@@ -343,9 +343,7 @@ public class KeyDictionaryPanel extends JFrame{
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Load .png File");
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
-		File correctFile = null;
-		JOptionPane optPane = new JOptionPane();
-		
+		File correctFile = null;		
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -353,14 +351,14 @@ public class KeyDictionaryPanel extends JFrame{
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("png")) {
-        		optPane.showMessageDialog(parent, "Please select a valid '.png' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		JOptionPane.showMessageDialog(parent, "Please select a valid '.png' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
 
         	}
         }else {
-        	optPane.showMessageDialog(parent, "Skipped after user request.");
+        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
@@ -375,22 +373,20 @@ public class KeyDictionaryPanel extends JFrame{
 		fileChooser.setDialogTitle("Choose Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
-		File correctFile = null;
-		JOptionPane optPane = new JOptionPane();
-		
+		File correctFile = null;	
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		optPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	optPane.showMessageDialog(parent, "Skipped after user request.");
+        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
@@ -405,22 +401,20 @@ public class KeyDictionaryPanel extends JFrame{
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));		
-		File correctFile = null;
-		JOptionPane optPane = new JOptionPane();
-		
+		File correctFile = null;		
 		
 		int returnVal = fileChooser.showSaveDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		optPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	optPane.showMessageDialog(parent, "Skipped after user request.");
+        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}

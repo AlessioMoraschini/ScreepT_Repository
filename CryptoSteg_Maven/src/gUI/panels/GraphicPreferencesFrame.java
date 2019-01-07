@@ -13,6 +13,7 @@ import java.awt.SystemColor;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -161,7 +162,7 @@ public class GraphicPreferencesFrame extends JFrame{
 //					thisFrame.getContentPane().repaint();
 				} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
 				JOptionPane.showMessageDialog(thisFrame, "Sorry, something went wrong :(", e1.getClass().getName(), JOptionPane.ERROR_MESSAGE);
-				logger.error("Something went wrong loading lookAndFeel :("+e1.getStackTrace());
+				logger.error("Something went wrong loading lookAndFeel :("+Arrays.toString(e1.getStackTrace()));
 				}
 		    }
 		});

@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.awt.peer.PanelPeer;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -232,7 +233,7 @@ public class TreeFileMouseListenerCrypter {
 		            	logger.debug(path+" Deleted: "+selectedFile.delete());
 			        }
 		            String msg = "Files deleted!";
-	            	logger.debug(msg+treeSelArr);
+	            	logger.debug(msg+Arrays.toString(treeSelArr));
 	            	TEXT_LOG.setText("\n\n ### Completed ###\n\n  "+msg);
 
 	            }else {
@@ -305,7 +306,7 @@ public class TreeFileMouseListenerCrypter {
 									logger.debug(selectedFile.getName() + " exported to " + selected.getAbsolutePath());
 								}
 								String msg = "Files exported!";
-								logger.debug(msg + treeSelArr);
+								logger.debug(msg + Arrays.toString(treeSelArr));
 								TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
 					    		progUpdater.getPb().setValue(100);
 						    	JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!", JOptionPane.INFORMATION_MESSAGE);

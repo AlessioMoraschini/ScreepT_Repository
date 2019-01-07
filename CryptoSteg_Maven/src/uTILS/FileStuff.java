@@ -56,23 +56,25 @@ public class FileStuff {
 	public static int upperCaseSubFolder(File rootDir) {
 		int total=0;
 		boolean esit=false;
-		if(rootDir.isFile()) {
-			esit=renameFileUpperFirst(rootDir);	
-			if(esit==false)
-				total++;
-		}else {
-			renameFileUpperFirst(rootDir);
-			for(File file : rootDir.listFiles()) {
-				// se è una directory uso la ricorsione
-				if(file.isDirectory()) {
-					esit=renameFileUpperFirst(file);
-					upperCaseSubFolder(file);
-				}else if(file.isFile()) {
-					esit=renameFileUpperFirst(file);
-				}
-				if(esit==false)
+		if (rootDir!=null) {
+			if (rootDir.isFile()) {
+				esit = renameFileUpperFirst(rootDir);
+				if (esit == false)
 					total++;
-			}
+			} else {
+				renameFileUpperFirst(rootDir);
+				for (File file : rootDir.listFiles()) {
+					// se è una directory uso la ricorsione
+					if (file.isDirectory()) {
+						esit = renameFileUpperFirst(file);
+						upperCaseSubFolder(file);
+					} else if (file.isFile()) {
+						esit = renameFileUpperFirst(file);
+					}
+					if (esit == false)
+						total++;
+				}
+			} 
 		}
 		return total;
 	}
@@ -148,19 +150,21 @@ public class FileStuff {
 
 		if(source.isDirectory()) {
 			File[] srcFiles = source.listFiles();
-			for(File file : srcFiles) {
+			if (srcFiles!=null) {
+				for (File file : srcFiles) {
 
-				if (extFilter.equals("")||FilenameUtils.getExtension(file.getName()).equals(extFilter)) {
-					String destinationPathString = destination.getPath() + "\\" + file.getName();
-					File newFile = new File(destinationPathString);
-					if (newFile.exists() && !overwrite) {
-						// if file i exists and overwrite specified as false, then use the function to 
-						// correct the name until it's not unique, and then update path string
-						destinationPathString = destination.getPath() + "\\" + renameJavaObjFile(newFile).getName();
+					if (extFilter.equals("") || FilenameUtils.getExtension(file.getName()).equals(extFilter)) {
+						String destinationPathString = destination.getPath() + "\\" + file.getName();
+						File newFile = new File(destinationPathString);
+						if (newFile.exists() && !overwrite) {
+							// if file i exists and overwrite specified as false, then use the function to 
+							// correct the name until it's not unique, and then update path string
+							destinationPathString = destination.getPath() + "\\" + renameJavaObjFile(newFile).getName();
+						}
+						Path destinationPath = Paths.get(destinationPathString);
+						Files.copy(file.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
 					}
-					Path destinationPath = Paths.get(destinationPathString);
-					Files.copy(file.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-				}
+				} 
 			}
 		}
 

@@ -483,8 +483,7 @@ public class CrypterPanel extends JPanel {
 						textAreaLog.setText(msg);
 					}
 				}
-				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter( currentConf, thisPanel);
-				
+				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter( currentConf, thisPanel);			
 			}
 		};
 		// initialize tree 

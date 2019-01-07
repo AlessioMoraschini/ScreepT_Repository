@@ -21,16 +21,21 @@ public class FileTreeModel implements TreeModel {
 	    @Override
 	    public Object getChild(Object parent, int index) {
 	        File f = (File) parent;
-	        return f.listFiles()[index];
+		    File[] sons = f.listFiles();
+			return sons[index];
+			
 	    }
 
 	    @Override
 	    public int getChildCount(Object parent) {
 	        File f = (File) parent;
+	        File[] sons = f.listFiles();
 	        if (!f.isDirectory()) {
 	            return 0;
 	        } else {
-	            return f.list().length;
+		        if (sons.length!=0) {
+		        	return sons.length;
+		        }else return 0;  
 	        }
 	    }
 
@@ -38,7 +43,9 @@ public class FileTreeModel implements TreeModel {
 	    public int getIndexOfChild(Object parent, Object child) {
 	        File par = (File) parent;
 	        File ch = (File) child;
-	        return Arrays.asList(par.listFiles()).indexOf(ch);
+	        if(par!=null) {
+		        return Arrays.asList(par.listFiles()).indexOf(ch);
+	        }else return 0;
 	    }
 
 	    @Override

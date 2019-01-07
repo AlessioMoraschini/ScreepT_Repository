@@ -1009,8 +1009,6 @@ public class mainGUI {
 		fileChooser.setSelectedFile(new File(defName));
 		fileChooser.setCurrentDirectory(new File(currentConfiguration.getFileOpt().getLastDstFolderPath()));		
 		File correctFile = null;
-		JOptionPane optPane = new JOptionPane();
-		
 		
 		int returnVal = fileChooser.showSaveDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -1021,14 +1019,14 @@ public class mainGUI {
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("log")) {
-        		optPane.showMessageDialog(parent, "Please specify a valid 'log' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		JOptionPane.showMessageDialog(parent, "Please specify a valid 'log' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
         		currentConfiguration.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
 
         	}
         }else {
-        	optPane.showMessageDialog(parent, "Skipped after user request.");
+        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}

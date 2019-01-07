@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.peer.PanelPeer;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
@@ -146,7 +147,7 @@ public class TreeFileMouseListenerDictionary {
 		            	logger.debug(path+" Deleted: "+selectedFile.delete());		        		
 			        }
 		            String msg = "Files deleted!";
-	            	logger.debug(msg+treeSelArr);
+	            	logger.debug(msg+Arrays.toString(treeSelArr));
 	            	TEXT_LOG.setText("\n\n ### Completed ###\n\n  "+msg);
 
 	            }else {
@@ -218,7 +219,7 @@ public class TreeFileMouseListenerDictionary {
 									logger.debug(selectedFile.getName() + " exported to " + selected.getAbsolutePath());
 								}
 								String msg = "Files exported!";
-								logger.debug(msg + treeSelArr);
+								logger.debug(msg + Arrays.toString(treeSelArr));
 								TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
 					    		progUpdater.getPb().setValue(100);
 						    	JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!", JOptionPane.INFORMATION_MESSAGE);
@@ -246,7 +247,6 @@ public class TreeFileMouseListenerDictionary {
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Load .png File");
 		File correctFile = null;
-		JOptionPane optPane = new JOptionPane();
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -254,13 +254,13 @@ public class TreeFileMouseListenerDictionary {
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("png")) {
-        		optPane.showMessageDialog(parent, "Please select a valid '.png' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		JOptionPane.showMessageDialog(parent, "Please select a valid '.png' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
 
         	}
         }else {
-        	optPane.showMessageDialog(parent, "Skipped after user request.");
+        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}

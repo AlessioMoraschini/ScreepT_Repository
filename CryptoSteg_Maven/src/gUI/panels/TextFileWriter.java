@@ -40,6 +40,7 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -381,7 +382,7 @@ public class TextFileWriter extends JPanel {
 								currentConfiguration.getFileOpt()
 										.setLastDstFolderPath(selectedFile.getParentFile().getAbsolutePath());
 							}
-						} catch (Exception e1) {
+						} catch (IOException e1) {
 							JOptionPane.showMessageDialog(null, "error Saving the selected file :(");
 						}
 						new Thread(new Runnable() {
@@ -547,7 +548,6 @@ public class TextFileWriter extends JPanel {
 		slider_margin.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 					textMargin=slider_margin.getValue();
-					String backupText = new String(textArea_1.getText());
 					textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
 					textArea_1.revalidate();
 					textArea_1.repaint();
