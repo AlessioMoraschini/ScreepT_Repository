@@ -1,0 +1,26 @@
+package gUI.utils.tooltip;
+
+import java.awt.Component;
+
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+
+import gUI.om.BufferedImageType;
+import gUI.om.ScalingAlgorithm;
+
+public class ToolTipBufferedImageType extends DefaultListCellRenderer {
+
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        // I'd extract the basic "text" representation of the value
+        // and pass that to the super call, which will apply it to the 
+        // JLabel via the setText method, otherwise it will use the
+        // objects toString method to generate a representation
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus); 
+        BufferedImageType comboVal =(BufferedImageType)value;
+        setToolTipText(comboVal.getDescription());
+        return this;
+    }
+
+}
+	
