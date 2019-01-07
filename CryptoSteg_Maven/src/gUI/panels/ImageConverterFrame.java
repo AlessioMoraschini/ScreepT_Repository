@@ -173,20 +173,22 @@ public class ImageConverterFrame extends JFrame{
 		getContentPane().add(lblWidth, "cell 0 2,alignx center");
 		
 		spinnerWidth = new JSpinner();
-		spinnerWidth.setModel(new SpinnerNumberModel(100, 0, 8000, 5));
+		spinnerWidth.setModel(new SpinnerNumberModel(100, 0, 8000, 1));
 		getContentPane().add(spinnerWidth, "cell 1 2,growx,aligny center");
 		
 		// WIDTH SPINNER LISTENER
 		spinnerWidth.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				// if KeepRatio is  selected 
-				if(chckbxKeepRatio.isSelected()) {
-					if (inputImg!=null) {
-						// modify height according to ratio of original image
-						float r = (float) inputImg.getWidth() / (float) inputImg.getHeight();
-						int newH = (int) ((int) spinnerWidth.getValue() / r);
-						spinnerHeight.setValue(newH);
-					}
+				boolean posWValSel = (int)spinnerWidth.getValue() > 0;
+				boolean posHValSel = (int)spinnerHeight.getValue() > 0;
+				if(chckbxKeepRatio.isSelected() && inputImg!=null && posWValSel && posHValSel) {
+					// modify height according to ratio of original image
+					float r = (float) inputImg.getWidth() / (float) inputImg.getHeight();
+					int newH = (int) ((int) spinnerWidth.getValue() / r);
+					spinnerHeight.setValue(newH);
+				}else if(!posWValSel){
+					spinnerWidth.setValue(1);
 				}
 				lblOutSize.setText((int) spinnerWidth.getValue()+" X "+(int) spinnerHeight.getValue());
 			}
@@ -199,7 +201,7 @@ public class ImageConverterFrame extends JFrame{
 		//original size listener
 		btnOriginalSize.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (inputImg!=null) {
+				if (inputImg!=null ) {
 					spinnerWidth.setValue(inputImg.getWidth());
 					if (!chckbxKeepRatio.isSelected()) {
 						spinnerHeight.setValue(inputImg.getHeight());
@@ -229,12 +231,16 @@ public class ImageConverterFrame extends JFrame{
 		getContentPane().add(lblHeight, "cell 0 3,alignx center");
 		
 		spinnerHeight = new JSpinner();
-		spinnerHeight.setModel(new SpinnerNumberModel(100, 0, 8000, 5));
+		spinnerHeight.setModel(new SpinnerNumberModel(100, 0, 8000, 1));
 		getContentPane().add(spinnerHeight, "cell 1 3,growx,aligny center");
 		
 		// HEIGHT SPINNER LISTENER
 		spinnerHeight.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
+				boolean posHValSel = (int)spinnerHeight.getValue() > 0;
+				if(!posHValSel) {
+					spinnerHeight.setValue(1);
+				}			
 				lblOutSize.setText((int) spinnerWidth.getValue()+" X "+(int) spinnerHeight.getValue());
 			}
 		});
@@ -503,13 +509,13 @@ public class ImageConverterFrame extends JFrame{
 									logger.error("error retrieving the image :(");
 								} 
 							}
+							progUpdater.getPb().setValue(100);
 						}else {
-							refreshInGui("###Error###","###Error###","###Error###","###Error###", 0, 0);
+							refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
 							String msg = "You have to Load a Source image file before to convert it !";
 							JOptionPane.showMessageDialog(thisFrame, msg,"Missing source file", JOptionPane.ERROR_MESSAGE);
 							logger.error(msg);
 						}	
-						progUpdater.getPb().setValue(100);
 						
 						// reactivate buttons
 						btnConvertAddDictionary.setEnabled(true);
@@ -563,7 +569,7 @@ public class ImageConverterFrame extends JFrame{
 						
 						logger.debug("Image Loaded!");
 					}else {
-						refreshInGui("###Error###","###Error###","###Error###","###Error###", 0, 0);
+						refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
 					}
 				}
 				
@@ -633,7 +639,7 @@ public class ImageConverterFrame extends JFrame{
 
 							}
 						}else {
-							refreshInGui("###Error###","###Error###","###Error###","###Error###", 0, 0);
+							refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
 							String msg = "You have to Load a Source image file before to convert it !";
 							JOptionPane.showMessageDialog(thisFrame, msg,"Missing source file", JOptionPane.ERROR_MESSAGE);
 							logger.error(msg);
@@ -694,23 +700,23 @@ public class ImageConverterFrame extends JFrame{
 	 */
 	private void refreshOutGui() {
 
-		// operations that need file to be not null
-		if (inputImgFile!=null) {
+		// operations that need either file and img to be not null
+		if (inputImgFile!=null && inputImg!=null) {
 			
 			// if same format is selected
 			if(chckbxSameFormat.isSelected()) {
 				comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
-				lblOutSize.setText(FileStuff.coolFileSize(inputImgFile));
+				lblOutSize.setText((int) spinnerWidth.getValue()+" X "+(int) spinnerHeight.getValue());
 			}else{
 				lblOutFileSize.setText("Coming soon :)");
 			}
 		}else {
-			refreshInGui("###Error###","###Error###","###Error###","###Error###", 0, 0);
+			refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
 		}
 		
 		
 		// if KeepRatio is  selected
-		if(chckbxKeepRatio.isSelected()) {
+		if(chckbxKeepRatio.isSelected() && inputImg!=null) {
 			spinnerHeight.setEnabled(false);
 			if (inputImg!=null) {
 				// modify height according to ratio of original image

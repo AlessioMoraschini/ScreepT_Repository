@@ -41,8 +41,6 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
 
         	}
-        }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}

@@ -368,7 +368,7 @@ public class TextFileWriter extends JPanel {
 									JOptionPane.showMessageDialog(parent, "Operation cancelled");
 								}
 							} else {
-								//		            		selectedFile = FileStuff.changeExtension(selectedFile, CURRENT_EXT_OUT);
+//  		            		selectedFile = FileStuff.changeExtension(selectedFile, CURRENT_EXT_OUT);
 								done = selectedFile.createNewFile();
 								PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
 								out.write(textArea_1.getText());
