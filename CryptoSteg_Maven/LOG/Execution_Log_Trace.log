@@ -11029,3 +11029,85 @@ ScrYpt_V1.0 Started now!
 2019-01-05 01:51:01,561 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
 2019-01-05 01:51:21,563 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
 2019-01-05 01:51:41,565 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-07 22:27:54,139 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Mon Jan 07 22:27:54 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-01-07 22:27:54,179 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 15
+ LOG_FONT_SIZE: 13
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-01-07 22:27:54,335 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-01-07 22:27:54,351 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-01-07 22:27:54,789 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-01-07 22:27:54,933 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-01-07 22:27:54,933 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-01-07 22:27:54,933 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-01-07 22:27:55,170 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-01-07 22:27:55,178 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-01-07 22:27:55,178 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-01-07 22:27:58,280 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - ## KEY GENERATOR started
+2019-01-07 22:28:13,279 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - Exit keygen function
+2019-01-07 22:28:14,139 [Thread-10] DEBUG uTILS.ImageWorker - Key generated!
+2019-01-07 22:28:14,326 [Thread-10] DEBUG gUI.panels.ImageGenContainerPanel - Generated Image of 1831Px X 1293Px
+2019-01-07 22:28:15,186 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-07 22:28:16,326 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - Exit keygen function
+2019-01-07 22:28:17,068 [Thread-12] DEBUG uTILS.ImageWorker - Key generated!
+2019-01-07 22:28:17,219 [Thread-12] DEBUG gUI.panels.ImageGenContainerPanel - Generated Image of 1831Px X 1293Px
+2019-01-07 22:28:24,858 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - Exit keygen function
+2019-01-07 22:28:27,917 [Thread-14] DEBUG uTILS.ImageWorker - Key generated!
+2019-01-07 22:28:28,869 [Thread-14] DEBUG gUI.panels.ImageGenContainerPanel - Generated Image of 4000Px X 4000Px
+2019-01-07 22:28:33,499 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - Closing gUI.panels.KeyGenPanel$9
+2019-01-07 22:28:35,201 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-07 22:28:38,373 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-07 22:28:38,373 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-07 22:28:38,373 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Mon Jan 07 22:28:38 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+

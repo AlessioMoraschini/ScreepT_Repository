@@ -469,39 +469,39 @@ public class ImageConverterFrame extends JFrame{
 							if (inputImg != null) {
 								try {
 									inputImg = ImageIO.read(inputImgFile);
+
+									progUpdater.getPb().setValue(30);
+									
+									int X = (int)spinnerWidth.getValue();
+									int Y = (int)spinnerHeight.getValue();
+									ScalingAlgorithm alg = (ScalingAlgorithm) comboScaleQuality.getSelectedItem();
+									
+									// if not to save same as the original
+									if(X!=inputImg.getWidth() || Y!=inputImg.getHeight() || !((String)comboBoxFormats.getSelectedItem()).equals(FilenameUtils.getExtension(inputImgFile.getName()))) {
+										Image img =inputImg.getScaledInstance(X, Y, alg.getAlgorithm());
+										// convert Image to BufferedImage
+										progUpdater.getPb().setValue(35);
+										inputImg = new BufferedImage(X, Y, inputImg.getType());
+										Graphics2D g2d = inputImg.createGraphics();
+										g2d.drawImage(img, 0, 0, null);
+										g2d.dispose();				
+										progUpdater.getPb().setValue(50);
+									}
+									
+									File selected = new File(KeyGenPanel.KEY_DICTIONARY + inputImgFile.getName());
+									selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
+									if (selected!=null) {
+										progUpdater.getPb().setValue(70);
+										progUpdater.getPb().setValue(90);
+										//if is selected an export file
+										ImageWorker.convertAndWrite(inputImg, (String)comboBoxFormats.getSelectedItem(), selected);
+										String msg ="Image converted and added to dictionary: "+selected.getAbsolutePath();
+										JOptionPane.showMessageDialog(thisFrame, msg, "Image converted :)", JOptionPane.INFORMATION_MESSAGE);
+										logger.debug(msg);
+									}
 								} catch (IOException e1) {
 									logger.error("error retrieving the image :(");
 								} 
-							}
-							
-							progUpdater.getPb().setValue(30);
-							
-							int X = (int)spinnerWidth.getValue();
-							int Y = (int)spinnerHeight.getValue();
-							ScalingAlgorithm alg = (ScalingAlgorithm) comboScaleQuality.getSelectedItem();
-							
-							// if not to save same as the original
-							if(X!=inputImg.getWidth() || Y!=inputImg.getHeight() || !((String)comboBoxFormats.getSelectedItem()).equals(FilenameUtils.getExtension(inputImgFile.getName()))) {
-								Image img =inputImg.getScaledInstance(X, Y, alg.getAlgorithm());
-								// convert Image to BufferedImage
-								progUpdater.getPb().setValue(35);
-								inputImg = new BufferedImage(X, Y, inputImg.getType());
-								Graphics2D g2d = inputImg.createGraphics();
-								g2d.drawImage(img, 0, 0, null);
-								g2d.dispose();				
-								progUpdater.getPb().setValue(50);
-							}
-							
-							File selected = new File(KeyGenPanel.KEY_DICTIONARY + inputImgFile.getName());
-							selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
-							if (selected!=null) {
-								progUpdater.getPb().setValue(70);
-								progUpdater.getPb().setValue(90);
-								//if is selected an export file
-								ImageWorker.convertAndWrite(inputImg, (String)comboBoxFormats.getSelectedItem(), selected);
-								String msg ="Image converted and added to dictionary: "+selected.getAbsolutePath();
-								JOptionPane.showMessageDialog(thisFrame, msg, "Image converted :)", JOptionPane.INFORMATION_MESSAGE);
-								logger.debug(msg);
 							}
 						}else {
 							refreshInGui("###Error###","###Error###","###Error###","###Error###", 0, 0);

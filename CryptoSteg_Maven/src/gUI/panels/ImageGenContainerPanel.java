@@ -11,17 +11,14 @@ import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
 import gUI.om.BufferedImageType;
-import gUI.utils.filedialog.AdWaitDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import uTILS.ImageWorker;

@@ -39,7 +39,7 @@ public class ScreeptManager {
 	public ScreeptManager(ImageCodeDecode imgCod, EncryptDecrypt aesCod) {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = aesCod;
-		imgCoder = imgCoder;
+		imgCoder = imgCod;
 	}	
 	
 	// 
@@ -52,7 +52,7 @@ public class ScreeptManager {
 	public ScreeptManager(ImageCodeDecode imgCod) {
 		mode = CryptoMode.ONLY_STEG;
 		aesCoder = null;
-		imgCoder = imgCoder;
+		imgCoder = imgCod;
 	}
 	
 	//////////////////////
