@@ -139,7 +139,7 @@ public class CrypterPanel extends JPanel {
 		
 		parentFrame=parent;
 		// set the background of the entire panel
-		setBackground(new Color(176, 196, 222));
+		setBackground(SystemColor.desktop);
 		
 		// start with layout & header
 		initializeHeader();		
@@ -208,13 +208,13 @@ public class CrypterPanel extends JPanel {
 	}
 	
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[200:200:200][200:200:200][130,grow][:80:130,grow][140][120,grow][200,grow 300][70,grow]", "[:40:50px][25][30][100][100,grow][40px][280,grow]"));
+		setLayout(new MigLayout("", "[200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][200,grow 300][70,grow]", "[:40:50px][10px:10px:10px][25][30][100][140,grow][:10px:10px][280,grow]"));
 		
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
 		panelHeader.setBorder(new LineBorder(Color.BLACK, 4, true));
 		panelHeader.setBackground(new Color(100, 149, 237));
-		add(panelHeader, "cell 0 0 8 1,grow");
+		add(panelHeader, "cell 0 0 9 1,grow");
 		panelHeader.setLayout(new MigLayout("", "[50%][50%,grow]", "[50][]"));
 		
 		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
@@ -312,7 +312,7 @@ public class CrypterPanel extends JPanel {
 		panelStatus = new JPanel();
 		panelStatus.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panelStatus.setBackground(Color.DARK_GRAY);
-		add(panelStatus, "cell 2 1 6 1,grow");
+		add(panelStatus, "cell 3 2 6 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
 		gbl_panelStatus.columnWidths = new int[]{100, 0, 120, 140, 70, 150, 70, 100, 100, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
@@ -402,7 +402,7 @@ public class CrypterPanel extends JPanel {
 		panelStatus.add(labelFlagCodeReady, gbc_labelFlagCodeReady);
 		labelFlagCodeReady.setBorder(null);
 		labelFlagCodeReady.setFont(new Font("SansSerif", Font.BOLD, 15));
-		add(scrollPanelTab, "cell 0 1 2 5,grow");
+		add(scrollPanelTab, "cell 0 2 2 4,grow");
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBorder(new LineBorder(new Color(0, 0, 0), 0));
@@ -450,12 +450,12 @@ public class CrypterPanel extends JPanel {
 		
 		scrollPaneText = new JScrollPane();
 		scrollPaneText.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		add(scrollPaneText, "cell 2 2 6 5,grow");
+		add(scrollPaneText, "cell 3 3 6 5,grow");
 		
 		textAreaMain = new JTextArea();
 		textAreaMain.setRequestFocusEnabled(false);
 		textAreaMain.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		textAreaMain.setBackground(Color.WHITE);
+		textAreaMain.setBackground(SystemColor.menu);
 		textAreaMain.setEditable(false);
 		textAreaMain.setMargin(new Insets(10, 35, 10, 35));
 		scrollPaneText.setViewportView(textAreaMain);
@@ -490,7 +490,7 @@ public class CrypterPanel extends JPanel {
 		
 		scrollPaneTree = new JScrollPane();
 		scrollPaneTree.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		add(scrollPaneTree, "cell 0 6 2 1,grow");
+		add(scrollPaneTree, "cell 0 7 2 1,grow");
 		tree= new JTree(treeModel);
 		tree.setRequestFocusEnabled(false);
 		tree.setFont(new Font("SansSerif", Font.BOLD, 14));
