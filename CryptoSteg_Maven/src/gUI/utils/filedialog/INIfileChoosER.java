@@ -31,7 +31,7 @@ public class INIfileChoosER extends JDialog{
 	/**
 	 * Costruttore per lettura file INI
 	 * */
-	public INIfileChoosER(INItializer fileINI, TextArea textA) {
+	public INIfileChoosER(INItializer fileINI, JTextArea textA) {
 		
 		fileChooser = new JFileChooser();			
 		fileChooser.setDialogTitle("Load Configuration .INI File");

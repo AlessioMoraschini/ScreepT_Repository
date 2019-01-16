@@ -52,7 +52,8 @@ public class ChargeIniLog extends JPanel{
 		setLayout(new MigLayout("", "[117.00][][][70,grow][50][100px,grow][:80:250px]", "[:58.00:60px][][90%,grow]"));
 		
 		
-		TextArea textArea = new TextArea();
+		JTextArea textArea = new JTextArea();
+		textArea.setLineWrap(true);
 		textArea.setEditable(false);
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
 		textArea.append(config.toStringa()); 		
@@ -143,9 +144,9 @@ public class ChargeIniLog extends JPanel{
 		buttonReload.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
 		add(buttonReload, "cell 2 1");
 		
-		JScrollBar scrollBar = new JScrollBar();
-	
-		parent.getContentPane().add(scrollBar);
+//		JScrollBar scrollBar = new JScrollBar();
+//	
+//		parent.getContentPane().add(scrollBar);
 		
 		logger.debug("## CONFIGURATION MANAGER MODULE started");
 	}

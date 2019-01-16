@@ -208,14 +208,14 @@ public class CrypterPanel extends JPanel {
 	}
 	
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][200,grow 300][70,grow]", "[:40:50px][10px:10px:10px][25][30][100][140,grow][:10px:10px][280,grow]"));
+		setLayout(new MigLayout("", "[200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:200,grow 300][70,grow]", "[:40:50px][10px:10px:10px][25][30][100][140,grow][:10px:10px][280,grow]"));
 		
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
 		panelHeader.setBorder(new LineBorder(Color.BLACK, 4, true));
 		panelHeader.setBackground(new Color(100, 149, 237));
 		add(panelHeader, "cell 0 0 9 1,grow");
-		panelHeader.setLayout(new MigLayout("", "[50%][50%,grow]", "[50][]"));
+		panelHeader.setLayout(new MigLayout("", "[50%][50%]", "[50][]"));
 		
 		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
 		lblScreeptHeader.setHorizontalAlignment(SwingConstants.CENTER);
@@ -314,7 +314,7 @@ public class CrypterPanel extends JPanel {
 		panelStatus.setBackground(Color.DARK_GRAY);
 		add(panelStatus, "cell 3 2 6 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{100, 0, 120, 140, 70, 150, 70, 100, 100, 0};
+		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 70, 100, 100, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
 		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
@@ -338,7 +338,7 @@ public class CrypterPanel extends JPanel {
 		gbc_lblSrcFileSel.gridy = 0;
 		panelStatus.add(lblSrcFileSel, gbc_lblSrcFileSel);
 		
-		lblSelectedInputStatic = new JLabel("Key Image:");
+		lblSelectedInputStatic = new JLabel(" Key Image:");
 		lblSelectedInputStatic.setForeground(new Color(255, 239, 213));
 		GridBagConstraints gbc_lblSelectedInputStatic = new GridBagConstraints();
 		gbc_lblSelectedInputStatic.insets = new Insets(0, 0, 0, 5);
