@@ -12,6 +12,7 @@ public class ByteWorker {
 	}
 	
 	// METHODS 
+	
 	/**
 	 * this method is created to use standard-safe way to convert from string to array of bytes.
 	 * @param srcString the source string
