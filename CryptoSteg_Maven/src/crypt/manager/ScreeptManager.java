@@ -1,12 +1,11 @@
 package crypt.manager;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -20,7 +19,8 @@ import org.apache.log4j.Logger;
 import crypt.aes.AESException;
 import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
-import gUI.panels.KeyGenPanel;
+import iNIT.INItializer;
+import iNIT.om.AesOption;
 
 /**
  * 
@@ -58,19 +58,48 @@ public class ScreeptManager {
 	//    CONSTRUCTOR   //
 	//////////////////////
 	
+	/**
+	 * Default Constructor - AES Crypto-Conversion with default psw
+	 * 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws NoSuchPaddingException 
+	 * @throws UnsupportedEncodingException 
+	 * 
+	 */
+	public ScreeptManager() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
+		mode = CryptoMode.COMPLETE;
+		aesCoder = new EncryptDecrypt(AesOption.DEFAULT_AES_KEY);
+		imgCoder = null;
+	}
+	
+	/**
+	 * Constructor for complete mode Crypto-Conversion
+	 * 
+	 * @param imgCod the initialized imageCoder
+	 * @param aesCod the initialized aesCoder
+	 */
 	public ScreeptManager(ImageCodeDecode imgCod, EncryptDecrypt aesCod) {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = aesCod;
 		imgCoder = imgCod;
 	}	
 	
-	// 
+	/**
+	 *  Constructor for only AES Crypto-conversion
+	 *  
+	 * @param aesCod the initialized aesCoder
+	 */
 	public ScreeptManager(EncryptDecrypt aesCod) {
 		mode = CryptoMode.ONLY_AES;
 		aesCoder = aesCod;
 		imgCoder = null;
 	}
 		
+	/**
+	 *  Constructor for only image Crypto-Conversion
+	 *  
+	 * @param imgCod the initialized imageCoder
+	 */
 	public ScreeptManager(ImageCodeDecode imgCod) {
 		mode = CryptoMode.ONLY_STEG;
 		aesCoder = null;
