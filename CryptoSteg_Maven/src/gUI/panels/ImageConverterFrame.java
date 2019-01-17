@@ -217,6 +217,9 @@ public class ImageConverterFrame extends JFrame{
 		panelImgDisp = new JPanel();
 		panelImgDisp.setMaximumSize(new Dimension(220, 220));
 		panelImgDisp.setBackground(Color.BLACK);
+		JLabel iniLabel = new JLabel("Load an Image to start :)");
+		iniLabel.setForeground(Color.LIGHT_GRAY);
+		panelImgDisp.add(iniLabel);
 		getContentPane().add(panelImgDisp, "cell 4 2 2 5,grow");
 		GridBagLayout gbl_panelImgDisp = new GridBagLayout();
 		gbl_panelImgDisp.columnWidths = new int[]{0};

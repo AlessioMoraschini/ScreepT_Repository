@@ -81,9 +81,9 @@ public class ScreeptManager {
 	//      METHODS     //
 	//////////////////////
 	
-	//TODO here goes method that recognize the mode and apply conversion (one method for string and one method for files)
-	//     this method also has to avoid outOfMemory errors, remember to use Buffers! 
-	//     NB a method for each combination of types/mode
+	// here goes method that recognize the mode and apply conversion (one method for string and one method for files)
+	// this method also has to avoid outOfMemory errors, remember to use Buffers! 
+	// NB a method for each combination of types/mode
 	
 	/**
 	 * this method is used to crypt source file according to the mode setted in the corresponding field.
