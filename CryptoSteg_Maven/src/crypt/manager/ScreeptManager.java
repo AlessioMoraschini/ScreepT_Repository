@@ -1,5 +1,6 @@
 package crypt.manager;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,14 +14,18 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
 import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
-import iNIT.INItializer;
+import crypt.steg.STEGException;
 import iNIT.om.AesOption;
+import uTILS.FileStuff;
 
 /**
  * 
@@ -39,7 +44,10 @@ public class ScreeptManager {
 	static Logger logger = Logger.getLogger(ScreeptManager.class);
 	
 	// temp file path
-	private final static String RESULT_PATH = "Resources_Scrypt/temp/temp_result";
+	private final static String RESULT_PATH = "Resources_Scrypt/temp/";
+	
+	// temp crypted file name
+	private final static String CRYPT_NAME = "temp_crypt_out";
 	
 	// this is the size of the buffer used for file IO to avoid memory leak
 	private static int BUFFER_SIZE = 1024*1024*50; // default - 50 MB of buffer
@@ -53,7 +61,7 @@ public class ScreeptManager {
 	private EncryptDecrypt aesCoder;
 	
 	private CryptoMode mode;
-	
+		
 	//////////////////////
 	//    CONSTRUCTOR   //
 	//////////////////////
@@ -78,7 +86,7 @@ public class ScreeptManager {
 	 * @param imgCod the initialized imageCoder
 	 * @param aesCod the initialized aesCoder
 	 */
-	public ScreeptManager(ImageCodeDecode imgCod, EncryptDecrypt aesCod) {
+	public ScreeptManager(ImageCodeDecode imgCod, File keyImgFile, EncryptDecrypt aesCod) {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = aesCod;
 		imgCoder = imgCod;
@@ -100,7 +108,7 @@ public class ScreeptManager {
 	 *  
 	 * @param imgCod the initialized imageCoder
 	 */
-	public ScreeptManager(ImageCodeDecode imgCod) {
+	public ScreeptManager(ImageCodeDecode imgCod, File keyImgFile) {
 		mode = CryptoMode.ONLY_STEG;
 		aesCoder = null;
 		imgCoder = imgCod;
@@ -118,7 +126,7 @@ public class ScreeptManager {
 	 * this method is used to crypt source file according to the mode setted in the corresponding field.
 	 * 
 	 * @param srcFile this is the source file to be cripted
-	 * @return temp file that wraps an image (if the mode is complete/steg) or normal file(only aes mode)
+	 * @return temp directory path, with out files that wrap an image (if the mode is complete/steg) or normal file(only aes mode)
 	 * 
 	 * @throws IOException 
 	 * @throws AESException 
@@ -128,48 +136,58 @@ public class ScreeptManager {
 	 * @throws NoSuchAlgorithmException 
 	 * @throws NoSuchPaddingException 
 	 * @throws InvalidKeyException 
+	 * @throws STEGException 
 	 */
-	public File crypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
-		// initialize the wrapper result file container
-		File result = new File(RESULT_PATH);
+	public String crypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 		
-		if(result.exists()) {
+		logger.debug("Started cripting with selected mode: "+mode);
+		
+		// initialize the temp directory reference
+		File temp_folder = new File(RESULT_PATH);
+		
+		if(temp_folder.exists()) {
 			
-			// if the file exists empty it
-			FileWriter writer = new FileWriter(result, false);
-			writer.write("");
-			writer.close();
-	
-		}else {
-		
-			// if it does not exist create a new empty file
-			result.createNewFile();
-		
+			// empty temp folder content files before to start encription
+			boolean deleted = FileStuff.deleteDirContent(temp_folder);
+			if(deleted) {
+				logger.debug("Temp dir ("+RESULT_PATH+") succesfully emptied :)");
+			}else {
+				logger.error("Some error occurred deleting "+RESULT_PATH+" content :(");
+			}
 		}
 		
 		FileInputStream streamIN = new FileInputStream(srcFile);
 		byte[] buffer = new byte[BUFFER_SIZE];
+			
+		// initialize var according to selected mode:
 		
-		// initialize writer with append flag set to true, so it don't overwrite at every cycle of buffer read
-		FileOutputStream outWriter = new FileOutputStream(RESULT_PATH, true);
-		
-		// this integer will contain value -1 when file is ended 
-		int readFlag = streamIN.read(buffer);
-		
-		// initialize var according to selected mode
+		// CASE 1 - ONLY AES
 		if(mode.AES && !mode.STEG) {
 
+			logger.debug("AES mode detected!");
+			
+			// this integer will contain value -1 when file is ended 
+			int readFlag = streamIN.read(buffer);
+			
+			File result = new File(RESULT_PATH+CRYPT_NAME+"_aesCrypted."+FilenameUtils.getExtension(srcFile.getName()));
+			
+			// create file if it does not exist
+			result.createNewFile();
+			
+			// initialize writer with append flag set to true, so it don't overwrite at every cycle of buffer read
+			FileOutputStream outWriter = new FileOutputStream(result.getAbsolutePath(), true);
+			
 			// AES error types
 			if(this.aesCoder == null || this.aesCoder.getPassword().equals("")) {
 
 				// close streams to avoid memory leaks
 				streamIN.close();
 				outWriter.close();	
-				
+				logger.error("Error retrieving the AES coder -> null or void passsword!");
+
 				throw new AESException();
 			}
 			
-			// IF ONLY AES
 			while(readFlag > 0) {
 				
 				// encrypt current buffer content and write it to temp out file
@@ -180,17 +198,59 @@ public class ScreeptManager {
 				readFlag = streamIN.read(buffer);
 			}		
 			
+			outWriter.close();
+			logger.debug("AES crypt phase ended: "+result.getName()+" created :)");
+			
+		// CASE 2 - ONLY STEG
 		}else if(mode.STEG && !mode.AES) {
 			
-			// IF ONLY STEG
+			logger.debug("STEG mode detected!");
+
+			int w = this.imgCoder.getKeyImage().getWidth();
+			int h = this.imgCoder.getKeyImage().getHeight();
+			
+			// set buffer at 1 byte per px of image key
+			buffer = new byte[w*h];
+			
+			// this integer will contain value -1 when file is ended 
+			int readFlag = streamIN.read(buffer);
+			
+			// STEG error types
+			if(this.imgCoder == null || this.imgCoder.getKeyImage()==null) {
+				
+				// close streams to avoid memory leaks
+				streamIN.close();
+				logger.error("Error retrieving the STEG coder -> null coder or keyImage!");
+				
+				throw new STEGException();
+			}
+
 			while(readFlag > 0) {
 						
+				// cypt current buffer into image
+				BufferedImage imgResult = imgCoder.stegaCrypt(buffer);
+				
+				// first time overwrite no index.
+				// and use png extension 
+				File outFile = new File(RESULT_PATH+CRYPT_NAME+".png");
+				
+				ImageIO.write(imgResult, "png", outFile);
+								
+				// after first image is created create a new incremental-named file for next image until source byte buffer is ended
+				FileStuff.renameJavaObjFile(outFile);
+				
 				readFlag = streamIN.read(buffer);
 			
 			}
+		
+			logger.debug("STEG crypt phase ended :)");
+			
+		// CASE 3 - COMPLETE MODE
 		}else if (mode.STEG && mode.AES) {
 			
-			// IF COMPLETE MODE
+			// this integer will contain value -1 when file is ended 
+			int readFlag = streamIN.read(buffer);
+			
 			while(readFlag > 0) {
 				
 				readFlag = streamIN.read(buffer);
@@ -198,10 +258,11 @@ public class ScreeptManager {
 		}
 		
 		// close streams to avoid memory leaks
-		streamIN.close();
-		outWriter.close();		
+		streamIN.close();		
 		
-		return result;
+		logger.debug("Streams closed, exiting method.");
+		
+		return RESULT_PATH;
 	}
 	
 	//////////////////////
@@ -243,6 +304,10 @@ public class ScreeptManager {
 
 	public static void setBUFFER_SIZE(int bUFFER_SIZE) {
 		BUFFER_SIZE = bUFFER_SIZE;
-	}	
+	}
+
+	public static String getCryptName() {
+		return CRYPT_NAME;
+	}
 	
 }

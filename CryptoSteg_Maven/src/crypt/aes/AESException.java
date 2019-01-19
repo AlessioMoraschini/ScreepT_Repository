@@ -8,7 +8,6 @@ public class AESException extends Exception{
 	
 	@Override
 	public String getMessage() {
-		// TODO Auto-generated method stub
 		return "Error in the AES coder object, please be sure password is not null!";
 	}
 	

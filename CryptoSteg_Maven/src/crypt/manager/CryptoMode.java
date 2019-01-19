@@ -13,6 +13,16 @@ public enum CryptoMode {COMPLETE("AS", true, true),
 	
 	private String ID;
 	boolean AES;
+	boolean STEG;
+	
+	// private constructor
+	private CryptoMode(String id, boolean aes, boolean steg ) {
+		ID = id;
+		AES = aes;
+		STEG = steg;
+	}
+	
+	// GETTER AND SETTERS
 	
 	public String getID() {
 		return ID;
@@ -37,12 +47,5 @@ public enum CryptoMode {COMPLETE("AS", true, true),
 	public void setSTEG(boolean sTEG) {
 		STEG = sTEG;
 	}
-
-	boolean STEG;
 	
-	private CryptoMode(String id, boolean aes, boolean steg ) {
-		ID = id;
-		AES = aes;
-		STEG = steg;
-	}
 }

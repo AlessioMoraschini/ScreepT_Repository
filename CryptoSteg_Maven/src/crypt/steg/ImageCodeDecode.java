@@ -10,6 +10,13 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
+/**
+ * this class represent the coding/decoding of source byte list or array, implementing simil-steganography
+ * algorithm designed to be concatenated with aes result bytes or with raw bytes, depending on user needs :) 
+ * 
+ * @author Alessio Moraschini, 2018 Dalmine
+ *
+ */
 public class ImageCodeDecode {
 
 	// ImageCodeDecode logger creation		
@@ -112,6 +119,55 @@ public class ImageCodeDecode {
 	    		Integer codedPX = securePx - currentByteToInt;
 	    		codedImg.setRGB(j, i, codedPX);
 	    		//logger.debug("\n   =>  pxRGB: "+px+" - Secured pixel: "+securePx+"\n"+"-> Px: "+j+" X "+i+ " - SRC: "+px+" : byte: " + currentByteToInt + " => CODED = [" + codedPX+" ]");
+	    	}
+	    }
+	    // end of image
+//	    return imgPixels;		
+		
+		return codedImg;
+	}
+	
+	/**
+	 * Questo metodo si occupa di codificare tramite algoritmo SteganoCrypt una lista di byte passata come parametro. 
+	 * Il metodo si occupa di calcolare i px dell'immagine codedImg partendo dal corrispondente px della imageKey e dal
+	 * valore dell'i-esimo byte prelevato dall'array di byte sorgente.
+	 * 
+	 * @param AES_CODED_OUT  -> array di byte data dai byte originali codificati tramite AES
+	 * @return BufferedImage codedImg  -> immagine risultante dalla codifica
+	 * */
+	public BufferedImage stegaCrypt(byte[] AES_CODED_OUT) {
+				
+		BufferedImage sourceImg = keyImage;
+		BufferedImage codedImg = new BufferedImage(keyImage.getWidth(), keyImage.getHeight(), keyImage.getType());
+		
+		// calcolo larghezza e altezza immagine
+        int height = sourceImg.getHeight();
+	    int width = sourceImg.getWidth();
+	    
+	    // ciclo di scansione immagine
+	    Integer currentByteToInt;
+	    
+	    int k = 0;
+	    
+	    // per ogni riga
+	    for(int i=0; i < height;i++) { 
+
+	    	// per ogni colonna
+	    	for(int j=0; j<width;j++){ 
+	    		currentByteToInt = 0;
+	    		Integer px = sourceImg.getRGB(j, i);
+	    		// secure against overflow
+	    		Integer securePx = secForConversion(px);
+	    		
+	    		if(k<=AES_CODED_OUT.length) {
+		    		currentByteToInt = (int)AES_CODED_OUT[k];
+	    		}
+	    		// set new value - core of algorithm
+	    		Integer codedPX = securePx - currentByteToInt;
+	    		codedImg.setRGB(j, i, codedPX);
+	    		//logger.debug("\n   =>  pxRGB: "+px+" - Secured pixel: "+securePx+"\n"+"-> Px: "+j+" X "+i+ " - SRC: "+px+" : byte: " + currentByteToInt + " => CODED = [" + codedPX+" ]");
+	    		
+	    		k++;
 	    	}
 	    }
 	    // end of image

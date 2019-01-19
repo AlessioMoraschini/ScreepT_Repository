@@ -53,6 +53,59 @@ public class FileStuff {
 		return file;
 	}
 	
+	/**
+	 * This method is meant to delete all folder content, deleting recursively also the folders inside it.
+	 * the given folder won't be deleted, only it's content will be.
+	 * 
+	 * @param folder the source folder to be emptied
+	 * @return deleted: false if at least one deletion have incurred in some errors
+	 */
+	public static boolean deleteDirContentRecursive(File folder) {
+		boolean deleted = false;
+		
+		File[] files = folder.listFiles();
+	    if(files!=null) { //some JVMs return null for empty dirs
+	        for(File f: files) {
+	            if(f.isDirectory()) {
+	                boolean del = deleteDirContentRecursive(f);
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            } else {
+	                boolean del = f.delete();
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            }
+	        }
+	    }
+	    return deleted;	
+	}
+	
+	/**
+	 * This method is meant to delete all folder content, excluding sub-directories and their content.
+	 * the given folder won't be deleted, only it's content files will be.
+	 * 
+	 * @param folder the source folder, which content files have to be deleted
+	 * @return deleted: false if at least one deletion have incurred in some errors
+	 */
+	public static boolean deleteDirContent(File folder) {
+		boolean deleted = false;
+		
+		File[] files = folder.listFiles();
+	    if(files!=null) { //some JVMs return null for empty dirs
+	        for(File f: files) {
+	            if(f.isFile()) {
+	            	boolean del = f.delete();
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            } 
+	        }
+	    }
+	    return deleted;	
+	}
+	
 	public static int upperCaseSubFolder(File rootDir) {
 		int total=0;
 		boolean esit=false;
