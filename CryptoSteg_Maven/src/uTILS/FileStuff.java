@@ -106,6 +106,12 @@ public class FileStuff {
 	    return deleted;	
 	}
 	
+	/**
+	 * This method rename every single file or directory contained in the given one as parameter,
+	 * making the name starting with an uppercase letter.
+	 * @param rootDir the source directory
+	 * @return success the number of the renamed elements
+	 */
 	public static int upperCaseSubFolder(File rootDir) {
 		int total=0;
 		boolean esit=false;
@@ -132,6 +138,11 @@ public class FileStuff {
 		return total;
 	}
 	
+	/**
+	 * This method rename single file or directory, making the name starting with an uppercase letter
+	 * @param rootDir
+	 * @return success the boolean value representing the esit of the operation
+	 */
 	private static boolean renameFileUpperFirst(File rootDir) {
 		String name="";
 		String newName="";
@@ -223,6 +234,13 @@ public class FileStuff {
 
 	}
 	
+	/**
+	 * this method append the content of a txt file (as a string) in the given text area, updating also the given label with description
+	 * @param txtFile the source .txt file
+	 * @param textArea_1 the text area to be filled with file content
+	 * @param lblCurrentFile the label that will contain the info about operation
+	 * @return
+	 */
 	public static boolean loadFileTxtArea(File txtFile, JTextArea textArea_1, JLabel lblCurrentFile) {
 
     	if(!FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals("txt")) {
@@ -248,23 +266,17 @@ public class FileStuff {
 				JOptionPane.showMessageDialog(null, "[Error loading the selected file]");
 				return false;
 			}
-    		new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						Thread.sleep(4000);
-						//lblAdvice.setText("");
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}).start();
     
     	}
     	return true;
 	}
 	
+	/**
+	 * this method append the content of a txt file (as a string) in the given text area 
+	 * @param txtFile the source .txt file
+	 * @param textArea_1 the text area to be filled with file content
+	 * @return
+	 */
 	public static boolean appendFileTxtArea(File txtFile, JTextArea textArea_1) {
 
     	if(!FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals("txt")) {
