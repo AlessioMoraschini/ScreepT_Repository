@@ -47,8 +47,8 @@ public class ScreeptManager {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ScreeptManager.class);
 	
-	// temp file path
-	private final static String RESULT_PATH = "Resources_Scrypt/temp/";
+	// temp file path - default value after initializing with constructor
+	private String RESULT_PATH = "Resources_Scrypt/temp/";
 	
 	// temp crypted file name
 	private final static String CRYPT_NAME = "temp_crypt_out";
@@ -234,6 +234,84 @@ public class ScreeptManager {
 		return wellDone;
 	}
 	
+	/**
+	 * this method is used to decrypt source file(s) according to the mode setted in the corresponding field.
+	 * you can set the mode either with constructor or with setter method 
+	 * (remember to define also correct coders instances in that case).
+	 * 
+	 * @param srcFile this is the source file to be cripted. In case of multiple files it uses 
+	 * incremental names found in the same folder
+	 * @param currentConf this is the configuration instance used to get current gui style
+	 * 
+	 */
+	public Boolean deCrypt(File srcFile, INItializer currentConf) {
+		
+		progUpdater = new TestUpdateProgress(currentConf);
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Starting Decryption...");
+		
+		wellDone = false;
+		
+		logger.debug("Started cripting with selected mode: "+mode);
+		
+		w = this.imgCoder.getKeyImage().getWidth();
+		h = this.imgCoder.getKeyImage().getHeight();
+		
+		emptyTempPath() ;
+		
+		// initialize method according to selected mode:
+		
+		try {
+			// CASE 1 - ONLY AES
+			if(mode.AES && !mode.STEG) {
+				
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("AES mode detected!");
+
+				logger.debug("AES mode detected!");
+				
+				onlyAESDeCrypt(srcFile);
+				wellDone = true;
+				
+				logger.debug("AES crypt phase ended :)");
+				
+			// CASE 2 - ONLY STEG
+			}else if(mode.STEG && !mode.AES) {
+				
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("STEG mode detected!");
+				
+				logger.debug("STEG mode detected!");
+
+				//onlySTEGDeCrypt(srcFile);
+				wellDone = true;
+				
+				logger.debug("STEG crypt phase ended :)");
+				
+			// CASE 3 - COMPLETE MODE
+			}else if (mode.STEG && mode.AES) {
+				
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("COMPLETE mode detected!");
+
+				logger.debug("AES mode detected!");
+				
+				//completeDeCrypt(srcFile);
+				wellDone = true;
+				
+				logger.debug("AES crypt phase ended :)");
+				
+			}	
+		}catch(Exception e) {
+			resetAfterException(e);
+		}
+		
+		// TODO scrivi il metodo sulla falsa riga del codificatore: 
+		// adatta a struttura file e usa decrypt corrispondenti ala modalità
+		
+		return wellDone;
+	}
+	
 	// Function that set values before to throw exception
 	private void resetAfterException(Exception e) {
 		progUpdater.getPb().setValue(100);
@@ -288,7 +366,7 @@ public class ScreeptManager {
 		
 		int i = 1;
 		
-		progUpdater.getLabel().setText("Writing "+result.getName());
+		progUpdater.getLabel().setText("Crypting "+result.getName());
 		
 		while(readFlag > 0) {
 			
@@ -310,6 +388,60 @@ public class ScreeptManager {
 		progUpdater.getLabel().setText("Encryption completed! ");
 		
 		logger.debug("AES crypt phase ended: "+result.getName()+" created :)");
+		
+	}
+	
+	// Function that implements encryption of source file into another crypted file with same extension.
+	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
+		
+		FileInputStream streamIN = new FileInputStream(srcFile);
+		buffer = new byte[BUFFER_SIZE];
+		
+		// this integer will contain value -1 when file is ended 
+		int readFlag = streamIN.read(buffer);
+		
+		File result = new File(RESULT_PATH+CRYPT_NAME+"_AesDeCrypted."+FilenameUtils.getExtension(srcFile.getName()));
+		
+		// create file if it does not exist
+		result.createNewFile();
+		
+		// initialize writer with append flag set to true, so it don't overwrite at every cycle of buffer read
+		FileOutputStream outWriter = new FileOutputStream(result.getAbsolutePath(), true);
+		
+		// AES error types
+		if(this.aesCoder == null || this.aesCoder.getPassword().equals("")) {
+
+			// close streams to avoid memory leaks
+			streamIN.close();
+			outWriter.close();	
+			logger.error("Error retrieving the AES coder -> null or void passsword!");
+			throw new AESException();
+		}
+		
+		int i = 1;
+		
+		progUpdater.getLabel().setText("Decrypting - writing to "+result.getName());
+		
+		while(readFlag > 0) {
+			
+			// encrypt current buffer content and write it to temp out file
+			byte[] partialResult = aesCoder.decrypt(buffer);				
+			outWriter.write(partialResult);
+			
+			// load next bufferSize bytes from srcFile
+			readFlag = streamIN.read(buffer);
+			
+			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
+			
+			i++;
+		}		
+		// close streams to avoid memory leaks
+		streamIN.close();
+		outWriter.close();
+		progUpdater.getPb().setValue(100);
+		progUpdater.getLabel().setText("Decryption completed! ");
+		
+		logger.debug("AES decrypt phase ended: "+result.getName()+" created :)");
 		
 	}
 	
@@ -344,7 +476,7 @@ public class ScreeptManager {
 			// first time overwrite no index.
 			// and use png extension 
 			File outFile = new File(RESULT_PATH+CRYPT_NAME+"_"+FilenameUtils.getExtension(srcFile.getName())+"_StegCrypted.png");
-			progUpdater.getLabel().setText("Writing "+outFile.getName());
+			progUpdater.getLabel().setText("Crypting - writing to "+outFile.getName());
 			
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
@@ -408,7 +540,7 @@ public class ScreeptManager {
 		while(readFlag > 0) {
 			
 			File outFile = new File(RESULT_PATH+CRYPT_NAME+"_"+FilenameUtils.getExtension(srcFile.getName())+"_ScreepTed.png");
-			progUpdater.getLabel().setText("Writing "+outFile.getName());
+			progUpdater.getLabel().setText("Crypting - writing to "+outFile.getName());
 
 			// encrypt (AES) current buffer content with aes key string
 			byte[] partialResult = aesCoder.encrypt(buffer);				
@@ -488,8 +620,16 @@ public class ScreeptManager {
 	 * this is the name of the folder containing temp results
 	 * @return
 	 */
-	public static String getTempResultPath() {
+	public String getTempResultPath() {
 		return RESULT_PATH;
+	}
+	
+	/**
+	 * This method is used to set the source/destination path to which decrypt or encrypt source file(s)
+	 * @param resPath
+	 */
+	public void setTempResultPath(String resPath) {
+		RESULT_PATH = resPath;
 	}
 
 	public static int getBUFFER_SIZE() {
