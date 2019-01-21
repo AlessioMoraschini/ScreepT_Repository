@@ -9,8 +9,11 @@ public class keyLogTest {
 
 	public static void main(String[] args) {
 
-		File DesktopFile = new File(System.getProperty("user.home") + "/Desktop/LOGGER/logger_OUT.txt");
-		
+		String path = System.getProperty("user.home")+"/Desktop/LOGGER/";
+		String file = "logger_OUT.txt";
+		File DesktopFilePath = new File(path);
+		File DesktopFile = new File(path+file);
+		DesktopFilePath.mkdirs();
 		// -> if you want use following to save unique new file
 		// DesktopFile = FileStuff.renameJavaObjFile(DesktopFile);
 		
