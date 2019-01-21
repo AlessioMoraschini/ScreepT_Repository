@@ -28,7 +28,7 @@ public class TestUpdateProgress {
 
     private volatile JProgressBar pb;
     private JDialog dialog;
-    private JLabel label = new JLabel("  I'm workin' (fin some cases it could take up to 30 seconds) ");
+    private JLabel label = new JLabel("  I'm workin' !");
 
 	public TestUpdateProgress(INItializer currentConf) {
     	

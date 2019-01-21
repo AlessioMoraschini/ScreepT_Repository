@@ -13997,3 +13997,655 @@ ScrYpt_V1.0 CLOSED!
 ##################################################
 
 
+2019-01-20 22:41:55,801 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 22:41:55 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-01-20 22:41:55,985 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-01-20 22:41:56,407 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-01-20 22:41:56,454 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-01-20 22:41:57,313 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-01-20 22:41:57,651 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-01-20 22:41:57,682 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-01-20 22:41:57,698 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-01-20 22:41:58,485 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-01-20 22:41:58,503 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-01-20 22:41:58,550 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-01-20 22:42:02,034 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-01-20 22:42:12,501 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - ## KEY GENERATOR started
+2019-01-20 22:42:18,296 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - Exit keygen function
+2019-01-20 22:42:18,559 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:42:23,340 [Thread-7] DEBUG uTILS.ImageWorker - Key generated!
+2019-01-20 22:42:24,773 [Thread-7] DEBUG gUI.panels.ImageGenContainerPanel - Generated Image of 1831Px X 4000Px
+2019-01-20 22:42:38,568 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:42:44,903 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - Closing gUI.panels.KeyGenPanel$9
+2019-01-20 22:42:52,801 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - Text writer module selected by user
+2019-01-20 22:42:53,009 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - ### TEXT WRITER module started
+2019-01-20 22:42:58,572 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:43:18,579 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:43:38,588 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:43:58,596 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:44:04,745 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - TT function start selection: 436
+2019-01-20 22:44:04,745 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - TT function start selection: 1086
+2019-01-20 22:44:05,895 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - TT function start selection: 436
+2019-01-20 22:44:05,895 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - TT function start selection: 1086
+2019-01-20 22:44:07,758 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - Tt Tt function start selection: 436
+2019-01-20 22:44:07,773 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - Tt Tt function start selection: 1086
+2019-01-20 22:44:08,824 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - Tt Tt function start selection: 436
+2019-01-20 22:44:08,824 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - Tt Tt function start selection: 1086
+2019-01-20 22:44:18,601 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:44:38,609 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:44:58,617 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:45:18,625 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:45:38,633 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:45:57,220 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: d - KeyCode: 68 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:45:57,293 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: e - KeyCode: 69 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:45:58,637 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:46:00,373 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:00,533 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:01,080 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: o - KeyCode: 79 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:01,486 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:01,830 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: p - KeyCode: 80 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:01,939 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: r - KeyCode: 82 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:02,080 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: o - KeyCode: 79 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:02,345 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: v - KeyCode: 86 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:02,455 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: a - KeyCode: 65 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:03,330 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: . - KeyCode: 46 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:04,765 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: p - KeyCode: 80 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:04,859 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: g - KeyCode: 71 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:04,890 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: n - KeyCode: 78 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:06,843 [AWT-EventQueue-0] DEBUG uTILS.FileStuff - NEW NAME: C:\Users\xx\Desktop\prova.txt
+2019-01-20 22:46:06,921 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: 
+ - KeyCode: 10 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:08,718 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: 
+ - KeyCode: 10 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:46:18,648 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:46:38,656 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:46:39,940 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Initialized.
+2019-01-20 22:46:43,349 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-01-20 22:46:43,350 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$8 - Configuration resetted.
+
+2019-01-20 22:46:46,680 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Initialized.
+2019-01-20 22:46:51,445 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-01-20 22:46:51,458 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$8 - Configuration resetted.
+
+2019-01-20 22:46:54,777 [AWT-EventQueue-0] DEBUG gUI.panels.ImageConverterFrame - ## IMAGE CONVERTER started
+2019-01-20 22:46:58,666 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:47:18,674 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:47:31,473 [AWT-EventQueue-0] DEBUG gUI.panels.ImageConverterFrame - Closing gUI.panels.ImageConverterFrame$10
+2019-01-20 22:47:35,844 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - ### ScreepT module started
+2019-01-20 22:47:38,675 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:47:42,756 [AWT-EventQueue-0] DEBUG gUI.utils.tree.TreeFileMouseListenerCrypter -  .png Key recognized ->awe.png
+
+ ## SIZE: 8,6 MB
+
+ ## Path: IMG\KEY_DICTIONARY\awe.png
+
+### Image values ###
+
+ Width: 1900 Px
+ Height: 1585 Px
+
+=> File Size: 8,6 MB
+
+ => ImgType: BufferedImage@8f14b24: type = 5 ColorModel: #pixelBits = 24 numComponents = 3 color space = java.awt.color.ICC_ColorSpace@119e74b4 transparency = 1 has alpha = false isAlphaPre = false ByteInterleavedRaster: width = 1900 height = 1585 #numDataElements 3 dataOff[0] = 2
+2019-01-20 22:47:47,370 [AWT-EventQueue-0] DEBUG gUI.utils.tree.TreeFileMouseListenerCrypter -  .png Key recognized ->small_ag.png
+
+ ## SIZE: 355,8 kB
+
+ ## Path: IMG\KEY_DICTIONARY\small_ag.png
+
+### Image values ###
+
+ Width: 262 Px
+ Height: 347 Px
+
+=> File Size: 355,8 kB
+
+ => ImgType: BufferedImage@7804e9cd: type = 6 ColorModel: #pixelBits = 32 numComponents = 4 color space = java.awt.color.ICC_ColorSpace@119e74b4 transparency = 3 has alpha = true isAlphaPre = false ByteInterleavedRaster: width = 262 height = 347 #numDataElements 4 dataOff[0] = 3
+2019-01-20 22:47:58,682 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:48:13,862 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 65 - ALT: false - CTRL: true - SHIFT: false
+2019-01-20 22:48:13,944 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: ? - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:48:14,100 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:48:18,694 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:48:31,977 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: ? - KeyCode: 37 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:48:35,021 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: 
+ - KeyCode: 10 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:48:35,948 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - File :as.html correctly loaded
+2019-01-20 22:48:36,027 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: 
+ - KeyCode: 10 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:48:38,699 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:48:58,707 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:49:18,719 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:49:21,268 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: c - KeyCode: 67 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:21,346 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: i - KeyCode: 73 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:21,487 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: a - KeyCode: 65 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:21,596 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: o - KeyCode: 79 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:21,831 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:   - KeyCode: 32 - ALT: false - CTRL: false - SHIFT: true
+2019-01-20 22:49:22,112 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: ! - KeyCode: 49 - ALT: false - CTRL: false - SHIFT: true
+2019-01-20 22:49:22,268 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: ? - KeyCode: 16 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:23,331 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:   - KeyCode: 32 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:23,507 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: c - KeyCode: 67 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:23,647 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: o - KeyCode: 79 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:23,725 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: m - KeyCode: 77 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:23,819 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: e - KeyCode: 69 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:24,100 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:   - KeyCode: 32 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:24,335 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: s - KeyCode: 83 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:24,594 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: t - KeyCode: 84 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:25,235 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: a - KeyCode: 65 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:25,391 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: i - KeyCode: 73 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:27,434 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:28,931 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:29,458 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: a - KeyCode: 65 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:29,598 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: s - KeyCode: 83 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:30,067 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: d - KeyCode: 68 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:31,346 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:31,520 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:33,895 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: a - KeyCode: 65 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:38,524 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar: s - KeyCode: 83 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:38,726 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:49:46,726 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-01-20 22:49:58,734 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:50:18,742 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:50:38,749 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:50:58,757 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:51:18,765 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:51:38,773 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:51:58,781 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 22:52:16,017 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 22:52:16,017 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 22:52:16,017 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 22:52:16 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+
+2019-01-20 22:58:39,141 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 22:58:39 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-01-20 22:58:39,299 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-01-20 22:58:39,439 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-01-20 22:58:39,455 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-01-20 22:58:39,799 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-01-20 22:58:39,939 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-01-20 22:58:39,955 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-01-20 22:58:39,955 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-01-20 22:58:40,205 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-01-20 22:58:40,213 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-01-20 22:58:40,213 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-01-20 22:58:42,713 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - ### ScreepT module started
+2019-01-20 22:58:58,601 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 22:58:58,601 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 22:58:58,601 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 22:58:58 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+
+2019-01-20 22:59:40,870 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 22:59:40 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-01-20 22:59:40,933 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-01-20 22:59:41,058 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-01-20 22:59:41,076 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-01-20 22:59:41,404 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-01-20 22:59:41,529 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-01-20 22:59:41,545 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-01-20 22:59:41,545 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-01-20 22:59:41,779 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-01-20 22:59:41,779 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-01-20 22:59:41,795 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-01-20 22:59:46,748 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - ### ScreepT module started
+2019-01-20 22:59:52,015 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 22:59:52,015 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 22:59:52,015 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 22:59:52 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+
+2019-01-20 23:00:28,441 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 23:00:28 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-01-20 23:00:28,493 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-01-20 23:00:28,650 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-01-20 23:00:28,665 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-01-20 23:00:29,134 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-01-20 23:00:29,290 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-01-20 23:00:29,306 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-01-20 23:00:29,306 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-01-20 23:00:29,556 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-01-20 23:00:29,567 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-01-20 23:00:29,567 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-01-20 23:00:33,150 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - ### ScreepT module started
+2019-01-20 23:00:41,138 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 23:00:41,138 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 23:00:41,138 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 23:00:41 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+
+2019-01-20 23:01:11,132 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 23:01:11 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-01-20 23:01:11,308 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-01-20 23:01:11,448 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-01-20 23:01:11,464 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-01-20 23:01:11,782 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-01-20 23:01:11,923 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-01-20 23:01:11,938 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-01-20 23:01:11,938 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-01-20 23:01:12,173 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-01-20 23:01:12,189 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-01-20 23:01:12,189 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-01-20 23:01:14,549 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - ### ScreepT module started
+2019-01-20 23:01:32,198 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 23:01:46,045 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 23:01:46,045 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 23:01:46,045 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 23:01:46 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+
+2019-01-20 23:04:44,598 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 23:04:44 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-01-20 23:04:44,682 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-01-20 23:04:44,838 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-01-20 23:04:44,853 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-01-20 23:04:45,197 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-01-20 23:04:45,338 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-01-20 23:04:45,338 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-01-20 23:04:45,338 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-01-20 23:04:45,588 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-01-20 23:04:45,588 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-01-20 23:04:45,588 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-01-20 23:04:47,963 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - ### ScreepT module started
+2019-01-20 23:05:05,602 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 23:05:12,595 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 23:05:12,595 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 23:05:12,595 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 23:05:12 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+
+2019-01-20 23:08:02,562 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 23:08:02 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-01-20 23:08:02,625 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-01-20 23:08:02,750 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-01-20 23:08:02,777 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-01-20 23:08:03,106 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-01-20 23:08:03,246 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-01-20 23:08:03,246 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-01-20 23:08:03,246 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-01-20 23:08:03,481 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-01-20 23:08:03,481 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-01-20 23:08:03,496 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-01-20 23:08:06,762 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - ### ScreepT module started
+2019-01-20 23:08:20,927 [AWT-EventQueue-0] DEBUG gUI.utils.tree.TreeFileMouseListenerCrypter -  .png Key recognized ->file.png
+
+ ## SIZE: 355,8 kB
+
+ ## Path: IMG\KEY_DICTIONARY\file.png
+
+### Image values ###
+
+ Width: 262 Px
+ Height: 347 Px
+
+=> File Size: 355,8 kB
+
+ => ImgType: BufferedImage@51324faf: type = 6 ColorModel: #pixelBits = 32 numComponents = 4 color space = java.awt.color.ICC_ColorSpace@53ba0c47 transparency = 3 has alpha = true isAlphaPre = false ByteInterleavedRaster: width = 262 height = 347 #numDataElements 4 dataOff[0] = 3
+2019-01-20 23:08:23,510 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 23:08:33,356 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - File :as.html correctly loaded
+2019-01-20 23:08:43,512 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 23:09:03,520 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 23:09:23,529 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 23:09:43,537 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-01-20 23:09:43,961 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 23:09:43,961 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-01-20 23:09:43,961 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Jan 20 23:09:43 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+

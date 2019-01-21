@@ -26,6 +26,8 @@ import crypt.aes.AESException;
 import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
 import crypt.steg.STEGException;
+import gUI.utils.progressDialog.TestUpdateProgress;
+import iNIT.INItializer;
 import iNIT.om.AesOption;
 import uTILS.FileStuff;
 
@@ -68,6 +70,10 @@ public class ScreeptManager {
 	private int h;
 	
 	private byte[] buffer;
+	
+	private volatile TestUpdateProgress progUpdater;
+	
+	boolean wellDone = false;
 		
 	//////////////////////
 	//    CONSTRUCTOR   //
@@ -145,9 +151,13 @@ public class ScreeptManager {
 	 * @throws InvalidKeyException 
 	 * @throws STEGException 
 	 */
-	public Boolean crypt(File srcFile) {
+	public Boolean crypt(File srcFile, INItializer currentConf) {
 		
-		boolean wellDone = false;
+    	progUpdater = new TestUpdateProgress(currentConf);
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Starting ecnryption...");
+		
+		wellDone = false;
 		
 		logger.debug("Started cripting with selected mode: "+mode);
 		
@@ -161,6 +171,9 @@ public class ScreeptManager {
 		try {
 			// CASE 1 - ONLY AES
 			if(mode.AES && !mode.STEG) {
+				
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("AES mode detected!");
 
 				logger.debug("AES mode detected!");
 				
@@ -172,6 +185,9 @@ public class ScreeptManager {
 			// CASE 2 - ONLY STEG
 			}else if(mode.STEG && !mode.AES) {
 				
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("STEG mode detected!");
+				
 				logger.debug("STEG mode detected!");
 
 				onlySTEGCrypt(srcFile);
@@ -182,6 +198,9 @@ public class ScreeptManager {
 			// CASE 3 - COMPLETE MODE
 			}else if (mode.STEG && mode.AES) {
 				
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("COMPLETE mode detected!");
+
 				logger.debug("AES mode detected!");
 				
 				completeCrypt(srcFile);
@@ -191,37 +210,36 @@ public class ScreeptManager {
 				
 			}	
 		}catch(STEGException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		} catch (InvalidKeyException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		} catch (NoSuchPaddingException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		} catch (NoSuchAlgorithmException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		} catch (InvalidAlgorithmParameterException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		} catch (BadPaddingException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		} catch (IllegalBlockSizeException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		} catch (IOException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		} catch (AESException e) {
-			logger.error(Arrays.toString(e.getStackTrace()));
-			wellDone = false;
+			resetAfterException(e);
 		}
 			
 		logger.debug("Streams closed, exiting method.");
 		
 		return wellDone;
+	}
+	
+	// Function that set values before to throw exception
+	private void resetAfterException(Exception e) {
+		progUpdater.getPb().setValue(100);
+		progUpdater.getLabel().setText("OOOPS! An error occurred :(");
+		logger.error(Arrays.toString(e.getStackTrace()));
+		wellDone = false;
 	}
 	
 	// Function that delete the content of the temporaneous folder.
@@ -268,6 +286,10 @@ public class ScreeptManager {
 			throw new AESException();
 		}
 		
+		int i = 1;
+		
+		progUpdater.getLabel().setText("Writing "+result.getName());
+		
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
@@ -276,10 +298,16 @@ public class ScreeptManager {
 			
 			// load next bufferSize bytes from srcFile
 			readFlag = streamIN.read(buffer);
+			
+			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
+			
+			i++;
 		}		
 		// close streams to avoid memory leaks
 		streamIN.close();
 		outWriter.close();
+		progUpdater.getPb().setValue(100);
+		progUpdater.getLabel().setText("Encryption completed! ");
 		
 		logger.debug("AES crypt phase ended: "+result.getName()+" created :)");
 		
@@ -306,6 +334,8 @@ public class ScreeptManager {
 			throw new STEGException();
 		}
 
+		int i = 1;
+		
 		while(readFlag > 0) {
 					
 			// cypt current buffer into image
@@ -314,6 +344,7 @@ public class ScreeptManager {
 			// first time overwrite no index.
 			// and use png extension 
 			File outFile = new File(RESULT_PATH+CRYPT_NAME+"_"+FilenameUtils.getExtension(srcFile.getName())+"_StegCrypted.png");
+			progUpdater.getLabel().setText("Writing "+outFile.getName());
 			
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
@@ -329,9 +360,14 @@ public class ScreeptManager {
 				logger.error("Error ocurred writing "+outFile.getAbsolutePath());
 				throw new IOException();
 			}
+			
+			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
+			i++;
 		}
 		// close streams to avoid memory leaks
 		streamIN.close();
+		progUpdater.getPb().setValue(100);
+		progUpdater.getLabel().setText("Encryption completed! ");
 					
 	}
 	
@@ -367,10 +403,13 @@ public class ScreeptManager {
 			throw new STEGException();
 		}
 		
+		int i = 1;
+		
 		while(readFlag > 0) {
 			
 			File outFile = new File(RESULT_PATH+CRYPT_NAME+"_"+FilenameUtils.getExtension(srcFile.getName())+"_ScreepTed.png");
-			
+			progUpdater.getLabel().setText("Writing "+outFile.getName());
+
 			// encrypt (AES) current buffer content with aes key string
 			byte[] partialResult = aesCoder.encrypt(buffer);				
 			
@@ -392,9 +431,14 @@ public class ScreeptManager {
 				logger.error("Error ocurred writing "+outFile.getAbsolutePath());
 				throw new IOException();	
 			}
+			
+			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
+			i++;
 		}		
 		// close streams to avoid memory leaks
 		streamIN.close();
+		progUpdater.getPb().setValue(100);
+		progUpdater.getLabel().setText("Encryption completed! ");
 
 	}
 	
