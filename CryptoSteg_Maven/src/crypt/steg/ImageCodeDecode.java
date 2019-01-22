@@ -216,6 +216,48 @@ public class ImageCodeDecode {
 	}
 	
 	/**
+	 * Questo metodo si occupa di decodificare l'immagine codificata a partire dalla imageKey (campo della classe).
+	 * 
+	 * @param BufferedImage codedImg -> immagine codificata da stegaCrypt da decodificare
+	 * @return List<Byte> AES_CODED_IN -> lista di byte prodotta in uscita
+	 */
+	public byte[] stegaDeCryptToArray(BufferedImage codedImg) {
+		// calcolo larghezza e altezza immagine
+        int height = codedImg.getHeight();
+		int width = codedImg.getWidth();
+		
+		byte[] stegDecodedAesIn = new byte[height*width];
+		
+		// olny if img and key have same dimension (first level check)
+		if (keyImage.getHeight()==codedImg.getHeight() && keyImage.getWidth()==codedImg.getWidth()) {
+			
+			int k = 0;
+			// ciclo di scansione immagine
+			// per ogni riga
+		    for(int i=0; i < height;i++) { 
+
+		    	// per ogni colonna
+		    	for(int j=0; j<width;j++){ 
+		    		Integer currentKeyPx = keyImage.getRGB(j, i);
+		    		// redo secure against overflow like when coding
+		    		Integer secureKeyPx = secForConversion(currentKeyPx);
+		    		Integer codedPx = codedImg.getRGB(j, i);	    		
+		    		
+		    		// retrieve original int value from key and coded values - core of algorithm
+		    		int decodedPX = secureKeyPx - codedPx;
+		    		
+		    		// TODO int to Byte
+		    		stegDecodedAesIn[k] = (byte)(decodedPX);
+		    		k++;
+		    	}
+		    }
+		    // end of image
+	        //return imgPixels;		
+		}		
+		return stegDecodedAesIn;
+	}
+	
+	/**
 	 * This method is used locally to secure that a integer value is suitable to be
 	 * used as start value for encryption process. This done by ensuring that
 	 * a byte can be summed or subtraced without overflow, that would cause

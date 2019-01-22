@@ -42,7 +42,7 @@ public class FileStuff {
 	public static File changeExtension(File file, String newExtension) {
 		int extensionLenght = (FilenameUtils.getExtension(file.getName())).length();
 		String noExt="";
-		if(FilenameUtils.getExtension(file.getName()).length()==0) {
+		if(extensionLenght==0) {
 			noExt = file.getAbsolutePath().substring(0, file.getAbsolutePath().length()-(extensionLenght));
 		}else {
 			noExt = file.getAbsolutePath().substring(0, file.getAbsolutePath().length()-(extensionLenght+1));
@@ -51,6 +51,21 @@ public class FileStuff {
 		file= new File(noExt + newExtension);
 		logger.debug("NEW NAME: "+file.getAbsolutePath());
 		return file;
+	}
+	
+	public static String changeExtension(String originalName, String newExtension) {
+		int extensionLenght = (FilenameUtils.getExtension(originalName)).length();
+		String noExt="";
+		if(extensionLenght==0) {
+			noExt = originalName.substring(0, originalName.length()-(extensionLenght));
+		}else {
+			noExt = originalName.substring(0, originalName.length()-(extensionLenght+1));
+		}
+		
+		String newName = noExt + newExtension;
+		logger.debug("NEW NAME: "+newName);
+		return (newName);
+
 	}
 	
 	/**
@@ -96,10 +111,7 @@ public class FileStuff {
 	    if(files!=null) { //some JVMs return null for empty dirs
 	        for(File f: files) {
 	            if(f.isFile()) {
-	            	boolean del = f.delete();
-	                if(del==false) {
-	                	deleted = false;
-	                }
+	            	deleted = f.delete();
 	            } 
 	        }
 	    }
