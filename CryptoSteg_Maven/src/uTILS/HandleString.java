@@ -44,6 +44,48 @@ public class HandleString {
 	        return "ERROR :("; // simple exception handling, please review it
 	    }
 	}
+	
+	/**
+	 * this method extract from the source string the elements starting from N elements, and return it. 
+	 * the elements are calculated as separated by the given separator.
+	 * @param source
+	 * @param separator
+	 * @param start integer representening from which element String elements have to be kept.
+	 * @return new string with only elements from start
+	 */
+	public static String retrieveFromNelements(String source, String separator, int start) {
+		StringTokenizer tokenizer = new StringTokenizer(source, separator);
+		String result = "";
+		int i= 0;
+		while(tokenizer.hasMoreTokens()) {
+			if(i>=start) {
+				result += tokenizer.nextToken();
+			}
+			i++;
+		}
+		return result;
+	}
+	
+	/**
+	 * this method extract from the source string the elements starting from N elements to end element, and return it. 
+	 * the elements are calculated as separated by the given separator.
+	 * @param source
+	 * @param separator
+	 * @param start integer representening from which element String elements have to be kept.
+	 * @return new string with only elements from start
+	 */
+	public static String retrieveFromNelements(String source, String separator, int start, int end) {
+		StringTokenizer tokenizer = new StringTokenizer(source, separator);
+		String result = "";
+		int i= 0;
+		while(tokenizer.hasMoreTokens()) {
+			if(i>=start && i<=end) {
+				result += tokenizer.nextToken();
+			}
+			i++;
+		}
+		return result;
+	}
 
 	public static String xmlPrettyFormat(String input) {
 	    return xmlPrettyFormat(input, 2);
