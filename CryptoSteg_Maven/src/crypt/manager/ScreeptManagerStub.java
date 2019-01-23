@@ -1,4 +1,4 @@
-package classes;
+package crypt.manager;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
 import crypt.aes.EncryptDecrypt;
-import crypt.manager.CryptoMode;
 import crypt.steg.ImageCodeDecode;
 import crypt.steg.STEGException;
 import gUI.utils.progressDialog.TestUpdateProgress;
@@ -352,9 +351,7 @@ public class ScreeptManagerStub {
 			logger.error("Error retrieving the AES coder -> null or void passsword!");
 			throw new AESException();
 		}
-		
-		int i = 1;
-		
+			
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
@@ -367,8 +364,7 @@ public class ScreeptManagerStub {
 				buffer = new byte[available];
 			}
 			readFlag = streamIN.read(buffer);
-			
-			i++;
+
 		}		
 		
 		// close streams to avoid memory leaks
@@ -409,8 +405,6 @@ public class ScreeptManagerStub {
 			throw new AESException();
 		}
 		
-		int i = 1;
-		
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
@@ -424,7 +418,6 @@ public class ScreeptManagerStub {
 			}
 			readFlag = streamIN.read(buffer);
 			
-			i++;
 		}		
 		// close streams to avoid memory leaks
 		streamIN.close();
@@ -461,7 +454,6 @@ public class ScreeptManagerStub {
 			throw new STEGException();
 		}
 
-		int i = 1;
 		
 		String oldExtension = FilenameUtils.getExtension(srcFile.getName());
 		// now use png extension 
@@ -473,8 +465,11 @@ public class ScreeptManagerStub {
 		
 		while(readFlag > 0) {
 					
+			Integer nBytesStegged = 0;
 			// crypt current buffer into image
-			BufferedImage imgResult = imgCoder.stegaCrypt(buffer);
+			BufferedImage imgResult = imgCoder.stegaCrypt(buffer, nBytesStegged);
+			
+			outFile = new File(nBytesStegged+"_"+outFile.getName());
 			
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
@@ -495,7 +490,6 @@ public class ScreeptManagerStub {
 				throw new IOException();
 			}
 			
-			i++;
 		}
 		// close streams to avoid memory leaks
 		streamIN.close();
@@ -507,13 +501,13 @@ public class ScreeptManagerStub {
 	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
 
 		// separate extension from name of file with .png extension
-		String retrievedExtension = HandleString.retrieveFromNelements(srcFile.getName(), "_", 0, 1);
-		CRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_", 1);
+		String retrievedExtension = HandleString.retrieveFromNelements(srcFile.getName(), "_", 1, 2);
+		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_", 1);
 		// now use retrieved extension from aesCoded Name and recalculate CRYPT_NAME
-		CRYPT_NAME = FileStuff.changeExtension(CRYPT_NAME, retrievedExtension);
+		DECRYPT_NAME = FileStuff.changeExtension(DECRYPT_NAME, retrievedExtension);
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(RESULT_PATH+"StegDeCrypted_"+CRYPT_NAME);		
+		File outFile = new File(RESULT_PATH+"StegDeCrypted_"+DECRYPT_NAME);		
 		
 		FileOutputStream fout = new FileOutputStream(outFile, true);
 		
@@ -591,11 +585,15 @@ public class ScreeptManagerStub {
 		
 		while(readFlag > 0) {
 			
+			Integer nBytesStegged = 0;
+			
 			// encrypt (AES) current buffer content with aes key string
 			byte[] partialResult = aesCoder.encrypt(buffer);				
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
-			BufferedImage imgResult = imgCoder.stegaCrypt(partialResult);
+			BufferedImage imgResult = imgCoder.stegaCrypt(partialResult, nBytesStegged);
+			
+			outFile = new File(nBytesStegged+"_"+outFile.getName());
 			
 			// write i-image on the file and then calculate new incremental name for next one
 			boolean OK = ImageIO.write(imgResult, "png", outFile);

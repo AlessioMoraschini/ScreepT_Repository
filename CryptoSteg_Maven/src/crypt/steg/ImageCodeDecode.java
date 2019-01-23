@@ -135,7 +135,7 @@ public class ImageCodeDecode {
 	 * @param AES_CODED_OUT  -> array di byte data dai byte originali codificati tramite AES
 	 * @return BufferedImage codedImg  -> immagine risultante dalla codifica
 	 * */
-	public BufferedImage stegaCrypt(byte[] AES_CODED_OUT) {
+	public BufferedImage stegaCrypt(byte[] AES_CODED_OUT, Integer nBytesCoded) {
 				
 		BufferedImage sourceImg = keyImage;
 		BufferedImage codedImg = new BufferedImage(keyImage.getWidth(), keyImage.getHeight(), keyImage.getType());
@@ -161,6 +161,10 @@ public class ImageCodeDecode {
 	    		
 	    		if(k<=AES_CODED_OUT.length) {
 		    		currentByteToInt = (int)AES_CODED_OUT[k];
+	    		}
+	    		else {
+	    			// if source file is ended remember number of coded
+	    			nBytesCoded = k; 
 	    		}
 	    		// set new value - core of algorithm
 	    		Integer codedPX = securePx - currentByteToInt;
@@ -204,7 +208,6 @@ public class ImageCodeDecode {
 		    		// retrieve original int value from key and coded values - core of algorithm
 		    		int decodedPX = secureKeyPx - codedPx;
 		    		
-		    		// TODO int to Byte
 		    		Byte decodedLastEightBits = (byte)(decodedPX);
 		    		stegDecodedAesIn.add(decodedLastEightBits);
 		    	}
@@ -246,7 +249,7 @@ public class ImageCodeDecode {
 		    		// retrieve original int value from key and coded values - core of algorithm
 		    		int decodedPX = secureKeyPx - codedPx;
 		    		
-		    		// TODO int to Byte
+		    		// TODO return dinamyc size array avoiding to have null bytes (0)
 		    		stegDecodedAesIn[k] = (byte)(decodedPX);
 		    		k++;
 		    	}

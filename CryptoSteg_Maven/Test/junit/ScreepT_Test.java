@@ -10,15 +10,12 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.ini4j.InvalidFileFormatException;
-import org.ini4j.Wini;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import classes.ScreeptManagerStub;
-import junit.*;
 import uTILS.FileStuff;
 import crypt.aes.EncryptDecrypt;
-import iNIT.INItializer;
+import crypt.manager.ScreeptManagerStub;
 
 public class ScreepT_Test {
 
