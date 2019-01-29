@@ -213,6 +213,40 @@ public class FileStuff {
 	}
 	
 	/**
+	 * this function rename a file until it has a unique name not existing yet, putting incrementally 
+	 * an integer value starting to 0 (even if the file does not exist but have no index at the beginning )
+	 * at the start of the fileName, placing a string separator between it and the original fileName
+	 * 
+	 * @param file the source file to check for unique name
+	 * @param separator the string separator to put after file incremental number
+	 * @return the file renamed - NB the original File parameter will not be renamed !
+	 */
+	public static File renameJavaObjFileAtStart(File file, String separator) {
+
+		String fileName=file.getPath();
+		
+		String first = fileName.split(separator)[0];
+		try {
+			Integer.parseInt(first);
+		}catch(NumberFormatException e) {
+			first = "0";
+		}
+		
+		int counter = 1;
+		
+		File f = null;
+		
+		while(file.exists()){
+			
+			counter++;
+		}
+		
+		f = new File(counter+separator+fileName);
+		
+		return f;
+	}
+	
+	/**
 	 * this method is used to physically copy the content of a folder inside a distination folder
 	 * (works also for a source file instead of a source folder). 
 	 * @param source Directory or file

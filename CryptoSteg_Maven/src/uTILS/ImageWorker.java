@@ -313,7 +313,21 @@ public class ImageWorker {
 	   	loGGer.debug("Key generated!");
 		return generatedKeyimg;
 	}
+	
+	/**
+	 * metodo che estrare una porzione di immagine
+	 */
+	public static BufferedImage getPortion(BufferedImage src, int x, int y) {
 
+		if(x<=src.getWidth() && y<src.getHeight()) {
+			BufferedImage portion = src.getSubimage(0, 0, x, y);
+			return portion;
+		}else {
+			return null;
+		}
+		
+	}
+	
 	/**
 	 * metodo che crea un'immagine casuale di i*j pixel
 	 * 

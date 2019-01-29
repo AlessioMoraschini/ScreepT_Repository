@@ -32,6 +32,7 @@ import iNIT.INItializer;
 import iNIT.om.AesOption;
 import uTILS.FileStuff;
 import uTILS.HandleString;
+import uTILS.ImageWorker;
 
 /**
  * 
@@ -431,9 +432,11 @@ public class ScreeptManagerStub {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException {
 
+		// initialize buffer to store one source's byte for every available px of keyImg
 		FileInputStream streamIN = new FileInputStream(srcFile);
 		int STEG_BUFFER_SIZE = w*h;
 		
+		// check availabe bytes from source to avoid filling to buffer_size with null values
 		// set buffer at 1 byte per px of image key if <= than available
 		int available = streamIN.available();
 		if (STEG_BUFFER_SIZE >= available) {
@@ -460,21 +463,23 @@ public class ScreeptManagerStub {
 		File newExtensionSrc = FileStuff.changeExtension(srcFile, ".png");
 		CRYPT_NAME = newExtensionSrc.getName();
 		
-		// first time overwrite no index.
-		File outFile = new File(RESULT_PATH+oldExtension+"_StegCrypted_"+CRYPT_NAME);
-		
+		int n = 1;
+		File outFile;
 		while(readFlag > 0) {
-					
+			
+			// this value will be used during decription to recognize where px value have to be ignored
+			// (cause img is of fixed dimension)
 			Integer nBytesStegged = 0;
+			
 			// crypt current buffer into image
 			BufferedImage imgResult = imgCoder.stegaCrypt(buffer, nBytesStegged);
 			
-			outFile = new File(nBytesStegged+"_"+outFile.getName());
-			
+			// sequence of info stored in name is the following:
+			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
+			outFile = new File(RESULT_PATH+n+"_"+nBytesStegged+"_"+oldExtension+"_StegCrypted_"+CRYPT_NAME);
+
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
-			// after first image is created create a new incremental-named file for next image until source byte buffer is ended
-			outFile = FileStuff.renameJavaObjFile(outFile);
 			
 			available = streamIN.available();
 			if (STEG_BUFFER_SIZE >= available) {
@@ -620,6 +625,59 @@ public class ScreeptManagerStub {
 		// close streams to avoid memory leaks
 		streamIN.close();
 
+	}
+	
+	/**
+	 * This method will grant that the buffer created with w*h will contain all aes coded bytes
+	 * In other words this make sure number of elements in a 2-Dimensional array of W*H elements.
+	 * 
+	 * It updates parameters W and H, making the n° of pixels multiple of K
+	 * 
+	 * @param W positive number of rows
+	 * @param H positive number of columns
+	 * @param K positive integer divisor to grant [(W*H)%K==0]
+	 * 
+	 * @return new value of W.
+	 */
+	static public Integer grantAreaMultipleOfN(Integer W, Integer H, int N) {
+
+		if(W==0 || H==0) {
+			return 0;
+		}
+		if(W<N || W*H<N) {
+			return 0;
+		}
+		// Make W or H multiple of 16 => now if I multiply a number to it, i've chosen Width.
+		// The result it's still multiple of 16. the method chooses the nearest number
+		
+		W = (W/N)*N;
+		
+		return W;
+		
+// - V2 -	W*H has to be multiple of 16		
+//
+//			Integer tempRes = W*H;
+//			if(tempRes%16 != 0) {
+//			tempRes = Math.round(tempRes/16)*16;
+//			// now tempRes divides 16, so also 8
+//			// now sub-divide into h and w => W*H= (tempRes^2)/W = 
+//			W = tempRes/4;
+//			H = tempRes/W;
+//		}
+	
+	}
+	
+	/**
+	 * similar to grantAreaMultipleOfN buf this one extract sub-image from source
+	 * granting that resultPixels number is multiple of given N (divisor)
+	 * @param key this is the source image
+	 * @param N this is the divisor to which N°pixels must be multiple of
+	 * @return sub-image: the extracted image with [new width <= original width] and N°px%divisor = 0
+	 */
+	static public BufferedImage subImgMultOfNpx(BufferedImage key, int N) {
+		int newWidth = grantAreaMultipleOfN(key.getWidth(), key.getHeight(), N);
+		BufferedImage mult16IMG = ImageWorker.getPortion(key, newWidth, key.getHeight());
+		return mult16IMG;
 	}
 	
 	//////////////////////
