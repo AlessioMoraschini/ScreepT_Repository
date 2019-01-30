@@ -27,9 +27,9 @@ public class ScreepT_Test {
 	private final String AES_KEY = "ciaosonoalessio";
 	private EncryptDecrypt AEScoder;
 	private ImageCodeDecode STEGcoder;
-	private File srcFile = new File("TEST_FILES/Source.txt");
+	private File srcFile = new File("TEST_FILES/Source_medium.txt");
 	private File codedFileAES = new File("TEST_FILES/AesCrypted_Source.txt");
-	private File keyIMG = new File("TEST_FILES/keyIMG.png");
+	private File keyIMG = new File("TEST_FILES/keyIMG_1000.png");
 	
 	private ScreeptManagerStub screepTManager;
 	
