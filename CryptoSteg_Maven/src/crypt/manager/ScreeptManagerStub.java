@@ -30,6 +30,7 @@ import crypt.steg.STEGException;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import iNIT.om.AesOption;
+import uTILS.CustomFileComparator;
 import uTILS.FileStuff;
 import uTILS.HandleString;
 import uTILS.ImageWorker;
@@ -51,7 +52,8 @@ public class ScreeptManagerStub {
 	static Logger logger = Logger.getLogger(ScreeptManagerStub.class);
 	
 	// temp file path - default value after initializing with constructor
-	private String RESULT_PATH = "Resources_Scrypt/temp/";
+	private final String TEMP_PATH = "Resources_Scrypt/temp/";
+	private String RESULT_PATH = TEMP_PATH;
 	
 	// temp crypted/decrypted file name
 	private static String CRYPT_NAME = "temp_crypter_out";
@@ -181,7 +183,7 @@ public class ScreeptManagerStub {
 				logger.debug("STEG mode detected!");
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = RESULT_PATH+srcFile.getName()+"/";
+				RESULT_PATH = TEMP_PATH+srcFile.getName()+"/";
 				File outFolder = new File(RESULT_PATH);
 				outFolder.mkdir();
 				
@@ -199,7 +201,7 @@ public class ScreeptManagerStub {
 				logger.debug("COMPLETE mode detected!");
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = RESULT_PATH+srcFile.getName()+"/";
+				RESULT_PATH = TEMP_PATH+srcFile.getName()+"/";
 				File outFolder = new File(RESULT_PATH);
 				outFolder.mkdir();
 				
@@ -316,16 +318,16 @@ public class ScreeptManagerStub {
 	// Function that delete the content of the temporaneous folder.
 	private void emptyTempPath(){
 		// initialize the temp directory reference
-		File temp_folder = new File(RESULT_PATH);
+		File temp_folder = new File(TEMP_PATH);
 		
 		if(temp_folder.exists() && temp_folder.listFiles().length!=0) {
 			
 			// empty temp folder content files before to start encription
 			boolean deleted = FileStuff.deleteDirContent(temp_folder);
 			if(deleted) {
-				logger.debug("Temp dir ("+RESULT_PATH+") succesfully emptied :)");
+				logger.debug("Temp dir ("+TEMP_PATH+") succesfully emptied :)");
 			}else {
-				logger.error("Some error occurred deleting "+RESULT_PATH+" content :(");
+				logger.error("Some error occurred deleting "+TEMP_PATH+" content :(");
 			}
 		}else {
 			logger.warn("Temp dir already empty or not existing");
@@ -345,7 +347,7 @@ public class ScreeptManagerStub {
 		int readFlag = streamIN.read(buffer);
 		
 		CRYPT_NAME = srcFile.getName();
-		File result = new File(RESULT_PATH+"AesCrypted_"+CRYPT_NAME);
+		File result = new File(TEMP_PATH+"AesCrypted_"+CRYPT_NAME);
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -398,7 +400,7 @@ public class ScreeptManagerStub {
 		int readFlag = streamIN.read(buffer);
 		
 		DECRYPT_NAME = srcFile.getName();
-		File result = new File(RESULT_PATH+"AesDeCrypted_"+DECRYPT_NAME);
+		File result = new File(TEMP_PATH+"AesDeCrypted_"+DECRYPT_NAME);
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -480,7 +482,7 @@ public class ScreeptManagerStub {
 			
 			// sequence of info stored in name is the following:
 			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
-			outFile = new File(RESULT_PATH+n+"_"+nBytesStegged+".png");
+			outFile = new File(RESULT_PATH+n+"_"+nBytesStegged+"_.png");
 
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
@@ -519,6 +521,7 @@ public class ScreeptManagerStub {
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
 		File outFile = new File(RESULT_PATH+"StegDeCrypted_"+DECRYPT_NAME);		
 		
+		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
 		
 		// STEG error types
@@ -532,16 +535,20 @@ public class ScreeptManagerStub {
 
 		int i = 1;
 			
-		// TODO get file array and scan all files till the end and soort them by name
+		// TODO get file array and scan all files till the end and sort them by first element in name name
 		File[] cryptedImgList = srcFile.listFiles();
-		Arrays.sort(cryptedImgList);
+		// order files in source folder using first element(see STEGcrypter) with "_" separator
+		Arrays.sort(cryptedImgList, new CustomFileComparator("_", 0));
 		
 		for(File iFile : cryptedImgList) {
 			
-			// retrieve images from 0 to n with same name
+			// retrieve number of coded bytes into image from file name
+			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
+			
+			// retrieve current image from file
 			BufferedImage codedImg = ImageIO.read(iFile);
 			
-			fout.write(imgCoder.stegaDeCryptToArray(codedImg));
+			fout.write(imgCoder.stegaDeCryptToArray(codedImg, bytesToGet));
 
 			i++;
 		}

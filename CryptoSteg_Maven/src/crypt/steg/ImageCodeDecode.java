@@ -159,7 +159,7 @@ public class ImageCodeDecode {
 	    		// secure against overflow
 	    		Integer securePx = secForConversion(px);
 	    		
-	    		if(k<=AES_CODED_OUT.length) {
+	    		if(k<AES_CODED_OUT.length) {
 		    		currentByteToInt = (int)AES_CODED_OUT[k];
 	    		}
 	    		else {
@@ -253,6 +253,50 @@ public class ImageCodeDecode {
 		    		// TODO return dinamyc size array avoiding to have null bytes (0)
 		    		stegDecodedAesIn[k] = (byte)(decodedPX);
 		    		k++;
+		    	}
+		    }
+		    // end of image
+	        //return imgPixels;		
+		}		
+		return stegDecodedAesIn;
+	}
+	
+	/**
+	 * Questo metodo si occupa di decodificare l'immagine codificata a partire dalla imageKey (campo della classe).
+	 * 
+	 * @param BufferedImage codedImg -> immagine codificata da stegaCrypt da decodificare
+	 * @return List<Byte> AES_CODED_IN -> lista di byte prodotta in uscita
+	 */
+	public byte[] stegaDeCryptToArray(BufferedImage codedImg, Integer cryptedByteNumber) {
+		// calcolo larghezza e altezza immagine
+        int height = codedImg.getHeight();
+		int width = codedImg.getWidth();
+		
+		byte[] stegDecodedAesIn = new byte[cryptedByteNumber];
+		
+		// olny if img and key have same dimension (first level check)
+		if (keyImage.getHeight()==codedImg.getHeight() && keyImage.getWidth()==codedImg.getWidth()) {
+			
+			int k = 0;
+			// ciclo di scansione immagine
+			// per ogni riga
+		    for(int i=0; i < height;i++) { 
+
+		    	// per ogni colonna
+		    	for(int j=0; j<width;j++){ 
+		    		Integer currentKeyPx = keyImage.getRGB(j, i);
+		    		// redo secure against overflow like when coding
+		    		Integer secureKeyPx = secForConversion(currentKeyPx);
+		    		Integer codedPx = codedImg.getRGB(j, i);	    		
+		    		
+		    		// retrieve original int value from key and coded values - core of algorithm
+		    		int decodedPX = secureKeyPx - codedPx;
+		    		
+		    		if (k<cryptedByteNumber) {
+						// TODO return dinamyc size array avoiding to have null bytes (0)
+						stegDecodedAesIn[k] = (byte) (decodedPX);
+					}
+					k++;
 		    	}
 		    }
 		    // end of image

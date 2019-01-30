@@ -61,6 +61,31 @@ public class ScreepT_Test {
 	
 	@Test
 	@Ignore
+	public void testOnlyAESdecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+		
+		try {
+			initAES();
+			
+			assertTrue(screepTManager.getMode().equals(CryptoMode.ONLY_AES));
+			assertTrue(screepTManager.deCrypt(codedFileAES));
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			for(File result : resultDir.listFiles()) {
+				
+				File out = new File("TEST_FILES/" + result.getName());
+				out = FileStuff.renameJavaObjFile(out);
+				
+				assertTrue(result.renameTo(out));
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	
 	public void testOnlySTEGcrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
@@ -87,32 +112,9 @@ public class ScreepT_Test {
 		}
 	}
 	
-	@Test
-	@Ignore
-	public void testOnlyAESdecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
-		
-		try {
-			initAES();
-			
-			assertTrue(screepTManager.getMode().equals(CryptoMode.ONLY_AES));
-			assertTrue(screepTManager.deCrypt(codedFileAES));
-			
-			File resultDir =new File(TEMP_DIR);
-			
-			for(File result : resultDir.listFiles()) {
-				
-				File out = new File("TEST_FILES/" + result.getName());
-				out = FileStuff.renameJavaObjFile(out);
-				
-				assertTrue(result.renameTo(out));
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	@Test
+	@Ignore
 	public void test_grantAreaMultipleOfN() {
 		
 		// test customization
