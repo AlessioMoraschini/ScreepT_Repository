@@ -154,7 +154,7 @@ public class ImageCodeDecode {
 
 	    	// per ogni colonna
 	    	for(int j=0; j<width;j++){ 
-	    		currentByteToInt = 0;
+	    		
 	    		Integer px = sourceImg.getRGB(j, i);
 	    		// secure against overflow
 	    		Integer securePx = secForConversion(px);
@@ -165,6 +165,7 @@ public class ImageCodeDecode {
 	    		else {
 	    			// if source file is ended remember number of coded
 	    			nBytesCoded = k; 
+	    			currentByteToInt = 0;
 	    		}
 	    		// set new value - core of algorithm
 	    		Integer codedPX = securePx - currentByteToInt;

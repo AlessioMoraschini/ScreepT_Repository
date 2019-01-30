@@ -315,7 +315,7 @@ public class ImageWorker {
 	}
 	
 	/**
-	 * metodo che estrare una porzione di immagine
+	 * metodo che estrae una porzione di immagine
 	 */
 	public static BufferedImage getPortion(BufferedImage src, int x, int y) {
 

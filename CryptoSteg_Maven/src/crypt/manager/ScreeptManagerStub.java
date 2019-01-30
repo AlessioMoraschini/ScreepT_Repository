@@ -101,7 +101,7 @@ public class ScreeptManagerStub {
 	 * @param imgCod the initialized imageCoder
 	 * @param aesCod the initialized aesCoder
 	 */
-	public ScreeptManagerStub(ImageCodeDecode imgCod, File keyImgFile, EncryptDecrypt aesCod) {
+	public ScreeptManagerStub(ImageCodeDecode imgCod, EncryptDecrypt aesCod) {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = aesCod;
 		imgCoder = imgCod;
@@ -123,7 +123,7 @@ public class ScreeptManagerStub {
 	 *  
 	 * @param imgCod the initialized imageCoder
 	 */
-	public ScreeptManagerStub(ImageCodeDecode imgCod, File keyImgFile) {
+	public ScreeptManagerStub(ImageCodeDecode imgCod) {
 		mode = CryptoMode.ONLY_STEG;
 		aesCoder = null;
 		imgCoder = imgCod;
@@ -174,24 +174,34 @@ public class ScreeptManagerStub {
 				onlyAESCrypt(srcFile);
 				wellDone = true;
 				
-				logger.debug("AES Decrypt phase - EXITING");
+				logger.debug("AES Crypt phase - EXITING");
 				
 			// CASE 2 - ONLY STEG
 			}else if(mode.STEG && !mode.AES) {
 				logger.debug("STEG mode detected!");
 
+				// create container folder for result coded images with same name of source file
+				RESULT_PATH = RESULT_PATH+srcFile.getName()+"/";
+				File outFolder = new File(RESULT_PATH);
+				outFolder.mkdir();
+				
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
 				onlySTEGCrypt(srcFile);
 				wellDone = true;
 				
-				logger.debug("STEG Decrypt phase - EXITING");
+				logger.debug("STEG Crypt phase - EXITING");
 				
 			// CASE 3 - COMPLETE MODE
 			}else if (mode.STEG && mode.AES) {
 
-				logger.debug("AES mode detected!");
+				logger.debug("COMPLETE mode detected!");
+
+				// create container folder for result coded images with same name of source file
+				RESULT_PATH = RESULT_PATH+srcFile.getName()+"/";
+				File outFolder = new File(RESULT_PATH);
+				outFolder.mkdir();
 				
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
@@ -199,7 +209,7 @@ public class ScreeptManagerStub {
 				completeCrypt(srcFile);
 				wellDone = true;
 				
-				logger.debug("AES Decrypt phase - EXITING");
+				logger.debug("COMPLETE Crypt phase - EXITING");
 				
 			}	
 		}catch(STEGException e) {
@@ -457,12 +467,6 @@ public class ScreeptManagerStub {
 			throw new STEGException();
 		}
 
-		
-		String oldExtension = FilenameUtils.getExtension(srcFile.getName());
-		// now use png extension 
-		File newExtensionSrc = FileStuff.changeExtension(srcFile, ".png");
-		CRYPT_NAME = newExtensionSrc.getName();
-		
 		int n = 1;
 		File outFile;
 		while(readFlag > 0) {
@@ -476,7 +480,7 @@ public class ScreeptManagerStub {
 			
 			// sequence of info stored in name is the following:
 			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
-			outFile = new File(RESULT_PATH+n+"_"+nBytesStegged+"_"+oldExtension+"_StegCrypted_"+CRYPT_NAME);
+			outFile = new File(RESULT_PATH+n+"_"+nBytesStegged+".png");
 
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
@@ -494,6 +498,7 @@ public class ScreeptManagerStub {
 				logger.error("Error ocurred writing "+outFile.getAbsolutePath());
 				throw new IOException();
 			}
+			n++;
 			
 		}
 		// close streams to avoid memory leaks
@@ -528,7 +533,7 @@ public class ScreeptManagerStub {
 		int i = 1;
 			
 		// TODO get file array and scan all files till the end and soort them by name
-		File[] cryptedImgList = srcFile.getParentFile().listFiles();
+		File[] cryptedImgList = srcFile.listFiles();
 		Arrays.sort(cryptedImgList);
 		
 		for(File iFile : cryptedImgList) {
