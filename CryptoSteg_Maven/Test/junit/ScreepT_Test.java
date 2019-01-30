@@ -91,6 +91,8 @@ public class ScreepT_Test {
 		try {
 			initSTEG();
 			
+			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
+			
 			assertTrue(screepTManager.getMode().equals(CryptoMode.ONLY_STEG));
 			assertTrue(screepTManager.crypt(srcFile));
 			
@@ -99,13 +101,14 @@ public class ScreepT_Test {
 			for(File result : resultDir.listFiles()) {
 				// destination path - avoid duplicates
 				File out = new File("TEST_FILES/" + result.getName());
-				if (out.exists()) {
+				if (out.exists() && out.isDirectory()) {
 					out.delete();
 				}
 
-//				out = FileStuff.renameJavaObjFile(out);
+				out = FileStuff.renameJavaObjFile(out);
 				assertTrue(result.renameTo(out));
-				assertTrue(result.isDirectory());
+				//assertTrue(result.isDirectory());
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

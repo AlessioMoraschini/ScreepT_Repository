@@ -135,17 +135,17 @@ public class ImageCodeDecode {
 	 * @param AES_CODED_OUT  -> array di byte data dai byte originali codificati tramite AES
 	 * @return BufferedImage codedImg  -> immagine risultante dalla codifica
 	 * */
-	public BufferedImage stegaCrypt(byte[] AES_CODED_OUT, Integer nBytesCoded) {
+	public StegOmResult stegaCrypt(byte[] AES_CODED_OUT) {
 				
 		BufferedImage sourceImg = keyImage;
 		BufferedImage codedImg = new BufferedImage(keyImage.getWidth(), keyImage.getHeight(), keyImage.getType());
-		
+		Integer nBytesCoded = 0;
 		// calcolo larghezza e altezza immagine
         int height = sourceImg.getHeight();
 	    int width = sourceImg.getWidth();
 	    
 	    // ciclo di scansione immagine
-	    Integer currentByteToInt;
+	    int currentByteToInt;
 	    
 	    int k = 0;
 	    
@@ -161,10 +161,10 @@ public class ImageCodeDecode {
 	    		
 	    		if(k<AES_CODED_OUT.length) {
 		    		currentByteToInt = (int)AES_CODED_OUT[k];
+	    			// if source file is ended remember number of coded
+	    			nBytesCoded = k+1; 
 	    		}
 	    		else {
-	    			// if source file is ended remember number of coded
-	    			nBytesCoded = k; 
 	    			currentByteToInt = 0;
 	    		}
 	    		// set new value - core of algorithm
@@ -175,10 +175,11 @@ public class ImageCodeDecode {
 	    		k++;
 	    	}
 	    }
+	    String strBytesCoded = String.valueOf(nBytesCoded);
 	    // end of image
 //	    return imgPixels;		
 		
-		return codedImg;
+		return new StegOmResult(codedImg, strBytesCoded);
 	}
 	
 	/**
@@ -284,15 +285,16 @@ public class ImageCodeDecode {
 
 		    	// per ogni colonna
 		    	for(int j=0; j<width;j++){ 
-		    		Integer currentKeyPx = keyImage.getRGB(j, i);
-		    		// redo secure against overflow like when coding
-		    		Integer secureKeyPx = secForConversion(currentKeyPx);
-		    		Integer codedPx = codedImg.getRGB(j, i);	    		
-		    		
-		    		// retrieve original int value from key and coded values - core of algorithm
-		    		int decodedPX = secureKeyPx - codedPx;
-		    		
+		    		// execute i-cycle only if there are further bytes crypted in image
 		    		if (k<cryptedByteNumber) {
+			    		Integer currentKeyPx = keyImage.getRGB(j, i);
+			    		// redo secure against overflow like when coding
+			    		Integer secureKeyPx = secForConversion(currentKeyPx);
+			    		Integer codedPx = codedImg.getRGB(j, i);	    		
+			    		
+			    		// retrieve original int value from key and coded values - core of algorithm
+			    		int decodedPX = secureKeyPx - codedPx;
+			    		
 						// TODO return dinamyc size array avoiding to have null bytes (0)
 						stegDecodedAesIn[k] = (byte) (decodedPX);
 					}

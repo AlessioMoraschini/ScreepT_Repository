@@ -27,6 +27,7 @@ import crypt.aes.AESException;
 import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
 import crypt.steg.STEGException;
+import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import iNIT.om.AesOption;
@@ -513,13 +514,12 @@ public class ScreeptManager {
 		File outFile = new File(RESULT_PATH+oldExtension+"_StegCrypted_"+CRYPT_NAME);
 		
 		while(readFlag > 0) {
-			
-			Integer nBytesStegged = 0;
-			
+
 			// crypt current buffer into image
-			BufferedImage imgResult = imgCoder.stegaCrypt(buffer, nBytesStegged);
+			StegOmResult result = imgCoder.stegaCrypt(buffer);
+			BufferedImage imgResult = result.getImgRes();
 			
-			outFile = new File(nBytesStegged+"_"+outFile.getName());
+			outFile = new File(RESULT_PATH+"_"+result.getnBytesCoded()+"_.png");
 			
 			progUpdater.getLabel().setText("Crypting - writing to "+outFile.getName());
 			
@@ -646,17 +646,16 @@ public class ScreeptManager {
 		
 		while(readFlag > 0) {
 			
-			Integer nBytesStegged = 0;
-			
 			progUpdater.getLabel().setText("Crypting - writing to "+outFile.getName());
 
 			// encrypt (AES) current buffer content with aes key string
 			byte[] partialResult = aesCoder.encrypt(buffer);				
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
-			BufferedImage imgResult = imgCoder.stegaCrypt(partialResult, nBytesStegged);
+			StegOmResult result = imgCoder.stegaCrypt(partialResult);
+			BufferedImage imgResult = result.getImgRes();
 			
-			outFile = new File(nBytesStegged+"_"+outFile.getName());
+			outFile = new File(result.getnBytesCoded()+"_"+outFile.getName());
 			
 			// write i-image on the file and then calculate new incremental name for next one
 			boolean OK = ImageIO.write(imgResult, "png", outFile);

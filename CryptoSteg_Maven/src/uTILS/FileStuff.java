@@ -76,13 +76,13 @@ public class FileStuff {
 	 * @return deleted: false if at least one deletion have incurred in some errors
 	 */
 	public static boolean deleteDirContentRecursive(File folder) {
-		boolean deleted = false;
+		boolean deleted = true;
 		
 		File[] files = folder.listFiles();
 	    if(files!=null) { //some JVMs return null for empty dirs
 	        for(File f: files) {
 	            if(f.isDirectory()) {
-	                boolean del = deleteDirContentRecursive(f);
+	                boolean del = deleteDirContentInclRoot(f);
 	                if(del==false) {
 	                	deleted = false;
 	                }
@@ -93,6 +93,35 @@ public class FileStuff {
 	                }
 	            }
 	        }
+	    }
+	    return deleted;	
+	}
+	
+	/**
+	 * same as deleteDirContentRecursive but this one deletes also the root folder
+	 * @param folder
+	 * @return
+	 */
+	private static boolean deleteDirContentInclRoot(File folder) {
+		boolean deleted = true;
+		
+		File[] files = folder.listFiles();
+	    if(files!=null) { //some JVMs return null for empty dirs
+	        for(File f: files) {
+	            if(f.isDirectory()) {
+	                boolean del = deleteDirContentInclRoot(f);
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            } else {
+	                boolean del = f.delete();
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            }
+	        }
+	        // at the end delete given container folder too
+	        folder.delete();
 	    }
 	    return deleted;	
 	}

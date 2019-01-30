@@ -14962,3 +14962,94 @@ ScrYpt_V1.0 CLOSED!
 2019-01-22 23:47:52,063 [main] DEBUG classes.ScreeptManagerStub - AES mode detected!
 2019-01-22 23:47:52,114 [main] DEBUG classes.ScreeptManagerStub - AES decrypt phase ended: AesDeCrypted_AesCrypted_Source.txt created :)
 2019-01-22 23:47:52,114 [main] DEBUG classes.ScreeptManagerStub - AES crypt phase ended :)
+2019-01-30 18:50:31,207 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 18:50:31,207 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 18:50:31,207 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 18:50:31,657 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\Source.txt\1_0_.png
+2019-01-30 18:50:31,657 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 18:50:31,657 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 19:37:10,170 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 19:37:10,189 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 19:37:10,189 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 19:37:10,189 [main] ERROR crypt.manager.ScreeptManagerStub - [java.io.FileInputStream.open0(Native Method), java.io.FileInputStream.open(FileInputStream.java:195), java.io.FileInputStream.<init>(FileInputStream.java:138), crypt.manager.ScreeptManagerStub.onlySTEGCrypt(ScreeptManagerStub.java:448), crypt.manager.ScreeptManagerStub.crypt(ScreeptManagerStub.java:193), junit.ScreepT_Test.testOnlySTEGcrypt(ScreepT_Test.java:95), sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method), sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62), sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43), java.lang.reflect.Method.invoke(Method.java:498), org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50), org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12), org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47), org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17), org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325), org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78), org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57), org.junit.runners.ParentRunner$3.run(ParentRunner.java:290), org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71), org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288), org.junit.runners.ParentRunner.access$000(ParentRunner.java:58), org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268), org.junit.runners.ParentRunner.run(ParentRunner.java:363), org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86), org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38), org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:538), org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:760), org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:460), org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:206)]
+2019-01-30 19:37:10,189 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 19:39:50,422 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 19:39:50,427 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 19:39:50,427 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 19:39:50,429 [main] ERROR crypt.manager.ScreeptManagerStub - [java.io.FileInputStream.open0(Native Method), java.io.FileInputStream.open(FileInputStream.java:195), java.io.FileInputStream.<init>(FileInputStream.java:138), crypt.manager.ScreeptManagerStub.onlySTEGCrypt(ScreeptManagerStub.java:448), crypt.manager.ScreeptManagerStub.crypt(ScreeptManagerStub.java:193), junit.ScreepT_Test.testOnlySTEGcrypt(ScreepT_Test.java:95), sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method), sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62), sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43), java.lang.reflect.Method.invoke(Method.java:498), org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50), org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12), org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47), org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17), org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325), org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78), org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57), org.junit.runners.ParentRunner$3.run(ParentRunner.java:290), org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71), org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288), org.junit.runners.ParentRunner.access$000(ParentRunner.java:58), org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268), org.junit.runners.ParentRunner.run(ParentRunner.java:363), org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:86), org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38), org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:538), org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:760), org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:460), org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:206)]
+2019-01-30 19:39:50,429 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 19:41:17,216 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 19:41:17,244 [main] ERROR crypt.manager.ScreeptManagerStub - Some error occurred deleting Resources_Scrypt/temp/ content :(
+2019-01-30 19:41:17,244 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 19:41:17,713 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\Source.txt\1__.png
+2019-01-30 19:41:17,713 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 19:41:17,713 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 19:56:33,941 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 19:56:33,946 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 19:56:33,946 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 19:56:34,437 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\Source.txt\1_90913_.png
+2019-01-30 19:56:34,437 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 19:56:34,437 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:00:51,929 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:00:51,957 [main] ERROR crypt.manager.ScreeptManagerStub - Some error occurred deleting Resources_Scrypt/temp/ content :(
+2019-01-30 20:00:51,957 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:00:52,379 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_90913_.png
+2019-01-30 20:00:52,394 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:00:52,394 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:02:11,478 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:02:11,500 [main] ERROR crypt.manager.ScreeptManagerStub - Some error occurred deleting Resources_Scrypt/temp/ content :(
+2019-01-30 20:02:11,500 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:02:11,891 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_90913_.png
+2019-01-30 20:02:11,891 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:02:11,891 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:03:18,369 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:03:18,391 [main] ERROR crypt.manager.ScreeptManagerStub - Some error occurred deleting Resources_Scrypt/temp/ content :(
+2019-01-30 20:03:18,391 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:12:24,475 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:12:24,491 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 20:12:24,491 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:12:24,898 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_90913_.png
+2019-01-30 20:12:24,898 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:12:24,898 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:14:34,880 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:14:34,889 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 20:14:34,890 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:14:35,390 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_1736_.png
+2019-01-30 20:14:35,390 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:14:35,390 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:15:49,736 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:15:49,775 [main] ERROR crypt.manager.ScreeptManagerStub - Some error occurred deleting Resources_Scrypt/temp/ content :(
+2019-01-30 20:15:49,775 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:15:50,181 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_1736_.png
+2019-01-30 20:15:50,196 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:15:50,196 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:18:28,438 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:18:28,454 [main] ERROR crypt.manager.ScreeptManagerStub - Some error occurred deleting Resources_Scrypt/temp/ content :(
+2019-01-30 20:18:28,454 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:18:28,797 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_1736_.png
+2019-01-30 20:18:28,797 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:18:28,797 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:25:09,117 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:25:09,134 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 20:25:09,134 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:25:09,526 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_1736_.png
+2019-01-30 20:25:09,526 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:25:09,526 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:25:29,151 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:25:29,186 [main] DEBUG crypt.manager.ScreeptManagerStub - Temp dir (Resources_Scrypt/temp/) succesfully emptied :)
+2019-01-30 20:25:29,186 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:25:29,592 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_1736_.png
+2019-01-30 20:25:29,608 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:25:29,608 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:38:45,840 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:38:45,840 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 20:38:45,840 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:38:46,246 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_1736_.png
+2019-01-30 20:38:46,246 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:38:46,246 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.
+2019-01-30 20:45:32,181 [main] DEBUG crypt.manager.ScreeptManagerStub - Started cripting with selected mode: ONLY_STEG
+2019-01-30 20:45:32,181 [main] WARN  crypt.manager.ScreeptManagerStub - Temp dir already empty or not existing
+2019-01-30 20:45:32,181 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG mode detected!
+2019-01-30 20:45:32,603 [main] DEBUG crypt.manager.ScreeptManagerStub - Image written: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\temp\STEGcod_Source.txt\1_1737_.png
+2019-01-30 20:45:32,603 [main] DEBUG crypt.manager.ScreeptManagerStub - STEG Crypt phase - EXITING
+2019-01-30 20:45:32,603 [main] DEBUG crypt.manager.ScreeptManagerStub - Streams closed, exiting method.

@@ -27,6 +27,7 @@ import crypt.aes.AESException;
 import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
 import crypt.steg.STEGException;
+import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import iNIT.om.AesOption;
@@ -183,7 +184,7 @@ public class ScreeptManagerStub {
 				logger.debug("STEG mode detected!");
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = TEMP_PATH+srcFile.getName()+"/";
+				RESULT_PATH = TEMP_PATH+"STEGcod_"+srcFile.getName()+"/";
 				File outFolder = new File(RESULT_PATH);
 				outFolder.mkdir();
 				
@@ -201,7 +202,7 @@ public class ScreeptManagerStub {
 				logger.debug("COMPLETE mode detected!");
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = TEMP_PATH+srcFile.getName()+"/";
+				RESULT_PATH = TEMP_PATH+"COMPLETEcod_"+srcFile.getName()+"/";
 				File outFolder = new File(RESULT_PATH);
 				outFolder.mkdir();
 				
@@ -323,7 +324,7 @@ public class ScreeptManagerStub {
 		if(temp_folder.exists() && temp_folder.listFiles().length!=0) {
 			
 			// empty temp folder content files before to start encription
-			boolean deleted = FileStuff.deleteDirContent(temp_folder);
+			boolean deleted = FileStuff.deleteDirContentRecursive(temp_folder);
 			if(deleted) {
 				logger.debug("Temp dir ("+TEMP_PATH+") succesfully emptied :)");
 			}else {
@@ -475,14 +476,14 @@ public class ScreeptManagerStub {
 			
 			// this value will be used during decription to recognize where px value have to be ignored
 			// (cause img is of fixed dimension)
-			Integer nBytesStegged = 0;
 			
 			// crypt current buffer into image
-			BufferedImage imgResult = imgCoder.stegaCrypt(buffer, nBytesStegged);
+			StegOmResult result = imgCoder.stegaCrypt(buffer);
+			BufferedImage imgResult = result.getImgRes();
 			
 			// sequence of info stored in name is the following:
 			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
-			outFile = new File(RESULT_PATH+n+"_"+nBytesStegged+"_.png");
+			outFile = new File(RESULT_PATH+n+"_"+result.getnBytesCoded()+"_.png");
 
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
@@ -602,15 +603,16 @@ public class ScreeptManagerStub {
 		
 		while(readFlag > 0) {
 			
-			Integer nBytesStegged = 0;
+			String nBytesStegged;
 			
 			// encrypt (AES) current buffer content with aes key string
 			byte[] partialResult = aesCoder.encrypt(buffer);				
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
-			BufferedImage imgResult = imgCoder.stegaCrypt(partialResult, nBytesStegged);
+			StegOmResult result = imgCoder.stegaCrypt(partialResult);
+			BufferedImage imgResult = result.getImgRes();
 			
-			outFile = new File(nBytesStegged+"_"+outFile.getName());
+			outFile = new File(result.getnBytesCoded()+"_"+outFile.getName());
 			
 			// write i-image on the file and then calculate new incremental name for next one
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
