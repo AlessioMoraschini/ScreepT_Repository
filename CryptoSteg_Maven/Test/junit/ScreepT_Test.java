@@ -29,6 +29,7 @@ public class ScreepT_Test {
 	private ImageCodeDecode STEGcoder;
 	private File srcFile = new File("TEST_FILES/Source_medium.txt");
 	private File codedFileAES = new File("TEST_FILES/AesCrypted_Source.txt");
+	private File codedFolderSTEG = new File("TEST_FILES/STEGcod_Source_medium.txt");
 	private File keyIMG = new File("TEST_FILES/keyIMG_1000.png");
 	
 	private ScreeptManagerStub screepTManager;
@@ -85,7 +86,7 @@ public class ScreepT_Test {
 	}
 	
 	@Test
-	
+	@Ignore
 	public void testOnlySTEGcrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
@@ -95,6 +96,37 @@ public class ScreepT_Test {
 			
 			assertTrue(screepTManager.getMode().equals(CryptoMode.ONLY_STEG));
 			assertTrue(screepTManager.crypt(srcFile));
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			for(File result : resultDir.listFiles()) {
+				// destination path - avoid duplicates
+				File out = new File("TEST_FILES/" + result.getName());
+				if (out.exists() && out.isDirectory()) {
+					out.delete();
+				}
+
+				out = FileStuff.renameJavaObjFile(out);
+				assertTrue(result.renameTo(out));
+				//assertTrue(result.isDirectory());
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+
+	public void testOnlySTEGDecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+		
+		try {
+			initSTEG();
+			
+			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
+			
+			assertTrue(screepTManager.getMode().equals(CryptoMode.ONLY_STEG));
+			assertTrue(screepTManager.deCrypt(codedFolderSTEG));
 			
 			File resultDir =new File(TEMP_DIR);
 			

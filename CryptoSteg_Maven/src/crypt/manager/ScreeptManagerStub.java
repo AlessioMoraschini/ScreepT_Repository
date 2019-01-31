@@ -281,7 +281,7 @@ public class ScreeptManagerStub {
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-				//onlySTEGDeCrypt(srcFile);
+				onlySTEGDeCrypt(srcFile);
 				wellDone = true;
 				
 				logger.debug("STEG Decrypt phase - EXITING");
@@ -513,14 +513,11 @@ public class ScreeptManagerStub {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
 
-		// separate extension from name of file with .png extension
-		String retrievedExtension = HandleString.retrieveFromNelements(srcFile.getName(), "_", 1, 2);
-		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_", 1);
-		// now use retrieved extension from aesCoded Name and recalculate CRYPT_NAME
-		DECRYPT_NAME = FileStuff.changeExtension(DECRYPT_NAME, retrievedExtension);
+		// second element of folder result name is name of original file
+		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(RESULT_PATH+"StegDeCrypted_"+DECRYPT_NAME);		
+		File outFile = new File(TEMP_PATH+"StegDeCrypted_"+DECRYPT_NAME);		
 		
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
@@ -534,8 +531,6 @@ public class ScreeptManagerStub {
 			throw new STEGException();
 		}
 
-		int i = 1;
-			
 		// TODO get file array and scan all files till the end and sort them by first element in name name
 		File[] cryptedImgList = srcFile.listFiles();
 		// order files in source folder using first element(see STEGcrypter) with "_" separator
@@ -543,7 +538,7 @@ public class ScreeptManagerStub {
 		
 		for(File iFile : cryptedImgList) {
 			
-			// retrieve number of coded bytes into image from file name
+			// retrieve number of coded bytes into image from file name - the second element in name
 			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
 			
 			// retrieve current image from file
@@ -551,7 +546,6 @@ public class ScreeptManagerStub {
 			
 			fout.write(imgCoder.stegaDeCryptToArray(codedImg, bytesToGet));
 
-			i++;
 		}
 		
 		// close streams to avoid memory leaks
@@ -653,7 +647,7 @@ public class ScreeptManagerStub {
 	 * 
 	 * @return new value of W.
 	 */
-	static public Integer grantAreaMultipleOfN(Integer W, Integer H, int N) {
+	static public int grantAreaMultipleOfN(Integer W, Integer H, int N) {
 
 		if(W==0 || H==0) {
 			return 0;
@@ -679,6 +673,20 @@ public class ScreeptManagerStub {
 //			H = tempRes/W;
 //		}
 	
+	}
+	
+	/**
+	 * same of the area version, but with only one parameter number to check
+	 * @param number
+	 * @param N
+	 * @return
+	 */
+	static public int grantMultipleOfN(Integer number, int N) {
+		if(number<N) {
+			return 0;
+		}
+		number = (number/N)*N;
+		return number;
 	}
 	
 	/**

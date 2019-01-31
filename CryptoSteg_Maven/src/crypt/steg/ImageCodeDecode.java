@@ -161,7 +161,7 @@ public class ImageCodeDecode {
 	    		
 	    		if(k<AES_CODED_OUT.length) {
 		    		currentByteToInt = (int)AES_CODED_OUT[k];
-	    			// if source file is ended remember number of coded
+	    			// if source file is ended remember number of coded (k+1 because k starts from 0 being an index instead of a counter)
 	    			nBytesCoded = k+1; 
 	    		}
 	    		else {
