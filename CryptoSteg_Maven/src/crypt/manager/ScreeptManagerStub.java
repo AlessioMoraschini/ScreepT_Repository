@@ -559,6 +559,11 @@ public class ScreeptManagerStub {
 	// this is method for top security
 	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 		
+		// calculate w to grant n° of pixels%16=0 and use the portion of key image with calculated new w
+		w=grantAreaMultipleOfN(w, h, 16);
+		// now update key image with portion calculated
+		imgCoder.setKeyImage(ImageWorker.getPortion(imgCoder.getKeyImage(), w, h));
+		
 		FileInputStream streamIN = new FileInputStream(srcFile);
 		int STEG_BUFFER_SIZE = w*h;
 		
@@ -593,26 +598,24 @@ public class ScreeptManagerStub {
 		
 		File outFile = new File(RESULT_PATH+CRYPT_NAME+"_"+FilenameUtils.getExtension(srcFile.getName())+"_ScreepTed.png");
 		
-		int i = 1;
+		int n = 1;
 		
 		while(readFlag > 0) {
-			
-			String nBytesStegged;
-			
+
 			// encrypt (AES) current buffer content with aes key string
+			// remember that in case of available%16!=0 -> partial result's size aproximate in excess to reach multiple of 16 (that's how AES works)
 			byte[] partialResult = aesCoder.encrypt(buffer);				
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
 			StegOmResult result = imgCoder.stegaCrypt(partialResult);
 			BufferedImage imgResult = result.getImgRes();
 			
-			outFile = new File(result.getnBytesCoded()+"_"+outFile.getName());
+			// sequence of info stored in name is the following:
+			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
+			outFile = new File(RESULT_PATH+n+"_"+result.getnBytesCoded()+"_.png");
 			
 			// write i-image on the file and then calculate new incremental name for next one
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
-			
-			// after first image is created create a new incremental-named file for next image until source byte buffer is ended
-			outFile = FileStuff.renameJavaObjFile(outFile);
 			
 			available = streamIN.available();
 			if (STEG_BUFFER_SIZE >= available) {
@@ -628,7 +631,7 @@ public class ScreeptManagerStub {
 				throw new IOException();	
 			}
 			
-			i++;
+			n++;
 		}		
 		// close streams to avoid memory leaks
 		streamIN.close();
