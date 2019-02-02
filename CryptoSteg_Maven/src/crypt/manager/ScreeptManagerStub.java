@@ -235,8 +235,8 @@ public class ScreeptManagerStub {
 			resetAfterException(e);
 		}
 			
-		logger.debug("Streams closed, exiting method.");
-		
+		logger.debug("Streams closed, exiting encription.");
+		// TODO check welldone usage
 		return wellDone;
 	}
 	
@@ -294,7 +294,7 @@ public class ScreeptManagerStub {
 				
 				logger.debug("AES mode detected!");
 				
-				//completeDeCrypt(srcFile);
+				completeDeCrypt(srcFile);
 				wellDone = true;
 				
 				logger.debug("AES Decrypt phase - EXITING");
@@ -304,9 +304,8 @@ public class ScreeptManagerStub {
 			resetAfterException(e);
 		}
 		
-		// TODO scrivi il metodo sulla falsa riga del codificatore: 
-		// adatta a struttura file e usa decrypt corrispondenti alla modalità
-		
+		logger.debug("Streams closed, exiting decription.");
+		// TODO check welldone usage
 		return wellDone;
 	}
 	
@@ -559,13 +558,14 @@ public class ScreeptManagerStub {
 	// this is method for top security
 	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 		
-		// calculate w to grant n° of pixels%16=0 and use the portion of key image with calculated new w
-		w=grantAreaMultipleOfN(w, h, 16);
+		// create a copy by reference of the original coder
+		ImageCodeDecode copyOfImgCoder = new ImageCodeDecode(imgCoder);
+		// calculate w to grant n° of pixels%16=0 and use the portion of key image with calculated
 		// now update key image with portion calculated
-		imgCoder.setKeyImage(ImageWorker.getPortion(imgCoder.getKeyImage(), w, h));
+		copyOfImgCoder.setKeyImage(subImgMultOfNpx(imgCoder.getKeyImage(), 16));
 		
 		FileInputStream streamIN = new FileInputStream(srcFile);
-		int STEG_BUFFER_SIZE = w*h;
+		int STEG_BUFFER_SIZE = copyOfImgCoder.getKeyImage().getWidth()*copyOfImgCoder.getKeyImage().getHeight();
 		
 		// set buffer at 1 byte per px of image key if <= than available
 		int available = streamIN.available();
@@ -607,7 +607,7 @@ public class ScreeptManagerStub {
 			byte[] partialResult = aesCoder.encrypt(buffer);				
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
-			StegOmResult result = imgCoder.stegaCrypt(partialResult);
+			StegOmResult result = copyOfImgCoder.stegaCrypt(partialResult);
 			BufferedImage imgResult = result.getImgRes();
 			
 			// sequence of info stored in name is the following:
@@ -636,6 +636,51 @@ public class ScreeptManagerStub {
 		// close streams to avoid memory leaks
 		streamIN.close();
 
+	}
+	
+	// this function implement the decription of several (0-n) images containing crypted values, using the encryption key image.
+	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
+	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
+		// second element of folder result name is name of original file
+		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
+		
+		// this time outfile is one and source can be multiple files incremental from 1st srcFile
+		File outFile = new File(TEMP_PATH+"Complete_DeCrypted_"+DECRYPT_NAME);		
+		
+		// create out Stream setting append mode (do not overwrite every cycle)
+		FileOutputStream fout = new FileOutputStream(outFile, true);
+		
+		// STEG error types
+		if(this.imgCoder == null || this.imgCoder.getKeyImage()==null) {
+			
+			// close streams to avoid memory leaks
+			fout.close();
+			logger.error("Error retrieving the STEG decoder -> null coder or keyImage!");
+			throw new STEGException();
+		}
+
+		// TODO get file array and scan all files till the end and sort them by first element in name name
+		File[] cryptedImgList = srcFile.listFiles();
+		// order files in source folder using first element(see STEGcrypter) with "_" separator
+		Arrays.sort(cryptedImgList, new CustomFileComparator("_", 0));
+		
+		for(File iFile : cryptedImgList) {
+			
+			// retrieve number of coded bytes into image from file name - the second element in name
+			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
+			
+			// retrieve current image from file
+			BufferedImage codedImg = ImageIO.read(iFile);
+			
+			// decript with steg current coded image
+			byte[] partial_res = imgCoder.stegaDeCryptToArray(codedImg, bytesToGet);
+			
+			// now decript with aes and write to out file
+			fout.write(aesCoder.decrypt(partial_res));
+		}
+		
+		// close streams to avoid memory leaks
+		fout.close();
 	}
 	
 	/**

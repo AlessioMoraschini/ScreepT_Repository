@@ -22,17 +22,35 @@ import crypt.manager.ScreeptManagerStub;
 import crypt.steg.ImageCodeDecode;
 
 public class ScreepT_Test {
-
+	
+///////////////////////////////////////////////////////////////////
+////////////////// INITIALIZE VARIABLES FOR TEST //////////////////
+///////////////////////////////////////////////////////////////////
+	
+	// DIRECTORIES 
 	private final String TEMP_DIR = "Resources_Scrypt/temp/";
+	
+	// KEY INITIALIZATION
 	private final String AES_KEY = "ciaosonoalessio";
-	private EncryptDecrypt AEScoder;
-	private ImageCodeDecode STEGcoder;
-	private File srcFile = new File("TEST_FILES/Source_medium.txt");
-	private File codedFileAES = new File("TEST_FILES/AesCrypted_Source.txt");
-	private File codedFolderSTEG = new File("TEST_FILES/STEGcod_Source_medium.txt");
 	private File keyIMG = new File("TEST_FILES/keyIMG_1000.png");
 	
+	// SOURCE FILE - COMMON FOR ALL ENCRIPTION TESTS
+	private File srcFile = new File("TEST_FILES/Source_medium.txt");
+	
+	// ONLY AES CODED SOURCE (decript test)
+	private File codedFileAES = new File("TEST_FILES/AesCrypted_Source.txt");
+	
+	// ONLY STEG CODED SOURCE (decript test)
+	private File codedFolderSTEG = new File("TEST_FILES/STEGcod_Source_medium.txt");
+	
+	// CODERS USED IN initMethod private functions (only for test purpose)
+	private EncryptDecrypt AEScoder;
+	private ImageCodeDecode STEGcoder;	
 	private ScreeptManagerStub screepTManager;
+	
+////////////////////////////////////////////////////////////////
+////////////////////// START TEST METHODS //////////////////////
+////////////////////////////////////////////////////////////////
 	
 	@Test
 	@Ignore
@@ -117,7 +135,7 @@ public class ScreepT_Test {
 	}
 	
 	@Test
-
+	@Ignore
 	public void testOnlySTEGDecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
@@ -126,6 +144,68 @@ public class ScreepT_Test {
 			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
 			
 			assertTrue(screepTManager.getMode().equals(CryptoMode.ONLY_STEG));
+			assertTrue(screepTManager.deCrypt(codedFolderSTEG));
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			for(File result : resultDir.listFiles()) {
+				// destination path - avoid duplicates
+				File out = new File("TEST_FILES/" + result.getName());
+				if (out.exists() && out.isDirectory()) {
+					out.delete();
+				}
+
+				out = FileStuff.renameJavaObjFile(out);
+				assertTrue(result.renameTo(out));
+				//assertTrue(result.isDirectory());
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Ignore
+	public void testCompleteCrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+		
+		try {
+			initCOMPLETE();
+			
+			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
+			
+			assertTrue(screepTManager.getMode().equals(CryptoMode.COMPLETE));
+			assertTrue(screepTManager.crypt(srcFile));
+			
+			File resultDir =new File(TEMP_DIR);
+			
+			for(File result : resultDir.listFiles()) {
+				// destination path - avoid duplicates
+				File out = new File("TEST_FILES/" + result.getName());
+				if (out.exists() && out.isDirectory()) {
+					out.delete();
+				}
+
+				out = FileStuff.renameJavaObjFile(out);
+				assertTrue(result.renameTo(out));
+				//assertTrue(result.isDirectory());
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Ignore
+	public void testCompleteDeCrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+		
+		try {
+			initCOMPLETE();
+			
+			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
+			
+			assertTrue(screepTManager.getMode().equals(CryptoMode.COMPLETE));
 			assertTrue(screepTManager.deCrypt(codedFolderSTEG));
 			
 			File resultDir =new File(TEMP_DIR);
@@ -196,5 +276,11 @@ public class ScreepT_Test {
 	private void initSTEG() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException {
 		STEGcoder = new ImageCodeDecode(keyIMG);
 		screepTManager = new ScreeptManagerStub(STEGcoder);
+	}
+	
+	private void initCOMPLETE() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException {
+		AEScoder = new EncryptDecrypt(AES_KEY);
+		STEGcoder = new ImageCodeDecode(keyIMG);
+		screepTManager = new ScreeptManagerStub(STEGcoder, AEScoder);
 	}
 }

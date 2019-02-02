@@ -37,13 +37,23 @@ public class ImageCodeDecode {
 	//////////////////////
 	
 	// VIA File - CONSTRUCTORS
-		/**
-		 * this constructor needs a valid file image and use default img type set in this class.
-		 * @param keyImg source image for coding
-		 */
+	/**
+	 * this constructor needs a valid file image and use default img type set in this class.
+	 * @param keyImg source image for coding
+	 */
 	public ImageCodeDecode(File keyImgFile) throws IOException {
 		keyImage = ImageIO.read(keyImgFile);
 		outputType = DEFAULT_IMG_TYPE;
+	}
+	
+	/**
+	 * this constructor is meant to create a new instance by reference
+	 * from an existing imgCoder, without affecting the original when created one changes
+	 * @param original
+	 */
+	public ImageCodeDecode (ImageCodeDecode original) {
+		this.keyImage = original.keyImage;
+		this.outputType = original.outputType;
 	}
 	
 	/**
