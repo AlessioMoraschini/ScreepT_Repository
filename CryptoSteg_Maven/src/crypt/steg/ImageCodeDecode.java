@@ -29,7 +29,7 @@ public class ImageCodeDecode {
 	//      FIELDS      //
 	//////////////////////
 	
-	private BufferedImage keyImage;  // rappresenta la password di codifica/decodifica
+	public BufferedImage keyImage;  // rappresenta la password di codifica/decodifica
 	int outputType;
 	
 	//////////////////////

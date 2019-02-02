@@ -43,6 +43,9 @@ public class ScreepT_Test {
 	// ONLY STEG CODED SOURCE (decript test)
 	private File codedFolderSTEG = new File("TEST_FILES/STEGcod_Source_medium.txt");
 	
+	// COMPLETE CODED SOURCE (decript test)
+	private File codedFolderCOMPLETE = new File("TEST_FILES/COMPLETEcod_Source_medium.txt");
+	
 	// CODERS USED IN initMethod private functions (only for test purpose)
 	private EncryptDecrypt AEScoder;
 	private ImageCodeDecode STEGcoder;	
@@ -197,7 +200,7 @@ public class ScreepT_Test {
 	}
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testCompleteDeCrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
@@ -206,7 +209,7 @@ public class ScreepT_Test {
 			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
 			
 			assertTrue(screepTManager.getMode().equals(CryptoMode.COMPLETE));
-			assertTrue(screepTManager.deCrypt(codedFolderSTEG));
+			assertTrue(screepTManager.deCrypt(codedFolderCOMPLETE));
 			
 			File resultDir =new File(TEMP_DIR);
 			

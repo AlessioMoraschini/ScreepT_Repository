@@ -319,7 +319,7 @@ public class ImageWorker {
 	 */
 	public static BufferedImage getPortion(BufferedImage src, int x, int y) {
 
-		if(x<=src.getWidth() && y<src.getHeight()) {
+		if(x<=src.getWidth() && y<=src.getHeight()) {
 			BufferedImage portion = src.getSubimage(0, 0, x, y);
 			return portion;
 		}else {
