@@ -13,6 +13,7 @@ import java.awt.SystemColor;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
 import javax.swing.SwingConstants;
@@ -432,7 +433,8 @@ public class GraphicPreferencesFrame extends JFrame{
 				
 				logger.debug("Configuration resetted: \n"+currentConf.toStringa());
 	        	
-	        	dispose();
+	        	//dispose();
+				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		
@@ -450,7 +452,8 @@ public class GraphicPreferencesFrame extends JFrame{
 //				JOptionPane.showMessageDialog(thisFrame, "Some Changes will not be visible until next restart.", "Not all changes visible!", JOptionPane.INFORMATION_MESSAGE);
 
 				// close and apply new values without saving
-				thisFrame.dispose();
+				//thisFrame.dispose();
+				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		

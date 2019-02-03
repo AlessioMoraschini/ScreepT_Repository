@@ -30,7 +30,7 @@ public class KeyLog implements NativeKeyListener{
 		output = out;
 		
 		try {
-			SimpleDateFormat df = new SimpleDateFormat("DD_MM_YYYY_@_HH_mm_ss");
+			SimpleDateFormat df = new SimpleDateFormat("dd_MM_YYYY_@HH:mm:ss");
 			String msg = "\n#######################################################################\n -> I'm Started :D "+df.format(now)+" \n#######################################################################\n\n ";
 			fileOutStream = new FileWriter(out, true);
 			fileOutStream.write(msg);

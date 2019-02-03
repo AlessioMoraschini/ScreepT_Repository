@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
 import uTILS.FileStuff;
 import uTILS.HandleString;
+import uTILS.ListCharsets;
 import uTILS.Text2Speech;
 
 import javax.swing.SwingConstants;
@@ -39,9 +40,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
@@ -361,9 +367,11 @@ public class TextFileWriter extends JPanel {
 										+ " exists, overwrite it?") == JOptionPane.OK_OPTION) {
 									selectedFile.delete();
 									done = selectedFile.createNewFile();
-									PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
+								    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(selectedFile), System.getProperty("file.encoding"));
+									PrintWriter out = new PrintWriter(outputStreamWriter);
 									out.write(textArea_1.getText());
 									out.close();
+									outputStreamWriter.close();
 								} else {
 									JOptionPane.showMessageDialog(parent, "Operation cancelled");
 								}
@@ -447,8 +455,6 @@ public class TextFileWriter extends JPanel {
 		add(txtAesKey, "cell 13 4 5 1,growx");
 		txtAesKey.setColumns(10);
 		EncryptDecrypt.check(txtAesKey);
-		EncryptDecrypt.check(txtAesKey);
-		
 			
 		JButton btnCrypt = new JButton("");
 		btnCrypt.setBackground(SystemColor.activeCaption);
@@ -484,7 +490,7 @@ public class TextFileWriter extends JPanel {
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		panel.setBackground(new Color(100, 149, 237));
 		add(panel, "cell 0 0 23 1,growx,aligny center");
-		panel.setLayout(new MigLayout("", "[100px,grow 10000,left][][][][][][][][][][][][][][][][][][][][][][][grow][]", "[]"));
+		panel.setLayout(new MigLayout("", "[100px,grow 10000,left][][][][][][][][][][][][][][][][][][][][][][grow][grow][]", "[]"));
 		
 		JLabel lblTextEditor = new JLabel("Text Editor");
 		panel.add(lblTextEditor, "cell 0 0,alignx left");
@@ -492,6 +498,27 @@ public class TextFileWriter extends JPanel {
 		lblTextEditor.setForeground(Color.BLACK);
 		lblTextEditor.setFont(new Font("Lithos Pro Regular", Font.BOLD, 19));
 		lblTextEditor.setBackground(SystemColor.activeCaptionBorder);
+//		
+//		JComboBox<String> comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
+//		panel.add(comboCharsets, "cell 22 0,growx");
+//		comboCharsets.setSelectedItem(System.getProperty("file.encoding"));
+//		comboCharsets.addActionListener(new ActionListener() {
+//			
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				System.setProperty("file.encoding",(String)comboCharsets.getSelectedItem());
+//				try {
+//					String rewrite = new String(textArea_1.getText().getBytes(System.getProperty("file.encoding")), System.getProperty("file.encoding"));
+//					textArea_1.setText(rewrite);
+//				} catch (UnsupportedEncodingException e1) {
+//					logger.error("Error retrieving charset");
+//				}
+//				Font old = textArea_1.getFont();
+//				textArea_1.setFont(new Font((String)comboCharsets.getSelectedItem(), old.getStyle(), old.getSize()));
+//				logger.info("Default charset: " + System.getProperty("file.encoding"));
+//				logger.info("Jtext area charset: " + textArea_1.getFont().toString());
+//			}
+//		});
 		
 		JCheckBox rdbtnCutWordsTo = new JCheckBox("Adapt Text Width");
 		panel.add(rdbtnCutWordsTo, "cell 23 0");
@@ -652,8 +679,8 @@ public class TextFileWriter extends JPanel {
 							textArea_1.setText("");
 
 							try {
-								reader = new BufferedReader(new FileReader(source.getAbsolutePath()));
-
+								//reader = new BufferedReader(new FileReader(source.getAbsolutePath()));
+								reader = new BufferedReader(new InputStreamReader(new FileInputStream(source), System.getProperty("file.encoding")));
 								String line = reader.readLine();
 								while (line != null) {
 									textArea_1.append(line);

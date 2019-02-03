@@ -57,9 +57,11 @@ import org.apache.commons.codec.binary.Base64;
 			if(password.length()==16) {
 				this.password=password;
 			}
-			
-			ivParameterSpec = new IvParameterSpec(password.getBytes("UTF-8"));
-		    secretKeySpec = new SecretKeySpec(password.getBytes("UTF-8"), "AES");
+			// CHANGE UTF-8 TO ISO8859.1 AND EXTRACT 16 BYTES ONLY -> NOW KEY LENGTH IS ALWAYS 16 BYTES EVEN WITH CYRILLIC OR OTHER ENCODINGS
+//			byte[] bytePsw = password.getBytes("UTF-8");
+			byte[] bytePsw = password.getBytes("ISO-8859-1");
+			ivParameterSpec = new IvParameterSpec(bytePsw);
+		    secretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, 16), "AES");
 		    cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
 		}
 		
@@ -73,11 +75,12 @@ import org.apache.commons.codec.binary.Base64;
 		 * 
 		 * @param sourceString
 		 * @return encryptedString
+		 * 
 		 * */
 		public String encrypt(String toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
-		        InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+		        InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
 		    cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
-		    byte[] encrypted = cipher.doFinal(toBeEncrypt.getBytes());
+		    byte[] encrypted = cipher.doFinal(toBeEncrypt.getBytes(System.getProperty("file.encoding")));
 		    return Base64.encodeBase64String(encrypted);
 		}
 		
@@ -111,13 +114,14 @@ import org.apache.commons.codec.binary.Base64;
 		 * 
 		 * @param sourceString
 		 * @return encryptedString
+		 * @throws UnsupportedEncodingException 
 		 * */
 		public String decrypt(String encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
-		        BadPaddingException, IllegalBlockSizeException {
+		        BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
 			
 		    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-		    byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encrypted));
-		    return new String(decryptedBytes);
+		    byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encrypted.getBytes()));
+		    return new String(decryptedBytes,System.getProperty("file.encoding"));
 		}
 		
 		/**

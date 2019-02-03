@@ -103,6 +103,7 @@ public class mainGUI {
 	
 	// the main frame for placing the content
 	volatile private JFrame frmScryptV;
+	
 	// frames that open in new dialog
 	private static GraphicPreferencesFrame panelGuiOptions;
 	private static KeyGenPanel panelKeyGen;

@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import gUI.mainGUI;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
+import uTILS.ListCharsets;
+
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
@@ -29,10 +31,13 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.io.UnsupportedEncodingException;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.JSeparator;
+import javax.swing.JComboBox;
 
 public class GeneralOptionsFrame extends JFrame{
 
@@ -46,16 +51,19 @@ public class GeneralOptionsFrame extends JFrame{
 	private JTextField textFieldUname;
 	private JSpinner spinnerInterval;
 	private JCheckBox chckbxAutosave;
+	private JComboBox<String> comboCharsets;
 	
 	// actual values
 	private static int AUTOSAVE_INTERVAL;
 	private static boolean AUTOSAVE_FLAG;
 	private static String CURRENT_USERNAME;
+	private static String CHARSET;
 	
 	// default values
 	private static int BACKUP_AUTOSAVE_INTERVAL;
 	private static boolean BACKUP_AUTOSAVE_FLAG;
 	private static String BACKUP_CURRENT_USERNAME;
+	private static String BACKUP_CHARSET;
 	
 	// reference to configuration
 	private INItializer currentConfiguration;
@@ -77,16 +85,19 @@ public class GeneralOptionsFrame extends JFrame{
 		AUTOSAVE_INTERVAL = currentConfiguration.getFileOpt().getAutosaveInterval()/1000;
 		AUTOSAVE_FLAG = currentConfiguration.getFileOpt().isFlagAutosave();
 		CURRENT_USERNAME = currentConfiguration.getGenOpt().getUserName();
+		CHARSET = System.getProperty("file.encoding");
 		
 		// initialize default values (by value)
 		BACKUP_AUTOSAVE_INTERVAL = AUTOSAVE_INTERVAL;
 		BACKUP_AUTOSAVE_FLAG = AUTOSAVE_FLAG;
 		BACKUP_CURRENT_USERNAME = new String(CURRENT_USERNAME);
+		BACKUP_CHARSET = new String(CHARSET); 
+		
 		
 		logger.debug("Initialized.");
 		
 		getContentPane().setBackground(new Color(119, 136, 153));
-		getContentPane().setLayout(new MigLayout("", "[:10px:100px,grow][:180px:180px][:80:180,grow][130,grow][90,grow][:10px:100px,grow][:100px:170px][:100px:100px][:75px:75px][:75px:75px][:10px:100px,grow]", "[:50:70px][5][][:15:15px][30][10][][:5:5px][10%,grow,baseline]"));
+		getContentPane().setLayout(new MigLayout("", "[:10px:100px,grow][:110px:110px][:80:180,grow][130,grow][110,grow][:10px:100px,grow][:100px:170px][:100px:100px][:75px:75px][:75px:75px][:10px:100px,grow]", "[:50:70px][5][][:5:5px][30][10][][:5:5px][10%,grow,baseline]"));
 		
 		JPanel panel = new JPanel();
 		panel.setForeground(Color.BLACK);
@@ -148,7 +159,7 @@ public class GeneralOptionsFrame extends JFrame{
 		spinnerInterval.setModel(new SpinnerNumberModel(AUTOSAVE_INTERVAL, INItializer.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600, 1));
 		getContentPane().add(spinnerInterval, "cell 2 2 2 1,growx,aligny center");
 		spinnerInterval.setValue(AUTOSAVE_INTERVAL);
-		if(chckbxAutosave.isSelected()) {
+		if(AUTOSAVE_FLAG) {
 			spinnerInterval.setEnabled(true);
 		}else {
 			spinnerInterval.setEnabled(false);
@@ -158,13 +169,24 @@ public class GeneralOptionsFrame extends JFrame{
 		label_1.setFont(new Font("SansSerif", Font.BOLD, 21));
 		getContentPane().add(label_1, "cell 4 2,alignx center");
 		
-
-
-
+		JLabel lblDefaultCharset = new JLabel("Default Charset");
+		lblDefaultCharset.setFont(new Font("SansSerif", Font.BOLD, 13));
+		getContentPane().add(lblDefaultCharset, "cell 1 4,alignx center");
+		
+		comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
+		getContentPane().add(comboCharsets, "cell 2 4 2 1,growx");
+		comboCharsets.setSelectedItem(CHARSET);
+		comboCharsets.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CHARSET = (String)comboCharsets.getSelectedItem();
+				logger.info("Default charset: " + CHARSET);
+			}
+		});
 		
 		JLabel label = new JLabel("Username");
 		label.setFont(new Font("Tahoma", Font.BOLD, 13));
-		getContentPane().add(label, "cell 1 4,alignx center");
+		getContentPane().add(label, "cell 4 4,alignx center");
 		
 		textFieldUname = new JTextField();
 		textFieldUname.setText(CURRENT_USERNAME);
@@ -173,7 +195,7 @@ public class GeneralOptionsFrame extends JFrame{
 		textFieldUname.setColumns(10);
 		textFieldUname.setBorder(new LineBorder(Color.DARK_GRAY, 3));
 		textFieldUname.setBackground(new Color(224, 255, 255));
-		getContentPane().add(textFieldUname, "cell 2 4 8 1,growx");
+		getContentPane().add(textFieldUname, "cell 6 4 4 1,growx");
 		textFieldUname.getDocument().addDocumentListener(new DocumentListener() {
 			  public void changedUpdate(DocumentEvent e) {
 			  	  resetCurrentIni();
@@ -202,6 +224,13 @@ public class GeneralOptionsFrame extends JFrame{
 	        	// update gui
 	        	updateGUIComponents();		        	
 				
+	        	// reset check box workaround
+	        	if(chckbxAutosave.isSelected()) {
+					spinnerInterval.setEnabled(true);
+				}else {
+					spinnerInterval.setEnabled(false);
+				}
+	        	
 				logger.debug("Configuration resetted.\n");
 	        	
 			}
@@ -226,7 +255,8 @@ public class GeneralOptionsFrame extends JFrame{
 				
 				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
 	        	
-				dispose();
+				//thisFrame.dispose();
+				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		
@@ -240,7 +270,8 @@ public class GeneralOptionsFrame extends JFrame{
 	        	updateGUIComponents();	
 				
 				// close and apply new values without saving () windowclose listener will use updated values
-				dispose();
+				//thisFrame.dispose();
+	        	dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		
@@ -310,6 +341,7 @@ public class GeneralOptionsFrame extends JFrame{
     	textFieldUname.setText(CURRENT_USERNAME);
     	spinnerInterval.setValue(AUTOSAVE_INTERVAL);
     	chckbxAutosave.setSelected(AUTOSAVE_FLAG);
+    	comboCharsets.setSelectedItem(CHARSET);
 	}
 	
 	/**
@@ -320,7 +352,7 @@ public class GeneralOptionsFrame extends JFrame{
 		AUTOSAVE_INTERVAL = BACKUP_AUTOSAVE_INTERVAL;
 		AUTOSAVE_FLAG = BACKUP_AUTOSAVE_FLAG;
 		CURRENT_USERNAME = BACKUP_CURRENT_USERNAME;
-		
+		CHARSET = BACKUP_CHARSET;
 	}
 	
 	/**
@@ -331,11 +363,13 @@ public class GeneralOptionsFrame extends JFrame{
 		AUTOSAVE_INTERVAL = BACKUP_AUTOSAVE_INTERVAL;
 		AUTOSAVE_FLAG = BACKUP_AUTOSAVE_FLAG;
 		CURRENT_USERNAME = BACKUP_CURRENT_USERNAME;
+		CHARSET = BACKUP_CHARSET;
 		
 		// reset INItializer reference currentConfiguration too
 		currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
 		currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
 		currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
+		System.setProperty("file.encoding", CHARSET);
 
 	}
 	
@@ -347,6 +381,7 @@ public class GeneralOptionsFrame extends JFrame{
 		BACKUP_AUTOSAVE_INTERVAL = AUTOSAVE_INTERVAL;
 		BACKUP_AUTOSAVE_FLAG = AUTOSAVE_FLAG;
 		BACKUP_CURRENT_USERNAME = CURRENT_USERNAME;
+		BACKUP_CHARSET = CHARSET;
 	}
 	
 	/**
@@ -357,11 +392,13 @@ public class GeneralOptionsFrame extends JFrame{
 		BACKUP_AUTOSAVE_INTERVAL = AUTOSAVE_INTERVAL;
 		BACKUP_AUTOSAVE_FLAG = AUTOSAVE_FLAG;
 		BACKUP_CURRENT_USERNAME = CURRENT_USERNAME;
+		BACKUP_CHARSET = CHARSET;
 		
 		// set INItializer reference currentConfiguration too
 		currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
 		currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
 		currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
+		System.setProperty("file.encoding", CHARSET);
 
 	}
 }

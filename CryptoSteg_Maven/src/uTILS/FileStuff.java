@@ -3,8 +3,10 @@ package uTILS;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryNotEmptyException;
@@ -361,7 +363,7 @@ public class FileStuff {
     		BufferedReader reader;
 
     		try {
-				reader = new BufferedReader(new FileReader(txtFile.getAbsolutePath()));
+				reader = new BufferedReader(new InputStreamReader(new FileInputStream(txtFile), System.getProperty("file.encoding")));
 
 				String line = reader.readLine();
 				while(line!=null) {

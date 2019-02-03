@@ -341,7 +341,7 @@ public class KeyGenPanel extends JFrame {
 				        				logger.debug(selectedFile.getCanonicalPath()+" Created.");
 							    		progUpdater.getPb().setValue(90);
 					            	}
-					            		   		
+						    		progUpdater.getPb().setValue(100);
 					               	if(done) {
 					    				JOptionPane.showMessageDialog(thisFrame, "File "+selectedFile.getName()+" succesfully saved!");
 					    				currentConfig.getSteganOpt().getImgRecentPath().add(0, selectedFile.getAbsolutePath());
@@ -350,7 +350,6 @@ public class KeyGenPanel extends JFrame {
 					    				}
 							        	textLog.append("\n #### "+selectedFile+" saved!");
 					               	}
-						    		progUpdater.getPb().setValue(100);
 								} catch (Exception e1) {
 						    		progUpdater.getPb().setValue(100);
 									JOptionPane.showMessageDialog(thisFrame, "error Saving the selected file :(");
