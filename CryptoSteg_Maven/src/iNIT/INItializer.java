@@ -64,7 +64,7 @@ public class INItializer {
 			iniReadFile = new Wini(new File(DEFAULT_INI_PATH));
 			iniFile = new Wini(new File(DEFAULT_INI_PATH));
 		} catch (IOException e) {
-			
+			logger.error("Exception happened!", e);
 		}
 		genOpt = new GenericOption();
 		fileOpt = new FileOptions();
@@ -104,6 +104,7 @@ public class INItializer {
 		} catch (NumberFormatException e) {
 			guiOpt.setLogFontSize(guiOpt.DEFAULT_LOG_FONT_SIZE);
 			guiOpt.setMenuFontSize(guiOpt.DEFAULT_MENU_FONT_SIZE);
+			logger.error("Exception happened!", e);
 		}
 		// string values
 		guiOpt.setPreferredStyle(iniReadFile.get(GUI_OPT, "preferredStyle"));
@@ -139,6 +140,7 @@ public class INItializer {
 			
 		} catch (NumberFormatException e) {
 			fileOpt.setAutosaveInterval(fileOpt.DEFAULT_AUTOSAVE_INTERVAL);
+			logger.error("Exception happened!", e);
 		}
 		
 		// LOAD STEGANO OPTIONS
@@ -148,6 +150,7 @@ public class INItializer {
 		} catch (NumberFormatException e) {
 			steganOpt.setDefaultHeight(steganOpt.DEFAULT_HEIGHT);
 			steganOpt.setDefaultWidth(steganOpt.DEFAULT_WIDTH);
+			logger.error("Exception happened!", e);
 		}
 		String pathsListString = iniReadFile.get(STEGA_OPT, "imgKeyRecentPath");
 		if(pathsListString.equals("")) {
@@ -237,7 +240,7 @@ public class INItializer {
 		try {
 			iniFile.store();
 		} catch (IOException e) {
-			logger.error("Error writing the configuration: "+e.getMessage());
+			logger.error("Exception happened!", e);
 		}
 	}
 	
@@ -254,6 +257,7 @@ public class INItializer {
 			OK = true;
 		} catch (IOException e) {
 			OK = false;
+			logger.error("Exception happened!", e);
 		}
 		return OK;
 	}
@@ -271,6 +275,7 @@ public class INItializer {
 			OK = true;
 		} catch (IOException e) {
 			OK = false;
+			logger.error("Exception happened!", e);
 		}
 		return OK;
 	}
@@ -288,6 +293,7 @@ public class INItializer {
 			OK = true;
 		} catch (IOException e) {
 			OK = false;
+			logger.error("Exception happened!", e);
 		}
 		return OK;
 	}

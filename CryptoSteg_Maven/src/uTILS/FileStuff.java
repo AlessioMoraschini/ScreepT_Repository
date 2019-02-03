@@ -166,7 +166,7 @@ public class FileStuff {
 			} else {
 				renameFileUpperFirst(rootDir);
 				for (File file : rootDir.listFiles()) {
-					// se è una directory uso la ricorsione
+					// se ï¿½ una directory uso la ricorsione
 					if (file.isDirectory()) {
 						esit = renameFileUpperFirst(file);
 						upperCaseSubFolder(file);
@@ -261,6 +261,7 @@ public class FileStuff {
 			Integer.parseInt(first);
 		}catch(NumberFormatException e) {
 			first = "0";
+			logger.error("Exception happened!", e);
 		}
 		
 		int counter = 1;
@@ -341,6 +342,7 @@ public class FileStuff {
 				
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(null, "[Error loading the selected file]");
+				logger.error("Exception happened!", e1);
 				return false;
 			}
     
@@ -375,6 +377,7 @@ public class FileStuff {
 				
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(null, "[Error loading the selected file]");
+				logger.error("Exception happened!", e1);
 				return false;
 			}
     		new Thread(new Runnable() {
@@ -385,7 +388,7 @@ public class FileStuff {
 						Thread.sleep(4000);
 						//lblAdvice.setText("");
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("Exception happened!", e);
 					}
 				}
 			}).start();
@@ -417,7 +420,7 @@ public class FileStuff {
 				esit = ImageIO.write(img, "png", destFile);
 				logger.debug("Image written: "+destFile.getAbsolutePath());
 			} catch (IOException e) {
-    			logger.error("Error writing the image: "+e.toString());
+				logger.error("Exception happened!", e);
 			}
 			if (esit) {
 				logger.debug(destFile.getAbsolutePath() + " Created!");
@@ -435,7 +438,7 @@ public class FileStuff {
         				logger.debug("Image written: "+destFile.getAbsolutePath());
         			}
         		} catch (IOException e) {
-        			logger.error("Error writing the image: "+e.toString());
+        			logger.error("Exception happened!", e);
         		}
 //               	updateProgressBar(80, progBar);
     		}else {
@@ -473,7 +476,7 @@ public class FileStuff {
 			try {
 				dest.createNewFile();
 			} catch (IOException e) {
-				logger.error("Error during the file writing");
+				logger.error("Exception happened!", e);
 				esit = false;
 			}
 		}else {
@@ -483,7 +486,7 @@ public class FileStuff {
 				try {
 					dest.createNewFile();
 				} catch (IOException e) {
-					logger.error("Error during the file writing");
+					logger.error("Exception happened!", e);
 					esit = false;
 				}
 			}else {
@@ -496,7 +499,7 @@ public class FileStuff {
 		    logger.debug("File written: "+dest.getAbsolutePath()+"\nSize: " + coolFileSize(dest));
 		    esit = true;
 		} catch (IOException e) {
-		   logger.error("Error during the file writing");
+			logger.error("Exception happened!", e);
 		   esit = false;
 		}
 		
@@ -517,7 +520,7 @@ public class FileStuff {
 				}
 			});
 		} catch (InvocationTargetException | InterruptedException e1) {
-			logger.error("Error updating progressbar: "+e1.toString());
+			logger.error("Exception happened!", e1);
 		}
 	}
 	

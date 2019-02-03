@@ -3,9 +3,8 @@ package crypt.manager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -31,8 +30,10 @@ import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import iNIT.om.AesOption;
+import uTILS.CustomFileComparator;
 import uTILS.FileStuff;
 import uTILS.HandleString;
+import uTILS.ImageWorker;
 
 /**
  * 
@@ -51,14 +52,16 @@ public class ScreeptManager {
 	static Logger logger = Logger.getLogger(ScreeptManager.class);
 	
 	// temp file path - default value after initializing with constructor
-	private String RESULT_PATH = "Resources_Scrypt/temp/";
+	private final String TEMP_PATH = "Resources_Scrypt/temp/";
+	private String RESULT_PATH = TEMP_PATH;
 	
 	// temp crypted/decrypted file name
 	private static String CRYPT_NAME = "temp_crypter_out";
 	private static String DECRYPT_NAME = "temp_decrypter_out";
 	
+	// NB AES_BUFFER SIZE MUST BE THE SAME FOR ENCRIPTION AND DECRIPTION!
 	// this is the size of the buffer used for file IO to avoid memory leak
-	private static int AES_BUFFER_SIZE = 1024*1024*4; // default - 4 MB of buffer
+	private static int AES_BUFFER_SIZE = grantMultipleOfN(1024*1024, 16); // default - 1 MB of buffer - have to multiple of 16
 
 	//////////////////////
 	//      FIELDS      //
@@ -103,7 +106,7 @@ public class ScreeptManager {
 	 * @param imgCod the initialized imageCoder
 	 * @param aesCod the initialized aesCoder
 	 */
-	public ScreeptManager(ImageCodeDecode imgCod, File keyImgFile, EncryptDecrypt aesCod) {
+	public ScreeptManager(ImageCodeDecode imgCod, EncryptDecrypt aesCod) {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = aesCod;
 		imgCoder = imgCod;
@@ -125,7 +128,7 @@ public class ScreeptManager {
 	 *  
 	 * @param imgCod the initialized imageCoder
 	 */
-	public ScreeptManager(ImageCodeDecode imgCod, File keyImgFile) {
+	public ScreeptManager(ImageCodeDecode imgCod) {
 		mode = CryptoMode.ONLY_STEG;
 		aesCoder = null;
 		imgCoder = imgCod;
@@ -183,10 +186,17 @@ public class ScreeptManager {
 				onlyAESCrypt(srcFile);
 				wellDone = true;
 				
-				logger.debug("AES crypt phase - EXITING");
+				progUpdater.getPb().setValue(100);
+				logger.debug("AES Crypt phase - EXITING");
 				
 			// CASE 2 - ONLY STEG
 			}else if(mode.STEG && !mode.AES) {
+				logger.debug("STEG mode detected!");
+
+				// create container folder for result coded images with same name of source file
+				RESULT_PATH = TEMP_PATH+"STEGcod_"+srcFile.getName()+"/";
+				File outFolder = new File(RESULT_PATH);
+				outFolder.mkdir();
 				
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
@@ -199,10 +209,18 @@ public class ScreeptManager {
 				onlySTEGCrypt(srcFile);
 				wellDone = true;
 				
-				logger.debug("STEG crypt phase  - EXITING");
+				progUpdater.getPb().setValue(100);
+				logger.debug("STEG Crypt phase - EXITING");
 				
 			// CASE 3 - COMPLETE MODE
 			}else if (mode.STEG && mode.AES) {
+
+				logger.debug("COMPLETE mode detected!");
+
+				// create container folder for result coded images with same name of source file
+				RESULT_PATH = TEMP_PATH+"COMPLETEcod_"+srcFile.getName()+"/";
+				File outFolder = new File(RESULT_PATH);
+				outFolder.mkdir();
 				
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
@@ -215,7 +233,8 @@ public class ScreeptManager {
 				completeCrypt(srcFile);
 				wellDone = true;
 				
-				logger.debug("AES crypt phase - EXITING");
+				progUpdater.getPb().setValue(100);
+				logger.debug("COMPLETE Crypt phase - EXITING");
 				
 			}	
 		}catch(STEGException e) {
@@ -238,8 +257,8 @@ public class ScreeptManager {
 			resetAfterException(e);
 		}
 			
-		logger.debug("Streams closed, exiting method.");
-		
+		logger.debug("Streams closed, exiting encription.");
+		// TODO check welldone usage
 		return wellDone;
 	}
 	
@@ -255,15 +274,17 @@ public class ScreeptManager {
 	 */
 	public Boolean deCrypt(File srcFile, INItializer currentConf) {
 		
-		buffer = new byte[AES_BUFFER_SIZE];
-
+		// aes source arrays were multiple of 16, so result array each time is 16 byte more cause of aes padding structure
+		// to avoid errors i've to include that bytes during the read plus the IV size
+		buffer = new byte[AES_BUFFER_SIZE+32];
+		
 		progUpdater = new TestUpdateProgress(currentConf);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Starting Decryption...");
 		
 		wellDone = false;
 		
-		logger.debug("Started Decrypt with selected mode: "+mode);
+		logger.debug("Started Decrypting with selected mode: "+mode);
 		
 		emptyTempPath() ;
 		
@@ -281,11 +302,13 @@ public class ScreeptManager {
 				onlyAESDeCrypt(srcFile);
 				wellDone = true;
 				
+				progUpdater.getPb().setValue(100);
 				logger.debug("AES Decrypt phase - EXITING");
 				
 			// CASE 2 - ONLY STEG
 			}else if(mode.STEG && !mode.AES) {
-				
+				logger.debug("STEG mode detected!");
+
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
@@ -294,9 +317,10 @@ public class ScreeptManager {
 				
 				logger.debug("STEG mode detected!");
 
-				//onlySTEGDeCrypt(srcFile);
+				onlySTEGDeCrypt(srcFile);
 				wellDone = true;
 				
+				progUpdater.getPb().setValue(100);
 				logger.debug("STEG Decrypt phase - EXITING");
 				
 			// CASE 3 - COMPLETE MODE
@@ -308,11 +332,12 @@ public class ScreeptManager {
 				progUpdater.getPb().setValue(5);
 				progUpdater.getLabel().setText("COMPLETE mode detected!");
 
-				logger.debug("AES mode detected!");
+				logger.debug("COMPLETE mode detected!");
 				
-				//completeDeCrypt(srcFile);
+				completeDeCrypt(srcFile);
 				wellDone = true;
 				
+				progUpdater.getPb().setValue(100);
 				logger.debug("AES Decrypt phase - EXITING");
 				
 			}	
@@ -320,9 +345,8 @@ public class ScreeptManager {
 			resetAfterException(e);
 		}
 		
-		// TODO scrivi il metodo sulla falsa riga del codificatore: 
-		// adatta a struttura file e usa decrypt corrispondenti alla modalità
-		
+		logger.debug("Streams closed, exiting decription.");
+		// TODO check welldone usage
 		return wellDone;
 	}
 	
@@ -330,24 +354,26 @@ public class ScreeptManager {
 	private void resetAfterException(Exception e) {
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("OOOPS! An error occurred :(");
-		logger.error(Arrays.toString(e.getStackTrace()));
+		logger.error("Exception happened!", e);
 		wellDone = false;
 	}
 	
 	// Function that delete the content of the temporaneous folder.
 	private void emptyTempPath(){
 		// initialize the temp directory reference
-		File temp_folder = new File(RESULT_PATH);
+		File temp_folder = new File(TEMP_PATH);
 		
-		if(temp_folder.exists()) {
+		if(temp_folder.exists() && temp_folder.listFiles().length!=0) {
 			
 			// empty temp folder content files before to start encription
-			boolean deleted = FileStuff.deleteDirContent(temp_folder);
+			boolean deleted = FileStuff.deleteDirContentRecursive(temp_folder);
 			if(deleted) {
-				logger.debug("Temp dir ("+RESULT_PATH+") succesfully emptied :)");
+				logger.debug("Temp dir ("+TEMP_PATH+") succesfully emptied :)");
 			}else {
-				logger.error("Some error occurred deleting "+RESULT_PATH+" content :(");
+				logger.error("Some error occurred deleting "+TEMP_PATH+" content :(");
 			}
+		}else {
+			logger.warn("Temp dir already empty or not existing");
 		}
 	}
 	
@@ -364,7 +390,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		CRYPT_NAME = srcFile.getName();
-		File result = new File(RESULT_PATH+"AesCrypted_"+CRYPT_NAME);
+		File result = new File(TEMP_PATH+"AesCrypted_"+CRYPT_NAME);
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -381,11 +407,9 @@ public class ScreeptManager {
 			logger.error("Error retrieving the AES coder -> null or void passsword!");
 			throw new AESException();
 		}
-		
-		int i = 1;
-		
+
 		progUpdater.getLabel().setText("Crypting "+result.getName());
-		
+		int i=1;
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
@@ -400,7 +424,6 @@ public class ScreeptManager {
 			readFlag = streamIN.read(buffer);
 			
 			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
-			
 			i++;
 		}		
 		
@@ -427,7 +450,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		DECRYPT_NAME = srcFile.getName();
-		File result = new File(RESULT_PATH+"AesDeCrypted_"+DECRYPT_NAME);
+		File result = new File(TEMP_PATH+"AesDeCrypted_"+DECRYPT_NAME);
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -444,11 +467,9 @@ public class ScreeptManager {
 			logger.error("Error retrieving the AES coder -> null or void passsword!");
 			throw new AESException();
 		}
-		
-		int i = 1;
-		
+
 		progUpdater.getLabel().setText("Decrypting - writing to "+result.getName());
-		
+		int i =1;
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
@@ -463,7 +484,6 @@ public class ScreeptManager {
 			readFlag = streamIN.read(buffer);
 			
 			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
-			
 			i++;
 		}		
 		// close streams to avoid memory leaks
@@ -480,9 +500,11 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException {
 
+		// initialize buffer to store one source's byte for every available px of keyImg
 		FileInputStream streamIN = new FileInputStream(srcFile);
 		int STEG_BUFFER_SIZE = w*h;
 		
+		// check availabe bytes from source to avoid filling to buffer_size with null values
 		// set buffer at 1 byte per px of image key if <= than available
 		int available = streamIN.available();
 		if (STEG_BUFFER_SIZE >= available) {
@@ -503,30 +525,23 @@ public class ScreeptManager {
 			throw new STEGException();
 		}
 
-		int i = 1;
-		
-		String oldExtension = FilenameUtils.getExtension(srcFile.getName());
-		// now use png extension 
-		File newExtensionSrc = FileStuff.changeExtension(srcFile, ".png");
-		CRYPT_NAME = newExtensionSrc.getName();
-		
-		// first time overwrite no index.
-		File outFile = new File(RESULT_PATH+oldExtension+"_StegCrypted_"+CRYPT_NAME);
-		
+		int n = 1;
+		File outFile;
 		while(readFlag > 0) {
-
+			
+			// this value will be used during decription to recognize where px value have to be ignored
+			// (cause img is of fixed dimension)
+			
 			// crypt current buffer into image
 			StegOmResult result = imgCoder.stegaCrypt(buffer);
 			BufferedImage imgResult = result.getImgRes();
 			
-			outFile = new File(RESULT_PATH+"_"+result.getnBytesCoded()+"_.png");
-			
-			progUpdater.getLabel().setText("Crypting - writing to "+outFile.getName());
-			
+			// sequence of info stored in name is the following:
+			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
+			outFile = new File(RESULT_PATH+n+"_"+result.getnBytesCoded()+"_.png");
+
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
-			// after first image is created create a new incremental-named file for next image until source byte buffer is ended
-			outFile = FileStuff.renameJavaObjFile(outFile);
 			
 			available = streamIN.available();
 			if (STEG_BUFFER_SIZE >= available) {
@@ -541,9 +556,10 @@ public class ScreeptManager {
 				logger.error("Error ocurred writing "+outFile.getAbsolutePath());
 				throw new IOException();
 			}
+			n++;
 			
-			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
-			i++;
+			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*100);
+
 		}
 		// close streams to avoid memory leaks
 		streamIN.close();
@@ -556,15 +572,13 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
 
-		// separate extension from name of file with .png extension
-		String retrievedExtension = HandleString.retrieveFromNelements(srcFile.getName(), "_", 0, 1);
-		CRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_", 1);
-		// now use retrieved extension from aesCoded Name and recalculate CRYPT_NAME
-		CRYPT_NAME = FileStuff.changeExtension(CRYPT_NAME, retrievedExtension);
+		// second element of folder result name is name of original file
+		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(RESULT_PATH+"StegDeCrypted_"+CRYPT_NAME);		
+		File outFile = new File(TEMP_PATH+"StegDeCrypted_"+DECRYPT_NAME);		
 		
+		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
 		
 		// STEG error types
@@ -576,23 +590,33 @@ public class ScreeptManager {
 			throw new STEGException();
 		}
 
-		int i = 1;
-			
 		progUpdater.getLabel().setText("DeCrypting - writing to "+outFile.getName());
 		
-		// TODO get file array and scan all files till the end and soort them by name
-		File[] cryptedImgList = srcFile.getParentFile().listFiles();
-		Arrays.sort(cryptedImgList);
-		
+		// get file array and scan all files till the end and sort them by first element in name name
+		File[] cryptedImgList = srcFile.listFiles(new FilenameFilter() {
+			// accept only png files
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".png");
+			}
+		});
+		// order files in source folder using first element(see STEGcrypter) with "_" separator
+		Arrays.sort(cryptedImgList, new CustomFileComparator("_", 0));
+
 		for(File iFile : cryptedImgList) {
 			
-			// retrieve images from 0 to n with same name
+			int i=1;
+			
+			// retrieve number of coded bytes into image from file name - the second element in name
+			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
+			
+			// retrieve current image from file
 			BufferedImage codedImg = ImageIO.read(iFile);
 			
-			fout.write(imgCoder.stegaDeCryptToArray(codedImg));
+			fout.write(imgCoder.stegaDeCryptToArray(codedImg, bytesToGet));
 
-			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
-			i++;
+			progUpdater.getPb().setValue(Math.round((float)i/(float)cryptedImgList.length*100));
+
 		}
 		
 		// close streams to avoid memory leaks
@@ -607,9 +631,10 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	// this is method for top security
 	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
-		
+				
 		FileInputStream streamIN = new FileInputStream(srcFile);
-		int STEG_BUFFER_SIZE = w*h;
+		// grant that generated bytes can be all contained in image without loss (consider 16 max for padding and iv space) 
+		int STEG_BUFFER_SIZE = w*h-32;
 		
 		// set buffer at 1 byte per px of image key if <= than available
 		int available = streamIN.available();
@@ -632,7 +657,7 @@ public class ScreeptManager {
 		}
 		
 		// STEG error types
-		if(this.imgCoder == null || this.imgCoder.getKeyImage()==null) {
+		if(imgCoder == null || imgCoder.getKeyImage()==null) {
 			
 			// close streams to avoid memory leaks
 			streamIN.close();
@@ -640,29 +665,29 @@ public class ScreeptManager {
 			throw new STEGException();
 		}
 		
-		File outFile = new File(RESULT_PATH+CRYPT_NAME+"_"+FilenameUtils.getExtension(srcFile.getName())+"_ScreepTed.png");
+		File outFile;
 		
-		int i = 1;
+		int n = 1;
 		
 		while(readFlag > 0) {
 			
-			progUpdater.getLabel().setText("Crypting - writing to "+outFile.getName());
+			progUpdater.getLabel().setText("Crypting "+srcFile.getName());
 
 			// encrypt (AES) current buffer content with aes key string
+			// remember that in case of available%16!=0 -> partial result's size approximate in excess to reach multiple of 16 (that's how AES works)
 			byte[] partialResult = aesCoder.encrypt(buffer);				
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
 			StegOmResult result = imgCoder.stegaCrypt(partialResult);
 			BufferedImage imgResult = result.getImgRes();
 			
-			outFile = new File(result.getnBytesCoded()+"_"+outFile.getName());
+			// sequence of info stored in name is the following:
+			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
+			outFile = new File(RESULT_PATH+n+"_"+result.getnBytesCoded()+"_.png");
 			
 			// write i-image on the file and then calculate new incremental name for next one
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 			
-			// after first image is created create a new incremental-named file for next image until source byte buffer is ended
-			outFile = FileStuff.renameJavaObjFile(outFile);
-
 			available = streamIN.available();
 			if (STEG_BUFFER_SIZE >= available) {
 				buffer = new byte[available];
@@ -677,14 +702,142 @@ public class ScreeptManager {
 				throw new IOException();	
 			}
 			
-			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
-			i++;
+			progUpdater.getPb().setValue(Math.round((float)buffer.length*n/(float)srcFile.length())*100);
+			n++;
 		}		
 		// close streams to avoid memory leaks
 		streamIN.close();
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("Encryption completed! ");
 
+	}
+	
+	// this function implement the decription of several (0-n) images containing crypted values, using the encryption key image.
+	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
+	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
+		
+//		// create a copy by reference of the original coder - THIS WILL USE SAME PORTION USED FOR ENCRYPTION
+//		ImageCodeDecode copyOfImgCoder = new ImageCodeDecode(imgCoder);
+//		// calculate w to grant nï¿½ of pixels%16=0 and use the portion of key image with calculated
+//		// now update key image with portion calculated
+//		copyOfImgCoder.keyImage = (subImgMultOfNpx(imgCoder.getKeyImage(), 16));
+//		
+		// second element of folder result name is name of original file
+		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
+		
+		// this time outfile is one and source can be multiple files incremental from 1st srcFile
+		File outFile = new File(TEMP_PATH+"Complete_DeCrypted_"+DECRYPT_NAME);		
+		
+		// create out Stream setting append mode (do not overwrite every cycle)
+		FileOutputStream fout = new FileOutputStream(outFile, true);
+		
+		// STEG error types
+		if(imgCoder == null || imgCoder.getKeyImage()==null) {
+			
+			// close streams to avoid memory leaks
+			fout.close();
+			logger.error("Error retrieving the STEG decoder -> null coder or keyImage!");
+			throw new STEGException();
+		}
+
+		// TODO get file array and scan all files till the end and sort them by first element in name name
+		File[] cryptedImgList = srcFile.listFiles(new FilenameFilter() {
+			// accept only png files
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".png");
+			}
+		});
+		
+		// order files in source folder using first element(see STEGcrypter) with "_" separator
+		Arrays.sort(cryptedImgList, new CustomFileComparator("_", 0));
+		
+		for(File iFile : cryptedImgList) {
+			
+			// retrieve number of coded bytes into image from file name - the second element in name
+			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
+			
+			// retrieve current image from file
+			BufferedImage codedImg = ImageIO.read(iFile);
+			
+			// decript with steg current coded image
+			byte[] partial_res = imgCoder.stegaDeCryptToArray(codedImg, bytesToGet);
+			
+			// now decript with aes and write to out file
+			fout.write(aesCoder.decrypt(partial_res));
+		}
+		
+		// TODO first save aescoded to file then decript
+		
+		// close streams to avoid memory leaks
+		fout.close();
+	}
+	
+	/**
+	 * This method will grant that the buffer created with w*h will contain all aes coded bytes
+	 * In other words this make sure number of elements in a 2-Dimensional array of W*H elements.
+	 * 
+	 * It updates parameters W and H, making the nï¿½ of pixels multiple of K
+	 * 
+	 * @param W positive number of rows
+	 * @param H positive number of columns
+	 * @param K positive integer divisor to grant [(W*H)%K==0]
+	 * 
+	 * @return new value of W.
+	 */
+	static public int grantAreaMultipleOfN(Integer W, Integer H, int N) {
+
+		if(W==0 || H==0) {
+			return 0;
+		}
+		if(W<N || W*H<N) {
+			return 0;
+		}
+		// Make W or H multiple of N => now if I multiply a number to it, i've chosen Width.
+		// The result it's still multiple of N. the method chooses the nearest number
+		
+		W = (W/N)*N;
+		
+		return W;
+		
+// - V2 -	W*H has to be multiple of N		
+//
+//			Integer tempRes = W*H;
+//			if(tempRes%N != 0) {
+//			tempRes = Math.round(tempRes/N)*N;
+//			// now tempRes divides N, so also 8
+//			// now sub-divide into h and w => W*H= (tempRes^2)/W = 
+//			W = tempRes/4;
+//			H = tempRes/W;
+//		}
+	
+	}
+	
+	/**
+	 * same of the area version, but with only one parameter number to check
+	 * @param number
+	 * @param N
+	 * @return
+	 */
+	static public int grantMultipleOfN(Integer number, int N) {
+		if(number<N) {
+			return 0;
+		}
+		number = (number/N)*N;
+		return number;
+	}
+	
+	/**
+	 * similar to grantAreaMultipleOfN buf this one extract sub-image from source
+	 * granting that resultPixels number is multiple of given N (divisor)
+	 * @param key this is the source image
+	 * @param N this is the divisor to which Nï¿½pixels must be multiple of
+	 * @return sub-image: the extracted image with [new width <= original width] and Nï¿½px%divisor = 0
+	 */
+	static public BufferedImage subImgMultOfNpx(BufferedImage key, int N) {
+		int newWidth = grantAreaMultipleOfN(key.getWidth(), key.getHeight(), N);
+		BufferedImage multNIMG = ImageWorker.getPortion(key, newWidth, key.getHeight());
+		return multNIMG;
 	}
 	
 	//////////////////////
@@ -749,12 +902,13 @@ public class ScreeptManager {
 		return AES_BUFFER_SIZE;
 	}
 
-	/**
-	 * @param bUFFER_SIZE integer representing size of buffer - maximum 2 GB 
-	 */
-	public static void setAES_BUFFER_SIZE(int bUFFER_SIZE) {
-		AES_BUFFER_SIZE = bUFFER_SIZE;
-	}
+//			DISABLED TO KEEP SAFE ENCRIPTION AND DECRIPTION - DIFFERENT SIZE MAKES FILE UNDECRIPTABLE
+//	/**
+//	 * @param bUFFER_SIZE integer representing size of buffer - maximum 2 GB 
+//	 */
+//	public static void setAES_BUFFER_SIZE(int bUFFER_SIZE) {
+//		AES_BUFFER_SIZE = grantMultipleOfN(bUFFER_SIZE, 16);
+//	}
 
 	/**
 	 * @return CRYTPT_NAME this is the name of the default outFile without extension

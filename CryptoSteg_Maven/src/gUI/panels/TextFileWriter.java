@@ -65,6 +65,7 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import gUI.om.SupportedFileTextEditor;
 import gUI.utils.filedialog.TemplatesChoosePanel;
+import gUI.utils.shortcutshandler.TextEditorListener;
 
 import javax.swing.JRadioButton;
 
@@ -88,6 +89,7 @@ public class TextFileWriter extends JPanel {
 	public final String ICON_DECRYPT = "Resources_Scrypt/Icons/Decrypt.png";
 	public final String ICON_SPEAKER = "Resources_Scrypt/Icons/Speaker.png";
 
+	private TextFileWriter currentTextEditor;
 	
 	public Color LBL_ADVICE_COLOR;
 	
@@ -105,8 +107,8 @@ public class TextFileWriter extends JPanel {
 	private int textMargin;
 	
 	// flag to signal if function is already running
-	boolean alreadySaving = false;
-	boolean alreadyLoading = false;
+	public boolean alreadySaving = false;
+	public boolean alreadyLoading = false;
 	
 	// field containing fast crypt text user key, sinchronized from ini file as default
 	private JTextField txtAesKey;
@@ -114,14 +116,17 @@ public class TextFileWriter extends JPanel {
 	// field containing the current object used to speak text
 	Text2Speech objSpeaker;
 	
-	// GUI Objcets
-	private JButton btnSaveTextFile;
-	private JButton btnLoadTextFile;
-	private JButton btnSpeak;
+	// GUI Objects
+	public JButton btnSaveTextFile;
+	public JButton btnLoadTextFile;
+	public JButton btnSpeak;
+	public JTextArea textArea_1;
 	
-	private UndoManager manager;
+	public UndoManager manager;
 	
 	public TextFileWriter(JFrame parent, INItializer currentConfiguration) {
+		
+		currentTextEditor=this;
 		
 		logger.debug("Text writer module selected by user");
 		
@@ -181,7 +186,7 @@ public class TextFileWriter extends JPanel {
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, 18));
 		
 		
-		JTextArea textArea_1 = new JTextArea();
+		textArea_1 = new JTextArea();
 		textArea_1.setFont(new Font("Dialog", Font.PLAIN, 20));
 		textArea.setViewportView(textArea_1);
 		manager = new UndoManager();
@@ -219,6 +224,7 @@ public class TextFileWriter extends JPanel {
 //					AesKey.setText(decrypter.getDispKey());
 				}catch(Exception e) {
 					JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
+					logger.error("Exception happened!", e);
 				}
 				
 			}
@@ -392,6 +398,7 @@ public class TextFileWriter extends JPanel {
 							}
 						} catch (IOException e1) {
 							JOptionPane.showMessageDialog(null, "error Saving the selected file :(");
+							logger.error("Exception happened!", e1);
 						}
 						new Thread(new Runnable() {
 
@@ -401,7 +408,7 @@ public class TextFileWriter extends JPanel {
 									Thread.sleep(4000);
 									lblAdvice.setText("");
 								} catch (InterruptedException e) {
-									e.printStackTrace();
+									logger.error("Exception happened!", e);
 								}
 							}
 						}).start();
@@ -480,6 +487,7 @@ public class TextFileWriter extends JPanel {
 					textArea_1.setText(crypter.encrypt(textArea_1.getText()));
 				}catch(Exception e) {
 					JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
+					logger.error("Exception happened!", e);
 				}	
 			}
 		});
@@ -1042,95 +1050,13 @@ public class TextFileWriter extends JPanel {
 
 	}
 	
+
+	// initialize listener
 	/**
-	 *  KEYBOARD SHORTCUTS
+	 *  KEYBOARD SHORTCUTS - use custom listener
 	 */
 	private KeyEventDispatcher getKeyEventHandler() {
-		return new KeyEventDispatcher() {
-			  @Override
-			  public boolean dispatchKeyEvent(final KeyEvent e) {
-			    if (e.getID() == KeyEvent.KEY_RELEASED) {
-			      
-			    	logger.debug("!!! Catched key input: "+"KeyChar: "+e.getKeyChar()+" - KeyCode: "+e.getKeyCode()+" - ALT: "+e.isAltDown()+" - CTRL: "+e.isControlDown()+" - SHIFT: "+e.isShiftDown());
-			    	
-			    	/**
-			    	 *  UNDO
-			    	 */
-			    	// case CTRL-Z -> undo
-					if (e.getKeyCode()==90 && e.isControlDown() && !e.isShiftDown() && !e.isAltDown()) {
-						if(manager.canUndo()) {
-							manager.undo();
-							
-						}
-					}
-					
-					//case Ctrl-shift-Z -> undoN
-					if (e.getKeyCode()==90 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
-					{
-						if(manager.canUndo()) {
-							for(int i = 0; i<5; i++) {
-								manager.undo();
-							}
-						}
-					}
-					
-					/**
-					 *  REDO
-					 */
-					//case Ctrl-alt-Z -> redo
-					if (e.getKeyCode()==90 && e.isControlDown() && !e.isShiftDown() && e.isAltDown())
-					{
-						if(manager.canRedo()) {
-							manager.redo();
-						}
-					}
-					
-					//case Ctrl-shift-Alt-z -> redoN
-					if (e.getKeyCode()==90 && e.isAltDown() && e.isControlDown() && e.isShiftDown())
-					{
-						if(manager.canRedo()) {
-							for(int i = 0; i<5; i++) {
-								manager.redo();
-							}
-						}
-					}
-					
-					/**
-					 *  SAVE FILE
-					 */
-					//case Ctrl-s -> Save file
-					if ( !alreadySaving && e.getKeyCode()==83 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-					{
-						// simulates click on save button
-						btnSaveTextFile.doClick();
-						
-					}
-					
-					/**
-					 *  LOAD FILE
-					 */
-					//case Ctrl-o -> Load file
-					if (!alreadyLoading && e.getKeyCode()==79 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-					{
-						// simulates click on load button
-						btnLoadTextFile.doClick();
-					}
-					
-					/**
-					 * READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker
-					 */
-					//case Ctrl-Space -> listen/stop playing
-					if (!alreadyLoading && e.getKeyCode()==32 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-					{
-						// simulates click on load button
-						btnSpeak.doClick();
-					}
-			      
-			    }
-			    // Pass the KeyEvent to the next KeyEventDispatcher in the chain
-			    return false;
-			  }
-			};
+		return new TextEditorListener(currentTextEditor); 
 	}
 	
 }

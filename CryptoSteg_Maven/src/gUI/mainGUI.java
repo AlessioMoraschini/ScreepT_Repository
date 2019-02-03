@@ -185,7 +185,7 @@ public class mainGUI {
 						currentConfiguration = new INItializer(new Wini(new File(DEFAULT_INI)));
 						currentConfiguration.readConfigIniFile();
 					} catch (IOException e) {
-						logger.error("Error during loading of file [Resources_Scrypt/CONFIG.ini]");
+						logger.error("Exception happened during loading of file [Resources_Scrypt/CONFIG.ini]!", e);
 					}
 					
 					// initialize style
@@ -197,7 +197,7 @@ public class mainGUI {
 						logger.debug(preferredStyle+" initialized correctly.");
 					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 							| UnsupportedLookAndFeelException e3) {
-						logger.warn(preferredStyle+" not loaded, some error occurred.");
+						logger.error("Exception happened!", e3);
 					}
 					
 					DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
@@ -248,7 +248,7 @@ public class mainGUI {
 										flagImgConv=false;
 									}
 								} catch (InterruptedException e) {
-							        logger.warn("## ## MODULES FLAG UPDATER interrupted.");
+									logger.error("Exception happened!", e);
 								}
 							}
 						}
@@ -275,7 +275,7 @@ public class mainGUI {
 										logger.debug("AUTOSAVE ON: file saved ["
 												+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
 									} catch (Exception e) {
-										logger.error("An error occurred during the saving :(");
+										logger.error("Exception happened!", e);
 									}
 								}
 							}
@@ -338,7 +338,7 @@ public class mainGUI {
 									logger.debug("AUTOSAVE ON: file saved before exiting ["
 											+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
 								} catch (Exception e) {
-									logger.error("An error occurred during the saving :(");
+									logger.error("Exception happened!", e);
 								}
 							}
 					        
@@ -352,7 +352,7 @@ public class mainGUI {
 					
 					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 				} catch (Exception e) {
-					logger.error("Error initializing GUI: "+e.getMessage());
+					logger.error("Exception happened!", e);
 				}
 			}
 		});
@@ -376,7 +376,7 @@ public class mainGUI {
 			frmScryptV.setIconImage(ImageIO.read(new File(RESOURCES_DIR + "icon.jpg")));
 			logger.debug("icon image setted to main window");
 		} catch (IOException e1) {
-			logger.debug("Error setting main window icon image :(");
+			logger.error("Exception happened!", e1);
 		}
 		
 		// TITLE UPDATER - Thread that refreshes every second the username of the title
@@ -465,7 +465,7 @@ public class mainGUI {
 			logger.debug("Background of mainGUI setted: "+RESOURCES_DIR + "Logo-AM_v2.jpg");
 
         } catch (IOException e2) {
-            logger.error("Background - mainGUI: error : "+e2.toString());
+			logger.error("Exception happened!", e2);
         }
 
         frmScryptV.setVisible(true);
@@ -547,6 +547,7 @@ public class mainGUI {
 						currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(frmScryptV,"Error opening: "+DEFAULT_INI+" -> maybe it does not exist?");
+						logger.error("Exception happened!", e);
 					}
 			    	currentConfiguration.readConfigIniFile();
 			    	JOptionPane.showMessageDialog(frmScryptV,"File '"+ currentConfiguration.getIniFile().getFile().getName()+"' loaded!");
@@ -568,7 +569,7 @@ public class mainGUI {
 					currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
 
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					logger.error("Exception happened!", e1);
 				}
 				if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to overwrite default config(standard CONFIG.ini will be lost)? ","Warning - Overwrite INI standard config?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
 					currentConfiguration.writeCurrentConfigIniFile();
@@ -775,7 +776,7 @@ public class mainGUI {
 		mnFilesAndDirectories.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
 		mnVarious.add(mnFilesAndDirectories);
 		
-		// funzionalità per applicare la prima lettera magiuscola a directory e al suo contenuto
+		// funzionalitï¿½ per applicare la prima lettera magiuscola a directory e al suo contenuto
 		JMenuItem mntmTouppercaseDirectory = new JMenuItem("Uppercase First letter - Files&Directories");
 		mnFilesAndDirectories.add(mntmTouppercaseDirectory);
 		mntmTouppercaseDirectory.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
@@ -812,6 +813,7 @@ public class mainGUI {
 		            	}
 		            }catch(Exception exc) {
 						JOptionPane.showMessageDialog(frmScryptV, "Renaming cancelled! \n An error occurred.", "Error Executin' requested Action", JOptionPane.ERROR_MESSAGE);
+						logger.error("Exception happened!", exc);
 		            }
 				}else {
 					JOptionPane.showMessageDialog(frmScryptV, "Renaming cancelled! ", "Skipped by user", JOptionPane.INFORMATION_MESSAGE);
@@ -850,7 +852,7 @@ public class mainGUI {
 			    	contentPane.repaint();
 		            
 		        } catch (IOException e2) {
-		            e2.printStackTrace();
+		        	logger.error("Exception happened!", e2);
 		        }
 		        //frmScryptV.pack();
 			}
@@ -924,15 +926,15 @@ public class mainGUI {
 		    }
 		    DARK_THEME=true;
 		  } catch (ClassNotFoundException e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  } catch (InstantiationException e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  } catch (IllegalAccessException e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  } catch (javax.swing.UnsupportedLookAndFeelException e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  } catch (Exception e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  }
 		  // Show your JFrame
 	}
@@ -964,15 +966,15 @@ public class mainGUI {
 		    }
 			DARK_THEME=false;
 		  } catch (ClassNotFoundException e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  } catch (InstantiationException e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  } catch (IllegalAccessException e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  } catch (javax.swing.UnsupportedLookAndFeelException e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  } catch (Exception e) {
-		    e.printStackTrace();
+			  logger.error("Exception happened!", e);
 		  }
 		  // Show your JFrame
 	}

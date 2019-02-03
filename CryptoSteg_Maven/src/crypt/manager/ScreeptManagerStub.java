@@ -3,15 +3,13 @@ package crypt.manager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
@@ -19,8 +17,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
@@ -28,8 +24,6 @@ import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
 import crypt.steg.STEGException;
 import crypt.steg.StegOmResult;
-import gUI.utils.progressDialog.TestUpdateProgress;
-import iNIT.INItializer;
 import iNIT.om.AesOption;
 import uTILS.CustomFileComparator;
 import uTILS.FileStuff;
@@ -291,7 +285,7 @@ public class ScreeptManagerStub {
 				
 			// CASE 3 - COMPLETE MODE
 			}else if (mode.STEG && mode.AES) {
-				
+
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
@@ -314,7 +308,7 @@ public class ScreeptManagerStub {
 	
 	// Function that set values before to throw exception
 	private void resetAfterException(Exception e) {
-		logger.error(Arrays.toString(e.getStackTrace()));
+		logger.error("Exception happened!", e);
 		wellDone = false;
 	}
 	
@@ -367,7 +361,7 @@ public class ScreeptManagerStub {
 			logger.error("Error retrieving the AES coder -> null or void passsword!");
 			throw new AESException();
 		}
-			
+
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
@@ -533,11 +527,17 @@ public class ScreeptManagerStub {
 			throw new STEGException();
 		}
 
-		// TODO get file array and scan all files till the end and sort them by first element in name name
-		File[] cryptedImgList = srcFile.listFiles();
+		// get file array and scan all files till the end and sort them by first element in name name
+		File[] cryptedImgList = srcFile.listFiles(new FilenameFilter() {
+			// accept only png files
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".png");
+			}
+		});
 		// order files in source folder using first element(see STEGcrypter) with "_" separator
 		Arrays.sort(cryptedImgList, new CustomFileComparator("_", 0));
-		
+
 		for(File iFile : cryptedImgList) {
 			
 			// retrieve number of coded bytes into image from file name - the second element in name
@@ -563,7 +563,7 @@ public class ScreeptManagerStub {
 		
 //		// create a copy by reference of the original coder
 //		ImageCodeDecode copyOfImgCoder = new ImageCodeDecode(imgCoder);
-//		// calculate w to grant n° of pixels%16=0 and use the portion of key image with calculated
+//		// calculate w to grant nï¿½ of pixels%16=0 and use the portion of key image with calculated
 //		// now update key image with portion calculated
 //		copyOfImgCoder.keyImage = (subImgMultOfNpx(imgCoder.getKeyImage(), 16));
 //		
@@ -577,7 +577,7 @@ public class ScreeptManagerStub {
 			buffer = new byte[available];
 		}else {
 			buffer = new byte[STEG_BUFFER_SIZE];
-		}	
+		}
 		
 		// this integer will contain value -1 when file is ended 
 		int readFlag = streamIN.read(buffer);
@@ -648,7 +648,7 @@ public class ScreeptManagerStub {
 		
 //		// create a copy by reference of the original coder - THIS WILL USE SAME PORTION USED FOR ENCRYPTION
 //		ImageCodeDecode copyOfImgCoder = new ImageCodeDecode(imgCoder);
-//		// calculate w to grant n° of pixels%16=0 and use the portion of key image with calculated
+//		// calculate w to grant nï¿½ of pixels%16=0 and use the portion of key image with calculated
 //		// now update key image with portion calculated
 //		copyOfImgCoder.keyImage = (subImgMultOfNpx(imgCoder.getKeyImage(), 16));
 //		
@@ -671,7 +671,14 @@ public class ScreeptManagerStub {
 		}
 
 		// TODO get file array and scan all files till the end and sort them by first element in name name
-		File[] cryptedImgList = srcFile.listFiles();
+		File[] cryptedImgList = srcFile.listFiles(new FilenameFilter() {
+			// accept only png files
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".png");
+			}
+		});
+		
 		// order files in source folder using first element(see STEGcrypter) with "_" separator
 		Arrays.sort(cryptedImgList, new CustomFileComparator("_", 0));
 		
@@ -700,7 +707,7 @@ public class ScreeptManagerStub {
 	 * This method will grant that the buffer created with w*h will contain all aes coded bytes
 	 * In other words this make sure number of elements in a 2-Dimensional array of W*H elements.
 	 * 
-	 * It updates parameters W and H, making the n° of pixels multiple of K
+	 * It updates parameters W and H, making the nï¿½ of pixels multiple of K
 	 * 
 	 * @param W positive number of rows
 	 * @param H positive number of columns
@@ -754,8 +761,8 @@ public class ScreeptManagerStub {
 	 * similar to grantAreaMultipleOfN buf this one extract sub-image from source
 	 * granting that resultPixels number is multiple of given N (divisor)
 	 * @param key this is the source image
-	 * @param N this is the divisor to which N°pixels must be multiple of
-	 * @return sub-image: the extracted image with [new width <= original width] and N°px%divisor = 0
+	 * @param N this is the divisor to which Nï¿½pixels must be multiple of
+	 * @return sub-image: the extracted image with [new width <= original width] and Nï¿½px%divisor = 0
 	 */
 	static public BufferedImage subImgMultOfNpx(BufferedImage key, int N) {
 		int newWidth = grantAreaMultipleOfN(key.getWidth(), key.getHeight(), N);

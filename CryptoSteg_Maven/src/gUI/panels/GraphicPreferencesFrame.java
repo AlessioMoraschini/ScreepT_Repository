@@ -163,8 +163,7 @@ public class GraphicPreferencesFrame extends JFrame{
 //					thisFrame.getContentPane().repaint();
 				} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
 				JOptionPane.showMessageDialog(thisFrame, "Sorry, something went wrong :(", e1.getClass().getName(), JOptionPane.ERROR_MESSAGE);
-				logger.error("Something went wrong loading lookAndFeel :("+Arrays.toString(e1.getStackTrace()));
-				}
+				logger.error("Exception happened!", e1);				}
 		    }
 		});
 		
@@ -241,7 +240,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		    		}
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 						| UnsupportedLookAndFeelException e1) {
-					logger.error("Error setting look and feel :(");
+					logger.error("Exception happened!", e1);
 				}
 				
 				if(!DARK_THEME) {
@@ -321,7 +320,7 @@ public class GraphicPreferencesFrame extends JFrame{
 			    		}
 					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 							| UnsupportedLookAndFeelException e1) {
-						logger.error("Error setting look and feel :(");
+						logger.error("Exception happened!", e1);
 					}
 					
 					if(!DARK_THEME) {
@@ -419,7 +418,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		    		}
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 						| UnsupportedLookAndFeelException e1) {
-					logger.error("Error setting look and feel :(");
+					logger.error("Exception happened!", e1);
 				}
 				
 				if(!DARK_THEME) {
