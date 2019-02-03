@@ -38,7 +38,7 @@ public class ScreepT_Test {
 	private File srcFile = new File("TEST_FILES/Source_medium.txt");
 	
 	// ONLY AES CODED SOURCE (decript test)
-	private File codedFileAES = new File("TEST_FILES/AesCrypted_Source.txt");
+	private File codedFileAES = new File("TEST_FILES/AesCrypted_Source_medium.txt");
 	
 	// ONLY STEG CODED SOURCE (decript test)
 	private File codedFolderSTEG = new File("TEST_FILES/STEGcod_Source_medium.txt");
@@ -69,9 +69,11 @@ public class ScreepT_Test {
 			
 			for(File result : resultDir.listFiles()) {
 				File out = new File("TEST_FILES/" + result.getName());
-				if (out.exists()) {
-					out.delete();
-				}
+// 			remove comment to overwrite result
+//				if (out.exists()) {
+//					out.delete();
+//				}
+				out = FileStuff.renameJavaObjFile(out);
 
 //				out = FileStuff.renameJavaObjFile(out);
 				assertTrue(result.renameTo(out));
@@ -82,7 +84,7 @@ public class ScreepT_Test {
 	}
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testOnlyAESdecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
@@ -200,7 +202,7 @@ public class ScreepT_Test {
 	}
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void testCompleteDeCrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {

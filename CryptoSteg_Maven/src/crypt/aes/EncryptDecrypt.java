@@ -5,6 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Arrays;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -28,6 +31,8 @@ import org.apache.commons.codec.binary.Base64;
 		private IvParameterSpec ivParameterSpec;
 		private SecretKeySpec secretKeySpec;
 		private Cipher cipher;
+		
+		private SecureRandom sRand;
 		
 		//////////////////////
 		//    COSTRUTTORI   //  
@@ -78,16 +83,26 @@ import org.apache.commons.codec.binary.Base64;
 		
 		/**
 		 * Questo metodo si occupa di codificare tramite AES un array di byte passato come parametro. 
-		 * A differenza del metodo precedente ritorna anche un valore in formato byte[]
+		 * A differenza del metodo precedente ritorna anche un valore in formato byte[] 
 		 * 
 		 * @param sourceByte[]
 		 * @return encryptedByte[]
 		 * */
 		public byte[] encrypt(byte[] toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
 		InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-		cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
-		byte[] encrypted = cipher.doFinal(toBeEncrypt);
-		return encrypted;
+			
+			// set random initialization vector
+			byte[] iv = generateIV();
+			ivParameterSpec = new IvParameterSpec(iv);
+			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+			byte[] encrypted = cipher.doFinal(toBeEncrypt);
+			
+			// insert iv at the start of encrypted msg
+		    byte[] result = new byte[iv.length + encrypted.length];
+		    System.arraycopy(iv, 0, result, 0, iv.length);
+		    System.arraycopy(encrypted, 0, result, iv.length, encrypted.length);
+			
+			return result;
 		}
 		
 		/**
@@ -99,6 +114,7 @@ import org.apache.commons.codec.binary.Base64;
 		 * */
 		public String decrypt(String encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
 		        BadPaddingException, IllegalBlockSizeException {
+			
 		    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
 		    byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encrypted));
 		    return new String(decryptedBytes);
@@ -113,8 +129,14 @@ import org.apache.commons.codec.binary.Base64;
 		 * */
 		public byte[] decrypt(byte[] encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
 	    BadPaddingException, IllegalBlockSizeException {
+			
+			// retrieve IV and cripted message
+			byte[] iv = Arrays.copyOfRange(encrypted, 0, 16);
+		    byte[] ciphertext = Arrays.copyOfRange(encrypted, iv.length, encrypted.length);			
+		    ivParameterSpec = new IvParameterSpec(iv);
+		    
 			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-			byte[] decryptedBytes = cipher.doFinal(encrypted);
+			byte[] decryptedBytes = cipher.doFinal(ciphertext);
 			return decryptedBytes;
 		}
 		
@@ -137,6 +159,13 @@ import org.apache.commons.codec.binary.Base64;
 	        	aesKey.setBackground(Color.green);
 				aesKey.setToolTipText("WOW! 16 char is perfect! :D");
 			}	
+		}
+		
+		private byte[] generateIV() {
+			sRand = new SecureRandom();
+			byte[] iv = new byte[16];
+			sRand.nextBytes(iv);
+			return iv;
 		}
 		
 		//////////////////////
@@ -169,10 +198,6 @@ import org.apache.commons.codec.binary.Base64;
 	
 		public String getPassword() {
 			return password;
-		}
-	
-		public void setPassword(String password) {
-			this.password = password;
 		}
 	
 		public String getDisplayedKey() {
