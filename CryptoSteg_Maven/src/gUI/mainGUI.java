@@ -200,6 +200,14 @@ public class mainGUI {
 						logger.error("Exception happened!", e3);
 					}
 					
+					// try to set preferred charset
+					try {
+						System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
+						logger.info("Charset setted: "+ System.getProperty("file.encoding"));
+					} catch (Exception e) {
+						logger.error("Exception happened: Erroring setting charset :(", e);		
+					}
+					
 					DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
 					// adjust general look and feel opt
 					if(DARK_THEME) {

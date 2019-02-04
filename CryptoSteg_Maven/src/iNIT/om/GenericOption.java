@@ -4,20 +4,23 @@ public class GenericOption {
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
 	public final String DEFAULT_USERNAME = "";
+	public final String DEFAULT_CHARSET = "UTF-8";
 	public final boolean DEFAULT_FLAG_AES = true;
 	public final boolean DEFAULT_FLAG_STEG = true;
 
 	// FILEDS
 	private String userName;
-	private boolean flagAes;  // flag che indica se è attiva la fase di codifica/decodifica AES
-	private boolean flagSteg; // flag che indica se è attiva la fase di codifica/decodifica Steganografica
+	private String charset;
+	private boolean flagAes;  // flag che indica se ï¿½ attiva la fase di codifica/decodifica AES
+	private boolean flagSteg; // flag che indica se ï¿½ attiva la fase di codifica/decodifica Steganografica
 	
 	public GenericOption() {
 		
 	}
 	
-	public GenericOption(String user, boolean AES, boolean STEG) {
+	public GenericOption(String user, String chars, boolean AES, boolean STEG) {
 		userName = user;
+		charset = chars;
 		flagAes = AES;
 		flagSteg = STEG;
 	}
@@ -28,6 +31,14 @@ public class GenericOption {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getCharset() {
+		return charset;
+	}
+
+	public void setCharset(String charset) {
+		this.charset = charset;
 	}
 
 	public boolean isFlagAes() {

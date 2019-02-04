@@ -284,6 +284,7 @@ public class GeneralOptionsFrame extends JFrame{
 					
 					// write single values to file ini associated to currentConf
 					currentConf.writeSingleValue(currentConf.GEN_OPT, "userName", CURRENT_USERNAME);
+					currentConf.writeSingleValue(currentConf.GEN_OPT, "charset", CHARSET);
 					currentConf.writeSingleValue(currentConf.FILE_OPT, "flagAutosave", AUTOSAVE_FLAG);
 					currentConf.writeSingleValue(currentConf.FILE_OPT, "autosaveInterval", AUTOSAVE_INTERVAL*1000);
 					
@@ -369,6 +370,7 @@ public class GeneralOptionsFrame extends JFrame{
 		currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
 		currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
 		currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
+		currentConfiguration.getGenOpt().setCharset(CHARSET);
 		System.setProperty("file.encoding", CHARSET);
 
 	}
@@ -398,6 +400,7 @@ public class GeneralOptionsFrame extends JFrame{
 		currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
 		currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
 		currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
+		currentConfiguration.getGenOpt().setCharset(CHARSET);
 		System.setProperty("file.encoding", CHARSET);
 
 	}

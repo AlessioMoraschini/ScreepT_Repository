@@ -1,0 +1,518 @@
+2019-02-03 23:02:20,364 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Feb 03 23:02:20 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-02-03 23:02:20,409 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-02-03 23:02:20,517 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-02-03 23:02:20,536 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-02-03 23:02:20,770 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-02-03 23:02:20,911 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-02-03 23:02:20,920 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-02-03 23:02:20,921 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-02-03 23:02:21,156 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-02-03 23:02:21,158 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-02-03 23:02:21,162 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-02-03 23:02:23,544 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - Text writer module selected by user
+2019-02-03 23:02:23,680 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - ### TEXT WRITER module started
+2019-02-03 23:02:32,711 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 65 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:02:33,255 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:02:35,231 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 65 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:02:35,375 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:02:36,862 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 65 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:02:37,022 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:02:41,162 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:02:45,958 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-02-03 23:02:45,958 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-02-03 23:02:45,958 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Feb 03 23:02:45 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+
+2019-02-03 23:03:14,841 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Feb 03 23:03:14 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-02-03 23:03:14,889 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-02-03 23:03:14,992 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-02-03 23:03:15,007 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-02-03 23:03:15,244 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-02-03 23:03:15,370 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-02-03 23:03:15,379 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-02-03 23:03:15,380 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-02-03 23:03:15,576 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-02-03 23:03:15,578 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-02-03 23:03:15,580 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-02-03 23:03:17,670 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - Text writer module selected by user
+2019-02-03 23:03:17,811 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - ### TEXT WRITER module started
+2019-02-03 23:03:35,581 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:03:37,118 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 65 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:03:37,382 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:03:43,678 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 127 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:03:43,767 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:03:46,702 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:03:50,318 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:03:51,591 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 18 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:03:52,686 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:03:54,359 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:03:55,015 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:03:55,582 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:03:56,119 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 18 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:03:56,479 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:03:56,791 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:03:57,023 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:03:57,863 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:03:58,605 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:03:58,830 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:03:59,726 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:00,326 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:01,711 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: true
+2019-02-03 23:04:03,095 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: true
+2019-02-03 23:04:04,342 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: true
+2019-02-03 23:04:05,959 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:06,022 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 18 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:08,095 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:04:08,871 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:04:09,623 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:04:10,966 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:11,071 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:04:11,671 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:13,039 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:13,551 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:13,927 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:14,278 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:15,334 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:15,582 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:04:17,287 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 18 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:18,358 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:20,527 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:21,030 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 18 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:21,574 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:22,911 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:04:24,286 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:04:24,638 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 8 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:04:26,479 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:   - KeyCode: 32 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:04:27,622 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:27,998 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:28,182 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:28,407 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:28,631 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:28,847 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:29,095 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:30,622 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:04:30,911 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:04:31,158 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:31,695 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:04:31,918 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-03 23:04:32,046 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:32,846 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:33,878 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: true
+2019-02-03 23:04:34,662 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: true
+2019-02-03 23:04:35,134 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: true
+2019-02-03 23:04:35,494 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: true
+2019-02-03 23:04:35,583 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:04:35,702 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: true - CTRL: true - SHIFT: false
+2019-02-03 23:04:35,742 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 18 - ALT: false - CTRL: true - SHIFT: false
+2019-02-03 23:04:35,806 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:04:52,007 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-02-03 23:04:54,128 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-02-03 23:04:54,327 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$5 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-02-03 23:04:55,583 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:04:55,909 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-02-03 23:04:57,643 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-02-03 23:04:57,791 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$5 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-02-03 23:04:59,693 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Initialized.
+2019-02-03 23:05:04,277 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Starting reset of General Options
+2019-02-03 23:05:04,277 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-03 23:05:04,277 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Configuration resetted.
+
+2019-02-03 23:05:09,111 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-03 23:05:09,111 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-02-03 23:05:09,112 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-03 23:05:09,112 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$9 - Configuration resetted.
+
+2019-02-03 23:05:15,584 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:05:17,507 [AWT-EventQueue-0] DEBUG gUI.panels.CrypterPanel - ### ScreepT module started
+2019-02-03 23:05:34,244 [AWT-EventQueue-0] DEBUG gUI.panels.ImageConverterFrame - ## IMAGE CONVERTER started
+2019-02-03 23:05:35,585 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:05:55,585 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:06:08,012 [AWT-EventQueue-0] DEBUG uTILS.FileStuff - NEW NAME: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\###.jpg
+2019-02-03 23:06:08,018 [AWT-EventQueue-0] DEBUG gUI.panels.ImageConverterFrame - Image Loaded!
+2019-02-03 23:06:15,586 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:06:28,317 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: 0 - KeyCode: 96 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:06:29,311 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: 2 - KeyCode: 98 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:06:30,174 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: 0 - KeyCode: 96 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:06:30,446 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: 0 - KeyCode: 96 - ALT: false - CTRL: false - SHIFT: false
+2019-02-03 23:06:35,586 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:06:46,176 [AWT-EventQueue-0] DEBUG uTILS.FileStuff - NEW NAME: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\nano_11.bmp
+2019-02-03 23:06:48,010 [AWT-EventQueue-0] DEBUG uTILS.FileStuff - NEW NAME: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\nano_11.png
+2019-02-03 23:06:51,335 [AWT-EventQueue-0] DEBUG uTILS.FileStuff - NEW NAME: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\nano_11.jpg
+2019-02-03 23:06:55,586 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:07:03,300 [AWT-EventQueue-0] DEBUG uTILS.FileStuff - NEW NAME: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\nano_11.jpg
+2019-02-03 23:07:03,303 [AWT-EventQueue-0] DEBUG gUI.panels.ImageConverterFrame - Image Loaded!
+2019-02-03 23:07:15,587 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:07:27,225 [AWT-EventQueue-0] DEBUG gUI.panels.ImageConverterFrame - Closing gUI.panels.ImageConverterFrame$10
+2019-02-03 23:07:35,587 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:07:47,974 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - ## KEY GENERATOR started
+2019-02-03 23:07:53,016 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - Exit keygen function
+2019-02-03 23:07:53,730 [Thread-13] DEBUG uTILS.ImageWorker - Key generated!
+2019-02-03 23:07:53,748 [Thread-13] DEBUG gUI.panels.ImageGenContainerPanel - Generated Image of 1831Px X 1293Px
+2019-02-03 23:07:55,587 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:08:00,255 [AWT-EventQueue-0] DEBUG gUI.panels.KeyGenPanel - Closing gUI.panels.KeyGenPanel$9
+2019-02-03 23:08:15,588 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:08:35,589 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:08:55,589 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-03 23:09:08,035 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-02-03 23:09:08,035 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-02-03 23:09:08,035 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Feb 03 23:09:08 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+
+2019-02-04 08:31:29,575 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Mon Feb 04 08:31:29 CET 2019
+
+ScrYpt_V1.0 Started now!
+
+##################################################
+
+
+2019-02-04 08:31:29,641 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+
+ ---- AES OPTIONS -----
+
+ AESKEY: ST3G4N0cr1p74009
+  
+ ---- GENERAL OPTIONS -----
+
+ USERNAME: Alessio
+ CHARSET: UTF-8
+ FLAGAES: false
+ FLAGSTEG: true
+  
+ ---- GUI OPTIONS -----
+
+ PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+ MENU_FONT_SIZE: 19
+ LOG_FONT_SIZE: 16
+ DARK_GUI_NUMBUS: false
+  
+ ---- FILE OPTIONS -----
+
+ LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+ LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+ FLAG_AUTOSAVE: false
+ AUTOSAVE_INTERVAL: 600000
+ FLAGOVERWRITE: false 
+  
+ ---- STEGANO OPTIONS -----
+
+ DEFAULT_HEIGHT: 1293
+ DEFAULT_WIDTH: 1831
+ IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+ 
+2019-02-04 08:31:29,803 [AWT-EventQueue-0] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-02-04 08:31:29,804 [AWT-EventQueue-0] INFO  gUI.mainGUI - Charset setted: UTF-8
+2019-02-04 08:31:29,824 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-02-04 08:31:30,200 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-02-04 08:31:30,389 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## GUI components started
+2019-02-04 08:31:30,406 [AWT-EventQueue-0] DEBUG gUI.mainGUI - icon image setted to main window
+2019-02-04 08:31:30,408 [AWT-EventQueue-0] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-02-04 08:31:30,870 [AWT-EventQueue-0] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-02-04 08:31:30,872 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-02-04 08:31:30,875 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-02-04 08:31:50,877 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:32:10,877 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:32:30,877 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:32:50,878 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:32:52,193 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Initialized.
+2019-02-04 08:33:00,089 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Starting reset of General Options
+2019-02-04 08:33:00,090 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-04 08:33:00,093 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Configuration resetted.
+
+2019-02-04 08:33:10,274 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-04 08:33:10,274 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-02-04 08:33:10,275 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-04 08:33:10,275 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$9 - Configuration resetted.
+
+2019-02-04 08:33:10,878 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:33:13,239 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Initialized.
+2019-02-04 08:33:15,362 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-02-04 08:33:15,364 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-04 08:33:15,364 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$9 - Configuration resetted.
+
+2019-02-04 08:33:18,382 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - Text writer module selected by user
+2019-02-04 08:33:18,494 [AWT-EventQueue-0] DEBUG gUI.panels.TextFileWriter - ### TEXT WRITER module started
+2019-02-04 08:33:21,488 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: a - KeyCode: 65 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:21,556 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: l - KeyCode: 76 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:21,655 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: e - KeyCode: 69 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:21,816 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: s - KeyCode: 83 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:21,953 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: s - KeyCode: 83 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,079 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: i - KeyCode: 73 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,163 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: o - KeyCode: 79 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,230 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:   - KeyCode: 32 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,330 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: a - KeyCode: 65 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,452 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: l - KeyCode: 76 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,538 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: e - KeyCode: 69 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,725 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: s - KeyCode: 83 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,844 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: s - KeyCode: 83 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,947 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: i - KeyCode: 73 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:22,975 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: o - KeyCode: 79 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:30,879 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:33:33,569 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-04 08:33:35,377 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-04 08:33:36,115 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 18 - ALT: false - CTRL: true - SHIFT: false
+2019-02-04 08:33:36,534 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: false
+2019-02-04 08:33:37,276 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 90 - ALT: true - CTRL: true - SHIFT: false
+2019-02-04 08:33:37,524 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 18 - ALT: false - CTRL: true - SHIFT: false
+2019-02-04 08:33:37,960 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: false - CTRL: true - SHIFT: false
+2019-02-04 08:33:38,279 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-04 08:33:38,467 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-04 08:33:38,653 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-04 08:33:38,814 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-04 08:33:39,404 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-04 08:33:39,575 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-04 08:33:39,714 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-04 08:33:39,854 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 90 - ALT: false - CTRL: true - SHIFT: true
+2019-02-04 08:33:39,862 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: false - CTRL: true - SHIFT: false
+2019-02-04 08:33:39,899 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 17 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:33:50,880 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:34:00,249 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Initialized.
+2019-02-04 08:34:07,685 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: Big5
+2019-02-04 08:34:10,880 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:34:11,480 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - SAVE => General Options saved.
+2019-02-04 08:34:12,575 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: 
+ - KeyCode: 10 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:13,696 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: Big5
+2019-02-04 08:34:13,697 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-02-04 08:34:13,697 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: Big5
+2019-02-04 08:34:13,697 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$9 - Configuration resetted.
+
+2019-02-04 08:34:18,731 [AWT-EventQueue-0] DEBUG gUI.utils.filedialog.INIfileChoosER - => No File selected! 
+2019-02-04 08:34:18,731 [AWT-EventQueue-0] DEBUG gUI.utils.filedialog.INIfileChoosER - 
+
+
+=> INI CONFIGURATION maintained 
+
+ -> 
+2019-02-04 08:34:18,785 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar:  - KeyCode: 27 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:20,979 [AWT-EventQueue-0] DEBUG gUI.panels.ChargeIniLog - ## CONFIGURATION MANAGER MODULE started
+2019-02-04 08:34:30,881 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:34:36,385 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Initialized.
+2019-02-04 08:34:39,470 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: US-ASCII
+2019-02-04 08:34:39,539 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: U - KeyCode: 85 - ALT: false - CTRL: false - SHIFT: true
+2019-02-04 08:34:39,761 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-16
+2019-02-04 08:34:39,804 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: T - KeyCode: 84 - ALT: false - CTRL: false - SHIFT: true
+2019-02-04 08:34:39,993 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-16
+2019-02-04 08:34:40,075 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: F - KeyCode: 70 - ALT: false - CTRL: false - SHIFT: true
+2019-02-04 08:34:40,308 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 16 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:40,884 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-16BE
+2019-02-04 08:34:40,969 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 40 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:41,214 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-16LE
+2019-02-04 08:34:41,287 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 40 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:41,409 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-32
+2019-02-04 08:34:41,501 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 40 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:41,664 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-32BE
+2019-02-04 08:34:41,750 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 40 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:42,008 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-32LE
+2019-02-04 08:34:42,117 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 40 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:42,367 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-04 08:34:42,454 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: ￿ - KeyCode: 40 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:43,568 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-04 08:34:43,627 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: 
+ - KeyCode: 10 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:50,881 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-02-04 08:34:52,018 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - SAVE => General Options saved.
+2019-02-04 08:34:53,127 [AWT-EventQueue-0] DEBUG gUI.utils.shortcutshandler.TextEditorListener - !!! Catched key input: KeyChar: 
+ - KeyCode: 10 - ALT: false - CTRL: false - SHIFT: false
+2019-02-04 08:34:55,113 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-04 08:34:55,114 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-02-04 08:34:55,114 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-02-04 08:34:55,114 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$9 - Configuration resetted.
+
+2019-02-04 08:35:10,425 [AWT-EventQueue-0] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-02-04 08:35:10,425 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER interrupted.
+2019-02-04 08:35:10,426 [AWT-EventQueue-0] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Mon Feb 04 08:35:10 CET 2019
+
+ScrYpt_V1.0 CLOSED!
+
+##################################################
+
+

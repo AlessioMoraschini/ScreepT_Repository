@@ -94,6 +94,10 @@ public class INItializer {
 		if(genOpt.getUserName().equals("")) {
 			genOpt.setUserName(genOpt.DEFAULT_USERNAME);
 		}
+		genOpt.setCharset(iniReadFile.get(GEN_OPT, "charset"));
+		if(genOpt.getCharset().equals("")) {
+			genOpt.setCharset(genOpt.DEFAULT_CHARSET);
+		}
 		
 		// LOAD GUI OPTIONS
 		
@@ -185,6 +189,7 @@ public class INItializer {
 			genOpt.setUserName(genOpt.DEFAULT_USERNAME);
 		}
 		iniFile.put(GEN_OPT, "userName", genOpt.getUserName());
+		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
 		iniFile.put(GEN_OPT, "flagCodificaAes", genOpt.isFlagAes());
 		iniFile.put(GEN_OPT, "flagCodificaSteg", genOpt.isFlagSteg());
 		
@@ -311,6 +316,7 @@ public class INItializer {
 		result += ("\n ---- AES OPTIONS -----\n\n " + "AESKEY: " + aesOpt.getAesKey()+"\n ");
 		// concat GENERAL OPTIONS
 		result += (" \n ---- GENERAL OPTIONS -----\n\n " + "USERNAME: " + genOpt.getUserName()+"\n ");
+		result += ("CHARSET: " + genOpt.getCharset()+"\n ");
 		result += ("FLAGAES: " + genOpt.isFlagAes()+"\n ");
 		result += ("FLAGSTEG: " + genOpt.isFlagSteg()+"\n ");
 		// concat GUI_OPTION
