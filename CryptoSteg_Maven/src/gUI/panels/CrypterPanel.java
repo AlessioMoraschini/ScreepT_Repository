@@ -1,29 +1,26 @@
 package gUI.panels;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.KeyboardFocusManager;
 
-import javax.swing.JTextPane;
 import javax.swing.JTree;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import crypt.aes.EncryptDecrypt;
 import crypt.manager.CryptoMode;
+import crypt.manager.ScreeptManager;
+import crypt.steg.ImageCodeDecode;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
-import gUI.utils.tree.TreeCellRendererDark;
 import gUI.utils.tree.TreeFileMouseListenerCrypter;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
@@ -39,28 +36,26 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import java.awt.SystemColor;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.swing.SwingConstants;
 import javax.swing.UIDefaults;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTabbedPane;
-import javax.swing.JSeparator;
 import javax.swing.JComboBox;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import javax.swing.JButton;
-import javax.swing.JProgressBar;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -69,71 +64,109 @@ public class CrypterPanel extends JPanel {
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(CrypterPanel.class);
 	
+	// Global reference to current configuration
+	private INItializer currentConf;
+	
+///////////////////////////////////////////////
+		//  GUI-RELATED-OBJECTS   //
+		////////////////////////////
+
+	// text Areas
+	private JTextArea textAreaMain;
+	private JTextArea textAreaLog;
+
+	//Jtree used to represent dictionary
+	private JTree tree;
+
+	// listener used to refresh file options displayed
+	private TreeSelectionListener treeListener;
+	
+	// tree model to specify root
+	private TreeModel treeModel;
+	
+	// Jlabels
+	private JLabel lblSelectedModeStatic;
+	private JLabel lblAesKeyStatic;
+	private JLabel lblSelectedInputStatic;
+	private JLabel lblKeyImageSelected;
+	private JLabel labelFlagCodeReady;
+	private JLabel lblDisplayedKey;
+	private JLabel lblSourceFileStatic;
+	private JLabel lblSrcFileSel;
+	private JLabel lblScreeptHeader;
+
+	// frame of parent GUI-object (main-GUI)
+	private JFrame parentFrame;
+	
+	// panels
+	private JPanel panelContainerKey;
+	private JPanel panelStatus;	
+	private JPanel panelUserActions;
+	private JPanel panelKeyImgDisp;
+	private JPanel panelHeader;
+	
+	// scroll panel for jtree
+	private JScrollPane scrollPaneTree;
+	
+	// other scroll-panels
+	private JScrollPane scrollPaneText;
+	private JScrollPane scrollPaneLog;
+	private JScrollPane scrollPanelTab;
+
+	// info tabbed pane
+	private JTabbedPane tabbedPane;
+	
+	// Buttons
+	private JButton btnDeCreept;
+	private JButton btnCreept;
+	private JButton btnSelectSourceFile;
+	private JButton btnDispoKeyImg;
+
+	// public field representing current Panel
+	public static CrypterPanel thisPanel; 
+	
+	// AES password gui-container
+	private JTextField AESKEYtext;
+	
+	// combobox to select conversion mode
+	private JComboBox comboModeCrypto;
+
+	
+///////////////////////////////////////////////
+		// CODING-RELATED-OBJECTS //
+		////////////////////////////
+	
 	// static path of keyDictionary
 	public static final String KEY_DICTIONARY = KeyGenPanel.KEY_DICTIONARY;
 		
 	// file representing dictionary
 	public static final File KEY_DICTIONARY_FILE = new File(KEY_DICTIONARY);
 		
-	// Global reference to current configuration
-	private INItializer currentConf;
-	
-	// gui elements
-	private JPanel panelHeader;
-	private JLabel lblScreeptHeader;
-	
-	private JTextArea textAreaMain;
-	private JTextArea textAreaLog;
-	
-	private JScrollPane scrollPaneText;
-	private JScrollPane scrollPaneLog;
-	private JScrollPane scrollPanelTab;
-	
-	// info tabbed pane
-	private JTabbedPane tabbedPane;
-
-	//Jtree used to represent dictionary
-	private JTree tree;
-	// scroll panel for jtree
-	private JScrollPane scrollPaneTree;
-
-	// listener used to refresh file options displayed
-	private TreeSelectionListener treeListener;
-	private JPanel panelContainerKey;
-	
-	// tree model to specify root
-	private TreeModel treeModel;
-	private JLabel lblSelectedModeStatic;
-	private JLabel lblAesKeyStatic;
-	private JLabel lblSelectedInputStatic;
-	private JLabel lblKeyImageSelected;
-	private JComboBox comboModeCrypto;
-	private JTextField AESKEYtext;
-	private JLabel labelFlagCodeReady;
-	private JPanel panelStatus;	
-	private JFrame parentFrame;
-	private JPanel panelUserActions;
-	private JLabel lblDisplayedKey;
-	private JPanel panelKeyImgDisp;
-	private JButton btnDeCreept;
-	private JButton btnCreept;
-	private JButton btnSelectSourceFile;
-	private JButton btnDispoKeyImg;
-	private JLabel lblSourceFileStatic;
-	private JLabel lblSrcFileSel;
-	
-	// public field representing current Panel
-	public static CrypterPanel thisPanel; 
+	// TEMP DIRECTORY
+	private final File TEMP_DIR = new File("Resources_Scrypt/temp/");
 	
 	// field representing the source file loaded by user, this is the file to crypt/decrypt
 	private File srcFile;
+	
 	// fied representing the img key file selected by user
 	private File srcKeyImageFile;
+	
+	// CODERS objects - shared by methods
+	private EncryptDecrypt AEScoder;
+	private ImageCodeDecode STEGcoder;	
+	private ScreeptManager screepTManager;
+	
+	// volatile value representing if coders are used
+	private volatile boolean coderUsed = false;
 
 	/**
 	 * Create the application.
 	 */
 	public CrypterPanel(INItializer currentConfiguration, JFrame parent) {
+		
+/////////////////////////////////////////////////////////////////////////////////////
+///////////////					INITIALIZATION    				/////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 		
 		thisPanel = this;
 		
@@ -192,10 +225,16 @@ public class CrypterPanel extends JPanel {
 					// check the aes key and set jtextField color
 					EncryptDecrypt.check(AESKEYtext);
 					// set the label text according to selected mode
-					checkIfReadyToCode();
+					if(checkIfReadyToCode() && !coderUsed) {
+						btnCreept.setEnabled(true);
+						btnDeCreept.setEnabled(true);
+					}else {
+						btnCreept.setEnabled(false);
+						btnDeCreept.setEnabled(false);
+					}
 					
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						logger.error(e.getMessage());
 					}
@@ -207,6 +246,9 @@ public class CrypterPanel extends JPanel {
 		logger.debug("### ScreepT module started");
 	}
 	
+	/**
+	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
+	 */
 	private void initializeHeader() {
 		setLayout(new MigLayout("", "[200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:200,grow 300][70,grow]", "[:40:50px][4px:4px:4px][35][4px][100][140,grow][:10px:10px][280,grow]"));
 		
@@ -229,7 +271,7 @@ public class CrypterPanel extends JPanel {
 		panelUserActions.setBorder(new LineBorder(new Color(0, 0, 0), 0));
 		panelUserActions.setBackground(new Color(100, 149, 237));
 		GridBagLayout gbl_panelUserActions = new GridBagLayout();
-		gbl_panelUserActions.columnWidths = new int[]{0, 0, 0, 290, 0};
+		gbl_panelUserActions.columnWidths = new int[]{0, 0, 0, 350, 0};
 		gbl_panelUserActions.rowHeights = new int[]{30, 0};
 		gbl_panelUserActions.columnWeights = new double[]{1.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		gbl_panelUserActions.rowWeights = new double[]{1.0, Double.MIN_VALUE};
@@ -360,8 +402,10 @@ public class CrypterPanel extends JPanel {
 		btnSelectSourceFile.setForeground(new Color(255, 99, 71));
 		btnSelectSourceFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// read input file with fileChooser
-				File selected = GenericFileChooserDialog.fileRead(thisPanel, currentConf);
+				
+				// read input file or directory with fileChooser
+				File selected = GenericFileChooserDialog.fileAndDirRead(thisPanel, currentConf);
+				
 				if (selected!=null) {
 					srcFile = selected;
 					
@@ -392,6 +436,146 @@ public class CrypterPanel extends JPanel {
 		btnCreept.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 18));
 		btnCreept.setBackground(new Color(139, 0, 0));
 		
+		// CREEPT ACTION LISTENER
+		btnCreept.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// notify that method is running
+				coderUsed=true;
+				
+				// boolean value representing if everything went good
+				boolean resultOK = false;
+				
+				// retrieve keyAES from GUI text-field
+				String aesKey = AESKEYtext.getText();
+				
+				// first recognize selected combo Mode selected
+				CryptoMode mode = (CryptoMode)comboModeCrypto.getSelectedItem();
+				
+				if (srcFile!=null && srcFile.exists()) {
+					
+					// ONLY AES CRYPT
+					if (mode.AES && !mode.STEG) {
+						try {
+							
+							if (srcFile.isFile()) {
+								// get output asking to user
+								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+									
+								if (destinationDir!=null) {
+									
+									if(!destinationDir.exists()) {
+										destinationDir.mkdirs();
+									}
+									
+									screepTManager = initAES(aesKey);
+									resultOK = screepTManager.crypt(srcFile, currentConf);
+									
+									if (resultOK) {
+										for (File result : TEMP_DIR.listFiles()) {
+											FileUtils.moveFileToDirectory(result, destinationDir, true);
+											logger.info(result.getName() + " moved to "+destinationDir.getAbsolutePath()+" :D");
+										} 
+									} 
+								}
+							}
+
+						} catch (UnsupportedEncodingException e1) {
+							logger.error("Encoding Exception happened!", e1);
+						} catch (NoSuchPaddingException e1) {
+							logger.error("Padding Exception happened!", e1);
+						} catch (NoSuchAlgorithmException e1) {
+							logger.error("Algorithm Exception happened!", e1);
+						} catch (IOException e1) {
+							logger.error("Exception occurred moving the result file :(", e1);
+						}
+					
+					// ONLY STEG CRYPT
+					} else if (!mode.AES && mode.STEG) {
+						try {
+							
+							if (srcFile.isFile()) {
+								// get output asking to user
+								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+									
+								if (destinationDir!=null) {
+									
+									if(!destinationDir.exists()) {
+										destinationDir.mkdirs();
+									}
+									
+									screepTManager = initSTEG(srcKeyImageFile);
+									resultOK = screepTManager.crypt(srcFile, currentConf);
+									
+									if (resultOK) {
+										for (File result : TEMP_DIR.listFiles()) {
+											FileUtils.moveToDirectory(result, destinationDir, true);
+											logger.info(result.getName() + " moved to "+destinationDir.getAbsolutePath()+" :D");
+										} 
+									} 
+								}
+							}//END-IF FILE SOURCE CHECK
+
+						} catch (IOException e1) {
+							logger.error("IO Exception happened!", e1);
+						}
+						
+					// COMPLETE CRYPT
+					} else if (mode.AES && mode.STEG) {
+						try {
+							
+							if (srcFile.isFile()) {
+								// get output asking to user
+								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+									
+								if (destinationDir!=null) {
+									
+									if(!destinationDir.exists()) {
+										destinationDir.mkdirs();
+									}
+									
+									screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
+									resultOK = screepTManager.crypt(srcFile, currentConf);
+									
+									if (resultOK) {
+										for (File result : TEMP_DIR.listFiles()) {
+											FileUtils.moveToDirectory(result, destinationDir, true);
+											logger.info(result.getName() + " moved to "+destinationDir.getAbsolutePath()+" :D");
+										} 
+									} 
+								}
+							}//END-IF FILE SOURCE CHECK
+
+						} catch (UnsupportedEncodingException e1) {
+							logger.error("Encoding Exception happened!", e1);
+						} catch (NoSuchPaddingException e1) {
+							logger.error("Padding Exception happened!", e1);
+						} catch (NoSuchAlgorithmException e1) {
+							logger.error("Algorithm Exception happened!", e1);
+						} catch (IOException e1) {
+							logger.error("IO Exception happened!", e1);
+						}
+					} 
+				}
+				
+				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
+				String msg;
+				if(resultOK) {
+					msg = "Operation completed succesfully :)";
+					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
+					logger.info(msg);
+				}else {
+					msg = "Something went wrong :(";
+					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
+					logger.info(msg);
+				}
+				
+				coderUsed=false;
+			}
+		});
+		
 		btnDeCreept = new JButton("DeCreept");
 		GridBagConstraints gbc_btnDeCreept = new GridBagConstraints();
 		gbc_btnDeCreept.fill = GridBagConstraints.BOTH;
@@ -403,8 +587,148 @@ public class CrypterPanel extends JPanel {
 		btnDeCreept.setBorder(new LineBorder(SystemColor.scrollbar, 2));
 		btnDeCreept.setBackground(new Color(139, 0, 0));
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 18));
-		add(scrollPanelTab, "cell 0 4 2 2,grow");
 		
+		// DECREEPT ACTION LISTENER
+		btnDeCreept.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				// notify that method is running
+				coderUsed=true;
+				
+				// boolean value representing if everything went good
+				boolean resultOK = false;
+				
+				// retrieve keyAES from GUI text-field
+				String aesKey = AESKEYtext.getText();
+				
+				// first recognize selected combo Mode selected
+				CryptoMode mode = (CryptoMode)comboModeCrypto.getSelectedItem();
+				
+				if (srcFile!=null && srcFile.exists()) {
+					
+					// ONLY AES DECRYPT
+					if (mode.AES && !mode.STEG) {
+						try {
+							
+							if (srcFile.isFile()) {
+								// get output asking to user
+								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+									
+								if (destinationDir!=null) {
+									
+									if(!destinationDir.exists()) {
+										destinationDir.mkdirs();
+									}
+									
+									screepTManager = initAES(aesKey);
+									resultOK = screepTManager.deCrypt(srcFile, currentConf);
+									
+									if (resultOK) {
+										for (File result : TEMP_DIR.listFiles()) {
+											FileUtils.moveFileToDirectory(result, destinationDir, true);
+											logger.info(result.getName() + " moved to "+destinationDir.getAbsolutePath()+" :D");
+										} 
+									} 
+								}
+							}
+
+						} catch (UnsupportedEncodingException e1) {
+							logger.error("Encoding Exception happened!", e1);
+						} catch (NoSuchPaddingException e1) {
+							logger.error("Padding Exception happened!", e1);
+						} catch (NoSuchAlgorithmException e1) {
+							logger.error("Algorithm Exception happened!", e1);
+						} catch (IOException e1) {
+							logger.error("Exception occurred moving the result file :(", e1);
+						}
+					
+					// ONLY STEG DECRYPT
+					} else if (!mode.AES && mode.STEG) {
+						try {
+							
+							if (srcFile.isDirectory()) {
+								// get output asking to user
+								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+									
+								if (destinationDir!=null) {
+									
+									if(!destinationDir.exists()) {
+										destinationDir.mkdirs();
+									}
+									
+									screepTManager = initSTEG(srcKeyImageFile);
+									resultOK = screepTManager.deCrypt(srcFile, currentConf);
+									
+									if (resultOK) {
+										for (File result : TEMP_DIR.listFiles()) {
+											FileUtils.moveToDirectory(result, destinationDir, true);
+											logger.info(result.getName() + " moved to "+destinationDir.getAbsolutePath()+" :D");
+										} 
+									} 
+								}
+							}//END-IF FILE SOURCE CHECK
+
+						} catch (IOException e1) {
+							logger.error("IO Exception happened!", e1);
+						}
+						
+					// COMPLETE DECRYPT
+					} else if (mode.AES && mode.STEG) {
+						try {
+							
+							if (srcFile.isDirectory()) {
+								// get output asking to user
+								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+									
+								if (destinationDir!=null) {
+									
+									if(!destinationDir.exists()) {
+										destinationDir.mkdirs();
+									}
+									
+									screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
+									resultOK = screepTManager.deCrypt(srcFile, currentConf);
+									
+									if (resultOK) {
+										for (File result : TEMP_DIR.listFiles()) {
+											FileUtils.moveToDirectory(result, destinationDir, true);
+											logger.info(result.getName() + " moved to "+destinationDir.getAbsolutePath()+" :D");
+										} 
+									} 
+								}
+							}//END-IF FILE SOURCE CHECK
+
+						} catch (UnsupportedEncodingException e1) {
+							logger.error("Encoding Exception happened!", e1);
+						} catch (NoSuchPaddingException e1) {
+							logger.error("Padding Exception happened!", e1);
+						} catch (NoSuchAlgorithmException e1) {
+							logger.error("Algorithm Exception happened!", e1);
+						} catch (IOException e1) {
+							logger.error("IO Exception happened!", e1);
+						}
+					} 
+				}
+				
+				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
+				String msg;
+				if(resultOK) {
+					msg = "Operation completed succesfully :)";
+					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
+					logger.info(msg);
+				}else {
+					msg = "Something went wrong :(";
+					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
+					logger.info(msg);
+				}
+				
+				coderUsed=false;
+			}
+		});
+		
+		add(scrollPanelTab, "cell 0 4 2 2,grow");
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBorder(new LineBorder(new Color(0, 0, 0), 0));
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -554,7 +878,7 @@ public class CrypterPanel extends JPanel {
 			// ready!
 			labelFlagCodeReady.setForeground(Color.green);
 			checkEsit += " - ScreepT is Ready to Crypt/Decrypt :) - ";
-		}
+		}		
 		
 		// update label on GUI
 		
@@ -580,6 +904,27 @@ public class CrypterPanel extends JPanel {
 		tree.repaint();
 	}
 
+	private ScreeptManager initAES(String AES_KEY) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
+		AEScoder = new EncryptDecrypt(AES_KEY);
+		screepTManager = new ScreeptManager(AEScoder);
+		return screepTManager;
+	}
+	
+	private ScreeptManager initSTEG(File imageFile) throws IOException {
+		STEGcoder = new ImageCodeDecode(imageFile);
+		screepTManager = new ScreeptManager(STEGcoder);
+		return screepTManager;
+	}
+	
+	private ScreeptManager initCOMPLETE(String AES_KEY, File imageFile) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException {
+		AEScoder = new EncryptDecrypt(AES_KEY);
+		STEGcoder = new ImageCodeDecode(imageFile);
+		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
+		return screepTManager;
+	}
+	
+	// getters and setters
+	
 	public JTextArea getTextAreaMain() {
 		return textAreaMain;
 	}

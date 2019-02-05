@@ -2,7 +2,6 @@ package gUI.panels;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
@@ -11,29 +10,20 @@ import org.ini4j.Wini;
 import gUI.utils.filedialog.INIfileChoosER;
 import iNIT.INItializer;
 
-import java.awt.FlowLayout;
-import java.awt.TextArea;
 import net.miginfocom.swing.MigLayout;
 import uTILS.ImageWorker;
 
-import java.awt.CardLayout;
-import java.awt.Dimension;
-import javax.swing.JScrollBar;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
-import javax.swing.JFileChooser;
 import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
 

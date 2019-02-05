@@ -442,7 +442,7 @@ public class ImageConverterFrame extends JFrame{
 				btnOriginalSize.setEnabled(false);
 				btnStartConversion.setEnabled(false);
 				
-				File selected = GenericFileChooserDialog.fileRead(thisFrame, currentConf);
+				File selected = GenericFileChooserDialog.fileImgRead(thisFrame, currentConf);
 				if (selected!=null) {
 					
 					progUpdater = new TestUpdateProgress(currentConfiguration);
@@ -549,7 +549,7 @@ public class ImageConverterFrame extends JFrame{
 									File selected = FileStuff.renameJavaObjFile(inputImgFile);
 									selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
 							
-									selected = GenericFileChooserDialog.fileWrite(thisFrame, currentConf, selected.getName());									
+									selected = GenericFileChooserDialog.fileImgWrite(thisFrame, currentConf, selected.getName());									
 									
 									if (selected!=null) {
 										
