@@ -1,30 +1,38 @@
 package uTILS;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.text.Format;
+import java.util.Arrays;
 import java.util.Random;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.sound.sampled.spi.FormatConversionProvider;
-import javax.swing.JProgressBar;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import gUI.panels.ImageGenContainerPanel;
-import gUI.utils.progressDialog.TestUpdateProgress;
 
 public class ImageWorker {
 
@@ -34,6 +42,7 @@ public class ImageWorker {
 	//////////////////////
 	// FIELDS //
 	//////////////////////
+	public final static String[] SUPPORTED_EXTENSIONS = ImageIO.getWriterFileSuffixes();
 
 	public final static int MAX_WIDTH_GEN = 4000;
 	public final static int MAX_HEIGHT_GEN = 4000;
@@ -46,7 +55,7 @@ public class ImageWorker {
 	////////////////////// eccezione!
 	//////////////////////
 
-	// nascosto perchè può dare errori, dovrei controllare
+	// nascosto perchï¿½ puï¿½ dare errori, dovrei controllare
 	// che siano valorizzati i campi prima di invocare i metodi
 	//
 	// public ImageWorker() {
@@ -103,7 +112,7 @@ public class ImageWorker {
 		int height = img.getHeight();
 		int width = img.getWidth();
 
-		// matrice rappresentante gli interi getRGB(x,y) -> è il valore del pixel
+		// matrice rappresentante gli interi getRGB(x,y) -> ï¿½ il valore del pixel
 		Integer[][] imgPixels = new Integer[width][height];
 
 		// ciclo di scansione immagine
@@ -150,7 +159,7 @@ public class ImageWorker {
 		int height = img.getHeight();
 		int width = img.getWidth();
 
-		// matrice rappresentante gli interi getRGB(x,y) -> è il valore del pixel
+		// matrice rappresentante gli interi getRGB(x,y) -> ï¿½ il valore del pixel
 		Integer[][] imgPixels = new Integer[width][height];
 
 		// ciclo di scansione immagine
@@ -194,7 +203,7 @@ public class ImageWorker {
 		int height = image.getHeight();
 		int width = image.getWidth();
 
-		// matrice rappresentante gli interi getRGB(x,y) -> è il valore del pixel
+		// matrice rappresentante gli interi getRGB(x,y) -> ï¿½ il valore del pixel
 		Integer[][] imgPixels = new Integer[width][height];
 
 		// ciclo di scansione immagine
@@ -228,7 +237,7 @@ public class ImageWorker {
 		int height = image.getHeight();
 		int width = image.getWidth();
 
-		// matrice rappresentante gli interi getRGB(x,y) -> è il valore del pixel
+		// matrice rappresentante gli interi getRGB(x,y) -> ï¿½ il valore del pixel
 		Integer[][] imgPixels = new Integer[width][height];
 
 		// ciclo di scansione immagine
@@ -472,10 +481,146 @@ public class ImageWorker {
 
 		try (OutputStream os = new FileOutputStream(destination)) {
 			ImageIO.write(srcImage, outExtension, os);
+			os.close();
 			return true;
 		} catch (Exception exp) {
 			return false;
 		}
+	}
+	
+	/**
+	 * method to clone BufferedImage by reference
+	 * 
+	 * @param source image to clone
+	 * 
+	 * @return the cloned BufferedImage
+	 */
+	public static BufferedImage copyImage(BufferedImage source){
+	    BufferedImage b = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
+	    Graphics g = b.getGraphics();
+	    g.drawImage(source, 0, 0, null);
+	    g.dispose();
+	    return b;
+	}
+	
+	/**
+	 * This method compress an image with given params and returns the compressed image as byte array
+	 * 
+	 * @param sourceImage the image to be compressed
+	 * @param extension is the string extension for the output bytes (loseless modes as "png" do not lose information)
+	 * @param factor the compression factor between 0.0 and 1.0
+	 * 
+	 * @author Alessio Moraschini
+	 */
+	public static byte[] compressIMG(BufferedImage sourceImage, String extension, float factor) throws UnsupportedOperationException {
+		
+		ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+			
+		try {
+			// intialize ImageStream to byteArrayStream
+			ImageOutputStream outputStream = ImageIO.createImageOutputStream(compressed);
+			
+			// initialize type use it to create outWriter
+			ImageTypeSpecifier type = ImageTypeSpecifier.createFromBufferedImageType(sourceImage.getType());
+			ImageWriter writer = ImageIO.getImageWriters(type, extension).next();
+			
+			// calculate param for compression
+			ImageWriteParam param = writer.getDefaultWriteParam();
+			if (param.canWriteCompressed()) {
+				param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+				param.setCompressionQuality(factor);
+			}else {
+				// free used in-memory structures
+				compressed.flush();
+				outputStream.flush();
+				outputStream.close();
+				writer.dispose();
+				throw new UnsupportedOperationException();
+			}
+			// now write image to in-memory buffer
+			writer.setOutput(outputStream);
+			writer.write(null, new IIOImage(sourceImage, null, null), param);
+			
+			// free used in-memory structures
+			outputStream.close();
+			writer.dispose();
+			
+		} catch (IOException e) {
+			loGGer.error("Exception happened!", e);
+		}catch (IllegalArgumentException e) {
+			loGGer.error("Error ", e);
+		}
+	
+		return compressed.toByteArray();
+	}
+	
+	/**
+	 * This method compress an image with given params and returns the compressed image as byte array
+	 * 
+	 * @param sourceImage the image to be compressed
+	 * @param extension is the string extension for the output bytes (loseless modes as "png" do not lose information)
+	 * @param factor the compression factor between 0.0 and 1.0
+	 * @param keepMetadata true if want to keep metadata, false to discard metadata
+	 * 
+	 * @author Alessio Moraschini
+	 * 
+	 * @throws IOException 
+	 */
+	public static byte[] compressIMG(File sourceImageFile, String extension, float factor, boolean keepMetadata) throws IOException, UnsupportedOperationException {
+		
+		ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+		BufferedImage srcImage = null;
+		IIOMetadata metadata = null;
+		
+		if(keepMetadata) {
+			try {
+				ImageInputStream in = ImageIO.createImageInputStream(sourceImageFile);
+				srcImage = ImageIO.read(sourceImageFile);
+				ImageReader readerImg = ImageIO.getImageReadersByFormatName(FilenameUtils.getExtension(sourceImageFile.getName())).next();
+				readerImg.setInput(in, true, false);
+				metadata = readerImg.getImageMetadata(0);
+			} catch (IOException e) {
+				loGGer.error("Exception retrieving image: "+sourceImageFile.getAbsolutePath(), e);
+			}
+		}else {
+			srcImage = ImageIO.read(sourceImageFile);
+		}
+		
+		try {
+			// intialize ImageStream to byteArrayStream
+			ImageOutputStream outputStream = ImageIO.createImageOutputStream(compressed);
+			
+			// initialize type use it to create outWriter
+			ImageTypeSpecifier type = ImageTypeSpecifier.createFromBufferedImageType(srcImage.getType());
+			ImageWriter writer = ImageIO.getImageWriters(type, extension).next();
+			
+			// calculate param for compression
+			ImageWriteParam param = writer.getDefaultWriteParam();
+			if (param.canWriteCompressed()) {
+				param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+				param.setCompressionQuality(factor);
+			}else {
+				// free used in-memory structures
+				outputStream.close();
+				writer.dispose();
+				throw new UnsupportedOperationException();
+			}
+			
+			// now write image to in-memory buffer
+			writer.setOutput(outputStream);
+			writer.write(null, new IIOImage(srcImage, null, metadata), param);
+			
+			// free used in-memory structures
+			compressed.flush();
+			outputStream.flush();
+			outputStream.close();
+			writer.dispose();
+			
+		} catch (FileNotFoundException e) {
+			loGGer.error("Exception happened!", e);
+		}
+	
+		return compressed.toByteArray();
 	}
 
 	/////////////////////
