@@ -21,11 +21,9 @@ import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
 import uTILS.FileStuff;
 import uTILS.HandleString;
-import uTILS.ListCharsets;
 import uTILS.Text2Speech;
 
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -37,17 +35,14 @@ import iNIT.INItializer;
 import java.awt.SystemColor;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
@@ -57,7 +52,6 @@ import javax.swing.undo.UndoManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.UIManager;
 import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 import javax.swing.border.LineBorder;
@@ -66,8 +60,6 @@ import javax.swing.DefaultComboBoxModel;
 import gUI.om.SupportedFileTextEditor;
 import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorListener;
-
-import javax.swing.JRadioButton;
 
 public class TextFileWriter extends JPanel {
 

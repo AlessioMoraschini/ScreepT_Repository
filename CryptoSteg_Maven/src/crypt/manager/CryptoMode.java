@@ -7,19 +7,21 @@ package crypt.manager;
  * @author Alessio Moraschini
  *
  */
-public enum CryptoMode {COMPLETE("AS", true, true),
-						ONLY_AES("A", true, false),
-						ONLY_STEG("S", false, true);
+public enum CryptoMode {COMPLETE("AS", true, true, true),
+						ONLY_AES("A", true, false, false),
+						ONLY_STEG("S", false, true, false);
 	
 	private String ID;
 	public boolean AES;
 	public boolean STEG;
+	public boolean COMPL;
 	
 	// private constructor
-	private CryptoMode(String id, boolean aes, boolean steg ) {
+	private CryptoMode(String id, boolean aes, boolean steg, boolean comp) {
 		ID = id;
 		AES = aes;
 		STEG = steg;
+		COMPL = comp;
 	}
 	
 	// GETTER AND SETTERS
@@ -46,6 +48,14 @@ public enum CryptoMode {COMPLETE("AS", true, true),
 
 	public void setSTEG(boolean sTEG) {
 		STEG = sTEG;
+	}
+
+	public boolean isCOMPL() {
+		return COMPL;
+	}
+
+	public void setCOMPL(boolean cOMPL) {
+		COMPL = cOMPL;
 	}
 	
 }

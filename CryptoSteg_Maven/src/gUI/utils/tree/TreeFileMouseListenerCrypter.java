@@ -132,33 +132,9 @@ public class TreeFileMouseListenerCrypter {
 
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
-	        	File thisFile = (File)tree.getLastSelectedPathComponent();
-	        	// if a file is selected
-				if (tree.getLastSelectedPathComponent()!=null) {
-					try {
-						if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")&&ImageIO.read(thisFile)!=null) {
-							String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
-							TEXT_LOG.setText(msg);	
-							imgKeySelected.setForeground(SystemColor.GREEN);
-							imgKeySelected.setText(thisFile.getName());
-							cryptoPanel.setSrcKeyImageFile(thisFile);
-							JOptionPane.showMessageDialog(mainFrame, "Key Image file correctly loaded and selected :)",
-									"Key Image Selected :)", JOptionPane.INFORMATION_MESSAGE);
-						}else {
-							String msg = "File not recognized as Key: \n\n => "+thisFile.getName();
-							TEXT_LOG.append(msg);
-							JOptionPane.showMessageDialog(mainFrame, "Key Image file not recognized :(",
-									"Key Image not recognized :(", JOptionPane.ERROR_MESSAGE);
-						}
-					} catch (IOException e) {
-						String msg = "Some Error Occurred :(";
-						TEXT_LOG.setText(msg);
-						imgKeySelected.setForeground(Color.RED);
-						imgKeySelected.setText(msg);
-						cryptoPanel.setSrcKeyImageFile(null);
-						JOptionPane.showMessageDialog(mainFrame, msg, msg, JOptionPane.ERROR_MESSAGE);
-					}
-				}
+	        	
+	        	useAsKeyImage();
+	        	loadInfo();
 
 	        }
 	    };
@@ -169,49 +145,9 @@ public class TreeFileMouseListenerCrypter {
 
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
-	            if(selectedNode != null){
-					File thisFile = (File)tree.getLastSelectedPathComponent();
-					try {
-						BufferedImage img = ImageIO.read(thisFile);
-						// check if file is an image or not
-						if(img == null ) {
-							throw new IOException();
-						}
-						String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getPath()
-									+"\n\n### Image values ###\n\n Width: "+img.getWidth()+" Px\n Height: "+img.getHeight()+" Px\n\n=> File Size: "
-									+FileStuff.coolFileSize(thisFile)+"\n\n => ImgType: "+img.toString();
-						logger.debug(msg);
-						TEXT_LOG.setText(msg);
-						
-						// read image from file
-						BufferedImage image = ImageIO.read(thisFile);
-						
-						// way with default method from ImageIO
-//					    Image scaledImage = image.getScaledInstance(imgKeyPanel.getWidth()-13, imgKeyPanel.getHeight()-13,Image.SCALE_FAST);
-
-						// way with custom repainter (keep type)
-						Image scaledImage = ImageWorker.scaleImage(image, image.getType(), imgKeyPanel.getWidth(), imgKeyPanel.getHeight());
-					
-						refreshImage(scaledImage);
-						
-						lblKeyDisp.setText("Displayed: "+thisFile.getPath());
-
-						
-					} catch (IOException e1) {
-						String msg = "Error reading the image, something went wrong :(";
-						logger.debug(msg);
-						TEXT_LOG.setText(msg);
-						lblKeyDisp.setText(msg);
-						imgKeyPanel.removeAll();
-						JLabel errorMsg = new JLabel("Error opening file :(");
-						errorMsg.setForeground(Color.white);
-						errorMsg.setHorizontalAlignment(JLabel.CENTER);
-						errorMsg.setVerticalAlignment(JLabel.CENTER);
-						imgKeyPanel.add(errorMsg);
-						imgKeyPanel.revalidate(); 
-						imgKeyPanel.repaint();	
-					}
-	            }
+	        	
+	        	loadInfo();
+	        	
 	        }
 	    };
 	}
@@ -222,25 +158,28 @@ public class TreeFileMouseListenerCrypter {
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
 
-	            TreePath[] treeSelArr = tree.getSelectionPaths();
-	            int i = 0;
-            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(mainFrame, "Are you sure to delete?")==JOptionPane.OK_OPTION){	        		
-		            for(TreePath tp : treeSelArr) {
-//		            	String path = tp.toString().replaceAll("\\]| |\\[|", "").replaceAll(",", File.separator);
-		            	String path = tp.getLastPathComponent().toString();
-		            	File selectedFile = new File(path);
-	//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
-		            	logger.debug(path+" Deleted: "+selectedFile.delete());
-			        }
-		            String msg = "Files deleted!";
-	            	logger.debug(msg+Arrays.toString(treeSelArr));
-	            	TEXT_LOG.setText("\n\n ### Completed ###\n\n  "+msg);
+	            if (!cryptoPanel.coderUsed) {
+					TreePath[] treeSelArr = tree.getSelectionPaths();
+					int i = 0;
+					if (treeSelArr.length != 0 && JOptionPane.showConfirmDialog(mainFrame,
+							"Are you sure to delete?") == JOptionPane.OK_OPTION) {
+						for (TreePath tp : treeSelArr) {
+							//		            	String path = tp.toString().replaceAll("\\]| |\\[|", "").replaceAll(",", File.separator);
+							String path = tp.getLastPathComponent().toString();
+							File selectedFile = new File(path);
+							//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
+							logger.debug(path + " Deleted: " + selectedFile.delete());
+						}
+						String msg = "Files deleted!";
+						logger.debug(msg + Arrays.toString(treeSelArr));
+						TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
 
-	            }else {
-	            	String msg = "Skipped after user request!";
-			    	JOptionPane.showMessageDialog(mainFrame, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
-			    	logger.debug(msg);
-	            }
+					} else {
+						String msg = "Skipped after user request!";
+						JOptionPane.showMessageDialog(mainFrame, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
+						logger.debug(msg);
+					} 
+				}
 
 	        }
 	    };
@@ -276,52 +215,132 @@ public class TreeFileMouseListenerCrypter {
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
 	        	
-				// show input dialog to select the file(gives null in case of no file selected)
-				File selected = directoWrite(TEXT_LOG);
-				
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						
-						if (selected!= null) {
-							progUpdater = new TestUpdateProgress(currentConfig);
-				    		progUpdater.getPb().setValue(5);
-				    		
-							
-							if (!selected.exists()) {
-								selected.mkdirs();
-							}
-							TreePath[] treeSelArr = tree.getSelectionPaths();
-							int i = 0;
-							if (treeSelArr.length != 0) {
-								for (TreePath tp : treeSelArr) {
-									i++;
-									progUpdater.getPb().setValue((int)((float)i/(float)treeSelArr.length));
-									String path = tp.getLastPathComponent().toString();
-									File selectedFile = new File(path);
-				//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
-									FileStuff.copyFile(selectedFile,
-											new File(selected.getAbsolutePath() + "\\" + selectedFile.getName()), false);
-									logger.debug(selectedFile.getName() + " exported to " + selected.getAbsolutePath());
-								}
-								String msg = "Files exported!";
-								logger.debug(msg + Arrays.toString(treeSelArr));
-								TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
-					    		progUpdater.getPb().setValue(100);
-						    	JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!", JOptionPane.INFORMATION_MESSAGE);
+				if (!cryptoPanel.coderUsed) {
+					// show input dialog to select the file(gives null in case of no file selected)
+					File selected = directoWrite(TEXT_LOG);
+					new Thread(new Runnable() {
 
-							} else {
-					    		progUpdater.getPb().setValue(100);
-								String msg = "Skipped after user request!";
-								JOptionPane.showMessageDialog(tree, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
-								logger.debug(msg);
+						@Override
+						public void run() {
+
+							if (selected != null) {
+								progUpdater = new TestUpdateProgress(currentConfig);
+								progUpdater.getPb().setValue(5);
+
+								if (!selected.exists()) {
+									selected.mkdirs();
+								}
+								TreePath[] treeSelArr = tree.getSelectionPaths();
+								int i = 0;
+								if (treeSelArr.length != 0) {
+									for (TreePath tp : treeSelArr) {
+										i++;
+										progUpdater.getPb().setValue((int) ((float) i / (float) treeSelArr.length));
+										String path = tp.getLastPathComponent().toString();
+										File selectedFile = new File(path);
+										//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
+										FileStuff.copyFile(selectedFile,
+												new File(selected.getAbsolutePath() + "\\" + selectedFile.getName()),
+												false);
+										logger.debug(
+												selectedFile.getName() + " exported to " + selected.getAbsolutePath());
+									}
+									String msg = "Files exported!";
+									logger.debug(msg + Arrays.toString(treeSelArr));
+									TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
+									progUpdater.getPb().setValue(100);
+									JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!",
+											JOptionPane.INFORMATION_MESSAGE);
+
+								} else {
+									progUpdater.getPb().setValue(100);
+									String msg = "Skipped after user request!";
+									JOptionPane.showMessageDialog(tree, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
+									logger.debug(msg);
+								}
 							}
 						}
-					}
-				}).start();       	
+					}).start();
+				}       	
 	        }
 		};
+	}
+	
+	private void loadInfo() {
+
+        if(selectedNode != null){
+			File thisFile = (File)tree.getLastSelectedPathComponent();
+			try {
+				BufferedImage img = ImageIO.read(thisFile);
+				// check if file is an image or not
+				if(img == null ) {
+					throw new IOException();
+				}
+				String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getPath()
+							+"\n\n### Image values ###\n\n Width: "+img.getWidth()+" Px\n Height: "+img.getHeight()+" Px\n\n=> File Size: "
+							+FileStuff.coolFileSize(thisFile)+"\n\n => ImgType: "+img.toString();
+				logger.debug(msg);
+				TEXT_LOG.setText(msg);
+				
+				// read image from file
+				BufferedImage image = ImageIO.read(thisFile);
+				
+				// way with default method from ImageIO
+//			    Image scaledImage = image.getScaledInstance(imgKeyPanel.getWidth()-13, imgKeyPanel.getHeight()-13,Image.SCALE_FAST);
+
+				// way with custom repainter (keep type)
+				Image scaledImage = ImageWorker.scaleImage(image, image.getType(), imgKeyPanel.getWidth(), imgKeyPanel.getHeight());
+			
+				refreshImage(scaledImage);
+				
+				lblKeyDisp.setText("Displayed: "+thisFile.getPath());
+
+				
+			} catch (IOException e1) {
+				String msg = "Error reading the image, something went wrong :(";
+				logger.debug(msg);
+				TEXT_LOG.setText(msg);
+				lblKeyDisp.setText(msg);
+				imgKeyPanel.removeAll();
+				JLabel errorMsg = new JLabel("Error opening file :(");
+				errorMsg.setForeground(Color.white);
+				errorMsg.setHorizontalAlignment(JLabel.CENTER);
+				errorMsg.setVerticalAlignment(JLabel.CENTER);
+				imgKeyPanel.add(errorMsg);
+				imgKeyPanel.revalidate(); 
+				imgKeyPanel.repaint();	
+			}
+        }
+	}
+	
+	private void useAsKeyImage() {
+		File thisFile = (File)tree.getLastSelectedPathComponent();
+    	// if a file is selected
+		if (tree.getLastSelectedPathComponent()!=null && !cryptoPanel.coderUsed) {
+			try {
+				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png")&&ImageIO.read(thisFile)!=null) {
+					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
+					TEXT_LOG.setText(msg);	
+					imgKeySelected.setForeground(SystemColor.GREEN);
+					imgKeySelected.setText(thisFile.getName());
+					cryptoPanel.setSrcKeyImageFile(thisFile);
+					JOptionPane.showMessageDialog(mainFrame, "Key Image file correctly loaded and selected :)",
+							"Key Image Selected :)", JOptionPane.INFORMATION_MESSAGE);
+				}else {
+					String msg = "File not recognized as Key: \n\n => "+thisFile.getName();
+					TEXT_LOG.append(msg);
+					JOptionPane.showMessageDialog(mainFrame, "Key Image file not recognized :(",
+							"Key Image not recognized :(", JOptionPane.ERROR_MESSAGE);
+				}
+			} catch (IOException e) {
+				String msg = "Some Error Occurred :(";
+				TEXT_LOG.setText(msg);
+				imgKeySelected.setForeground(Color.RED);
+				imgKeySelected.setText(msg);
+				cryptoPanel.setSrcKeyImageFile(null);
+				JOptionPane.showMessageDialog(mainFrame, msg, msg, JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 	/**

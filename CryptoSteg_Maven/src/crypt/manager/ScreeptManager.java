@@ -51,8 +51,9 @@ public class ScreeptManager {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ScreeptManager.class);
 	
-	// temp file path - default value after initializing with constructor
 	private final String TEMP_PATH = "Resources_Scrypt/temp/";
+	// temp file path - default value after initializing with constructor
+	private String OUT_PATH = TEMP_PATH;
 	private String RESULT_PATH = TEMP_PATH;
 	
 	// temp crypted/decrypted file name
@@ -81,6 +82,9 @@ public class ScreeptManager {
 	private volatile TestUpdateProgress progUpdater;
 	
 	boolean wellDone = false;
+	
+	// TODO use this to keep memory of written files
+	public ArrayList<String> writtenPathsList = new ArrayList<String>();
 		
 	//////////////////////
 	//    CONSTRUCTOR   //
@@ -170,8 +174,9 @@ public class ScreeptManager {
 		
 		logger.debug("Started Crypt with selected mode: "+mode);
 
-		emptyTempPath() ;
-			
+		if(OUT_PATH.equals(TEMP_PATH)) {
+			emptyTempPath() ;
+		}
 		// initialize method according to selected mode:
 		
 		try {
@@ -194,8 +199,8 @@ public class ScreeptManager {
 				logger.debug("STEG mode detected!");
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = TEMP_PATH+"STEGcod_"+srcFile.getName()+"/";
-				File outFolder = new File(RESULT_PATH);
+				RESULT_PATH = OUT_PATH+"STEGcod_"+srcFile.getName()+"/";
+				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
 				
 				w = this.imgCoder.getKeyImage().getWidth();
@@ -218,8 +223,8 @@ public class ScreeptManager {
 				logger.debug("COMPLETE mode detected!");
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = TEMP_PATH+"COMPLETEcod_"+srcFile.getName()+"/";
-				File outFolder = new File(RESULT_PATH);
+				RESULT_PATH = OUT_PATH+"COMPLETEcod_"+srcFile.getName()+"/";
+				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
 				
 				w = this.imgCoder.getKeyImage().getWidth();
@@ -274,7 +279,7 @@ public class ScreeptManager {
 	 */
 	public Boolean deCrypt(File srcFile, INItializer currentConf) {
 		
-		// aes source arrays were multiple of 16, so result array each time is 16 byte more cause of aes padding structure
+		// aes source arrays were multiple of 16, so result array each time is 32 byte more cause of aes padding structure and random IV size
 		// to avoid errors i've to include that bytes during the read plus the IV size
 		buffer = new byte[AES_BUFFER_SIZE+32];
 		
@@ -286,7 +291,9 @@ public class ScreeptManager {
 		
 		logger.debug("Started Decrypting with selected mode: "+mode);
 		
-		emptyTempPath() ;
+		if(OUT_PATH.equals(TEMP_PATH)) {
+			emptyTempPath() ;
+		}
 		
 		// initialize method according to selected mode:
 		
@@ -361,16 +368,16 @@ public class ScreeptManager {
 	// Function that delete the content of the temporaneous folder.
 	private void emptyTempPath(){
 		// initialize the temp directory reference
-		File temp_folder = new File(TEMP_PATH);
+		File temp_folder = new File(OUT_PATH);
 		
 		if(temp_folder.exists() && temp_folder.listFiles().length!=0) {
 			
 			// empty temp folder content files before to start encription
 			boolean deleted = FileStuff.deleteDirContentRecursive(temp_folder);
 			if(deleted) {
-				logger.debug("Temp dir ("+TEMP_PATH+") succesfully emptied :)");
+				logger.debug("Temp dir ("+OUT_PATH+") succesfully emptied :)");
 			}else {
-				logger.error("Some error occurred deleting "+TEMP_PATH+" content :(");
+				logger.error("Some error occurred deleting "+OUT_PATH+" content :(");
 			}
 		}else {
 			logger.warn("Temp dir already empty or not existing");
@@ -381,16 +388,20 @@ public class ScreeptManager {
 	private void onlyAESCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 		
 		FileInputStream streamIN = new FileInputStream(srcFile);
-		int available = streamIN.available();
+//		int available = streamIN.available();
+		
+		// calculate available avoiding overflow
+		long progN = 0;
+		long available = getAvailable(srcFile, progN);
 		if (AES_BUFFER_SIZE >= available) {
-			buffer = new byte[available];
+			buffer = new byte[(int)available];
 		}
 		
 		// this integer will contain value -1 when file is ended 
 		int readFlag = streamIN.read(buffer);
 		
 		CRYPT_NAME = srcFile.getName();
-		File result = new File(TEMP_PATH+"AesCrypted_"+CRYPT_NAME);
+		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+"AesCrypted_"+CRYPT_NAME));
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -410,6 +421,8 @@ public class ScreeptManager {
 
 		progUpdater.getLabel().setText("Crypting "+result.getName());
 		int i=1;
+
+		
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
@@ -417,14 +430,19 @@ public class ScreeptManager {
 			outWriter.write(partialResult);
 			outWriter.flush();
 			// load next bufferSize bytes from srcFile
-			available = streamIN.available();
+			//available = streamIN.available(); 
+			
+			progN += buffer.length; 
+			available = getAvailable(srcFile, progN);
+			
 			if (AES_BUFFER_SIZE >= available) {
-				buffer = new byte[available];
+				buffer = new byte[(int)available];
 			}
 			readFlag = streamIN.read(buffer);
 			
-			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
+			progUpdater.getPb().setValue((int)(((float)buffer.length/(float)srcFile.length())*i*100));
 			i++;
+			
 		}		
 		
 		// close streams to avoid memory leaks
@@ -441,16 +459,19 @@ public class ScreeptManager {
 	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 		
 		FileInputStream streamIN = new FileInputStream(srcFile);
-		int available = streamIN.available();
+		//int available = streamIN.available();
+		
+		long progN = 0;
+		long available = getAvailable(srcFile, progN);
 		if (AES_BUFFER_SIZE >= available) {
-			buffer = new byte[available];
+			buffer = new byte[(int)available];
 		}
 		
 		// this integer will contain value -1 when file is ended 
 		int readFlag = streamIN.read(buffer);
 		
 		DECRYPT_NAME = srcFile.getName();
-		File result = new File(TEMP_PATH+"AesDeCrypted_"+DECRYPT_NAME);
+		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+"AesDeCrypted_"+DECRYPT_NAME));
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -469,7 +490,9 @@ public class ScreeptManager {
 		}
 
 		progUpdater.getLabel().setText("Decrypting - writing to "+result.getName());
+		
 		int i =1;
+		
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
@@ -477,13 +500,17 @@ public class ScreeptManager {
 			outWriter.write(partialResult);
 			
 			// load next bufferSize bytes from srcFile
-			available = streamIN.available();
+			// available = streamIN.available();
+			
+			progN += buffer.length; 
+			available = getAvailable(srcFile, progN);
+			
 			if (AES_BUFFER_SIZE >= available) {
-				buffer = new byte[available];
+				buffer = new byte[(int)available];
 			}
 			readFlag = streamIN.read(buffer);
 			
-			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*i*100);
+			progUpdater.getPb().setValue((int)(((float)buffer.length/(float)srcFile.length())*i*100));
 			i++;
 		}		
 		// close streams to avoid memory leaks
@@ -506,9 +533,11 @@ public class ScreeptManager {
 		
 		// check availabe bytes from source to avoid filling to buffer_size with null values
 		// set buffer at 1 byte per px of image key if <= than available
-		int available = streamIN.available();
+		//int available = streamIN.available();
+		long progN = 0;
+		long available = getAvailable(srcFile, progN);
 		if (STEG_BUFFER_SIZE >= available) {
-			buffer = new byte[available];
+			buffer = new byte[(int)available];
 		}else {
 			buffer = new byte[STEG_BUFFER_SIZE];
 		}
@@ -543,9 +572,12 @@ public class ScreeptManager {
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
 			
-			available = streamIN.available();
+			//available = streamIN.available();
+			progN += buffer.length; 
+			available = getAvailable(srcFile, progN);
+			
 			if (STEG_BUFFER_SIZE >= available) {
-				buffer = new byte[available];
+				buffer = new byte[(int)available];
 			}
 			readFlag = streamIN.read(buffer);
 			
@@ -558,7 +590,7 @@ public class ScreeptManager {
 			}
 			n++;
 			
-			progUpdater.getPb().setValue(Math.round((float)buffer.length/(float)srcFile.length())*100);
+			progUpdater.getPb().setValue((int)(((float)buffer.length/srcFile.length())*n*100));
 
 		}
 		// close streams to avoid memory leaks
@@ -576,7 +608,7 @@ public class ScreeptManager {
 		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(TEMP_PATH+"StegDeCrypted_"+DECRYPT_NAME);		
+		File outFile = new File(OUT_PATH+"StegDeCrypted_"+DECRYPT_NAME);		
 		
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
@@ -602,10 +634,10 @@ public class ScreeptManager {
 		});
 		// order files in source folder using first element(see STEGcrypter) with "_" separator
 		Arrays.sort(cryptedImgList, new CustomFileComparator("_", 0));
-
+		
+		int i=1;
+		
 		for(File iFile : cryptedImgList) {
-			
-			int i=1;
 			
 			// retrieve number of coded bytes into image from file name - the second element in name
 			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
@@ -615,8 +647,9 @@ public class ScreeptManager {
 			
 			fout.write(imgCoder.stegaDeCryptToArray(codedImg, bytesToGet));
 
-			progUpdater.getPb().setValue(Math.round((float)i/(float)cryptedImgList.length*100));
-
+			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
+			
+			i++;
 		}
 		
 		// close streams to avoid memory leaks
@@ -637,7 +670,12 @@ public class ScreeptManager {
 		int STEG_BUFFER_SIZE = w*h-32;
 		
 		// set buffer at 1 byte per px of image key if <= than available
-		int available = streamIN.available();
+		//int available = streamIN.available();
+		long srcSize = srcFile.length();
+		if(srcSize>Integer.MAX_VALUE)
+			srcSize = Integer.MAX_VALUE;
+		int available = (int)srcSize;
+		
 		if (STEG_BUFFER_SIZE >= available) {
 			buffer = new byte[available];
 		}else {
@@ -668,6 +706,7 @@ public class ScreeptManager {
 		File outFile;
 		
 		int n = 1;
+		int progN = 0;
 		
 		while(readFlag > 0) {
 			
@@ -688,7 +727,13 @@ public class ScreeptManager {
 			// write i-image on the file and then calculate new incremental name for next one
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 			
-			available = streamIN.available();
+			//available = streamIN.available();
+			progN += buffer.length; 
+			srcSize = srcFile.length();
+			if(srcSize>Integer.MAX_VALUE)
+				srcSize = Integer.MAX_VALUE;
+			available = (int)srcSize-progN;
+			
 			if (STEG_BUFFER_SIZE >= available) {
 				buffer = new byte[available];
 			}
@@ -702,7 +747,8 @@ public class ScreeptManager {
 				throw new IOException();	
 			}
 			
-			progUpdater.getPb().setValue(Math.round((float)buffer.length*n/(float)srcFile.length())*100);
+			progUpdater.getPb().setValue((int)(((float)buffer.length/(float)srcFile.length())*n*100));
+			
 			n++;
 		}		
 		// close streams to avoid memory leaks
@@ -726,7 +772,7 @@ public class ScreeptManager {
 		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(TEMP_PATH+"Complete_DeCrypted_"+DECRYPT_NAME);		
+		File outFile = new File(OUT_PATH+"Complete_DeCrypted_"+DECRYPT_NAME);		
 		
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
@@ -752,6 +798,8 @@ public class ScreeptManager {
 		// order files in source folder using first element(see STEGcrypter) with "_" separator
 		Arrays.sort(cryptedImgList, new CustomFileComparator("_", 0));
 		
+		int i = 1;
+		
 		for(File iFile : cryptedImgList) {
 			
 			// retrieve number of coded bytes into image from file name - the second element in name
@@ -765,12 +813,23 @@ public class ScreeptManager {
 			
 			// now decript with aes and write to out file
 			fout.write(aesCoder.decrypt(partial_res));
+			
+			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
+			
+			i++;
 		}
 		
 		// TODO first save aescoded to file then decript
 		
 		// close streams to avoid memory leaks
 		fout.close();
+	}
+	
+	private long getAvailable(File source, long progN) {
+		long srcSize = source.length();
+		if(srcSize>Integer.MAX_VALUE)
+			srcSize = Integer.MAX_VALUE;
+		return (srcSize-progN);
 	}
 	
 	/**
@@ -886,16 +945,16 @@ public class ScreeptManager {
 	 * this is the name of the folder containing temp results
 	 * @return
 	 */
-	public String getTempResultPath() {
-		return RESULT_PATH;
+	public String getOutPath() {
+		return OUT_PATH;
 	}
 	
 	/**
 	 * This method is used to set the source/destination path to which decrypt or encrypt source file(s)
 	 * @param resPath
 	 */
-	public void setTempResultPath(String resPath) {
-		RESULT_PATH = resPath;
+	public void setOutPath(String outPath) {
+		OUT_PATH = outPath+"/";
 	}
 
 	public static int getAES_BUFFER_SIZE() {

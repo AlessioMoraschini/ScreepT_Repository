@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -54,16 +55,22 @@ public class HandleString {
 	 * @return new string with only elements from start
 	 */
 	public static String retrieveFromNelements(String source, String separator, int start) {
-		StringTokenizer tokenizer = new StringTokenizer(source, separator);
-		String result = "";
-		int i= 0;
-		while(tokenizer.hasMoreTokens()) {
-			if(i>=start) {
-				result += tokenizer.nextToken();
+		try {
+			StringTokenizer tokenizer = new StringTokenizer(source, separator);
+			String result = "";
+			int i= 0;
+			while(tokenizer.hasMoreTokens()) {
+				if(i>=start) {
+					result += tokenizer.nextToken();
+				}
+				i++;
 			}
-			i++;
+			return result;
+		} catch (NoSuchElementException e) {
+			return source;
+		} catch(NullPointerException e) {
+			return source;
 		}
-		return result;
 	}
 	
 	/**
@@ -75,16 +82,22 @@ public class HandleString {
 	 * @return new string with only elements from start
 	 */
 	public static String retrieveFromNelements(String source, String separator, int start, int end) {
-		StringTokenizer tokenizer = new StringTokenizer(source, separator);
-		String result = "";
-		int i= 0;
-		while(tokenizer.hasMoreTokens()) {
-			if(i>=start && i<=end) {
-				result += tokenizer.nextToken();
+		try {
+			StringTokenizer tokenizer = new StringTokenizer(source, separator);
+			String result = "";
+			int i= 0;
+			while(tokenizer.hasMoreTokens()) {
+				if(i>=start && i<=end) {
+					result += tokenizer.nextToken();
+				}
+				i++;
 			}
-			i++;
+			return result;
+		} catch (NoSuchElementException e) {
+			return source;
+		} catch(NullPointerException e) {
+			return source;
 		}
-		return result;
 	}
 
 	public static String xmlPrettyFormat(String input) {
@@ -193,7 +206,7 @@ public class HandleString {
 			if (flagNewUp==true) {
 				result+=String.valueOf(character_i).toUpperCase();
 				// space and still to uppercase handler
-				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='«'||character_i=='»')) {
+				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='ï¿½'||character_i=='ï¿½')) {
 					flagNewUp=false;
 				}		
 			}
@@ -257,7 +270,7 @@ public class HandleString {
 			if (flagNewUp==true) {
 				result+=String.valueOf(character_i).toLowerCase();
 				// space and still to uppercase handler
-				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='«'||character_i=='»')) {
+				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='ï¿½'||character_i=='ï¿½')) {
 					flagNewUp=false;
 				}		
 			}

@@ -26,6 +26,8 @@ public class TestUpdateProgress {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TestUpdateProgress.class); 
 
+	private boolean forceStop = false;
+	
     private volatile JProgressBar pb;
     private JDialog dialog;
     private JLabel label = new JLabel("  I'm workin' !");
@@ -39,6 +41,68 @@ public class TestUpdateProgress {
         	logger.error("Error setting current look and feel! :(");
         }
 		
+        dialog = new JDialog();
+        dialog.setMinimumSize(new Dimension(400, 140));
+        dialog.setTitle("Processing");
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0};
+        gridBagLayout.columnWidths = new int[]{0, 10, 100, 0, 10};
+        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0};
+        gridBagLayout.rowHeights = new int[]{60, 40, 5};
+        dialog.getContentPane().setLayout(gridBagLayout);
+        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.setAlwaysOnTop(true);
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.insets = new Insets(2, 2, 2, 2);
+//        gbc.weightx = 1;
+//        gbc.gridy = 0;
+        GridBagConstraints gbc_label = new GridBagConstraints();
+        gbc_label.gridwidth = 3;
+        gbc_label.insets = new Insets(0, 0, 5, 0);
+        gbc_label.gridx = 1;
+        gbc_label.gridy = 0;
+        dialog.getContentPane().add(label, gbc_label);
+        
+        // set progress bar
+        pb = new JProgressBar();       
+        UIManager.put("nimbusOrange", Color.GREEN);
+        pb.putClientProperty("Nimbus.Overrides.InheritDefaults", Boolean.TRUE);
+
+//        // bar color
+//        UIManager.put("ProgressBar.background", Color.gray);
+//        UIManager.put("ProgressBar.foreground", Color.GREEN);
+//        // text color
+//        UIManager.put("ProgressBar.selectionBackground", Color.darkGray);
+//        UIManager.put("ProgressBar.selectionForeground", Color.BLACK);
+		pb.setStringPainted(true);
+        
+        GridBagConstraints gbc_pb = new GridBagConstraints();
+        gbc_pb.insets = new Insets(0, 0, 5, 5);
+        gbc_pb.fill = GridBagConstraints.BOTH;
+        gbc_pb.gridx = 2;
+        gbc_pb.gridy = 1;
+        dialog.getContentPane().add(pb, gbc_pb);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+		
+        new Thread(new Runnable() {
+
+            public void run() {
+
+                try {
+					doInBackground();
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+                
+        	}
+        }).start();
+    }
+	
+public TestUpdateProgress() {
+    			
         dialog = new JDialog();
         dialog.setMinimumSize(new Dimension(250, 100));
         dialog.setTitle("Processing");
@@ -106,11 +170,15 @@ public class TestUpdateProgress {
     }
 
     protected void doInBackground() throws Exception {
-        while(pb.getValue()<=101) {
+        while(pb.getValue()<=101 && !forceStop) {
             Thread.sleep(150);
             doneCheck();
         }
     }         
+    
+    public void forceClose() {
+    	forceStop = true;
+    }
 
 	public JProgressBar getPb() {
 		return pb;
@@ -135,5 +203,7 @@ public class TestUpdateProgress {
 	public void setLabel(JLabel label) {
 		this.label = label;
 	}
+	
+	
 	
 }

@@ -104,7 +104,7 @@ public class FileStuff {
 	 * @param folder
 	 * @return
 	 */
-	private static boolean deleteDirContentInclRoot(File folder) {
+	public static boolean deleteDirContentInclRoot(File folder) {
 		boolean deleted = true;
 		
 		File[] files = folder.listFiles();
@@ -186,7 +186,7 @@ public class FileStuff {
 	 * @param rootDir
 	 * @return success the boolean value representing the esit of the operation
 	 */
-	private static boolean renameFileUpperFirst(File rootDir) {
+	public static boolean renameFileUpperFirst(File rootDir) {
 		String name="";
 		String newName="";
 		name=rootDir.getName();
@@ -241,6 +241,40 @@ public class FileStuff {
 		f = new File(fileName);
 		
 		return f;
+	}
+	
+	/**
+	 * this method change name of java File variable until the result is a non existent file
+	 * It do that adding (i) numbers at the end of the file name, just before the start of the
+	 * extension . 
+	 * 
+	 * @param file
+	 * @return the new unique name in String format
+	 */
+	public static String getUniqueNameFile(File file) {
+		String fileName=file.getPath();
+
+		String extension = "";
+		String name = "";
+
+		int idxOfDot = fileName.lastIndexOf('.');   //Get the last index of . to separate extension
+		extension = fileName.substring(idxOfDot + 1);
+		name = fileName.substring(0, idxOfDot);
+
+		Path path = Paths.get(fileName);
+		int counter = 1;
+		File f = null;
+		while(Files.exists(path)){
+			// if already with parentesis number
+			if(name.substring(name.length()-1, name.length()).equals(")")) {
+				idxOfDot = fileName.lastIndexOf('(');
+				name = fileName.substring(0, idxOfDot);
+			}
+		    fileName = name+"("+counter+")."+extension;
+		    path = Paths.get(fileName);
+		    counter++;
+		}
+		return fileName;
 	}
 	
 	/**
