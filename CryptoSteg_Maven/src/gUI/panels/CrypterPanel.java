@@ -599,13 +599,22 @@ public class CrypterPanel extends JPanel {
 					msg = "Operation completed succesfully :)";
 					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
 					logger.info(msg);
+					textAreaLog.setText(msg);
+					textAreaMain.setText(screepTManager.getOutputStats());
+					tabbedPane.setSelectedIndex(0);
+
 				}else {
 					msg = "Something went wrong :(";
 					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
-					logger.info(msg);
+					logger.error(msg);
+					textAreaLog.setText(msg);
+					textAreaMain.setText(screepTManager.getOutputStats());
+					tabbedPane.setSelectedIndex(0);
+					
 				}
 				
 				coderUsed=false;
+				
 			}
 		};
 	}
@@ -725,14 +734,21 @@ public class CrypterPanel extends JPanel {
 					msg = "Operation completed succesfully :)";
 					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
 					logger.info(msg);
+					textAreaLog.setText(msg);
+					textAreaMain.setText(screepTManager.getOutputStats());
+					tabbedPane.setSelectedIndex(0);
+
 				}else {
 					msg = "Something went wrong :(";
 					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
-					logger.info(msg);
+					logger.error(msg);
+					textAreaLog.setText(msg);
+					textAreaMain.setText(screepTManager.getOutputStats());
+					tabbedPane.setSelectedIndex(0);
+
 				}
 				
 				coderUsed=false;
-				
 			}
 		};
 	}

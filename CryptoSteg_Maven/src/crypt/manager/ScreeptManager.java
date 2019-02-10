@@ -17,6 +17,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -85,6 +86,8 @@ public class ScreeptManager {
 	
 	// TODO use this to keep memory of written files
 	public ArrayList<String> writtenPathsList = new ArrayList<String>();
+	
+	private String tempMSG="";
 		
 	//////////////////////
 	//    CONSTRUCTOR   //
@@ -172,6 +175,9 @@ public class ScreeptManager {
 		
 		wellDone = false;
 		
+		tempMSG += "Start encripting "+srcFile.getAbsolutePath()+" ...\n[Selected mode: "+mode+" ]\n";
+		tempMSG += "[ Out folder: "+OUT_PATH+" ]\n";
+
 		logger.debug("Started Crypt with selected mode: "+mode);
 
 		if(OUT_PATH.equals(TEMP_PATH)) {
@@ -187,7 +193,7 @@ public class ScreeptManager {
 				progUpdater.getLabel().setText("AES mode detected!");
 
 				logger.debug("AES mode detected!");
-				
+
 				onlyAESCrypt(srcFile);
 				wellDone = true;
 				
@@ -196,10 +202,9 @@ public class ScreeptManager {
 				
 			// CASE 2 - ONLY STEG
 			}else if(mode.STEG && !mode.AES) {
-				logger.debug("STEG mode detected!");
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = OUT_PATH+"STEGcod_"+srcFile.getName()+"/";
+				RESULT_PATH = OUT_PATH+"STEGcr_"+srcFile.getName()+"/";
 				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
 				
@@ -209,6 +214,7 @@ public class ScreeptManager {
 				progUpdater.getPb().setValue(5);
 				progUpdater.getLabel().setText("STEG mode detected!");
 				
+				tempMSG += "\n => Using folder [ "+outFolder.getAbsolutePath()+" ] to contain crypted Images!\n";
 				logger.debug("STEG mode detected!");
 
 				onlySTEGCrypt(srcFile);
@@ -220,20 +226,19 @@ public class ScreeptManager {
 			// CASE 3 - COMPLETE MODE
 			}else if (mode.STEG && mode.AES) {
 
-				logger.debug("COMPLETE mode detected!");
-
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = OUT_PATH+"COMPLETEcod_"+srcFile.getName()+"/";
+				RESULT_PATH = OUT_PATH+"COMPLcr_"+srcFile.getName()+"/";
 				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
-				
+
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
 				progUpdater.getPb().setValue(5);
 				progUpdater.getLabel().setText("COMPLETE mode detected!");
 
-				logger.debug("AES mode detected!");
+				tempMSG += "\n => Using folder [ "+outFolder.getAbsolutePath()+" ] to contain crypted Images!\n";
+				logger.debug("COMPLETE mode detected!");
 				
 				completeCrypt(srcFile);
 				wellDone = true;
@@ -263,6 +268,8 @@ public class ScreeptManager {
 		}
 			
 		logger.debug("Streams closed, exiting encription.");
+		tempMSG += "\n => Streams closed, exiting encription.";
+		
 		// TODO check welldone usage
 		return wellDone;
 	}
@@ -289,6 +296,8 @@ public class ScreeptManager {
 		
 		wellDone = false;
 		
+		tempMSG += "Start decripting "+srcFile.getAbsolutePath()+" ...\nSelected mode: [ "+mode+" ]\n";
+		tempMSG += "[ Out folder: "+OUT_PATH+" ]\n";
 		logger.debug("Started Decrypting with selected mode: "+mode);
 		
 		if(OUT_PATH.equals(TEMP_PATH)) {
@@ -345,7 +354,7 @@ public class ScreeptManager {
 				wellDone = true;
 				
 				progUpdater.getPb().setValue(100);
-				logger.debug("AES Decrypt phase - EXITING");
+				logger.debug("COMPLETE Decrypt phase - EXITING");
 				
 			}	
 		}catch(Exception e) {
@@ -353,15 +362,20 @@ public class ScreeptManager {
 		}
 		
 		logger.debug("Streams closed, exiting decription.");
+		tempMSG += "\n => Streams closed, exiting decription.";
+
 		// TODO check welldone usage
 		return wellDone;
 	}
 	
 	// Function that set values before to throw exception
 	private void resetAfterException(Exception e) {
+		String msg = "\n => OOOPS! An error occurred :(";
 		progUpdater.getPb().setValue(100);
-		progUpdater.getLabel().setText("OOOPS! An error occurred :(");
-		logger.error("Exception happened!", e);
+		progUpdater.getLabel().setText(msg);
+		logger.error(msg, e);
+		tempMSG += msg;
+		
 		wellDone = false;
 	}
 	
@@ -369,18 +383,25 @@ public class ScreeptManager {
 	private void emptyTempPath(){
 		// initialize the temp directory reference
 		File temp_folder = new File(OUT_PATH);
-		
+		String msg = "";
 		if(temp_folder.exists() && temp_folder.listFiles().length!=0) {
 			
 			// empty temp folder content files before to start encription
 			boolean deleted = FileStuff.deleteDirContentRecursive(temp_folder);
 			if(deleted) {
-				logger.debug("Temp dir ("+OUT_PATH+") succesfully emptied :)");
+				msg ="\n => Temp dir ("+OUT_PATH+") succesfully emptied :)";
+				logger.debug(msg);
+				tempMSG += msg;
+				
 			}else {
-				logger.error("Some error occurred deleting "+OUT_PATH+" content :(");
+				msg = "\n => Some error occurred deleting "+OUT_PATH+" content :(";
+				logger.error(msg);
+				tempMSG += msg;
 			}
 		}else {
-			logger.warn("Temp dir already empty or not existing");
+			msg = "\n => Temp dir already empty or not existing";
+			logger.warn(msg);
+			tempMSG += msg;
 		}
 	}
 	
@@ -401,7 +422,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		CRYPT_NAME = srcFile.getName();
-		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+"AesCrypted_"+CRYPT_NAME));
+		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+"AEScr_"+CRYPT_NAME));
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -441,6 +462,7 @@ public class ScreeptManager {
 			readFlag = streamIN.read(buffer);
 			
 			progUpdater.getPb().setValue((int)(((float)buffer.length/(float)srcFile.length())*i*100));
+			
 			i++;
 			
 		}		
@@ -451,7 +473,9 @@ public class ScreeptManager {
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("Encryption completed! ");
 		
-		logger.debug("AES crypt phase ended: "+result.getName()+" created :)");
+		String msg = "\nAES crypt phase ended: Output file => "+result.getName();
+		tempMSG += msg;
+		logger.debug(msg);
 		
 	}
 	
@@ -471,7 +495,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		DECRYPT_NAME = srcFile.getName();
-		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+"AesDeCrypted_"+DECRYPT_NAME));
+		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+"AESdcr"+DECRYPT_NAME));
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -519,7 +543,9 @@ public class ScreeptManager {
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("Decryption completed! ");
 		
-		logger.debug("AES decrypt phase ended: "+result.getName()+" created :)");
+		String msg = "\nAES decrypt phase ended: Output file => "+result.getName();
+		tempMSG += msg;
+		logger.debug(msg);
 		
 	}
 	
@@ -582,10 +608,16 @@ public class ScreeptManager {
 			readFlag = streamIN.read(buffer);
 			
 			if(OK) {
-				logger.debug("Image written: "+outFile.getAbsolutePath());	
+				String msg = "\n=> STEG image number "+n+" written: Output file => "+outFile.getAbsolutePath();
+				tempMSG += msg;
+				logger.debug(msg);
+				
 			}else {
 				streamIN.close();
-				logger.error("Error ocurred writing "+outFile.getAbsolutePath());
+				String msg = "\n=> Error ocurred writing "+outFile.getAbsolutePath()+" ... exiting";
+				tempMSG += msg;
+				logger.error(msg);
+				
 				throw new IOException();
 			}
 			n++;
@@ -608,7 +640,7 @@ public class ScreeptManager {
 		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(OUT_PATH+"StegDeCrypted_"+DECRYPT_NAME);		
+		File outFile = new File(OUT_PATH+"STEGdcr_"+DECRYPT_NAME);		
 		
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
@@ -648,14 +680,22 @@ public class ScreeptManager {
 			fout.write(imgCoder.stegaDeCryptToArray(codedImg, bytesToGet));
 
 			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
+			String msg = "\nSTEG decripting current coded image: "+iFile.getName();
+			tempMSG += msg;
+			logger.debug(msg);
 			
 			i++;
 		}
 		
 		// close streams to avoid memory leaks
 		fout.close();
+		
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("Decryption completed! ");
+		
+		String msg = "\nSTEG decrypt phase ended: Output file => "+outFile.getAbsolutePath();
+		tempMSG += msg;
+		logger.debug(msg);
 					
 	}
 	
@@ -690,7 +730,7 @@ public class ScreeptManager {
 
 			// close streams to avoid memory leaks
 			streamIN.close();
-			logger.error("Error retrieving the AES coder -> null or void passsword!");
+			logger.error("Error retrieving the AES coder -> null coder or void passsword!");
 			throw new AESException();
 		}
 		
@@ -740,14 +780,22 @@ public class ScreeptManager {
 			readFlag = streamIN.read(buffer);
 			
 			if(OK) {
-				logger.debug("Image written: "+outFile.getAbsolutePath());	
+				String msg = "\n=> COMPLETE image number "+n+" written: Output file => "+outFile.getAbsolutePath();
+				tempMSG += msg;
+				logger.debug(msg);
 			}else {
 				streamIN.close();
-				logger.error("Error ocurred writing "+outFile.getAbsolutePath());
+				String msg = "\n=> Error ocurred writing "+outFile.getAbsolutePath()+" ... exiting";
+				tempMSG += msg;
+				logger.error(msg);
+				
 				throw new IOException();	
 			}
 			
 			progUpdater.getPb().setValue((int)(((float)buffer.length/(float)srcFile.length())*n*100));
+			String msg = "\n COMPLETE crypt curent file ended: Output file => "+outFile.getAbsolutePath();
+			tempMSG += msg;
+			logger.debug(msg);			
 			
 			n++;
 		}		
@@ -755,7 +803,7 @@ public class ScreeptManager {
 		streamIN.close();
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("Encryption completed! ");
-
+		
 	}
 	
 	// this function implement the decription of several (0-n) images containing crypted values, using the encryption key image.
@@ -772,7 +820,7 @@ public class ScreeptManager {
 		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(OUT_PATH+"Complete_DeCrypted_"+DECRYPT_NAME);		
+		File outFile = new File(OUT_PATH+"COMPLdcr_"+DECRYPT_NAME);		
 		
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
@@ -815,14 +863,19 @@ public class ScreeptManager {
 			fout.write(aesCoder.decrypt(partial_res));
 			
 			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
+			String msg = "\nCOMPLETE decripting current coded image: "+iFile.getName();
+			tempMSG += msg;
+			logger.debug(msg);
 			
 			i++;
 		}
 		
-		// TODO first save aescoded to file then decript
-		
 		// close streams to avoid memory leaks
 		fout.close();
+		
+		String msg = "\nCOMPLETE decrypt phase ended: Output file => "+outFile.getAbsolutePath();
+		tempMSG += msg;
+		logger.debug(msg);
 	}
 	
 	private long getAvailable(File source, long progN) {
@@ -960,7 +1013,7 @@ public class ScreeptManager {
 	public static int getAES_BUFFER_SIZE() {
 		return AES_BUFFER_SIZE;
 	}
-
+	
 //			DISABLED TO KEEP SAFE ENCRIPTION AND DECRIPTION - DIFFERENT SIZE MAKES FILE UNDECRIPTABLE
 //	/**
 //	 * @param bUFFER_SIZE integer representing size of buffer - maximum 2 GB 
@@ -974,5 +1027,16 @@ public class ScreeptManager {
 	 */
 	public static String getCryptName() {
 		return CRYPT_NAME;
-	}	
+	}
+
+	/**
+	 * used to retrieve message by screept manager
+	 * @return
+	 */
+	public String getOutputStats() {
+		return tempMSG;
+	}
+
+	
+	
 }
