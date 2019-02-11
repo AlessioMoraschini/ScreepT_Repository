@@ -19,10 +19,8 @@ import javax.swing.JPanel;
 import java.awt.SystemColor;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;

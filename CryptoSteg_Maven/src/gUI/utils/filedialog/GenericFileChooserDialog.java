@@ -9,9 +9,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
 
+import gUI.panels.CrypterPanel;
 import iNIT.INItializer;
 
 public class GenericFileChooserDialog {
@@ -35,6 +37,46 @@ public class GenericFileChooserDialog {
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!Arrays.asList(writerNames).contains(givenExtension)) {
+        		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        	}else {
+        		correctFile = selectedFile;
+        		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
+        	}
+        }
+        return correctFile;
+	}
+	
+	/**JFRAME - only img supported extension
+	 * this method select a file from the user (only supported images files),if nothing is selected returns null
+	 */
+	public static File fileImgRead(CrypterPanel parent, INItializer currentConf, String ext) {
+
+		JFileChooser fileChooser = new JFileChooser();		
+		fileChooser.setDialogTitle("Select input Image File");
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "Only images of "+ext+" format";
+			}
+			
+			@Override
+			public boolean accept(File file) {
+				if(file.getName().toLowerCase().endsWith(ext) || file.isDirectory()) {
+					return true;
+				}else return false;
+			}
+		});
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
+		File correctFile = null;		
+		
+		int returnVal = fileChooser.showOpenDialog(parent);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            
+        	File selectedFile = fileChooser.getSelectedFile();
+        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
+        	if(selectedFile==null || !ext.equalsIgnoreCase(givenExtension)) {
         		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;

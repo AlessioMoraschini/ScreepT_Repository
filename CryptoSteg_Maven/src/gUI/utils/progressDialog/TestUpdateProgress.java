@@ -34,9 +34,14 @@ public class TestUpdateProgress {
 
 	public TestUpdateProgress(INItializer currentConf) {
     	
-        try {
+		goNmonitor(currentConf);
+        
+    }
+	
+	private synchronized void goNmonitor(INItializer config) {
+		try {
         	// set preferred style from current configuration
-            UIManager.setLookAndFeel(currentConf.getGuiOpt().getPreferredStyle());
+            UIManager.setLookAndFeel(config.getGuiOpt().getPreferredStyle());
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
         	logger.error("Error setting current look and feel! :(");
         }
@@ -99,9 +104,9 @@ public class TestUpdateProgress {
                 
         	}
         }).start();
-    }
+	}
 	
-public TestUpdateProgress() {
+	public TestUpdateProgress() {
     			
         dialog = new JDialog();
         dialog.setMinimumSize(new Dimension(250, 100));

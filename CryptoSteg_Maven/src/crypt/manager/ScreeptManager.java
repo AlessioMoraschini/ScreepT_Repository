@@ -17,10 +17,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
-import javax.swing.text.html.HTMLDocument.Iterator;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
@@ -473,7 +469,7 @@ public class ScreeptManager {
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("Encryption completed! ");
 		
-		String msg = "\nAES crypt phase ended: Output file => "+result.getName();
+		String msg = "AES crypt phase ended: Output file => "+result.getName()+"\n";
 		tempMSG += msg;
 		logger.debug(msg);
 		
@@ -543,7 +539,7 @@ public class ScreeptManager {
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("Decryption completed! ");
 		
-		String msg = "\nAES decrypt phase ended: Output file => "+result.getName();
+		String msg = "AES decrypt phase ended: Output file => "+result.getName()+"\n";
 		tempMSG += msg;
 		logger.debug(msg);
 		
@@ -640,7 +636,8 @@ public class ScreeptManager {
 		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(OUT_PATH+"STEGdcr_"+DECRYPT_NAME);		
+		File outFile = new File(OUT_PATH+"STEGdcr_"+DECRYPT_NAME);
+		outFile = FileStuff.renameJavaObjFile(outFile);
 		
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
@@ -693,7 +690,7 @@ public class ScreeptManager {
 		progUpdater.getPb().setValue(100);
 		progUpdater.getLabel().setText("Decryption completed! ");
 		
-		String msg = "\nSTEG decrypt phase ended: Output file => "+outFile.getAbsolutePath();
+		String msg = "STEG decrypt phase ended: Output file => "+outFile.getAbsolutePath()+"\n";
 		tempMSG += msg;
 		logger.debug(msg);
 					
@@ -821,6 +818,7 @@ public class ScreeptManager {
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
 		File outFile = new File(OUT_PATH+"COMPLdcr_"+DECRYPT_NAME);		
+		outFile = FileStuff.renameJavaObjFile(outFile);
 		
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
@@ -873,7 +871,7 @@ public class ScreeptManager {
 		// close streams to avoid memory leaks
 		fout.close();
 		
-		String msg = "\nCOMPLETE decrypt phase ended: Output file => "+outFile.getAbsolutePath();
+		String msg = "COMPLETE decrypt phase ended: Output file => "+outFile.getAbsolutePath()+"\n";
 		tempMSG += msg;
 		logger.debug(msg);
 	}

@@ -222,8 +222,12 @@ public class FileStuff {
 		String name = "";
 
 		int idxOfDot = fileName.lastIndexOf('.');   //Get the last index of . to separate extension
-		extension = fileName.substring(idxOfDot + 1);
-		name = fileName.substring(0, idxOfDot);
+		if(idxOfDot>=0) {
+			extension = fileName.substring(idxOfDot + 1);
+			name = fileName.substring(0, idxOfDot);
+		}else {
+			name = fileName;
+		}		
 
 		Path path = Paths.get(fileName);
 		int counter = 1;

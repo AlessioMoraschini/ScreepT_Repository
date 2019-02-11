@@ -7,11 +7,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 
 import javax.swing.JTree;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
@@ -25,6 +25,7 @@ import gUI.utils.tree.TreeFileMouseListenerCrypter;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import uTILS.FileStuff;
+import uTILS.ImageWorker;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -37,6 +38,7 @@ import javax.swing.tree.TreePath;
 
 import java.awt.SystemColor;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -48,7 +50,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTabbedPane;
 import javax.swing.JComboBox;
 import javax.crypto.NoSuchPaddingException;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import java.awt.GridBagLayout;
@@ -57,6 +61,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 
 public class CrypterPanel extends JPanel {
@@ -226,19 +231,15 @@ public class CrypterPanel extends JPanel {
 					EncryptDecrypt.check(AESKEYtext);
 					// set the label text according to selected mode
 					if(checkIfReadyToCode() && !coderUsed) {
-						btnCreept.setEnabled(true);
-						btnDeCreept.setEnabled(true);
+						enableCoderButtons();
 					}else {
-						btnCreept.setEnabled(false);
-						btnDeCreept.setEnabled(false);
+						disableCoderButtons();
 					}
 					
-					if(coderUsed) {
-						btnDispoKeyImg.setEnabled(false);
-						btnSelectSourceFile.setEnabled(false);
+					if(!coderUsed) {
+						enableSelectionButtons();
 					}else {
-						btnDispoKeyImg.setEnabled(true);
-						btnSelectSourceFile.setEnabled(true);
+						disableSelectionButtons();
 					}
 					
 					try {
@@ -297,6 +298,18 @@ public class CrypterPanel extends JPanel {
 		btnDispoKeyImg.setForeground(Color.BLACK);
 		btnDispoKeyImg.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 18));
 		btnDispoKeyImg.setBackground(Color.LIGHT_GRAY);
+		btnDispoKeyImg.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				File dispoImgFile = GenericFileChooserDialog.fileImgRead(thisPanel, currentConf, "png");
+				useAsKeyImage(dispoImgFile);
+	        	loadInfo(dispoImgFile);
+	        	
+			}
+		});
+		
 		scrollPanelTab = new JScrollPane();
 		scrollPanelTab.setBorder(new LineBorder(new Color(0, 0, 0)));
 		scrollPanelTab.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -450,7 +463,14 @@ public class CrypterPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				new Thread(cripterRunner()).start();
+				try {
+					new Thread(cripterRunner()).start();
+				}
+				catch(Exception ex) {
+					coderUsed = false;
+					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					logger.error("Exception happened during creept", ex);
+				}
 				
 			}
 		});
@@ -473,8 +493,14 @@ public class CrypterPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				new Thread(decripterRunner()).start();
-				
+				try {
+					new Thread(decripterRunner()).start();
+				}catch(Exception ex) {
+					coderUsed = false;
+					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					logger.error("Exception happened during decreept!", ex);
+				}
+								
 			}
 		});
 		
@@ -490,6 +516,10 @@ public class CrypterPanel extends JPanel {
 			
 			@Override
 			public void run() {
+				
+				// get output asking to user
+				File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+
 				// notify that method is running
 				coderUsed=true;
 				
@@ -502,27 +532,24 @@ public class CrypterPanel extends JPanel {
 				// first recognize selected combo Mode selected
 				CryptoMode mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
-				if (srcFile!=null && srcFile.exists()) {
+				if (srcFile!=null && srcFile.exists() && destinationDir!=null) {
+					
+					if(!destinationDir.exists()) {
+						destinationDir.mkdir();
+					}
 					
 					// ONLY AES DECRYPT
 					if (mode.AES && !mode.STEG) {
 						try {
+							screepTManager = initAES(aesKey);
 							
+							// if only one file
 							if (srcFile.isFile()) {
-								// get output asking to user
-								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
-									
-								if (destinationDir!=null) {
-									
-									if(!destinationDir.exists()) {
-										destinationDir.mkdirs();
-									}
-									
-									screepTManager = initAES(aesKey);
-									screepTManager.setOutPath(destinationDir.getCanonicalPath());
-									resultOK = screepTManager.deCrypt(srcFile, currentConf);
-									
-								}
+								resultOK = deCryptCurrentFile(srcFile, destinationDir);
+							
+							// if directory selected
+							}else if (srcFile.isDirectory()) {
+								resultOK = deCryptDirAES(srcFile, destinationDir);
 							}
 
 						} catch (UnsupportedEncodingException e1) {
@@ -538,23 +565,11 @@ public class CrypterPanel extends JPanel {
 					// ONLY STEG DECRYPT
 					} else if (!mode.AES && mode.STEG) {
 						try {
+							screepTManager = initSTEG(srcKeyImageFile);
 							
 							if (srcFile.isDirectory()) {
-								// get output asking to user
-								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
-									
-								if (destinationDir!=null) {
-									
-									if(!destinationDir.exists()) {
-										destinationDir.mkdirs();
-									}
-									
-									screepTManager = initSTEG(srcKeyImageFile);
-									screepTManager.setOutPath(destinationDir.getCanonicalPath());
-									resultOK = screepTManager.deCrypt(srcFile, currentConf);
-									
-								}
-							}//END-IF FILE SOURCE CHECK
+								resultOK = deCryptDirSTEG(srcFile, destinationDir);
+							}
 
 						} catch (IOException e1) {
 							logger.error("IO Exception happened!", e1);
@@ -563,23 +578,11 @@ public class CrypterPanel extends JPanel {
 					// COMPLETE DECRYPT
 					} else if (mode.AES && mode.STEG) {
 						try {
-							
+							screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
+
 							if (srcFile.isDirectory()) {
-								// get output asking to user
-								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
-									
-								if (destinationDir!=null) {
-									
-									if(!destinationDir.exists()) {
-										destinationDir.mkdirs();
-									}
-									
-									screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
-									screepTManager.setOutPath(destinationDir.getCanonicalPath());
-									resultOK = screepTManager.deCrypt(srcFile, currentConf);
-									
-								}
-							}//END-IF FILE SOURCE CHECK
+								resultOK = deCryptDirSTEG(srcFile, destinationDir);
+							}
 
 						} catch (UnsupportedEncodingException e1) {
 							logger.error("Encoding Exception happened!", e1);
@@ -593,24 +596,28 @@ public class CrypterPanel extends JPanel {
 					} 
 				}
 				
-				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
-				String msg;
+				// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
 				if(resultOK) {
-					msg = "Operation completed succesfully :)";
+					String msg = "Operation completed succesfully :)";
 					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
 					logger.info(msg);
 					textAreaLog.setText(msg);
 					textAreaMain.setText(screepTManager.getOutputStats());
 					tabbedPane.setSelectedIndex(0);
+					lblSrcFileSel.setText("Deselected after decription");
+					srcFile = null;
 
-				}else {
-					msg = "Something went wrong :(";
-					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
-					logger.error(msg);
-					textAreaLog.setText(msg);
-					textAreaMain.setText(screepTManager.getOutputStats());
-					tabbedPane.setSelectedIndex(0);
-					
+				}else {					
+					if (destinationDir != null) {
+						String msg = "Something went wrong :(";
+						JOptionPane.showMessageDialog(thisPanel, msg, "SUCCESS!", JOptionPane.ERROR_MESSAGE);
+						logger.error(msg);
+						textAreaLog.setText(msg);
+						textAreaMain.setText(screepTManager.getOutputStats());
+						tabbedPane.setSelectedIndex(0);
+					}else{
+						JOptionPane.showMessageDialog(thisPanel, "No directory selected, export aborted!", "No directory selected", JOptionPane.WARNING_MESSAGE);
+					}
 				}
 				
 				coderUsed=false;
@@ -625,6 +632,9 @@ public class CrypterPanel extends JPanel {
 			@Override
 			public void run() {
 				
+				// get output asking to user
+				File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+				
 				// notify that method is running
 				coderUsed=true;
 				
@@ -637,27 +647,25 @@ public class CrypterPanel extends JPanel {
 				// first recognize selected combo Mode selected
 				CryptoMode mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
-				if (srcFile!=null && srcFile.exists()) {
+				if (srcFile!=null && srcFile.exists() && destinationDir!=null) {
+					
+					if(!destinationDir.exists()) {
+						destinationDir.mkdir();
+					}
 					
 					// ONLY AES CRYPT
 					if (mode.AES && !mode.STEG) {
 						try {
+							// initialize coder
+							screepTManager = initAES(aesKey);
 							
+							// if only one file
 							if (srcFile.isFile()) {
-								// get output asking to user
-								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
-									
-								if (destinationDir!=null) {
-									
-									if(!destinationDir.exists()) {
-										destinationDir.mkdirs();
-									}
-									
-									screepTManager = initAES(aesKey);
-									screepTManager.setOutPath(destinationDir.getCanonicalPath());
-									resultOK = screepTManager.crypt(srcFile, currentConf);
-									
-								}
+								resultOK = cryptCurrentFile(srcFile, destinationDir);
+							
+							// if directory selected
+							}else if (srcFile.isDirectory()) {
+								resultOK = cryptDir(srcFile, destinationDir);
 							}
 
 						} catch (UnsupportedEncodingException e1) {
@@ -674,22 +682,16 @@ public class CrypterPanel extends JPanel {
 					} else if (!mode.AES && mode.STEG) {
 						try {
 							
+							screepTManager = initSTEG(srcKeyImageFile);
+							
+							// if only one file
 							if (srcFile.isFile()) {
-								// get output asking to user
-								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
-									
-								if (destinationDir!=null) {
-									
-									if(!destinationDir.exists()) {
-										destinationDir.mkdirs();
-									}
-									
-									screepTManager = initSTEG(srcKeyImageFile);
-									screepTManager.setOutPath(destinationDir.getCanonicalPath());
-									resultOK = screepTManager.crypt(srcFile, currentConf);
-									
-								}
-							}//END-IF FILE SOURCE CHECK
+								resultOK = cryptCurrentFile(srcFile, destinationDir);
+							
+							// if directory selected
+							}else if (srcFile.isDirectory()) {
+								resultOK = cryptDir(srcFile, destinationDir);
+							}
 
 						} catch (IOException e1) {
 							logger.error("IO Exception happened!", e1);
@@ -699,22 +701,16 @@ public class CrypterPanel extends JPanel {
 					} else if (mode.AES && mode.STEG) {
 						try {
 							
+							screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
+							
+							// if only one file
 							if (srcFile.isFile()) {
-								// get output asking to user
-								File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
-									
-								if (destinationDir!=null) {
-									
-									if(!destinationDir.exists()) {
-										destinationDir.mkdirs();
-									}
-									
-									screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
-									screepTManager.setOutPath(destinationDir.getCanonicalPath());
-									resultOK = screepTManager.crypt(srcFile, currentConf);
-									
-								}
-							}//END-IF FILE SOURCE CHECK
+								resultOK = cryptCurrentFile(srcFile, destinationDir);
+							
+							// if directory selected
+							}else if (srcFile.isDirectory()) {
+								resultOK = cryptDir(srcFile, destinationDir);
+							}
 
 						} catch (UnsupportedEncodingException e1) {
 							logger.error("Encoding Exception happened!", e1);
@@ -727,25 +723,30 @@ public class CrypterPanel extends JPanel {
 						}
 					} 
 				}
-				
+		
 				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
-				String msg;
 				if(resultOK) {
-					msg = "Operation completed succesfully :)";
+					String msg = "Operation completed succesfully :)";
 					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
 					logger.info(msg);
 					textAreaLog.setText(msg);
 					textAreaMain.setText(screepTManager.getOutputStats());
 					tabbedPane.setSelectedIndex(0);
+					lblSrcFileSel.setText("Deselected after encription");
+					srcFile = null;
 
 				}else {
-					msg = "Something went wrong :(";
-					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
-					logger.error(msg);
-					textAreaLog.setText(msg);
-					textAreaMain.setText(screepTManager.getOutputStats());
-					tabbedPane.setSelectedIndex(0);
-
+					if(destinationDir != null) {
+						String msg = "Something went wrong :(";
+						JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
+						logger.error(msg);
+						textAreaLog.setText(msg);
+						textAreaMain.setText(screepTManager.getOutputStats());
+						tabbedPane.setSelectedIndex(0);
+					}
+					else{
+						JOptionPane.showMessageDialog(thisPanel, "No directory selected, export aborted!", "No directory selected", JOptionPane.WARNING_MESSAGE);
+					}
 				}
 				
 				coderUsed=false;
@@ -937,6 +938,244 @@ public class CrypterPanel extends JPanel {
 		STEGcoder = new ImageCodeDecode(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
 		return screepTManager;
+	}
+	
+	// CRYPT METHODS
+	private boolean cryptCurrentFile(File src, File destinationDir) throws IOException{
+		boolean resultOK = false;
+		if (destinationDir!=null) {
+			
+			if(!destinationDir.exists()) {
+				destinationDir.mkdirs();
+			}
+			
+			screepTManager.setOutPath(destinationDir.getCanonicalPath());
+			resultOK = screepTManager.crypt(src, currentConf);
+			
+		}
+		return resultOK;
+	}
+	
+	private boolean cryptDir(File src, File destinationDir) throws IOException {
+		boolean resultOK = false;
+		
+		if (src.isFile()) {
+			
+			resultOK = cryptCurrentFile(src, destinationDir);
+
+		}else if (src.isDirectory()) {
+			// create new folder in destination
+			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+src.getName());
+			// if dir to create inside destination exists create unique name
+			if(destSonDir.exists()) {
+				destSonDir = FileStuff.renameJavaObjFile(destSonDir);
+			}
+			destSonDir.mkdir();
+			
+			// scan source folder content
+			for(File iFile : src.listFiles()) {
+				if(iFile.isDirectory()) {
+					resultOK = cryptDir(iFile, destSonDir);
+				}else if (iFile.isFile()) {
+					resultOK = cryptCurrentFile(iFile, destSonDir);
+				}
+			}
+			
+		}
+		
+		return resultOK;
+	}
+	
+	// DECRYPT METHODS	
+	private boolean deCryptCurrentFile(File src, File destinationDir) throws IOException{
+		boolean resultOK = false;
+		if (destinationDir!=null) {
+			
+			if(!destinationDir.exists()) {
+				destinationDir.mkdirs();
+			}
+			
+			screepTManager.setOutPath(destinationDir.getCanonicalPath());
+			resultOK = screepTManager.deCrypt(src, currentConf);
+			
+		}
+		return resultOK;
+	}
+	
+	private boolean deCryptDirAES(File src, File destinationDir) throws IOException {
+		boolean resultOK = false;
+		
+		if (src.isFile()) {
+			
+			resultOK = deCryptCurrentFile(src, destinationDir);
+
+		}else if (src.isDirectory()) {
+			// create new folder in destination
+			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+src.getName());
+			// if dir to create inside destination exists create unique name
+			destSonDir = FileStuff.renameJavaObjFile(destSonDir);
+			destSonDir.mkdir();
+			
+			// scan source folder content
+			for(File iFile : src.listFiles()) {
+				if(iFile.isDirectory()) {
+					resultOK = deCryptDirAES(iFile, destSonDir);
+				}else if (iFile.isFile()) {
+					resultOK = deCryptCurrentFile(iFile, destSonDir);
+				}
+			}
+			
+		}
+		
+		return resultOK;
+	}
+	
+	// use this to recognize folder containing STEG/COMPLETE folders that contains result instead of generic folder
+	private boolean deCryptDirSTEG(File src, File destinationDir) throws IOException {
+		boolean resultOK = false;
+		
+		if (src.isDirectory()) {
+			// create new folder in destination
+			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+src.getName());
+			destSonDir = FileStuff.renameJavaObjFile(destSonDir);
+			// if dir to create inside destination exists create unique name
+			
+			// scan source folder content
+			for(File iFile : src.listFiles()) {
+				if(iFile.isDirectory()) {
+					
+					destSonDir.mkdir();
+					// now check if sons are files or dir
+					File[] retrieved = iFile.listFiles(new FileFilter() {
+						
+						@Override // don't scan contained files further if they are not directories
+						public boolean accept(File sonFile) {
+							if(sonFile.isFile()) {
+								return false;
+							}
+							else return true;
+						}
+					});
+					
+					if(retrieved.length!=0 && retrieved[0].isDirectory()) {
+						// if generic folder it contains other folders
+						resultOK = deCryptDirSTEG(iFile, destSonDir);
+					}else {
+						// if STEG/COMPLETE crypted only png files are contained, then decript current folder
+						resultOK = deCryptCurrentFile(iFile, destSonDir);
+					}
+					
+				}else {
+					// if STEG/COMPLETE crypted only png files are contained, then decript current folder
+					resultOK = deCryptCurrentFile(src, destinationDir);
+					break;
+				}
+			}
+			
+		}
+		
+		return resultOK;
+	}
+	
+	private void useAsKeyImage(File thisFile) {
+		
+    	// if a file is selected
+		if (thisFile.exists()) {
+			try {
+				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png")&&ImageIO.read(thisFile)!=null) {
+					textAreaLog.setText("");
+					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
+					logger.info(msg);
+					textAreaLog.append(msg);	
+					lblKeyImageSelected.setForeground(SystemColor.GREEN);
+					lblKeyImageSelected.setText(thisFile.getName());
+					srcKeyImageFile = thisFile;
+					JOptionPane.showMessageDialog(thisPanel, "Key Image file correctly loaded and selected :)","Key Image Selected :)", JOptionPane.INFORMATION_MESSAGE);
+				}else {
+					String msg = "File not recognized as Key: \n\n => "+thisFile.getName();
+					textAreaLog.append(msg);
+					JOptionPane.showMessageDialog(thisPanel, "Key Image file not recognized :(","Key Image not recognized :(", JOptionPane.ERROR_MESSAGE);
+				}
+			} catch (IOException e) {
+				String msg = "Some Error Occurred :(";
+				textAreaLog.append(msg);
+				JOptionPane.showMessageDialog(thisPanel, msg, msg, JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+	
+	private void loadInfo(File thisFile) {
+
+		try {
+			BufferedImage img = ImageIO.read(thisFile);
+			// check if file is an image or not
+			if(img == null ) {
+				throw new IOException();
+			}
+			
+			// read image from file
+			BufferedImage image = ImageIO.read(thisFile);
+			Image scaledImage = ImageWorker.scaleImage(image, image.getType(), panelKeyImgDisp.getWidth(), panelKeyImgDisp.getHeight());
+		
+			refreshImage(scaledImage);
+			
+			String msg = "\n\n### Image values ###\n\n Width: "+img.getWidth()+" Px\n Height: "+img.getHeight()+" Px\n\n=> File Size: "
+					+FileStuff.coolFileSize(thisFile)+"\n\n => ImgType: "+img.toString();
+			textAreaLog.append(msg);
+			logger.info(msg);
+			lblDisplayedKey.setText("Displayed: "+thisFile.getName());
+			
+		} catch (IOException e1) {
+			String msg = "Error reading the image, something went wrong :(";
+			logger.debug(msg);
+			textAreaLog.setText(msg);
+			lblKeyImageSelected.setText(msg);
+			panelKeyImgDisp.removeAll();
+			JLabel errorMsg = new JLabel("Error opening file :(");
+			errorMsg.setForeground(Color.white);
+			errorMsg.setHorizontalAlignment(JLabel.CENTER);
+			errorMsg.setVerticalAlignment(JLabel.CENTER);
+			panelKeyImgDisp.add(errorMsg);
+			panelKeyImgDisp.revalidate(); 
+			panelKeyImgDisp.repaint();	
+		}
+    }
+	
+
+	/**
+	 * This method is used only locally to refresh image with the given one
+	 */
+	private void refreshImage(Image image) {
+		
+		JLabel picLabel = new JLabel(new ImageIcon(image));
+		panelKeyImgDisp.removeAll();
+		panelKeyImgDisp.add(picLabel);
+		picLabel.setHorizontalAlignment(JLabel.CENTER);
+		picLabel.setVerticalAlignment(JLabel.CENTER);
+		panelKeyImgDisp.revalidate(); 
+		panelKeyImgDisp.repaint();	
+	}
+	
+	private void disableCoderButtons() {
+		btnCreept.setEnabled(false);
+		btnDeCreept.setEnabled(false);
+	}
+	
+	private void enableCoderButtons() {
+		btnCreept.setEnabled(true);
+		btnDeCreept.setEnabled(true);
+	}
+	
+	private void disableSelectionButtons() {
+		btnDispoKeyImg.setEnabled(false);
+		btnSelectSourceFile.setEnabled(false);
+		btnDispoKeyImg.setEnabled(false);
+	}
+	
+	private void enableSelectionButtons() {
+		btnDispoKeyImg.setEnabled(true);
+		btnSelectSourceFile.setEnabled(true);
+		btnDispoKeyImg.setEnabled(true);
 	}
 	
 	// getters and setters
