@@ -18,10 +18,11 @@ import javax.imageio.ImageIO;
 
 import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
+import crypt.steg.STEGException;
 
 public class AesStegTest {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, STEGException {
 		String key= "ST3G4N0cr1p74009";
 		String srcText = "Ciao, sono un testo di prova";
 		String coded = srcText;

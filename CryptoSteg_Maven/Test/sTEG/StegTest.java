@@ -9,12 +9,13 @@ import org.junit.Test;
 
 import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
+import crypt.steg.STEGException;
 import uTILS.ImageWorker;
 
 public class StegTest {
 
 	@Test
-	public void testCryptByte_1() {
+	public void testCryptByte_1() throws STEGException {
 		int testTypeImg = BufferedImage.TYPE_3BYTE_BGR;
 		
 		ArrayList<Byte> sourceBytes = generateRandomByteList(400);

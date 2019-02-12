@@ -194,7 +194,7 @@ public class KeyGenPanel extends JFrame {
 		panel_1.add(lblFinalSize, "cell 1 6 3 1,alignx left");
 		
 		// update prevision of size according to type of image, the function calculate size
-		int mult=((BufferedImageType)comboImgType.getSelectedItem()).multiplicator;
+		int mult=((BufferedImageType)comboImgType.getSelectedItem()).getMultiplicator();
 		lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 		
 		JSeparator separator_2 = new JSeparator();
@@ -476,7 +476,7 @@ public class KeyGenPanel extends JFrame {
 				lblThisSettingsAllow.setText("-> This settings allow to code "+(CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				
 				// update prevision of size according to type of image, the function calculate size
-				int mult=((BufferedImageType)comboImgType.getSelectedItem()).multiplicator;
+				int mult=((BufferedImageType)comboImgType.getSelectedItem()).getMultiplicator();
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});		
@@ -492,7 +492,7 @@ public class KeyGenPanel extends JFrame {
 				lblThisSettingsAllow.setText("-> This settings allow to code "+(CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				
 				// update prevision of size according to type of image, the function calculate size
-				int mult=((BufferedImageType)comboImgType.getSelectedItem()).multiplicator;
+				int mult=((BufferedImageType)comboImgType.getSelectedItem()).getMultiplicator();
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});
@@ -514,7 +514,7 @@ public class KeyGenPanel extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				CURRENT_IMG_TYPE = (BufferedImageType)comboImgType.getSelectedItem();
 				// update prevision of size according to type of image, the function calculate size
-				int mult=((BufferedImageType)comboImgType.getSelectedItem()).multiplicator;
+				int mult=((BufferedImageType)comboImgType.getSelectedItem()).getMultiplicator();
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});

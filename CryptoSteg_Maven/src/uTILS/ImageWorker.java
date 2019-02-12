@@ -32,6 +32,11 @@ import javax.imageio.stream.ImageOutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
+
 import gUI.panels.ImageGenContainerPanel;
 
 public class ImageWorker {
@@ -488,6 +493,8 @@ public class ImageWorker {
 		}
 	}
 	
+	
+	
 	/**
 	 * method to clone BufferedImage by reference
 	 * 
@@ -512,7 +519,7 @@ public class ImageWorker {
 	 * 
 	 * @author Alessio Moraschini
 	 */
-	public static byte[] compressIMG(BufferedImage sourceImage, String extension, float factor) throws UnsupportedOperationException {
+	public static byte[] compressIMGjpgNoMeta(BufferedImage sourceImage, float factor) throws UnsupportedOperationException {
 		
 		ByteArrayOutputStream compressed = new ByteArrayOutputStream();
 			
@@ -522,7 +529,7 @@ public class ImageWorker {
 			
 			// initialize type use it to create outWriter
 			ImageTypeSpecifier type = ImageTypeSpecifier.createFromBufferedImageType(sourceImage.getType());
-			ImageWriter writer = ImageIO.getImageWriters(type, extension).next();
+			ImageWriter writer = ImageIO.getImageWriters(type, "jpg").next();
 			
 			// calculate param for compression
 			ImageWriteParam param = writer.getDefaultWriteParam();
@@ -566,7 +573,7 @@ public class ImageWorker {
 	 * 
 	 * @throws IOException 
 	 */
-	public static byte[] compressIMG(File sourceImageFile, String extension, float factor, boolean keepMetadata) throws IOException, UnsupportedOperationException {
+	public static byte[] compressIMGjpg(File sourceImageFile, float factor, boolean keepMetadata) throws IOException, UnsupportedOperationException {
 		
 		ByteArrayOutputStream compressed = new ByteArrayOutputStream();
 		BufferedImage srcImage = null;
@@ -592,7 +599,7 @@ public class ImageWorker {
 			
 			// initialize type use it to create outWriter
 			ImageTypeSpecifier type = ImageTypeSpecifier.createFromBufferedImageType(srcImage.getType());
-			ImageWriter writer = ImageIO.getImageWriters(type, extension).next();
+			ImageWriter writer = ImageIO.getImageWriters(type, "jpg").next();
 			
 			// calculate param for compression
 			ImageWriteParam param = writer.getDefaultWriteParam();

@@ -19,6 +19,7 @@ import crypt.aes.EncryptDecrypt;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManager;
 import crypt.steg.ImageCodeDecode;
+import crypt.steg.STEGException;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.TreeFileMouseListenerCrypter;
@@ -573,6 +574,8 @@ public class CrypterPanel extends JPanel {
 
 						} catch (IOException e1) {
 							logger.error("IO Exception happened!", e1);
+						} catch (STEGException e1) {
+							logger.error("STEG Exception happened!", e1);
 						}
 						
 					// COMPLETE DECRYPT
@@ -592,6 +595,8 @@ public class CrypterPanel extends JPanel {
 							logger.error("Algorithm Exception happened!", e1);
 						} catch (IOException e1) {
 							logger.error("IO Exception happened!", e1);
+						} catch (STEGException e1) {
+							logger.error("STEG Exception happened!", e1);
 						}
 					} 
 				}
@@ -695,6 +700,8 @@ public class CrypterPanel extends JPanel {
 
 						} catch (IOException e1) {
 							logger.error("IO Exception happened!", e1);
+						} catch (STEGException e1) {
+							logger.error("STEG Exception happened!", e1);
 						}
 						
 					// COMPLETE CRYPT
@@ -720,6 +727,8 @@ public class CrypterPanel extends JPanel {
 							logger.error("Algorithm Exception happened!", e1);
 						} catch (IOException e1) {
 							logger.error("IO Exception happened!", e1);
+						} catch (STEGException e1) {
+							logger.error("STEG Exception happened!", e1);
 						}
 					} 
 				}
@@ -927,13 +936,13 @@ public class CrypterPanel extends JPanel {
 		return screepTManager;
 	}
 	
-	private ScreeptManager initSTEG(File imageFile) throws IOException {
+	private ScreeptManager initSTEG(File imageFile) throws IOException, STEGException {
 		STEGcoder = new ImageCodeDecode(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder);
 		return screepTManager;
 	}
 	
-	private ScreeptManager initCOMPLETE(String AES_KEY, File imageFile) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException {
+	private ScreeptManager initCOMPLETE(String AES_KEY, File imageFile) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException {
 		AEScoder = new EncryptDecrypt(AES_KEY);
 		STEGcoder = new ImageCodeDecode(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);

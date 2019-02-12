@@ -20,6 +20,7 @@ import crypt.aes.EncryptDecrypt;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerStub;
 import crypt.steg.ImageCodeDecode;
+import crypt.steg.STEGException;
 
 public class ScreepT_Test {
 	
@@ -84,7 +85,7 @@ public class ScreepT_Test {
 	}
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void testOnlyAESdecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
@@ -278,12 +279,12 @@ public class ScreepT_Test {
 		screepTManager = new ScreeptManagerStub(AEScoder);
 	}
 	
-	private void initSTEG() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException {
+	private void initSTEG() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException {
 		STEGcoder = new ImageCodeDecode(keyIMG);
 		screepTManager = new ScreeptManagerStub(STEGcoder);
 	}
 	
-	private void initCOMPLETE() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException {
+	private void initCOMPLETE() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException {
 		AEScoder = new EncryptDecrypt(AES_KEY);
 		STEGcoder = new ImageCodeDecode(keyIMG);
 		screepTManager = new ScreeptManagerStub(STEGcoder, AEScoder);

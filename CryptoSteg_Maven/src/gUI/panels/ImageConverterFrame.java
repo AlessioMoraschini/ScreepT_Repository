@@ -537,6 +537,9 @@ public class ImageConverterFrame extends JFrame{
 								// if source file exists and is loaded
 								if(inputImgFile!=null && inputImg!=null) {
 									
+									// FORMAT FLAG INITIALIZER
+									boolean JPGorJPEG = ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("jpg") || ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("jpeg");
+									
 									// create copy by reference
 									BufferedImage imageToConvert = ImageWorker.copyImage(inputImg);
 									
@@ -570,11 +573,24 @@ public class ImageConverterFrame extends JFrame{
 																
 										//if is selected an export file
 										if(getCompressionFactor()==1f && !checkBoxKeepMetadata.isSelected()) {
+											
+											// IF UNCOMPRESSED
+											
 											ImageWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
 										}else if(checkBoxKeepMetadata.isSelected()) {
+											
+											// IF KEEP METADATA
+											
 											try {
 												fout = new FileOutputStream(selected);
-												fout.write(ImageWorker.compressIMG(inputImgFile, (String)comboBoxFormats.getSelectedItem(), getCompressionFactor(), true));
+												
+												// START FORMAT TEST
+												
+												if(JPGorJPEG) {
+													fout.write(ImageWorker.compressIMGjpg(inputImgFile, getCompressionFactor(), true));
+												}
+																								
+												
 												fout.flush();
 												fout.close();
 											} catch (IOException e) {
@@ -585,9 +601,16 @@ public class ImageConverterFrame extends JFrame{
 												logger.error("Exception happened during conversion", e);
 											}
 										}else {
+											
+											// IF DON'T KEEP METADATA
+											
 											try {
 												fout = new FileOutputStream(selected);
-												fout.write(ImageWorker.compressIMG(imageToConvert, (String)comboBoxFormats.getSelectedItem(), getCompressionFactor()));
+												
+												if (JPGorJPEG) {
+													fout.write(ImageWorker.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
+												}
+												
 												fout.flush();
 												fout.close();
 											} catch (IOException e) {
