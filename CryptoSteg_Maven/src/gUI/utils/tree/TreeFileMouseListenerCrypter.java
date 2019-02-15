@@ -28,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -43,6 +44,7 @@ import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import uTILS.FileStuff;
+import uTILS.HandleString;
 import uTILS.ImageWorker;
 
 public class TreeFileMouseListenerCrypter {
@@ -226,6 +228,7 @@ public class TreeFileMouseListenerCrypter {
 							if (selected != null) {
 								progUpdater = new TestUpdateProgress(currentConfig);
 								progUpdater.getPb().setValue(5);
+								progUpdater.getLabel().setText("Exporting files...");
 
 								if (!selected.exists()) {
 									selected.mkdirs();
@@ -293,7 +296,11 @@ public class TreeFileMouseListenerCrypter {
 			
 				refreshImage(scaledImage);
 				
-				lblKeyDisp.setText("Displayed: "+thisFile.getPath());
+				String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getAbsolutePath(), cryptoPanel.labelLengthLimit);
+
+				lblKeyDisp.setText("Displayed: " + newdisplayed);
+				
+				cryptoPanel.getTabbedPane().setSelectedIndex(1);
 
 				
 			} catch (IOException e1) {
@@ -322,7 +329,10 @@ public class TreeFileMouseListenerCrypter {
 					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
 					TEXT_LOG.setText(msg);	
 					imgKeySelected.setForeground(SystemColor.GREEN);
-					imgKeySelected.setText(thisFile.getName());
+					
+					String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), cryptoPanel.labelLengthLimit);
+
+					imgKeySelected.setText(newdisplayed);
 					cryptoPanel.setSrcKeyImageFile(thisFile);
 					JOptionPane.showMessageDialog(mainFrame, "Key Image file correctly loaded and selected :)",
 							"Key Image Selected :)", JOptionPane.INFORMATION_MESSAGE);

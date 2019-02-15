@@ -48,6 +48,10 @@ public class ImageWorker {
 	// FIELDS //
 	//////////////////////
 	public final static String[] SUPPORTED_EXTENSIONS = ImageIO.getWriterFileSuffixes();
+	
+	private final static int MAX_INT = Integer.MAX_VALUE;
+	private final static int MIN_INT = Integer.MIN_VALUE;
+	SecureRandom rand;
 
 	public final static int MAX_WIDTH_GEN = 4000;
 	public final static int MAX_HEIGHT_GEN = 4000;
@@ -320,7 +324,7 @@ public class ImageWorker {
 			
 			for (int j = 0; j < width; j++) {
 				// per ogni colonna
-				pixelRGBValue = random.nextInt(Integer.MAX_VALUE);
+				pixelRGBValue = random.nextInt(MAX_INT)-random.nextInt(MAX_INT);
 				generatedKeyimg.setRGB(j, i, pixelRGBValue);
 			}
 		}
@@ -371,7 +375,7 @@ public class ImageWorker {
 		for (int i = 0; i < height; i++) {
 			// per ogni colonna
 			for (int j = 0; j < width; j++) {
-				pixelRGBValue = random.nextInt(Integer.MAX_VALUE);
+				pixelRGBValue = random.nextInt(MAX_INT)-random.nextInt(MAX_INT);
 				generatedKeyimg.setRGB(j, i, pixelRGBValue);
 			}
 		}
@@ -408,7 +412,7 @@ public class ImageWorker {
 		for (int i = 0; i < height; i++) {
 			// per ogni colonna
 			for (int j = 0; j < width; j++) {
-				pixelRGBValue = random.nextInt(Integer.MAX_VALUE);
+				pixelRGBValue = random.nextInt(MAX_INT)-random.nextInt(MAX_INT);
 				generatedKeyimg.setRGB(j, i, pixelRGBValue);
 
 			}

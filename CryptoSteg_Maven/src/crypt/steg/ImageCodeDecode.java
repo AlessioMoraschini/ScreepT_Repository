@@ -3,6 +3,7 @@ package crypt.steg;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,6 +21,12 @@ import gUI.om.BufferedImageType;
  *
  */
 public class ImageCodeDecode {
+	
+	private final int MAX_INT = Integer.MAX_VALUE;
+	private final int MIN_INT = Integer.MIN_VALUE;
+	
+	Integer upLim = MAX_INT - 16777216; // max - 2^24
+	Integer downLim = MIN_INT + 16777216; // min+2^24
 
 	// ImageCodeDecode logger creation		
 	static Logger logger = Logger.getLogger(ImageCodeDecode.class); 
@@ -233,7 +240,11 @@ public class ImageCodeDecode {
 	 * @return OmResult  -> oggetto contenente l'immagine risultante dalla codifica, e il numero di byte codificati.
 	 * */
 	public StegOmResult stegaCryptMultiByte(byte[] AES_CODED_OUT) {
+		
+		SecureRandom rand = new SecureRandom();
 				
+		logger.debug("Started decripting byte array of " + AES_CODED_OUT.length);
+
 		BufferedImage codedImg = new BufferedImage(keyImage.getWidth(), keyImage.getHeight(), keyImage.getType());
 		
 		// initialize total coded bytes and initial available bytes from source
@@ -285,18 +296,24 @@ public class ImageCodeDecode {
 	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
 	    			}else if(availableSrcBytes == 0){
 	    				
-	    				// if finished available bytes
-		    			currentByteToInt = 0;
+	    				// if finished available bytes current value will be a random value (to not have clear keyImage pixel in result)
+		    			currentByteToInt = rand.nextInt(MAX_INT)-rand.nextInt(MAX_INT);
 		    		}
 	    		}   		 
 	    		
 	    		// retrieve current pixel value from key Image
 	    		Integer pxKey = keyImage.getRGB(j, i);
 	    		// make it secure against overflow dividing unsigned by two <=> right shift one position
-	    		Integer securePxKey = secureRightShift(pxKey);
+//	    		Integer securePxKey = secureRightShift(pxKey);
+	    		Integer securePxKey = secForConversion(pxKey);
 	    		
+	    		Integer codedPX;
 	    		// set new value - core of algorithm
-	    		Integer codedPX = securePxKey - currentByteToInt;
+	    		if(availableSrcBytes!=0) {
+		    		codedPX = securePxKey - currentByteToInt;
+	    		}else {
+	    			codedPX = currentByteToInt;
+	    		}
 	    		codedImg.setRGB(j, i, codedPX);
 	    		
 	    		// update progressive N of coded bytes from source, and decrease by the same amount the available bytes
@@ -308,6 +325,8 @@ public class ImageCodeDecode {
 	    // end of image
 //	    return imgPixels;		
 		
+		logger.debug("Finished -> Bytes decripted: "+nBytesCoded+" ; Residual bytes: "+availableSrcBytes+" (must be 0)");
+	    
 		return new StegOmResult(codedImg, strBytesCoded);
 	}
 	
@@ -452,6 +471,8 @@ public class ImageCodeDecode {
 	 * */
 	public byte[] stegaDeCryptMultiByte(BufferedImage codedImg, Integer cryptedByteNumber) throws STEGException {
 		
+		logger.debug("Started decripting "+cryptedByteNumber+"from image with "+bytePerPix+" bytes for each pixel..." );
+		
 		int origLength = cryptedByteNumber;
 		// calcolo larghezza e altezza dell'immagine codificata passata
         int height = codedImg.getHeight();
@@ -474,7 +495,9 @@ public class ImageCodeDecode {
 					// retrieve current pixel value from key Image
 					Integer pxKey = keyImage.getRGB(j, i);
 					// make it secure against overflow dividing unsigned by two <=> right shift one position
-					Integer securePxKey = secureRightShift(pxKey);
+//					Integer securePxKey = secureRightShift(pxKey);
+		    		Integer securePxKey = secForConversion(pxKey);
+
 					Integer codedPx = codedImg.getRGB(j, i);
 					
 					// get decoded value - core of algorithm
@@ -525,7 +548,9 @@ public class ImageCodeDecode {
 					
 					// END PIXEL
 				}// END LINE
-			}// END ROW 
+			}// END ROW
+			
+			logger.debug("Bytes decripted: "+nBytesDeCoded);
 		}else throw new STEGException(); // se dimensioni non corrispondono alla chiave
 		
 		return decodedBytes;
@@ -542,8 +567,7 @@ public class ImageCodeDecode {
 	 * @return secured value redy to be used for encryption
 	 */
 	private Integer secForConversion(Integer val) {
-		Integer upLim = Integer.MAX_VALUE - Byte.MAX_VALUE;
-		Integer downLim = Integer.MIN_VALUE - Byte.MIN_VALUE;
+		
 		if(val > upLim) {
 			val = upLim;
 		}else if(val < downLim) {

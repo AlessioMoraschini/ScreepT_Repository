@@ -11,7 +11,7 @@ public enum CryptoMode {COMPLETE("AS", true, true, true),
 						ONLY_AES("A", true, false, false),
 						ONLY_STEG("S", false, true, false);
 	
-	private String ID;
+	public String ID;
 	public boolean AES;
 	public boolean STEG;
 	public boolean COMPL;

@@ -28,6 +28,18 @@ public class HandleString {
 		currentString = new String(input);
 	}
 	
+	public static String fitToMaxLentgh(String source, int lim) {
+		String res = source;
+		int length = source.length();
+		
+		if (length > lim) {
+			int half = (int)(float)lim/2;
+			res = source.substring(0, half-3)+" ... "+source.substring(length-half-2, length);
+		}
+		
+		return res;
+	}
+	
 	public static String xmlPrettyFormat(String input, int indent) {
 	    try {
 	    	

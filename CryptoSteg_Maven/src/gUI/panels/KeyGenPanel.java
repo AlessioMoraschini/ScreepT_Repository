@@ -416,9 +416,13 @@ public class KeyGenPanel extends JFrame {
 						textLog.append( "\nI'm workin'... just a second (or maybe two!) :)");
 						textLog.setSelectionStart(textLog.getText().length());
 						File result = FileStuff.addKeyImgToDictionary(inputName, IMG , thisFrame);
-						String out = "FINISHED!";
+						String out = result.getName()+" => Added to dictionary :)";
 						textLog.append(out);
 						logger.debug(out);
+						
+						btnExport.setEnabled(true);
+						btnGenerateKey.setEnabled(true);
+						btnAddInDictionary.setEnabled(true);
 						JOptionPane.showMessageDialog(thisFrame, out);
 					}else {
 						// case of null input (cancel pressed by user)

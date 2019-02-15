@@ -17,6 +17,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
+import javax.swing.JProgressBar;
+
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
@@ -162,13 +164,13 @@ public class ScreeptManager {
 	 * @throws STEGException 
 	 */
 	public Boolean crypt(File srcFile, INItializer currentConf) {
-		
+
 		buffer = new byte[AES_BUFFER_SIZE];
 		
-    	progUpdater = new TestUpdateProgress(currentConf);
-		progUpdater.getPb().setValue(0);
-		progUpdater.getLabel().setText("Starting ecnryption...");
-		
+//    	progUpdater = new TestUpdateProgress(currentConf);
+//		progUpdater.getPb().setValue(0);
+//		progUpdater.getLabel().setText("Starting ecnryption...");
+//		
 		wellDone = false;
 		
 		tempMSG += "Start encripting "+srcFile.getAbsolutePath()+" ...\n[Selected mode: "+mode+" ]\n";
@@ -185,30 +187,31 @@ public class ScreeptManager {
 			// CASE 1 - ONLY AES
 			if(mode.AES && !mode.STEG) {
 				
-				progUpdater.getPb().setValue(5);
-				progUpdater.getLabel().setText("AES mode detected!");
+//				progUpdater.getPb().setValue(5);
+//				progUpdater.getLabel().setText("AES mode detected!");
 
 				logger.debug("AES mode detected!");
 
 				onlyAESCrypt(srcFile);
 				wellDone = true;
 				
-				progUpdater.getPb().setValue(100);
+//				progUpdater.getPb().setValue(100);
 				logger.debug("AES Crypt phase - EXITING");
 				
 			// CASE 2 - ONLY STEG
 			}else if(mode.STEG && !mode.AES) {
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = OUT_PATH+"STEGcr_"+srcFile.getName()+"/";
+				RESULT_PATH = OUT_PATH+srcFile.getName()+"/";
 				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
+				RESULT_PATH = outFolder.getCanonicalPath()+"/";
 				
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-				progUpdater.getPb().setValue(5);
-				progUpdater.getLabel().setText("STEG mode detected!");
+//				progUpdater.getPb().setValue(5);
+//				progUpdater.getLabel().setText("STEG mode detected!");
 				
 				tempMSG += "\n => Using folder [ "+outFolder.getAbsolutePath()+" ] to contain crypted Images!\n";
 				logger.debug("STEG mode detected!");
@@ -216,22 +219,23 @@ public class ScreeptManager {
 				onlySTEGCrypt(srcFile);
 				wellDone = true;
 				
-				progUpdater.getPb().setValue(100);
+//				progUpdater.getPb().setValue(100);
 				logger.debug("STEG Crypt phase - EXITING");
 				
 			// CASE 3 - COMPLETE MODE
 			}else if (mode.STEG && mode.AES) {
 
 				// create container folder for result coded images with same name of source file
-				RESULT_PATH = OUT_PATH+"COMPLcr_"+srcFile.getName()+"/";
+				RESULT_PATH = OUT_PATH+srcFile.getName()+"/";
 				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
+				RESULT_PATH = outFolder.getCanonicalPath()+"/";
 
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-				progUpdater.getPb().setValue(5);
-				progUpdater.getLabel().setText("COMPLETE mode detected!");
+//				progUpdater.getPb().setValue(5);
+//				progUpdater.getLabel().setText("COMPLETE mode detected!");
 
 				tempMSG += "\n => Using folder [ "+outFolder.getAbsolutePath()+" ] to contain crypted Images!\n";
 				logger.debug("COMPLETE mode detected!");
@@ -239,7 +243,7 @@ public class ScreeptManager {
 				completeCrypt(srcFile);
 				wellDone = true;
 				
-				progUpdater.getPb().setValue(100);
+//				progUpdater.getPb().setValue(100);
 				logger.debug("COMPLETE Crypt phase - EXITING");
 				
 			}	
@@ -260,6 +264,8 @@ public class ScreeptManager {
 		} catch (IOException e) {
 			resetAfterException(e);
 		} catch (AESException e) {
+			resetAfterException(e);
+		} catch (Exception e) {
 			resetAfterException(e);
 		}
 			
@@ -286,9 +292,9 @@ public class ScreeptManager {
 		// to avoid errors i've to include that bytes during the read plus the IV size
 		buffer = new byte[AES_BUFFER_SIZE+32];
 		
-		progUpdater = new TestUpdateProgress(currentConf);
-		progUpdater.getPb().setValue(0);
-		progUpdater.getLabel().setText("Starting Decryption...");
+//		progUpdater = new TestUpdateProgress(currentConf);
+//		progUpdater.getPb().setValue(0);
+//		progUpdater.getLabel().setText("Starting Decryption...");
 		
 		wellDone = false;
 		
@@ -306,15 +312,15 @@ public class ScreeptManager {
 			// CASE 1 - ONLY AES
 			if(mode.AES && !mode.STEG) {
 				
-				progUpdater.getPb().setValue(5);
-				progUpdater.getLabel().setText("AES mode detected!");
+//				progUpdater.getPb().setValue(5);
+//				progUpdater.getLabel().setText("AES mode detected!");
 
 				logger.debug("AES mode detected!");
 				
 				onlyAESDeCrypt(srcFile);
 				wellDone = true;
 				
-				progUpdater.getPb().setValue(100);
+//				progUpdater.getPb().setValue(100);
 				logger.debug("AES Decrypt phase - EXITING");
 				
 			// CASE 2 - ONLY STEG
@@ -324,15 +330,15 @@ public class ScreeptManager {
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-				progUpdater.getPb().setValue(5);
-				progUpdater.getLabel().setText("STEG mode detected!");
+//				progUpdater.getPb().setValue(5);
+//				progUpdater.getLabel().setText("STEG mode detected!");
 				
 				logger.debug("STEG mode detected!");
 
 				onlySTEGDeCrypt(srcFile);
 				wellDone = true;
 				
-				progUpdater.getPb().setValue(100);
+//				progUpdater.getPb().setValue(100);
 				logger.debug("STEG Decrypt phase - EXITING");
 				
 			// CASE 3 - COMPLETE MODE
@@ -341,15 +347,15 @@ public class ScreeptManager {
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-				progUpdater.getPb().setValue(5);
-				progUpdater.getLabel().setText("COMPLETE mode detected!");
+//				progUpdater.getPb().setValue(5);
+//				progUpdater.getLabel().setText("COMPLETE mode detected!");
 
 				logger.debug("COMPLETE mode detected!");
 				
 				completeDeCrypt(srcFile);
 				wellDone = true;
 				
-				progUpdater.getPb().setValue(100);
+//				progUpdater.getPb().setValue(100);
 				logger.debug("COMPLETE Decrypt phase - EXITING");
 				
 			}	
@@ -368,10 +374,8 @@ public class ScreeptManager {
 	private void resetAfterException(Exception e) {
 		String msg = "\n => OOOPS! An error occurred :(";
 		progUpdater.getPb().setValue(100);
-		progUpdater.getLabel().setText(msg);
 		logger.error(msg, e);
 		tempMSG += msg;
-		
 		wellDone = false;
 	}
 	
@@ -404,6 +408,10 @@ public class ScreeptManager {
 	// Function that implements encryption of source file into another crypted file with same extension.
 	private void onlyAESCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 		
+		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
+		
 		FileInputStream streamIN = new FileInputStream(srcFile);
 //		int available = streamIN.available();
 		
@@ -418,7 +426,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		CRYPT_NAME = srcFile.getName();
-		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+"AEScr_"+CRYPT_NAME));
+		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+CRYPT_NAME));
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -436,9 +444,7 @@ public class ScreeptManager {
 			throw new AESException();
 		}
 
-		progUpdater.getLabel().setText("Crypting "+result.getName());
 		int i=1;
-
 		
 		while(readFlag > 0) {
 			
@@ -478,6 +484,10 @@ public class ScreeptManager {
 	// Function that implements aes decryption of source file into another decrypted file with same extension.
 	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 		
+		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
+		
 		FileInputStream streamIN = new FileInputStream(srcFile);
 		//int available = streamIN.available();
 		
@@ -491,7 +501,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		DECRYPT_NAME = srcFile.getName();
-		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+"AESdcr"+DECRYPT_NAME));
+		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+DECRYPT_NAME));
 		
 		// create file if it does not exist
 		result.createNewFile();
@@ -509,8 +519,6 @@ public class ScreeptManager {
 			throw new AESException();
 		}
 
-		progUpdater.getLabel().setText("Decrypting - writing to "+result.getName());
-		
 		int i =1;
 		
 		while(readFlag > 0) {
@@ -549,6 +557,10 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException {
 
+		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
+		
 		// get (available for write) bytes per pix
 		int mult = this.imgCoder.getBytePerPix();
 
@@ -634,11 +646,15 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
 
+		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
+		
 		// second element of folder result name is name of original file
-		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
+		DECRYPT_NAME = srcFile.getName();
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(OUT_PATH+"STEGdcr_"+DECRYPT_NAME);
+		File outFile = new File(OUT_PATH+DECRYPT_NAME);
 		outFile = FileStuff.renameJavaObjFile(outFile);
 		
 		// create out Stream setting append mode (do not overwrite every cycle)
@@ -653,8 +669,6 @@ public class ScreeptManager {
 			throw new STEGException();
 		}
 
-		progUpdater.getLabel().setText("DeCrypting - writing to "+outFile.getName());
-		
 		// get file array and scan all files till the end and sort them by first element in name name
 		File[] cryptedImgList = srcFile.listFiles(new FilenameFilter() {
 			// accept only png files
@@ -704,6 +718,10 @@ public class ScreeptManager {
 	// this is method for top security
 	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 				
+		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
+		
 		// get (available for write) bytes per pix
 		int mult = this.imgCoder.getBytePerPix();
 		
@@ -812,6 +830,10 @@ public class ScreeptManager {
 	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
 	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 		
+		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
+		
 //		// create a copy by reference of the original coder - THIS WILL USE SAME PORTION USED FOR ENCRYPTION
 //		ImageCodeDecode copyOfImgCoder = new ImageCodeDecode(imgCoder);
 //		// calculate w to grant n� of pixels%16=0 and use the portion of key image with calculated
@@ -819,10 +841,10 @@ public class ScreeptManager {
 //		copyOfImgCoder.keyImage = (subImgMultOfNpx(imgCoder.getKeyImage(), 16));
 //		
 		// second element of folder result name is name of original file
-		DECRYPT_NAME = HandleString.retrieveFromNelements(srcFile.getName(), "_",1);
+		DECRYPT_NAME = srcFile.getName();
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(OUT_PATH+"COMPLdcr_"+DECRYPT_NAME);		
+		File outFile = new File(OUT_PATH+DECRYPT_NAME);		
 		outFile = FileStuff.renameJavaObjFile(outFile);
 		
 		// create out Stream setting append mode (do not overwrite every cycle)

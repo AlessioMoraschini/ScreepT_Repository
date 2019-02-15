@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import gUI.om.BufferedImageType;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.TreeFileMouseListenerDictionary;
 import iNIT.INItializer;
@@ -112,20 +113,10 @@ public class KeyDictionaryPanel extends JFrame{
 		getContentPane().add(panel_1, "cell 0 2 9 1,grow");
 		panel_1.setLayout(new MigLayout("", "[:10px:10px][:50:50px][:100:60%,grow][:10px:10px][][10][][5%][20px:12.5%,grow]", "[:20px:30px][20][20][20][20][10,grow]"));
 		
-		JCheckBox chkOverwrite = new JCheckBox("Overwrite Dictionary files");
-		chkOverwrite.setFont(new Font("SansSerif", Font.BOLD, 12));
-		chkOverwrite.setForeground(Color.LIGHT_GRAY);
-		chkOverwrite.setSelected(currentConf.getFileOpt().isFlagOverwrite());
-		chkOverwrite.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(chkOverwrite.isSelected()) {
-					currentConf.getFileOpt().setFlagOverwrite(true);
-				}else {
-					currentConf.getFileOpt().setFlagOverwrite(false);
-				}
-			}
-		});
-		panel_1.add(chkOverwrite, "cell 0 4 4 1,alignx center");
+		
+		scrollPane = new JScrollPane();
+		panel_1.add(scrollPane, "cell 4 1 5 5,grow");
+		
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -140,37 +131,19 @@ public class KeyDictionaryPanel extends JFrame{
 		textArea.setBackground(new Color(255, 222, 173));
 		scrollPane_1.setViewportView(textArea);
 		
-		
-		JButton btnViewInSystem = new JButton("View in System explorer");
-		panel_1.add(btnViewInSystem, "cell 1 0 2 1,growx");
-		btnViewInSystem.setForeground(new Color(211, 211, 211));
-		btnViewInSystem.setFont(new Font("SansSerif", Font.BOLD, 10));
-		btnViewInSystem.setBackground(new Color(0, 0, 0));
-		
-		
-		btnViewInSystem.addActionListener(new ActionListener() {
-			
-			@Override
+		JCheckBox chkOverwrite = new JCheckBox("Overwrite Dictionary files");
+		chkOverwrite.setFont(new Font("SansSerif", Font.BOLD, 12));
+		chkOverwrite.setForeground(Color.LIGHT_GRAY);
+		chkOverwrite.setSelected(currentConf.getFileOpt().isFlagOverwrite());
+		chkOverwrite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					Desktop.getDesktop().open(KEY_DICTIONARY_FILE);
-					logger.debug(KEY_DICTIONARY_FILE.getAbsolutePath()+" Opened in system explorer");
-					
-					// alternative way to open in system explorer
-					//Runtime.getRuntime().exec("explorer.exe /select," + KEY_DICTIONARY_FILE.getAbsolutePath());
-				} catch (IOException e1) {
-				logger.error("Error opening folder in system explorer !"+e1.toString());
-				}				
+				if(chkOverwrite.isSelected()) {
+					currentConf.getFileOpt().setFlagOverwrite(true);
+				}else {
+					currentConf.getFileOpt().setFlagOverwrite(false);
+				}
 			}
 		});
-		
-		JLabel lblNewLabel = new JLabel("Current files in Dictionary");
-		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-		lblNewLabel.setForeground(Color.WHITE);
-		panel_1.add(lblNewLabel, "cell 4 0 5 1,alignx center");
-		
-		scrollPane = new JScrollPane();
-		panel_1.add(scrollPane, "cell 4 1 5 5,grow");
 		
 		TreeModel treeModel = new FileTreeModel(KEY_DICTIONARY_FILE);
 		tree = new JTree(treeModel);
@@ -201,7 +174,8 @@ public class KeyDictionaryPanel extends JFrame{
 			}
 		};
 		tree.addTreeSelectionListener(treeListener);
-
+		
+		
 		JButton btnReloadImgTree = new JButton("");
 		btnReloadImgTree.setBackground(Color.BLACK);
 		btnReloadImgTree.setIcon(new ImageIcon(ChargeIniLog.ICON_RELOAD_BLUE));
@@ -213,37 +187,80 @@ public class KeyDictionaryPanel extends JFrame{
 				refreshJTree();
 			}
 		});
-		panel_1.add(btnReloadImgTree, "cell 1 1,alignx center,aligny center");
+		panel_1.add(btnReloadImgTree, "cell 1 4,alignx center,aligny center");
+		panel_1.add(chkOverwrite, "cell 2 4,alignx center");
 		
+		JButton btnViewInSystem = new JButton("View in System explorer");
+		panel_1.add(btnViewInSystem, "cell 1 0 2 1,growx");
+		btnViewInSystem.setForeground(new Color(211, 211, 211));
+		btnViewInSystem.setFont(new Font("SansSerif", Font.BOLD, 15));
+		btnViewInSystem.setBackground(new Color(0, 0, 0));
+		
+		
+		btnViewInSystem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().open(KEY_DICTIONARY_FILE);
+					logger.debug(KEY_DICTIONARY_FILE.getAbsolutePath()+" Opened in system explorer");
+					
+					// alternative way to open in system explorer
+					//Runtime.getRuntime().exec("explorer.exe /select," + KEY_DICTIONARY_FILE.getAbsolutePath());
+				} catch (IOException e1) {
+				logger.error("Error opening folder in system explorer !"+e1.toString());
+				}				
+			}
+		});
+		
+		JLabel lblNewLabel = new JLabel("Current files in Dictionary");
+		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+		lblNewLabel.setForeground(Color.WHITE);
+		panel_1.add(lblNewLabel, "cell 4 0 5 1,alignx center");
+	
 		JButton btnLoadKey = new JButton("Add Key Image");
 		btnLoadKey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// show input dialog to select the file(gives null in case of no file selected)
 				File selected = fileRead(thisPanel);
-				if (selected!=null) {
-					if (FileStuff.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()),currentConf.getFileOpt().isFlagOverwrite())) {
-						JOptionPane.showMessageDialog(thisPanel, "File correctly saved in " + KEY_DICTIONARY,
-								"File added to dictionary :)", JOptionPane.INFORMATION_MESSAGE);
-						logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KEY_DICTIONARY);
-					} else {
-						JOptionPane.showMessageDialog(thisPanel, "File not saved in " + KEY_DICTIONARY,
-								"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
-						logger.error("File not saved, some error occurred :( ");
+				if (selected!=null && selected.getName().toLowerCase().endsWith("png")) {
+					
+					try {
+						BufferedImage tempImg = ImageIO.read(selected);
+						if(BufferedImageType.checkIfAdmittedType(tempImg.getType())) {
+							
+							if (FileStuff.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()),currentConf.getFileOpt().isFlagOverwrite())) {
+								JOptionPane.showMessageDialog(thisPanel, "File correctly saved in " + KEY_DICTIONARY,
+										"File added to dictionary :)", JOptionPane.INFORMATION_MESSAGE);
+								logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KEY_DICTIONARY);
+							}else{
+								erorrLogNmsg();
+							}
+							refreshJTree();
+							
+						}else {
+							erorrLogNmsg();
+						}
+					} catch (IOException e1) {
+						logger.error("IO error retrieving image from selected file", e1);
+						erorrLogNmsg();
 					}
-					// refresh tree gui
-					refreshJTree();
+				} else {
+					erorrLogNmsg();
 				}
 			}
 		});
-		panel_1.add(btnLoadKey, "cell 2 1,grow");
+		panel_1.add(btnLoadKey, "cell 1 1 2 1,grow");
 		btnLoadKey.setBackground(Color.GRAY);
-		btnLoadKey.setFont(new Font("SansSerif", Font.BOLD, 10));
+		btnLoadKey.setFont(new Font("SansSerif", Font.BOLD, 13));
 		
 		JButton btnImportDictionary = new JButton("Import Dictionary");
 		panel_1.add(btnImportDictionary, "cell 1 2 2 1,growx");
 		btnImportDictionary.setBackground(Color.GRAY);
-		btnImportDictionary.setFont(new Font("SansSerif", Font.BOLD, 10));
+		btnImportDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));
 		btnImportDictionary.addActionListener(new ActionListener() {
+			
+			// TODO check image type and extension of file before to load! 
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -270,7 +287,7 @@ public class KeyDictionaryPanel extends JFrame{
 		JButton btnExportDictionary = new JButton("Export Dictionary");
 		panel_1.add(btnExportDictionary, "cell 1 3 2 1,growx");
 		btnExportDictionary.setBackground(Color.GRAY);
-		btnExportDictionary.setFont(new Font("SansSerif", Font.BOLD, 10));
+		btnExportDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));
 		btnExportDictionary.addActionListener(new ActionListener() {
 			
 			@Override
@@ -417,6 +434,12 @@ public class KeyDictionaryPanel extends JFrame{
         	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
+	}
+	
+	private void erorrLogNmsg() {
+		JOptionPane.showMessageDialog(thisPanel, "File not saved in " + KEY_DICTIONARY,
+				"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+		logger.error("File not saved, some error occurred :( ");
 	}
 	
 	private void refreshJTree() {
