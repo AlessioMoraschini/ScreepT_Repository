@@ -7,10 +7,7 @@ import javax.swing.JLabel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.FlatteningPathIterator;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -22,13 +19,13 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 
 import javax.swing.JFileChooser;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -37,10 +34,11 @@ import org.ini4j.Wini;
 
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
-import gUI.panels.CryptoStegTest_Gui_V2_0;
 import gUI.panels.GeneralOptionsFrame;
 import gUI.panels.KeyGenPanel;
+import gUI.panels.NetInfoPanel;
 import gUI.panels.TextFileWriter;
+import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.ImageConverterFrame;
@@ -52,10 +50,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.SystemColor;
@@ -68,7 +63,6 @@ import java.awt.Color;
 import javax.swing.Action;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
-import javax.swing.UIDefaults;
 
 public class mainGUI {
 
@@ -83,10 +77,12 @@ public class mainGUI {
 	
 	// the name of the application used elsewhere on the sw
 	private static final String APPLICATION_NAME = "ScrYpt_V1.0";
+	private static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
 	
 	// constant files & directories prefix
 	private static final String RESOURCES_DIR="Resources_Scrypt/";
 	private static final String DEFAULT_INI="Resources_Scrypt/CONFIG.ini";
+	private static final String BACKUP_SW_INI="Resources_Scrypt/Backup/BACKUP_CONFIG.ini";
 	private static final String DEFAULT_INI_FOLDER="INI_FILES";
 	
 	// log_trace location
@@ -104,12 +100,50 @@ public class mainGUI {
 	// the main frame for placing the content
 	volatile private JFrame frmScryptV;
 	
-	// frames that open in new dialog
+	// FRAMES THAT OPEN IN A NEW DIALOG
 	private static GraphicPreferencesFrame panelGuiOptions;
 	private static KeyGenPanel panelKeyGen;
 	private static KeyDictionaryPanel panelKeyDict;
 	private static GeneralOptionsFrame panelGeneralOptions;
 	private static ImageConverterFrame panelImgConv;
+	private static NetInfoPanel netInfoPanel;
+	
+	// PANELS THAT OPEN IN THE MAIN FRAME
+	private TextFileWriter initTxtWriter;
+	private JPanel panelCrypter;
+	private ChargeIniLog configManagerPanel;
+	
+	// MENU ITEMS
+	private JMenuBar menuBar;
+	
+	private JMenu mnFile;
+	private JMenu mnPreferences;
+	private JMenu mnCryptoSteg; 
+	private JMenu mnVarious;
+	private JMenu mnConversionsAndOther;
+	private JMenu mnFilesAndDirectories;
+	private JMenu mnHelp;
+	
+	private JMenuItem mntmExit;
+	private JMenuItem loadPrjSub;
+	private JMenuItem savePrjSub;
+	private JMenuItem loadDefaultPrjSub;
+	private JMenuItem mntmUserDocumentation;
+	private JMenuItem mntmSaveCurrentAs;
+	private JMenuItem mntmGenOpt;
+	private JMenuItem mntmCustomizeUIView;
+	private JMenuItem mntmInspectCurrentConfiguration;
+	private JMenuItem mntmCrypter;
+	private JMenuItem generateKeyImageSub;
+	private JMenuItem mntmViewKeyDictionary;
+	private JMenuItem mntmNewTextFile;
+	private JMenuItem netInfo;
+	private JMenuItem mntmImageConverter;
+	private JMenuItem mntmTouppercaseDirectory;
+	private JMenuItem mntmReturnToWelcome;
+	private JMenuItem mntmAboutScreept;
+	private JMenuItem mntmExportLog; 
+	private JMenuItem loadSrcrYptDefaultConf;
 	
 	// END GUI ELEMENTS
 	
@@ -135,12 +169,6 @@ public class mainGUI {
 	// date used for log operations
 	private static Date now;
 	
-	// panel representing text-editor
-	private TextFileWriter initTxtWriter;
-	
-	// panel representing the file Crypter
-	private JPanel panelCrypter;
-	
 	// FLAGS TO SIGNAL THAT A MODULE IS OPENED (JDIALOG) 
 	// for jpanels they refresh only the first time opened or if manually refreshed (TODO)
 	private static boolean flagFrameKeyGen=false;
@@ -148,6 +176,7 @@ public class mainGUI {
 	private static boolean flagFrameGuiOptions=false;
 	private static boolean flagFrameKeyDict=false;	
 	private static boolean flagImgConv=false;
+	private static boolean flagInfoPanel=false;
 	
 	volatile private static boolean running = false;
 	
@@ -254,6 +283,9 @@ public class mainGUI {
 									}
 									if(!ImageConverterFrame.active) {
 										flagImgConv=false;
+									}
+									if(!NetInfoPanel.active) {
+										flagInfoPanel=false;
 									}
 								} catch (InterruptedException e) {
 									logger.error("Exception happened!", e);
@@ -373,7 +405,7 @@ public class mainGUI {
 	public mainGUI() {
 		
 		// initialize value for function uppercaseDirectories ()
-		last_dir_used="INI_FILES";
+		last_dir_used=currentConfiguration.getFileOpt().getLastSrcFolderPath();
 		
 		// INITIALIZE MAIN_GUI (See the initialize() function below this constructor)
 		initialize();
@@ -410,27 +442,12 @@ public class mainGUI {
 	 */
 	private void initialize() {
 
-		// if not specified name in config then prompt
+		// ASK FOR USERNAME IF NULL OR FIRST TIME
 		if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-			boolean end=false;
-			String input="";
-			logger.debug("Current user input initialization: void user or lenght>20 detected!");
-			do {
-				input = JOptionPane.showInputDialog("Please insert your name:", "U-sir");
-				if (input.length() > 20) {
-					JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",
-							"UserName lenght Error", JOptionPane.WARNING_MESSAGE);
-					logger.error("Error in user input, redo.");
-				} else {
-					currentConfiguration.getGenOpt().setUserName(input);
-					currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "userName", input);
-					end = true;
-				} 
-			} while (!end);
-			logger.debug("Name selected and saved username: "+input);
+			askUsername();
 		}
 		
-		// inizialize values with screen width
+		// INITIALIZE SCREEN PROPOERTIES
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		screenWidth = gd.getDisplayMode().getWidth();
 		screenHeight = gd.getDisplayMode().getHeight();
@@ -438,58 +455,36 @@ public class mainGUI {
 		menuSize = currentConfiguration.getGuiOpt().getMenuFontSize();
 		subMenuSize = menuSize-2;
 		
+		// INITIALIZE MAIN FRAME
 		frmScryptV = new JFrame();
 		frmScryptV.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		frmScryptV.getContentPane().setBackground(SystemColor.windowText);
 		frmScryptV.setBounds(0, 0, 1200, 860 );
 		
-		//Istruzione per schermo intero
+		// FULL SCREEN SETTING
 	    frmScryptV.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		
 		frmScryptV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		JMenuBar menuBar = new JMenuBar();
-//		menuBar.setBackground(Color.DARK_GRAY);
-		menuBar.setFont(new Font("Segoe UI", Font.BOLD, menuSize));
+        frmScryptV.setVisible(true);
+        
+        setBackgroundImage();
+        
+        // INIT MENU and SUMBMENUS
+        menuBar = new JMenuBar();
 		menuBar.setOpaque(true);
 		frmScryptV.setJMenuBar(menuBar);
 		
-		// setto lo sfondo iniziale dell'app
-		try {
-			JPanel MAIN_PANEL = new JPanel();
-			MAIN_PANEL.setBackground(SystemColor.infoText);
-            frmScryptV.getContentPane().add(MAIN_PANEL);
-            MAIN_PANEL.setLayout(new MigLayout("", "[90%]", "[1.00][100.52%,baseline]"));
-            BufferedImage image = ImageIO.read(new File(RESOURCES_DIR + "Logo-AM_v2.jpg"));
-            //Image scaledImage = image.getScaledInstance(screenWidth, screenHeight,Image.SCALE_FAST);
-            JLabel label = new JLabel(new ImageIcon(image));
-            //MAIN_PANEL.add(label, "cell 0 1,grow");
-            
-		   	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-		   	contentPane.removeAll();
-	    	contentPane.add(label);
-	    	contentPane.revalidate(); 
-	    	contentPane.repaint();
-			logger.debug("Background of mainGUI setted: "+RESOURCES_DIR + "Logo-AM_v2.jpg");
-
-        } catch (IOException e2) {
-			logger.error("Exception happened!", e2);
-        }
-
-        frmScryptV.setVisible(true);
+		mnFile = new JMenu("File");
+		mnPreferences = new JMenu("Preferences");
+		mnCryptoSteg = new JMenu("ScreepT");
+		mnVarious = new JMenu("Various");
+		mnConversionsAndOther = new JMenu("Conversions and Media");
+		mnFilesAndDirectories = new JMenu("Files And Directories");
+		mnHelp = new JMenu("Help");
 		
-		JMenu mnFile = new JMenu("File");
-		mnFile.setBackground(SystemColor.menu);
-		//mnFile.setForeground(Color.BLACK);
-		mnFile.setFont(new Font("Gadugi", Font.BOLD, menuSize));
-		menuBar.add(mnFile);
-		//UIManager.put("PopupMenu.border", new LineBorder(Color.gray));
+//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
 		
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mntmExit.addActionListener(new ActionListener() {
-			
-			@Override
+		// NOT OPENING VIEW - EXIT AND CLOSE SCRYPT
+		mntmExit = new JMenuItem(new AbstractAction("Exit") {
 			public void actionPerformed(ActionEvent e) {
 				if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(","Exit Program",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
 					now=new Date();
@@ -504,55 +499,34 @@ public class mainGUI {
 			}
 		});
 		
-		JMenuItem mntmInspectCurrentConfiguration = new JMenuItem(new AbstractAction("Current Configuration") {
-		    public void actionPerformed(ActionEvent ae) {
-				   
-	    		JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-		    	ChargeIniLog init = new ChargeIniLog(currentConfiguration, frmScryptV);
-		    	contentPane.removeAll();
-		    	contentPane.add(init);
-		    	contentPane.revalidate(); 
-		    	contentPane.repaint();
-//		    	currentConfiguration.readConfigIniFile();	-> cause of a bug because of cuncurrency	    	
-	    }
-	});
-		mntmInspectCurrentConfiguration.setText("Configuration Manager");
-		mntmInspectCurrentConfiguration.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnFile.add(mntmInspectCurrentConfiguration);
-		
-		JMenuItem loadPrjSub = new JMenuItem(new AbstractAction("Load Configuration") {
+		// NOT OPENING VIEW - LOAD CUSTOM CONFIGURATION
+		loadPrjSub = new JMenuItem(new AbstractAction("Load Custom Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		   
 		    		JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 		    		INIfileChoosER panel = new INIfileChoosER(currentConfiguration, DEFAULT_INI_FOLDER);
 			    	panel.setBounds(20,20,frmScryptV.getWidth(),frmScryptV.getHeight()/2);
-//			    	currentConfiguration.readConfigIniFile();	-> cause of a bug because of cuncurrency	    	
 		    }
 		});
-		mnFile.add(loadPrjSub);
-		loadPrjSub.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		
-		JMenuItem savePrjSub = new JMenuItem(new AbstractAction("Save Configuration") {
+
+		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
+		savePrjSub = new JMenuItem(new AbstractAction("Export Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 		    	INIfileChoosER panel = new INIfileChoosER(currentConfiguration);
 		    	panel.setBounds(20,20,frmScryptV.getWidth(),frmScryptV.getHeight()/2);  	
-				//config_PATH.setText(currentConfiguration.getIniFile().getFile().getAbsolutePath());
 		    }
 		});
-		mnFile.add(savePrjSub);
-		savePrjSub.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
 		
-		JSeparator separator_1 = new JSeparator();
-		mnFile.add(separator_1);
-		
-		JMenuItem loadDefaultPrjSub = new JMenuItem(new AbstractAction("Load Default Configuration") {
+		// NOT OPENING VIEW - RELOAD CONFIGURATION
+		loadDefaultPrjSub = new JMenuItem(new AbstractAction("Reload Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 
-		    	if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to load default config(unsaved changes will be lost)? ","Warning - Load INI standard config?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
+		    	if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to load default config(unsaved changes will be lost)? ","Warning - Reload INI default config?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
 			    	try {
 						currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
 						currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
+						JOptionPane.showMessageDialog(frmScryptV,"Configuration reloaded!");
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(frmScryptV,"Error opening: "+DEFAULT_INI+" -> maybe it does not exist?");
 						logger.error("Exception happened!", e);
@@ -560,17 +534,13 @@ public class mainGUI {
 			    	currentConfiguration.readConfigIniFile();
 			    	JOptionPane.showMessageDialog(frmScryptV,"File '"+ currentConfiguration.getIniFile().getFile().getName()+"' loaded!");
 			    }else {
-					JOptionPane.showMessageDialog(frmScryptV, "File not loaded, current CONFIG mantained!");
+					JOptionPane.showMessageDialog(frmScryptV, "Configuration not loaded, current CONFIG mantained!");
 				}
 		    }
 		});
-		mnFile.add(loadDefaultPrjSub);
-		loadDefaultPrjSub.setText("Load Default Configuration");
-		loadDefaultPrjSub.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
 		
-		JMenuItem mntmSaveCurrentAs = new JMenuItem("Save Current as Default");
-		mnFile.add(mntmSaveCurrentAs);
-		mntmSaveCurrentAs.addActionListener(new ActionListener() {
+		// NOT OPENING VIEW - SAVE DEFAULT CONFIGURATION
+		mntmSaveCurrentAs = new JMenuItem(new AbstractAction("Save Current as Default") {
 			public void actionPerformed(ActionEvent e) {
 				try {	
 					currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
@@ -579,308 +549,40 @@ public class mainGUI {
 				} catch (IOException e1) {
 					logger.error("Exception happened!", e1);
 				}
-				if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to overwrite default config(standard CONFIG.ini will be lost)? ","Warning - Overwrite INI standard config?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
+				if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to overwrite default configuration?","Warning - Overwrite default configuration?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
 					currentConfiguration.writeCurrentConfigIniFile();
 					JOptionPane.showMessageDialog(frmScryptV, "File "+currentConfiguration.getIniFile().getFile().getAbsolutePath()+" saved!");
 				}else {
-					JOptionPane.showMessageDialog(frmScryptV, "File not saved!");
+					JOptionPane.showMessageDialog(frmScryptV, "Configuration not saved!");
 				}
 			}
 		});
-		mntmSaveCurrentAs.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
 		
-		JSeparator separator_2 = new JSeparator();
-		mnFile.add(separator_2);
-		mnFile.add(mntmExit);
-	
-		
-		JMenu mnPreferences = new JMenu("Preferences");
-		mnPreferences.setBackground(SystemColor.menu);
-		//mnPreferences.setForeground(Color.BLACK);
-		mnPreferences.setFont(new Font("Gadugi", Font.BOLD, menuSize));
-		menuBar.add(mnPreferences);
-		
-		JMenuItem mntmCustomizeUIView = new JMenuItem("Customize UI View");
-		mntmCustomizeUIView.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (!flagFrameGuiOptions) {
-					flagFrameGuiOptions = true;
-					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
-					panelGuiOptions.setBounds(500, 300, 950, 330);
-					panelGuiOptions.setVisible(true);
-//					panelGuiOptions.setAlwaysOnTop(true);
-					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelGuiOptions.setTitle("Apply/Save Preferences [Customize - Apply - Save]");
-				}else {
-					panelGuiOptions.requestFocus();
-				}
-			}
-		});
-		mntmCustomizeUIView.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnPreferences.add(mntmCustomizeUIView);
-		
-		JMenuItem mntmCrypto = new JMenuItem("General Options");
-		mntmCrypto.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (!flagFrameGenOptions) {
-					flagFrameGenOptions=true;
-					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
-					//bounds setted in constructor GraphicPreferencesFrame();
-					panelGeneralOptions.setBounds(400, 300, 700, 250);
-					panelGeneralOptions.setVisible(true);
-//					panelGeneralOptions.setAlwaysOnTop(true);
-					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelGeneralOptions.setTitle("Apply/Save General Options [Customize - Apply - Save]");
-				}else {
-					panelGeneralOptions.requestFocus();
-				}
-			}
-		});
-		mntmCrypto.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnPreferences.add(mntmCrypto);
-		
-		JMenu mnCryptoSteg = new JMenu("ScreepT");
-		mnCryptoSteg.setBackground(SystemColor.menu);
-		//mnCryptoSteg.setForeground(Color.BLACK);
-		mnCryptoSteg.setFont(new Font("Gadugi", Font.BOLD, menuSize));
-		menuBar.add(mnCryptoSteg);
-		
-		JMenuItem mntmCrypter = new JMenuItem(new AbstractAction("File Crypter") {
+		// NOT OPENING VIEW - RELOAD STANDARD SCRYPT CONFIGURATION
+		loadSrcrYptDefaultConf = new JMenuItem(new AbstractAction("Reset Original") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-		    	if(panelCrypter == null) {
-			    	panelCrypter = new CrypterPanel(currentConfiguration, frmScryptV);
-		    	}
-		    	contentPane.removeAll();
-		    	contentPane.add(panelCrypter);
-		    	contentPane.revalidate(); 
-		    	contentPane.repaint();
-		    }
-		});
-		mntmCrypter.setText("ScreepT - Crypt and Decrypt files");
-		mntmCrypter.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnCryptoSteg.add(mntmCrypter);
-		
-		JSeparator separator_3 = new JSeparator();
-		mnCryptoSteg.add(separator_3);
-		
-//		// esempio per embed in finestra principale
-//		
-//		JMenuItem loadKeyImageSub = new JMenuItem(new AbstractAction("Load Key Image") {
-//		    public void actionPerformed(ActionEvent ae) {
-//		    	
-//		    }
-//		});
-//		mnCryptoSteg.add(loadKeyImageSub);
-//		loadKeyImageSub.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-//		
-		// open in a new window
-		JMenuItem generateKeyImageSub = new JMenuItem(new AbstractAction("Generate Key Image") {
-		    public void actionPerformed(ActionEvent ae) {
-		    	if (!flagFrameKeyGen) {
-		    		flagFrameKeyGen = true;
-		    		panelKeyGen = new KeyGenPanel(currentConfiguration);
-//					panelKeyGen.setAlwaysOnTop(true);
-					panelKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelKeyGen.setBounds(150, 150, 1100, 800);
-					panelKeyGen.setVisible(true);
-					panelKeyGen.setTitle("IMG Generator (V1.1) - A.M.2018");
-					//panel.setAlwaysOnTop(true);
-					//panel.setSize(frmScryptV.getWidth(),frmScryptV.getHeight());
-				}else {
-					panelKeyGen.requestFocus();
+
+		    	if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ","Warning - Reset INI standard config?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
+			    	try {
+			    		FileUtils.copyFile(new File(BACKUP_SW_INI), new File(DEFAULT_INI));
+						currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
+						currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
+						askUsername();
+						
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(frmScryptV,"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
+						logger.error("Exception happened!", e);
+					}
+			    	currentConfiguration.readConfigIniFile();
+			    	JOptionPane.showMessageDialog(frmScryptV,"File '"+ currentConfiguration.getIniFile().getFile().getName()+"' loaded!");
+			    }else {
+					JOptionPane.showMessageDialog(frmScryptV, "Configuration not loaded, current CONFIG mantained!");
 				}
 		    }
 		});
-		mnCryptoSteg.add(generateKeyImageSub);
-		generateKeyImageSub.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
 		
-		// open in a new window - DICTIONARY (KEY IMG)
-		JMenuItem mntmViewKeyDictionary = new JMenuItem(new AbstractAction("View Key Dictionary") {
-		    public void actionPerformed(ActionEvent e) {
-		    	if (!flagFrameKeyDict) {
-		    		flagFrameKeyDict = true;
-		    		panelKeyDict = new KeyDictionaryPanel(currentConfiguration);
-		    		panelKeyDict.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		panelKeyDict.setBounds(300, 100, 800, 560);
-//		    		panelKeyDict.setAlwaysOnTop(true);
-		    		panelKeyDict.setVisible(true);
-		    		panelKeyDict.setTitle("Key Dictionary Manager");
-				}else {
-					panelKeyDict.requestFocus();
-				}
-			}
-		});
-		mnCryptoSteg.add(mntmViewKeyDictionary);
-		mntmViewKeyDictionary.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		
-		JMenu mnVarious = new JMenu("Various");
-		mnVarious.setBackground(SystemColor.menu);
-		//mnVarious.setForeground(Color.BLACK);
-		mnVarious.setFont(new Font("Gadugi", Font.BOLD, menuSize));
-		menuBar.add(mnVarious);
-		
-		JMenuItem mntmNewTextFile = new JMenuItem("Text Editor");
-		mnVarious.add(mntmNewTextFile);
-		mntmNewTextFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			
-				JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-				if(initTxtWriter == null) {
-					initTxtWriter = new TextFileWriter(frmScryptV, currentConfiguration);
-				}		    	
-		    	contentPane.removeAll();
-		    	contentPane.add(initTxtWriter);
-		    	contentPane.revalidate(); 
-		    	contentPane.repaint();
-			
-			}
-		});
-		mntmNewTextFile.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		
-		JSeparator separator_4 = new JSeparator();
-		mnVarious.add(separator_4);
-		
-		JMenu mnConversionsAndOther = new JMenu("Conversions and Media");
-		mnConversionsAndOther.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnVarious.add(mnConversionsAndOther);
-		
-		JMenuItem mntmSimpleCryptdecriptaes = new JMenuItem("Simple Text Crypt/Decript (AES)");
-		mnConversionsAndOther.add(mntmSimpleCryptdecriptaes);
-		mntmSimpleCryptdecriptaes.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mntmSimpleCryptdecriptaes.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CryptoStegTest_Gui_V2_0 runner = new CryptoStegTest_Gui_V2_0();
-		    	runner.getFrame().setVisible(true);
-//		    	runner.setAlwaysOnTop(true);
-		    	runner.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			}
-		});
-		
-		JMenuItem mntmImageConverter = new JMenuItem("Image Converter");
-		mntmImageConverter.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnConversionsAndOther.add(mntmImageConverter);
-		mntmImageConverter.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-		    	if (!flagImgConv) {
-		    		flagImgConv = true;
-		    		panelImgConv = new ImageConverterFrame(currentConfiguration);
-//		    		panelImgConv.setAlwaysOnTop(true);
-		    		panelImgConv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		panelImgConv.setBounds(700, 200, 650, 500);
-		    		panelImgConv.setVisible(true);
-		    		panelImgConv.setTitle("IMG Generator (V1.1) - A.M.2018");
-					//panel.setAlwaysOnTop(true);
-					//panel.setSize(frmScryptV.getWidth(),frmScryptV.getHeight());
-				}else {
-					panelImgConv.requestFocus();
-				}
-			}
-		});
-		
-		JMenu mnFilesAndDirectories = new JMenu("Files And Directories");
-		mnFilesAndDirectories.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnVarious.add(mnFilesAndDirectories);
-		
-		// funzionalit� per applicare la prima lettera magiuscola a directory e al suo contenuto
-		JMenuItem mntmTouppercaseDirectory = new JMenuItem("Uppercase First letter - Files&Directories");
-		mnFilesAndDirectories.add(mntmTouppercaseDirectory);
-		mntmTouppercaseDirectory.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mntmTouppercaseDirectory.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int errors=0;
-				File selectedFile;
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Select source dir/file to make uppercase");
-				fileChooser.setCurrentDirectory(new File(last_dir_used));
-				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				int returnVal = fileChooser.showOpenDialog(frmScryptV);
-				if (returnVal == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile()!=null) {
-		            try {
-		            	selectedFile = fileChooser.getSelectedFile();
-		            	if(selectedFile.isFile()) {
-		            		if(JOptionPane.showConfirmDialog(fileChooser, "Are you sure to rename file: '"+selectedFile.getName()+
-			            			"'?")==JOptionPane.OK_OPTION) {
-		            			last_dir_used = selectedFile.getParentFile().getAbsolutePath();
-				            	errors=FileStuff.upperCaseSubFolder(selectedFile);
-				            	JOptionPane.showMessageDialog(frmScryptV, "Renaming completed! \n\nCompleted with: "+errors+" Errors.");
-		            		}
-		            	}//END FILE
-		            	else if(selectedFile.isDirectory()) {
-		            		if(JOptionPane.showConfirmDialog(fileChooser, "Are you sure to rename folder: '"+selectedFile.getName()+
-			            			"' and all files/directory in it?")==JOptionPane.OK_OPTION) {
-		            			last_dir_used = selectedFile.getAbsolutePath();
-				            	errors=FileStuff.upperCaseSubFolder(selectedFile);
-				            	JOptionPane.showMessageDialog(frmScryptV, "Renaming completed! \n\nCompleted with: "+errors+" Errors.");
-		            		}	
-		            	}// END DIRECTORY
-		            	if(!selectedFile.exists()) {
-			            	JOptionPane.showMessageDialog(frmScryptV, "File does not exist! \nChoose an existing File or Directory ;)", "Error Executin' requested Action", JOptionPane.WARNING_MESSAGE);
-		            	}
-		            }catch(Exception exc) {
-						JOptionPane.showMessageDialog(frmScryptV, "Renaming cancelled! \n An error occurred.", "Error Executin' requested Action", JOptionPane.ERROR_MESSAGE);
-						logger.error("Exception happened!", exc);
-		            }
-				}else {
-					JOptionPane.showMessageDialog(frmScryptV, "Renaming cancelled! ", "Skipped by user", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-		
-		JMenu mnNetworkUtils = new JMenu("Network Utils");
-		mnNetworkUtils.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnVarious.add(mnNetworkUtils);
-		
-		JMenu mnHelp = new JMenu("Help");
-		mnHelp.setBackground(SystemColor.menu);
-		//mnHelp.setForeground(Color.BLACK);
-		mnHelp.setFont(new Font("Gadugi", Font.BOLD, menuSize));
-		menuBar.add(mnHelp);
-		
-		JMenuItem mntmReturnToWelcome = new JMenuItem("Return to Welcome Page");
-		mntmReturnToWelcome.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mntmReturnToWelcome.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				// setto lo sfondo iniziale dell'app
-				try {
-					JPanel MAIN_PANEL = new JPanel();
-					MAIN_PANEL.setBackground(SystemColor.infoText);
-		            frmScryptV.getContentPane().add(MAIN_PANEL);
-		            MAIN_PANEL.setLayout(new MigLayout("", "[90%]", "[60.00][100.52%,baseline]"));
-		            JLabel label = new JLabel(new ImageIcon(ImageIO.read(new File(RESOURCES_DIR + "Logo-AM_v2.jpg"))));
-		            MAIN_PANEL.add(label, "cell 0 1,grow");
-		            
-				   	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-				   	contentPane.removeAll();
-			    	contentPane.add(label);
-			    	contentPane.revalidate(); 
-			    	contentPane.repaint();
-		            
-		        } catch (IOException e2) {
-		        	logger.error("Exception happened!", e2);
-		        }
-		        //frmScryptV.pack();
-			}
-		});
-		
-		JMenuItem mntmAboutScreept = new JMenuItem((Action) null);
-		mntmAboutScreept.setText("About - ScrYpt");
-		mntmAboutScreept.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnHelp.add(mntmAboutScreept);
-		
-		JSeparator separator = new JSeparator();
-		mnHelp.add(separator);
-		
-		JMenuItem mntmExportLog = new JMenuItem("Export Event Log");
-		mntmExportLog.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
-		mnHelp.add(mntmExportLog);
-		mnHelp.add(mntmReturnToWelcome);
-		mntmExportLog.addActionListener(new ActionListener() {
-			
-			@Override
+		// NOT OPENING VIEW - LOG EXPORT
+		mntmExportLog = new JMenuItem(new AbstractAction("Export Event Log") {
 			public void actionPerformed(ActionEvent e) {
 				// show input dialog to select the file(gives null in case of no file selected)
 				File selected = fileLogWriteDialog(frmScryptV);		
@@ -899,15 +601,282 @@ public class mainGUI {
 								"]  Some error occurred :(", JOptionPane.ERROR_MESSAGE);
 						logger.error("File not saved, some error occurred :( ");
 					}
-					
 				}
 			}
 		});
 		
-		JMenuItem mntmUserDocumentation = new JMenuItem((Action) null);
-		mntmUserDocumentation.setText("User Guide");
-		mntmUserDocumentation.setFont(new Font("Segoe UI", Font.PLAIN, subMenuSize));
+		// NOT OPENING VIEW - UPPERCASE DIRECTORY'S NAMES FIRST LETTER
+		mntmTouppercaseDirectory = new JMenuItem(new AbstractAction("Uppercase First letter - Files&Directories") {
+			public void actionPerformed(ActionEvent e) {
+				last_dir_used = DirectoryManagementGUI.renameFirstLetterDirNames(frmScryptV, last_dir_used);
+			}
+		});
+		
+///////////////// HANDLERS THAT OPEN A NEW WINDOW  ////////////////////////
+		
+		// open in a new window - CONFIGURATION MANAGER
+		mntmCustomizeUIView = new JMenuItem(new AbstractAction("Customize Graphics") {
+			public void actionPerformed(ActionEvent e) {
+				if (!flagFrameGuiOptions) {
+					flagFrameGuiOptions = true;
+					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
+					panelGuiOptions.setBounds(500, 300, 950, 330);
+					panelGuiOptions.setVisible(true);
+					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					panelGuiOptions.setTitle("Apply/Save Preferences [Customize - Apply - Save]");
+				}else {
+					panelGuiOptions.requestFocus();
+				}
+			}
+		});
+		
+		// open in a new window - GENERAL OPTIONS
+		mntmGenOpt = new JMenuItem(new AbstractAction("General Options") {
+			public void actionPerformed(ActionEvent e) {
+				if (!flagFrameGenOptions) {
+					flagFrameGenOptions=true;
+					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
+					panelGeneralOptions.setBounds(400, 300, 700, 250);
+					panelGeneralOptions.setVisible(true);
+					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					panelGeneralOptions.setTitle("Apply/Save General Options [Customize - Apply - Save]");
+				}else {
+					panelGeneralOptions.requestFocus();
+				}
+			}
+		});
+		
+		// open in a new window - KEYGEN
+		generateKeyImageSub = new JMenuItem(new AbstractAction("Generate Key Image") {
+		    public void actionPerformed(ActionEvent ae) {
+		    	if (!flagFrameKeyGen) {
+		    		flagFrameKeyGen = true;
+		    		panelKeyGen = new KeyGenPanel(currentConfiguration);
+					panelKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					panelKeyGen.setBounds(150, 150, 1100, 800);
+					panelKeyGen.setVisible(true);
+					panelKeyGen.setTitle("IMG Generator (V1.1) - A.M.2018");
+				}else {
+					panelKeyGen.requestFocus();
+				}
+		    }
+		});
+		
+		// open in a new window - NET INFO
+		netInfo = new JMenuItem(new AbstractAction("Net Info") {
+		    public void actionPerformed(ActionEvent ae) {
+		    	if (!flagInfoPanel) {
+		    		flagInfoPanel = true;
+		    		netInfoPanel = new NetInfoPanel(currentConfiguration);
+		    		netInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		    		netInfoPanel.setBounds(150, 150, 1100, 800);
+		    		netInfoPanel.setVisible(true);
+		    		netInfoPanel.setTitle("Network info - ScrYpT");
+				}else {
+					netInfoPanel.requestFocus();
+				}
+		    }
+		});
+		
+		// open in a new window - DICTIONARY (KEY IMG)
+		mntmViewKeyDictionary = new JMenuItem(new AbstractAction("View Key Dictionary") {
+		    public void actionPerformed(ActionEvent e) {
+		    	if (!flagFrameKeyDict) {
+		    		flagFrameKeyDict = true;
+		    		panelKeyDict = new KeyDictionaryPanel(currentConfiguration);
+		    		panelKeyDict.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		    		panelKeyDict.setBounds(300, 100, 800, 560);
+		    		panelKeyDict.setVisible(true);
+		    		panelKeyDict.setTitle("Key Dictionary Manager");
+				}else {
+					panelKeyDict.requestFocus();
+				}
+			}
+		});
+		
+		// open in a new window - IMAGE CONVERTER
+		mntmImageConverter = new JMenuItem(new AbstractAction("Image Converter") {
+			public void actionPerformed(ActionEvent e) {
+		    	if (!flagImgConv) {
+		    		flagImgConv = true;
+		    		panelImgConv = new ImageConverterFrame(currentConfiguration);
+		    		panelImgConv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		    		panelImgConv.setBounds(700, 200, 650, 500);
+		    		panelImgConv.setVisible(true);
+		    		panelImgConv.setTitle("IMG Generator (V1.1) - A.M.2018");
+				}else {
+					panelImgConv.requestFocus();
+				}
+			}
+		});
+		
+		// open in a new window - ABOUT SCRYPT
+		mntmAboutScreept = new JMenuItem(new AbstractAction("About - ScrYpt") {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		
+		// open in a new window - MANUAL
+		mntmUserDocumentation = new JMenuItem(new AbstractAction("User Guide") {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		
+////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
+		
+		// open in main frame - FILE CRYPTER
+		mntmCrypter = new JMenuItem(new AbstractAction("ScreepT - Crypt and Decrypt files") {
+		    public void actionPerformed(ActionEvent ae) {
+		    	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
+		    	if(panelCrypter == null) {
+			    	panelCrypter = new CrypterPanel(currentConfiguration, frmScryptV);
+		    	}
+		    	contentPane.removeAll();
+		    	contentPane.add(panelCrypter);
+		    	contentPane.revalidate(); 
+		    	contentPane.repaint();
+		    }
+		});
+		
+		// open in main frame - CONFIGURATION MANAGER
+		mntmInspectCurrentConfiguration = new JMenuItem(new AbstractAction("Configuration Manager") {
+		    public void actionPerformed(ActionEvent ae) {
+				   
+	    		JPanel contentPane = (JPanel) frmScryptV.getContentPane();
+	    		if (configManagerPanel == null) {
+					configManagerPanel = new ChargeIniLog(currentConfiguration, frmScryptV);
+				}
+				contentPane.removeAll();
+		    	contentPane.add(configManagerPanel);
+		    	contentPane.revalidate(); 
+		    	contentPane.repaint();
+		    }
+		});
+		
+		// open in main frame - TEXT EDITOR
+		mntmNewTextFile = new JMenuItem(new AbstractAction("Text Editor") {
+			public void actionPerformed(ActionEvent e) {
+			
+				JPanel contentPane = (JPanel) frmScryptV.getContentPane();
+				if(initTxtWriter == null) {
+					initTxtWriter = new TextFileWriter(frmScryptV, currentConfiguration);
+				}		    	
+		    	contentPane.removeAll();
+		    	contentPane.add(initTxtWriter);
+		    	contentPane.revalidate(); 
+		    	contentPane.repaint();
+			
+			}
+		});
+		
+		// open in main frame - RETURN TO WELCOME PAGE
+		mntmReturnToWelcome = new JMenuItem(new AbstractAction("Return to Welcome Page") {
+			public void actionPerformed(ActionEvent e) {
+				
+				setBackgroundImage();
+			}
+		});
+
+		
+////////// END OF HANDLERS DECLARATION  ////////////////
+		
+		// once each component is declared add it to the menu bar
+		structureMenuBar();
+	}
+	
+	private void structureMenuBar() {
+		
+		// INITIALIZE FONTS BY TYPE
+		Font menuBarFont = new Font("Segoe UI", Font.BOLD, menuSize);
+		Font subMenuFont = new Font("Gadugi", Font.BOLD, menuSize);
+		Font menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
+		
+		// CREATE MENU STRUCTURE
+		menuBar.add(mnFile);
+		menuBar.add(mnPreferences);
+		menuBar.add(mnCryptoSteg);
+		menuBar.add(mnVarious);
+		menuBar.add(mnHelp);
+		
+		mnFile.add(mntmInspectCurrentConfiguration);
+		mnFile.add(new JSeparator());
+		mnFile.add(loadPrjSub);
+		mnFile.add(savePrjSub);
+		mnFile.add(new JSeparator());
+		mnFile.add(loadDefaultPrjSub);
+		mnFile.add(mntmSaveCurrentAs);
+		mnFile.add(new JSeparator());
+		mnFile.add(loadSrcrYptDefaultConf);
+		mnFile.add(new JSeparator());
+		mnFile.add(mntmExit);
+		
+		mnPreferences.add(mntmCustomizeUIView);
+		mnPreferences.add(mntmGenOpt);
+		
+		mnCryptoSteg.add(mntmCrypter);
+		mnCryptoSteg.add(new JSeparator());
+		mnCryptoSteg.add(generateKeyImageSub);
+		mnCryptoSteg.add(mntmViewKeyDictionary);
+
+		mnVarious.add(mntmNewTextFile);
+		mnVarious.add(new JSeparator());
+		mnVarious.add(netInfo);
+		mnVarious.add(mnConversionsAndOther);
+		mnVarious.add(mnFilesAndDirectories);
+
+		mnConversionsAndOther.add(mntmImageConverter);
+		mnFilesAndDirectories.add(mntmTouppercaseDirectory);
+		
+		mnHelp.add(mntmAboutScreept);		
+		mnHelp.add(new JSeparator());
+		mnHelp.add(mntmExportLog);
 		mnHelp.add(mntmUserDocumentation);
+		mnHelp.add(new JSeparator());
+		mnHelp.add(mntmReturnToWelcome);
+		
+		// SET FONTS
+		menuBar.setFont(menuBarFont);
+		
+		mnFile.setFont(subMenuFont);
+		mnHelp.setFont(subMenuFont);
+		mnPreferences.setFont(subMenuFont);
+		mnCryptoSteg.setFont(subMenuFont);
+		mnVarious.setFont(subMenuFont);
+
+		mnFilesAndDirectories.setFont(menuItemFont);
+		mnConversionsAndOther.setFont(menuItemFont);
+
+		mntmExit.setFont(menuItemFont);
+		mntmInspectCurrentConfiguration.setFont(menuItemFont);
+		loadPrjSub.setFont(menuItemFont);
+		savePrjSub.setFont(menuItemFont);
+		loadDefaultPrjSub.setFont(menuItemFont);
+		mntmSaveCurrentAs.setFont(menuItemFont);
+		loadSrcrYptDefaultConf.setFont(menuItemFont);
+		mntmCustomizeUIView.setFont(menuItemFont);
+		mntmGenOpt.setFont(menuItemFont);
+		mntmCrypter.setFont(menuItemFont);
+		generateKeyImageSub.setFont(menuItemFont);
+		netInfo.setFont(menuItemFont);
+		mntmViewKeyDictionary.setFont(menuItemFont);
+		mntmNewTextFile.setFont(menuItemFont);
+		mntmImageConverter.setFont(menuItemFont);
+		mntmTouppercaseDirectory.setFont(menuItemFont);
+		mntmReturnToWelcome.setFont(menuItemFont);
+		mntmAboutScreept.setFont(menuItemFont);
+		mntmExportLog.setFont(menuItemFont);
+		mntmUserDocumentation.setFont(menuItemFont);
+	}
+	
+	public void updateMenuAndLogFontSize(int fontSize){
+
+		// use the same font as main gui but change font size
+		UIManager.put("JMenuBar.font", new Font("Segoe UI", Font.BOLD, fontSize ));
+		UIManager.put("JMenu.font", new Font("Segoe UI", Font.BOLD, fontSize ));
+		UIManager.put("JMenuItem.font", new Font("Segoe UI", Font.BOLD, fontSize-2 ));
+	    SwingUtilities.updateComponentTreeUI(frmScryptV);
 	}
 	
 	public static void updateUIDarkNimbus() {
@@ -987,23 +956,46 @@ public class mainGUI {
 		  // Show your JFrame
 	}
 	
-	public void updateMenuAndLogFontSize(int fontSize){
-		
+	public void askUsername() {
+		boolean end=false;
+		String input="";
+		logger.debug("Current user input initialization: void user or lenght>20 detected!");
+		do {
+			input = JOptionPane.showInputDialog("Please insert your name:", "U-sir");
+			if (input==null || input.equals("") || input.length() > 20) {
+				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",
+						"UserName lenght Error", JOptionPane.WARNING_MESSAGE);
+				logger.error("Error in user input, redo.");
+			} else {
+				currentConfiguration.getGenOpt().setUserName(input);
+				currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "userName", input);
+				end = true;
+			} 
+		} while (!end);
+		logger.debug("Name selected and saved username: "+input);
+	}
+	
+	public void setBackgroundImage() {
+		// setto lo sfondo iniziale dell'app
+		try {
+			JPanel MAIN_PANEL = new JPanel();
+			MAIN_PANEL.setBackground(SystemColor.infoText);
+            frmScryptV.getContentPane().add(MAIN_PANEL);
+            MAIN_PANEL.setLayout(new MigLayout("", "[90%]", "[1.00][100.52%,baseline]"));
+            BufferedImage image = ImageIO.read(new File(RESOURCES_DIR + APPLICATION_MAIN_BCKG));
+            Image scaledImage = image.getScaledInstance(screenWidth, screenHeight,Image.SCALE_REPLICATE);
+            JLabel label = new JLabel(new ImageIcon(scaledImage));
+            
+		   	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
+		   	contentPane.removeAll();
+	    	contentPane.add(label);
+	    	contentPane.revalidate(); 
+	    	contentPane.repaint();
+			logger.debug("Background of mainGUI setted: "+RESOURCES_DIR + APPLICATION_MAIN_BCKG);
 
-		// use the same font as main gui but change font size
-		UIManager.put("JMenuBar.font", new Font("Segoe UI", Font.BOLD, fontSize ));
-		UIManager.put("JMenu.font", new Font("Segoe UI", Font.BOLD, fontSize ));
-		UIManager.put("JMenuItem.font", new Font("Segoe UI", Font.BOLD, fontSize-2 ));
-
-	//			Component[] panelElem = window.getComponents();
-	//			for (Component c : panelElem) {
-	//				if(c instanceof JMenu) {
-	//					c.setFont(new Font("Segoe UI", Font.BOLD, MENU_FONT_SIZE ));
-	//					c.revalidate();
-	//					c.repaint();
-	//				}
-	//			}
-	    SwingUtilities.updateComponentTreeUI(frmScryptV);
+        } catch (IOException e2) {
+			logger.error("Exception happened!", e2);
+        }
 	}
 	
 	/**

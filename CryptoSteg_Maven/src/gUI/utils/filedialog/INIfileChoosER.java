@@ -95,6 +95,7 @@ public class INIfileChoosER extends JDialog{
             	fileINI.readConfigIniFile();
     	    	logger.debug("chosen: "+fileChooser.getSelectedFile().getAbsolutePath());
     	    	logger.debug("\n\n\n### NEW INI CONFIGURATION LOADED ###\n\n -> "+fileINI.toStringa());
+    	    	JOptionPane.showMessageDialog(fileChooser.getParent(),"Configuration Loaded!");
     	        
 			} catch (IOException e) {
 				logger.error("File not exist or cannot be read! :("+"IO error\n");

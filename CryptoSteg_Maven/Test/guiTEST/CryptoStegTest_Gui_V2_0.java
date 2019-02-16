@@ -1,4 +1,4 @@
-package gUI.panels;
+package guiTEST;
 
 import java.awt.EventQueue;
 import java.awt.Font;
