@@ -24,91 +24,113 @@ public class TextEditorListener implements KeyEventDispatcher{
 	      
 	    	logger.debug("!!! Catched key input: "+"KeyChar: "+e.getKeyChar()+" - KeyCode: "+e.getKeyCode()+" - ALT: "+e.isAltDown()+" - CTRL: "+e.isControlDown()+" - SHIFT: "+e.isShiftDown());
 		
-		/**
-		 *  UNDO
-		 */
-		// case CTRL-Z -> undo
-		if (e.getKeyCode()==90 && e.isControlDown() && !e.isShiftDown() && !e.isAltDown()) {
-			if(currentTextEditor.manager.canUndo()) {
-				currentTextEditor.manager.undo();
-				
-			}
-		}
-		
-		//case Ctrl-shift-Z -> undo5Steps
-		if (e.getKeyCode()==90 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
-		{
-			for(int i = 0; i<5; i++) {
+			/**
+			 *  UNDO
+			 */
+			// case CTRL-Z -> undo
+			if (e.getKeyCode()==90 && e.isControlDown() && !e.isShiftDown() && !e.isAltDown()) {
 				if(currentTextEditor.manager.canUndo()) {
 					currentTextEditor.manager.undo();
+					
 				}
 			}
-		}
-		
-		/**
-		 *  REDO
-		 */
-		//case Ctrl-alt-Z -> redo
-		if (e.getKeyCode()==90 && e.isControlDown() && !e.isShiftDown() && e.isAltDown())
-		{
-			if(currentTextEditor.manager.canRedo()) {
-				currentTextEditor.manager.redo();
+			
+			//case Ctrl-shift-Z -> undo5Steps
+			if (e.getKeyCode()==90 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
+			{
+				for(int i = 0; i<5; i++) {
+					if(currentTextEditor.manager.canUndo()) {
+						currentTextEditor.manager.undo();
+					}
+				}
 			}
-		}
-		
-		//case Ctrl-shift-Alt-z -> redo5steps
-		if (e.getKeyCode()==90 && e.isAltDown() && e.isControlDown() && e.isShiftDown())
-		{
-			for(int i = 0; i<5; i++) {
-				if (currentTextEditor.manager.canRedo()) {
+			
+			/**
+			 *  REDO
+			 */
+			//case Ctrl-alt-Z -> redo
+			if (e.getKeyCode()==90 && e.isControlDown() && !e.isShiftDown() && e.isAltDown())
+			{
+				if(currentTextEditor.manager.canRedo()) {
 					currentTextEditor.manager.redo();
 				}
 			}
-		}
-		
-		/**
-		 *  SAVE FILE
-		 */
-		//case Ctrl-s -> Save file
-		if ( !currentTextEditor.alreadySaving && e.getKeyCode()==83 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-		{
-			// simulates click on save button
-			currentTextEditor.btnSaveTextFile.doClick();
 			
-		}
-		
-		/**
-		 *  LOAD FILE
-		 */
-		//case Ctrl-o -> Load file
-		if (!currentTextEditor.alreadyLoading && e.getKeyCode()==79 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-		{
-			// simulates click on load button
-			currentTextEditor.btnLoadTextFile.doClick();
-		}
-		
-		/**
-		 * READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker
-		 */
-		//case Ctrl-Space -> listen/stop playing
-		if (!currentTextEditor.alreadyLoading && e.getKeyCode()==32 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-		{
-			// simulates click on load button
-			currentTextEditor.btnSpeak.doClick();
-		}
-		
-		/**
-		 * CLEAN TEXT
-		 */
-		// case ctrl-canc
-		if (!currentTextEditor.alreadyLoading && e.getKeyCode()==127 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-		{
-			// DELETE TEXT AREA CONTENT
-			currentTextEditor.textArea_1.setText("");
-		}
+			//case Ctrl-shift-Alt-z -> redo5steps
+			if (e.getKeyCode()==90 && e.isAltDown() && e.isControlDown() && e.isShiftDown())
+			{
+				for(int i = 0; i<5; i++) {
+					if (currentTextEditor.manager.canRedo()) {
+						currentTextEditor.manager.redo();
+					}
+				}
+			}
+			
+			/**
+			 *  SAVE FILE
+			 */
+			//case Ctrl-s -> Save file
+			if ( !currentTextEditor.alreadySaving && e.getKeyCode()==83 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+			{
+				currentTextEditor.btnSaveTextFile.doClick();
+				
+			}
+			
+			/**
+			 *  LOAD FILE
+			 */
+			//case Ctrl-o -> Load file
+			if (!currentTextEditor.alreadyLoading && e.getKeyCode()==79 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+			{
+				currentTextEditor.btnLoadTextFile.doClick();
+			}
+			
+			/**
+			 * READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker
+			 */
+			//case Ctrl-Space -> listen/stop playing
+			if (e.getKeyCode()==32 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+			{
+				currentTextEditor.btnSpeak.doClick();
+			}
+			
+			/**
+			 * CLEAN TEXT
+			 */
+			// case ctrl-canc
+			if (e.getKeyCode()==127 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+			{
+				// DELETE TEXT AREA CONTENT
+				currentTextEditor.textArea_1.setText("");
+			}
+			
+			/**
+			 * crypt-decrypt
+			 */
+			// case ctrl-shift-C => cript
+			if (e.getKeyCode()==67 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
+			{
+				currentTextEditor.btnCrypt.doClick();
+			}
+			
+			// case ctrl-shift-D => decript
+			if (e.getKeyCode()==68 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
+			{
+				currentTextEditor.btnDecrypt.doClick();
+			}
+			
+			/**
+			 * Dark-Light view
+			 */
+			// case ctrl-shift-B => dark/light
+			if (e.getKeyCode()==66 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+			{
+				currentTextEditor.btnDark.doClick();
+			}
 	  
-	}
+	    }
+	    
 	// Pass the KeyEvent to the next KeyEventDispatcher in the chain
-	    return false;
-	  }
+    return false;
+	}
 }

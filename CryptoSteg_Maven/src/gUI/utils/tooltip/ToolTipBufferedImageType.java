@@ -6,6 +6,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 import gUI.om.BufferedImageType;
+import gUI.om.KeyGenImageType;
 import gUI.om.ScalingAlgorithm;
 
 public class ToolTipBufferedImageType extends DefaultListCellRenderer {
@@ -17,7 +18,7 @@ public class ToolTipBufferedImageType extends DefaultListCellRenderer {
         // JLabel via the setText method, otherwise it will use the
         // objects toString method to generate a representation
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus); 
-        BufferedImageType comboVal =(BufferedImageType)value;
+        KeyGenImageType comboVal =(KeyGenImageType)value;
         setToolTipText(comboVal.getDescription());
         return this;
     }

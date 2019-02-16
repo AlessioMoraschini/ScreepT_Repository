@@ -112,6 +112,10 @@ public class TextFileWriter extends JPanel {
 	public JButton btnSaveTextFile;
 	public JButton btnLoadTextFile;
 	public JButton btnSpeak;
+	public JButton btnDecrypt;
+	public JButton btnCrypt;
+	public JButton btnDark;
+	
 	public JTextArea textArea_1;
 	
 	public UndoManager manager;
@@ -192,7 +196,7 @@ public class TextFileWriter extends JPanel {
 		
 		
 		
-		JButton btnDecrypt = new JButton("");
+		btnDecrypt = new JButton("");
 		btnDecrypt.setBackground(SystemColor.activeCaption);
 		btnDecrypt.setIcon(new ImageIcon(ICON_DECRYPT));
 		btnDecrypt.setToolTipText("Decrypt displayed text with given key");
@@ -455,7 +459,7 @@ public class TextFileWriter extends JPanel {
 		txtAesKey.setColumns(10);
 		EncryptDecrypt.check(txtAesKey);
 			
-		JButton btnCrypt = new JButton("");
+		btnCrypt = new JButton("");
 		btnCrypt.setBackground(SystemColor.activeCaption);
 		btnCrypt.setIcon(new ImageIcon(ICON_CRYPT));
 		btnCrypt.setToolTipText("Crypt displayed text with given key");
@@ -857,7 +861,7 @@ public class TextFileWriter extends JPanel {
 		btnBold.setIcon(new ImageIcon(ICON_TEXT_BOLD));
 		add(btnBold, "cell 8 5,alignx center");
 		
-		JButton btnDark = new JButton("Dark/Light");
+		btnDark = new JButton("Dark/Light");
 		btnDark.setToolTipText("Switch upon dark and light text combination");
 		btnDark.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnDark.setForeground(SystemColor.menuText);

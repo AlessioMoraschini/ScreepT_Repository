@@ -36,6 +36,7 @@ public class TestUpdateProgress {
     private volatile JProgressBar pb;
     private volatile JProgressBar GeneralBar;
     
+    private int defaultCloseOp = JDialog.DO_NOTHING_ON_CLOSE;
     private JDialog dialog;
     private JLabel label = new JLabel("  I'm workin' !");
     
@@ -122,13 +123,12 @@ public class TestUpdateProgress {
 	
 	private synchronized void initGeneralBar() {
 		
-		//TODO set progress bar
         GeneralBar = new JProgressBar();       
         GeneralBar.putClientProperty("Nimbus.Overrides.InheritDefaults", Boolean.TRUE);
 
         GeneralBar.setStringPainted(true);
         
-        dialog.getContentPane().add(GeneralBar, gbc_pb);
+        dialog.getContentPane().add(GeneralBar, gbc_genb);
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
@@ -173,7 +173,7 @@ public class TestUpdateProgress {
         gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0};
         gridBagLayout.rowHeights = new int[]{60, 40, 5};
         dialog.getContentPane().setLayout(gridBagLayout);
-        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialog.setDefaultCloseOperation(defaultCloseOp);
         dialog.setAlwaysOnTop(true);
         GridBagConstraints gbc_label = new GridBagConstraints();
         gbc_label.gridwidth = 3;
@@ -195,6 +195,12 @@ public class TestUpdateProgress {
 			gbc_genb.gridx = 2;
 			gbc_genb.gridy = nYrows - 1;
 		}
+	}
+	
+	public void setUndefinedDurationAndClosable() {
+		pb.setIndeterminate(true);
+		defaultCloseOp = JDialog.DISPOSE_ON_CLOSE;
+		dialog.setDefaultCloseOperation(defaultCloseOp);
 	}
 
     protected void doneCheck(JProgressBar bar) {

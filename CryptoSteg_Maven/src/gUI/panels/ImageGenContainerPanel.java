@@ -19,6 +19,7 @@ import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 
 import gUI.om.BufferedImageType;
+import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import uTILS.ImageWorker;
@@ -48,7 +49,7 @@ public class ImageGenContainerPanel extends JPanel{
 
 	
 	// constructor that create a random img and adds it to obj panel (this class extends JPanel)
-    public ImageGenContainerPanel(BufferedImageType imgEnumType, int w, int h, KeyGenPanel thisFrame, INItializer currentConf) {
+    public ImageGenContainerPanel(KeyGenImageType imgEnumType, int w, int h, KeyGenPanel thisFrame, INItializer currentConf) {
     	
     	genContPane = this;
     	
@@ -71,6 +72,8 @@ public class ImageGenContainerPanel extends JPanel{
 			public void run() {
 				
 				bar.setValue(20);
+				bar.setString("Workin...");
+				bar.setIndeterminate(true);
 				jtext.append(" Values loaded :)");
 		    	FlowLayout layout = new FlowLayout();
 				layout.setVgap(0);
@@ -98,6 +101,7 @@ public class ImageGenContainerPanel extends JPanel{
 			    picLabel.setBounds(0, 0,(int)backup.getWidth(), (int)backup.getHeight());
 				bar.setValue(100);
 	            bar.setString("Ready :)");
+	            bar.setIndeterminate(false);
 				progUpdater.getPb().setValue(100);
 				jtext.append("\n -> Finished!");
 				logger.debug("Generated Image of " + width + "Px X " + height + "Px");

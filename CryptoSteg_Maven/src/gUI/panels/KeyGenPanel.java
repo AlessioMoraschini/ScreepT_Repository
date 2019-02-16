@@ -52,6 +52,7 @@ import javax.swing.JFileChooser;
 import javax.swing.DefaultComboBoxModel;
 
 import gUI.om.BufferedImageType;
+import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import gUI.utils.tooltip.ToolTipListCellRenderer;
@@ -76,7 +77,7 @@ public class KeyGenPanel extends JFrame {
 	private JSpinner widthValGUI;
 	private int CURRENT_SEL_W;
 	private int CURRENT_SEL_H;
-	private BufferedImageType CURRENT_IMG_TYPE;
+	private KeyGenImageType CURRENT_IMG_TYPE;
 
 	// container of the image from which generated original image will be taken
 	private ImageGenContainerPanel imageContainer;
@@ -112,7 +113,7 @@ public class KeyGenPanel extends JFrame {
 		CURRENT_SEL_H = currentConfig.getSteganOpt().getDefaultHeight();
 		
 		// initialize img type
-		CURRENT_IMG_TYPE = BufferedImageType.THREE_BYTE_BGR;
+		CURRENT_IMG_TYPE = KeyGenImageType.TOP_SECURITY;
 		
 		getContentPane().setBackground(SystemColor.textInactiveText);
 		getContentPane().setLayout(new MigLayout("", "[88.00px,grow][93.00][89.00px,grow][89.00px,grow][:100:10%][:100:10%][:100:8%][:100:8%][:100:14%]", "[35px][50][30%,grow][10%][30px][80px:130,grow][50]"));
@@ -146,12 +147,16 @@ public class KeyGenPanel extends JFrame {
 		textLog.setBackground(new Color(211, 211, 211));
 //		panel_2.add(textLog, "cell 0 0,grow");
 		
+		JLabel lblFinalSize = new JLabel("-> Image size Prevision: ");
+		lblFinalSize.setForeground(new Color(176, 196, 222));
+		lblFinalSize.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+		panel_1.add(lblFinalSize, "cell 1 6 3 1,alignx left");
+		
 		JLabel lblThisSettingsAllow = new JLabel("-> This settings allow to code 0 Kbytes of data inside Image");
 		lblThisSettingsAllow.setForeground(new Color(100, 149, 237));
 		lblThisSettingsAllow.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
 		panel_1.add(lblThisSettingsAllow, "cell 1 5 3 1,alignx left");
-		lblThisSettingsAllow.setText("-> This settings allow to code "+(CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
-		
+			
 		// initialize spinner and sliders with max, min, and selected values
 		widthValGUI = new JSpinner();
 		widthValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_W, 100, ImageWorker.MAX_WIDTH_GEN, 5));
@@ -178,24 +183,20 @@ public class KeyGenPanel extends JFrame {
 		lblImageType.setFont(new Font("SansSerif", Font.BOLD, 12));
 		panel_1.add(lblImageType, "cell 0 3 2 1,alignx center");
 		
-		comboImgType = new JComboBox(BufferedImageType.values());
+		comboImgType = new JComboBox(KeyGenImageType.values());
 		panel_1.add(comboImgType, "cell 2 3 2 1,growx");
 		comboImgType.setRenderer(new ToolTipBufferedImageType());
-		comboImgType.setSelectedItem(BufferedImageType.FOUR_BYTE_ABGR);
-
+		comboImgType.setSelectedItem(KeyGenImageType.TOP_SECURITY);
+		
+		// update prevision of size according to type of image, the function calculate size
+		int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
+		lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
+		lblThisSettingsAllow.setText("-> This settings allow to code "+((mult-1)*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
+	
 		JSeparator separator = new JSeparator();
 		separator.setForeground(SystemColor.activeCaption);
 		separator.setBackground(Color.LIGHT_GRAY);
 		panel_1.add(separator, "cell 1 4 3 1,growx");
-		
-		JLabel lblFinalSize = new JLabel("-> Image size Prevision: ");
-		lblFinalSize.setForeground(new Color(176, 196, 222));
-		lblFinalSize.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
-		panel_1.add(lblFinalSize, "cell 1 6 3 1,alignx left");
-		
-		// update prevision of size according to type of image, the function calculate size
-		int mult=((BufferedImageType)comboImgType.getSelectedItem()).getMultiplicator();
-		lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 		
 		JSeparator separator_2 = new JSeparator();
 		panel_1.add(separator_2, "cell 1 7 3 1,growx");
@@ -309,6 +310,7 @@ public class KeyGenPanel extends JFrame {
 					        	
 					        	progUpdater = new TestUpdateProgress(currentConfig);
 					    		progUpdater.getPb().setValue(10);
+					    		progUpdater.getPb().setIndeterminate(true);
 					        	
 					            boolean done= false;
 					        	try {
@@ -413,12 +415,22 @@ public class KeyGenPanel extends JFrame {
 					}
 					// now if user pressed cancel input is null, let's check
 					if(inputName != null){
-						textLog.append( "\nI'm workin'... just a second (or maybe two!) :)");
-						textLog.setSelectionStart(textLog.getText().length());
-						File result = FileStuff.addKeyImgToDictionary(inputName, IMG , thisFrame);
-						String out = result.getName()+" => Added to dictionary :)";
-						textLog.append(out);
-						logger.debug(out);
+						progUpdater = new TestUpdateProgress(currentConfig);
+			    		progUpdater.getPb().setIndeterminate(true);
+			    		
+						String out="An error occurred :(";
+						try {
+							textLog.append("\nI'm workin'... just a second (or maybe two!) :)");
+							textLog.setSelectionStart(textLog.getText().length());
+							File result = FileStuff.addKeyImgToDictionary(inputName, IMG, thisFrame);
+							out = result.getName() + " => Added to dictionary :)";
+							textLog.append(out);
+							logger.debug(out);
+						} catch (Exception e2) {
+							logger.error("An error occurred importing to dictionary :("+e2);
+						}
+						progUpdater = new TestUpdateProgress(currentConfig);
+			    		progUpdater.getPb().setValue(100);
 						
 						btnExport.setEnabled(true);
 						btnGenerateKey.setEnabled(true);
@@ -477,10 +489,10 @@ public class KeyGenPanel extends JFrame {
 				sliderWidth.setValue(value);
 				CURRENT_SEL_W = value;
 				currentConfig.getSteganOpt().setDefaultWidth(CURRENT_SEL_W);
-				lblThisSettingsAllow.setText("-> This settings allow to code "+(CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				
 				// update prevision of size according to type of image, the function calculate size
-				int mult=((BufferedImageType)comboImgType.getSelectedItem()).getMultiplicator();
+				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
+				lblThisSettingsAllow.setText("-> This settings allow to code "+((mult-1)*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});		
@@ -493,10 +505,10 @@ public class KeyGenPanel extends JFrame {
 				sliderHeight.setValue(value);
 				CURRENT_SEL_H = value;		
 				currentConfig.getSteganOpt().setDefaultHeight(CURRENT_SEL_H);
-				lblThisSettingsAllow.setText("-> This settings allow to code "+(CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				
 				// update prevision of size according to type of image, the function calculate size
-				int mult=((BufferedImageType)comboImgType.getSelectedItem()).getMultiplicator();
+				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
+				lblThisSettingsAllow.setText("-> This settings allow to code "+((mult-1)*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});
@@ -516,9 +528,10 @@ public class KeyGenPanel extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CURRENT_IMG_TYPE = (BufferedImageType)comboImgType.getSelectedItem();
+				CURRENT_IMG_TYPE = (KeyGenImageType)comboImgType.getSelectedItem();
 				// update prevision of size according to type of image, the function calculate size
-				int mult=((BufferedImageType)comboImgType.getSelectedItem()).getMultiplicator();
+				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
+				lblThisSettingsAllow.setText("-> This settings allow to code "+((mult-1)*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});

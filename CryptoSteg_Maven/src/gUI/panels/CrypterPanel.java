@@ -168,7 +168,7 @@ public class CrypterPanel extends JPanel {
 	// volatile value representing if coders are used
 	public volatile boolean coderUsed = false;
 	
-	public final int labelLengthLimit = 40;
+	public static final int labelLengthLimit = 40;
 
 	/**
 	 * Create the application.
@@ -270,7 +270,7 @@ public class CrypterPanel extends JPanel {
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
 		panelHeader.setBorder(new LineBorder(Color.GRAY, 4, true));
-		panelHeader.setBackground(new Color(153, 153, 204));
+		panelHeader.setBackground(new Color(102, 153, 255));
 		add(panelHeader, "cell 0 0 9 1,grow");
 		panelHeader.setLayout(new MigLayout("", "[50%][50%]", "[50][]"));
 		
