@@ -56,7 +56,7 @@ import java.util.Date;
 import java.awt.SystemColor;
 
 import net.miginfocom.swing.MigLayout;
-import uTILS.FileStuff;
+import uTILS.local.FileStuff;
 
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Color;

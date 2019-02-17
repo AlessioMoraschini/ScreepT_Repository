@@ -1,4 +1,4 @@
-package uTILS;
+package uTILS.local;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;

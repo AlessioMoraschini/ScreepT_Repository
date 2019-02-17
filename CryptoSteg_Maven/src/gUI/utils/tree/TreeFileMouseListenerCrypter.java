@@ -43,9 +43,9 @@ import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
-import uTILS.FileStuff;
-import uTILS.HandleString;
-import uTILS.ImageWorker;
+import uTILS.local.FileStuff;
+import uTILS.local.HandleString;
+import uTILS.local.ImageWorker;
 
 public class TreeFileMouseListenerCrypter {
 	

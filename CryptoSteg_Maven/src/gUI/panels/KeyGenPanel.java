@@ -15,8 +15,8 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
-import uTILS.FileStuff;
-import uTILS.ImageWorker;
+import uTILS.local.FileStuff;
+import uTILS.local.ImageWorker;
 
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;

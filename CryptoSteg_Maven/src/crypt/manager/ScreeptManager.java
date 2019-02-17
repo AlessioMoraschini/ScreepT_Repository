@@ -29,10 +29,10 @@ import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import iNIT.om.AesOption;
-import uTILS.CustomFileComparator;
-import uTILS.FileStuff;
-import uTILS.HandleString;
-import uTILS.ImageWorker;
+import uTILS.local.CustomFileComparator;
+import uTILS.local.FileStuff;
+import uTILS.local.HandleString;
+import uTILS.local.ImageWorker;
 
 /**
  * 

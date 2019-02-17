@@ -18,15 +18,15 @@ import org.ini4j.Wini;
 import crypt.aes.EncryptDecrypt;
 import gUI.panels.KeyGenPanel;
 import iNIT.INItializer;
-import uTILS.FileStuff;
-import uTILS.ImageWorker;
+import uTILS.local.FileStuff;
+import uTILS.local.ImageWorker;
 
 public class prova_byte_AES {
 	
 	public static void main(String[] args) {
 
 		String psw_user = "";
-		String msg = "Questo è un messaggio di prova";
+		String msg = "Questo ï¿½ un messaggio di prova";
 
 		EncryptDecrypt cripter;
 		try {

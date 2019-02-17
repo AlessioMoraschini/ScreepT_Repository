@@ -35,7 +35,7 @@ import gUI.panels.KeyDictionaryPanel;
 import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
-import uTILS.FileStuff;
+import uTILS.local.FileStuff;
 
 public class TreeFileMouseListenerDictionary {
 	

@@ -22,7 +22,7 @@ import gUI.om.BufferedImageType;
 import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
-import uTILS.ImageWorker;
+import uTILS.local.ImageWorker;
 
 public class ImageGenContainerPanel extends JPanel{
  

@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 import org.apache.commons.io.FileUtils;
 
-import uTILS.FileProgressMonitor;
+import uTILS.local.FileProgressMonitor;
 
 public class TestProgressMonitor {
 

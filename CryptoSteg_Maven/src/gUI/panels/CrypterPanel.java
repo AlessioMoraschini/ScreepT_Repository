@@ -26,9 +26,9 @@ import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.TreeFileMouseListenerCrypter;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
-import uTILS.FileStuff;
-import uTILS.HandleString;
-import uTILS.ImageWorker;
+import uTILS.local.FileStuff;
+import uTILS.local.HandleString;
+import uTILS.local.ImageWorker;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

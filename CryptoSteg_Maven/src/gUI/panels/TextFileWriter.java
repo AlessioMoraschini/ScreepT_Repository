@@ -19,9 +19,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import net.miginfocom.swing.MigLayout;
-import uTILS.FileStuff;
-import uTILS.HandleString;
-import uTILS.Text2Speech;
+import uTILS.local.FileStuff;
+import uTILS.local.HandleString;
+import uTILS.local.Text2Speech;
 
 import javax.swing.SwingConstants;
 

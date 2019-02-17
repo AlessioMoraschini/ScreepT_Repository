@@ -8,7 +8,7 @@ import java.awt.BorderLayout;
 import javax.swing.border.LineBorder;
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
-import uTILS.HandleString;
+import uTILS.local.HandleString;
 
 import javax.swing.JLabel;
 import java.awt.Font;

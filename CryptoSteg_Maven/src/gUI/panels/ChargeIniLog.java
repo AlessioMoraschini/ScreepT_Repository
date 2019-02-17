@@ -11,7 +11,7 @@ import gUI.utils.filedialog.INIfileChoosER;
 import iNIT.INItializer;
 
 import net.miginfocom.swing.MigLayout;
-import uTILS.ImageWorker;
+import uTILS.local.ImageWorker;
 
 import java.awt.Font;
 import javax.swing.JLabel;

@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import gUI.mainGUI;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
-import uTILS.ListCharsets;
+import uTILS.local.ListCharsets;
 
 import javax.swing.JPanel;
 import java.awt.Color;

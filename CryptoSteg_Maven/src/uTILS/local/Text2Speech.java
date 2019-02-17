@@ -1,4 +1,4 @@
-package uTILS;
+package uTILS.local;
 import java.util.Locale;
 
 import javax.speech.Central;

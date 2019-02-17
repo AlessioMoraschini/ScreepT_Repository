@@ -10,7 +10,7 @@ import org.junit.Test;
 import crypt.aes.EncryptDecrypt;
 import crypt.steg.ImageCodeDecode;
 import crypt.steg.STEGException;
-import uTILS.ImageWorker;
+import uTILS.local.ImageWorker;
 
 public class StegTest {
 

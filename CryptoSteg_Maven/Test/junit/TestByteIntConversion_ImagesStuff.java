@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import crypt.steg.ImageCodeDecode;
 import gUI.om.BufferedImageType;
-import uTILS.ImageWorker;
+import uTILS.local.ImageWorker;
 
 public class TestByteIntConversion_ImagesStuff {
 	

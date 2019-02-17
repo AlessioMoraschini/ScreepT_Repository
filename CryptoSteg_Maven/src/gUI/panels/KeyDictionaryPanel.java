@@ -10,7 +10,7 @@ import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.TreeFileMouseListenerDictionary;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
-import uTILS.FileStuff;
+import uTILS.local.FileStuff;
 
 import javax.swing.JPanel;
 import java.awt.SystemColor;

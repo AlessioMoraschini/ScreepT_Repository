@@ -25,9 +25,9 @@ import java.io.IOException;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
-import uTILS.FileStuff;
-import uTILS.HandleString;
-import uTILS.ImageWorker;
+import uTILS.local.FileStuff;
+import uTILS.local.HandleString;
+import uTILS.local.ImageWorker;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

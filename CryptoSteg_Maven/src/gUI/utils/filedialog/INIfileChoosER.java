@@ -13,7 +13,7 @@ import org.ini4j.Wini;
 import org.omg.CORBA.INITIALIZE;
 
 import iNIT.INItializer;
-import uTILS.FileStuff;
+import uTILS.local.FileStuff;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
