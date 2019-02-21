@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -27,6 +28,8 @@ public class TestUpdateProgress {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TestUpdateProgress.class); 
 
+	private final static int LeftStart = 400;
+	private final static int TopStart = 300;
 	public final static int PanelWidth = 400;
 	public final static int PanelHeight = 100;
 	
@@ -166,6 +169,7 @@ public class TestUpdateProgress {
 		
 		dialog = new JDialog();
         dialog.setMinimumSize(new Dimension(PanelWidth, PanelHeight));
+        dialog.setBounds(new Rectangle(LeftStart, TopStart, PanelWidth, PanelHeight));
         dialog.setTitle("Processing");
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0};
@@ -210,7 +214,7 @@ public class TestUpdateProgress {
     }
 
     protected void doInBackground(JProgressBar bar) throws Exception {
-        while(pb.getValue()<100 && !forceStop) {
+        while(pb.getValue()<100 || !forceStop) {
             Thread.sleep(150);
             doneCheck(bar);
         }

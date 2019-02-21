@@ -56,7 +56,7 @@ public class ImageCodeDecode {
 	public ImageCodeDecode(File keyImgFile) throws IOException, STEGException {
 		keyImage = ImageIO.read(keyImgFile);
 		outputType = keyImage.getType();
-		bytePerPix = (keyImage.getColorModel().getPixelSize()/8)-1;
+		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
 		if(!BufferedImageType.checkIfAdmittedType(outputType)) {
 			throw new STEGException();
 		}
@@ -71,7 +71,7 @@ public class ImageCodeDecode {
 	public ImageCodeDecode (ImageCodeDecode original) throws STEGException {
 		this.keyImage = original.keyImage;
 		this.outputType = keyImage.getType();
-		bytePerPix = (keyImage.getColorModel().getPixelSize()/8)-1;
+		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
 		if(!BufferedImageType.checkIfAdmittedType(outputType)) {
 			throw new STEGException();
 		}
@@ -87,7 +87,7 @@ public class ImageCodeDecode {
 	public ImageCodeDecode(File keyImgFile, int outputImgType) throws IOException, STEGException {
 		keyImage = ImageIO.read(keyImgFile);
 		outputType = outputImgType;
-		bytePerPix = (keyImage.getColorModel().getPixelSize()/8)-1;
+		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
 		if(!BufferedImageType.checkIfAdmittedType(outputType)) {
 			throw new STEGException();
 		}
@@ -102,7 +102,7 @@ public class ImageCodeDecode {
 	public ImageCodeDecode(BufferedImage keyImg) throws STEGException {
 		keyImage = keyImg;
 		outputType = keyImage.getType();
-		bytePerPix = (keyImage.getColorModel().getPixelSize()/8)-1;
+		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
 		if(!BufferedImageType.checkIfAdmittedType(outputType)) {
 			throw new STEGException();
 		}
@@ -118,7 +118,7 @@ public class ImageCodeDecode {
 	public ImageCodeDecode(BufferedImage keyImg, int outputImgType) throws STEGException {
 		keyImage = keyImg;
 		outputType = outputImgType;
-		bytePerPix = (keyImage.getColorModel().getPixelSize()/8)-1;
+		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
 		if(!BufferedImageType.checkIfAdmittedType(outputType)) {
 			throw new STEGException();
 		}
@@ -240,6 +240,7 @@ public class ImageCodeDecode {
 	 * @return OmResult  -> oggetto contenente l'immagine risultante dalla codifica, e il numero di byte codificati.
 	 * */
 	public StegOmResult stegaCryptMultiByte(byte[] AES_CODED_OUT) {
+		int bytePerPix = this.bytePerPix-1;
 		
 		SecureRandom rand = new SecureRandom();
 				
@@ -311,6 +312,109 @@ public class ImageCodeDecode {
 	    		// set new value - core of algorithm
 	    		if(availableSrcBytes!=0) {
 		    		codedPX = securePxKey - currentByteToInt;
+	    		}else {
+	    			codedPX = currentByteToInt;
+	    		}
+	    		codedImg.setRGB(j, i, codedPX);
+	    		
+	    		// update progressive N of coded bytes from source, and decrease by the same amount the available bytes
+	    		nBytesCoded += cycleN;
+	    		availableSrcBytes -= cycleN;
+	    	}
+	    }
+	    String strBytesCoded = String.valueOf(nBytesCoded);
+	    // end of image
+//	    return imgPixels;		
+		
+		logger.debug("Finished -> Bytes decripted: "+nBytesCoded+" ; Residual bytes: "+availableSrcBytes+" (must be 0)");
+	    
+		return new StegOmResult(codedImg, strBytesCoded);
+	}
+		
+	/**
+	 * 
+	 * @param AES_CODED_OUT
+	 * @return
+	 */
+	// TODO
+	public StegOmResult stegaCrypt4ByteXor(byte[] AES_CODED_OUT) {
+		
+		SecureRandom rand = new SecureRandom();
+				
+		logger.debug("Started decripting byte array of " + AES_CODED_OUT.length);
+
+		BufferedImage codedImg = new BufferedImage(keyImage.getWidth(), keyImage.getHeight(), keyImage.getType());
+		
+		// initialize total coded bytes and initial available bytes from source
+		Integer nBytesCoded = 0;
+		Integer availableSrcBytes = AES_CODED_OUT.length;
+		
+		// calcolo larghezza e altezza immagine
+        int height = keyImage.getHeight();
+	    int width = keyImage.getWidth();
+	    
+	    // ciclo di scansione immagine
+	    int currentByteToInt = 0;
+	    
+	    // represents the number of bytes effectively written at each cycle
+	    int cycleN = 0;
+	    
+	    // per ogni riga
+	    for(int i=0; i < height;i++) { 
+
+	    	// per ogni colonna
+	    	for(int j=0; j<width;j++){ 
+	    		
+	    		if(availableSrcBytes >= bytePerPix) {
+	    			
+	    			// in case It's possible to write max size bytes
+	    			cycleN = bytePerPix;
+	    			
+	    			if(bytePerPix == 4) {
+	    				
+	    				currentByteToInt = fourBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2], AES_CODED_OUT[nBytesCoded+3]);
+	    			}else if(bytePerPix == 3) {
+	    				
+	    				currentByteToInt = threeBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
+	    			}else if(bytePerPix == 2) {
+	    				
+	    				currentByteToInt = threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
+	    			}else if(bytePerPix == 1) {
+	    				
+	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
+	    			}
+	    			
+	    		}else if(availableSrcBytes < bytePerPix) {
+	    			
+	    			// If there are less than max size
+	    			cycleN = availableSrcBytes;
+	    			
+	    			if(availableSrcBytes == 3) {
+	    				
+	    				currentByteToInt = fourBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
+	    			}else if(availableSrcBytes == 2) {
+	    				
+	    				currentByteToInt = threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
+	    			}else if(availableSrcBytes == 1) {
+	    				
+	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
+	    			}else if(availableSrcBytes == 0){
+	    				
+	    				// if finished available bytes current value will be a random value (to not have clear keyImage pixel in result)
+		    			currentByteToInt = rand.nextInt(MAX_INT)-rand.nextInt(MAX_INT);
+		    		}
+	    		}   		 
+	    		
+	    		// retrieve current pixel value from key Image
+	    		Integer pxKey = keyImage.getRGB(j, i);
+//	    		Integer securePxKey = secForConversion(pxKey); 
+	    		
+	    		// TODO improve secureKey version to avoid getting key knowing (criptedPX, sourcePX)
+
+	    		Integer codedPX;
+	    		// set new value - core of algorithm
+	    		if(availableSrcBytes!=0) {
+		    		codedPX = pxKey ^ currentByteToInt;
 	    		}else {
 	    			codedPX = currentByteToInt;
 	    		}
@@ -471,6 +575,8 @@ public class ImageCodeDecode {
 	 * */
 	public byte[] stegaDeCryptMultiByte(BufferedImage codedImg, Integer cryptedByteNumber) throws STEGException {
 		
+		int bytePerPix = this.bytePerPix-1;
+
 		logger.debug("Started decripting "+cryptedByteNumber+"from image with "+bytePerPix+" bytes for each pixel..." );
 		
 		int origLength = cryptedByteNumber;
@@ -557,6 +663,121 @@ public class ImageCodeDecode {
 	}
 	
 	/**
+	 * Questo metodo si occupa di decodificare tramite algoritmo SteganoCrypt un'immagine passata come parametro. 
+	 * Il metodo si occupa di calcolare i px dell'immagine decodedImg partendo dal corrispondente px della codedImage e dal
+	 * valore dell'i-esimo pixel della chiave. A differenza degli altri metodi riconosce in base al tipo di immagine
+	 * sceglie se estrapolare 1,2,3, o 4 byte da ogni pixel.
+	 * 
+	 * NB -> il risultato è di lunghezza variabile tra 0 e w*h*codedImgType
+	 * 
+	 * @param BufferedImage codedImg -> immagine codificata da stegaCrypt da decodificare
+	 * @param cryptedBytes -> il numero di bytes criptati in codifica
+	 * 
+	 * @return La lista di byte prodotta in uscita
+	 * @throws STEGException 
+	 * */
+	public byte[] stegaDeCrypt4ByteXor(BufferedImage codedImg, Integer cryptedByteNumber) throws STEGException {
+		
+		logger.debug("Started decripting "+cryptedByteNumber+"from image with "+bytePerPix+" bytes for each pixel..." );
+		
+		int origLength = cryptedByteNumber;
+		// calcolo larghezza e altezza dell'immagine codificata passata
+        int height = codedImg.getHeight();
+		int width = codedImg.getWidth();
+		
+		byte[] decodedBytes = new byte[cryptedByteNumber];
+	    byte[] cycleBytes;
+		
+		int nBytesDeCoded = 0;
+		
+		// mi assicuro che chiave e result abbiano la stessa dimensione
+	    if (keyImage.getHeight()==codedImg.getHeight() && keyImage.getWidth()==codedImg.getWidth()) {
+			
+	    	// per ogni riga
+			for (int i = 0; i < height; i++) {
+
+				// per ogni colonna
+				for (int j = 0; j < width; j++) {
+
+					// retrieve current pixel value from key Image
+					Integer pxKey = keyImage.getRGB(j, i);
+//					// make it secure against overflow dividing unsigned by two <=> right shift one position
+//		    		Integer securePxKey = secForConversion(pxKey);
+
+					Integer codedPx = codedImg.getRGB(j, i);
+					
+					// get decoded value - core of algorithm xor
+					Integer decodedPX = pxKey ^ codedPx;
+					
+					// get back integer into four bytes array for current pixel
+					cycleBytes = retrieveBytesFromInt(decodedPX);
+					
+					// NOW GET BACK BYTES THAT ARE ENCODED INTO DECODED INTEGER:
+					
+					if (cryptedByteNumber >= bytePerPix) {
+						
+						if (bytePerPix == 4) {
+
+							decodedBytes[nBytesDeCoded] = cycleBytes[0];
+							decodedBytes[nBytesDeCoded+1] = cycleBytes[1];
+							decodedBytes[nBytesDeCoded+2] = cycleBytes[2];
+							decodedBytes[nBytesDeCoded+3] = cycleBytes[3];
+							nBytesDeCoded += 4;
+							
+						}else if (bytePerPix == 3) {
+
+							decodedBytes[nBytesDeCoded] = cycleBytes[1];
+							decodedBytes[nBytesDeCoded+1] = cycleBytes[2];
+							decodedBytes[nBytesDeCoded+2] = cycleBytes[3];
+							nBytesDeCoded += 3;
+							
+						} else if (bytePerPix == 2) {
+
+							decodedBytes[nBytesDeCoded] = cycleBytes[2];
+							decodedBytes[nBytesDeCoded+1] = cycleBytes[3];
+							nBytesDeCoded += 2;
+							
+						} else if (bytePerPix == 1) {
+
+							decodedBytes[nBytesDeCoded] = cycleBytes[3];
+							nBytesDeCoded ++;						}
+
+					} else if (cryptedByteNumber < bytePerPix) {
+
+						if (cryptedByteNumber == 3) {
+							
+							decodedBytes[nBytesDeCoded] = cycleBytes[1];
+							decodedBytes[nBytesDeCoded+1] = cycleBytes[2];
+							decodedBytes[nBytesDeCoded+2] = cycleBytes[3];
+							nBytesDeCoded += 3;
+							
+						} else if (cryptedByteNumber == 2) {
+							
+							decodedBytes[nBytesDeCoded] = cycleBytes[2];
+							decodedBytes[nBytesDeCoded+1] = cycleBytes[3];
+							nBytesDeCoded += 2;
+							
+						} else if (cryptedByteNumber == 1) {
+
+							decodedBytes[nBytesDeCoded] = cycleBytes[3];
+							nBytesDeCoded ++;		
+						}
+					}
+
+					// decrease initial coded bytes number from source the same as decoded bytes at this cycle
+					cryptedByteNumber = origLength - nBytesDeCoded;
+					
+					// END PIXEL
+				}// END LINE
+			}// END ROW
+			
+			logger.debug("Bytes decripted: "+nBytesDeCoded);
+		}else throw new STEGException(); // se dimensioni non corrispondono alla chiave
+		
+		return decodedBytes;
+	}
+	
+	/**
 	 * This method is used locally to secure that a integer value is suitable to be
 	 * used as start value for encryption process. This done by ensuring that
 	 * a byte can be summed or subtraced without overflow, that would cause
@@ -575,6 +796,14 @@ public class ImageCodeDecode {
 		}
 		return val;
 	}	
+
+	/**
+	 * @return the 32 bytes integer(4x 8 bits) made by the four bytes in the order: [b0,b1,b2,b3]
+	 */
+	public static int fourBytesToIntShift(byte b0, byte b1, byte b2, byte b3) {
+		int r = (b3 & 0xFF) | ((b2 & 0xFF) << 8) | ((b1 & 0xFF) << 16) | ((b0 & 0xFF) << 24);
+		return r;
+	}
 	
 	/**
 	 * @return the 24 bytes integer(8 zeros and 24 bits) made by the three bytes in the order: [0,b1,b2,b3]

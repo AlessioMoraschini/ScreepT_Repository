@@ -600,7 +600,7 @@ public class ScreeptManager {
 			// (cause img is of fixed dimension)
 			
 			// crypt current buffer into image
-			StegOmResult result = imgCoder.stegaCryptMultiByte(buffer);
+			StegOmResult result = imgCoder.stegaCrypt4ByteXor(buffer);
 			BufferedImage imgResult = result.getImgRes();
 			
 			// sequence of info stored in name is the following:
@@ -690,7 +690,7 @@ public class ScreeptManager {
 			// retrieve current image from file
 			BufferedImage codedImg = ImageIO.read(iFile);
 			
-			fout.write(imgCoder.stegaDeCryptMultiByte(codedImg, bytesToGet));
+			fout.write(imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet));
 
 			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
 			String msg = "\nSTEG decripting current coded image: "+iFile.getName();
@@ -777,7 +777,7 @@ public class ScreeptManager {
 			byte[] partialResult = aesCoder.encrypt(buffer);				
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
-			StegOmResult result = imgCoder.stegaCryptMultiByte(partialResult);
+			StegOmResult result = imgCoder.stegaCrypt4ByteXor(partialResult);
 			BufferedImage imgResult = result.getImgRes();
 			
 			// sequence of info stored in name is the following:
@@ -882,7 +882,7 @@ public class ScreeptManager {
 			BufferedImage codedImg = ImageIO.read(iFile);
 			
 			// decript with steg current coded image
-			byte[] partial_res = imgCoder.stegaDeCryptMultiByte(codedImg, bytesToGet);
+			byte[] partial_res = imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet);
 			
 			// now decript with aes and write to out file
 			fout.write(aesCoder.decrypt(partial_res));

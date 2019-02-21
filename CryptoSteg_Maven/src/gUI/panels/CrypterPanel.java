@@ -988,6 +988,7 @@ public class CrypterPanel extends JPanel {
 			resultOK = screepTManager.crypt(src, currentConf);
 			
 		}
+
 		return resultOK;
 	}
 	

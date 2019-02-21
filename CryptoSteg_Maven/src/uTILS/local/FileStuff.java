@@ -465,7 +465,8 @@ public class FileStuff {
 			}
 //			updateProgressBar(80, progBar);
 		} else if(destFile.exists()) {
-    		if(JOptionPane.showConfirmDialog(parent, "File "+destFile.getName()+" exists, overwrite it?")==JOptionPane.OK_OPTION) {
+			int choice = JOptionPane.showConfirmDialog(parent, "File "+destFile.getName()+" exists, overwrite it?");
+    		if(choice == JOptionPane.OK_OPTION) {
 //    			updateProgressBar(30, progBar);
     			destFile.delete();	
 //    			updateProgressBar(40, progBar);
@@ -479,9 +480,16 @@ public class FileStuff {
         			logger.error("Exception happened!", e);
         		}
 //               	updateProgressBar(80, progBar);
-    		}else {
-				JOptionPane.showMessageDialog(parent, "Operation cancelled");
-    			logger.warn("Operation cancelled");
+    		}else if(choice == JOptionPane.NO_OPTION){
+               	try {
+               		destFile = FileStuff.renameJavaObjFile(destFile);
+        			esit = ImageIO.write(img, "png", destFile);
+        			if(esit) {
+        				logger.debug("Image written: "+destFile.getAbsolutePath());
+        			}
+        		} catch (IOException e) {
+        			logger.error("Exception happened!", e);
+        		}
     		}
     		
     	}

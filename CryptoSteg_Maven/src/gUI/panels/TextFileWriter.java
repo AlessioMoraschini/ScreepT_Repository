@@ -108,17 +108,25 @@ public class TextFileWriter extends JPanel {
 	// field containing the current object used to speak text
 	Text2Speech objSpeaker;
 	
-	// GUI Objects
+	// GUI Objects //
 	public JButton btnSaveTextFile;
 	public JButton btnLoadTextFile;
 	public JButton btnSpeak;
 	public JButton btnDecrypt;
 	public JButton btnCrypt;
 	public JButton btnDark;
+	public JButton btnUpperPostDots;
+	public JButton btnTt;
+	
+	public JSlider sliderSpokenSpeed;
+	public JSlider sliderFontSize;
+	public JSlider slider_margin;
 	
 	public JTextArea textArea_1;
 	
 	public UndoManager manager;
+	
+//////////////// CONSTRUCTOR /////////////////////
 	
 	public TextFileWriter(JFrame parent, INItializer currentConfiguration) {
 		
@@ -150,7 +158,7 @@ public class TextFileWriter extends JPanel {
 		lblVoiceSpeed.setForeground(new Color(211, 211, 211));
 		add(lblVoiceSpeed, "cell 10 2");
 		
-		JSlider sliderSpokenSpeed = new JSlider();
+		sliderSpokenSpeed = new JSlider();
 		sliderSpokenSpeed.setValue(90);
 		sliderSpokenSpeed.setMaximum(400);
 		add(sliderSpokenSpeed, "cell 11 2 2 1,alignx center");
@@ -252,18 +260,18 @@ public class TextFileWriter extends JPanel {
 		btnBackgroundCol.setIcon(new ImageIcon(ICON_TEXT_BG_COLOR));
 		add(btnBackgroundCol, "cell 9 4,alignx center");
 		
-		JSlider slider = new JSlider(4,100);
-		slider.setForeground(SystemColor.activeCaptionBorder);
-		slider.setBackground(UIManager.getColor("Button.shadow"));
-		slider.setValue(textArea_1.getFont().getSize());
-		slider.addChangeListener(new ChangeListener() {
+		sliderFontSize = new JSlider(4,100);
+		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
+		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
+		sliderFontSize.setValue(textArea_1.getFont().getSize());
+		sliderFontSize.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				Font font=textArea_1.getFont();
-				font = new Font(font.getName(), font.getStyle(), slider.getValue() );
+				font = new Font(font.getName(), font.getStyle(), sliderFontSize.getValue() );
 				textArea_1.setFont(font);
 				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			}
 		});
-		add(slider, "cell 21 5 2 1,growx");
+		add(sliderFontSize, "cell 21 5 2 1,growx");
 		
 		JButton tglbtnLorem = new JButton("Lorem Ipsum");
 		tglbtnLorem.setToolTipText("Insert classic test text \"Lorem Ipsum\"");
@@ -280,7 +288,7 @@ public class TextFileWriter extends JPanel {
 		btnFontChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FontDialog.showDialog(textArea_1);
-				slider.setValue(textArea_1.getFont().getSize());
+				sliderFontSize.setValue(textArea_1.getFont().getSize());
 				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			}
 		});
 		
@@ -572,7 +580,7 @@ public class TextFileWriter extends JPanel {
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
 		add(lblMargin, "cell 19 4,alignx center");
 		
-		JSlider slider_margin = new JSlider(0,100,0);
+		slider_margin = new JSlider(0,100,0);
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
 		add(slider_margin, "cell 20 4 3 1,growx");
 		
@@ -771,7 +779,7 @@ public class TextFileWriter extends JPanel {
 				textArea_1.setForeground(DEFAULT_FORE_COL);
 				txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
 				slider_margin.setValue(10);
-				slider.setValue(textArea_1.getFont().getSize());
+				sliderFontSize.setValue(textArea_1.getFont().getSize());
 				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
 			}
 		});
@@ -823,7 +831,7 @@ public class TextFileWriter extends JPanel {
 		btnClear.setFont(new Font("Wide Latin", Font.BOLD, 14));
 		add(btnClear, "cell 6 4,growx,aligny center");
 		
-		JButton btnUpperPostDots = new JButton(".Tt");
+		btnUpperPostDots = new JButton(".Tt");
 		btnUpperPostDots.setToolTipText("Makes text uppercase after dots a significat line brokers");
 		btnUpperPostDots.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnUpperPostDots.addActionListener(new ActionListener() {
@@ -888,7 +896,7 @@ public class TextFileWriter extends JPanel {
 		btnDark.setBackground(Color.DARK_GRAY);
 				
 		
-		JButton btnTt = new JButton("TT");
+		btnTt = new JButton("TT");
 		btnTt.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnTt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

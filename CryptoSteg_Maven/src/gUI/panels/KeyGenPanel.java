@@ -416,6 +416,7 @@ public class KeyGenPanel extends JFrame {
 					// now if user pressed cancel input is null, let's check
 					if(inputName != null){
 						progUpdater = new TestUpdateProgress(currentConfig);
+			    		progUpdater.getPb().setValue(0);
 			    		progUpdater.getPb().setIndeterminate(true);
 			    		
 						String out="An error occurred :(";
@@ -429,7 +430,6 @@ public class KeyGenPanel extends JFrame {
 						} catch (Exception e2) {
 							logger.error("An error occurred importing to dictionary :("+e2);
 						}
-						progUpdater = new TestUpdateProgress(currentConfig);
 			    		progUpdater.getPb().setValue(100);
 						
 						btnExport.setEnabled(true);
