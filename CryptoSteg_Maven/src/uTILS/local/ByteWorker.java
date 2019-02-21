@@ -92,7 +92,42 @@ public class ByteWorker {
 		
 	}
 	
+	/**
+	 * this method returns bits composing an array of bytes
+	 * 
+	 * @param the source array of bytes to analize
+	 * @return the String containing 0|1 representing bits in the given parameter byte array
+	 */
+	public static String byteArrayToBinary(byte[] bytes) {
+		String out="";
+		
+		for (byte b : bytes) {
+		    out += Integer.toBinaryString(b & 255 | 256).substring(1)+".";
+		}
+		
+		return out.substring(0, out.length()-1);
+	}
 	
+	/** This method return XOR of two byte array of same size. 
+	 * 
+	 *  @return the result of xor (null if length of param arrays are not equals)
+	 */
+    public static byte[] xor(byte[] data1, byte[] data2) {
+
+    	byte[] result = null;
+    	if (data1.length == data2.length) {
+
+    		result = new byte[data1.length];
+    		for (int i = 0; i < data1.length; i++) {
+				result[i] = (byte)(0xff & (data2[i] ^ data1[i]));
+			} 
+			return result;
+			
+		}else {
+			// if different lengths
+			return null;
+		}
+    }
 	
 	// GETTERS AND SETTERS
 	

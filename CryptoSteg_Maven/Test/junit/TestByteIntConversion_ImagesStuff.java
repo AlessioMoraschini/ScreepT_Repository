@@ -1,14 +1,26 @@
 package junit;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import crypt.steg.ImageCodeDecode;
 import gUI.om.BufferedImageType;
+import junit.configuration.RepeatTest;
+import junit.configuration.RepeatedTestRule;
+import uTILS.local.ByteWorker;
 import uTILS.local.ImageWorker;
 
+import org.junit.Rule;
+
 public class TestByteIntConversion_ImagesStuff {
+	
+	@Rule
+	public RepeatedTestRule repeatRule = new RepeatedTestRule();
 	
 	private final int MAX3Bytes = (int) (Math.pow(2.0d, 24.0d)-1);
 	private final int MIN3Bytes = - (int) (Math.pow(2.0d, 24.0d)-1);
@@ -28,6 +40,7 @@ public class TestByteIntConversion_ImagesStuff {
 	///////////////////////////////////////////////////////////////
 	
 	@Test
+	@Ignore
 	public void test3FromInt() {
 		print(" => 3byte - TEST FROM INT\n");
 		
@@ -42,7 +55,40 @@ public class TestByteIntConversion_ImagesStuff {
 		separatorPrint();
 	}
 	
+	@Test	
+	@RepeatTest(times = 17)
+	public void xorTest() {
+		print(" => XOR BYTE ARRAY TEST\n");
+		
+		initBytes();
+		byte[] arrA = Arrays.copyOf(byteSrc, byteSrc.length);
+		print("Byte A:    " + ByteWorker.byteArrayToBinary(arrA));
+		
+		initBytes();
+		byte[] arrB = Arrays.copyOf(byteSrc, byteSrc.length);
+		print("Byte B:    " + ByteWorker.byteArrayToBinary(arrB));
+	
+		print("\n");
+		
+		byte[] AxorB = ByteWorker.xor(arrA, arrB);
+		print("A XOR B:   " + ByteWorker.byteArrayToBinary(AxorB));
+		
+		print("\n");
+		
+		byte[] resXORB = ByteWorker.xor(AxorB, arrB);
+		print("res XOR B: " + ByteWorker.byteArrayToBinary(resXORB));
+		
+		byte[] resXORA = ByteWorker.xor(AxorB, arrA);
+		print("res XOR A: " + ByteWorker.byteArrayToBinary(resXORA));
+		
+		assertTrue(Arrays.equals(resXORB,arrA));
+		assertTrue(Arrays.equals(resXORA,arrB));
+		
+		separatorPrint();
+	}
+	
 	@Test
+	@Ignore
 	public void test3FromByte() {
 		print(" => 3 byte - TEST FROM BYTE\n");
 		
@@ -58,6 +104,7 @@ public class TestByteIntConversion_ImagesStuff {
 	}
 	
 	@Test
+	@Ignore
 	public void testSecureShiftSum() {
 		print(" => TEST secure byte\n");
 		
@@ -80,6 +127,7 @@ public class TestByteIntConversion_ImagesStuff {
 	}
 	
 	@Test
+	@Ignore
 	public void testNegativeSecureShiftSum() {
 		print(" => TEST secure byte subctraction\n");
 		
@@ -102,6 +150,7 @@ public class TestByteIntConversion_ImagesStuff {
 	}
 	
 	@Test
+	@Ignore
 	public void testPossibleBitsPerPX() {
 		print(" => TEST image types bit X pixel\n");
 		for(BufferedImageType current : BufferedImageType.values()) {
