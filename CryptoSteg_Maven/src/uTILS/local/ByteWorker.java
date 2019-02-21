@@ -57,6 +57,26 @@ public class ByteWorker {
 	}
 	
 	/**
+	 * this method is created to use standard-safe way to convert from string to arrayList of Byte.
+	 * @param srcString the source string
+	 * @return the Byte arrayList equivalent to srcString
+	 * @throws UnsupportedEncodingException 
+	 */
+	public static ArrayList<Byte> strToByteList(String srcString, String charset) throws UnsupportedEncodingException {
+
+		byte[] codedBytes = srcString.getBytes(charset);
+		ArrayList<Byte> byteList = new ArrayList<Byte>();
+
+		// translate byte[] to ArrayList<Byte>
+		for(byte currentByte : codedBytes) {
+			byteList.add(currentByte);
+		}
+		
+		return byteList;
+		
+	}
+	
+	/**
 	 * this method is created to use standard-safe way to convert from byte array to arrayList of Byte.
 	 * @param srcString the source array of bytes
 	 * @return the ArrayList of Byte obj equivalent to src byte array
@@ -108,7 +128,7 @@ public class ByteWorker {
 		return out.substring(0, out.length()-1);
 	}
 	
-	/** This method return XOR of two byte array of same size. 
+	/** This method return bitwise XOR of two byte array of the same size. 
 	 * 
 	 *  @return the result of xor (null if length of param arrays are not equals)
 	 */
@@ -120,6 +140,48 @@ public class ByteWorker {
     		result = new byte[data1.length];
     		for (int i = 0; i < data1.length; i++) {
 				result[i] = (byte)(0xff & (data2[i] ^ data1[i]));
+			} 
+			return result;
+			
+		}else {
+			// if different lengths
+			return null;
+		}
+    }
+    
+	/** This method return bitwise AND of two byte array of the same size. 
+	 * 
+	 *  @return the result of AND (null if length of param arrays are not equals)
+	 */
+    public static byte[] and(byte[] data1, byte[] data2) {
+
+    	byte[] result = null;
+    	if (data1.length == data2.length) {
+
+    		result = new byte[data1.length];
+    		for (int i = 0; i < data1.length; i++) {
+				result[i] = (byte)(0xff & (data2[i] & data1[i]));
+			} 
+			return result;
+			
+		}else {
+			// if different lengths
+			return null;
+		}
+    }
+    
+    /** This method return bitwise OR of two byte array of the same size. 
+	 * 
+	 *  @return the result of OR (null if length of param arrays are not equals)
+	 */
+    public static byte[] or(byte[] data1, byte[] data2) {
+
+    	byte[] result = null;
+    	if (data1.length == data2.length) {
+
+    		result = new byte[data1.length];
+    		for (int i = 0; i < data1.length; i++) {
+				result[i] = (byte)(0xff & (data2[i] | data1[i]));
 			} 
 			return result;
 			

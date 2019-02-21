@@ -55,38 +55,6 @@ public class TestByteIntConversion_ImagesStuff {
 		separatorPrint();
 	}
 	
-	@Test	
-	@RepeatTest(times = 17)
-	public void xorTest() {
-		print(" => XOR BYTE ARRAY TEST\n");
-		
-		initBytes();
-		byte[] arrA = Arrays.copyOf(byteSrc, byteSrc.length);
-		print("Byte A:    " + ByteWorker.byteArrayToBinary(arrA));
-		
-		initBytes();
-		byte[] arrB = Arrays.copyOf(byteSrc, byteSrc.length);
-		print("Byte B:    " + ByteWorker.byteArrayToBinary(arrB));
-	
-		print("\n");
-		
-		byte[] AxorB = ByteWorker.xor(arrA, arrB);
-		print("A XOR B:   " + ByteWorker.byteArrayToBinary(AxorB));
-		
-		print("\n");
-		
-		byte[] resXORB = ByteWorker.xor(AxorB, arrB);
-		print("res XOR B: " + ByteWorker.byteArrayToBinary(resXORB));
-		
-		byte[] resXORA = ByteWorker.xor(AxorB, arrA);
-		print("res XOR A: " + ByteWorker.byteArrayToBinary(resXORA));
-		
-		assertTrue(Arrays.equals(resXORB,arrA));
-		assertTrue(Arrays.equals(resXORA,arrB));
-		
-		separatorPrint();
-	}
-	
 	@Test
 	@Ignore
 	public void test3FromByte() {
@@ -157,6 +125,38 @@ public class TestByteIntConversion_ImagesStuff {
 			int bitSize = ImageWorker.generaKeyImage(20, 20, current.getType()).getColorModel().getPixelSize();
 			print(" => Type: "+current+", SIZE in bits: "+bitSize);
 		}
+		separatorPrint();
+	}
+	
+	@Test	
+	@RepeatTest(times = 10)
+	public void xorTest() {
+		print(" => XOR BYTE ARRAY TEST\n");
+		
+		initBytes();
+		byte[] arrA = Arrays.copyOf(byteSrc, byteSrc.length);
+		print("Byte A:    " + ByteWorker.byteArrayToBinary(arrA));
+		
+		initBytes();
+		byte[] arrB = Arrays.copyOf(byteSrc, byteSrc.length);
+		print("Byte B:    " + ByteWorker.byteArrayToBinary(arrB));
+	
+		print("\n");
+		
+		byte[] AxorB = ByteWorker.xor(arrA, arrB);
+		print("A XOR B:   " + ByteWorker.byteArrayToBinary(AxorB));
+		
+		print("\n");
+		
+		byte[] resXORB = ByteWorker.xor(AxorB, arrB);
+		print("res XOR B: " + ByteWorker.byteArrayToBinary(resXORB));
+		
+		byte[] resXORA = ByteWorker.xor(AxorB, arrA);
+		print("res XOR A: " + ByteWorker.byteArrayToBinary(resXORA));
+		
+		assertTrue(Arrays.equals(resXORB,arrA));
+		assertTrue(Arrays.equals(resXORA,arrB));
+		
 		separatorPrint();
 	}
 	
