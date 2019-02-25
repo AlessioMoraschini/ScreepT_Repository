@@ -317,19 +317,19 @@ public class GeneralOptionsFrame extends JFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
-		        	logger.debug("Closing GUI_Preferences");
-					
-		        	// reset values to default adn update configuration
-		        	resetValuesAndAdd();
-		        	
-		        	// update gui
-		        	updateGUIComponents();		        	
-					
-					logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
-		        	
-					active = false;
-					
-		        	dispose();
+	        	logger.debug("Closing GUI_Preferences");
+				
+	        	// reset values to default adn update configuration
+	        	resetValuesAndAdd();
+	        	
+	        	// update gui
+	        	updateGUIComponents();		        	
+				
+				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
+	        	
+				active = false;
+				
+	        	dispose();
 		    }
 		});
 

@@ -1,6 +1,7 @@
 package crypt.manager;
 
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,13 +13,15 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
-import javax.swing.JProgressBar;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
@@ -31,7 +34,6 @@ import iNIT.INItializer;
 import iNIT.om.AesOption;
 import uTILS.local.CustomFileComparator;
 import uTILS.local.FileStuff;
-import uTILS.local.HandleString;
 import uTILS.local.ImageWorker;
 
 /**
@@ -87,6 +89,12 @@ public class ScreeptManager {
 	
 	private String tempMSG="";
 		
+	// list to keep memory of open streams in case of error
+	private List<Closeable> closeables = new LinkedList<Closeable>();
+	
+	// reference to keep memory of outFile/dir (in case of steg delete all out dir representing crypted single file) in case of error
+	public File currentOutFile;
+	
 	//////////////////////
 	//    CONSTRUCTOR   //
 	//////////////////////
@@ -171,7 +179,7 @@ public class ScreeptManager {
 //		progUpdater.getPb().setValue(0);
 //		progUpdater.getLabel().setText("Starting ecnryption...");
 //		
-		wellDone = false;
+		wellDone = true;
 		
 		tempMSG += "Start encripting "+srcFile.getAbsolutePath()+" ...\n[Selected mode: "+mode+" ]\n";
 		tempMSG += "[ Out folder: "+OUT_PATH+" ]\n";
@@ -193,7 +201,6 @@ public class ScreeptManager {
 				logger.debug("AES mode detected!");
 
 				onlyAESCrypt(srcFile);
-				wellDone = true;
 				
 //				progUpdater.getPb().setValue(100);
 				logger.debug("AES Crypt phase - EXITING");
@@ -207,6 +214,9 @@ public class ScreeptManager {
 				outFolder.mkdir();
 				RESULT_PATH = outFolder.getCanonicalPath()+"/";
 				
+				// update reference to currentOutFile/folder
+				currentOutFile = outFolder;
+				
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
@@ -217,7 +227,6 @@ public class ScreeptManager {
 				logger.debug("STEG mode detected!");
 
 				onlySTEGCrypt(srcFile);
-				wellDone = true;
 				
 //				progUpdater.getPb().setValue(100);
 				logger.debug("STEG Crypt phase - EXITING");
@@ -230,6 +239,9 @@ public class ScreeptManager {
 				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
 				RESULT_PATH = outFolder.getCanonicalPath()+"/";
+				
+				// update reference to currentOutFile/folder
+				currentOutFile = outFolder;
 
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
@@ -241,7 +253,6 @@ public class ScreeptManager {
 				logger.debug("COMPLETE mode detected!");
 				
 				completeCrypt(srcFile);
-				wellDone = true;
 				
 //				progUpdater.getPb().setValue(100);
 				logger.debug("COMPLETE Crypt phase - EXITING");
@@ -296,7 +307,7 @@ public class ScreeptManager {
 //		progUpdater.getPb().setValue(0);
 //		progUpdater.getLabel().setText("Starting Decryption...");
 		
-		wellDone = false;
+		wellDone = true;
 		
 		tempMSG += "Start decripting "+srcFile.getAbsolutePath()+" ...\nSelected mode: [ "+mode+" ]\n";
 		tempMSG += "[ Out folder: "+OUT_PATH+" ]\n";
@@ -318,7 +329,6 @@ public class ScreeptManager {
 				logger.debug("AES mode detected!");
 				
 				onlyAESDeCrypt(srcFile);
-				wellDone = true;
 				
 //				progUpdater.getPb().setValue(100);
 				logger.debug("AES Decrypt phase - EXITING");
@@ -336,7 +346,6 @@ public class ScreeptManager {
 				logger.debug("STEG mode detected!");
 
 				onlySTEGDeCrypt(srcFile);
-				wellDone = true;
 				
 //				progUpdater.getPb().setValue(100);
 				logger.debug("STEG Decrypt phase - EXITING");
@@ -353,7 +362,6 @@ public class ScreeptManager {
 				logger.debug("COMPLETE mode detected!");
 				
 				completeDeCrypt(srcFile);
-				wellDone = true;
 				
 //				progUpdater.getPb().setValue(100);
 				logger.debug("COMPLETE Decrypt phase - EXITING");
@@ -372,11 +380,16 @@ public class ScreeptManager {
 	
 	// Function that set values before to throw exception
 	private void resetAfterException(Exception e) {
+		
 		String msg = "\n => OOOPS! An error occurred :(";
 		progUpdater.getPb().setValue(100);
+		progUpdater.forceClose();
 		logger.error(msg, e);
 		tempMSG += msg;
 		wellDone = false;
+		killOpenStreams();
+		FileUtils.deleteQuietly(currentOutFile);
+		
 	}
 	
 	// Function that delete the content of the temporaneous folder.
@@ -428,11 +441,17 @@ public class ScreeptManager {
 		CRYPT_NAME = srcFile.getName();
 		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+CRYPT_NAME));
 		
+		// update reference to currentOutFile/folder
+		currentOutFile = result;
+		
 		// create file if it does not exist
 		result.createNewFile();
 		
 		// initialize writer with append flag set to true, so it don't overwrite at every cycle of buffer read
 		FileOutputStream outWriter = new FileOutputStream(result, true);
+		
+		closeables.add(streamIN);
+		closeables.add(outWriter);
 		
 		// AES error types
 		if(this.aesCoder == null || this.aesCoder.getPassword().equals("")) {
@@ -503,11 +522,17 @@ public class ScreeptManager {
 		DECRYPT_NAME = srcFile.getName();
 		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+DECRYPT_NAME));
 		
+		// update reference to currentOutFile/folder
+		currentOutFile = result;
+				
 		// create file if it does not exist
 		result.createNewFile();
 		
 		// initialize writer with append flag set to true, so it don't overwrite at every cycle of buffer read
 		FileOutputStream outWriter = new FileOutputStream(result.getAbsolutePath(), true);
+		
+		closeables.add(streamIN);
+		closeables.add(outWriter);
 		
 		// AES error types
 		if(this.aesCoder == null || this.aesCoder.getPassword().equals("")) {
@@ -568,6 +593,8 @@ public class ScreeptManager {
 		FileInputStream streamIN = new FileInputStream(srcFile);
 		int STEG_BUFFER_SIZE = w*h*mult;
 		//int STEG_BUFFER_SIZE = w*h;
+		
+		closeables.add(streamIN);
 		
 		// check availabe bytes from source to avoid filling to buffer_size with null values
 		// set buffer at 1 byte per px of image key if <= than available
@@ -657,8 +684,13 @@ public class ScreeptManager {
 		File outFile = new File(OUT_PATH+DECRYPT_NAME);
 		outFile = FileStuff.renameJavaObjFile(outFile);
 		
+		// update reference to currentOutFile/folder
+		currentOutFile = outFile;
+				
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
+		
+		closeables.add(fout);
 		
 		// STEG error types
 		if(this.imgCoder == null || this.imgCoder.getKeyImage()==null) {
@@ -728,6 +760,8 @@ public class ScreeptManager {
 		FileInputStream streamIN = new FileInputStream(srcFile);
 		// grant that generated bytes can be all contained in image without loss (consider 16 max for padding and 16 for iv space) 
 		int STEG_BUFFER_SIZE = (w*h*mult)-32;
+		
+		closeables.add(streamIN);
 		
 		// set buffer at 1 byte per px of image key if <= than available
 		//int available = streamIN.available();
@@ -847,8 +881,13 @@ public class ScreeptManager {
 		File outFile = new File(OUT_PATH+DECRYPT_NAME);		
 		outFile = FileStuff.renameJavaObjFile(outFile);
 		
+		// update reference to currentOutFile/folder
+		currentOutFile = outFile;
+				
 		// create out Stream setting append mode (do not overwrite every cycle)
 		FileOutputStream fout = new FileOutputStream(outFile, true);
+
+		closeables.add(fout);
 		
 		// STEG error types
 		if(imgCoder == null || imgCoder.getKeyImage()==null) {
@@ -977,10 +1016,29 @@ public class ScreeptManager {
 		return multNIMG;
 	}
 	
+	public void disableProgressUpdater() {
+		
+		if(progUpdater != null) {
+			progUpdater.getPb().setValue(100);
+			progUpdater.forceClose();
+		}
+	}
+	
+	public void killOpenStreams(){
+		for (Closeable closeable : closeables) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                }catch (Exception e) {
+					logger.error("An error occurred closing opened streams", e);
+				}
+            }
+        }
+	}
+	
 	//////////////////////
 	// GETTERS & SETTERS /
 	//////////////////////
-
 
 	public ImageCodeDecode getImgCoder() {
 		return imgCoder;

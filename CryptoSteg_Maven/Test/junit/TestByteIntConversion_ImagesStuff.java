@@ -2,6 +2,7 @@ package junit;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -13,6 +14,7 @@ import gUI.om.BufferedImageType;
 import junit.configuration.RepeatTest;
 import junit.configuration.RepeatedTestRule;
 import uTILS.local.ByteWorker;
+import uTILS.local.FileStuff;
 import uTILS.local.ImageWorker;
 
 import org.junit.Rule;
@@ -38,6 +40,13 @@ public class TestByteIntConversion_ImagesStuff {
 	///////////////////////////////////////////////////////////////
 	//////////////////////START TEST METHODS //////////////////////
 	///////////////////////////////////////////////////////////////
+	
+	@Test
+	@Ignore
+	public void deleteFileRecursive() {
+		print("startDelete");
+		FileStuff.deleteDirContentRecursive(new File("C:\\Users\\xx\\Desktop\\MultiCrypterTest\\2"));
+	}
 	
 	@Test
 	@Ignore
@@ -72,6 +81,7 @@ public class TestByteIntConversion_ImagesStuff {
 	}
 	
 	@Test
+	@Ignore
 	public void test4FromByte() {
 		print(" => 3 byte - TEST FROM BYTE\n");
 		

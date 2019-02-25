@@ -4,10 +4,14 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
@@ -40,7 +44,10 @@ public class FileStuff {
 	// FileStuff logger creation		
 	static Logger logger = Logger.getLogger(FileStuff.class); 
 		
-	
+	/**
+	 * Change extension to the given one and return the new file reference. Be careful, the returned file is not physically created!
+	 * NB the extension must be preceeded by a dot
+	 */
 	public static File changeExtension(File file, String newExtension) {
 		int extensionLenght = (FilenameUtils.getExtension(file.getName())).length();
 		String noExt="";
@@ -55,6 +62,10 @@ public class FileStuff {
 		return file;
 	}
 	
+	/**
+	 * Change extension to the given one and return the new String name.
+	 * NB the extension must be preceeded by a dot
+	 */
 	public static String changeExtension(String originalName, String newExtension) {
 		int extensionLenght = (FilenameUtils.getExtension(originalName)).length();
 		String noExt="";
@@ -147,6 +158,27 @@ public class FileStuff {
 	        }
 	    }
 	    return deleted;	
+	}
+	
+	/**
+	 * get number of files and directories in a given folder, including subdirectories if countDirAsOne is true
+	 * @param directory the root directory to search in
+	 * @return
+	 */
+	public static int countFilesInDirectory(File directory, boolean countDirAsOne) {
+	  int count = 0;
+	  for (File file : directory.listFiles()) {
+	      if (file.isFile()) {
+	          count++;
+	      }
+	      if (file.isDirectory()) {
+	    	  if(countDirAsOne) {
+	    		  count++;
+	    	  }
+	          count += countFilesInDirectory(file, countDirAsOne);
+	      }
+	  }
+	  return count;
 	}
 	
 	/**
@@ -386,6 +418,62 @@ public class FileStuff {
     
     	}
     	return true;
+	}
+	
+	/**
+	 * This method read from a file and give a String representation of content
+	 * @param toRead the source file to read
+	 * @return
+	 * @throws IOException
+	 */
+	public static String readFileAsString(File toRead) throws IOException {
+		FileInputStream readerStream = new FileInputStream(toRead);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
+		String read = "";
+		String line = reader.readLine();
+		while (line != null) {
+			read += line;
+			read += "\n";
+			line = reader.readLine();
+		}
+		reader.close();
+		return read;
+	}
+	
+	/**
+	 * This method writes a string to a file 
+	 * @param source the source string to write on file
+	 * @param outFile the ouput file to write in
+	 * @param overwrite if true overwrite existing file
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean writeStringToFile(String source, File outFile, boolean overwrite) throws IOException {
+		if(outFile.exists()) {
+			if (overwrite) {
+				boolean deleted = outFile.delete();
+				boolean recreated = outFile.createNewFile();
+				if(!recreated || !deleted) {
+					return false;
+				}
+			}else {
+				return false;
+			}
+		}else {
+			boolean recreated = outFile.createNewFile();
+			if(!recreated) {
+				return false;
+			}
+		}
+		
+		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(outFile), System.getProperty("file.encoding"));
+		PrintWriter out = new PrintWriter(outputStreamWriter);
+		out.write(source);
+		
+		out.close();
+		outputStreamWriter.close();
+		
+		return true;
 	}
 	
 	/**

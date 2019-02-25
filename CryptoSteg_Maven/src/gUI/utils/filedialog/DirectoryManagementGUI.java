@@ -4,10 +4,12 @@ import java.awt.Component;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
+import iNIT.INItializer;
 import uTILS.local.FileStuff;
 
 public class DirectoryManagementGUI {
@@ -54,5 +56,35 @@ public class DirectoryManagementGUI {
 		}
 		
 		return defaultVisualizedDir;
+	}
+	
+	public static void deleteContentOfDir(JFrame parent,INItializer currentConf) {
+		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		if (selected!=null) {
+			boolean res = FileStuff.deleteDirContentRecursive(selected);
+			if (res) {
+				JOptionPane.showMessageDialog(parent, "Completed, content deleted :)", "Completed, content deleted", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+			} 
+		}else {
+			//JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	public static void makeDirsFromPath(JFrame parent,INItializer currentConf) {
+		
+		String dirToMake = JOptionPane.showInputDialog("Insert the complete Path of the directories to create (accepted separators=['\\','/'])");
+		if (!dirToMake.equals("")) {
+			File givenDir = new File(dirToMake);
+			boolean res = givenDir.mkdirs();
+			if (res) {
+				JOptionPane.showMessageDialog(parent, "Completed, Directories created!", "Directories created!", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(parent, "Some error occurred creating folders :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+			} 
+		}else {
+			JOptionPane.showMessageDialog(parent, "Void path, exiting.", "Some error occurred!", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

@@ -116,6 +116,33 @@ public class GenericFileChooserDialog {
 	}
 	
 	/**
+	 * JPANEL - every extension
+	 * this method select a source file from the user,if nothing is selected returns null
+	 */
+	public static File fileRead(JPanel parent) {
+		
+		JFileChooser fileChooser = new JFileChooser();		
+		fileChooser.setDialogTitle("Select input File");
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		File correctFile = null;
+		
+		int returnVal = fileChooser.showOpenDialog(parent);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            
+        	File selectedFile = fileChooser.getSelectedFile();
+//        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
+        	if(selectedFile==null) {
+        		JOptionPane.showMessageDialog(parent, "Please select a file!", "File not selected", JOptionPane.ERROR_MESSAGE);
+        	}else {
+        		correctFile = selectedFile;
+        	}
+        }else {
+        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        }
+        return correctFile;
+	}
+	
+	/**
 	 * JCOMPONENT - every extension and every typer of source
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
@@ -140,7 +167,7 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	//JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
@@ -177,7 +204,6 @@ public class GenericFileChooserDialog {
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */
 	public static File directoRead(JFrame parent, INItializer currentConf) {
-
 		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Choose Input Directory");

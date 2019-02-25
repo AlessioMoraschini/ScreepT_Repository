@@ -2,6 +2,7 @@ package gUI.panels;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
@@ -30,7 +31,7 @@ import javax.swing.border.LineBorder;
 public class ChargeIniLog extends JPanel{
 	
 	// INItializer logger creation		
-		static Logger logger = Logger.getLogger(ChargeIniLog.class); 
+	static Logger logger = Logger.getLogger(ChargeIniLog.class); 
 	
 	// name used when using icons, remember to put in the correct folder or it will lanuch nullpointerException
 	public final static String ICON_RELOAD_BLUE = "Resources_Scrypt/Icons/Reload.png";
@@ -38,32 +39,30 @@ public class ChargeIniLog extends JPanel{
 	public ChargeIniLog(INItializer config, JFrame parent) {
 		setBackground(Color.LIGHT_GRAY);
 		
- 
 		setLayout(new MigLayout("", "[117.00][][][70,grow][50][100px,grow][:80:250px]", "[:58.00:60px][][90%,grow]"));
 		
-		
+		JScrollPane scrollPane = new JScrollPane();
 		JTextArea textArea = new JTextArea();
+		scrollPane.setViewportView(textArea);
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
 		textArea.append(config.toStringa()); 		
+		add(scrollPane, "cell 0 2 7 1,grow");
 		
 		JLabel lblAvviso = new JLabel("[Configuration loaded]");
 		lblAvviso.setForeground(Color.DARK_GRAY);
 		add(lblAvviso, "cell 3 1,alignx left");
 		
-
 		JLabel lblInitializationFrom = new JLabel("Current .ini file: ");
 		lblInitializationFrom.setFont(new Font("Trajan Pro 3", Font.BOLD, 15));
 		add(lblInitializationFrom, "cell 5 1,alignx right");
-		
 		
 		JLabel config_PATH = new JLabel("");
 		config_PATH.setHorizontalAlignment(SwingConstants.CENTER);
 		config_PATH.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		add(config_PATH, "cell 6 1,alignx right");
 		config_PATH.setText(config.getIniFile().getFile().getPath());
-		add(textArea, "cell 0 2 7 1,grow");
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(SystemColor.menu);
@@ -95,7 +94,6 @@ public class ChargeIniLog extends JPanel{
 			}
 		});
 		
-		
 		JButton btnLoadCustomConfig = new JButton("Load Custom CONFIG");
 		btnLoadCustomConfig.setForeground(Color.WHITE);
 		btnLoadCustomConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
@@ -110,7 +108,6 @@ public class ChargeIniLog extends JPanel{
 				//config.readConfigIniFile(); bug overwrite volatile INI when user does not choose any file or cancel
 			}
 		});
-		
 		
 		btnLoadCustomConfig.setBackground(Color.DARK_GRAY);
 		add(btnLoadCustomConfig, "cell 0 1,grow");
@@ -133,10 +130,6 @@ public class ChargeIniLog extends JPanel{
 		buttonReload.setBackground(Color.DARK_GRAY);
 		buttonReload.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
 		add(buttonReload, "cell 2 1");
-		
-//		JScrollBar scrollBar = new JScrollBar();
-//	
-//		parent.getContentPane().add(scrollBar);
 		
 		logger.debug("## CONFIGURATION MANAGER MODULE started");
 	}

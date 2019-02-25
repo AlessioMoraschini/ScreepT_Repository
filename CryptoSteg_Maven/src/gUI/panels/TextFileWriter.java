@@ -997,8 +997,6 @@ public class TextFileWriter extends JPanel {
 		}
 		
 		// END checkbox listeners
-
-		
 		
 		JButton btnItaliC = new JButton("");
 		btnItaliC.setToolTipText("Set italics style to all text");

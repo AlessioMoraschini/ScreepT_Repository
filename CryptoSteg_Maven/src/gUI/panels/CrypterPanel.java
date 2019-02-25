@@ -20,6 +20,7 @@ import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManager;
 import crypt.steg.ImageCodeDecode;
 import crypt.steg.STEGException;
+import gUI.mainGUI;
 import gUI.om.BufferedImageType;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
@@ -316,8 +317,7 @@ public class CrypterPanel extends JPanel {
 					lblSrcFileSel.setForeground(Color.GREEN);
 					lblSrcFileSel.setText(newdisplayed);
 					
-					JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded",
-							"File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
 					logger.debug("File :" + selected.getName() + " correctly loaded");
 			
 				}
@@ -466,24 +466,6 @@ public class CrypterPanel extends JPanel {
 		btnCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		btnCreept.setBackground(new Color(204, 51, 51));
 		
-		// CREEPT ACTION LISTENER
-		btnCreept.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				try {
-					new Thread(cripterRunner()).start();
-				}
-				catch(Exception ex) {
-					coderUsed = false;
-					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
-					logger.error("Exception happened during creept", ex);
-				}
-				
-			}
-		});
-		
 		btnDeCreept = new JButton("DeCreept");
 		btnDeCreept.setMargin(new Insets(0, 0, 0, 20));
 		GridBagConstraints gbc_btnDeCreept = new GridBagConstraints();
@@ -498,6 +480,27 @@ public class CrypterPanel extends JPanel {
 		btnDeCreept.setBackground(new Color(102, 153, 0));
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		
+
+		// CREEPT ACTION LISTENER
+		btnCreept.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					new Thread(cripterRunner()).start();
+				}
+				catch(Exception ex) {
+					coderUsed = false;
+					screepTManager.disableProgressUpdater();
+					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					logger.error("Exception happened during creept", ex);
+				}
+				
+			}
+		});
+		
+		
 		// DECREEPT ACTION LISTENER
 		btnDeCreept.addActionListener(new ActionListener() {
 			
@@ -508,6 +511,7 @@ public class CrypterPanel extends JPanel {
 					new Thread(decripterRunner()).start();
 				}catch(Exception ex) {
 					coderUsed = false;
+					screepTManager.disableProgressUpdater();
 					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
 					logger.error("Exception happened during decreept!", ex);
 				}
@@ -522,15 +526,30 @@ public class CrypterPanel extends JPanel {
 		scrollPanelTab.setViewportView(tabbedPane);
 	}
 	
+/////////////////////////////////////
+		// USEFUL METHODS //
+		////////////////////
+	
 	private Runnable decripterRunner() {
 		return new Runnable() {
 			
 			@Override
 			public void run() {
 				
-				// get output asking to user
-				File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
-
+				File destinationDir = null;
+				
+				// ask user if he wants to delete decripted after closing ScrYpT
+				int deleteAfterClose = JOptionPane.showConfirmDialog(parentFrame, "Delete decripted file(s) after exiting ScrypT? (TEMP folder will be created on Desktop)",
+						"Delete decripted when SW will be closed", JOptionPane.YES_NO_OPTION);
+				
+				if(deleteAfterClose == JOptionPane.YES_OPTION) {
+					// if temporary mode create temp folder ScrYpT on desktop
+					destinationDir = new File(mainGUI.TEMP_DECRIPTED_ROOT_PATH);
+				}else {
+					// get output asking to user
+					destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+				}
+				
 				// notify that method is running
 				coderUsed=true;
 				
@@ -564,15 +583,15 @@ public class CrypterPanel extends JPanel {
 							}
 
 						} catch (UnsupportedEncodingException e1) {
-							logger.error("Encoding Exception happened!", e1);
+							resultOK = resetAfterException("Encoding Exception happened!", e1);
 						} catch (NoSuchPaddingException e1) {
-							logger.error("Padding Exception happened!", e1);
+							resultOK = resetAfterException("Padding Exception happened!", e1);
 						} catch (NoSuchAlgorithmException e1) {
-							logger.error("Algorithm Exception happened!", e1);
+							resultOK = resetAfterException("Algorithm Exception happened!", e1);
 						} catch (IOException e1) {
-							logger.error("Exception occurred moving the result file :(", e1);
+							resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
 						} catch (Exception e1) {
-							logger.error("Generic Exception occurred :(", e1);
+							resultOK = resetAfterException("Generic Exception occurred :(", e1);
 						}
 					
 					// ONLY STEG DECRYPT
@@ -585,11 +604,11 @@ public class CrypterPanel extends JPanel {
 							}
 
 						} catch (IOException e1) {
-							logger.error("IO Exception happened!", e1);
+							resultOK = resetAfterException("IO Exception happened!", e1);
 						} catch (STEGException e1) {
-							logger.error("STEG Exception happened!", e1);
+							resultOK = resetAfterException("STEG Exception happened!", e1);
 						} catch (Exception e1) {
-							logger.error("Generic Exception occurred :(", e1);
+							resultOK = resetAfterException("Generic Exception occurred :(", e1);
 						}
 						
 					// COMPLETE DECRYPT
@@ -602,20 +621,21 @@ public class CrypterPanel extends JPanel {
 							}
 
 						} catch (UnsupportedEncodingException e1) {
-							logger.error("Encoding Exception happened!", e1);
+							resultOK = resetAfterException("Encoding Exception happened!", e1);
 						} catch (NoSuchPaddingException e1) {
-							logger.error("Padding Exception happened!", e1);
+							resultOK = resetAfterException("Padding Exception happened!", e1);
 						} catch (NoSuchAlgorithmException e1) {
-							logger.error("Algorithm Exception happened!", e1);
+							resultOK = resetAfterException("Algorithm Exception happened!", e1);
 						} catch (IOException e1) {
-							logger.error("IO Exception happened!", e1);
+							resultOK = resetAfterException("IO Exception happened!", e1);
 						} catch (STEGException e1) {
-							logger.error("STEG Exception happened!", e1);
+							resultOK = resetAfterException("STEG Exception happened!", e1);
 						} catch (Exception e1) {
-							logger.error("Generic Exception occurred :(", e1);
+							resultOK = resetAfterException("Generic Exception occurred :(", e1);
 						}
 					} 
 				}
+				screepTManager.disableProgressUpdater();
 				
 				// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
 				if(resultOK) {
@@ -691,15 +711,15 @@ public class CrypterPanel extends JPanel {
 							}
 
 						} catch (UnsupportedEncodingException e1) {
-							logger.error("Encoding Exception happened!", e1);
+							resultOK = resetAfterException("Encoding Exception happened!", e1);
 						} catch (NoSuchPaddingException e1) {
-							logger.error("Padding Exception happened!", e1);
+							resultOK = resetAfterException("Padding Exception happened!", e1);
 						} catch (NoSuchAlgorithmException e1) {
-							logger.error("Algorithm Exception happened!", e1);
+							resultOK = resetAfterException("Algorithm Exception happened!", e1);
 						} catch (IOException e1) {
-							logger.error("Exception occurred moving the result file :(", e1);
+							resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
 						} catch (Exception e1) {
-							logger.error("Generic Exception occurred :(", e1);
+							resultOK = resetAfterException("Generic Exception occurred :(", e1);
 						}
 					
 					// ONLY STEG CRYPT
@@ -718,11 +738,11 @@ public class CrypterPanel extends JPanel {
 							}
 
 						} catch (IOException e1) {
-							logger.error("IO Exception happened!", e1);
+							resultOK = resetAfterException("IO Exception happened!", e1);
 						} catch (STEGException e1) {
-							logger.error("STEG Exception happened!", e1);
+							resultOK = resetAfterException("STEG Exception happened!", e1);
 						} catch (Exception e1) {
-							logger.error("Generic Exception occurred :(", e1);
+							resultOK = resetAfterException("Generic Exception occurred :(", e1);
 						}
 						
 					// COMPLETE CRYPT
@@ -741,20 +761,21 @@ public class CrypterPanel extends JPanel {
 							}
 
 						} catch (UnsupportedEncodingException e1) {
-							logger.error("Encoding Exception happened!", e1);
+							resultOK = resetAfterException("Encoding Exception happened!", e1);
 						} catch (NoSuchPaddingException e1) {
-							logger.error("Padding Exception happened!", e1);
+							resultOK = resetAfterException("Padding Exception happened!", e1);
 						} catch (NoSuchAlgorithmException e1) {
-							logger.error("Algorithm Exception happened!", e1);
+							resultOK = resetAfterException("Algorithm Exception happened!", e1);
 						} catch (IOException e1) {
-							logger.error("IO Exception happened!", e1);
+							resultOK = resetAfterException("IO Exception happened!", e1);
 						} catch (STEGException e1) {
-							logger.error("STEG Exception happened!", e1);
+							resultOK = resetAfterException("STEG Exception happened!", e1);
 						} catch (Exception e1) {
-							logger.error("Generic Exception occurred :(", e1);
+							resultOK = resetAfterException("Generic Exception occurred :(", e1);
 						}
 					} 
 				}
+				screepTManager.disableProgressUpdater();
 		
 				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
 				if(resultOK) {
@@ -1204,8 +1225,12 @@ public class CrypterPanel extends JPanel {
 			JOptionPane.showMessageDialog(thisPanel, "OOOps, IO Error occurred :(", "IO error", JOptionPane.ERROR_MESSAGE);
 		}
     }
-	
 
+	private boolean resetAfterException(String msg, Exception e) {
+		logger.error(msg, e);
+		return false;
+	}
+	
 	/**
 	 * This method is used only locally to refresh image with the given one
 	 */

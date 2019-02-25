@@ -6,7 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JMenuBar;
@@ -38,14 +41,17 @@ import gUI.panels.GeneralOptionsFrame;
 import gUI.panels.KeyGenPanel;
 import gUI.panels.NetInfoPanel;
 import gUI.panels.TextFileWriter;
+import gUI.utils.filedialog.AdWaitDialog;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
+import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
 import iNIT.INItializer;
 
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -53,6 +59,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Vector;
 import java.awt.SystemColor;
 
 import net.miginfocom.swing.MigLayout;
@@ -60,7 +67,6 @@ import uTILS.local.FileStuff;
 
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Color;
-import javax.swing.Action;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 
@@ -78,6 +84,7 @@ public class mainGUI {
 	// the name of the application used elsewhere on the sw
 	private static final String APPLICATION_NAME = "ScrYpt_V1.0";
 	private static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
+	private static final String ICON_FILE_NAME = "icon.jpg";
 	
 	// constant files & directories prefix
 	private static final String RESOURCES_DIR="Resources_Scrypt/";
@@ -96,6 +103,9 @@ public class mainGUI {
 	private String last_dir_used; 
 	
 	// GUI ELEMENTS
+	
+	// background image
+	private JLabel labelBACKground;
 	
 	// the main frame for placing the content
 	volatile private JFrame frmScryptV;
@@ -139,11 +149,13 @@ public class mainGUI {
 	private JMenuItem mntmNewTextFile;
 	private JMenuItem netInfo;
 	private JMenuItem mntmImageConverter;
-	private JMenuItem mntmTouppercaseDirectory;
 	private JMenuItem mntmReturnToWelcome;
 	private JMenuItem mntmAboutScreept;
 	private JMenuItem mntmExportLog; 
 	private JMenuItem loadSrcrYptDefaultConf;
+	private JMenuItem mntmTouppercaseDirectory;
+	private JMenuItem mntmDeleteDirectoryContentRecursive;
+	private JMenuItem mntmMakeDirsFromPath;
 	
 	// END GUI ELEMENTS
 	
@@ -178,8 +190,14 @@ public class mainGUI {
 	private static boolean flagImgConv=false;
 	private static boolean flagInfoPanel=false;
 	
+	// flag to close all suspended threads when exitings Main App
 	volatile private static boolean running = false;
 	
+	private mainGUI mainAPP = this;
+	
+	// temp decryptedFolder
+	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
+	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	/**
 	 * MAINT METHOD
 	 * 
@@ -190,7 +208,7 @@ public class mainGUI {
 			public void run() {
 				try {
 					now = new Date();
-					
+					running= true;
 					// empty old log file
 					// useful for test phase
 //					
@@ -217,42 +235,9 @@ public class mainGUI {
 						logger.error("Exception happened during loading of file [Resources_Scrypt/CONFIG.ini]!", e);
 					}
 					
-					// initialize style
-					preferredStyle = currentConfiguration.getGuiOpt().getPreferredStyle();
+					initGUI();
 					
-					// initialize GUI default Style from ini
-					try {
-						UIManager.setLookAndFeel(preferredStyle);
-						logger.debug(preferredStyle+" initialized correctly.");
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| UnsupportedLookAndFeelException e3) {
-						logger.error("Exception happened!", e3);
-					}
-					
-					// try to set preferred charset
-					try {
-						System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
-						logger.info("Charset setted: "+ System.getProperty("file.encoding"));
-					} catch (Exception e) {
-						logger.error("Exception happened: Erroring setting charset :(", e);		
-					}
-					
-					DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
-					// adjust general look and feel opt
-					if(DARK_THEME) {
-						updateUIDarkNimbus();
-					}else {
-						updateUILightNimbus();
-					}
-					
-					// menu List
-//					UIManager.getLookAndFeelDefaults().put("MenuBar[Enabled].backgroundPainter", Color.RED);
-					
-					// menu item
-//					UIManager.getLookAndFeelDefaults().put("MenuItem[Enabled].textForeground", Color.WHITE);
-//					UIManager.getLookAndFeelDefaults().put("MenuItem[Enabled].backgroundPainter", Color.black);
-					
-					// start window using constructor (see below)
+					// START MAIN WINDOW CONSTRUCTOR
 					logger.debug("Initializing main GUI-start");
 					mainGUI window = new mainGUI();
 					window.frmScryptV.setVisible(true);
@@ -265,7 +250,7 @@ public class mainGUI {
 						@Override
 						public void run() {
 							logger.debug("## MODULES FLAG UPDATER started");
-							while(true) {
+							while(running) {
 								try {
 									// sleep small time to adapt
 									Thread.sleep(600);
@@ -329,7 +314,7 @@ public class mainGUI {
 						@Override
 						public void run() {
 							logger.debug("## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: "+currentConfiguration.getFileOpt().isFlagAutosave());
-							while(true) {
+							while(running) {
 								try {
 									// every period specified within the fields
 									Thread.sleep(AUTOSAVE_MANAGER_PERIOD);
@@ -351,42 +336,55 @@ public class mainGUI {
 						        	logger.warn("## AUTOSAVE-MANAGER interrupted.");
 								}
 							}
+							logger.warn("## AUTOSAVE-MANAGER Stopped (Closing ScrYpt)");
 						}
 					});
 					
 					// start autosave manager module
 					autosaveManager.start();
 					
-					// add listener for window closing
+					// WINDOW CLOSE LISTENER
 					window.frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
 					    @Override
 					    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 					        now=new Date();
-					        if(autosaveManager.isAlive()) {
-					        	autosaveManager.interrupt();
-					        	logger.warn("## AUTOSAVE-MANAGER interrupted.");
-					        }
-					        if(autosaveModule.isAlive()) {
-						        autosaveModule.interrupt();
-						        logger.warn("## AUTOSAVE MODULE interrupted.");
-					        }
 					        
 					        // if autosave is on save before quit
 					        if(currentConfiguration.getFileOpt().isFlagAutosave()) {
 								try {
 									currentConfiguration.writeCurrentConfigIniFile();
-									logger.debug("AUTOSAVE ON: file saved before exiting ["
+									logger.debug(" => AUTOSAVE ON: file saved before exiting ["
 											+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
 								} catch (Exception e) {
 									logger.error("Exception happened!", e);
 								}
 							}
 					        
-					      	logger.debug("\n\n##################################################\n\n"+now.toString()+"\n\n"
-									+ APPLICATION_NAME+" CLOSED!\n\n"
-									+ "##################################################\n\n");
+					      	logger.debug(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
+											+ APPLICATION_NAME+" CLOSED!\n\n"
+											+ "##################################################\n\n");
 					      	
-					      	running = false;
+					      	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
+					      	Thread tempEraser = new Thread(tempDecryptedEraser());
+					      	tempEraser.start();	
+					      	
+							String msg = "Deleting temp files and folders... please wait!";
+							
+							new Thread(new Runnable() {
+										
+								@Override
+								public void run() {
+									JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.INFORMATION_MESSAGE);
+								}
+							}).start();
+							
+							try {
+								tempEraser.join();
+							} catch (InterruptedException e) {
+								logger.error("Some error occurred deleting temporary Decrypted files");
+							}
+					      	
+							running = false;
 					  	}
 					});
 					
@@ -413,7 +411,7 @@ public class mainGUI {
 		
 		// SW window icon
 		try {
-			frmScryptV.setIconImage(ImageIO.read(new File(RESOURCES_DIR + "icon.jpg")));
+			frmScryptV.setIconImage(ImageIO.read(new File(RESOURCES_DIR + ICON_FILE_NAME)));
 			logger.debug("icon image setted to main window");
 		} catch (IOException e1) {
 			logger.error("Exception happened!", e1);
@@ -428,7 +426,7 @@ public class mainGUI {
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
-						frmScryptV.setTitle("Scrypt - V1.0 - A.M. developement");	
+						frmScryptV.setTitle(APPLICATION_NAME+" - A.M. developement");	
 					}
 				}
 			}
@@ -481,7 +479,7 @@ public class mainGUI {
 		mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnHelp = new JMenu("Help");
 		
-//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
+		//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
 		
 		// NOT OPENING VIEW - EXIT AND CLOSE SCRYPT
 		mntmExit = new JMenuItem(new AbstractAction("Exit") {
@@ -612,14 +610,30 @@ public class mainGUI {
 			}
 		});
 		
-///////////////// HANDLERS THAT OPEN A NEW WINDOW  ////////////////////////
+		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT
+		mntmDeleteDirectoryContentRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (Recursive)") {
+			public void actionPerformed(ActionEvent e) {
+				DirectoryManagementGUI.deleteContentOfDir(frmScryptV, currentConfiguration);
+			}
+		});
+		
+		// NOT OPENING VIEW - MAKE DIRS FROM STRING PATH
+		mntmMakeDirsFromPath = new JMenuItem(new AbstractAction("Create directories from String path") {
+			public void actionPerformed(ActionEvent e) {
+				DirectoryManagementGUI.makeDirsFromPath(frmScryptV, currentConfiguration);
+			}
+		});
+		
+		
+		
+	///////////////// HANDLERS THAT OPEN A NEW WINDOW  ////////////////////////
 		
 		// open in a new window - CONFIGURATION MANAGER
 		mntmCustomizeUIView = new JMenuItem(new AbstractAction("Customize Graphics") {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagFrameGuiOptions) {
 					flagFrameGuiOptions = true;
-					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
+					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration, mainAPP);
 					panelGuiOptions.setBounds(500, 300, 950, 330);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -724,7 +738,7 @@ public class mainGUI {
 			}
 		});
 		
-////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
+	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		
 		// open in main frame - FILE CRYPTER
 		mntmCrypter = new JMenuItem(new AbstractAction("ScreepT - Crypt and Decrypt files") {
@@ -779,74 +793,134 @@ public class mainGUI {
 			}
 		});
 
-		
-////////// END OF HANDLERS DECLARATION  ////////////////
+		// BACKGROUND RESIZER //
+		frmScryptV.addComponentListener(new ComponentListener() {
+			public void componentShown(ComponentEvent e) {
+			}
+			public void componentResized(ComponentEvent e) {
+				labelBACKground.setSize(frmScryptV.getContentPane().getSize());
+			}
+			public void componentMoved(ComponentEvent e) {
+			}
+			public void componentHidden(ComponentEvent e) {
+			}
+		});
+	////////// END OF HANDLERS DECLARATION  ////////////////
 		
 		// once each component is declared add it to the menu bar
 		structureMenuBar();
+	}
+	
+	
+//////////	NOW SOME USEFUL METHOD  ////////////////
+	
+	private static void initGUI() {
+		// initialize style
+		preferredStyle = currentConfiguration.getGuiOpt().getPreferredStyle();
+		
+		// initialize GUI default Style from ini
+		try {
+			UIManager.setLookAndFeel(preferredStyle);
+			logger.debug(preferredStyle+" initialized correctly.");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e3) {
+			logger.error("Exception happened!", e3);
+		}
+		
+		// try to set preferred charset
+		try {
+			System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
+			logger.info("Charset setted: "+ System.getProperty("file.encoding"));
+		} catch (Exception e) {
+			logger.error("Exception happened: Erroring setting charset :(", e);		
+		}
+		
+		DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
+		// adjust general look and feel opt
+		if(DARK_THEME) {
+			updateUIDarkNimbus();
+		}else {
+			updateUILightNimbus();
+		}
 	}
 	
 	private void structureMenuBar() {
 		
 		// INITIALIZE FONTS BY TYPE
 		Font menuBarFont = new Font("Segoe UI", Font.BOLD, menuSize);
-		Font subMenuFont = new Font("Gadugi", Font.BOLD, menuSize);
+		Font subMenuFont = new Font("Gadugi", Font.BOLD, subMenuSize);
 		Font menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
 		
-		// CREATE MENU STRUCTURE
+		// CREATE MENU-BAR STRUCTURE
 		menuBar.add(mnFile);
 		menuBar.add(mnPreferences);
 		menuBar.add(mnCryptoSteg);
 		menuBar.add(mnVarious);
 		menuBar.add(mnHelp);
 		
-		mnFile.add(mntmInspectCurrentConfiguration);
-		mnFile.add(new JSeparator());
-		mnFile.add(loadPrjSub);
-		mnFile.add(savePrjSub);
-		mnFile.add(new JSeparator());
-		mnFile.add(loadDefaultPrjSub);
-		mnFile.add(mntmSaveCurrentAs);
-		mnFile.add(new JSeparator());
-		mnFile.add(loadSrcrYptDefaultConf);
-		mnFile.add(new JSeparator());
-		mnFile.add(mntmExit);
-		
-		mnPreferences.add(mntmCustomizeUIView);
-		mnPreferences.add(mntmGenOpt);
-		
-		mnCryptoSteg.add(mntmCrypter);
-		mnCryptoSteg.add(new JSeparator());
-		mnCryptoSteg.add(generateKeyImageSub);
-		mnCryptoSteg.add(mntmViewKeyDictionary);
+			// SUB-MENU
+			mnFile.add(mntmInspectCurrentConfiguration);
+			mnFile.add(new JSeparator());
+			mnFile.add(loadPrjSub);
+			mnFile.add(savePrjSub);
+			mnFile.add(new JSeparator());
+			mnFile.add(loadDefaultPrjSub);
+			mnFile.add(mntmSaveCurrentAs);
+			mnFile.add(new JSeparator());
+			mnFile.add(loadSrcrYptDefaultConf);
+			mnFile.add(new JSeparator());
+			mnFile.add(mntmExit);
+			
+			mnPreferences.add(mntmCustomizeUIView);
+			mnPreferences.add(mntmGenOpt);
+			
+			mnCryptoSteg.add(mntmCrypter);
+			mnCryptoSteg.add(new JSeparator());
+			mnCryptoSteg.add(generateKeyImageSub);
+			mnCryptoSteg.add(mntmViewKeyDictionary);
+	
+			mnVarious.add(mntmNewTextFile);
+			mnVarious.add(new JSeparator());
+			mnVarious.add(netInfo);
+			mnVarious.add(mnConversionsAndOther);
+			mnVarious.add(mnFilesAndDirectories);
+			
+			mnHelp.add(mntmAboutScreept);		
+			mnHelp.add(new JSeparator());
+			mnHelp.add(mntmExportLog);
+			mnHelp.add(mntmUserDocumentation);
+			mnHelp.add(new JSeparator());
+			mnHelp.add(mntmReturnToWelcome);
+			
+				// UNDER-SUB-MENU
+				mnConversionsAndOther.add(mntmImageConverter);
+				
+				mnFilesAndDirectories.add(mntmTouppercaseDirectory);
+				mnFilesAndDirectories.add(mntmMakeDirsFromPath);
+				mnFilesAndDirectories.add(mntmDeleteDirectoryContentRecursive);
+			
+		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
+	}
+	
+	/**
+	 * Method to update the font of main menu
+	 *  
+	 * @param menuBarFont Font for main menuBar
+	 * @param subMenuFont Font for sub menu containers
+	 * @param menuItemFont Font for clickable items
+	 */
+	public void updateMenuFonts(Font menuBarFont, Font subMenuFont, Font menuItemFont) {
 
-		mnVarious.add(mntmNewTextFile);
-		mnVarious.add(new JSeparator());
-		mnVarious.add(netInfo);
-		mnVarious.add(mnConversionsAndOther);
-		mnVarious.add(mnFilesAndDirectories);
-
-		mnConversionsAndOther.add(mntmImageConverter);
-		mnFilesAndDirectories.add(mntmTouppercaseDirectory);
-		
-		mnHelp.add(mntmAboutScreept);		
-		mnHelp.add(new JSeparator());
-		mnHelp.add(mntmExportLog);
-		mnHelp.add(mntmUserDocumentation);
-		mnHelp.add(new JSeparator());
-		mnHelp.add(mntmReturnToWelcome);
-		
-		// SET FONTS
 		menuBar.setFont(menuBarFont);
 		
-		mnFile.setFont(subMenuFont);
-		mnHelp.setFont(subMenuFont);
-		mnPreferences.setFont(subMenuFont);
-		mnCryptoSteg.setFont(subMenuFont);
-		mnVarious.setFont(subMenuFont);
+		mnFile.setFont(menuBarFont);
+		mnHelp.setFont(menuBarFont);
+		mnPreferences.setFont(menuBarFont);
+		mnCryptoSteg.setFont(menuBarFont);
+		mnVarious.setFont(menuBarFont);
 
-		mnFilesAndDirectories.setFont(menuItemFont);
-		mnConversionsAndOther.setFont(menuItemFont);
+		mnFilesAndDirectories.setFont(subMenuFont);
+		mnConversionsAndOther.setFont(subMenuFont);
 
 		mntmExit.setFont(menuItemFont);
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
@@ -864,6 +938,8 @@ public class mainGUI {
 		mntmNewTextFile.setFont(menuItemFont);
 		mntmImageConverter.setFont(menuItemFont);
 		mntmTouppercaseDirectory.setFont(menuItemFont);
+		mntmMakeDirsFromPath.setFont(menuItemFont);
+		mntmDeleteDirectoryContentRecursive.setFont(menuItemFont);
 		mntmReturnToWelcome.setFont(menuItemFont);
 		mntmAboutScreept.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
@@ -983,12 +1059,12 @@ public class mainGUI {
             frmScryptV.getContentPane().add(MAIN_PANEL);
             MAIN_PANEL.setLayout(new MigLayout("", "[90%]", "[1.00][100.52%,baseline]"));
             BufferedImage image = ImageIO.read(new File(RESOURCES_DIR + APPLICATION_MAIN_BCKG));
-            Image scaledImage = image.getScaledInstance(screenWidth, screenHeight,Image.SCALE_REPLICATE);
-            JLabel label = new JLabel(new ImageIcon(scaledImage));
+            Image scaledImage = image.getScaledInstance(screenWidth-100, screenHeight-100,Image.SCALE_SMOOTH);
+            labelBACKground = new JLabel(new ImageIcon(scaledImage));
             
 		   	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 		   	contentPane.removeAll();
-	    	contentPane.add(label);
+	    	contentPane.add(labelBACKground);
 	    	contentPane.revalidate(); 
 	    	contentPane.repaint();
 			logger.debug("Background of mainGUI setted: "+RESOURCES_DIR + APPLICATION_MAIN_BCKG);
@@ -1034,8 +1110,22 @@ public class mainGUI {
         return correctFile;
 	}
 	
-	//TODO function to update graphic and current conf usage values on the fly after load
-	public static void updateMainGUI() {
-		// TODO
+	public static Runnable tempDecryptedEraser() {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				File[] decryptedList = TEMP_DECRIPTED_ROOT.listFiles();
+				if (decryptedList!= null && decryptedList.length!=0) {
+					// while there are temp decripted delete them
+					for (File temp : decryptedList) {
+						FileUtils.deleteQuietly(temp);
+					} 
+				}	
+				// now delete temp folder, and retry if something has not been deleted
+				FileStuff.deleteDirContentInclRoot(TEMP_DECRIPTED_ROOT);
+			}
+		};
 	}
+	
 }

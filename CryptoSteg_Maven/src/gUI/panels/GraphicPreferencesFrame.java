@@ -49,8 +49,13 @@ public class GraphicPreferencesFrame extends JFrame{
 	// GraphicPreferencesFrame logger
 	static Logger logger = Logger.getLogger(GraphicPreferencesFrame.class); 
 	
+	// GUI elements
 	private final JFrame thisFrame = this;
 	private JTextField textFieldUname;
+	private JSlider sliderMenuSize;
+	private JSlider sliderLogSize;
+	private JComboBox comboStyleLaF;
+	private JCheckBox chckbxDarklight;
 	
 	// actual values
 	private static String CURRENT_USERNAME;
@@ -66,28 +71,19 @@ public class GraphicPreferencesFrame extends JFrame{
 	private static int BACKUP_LOG_PANEL_FONT_SIZE;
 	private static boolean BACKUP_DARK_THEME;
 	
+	private mainGUI mainAPP;
 	// flag to signal active
 	public static boolean active = false;
 
-	public GraphicPreferencesFrame(INItializer currentConf) {
+	public GraphicPreferencesFrame(INItializer currentConf, mainGUI rootApplication) {
 		
 		active = true;
 		
+		mainAPP = rootApplication;
+		
 		JFrame thisFrame = this;
 		
-		// initialize values from currentConfig
-		CURRENT_USERNAME = currentConf.getGenOpt().getUserName();
-		MENU_FONT_SIZE = currentConf.getGuiOpt().getMenuFontSize();
-		LOG_PANEL_FONT_SIZE = currentConf.getGuiOpt().getLogFontSize();
-		PREFERRED_STYLE = currentConf.getGuiOpt().getPreferredStyle();
-		DARK_THEME = currentConf.getGuiOpt().isDarkGuiNimbus();
-		
-		// initialize default values (by value)
-		BACKUP_CURRENT_USERNAME = new String(CURRENT_USERNAME);
-		BACKUP_MENU_FONT_SIZE = MENU_FONT_SIZE;
-		BACKUP_LOG_PANEL_FONT_SIZE = LOG_PANEL_FONT_SIZE;
-		BACKUP_PREFERRED_STYLE = new String(PREFERRED_STYLE);
-		BACKUP_DARK_THEME=DARK_THEME;
+		initValues(currentConf);
 		
 		logger.debug("Initialized.");
 		
@@ -106,7 +102,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		getContentPane().add(panel, "cell 1 0 9 1,grow");
 		panel.setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][grow 1000][][][][][]", "[100]"));
 		
-		JCheckBox chckbxDarklight = new JCheckBox("Nimbus Dark theme");
+		chckbxDarklight = new JCheckBox("Nimbus Dark theme");
 		chckbxDarklight.setFont(new Font("SansSerif", Font.BOLD, 13));
 		panel.add(chckbxDarklight, "cell 0 0,growx");
 		chckbxDarklight.addActionListener(new ActionListener() {
@@ -143,7 +139,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		lblGuiType.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblGuiType, "cell 1 4,alignx center");
 		
-		JComboBox comboStyleLaF = new JComboBox(UIManager.getInstalledLookAndFeels());
+		comboStyleLaF = new JComboBox(UIManager.getInstalledLookAndFeels());
 		comboStyleLaF.setMaximumRowCount(10);
 		comboStyleLaF.setSelectedItem(PREFERRED_STYLE);
 		getContentPane().add(comboStyleLaF, "cell 2 4 8 1,grow");
@@ -163,7 +159,9 @@ public class GraphicPreferencesFrame extends JFrame{
 //					thisFrame.getContentPane().repaint();
 				} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
 				JOptionPane.showMessageDialog(thisFrame, "Sorry, something went wrong :(", e1.getClass().getName(), JOptionPane.ERROR_MESSAGE);
-				logger.error("Exception happened!", e1);				}
+				logger.error("Exception happened!", e1);	
+				PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
+				}
 		    }
 		});
 		
@@ -176,7 +174,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		getContentPane().add(spinnerMenuSize, "cell 2 6,growx");
 		spinnerMenuSize.setValue(MENU_FONT_SIZE);
 		
-		JSlider sliderMenuSize = new JSlider();
+		sliderMenuSize = new JSlider();
 		sliderMenuSize.setValue(MENU_FONT_SIZE);
 		sliderMenuSize.setMaximum(24);
 		sliderMenuSize.setMinimum(5);
@@ -191,7 +189,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		spinnerLogSize.setValue(LOG_PANEL_FONT_SIZE);
 		getContentPane().add(spinnerLogSize, "cell 2 7,growx");
 		
-		JSlider sliderLogSize = new JSlider();
+		sliderLogSize = new JSlider();
 		sliderLogSize.setMaximum(30);
 		sliderLogSize.setMinimum(5);
 		sliderLogSize.setValue(LOG_PANEL_FONT_SIZE);
@@ -213,46 +211,13 @@ public class GraphicPreferencesFrame extends JFrame{
 				logger.debug("Starting reset of GUI_Preferences");
 				
 				// reset current values
-				CURRENT_USERNAME = BACKUP_CURRENT_USERNAME;
-				PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
-				MENU_FONT_SIZE = BACKUP_MENU_FONT_SIZE;
-				LOG_PANEL_FONT_SIZE = BACKUP_LOG_PANEL_FONT_SIZE;
-				DARK_THEME = BACKUP_DARK_THEME;
-				
+				resetToBackup();
 				
 				// reset INItializer reference currentConf too
-				currentConf.getGenOpt().setUserName(CURRENT_USERNAME);
-				currentConf.getGuiOpt().setPreferredStyle(PREFERRED_STYLE);
-				currentConf.getGuiOpt().setMenuFontSize(MENU_FONT_SIZE);
-				currentConf.getGuiOpt().setLogFontSize(LOG_PANEL_FONT_SIZE);
-				currentConf.getGuiOpt().setDarkGuiNimbus(DARK_THEME);
+				resetConfigValues(currentConf);
 				
 				// reset gui (sliders changement will trigger jtextfield, see action listener)
-				sliderMenuSize.setValue(MENU_FONT_SIZE);
-				sliderLogSize.setValue(LOG_PANEL_FONT_SIZE);
-				textFieldUname.setText(CURRENT_USERNAME);
-				chckbxDarklight.setSelected(DARK_THEME);
-				comboStyleLaF.setSelectedItem(PREFERRED_STYLE);
-				try {
-					UIManager.setLookAndFeel(PREFERRED_STYLE);
-					for(Window window: Window.getWindows()) {
-		    		    SwingUtilities.updateComponentTreeUI(window);
-		    		}
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-						| UnsupportedLookAndFeelException e1) {
-					logger.error("Exception happened!", e1);
-				}
-				
-				if(!DARK_THEME) {
-					mainGUI.updateUILightNimbus();
-					chckbxDarklight.setSelected(false);
-				}else {
-					mainGUI.updateUIDarkNimbus();
-					chckbxDarklight.setSelected(true);
-				}
-				for(Window window: Window.getWindows()) {
-	    		    SwingUtilities.updateComponentTreeUI(window);
-	    		}
+				updateGUI();
 				
 				logger.debug("Configuration resetted: \n"+currentConf.toStringa());
 			}
@@ -287,81 +252,20 @@ public class GraphicPreferencesFrame extends JFrame{
 			  }
 		});
 		
-		// default close operation(same as reset) 
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-		        	logger.debug("Closing GUI_Preferences");
-					
-					// reset current values
-					CURRENT_USERNAME = BACKUP_CURRENT_USERNAME;
-					PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
-					MENU_FONT_SIZE = BACKUP_MENU_FONT_SIZE;
-					LOG_PANEL_FONT_SIZE = BACKUP_LOG_PANEL_FONT_SIZE;
-					DARK_THEME = BACKUP_DARK_THEME;
-					
-					// reset INItializer reference currentConf too
-					currentConf.getGenOpt().setUserName(CURRENT_USERNAME);
-					currentConf.getGuiOpt().setPreferredStyle(PREFERRED_STYLE);
-					currentConf.getGuiOpt().setMenuFontSize(MENU_FONT_SIZE);
-					currentConf.getGuiOpt().setLogFontSize(LOG_PANEL_FONT_SIZE);
-					currentConf.getGuiOpt().setDarkGuiNimbus(DARK_THEME);
-					
-					// update gui (sliders changement will trigger jtextfield, see action listener)
-					sliderMenuSize.setValue(MENU_FONT_SIZE);
-					sliderLogSize.setValue(LOG_PANEL_FONT_SIZE);
-					textFieldUname.setText(CURRENT_USERNAME);
-					comboStyleLaF.setSelectedItem(PREFERRED_STYLE);
-					try {
-						UIManager.setLookAndFeel(PREFERRED_STYLE);
-						for(Window window: Window.getWindows()) {
-			    		    SwingUtilities.updateComponentTreeUI(window);
-			    		}
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-							| UnsupportedLookAndFeelException e1) {
-						logger.error("Exception happened!", e1);
-					}
-					
-					if(!DARK_THEME) {
-						mainGUI.updateUILightNimbus();
-					}else {
-						mainGUI.updateUIDarkNimbus();
-					}
-					for(Window window: Window.getWindows()) {
-		    		    SwingUtilities.updateComponentTreeUI(window);
-		    		}
-					
-					logger.debug("Closing "+getClass().getName()+" - Configuration resetted: \n"+currentConf.toStringa());
-		        	
-					active = false;
-					
-		        	dispose();
-		    }
-		});
-		
 		JButton btnSaveConf = new JButton("Save Values");
 		btnSaveConf.setForeground(new Color(0, 0, 0));
 		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSaveConf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				if (JOptionPane.showConfirmDialog(thisFrame,"Are you sure you want to overwrite "+currentConf.getIniFile().getFile().getPath()+"(ONLY GUI_OPTIONS)?", 
-		        		"overwrite configuration", JOptionPane.YES_NO_OPTION,
-		        		JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+				int chosenOption = JOptionPane.showConfirmDialog(thisFrame,"Are you sure you want to overwrite "+currentConf.getIniFile().getFile().getPath()+"(ONLY GUI_OPTIONS)?", 
+		        		"overwrite configuration", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (chosenOption == JOptionPane.YES_OPTION) {
+					
 					// write single values to file ini associated to currentConf
-					currentConf.writeSingleValue(currentConf.GEN_OPT, "userName", CURRENT_USERNAME);
-					currentConf.writeSingleValue(currentConf.GUI_OPT, "preferredStyle", PREFERRED_STYLE);
-					currentConf.writeSingleValue(currentConf.GUI_OPT, "menuFontSize", MENU_FONT_SIZE);
-					currentConf.writeSingleValue(currentConf.GUI_OPT, "logFontSize", LOG_PANEL_FONT_SIZE);
-					currentConf.writeSingleValue(currentConf.GUI_OPT, "darkGuiNimbus", DARK_THEME);
+					writeValuesToConfFile(currentConf);
 					
 					// update BACKUP_VALUES as the new ones
-					BACKUP_CURRENT_USERNAME = CURRENT_USERNAME;
-					BACKUP_PREFERRED_STYLE = PREFERRED_STYLE;
-					BACKUP_MENU_FONT_SIZE = MENU_FONT_SIZE;
-					BACKUP_LOG_PANEL_FONT_SIZE = LOG_PANEL_FONT_SIZE;
-					BACKUP_DARK_THEME = DARK_THEME;
+					updateBackup();
 
 					JOptionPane.showMessageDialog(thisFrame, "Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.", "Saved!", JOptionPane.INFORMATION_MESSAGE);
 
@@ -387,48 +291,18 @@ public class GraphicPreferencesFrame extends JFrame{
 		btnDiscard.setBackground(new Color(205, 92, 92));
 		getContentPane().add(btnDiscard, "cell 9 9,growx");
 		btnDiscard.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("DISCARD => Closing GUI_Preferences");
 				
 				// reset current values
-				CURRENT_USERNAME = BACKUP_CURRENT_USERNAME;
-				PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
-				MENU_FONT_SIZE = BACKUP_MENU_FONT_SIZE;
-				LOG_PANEL_FONT_SIZE = BACKUP_LOG_PANEL_FONT_SIZE;
-				DARK_THEME = BACKUP_DARK_THEME;
+				resetToBackup();
 				
 				// reset INItializer reference currentConf too
-				currentConf.getGenOpt().setUserName(CURRENT_USERNAME);
-				currentConf.getGuiOpt().setPreferredStyle(PREFERRED_STYLE);
-				currentConf.getGuiOpt().setMenuFontSize(MENU_FONT_SIZE);
-				currentConf.getGuiOpt().setLogFontSize(LOG_PANEL_FONT_SIZE);
-				currentConf.getGuiOpt().setDarkGuiNimbus(DARK_THEME);
+				resetConfigValues(currentConf);
 				
 				// reset gui (sliders changement will trigger jtextfield, see action listener)
-				sliderMenuSize.setValue(MENU_FONT_SIZE);
-				sliderLogSize.setValue(LOG_PANEL_FONT_SIZE);
-				textFieldUname.setText(CURRENT_USERNAME);
-				comboStyleLaF.setSelectedItem(PREFERRED_STYLE);
-				try {
-					UIManager.setLookAndFeel(PREFERRED_STYLE);
-					for(Window window: Window.getWindows()) {
-		    		    SwingUtilities.updateComponentTreeUI(window);
-		    		}
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-						| UnsupportedLookAndFeelException e1) {
-					logger.error("Exception happened!", e1);
-				}
-				
-				if(!DARK_THEME) {
-					mainGUI.updateUILightNimbus();
-				}else {
-					mainGUI.updateUIDarkNimbus();
-				}
-				for(Window window: Window.getWindows()) {
-	    		    SwingUtilities.updateComponentTreeUI(window);
-	    		}
+				updateGUI();
 				
 				logger.debug("Configuration resetted: \n"+currentConf.toStringa());
 	        	
@@ -438,14 +312,10 @@ public class GraphicPreferencesFrame extends JFrame{
 		});
 		
 		btnUseSettings.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// update (locally)BACKUP_VALUES as the new ones
-				BACKUP_CURRENT_USERNAME = CURRENT_USERNAME;
-				BACKUP_PREFERRED_STYLE = PREFERRED_STYLE;
-				BACKUP_MENU_FONT_SIZE = MENU_FONT_SIZE;
-				BACKUP_LOG_PANEL_FONT_SIZE = LOG_PANEL_FONT_SIZE;
+				updateBackup();
 				
 //				// advisor (changes won't take place until restart or reload of modules)
 //				JOptionPane.showMessageDialog(thisFrame, "Some Changes will not be visible until next restart.", "Not all changes visible!", JOptionPane.INFORMATION_MESSAGE);
@@ -494,22 +364,116 @@ public class GraphicPreferencesFrame extends JFrame{
 				spinnerMenuSize.setValue(MENU_FONT_SIZE);
 			}
 		});
+		
+		// default close operation(same as reset) 
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+		        	logger.debug("Closing GUI_Preferences");
+					
+					// reset current values
+					resetToBackup();
+					
+					// reset INItializer reference currentConf too
+					resetConfigValues(currentConf);
+					
+					// update gui (sliders changement will trigger jtextfield, see action listener)
+					
+					
+					logger.debug("Closing "+getClass().getName()+" - Configuration resetted: \n"+currentConf.toStringa());
+		        	
+					active = false;
+					
+		        	dispose();
+		    }
+		});
 	} 
 	
+	private void initValues(INItializer currentConf) {
+		// initialize values from currentConfig
+		CURRENT_USERNAME = currentConf.getGenOpt().getUserName();
+		MENU_FONT_SIZE = currentConf.getGuiOpt().getMenuFontSize();
+		LOG_PANEL_FONT_SIZE = currentConf.getGuiOpt().getLogFontSize();
+		PREFERRED_STYLE = currentConf.getGuiOpt().getPreferredStyle();
+		DARK_THEME = currentConf.getGuiOpt().isDarkGuiNimbus();
+		
+		// initialize default values (by value)
+		BACKUP_CURRENT_USERNAME = new String(CURRENT_USERNAME);
+		BACKUP_MENU_FONT_SIZE = MENU_FONT_SIZE;
+		BACKUP_LOG_PANEL_FONT_SIZE = LOG_PANEL_FONT_SIZE;
+		BACKUP_PREFERRED_STYLE = new String(PREFERRED_STYLE);
+		BACKUP_DARK_THEME=DARK_THEME;
+	}
+	
+	private void resetConfigValues(INItializer currentConf) {
+		currentConf.getGenOpt().setUserName(CURRENT_USERNAME);
+		currentConf.getGuiOpt().setPreferredStyle(PREFERRED_STYLE);
+		currentConf.getGuiOpt().setMenuFontSize(MENU_FONT_SIZE);
+		currentConf.getGuiOpt().setLogFontSize(LOG_PANEL_FONT_SIZE);
+		currentConf.getGuiOpt().setDarkGuiNimbus(DARK_THEME);
+	}
+	
+	private boolean writeValuesToConfFile(INItializer currentConf) {
+		currentConf.writeSingleValue(currentConf.GEN_OPT, "userName", CURRENT_USERNAME);
+		currentConf.writeSingleValue(currentConf.GUI_OPT, "preferredStyle", PREFERRED_STYLE);
+		currentConf.writeSingleValue(currentConf.GUI_OPT, "menuFontSize", MENU_FONT_SIZE);
+		currentConf.writeSingleValue(currentConf.GUI_OPT, "logFontSize", LOG_PANEL_FONT_SIZE);
+		currentConf.writeSingleValue(currentConf.GUI_OPT, "darkGuiNimbus", DARK_THEME);
+		
+		return true;
+	}
+	
+	private void updateGUI() {
+		sliderMenuSize.setValue(MENU_FONT_SIZE);
+		sliderLogSize.setValue(LOG_PANEL_FONT_SIZE);
+		textFieldUname.setText(CURRENT_USERNAME);
+		comboStyleLaF.setSelectedItem(PREFERRED_STYLE);
+		chckbxDarklight.setSelected(DARK_THEME);
+		
+		try {
+			UIManager.setLookAndFeel(PREFERRED_STYLE);
+			for(Window window: Window.getWindows()) {
+    		    SwingUtilities.updateComponentTreeUI(window);
+    		}
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e1) {
+			logger.error("Exception happened!", e1);
+		}
+		
+		if(!DARK_THEME) {
+			mainGUI.updateUILightNimbus();
+		}else {
+			mainGUI.updateUIDarkNimbus();
+		}
+		for(Window window: Window.getWindows()) {
+		    SwingUtilities.updateComponentTreeUI(window);
+		}
+	}
+	
+	private void updateBackup(){
+		// update backup values to current
+		BACKUP_CURRENT_USERNAME = CURRENT_USERNAME;
+		BACKUP_PREFERRED_STYLE = PREFERRED_STYLE;
+		BACKUP_MENU_FONT_SIZE = MENU_FONT_SIZE;
+		BACKUP_LOG_PANEL_FONT_SIZE = LOG_PANEL_FONT_SIZE;
+		BACKUP_DARK_THEME = DARK_THEME;
+	}
+	
+	private void resetToBackup(){
+		// reset current values
+		CURRENT_USERNAME = BACKUP_CURRENT_USERNAME;
+		PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
+		MENU_FONT_SIZE = BACKUP_MENU_FONT_SIZE;
+		LOG_PANEL_FONT_SIZE = BACKUP_LOG_PANEL_FONT_SIZE;
+		DARK_THEME = BACKUP_DARK_THEME;
+	}
+
 	private static void updateMenuAndLogFontSize(JFrame jframe){
 		
-
 		// use the same font as main gui but change font size
 		UIManager.put("MenuBar.font", new Font("Segoe UI", Font.BOLD, MENU_FONT_SIZE ));
 		UIManager.put("Menu.font", new Font("Segoe UI", Font.BOLD, MENU_FONT_SIZE ));
-	//			Component[] panelElem = window.getComponents();
-	//			for (Component c : panelElem) {
-	//				if(c instanceof JMenu) {
-	//					c.setFont(new Font("Segoe UI", Font.BOLD, MENU_FONT_SIZE ));
-	//					c.revalidate();
-	//					c.repaint();
-	//				}
-	//			}
 	    SwingUtilities.updateComponentTreeUI(jframe);
 		
 	}

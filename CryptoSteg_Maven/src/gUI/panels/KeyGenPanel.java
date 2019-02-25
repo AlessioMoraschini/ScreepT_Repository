@@ -191,7 +191,7 @@ public class KeyGenPanel extends JFrame {
 		// update prevision of size according to type of image, the function calculate size
 		int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
 		lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
-		lblThisSettingsAllow.setText("-> This settings allow to code "+((mult-1)*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
+		lblThisSettingsAllow.setText("-> This settings allow to code "+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 	
 		JSeparator separator = new JSeparator();
 		separator.setForeground(SystemColor.activeCaption);
@@ -289,10 +289,8 @@ public class KeyGenPanel extends JFrame {
 					
 					@Override
 					public void run() {
-						btnAddInDictionary.setEnabled(false);
-						btnGenerateKey.setEnabled(false);
-						btnExport.setEnabled(false);
 						
+						updateBTNenabled(false);						
 						Date now = new Date();
 						
 						JFileChooser fileChooser = new JFileChooser();		
@@ -359,24 +357,16 @@ public class KeyGenPanel extends JFrame {
 				    		        textLog.append("\n -> ERROR Saving file :(");
 								}		        	
 					        }else {
-					        	btnAddInDictionary.setEnabled(true);
-								btnGenerateKey.setSelected(true);
-								btnExport.setEnabled(true);
+					        	updateBTNenabled(true);
 					        	logger.warn("EXPORT ABORTED by user");
 								JOptionPane.showMessageDialog(thisFrame, "Process killed by user, not exported.", "Cancelled by user", JOptionPane.WARNING_MESSAGE);
 					        }
 							
 						}else {
-							btnAddInDictionary.setEnabled(true);
-							btnGenerateKey.setSelected(true);
-							btnExport.setEnabled(true);
+							updateBTNenabled(true);
 							JOptionPane.showMessageDialog(thisFrame, "Image is null, first you have to generate an image!", "NULL image Error",JOptionPane.ERROR_MESSAGE );
 						}
-						
-						btnAddInDictionary.setEnabled(true);
-						btnGenerateKey.setEnabled(true);
-						btnExport.setEnabled(true);
-
+						updateBTNenabled(true);
 					}
 				}).start();
 				
@@ -397,10 +387,7 @@ public class KeyGenPanel extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				btnExport.setEnabled(false);
-				btnGenerateKey.setEnabled(false);
-				btnAddInDictionary.setEnabled(false);
-				
+				updateBTNenabled(false);				
 				Date now = new Date();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
 	
@@ -432,21 +419,15 @@ public class KeyGenPanel extends JFrame {
 						}
 			    		progUpdater.getPb().setValue(100);
 						
-						btnExport.setEnabled(true);
-						btnGenerateKey.setEnabled(true);
-						btnAddInDictionary.setEnabled(true);
+			    		updateBTNenabled(true);
 						JOptionPane.showMessageDialog(thisFrame, out);
 					}else {
 						// case of null input (cancel pressed by user)
-						btnExport.setEnabled(true);
-						btnGenerateKey.setEnabled(true);
-						btnAddInDictionary.setEnabled(true);
+						updateBTNenabled(true);
 						JOptionPane.showMessageDialog(thisFrame, "Process killed by user, not added to dictionary.", "Cancelled", JOptionPane.WARNING_MESSAGE);
 					}
 				}else {
-					btnExport.setEnabled(true);
-					btnGenerateKey.setEnabled(true);
-					btnAddInDictionary.setEnabled(true);
+					updateBTNenabled(true);
 					JOptionPane.showMessageDialog(thisFrame, "Image is null, first you have to generate an image!", "NULL image Error",JOptionPane.ERROR_MESSAGE );
 				}
 
@@ -460,9 +441,7 @@ public class KeyGenPanel extends JFrame {
 				
 				panelIMG.setSize(DEF_W, panelIMG.getSize().height);
 				
-				btnGenerateKey.setEnabled(false);
-				btnAddInDictionary.setEnabled(false);
-				btnExport.setEnabled(false);
+				updateBTNenabled(false);
 				
 				textInfo.setText("Conversion started with:\n\n# width of generated key: "+CURRENT_SEL_W+"Px\n# height of generated key: "+CURRENT_SEL_H+"Px");
 				textInfo.append("\nAfter Key is generated pressing the 'generate' button,you can see a quick preview on the right :)");
@@ -476,6 +455,8 @@ public class KeyGenPanel extends JFrame {
 				imageContainer.setBackground(Color.DARK_GRAY);
 			   	panelIMG.revalidate(); 
 			   	panelIMG.repaint();	
+			   	
+			   	updateBTNenabled(true);
 				
 			}
 		});
@@ -492,7 +473,7 @@ public class KeyGenPanel extends JFrame {
 				
 				// update prevision of size according to type of image, the function calculate size
 				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
-				lblThisSettingsAllow.setText("-> This settings allow to code "+((mult-1)*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
+				lblThisSettingsAllow.setText("-> This settings allow to code "+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});		
@@ -508,7 +489,7 @@ public class KeyGenPanel extends JFrame {
 				
 				// update prevision of size according to type of image, the function calculate size
 				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
-				lblThisSettingsAllow.setText("-> This settings allow to code "+((mult-1)*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
+				lblThisSettingsAllow.setText("-> This settings allow to code "+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});
@@ -531,7 +512,7 @@ public class KeyGenPanel extends JFrame {
 				CURRENT_IMG_TYPE = (KeyGenImageType)comboImgType.getSelectedItem();
 				// update prevision of size according to type of image, the function calculate size
 				int mult=((KeyGenImageType)comboImgType.getSelectedItem()).getMultiplicator();
-				lblThisSettingsAllow.setText("-> This settings allow to code "+((mult-1)*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
+				lblThisSettingsAllow.setText("-> This settings allow to code "+(mult*CURRENT_SEL_H*CURRENT_SEL_W)/1024+" KBytes of data inside Image");
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});
@@ -554,6 +535,12 @@ public class KeyGenPanel extends JFrame {
 	private int getImgSizePrevision(int mult) {
 		int size = CURRENT_SEL_H*CURRENT_SEL_W*mult;
 		return size;
+	}
+	
+	private void updateBTNenabled(boolean enabled) {
+		btnExport.setEnabled(enabled);
+		btnGenerateKey.setEnabled(enabled);
+		btnAddInDictionary.setEnabled(enabled);
 	}
 
 	public ImageGenContainerPanel getImageContainer() {
