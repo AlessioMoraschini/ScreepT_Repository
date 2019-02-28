@@ -67,6 +67,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
+import javax.swing.JCheckBox;
 
 public class CrypterPanel extends JPanel {
 
@@ -170,6 +171,7 @@ public class CrypterPanel extends JPanel {
 	public volatile boolean coderUsed = false;
 	
 	public static final int labelLengthLimit = 40;
+	private JCheckBox chckbxShuffle;
 
 	/**
 	 * Create the application.
@@ -317,6 +319,8 @@ public class CrypterPanel extends JPanel {
 					lblSrcFileSel.setForeground(Color.GREEN);
 					lblSrcFileSel.setText(newdisplayed);
 					
+					appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
+					
 					JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
 					logger.debug("File :" + selected.getName() + " correctly loaded");
 			
@@ -361,9 +365,9 @@ public class CrypterPanel extends JPanel {
 		panelStatus.setBackground(Color.BLACK);
 		add(panelStatus, "cell 0 2 9 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 70, 100, 100, 60, 120, 120, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 70, 100, 80, 100, 60, 120, 120, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
-		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelStatus.setLayout(gbl_panelStatus);
 		
@@ -442,12 +446,21 @@ public class CrypterPanel extends JPanel {
 		panelStatus.add(comboModeCrypto, gbc_comboModeCrypto);
 		comboModeCrypto.setModel(new DefaultComboBoxModel(CryptoMode.values()));
 		
+		chckbxShuffle = new JCheckBox("Ultra Secure");
+		chckbxShuffle.setForeground(Color.WHITE);
+		
+		GridBagConstraints gbc_chckbxShuffle = new GridBagConstraints();
+		gbc_chckbxShuffle.insets = new Insets(0, 0, 0, 5);
+		gbc_chckbxShuffle.gridx = 8;
+		gbc_chckbxShuffle.gridy = 0;
+		panelStatus.add(chckbxShuffle, gbc_chckbxShuffle);
+		
 		labelFlagCodeReady = new JLabel("");
 		labelFlagCodeReady.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_labelFlagCodeReady = new GridBagConstraints();
 		gbc_labelFlagCodeReady.insets = new Insets(0, 0, 0, 5);
 		gbc_labelFlagCodeReady.fill = GridBagConstraints.VERTICAL;
-		gbc_labelFlagCodeReady.gridx = 8;
+		gbc_labelFlagCodeReady.gridx = 9;
 		gbc_labelFlagCodeReady.gridy = 0;
 		panelStatus.add(labelFlagCodeReady, gbc_labelFlagCodeReady);
 		labelFlagCodeReady.setBorder(null);
@@ -457,7 +470,7 @@ public class CrypterPanel extends JPanel {
 		GridBagConstraints gbc_btnCreept = new GridBagConstraints();
 		gbc_btnCreept.fill = GridBagConstraints.BOTH;
 		gbc_btnCreept.insets = new Insets(0, 0, 0, 5);
-		gbc_btnCreept.gridx = 10;
+		gbc_btnCreept.gridx = 11;
 		gbc_btnCreept.gridy = 0;
 		panelStatus.add(btnCreept, gbc_btnCreept);
 		btnCreept.setRequestFocusEnabled(false);
@@ -471,7 +484,7 @@ public class CrypterPanel extends JPanel {
 		GridBagConstraints gbc_btnDeCreept = new GridBagConstraints();
 		gbc_btnDeCreept.insets = new Insets(0, 0, 0, 5);
 		gbc_btnDeCreept.fill = GridBagConstraints.BOTH;
-		gbc_btnDeCreept.gridx = 11;
+		gbc_btnDeCreept.gridx = 12;
 		gbc_btnDeCreept.gridy = 0;
 		panelStatus.add(btnDeCreept, gbc_btnDeCreept);
 		btnDeCreept.setRequestFocusEnabled(false);
@@ -492,7 +505,9 @@ public class CrypterPanel extends JPanel {
 				}
 				catch(Exception ex) {
 					coderUsed = false;
-					screepTManager.disableProgressUpdater();
+					if(screepTManager!=null) {
+						screepTManager.disableProgressUpdater();
+					}
 					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
 					logger.error("Exception happened during creept", ex);
 				}
@@ -511,7 +526,9 @@ public class CrypterPanel extends JPanel {
 					new Thread(decripterRunner()).start();
 				}catch(Exception ex) {
 					coderUsed = false;
-					screepTManager.disableProgressUpdater();
+					if(screepTManager!=null) {
+						screepTManager.disableProgressUpdater();
+					}
 					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
 					logger.error("Exception happened during decreept!", ex);
 				}
@@ -635,7 +652,11 @@ public class CrypterPanel extends JPanel {
 						}
 					} 
 				}
-				screepTManager.disableProgressUpdater();
+				coderUsed=false;
+				
+				if(screepTManager!=null) {
+					screepTManager.disableProgressUpdater();
+				}
 				
 				// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
 				if(resultOK) {
@@ -674,11 +695,11 @@ public class CrypterPanel extends JPanel {
 			@Override
 			public void run() {
 				
-				// get output asking to user
-				File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
-				
 				// notify that method is running
 				coderUsed=true;
+				
+				// get output asking to user
+				File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
 				
 				// boolean value representing if everything went good
 				boolean resultOK = false;
@@ -775,7 +796,11 @@ public class CrypterPanel extends JPanel {
 						}
 					} 
 				}
-				screepTManager.disableProgressUpdater();
+				coderUsed=false;
+				
+				if(screepTManager!=null) {
+					screepTManager.disableProgressUpdater();
+				}
 		
 				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
 				if(resultOK) {
@@ -857,7 +882,10 @@ public class CrypterPanel extends JPanel {
 		textAreaMain.setEditable(false);
 		textAreaMain.setMargin(new Insets(10, 35, 10, 35));
 		scrollPaneText.setViewportView(textAreaMain);
-		textAreaMain.setText("### WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files?\r\n\r\n Nobody knows how to crypt them better than me ;)"); 
+		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");
+		textAreaMain.append("\n\n#####################################################################################\n");
+		textAreaMain.append(    "###############################__I'M READY__#########################################");
+		textAreaMain.append("  \n#####################################################################################\n");
 
 	}
 	
@@ -986,6 +1014,7 @@ public class CrypterPanel extends JPanel {
 	private ScreeptManager initSTEG(File imageFile) throws IOException, STEGException {
 		STEGcoder = new ImageCodeDecode(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder);
+		screepTManager.setShuffleResult(chckbxShuffle.isSelected());
 		return screepTManager;
 	}
 	
@@ -993,6 +1022,7 @@ public class CrypterPanel extends JPanel {
 		AEScoder = new EncryptDecrypt(AES_KEY);
 		STEGcoder = new ImageCodeDecode(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
+		screepTManager.setShuffleResult(chckbxShuffle.isSelected());
 		return screepTManager;
 	}
 	
@@ -1265,6 +1295,16 @@ public class CrypterPanel extends JPanel {
 		btnDispoKeyImg.setEnabled(true);
 		btnSelectSourceFile.setEnabled(true);
 		btnDispoKeyImg.setEnabled(true);
+	}
+	
+	private void appendMessageTxtAreas(String msg) {
+		String out = "\n\n## "+msg+" ##\n\n";
+		textAreaLog.setSelectionStart(textAreaLog.getText().length()-1);
+		textAreaMain.setSelectionStart(textAreaMain.getText().length()-1);
+		
+		textAreaLog.append(out);
+		textAreaMain.append(out);
+		tabbedPane.setSelectedIndex(0);
 	}
 	
 	// getters and setters

@@ -32,6 +32,7 @@ import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import iNIT.om.AesOption;
+import uTILS.local.ByteArrayShuffler;
 import uTILS.local.CustomFileComparator;
 import uTILS.local.FileStuff;
 import uTILS.local.ImageWorker;
@@ -74,6 +75,8 @@ public class ScreeptManager {
 	private EncryptDecrypt aesCoder;
 	
 	private CryptoMode mode;
+	
+	private boolean shuffleResult = false;
 	
 	private int w;
 	private int h;
@@ -309,7 +312,7 @@ public class ScreeptManager {
 		
 		wellDone = true;
 		
-		tempMSG += "Start decripting "+srcFile.getAbsolutePath()+" ...\nSelected mode: [ "+mode+" ]\n";
+		tempMSG += "Start decripting "+srcFile.getAbsolutePath()+" ...\nSelected mode: [ "+mode+" ]\n\n";
 		tempMSG += "[ Out folder: "+OUT_PATH+" ]\n";
 		logger.debug("Started Decrypting with selected mode: "+mode);
 		
@@ -609,7 +612,7 @@ public class ScreeptManager {
 		
 		// this integer will contain value -1 when file is ended 
 		int readFlag = streamIN.read(buffer);
-		
+
 		// STEG error types
 		if(this.imgCoder == null || this.imgCoder.getKeyImage()==null) {
 			
@@ -622,6 +625,11 @@ public class ScreeptManager {
 		int n = 1;
 		File outFile;
 		while(readFlag > 0) {
+			
+			// check if have to shuffle source bytes by 256byte blocks
+			if(shuffleResult) {
+				buffer = ByteArrayShuffler.entroPieForward(buffer);
+			}
 			
 			// this value will be used during decription to recognize where px value have to be ignored
 			// (cause img is of fixed dimension)
@@ -722,7 +730,13 @@ public class ScreeptManager {
 			// retrieve current image from file
 			BufferedImage codedImg = ImageIO.read(iFile);
 			
-			fout.write(imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet));
+			byte[] buffer = imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet);
+			// check if have to shuffle source bytes by 256byte blocks
+			if(shuffleResult) {
+				buffer = ByteArrayShuffler.entroPieBack(buffer);
+			}
+			
+			fout.write(buffer);
 
 			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
 			String msg = "\nSTEG decripting current coded image: "+iFile.getName();
@@ -809,6 +823,11 @@ public class ScreeptManager {
 			// encrypt (AES) current buffer content with aes key string
 			// remember that in case of available%16!=0 -> partial result's size approximate in excess to reach multiple of 16 (that's how AES works)
 			byte[] partialResult = aesCoder.encrypt(buffer);				
+			
+			// check if have to shuffle source bytes by 256byte blocks
+			if(shuffleResult) {
+				partialResult = ByteArrayShuffler.entroPieForward(partialResult);
+			}
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
 			StegOmResult result = imgCoder.stegaCrypt4ByteXor(partialResult);
@@ -922,6 +941,11 @@ public class ScreeptManager {
 			
 			// decript with steg current coded image
 			byte[] partial_res = imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet);
+			
+			// check if have to shuffle source bytes by 256byte blocks
+			if(shuffleResult) {
+				partial_res = ByteArrayShuffler.entroPieBack(partial_res);
+			}
 			
 			// now decript with aes and write to out file
 			fout.write(aesCoder.decrypt(partial_res));
@@ -1120,6 +1144,14 @@ public class ScreeptManager {
 		return tempMSG;
 	}
 
-	
+	public boolean isShuffleResult() {
+		return shuffleResult;
+	}
+
+	public void setShuffleResult(boolean shuffleResult) {
+		this.shuffleResult = shuffleResult;
+		logger.info("Setting ShuffleMode Option (aka ultra secure mode: if true values will be sorted before crypt and after decrypt) => "+this.shuffleResult);
+	}
+
 	
 }

@@ -71,7 +71,7 @@ import org.apache.commons.codec.binary.Base64;
 		
 		/**
 		 * Questo metodo si occupa di codificare tramite AES una stringa passata come parametro,
-		 * (la converte in byte[], converte con "Cipher", dopodichè riconverte in string).
+		 * (la converte in byte[], converte con "Cipher", dopodichï¿½ riconverte in string).
 		 * 
 		 * @param sourceString
 		 * @return encryptedString
@@ -110,7 +110,7 @@ import org.apache.commons.codec.binary.Base64;
 		
 		/**
 		 * Questo metodo si occupa di decodificare tramite AES una stringa passata come parametro,
-		 * (la converte in byte[], converte con "Cipher", dopodichè riconverte in string).
+		 * (la converte in byte[], converte con "Cipher", dopodichï¿½ riconverte in string).
 		 * 
 		 * @param sourceString
 		 * @return encryptedString

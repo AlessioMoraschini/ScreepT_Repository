@@ -8,8 +8,6 @@ import javax.swing.JLabel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JMenuBar;
@@ -41,17 +39,14 @@ import gUI.panels.GeneralOptionsFrame;
 import gUI.panels.KeyGenPanel;
 import gUI.panels.NetInfoPanel;
 import gUI.panels.TextFileWriter;
-import gUI.utils.filedialog.AdWaitDialog;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
-import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
 import iNIT.INItializer;
 
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -59,7 +54,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Vector;
 import java.awt.SystemColor;
 
 import net.miginfocom.swing.MigLayout;

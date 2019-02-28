@@ -252,7 +252,7 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	//JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
