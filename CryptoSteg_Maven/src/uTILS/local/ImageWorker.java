@@ -38,6 +38,7 @@ import com.googlecode.pngtastic.core.PngChunk;
 import com.googlecode.pngtastic.core.PngImage;
 import com.googlecode.pngtastic.core.PngOptimizer;
 
+import crypt.steg.STEGException;
 import gUI.panels.ImageGenContainerPanel;
 
 public class ImageWorker {
@@ -48,6 +49,9 @@ public class ImageWorker {
 	//////////////////////
 	// FIELDS //
 	//////////////////////
+	public final static int ORIZ_OPTION = 0; 
+	public final static int VERT_OPTION = 1; 
+	
 	public final static String[] SUPPORTED_EXTENSIONS = ImageIO.getWriterFileSuffixes();
 	
 	private final static int MAX_INT = Integer.MAX_VALUE;
@@ -98,10 +102,133 @@ public class ImageWorker {
 	}
 
 	/**
+	 * questo metodo ritorna un array contenente i valori interi di N pixel, scorrendo l'immagine fornita secondo l'ordine scelto
+	 * @param image immagine sorgente
+	 * @param N numero di valori da estrarre: se maggiore del numero di pixel presenti in image allora ritorna null
+	 * @param option : ORIZ_OPTION oppure VERT_OPTION (definiti in questa classe come statici)
+	 * @throws STEGException 
+	 */
+	public static int[] readNValuesFromImage(BufferedImage image, int N, int option) throws STEGException {
+		int H = 0;
+		int W = 0;
+		if (image!=null) {
+			H = image.getHeight();
+			W = image.getWidth();
+		}else throw new STEGException();
+		
+		if(N<=(W*H)) {
+			int[] read = new int[N];
+			int row=0;
+			int col=0;
+			for(int i = 0; i<N; i++) {
+				if(row>H-1) {
+					row=0;
+					col++;
+				}
+				if(col>W-1) {
+					col=0;
+					row++;
+				}
+				
+				if(option==ORIZ_OPTION) {
+					read[i] = image.getRGB(col, row);
+					col++;
+				}else if(option==VERT_OPTION) {
+					read[i] = image.getRGB(col, row);
+					row++;
+				}
+			}
+			return read;
+		}else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Questo metodo restituisce un array contenente il valore dei pixel ottenuti scansionando l'immagine orizzontalmente, distanziati dall'intervallo fornito
+	 * @param image
+	 * @param N E' il numero di pixel da estrarre. Può essere anche maggiore del numero di pixel contenuti nell'immagine
+	 * @param interval intervallo tra un pixel e il successivo durante la scansione
+	 * @return array di interi rappresentanti il valore dei pixel scansionati
+	 * @throws STEGException 
+	 */
+	public static int[] readNSpacedValuesFromImage(BufferedImage image, int N, int interval) throws STEGException {
+		int H = 0;
+		int W = 0;
+		if (image!=null) {
+			H = image.getHeight();
+			W = image.getWidth();
+		}else throw new STEGException();
+		
+		if(N<=(W*H)) {
+			int[] read = new int[N];
+			int row=0;
+			int col=0;
+			for(int i = 0; i<N; i++) {
+				if(row>H-1) {
+					row=0;
+					col++;
+				}
+				if(col>W-1) {
+					col=0;
+					row++;
+				}
+				
+				read[i] = image.getRGB(col, row);
+				col += interval%W;
+			}
+			return read;
+		}else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Questo metodo restituisce un array contenente il valore dei pixel ottenuti scansionando l'immagine orizzontalmente, distanziati dall'intervallo fornito
+	 * iN QUESTO CASO L'INTERVALLO è CALCOLATO AUTOMATICAMENTE A SECONDA DEL VALORE DEL PRIMO PX
+	 * @param image
+	 * @param N E' il numero di pixel da estrarre. Può essere anche maggiore del numero di pixel contenuti nell'immagine
+	 * @return array di interi rappresentanti il valore dei pixel scansionati
+	 * @throws STEGException 
+	 */
+	public static int[] readNSpacedValuesFromImage(BufferedImage image, int N) throws STEGException {
+		int H=0;
+		int W=0;
+		int interval=1;
+		if (image!=null) {
+			H = image.getHeight();
+			W = image.getWidth();
+			interval = Math.abs((image.getRGB(0, 0))+1)%W;
+		}else throw new STEGException();
+		
+		if(N<=(W*H)) {
+			int[] read = new int[N];
+			int row=0;
+			int col=0;
+			for(int i = 0; i<N; i++) {
+				if(row>H-1) {
+					row=0;
+					col++;
+				}
+				if(col>W-1) {
+					col=0;
+					row++;
+				}
+				
+				read[i] = image.getRGB(col, row);
+				col += interval%W;
+			}
+			return read;
+		}else {
+			return null;
+		}
+	}
+	
+	/**
 	 * Metodo statico che, dato il nome (String) del file dell'immagine e il logger
 	 * ritorna la matrice di interi x pixel (getRGB(x,y))
 	 */
-	public static Integer[][] readPxValue(String imgPath, File logger) throws IOException {
+	public static Integer[][] readPxValues(String imgPath, File logger) throws IOException {
 
 		// inizializzo variabili necessarie globali
 		BufferedImage img = null;
@@ -137,7 +264,6 @@ public class ImageWorker {
 				loGGer.debug("[X=" + j + " ; Y=" + i + "] Value: " + px + " ");
 				writer.write("[X=" + j + " ; Y=" + i + "] Value: " + px + " ");
 			}
-
 		}
 
 		// chiudo il writer per non sprecare memoria

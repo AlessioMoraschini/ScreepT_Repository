@@ -600,6 +600,18 @@ public class FileStuff {
 	    return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 	
+	/**
+	 *  return a string containing the size formatted correctly according to his size
+	 * @param size is the size in bytes to represent in cool way
+	 * @return cool formatted string representing the file size with correct measure unit
+	 */
+	public static String coolFileSize(Long size){
+		if(size <= 0) return "0";
+	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+	    return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+	}
+	
 	public static boolean copyFile(File source, File dest, boolean overwrite) {
 		
 		boolean esit = false;

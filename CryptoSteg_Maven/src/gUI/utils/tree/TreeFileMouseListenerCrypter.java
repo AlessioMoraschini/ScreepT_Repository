@@ -307,15 +307,17 @@ public class TreeFileMouseListenerCrypter {
 				String msg = "Error reading the image, something went wrong :(";
 				logger.debug(msg);
 				TEXT_LOG.setText(msg);
-				lblKeyDisp.setText(msg);
-				imgKeyPanel.removeAll();
-				JLabel errorMsg = new JLabel("Error opening file :(");
-				errorMsg.setForeground(Color.white);
-				errorMsg.setHorizontalAlignment(JLabel.CENTER);
-				errorMsg.setVerticalAlignment(JLabel.CENTER);
-				imgKeyPanel.add(errorMsg);
-				imgKeyPanel.revalidate(); 
-				imgKeyPanel.repaint();	
+				if (cryptoPanel.getSrcKeyImageFile() == null) {
+					lblKeyDisp.setText(msg);
+					imgKeyPanel.removeAll();
+					JLabel errorMsg = new JLabel("Error opening file :(");
+					errorMsg.setForeground(Color.white);
+					errorMsg.setHorizontalAlignment(JLabel.CENTER);
+					errorMsg.setVerticalAlignment(JLabel.CENTER);
+					imgKeyPanel.add(errorMsg);
+					imgKeyPanel.revalidate();
+					imgKeyPanel.repaint();
+				}	
 			}
         }
 	}
@@ -343,8 +345,8 @@ public class TreeFileMouseListenerCrypter {
 							"Key Image not recognized :(", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (IOException e) {
-				String msg = "Some Error Occurred :(";
-				TEXT_LOG.setText(msg);
+				String msg = "Some Error Occurred... please reload key image!";
+				TEXT_LOG.append(msg);
 				imgKeySelected.setForeground(Color.RED);
 				imgKeySelected.setText(msg);
 				cryptoPanel.setSrcKeyImageFile(null);

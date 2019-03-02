@@ -15,6 +15,7 @@ import javax.swing.JTree;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import crypt.aes.AESException;
 import crypt.aes.EncryptDecrypt;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManager;
@@ -446,6 +447,22 @@ public class CrypterPanel extends JPanel {
 		panelStatus.add(comboModeCrypto, gbc_comboModeCrypto);
 		comboModeCrypto.setModel(new DefaultComboBoxModel(CryptoMode.values()));
 		
+		// CHANGED MODE LISTENER
+		comboModeCrypto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CryptoMode modality = (CryptoMode)comboModeCrypto.getSelectedItem();
+				if(modality.equals(CryptoMode.ONLY_AES)) {
+					chckbxShuffle.setEnabled(false);
+					chckbxShuffle.setForeground(Color.gray);
+				}else {
+					chckbxShuffle.setEnabled(true);
+					chckbxShuffle.setForeground(Color.white);
+				}
+			}
+		});
+		
 		chckbxShuffle = new JCheckBox("Ultra Secure");
 		chckbxShuffle.setForeground(Color.WHITE);
 		
@@ -791,6 +808,8 @@ public class CrypterPanel extends JPanel {
 							resultOK = resetAfterException("IO Exception happened!", e1);
 						} catch (STEGException e1) {
 							resultOK = resetAfterException("STEG Exception happened!", e1);
+						} catch (AESException e1) {
+							resultOK = resetAfterException("AES Exception happened!", e1);
 						} catch (Exception e1) {
 							resultOK = resetAfterException("Generic Exception occurred :(", e1);
 						}
@@ -956,27 +975,26 @@ public class CrypterPanel extends JPanel {
 		
 		if(srcFile == null || lblSrcFileSel.getText().equals("No file selected")) {
 			// MISSING source file
-			labelFlagCodeReady.setForeground(Color.orange);
+			labelFlagCodeReady.setForeground(Color.red);
 			checkEsit += " - Source File missing - ";
 			ready = false;
 		}
 		
 		if(srcKeyImageFile==null && selectedMode.isSTEG()) {
 			// INVALID FILE FORMAT
-			labelFlagCodeReady.setForeground(Color.orange);
+			labelFlagCodeReady.setForeground(Color.red);
 			checkEsit += " - Missing IMGkey - ";
 			ready = false;
 		}
 		
 		if(AESKEYtext.getText().equals("") && selectedMode.isAES()) {
 			// MISSING AES KEY
-			labelFlagCodeReady.setForeground(Color.orange);
+			labelFlagCodeReady.setForeground(Color.red);
 			checkEsit += " - AES missing - ";
 			ready = false;
 		}
 		
 		if(ready) {
-			// ready!
 			labelFlagCodeReady.setForeground(Color.green);
 			checkEsit += " - ScreepT is Ready to Crypt/Decrypt :) - ";
 		}		
@@ -1005,6 +1023,7 @@ public class CrypterPanel extends JPanel {
 		tree.repaint();
 	}
 
+///////////////////////////////////////////////////////// CRYPT INITIALIZERS /////////////////////////////////////////////////////////
 	private ScreeptManager initAES(String AES_KEY) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		AEScoder = new EncryptDecrypt(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
@@ -1012,21 +1031,30 @@ public class CrypterPanel extends JPanel {
 	}
 	
 	private ScreeptManager initSTEG(File imageFile) throws IOException, STEGException {
+		if(imageFile == null) {
+			throw new STEGException();
+		}
 		STEGcoder = new ImageCodeDecode(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder);
-		screepTManager.setShuffleResult(chckbxShuffle.isSelected());
+		screepTManager.setShuffleResult(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
 		return screepTManager;
 	}
 	
-	private ScreeptManager initCOMPLETE(String AES_KEY, File imageFile) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException {
+	private ScreeptManager initCOMPLETE(String AES_KEY, File imageFile) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException {
+		if(imageFile == null) {
+			throw new STEGException();
+		}
+		if(AES_KEY.length() == 0) {
+			throw new AESException();
+		}
 		AEScoder = new EncryptDecrypt(AES_KEY);
 		STEGcoder = new ImageCodeDecode(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
-		screepTManager.setShuffleResult(chckbxShuffle.isSelected());
+		screepTManager.setShuffleResult(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
 		return screepTManager;
 	}
 	
-	// CRYPT METHODS
+///////////////////////////////////////////////////////// CRYPT METHODS /////////////////////////////////////////////////////////
 	private boolean cryptCurrentFile(File src, File destinationDir) throws IOException{
 		boolean resultOK = false;
 		if (destinationDir!=null) {
@@ -1073,7 +1101,7 @@ public class CrypterPanel extends JPanel {
 		return resultOK;
 	}
 	
-	// DECRYPT METHODS	
+///////////////////////////////////////////////////////// DECRYPT METHODS /////////////////////////////////////////////////////////
 	private boolean deCryptCurrentFile(File src, File destinationDir) throws IOException{
 		boolean resultOK = false;
 		if (destinationDir!=null) {
@@ -1164,7 +1192,8 @@ public class CrypterPanel extends JPanel {
 		
 		return resultOK;
 	}
-	
+
+///////////////////////////////////////////////////////// GUI-FILE SELECTOR METHODS /////////////////////////////////////////////////////////	
 	private void useAsKeyImage(File thisFile) {
 		
     	// if a file is selected
@@ -1184,7 +1213,7 @@ public class CrypterPanel extends JPanel {
 					srcKeyImageFile = thisFile;
 					JOptionPane.showMessageDialog(thisPanel, "Key Image file correctly loaded and selected :)","Key Image Selected :)", JOptionPane.INFORMATION_MESSAGE);
 				}else {
-					String msg = "File not recognized as Key: \n\n => "+thisFile.getName();
+					String msg = " File not recognized as Key: \n\n => "+thisFile.getName();
 					textAreaLog.append(msg);
 					JOptionPane.showMessageDialog(thisPanel, "Key Image file not recognized :(","Key Image not recognized :(", JOptionPane.ERROR_MESSAGE);
 				}
@@ -1242,16 +1271,18 @@ public class CrypterPanel extends JPanel {
 		} catch (IOException e1) {
 			String msg = "Error reading the image, something went wrong :(";
 			logger.debug(msg);
-			textAreaLog.setText(msg);
-			lblKeyImageSelected.setText(msg);
-			panelKeyImgDisp.removeAll();
-			JLabel errorMsg = new JLabel("Error opening file :(");
-			errorMsg.setForeground(Color.white);
-			errorMsg.setHorizontalAlignment(JLabel.CENTER);
-			errorMsg.setVerticalAlignment(JLabel.CENTER);
-			panelKeyImgDisp.add(errorMsg);
-			panelKeyImgDisp.revalidate(); 
-			panelKeyImgDisp.repaint();	
+			textAreaLog.append(msg);
+			if (this.srcKeyImageFile == null) {
+				lblKeyImageSelected.setText(msg);
+				panelKeyImgDisp.removeAll();
+				JLabel errorMsg = new JLabel("Error opening file :(");
+				errorMsg.setForeground(Color.white);
+				errorMsg.setHorizontalAlignment(JLabel.CENTER);
+				errorMsg.setVerticalAlignment(JLabel.CENTER);
+				panelKeyImgDisp.add(errorMsg);
+				panelKeyImgDisp.revalidate();
+				panelKeyImgDisp.repaint();
+			}
 			JOptionPane.showMessageDialog(thisPanel, "OOOps, IO Error occurred :(", "IO error", JOptionPane.ERROR_MESSAGE);
 		}
     }

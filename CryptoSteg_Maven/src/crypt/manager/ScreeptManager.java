@@ -34,6 +34,7 @@ import iNIT.INItializer;
 import iNIT.om.AesOption;
 import uTILS.local.ByteArrayShuffler;
 import uTILS.local.CustomFileComparator;
+import uTILS.local.EntophyzerUtils;
 import uTILS.local.FileStuff;
 import uTILS.local.ImageWorker;
 
@@ -585,6 +586,8 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException {
 
+		int[] keyIndexes = ImageWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		
 		if(progUpdater == null) progUpdater = new TestUpdateProgress();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
@@ -628,7 +631,8 @@ public class ScreeptManager {
 			
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
-				buffer = ByteArrayShuffler.entroPieForward(buffer);
+//				buffer = ByteArrayShuffler.entroPieForward(buffer);
+				buffer = EntophyzerUtils.orderArrayByKey(buffer, keyIndexes);
 			}
 			
 			// this value will be used during decription to recognize where px value have to be ignored
@@ -680,6 +684,8 @@ public class ScreeptManager {
 	// Function that implements decryption of source file into several .png images without using pre-AES coding.
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
+
+		int[] keyIndexes = ImageWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
 		if(progUpdater == null) progUpdater = new TestUpdateProgress();
 		progUpdater.getPb().setValue(0);
@@ -733,7 +739,8 @@ public class ScreeptManager {
 			byte[] buffer = imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet);
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
-				buffer = ByteArrayShuffler.entroPieBack(buffer);
+//				buffer = ByteArrayShuffler.entroPieBack(buffer);
+				buffer = EntophyzerUtils.orderArrayByKey(buffer, keyIndexes);
 			}
 			
 			fout.write(buffer);
@@ -764,6 +771,8 @@ public class ScreeptManager {
 	// this is method for top security
 	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 				
+		int[] keyIndexes = ImageWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+
 		if(progUpdater == null) progUpdater = new TestUpdateProgress();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
@@ -826,7 +835,8 @@ public class ScreeptManager {
 			
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
-				partialResult = ByteArrayShuffler.entroPieForward(partialResult);
+//				partialResult = ByteArrayShuffler.entroPieForward(partialResult);
+				partialResult = EntophyzerUtils.orderArrayByKey(partialResult, keyIndexes);
 			}
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
@@ -883,6 +893,8 @@ public class ScreeptManager {
 	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
 	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 		
+		int[] keyIndexes = ImageWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+
 		if(progUpdater == null) progUpdater = new TestUpdateProgress();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
@@ -944,7 +956,8 @@ public class ScreeptManager {
 			
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
-				partial_res = ByteArrayShuffler.entroPieBack(partial_res);
+//				partial_res = ByteArrayShuffler.entroPieBack(partial_res);
+				partial_res = EntophyzerUtils.orderArrayByKey(partial_res, keyIndexes);
 			}
 			
 			// now decript with aes and write to out file
@@ -1150,7 +1163,7 @@ public class ScreeptManager {
 
 	public void setShuffleResult(boolean shuffleResult) {
 		this.shuffleResult = shuffleResult;
-		logger.info("Setting ShuffleMode Option (aka ultra secure mode: if true values will be sorted before crypt and after decrypt) => "+this.shuffleResult);
+		logger.info("Setting ShuffleMode Option (AKA ultra secure mode: if true values will be sorted before crypt and after decrypt. !ONLY WITH STEG/COMPLETE MODES!) \n => ShuffleMode is "+this.shuffleResult);
 	}
 
 	

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -296,8 +297,82 @@ public class HandleString {
 			}
 		}
 		
-		
 		return result;
 	}
-
+	
+	/**
+	 * This method prints key and values from map
+	 * @param map
+	 */
+    public static <K, V> void printMap(Map<K, V> map) {
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            System.out.println("Key : " + entry.getKey() 
+				+ " <=> Value : " + entry.getValue());
+        }
+    }
+    
+    /**
+     * This method prints values from generic array using toString
+     * @param array
+     */
+    public static<E> void printArray(E[] array) {
+    	int i=0;
+        for (E curr : array) {
+            System.out.println("Val["+i+"] : " + curr);
+            i++;
+        }
+    }
+    
+    /**
+     * This method prints string representation of int array using toString
+     * @param array
+     */
+    public static void printArray(int[] array) {
+    	int i=0;
+    	String out="";
+        for (int curr : array) {
+        	System.out.println("Val["+i+"] : " + curr);
+            i++;
+        }
+    }
+    
+    /**
+	 * This method returns string representation from key and values from map
+	 * @param map
+	 */
+    public static <K, V> String stringVal(Map<K, V> map) {
+    	String out="";
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            out+= "Key : " + entry.getKey() + " <=> Value : " + entry.getValue()+"\n";
+        }
+        return out;
+    }
+    
+    /**
+     * This method returns string representation from generic array using toString
+     * @param array
+     */
+    public static<E> String stringVal(E[] array) {
+    	int i=0;
+    	String out="";
+        for (E curr : array) {
+            out+="Val["+i+"] : " + curr+"\n";
+            i++;
+        }
+        return out;
+    }
+    
+    /**
+     * This method returns string representation from int array using toString
+     * @param array
+     */
+    public static String stringVal(int[] array) {
+    	int i=0;
+    	String out="";
+        for (int curr : array) {
+            out += "Val["+i+"] : " + curr+"\n";
+            i++;
+        }
+        return out;
+    }
 }
