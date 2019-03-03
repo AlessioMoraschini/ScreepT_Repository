@@ -177,12 +177,24 @@ public class mainGUI {
 	
 	// FLAGS TO SIGNAL THAT A MODULE IS OPENED (JDIALOG) 
 	// for jpanels they refresh only the first time opened or if manually refreshed (TODO)
-	private static boolean flagFrameKeyGen=false;
-	private static boolean flagFrameGenOptions=false;
-	private static boolean flagFrameGuiOptions=false;
-	private static boolean flagFrameKeyDict=false;	
-	private static boolean flagImgConv=false;
-	private static boolean flagInfoPanel=false;
+	private static boolean flagFrameKeyGen = false;
+	private static boolean flagFrameGenOptions = false;
+	private static boolean flagFrameGuiOptions = false;
+	private static boolean flagFrameKeyDict = false;	
+	private static boolean flagImgConv = false;
+	private static boolean flagInfoPanel = false;
+	
+	// flags for no-window operations
+	private static boolean FLAG_mntmExit = false;
+	private static boolean FLAG_loadPrjSub = false;
+	private static boolean FLAG_savePrjSub = false;
+	private static boolean FLAG_loadDefaultPrjSub = false;
+	private static boolean FLAG_mntmSaveCurrentAs = false;
+	private static boolean FLAG_loadSrcrYptDefaultConf = false;
+	private static boolean FLAG_mntmExportLog = false;
+	private static boolean FLAG_mntmTouppercaseDirectory = false;
+	private static boolean FLAG_mntmDeleteDirectoryContentRecursive = false;
+	private static boolean FLAG_mntmMakeDirsFromPath = false;
 	
 	// flag to close all suspended threads when exitings Main App
 	volatile private static boolean running = false;
@@ -192,8 +204,9 @@ public class mainGUI {
 	// temp decryptedFolder
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
+	
 	/**
-	 * MAINT METHOD
+	 * MAIN METHOD
 	 * 
 	 * Calls contructor, initialize & Launch the application.
 	 */
@@ -478,147 +491,201 @@ public class mainGUI {
 		// NOT OPENING VIEW - EXIT AND CLOSE SCRYPT
 		mntmExit = new JMenuItem(new AbstractAction("Exit") {
 			public void actionPerformed(ActionEvent e) {
-				if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(","Exit Program",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
-					now=new Date();
-			      	logger.debug("\n\n##################################################\n\n"+now.toString()+"\n\n"
-							+ APPLICATION_NAME+" CLOSED!\n\n"
-							+ "##################################################\n\n");
-			      	
-			      	running = false;
-			      	
-					frmScryptV.dispose();
+				if (!FLAG_mntmExit) {
+					FLAG_mntmExit = true;
+					if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
+							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+						now = new Date();
+						logger.debug("\n\n##################################################\n\n" + now.toString()
+								+ "\n\n" + APPLICATION_NAME + " CLOSED!\n\n"
+								+ "##################################################\n\n");
+
+						running = false;
+
+						frmScryptV.dispose();
+					}
+					FLAG_mntmExit = false;
 				}
 			}
 		});
-		
+
 		// NOT OPENING VIEW - LOAD CUSTOM CONFIGURATION
 		loadPrjSub = new JMenuItem(new AbstractAction("Load Custom Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		   
-		    		JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-		    		INIfileChoosER panel = new INIfileChoosER(currentConfiguration, DEFAULT_INI_FOLDER);
-			    	panel.setBounds(20,20,frmScryptV.getWidth(),frmScryptV.getHeight()/2);
+		    		if (!FLAG_loadPrjSub) {
+		    			FLAG_loadPrjSub = true;
+						JPanel contentPane = (JPanel) frmScryptV.getContentPane();
+						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, DEFAULT_INI_FOLDER);
+						panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
+						FLAG_loadPrjSub = false;
+					}
 		    }
 		});
 
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
 		savePrjSub = new JMenuItem(new AbstractAction("Export Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-		    	INIfileChoosER panel = new INIfileChoosER(currentConfiguration);
-		    	panel.setBounds(20,20,frmScryptV.getWidth(),frmScryptV.getHeight()/2);  	
+		    	if (!FLAG_savePrjSub) {
+		    		FLAG_savePrjSub = true;
+					JPanel contentPane = (JPanel) frmScryptV.getContentPane();
+					INIfileChoosER panel = new INIfileChoosER(currentConfiguration);
+					panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
+					FLAG_savePrjSub = false;
+				}  	
 		    }
 		});
-		
+
 		// NOT OPENING VIEW - RELOAD CONFIGURATION
 		loadDefaultPrjSub = new JMenuItem(new AbstractAction("Reload Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 
-		    	if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to load default config(unsaved changes will be lost)? ","Warning - Reload INI default config?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
-			    	try {
-						currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
-						currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
-						JOptionPane.showMessageDialog(frmScryptV,"Configuration reloaded!");
-					} catch (IOException e) {
-						JOptionPane.showMessageDialog(frmScryptV,"Error opening: "+DEFAULT_INI+" -> maybe it does not exist?");
-						logger.error("Exception happened!", e);
-					}
-			    	currentConfiguration.readConfigIniFile();
-			    	JOptionPane.showMessageDialog(frmScryptV,"File '"+ currentConfiguration.getIniFile().getFile().getName()+"' loaded!");
-			    }else {
-					JOptionPane.showMessageDialog(frmScryptV, "Configuration not loaded, current CONFIG mantained!");
+		    	if (!FLAG_loadDefaultPrjSub) {
+		    		FLAG_loadDefaultPrjSub = true;
+					if (JOptionPane.showConfirmDialog(frmScryptV,
+							"Really want to load default config(unsaved changes will be lost)? ",
+							"Warning - Reload INI default config?",
+							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+						try {
+							currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
+							currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
+							JOptionPane.showMessageDialog(frmScryptV, "Configuration reloaded!");
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(frmScryptV,
+									"Error opening: " + DEFAULT_INI + " -> maybe it does not exist?");
+							logger.error("Exception happened!", e);
+						}
+						currentConfiguration.readConfigIniFile();
+						JOptionPane.showMessageDialog(frmScryptV,
+								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
+					} else {
+						JOptionPane.showMessageDialog(frmScryptV,
+								"Configuration not loaded, current CONFIG mantained!");
+					} 
+					FLAG_loadDefaultPrjSub = false;
 				}
 		    }
 		});
-		
+
 		// NOT OPENING VIEW - SAVE DEFAULT CONFIGURATION
 		mntmSaveCurrentAs = new JMenuItem(new AbstractAction("Save Current as Default") {
 			public void actionPerformed(ActionEvent e) {
-				try {	
-					currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
-					currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
+				if (!FLAG_mntmSaveCurrentAs) {
+					FLAG_mntmSaveCurrentAs = true;
+					try {
+						currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
+						currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
 
-				} catch (IOException e1) {
-					logger.error("Exception happened!", e1);
-				}
-				if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to overwrite default configuration?","Warning - Overwrite default configuration?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
-					currentConfiguration.writeCurrentConfigIniFile();
-					JOptionPane.showMessageDialog(frmScryptV, "File "+currentConfiguration.getIniFile().getFile().getAbsolutePath()+" saved!");
-				}else {
-					JOptionPane.showMessageDialog(frmScryptV, "Configuration not saved!");
+					} catch (IOException e1) {
+						logger.error("Exception happened!", e1);
+					}
+					if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to overwrite default configuration?",
+							"Warning - Overwrite default configuration?",
+							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+						currentConfiguration.writeCurrentConfigIniFile();
+						JOptionPane.showMessageDialog(frmScryptV,
+								"File " + currentConfiguration.getIniFile().getFile().getAbsolutePath() + " saved!");
+					} else {
+						JOptionPane.showMessageDialog(frmScryptV, "Configuration not saved!");
+					}
+					FLAG_mntmSaveCurrentAs = false;
 				}
 			}
 		});
-		
+
 		// NOT OPENING VIEW - RELOAD STANDARD SCRYPT CONFIGURATION
 		loadSrcrYptDefaultConf = new JMenuItem(new AbstractAction("Reset Original") {
 		    public void actionPerformed(ActionEvent ae) {
 
-		    	if(JOptionPane.showConfirmDialog(frmScryptV, "Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ","Warning - Reset INI standard config?",JOptionPane.YES_NO_OPTION)==JOptionPane.OK_OPTION) {
-			    	try {
-			    		FileUtils.copyFile(new File(BACKUP_SW_INI), new File(DEFAULT_INI));
-						currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
-						currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
-						askUsername();
-						
-					} catch (IOException e) {
-						JOptionPane.showMessageDialog(frmScryptV,"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
-						logger.error("Exception happened!", e);
-					}
-			    	currentConfiguration.readConfigIniFile();
-			    	JOptionPane.showMessageDialog(frmScryptV,"File '"+ currentConfiguration.getIniFile().getFile().getName()+"' loaded!");
-			    }else {
-					JOptionPane.showMessageDialog(frmScryptV, "Configuration not loaded, current CONFIG mantained!");
+		    	if (!FLAG_loadSrcrYptDefaultConf) {
+		    		FLAG_loadSrcrYptDefaultConf = true;
+					if (JOptionPane.showConfirmDialog(frmScryptV,
+							"Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ",
+							"Warning - Reset INI standard config?",
+							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+						try {
+							FileUtils.copyFile(new File(BACKUP_SW_INI), new File(DEFAULT_INI));
+							currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
+							currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
+							askUsername();
+
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(frmScryptV,
+									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
+							logger.error("Exception happened!", e);
+						}
+						currentConfiguration.readConfigIniFile();
+						JOptionPane.showMessageDialog(frmScryptV,
+								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
+					} else {
+						JOptionPane.showMessageDialog(frmScryptV,
+								"Configuration not loaded, current CONFIG mantained!");
+					} 
+					FLAG_loadSrcrYptDefaultConf = false;
 				}
 		    }
 		});
-		
+
 		// NOT OPENING VIEW - LOG EXPORT
 		mntmExportLog = new JMenuItem(new AbstractAction("Export Event Log") {
 			public void actionPerformed(ActionEvent e) {
-				// show input dialog to select the file(gives null in case of no file selected)
-				File selected = fileLogWriteDialog(frmScryptV);		
-				if (selected!=null) {
-				   	logger.debug("\n\n##################################################\n\n"+now.toString()+"\n\n"
-							+ APPLICATION_NAME+" EXPORT!\n\n"
-							+ "##################################################\n\n");
-			  	
-					// give true to overwrite because fileWriteDialog already set the value to be unique
-					if (FileStuff.copyFile(new File(LOG_PATH), selected ,true)) {
-						JOptionPane.showMessageDialog(frmScryptV, "File correctly saved in " + selected,
-								"Log File Exported :)", JOptionPane.INFORMATION_MESSAGE);
-						logger.debug("File :" + LOG_PATH + " Exported, exportFile: " + selected);
-					} else {
-						JOptionPane.showMessageDialog(frmScryptV, "File not saved [" + selected,
-								"]  Some error occurred :(", JOptionPane.ERROR_MESSAGE);
-						logger.error("File not saved, some error occurred :( ");
+				if (!FLAG_mntmExportLog) {
+					FLAG_mntmExportLog = true;
+					// show input dialog to select the file(gives null in case of no file selected)
+					File selected = fileLogWriteDialog(frmScryptV);
+					if (selected != null) {
+						logger.debug("\n\n##################################################\n\n" + now.toString()
+								+ "\n\n" + APPLICATION_NAME + " EXPORT!\n\n"
+								+ "##################################################\n\n");
+
+						// give true to overwrite because fileWriteDialog already set the value to be unique
+						if (FileStuff.copyFile(new File(LOG_PATH), selected, true)) {
+							JOptionPane.showMessageDialog(frmScryptV, "File correctly saved in " + selected,
+									"Log File Exported :)", JOptionPane.INFORMATION_MESSAGE);
+							logger.debug("File :" + LOG_PATH + " Exported, exportFile: " + selected);
+						} else {
+							JOptionPane.showMessageDialog(frmScryptV, "File not saved [" + selected,
+									"]  Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+							logger.error("File not saved, some error occurred :( ");
+						}
 					}
+					FLAG_mntmExportLog = false;
 				}
 			}
 		});
-		
+
 		// NOT OPENING VIEW - UPPERCASE DIRECTORY'S NAMES FIRST LETTER
 		mntmTouppercaseDirectory = new JMenuItem(new AbstractAction("Uppercase First letter - Files&Directories") {
 			public void actionPerformed(ActionEvent e) {
-				last_dir_used = DirectoryManagementGUI.renameFirstLetterDirNames(frmScryptV, last_dir_used);
+				if (!FLAG_mntmTouppercaseDirectory) {
+					FLAG_mntmTouppercaseDirectory = true;
+					last_dir_used = DirectoryManagementGUI.renameFirstLetterDirNames(frmScryptV, last_dir_used);
+					FLAG_mntmTouppercaseDirectory = false;
+				}
 			}
 		});
 		
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT
 		mntmDeleteDirectoryContentRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (Recursive)") {
 			public void actionPerformed(ActionEvent e) {
-				DirectoryManagementGUI.deleteContentOfDir(frmScryptV, currentConfiguration);
+				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
+					FLAG_mntmDeleteDirectoryContentRecursive = true;
+					DirectoryManagementGUI.deleteContentOfDir(frmScryptV, currentConfiguration);
+					FLAG_mntmDeleteDirectoryContentRecursive = false;
+				}
 			}
 		});
-		
+
 		// NOT OPENING VIEW - MAKE DIRS FROM STRING PATH
 		mntmMakeDirsFromPath = new JMenuItem(new AbstractAction("Create directories from String path") {
 			public void actionPerformed(ActionEvent e) {
-				DirectoryManagementGUI.makeDirsFromPath(frmScryptV, currentConfiguration);
+				if (!FLAG_mntmMakeDirsFromPath) {
+					FLAG_mntmMakeDirsFromPath = true;
+					DirectoryManagementGUI.makeDirsFromPath(frmScryptV, currentConfiguration);
+					FLAG_mntmMakeDirsFromPath = false;
+				}
 			}
 		});
-		
-		
 		
 	///////////////// HANDLERS THAT OPEN A NEW WINDOW  ////////////////////////
 		
@@ -677,7 +744,7 @@ public class mainGUI {
 		    		flagInfoPanel = true;
 		    		netInfoPanel = new NetInfoPanel(currentConfiguration);
 		    		netInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		netInfoPanel.setBounds(150, 150, 1100, 800);
+		    		netInfoPanel.setBounds(150, 150, 850, 600);
 		    		netInfoPanel.setVisible(true);
 		    		netInfoPanel.setTitle("Network info - ScrYpT");
 				}else {

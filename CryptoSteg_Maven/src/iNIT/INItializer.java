@@ -81,11 +81,12 @@ public class INItializer {
 	 */
 	public void readConfigIniFile() {
 		
-		// LOAD AES OPTIONS
-		aesOpt.setAesKey(iniReadFile.get(AES_OPT, "aesKey"));
-		if(aesOpt.getAesKey().equals("")||aesOpt.getAesKey()==null) {
-			aesOpt.setAesKey(aesOpt.DEFAULT_AES_KEY);
-		}
+		// LOAD AES OPTIONS => disabled key for security
+		
+//		aesOpt.setAesKey(iniReadFile.get(AES_OPT, "aesKey"));
+//		if(aesOpt.getAesKey().equals("")||aesOpt.getAesKey()==null) {
+//			aesOpt.setAesKey(aesOpt.DEFAULT_AES_KEY);
+//		}
 		
 		// LOAD GENERAL OPTIONS
 		genOpt.setFlagAes(Boolean.parseBoolean(iniReadFile.get(GEN_OPT, "flagCodificaAes")));
@@ -182,7 +183,7 @@ public class INItializer {
 		if(aesOpt.getAesKey().equals("")) {
 			aesOpt.setAesKey(aesOpt.DEFAULT_AES_KEY);
 		}
-		iniFile.put(AES_OPT, "aesKey", aesOpt.getAesKey());
+//		iniFile.put(AES_OPT, "aesKey", aesOpt.getAesKey());
 		
 		// set INIFILE-GENERAL OPTIONS
 		if(genOpt.getUserName().equals("")) {

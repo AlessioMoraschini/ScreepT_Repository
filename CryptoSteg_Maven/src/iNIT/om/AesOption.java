@@ -9,7 +9,7 @@ public class AesOption {
 	private String aesKey;
 	
 	public AesOption() {
-		
+		aesKey = "";
 	}
 	
 	public AesOption(String aesKEY) {

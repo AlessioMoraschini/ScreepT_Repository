@@ -175,7 +175,7 @@ public class ScreeptManager {
 	 * @throws InvalidKeyException 
 	 * @throws STEGException 
 	 */
-	public Boolean crypt(File srcFile, INItializer currentConf) {
+	public Boolean crypt(File srcFile) {
 
 		buffer = new byte[AES_BUFFER_SIZE];
 		
@@ -298,10 +298,9 @@ public class ScreeptManager {
 	 * 
 	 * @param srcFile this is the source file to be cripted. In case of multiple files it uses 
 	 * incremental names found in the same folder
-	 * @param currentConf this is the configuration instance used to get current gui style
 	 * 
 	 */
-	public Boolean deCrypt(File srcFile, INItializer currentConf) {
+	public Boolean deCrypt(File srcFile) {
 		
 		// aes source arrays were multiple of 16, so result array each time is 32 byte more cause of aes padding structure and random IV size
 		// to avoid errors i've to include that bytes during the read plus the IV size
@@ -740,7 +739,7 @@ public class ScreeptManager {
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
 //				buffer = ByteArrayShuffler.entroPieBack(buffer);
-				buffer = EntophyzerUtils.orderArrayByKey(buffer, keyIndexes);
+				buffer = EntophyzerUtils.reorderBackArrayByKey(buffer, keyIndexes);
 			}
 			
 			fout.write(buffer);
@@ -957,7 +956,7 @@ public class ScreeptManager {
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
 //				partial_res = ByteArrayShuffler.entroPieBack(partial_res);
-				partial_res = EntophyzerUtils.orderArrayByKey(partial_res, keyIndexes);
+				partial_res = EntophyzerUtils.reorderBackArrayByKey(partial_res, keyIndexes);
 			}
 			
 			// now decript with aes and write to out file
@@ -1163,7 +1162,8 @@ public class ScreeptManager {
 
 	public void setShuffleResult(boolean shuffleResult) {
 		this.shuffleResult = shuffleResult;
-		logger.info("Setting ShuffleMode Option (AKA ultra secure mode: if true values will be sorted before crypt and after decrypt. !ONLY WITH STEG/COMPLETE MODES!) \n => ShuffleMode is "+this.shuffleResult);
+		logger.info("Setting ShuffleMode Option (AKA ultra secure mode: if true values will be sorted before crypt and after decrypt. !ONLY WITH STEG/COMPLETE MODES!)"
+				+ " \n => ShuffleMode is "+this.shuffleResult);
 	}
 
 	

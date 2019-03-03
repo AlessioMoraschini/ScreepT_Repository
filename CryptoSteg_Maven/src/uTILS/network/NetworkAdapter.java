@@ -1,5 +1,7 @@
 package uTILS.network;
 
+import java.net.InetAddress;
+
 public class NetworkAdapter {
 	
 	public byte[] localIP;
@@ -8,6 +10,7 @@ public class NetworkAdapter {
 	public String locIP;
 	public String remIP;
 	public String locMAC;
+	public InetAddress AddressInfo;
 	
 	public String name;
 	public String hostName;
@@ -26,6 +29,14 @@ public class NetworkAdapter {
 
 	public byte[] getLocalMAC() {
 		return localMAC;
+	}
+
+	public InetAddress getAddressInfo() {
+		return AddressInfo;
+	}
+
+	public void setAddressInfo(InetAddress addressInfo) {
+		AddressInfo = addressInfo;
 	}
 
 	public void setLocalIP(byte[] localIP) {
@@ -57,6 +68,11 @@ public class NetworkAdapter {
 
 	public void setHostName(String hostName) {
 		this.hostName = hostName;
+	}
+
+	@Override
+	public String toString() {
+		return name +" - "+ locMAC + " - "+ locIP;
 	}
 
 

@@ -12,6 +12,7 @@ import java.awt.Insets;
 
 import javax.swing.JTree;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
@@ -990,7 +991,7 @@ public class CrypterPanel extends JPanel {
 		if(AESKEYtext.getText().equals("") && selectedMode.isAES()) {
 			// MISSING AES KEY
 			labelFlagCodeReady.setForeground(Color.red);
-			checkEsit += " - AES missing - ";
+			checkEsit += " - missing AES key - ";
 			ready = false;
 		}
 		
@@ -1064,7 +1065,7 @@ public class CrypterPanel extends JPanel {
 			}
 			
 			screepTManager.setOutPath(destinationDir.getCanonicalPath());
-			resultOK = screepTManager.crypt(src, currentConf);
+			resultOK = screepTManager.crypt(src);
 			
 		}
 
@@ -1111,7 +1112,7 @@ public class CrypterPanel extends JPanel {
 			}
 			
 			screepTManager.setOutPath(destinationDir.getCanonicalPath());
-			resultOK = screepTManager.deCrypt(src, currentConf);
+			resultOK = screepTManager.deCrypt(src);
 			
 		}
 		return resultOK;
@@ -1136,6 +1137,9 @@ public class CrypterPanel extends JPanel {
 			for(File iFile : src.listFiles()) {
 				if(iFile.isDirectory()) {
 					resultOK = deCryptDirAES(iFile, destSonDir);
+					if(!resultOK) {
+						FileUtils.deleteQuietly(iFile);
+					}
 				}else if (iFile.isFile()) {
 					resultOK = deCryptCurrentFile(iFile, destSonDir);
 				}

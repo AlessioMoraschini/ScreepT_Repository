@@ -43,7 +43,7 @@ public class NetworkUtils {
 	public NetworkUtils() throws IOException {
 		
 		LogManager.getRootLogger().setLevel(Level.ERROR);
-		init();
+		retrieveAvailableAdapters();
 	}
 	
 ////////////////////////  PRIVATE METHODS  ////////////////////////
@@ -52,7 +52,7 @@ public class NetworkUtils {
 		networkAdapters = new Vector<NetworkAdapter>();
 		pubIPServices = getURLSservicesPUBIP();
 		networkInterfaces = NetworkInterface.getNetworkInterfaces();
-		timeout = 10000;
+		timeout = 8000;
 	}
 	
 	private static Vector<URI> getURLSservicesPUBIP(){
@@ -78,7 +78,7 @@ public class NetworkUtils {
 		
 	}
 	
-	public void retrieveAvailableAdapters() throws IOException {
+	private void retrieveAvailableAdapters() throws IOException {
 		
 		init();
 		
@@ -86,7 +86,7 @@ public class NetworkUtils {
 			NetworkInterface currentInterface = networkInterfaces.nextElement();
 			Enumeration<InetAddress> currentSubInterface = currentInterface.getInetAddresses();
 			
-			while(currentSubInterface.hasMoreElements() && currentInterface.isUp()) {
+			while(currentSubInterface.hasMoreElements() && currentInterface.isUp() && !currentInterface.isVirtual() && !currentInterface.isLoopback()) {
 				InetAddress currentInet = (InetAddress)currentSubInterface.nextElement();
 				NetworkAdapter currentAdapter = new NetworkAdapter();	
 				
@@ -94,21 +94,27 @@ public class NetworkUtils {
 				currentAdapter.setLocalMAC(currentInterface.getHardwareAddress());
 				currentAdapter.setName(currentInterface.getDisplayName());
 				currentAdapter.setHostName(currentInet.getHostName());
-				
-				if (currentAdapter.getLocalIP()!=null && currentInet.isReachable(1000)) {
-					try {
-						currentAdapter.setRemoteIP(retrievePublicIP(currentInet));
-					} catch (IOException e) {
-						logger.error("Unreachable network using adapter");
-					}
-				}
+				currentAdapter.setAddressInfo(currentInet);
+
 				networkAdapters.add(currentAdapter);
 			}
 			
 		}
 	}
 	
-	public static byte[] retrievePublicIP(InetAddress localAddress) throws IOException {
+	public String retrieveAdapterPublicIP(NetworkAdapter currentAdapter) throws IOException {
+		if (currentAdapter.getLocalIP()!=null && currentAdapter.getAddressInfo().isReachable(1000)) {
+			try {
+				currentAdapter.setRemoteIP(retrievePublicIP(currentAdapter.getAddressInfo()));
+			} catch (IOException e) {
+				logger.error("Unreachable network using adapter");
+				currentAdapter.remIP = "Unreachable Service";
+			}
+		}
+		return currentAdapter.remIP;
+	}
+	
+	private static byte[] retrievePublicIP(InetAddress localAddress) throws IOException {
 		
 		boolean retrieved = false;
 		String responseString = null;

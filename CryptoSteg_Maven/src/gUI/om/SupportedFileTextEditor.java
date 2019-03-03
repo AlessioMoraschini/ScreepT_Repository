@@ -9,6 +9,7 @@ public enum SupportedFileTextEditor {TXT(".txt","txt"),
 									 HTML(".html","html"),
 									 CSS(".css","css"),
 									 JSON(".JSON","JSON"),
+									 JAVA(".java","java"),
 									 JS(".js","js");
 							   
 	public String senzapunto;

@@ -142,7 +142,7 @@ public class TextFileWriter extends JPanel {
 		uppercaseDots=true;
 		
 		setBackground(Color.DARK_GRAY);
-		setLayout(new MigLayout("", "[40][40][70][4%][][][][:40:40][:40:40][:40:40][:40:40][:30:30][:40:80px][20][20][30][-119.00][40.00][30,fill][70][35][35,grow][70]", "[:20:50px,grow][][20][][25][25][52.33%,grow]"));
+		setLayout(new MigLayout("", "[40][40][70][4%][][][][:40:40][:40:40][:40:40][:40:40][:30:30][:40:80px][20][20][30][40.00][40,fill][70][35][35,grow][70]", "[:20:50px,grow][][20][][25][25][52.33%,grow]"));
 		
 		JLabel lblCurrentFileLBL = new JLabel("   Current file:");
 		lblCurrentFileLBL.setForeground(SystemColor.controlHighlight);
@@ -154,9 +154,9 @@ public class TextFileWriter extends JPanel {
 		lblCurrentFile.setForeground(SystemColor.activeCaption);
 		add(lblCurrentFile, "cell 3 2 6 1,alignx left");
 		
-		JLabel lblVoiceSpeed = new JLabel("Rate");
+		JLabel lblVoiceSpeed = new JLabel("Voice rate");
 		lblVoiceSpeed.setForeground(new Color(211, 211, 211));
-		add(lblVoiceSpeed, "cell 10 2");
+		add(lblVoiceSpeed, "cell 9 2 2 1,alignx center");
 		
 		sliderSpokenSpeed = new JSlider();
 		sliderSpokenSpeed.setValue(90);
@@ -176,17 +176,66 @@ public class TextFileWriter extends JPanel {
 		lblAdvice.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblAdvice.setForeground(new Color(176, 224, 230));
 		lblAdvice.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblAdvice, "cell 21 2 2 1,alignx center,aligny center");
+		add(lblAdvice, "cell 20 2 2 1,alignx center,aligny center");
 		lblAdvice.setText(" [Current output: .txt]");
 		
-		JCheckBox btnRemembPsw = new JCheckBox("Remember");
-		btnRemembPsw.setHorizontalAlignment(SwingConstants.CENTER);
-		btnRemembPsw.setFont(new Font("SansSerif", Font.PLAIN, 10));
-		btnRemembPsw.setForeground(new Color(100, 149, 237));
-		add(btnRemembPsw, "cell 15 5 3 1,alignx center");
+		btnCrypt = new JButton("");
+		btnCrypt.setBackground(SystemColor.activeCaption);
+		btnCrypt.setIcon(new ImageIcon(ICON_CRYPT));
+		btnCrypt.setToolTipText("Crypt displayed text with given key");
+		btnCrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnCrypt.setForeground(SystemColor.inactiveCaption);
+		//		btnCrypt.setBackground(Color.LIGHT_GRAY);
+				add(btnCrypt, "cell 16 4,growx");
+				btnCrypt.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						// this function is used to change color and tooltip text according to key lenght
+						EncryptDecrypt.check(txtAesKey);
+						
+						//if checkbutton is selected the remember passwor in current configuration 
+						//(volatile until explicit save by user)
+						
+						try {
+							EncryptDecrypt crypter=new EncryptDecrypt(txtAesKey.getText());
+							textArea_1.setText(crypter.encrypt(textArea_1.getText()));
+						}catch(Exception e) {
+							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
+							logger.error("Exception happened!", e);
+						}	
+					}
+				});
+		
+		
+		
+		btnDecrypt = new JButton("");
+		btnDecrypt.setBackground(SystemColor.activeCaption);
+		btnDecrypt.setIcon(new ImageIcon(ICON_DECRYPT));
+		btnDecrypt.setToolTipText("Decrypt displayed text with given key");
+		btnDecrypt.setForeground(SystemColor.inactiveCaption);
+		btnDecrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
+		//		btnDecrypt.setBackground(Color.LIGHT_GRAY);
+				add(btnDecrypt, "cell 16 5,growx");
+				btnDecrypt.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {	
+						// this function is used to update bg color of textfield according to given key's lenght
+						EncryptDecrypt.check(txtAesKey);
+						//if checkbutton is selected the remember passwor in current configuration 
+						//(volatile until explicit save by user)
+						
+						try {
+							EncryptDecrypt decrypter=new EncryptDecrypt(txtAesKey.getText());
+							textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
+//					AesKey.setText(decrypter.getDispKey());
+						}catch(Exception e) {
+							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
+							logger.error("Exception happened!", e);
+						}
+						
+					}
+				});
 		
 		JScrollPane textArea = new JScrollPane();
-		add(textArea, "cell 0 6 23 1,grow");
+		add(textArea, "cell 0 6 22 1,grow");
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, 18));
 		
 		
@@ -199,40 +248,8 @@ public class TextFileWriter extends JPanel {
 		
 		JLabel lblSIZE = new JLabel("");
 		lblSIZE.setForeground(SystemColor.window);
-		add(lblSIZE, "cell 20 5");
+		add(lblSIZE, "cell 19 5");
 		lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
-		
-		
-		
-		btnDecrypt = new JButton("");
-		btnDecrypt.setBackground(SystemColor.activeCaption);
-		btnDecrypt.setIcon(new ImageIcon(ICON_DECRYPT));
-		btnDecrypt.setToolTipText("Decrypt displayed text with given key");
-		btnDecrypt.setForeground(SystemColor.inactiveCaption);
-		btnDecrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
-//		btnDecrypt.setBackground(Color.LIGHT_GRAY);
-		add(btnDecrypt, "cell 14 5,growx");
-		btnDecrypt.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {	
-				// this function is used to update bg color of textfield according to given key's lenght
-				EncryptDecrypt.check(txtAesKey);
-				//if checkbutton is selected the remember passwor in current configuration 
-				//(volatile until explicit save by user)
-				if(btnRemembPsw.isSelected()) {
-					currentConfiguration.getAesOpt().setAesKey(txtAesKey.getText());;
-				}
-				
-				try {
-					EncryptDecrypt decrypter=new EncryptDecrypt(txtAesKey.getText());
-					textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
-//					AesKey.setText(decrypter.getDispKey());
-				}catch(Exception e) {
-					JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
-					logger.error("Exception happened!", e);
-				}
-				
-			}
-		});
 		
 		JButton btnBackgroundCol = new JButton("");
 		btnBackgroundCol.setToolTipText("Change background color (won't be saved in .txt)");
@@ -271,7 +288,7 @@ public class TextFileWriter extends JPanel {
 				textArea_1.setFont(font);
 				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			}
 		});
-		add(sliderFontSize, "cell 21 5 2 1,growx");
+		add(sliderFontSize, "cell 20 5 2 1,growx");
 		
 		JButton tglbtnLorem = new JButton("Lorem Ipsum");
 		tglbtnLorem.setToolTipText("Insert classic test text \"Lorem Ipsum\"");
@@ -329,15 +346,15 @@ public class TextFileWriter extends JPanel {
 		btnFontChooser.setIcon(new ImageIcon(ICON_TEXT_FONT));
 		add(btnFontChooser, "cell 10 5,alignx center"); 
 		tglbtnLorem.setBackground(new Color(176, 196, 222));
-		add(tglbtnLorem, "cell 11 5 2 1,growx");
+		add(tglbtnLorem, "cell 13 5 3 1,growx");
 		
 		JLabel lblNewLabel = new JLabel("\u2193  (AES KEY)  \u2193");
 		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblNewLabel.setForeground(new Color(211, 211, 211));
-		add(lblNewLabel, "cell 13 2 5 1,alignx center");
+		add(lblNewLabel, "cell 13 2 3 1,alignx center");
 		
 		JSeparator separator_1 = new JSeparator();
-		add(separator_1, "cell 0 3 23 1,growx");
+		add(separator_1, "cell 0 3 22 1,growx");
 		
 		btnSaveTextFile = new JButton("");
 		btnSaveTextFile.setToolTipText("Choose name and folder, save "+CURRENT_EXT_OUT+" file!");
@@ -358,16 +375,9 @@ public class TextFileWriter extends JPanel {
 						try {
 							File selectedFile = fileChooser.getSelectedFile();
 							String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
-							boolean recognized = false;
-							//this boolean is used to exclude change name extension if the given one is recognized by the system
-							for (SupportedFileTextEditor extension : SupportedFileTextEditor.values()) {
-								if (extension.senzapunto.equals(givenExtension)) {
-									recognized = true;
-								}
-							}
+
 							// if not specified extension, invalid or equal to checkbox, then change extension to current in global var
-							if (("." + givenExtension).equals(CURRENT_EXT_OUT) || givenExtension.equals("")
-									|| (("." + givenExtension).length() > 5) || !recognized) {
+							if (("." + givenExtension).equals(CURRENT_EXT_OUT) || givenExtension.equals("") || (("." + givenExtension).length() > 5)) {
 								selectedFile = FileStuff.changeExtension(selectedFile, CURRENT_EXT_OUT);
 							} else {
 								selectedFile = FileStuff.changeExtension(selectedFile, "." + givenExtension);
@@ -457,51 +467,22 @@ public class TextFileWriter extends JPanel {
 		});
 		tglbtnTemplates.setFont(new Font("SansSerif", Font.BOLD, 12));
 		tglbtnTemplates.setBackground(new Color(176, 196, 222));
-		add(tglbtnTemplates, "cell 11 4 2 1,growx");
+		add(tglbtnTemplates, "cell 11 5 2 1,growx");
 		
 		txtAesKey = new JTextField();
 		txtAesKey.setHorizontalAlignment(SwingConstants.CENTER);
 		//txtAesKey.setText("ST3G4N0cr1p74009");
 		txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
-		add(txtAesKey, "cell 13 4 5 1,growx");
+		add(txtAesKey, "cell 11 4 5 1,growx");
 		txtAesKey.setColumns(10);
 		EncryptDecrypt.check(txtAesKey);
-			
-		btnCrypt = new JButton("");
-		btnCrypt.setBackground(SystemColor.activeCaption);
-		btnCrypt.setIcon(new ImageIcon(ICON_CRYPT));
-		btnCrypt.setToolTipText("Crypt displayed text with given key");
-		btnCrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnCrypt.setForeground(SystemColor.inactiveCaption);
-//		btnCrypt.setBackground(Color.LIGHT_GRAY);
-		add(btnCrypt, "cell 13 5,growx");
-		btnCrypt.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				// this function is used to change color and tooltip text according to key lenght
-				EncryptDecrypt.check(txtAesKey);
-				
-				//if checkbutton is selected the remember passwor in current configuration 
-				//(volatile until explicit save by user)
-				if(btnRemembPsw.isSelected()) {
-					currentConfiguration.getAesOpt().setAesKey(txtAesKey.getText());;
-				}
-				
-				try {
-					EncryptDecrypt crypter=new EncryptDecrypt(txtAesKey.getText());
-					textArea_1.setText(crypter.encrypt(textArea_1.getText()));
-				}catch(Exception e) {
-					JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
-					logger.error("Exception happened!", e);
-				}	
-			}
-		});
 				
 		
 		JPanel panel = new JPanel();
 		panel.setForeground(SystemColor.menu);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		panel.setBackground(new Color(100, 149, 237));
-		add(panel, "cell 0 0 23 1,growx,aligny center");
+		add(panel, "cell 0 0 22 1,growx,aligny center");
 		panel.setLayout(new MigLayout("", "[100px,grow 10000,left][][][][][][][][][][][][][][][][][][][][][][grow][grow][]", "[]"));
 		
 		JLabel lblTextEditor = new JLabel("Text Editor");
@@ -576,13 +557,14 @@ public class TextFileWriter extends JPanel {
 		
 		
 		JLabel lblMargin = new JLabel("Margin:");
+		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMargin.setForeground(SystemColor.menu);
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		add(lblMargin, "cell 19 4,alignx center");
+		add(lblMargin, "cell 17 4 2 1,alignx center");
 		
 		slider_margin = new JSlider(0,100,0);
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		add(slider_margin, "cell 20 4 3 1,growx");
+		add(slider_margin, "cell 19 4 3 1,growx");
 		
 		slider_margin.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -598,8 +580,9 @@ public class TextFileWriter extends JPanel {
 
 		
 		JLabel lblFontSize = new JLabel("Font size: ");
+		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFontSize.setForeground(SystemColor.menu);
-		add(lblFontSize, "cell 19 5,alignx center");
+		add(lblFontSize, "cell 17 5 2 1,alignx center");
 		
 
 		
@@ -664,7 +647,7 @@ public class TextFileWriter extends JPanel {
 		}).start();
 		
 		JSeparator separator = new JSeparator();
-		add(separator, "cell 0 1 23 1,growx");
+		add(separator, "cell 0 1 22 1,growx");
 		
 		btnLoadTextFile = new JButton("");
 		btnLoadTextFile.setToolTipText("Load source File");

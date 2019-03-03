@@ -111,7 +111,7 @@ public class ImageWorker {
 	public static int[] readNValuesFromImage(BufferedImage image, int N, int option) throws STEGException {
 		int H = 0;
 		int W = 0;
-		if (image!=null) {
+		if (image!=null && N>0) {
 			H = image.getHeight();
 			W = image.getWidth();
 		}else throw new STEGException();
@@ -155,9 +155,12 @@ public class ImageWorker {
 	public static int[] readNSpacedValuesFromImage(BufferedImage image, int N, int interval) throws STEGException {
 		int H = 0;
 		int W = 0;
-		if (image!=null) {
+		if (image!=null && N>0) {
 			H = image.getHeight();
 			W = image.getWidth();
+			if(interval == 0) {
+				interval = (W/N)%W;
+			}
 		}else throw new STEGException();
 		
 		if(N<=(W*H)) {
@@ -195,10 +198,13 @@ public class ImageWorker {
 		int H=0;
 		int W=0;
 		int interval=1;
-		if (image!=null) {
+		if (image!=null && N>0) {
 			H = image.getHeight();
 			W = image.getWidth();
 			interval = Math.abs((image.getRGB(0, 0))+1)%W;
+			if(interval == 0) {
+				interval = (W/N)%W;
+			}
 		}else throw new STEGException();
 		
 		if(N<=(W*H)) {
