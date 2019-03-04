@@ -55,7 +55,7 @@ import gUI.om.BufferedImageType;
 import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
-import gUI.utils.tooltip.ToolTipListCellRenderer;
+import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;

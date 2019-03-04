@@ -7,7 +7,7 @@ import javax.swing.JList;
 
 import gUI.om.ScalingAlgorithm;
 
-public class ToolTipListCellRenderer extends DefaultListCellRenderer {
+public class ToolTipScalingAlgorithm extends DefaultListCellRenderer {
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

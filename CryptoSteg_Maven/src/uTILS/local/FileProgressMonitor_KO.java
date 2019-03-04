@@ -4,7 +4,7 @@ import java.io.File;
 
 import gUI.utils.progressDialog.TestUpdateProgress;
 
-public class FileProgressMonitor {
+public class FileProgressMonitor_KO {
 	
 	// this is the tread that update the progress;
 	public static Thread moveUpdater;

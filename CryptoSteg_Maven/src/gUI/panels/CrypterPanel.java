@@ -17,10 +17,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
-import crypt.aes.EncryptDecrypt;
+import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManager;
-import crypt.steg.ImageCodeDecode;
+import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import gUI.mainGUI;
 import gUI.om.BufferedImageType;
@@ -164,8 +164,8 @@ public class CrypterPanel extends JPanel {
 	private File srcKeyImageFile;
 	
 	// CODERS objects - shared by methods
-	private EncryptDecrypt AEScoder;
-	private ImageCodeDecode STEGcoder;	
+	private AesCipher AEScoder;
+	private StegCipher STEGcoder;	
 	private ScreeptManager screepTManager;
 	private CryptoMode mode;
 	
@@ -239,7 +239,7 @@ public class CrypterPanel extends JPanel {
 				while(true) {
 					
 					// check the aes key and set jtextField color
-					EncryptDecrypt.check(AESKEYtext);
+					AesCipher.check(AESKEYtext);
 					// set the label text according to selected mode
 					if(checkIfReadyToCode() && !coderUsed) {
 						enableCoderButtons();
@@ -1026,7 +1026,7 @@ public class CrypterPanel extends JPanel {
 
 ///////////////////////////////////////////////////////// CRYPT INITIALIZERS /////////////////////////////////////////////////////////
 	private ScreeptManager initAES(String AES_KEY) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
-		AEScoder = new EncryptDecrypt(AES_KEY);
+		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
 		return screepTManager;
 	}
@@ -1035,7 +1035,7 @@ public class CrypterPanel extends JPanel {
 		if(imageFile == null) {
 			throw new STEGException();
 		}
-		STEGcoder = new ImageCodeDecode(imageFile);
+		STEGcoder = new StegCipher(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder);
 		screepTManager.setShuffleResult(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
 		return screepTManager;
@@ -1048,8 +1048,8 @@ public class CrypterPanel extends JPanel {
 		if(AES_KEY.length() == 0) {
 			throw new AESException();
 		}
-		AEScoder = new EncryptDecrypt(AES_KEY);
-		STEGcoder = new ImageCodeDecode(imageFile);
+		AEScoder = new AesCipher(AES_KEY);
+		STEGcoder = new StegCipher(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
 		screepTManager.setShuffleResult(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
 		return screepTManager;

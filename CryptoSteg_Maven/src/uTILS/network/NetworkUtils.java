@@ -1,13 +1,25 @@
 package uTILS.network;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Random;
 import java.util.Vector;
+
+import javax.swing.JProgressBar;
+
+import org.apache.commons.net.ftp.FTPClient;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,6 +34,13 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.hyperic.sigar.NetInterfaceConfig;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
+
+import uTILS.local.FileStuff;
+import uTILS.network.om.FtpSpeedTestOptions;
+import uTILS.network.om.NetworkAdapter;
 
 public class NetworkUtils {
 
@@ -30,6 +49,12 @@ public class NetworkUtils {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(NetworkUtils.class); 
 	
+	public final static String testAddress = "www.google.com";
+	
+	private static final String tempFile = "Resources_Scrypt/temp/temp.txt";
+	
+	//private static final Random RANDOM_GENERATOR = new Random();
+
 	private static Vector<URI> pubIPServices;
 	
 	private static int timeout; // in milliseconds
@@ -38,12 +63,16 @@ public class NetworkUtils {
 	
 	public Enumeration<NetworkInterface> networkInterfaces;
 	
+	public static Sigar sysINFO;
+	
 ////////////////////////  CONSTRUCTORS  ////////////////////////
 	
 	public NetworkUtils() throws IOException {
 		
 		LogManager.getRootLogger().setLevel(Level.ERROR);
 		retrieveAvailableAdapters();
+		sysINFO = new Sigar();
+		associateNetAdaptersWithConfig();
 	}
 	
 ////////////////////////  PRIVATE METHODS  ////////////////////////
@@ -86,15 +115,17 @@ public class NetworkUtils {
 			NetworkInterface currentInterface = networkInterfaces.nextElement();
 			Enumeration<InetAddress> currentSubInterface = currentInterface.getInetAddresses();
 			
-			while(currentSubInterface.hasMoreElements() && currentInterface.isUp() && !currentInterface.isVirtual() && !currentInterface.isLoopback()) {
+			while(currentSubInterface.hasMoreElements() /**&& currentInterface.isUp()**/ && !currentInterface.isVirtual() && !currentInterface.isLoopback()) {
 				InetAddress currentInet = (InetAddress)currentSubInterface.nextElement();
 				NetworkAdapter currentAdapter = new NetworkAdapter();	
 				
+				currentAdapter.setNetworkInterface(currentInterface);
 				currentAdapter.setLocalIP(currentInet.getAddress());
 				currentAdapter.setLocalMAC(currentInterface.getHardwareAddress());
 				currentAdapter.setName(currentInterface.getDisplayName());
+				currentAdapter.setMTU(currentInterface.getMTU());
 				currentAdapter.setHostName(currentInet.getHostName());
-				currentAdapter.setAddressInfo(currentInet);
+				currentAdapter.setInetAddr(currentInet);
 
 				networkAdapters.add(currentAdapter);
 			}
@@ -102,16 +133,125 @@ public class NetworkUtils {
 		}
 	}
 	
+	private void associateNetAdaptersWithConfig() {
+		String[] interfaces = new String[1];
+		try {
+			interfaces = sysINFO.getNetInterfaceList();
+			for(String interfName : interfaces) {
+				NetInterfaceConfig currentConf = sysINFO.getNetInterfaceConfig(interfName);
+				for(NetworkAdapter adapterIter : networkAdapters) {
+					boolean condition = currentConf.getHwaddr().equals(adapterIter.locMAC)
+							&& currentConf.getAddress().equals(adapterIter.locIP); 
+//							&& currentConf.getDescription().equals(adapterIter.getName());
+					if(condition) {
+						adapterIter.setInterfaceConfig(currentConf);
+					}
+				}
+			}
+		} catch (SigarException e) {
+			logger.error("Error retrieving interfaces with Sigar", e);
+		}
+
+	}
+	
 	public String retrieveAdapterPublicIP(NetworkAdapter currentAdapter) throws IOException {
-		if (currentAdapter.getLocalIP()!=null && currentAdapter.getAddressInfo().isReachable(1000)) {
+		if (currentAdapter.getLocalIP()!=null && currentAdapter.getInetAddr().isReachable(1000)) {
 			try {
-				currentAdapter.setRemoteIP(retrievePublicIP(currentAdapter.getAddressInfo()));
+				currentAdapter.setRemoteIP(retrievePublicIP(currentAdapter.getInetAddr()));
 			} catch (IOException e) {
 				logger.error("Unreachable network using adapter");
 				currentAdapter.remIP = "Unreachable Service";
 			}
 		}
 		return currentAdapter.remIP;
+	}
+	
+	public static int retrieveLatency(NetworkInterface netInf) throws UnknownHostException, IOException {
+		int times = 5;
+		long start = System.nanoTime();
+		for (int i = 0; i < times; i++) {
+			InetAddress.getByName(testAddress).isReachable(netInf, 0, timeout);
+		}		
+		long end = System.nanoTime();
+		int avg_ms = (int)((end-start)/(1000000*times));
+		return avg_ms;
+	}
+	
+	// TODO  reorder to separate ftp functions and unify them
+	public static String retrieveUpSpeed(InetAddress localAddress, FtpSpeedTestOptions testOptions, JProgressBar progress) throws SocketException, IOException, InterruptedException {
+
+		if(!localAddress.isReachable(2000)) {
+			return "Given local address is not reachable. Check connection and retry";
+		}
+		
+		if(progress != null) progress.setIndeterminate(true);
+		updatePb(progress, 30);
+		
+		byte[] randomFile = new byte[testOptions.upSize];
+		byte fill = (byte) 56;
+		Arrays.fill(randomFile, fill);
+		//RANDOM_GENERATOR.nextBytes(randomFile);
+		ByteArrayInputStream randomStream = new ByteArrayInputStream(randomFile);
+
+		FTPClient ftpClient = ftpUPinit(localAddress);
+		
+		// start upload
+		long start = System.currentTimeMillis();		
+		boolean result = ftpClient.storeUniqueFile(randomStream);
+		long end = System.currentTimeMillis();
+		
+		ftpClient.logout();
+		randomStream.close();
+		
+		// calculate speed
+		int upSpeed = (int)(randomFile.length/((end-start)/(1000F)));
+		String UP_Speed = FileStuff.coolFileSize((long)upSpeed)+"/s  ["+FileStuff.coolFileSizeBits((long)upSpeed)+"ps]";
+		
+		if(progress != null) progress.setIndeterminate(false);
+		updatePb(progress, 100);
+
+		return UP_Speed;
+	}
+	
+	public static String retrieveDownSpeed(InetAddress localAddress, FtpSpeedTestOptions testOptions, JProgressBar progress) throws IOException {
+
+		if(!localAddress.isReachable(2000)) {
+			return "Given local address is not reachable. Check connection and retry";
+		}
+		if(progress != null) progress.setIndeterminate(true);
+		updatePb(progress, 5);
+		
+		FTPClient ftpClient = ftpDOWNinit(localAddress);
+		byte[] downloadedBuffer = new byte[testOptions.downSize/10];
+		InputStream downStream = ftpClient.retrieveFileStream(testOptions.downFileName);
+		// start download
+		int read = 1;
+		int i=5;
+		long start = System.currentTimeMillis();	
+		while (read>0) {
+			read = downStream.read(downloadedBuffer);
+			updatePb(progress, i);
+			i+=10;
+		}
+		long end = System.currentTimeMillis();
+		
+		ftpClient.logout();
+		downStream.close();
+		
+		// calculate speed TODO
+		int downSpeed = (int)(testOptions.downSize/((end-start)/(1000F)));
+		String DOWN_Speed = FileStuff.coolFileSize((long)downSpeed)+"/s  ["+FileStuff.coolFileSizeBits((long)downSpeed)+"ps]";
+		
+		if(progress != null) progress.setIndeterminate(false);
+		updatePb(progress, 100);
+		
+		return DOWN_Speed;
+	}
+	
+	private static void updatePb(JProgressBar pb, int i) {
+		if(pb != null) {
+			pb.setValue(i);
+		}
 	}
 	
 	private static byte[] retrievePublicIP(InetAddress localAddress) throws IOException {
@@ -156,6 +296,26 @@ public class NetworkUtils {
 	    
 	    return IPaddressConverter.asBytes(responseString);
 	}
+	
+	private static FTPClient ftpDOWNinit(InetAddress localAddress) throws IOException {
+		// force passive mode to use specified adapter
+		FTPClient ftpClient = new FTPClient();
+		ftpClient.enterLocalPassiveMode();
+		ftpClient.setPassiveLocalIPAddress(localAddress);
+		ftpClient.connect(FtpSpeedTestOptions.HOST_FTP);
+		ftpClient.login(FtpSpeedTestOptions.USER_FTP, FtpSpeedTestOptions.PSW_FTP);
+		return ftpClient;
+	}
+	private static FTPClient ftpUPinit(InetAddress localAddress) throws IOException {
+		// force passive mode to use specified adapter
+		FTPClient ftpClient = new FTPClient();
+		ftpClient.enterLocalPassiveMode();
+		ftpClient.setPassiveLocalIPAddress(localAddress);
+		ftpClient.connect(FtpSpeedTestOptions.HOST_FTP);
+		ftpClient.login(FtpSpeedTestOptions.USER_FTP, FtpSpeedTestOptions.PSW_FTP);
+		ftpClient.changeWorkingDirectory(FtpSpeedTestOptions.UP_FOLDER);
+		return ftpClient;
+	}
 
 ////////////////////////  GETTERS AND SETTERS  ////////////////////////
 	
@@ -173,6 +333,10 @@ public class NetworkUtils {
 
 	public Vector<NetworkAdapter> getAdapters() {
 		return networkAdapters;
+	}
+
+	public static Sigar getSysINFO() {
+		return sysINFO;
 	}
 	
 }

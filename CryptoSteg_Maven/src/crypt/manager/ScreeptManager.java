@@ -25,8 +25,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
-import crypt.aes.EncryptDecrypt;
-import crypt.steg.ImageCodeDecode;
+import crypt.aes.AesCipher;
+import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
@@ -71,9 +71,9 @@ public class ScreeptManager {
 	//      FIELDS      //
 	//////////////////////
 	
-	private ImageCodeDecode imgCoder;	
+	private StegCipher imgCoder;	
 	
-	private EncryptDecrypt aesCoder;
+	private AesCipher aesCoder;
 	
 	private CryptoMode mode;
 	
@@ -113,7 +113,7 @@ public class ScreeptManager {
 	 */
 	public ScreeptManager() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		mode = CryptoMode.COMPLETE;
-		aesCoder = new EncryptDecrypt(AesOption.DEFAULT_AES_KEY);
+		aesCoder = new AesCipher(AesOption.DEFAULT_AES_KEY);
 		imgCoder = null;
 	}
 	
@@ -123,7 +123,7 @@ public class ScreeptManager {
 	 * @param imgCod the initialized imageCoder
 	 * @param aesCod the initialized aesCoder
 	 */
-	public ScreeptManager(ImageCodeDecode imgCod, EncryptDecrypt aesCod) {
+	public ScreeptManager(StegCipher imgCod, AesCipher aesCod) {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = aesCod;
 		imgCoder = imgCod;
@@ -134,7 +134,7 @@ public class ScreeptManager {
 	 *  
 	 * @param aesCod the initialized aesCoder
 	 */
-	public ScreeptManager(EncryptDecrypt aesCod) {
+	public ScreeptManager(AesCipher aesCod) {
 		mode = CryptoMode.ONLY_AES;
 		aesCoder = aesCod;
 		imgCoder = null;
@@ -145,7 +145,7 @@ public class ScreeptManager {
 	 *  
 	 * @param imgCod the initialized imageCoder
 	 */
-	public ScreeptManager(ImageCodeDecode imgCod) {
+	public ScreeptManager(StegCipher imgCod) {
 		mode = CryptoMode.ONLY_STEG;
 		aesCoder = null;
 		imgCoder = imgCod;
@@ -1076,7 +1076,7 @@ public class ScreeptManager {
 	// GETTERS & SETTERS /
 	//////////////////////
 
-	public ImageCodeDecode getImgCoder() {
+	public StegCipher getImgCoder() {
 		return imgCoder;
 	}
 
@@ -1084,11 +1084,11 @@ public class ScreeptManager {
 	 * set the Coder used for STEG ecryption/decryption
 	 * @return
 	 */
-	public void setImgCoder(ImageCodeDecode imgCoder) {
+	public void setImgCoder(StegCipher imgCoder) {
 		this.imgCoder = imgCoder;
 	}
 
-	public EncryptDecrypt getAesCoder() {
+	public AesCipher getAesCoder() {
 		return aesCoder;
 	}
 	
@@ -1096,7 +1096,7 @@ public class ScreeptManager {
 	 * set the Coder used for AES ecryption/decryption
 	 * @return
 	 */
-	public void setAesCoder(EncryptDecrypt aesCoder) {
+	public void setAesCoder(AesCipher aesCoder) {
 		this.aesCoder = aesCoder;
 	}
 

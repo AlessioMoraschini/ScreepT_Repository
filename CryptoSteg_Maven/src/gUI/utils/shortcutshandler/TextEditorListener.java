@@ -7,16 +7,16 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import gUI.panels.TextFileWriter;
+import gUI.panels.TextEditor;
 
 public class TextEditorListener implements KeyEventDispatcher{
 	
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditorListener.class);
 	
-	TextFileWriter currentTextEditor;
+	TextEditor currentTextEditor;
 	
-	public TextEditorListener(TextFileWriter currentTextEdit) {
+	public TextEditorListener(TextEditor currentTextEdit) {
 		currentTextEditor = currentTextEdit;
 	}
 	

@@ -1,8 +1,15 @@
-package uTILS.network;
+package uTILS.network.om;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+
+import org.hyperic.sigar.NetInterfaceConfig;
+
+import uTILS.network.IPaddressConverter;
 
 public class NetworkAdapter {
+	
+	// FIELDS //
 	
 	public byte[] localIP;
 	public byte[] remoteIP;
@@ -10,15 +17,24 @@ public class NetworkAdapter {
 	public String locIP;
 	public String remIP;
 	public String locMAC;
-	public InetAddress AddressInfo;
+	public InetAddress inetAddr;
+	public NetworkInterface networkInterface;
 	
+	public int MTU;
+	 
 	public String name;
 	public String hostName;
+	
+	public NetInterfaceConfig interfaceConfig;
+	
+	// CONSTRUCTOR //
 	
 	public NetworkAdapter() {
 		
 	}
 
+	// GETTERS AND SETTERS //
+	
 	public byte[] getLocalIP() {
 		return localIP;
 	}
@@ -31,12 +47,12 @@ public class NetworkAdapter {
 		return localMAC;
 	}
 
-	public InetAddress getAddressInfo() {
-		return AddressInfo;
+	public InetAddress getInetAddr() {
+		return inetAddr;
 	}
 
-	public void setAddressInfo(InetAddress addressInfo) {
-		AddressInfo = addressInfo;
+	public void setInetAddr(InetAddress inetAddr) {
+		this.inetAddr = inetAddr;
 	}
 
 	public void setLocalIP(byte[] localIP) {
@@ -70,10 +86,33 @@ public class NetworkAdapter {
 		this.hostName = hostName;
 	}
 
+	public int getMTU() {
+		return MTU;
+	}
+
+	public void setMTU(int mTU) {
+		MTU = mTU;
+	}
+
+	public NetInterfaceConfig getInterfaceConfig() {
+		return interfaceConfig;
+	}
+
+	public void setInterfaceConfig(NetInterfaceConfig interfaceConfig) {
+		this.interfaceConfig = interfaceConfig;
+	}
+
+	public NetworkInterface getNetworkInterface() {
+		return networkInterface;
+	}
+
+	public void setNetworkInterface(NetworkInterface networkInterface) {
+		this.networkInterface = networkInterface;
+	}
+
 	@Override
 	public String toString() {
 		return name +" - "+ locMAC + " - "+ locIP;
 	}
-
 
 }

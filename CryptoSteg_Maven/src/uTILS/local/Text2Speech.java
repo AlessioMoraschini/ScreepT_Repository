@@ -13,7 +13,7 @@ import com.sun.speech.freetts.*;
 //import javax.speech.synthesis.SynthesizerModeDesc;
 //import javax.speech.synthesis.Voice; 
 
-import gUI.panels.TextFileWriter;
+import gUI.panels.TextEditor;
 
 public class Text2Speech {
 	

@@ -3,11 +3,15 @@ package gUI.panels;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
+import org.hyperic.sigar.NetInfo;
+import org.hyperic.sigar.NetInterfaceConfig;
+import org.hyperic.sigar.SigarException;
 
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
-import uTILS.network.NetworkAdapter;
 import uTILS.network.NetworkUtils;
+import uTILS.network.om.FtpSpeedTestOptions;
+import uTILS.network.om.NetworkAdapter;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -18,6 +22,8 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,10 +33,10 @@ import javax.swing.SwingConstants;
 import java.awt.Dimension;
 import java.awt.Component;
 import javax.swing.JScrollPane;
-import java.awt.Button;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JProgressBar;
 
 public class NetInfoPanel extends JFrame{
 	
@@ -39,6 +45,7 @@ public class NetInfoPanel extends JFrame{
 	
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
+	private static int upSpeedTestSize = 250000;
 	
 	// flag to signal active
 	public static boolean active=false;
@@ -56,13 +63,13 @@ public class NetInfoPanel extends JFrame{
 	private JLabel lblLocalIp;
 	private JLabel lblPublicIp;
 	private JLabel lblAdapterName;
-	private JLabel lblOther;
+	private JLabel lblDNS1;
 	private JTextField dynLblAdapterName;
 	private JTextField dynLblMacAddress;
 	private JTextField dynLblLocalIP;
 	private JTextField dynLblPublicIP;
-	private JTextField dynLblOther;
-	private JSeparator separator;
+	private JTextField dynLblDNS1;
+	private JSeparator separatorVertMiddle;
 	
 	// network related objects
 	public NetInfoPanel thisPanel;
@@ -74,6 +81,20 @@ public class NetInfoPanel extends JFrame{
 	private JLabel dynLblUPspeed;
 	private JLabel dynLblDOWNspeed;
 	private JLabel dynLblLatency;
+	private JLabel lblDNS2;
+	private JTextField dynLblDNS2;
+	private JLabel lblDefaultGateway;
+	private JTextField dynLblDefGateway;
+	private JLabel lblSubnetMask;
+	private JTextField dynLblSubnetMask;
+	private JLabel lblMTU;
+	private JTextField dynLblMTU;
+	private JComboBox<FtpSpeedTestOptions> comboSpeedTestOpt;
+	private JProgressBar progressBarUp;
+	private JProgressBar progressBarDown;
+	private JProgressBar progressBarLatency;
+	private JSeparator separatorUpSpeed;
+	private JSeparator separator;
 	
 	// CONSTRUCTOR
 	
@@ -99,14 +120,14 @@ public class NetInfoPanel extends JFrame{
 	
 	private void initialize() {
 	
-		getContentPane().setBackground(new Color(210, 180, 140));
+		getContentPane().setBackground(new Color(169, 169, 169));
 		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[70px][60px][75%]"));
 		
 		headerPanelTitle = new JPanel();
 		headerPanelTitle.setMinimumSize(new Dimension(100, 10));
 		headerPanelTitle.setForeground(SystemColor.menu);
 		headerPanelTitle.setBorder(new LineBorder(new Color(0, 0, 0), 4));
-		headerPanelTitle.setBackground(new Color(169, 169, 169));
+		headerPanelTitle.setBackground(Color.DARK_GRAY);
 		getContentPane().add(headerPanelTitle, "cell 0 0 4 1,grow");
 		headerPanelTitle.setLayout(new MigLayout("", "[grow,trailing][100%,grow,center][grow,trailing]", "[20px,grow]"));
 		
@@ -114,8 +135,8 @@ public class NetInfoPanel extends JFrame{
 		lblNetworkInfoTool.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblNetworkInfoTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblNetworkInfoTool.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNetworkInfoTool.setForeground(Color.BLACK);
-		lblNetworkInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 19));
+		lblNetworkInfoTool.setForeground(Color.WHITE);
+		lblNetworkInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 24));
 		lblNetworkInfoTool.setBackground(SystemColor.activeCaptionBorder);
 		headerPanelTitle.add(lblNetworkInfoTool, "cell 1 0,alignx center,growy");
 		
@@ -140,13 +161,13 @@ public class NetInfoPanel extends JFrame{
 		panel = new JPanel();
 		panel.setBackground(new Color(255, 250, 240));
 		ConncetionInfoScrollPanel.setViewportView(panel);
-		panel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][10px][12.5%,grow][12.5%,grow][12.5%,grow]", "[40,grow][40,grow][40,grow][40,grow][40,grow][40,grow]"));
+		panel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][10px][12.5%,grow][12.5%,grow][12.5%,grow]", "[40,grow][40,grow][10][40,grow][40,grow][40,grow][40,grow][40,grow]"));
 		
 		lblAdapterName = new JLabel("Adapter Name:");
 		lblAdapterName.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel.add(lblAdapterName, "cell 0 0,alignx center");
 		
-		dynLblAdapterName = new JTextField("-");
+		dynLblAdapterName = new JTextField(UNSELECTED);
 		dynLblAdapterName.setEditable(false);
 		dynLblAdapterName.setForeground(new Color(72, 61, 139));
 		dynLblAdapterName.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -156,13 +177,17 @@ public class NetInfoPanel extends JFrame{
 		btnCalculateConnSpeed.setMinimumSize(new Dimension(0, 40));
 		btnCalculateConnSpeed.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		btnCalculateConnSpeed.setBackground(new Color(192, 192, 192));
-		panel.add(btnCalculateConnSpeed, "cell 4 0 3 1,growx");
+		panel.add(btnCalculateConnSpeed, "cell 4 0 2 1,growx");
+		
+//		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(); // only for updating graphics with windowbuilder
+		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(FtpSpeedTestOptions.values());
+		panel.add(comboSpeedTestOpt, "cell 6 0,alignx center,aligny center");
 		
 		lblHostName = new JLabel("Host Name:");
 		lblHostName.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel.add(lblHostName, "cell 0 1,alignx center");
 		
-		dynLblHostName = new JTextField("-");
+		dynLblHostName = new JTextField(UNSELECTED);
 		dynLblHostName.setEditable(false);
 		dynLblHostName.setForeground(new Color(72, 61, 139));
 		dynLblHostName.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -172,46 +197,72 @@ public class NetInfoPanel extends JFrame{
 		lblMacAddress.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel.add(lblMacAddress, "cell 0 2,alignx center");
 		
-		dynLblMacAddress = new JTextField("-");
+		dynLblMacAddress = new JTextField(UNSELECTED);
 		dynLblMacAddress.setEditable(false);
 		dynLblMacAddress.setForeground(new Color(72, 61, 139));
 		dynLblMacAddress.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel.add(dynLblMacAddress, "cell 1 2 2 1,growx");
 		
-		separator = new JSeparator();
-		separator.setBackground(new Color(0, 0, 0));
-		separator.setOrientation(SwingConstants.VERTICAL);
-		panel.add(separator, "cell 3 0 1 6,alignx center,growy");
+		separatorVertMiddle = new JSeparator();
+		separatorVertMiddle.setBackground(new Color(0, 0, 0));
+		separatorVertMiddle.setOrientation(SwingConstants.VERTICAL);
+		panel.add(separatorVertMiddle, "cell 3 0 1 8,alignx center,growy");
 		
 		panel_1 = new JPanel();
+		panel_1.setBackground(Color.LIGHT_GRAY);
 		panel_1.setBorder(new LineBorder(new Color(0, 51, 51), 2));
-		panel.add(panel_1, "cell 4 1 3 5,grow");
-		panel_1.setLayout(new MigLayout("", "[10%,grow][50%,grow]", "[30px,grow][30px,grow][30px,grow]"));
+		panel.add(panel_1, "cell 4 1 3 4,grow");
+		panel_1.setLayout(new MigLayout("", "[10%,grow][50%,grow]", "[15px][30px,grow][10px][10px][30px,grow][10px][10px][30px,grow]"));
+		
+		progressBarUp = new JProgressBar();
+		progressBarUp.setBackground(Color.DARK_GRAY);
+		progressBarUp.setForeground(Color.BLACK);
+		progressBarUp.setStringPainted(true);
+		panel_1.add(progressBarUp, "cell 0 0 2 1,growx");
 		
 		lblUpload = new JLabel("Upload:");
 		lblUpload.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel_1.add(lblUpload, "cell 0 0,alignx center");
+		panel_1.add(lblUpload, "cell 0 1,alignx center");
 		
 		dynLblUPspeed = new JLabel(UNSELECTED);
 		dynLblUPspeed.setHorizontalAlignment(SwingConstants.CENTER);
 		dynLblUPspeed.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel_1.add(dynLblUPspeed, "cell 1 0,alignx center");
+		panel_1.add(dynLblUPspeed, "cell 1 1,alignx center");
+		
+		separatorUpSpeed = new JSeparator();
+		separatorUpSpeed.setPreferredSize(new Dimension(0, 4));
+		separatorUpSpeed.setForeground(Color.BLACK);
+		panel_1.add(separatorUpSpeed, "cell 0 2 2 1,growx");
+		
+		progressBarDown = new JProgressBar();
+		progressBarDown.setBackground(Color.DARK_GRAY);
+		progressBarDown.setForeground(Color.BLACK);
+		progressBarDown.setStringPainted(true);
+		panel_1.add(progressBarDown, "cell 0 3 2 1,growx");
 		
 		lblDownload = new JLabel("Download:");
 		lblDownload.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel_1.add(lblDownload, "cell 0 1,alignx center");
+		panel_1.add(lblDownload, "cell 0 4,alignx center");
 		
 		dynLblDOWNspeed = new JLabel(UNSELECTED);
 		dynLblDOWNspeed.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel_1.add(dynLblDOWNspeed, "cell 1 1,alignx center");
+		panel_1.add(dynLblDOWNspeed, "cell 1 4,alignx center");
+		
+		separator = new JSeparator();
+		separator.setPreferredSize(new Dimension(0, 4));
+		separator.setForeground(Color.BLACK);
+		panel_1.add(separator, "cell 0 5 2 1,growx");
+		
+		progressBarLatency = new JProgressBar();
+		panel_1.add(progressBarLatency, "cell 0 6 2 1,growx");
 		
 		labelLatency = new JLabel("Latency:");
 		labelLatency.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel_1.add(labelLatency, "cell 0 2,alignx center");
+		panel_1.add(labelLatency, "cell 0 7,alignx center");
 		
 		dynLblLatency = new JLabel(UNSELECTED);
 		dynLblLatency.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel_1.add(dynLblLatency, "cell 1 2,alignx center");
+		panel_1.add(dynLblLatency, "cell 1 7,alignx center");
 		
 		lblLocalIp = new JLabel("Local IP:");
 		lblLocalIp.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -227,21 +278,61 @@ public class NetInfoPanel extends JFrame{
 		lblPublicIp.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel.add(lblPublicIp, "cell 0 4,alignx center,aligny center");
 		
-		dynLblPublicIP = new JTextField("-");
+		dynLblPublicIP = new JTextField(UNSELECTED);
 		dynLblPublicIP.setEditable(false);
 		dynLblPublicIP.setForeground(new Color(72, 61, 139));
 		dynLblPublicIP.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel.add(dynLblPublicIP, "cell 1 4 2 1,growx");
 		
-		lblOther = new JLabel("Other:");
-		lblOther.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel.add(lblOther, "cell 0 5,alignx center");
+		lblSubnetMask = new JLabel("Subnet Mask:");
+		lblSubnetMask.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(lblSubnetMask, "cell 0 5,alignx center");
 		
-		dynLblOther = new JTextField(UNSELECTED);
-		dynLblOther.setEditable(false);
-		dynLblOther.setForeground(new Color(72, 61, 139));
-		dynLblOther.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel.add(dynLblOther, "cell 1 5 2 1,growx");
+		dynLblSubnetMask = new JTextField(UNSELECTED);
+		dynLblSubnetMask.setForeground(new Color(72, 61, 139));
+		dynLblSubnetMask.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblSubnetMask.setEditable(false);
+		panel.add(dynLblSubnetMask, "cell 1 5 2 1,growx");
+		
+		lblDNS1 = new JLabel("DNS 1:");
+		lblDNS1.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(lblDNS1, "cell 4 5,alignx center");
+		
+		dynLblDNS1 = new JTextField(UNSELECTED);
+		dynLblDNS1.setEditable(false);
+		dynLblDNS1.setForeground(new Color(72, 61, 139));
+		dynLblDNS1.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(dynLblDNS1, "cell 5 5 2 1,growx");
+		
+		lblDefaultGateway = new JLabel("Default Gateway:");
+		lblDefaultGateway.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(lblDefaultGateway, "cell 0 6,alignx center");
+		
+		dynLblDefGateway = new JTextField(UNSELECTED);
+		dynLblDefGateway.setForeground(new Color(72, 61, 139));
+		dynLblDefGateway.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblDefGateway.setEditable(false);
+		panel.add(dynLblDefGateway, "cell 1 6 2 1,growx");
+		
+		lblDNS2 = new JLabel("DNS 2:");
+		lblDNS2.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(lblDNS2, "cell 4 6,alignx center");
+		
+		dynLblDNS2 = new JTextField(UNSELECTED);
+		dynLblDNS2.setForeground(new Color(72, 61, 139));
+		dynLblDNS2.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblDNS2.setEditable(false);
+		panel.add(dynLblDNS2, "cell 5 6 2 1,growx");
+		
+		lblMTU = new JLabel("MTU:");
+		lblMTU.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(lblMTU, "cell 0 7,alignx center");
+		
+		dynLblMTU = new JTextField("##############");
+		dynLblMTU.setForeground(new Color(72, 61, 139));
+		dynLblMTU.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblMTU.setEditable(false);
+		panel.add(dynLblMTU, "cell 1 7 2 1,growx");
 		
 		// default close operation(same as reset) 
 		addWindowListener(new java.awt.event.WindowAdapter() {
@@ -260,6 +351,7 @@ public class NetInfoPanel extends JFrame{
 			@Override
 			public void run() {
 				updateNetDisplayedINFO();
+				updateAdapterGUIinfos();
 			}
 		}).start();
 	}
@@ -274,6 +366,91 @@ public class NetInfoPanel extends JFrame{
 				updateNetDisplayedINFO();
 			}
 		});
+		
+		// SPEED CALCULATOR LISTENER
+		btnCalculateConnSpeed.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				dynLblUPspeed.setText("Calculating...");
+				dynLblDOWNspeed.setText("Calculating...");
+				
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						calculateLatency();
+						calculateDOWNspeed((FtpSpeedTestOptions)comboSpeedTestOpt.getSelectedItem());
+						calculateUPspeed((FtpSpeedTestOptions)comboSpeedTestOpt.getSelectedItem());
+					}
+				}).start();
+			}
+		});
+	}
+	
+	private void calculateLatency() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
+				progressBarLatency.setValue(0);
+				progressBarLatency.setForeground(Color.blue);
+				try {
+					int latency = NetworkUtils.retrieveLatency(currentSelAdapter.getNetworkInterface());
+					dynLblLatency.setText(String.valueOf(latency)+" ms");
+					progressBarLatency.setValue(100);
+					progressBarLatency.setForeground(Color.blue);
+				} catch (UnknownHostException e) {
+					String msg = "Host "+NetworkUtils.testAddress+" not recognized";
+					dynLblLatency.setText(msg);
+					logger.error(msg, e);
+					progressBarLatency.setValue(0);
+					progressBarLatency.setForeground(Color.red);
+				} catch (IOException e) {
+					String msg = "IO error occcurred";
+					dynLblLatency.setText(msg);
+					logger.error(msg, e);
+					progressBarLatency.setValue(0);
+					progressBarLatency.setForeground(Color.red);
+				}
+			}
+		}).start();
+	}
+	
+	private void calculateUPspeed(FtpSpeedTestOptions options) {
+//		new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+				currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
+				try {
+					dynLblUPspeed.setText(NetworkUtils.retrieveUpSpeed(currentSelAdapter.getInetAddr(), options, progressBarUp));
+				} catch (IOException | InterruptedException e) {
+					String msg = "IO error occcurred";
+					dynLblUPspeed.setText(msg);
+					logger.error(msg, e);
+				}
+//			}
+//		}).start();
+	}
+	
+	private void calculateDOWNspeed(FtpSpeedTestOptions options) {
+//		new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+				currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
+				try {
+					dynLblDOWNspeed.setText(NetworkUtils.retrieveDownSpeed(currentSelAdapter.getInetAddr(), options, progressBarDown));
+				} catch (IOException e) {
+					String msg = "IO error occcurred";
+					dynLblDOWNspeed.setText(msg);
+					logger.error(msg, e);
+				}
+//			}
+//		}).start();
 	}
 	
 	private void handleException(String msg, Throwable e) {
@@ -283,10 +460,14 @@ public class NetInfoPanel extends JFrame{
 
 	private void updateNetDisplayedINFO() {
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
+		NetInterfaceConfig netInfo = currentSelAdapter.interfaceConfig;
 		dynLblAdapterName.setText(currentSelAdapter.name);
 		dynLblLocalIP.setText(currentSelAdapter.locIP);
 		dynLblMacAddress.setText(currentSelAdapter.locMAC);
 		dynLblHostName.setText(currentSelAdapter.hostName);
+		dynLblMTU.setText(String.valueOf(currentSelAdapter.getMTU()));
+		String subMask = netInfo != null ? currentSelAdapter.getInterfaceConfig().getNetmask() : errMSG;
+		dynLblSubnetMask.setText(subMask);
 		try {
 			dynLblPublicIP.setText(netUtils.retrieveAdapterPublicIP(currentSelAdapter));
 		} catch (IOException e1) {
@@ -294,7 +475,23 @@ public class NetInfoPanel extends JFrame{
 			dynLblPublicIP.setText(msg);
 			handleException(msg, e1);
 		}
-		dynLblOther.setText(UNSELECTED);
+	}
+	
+	private void updateAdapterGUIinfos() {
+		
+		try {
+			NetInfo netInfo = netUtils.getSysINFO().getNetInfo();
+			dynLblDefGateway.setText(netInfo.getDefaultGateway());
+			dynLblDNS1.setText(netInfo.getPrimaryDns());
+			dynLblDNS2.setText(netInfo.getSecondaryDns());
+		} catch (SigarException e) {
+			String msg = "Error retrieving network Informations";
+			dynLblPublicIP.setText(errMSG);
+			dynLblDNS1.setText(errMSG);
+			dynLblDNS2.setText(errMSG);
+			handleException(msg, e);
+		}
+		
 	}
 	
 	private void updateNetDisplayedERROR() {
@@ -303,7 +500,7 @@ public class NetInfoPanel extends JFrame{
 		dynLblMacAddress.setText(errMSG);
 		dynLblHostName.setText(errMSG);
 		dynLblPublicIP.setText(errMSG);
-		dynLblOther.setText(errMSG);
+		dynLblDNS1.setText(errMSG);
 	}
 	
 	private void reloadAdaptersCombo() {

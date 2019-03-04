@@ -20,8 +20,8 @@ import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
-import crypt.aes.EncryptDecrypt;
-import crypt.steg.ImageCodeDecode;
+import crypt.aes.AesCipher;
+import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegOmResult;
 import iNIT.om.AesOption;
@@ -62,9 +62,9 @@ public class ScreeptManagerStub {
 	//      FIELDS      //
 	//////////////////////
 	
-	private ImageCodeDecode imgCoder;	
+	private StegCipher imgCoder;	
 	
-	private EncryptDecrypt aesCoder;
+	private AesCipher aesCoder;
 	
 	private CryptoMode mode;
 	
@@ -89,7 +89,7 @@ public class ScreeptManagerStub {
 	 */
 	public ScreeptManagerStub() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		mode = CryptoMode.COMPLETE;
-		aesCoder = new EncryptDecrypt(AesOption.DEFAULT_AES_KEY);
+		aesCoder = new AesCipher(AesOption.DEFAULT_AES_KEY);
 		imgCoder = null;
 	}
 	
@@ -99,7 +99,7 @@ public class ScreeptManagerStub {
 	 * @param imgCod the initialized imageCoder
 	 * @param aesCod the initialized aesCoder
 	 */
-	public ScreeptManagerStub(ImageCodeDecode imgCod, EncryptDecrypt aesCod) {
+	public ScreeptManagerStub(StegCipher imgCod, AesCipher aesCod) {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = aesCod;
 		imgCoder = imgCod;
@@ -110,7 +110,7 @@ public class ScreeptManagerStub {
 	 *  
 	 * @param aesCod the initialized aesCoder
 	 */
-	public ScreeptManagerStub(EncryptDecrypt aesCod) {
+	public ScreeptManagerStub(AesCipher aesCod) {
 		mode = CryptoMode.ONLY_AES;
 		aesCoder = aesCod;
 		imgCoder = null;
@@ -121,7 +121,7 @@ public class ScreeptManagerStub {
 	 *  
 	 * @param imgCod the initialized imageCoder
 	 */
-	public ScreeptManagerStub(ImageCodeDecode imgCod) {
+	public ScreeptManagerStub(StegCipher imgCod) {
 		mode = CryptoMode.ONLY_STEG;
 		aesCoder = null;
 		imgCoder = imgCod;
@@ -775,7 +775,7 @@ public class ScreeptManagerStub {
 	//////////////////////
 
 
-	public ImageCodeDecode getImgCoder() {
+	public StegCipher getImgCoder() {
 		return imgCoder;
 	}
 
@@ -783,11 +783,11 @@ public class ScreeptManagerStub {
 	 * set the Coder used for STEG ecryption/decryption
 	 * @return
 	 */
-	public void setImgCoder(ImageCodeDecode imgCoder) {
+	public void setImgCoder(StegCipher imgCoder) {
 		this.imgCoder = imgCoder;
 	}
 
-	public EncryptDecrypt getAesCoder() {
+	public AesCipher getAesCoder() {
 		return aesCoder;
 	}
 	
@@ -795,7 +795,7 @@ public class ScreeptManagerStub {
 	 * set the Coder used for AES ecryption/decryption
 	 * @return
 	 */
-	public void setAesCoder(EncryptDecrypt aesCoder) {
+	public void setAesCoder(AesCipher aesCoder) {
 		this.aesCoder = aesCoder;
 	}
 

@@ -20,7 +20,7 @@ import gUI.om.BufferedImageType;
  * @author Alessio Moraschini, 2018 Dalmine
  *
  */
-public class ImageCodeDecode {
+public class StegCipher {
 	
 	private final int MAX_INT = Integer.MAX_VALUE;
 	private final int MIN_INT = Integer.MIN_VALUE;
@@ -29,7 +29,7 @@ public class ImageCodeDecode {
 	Integer downLim = MIN_INT + 16777216; // min+2^24
 
 	// ImageCodeDecode logger creation		
-	static Logger logger = Logger.getLogger(ImageCodeDecode.class); 
+	static Logger logger = Logger.getLogger(StegCipher.class); 
 	
 	// DEFAULT VALUES
 	public final int DEFAULT_IMG_TYPE = BufferedImage.TYPE_4BYTE_ABGR;
@@ -53,7 +53,7 @@ public class ImageCodeDecode {
 	 * @param keyImg source image for coding
 	 * @throws STEGException 
 	 */
-	public ImageCodeDecode(File keyImgFile) throws IOException, STEGException {
+	public StegCipher(File keyImgFile) throws IOException, STEGException {
 		keyImage = ImageIO.read(keyImgFile);
 		outputType = keyImage.getType();
 		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
@@ -68,7 +68,7 @@ public class ImageCodeDecode {
 	 * @param original
 	 * @throws STEGException 
 	 */
-	public ImageCodeDecode (ImageCodeDecode original) throws STEGException {
+	public StegCipher (StegCipher original) throws STEGException {
 		this.keyImage = original.keyImage;
 		this.outputType = keyImage.getType();
 		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
@@ -84,7 +84,7 @@ public class ImageCodeDecode {
 	 * @throws IOException thrown if file readin' has some problems
 	 * @throws STEGException 
 	 */
-	public ImageCodeDecode(File keyImgFile, int outputImgType) throws IOException, STEGException {
+	public StegCipher(File keyImgFile, int outputImgType) throws IOException, STEGException {
 		keyImage = ImageIO.read(keyImgFile);
 		outputType = outputImgType;
 		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
@@ -99,7 +99,7 @@ public class ImageCodeDecode {
 	 * @param keyImg source image for coding
 	 * @throws STEGException 
 	 */
-	public ImageCodeDecode(BufferedImage keyImg) throws STEGException {
+	public StegCipher(BufferedImage keyImg) throws STEGException {
 		keyImage = keyImg;
 		outputType = keyImage.getType();
 		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);
@@ -115,7 +115,7 @@ public class ImageCodeDecode {
 	 * @throws STEGException 
 	 * @throws IOException thrown if file readin' has some problems
 	 */
-	public ImageCodeDecode(BufferedImage keyImg, int outputImgType) throws STEGException {
+	public StegCipher(BufferedImage keyImg, int outputImgType) throws STEGException {
 		keyImage = keyImg;
 		outputType = outputImgType;
 		bytePerPix = (keyImage.getColorModel().getPixelSize()/8);

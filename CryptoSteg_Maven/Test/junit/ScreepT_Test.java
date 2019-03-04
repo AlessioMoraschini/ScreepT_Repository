@@ -15,10 +15,10 @@ import org.ini4j.InvalidFileFormatException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import crypt.aes.EncryptDecrypt;
+import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerStub;
-import crypt.steg.ImageCodeDecode;
+import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import uTILS.local.FileStuff;
 
@@ -48,8 +48,8 @@ public class ScreepT_Test {
 	private File codedFolderCOMPLETE = new File("TEST_FILES/COMPLETEcod_Source_medium.txt");
 	
 	// CODERS USED IN initMethod private functions (only for test purpose)
-	private EncryptDecrypt AEScoder;
-	private ImageCodeDecode STEGcoder;	
+	private AesCipher AEScoder;
+	private StegCipher STEGcoder;	
 	private ScreeptManagerStub screepTManager;
 	
 ////////////////////////////////////////////////////////////////
@@ -275,18 +275,18 @@ public class ScreepT_Test {
 	}
 	
 	private void initAES() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
-		AEScoder = new EncryptDecrypt(AES_KEY);
+		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManagerStub(AEScoder);
 	}
 	
 	private void initSTEG() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException {
-		STEGcoder = new ImageCodeDecode(keyIMG);
+		STEGcoder = new StegCipher(keyIMG);
 		screepTManager = new ScreeptManagerStub(STEGcoder);
 	}
 	
 	private void initCOMPLETE() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException {
-		AEScoder = new EncryptDecrypt(AES_KEY);
-		STEGcoder = new ImageCodeDecode(keyIMG);
+		AEScoder = new AesCipher(AES_KEY);
+		STEGcoder = new StegCipher(keyIMG);
 		screepTManager = new ScreeptManagerStub(STEGcoder, AEScoder);
 	}
 }

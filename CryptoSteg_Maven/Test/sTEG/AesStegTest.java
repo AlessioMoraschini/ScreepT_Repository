@@ -16,8 +16,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 
-import crypt.aes.EncryptDecrypt;
-import crypt.steg.ImageCodeDecode;
+import crypt.aes.AesCipher;
+import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 
 public class AesStegTest {
@@ -29,7 +29,7 @@ public class AesStegTest {
 		String decoded = "not yet decoded :(";
 				
 		try {
-			EncryptDecrypt crypter=new EncryptDecrypt(key);
+			AesCipher crypter=new AesCipher(key);
 			coded = crypter.encrypt(srcText);
 		
 			byte[] codedBytes = coded.getBytes();
@@ -40,7 +40,7 @@ public class AesStegTest {
 				byteList.add(currentByte);
 			}
 			
-			ImageCodeDecode imgCoder = new ImageCodeDecode(new File("IMG/KEY_DICTIONARY/small_agbr.png"));
+			StegCipher imgCoder = new StegCipher(new File("IMG/KEY_DICTIONARY/small_agbr.png"));
 			BufferedImage keyImg = imgCoder.getKeyImage();
 			
 			BufferedImage result = imgCoder.stegaCrypt(byteList);
@@ -50,7 +50,7 @@ public class AesStegTest {
 			System.out.println("Coded Image:" + result.toString());
 			
 			ArrayList<Byte> decodedList = new ArrayList<Byte>();
-			imgCoder = new ImageCodeDecode(new File("IMG/KEY_DICTIONARY/small_agbr.png"));
+			imgCoder = new StegCipher(new File("IMG/KEY_DICTIONARY/small_agbr.png"));
 			decodedList = imgCoder.stegaDeCrypt(result);
 	
 			byte[] decodedBytes = new byte[decodedList.size()];

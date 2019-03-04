@@ -13,8 +13,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AESException;
-import crypt.aes.EncryptDecrypt;
-import crypt.steg.ImageCodeDecode;
+import crypt.aes.AesCipher;
+import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import uTILS.local.FileStuff;
 
@@ -26,8 +26,8 @@ public class ScreeptManagerMultiFile {
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	
 	// CODERS objects - shared by methods
-	private static EncryptDecrypt AEScoder;
-	private static ImageCodeDecode STEGcoder;	
+	private static AesCipher AEScoder;
+	private static StegCipher STEGcoder;	
 	private static ScreeptManager screepTManager;
 	private static boolean shuffle = true;
 	
@@ -287,7 +287,7 @@ public class ScreeptManagerMultiFile {
 ///////////////////////////////////////////////////////// CRYPT INITIALIZERS /////////////////////////////////////////////////////////
 	private static ScreeptManager initAES(String AES_KEY)
 			throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
-		AEScoder = new EncryptDecrypt(AES_KEY);
+		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
 		return screepTManager;
 	}
@@ -296,7 +296,7 @@ public class ScreeptManagerMultiFile {
 		if (imageFile == null) {
 			throw new STEGException();
 		}
-		STEGcoder = new ImageCodeDecode(imageFile);
+		STEGcoder = new StegCipher(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder);
 		screepTManager.setShuffleResult(shuffle);
 		return screepTManager;
@@ -310,8 +310,8 @@ public class ScreeptManagerMultiFile {
 		if (AES_KEY.length() == 0) {
 			throw new AESException();
 		}
-		AEScoder = new EncryptDecrypt(AES_KEY);
-		STEGcoder = new ImageCodeDecode(imageFile);
+		AEScoder = new AesCipher(AES_KEY);
+		STEGcoder = new StegCipher(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
 		screepTManager.setShuffleResult(shuffle);
 		return screepTManager;

@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import gUI.om.ScalingAlgorithm;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
-import gUI.utils.tooltip.ToolTipListCellRenderer;
+import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import iNIT.INItializer;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -309,7 +309,7 @@ public class ImageConverterFrame extends JFrame{
 		
 		comboScaleQuality = new JComboBox(ScalingAlgorithm.values());
 		getContentPane().add(comboScaleQuality, "cell 0 6 2 1,growx,aligny center");
-		comboScaleQuality.setRenderer(new ToolTipListCellRenderer());
+		comboScaleQuality.setRenderer(new ToolTipScalingAlgorithm());
 		
 		comboBoxFormats = new JComboBox(writerNames);
 		getContentPane().add(comboBoxFormats, "cell 2 6 2 1,growx,aligny center");

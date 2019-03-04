@@ -38,9 +38,10 @@ import gUI.panels.CrypterPanel;
 import gUI.panels.GeneralOptionsFrame;
 import gUI.panels.KeyGenPanel;
 import gUI.panels.NetInfoPanel;
-import gUI.panels.TextFileWriter;
+import gUI.panels.TextEditor;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
+import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
@@ -113,7 +114,7 @@ public class mainGUI {
 	private static NetInfoPanel netInfoPanel;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
-	private TextFileWriter initTxtWriter;
+	private TextEditor initTxtWriter;
 	private JPanel panelCrypter;
 	private ChargeIniLog configManagerPanel;
 	
@@ -742,11 +743,22 @@ public class mainGUI {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagInfoPanel) {
 		    		flagInfoPanel = true;
-		    		netInfoPanel = new NetInfoPanel(currentConfiguration);
-		    		netInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		netInfoPanel.setBounds(150, 150, 850, 600);
-		    		netInfoPanel.setVisible(true);
-		    		netInfoPanel.setTitle("Network info - ScrYpT");
+		    		new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							TestUpdateProgress prog = new TestUpdateProgress();
+							prog.getPb().setIndeterminate(true);
+							prog.getLabel().setText("Loading...");
+				    		netInfoPanel = new NetInfoPanel(currentConfiguration);	
+				    		netInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				    		netInfoPanel.setBounds(150, 150, 950, 700);
+				    		netInfoPanel.setVisible(true);
+				    		netInfoPanel.setTitle("Network info - ScrYpT");
+				    		prog.getPb().setValue(100);
+						}
+					}).start();
+		    		
 				}else {
 					netInfoPanel.requestFocus();
 				}
@@ -836,7 +848,7 @@ public class mainGUI {
 			
 				JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 				if(initTxtWriter == null) {
-					initTxtWriter = new TextFileWriter(frmScryptV, currentConfiguration);
+					initTxtWriter = new TextEditor(frmScryptV, currentConfiguration);
 				}		    	
 		    	contentPane.removeAll();
 		    	contentPane.add(initTxtWriter);

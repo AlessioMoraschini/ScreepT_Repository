@@ -15,7 +15,7 @@ import javax.swing.JProgressBar;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
-import crypt.aes.EncryptDecrypt;
+import crypt.aes.AesCipher;
 import gUI.panels.KeyGenPanel;
 import iNIT.INItializer;
 import uTILS.local.FileStuff;
@@ -28,9 +28,9 @@ public class prova_byte_AES {
 		String psw_user = "";
 		String msg = "Questo � un messaggio di prova";
 
-		EncryptDecrypt cripter;
+		AesCipher cripter;
 		try {
-			cripter = new EncryptDecrypt(psw_user);
+			cripter = new AesCipher(psw_user);
 			if(cripter != null) {
 				String result = cripter.encrypt(msg);
 				System.out.println("Risultato codificato: \n\n" + result);

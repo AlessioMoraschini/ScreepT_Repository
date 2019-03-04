@@ -7,8 +7,8 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import crypt.aes.EncryptDecrypt;
-import crypt.steg.ImageCodeDecode;
+import crypt.aes.AesCipher;
+import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import uTILS.local.ImageWorker;
 
@@ -20,7 +20,7 @@ public class StegTest {
 		
 		ArrayList<Byte> sourceBytes = generateRandomByteList(400);
 		BufferedImage generatedImage = ImageWorker.generaKeyImage(20, 20, testTypeImg);
-		ImageCodeDecode STEG = new ImageCodeDecode(generatedImage, testTypeImg); 
+		StegCipher STEG = new StegCipher(generatedImage, testTypeImg); 
 		STEG.stegaCrypt(sourceBytes);
 		
 	}

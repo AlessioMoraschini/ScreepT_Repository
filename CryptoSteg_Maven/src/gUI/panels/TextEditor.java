@@ -29,7 +29,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.drjekyll.fontchooser.FontDialog;
 
-import crypt.aes.EncryptDecrypt;
+import crypt.aes.AesCipher;
 import iNIT.INItializer;
 
 import java.awt.SystemColor;
@@ -61,10 +61,10 @@ import gUI.om.SupportedFileTextEditor;
 import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorListener;
 
-public class TextFileWriter extends JPanel {
+public class TextEditor extends JPanel {
 
 	// TextFileWriter logger creation
-	static Logger logger = Logger.getLogger(TextFileWriter.class);
+	static Logger logger = Logger.getLogger(TextEditor.class);
 	
 	// name used when using icons, remember to put in the correct folder or it will lanuch nullpointerException
 	public final String ICON_TEXT_CLEAR = "Resources_Scrypt/Icons/Clear.png";
@@ -81,7 +81,7 @@ public class TextFileWriter extends JPanel {
 	public final String ICON_DECRYPT = "Resources_Scrypt/Icons/Decrypt.png";
 	public final String ICON_SPEAKER = "Resources_Scrypt/Icons/Speaker.png";
 
-	private TextFileWriter currentTextEditor;
+	private TextEditor currentTextEditor;
 	
 	public Color LBL_ADVICE_COLOR;
 	
@@ -128,7 +128,7 @@ public class TextFileWriter extends JPanel {
 	
 //////////////// CONSTRUCTOR /////////////////////
 	
-	public TextFileWriter(JFrame parent, INItializer currentConfiguration) {
+	public TextEditor(JFrame parent, INItializer currentConfiguration) {
 		
 		currentTextEditor=this;
 		
@@ -190,13 +190,13 @@ public class TextFileWriter extends JPanel {
 				btnCrypt.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						// this function is used to change color and tooltip text according to key lenght
-						EncryptDecrypt.check(txtAesKey);
+						AesCipher.check(txtAesKey);
 						
 						//if checkbutton is selected the remember passwor in current configuration 
 						//(volatile until explicit save by user)
 						
 						try {
-							EncryptDecrypt crypter=new EncryptDecrypt(txtAesKey.getText());
+							AesCipher crypter=new AesCipher(txtAesKey.getText());
 							textArea_1.setText(crypter.encrypt(textArea_1.getText()));
 						}catch(Exception e) {
 							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
@@ -218,12 +218,12 @@ public class TextFileWriter extends JPanel {
 				btnDecrypt.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {	
 						// this function is used to update bg color of textfield according to given key's lenght
-						EncryptDecrypt.check(txtAesKey);
+						AesCipher.check(txtAesKey);
 						//if checkbutton is selected the remember passwor in current configuration 
 						//(volatile until explicit save by user)
 						
 						try {
-							EncryptDecrypt decrypter=new EncryptDecrypt(txtAesKey.getText());
+							AesCipher decrypter=new AesCipher(txtAesKey.getText());
 							textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
 //					AesKey.setText(decrypter.getDispKey());
 						}catch(Exception e) {
@@ -475,7 +475,7 @@ public class TextFileWriter extends JPanel {
 		txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
 		add(txtAesKey, "cell 11 4 5 1,growx");
 		txtAesKey.setColumns(10);
-		EncryptDecrypt.check(txtAesKey);
+		AesCipher.check(txtAesKey);
 				
 		
 		JPanel panel = new JPanel();
@@ -636,7 +636,7 @@ public class TextFileWriter extends JPanel {
 			@Override
 			public void run() {
 				while(true) {
-					EncryptDecrypt.check(txtAesKey);				
+					AesCipher.check(txtAesKey);				
 					try {
 						Thread.sleep(400);
 					} catch (InterruptedException e) {

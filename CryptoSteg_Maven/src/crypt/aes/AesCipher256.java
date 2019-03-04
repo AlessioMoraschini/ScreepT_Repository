@@ -6,19 +6,24 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JTextField;
 
 import org.apache.commons.codec.binary.Base64;
 	
-	public class EncryptDecrypt {
+	public class AesCipher256 {
 	
 		//////////////////////
 		//      CAMPI       //
@@ -29,7 +34,7 @@ import org.apache.commons.codec.binary.Base64;
 		private String password;//valore aggiornato con i pad
 		private String displayedKey;//valore originale chiave inserita
 		private IvParameterSpec ivParameterSpec;
-		private SecretKeySpec secretKeySpec;
+		private SecretKeySpec secretKey;
 		private Cipher cipher;
 		
 		private SecureRandom sRand;
@@ -38,11 +43,11 @@ import org.apache.commons.codec.binary.Base64;
 		//    COSTRUTTORI   //  
 		//////////////////////
 		
-		public EncryptDecrypt() {
+		public AesCipher256() {
 			
 		}
 		
-		public EncryptDecrypt(String password) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
+		public AesCipher256(String password) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException {
 			displayedKey=password;
 			while(password.length() !=16) {
 			    if(password.length()<16) {
@@ -57,11 +62,17 @@ import org.apache.commons.codec.binary.Base64;
 			if(password.length()==16) {
 				this.password=password;
 			}
+			
 			// CHANGE UTF-8 TO ISO8859.1 AND EXTRACT 16 BYTES ONLY -> NOW KEY LENGTH IS ALWAYS 16 BYTES EVEN WITH CYRILLIC OR OTHER ENCODINGS
 //			byte[] bytePsw = password.getBytes("UTF-8");
 			byte[] bytePsw = password.getBytes("ISO-8859-1");
 			ivParameterSpec = new IvParameterSpec(bytePsw);
-		    secretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, 16), "AES");
+			
+			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+	        KeySpec spec = new PBEKeySpec(password.toCharArray(), Arrays.copyOf(bytePsw, 16), 65536, 256);
+	        SecretKey tmp = factory.generateSecret(spec);
+	        secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+
 		    cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
 		}
 		
@@ -75,12 +86,11 @@ import org.apache.commons.codec.binary.Base64;
 		 * 
 		 * @param sourceString
 		 * @return encryptedString
-		 * 
 		 * */
 		public String encrypt(String toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
-		        InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
-		    cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
-		    byte[] encrypted = cipher.doFinal(toBeEncrypt.getBytes(System.getProperty("file.encoding")));
+		        InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+			cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
+		    byte[] encrypted = cipher.doFinal(toBeEncrypt.getBytes());
 		    return Base64.encodeBase64String(encrypted);
 		}
 		
@@ -97,7 +107,7 @@ import org.apache.commons.codec.binary.Base64;
 			// set random initialization vector
 			byte[] iv = generateIV();
 			ivParameterSpec = new IvParameterSpec(iv);
-			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+			cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
 			byte[] encrypted = cipher.doFinal(toBeEncrypt);
 			
 			// insert iv at the start of encrypted msg
@@ -114,14 +124,13 @@ import org.apache.commons.codec.binary.Base64;
 		 * 
 		 * @param sourceString
 		 * @return encryptedString
-		 * @throws UnsupportedEncodingException 
 		 * */
 		public String decrypt(String encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
-		        BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
+		        BadPaddingException, IllegalBlockSizeException {
 			
-		    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-		    byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encrypted.getBytes()));
-		    return new String(decryptedBytes,System.getProperty("file.encoding"));
+		    cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+		    byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encrypted));
+		    return new String(decryptedBytes);
 		}
 		
 		/**
@@ -139,7 +148,7 @@ import org.apache.commons.codec.binary.Base64;
 		    byte[] ciphertext = Arrays.copyOfRange(encrypted, iv.length, encrypted.length);			
 		    ivParameterSpec = new IvParameterSpec(iv);
 		    
-			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+			cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
 			byte[] decryptedBytes = cipher.doFinal(ciphertext);
 			return decryptedBytes;
 		}
@@ -182,14 +191,6 @@ import org.apache.commons.codec.binary.Base64;
 		
 		public void setIvParameterSpec(IvParameterSpec ivParameterSpec) {
 			this.ivParameterSpec = ivParameterSpec;
-		}
-	
-		public SecretKeySpec getSecretKeySpec() {
-			return secretKeySpec;
-		}
-		
-		public void setSecretKeySpec(SecretKeySpec secretKeySpec) {
-			this.secretKeySpec = secretKeySpec;
 		}
 	
 		public Cipher getCipher() {
