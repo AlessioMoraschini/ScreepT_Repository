@@ -43,6 +43,7 @@ import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.panels.GraphicPreferencesFrame;
+import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
 import iNIT.INItializer;
@@ -61,6 +62,7 @@ import net.miginfocom.swing.MigLayout;
 import uTILS.local.FileStuff;
 
 import java.awt.Dialog.ModalExclusionType;
+import java.awt.Dimension;
 import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
@@ -112,6 +114,7 @@ public class mainGUI {
 	private static GeneralOptionsFrame panelGeneralOptions;
 	private static ImageConverterFrame panelImgConv;
 	private static NetInfoPanel netInfoPanel;
+	private static HwInfoPanel hwInfoPanel;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	private TextEditor initTxtWriter;
@@ -143,6 +146,7 @@ public class mainGUI {
 	private JMenuItem mntmViewKeyDictionary;
 	private JMenuItem mntmNewTextFile;
 	private JMenuItem netInfo;
+	private JMenuItem hwInfo;
 	private JMenuItem mntmImageConverter;
 	private JMenuItem mntmReturnToWelcome;
 	private JMenuItem mntmAboutScreept;
@@ -183,7 +187,8 @@ public class mainGUI {
 	private static boolean flagFrameGuiOptions = false;
 	private static boolean flagFrameKeyDict = false;	
 	private static boolean flagImgConv = false;
-	private static boolean flagInfoPanel = false;
+	private static boolean flagNetInfoPanel = false;
+	private static boolean flagHwInfoPanel = false;
 	
 	// flags for no-window operations
 	private static boolean FLAG_mntmExit = false;
@@ -278,7 +283,10 @@ public class mainGUI {
 										flagImgConv=false;
 									}
 									if(!NetInfoPanel.active) {
-										flagInfoPanel=false;
+										flagNetInfoPanel=false;
+									}
+									if(!HwInfoPanel.active) {
+										flagHwInfoPanel=false;
 									}
 								} catch (InterruptedException e) {
 									logger.error("Exception happened!", e);
@@ -741,8 +749,8 @@ public class mainGUI {
 		// open in a new window - NET INFO
 		netInfo = new JMenuItem(new AbstractAction("Net Info") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (!flagInfoPanel) {
-		    		flagInfoPanel = true;
+		    	if (!flagNetInfoPanel) {
+		    		flagNetInfoPanel = true;
 		    		new Thread(new Runnable() {
 						
 						@Override
@@ -761,6 +769,33 @@ public class mainGUI {
 		    		
 				}else {
 					netInfoPanel.requestFocus();
+				}
+		    }
+		});
+		
+		// open in a new window - NET INFO
+		hwInfo = new JMenuItem(new AbstractAction("Hardware Info") {
+		    public void actionPerformed(ActionEvent ae) {
+		    	if (!flagHwInfoPanel) {
+		    		flagHwInfoPanel = true;
+		    		new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							TestUpdateProgress prog = new TestUpdateProgress();
+							prog.getPb().setIndeterminate(true);
+							prog.getLabel().setText("Loading...");
+				    		hwInfoPanel = new HwInfoPanel(currentConfiguration);	
+				    		hwInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				    		hwInfoPanel.setBounds(250, 200, 950, 700);
+				    		hwInfoPanel.setVisible(true);
+				    		hwInfoPanel.setTitle("Hardware info - ScrYpT");
+				    		prog.getPb().setValue(100);
+						}
+					}).start();
+		    		
+				}else {
+					hwInfoPanel.requestFocus();
 				}
 		    }
 		});
@@ -789,6 +824,7 @@ public class mainGUI {
 		    		panelImgConv = new ImageConverterFrame(currentConfiguration);
 		    		panelImgConv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    		panelImgConv.setBounds(700, 200, 650, 500);
+		    		panelImgConv.setResizable(false);
 		    		panelImgConv.setVisible(true);
 		    		panelImgConv.setTitle("IMG Generator (V1.1) - A.M.2018");
 				}else {
@@ -955,6 +991,7 @@ public class mainGUI {
 			mnVarious.add(mntmNewTextFile);
 			mnVarious.add(new JSeparator());
 			mnVarious.add(netInfo);
+			mnVarious.add(hwInfo);
 			mnVarious.add(mnConversionsAndOther);
 			mnVarious.add(mnFilesAndDirectories);
 			
@@ -1007,6 +1044,7 @@ public class mainGUI {
 		mntmCrypter.setFont(menuItemFont);
 		generateKeyImageSub.setFont(menuItemFont);
 		netInfo.setFont(menuItemFont);
+		hwInfo.setFont(menuItemFont);
 		mntmViewKeyDictionary.setFont(menuItemFont);
 		mntmNewTextFile.setFont(menuItemFont);
 		mntmImageConverter.setFont(menuItemFont);

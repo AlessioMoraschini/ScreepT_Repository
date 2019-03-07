@@ -367,9 +367,9 @@ public class CrypterPanel extends JPanel {
 		panelStatus.setBackground(Color.BLACK);
 		add(panelStatus, "cell 0 2 9 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 70, 100, 80, 100, 60, 120, 120, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 70, 100, 80, 300, 120, 120, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
-		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelStatus.setLayout(gbl_panelStatus);
 		
@@ -482,13 +482,13 @@ public class CrypterPanel extends JPanel {
 		gbc_labelFlagCodeReady.gridy = 0;
 		panelStatus.add(labelFlagCodeReady, gbc_labelFlagCodeReady);
 		labelFlagCodeReady.setBorder(null);
-		labelFlagCodeReady.setFont(new Font("SansSerif", Font.BOLD, 15));
+		labelFlagCodeReady.setFont(new Font("SansSerif", Font.BOLD, 14));
 		
 		btnCreept = new JButton("Creept");
 		GridBagConstraints gbc_btnCreept = new GridBagConstraints();
 		gbc_btnCreept.fill = GridBagConstraints.BOTH;
 		gbc_btnCreept.insets = new Insets(0, 0, 0, 5);
-		gbc_btnCreept.gridx = 11;
+		gbc_btnCreept.gridx = 10;
 		gbc_btnCreept.gridy = 0;
 		panelStatus.add(btnCreept, gbc_btnCreept);
 		btnCreept.setRequestFocusEnabled(false);
@@ -502,7 +502,7 @@ public class CrypterPanel extends JPanel {
 		GridBagConstraints gbc_btnDeCreept = new GridBagConstraints();
 		gbc_btnDeCreept.insets = new Insets(0, 0, 0, 5);
 		gbc_btnDeCreept.fill = GridBagConstraints.BOTH;
-		gbc_btnDeCreept.gridx = 12;
+		gbc_btnDeCreept.gridx = 11;
 		gbc_btnDeCreept.gridy = 0;
 		panelStatus.add(btnDeCreept, gbc_btnDeCreept);
 		btnDeCreept.setRequestFocusEnabled(false);

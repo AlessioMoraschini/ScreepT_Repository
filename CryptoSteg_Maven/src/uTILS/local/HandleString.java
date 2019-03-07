@@ -219,7 +219,7 @@ public class HandleString {
 			if (flagNewUp==true) {
 				result+=String.valueOf(character_i).toUpperCase();
 				// space and still to uppercase handler
-				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='�'||character_i=='�')) {
+				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='!'||character_i=='?')) {
 					flagNewUp=false;
 				}		
 			}

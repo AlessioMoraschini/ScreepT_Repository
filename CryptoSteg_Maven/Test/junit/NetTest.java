@@ -1,7 +1,6 @@
 package junit;
 
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.Arrays;
 
 import org.hyperic.sigar.SigarException;
@@ -11,7 +10,7 @@ import org.junit.Test;
 import uTILS.network.NetworkUtils;
 
 
-public class netTest {
+public class NetTest {
 
 	@Test
 	public void testNetInfo() throws IOException {
@@ -23,8 +22,6 @@ public class netTest {
 		} catch (SigarException e) {
 			print("error");
 		}
-		
-		
 	}
 	
 	// lazy printer

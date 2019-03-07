@@ -45,10 +45,11 @@ public class NetInfoPanel extends JFrame{
 	
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
-	private static int upSpeedTestSize = 250000;
 	
 	// flag to signal active
 	public static boolean active=false;
+	
+	// gui fields
 	private JComboBox<NetworkAdapter> comboAdapters;
 	private JLabel lblNetworkInfoTool;
 	private JPanel headerPanelTitle;
@@ -95,8 +96,10 @@ public class NetInfoPanel extends JFrame{
 	private JProgressBar progressBarLatency;
 	private JSeparator separatorUpSpeed;
 	private JSeparator separator;
+	private JLabel lblBroadcastAddress;
+	private JTextField dynLblBroadcastAddr;
 	
-	// CONSTRUCTOR
+////////////////////////// CONSTRUCTOR //////////////////////////
 	
 	public NetInfoPanel(INItializer currentConfig) {
 		setMaximumSize(new Dimension(800, 450));
@@ -116,7 +119,7 @@ public class NetInfoPanel extends JFrame{
 		addEventHandlers();
 	}
 	
-	// METHODS
+////////////////////////// INITIALIZER METHOD //////////////////////////
 	
 	private void initialize() {
 	
@@ -161,7 +164,7 @@ public class NetInfoPanel extends JFrame{
 		panel = new JPanel();
 		panel.setBackground(new Color(255, 250, 240));
 		ConncetionInfoScrollPanel.setViewportView(panel);
-		panel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][10px][12.5%,grow][12.5%,grow][12.5%,grow]", "[40,grow][40,grow][10][40,grow][40,grow][40,grow][40,grow][40,grow]"));
+		panel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][10px][12.5%,grow][12.5%,grow][12.5%,grow]", "[40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow]"));
 		
 		lblAdapterName = new JLabel("Adapter Name:");
 		lblAdapterName.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -179,7 +182,7 @@ public class NetInfoPanel extends JFrame{
 		btnCalculateConnSpeed.setBackground(new Color(192, 192, 192));
 		panel.add(btnCalculateConnSpeed, "cell 4 0 2 1,growx");
 		
-//		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(); // only for updating graphics with windowbuilder
+//		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(); // active this only while updating graphics with windowbuilder
 		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(FtpSpeedTestOptions.values());
 		panel.add(comboSpeedTestOpt, "cell 6 0,alignx center,aligny center");
 		
@@ -294,35 +297,45 @@ public class NetInfoPanel extends JFrame{
 		dynLblSubnetMask.setEditable(false);
 		panel.add(dynLblSubnetMask, "cell 1 5 2 1,growx");
 		
-		lblDNS1 = new JLabel("DNS 1:");
-		lblDNS1.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel.add(lblDNS1, "cell 4 5,alignx center");
-		
-		dynLblDNS1 = new JTextField(UNSELECTED);
-		dynLblDNS1.setEditable(false);
-		dynLblDNS1.setForeground(new Color(72, 61, 139));
-		dynLblDNS1.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel.add(dynLblDNS1, "cell 5 5 2 1,growx");
-		
 		lblDefaultGateway = new JLabel("Default Gateway:");
 		lblDefaultGateway.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel.add(lblDefaultGateway, "cell 0 6,alignx center");
+		panel.add(lblDefaultGateway, "cell 4 5,alignx center");
 		
 		dynLblDefGateway = new JTextField(UNSELECTED);
 		dynLblDefGateway.setForeground(new Color(72, 61, 139));
 		dynLblDefGateway.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblDefGateway.setEditable(false);
-		panel.add(dynLblDefGateway, "cell 1 6 2 1,growx");
+		panel.add(dynLblDefGateway, "cell 5 5 2 1,growx");
+		
+		lblBroadcastAddress = new JLabel("Broadcast address:");
+		lblBroadcastAddress.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(lblBroadcastAddress, "cell 0 6,alignx center");
+		
+		dynLblBroadcastAddr = new JTextField("##############");
+		dynLblBroadcastAddr.setForeground(new Color(72, 61, 139));
+		dynLblBroadcastAddr.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblBroadcastAddr.setEditable(false);
+		panel.add(dynLblBroadcastAddr, "cell 1 6 2 1,growx");
+		
+		lblDNS1 = new JLabel("DNS 1:");
+		lblDNS1.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(lblDNS1, "cell 4 6,alignx center");
+		
+		dynLblDNS1 = new JTextField(UNSELECTED);
+		dynLblDNS1.setEditable(false);
+		dynLblDNS1.setForeground(new Color(72, 61, 139));
+		dynLblDNS1.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		panel.add(dynLblDNS1, "cell 5 6 2 1,growx");
 		
 		lblDNS2 = new JLabel("DNS 2:");
 		lblDNS2.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panel.add(lblDNS2, "cell 4 6,alignx center");
+		panel.add(lblDNS2, "cell 4 7,alignx center");
 		
 		dynLblDNS2 = new JTextField(UNSELECTED);
 		dynLblDNS2.setForeground(new Color(72, 61, 139));
 		dynLblDNS2.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblDNS2.setEditable(false);
-		panel.add(dynLblDNS2, "cell 5 6 2 1,growx");
+		panel.add(dynLblDNS2, "cell 5 7 2 1,growx");
 		
 		lblMTU = new JLabel("MTU:");
 		lblMTU.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -352,9 +365,12 @@ public class NetInfoPanel extends JFrame{
 			public void run() {
 				updateNetDisplayedINFO();
 				updateAdapterGUIinfos();
+				validateConnectivity();
 			}
 		}).start();
 	}
+	
+////////////////////////// EVENT HANDLERS ACTION LISTENERS //////////////////////////
 	
 	private void addEventHandlers() {
 		
@@ -363,11 +379,14 @@ public class NetInfoPanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				updateNetDisplayedINFO();
+				resetProgressBars();
+				validateConnectivity();
 			}
 		});
 		
-		// SPEED CALCULATOR LISTENER
+		// SPEED CALCULATOR BUTTON LISTENER
 		btnCalculateConnSpeed.addActionListener(new ActionListener() {
 			
 			@Override
@@ -388,6 +407,8 @@ public class NetInfoPanel extends JFrame{
 			}
 		});
 	}
+	
+////////////////////////// AND NOW SOME USEFUL METHOD //////////////////////////
 	
 	private void calculateLatency() {
 		new Thread(new Runnable() {
@@ -420,37 +441,38 @@ public class NetInfoPanel extends JFrame{
 	}
 	
 	private void calculateUPspeed(FtpSpeedTestOptions options) {
-//		new Thread(new Runnable() {
-//			
-//			@Override
-//			public void run() {
-				currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
-				try {
-					dynLblUPspeed.setText(NetworkUtils.retrieveUpSpeed(currentSelAdapter.getInetAddr(), options, progressBarUp));
-				} catch (IOException | InterruptedException e) {
-					String msg = "IO error occcurred";
-					dynLblUPspeed.setText(msg);
-					logger.error(msg, e);
-				}
-//			}
-//		}).start();
+		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
+		try {
+			dynLblUPspeed.setText(NetworkUtils.retrieveUpSpeed(currentSelAdapter.getInetAddr(), options, progressBarUp));
+		} catch (IOException | InterruptedException e) {
+			String msg = "IO error occcurred";
+			dynLblUPspeed.setText(msg);
+			resetProgressBars();
+			logger.error(msg, e);
+		}
 	}
 	
 	private void calculateDOWNspeed(FtpSpeedTestOptions options) {
-//		new Thread(new Runnable() {
-//			
-//			@Override
-//			public void run() {
-				currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
-				try {
-					dynLblDOWNspeed.setText(NetworkUtils.retrieveDownSpeed(currentSelAdapter.getInetAddr(), options, progressBarDown));
-				} catch (IOException e) {
-					String msg = "IO error occcurred";
-					dynLblDOWNspeed.setText(msg);
-					logger.error(msg, e);
-				}
-//			}
-//		}).start();
+		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
+		try {
+			dynLblDOWNspeed.setText(NetworkUtils.retrieveDownSpeed(currentSelAdapter.getInetAddr(), options, progressBarDown));
+		} catch (IOException e) {
+			String msg = "IO error occcurred";
+			dynLblDOWNspeed.setText(msg);
+			resetProgressBars();
+			logger.error(msg, e);
+		}
+	}
+	
+	private void validateConnectivity() {
+		boolean networkUp = false;
+		
+		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
+		if(currentSelAdapter.interfaceConfig != null) {
+			networkUp = true;
+		}
+		
+		btnCalculateConnSpeed.setEnabled(networkUp);
 	}
 	
 	private void handleException(String msg, Throwable e) {
@@ -458,16 +480,19 @@ public class NetInfoPanel extends JFrame{
 		JOptionPane.showMessageDialog(thisPanel, msg, msg, JOptionPane.ERROR_MESSAGE);
 	}
 
+	// interface related info
 	private void updateNetDisplayedINFO() {
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
-		NetInterfaceConfig netInfo = currentSelAdapter.interfaceConfig;
 		dynLblAdapterName.setText(currentSelAdapter.name);
 		dynLblLocalIP.setText(currentSelAdapter.locIP);
 		dynLblMacAddress.setText(currentSelAdapter.locMAC);
 		dynLblHostName.setText(currentSelAdapter.hostName);
 		dynLblMTU.setText(String.valueOf(currentSelAdapter.getMTU()));
-		String subMask = netInfo != null ? currentSelAdapter.getInterfaceConfig().getNetmask() : errMSG;
+		NetInterfaceConfig netInfo = currentSelAdapter.interfaceConfig;
+		String broadcastAddr = netInfo != null ? netInfo.getBroadcast() : errMSG;
+		String subMask = netInfo != null ? netInfo.getNetmask() : errMSG;
 		dynLblSubnetMask.setText(subMask);
+		dynLblBroadcastAddr.setText(broadcastAddr);
 		try {
 			dynLblPublicIP.setText(netUtils.retrieveAdapterPublicIP(currentSelAdapter));
 		} catch (IOException e1) {
@@ -477,21 +502,21 @@ public class NetInfoPanel extends JFrame{
 		}
 	}
 	
+	// interface unrelated info
 	private void updateAdapterGUIinfos() {
 		
 		try {
-			NetInfo netInfo = netUtils.getSysINFO().getNetInfo();
-			dynLblDefGateway.setText(netInfo.getDefaultGateway());
+			NetInfo netInfo = NetworkUtils.getSysINFO().getNetInfo();
 			dynLblDNS1.setText(netInfo.getPrimaryDns());
 			dynLblDNS2.setText(netInfo.getSecondaryDns());
+			dynLblDefGateway.setText(netInfo.getDefaultGateway());
 		} catch (SigarException e) {
 			String msg = "Error retrieving network Informations";
-			dynLblPublicIP.setText(errMSG);
+			dynLblDefGateway.setText(errMSG);
 			dynLblDNS1.setText(errMSG);
 			dynLblDNS2.setText(errMSG);
 			handleException(msg, e);
 		}
-		
 	}
 	
 	private void updateNetDisplayedERROR() {
@@ -501,6 +526,7 @@ public class NetInfoPanel extends JFrame{
 		dynLblHostName.setText(errMSG);
 		dynLblPublicIP.setText(errMSG);
 		dynLblDNS1.setText(errMSG);
+		dynLblDNS2.setText(errMSG);
 	}
 	
 	private void reloadAdaptersCombo() {
@@ -511,5 +537,15 @@ public class NetInfoPanel extends JFrame{
 		comboAdapters.revalidate();
 		comboAdapters.repaint();
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
+	}
+	
+	private void resetProgressBars() {
+		progressBarDown.setValue(0);
+		progressBarLatency.setValue(0);
+		progressBarUp.setValue(0);
+		
+		progressBarDown.setIndeterminate(false);
+		progressBarLatency.setIndeterminate(false);
+		progressBarUp.setIndeterminate(false);
 	}
 }
