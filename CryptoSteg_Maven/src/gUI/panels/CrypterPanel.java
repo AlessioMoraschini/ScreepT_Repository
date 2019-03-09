@@ -270,21 +270,21 @@ public class CrypterPanel extends JPanel {
 	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
 	 */
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:200,grow 300][70,grow]", "[:40:50px][4px:4px:4px][35][4px][100][140,grow][:10px:10px][280,grow]"));
+		setLayout(new MigLayout("", "[200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:200,grow 300][70,grow]", "[:40:50px,top][4px:4px:4px][35][4px][100][140,grow][:10px:10px][280,grow]"));
 		
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
-		panelHeader.setBorder(new LineBorder(Color.GRAY, 4, true));
-		panelHeader.setBackground(new Color(102, 153, 255));
+		panelHeader.setBorder(new LineBorder(new Color(64, 64, 64), 4));
+		panelHeader.setBackground(new Color(176, 196, 222));
 		add(panelHeader, "cell 0 0 9 1,grow");
-		panelHeader.setLayout(new MigLayout("", "[50%][50%]", "[50][]"));
+		panelHeader.setLayout(new MigLayout("", "[50%][50%]", "[40]"));
 		
 		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
 		lblScreeptHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		lblScreeptHeader.setForeground(new Color(0, 0, 0));
-		lblScreeptHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 24));
+		lblScreeptHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
 		lblScreeptHeader.setBackground(new Color(112, 128, 144));
-		panelHeader.add(lblScreeptHeader, "cell 0 0,alignx center");
+		panelHeader.add(lblScreeptHeader, "cell 0 0,alignx left");
 		
 		panelUserActions = new JPanel();
 		panelUserActions.setOpaque(false);
@@ -293,20 +293,20 @@ public class CrypterPanel extends JPanel {
 		panelUserActions.setBackground(new Color(100, 149, 237));
 		GridBagLayout gbl_panelUserActions = new GridBagLayout();
 		gbl_panelUserActions.columnWidths = new int[]{0, 0, 0, 280, 0};
-		gbl_panelUserActions.rowHeights = new int[]{30, 0};
+		gbl_panelUserActions.rowHeights = new int[]{20, 0};
 		gbl_panelUserActions.columnWeights = new double[]{1.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_panelUserActions.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panelUserActions.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelUserActions.setLayout(gbl_panelUserActions);
 		
 		btnSelectSourceFile = new JButton("Select Source File");
 		GridBagConstraints gbc_btnSelectSourceFile = new GridBagConstraints();
-		gbc_btnSelectSourceFile.fill = GridBagConstraints.BOTH;
+		gbc_btnSelectSourceFile.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnSelectSourceFile.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSelectSourceFile.gridx = 2;
 		gbc_btnSelectSourceFile.gridy = 0;
 		panelUserActions.add(btnSelectSourceFile, gbc_btnSelectSourceFile);
 		btnSelectSourceFile.setRequestFocusEnabled(false);
-		btnSelectSourceFile.setBorder(new LineBorder(new Color(0, 0, 0), 4));
+		btnSelectSourceFile.setBorder(new LineBorder(new Color(0, 0, 0), 3));
 		btnSelectSourceFile.setForeground(SystemColor.text);
 		btnSelectSourceFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -329,20 +329,20 @@ public class CrypterPanel extends JPanel {
 				}
 			}
 		});
-		btnSelectSourceFile.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 18));
+		btnSelectSourceFile.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 16));
 		btnSelectSourceFile.setBackground(Color.DARK_GRAY);
 		
 		btnDispoKeyImg = new JButton("One-use Key Image");
 		btnDispoKeyImg.setMargin(new Insets(4, 4, 4, 4));
 		GridBagConstraints gbc_btnDispoKeyImg = new GridBagConstraints();
-		gbc_btnDispoKeyImg.fill = GridBagConstraints.BOTH;
+		gbc_btnDispoKeyImg.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnDispoKeyImg.gridx = 3;
 		gbc_btnDispoKeyImg.gridy = 0;
 		panelUserActions.add(btnDispoKeyImg, gbc_btnDispoKeyImg);
 		btnDispoKeyImg.setRequestFocusEnabled(false);
-		btnDispoKeyImg.setBorder(new LineBorder(new Color(0, 0, 0), 4, true));
+		btnDispoKeyImg.setBorder(new LineBorder(new Color(0, 0, 0), 3));
 		btnDispoKeyImg.setForeground(SystemColor.text);
-		btnDispoKeyImg.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 18));
+		btnDispoKeyImg.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 16));
 		btnDispoKeyImg.setBackground(Color.DARK_GRAY);
 		btnDispoKeyImg.addActionListener(new ActionListener() {
 			
@@ -493,7 +493,7 @@ public class CrypterPanel extends JPanel {
 		panelStatus.add(btnCreept, gbc_btnCreept);
 		btnCreept.setRequestFocusEnabled(false);
 		btnCreept.setForeground(Color.BLACK);
-		btnCreept.setBorder(new LineBorder(Color.GRAY, 4));
+		btnCreept.setBorder(null);
 		btnCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		btnCreept.setBackground(new Color(204, 51, 51));
 		
@@ -507,8 +507,8 @@ public class CrypterPanel extends JPanel {
 		panelStatus.add(btnDeCreept, gbc_btnDeCreept);
 		btnDeCreept.setRequestFocusEnabled(false);
 		btnDeCreept.setForeground(Color.BLACK);
-		btnDeCreept.setBorder(new LineBorder(Color.GRAY, 4));
-		btnDeCreept.setBackground(new Color(102, 153, 0));
+		btnDeCreept.setBorder(null);
+		btnDeCreept.setBackground(new Color(154, 205, 50));
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		
 

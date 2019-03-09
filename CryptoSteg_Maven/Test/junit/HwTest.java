@@ -41,7 +41,8 @@ public class HwTest {
 		print("OS architecture: " + System.getProperty("os.arch"));
 		print("Java version: " + System.getProperty("java.version"));
 
-		print("Monitors: " + Arrays.toString(sysINFO.getHardware().getDisplays()));
+		print(sysINFO.getHardware().getDisplays()[0].getEdid());
+		print("Monitors: " + sysINFO.getHardware().getDisplays()[0]);
 		//print("Sound cards: " + Arrays.toString(sysINFO.getHardware().getSoundCards()));
 		print("USB vendor: " + sysINFO.getHardware().getUsbDevices(false)[0].getVendor());
 		print("MOBO: " + sysINFO.getHardware().getComputerSystem().getBaseboard().getManufacturer());
@@ -68,6 +69,10 @@ public class HwTest {
 			i++;
 		}
 		
+		// oshi cpu
+		titlePrint(" OSHI CPU INFO ");
+		print(sysINFO.getHardware().getProcessor().toString());
+		
 		// DIRECTORY STATS
 		titlePrint(" /"+ dir +" ");
 		
@@ -93,10 +98,12 @@ public class HwTest {
 			} 
 //		}
 
+			
 		// FILE SYSTEM INFO
 		titlePrint(" File System Info ");
 		for(FileSystem FS : FSList) {
 			separatorPrint();
+			print(FS.toString());
 			print("Name: " + FS.getDevName());
 			print("Dir: " + FS.getDirName());
 			print("Flags: " + FS.getFlags());
@@ -140,4 +147,5 @@ public class HwTest {
 		for(int i = 0; i<n; i++) out+=("#");
 		print(out+"\n");
 	}
+	
 }

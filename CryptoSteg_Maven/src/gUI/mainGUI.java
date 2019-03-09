@@ -757,7 +757,8 @@ public class mainGUI {
 						public void run() {
 							TestUpdateProgress prog = new TestUpdateProgress();
 							prog.getPb().setIndeterminate(true);
-							prog.getLabel().setText("Loading...");
+							prog.getLabel().setText("Loading Network informations...");
+							prog.getPb().setString("Loading...");
 				    		netInfoPanel = new NetInfoPanel(currentConfiguration);	
 				    		netInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				    		netInfoPanel.setBounds(150, 150, 950, 700);
@@ -784,10 +785,12 @@ public class mainGUI {
 						public void run() {
 							TestUpdateProgress prog = new TestUpdateProgress();
 							prog.getPb().setIndeterminate(true);
-							prog.getLabel().setText("Loading...");
+							prog.getLabel().setText("Loading System informations...");
+							prog.getPb().setString("Loading...");
 				    		hwInfoPanel = new HwInfoPanel(currentConfiguration);	
 				    		hwInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				    		hwInfoPanel.setBounds(250, 200, 950, 700);
+				    		hwInfoPanel.setBounds(250, 200, 1000, 750);
+				    		hwInfoPanel.setResizable(false);
 				    		hwInfoPanel.setVisible(true);
 				    		hwInfoPanel.setTitle("Hardware info - ScrYpT");
 				    		prog.getPb().setValue(100);
@@ -897,7 +900,6 @@ public class mainGUI {
 		// open in main frame - RETURN TO WELCOME PAGE
 		mntmReturnToWelcome = new JMenuItem(new AbstractAction("Return to Welcome Page") {
 			public void actionPerformed(ActionEvent e) {
-				
 				setBackgroundImage();
 			}
 		});
@@ -1070,6 +1072,7 @@ public class mainGUI {
 //		UIManager.put( "control", new Color( 128, 128, 128) );
 //		  UIManager.put( "info", new Color(128,128,128) );
 		  UIManager.put( "nimbusBase", new Color( 18, 30, 49) );
+		  UIManager.put( "MenuBar.foreground", Color.white );
 //		  UIManager.put( "nimbusAlertYellow", new Color( 248, 187, 0) );
 //		  UIManager.put( "nimbusDisabledText", new Color( 128, 128, 128) );
 //		  UIManager.put( "nimbusFocus", new Color(115,164,209) );
@@ -1109,6 +1112,7 @@ public class mainGUI {
 //		UIManager.put( "control", new Color( 128, 128, 128) );
 //		  UIManager.put( "info", new Color(128,128,128) );
 		  UIManager.put( "nimbusBase", new Color(51,98,140) );
+		  UIManager.put( "MenuBar.foreground", Color.black );
 //		  UIManager.put( "nimbusAlertYellow", new Color( 248, 187, 0) );
 //		  UIManager.put( "nimbusDisabledText", new Color( 128, 128, 128) );
 //		  UIManager.put( "nimbusFocus", new Color(115,164,209) );

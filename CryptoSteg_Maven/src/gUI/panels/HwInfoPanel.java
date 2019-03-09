@@ -3,13 +3,32 @@ package gUI.panels;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
+import org.hyperic.sigar.CpuInfo;
+import org.hyperic.sigar.FileSystem;
+import org.hyperic.sigar.Mem;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 
+import gUI.om.HDinfo;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
+import oshi.SystemInfo;
+import oshi.hardware.Baseboard;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.Display;
+import oshi.hardware.HWDiskStore;
+import uTILS.local.DoubleListWorker;
+import uTILS.local.FileStuff;
+import uTILS.om.LimitedList;
+
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.util.Arrays;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -22,6 +41,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JTextArea;
 
 public class HwInfoPanel extends JFrame{
 	
@@ -30,9 +50,25 @@ public class HwInfoPanel extends JFrame{
 	
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
-	
+	private static final int RAM_REFRESH_RATE = 500;
+	private static final int CPU_REFRESH_RATE = 1000;
+	private static final int HD_REFRESH_RATE = 2000;
+
 	// flag to signal active
 	public static boolean active=false;
+
+	// GUI elements
+	private JScrollPane scrollPane;
+	private JTextArea textAreaDisplay;
+	private JPanel panel;
+	private JTextField dynLblCpuVoltage;
+	private JTextField dynLblCpuTemp;
+	private JTextField dynLblCpuAvgUsage;
+	private JTextField dynLblCpuUsage;
+	private JLabel lblUsage;
+	private JLabel lblAvg;
+	private JLabel lblTemperature;
+	private JLabel lblVoltage;
 	private JLabel lblHardwareInfoTool;
 	private JPanel panelHeaderTitle;
 	private JScrollPane ConncetionInfoScrollPanel;
@@ -41,9 +77,6 @@ public class HwInfoPanel extends JFrame{
 	private JLabel lblOsName;
 	private JTextField dynLblOsName;
 	private JTextField dynLblJavaVersion;
-	
-	// network related objects
-	public HwInfoPanel thisPanel;
 	private JLabel lblOsVersion;
 	private JTextField dynLblOsVersion;
 	private JLabel lblRam;
@@ -51,7 +84,7 @@ public class HwInfoPanel extends JFrame{
 	private JLabel lblUsedRam;
 	private JTextField dynLblRam;
 	private JTextField dynLblFreeRam;
-	private JTextField textField_2;
+	private JTextField dynLblUsedRam;
 	private JSeparator separator;
 	private JPanel panelRAM;
 	private JLabel lblArchitecture;
@@ -61,36 +94,55 @@ public class HwInfoPanel extends JFrame{
 	private JLabel lblCPU;
 	private JTextField dynLblCPU;
 	private JLabel lblCpuCores;
-	private JTextField dynLblNofCores;
+	private JTextField dynLblCPUNofCores;
 	private JLabel lblVendor;
-	private JTextField dynLblVendor;
+	private JTextField dynLblCPUVendor;
 	private JLabel lblNofSockets;
-	private JTextField dynLblNofSockets;
+	private JTextField dynLblCPUNofSockets;
 	private JLabel lblCpuFrequency;
 	private JLabel lblCacheSize;
 	private JTextField dynLblCpuFrequency;
-	private JTextField dynLblCacheSize;
+	private JTextField dynLblCPUCacheSize;
 	private JPanel panelMOBO;
 	private JLabel lblMotherboard;
 	private JTextField dynLblMoboModel;
 	private JLabel lblMoboVendor;
 	private JTextField dynLblMoboVendor;
-	private JTextField dynLblSerialNumber;
+	private JTextField dynLblMoboSerialNumber;
 	private JLabel lblSerialNumber;
 	private JPanel panelHD;
 	private JLabel lblHd;
-	private JComboBox comboBox;
-	private JLabel lblReadSpeed;
-	private JLabel lblWriteSpeed;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JComboBox comboSelectedHd;
+	private JLabel lblReads;
+	private JLabel lblHDName;
+	private JTextField dynLblHDReadBytes;
+	private JTextField dynLblHDmodel;
 	private JPanel panelMonitors;
 	private JLabel lblDisplay;
-	private JComboBox comboBox_1;
-	private JLabel label;
-	private JTextField textField_3;
-	private JLabel label_1;
-	private JTextField textField_4;
+	private JComboBox comboSelectedDisplay;
+	private JLabel lblName;
+	private JTextField dynLblDisplayInfo1;
+	
+	// system variables
+	private SystemInfo sysINFO;
+	private Mem memoryRam;
+	private Sigar sigar;
+	private CpuInfo[] cpuInfos; 
+	private Baseboard MOBO; 
+	private Display[] displays;
+	private Integer[] displayIndexer;
+	private CentralProcessor genCPU;
+	private LimitedList<Double> cpuUsageHystory;
+	private HDinfo[] HDList;
+	
+	// network related objects
+	public HwInfoPanel thisPanel;
+	private JLabel lblWrites;
+	private JTextField dynLblHDWriteBytes;
+	private JLabel lblHDCapacity;
+	private JLabel lblHDSerial;
+	private JTextField dynLblHDCapacity;
+	private JTextField dynLblHDSerial;
 	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
@@ -101,6 +153,8 @@ public class HwInfoPanel extends JFrame{
 		active = true;
 		thisPanel = this;
 		
+		initSystemVars();
+		
 		initialize();
 		
 		addEventHandlers();
@@ -109,15 +163,15 @@ public class HwInfoPanel extends JFrame{
 ////////////////////////// INITIALIZER METHOD //////////////////////////
 	
 	private void initialize() {
-	
-		getContentPane().setBackground(new Color(0, 0, 0));
-		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[70px][60px][75%]"));
+		
+		getContentPane().setBackground(new Color(255, 255, 255));
+		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[50px][60px][75%,grow]"));
 		
 		panelHeaderTitle = new JPanel();
 		panelHeaderTitle.setMinimumSize(new Dimension(100, 10));
 		panelHeaderTitle.setForeground(SystemColor.menu);
-		panelHeaderTitle.setBorder(new LineBorder(Color.DARK_GRAY, 4));
-		panelHeaderTitle.setBackground(new Color(70, 130, 180));
+		panelHeaderTitle.setBorder(new LineBorder(new Color(119, 136, 153), 4));
+		panelHeaderTitle.setBackground(Color.BLACK);
 		getContentPane().add(panelHeaderTitle, "cell 0 0 4 1,grow");
 		panelHeaderTitle.setLayout(new MigLayout("", "[grow,trailing][100%,grow,center][grow,trailing]", "[20px,grow]"));
 		
@@ -125,8 +179,8 @@ public class HwInfoPanel extends JFrame{
 		lblHardwareInfoTool.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblHardwareInfoTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblHardwareInfoTool.setHorizontalAlignment(SwingConstants.CENTER);
-		lblHardwareInfoTool.setForeground(new Color(0, 0, 0));
-		lblHardwareInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 24));
+		lblHardwareInfoTool.setForeground(new Color(240, 248, 255));
+		lblHardwareInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 30));
 		lblHardwareInfoTool.setBackground(SystemColor.activeCaptionBorder);
 		panelHeaderTitle.add(lblHardwareInfoTool, "cell 1 0,alignx center,growy");
 		
@@ -138,10 +192,10 @@ public class HwInfoPanel extends JFrame{
 		mainContainerPanel = new JPanel();
 		mainContainerPanel.setBackground(new Color(211, 211, 211));
 		ConncetionInfoScrollPanel.setViewportView(mainContainerPanel);
-		mainContainerPanel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][12.5%,grow]", "[40,grow][5][50,grow][50,grow][50,grow][40,grow][40,grow][40,grow][40,grow][40,grow]"));
+		mainContainerPanel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][12.5%,grow]", "[50,grow][5][50,grow][50,grow][50,grow][40,grow][40,grow][40,grow][40,grow][40][80,grow]"));
 		
 		panelGeneral = new JPanel();
-		panelGeneral.setBackground(Color.DARK_GRAY);
+		panelGeneral.setBackground(new Color(0, 0, 0));
 		mainContainerPanel.add(panelGeneral, "cell 0 0 4 1,grow");
 		panelGeneral.setLayout(new MigLayout("", "[100][grow][grow][grow][grow][grow][grow][grow]", "[grow]"));
 		
@@ -150,7 +204,7 @@ public class HwInfoPanel extends JFrame{
 		panelGeneral.add(lblArchitecture, "cell 0 0,alignx center");
 		lblArchitecture.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		
-		dynLblArch = new JTextField("##############");
+		dynLblArch = new JTextField(UNSELECTED);
 		panelGeneral.add(dynLblArch, "cell 1 0,growx");
 		dynLblArch.setForeground(new Color(72, 61, 139));
 		dynLblArch.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -202,9 +256,9 @@ public class HwInfoPanel extends JFrame{
 		
 		lblRam = new JLabel("RAM:");
 		panelRAM.add(lblRam, "cell 0 0 1 2,alignx center");
-		lblRam.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblRam.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		
-		dynLblRam = new JTextField("##############");
+		dynLblRam = new JTextField(UNSELECTED);
 		panelRAM.add(dynLblRam, "cell 1 0 1 2,growx");
 		dynLblRam.setForeground(new Color(72, 61, 139));
 		dynLblRam.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -214,7 +268,7 @@ public class HwInfoPanel extends JFrame{
 		panelRAM.add(lblFreeRam, "cell 2 0 1 2,alignx center");
 		lblFreeRam.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		
-		dynLblFreeRam = new JTextField("##############");
+		dynLblFreeRam = new JTextField(UNSELECTED);
 		panelRAM.add(dynLblFreeRam, "cell 3 0 1 2,growx");
 		dynLblFreeRam.setForeground(new Color(72, 61, 139));
 		dynLblFreeRam.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -224,23 +278,23 @@ public class HwInfoPanel extends JFrame{
 		panelRAM.add(lblUsedRam, "cell 4 0 1 2,alignx center");
 		lblUsedRam.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		
-		textField_2 = new JTextField("##############");
-		panelRAM.add(textField_2, "cell 5 0 1 2,growx");
-		textField_2.setForeground(new Color(72, 61, 139));
-		textField_2.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		textField_2.setEditable(false);
+		dynLblUsedRam = new JTextField(UNSELECTED);
+		panelRAM.add(dynLblUsedRam, "cell 5 0 1 2,growx");
+		dynLblUsedRam.setForeground(new Color(72, 61, 139));
+		dynLblUsedRam.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblUsedRam.setEditable(false);
 		
 		panelCPU = new JPanel();
 		panelCPU.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelCPU.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelCPU, "cell 0 3 4 3,grow");
-		panelCPU.setLayout(new MigLayout("", "[100][160px,grow][grow][grow][100px,grow][grow]", "[grow][grow][grow]"));
+		panelCPU.setLayout(new MigLayout("", "[100][160px,grow][150][60][150][150]", "[grow][grow][grow]"));
 		
 		lblCPU = new JLabel("CPU:");
-		lblCPU.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblCPU.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		panelCPU.add(lblCPU, "cell 0 0,alignx center");
 		
-		dynLblCPU = new JTextField("##############");
+		dynLblCPU = new JTextField(UNSELECTED);
 		dynLblCPU.setForeground(new Color(72, 61, 139));
 		dynLblCPU.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblCPU.setEditable(false);
@@ -250,17 +304,17 @@ public class HwInfoPanel extends JFrame{
 		lblNofSockets.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelCPU.add(lblNofSockets, "cell 2 0,alignx center");
 		
-		dynLblNofSockets = new JTextField("##############");
-		dynLblNofSockets.setForeground(new Color(72, 61, 139));
-		dynLblNofSockets.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		dynLblNofSockets.setEditable(false);
-		panelCPU.add(dynLblNofSockets, "cell 3 0,growx");
+		dynLblCPUNofSockets = new JTextField(UNSELECTED);
+		dynLblCPUNofSockets.setForeground(new Color(72, 61, 139));
+		dynLblCPUNofSockets.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblCPUNofSockets.setEditable(false);
+		panelCPU.add(dynLblCPUNofSockets, "cell 3 0,growx");
 		
 		lblCpuFrequency = new JLabel("Cpu Frequency:");
 		lblCpuFrequency.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelCPU.add(lblCpuFrequency, "cell 4 0,alignx center");
 		
-		dynLblCpuFrequency = new JTextField("##############");
+		dynLblCpuFrequency = new JTextField(UNSELECTED);
 		dynLblCpuFrequency.setForeground(new Color(72, 61, 139));
 		dynLblCpuFrequency.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblCpuFrequency.setEditable(false);
@@ -270,31 +324,81 @@ public class HwInfoPanel extends JFrame{
 		panelCPU.add(lblVendor, "cell 0 1,alignx center");
 		lblVendor.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		
-		dynLblVendor = new JTextField("##############");
-		dynLblVendor.setForeground(new Color(72, 61, 139));
-		dynLblVendor.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		dynLblVendor.setEditable(false);
-		panelCPU.add(dynLblVendor, "cell 1 1,growx");
+		dynLblCPUVendor = new JTextField(UNSELECTED);
+		dynLblCPUVendor.setForeground(new Color(72, 61, 139));
+		dynLblCPUVendor.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblCPUVendor.setEditable(false);
+		panelCPU.add(dynLblCPUVendor, "cell 1 1,growx");
 		
 		lblCpuCores = new JLabel("Number of Cores:");
 		lblCpuCores.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelCPU.add(lblCpuCores, "cell 2 1,alignx center");
 		
-		dynLblNofCores = new JTextField("##############");
-		dynLblNofCores.setForeground(new Color(72, 61, 139));
-		dynLblNofCores.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		dynLblNofCores.setEditable(false);
-		panelCPU.add(dynLblNofCores, "cell 3 1,growx");
+		dynLblCPUNofCores = new JTextField(UNSELECTED);
+		dynLblCPUNofCores.setForeground(new Color(72, 61, 139));
+		dynLblCPUNofCores.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblCPUNofCores.setEditable(false);
+		panelCPU.add(dynLblCPUNofCores, "cell 3 1,growx");
 		
 		lblCacheSize = new JLabel("Cache Size:");
 		lblCacheSize.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelCPU.add(lblCacheSize, "cell 4 1,alignx center");
 		
-		dynLblCacheSize = new JTextField("##############");
-		dynLblCacheSize.setForeground(new Color(72, 61, 139));
-		dynLblCacheSize.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		dynLblCacheSize.setEditable(false);
-		panelCPU.add(dynLblCacheSize, "cell 5 1,growx");
+		dynLblCPUCacheSize = new JTextField(UNSELECTED);
+		dynLblCPUCacheSize.setForeground(new Color(72, 61, 139));
+		dynLblCPUCacheSize.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblCPUCacheSize.setEditable(false);
+		panelCPU.add(dynLblCPUCacheSize, "cell 5 1,growx");
+		
+		panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		panel.setBackground(Color.DARK_GRAY);
+		panelCPU.add(panel, "cell 0 2 6 1,grow");
+		panel.setLayout(new MigLayout("", "[60][grow][60][grow][50][grow][60][grow]", "[grow]"));
+		
+		lblUsage = new JLabel("Usage:");
+		lblUsage.setForeground(Color.WHITE);
+		lblUsage.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panel.add(lblUsage, "cell 0 0,alignx center");
+		
+		dynLblCpuUsage = new JTextField(UNSELECTED);
+		dynLblCpuUsage.setForeground(new Color(72, 61, 139));
+		dynLblCpuUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblCpuUsage.setEditable(false);
+		panel.add(dynLblCpuUsage, "cell 1 0,growx");
+		
+		lblAvg = new JLabel("AVG:");
+		lblAvg.setForeground(Color.WHITE);
+		lblAvg.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panel.add(lblAvg, "cell 2 0,alignx center");
+		
+		dynLblCpuAvgUsage = new JTextField(UNSELECTED);
+		dynLblCpuAvgUsage.setForeground(new Color(72, 61, 139));
+		dynLblCpuAvgUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblCpuAvgUsage.setEditable(false);
+		panel.add(dynLblCpuAvgUsage, "cell 3 0,growx");
+		
+		lblTemperature = new JLabel("Temperature:");
+		lblTemperature.setForeground(Color.WHITE);
+		lblTemperature.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panel.add(lblTemperature, "cell 4 0,alignx center");
+		
+		dynLblCpuTemp = new JTextField(UNSELECTED);
+		dynLblCpuTemp.setForeground(new Color(72, 61, 139));
+		dynLblCpuTemp.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblCpuTemp.setEditable(false);
+		panel.add(dynLblCpuTemp, "cell 5 0,growx");
+		
+		lblVoltage = new JLabel("Voltage:");
+		lblVoltage.setForeground(Color.WHITE);
+		lblVoltage.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panel.add(lblVoltage, "cell 6 0,alignx center");
+		
+		dynLblCpuVoltage = new JTextField(UNSELECTED);
+		dynLblCpuVoltage.setForeground(new Color(72, 61, 139));
+		dynLblCpuVoltage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblCpuVoltage.setEditable(false);
+		panel.add(dynLblCpuVoltage, "cell 7 0,growx");
 		
 		panelMOBO = new JPanel();
 		panelMOBO.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
@@ -303,10 +407,10 @@ public class HwInfoPanel extends JFrame{
 		panelMOBO.setLayout(new MigLayout("", "[100][160][110][grow][130][grow]", "[grow]"));
 		
 		lblMotherboard = new JLabel("MOBO:");
-		lblMotherboard.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblMotherboard.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		panelMOBO.add(lblMotherboard, "cell 0 0,alignx center");
 		
-		dynLblMoboModel = new JTextField("##############");
+		dynLblMoboModel = new JTextField(UNSELECTED);
 		dynLblMoboModel.setForeground(new Color(72, 61, 139));
 		dynLblMoboModel.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblMoboModel.setEditable(false);
@@ -316,7 +420,7 @@ public class HwInfoPanel extends JFrame{
 		lblMoboVendor.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelMOBO.add(lblMoboVendor, "cell 2 0,alignx center");
 		
-		dynLblMoboVendor = new JTextField("##############");
+		dynLblMoboVendor = new JTextField(UNSELECTED);
 		dynLblMoboVendor.setForeground(new Color(72, 61, 139));
 		dynLblMoboVendor.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblMoboVendor.setEditable(false);
@@ -326,77 +430,106 @@ public class HwInfoPanel extends JFrame{
 		lblSerialNumber.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelMOBO.add(lblSerialNumber, "cell 4 0,alignx center");
 		
-		dynLblSerialNumber = new JTextField("##############");
-		dynLblSerialNumber.setForeground(new Color(72, 61, 139));
-		dynLblSerialNumber.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		dynLblSerialNumber.setEditable(false);
-		panelMOBO.add(dynLblSerialNumber, "cell 5 0,growx");
+		dynLblMoboSerialNumber = new JTextField(UNSELECTED);
+		dynLblMoboSerialNumber.setForeground(new Color(72, 61, 139));
+		dynLblMoboSerialNumber.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblMoboSerialNumber.setEditable(false);
+		panelMOBO.add(dynLblMoboSerialNumber, "cell 5 0,growx");
 		
 		panelHD = new JPanel();
 		panelHD.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelHD.setBackground(new Color(169, 169, 169));
-		mainContainerPanel.add(panelHD, "cell 0 7 4 1,grow");
-		panelHD.setLayout(new MigLayout("", "[100][160][110][grow][130px][grow]", "[]"));
+		mainContainerPanel.add(panelHD, "cell 0 7 4 2,grow");
+		panelHD.setLayout(new MigLayout("", "[100][160][80][grow][130px][grow]", "[grow][grow]"));
 		
 		lblHd = new JLabel("HD:");
-		lblHd.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblHd.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		panelHD.add(lblHd, "cell 0 0,alignx center");
 		
-		comboBox = new JComboBox();
-		panelHD.add(comboBox, "cell 1 0,growx");
+//		comboSelectedHd = new JComboBox(); // only for editing in windowbuilder
+		comboSelectedHd = new JComboBox(HDList);
+		panelHD.add(comboSelectedHd, "cell 1 0,growx");
 		
-		lblReadSpeed = new JLabel("Read Speed:");
-		lblReadSpeed.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		panelHD.add(lblReadSpeed, "cell 2 0,alignx center");
+		lblWrites = new JLabel("Writes:");
+		lblWrites.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panelHD.add(lblWrites, "cell 2 0,alignx center");
 		
-		textField = new JTextField("##############");
-		textField.setForeground(new Color(72, 61, 139));
-		textField.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		textField.setEditable(false);
-		panelHD.add(textField, "cell 3 0,growx");
+		dynLblHDWriteBytes = new JTextField(UNSELECTED);
+		dynLblHDWriteBytes.setForeground(new Color(72, 61, 139));
+		dynLblHDWriteBytes.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblHDWriteBytes.setEditable(false);
+		panelHD.add(dynLblHDWriteBytes, "cell 3 0,growx");
 		
-		lblWriteSpeed = new JLabel("Write Speed:");
-		lblWriteSpeed.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		panelHD.add(lblWriteSpeed, "cell 4 0,alignx center");
+		lblHDCapacity = new JLabel("Capacity:");
+		lblHDCapacity.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panelHD.add(lblHDCapacity, "cell 4 0,alignx center");
 		
-		textField_1 = new JTextField("##############");
-		textField_1.setForeground(new Color(72, 61, 139));
-		textField_1.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		textField_1.setEditable(false);
-		panelHD.add(textField_1, "cell 5 0,growx");
+		dynLblHDCapacity = new JTextField("##############");
+		dynLblHDCapacity.setForeground(new Color(72, 61, 139));
+		dynLblHDCapacity.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblHDCapacity.setEditable(false);
+		panelHD.add(dynLblHDCapacity, "cell 5 0,growx");
+		
+		lblHDName = new JLabel("Model:");
+		lblHDName.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panelHD.add(lblHDName, "cell 0 1,alignx center");
+		
+		dynLblHDmodel = new JTextField(UNSELECTED);
+		dynLblHDmodel.setForeground(new Color(72, 61, 139));
+		dynLblHDmodel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblHDmodel.setEditable(false);
+		panelHD.add(dynLblHDmodel, "cell 1 1,growx");
+		
+		lblReads = new JLabel("Reads:");
+		lblReads.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panelHD.add(lblReads, "cell 2 1,alignx center");
+		
+		dynLblHDReadBytes = new JTextField(UNSELECTED);
+		dynLblHDReadBytes.setForeground(new Color(72, 61, 139));
+		dynLblHDReadBytes.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblHDReadBytes.setEditable(false);
+		panelHD.add(dynLblHDReadBytes, "cell 3 1,growx");
+		
+		lblHDSerial = new JLabel("Serial Number:");
+		lblHDSerial.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panelHD.add(lblHDSerial, "cell 4 1,alignx center");
+		
+		dynLblHDSerial = new JTextField("##############");
+		dynLblHDSerial.setForeground(new Color(72, 61, 139));
+		dynLblHDSerial.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblHDSerial.setEditable(false);
+		panelHD.add(dynLblHDSerial, "cell 5 1,growx");
 		
 		panelMonitors = new JPanel();
 		panelMonitors.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelMonitors.setBackground(new Color(169, 169, 169));
-		mainContainerPanel.add(panelMonitors, "cell 0 8 4 1,grow");
-		panelMonitors.setLayout(new MigLayout("", "[100][160][110][grow][130px][grow]", "[]"));
+		mainContainerPanel.add(panelMonitors, "cell 0 9 4 2,grow");
+		panelMonitors.setLayout(new MigLayout("", "[100][160][110][grow]", "[][grow]"));
 		
 		lblDisplay = new JLabel("DISPLAY:");
-		lblDisplay.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblDisplay.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		panelMonitors.add(lblDisplay, "cell 0 0,alignx center");
 		
-		comboBox_1 = new JComboBox();
-		panelMonitors.add(comboBox_1, "cell 1 0,growx");
+//		comboSelectedDisplay = new JComboBox(); // only for editing in windowbuilder
+		comboSelectedDisplay = new JComboBox<Integer>(displayIndexer);
+		panelMonitors.add(comboSelectedDisplay, "cell 1 0,growx");
 		
-		label = new JLabel("Read Speed:");
-		label.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		panelMonitors.add(label, "cell 2 0,alignx center");
+		lblName = new JLabel("Name:");
+		lblName.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panelMonitors.add(lblName, "cell 2 0,alignx center");
 		
-		textField_3 = new JTextField("##############");
-		textField_3.setForeground(new Color(72, 61, 139));
-		textField_3.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		textField_3.setEditable(false);
-		panelMonitors.add(textField_3, "cell 3 0,growx");
+		dynLblDisplayInfo1 = new JTextField(UNSELECTED);
+		dynLblDisplayInfo1.setForeground(new Color(72, 61, 139));
+		dynLblDisplayInfo1.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblDisplayInfo1.setEditable(false);
+		panelMonitors.add(dynLblDisplayInfo1, "cell 3 0,growx");
 		
-		label_1 = new JLabel("Write Speed:");
-		label_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		panelMonitors.add(label_1, "cell 4 0,alignx center");
+		scrollPane = new JScrollPane();
+		panelMonitors.add(scrollPane, "cell 0 1 4 1,grow");
 		
-		textField_4 = new JTextField("##############");
-		textField_4.setForeground(new Color(72, 61, 139));
-		textField_4.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		textField_4.setEditable(false);
-		panelMonitors.add(textField_4, "cell 5 0,growx");
+		textAreaDisplay = new JTextArea();
+		textAreaDisplay.setBackground(new Color(255, 250, 205));
+		scrollPane.setViewportView(textAreaDisplay);
 		
 		// default close operation(same as reset) 
 		addWindowListener(new java.awt.event.WindowAdapter() {
@@ -414,20 +547,199 @@ public class HwInfoPanel extends JFrame{
 			
 			@Override
 			public void run() {
+				updateGenInfo();
+				updateMoboInfo();
+				updateHdInfo();
+				updateCpuInfo();
+				updateDisplayInfo();
 				
+				while(thisPanel.active) {
+					updateRamInfo();
+					try {
+						Thread.sleep(RAM_REFRESH_RATE);
+					} catch (InterruptedException e) {
+						logger.error(Arrays.toString(e.getStackTrace()));
+					}
+				}
 			}
 		}).start();
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				while(thisPanel.active) {
+					updateCpuUsageInfo();
+					try {
+						Thread.sleep(CPU_REFRESH_RATE);
+					} catch (InterruptedException e) {
+						logger.error(Arrays.toString(e.getStackTrace()));
+					}
+				}
+			}
+		}).start();
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				while(thisPanel.active) {
+					updateHdInfo();
+					try {
+						Thread.sleep(HD_REFRESH_RATE);
+					} catch (InterruptedException e) {
+						logger.error(Arrays.toString(e.getStackTrace()));
+					}
+				}
+			}
+		}).start();
+		
 	}
 	
 ////////////////////////// EVENT HANDLERS ACTION LISTENERS //////////////////////////
 	
 	private void addEventHandlers() {
 		
+		comboSelectedDisplay.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateDisplayInfo();				
+			}
+		});
+		
+		comboSelectedHd.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateHdInfo();				
+			}
+		});
 		
 	}
 	
 ////////////////////////// AND NOW SOME USEFUL METHOD //////////////////////////
 	
+	private void initSystemVars() {
+		cpuUsageHystory = new LimitedList<Double>(1000);
+		sysINFO = new SystemInfo();
+		sigar = new Sigar();
+		MOBO = sysINFO.getHardware().getComputerSystem().getBaseboard();
+		displays = sysINFO.getHardware().getDisplays();
+		displayIndexer = initDisplayIndexer();
+		genCPU = sysINFO.getHardware().getProcessor();
+		
+		HWDiskStore[] info = sysINFO.getHardware().getDiskStores();
+		HDList = new HDinfo[info.length];
+		int i = 0;
+		for(HWDiskStore disk : info) {
+			HDList[i] = new HDinfo(disk);
+		}
+	}
+	
+	private void updateGenInfo() {
+		dynLblArch.setText(System.getProperty("os.arch"));
+		dynLblOsName.setText(System.getProperty("os.name"));
+		dynLblOsVersion.setText(System.getProperty("os.version"));
+		dynLblJavaVersion.setText(System.getProperty("java.version"));
+	}
+	
+	private void updateCpuInfo() {
+		try {
+			cpuInfos = sigar.getCpuInfoList();
+		} catch (SigarException e) {
+			logger.error("Error initializing cpu", e);
+		}
+		dynLblCPU.setText(cpuInfos[0].getModel());
+		dynLblCpuFrequency.setText(String.valueOf(cpuInfos[0].getMhz())+"Mhz");
+		dynLblCPUNofCores.setText(String.valueOf(cpuInfos[0].getTotalCores()));
+		dynLblCPUNofSockets.setText(String.valueOf(cpuInfos[0].getTotalSockets()));
+		dynLblCPUVendor.setText(cpuInfos[0].getVendor());
+		
+		String cacheSize = (cpuInfos[0].getCacheSize()!=-1)? String.valueOf(FileStuff.coolFileSize(cpuInfos[0].getCacheSize())) : errMSG;
+		dynLblCPUCacheSize.setText(cacheSize);
+		
+	}
+	
+	private void updateMoboInfo() {
+		String vendor = (!MOBO.getManufacturer().equals(""))? MOBO.getManufacturer(): UNSELECTED;
+		dynLblMoboVendor.setText(vendor);
+		String model = (!MOBO.getModel().equals(""))? MOBO.getModel(): UNSELECTED;
+		dynLblMoboModel.setText(model);
+		dynLblMoboSerialNumber.setText(MOBO.getSerialNumber());
+	}
+	
+	private void updateRamInfo() {
+		try {
+			memoryRam = sigar.getMem();
+			String usedPerc = String.valueOf(Math.round(memoryRam.getUsedPercent()))+"%";
+			String freePerc = String.valueOf(Math.round(memoryRam.getFreePercent()))+"%";
+			
+			dynLblRam.setText(String.valueOf(memoryRam.getRam())+" MB");
+			dynLblFreeRam.setText(FileStuff.coolFileSize(memoryRam.getActualFree()) + " ["+freePerc+"]");
+			dynLblUsedRam.setText(FileStuff.coolFileSize(memoryRam.getActualUsed()) + " ["+usedPerc+"]");
+		} catch (SigarException e) {	
+			dynLblRam.setText(errMSG);
+			dynLblFreeRam.setText(errMSG);
+			dynLblFreeRam.setText(errMSG);
+		}
+	}
+	
+	private void updateCpuUsageInfo() {
+		double currentUsage = genCPU.getSystemCpuLoadBetweenTicks();
+		cpuUsageHystory.add(currentUsage);
+		double avgUsageCurrent = DoubleListWorker.getAvgValue(cpuUsageHystory.getList());
+		double cpuVolts = sysINFO.getHardware().getSensors().getCpuVoltage();
+		double cpuTemp = sysINFO.getHardware().getSensors().getCpuTemperature();
+		String usagePerc = new DecimalFormat("#,##0.##").format(currentUsage*100)+ "%";
+		String AVGPerc = new DecimalFormat("#,##0.##").format(avgUsageCurrent*100)+ "%";
+		String cpuVoltage = (cpuVolts != 0)? (new DecimalFormat("#,##0.####").format(cpuVolts)+ " Volts") : errMSG;
+		String cputemperature = (cpuTemp != 0)? (new DecimalFormat("#,##0.####").format(cpuTemp)+ " °C") : errMSG;
+		dynLblCpuUsage.setText(usagePerc);
+		dynLblCpuAvgUsage.setText(AVGPerc);
+		dynLblCpuVoltage.setText(cpuVoltage);
+		dynLblCpuTemp.setText(cputemperature);
+	}
+	
+	private void updateHdInfo() {
+		HDinfo selected = (HDinfo)comboSelectedHd.getSelectedItem();
+		HWDiskStore disk = selected.getDisk();
+		disk.updateDiskStats();
+		dynLblHDReadBytes.setText(String.valueOf(disk.getReadBytes()));
+		dynLblHDWriteBytes.setText(String.valueOf(disk.getWrites()));
+		dynLblHDmodel.setText(disk.getModel());
+		dynLblHDCapacity.setText(FileStuff.coolFileSize(disk.getSize()));
+		dynLblHDSerial.setText(disk.getSerial());
+	}
+
+	private void updateDisplayInfo() {
+		int iDisp = comboSelectedDisplay.getSelectedIndex();
+		Display selDisplay = displays[iDisp];
+		String displayInfoString = selDisplay.toString();
+		textAreaDisplay.setText(displayInfoString);
+		String[] splittedLinesString = displayInfoString.split("\n");
+		String name = "Monitor Name:";
+		
+		for (String splitted : splittedLinesString) {
+			if(splitted.indexOf(name)!=-1) {
+				String dynName = splitted.substring(splitted.indexOf(name)+name.length()); 
+				dynLblDisplayInfo1.setText(dynName);
+			}else {
+				dynLblDisplayInfo1.setText(UNSELECTED);
+			}
+		}
+		
+	}
+	
+	private Integer[] initDisplayIndexer() {
+		Integer[] indexer = new Integer[displays.length];
+		for(int i=0; i<displays.length; i++) {
+			indexer[i] = i;
+		}
+		return indexer;
+	}
 	
 	private void handleException(String msg, Throwable e) {
 		logger.error(msg, e);

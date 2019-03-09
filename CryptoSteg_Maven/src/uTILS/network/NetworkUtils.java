@@ -69,7 +69,7 @@ public class NetworkUtils {
 	
 	public NetworkUtils() throws IOException {
 		
-		LogManager.getRootLogger().setLevel(Level.ERROR);
+		//LogManager.getRootLogger().setLevel(Level.ERROR);
 		retrieveAvailableAdapters();
 		sysINFO = new Sigar();
 		associateNetAdaptersWithConfig();

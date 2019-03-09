@@ -71,11 +71,6 @@ public class NetInfoPanel extends JFrame{
 	private JTextField dynLblPublicIP;
 	private JTextField dynLblDNS1;
 	private JSeparator separatorVertMiddle;
-	
-	// network related objects
-	public NetInfoPanel thisPanel;
-	public NetworkAdapter currentSelAdapter;
-	private NetworkUtils netUtils;
 	private JLabel labelLatency;
 	private JLabel lblHostName;
 	private JTextField dynLblHostName;
@@ -98,6 +93,11 @@ public class NetInfoPanel extends JFrame{
 	private JSeparator separator;
 	private JLabel lblBroadcastAddress;
 	private JTextField dynLblBroadcastAddr;
+	
+	// network related objects
+	public NetInfoPanel thisPanel;
+	private NetworkUtils netUtils;
+	public NetworkAdapter currentSelAdapter;
 	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
@@ -123,14 +123,14 @@ public class NetInfoPanel extends JFrame{
 	
 	private void initialize() {
 	
-		getContentPane().setBackground(new Color(169, 169, 169));
+		getContentPane().setBackground(Color.BLACK);
 		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[70px][60px][75%]"));
 		
 		headerPanelTitle = new JPanel();
 		headerPanelTitle.setMinimumSize(new Dimension(100, 10));
 		headerPanelTitle.setForeground(SystemColor.menu);
-		headerPanelTitle.setBorder(new LineBorder(new Color(0, 0, 0), 4));
-		headerPanelTitle.setBackground(Color.DARK_GRAY);
+		headerPanelTitle.setBorder(new LineBorder(Color.DARK_GRAY, 4));
+		headerPanelTitle.setBackground(new Color(250, 128, 114));
 		getContentPane().add(headerPanelTitle, "cell 0 0 4 1,grow");
 		headerPanelTitle.setLayout(new MigLayout("", "[grow,trailing][100%,grow,center][grow,trailing]", "[20px,grow]"));
 		
@@ -138,13 +138,14 @@ public class NetInfoPanel extends JFrame{
 		lblNetworkInfoTool.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblNetworkInfoTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblNetworkInfoTool.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNetworkInfoTool.setForeground(Color.WHITE);
+		lblNetworkInfoTool.setForeground(new Color(0, 0, 0));
 		lblNetworkInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 24));
 		lblNetworkInfoTool.setBackground(SystemColor.activeCaptionBorder);
 		headerPanelTitle.add(lblNetworkInfoTool, "cell 1 0,alignx center,growy");
 		
 		lblSelectedNetworkAdapter = new JLabel("Selected Network Adapter :");
-		lblSelectedNetworkAdapter.setForeground(new Color(128, 0, 0));
+		lblSelectedNetworkAdapter.setBackground(Color.WHITE);
+		lblSelectedNetworkAdapter.setForeground(Color.LIGHT_GRAY);
 		lblSelectedNetworkAdapter.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		getContentPane().add(lblSelectedNetworkAdapter, "cell 1 1,alignx center");
 		
