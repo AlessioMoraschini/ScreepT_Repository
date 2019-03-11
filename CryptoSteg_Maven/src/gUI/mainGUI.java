@@ -73,7 +73,7 @@ public class mainGUI {
 	static Logger logger = Logger.getLogger(mainGUI.class);
 
 	// autosave constant refresh period in millisecond
-	private static final long AUTOSAVE_MANAGER_PERIOD=20000;
+	private static final long AUTOSAVE_MANAGER_PERIOD=8000;
 	
 	// AUTOSAVE MODULE - only if specified in fileOptions
 	private static Thread autosaveModule;
@@ -86,7 +86,7 @@ public class mainGUI {
 	// constant files & directories prefix
 	private static final String RESOURCES_DIR="Resources_Scrypt/";
 	private static final String DEFAULT_INI="Resources_Scrypt/CONFIG.ini";
-	private static final String BACKUP_SW_INI="Resources_Scrypt/Backup/BACKUP_CONFIG.ini";
+	private static final String BACKUP_INI="Resources_Scrypt/Backup/BACKUP_CONFIG.ini";
 	private static final String DEFAULT_INI_FOLDER="INI_FILES";
 	
 	// log_trace location
@@ -203,7 +203,7 @@ public class mainGUI {
 	private static boolean FLAG_mntmMakeDirsFromPath = false;
 	
 	// flag to close all suspended threads when exitings Main App
-	volatile private static boolean running = false;
+	volatile private static boolean mainAppRunning = false;
 	
 	private mainGUI mainAPP = this;
 	
@@ -221,7 +221,7 @@ public class mainGUI {
 			public void run() {
 				try {
 					now = new Date();
-					running= true;
+					mainAppRunning = true;
 					// empty old log file
 					// useful for test phase
 //					
@@ -263,7 +263,7 @@ public class mainGUI {
 						@Override
 						public void run() {
 							logger.debug("## MODULES FLAG UPDATER started");
-							while(running) {
+							while(mainAppRunning) {
 								try {
 									// sleep small time to adapt
 									Thread.sleep(600);
@@ -300,9 +300,9 @@ public class mainGUI {
 					autosaveModule = new Thread(new Runnable() {
 						@Override
 						public void run() {
-							running = true;
+//							running = true;
 							logger.debug("## AUTOSAVE module started, interval: "+currentConfiguration.getFileOpt().getAutosaveInterval() + " milliseconds");
-							while (running) {
+							while (mainAppRunning) {
 												
 								try {
 									// sleep time is the interval configured by user
@@ -330,7 +330,7 @@ public class mainGUI {
 						@Override
 						public void run() {
 							logger.debug("## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: "+currentConfiguration.getFileOpt().isFlagAutosave());
-							while(running) {
+							while(mainAppRunning) {
 								try {
 									// every period specified within the fields
 									Thread.sleep(AUTOSAVE_MANAGER_PERIOD);
@@ -400,7 +400,7 @@ public class mainGUI {
 								logger.error("Some error occurred deleting temporary Decrypted files");
 							}
 					      	
-							running = false;
+							mainAppRunning = false;
 					  	}
 					});
 					
@@ -509,7 +509,7 @@ public class mainGUI {
 								+ "\n\n" + APPLICATION_NAME + " CLOSED!\n\n"
 								+ "##################################################\n\n");
 
-						running = false;
+						mainAppRunning = false;
 
 						frmScryptV.dispose();
 					}
@@ -613,7 +613,7 @@ public class mainGUI {
 							"Warning - Reset INI standard config?",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 						try {
-							FileUtils.copyFile(new File(BACKUP_SW_INI), new File(DEFAULT_INI));
+							FileUtils.copyFile(new File(BACKUP_INI), new File(DEFAULT_INI));
 							currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
 							currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
 							askUsername();
@@ -709,6 +709,7 @@ public class mainGUI {
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGuiOptions.setTitle("Apply/Save Preferences [Customize - Apply - Save]");
 				}else {
+					panelGuiOptions.setState(java.awt.Frame.NORMAL);
 					panelGuiOptions.requestFocus();
 				}
 			}
@@ -725,6 +726,7 @@ public class mainGUI {
 					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGeneralOptions.setTitle("Apply/Save General Options [Customize - Apply - Save]");
 				}else {
+					panelGeneralOptions.setState(java.awt.Frame.NORMAL);
 					panelGeneralOptions.requestFocus();
 				}
 			}
@@ -741,13 +743,14 @@ public class mainGUI {
 					panelKeyGen.setVisible(true);
 					panelKeyGen.setTitle("IMG Generator (V1.1) - A.M.2018");
 				}else {
+					panelKeyGen.setState(java.awt.Frame.NORMAL);
 					panelKeyGen.requestFocus();
 				}
 		    }
 		});
 		
 		// open in a new window - NET INFO
-		netInfo = new JMenuItem(new AbstractAction("Net Info") {
+		netInfo = new JMenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagNetInfoPanel) {
 		    		flagNetInfoPanel = true;
@@ -761,6 +764,7 @@ public class mainGUI {
 							prog.getPb().setString("Loading...");
 				    		netInfoPanel = new NetInfoPanel(currentConfiguration);	
 				    		netInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				    		netInfoPanel.setAlwaysOnTop(true);
 				    		netInfoPanel.setBounds(150, 150, 950, 700);
 				    		netInfoPanel.setVisible(true);
 				    		netInfoPanel.setTitle("Network info - ScrYpT");
@@ -769,13 +773,14 @@ public class mainGUI {
 					}).start();
 		    		
 				}else {
+					netInfoPanel.setState(java.awt.Frame.NORMAL);
 					netInfoPanel.requestFocus();
 				}
 		    }
 		});
 		
 		// open in a new window - NET INFO
-		hwInfo = new JMenuItem(new AbstractAction("Hardware Info") {
+		hwInfo = new JMenuItem(new AbstractAction("System Info") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagHwInfoPanel) {
 		    		flagHwInfoPanel = true;
@@ -790,6 +795,7 @@ public class mainGUI {
 				    		hwInfoPanel = new HwInfoPanel(currentConfiguration);	
 				    		hwInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				    		hwInfoPanel.setBounds(250, 200, 1000, 750);
+				    		hwInfoPanel.setAlwaysOnTop(true);
 				    		hwInfoPanel.setResizable(false);
 				    		hwInfoPanel.setVisible(true);
 				    		hwInfoPanel.setTitle("Hardware info - ScrYpT");
@@ -798,6 +804,7 @@ public class mainGUI {
 					}).start();
 		    		
 				}else {
+					hwInfoPanel.setState(java.awt.Frame.NORMAL);
 					hwInfoPanel.requestFocus();
 				}
 		    }
@@ -814,6 +821,7 @@ public class mainGUI {
 		    		panelKeyDict.setVisible(true);
 		    		panelKeyDict.setTitle("Key Dictionary Manager");
 				}else {
+					panelKeyDict.setState(java.awt.Frame.NORMAL);
 					panelKeyDict.requestFocus();
 				}
 			}
@@ -831,6 +839,7 @@ public class mainGUI {
 		    		panelImgConv.setVisible(true);
 		    		panelImgConv.setTitle("IMG Generator (V1.1) - A.M.2018");
 				}else {
+					panelImgConv.setState(java.awt.Frame.NORMAL);
 					panelImgConv.requestFocus();
 				}
 			}

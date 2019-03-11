@@ -124,13 +124,13 @@ public class NetInfoPanel extends JFrame{
 	private void initialize() {
 	
 		getContentPane().setBackground(Color.BLACK);
-		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[70px][60px][75%]"));
+		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[60px][60px][75%,grow]"));
 		
 		headerPanelTitle = new JPanel();
 		headerPanelTitle.setMinimumSize(new Dimension(100, 10));
 		headerPanelTitle.setForeground(SystemColor.menu);
 		headerPanelTitle.setBorder(new LineBorder(Color.DARK_GRAY, 4));
-		headerPanelTitle.setBackground(new Color(250, 128, 114));
+		headerPanelTitle.setBackground(new Color(119, 136, 153));
 		getContentPane().add(headerPanelTitle, "cell 0 0 4 1,grow");
 		headerPanelTitle.setLayout(new MigLayout("", "[grow,trailing][100%,grow,center][grow,trailing]", "[20px,grow]"));
 		
@@ -382,7 +382,7 @@ public class NetInfoPanel extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				
 				updateNetDisplayedINFO();
-				resetProgressBars();
+				resetSpeedTestValues();
 				validateConnectivity();
 			}
 		});
@@ -448,7 +448,7 @@ public class NetInfoPanel extends JFrame{
 		} catch (IOException | InterruptedException e) {
 			String msg = "IO error occcurred";
 			dynLblUPspeed.setText(msg);
-			resetProgressBars();
+			resetSpeedTestValues();
 			logger.error(msg, e);
 		}
 	}
@@ -460,7 +460,7 @@ public class NetInfoPanel extends JFrame{
 		} catch (IOException e) {
 			String msg = "IO error occcurred";
 			dynLblDOWNspeed.setText(msg);
-			resetProgressBars();
+			resetSpeedTestValues();
 			logger.error(msg, e);
 		}
 	}
@@ -540,10 +540,13 @@ public class NetInfoPanel extends JFrame{
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
 	}
 	
-	private void resetProgressBars() {
+	private void resetSpeedTestValues() {
 		progressBarDown.setValue(0);
 		progressBarLatency.setValue(0);
 		progressBarUp.setValue(0);
+		dynLblDOWNspeed.setText(UNSELECTED);
+		dynLblUPspeed.setText(UNSELECTED);
+		dynLblLatency.setText(UNSELECTED);
 		
 		progressBarDown.setIndeterminate(false);
 		progressBarLatency.setIndeterminate(false);
