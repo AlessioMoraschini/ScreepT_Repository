@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,11 +13,12 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.ini4j.InvalidFileFormatException;
+import org.ini4j.Wini;
 
 import gui.panels.StartPanel;
 import launcherutils.FileUtils;
 import launcherutils.SysUtils;
-import launcherutils.om.OSenum;
 import launcherutils.om.OSinfo;
 
 /**
@@ -44,19 +44,28 @@ public class ScrYpTLauncher {
 	public static final String APPLICATION_DIR = "Application/";
 	
 	private static final String LOG_PROPERTIES_PATH = LAUNCHER_CONTAINER_PATH+"Config/log4j.properties";
-
+	
+	// main application path default
+	public static String MAIN_JAR_FILE = "SCreepT_V0.3.1_X.jar";
+	
+	// jvm search fields default
+	public static String MIN_JRE_VERSION = "1.6"; // included MIN
+	public static String MAX_JRE_VERSION = "9.0"; // excluded MAX
+	public static String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512"; // default memory options
+	public static final String NOT_FOUND_JVM = "";
+	public static final String JVM_ARGS = "-Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
+	
+	// DEFAULT INI
+	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "/Launcher_Configuration.ini"; 
+	public static final String INI_JVM_OPT = "JVM_OPTIONS";
+	public static final String INI_APP_OPT = "APPLICATION_OPTIONS";
+	private static Wini iniConfigFile;
+	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ScrYpTLauncher.class); 
 		
-	// FIELDS
-	
-	public static final String MAIN_JAR_FILE = "SCreepT_V0.3.1_X.jar";
-	public static final String JVM_ARGS = "-Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
-	
-	// jvm search fields
-	public static final String MIN_JRE_VERSION = "1.6"; // included MIN
-	public static final String MAX_JRE_VERSION = "9.0"; // excluded MAX
-	public static final String NOT_FOUND_JVM = "";
+////////////////////////////////////// FIELDS //////////////////////////////////////
+
 	public static OSinfo currentOS;
 	
 	public static LinkedList<String> execCommand;
@@ -70,6 +79,8 @@ public class ScrYpTLauncher {
 		// Initialize logger properties
 		PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
 		appLogStart();
+		
+		initFromINIFile();
 		
 		start();
 
@@ -207,7 +218,7 @@ public class ScrYpTLauncher {
 	 */
 	private void addLaunchScrYpTCommand() {
 		
-		execCommand.add(SysUtils.startJarCommand(JVM_ARGS, MAIN_JAR_FILE)+" -Xmx2048m -Xms512");
+		execCommand.add(SysUtils.startJarCommand(JVM_ARGS, MAIN_JAR_FILE)+" "+JVM_MEMORY_OPTIONS);
 	}
 	
 	/**
@@ -260,6 +271,30 @@ public class ScrYpTLauncher {
 		
 		// if not found rech this point and return 
 		return NOT_FOUND_JVM;
+	}
+	
+	// read configuration from ini file with null-value check
+	private static void initFromINIFile(){
+		try {
+			iniConfigFile = new Wini(new File(DEFAULT_INI_PATH));
+			
+			// JVM OPTIONS WITH NULL CHECK
+			String MAX_JVERSION_INI = iniConfigFile.get(INI_JVM_OPT, "maxJvmVersion");
+			MAX_JRE_VERSION = (MAX_JVERSION_INI != null)? MAX_JVERSION_INI : MAX_JRE_VERSION;
+			String MIN_JVERSION_INI = iniConfigFile.get(INI_JVM_OPT, "minJvmVersion");
+			MIN_JRE_VERSION = (MIN_JVERSION_INI != null)? MIN_JVERSION_INI : MIN_JRE_VERSION;
+			String MEM_JOPTIONS_INI = iniConfigFile.get(INI_JVM_OPT, "memoryArgs");
+			JVM_MEMORY_OPTIONS = (MEM_JOPTIONS_INI != null)? MEM_JOPTIONS_INI : JVM_MEMORY_OPTIONS;
+			
+			// APPLICATION OPTIONS WITH NULL CHECK
+			String MAIN_JAR_INI = iniConfigFile.get(INI_APP_OPT, "jarToLaunch");
+			MAIN_JAR_FILE = (MAIN_JAR_INI != null)? MAIN_JAR_INI : MAIN_JAR_FILE;
+			
+		} catch (InvalidFileFormatException e) {
+			logger.error("Invalid format detected while trying to read " + DEFAULT_INI_PATH, e);
+		} catch (IOException e) {
+			logger.error("IO error while trying to read " + DEFAULT_INI_PATH, e);
+		}
 	}
 	
 	private static void appLogStart() {
