@@ -4,6 +4,17 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import gui.ScrYpTLauncher;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+
 public class CustomizeParametersPanel extends JFrame{
 	
 	// KeyGenPanel logger
@@ -12,16 +23,61 @@ public class CustomizeParametersPanel extends JFrame{
 	public static boolean active = false;
 	private CustomizeParametersPanel thisPanel;
 	private StartPanel parentStarterPanel;
+	private JLabel lblMaxMemory;
+	private JLabel lblMinMemory;
+	private JSpinner spinnerMinMemoryMB;
+	private JSpinner spinnerMaxMemoryMB;
+	private JButton btnExitConfiguration;
+	private JButton btnReloadInitialConfig;
+	private JButton btnSaveConfig;
+	
+	private String backupMemoryArgs = "";
 	
 	public CustomizeParametersPanel(String title, StartPanel parentPanel) {
-		active = true;
 		
-		parentStarterPanel = parentPanel;
+		// CUSTOM SETTINGS
+		active = true;
 		thisPanel = this;
-		thisPanel.setBounds(160, 180, 700, 600);
-		thisPanel.setTitle(title);
+		this.setBounds(160, 180, 540, 190);
+		thisPanel.setTitle(title);		
+		parentStarterPanel = parentPanel;
+		// END CUSTOM SETTINGS
+		
+		getContentPane().setBackground(Color.WHITE);
+		getContentPane().setLayout(new MigLayout("", "[100px,grow][][70px]", "[grow][grow][grow]"));
+		
+		lblMaxMemory = new JLabel("Max memory(MB):");
+		getContentPane().add(lblMaxMemory, "cell 0 0,alignx center");
+		
+		spinnerMaxMemoryMB = new JSpinner();
+		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(1024, 256, 4000, 20));
+		getContentPane().add(spinnerMaxMemoryMB, "cell 1 0 2 1,growx");
+		
+		lblMinMemory = new JLabel("Min memory (MB):");
+		getContentPane().add(lblMinMemory, "cell 0 1,alignx center");
+		
+		spinnerMinMemoryMB = new JSpinner();
+		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(512, 128, 1024, 1));
+		getContentPane().add(spinnerMinMemoryMB, "cell 1 1 2 1,growx");
+		
+		btnExitConfiguration = new JButton("Discard and return to Launcher");
+		btnExitConfiguration.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnExitConfiguration, "cell 0 2,growx");
+		
+		btnReloadInitialConfig = new JButton("Reset to Initial Config");
+		btnReloadInitialConfig.setToolTipText("Coming soon :)");
+		btnReloadInitialConfig.setEnabled(false);
+		btnReloadInitialConfig.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnReloadInitialConfig, "cell 1 2,growx");
+		
+		btnSaveConfig = new JButton("Save Custom Config");
+		btnSaveConfig.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnSaveConfig, "cell 2 2,growx");
 		
 		addHandlers();
+		backupInitialValues();
+		
+		logger.info(this.getClass().getName() + " Started");
 	}
 	
 	private void addHandlers() {
@@ -36,5 +92,46 @@ public class CustomizeParametersPanel extends JFrame{
 	        	dispose();
 		    }
 		});
+		
+		btnExitConfiguration.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				active = false;
+				thisPanel.dispose();
+			}
+		});
+		
+		btnReloadInitialConfig.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO parse values from String 				
+			}
+		});
+		
+		btnSaveConfig.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				String maxMemory = String.valueOf((Integer)spinnerMaxMemoryMB.getValue());
+				String minMemory = String.valueOf((Integer)spinnerMinMemoryMB.getValue());
+				String args = "-Xmx"+maxMemory+"m -Xms"+minMemory;
+				
+				// update launcher vars and write to config INI file
+				String SECTION_ARGS = ScrYpTLauncher.INI_JVM_OPT;
+				ScrYpTLauncher.JVM_MEMORY_OPTIONS = SECTION_ARGS;
+				ScrYpTLauncher.writeValueToIniConfiguration(SECTION_ARGS, "memoryArgs", args);
+				// regenerate command list with new args
+				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();
+				
+			}
+		});
+	}
+	
+	private void backupInitialValues() {
+		backupMemoryArgs = ScrYpTLauncher.JVM_MEMORY_OPTIONS;
+		// TODO parse values from string
 	}
 }

@@ -6,6 +6,9 @@ import org.apache.log4j.Logger;
 
 import gui.ScrYpTLauncher;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
@@ -26,10 +29,12 @@ public class StartPanel extends JFrame{
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(StartPanel.class); 
 			
+	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+
 	public ScrYpTLauncher LAUNCHER;
 	private StartPanel LAUNCHER_GUI;
 	private CustomizeParametersPanel customizerPanel;
-	private MissingDependenciesPanel missingDependenciesPanel;
+	public MissingDependenciesPanel missingDependenciesPanel;
 	
 	private int screenWidth;
 	private int screenHeight;
@@ -40,6 +45,14 @@ public class StartPanel extends JFrame{
 	private JButton btnCustomizeParameters;
 	
 	public StartPanel(String frameTitle, ScrYpTLauncher launcher) {
+		
+		try {
+			UIManager.setLookAndFeel(NimbusLookAndFeel);
+			logger.debug(NimbusLookAndFeel+" initialized correctly.");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e3) {
+			logger.error("Exception happened!\n\n", e3);
+		}
 		
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		screenWidth = gd.getDisplayMode().getWidth();
@@ -78,15 +91,21 @@ public class StartPanel extends JFrame{
 	
 		addHandlers();
 		
-		//  IF COMPATIBLE JVM VERSION IS NOT FOUND THEN OPEN DIALOG
-		if(LAUNCHER.javaPath.equals("")) {
-			missingDependenciesPanel = new MissingDependenciesPanel("Compatible JVM not found", LAUNCHER_GUI);
-			missingDependenciesPanel.setVisible(true);
-		}
+		logger.info(this.getClass().getName() + " Started");
 	}
 	
 	// button handler settings
 	private void addHandlers() {
+		
+		// default close operation(same as reset) 
+		LAUNCHER_GUI.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	logger.debug("Closing Frame: " + LAUNCHER_GUI.getClass().getName());	        	
+
+		    }
+		});
 		
 		btnStartScrypt.addActionListener(new ActionListener() {
 			

@@ -16,9 +16,11 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
 import launcherutils.FileUtils;
 import launcherutils.SysUtils;
+import launcherutils.om.DependencyModel;
 import launcherutils.om.OSinfo;
 
 /**
@@ -57,6 +59,7 @@ public class ScrYpTLauncher {
 	
 	// use this as flag to signal that something is not ok with dependencies
 	public static  boolean criticalDependenciesOK = false;
+	public static ArrayList<DependencyModel> dependeciesMissing;
 	
 	// DEFAULT INI
 	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "/Launcher_Configuration.ini"; 
@@ -73,7 +76,7 @@ public class ScrYpTLauncher {
 	
 	public static LinkedList<String> execCommand;
 	public static StartPanel launcherMainFrame;
-	public static String javaPath="";
+	public static String javaPath=NOT_FOUND_JVM;
 	public static ScrYpTLauncher LAUNCHER;
 	
 	// MAIN START POINT
@@ -109,7 +112,6 @@ public class ScrYpTLauncher {
 	// CONSTRUCTOR
 	public ScrYpTLauncher() {
 		
-		execCommand = new LinkedList<String>();	
 		analyzeBeforeLauncher();
 		
 		// GUI launcher initialization
@@ -123,12 +125,28 @@ public class ScrYpTLauncher {
 				System.exit(0);
 			}
 		});
+		//  IF PROBLEMS WITH DEPENDENCIES LIST CONTAINS SOME ELEMENTS
+		if(dependeciesMissing.size() != 0) {
+			launcherMainFrame.missingDependenciesPanel = new MissingDependenciesPanel("one dependency is missing", launcherMainFrame);
+			launcherMainFrame.missingDependenciesPanel.setVisible(true);
+			launcherMainFrame.missingDependenciesPanel.setAlwaysOnTop(true);
+			launcherMainFrame.missingDependenciesPanel.requestFocus();
+		}
 	}
 	
 	public void analyzeBeforeLauncher() {
+		
+		execCommand = new LinkedList<String>();	
+		dependeciesMissing = new ArrayList<DependencyModel>();
+		
 		currentOS = SysUtils.retrieveOS();
 		
 		javaPath = retrieveCorrectJVMS();
+		
+		if(javaPath.equals(NOT_FOUND_JVM)) {
+			DependencyModel javaDependency = new DependencyModel("JVM", "", false);
+			dependeciesMissing.add(javaDependency);
+		}
 		// static for test => comment to use found one
 		//javaPath="C:/Program Files/Java/jdk1.8.0_162/bin;";
 				
@@ -183,7 +201,7 @@ public class ScrYpTLauncher {
 
 		ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 		String foundCorrect = compareWithAdmittedJVMS(foundJvmHomeList);
-		foundCorrect = (!foundCorrect.equals(""))? foundCorrect+"/bin": "";
+		foundCorrect = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
 		return foundCorrect;
 	}
 	
