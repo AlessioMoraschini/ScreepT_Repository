@@ -41,6 +41,7 @@ import launcherutils.om.OSinfo;
 public class ScrYpTLauncher {
 
 	public static final String LAUNCHER_CONTAINER_PATH = "LAUNCHER/";
+	public static final String APPLICATION_DIR = "Application/";
 	
 	private static final String LOG_PROPERTIES_PATH = LAUNCHER_CONTAINER_PATH+"Config/log4j.properties";
 
@@ -54,11 +55,11 @@ public class ScrYpTLauncher {
 	
 	// jvm search fields
 	public static final String MIN_JRE_VERSION = "1.6"; // included MIN
-	public static final String MAX_JRE_VERSION = "1.9"; // excluded MAX
-	public static final String NOT_FOUND_JVM = "NOT_FOUND";
+	public static final String MAX_JRE_VERSION = "9.0"; // excluded MAX
+	public static final String NOT_FOUND_JVM = "";
 	public static OSinfo currentOS;
 	
-	public static LinkedList<String> execCommand = new LinkedList<String>();
+	public static LinkedList<String> execCommand;
 	public static StartPanel launcherMainFrame;
 	public static String javaPath="";
 	public static ScrYpTLauncher LAUNCHER;
@@ -93,18 +94,9 @@ public class ScrYpTLauncher {
 	
 	// CONSTRUCTOR
 	public ScrYpTLauncher() {
-			
-		currentOS = SysUtils.retrieveOS();
 		
-		javaPath = checkJVMS();
-		// static for test => comment to use found one
-		javaPath="C:/Program Files/Java/jdk1.8.0_162/bin;";
-				
-		addPathCommand(javaPath);
-		
-		addInstallDependenciesCommand();
-		
-		addLaunchScrYpTCommand();
+		execCommand = new LinkedList<String>();	
+		analyzeBeforeLauncher();
 		
 		// GUI launcher initialization
 		launcherMainFrame = new StartPanel("ScrYpt Launcher", this);
@@ -117,6 +109,20 @@ public class ScrYpTLauncher {
 				System.exit(0);
 			}
 		});
+	}
+	
+	public void analyzeBeforeLauncher() {
+		currentOS = SysUtils.retrieveOS();
+		
+		javaPath = retrieveCorrectJVMS();
+		// static for test => comment to use found one
+		//javaPath="C:/Program Files/Java/jdk1.8.0_162/bin;";
+				
+		addPathCommand(javaPath);
+		
+		addInstallDependenciesCommand();
+		
+		addLaunchScrYpTCommand();
 	}
 	
 	/**
@@ -159,11 +165,11 @@ public class ScrYpTLauncher {
 	 * 
 	 * @return If found return true, else return false
 	 */
-	private String checkJVMS() {
+	private String retrieveCorrectJVMS() {
 
 		ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 		String foundCorrect = compareWithAdmittedJVMS(foundJvmHomeList);
-		
+		foundCorrect = (!foundCorrect.equals(""))? foundCorrect+"/bin": "";
 		return foundCorrect;
 	}
 	
@@ -174,8 +180,9 @@ public class ScrYpTLauncher {
 	private void addPathCommand(String pathEntry) {
 
 		if(currentOS.isWindows()) {
-			execCommand.add("set JDK_PATH=" + pathEntry);
+			execCommand.add("set JDK_PATH=" + pathEntry + ";");
 			execCommand.add("set PATH=%JDK_PATH%%PATH%");
+			execCommand.add("echo %PATH%");
 		
 		}else if(currentOS.isLinux()) {
 		
@@ -233,14 +240,21 @@ public class ScrYpTLauncher {
 			
 			// find name from path
 			String versionDirName = new File(currentPath).getName();
-			// remove all non-digits from string name of current version directory
-			String digitsOnly = versionDirName.replaceAll("\\D+","");
+			// change  underscores with dots
+			String dotsOnly = versionDirName.replaceAll("_",".");
+			dotsOnly = dotsOnly.replaceAll("-","");
+			// remove non dots chars
+			String noLettersDotsOnly = dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-","");
 			
-			boolean lessThanMax = digitsOnly.compareToIgnoreCase(this.MAX_JRE_VERSION) < 0; // true if digits < max
-			boolean moreThanMin = digitsOnly.compareToIgnoreCase(this.MIN_JRE_VERSION) >= 0; // true if digits >= min
-			
-			if(lessThanMax && moreThanMin) {
-				return currentPath;
+			try {
+				boolean lessThanMax = SysUtils.compareVersions(noLettersDotsOnly, this.MAX_JRE_VERSION) < 0; // true if digits < max
+				boolean moreThanMin = SysUtils.compareVersions(noLettersDotsOnly,this.MIN_JRE_VERSION) >= 0; // true if digits >= min
+				
+				if(lessThanMax && moreThanMin) {
+					return currentPath;
+				}
+			} catch (IllegalArgumentException e) {
+				logger.error("Error comparing java version for " + currentPath, e);
 			}
 		}
 		

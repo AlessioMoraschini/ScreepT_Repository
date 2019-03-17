@@ -1,11 +1,18 @@
 package launcherutils;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
 
 import launcherutils.om.JVMInfo;
 import launcherutils.om.OSinfo;
 
 public class SysUtils {
+	
+	// KeyGenPanel logger
+	static Logger logger = Logger.getLogger(SysUtils.class); 
 	
 	// STATIC METHODS
 	
@@ -34,13 +41,100 @@ public class SysUtils {
 		
 		if(OS.isLinux()) {
 			
+			// END LINUX
 		}else if(OS.isMac()) {
 			
+			// END MAC
 		}else if(OS.isWindows()) {
 			
-		}
+			ArrayList<String> foundJavaRootFolders = new ArrayList<String>();
+			foundJavaRootFolders = findWindowsProgramPath("java");
+			for(String currFolder : foundJavaRootFolders) {
+				ArrayList<String> foundVersions = getAllJavaVersionFromRoot(currFolder);
+				for (String currVersionPath : foundVersions) {
+					foundJVMS.add(currVersionPath);
+				}
+			}
+		} // END WINDOWS
 		
 		return foundJVMS;
+	}
+	
+	public static ArrayList<String> findWindowsProgramPath(String programName) {
+		ArrayList<String> foundList = new ArrayList<String>();
+		
+		String path32 = "C:/Program Files (x86)/";
+		String path64 = "C:/Program Files/";
+		
+		File sw32 = new File(path32, programName);
+		File sw64 = new File(path64, programName);
+		
+		if(sw64.exists()) {
+			foundList.add(sw64.getAbsolutePath());
+		}
+		if(sw32.exists()) {
+			foundList.add(sw32.getAbsolutePath());
+		}
+		
+		return foundList;
+	}
+	
+	public static ArrayList<String> getAllJavaVersionFromRoot(String root) {
+		ArrayList<String> stringRetrievedPaths = new ArrayList<String>();
+		
+		File currentRootDir = new File(root);
+		currentRootDir.list(new FilenameFilter() {
+			
+			@Override
+			public boolean accept(File dir, String name) {
+				
+				if(!(name.toLowerCase().indexOf("jdk")<0) || !(name.toLowerCase().indexOf("jre")<0)) {
+					if (dir.isDirectory()) {
+						String currentPath = dir.getPath()+"/"+name;
+						// if name contains (case insensitive) jdk or jre then it's a java install directory
+						if (new File(currentPath+"/bin").exists()) {
+							stringRetrievedPaths.add(currentPath);
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+		}); // END FILE FILTER
+		
+		return stringRetrievedPaths;
+	}
+	
+	/**
+	 * Dotted version format compare - if version not matches format <Strong>IllegalArgumentException</Strong> is thrown
+	 * 
+	 * @param version_A
+	 * @param version_B
+	 * @return [-1 if A<B], [1 if A>B], [0 if equals]
+	 */
+	public static int compareVersions(String version_A, String version_B) throws IllegalArgumentException{
+		
+		if(version_A == null || version_B == null) {
+			throw new IllegalArgumentException("Version can not be null");
+		}
+		if(!version_A.matches("[0-9]+(\\.[0-9]+)*") || !version_B.matches("[0-9]+(\\.[0-9]+)*")) {
+			throw new IllegalArgumentException("Invalid version format");
+		}
+		
+        String[] AParts = version_A.split("\\.");
+        String[] BParts = version_B.split("\\.");
+        int length = Math.max(AParts.length, BParts.length);
+        for(int i = 0; i < length; i++) {
+            int ACurrPart = i < AParts.length ? Integer.parseInt(AParts[i]) : 0;
+            int BCurrPart = i < BParts.length ? Integer.parseInt(BParts[i]) : 0;
+            if(ACurrPart < BCurrPart) {
+            	return -1;
+            }
+            if(ACurrPart > BCurrPart) {
+            	return 1;
+            }
+        }
+        return 0;
 	}
 	
 }
