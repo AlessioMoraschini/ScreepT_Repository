@@ -55,6 +55,9 @@ public class ScrYpTLauncher {
 	public static final String NOT_FOUND_JVM = "";
 	public static final String JVM_ARGS = "-Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
 	
+	// use this as flag to signal that something is not ok with dependencies
+	public static  boolean criticalDependenciesOK = false;
+	
 	// DEFAULT INI
 	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "/Launcher_Configuration.ini"; 
 	public static final String INI_JVM_OPT = "JVM_OPTIONS";
@@ -211,6 +214,7 @@ public class ScrYpTLauncher {
 	 */
 	private void addInstallDependenciesCommand() {
 		// TODO
+		criticalDependenciesOK = true;
 	}
 	
 	/**
@@ -251,11 +255,9 @@ public class ScrYpTLauncher {
 			
 			// find name from path
 			String versionDirName = new File(currentPath).getName();
-			// change  underscores with dots
-			String dotsOnly = versionDirName.replaceAll("_",".");
-			dotsOnly = dotsOnly.replaceAll("-","");
-			// remove non dots chars
-			String noLettersDotsOnly = dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-","");
+			
+			// remove non dots chars and transform undescores to dots
+			String noLettersDotsOnly = SysUtils.keepOnlyDotsAndDigits(versionDirName);
 			
 			try {
 				boolean lessThanMax = SysUtils.compareVersions(noLettersDotsOnly, this.MAX_JRE_VERSION) < 0; // true if digits < max
@@ -274,7 +276,7 @@ public class ScrYpTLauncher {
 	}
 	
 	// read configuration from ini file with null-value check
-	private static void initFromINIFile(){
+	public static void initFromINIFile(){
 		try {
 			iniConfigFile = new Wini(new File(DEFAULT_INI_PATH));
 			
@@ -295,6 +297,29 @@ public class ScrYpTLauncher {
 		} catch (IOException e) {
 			logger.error("IO error while trying to read " + DEFAULT_INI_PATH, e);
 		}
+	}
+	
+	/**
+	 * use this function to write a single value to launcher configuration file
+	 * @param OPT_SECTION
+	 * @param OPT_VAR
+	 * @param OPT_VALUE
+	 * @return
+	 */
+	public synchronized static boolean writeValueToIniConfiguration(String OPT_SECTION, String OPT_VAR, String OPT_VALUE ) {
+		boolean OK = false;
+		
+		if (iniConfigFile != null && iniConfigFile.getFile().exists()) {
+			try {
+				iniConfigFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
+				iniConfigFile.store();
+				OK = true;
+			} catch (IOException e) {
+				OK = false;
+				logger.error("Exception happened writing value to LAUNCHER ini configuration file!\n\n", e);
+			} 
+		}
+		return OK;
 	}
 	
 	private static void appLogStart() {

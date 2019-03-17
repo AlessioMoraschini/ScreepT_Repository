@@ -47,6 +47,7 @@ import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
 import iNIT.INItializer;
+import launcherutils.SysUtils;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -145,8 +146,8 @@ public class mainGUI {
 	private JMenuItem generateKeyImageSub;
 	private JMenuItem mntmViewKeyDictionary;
 	private JMenuItem mntmNewTextFile;
-	private JMenuItem netInfo;
-	private JMenuItem hwInfo;
+	private JMenuItem mntmnetInfo;
+	private JMenuItem mntmhwInfo;
 	private JMenuItem mntmImageConverter;
 	private JMenuItem mntmReturnToWelcome;
 	private JMenuItem mntmAboutScreept;
@@ -162,7 +163,8 @@ public class mainGUI {
 	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.	
 	public static INItializer currentConfiguration;
 	
-	// VALUES FROM INI
+	public static String currentJvmVersion = "";
+	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = "1.9.0";
 	
 	// global values representing the screen size
 	public static int screenWidth;
@@ -750,7 +752,7 @@ public class mainGUI {
 		});
 		
 		// open in a new window - NET INFO
-		netInfo = new JMenuItem(new AbstractAction("Network Info") {
+		mntmnetInfo = new JMenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagNetInfoPanel) {
 		    		flagNetInfoPanel = true;
@@ -780,7 +782,7 @@ public class mainGUI {
 		});
 		
 		// open in a new window - NET INFO
-		hwInfo = new JMenuItem(new AbstractAction("System Info") {
+		mntmhwInfo = new JMenuItem(new AbstractAction("System Info") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagHwInfoPanel) {
 		    		flagHwInfoPanel = true;
@@ -929,6 +931,9 @@ public class mainGUI {
 		
 		// once each component is declared add it to the menu bar
 		structureMenuBar();
+		
+		// check non compatible options with current JVM
+		checkVersionAndDisableUnsupportedOpt();
 	}
 	
 	
@@ -1001,8 +1006,8 @@ public class mainGUI {
 	
 			mnVarious.add(mntmNewTextFile);
 			mnVarious.add(new JSeparator());
-			mnVarious.add(netInfo);
-			mnVarious.add(hwInfo);
+			mnVarious.add(mntmnetInfo);
+			mnVarious.add(mntmhwInfo);
 			mnVarious.add(mnConversionsAndOther);
 			mnVarious.add(mnFilesAndDirectories);
 			
@@ -1054,8 +1059,8 @@ public class mainGUI {
 		mntmGenOpt.setFont(menuItemFont);
 		mntmCrypter.setFont(menuItemFont);
 		generateKeyImageSub.setFont(menuItemFont);
-		netInfo.setFont(menuItemFont);
-		hwInfo.setFont(menuItemFont);
+		mntmnetInfo.setFont(menuItemFont);
+		mntmhwInfo.setFont(menuItemFont);
 		mntmViewKeyDictionary.setFont(menuItemFont);
 		mntmNewTextFile.setFont(menuItemFont);
 		mntmImageConverter.setFont(menuItemFont);
@@ -1250,6 +1255,21 @@ public class mainGUI {
 				FileStuff.deleteDirContentInclRoot(TEMP_DECRIPTED_ROOT);
 			}
 		};
+	}
+	
+	private void checkVersionAndDisableUnsupportedOpt() {
+		currentJvmVersion = System.getProperty("java.version");
+		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(currentJvmVersion);
+		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, MAX_JVM_COMPLETE_COMPATIBILITY);
+		if(compareRes == 1) {
+			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion + "). Install version under "+MAX_JVM_COMPLETE_COMPATIBILITY;
+			// Disable non compatible options
+			mntmhwInfo.setEnabled(false);
+			mntmnetInfo.setEnabled(false);
+			// set tooltip text to menu item
+			mntmhwInfo.setToolTipText(tooltipMSG);
+			mntmnetInfo.setToolTipText(tooltipMSG);
+		}
 	}
 	
 }

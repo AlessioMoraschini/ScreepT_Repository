@@ -106,11 +106,24 @@ public class SysUtils {
 	}
 	
 	/**
+	 * Use this method to remove every charachter from given string, except "." and digits 0-9
+	 * Note that eventual undescores will become dots.
+	 * @param source
+	 * @return
+	 */
+	public static String keepOnlyDotsAndDigits(String source) {
+		String dotsOnly = source.replaceAll("_",".");
+		dotsOnly = dotsOnly.replaceAll("-","");
+		// remove non dots chars
+		return dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-","");
+	}
+	
+	/**
 	 * Dotted version format compare - if version not matches format <Strong>IllegalArgumentException</Strong> is thrown
 	 * 
 	 * @param version_A
 	 * @param version_B
-	 * @return [-1 if A<B], [1 if A>B], [0 if equals]
+	 * @return -1 if A less than B, 1 if A more than B, 0 if equals
 	 */
 	public static int compareVersions(String version_A, String version_B) throws IllegalArgumentException{
 		

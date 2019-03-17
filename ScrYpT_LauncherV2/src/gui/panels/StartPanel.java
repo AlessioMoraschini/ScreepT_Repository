@@ -26,8 +26,10 @@ public class StartPanel extends JFrame{
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(StartPanel.class); 
 			
-	private ScrYpTLauncher LAUNCHER;
+	public ScrYpTLauncher LAUNCHER;
 	private StartPanel LAUNCHER_GUI;
+	private CustomizeParametersPanel customizerPanel;
+	private MissingDependenciesPanel missingDependenciesPanel;
 	
 	private int screenWidth;
 	private int screenHeight;
@@ -75,6 +77,12 @@ public class StartPanel extends JFrame{
 		mainPanel.add(btnStartScrypt, "cell 3 1,grow");
 	
 		addHandlers();
+		
+		//  IF COMPATIBLE JVM VERSION IS NOT FOUND THEN OPEN DIALOG
+		if(LAUNCHER.javaPath.equals("")) {
+			missingDependenciesPanel = new MissingDependenciesPanel("Compatible JVM not found", LAUNCHER_GUI);
+			missingDependenciesPanel.setVisible(true);
+		}
 	}
 	
 	// button handler settings
@@ -95,7 +103,13 @@ public class StartPanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO add customizator
+				if(!CustomizeParametersPanel.active) {
+					customizerPanel = new CustomizeParametersPanel("Customize start options", LAUNCHER_GUI);
+					customizerPanel.setVisible(true);
+				}else {
+					customizerPanel.setState(java.awt.Frame.NORMAL);
+					customizerPanel.requestFocus();
+				}
 			}
 		});
 	}

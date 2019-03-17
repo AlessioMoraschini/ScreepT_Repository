@@ -185,3 +185,73 @@ Launcher Started now!
 ##################################################
 
 
+2019-03-17 19:52:14,809 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Sun Mar 17 19:52:14 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-17 19:52:14,840 [main] ERROR gui.ScrYpTLauncher - IO error while trying to read LAUNCHER//Launcher_Configuration.ini
+java.io.FileNotFoundException: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\ScrYpT_LauncherV2\LAUNCHER\Launcher_Configuration.ini (Impossibile trovare il file specificato)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(FileInputStream.java:195)
+	at java.io.FileInputStream.<init>(FileInputStream.java:138)
+	at java.io.FileInputStream.<init>(FileInputStream.java:93)
+	at sun.net.www.protocol.file.FileURLConnection.connect(FileURLConnection.java:90)
+	at sun.net.www.protocol.file.FileURLConnection.getInputStream(FileURLConnection.java:188)
+	at java.net.URL.openStream(URL.java:1045)
+	at org.ini4j.spi.IniSource.<init>(IniSource.java:55)
+	at org.ini4j.spi.AbstractParser.newIniSource(AbstractParser.java:68)
+	at org.ini4j.spi.IniParser.parse(IniParser.java:67)
+	at org.ini4j.Ini.load(Ini.java:119)
+	at org.ini4j.Ini.load(Ini.java:114)
+	at org.ini4j.Ini.load(Ini.java:99)
+	at org.ini4j.Wini.<init>(Wini.java:49)
+	at gui.ScrYpTLauncher.initFromINIFile(ScrYpTLauncher.java:281)
+	at gui.ScrYpTLauncher.main(ScrYpTLauncher.java:86)
+2019-03-17 19:53:06,246 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Sun Mar 17 19:53:06 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-17 19:54:28,099 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Sun Mar 17 19:54:28 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-17 19:54:28,131 [main] ERROR gui.ScrYpTLauncher - IO error while trying to read LAUNCHER//Launcher_Configuration.ini
+java.io.FileNotFoundException: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\ScrYpT_LauncherV2\LAUNCHER\Launcher_Configuration.ini (Impossibile trovare il file specificato)
+	at java.io.FileInputStream.open0(Native Method)
+	at java.io.FileInputStream.open(FileInputStream.java:195)
+	at java.io.FileInputStream.<init>(FileInputStream.java:138)
+	at java.io.FileInputStream.<init>(FileInputStream.java:93)
+	at sun.net.www.protocol.file.FileURLConnection.connect(FileURLConnection.java:90)
+	at sun.net.www.protocol.file.FileURLConnection.getInputStream(FileURLConnection.java:188)
+	at java.net.URL.openStream(URL.java:1045)
+	at org.ini4j.spi.IniSource.<init>(IniSource.java:55)
+	at org.ini4j.spi.AbstractParser.newIniSource(AbstractParser.java:68)
+	at org.ini4j.spi.IniParser.parse(IniParser.java:67)
+	at org.ini4j.Ini.load(Ini.java:119)
+	at org.ini4j.Ini.load(Ini.java:114)
+	at org.ini4j.Ini.load(Ini.java:99)
+	at org.ini4j.Wini.<init>(Wini.java:49)
+	at gui.ScrYpTLauncher.initFromINIFile(ScrYpTLauncher.java:281)
+	at gui.ScrYpTLauncher.main(ScrYpTLauncher.java:86)
+2019-03-17 19:55:07,800 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
