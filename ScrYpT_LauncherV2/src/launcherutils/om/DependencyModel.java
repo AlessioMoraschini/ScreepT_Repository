@@ -1,15 +1,21 @@
 package launcherutils.om;
 
+import java.awt.event.ActionListener;
+
 public class DependencyModel {
 	
 	public String dependencyName;
-	public String dependencyPath;
+	public String solution;
 	public boolean isCritical;
+	public ActionListener downloadAndInstall;
+	public ActionListener locateManually;
 	
-	public DependencyModel(String name, String path, boolean critical) {
+	public DependencyModel(String name, String sol, boolean critical, ActionListener downInstall, ActionListener locate) {
 		dependencyName = name;
-		dependencyPath = path;
+		solution = sol;
 		isCritical = critical;
+		downloadAndInstall = downInstall;
+		locateManually = locate;
 	}
 
 	@Override

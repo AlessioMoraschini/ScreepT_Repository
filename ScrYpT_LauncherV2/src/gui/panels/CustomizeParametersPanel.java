@@ -31,7 +31,11 @@ public class CustomizeParametersPanel extends JFrame{
 	private JButton btnReloadInitialConfig;
 	private JButton btnSaveConfig;
 	
-	private String backupMemoryArgs = "";
+	private int backupMinMemoryXms;
+	private int backupMaxMemoryXmx;
+	
+	private static final int defaultMinMemXms = 512;
+	private static final int defaultMaxMemXmx = 1024;
 	
 	public CustomizeParametersPanel(String title, StartPanel parentPanel) {
 		
@@ -50,14 +54,14 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(lblMaxMemory, "cell 0 0,alignx center");
 		
 		spinnerMaxMemoryMB = new JSpinner();
-		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(1024, 256, 4000, 20));
+		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(defaultMaxMemXmx, 256, 4000, 20));
 		getContentPane().add(spinnerMaxMemoryMB, "cell 1 0 2 1,growx");
 		
 		lblMinMemory = new JLabel("Min memory (MB):");
 		getContentPane().add(lblMinMemory, "cell 0 1,alignx center");
 		
 		spinnerMinMemoryMB = new JSpinner();
-		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(512, 128, 1024, 1));
+		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(defaultMinMemXms, 128, 1024, 20));
 		getContentPane().add(spinnerMinMemoryMB, "cell 1 1 2 1,growx");
 		
 		btnExitConfiguration = new JButton("Discard and return to Launcher");
@@ -121,17 +125,35 @@ public class CustomizeParametersPanel extends JFrame{
 				
 				// update launcher vars and write to config INI file
 				String SECTION_ARGS = ScrYpTLauncher.INI_JVM_OPT;
-				ScrYpTLauncher.JVM_MEMORY_OPTIONS = SECTION_ARGS;
+				ScrYpTLauncher.JVM_MEMORY_OPTIONS = args;
 				ScrYpTLauncher.writeValueToIniConfiguration(SECTION_ARGS, "memoryArgs", args);
 				// regenerate command list with new args
 				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();
+				dispose();
 				
 			}
 		});
 	}
 	
 	private void backupInitialValues() {
-		backupMemoryArgs = ScrYpTLauncher.JVM_MEMORY_OPTIONS;
-		// TODO parse values from string
+		try {
+			String memArgsBackup = ScrYpTLauncher.JVM_MEMORY_OPTIONS;
+			String[] splittedStringArgs = memArgsBackup.split(" ");
+			for(String currentParam : splittedStringArgs) {
+				if(currentParam.indexOf("-Xmx") >= 0) {
+					backupMaxMemoryXmx = Integer.valueOf(currentParam.replaceAll("\\D+",""));
+				
+				}else if(currentParam.indexOf("-Xms") >= 0) {
+					backupMinMemoryXms = Integer.valueOf(currentParam.replaceAll("\\D+",""));
+				}
+			}
+		} catch (NumberFormatException e) {
+			logger.error("Error parsing memory args from string", e);
+			backupMaxMemoryXmx = defaultMaxMemXmx;
+			backupMinMemoryXms = defaultMinMemXms;
+		}
+		
+		spinnerMaxMemoryMB.setValue(backupMaxMemoryXmx);
+		spinnerMinMemoryMB.setValue(backupMinMemoryXms);
 	}
 }

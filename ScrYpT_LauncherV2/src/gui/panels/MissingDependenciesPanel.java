@@ -7,13 +7,21 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import gui.ScrYpTLauncher;
 import launcherutils.om.DependencyModel;
+
+import java.awt.Button;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Date;
+
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -34,6 +42,8 @@ public class MissingDependenciesPanel extends JDialog{
 	private static final String[] columnNames = {"Dependency name", "Critical dependency (T/F)", "Dependency actions"};
 	private JButton btnIgnoreWarnings;
 	private JButton btnRefreshNCheck;
+	private JButton btnLocateManually;
+	private JButton btnInstallDependency;
 	
 	// constructor
 	public MissingDependenciesPanel(String title, StartPanel parentStarter) {
@@ -42,10 +52,10 @@ public class MissingDependenciesPanel extends JDialog{
 		thisPanel = this;
 		thisPanel.setTitle(title);
 		
-		dependeciesMissing = parentStarter.LAUNCHER.dependeciesMissing;
+		dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[50px:80px][grow][40px:n,grow]"));
+		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[50px:80px][grow][40px:n][40px:n]"));
 		
 		lblTitleHeaderMessage = new JLabel("Some dependencies are missing, if they're critical you have to solve them before to start ScrYpt!");
 		lblTitleHeaderMessage.setBackground(new Color(211, 211, 211));
@@ -66,26 +76,33 @@ public class MissingDependenciesPanel extends JDialog{
 		table.setRowHeight(30);
 		getContentPane().add(tableContainer, "cell 0 1 2 1,grow");
 		
+		btnLocateManually = new JButton("Add installation path manually");
+		btnLocateManually.setFont(new Font("SansSerif", Font.BOLD, 14));
+		btnLocateManually.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnLocateManually, "cell 0 2,grow");
+		
+		btnInstallDependency = new JButton("Install/Download Dependency");
+		btnInstallDependency.setFont(new Font("SansSerif", Font.BOLD, 14));
+		btnInstallDependency.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnInstallDependency, "cell 1 2,grow");
+		
 		btnIgnoreWarnings = new JButton("Ignore warnings (some functions will be disabled)");
 		btnIgnoreWarnings.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		btnIgnoreWarnings.setBackground(new Color(176, 196, 222));
-		getContentPane().add(btnIgnoreWarnings, "cell 0 2,growx");
+		getContentPane().add(btnIgnoreWarnings, "cell 0 3,grow");
 		
 		btnRefreshNCheck = new JButton("Refresh and check again for dependencies");
 		btnRefreshNCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		btnRefreshNCheck.setBackground(new Color(176, 196, 222));
-		getContentPane().add(btnRefreshNCheck, "cell 1 2,growx");
+		getContentPane().add(btnRefreshNCheck, "cell 1 3,grow");
 		
-		if(!parentStarterFrame.LAUNCHER.criticalDependenciesOK) {
-			// if critical problem then disable window closing possibility
-			disableContinueAvailable();
-		}
+		checkCriticalMissingDependencies();
 		
 		updateDependencyIssueTable();
 		
 		addHandlers();
 		
-		thisPanel.setBounds(120, 120, 700, 250 );
+		thisPanel.setBounds(120, 120, 700, 450 );
 		
 		logger.info(this.getClass().getName() + " Started");
 	}
@@ -97,23 +114,67 @@ public class MissingDependenciesPanel extends JDialog{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
+		    	if(!ScrYpTLauncher.criticalDependenciesOK) {
+		    		askIfSureToExit();
+		    	}
+		    	askIfSureToClose();
 	        	logger.debug("Closing Frame: " + thisPanel.getClass().getName());	        	
 
 		    }
 		});
 		
+		btnIgnoreWarnings.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				askIfSureToClose();
+			}
+		});
+		
+		btnRefreshNCheck.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
+				checkCriticalMissingDependencies();
+				dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
+				if(dependeciesMissing.size() == 0) {
+					parentStarterFrame.setEnabled(true);
+					dispose();
+				}else {
+					updateDependencyIssueTable();
+				}
+			}
+		});
+		
+		btnLocateManually.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(table.getSelectedRows().length > 0) {
+					
+					locateDependencies(table.getSelectedRows());
+					
+					parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
+					checkCriticalMissingDependencies();
+					updateDependencyIssueTable();
+				}
+			}
+		});
 	}
 	
-	private void disableContinueAvailable() {
-		thisPanel.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		thisPanel.setAlwaysOnTop(true);
-		parentStarterFrame.setEnabled(false);
-	}
-	
-	private void enableContinueAvailable() {
-		thisPanel.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		thisPanel.setAlwaysOnTop(false);
-		parentStarterFrame.setEnabled(true);
+	private void checkCriticalMissingDependencies() {
+		if(!ScrYpTLauncher.criticalDependenciesOK) {
+			// if critical problem then disable window closing possibility
+			parentStarterFrame.setEnabled(false);
+			btnIgnoreWarnings.setEnabled(false);
+		}
+		if(ScrYpTLauncher.dependeciesMissing.size() != 0) {
+			parentStarterFrame.setEnabled(false);
+		}else{
+			parentStarterFrame.setEnabled(true);
+			dispose();
+		}
 	}
 	
 	private DefaultTableModel getTableModel() {
@@ -131,17 +192,62 @@ public class MissingDependenciesPanel extends JDialog{
 		table.setBackground(Color.WHITE);
 		table.getTableHeader().setFont(new Font("Segoe UI Black", Font.BOLD, 14));
 		table.getTableHeader().setVisible(true);
+		table.getTableHeader().setResizingAllowed(true);
 		return model;
 	}
 	
 	private void updateDependencyIssueTable() {
+		
+		if(thisPanel.dependeciesMissing.size() == 0) {
+			parentStarterFrame.setEnabled(true);
+			dispose();
+			return;
+		}
 		// first empty the table
-//		table.removeAll();
+		table.removeAll();
 		table.setModel(getTableModel());
 		
 		for(DependencyModel currentDependency : dependeciesMissing) {
 			DefaultTableModel model = (DefaultTableModel) table.getModel();
 			model.addRow(new Object[]{currentDependency.dependencyName, currentDependency.isCritical, ""});
+		}
+		table.revalidate();
+		table.repaint();
+		
+	}
+	
+	private void askIfSureToClose() {
+		String msg = "Are you sure to continue anyway? Some ScrYpT functions will be disabled by default.";
+		int response = JOptionPane.showConfirmDialog(parentStarterFrame, msg, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
+		if (response == JOptionPane.OK_OPTION) {
+			parentStarterFrame.setEnabled(true);
+			dispose();
+		}else {
+			thisPanel.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		}
+	}
+	
+	private void askIfSureToExit() {
+		String msg = "Are you sure to close? Scrypt cannot be launched without required dependencies, launcher will close if continue";
+		int response = JOptionPane.showConfirmDialog(parentStarterFrame, msg, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
+		if (response == JOptionPane.OK_OPTION) {
+			System.exit(1);
+    		logger.warn("Critical dependencies missing: Launcher closed by user");
+		}else {
+			thisPanel.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		}
+	}
+	
+	private void locateDependencies(int[] selectedDependenciesIndex) {
+		int i = 0;
+		for(DependencyModel currentDependency : dependeciesMissing) {
+			java.util.Date now = new java.util.Date();
+			ActionListener locator = currentDependency.locateManually;
+			ActionEvent event = new ActionEvent(new Button(), ActionEvent.ACTION_PERFORMED, "Anything", now.getTime(), 0);
+			if(locator != null) {
+				locator.actionPerformed(event);
+			}
+			i++;
 		}
 	}
 }

@@ -1,7 +1,10 @@
 package launcherutils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -50,7 +53,7 @@ public class SysUtils {
 			ArrayList<String> foundJavaRootFolders = new ArrayList<String>();
 			foundJavaRootFolders = findWindowsProgramPath("java");
 			for(String currFolder : foundJavaRootFolders) {
-				ArrayList<String> foundVersions = getAllJavaVersionFromRoot(currFolder);
+				ArrayList<String> foundVersions = getAllJavaWinVersionFromRoot(currFolder);
 				for (String currVersionPath : foundVersions) {
 					foundJVMS.add(currVersionPath);
 				}
@@ -79,7 +82,7 @@ public class SysUtils {
 		return foundList;
 	}
 	
-	public static ArrayList<String> getAllJavaVersionFromRoot(String root) {
+	public static ArrayList<String> getAllJavaWinVersionFromRoot(String root) {
 		ArrayList<String> stringRetrievedPaths = new ArrayList<String>();
 		
 		File currentRootDir = new File(root);
@@ -103,6 +106,15 @@ public class SysUtils {
 		}); // END FILE FILTER
 		
 		return stringRetrievedPaths;
+	}
+	
+	public static String getJavaVersionFromBin(String javaBinDirPath) throws IOException {
+	    File parentOfBin = new File(javaBinDirPath).getParentFile();
+		File releaseFile = new File(parentOfBin.getAbsolutePath(), "release");
+	    BufferedReader bufferedReader = new BufferedReader(new FileReader(releaseFile));
+	    String version = bufferedReader.readLine();
+	    bufferedReader.close();
+	    return version.substring(version.indexOf("\"") + 1, version.lastIndexOf("\""));
 	}
 	
 	/**

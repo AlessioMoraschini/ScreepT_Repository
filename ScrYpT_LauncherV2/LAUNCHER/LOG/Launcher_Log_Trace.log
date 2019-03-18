@@ -1441,3 +1441,1181 @@ Launcher Closed now!
 ##################################################
 
 
+2019-03-18 01:10:21,695 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:10:21 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:10:22,165 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:10:22,435 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:10:22,858 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:12:43,153 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-03-18 01:12:45,400 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-03-18 01:12:47,395 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:12:47,395 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:12:47 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:14:19,442 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:14:19 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:14:19,757 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:14:19,922 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:14:20,231 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:14:36,171 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:14:36,913 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:14:36,913 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:14:36 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:15:19,960 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:15:19 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:15:20,338 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:15:20,470 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:15:20,799 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:15:42,105 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:15:42,105 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:15:42 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:17:19,355 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:17:19 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:17:19,653 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:17:19,823 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:17:20,166 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:18:02,403 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:18:02,404 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:18:02 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:22:15,321 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:22:15 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:22:15,608 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:22:15,768 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:22:16,053 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:22:32,747 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:24:32,810 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:24:32 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:24:33,115 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:24:33,285 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:24:33,594 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:24:41,282 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:24:43,997 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:24:46,778 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:24:52,459 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-03-18 01:24:56,252 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-03-18 01:24:57,718 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:24:57,718 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:24:57 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:24:59,236 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:24:59 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:24:59,564 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:24:59,739 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:25:00,054 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:25:05,809 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:25:07,129 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:25:07,129 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:25:07 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:25:53,099 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:25:53 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:25:53,454 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:25:53,600 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:26:02,938 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:26:02,938 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:26:02 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:26:08,708 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:26:08 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:26:09,019 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:26:09,186 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:26:09,486 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:26:13,064 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:26:13,064 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:26:13 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:28:07,222 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:28:07 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:28:07,519 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:28:07,673 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:28:11,196 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-03-18 01:28:12,342 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-03-18 01:28:13,146 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:28:13,146 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:28:13 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:28:30,250 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:28:30 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:28:30,541 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:28:30,712 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:28:58,332 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:28:58,333 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:28:58 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:29:21,005 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:29:20 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:29:21,340 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:29:21,517 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:30:22,586 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:30:22 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:30:22,876 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:30:23,033 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:30:26,076 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:30:26,077 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:30:26 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:31:08,002 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:31:07 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:31:08,287 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:31:08,439 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:32:20,552 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:32:20 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:32:20,846 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:32:21,003 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:32:23,670 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:32:23,671 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:32:23 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:32:36,779 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:32:36 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:32:37,074 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:32:37,227 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:32:38,780 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:32:38,781 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:32:38 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:37:45,853 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:37:45 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:37:46,148 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:37:46,294 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:37:52,913 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:38:12,879 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:38:12 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:38:13,166 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:38:13,317 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:38:13,599 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:38:24,585 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:38:24 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:38:24,886 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:38:25,042 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:38:25,341 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:38:31,257 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:38:36,215 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:38:36,872 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:38:36,872 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:38:36 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:41:09,755 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:41:09 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:41:10,067 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:41:10,224 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:41:10,516 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:41:17,264 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 01:41:19,171 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:41:19,171 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:41:19 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 01:41:26,841 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:41:26 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:41:27,139 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:41:27,300 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:41:27,579 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:42:14,007 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:42:14 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 01:42:14,309 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 01:42:14,456 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 01:42:14,760 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 01:42:19,934 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 01:42:19,935 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 01:42:19 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 19:19:26,966 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:19:26 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:19:27,700 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:19:27,984 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:19:28,638 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 19:19:37,583 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 19:19:39,512 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 19:19:39,512 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:19:39 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 19:31:25,508 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:31:25 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:31:25,989 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:31:26,178 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:31:26,587 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 19:31:41,464 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-03-18 19:31:53,286 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 19:31:53,286 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:31:53 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 19:31:59,502 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:31:59 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:31:59,959 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:32:00,163 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:32:00,568 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 19:49:01,513 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:49:01 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:49:01,971 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:49:02,165 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:50:05,167 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:50:05 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:50:05,614 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:50:05,813 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:50:43,151 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:50:43 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:50:43,716 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:50:43,940 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:50:58,615 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:50:58 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:50:59,095 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:50:59,295 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:51:27,094 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:51:27 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:51:27,635 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:51:27,909 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:53:53,868 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:53:53 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:53:54,329 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:53:54,532 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:54:00,166 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 19:54:20,505 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 19:54:20 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 19:54:20,985 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 19:54:21,206 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 19:54:21,611 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 20:31:21,295 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 20:31:21,913 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 20:31:21,913 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 20:31:21 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 21:06:50,259 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:06:50 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:06:50,774 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:06:51,011 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:07:39,073 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:07:39 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:07:39,573 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:07:39,840 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:10:49,961 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:10:49 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:10:50,414 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:10:50,630 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:11:45,678 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:11:45 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:11:46,116 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:11:46,311 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:12:30,229 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:12:30 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:12:30,729 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:12:30,938 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:17:51,260 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:17:51 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:17:51,760 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:17:51,972 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:18:20,571 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 21:18:47,841 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:18:47 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:18:48,263 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:18:48,451 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:18:48,848 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 21:19:03,213 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 21:19:04,830 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 21:19:04,830 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:19:04 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 21:23:22,323 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:23:22 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:23:22,777 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:23:22,981 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:23:27,871 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 21:23:38,219 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:23:38 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:23:38,594 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:23:38,771 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:23:39,143 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 21:23:55,770 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 21:23:57,253 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 21:23:57,253 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:23:57 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 21:31:40,005 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:31:39 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:31:40,442 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:31:40,677 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:31:46,536 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 21:32:00,858 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 21:32:02,302 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 21:32:02,302 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:32:02 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 21:32:15,206 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:32:15 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 21:32:15,597 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 21:32:15,784 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 21:32:16,154 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 21:32:50,560 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 21:32:52,346 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 21:32:52,346 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 21:32:52 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 22:15:02,060 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 22:15:02 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 22:15:02,544 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 22:15:02,774 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 22:15:03,181 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 22:15:42,068 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 22:15:43,843 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 22:15:43,843 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 22:15:43 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 22:37:43,442 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 22:37:43 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 22:37:43,880 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 22:37:44,095 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 22:37:44,516 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 22:38:07,633 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 22:38:07,633 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 22:38:07 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 22:40:02,786 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 22:40:02 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 22:40:03,208 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 22:40:03,411 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 22:40:03,816 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 22:40:39,923 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-03-18 22:40:46,178 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-03-18 22:40:47,631 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 22:40:47,631 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 22:40:47 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 22:43:39,303 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 22:43:39 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 22:43:39,757 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 22:43:39,934 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 22:43:45,846 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 22:43:45,846 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 22:43:45 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 23:30:34,106 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:30:34 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:31:44,496 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:31:44 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:31:44,981 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 23:31:45,171 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 23:31:45,593 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 23:33:50,951 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:33:50 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:33:51,591 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 23:33:51,916 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 23:33:52,323 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 23:38:02,690 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 23:38:12,900 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 23:38:12,900 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:38:12 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 23:41:25,352 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:41:25 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:41:25,837 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 23:41:26,037 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 23:41:26,428 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 23:41:58,877 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 23:42:00,389 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 23:42:00,404 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:42:00 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 23:43:38,696 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:43:38 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:43:39,352 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 23:43:39,568 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 23:43:52,802 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 23:44:19,465 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
+2019-03-18 23:44:20,997 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-18 23:44:20,997 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:44:20 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+
+2019-03-18 23:44:45,793 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:44:45 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:44:46,262 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 23:44:46,497 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 23:44:46,919 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 23:49:49,304 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:49:49 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:49:49,991 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 23:49:50,215 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 23:49:50,622 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 23:53:11,944 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:53:11 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:53:12,413 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 23:53:12,632 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 23:53:13,054 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-18 23:57:00,985 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Mon Mar 18 23:57:00 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-18 23:57:01,439 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-18 23:57:01,664 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-18 23:57:02,117 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-19 00:02:30,996 [main] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Tue Mar 19 00:02:30 CET 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-03-19 00:02:31,464 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-03-19 00:02:31,692 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-03-19 00:02:32,114 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
+2019-03-19 00:03:26,041 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-03-19 00:03:27,932 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-03-19 00:03:41,058 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-03-19 00:03:41,058 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+
+##################################################
+
+Tue Mar 19 00:03:41 CET 2019
+
+Launcher Closed now!
+
+##################################################
+
+

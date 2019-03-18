@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -67,6 +70,13 @@ public class ScrYpTLauncher {
 	public static final String INI_APP_OPT = "APPLICATION_OPTIONS";
 	private static Wini iniConfigFile;
 	
+	// USER MANUALLY LOCATED DEPENDENCY PATHS
+	public String manualPath_Jvm = NOT_FOUND_JVM;
+	
+	// ACTION LISTENERS - JVM
+	public ActionListener actionLocManually_Jvm;
+	public ActionListener actionDownNInstall_Jvm;
+	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ScrYpTLauncher.class); 
 		
@@ -112,6 +122,8 @@ public class ScrYpTLauncher {
 	// CONSTRUCTOR
 	public ScrYpTLauncher() {
 		
+		defineActionListeners();
+		
 		analyzeBeforeLauncher();
 		
 		// GUI launcher initialization
@@ -129,7 +141,6 @@ public class ScrYpTLauncher {
 		if(dependeciesMissing.size() != 0) {
 			launcherMainFrame.missingDependenciesPanel = new MissingDependenciesPanel("one dependency is missing", launcherMainFrame);
 			launcherMainFrame.missingDependenciesPanel.setVisible(true);
-			launcherMainFrame.missingDependenciesPanel.setAlwaysOnTop(true);
 			launcherMainFrame.missingDependenciesPanel.requestFocus();
 		}
 	}
@@ -144,7 +155,7 @@ public class ScrYpTLauncher {
 		javaPath = retrieveCorrectJVMS();
 		
 		if(javaPath.equals(NOT_FOUND_JVM)) {
-			DependencyModel javaDependency = new DependencyModel("JVM", "", false);
+			DependencyModel javaDependency = new DependencyModel("Compatible JAVA JVM not found", "Download/Locate", false, actionDownNInstall_Jvm, actionLocManually_Jvm);
 			dependeciesMissing.add(javaDependency);
 		}
 		// static for test => comment to use found one
@@ -269,19 +280,20 @@ public class ScrYpTLauncher {
 	 */
 	private String compareWithAdmittedJVMS(List<String> foundJVMS) {
 		
+		// first check used located JVM if it exist
+		if(!manualPath_Jvm.equals(NOT_FOUND_JVM) && isOKManualJVM()) {
+			File binPath = new File(manualPath_Jvm);
+			return binPath.getParentFile().getAbsolutePath();
+		}
+		
 		for(String currentPath : foundJVMS) {
 			
 			// find name from path
 			String versionDirName = new File(currentPath).getName();
 			
-			// remove non dots chars and transform undescores to dots
-			String noLettersDotsOnly = SysUtils.keepOnlyDotsAndDigits(versionDirName);
-			
 			try {
-				boolean lessThanMax = SysUtils.compareVersions(noLettersDotsOnly, this.MAX_JRE_VERSION) < 0; // true if digits < max
-				boolean moreThanMin = SysUtils.compareVersions(noLettersDotsOnly,this.MIN_JRE_VERSION) >= 0; // true if digits >= min
-				
-				if(lessThanMax && moreThanMin) {
+					
+				if(checkSingleJavaVersionOK(versionDirName)) {
 					return currentPath;
 				}
 			} catch (IllegalArgumentException e) {
@@ -291,6 +303,57 @@ public class ScrYpTLauncher {
 		
 		// if not found rech this point and return 
 		return NOT_FOUND_JVM;
+	}
+
+	/**
+	 * check if a given java version (which can contain letters or underscores) respect
+	 * min and max values : if less than max and more(or equal) to min then is OK.
+	 * @param version
+	 * @return
+	 */
+	private static boolean checkSingleJavaVersionOK(String version) {
+		// remove non dots chars and transform undescores to dots
+		String noLettersDotsOnly = SysUtils.keepOnlyDotsAndDigits(version);
+		
+		boolean lessThanMax;
+		boolean moreThanMin;
+		try {
+			lessThanMax = SysUtils.compareVersions(noLettersDotsOnly, MAX_JRE_VERSION) < 0;
+			moreThanMin = SysUtils.compareVersions(noLettersDotsOnly,MIN_JRE_VERSION) >= 0;
+		} catch (IllegalArgumentException e) {
+			logger.error("Error comparing version: illegal format of ["+version+"]", e);
+			return false;
+		}
+	
+		return (lessThanMax && moreThanMin);
+	}
+	
+	private boolean isOKManualJVM() { // TODO improve and make multiOS
+		File manualJvmBin = new File(manualPath_Jvm);
+		boolean errorCondition1 = !manualJvmBin.exists();
+		String version ="";
+		try {
+			version = SysUtils.getJavaVersionFromBin(manualPath_Jvm);
+		} catch (IOException e) {
+			logger.error("Error checkin java version from release file in /bin directory", e);
+			return false;
+		}
+		boolean errorCondition2 = !checkSingleJavaVersionOK(version) ;
+		if(errorCondition1 || errorCondition2) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
+	public void defineActionListeners() {
+		actionLocManually_Jvm = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String msg = "Specify /bin folder of a supported java installation ("+MIN_JRE_VERSION+" <= VERSION < "+MAX_JRE_VERSION+")";
+				manualPath_Jvm = FileUtils.directoRead(launcherMainFrame, msg).getAbsolutePath();
+			}
+		};
 	}
 	
 	// read configuration from ini file with null-value check
