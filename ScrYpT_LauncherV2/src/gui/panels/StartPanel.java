@@ -43,6 +43,9 @@ public class StartPanel extends JFrame{
 	private JPanel mainPanel;
 	private JButton btnStartScrypt;
 	private JButton btnCustomizeParameters;
+	private JLabel lblScryptLauncher;
+	private JLabel label;
+	private JLabel lblAmDesign;
 	
 	public StartPanel(String frameTitle, ScrYpTLauncher launcher) {
 		
@@ -67,27 +70,42 @@ public class StartPanel extends JFrame{
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setLayout(new MigLayout("", "[grow][40%:n,grow][20px:n][40%:n,grow][grow]", "[30px,grow][50px][15px]"));
+		mainPanel.setLayout(new MigLayout("", "[grow][40px:n,grow][20px:n,grow][20px:n,grow][40px:n,grow][20px]", "[30px,grow][50px][25px]"));
 		
 		JLabel lblWelcomeToScrypt = new JLabel("Welcome to ScrYpT, chose your preferences... or just start me :)");
 		lblWelcomeToScrypt.setForeground(Color.WHITE);
 		lblWelcomeToScrypt.setFont(new Font("Segoe UI Black", Font.PLAIN, 14));
-		mainPanel.add(lblWelcomeToScrypt, "cell 1 0 3 1,alignx center");
+		mainPanel.add(lblWelcomeToScrypt, "cell 0 0 6 1,alignx center");
 		
 		btnCustomizeParameters = new JButton("Customize parameters");
 		btnCustomizeParameters.setBorder(null);
 		btnCustomizeParameters.setForeground(new Color(0, 0, 0));
-		btnCustomizeParameters.setBackground(new Color(211, 211, 211));
+		btnCustomizeParameters.setBackground(new Color(169, 169, 169));
 		btnCustomizeParameters.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnCustomizeParameters.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		mainPanel.add(btnCustomizeParameters, "cell 1 1,grow");
+		mainPanel.add(btnCustomizeParameters, "cell 0 1 3 1,grow");
 		
 		btnStartScrypt = new JButton("Start ScrYpT");
 		btnStartScrypt.setBorder(null);
-		btnStartScrypt.setBackground(new Color(211, 211, 211));
+		btnStartScrypt.setBackground(new Color(169, 169, 169));
 		btnStartScrypt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		mainPanel.add(btnStartScrypt, "cell 3 1,grow");
+		mainPanel.add(btnStartScrypt, "cell 3 1 3 1,grow");
+		
+		lblAmDesign = new JLabel("A.M. Design & Developement");
+		lblAmDesign.setForeground(Color.LIGHT_GRAY);
+		lblAmDesign.setFont(new Font("SansSerif", Font.PLAIN, 10));
+		mainPanel.add(lblAmDesign, "cell 0 2 2 1,alignx left,aligny bottom");
+		
+		lblScryptLauncher = new JLabel("ScrYpT Launcher");
+		lblScryptLauncher.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		lblScryptLauncher.setForeground(new Color(240, 248, 255));
+		mainPanel.add(lblScryptLauncher, "cell 2 2 2 1,alignx center,aligny bottom");
+		
+		label = new JLabel("ScrYpT Launcher - V1.0");
+		label.setForeground(Color.LIGHT_GRAY);
+		label.setFont(new Font("SansSerif", Font.PLAIN, 10));
+		mainPanel.add(label, "cell 4 2 2 1,alignx right,aligny bottom");
 	
 		addHandlers();
 		

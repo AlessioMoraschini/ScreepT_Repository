@@ -5,8 +5,11 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import gui.ScrYpTLauncher;
+import launcherutils.SysUtils;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,6 +48,7 @@ public class CustomizeParametersPanel extends JFrame{
 		this.setBounds(160, 180, 540, 190);
 		thisPanel.setTitle(title);		
 		parentStarterPanel = parentPanel;
+		
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.WHITE);
@@ -54,14 +58,14 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(lblMaxMemory, "cell 0 0,alignx center");
 		
 		spinnerMaxMemoryMB = new JSpinner();
-		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(defaultMaxMemXmx, 256, 4000, 20));
+		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(defaultMaxMemXmx, 256, SysUtils.getMaxMemoryAdmitted(), 20));
 		getContentPane().add(spinnerMaxMemoryMB, "cell 1 0 2 1,growx");
 		
 		lblMinMemory = new JLabel("Min memory (MB):");
 		getContentPane().add(lblMinMemory, "cell 0 1,alignx center");
 		
 		spinnerMinMemoryMB = new JSpinner();
-		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(defaultMinMemXms, 128, 1024, 20));
+		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(defaultMinMemXms, 128, SysUtils.getMaxMemoryAdmitted(), 20));
 		getContentPane().add(spinnerMinMemoryMB, "cell 1 1 2 1,growx");
 		
 		btnExitConfiguration = new JButton("Discard and return to Launcher");
@@ -70,7 +74,7 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		btnReloadInitialConfig = new JButton("Reset to Initial Config");
 		btnReloadInitialConfig.setToolTipText("Coming soon :)");
-		btnReloadInitialConfig.setEnabled(false);
+		btnReloadInitialConfig.setEnabled(true);
 		btnReloadInitialConfig.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnReloadInitialConfig, "cell 1 2,growx");
 		
@@ -110,7 +114,8 @@ public class CustomizeParametersPanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO parse values from String 				
+				spinnerMaxMemoryMB.setValue(backupMaxMemoryXmx);
+				spinnerMinMemoryMB.setValue(backupMinMemoryXms);				
 			}
 		});
 		
@@ -121,7 +126,7 @@ public class CustomizeParametersPanel extends JFrame{
 				
 				String maxMemory = String.valueOf((Integer)spinnerMaxMemoryMB.getValue());
 				String minMemory = String.valueOf((Integer)spinnerMinMemoryMB.getValue());
-				String args = "-Xmx"+maxMemory+"m -Xms"+minMemory;
+				String args = "-Xmx"+maxMemory+"m -Xms"+minMemory+"m";
 				
 				// update launcher vars and write to config INI file
 				String SECTION_ARGS = ScrYpTLauncher.INI_JVM_OPT;
@@ -129,6 +134,8 @@ public class CustomizeParametersPanel extends JFrame{
 				ScrYpTLauncher.writeValueToIniConfiguration(SECTION_ARGS, "memoryArgs", args);
 				// regenerate command list with new args
 				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();
+				JOptionPane.showMessageDialog(thisPanel, "Settings saved :)", "Settings saved", JOptionPane.INFORMATION_MESSAGE);
+				active = false;
 				dispose();
 				
 			}

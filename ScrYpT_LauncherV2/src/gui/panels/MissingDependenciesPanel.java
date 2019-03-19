@@ -8,7 +8,9 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import gui.ScrYpTLauncher;
+import launcherutils.SysUtils;
 import launcherutils.om.DependencyModel;
+import launcherutils.om.OSinfo;
 
 import java.awt.Button;
 import java.awt.Color;
@@ -20,6 +22,8 @@ import javax.swing.JScrollPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
 
 import javax.swing.SwingConstants;
@@ -81,7 +85,7 @@ public class MissingDependenciesPanel extends JDialog{
 		btnLocateManually.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnLocateManually, "cell 0 2,grow");
 		
-		btnInstallDependency = new JButton("Install/Download Dependency");
+		btnInstallDependency = new JButton("Install Dependency / go to download page");
 		btnInstallDependency.setFont(new Font("SansSerif", Font.BOLD, 14));
 		btnInstallDependency.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnInstallDependency, "cell 1 2,grow");
@@ -161,6 +165,22 @@ public class MissingDependenciesPanel extends JDialog{
 				}
 			}
 		});
+		
+		btnInstallDependency.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(table.getSelectedRows().length > 0) {
+					
+					installDependencies(table.getSelectedRows());
+					
+					parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
+					checkCriticalMissingDependencies();
+					updateDependencyIssueTable();
+				}
+			}
+		});
 	}
 	
 	private void checkCriticalMissingDependencies() {
@@ -193,6 +213,10 @@ public class MissingDependenciesPanel extends JDialog{
 		table.getTableHeader().setFont(new Font("Segoe UI Black", Font.BOLD, 14));
 		table.getTableHeader().setVisible(true);
 		table.getTableHeader().setResizingAllowed(true);
+		table.setRowSelectionAllowed(true);
+		table.setSelectionBackground(Color.DARK_GRAY);
+		table.setSelectionForeground(Color.WHITE);
+		table.setOpaque(true);
 		return model;
 	}
 	
@@ -239,7 +263,6 @@ public class MissingDependenciesPanel extends JDialog{
 	}
 	
 	private void locateDependencies(int[] selectedDependenciesIndex) {
-		int i = 0;
 		for(DependencyModel currentDependency : dependeciesMissing) {
 			java.util.Date now = new java.util.Date();
 			ActionListener locator = currentDependency.locateManually;
@@ -247,7 +270,33 @@ public class MissingDependenciesPanel extends JDialog{
 			if(locator != null) {
 				locator.actionPerformed(event);
 			}
-			i++;
+		}
+	}
+	
+	private void installDependencies(int[] selectedDependenciesIndex) {
+		for (DependencyModel currentDependency : dependeciesMissing) {
+			File localInstaller = new File(currentDependency.relativePathToInstaller.getCurrentOSPath());	
+			if (localInstaller.exists()) {
+				launchInstaller(currentDependency.relativePathToInstaller.getCurrentOSPath());
+			} else if(currentDependency.URL != null){
+				SysUtils.openUrlInBrowser(currentDependency.URL);
+			} 
+		}
+	}
+	
+	private void launchInstaller(String relativePath) {
+		OSinfo OS = SysUtils.retrieveOS();
+		
+		if(OS.isWindows()) {
+			try {
+				Process process = new ProcessBuilder(relativePath).start();
+			} catch (IOException e) {
+				logger.error("Error launching installer " + relativePath, e);
+			}
+		}else if(OS.isLinux()) {
+			
+		}else if(OS.isMac()) {
+			
 		}
 	}
 }

@@ -23,6 +23,7 @@ import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
 import launcherutils.FileUtils;
 import launcherutils.SysUtils;
+import launcherutils.om.DependencyLocalPath;
 import launcherutils.om.DependencyModel;
 import launcherutils.om.OSinfo;
 
@@ -57,6 +58,7 @@ public class ScrYpTLauncher {
 	public static String MIN_JRE_VERSION = "1.6"; // included MIN
 	public static String MAX_JRE_VERSION = "9.0"; // excluded MAX
 	public static String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512"; // default memory options
+	public static final String JVM_URL_INSTALL = "https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html";
 	public static final String NOT_FOUND_JVM = "";
 	public static final String JVM_ARGS = "-Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
 	
@@ -155,8 +157,7 @@ public class ScrYpTLauncher {
 		javaPath = retrieveCorrectJVMS();
 		
 		if(javaPath.equals(NOT_FOUND_JVM)) {
-			DependencyModel javaDependency = new DependencyModel("Compatible JAVA JVM not found", "Download/Locate", false, actionDownNInstall_Jvm, actionLocManually_Jvm);
-			dependeciesMissing.add(javaDependency);
+			addToMissingDependenciesJVM();
 		}
 		// static for test => comment to use found one
 		//javaPath="C:/Program Files/Java/jdk1.8.0_162/bin;";
@@ -166,6 +167,16 @@ public class ScrYpTLauncher {
 		addInstallDependenciesCommand();
 		
 		addLaunchScrYpTCommand();
+	}
+	
+	public void addToMissingDependenciesJVM() {
+		String localPathWinInstaller = DependencyModel.INSTALLERS_PATH + SysUtils.findIf32or64() + "/JRE-1.8-installer/jre-1.8u201.exe";
+		String localPathLinInstaller = "";
+		String localPathMacInstaller = "";
+		DependencyLocalPath pathsLocalInstaller = new DependencyLocalPath(localPathWinInstaller, localPathLinInstaller, localPathMacInstaller);
+		
+		DependencyModel javaDependency = new DependencyModel("Compatible JAVA JVM not found", "Download/Locate", false, JVM_URL_INSTALL, pathsLocalInstaller, actionDownNInstall_Jvm, actionLocManually_Jvm);
+		dependeciesMissing.add(javaDependency);
 	}
 	
 	/**
@@ -179,7 +190,7 @@ public class ScrYpTLauncher {
 			String initPath = writeInitBatShAndGetPath(combinedCommands);
 			Runtime.getRuntime().exec(initPath);
 		} catch (IOException e) {
-			logger.error("Error launching application!\n\n", e);
+			logger.error(" !!! Error launching main application !!!\n\n", e);
 		}
 	}
 	
@@ -251,7 +262,8 @@ public class ScrYpTLauncher {
 	 */
 	private void addLaunchScrYpTCommand() {
 		
-		execCommand.add(SysUtils.startJarCommand(JVM_ARGS, MAIN_JAR_FILE)+" "+JVM_MEMORY_OPTIONS);
+		String complete_ARGS = JVM_MEMORY_OPTIONS + " -XshowSettings:vm " + JVM_ARGS;
+		execCommand.add(SysUtils.startJarCommand(complete_ARGS, MAIN_JAR_FILE));
 	}
 	
 	/**
@@ -286,6 +298,7 @@ public class ScrYpTLauncher {
 			return binPath.getParentFile().getAbsolutePath();
 		}
 		
+		// if unspecified manual search automatically
 		for(String currentPath : foundJVMS) {
 			
 			// find name from path
@@ -299,6 +312,7 @@ public class ScrYpTLauncher {
 			} catch (IllegalArgumentException e) {
 				logger.error("Error comparing java version for " + currentPath, e);
 			}
+			
 		}
 		
 		// if not found rech this point and return 

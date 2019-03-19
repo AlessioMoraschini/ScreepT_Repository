@@ -1,10 +1,13 @@
 package launcherutils;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -162,4 +165,76 @@ public class SysUtils {
         return 0;
 	}
 	
+	/**
+	 * @return the max memory usable by Java software in MB
+	 */
+	public static int getMaxMemoryAdmitted() {
+		
+		if(is64arch()) {
+			return 4092;
+		}else{
+			return 2048;
+		}
+	}
+	
+	/**
+	 * return true if current architecture is 64 bits, false is 32 bits.
+	 * @return
+	 */
+	public static boolean is64arch() {
+		String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+		if(arch.endsWith("64")) {
+			return true;
+		}else return false;
+	}
+	
+	public static int findIf32or64() {
+		if(is64arch()) {
+			return 64;
+		}else {
+			return 32;
+		}
+	}
+	
+	public static boolean openUrlInBrowser(String URL) {
+		
+		if(Desktop.isDesktopSupported()){
+			Desktop desktop = Desktop.getDesktop();
+			try {
+				desktop.browse(new URI(URL));
+				return true;
+			} catch (IOException | URISyntaxException e) {
+				logger.error("Error opening multiplatform browser.\n\n", e);
+			}
+		}else {
+			OSinfo OS = retrieveOS();
+			Runtime runtime = Runtime.getRuntime();
+			
+			if(OS.isLinux()){
+				try {
+					runtime.exec("xdg-open " + URL);
+					return true;
+				} catch (IOException e) {
+					logger.error("Error opening URL with Linux Native command\n\n", e);
+				}
+			}else if(OS.isMac()) {
+				try {
+					runtime.exec("open " + URL);
+					return true;
+				} catch (IOException e) {
+					logger.error("Error opening URL with Mac-OS Native command\n\n", e);
+				}
+			}else if(OS.isWindows()) {
+				try {
+					runtime.exec("rundll32 url.dll,FileProtocolHandler " + URL);
+					return true;
+				} catch (IOException e) {
+					logger.error("Error opening URL with Windows Native command\n\n", e);
+				}
+			}else {
+				return false;
+			}
+		}
+		return false;
+	}
 }
