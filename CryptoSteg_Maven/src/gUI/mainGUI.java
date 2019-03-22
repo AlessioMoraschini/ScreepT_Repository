@@ -42,6 +42,7 @@ import gUI.panels.TextEditor;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
+import gui.utils.LauncherLoaderFrame;
 import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
@@ -80,9 +81,10 @@ public class mainGUI {
 	private static Thread autosaveModule;
 	
 	// the name of the application used elsewhere on the sw
-	private static final String APPLICATION_NAME = "ScrYpt_V1.0";
+	private static final String APPLICATION_NAME = "ScrYpT  V1.0";
 	private static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
 	private static final String ICON_FILE_NAME = "icon.jpg";
+	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
 	// constant files & directories prefix
 	private static final String RESOURCES_DIR="Resources_Scrypt/";
@@ -213,15 +215,32 @@ public class mainGUI {
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	
+	// loader to visualize while loading application
+	public static LauncherLoaderFrame loaderGraphics;
+	
 	/**
 	 * MAIN METHOD
 	 * 
 	 * Calls contructor, initialize & Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+		
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg");
+		for (int i = 0; i < 10; i++) {
+			String dots = new String(new char[i+1]).replace("\0", ".");
+			String msg = "Initializing "+ APPLICATION_NAME + dots;
+			loaderGraphics.update(msg, i/2);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				logger.error("Error waiting before starting launcher", e);
+			} 
+		}
+		
+		new Thread(new Runnable() {
 			public void run() {
 				try {
+					
 					now = new Date();
 					mainAppRunning = true;
 					// empty old log file
@@ -250,15 +269,17 @@ public class mainGUI {
 						logger.error("Exception happened during loading of file [Resources_Scrypt/CONFIG.ini]!", e);
 					}
 					
+		loaderGraphics.update("Initializing graphics... ", 15);
+					
 					initGUI();
 					
 					// START MAIN WINDOW CONSTRUCTOR
 					logger.debug("Initializing main GUI-start");
 					mainGUI window = new mainGUI();
-					window.frmScryptV.setVisible(true);
 					logger.debug("Main GUI initialized correctly.");
 					
-
+		loaderGraphics.update("Starting autosave modules... ", 85);
+					
 					// ACTIVE MODULES FLAG UPDATER THREAD
 					new Thread(new Runnable() {
 						
@@ -406,12 +427,15 @@ public class mainGUI {
 					  	}
 					});
 					
+					loaderGraphics.update("Ready! :)", 100);
+					window.frmScryptV.setVisible(true);
+					
 					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 				} catch (Exception e) {
 					logger.error("Exception happened!", e);
 				}
 			}
-		});
+		}).start();
 	}
 
 	/**
@@ -463,6 +487,8 @@ public class mainGUI {
 			askUsername();
 		}
 		
+ loaderGraphics.update("Initializing screen properties...", 30);
+ 
 		// INITIALIZE SCREEN PROPOERTIES
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		screenWidth = gd.getDisplayMode().getWidth();
@@ -496,6 +522,8 @@ public class mainGUI {
 		mnConversionsAndOther = new JMenu("Conversions and Media");
 		mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnHelp = new JMenu("Help");
+	
+ loaderGraphics.update("Defining handlers...", 40);
 		
 		//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
 		
@@ -928,6 +956,8 @@ public class mainGUI {
 			}
 		});
 	////////// END OF HANDLERS DECLARATION  ////////////////
+	
+ loaderGraphics.update("Structuring menu...", 60);
 		
 		// once each component is declared add it to the menu bar
 		structureMenuBar();

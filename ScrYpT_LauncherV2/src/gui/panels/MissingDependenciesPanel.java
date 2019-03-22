@@ -20,10 +20,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Date;
 
 import javax.swing.SwingConstants;
@@ -32,6 +35,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 
 public class MissingDependenciesPanel extends JDialog{
 	
@@ -214,8 +218,8 @@ public class MissingDependenciesPanel extends JDialog{
 		table.getTableHeader().setVisible(true);
 		table.getTableHeader().setResizingAllowed(true);
 		table.setRowSelectionAllowed(true);
-		table.setSelectionBackground(Color.DARK_GRAY);
-		table.setSelectionForeground(Color.WHITE);
+		table.setSelectionBackground(new Color(245, 222, 179));
+		table.setSelectionForeground(Color.BLACK);
 		table.setOpaque(true);
 		return model;
 	}
@@ -242,8 +246,13 @@ public class MissingDependenciesPanel extends JDialog{
 	
 	private void askIfSureToClose() {
 		String msg = "Are you sure to continue anyway? Some ScrYpT functions will be disabled by default.";
-		int response = JOptionPane.showConfirmDialog(parentStarterFrame, msg, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
+		JCheckBox checkbox = new JCheckBox("Do not show this section next Time");
+		Object[] params = {msg, checkbox};
+		int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
 		if (response == JOptionPane.OK_OPTION) {
+			if(checkbox.isSelected()) {
+				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "autoShowInstallOpt", "false");
+			}
 			parentStarterFrame.setEnabled(true);
 			dispose();
 		}else {
@@ -278,25 +287,44 @@ public class MissingDependenciesPanel extends JDialog{
 			File localInstaller = new File(currentDependency.relativePathToInstaller.getCurrentOSPath());	
 			if (localInstaller.exists()) {
 				launchInstaller(currentDependency.relativePathToInstaller.getCurrentOSPath());
-			} else if(currentDependency.URL != null){
+			} else if(currentDependency.URL != null && !currentDependency.URL.equals("")){
 				SysUtils.openUrlInBrowser(currentDependency.URL);
 			} 
 		}
 	}
 	
-	private void launchInstaller(String relativePath) {
+	// launch a batch/bash installer according to OS used
+	private void launchInstaller(String relativePathToLauncher) {
 		OSinfo OS = SysUtils.retrieveOS();
 		
 		if(OS.isWindows()) {
 			try {
-				Process process = new ProcessBuilder(relativePath).start();
+				Process windowsProcess = new ProcessBuilder(relativePathToLauncher).start();
+				InputStream inStream = windowsProcess.getInputStream();
+				logger.info(SysUtils.readProcessOutput(inStream));
+				inStream.close();
 			} catch (IOException e) {
-				logger.error("Error launching installer " + relativePath, e);
+				logger.error("Error launching Windows installer " + relativePathToLauncher, e);
 			}
 		}else if(OS.isLinux()) {
-			
+			try {
+				Process linuxProcess =  new ProcessBuilder(relativePathToLauncher).start();
+				InputStream inStream = linuxProcess.getInputStream();
+				logger.info(SysUtils.readProcessOutput(inStream));
+				inStream.close();
+				
+			} catch (IOException e) {
+				logger.error("Error launching Linux installer " + relativePathToLauncher, e);
+			}
 		}else if(OS.isMac()) {
-			
+			try {
+				Process macProcess = new ProcessBuilder(relativePathToLauncher).start();
+				InputStream inStream = macProcess.getInputStream();
+				logger.info(SysUtils.readProcessOutput(inStream));
+				inStream.close();
+			} catch (IOException e) {
+				logger.error("Error launching MacOS installer " + relativePathToLauncher, e);
+			}
 		}
 	}
 }

@@ -21,6 +21,7 @@ import org.ini4j.Wini;
 
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
+import gui.utils.LauncherLoaderFrame;
 import launcherutils.FileUtils;
 import launcherutils.SysUtils;
 import launcherutils.om.DependencyLocalPath;
@@ -46,6 +47,7 @@ import launcherutils.om.OSinfo;
  */
 public class ScrYpTLauncher {
 
+	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	public static final String LAUNCHER_CONTAINER_PATH = "LAUNCHER/";
 	public static final String APPLICATION_DIR = "Application/";
 	
@@ -71,9 +73,11 @@ public class ScrYpTLauncher {
 	public static final String INI_JVM_OPT = "JVM_OPTIONS";
 	public static final String INI_APP_OPT = "APPLICATION_OPTIONS";
 	private static Wini iniConfigFile;
+	public static boolean showInstallOptions = true;
 	
 	// USER MANUALLY LOCATED DEPENDENCY PATHS
 	public String manualPath_Jvm = NOT_FOUND_JVM;
+	private final static String arch32OR64 = String.valueOf(SysUtils.findIf32or64());
 	
 	// ACTION LISTENERS - JVM
 	public ActionListener actionLocManually_Jvm;
@@ -90,16 +94,30 @@ public class ScrYpTLauncher {
 	public static StartPanel launcherMainFrame;
 	public static String javaPath=NOT_FOUND_JVM;
 	public static ScrYpTLauncher LAUNCHER;
+	public static LauncherLoaderFrame loaderGraphics;
 	
 	// MAIN START POINT
 	public static void main(String[] args) {
 		
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg");
+		for (int i = 0; i < 15; i++) {
+			String dots = new String(new char[i+1]).replace("\0", ".");
+			String msg = "Initializing launcher" + dots;
+			loaderGraphics.update(msg, i/2);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				logger.error("Error waiting before starting launcher", e);
+			} 
+		}
 		// Initialize logger properties
 		PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
 		appLogStart();
 		
+		loaderGraphics.update("Reading Configuration File "+DEFAULT_INI_PATH, 15);
 		initFromINIFile();
 		
+		loaderGraphics.update("Starting Launcher...", 25);
 		start();
 
 	}// end main
@@ -124,12 +142,16 @@ public class ScrYpTLauncher {
 	// CONSTRUCTOR
 	public ScrYpTLauncher() {
 		
+		loaderGraphics.update("Defining Listeners...", 30);
 		defineActionListeners();
 		
+		loaderGraphics.update("Analyzing dependencies...", 45);
 		analyzeBeforeLauncher();
 		
+		loaderGraphics.update("Initializing graphics...", 80);
 		// GUI launcher initialization
 		launcherMainFrame = new StartPanel("ScrYpt Launcher", this);
+		loaderGraphics.update("Ready", 100);
 		launcherMainFrame.setVisible(true);
 		launcherMainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		launcherMainFrame.addWindowListener(new WindowAdapter() {
@@ -140,8 +162,8 @@ public class ScrYpTLauncher {
 			}
 		});
 		//  IF PROBLEMS WITH DEPENDENCIES LIST CONTAINS SOME ELEMENTS
-		if(dependeciesMissing.size() != 0) {
-			launcherMainFrame.missingDependenciesPanel = new MissingDependenciesPanel("one dependency is missing", launcherMainFrame);
+		if(dependeciesMissing.size() != 0 && (showInstallOptions || !criticalDependenciesOK)) {
+			launcherMainFrame.missingDependenciesPanel = new MissingDependenciesPanel("There are dependencies not found!", launcherMainFrame);
 			launcherMainFrame.missingDependenciesPanel.setVisible(true);
 			launcherMainFrame.missingDependenciesPanel.requestFocus();
 		}
@@ -170,7 +192,7 @@ public class ScrYpTLauncher {
 	}
 	
 	public void addToMissingDependenciesJVM() {
-		String localPathWinInstaller = DependencyModel.INSTALLERS_PATH + SysUtils.findIf32or64() + "/JRE-1.8-installer/jre-1.8u201.exe";
+		String localPathWinInstaller = DependencyModel.INSTALLERS_PATH + arch32OR64 + "/JRE-1.8-installer/jre-1.8u201.exe";
 		String localPathLinInstaller = "";
 		String localPathMacInstaller = "";
 		DependencyLocalPath pathsLocalInstaller = new DependencyLocalPath(localPathWinInstaller, localPathLinInstaller, localPathMacInstaller);
@@ -220,7 +242,13 @@ public class ScrYpTLauncher {
 	 * @return If found return true, else return false
 	 */
 	private String retrieveCorrectJVMS() {
-
+		
+		// if current is correct return it and exit method
+		if(checkSingleJavaVersionOK(SysUtils.getCurrentJVMversion())) {
+			return ";"; 
+			// adding ; to path does not modify current retrieved and escapes NOT_FOUND_JVM controls as path won't be ""
+		}
+		
 		ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 		String foundCorrect = compareWithAdmittedJVMS(foundJvmHomeList);
 		foundCorrect = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
@@ -333,7 +361,7 @@ public class ScrYpTLauncher {
 		boolean moreThanMin;
 		try {
 			lessThanMax = SysUtils.compareVersions(noLettersDotsOnly, MAX_JRE_VERSION) < 0;
-			moreThanMin = SysUtils.compareVersions(noLettersDotsOnly,MIN_JRE_VERSION) >= 0;
+			moreThanMin = SysUtils.compareVersions(noLettersDotsOnly, MIN_JRE_VERSION) >= 0;
 		} catch (IllegalArgumentException e) {
 			logger.error("Error comparing version: illegal format of ["+version+"]", e);
 			return false;
@@ -386,6 +414,8 @@ public class ScrYpTLauncher {
 			// APPLICATION OPTIONS WITH NULL CHECK
 			String MAIN_JAR_INI = iniConfigFile.get(INI_APP_OPT, "jarToLaunch");
 			MAIN_JAR_FILE = (MAIN_JAR_INI != null)? MAIN_JAR_INI : MAIN_JAR_FILE;
+			String autoInstallerOpt = iniConfigFile.get(INI_APP_OPT, "autoShowInstallOpt");
+			showInstallOptions = (autoInstallerOpt!=null && autoInstallerOpt.equalsIgnoreCase("false"))? false : true;
 			
 		} catch (InvalidFileFormatException e) {
 			logger.error("Invalid format detected while trying to read " + DEFAULT_INI_PATH, e);

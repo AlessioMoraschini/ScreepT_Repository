@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -30,7 +32,8 @@ public class SysUtils {
 		return new JVMInfo();
 	}
 	
-	// OS independent commands
+
+///////////////////////////////// GENERIC STUFF ////////////////////////////////////////////////
 	
 	public static String startJarCommand(String jvmArgs, String jarPath) {
 		String command = "java " + jvmArgs + " -jar " + jarPath;
@@ -65,6 +68,173 @@ public class SysUtils {
 		
 		return foundJVMS;
 	}
+	
+	public static String getCurrentJVMversion() {
+		return System.getProperty("java.version");
+	}
+	
+	public static String getJavaVersionFromBin(String javaBinDirPath) throws IOException {
+		File parentOfBin = new File(javaBinDirPath).getParentFile();
+		File releaseFile = new File(parentOfBin.getAbsolutePath(), "release");
+		BufferedReader bufferedReader = new BufferedReader(new FileReader(releaseFile));
+		String version = bufferedReader.readLine();
+		bufferedReader.close();
+		return version.substring(version.indexOf("\"") + 1, version.lastIndexOf("\""));
+	}
+
+	/**
+	 * Use this method to remove every charachter from given string, except "." and
+	 * digits 0-9 Note that eventual undescores will become dots.
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public static String keepOnlyDotsAndDigits(String source) {
+		String dotsOnly = source.replaceAll("_", ".");
+		dotsOnly = dotsOnly.replaceAll("-", "");
+		// remove non dots chars
+		return dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-", "");
+	}
+
+	/**
+	 * Dotted version format compare - if version not matches format
+	 * <Strong>IllegalArgumentException</Strong> is thrown
+	 * 
+	 * @param version_A
+	 * @param version_B
+	 * @return -1 if A less than B, 1 if A more than B, 0 if equals
+	 */
+	public static int compareVersions(String version_A, String version_B) throws IllegalArgumentException {
+
+		if (version_A == null || version_B == null) {
+			throw new IllegalArgumentException("Version can not be null");
+		}
+		if (!version_A.matches("[0-9]+(\\.[0-9]+)*") || !version_B.matches("[0-9]+(\\.[0-9]+)*")) {
+			throw new IllegalArgumentException("Invalid version format");
+		}
+
+		String[] AParts = version_A.split("\\.");
+		String[] BParts = version_B.split("\\.");
+		int length = Math.max(AParts.length, BParts.length);
+		for (int i = 0; i < length; i++) {
+			int ACurrPart = i < AParts.length ? Integer.parseInt(AParts[i]) : 0;
+			int BCurrPart = i < BParts.length ? Integer.parseInt(BParts[i]) : 0;
+			if (ACurrPart < BCurrPart) {
+				return -1;
+			}
+			if (ACurrPart > BCurrPart) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * @return the max memory usable by Java software in MB
+	 */
+	public static int getMaxMemoryAdmitted() {
+
+		if (is64arch()) {
+			return 4092;
+		} else {
+			return 2048;
+		}
+	}
+
+	/**
+	 * return true if current architecture is 64 bits, false is 32 bits.
+	 * 
+	 * @return
+	 */
+	public static boolean is64arch() {
+		String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+		if (arch.endsWith("64")) {
+			return true;
+		} else
+			return false;
+	}
+	
+	/**
+	 * return true if current architecture is 32 bits, false is 64 bits.
+	 * 
+	 * @return
+	 */
+	public static boolean is32arch() {
+		String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+		if (arch.endsWith("32")) {
+			return true;
+		} else
+			return false;
+	}
+
+	public static int findIf32or64() {
+		if (is64arch()) {
+			return 64;
+		} else {
+			return 32;
+		}
+	}
+
+	public static boolean openUrlInBrowser(String URL) {
+
+		if (Desktop.isDesktopSupported()) {
+			Desktop desktop = Desktop.getDesktop();
+			try {
+				desktop.browse(new URI(URL));
+				return true;
+			} catch (IOException | URISyntaxException e) {
+				logger.error("Error opening multiplatform browser.\n\n", e);
+			}
+		} else {
+			OSinfo OS = retrieveOS();
+			Runtime runtime = Runtime.getRuntime();
+
+			if (OS.isLinux()) {
+				try {
+					runtime.exec("xdg-open " + URL);
+					return true;
+				} catch (IOException e) {
+					logger.error("Error opening URL with Linux Native command\n\n", e);
+				}
+			} else if (OS.isMac()) {
+				try {
+					runtime.exec("open " + URL);
+					return true;
+				} catch (IOException e) {
+					logger.error("Error opening URL with Mac-OS Native command\n\n", e);
+				}
+			} else if (OS.isWindows()) {
+				try {
+					runtime.exec("rundll32 url.dll,FileProtocolHandler " + URL);
+					return true;
+				} catch (IOException e) {
+					logger.error("Error opening URL with Windows Native command\n\n", e);
+				}
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	public static String readProcessOutput(InputStream inputStream) {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		StringBuilder builder = new StringBuilder();
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				builder.append(line);
+				builder.append(System.getProperty("line.separator"));
+			}
+			reader.close();
+		} catch (IOException e) {
+			logger.error("Error reading process output:\n\n", e);
+		}
+
+		return builder.toString();
+	}
+	
+/////////////////////////////  WINDOWS ONLY  //////////////////////////////////////////
 	
 	public static ArrayList<String> findWindowsProgramPath(String programName) {
 		ArrayList<String> foundList = new ArrayList<String>();
@@ -111,130 +281,16 @@ public class SysUtils {
 		return stringRetrievedPaths;
 	}
 	
-	public static String getJavaVersionFromBin(String javaBinDirPath) throws IOException {
-	    File parentOfBin = new File(javaBinDirPath).getParentFile();
-		File releaseFile = new File(parentOfBin.getAbsolutePath(), "release");
-	    BufferedReader bufferedReader = new BufferedReader(new FileReader(releaseFile));
-	    String version = bufferedReader.readLine();
-	    bufferedReader.close();
-	    return version.substring(version.indexOf("\"") + 1, version.lastIndexOf("\""));
-	}
+////////////////////////////////  LINUX ONLY  ///////////////////////////////////////////////// sudo update-alternatives --config java
 	
-	/**
-	 * Use this method to remove every charachter from given string, except "." and digits 0-9
-	 * Note that eventual undescores will become dots.
-	 * @param source
-	 * @return
-	 */
-	public static String keepOnlyDotsAndDigits(String source) {
-		String dotsOnly = source.replaceAll("_",".");
-		dotsOnly = dotsOnly.replaceAll("-","");
-		// remove non dots chars
-		return dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-","");
-	}
-	
-	/**
-	 * Dotted version format compare - if version not matches format <Strong>IllegalArgumentException</Strong> is thrown
-	 * 
-	 * @param version_A
-	 * @param version_B
-	 * @return -1 if A less than B, 1 if A more than B, 0 if equals
-	 */
-	public static int compareVersions(String version_A, String version_B) throws IllegalArgumentException{
+	public static ArrayList<String> getLinuxJavaVersions() {
+		ArrayList<String> stringRetrievedPaths = new ArrayList<String>();
 		
-		if(version_A == null || version_B == null) {
-			throw new IllegalArgumentException("Version can not be null");
-		}
-		if(!version_A.matches("[0-9]+(\\.[0-9]+)*") || !version_B.matches("[0-9]+(\\.[0-9]+)*")) {
-			throw new IllegalArgumentException("Invalid version format");
-		}
+		// TODO implement this
 		
-        String[] AParts = version_A.split("\\.");
-        String[] BParts = version_B.split("\\.");
-        int length = Math.max(AParts.length, BParts.length);
-        for(int i = 0; i < length; i++) {
-            int ACurrPart = i < AParts.length ? Integer.parseInt(AParts[i]) : 0;
-            int BCurrPart = i < BParts.length ? Integer.parseInt(BParts[i]) : 0;
-            if(ACurrPart < BCurrPart) {
-            	return -1;
-            }
-            if(ACurrPart > BCurrPart) {
-            	return 1;
-            }
-        }
-        return 0;
-	}
-	
-	/**
-	 * @return the max memory usable by Java software in MB
-	 */
-	public static int getMaxMemoryAdmitted() {
+		return stringRetrievedPaths;
 		
-		if(is64arch()) {
-			return 4092;
-		}else{
-			return 2048;
-		}
 	}
 	
-	/**
-	 * return true if current architecture is 64 bits, false is 32 bits.
-	 * @return
-	 */
-	public static boolean is64arch() {
-		String arch = System.getenv("PROCESSOR_ARCHITECTURE");
-		if(arch.endsWith("64")) {
-			return true;
-		}else return false;
-	}
-	
-	public static int findIf32or64() {
-		if(is64arch()) {
-			return 64;
-		}else {
-			return 32;
-		}
-	}
-	
-	public static boolean openUrlInBrowser(String URL) {
-		
-		if(Desktop.isDesktopSupported()){
-			Desktop desktop = Desktop.getDesktop();
-			try {
-				desktop.browse(new URI(URL));
-				return true;
-			} catch (IOException | URISyntaxException e) {
-				logger.error("Error opening multiplatform browser.\n\n", e);
-			}
-		}else {
-			OSinfo OS = retrieveOS();
-			Runtime runtime = Runtime.getRuntime();
-			
-			if(OS.isLinux()){
-				try {
-					runtime.exec("xdg-open " + URL);
-					return true;
-				} catch (IOException e) {
-					logger.error("Error opening URL with Linux Native command\n\n", e);
-				}
-			}else if(OS.isMac()) {
-				try {
-					runtime.exec("open " + URL);
-					return true;
-				} catch (IOException e) {
-					logger.error("Error opening URL with Mac-OS Native command\n\n", e);
-				}
-			}else if(OS.isWindows()) {
-				try {
-					runtime.exec("rundll32 url.dll,FileProtocolHandler " + URL);
-					return true;
-				} catch (IOException e) {
-					logger.error("Error opening URL with Windows Native command\n\n", e);
-				}
-			}else {
-				return false;
-			}
-		}
-		return false;
-	}
+
 }
