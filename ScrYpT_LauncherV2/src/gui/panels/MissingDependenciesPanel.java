@@ -30,10 +30,14 @@ import java.io.OutputStream;
 import java.sql.Date;
 
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
@@ -52,10 +56,13 @@ public class MissingDependenciesPanel extends JDialog{
 	private JButton btnRefreshNCheck;
 	private JButton btnLocateManually;
 	private JButton btnInstallDependency;
+	private JButton btnDownloadDependency;
+	public static boolean active = false;
 	
 	// constructor
 	public MissingDependenciesPanel(String title, StartPanel parentStarter) {
 		
+		active = true;
 		parentStarterFrame = parentStarter;
 		thisPanel = this;
 		thisPanel.setTitle(title);
@@ -63,16 +70,17 @@ public class MissingDependenciesPanel extends JDialog{
 		dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[50px:80px][grow][40px:n][40px:n]"));
+		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow][50%,grow]", "[50px:80px][grow][40px:n][40px:n]"));
 		
 		lblTitleHeaderMessage = new JLabel("Some dependencies are missing, if they're critical you have to solve them before to start ScrYpt!");
-		lblTitleHeaderMessage.setBackground(new Color(211, 211, 211));
+		lblTitleHeaderMessage.setForeground(new Color(211, 211, 211));
+		lblTitleHeaderMessage.setBackground(Color.BLACK);
 		lblTitleHeaderMessage.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		lblTitleHeaderMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitleHeaderMessage.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblTitleHeaderMessage.setOpaque(true);
 		lblTitleHeaderMessage.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 2 1,grow");
+		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 3 1,grow");
 		
 		table = new JTable();
 		JScrollPane tableContainer = new JScrollPane(table);
@@ -82,27 +90,34 @@ public class MissingDependenciesPanel extends JDialog{
 		table.setShowHorizontalLines(true);
 		table.setShowVerticalLines(true);
 		table.setRowHeight(30);
-		getContentPane().add(tableContainer, "cell 0 1 2 1,grow");
+		getContentPane().add(tableContainer, "cell 0 1 3 1,grow");
 		
-		btnLocateManually = new JButton("Add installation path manually");
-		btnLocateManually.setFont(new Font("SansSerif", Font.BOLD, 14));
-		btnLocateManually.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnLocateManually, "cell 0 2,grow");
+		btnRefreshNCheck = new JButton("Refresh and check again for dependencies");
+		btnRefreshNCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		btnRefreshNCheck.setBackground(Color.GRAY);
+		getContentPane().add(btnRefreshNCheck, "cell 0 2,grow");
 		
-		btnInstallDependency = new JButton("Install Dependency / go to download page");
+		btnInstallDependency = new JButton("Install Selected");
 		btnInstallDependency.setFont(new Font("SansSerif", Font.BOLD, 14));
 		btnInstallDependency.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnInstallDependency, "cell 1 2,grow");
 		
+		btnDownloadDependency = new JButton("Download Selected");
+		btnDownloadDependency.setFont(new Font("SansSerif", Font.BOLD, 14));
+		btnDownloadDependency.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnDownloadDependency, "cell 2 2,grow");
+		
 		btnIgnoreWarnings = new JButton("Ignore warnings (some functions will be disabled)");
 		btnIgnoreWarnings.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		btnIgnoreWarnings.setBackground(new Color(176, 196, 222));
+		btnIgnoreWarnings.setBackground(new Color(255, 250, 205));
 		getContentPane().add(btnIgnoreWarnings, "cell 0 3,grow");
 		
-		btnRefreshNCheck = new JButton("Refresh and check again for dependencies");
-		btnRefreshNCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		btnRefreshNCheck.setBackground(new Color(176, 196, 222));
-		getContentPane().add(btnRefreshNCheck, "cell 1 3,grow");
+		btnLocateManually = new JButton("Add installation path manually");
+		btnLocateManually.setFont(new Font("SansSerif", Font.BOLD, 14));
+		btnLocateManually.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnLocateManually, "cell 1 3 2 1,grow");
+		
+		setGraphics();
 		
 		checkCriticalMissingDependencies();
 		
@@ -147,7 +162,9 @@ public class MissingDependenciesPanel extends JDialog{
 				checkCriticalMissingDependencies();
 				dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
 				if(dependeciesMissing.size() == 0) {
+					JOptionPane.showMessageDialog(thisPanel, "All dependencies are OK, you're ready to use all ScrYpT functions :)", "No missing dependencies found!", JOptionPane.INFORMATION_MESSAGE);
 					parentStarterFrame.setEnabled(true);
+					active = false;
 					dispose();
 				}else {
 					updateDependencyIssueTable();
@@ -185,7 +202,71 @@ public class MissingDependenciesPanel extends JDialog{
 				}
 			}
 		});
+		
+		btnDownloadDependency.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(table.getSelectedRows().length > 0) {
+					
+					downloadDependencies(table.getSelectedRows());
+					
+				}
+			}
+		});
+		
+		// listener for row selected: if there is no installer disable button
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if(table.getSelectedRow() != -1){
+					try{
+						DependencyModel selectedDependency = dependeciesMissing.get(table.getSelectedRow());
+						File localInstaller = new File(selectedDependency.relativePathToInstaller.getCurrentOSPath());
+						// check local installer
+						if (!localInstaller.exists()) {
+							btnInstallDependency.setEnabled(false);
+							btnInstallDependency
+									.setToolTipText("There is no installer in current version of ScrYpt for "
+											+ selectedDependency.dependencyName);
+						} else {
+							btnInstallDependency.setEnabled(true);
+							btnInstallDependency.setToolTipText(
+									"Click to install using local installer " + selectedDependency.dependencyName);
+						}
+						// check remote URL for download
+						if (selectedDependency.URL == null || selectedDependency.URL.equals("")) {
+							btnDownloadDependency.setEnabled(false);
+							btnDownloadDependency
+									.setToolTipText("There is no URL specified in current version of ScrYpt for "
+											+ selectedDependency.dependencyName);
+						} else {
+							btnDownloadDependency.setEnabled(true);
+							btnDownloadDependency.setToolTipText(
+									"Click to open download page for " + selectedDependency.dependencyName);
+						} 
+					}catch(ArrayIndexOutOfBoundsException ex) {
+						logger.warn("Table selection listener triggered, but no rows selected ", ex);
+					} 
+				} // END IF sel != -1				
+			}
+		}); // END table listener
+		
 	}
+	
+	private void setGraphics(){
+		try {
+			thisPanel.setIconImage(ImageIO.read(new File("Resources_Scrypt/icon.jpg")));
+			logger.debug("icon image setted to main window");
+		} catch (IOException e1) {
+			logger.error("Exception happened!", e1);
+		}
+		
+		UIManager.put("ToolTip.background", new Color(255, 250, 205));
+	}
+	
+	// methods used to check dependency status and install //
 	
 	private void checkCriticalMissingDependencies() {
 		if(!ScrYpTLauncher.criticalDependenciesOK) {
@@ -197,6 +278,7 @@ public class MissingDependenciesPanel extends JDialog{
 			parentStarterFrame.setEnabled(false);
 		}else{
 			parentStarterFrame.setEnabled(true);
+			active = false;
 			dispose();
 		}
 	}
@@ -228,6 +310,7 @@ public class MissingDependenciesPanel extends JDialog{
 		
 		if(thisPanel.dependeciesMissing.size() == 0) {
 			parentStarterFrame.setEnabled(true);
+			active = false;
 			dispose();
 			return;
 		}
@@ -248,15 +331,24 @@ public class MissingDependenciesPanel extends JDialog{
 		String msg = "Are you sure to continue anyway? Some ScrYpT functions will be disabled by default.";
 		JCheckBox checkbox = new JCheckBox("Do not show this section next Time");
 		Object[] params = {msg, checkbox};
-		int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
-		if (response == JOptionPane.OK_OPTION) {
-			if(checkbox.isSelected()) {
-				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "autoShowInstallOpt", "false");
+		if (dependeciesMissing.size() != 0) {
+			int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, "Confirm before continue",
+					JOptionPane.WARNING_MESSAGE);
+			if (response == JOptionPane.OK_OPTION) {
+				if (checkbox.isSelected()) {
+					ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "autoShowInstallOpt",
+							"false");
+				}
+				parentStarterFrame.setEnabled(true);
+				active = false;
+				dispose();
+			} else {
+				thisPanel.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 			}
-			parentStarterFrame.setEnabled(true);
-			dispose();
 		}else {
-			thisPanel.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+			parentStarterFrame.setEnabled(true);
+			active = false;
+			dispose();
 		}
 	}
 	
@@ -283,15 +375,29 @@ public class MissingDependenciesPanel extends JDialog{
 	}
 	
 	private void installDependencies(int[] selectedDependenciesIndex) {
-		for (DependencyModel currentDependency : dependeciesMissing) {
+		for(int currentIndex : selectedDependenciesIndex) {
+			DependencyModel currentDependency = dependeciesMissing.get(currentIndex);
 			File localInstaller = new File(currentDependency.relativePathToInstaller.getCurrentOSPath());	
 			if (localInstaller.exists()) {
 				launchInstaller(currentDependency.relativePathToInstaller.getCurrentOSPath());
-			} else if(currentDependency.URL != null && !currentDependency.URL.equals("")){
+			}else {
+				JOptionPane.showMessageDialog(thisPanel, ("There is no installer for "+currentDependency.dependencyName), "Installer missing", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
+	}
+	
+	private void downloadDependencies(int[] selectedDependenciesIndex) {
+		for(int currentIndex : selectedDependenciesIndex) {
+			DependencyModel currentDependency = dependeciesMissing.get(currentIndex);
+			if(currentDependency.URL != null && !currentDependency.URL.equals("")){
 				SysUtils.openUrlInBrowser(currentDependency.URL);
-			} 
+			}else {
+				JOptionPane.showMessageDialog(thisPanel, ("Error opening URL for "+currentDependency.dependencyName), "URL missing", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
+	
 	
 	// launch a batch/bash installer according to OS used
 	private void launchInstaller(String relativePathToLauncher) {

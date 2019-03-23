@@ -21,6 +21,7 @@ import uTILS.local.ImageWorker;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,6 +52,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.DefaultComboBoxModel;
 
+import gUI.mainGUI;
 import gUI.om.BufferedImageType;
 import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
@@ -105,6 +107,14 @@ public class KeyGenPanel extends JFrame {
 	public KeyGenPanel(INItializer currentConfig) {
 
 		active = true;
+		
+		// SW window icon
+		try {
+			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
+			logger.debug("icon image setted to main window");
+		} catch (IOException e1) {
+			logger.error("Exception happened!", e1);
+		}
 		
 		thisFrame = this;
 		

@@ -11,12 +11,20 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class CustomizeParametersPanel extends JFrame{
 	
@@ -39,6 +47,10 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	private static final int defaultMinMemXms = 512;
 	private static final int defaultMaxMemXmx = 1024;
+	private JLabel lblMaxWarninig;
+	private JLabel lblMinWarninig;
+	
+	private Image warningImage;
 	
 	public CustomizeParametersPanel(String title, StartPanel parentPanel) {
 		
@@ -52,37 +64,49 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.WHITE);
-		getContentPane().setLayout(new MigLayout("", "[100px,grow][][70px]", "[grow][grow][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[100px,grow][20px][][70px]", "[grow][grow][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		getContentPane().add(lblMaxMemory, "cell 0 0,alignx center");
 		
+		lblMaxWarninig = new JLabel("");
+		getContentPane().add(lblMaxWarninig, "cell 1 0");
+		
 		spinnerMaxMemoryMB = new JSpinner();
+		spinnerMaxMemoryMB.setOpaque(true);
 		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(defaultMaxMemXmx, 256, SysUtils.getMaxMemoryAdmitted(), 20));
-		getContentPane().add(spinnerMaxMemoryMB, "cell 1 0 2 1,growx");
+		getContentPane().add(spinnerMaxMemoryMB, "cell 2 0 2 1,growx");
 		
 		lblMinMemory = new JLabel("Min memory (MB):");
 		getContentPane().add(lblMinMemory, "cell 0 1,alignx center");
 		
+		lblMinWarninig = new JLabel("");
+		getContentPane().add(lblMinWarninig, "cell 1 1");
+		
 		spinnerMinMemoryMB = new JSpinner();
+		spinnerMinMemoryMB.setOpaque(true);
 		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(defaultMinMemXms, 128, SysUtils.getMaxMemoryAdmitted(), 20));
-		getContentPane().add(spinnerMinMemoryMB, "cell 1 1 2 1,growx");
+		getContentPane().add(spinnerMinMemoryMB, "cell 2 1 2 1,growx");
 		
 		btnExitConfiguration = new JButton("Discard and return to Launcher");
 		btnExitConfiguration.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnExitConfiguration, "cell 0 2,growx");
+		getContentPane().add(btnExitConfiguration, "cell 0 2 2 1,growx");
 		
 		btnReloadInitialConfig = new JButton("Reset to Initial Config");
-		btnReloadInitialConfig.setToolTipText("Coming soon :)");
 		btnReloadInitialConfig.setEnabled(true);
 		btnReloadInitialConfig.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnReloadInitialConfig, "cell 1 2,growx");
+		getContentPane().add(btnReloadInitialConfig, "cell 2 2,growx");
 		
-		btnSaveConfig = new JButton("Save Custom Config");
+		btnSaveConfig = new JButton("Save Launch Options");
 		btnSaveConfig.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnSaveConfig, "cell 2 2,growx");
+		getContentPane().add(btnSaveConfig, "cell 3 2,growx");
+		
+		// add custom behaviour to frame
+		
+		setGraphics();
 		
 		addHandlers();
+		
 		backupInitialValues();
 		
 		logger.info(this.getClass().getName() + " Started");
@@ -140,6 +164,52 @@ public class CustomizeParametersPanel extends JFrame{
 				
 			}
 		});
+		
+		// add listeners to spinners to prevent max<min and min>max //
+		
+		spinnerMaxMemoryMB.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int max = (int)spinnerMaxMemoryMB.getValue();
+				int min = (int)spinnerMinMemoryMB.getValue();
+
+				checkEqualMinMaxMemory(max, min);
+				
+				if(max < min) {
+					spinnerMinMemoryMB.setValue(max);
+				}
+			}
+		});
+		
+		spinnerMinMemoryMB.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int max = (int)spinnerMaxMemoryMB.getValue();
+				int min = (int)spinnerMinMemoryMB.getValue();
+				
+				checkEqualMinMaxMemory(max, min);
+				
+				if(max < min) {
+					spinnerMaxMemoryMB.setValue(min);
+				}
+			}
+		});
+	}
+	
+	private void checkEqualMinMaxMemory(int max, int min) {
+		if(max == min) {
+			lblMaxWarninig.setVisible(true);
+			lblMinWarninig.setVisible(true);
+			lblMaxWarninig.setToolTipText("It's recommended to use bigger value for max memory than minimum, equal values cause performance decrease! ");
+			lblMinWarninig.setToolTipText("It's recommended to use lower value for minimum memory than max, equal values cause performance decrease! ");
+		}else {
+			lblMaxWarninig.setVisible(false);
+			lblMinWarninig.setVisible(false);
+			lblMaxWarninig.setToolTipText(null);
+			lblMinWarninig.setToolTipText(null);
+		}
 	}
 	
 	private void backupInitialValues() {
@@ -162,5 +232,24 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		spinnerMaxMemoryMB.setValue(backupMaxMemoryXmx);
 		spinnerMinMemoryMB.setValue(backupMinMemoryXms);
+	}
+	
+	private void setGraphics() {
+		try {
+			thisPanel.setIconImage(ImageIO.read(new File("Resources_Scrypt/icon.jpg")));
+			logger.debug("icon image setted to main window");
+		} catch (IOException e1) {
+			logger.error("Exception happened!", e1);
+		}
+		
+		try {
+			warningImage = ImageIO.read(new File("Resources_Scrypt/Icons/Warning.png"));
+			lblMaxWarninig.setIcon(new ImageIcon(warningImage));
+			lblMaxWarninig.setVisible(false);
+			lblMinWarninig.setIcon(new ImageIcon(warningImage));
+			lblMinWarninig.setVisible(false);
+		}catch(IOException e) {
+			logger.error("Error initializing warning icons", e);
+		}
 	}
 }

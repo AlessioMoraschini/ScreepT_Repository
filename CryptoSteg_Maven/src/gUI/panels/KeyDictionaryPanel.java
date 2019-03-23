@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import gUI.mainGUI;
 import gUI.om.BufferedImageType;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.TreeFileMouseListenerDictionary;
@@ -78,6 +79,14 @@ public class KeyDictionaryPanel extends JFrame{
 	public KeyDictionaryPanel(INItializer currentConfiguration) {
 		
 		active = true;
+		
+		// SW window icon
+		try {
+			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
+			logger.debug("icon image setted to main window");
+		} catch (IOException e1) {
+			logger.error("Exception happened!", e1);
+		}
 		
 		thisPanel = this;
 		// initialize configuration

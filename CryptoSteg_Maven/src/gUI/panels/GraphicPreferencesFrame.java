@@ -14,6 +14,8 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.swing.SwingConstants;
@@ -34,6 +36,7 @@ import iNIT.INItializer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.imageio.ImageIO;
 import javax.security.auth.callback.NameCallback;
 import javax.swing.JButton;
 import javax.swing.JSlider;
@@ -78,6 +81,14 @@ public class GraphicPreferencesFrame extends JFrame{
 	public GraphicPreferencesFrame(INItializer currentConf, mainGUI rootApplication) {
 		
 		active = true;
+		
+		// SW window icon
+		try {
+			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
+			logger.debug("icon image setted to main window");
+		} catch (IOException e1) {
+			logger.error("Exception happened!", e1);
+		}
 		
 		mainAPP = rootApplication;
 		

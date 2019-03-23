@@ -11,6 +11,7 @@ import org.hyperic.sigar.ProcMem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
+import gUI.mainGUI;
 import gUI.om.HDinfo;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
@@ -29,6 +30,8 @@ import javax.swing.border.LineBorder;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
@@ -42,6 +45,7 @@ import java.awt.Component;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 
@@ -168,6 +172,15 @@ public class HwInfoPanel extends JFrame{
 		setMinimumSize(new Dimension(750, 400));
 		
 		active = true;
+		
+		// SW window icon
+		try {
+			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
+			logger.debug("icon image setted to main window");
+		} catch (IOException e1) {
+			logger.error("Exception happened!", e1);
+		}
+		
 		thisPanel = this;
 		
 		initSystemVars();

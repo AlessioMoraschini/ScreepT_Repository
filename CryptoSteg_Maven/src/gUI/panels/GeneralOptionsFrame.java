@@ -28,10 +28,13 @@ import java.awt.Window;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
@@ -74,6 +77,14 @@ public class GeneralOptionsFrame extends JFrame{
 	public GeneralOptionsFrame(INItializer currentConf) {
 		
 		active = true;
+		
+		// SW window icon
+		try {
+			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
+			logger.debug("icon image setted to main window");
+		} catch (IOException e1) {
+			logger.error("Exception happened!", e1);
+		}
 		
 		// initialize config
 		currentConfiguration = currentConf;

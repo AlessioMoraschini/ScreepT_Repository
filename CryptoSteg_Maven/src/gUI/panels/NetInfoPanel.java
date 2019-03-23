@@ -7,12 +7,14 @@ import org.hyperic.sigar.NetInfo;
 import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
+import gUI.mainGUI;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import uTILS.network.NetworkUtils;
 import uTILS.network.om.FtpSpeedTestOptions;
 import uTILS.network.om.NetworkAdapter;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -21,6 +23,7 @@ import javax.swing.border.LineBorder;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -107,6 +110,14 @@ public class NetInfoPanel extends JFrame{
 		
 		active=true;
 		thisPanel = this;
+		
+		// SW window icon
+		try {
+			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
+			logger.debug("icon image setted to main window");
+		} catch (IOException e1) {
+			logger.error("Exception happened!", e1);
+		}
 		
 		try {
 			netUtils = new NetworkUtils();

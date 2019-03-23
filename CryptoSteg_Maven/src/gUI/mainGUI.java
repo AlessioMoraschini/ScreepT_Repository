@@ -1,7 +1,5 @@
 package gUI;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -64,7 +62,6 @@ import net.miginfocom.swing.MigLayout;
 import uTILS.local.FileStuff;
 
 import java.awt.Dialog.ModalExclusionType;
-import java.awt.Dimension;
 import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
@@ -83,11 +80,11 @@ public class mainGUI {
 	// the name of the application used elsewhere on the sw
 	private static final String APPLICATION_NAME = "ScrYpT  V1.0";
 	private static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
-	private static final String ICON_FILE_NAME = "icon.jpg";
+	public static final String ICON_FILE_NAME = "icon.jpg";
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
 	// constant files & directories prefix
-	private static final String RESOURCES_DIR="Resources_Scrypt/";
+	public static final String RESOURCES_DIR="Resources_Scrypt/";
 	private static final String DEFAULT_INI="Resources_Scrypt/CONFIG.ini";
 	private static final String BACKUP_INI="Resources_Scrypt/Backup/BACKUP_CONFIG.ini";
 	private static final String DEFAULT_INI_FOLDER="INI_FILES";
