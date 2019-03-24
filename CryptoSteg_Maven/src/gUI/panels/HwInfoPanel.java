@@ -518,6 +518,11 @@ public class HwInfoPanel extends JFrame{
 		
 //		comboSelectedHd = new JComboBox(); // only for editing in windowbuilder
 		comboSelectedHd = new JComboBox(HDList);
+		try {
+			comboSelectedHd.setSelectedItem(0);
+		} catch (IndexOutOfBoundsException e) {
+			logger.error(e);
+		}
 		panelHD.add(comboSelectedHd, "cell 1 0,growx");
 		
 		lblWrites = new JLabel("Writes:");
@@ -742,6 +747,7 @@ public class HwInfoPanel extends JFrame{
 		int i = 0;
 		for(HWDiskStore disk : info) {
 			HDList[i] = new HDinfo(disk);
+			i++;
 		}
 	}
 	
@@ -829,16 +835,20 @@ public class HwInfoPanel extends JFrame{
 	}
 	
 	private void updateHdInfo() {
-		HDinfo selected = (HDinfo)comboSelectedHd.getSelectedItem();
-		HWDiskStore disk = selected.getDisk();
-		disk.updateDiskStats();
-		dynLblHDReadBytes.setText(String.valueOf(disk.getReadBytes()));
-		dynLblHDWriteBytes.setText(String.valueOf(disk.getWrites()));
-		dynLblHDmodel.setText(disk.getModel());
-		dynLblHDCapacity.setText(FileStuff.coolFileSize(disk.getSize()));
-		dynLblHDSerial.setText(disk.getSerial());
-		dynLblHdBytesRead.setText(FileStuff.coolFileSize(disk.getReadBytes()));
-		dynLblHdBytesWritten.setText(FileStuff.coolFileSize(disk.getWriteBytes()));
+		try {
+			HDinfo selected = (HDinfo) comboSelectedHd.getSelectedItem();
+			HWDiskStore disk = selected.getDisk();
+			disk.updateDiskStats();
+			dynLblHDReadBytes.setText(String.valueOf(disk.getReadBytes()));
+			dynLblHDWriteBytes.setText(String.valueOf(disk.getWrites()));
+			dynLblHDmodel.setText(disk.getModel());
+			dynLblHDCapacity.setText(FileStuff.coolFileSize(disk.getSize()));
+			dynLblHDSerial.setText(disk.getSerial());
+			dynLblHdBytesRead.setText(FileStuff.coolFileSize(disk.getReadBytes()));
+			dynLblHdBytesWritten.setText(FileStuff.coolFileSize(disk.getWriteBytes()));
+		} catch (IndexOutOfBoundsException e) {
+			logger.error(e);
+		}
 	}
 
 	private void updateDisplayInfo() {
