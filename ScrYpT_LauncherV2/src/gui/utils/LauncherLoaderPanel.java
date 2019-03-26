@@ -72,6 +72,12 @@ public class LauncherLoaderPanel extends JPanel{
 		if (progressBar != null) {
 			progressBar.setValue(progress);
 			if(progressBar.getValue() >= 100){
+				try {
+					// this is to show last message before loader closes
+					Thread.sleep(600);
+				} catch (InterruptedException e) {
+					logger.warn("Cannot wait at end of loading");
+				}
 				parentFrame.dispose();
 			}
 		}

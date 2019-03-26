@@ -1,6 +1,5 @@
 package gUI.utils.tree;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.SystemColor;
@@ -10,7 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.awt.peer.PanelPeer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -27,22 +25,15 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import gUI.panels.CrypterPanel;
-import gUI.panels.KeyDictionaryPanel;
 import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
-import net.miginfocom.swing.MigLayout;
 import uTILS.local.FileStuff;
 import uTILS.local.HandleString;
 import uTILS.local.ImageWorker;

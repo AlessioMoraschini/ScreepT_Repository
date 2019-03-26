@@ -498,12 +498,12 @@ public class mainGUI {
 		frmScryptV = new JFrame();
 		frmScryptV.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		frmScryptV.getContentPane().setBackground(SystemColor.windowText);
-		frmScryptV.setBounds(0, 0, 1200, 860 );
+		frmScryptV.setBounds(0, 0, 1600, 900 );
 		
 		// FULL SCREEN SETTING
 	    frmScryptV.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frmScryptV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frmScryptV.setVisible(true);
+//        frmScryptV.setVisible(true);
         
         setBackgroundImage();
         

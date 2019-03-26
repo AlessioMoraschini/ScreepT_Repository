@@ -26,7 +26,9 @@ import gUI.mainGUI;
 import gUI.om.BufferedImageType;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
+import gUI.utils.tree.TreeCellRendererDark;
 import gUI.utils.tree.TreeFileMouseListenerCrypter;
+import gUI.utils.tree.dragndrop.VirtualFileDropPane;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import uTILS.local.FileStuff;
@@ -70,6 +72,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
+import javax.swing.JSeparator;
 
 public class CrypterPanel extends JPanel {
 
@@ -159,6 +162,7 @@ public class CrypterPanel extends JPanel {
 	
 	// field representing the source file loaded by user, this is the file to crypt/decrypt
 	private File srcFile;
+	private File[] srcFiles; 
 	
 	// fied representing the img key file selected by user
 	private File srcKeyImageFile;
@@ -174,6 +178,12 @@ public class CrypterPanel extends JPanel {
 	
 	public static final int labelLengthLimit = 40;
 	private JCheckBox chckbxShuffle;
+	private JScrollPane scrollPaneDragNDropSource;
+	private JPanel panelBackgroundDragSources;
+	private JTree treeSourcesDragAndDrop;
+	private JLabel lblSelectedFilesDragTitle;
+	private JSeparator separatorDragNDropTitle;
+	private VirtualFileDropPane panelVDragNDropPane;
 
 	/**
 	 * Create the application.
@@ -270,13 +280,13 @@ public class CrypterPanel extends JPanel {
 	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
 	 */
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:200,grow 300][70,grow]", "[:40:50px,top][4px:4px:4px][35][4px][100][140,grow][:10px:10px][280,grow]"));
+		setLayout(new MigLayout("", "[:5px:5px][200:200:200][170:170:170][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:250px:450px,grow][:70:100px]", "[:40:50px,top][4px:4px:4px][35][4px][100,grow][140,grow][:10px:10px][280,grow][:1px:1px]"));
 		
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
 		panelHeader.setBorder(new LineBorder(new Color(64, 64, 64), 4));
-		panelHeader.setBackground(new Color(176, 196, 222));
-		add(panelHeader, "cell 0 0 9 1,grow");
+		panelHeader.setBackground(new Color(205, 92, 92));
+		add(panelHeader, "cell 0 0 10 1,grow");
 		panelHeader.setLayout(new MigLayout("", "[50%][50%]", "[40]"));
 		
 		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
@@ -316,10 +326,10 @@ public class CrypterPanel extends JPanel {
 				
 				if (selected!=null && selected.exists()) {
 					srcFile = selected;
+					panelVDragNDropPane.addFileToTree(selected);
 					String newdisplayed = HandleString.fitToMaxLentgh(selected.getName(), labelLengthLimit);
 					// update gui
-					lblSrcFileSel.setForeground(Color.GREEN);
-					lblSrcFileSel.setText(newdisplayed);
+					panelVDragNDropPane.message.setText("New file added to list!");
 					
 					appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
 					
@@ -359,13 +369,12 @@ public class CrypterPanel extends JPanel {
 		scrollPanelTab = new JScrollPane();
 		scrollPanelTab.setBorder(new LineBorder(Color.GRAY, 4));
 		scrollPanelTab.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPanelTab.setViewportBorder(new LineBorder(new Color(0, 0, 0), 2));
 		scrollPanelTab.getViewport().setBackground(Color.DARK_GRAY);
 		
 		panelStatus = new JPanel();
 		panelStatus.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panelStatus.setBackground(Color.BLACK);
-		add(panelStatus, "cell 0 2 9 1,grow");
+		add(panelStatus, "cell 0 2 10 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
 		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 70, 100, 80, 300, 120, 120, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
@@ -495,7 +504,7 @@ public class CrypterPanel extends JPanel {
 		btnCreept.setForeground(Color.BLACK);
 		btnCreept.setBorder(null);
 		btnCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
-		btnCreept.setBackground(new Color(204, 51, 51));
+		btnCreept.setBackground(new Color(154, 205, 50));
 		
 		btnDeCreept = new JButton("DeCreept");
 		btnDeCreept.setMargin(new Insets(0, 0, 0, 20));
@@ -554,7 +563,7 @@ public class CrypterPanel extends JPanel {
 			}
 		});
 		
-		add(scrollPanelTab, "cell 0 4 2 2,grow");
+		add(scrollPanelTab, "cell 1 4 2 3,grow");
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBorder(new LineBorder(new Color(0, 0, 0), 0));
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -572,6 +581,8 @@ public class CrypterPanel extends JPanel {
 			public void run() {
 				
 				File destinationDir = null;
+				// retrieve source file array from dragNDrop panel
+				srcFiles = panelVDragNDropPane.getTreeNodes();
 				
 				// ask user if he wants to delete decripted after closing ScrYpT
 				int deleteAfterClose = JOptionPane.showConfirmDialog(parentFrame, "Delete decripted file(s) after exiting ScrypT? (TEMP folder will be created on Desktop)",
@@ -597,76 +608,78 @@ public class CrypterPanel extends JPanel {
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
-				if (srcFile!=null && srcFile.exists() && destinationDir!=null) {
-					
-					if(!destinationDir.exists()) {
-						destinationDir.mkdir();
-					}
-					
-					// ONLY AES DECRYPT
-					if (mode.AES && !mode.STEG) {
-						try {
-							screepTManager = initAES(aesKey);
-							
-							// if only one file
-							if (srcFile.isFile()) {
-								resultOK = deCryptCurrentFile(srcFile, destinationDir);
-							
-							// if directory selected
-							}else if (srcFile.isDirectory()) {
-								resultOK = deCryptDirAES(srcFile, destinationDir);
+				if (!destinationDir.exists()) {
+					destinationDir.mkdir();
+				}
+				
+				for (File currentFile : srcFiles) {
+					if (currentFile != null && currentFile.exists() && destinationDir != null) {
+
+						// ONLY AES DECRYPT
+						if (mode.AES && !mode.STEG) {
+							try {
+								screepTManager = initAES(aesKey);
+
+								// if only one file
+								if (currentFile.isFile()) {
+									resultOK = deCryptCurrentFile(currentFile, destinationDir);
+
+									// if directory selected
+								} else if (currentFile.isDirectory()) {
+									resultOK = deCryptDirAES(currentFile, destinationDir);
+								}
+
+							} catch (UnsupportedEncodingException e1) {
+								resultOK = resetAfterException("Encoding Exception happened!", e1);
+							} catch (NoSuchPaddingException e1) {
+								resultOK = resetAfterException("Padding Exception happened!", e1);
+							} catch (NoSuchAlgorithmException e1) {
+								resultOK = resetAfterException("Algorithm Exception happened!", e1);
+							} catch (IOException e1) {
+								resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
+							} catch (Exception e1) {
+								resultOK = resetAfterException("Generic Exception occurred :(", e1);
 							}
 
-						} catch (UnsupportedEncodingException e1) {
-							resultOK = resetAfterException("Encoding Exception happened!", e1);
-						} catch (NoSuchPaddingException e1) {
-							resultOK = resetAfterException("Padding Exception happened!", e1);
-						} catch (NoSuchAlgorithmException e1) {
-							resultOK = resetAfterException("Algorithm Exception happened!", e1);
-						} catch (IOException e1) {
-							resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
-						} catch (Exception e1) {
-							resultOK = resetAfterException("Generic Exception occurred :(", e1);
-						}
-					
-					// ONLY STEG DECRYPT
-					} else if (!mode.AES && mode.STEG) {
-						try {
-							screepTManager = initSTEG(srcKeyImageFile);
-							
-							if (srcFile.isDirectory()) {
-								resultOK = deCryptDirSTEG(srcFile, destinationDir);
+							// ONLY STEG DECRYPT
+						} else if (!mode.AES && mode.STEG) {
+							try {
+								screepTManager = initSTEG(srcKeyImageFile);
+
+								if (currentFile.isDirectory()) {
+									resultOK = deCryptDirSTEG(currentFile, destinationDir);
+								}
+
+							} catch (IOException e1) {
+								resultOK = resetAfterException("IO Exception happened!", e1);
+							} catch (STEGException e1) {
+								resultOK = resetAfterException("STEG Exception happened!", e1);
+							} catch (Exception e1) {
+								resultOK = resetAfterException("Generic Exception occurred :(", e1);
 							}
 
-						} catch (IOException e1) {
-							resultOK = resetAfterException("IO Exception happened!", e1);
-						} catch (STEGException e1) {
-							resultOK = resetAfterException("STEG Exception happened!", e1);
-						} catch (Exception e1) {
-							resultOK = resetAfterException("Generic Exception occurred :(", e1);
-						}
-						
-					// COMPLETE DECRYPT
-					} else if (mode.AES && mode.STEG) {
-						try {
-							screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
+							// COMPLETE DECRYPT
+						} else if (mode.AES && mode.STEG) {
+							try {
+								screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
 
-							if (srcFile.isDirectory()) {
-								resultOK = deCryptDirSTEG(srcFile, destinationDir);
+								if (currentFile.isDirectory()) {
+									resultOK = deCryptDirSTEG(currentFile, destinationDir);
+								}
+
+							} catch (UnsupportedEncodingException e1) {
+								resultOK = resetAfterException("Encoding Exception happened!", e1);
+							} catch (NoSuchPaddingException e1) {
+								resultOK = resetAfterException("Padding Exception happened!", e1);
+							} catch (NoSuchAlgorithmException e1) {
+								resultOK = resetAfterException("Algorithm Exception happened!", e1);
+							} catch (IOException e1) {
+								resultOK = resetAfterException("IO Exception happened!", e1);
+							} catch (STEGException e1) {
+								resultOK = resetAfterException("STEG Exception happened!", e1);
+							} catch (Exception e1) {
+								resultOK = resetAfterException("Generic Exception occurred :(", e1);
 							}
-
-						} catch (UnsupportedEncodingException e1) {
-							resultOK = resetAfterException("Encoding Exception happened!", e1);
-						} catch (NoSuchPaddingException e1) {
-							resultOK = resetAfterException("Padding Exception happened!", e1);
-						} catch (NoSuchAlgorithmException e1) {
-							resultOK = resetAfterException("Algorithm Exception happened!", e1);
-						} catch (IOException e1) {
-							resultOK = resetAfterException("IO Exception happened!", e1);
-						} catch (STEGException e1) {
-							resultOK = resetAfterException("STEG Exception happened!", e1);
-						} catch (Exception e1) {
-							resultOK = resetAfterException("Generic Exception occurred :(", e1);
 						}
 					} 
 				}
@@ -684,8 +697,6 @@ public class CrypterPanel extends JPanel {
 					textAreaLog.setText(msg);
 					textAreaMain.setText(screepTManager.getOutputStats());
 					tabbedPane.setSelectedIndex(0);
-					lblSrcFileSel.setForeground(Color.yellow);
-					lblSrcFileSel.setText("Deselected after decription");
 					srcFile = null;
 
 				}else {					
@@ -719,6 +730,9 @@ public class CrypterPanel extends JPanel {
 				// get output asking to user
 				File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
 				
+				// retrieve source file array from dragNDrop panel
+				srcFiles = panelVDragNDropPane.getTreeNodes();
+				
 				// boolean value representing if everything went good
 				boolean resultOK = false;
 				
@@ -728,91 +742,93 @@ public class CrypterPanel extends JPanel {
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
-				if (srcFile!=null && srcFile.exists() && destinationDir!=null) {
-					
-					if(!destinationDir.exists()) {
-						destinationDir.mkdir();
-					}
-					
-					// ONLY AES CRYPT
-					if (mode.AES && !mode.STEG) {
-						try {
-							// initialize coder
-							screepTManager = initAES(aesKey);
-							
-							// if only one file
-							if (srcFile.isFile()) {
-								resultOK = cryptCurrentFile(srcFile, destinationDir);
-							
-							// if directory selected
-							}else if (srcFile.isDirectory()) {
-								resultOK = cryptDir(srcFile, destinationDir);
-							}
+				for (File currentFile : srcFiles) {
+					if (currentFile != null && currentFile.exists() && destinationDir != null) {
 
-						} catch (UnsupportedEncodingException e1) {
-							resultOK = resetAfterException("Encoding Exception happened!", e1);
-						} catch (NoSuchPaddingException e1) {
-							resultOK = resetAfterException("Padding Exception happened!", e1);
-						} catch (NoSuchAlgorithmException e1) {
-							resultOK = resetAfterException("Algorithm Exception happened!", e1);
-						} catch (IOException e1) {
-							resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
-						} catch (Exception e1) {
-							resultOK = resetAfterException("Generic Exception occurred :(", e1);
+						if (!destinationDir.exists()) {
+							destinationDir.mkdir();
 						}
-					
-					// ONLY STEG CRYPT
-					} else if (!mode.AES && mode.STEG) {
-						try {
-							
-							screepTManager = initSTEG(srcKeyImageFile);
-							
-							// if only one file
-							if (srcFile.isFile()) {
-								resultOK = cryptCurrentFile(srcFile, destinationDir);
-							
-							// if directory selected
-							}else if (srcFile.isDirectory()) {
-								resultOK = cryptDir(srcFile, destinationDir);
+
+						// ONLY AES CRYPT
+						if (mode.AES && !mode.STEG) {
+							try {
+								// initialize coder
+								screepTManager = initAES(aesKey);
+
+								// if only one file
+								if (currentFile.isFile()) {
+									resultOK = cryptCurrentFile(currentFile, destinationDir);
+
+									// if directory selected
+								} else if (currentFile.isDirectory()) {
+									resultOK = cryptDir(currentFile, destinationDir);
+								}
+
+							} catch (UnsupportedEncodingException e1) {
+								resultOK = resetAfterException("Encoding Exception happened!", e1);
+							} catch (NoSuchPaddingException e1) {
+								resultOK = resetAfterException("Padding Exception happened!", e1);
+							} catch (NoSuchAlgorithmException e1) {
+								resultOK = resetAfterException("Algorithm Exception happened!", e1);
+							} catch (IOException e1) {
+								resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
+							} catch (Exception e1) {
+								resultOK = resetAfterException("Generic Exception occurred :(", e1);
 							}
 
-						} catch (IOException e1) {
-							resultOK = resetAfterException("IO Exception happened!", e1);
-						} catch (STEGException e1) {
-							resultOK = resetAfterException("STEG Exception happened!", e1);
-						} catch (Exception e1) {
-							resultOK = resetAfterException("Generic Exception occurred :(", e1);
-						}
-						
-					// COMPLETE CRYPT
-					} else if (mode.AES && mode.STEG) {
-						try {
-							
-							screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
-							
-							// if only one file
-							if (srcFile.isFile()) {
-								resultOK = cryptCurrentFile(srcFile, destinationDir);
-							
-							// if directory selected
-							}else if (srcFile.isDirectory()) {
-								resultOK = cryptDir(srcFile, destinationDir);
+							// ONLY STEG CRYPT
+						} else if (!mode.AES && mode.STEG) {
+							try {
+
+								screepTManager = initSTEG(srcKeyImageFile);
+
+								// if only one file
+								if (currentFile.isFile()) {
+									resultOK = cryptCurrentFile(currentFile, destinationDir);
+
+									// if directory selected
+								} else if (currentFile.isDirectory()) {
+									resultOK = cryptDir(currentFile, destinationDir);
+								}
+
+							} catch (IOException e1) {
+								resultOK = resetAfterException("IO Exception happened!", e1);
+							} catch (STEGException e1) {
+								resultOK = resetAfterException("STEG Exception happened!", e1);
+							} catch (Exception e1) {
+								resultOK = resetAfterException("Generic Exception occurred :(", e1);
 							}
 
-						} catch (UnsupportedEncodingException e1) {
-							resultOK = resetAfterException("Encoding Exception happened!", e1);
-						} catch (NoSuchPaddingException e1) {
-							resultOK = resetAfterException("Padding Exception happened!", e1);
-						} catch (NoSuchAlgorithmException e1) {
-							resultOK = resetAfterException("Algorithm Exception happened!", e1);
-						} catch (IOException e1) {
-							resultOK = resetAfterException("IO Exception happened!", e1);
-						} catch (STEGException e1) {
-							resultOK = resetAfterException("STEG Exception happened!", e1);
-						} catch (AESException e1) {
-							resultOK = resetAfterException("AES Exception happened!", e1);
-						} catch (Exception e1) {
-							resultOK = resetAfterException("Generic Exception occurred :(", e1);
+							// COMPLETE CRYPT
+						} else if (mode.AES && mode.STEG) {
+							try {
+
+								screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
+
+								// if only one file
+								if (currentFile.isFile()) {
+									resultOK = cryptCurrentFile(currentFile, destinationDir);
+
+									// if directory selected
+								} else if (currentFile.isDirectory()) {
+									resultOK = cryptDir(currentFile, destinationDir);
+								}
+
+							} catch (UnsupportedEncodingException e1) {
+								resultOK = resetAfterException("Encoding Exception happened!", e1);
+							} catch (NoSuchPaddingException e1) {
+								resultOK = resetAfterException("Padding Exception happened!", e1);
+							} catch (NoSuchAlgorithmException e1) {
+								resultOK = resetAfterException("Algorithm Exception happened!", e1);
+							} catch (IOException e1) {
+								resultOK = resetAfterException("IO Exception happened!", e1);
+							} catch (STEGException e1) {
+								resultOK = resetAfterException("STEG Exception happened!", e1);
+							} catch (AESException e1) {
+								resultOK = resetAfterException("AES Exception happened!", e1);
+							} catch (Exception e1) {
+								resultOK = resetAfterException("Generic Exception occurred :(", e1);
+							}
 						}
 					} 
 				}
@@ -830,8 +846,6 @@ public class CrypterPanel extends JPanel {
 					textAreaLog.setText(msg);
 					textAreaMain.setText(screepTManager.getOutputStats());
 					tabbedPane.setSelectedIndex(0);
-					lblSrcFileSel.setForeground(Color.yellow);
-					lblSrcFileSel.setText("Deselected after encription");
 					srcFile = null;
 
 				}else {
@@ -893,9 +907,10 @@ public class CrypterPanel extends JPanel {
 		
 		scrollPaneText = new JScrollPane();
 		scrollPaneText.setBorder(new LineBorder(Color.GRAY, 4));
-		add(scrollPaneText, "cell 3 4 6 4,grow");
+		add(scrollPaneText, "cell 3 4 5 4,grow");
 		
 		textAreaMain = new JTextArea();
+		textAreaMain.setWrapStyleWord(true);
 		textAreaMain.setRequestFocusEnabled(false);
 		textAreaMain.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		textAreaMain.setBackground(SystemColor.menu);
@@ -910,6 +925,9 @@ public class CrypterPanel extends JPanel {
 	}
 	
 	public void configureNstartTree() {
+		
+		/** TREE FOR KEY IMAGES **/
+		
 		treeModel = new FileTreeModel(KEY_DICTIONARY_FILE);
 		treeListener = new TreeSelectionListener() {
 			
@@ -932,26 +950,69 @@ public class CrypterPanel extends JPanel {
 				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter( currentConf, thisPanel);			
 			}
 		};
+		
 		// initialize tree 
 		
 		scrollPaneTree = new JScrollPane();
 		scrollPaneTree.setBackground(Color.DARK_GRAY);
 		scrollPaneTree.setBorder(new LineBorder(Color.LIGHT_GRAY, 4));
-		add(scrollPaneTree, "cell 0 7 2 1,grow");
+		add(scrollPaneTree, "cell 1 7 2 1,grow");
 		tree= new JTree(treeModel);
 		tree.setRequestFocusEnabled(false);
 		tree.setFont(new Font("SansSerif", Font.BOLD, 14));
+		
+		/** TREE TO DRAG AND DROP SOURCE FILES **/
+		
+		scrollPaneDragNDropSource = new JScrollPane();
+		scrollPaneDragNDropSource.setBackground(Color.LIGHT_GRAY);
+		scrollPaneDragNDropSource.setBorder(new LineBorder(Color.GRAY, 4));
+		add(scrollPaneDragNDropSource, "cell 8 4 2 4,grow");
+		
+		panelBackgroundDragSources = new JPanel();
+		panelBackgroundDragSources.setBackground(new Color(220, 220, 220));
+		scrollPaneDragNDropSource.setViewportView(panelBackgroundDragSources);
+		panelBackgroundDragSources.setLayout(new MigLayout("", "[][grow]", "[][][][65%,grow][25%,grow]"));
+		
+		lblSelectedFilesDragTitle = new JLabel("Selected Files Pool");
+		lblSelectedFilesDragTitle.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblSelectedFilesDragTitle.setBorder(null);
+		lblSelectedFilesDragTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSelectedFilesDragTitle.setForeground(Color.BLACK);
+		lblSelectedFilesDragTitle.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
+		lblSelectedFilesDragTitle.setBackground(new Color(112, 128, 144));
+		panelBackgroundDragSources.add(lblSelectedFilesDragTitle, "cell 0 0 2 1,growx");
+		
+		separatorDragNDropTitle = new JSeparator();
+		panelBackgroundDragSources.add(separatorDragNDropTitle, "cell 1 1,growx");
+		
+		treeSourcesDragAndDrop = new JTree();
+		treeSourcesDragAndDrop.setBackground(new Color(220, 220, 220));
+		panelBackgroundDragSources.add(treeSourcesDragAndDrop, "cell 0 2 2 2,grow");
+		
+		panelVDragNDropPane = new VirtualFileDropPane(treeSourcesDragAndDrop, scrollPaneDragNDropSource);
+		panelVDragNDropPane.message.setText("Drag your files here!");
+		panelVDragNDropPane.message.setFont(new Font("SansSerif", Font.BOLD, 20));
+		panelVDragNDropPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
+		panelVDragNDropPane.setBackground(Color.LIGHT_GRAY);
+		panelBackgroundDragSources.add(panelVDragNDropPane, "cell 0 4 2 1,grow");
 	}
 	
 	public void initializeTree() {
 		
+		UIDefaults paneDefaults = new UIDefaults();
+	    paneDefaults.put("Tree.selectionBackground",Color.BLACK);
+	    
+		/** TREE TO DRAG AND DROP SOURCE FILES **/
+//		treeSourcesDragAndDrop.setCellRenderer(new TreeCellRendererDark());
+	    treeSourcesDragAndDrop.putClientProperty("Nimbus.Overrides",paneDefaults);
+	    treeSourcesDragAndDrop.putClientProperty("Nimbus.Overrides.InheritDefaults",false);
+		
+		/** TREE FOR KEY IMAGES **/
+		
 		tree.setVisibleRowCount(10);		
 		// set custom graphic renderer to jtree
 	    // tree.setCellRenderer(new TreeCellRendererDark());
-		
 		tree.setBackground(Color.DARK_GRAY);
-		UIDefaults paneDefaults = new UIDefaults();
-	    paneDefaults.put("Tree.selectionBackground",Color.BLACK);
 		tree.putClientProperty("Nimbus.Overrides",paneDefaults);
 		tree.putClientProperty("Nimbus.Overrides.InheritDefaults",false);
 		scrollPaneTree.setViewportView(tree);
@@ -973,12 +1034,18 @@ public class CrypterPanel extends JPanel {
 		//(see enum custom type)
 		boolean ready = true;
 		String checkEsit = "";
+		int selectedFilesN = panelVDragNDropPane.getNumFirstLevelNodes(); 
 		
-		if(srcFile == null || lblSrcFileSel.getText().equals("No file selected")) {
+		if(selectedFilesN == 0) {
 			// MISSING source file
-			labelFlagCodeReady.setForeground(Color.red);
+			lblSrcFileSel.setText("No file selected");
+			lblSrcFileSel.setForeground(Color.YELLOW);
+			labelFlagCodeReady.setForeground(Color.RED);
 			checkEsit += " - Source File missing - ";
 			ready = false;
+		}else {
+			lblSrcFileSel.setForeground(Color.GREEN);
+			lblSrcFileSel.setText(selectedFilesN + " selected");
 		}
 		
 		if(srcKeyImageFile==null && selectedMode.isSTEG()) {
