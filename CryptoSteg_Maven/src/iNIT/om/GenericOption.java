@@ -11,6 +11,7 @@ public class GenericOption {
 	// FILEDS
 	private String userName;
 	private String charset;
+	private boolean ultraSecure;
 	private boolean flagAes;  // flag che indica se � attiva la fase di codifica/decodifica AES
 	private boolean flagSteg; // flag che indica se � attiva la fase di codifica/decodifica Steganografica
 	
@@ -18,11 +19,12 @@ public class GenericOption {
 		
 	}
 	
-	public GenericOption(String user, String chars, boolean AES, boolean STEG) {
+	public GenericOption(String user, String chars, boolean AES, boolean STEG, boolean ultraSec) {
 		userName = user;
 		charset = chars;
 		flagAes = AES;
 		flagSteg = STEG;
+		ultraSecure = ultraSec;
 	}
 
 	public String getUserName() {
@@ -39,6 +41,14 @@ public class GenericOption {
 
 	public void setCharset(String charset) {
 		this.charset = charset;
+	}
+
+	public boolean isUltraSecure() {
+		return ultraSecure;
+	}
+
+	public void setUltraSecure(boolean ultraSecure) {
+		this.ultraSecure = ultraSecure;
 	}
 
 	public boolean isFlagAes() {

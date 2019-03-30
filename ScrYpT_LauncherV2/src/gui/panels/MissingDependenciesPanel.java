@@ -1,6 +1,8 @@
 package gui.panels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -72,14 +74,14 @@ public class MissingDependenciesPanel extends JDialog{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow][50%,grow]", "[50px:80px][grow][40px:n][40px:n]"));
 		
-		lblTitleHeaderMessage = new JLabel("Some dependencies are missing, if they're critical you have to solve them before to start ScrYpt!");
+		lblTitleHeaderMessage = new JLabel("If some dependencies are missing and they're critical, you have to solve them before to start ScrYpt!");
 		lblTitleHeaderMessage.setForeground(new Color(211, 211, 211));
 		lblTitleHeaderMessage.setBackground(Color.BLACK);
 		lblTitleHeaderMessage.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		lblTitleHeaderMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitleHeaderMessage.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblTitleHeaderMessage.setOpaque(true);
-		lblTitleHeaderMessage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		lblTitleHeaderMessage.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 3 1,grow");
 		
 		table = new JTable();
@@ -180,9 +182,6 @@ public class MissingDependenciesPanel extends JDialog{
 					
 					locateDependencies(table.getSelectedRows());
 					
-					parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
-					checkCriticalMissingDependencies();
-					updateDependencyIssueTable();
 				}
 			}
 		});
@@ -320,7 +319,7 @@ public class MissingDependenciesPanel extends JDialog{
 		
 		for(DependencyModel currentDependency : dependeciesMissing) {
 			DefaultTableModel model = (DefaultTableModel) table.getModel();
-			model.addRow(new Object[]{currentDependency.dependencyName, currentDependency.isCritical, ""});
+			model.addRow(new Object[]{currentDependency.dependencyName, currentDependency.isCritical, currentDependency.solution});
 		}
 		table.revalidate();
 		table.repaint();
@@ -370,6 +369,9 @@ public class MissingDependenciesPanel extends JDialog{
 			ActionEvent event = new ActionEvent(new Button(), ActionEvent.ACTION_PERFORMED, "Anything", now.getTime(), 0);
 			if(locator != null) {
 				locator.actionPerformed(event);
+				parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
+				checkCriticalMissingDependencies();
+				updateDependencyIssueTable();
 			}
 		}
 	}
@@ -405,7 +407,8 @@ public class MissingDependenciesPanel extends JDialog{
 		
 		if(OS.isWindows()) {
 			try {
-				Process windowsProcess = new ProcessBuilder(relativePathToLauncher).start();
+				List<String> cmds = Arrays.asList("cmd.exe", "/C", "start",relativePathToLauncher);
+				Process windowsProcess = new ProcessBuilder(cmds).start();
 				InputStream inStream = windowsProcess.getInputStream();
 				logger.info(SysUtils.readProcessOutput(inStream));
 				inStream.close();

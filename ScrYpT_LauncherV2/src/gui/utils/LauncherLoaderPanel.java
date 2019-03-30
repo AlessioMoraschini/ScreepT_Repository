@@ -8,7 +8,6 @@ import java.awt.Image;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
-import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JProgressBar;
 
@@ -38,7 +37,7 @@ public class LauncherLoaderPanel extends JPanel{
 		
 		layeredPane = new JLayeredPane();
 		add(layeredPane, "name_9667472767499");
-		layeredPane.setLayout(new MigLayout("", "[grow]", "[grow][][20px]"));
+		layeredPane.setLayout(new MigLayout("", "[grow]", "[grow][][:20px:20px]"));
 		
 		JLabel lblBackgroundImage = new JLabel("");
 		layeredPane.add(lblBackgroundImage, "cell 0 0,aligny baseline");
@@ -50,7 +49,11 @@ public class LauncherLoaderPanel extends JPanel{
 		progressBar = new JProgressBar();
 		layeredPane.setLayer(progressBar, 1);
 		progressBar.setForeground(Color.GREEN);
-		layeredPane.add(progressBar, "cell 0 2,growx");
+		layeredPane.add(progressBar, "cell 0 2,growx,aligny baseline");
+		
+		GUIStyelSettings.setStyle(GUIStyelSettings.PlafLookAndFeels);
+		
+		logger.info(this.getClass().getName() + " Started");
 	}
 	
 	@Override

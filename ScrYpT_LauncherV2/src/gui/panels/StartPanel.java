@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import gui.ScrYpTLauncher;
+import gui.utils.GUIStyelSettings;
+
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -26,12 +28,14 @@ import java.io.IOException;
 import java.awt.Button;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
+import java.awt.Insets;
 
 public class StartPanel extends JFrame{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(StartPanel.class); 
 			
+	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 
 	public ScrYpTLauncher LAUNCHER;
@@ -63,16 +67,16 @@ public class StartPanel extends JFrame{
 		
 		this.LAUNCHER = launcher;
 		this.setTitle(frameTitle);
-		this.setBounds(screenWidth/4, screenHeight/4, 516, 191);
+		this.setBounds(screenWidth/4, screenHeight/4, 480, 180);
 		
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setLayout(new MigLayout("", "[grow][40px:n,grow][20px:n,grow][20px:n,grow][40px:n,grow][20px]", "[30px,grow][25px][25px][25px]"));
+		mainPanel.setLayout(new MigLayout("", "[grow][40px:n,grow][40px:n,grow][20px:n,grow][40px:n,grow][20px]", "[30px,grow][25px][25px][25px]"));
 		
 		JLabel lblWelcomeToScrypt = new JLabel("Welcome to ScrYpT, chose your preferences... or just start me :)");
 		lblWelcomeToScrypt.setForeground(Color.WHITE);
-		lblWelcomeToScrypt.setFont(new Font("Segoe UI Black", Font.PLAIN, 14));
+		lblWelcomeToScrypt.setFont(new Font("Segoe UI Black", Font.PLAIN, 13));
 		mainPanel.add(lblWelcomeToScrypt, "cell 0 0 6 1,alignx center");
 		
 		btnCustomizeParameters = new JButton("Customize launch parameters");
@@ -84,11 +88,12 @@ public class StartPanel extends JFrame{
 		mainPanel.add(btnCustomizeParameters, "cell 0 1 3 1,grow");
 		
 		btnStartScrypt = new JButton("Start ScrYpT");
+		btnStartScrypt.setMargin(new Insets(10, 10, 10, 10));
 		btnStartScrypt.setForeground(new Color(0, 0, 0));
 		btnStartScrypt.setBorder(null);
-		btnStartScrypt.setBackground(new Color(112, 128, 144));
+		btnStartScrypt.setBackground(new Color(107, 142, 35));
 		btnStartScrypt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 22));
+		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		mainPanel.add(btnStartScrypt, "cell 3 1 3 2,grow");
 		
 		btnDependencyManager = new JButton("Open Dependency Manager");
@@ -179,13 +184,7 @@ public class StartPanel extends JFrame{
 			logger.error("Exception happened!", e1);
 		}
 		// initialize default UI
-		try {
-			UIManager.setLookAndFeel(NimbusLookAndFeel);
-			logger.debug(NimbusLookAndFeel+" initialized correctly.");
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e3) {
-			logger.error("Exception happened!\n\n", e3);
-		}
+		GUIStyelSettings.setStyle(GUIStyelSettings.NimbusLookAndFeel);
 	}
 	
 }

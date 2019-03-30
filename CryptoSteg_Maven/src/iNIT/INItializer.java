@@ -89,6 +89,7 @@ public class INItializer {
 //		}
 		
 		// LOAD GENERAL OPTIONS
+		genOpt.setUltraSecure(Boolean.parseBoolean(iniReadFile.get(GEN_OPT, "flagUltraSecure")));
 		genOpt.setFlagAes(Boolean.parseBoolean(iniReadFile.get(GEN_OPT, "flagCodificaAes")));
 		genOpt.setFlagSteg(Boolean.parseBoolean(iniReadFile.get(GEN_OPT, "flagCodificaSteg")));
 		genOpt.setUserName(iniReadFile.get(GEN_OPT, "userName"));
@@ -193,6 +194,7 @@ public class INItializer {
 		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
 		iniFile.put(GEN_OPT, "flagCodificaAes", genOpt.isFlagAes());
 		iniFile.put(GEN_OPT, "flagCodificaSteg", genOpt.isFlagSteg());
+		iniFile.put(GEN_OPT, "flagUltraSecure", genOpt.isUltraSecure());
 		
 		// set INIFILE-GUI OPTIONS
 		if(guiOpt.getPreferredStyle().equals("")) {
@@ -310,32 +312,35 @@ public class INItializer {
 		String result = "";
 		// DEBUG ReadWrite Structure
 		//result="\n[Debug-Read] String INIFILE -> "+ iniReadFile.getFile().getAbsolutePath();
-		//result += "\n[Debug-Write] String INIFILE -> "+ iniFile.getFile().getAbsolutePath()+"\n\n  -----------------\n\n ";
+		//builder.append"\n[Debug-Write] String INIFILE -> "+ iniFile.getFile().getAbsolutePath()+"\n\n  -----------------\n\n ";
+		StringBuilder builder = new StringBuilder();
 		
-		result+= ("\n\n### Config file: "+this.getIniFile().getFile().getAbsolutePath()+"\n\n");
+		builder.append("\n\n### Config file: "+this.getIniFile().getFile().getAbsolutePath()+"\n\n");
 		// concat AES OPTIONS
-		result += ("\n ---- AES OPTIONS -----\n\n " + "AESKEY: " + aesOpt.getAesKey()+"\n ");
+		builder.append("\n ---- AES OPTIONS -----\n\n " + "AESKEY: " + aesOpt.getAesKey()+"\n ");
 		// concat GENERAL OPTIONS
-		result += (" \n ---- GENERAL OPTIONS -----\n\n " + "USERNAME: " + genOpt.getUserName()+"\n ");
-		result += ("CHARSET: " + genOpt.getCharset()+"\n ");
-		result += ("FLAGAES: " + genOpt.isFlagAes()+"\n ");
-		result += ("FLAGSTEG: " + genOpt.isFlagSteg()+"\n ");
+		builder.append(" \n ---- GENERAL OPTIONS -----\n\n " + "USERNAME: " + genOpt.getUserName()+"\n ");
+		builder.append("CHARSET: " + genOpt.getCharset()+"\n ");
+		builder.append("ULTRA-SECURE: " + genOpt.isUltraSecure()+"\n ");
+		builder.append("FLAGAES: " + genOpt.isFlagAes()+"\n ");
+		builder.append("FLAGSTEG: " + genOpt.isFlagSteg()+"\n ");
 		// concat GUI_OPTION
-		result += (" \n ---- GUI OPTIONS -----\n\n " + "PREFERRED_STYLE: " + guiOpt.getPreferredStyle()+"\n ");
-		result += ("MENU_FONT_SIZE: " + guiOpt.getMenuFontSize()+"\n ");
-		result += ("LOG_FONT_SIZE: " +guiOpt.getLogFontSize()+"\n ");
-		result += ("DARK_GUI_NUMBUS: " +guiOpt.isDarkGuiNimbus()+"\n ");
+		builder.append(" \n ---- GUI OPTIONS -----\n\n " + "PREFERRED_STYLE: " + guiOpt.getPreferredStyle()+"\n ");
+		builder.append("MENU_FONT_SIZE: " + guiOpt.getMenuFontSize()+"\n ");
+		builder.append("LOG_FONT_SIZE: " +guiOpt.getLogFontSize()+"\n ");
+		builder.append("DARK_GUI_NUMBUS: " +guiOpt.isDarkGuiNimbus()+"\n ");
 		// concat FILE OPTIONS
-		result += (" \n ---- FILE OPTIONS -----\n\n " + "LAST_DST_FOLDERPATH: " + fileOpt.getLastDstFolderPath()+"\n ");
-		result += ("LAST_SRC_FOLDERPATH: " +fileOpt.getLastSrcFolderPath()+"\n ");
-		result += ("FLAG_AUTOSAVE: " + fileOpt.isFlagAutosave()+"\n ");
-		result += ("AUTOSAVE_INTERVAL: " + fileOpt.getAutosaveInterval()+"\n ");
-		result += ("FLAGOVERWRITE: " + fileOpt.isFlagOverwrite()+" \n ");
+		builder.append(" \n ---- FILE OPTIONS -----\n\n " + "LAST_DST_FOLDERPATH: " + fileOpt.getLastDstFolderPath()+"\n ");
+		builder.append("LAST_SRC_FOLDERPATH: " +fileOpt.getLastSrcFolderPath()+"\n ");
+		builder.append("FLAG_AUTOSAVE: " + fileOpt.isFlagAutosave()+"\n ");
+		builder.append("AUTOSAVE_INTERVAL: " + fileOpt.getAutosaveInterval()+"\n ");
+		builder.append("FLAGOVERWRITE: " + fileOpt.isFlagOverwrite()+" \n ");
 		// concat STEGANO OPTIONS
-		result += (" \n ---- STEGANO OPTIONS -----\n\n " + "DEFAULT_HEIGHT: " + steganOpt.getDefaultHeight()+"\n ");
-		result += ("DEFAULT_WIDTH: " + steganOpt.getDefaultWidth()+"\n ");
-		result += ("IMG_RECENT_PATH: " +steganOpt.getImgRecentPath()+"\n ");
+		builder.append(" \n ---- STEGANO OPTIONS -----\n\n " + "DEFAULT_HEIGHT: " + steganOpt.getDefaultHeight()+"\n ");
+		builder.append("DEFAULT_WIDTH: " + steganOpt.getDefaultWidth()+"\n ");
+		builder.append("IMG_RECENT_PATH: " +steganOpt.getImgRecentPath()+"\n ");
 
+		result = builder.toString();
 		
 		return result;
 	}

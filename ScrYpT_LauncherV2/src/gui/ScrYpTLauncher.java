@@ -47,6 +47,9 @@ import launcherutils.om.OSinfo;
  */
 public class ScrYpTLauncher {
 
+	// KeyGenPanel logger
+	static Logger logger = Logger.getLogger(ScrYpTLauncher.class); 
+		
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	public static final String LAUNCHER_CONTAINER_PATH = "LAUNCHER/";
 	public static final String APPLICATION_DIR = "Application/";
@@ -64,16 +67,17 @@ public class ScrYpTLauncher {
 	public static final String NOT_FOUND_JVM = "";
 	public static final String JVM_ARGS = "-Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
 	
-	// use this as flag to signal that something is not ok with dependencies
-	public static  boolean criticalDependenciesOK = false;
-	public static ArrayList<DependencyModel> dependeciesMissing;
-	
 	// DEFAULT INI
 	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "/Launcher_Configuration.ini"; 
 	public static final String INI_JVM_OPT = "JVM_OPTIONS";
 	public static final String INI_APP_OPT = "APPLICATION_OPTIONS";
+	
+	// use this as flag to signal that something is not ok with dependencies
+	public static  boolean criticalDependenciesOK = false;
+	public static ArrayList<DependencyModel> dependeciesMissing;
 	private static Wini iniConfigFile;
 	public static boolean showInstallOptions = true;
+	public static boolean hideNStartDirect = false;
 	
 	// USER MANUALLY LOCATED DEPENDENCY PATHS
 	public String manualPath_Jvm = NOT_FOUND_JVM;
@@ -83,9 +87,6 @@ public class ScrYpTLauncher {
 	public ActionListener actionLocManually_Jvm;
 	public ActionListener actionDownNInstall_Jvm;
 	
-	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(ScrYpTLauncher.class); 
-		
 ////////////////////////////////////// FIELDS //////////////////////////////////////
 
 	public static OSinfo currentOS;
@@ -99,7 +100,7 @@ public class ScrYpTLauncher {
 	// MAIN START POINT
 	public static void main(String[] args) {
 		
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg");
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", 200);
 		for (int i = 0; i < 15; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing launcher" + dots;
@@ -149,6 +150,15 @@ public class ScrYpTLauncher {
 		analyzeBeforeLauncher();
 		
 		loaderGraphics.update("Initializing graphics...", 80);
+		
+		// if direct launch configured launch directly commands
+		if(hideNStartDirect) {
+			appLogEnd();
+			loaderGraphics.update("Ready", 100);
+			launchCommands();
+			System.exit(0);
+		}
+		
 		// GUI launcher initialization
 		launcherMainFrame = new StartPanel("ScrYpt Launcher", this);
 		loaderGraphics.update("Ready", 100);
@@ -166,10 +176,14 @@ public class ScrYpTLauncher {
 			launcherMainFrame.missingDependenciesPanel = new MissingDependenciesPanel("There are dependencies not found!", launcherMainFrame);
 			launcherMainFrame.missingDependenciesPanel.setVisible(true);
 			launcherMainFrame.missingDependenciesPanel.requestFocus();
+			logger.info("Missing dependencies detected, opening installer panel");
 		}
+		logger.info(this.getClass().getName() + " Loaded");
 	}
 	
 	public void analyzeBeforeLauncher() {
+		
+		logger.info("Started to analyze before launch");
 		
 		execCommand = new LinkedList<String>();	
 		dependeciesMissing = new ArrayList<DependencyModel>();
@@ -189,6 +203,8 @@ public class ScrYpTLauncher {
 		addInstallDependenciesCommand();
 		
 		addLaunchScrYpTCommand();
+		
+		logger.info("Launch command generated:\n\n" + getCombinedCommandList());
 	}
 	
 	public void addToMissingDependenciesJVM() {
@@ -197,7 +213,7 @@ public class ScrYpTLauncher {
 		String localPathMacInstaller = "";
 		DependencyLocalPath pathsLocalInstaller = new DependencyLocalPath(localPathWinInstaller, localPathLinInstaller, localPathMacInstaller);
 		
-		DependencyModel javaDependency = new DependencyModel("Compatible JAVA JVM not found", "Download/Locate", false, JVM_URL_INSTALL, pathsLocalInstaller, actionDownNInstall_Jvm, actionLocManually_Jvm);
+		DependencyModel javaDependency = new DependencyModel("Compatible JAVA JVM not found", "Download/Install/Locate", false, JVM_URL_INSTALL, pathsLocalInstaller, actionDownNInstall_Jvm, actionLocManually_Jvm);
 		dependeciesMissing.add(javaDependency);
 	}
 	
@@ -205,14 +221,18 @@ public class ScrYpTLauncher {
 	 * retrieve list of commands, write to file and run it in current OS
 	 */
 	public void launchCommands() {
+		
+		logger.info("Launching commands on currentOS: " + currentOS.getOsName() + currentOS.getOsArch());
+		
 		String combinedCommands = getCombinedCommandList();
 		// TODO use initpath to call exec
 		
 		try {
 			String initPath = writeInitBatShAndGetPath(combinedCommands);
 			Runtime.getRuntime().exec(initPath);
+			logger.info("Commands launched without exceptions :)"); 
 		} catch (IOException e) {
-			logger.error(" !!! Error launching main application !!!\n\n", e);
+			logger.error(" !!! Error launching generated commands file !!!\n\n", e);
 		}
 	}
 	
@@ -226,9 +246,13 @@ public class ScrYpTLauncher {
 	private static String writeInitBatShAndGetPath(String commandList) throws IOException {
 
 		String initFilePath = (!currentOS.isWindows())? "LauncherBash.sh" : "LauncherBatch.bat";
+		logger.info("Creating launcher file : " + initFilePath);
 		
 		// write commands to build bash/batch starter file
-		FileUtils.writeStringToFile(commandList, new File(initFilePath), true);
+		boolean written = FileUtils.writeStringToFile(commandList, new File(initFilePath), true);
+		
+		String msg = (written)? "Write completed correctly :)" : "Write not succeded for some error :(";
+		logger.info(msg);
 		
 		return initFilePath;
 	}	
@@ -243,6 +267,8 @@ public class ScrYpTLauncher {
 	 */
 	private String retrieveCorrectJVMS() {
 		
+		logger.info("Started java installed versions check!");
+		
 		// if current is correct return it and exit method
 		if(checkSingleJavaVersionOK(SysUtils.getCurrentJVMversion())) {
 			return ";"; 
@@ -252,6 +278,9 @@ public class ScrYpTLauncher {
 		ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 		String foundCorrect = compareWithAdmittedJVMS(foundJvmHomeList);
 		foundCorrect = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
+		logger.info("Versions found: " + foundJvmHomeList);
+		logger.info("Found correct one: " + foundCorrect);
+		
 		return foundCorrect;
 	}
 	
@@ -401,6 +430,8 @@ public class ScrYpTLauncher {
 	// read configuration from ini file with null-value check
 	public static void initFromINIFile(){
 		try {
+			logger.info("Loading INI launcher_configuration file...");
+			
 			iniConfigFile = new Wini(new File(DEFAULT_INI_PATH));
 			
 			// JVM OPTIONS WITH NULL CHECK
@@ -416,7 +447,10 @@ public class ScrYpTLauncher {
 			MAIN_JAR_FILE = (MAIN_JAR_INI != null)? MAIN_JAR_INI : MAIN_JAR_FILE;
 			String autoInstallerOpt = iniConfigFile.get(INI_APP_OPT, "autoShowInstallOpt");
 			showInstallOptions = (autoInstallerOpt!=null && autoInstallerOpt.equalsIgnoreCase("false"))? false : true;
+			String hideNStart = iniConfigFile.get(INI_APP_OPT, "flagHideNStartDirect");
+			hideNStartDirect = (hideNStart!=null && hideNStart.equalsIgnoreCase("true"))? true : false;
 			
+			logger.info("Launcher_configuration file loaded!");
 		} catch (InvalidFileFormatException e) {
 			logger.error("Invalid format detected while trying to read " + DEFAULT_INI_PATH, e);
 		} catch (IOException e) {

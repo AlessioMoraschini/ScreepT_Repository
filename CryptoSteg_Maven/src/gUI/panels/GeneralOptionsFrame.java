@@ -3,8 +3,11 @@ package gUI.panels;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
+import org.ini4j.InvalidFileFormatException;
+import org.ini4j.Wini;
 
 import gUI.mainGUI;
+import gui.ScrYpTLauncher;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import uTILS.local.ListCharsets;
@@ -70,9 +73,11 @@ public class GeneralOptionsFrame extends JFrame{
 	
 	// reference to configuration
 	private INItializer currentConfiguration;
+	private Wini launcherConfiguration;
 	
 	// flag to signal active
 	public static boolean active=false;
+	private JCheckBox chckbxHideLauncherAt;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		
@@ -88,22 +93,18 @@ public class GeneralOptionsFrame extends JFrame{
 		
 		// initialize config
 		currentConfiguration = currentConf;
+		try {
+			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
+		} catch (InvalidFileFormatException e1) {
+			logger.error("Invlid launcher configuration format!\n", e1);
+		} catch (IOException e1) {
+			logger.error("IO error setting launcher configuration file", e1);
+		}
 		
 		// assign this frame to variable
 		thisFrame = this;
 		
-		// initialize values from currentConfig
-		AUTOSAVE_INTERVAL = currentConfiguration.getFileOpt().getAutosaveInterval()/1000;
-		AUTOSAVE_FLAG = currentConfiguration.getFileOpt().isFlagAutosave();
-		CURRENT_USERNAME = currentConfiguration.getGenOpt().getUserName();
-		CHARSET = System.getProperty("file.encoding");
-		
-		// initialize default values (by value)
-		BACKUP_AUTOSAVE_INTERVAL = AUTOSAVE_INTERVAL;
-		BACKUP_AUTOSAVE_FLAG = AUTOSAVE_FLAG;
-		BACKUP_CURRENT_USERNAME = new String(CURRENT_USERNAME);
-		BACKUP_CHARSET = new String(CHARSET); 
-		
+		initializeValues();		
 		
 		logger.debug("Initialized.");
 		
@@ -115,7 +116,7 @@ public class GeneralOptionsFrame extends JFrame{
 		panel.setBorder(new LineBorder(Color.BLACK, 4));
 		panel.setBackground(Color.DARK_GRAY);
 		getContentPane().add(panel, "cell 1 0 9 1,grow");
-		panel.setLayout(new MigLayout("", "[10,grow][90%]", "[]"));
+		panel.setLayout(new MigLayout("", "[10,grow][10,grow][200px,grow]", "[]"));
 		
 		chckbxAutosave = new JCheckBox("Autosave");
 		chckbxAutosave.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -145,13 +146,21 @@ public class GeneralOptionsFrame extends JFrame{
 		lblIntMinutes.setFont(new Font("SansSerif", Font.BOLD, 13));
 		getContentPane().add(lblIntMinutes, "cell 6 2 3 1,alignx center,aligny center");
 		
+		chckbxHideLauncherAt = new JCheckBox("Hide Launcher at start");
+		panel.add(chckbxHideLauncherAt, "cell 1 0");
+		chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
+		chckbxHideLauncherAt.setHorizontalAlignment(SwingConstants.CENTER);
+		chckbxHideLauncherAt.setForeground(Color.WHITE);
+		chckbxHideLauncherAt.setFont(new Font("SansSerif", Font.BOLD, 14));
+		chckbxHideLauncherAt.setBackground(new Color(119, 136, 153));
+		
 		
 		JLabel lblGeneralOptions = new JLabel("General Options");
 		lblGeneralOptions.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblGeneralOptions.setForeground(new Color(230, 230, 250));
 		lblGeneralOptions.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
 		lblGeneralOptions.setBackground(Color.LIGHT_GRAY);
-		panel.add(lblGeneralOptions, "cell 1 0,alignx right");
+		panel.add(lblGeneralOptions, "cell 2 0,alignx right");
 		
 		JLabel lblIntervalInSeconds = new JLabel("Interval in Seconds");
 		lblIntervalInSeconds.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -251,7 +260,7 @@ public class GeneralOptionsFrame extends JFrame{
 		getContentPane().add(separator, "cell 1 6 9 1,growx");
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));
-		getContentPane().add(btnResetValues, "cell 1 8");
+		getContentPane().add(btnResetValues, "cell 1 8 2 1");
 		
 		JButton btnDiscard = new JButton("Discard");
 		btnDiscard.addActionListener(new ActionListener() {
@@ -279,6 +288,9 @@ public class GeneralOptionsFrame extends JFrame{
 				
 				// update gui
 	        	updateGUIComponents();	
+	        	
+	        	// write launcher configuration
+	    		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
 				
 				// close and apply new values without saving () windowclose listener will use updated values
 				//thisFrame.dispose();
@@ -293,18 +305,16 @@ public class GeneralOptionsFrame extends JFrame{
 		        		"overwrite configuration", JOptionPane.YES_NO_OPTION,
 		        		JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
 					
-					// write single values to file ini associated to currentConf
-					currentConf.writeSingleValue(currentConf.GEN_OPT, "userName", CURRENT_USERNAME);
-					currentConf.writeSingleValue(currentConf.GEN_OPT, "charset", CHARSET);
-					currentConf.writeSingleValue(currentConf.FILE_OPT, "flagAutosave", AUTOSAVE_FLAG);
-					currentConf.writeSingleValue(currentConf.FILE_OPT, "autosaveInterval", AUTOSAVE_INTERVAL*1000);
+					writeValues();
 					
 					// update backup values to current
-					setValues();
+					setValuesAndAdd();
 
 					logger.debug("SAVE => General Options saved.");
 					JOptionPane.showMessageDialog(thisFrame, "General Options Saved :)", "Saved!", JOptionPane.INFORMATION_MESSAGE);
-
+					
+					dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
+					
 				}else {
 					JOptionPane.showMessageDialog(thisFrame, "Ok, I wont save theese settings ;)", "Not saved!", JOptionPane.WARNING_MESSAGE);
 				}
@@ -346,6 +356,20 @@ public class GeneralOptionsFrame extends JFrame{
 
 	}
 	
+	private void initializeValues() {
+		// initialize values from currentConfig
+		AUTOSAVE_INTERVAL = currentConfiguration.getFileOpt().getAutosaveInterval()/1000;
+		AUTOSAVE_FLAG = currentConfiguration.getFileOpt().isFlagAutosave();
+		CURRENT_USERNAME = currentConfiguration.getGenOpt().getUserName();
+		CHARSET = System.getProperty("file.encoding");
+		
+		// initialize default values (by value)
+		BACKUP_AUTOSAVE_INTERVAL = AUTOSAVE_INTERVAL;
+		BACKUP_AUTOSAVE_FLAG = AUTOSAVE_FLAG;
+		BACKUP_CURRENT_USERNAME = new String(CURRENT_USERNAME);
+		BACKUP_CHARSET = new String(CHARSET); 
+	}
+	
 	/**
 	 * updates gui with current used values
 	 */
@@ -354,19 +378,9 @@ public class GeneralOptionsFrame extends JFrame{
     	spinnerInterval.setValue(AUTOSAVE_INTERVAL);
     	chckbxAutosave.setSelected(AUTOSAVE_FLAG);
     	comboCharsets.setSelectedItem(CHARSET);
+    	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
 	}
-	
-	/**
-	 * resets values to backup ones
-	 */
-	private void resetValues() {
-		// reset current values
-		AUTOSAVE_INTERVAL = BACKUP_AUTOSAVE_INTERVAL;
-		AUTOSAVE_FLAG = BACKUP_AUTOSAVE_FLAG;
-		CURRENT_USERNAME = BACKUP_CURRENT_USERNAME;
-		CHARSET = BACKUP_CHARSET;
-	}
-	
+		
 	/**
 	 * resets values to backup ones
 	 */
@@ -387,17 +401,6 @@ public class GeneralOptionsFrame extends JFrame{
 	}
 	
 	/**
-	 * sets values to backup ones
-	 */
-	private void setValues() {
-		// set current values
-		BACKUP_AUTOSAVE_INTERVAL = AUTOSAVE_INTERVAL;
-		BACKUP_AUTOSAVE_FLAG = AUTOSAVE_FLAG;
-		BACKUP_CURRENT_USERNAME = CURRENT_USERNAME;
-		BACKUP_CHARSET = CHARSET;
-	}
-	
-	/**
 	 * sets values to backup ones and adds them to configuration
 	 */
 	private void setValuesAndAdd() {
@@ -414,5 +417,32 @@ public class GeneralOptionsFrame extends JFrame{
 		currentConfiguration.getGenOpt().setCharset(CHARSET);
 		System.setProperty("file.encoding", CHARSET);
 
+	}
+	
+	private void writeValues() {
+		// write single values to file ini associated to currentConf
+		currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "userName", CURRENT_USERNAME);
+		currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "charset", CHARSET);
+		currentConfiguration.writeSingleValue(currentConfiguration.FILE_OPT, "flagAutosave", AUTOSAVE_FLAG);
+		currentConfiguration.writeSingleValue(currentConfiguration.FILE_OPT, "autosaveInterval", AUTOSAVE_INTERVAL*1000);
+		
+		// write launcher configuration
+		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
+	}
+	
+	private void writeLauncherHidingOption(boolean hideLauncher) {
+		try {
+			String valueHidden = (hideLauncher)? "true" : "false";
+			launcherConfiguration.put(ScrYpTLauncher.INI_APP_OPT, "flagHideNStartDirect", valueHidden );
+			launcherConfiguration.store();
+		} catch (IOException e) {
+			logger.error("Exception happened writing launcher configuration!", e);
+		}
+	}
+	
+	private boolean readLauncherHidingOption() {
+		String startDirectString = launcherConfiguration.get(ScrYpTLauncher.INI_APP_OPT, "flagHideNStartDirect");
+		boolean startDirect = (startDirectString.equalsIgnoreCase("true"))? true : false;
+		return startDirect;
 	}
 }

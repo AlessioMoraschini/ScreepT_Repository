@@ -24,6 +24,16 @@ public enum CryptoMode {COMPLETE("AS", true, true, true),
 		COMPL = comp;
 	}
 	
+	public static CryptoMode getModeFromBoolean(boolean aes, boolean steg) {
+		if(aes && !steg) {
+			return ONLY_AES;
+		}else if(!aes && steg) {
+			return ONLY_STEG;
+		}else {
+			return COMPLETE;
+		}
+	}
+	
 	// GETTER AND SETTERS
 	
 	public String getID() {

@@ -66,7 +66,10 @@ public class TextEditor extends JPanel {
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditor.class);
 	
-	// name used when using icons, remember to put in the correct folder or it will lanuch nullpointerException
+	//  RESOURCE FILES //
+	private final String LOREM_IPSUM = "Resources_Scrypt/LoremIpsum.txt";
+	
+	// ICONS //
 	public final String ICON_TEXT_CLEAR = "Resources_Scrypt/Icons/Clear.png";
 	public final String ICON_TEXT_BOLD = "Resources_Scrypt/Icons/Bold.png";
 	public final String ICON_TEXT_ITALIC = "Resources_Scrypt/Icons/Italic.png";
@@ -80,16 +83,80 @@ public class TextEditor extends JPanel {
 	public final String ICON_CRYPT = "Resources_Scrypt/Icons/Crypt.png";
 	public final String ICON_DECRYPT = "Resources_Scrypt/Icons/Decrypt.png";
 	public final String ICON_SPEAKER = "Resources_Scrypt/Icons/Speaker.png";
+	
+	// TOOLTIPS //
+	private static final String tooltipSaveTextFile = "[Ctrl+S] Choose name and folder, save current file";
+	private static final String tooltipLoadTextFile = "[Ctrl+O] Load source File";
+	private static final String tooltipSpeak = "[Ctrl+spacebar] Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable";
+	private static final String tooltipDecrypt = "[Ctrl+shift+D]Decrypt displayed text with given key";
+	private static final String tooltipCrypt = "[Ctrl+shift+C] Crypt displayed text with given key";
+	private static final String tooltipBackgroundColor = "Change background color (won't be saved in .txt)";
+	private static final String tooltipForegroundTxt = "Change text color (won't be saved in .txt)";
+	private static final String tooltipDarkSwitch = "Switch upon dark and light text combination";
+	private static final String tooltipUpperPostDots = "Makes text uppercase after dots a significat line brokers";
+	private static final String tooltipTt = "Makes textArea content uppercase";
+	private static final String tooltipTtTt = "Makes al initial characters uppercase";
+	private static final String tooltipLoremIpsum = "Insert classic test text \"Lorem Ipsum\"";
+	private static final String tooltipFontChooser = "Change font and text-properties";
+	private static final String tooltipComboFileFormat = "Choose file extension";
+	private static final String tooltipTemplates = "Choose between many different patterns of code to insert in you text";
+	private static final String tooltipCutWordsTo = "When selected, the text will be cropped to adapt the size of the text area";
+	private static final String tooltipFitMaintainWords = "When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)";
+	private static final String tooltipDefaultOpt = "Reset default text-graphics values";
+	private static final String tooltipUndo = "[Ctrl+Z] Undo Last";
+	private static final String tooltipClearText = "[Ctrl+canc] Erase the content of the current opened file displayed (without save)";
+	private static final String tooltipRedo = "[Alt+Z] Redo Last";
+	private static final String tooltipBoldText = "Set bold style to all text";
+	private static final String tooltipItalic = "Set italics style to all text"; 
+	
+	// GUI Objects //
+	public JCheckBox chkFitmantainwords;
+	public JCheckBox chkCutWordsTo;
+	
+	private JLabel lblSIZE;
+	private JLabel lblNewLabel;
+	private JLabel lblTextEditor;
+	private JLabel lblMargin;
+	private JLabel lblFontSize;
+	private JLabel lblCurrentFileLBL;
+	private JLabel lblCurrentFile;
+	private JLabel lblVoiceSpeed;
+	public JLabel lblAdvice;
+	
+	public JButton btntTextFormat;
+	public JButton btnSaveTextFile;
+	public JButton btnLoadTextFile;
+	public JButton btnSpeak;
+	public JButton btnDecrypt;
+	public JButton btnCrypt;
+	public JButton btnDark;
+	public JButton btnUpperPostDots;
+	public JButton btnTt;
+	public JButton btnTtTt;
+	public JButton btnBackgroundCol; 
+	public JButton btnLoremIpsum;
+	public JButton btnFontChooser;
+	public JButton btnTemplates;
+	public JButton btnDefaultOpt;
+	public JButton btnUndo;
+	public JButton btnClear;
+	public JButton btnRedo;
+	public JButton btnBold;
+	public JButton btnItaliC;
+	public JButton btnForegroundCol;
+	
+	public JComboBox comboFileFormat;
+	
+	public JSlider sliderSpokenSpeed;
+	public JSlider sliderFontSize;
+	public JSlider slider_margin;
+	
+	public JTextArea textArea_1;
+	private JTextField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as default
+	
+	private JFrame parentFrame; // the frame that instantiate this object
 
-	private TextEditor currentTextEditor;
-	
-	public Color LBL_ADVICE_COLOR;
-	
-	public String CURRENT_EXT_OUT;
-
-	// default phrase in text_editor used to check GUI
-	private final String LOREM_IPSUM = "Resources_Scrypt/LoremIpsum.txt";
-	
+	// GENERAL FIELDS //
 	// values used in editor functions Tt Tt and .Tt
 	private boolean uppercaseDots;
 	private boolean uppercase;
@@ -102,41 +169,26 @@ public class TextEditor extends JPanel {
 	public boolean alreadySaving = false;
 	public boolean alreadyLoading = false;
 	
-	// field containing fast crypt text user key, sinchronized from ini file as default
-	private JTextField txtAesKey;
-	
-	// field containing the current object used to speak text
-	Text2Speech objSpeaker;
-	
-	// GUI Objects //
-	public JButton btnSaveTextFile;
-	public JButton btnLoadTextFile;
-	public JButton btnSpeak;
-	public JButton btnDecrypt;
-	public JButton btnCrypt;
-	public JButton btnDark;
-	public JButton btnUpperPostDots;
-	public JButton btnTt;
-	
-	public JSlider sliderSpokenSpeed;
-	public JSlider sliderFontSize;
-	public JSlider slider_margin;
-	
-	public JTextArea textArea_1;
+	public String CURRENT_EXT_OUT = ".txt";
+	public Color LBL_ADVICE_COLOR;
 	
 	public UndoManager manager;
+	private INItializer currentConfiguration;
+	private TextEditor currentTextEditor; // current object
+	private Text2Speech objSpeaker; // field containing the current object used to speak text
+
 	
 //////////////// CONSTRUCTOR /////////////////////
 	
-	public TextEditor(JFrame parent, INItializer currentConfiguration) {
-		
-		currentTextEditor=this;
-		
+	public TextEditor(JFrame parent, INItializer currentConf) {
+
 		logger.debug("Text writer module selected by user");
 		
-		// initialize values used in gui
+		// initialize values used in gui //
+		currentConfiguration = currentConf;		
+		parentFrame = parent;		
+		currentTextEditor=this;
 		LBL_ADVICE_COLOR = new Color(124, 252, 0);
-		CURRENT_EXT_OUT = ".txt";
 		textMargin = 14;
 		uppercase = false;
 		uppercaseDots=true;
@@ -144,17 +196,17 @@ public class TextEditor extends JPanel {
 		setBackground(Color.DARK_GRAY);
 		setLayout(new MigLayout("", "[40][40][70][4%][][][][:40:40][:40:40][:40:40][:40:40][:30:30][:40:80px][20][20][30][40.00][40,fill][70][35][35,grow][70]", "[:20:50px,grow][][20][][25][25][52.33%,grow]"));
 		
-		JLabel lblCurrentFileLBL = new JLabel("   Current file:");
+		lblCurrentFileLBL = new JLabel("   Current file:");
 		lblCurrentFileLBL.setForeground(SystemColor.controlHighlight);
 		lblCurrentFileLBL.setFont(new Font("Tahoma", Font.BOLD, 18));
 		add(lblCurrentFileLBL, "cell 0 2 3 1,alignx center");
 		
-		JLabel lblCurrentFile = new JLabel("\\*.txt");
+		lblCurrentFile = new JLabel("\\*.txt");
 		lblCurrentFile.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblCurrentFile.setForeground(SystemColor.activeCaption);
 		add(lblCurrentFile, "cell 3 2 6 1,alignx left");
 		
-		JLabel lblVoiceSpeed = new JLabel("Voice rate");
+		lblVoiceSpeed = new JLabel("Voice rate");
 		lblVoiceSpeed.setForeground(new Color(211, 211, 211));
 		add(lblVoiceSpeed, "cell 9 2 2 1,alignx center");
 		
@@ -162,16 +214,8 @@ public class TextEditor extends JPanel {
 		sliderSpokenSpeed.setValue(90);
 		sliderSpokenSpeed.setMaximum(400);
 		add(sliderSpokenSpeed, "cell 11 2 2 1,alignx center");
-		sliderSpokenSpeed.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				if(objSpeaker!=null) {
-					objSpeaker.voice.setDurationStretch((sliderSpokenSpeed.getValue()));
-				}
-			}
-		});
 		
-		
-		JLabel lblAdvice = new JLabel("");
+		lblAdvice = new JLabel("");
 		lblAdvice.setBackground(SystemColor.info);
 		lblAdvice.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblAdvice.setForeground(new Color(176, 224, 230));
@@ -182,82 +226,339 @@ public class TextEditor extends JPanel {
 		btnCrypt = new JButton("");
 		btnCrypt.setBackground(SystemColor.activeCaption);
 		btnCrypt.setIcon(new ImageIcon(ICON_CRYPT));
-		btnCrypt.setToolTipText("Crypt displayed text with given key");
+		btnCrypt.setToolTipText(tooltipCrypt);
 		btnCrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnCrypt.setForeground(SystemColor.inactiveCaption);
-		//		btnCrypt.setBackground(Color.LIGHT_GRAY);
-				add(btnCrypt, "cell 16 4,growx");
-				btnCrypt.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						// this function is used to change color and tooltip text according to key lenght
-						AesCipher.check(txtAesKey);
-						
-						//if checkbutton is selected the remember passwor in current configuration 
-						//(volatile until explicit save by user)
-						
-						try {
-							AesCipher crypter=new AesCipher(txtAesKey.getText());
-							textArea_1.setText(crypter.encrypt(textArea_1.getText()));
-						}catch(Exception e) {
-							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
-							logger.error("Exception happened!", e);
-						}	
-					}
-				});
-		
-		
+		add(btnCrypt, "cell 16 4,growx");
 		
 		btnDecrypt = new JButton("");
 		btnDecrypt.setBackground(SystemColor.activeCaption);
 		btnDecrypt.setIcon(new ImageIcon(ICON_DECRYPT));
-		btnDecrypt.setToolTipText("Decrypt displayed text with given key");
+		btnDecrypt.setToolTipText(tooltipDecrypt);
 		btnDecrypt.setForeground(SystemColor.inactiveCaption);
 		btnDecrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
-		//		btnDecrypt.setBackground(Color.LIGHT_GRAY);
-				add(btnDecrypt, "cell 16 5,growx");
-				btnDecrypt.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {	
-						// this function is used to update bg color of textfield according to given key's lenght
-						AesCipher.check(txtAesKey);
-						//if checkbutton is selected the remember passwor in current configuration 
-						//(volatile until explicit save by user)
-						
-						try {
-							AesCipher decrypter=new AesCipher(txtAesKey.getText());
-							textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
-//					AesKey.setText(decrypter.getDispKey());
-						}catch(Exception e) {
-							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
-							logger.error("Exception happened!", e);
-						}
-						
-					}
-				});
+		add(btnDecrypt, "cell 16 5,growx");
 		
-		JScrollPane textArea = new JScrollPane();
-		add(textArea, "cell 0 6 22 1,grow");
-		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, 18));
-		
+		JScrollPane textScrollPaneArea = new JScrollPane();
+		add(textScrollPaneArea, "cell 0 6 22 1,grow");
+		textScrollPaneArea.setFont(new Font("DejaVu Sans", Font.PLAIN, 18));
 		
 		textArea_1 = new JTextArea();
 		textArea_1.setFont(new Font("Dialog", Font.PLAIN, 20));
-		textArea.setViewportView(textArea_1);
+		textScrollPaneArea.setViewportView(textArea_1);
 		manager = new UndoManager();
 		manager.setLimit(1000);
 		textArea_1.getDocument().addUndoableEditListener(manager);
 		
-		JLabel lblSIZE = new JLabel("");
+		lblSIZE = new JLabel("");
 		lblSIZE.setForeground(SystemColor.window);
 		add(lblSIZE, "cell 19 5");
 		lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
 		
-		JButton btnBackgroundCol = new JButton("");
-		btnBackgroundCol.setToolTipText("Change background color (won't be saved in .txt)");
+		btnBackgroundCol = new JButton("");
+		btnBackgroundCol.setToolTipText(tooltipBackgroundColor);
+		btnBackgroundCol.setBackground(new Color(176, 196, 222));
+		btnBackgroundCol.setIcon(new ImageIcon(ICON_TEXT_BG_COLOR));
+		add(btnBackgroundCol, "cell 9 4,alignx center");
+		
+		sliderFontSize = new JSlider(4,100);
+		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
+		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
+		sliderFontSize.setValue(textArea_1.getFont().getSize());
+		add(sliderFontSize, "cell 20 5 2 1,growx");
+		
+		btnLoremIpsum = new JButton("Lorem Ipsum");
+		btnLoremIpsum.setToolTipText(tooltipLoremIpsum);
+		btnLoremIpsum.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnLoremIpsum.setBackground(new Color(176, 196, 222));
+		add(btnLoremIpsum, "cell 13 5 3 1,growx");
+		
+		btnFontChooser = new JButton("");
+		btnFontChooser.setToolTipText(tooltipFontChooser);
+		
+		btnSpeak = new JButton("");
+		btnSpeak.setToolTipText(tooltipSpeak);
+		btnSpeak.setIcon(new ImageIcon(ICON_SPEAKER));
+		btnSpeak.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnSpeak.setBackground(new Color(176, 196, 222));
+		add(btnSpeak, "cell 10 4,alignx center");
+
+		btnFontChooser.setBackground(new Color(176, 196, 222));
+		btnFontChooser.setIcon(new ImageIcon(ICON_TEXT_FONT));
+		add(btnFontChooser, "cell 10 5,alignx center"); 
+		
+		lblNewLabel = new JLabel("\u2193  (AES KEY)  \u2193");
+		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
+		lblNewLabel.setForeground(new Color(211, 211, 211));
+		add(lblNewLabel, "cell 13 2 3 1,alignx center");
+		
+		JSeparator separator_1 = new JSeparator();
+		add(separator_1, "cell 0 3 22 1,growx");
+		
+		btnSaveTextFile = new JButton("");
+		btnSaveTextFile.setToolTipText(tooltipSaveTextFile);
+		btnSaveTextFile.setForeground(SystemColor.menuText);
+		btnSaveTextFile.setIcon(new ImageIcon(ICON_FILE_SAVE));
+		btnSaveTextFile.setBackground(SystemColor.inactiveCaption);
+		add(btnSaveTextFile, "cell 1 4,grow");
+		
+		comboFileFormat = new JComboBox();
+		comboFileFormat.setToolTipText(tooltipComboFileFormat);
+		comboFileFormat.setBackground(SystemColor.textHighlight);
+		comboFileFormat.setModel(new DefaultComboBoxModel(SupportedFileTextEditor.values()));
+		add(comboFileFormat, "cell 2 4,growx");
+		
+		btnTemplates = new JButton("Templates");
+		btnTemplates.setToolTipText(tooltipTemplates);
+		btnTemplates.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnTemplates.setBackground(new Color(176, 196, 222));
+		add(btnTemplates, "cell 11 5 2 1,growx");
+		
+		txtAesKey = new JTextField();
+		txtAesKey.setHorizontalAlignment(SwingConstants.CENTER);
+		txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
+		add(txtAesKey, "cell 11 4 5 1,growx");
+		txtAesKey.setColumns(10);
+		AesCipher.check(txtAesKey);
+				
+		JPanel panel = new JPanel();
+		panel.setForeground(SystemColor.menu);
+		panel.setBorder(new LineBorder(new Color(0, 0, 0), 4));
+		panel.setBackground(new Color(100, 149, 237));
+		add(panel, "cell 0 0 22 1,growx,aligny center");
+		panel.setLayout(new MigLayout("", "[100px,grow 10000,left][][][][][][][][][][][][][][][][][][][][][][grow][grow][]", "[]"));
+		
+		lblTextEditor = new JLabel("Text Editor");
+		panel.add(lblTextEditor, "cell 0 0,alignx left");
+		lblTextEditor.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTextEditor.setForeground(Color.BLACK);
+		lblTextEditor.setFont(new Font("Lithos Pro Regular", Font.BOLD, 19));
+		lblTextEditor.setBackground(SystemColor.activeCaptionBorder);
+		
+		chkCutWordsTo = new JCheckBox("Adapt Text Width");
+		panel.add(chkCutWordsTo, "cell 23 0");
+		chkCutWordsTo.setToolTipText(tooltipCutWordsTo);
+		chkCutWordsTo.setSelected(true);
+		chkCutWordsTo.setForeground(SystemColor.control);
+		chkCutWordsTo.setBackground(Color.DARK_GRAY);
+		
+		chkFitmantainwords = new JCheckBox("and...Mantain Words!");
+		panel.add(chkFitmantainwords, "cell 24 0");
+		chkFitmantainwords.setToolTipText(tooltipFitMaintainWords);
+		chkFitmantainwords.setForeground(SystemColor.control);
+		chkFitmantainwords.setBackground(Color.DARK_GRAY);
+		chkFitmantainwords.setEnabled(false);
+		
+		lblMargin = new JLabel("Margin:");
+		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMargin.setForeground(SystemColor.menu);
+		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
+		add(lblMargin, "cell 17 4 2 1,alignx center");
+		
+		slider_margin = new JSlider(0,100,0);
+		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
+		add(slider_margin, "cell 19 4 3 1,growx");
+		
+		lblFontSize = new JLabel("Font size: ");
+		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFontSize.setForeground(SystemColor.menu);
+		add(lblFontSize, "cell 17 5 2 1,alignx center");
+		
+		btntTextFormat = new JButton("Format");
+		btntTextFormat.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btntTextFormat.setBackground(new Color(176, 196, 222));
+		add(btntTextFormat, "cell 3 4,growx");
+		
+		JSeparator separator = new JSeparator();
+		add(separator, "cell 0 1 22 1,growx");
+		
+		btnLoadTextFile = new JButton("");
+		btnLoadTextFile.setToolTipText(tooltipLoadTextFile);
+		btnLoadTextFile.setForeground(SystemColor.menuText);
+		btnLoadTextFile.setBackground(SystemColor.inactiveCaption);
+		btnLoadTextFile.setIcon(new ImageIcon(ICON_FILE_LOAD));
+		add(btnLoadTextFile, "cell 0 4,grow");
+		
+		btnDefaultOpt = new JButton("Default Opt");
+		btnDefaultOpt.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnDefaultOpt.setToolTipText(tooltipDefaultOpt);
+		btnDefaultOpt.setForeground(SystemColor.menuText);
+		btnDefaultOpt.setBackground(new Color(176, 196, 222));
+		add(btnDefaultOpt, "cell 4 4 2 1,growx");
+		
+		btnUndo = new JButton("");
+		btnUndo.setToolTipText(tooltipUndo);
+		btnUndo.setBackground(new Color(176, 196, 222));
+		add(btnUndo, "cell 7 4,alignx center");
+		btnUndo.setIcon(new ImageIcon(ICON_UNDO));
+		
+		btnRedo = new JButton("");
+		btnRedo.setToolTipText(tooltipRedo);
+		btnRedo.setBackground(new Color(176, 196, 222));
+		add(btnRedo, "cell 8 4,alignx center");
+		btnRedo.setIcon(new ImageIcon(ICON_REDO));
+		
+		btnClear = new JButton("");
+		btnClear.setToolTipText(tooltipClearText);
+		btnClear.setBackground(new Color(176, 196, 222));
+		btnClear.setIcon(new ImageIcon(ICON_TEXT_CLEAR));
+		btnClear.setFont(new Font("Wide Latin", Font.BOLD, 14));
+		add(btnClear, "cell 6 4,growx,aligny center");
+		
+		btnUpperPostDots = new JButton(".Tt");
+		btnUpperPostDots.setToolTipText(tooltipUpperPostDots);
+		btnUpperPostDots.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnUpperPostDots.setBackground(new Color(176, 196, 222));
+		add(btnUpperPostDots, "cell 6 5,growx");
+		textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
+		
+		btnBold = new JButton("");
+		btnBold.setToolTipText(tooltipBoldText);
+		btnBold.setBackground(new Color(176, 196, 222));
+		btnBold.setIcon(new ImageIcon(ICON_TEXT_BOLD));
+		add(btnBold, "cell 8 5,alignx center");
+		
+		btnDark = new JButton("Dark/Light");
+		btnDark.setToolTipText(tooltipDarkSwitch);
+		btnDark.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnDark.setForeground(SystemColor.menuText);
+		btnDark.setBackground(SystemColor.controlShadow);
+		btnDark.setIcon(null);
+		btnDark.setPreferredSize(btnBold.size());
+		add(btnDark, "cell 0 5 4 1,growx,aligny center");
+		btnDark.setForeground(Color.LIGHT_GRAY);
+		btnDark.setBackground(Color.DARK_GRAY);
+		
+		btnTt = new JButton("TT");
+		btnTt.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnTt.setBackground(new Color(176, 196, 222));
+		btnTt.setToolTipText(tooltipTt);
+		add(btnTt, "cell 4 5,growx");
+		
+		btnTtTt = new JButton("Tt Tt");
+		btnTtTt.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnTtTt.setBackground(new Color(176, 196, 222));
+		btnTtTt.setToolTipText(tooltipTtTt);
+		add(btnTtTt, "cell 5 5,growx");
+		
+		if(chkCutWordsTo.isSelected()) {
+			textArea_1.setLineWrap(true);
+			chkFitmantainwords.setEnabled(true);
+		}
+		
+		btnItaliC = new JButton("");
+		btnItaliC.setToolTipText(tooltipItalic);
+		btnItaliC.setBackground(new Color(176, 196, 222));
+		btnItaliC.setIcon(new ImageIcon(ICON_TEXT_ITALIC));
+		add(btnItaliC, "cell 7 5,alignx center");
+		
+		btnForegroundCol = new JButton("");
+		btnForegroundCol.setToolTipText(tooltipForegroundTxt);
+		btnForegroundCol.setBackground(new Color(176, 196, 222));
+		btnForegroundCol.setIcon(new ImageIcon(ICON_TEXT_COLOR));
+		add(btnForegroundCol, "cell 9 5,alignx center");
+		
+		JScrollBar scrollBar = new JScrollBar();
+		
+		parentFrame.getContentPane().add(scrollBar);
+		
+		addHandlers();
+		
+		// add custom keyboard listener
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
+		
+		startAesKeyCheckThread();
+
+		logger.debug("### TEXT WRITER module started");
+
+	}
+	
+	private void startAesKeyCheckThread() {
+		// this thread will check every 0.2s the value contained in the textfield
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true) {
+					AesCipher.check(txtAesKey);				
+					try {
+						Thread.sleep(400);
+					} catch (InterruptedException e) {
+						logger.error(e.getMessage());
+					}
+				}
+			}
+		}).start();
+	}
+	
+	/**
+	 * This method adds handlers to action-related Components
+	 * (Use this after initialization)
+	 */
+	private void addHandlers() {
+		
+		// COLORS DEFAULT DEFINITIONS
+		final Font DEFAULT = textArea_1.getFont();
+		final Color DEFAULT_BCKG_COL = textArea_1.getBackground(); 
+		final Color DEFAULT_FORE_COL = textArea_1.getForeground();
+		
+		// CRYPT TEXT
+		btnCrypt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// this function is used to change color and tooltip text according to key lenght
+				AesCipher.check(txtAesKey);
+				
+				//if checkbutton is selected the remember passwor in current configuration 
+				//(volatile until explicit save by user)
+				
+				try {
+					AesCipher crypter=new AesCipher(txtAesKey.getText());
+					textArea_1.setText(crypter.encrypt(textArea_1.getText()));
+				}catch(Exception e) {
+					JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
+					logger.error("Exception happened!", e);
+				}	
+			}
+		});
+		
+		// DECRIPT TEXT
+		btnDecrypt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {	
+				// this function is used to update bg color of textfield according to given key's lenght
+				AesCipher.check(txtAesKey);
+				//if checkbutton is selected the remember passwor in current configuration 
+				//(volatile until explicit save by user)
+				
+				try {
+					AesCipher decrypter=new AesCipher(txtAesKey.getText());
+					textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
+				}catch(Exception e) {
+					JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
+					logger.error("Exception happened!", e);
+				}
+				
+			}
+		});
+		
+		// SET DEFAULT TEXT AREA COLORS
+		btnDefaultOpt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textArea_1.setFont(DEFAULT);
+				textArea_1.setBackground(DEFAULT_BCKG_COL);
+				textArea_1.setForeground(DEFAULT_FORE_COL);
+				txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
+				slider_margin.setValue(10);
+				sliderFontSize.setValue(textArea_1.getFont().getSize());
+				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
+			}
+		});
+		
+		//BACKGROUND TEXT COLOR
 		btnBackgroundCol.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				JColorChooser chooser = new JColorChooser();
-			    JDialog dialog = chooser.createDialog(parent,"Choose Background color",true,chooser, new ActionListener() {
+			    JDialog dialog = chooser.createDialog(parentFrame,"Choose Background color",true,chooser, new ActionListener() {
 					
 					@Override // OK
 					public void actionPerformed(ActionEvent e) {
@@ -273,35 +574,57 @@ public class TextEditor extends JPanel {
 				dialog.setVisible(true);
 			}
 		});
-		btnBackgroundCol.setBackground(new Color(176, 196, 222));
-		btnBackgroundCol.setIcon(new ImageIcon(ICON_TEXT_BG_COLOR));
-		add(btnBackgroundCol, "cell 9 4,alignx center");
 		
-		sliderFontSize = new JSlider(4,100);
-		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
-		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
-		sliderFontSize.setValue(textArea_1.getFont().getSize());
-		sliderFontSize.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				Font font=textArea_1.getFont();
-				font = new Font(font.getName(), font.getStyle(), sliderFontSize.getValue() );
-				textArea_1.setFont(font);
-				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			}
+		//FOREGROUND TEXT COLOR
+		btnForegroundCol.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {      
+			      
+				JColorChooser chooser = new JColorChooser();
+			    JDialog dialog = chooser.createDialog(parentFrame,"Choose Foreground color",true,chooser, new ActionListener() {
+					
+					@Override // OK
+					public void actionPerformed(ActionEvent e) {
+						Color c = chooser.getColor();
+						if (c != null) {
+					        textArea_1.setForeground(c);
+				      }			
+					}
+				}, new ActionListener() {
+					@Override // NO
+					public void actionPerformed(ActionEvent e) {	
+					}
+				});
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+			}
 		});
-		add(sliderFontSize, "cell 20 5 2 1,growx");
 		
-		JButton tglbtnLorem = new JButton("Lorem Ipsum");
-		tglbtnLorem.setToolTipText("Insert classic test text \"Lorem Ipsum\"");
-		tglbtnLorem.setFont(new Font("SansSerif", Font.BOLD, 12));
-		tglbtnLorem.addActionListener(new ActionListener() {
+		// SWITCH BETWEEN DARK/LIGHT COLORS FOR TEXT AREA
+		btnDark.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(textArea_1.getForeground()==Color.BLACK || textArea_1.getBackground()==DEFAULT_BCKG_COL || textArea_1.getBackground()==Color.WHITE) {
+					textArea_1.setForeground(SystemColor.LIGHT_GRAY);
+					textArea_1.setBackground(Color.BLACK);
+					btnDark.setForeground(Color.DARK_GRAY);
+					btnDark.setBackground(SystemColor.controlHighlight);	
+				 }else {
+					textArea_1.setForeground(Color.BLACK);
+					textArea_1.setBackground(SystemColor.controlHighlight);	
+					btnDark.setForeground(SystemColor.LIGHT_GRAY);
+					btnDark.setBackground(Color.DARK_GRAY);
+				 }
+			}
+		});
+		
+		// INSERT LOREM IPSUM
+		btnLoremIpsum.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 							
 				FileStuff.appendFileTxtArea(new File(LOREM_IPSUM), textArea_1);
 			}
 		});
 		
-		JButton btnFontChooser = new JButton("");
-		btnFontChooser.setToolTipText("Change font and text-properties");
+		// FONT CHOOSER PANEL
 		btnFontChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FontDialog.showDialog(textArea_1);
@@ -309,14 +632,51 @@ public class TextEditor extends JPanel {
 				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			}
 		});
 		
-		btnSpeak = new JButton("");
-		btnSpeak.setToolTipText("[Ctrl+spacebar]Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable.");
-		btnSpeak.setIcon(new ImageIcon(ICON_SPEAKER));
-		btnSpeak.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnSpeak.setBackground(new Color(176, 196, 222));
-		add(btnSpeak, "cell 10 4,alignx center");
+		// TEXT AREA FORMATTER
+		btntTextFormat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String source = new String(textArea_1.getText());
+				String old = new String(source);
+				// XML format handler (if xml formatter works then is a xml recognized file)
+				if(CURRENT_EXT_OUT.equals(".xml")&&!HandleString.xmlPrettyFormat(source,4).equals("ERROR :(")) {
+					source=HandleString.xmlPrettyFormat(source, 4);
+					if(source.equals(old)) {
+						// already formatted
+						textArea_1.setText(HandleString.removeLines(source));
+					}else{
+						// not yet formatted
+						textArea_1.setText(source);
+					}
+				}
+				//if error :(
+				else {
+					if(CURRENT_EXT_OUT.equals(".xml")) {
+						JOptionPane.showMessageDialog(parentFrame, "Error reading xml format, maybe it's not a valid xml String?", "XML format Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
+		
+		// SLIDER FONT CHANGED 
+		sliderFontSize.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				Font font=textArea_1.getFont();
+				font = new Font(font.getName(), font.getStyle(), sliderFontSize.getValue() );
+				textArea_1.setFont(font);
+				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			}
+		});
+		
+		// SET SPEAKER'S VOICE SPEED
+		sliderSpokenSpeed.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				if(objSpeaker!=null) {
+					objSpeaker.voice.setDurationStretch((sliderSpokenSpeed.getValue()));
+				}
+			}
+		});
+		
+		// SPEAK TEXT
 		btnSpeak.addActionListener(new ActionListener() {
-			
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -338,28 +698,220 @@ public class TextEditor extends JPanel {
 						}						
 					}
 				}).start();
+			}
+		});
+		
+		// UNDO LAST OPERATION ON TEXT
+		btnUndo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(manager.canUndo()) {
+					manager.undo();
+				}
+			}
+		});
+		
+		// REDO LAST OPERATION ON TEXT
+		btnRedo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(manager.canRedo()) {
+					manager.redo();
+				}
 				
 			}
 		});
 		
-		btnFontChooser.setBackground(new Color(176, 196, 222));
-		btnFontChooser.setIcon(new ImageIcon(ICON_TEXT_FONT));
-		add(btnFontChooser, "cell 10 5,alignx center"); 
-		tglbtnLorem.setBackground(new Color(176, 196, 222));
-		add(tglbtnLorem, "cell 13 5 3 1,growx");
+		// CLEAR TEXT AREA
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(JOptionPane.showConfirmDialog(parentFrame, "Clear Text?")==JOptionPane.OK_OPTION) {
+					textArea_1.setText("");
+				}
+			}
+		});
 		
-		JLabel lblNewLabel = new JLabel("\u2193  (AES KEY)  \u2193");
-		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
-		lblNewLabel.setForeground(new Color(211, 211, 211));
-		add(lblNewLabel, "cell 13 2 3 1,alignx center");
+		// MAKE UPPER CASE AFTER LINE ENDERS
+		btnUpperPostDots.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (uppercaseDots) {
+					String result = HandleString.upperAfterDots(textArea_1.getText(), '.');
+					textArea_1.setText(result);
+					uppercaseDots=false;
+				}else {
+					String result = HandleString.lowerAfterDots(textArea_1.getText(), '.');
+					textArea_1.setText(result);
+					uppercaseDots=true;
+				}
+			}
+		});
 		
-		JSeparator separator_1 = new JSeparator();
-		add(separator_1, "cell 0 3 22 1,growx");
+		// FILE FORMAT SELECTOR
+		comboFileFormat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					SupportedFileTextEditor selected = (SupportedFileTextEditor) comboFileFormat.getSelectedItem();
+					CURRENT_EXT_OUT = selected.nomeStringa;
+					lblAdvice.setText("[Current output: "+CURRENT_EXT_OUT+"]");
+					btnSaveTextFile.setToolTipText("Choose name and folder, save "+CURRENT_EXT_OUT+" file!");
+				}
+			}
+		);
 		
-		btnSaveTextFile = new JButton("");
-		btnSaveTextFile.setToolTipText("Choose name and folder, save "+CURRENT_EXT_OUT+" file!");
-		btnSaveTextFile.setForeground(SystemColor.menuText);
-		btnSaveTextFile.setIcon(new ImageIcon(ICON_FILE_SAVE));
+		// OPEN TEMPLATES PANEL
+		btnTemplates.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame panel = new TemplatesChoosePanel(textArea_1, comboFileFormat);
+		    	panel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		    	panel.setBounds(750,20,500,170);
+		    	panel.setAlwaysOnTop(true);
+		    	panel.setVisible(true);
+		    	panel.setTitle("IMG Generator (V1.1) - A.M.2018");
+			}
+		});
+		
+		// ADAPT TO WIDTH MAINTAINING WORDS
+		chkFitmantainwords.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(chkFitmantainwords.isSelected()) {
+					textArea_1.setWrapStyleWord(true);
+				}else {
+					textArea_1.setWrapStyleWord(false);
+				}
+			}
+		});		
+		
+		// ADAPT TO WIDTH
+		chkCutWordsTo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(chkCutWordsTo.isSelected()) {
+					textArea_1.setLineWrap(true);
+					chkCutWordsTo.setEnabled(true);
+				}else {
+					textArea_1.setLineWrap(false);
+					textArea_1.setWrapStyleWord(false);
+					chkCutWordsTo.setEnabled(false);
+				}
+			}
+		});
+		
+		// MARGIN TEXT AREA SELECTOR
+		slider_margin.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+					textMargin=slider_margin.getValue();
+					textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
+					textArea_1.revalidate();
+					textArea_1.repaint();
+			}
+		});
+		
+		// SET TEXT STYLE TO ITALICS
+		btnItaliC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 if(!textArea_1.getFont().isItalic()) {
+					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.ITALIC, textArea_1.getFont().getSize()));
+				 }else {
+					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.PLAIN, textArea_1.getFont().getSize()));
+				 }		
+			}
+		});
+		
+		// MAKE TEXT BOLD
+		btnBold.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 if(!textArea_1.getFont().isBold()) {
+					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.BOLD, textArea_1.getFont().getSize()));
+				 }else {
+					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.PLAIN, textArea_1.getFont().getSize()));
+				 }
+				
+			}
+		});
+		
+		// MAKE UPPERCASE AFTER LINE ENDS
+		btnTt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String text = textArea_1.getText();
+				String textBackup = new String(text);
+				String selected = textArea_1.getSelectedText();
+				String start="";
+				String end = "";
+				Boolean none = false;
+				int strtN=0;
+				int endN=text.length();
+				if(selected==null) {
+					//select ALL if no selection
+					none=true;
+					selected = new String(text);
+				}else {
+					strtN=textArea_1.getSelectionStart();
+					endN=textArea_1.getSelectionEnd();
+					start = textBackup.substring(0, strtN);
+					end = textBackup.substring(endN, textBackup.length());
+				}				
+				backupText = new String(selected);// create backup copy by value
+				
+				if(!uppercase) {
+					selected = selected.toUpperCase();
+					uppercase=true;
+				}
+				else {
+					selected = selected.toLowerCase();
+					uppercase=false;
+				}
+				
+				selected = start + selected + end;
+				textArea_1.setText(selected);
+				if(!none) {
+					textArea_1.requestFocus();
+					textArea_1.setSelectionStart(strtN);
+					textArea_1.setSelectionEnd(endN);
+				}
+				logger.debug("TT function start selection: "+strtN);
+				logger.debug("TT function start selection: "+endN);
+			}
+		});
+		
+		// MAKE EVERY WORD STARTING WITH UPPERCASE LETTER
+		btnTtTt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String text = textArea_1.getText();
+				String textBackup = new String(text);
+				String selected = textArea_1.getSelectedText();
+				String start="";
+				String end = "";
+				int strtN=0;
+				int endN=text.length();
+				if(selected==null) {
+					//select ALL if no selection
+					selected = new String(text);
+				}else {
+					strtN=textArea_1.getSelectionStart();
+					endN=textArea_1.getSelectionEnd();
+					start = textBackup.substring(0, strtN);
+					end = textBackup.substring(endN, textBackup.length());
+				}				
+				backupText = new String(selected);// create backup copy by value
+				
+				selected = HandleString.uppercaseEveryFirstLetterNoSpace(selected);
+				if (selected.equals(backupText)) {
+					selected = HandleString.lowerCaseEveryFirstLetterNoSpace(selected);
+//							btnTtTt.setBackground(SystemColor.activeCaptionBorder);
+				}else {
+//							btnTtTt.setBackground(Color.gray);
+				}
+				selected = start + selected + end;
+				textArea_1.setText(selected);
+				textArea_1.requestFocus();
+				textArea_1.setSelectionStart(strtN);
+				textArea_1.setSelectionEnd(endN);
+				logger.debug("Tt Tt function start selection: "+strtN);
+				logger.debug("Tt Tt function start selection: "+endN);
+				
+			}
+		});
+		
+		// SAVE TEXT FILE
 		btnSaveTextFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			
@@ -369,7 +921,7 @@ public class TextEditor extends JPanel {
 					JFileChooser fileChooser = new JFileChooser();
 					fileChooser.setCurrentDirectory(new File(currentConfiguration.getFileOpt().getLastDstFolderPath()));
 					fileChooser.setDialogTitle("Save " + CURRENT_EXT_OUT + " File");
-					int returnVal = fileChooser.showSaveDialog(parent);
+					int returnVal = fileChooser.showSaveDialog(parentFrame);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
 						boolean done = false;
 						try {
@@ -383,7 +935,7 @@ public class TextEditor extends JPanel {
 								selectedFile = FileStuff.changeExtension(selectedFile, "." + givenExtension);
 							}
 							if (selectedFile.exists()) {
-								if (JOptionPane.showConfirmDialog(parent, "File " + selectedFile.getName()
+								if (JOptionPane.showConfirmDialog(parentFrame, "File " + selectedFile.getName()
 										+ " exists, overwrite it?") == JOptionPane.OK_OPTION) {
 									selectedFile.delete();
 									done = selectedFile.createNewFile();
@@ -393,10 +945,9 @@ public class TextEditor extends JPanel {
 									out.close();
 									outputStreamWriter.close();
 								} else {
-									JOptionPane.showMessageDialog(parent, "Operation cancelled");
+									JOptionPane.showMessageDialog(parentFrame, "Operation cancelled");
 								}
 							} else {
-//  		            		selectedFile = FileStuff.changeExtension(selectedFile, CURRENT_EXT_OUT);
 								done = selectedFile.createNewFile();
 								PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
 								out.write(textArea_1.getText());
@@ -404,7 +955,7 @@ public class TextEditor extends JPanel {
 							}
 
 							if (done) {
-								JOptionPane.showMessageDialog(parent,
+								JOptionPane.showMessageDialog(parentFrame,
 										"File " + selectedFile.getName() + " succesfully saved!");
 								lblCurrentFile.setText(selectedFile.getName());
 								currentConfiguration.getFileOpt()
@@ -426,234 +977,14 @@ public class TextEditor extends JPanel {
 								}
 							}
 						}).start();
-
 					}
 					// update signal value
 					alreadySaving = false;
 				}
-				
-			}
-		});
-		btnSaveTextFile.setBackground(SystemColor.inactiveCaption);
-		add(btnSaveTextFile, "cell 1 4,grow");
-		
-		
-		JComboBox comboFileFormat = new JComboBox();
-		comboFileFormat.setToolTipText("Choose file extension");
-		comboFileFormat.setBackground(SystemColor.textHighlight);
-		comboFileFormat.setModel(new DefaultComboBoxModel(SupportedFileTextEditor.values()));
-		add(comboFileFormat, "cell 2 4,growx");
-		comboFileFormat.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-					SupportedFileTextEditor selected = (SupportedFileTextEditor) comboFileFormat.getSelectedItem();
-					CURRENT_EXT_OUT = selected.nomeStringa;
-					lblAdvice.setText("[Current output: "+CURRENT_EXT_OUT+"]");
-					btnSaveTextFile.setToolTipText("Choose name and folder, save "+CURRENT_EXT_OUT+" file!");
-				}
-			}
-		);
-		
-		JButton tglbtnTemplates = new JButton("Templates");
-		tglbtnTemplates.setToolTipText("Choose between many different patterns of code to insert in you text");
-		tglbtnTemplates.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFrame panel = new TemplatesChoosePanel(textArea_1, comboFileFormat);
-		    	panel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    	panel.setBounds(750,20,500,170);
-		    	panel.setAlwaysOnTop(true);
-		    	panel.setVisible(true);
-		    	panel.setTitle("IMG Generator (V1.1) - A.M.2018");
-			}
-		});
-		tglbtnTemplates.setFont(new Font("SansSerif", Font.BOLD, 12));
-		tglbtnTemplates.setBackground(new Color(176, 196, 222));
-		add(tglbtnTemplates, "cell 11 5 2 1,growx");
-		
-		txtAesKey = new JTextField();
-		txtAesKey.setHorizontalAlignment(SwingConstants.CENTER);
-		//txtAesKey.setText("ST3G4N0cr1p74009");
-		txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
-		add(txtAesKey, "cell 11 4 5 1,growx");
-		txtAesKey.setColumns(10);
-		AesCipher.check(txtAesKey);
-				
-		
-		JPanel panel = new JPanel();
-		panel.setForeground(SystemColor.menu);
-		panel.setBorder(new LineBorder(new Color(0, 0, 0), 4));
-		panel.setBackground(new Color(100, 149, 237));
-		add(panel, "cell 0 0 22 1,growx,aligny center");
-		panel.setLayout(new MigLayout("", "[100px,grow 10000,left][][][][][][][][][][][][][][][][][][][][][][grow][grow][]", "[]"));
-		
-		JLabel lblTextEditor = new JLabel("Text Editor");
-		panel.add(lblTextEditor, "cell 0 0,alignx left");
-		lblTextEditor.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTextEditor.setForeground(Color.BLACK);
-		lblTextEditor.setFont(new Font("Lithos Pro Regular", Font.BOLD, 19));
-		lblTextEditor.setBackground(SystemColor.activeCaptionBorder);
-//		
-//		JComboBox<String> comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
-//		panel.add(comboCharsets, "cell 22 0,growx");
-//		comboCharsets.setSelectedItem(System.getProperty("file.encoding"));
-//		comboCharsets.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				System.setProperty("file.encoding",(String)comboCharsets.getSelectedItem());
-//				try {
-//					String rewrite = new String(textArea_1.getText().getBytes(System.getProperty("file.encoding")), System.getProperty("file.encoding"));
-//					textArea_1.setText(rewrite);
-//				} catch (UnsupportedEncodingException e1) {
-//					logger.error("Error retrieving charset");
-//				}
-//				Font old = textArea_1.getFont();
-//				textArea_1.setFont(new Font((String)comboCharsets.getSelectedItem(), old.getStyle(), old.getSize()));
-//				logger.info("Default charset: " + System.getProperty("file.encoding"));
-//				logger.info("Jtext area charset: " + textArea_1.getFont().toString());
-//			}
-//		});
-		
-		JCheckBox rdbtnCutWordsTo = new JCheckBox("Adapt Text Width");
-		panel.add(rdbtnCutWordsTo, "cell 23 0");
-		rdbtnCutWordsTo.setToolTipText("When selected, the text will be cropped to adapt the size of the text area");
-		rdbtnCutWordsTo.setSelected(true);
-		rdbtnCutWordsTo.setForeground(SystemColor.control);
-		rdbtnCutWordsTo.setBackground(Color.DARK_GRAY);
-		
-		JCheckBox rdbtnFitmantainwords = new JCheckBox("and...Mantain Words!");
-		panel.add(rdbtnFitmantainwords, "cell 24 0");
-		rdbtnFitmantainwords.setToolTipText("When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)");
-		rdbtnFitmantainwords.setForeground(SystemColor.control);
-		rdbtnFitmantainwords.setBackground(Color.DARK_GRAY);
-		rdbtnFitmantainwords.setEnabled(false);
-		
-	
-		
-		rdbtnFitmantainwords.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(rdbtnFitmantainwords.isSelected()) {
-					textArea_1.setWrapStyleWord(true);
-				}else {
-					textArea_1.setWrapStyleWord(false);
-				}
 			}
 		});
 		
-		
-		// START checkbox listeners
-		
-		rdbtnCutWordsTo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(rdbtnCutWordsTo.isSelected()) {
-					textArea_1.setLineWrap(true);
-					rdbtnFitmantainwords.setEnabled(true);
-				}else {
-					textArea_1.setLineWrap(false);
-					textArea_1.setWrapStyleWord(false);
-					rdbtnFitmantainwords.setEnabled(false);
-				}
-			}
-		});
-		
-		
-		JLabel lblMargin = new JLabel("Margin:");
-		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMargin.setForeground(SystemColor.menu);
-		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		add(lblMargin, "cell 17 4 2 1,alignx center");
-		
-		slider_margin = new JSlider(0,100,0);
-		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		add(slider_margin, "cell 19 4 3 1,growx");
-		
-		slider_margin.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-					textMargin=slider_margin.getValue();
-					textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
-					textArea_1.revalidate();
-					textArea_1.repaint();
-//					textArea_1.setText(backupText); -> caused a bug with redo
-			}
-		});
-		
-		
-
-		
-		JLabel lblFontSize = new JLabel("Font size: ");
-		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFontSize.setForeground(SystemColor.menu);
-		add(lblFontSize, "cell 17 5 2 1,alignx center");
-		
-
-		
-//		ColorChooserButton colorChooser = new ColorChooserButton(Color.WHITE);
-//		colorChooser.addColorChangedListener(new ColorChangedListener() {
-//		    @Override
-//		    public void colorChanged(Color newColor) {
-//		            // do something with newColor ...
-//		    }
-//		});
-		
-		
-		
-		JButton btnXmlFormat = new JButton("Format");
-		btnXmlFormat.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnXmlFormat.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String source = new String(textArea_1.getText());
-				String old = new String(source);
-				// XML format handler (if xml formatter works then is a xml recognized file)
-				if(CURRENT_EXT_OUT.equals(".xml")&&!HandleString.xmlPrettyFormat(source,4).equals("ERROR :(")) {
-					source=HandleString.xmlPrettyFormat(source, 4);
-					if(source.equals(old)) {
-						// already formatted
-						textArea_1.setText(HandleString.removeLines(source));
-					}else{
-						// not yet formatted
-						textArea_1.setText(source);
-					}
-				}
-				//if error :(
-				else {
-					if(CURRENT_EXT_OUT.equals(".xml")) {
-						JOptionPane.showMessageDialog(parent, "Error reading xml format, maybe it's not a valid xml String?", "XML format Error", JOptionPane.ERROR_MESSAGE);
-					}
-				}
-			}
-		});
-		btnXmlFormat.setBackground(new Color(176, 196, 222));
-		add(btnXmlFormat, "cell 3 4,growx");
-		
-		final Font DEFAULT = textArea_1.getFont();
-		final Color DEFAULT_BCKG_COL = textArea_1.getBackground(); 
-		final Color DEFAULT_FORE_COL = textArea_1.getForeground();
-		
-		
-		
-		// this thread will check every 0.2s the value contained in the textfield
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while(true) {
-					AesCipher.check(txtAesKey);				
-					try {
-						Thread.sleep(400);
-					} catch (InterruptedException e) {
-						logger.error(e.getMessage());
-					}
-				}
-			}
-		}).start();
-		
-		JSeparator separator = new JSeparator();
-		add(separator, "cell 0 1 22 1,growx");
-		
-		btnLoadTextFile = new JButton("");
-		btnLoadTextFile.setToolTipText("Load source File");
-		btnLoadTextFile.setForeground(SystemColor.menuText);
-		btnLoadTextFile.setBackground(SystemColor.inactiveCaption);
-		btnLoadTextFile.setIcon(new ImageIcon(ICON_FILE_LOAD));
+		// LOAD TEXT FILE
 		btnLoadTextFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			
@@ -704,335 +1035,12 @@ public class TextEditor extends JPanel {
 									}
 								}
 							}).start();
-
 						}
 					} 
 					alreadyLoading = false;
 				}// end if !already loading
 			}
 		});
-		
-//		JCheckBox tglbtntxt = new JCheckBox(".txt");
-//		tglbtntxt.setSelected(true);
-//		tglbtntxt.setHorizontalAlignment(SwingConstants.CENTER);
-//		tglbtntxt.setBackground(SystemColor.controlShadow);
-//		add(tglbtntxt, "cell 2 2,growx");
-//		
-//		JCheckBox rdbtnXml = new JCheckBox(".xml");
-//		rdbtnXml.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				if (rdbtnXml.isSelected()) {
-//					CURRENT_EXT_OUT = ".xml";
-//					tglbtntxt.setSelected(false);
-//					lblAdvice.setText("[Current output: "+CURRENT_EXT_OUT+"]");
-//				}
-//			}
-//		});
-//		rdbtnXml.setHorizontalAlignment(SwingConstants.CENTER);
-//		rdbtnXml.setBackground(SystemColor.controlShadow);
-//		add(rdbtnXml, "cell 0 2 2 1,growx");
-//		
-//		
-//		
-//		
-//		tglbtntxt.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				if(tglbtntxt.isSelected()) {
-//					CURRENT_EXT_OUT = ".txt";
-//					rdbtnXml.setSelected(false);
-//					lblAdvice.setText("[Current output: "+CURRENT_EXT_OUT+"]");
-//				}
-//			}
-//		});
-		
-		
-		add(btnLoadTextFile, "cell 0 4,grow");
-		
-		
-				
-		JButton btnDefault = new JButton("Default Opt");
-		btnDefault.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnDefault.setToolTipText("Reset default text-graphics values");
-		btnDefault.setForeground(SystemColor.menuText);
-		btnDefault.setBackground(new Color(176, 196, 222));
-		btnDefault.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				textArea_1.setFont(DEFAULT);
-				textArea_1.setBackground(DEFAULT_BCKG_COL);
-				textArea_1.setForeground(DEFAULT_FORE_COL);
-				txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
-				slider_margin.setValue(10);
-				sliderFontSize.setValue(textArea_1.getFont().getSize());
-				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
-			}
-		});
-		add(btnDefault, "cell 4 4 2 1,growx");
-		
-		
-		
-		JButton btnUndo = new JButton("");
-		btnUndo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(manager.canUndo()) {
-					manager.undo();
-				}
-			}
-		});
-		btnUndo.setToolTipText("Undo Last [Ctrl+z]");
-		btnUndo.setBackground(new Color(176, 196, 222));
-		add(btnUndo, "cell 7 4,alignx center");
-		btnUndo.setIcon(new ImageIcon(ICON_UNDO));
-		
-		JButton btnRedo = new JButton("");
-		btnRedo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				if(manager.canRedo()) {
-					manager.redo();
-				}
-				
-			}
-		});
-		btnRedo.setToolTipText("Redo Last [Alt+z]");
-		btnRedo.setBackground(new Color(176, 196, 222));
-		add(btnRedo, "cell 8 4,alignx center");
-		btnRedo.setIcon(new ImageIcon(ICON_REDO));
-		
-		
-		JButton btnClear = new JButton("");
-		btnClear.setToolTipText("Erase the content of the current opened file displayed (without save)");
-		btnClear.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				if(JOptionPane.showConfirmDialog(parent, "Clear Text?")==JOptionPane.OK_OPTION) {
-					textArea_1.setText("");
-				}
-			}
-		});
-		btnClear.setBackground(new Color(176, 196, 222));
-		btnClear.setIcon(new ImageIcon(ICON_TEXT_CLEAR));
-		btnClear.setFont(new Font("Wide Latin", Font.BOLD, 14));
-		add(btnClear, "cell 6 4,growx,aligny center");
-		
-		btnUpperPostDots = new JButton(".Tt");
-		btnUpperPostDots.setToolTipText("Makes text uppercase after dots a significat line brokers");
-		btnUpperPostDots.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnUpperPostDots.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (uppercaseDots) {
-					String result = HandleString.upperAfterDots(textArea_1.getText(), '.');
-					textArea_1.setText(result);
-//					btnUpperPostDots.setBackground(SystemColor.gray);
-					uppercaseDots=false;
-				}else {
-					String result = HandleString.lowerAfterDots(textArea_1.getText(), '.');
-					textArea_1.setText(result);
-//					btnUpperPostDots.setBackground(SystemColor.activeCaptionBorder);
-					uppercaseDots=true;
-				}
-			}
-		});
-		btnUpperPostDots.setBackground(new Color(176, 196, 222));
-		add(btnUpperPostDots, "cell 6 5,growx");
-		textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
-		
-		JButton btnBold = new JButton("");
-		btnBold.setToolTipText("Set bold style to all text");
-		btnBold.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				 if(!textArea_1.getFont().isBold()) {
-					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.BOLD, textArea_1.getFont().getSize()));
-				 }else {
-					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.PLAIN, textArea_1.getFont().getSize()));
-				 }
-				
-			}
-		});
-		btnBold.setBackground(new Color(176, 196, 222));
-		btnBold.setIcon(new ImageIcon(ICON_TEXT_BOLD));
-		add(btnBold, "cell 8 5,alignx center");
-		
-		btnDark = new JButton("Dark/Light");
-		btnDark.setToolTipText("Switch upon dark and light text combination");
-		btnDark.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnDark.setForeground(SystemColor.menuText);
-		btnDark.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(textArea_1.getForeground()==Color.BLACK || textArea_1.getBackground()==DEFAULT_BCKG_COL || textArea_1.getBackground()==Color.WHITE) {
-					textArea_1.setForeground(SystemColor.LIGHT_GRAY);
-					textArea_1.setBackground(Color.BLACK);
-					btnDark.setForeground(Color.DARK_GRAY);
-					btnDark.setBackground(SystemColor.controlHighlight);	
-				 }else {
-					textArea_1.setForeground(Color.BLACK);
-					textArea_1.setBackground(SystemColor.controlHighlight);	
-					btnDark.setForeground(SystemColor.LIGHT_GRAY);
-					btnDark.setBackground(Color.DARK_GRAY);
-				 }
-			}
-		});
-		btnDark.setBackground(SystemColor.controlShadow);
-		btnDark.setIcon(null);
-		btnDark.setPreferredSize(btnBold.size());
-		add(btnDark, "cell 0 5 4 1,growx,aligny center");
-		btnDark.setForeground(Color.LIGHT_GRAY);
-		btnDark.setBackground(Color.DARK_GRAY);
-				
-		
-		btnTt = new JButton("TT");
-		btnTt.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnTt.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String text = textArea_1.getText();
-				String textBackup = new String(text);
-				String selected = textArea_1.getSelectedText();
-				String start="";
-				String end = "";
-				Boolean none = false;
-				int strtN=0;
-				int endN=text.length();
-				if(selected==null) {
-					//select ALL if no selection
-					none=true;
-					selected = new String(text);
-				}else {
-					strtN=textArea_1.getSelectionStart();
-					endN=textArea_1.getSelectionEnd();
-					start = textBackup.substring(0, strtN);
-					end = textBackup.substring(endN, textBackup.length());
-				}				
-				backupText = new String(selected);// create backup copy by value
-				
-				if(!uppercase) {
-//					btnTt.setBackground(Color.gray);
-					selected = selected.toUpperCase();
-					uppercase=true;
-				}
-				else {
-//					btnTt.setBackground(SystemColor.activeCaptionBorder);
-					selected = selected.toLowerCase();
-					uppercase=false;
-				}
-				
-				selected = start + selected + end;
-				textArea_1.setText(selected);
-				if(!none) {
-					textArea_1.requestFocus();
-					textArea_1.setSelectionStart(strtN);
-					textArea_1.setSelectionEnd(endN);
-				}
-				
-				logger.debug("TT function start selection: "+strtN);
-				logger.debug("TT function start selection: "+endN);
-			}
-		});
-		btnTt.setBackground(new Color(176, 196, 222));
-		btnTt.setToolTipText("Makes textArea content uppercase");
-		add(btnTt, "cell 4 5,growx");
-		
-		JButton btnTtTt = new JButton("Tt Tt");
-		btnTtTt.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnTtTt.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				String text = textArea_1.getText();
-				String textBackup = new String(text);
-				String selected = textArea_1.getSelectedText();
-				String start="";
-				String end = "";
-				int strtN=0;
-				int endN=text.length();
-				if(selected==null) {
-					//select ALL if no selection
-					selected = new String(text);
-				}else {
-					strtN=textArea_1.getSelectionStart();
-					endN=textArea_1.getSelectionEnd();
-					start = textBackup.substring(0, strtN);
-					end = textBackup.substring(endN, textBackup.length());
-				}				
-				backupText = new String(selected);// create backup copy by value
-				
-				selected = HandleString.uppercaseEveryFirstLetterNoSpace(selected);
-				if (selected.equals(backupText)) {
-					selected = HandleString.lowerCaseEveryFirstLetterNoSpace(selected);
-//					btnTtTt.setBackground(SystemColor.activeCaptionBorder);
-				}else {
-//					btnTtTt.setBackground(Color.gray);
-				}
-				selected = start + selected + end;
-				textArea_1.setText(selected);
-				textArea_1.requestFocus();
-				textArea_1.setSelectionStart(strtN);
-				textArea_1.setSelectionEnd(endN);
-				logger.debug("Tt Tt function start selection: "+strtN);
-				logger.debug("Tt Tt function start selection: "+endN);
-				
-			}
-		});
-		btnTtTt.setBackground(new Color(176, 196, 222));
-		btnTtTt.setToolTipText("Makes al initial characters uppercase");
-		add(btnTtTt, "cell 5 5,growx");
-		
-		if(rdbtnCutWordsTo.isSelected()) {
-			textArea_1.setLineWrap(true);
-			rdbtnFitmantainwords.setEnabled(true);
-		}
-		
-		// END checkbox listeners
-		
-		JButton btnItaliC = new JButton("");
-		btnItaliC.setToolTipText("Set italics style to all text");
-		btnItaliC.setBackground(new Color(176, 196, 222));
-		btnItaliC.setIcon(new ImageIcon(ICON_TEXT_ITALIC));
-		btnItaliC.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				 if(!textArea_1.getFont().isItalic()) {
-					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.ITALIC, textArea_1.getFont().getSize()));
-				 }else {
-					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.PLAIN, textArea_1.getFont().getSize()));
-				 }		
-			}
-		});
-		add(btnItaliC, "cell 7 5,alignx center");
-		
-		JButton btnForegroundCol = new JButton("");
-		btnForegroundCol.setToolTipText("Change text color (won't be saved in .txt)");
-		btnForegroundCol.setBackground(new Color(176, 196, 222));
-		btnForegroundCol.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {      
-			      
-					JColorChooser chooser = new JColorChooser();
-				    JDialog dialog = chooser.createDialog(parent,"Choose Foreground color",true,chooser, new ActionListener() {
-						
-						@Override // OK
-						public void actionPerformed(ActionEvent e) {
-							Color c = chooser.getColor();
-							if (c != null) {
-						        textArea_1.setForeground(c);
-					      }			
-						}
-					}, new ActionListener() {
-						@Override // NO
-						public void actionPerformed(ActionEvent e) {	
-						}
-					});
-					dialog.setAlwaysOnTop(true);
-					dialog.setVisible(true);
-				}
-		});
-		btnForegroundCol.setIcon(new ImageIcon(ICON_TEXT_COLOR));
-		add(btnForegroundCol, "cell 9 5,alignx center");
-		
-		JScrollBar scrollBar = new JScrollBar();
-		
-		parent.getContentPane().add(scrollBar);
-		
-		// add custom keyboard listener
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
-		
-		logger.debug("### TEXT WRITER module started");
-
 	}
 	
 

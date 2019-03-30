@@ -19,7 +19,10 @@ public class LauncherLoaderFrame extends JFrame{
 	public static int W = 500;
 	public static int H = 280;
 	
-	public LauncherLoaderFrame(String title, String backImagePath) {
+	public LauncherLoaderFrame(String title, String backImagePath, int height) {
+		
+		H = (height > 100 && height < 400)? height: H ;
+		W = (int)(H * 1.78);
 		
 		this.setUndecorated(true);
 		this.setAlwaysOnTop(true);

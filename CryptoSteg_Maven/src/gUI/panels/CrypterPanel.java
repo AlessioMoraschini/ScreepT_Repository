@@ -73,6 +73,7 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
+import java.awt.Cursor;
 
 public class CrypterPanel extends JPanel {
 
@@ -280,7 +281,7 @@ public class CrypterPanel extends JPanel {
 	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
 	 */
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[:5px:5px][200:200:200][170:170:170][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:250px:450px,grow][:70:100px]", "[:40:50px,top][4px:4px:4px][35][4px][100,grow][140,grow][:10px:10px][280,grow][:1px:1px]"));
+		setLayout(new MigLayout("", "[:5px:5px][200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:250px:450px,grow][:70:100px]", "[:40:50px,top][4px:4px:4px][35][4px][100,grow][140,grow][:10px:10px][280,grow][:1px:1px]"));
 		
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
@@ -470,12 +471,22 @@ public class CrypterPanel extends JPanel {
 					chckbxShuffle.setEnabled(true);
 					chckbxShuffle.setForeground(Color.white);
 				}
+				
+				// update configuration reference
+				currentConf.getGenOpt().setFlagAes(modality.AES);
+				currentConf.getGenOpt().setFlagSteg(modality.STEG);
 			}
 		});
 		
 		chckbxShuffle = new JCheckBox("Ultra Secure");
 		chckbxShuffle.setForeground(Color.WHITE);
-		
+		chckbxShuffle.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentConf.getGenOpt().setUltraSecure(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
+			}
+		});
 		GridBagConstraints gbc_chckbxShuffle = new GridBagConstraints();
 		gbc_chckbxShuffle.insets = new Insets(0, 0, 0, 5);
 		gbc_chckbxShuffle.gridx = 8;
@@ -494,6 +505,7 @@ public class CrypterPanel extends JPanel {
 		labelFlagCodeReady.setFont(new Font("SansSerif", Font.BOLD, 14));
 		
 		btnCreept = new JButton("Creept");
+		btnCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		GridBagConstraints gbc_btnCreept = new GridBagConstraints();
 		gbc_btnCreept.fill = GridBagConstraints.BOTH;
 		gbc_btnCreept.insets = new Insets(0, 0, 0, 5);
@@ -504,9 +516,10 @@ public class CrypterPanel extends JPanel {
 		btnCreept.setForeground(Color.BLACK);
 		btnCreept.setBorder(null);
 		btnCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
-		btnCreept.setBackground(new Color(154, 205, 50));
+		btnCreept.setBackground(new Color(127, 255, 0));
 		
 		btnDeCreept = new JButton("DeCreept");
+		btnDeCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDeCreept.setMargin(new Insets(0, 0, 0, 20));
 		GridBagConstraints gbc_btnDeCreept = new GridBagConstraints();
 		gbc_btnDeCreept.insets = new Insets(0, 0, 0, 5);
@@ -517,7 +530,7 @@ public class CrypterPanel extends JPanel {
 		btnDeCreept.setRequestFocusEnabled(false);
 		btnDeCreept.setForeground(Color.BLACK);
 		btnDeCreept.setBorder(null);
-		btnDeCreept.setBackground(new Color(154, 205, 50));
+		btnDeCreept.setBackground(new Color(255, 0, 0));
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		
 
@@ -608,7 +621,7 @@ public class CrypterPanel extends JPanel {
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
-				if (!destinationDir.exists()) {
+				if (destinationDir!= null && !destinationDir.exists()) {
 					destinationDir.mkdir();
 				}
 				
@@ -1023,12 +1036,13 @@ public class CrypterPanel extends JPanel {
 	private void initialize(INItializer config) {
 		currentConf = config;		
 		AESKEYtext.setText(config.getAesOpt().getAesKey());
-
+		CryptoMode mode = CryptoMode.getModeFromBoolean(currentConf.getGenOpt().isFlagAes(), currentConf.getGenOpt().isFlagSteg());
+		comboModeCrypto.setSelectedItem(mode);
+		chckbxShuffle.setSelected(currentConf.getGenOpt().isUltraSecure());
 	}
 	
 	private synchronized boolean checkIfReadyToCode() {
 		CryptoMode selectedMode = (CryptoMode)comboModeCrypto.getSelectedItem();
-		
 		
 		// check the operation requested according to combo box value     
 		//(see enum custom type)

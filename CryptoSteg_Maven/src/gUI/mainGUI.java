@@ -222,7 +222,8 @@ public class mainGUI {
 	 */
 	public static void main(String[] args) {
 		
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg");
+		// OPEN LOADING PANEL
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", 280);
 		for (int i = 0; i < 10; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing "+ APPLICATION_NAME + dots;
@@ -267,8 +268,6 @@ public class mainGUI {
 					}
 					
 		loaderGraphics.update("Initializing graphics... ", 15);
-					
-					initGUI();
 					
 					// START MAIN WINDOW CONSTRUCTOR
 					logger.debug("Initializing main GUI-start");
@@ -383,53 +382,49 @@ public class mainGUI {
 					window.frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
 					    @Override
 					    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-					        now=new Date();
-					        
-					        // if autosave is on save before quit
-					        if(currentConfiguration.getFileOpt().isFlagAutosave()) {
-								try {
-									currentConfiguration.writeCurrentConfigIniFile();
-									logger.debug(" => AUTOSAVE ON: file saved before exiting ["
-											+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
-								} catch (Exception e) {
-									logger.error("Exception happened!", e);
-								}
-							}
-					        
-					      	logger.debug(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
-											+ APPLICATION_NAME+" CLOSED!\n\n"
-											+ "##################################################\n\n");
-					      	
-					      	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
-					      	Thread tempEraser = new Thread(tempDecryptedEraser());
-					      	tempEraser.start();	
-					      	
-							String msg = "Deleting temp files and folders... please wait!";
-							
-							new Thread(new Runnable() {
-										
-								@Override
-								public void run() {
-									JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.INFORMATION_MESSAGE);
-								}
-							}).start();
-							
-							try {
-								tempEraser.join();
-							} catch (InterruptedException e) {
-								logger.error("Some error occurred deleting temporary Decrypted files");
-							}
-					      	
-							mainAppRunning = false;
+					    	
+					    	if (JOptionPane.showConfirmDialog(window.frmScryptV, "Really want to exit? :(", "Exit Program",
+									JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+					    		
+					    		// perform closing operation and exit
+					    		closeApplication();
+					    	}else {
+					    		window.frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					    	}
 					  	}
 					});
 					
 					loaderGraphics.update("Ready! :)", 100);
+					
+					initGUI();
+					
 					window.frmScryptV.setVisible(true);
 					
+					// ASK FOR USERNAME IF NULL OR FIRST TIME
+					if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
+						currentConfiguration.getGenOpt().setUserName(window.askUsername());
+					}
+					window.startTitleUpdater();
 					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 				} catch (Exception e) {
 					logger.error("Exception happened!", e);
+				}
+			}
+		}).start();
+	}
+	
+	public void startTitleUpdater() {
+		// TITLE UPDATER - Thread that refreshes every second the username of the title
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (mainAppRunning) {
+					frmScryptV.setTitle(currentConfiguration.getGenOpt().getUserName()+" is using " + APPLICATION_NAME);				
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						frmScryptV.setTitle(APPLICATION_NAME+" - A.M. developement");	
+					}
 				}
 			}
 		}).start();
@@ -456,20 +451,6 @@ public class mainGUI {
 			logger.error("Exception happened!", e1);
 		}
 		
-		// TITLE UPDATER - Thread that refreshes every second the username of the title
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					frmScryptV.setTitle(currentConfiguration.getGenOpt().getUserName()+" is using " + APPLICATION_NAME);				
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						frmScryptV.setTitle(APPLICATION_NAME+" - A.M. developement");	
-					}
-				}
-			}
-		}).start();
 		logger.debug("## TITLE UPDATER started.");
 	}
 	// END CONSTRUCTOR
@@ -479,11 +460,6 @@ public class mainGUI {
 	 */
 	private void initialize() {
 
-		// ASK FOR USERNAME IF NULL OR FIRST TIME
-		if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-			askUsername();
-		}
-		
  loaderGraphics.update("Initializing screen properties...", 30);
  
 		// INITIALIZE SCREEN PROPOERTIES
@@ -531,14 +507,9 @@ public class mainGUI {
 					FLAG_mntmExit = true;
 					if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
-						now = new Date();
-						logger.debug("\n\n##################################################\n\n" + now.toString()
-								+ "\n\n" + APPLICATION_NAME + " CLOSED!\n\n"
-								+ "##################################################\n\n");
-
-						mainAppRunning = false;
-
-						frmScryptV.dispose();
+						
+						// perform closing actions and exit application
+						closeApplication();
 					}
 					FLAG_mntmExit = false;
 				}
@@ -641,18 +612,18 @@ public class mainGUI {
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 						try {
 							FileUtils.copyFile(new File(BACKUP_INI), new File(DEFAULT_INI));
-							currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
+							currentConfiguration.setIniReadFile(new Wini(new File(DEFAULT_INI)));
 							currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
-							askUsername();
-
 						} catch (IOException e) {
 							JOptionPane.showMessageDialog(frmScryptV,
 									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
 							logger.error("Exception happened!", e);
 						}
-						currentConfiguration.readConfigIniFile();
+						String name = askUsername();
 						JOptionPane.showMessageDialog(frmScryptV,
 								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
+						currentConfiguration.readConfigIniFile();
+						currentConfiguration.getGenOpt().setUserName(name);
 					} else {
 						JOptionPane.showMessageDialog(frmScryptV,
 								"Configuration not loaded, current CONFIG mantained!");
@@ -1188,7 +1159,7 @@ public class mainGUI {
 		  // Show your JFrame
 	}
 	
-	public void askUsername() {
+	public String askUsername() {
 		boolean end=false;
 		String input="";
 		logger.debug("Current user input initialization: void user or lenght>20 detected!");
@@ -1199,12 +1170,13 @@ public class mainGUI {
 						"UserName lenght Error", JOptionPane.WARNING_MESSAGE);
 				logger.error("Error in user input, redo.");
 			} else {
-				currentConfiguration.getGenOpt().setUserName(input);
 				currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "userName", input);
+				currentConfiguration.getGenOpt().setUserName(input);
 				end = true;
 			} 
 		} while (!end);
 		logger.debug("Name selected and saved username: "+input);
+		return input;
 	}
 	
 	public void setBackgroundImage() {
@@ -1297,6 +1269,49 @@ public class mainGUI {
 			mntmhwInfo.setToolTipText(tooltipMSG);
 			mntmnetInfo.setToolTipText(tooltipMSG);
 		}
+	}
+	
+	public static void closeApplication() {
+		now=new Date();
+        
+        // if autosave is on save before quit
+        if(currentConfiguration.getFileOpt().isFlagAutosave()) {
+			try {
+				currentConfiguration.writeCurrentConfigIniFile();
+				logger.debug(" => AUTOSAVE ON: file saved before exiting ["
+						+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
+			} catch (Exception e) {
+				logger.error("Exception happened!", e);
+			}
+		}
+        
+      	logger.debug(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
+						+ APPLICATION_NAME+" CLOSED!\n\n"
+						+ "##################################################\n\n");
+      	
+      	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
+      	Thread tempEraser = new Thread(tempDecryptedEraser());
+      	tempEraser.start();	
+      	
+		String msg = "Deleting temp files and folders... please wait!";
+		
+		new Thread(new Runnable() {
+					
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.INFORMATION_MESSAGE);
+			}
+		}).start();
+		
+		try {
+			tempEraser.join();
+		} catch (InterruptedException e) {
+			logger.error("Some error occurred deleting temporary Decrypted files");
+		}
+      	
+		mainAppRunning = false;
+		
+		System.exit(0);
 	}
 	
 }
