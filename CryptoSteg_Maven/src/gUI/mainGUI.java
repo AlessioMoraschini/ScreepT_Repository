@@ -31,6 +31,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
+import gUI.panels.AboutSectionPanel;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.GeneralOptionsFrame;
@@ -53,7 +54,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.SystemColor;
@@ -71,15 +74,18 @@ public class mainGUI {
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(mainGUI.class);
 
-	// autosave constant refresh period in millisecond
-	private static final long AUTOSAVE_MANAGER_PERIOD=8000;
+	private static Date now; // date used for log operations
+
+////////////////////// GENERAL STATIC ELEMENTS /////////////////////////
+////////////////////////////////////////////////////////////////////////
 	
-	// AUTOSAVE MODULE - only if specified in fileOptions
-	private static Thread autosaveModule;
-	
+	private static final long AUTOSAVE_MANAGER_PERIOD=8000; // autosave manager constant check refresh period in millisecond
+	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
+		
 	// the name of the application used elsewhere on the sw
-	private static final String APPLICATION_NAME = "ScrYpT  V1.0";
-	private static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
+	public static final String APP_VERSION = "0.5";
+	public static final String APPLICATION_NAME = "ScrYpT " + APP_VERSION;
+	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
 	public static final String ICON_FILE_NAME = "icon.jpg";
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
@@ -92,14 +98,16 @@ public class mainGUI {
 	// log_trace location
 	private static final String LOG_PROPERTIES_PATH = RESOURCES_DIR + "log4j.properties";
 	private static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
-	// some used lookAndFeel
-	public static String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-	public static String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	
-	// Filed for uppercaseFirstLetter "various' function"
-	private String last_dir_used; 
+	// temp decryptedFolder
+	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
+	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	
-	// GUI ELEMENTS
+	public static String currentJvmVersion = "";
+	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = "1.9.0";
+	
+//////////////////////////// GUI ELEMENTS //////////////////////////////
+////////////////////////////////////////////////////////////////////////
 	
 	// background image
 	private JLabel labelBACKground;
@@ -113,8 +121,9 @@ public class mainGUI {
 	private static KeyDictionaryPanel panelKeyDict;
 	private static GeneralOptionsFrame panelGeneralOptions;
 	private static ImageConverterFrame panelImgConv;
-	private static NetInfoPanel netInfoPanel;
-	private static HwInfoPanel hwInfoPanel;
+	private static NetInfoPanel panelNetInfo;
+	private static HwInfoPanel panelHwInfo;
+	private static AboutSectionPanel panelAbout;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	private TextEditor initTxtWriter;
@@ -156,30 +165,28 @@ public class mainGUI {
 	private JMenuItem mntmDeleteDirectoryContentRecursive;
 	private JMenuItem mntmMakeDirsFromPath;
 	
-	// END GUI ELEMENTS
+////////////////////////// MAIN GUI ELEMENTS ///////////////////////////
+////////////////////////////////////////////////////////////////////////
 	
 	// this file is the abstraction of the current settings used by various sub-programs and application of this main_GUI.
 	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.	
 	public static INItializer currentConfiguration;
 	
-	public static String currentJvmVersion = "";
-	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = "1.9.0";
+	// Filed for uppercaseFirstLetter "various' function"
+	private String last_dir_used; 
 	
 	// global values representing the screen size
 	public static int screenWidth;
 	public static int screenHeight;
 
-	// true if dark theme is selected
-	public static boolean DARK_THEME;
-	
-	// preferredStyle (initialized to fully avoid null values)
-	public static String preferredStyle = WindowsLookAndFeel;
+	// some used lookAndFeel
+	public static String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+	public static String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+	public static String preferredStyle = WindowsLookAndFeel; // preferredStyle (initialized to fully avoid null values)
+	public static boolean DARK_THEME; // true if dark theme is selected
 	
 	private int menuSize;
 	private int subMenuSize;
-	
-	// date used for log operations
-	private static Date now;
 	
 	// FLAGS TO SIGNAL THAT A MODULE IS OPENED (JDIALOG) 
 	// for jpanels they refresh only the first time opened or if manually refreshed (TODO)
@@ -190,6 +197,7 @@ public class mainGUI {
 	private static boolean flagImgConv = false;
 	private static boolean flagNetInfoPanel = false;
 	private static boolean flagHwInfoPanel = false;
+	private static boolean flagAboutPanel = false;
 	
 	// flags for no-window operations
 	private static boolean FLAG_mntmExit = false;
@@ -206,11 +214,8 @@ public class mainGUI {
 	// flag to close all suspended threads when exitings Main App
 	volatile private static boolean mainAppRunning = false;
 	
+	// main app object reference
 	private mainGUI mainAPP = this;
-	
-	// temp decryptedFolder
-	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
-	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	
 	// loader to visualize while loading application
 	public static LauncherLoaderFrame loaderGraphics;
@@ -243,15 +248,15 @@ public class mainGUI {
 					mainAppRunning = true;
 					// empty old log file
 					// useful for test phase
-//					
-//					PrintWriter writer;
-//					try {
-//						writer = new PrintWriter(LOG_PATH);
-//						writer.print("");
-//						writer.close();
-//					} catch (FileNotFoundException e) {
-//						e.printStackTrace();
-//					}
+					
+					PrintWriter writer;
+					try {
+						writer = new PrintWriter(LOG_PATH);
+						writer.print("");
+						writer.close();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
 					
 					// Initialize logger properties
 					PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
@@ -306,6 +311,9 @@ public class mainGUI {
 									}
 									if(!HwInfoPanel.active) {
 										flagHwInfoPanel=false;
+									}
+									if(!AboutSectionPanel.active) {
+										flagAboutPanel=false;
 									}
 								} catch (InterruptedException e) {
 									logger.error("Exception happened!", e);
@@ -365,7 +373,7 @@ public class mainGUI {
 										logger.warn("## AUTOSAVE-MANAGER: [AUTOSAVE OFF] autosave module interrupted.");
 									}else {
 										logger.debug("## AUTOSAVE-MANAGER: [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
-									}									
+									}
 									
 								} catch (InterruptedException e) {
 						        	logger.warn("## AUTOSAVE-MANAGER interrupted.");
@@ -760,19 +768,19 @@ public class mainGUI {
 							prog.getPb().setIndeterminate(true);
 							prog.getLabel().setText("Loading Network informations...");
 							prog.getPb().setString("Loading...");
-				    		netInfoPanel = new NetInfoPanel(currentConfiguration);	
-				    		netInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				    		netInfoPanel.setAlwaysOnTop(true);
-				    		netInfoPanel.setBounds(150, 150, 950, 700);
-				    		netInfoPanel.setVisible(true);
-				    		netInfoPanel.setTitle("Network info - ScrYpT");
+							panelNetInfo = new NetInfoPanel(currentConfiguration);	
+							panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							panelNetInfo.setAlwaysOnTop(true);
+							panelNetInfo.setBounds(150, 150, 950, 700);
+							panelNetInfo.setVisible(true);
+							panelNetInfo.setTitle("Network info - ScrYpT");
 				    		prog.getPb().setValue(100);
 						}
 					}).start();
 		    		
 				}else {
-					netInfoPanel.setState(java.awt.Frame.NORMAL);
-					netInfoPanel.requestFocus();
+					panelNetInfo.setState(java.awt.Frame.NORMAL);
+					panelNetInfo.requestFocus();
 				}
 		    }
 		});
@@ -790,20 +798,20 @@ public class mainGUI {
 							prog.getPb().setIndeterminate(true);
 							prog.getLabel().setText("Loading System informations...");
 							prog.getPb().setString("Loading...");
-				    		hwInfoPanel = new HwInfoPanel(currentConfiguration);	
-				    		hwInfoPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				    		hwInfoPanel.setBounds(250, 200, 1000, 750);
-				    		hwInfoPanel.setAlwaysOnTop(true);
-				    		hwInfoPanel.setResizable(false);
-				    		hwInfoPanel.setVisible(true);
-				    		hwInfoPanel.setTitle("Hardware info - ScrYpT");
+							panelHwInfo = new HwInfoPanel(currentConfiguration);	
+							panelHwInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							panelHwInfo.setBounds(250, 200, 1000, 750);
+							panelHwInfo.setAlwaysOnTop(true);
+							panelHwInfo.setResizable(false);
+							panelHwInfo.setVisible(true);
+							panelHwInfo.setTitle("Hardware info - ScrYpT");
 				    		prog.getPb().setValue(100);
 						}
 					}).start();
 		    		
 				}else {
-					hwInfoPanel.setState(java.awt.Frame.NORMAL);
-					hwInfoPanel.requestFocus();
+					panelHwInfo.setState(java.awt.Frame.NORMAL);
+					panelHwInfo.requestFocus();
 				}
 		    }
 		});
@@ -846,7 +854,18 @@ public class mainGUI {
 		// open in a new window - ABOUT SCRYPT
 		mntmAboutScreept = new JMenuItem(new AbstractAction("About - ScrYpt") {
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				if (!flagAboutPanel) {
+					flagAboutPanel = true;
+		    		panelAbout = new AboutSectionPanel(frmScryptV);
+		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		    		panelAbout.setBounds(700, 200, 650, 500);
+		    		panelAbout.setResizable(false);
+		    		panelAbout.setVisible(true);
+		    		panelAbout.setTitle("IMG Generator (" + APP_VERSION + ") - A.M.2018");
+				}else {
+					panelAbout.setState(java.awt.Frame.NORMAL);
+					panelAbout.requestFocus();
+				}
 			}
 		});
 		

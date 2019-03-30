@@ -7,15 +7,18 @@ import org.apache.log4j.Logger;
 public class AboutSectionPanel extends JFrame{
 
 	// initialize Logger
-	// GraphicPreferencesFrame logger
 	static Logger logger = Logger.getLogger(AboutSectionPanel.class); 
 	
 	private final JFrame thisFrame;
+	private JFrame mainApp;
 	// flag to signal active
 	public static boolean active=false;
 	
-	public AboutSectionPanel() {
+	public AboutSectionPanel(JFrame main) {
 		logger.info(this.getClass().getName() + " Starting...");
+
+		mainApp = main;
+		mainApp.setEnabled(false);
 		thisFrame = this;
 		active = true;
 		
@@ -31,9 +34,12 @@ public class AboutSectionPanel extends JFrame{
 		            
 				active = false;
 				
+				
 				logger.info(this.getClass().getName() + " Closed");
+				mainApp.setEnabled(true);				
 	        	dispose();
 		    }
 		});
 	}
+	
 }
