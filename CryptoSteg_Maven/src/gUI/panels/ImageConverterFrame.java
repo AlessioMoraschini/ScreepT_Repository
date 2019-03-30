@@ -147,9 +147,15 @@ public class ImageConverterFrame extends JFrame{
 
 	
 	public ImageConverterFrame(INItializer currentConf) {
+		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		thisFrame = this;
 		
 		active = true;
+		
+		// initialize field representing locally configuration referred
+		currentConfiguration = currentConf;
 		
 		try {
 			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
@@ -157,9 +163,6 @@ public class ImageConverterFrame extends JFrame{
 		} catch (IOException e1) {
 			logger.error("Exception happened!", e1);
 		}
-		
-		// initialize field representing locally configuration referred
-		currentConfiguration = currentConf;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		
@@ -193,24 +196,6 @@ public class ImageConverterFrame extends JFrame{
 		spinnerWidth.setModel(new SpinnerNumberModel(100, 1, 8000, 5));
 		getContentPane().add(spinnerWidth, "cell 1 2 2 1,growx,aligny center");
 		
-		// WIDTH SPINNER LISTENER
-		spinnerWidth.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				// if KeepRatio is  selected 
-				boolean posWValSel = (int)spinnerWidth.getValue() > 0;
-				boolean posHValSel = (int)spinnerHeight.getValue() > 0;
-				if(chckbxKeepRatio.isSelected() && inputImg!=null && posWValSel && posHValSel) {
-					// modify height according to ratio of original image
-					float r = (float) inputImg.getWidth() / (float) inputImg.getHeight();
-					int newH = (int) ((int) spinnerWidth.getValue() / r);
-					spinnerHeight.setValue(newH);
-				}else if(!posWValSel){
-					spinnerWidth.setValue(1);
-				}
-				lblOutSizeVal.setText((int) spinnerWidth.getValue()+" X "+(int) spinnerHeight.getValue());
-			}
-		});
-		
 		lblHeight = new JLabel("Height");
 		lblHeight.setForeground(new Color(240, 230, 140));
 		lblHeight.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -219,17 +204,6 @@ public class ImageConverterFrame extends JFrame{
 		spinnerHeight = new JSpinner();
 		spinnerHeight.setModel(new SpinnerNumberModel(100, 1, 8000, 5));
 		getContentPane().add(spinnerHeight, "cell 4 2 2 1,growx,aligny center");
-		
-		// HEIGHT SPINNER LISTENER
-		spinnerHeight.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				boolean posHValSel = (int)spinnerHeight.getValue() > 0;
-				if(!posHValSel) {
-					spinnerHeight.setValue(1);
-				}			
-				lblOutSizeVal.setText((int) spinnerWidth.getValue()+" X "+(int) spinnerHeight.getValue());
-			}
-		});
 		
 		separator_6 = new JSeparator();
 		separator_6.setOrientation(SwingConstants.VERTICAL);
@@ -254,47 +228,17 @@ public class ImageConverterFrame extends JFrame{
 		getContentPane().add(btnOriginalSize, "cell 0 3 2 1,growx");
 		btnOriginalSize.setBackground(Color.GRAY);
 		
-		//original size listener
-		btnOriginalSize.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (inputImg!=null ) {
-					spinnerWidth.setValue(inputImg.getWidth());
-					if (!chckbxKeepRatio.isSelected()) {
-						spinnerHeight.setValue(inputImg.getHeight());
-					} 
-				}
-			}
-		});
-		
 		chckbxSameFormat = new JCheckBox("Original format");
 		chckbxSameFormat.setSelected(true);
 		getContentPane().add(chckbxSameFormat, "cell 2 3 2 1,alignx center");
 		chckbxSameFormat.setOpaque(false);
 		chckbxSameFormat.setForeground(new Color(216, 191, 216));
 		
-
-		//CHECKBOX SAME FORMAT LISTENER
-		chckbxSameFormat.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// refresh gui
-				refreshOutGui();
-			}
-		});
-		
-				
 		chckbxKeepRatio = new JCheckBox("Original Ratio");
 		chckbxKeepRatio.setSelected(true);
 		getContentPane().add(chckbxKeepRatio, "cell 4 3 2 1,alignx center");
 		chckbxKeepRatio.setForeground(new Color(216, 191, 216));
 		chckbxKeepRatio.setOpaque(false);	
-		
-		// KEEP RATIO SELECTOR LISTENER
-		chckbxKeepRatio.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-		// refresh gui
-		refreshOutGui();
-			}
-		});	
 		
 		separator_7 = new JSeparator();
 		getContentPane().add(separator_7, "cell 0 4 7 1,growx");
@@ -321,22 +265,6 @@ public class ImageConverterFrame extends JFrame{
 		
 		comboBoxFormats = new JComboBox(writerNames);
 		getContentPane().add(comboBoxFormats, "cell 2 6 2 1,growx,aligny center");
-		
-		
-		// COMBO FORMATS LISTENER
-		comboBoxFormats.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(!chckbxSameFormat.isSelected()) {
-					String selectedExt = (String)comboBoxFormats.getSelectedItem();
-					lblOutTypeVal.setText(selectedExt);
-					lblOutFileVal.setText(FileStuff.changeExtension(new File(lblOutFileVal.getText()), "."+selectedExt).getName());
-				}else {
-					if(inputImgFile!= null) {
-						comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
-					}
-				}
-			}
-		});
 		
 		spinnerCompFactor = new JSpinner();
 		spinnerCompFactor.setMinimumSize(new Dimension(35, 25));
@@ -435,77 +363,6 @@ public class ImageConverterFrame extends JFrame{
 		btnLoadSourceImg.setBackground(Color.DARK_GRAY);
 		btnLoadSourceImg.setFont(new Font("SansSerif", Font.BOLD, 14));
 		
-		// LOAD SOURCE IMAGE BUTTON LISTENER
-		btnLoadSourceImg.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						
-						btnConvertAddDictionary.setEnabled(false);
-						btnLoadSourceImg.setEnabled(false);
-						btnOriginalSize.setEnabled(false);
-						btnStartConversion.setEnabled(false);
-						
-						File selected = GenericFileChooserDialog.fileImgRead(thisFrame, currentConf);
-						if (selected!=null) {
-							
-							progUpdater = new TestUpdateProgress(currentConfiguration);
-							progUpdater.getPb().setValue(20);
-							progUpdater.getLabel().setText("I'm loading the image...");
-				    		progUpdater.getPb().setIndeterminate(true);
-
-							try {
-								inputImg = ImageIO.read(selected);
-								inputImgFile = selected;
-							} catch (IOException e2) {
-								String msg = "Image not loaded :("+e2.toString();
-								JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
-								logger.error(msg);
-							}
-							
-							if (inputImg!=null && inputImgFile!=null) {
-								
-								progUpdater.getPb().setValue(50);
-								progUpdater.getLabel().setText("I'm creating the preview...");
-
-								int w = inputImg.getWidth();
-								int h = inputImg.getHeight();
-								String size = w + " X " + h;
-								
-								// refresh gui
-								comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
-								refreshOutGui();						
-								refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
-										FileStuff.coolFileSize(inputImgFile), w, h);				
-								
-								// refresh image preview in gui
-								// way with custom repainter (keep type)
-								scaledImage = ImageWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
-								refreshImage(scaledImage);
-								
-								logger.debug("Image Loaded!");
-							}else {
-								refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
-							}
-							
-						progUpdater.getPb().setValue(100);
-							
-						}
-
-						btnConvertAddDictionary.setEnabled(true);
-						btnLoadSourceImg.setEnabled(true);
-						btnOriginalSize.setEnabled(true);
-						btnStartConversion.setEnabled(true);
-						
-					}
-				}).start();
-				
-			}
-		});
-		
 		lblSize = new JLabel("Size");
 		panel.add(lblSize, "cell 0 4,alignx center");
 		
@@ -534,126 +391,6 @@ public class ImageConverterFrame extends JFrame{
 		btnStartConversion.setBackground(Color.BLACK);
 		panel.add(btnStartConversion, "cell 8 4 2 1,grow");
 		
-				// START CONVERSION BUTTON LISTENER
-				btnStartConversion.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-		
-						new Thread(new Runnable() {
-							
-							@Override
-							public void run() {
-								
-								btnConvertAddDictionary.setEnabled(false);
-								btnLoadSourceImg.setEnabled(false);
-								btnOriginalSize.setEnabled(false);
-								btnStartConversion.setEnabled(false);
-								FileOutputStream fout=null;
-								
-								// if source file exists and is loaded
-								if(inputImgFile!=null && inputImg!=null) {
-									
-									// FORMAT FLAG INITIALIZER
-									boolean JPGorJPEG = ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("jpg") || ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("jpeg");
-									boolean PNG = ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("png");
-
-									// create copy by reference
-									BufferedImage imageToConvert = ImageWorker.copyImage(inputImg);
-									
-									int X = (int)spinnerWidth.getValue();
-									int Y = (int)spinnerHeight.getValue();
-									ScalingAlgorithm alg = (ScalingAlgorithm) comboScaleQuality.getSelectedItem();
-									
-									File selected = GenericFileChooserDialog.fileImgWrite(thisFrame, currentConf, inputImgFile.getName());									
-									
-									if (selected!=null) {
-										
-										selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
-										selected = FileStuff.renameJavaObjFile(selected);
-										
-										progUpdater = new TestUpdateProgress(currentConfiguration);
-										progUpdater.getPb().setValue(20);
-							    		progUpdater.getPb().setIndeterminate(true);
-		
-										// if not same as the original
-										if(X!=imageToConvert.getWidth() || Y!=imageToConvert.getHeight() || !((String)comboBoxFormats.getSelectedItem()).equals(FilenameUtils.getExtension(inputImgFile.getName()))) {
-											Image img =imageToConvert.getScaledInstance(X, Y, alg.getAlgorithm());
-											// convert Image to BufferedImage
-											imageToConvert = new BufferedImage(X, Y, imageToConvert.getType());
-											Graphics2D g2d = imageToConvert.createGraphics();
-											g2d.drawImage(img, 0, 0, null);
-											g2d.dispose();						 
-										}
-										
-										// update advisor
-										progUpdater.getPb().setValue(50);
-										progUpdater.getLabel().setText("I'm Encoding the image...");
-																
-										//if is selected an export file
-										if(getCompressionFactor()==1f) {
-											
-											// IF DON'T COMPRESS
-											ImageWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
-											
-										}else {
-											
-											// IF COMPRESS
-											try {
-												fout = new FileOutputStream(selected);
-												
-												if (JPGorJPEG) {
-													// jpeg converter
-													fout.write(ImageWorker.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
-												}else if(PNG) {
-													// png converter
-													
-													fout.write(ImageWorker.compressIMGpng(imageToConvert, getCompressionFactorPng(), false));
-												}else {
-													// if no supported conversion type use default
-													ImageWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
-												}
-												
-												fout.flush();
-												fout.close();
-											} catch (IOException e) {
-								        		JOptionPane.showMessageDialog(thisFrame, "IO error :(", "IO Error", JOptionPane.ERROR_MESSAGE);
-												logger.error("Exception happened during conversion", e);
-											} catch (UnsupportedOperationException e) {
-								        		JOptionPane.showMessageDialog(thisFrame, "Unsupported operation :(", "IO Error", JOptionPane.ERROR_MESSAGE);
-												logger.error("Exception happened during conversion", e);
-											}
-										}
-								
-										// update advisor
-										progUpdater.getPb().setValue(100);
-										
-										String msg = "Image converted: "+selected.getAbsolutePath();
-										logger.debug(msg);
-										JOptionPane.showMessageDialog(thisFrame, msg,"Image converted :)", JOptionPane.INFORMATION_MESSAGE);
-		
-									}
-								}else {
-									refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
-									String msg = "You have to Load a Source image file before to convert it !";
-									JOptionPane.showMessageDialog(thisFrame, msg,"Missing source file", JOptionPane.ERROR_MESSAGE);
-									logger.error(msg);
-								}
-								btnConvertAddDictionary.setEnabled(true);
-								btnLoadSourceImg.setEnabled(true);
-								btnOriginalSize.setEnabled(true);
-								btnStartConversion.setEnabled(true);
-								try {
-									if(fout!=null) {
-										fout.close();
-									}
-								} catch (IOException e) {
-									logger.error("Exception happened closing the output stream", e);
-								}
-							}
-						}).start();
-						
-					}
-				});
-		
 		lblFileSize = new JLabel("File Size");
 		panel.add(lblFileSize, "cell 0 5,alignx center");
 		
@@ -680,6 +417,97 @@ public class ImageConverterFrame extends JFrame{
 		btnConvertAddDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));
 		btnConvertAddDictionary.setBackground(new Color(112, 128, 144));
 		panel.add(btnConvertAddDictionary, "cell 8 5 2 1,grow");
+		
+		// window on close operations
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	logger.debug("Closing "+getClass().getName());
+	        	active = false;
+	        	dispose();
+		    }
+		});
+		
+		addHandlers();
+		
+		logger.debug("## IMAGE CONVERTER started");
+	}
+	
+	private void addHandlers() {
+		
+		// WIDTH SPINNER LISTENER
+		spinnerWidth.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				// if KeepRatio is  selected 
+				boolean posWValSel = (int)spinnerWidth.getValue() > 0;
+				boolean posHValSel = (int)spinnerHeight.getValue() > 0;
+				if(chckbxKeepRatio.isSelected() && inputImg!=null && posWValSel && posHValSel) {
+					// modify height according to ratio of original image
+					float r = (float) inputImg.getWidth() / (float) inputImg.getHeight();
+					int newH = (int) ((int) spinnerWidth.getValue() / r);
+					spinnerHeight.setValue(newH);
+				}else if(!posWValSel){
+					spinnerWidth.setValue(1);
+				}
+				lblOutSizeVal.setText((int) spinnerWidth.getValue()+" X "+(int) spinnerHeight.getValue());
+			}
+		});
+		
+		// HEIGHT SPINNER LISTENER
+		spinnerHeight.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				boolean posHValSel = (int)spinnerHeight.getValue() > 0;
+				if(!posHValSel) {
+					spinnerHeight.setValue(1);
+				}			
+				lblOutSizeVal.setText((int) spinnerWidth.getValue()+" X "+(int) spinnerHeight.getValue());
+			}
+		});
+		
+
+		//ORIGINAL SIZE RESETTER BUTTON HANDLER
+		btnOriginalSize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (inputImg!=null ) {
+					spinnerWidth.setValue(inputImg.getWidth());
+					if (!chckbxKeepRatio.isSelected()) {
+						spinnerHeight.setValue(inputImg.getHeight());
+					} 
+				}
+			}
+		});
+		
+		//CHECKBOX SAME FORMAT HANDLER
+		chckbxSameFormat.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// refresh gui
+				refreshOutGui();
+			}
+		});
+		
+		// KEEP RATIO SELECTOR LISTENER
+		chckbxKeepRatio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		// refresh gui
+		refreshOutGui();
+			}
+		});
+		
+		// COMBO FORMATS LISTENER
+		comboBoxFormats.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!chckbxSameFormat.isSelected()) {
+					String selectedExt = (String)comboBoxFormats.getSelectedItem();
+					lblOutTypeVal.setText(selectedExt);
+					lblOutFileVal.setText(FileStuff.changeExtension(new File(lblOutFileVal.getText()), "."+selectedExt).getName());
+				}else {
+					if(inputImgFile!= null) {
+						comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
+					}
+				}
+			}
+		});
 		
 		// convert and save to dictionary - almost equals to convert and export
 		btnConvertAddDictionary.addActionListener(new ActionListener() {
@@ -760,19 +588,197 @@ public class ImageConverterFrame extends JFrame{
 				
 			}
 		});
+		
+		// START CONVERSION BUTTON LISTENER
+		btnStartConversion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-		// window on close operations
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-	        	logger.debug("Closing "+getClass().getName());
-	        	active = false;
-	        	dispose();
-		    }
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						
+						btnConvertAddDictionary.setEnabled(false);
+						btnLoadSourceImg.setEnabled(false);
+						btnOriginalSize.setEnabled(false);
+						btnStartConversion.setEnabled(false);
+						FileOutputStream fout=null;
+						
+						// if source file exists and is loaded
+						if(inputImgFile!=null && inputImg!=null) {
+							
+							// FORMAT FLAG INITIALIZER
+							boolean JPGorJPEG = ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("jpg") || ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("jpeg");
+							boolean PNG = ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("png");
+
+							// create copy by reference
+							BufferedImage imageToConvert = ImageWorker.copyImage(inputImg);
+							
+							int X = (int)spinnerWidth.getValue();
+							int Y = (int)spinnerHeight.getValue();
+							ScalingAlgorithm alg = (ScalingAlgorithm) comboScaleQuality.getSelectedItem();
+							
+							File selected = GenericFileChooserDialog.fileImgWrite(thisFrame, currentConfiguration, inputImgFile.getName());									
+							
+							if (selected!=null) {
+								
+								selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
+								selected = FileStuff.renameJavaObjFile(selected);
+								
+								progUpdater = new TestUpdateProgress(currentConfiguration);
+								progUpdater.getPb().setValue(20);
+					    		progUpdater.getPb().setIndeterminate(true);
+
+								// if not same as the original
+								if(X!=imageToConvert.getWidth() || Y!=imageToConvert.getHeight() || !((String)comboBoxFormats.getSelectedItem()).equals(FilenameUtils.getExtension(inputImgFile.getName()))) {
+									Image img =imageToConvert.getScaledInstance(X, Y, alg.getAlgorithm());
+									// convert Image to BufferedImage
+									imageToConvert = new BufferedImage(X, Y, imageToConvert.getType());
+									Graphics2D g2d = imageToConvert.createGraphics();
+									g2d.drawImage(img, 0, 0, null);
+									g2d.dispose();						 
+								}
+								
+								// update advisor
+								progUpdater.getPb().setValue(50);
+								progUpdater.getLabel().setText("I'm Encoding the image...");
+														
+								//if is selected an export file
+								if(getCompressionFactor()==1f) {
+									
+									// IF DON'T COMPRESS
+									ImageWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
+									
+								}else {
+									
+									// IF COMPRESS
+									try {
+										fout = new FileOutputStream(selected);
+										
+										if (JPGorJPEG) {
+											// jpeg converter
+											fout.write(ImageWorker.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
+										}else if(PNG) {
+											// png converter
+											
+											fout.write(ImageWorker.compressIMGpng(imageToConvert, getCompressionFactorPng(), false));
+										}else {
+											// if no supported conversion type use default
+											ImageWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
+										}
+										
+										fout.flush();
+										fout.close();
+									} catch (IOException e) {
+						        		JOptionPane.showMessageDialog(thisFrame, "IO error :(", "IO Error", JOptionPane.ERROR_MESSAGE);
+										logger.error("Exception happened during conversion", e);
+									} catch (UnsupportedOperationException e) {
+						        		JOptionPane.showMessageDialog(thisFrame, "Unsupported operation :(", "IO Error", JOptionPane.ERROR_MESSAGE);
+										logger.error("Exception happened during conversion", e);
+									}
+								}
+						
+								// update advisor
+								progUpdater.getPb().setValue(100);
+								
+								String msg = "Image converted: "+selected.getAbsolutePath();
+								logger.debug(msg);
+								JOptionPane.showMessageDialog(thisFrame, msg,"Image converted :)", JOptionPane.INFORMATION_MESSAGE);
+
+							}
+						}else {
+							refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
+							String msg = "You have to Load a Source image file before to convert it !";
+							JOptionPane.showMessageDialog(thisFrame, msg,"Missing source file", JOptionPane.ERROR_MESSAGE);
+							logger.error(msg);
+						}
+						btnConvertAddDictionary.setEnabled(true);
+						btnLoadSourceImg.setEnabled(true);
+						btnOriginalSize.setEnabled(true);
+						btnStartConversion.setEnabled(true);
+						try {
+							if(fout!=null) {
+								fout.close();
+							}
+						} catch (IOException e) {
+							logger.error("Exception happened closing the output stream", e);
+						}
+					}
+				}).start();
+				
+			}
 		});
 		
-		logger.debug("## IMAGE CONVERTER started");
+		// LOAD SOURCE IMAGE BUTTON LISTENER
+		btnLoadSourceImg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						
+						btnConvertAddDictionary.setEnabled(false);
+						btnLoadSourceImg.setEnabled(false);
+						btnOriginalSize.setEnabled(false);
+						btnStartConversion.setEnabled(false);
+						
+						File selected = GenericFileChooserDialog.fileImgRead(thisFrame, currentConfiguration);
+						if (selected!=null) {
+							
+							progUpdater = new TestUpdateProgress(currentConfiguration);
+							progUpdater.getPb().setValue(20);
+							progUpdater.getLabel().setText("I'm loading the image...");
+				    		progUpdater.getPb().setIndeterminate(true);
+
+							try {
+								inputImg = ImageIO.read(selected);
+								inputImgFile = selected;
+							} catch (IOException e2) {
+								String msg = "Image not loaded :("+e2.toString();
+								JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+								logger.error(msg);
+							}
+							
+							if (inputImg!=null && inputImgFile!=null) {
+								
+								progUpdater.getPb().setValue(50);
+								progUpdater.getLabel().setText("I'm creating the preview...");
+
+								int w = inputImg.getWidth();
+								int h = inputImg.getHeight();
+								String size = w + " X " + h;
+								
+								// refresh gui
+								comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
+								refreshOutGui();						
+								refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
+										FileStuff.coolFileSize(inputImgFile), w, h);				
+								
+								// refresh image preview in gui
+								// way with custom repainter (keep type)
+								scaledImage = ImageWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
+								refreshImage(scaledImage);
+								
+								logger.debug("Image Loaded!");
+							}else {
+								refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
+							}
+							
+						progUpdater.getPb().setValue(100);
+							
+						}
+
+						btnConvertAddDictionary.setEnabled(true);
+						btnLoadSourceImg.setEnabled(true);
+						btnOriginalSize.setEnabled(true);
+						btnStartConversion.setEnabled(true);
+						
+					}
+				}).start();
+				
+			}
+		});
 	}
 	
 	/**

@@ -25,7 +25,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import javax.swing.JLabel;
@@ -105,6 +104,9 @@ public class NetInfoPanel extends JFrame{
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
 	public NetInfoPanel(INItializer currentConfig) {
+		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		setMaximumSize(new Dimension(800, 450));
 		setMinimumSize(new Dimension(750, 400));
 		
@@ -380,6 +382,8 @@ public class NetInfoPanel extends JFrame{
 				validateConnectivity();
 			}
 		}).start();
+		
+		logger.info(this.getClass().getName() + " Started");
 	}
 	
 ////////////////////////// EVENT HANDLERS ACTION LISTENERS //////////////////////////

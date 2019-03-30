@@ -1,4 +1,4 @@
-package junit;
+package junit.GUI;
 
 import static org.junit.Assert.assertTrue;
 

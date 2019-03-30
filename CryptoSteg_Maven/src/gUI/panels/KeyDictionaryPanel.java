@@ -78,6 +78,8 @@ public class KeyDictionaryPanel extends JFrame{
 	// constructor
 	public KeyDictionaryPanel(INItializer currentConfiguration) {
 		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		active = true;
 		
 		// SW window icon

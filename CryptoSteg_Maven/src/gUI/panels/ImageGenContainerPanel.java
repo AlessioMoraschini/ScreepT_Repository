@@ -51,6 +51,8 @@ public class ImageGenContainerPanel extends JPanel{
 	// constructor that create a random img and adds it to obj panel (this class extends JPanel)
     public ImageGenContainerPanel(KeyGenImageType imgEnumType, int w, int h, KeyGenPanel thisFrame, INItializer currentConf) {
     	
+    	logger.info(this.getClass().getName() + " Starting...");
+    	
     	genContPane = this;
     	
     	progUpdater = new TestUpdateProgress(currentConf);
@@ -110,6 +112,8 @@ public class ImageGenContainerPanel extends JPanel{
 			}
 		});
     	starterAsync.start();
+    	
+    	logger.info(this.getClass().getName() + " Started");
     }
     
 

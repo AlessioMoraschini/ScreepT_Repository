@@ -51,13 +51,18 @@ public class GeneralOptionsFrame extends JFrame{
 	// GraphicPreferencesFrame logger
 	static Logger logger = Logger.getLogger(GeneralOptionsFrame.class); 
 	
-	private final JFrame thisFrame;
-	
 	// gui elements as fields
+	private final JFrame thisFrame;
 	private JTextField textFieldUname;
 	private JSpinner spinnerInterval;
 	private JCheckBox chckbxAutosave;
 	private JComboBox<String> comboCharsets;
+	private JCheckBox chckbxHideLauncherAt;	
+	private JLabel lblIntMinutes;
+	private JButton btnResetValues;
+	private JButton btnDiscard;
+	private JButton btnUseSettings;
+	private JButton btnSaveConf;
 	
 	// actual values
 	private static int AUTOSAVE_INTERVAL;
@@ -77,11 +82,18 @@ public class GeneralOptionsFrame extends JFrame{
 	
 	// flag to signal active
 	public static boolean active=false;
-	private JCheckBox chckbxHideLauncherAt;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		active = true;
+		
+		// assign this frame to variable
+		thisFrame = this;
+		
+		// initialize launcher config
+		currentConfiguration = currentConf;
 		
 		// SW window icon
 		try {
@@ -91,8 +103,6 @@ public class GeneralOptionsFrame extends JFrame{
 			logger.error("Exception happened!", e1);
 		}
 		
-		// initialize config
-		currentConfiguration = currentConf;
 		try {
 			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
 		} catch (InvalidFileFormatException e1) {
@@ -101,12 +111,7 @@ public class GeneralOptionsFrame extends JFrame{
 			logger.error("IO error setting launcher configuration file", e1);
 		}
 		
-		// assign this frame to variable
-		thisFrame = this;
-		
 		initializeValues();		
-		
-		logger.debug("Initialized.");
 		
 		getContentPane().setBackground(new Color(119, 136, 153));
 		getContentPane().setLayout(new MigLayout("", "[:10px:100px,grow][:110px:110px][:80:180,grow][130,grow][110,grow][:10px:100px,grow][:100px:170px][:100px:100px][:75px:75px][:75px:75px][:10px:100px,grow]", "[:50:70px][5][][:5:5px][30][10][][:5:5px][10%,grow,baseline]"));
@@ -125,22 +130,9 @@ public class GeneralOptionsFrame extends JFrame{
 		chckbxAutosave.setHorizontalAlignment(SwingConstants.CENTER);
 		chckbxAutosave.setBackground(new Color(119, 136, 153));
 		chckbxAutosave.setSelected(AUTOSAVE_FLAG);
-		chckbxAutosave.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AUTOSAVE_FLAG = chckbxAutosave.isSelected();
-				currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
-				if(chckbxAutosave.isSelected()) {
-					spinnerInterval.setEnabled(true);
-				}else {
-					spinnerInterval.setEnabled(false);
-				}
-			}
-		});
 		
 //		 calculate minutes: interval in seconds / 60
-		JLabel lblIntMinutes = new JLabel(AUTOSAVE_INTERVAL/60 +" Minutes + "+ AUTOSAVE_INTERVAL%60+" Seconds");
+		lblIntMinutes = new JLabel(AUTOSAVE_INTERVAL/60 +" Minutes + "+ AUTOSAVE_INTERVAL%60+" Seconds");
 		lblIntMinutes.setBackground(new Color(240, 248, 255));
 		lblIntMinutes.setForeground(new Color(255, 255, 255));
 		lblIntMinutes.setFont(new Font("SansSerif", Font.BOLD, 13));
@@ -154,7 +146,6 @@ public class GeneralOptionsFrame extends JFrame{
 		chckbxHideLauncherAt.setFont(new Font("SansSerif", Font.BOLD, 14));
 		chckbxHideLauncherAt.setBackground(new Color(119, 136, 153));
 		
-		
 		JLabel lblGeneralOptions = new JLabel("General Options");
 		lblGeneralOptions.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblGeneralOptions.setForeground(new Color(230, 230, 250));
@@ -166,16 +157,8 @@ public class GeneralOptionsFrame extends JFrame{
 		lblIntervalInSeconds.setFont(new Font("SansSerif", Font.BOLD, 12));
 		getContentPane().add(lblIntervalInSeconds, "cell 1 2,alignx center,aligny center");
 		
-		
 		// update only local variable fields, INItializer will be updated on exit/save/use/discard
 		spinnerInterval = new JSpinner();
-		spinnerInterval.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				AUTOSAVE_INTERVAL = (int)spinnerInterval.getValue();
-				currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
-				lblIntMinutes.setText(AUTOSAVE_INTERVAL/60 +" Minutes + "+ AUTOSAVE_INTERVAL%60+" Seconds");
-			}
-		});
 		spinnerInterval.setModel(new SpinnerNumberModel(AUTOSAVE_INTERVAL, INItializer.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600, 1));
 		getContentPane().add(spinnerInterval, "cell 2 2 2 1,growx,aligny center");
 		spinnerInterval.setValue(AUTOSAVE_INTERVAL);
@@ -196,17 +179,10 @@ public class GeneralOptionsFrame extends JFrame{
 		comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
 		getContentPane().add(comboCharsets, "cell 2 4 2 1,growx");
 		comboCharsets.setSelectedItem(CHARSET);
-		comboCharsets.addActionListener(new ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CHARSET = (String)comboCharsets.getSelectedItem();
-				logger.info("Default charset: " + CHARSET);
-			}
-		});
 		
-		JLabel label = new JLabel("Username");
-		label.setFont(new Font("Tahoma", Font.BOLD, 13));
-		getContentPane().add(label, "cell 4 4,alignx center");
+		JLabel lblUsername = new JLabel("Username");
+		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
+		getContentPane().add(lblUsername, "cell 4 4,alignx center");
 		
 		textFieldUname = new JTextField();
 		textFieldUname.setText(CURRENT_USERNAME);
@@ -216,6 +192,94 @@ public class GeneralOptionsFrame extends JFrame{
 		textFieldUname.setBorder(new LineBorder(Color.DARK_GRAY, 3));
 		textFieldUname.setBackground(new Color(224, 255, 255));
 		getContentPane().add(textFieldUname, "cell 6 4 4 1,growx");
+		
+		btnResetValues = new JButton("Reset initial values");
+		
+		JSeparator separator = new JSeparator();
+		getContentPane().add(separator, "cell 1 6 9 1,growx");
+		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnResetValues.setBackground(new Color(240, 230, 140));
+		getContentPane().add(btnResetValues, "cell 1 8 2 1");
+		
+		btnDiscard = new JButton("Discard");
+
+		btnUseSettings = new JButton("Use");
+		
+		btnSaveConf = new JButton("Save Values");
+		btnSaveConf.setForeground(Color.BLACK);
+		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnSaveConf.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnSaveConf, "cell 7 8");
+		btnUseSettings.setForeground(Color.WHITE);
+		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnUseSettings.setBackground(Color.DARK_GRAY);
+		getContentPane().add(btnUseSettings, "cell 8 8,growx");
+		btnDiscard.setForeground(new Color(0, 0, 0));
+		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnDiscard.setBackground(new Color(205, 92, 92));
+		getContentPane().add(btnDiscard, "cell 9 8,growx");
+		
+		addHandlers();
+		
+		logger.info(this.getClass().getName() + " Started");
+	}
+	
+	private void addHandlers() {
+		
+		// DEFAULT CLOSE ACTIONS 
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	logger.debug("Closing GUI_Preferences");
+				
+	        	// reset values to default adn update configuration
+	        	resetValuesAndAdd();
+	        	
+	        	// update gui
+	        	updateGUIComponents();		        	
+
+	        	active = false;
+				
+				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
+	        	dispose();
+		    }
+		});
+		
+		// AUTOSAVE CHECKBOX HANDLER
+		chckbxAutosave.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AUTOSAVE_FLAG = chckbxAutosave.isSelected();
+				currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
+				if(chckbxAutosave.isSelected()) {
+					spinnerInterval.setEnabled(true);
+				}else {
+					spinnerInterval.setEnabled(false);
+				}
+			}
+		});
+		
+		// AUTOSAVE SPINNER HANDLER
+		spinnerInterval.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				AUTOSAVE_INTERVAL = (int)spinnerInterval.getValue();
+				currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
+				lblIntMinutes.setText(AUTOSAVE_INTERVAL/60 +" Minutes + "+ AUTOSAVE_INTERVAL%60+" Seconds");
+			}
+		});
+		
+		// CHARSETS SELECTOR HANDLER
+		comboCharsets.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CHARSET = (String)comboCharsets.getSelectedItem();
+				logger.info("Default charset: " + CHARSET);
+			}
+		});
+		
+		// USERNAME HANDLER
 		textFieldUname.getDocument().addDocumentListener(new DocumentListener() {
 			  public void changedUpdate(DocumentEvent e) {
 			  	  resetCurrentIni();
@@ -229,11 +293,11 @@ public class GeneralOptionsFrame extends JFrame{
 
 			  public void resetCurrentIni() {
 				  CURRENT_USERNAME = textFieldUname.getText();
-				  currentConf.getGenOpt().setUserName(CURRENT_USERNAME);
+				  currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
 			  }
 		});
 		
-		JButton btnResetValues = new JButton("Reset initial values");
+		// RESET BUTTON HANDLER
 		btnResetValues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("Starting reset of General Options");
@@ -256,13 +320,7 @@ public class GeneralOptionsFrame extends JFrame{
 			}
 		});
 		
-		JSeparator separator = new JSeparator();
-		getContentPane().add(separator, "cell 1 6 9 1,growx");
-		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnResetValues.setBackground(new Color(240, 230, 140));
-		getContentPane().add(btnResetValues, "cell 1 8 2 1");
-		
-		JButton btnDiscard = new JButton("Discard");
+		// DISCARD BUTTON HANDLER
 		btnDiscard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("DISCARD => Closing General Options");
@@ -280,28 +338,10 @@ public class GeneralOptionsFrame extends JFrame{
 			}
 		});
 		
-		JButton btnUseSettings = new JButton("Use");
-		btnUseSettings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// update fields' values
-				setValuesAndAdd();
-				
-				// update gui
-	        	updateGUIComponents();	
-	        	
-	        	// write launcher configuration
-	    		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
-				
-				// close and apply new values without saving () windowclose listener will use updated values
-				//thisFrame.dispose();
-	        	dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
-			}
-		});
-		
-		JButton btnSaveConf = new JButton("Save Values");
+		// SAVE CONF BUTTON HANDLER
 		btnSaveConf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (JOptionPane.showConfirmDialog(thisFrame,"Are you sure you want to overwrite "+currentConf.getIniFile().getFile().getPath()+"(ONLY GENERAL OPTIONS)?", 
+				if (JOptionPane.showConfirmDialog(thisFrame,"Are you sure you want to overwrite "+currentConfiguration.getIniFile().getFile().getPath()+"(ONLY GENERAL OPTIONS)?", 
 		        		"overwrite configuration", JOptionPane.YES_NO_OPTION,
 		        		JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
 					
@@ -320,40 +360,24 @@ public class GeneralOptionsFrame extends JFrame{
 				}
 			}
 		});
-		btnSaveConf.setForeground(Color.BLACK);
-		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnSaveConf.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnSaveConf, "cell 7 8");
-		btnUseSettings.setForeground(Color.WHITE);
-		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnUseSettings.setBackground(Color.DARK_GRAY);
-		getContentPane().add(btnUseSettings, "cell 8 8,growx");
-		btnDiscard.setForeground(new Color(0, 0, 0));
-		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnDiscard.setBackground(new Color(205, 92, 92));
-		getContentPane().add(btnDiscard, "cell 9 8,growx");
 		
-		// default close operation(same as reset) 
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-	        	logger.debug("Closing GUI_Preferences");
+		// USE SETTINGS BUTTON HANDLER
+		btnUseSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// update fields' values
+				setValuesAndAdd();
 				
-	        	// reset values to default adn update configuration
-	        	resetValuesAndAdd();
+				// update gui
+	        	updateGUIComponents();	
 	        	
-	        	// update gui
-	        	updateGUIComponents();		        	
+	        	// write launcher configuration
+	    		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
 				
-				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
-	        	
-				active = false;
-				
-	        	dispose();
-		    }
+				// close and apply new values without saving () windowclose listener will use updated values
+				//thisFrame.dispose();
+	        	dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
+			}
 		});
-
 	}
 	
 	private void initializeValues() {

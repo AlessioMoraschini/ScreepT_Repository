@@ -37,6 +37,9 @@ public class ChargeIniLog extends JPanel{
 	public final static String ICON_RELOAD_BLUE = "Resources_Scrypt/Icons/Reload.png";
 
 	public ChargeIniLog(INItializer config, JFrame parent) {
+		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		setBackground(Color.LIGHT_GRAY);
 		
 		setLayout(new MigLayout("", "[117.00][][][70,grow][50][100px,grow][:80:250px]", "[:58.00:60px][][90%,grow]"));
@@ -131,6 +134,6 @@ public class ChargeIniLog extends JPanel{
 		buttonReload.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
 		add(buttonReload, "cell 2 1");
 		
-		logger.debug("## CONFIGURATION MANAGER MODULE started");
+		logger.info(this.getClass().getName() + " Started");
 	}
 }

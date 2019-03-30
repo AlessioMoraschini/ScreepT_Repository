@@ -182,7 +182,7 @@ public class TextEditor extends JPanel {
 	
 	public TextEditor(JFrame parent, INItializer currentConf) {
 
-		logger.debug("Text writer module selected by user");
+		logger.info(this.getClass().getName() + " Starting...");
 		
 		// initialize values used in gui //
 		currentConfiguration = currentConf;		
@@ -508,16 +508,17 @@ public class TextEditor extends JPanel {
 				// this function is used to change color and tooltip text according to key lenght
 				AesCipher.check(txtAesKey);
 				
-				//if checkbutton is selected the remember passwor in current configuration 
-				//(volatile until explicit save by user)
-				
-				try {
-					AesCipher crypter=new AesCipher(txtAesKey.getText());
-					textArea_1.setText(crypter.encrypt(textArea_1.getText()));
-				}catch(Exception e) {
-					JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
-					logger.error("Exception happened!", e);
-				}	
+				if (txtAesKey.getText().length() != 0) {
+					try {
+						AesCipher crypter = new AesCipher(txtAesKey.getText());
+						textArea_1.setText(crypter.encrypt(textArea_1.getText()));
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
+						logger.error("Exception happened!", e);
+					} 
+				}else {
+					JOptionPane.showMessageDialog(currentTextEditor, "Please enter a password, empty key text!", "Empty password", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 		
@@ -526,15 +527,17 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {	
 				// this function is used to update bg color of textfield according to given key's lenght
 				AesCipher.check(txtAesKey);
-				//if checkbutton is selected the remember passwor in current configuration 
-				//(volatile until explicit save by user)
 				
-				try {
-					AesCipher decrypter=new AesCipher(txtAesKey.getText());
-					textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
-				}catch(Exception e) {
-					JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
-					logger.error("Exception happened!", e);
+				if (txtAesKey.getText().length() != 0) {
+					try {
+						AesCipher decrypter = new AesCipher(txtAesKey.getText());
+						textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
+						logger.error("Exception happened!", e);
+					} 
+				}else {
+					JOptionPane.showMessageDialog(currentTextEditor, "Please enter a password, empty key text!", "Empty password", JOptionPane.WARNING_MESSAGE);
 				}
 				
 			}
@@ -785,11 +788,11 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if(chkCutWordsTo.isSelected()) {
 					textArea_1.setLineWrap(true);
-					chkCutWordsTo.setEnabled(true);
+					chkFitmantainwords.setEnabled(true);
 				}else {
 					textArea_1.setLineWrap(false);
 					textArea_1.setWrapStyleWord(false);
-					chkCutWordsTo.setEnabled(false);
+					chkFitmantainwords.setEnabled(false);
 				}
 			}
 		});

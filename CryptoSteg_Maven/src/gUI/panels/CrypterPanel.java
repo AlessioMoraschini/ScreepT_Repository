@@ -194,6 +194,7 @@ public class CrypterPanel extends JPanel {
 /////////////////////////////////////////////////////////////////////////////////////
 ///////////////					INITIALIZATION    				/////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+		logger.info(this.getClass().getName() + " Starting...");
 		
 		thisPanel = this;
 		
@@ -274,7 +275,7 @@ public class CrypterPanel extends JPanel {
 			}
 		}).start();
 		
-		logger.debug("### ScreepT module started");
+		logger.info(this.getClass().getName() + " Started");
 	}
 	
 	/**

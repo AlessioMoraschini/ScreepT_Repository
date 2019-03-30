@@ -29,6 +29,8 @@ public class LauncherLoaderPanel extends JPanel{
 	
 	public LauncherLoaderPanel(Image background, JFrame parent) {
 		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		parentFrame = parent;
 		backgroundImage = background;
 		

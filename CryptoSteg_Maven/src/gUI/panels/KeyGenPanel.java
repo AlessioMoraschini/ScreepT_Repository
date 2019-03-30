@@ -106,7 +106,11 @@ public class KeyGenPanel extends JFrame {
 	 */
 	public KeyGenPanel(INItializer currentConfig) {
 
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		active = true;
+		
+		thisFrame = this;
 		
 		// SW window icon
 		try {
@@ -115,8 +119,6 @@ public class KeyGenPanel extends JFrame {
 		} catch (IOException e1) {
 			logger.error("Exception happened!", e1);
 		}
-		
-		thisFrame = this;
 		
 		// get default values to initialize panel
 		CURRENT_SEL_W = currentConfig.getSteganOpt().getDefaultWidth();
@@ -527,9 +529,6 @@ public class KeyGenPanel extends JFrame {
 			}
 		});
 		
-		
-		logger.debug("## KEY GENERATOR started");
-		
 		// window on close operations
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
@@ -540,6 +539,8 @@ public class KeyGenPanel extends JFrame {
 	        	dispose();
 		    }
 		});
+
+		logger.debug("## KEY GENERATOR started");
 	}
 	
 	private int getImgSizePrevision(int mult) {

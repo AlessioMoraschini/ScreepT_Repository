@@ -17,6 +17,8 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JTextField;
 
 import org.apache.commons.codec.binary.Base64;
+
+import uTILS.local.HandleString;
 	
 	public class AesCipher {
 	
@@ -51,15 +53,16 @@ import org.apache.commons.codec.binary.Base64;
 			    else if(password.length()>16) {
 			    	password=password.substring(0, 16);   	  
 			    }
-			    this.password=password;
 			}
+			this.password=password;
 			
 			if(password.length()==16) {
 				this.password=password;
 			}
 			// CHANGE UTF-8 TO ISO8859.1 AND EXTRACT 16 BYTES ONLY -> NOW KEY LENGTH IS ALWAYS 16 BYTES EVEN WITH CYRILLIC OR OTHER ENCODINGS
-//			byte[] bytePsw = password.getBytes("UTF-8");
-			byte[] bytePsw = password.getBytes("ISO-8859-1");
+//			byte[] bytePsw = password.getBytes("ISO-8859-1"); => old version
+			
+			byte[] bytePsw = HandleString.extractSameLengthByteArray(password);
 			ivParameterSpec = new IvParameterSpec(bytePsw);
 		    secretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, 16), "AES");
 		    cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");

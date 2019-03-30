@@ -2,6 +2,7 @@ package uTILS.local;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,6 +19,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import testUtils.Printer;
+
 public class HandleString {
 
 	// this array contains all char that trigger uppercase next char
@@ -27,6 +30,44 @@ public class HandleString {
 	
 	public HandleString(String input) {
 		currentString = new String(input);
+	}
+	
+	/**
+	 * this method returns an array of bytes of the same length of given string, even if the source has more bytes for each charachter (chinese, cyrillic , etc)
+	 * @param source the source string
+	 * @return null if source is null, array of first source.length bytes else
+	 * @throws UnsupportedEncodingException
+	 */
+	public static byte[] extractSameLengthByteArray(String source) throws UnsupportedEncodingException {
+		if(source == null) {
+			return null;
+		}
+		
+		int sourceLength = source.length();
+		byte[] extractedBytes = new byte[source.length()];
+		ArrayList<Byte> extractedList = new ArrayList<Byte>();
+		
+		// extract bytes from source string
+		for(int i=0; i<sourceLength; i++) {
+			String currentChar = source.substring(i, i+1);
+			byte[] byteChar = currentChar.getBytes("UTF-8");
+			
+			for(byte b : byteChar) {
+				extractedList.add(b);
+			}
+		}
+		
+		// create array containing bytes
+		int i = 0;
+		for(byte by : extractedList) {
+			if(i >= sourceLength) {
+				break;
+			}
+			extractedBytes[i] = by;
+			i++;
+		}
+		
+		return extractedBytes;
 	}
 	
 	public static String fitToMaxLentgh(String source, int lim) {

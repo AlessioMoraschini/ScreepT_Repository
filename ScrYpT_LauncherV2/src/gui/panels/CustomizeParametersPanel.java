@@ -54,6 +54,8 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	public CustomizeParametersPanel(String title, StartPanel parentPanel) {
 		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		// CUSTOM SETTINGS
 		active = true;
 		thisPanel = this;

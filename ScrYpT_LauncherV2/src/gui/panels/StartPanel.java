@@ -57,6 +57,8 @@ public class StartPanel extends JFrame{
 	
 	public StartPanel(String frameTitle, ScrYpTLauncher launcher) {
 		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		LAUNCHER_GUI = this;
 		
 		setGraphics();

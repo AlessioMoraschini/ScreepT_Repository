@@ -1,4 +1,4 @@
-package junit;
+package junit.GUI;
 
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +18,7 @@ public class EntroPieTest {
 	@Rule
 	public RepeatedTestRule repeatRule = new RepeatedTestRule();
 	
-	// TEST FIELDS
+	// TEST INITIALIZATION VALUES
 	int N = 256000000;
 	byte[] sourceArray = new byte[N];
 	byte[] entropyzedArray;
@@ -26,7 +26,7 @@ public class EntroPieTest {
 	// START TESTS
 	
 	@Test
-	@RepeatTest(times = 1)
+	@RepeatTest(times = 2)
 	public void entroPieForwardTest() throws IndexOutOfBoundsException{
 		
 		long startTime = System.nanoTime();

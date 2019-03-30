@@ -168,6 +168,9 @@ public class HwInfoPanel extends JFrame{
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
 	public HwInfoPanel(INItializer currentConfig) {
+		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		setMaximumSize(new Dimension(800, 450));
 		setMinimumSize(new Dimension(750, 400));
 		
@@ -190,6 +193,8 @@ public class HwInfoPanel extends JFrame{
 		addValuesInitThreads();
 		
 		addEventHandlers();
+		
+		logger.info(this.getClass().getName() + " Started");
 	}
 	
 ////////////////////////// INITIALIZER METHOD //////////////////////////

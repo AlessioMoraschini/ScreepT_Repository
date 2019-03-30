@@ -80,6 +80,8 @@ public class GraphicPreferencesFrame extends JFrame{
 
 	public GraphicPreferencesFrame(INItializer currentConf, mainGUI rootApplication) {
 		
+		logger.info(this.getClass().getName() + " Starting...");
+		
 		active = true;
 		
 		// SW window icon
