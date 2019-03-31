@@ -1,116 +1,106 @@
 package gUI.panels;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Insets;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-
-import net.miginfocom.swing.MigLayout;
-import uTILS.local.FileStuff;
-import uTILS.local.ImageWorker;
-
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.awt.event.ActionEvent;
-
-import iNIT.INItializer;
-
-import java.awt.SystemColor;
-import java.awt.BorderLayout;
-
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
-
-import java.awt.Color;
-
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.imageio.ImageIO;
+
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.awt.event.ActionEvent;
+import java.awt.SystemColor;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
+
+import iNIT.INItializer;
+import uTILS.local.FileStuff;
+import uTILS.local.ImageWorker;
 
 import gUI.mainGUI;
-import gUI.om.BufferedImageType;
 import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
-import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 
 public class KeyGenPanel extends JFrame {
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(KeyGenPanel.class); 
 	
+	// static path of keyDictionary
+	public static final String KEY_DICTIONARY = "IMG/KEY_DICTIONARY/";
+
 	// width and height of the image container
 	public final int DEF_W = 550; 
 	public final int DEF_H = 500; 
 	
-	// static path of keyDictionary
-	public static final String KEY_DICTIONARY = "IMG/KEY_DICTIONARY/";
-	
-	private JSpinner heightValGUI;
-	private JSpinner widthValGUI;
 	private int CURRENT_SEL_W;
 	private int CURRENT_SEL_H;
-	private KeyGenImageType CURRENT_IMG_TYPE;
-
-	// container of the image from which generated original image will be taken
-	private ImageGenContainerPanel imageContainer;
-	
-	// flag to signal active
-	public static boolean active=false;
 	
 	// GUI objects
+	private JSpinner heightValGUI;
+	private JSpinner widthValGUI;
+	private JSlider sliderHeight;
+	private JSlider sliderWidth;
 	private JButton btnAddInDictionary;
 	private JButton btnExport;
 	private JButton btnGenerateKey;
 	private volatile JProgressBar progressBar;
 	private JPanel panelIMG;
 	private JTextArea textLog;
-	private KeyGenPanel thisFrame;
+	private JTextArea textInfo;
 	private JComboBox comboImgType;
+	private JLabel lblFinalSize;
+	private JLabel lblThisSettingsAllow;
 	
-	// object that display wait dialog
+	// container of the image from which generated original image will be taken
 	private volatile TestUpdateProgress progUpdater;
-    
+	private ImageGenContainerPanel imageContainer;
+	private KeyGenPanel thisFrame;
+	
+	// flag to signal active
+	public static boolean active=false;
 
+	private KeyGenImageType CURRENT_IMG_TYPE;
+	
+	private INItializer currentConfig;
+	
 	/**
 	 * Create the application.
 	 */
-	public KeyGenPanel(INItializer currentConfig) {
+	public KeyGenPanel(INItializer currentConf) {
 
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		active = true;
-		
 		thisFrame = this;
+		currentConfig = currentConf;
 		
 		// SW window icon
 		try {
@@ -157,14 +147,13 @@ public class KeyGenPanel extends JFrame {
 		textAreaLog.setViewportView(textLog);
 		textLog.setFont(new Font("Dialog", Font.PLAIN, currentConfig.getGuiOpt().getLogFontSize()));
 		textLog.setBackground(new Color(211, 211, 211));
-//		panel_2.add(textLog, "cell 0 0,grow");
 		
-		JLabel lblFinalSize = new JLabel("-> Image size Prevision: ");
+		lblFinalSize = new JLabel("-> Image size Prevision: ");
 		lblFinalSize.setForeground(new Color(176, 196, 222));
 		lblFinalSize.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
 		panel_1.add(lblFinalSize, "cell 1 6 3 1,alignx left");
-		
-		JLabel lblThisSettingsAllow = new JLabel("-> This settings allow to code 0 Kbytes of data inside Image");
+
+		lblThisSettingsAllow = new JLabel("-> This settings allow to code 0 Kbytes of data inside Image");
 		lblThisSettingsAllow.setForeground(new Color(100, 149, 237));
 		lblThisSettingsAllow.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
 		panel_1.add(lblThisSettingsAllow, "cell 1 5 3 1,alignx left");
@@ -174,7 +163,7 @@ public class KeyGenPanel extends JFrame {
 		widthValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_W, 100, ImageWorker.MAX_WIDTH_GEN, 5));
 		panel_1.add(widthValGUI, "cell 2 1,growx");
 		
-		JSlider sliderWidth = new JSlider(JSlider.HORIZONTAL, 100,ImageWorker.MAX_WIDTH_GEN, CURRENT_SEL_W );
+		sliderWidth = new JSlider(JSlider.HORIZONTAL, 100,ImageWorker.MAX_WIDTH_GEN, CURRENT_SEL_W );
 		panel_1.add(sliderWidth, "cell 3 1,growx");
 		
 		JLabel lblImageHeight = new JLabel("Image Height (Px):");
@@ -182,13 +171,12 @@ public class KeyGenPanel extends JFrame {
 		lblImageHeight.setFont(new Font("SansSerif", Font.BOLD, 12));
 		panel_1.add(lblImageHeight, "cell 0 2 2 1,alignx center,aligny center");
 		
-		JSlider sliderHeight = new JSlider(JSlider.HORIZONTAL, 100,ImageWorker.MAX_HEIGHT_GEN, CURRENT_SEL_H);
+		sliderHeight = new JSlider(JSlider.HORIZONTAL, 100,ImageWorker.MAX_HEIGHT_GEN, CURRENT_SEL_H);
 		panel_1.add(sliderHeight, "cell 3 2,growx");
 		
 		heightValGUI = new JSpinner();
 		heightValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_H, 100, ImageWorker.MAX_HEIGHT_GEN, 5));
 		panel_1.add(heightValGUI, "cell 2 2,growx");
-		
 		
 		JLabel lblImageType = new JLabel("Image Type:");
 		lblImageType.setForeground(Color.WHITE);
@@ -221,8 +209,7 @@ public class KeyGenPanel extends JFrame {
 		panel_1.add(textArea, "cell 1 9 3 1,grow");
 		textArea.setFont(new Font("SansSerif", Font.PLAIN, 18));
 
-		
-		JTextArea textInfo = new JTextArea();
+		textInfo = new JTextArea();
 		textInfo.setRequestFocusEnabled(false);
 		textInfo.setLineWrap(true);
 		textInfo.setWrapStyleWord(true);
@@ -237,17 +224,6 @@ public class KeyGenPanel extends JFrame {
 		textInfo.append("\n\nThis will be the same image dimensions of the output converted img(es) when cripting file with ScreepT.\n -> Bigger the image and more the values it can contain! ");
 		textInfo.append("\nAfter Key is generated pressing the 'generate' button,you can see a quick preview on the right :)");
 		textInfo.append("\nNB -> It's recommended to use 4byte types to cript files!");
-		
-		sliderHeight.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				int value = (int)sliderHeight.getValue();
-				heightValGUI.setValue(value);
-				CURRENT_SEL_H = value;		
-				currentConfig.getSteganOpt().setDefaultHeight(CURRENT_SEL_H);
-			}
-		});
 		
 		panelIMG = new JPanel();
 		panelIMG.setRequestFocusEnabled(false);
@@ -294,6 +270,35 @@ public class KeyGenPanel extends JFrame {
 		
 		btnExport = new JButton("Export");
 		btnExport.setRequestFocusEnabled(false);
+		btnExport.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnExport.setForeground(new Color(0, 0, 0));
+		btnExport.setBackground(new Color(230, 230, 250));
+		getContentPane().add(btnExport, "cell 7 4,grow");
+		
+		btnAddInDictionary = new JButton("Add to Dictionary");
+		btnAddInDictionary.setRequestFocusEnabled(false);
+		btnAddInDictionary.setBackground(new Color(230, 230, 250));
+		btnAddInDictionary.setFont(new Font("SansSerif", Font.BOLD, 12));
+		getContentPane().add(btnAddInDictionary, "cell 8 4,grow");
+		
+		// window on close operations
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	logger.debug("Closing "+getClass().getName());
+	        	active = false;
+	        	dispose();
+		    }
+		});
+
+		addHandlers();
+		
+		logger.debug("## KEY GENERATOR started");
+	}
+	
+	private void addHandlers() {
+		// EXPORT BUTTON HANDLER
 		btnExport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -384,16 +389,8 @@ public class KeyGenPanel extends JFrame {
 				
 			}
 		});
-		btnExport.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnExport.setForeground(new Color(0, 0, 0));
-		btnExport.setBackground(new Color(230, 230, 250));
-		getContentPane().add(btnExport, "cell 7 4,grow");
 		
-		btnAddInDictionary = new JButton("Add to Dictionary");
-		btnAddInDictionary.setRequestFocusEnabled(false);
-		btnAddInDictionary.setBackground(new Color(230, 230, 250));
-		btnAddInDictionary.setFont(new Font("SansSerif", Font.BOLD, 12));
-		getContentPane().add(btnAddInDictionary, "cell 8 4,grow");
+		// ADD IN DICTIONARY HANDLER
 		btnAddInDictionary.addActionListener(new ActionListener() {
 			
 			@Override
@@ -474,6 +471,7 @@ public class KeyGenPanel extends JFrame {
 		});
 		getContentPane().add(btnGenerateKey, "cell 4 4,grow");
 		
+		// WIDTH SPINNER CHANGE HANDLER
 		widthValGUI.addChangeListener(new ChangeListener() {
 			
 			@Override
@@ -490,6 +488,7 @@ public class KeyGenPanel extends JFrame {
 			}
 		});		
 		
+		// HEIGTH SPINNER CHANGE HANDLER
 		heightValGUI.addChangeListener(new ChangeListener() {
 			
 			@Override
@@ -506,6 +505,7 @@ public class KeyGenPanel extends JFrame {
 			}
 		});
 		
+		// WIDTH SLIDER CHANGE HANDLER
 		sliderWidth.addChangeListener(new ChangeListener() {
 			
 			@Override
@@ -517,6 +517,19 @@ public class KeyGenPanel extends JFrame {
 			}
 		});		
 		
+		// HEIGTH SLIDER CHANGE HANDLER
+		sliderHeight.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int value = (int)sliderHeight.getValue();
+				heightValGUI.setValue(value);
+				CURRENT_SEL_H = value;		
+				currentConfig.getSteganOpt().setDefaultHeight(CURRENT_SEL_H);
+			}
+		});
+		
+		// COMBO IMAGE TYPE HANDLER
 		comboImgType.addActionListener(new ActionListener() {
 			
 			@Override
@@ -528,20 +541,9 @@ public class KeyGenPanel extends JFrame {
 				lblFinalSize.setText("-> Image size Prevision: "+getImgSizePrevision(mult)/1024+" KBytes");
 			}
 		});
-		
-		// window on close operations
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-	        	logger.debug("Closing "+getClass().getName());
-	        	active = false;
-	        	dispose();
-		    }
-		});
-
-		logger.debug("## KEY GENERATOR started");
 	}
+	
+	// SOME USEFUL METHOD
 	
 	private int getImgSizePrevision(int mult) {
 		int size = CURRENT_SEL_H*CURRENT_SEL_W*mult;
@@ -553,6 +555,8 @@ public class KeyGenPanel extends JFrame {
 		btnGenerateKey.setEnabled(enabled);
 		btnAddInDictionary.setEnabled(enabled);
 	}
+	
+	// GETTERS AND SETTERS
 
 	public ImageGenContainerPanel getImageContainer() {
 		return imageContainer;
