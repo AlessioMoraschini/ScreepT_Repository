@@ -8,6 +8,7 @@ import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
 import gUI.mainGUI;
+import gUI.utils.iconHandler.IconHandler;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import uTILS.network.NetworkUtils;
@@ -114,12 +115,7 @@ public class NetInfoPanel extends JFrame{
 		thisPanel = this;
 		
 		// SW window icon
-		try {
-			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
-			logger.debug("icon image setted to main window");
-		} catch (IOException e1) {
-			logger.error("Exception happened!", e1);
-		}
+		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		try {
 			netUtils = new NetworkUtils();

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import gUI.mainGUI;
 import gUI.om.ScalingAlgorithm;
 import gUI.utils.filedialog.GenericFileChooserDialog;
+import gUI.utils.iconHandler.IconHandler;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import iNIT.INItializer;
@@ -157,12 +158,7 @@ public class ImageConverterFrame extends JFrame{
 		// initialize field representing locally configuration referred
 		currentConfiguration = currentConf;
 		
-		try {
-			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
-			logger.debug("icon image setted to main window");
-		} catch (IOException e1) {
-			logger.error("Exception happened!", e1);
-		}
+		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		

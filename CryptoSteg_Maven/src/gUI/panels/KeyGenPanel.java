@@ -44,6 +44,7 @@ import uTILS.local.ImageWorker;
 
 import gUI.mainGUI;
 import gUI.om.KeyGenImageType;
+import gUI.utils.iconHandler.IconHandler;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 
@@ -103,12 +104,7 @@ public class KeyGenPanel extends JFrame {
 		currentConfig = currentConf;
 		
 		// SW window icon
-		try {
-			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
-			logger.debug("icon image setted to main window");
-		} catch (IOException e1) {
-			logger.error("Exception happened!", e1);
-		}
+		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		// get default values to initialize panel
 		CURRENT_SEL_W = currentConfig.getSteganOpt().getDefaultWidth();

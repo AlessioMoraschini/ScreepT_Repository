@@ -67,7 +67,7 @@ public class TextEditor extends JPanel {
 	static Logger logger = Logger.getLogger(TextEditor.class);
 	
 	//  RESOURCE FILES //
-	private final String LOREM_IPSUM = "Resources_Scrypt/LoremIpsum.txt";
+	private final String LOREM_IPSUM = "Resources_Scrypt/Templates/LoremIpsum.txt";
 	
 	// ICONS //
 	public final String ICON_TEXT_CLEAR = "Resources_Scrypt/Icons/Clear.png";

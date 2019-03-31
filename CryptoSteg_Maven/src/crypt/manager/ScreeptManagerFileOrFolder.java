@@ -18,10 +18,10 @@ import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import uTILS.local.FileStuff;
 
-public class ScreeptManagerMultiFile {
+public class ScreeptManagerFileOrFolder {
 
 	// TextFileWriter logger creation
-	static Logger logger = Logger.getLogger(ScreeptManagerMultiFile.class);
+	static Logger logger = Logger.getLogger(ScreeptManagerFileOrFolder.class);
 	
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	
@@ -344,7 +344,7 @@ public class ScreeptManagerMultiFile {
 
 		} else if (src.isDirectory()) {
 			// create new folder in destination
-			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + screepTManager.getMode().ID + "_" + src.getName());
+			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + src.getName());
 			// if dir to create inside destination exists create unique name
 			if (destSonDir.exists()) {
 				destSonDir = FileStuff.renameJavaObjFile(destSonDir);
@@ -391,7 +391,7 @@ public class ScreeptManagerMultiFile {
 		} else if (src.isDirectory()) {
 
 			// create new folder in destination
-			File destSonDir = new File(destinationDir.getCanonicalPath() + "/Decod_" + src.getName());
+			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + src.getName());
 			// if dir to create inside destination exists create unique name
 			destSonDir = FileStuff.renameJavaObjFile(destSonDir);
 			destSonDir.mkdir();
@@ -468,7 +468,7 @@ public class ScreeptManagerMultiFile {
 	}
 
 	public static void setShuffle(boolean shuffle) {
-		ScreeptManagerMultiFile.shuffle = shuffle;
+		ScreeptManagerFileOrFolder.shuffle = shuffle;
 	}
 
 	public String getOpInfo() {

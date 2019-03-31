@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;

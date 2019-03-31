@@ -4,6 +4,9 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import gUI.mainGUI;
+import gUI.utils.iconHandler.IconHandler;
+
 public class AboutSectionPanel extends JFrame{
 
 	// initialize Logger
@@ -16,7 +19,9 @@ public class AboutSectionPanel extends JFrame{
 	
 	public AboutSectionPanel(JFrame main) {
 		logger.info(this.getClass().getName() + " Starting...");
-
+		
+		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		
 		mainApp = main;
 		mainApp.setEnabled(false);
 		thisFrame = this;

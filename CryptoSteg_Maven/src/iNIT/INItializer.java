@@ -311,23 +311,23 @@ public class INItializer {
 		
 		builder.append("\n\n### Config file: "+this.getIniFile().getFile().getAbsolutePath());
 		// concat AES OPTIONS
-		builder.append("\n\n ---- AES OPTIONS -----\n\n ")
-			   .append("\nFLAGAES: " + aesOpt.isFlagAes());
+		builder.append("\n\n ---- AES OPTIONS -----\n\n")
+			   .append("\nFLAGAES: ").append(aesOpt.isFlagAes());
 		
 		// concat GENERAL OPTIONS
-		builder.append(" \n\n ---- GENERAL OPTIONS -----\n\n ")
+		builder.append("\n\n ---- GENERAL OPTIONS -----\n\n")
 			   .append("USERNAME: ").append(genOpt.getUserName())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION
-		builder.append(" \n\n ---- GUI OPTIONS -----\n\n ")
+		builder.append("\n\n ---- GUI OPTIONS -----\n\n")
 			   .append("PREFERRED_STYLE: ").append(guiOpt.getPreferredStyle())
 			   .append("\nMENU_FONT_SIZE: ").append(guiOpt.getMenuFontSize())
 			   .append("\nLOG_FONT_SIZE: ").append(guiOpt.getLogFontSize())
 			   .append("\nDARK_GUI_NUMBUS: ").append(guiOpt.isDarkGuiNimbus());
 		
 		// concat FILE OPTIONS
-		builder.append(" \n\n ---- FILE OPTIONS -----\n\n ")
+		builder.append("\n\n ---- FILE OPTIONS -----\n\n")
 			   .append("LAST_DST_FOLDERPATH: ").append(fileOpt.getLastDstFolderPath())
 			   .append("\nLAST_SRC_FOLDERPATH: ").append(fileOpt.getLastSrcFolderPath())
 			   .append("\nFLAG_AUTOSAVE: ").append(fileOpt.isFlagAutosave())
@@ -335,7 +335,7 @@ public class INItializer {
 			   .append("\nFLAGOVERWRITE: ").append(fileOpt.isFlagOverwrite());
 		
 		// concat STEGANO OPTIONS
-		builder.append(" \n\n ---- STEGANO OPTIONS -----\n\n ")
+		builder.append("\n\n ---- STEGANO OPTIONS -----\n\n")
 			   .append("DEFAULT_HEIGHT: ").append(steganOpt.getDefaultHeight())
 		  	   .append("\nULTRA-SECURE: ").append(steganOpt.isUltraSecure())
 			   .append("\nFLAGSTEG: ").append(steganOpt.isFlagSteg())
@@ -343,7 +343,7 @@ public class INItializer {
 		       .append("\nIMG_RECENT_PATH: ").append(steganOpt.getImgRecentPath());
 
 		// concat TEXT EDITOR OPTIONS
-		builder.append(" \n\n ---- TEXT EDITOR -----\n\n ");
+		builder.append("\n\n ---- TEXT EDITOR -----\n\n");
 		
 		// create and return result
 		result = builder.toString();

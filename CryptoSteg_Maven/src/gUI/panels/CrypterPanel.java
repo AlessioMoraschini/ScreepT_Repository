@@ -26,7 +26,6 @@ import gUI.mainGUI;
 import gUI.om.BufferedImageType;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
-import gUI.utils.tree.TreeCellRendererDark;
 import gUI.utils.tree.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.dragndrop.VirtualFileDropPane;
 import iNIT.INItializer;
@@ -50,6 +49,9 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import javax.swing.SwingConstants;
 import javax.swing.UIDefaults;
@@ -82,6 +84,9 @@ public class CrypterPanel extends JPanel {
 	
 	// Global reference to current configuration
 	private INItializer currentConf;
+	
+	// dateFormatter
+	private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd @ HH-mm-ss");
 	
 ///////////////////////////////////////////////
 		//  GUI-RELATED-OBJECTS   //
@@ -282,7 +287,7 @@ public class CrypterPanel extends JPanel {
 	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
 	 */
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[:5px:5px][200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][50px:250px:450px,grow][:70:100px]", "[:40:50px,top][4px:4px:4px][35][4px][100,grow][140,grow][:10px:10px][280,grow][:1px:1px]"));
+		setLayout(new MigLayout("", "[:5px:5px][200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][150px:250px:450px,grow][70px:70px:100px]", "[:40:50px,top][4px:4px:4px][35][4px][100,grow][140,grow][:10px:10px][280,grow][:1px:1px]"));
 		
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
@@ -622,8 +627,15 @@ public class CrypterPanel extends JPanel {
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
-				if (destinationDir!= null && !destinationDir.exists()) {
-					destinationDir.mkdir();
+				if (destinationDir!= null) {
+					
+					Date now = new Date();
+					String date = dateFormatter.format(now);
+					destinationDir = new File(destinationDir.getAbsolutePath() + "/" + date);
+					
+					if (!destinationDir.exists()) {
+						destinationDir.mkdir();
+					}
 				}
 				
 				for (File currentFile : srcFiles) {
@@ -756,13 +768,20 @@ public class CrypterPanel extends JPanel {
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
+				if (destinationDir!= null) {
+					
+					Date now = new Date();
+					String date = dateFormatter.format(now);
+					destinationDir = new File(destinationDir.getAbsolutePath() + "/" + date);
+					
+					if (!destinationDir.exists()) {
+						destinationDir.mkdir();
+					}
+				}
+				
 				for (File currentFile : srcFiles) {
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
-
-						if (!destinationDir.exists()) {
-							destinationDir.mkdir();
-						}
-
+						
 						// ONLY AES CRYPT
 						if (mode.AES && !mode.STEG) {
 							try {
@@ -1163,7 +1182,7 @@ public class CrypterPanel extends JPanel {
 
 		}else if (src.isDirectory()) {
 			// create new folder in destination
-			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+mode.ID+"_"+src.getName());
+			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+src.getName());
 			// if dir to create inside destination exists create unique name
 			if(destSonDir.exists()) {
 				destSonDir = FileStuff.renameJavaObjFile(destSonDir);
@@ -1210,7 +1229,7 @@ public class CrypterPanel extends JPanel {
 		}else if (src.isDirectory()) {
 
 			// create new folder in destination
-			File destSonDir = new File(destinationDir.getCanonicalPath()+"/Decod_"+src.getName());
+			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+src.getName());
 			// if dir to create inside destination exists create unique name
 			destSonDir = FileStuff.renameJavaObjFile(destSonDir);
 			destSonDir.mkdir();

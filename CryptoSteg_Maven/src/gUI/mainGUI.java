@@ -88,6 +88,7 @@ public class mainGUI {
 	public static final String APPLICATION_NAME = "ScrYpT " + APP_VERSION;
 	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
 	public static final String ICON_FILE_NAME = "icon.jpg";
+	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
 	// constant files & directories prefix
@@ -229,7 +230,7 @@ public class mainGUI {
 	public static void main(String[] args) {
 		
 		// OPEN LOADING PANEL
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", 280);
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", LAUNCHER_BACK_IMAGE_PATH, 280);
 		for (int i = 0; i < 10; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing "+ APPLICATION_NAME + dots;
@@ -454,7 +455,8 @@ public class mainGUI {
 		
 		// SW window icon
 		try {
-			frmScryptV.setIconImage(ImageIO.read(new File(RESOURCES_DIR + ICON_FILE_NAME)));
+			SW_ICON = ImageIO.read(new File(RESOURCES_DIR + ICON_FILE_NAME));
+			frmScryptV.setIconImage(SW_ICON);
 			logger.debug("icon image setted to main window");
 		} catch (IOException e1) {
 			logger.error("Exception happened!", e1);
@@ -710,7 +712,7 @@ public class mainGUI {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagFrameGuiOptions) {
 					flagFrameGuiOptions = true;
-					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration, mainAPP);
+					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
 					panelGuiOptions.setBounds(500, 300, 950, 330);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -862,7 +864,7 @@ public class mainGUI {
 		    		panelAbout.setBounds(700, 200, 650, 500);
 		    		panelAbout.setResizable(false);
 		    		panelAbout.setVisible(true);
-		    		panelAbout.setTitle("IMG Generator (" + APP_VERSION + ") - A.M.2018");
+		    		panelAbout.setTitle("ScrYpT - About(" + APP_VERSION + ") - A.M.2018");
 				}else {
 					panelAbout.setState(java.awt.Frame.NORMAL);
 					panelAbout.requestFocus();
@@ -1235,7 +1237,7 @@ public class mainGUI {
 	public static File fileLogWriteDialog(JFrame parent) {
 		
 		now = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_@_HH-MM-ss");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_@_HH-mm-ss");
 		String defName = "ScreepT_Execution_Log_" + df.format(now) + ".log";
 		
 		JFileChooser fileChooser = new JFileChooser();		

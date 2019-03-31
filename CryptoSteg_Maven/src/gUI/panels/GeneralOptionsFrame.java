@@ -7,6 +7,7 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
 import gUI.mainGUI;
+import gUI.utils.iconHandler.IconHandler;
 import gui.ScrYpTLauncher;
 import iNIT.INItializer;
 import iNIT.om.FileOptions;
@@ -91,12 +92,7 @@ public class GeneralOptionsFrame extends JFrame{
 		currentConfiguration = currentConf;
 		
 		// SW window icon
-		try {
-			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
-			logger.debug("icon image setted to main window");
-		} catch (IOException e1) {
-			logger.error("Exception happened!", e1);
-		}
+		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		try {
 			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));

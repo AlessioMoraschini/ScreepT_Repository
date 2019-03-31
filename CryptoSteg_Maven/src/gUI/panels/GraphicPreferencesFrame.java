@@ -28,6 +28,7 @@ import javax.swing.event.DocumentListener;
 import org.apache.log4j.Logger;
 
 import gUI.mainGUI;
+import gUI.utils.iconHandler.IconHandler;
 import iNIT.INItializer;
 
 import javax.swing.UIManager;
@@ -78,30 +79,19 @@ public class GraphicPreferencesFrame extends JFrame{
 	private static int BACKUP_LOG_PANEL_FONT_SIZE;
 	private static boolean BACKUP_DARK_THEME;
 	
-	private mainGUI mainAPP;
 	// flag to signal active
 	public static boolean active = false;
 	
 	private INItializer currentConfiguration;
 
-	public GraphicPreferencesFrame(INItializer currentConf, mainGUI rootApplication) {
+	public GraphicPreferencesFrame(INItializer currentConf) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		currentConfiguration = currentConf;
 		active = true;
 		
-		// SW window icon
-		try {
-			this.setIconImage(ImageIO.read(new File(mainGUI.RESOURCES_DIR + mainGUI.ICON_FILE_NAME)));
-			logger.debug("icon image setted to main window");
-		} catch (IOException e1) {
-			logger.error("Exception happened!", e1);
-		}
-		
-		mainAPP = rootApplication;
-		
-		JFrame thisFrame = this;
+		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		initValues(currentConfiguration);
 		
