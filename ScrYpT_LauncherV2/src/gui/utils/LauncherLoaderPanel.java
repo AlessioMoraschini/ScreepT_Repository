@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import javax.swing.JLabel;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 
 public class LauncherLoaderPanel extends JPanel{
 	
@@ -49,11 +50,12 @@ public class LauncherLoaderPanel extends JPanel{
 		layeredPane.add(lblText, "cell 0 1,alignx left,aligny center");
 		
 		progressBar = new JProgressBar();
+		progressBar.setSize(new Dimension(0, 20));
 		layeredPane.setLayer(progressBar, 1);
 		progressBar.setForeground(Color.GREEN);
 		layeredPane.add(progressBar, "cell 0 2,growx,aligny baseline");
 		
-		GUIStyelSettings.setStyle(GUIStyelSettings.PlafLookAndFeels);
+		GUIStyelSettings.setStyle(GUIStyelSettings.WindowsLookAndFeel);
 		
 		logger.info(this.getClass().getName() + " Started");
 	}
@@ -76,7 +78,7 @@ public class LauncherLoaderPanel extends JPanel{
 	public void setProgress(int progress) {
 		if (progressBar != null) {
 			progressBar.setValue(progress);
-			if(progressBar.getValue() >= 100){
+			if(progress >= 100){
 				try {
 					// this is to show last message before loader closes
 					Thread.sleep(600);

@@ -68,7 +68,7 @@ public class ScrYpTLauncher {
 	public static final String JVM_ARGS = "-Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
 	
 	// DEFAULT INI
-	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "/Launcher_Configuration.ini"; 
+	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "Launcher_Configuration.ini"; 
 	public static final String INI_JVM_OPT = "JVM_OPTIONS";
 	public static final String INI_APP_OPT = "APPLICATION_OPTIONS";
 	
@@ -100,13 +100,13 @@ public class ScrYpTLauncher {
 	// MAIN START POINT
 	public static void main(String[] args) {
 		
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", 200);
-		for (int i = 0; i < 15; i++) {
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", 250);
+		for (int i = 0; i < 25; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing launcher" + dots;
 			loaderGraphics.update(msg, i/2);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				logger.error("Error waiting before starting launcher", e);
 			} 
@@ -120,6 +120,8 @@ public class ScrYpTLauncher {
 		
 		loaderGraphics.update("Starting Launcher...", 25);
 		start();
+		
+		loaderGraphics.update("Ready", 100);
 
 	}// end main
 	
@@ -143,13 +145,9 @@ public class ScrYpTLauncher {
 	// CONSTRUCTOR
 	public ScrYpTLauncher() {
 		
-		loaderGraphics.update("Defining Listeners...", 30);
 		defineActionListeners();
 		
-		loaderGraphics.update("Analyzing dependencies...", 45);
 		analyzeBeforeLauncher();
-		
-		loaderGraphics.update("Initializing graphics...", 80);
 		
 		// if direct launch configured launch directly commands
 		if(hideNStartDirect) {
@@ -161,7 +159,6 @@ public class ScrYpTLauncher {
 		
 		// GUI launcher initialization
 		launcherMainFrame = new StartPanel("ScrYpt Launcher", this);
-		loaderGraphics.update("Ready", 100);
 		launcherMainFrame.setVisible(true);
 		launcherMainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		launcherMainFrame.addWindowListener(new WindowAdapter() {

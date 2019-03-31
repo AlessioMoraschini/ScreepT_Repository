@@ -70,7 +70,7 @@ public class ChargeIniLog extends JPanel{
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(SystemColor.menu);
 		panel_1.setBorder(new LineBorder(Color.DARK_GRAY, 4));
-		panel_1.setBackground(SystemColor.activeCaption);
+		panel_1.setBackground(new Color(250, 235, 215));
 		add(panel_1, "cell 0 0 7 1,grow");
 		panel_1.setLayout(new MigLayout("", "[100%]", "[]"));
 		

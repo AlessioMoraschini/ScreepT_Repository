@@ -9,6 +9,7 @@ import org.ini4j.Wini;
 import gUI.mainGUI;
 import gui.ScrYpTLauncher;
 import iNIT.INItializer;
+import iNIT.om.FileOptions;
 import net.miginfocom.swing.MigLayout;
 import uTILS.local.ListCharsets;
 
@@ -22,12 +23,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JCheckBox;
-import java.awt.SystemColor;
-import java.awt.Window;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -38,7 +34,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
@@ -153,13 +148,13 @@ public class GeneralOptionsFrame extends JFrame{
 		lblGeneralOptions.setBackground(Color.LIGHT_GRAY);
 		panel.add(lblGeneralOptions, "cell 2 0,alignx right");
 		
-		JLabel lblIntervalInSeconds = new JLabel("Interval in Seconds");
+		JLabel lblIntervalInSeconds = new JLabel("Autosave Interval");
 		lblIntervalInSeconds.setFont(new Font("SansSerif", Font.BOLD, 12));
 		getContentPane().add(lblIntervalInSeconds, "cell 1 2,alignx center,aligny center");
 		
 		// update only local variable fields, INItializer will be updated on exit/save/use/discard
 		spinnerInterval = new JSpinner();
-		spinnerInterval.setModel(new SpinnerNumberModel(AUTOSAVE_INTERVAL, INItializer.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600, 1));
+		spinnerInterval.setModel(new SpinnerNumberModel(AUTOSAVE_INTERVAL, FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600, 1));
 		getContentPane().add(spinnerInterval, "cell 2 2 2 1,growx,aligny center");
 		spinnerInterval.setValue(AUTOSAVE_INTERVAL);
 		if(AUTOSAVE_FLAG) {

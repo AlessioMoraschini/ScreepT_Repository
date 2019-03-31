@@ -5,11 +5,12 @@ import java.io.File;
 public class FileOptions {
 	
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
-	public final boolean DEFAULT_FLAG_AUTOSAVE = true;
-	public final boolean DEFAULT_FLAG_OVERWRITE = false;
-	public final int DEFAULT_AUTOSAVE_INTERVAL = 5;
-	public final String DEFAULT_LAST_SRC_FOLDER_PATH = "";
-	public final String DEFAULT_LAST_DEST_FOLDER_PATH = "";
+	public final static boolean DEFAULT_FLAG_AUTOSAVE = true;
+	public final static boolean DEFAULT_FLAG_OVERWRITE = false;
+	public final static int DEFAULT_AUTOSAVE_INTERVAL = 5;
+	public final static String DEFAULT_LAST_SRC_FOLDER_PATH = "";
+	public final static String DEFAULT_LAST_DEST_FOLDER_PATH = "";
+	public final static int DEFAULT_MIN_AUTOSAVE_INTERVAL = 60000;
 	
 	// FIELDS
 	private boolean flagAutosave;

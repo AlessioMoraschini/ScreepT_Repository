@@ -474,8 +474,8 @@ public class CrypterPanel extends JPanel {
 				}
 				
 				// update configuration reference
-				currentConf.getGenOpt().setFlagAes(modality.AES);
-				currentConf.getGenOpt().setFlagSteg(modality.STEG);
+				currentConf.getAesOpt().setFlagAes(modality.AES);
+				currentConf.getSteganOpt().setFlagSteg(modality.STEG);
 			}
 		});
 		
@@ -485,7 +485,7 @@ public class CrypterPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currentConf.getGenOpt().setUltraSecure(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
+				currentConf.getSteganOpt().setUltraSecure(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
 			}
 		});
 		GridBagConstraints gbc_chckbxShuffle = new GridBagConstraints();
@@ -1036,10 +1036,10 @@ public class CrypterPanel extends JPanel {
 	
 	private void initialize(INItializer config) {
 		currentConf = config;		
-		AESKEYtext.setText(config.getAesOpt().getAesKey());
-		CryptoMode mode = CryptoMode.getModeFromBoolean(currentConf.getGenOpt().isFlagAes(), currentConf.getGenOpt().isFlagSteg());
+		AESKEYtext.setText("");
+		CryptoMode mode = CryptoMode.getModeFromBoolean(currentConf.getAesOpt().isFlagAes(), currentConf.getSteganOpt().isFlagSteg());
 		comboModeCrypto.setSelectedItem(mode);
-		chckbxShuffle.setSelected(currentConf.getGenOpt().isUltraSecure());
+		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
 	}
 	
 	private synchronized boolean checkIfReadyToCode() {

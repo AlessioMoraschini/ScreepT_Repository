@@ -113,7 +113,7 @@ public class ScreeptManager {
 	 */
 	public ScreeptManager() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		mode = CryptoMode.COMPLETE;
-		aesCoder = new AesCipher(AesOption.DEFAULT_AES_KEY);
+		aesCoder = new AesCipher("");
 		imgCoder = null;
 	}
 	

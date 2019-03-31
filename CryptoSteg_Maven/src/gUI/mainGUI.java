@@ -60,6 +60,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.SystemColor;
+import java.awt.Window;
 
 import net.miginfocom.swing.MigLayout;
 import uTILS.local.FileStuff;
@@ -182,7 +183,7 @@ public class mainGUI {
 	// some used lookAndFeel
 	public static String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 	public static String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-	public static String preferredStyle = WindowsLookAndFeel; // preferredStyle (initialized to fully avoid null values)
+	public static String preferredStyle = NimbusLookAndFeel; // preferredStyle (initialized to fully avoid null values)
 	public static boolean DARK_THEME; // true if dark theme is selected
 	
 	private int menuSize;
@@ -876,6 +877,10 @@ public class mainGUI {
 			}
 		});
 		
+		// temp tooltip
+		mntmUserDocumentation.setEnabled(false);
+		mntmUserDocumentation.setToolTipText("Cooming soon!");
+		
 	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		
 		// open in main frame - FILE CRYPTER
@@ -963,6 +968,9 @@ public class mainGUI {
 		// initialize GUI default Style from ini
 		try {
 			UIManager.setLookAndFeel(preferredStyle);
+			for(Window window: Window.getWindows()) {
+    		    SwingUtilities.updateComponentTreeUI(window);
+    		}
 			logger.debug(preferredStyle+" initialized correctly.");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e3) {

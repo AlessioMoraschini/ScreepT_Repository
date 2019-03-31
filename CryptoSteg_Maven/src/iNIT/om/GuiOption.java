@@ -4,10 +4,10 @@ package iNIT.om;
 public class GuiOption {
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
-	public final int DEFAULT_MENU_FONT_SIZE = 12; 
-	public final int DEFAULT_LOG_FONT_SIZE = 12; 
-	public final String DEFAULT_GUI_STYLE ="com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-	public final boolean DEFAULT_GUI_DARK_NIMBUS =false;
+	public final static int DEFAULT_MENU_FONT_SIZE = 12; 
+	public final static int DEFAULT_LOG_FONT_SIZE = 12; 
+	public final static String DEFAULT_GUI_STYLE ="com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+	public final static boolean DEFAULT_GUI_DARK_NIMBUS =false;
 
 	// FIELDS	
 	private String preferredStyle;

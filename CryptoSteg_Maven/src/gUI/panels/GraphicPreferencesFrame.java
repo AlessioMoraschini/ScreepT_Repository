@@ -3,11 +3,9 @@ package gUI.panels;
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.Window;
@@ -16,7 +14,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -37,7 +34,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.imageio.ImageIO;
-import javax.security.auth.callback.NameCallback;
 import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JSeparator;
@@ -60,6 +56,14 @@ public class GraphicPreferencesFrame extends JFrame{
 	private JComboBox comboStyleLaF;
 	private JCheckBox chckbxDarklight;
 	
+	private JButton btnDiscard;
+	private JButton btnUseSettings;
+	private JButton btnSaveConf;
+	private JButton btnResetValues;
+	private JLabel lblUsername;
+	private JSpinner spinnerMenuSize;
+	private JSpinner spinnerLogSize;
+	
 	// actual values
 	private static String CURRENT_USERNAME;
 	private static String PREFERRED_STYLE;
@@ -77,11 +81,14 @@ public class GraphicPreferencesFrame extends JFrame{
 	private mainGUI mainAPP;
 	// flag to signal active
 	public static boolean active = false;
+	
+	private INItializer currentConfiguration;
 
 	public GraphicPreferencesFrame(INItializer currentConf, mainGUI rootApplication) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
+		currentConfiguration = currentConf;
 		active = true;
 		
 		// SW window icon
@@ -96,7 +103,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		
 		JFrame thisFrame = this;
 		
-		initValues(currentConf);
+		initValues(currentConfiguration);
 		
 		logger.debug("Initialized.");
 		
@@ -118,22 +125,6 @@ public class GraphicPreferencesFrame extends JFrame{
 		chckbxDarklight = new JCheckBox("Nimbus Dark theme");
 		chckbxDarklight.setFont(new Font("SansSerif", Font.BOLD, 13));
 		panel.add(chckbxDarklight, "cell 0 0,growx");
-		chckbxDarklight.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(!chckbxDarklight.isSelected()) {
-					mainGUI.updateUILightNimbus();
-					currentConf.getGuiOpt().setDarkGuiNimbus(false);
-					DARK_THEME=false;
-				}else {
-					mainGUI.updateUIDarkNimbus();
-					currentConf.getGuiOpt().setDarkGuiNimbus(true);
-					DARK_THEME=true;
-				}
-				for(Window window: Window.getWindows()) {
-	    		    SwingUtilities.updateComponentTreeUI(window);
-	    		}
-			}
-		});
 		if(DARK_THEME) {
 			chckbxDarklight.setSelected(true);
 		}
@@ -154,35 +145,14 @@ public class GraphicPreferencesFrame extends JFrame{
 		
 		comboStyleLaF = new JComboBox(UIManager.getInstalledLookAndFeels());
 		comboStyleLaF.setMaximumRowCount(10);
-		comboStyleLaF.setSelectedItem(PREFERRED_STYLE);
+		updateComboLaFGUI(PREFERRED_STYLE);
 		getContentPane().add(comboStyleLaF, "cell 2 4 8 1,grow");
-		
-		// Initialize ComboBox values,
-		comboStyleLaF.addActionListener (new ActionListener () {
-		    public void actionPerformed(ActionEvent e) {
-		    	try {
-		    		LookAndFeelInfo laf = (LookAndFeelInfo)comboStyleLaF.getSelectedItem();		    		
-		    		PREFERRED_STYLE = laf.getClassName();
-		    		currentConf.getGuiOpt().setPreferredStyle(PREFERRED_STYLE); 
-		    		UIManager.setLookAndFeel(laf.getClassName());
-		    		for(Window window: Window.getWindows()) {
-		    		    SwingUtilities.updateComponentTreeUI(window);
-		    		}
-//					thisFrame.getContentPane().revalidate();
-//					thisFrame.getContentPane().repaint();
-				} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
-				JOptionPane.showMessageDialog(thisFrame, "Sorry, something went wrong :(", e1.getClass().getName(), JOptionPane.ERROR_MESSAGE);
-				logger.error("Exception happened!", e1);	
-				PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
-				}
-		    }
-		});
 		
 		JLabel lblMenuFontSize = new JLabel("Menu font size");
 		lblMenuFontSize.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblMenuFontSize, "cell 1 6,alignx center");
 		
-		JSpinner spinnerMenuSize = new JSpinner();
+		spinnerMenuSize = new JSpinner();
 		spinnerMenuSize.setModel(new SpinnerNumberModel(12, 5, 24, 1));
 		getContentPane().add(spinnerMenuSize, "cell 2 6,growx");
 		spinnerMenuSize.setValue(MENU_FONT_SIZE);
@@ -197,7 +167,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		lblFontSize.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblFontSize, "cell 1 7,alignx center");
 		
-		JSpinner spinnerLogSize = new JSpinner();
+		spinnerLogSize = new JSpinner();
 		spinnerLogSize.setModel(new SpinnerNumberModel(12, 5, 30, 1));
 		spinnerLogSize.setValue(LOG_PANEL_FONT_SIZE);
 		getContentPane().add(spinnerLogSize, "cell 2 7,growx");
@@ -211,10 +181,106 @@ public class GraphicPreferencesFrame extends JFrame{
 		JSeparator separator_1 = new JSeparator();
 		getContentPane().add(separator_1, "cell 1 8 9 1,growx,aligny center");
 		
-		JButton btnResetValues = new JButton("Reset initial values");
+		btnResetValues = new JButton("Reset initial values");
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));
 		getContentPane().add(btnResetValues, "cell 1 9 2 1,growx,aligny center");
+		
+		lblUsername = new JLabel("Username");
+		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
+		getContentPane().add(lblUsername, "cell 3 9,alignx right");
+		
+		textFieldUname = new JTextField();
+		textFieldUname.setBackground(new Color(224, 255, 255));
+		textFieldUname.setHorizontalAlignment(SwingConstants.CENTER);
+		textFieldUname.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		getContentPane().add(textFieldUname, "cell 4 9 3 1,growx,aligny center");
+		textFieldUname.setColumns(10);
+		textFieldUname.setBorder(new LineBorder(Color.DARK_GRAY, 3));
+		textFieldUname.setText(CURRENT_USERNAME);
+		
+		btnSaveConf = new JButton("Save Values");
+		btnSaveConf.setForeground(new Color(0, 0, 0));
+		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnSaveConf.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnSaveConf, "cell 7 9,growx,aligny center");
+		 
+		btnUseSettings = new JButton("Use");
+		btnUseSettings.setForeground(Color.WHITE);
+		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnUseSettings.setBackground(Color.DARK_GRAY);
+		getContentPane().add(btnUseSettings, "cell 8 9,growx");
+		
+		btnDiscard = new JButton("Discard");
+		btnDiscard.setForeground(new Color(0, 0, 0));
+		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnDiscard.setBackground(new Color(205, 92, 92));
+		getContentPane().add(btnDiscard, "cell 9 9,growx");
+		
+		// default close operation(same as reset) 
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+		        	logger.debug("Closing GUI_Preferences");
+					
+					// reset current values
+					resetToBackup();
+					
+					// reset INItializer reference currentConf too
+					resetConfigValues(currentConf);
+					
+					logger.debug("Closing "+getClass().getName()+" - Configuration resetted: \n"+currentConf.toStringa());
+		        	
+					active = false;
+					
+		        	dispose();
+		    }
+		});
+		
+		addHandlers();
+	}
+	
+	private void addHandlers() {
+		
+		// DARK GUI HANDLER
+		chckbxDarklight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(!chckbxDarklight.isSelected()) {
+					mainGUI.updateUILightNimbus();
+					currentConfiguration.getGuiOpt().setDarkGuiNimbus(false);
+					DARK_THEME=false;
+				}else {
+					mainGUI.updateUIDarkNimbus();
+					currentConfiguration.getGuiOpt().setDarkGuiNimbus(true);
+					DARK_THEME=true;
+				}
+				for(Window window: Window.getWindows()) {
+	    		    SwingUtilities.updateComponentTreeUI(window);
+	    		}
+			}
+		});
+		
+		// COMBO STYLE HANDLER
+		comboStyleLaF.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	try {
+		    		LookAndFeelInfo laf = (LookAndFeelInfo)comboStyleLaF.getSelectedItem();		    		
+		    		PREFERRED_STYLE = laf.getClassName();
+		    		currentConfiguration.getGuiOpt().setPreferredStyle(PREFERRED_STYLE); 
+		    		UIManager.setLookAndFeel(laf.getClassName());
+		    		for(Window window: Window.getWindows()) {
+		    		    SwingUtilities.updateComponentTreeUI(window);
+		    		}
+				} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+				JOptionPane.showMessageDialog(thisFrame, "Sorry, something went wrong :(", e1.getClass().getName(), JOptionPane.ERROR_MESSAGE);
+				logger.error("Exception happened!", e1);	
+				PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
+				}
+		    }
+		});
+		
+		// RESET BUTTON HANDLER
 		btnResetValues.addActionListener(new ActionListener() {
 			
 			// action fired when user reset initial values saved in backup values
@@ -227,27 +293,16 @@ public class GraphicPreferencesFrame extends JFrame{
 				resetToBackup();
 				
 				// reset INItializer reference currentConf too
-				resetConfigValues(currentConf);
+				resetConfigValues(currentConfiguration);
 				
 				// reset gui (sliders changement will trigger jtextfield, see action listener)
 				updateGUI();
 				
-				logger.debug("Configuration resetted: \n"+currentConf.toStringa());
+				logger.debug("Configuration resetted: \n"+currentConfiguration.toStringa());
 			}
 		});
 		
-		JLabel lblUsername = new JLabel("Username");
-		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
-		getContentPane().add(lblUsername, "cell 3 9,alignx right");
-		
-		textFieldUname = new JTextField();
-		textFieldUname.setBackground(new Color(224, 255, 255));
-		textFieldUname.setHorizontalAlignment(SwingConstants.CENTER);
-		textFieldUname.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		getContentPane().add(textFieldUname, "cell 4 9 3 1,growx,aligny center");
-		textFieldUname.setColumns(10);
-		textFieldUname.setBorder(new LineBorder(Color.DARK_GRAY, 3));
-		textFieldUname.setText(CURRENT_USERNAME);
+		// USERNAME TEXTFIELD HANDLER
 		textFieldUname.getDocument().addDocumentListener(new DocumentListener() {
 			  public void changedUpdate(DocumentEvent e) {
 			  	  resetCurrentIni();
@@ -261,21 +316,19 @@ public class GraphicPreferencesFrame extends JFrame{
 
 			  public void resetCurrentIni() {
 				  CURRENT_USERNAME = textFieldUname.getText();
-				  currentConf.getGenOpt().setUserName(CURRENT_USERNAME);
+				  currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
 			  }
 		});
 		
-		JButton btnSaveConf = new JButton("Save Values");
-		btnSaveConf.setForeground(new Color(0, 0, 0));
-		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
+		// SAVE CONFIG BUTTON HANDLER
 		btnSaveConf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int chosenOption = JOptionPane.showConfirmDialog(thisFrame,"Are you sure you want to overwrite "+currentConf.getIniFile().getFile().getPath()+"(ONLY GUI_OPTIONS)?", 
+				int chosenOption = JOptionPane.showConfirmDialog(thisFrame,"Are you sure you want to overwrite "+currentConfiguration.getIniFile().getFile().getPath()+"(ONLY GUI_OPTIONS)?", 
 		        		"overwrite configuration", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (chosenOption == JOptionPane.YES_OPTION) {
 					
 					// write single values to file ini associated to currentConf
-					writeValuesToConfFile(currentConf);
+					writeValuesToConfFile(currentConfiguration);
 					
 					// update BACKUP_VALUES as the new ones
 					updateBackup();
@@ -285,24 +338,10 @@ public class GraphicPreferencesFrame extends JFrame{
 				}else {
 					JOptionPane.showMessageDialog(thisFrame, "Ok, I wont save theese settings ;)", "Not saved!", JOptionPane.WARNING_MESSAGE);
 				}
-				
-				
 			}
 		});
-		btnSaveConf.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnSaveConf, "cell 7 9,growx,aligny center");
 		
-		JButton btnUseSettings = new JButton("Use");
-		btnUseSettings.setForeground(Color.WHITE);
-		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnUseSettings.setBackground(Color.DARK_GRAY);
-		getContentPane().add(btnUseSettings, "cell 8 9,growx");
-		
-		JButton btnDiscard = new JButton("Discard");
-		btnDiscard.setForeground(new Color(0, 0, 0));
-		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnDiscard.setBackground(new Color(205, 92, 92));
-		getContentPane().add(btnDiscard, "cell 9 9,growx");
+		// DISCARD BUTTON HANDLER
 		btnDiscard.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -312,40 +351,39 @@ public class GraphicPreferencesFrame extends JFrame{
 				resetToBackup();
 				
 				// reset INItializer reference currentConf too
-				resetConfigValues(currentConf);
+				resetConfigValues(currentConfiguration);
 				
 				// reset gui (sliders changement will trigger jtextfield, see action listener)
 				updateGUI();
 				
-				logger.debug("Configuration resetted: \n"+currentConf.toStringa());
+				logger.debug("Configuration resetted: \n"+currentConfiguration.toStringa());
 	        	
 	        	//dispose();
 				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		
+		// USE SETTINGS BUTTON HANDLER
 		btnUseSettings.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// update (locally)BACKUP_VALUES as the new ones
 				updateBackup();
 				
-//				// advisor (changes won't take place until restart or reload of modules)
-//				JOptionPane.showMessageDialog(thisFrame, "Some Changes will not be visible until next restart.", "Not all changes visible!", JOptionPane.INFORMATION_MESSAGE);
-
 				// close and apply new values without saving
-				//thisFrame.dispose();
 				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		
-		// event handlers
+		/** SPINNER HANDLERS **/
+		
+		// MENU SIZE HANDLER
 		spinnerMenuSize.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				MENU_FONT_SIZE = (int)spinnerMenuSize.getValue();
-				currentConf.getGuiOpt().setMenuFontSize(MENU_FONT_SIZE);
+				currentConfiguration.getGuiOpt().setMenuFontSize(MENU_FONT_SIZE);
 				sliderMenuSize.setValue(MENU_FONT_SIZE);
 			}
 		});
@@ -355,7 +393,7 @@ public class GraphicPreferencesFrame extends JFrame{
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				LOG_PANEL_FONT_SIZE = (int)spinnerLogSize.getValue();
-				currentConf.getGuiOpt().setLogFontSize(LOG_PANEL_FONT_SIZE);
+				currentConfiguration.getGuiOpt().setLogFontSize(LOG_PANEL_FONT_SIZE);
 				sliderLogSize.setValue(LOG_PANEL_FONT_SIZE);
 			}
 		});
@@ -377,31 +415,7 @@ public class GraphicPreferencesFrame extends JFrame{
 				spinnerMenuSize.setValue(MENU_FONT_SIZE);
 			}
 		});
-		
-		// default close operation(same as reset) 
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-		        	logger.debug("Closing GUI_Preferences");
-					
-					// reset current values
-					resetToBackup();
-					
-					// reset INItializer reference currentConf too
-					resetConfigValues(currentConf);
-					
-					// update gui (sliders changement will trigger jtextfield, see action listener)
-					
-					
-					logger.debug("Closing "+getClass().getName()+" - Configuration resetted: \n"+currentConf.toStringa());
-		        	
-					active = false;
-					
-		        	dispose();
-		    }
-		});
-	} 
+	}
 	
 	private void initValues(INItializer currentConf) {
 		// initialize values from currentConfig
@@ -428,11 +442,11 @@ public class GraphicPreferencesFrame extends JFrame{
 	}
 	
 	private boolean writeValuesToConfFile(INItializer currentConf) {
-		currentConf.writeSingleValue(currentConf.GEN_OPT, "userName", CURRENT_USERNAME);
-		currentConf.writeSingleValue(currentConf.GUI_OPT, "preferredStyle", PREFERRED_STYLE);
-		currentConf.writeSingleValue(currentConf.GUI_OPT, "menuFontSize", MENU_FONT_SIZE);
-		currentConf.writeSingleValue(currentConf.GUI_OPT, "logFontSize", LOG_PANEL_FONT_SIZE);
-		currentConf.writeSingleValue(currentConf.GUI_OPT, "darkGuiNimbus", DARK_THEME);
+		currentConf.writeSingleValue(INItializer.GEN_OPT, "userName", CURRENT_USERNAME);
+		currentConf.writeSingleValue(INItializer.GUI_OPT, "preferredStyle", PREFERRED_STYLE);
+		currentConf.writeSingleValue(INItializer.GUI_OPT, "menuFontSize", MENU_FONT_SIZE);
+		currentConf.writeSingleValue(INItializer.GUI_OPT, "logFontSize", LOG_PANEL_FONT_SIZE);
+		currentConf.writeSingleValue(INItializer.GUI_OPT, "darkGuiNimbus", DARK_THEME);
 		
 		return true;
 	}
@@ -441,7 +455,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		sliderMenuSize.setValue(MENU_FONT_SIZE);
 		sliderLogSize.setValue(LOG_PANEL_FONT_SIZE);
 		textFieldUname.setText(CURRENT_USERNAME);
-		comboStyleLaF.setSelectedItem(PREFERRED_STYLE);
+		updateComboLaFGUI(PREFERRED_STYLE);
 		chckbxDarklight.setSelected(DARK_THEME);
 		
 		try {
@@ -489,5 +503,16 @@ public class GraphicPreferencesFrame extends JFrame{
 		UIManager.put("Menu.font", new Font("Segoe UI", Font.BOLD, MENU_FONT_SIZE ));
 	    SwingUtilities.updateComponentTreeUI(jframe);
 		
+	}
+	
+	private void updateComboLaFGUI(String value) {
+		
+		for(int i = 0; i<comboStyleLaF.getItemCount(); i++ ) {
+			String currentScanString = ((LookAndFeelInfo)comboStyleLaF.getItemAt(i)).getClassName();
+			if(currentScanString.indexOf(value) > -1) {
+				comboStyleLaF.setSelectedIndex(i);
+				break;
+			}
+		}
 	}
 }

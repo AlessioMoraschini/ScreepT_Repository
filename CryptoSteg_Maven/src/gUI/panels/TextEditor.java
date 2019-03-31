@@ -316,7 +316,7 @@ public class TextEditor extends JPanel {
 		
 		txtAesKey = new JTextField();
 		txtAesKey.setHorizontalAlignment(SwingConstants.CENTER);
-		txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
+		txtAesKey.setText("");
 		add(txtAesKey, "cell 11 4 5 1,growx");
 		txtAesKey.setColumns(10);
 		AesCipher.check(txtAesKey);
@@ -549,7 +549,7 @@ public class TextEditor extends JPanel {
 				textArea_1.setFont(DEFAULT);
 				textArea_1.setBackground(DEFAULT_BCKG_COL);
 				textArea_1.setForeground(DEFAULT_FORE_COL);
-				txtAesKey.setText(currentConfiguration.getAesOpt().getAesKey());
+//				txtAesKey.setText("");
 				slider_margin.setValue(10);
 				sliderFontSize.setValue(textArea_1.getFont().getSize());
 				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");

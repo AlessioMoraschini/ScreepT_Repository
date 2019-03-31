@@ -2,11 +2,8 @@ package iNIT;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
@@ -17,6 +14,7 @@ import iNIT.om.FileOptions;
 import iNIT.om.GenericOption;
 import iNIT.om.GuiOption;
 import iNIT.om.SteganOption;
+import iNIT.om.TextEditorOption;
 
 public class INItializer {
 
@@ -25,22 +23,26 @@ public class INItializer {
 		
 	
 	// DEFAULT INI
-	public final String DEFAULT_INI_PATH = "Resources_Scrypt/CONFIG.ini"; 
-	public final static int DEFAULT_MIN_AUTOSAVE_INTERVAL = 60000;
+	public final static String DEFAULT_INI_PATH = "Resources_Scrypt/CONFIG.ini"; 
+	
 	// FILEDS
 	private Ini iniReadFile;
 	private Wini iniFile;
+	
+	// options om
 	private GenericOption genOpt;
 	private FileOptions fileOpt;
 	private SteganOption steganOpt;
 	private AesOption aesOpt;
 	private GuiOption guiOpt;
+	private TextEditorOption textEditorOpt;
 	
-	public final String AES_OPT = "AES_OPTIONS";
-	public final String STEGA_OPT = "STEGANO_OPTIONS";
-	public final String FILE_OPT = "FILE_OPTIONS";
-	public final String GEN_OPT = "GENERIC_OPTIONS";
-	public final String GUI_OPT = "GUI_OPTIONS";
+	public final static String AES_OPT = "AES_OPTIONS";
+	public final static String STEGA_OPT = "STEGANO_OPTIONS";
+	public final static String FILE_OPT = "FILE_OPTIONS";
+	public final static String GEN_OPT = "GENERIC_OPTIONS";
+	public final static String GUI_OPT = "GUI_OPTIONS";
+	public final static String TEXT_EDITOR_OPT = "TEXT_EDITOR";
 
 	
 	public INItializer() {
@@ -71,6 +73,7 @@ public class INItializer {
 		steganOpt = new SteganOption();
 		aesOpt = new AesOption();
 		guiOpt = new GuiOption();
+		textEditorOpt = new TextEditorOption();
 	}
 	
 	// READ & FILL FIELDS METHODS
@@ -82,23 +85,16 @@ public class INItializer {
 	public void readConfigIniFile() {
 		
 		// LOAD AES OPTIONS => disabled key for security
-		
-//		aesOpt.setAesKey(iniReadFile.get(AES_OPT, "aesKey"));
-//		if(aesOpt.getAesKey().equals("")||aesOpt.getAesKey()==null) {
-//			aesOpt.setAesKey(aesOpt.DEFAULT_AES_KEY);
-//		}
+		aesOpt.setFlagAes(Boolean.parseBoolean(iniReadFile.get(AES_OPT, "flagCodificaAes")));
 		
 		// LOAD GENERAL OPTIONS
-		genOpt.setUltraSecure(Boolean.parseBoolean(iniReadFile.get(GEN_OPT, "flagUltraSecure")));
-		genOpt.setFlagAes(Boolean.parseBoolean(iniReadFile.get(GEN_OPT, "flagCodificaAes")));
-		genOpt.setFlagSteg(Boolean.parseBoolean(iniReadFile.get(GEN_OPT, "flagCodificaSteg")));
 		genOpt.setUserName(iniReadFile.get(GEN_OPT, "userName"));
 		if(genOpt.getUserName().equals("")) {
-			genOpt.setUserName(genOpt.DEFAULT_USERNAME);
+			genOpt.setUserName(GenericOption.DEFAULT_USERNAME);
 		}
 		genOpt.setCharset(iniReadFile.get(GEN_OPT, "charset"));
 		if(genOpt.getCharset().equals("")) {
-			genOpt.setCharset(genOpt.DEFAULT_CHARSET);
+			genOpt.setCharset(GenericOption.DEFAULT_CHARSET);
 		}
 		
 		// LOAD GUI OPTIONS
@@ -108,14 +104,14 @@ public class INItializer {
 			guiOpt.setMenuFontSize(Integer.valueOf(iniReadFile.get(GUI_OPT, "menuFontSize")));
 			guiOpt.setLogFontSize(Integer.valueOf(iniReadFile.get(GUI_OPT, "logFontSize")));
 		} catch (NumberFormatException e) {
-			guiOpt.setLogFontSize(guiOpt.DEFAULT_LOG_FONT_SIZE);
-			guiOpt.setMenuFontSize(guiOpt.DEFAULT_MENU_FONT_SIZE);
+			guiOpt.setLogFontSize(GuiOption.DEFAULT_LOG_FONT_SIZE);
+			guiOpt.setMenuFontSize(GuiOption.DEFAULT_MENU_FONT_SIZE);
 			logger.error("Exception happened!", e);
 		}
 		// string values
 		guiOpt.setPreferredStyle(iniReadFile.get(GUI_OPT, "preferredStyle"));
 		if(guiOpt.getPreferredStyle().equals("")||guiOpt.getPreferredStyle()==null) {
-			guiOpt.setPreferredStyle(guiOpt.DEFAULT_GUI_STYLE);
+			guiOpt.setPreferredStyle(GuiOption.DEFAULT_GUI_STYLE);
 		}
 		// boolean
 		guiOpt.setDarkGuiNimbus(Boolean.parseBoolean(iniReadFile.get(GUI_OPT, "darkGuiNimbus")));
@@ -129,38 +125,40 @@ public class INItializer {
 		fileOpt.setLastDstFolderPath(iniReadFile.get(FILE_OPT, "lastDstFolder"));
 		// String
 		if(fileOpt.getLastDstFolderPath().equals("")) {
-			fileOpt.setLastDstFolderPath(fileOpt.DEFAULT_LAST_DEST_FOLDER_PATH);
+			fileOpt.setLastDstFolderPath(FileOptions.DEFAULT_LAST_DEST_FOLDER_PATH);
 		}
 		fileOpt.setLastSrcFolderPath(iniReadFile.get(FILE_OPT, "lastSrcFolder"));
 		if(fileOpt.getLastSrcFolderPath().equals("")) {
-			fileOpt.setLastSrcFolderPath(fileOpt.DEFAULT_LAST_SRC_FOLDER_PATH);
+			fileOpt.setLastSrcFolderPath(FileOptions.DEFAULT_LAST_SRC_FOLDER_PATH);
 		}
 		// integer
 		try {
 			// minimum value 1 minutes
-			if(Integer.valueOf(iniReadFile.get(FILE_OPT, "autosaveInterval"))<DEFAULT_MIN_AUTOSAVE_INTERVAL) {
-				fileOpt.setAutosaveInterval(DEFAULT_MIN_AUTOSAVE_INTERVAL);
+			if(Integer.valueOf(iniReadFile.get(FILE_OPT, "autosaveInterval"))<FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL) {
+				fileOpt.setAutosaveInterval(FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL);
 			}else {
 				fileOpt.setAutosaveInterval(Integer.valueOf(iniReadFile.get(FILE_OPT, "autosaveInterval")));
 			}
 			
 		} catch (NumberFormatException e) {
-			fileOpt.setAutosaveInterval(fileOpt.DEFAULT_AUTOSAVE_INTERVAL);
+			fileOpt.setAutosaveInterval(FileOptions.DEFAULT_AUTOSAVE_INTERVAL);
 			logger.error("Exception happened!", e);
 		}
 		
 		// LOAD STEGANO OPTIONS
+		steganOpt.setUltraSecure(Boolean.parseBoolean(iniReadFile.get(STEGA_OPT, "flagUltraSecure")));
+		steganOpt.setFlagSteg(Boolean.parseBoolean(iniReadFile.get(STEGA_OPT, "flagCodificaSteg")));
 		try {
 			steganOpt.setDefaultHeight(Integer.valueOf(iniReadFile.get(STEGA_OPT, "defaultWidth")));
 			steganOpt.setDefaultWidth(Integer.valueOf(iniReadFile.get(STEGA_OPT, "defaultHeight")));
 		} catch (NumberFormatException e) {
-			steganOpt.setDefaultHeight(steganOpt.DEFAULT_HEIGHT);
-			steganOpt.setDefaultWidth(steganOpt.DEFAULT_WIDTH);
+			steganOpt.setDefaultHeight(SteganOption.DEFAULT_HEIGHT);
+			steganOpt.setDefaultWidth(SteganOption.DEFAULT_WIDTH);
 			logger.error("Exception happened!", e);
 		}
 		String pathsListString = iniReadFile.get(STEGA_OPT, "imgKeyRecentPath");
 		if(pathsListString.equals("")) {
-			pathsListString = steganOpt.DEFAULT_IMG_RECENT_PATH;
+			pathsListString = SteganOption.DEFAULT_IMG_RECENT_PATH;
 		}
 		StringTokenizer tokenizer = new StringTokenizer(pathsListString, ",");
 		steganOpt.getImgRecentPath().clear();
@@ -181,24 +179,18 @@ public class INItializer {
 	public synchronized void writeCurrentConfigIniFile() {
 		
 		// set INIFILE-AES OPTIONS
-		if(aesOpt.getAesKey().equals("")) {
-			aesOpt.setAesKey(aesOpt.DEFAULT_AES_KEY);
-		}
-//		iniFile.put(AES_OPT, "aesKey", aesOpt.getAesKey());
+		iniFile.put(AES_OPT, "flagCodificaAes", aesOpt.isFlagAes());
 		
 		// set INIFILE-GENERAL OPTIONS
 		if(genOpt.getUserName().equals("")) {
-			genOpt.setUserName(genOpt.DEFAULT_USERNAME);
+			genOpt.setUserName(GenericOption.DEFAULT_USERNAME);
 		}
 		iniFile.put(GEN_OPT, "userName", genOpt.getUserName());
 		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
-		iniFile.put(GEN_OPT, "flagCodificaAes", genOpt.isFlagAes());
-		iniFile.put(GEN_OPT, "flagCodificaSteg", genOpt.isFlagSteg());
-		iniFile.put(GEN_OPT, "flagUltraSecure", genOpt.isUltraSecure());
 		
 		// set INIFILE-GUI OPTIONS
 		if(guiOpt.getPreferredStyle().equals("")) {
-			guiOpt.setPreferredStyle(guiOpt.DEFAULT_GUI_STYLE);
+			guiOpt.setPreferredStyle(GuiOption.DEFAULT_GUI_STYLE);
 		}
 		iniFile.put(GUI_OPT, "preferredStyle", guiOpt.getPreferredStyle());
 		iniFile.put(GUI_OPT, "menuFontSize", guiOpt.getMenuFontSize());
@@ -212,11 +204,11 @@ public class INItializer {
 		iniFile.put(FILE_OPT, "flagOverwrite", fileOpt.isFlagOverwrite());
 		// string values
 		if(fileOpt.getLastDstFolderPath().equals("")) {
-			fileOpt.setLastDstFolderPath(fileOpt.DEFAULT_LAST_DEST_FOLDER_PATH);
+			fileOpt.setLastDstFolderPath(FileOptions.DEFAULT_LAST_DEST_FOLDER_PATH);
 		}
 		iniFile.put(FILE_OPT, "lastDstFolder", fileOpt.getLastDstFolderPath());
 		if(fileOpt.getLastSrcFolderPath().equals("")) {
-			fileOpt.setLastSrcFolderPath(fileOpt.DEFAULT_LAST_SRC_FOLDER_PATH);
+			fileOpt.setLastSrcFolderPath(FileOptions.DEFAULT_LAST_SRC_FOLDER_PATH);
 		}
 		iniFile.put(FILE_OPT, "lastSrcFolder", fileOpt.getLastSrcFolderPath());
 		// integer values
@@ -224,6 +216,8 @@ public class INItializer {
 		
 		
 		// set INIFILE-STEGANO OPTIONS
+		iniFile.put(STEGA_OPT, "flagCodificaSteg", steganOpt.isFlagSteg());
+		iniFile.put(STEGA_OPT, "flagUltraSecure", steganOpt.isUltraSecure());
 		iniFile.put(STEGA_OPT, "defaultWidth", steganOpt.getDefaultWidth());
 		iniFile.put(STEGA_OPT, "defaultHeight", steganOpt.getDefaultHeight());
 		// creo variabili temporanee per il ricalcolo della stringa_lista
@@ -237,7 +231,7 @@ public class INItializer {
 			}
 		}
 		if(accumulator.equals("")) {
-			accumulator = steganOpt.DEFAULT_IMG_RECENT_PATH;
+			accumulator = SteganOption.DEFAULT_IMG_RECENT_PATH;
 		}
 		iniFile.put(STEGA_OPT, "imgKeyRecentPath", accumulator );
 		
@@ -315,31 +309,43 @@ public class INItializer {
 		//builder.append"\n[Debug-Write] String INIFILE -> "+ iniFile.getFile().getAbsolutePath()+"\n\n  -----------------\n\n ";
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append("\n\n### Config file: "+this.getIniFile().getFile().getAbsolutePath()+"\n\n");
+		builder.append("\n\n### Config file: "+this.getIniFile().getFile().getAbsolutePath());
 		// concat AES OPTIONS
-		builder.append("\n ---- AES OPTIONS -----\n\n " + "AESKEY: " + aesOpt.getAesKey()+"\n ");
+		builder.append("\n\n ---- AES OPTIONS -----\n\n ")
+			   .append("\nFLAGAES: " + aesOpt.isFlagAes());
+		
 		// concat GENERAL OPTIONS
-		builder.append(" \n ---- GENERAL OPTIONS -----\n\n " + "USERNAME: " + genOpt.getUserName()+"\n ");
-		builder.append("CHARSET: " + genOpt.getCharset()+"\n ");
-		builder.append("ULTRA-SECURE: " + genOpt.isUltraSecure()+"\n ");
-		builder.append("FLAGAES: " + genOpt.isFlagAes()+"\n ");
-		builder.append("FLAGSTEG: " + genOpt.isFlagSteg()+"\n ");
+		builder.append(" \n\n ---- GENERAL OPTIONS -----\n\n ")
+			   .append("USERNAME: ").append(genOpt.getUserName())
+			   .append("\nCHARSET: ").append(genOpt.getCharset());
+		
 		// concat GUI_OPTION
-		builder.append(" \n ---- GUI OPTIONS -----\n\n " + "PREFERRED_STYLE: " + guiOpt.getPreferredStyle()+"\n ");
-		builder.append("MENU_FONT_SIZE: " + guiOpt.getMenuFontSize()+"\n ");
-		builder.append("LOG_FONT_SIZE: " +guiOpt.getLogFontSize()+"\n ");
-		builder.append("DARK_GUI_NUMBUS: " +guiOpt.isDarkGuiNimbus()+"\n ");
+		builder.append(" \n\n ---- GUI OPTIONS -----\n\n ")
+			   .append("PREFERRED_STYLE: ").append(guiOpt.getPreferredStyle())
+			   .append("\nMENU_FONT_SIZE: ").append(guiOpt.getMenuFontSize())
+			   .append("\nLOG_FONT_SIZE: ").append(guiOpt.getLogFontSize())
+			   .append("\nDARK_GUI_NUMBUS: ").append(guiOpt.isDarkGuiNimbus());
+		
 		// concat FILE OPTIONS
-		builder.append(" \n ---- FILE OPTIONS -----\n\n " + "LAST_DST_FOLDERPATH: " + fileOpt.getLastDstFolderPath()+"\n ");
-		builder.append("LAST_SRC_FOLDERPATH: " +fileOpt.getLastSrcFolderPath()+"\n ");
-		builder.append("FLAG_AUTOSAVE: " + fileOpt.isFlagAutosave()+"\n ");
-		builder.append("AUTOSAVE_INTERVAL: " + fileOpt.getAutosaveInterval()+"\n ");
-		builder.append("FLAGOVERWRITE: " + fileOpt.isFlagOverwrite()+" \n ");
+		builder.append(" \n\n ---- FILE OPTIONS -----\n\n ")
+			   .append("LAST_DST_FOLDERPATH: ").append(fileOpt.getLastDstFolderPath())
+			   .append("\nLAST_SRC_FOLDERPATH: ").append(fileOpt.getLastSrcFolderPath())
+			   .append("\nFLAG_AUTOSAVE: ").append(fileOpt.isFlagAutosave())
+			   .append("\nAUTOSAVE_INTERVAL: ").append(fileOpt.getAutosaveInterval())
+			   .append("\nFLAGOVERWRITE: ").append(fileOpt.isFlagOverwrite());
+		
 		// concat STEGANO OPTIONS
-		builder.append(" \n ---- STEGANO OPTIONS -----\n\n " + "DEFAULT_HEIGHT: " + steganOpt.getDefaultHeight()+"\n ");
-		builder.append("DEFAULT_WIDTH: " + steganOpt.getDefaultWidth()+"\n ");
-		builder.append("IMG_RECENT_PATH: " +steganOpt.getImgRecentPath()+"\n ");
+		builder.append(" \n\n ---- STEGANO OPTIONS -----\n\n ")
+			   .append("DEFAULT_HEIGHT: ").append(steganOpt.getDefaultHeight())
+		  	   .append("\nULTRA-SECURE: ").append(steganOpt.isUltraSecure())
+			   .append("\nFLAGSTEG: ").append(steganOpt.isFlagSteg())
+		       .append("\nDEFAULT_WIDTH: ").append(steganOpt.getDefaultWidth())
+		       .append("\nIMG_RECENT_PATH: ").append(steganOpt.getImgRecentPath());
 
+		// concat TEXT EDITOR OPTIONS
+		builder.append(" \n\n ---- TEXT EDITOR -----\n\n ");
+		
+		// create and return result
 		result = builder.toString();
 		
 		return result;
@@ -400,7 +406,9 @@ public class INItializer {
 	public void setAesOpt(AesOption aesOpt) {
 		this.aesOpt = aesOpt;
 	}
-	
-	
+
+	public String getTEXT_EDITOR_OPT() {
+		return TEXT_EDITOR_OPT;
+	}
 	
 }
