@@ -16,8 +16,8 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
-import junit.configuration.RepeatTest;
-import junit.configuration.RepeatedTestRule;
+import configuration.RepeatTest;
+import configuration.RepeatedTestRule;
 import uTILS.local.EntophyzerUtils;
 import uTILS.local.FileStuff;
 

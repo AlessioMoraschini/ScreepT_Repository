@@ -26,7 +26,7 @@ public class Generator {
 	}
 	
 	// HASHMAP GENERATOR
-	public static Map<Integer, Integer> getRandMap(int dim){
+	public static Map<Integer, Integer> getRandIntMap(int dim){
 		Map<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
 		Random rand = new Random();
 		

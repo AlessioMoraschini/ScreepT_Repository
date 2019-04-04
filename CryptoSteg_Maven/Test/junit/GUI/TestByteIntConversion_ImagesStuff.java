@@ -9,10 +9,10 @@ import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import configuration.RepeatTest;
+import configuration.RepeatedTestRule;
 import crypt.steg.StegCipher;
 import gUI.om.BufferedImageType;
-import junit.configuration.RepeatTest;
-import junit.configuration.RepeatedTestRule;
 import uTILS.local.ByteWorker;
 import uTILS.local.FileStuff;
 import uTILS.local.ImageWorker;

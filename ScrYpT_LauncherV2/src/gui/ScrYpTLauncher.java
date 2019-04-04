@@ -64,6 +64,8 @@ public class ScrYpTLauncher {
 	public static String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512"; // default memory options
 	public static final String JVM_URL_INSTALL = "https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html";
 	public static final String NOT_FOUND_JVM = "";
+	public static final String JVM_OK = "JVMOK";
+	public static boolean ignoreWarnings = false;
 	public static final String JVM_ARGS = "-Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
 	
 	// DEFAULT INI
@@ -80,6 +82,7 @@ public class ScrYpTLauncher {
 	
 	// USER MANUALLY LOCATED DEPENDENCY PATHS
 	public String manualPath_Jvm = NOT_FOUND_JVM;
+	public static String javaPath=NOT_FOUND_JVM;
 	private final static String arch32OR64 = String.valueOf(SysUtils.findIf32or64());
 	
 	// ACTION LISTENERS - JVM
@@ -92,7 +95,6 @@ public class ScrYpTLauncher {
 	
 	public static LinkedList<String> execCommand;
 	public static StartPanel launcherMainFrame;
-	public static String javaPath=NOT_FOUND_JVM;
 	public static ScrYpTLauncher LAUNCHER;
 	public static LauncherLoaderFrame loaderGraphics;
 	
@@ -264,11 +266,19 @@ public class ScrYpTLauncher {
 	private String retrieveCorrectJVMS() {
 		
 		logger.info("Started java installed versions check!");
+		String currJvmVersion = SysUtils.getCurrentJVMversion();
 		
 		// if current is correct return it and exit method
-		if(checkSingleJavaVersionOK(SysUtils.getCurrentJVMversion())) {
-			return ";"; 
+		if(checkSingleJavaVersionOK(currJvmVersion)) {
+			logger.info("Current JVM("+currJvmVersion+") is OK -> selected and skipping search");
+			return JVM_OK;
 			// adding ; to path does not modify current retrieved and escapes NOT_FOUND_JVM controls as path won't be ""
+		}
+		
+		if(ignoreWarnings) {
+			// if user selected to ignore given warnings
+			logger.info("User have chosen to ignore warnings: Current JVM("+currJvmVersion+") will be used.");
+			return JVM_OK;
 		}
 		
 		ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
@@ -286,19 +296,21 @@ public class ScrYpTLauncher {
 	 */
 	private void addPathCommand(String pathEntry) {
 
-		if(currentOS.isWindows()) {
-			execCommand.add("set JDK_PATH=" + pathEntry + ";");
-			execCommand.add("set PATH=%JDK_PATH%%PATH%");
-			execCommand.add("echo %PATH%");
-		
-		}else if(currentOS.isLinux()) {
-		
-			execCommand.add("PATH=" + pathEntry + ":$PATH");
-		
-		}else if(currentOS.isMac()) {
-			
-			execCommand.add("PATH=" + pathEntry + ":$PATH");
+		if (!javaPath.equals(JVM_OK)) {
+			if (currentOS.isWindows()) {
+				execCommand.add("set JDK_PATH=" + pathEntry + ";");
+				execCommand.add("set PATH=%JDK_PATH%%PATH%");
+				execCommand.add("echo %PATH%");
 
+			} else if (currentOS.isLinux()) {
+
+				execCommand.add("PATH=" + pathEntry + ":$PATH");
+
+			} else if (currentOS.isMac()) {
+
+				execCommand.add("PATH=" + pathEntry + ":$PATH");
+
+			} 
 		}		
 	}
 	

@@ -83,10 +83,16 @@ public class mainGUI {
 	private static final long AUTOSAVE_MANAGER_PERIOD=8000; // autosave manager constant check refresh period in millisecond
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
-	// the name of the application used elsewhere on the sw
+	// general application variables
 	public static final String APP_VERSION = "0.5";
-	public static final String APPLICATION_NAME = "ScrYpT " + APP_VERSION;
+	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
+	public static final String AUTHOR = "A.M. Design and Developement";
+	public static final String APP_VERSION_DATE = "4/4/2019";
+	public static final String WEBSITE = "www.am_design_developement.com";
+	
+	// icons and images
 	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
+	public static Image APPLICATION_MAIN_BCKG_IMAGE;
 	public static final String ICON_FILE_NAME = "icon.jpg";
 	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
@@ -191,7 +197,8 @@ public class mainGUI {
 	private int subMenuSize;
 	
 	// FLAGS TO SIGNAL THAT A MODULE IS OPENED (JDIALOG) 
-	// for jpanels they refresh only the first time opened or if manually refreshed (TODO)
+	// for jpanels they refresh only the first time opened or if manually refreshed 
+	// (-> TODO manual refresh)
 	private static boolean flagFrameKeyGen = false;
 	private static boolean flagFrameGenOptions = false;
 	private static boolean flagFrameGuiOptions = false;
@@ -329,7 +336,6 @@ public class mainGUI {
 					autosaveModule = new Thread(new Runnable() {
 						@Override
 						public void run() {
-//							running = true;
 							logger.debug("## AUTOSAVE module started, interval: "+currentConfiguration.getFileOpt().getAutosaveInterval() + " milliseconds");
 							while (mainAppRunning) {
 												
@@ -859,12 +865,12 @@ public class mainGUI {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagAboutPanel) {
 					flagAboutPanel = true;
-		    		panelAbout = new AboutSectionPanel(frmScryptV);
+		    		panelAbout = new AboutSectionPanel(mainAPP);
 		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		panelAbout.setBounds(700, 200, 650, 500);
+		    		panelAbout.setBounds(700, 200, 360, 300);
 		    		panelAbout.setResizable(false);
 		    		panelAbout.setVisible(true);
-		    		panelAbout.setTitle("ScrYpT - About(" + APP_VERSION + ") - A.M.2018");
+		    		panelAbout.setTitle(APPLICATION_NAME);
 				}else {
 					panelAbout.setState(java.awt.Frame.NORMAL);
 					panelAbout.requestFocus();
@@ -1199,13 +1205,18 @@ public class mainGUI {
 						"UserName lenght Error", JOptionPane.WARNING_MESSAGE);
 				logger.error("Error in user input, redo.");
 			} else {
-				currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "userName", input);
+				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", input);
 				currentConfiguration.getGenOpt().setUserName(input);
 				end = true;
 			} 
 		} while (!end);
 		logger.debug("Name selected and saved username: "+input);
 		return input;
+	}
+	
+	public void readBackgroundImage() throws IOException {
+		BufferedImage image = ImageIO.read(new File(RESOURCES_DIR + APPLICATION_MAIN_BCKG));
+        APPLICATION_MAIN_BCKG_IMAGE = image.getScaledInstance(screenWidth-100, screenHeight-100,Image.SCALE_SMOOTH);
 	}
 	
 	public void setBackgroundImage() {
@@ -1215,10 +1226,12 @@ public class mainGUI {
 			MAIN_PANEL.setBackground(SystemColor.infoText);
             frmScryptV.getContentPane().add(MAIN_PANEL);
             MAIN_PANEL.setLayout(new MigLayout("", "[90%]", "[1.00][100.52%,baseline]"));
-            BufferedImage image = ImageIO.read(new File(RESOURCES_DIR + APPLICATION_MAIN_BCKG));
-            Image scaledImage = image.getScaledInstance(screenWidth-100, screenHeight-100,Image.SCALE_SMOOTH);
-            labelBACKground = new JLabel(new ImageIcon(scaledImage));
             
+            if(APPLICATION_MAIN_BCKG_IMAGE == null) {
+            	readBackgroundImage();
+            }
+            
+            labelBACKground = new JLabel(new ImageIcon(APPLICATION_MAIN_BCKG_IMAGE));
 		   	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 		   	contentPane.removeAll();
 	    	contentPane.add(labelBACKground);
@@ -1341,6 +1354,13 @@ public class mainGUI {
 		mainAppRunning = false;
 		
 		System.exit(0);
+	}
+	
+	
+	// GETTERS //
+	
+	public JFrame getMainFrame() {
+		return frmScryptV;
 	}
 	
 }

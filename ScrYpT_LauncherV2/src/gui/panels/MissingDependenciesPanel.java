@@ -142,7 +142,7 @@ public class MissingDependenciesPanel extends JDialog{
 		    	if(!ScrYpTLauncher.criticalDependenciesOK) {
 		    		askIfSureToExit();
 		    	}
-		    	askIfSureToClose();
+		    	askIfSureToCloseIgnoring();
 	        	logger.debug("Closing Frame: " + thisPanel.getClass().getName());	        	
 
 		    }
@@ -152,7 +152,7 @@ public class MissingDependenciesPanel extends JDialog{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				askIfSureToClose();
+				askIfSureToCloseIgnoring();
 			}
 		});
 		
@@ -326,7 +326,7 @@ public class MissingDependenciesPanel extends JDialog{
 		
 	}
 	
-	private void askIfSureToClose() {
+	private void askIfSureToCloseIgnoring() {
 		String msg = "Are you sure to continue anyway? Some ScrYpT functions will be disabled by default.";
 		JCheckBox checkbox = new JCheckBox("Do not show this section next Time");
 		Object[] params = {msg, checkbox};
@@ -335,9 +335,9 @@ public class MissingDependenciesPanel extends JDialog{
 					JOptionPane.WARNING_MESSAGE);
 			if (response == JOptionPane.OK_OPTION) {
 				if (checkbox.isSelected()) {
-					ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "autoShowInstallOpt",
-							"false");
+					ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "autoShowInstallOpt", "false");
 				}
+				ScrYpTLauncher.ignoreWarnings = true;
 				parentStarterFrame.setEnabled(true);
 				active = false;
 				dispose();

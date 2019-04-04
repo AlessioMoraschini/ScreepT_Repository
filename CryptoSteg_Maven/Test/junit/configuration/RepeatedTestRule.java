@@ -3,6 +3,9 @@ package junit.configuration;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import junit.configuration.RepeatTest;
+import junit.configuration.RepeatableTestStatement;
  
 public class RepeatedTestRule implements TestRule
 {

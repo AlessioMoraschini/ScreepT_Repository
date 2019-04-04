@@ -267,8 +267,10 @@ public class SysUtils {
 				if(!(name.toLowerCase().indexOf("jdk")<0) || !(name.toLowerCase().indexOf("jre")<0)) {
 					if (dir.isDirectory()) {
 						String currentPath = dir.getPath()+"/"+name;
+						File binFolder = new File(currentPath+"/bin");
+						File exeJvm = new File(binFolder.getAbsolutePath()+"/java.exe");
 						// if name contains (case insensitive) jdk or jre then it's a java install directory
-						if (new File(currentPath+"/bin").exists()) {
+						if (exeJvm.exists()) {
 							stringRetrievedPaths.add(currentPath);
 							return true;
 						}

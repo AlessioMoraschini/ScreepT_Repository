@@ -8,7 +8,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="INI_FILES"/>
 	<classpathentry kind="src" path="IMG"/>
-	<classpathentry kind="src" path="Resources_Scrypt"/>
+	<classpathentry excluding=".so" kind="src" path="Resources_Scrypt"/>
 	<classpathentry kind="src" path="Test"/>
 	<classpathentry kind="src" path="LOG"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="Resources_Scrypt/lib/sigar.jar"/>
+	<classpathentry kind="lib" path="Resources_Scrypt/lib/JnetPcap/jnetpcap.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

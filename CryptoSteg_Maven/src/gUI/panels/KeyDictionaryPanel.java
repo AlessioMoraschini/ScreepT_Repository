@@ -91,7 +91,7 @@ public class KeyDictionaryPanel extends JFrame{
 		currentConf = currentConfiguration;
 		
 		logger.debug("## KeyDictionary panel started!");
-		getContentPane().setBackground(new Color(188, 143, 143));
+		getContentPane().setBackground(new Color(250, 240, 230));
 		getContentPane().setLayout(new MigLayout("", "[88.00px][93.00][89.00px][10.00px][10px:100:500,grow 500][:100:10%][:100:8%][:100:8%][:100:14%]", "[35px][:25:25px][40%,grow]"));
 		
 		JPanel panel = new JPanel();

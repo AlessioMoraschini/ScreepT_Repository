@@ -9,8 +9,8 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 
-import junit.configuration.RepeatTest;
-import junit.configuration.RepeatedTestRule;
+import configuration.RepeatTest;
+import configuration.RepeatedTestRule;
 import testUtils.Printer;
 import uTILS.local.ByteArrayShuffler;
 
