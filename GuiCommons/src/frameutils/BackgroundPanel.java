@@ -1,26 +1,19 @@
-package gUI.utils.standardpanels;
+package frameutils;
+
 
 import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JPanel;
 
-import org.apache.log4j.Logger;
-
 public class BackgroundPanel extends JPanel{
 	
-	// mainGUI logger
-	static Logger logger = Logger.getLogger(BackgroundPanel.class);
 		
 	private Image backgroundImage;
 	
 	public BackgroundPanel(Image background) {
 		
-		logger.info(this.getClass().getName() + " Starting...");
-		
 		backgroundImage = background;
-		
-		logger.info(this.getClass().getName() + " Started");
 	}
 	
 	@Override

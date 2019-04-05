@@ -13,6 +13,8 @@ import javax.swing.JProgressBar;
 
 import org.apache.log4j.Logger;
 
+import guistyle.GUIStyelSettings;
+
 import javax.swing.JLabel;
 import java.awt.CardLayout;
 import java.awt.Dimension;

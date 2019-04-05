@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import gui.ScrYpTLauncher;
 import launcherutils.SysUtils;
 import net.miginfocom.swing.MigLayout;
@@ -59,7 +60,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// CUSTOM SETTINGS
 		active = true;
 		thisPanel = this;
-		this.setBounds(160, 180, 540, 190);
+		GuiUtils.centerFrame(this, 540, 190);
 		thisPanel.setTitle(title);		
 		parentStarterPanel = parentPanel;
 		

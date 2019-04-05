@@ -23,6 +23,14 @@
 		<artifactId>ini4j</artifactId>
 		<version>0.5.4</version>
 	</dependency>
+
+	<!-- IMPORTS FROM OTHER PROJECTS -->
+	<dependency>
+		<groupId>GuiCommons</groupId>
+		<artifactId>GuiCommons</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+ 	</dependency>
+
   </dependencies>
   
 </project>

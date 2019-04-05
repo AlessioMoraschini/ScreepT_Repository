@@ -1,8 +1,6 @@
 package gui.utils;
 
-import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 
@@ -10,6 +8,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
+
+import frameutils.GuiUtils;
 
 public class LauncherLoaderFrame extends JFrame{
 
@@ -35,10 +35,8 @@ public class LauncherLoaderFrame extends JFrame{
 		} catch (IOException e) {
 			logger.error("Error loading Background launcher image", e);
 		}
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-
-		this.setSize(W, H);
-		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+		GuiUtils.centerFrame(this, W, H);
+		
 		this.setVisible(true);
 		this.setTitle(title);
 		

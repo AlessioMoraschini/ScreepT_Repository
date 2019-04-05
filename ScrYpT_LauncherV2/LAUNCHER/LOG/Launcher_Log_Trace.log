@@ -1,122 +1,49 @@
-2019-03-29 00:13:20,109 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started to analyze before launch
-2019-03-29 00:13:20,125 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started java installed versions check!
-2019-03-29 00:13:20,125 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Versions found: [C:\Program Files\java/jdk-11.0.2, C:\Program Files\java/jdk1.8.0_162, C:\Program Files\java/jre-9.0.4]
-2019-03-29 00:13:20,125 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Found correct one: 
-2019-03-29 00:13:20,125 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Launch command generated:
-
-set JDK_PATH=; 
-
-set PATH=%JDK_PATH%%PATH% 
-
-echo %PATH% 
-
-java -Xmx1048m -Xms964m -XshowSettings:vm -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar
-2019-03-29 00:13:20,125 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
-2019-03-29 00:13:20,172 [AWT-EventQueue-0] DEBUG gui.utils.LauncherLoaderPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
-2019-03-29 00:13:20,203 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
-2019-03-29 00:13:21,109 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - icon image setted to main window
-2019-03-29 00:13:21,111 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
-2019-03-29 00:13:21,174 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Missing dependencies detected, opening installer panel
-2019-03-29 00:13:21,174 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
-2019-03-29 00:13:28,346 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
-2019-03-29 00:13:35,033 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
-2019-03-29 00:13:35,033 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+2019-04-05 23:50:12,202 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-04-05 23:50:12,452 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
+2019-04-05 23:50:22,186 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-04-05 23:50:22,186 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
 
 ##################################################
 
-Fri Mar 29 00:13:35 CET 2019
+Fri Apr 05 23:50:22 CEST 2019
 
 Launcher Closed now!
 
 ##################################################
 
 
-2019-03-29 00:13:45,786 [main] DEBUG gui.ScrYpTLauncher - 
+2019-04-06 01:01:15,932 [main] DEBUG gui.ScrYpTLauncher - 
 
 ##################################################
 
-Fri Mar 29 00:13:45 CET 2019
+Sat Apr 06 01:01:15 CEST 2019
 
 Launcher Started now!
 
 ##################################################
 
 
-2019-03-29 00:13:45,802 [main] INFO  gui.ScrYpTLauncher - Loading INI launcher_configuration file...
-2019-03-29 00:13:45,836 [main] INFO  gui.ScrYpTLauncher - Launcher_configuration file loaded!
-2019-03-29 00:13:45,836 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started to analyze before launch
-2019-03-29 00:13:45,836 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started java installed versions check!
-2019-03-29 00:13:45,852 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Versions found: [C:\Program Files\java/jdk-11.0.2, C:\Program Files\java/jdk1.8.0_162, C:\Program Files\java/jre-9.0.4]
-2019-03-29 00:13:45,852 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Found correct one: 
-2019-03-29 00:13:45,852 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Launch command generated:
+2019-04-06 01:01:15,949 [main] INFO  gui.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-04-06 01:01:15,980 [main] INFO  gui.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-04-06 01:01:15,996 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started to analyze before launch
+2019-04-06 01:01:15,996 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started java installed versions check!
+2019-04-06 01:01:15,996 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-04-06 01:01:15,996 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Launch command generated:
 
-set JDK_PATH=; 
-
-set PATH=%JDK_PATH%%PATH% 
-
-echo %PATH% 
-
-java -Xmx1048m -Xms964m -XshowSettings:vm -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar
-2019-03-29 00:13:45,852 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
-2019-03-29 00:13:45,899 [AWT-EventQueue-0] DEBUG gui.utils.LauncherLoaderPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
-2019-03-29 00:13:45,914 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
-2019-03-29 00:13:46,805 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - icon image setted to main window
-2019-03-29 00:13:46,822 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
-2019-03-29 00:13:46,869 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Missing dependencies detected, opening installer panel
-2019-03-29 00:13:46,869 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
-2019-03-29 00:13:49,384 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
-2019-03-29 00:13:56,199 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
-2019-03-29 00:13:56,199 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
+java -Xmx1048m -Xms964m -XshowSettings:vm -Dsun.java2d.uiScale=1 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar
+2019-04-06 01:01:16,012 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-04-06 01:01:16,012 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-04-06 01:01:16,105 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-04-06 01:01:16,355 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
+2019-04-06 01:01:18,496 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-04-06 01:01:18,573 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - icon image setted to main window
+2019-04-06 01:01:18,604 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-04-06 01:01:26,370 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-04-06 01:01:26,370 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
 
 ##################################################
 
-Fri Mar 29 00:13:56 CET 2019
-
-Launcher Closed now!
-
-##################################################
-
-
-2019-03-29 00:22:59,125 [main] DEBUG gui.ScrYpTLauncher - 
-
-##################################################
-
-Fri Mar 29 00:22:59 CET 2019
-
-Launcher Started now!
-
-##################################################
-
-
-2019-03-29 00:22:59,125 [main] INFO  gui.ScrYpTLauncher - Loading INI launcher_configuration file...
-2019-03-29 00:22:59,170 [main] INFO  gui.ScrYpTLauncher - Launcher_configuration file loaded!
-2019-03-29 00:22:59,186 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started to analyze before launch
-2019-03-29 00:22:59,186 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started java installed versions check!
-2019-03-29 00:22:59,186 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Versions found: [C:\Program Files\java/jdk-11.0.2, C:\Program Files\java/jdk1.8.0_162, C:\Program Files\java/jre-9.0.4]
-2019-03-29 00:22:59,186 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Found correct one: 
-2019-03-29 00:22:59,186 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Launch command generated:
-
-set JDK_PATH=; 
-
-set PATH=%JDK_PATH%%PATH% 
-
-echo %PATH% 
-
-java -Xmx1048m -Xms964m -XshowSettings:vm -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar
-2019-03-29 00:22:59,186 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
-2019-03-29 00:22:59,233 [AWT-EventQueue-0] DEBUG gui.utils.LauncherLoaderPanel - com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
-2019-03-29 00:22:59,249 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
-2019-03-29 00:23:00,170 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - icon image setted to main window
-2019-03-29 00:23:00,181 [AWT-EventQueue-0] INFO  gui.panels.MissingDependenciesPanel - gui.panels.MissingDependenciesPanel Started
-2019-03-29 00:23:00,259 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Missing dependencies detected, opening installer panel
-2019-03-29 00:23:00,259 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
-2019-03-29 00:23:03,493 [AWT-EventQueue-0] DEBUG gui.panels.MissingDependenciesPanel - Closing Frame: gui.panels.MissingDependenciesPanel
-2019-03-29 00:23:05,212 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
-2019-03-29 00:23:05,212 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
-
-##################################################
-
-Fri Mar 29 00:23:05 CET 2019
+Sat Apr 06 01:01:26 CEST 2019
 
 Launcher Closed now!
 

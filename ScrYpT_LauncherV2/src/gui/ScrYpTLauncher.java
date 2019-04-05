@@ -66,7 +66,7 @@ public class ScrYpTLauncher {
 	public static final String NOT_FOUND_JVM = "";
 	public static final String JVM_OK = "JVMOK";
 	public static boolean ignoreWarnings = false;
-	public static final String JVM_ARGS = "-Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
+	public static final String JVM_ARGS = "-Dsun.java2d.uiScale=1 -Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
 	
 	// DEFAULT INI
 	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "Launcher_Configuration.ini"; 

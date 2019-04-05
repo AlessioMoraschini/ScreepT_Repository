@@ -4,12 +4,11 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import gui.ScrYpTLauncher;
-import gui.utils.GUIStyelSettings;
+import guistyle.GUIStyelSettings;
 
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,16 +17,12 @@ import javax.swing.JLabel;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import java.awt.Font;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.awt.Button;
 import java.awt.Cursor;
-import javax.swing.border.LineBorder;
 import java.awt.Insets;
 
 public class StartPanel extends JFrame{
@@ -55,6 +50,9 @@ public class StartPanel extends JFrame{
 	private JLabel lblAmDesign;
 	private JButton btnDependencyManager;
 	
+	private final int W = 480;
+	private final int H = 180;
+	
 	public StartPanel(String frameTitle, ScrYpTLauncher launcher) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
@@ -63,13 +61,10 @@ public class StartPanel extends JFrame{
 		
 		setGraphics();
 		
-		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		screenWidth = gd.getDisplayMode().getWidth();
-		screenHeight = gd.getDisplayMode().getHeight();
-		
 		this.LAUNCHER = launcher;
 		this.setTitle(frameTitle);
-		this.setBounds(screenWidth/4, screenHeight/4, 480, 180);
+
+		GuiUtils.centerFrame(this, W, H);
 		
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
