@@ -30,7 +30,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,16 +37,15 @@ import java.util.Date;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import iNIT.INItializer;
 import uTILS.local.FileStuff;
 import uTILS.local.ImageWorker;
 
 import gUI.mainGUI;
 import gUI.om.KeyGenImageType;
-import gUI.utils.iconHandler.IconHandler;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
-
 
 public class KeyGenPanel extends JFrame {
 
@@ -104,7 +102,7 @@ public class KeyGenPanel extends JFrame {
 		currentConfig = currentConf;
 		
 		// SW window icon
-		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		// get default values to initialize panel
 		CURRENT_SEL_W = currentConfig.getSteganOpt().getDefaultWidth();

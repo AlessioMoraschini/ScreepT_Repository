@@ -11,9 +11,9 @@ import org.hyperic.sigar.ProcMem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
+import frameutils.GuiUtils;
 import gUI.mainGUI;
 import gUI.om.HDinfo;
-import gUI.utils.iconHandler.IconHandler;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import oshi.SystemInfo;
@@ -178,7 +178,7 @@ public class HwInfoPanel extends JFrame{
 		active = true;
 		
 		// SW window icon
-		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		thisPanel = this;
 		

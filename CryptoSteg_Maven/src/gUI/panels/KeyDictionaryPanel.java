@@ -5,9 +5,9 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import gUI.mainGUI;
 import gUI.om.BufferedImageType;
-import gUI.utils.iconHandler.IconHandler;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.TreeFileMouseListenerDictionary;
 import iNIT.INItializer;
@@ -18,8 +18,6 @@ import javax.swing.JPanel;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +82,7 @@ public class KeyDictionaryPanel extends JFrame{
 		active = true;
 		
 		// SW window icon
-		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		thisPanel = this;
 		// initialize configuration

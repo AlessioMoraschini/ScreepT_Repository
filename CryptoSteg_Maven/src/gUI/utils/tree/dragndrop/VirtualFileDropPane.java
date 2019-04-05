@@ -72,7 +72,7 @@ public class VirtualFileDropPane extends JPanel {
         
         setLayout(new GridBagLayout());
         message = new JLabel("Drag here your files to code/decode them");
-        message.setFont(message.getFont().deriveFont(java.awt.Font.BOLD, 24));
+        message.setFont(message.getFont().deriveFont(java.awt.Font.BOLD, 18));
         add(message);
 
     }

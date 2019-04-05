@@ -7,15 +7,14 @@ import org.hyperic.sigar.NetInfo;
 import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
+import frameutils.GuiUtils;
 import gUI.mainGUI;
-import gUI.utils.iconHandler.IconHandler;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import uTILS.network.NetworkUtils;
 import uTILS.network.om.FtpSpeedTestOptions;
 import uTILS.network.om.NetworkAdapter;
 
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -24,7 +23,6 @@ import javax.swing.border.LineBorder;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -115,7 +113,7 @@ public class NetInfoPanel extends JFrame{
 		thisPanel = this;
 		
 		// SW window icon
-		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		try {
 			netUtils = new NetworkUtils();

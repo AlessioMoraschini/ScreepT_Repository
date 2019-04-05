@@ -415,12 +415,15 @@ public class mainGUI {
 					initGUI();
 					
 					window.frmScryptV.setVisible(true);
+					window.frmScryptV.toFront();
+					window.frmScryptV.requestFocus();
 					
 					// ASK FOR USERNAME IF NULL OR FIRST TIME
 					if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
 						currentConfiguration.getGenOpt().setUserName(window.askUsername());
 					}
 					window.startTitleUpdater();
+					
 					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 				} catch (Exception e) {
 					logger.error("Exception happened!", e);
@@ -867,7 +870,7 @@ public class mainGUI {
 					flagAboutPanel = true;
 		    		panelAbout = new AboutSectionPanel(mainAPP);
 		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		panelAbout.setBounds(700, 200, 360, 300);
+		    		panelAbout.setBounds(700, 200, 400, 345);
 		    		panelAbout.setResizable(false);
 		    		panelAbout.setVisible(true);
 		    		panelAbout.setTitle(APPLICATION_NAME);
@@ -964,6 +967,8 @@ public class mainGUI {
 		
 		// check non compatible options with current JVM
 		checkVersionAndDisableUnsupportedOpt();
+		
+		frmScryptV.requestFocus();
 	}
 	
 	

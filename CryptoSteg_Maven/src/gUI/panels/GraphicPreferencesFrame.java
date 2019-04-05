@@ -12,8 +12,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -27,14 +25,13 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import gUI.mainGUI;
-import gUI.utils.iconHandler.IconHandler;
 import iNIT.INItializer;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JSeparator;
@@ -91,7 +88,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		currentConfiguration = currentConf;
 		active = true;
 		
-		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		initValues(currentConfiguration);
 		
@@ -171,11 +168,6 @@ public class GraphicPreferencesFrame extends JFrame{
 		JSeparator separator_1 = new JSeparator();
 		getContentPane().add(separator_1, "cell 1 8 9 1,growx,aligny center");
 		
-		btnResetValues = new JButton("Reset initial values");
-		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnResetValues.setBackground(new Color(240, 230, 140));
-		getContentPane().add(btnResetValues, "cell 1 9 2 1,growx,aligny center");
-		
 		lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblUsername, "cell 3 9,alignx right");
@@ -188,6 +180,11 @@ public class GraphicPreferencesFrame extends JFrame{
 		textFieldUname.setColumns(10);
 		textFieldUname.setBorder(new LineBorder(Color.DARK_GRAY, 3));
 		textFieldUname.setText(CURRENT_USERNAME);
+		
+		btnResetValues = new JButton("Reset initial values");
+		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnResetValues.setBackground(new Color(240, 230, 140));
+		getContentPane().add(btnResetValues, "cell 1 9 2 1,growx,aligny center");
 		
 		btnSaveConf = new JButton("Save Values");
 		btnSaveConf.setForeground(new Color(0, 0, 0));

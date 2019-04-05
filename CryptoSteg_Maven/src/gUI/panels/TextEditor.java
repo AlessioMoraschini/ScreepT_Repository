@@ -52,7 +52,6 @@ import javax.swing.undo.UndoManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.UIManager;
 import javax.swing.JCheckBox;
-import javax.swing.JTextField;
 import javax.swing.JSeparator;
 import javax.swing.border.LineBorder;
 import javax.swing.JComboBox;
@@ -60,11 +59,14 @@ import javax.swing.DefaultComboBoxModel;
 import gUI.om.SupportedFileTextEditor;
 import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorListener;
+import javax.swing.JPasswordField;
 
 public class TextEditor extends JPanel {
 
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditor.class);
+	
+	public static final char DEFAULT_PSW_CHAR = '\u25CF';
 	
 	//  RESOURCE FILES //
 	private final String LOREM_IPSUM = "Resources_Scrypt/Templates/LoremIpsum.txt";
@@ -152,7 +154,7 @@ public class TextEditor extends JPanel {
 	public JSlider slider_margin;
 	
 	public JTextArea textArea_1;
-	private JTextField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as default
+	private JPasswordField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as default
 	
 	private JFrame parentFrame; // the frame that instantiate this object
 
@@ -176,6 +178,7 @@ public class TextEditor extends JPanel {
 	private INItializer currentConfiguration;
 	private TextEditor currentTextEditor; // current object
 	private Text2Speech objSpeaker; // field containing the current object used to speak text
+	private JCheckBox chckbxAesShowKey;
 
 	
 //////////////// CONSTRUCTOR /////////////////////
@@ -194,7 +197,7 @@ public class TextEditor extends JPanel {
 		uppercaseDots=true;
 		
 		setBackground(Color.DARK_GRAY);
-		setLayout(new MigLayout("", "[40][40][70][4%][][][][:40:40][:40:40][:40:40][:40:40][:30:30][:40:80px][20][20][30][40.00][40,fill][70][35][35,grow][70]", "[:20:50px,grow][][20][][25][25][52.33%,grow]"));
+		setLayout(new MigLayout("", "[40][40][70][4%][][][][:40:40][:40:40][:40:40][:40:40][:50px:50px][:50px:50px][20][20][30][40.00][40,fill][70][35px:35][35,grow][35,grow][70]", "[:20:50px,grow][][20][][25][25][52.33%,grow]"));
 		
 		lblCurrentFileLBL = new JLabel("   Current file:");
 		lblCurrentFileLBL.setForeground(SystemColor.controlHighlight);
@@ -220,8 +223,20 @@ public class TextEditor extends JPanel {
 		lblAdvice.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblAdvice.setForeground(new Color(176, 224, 230));
 		lblAdvice.setHorizontalAlignment(SwingConstants.CENTER);
-		add(lblAdvice, "cell 20 2 2 1,alignx center,aligny center");
+		add(lblAdvice, "cell 20 2 3 1,alignx center,aligny center");
 		lblAdvice.setText(" [Current output: .txt]");
+		
+		btnLoremIpsum = new JButton("Lorem Ipsum");
+		btnLoremIpsum.setToolTipText(tooltipLoremIpsum);
+		btnLoremIpsum.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnLoremIpsum.setBackground(new Color(176, 196, 222));
+		add(btnLoremIpsum, "cell 16 4 2 1,growx");
+		
+		lblMargin = new JLabel("Margin:");
+		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMargin.setForeground(SystemColor.menu);
+		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
+		add(lblMargin, "cell 18 4,alignx center");
 		
 		btnCrypt = new JButton("");
 		btnCrypt.setBackground(SystemColor.activeCaption);
@@ -229,7 +244,7 @@ public class TextEditor extends JPanel {
 		btnCrypt.setToolTipText(tooltipCrypt);
 		btnCrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnCrypt.setForeground(SystemColor.inactiveCaption);
-		add(btnCrypt, "cell 16 4,growx");
+		add(btnCrypt, "cell 11 5,alignx center");
 		
 		btnDecrypt = new JButton("");
 		btnDecrypt.setBackground(SystemColor.activeCaption);
@@ -237,10 +252,26 @@ public class TextEditor extends JPanel {
 		btnDecrypt.setToolTipText(tooltipDecrypt);
 		btnDecrypt.setForeground(SystemColor.inactiveCaption);
 		btnDecrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
-		add(btnDecrypt, "cell 16 5,growx");
+		add(btnDecrypt, "cell 12 5,alignx center");
+		
+		chckbxAesShowKey = new JCheckBox("Show key");
+		chckbxAesShowKey.setForeground(Color.WHITE);
+		chckbxAesShowKey.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		add(chckbxAesShowKey, "cell 13 5 3 1,alignx center");
+		
+		btnTemplates = new JButton("Templates");
+		btnTemplates.setToolTipText(tooltipTemplates);
+		btnTemplates.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnTemplates.setBackground(new Color(176, 196, 222));
+		add(btnTemplates, "cell 16 5 2 1,growx");
+		
+		lblFontSize = new JLabel("Font size: ");
+		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFontSize.setForeground(SystemColor.menu);
+		add(lblFontSize, "cell 18 5,alignx center");
 		
 		JScrollPane textScrollPaneArea = new JScrollPane();
-		add(textScrollPaneArea, "cell 0 6 22 1,grow");
+		add(textScrollPaneArea, "cell 0 6 23 1,grow");
 		textScrollPaneArea.setFont(new Font("DejaVu Sans", Font.PLAIN, 18));
 		
 		textArea_1 = new JTextArea();
@@ -249,11 +280,6 @@ public class TextEditor extends JPanel {
 		manager = new UndoManager();
 		manager.setLimit(1000);
 		textArea_1.getDocument().addUndoableEditListener(manager);
-		
-		lblSIZE = new JLabel("");
-		lblSIZE.setForeground(SystemColor.window);
-		add(lblSIZE, "cell 19 5");
-		lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
 		
 		btnBackgroundCol = new JButton("");
 		btnBackgroundCol.setToolTipText(tooltipBackgroundColor);
@@ -265,16 +291,15 @@ public class TextEditor extends JPanel {
 		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
 		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
 		sliderFontSize.setValue(textArea_1.getFont().getSize());
-		add(sliderFontSize, "cell 20 5 2 1,growx");
-		
-		btnLoremIpsum = new JButton("Lorem Ipsum");
-		btnLoremIpsum.setToolTipText(tooltipLoremIpsum);
-		btnLoremIpsum.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnLoremIpsum.setBackground(new Color(176, 196, 222));
-		add(btnLoremIpsum, "cell 13 5 3 1,growx");
+		add(sliderFontSize, "cell 20 5 3 1,growx");
 		
 		btnFontChooser = new JButton("");
 		btnFontChooser.setToolTipText(tooltipFontChooser);
+
+		lblSIZE = new JLabel("");
+		lblSIZE.setForeground(SystemColor.window);
+		add(lblSIZE, "cell 19 5,alignx center");
+		lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
 		
 		btnSpeak = new JButton("");
 		btnSpeak.setToolTipText(tooltipSpeak);
@@ -293,7 +318,7 @@ public class TextEditor extends JPanel {
 		add(lblNewLabel, "cell 13 2 3 1,alignx center");
 		
 		JSeparator separator_1 = new JSeparator();
-		add(separator_1, "cell 0 3 22 1,growx");
+		add(separator_1, "cell 0 3 23 1,growx");
 		
 		btnSaveTextFile = new JButton("");
 		btnSaveTextFile.setToolTipText(tooltipSaveTextFile);
@@ -308,24 +333,20 @@ public class TextEditor extends JPanel {
 		comboFileFormat.setModel(new DefaultComboBoxModel(SupportedFileTextEditor.values()));
 		add(comboFileFormat, "cell 2 4,growx");
 		
-		btnTemplates = new JButton("Templates");
-		btnTemplates.setToolTipText(tooltipTemplates);
-		btnTemplates.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnTemplates.setBackground(new Color(176, 196, 222));
-		add(btnTemplates, "cell 11 5 2 1,growx");
-		
-		txtAesKey = new JTextField();
+		txtAesKey = new JPasswordField();
 		txtAesKey.setHorizontalAlignment(SwingConstants.CENTER);
 		txtAesKey.setText("");
 		add(txtAesKey, "cell 11 4 5 1,growx");
 		txtAesKey.setColumns(10);
+		txtAesKey.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		txtAesKey.setEchoChar(DEFAULT_PSW_CHAR);
 		AesCipher.check(txtAesKey);
 				
 		JPanel panel = new JPanel();
 		panel.setForeground(SystemColor.menu);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		panel.setBackground(new Color(100, 149, 237));
-		add(panel, "cell 0 0 22 1,growx,aligny center");
+		add(panel, "cell 0 0 23 1,growx,aligny center");
 		panel.setLayout(new MigLayout("", "[100px,grow 10000,left][][][][][][][][][][][][][][][][][][][][][][grow][grow][]", "[]"));
 		
 		lblTextEditor = new JLabel("Text Editor");
@@ -349,20 +370,9 @@ public class TextEditor extends JPanel {
 		chkFitmantainwords.setBackground(Color.DARK_GRAY);
 		chkFitmantainwords.setEnabled(false);
 		
-		lblMargin = new JLabel("Margin:");
-		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMargin.setForeground(SystemColor.menu);
-		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		add(lblMargin, "cell 17 4 2 1,alignx center");
-		
 		slider_margin = new JSlider(0,100,0);
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		add(slider_margin, "cell 19 4 3 1,growx");
-		
-		lblFontSize = new JLabel("Font size: ");
-		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFontSize.setForeground(SystemColor.menu);
-		add(lblFontSize, "cell 17 5 2 1,alignx center");
+		add(slider_margin, "cell 19 4 4 1,growx");
 		
 		btntTextFormat = new JButton("Format");
 		btntTextFormat.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -370,7 +380,7 @@ public class TextEditor extends JPanel {
 		add(btntTextFormat, "cell 3 4,growx");
 		
 		JSeparator separator = new JSeparator();
-		add(separator, "cell 0 1 22 1,growx");
+		add(separator, "cell 0 1 23 1,growx");
 		
 		btnLoadTextFile = new JButton("");
 		btnLoadTextFile.setToolTipText(tooltipLoadTextFile);
@@ -501,6 +511,19 @@ public class TextEditor extends JPanel {
 		final Font DEFAULT = textArea_1.getFont();
 		final Color DEFAULT_BCKG_COL = textArea_1.getBackground(); 
 		final Color DEFAULT_FORE_COL = textArea_1.getForeground();
+		
+		// SHOW/HIDE PASSORD DISPLAYED
+		chckbxAesShowKey.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxAesShowKey.isSelected()) {
+					txtAesKey.setEchoChar((char) 0);
+				}else {
+					txtAesKey.setEchoChar(DEFAULT_PSW_CHAR);
+				}
+			}
+		});
 		
 		// CRYPT TEXT
 		btnCrypt.addActionListener(new ActionListener() {

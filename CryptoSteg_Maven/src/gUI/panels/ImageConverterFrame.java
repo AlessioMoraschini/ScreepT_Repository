@@ -5,10 +5,10 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import gUI.mainGUI;
 import gUI.om.ScalingAlgorithm;
 import gUI.utils.filedialog.GenericFileChooserDialog;
-import gUI.utils.iconHandler.IconHandler;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import iNIT.INItializer;
@@ -158,7 +158,7 @@ public class ImageConverterFrame extends JFrame{
 		// initialize field representing locally configuration referred
 		currentConfiguration = currentConf;
 		
-		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		

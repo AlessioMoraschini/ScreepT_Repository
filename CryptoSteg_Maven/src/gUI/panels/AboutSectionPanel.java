@@ -5,9 +5,10 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import frameutils.BackgroundPanel;
+import frameutils.GuiUtils;
 import gUI.mainGUI;
-import gUI.utils.iconHandler.IconHandler;
-import gUI.utils.standardpanels.BackgroundPanel;
+import guistyle.TextGuiUtils;
 import launcherutils.SysUtils;
 
 import java.awt.Color;
@@ -20,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
@@ -67,7 +69,7 @@ public class AboutSectionPanel extends JFrame{
 		
 		backPanel = new BackgroundPanel(background);
 		backPanel.setBackground(Color.BLACK);
-		backPanel.setLayout(new MigLayout("", "[25%][25%][25%][25%]", "[40px][30px][grow][30px][grow][30px][grow]"));
+		backPanel.setLayout(new MigLayout("", "[20px][25%][25%][25%][25%][20px]", "[5px][40px][30px][grow][30px][grow][30px][grow][30px]"));
 		getContentPane().add(backPanel);
 		
 		lblTitle = new JLabel(mainGUI.APPLICATION_NAME);
@@ -76,34 +78,34 @@ public class AboutSectionPanel extends JFrame{
 		lblTitle.setBackground(Color.DARK_GRAY);
 		lblTitle.setFont(new Font("Lithos Pro Regular", Font.BOLD, 25));
 		lblTitle.setForeground(Color.WHITE);
-		backPanel.add(lblTitle, "cell 0 0 4 1,alignx center,growy");
+		backPanel.add(lblTitle, "cell 1 1 4 1,alignx center,growy");
 		
 		JLabel lblReleaseDate = new JLabel("Release Date");
 		lblReleaseDate.setForeground(new Color(211, 211, 211));
 		lblReleaseDate.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		backPanel.add(lblReleaseDate, "cell 0 1 4 1,alignx center,aligny bottom");
+		backPanel.add(lblReleaseDate, "cell 1 2 4 1,alignx center,aligny bottom");
 		
 		dynLblReleaseDate = new JLabel(mainGUI.APP_VERSION_DATE);
 		dynLblReleaseDate.setHorizontalAlignment(SwingConstants.CENTER);
 		dynLblReleaseDate.setForeground(new Color(255, 248, 220));
 		dynLblReleaseDate.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-		backPanel.add(dynLblReleaseDate, "cell 0 2 4 1,alignx center");
+		backPanel.add(dynLblReleaseDate, "cell 1 3 4 1,alignx center");
 		
 		JLabel lblMadeBy = new JLabel("Made by");
 		lblMadeBy.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblMadeBy.setForeground(new Color(211, 211, 211));
-		backPanel.add(lblMadeBy, "cell 0 3 4 1,alignx center,aligny bottom");
+		backPanel.add(lblMadeBy, "cell 1 4 4 1,alignx center,aligny bottom");
 		
 		dynLblAuthor = new JLabel(mainGUI.AUTHOR);
 		dynLblAuthor.setHorizontalAlignment(SwingConstants.CENTER);
 		dynLblAuthor.setForeground(new Color(255, 248, 220));
 		dynLblAuthor.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-		backPanel.add(dynLblAuthor, "cell 0 4 4 1,alignx center");
+		backPanel.add(dynLblAuthor, "cell 1 5 4 1,alignx center");
 		
 		JLabel lblOfficialWebsite = new JLabel("Official Website");
 		lblOfficialWebsite.setForeground(new Color(211, 211, 211));
 		lblOfficialWebsite.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		backPanel.add(lblOfficialWebsite, "cell 0 5 4 1,alignx center,aligny bottom");
+		backPanel.add(lblOfficialWebsite, "cell 1 6 4 1,alignx center,aligny bottom");
 		
 		dynLblWebsite = new JButton(mainGUI.WEBSITE);
 		dynLblWebsite.setBorder(null);
@@ -120,10 +122,12 @@ public class AboutSectionPanel extends JFrame{
 		dynLblWebsite.setHorizontalAlignment(SwingConstants.LEFT);
 		dynLblWebsite.setForeground(new Color(255, 248, 220));
 		dynLblWebsite.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-		backPanel.add(dynLblWebsite, "cell 0 6 4 1,alignx center");
+		TextGuiUtils.underlineText(dynLblWebsite);
+		TextGuiUtils.hoverForeground(dynLblWebsite, new Color(100, 149, 237));
+		backPanel.add(dynLblWebsite, "cell 1 7 4 1,alignx center");
 		
 		// SET FRAME ICON
-		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		// ADD HANDLERS AND NOTIFY LOG
 		addHandlers();

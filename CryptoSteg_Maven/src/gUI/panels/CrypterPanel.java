@@ -50,7 +50,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.swing.SwingConstants;
@@ -63,7 +62,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -76,6 +74,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
 import java.awt.Cursor;
+import javax.swing.JPasswordField;
 
 public class CrypterPanel extends JPanel {
 
@@ -95,6 +94,9 @@ public class CrypterPanel extends JPanel {
 	// text Areas
 	private JTextArea textAreaMain;
 	private JTextArea textAreaLog;
+	
+	// password field
+	private JCheckBox chckbxShowAesKey;
 
 	//Jtree used to represent dictionary
 	private JTree tree;
@@ -122,7 +124,6 @@ public class CrypterPanel extends JPanel {
 	// panels
 	private JPanel panelContainerKey;
 	private JPanel panelStatus;	
-	private JPanel panelUserActions;
 	private JPanel panelKeyImgDisp;
 	private JPanel panelHeader;
 	
@@ -147,7 +148,8 @@ public class CrypterPanel extends JPanel {
 	public static CrypterPanel thisPanel; 
 	
 	// AES password gui-container
-	private JTextField AESKEYtext;
+	private JPasswordField AESKEYtext;
+	public static final char DEFAULT_PSW_CHAR = '\u25CF';
 	
 	// combobox to select conversion mode
 	private JComboBox comboModeCrypto;
@@ -220,6 +222,8 @@ public class CrypterPanel extends JPanel {
 		// function to initialize values
 		initialize(currentConfiguration);
 				
+		// ADD ACTION LISTENERS TO LINK ACTIONS // 
+		addHandlers();
 		
 		// new thread that updates jtree periodically
 		new Thread(new Runnable() {
@@ -287,105 +291,35 @@ public class CrypterPanel extends JPanel {
 	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
 	 */
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[:5px:5px][200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][150px:250px:450px,grow][70px:70px:100px]", "[:40:50px,top][4px:4px:4px][35][4px][100,grow][140,grow][:10px:10px][280,grow][:1px:1px]"));
+		setLayout(new MigLayout("", "[200:200:200][200:200:200][:10px:10px][130,grow][:80:130,grow][140][120,grow][350px:350px:350px][100px:100px:100px]", "[:40:50px,top][4px:4px:4px][35][4px][100,grow][140,grow][:30px:30px][280,grow][:1px:1px]"));
 		
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
-		panelHeader.setBorder(new LineBorder(new Color(64, 64, 64), 4));
+		panelHeader.setBorder(new LineBorder(new Color(211, 211, 211), 2, true));
 		panelHeader.setBackground(new Color(205, 92, 92));
-		add(panelHeader, "cell 0 0 10 1,grow");
-		panelHeader.setLayout(new MigLayout("", "[50%][50%]", "[40]"));
+		add(panelHeader, "cell 0 0 9 1,grow");
+		panelHeader.setLayout(new MigLayout("", "[400px,grow]", "[40]"));
 		
 		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
 		lblScreeptHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		lblScreeptHeader.setForeground(new Color(0, 0, 0));
 		lblScreeptHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
 		lblScreeptHeader.setBackground(new Color(112, 128, 144));
-		panelHeader.add(lblScreeptHeader, "cell 0 0,alignx left");
-		
-		panelUserActions = new JPanel();
-		panelUserActions.setOpaque(false);
-		panelHeader.add(panelUserActions, "cell 1 0,growx");
-		panelUserActions.setBorder(new LineBorder(new Color(0, 0, 0), 0));
-		panelUserActions.setBackground(new Color(100, 149, 237));
-		GridBagLayout gbl_panelUserActions = new GridBagLayout();
-		gbl_panelUserActions.columnWidths = new int[]{0, 0, 0, 280, 0};
-		gbl_panelUserActions.rowHeights = new int[]{20, 0};
-		gbl_panelUserActions.columnWeights = new double[]{1.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_panelUserActions.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-		panelUserActions.setLayout(gbl_panelUserActions);
-		
-		btnSelectSourceFile = new JButton("Select Source File");
-		GridBagConstraints gbc_btnSelectSourceFile = new GridBagConstraints();
-		gbc_btnSelectSourceFile.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnSelectSourceFile.insets = new Insets(0, 0, 0, 5);
-		gbc_btnSelectSourceFile.gridx = 2;
-		gbc_btnSelectSourceFile.gridy = 0;
-		panelUserActions.add(btnSelectSourceFile, gbc_btnSelectSourceFile);
-		btnSelectSourceFile.setRequestFocusEnabled(false);
-		btnSelectSourceFile.setBorder(new LineBorder(new Color(0, 0, 0), 3));
-		btnSelectSourceFile.setForeground(SystemColor.text);
-		btnSelectSourceFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				// select input file or directory with fileChooser
-				File selected = GenericFileChooserDialog.fileAndDirRead(thisPanel, currentConf);
-				
-				if (selected!=null && selected.exists()) {
-					srcFile = selected;
-					panelVDragNDropPane.addFileToTree(selected);
-					String newdisplayed = HandleString.fitToMaxLentgh(selected.getName(), labelLengthLimit);
-					// update gui
-					panelVDragNDropPane.message.setText("New file added to list!");
-					
-					appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
-					
-					JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
-					logger.debug("File :" + selected.getName() + " correctly loaded");
-			
-				}
-			}
-		});
-		btnSelectSourceFile.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 16));
-		btnSelectSourceFile.setBackground(Color.DARK_GRAY);
-		
-		btnDispoKeyImg = new JButton("One-use Key Image");
-		btnDispoKeyImg.setMargin(new Insets(4, 4, 4, 4));
-		GridBagConstraints gbc_btnDispoKeyImg = new GridBagConstraints();
-		gbc_btnDispoKeyImg.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnDispoKeyImg.gridx = 3;
-		gbc_btnDispoKeyImg.gridy = 0;
-		panelUserActions.add(btnDispoKeyImg, gbc_btnDispoKeyImg);
-		btnDispoKeyImg.setRequestFocusEnabled(false);
-		btnDispoKeyImg.setBorder(new LineBorder(new Color(0, 0, 0), 3));
-		btnDispoKeyImg.setForeground(SystemColor.text);
-		btnDispoKeyImg.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 16));
-		btnDispoKeyImg.setBackground(Color.DARK_GRAY);
-		btnDispoKeyImg.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				File dispoImgFile = GenericFileChooserDialog.fileImgRead(thisPanel, currentConf, "png");
-				useAsKeyImage(dispoImgFile);
-	        	loadInfo(dispoImgFile);
-	        	
-			}
-		});
+		panelHeader.add(lblScreeptHeader, "cell 0 0,growx");
 		
 		scrollPanelTab = new JScrollPane();
-		scrollPanelTab.setBorder(new LineBorder(Color.GRAY, 4));
+		scrollPanelTab.setBorder(new LineBorder(new Color(119, 136, 153), 3, true));
 		scrollPanelTab.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPanelTab.getViewport().setBackground(Color.DARK_GRAY);
 		
 		panelStatus = new JPanel();
 		panelStatus.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panelStatus.setBackground(Color.BLACK);
-		add(panelStatus, "cell 0 2 10 1,grow");
+		add(panelStatus, "cell 0 2 9 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 70, 100, 80, 300, 120, 120, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 0, 70, 100, 80, 300, 120, 120, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
-		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelStatus.setLayout(gbl_panelStatus);
 		
@@ -436,8 +370,10 @@ public class CrypterPanel extends JPanel {
 		panelStatus.add(lblAesKeyStatic, gbc_lblAesKeyStatic);
 		lblAesKeyStatic.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		
-		AESKEYtext = new JTextField();
+		AESKEYtext = new JPasswordField();
 		AESKEYtext.setHorizontalAlignment(SwingConstants.CENTER);
+		AESKEYtext.setEchoChar(DEFAULT_PSW_CHAR);
+		AESKEYtext.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		GridBagConstraints gbc_AESKEYtext = new GridBagConstraints();
 		gbc_AESKEYtext.fill = GridBagConstraints.HORIZONTAL;
 		gbc_AESKEYtext.insets = new Insets(0, 0, 0, 5);
@@ -446,11 +382,21 @@ public class CrypterPanel extends JPanel {
 		panelStatus.add(AESKEYtext, gbc_AESKEYtext);
 		AESKEYtext.setColumns(10);
 		
+		chckbxShowAesKey = new JCheckBox("Show");
+		chckbxShowAesKey.setForeground(Color.WHITE);
+		chckbxShowAesKey.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		GridBagConstraints gbc_chckbxShowAesKey = new GridBagConstraints();
+		gbc_chckbxShowAesKey.anchor = GridBagConstraints.WEST;
+		gbc_chckbxShowAesKey.insets = new Insets(0, 0, 0, 5);
+		gbc_chckbxShowAesKey.gridx = 6;
+		gbc_chckbxShowAesKey.gridy = 0;
+		panelStatus.add(chckbxShowAesKey, gbc_chckbxShowAesKey);
+		
 		lblSelectedModeStatic = new JLabel("Mode:");
 		lblSelectedModeStatic.setForeground(new Color(255, 239, 213));
 		GridBagConstraints gbc_lblSelectedModeStatic = new GridBagConstraints();
 		gbc_lblSelectedModeStatic.insets = new Insets(0, 0, 0, 5);
-		gbc_lblSelectedModeStatic.gridx = 6;
+		gbc_lblSelectedModeStatic.gridx = 7;
 		gbc_lblSelectedModeStatic.gridy = 0;
 		panelStatus.add(lblSelectedModeStatic, gbc_lblSelectedModeStatic);
 		lblSelectedModeStatic.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -459,43 +405,17 @@ public class CrypterPanel extends JPanel {
 		GridBagConstraints gbc_comboModeCrypto = new GridBagConstraints();
 		gbc_comboModeCrypto.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboModeCrypto.insets = new Insets(0, 0, 0, 5);
-		gbc_comboModeCrypto.gridx = 7;
+		gbc_comboModeCrypto.gridx = 8;
 		gbc_comboModeCrypto.gridy = 0;
 		panelStatus.add(comboModeCrypto, gbc_comboModeCrypto);
 		comboModeCrypto.setModel(new DefaultComboBoxModel(CryptoMode.values()));
-		
-		// CHANGED MODE LISTENER
-		comboModeCrypto.addActionListener(new ActionListener() {
 			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CryptoMode modality = (CryptoMode)comboModeCrypto.getSelectedItem();
-				if(modality.equals(CryptoMode.ONLY_AES)) {
-					chckbxShuffle.setEnabled(false);
-					chckbxShuffle.setForeground(Color.gray);
-				}else {
-					chckbxShuffle.setEnabled(true);
-					chckbxShuffle.setForeground(Color.white);
-				}
-				
-				// update configuration reference
-				currentConf.getAesOpt().setFlagAes(modality.AES);
-				currentConf.getSteganOpt().setFlagSteg(modality.STEG);
-			}
-		});
-		
 		chckbxShuffle = new JCheckBox("Ultra Secure");
 		chckbxShuffle.setForeground(Color.WHITE);
-		chckbxShuffle.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				currentConf.getSteganOpt().setUltraSecure(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
-			}
-		});
+		
 		GridBagConstraints gbc_chckbxShuffle = new GridBagConstraints();
 		gbc_chckbxShuffle.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxShuffle.gridx = 8;
+		gbc_chckbxShuffle.gridx = 9;
 		gbc_chckbxShuffle.gridy = 0;
 		panelStatus.add(chckbxShuffle, gbc_chckbxShuffle);
 		
@@ -504,7 +424,7 @@ public class CrypterPanel extends JPanel {
 		GridBagConstraints gbc_labelFlagCodeReady = new GridBagConstraints();
 		gbc_labelFlagCodeReady.insets = new Insets(0, 0, 0, 5);
 		gbc_labelFlagCodeReady.fill = GridBagConstraints.VERTICAL;
-		gbc_labelFlagCodeReady.gridx = 9;
+		gbc_labelFlagCodeReady.gridx = 10;
 		gbc_labelFlagCodeReady.gridy = 0;
 		panelStatus.add(labelFlagCodeReady, gbc_labelFlagCodeReady);
 		labelFlagCodeReady.setBorder(null);
@@ -515,7 +435,7 @@ public class CrypterPanel extends JPanel {
 		GridBagConstraints gbc_btnCreept = new GridBagConstraints();
 		gbc_btnCreept.fill = GridBagConstraints.BOTH;
 		gbc_btnCreept.insets = new Insets(0, 0, 0, 5);
-		gbc_btnCreept.gridx = 10;
+		gbc_btnCreept.gridx = 11;
 		gbc_btnCreept.gridy = 0;
 		panelStatus.add(btnCreept, gbc_btnCreept);
 		btnCreept.setRequestFocusEnabled(false);
@@ -530,7 +450,7 @@ public class CrypterPanel extends JPanel {
 		GridBagConstraints gbc_btnDeCreept = new GridBagConstraints();
 		gbc_btnDeCreept.insets = new Insets(0, 0, 0, 5);
 		gbc_btnDeCreept.fill = GridBagConstraints.BOTH;
-		gbc_btnDeCreept.gridx = 11;
+		gbc_btnDeCreept.gridx = 12;
 		gbc_btnDeCreept.gridy = 0;
 		panelStatus.add(btnDeCreept, gbc_btnDeCreept);
 		btnDeCreept.setRequestFocusEnabled(false);
@@ -538,6 +458,16 @@ public class CrypterPanel extends JPanel {
 		btnDeCreept.setBorder(null);
 		btnDeCreept.setBackground(new Color(255, 0, 0));
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
+		
+		add(scrollPanelTab, "cell 0 4 2 2,grow");
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBorder(null);
+		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		scrollPanelTab.setViewportView(tabbedPane);
+		
+	}
+	
+	private void addHandlers(){
 		
 
 		// CREEPT ACTION LISTENER
@@ -582,11 +512,83 @@ public class CrypterPanel extends JPanel {
 			}
 		});
 		
-		add(scrollPanelTab, "cell 1 4 2 3,grow");
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBorder(new LineBorder(new Color(0, 0, 0), 0));
-		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		scrollPanelTab.setViewportView(tabbedPane);
+		// CHANGED MODE LISTENER
+		comboModeCrypto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CryptoMode modality = (CryptoMode)comboModeCrypto.getSelectedItem();
+				if(modality.equals(CryptoMode.ONLY_AES)) {
+					chckbxShuffle.setEnabled(false);
+					chckbxShuffle.setForeground(Color.gray);
+				}else {
+					chckbxShuffle.setEnabled(true);
+					chckbxShuffle.setForeground(Color.white);
+				}
+				
+				// update configuration reference
+				currentConf.getAesOpt().setFlagAes(modality.AES);
+				currentConf.getSteganOpt().setFlagSteg(modality.STEG);
+			}
+		});
+		
+		// ULTRA-SECURE CHECKBOX LISTENER
+		chckbxShuffle.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentConf.getSteganOpt().setUltraSecure(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
+			}
+		});
+		
+		// SHOW/HIDE PASSWORD
+		chckbxShowAesKey.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxShowAesKey.isSelected()) {
+					AESKEYtext.setEchoChar((char) 0);
+				}else {
+					AESKEYtext.setEchoChar(DEFAULT_PSW_CHAR);
+				}				
+			}
+		});
+		
+		// SELECT SINGLE FILE LISTENER
+		btnSelectSourceFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				// select input file or directory with fileChooser
+				File selected = GenericFileChooserDialog.fileAndDirRead(thisPanel, currentConf);
+				
+				if (selected!=null && selected.exists()) {
+					srcFile = selected;
+					panelVDragNDropPane.addFileToTree(selected);
+					String newdisplayed = HandleString.fitToMaxLentgh(selected.getName(), labelLengthLimit);
+					// update gui
+					panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
+					
+					appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
+					
+					JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
+					logger.debug("File :" + selected.getName() + " correctly loaded");
+				}
+			}
+		});
+		
+		// SELECT DISPOSABLE KEY IMAGE LISTENER
+		btnDispoKeyImg.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				File dispoImgFile = GenericFileChooserDialog.fileImgRead(thisPanel, currentConf, "png");
+				if (dispoImgFile != null) {
+					useAsKeyImage(dispoImgFile);
+					loadInfo(dispoImgFile);
+				}
+			}
+		});
 	}
 	
 /////////////////////////////////////
@@ -908,6 +910,7 @@ public class CrypterPanel extends JPanel {
 		scrollPaneLog.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		
 		textAreaLog = new JTextArea();
+		textAreaLog.setBorder(null);
 		textAreaLog.setWrapStyleWord(true);
 		textAreaLog.setRequestFocusEnabled(false);
 		textAreaLog.setLineWrap(true);
@@ -940,7 +943,7 @@ public class CrypterPanel extends JPanel {
 		
 		scrollPaneText = new JScrollPane();
 		scrollPaneText.setBorder(new LineBorder(Color.GRAY, 4));
-		add(scrollPaneText, "cell 3 4 5 4,grow");
+		add(scrollPaneText, "cell 2 4 5 4,grow");
 		
 		textAreaMain = new JTextArea();
 		textAreaMain.setWrapStyleWord(true);
@@ -984,13 +987,24 @@ public class CrypterPanel extends JPanel {
 			}
 		};
 		
+		btnDispoKeyImg = new JButton("One-use Key Image");
+		btnDispoKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		add(btnDispoKeyImg, "cell 0 6 2 1,growx");
+		btnDispoKeyImg.setMargin(new Insets(4, 4, 4, 4));
+		btnDispoKeyImg.setRequestFocusEnabled(false);
+		btnDispoKeyImg.setBorder(new LineBorder(new Color(119, 136, 153), 3, true));
+		btnDispoKeyImg.setForeground(SystemColor.text);
+		btnDispoKeyImg.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 16));
+		btnDispoKeyImg.setBackground(Color.DARK_GRAY);
+		
 		// initialize tree 
 		
 		scrollPaneTree = new JScrollPane();
 		scrollPaneTree.setBackground(Color.DARK_GRAY);
-		scrollPaneTree.setBorder(new LineBorder(Color.LIGHT_GRAY, 4));
-		add(scrollPaneTree, "cell 1 7 2 1,grow");
+		scrollPaneTree.setBorder(new LineBorder(new Color(119, 136, 153), 3, true));
+		add(scrollPaneTree, "cell 0 7 2 1,grow");
 		tree= new JTree(treeModel);
+		tree.setBorder(null);
 		tree.setRequestFocusEnabled(false);
 		tree.setFont(new Font("SansSerif", Font.BOLD, 14));
 		
@@ -998,13 +1012,13 @@ public class CrypterPanel extends JPanel {
 		
 		scrollPaneDragNDropSource = new JScrollPane();
 		scrollPaneDragNDropSource.setBackground(Color.LIGHT_GRAY);
-		scrollPaneDragNDropSource.setBorder(new LineBorder(Color.GRAY, 4));
-		add(scrollPaneDragNDropSource, "cell 8 4 2 4,grow");
+		scrollPaneDragNDropSource.setBorder(new LineBorder(new Color(119, 136, 153), 3, true));
+		add(scrollPaneDragNDropSource, "cell 7 4 2 4,grow");
 		
 		panelBackgroundDragSources = new JPanel();
 		panelBackgroundDragSources.setBackground(new Color(220, 220, 220));
 		scrollPaneDragNDropSource.setViewportView(panelBackgroundDragSources);
-		panelBackgroundDragSources.setLayout(new MigLayout("", "[][grow]", "[][][][65%,grow][25%,grow]"));
+		panelBackgroundDragSources.setLayout(new MigLayout("", "[][grow]", "[50px][][30px][300px,grow][150px,grow]"));
 		
 		lblSelectedFilesDragTitle = new JLabel("Selected Files Pool");
 		lblSelectedFilesDragTitle.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1018,13 +1032,22 @@ public class CrypterPanel extends JPanel {
 		separatorDragNDropTitle = new JSeparator();
 		panelBackgroundDragSources.add(separatorDragNDropTitle, "cell 1 1,growx");
 		
+		btnSelectSourceFile = new JButton("Add Source File or Folder");
+		btnSelectSourceFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelBackgroundDragSources.add(btnSelectSourceFile, "cell 0 2 2 1,grow");
+		btnSelectSourceFile.setRequestFocusEnabled(false);
+		btnSelectSourceFile.setBorder(new LineBorder(new Color(0, 0, 0), 3));
+		btnSelectSourceFile.setForeground(SystemColor.text);
+		btnSelectSourceFile.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 15));
+		btnSelectSourceFile.setBackground(Color.DARK_GRAY);
+		
 		treeSourcesDragAndDrop = new JTree();
 		treeSourcesDragAndDrop.setBackground(new Color(220, 220, 220));
-		panelBackgroundDragSources.add(treeSourcesDragAndDrop, "cell 0 2 2 2,grow");
+		panelBackgroundDragSources.add(treeSourcesDragAndDrop, "cell 0 3 2 1,grow");
 		
 		panelVDragNDropPane = new VirtualFileDropPane(treeSourcesDragAndDrop, scrollPaneDragNDropSource);
 		panelVDragNDropPane.message.setText("Drag your files here!");
-		panelVDragNDropPane.message.setFont(new Font("SansSerif", Font.BOLD, 20));
+		panelVDragNDropPane.message.setFont(new Font("SansSerif", Font.BOLD, 16));
 		panelVDragNDropPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		panelVDragNDropPane.setBackground(Color.LIGHT_GRAY);
 		panelBackgroundDragSources.add(panelVDragNDropPane, "cell 0 4 2 1,grow");

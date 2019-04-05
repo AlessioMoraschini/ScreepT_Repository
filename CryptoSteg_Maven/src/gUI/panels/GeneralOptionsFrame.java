@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import frameutils.GuiUtils;
 import gUI.mainGUI;
-import gUI.utils.iconHandler.IconHandler;
 import gui.ScrYpTLauncher;
 import iNIT.INItializer;
 import iNIT.om.FileOptions;
@@ -28,7 +28,6 @@ import javax.swing.JCheckBox;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
@@ -92,7 +91,7 @@ public class GeneralOptionsFrame extends JFrame{
 		currentConfiguration = currentConf;
 		
 		// SW window icon
-		IconHandler.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		try {
 			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
@@ -184,27 +183,26 @@ public class GeneralOptionsFrame extends JFrame{
 		textFieldUname.setBackground(new Color(224, 255, 255));
 		getContentPane().add(textFieldUname, "cell 6 4 4 1,growx");
 		
-		btnResetValues = new JButton("Reset initial values");
-		
 		JSeparator separator = new JSeparator();
+		btnResetValues = new JButton("Reset initial values");
 		getContentPane().add(separator, "cell 1 6 9 1,growx");
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));
 		getContentPane().add(btnResetValues, "cell 1 8 2 1");
-		
-		btnDiscard = new JButton("Discard");
-
-		btnUseSettings = new JButton("Use");
 		
 		btnSaveConf = new JButton("Save Values");
 		btnSaveConf.setForeground(Color.BLACK);
 		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSaveConf.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnSaveConf, "cell 7 8");
+
+		btnUseSettings = new JButton("Use");
 		btnUseSettings.setForeground(Color.WHITE);
 		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnUseSettings.setBackground(Color.DARK_GRAY);
 		getContentPane().add(btnUseSettings, "cell 8 8,growx");
+
+		btnDiscard = new JButton("Discard");
 		btnDiscard.setForeground(new Color(0, 0, 0));
 		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDiscard.setBackground(new Color(205, 92, 92));
