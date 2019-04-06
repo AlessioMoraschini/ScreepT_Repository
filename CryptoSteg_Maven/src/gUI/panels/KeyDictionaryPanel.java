@@ -44,7 +44,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
-import java.awt.Button;
 import javax.swing.JCheckBox;
 import javax.swing.ScrollPaneConstants;
 
@@ -76,6 +75,7 @@ public class KeyDictionaryPanel extends JFrame{
 	
 	// constructor
 	public KeyDictionaryPanel(INItializer currentConfiguration) {
+		setBackground(new Color(255, 228, 225));
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -89,13 +89,13 @@ public class KeyDictionaryPanel extends JFrame{
 		currentConf = currentConfiguration;
 		
 		logger.debug("## KeyDictionary panel started!");
-		getContentPane().setBackground(new Color(250, 240, 230));
+		getContentPane().setBackground(new Color(211, 211, 211));
 		getContentPane().setLayout(new MigLayout("", "[88.00px][93.00][89.00px][10.00px][10px:100:500,grow 500][:100:10%][:100:8%][:100:8%][:100:14%]", "[35px][:25:25px][40%,grow]"));
 		
 		JPanel panel = new JPanel();
 		panel.setForeground(SystemColor.menu);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 3));
-		panel.setBackground(SystemColor.activeCaption);
+		panel.setBackground(new Color(176, 196, 222));
 		getContentPane().add(panel, "cell 0 0 9 1,growx,aligny center");
 		panel.setLayout(new MigLayout("", "[][][][][][][][][][grow][][][]", "[]"));
 		

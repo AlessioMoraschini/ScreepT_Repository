@@ -99,8 +99,8 @@ public class mainGUI {
 	
 	// constant files & directories prefix
 	public static final String RESOURCES_DIR="Resources_Scrypt/";
-	private static final String DEFAULT_INI="Resources_Scrypt/CONFIG.ini";
-	private static final String BACKUP_INI="Resources_Scrypt/Backup/BACKUP_CONFIG.ini";
+	public static final String DEFAULT_INI="Resources_Scrypt/CONFIG.ini";
+	public static final String BACKUP_INI="Resources_Scrypt/Backup/BACKUP_CONFIG.ini";
 	private static final String DEFAULT_INI_FOLDER="INI_FILES";
 	
 	// log_trace location
@@ -149,15 +149,16 @@ public class mainGUI {
 	private JMenu mnFilesAndDirectories;
 	private JMenu mnHelp;
 	
-	private JMenuItem mntmExit;
+	private JMenuItem mntmInspectCurrentConfiguration;
 	private JMenuItem loadPrjSub;
 	private JMenuItem savePrjSub;
 	private JMenuItem loadDefaultPrjSub;
-	private JMenuItem mntmUserDocumentation;
 	private JMenuItem mntmSaveCurrentAs;
+	private JMenuItem loadSrcrYptDefaultConf;
+	private JMenuItem mntmExit;
+	private JMenuItem mntmUserDocumentation;
 	private JMenuItem mntmGenOpt;
 	private JMenuItem mntmCustomizeUIView;
-	private JMenuItem mntmInspectCurrentConfiguration;
 	private JMenuItem mntmCrypter;
 	private JMenuItem generateKeyImageSub;
 	private JMenuItem mntmViewKeyDictionary;
@@ -168,7 +169,6 @@ public class mainGUI {
 	private JMenuItem mntmReturnToWelcome;
 	private JMenuItem mntmAboutScreept;
 	private JMenuItem mntmExportLog; 
-	private JMenuItem loadSrcrYptDefaultConf;
 	private JMenuItem mntmTouppercaseDirectory;
 	private JMenuItem mntmDeleteDirectoryContentRecursive;
 	private JMenuItem mntmMakeDirsFromPath;
@@ -255,17 +255,17 @@ public class mainGUI {
 					
 					now = new Date();
 					mainAppRunning = true;
+
 					// empty old log file
 					// useful for test phase
-					
-					PrintWriter writer;
-					try {
-						writer = new PrintWriter(LOG_PATH);
-						writer.print("");
-						writer.close();
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					}
+//					PrintWriter writer;
+//					try {
+//						writer = new PrintWriter(LOG_PATH);
+//						writer.print("");
+//						writer.close();
+//					} catch (FileNotFoundException e) {
+//						e.printStackTrace();
+//					}
 					
 					// Initialize logger properties
 					PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
@@ -399,13 +399,20 @@ public class mainGUI {
 					    @Override
 					    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 					    	
+							Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+					    	window.frmScryptV.setAlwaysOnTop(true);
+					    	
 					    	if (JOptionPane.showConfirmDialog(window.frmScryptV, "Really want to exit? :(", "Exit Program",
 									JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 					    		
 					    		// perform closing operation and exit
 					    		closeApplication();
 					    	}else {
+					    		
 					    		window.frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					    		window.frmScryptV.setAlwaysOnTop(false);
+					    		activeWindow.toFront();
+					    		activeWindow.requestFocus();
 					    	}
 					  	}
 					});
@@ -525,12 +532,21 @@ public class mainGUI {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExit) {
 					FLAG_mntmExit = true;
+					
+					// backup current active window
+					Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+					frmScryptV.setAlwaysOnTop(true);
+					
 					if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 						
 						// perform closing actions and exit application
 						closeApplication();
 					}
+					
+					frmScryptV.setAlwaysOnTop(false);
+					activeWindow.toFront();
+		    		activeWindow.requestFocus();
 					FLAG_mntmExit = false;
 				}
 			}
@@ -914,7 +930,7 @@ public class mainGUI {
 				   
 	    		JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 	    		if (configManagerPanel == null) {
-					configManagerPanel = new ChargeIniLog(currentConfiguration, frmScryptV);
+					configManagerPanel = new ChargeIniLog(currentConfiguration, mainAPP);
 				}
 				contentPane.removeAll();
 		    	contentPane.add(configManagerPanel);
@@ -961,7 +977,9 @@ public class mainGUI {
 	////////// END OF HANDLERS DECLARATION  ////////////////
 	
  loaderGraphics.update("Structuring menu...", 60);
-		
+
+ 		addHandlers();
+ 
 		// once each component is declared add it to the menu bar
 		structureMenuBar();
 		
@@ -1064,6 +1082,7 @@ public class mainGUI {
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentRecursive);
 			
 		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
+		addMenuIcons(); // not implemented for now -> is there need for it?
 	}
 	
 	/**
@@ -1109,6 +1128,13 @@ public class mainGUI {
 		mntmAboutScreept.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
 		mntmUserDocumentation.setFont(menuItemFont);
+	}
+	
+	public void addHandlers() {
+		
+	}
+	
+	public void addMenuIcons() {
 	}
 	
 	public void updateMenuAndLogFontSize(int fontSize){
@@ -1199,7 +1225,7 @@ public class mainGUI {
 		  // Show your JFrame
 	}
 	
-	public String askUsername() {
+	public static String askUsername() {
 		boolean end=false;
 		String input="";
 		logger.debug("Current user input initialization: void user or lenght>20 detected!");
@@ -1319,8 +1345,11 @@ public class mainGUI {
 	}
 	
 	public static void closeApplication() {
+		
+		closeOpenBlockingFrames();
+
 		now=new Date();
-        
+		
         // if autosave is on save before quit
         if(currentConfiguration.getFileOpt().isFlagAutosave()) {
 			try {
@@ -1361,6 +1390,15 @@ public class mainGUI {
 		System.exit(0);
 	}
 	
+	public static void closeOpenBlockingFrames(){
+		if(panelHwInfo != null) {
+			panelHwInfo.dispose();
+		}
+		
+		if(panelNetInfo != null) {
+			panelNetInfo.dispose();
+		}
+	}
 	
 	// GETTERS //
 	

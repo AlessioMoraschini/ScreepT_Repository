@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.hyperic.sigar.CpuInfo;
-import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.ProcCpu;
 import org.hyperic.sigar.ProcMem;
@@ -31,8 +30,6 @@ import javax.swing.border.LineBorder;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
@@ -46,7 +43,6 @@ import java.awt.Component;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 

@@ -1,15 +1,15 @@
-2019-04-06 22:24:58,872 [Thread-2] DEBUG gUI.mainGUI - 
+2019-04-07 01:00:11,598 [Thread-2] DEBUG gUI.mainGUI - 
 
 ##################################################
 
-Sat Apr 06 22:24:58 CEST 2019
+Sun Apr 07 01:00:11 CEST 2019
 
 ScrYpT - V0.5 Started now!
 
 ##################################################
 
 
-2019-04-06 22:24:58,931 [Thread-2] DEBUG iNIT.INItializer - Loaded ini file: 
+2019-04-07 01:00:11,651 [Thread-2] DEBUG iNIT.INItializer - Loaded ini file: 
 
 ### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
 
@@ -40,32 +40,32 @@ FLAGOVERWRITE: false
 
  ---- STEGANO OPTIONS -----
 
-DEFAULT_HEIGHT: 1293
+DEFAULT_HEIGHT: 1633
 ULTRA-SECURE: true
 FLAGSTEG: false
-DEFAULT_WIDTH: 1831
+DEFAULT_WIDTH: 1293
 IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
 
  ---- TEXT EDITOR -----
 
 
-2019-04-06 22:24:58,932 [Thread-2] DEBUG gUI.mainGUI - Initializing main GUI-start
-2019-04-06 22:24:59,269 [Thread-2] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
-2019-04-06 22:24:59,335 [Thread-2] DEBUG gUI.mainGUI - ## GUI components started
-2019-04-06 22:24:59,336 [Thread-2] DEBUG gUI.mainGUI - icon image setted to main window
-2019-04-06 22:24:59,336 [Thread-2] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
-2019-04-06 22:24:59,336 [Thread-2] DEBUG gUI.mainGUI - Main GUI initialized correctly.
-2019-04-06 22:24:59,338 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
-2019-04-06 22:24:59,342 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: true
-2019-04-06 22:25:00,092 [Thread-2] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
-2019-04-06 22:25:00,092 [Thread-2] INFO  gUI.mainGUI - Charset setted: UTF-8
-2019-04-06 22:25:03,391 [Thread-7] INFO  gUI.panels.HwInfoPanel - gUI.panels.HwInfoPanel Starting...
-2019-04-06 22:25:04,818 [Thread-7] INFO  gUI.panels.HwInfoPanel - gUI.panels.HwInfoPanel Started
-2019-04-06 22:25:07,342 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER: detected flagAutosave=true & Autosave is not running yet -> Starting autosave module...
-2019-04-06 22:25:07,343 [Thread-4] DEBUG gUI.mainGUI - ## AUTOSAVE module started, interval: 600000 milliseconds
-2019-04-06 22:25:13,648 [AWT-EventQueue-0] DEBUG gUI.panels.HwInfoPanel - Closing Frame: gUI.panels.HwInfoPanel
-2019-04-06 22:25:15,342 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
-2019-04-06 22:25:15,859 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Configuration written to: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+2019-04-07 01:00:11,659 [Thread-2] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-04-07 01:00:11,803 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:00:12,014 [Thread-2] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-04-07 01:00:12,068 [Thread-2] DEBUG gUI.mainGUI - ## GUI components started
+2019-04-07 01:00:12,069 [Thread-2] DEBUG gUI.mainGUI - icon image setted to main window
+2019-04-07 01:00:12,069 [Thread-2] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-04-07 01:00:12,069 [Thread-2] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-04-07 01:00:12,071 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-04-07 01:00:12,073 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: true
+2019-04-07 01:00:12,800 [Thread-2] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-04-07 01:00:12,800 [Thread-2] INFO  gUI.mainGUI - Charset setted: UTF-8
+2019-04-07 01:00:14,724 [AWT-EventQueue-0] INFO  gUI.panels.ChargeIniLog - gUI.panels.ChargeIniLog Starting...
+2019-04-07 01:00:14,905 [AWT-EventQueue-0] INFO  gUI.panels.ChargeIniLog - gUI.panels.ChargeIniLog Started
+2019-04-07 01:00:19,803 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:00:20,074 [Thread-5] WARN  gUI.mainGUI - ## AUTOSAVE-MANAGER: detected flagAutosave=true & Autosave is not running yet -> Starting autosave module...
+2019-04-07 01:00:20,075 [Thread-4] DEBUG gUI.mainGUI - ## AUTOSAVE module started, interval: 600000 milliseconds
+2019-04-07 01:00:25,359 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Configuration written to: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
 
 ### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
 
@@ -96,21 +96,101 @@ FLAGOVERWRITE: false
 
  ---- STEGANO OPTIONS -----
 
-DEFAULT_HEIGHT: 1293
+DEFAULT_HEIGHT: 1633
 ULTRA-SECURE: true
 FLAGSTEG: false
-DEFAULT_WIDTH: 1831
+DEFAULT_WIDTH: 1293
 IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
 
  ---- TEXT EDITOR -----
 
 
-2019-04-06 22:25:15,865 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  => AUTOSAVE ON: file saved before exiting [C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini]
-2019-04-06 22:25:15,865 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  ## CLOSING APPLICATION:
+2019-04-07 01:00:25,365 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  => AUTOSAVE ON: file saved before exiting [C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini]
+2019-04-07 01:00:25,365 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  ## CLOSING APPLICATION:
 
 ##################################################
 
-Sat Apr 06 22:25:15 CEST 2019
+Sun Apr 07 01:00:25 CEST 2019
+
+ScrYpT - V0.5 CLOSED!
+
+##################################################
+
+
+2019-04-07 01:00:27,804 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:00:35,804 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:00:43,804 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:00:51,805 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:00:59,805 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:01:07,806 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:01:15,806 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:01:23,807 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:01:31,808 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:01:39,808 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:01:47,808 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:01:55,809 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:02:03,810 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:02:11,810 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:02:19,811 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:02:27,811 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:02:35,812 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:02:43,812 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:02:51,813 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:02:59,814 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:03:07,814 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:03:15,815 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:03:23,815 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:03:31,815 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:03:39,815 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:03:47,815 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:03:55,815 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:04:03,816 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-04-07 01:04:11,388 [AWT-EventQueue-0] DEBUG iNIT.INItializer - Configuration written to: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: true
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Documents
+FLAG_AUTOSAVE: true
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1633
+ULTRA-SECURE: true
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+
+2019-04-07 01:04:11,391 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  => AUTOSAVE ON: file saved before exiting [C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini]
+2019-04-07 01:04:11,391 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sun Apr 07 01:04:11 CEST 2019
 
 ScrYpT - V0.5 CLOSED!
 

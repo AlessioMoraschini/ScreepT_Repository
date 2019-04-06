@@ -18,6 +18,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import amfileutils.FileStuff;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
 import gui.utils.LauncherLoaderFrame;
@@ -247,7 +248,7 @@ public class ScrYpTLauncher {
 		logger.info("Creating launcher file : " + initFilePath);
 		
 		// write commands to build bash/batch starter file
-		boolean written = FileUtils.writeStringToFile(commandList, new File(initFilePath), true);
+		boolean written = FileStuff.writeStringToFile(commandList, new File(initFilePath), true);
 		
 		String msg = (written)? "Write completed correctly :)" : "Write not succeded for some error :(";
 		logger.info(msg);

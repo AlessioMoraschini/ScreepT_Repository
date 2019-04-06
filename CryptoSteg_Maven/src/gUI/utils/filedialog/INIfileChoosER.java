@@ -151,12 +151,11 @@ public class INIfileChoosER extends JDialog{
                	}
 				
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e);
 			}  			
             
         }else{
         	JOptionPane.showMessageDialog(this.getContentPane(), "Operation cancelled");
-//			fileChooser.setCurrentDirectory(new File(fileINI.DEFAULT_INI_PATH).getParentFile());	
         }
 		
 		getContentPane().add(fileChooser, BorderLayout.NORTH);
