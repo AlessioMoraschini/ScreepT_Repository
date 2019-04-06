@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 
 import org.apache.commons.codec.binary.Base64;
 
-import uTILS.local.HandleString;
+import local.HandleString;
 	
 	public class AesCipher {
 	

@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
@@ -29,9 +30,8 @@ import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.dragndrop.VirtualFileDropPane;
 import iNIT.INItializer;
+import local.HandleString;
 import net.miginfocom.swing.MigLayout;
-import uTILS.local.FileStuff;
-import uTILS.local.HandleString;
 import uTILS.local.ImageWorker;
 
 import javax.swing.JLabel;

@@ -12,10 +12,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
+
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
-import uTILS.local.FileStuff;
-import uTILS.local.HandleString;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,6 +28,8 @@ import javax.swing.DefaultComboBoxModel;
 
 import gUI.om.SupportedFileTextEditor;
 import gUI.om.Templates_Enum;
+import local.HandleString;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;

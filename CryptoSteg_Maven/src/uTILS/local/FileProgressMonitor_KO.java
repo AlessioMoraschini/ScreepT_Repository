@@ -1,8 +1,7 @@
 package uTILS.local;
 
-import java.io.File;
-
 import gUI.utils.progressDialog.TestUpdateProgress;
+
 
 public class FileProgressMonitor_KO {
 	

@@ -30,12 +30,12 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import gUI.panels.CrypterPanel;
 import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
-import uTILS.local.FileStuff;
-import uTILS.local.HandleString;
+import local.HandleString;
 import uTILS.local.ImageWorker;
 
 public class TreeFileMouseListenerCrypter {

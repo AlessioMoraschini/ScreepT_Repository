@@ -11,9 +11,9 @@ import frameutils.GuiUtils;
 import gUI.mainGUI;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
-import uTILS.network.NetworkUtils;
-import uTILS.network.om.FtpSpeedTestOptions;
-import uTILS.network.om.NetworkAdapter;
+import network.NetworkUtils;
+import network.om.FtpSpeedTestOptions;
+import network.om.NetworkAdapter;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;

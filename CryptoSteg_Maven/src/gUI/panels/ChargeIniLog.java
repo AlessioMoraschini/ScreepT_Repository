@@ -10,7 +10,6 @@ import org.ini4j.Wini;
 
 import gUI.utils.filedialog.INIfileChoosER;
 import iNIT.INItializer;
-
 import net.miginfocom.swing.MigLayout;
 import uTILS.local.ImageWorker;
 

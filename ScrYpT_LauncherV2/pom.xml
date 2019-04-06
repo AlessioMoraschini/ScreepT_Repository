@@ -29,8 +29,19 @@
 		<groupId>GuiCommons</groupId>
 		<artifactId>GuiCommons</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
+	<dependency>	
+		<groupId>OsCommons</groupId>
+	  	<artifactId>OsCommons</artifactId>
+	  	<version>0.0.1-SNAPSHOT</version>
  	</dependency>
 
+	<dependency>
+		<groupId>GenCommons</groupId>
+	  	<artifactId>GenCommons</artifactId>
+	  	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
   </dependencies>
   
 </project>

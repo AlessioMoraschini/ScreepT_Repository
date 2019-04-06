@@ -30,6 +30,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -38,8 +39,10 @@ import com.googlecode.pngtastic.core.PngChunk;
 import com.googlecode.pngtastic.core.PngImage;
 import com.googlecode.pngtastic.core.PngOptimizer;
 
+import amfileutils.FileStuff;
 import crypt.steg.STEGException;
 import gUI.panels.ImageGenContainerPanel;
+import gUI.panels.KeyGenPanel;
 
 public class ImageWorker {
 
@@ -802,6 +805,70 @@ public class ImageWorker {
 	    
 	    // convert to png byte array
 	    return compressedPngData.toByteArray();
+	}
+	
+	/**
+	 * 
+	 * @param imageName is the name of the image to be written in the dictionary folder
+	 * 			(too see that please look at FileStuff class) 
+	 * @param img the image to write on file
+	 * @return esit of the write operation
+	 */
+	public static File addKeyImgToDictionary(String imageName, BufferedImage img, KeyGenPanel parent){
+				
+//		updateProgressBar(20, progBar);
+		boolean esit = false;
+		File destFile = new File(KeyGenPanel.KEY_DICTIONARY+imageName);
+	
+		destFile = FileStuff.changeExtension(destFile, ".png");
+		// if directory does not exist create it
+		
+		if (!destFile.exists()) {
+			esit = destFile.mkdirs();
+			try {
+//				updateProgressBar(30, progBar);
+				esit = ImageIO.write(img, "png", destFile);
+				loGGer.debug("Image written: "+destFile.getAbsolutePath());
+			} catch (IOException e) {
+				loGGer.error("Exception happened!", e);
+			}
+			if (esit) {
+				loGGer.debug(destFile.getAbsolutePath() + " Created!");
+			}
+//			updateProgressBar(80, progBar);
+		} else if(destFile.exists()) {
+			int choice = JOptionPane.showConfirmDialog(parent, "File "+destFile.getName()+" exists, overwrite it?");
+    		if(choice == JOptionPane.OK_OPTION) {
+//    			updateProgressBar(30, progBar);
+    			destFile.delete();	
+//    			updateProgressBar(40, progBar);
+               	try {
+                  	esit = destFile.createNewFile();
+        			esit = ImageIO.write(img, "png", destFile);
+        			if(esit) {
+        				loGGer.debug("Image written: "+destFile.getAbsolutePath());
+        			}
+        		} catch (IOException e) {
+        			loGGer.error("Exception happened!", e);
+        		}
+//               	updateProgressBar(80, progBar);
+    		}else if(choice == JOptionPane.NO_OPTION){
+               	try {
+               		destFile = FileStuff.renameJavaObjFile(destFile);
+        			esit = ImageIO.write(img, "png", destFile);
+        			if(esit) {
+        				loGGer.debug("Image written: "+destFile.getAbsolutePath());
+        			}
+        		} catch (IOException e) {
+        			loGGer.error("Exception happened!", e);
+        		}
+    		}
+    		
+    	}
+//		updateProgressBar(100, progBar);
+		parent.getBtnGenerateKey().setEnabled(true);
+		parent.getBtnExport().setEnabled(true);
+		return destFile;
 	}
 	
 	/**

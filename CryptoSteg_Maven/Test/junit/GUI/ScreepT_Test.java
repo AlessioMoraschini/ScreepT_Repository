@@ -15,12 +15,12 @@ import org.ini4j.InvalidFileFormatException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import amfileutils.FileStuff;
 import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerStub;
 import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
-import uTILS.local.FileStuff;
 
 public class ScreepT_Test {
 	

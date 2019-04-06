@@ -9,10 +9,11 @@ import frameutils.BackgroundPanel;
 import frameutils.GuiUtils;
 import gUI.mainGUI;
 import guistyle.TextGuiUtils;
-import launcherutils.SysUtils;
 
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import utils.SysUtils;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Image;

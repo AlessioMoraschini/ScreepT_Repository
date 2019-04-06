@@ -15,10 +15,10 @@ import javax.swing.JProgressBar;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
+import amfileutils.FileStuff;
 import crypt.aes.AesCipher;
 import gUI.panels.KeyGenPanel;
 import iNIT.INItializer;
-import uTILS.local.FileStuff;
 import uTILS.local.ImageWorker;
 
 public class prova_byte_AES {

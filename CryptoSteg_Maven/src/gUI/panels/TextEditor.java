@@ -19,9 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import net.miginfocom.swing.MigLayout;
-import uTILS.local.FileStuff;
-import uTILS.local.HandleString;
-import uTILS.local.Text2Speech;
 
 import javax.swing.SwingConstants;
 
@@ -29,8 +26,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.drjekyll.fontchooser.FontDialog;
 
+import amfileutils.FileStuff;
 import crypt.aes.AesCipher;
 import iNIT.INItializer;
+import local.HandleString;
+import local.Text2Speech;
 
 import java.awt.SystemColor;
 import javax.swing.JTextArea;

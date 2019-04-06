@@ -35,13 +35,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.miginfocom.swing.MigLayout;
-import org.apache.log4j.Logger;
-
-import frameutils.GuiUtils;
-import iNIT.INItializer;
-import uTILS.local.FileStuff;
 import uTILS.local.ImageWorker;
 
+import org.apache.log4j.Logger;
+
+import amfileutils.FileStuff;
+import frameutils.GuiUtils;
+import iNIT.INItializer;
 import gUI.mainGUI;
 import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
@@ -413,7 +413,7 @@ public class KeyGenPanel extends JFrame {
 						try {
 							textLog.append("\nI'm workin'... just a second (or maybe two!) :)");
 							textLog.setSelectionStart(textLog.getText().length());
-							File result = FileStuff.addKeyImgToDictionary(inputName, IMG, thisFrame);
+							File result = ImageWorker.addKeyImgToDictionary(inputName, IMG, thisFrame);
 							out = result.getName() + " => Added to dictionary :)";
 							textLog.append(out);
 							logger.debug(out);

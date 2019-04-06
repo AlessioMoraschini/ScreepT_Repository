@@ -10,13 +10,14 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import gui.ScrYpTLauncher;
-import launcherutils.SysUtils;
 import launcherutils.om.DependencyModel;
-import launcherutils.om.OSinfo;
 
 import java.awt.Button;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import om.OSinfo;
+import utils.SysUtils;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;

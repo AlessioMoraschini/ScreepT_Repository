@@ -12,11 +12,11 @@ import javax.swing.JOptionPane;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
-import uTILS.local.FileStuff;
 
 public class ScreeptManagerFileOrFolder {
 

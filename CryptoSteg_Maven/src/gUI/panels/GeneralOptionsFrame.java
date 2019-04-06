@@ -11,8 +11,8 @@ import gUI.mainGUI;
 import gui.ScrYpTLauncher;
 import iNIT.INItializer;
 import iNIT.om.FileOptions;
+import local.ListCharsets;
 import net.miginfocom.swing.MigLayout;
-import uTILS.local.ListCharsets;
 
 import javax.swing.JPanel;
 import java.awt.Color;

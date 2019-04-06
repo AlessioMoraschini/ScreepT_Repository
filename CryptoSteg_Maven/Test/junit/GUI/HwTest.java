@@ -12,9 +12,9 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 import org.junit.Test;
 
+import amfileutils.FileStuff;
 import oshi.SystemInfo;
 import oshi.jna.platform.windows.PowrProf.SystemBatteryState;
-import uTILS.local.FileStuff;
 
 public class HwTest {
 

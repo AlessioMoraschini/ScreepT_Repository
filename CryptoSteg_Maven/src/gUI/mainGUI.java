@@ -31,6 +31,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
+import amfileutils.FileStuff;
 import gUI.panels.AboutSectionPanel;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
@@ -47,7 +48,6 @@ import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
 import iNIT.INItializer;
-import launcherutils.SysUtils;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -63,7 +63,7 @@ import java.awt.SystemColor;
 import java.awt.Window;
 
 import net.miginfocom.swing.MigLayout;
-import uTILS.local.FileStuff;
+import utils.SysUtils;
 
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Color;

@@ -12,8 +12,8 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 import org.omg.CORBA.INITIALIZE;
 
+import amfileutils.FileStuff;
 import iNIT.INItializer;
-import uTILS.local.FileStuff;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

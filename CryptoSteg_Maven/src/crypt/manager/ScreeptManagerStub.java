@@ -19,15 +19,15 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegOmResult;
 import iNIT.om.AesOption;
-import uTILS.local.CustomFileComparator;
-import uTILS.local.FileStuff;
-import uTILS.local.HandleString;
+import local.CustomFileComparator;
+import local.HandleString;
 import uTILS.local.ImageWorker;
 
 /**

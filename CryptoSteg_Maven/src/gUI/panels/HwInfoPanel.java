@@ -11,19 +11,19 @@ import org.hyperic.sigar.ProcMem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
+import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import gUI.mainGUI;
 import gUI.om.HDinfo;
+import generic.LimitedList;
 import iNIT.INItializer;
+import local.DoubleListWorker;
 import net.miginfocom.swing.MigLayout;
 import oshi.SystemInfo;
 import oshi.hardware.Baseboard;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.Display;
 import oshi.hardware.HWDiskStore;
-import uTILS.local.DoubleListWorker;
-import uTILS.local.FileStuff;
-import uTILS.om.LimitedList;
 
 import javax.swing.JPanel;
 import java.awt.Color;

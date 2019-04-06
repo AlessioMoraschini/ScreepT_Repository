@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
-import crypt.steg.STEGException;
 import uTILS.local.ImageWorker;
+import crypt.steg.STEGException;
 
 public class StegTest {
 

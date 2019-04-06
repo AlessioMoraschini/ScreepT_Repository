@@ -6,13 +6,13 @@ import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
 import gui.ScrYpTLauncher;
-import launcherutils.SysUtils;
 import net.miginfocom.swing.MigLayout;
+import utils.SysUtils;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

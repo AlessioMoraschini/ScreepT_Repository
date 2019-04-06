@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
-import uTILS.local.ByteArrayShuffler;
+import local.ByteArrayShuffler;
 
 public class EntroPieTest {
 

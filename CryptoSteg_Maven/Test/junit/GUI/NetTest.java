@@ -7,7 +7,7 @@ import org.hyperic.sigar.SigarException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import uTILS.network.NetworkUtils;
+import network.NetworkUtils;
 
 
 public class NetTest {

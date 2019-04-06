@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
@@ -32,10 +33,9 @@ import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import iNIT.om.AesOption;
-import uTILS.local.ByteArrayShuffler;
-import uTILS.local.CustomFileComparator;
-import uTILS.local.EntophyzerUtils;
-import uTILS.local.FileStuff;
+import local.ByteArrayShuffler;
+import local.CustomFileComparator;
+import local.EntophyzerUtils;
 import uTILS.local.ImageWorker;
 
 /**

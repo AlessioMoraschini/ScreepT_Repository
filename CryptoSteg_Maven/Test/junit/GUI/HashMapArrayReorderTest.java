@@ -16,10 +16,10 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
+import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
-import uTILS.local.EntophyzerUtils;
-import uTILS.local.FileStuff;
+import local.EntophyzerUtils;
 
 public class HashMapArrayReorderTest {
 

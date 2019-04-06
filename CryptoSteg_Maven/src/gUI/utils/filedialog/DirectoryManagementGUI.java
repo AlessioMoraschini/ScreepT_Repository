@@ -9,8 +9,8 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import iNIT.INItializer;
-import uTILS.local.FileStuff;
 
 public class DirectoryManagementGUI {
 	

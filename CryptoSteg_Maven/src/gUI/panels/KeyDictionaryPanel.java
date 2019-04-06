@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import gUI.mainGUI;
 import gUI.om.BufferedImageType;
@@ -12,7 +13,6 @@ import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.TreeFileMouseListenerDictionary;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
-import uTILS.local.FileStuff;
 
 import javax.swing.JPanel;
 import java.awt.SystemColor;

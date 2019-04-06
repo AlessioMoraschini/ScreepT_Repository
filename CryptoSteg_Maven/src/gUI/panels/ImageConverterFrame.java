@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import gUI.mainGUI;
 import gUI.om.ScalingAlgorithm;
@@ -12,6 +13,8 @@ import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import iNIT.INItializer;
+import local.HandleString;
+
 import java.awt.GridBagLayout;
 import java.awt.Image;
 
@@ -27,8 +30,6 @@ import java.io.IOException;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
-import uTILS.local.FileStuff;
-import uTILS.local.HandleString;
 import uTILS.local.ImageWorker;
 
 import javax.swing.JLabel;

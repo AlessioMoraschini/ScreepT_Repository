@@ -1,6 +1,6 @@
 package testMain;
 
-import uTILS.local.HandleString;
+import local.HandleString;
 
 public class ProvaString {
 

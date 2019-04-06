@@ -9,12 +9,12 @@ import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import crypt.steg.StegCipher;
 import gUI.om.BufferedImageType;
-import uTILS.local.ByteWorker;
-import uTILS.local.FileStuff;
+import local.ByteWorker;
 import uTILS.local.ImageWorker;
 
 import org.junit.Rule;

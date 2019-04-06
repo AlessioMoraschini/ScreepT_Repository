@@ -22,10 +22,10 @@ import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
 import gui.utils.LauncherLoaderFrame;
 import launcherutils.FileUtils;
-import launcherutils.SysUtils;
 import launcherutils.om.DependencyLocalPath;
 import launcherutils.om.DependencyModel;
-import launcherutils.om.OSinfo;
+import om.OSinfo;
+import utils.SysUtils;
 
 /**
  * 
