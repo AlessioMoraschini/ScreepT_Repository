@@ -94,7 +94,7 @@ public class mainGUI {
 	public static final String RESOURCES_DIR= "Resources_Scrypt/";
 	public static final String DEFAULT_INI= RESOURCES_DIR + "CONFIG.ini";
 	public static final String BACKUP_INI= RESOURCES_DIR + "Backup/BACKUP_CONFIG.ini";
-	private static final String DEFAULT_INI_FOLDER= "INI_FILES";
+	public static final String DEFAULT_INI_FOLDER= "INI_FILES/";
 	
 	// icons and images
 	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";

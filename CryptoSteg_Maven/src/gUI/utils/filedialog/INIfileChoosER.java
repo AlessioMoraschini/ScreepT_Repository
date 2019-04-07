@@ -50,7 +50,7 @@ public class INIfileChoosER extends JDialog{
     			textA.append( fileINI.toStringa());
     	        
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e);
 			}else {
 				if(!fileExtension.equalsIgnoreCase("ini")) {
 					JOptionPane.showMessageDialog(fileChooser.getParent(), "Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());

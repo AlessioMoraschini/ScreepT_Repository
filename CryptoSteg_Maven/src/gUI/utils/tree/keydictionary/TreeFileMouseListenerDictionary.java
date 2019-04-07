@@ -1,13 +1,11 @@
-package gUI.utils.tree;
+package gUI.utils.tree.keydictionary;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.awt.peer.PanelPeer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -18,21 +16,15 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import gUI.panels.CrypterPanel;
-import gUI.panels.KeyDictionaryPanel;
 import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
@@ -46,7 +38,6 @@ public class TreeFileMouseListenerDictionary {
 	private JTree tree;
 	private File selectedNode;
 	private JTextArea TEXT_LOG = new JTextArea();
-	private JTextArea TEXT_MAIN = new JTextArea();
 	private JFrame mainFrame;
 	private INItializer currentConfig;
 	
@@ -58,7 +49,6 @@ public class TreeFileMouseListenerDictionary {
 		currentConfig = currentConf;
 		mainFrame = parent;
 		TEXT_LOG = log;
-		TEXT_MAIN = mainTxtArea;
 		tree = treeIn;
 		tree.setComponentPopupMenu(getPopUpMenu());
 		tree.addMouseListener(getMouseListener());
@@ -137,14 +127,14 @@ public class TreeFileMouseListenerDictionary {
 	        public void actionPerformed(ActionEvent arg0) {
 
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
-	            int i = 0;
             	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(mainFrame, "Are you sure to delete?")==JOptionPane.OK_OPTION){	        		
 		            for(TreePath tp : treeSelArr) {
 //		            	String path = tp.toString().replaceAll("\\]| |\\[|", "").replaceAll(",", File.separator);
 		            	String path = tp.getLastPathComponent().toString();
 		            	File selectedFile = new File(path);
-	//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
-		            	logger.debug(path+" Deleted: "+selectedFile.delete());		        		
+						if (selectedFile.isFile()) {
+							logger.debug(path + " Deleted: " + selectedFile.delete());
+						}		        		
 			        }
 		            String msg = "Files deleted!";
 	            	logger.debug(msg+Arrays.toString(treeSelArr));

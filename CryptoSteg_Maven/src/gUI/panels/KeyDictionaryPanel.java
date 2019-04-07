@@ -10,7 +10,7 @@ import frameutils.GuiUtils;
 import gUI.mainGUI;
 import gUI.om.BufferedImageType;
 import gUI.utils.tree.FileTreeModel;
-import gUI.utils.tree.TreeFileMouseListenerDictionary;
+import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 
@@ -159,10 +159,10 @@ public class KeyDictionaryPanel extends JFrame{
 		tree.setVisibleRowCount(10);
 		scrollPane.setViewportView(tree);
 		treeListener = new TreeSelectionListener() {
+		TreeFileMouseListenerDictionary menuListener = new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
 			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				TreeFileMouseListenerDictionary menuListener = new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
 				String msg;
 				File thisFile = (File)tree.getLastSelectedPathComponent();
 				if (thisFile!=null) {
@@ -219,7 +219,7 @@ public class KeyDictionaryPanel extends JFrame{
 					//Runtime.getRuntime().exec("explorer.exe /select," + KEY_DICTIONARY_FILE.getAbsolutePath());
 				} catch (IOException e1) {
 				logger.error("Error opening folder in system explorer !"+e1.toString());
-				}				
+				}
 			}
 		});
 		

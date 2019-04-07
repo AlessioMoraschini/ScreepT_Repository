@@ -1,4 +1,4 @@
-package gUI.utils.tree.dragndrop;
+package gUI.utils.tree.crypter.dragndrop;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -31,7 +31,7 @@ import javax.swing.tree.TreeNode;
 import org.apache.log4j.Logger;
 
 import gUI.panels.KeyDictionaryPanel;
-import gUI.utils.tree.dragndrop.om.CrypterDragFileModel;
+import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 
 public class VirtualFileDropPane extends JPanel {
 

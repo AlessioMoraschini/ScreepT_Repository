@@ -11,6 +11,9 @@ import org.ini4j.Wini;
 
 import gUI.mainGUI;
 import gUI.utils.filedialog.INIfileChoosER;
+import gUI.utils.tree.FileTreeModel;
+import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
+import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import uTILS.local.ImageWorker;
@@ -30,8 +33,12 @@ import java.awt.Color;
 
 import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
+import javax.swing.tree.TreeModel;
+
 import java.awt.Cursor;
 import javax.swing.border.BevelBorder;
+import javax.swing.JTree;
+import javax.swing.JSeparator;
 
 public class ChargeIniLog extends JPanel{
 	
@@ -43,21 +50,27 @@ public class ChargeIniLog extends JPanel{
 	
 	private INItializer config;
 	private mainGUI parent;
+	private ChargeIniLog thisPanel;
 	
 	// GUI ELEMENTS //
-	private JTextArea textArea;
+	public JTextArea textArea;
 	private JButton btnLoadCustomConfig;
 	private JButton btnExportConfig;
 	private JButton buttonReload;
 	private JButton btnSaveCurrentAsDefault;
 	private JButton btnResetOriginalConfig;
-	private JLabel lblAvviso;
-	private JLabel config_PATH;
-	private JPanel panelDynPath;
+	public JLabel lblAvviso;
+	public JLabel config_PATH;
+	public JPanel panelDynPath;
+	private JLabel lblPreferredConfigurations;
+	private JScrollPane scrollPaneTreeConfigs;
+	private JTree tree;
+	private JSeparator separator;
 
 	public ChargeIniLog(INItializer configuration, mainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
 		
+		thisPanel = this;
 		parent = parentFrame;
 		config = configuration;
 		
@@ -65,12 +78,13 @@ public class ChargeIniLog extends JPanel{
 		
 		setBackground(new Color(211, 211, 211));
 		
-		setLayout(new MigLayout("", "[117.00][][][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:58.00:60px][35px,grow][90%,grow]"));
+		setLayout(new MigLayout("", "[117.00][70px][30px][120px][30px][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:58.00:60px][35px][][20px][400px,grow]"));
 		
-		JScrollPane scrollPane = new JScrollPane();
+		JScrollPane scrollPaneTextArea = new JScrollPane();
+		scrollPaneTextArea.setBorder(new LineBorder(new Color(64, 64, 64), 3, true));
 		textArea = new JTextArea();
-		textArea.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
-		scrollPane.setViewportView(textArea);
+		textArea.setBorder(null);
+		scrollPaneTextArea.setViewportView(textArea);
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
@@ -81,25 +95,25 @@ public class ChargeIniLog extends JPanel{
 		btnExportConfig.setForeground(Color.BLACK);
 		btnExportConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnExportConfig.setBackground(new Color(176, 196, 222));
-		add(btnExportConfig, "cell 1 1,grow");
+		add(btnExportConfig, "cell 1 1 2 1,grow");
 		
 		btnSaveCurrentAsDefault = new JButton("Save current as Default");
 		btnSaveCurrentAsDefault.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSaveCurrentAsDefault.setForeground(Color.BLACK);
 		btnSaveCurrentAsDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnSaveCurrentAsDefault.setBackground(new Color(176, 196, 222));
-		add(btnSaveCurrentAsDefault, "cell 2 1,grow");
+		add(btnSaveCurrentAsDefault, "cell 3 1 2 1,grow");
 		
 		buttonReload = new JButton("");
 		buttonReload.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		buttonReload.setForeground(Color.WHITE);
 		buttonReload.setBackground(new Color(176, 196, 222));
 		buttonReload.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
-		add(buttonReload, "cell 3 1,grow");
+		add(buttonReload, "cell 5 1,grow");
 		
 		panelDynPath = new JPanel();
 		panelDynPath.setOpaque(false);
-		add(panelDynPath, "cell 5 1 3 1,alignx center,growy");
+		add(panelDynPath, "cell 7 1 3 1,alignx center,growy");
 		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
 		
 		JLabel lblInitializationFrom = new JLabel("Current .ini file: ");
@@ -117,19 +131,26 @@ public class ChargeIniLog extends JPanel{
 		btnResetOriginalConfig.setForeground(Color.BLACK);
 		btnResetOriginalConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnResetOriginalConfig.setBackground(new Color(250, 128, 114));
-		add(btnResetOriginalConfig, "cell 8 1,grow");
-		add(scrollPane, "cell 0 2 9 1,grow");
+		add(btnResetOriginalConfig, "cell 10 1,grow");
+		
+		separator = new JSeparator();
+		add(separator, "cell 0 2 11 1,growx");
+		
+		lblPreferredConfigurations = new JLabel("Preferred Configurations");
+		lblPreferredConfigurations.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		add(lblPreferredConfigurations, "cell 0 3 4 1,alignx center,aligny bottom");
+		add(scrollPaneTextArea, "cell 4 3 7 2,grow");
 		
 		lblAvviso = new JLabel("[Configuration loaded]");
 		lblAvviso.setForeground(Color.DARK_GRAY);
-		add(lblAvviso, "cell 4 1,growx");
+		add(lblAvviso, "cell 6 1,growx");
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(SystemColor.menu);
 		panel_1.setBorder(new LineBorder(Color.DARK_GRAY, 4));
-		panel_1.setBackground(new Color(250, 235, 215));
-		add(panel_1, "cell 0 0 9 1,grow");
-		panel_1.setLayout(new MigLayout("", "[100%]", "[]"));
+		panel_1.setBackground(new Color(176, 196, 222));
+		add(panel_1, "cell 0 0 11 1,grow");
+		panel_1.setLayout(new MigLayout("", "[100%]", "[grow]"));
 		
 		JLabel lblConfigurationManager = new JLabel("Configuration Manager");
 		lblConfigurationManager.setHorizontalAlignment(SwingConstants.CENTER);
@@ -144,6 +165,20 @@ public class ChargeIniLog extends JPanel{
 		btnLoadCustomConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnLoadCustomConfig.setBackground(new Color(176, 196, 222));
 		add(btnLoadCustomConfig, "cell 0 1,grow");
+		
+		scrollPaneTreeConfigs = new JScrollPane();
+		scrollPaneTreeConfigs.setBorder(new LineBorder(Color.DARK_GRAY, 3, true));
+		scrollPaneTreeConfigs.setOpaque(true);
+		scrollPaneTreeConfigs.setBackground(new Color(255, 255, 240));
+		add(scrollPaneTreeConfigs, "cell 0 4 4 1,grow");
+		
+		TreeModel treeModel = new FileTreeModel(new File(mainGUI.DEFAULT_INI_FOLDER));
+		tree = new JTree(treeModel);
+		TreeFileMouseListenerIni menuListener = new TreeFileMouseListenerIni(config, this, tree);
+		tree.setCellRenderer(new FileCellRendererIni());
+		tree.setBorder(null);
+		tree.setBackground(new Color(255, 255, 240));
+		scrollPaneTreeConfigs.setViewportView(tree);
 
 		addHandlers();
 		
@@ -244,10 +279,10 @@ public class ChargeIniLog extends JPanel{
 					config.setIniFile(new Wini(backupIni));
 					config.setIniReadFile(new Ini(backupIni));
 					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
-					} catch (IOException e1) {
-						logger.error("Exception happened!", e1);
-						JOptionPane.showMessageDialog(parent.getMainFrame(), "An error occurred :(", "Error", JOptionPane.ERROR_MESSAGE);
-					}
+				} catch (IOException e1) {
+					logger.error("Exception happened!", e1);
+					JOptionPane.showMessageDialog(parent.getMainFrame(), "An error occurred :(", "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}

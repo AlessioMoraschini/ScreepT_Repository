@@ -1,4 +1,4 @@
-package gUI.utils.tree.dragndrop;
+package gUI.utils.tree.crypter.dragndrop;
 
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
@@ -20,7 +20,7 @@ import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 
 import gUI.panels.CrypterPanel;
-import gUI.utils.tree.dragndrop.om.CrypterDragFileModel;
+import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 
 public class TreeDragNDropListenerCrypter {
 	

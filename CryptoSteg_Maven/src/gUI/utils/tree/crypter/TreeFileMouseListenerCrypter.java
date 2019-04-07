@@ -1,4 +1,4 @@
-package gUI.utils.tree;
+package gUI.utils.tree.crypter;
 
 import java.awt.Color;
 import java.awt.Image;

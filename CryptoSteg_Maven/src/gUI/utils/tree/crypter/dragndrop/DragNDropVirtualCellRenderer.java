@@ -1,4 +1,4 @@
-package gUI.utils.tree.dragndrop;
+package gUI.utils.tree.crypter.dragndrop;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,7 +12,7 @@ import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
 
-import gUI.utils.tree.dragndrop.om.CrypterDragFileModel;
+import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 
 public class DragNDropVirtualCellRenderer implements TreeCellRenderer {
 
@@ -25,14 +25,10 @@ public class DragNDropVirtualCellRenderer implements TreeCellRenderer {
 	
 	private JLabel iconContainer;
 	private Font oldFont;
-	private Font hoverFont;
-	private Font boldFont;
 	
 	DragNDropVirtualCellRenderer() {
 		iconContainer = new JLabel();
 		oldFont = iconContainer.getFont();
-		hoverFont = new Font(oldFont.getFontName(), oldFont.getStyle(), oldFont.getSize()+2);
-		boldFont = new Font(oldFont.getFontName(), Font.BOLD, oldFont.getSize()+2);
 		iconContainer.setFont(new Font(oldFont.getFontName(), oldFont.getStyle(), 15));
     }
 
@@ -58,24 +54,14 @@ public class DragNDropVirtualCellRenderer implements TreeCellRenderer {
 			}
         }
         
-        // on focus custom graphics
-        if(hasFocus) {
-//        	iconContainer.setFont(hoverFont);
-        }else {
-//        	iconContainer.setFont(oldFont);
-        }
-        
         // selected custom graphics
         if(selected) {
         	iconContainer.setOpaque(true);
         	iconContainer.setBackground(new Color(81, 81, 81));
         	iconContainer.setForeground(Color.WHITE);
-//        	iconContainer.setFont(boldFont);
         }else {
         	iconContainer.setOpaque(false);
         	iconContainer.setForeground(Color.DARK_GRAY);
-//        	iconContainer.setFont(oldFont);
-//        	tree.updateUI();
         }
         
         return iconContainer;
