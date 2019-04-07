@@ -65,6 +65,7 @@ public class StartPanel extends JFrame{
 		this.setTitle(frameTitle);
 
 		GuiUtils.centerFrame(this, W, H);
+		this.setResizable(false);
 		
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
@@ -130,7 +131,7 @@ public class StartPanel extends JFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
 	        	logger.debug("Closing Frame: " + LAUNCHER_GUI.getClass().getName());	        	
-
+	        	System.exit(0);
 		    }
 		});
 		

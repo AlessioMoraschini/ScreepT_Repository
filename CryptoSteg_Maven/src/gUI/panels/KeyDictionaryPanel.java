@@ -46,6 +46,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.JCheckBox;
 import javax.swing.ScrollPaneConstants;
+import java.awt.Cursor;
 
 public class KeyDictionaryPanel extends JFrame{
 
@@ -82,7 +83,7 @@ public class KeyDictionaryPanel extends JFrame{
 		active = true;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.ICON_KEY_DICT, this);
 		
 		thisPanel = this;
 		// initialize configuration
@@ -137,6 +138,7 @@ public class KeyDictionaryPanel extends JFrame{
 		scrollPane_1.setViewportView(textArea);
 		
 		JCheckBox chkOverwrite = new JCheckBox("Overwrite Dictionary files");
+		chkOverwrite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chkOverwrite.setFont(new Font("SansSerif", Font.BOLD, 12));
 		chkOverwrite.setForeground(Color.LIGHT_GRAY);
 		chkOverwrite.setSelected(currentConf.getFileOpt().isFlagOverwrite());
@@ -152,6 +154,7 @@ public class KeyDictionaryPanel extends JFrame{
 		
 		TreeModel treeModel = new FileTreeModel(KEY_DICTIONARY_FILE);
 		tree = new JTree(treeModel);
+		tree.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		tree.setBackground(Color.GRAY);
 		tree.setVisibleRowCount(10);
 		scrollPane.setViewportView(tree);
@@ -182,6 +185,7 @@ public class KeyDictionaryPanel extends JFrame{
 		
 		
 		JButton btnReloadImgTree = new JButton("");
+		btnReloadImgTree.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnReloadImgTree.setBackground(Color.BLACK);
 		btnReloadImgTree.setIcon(new ImageIcon(ChargeIniLog.ICON_RELOAD_BLUE));
 		btnReloadImgTree.addActionListener(new ActionListener() {
@@ -196,6 +200,7 @@ public class KeyDictionaryPanel extends JFrame{
 		panel_1.add(chkOverwrite, "cell 2 4,alignx center");
 		
 		JButton btnViewInSystem = new JButton("View in System explorer");
+		btnViewInSystem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(btnViewInSystem, "cell 1 0 2 1,growx");
 		btnViewInSystem.setForeground(new Color(211, 211, 211));
 		btnViewInSystem.setFont(new Font("SansSerif", Font.BOLD, 15));
@@ -224,6 +229,7 @@ public class KeyDictionaryPanel extends JFrame{
 		panel_1.add(lblNewLabel, "cell 4 0 5 1,alignx center");
 	
 		JButton btnLoadKey = new JButton("Add Key Image");
+		btnLoadKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLoadKey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// show input dialog to select the file(gives null in case of no file selected)
@@ -260,6 +266,7 @@ public class KeyDictionaryPanel extends JFrame{
 		btnLoadKey.setFont(new Font("SansSerif", Font.BOLD, 13));
 		
 		JButton btnImportDictionary = new JButton("Import Dictionary");
+		btnImportDictionary.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(btnImportDictionary, "cell 1 2 2 1,growx");
 		btnImportDictionary.setBackground(Color.GRAY);
 		btnImportDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));
@@ -290,6 +297,7 @@ public class KeyDictionaryPanel extends JFrame{
 		});
 		
 		JButton btnExportDictionary = new JButton("Export Dictionary");
+		btnExportDictionary.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(btnExportDictionary, "cell 1 3 2 1,growx");
 		btnExportDictionary.setBackground(Color.GRAY);
 		btnExportDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));

@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class GuiUtils {
@@ -17,6 +18,11 @@ public class GuiUtils {
 		}else {
 			return false;
 		}
+	}
+	
+	public static void setFrameIcon(String icon, JFrame frameToSet) {
+		ImageIcon imgIcon = new ImageIcon(icon);
+		frameToSet.setIconImage(imgIcon.getImage());
 	}
 	
 	public static Dimension getScreenSize() {

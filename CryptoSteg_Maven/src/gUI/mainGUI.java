@@ -48,15 +48,14 @@ import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
 import iNIT.INItializer;
+import menusettings.MenuSetter;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.SystemColor;
@@ -67,6 +66,7 @@ import utils.SysUtils;
 
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Color;
+
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 
@@ -90,6 +90,12 @@ public class mainGUI {
 	public static final String APP_VERSION_DATE = "4/4/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	
+	// constant files & directories prefix
+	public static final String RESOURCES_DIR= "Resources_Scrypt/";
+	public static final String DEFAULT_INI= RESOURCES_DIR + "CONFIG.ini";
+	public static final String BACKUP_INI= RESOURCES_DIR + "Backup/BACKUP_CONFIG.ini";
+	private static final String DEFAULT_INI_FOLDER= "INI_FILES";
+	
 	// icons and images
 	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
 	public static Image APPLICATION_MAIN_BCKG_IMAGE;
@@ -97,11 +103,47 @@ public class mainGUI {
 	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
-	// constant files & directories prefix
-	public static final String RESOURCES_DIR="Resources_Scrypt/";
-	public static final String DEFAULT_INI="Resources_Scrypt/CONFIG.ini";
-	public static final String BACKUP_INI="Resources_Scrypt/Backup/BACKUP_CONFIG.ini";
-	private static final String DEFAULT_INI_FOLDER="INI_FILES";
+	// MENU ICONS //
+	
+		// file submenu
+	public static final String ICON_CONF_MANAGER = RESOURCES_DIR + "Icons/Menu_Icons/manager.png";
+	public static final String ICON_LOAD_CUSTOM_CONF = RESOURCES_DIR + "Icons/Menu_Icons/loadConfig.png";
+	public static final String ICON_EXPORT_CONF = RESOURCES_DIR + "Icons/Menu_Icons/export.png";
+	public static final String ICON_RELOAD_CONF = RESOURCES_DIR + "Icons/Menu_Icons/reload.png";
+	public static final String ICON_SAVE_CONF = RESOURCES_DIR + "Icons/Menu_Icons/save.png";
+	public static final String ICON_SAVE_AS_DEFAULT_CONF = RESOURCES_DIR + "Icons/Menu_Icons/saveAsDefault.png";
+	public static final String ICON_RESET_CONF = RESOURCES_DIR + "Icons/Menu_Icons/reset.png";
+	public static final String ICON_EXIT = RESOURCES_DIR + "Icons/Menu_Icons/turnOff.png";
+	
+		// preferences submenu
+	public static final String ICON_GUI_OPT = RESOURCES_DIR + "Icons/Menu_Icons/graphics.png";
+	public static final String ICON_GEN_OPT = RESOURCES_DIR + "Icons/Menu_Icons/options.png";
+	
+		// Screept submenu
+	public static final String ICON_FILE_CRYPTER = RESOURCES_DIR + "Icons/Menu_Icons/crypter.png";
+	public static final String ICON_KEYGEN = RESOURCES_DIR + "Icons/Menu_Icons/imageWriter.png";
+	public static final String ICON_KEY_DICT = RESOURCES_DIR + "Icons/Menu_Icons/keyDictionary.png";
+	
+		// Various submenu
+	public static final String ICON_TEXT_EDITOR = RESOURCES_DIR + "Icons/Menu_Icons/textEditor.png";
+	public static final String ICON_NET_INFO = RESOURCES_DIR + "Icons/Menu_Icons/network.png";
+	public static final String ICON_HW_INFO = RESOURCES_DIR + "Icons/Menu_Icons/hardware.png";
+	public static final String ICON_CONVERSION = RESOURCES_DIR + "Icons/Menu_Icons/conversion.png";
+	public static final String ICON_FILE_N_DIR = RESOURCES_DIR + "Icons/Menu_Icons/folderActions.png";
+	
+	public static final String ICON_IMAGE_CONVERTER = RESOURCES_DIR + "Icons/Menu_Icons/imageConverter.png";
+	
+	public static final String ICON_UPPERCASE_FIRST = RESOURCES_DIR + "Icons/Menu_Icons/uppercase.png";
+	public static final String ICON_CREATE_FOLDER = RESOURCES_DIR + "Icons/Menu_Icons/createFolder.png";
+	public static final String ICON_DELETE_FOLDER = RESOURCES_DIR + "Icons/Menu_Icons/deleteFolder.png";
+	
+		// help submenu
+	public static final String ICON_ABOUT = RESOURCES_DIR + "Icons/Menu_Icons/about.png";
+	public static final String ICON_EXPORT_LOG = RESOURCES_DIR + "Icons/Menu_Icons/logExport.png";
+	public static final String ICON_USER_GUIDE = RESOURCES_DIR + "Icons/Menu_Icons/userGuide.png";
+	public static final String ICON_HOME_PAGE = RESOURCES_DIR + "Icons/Menu_Icons/homePage.png";
+		
+	// END MENU ICONS//
 	
 	// log_trace location
 	private static final String LOG_PROPERTIES_PATH = RESOURCES_DIR + "log4j.properties";
@@ -150,19 +192,19 @@ public class mainGUI {
 	private JMenu mnHelp;
 	
 	private JMenuItem mntmInspectCurrentConfiguration;
-	private JMenuItem loadPrjSub;
-	private JMenuItem savePrjSub;
-	private JMenuItem loadDefaultPrjSub;
+	private JMenuItem mntmloadPrjSub;
+	private JMenuItem mntmExportPrjSub;
+	private JMenuItem mntmReloadPrjSub;
 	private JMenuItem mntmSaveCurrentAs;
-	private JMenuItem loadSrcrYptDefaultConf;
+	private JMenuItem mntmloadSrcrYptDefaultConf;
 	private JMenuItem mntmExit;
 	private JMenuItem mntmUserDocumentation;
 	private JMenuItem mntmGenOpt;
 	private JMenuItem mntmCustomizeUIView;
 	private JMenuItem mntmCrypter;
-	private JMenuItem generateKeyImageSub;
+	private JMenuItem mntmgenerateKeyImageSub;
 	private JMenuItem mntmViewKeyDictionary;
-	private JMenuItem mntmNewTextFile;
+	private JMenuItem mntmTextEditor;
 	private JMenuItem mntmnetInfo;
 	private JMenuItem mntmhwInfo;
 	private JMenuItem mntmImageConverter;
@@ -417,7 +459,7 @@ public class mainGUI {
 					  	}
 					});
 					
-					loaderGraphics.update("Ready! :)", 100);
+					loaderGraphics.update("ScrYpT is Ready! :)", 100);
 					
 					initGUI();
 					
@@ -553,7 +595,7 @@ public class mainGUI {
 		});
 
 		// NOT OPENING VIEW - LOAD CUSTOM CONFIGURATION
-		loadPrjSub = new JMenuItem(new AbstractAction("Load Custom Configuration") {
+		mntmloadPrjSub = new JMenuItem(new AbstractAction("Load Custom Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		   
 		    		if (!FLAG_loadPrjSub) {
@@ -567,12 +609,12 @@ public class mainGUI {
 		});
 
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
-		savePrjSub = new JMenuItem(new AbstractAction("Export Current Configuration") {
+		mntmExportPrjSub = new JMenuItem(new AbstractAction("Export Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!FLAG_savePrjSub) {
 		    		FLAG_savePrjSub = true;
 					JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-					INIfileChoosER panel = new INIfileChoosER(currentConfiguration);
+					INIfileChoosER panel = new INIfileChoosER(currentConfiguration, (JLabel)null);
 					panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
 					FLAG_savePrjSub = false;
 				}  	
@@ -580,7 +622,7 @@ public class mainGUI {
 		});
 
 		// NOT OPENING VIEW - RELOAD CONFIGURATION
-		loadDefaultPrjSub = new JMenuItem(new AbstractAction("Reload Configuration") {
+		mntmReloadPrjSub = new JMenuItem(new AbstractAction("Reload Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadDefaultPrjSub) {
@@ -637,7 +679,7 @@ public class mainGUI {
 		});
 
 		// NOT OPENING VIEW - RELOAD STANDARD SCRYPT CONFIGURATION
-		loadSrcrYptDefaultConf = new JMenuItem(new AbstractAction("Reset Original") {
+		mntmloadSrcrYptDefaultConf = new JMenuItem(new AbstractAction("Reset Original") {
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadSrcrYptDefaultConf) {
@@ -732,7 +774,7 @@ public class mainGUI {
 		
 	///////////////// HANDLERS THAT OPEN A NEW WINDOW  ////////////////////////
 		
-		// open in a new window - CONFIGURATION MANAGER
+		// open in a new window - CUSTOMIZE GRAPHICS
 		mntmCustomizeUIView = new JMenuItem(new AbstractAction("Customize Graphics") {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagFrameGuiOptions) {
@@ -767,7 +809,7 @@ public class mainGUI {
 		});
 		
 		// open in a new window - KEYGEN
-		generateKeyImageSub = new JMenuItem(new AbstractAction("Generate Key Image") {
+		mntmgenerateKeyImageSub = new JMenuItem(new AbstractAction("Generate Key Image") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagFrameKeyGen) {
 		    		flagFrameKeyGen = true;
@@ -940,7 +982,7 @@ public class mainGUI {
 		});
 		
 		// open in main frame - TEXT EDITOR
-		mntmNewTextFile = new JMenuItem(new AbstractAction("Text Editor") {
+		mntmTextEditor = new JMenuItem(new AbstractAction("Text Editor") {
 			public void actionPerformed(ActionEvent e) {
 			
 				JPanel contentPane = (JPanel) frmScryptV.getContentPane();
@@ -1042,13 +1084,13 @@ public class mainGUI {
 			// SUB-MENU
 			mnFile.add(mntmInspectCurrentConfiguration);
 			mnFile.add(new JSeparator());
-			mnFile.add(loadPrjSub);
-			mnFile.add(savePrjSub);
+			mnFile.add(mntmloadPrjSub);
+			mnFile.add(mntmExportPrjSub);
 			mnFile.add(new JSeparator());
-			mnFile.add(loadDefaultPrjSub);
+			mnFile.add(mntmReloadPrjSub);
 			mnFile.add(mntmSaveCurrentAs);
 			mnFile.add(new JSeparator());
-			mnFile.add(loadSrcrYptDefaultConf);
+			mnFile.add(mntmloadSrcrYptDefaultConf);
 			mnFile.add(new JSeparator());
 			mnFile.add(mntmExit);
 			
@@ -1057,10 +1099,10 @@ public class mainGUI {
 			
 			mnCryptoSteg.add(mntmCrypter);
 			mnCryptoSteg.add(new JSeparator());
-			mnCryptoSteg.add(generateKeyImageSub);
+			mnCryptoSteg.add(mntmgenerateKeyImageSub);
 			mnCryptoSteg.add(mntmViewKeyDictionary);
 	
-			mnVarious.add(mntmNewTextFile);
+			mnVarious.add(mntmTextEditor);
 			mnVarious.add(new JSeparator());
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
@@ -1082,7 +1124,7 @@ public class mainGUI {
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentRecursive);
 			
 		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
-		addMenuIcons(); // not implemented for now -> is there need for it?
+		addMenuIcons();
 	}
 	
 	/**
@@ -1107,19 +1149,19 @@ public class mainGUI {
 
 		mntmExit.setFont(menuItemFont);
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
-		loadPrjSub.setFont(menuItemFont);
-		savePrjSub.setFont(menuItemFont);
-		loadDefaultPrjSub.setFont(menuItemFont);
+		mntmloadPrjSub.setFont(menuItemFont);
+		mntmExportPrjSub.setFont(menuItemFont);
+		mntmReloadPrjSub.setFont(menuItemFont);
 		mntmSaveCurrentAs.setFont(menuItemFont);
-		loadSrcrYptDefaultConf.setFont(menuItemFont);
+		mntmloadSrcrYptDefaultConf.setFont(menuItemFont);
 		mntmCustomizeUIView.setFont(menuItemFont);
 		mntmGenOpt.setFont(menuItemFont);
 		mntmCrypter.setFont(menuItemFont);
-		generateKeyImageSub.setFont(menuItemFont);
+		mntmgenerateKeyImageSub.setFont(menuItemFont);
 		mntmnetInfo.setFont(menuItemFont);
 		mntmhwInfo.setFont(menuItemFont);
 		mntmViewKeyDictionary.setFont(menuItemFont);
-		mntmNewTextFile.setFont(menuItemFont);
+		mntmTextEditor.setFont(menuItemFont);
 		mntmImageConverter.setFont(menuItemFont);
 		mntmTouppercaseDirectory.setFont(menuItemFont);
 		mntmMakeDirsFromPath.setFont(menuItemFont);
@@ -1135,6 +1177,45 @@ public class mainGUI {
 	}
 	
 	public void addMenuIcons() {
+		
+		MenuSetter.setIconTextGap(menuBar, 10);
+		
+		// file submenu
+		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(ICON_CONF_MANAGER));
+		mntmloadPrjSub.setIcon(new ImageIcon(ICON_LOAD_CUSTOM_CONF));
+		mntmExportPrjSub.setIcon(new ImageIcon(ICON_EXPORT_CONF));
+		mntmReloadPrjSub.setIcon(new ImageIcon(ICON_RELOAD_CONF));
+		mntmSaveCurrentAs.setIcon(new ImageIcon(ICON_SAVE_AS_DEFAULT_CONF));
+		mntmloadSrcrYptDefaultConf.setIcon(new ImageIcon(ICON_RESET_CONF));
+		mntmExit.setIcon(new ImageIcon(ICON_EXIT));
+		
+		// preferences submenu
+		mntmCustomizeUIView.setIcon(new ImageIcon(ICON_GUI_OPT));
+		mntmGenOpt.setIcon(new ImageIcon(ICON_GEN_OPT));
+		
+		// ScreepT submenu
+		mntmCrypter.setIcon(new ImageIcon(ICON_FILE_CRYPTER));
+		mntmgenerateKeyImageSub.setIcon(new ImageIcon(ICON_KEYGEN));
+		mntmViewKeyDictionary.setIcon(new ImageIcon(ICON_KEY_DICT));
+		
+		// Various submenu
+		mntmTextEditor.setIcon(new ImageIcon(ICON_TEXT_EDITOR));
+		mntmnetInfo.setIcon(new ImageIcon(ICON_NET_INFO));
+		mntmhwInfo.setIcon(new ImageIcon(ICON_HW_INFO));
+		mnConversionsAndOther.setIcon(new ImageIcon(ICON_CONVERSION));
+		mnFilesAndDirectories.setIcon(new ImageIcon(ICON_FILE_N_DIR));
+		
+		mntmImageConverter.setIcon(new ImageIcon(ICON_IMAGE_CONVERTER));
+		
+		mntmTouppercaseDirectory.setIcon(new ImageIcon(ICON_UPPERCASE_FIRST));
+		mntmMakeDirsFromPath.setIcon(new ImageIcon(ICON_CREATE_FOLDER));
+		mntmDeleteDirectoryContentRecursive.setIcon(new ImageIcon(ICON_DELETE_FOLDER));
+		
+		// Help submenu
+		mntmAboutScreept.setIcon(new ImageIcon(ICON_ABOUT));
+		mntmExportLog.setIcon(new ImageIcon(ICON_EXPORT_LOG));
+		mntmUserDocumentation.setIcon(new ImageIcon(ICON_USER_GUIDE));
+		mntmReturnToWelcome.setIcon(new ImageIcon(ICON_HOME_PAGE));
 	}
 	
 	public void updateMenuAndLogFontSize(int fontSize){

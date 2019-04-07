@@ -30,6 +30,8 @@ import java.awt.Color;
 
 import javax.swing.ImageIcon;
 import javax.swing.border.LineBorder;
+import java.awt.Cursor;
+import javax.swing.border.BevelBorder;
 
 public class ChargeIniLog extends JPanel{
 	
@@ -47,24 +49,27 @@ public class ChargeIniLog extends JPanel{
 	private JButton btnLoadCustomConfig;
 	private JButton btnExportConfig;
 	private JButton buttonReload;
-	private JLabel lblAvviso;
-	private JLabel config_PATH;
 	private JButton btnSaveCurrentAsDefault;
 	private JButton btnResetOriginalConfig;
+	private JLabel lblAvviso;
+	private JLabel config_PATH;
+	private JPanel panelDynPath;
 
 	public ChargeIniLog(INItializer configuration, mainGUI parentFrame) {
+		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
 		
 		parent = parentFrame;
 		config = configuration;
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
-		setBackground(Color.LIGHT_GRAY);
+		setBackground(new Color(211, 211, 211));
 		
-		setLayout(new MigLayout("", "[117.00][][][][][70,grow][50][100px][:80:250px]", "[:58.00:60px][35px][90%,grow]"));
+		setLayout(new MigLayout("", "[117.00][][][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:58.00:60px][35px,grow][90%,grow]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
 		textArea = new JTextArea();
+		textArea.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
 		scrollPane.setViewportView(textArea);
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
@@ -72,37 +77,52 @@ public class ChargeIniLog extends JPanel{
 		textArea.append(config.toStringa()); 		
 		
 		btnExportConfig = new JButton("Export current");
-		btnExportConfig.setForeground(Color.WHITE);
+		btnExportConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnExportConfig.setForeground(Color.BLACK);
 		btnExportConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnExportConfig.setBackground(Color.DARK_GRAY);
+		btnExportConfig.setBackground(new Color(176, 196, 222));
 		add(btnExportConfig, "cell 1 1,grow");
 		
 		btnSaveCurrentAsDefault = new JButton("Save current as Default");
-		btnSaveCurrentAsDefault.setForeground(Color.WHITE);
+		btnSaveCurrentAsDefault.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnSaveCurrentAsDefault.setForeground(Color.BLACK);
 		btnSaveCurrentAsDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnSaveCurrentAsDefault.setBackground(Color.DARK_GRAY);
+		btnSaveCurrentAsDefault.setBackground(new Color(176, 196, 222));
 		add(btnSaveCurrentAsDefault, "cell 2 1,grow");
 		
+		buttonReload = new JButton("");
+		buttonReload.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		buttonReload.setForeground(Color.WHITE);
+		buttonReload.setBackground(new Color(176, 196, 222));
+		buttonReload.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
+		add(buttonReload, "cell 3 1,grow");
+		
+		panelDynPath = new JPanel();
+		panelDynPath.setOpaque(false);
+		add(panelDynPath, "cell 5 1 3 1,alignx center,growy");
+		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
+		
+		JLabel lblInitializationFrom = new JLabel("Current .ini file: ");
+		panelDynPath.add(lblInitializationFrom, "cell 0 0,growx");
+		lblInitializationFrom.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		
+		config_PATH = new JLabel("");
+		panelDynPath.add(config_PATH, "cell 1 0,growx");
+		config_PATH.setHorizontalAlignment(SwingConstants.LEFT);
+		config_PATH.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		config_PATH.setText(config.getIniFile().getFile().getPath());
+		
 		btnResetOriginalConfig = new JButton("Reset original Config");
-		btnResetOriginalConfig.setForeground(Color.WHITE);
+		btnResetOriginalConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnResetOriginalConfig.setForeground(Color.BLACK);
 		btnResetOriginalConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnResetOriginalConfig.setBackground(new Color(119, 136, 153));
-		add(btnResetOriginalConfig, "cell 3 1,grow");
+		btnResetOriginalConfig.setBackground(new Color(250, 128, 114));
+		add(btnResetOriginalConfig, "cell 8 1,grow");
 		add(scrollPane, "cell 0 2 9 1,grow");
 		
 		lblAvviso = new JLabel("[Configuration loaded]");
 		lblAvviso.setForeground(Color.DARK_GRAY);
-		add(lblAvviso, "cell 5 1,alignx left");
-		
-		JLabel lblInitializationFrom = new JLabel("Current .ini file: ");
-		lblInitializationFrom.setFont(new Font("Trajan Pro 3", Font.BOLD, 15));
-		add(lblInitializationFrom, "cell 7 1,alignx right");
-		
-		config_PATH = new JLabel("");
-		config_PATH.setHorizontalAlignment(SwingConstants.CENTER);
-		config_PATH.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		add(config_PATH, "cell 8 1,alignx right");
-		config_PATH.setText(config.getIniFile().getFile().getPath());
+		add(lblAvviso, "cell 4 1,growx");
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(SystemColor.menu);
@@ -119,16 +139,11 @@ public class ChargeIniLog extends JPanel{
 		panel_1.add(lblConfigurationManager, "cell 0 0,alignx center");
 		
 		btnLoadCustomConfig = new JButton("Load Custom CONFIG");
-		btnLoadCustomConfig.setForeground(Color.WHITE);
+		btnLoadCustomConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnLoadCustomConfig.setForeground(Color.BLACK);
 		btnLoadCustomConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnLoadCustomConfig.setBackground(Color.DARK_GRAY);
+		btnLoadCustomConfig.setBackground(new Color(176, 196, 222));
 		add(btnLoadCustomConfig, "cell 0 1,grow");
-		
-		buttonReload = new JButton("");
-		buttonReload.setForeground(Color.WHITE);
-		buttonReload.setBackground(new Color(119, 136, 153));
-		buttonReload.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
-		add(buttonReload, "cell 4 1,grow");
 
 		addHandlers();
 		
@@ -143,12 +158,13 @@ public class ChargeIniLog extends JPanel{
 				try {
 					config.setIniFile(new Wini(config.getIniFile().getFile()));
 					config.setIniReadFile(new Wini(config.getIniFile().getFile()));
+					lblAvviso.setText("[Configuration re-loaded!]");
+					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+					config_PATH.setText(config.getIniFile().getFile().getPath());
+					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(parent.getMainFrame(), "Error during read of the file: " + config.getIniFile().getFile().getName(), "Load Error", JOptionPane.ERROR_MESSAGE);
 				}
-				lblAvviso.setText("[Configuration re-loaded!]");
-				config_PATH.setText(config.getIniFile().getFile().getPath());
-				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 			}
 		});
 		
@@ -156,26 +172,25 @@ public class ChargeIniLog extends JPanel{
 		btnLoadCustomConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("Load CONFIG clicked");
-				INIfileChoosER panel = new INIfileChoosER(config, textArea);
+				INIfileChoosER panel = new INIfileChoosER(config, textArea, lblAvviso);
 		    	panel.setBounds(20,20,parent.getMainFrame().getWidth(),parent.getMainFrame().getHeight()/2);  	
-				lblAvviso.setForeground(ImageWorker.randomColorRGB());
-		    	lblAvviso.setText("[Configuration Loaded!]");
+				lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 			}
 		});
 		
-		// SAVE CURRENT AS DEFAULT CONFIG
+		// EXPORT CURRENT CONFIG
 		btnExportConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				logger.debug("Save CONFIG clicked");
-		    	INIfileChoosER panel = new INIfileChoosER(config);
+				logger.debug("EXPORT CONFIG clicked");
+		    	INIfileChoosER panel = new INIfileChoosER(config, lblAvviso);
 		    	panel.setBounds(20,20,400,300);
-		    	lblAvviso.setText("[Configuration Exported!]");
+		    	lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
 			}
 		});
 		
-		// RELOAD STANDARD SCRYPT CONFIGURATION
+		// RELOAD ORIGINAL SCRYPT CONFIGURATION
 		btnResetOriginalConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (JOptionPane.showConfirmDialog(parent.getMainFrame(), "Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ",
@@ -185,17 +200,19 @@ public class ChargeIniLog extends JPanel{
 						FileUtils.copyFile(new File(mainGUI.BACKUP_INI), new File(mainGUI.DEFAULT_INI));
 						config.setIniReadFile(new Wini(new File(mainGUI.DEFAULT_INI)));
 						config.setIniFile(new Wini(new File(mainGUI.DEFAULT_INI)));
+						lblAvviso.setText("[Configuration Resetted!]");
+						String name = mainGUI.askUsername();
+						JOptionPane.showMessageDialog(parent.getMainFrame(), "File '" + config.getIniFile().getFile().getName() + "' loaded!");
+						config.readConfigIniFile();
+						config.getGenOpt().setUserName(name);
 					} catch (IOException exc) {
 						JOptionPane.showMessageDialog(parent.getMainFrame(),
 								"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
 						logger.error("Exception happened!", exc);
 					}
-					String name = mainGUI.askUsername();
-					JOptionPane.showMessageDialog(parent.getMainFrame(), "File '" + config.getIniFile().getFile().getName() + "' loaded!");
-					config.readConfigIniFile();
-					config.getGenOpt().setUserName(name);
+					
+					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
-					lblAvviso.setText("[Configuration Resetted!]");
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 				} else {
 					JOptionPane.showMessageDialog(parent.getMainFrame(),"Configuration not loaded, current CONFIG mantained!");
@@ -209,23 +226,28 @@ public class ChargeIniLog extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					config.setIniFile(new Wini(new File(mainGUI.DEFAULT_INI)));
-					config.setIniReadFile(new Ini(new File(mainGUI.DEFAULT_INI)));
-
-				} catch (IOException e1) {
-					logger.error("Exception happened!", e1);
-				}
-				if (JOptionPane.showConfirmDialog(parent.getMainFrame(), "Really want to overwrite default configuration?",
-						"Warning - Overwrite default configuration?",
-						JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
-					config.writeCurrentConfigIniFile();
-					lblAvviso.setText("[Configuration Saved as new Default!]");
-					config_PATH.setText(config.getIniFile().getFile().getPath());
-					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
-					JOptionPane.showMessageDialog(parent.getMainFrame(),"File " + config.getIniFile().getFile().getAbsolutePath() + " saved!");
-				} else {
-					JOptionPane.showMessageDialog(parent.getMainFrame(), "Configuration not saved!");
-				}
+					File backupIni = config.getIniFile().getFile();
+					if (JOptionPane.showConfirmDialog(parent.getMainFrame(), "Really want to overwrite default configuration?",
+							"Warning - Overwrite default configuration?",
+							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+						
+						config.setIniFile(new Wini(new File(mainGUI.DEFAULT_INI)));
+						config.setIniReadFile(new Ini(new File(mainGUI.DEFAULT_INI)));
+						config.writeCurrentConfigIniFile();
+						lblAvviso.setText("[Configuration Saved as new Default!]");
+						config_PATH.setText(config.getIniFile().getFile().getPath());
+						textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
+						JOptionPane.showMessageDialog(parent.getMainFrame(),"File " + config.getIniFile().getFile().getAbsolutePath() + " saved!");
+					} else {
+						JOptionPane.showMessageDialog(parent.getMainFrame(), "Configuration not saved!");
+					}
+					config.setIniFile(new Wini(backupIni));
+					config.setIniReadFile(new Ini(backupIni));
+					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+					} catch (IOException e1) {
+						logger.error("Exception happened!", e1);
+						JOptionPane.showMessageDialog(parent.getMainFrame(), "An error occurred :(", "Error", JOptionPane.ERROR_MESSAGE);
+					}
 			}
 		});
 	}

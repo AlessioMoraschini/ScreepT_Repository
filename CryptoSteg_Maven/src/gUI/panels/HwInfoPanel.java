@@ -174,7 +174,7 @@ public class HwInfoPanel extends JFrame{
 		active = true;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.ICON_HW_INFO, this);
 		
 		thisPanel = this;
 		

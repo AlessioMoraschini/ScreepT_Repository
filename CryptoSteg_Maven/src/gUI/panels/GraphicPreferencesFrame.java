@@ -39,6 +39,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
+import java.awt.Cursor;
 
 public class GraphicPreferencesFrame extends JFrame{
 	
@@ -88,7 +89,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		currentConfiguration = currentConf;
 		active = true;
 		
-		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.ICON_GUI_OPT, this);
 		
 		initValues(currentConfiguration);
 		
@@ -110,6 +111,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		panel.setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][grow 1000][][][][][]", "[100]"));
 		
 		chckbxDarklight = new JCheckBox("Nimbus Dark theme");
+		chckbxDarklight.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxDarklight.setFont(new Font("SansSerif", Font.BOLD, 13));
 		panel.add(chckbxDarklight, "cell 0 0,growx");
 		if(DARK_THEME) {
@@ -131,6 +133,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		getContentPane().add(lblGuiType, "cell 1 4,alignx center");
 		
 		comboStyleLaF = new JComboBox(UIManager.getInstalledLookAndFeels());
+		comboStyleLaF.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboStyleLaF.setMaximumRowCount(10);
 		updateComboLaFGUI(PREFERRED_STYLE);
 		getContentPane().add(comboStyleLaF, "cell 2 4 8 1,grow");
@@ -140,11 +143,13 @@ public class GraphicPreferencesFrame extends JFrame{
 		getContentPane().add(lblMenuFontSize, "cell 1 6,alignx center");
 		
 		spinnerMenuSize = new JSpinner();
+		spinnerMenuSize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		spinnerMenuSize.setModel(new SpinnerNumberModel(12, 5, 24, 1));
 		getContentPane().add(spinnerMenuSize, "cell 2 6,growx");
 		spinnerMenuSize.setValue(MENU_FONT_SIZE);
 		
 		sliderMenuSize = new JSlider();
+		sliderMenuSize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		sliderMenuSize.setValue(MENU_FONT_SIZE);
 		sliderMenuSize.setMaximum(24);
 		sliderMenuSize.setMinimum(5);
@@ -155,11 +160,13 @@ public class GraphicPreferencesFrame extends JFrame{
 		getContentPane().add(lblFontSize, "cell 1 7,alignx center");
 		
 		spinnerLogSize = new JSpinner();
+		spinnerLogSize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		spinnerLogSize.setModel(new SpinnerNumberModel(12, 5, 30, 1));
 		spinnerLogSize.setValue(LOG_PANEL_FONT_SIZE);
 		getContentPane().add(spinnerLogSize, "cell 2 7,growx");
 		
 		sliderLogSize = new JSlider();
+		sliderLogSize.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		sliderLogSize.setMaximum(30);
 		sliderLogSize.setMinimum(5);
 		sliderLogSize.setValue(LOG_PANEL_FONT_SIZE);
@@ -182,23 +189,27 @@ public class GraphicPreferencesFrame extends JFrame{
 		textFieldUname.setText(CURRENT_USERNAME);
 		
 		btnResetValues = new JButton("Reset initial values");
+		btnResetValues.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));
 		getContentPane().add(btnResetValues, "cell 1 9 2 1,growx,aligny center");
 		
 		btnSaveConf = new JButton("Save Values");
+		btnSaveConf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSaveConf.setForeground(new Color(0, 0, 0));
 		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSaveConf.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnSaveConf, "cell 7 9,growx,aligny center");
 		 
 		btnUseSettings = new JButton("Use");
+		btnUseSettings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnUseSettings.setForeground(Color.WHITE);
 		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnUseSettings.setBackground(Color.DARK_GRAY);
 		getContentPane().add(btnUseSettings, "cell 8 9,growx");
 		
 		btnDiscard = new JButton("Discard");
+		btnDiscard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDiscard.setForeground(new Color(0, 0, 0));
 		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDiscard.setBackground(new Color(205, 92, 92));

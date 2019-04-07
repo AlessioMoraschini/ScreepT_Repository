@@ -46,6 +46,7 @@ import gUI.mainGUI;
 import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
+import java.awt.Cursor;
 
 public class KeyGenPanel extends JFrame {
 
@@ -102,7 +103,7 @@ public class KeyGenPanel extends JFrame {
 		currentConfig = currentConf;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.ICON_KEYGEN, this);
 		
 		// get default values to initialize panel
 		CURRENT_SEL_W = currentConfig.getSteganOpt().getDefaultWidth();
@@ -154,10 +155,12 @@ public class KeyGenPanel extends JFrame {
 			
 		// initialize spinner and sliders with max, min, and selected values
 		widthValGUI = new JSpinner();
+		widthValGUI.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		widthValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_W, 100, ImageWorker.MAX_WIDTH_GEN, 5));
 		panel_1.add(widthValGUI, "cell 2 1,growx");
 		
 		sliderWidth = new JSlider(JSlider.HORIZONTAL, 100,ImageWorker.MAX_WIDTH_GEN, CURRENT_SEL_W );
+		sliderWidth.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(sliderWidth, "cell 3 1,growx");
 		
 		JLabel lblImageHeight = new JLabel("Image Height (Px):");
@@ -166,9 +169,11 @@ public class KeyGenPanel extends JFrame {
 		panel_1.add(lblImageHeight, "cell 0 2 2 1,alignx center,aligny center");
 		
 		sliderHeight = new JSlider(JSlider.HORIZONTAL, 100,ImageWorker.MAX_HEIGHT_GEN, CURRENT_SEL_H);
+		sliderHeight.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(sliderHeight, "cell 3 2,growx");
 		
 		heightValGUI = new JSpinner();
+		heightValGUI.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		heightValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_H, 100, ImageWorker.MAX_HEIGHT_GEN, 5));
 		panel_1.add(heightValGUI, "cell 2 2,growx");
 		
@@ -178,6 +183,7 @@ public class KeyGenPanel extends JFrame {
 		panel_1.add(lblImageType, "cell 0 3 2 1,alignx center");
 		
 		comboImgType = new JComboBox(KeyGenImageType.values());
+		comboImgType.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(comboImgType, "cell 2 3 2 1,growx");
 		comboImgType.setRenderer(new ToolTipBufferedImageType());
 		comboImgType.setSelectedItem(KeyGenImageType.TOP_SECURITY);
@@ -256,6 +262,7 @@ public class KeyGenPanel extends JFrame {
 		
 		textLog.setText("Hi "+currentConfig.getGenOpt().getUserName()+", generate your random custom key Image ;) ");
 		btnGenerateKey = new JButton("Generate Key");
+		btnGenerateKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKey.setRequestFocusEnabled(false);
 		btnGenerateKey.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnGenerateKey.setForeground(new Color(0, 0, 0));
@@ -263,6 +270,7 @@ public class KeyGenPanel extends JFrame {
 		
 		
 		btnExport = new JButton("Export");
+		btnExport.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnExport.setRequestFocusEnabled(false);
 		btnExport.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnExport.setForeground(new Color(0, 0, 0));
@@ -270,6 +278,7 @@ public class KeyGenPanel extends JFrame {
 		getContentPane().add(btnExport, "cell 7 4,grow");
 		
 		btnAddInDictionary = new JButton("Add to Dictionary");
+		btnAddInDictionary.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnAddInDictionary.setRequestFocusEnabled(false);
 		btnAddInDictionary.setBackground(new Color(230, 230, 250));
 		btnAddInDictionary.setFont(new Font("SansSerif", Font.BOLD, 12));

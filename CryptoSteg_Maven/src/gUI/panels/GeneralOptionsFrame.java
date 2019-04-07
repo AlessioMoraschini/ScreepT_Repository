@@ -39,6 +39,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.JSeparator;
 import javax.swing.JComboBox;
+import java.awt.Cursor;
 
 public class GeneralOptionsFrame extends JFrame{
 
@@ -91,7 +92,7 @@ public class GeneralOptionsFrame extends JFrame{
 		currentConfiguration = currentConf;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.ICON_GEN_OPT, this);
 		
 		try {
 			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
@@ -107,6 +108,7 @@ public class GeneralOptionsFrame extends JFrame{
 		getContentPane().setLayout(new MigLayout("", "[:10px:100px,grow][:110px:110px][:80:180,grow][130,grow][110,grow][:10px:100px,grow][:100px:170px][:100px:100px][:75px:75px][:75px:75px][:10px:100px,grow]", "[:50:70px][5][][:5:5px][30][10][][:5:5px][10%,grow,baseline]"));
 		
 		JPanel panel = new JPanel();
+		panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel.setForeground(Color.BLACK);
 		panel.setBorder(new LineBorder(Color.BLACK, 4));
 		panel.setBackground(Color.DARK_GRAY);
@@ -114,6 +116,7 @@ public class GeneralOptionsFrame extends JFrame{
 		panel.setLayout(new MigLayout("", "[10,grow][10,grow][200px,grow]", "[]"));
 		
 		chckbxAutosave = new JCheckBox("Autosave");
+		chckbxAutosave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxAutosave.setFont(new Font("SansSerif", Font.BOLD, 14));
 		chckbxAutosave.setForeground(Color.WHITE);
 		panel.add(chckbxAutosave, "cell 0 0");
@@ -129,6 +132,7 @@ public class GeneralOptionsFrame extends JFrame{
 		getContentPane().add(lblIntMinutes, "cell 6 2 3 1,alignx center,aligny center");
 		
 		chckbxHideLauncherAt = new JCheckBox("Hide Launcher at start");
+		chckbxHideLauncherAt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel.add(chckbxHideLauncherAt, "cell 1 0");
 		chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
 		chckbxHideLauncherAt.setHorizontalAlignment(SwingConstants.CENTER);
@@ -149,6 +153,7 @@ public class GeneralOptionsFrame extends JFrame{
 		
 		// update only local variable fields, INItializer will be updated on exit/save/use/discard
 		spinnerInterval = new JSpinner();
+		spinnerInterval.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		spinnerInterval.setModel(new SpinnerNumberModel(AUTOSAVE_INTERVAL, FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600, 1));
 		getContentPane().add(spinnerInterval, "cell 2 2 2 1,growx,aligny center");
 		spinnerInterval.setValue(AUTOSAVE_INTERVAL);
@@ -167,6 +172,7 @@ public class GeneralOptionsFrame extends JFrame{
 		getContentPane().add(lblDefaultCharset, "cell 1 4,alignx center");
 		
 		comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
+		comboCharsets.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		getContentPane().add(comboCharsets, "cell 2 4 2 1,growx");
 		comboCharsets.setSelectedItem(CHARSET);
 		
@@ -175,6 +181,7 @@ public class GeneralOptionsFrame extends JFrame{
 		getContentPane().add(lblUsername, "cell 4 4,alignx center");
 		
 		textFieldUname = new JTextField();
+		textFieldUname.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		textFieldUname.setText(CURRENT_USERNAME);
 		textFieldUname.setHorizontalAlignment(SwingConstants.CENTER);
 		textFieldUname.setFont(new Font("SansSerif", Font.PLAIN, 18));
@@ -185,24 +192,28 @@ public class GeneralOptionsFrame extends JFrame{
 		
 		JSeparator separator = new JSeparator();
 		btnResetValues = new JButton("Reset initial values");
+		btnResetValues.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		getContentPane().add(separator, "cell 1 6 9 1,growx");
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));
 		getContentPane().add(btnResetValues, "cell 1 8 2 1");
 		
 		btnSaveConf = new JButton("Save Values");
+		btnSaveConf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSaveConf.setForeground(Color.BLACK);
 		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSaveConf.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnSaveConf, "cell 7 8");
 
 		btnUseSettings = new JButton("Use");
+		btnUseSettings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnUseSettings.setForeground(Color.WHITE);
 		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnUseSettings.setBackground(Color.DARK_GRAY);
 		getContentPane().add(btnUseSettings, "cell 8 8,growx");
 
 		btnDiscard = new JButton("Discard");
+		btnDiscard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDiscard.setForeground(new Color(0, 0, 0));
 		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDiscard.setBackground(new Color(205, 92, 92));

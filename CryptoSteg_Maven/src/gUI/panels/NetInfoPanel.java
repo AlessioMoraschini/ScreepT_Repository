@@ -38,6 +38,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JProgressBar;
+import java.awt.Cursor;
 
 public class NetInfoPanel extends JFrame{
 	
@@ -46,6 +47,7 @@ public class NetInfoPanel extends JFrame{
 	
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
+	private static final String CALCULATING = "Calculating...";
 	
 	// flag to signal active
 	public static boolean active=false;
@@ -113,7 +115,7 @@ public class NetInfoPanel extends JFrame{
 		thisPanel = this;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.ICON_NET_INFO, this);
 		
 		try {
 			netUtils = new NetworkUtils();
@@ -157,6 +159,7 @@ public class NetInfoPanel extends JFrame{
 		getContentPane().add(lblSelectedNetworkAdapter, "cell 1 1,alignx center");
 		
 		comboAdapters = new JComboBox<NetworkAdapter>();
+		comboAdapters.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		if(netUtils!=null) {
 			reloadAdaptersCombo();
 		}else {
@@ -185,6 +188,7 @@ public class NetInfoPanel extends JFrame{
 		panel.add(dynLblAdapterName, "cell 1 0 2 1,growx");
 		
 		btnCalculateConnSpeed = new JButton("Calculate connection speed");
+		btnCalculateConnSpeed.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnCalculateConnSpeed.setMinimumSize(new Dimension(0, 40));
 		btnCalculateConnSpeed.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		btnCalculateConnSpeed.setBackground(new Color(192, 192, 192));
@@ -192,6 +196,7 @@ public class NetInfoPanel extends JFrame{
 		
 //		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(); // active this only while updating graphics with windowbuilder
 		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(FtpSpeedTestOptions.values());
+		comboSpeedTestOpt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel.add(comboSpeedTestOpt, "cell 6 0,alignx center,aligny center");
 		
 		lblHostName = new JLabel("Host Name:");
@@ -389,10 +394,16 @@ public class NetInfoPanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				updateNetDisplayedINFO();
-				resetSpeedTestValues();
-				validateConnectivity();
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						
+						updateCalculatingDispLbl();
+						resetSpeedTestValues();
+						updateNetDisplayedINFO();
+						validateConnectivity();
+					}
+				}).start();
 			}
 		});
 		
@@ -402,13 +413,16 @@ public class NetInfoPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				dynLblUPspeed.setText("Calculating...");
-				dynLblDOWNspeed.setText("Calculating...");
-				
 				new Thread(new Runnable() {
 					
 					@Override
 					public void run() {
+						resetSpeedTestValues();
+
+						dynLblUPspeed.setText("Calculating...");
+						dynLblDOWNspeed.setText("Calculating...");
+						dynLblLatency.setText("Calculating...");
+						
 						calculateLatency();
 						calculateDOWNspeed((FtpSpeedTestOptions)comboSpeedTestOpt.getSelectedItem());
 						calculateUPspeed((FtpSpeedTestOptions)comboSpeedTestOpt.getSelectedItem());
@@ -512,6 +526,18 @@ public class NetInfoPanel extends JFrame{
 		}
 	}
 	
+	private void updateCalculatingDispLbl() {
+		
+		dynLblAdapterName.setText(CALCULATING);
+		dynLblLocalIP.setText(CALCULATING);
+		dynLblMacAddress.setText(CALCULATING);
+		dynLblHostName.setText(CALCULATING);
+		dynLblMTU.setText(String.valueOf(CALCULATING));
+		dynLblSubnetMask.setText(CALCULATING);
+		dynLblBroadcastAddr.setText(CALCULATING);
+		dynLblPublicIP.setText(CALCULATING);
+	}
+	
 	// interface unrelated info
 	private void updateAdapterGUIinfos() {
 		
@@ -543,7 +569,6 @@ public class NetInfoPanel extends JFrame{
 		comboAdapters.removeAllItems();
 		DefaultComboBoxModel<NetworkAdapter> model = new DefaultComboBoxModel<NetworkAdapter>( netUtils.getAdapters() );
 		comboAdapters.setModel( model );
-		//comboTemplateSelector = new JComboBox<String>(retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER));
 		comboAdapters.revalidate();
 		comboAdapters.repaint();
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();

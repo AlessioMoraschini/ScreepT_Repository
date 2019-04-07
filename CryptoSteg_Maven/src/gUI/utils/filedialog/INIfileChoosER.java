@@ -2,22 +2,19 @@ package gUI.utils.filedialog;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
-import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
-import org.omg.CORBA.INITIALIZE;
 
 import amfileutils.FileStuff;
 import iNIT.INItializer;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.TextArea;
 import java.io.File;
 import java.io.IOException;
 
@@ -29,9 +26,9 @@ public class INIfileChoosER extends JDialog{
 	private JFileChooser fileChooser;
 	
 	/**
-	 * Costruttore per lettura file INI
+	 * Read file INI updating textArea and label
 	 * */
-	public INIfileChoosER(INItializer fileINI, JTextArea textA) {
+	public INIfileChoosER(INItializer fileINI, JTextArea textA, JLabel lblAvviso) {
 		
 		fileChooser = new JFileChooser();			
 		fileChooser.setDialogTitle("Load Configuration .INI File");
@@ -46,6 +43,7 @@ public class INIfileChoosER extends JDialog{
 				fileINI.setIniReadFile(new Wini(fileChooser.getSelectedFile()));
 //            	fileINI = new INItializer(new Wini(fileChooser.getSelectedFile())); -> bug, loose reference on main
             	fileINI.readConfigIniFile();
+            	lblAvviso.setText("[Configuration Loaded!]");
     	    	textA.setText("");
     	    	textA.append("chosen: "+fileChooser.getSelectedFile().getAbsolutePath());
     	    	textA.append("\n\n\n### NEW INI CONFIGURATION LOADED ###\n\n -> ");
@@ -77,7 +75,7 @@ public class INIfileChoosER extends JDialog{
     }
 	
 	/**
-	 * Costruttore per lettura file INI
+	 * Read file INI
 	 * */
 	public INIfileChoosER(INItializer fileINI, String defDir) {
 		
@@ -118,13 +116,16 @@ public class INIfileChoosER extends JDialog{
 		}
     }
         
-	// esporta backup file ini
-    public INIfileChoosER(INItializer fileINI) {
+	/**
+	 * Export file INI updating label (use null for label if you don't want to use it)
+	 */
+    public INIfileChoosER(INItializer fileINI, JLabel lblAvviso) {
 		
 		fileChooser = new JFileChooser();	
 		fileChooser.setDialogTitle("Save Configuration .INI File");;
 		fileChooser.setCurrentDirectory(new File("INI_FILES"));		
 		File selectedFile;
+		File backupIni = fileINI.getIniFile().getFile();
 		boolean done = false;
 		int returnVal = fileChooser.showSaveDialog(this.getParent());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -147,8 +148,10 @@ public class INIfileChoosER extends JDialog{
     				fileINI.setIniFile(new Wini(selectedFile));
     				fileINI.setIniReadFile(new Ini(selectedFile));
     				fileINI.writeCurrentConfigIniFile();
-//    		    	fileINI.readConfigIniFile();  -> cause of a bug
+    				if(lblAvviso != null) lblAvviso.setText("[Configuration Exported!]");
                	}
+               	fileINI.setIniFile(new Wini(backupIni));
+               	fileINI.setIniReadFile(new Ini(backupIni));
 				
 			} catch (IOException e) {
 				logger.error(e);

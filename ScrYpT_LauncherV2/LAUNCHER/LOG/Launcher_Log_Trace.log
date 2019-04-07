@@ -1,87 +1,9 @@
-2019-04-05 23:50:12,202 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
-2019-04-05 23:50:12,452 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
-2019-04-05 23:50:22,186 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
-2019-04-05 23:50:22,186 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
-
-##################################################
-
-Fri Apr 05 23:50:22 CEST 2019
-
-Launcher Closed now!
-
-##################################################
-
-
-2019-04-06 01:01:15,932 [main] DEBUG gui.ScrYpTLauncher - 
-
-##################################################
-
-Sat Apr 06 01:01:15 CEST 2019
-
-Launcher Started now!
-
-##################################################
-
-
-2019-04-06 01:01:15,949 [main] INFO  gui.ScrYpTLauncher - Loading INI launcher_configuration file...
-2019-04-06 01:01:15,980 [main] INFO  gui.ScrYpTLauncher - Launcher_configuration file loaded!
-2019-04-06 01:01:15,996 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started to analyze before launch
-2019-04-06 01:01:15,996 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started java installed versions check!
-2019-04-06 01:01:15,996 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
-2019-04-06 01:01:15,996 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Launch command generated:
-
-java -Xmx1048m -Xms964m -XshowSettings:vm -Dsun.java2d.uiScale=1 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar
-2019-04-06 01:01:16,012 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
-2019-04-06 01:01:16,012 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
-2019-04-06 01:01:16,105 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
-2019-04-06 01:01:16,355 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
-2019-04-06 01:01:18,496 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
-2019-04-06 01:01:18,573 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - icon image setted to main window
-2019-04-06 01:01:18,604 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
-2019-04-06 01:01:26,370 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
-2019-04-06 01:01:26,370 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
-
-##################################################
-
-Sat Apr 06 01:01:26 CEST 2019
-
-Launcher Closed now!
-
-##################################################
-
-
-2019-04-06 22:43:07,789 [main] DEBUG gui.ScrYpTLauncher - 
-
-##################################################
-
-Sat Apr 06 22:43:07 CEST 2019
-
-Launcher Started now!
-
-##################################################
-
-
-2019-04-06 22:43:07,792 [main] INFO  gui.ScrYpTLauncher - Loading INI launcher_configuration file...
-2019-04-06 22:43:07,825 [main] INFO  gui.ScrYpTLauncher - Launcher_configuration file loaded!
-2019-04-06 22:43:07,834 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started to analyze before launch
-2019-04-06 22:43:07,837 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Started java installed versions check!
-2019-04-06 22:43:07,838 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
-2019-04-06 22:43:07,838 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Launch command generated:
-
-java -Xmx1048m -Xms964m -XshowSettings:vm -Dsun.java2d.uiScale=1 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar
-2019-04-06 22:43:07,841 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
-2019-04-06 22:43:07,844 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
-2019-04-06 22:43:07,908 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
-2019-04-06 22:43:08,111 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
-2019-04-06 22:43:09,532 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
-2019-04-06 22:43:09,533 [AWT-EventQueue-0] DEBUG gui.ScrYpTLauncher - 
-
-##################################################
-
-Sat Apr 06 22:43:09 CEST 2019
-
-Launcher Closed now!
-
-##################################################
-
-
+2019-04-07 03:48:43,849 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-04-07 03:48:43,852 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-04-07 03:48:43,919 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-04-07 03:48:44,114 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
+2019-04-07 03:48:49,150 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Launching commands on currentOS: Windows 8.1amd64
+2019-04-07 03:48:49,151 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Creating launcher file : LauncherBatch.bat
+2019-04-07 03:48:49,153 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Write completed correctly :)
+2019-04-07 03:48:49,175 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Commands launched without exceptions :)
+2019-04-07 03:48:49,175 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel

@@ -1,0 +1,1 @@
+java -Xmx1048m -Xms964m -XshowSettings:vm -Dsun.java2d.uiScale=1 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar

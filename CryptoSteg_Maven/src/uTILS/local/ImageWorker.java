@@ -601,14 +601,15 @@ public class ImageWorker {
 
 	/**
 	 * this method generate a random color of the type argb
+	 * more the value is high and more the color is dark
 	 * 
 	 * @return
 	 */
-	public static Color randomColorRGB() {
+	public static Color randomColorRGB(float darkness) {
 		Random rand = new Random();
-		float r = rand.nextFloat() / 1f;
-		float g = rand.nextFloat() / 1f;
-		float b = rand.nextFloat() / 1f;
+		float r = rand.nextFloat() / darkness;
+		float g = rand.nextFloat() / darkness;
+		float b = rand.nextFloat() / darkness;
 		float a = rand.nextFloat();
 		if (a < 0.4) {
 			// guarantee opaque colors

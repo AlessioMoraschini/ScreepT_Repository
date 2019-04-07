@@ -22,7 +22,6 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
@@ -58,6 +57,9 @@ public class AboutSectionPanel extends JFrame{
 		mainAppFrame.setEnabled(false);
 		thisFrame = this;
 		active = true;
+		
+		// SET FRAME ICON
+		GuiUtils.setFrameIcon(mainGUI.ICON_ABOUT, this);
 		
 		BufferedImage image = null;
 		try {
@@ -126,9 +128,6 @@ public class AboutSectionPanel extends JFrame{
 		TextGuiUtils.underlineText(dynLblWebsite);
 		TextGuiUtils.hoverForeground(dynLblWebsite, new Color(100, 149, 237));
 		backPanel.add(dynLblWebsite, "cell 1 7 4 1,alignx center");
-		
-		// SET FRAME ICON
-		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
 		
 		// ADD HANDLERS AND NOTIFY LOG
 		addHandlers();

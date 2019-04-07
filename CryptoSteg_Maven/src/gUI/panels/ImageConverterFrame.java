@@ -159,7 +159,7 @@ public class ImageConverterFrame extends JFrame{
 		// initialize field representing locally configuration referred
 		currentConfiguration = currentConf;
 		
-		GuiUtils.setFrameIcon(mainGUI.SW_ICON, this);
+		GuiUtils.setFrameIcon(mainGUI.ICON_IMAGE_CONVERTER, this);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		
