@@ -5,6 +5,7 @@ import java.awt.Component;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 public class MenuSetter {
 
@@ -26,6 +27,18 @@ public class MenuSetter {
 	public static void setIconTextGap(JMenu menuBar, int distanceInPx) {
 		for(int i=0; i < menuBar.getItemCount(); i++) {
 			Component currentComponent = menuBar.getItem(i);
+			if(currentComponent instanceof JMenu) {
+				setIconTextGap((JMenu) currentComponent, distanceInPx);
+				((JMenu) currentComponent).setIconTextGap(distanceInPx);
+			}else if(currentComponent instanceof JMenuItem) {
+				((JMenuItem) currentComponent).setIconTextGap(distanceInPx);
+			}
+		}
+	}
+	
+	public static void setIconTextGap(JPopupMenu menuBar, int distanceInPx) {
+		for(int i=0; i < menuBar.getComponentCount(); i++) {
+			Component currentComponent = menuBar.getComponent(i);
 			if(currentComponent instanceof JMenu) {
 				setIconTextGap((JMenu) currentComponent, distanceInPx);
 				((JMenu) currentComponent).setIconTextGap(distanceInPx);

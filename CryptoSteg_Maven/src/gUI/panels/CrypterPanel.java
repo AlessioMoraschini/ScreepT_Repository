@@ -25,6 +25,7 @@ import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import gUI.mainGUI;
 import gUI.om.BufferedImageType;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
@@ -225,6 +226,9 @@ public class CrypterPanel extends JPanel {
 		// ADD ACTION LISTENERS TO LINK ACTIONS // 
 		addHandlers();
 		
+		// add Icons
+		addIcons();
+		
 		// new thread that updates jtree periodically
 		new Thread(new Runnable() {
 			
@@ -317,7 +321,7 @@ public class CrypterPanel extends JPanel {
 		panelStatus.setBackground(Color.BLACK);
 		add(panelStatus, "cell 0 2 9 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 0, 70, 100, 80, 300, 120, 120, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 0, 70, 100, 80, 300, 120, 135, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
 		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
@@ -465,6 +469,13 @@ public class CrypterPanel extends JPanel {
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		scrollPanelTab.setViewportView(tabbedPane);
 		
+	}
+	
+	private void addIcons() {
+		btnCreept.setIconTextGap(10);
+		btnDeCreept.setIconTextGap(10);
+		btnCreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
+		btnDeCreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
 	}
 	
 	private void addHandlers(){

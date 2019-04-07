@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
-import gUI.mainGUI;
 import gUI.om.BufferedImageType;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
 import iNIT.INItializer;
@@ -83,7 +83,7 @@ public class KeyDictionaryPanel extends JFrame{
 		active = true;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.ICON_KEY_DICT, this);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);
 		
 		thisPanel = this;
 		// initialize configuration
@@ -159,7 +159,6 @@ public class KeyDictionaryPanel extends JFrame{
 		tree.setVisibleRowCount(10);
 		scrollPane.setViewportView(tree);
 		treeListener = new TreeSelectionListener() {
-		TreeFileMouseListenerDictionary menuListener = new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
 			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
@@ -183,14 +182,13 @@ public class KeyDictionaryPanel extends JFrame{
 		};
 		tree.addTreeSelectionListener(treeListener);
 		
-		
 		JButton btnReloadImgTree = new JButton("");
 		btnReloadImgTree.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnReloadImgTree.setBackground(Color.BLACK);
 		btnReloadImgTree.setIcon(new ImageIcon(ChargeIniLog.ICON_RELOAD_BLUE));
 		btnReloadImgTree.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tree=new JTree(treeModel);
+				tree.setModel(treeModel);
 				
 				// refresh tree gui
 				refreshJTree();
@@ -211,15 +209,8 @@ public class KeyDictionaryPanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					Desktop.getDesktop().open(KEY_DICTIONARY_FILE);
-					logger.debug(KEY_DICTIONARY_FILE.getAbsolutePath()+" Opened in system explorer");
-					
-					// alternative way to open in system explorer
-					//Runtime.getRuntime().exec("explorer.exe /select," + KEY_DICTIONARY_FILE.getAbsolutePath());
-				} catch (IOException e1) {
-				logger.error("Error opening folder in system explorer !"+e1.toString());
-				}
+				
+				GuiUtils.openInFileSystem(KEY_DICTIONARY_FILE);
 			}
 		});
 		
@@ -345,7 +336,7 @@ public class KeyDictionaryPanel extends JFrame{
 				while (true) {
 					String backupText = textArea.getText();
 					TreePath[] backup = tree.getSelectionPaths();
-					tree = new JTree(treeModel);
+					tree.setModel(treeModel);
 					// refresh tree gui
 					refreshJTree();
 					tree.setSelectionPaths(backup);
@@ -360,6 +351,7 @@ public class KeyDictionaryPanel extends JFrame{
 			}
 		}).start();
 		
+		TreeFileMouseListenerDictionary menuListener = new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
 		logger.debug("## KEY DICTIONARY started");
 
 	}

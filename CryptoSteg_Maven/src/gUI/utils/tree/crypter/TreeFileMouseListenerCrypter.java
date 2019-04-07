@@ -33,9 +33,11 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import gUI.panels.CrypterPanel;
 import gUI.panels.KeyGenPanel;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import local.HandleString;
+import menusettings.MenuSetter;
 import uTILS.local.ImageWorker;
 
 public class TreeFileMouseListenerCrypter {
@@ -95,26 +97,36 @@ public class TreeFileMouseListenerCrypter {
 
 	private JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
-	    JMenuItem item2 = new JMenuItem("Load Image & Details");
-	    item2.addActionListener(getInfoActionListener());
-	    menu.add(item2);
 	    
-	    JMenuItem item5 = new JMenuItem("Use as Key");
-	    item5.addActionListener(getSelectKeyImgListener());
-	    menu.add(item5);
+	    JMenuItem itemReadKey = new JMenuItem("Load Image & Details");
+	    itemReadKey.addActionListener(getInfoActionListener());
+	    menu.add(itemReadKey);
+	    
+	    JMenuItem itemUseKey = new JMenuItem("Use as Key");
+	    itemUseKey.addActionListener(getSelectKeyImgListener());
+	    menu.add(itemUseKey);
 	    
 	    //TODO -> add autoconverter to png key when importing
-	    JMenuItem item3 = new JMenuItem("Add key Image to Dictionary");
-	    item3.addActionListener(addKeyActionListener());
-	    menu.add(item3);
+	    JMenuItem itemAddKey = new JMenuItem("Add key Image to Dictionary");
+	    itemAddKey.addActionListener(addKeyActionListener());
+	    menu.add(itemAddKey);
 	    
-	    JMenuItem item4 = new JMenuItem("Export selected key Images");
-	    item4.addActionListener(exportKeyActionListener());
-	    menu.add(item4);
+	    JMenuItem itemExportKeys = new JMenuItem("Export selected key Images");
+	    itemExportKeys.addActionListener(exportKeyActionListener());
+	    menu.add(itemExportKeys);
 	    
-	    JMenuItem item1 = new JMenuItem("Delete selected Key Images");
-	    item1.addActionListener(getDeleteActionListener());
-	    menu.add(item1);
+	    JMenuItem itemDelete = new JMenuItem("Delete selected Key Images");
+	    itemDelete.addActionListener(getDeleteActionListener());
+	    menu.add(itemDelete);
+	    
+	    // set menu icons
+	    MenuSetter.setIconTextGap(menu, 12);
+	    
+	    itemUseKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
+	    itemReadKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
+	    itemAddKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT));
+	    itemExportKeys.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
+	    itemDelete.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 
 	    return menu;
 	}

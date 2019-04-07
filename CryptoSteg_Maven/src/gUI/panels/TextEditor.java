@@ -57,6 +57,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import gUI.om.SupportedFileTextEditor;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorListener;
 import javax.swing.JPasswordField;
@@ -70,21 +71,6 @@ public class TextEditor extends JPanel {
 	
 	//  RESOURCE FILES //
 	private final String LOREM_IPSUM = "Resources_Scrypt/Templates/LoremIpsum.txt";
-	
-	// ICONS //
-	public final String ICON_TEXT_CLEAR = "Resources_Scrypt/Icons/Clear.png";
-	public final String ICON_TEXT_BOLD = "Resources_Scrypt/Icons/Bold.png";
-	public final String ICON_TEXT_ITALIC = "Resources_Scrypt/Icons/Italic.png";
-	public final String ICON_TEXT_COLOR = "Resources_Scrypt/Icons/TextColor_2.png";
-	public final String ICON_TEXT_BG_COLOR = "Resources_Scrypt/Icons/BackgroundColor.png";
-	public final String ICON_TEXT_FONT = "Resources_Scrypt/Icons/Font_2.png";
-	public final String ICON_FILE_SAVE = "Resources_Scrypt/Icons/SaveFile.png";
-	public final String ICON_FILE_LOAD = "Resources_Scrypt/Icons/LoadFile.png";
-	public final String ICON_REDO = "Resources_Scrypt/Icons/Redo.png";
-	public final String ICON_UNDO = "Resources_Scrypt/Icons/Undo.png";
-	public final String ICON_CRYPT = "Resources_Scrypt/Icons/Crypt.png";
-	public final String ICON_DECRYPT = "Resources_Scrypt/Icons/Decrypt.png";
-	public final String ICON_SPEAKER = "Resources_Scrypt/Icons/Speaker.png";
 	
 	// TOOLTIPS //
 	private static final String tooltipSaveTextFile = "[Ctrl+S] Choose name and folder, save current file";
@@ -240,7 +226,7 @@ public class TextEditor extends JPanel {
 		
 		btnCrypt = new JButton("");
 		btnCrypt.setBackground(SystemColor.activeCaption);
-		btnCrypt.setIcon(new ImageIcon(ICON_CRYPT));
+		btnCrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
 		btnCrypt.setToolTipText(tooltipCrypt);
 		btnCrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnCrypt.setForeground(SystemColor.inactiveCaption);
@@ -248,7 +234,7 @@ public class TextEditor extends JPanel {
 		
 		btnDecrypt = new JButton("");
 		btnDecrypt.setBackground(SystemColor.activeCaption);
-		btnDecrypt.setIcon(new ImageIcon(ICON_DECRYPT));
+		btnDecrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
 		btnDecrypt.setToolTipText(tooltipDecrypt);
 		btnDecrypt.setForeground(SystemColor.inactiveCaption);
 		btnDecrypt.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -284,7 +270,7 @@ public class TextEditor extends JPanel {
 		btnBackgroundCol = new JButton("");
 		btnBackgroundCol.setToolTipText(tooltipBackgroundColor);
 		btnBackgroundCol.setBackground(new Color(176, 196, 222));
-		btnBackgroundCol.setIcon(new ImageIcon(ICON_TEXT_BG_COLOR));
+		btnBackgroundCol.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BG_COLOR));
 		add(btnBackgroundCol, "cell 9 4,alignx center");
 		
 		sliderFontSize = new JSlider(4,100);
@@ -303,13 +289,13 @@ public class TextEditor extends JPanel {
 		
 		btnSpeak = new JButton("");
 		btnSpeak.setToolTipText(tooltipSpeak);
-		btnSpeak.setIcon(new ImageIcon(ICON_SPEAKER));
+		btnSpeak.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPEAKER));
 		btnSpeak.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSpeak.setBackground(new Color(176, 196, 222));
 		add(btnSpeak, "cell 10 4,alignx center");
 
 		btnFontChooser.setBackground(new Color(176, 196, 222));
-		btnFontChooser.setIcon(new ImageIcon(ICON_TEXT_FONT));
+		btnFontChooser.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_FONT));
 		add(btnFontChooser, "cell 10 5,alignx center"); 
 		
 		lblNewLabel = new JLabel("\u2193  (AES KEY)  \u2193");
@@ -323,7 +309,7 @@ public class TextEditor extends JPanel {
 		btnSaveTextFile = new JButton("");
 		btnSaveTextFile.setToolTipText(tooltipSaveTextFile);
 		btnSaveTextFile.setForeground(SystemColor.menuText);
-		btnSaveTextFile.setIcon(new ImageIcon(ICON_FILE_SAVE));
+		btnSaveTextFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE));
 		btnSaveTextFile.setBackground(SystemColor.inactiveCaption);
 		add(btnSaveTextFile, "cell 1 4,grow");
 		
@@ -386,7 +372,7 @@ public class TextEditor extends JPanel {
 		btnLoadTextFile.setToolTipText(tooltipLoadTextFile);
 		btnLoadTextFile.setForeground(SystemColor.menuText);
 		btnLoadTextFile.setBackground(SystemColor.inactiveCaption);
-		btnLoadTextFile.setIcon(new ImageIcon(ICON_FILE_LOAD));
+		btnLoadTextFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
 		add(btnLoadTextFile, "cell 0 4,grow");
 		
 		btnDefaultOpt = new JButton("Default Opt");
@@ -400,18 +386,18 @@ public class TextEditor extends JPanel {
 		btnUndo.setToolTipText(tooltipUndo);
 		btnUndo.setBackground(new Color(176, 196, 222));
 		add(btnUndo, "cell 7 4,alignx center");
-		btnUndo.setIcon(new ImageIcon(ICON_UNDO));
+		btnUndo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
 		
 		btnRedo = new JButton("");
 		btnRedo.setToolTipText(tooltipRedo);
 		btnRedo.setBackground(new Color(176, 196, 222));
 		add(btnRedo, "cell 8 4,alignx center");
-		btnRedo.setIcon(new ImageIcon(ICON_REDO));
+		btnRedo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
 		
 		btnClear = new JButton("");
 		btnClear.setToolTipText(tooltipClearText);
 		btnClear.setBackground(new Color(176, 196, 222));
-		btnClear.setIcon(new ImageIcon(ICON_TEXT_CLEAR));
+		btnClear.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_CLEAR));
 		btnClear.setFont(new Font("Wide Latin", Font.BOLD, 14));
 		add(btnClear, "cell 6 4,growx,aligny center");
 		
@@ -425,7 +411,7 @@ public class TextEditor extends JPanel {
 		btnBold = new JButton("");
 		btnBold.setToolTipText(tooltipBoldText);
 		btnBold.setBackground(new Color(176, 196, 222));
-		btnBold.setIcon(new ImageIcon(ICON_TEXT_BOLD));
+		btnBold.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BOLD));
 		add(btnBold, "cell 8 5,alignx center");
 		
 		btnDark = new JButton("Dark/Light");
@@ -459,13 +445,13 @@ public class TextEditor extends JPanel {
 		btnItaliC = new JButton("");
 		btnItaliC.setToolTipText(tooltipItalic);
 		btnItaliC.setBackground(new Color(176, 196, 222));
-		btnItaliC.setIcon(new ImageIcon(ICON_TEXT_ITALIC));
+		btnItaliC.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_ITALIC));
 		add(btnItaliC, "cell 7 5,alignx center");
 		
 		btnForegroundCol = new JButton("");
 		btnForegroundCol.setToolTipText(tooltipForegroundTxt);
 		btnForegroundCol.setBackground(new Color(176, 196, 222));
-		btnForegroundCol.setIcon(new ImageIcon(ICON_TEXT_COLOR));
+		btnForegroundCol.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_COLOR));
 		add(btnForegroundCol, "cell 9 5,alignx center");
 		
 		JScrollBar scrollBar = new JScrollBar();

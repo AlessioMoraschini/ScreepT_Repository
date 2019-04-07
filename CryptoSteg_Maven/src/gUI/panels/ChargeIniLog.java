@@ -49,7 +49,7 @@ public class ChargeIniLog extends JPanel{
 	public final static String ICON_RELOAD_BLUE = "Resources_Scrypt/Icons/Reload.png";
 	
 	private INItializer config;
-	private mainGUI parent;
+	public mainGUI parent;
 	private ChargeIniLog thisPanel;
 	
 	// GUI ELEMENTS //

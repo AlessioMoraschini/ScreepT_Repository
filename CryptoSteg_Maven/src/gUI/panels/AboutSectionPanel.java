@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import frameutils.BackgroundPanel;
 import frameutils.GuiUtils;
 import gUI.mainGUI;
+import gUI.utils.IconsPathConfigurator;
 import guistyle.TextGuiUtils;
 
 import java.awt.Color;
@@ -59,7 +60,7 @@ public class AboutSectionPanel extends JFrame{
 		active = true;
 		
 		// SET FRAME ICON
-		GuiUtils.setFrameIcon(mainGUI.ICON_ABOUT, this);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
 		
 		BufferedImage image = null;
 		try {

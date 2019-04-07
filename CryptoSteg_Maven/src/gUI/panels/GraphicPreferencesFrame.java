@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
 import gUI.mainGUI;
+import gUI.utils.IconsPathConfigurator;
 import iNIT.INItializer;
 
 import javax.swing.UIManager;
@@ -89,7 +90,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		currentConfiguration = currentConf;
 		active = true;
 		
-		GuiUtils.setFrameIcon(mainGUI.ICON_GUI_OPT, this);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
 		
 		initValues(currentConfiguration);
 		

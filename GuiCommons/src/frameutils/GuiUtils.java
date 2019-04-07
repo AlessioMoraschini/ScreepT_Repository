@@ -1,15 +1,22 @@
 package frameutils;
 
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import org.apache.log4j.Logger;
+
 public class GuiUtils {
+	
+	// INItializer logger creation		
+	static Logger logger = Logger.getLogger(GuiUtils.class); 
 	
 	public static boolean setFrameIcon(Image icon, JFrame frameToSet) {
 		if(icon != null) {
@@ -42,6 +49,18 @@ public class GuiUtils {
 		Dimension screenSize = getScreenSize();
 		targetFrame.setSize(W, H);
 		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
+	}
+	
+	public static void openInFileSystem(File destination) {
+		if (destination != null && destination.exists()) {
+			try {
+				Desktop.getDesktop().open(destination);
+				logger.debug(destination.getAbsolutePath()+" Opened in system explorer");
+
+			} catch (IOException e1) {
+				logger.error("Error opening folder in system explorer !", e1);
+			} 
+		}	
 	}
 	
 }

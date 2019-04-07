@@ -599,6 +599,46 @@ public class FileStuff {
 		return esit;
 	}
 	
+	public static boolean copyFileIntoDir(File source, File destdir, boolean overwrite) {
+		
+		boolean esit = false;
+		
+		// if dir not existing or dest file not existing
+		if(!destdir.exists()) {
+			destdir.getParentFile().mkdirs();
+			try {
+				destdir.createNewFile();
+			} catch (IOException e) {
+				logger.error("Exception happened!", e);
+				esit = false;
+			}
+		}else {
+			if(overwrite) {
+				logger.debug("File existing: user allowed to overwrite.");
+				destdir.delete();
+				try {
+					destdir.createNewFile();
+				} catch (IOException e) {
+					logger.error("Exception happened!", e);
+					esit = false;
+				}
+			}else {
+				// else give it unique name
+				destdir = renameJavaObjFile(destdir);
+			}
+		}
+		try {
+		    FileUtils.copyFileToDirectory(source, destdir, true);
+		    logger.debug("File written: "+destdir.getAbsolutePath()+"\nSize: " + coolFileSize(destdir));
+		    esit = true;
+		} catch (IOException e) {
+			logger.error("Exception happened!", e);
+		   esit = false;
+		}
+		
+		return esit;
+	}
+	
 	/**
 	 * function used to update safely the progressbar in asynchronous way
 	 * @param i

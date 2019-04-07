@@ -8,7 +8,7 @@ import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
 import frameutils.GuiUtils;
-import gUI.mainGUI;
+import gUI.utils.IconsPathConfigurator;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkUtils;
@@ -115,7 +115,7 @@ public class NetInfoPanel extends JFrame{
 		thisPanel = this;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.ICON_NET_INFO, this);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_NET_INFO, this);
 		
 		try {
 			netUtils = new NetworkUtils();

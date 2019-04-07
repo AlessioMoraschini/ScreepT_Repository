@@ -42,8 +42,8 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import iNIT.INItializer;
-import gUI.mainGUI;
 import gUI.om.KeyGenImageType;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import java.awt.Cursor;
@@ -103,7 +103,7 @@ public class KeyGenPanel extends JFrame {
 		currentConfig = currentConf;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.ICON_KEYGEN, this);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEYGEN, this);
 		
 		// get default values to initialize panel
 		CURRENT_SEL_W = currentConfig.getSteganOpt().getDefaultWidth();

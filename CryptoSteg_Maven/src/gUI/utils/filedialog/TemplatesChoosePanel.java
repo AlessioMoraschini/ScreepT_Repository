@@ -2,7 +2,6 @@ package gUI.utils.filedialog;
 
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
-import javax.swing.MutableComboBoxModel;
 
 import java.awt.Color;
 import javax.swing.JPanel;
@@ -23,23 +22,16 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
 import gUI.om.SupportedFileTextEditor;
-import gUI.om.Templates_Enum;
 import local.HandleString;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.awt.event.ActionEvent;
 

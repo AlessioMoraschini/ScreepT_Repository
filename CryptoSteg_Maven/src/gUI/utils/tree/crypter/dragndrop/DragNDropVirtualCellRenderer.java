@@ -12,6 +12,7 @@ import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
 
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 
 public class DragNDropVirtualCellRenderer implements TreeCellRenderer {
@@ -19,10 +20,6 @@ public class DragNDropVirtualCellRenderer implements TreeCellRenderer {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(DragNDropVirtualCellRenderer.class); 
 		
-	private static final String iconFolderPath ="Resources_Scrypt/Icons/Folder.png";
-	private static final String iconFilePath ="Resources_Scrypt/Icons/File.png";
-	private static final String iconRootPath ="Resources_Scrypt/Icons/Root.png";
-	
 	private JLabel iconContainer;
 	private Font oldFont;
 	
@@ -41,11 +38,11 @@ public class DragNDropVirtualCellRenderer implements TreeCellRenderer {
         	try {
 				CrypterDragFileModel nodeModeled = (CrypterDragFileModel) node;
 				if (nodeModeled.name.equalsIgnoreCase(VirtualFileDropPane.DEFAULT_ROOT)) {
-					iconContainer.setIcon(new ImageIcon(iconRootPath));
+					iconContainer.setIcon(new ImageIcon(IconsPathConfigurator.iconRootPath));
 				} else if (nodeModeled.realFile.isDirectory()) {
-					iconContainer.setIcon(new ImageIcon(iconFolderPath));
+					iconContainer.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 				} else {
-					iconContainer.setIcon(new ImageIcon(iconFilePath));
+					iconContainer.setIcon(new ImageIcon(IconsPathConfigurator.iconFilePath));
 				}
 				
 				iconContainer.setText(nodeModeled.toString());

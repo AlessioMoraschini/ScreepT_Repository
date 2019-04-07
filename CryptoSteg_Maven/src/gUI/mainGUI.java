@@ -39,6 +39,7 @@ import gUI.panels.GeneralOptionsFrame;
 import gUI.panels.KeyGenPanel;
 import gUI.panels.NetInfoPanel;
 import gUI.panels.TextEditor;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
@@ -103,47 +104,7 @@ public class mainGUI {
 	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
-	// MENU ICONS //
 	
-		// file submenu
-	public static final String ICON_CONF_MANAGER = RESOURCES_DIR + "Icons/Menu_Icons/manager.png";
-	public static final String ICON_LOAD_CUSTOM_CONF = RESOURCES_DIR + "Icons/Menu_Icons/loadConfig.png";
-	public static final String ICON_EXPORT_CONF = RESOURCES_DIR + "Icons/Menu_Icons/export.png";
-	public static final String ICON_RELOAD_CONF = RESOURCES_DIR + "Icons/Menu_Icons/reload.png";
-	public static final String ICON_SAVE_CONF = RESOURCES_DIR + "Icons/Menu_Icons/save.png";
-	public static final String ICON_SAVE_AS_DEFAULT_CONF = RESOURCES_DIR + "Icons/Menu_Icons/saveAsDefault.png";
-	public static final String ICON_RESET_CONF = RESOURCES_DIR + "Icons/Menu_Icons/reset.png";
-	public static final String ICON_EXIT = RESOURCES_DIR + "Icons/Menu_Icons/turnOff.png";
-	
-		// preferences submenu
-	public static final String ICON_GUI_OPT = RESOURCES_DIR + "Icons/Menu_Icons/graphics.png";
-	public static final String ICON_GEN_OPT = RESOURCES_DIR + "Icons/Menu_Icons/options.png";
-	
-		// Screept submenu
-	public static final String ICON_FILE_CRYPTER = RESOURCES_DIR + "Icons/Menu_Icons/crypter.png";
-	public static final String ICON_KEYGEN = RESOURCES_DIR + "Icons/Menu_Icons/imageWriter.png";
-	public static final String ICON_KEY_DICT = RESOURCES_DIR + "Icons/Menu_Icons/keyDictionary.png";
-	
-		// Various submenu
-	public static final String ICON_TEXT_EDITOR = RESOURCES_DIR + "Icons/Menu_Icons/textEditor.png";
-	public static final String ICON_NET_INFO = RESOURCES_DIR + "Icons/Menu_Icons/network.png";
-	public static final String ICON_HW_INFO = RESOURCES_DIR + "Icons/Menu_Icons/hardware.png";
-	public static final String ICON_CONVERSION = RESOURCES_DIR + "Icons/Menu_Icons/conversion.png";
-	public static final String ICON_FILE_N_DIR = RESOURCES_DIR + "Icons/Menu_Icons/folderActions.png";
-	
-	public static final String ICON_IMAGE_CONVERTER = RESOURCES_DIR + "Icons/Menu_Icons/imageConverter.png";
-	
-	public static final String ICON_UPPERCASE_FIRST = RESOURCES_DIR + "Icons/Menu_Icons/uppercase.png";
-	public static final String ICON_CREATE_FOLDER = RESOURCES_DIR + "Icons/Menu_Icons/createFolder.png";
-	public static final String ICON_DELETE_FOLDER = RESOURCES_DIR + "Icons/Menu_Icons/deleteFolder.png";
-	
-		// help submenu
-	public static final String ICON_ABOUT = RESOURCES_DIR + "Icons/Menu_Icons/about.png";
-	public static final String ICON_EXPORT_LOG = RESOURCES_DIR + "Icons/Menu_Icons/logExport.png";
-	public static final String ICON_USER_GUIDE = RESOURCES_DIR + "Icons/Menu_Icons/userGuide.png";
-	public static final String ICON_HOME_PAGE = RESOURCES_DIR + "Icons/Menu_Icons/homePage.png";
-		
-	// END MENU ICONS//
 	
 	// log_trace location
 	private static final String LOG_PROPERTIES_PATH = RESOURCES_DIR + "log4j.properties";
@@ -1181,41 +1142,41 @@ public class mainGUI {
 		MenuSetter.setIconTextGap(menuBar, 10);
 		
 		// file submenu
-		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(ICON_CONF_MANAGER));
-		mntmloadPrjSub.setIcon(new ImageIcon(ICON_LOAD_CUSTOM_CONF));
-		mntmExportPrjSub.setIcon(new ImageIcon(ICON_EXPORT_CONF));
-		mntmReloadPrjSub.setIcon(new ImageIcon(ICON_RELOAD_CONF));
-		mntmSaveCurrentAs.setIcon(new ImageIcon(ICON_SAVE_AS_DEFAULT_CONF));
-		mntmloadSrcrYptDefaultConf.setIcon(new ImageIcon(ICON_RESET_CONF));
-		mntmExit.setIcon(new ImageIcon(ICON_EXIT));
+		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
+		mntmloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
+		mntmExportPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
+		mntmReloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+		mntmSaveCurrentAs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
+		mntmloadSrcrYptDefaultConf.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
+		mntmExit.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXIT));
 		
 		// preferences submenu
-		mntmCustomizeUIView.setIcon(new ImageIcon(ICON_GUI_OPT));
-		mntmGenOpt.setIcon(new ImageIcon(ICON_GEN_OPT));
+		mntmCustomizeUIView.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GUI_OPT));
+		mntmGenOpt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_OPT));
 		
 		// ScreepT submenu
-		mntmCrypter.setIcon(new ImageIcon(ICON_FILE_CRYPTER));
-		mntmgenerateKeyImageSub.setIcon(new ImageIcon(ICON_KEYGEN));
-		mntmViewKeyDictionary.setIcon(new ImageIcon(ICON_KEY_DICT));
+		mntmCrypter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_CRYPTER));
+		mntmgenerateKeyImageSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN));
+		mntmViewKeyDictionary.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
 		
 		// Various submenu
-		mntmTextEditor.setIcon(new ImageIcon(ICON_TEXT_EDITOR));
-		mntmnetInfo.setIcon(new ImageIcon(ICON_NET_INFO));
-		mntmhwInfo.setIcon(new ImageIcon(ICON_HW_INFO));
-		mnConversionsAndOther.setIcon(new ImageIcon(ICON_CONVERSION));
-		mnFilesAndDirectories.setIcon(new ImageIcon(ICON_FILE_N_DIR));
+		mntmTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));
+		mntmnetInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NET_INFO));
+		mntmhwInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HW_INFO));
+		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
+		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 		
-		mntmImageConverter.setIcon(new ImageIcon(ICON_IMAGE_CONVERTER));
+		mntmImageConverter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
 		
-		mntmTouppercaseDirectory.setIcon(new ImageIcon(ICON_UPPERCASE_FIRST));
-		mntmMakeDirsFromPath.setIcon(new ImageIcon(ICON_CREATE_FOLDER));
-		mntmDeleteDirectoryContentRecursive.setIcon(new ImageIcon(ICON_DELETE_FOLDER));
+		mntmTouppercaseDirectory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPPERCASE_FIRST));
+		mntmMakeDirsFromPath.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
+		mntmDeleteDirectoryContentRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_FOLDER));
 		
 		// Help submenu
-		mntmAboutScreept.setIcon(new ImageIcon(ICON_ABOUT));
-		mntmExportLog.setIcon(new ImageIcon(ICON_EXPORT_LOG));
-		mntmUserDocumentation.setIcon(new ImageIcon(ICON_USER_GUIDE));
-		mntmReturnToWelcome.setIcon(new ImageIcon(ICON_HOME_PAGE));
+		mntmAboutScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
+		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
+		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));
 	}
 	
 	public void updateMenuAndLogFontSize(int fontSize){

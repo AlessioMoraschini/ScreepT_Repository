@@ -1,47 +1,34 @@
 package gUI.utils.tree.iniconfmanager;
 
-import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.awt.peer.PanelPeer;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import javax.imageio.ImageIO;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import frameutils.GuiUtils;
 import gUI.mainGUI;
 import gUI.panels.ChargeIniLog;
-import gUI.panels.CrypterPanel;
-import gUI.panels.KeyDictionaryPanel;
-import gUI.panels.KeyGenPanel;
-import gUI.utils.filedialog.INIfileChoosER;
-import gUI.utils.progressDialog.TestUpdateProgress;
+import gUI.utils.IconsPathConfigurator;
+import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
 import iNIT.INItializer;
+import menusettings.MenuSetter;
 import uTILS.local.ImageWorker;
 
 public class TreeFileMouseListenerIni {
@@ -85,26 +72,45 @@ public class TreeFileMouseListenerIni {
 	private JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
-	    JMenuItem item1 = new JMenuItem("Load Selected configuration");
-	    item1.addActionListener(loadSelectedConfiguration());
-	    menu.add(item1);
+	    JMenuItem loadItem = new JMenuItem("Load Selected configuration");
+	    loadItem.addActionListener(loadSelectedConfiguration());
+	    menu.add(loadItem);
 	    
-	    JMenuItem item2 = new JMenuItem("View in system explorer");
-	    item2.addActionListener(openInSystemExplorer());
-	    menu.add(item2);
+	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    sysExplorerItem.addActionListener(openInSystemExplorer());
+	    menu.add(sysExplorerItem);
 	    
-	    JMenuItem item3 = new JMenuItem("Delete selected Configuration files");
-	    item3.addActionListener(getDeleteActionListener());
-	    menu.add(item3);
+	    JMenuItem addCurrentItem = new JMenuItem("Add current configuration to this list");
+	    addCurrentItem.addActionListener(addCurrentConfig());
+	    menu.add(addCurrentItem);
 	    
-	    JMenuItem item4 = new JMenuItem("Import configuration file");
-	    item4.addActionListener(null);
-	    menu.add(item4);
+	    JMenuItem importItem = new JMenuItem("Import configuration file or directory content");
+	    importItem.addActionListener(importFilesConfig());
+	    menu.add(importItem);
 	    
-	    JMenuItem item5 = new JMenuItem("Refresh tree");
-	    item5.addActionListener(refreshListener());
-	    menu.add(item5);
+	    JMenuItem exportItem = new JMenuItem("Export selected configurations");
+	    exportItem.addActionListener(exportSelected());
+	    menu.add(exportItem);
+	    
+	    JMenuItem deleteItem = new JMenuItem("Delete selected Configuration files");
+	    deleteItem.addActionListener(getDeleteActionListener());
+	    menu.add(deleteItem);
+	    
+	    JMenuItem refreshItem = new JMenuItem("Refresh tree");
+	    refreshItem.addActionListener(refreshListener());
+	    menu.add(refreshItem);
 
+	    // set menu icons
+	    MenuSetter.setIconTextGap(menu, 12);
+	    
+	    loadItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD));
+	    sysExplorerItem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
+	    addCurrentItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
+	    deleteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+	    importItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT));
+	    exportItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
+	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+	    
 	    return menu;
 	}
 	
@@ -113,12 +119,31 @@ public class TreeFileMouseListenerIni {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					Desktop.getDesktop().open(new File(mainGUI.DEFAULT_INI_FOLDER));
-					
-				} catch (IOException e1) {
-				logger.error("Error opening folder in system explorer !"+e1.toString());
-				}		
+				GuiUtils.openInFileSystem(new File(mainGUI.DEFAULT_INI_FOLDER));
+			}
+		};
+	}
+	
+	private ActionListener addCurrentConfig() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				File currentIniFile = currentConfig.getIniFile().getFile();
+				File defaultFolder = new File(mainGUI.DEFAULT_INI_FOLDER);
+				
+				String newName = "";
+				newName = JOptionPane.showInputDialog("Choose a name for the configuration to save");
+				if (newName.equals("")) {
+					return;
+				}
+				
+				File newFile = FileStuff.renameJavaObjFile(new File(defaultFolder.getAbsolutePath() + "/" + newName));
+				
+				FileStuff.copyFile(currentIniFile, newFile, true);
+				
+				refreshTree();
 			}
 		};
 	}
@@ -178,10 +203,71 @@ public class TreeFileMouseListenerIni {
 		};
 	}
 	
+	private ActionListener importFilesConfig() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				importIniFileOrDir();
+				refreshTree();
+			}
+		};
+	}
+	
+	private ActionListener exportSelected() {
+	    return new ActionListener() {
+
+	        @Override
+	        public void actionPerformed(ActionEvent arg0) {
+	        	
+	        	Date now = new Date();
+	    		SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_@_HH-mm-ss");
+	        	File exportDir = GenericFileChooserDialog.directoWrite(confManagerPanel.parent.getMainFrame(), currentConfig);
+	        	if(exportDir == null)
+	        		return; // to avoid null pointer
+	        	exportDir = new File(exportDir.getAbsolutePath()+"/"+df.format(now));
+	        	exportDir.mkdirs();
+	        	
+	            TreePath[] treeSelArr = tree.getSelectionPaths();
+            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(confManagerPanel, "Are you sure to delete?")==JOptionPane.OK_OPTION){	        		
+		            for(TreePath tp : treeSelArr) {
+		            	
+	            		String path = tp.getLastPathComponent().toString();
+		            	File selectedFile = new File(path);
+		            	if(selectedFile.isFile() && selectedFile.exists()) {	
+		            		FileStuff.copyFileIntoDir(selectedFile, exportDir, false);
+		            	}else {
+		            		logger.warn(path + " Not existing: out of sync");
+		            	}
+			        }
+	            }
+            	GuiUtils.openInFileSystem(exportDir);
+	        }
+	    };
+	}
+	
 	// utility methods //
 	
 	private void refreshTree() {
 		tree.setModel(new FileTreeModel(new File(mainGUI.DEFAULT_INI_FOLDER)));
+	}
+	
+	private void importIniFileOrDir() {
+		File selectedImportDir = GenericFileChooserDialog.fileAndDirRead(confManagerPanel, currentConfig);
+		if (selectedImportDir!=null && selectedImportDir.isDirectory()) {
+			try {
+				FileStuff.copyDirectoryContents(selectedImportDir, new File(mainGUI.DEFAULT_INI_FOLDER), false, "ini");
+				JOptionPane.showMessageDialog(confManagerPanel,"Directory :" + selectedImportDir.getName() + " added in the configurations -> "
+								+ mainGUI.DEFAULT_INI_FOLDER, "Directory added to config pool :)", JOptionPane.INFORMATION_MESSAGE);
+				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + mainGUI.DEFAULT_INI_FOLDER);
+			} catch (IOException e1) {
+				JOptionPane.showMessageDialog(confManagerPanel, "Directory not imported in " + mainGUI.DEFAULT_INI_FOLDER,	". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+				logger.error("Directory not imported, some error occurred :( ");
+			} 
+		}else if(selectedImportDir!=null && selectedImportDir.isFile() && selectedImportDir.getName().toLowerCase().endsWith(".ini")) {
+			FileStuff.copyFileIntoDir(selectedImportDir, new File(mainGUI.DEFAULT_INI_FOLDER), false);
+			logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + mainGUI.DEFAULT_INI_FOLDER);
+		}
 	}
 	
 	private void loadIni(File iniFile) {

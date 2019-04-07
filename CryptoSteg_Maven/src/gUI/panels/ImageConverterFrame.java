@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
-import gUI.mainGUI;
 import gUI.om.ScalingAlgorithm;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
@@ -159,7 +159,7 @@ public class ImageConverterFrame extends JFrame{
 		// initialize field representing locally configuration referred
 		currentConfiguration = currentConf;
 		
-		GuiUtils.setFrameIcon(mainGUI.ICON_IMAGE_CONVERTER, this);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER, this);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -26,8 +27,10 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import gUI.panels.KeyGenPanel;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
+import menusettings.MenuSetter;
 
 public class TreeFileMouseListenerDictionary {
 	
@@ -75,22 +78,31 @@ public class TreeFileMouseListenerDictionary {
 
 	private JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
-	    JMenuItem item2 = new JMenuItem("Read Image & Details");
-	    item2.addActionListener(getInfoActionListener());
-	    menu.add(item2);
 	    
-	    JMenuItem item3 = new JMenuItem("Add key Image to Dictionary");
-	    item3.addActionListener(addKeyActionListener());
-	    menu.add(item3);
+	    JMenuItem itemReadKey = new JMenuItem("Read Image & Details");
+	    itemReadKey.addActionListener(getInfoActionListener());
+	    menu.add(itemReadKey);
 	    
-	    JMenuItem item4 = new JMenuItem("Export selected key Images");
-	    item4.addActionListener(exportKeyActionListener());
-	    menu.add(item4);
+	    JMenuItem itemAddKey = new JMenuItem("Add key Image to Dictionary");
+	    itemAddKey.addActionListener(addKeyActionListener());
+	    menu.add(itemAddKey);
 	    
-	    JMenuItem item1 = new JMenuItem("Delete selected Key Images");
-	    item1.addActionListener(getDeleteActionListener());
-	    menu.add(item1);
+	    JMenuItem itemExport = new JMenuItem("Export selected key Images");
+	    itemExport.addActionListener(exportKeyActionListener());
+	    menu.add(itemExport);
+	    
+	    JMenuItem itemDelete = new JMenuItem("Delete selected Key Images");
+	    itemDelete.addActionListener(getDeleteActionListener());
+	    menu.add(itemDelete);
 
+	    // set menu icons
+	    MenuSetter.setIconTextGap(menu, 12);
+	    
+	    itemReadKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
+	    itemAddKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT));
+	    itemExport.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
+	    itemDelete.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+	    
 	    return menu;
 	}
 

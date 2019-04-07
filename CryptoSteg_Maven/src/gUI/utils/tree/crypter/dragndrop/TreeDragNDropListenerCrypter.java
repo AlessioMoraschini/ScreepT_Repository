@@ -1,14 +1,13 @@
 package gUI.utils.tree.crypter.dragndrop;
 
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -19,8 +18,11 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import gUI.panels.CrypterPanel;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
+import menusettings.MenuSetter;
 
 public class TreeDragNDropListenerCrypter {
 	
@@ -59,7 +61,6 @@ public class TreeDragNDropListenerCrypter {
 	
 	private MouseListener getTooltipListener() {
 		return new MouseAdapter() {
-			
 		};
 	}
 
@@ -68,21 +69,29 @@ public class TreeDragNDropListenerCrypter {
 		JPopupMenu menu = new JPopupMenu();
 		 
 	    
-	    JMenuItem item1 = new JMenuItem("Refresh");
-	    item1.addActionListener(getRefreshListener());
-	    menu.add(item1);
+	    JMenuItem itemRefresh = new JMenuItem("Refresh");
+	    itemRefresh.addActionListener(getRefreshListener());
+	    menu.add(itemRefresh);
 
-	    JMenuItem item2 = new JMenuItem("Remove selected files");
-	    item2.addActionListener(getRemoveSelectedFromViewListener());
-	    menu.add(item2);
+	    JMenuItem itemRemoveSelected = new JMenuItem("Remove selected files");
+	    itemRemoveSelected.addActionListener(getRemoveSelectedFromViewListener());
+	    menu.add(itemRemoveSelected);
 	    
-	    JMenuItem item3 = new JMenuItem("Remove all");
-	    item3.addActionListener(getRemoveAllFromViewListener());
-	    menu.add(item3);
+	    JMenuItem itemRemoveAll = new JMenuItem("Remove all");
+	    itemRemoveAll.addActionListener(getRemoveAllFromViewListener());
+	    menu.add(itemRemoveAll);
 	    
-	    JMenuItem item4 = new JMenuItem("Open parent folder in File System view");
-	    item4.addActionListener(getFileSystemViewListener());
-	    menu.add(item4);
+	    JMenuItem itemFileSystemView = new JMenuItem("Open parent folder in File System view");
+	    itemFileSystemView.addActionListener(getFileSystemViewListener());
+	    menu.add(itemFileSystemView);
+	    
+	    // set menu icons
+	    MenuSetter.setIconTextGap(menu, 12);
+	    
+	    itemRefresh.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+	    itemRemoveSelected.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+	    itemRemoveAll.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVECROSS));
+	    itemFileSystemView.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 
 	    return menu;
 	}
@@ -155,25 +164,19 @@ public class TreeDragNDropListenerCrypter {
 
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
-	        	try {
-	        		int i = 0;
-	        		if (getNumFirstLevelNodes() != 0) {
-						for (DefaultMutableTreeNode currentSel : getSelectedNodes()) {
-							if (currentSel != null && currentSel.getParent() != null) {
-								File currentFile = ((CrypterDragFileModel) currentSel.getUserObject()).realFile;
-								if (currentFile.exists() && i < 5) {
-									Desktop.getDesktop().open(currentFile.getParentFile());
-								}
+        		int i = 0;
+        		if (getNumFirstLevelNodes() != 0) {
+					for (DefaultMutableTreeNode currentSel : getSelectedNodes()) {
+						if (currentSel != null && currentSel.getParent() != null) {
+							File currentFile = ((CrypterDragFileModel) currentSel.getUserObject()).realFile;
+							if (currentFile.exists() && i < 5) {
+								GuiUtils.openInFileSystem(currentFile.getParentFile());
 							}
-							i++; // open maximum 5 windows
-						} 
-					}
-					
-				} catch (IOException e) {
-					logger.error("Error opening folder in system explorer !", e);
-				}	
-
-	        }
+						}
+						i++; // open maximum 5 windows
+					} 
+				}
+			}
 	    };
 	}
 	

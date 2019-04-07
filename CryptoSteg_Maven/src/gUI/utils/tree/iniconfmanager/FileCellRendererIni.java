@@ -12,14 +12,13 @@ import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
 
+import gUI.utils.IconsPathConfigurator;
+
 public class FileCellRendererIni implements TreeCellRenderer {
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(FileCellRendererIni.class); 
 		
-	private static final String iconFilePath ="Resources_Scrypt/Icons/configFile.png";
-	private static final String iconFolderPath = "Resources_Scrypt/Icons/Folder.png";
-	
 	private JLabel iconContainer;
 	private Font oldFont;
 	
@@ -33,9 +32,9 @@ public class FileCellRendererIni implements TreeCellRenderer {
                                                   boolean leaf, int row, boolean hasFocus) {
         File elementFile = ((File)value);
         if(elementFile.getName().toLowerCase().endsWith(".ini")) {
-        	iconContainer.setIcon(new ImageIcon(iconFilePath));
+        	iconContainer.setIcon(new ImageIcon(IconsPathConfigurator.iconConfigFilePath));
         }else if(elementFile.isDirectory()) {
-        	iconContainer.setIcon(new ImageIcon(iconFolderPath));
+        	iconContainer.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
         }
         iconContainer.setText(elementFile.getName());
         

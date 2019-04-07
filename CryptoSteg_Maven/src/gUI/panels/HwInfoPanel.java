@@ -12,8 +12,8 @@ import org.hyperic.sigar.SigarException;
 
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
-import gUI.mainGUI;
 import gUI.om.HDinfo;
+import gUI.utils.IconsPathConfigurator;
 import generic.LimitedList;
 import iNIT.INItializer;
 import local.DoubleListWorker;
@@ -174,7 +174,7 @@ public class HwInfoPanel extends JFrame{
 		active = true;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(mainGUI.ICON_HW_INFO, this);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_HW_INFO, this);
 		
 		thisPanel = this;
 		
