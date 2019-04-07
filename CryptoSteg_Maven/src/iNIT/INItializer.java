@@ -149,8 +149,8 @@ public class INItializer {
 		steganOpt.setUltraSecure(Boolean.parseBoolean(iniReadFile.get(STEGA_OPT, "flagUltraSecure")));
 		steganOpt.setFlagSteg(Boolean.parseBoolean(iniReadFile.get(STEGA_OPT, "flagCodificaSteg")));
 		try {
-			steganOpt.setDefaultHeight(Integer.valueOf(iniReadFile.get(STEGA_OPT, "defaultWidth")));
-			steganOpt.setDefaultWidth(Integer.valueOf(iniReadFile.get(STEGA_OPT, "defaultHeight")));
+			steganOpt.setDefaultWidth(Integer.valueOf(iniReadFile.get(STEGA_OPT, "defaultWidth")));
+			steganOpt.setDefaultHeight(Integer.valueOf(iniReadFile.get(STEGA_OPT, "defaultHeight")));
 		} catch (NumberFormatException e) {
 			steganOpt.setDefaultHeight(SteganOption.DEFAULT_HEIGHT);
 			steganOpt.setDefaultWidth(SteganOption.DEFAULT_WIDTH);
