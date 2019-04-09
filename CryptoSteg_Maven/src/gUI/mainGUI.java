@@ -565,6 +565,7 @@ public class mainGUI {
 						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, DEFAULT_INI_FOLDER);
 						panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
 						FLAG_loadPrjSub = false;
+						updateGuiFromCurrConfig();
 					}
 		    }
 		});
@@ -602,6 +603,7 @@ public class mainGUI {
 							logger.error("Exception happened!", e);
 						}
 						currentConfiguration.readConfigIniFile();
+						updateGuiFromCurrConfig();
 						JOptionPane.showMessageDialog(frmScryptV,
 								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
 					} else {
@@ -663,6 +665,7 @@ public class mainGUI {
 								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
 						currentConfiguration.readConfigIniFile();
 						currentConfiguration.getGenOpt().setUserName(name);
+						updateGuiFromCurrConfig();
 					} else {
 						JOptionPane.showMessageDialog(frmScryptV,
 								"Configuration not loaded, current CONFIG mantained!");
@@ -1448,4 +1451,9 @@ public class mainGUI {
 		return frmScryptV;
 	}
 	
+	public void updateGuiFromCurrConfig() {
+		if(initTxtWriter != null) {
+			initTxtWriter.initGuiFromConfig();
+		}
+	}
 }

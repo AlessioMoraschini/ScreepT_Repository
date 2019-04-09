@@ -187,7 +187,8 @@ public class TreeFileMouseListenerIni {
 				String path = lastSelected.toString();
 				
 				if (lastSelected != null && path.toLowerCase().endsWith(".ini")) {
-					loadIni(new File(path));					
+					loadIni(new File(path));
+					confManagerPanel.parent.updateGuiFromCurrConfig();
 				}
 			}
 		};

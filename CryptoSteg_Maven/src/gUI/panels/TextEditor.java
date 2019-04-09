@@ -1075,7 +1075,7 @@ public class TextEditor extends JPanel {
 		});
 	}
 	
-	private void initGuiFromConfig(){
+	public void initGuiFromConfig(){
 		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 		slider_margin.setValue(txtOptions.getMargin());
 		sliderFontSize.setValue(txtOptions.getFont().getSize());

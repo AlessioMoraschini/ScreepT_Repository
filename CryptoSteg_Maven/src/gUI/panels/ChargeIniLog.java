@@ -205,6 +205,7 @@ public class ChargeIniLog extends JPanel{
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 					textAreaToTop();
+					parent.updateGuiFromCurrConfig();
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(parent.getMainFrame(), "Error during read of the file: " + config.getIniFile().getFile().getName(), "Load Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -221,6 +222,7 @@ public class ChargeIniLog extends JPanel{
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 				textAreaToTop();
+				parent.updateGuiFromCurrConfig();
 			}
 		});
 		
@@ -249,6 +251,7 @@ public class ChargeIniLog extends JPanel{
 						JOptionPane.showMessageDialog(parent.getMainFrame(), "File '" + config.getIniFile().getFile().getName() + "' loaded!");
 						config.readConfigIniFile();
 						config.getGenOpt().setUserName(name);
+						parent.updateGuiFromCurrConfig();
 					} catch (IOException exc) {
 						JOptionPane.showMessageDialog(parent.getMainFrame(),
 								"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
