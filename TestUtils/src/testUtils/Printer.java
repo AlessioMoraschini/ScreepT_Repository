@@ -25,7 +25,7 @@ public class Printer {
 	}
 	
 	// print a line separator
-	private void printSeparator(int n){
+	public static void printSeparator(int n){
 		int curr = 0;
 		print("\n");
 		while (curr < n) {

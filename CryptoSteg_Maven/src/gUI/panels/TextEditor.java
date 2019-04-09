@@ -29,6 +29,7 @@ import org.drjekyll.fontchooser.FontDialog;
 import amfileutils.FileStuff;
 import crypt.aes.AesCipher;
 import iNIT.INItializer;
+import iNIT.om.TextEditorOption;
 import local.HandleString;
 import local.Text2Speech;
 
@@ -261,7 +262,7 @@ public class TextEditor extends JPanel {
 		textScrollPaneArea.setFont(new Font("DejaVu Sans", Font.PLAIN, 18));
 		
 		textArea_1 = new JTextArea();
-		textArea_1.setFont(new Font("Dialog", Font.PLAIN, 20));
+		textArea_1.setFont(currentConfiguration.getTextEditorOpt().getFont());
 		textScrollPaneArea.setViewportView(textArea_1);
 		manager = new UndoManager();
 		manager.setLimit(1000);
@@ -464,6 +465,8 @@ public class TextEditor extends JPanel {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
 		
 		startAesKeyCheckThread();
+		
+		initGuiFromConfig();
 
 		logger.debug("### TEXT WRITER module started");
 
@@ -558,10 +561,11 @@ public class TextEditor extends JPanel {
 				textArea_1.setFont(DEFAULT);
 				textArea_1.setBackground(DEFAULT_BCKG_COL);
 				textArea_1.setForeground(DEFAULT_FORE_COL);
-//				txtAesKey.setText("");
 				slider_margin.setValue(10);
 				sliderFontSize.setValue(textArea_1.getFont().getSize());
 				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
+
+				updateTxtConfig(DEFAULT, DEFAULT_BCKG_COL, DEFAULT_FORE_COL, 10);
 			}
 		});
 		
@@ -574,7 +578,10 @@ public class TextEditor extends JPanel {
 					
 					@Override // OK
 					public void actionPerformed(ActionEvent e) {
-						textArea_1.setBackground(chooser.getColor());					
+						if (chooser.getColor() != null) {
+							textArea_1.setBackground(chooser.getColor());
+							currentConfiguration.getTextEditorOpt().setBackCol(chooser.getColor());
+						}					
 					}
 				}, new ActionListener() {
 					
@@ -599,6 +606,7 @@ public class TextEditor extends JPanel {
 						Color c = chooser.getColor();
 						if (c != null) {
 					        textArea_1.setForeground(c);
+					        currentConfiguration.getTextEditorOpt().setForeCol(c);
 				      }			
 					}
 				}, new ActionListener() {
@@ -625,6 +633,8 @@ public class TextEditor extends JPanel {
 					btnDark.setForeground(SystemColor.LIGHT_GRAY);
 					btnDark.setBackground(Color.DARK_GRAY);
 				 }
+				currentConfiguration.getTextEditorOpt().setBackCol(textArea_1.getBackground());
+				currentConfiguration.getTextEditorOpt().setForeCol(textArea_1.getForeground());				
 			}
 		});
 		
@@ -641,7 +651,9 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				FontDialog.showDialog(textArea_1);
 				sliderFontSize.setValue(textArea_1.getFont().getSize());
-				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			}
+				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");	
+				currentConfiguration.getTextEditorOpt().setFont(textArea_1.getFont());
+			}
 		});
 		
 		// TEXT AREA FORMATTER
@@ -675,14 +687,18 @@ public class TextEditor extends JPanel {
 				Font font=textArea_1.getFont();
 				font = new Font(font.getName(), font.getStyle(), sliderFontSize.getValue() );
 				textArea_1.setFont(font);
-				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			}
+				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");			
+				currentConfiguration.getTextEditorOpt().setFont(textArea_1.getFont());
+			}
 		});
 		
 		// SET SPEAKER'S VOICE SPEED
 		sliderSpokenSpeed.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				if(objSpeaker!=null) {
-					objSpeaker.voice.setDurationStretch((sliderSpokenSpeed.getValue()));
+					int rate = sliderSpokenSpeed.getValue();
+					objSpeaker.voice.setDurationStretch((rate));
+					currentConfiguration.getTextEditorOpt().setVoiceRate(rate);
 				}
 			}
 		});
@@ -813,27 +829,31 @@ public class TextEditor extends JPanel {
 					textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
 					textArea_1.revalidate();
 					textArea_1.repaint();
+					currentConfiguration.getTextEditorOpt().setMargin(textMargin);
 			}
 		});
 		
 		// SET TEXT STYLE TO ITALICS
 		btnItaliC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 if(!textArea_1.getFont().isItalic()) {
-					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.ITALIC, textArea_1.getFont().getSize()));
+				Font txtFont = textArea_1.getFont();
+				 if(!txtFont.isItalic()) {
+					textArea_1.setFont(txtFont.deriveFont(Font.ITALIC, txtFont.getSize()));
 				 }else {
-					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.PLAIN, textArea_1.getFont().getSize()));
-				 }		
+					textArea_1.setFont(txtFont.deriveFont(Font.PLAIN, txtFont.getSize()));
+				 }
+				 currentConfiguration.getTextEditorOpt().setFont(txtFont);
 			}
 		});
 		
 		// MAKE TEXT BOLD
 		btnBold.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 if(!textArea_1.getFont().isBold()) {
-					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.BOLD, textArea_1.getFont().getSize()));
+				Font txtFont = textArea_1.getFont();
+				 if(!txtFont.isBold()) {
+					textArea_1.setFont(txtFont.deriveFont(Font.BOLD, txtFont.getSize()));
 				 }else {
-					textArea_1.setFont(textArea_1.getFont().deriveFont(Font.PLAIN, textArea_1.getFont().getSize()));
+					textArea_1.setFont(txtFont.deriveFont(Font.PLAIN, txtFont.getSize()));
 				 }
 				
 			}
@@ -1055,6 +1075,16 @@ public class TextEditor extends JPanel {
 		});
 	}
 	
+	private void initGuiFromConfig(){
+		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
+		slider_margin.setValue(txtOptions.getMargin());
+		sliderFontSize.setValue(txtOptions.getFont().getSize());
+		sliderSpokenSpeed.setValue(txtOptions.getVoiceRate());
+		textArea_1.setBackground(txtOptions.getBackCol());
+		textArea_1.setForeground(txtOptions.getForeCol());
+		textArea_1.setFont(txtOptions.getFont());
+	}
+	
 
 	// initialize listener
 	/**
@@ -1062,6 +1092,14 @@ public class TextEditor extends JPanel {
 	 */
 	private KeyEventDispatcher getKeyEventHandler() {
 		return new TextEditorListener(currentTextEditor); 
+	}
+	
+	private void updateTxtConfig(Font DEFAULT, Color DEFAULT_BCKG_COL, Color DEFAULT_FORE_COL, int margin) {
+		TextEditorOption txtOpt = currentConfiguration.getTextEditorOpt();
+		txtOpt.setFont(DEFAULT);
+		txtOpt.setBackCol(DEFAULT_BCKG_COL);
+		txtOpt.setForeCol(DEFAULT_FORE_COL);
+		txtOpt.setMargin(margin);
 	}
 	
 }

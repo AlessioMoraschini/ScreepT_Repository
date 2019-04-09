@@ -19,6 +19,8 @@ import net.miginfocom.swing.MigLayout;
 import uTILS.local.ImageWorker;
 
 import java.awt.Font;
+import java.awt.Point;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.SystemColor;
@@ -54,18 +56,22 @@ public class ChargeIniLog extends JPanel{
 	
 	// GUI ELEMENTS //
 	public JTextArea textArea;
+	private JScrollPane scrollPaneTreeConfigs;
+	private JScrollPane scrollPaneTextArea;
+
 	private JButton btnLoadCustomConfig;
 	private JButton btnExportConfig;
 	private JButton buttonReload;
 	private JButton btnSaveCurrentAsDefault;
 	private JButton btnResetOriginalConfig;
+	
 	public JLabel lblAvviso;
 	public JLabel config_PATH;
 	public JPanel panelDynPath;
 	private JLabel lblPreferredConfigurations;
-	private JScrollPane scrollPaneTreeConfigs;
-	private JTree tree;
 	private JSeparator separator;
+
+	private JTree tree;
 
 	public ChargeIniLog(INItializer configuration, mainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
@@ -80,7 +86,8 @@ public class ChargeIniLog extends JPanel{
 		
 		setLayout(new MigLayout("", "[117.00][70px][30px][120px][30px][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:58.00:60px][35px][][20px][400px,grow]"));
 		
-		JScrollPane scrollPaneTextArea = new JScrollPane();
+		scrollPaneTextArea = new JScrollPane();
+		scrollPaneTextArea.setAutoscrolls(false);
 		scrollPaneTextArea.setBorder(new LineBorder(new Color(64, 64, 64), 3, true));
 		textArea = new JTextArea();
 		textArea.setBorder(null);
@@ -197,6 +204,7 @@ public class ChargeIniLog extends JPanel{
 					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
+					textAreaToTop();
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(parent.getMainFrame(), "Error during read of the file: " + config.getIniFile().getFile().getName(), "Load Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -212,6 +220,7 @@ public class ChargeIniLog extends JPanel{
 				lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
+				textAreaToTop();
 			}
 		});
 		
@@ -249,6 +258,8 @@ public class ChargeIniLog extends JPanel{
 					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
+					
+					textAreaToTop();
 				} else {
 					JOptionPane.showMessageDialog(parent.getMainFrame(),"Configuration not loaded, current CONFIG mantained!");
 				} 
@@ -272,6 +283,7 @@ public class ChargeIniLog extends JPanel{
 						lblAvviso.setText("[Configuration Saved as new Default!]");
 						config_PATH.setText(config.getIniFile().getFile().getPath());
 						textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
+						textAreaToTop();
 						JOptionPane.showMessageDialog(parent.getMainFrame(),"File " + config.getIniFile().getFile().getAbsolutePath() + " saved!");
 					} else {
 						JOptionPane.showMessageDialog(parent.getMainFrame(), "Configuration not saved!");
@@ -285,5 +297,9 @@ public class ChargeIniLog extends JPanel{
 				}
 			}
 		});
+	}
+	
+	private void textAreaToTop() {
+		scrollPaneTextArea.getViewport().setViewPosition(new Point(0,0));
 	}
 }

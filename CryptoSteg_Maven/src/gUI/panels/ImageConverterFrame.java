@@ -13,6 +13,7 @@ import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import iNIT.INItializer;
+import iNIT.om.ImgConverterOption;
 import local.HandleString;
 
 import java.awt.GridBagLayout;
@@ -428,6 +429,8 @@ public class ImageConverterFrame extends JFrame{
 		
 		addHandlers();
 		
+		initGuiFromConfig();
+		
 		logger.debug("## IMAGE CONVERTER started");
 	}
 	
@@ -480,14 +483,23 @@ public class ImageConverterFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// refresh gui
 				refreshOutGui();
+				currentConfiguration.getImageConvertionOpt().setSameExtension(chckbxSameFormat.isSelected());
 			}
 		});
 		
 		// KEEP RATIO SELECTOR LISTENER
 		chckbxKeepRatio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		// refresh gui
-		refreshOutGui();
+			// refresh gui
+			refreshOutGui();
+			currentConfiguration.getImageConvertionOpt().setSameSize(chckbxKeepRatio.isSelected());
+			}
+		});
+		
+		comboScaleQuality.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentConfiguration.getImageConvertionOpt().setAlgorithm((ScalingAlgorithm)comboScaleQuality.getSelectedItem());
 			}
 		});
 		
@@ -888,6 +900,14 @@ public class ImageConverterFrame extends JFrame{
 		picLabel.setVerticalAlignment(JLabel.CENTER);
 		panelImgDisp.revalidate(); 
 		panelImgDisp.repaint();	
+	}
+	
+	private void initGuiFromConfig() {
+		ImgConverterOption imgOptions = currentConfiguration.getImageConvertionOpt();
+		chckbxKeepRatio.setSelected(imgOptions.isSameSize());
+		chckbxSameFormat.setSelected(imgOptions.isSameExtension());
+		spinnerCompFactor.setValue(imgOptions.getQuality());
+		comboBoxFormats.setSelectedItem(imgOptions.getAlgorithm());
 	}
 	
 }

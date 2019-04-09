@@ -1,5 +1,7 @@
 package iNIT;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -9,12 +11,15 @@ import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
+import gUI.om.ScalingAlgorithm;
 import iNIT.om.AesOption;
 import iNIT.om.FileOptions;
 import iNIT.om.GenericOption;
 import iNIT.om.GuiOption;
+import iNIT.om.ImgConverterOption;
 import iNIT.om.SteganOption;
 import iNIT.om.TextEditorOption;
+import local.HandleString;
 
 public class INItializer {
 
@@ -36,6 +41,7 @@ public class INItializer {
 	private AesOption aesOpt;
 	private GuiOption guiOpt;
 	private TextEditorOption textEditorOpt;
+	private ImgConverterOption imageConvertOption;
 	
 	public final static String AES_OPT = "AES_OPTIONS";
 	public final static String STEGA_OPT = "STEGANO_OPTIONS";
@@ -43,7 +49,7 @@ public class INItializer {
 	public final static String GEN_OPT = "GENERIC_OPTIONS";
 	public final static String GUI_OPT = "GUI_OPTIONS";
 	public final static String TEXT_EDITOR_OPT = "TEXT_EDITOR";
-
+	public final static String IMAGE_CONVERTER_OPT = "IMAGE_CONVERTER";
 	
 	public INItializer() {
 		
@@ -74,6 +80,7 @@ public class INItializer {
 		aesOpt = new AesOption();
 		guiOpt = new GuiOption();
 		textEditorOpt = new TextEditorOption();
+		imageConvertOption = new ImgConverterOption();
 	}
 	
 	// READ & FILL FIELDS METHODS
@@ -106,7 +113,6 @@ public class INItializer {
 		} catch (NumberFormatException e) {
 			guiOpt.setLogFontSize(GuiOption.DEFAULT_LOG_FONT_SIZE);
 			guiOpt.setMenuFontSize(GuiOption.DEFAULT_MENU_FONT_SIZE);
-			logger.error("Exception happened!", e);
 		}
 		// string values
 		guiOpt.setPreferredStyle(iniReadFile.get(GUI_OPT, "preferredStyle"));
@@ -166,6 +172,40 @@ public class INItializer {
 		while(tokenizer.hasMoreTokens()) {
 			steganOpt.getImgRecentPath().add(tokenizer.nextToken());
 		}
+		
+		// TEXT EDITOR OPTIONS
+		String fontStr = iniReadFile.get(TEXT_EDITOR_OPT, "font");
+		String backColStr = iniReadFile.get(TEXT_EDITOR_OPT, "backgroundCol");
+		String foreColStr = iniReadFile.get(TEXT_EDITOR_OPT, "foregroundCol");
+		Font font = (fontStr != null && !fontStr.equals(""))? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
+		Color backCol = (backColStr != null && !backColStr.equals(""))? HandleString.getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
+		Color foreCol = (foreColStr != null && !foreColStr.equals(""))? HandleString.getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
+		textEditorOpt.setFont(font);
+		textEditorOpt.setBackCol(backCol);
+		textEditorOpt.setForeCol(foreCol);
+		try {
+			textEditorOpt.setMargin(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "margin")));
+		} catch (NumberFormatException e) {
+			textEditorOpt.setMargin(TextEditorOption.DEFAULT_MARGIN);
+		}
+		try {
+			textEditorOpt.setVoiceRate(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "voiceRate")));
+		} catch (NumberFormatException e) {
+			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_VOICE_RATE);
+		}
+		
+		// IMAGE CONVERTER OPTIONS
+		imageConvertOption.setSameSize(Boolean.parseBoolean(iniReadFile.get(IMAGE_CONVERTER_OPT, "sameSize")));
+		imageConvertOption.setSameExtension(Boolean.parseBoolean(iniReadFile.get(IMAGE_CONVERTER_OPT, "sameExtension")));
+		try {
+			imageConvertOption.setQuality(Integer.valueOf(iniReadFile.get(IMAGE_CONVERTER_OPT, "quality")));
+		} catch (NumberFormatException e) {
+			imageConvertOption.setQuality(ImgConverterOption.DEFAULT_QUALITY);
+		}
+		String algo = iniReadFile.get(IMAGE_CONVERTER_OPT, "algorithm");
+		algo = (ScalingAlgorithm.isValidString(algo))? algo : ImgConverterOption.DEFAULT_ALGORITHM.toString();
+		imageConvertOption.setAlgorithm(ScalingAlgorithm.valueOf(algo));
+		
 		logger.debug("Loaded ini file: "+ this.toStringa());
 	}
 	
@@ -235,10 +275,22 @@ public class INItializer {
 		}
 		iniFile.put(STEGA_OPT, "imgKeyRecentPath", accumulator );
 		
-		// log the operation
-		logger.debug("Configuration written to: "+iniFile.getFile().getAbsolutePath() + this.toStringa());
+		// TEXT EDITOR OPTIONS
+		iniFile.put(TEXT_EDITOR_OPT, "font", HandleString.getFontString(textEditorOpt.font));
+		iniFile.put(TEXT_EDITOR_OPT, "backgroundCol", HandleString.getRgbString(textEditorOpt.backCol));
+		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", HandleString.getRgbString(textEditorOpt.foreCol));
+		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
+		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
 		
-		// write the put values on the File
+		// IMAGE CONVERTER OPTIONS
+		iniFile.put(IMAGE_CONVERTER_OPT, "sameSize", imageConvertOption.sameSize);
+		iniFile.put(IMAGE_CONVERTER_OPT, "sameExtension", imageConvertOption.sameExtension);
+		iniFile.put(IMAGE_CONVERTER_OPT, "quality", imageConvertOption.quality);
+		iniFile.put(IMAGE_CONVERTER_OPT, "algorithm", imageConvertOption.algorithm);
+
+	logger.debug("Configuration written to: "+iniFile.getFile().getAbsolutePath() + this.toStringa());
+		
+		// WRITE ALL VALUES TO FILE
 		try {
 			iniFile.store();
 		} catch (IOException e) {
@@ -305,8 +357,8 @@ public class INItializer {
 	public String toStringa() {
 		String result = "";
 		// DEBUG ReadWrite Structure
-		//result="\n[Debug-Read] String INIFILE -> "+ iniReadFile.getFile().getAbsolutePath();
-		//builder.append"\n[Debug-Write] String INIFILE -> "+ iniFile.getFile().getAbsolutePath()+"\n\n  -----------------\n\n ";
+//		result="\n[Debug-Read] String INIFILE -> "+ iniReadFile.getFile().getAbsolutePath();
+//		builder.append"\n[Debug-Write] String INIFILE -> "+ iniFile.getFile().getAbsolutePath()+"\n\n  -----------------\n\n ";
 		StringBuilder builder = new StringBuilder();
 		
 		builder.append("\n\n### Config file: "+this.getIniFile().getFile().getAbsolutePath());
@@ -343,11 +395,22 @@ public class INItializer {
 		       .append("\nIMG_RECENT_PATH: ").append(steganOpt.getImgRecentPath());
 
 		// concat TEXT EDITOR OPTIONS
-		builder.append("\n\n ---- TEXT EDITOR -----\n\n");
+		builder.append("\n\n ---- TEXT EDITOR -----\n\n")
+			   .append("FONT: ").append(textEditorOpt.font)
+			   .append("\nMARGIN: ").append(textEditorOpt.margin)
+			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
+			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
+			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate);
 		
-		// create and return result
+		// concat TEXT EDITOR OPTIONS
+		builder.append("\n\n ---- IMAGE CONVERTER -----\n\n")
+			   .append("SAME_SIZE: ").append(imageConvertOption.sameSize)
+			   .append("\nSAME_EXTENSION: ").append(imageConvertOption.sameExtension)
+			   .append("\nQUALITY: ").append(imageConvertOption.quality)
+			   .append("\nALGORITHM: ").append(imageConvertOption.algorithm);
+		
+		// create and return result string
 		result = builder.toString();
-		
 		return result;
 	}
 	
@@ -407,8 +470,11 @@ public class INItializer {
 		this.aesOpt = aesOpt;
 	}
 
-	public String getTEXT_EDITOR_OPT() {
-		return TEXT_EDITOR_OPT;
+	public TextEditorOption getTextEditorOpt() {
+		return this.textEditorOpt;
 	}
 	
+	public ImgConverterOption getImageConvertionOpt() {
+		return this.imageConvertOption;
+	}
 }
