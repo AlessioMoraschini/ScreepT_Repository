@@ -548,8 +548,8 @@ public class mainGUI {
 					}
 					
 					frmScryptV.setAlwaysOnTop(false);
-					activeWindow.toFront();
 		    		activeWindow.requestFocus();
+		    		activeWindow.toFront();
 					FLAG_mntmExit = false;
 				}
 			}

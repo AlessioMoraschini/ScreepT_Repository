@@ -520,9 +520,9 @@ public class TextEditor extends JPanel {
 				// this function is used to change color and tooltip text according to key lenght
 				AesCipher.check(txtAesKey);
 				
-				if (txtAesKey.getText().length() != 0) {
+				if (txtAesKey.getPassword().length != 0) {
 					try {
-						AesCipher crypter = new AesCipher(txtAesKey.getText());
+						AesCipher crypter = new AesCipher(txtAesKey.getPassword());
 						textArea_1.setText(crypter.encrypt(textArea_1.getText()));
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
@@ -540,9 +540,9 @@ public class TextEditor extends JPanel {
 				// this function is used to update bg color of textfield according to given key's lenght
 				AesCipher.check(txtAesKey);
 				
-				if (txtAesKey.getText().length() != 0) {
+				if (txtAesKey.getPassword().length != 0) {
 					try {
-						AesCipher decrypter = new AesCipher(txtAesKey.getText());
+						AesCipher decrypter = new AesCipher(txtAesKey.getPassword());
 						textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);

@@ -33,10 +33,10 @@ public class ScreeptManagerFileOrFolder {
 	
 	private static String opInfo = "Nothing to display";
 	
-	private static boolean coderUsed = false;
+	public static boolean coderUsed = false;
 	
 ////////////////////////// MAIN METHODS ////////////////////////////////
-	public static boolean crYpt(CryptoMode mode, File srcFile, File destinationDir, String aesKey, File srcKeyImageFile) {
+	public static boolean crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile) {
 		boolean resultOK = false;
 
 		// notify that method is running
@@ -165,7 +165,7 @@ public class ScreeptManagerFileOrFolder {
 		return resultOK;
 	}
 	
-	public static boolean decrYpt(CryptoMode mode, File srcFile, File destinationDir, String aesKey, File srcKeyImageFile, boolean deleteAfterClose) {
+	public static boolean decrYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean deleteAfterClose) {
 		boolean resultOK = false;
 
 		if(deleteAfterClose) {
@@ -285,7 +285,7 @@ public class ScreeptManagerFileOrFolder {
 	}
 	
 ///////////////////////////////////////////////////////// CRYPT INITIALIZERS /////////////////////////////////////////////////////////
-	private static ScreeptManager initAES(String AES_KEY)
+	private static ScreeptManager initAES(char[] AES_KEY)
 			throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
@@ -302,12 +302,12 @@ public class ScreeptManagerFileOrFolder {
 		return screepTManager;
 	}
 
-	private static ScreeptManager initCOMPLETE(String AES_KEY, File imageFile)
+	private static ScreeptManager initCOMPLETE(char[] AES_KEY, File imageFile)
 			throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException {
 		if (imageFile == null) {
 			throw new STEGException();
 		}
-		if (AES_KEY.length() == 0) {
+		if (AES_KEY.length == 0) {
 			throw new AESException();
 		}
 		AEScoder = new AesCipher(AES_KEY);

@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
@@ -249,5 +250,43 @@ public class VirtualFileDropPane extends JPanel {
     public int getNumFirstLevelNodes() {
     	TreeNode root = (TreeNode)filesTree.getModel().getRoot();
 		return filesTree.getModel().getChildCount(root);
+    }
+    
+    public DefaultMutableTreeNode[] getSelectedNodes() {
+		TreePath[] treeSelPaths = filesTree.getSelectionPaths();
+		DefaultMutableTreeNode[] selectedNodesModel = new DefaultMutableTreeNode[treeSelPaths.length];
+		int i = 0;
+		for(TreePath currentNodePath : treeSelPaths) {
+			selectedNodesModel[i] = (DefaultMutableTreeNode)currentNodePath.getLastPathComponent();
+			i++;
+		}
+		return selectedNodesModel;
+	}
+    
+    public DefaultMutableTreeNode[] getAllNodes() {
+		TreeNode root = (TreeNode)filesTree.getModel().getRoot();
+		int Nfiles = filesTree.getModel().getChildCount(root);
+		DefaultMutableTreeNode[] nodeArray= new DefaultMutableTreeNode[Nfiles];
+				
+		for(int i=0; i<Nfiles; i++) {
+			nodeArray[i] = (DefaultMutableTreeNode)filesTree.getModel().getChild(root, i);
+		}
+		return nodeArray;
+	}
+    
+    public void removeAllSelected() {
+    	for(DefaultMutableTreeNode currentSel : getSelectedNodes()) {
+    		if (currentSel != null && currentSel.getParent() != null) {
+    			((DefaultTreeModel)filesTree.getModel()).removeNodeFromParent(currentSel);
+    		}
+		}
+    }
+    
+    public void removeAll() {
+    	for(DefaultMutableTreeNode currentScan : getAllNodes()) {
+    		if (currentScan != null && currentScan.getParent() != null) {
+    			((DefaultTreeModel)filesTree.getModel()).removeNodeFromParent(currentScan);
+    		}
+		}
     }
 }

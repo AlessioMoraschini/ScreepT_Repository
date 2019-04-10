@@ -27,6 +27,7 @@ import gUI.mainGUI;
 import gUI.om.BufferedImageType;
 import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.GenericFileChooserDialog;
+import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
@@ -634,13 +635,16 @@ public class CrypterPanel extends JPanel {
 				// boolean value representing if everything went good
 				boolean resultOK = false;
 				
-				// retrieve keyAES from GUI text-field
-				String aesKey = AESKEYtext.getText();
-				
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
+				TestUpdateProgress generalProgress = null;
+				
 				if (destinationDir!= null) {
+					
+					generalProgress = new TestUpdateProgress();
+					generalProgress.toFront();
+					generalProgress.move(0, -generalProgress.getDialog().getHeight()-50);
 					
 					Date now = new Date();
 					String date = dateFormatter.format(now);
@@ -651,13 +655,23 @@ public class CrypterPanel extends JPanel {
 					}
 				}
 				
+				StringBuilder builder = new StringBuilder();
+				int nFilesSource = srcFiles.length;
+				int nProgrFile = 0;
+				
 				for (File currentFile : srcFiles) {
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
+					
+						builder.append("Starting conversion of file ").append(nProgrFile+1).append("/").append(nFilesSource)
+						.append("[").append(currentFile.getName()).append("]");
+						int progressPerc = nProgrFile*100/nFilesSource;
+						generalProgress.update(progressPerc-1, builder.toString());
+						nProgrFile ++;
 
 						// ONLY AES DECRYPT
 						if (mode.AES && !mode.STEG) {
 							try {
-								screepTManager = initAES(aesKey);
+								screepTManager = initAES(AESKEYtext.getPassword());
 
 								// if only one file
 								if (currentFile.isFile()) {
@@ -700,7 +714,7 @@ public class CrypterPanel extends JPanel {
 							// COMPLETE DECRYPT
 						} else if (mode.AES && mode.STEG) {
 							try {
-								screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
+								screepTManager = initCOMPLETE(AESKEYtext.getPassword(), srcKeyImageFile);
 
 								if (currentFile.isDirectory()) {
 									resultOK = deCryptDirSTEG(currentFile, destinationDir);
@@ -724,14 +738,19 @@ public class CrypterPanel extends JPanel {
 				}
 				coderUsed=false;
 				
+				// CLEAR DATA AND CLOSE PROGRESS BAR
 				if(screepTManager!=null) {
 					screepTManager.disableProgressUpdater();
+					screepTManager.getAesCoder().clearSensitiveData();
 				}
+				generalProgress.update(100, null);
 				
 				// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
 				if(resultOK) {
-					String msg = "Operation completed succesfully :)";
-					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
+					String msg = "Operation completed succesfully!\nDo you want to empty source file pool?";
+					if(JOptionPane.showConfirmDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE)==JOptionPane.OK_OPTION) {
+						removeTreeFiles();
+					}
 					logger.info(msg);
 					textAreaLog.setText(msg);
 					textAreaMain.setText(screepTManager.getOutputStats());
@@ -752,7 +771,6 @@ public class CrypterPanel extends JPanel {
 				}
 				
 				coderUsed=false;
-				
 			}
 		};
 	}
@@ -775,14 +793,16 @@ public class CrypterPanel extends JPanel {
 				// boolean value representing if everything went good
 				boolean resultOK = false;
 				
-				// retrieve keyAES from GUI text-field
-				String aesKey = AESKEYtext.getText();
-				
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
 				
+				TestUpdateProgress generalProgress = null;
+				
 				if (destinationDir!= null) {
 					
+					generalProgress = new TestUpdateProgress();
+					generalProgress.toFront();
+					generalProgress.move(0, -generalProgress.getDialog().getHeight()-50);
 					Date now = new Date();
 					String date = dateFormatter.format(now);
 					destinationDir = new File(destinationDir.getAbsolutePath() + "/" + date);
@@ -792,14 +812,24 @@ public class CrypterPanel extends JPanel {
 					}
 				}
 				
+				StringBuilder builder = new StringBuilder();
+				int nFilesSource = srcFiles.length;
+				int nProgrFile = 0;
+				
 				for (File currentFile : srcFiles) {
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
+					
+						builder.append("Starting conversion of file ").append(nProgrFile+1).append("/").append(nFilesSource)
+						.append("[").append(currentFile.getName()).append("]");
+						int progressPerc = nProgrFile*100/nFilesSource;
+						generalProgress.update(progressPerc, builder.toString());
+						nProgrFile ++;
 						
 						// ONLY AES CRYPT
 						if (mode.AES && !mode.STEG) {
 							try {
 								// initialize coder
-								screepTManager = initAES(aesKey);
+								screepTManager = initAES(AESKEYtext.getPassword());
 
 								// if only one file
 								if (currentFile.isFile()) {
@@ -849,7 +879,7 @@ public class CrypterPanel extends JPanel {
 						} else if (mode.AES && mode.STEG) {
 							try {
 
-								screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
+								screepTManager = initCOMPLETE(AESKEYtext.getPassword(), srcKeyImageFile);
 
 								// if only one file
 								if (currentFile.isFile()) {
@@ -880,14 +910,19 @@ public class CrypterPanel extends JPanel {
 				}
 				coderUsed=false;
 				
+				//  CLEAR DATA AND CLOSE PROGRESS BAR
 				if(screepTManager!=null) {
 					screepTManager.disableProgressUpdater();
+					screepTManager.getAesCoder().clearSensitiveData();
 				}
+				generalProgress.update(100, null);
 		
 				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
 				if(resultOK) {
-					String msg = "Operation completed succesfully :)";
-					JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
+					String msg = "Operation completed succesfully!\nDo you want to empty source file pool?";
+					if(JOptionPane.showConfirmDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE)==JOptionPane.OK_OPTION) {
+						removeTreeFiles();
+					}
 					logger.info(msg);
 					textAreaLog.setText(msg);
 					textAreaMain.setText(screepTManager.getOutputStats());
@@ -1158,9 +1193,14 @@ public class CrypterPanel extends JPanel {
 		tree.revalidate();
 		tree.repaint();
 	}
+	
+	private void removeTreeFiles() {
+		panelVDragNDropPane.removeAll();
+		srcFiles = null; // will be reinitialized at each round of cript/decript
+	}
 
 ///////////////////////////////////////////////////////// CRYPT INITIALIZERS /////////////////////////////////////////////////////////
-	private ScreeptManager initAES(String AES_KEY) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
+	private ScreeptManager initAES(char[] AES_KEY) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
 		return screepTManager;
@@ -1176,11 +1216,11 @@ public class CrypterPanel extends JPanel {
 		return screepTManager;
 	}
 	
-	private ScreeptManager initCOMPLETE(String AES_KEY, File imageFile) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException {
+	private ScreeptManager initCOMPLETE(char[] AES_KEY, File imageFile) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException {
 		if(imageFile == null) {
 			throw new STEGException();
 		}
-		if(AES_KEY.length() == 0) {
+		if(AES_KEY.length == 0) {
 			throw new AESException();
 		}
 		AEScoder = new AesCipher(AES_KEY);

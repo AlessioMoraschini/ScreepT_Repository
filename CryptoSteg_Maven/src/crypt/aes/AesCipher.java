@@ -2,6 +2,9 @@ package crypt.aes;
 
 import java.awt.Color;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -14,12 +17,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import org.apache.commons.codec.binary.Base64;
 
-import local.HandleString;
-	
 	public class AesCipher {
 	
 		//////////////////////
@@ -28,8 +30,9 @@ import local.HandleString;
 		
 		//private static final String SECRET_KEY_1 = "ssdkF$HUy2A#D%kd";
 		//private static final String SECRET_KEY_2 = "weJiSEvR5yAC5ftB";
-		private String password;//valore aggiornato con i pad
-		private String displayedKey;//valore originale chiave inserita
+		private static final int limit = 16;
+		private char[] password;//valore aggiornato con i pad
+		private char[] displayedKey;//valore originale chiave inserita
 		private IvParameterSpec ivParameterSpec;
 		private SecretKeySpec secretKeySpec;
 		private Cipher cipher;
@@ -44,28 +47,25 @@ import local.HandleString;
 			
 		}
 		
-		public AesCipher(String password) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
+		public AesCipher(char[] password) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
+			
 			displayedKey=password;
-			while(password.length() !=16) {
-			    if(password.length()<16) {
-			    	password=password.concat("0");	    	
-			    }
-			    else if(password.length()>16) {
-			    	password=password.substring(0, 16);   	  
-			    }
+			this.password= new char[limit];
+			int i = 0;
+			while(i < limit) {
+			    	if(i<password.length) {
+			    		this.password[i] = password[i];
+			    	}else {
+			    		this.password[i] = '0';
+			    	}
+			    	i++;
 			}
-			this.password=password;
-			
-			if(password.length()==16) {
-				this.password=password;
-			}
-			// CHANGE UTF-8 TO ISO8859.1 AND EXTRACT 16 BYTES ONLY -> NOW KEY LENGTH IS ALWAYS 16 BYTES EVEN WITH CYRILLIC OR OTHER ENCODINGS
-//			byte[] bytePsw = password.getBytes("ISO-8859-1"); => old version
-			
-			byte[] bytePsw = HandleString.extractSameLengthByteArray(password);
+			byte[] bytePsw = charKeyToByteArray();
+//			byte[] bytePsw = HandleString.extractSameLengthByteArray(password);
 			ivParameterSpec = new IvParameterSpec(bytePsw);
 		    secretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, 16), "AES");
 		    cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+		    Arrays.fill(bytePsw, (byte)0); // clear sensitive temp data
 		}
 		
 		//////////////////////
@@ -148,21 +148,21 @@ import local.HandleString;
 		}
 		
 		// used with JTextField to check password strenght
-		public static void check(JTextField aesKey) {
-			String actkey=aesKey.getText();	
-	        if(actkey.length()<16) {     	
+		public static void check(JPasswordField aesKey) {
+				
+	        if(aesKey.getPassword().length<16) {     	
 	        	aesKey.setBackground(Color.orange);					    
 	        	aesKey.setToolTipText("You could reach 16 chars to have best secured password ;)");
 			}
-			if(actkey.length()>16) {
+			if(aesKey.getPassword().length>16) {
 				aesKey.setBackground(Color.yellow); 	
 				aesKey.setToolTipText("More that 16 chars are overkill, only first 16 are actually used :)");
 			}
-		    if(actkey.length()==0) {
+		    if(aesKey.getPassword().length==0) {
 	        	aesKey.setBackground(Color.red);
 				aesKey.setToolTipText("Password is empty...Fill password text-field!");
 			}
-			if(actkey.length()==16) {
+			if(aesKey.getPassword().length==16) {
 	        	aesKey.setBackground(Color.green);
 				aesKey.setToolTipText("WOW! 16 char is perfect! :D");
 			}	
@@ -203,16 +203,39 @@ import local.HandleString;
 			this.cipher = cipher;
 		}
 	
-		public String getPassword() {
+		public char[] getPassword() {
 			return password;
 		}
 	
-		public String getDisplayedKey() {
+		public char[] getDisplayedKey() {
 			return displayedKey;
 		}
 	
-		public void setDisplayedKey(String displayedKey) {
+		public void setDisplayedKey(char[] displayedKey) {
 			this.displayedKey = displayedKey;
+		}
+		
+		public byte[] charKeyToByteArray() {
+			CharBuffer chBuff = CharBuffer.wrap(this.password);
+			ByteBuffer byBuff = Charset.forName("UTF-8").encode(chBuff);
+			byte[] bytes = Arrays.copyOfRange(byBuff.array(), 0, limit);
+			Arrays.fill(byBuff.array(), (byte)0); // clear array data
+			
+			return bytes;
+		}
+		
+		/**
+		 * this function erase all sensitive data stored when initializing this obj
+		 * remember that you'll have to reinitialize before to use it again.
+		 */
+		public void clearSensitiveData() {
+			Arrays.fill(this.displayedKey, '0');
+			Arrays.fill(this.password, '0');
+			byte[] tempEraser = new byte[limit]; 
+			Arrays.fill(tempEraser, (byte)0);
+			
+			ivParameterSpec = new IvParameterSpec(tempEraser);
+		    secretKeySpec = new SecretKeySpec(Arrays.copyOf(tempEraser, 16), "AES");
 		}
 		
 }

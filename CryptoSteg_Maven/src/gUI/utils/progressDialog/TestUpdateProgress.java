@@ -15,6 +15,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import iNIT.INItializer;
 
 public class TestUpdateProgress {
@@ -216,6 +217,7 @@ public class TestUpdateProgress {
     
     public void forceClose() {
     	forceStop = true;
+    	dialog.dispose();
     }
 
 	public JProgressBar getPb() {
@@ -250,6 +252,26 @@ public class TestUpdateProgress {
 		this.label = label;
 	}
 	
+	/**
+	 * 
+	 * @param value integer progress from 1 to 100: if more or equal to 100 dialog will close
+	 * @param msg can be null, will be display on dialog
+	 */
+	public synchronized void update( int value, String msg) {
+		
+		this.pb.setValue(value);
+		this.pb.setStringPainted(true);
+		this.pb.setString(value+"%");
+		if(msg != null) {
+			this.label.setText(msg);
+		}
+	}
 	
+	public void toFront() {
+		dialog.setAlwaysOnTop(true);
+	}
 	
+	public void move(int xDiff, int yDiff) {
+		GuiUtils.moveFrame(dialog, xDiff, yDiff);
+	}
 }

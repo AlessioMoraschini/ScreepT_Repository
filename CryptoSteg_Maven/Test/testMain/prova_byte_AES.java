@@ -25,7 +25,7 @@ public class prova_byte_AES {
 	
 	public static void main(String[] args) {
 
-		String psw_user = "";
+		char[] psw_user = "".toCharArray();
 		String msg = "Questo � un messaggio di prova";
 
 		AesCipher cripter;

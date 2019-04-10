@@ -162,7 +162,7 @@ public class CryptoStegTest_Gui_V2_0 extends JDialog{
 				AesKey.setBackground(SystemColor.inactiveCaptionBorder);
 				
 				try {
-					AesCipher crypter=new AesCipher(AesKey.getText());
+					AesCipher crypter=new AesCipher(AesKey.getText().toCharArray());
 					encoded.setText(crypter.encrypt(source.getText()));
 //					AesKey.setText(crypter.getDispKey());
 				}catch(Exception e) {encoded.setText("Chiave sbagliata...Riprova!");}
@@ -186,7 +186,7 @@ public class CryptoStegTest_Gui_V2_0 extends JDialog{
 				AesKey.setBackground(SystemColor.inactiveCaptionBorder);
 				
 				try {
-					AesCipher decrypter=new AesCipher(AesKey.getText());
+					AesCipher decrypter=new AesCipher(AesKey.getText().toCharArray());
 					encoded.setText(decrypter.decrypt(source.getText()));
 //					AesKey.setText(decrypter.getDispKey());
 				}catch(Exception e) {encoded.setText("Chiave sbagliata...Riprova!");}

@@ -23,7 +23,7 @@ import crypt.steg.STEGException;
 public class AesStegTest {
 
 	public static void main(String[] args) throws IOException, STEGException {
-		String key= "ST3G4N0cr1p74009";
+		char[] key= "ST3G4N0cr1p74009".toCharArray();
 		String srcText = "Ciao, sono un testo di prova";
 		String coded = srcText;
 		String decoded = "not yet decoded :(";

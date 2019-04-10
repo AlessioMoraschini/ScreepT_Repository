@@ -1,9 +1,11 @@
 package frameutils;
 
 
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +51,12 @@ public class GuiUtils {
 		Dimension screenSize = getScreenSize();
 		targetFrame.setSize(W, H);
 		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
+	}
+	
+	public static void moveFrame(Component element, int xDiff, int yDiff) {
+		int newX = ((element.getX() + xDiff) < 0)? 0 : (element.getX() + xDiff);
+		int newY = ((element.getY() + yDiff) < 0)? 0 : (element.getY() + yDiff);
+		element.setBounds(new Rectangle(newX, newY, element.getWidth(), element.getHeight()));
 	}
 	
 	public static void openInFileSystem(File destination) {

@@ -32,7 +32,7 @@ public class ScreepT_Test {
 	private final String TEMP_DIR = "Resources_Scrypt/temp/";
 	
 	// KEY INITIALIZATION
-	private final String AES_KEY = "ciaosonoalessio";
+	private final char[] AES_KEY = "ciaosonoalessio".toCharArray();
 	private File keyIMG = new File("TEST_FILES/keyIMG_1000.png");
 	
 	// SOURCE FILE - COMMON FOR ALL ENCRIPTION TESTS

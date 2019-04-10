@@ -89,7 +89,7 @@ public class ScreeptManagerStub {
 	 */
 	public ScreeptManagerStub() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		mode = CryptoMode.COMPLETE;
-		aesCoder = new AesCipher("");
+		aesCoder = new AesCipher(("").toCharArray());
 		imgCoder = null;
 	}
 	
