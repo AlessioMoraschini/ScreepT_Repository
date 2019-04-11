@@ -18,7 +18,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -30,7 +29,7 @@ import org.apache.commons.codec.binary.Base64;
 		
 		//private static final String SECRET_KEY_1 = "ssdkF$HUy2A#D%kd";
 		//private static final String SECRET_KEY_2 = "weJiSEvR5yAC5ftB";
-		private static final int limit = 16;
+		public static final int limit = 16;
 		private char[] password;//valore aggiornato con i pad
 		private char[] displayedKey;//valore originale chiave inserita
 		private IvParameterSpec ivParameterSpec;
@@ -60,7 +59,7 @@ import org.apache.commons.codec.binary.Base64;
 			    	}
 			    	i++;
 			}
-			byte[] bytePsw = charKeyToByteArray();
+			byte[] bytePsw = charKeyToByteArrayV2();
 //			byte[] bytePsw = HandleString.extractSameLengthByteArray(password);
 			ivParameterSpec = new IvParameterSpec(bytePsw);
 		    secretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, 16), "AES");
@@ -222,6 +221,41 @@ import org.apache.commons.codec.binary.Base64;
 			Arrays.fill(byBuff.array(), (byte)0); // clear array data
 			
 			return bytes;
+		}
+		
+		/**
+		 * to improve - used for multi-bytes charset that generates much more than 16 bytes to have best diffusion through source chars
+		 */
+		public byte[] charKeyToByteArrayV2() {
+			CharBuffer chBuff = CharBuffer.wrap(this.password);
+			ByteBuffer byBuff = Charset.forName("UTF-8").encode(chBuff);
+			byte[] fullBytes = byBuff.array();
+			byte[] bytes = new byte[limit];
+			int zeros = nOfZeros(fullBytes);
+			float multiplicator = (fullBytes.length-zeros)/((float)bytes.length);
+			
+			for(int i = 0; i < limit; i++) {
+				// a char is 2 bytes, so take a byte every two to avoid depending on only first limit/2 chars
+				// use % to avoid outOfBounds in case of limit exceed
+				int nextIndex = (int)(i*multiplicator) % (fullBytes.length-zeros);
+				bytes[i] = fullBytes[nextIndex];
+			}
+			Arrays.fill(byBuff.array(), (byte)0); // clear array data
+			Arrays.fill(fullBytes, (byte)0); // clear array data
+			
+			return bytes;
+		}
+		
+		public int nOfZeros(byte[] src) {
+			int n = 0;
+			for(byte by : src) {
+				if(by == 0) {
+					n++;
+				}else {
+					n = 0; // only consecutive final zeros counted
+				}
+			}
+			return n;
 		}
 		
 		/**

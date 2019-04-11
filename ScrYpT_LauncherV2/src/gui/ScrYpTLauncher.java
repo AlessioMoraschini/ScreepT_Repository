@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -223,11 +224,14 @@ public class ScrYpTLauncher {
 		logger.info("Launching commands on currentOS: " + currentOS.getOsName() + currentOS.getOsArch());
 		
 		String combinedCommands = getCombinedCommandList();
-		// TODO use initpath to call exec
 		
 		try {
 			String initPath = writeInitBatShAndGetPath(combinedCommands);
-			Runtime.getRuntime().exec(initPath);
+//			Runtime.getRuntime().exec(initPath);
+			Process windowsProcess = new ProcessBuilder(initPath).start();
+			InputStream inStream = windowsProcess.getInputStream();
+			logger.info(SysUtils.readProcessOutput(inStream));
+			inStream.close();
 			logger.info("Commands launched without exceptions :)"); 
 		} catch (IOException e) {
 			logger.error(" !!! Error launching generated commands file !!!\n\n", e);

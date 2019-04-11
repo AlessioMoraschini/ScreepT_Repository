@@ -1,9 +1,0 @@
-2019-04-07 03:48:43,849 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
-2019-04-07 03:48:43,852 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
-2019-04-07 03:48:43,919 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
-2019-04-07 03:48:44,114 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - gui.ScrYpTLauncher Loaded
-2019-04-07 03:48:49,150 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Launching commands on currentOS: Windows 8.1amd64
-2019-04-07 03:48:49,151 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Creating launcher file : LauncherBatch.bat
-2019-04-07 03:48:49,153 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Write completed correctly :)
-2019-04-07 03:48:49,175 [AWT-EventQueue-0] INFO  gui.ScrYpTLauncher - Commands launched without exceptions :)
-2019-04-07 03:48:49,175 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
