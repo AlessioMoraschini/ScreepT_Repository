@@ -227,11 +227,8 @@ public class ScrYpTLauncher {
 		
 		try {
 			String initPath = writeInitBatShAndGetPath(combinedCommands);
-//			Runtime.getRuntime().exec(initPath);
-			Process windowsProcess = new ProcessBuilder(initPath).start();
-			InputStream inStream = windowsProcess.getInputStream();
-			logger.info(SysUtils.readProcessOutput(inStream));
-			inStream.close();
+			Runtime.getRuntime().exec(initPath);
+			
 			logger.info("Commands launched without exceptions :)"); 
 		} catch (IOException e) {
 			logger.error(" !!! Error launching generated commands file !!!\n\n", e);

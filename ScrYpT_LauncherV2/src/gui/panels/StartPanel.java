@@ -141,7 +141,7 @@ public class StartPanel extends JFrame{
 				
 				LAUNCHER.launchCommands();
 				LAUNCHER_GUI.dispatchEvent(new WindowEvent(LAUNCHER_GUI, WindowEvent.WINDOW_CLOSING));
-
+				
 			}
 		});
 		
