@@ -550,15 +550,20 @@ public class FileStuff {
 	 */
 	public static boolean writeStringToFile(String source, File outFile, boolean overwrite) throws IOException {
 		if(outFile.exists()) {
+			boolean deleted = true;
+			boolean recreated = false;
 			if (overwrite) {
-				boolean deleted = outFile.delete();
-				boolean recreated = outFile.createNewFile();
-				if(!recreated || !deleted) {
-					return false;
-				}
+				deleted = outFile.delete();
+				recreated = outFile.createNewFile();
 			}else {
+				outFile = renameJavaObjFile(outFile);
+				recreated = outFile.createNewFile();
+			}
+
+			if(!recreated || !deleted) {
 				return false;
 			}
+			
 		}else {
 			boolean recreated = outFile.createNewFile();
 			if(!recreated) {

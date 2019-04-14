@@ -66,7 +66,8 @@ public class IconsPathConfigurator {
 	public static final String ICON_TEXT_COLOR = RESOURCES_DIR + "Icons/TextColor_2.png";
 	public static final String ICON_TEXT_BG_COLOR = RESOURCES_DIR + "Icons/BackgroundColor.png";
 	public static final String ICON_TEXT_FONT = RESOURCES_DIR + "Icons/Font_2.png";
-	public static final String ICON_FILE_SAVE = RESOURCES_DIR + "Icons/SaveFile.png";
+	public static final String ICON_FILE_SAVE_AS = RESOURCES_DIR + "Icons/saveFileAs.png";
+	public static final String ICON_FILE_SAVE = RESOURCES_DIR + "Icons/saveFile.png";
 	public static final String ICON_FILE_LOAD = RESOURCES_DIR + "Icons/LoadFile.png";
 	public static final String ICON_REDO = RESOURCES_DIR + "Icons/Redo.png";
 	public static final String ICON_UNDO = RESOURCES_DIR + "Icons/Undo.png";

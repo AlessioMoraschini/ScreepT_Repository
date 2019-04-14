@@ -67,6 +67,13 @@
 	    <scope>test</scope>
 	</dependency>
 	
+	<!-- IMPORTS FROM OTHER PROJECTS -->
+		
+	<dependency>
+	  <groupId>testUtils</groupId>
+	  <artifactId>testUtils</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+	</dependency>
   
   </dependencies>
 </project>

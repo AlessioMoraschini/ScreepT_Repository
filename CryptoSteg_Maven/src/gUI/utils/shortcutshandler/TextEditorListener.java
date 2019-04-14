@@ -92,13 +92,21 @@ public class TextEditorListener implements KeyEventDispatcher{
 		if (e.getID() == KeyEvent.KEY_RELEASED  && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 	      
 			/**
+			 *  SAVE FILE AS NEW
+			 */
+			//case Ctrl+shift+s -> Save file as new
+			if ( !currentTextEditor.alreadySaving && e.getKeyCode()==83 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
+			{
+				currentTextEditor.btnSaveTextFileAs.doClick();
+			}
+			
+			/**
 			 *  SAVE FILE
 			 */
-			//case Ctrl+s -> Save file
+			//case Ctrl+s -> Save file as new
 			if ( !currentTextEditor.alreadySaving && e.getKeyCode()==83 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 			{
 				currentTextEditor.btnSaveTextFile.doClick();
-				
 			}
 			
 			/**
