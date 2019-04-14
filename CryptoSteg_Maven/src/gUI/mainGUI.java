@@ -6,6 +6,8 @@ import javax.swing.JLabel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JMenuBar;
@@ -21,6 +23,9 @@ import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Insets;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 
 import javax.swing.JFileChooser;
 
@@ -43,6 +48,8 @@ import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
+import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
+import gUI.utils.shortcutshandler.TextEditorListener;
 import gui.utils.LauncherLoaderFrame;
 import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.HwInfoPanel;
@@ -69,6 +76,7 @@ import java.awt.Dialog.ModalExclusionType;
 import java.awt.Color;
 
 import javax.swing.JSeparator;
+import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 
 public class mainGUI {
@@ -100,6 +108,8 @@ public class mainGUI {
 	// icons and images
 	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
 	public static Image APPLICATION_MAIN_BCKG_IMAGE;
+	public static final String SCREEPT_BACKGROUND_DRAGNDROP = "DragNDropBackground.jpg";
+	public static Image SCREEPT_BACKGROUND_DRAGNDROP_IMAGE;
 	public static final String ICON_FILE_NAME = "icon.jpg";
 	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
@@ -138,7 +148,7 @@ public class mainGUI {
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	private TextEditor initTxtWriter;
-	private JPanel panelCrypter;
+	private CrypterPanel panelCrypter;
 	private ChargeIniLog configManagerPanel;
 	
 	// MENU ITEMS
@@ -174,7 +184,9 @@ public class mainGUI {
 	private JMenuItem mntmExportLog; 
 	private JMenuItem mntmTouppercaseDirectory;
 	private JMenuItem mntmDeleteDirectoryContentRecursive;
+	private JMenuItem mntmDeleteDirectoryContentDirsOnlyRecursive;
 	private JMenuItem mntmMakeDirsFromPath;
+	private JMenuItem mntmCopyDirStructure;
 	
 ////////////////////////// MAIN GUI ELEMENTS ///////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -221,7 +233,9 @@ public class mainGUI {
 	private static boolean FLAG_mntmExportLog = false;
 	private static boolean FLAG_mntmTouppercaseDirectory = false;
 	private static boolean FLAG_mntmDeleteDirectoryContentRecursive = false;
+	private static boolean FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
 	private static boolean FLAG_mntmMakeDirsFromPath = false;
+	private static boolean FLAG_mntmCopyDirStructure = false; 
 	
 	// flag to close all suspended threads when exitings Main App
 	volatile private static boolean mainAppRunning = false;
@@ -291,7 +305,7 @@ public class mainGUI {
 					mainGUI window = new mainGUI();
 					logger.debug("Main GUI initialized correctly.");
 					
-		loaderGraphics.update("Starting autosave modules... ", 85);
+		loaderGraphics.update("Starting autosave modules... ", 25);
 					
 					// ACTIVE MODULES FLAG UPDATER THREAD
 					new Thread(new Runnable() {
@@ -420,19 +434,19 @@ public class mainGUI {
 					  	}
 					});
 					
-					loaderGraphics.update("ScrYpT is Ready! :)", 100);
-					
 					initGUI();
-					
-					window.frmScryptV.setVisible(true);
-					window.frmScryptV.toFront();
-					window.frmScryptV.requestFocus();
 					
 					// ASK FOR USERNAME IF NULL OR FIRST TIME
 					if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
 						currentConfiguration.getGenOpt().setUserName(window.askUsername());
 					}
 					window.startTitleUpdater();
+					
+					window.frmScryptV.setVisible(true);
+					window.frmScryptV.requestFocus();
+					
+					Thread.sleep(300);
+					window.frmScryptV.toFront();
 					
 					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 				} catch (Exception e) {
@@ -715,12 +729,23 @@ public class mainGUI {
 		});
 		
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT
-		mntmDeleteDirectoryContentRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (Recursive)") {
+		mntmDeleteDirectoryContentRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (except selected)") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
 					FLAG_mntmDeleteDirectoryContentRecursive = true;
 					DirectoryManagementGUI.deleteContentOfDir(frmScryptV, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentRecursive = false;
+				}
+			}
+		});
+		
+		// NOT OPENING VIEW - DELETE DIRECTORY'S CONTENT
+		mntmDeleteDirectoryContentDirsOnlyRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (files only)") {
+			public void actionPerformed(ActionEvent e) {
+				if(!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
+					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = true;
+					DirectoryManagementGUI.deleteDirContentFiles(frmScryptV, currentConfiguration);
+					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
 				}
 			}
 		});
@@ -732,6 +757,17 @@ public class mainGUI {
 					FLAG_mntmMakeDirsFromPath = true;
 					DirectoryManagementGUI.makeDirsFromPath(frmScryptV, currentConfiguration);
 					FLAG_mntmMakeDirsFromPath = false;
+				}
+			}
+		});
+		
+		// NOT OPENING VIEW - COPY DIRECTORY STRUCTURE
+		mntmCopyDirStructure = new JMenuItem(new AbstractAction("Copy directory structure (folders only)") {
+			public void actionPerformed(ActionEvent e) {
+				if(!FLAG_mntmCopyDirStructure) {
+					FLAG_mntmCopyDirStructure = true;
+					DirectoryManagementGUI.copyDirStructure(frmScryptV, currentConfiguration);
+					FLAG_mntmCopyDirStructure = false;
 				}
 			}
 		});
@@ -982,15 +1018,19 @@ public class mainGUI {
 		});
 	////////// END OF HANDLERS DECLARATION  ////////////////
 	
- loaderGraphics.update("Structuring menu...", 60);
-
+ loaderGraphics.update("Adding ActionHandlers...", 60);
  		addHandlers();
+ 		
+ 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
  
 		// once each component is declared add it to the menu bar
+ loaderGraphics.update("Structuring menu...", 80);
 		structureMenuBar();
 		
 		// check non compatible options with current JVM
 		checkVersionAndDisableUnsupportedOpt();
+		
+ loaderGraphics.update("ScrYpT is Ready! :)", 100, 350);
 		
 		frmScryptV.requestFocus();
 	}
@@ -1085,9 +1125,12 @@ public class mainGUI {
 				
 				mnFilesAndDirectories.add(mntmTouppercaseDirectory);
 				mnFilesAndDirectories.add(mntmMakeDirsFromPath);
+				mnFilesAndDirectories.add(mntmCopyDirStructure);
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentRecursive);
+				mnFilesAndDirectories.add(mntmDeleteDirectoryContentDirsOnlyRecursive);
 			
 		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
+		
 		addMenuIcons();
 	}
 	
@@ -1102,15 +1145,18 @@ public class mainGUI {
 
 		menuBar.setFont(menuBarFont);
 		
+		// MAIN MENU ENTRIES
 		mnFile.setFont(menuBarFont);
 		mnHelp.setFont(menuBarFont);
 		mnPreferences.setFont(menuBarFont);
 		mnCryptoSteg.setFont(menuBarFont);
 		mnVarious.setFont(menuBarFont);
 
+		// SUBDIRECTORIES
 		mnFilesAndDirectories.setFont(subMenuFont);
 		mnConversionsAndOther.setFont(subMenuFont);
-
+		
+		// FILE SECTION
 		mntmExit.setFont(menuItemFont);
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
 		mntmloadPrjSub.setFont(menuItemFont);
@@ -1118,18 +1164,32 @@ public class mainGUI {
 		mntmReloadPrjSub.setFont(menuItemFont);
 		mntmSaveCurrentAs.setFont(menuItemFont);
 		mntmloadSrcrYptDefaultConf.setFont(menuItemFont);
+		
+		// PREFERENCES SECTION
 		mntmCustomizeUIView.setFont(menuItemFont);
 		mntmGenOpt.setFont(menuItemFont);
+		
+		// SCREEPT SECTION
 		mntmCrypter.setFont(menuItemFont);
 		mntmgenerateKeyImageSub.setFont(menuItemFont);
+		mntmViewKeyDictionary.setFont(menuItemFont);
+
+		// VARIOUS SECTION
 		mntmnetInfo.setFont(menuItemFont);
 		mntmhwInfo.setFont(menuItemFont);
-		mntmViewKeyDictionary.setFont(menuItemFont);
 		mntmTextEditor.setFont(menuItemFont);
-		mntmImageConverter.setFont(menuItemFont);
-		mntmTouppercaseDirectory.setFont(menuItemFont);
-		mntmMakeDirsFromPath.setFont(menuItemFont);
-		mntmDeleteDirectoryContentRecursive.setFont(menuItemFont);
+		
+			// SUB -> CONVERSION UTILS SECTION
+			mntmImageConverter.setFont(menuItemFont);
+			
+			// SUB-> FILES AND DIRECTORIES SECTION
+			mntmTouppercaseDirectory.setFont(menuItemFont);
+			mntmMakeDirsFromPath.setFont(menuItemFont);
+			mntmDeleteDirectoryContentRecursive.setFont(menuItemFont);
+			mntmDeleteDirectoryContentDirsOnlyRecursive.setFont(menuItemFont);
+			mntmCopyDirStructure.setFont(menuItemFont);
+		
+		// HELP SECTION
 		mntmReturnToWelcome.setFont(menuItemFont);
 		mntmAboutScreept.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
@@ -1138,11 +1198,26 @@ public class mainGUI {
 	
 	public void addHandlers() {
 		
+		// DEACTIVATE OPEN MENU ON CLICK OUTSIDE IT WHEN OPEN
+		frmScryptV.addMouseListener(new MouseListener() {
+			
+			public void mouseReleased(MouseEvent e) {
+				MenuSelectionManager.defaultManager().clearSelectedPath();
+			}
+			public void mousePressed(MouseEvent e) {
+			}
+			public void mouseExited(MouseEvent e) {
+			}
+			public void mouseEntered(MouseEvent e) {
+			}
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
 	}
 	
 	public void addMenuIcons() {
 		
-		MenuSetter.setIconTextGap(menuBar, 10);
+		MenuSetter.setIconTextGap(menuBar, 15);
 		
 		// file submenu
 		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
@@ -1174,7 +1249,9 @@ public class mainGUI {
 		mntmTouppercaseDirectory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPPERCASE_FIRST));
 		mntmMakeDirsFromPath.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
 		mntmDeleteDirectoryContentRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_FOLDER));
-		
+		mntmDeleteDirectoryContentDirsOnlyRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_DIRS_ONLY));
+		mntmCopyDirStructure.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
+
 		// Help submenu
 		mntmAboutScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
@@ -1246,6 +1323,7 @@ public class mainGUI {
 //		  UIManager.put( "nimbusOrange", new Color(191,98,4) );
 //		  UIManager.put( "nimbusRed", new Color(169,46,34) );
 //		  UIManager.put( "nimbusSelectedText", new Color( 255, 255, 255) );
+		  UIManager.put( "MenuItem.textIconGap", 18);
 		  UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
 		 // UIManager.put( "text", new Color( 230, 230, 230) );
 		  try {
@@ -1293,6 +1371,9 @@ public class mainGUI {
 	public void readBackgroundImage() throws IOException {
 		BufferedImage image = ImageIO.read(new File(RESOURCES_DIR + APPLICATION_MAIN_BCKG));
         APPLICATION_MAIN_BCKG_IMAGE = image.getScaledInstance(screenWidth-100, screenHeight-100,Image.SCALE_SMOOTH);
+        
+        BufferedImage screeptImageDnD = ImageIO.read(new File(RESOURCES_DIR + SCREEPT_BACKGROUND_DRAGNDROP));
+        SCREEPT_BACKGROUND_DRAGNDROP_IMAGE = screeptImageDnD.getScaledInstance(screeptImageDnD.getWidth(), screeptImageDnD.getHeight(), Image.SCALE_SMOOTH);
 	}
 	
 	public void setBackgroundImage() {
@@ -1445,15 +1526,130 @@ public class mainGUI {
 		}
 	}
 	
+	/**
+	 *  KEYBOARD SHORTCUTS - use custom listener
+	 */
+	private KeyEventDispatcher getKeyEventHandler() {
+		return new MainGuiShortcutsListener(mainAPP); 
+	}
+	
+	public void updateGuiFromCurrConfig() {
+		// TEXT EDITOR REFRESH
+		if(initTxtWriter != null) {
+			initTxtWriter.initGuiFromConfig();
+		}
+		
+		// CRYPTER REFRESH
+		if(panelCrypter != null) {
+			panelCrypter.initGuiFromConfig();
+		}
+		
+		// PANEL GRAPHICS PREFERENCES
+		if(panelGuiOptions!= null && panelGuiOptions.isVisible()) {
+			panelGuiOptions.initGuiFromConfig();
+		}
+		
+		// PANEL GENERAL PREFERENCES
+		if(panelGeneralOptions != null && panelGeneralOptions.isVisible()) {
+			panelGeneralOptions.initGuiFromConfig();
+		}
+	}
+	
 	// GETTERS //
 	
 	public JFrame getMainFrame() {
 		return frmScryptV;
 	}
-	
-	public void updateGuiFromCurrConfig() {
-		if(initTxtWriter != null) {
-			initTxtWriter.initGuiFromConfig();
-		}
+
+	public JMenuItem getMntmInspectCurrentConfiguration() {
+		return mntmInspectCurrentConfiguration;
+	}
+
+	public JMenuItem getMntmloadPrjSub() {
+		return mntmloadPrjSub;
+	}
+
+	public JMenuItem getMntmExportPrjSub() {
+		return mntmExportPrjSub;
+	}
+
+	public JMenuItem getMntmReloadPrjSub() {
+		return mntmReloadPrjSub;
+	}
+
+	public JMenuItem getMntmSaveCurrentAs() {
+		return mntmSaveCurrentAs;
+	}
+
+	public JMenuItem getMntmloadSrcrYptDefaultConf() {
+		return mntmloadSrcrYptDefaultConf;
+	}
+
+	public JMenuItem getMntmExit() {
+		return mntmExit;
+	}
+
+	public JMenuItem getMntmUserDocumentation() {
+		return mntmUserDocumentation;
+	}
+
+	public JMenuItem getMntmGenOpt() {
+		return mntmGenOpt;
+	}
+
+	public JMenuItem getMntmCustomizeUIView() {
+		return mntmCustomizeUIView;
+	}
+
+	public JMenuItem getMntmCrypter() {
+		return mntmCrypter;
+	}
+
+	public JMenuItem getMntmgenerateKeyImageSub() {
+		return mntmgenerateKeyImageSub;
+	}
+
+	public JMenuItem getMntmViewKeyDictionary() {
+		return mntmViewKeyDictionary;
+	}
+
+	public JMenuItem getMntmTextEditor() {
+		return mntmTextEditor;
+	}
+
+	public JMenuItem getMntmnetInfo() {
+		return mntmnetInfo;
+	}
+
+	public JMenuItem getMntmhwInfo() {
+		return mntmhwInfo;
+	}
+
+	public JMenuItem getMntmImageConverter() {
+		return mntmImageConverter;
+	}
+
+	public JMenuItem getMntmReturnToWelcome() {
+		return mntmReturnToWelcome;
+	}
+
+	public JMenuItem getMntmAboutScreept() {
+		return mntmAboutScreept;
+	}
+
+	public JMenuItem getMntmExportLog() {
+		return mntmExportLog;
+	}
+
+	public JMenuItem getMntmTouppercaseDirectory() {
+		return mntmTouppercaseDirectory;
+	}
+
+	public JMenuItem getMntmDeleteDirectoryContentRecursive() {
+		return mntmDeleteDirectoryContentRecursive;
+	}
+
+	public JMenuItem getMntmMakeDirsFromPath() {
+		return mntmMakeDirsFromPath;
 	}
 }

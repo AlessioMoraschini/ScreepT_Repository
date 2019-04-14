@@ -48,4 +48,11 @@ public class LauncherLoaderFrame extends JFrame{
 			loader.update(updated, progressPercent);
 		}
 	}
+	
+	public void update(String text, int progressPercent, int msDelayIfEnd) {
+		if(loader != null) {
+			String updated = (text==null || text.equals(""))? "Loading...": text;
+			loader.update(updated, progressPercent, msDelayIfEnd);
+		}
+	}
 }

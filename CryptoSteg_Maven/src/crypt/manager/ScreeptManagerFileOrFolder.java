@@ -281,6 +281,9 @@ public class ScreeptManagerFileOrFolder {
 	// exception handler
 	private static boolean resetAfterException(String msg, Exception e) {
 		logger.error(msg, e);
+		if(e instanceof IOException) {
+			JOptionPane.showMessageDialog(null, "IO Error, remember that destination cannot be inside source!", "IO error", JOptionPane.ERROR_MESSAGE);
+		}
 		return false;
 	}
 	
@@ -343,6 +346,11 @@ public class ScreeptManagerFileOrFolder {
 			resultOK = cryptCurrentFile(src, destinationDir);
 
 		} else if (src.isDirectory()) {
+			// check that destination is not contained in source to avoid loop
+			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+				throw new IOException();
+			}
+			
 			// create new folder in destination
 			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + src.getName());
 			// if dir to create inside destination exists create unique name
@@ -389,7 +397,11 @@ public class ScreeptManagerFileOrFolder {
 			resultOK = deCryptCurrentFile(src, destinationDir);
 
 		} else if (src.isDirectory()) {
-
+			// check that destination is not contained in source to avoid loop
+			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+				throw new IOException();
+			}
+			
 			// create new folder in destination
 			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + src.getName());
 			// if dir to create inside destination exists create unique name
@@ -419,6 +431,11 @@ public class ScreeptManagerFileOrFolder {
 		boolean resultOK = false;
 
 		if (src.isDirectory()) {
+			// check that destination is not contained in source to avoid loop
+			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+				throw new IOException();
+			}
+			
 			// create new folder in destination
 			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + src.getName());
 			destSonDir = FileStuff.renameJavaObjFile(destSonDir);

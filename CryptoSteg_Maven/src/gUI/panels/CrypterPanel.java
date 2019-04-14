@@ -752,7 +752,7 @@ public class CrypterPanel extends JPanel {
 						removeTreeFiles();
 					}
 					logger.info(msg);
-					textAreaLog.setText(msg);
+					textAreaLog.append("\n" + msg);
 					textAreaMain.setText(screepTManager.getOutputStats());
 					tabbedPane.setSelectedIndex(0);
 					srcFile = null;
@@ -762,7 +762,7 @@ public class CrypterPanel extends JPanel {
 						String msg = "Something went wrong :(";
 						JOptionPane.showMessageDialog(thisPanel, msg, "SUCCESS!", JOptionPane.ERROR_MESSAGE);
 						logger.error(msg);
-						textAreaLog.setText(msg);
+						textAreaLog.append("\n" + msg);
 						textAreaMain.setText(screepTManager.getOutputStats());
 						tabbedPane.setSelectedIndex(0);
 					}else{
@@ -924,8 +924,8 @@ public class CrypterPanel extends JPanel {
 						removeTreeFiles();
 					}
 					logger.info(msg);
-					textAreaLog.setText(msg);
-					textAreaMain.setText(screepTManager.getOutputStats());
+					textAreaLog.append("\n" + msg);
+					textAreaMain.append(screepTManager.getOutputStats());
 					tabbedPane.setSelectedIndex(0);
 					srcFile = null;
 
@@ -934,8 +934,8 @@ public class CrypterPanel extends JPanel {
 						String msg = "Something went wrong :(";
 						JOptionPane.showMessageDialog(thisPanel, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
 						logger.error(msg);
-						textAreaLog.setText(msg);
-						textAreaMain.setText(screepTManager.getOutputStats());
+						textAreaLog.append("\n" + msg);
+						textAreaMain.append(screepTManager.getOutputStats());
 						tabbedPane.setSelectedIndex(0);
 					}
 					else{
@@ -1019,14 +1019,14 @@ public class CrypterPanel extends JPanel {
 				File thisFile = (File)tree.getLastSelectedPathComponent();
 				if (thisFile.isDirectory()) {
 					msg = "\n### Directory selected ### \n\n => " + thisFile.getName();
-					textAreaLog.setText(msg);	
+					textAreaLog.append("\n" + msg);	
 				}else {
 					if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")) {
 						msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
-						textAreaLog.setText(msg);						
+						textAreaLog.append("\n" + msg);						
 					}else {
 						msg = "File not recognized as Key: \n\n => "+thisFile.getName();
-						textAreaLog.setText(msg);
+						textAreaLog.append("\n" + msg);
 					}
 				}
 				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter( currentConf, thisPanel);			
@@ -1095,7 +1095,7 @@ public class CrypterPanel extends JPanel {
 		panelVDragNDropPane.message.setText("Drag your files here!");
 		panelVDragNDropPane.message.setFont(new Font("SansSerif", Font.BOLD, 16));
 		panelVDragNDropPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-		panelVDragNDropPane.setBackground(Color.LIGHT_GRAY);
+		panelVDragNDropPane.setBackground(Color.BLACK);
 		panelBackgroundDragSources.add(panelVDragNDropPane, "cell 0 4 2 1,grow");
 	}
 	
@@ -1255,6 +1255,11 @@ public class CrypterPanel extends JPanel {
 			resultOK = cryptCurrentFile(src, destinationDir);
 
 		}else if (src.isDirectory()) {
+			// check that destination is not contained in source to avoid loop
+			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+				throw new IOException();
+			}
+			
 			// create new folder in destination
 			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+src.getName());
 			// if dir to create inside destination exists create unique name
@@ -1301,7 +1306,11 @@ public class CrypterPanel extends JPanel {
 			resultOK = deCryptCurrentFile(src, destinationDir);
 
 		}else if (src.isDirectory()) {
-
+			// check that destination is not contained in source to avoid loop
+			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+				throw new IOException();
+			}
+			
 			// create new folder in destination
 			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+src.getName());
 			// if dir to create inside destination exists create unique name
@@ -1330,6 +1339,10 @@ public class CrypterPanel extends JPanel {
 		boolean resultOK = false;
 		
 		if (src.isDirectory()) {
+			// check that destination is not contained in source to avoid loop
+			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+				throw new IOException();
+			}
 			// create new folder in destination
 			File destSonDir = new File(destinationDir.getCanonicalPath()+"/"+src.getName());
 			destSonDir = FileStuff.renameJavaObjFile(destSonDir);
@@ -1379,10 +1392,10 @@ public class CrypterPanel extends JPanel {
 		if (thisFile.exists()) {
 			try {
 				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png") && ImageIO.read(thisFile)!=null) {
-					textAreaLog.setText("");
+					textAreaLog.append("\n" + "");
 					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
 					logger.info(msg);
-					textAreaLog.append(msg);	
+					textAreaLog.append("\n" + msg);	
 					
 					String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
 					
@@ -1393,12 +1406,12 @@ public class CrypterPanel extends JPanel {
 					JOptionPane.showMessageDialog(thisPanel, "Key Image file correctly loaded and selected :)","Key Image Selected :)", JOptionPane.INFORMATION_MESSAGE);
 				}else {
 					String msg = " File not recognized as Key: \n\n => "+thisFile.getName();
-					textAreaLog.append(msg);
+					textAreaLog.append("\n" + msg);
 					JOptionPane.showMessageDialog(thisPanel, "Key Image file not recognized :(","Key Image not recognized :(", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (IOException e) {
 				String msg = "Some Error Occurred :(";
-				textAreaLog.append(msg);
+				textAreaLog.append("\n" + msg);
 				JOptionPane.showMessageDialog(thisPanel, msg, msg, JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -1424,7 +1437,7 @@ public class CrypterPanel extends JPanel {
 				String msg = "\n\n### Image values ###\n\n Width: " + img.getWidth() + " Px\n Height: "
 						+ img.getHeight() + " Px\n\n=> File Size: " + FileStuff.coolFileSize(thisFile)
 						+ "\n\n => ImgType: " + img.toString();
-				textAreaLog.append(msg);
+				textAreaLog.append("\n" + msg);
 				logger.info(msg);
 				
 				String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
@@ -1433,7 +1446,7 @@ public class CrypterPanel extends JPanel {
 			}else {
 				
 				String msg = "Image type not supported by cripter: ";
-				textAreaLog.append(msg);
+				textAreaLog.append("\n" + msg);
 				logger.info(msg);
 				
 				String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
@@ -1450,7 +1463,7 @@ public class CrypterPanel extends JPanel {
 		} catch (IOException e1) {
 			String msg = "Error reading the image, something went wrong :(";
 			logger.debug(msg);
-			textAreaLog.append(msg);
+			textAreaLog.append("\n" + msg);
 			if (this.srcKeyImageFile == null) {
 				lblKeyImageSelected.setText(msg);
 				panelKeyImgDisp.removeAll();
@@ -1468,6 +1481,12 @@ public class CrypterPanel extends JPanel {
 
 	private boolean resetAfterException(String msg, Exception e) {
 		logger.error(msg, e);
+		textAreaLog.append("ERROR: "+msg);
+		if(e instanceof IOException) {
+			String err = "IO Error, remember that destination cannot be contained in source!";
+			textAreaLog.append("\n ERROR: "+err);
+			JOptionPane.showMessageDialog(thisPanel, err, "IO error: destination contained in source", JOptionPane.ERROR_MESSAGE);
+		}
 		return false;
 	}
 	
@@ -1515,6 +1534,14 @@ public class CrypterPanel extends JPanel {
 		textAreaLog.append(out);
 		textAreaMain.append(out);
 		tabbedPane.setSelectedIndex(0);
+	}
+	
+	public void initGuiFromConfig() {
+		Font logFont = textAreaLog.getFont();
+		Font mainAreaFont = textAreaMain.getFont();
+		textAreaLog.setFont(new Font(logFont.getName(), logFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()-1));
+		textAreaMain.setFont(new Font(mainAreaFont.getName(), mainAreaFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()));
+		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
 	}
 	
 	// getters and setters

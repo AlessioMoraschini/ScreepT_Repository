@@ -25,26 +25,37 @@ public class MenuSetter {
 	}
 	
 	public static void setIconTextGap(JMenu menuBar, int distanceInPx) {
+		JMenu menu;
+		JMenuItem menuItem;
+		
 		for(int i=0; i < menuBar.getItemCount(); i++) {
 			Component currentComponent = menuBar.getItem(i);
 			if(currentComponent instanceof JMenu) {
-				setIconTextGap((JMenu) currentComponent, distanceInPx);
-				((JMenu) currentComponent).setIconTextGap(distanceInPx);
+				menu = (JMenu) currentComponent;
+				setIconTextGap(menu, distanceInPx);
+				menu.setIconTextGap(distanceInPx);
 			}else if(currentComponent instanceof JMenuItem) {
-				((JMenuItem) currentComponent).setIconTextGap(distanceInPx);
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.setIconTextGap(distanceInPx);
 			}
 		}
 	}
 	
 	public static void setIconTextGap(JPopupMenu menuBar, int distanceInPx) {
+		JMenu menu;
+		JMenuItem menuItem;
+		
 		for(int i=0; i < menuBar.getComponentCount(); i++) {
 			Component currentComponent = menuBar.getComponent(i);
 			if(currentComponent instanceof JMenu) {
-				setIconTextGap((JMenu) currentComponent, distanceInPx);
-				((JMenu) currentComponent).setIconTextGap(distanceInPx);
+				menu = (JMenu) currentComponent;
+				setIconTextGap(menu, distanceInPx);
+				menu.setIconTextGap(distanceInPx);
 			}else if(currentComponent instanceof JMenuItem) {
-				((JMenuItem) currentComponent).setIconTextGap(distanceInPx);
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.setIconTextGap(distanceInPx);
 			}
 		}
 	}
+	
 }

@@ -80,14 +80,14 @@ public class StartPanel extends JFrame{
 		btnCustomizeParameters.setForeground(new Color(0, 0, 0));
 		btnCustomizeParameters.setBackground(new Color(169, 169, 169));
 		btnCustomizeParameters.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnCustomizeParameters.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		btnCustomizeParameters.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		mainPanel.add(btnCustomizeParameters, "cell 0 1 3 1,grow");
 		
 		btnStartScrypt = new JButton("Start ScrYpT");
 		btnStartScrypt.setMargin(new Insets(10, 10, 10, 10));
 		btnStartScrypt.setForeground(new Color(0, 0, 0));
 		btnStartScrypt.setBorder(null);
-		btnStartScrypt.setBackground(new Color(50, 138, 20));
+		btnStartScrypt.setBackground(new Color(5, 125, 5));
 		btnStartScrypt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		mainPanel.add(btnStartScrypt, "cell 3 1 3 2,grow");
@@ -95,7 +95,7 @@ public class StartPanel extends JFrame{
 		btnDependencyManager = new JButton("Open Dependency Manager");
 		btnDependencyManager.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDependencyManager.setForeground(Color.BLACK);
-		btnDependencyManager.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		btnDependencyManager.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		btnDependencyManager.setBorder(null);
 		btnDependencyManager.setBackground(new Color(169, 169, 169));
 		mainPanel.add(btnDependencyManager, "cell 0 2 3 1,grow");

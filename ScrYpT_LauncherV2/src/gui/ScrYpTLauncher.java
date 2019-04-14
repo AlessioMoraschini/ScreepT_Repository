@@ -123,7 +123,7 @@ public class ScrYpTLauncher {
 		loaderGraphics.update("Starting Launcher...", 25);
 		start();
 		
-		loaderGraphics.update("Launcher Ready!", 100);
+		loaderGraphics.update("Launcher Ready!", 100, 200);
 
 	}// end main
 	

@@ -77,13 +77,13 @@ public class LauncherLoaderPanel extends JPanel{
 		}
 	}
 
-	public void setProgress(int progress) {
+	public void setProgress(int progress, int msDelay) {
 		if (progressBar != null) {
 			progressBar.setValue(progress);
 			if(progress >= 100){
 				try {
 					// this is to show last message before loader closes
-					Thread.sleep(600);
+					Thread.sleep(msDelay);
 				} catch (InterruptedException e) {
 					logger.warn("Cannot wait at end of loading");
 				}
@@ -98,7 +98,12 @@ public class LauncherLoaderPanel extends JPanel{
 	
 	public void update(String txt, int progress){
 		setText(txt);
-		setProgress(progress);
+		setProgress(progress, 0);
+	}
+	
+	public void update(String txt, int progress, int msDelayIfEnd){
+		setText(txt);
+		setProgress(progress, msDelayIfEnd);
 	}
 	
 }

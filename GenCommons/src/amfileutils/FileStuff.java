@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -95,6 +96,114 @@ public class FileStuff {
 	        }
 	    }
 	    return deleted;	
+	}
+	
+	/**
+	 * This method copy the structure of the source dir, copying any found folder inside it (comprising source dir),
+	 * and creates the same structure in the given destination dir. If inside dest dir there is a folder with same name
+	 * as source dir, it creates a unique name.
+	 * @param sourceDir
+	 * @param destinationRootDir
+	 * @return true if every folder is created, false in the other case (some folder may be missing)
+	 * @throws IOException 
+	 */
+	public static boolean copyDirStructure(File sourceDir, File destinationRootDir, boolean recreateRoot) throws IOException {
+		
+		if(!sourceDir.exists() || checkIfContainedInDir(destinationRootDir, sourceDir)) {
+			throw new IOException();
+		}
+		
+		boolean esit = true;
+		String destRootPath = destinationRootDir.getAbsolutePath();
+		
+		// only first round recreates the source dir - if all the time cycle never ends
+		if(recreateRoot) {
+			destRootPath = destRootPath+"/"+sourceDir.getName();
+			destRootPath = FileStuff.getUniqueNameFile(new File(destRootPath));
+			new File(destRootPath).mkdir();
+		}
+		
+		File[] foundDirectories = sourceDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.DIR_ONLY));
+		for(File current : foundDirectories) {
+			File destCurrent = new File(destRootPath + "/" + current.getName());
+			
+			// recursive repeat for current source folder inside root
+			if(!copyDirStructure(current, destCurrent, false)) {
+				esit = false;
+			};
+
+			// copy current directory
+			if(!destCurrent.mkdirs()) {
+				esit = false;
+			}
+			
+		}
+		
+		return esit;
+	}
+	
+	/**
+	 * check if a file/folder is contained in a given suspect parent dir.
+	 * @param fileToCheck
+	 * @param suspectParentFolder
+	 * @return true if fileToCheck is contained suspectParentFolder, false if not
+	 */
+	public static boolean checkIfContainedInDir(File fileToCheck, File suspectParentFolder) {
+		boolean areRelated = true;
+		try {
+			areRelated = fileToCheck.getCanonicalPath().contains(suspectParentFolder.getCanonicalPath() + File.separator);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+	    return areRelated;
+	}
+	
+	/**
+	 * List all files in directory and his subdirectories. 
+	 * Use CustomFileFilters class and his parameters to select type of search.
+	 * @param sourceDir
+	 * @param filterType
+	 * @return
+	 */
+	public static ArrayList<File> getAllContent(File sourceDir, String filterType) {
+		ArrayList<File> result = new ArrayList<>();
+		for(File found : sourceDir.listFiles(CustomFileFilters.customTypeFilter(filterType))) {
+			if(found.isDirectory()) {
+				result.addAll(getAllContent(found, filterType));
+			}else {
+				result.add(found);
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * this method delete recursively the given directory's contentent, without deleting the folders in it.
+	 * @param dirToEmpy
+	 * @return true if all is deleted, false if something is still present
+	 */
+	public static boolean emptyDirContentFolderOnly(File dirToEmpy) {
+		if(!dirToEmpy.exists()) {
+			return false;
+		}
+		
+		boolean esit = true;
+		
+		File[] foundContent = dirToEmpy.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.ALL_FOUND));
+		for(File current : foundContent) {
+			
+			// delete current if file
+			if(current.isFile() && !FileUtils.deleteQuietly(current)) {
+				esit = false;
+			}
+			
+			// recursive delete content if folder
+			if(current.isDirectory() && !emptyDirContentFolderOnly(current)) {
+				esit = false;
+			};
+		}
+		
+		return esit;
 	}
 	
 	/**
@@ -267,12 +376,13 @@ public class FileStuff {
 	}
 	
 	/**
-	 * this method change name of java File variable until the result is a non existent file
+	 * this method change name from the given file absolute path, until the result is a non existent file
 	 * It do that adding (i) numbers at the end of the file name, just before the start of the
 	 * extension . 
+	 * <Strong>Note that the given File variable won't change</Strong>
 	 * 
 	 * @param file
-	 * @return the new unique name in String format
+	 * @return the new unique path name in String format
 	 */
 	public static String getUniqueNameFile(File file) {
 		String fileName=file.getPath();
@@ -281,9 +391,13 @@ public class FileStuff {
 		String name = "";
 
 		int idxOfDot = fileName.lastIndexOf('.');   //Get the last index of . to separate extension
-		extension = fileName.substring(idxOfDot + 1);
-		name = fileName.substring(0, idxOfDot);
-
+		if(idxOfDot>=0) {
+			extension = fileName.substring(idxOfDot + 1);
+			name = fileName.substring(0, idxOfDot);
+		}else {
+			name = fileName;
+		}	
+		
 		Path path = Paths.get(fileName);
 		int counter = 1;
 		while(Files.exists(path)){

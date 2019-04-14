@@ -469,4 +469,9 @@ public class GeneralOptionsFrame extends JFrame{
 		boolean startDirect = (startDirectString.equalsIgnoreCase("true"))? true : false;
 		return startDirect;
 	}
+	
+	public void initGuiFromConfig() {
+		initializeValues();
+		updateGUIComponents();
+	}
 }

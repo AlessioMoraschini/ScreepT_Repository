@@ -40,18 +40,29 @@ public class TemplatesChoosePanel extends JFrame{
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TemplatesChoosePanel.class);
 		
+	private final static String TEMPLATES_FOLDER_NAME = "Resources_Scrypt/Templates/";
+	private final static File TEMPLATES_FOLDER = new File(TEMPLATES_FOLDER_NAME);
+
+	public static boolean active = false;
+	
 	private JLabel lblTemplates;
 	private JPanel panel;
 	private JComboBox comboTemplateSelector;
 	private JButton btnInject;
-	
-	private final static String TEMPLATES_FOLDER_NAME = "Resources_Scrypt/Templates/";
-	private final static File TEMPLATES_FOLDER = new File(TEMPLATES_FOLDER_NAME);
 	private JButton btnAddSelectionToTemplates;
 	private JButton AddCustomFromFile;
+	private JButton buttonInvoker;
+	private JTextArea outputTextArea;
+	private JComboBox templatesCombo;
 	
 	// MAIN CONSTRUCTOR //
-	public TemplatesChoosePanel(JTextArea outputTextArea, JComboBox templatesCombo) {
+	public TemplatesChoosePanel(JTextArea outputText, JComboBox templatesComb, JButton buttonInvoke) {
+		
+		active = true;
+		
+		outputTextArea = outputText;
+		templatesCombo = templatesComb;
+		buttonInvoker = buttonInvoke;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[100px,grow][70px]", "[42px][30px,grow][30px,grow]"));
@@ -84,7 +95,24 @@ public class TemplatesChoosePanel extends JFrame{
 		btnAddSelectionToTemplates = new JButton("Add Selection to Templates");
 		getContentPane().add(btnAddSelectionToTemplates, "cell 1 2,growx");
 		
-		// START ACTION LISTENERS //
+		addHandlers();
+		
+	}
+	
+	private void addHandlers() {
+		
+		// DEFAULT CLOSE ACTIONS 
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	active = false;
+	        	buttonInvoker.setEnabled(true);
+	        	
+				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
+	        	dispose();
+		    }
+		});
 		
 		// append template into text area at current selection
 		btnInject.addActionListener(new ActionListener() {

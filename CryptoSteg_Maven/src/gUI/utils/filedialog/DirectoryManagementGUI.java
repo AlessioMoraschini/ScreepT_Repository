@@ -2,6 +2,7 @@ package gUI.utils.filedialog;
 
 import java.awt.Component;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -68,7 +69,7 @@ public class DirectoryManagementGUI {
 				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
 			} 
 		}else {
-			//JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
@@ -85,6 +86,49 @@ public class DirectoryManagementGUI {
 			} 
 		}else {
 			JOptionPane.showMessageDialog(parent, "Void path, exiting.", "Some error occurred!", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	public static void deleteDirContentFiles(JFrame parent,INItializer currentConf) {
+		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		if (selected != null) {
+			boolean res = FileStuff.emptyDirContentFolderOnly(selected);
+			if (res) {
+				JOptionPane.showMessageDialog(parent, "Completed, folders content deleted :)", "Completed, folders content deleted", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+			} 
+		}else {
+			JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	
+	public static void copyDirStructure(JFrame parent,INItializer currentConf) {
+		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		if (selected != null) {
+			File destination = GenericFileChooserDialog.directoWrite(parent, currentConf);
+			if (destination != null) {
+				boolean res = false;
+				try {
+					res = FileStuff.copyDirStructure(selected, destination, true);
+				} catch (IOException e) {
+					logger.error(e);
+					JOptionPane.showMessageDialog(parent, "IO Error: you cannot put destination inside source, choose another destination",
+							"IO Error: cannot put destination inside source", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (res) {
+					JOptionPane.showMessageDialog(parent, "Completed, folder directories content copied :)",
+							"Completed, folders directories content copied", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(parent, "Some error occurred, some folders could be missing :(",
+							"Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+				} 
+			}else {
+				JOptionPane.showMessageDialog(parent, "No destination directory selected, exiting.", "Destination directory missing!", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}else {
+			JOptionPane.showMessageDialog(parent, "No source directory selected, exiting.", "Source directory missing!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

@@ -514,4 +514,9 @@ public class GraphicPreferencesFrame extends JFrame{
 			}
 		}
 	}
+	
+	public void initGuiFromConfig() {
+		initValues(currentConfiguration);
+		updateGUI();
+	}
 }

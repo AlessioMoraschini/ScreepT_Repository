@@ -25,7 +25,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
-		if (e.getID() == KeyEvent.KEY_PRESSED) {
+		if (e.getID() == KeyEvent.KEY_PRESSED && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 			
 			/**
 			 *  UNDO
@@ -89,11 +89,8 @@ public class TextEditorListener implements KeyEventDispatcher{
 		
 ////////////////LISTENER FOR KEY RELEASED EVENT - WHEN NEED TO TRIGGER ONLY ONE TIME EVEN WHILE KEEPING PRESSED  //////////////////////////
 		
-		if (e.getID() == KeyEvent.KEY_RELEASED) {
+		if (e.getID() == KeyEvent.KEY_RELEASED  && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 	      
-			// only for debug purpose - comment before releasing ScrYpT
-	    	logger.debug("!!! Catched key input: "+"KeyChar: "+e.getKeyChar()+" - KeyCode: "+e.getKeyCode()+" - ALT: "+e.isAltDown()+" - CTRL: "+e.isControlDown()+" - SHIFT: "+e.isShiftDown());
-		
 			/**
 			 *  SAVE FILE
 			 */

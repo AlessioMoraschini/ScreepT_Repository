@@ -1,4 +1,4 @@
-package gUI.utils.tree.crypter.dragndrop;
+	package gUI.utils.tree.crypter.dragndrop;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.TooManyListenersException;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -31,10 +30,13 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
+import frameutils.BackgroundPanel;
+import gUI.mainGUI;
 import gUI.panels.KeyDictionaryPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
+import net.miginfocom.swing.MigLayout;
 
-public class VirtualFileDropPane extends JPanel {
+public class VirtualFileDropPane extends BackgroundPanel {
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(KeyDictionaryPanel.class); 
@@ -54,10 +56,11 @@ public class VirtualFileDropPane extends JPanel {
 
     // constructor
     public VirtualFileDropPane(JTree targetTree, Component targetDrop) {
+    	super(mainGUI.SCREEPT_BACKGROUND_DRAGNDROP_IMAGE, false);
     	
     	targetDropComponent = (targetDrop == null)? this : targetDrop;
-    	
     	filesTree = targetTree;
+
     	File sourceRootFile = new File(DEFAULT_ROOT);
         CrypterDragFileModel fileModelRoot = new CrypterDragFileModel(sourceRootFile);
         TreeNode root = new DefaultMutableTreeNode(fileModelRoot);
@@ -72,8 +75,11 @@ public class VirtualFileDropPane extends JPanel {
 		new TreeDragNDropListenerCrypter(filesTree); // pop-up menu listener
         
         setLayout(new GridBagLayout());
+        this.setBackground(Color.BLACK);
+        
         message = new JLabel("Drag here your files to code/decode them");
         message.setFont(message.getFont().deriveFont(java.awt.Font.BOLD, 18));
+        message.setForeground(Color.WHITE);
         add(message);
 
     }

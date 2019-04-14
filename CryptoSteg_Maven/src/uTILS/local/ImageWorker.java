@@ -3,6 +3,7 @@ package uTILS.local;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -597,6 +598,26 @@ public class ImageWorker {
 		graphics2D.drawImage(image, 0, 0, newWidth, newHeight, null);
 
 		return newImage;
+	}
+	
+	/**
+	 * this method resize an image to the given wanted dimensions keeping the same
+	 * width/height ratio. returns a Image resized
+	 */
+	public static Image scaleImage(Image image, int newWidth, int newHeight) {
+		// Make sure the aspect ratio is maintained, so the image is not distorted
+		double thumbRatio = (double) newWidth / (double) newHeight;
+		int imageWidth = image.getWidth(null);
+		int imageHeight = image.getHeight(null);
+		double aspectRatio = (double) imageWidth / (double) imageHeight;
+
+		if (thumbRatio < aspectRatio) {
+			newHeight = (int) (newWidth / aspectRatio);
+		} else {
+			newWidth = (int) (newHeight * aspectRatio);
+		}
+
+		return image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
 	}
 
 	/**
