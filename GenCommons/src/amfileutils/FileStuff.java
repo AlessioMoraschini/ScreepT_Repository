@@ -128,12 +128,12 @@ public class FileStuff {
 			File destCurrent = new File(destRootPath + "/" + current.getName());
 			
 			// recursive repeat for current source folder inside root
-			if(!copyDirStructure(current, destCurrent, false)) {
+			if(!copyDirStructure(current, destCurrent, false) && !destCurrent.exists()) {
 				esit = false;
 			};
 
 			// copy current directory
-			if(!destCurrent.mkdirs()) {
+			if(!destCurrent.mkdirs() && !destCurrent.exists()) {
 				esit = false;
 			}
 			

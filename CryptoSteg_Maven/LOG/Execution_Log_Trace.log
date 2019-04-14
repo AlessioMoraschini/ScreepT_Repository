@@ -1,0 +1,331 @@
+2019-04-14 14:14:44,339 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-04-14 14:14:44,585 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-04-14 14:14:45,771 [Thread-2] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Apr 14 14:14:45 CEST 2019
+
+ScrYpT - V0.5 Started now!
+
+##################################################
+
+
+2019-04-14 14:14:45,844 [Thread-2] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=28]
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-04-14 14:14:45,845 [Thread-2] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-04-14 14:14:46,339 [Thread-2] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-04-14 14:14:46,841 [Thread-2] DEBUG gUI.mainGUI - ## GUI components started
+2019-04-14 14:14:46,845 [Thread-2] DEBUG gUI.mainGUI - icon image setted to main window
+2019-04-14 14:14:46,846 [Thread-2] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-04-14 14:14:46,846 [Thread-2] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-04-14 14:14:46,851 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-04-14 14:14:46,855 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-04-14 14:14:47,065 [Thread-2] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-04-14 14:14:47,065 [Thread-2] INFO  gUI.mainGUI - Charset setted: UTF-8
+2019-04-14 14:14:54,856 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:15:02,856 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:15:04,382 [AWT-EventQueue-0] INFO  gUI.panels.ChargeIniLog - gUI.panels.ChargeIniLog Starting...
+2019-04-14 14:15:04,747 [AWT-EventQueue-0] INFO  gUI.panels.ChargeIniLog - gUI.panels.ChargeIniLog Started
+2019-04-14 14:15:10,856 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:15:16,191 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sun Apr 14 14:15:16 CEST 2019
+
+ScrYpT - V0.5 CLOSED!
+
+##################################################
+
+
+2019-04-14 14:20:19,819 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-04-14 14:20:19,978 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-04-14 14:20:21,096 [Thread-2] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Apr 14 14:20:21 CEST 2019
+
+ScrYpT - V0.5 Started now!
+
+##################################################
+
+
+2019-04-14 14:20:21,179 [Thread-2] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=28]
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-04-14 14:20:21,183 [Thread-2] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-04-14 14:20:21,676 [Thread-2] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-04-14 14:20:22,150 [Thread-2] DEBUG gUI.mainGUI - ## GUI components started
+2019-04-14 14:20:22,155 [Thread-2] DEBUG gUI.mainGUI - icon image setted to main window
+2019-04-14 14:20:22,155 [Thread-2] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-04-14 14:20:22,156 [Thread-2] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-04-14 14:20:22,165 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-04-14 14:20:22,167 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-04-14 14:20:22,299 [Thread-2] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-04-14 14:20:22,299 [Thread-2] INFO  gUI.mainGUI - Charset setted: UTF-8
+2019-04-14 14:20:29,017 [AWT-EventQueue-0] INFO  gUI.panels.ChargeIniLog - gUI.panels.ChargeIniLog Starting...
+2019-04-14 14:20:29,310 [AWT-EventQueue-0] INFO  gUI.panels.ChargeIniLog - gUI.panels.ChargeIniLog Started
+2019-04-14 14:20:30,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:20:38,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:20:46,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:20:54,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:21:02,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:21:06,678 [AWT-EventQueue-0] DEBUG gUI.panels.ChargeIniLog - EXPORT CONFIG clicked
+2019-04-14 14:21:10,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:21:18,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:21:26,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:21:34,168 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:21:42,169 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:21:50,170 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:21:58,171 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:22:06,172 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:22:14,172 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:22:22,172 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:22:30,173 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:22:38,173 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:22:46,173 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:22:54,175 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:23:02,175 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:23:10,175 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:23:18,176 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:23:26,192 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:23:34,193 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:23:42,194 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:23:50,195 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:23:58,196 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:24:06,196 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:24:14,197 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:24:22,197 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:24:30,198 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:24:38,198 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:24:46,198 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:24:54,199 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:25:02,199 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:25:10,200 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:25:18,200 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:25:26,200 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:25:34,200 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:25:42,201 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:25:50,201 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:25:58,201 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:26:06,201 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:26:14,202 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:26:22,202 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:26:30,202 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:26:38,203 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:26:46,203 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:26:54,203 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:27:02,204 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:27:10,205 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:27:18,205 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:27:26,206 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:27:34,206 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:27:38,156 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sun Apr 14 14:27:38 CEST 2019
+
+ScrYpT - V0.5 CLOSED!
+
+##################################################
+
+
+2019-04-14 14:31:40,405 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-04-14 14:31:40,566 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-04-14 14:31:41,692 [Thread-2] DEBUG gUI.mainGUI - 
+
+##################################################
+
+Sun Apr 14 14:31:41 CEST 2019
+
+ScrYpT - V0.5 Started now!
+
+##################################################
+
+
+2019-04-14 14:31:41,776 [Thread-2] DEBUG iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\workspace-varie-eclipse\CryptoSteg_Maven\IMG\image.jpg
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=28]
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-04-14 14:31:41,776 [Thread-2] DEBUG gUI.mainGUI - Initializing main GUI-start
+2019-04-14 14:31:42,278 [Thread-2] DEBUG gUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-04-14 14:31:42,758 [Thread-2] DEBUG gUI.mainGUI - ## GUI components started
+2019-04-14 14:31:42,764 [Thread-2] DEBUG gUI.mainGUI - icon image setted to main window
+2019-04-14 14:31:42,764 [Thread-2] DEBUG gUI.mainGUI - ## TITLE UPDATER started.
+2019-04-14 14:31:42,765 [Thread-2] DEBUG gUI.mainGUI - Main GUI initialized correctly.
+2019-04-14 14:31:42,771 [Thread-3] DEBUG gUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-04-14 14:31:42,773 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-04-14 14:31:42,900 [Thread-2] DEBUG gUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-04-14 14:31:42,900 [Thread-2] INFO  gUI.mainGUI - Charset setted: UTF-8
+2019-04-14 14:31:50,776 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:31:58,776 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:32:06,776 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:32:14,777 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:32:22,777 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:32:30,777 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:32:38,778 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:32:42,978 [AWT-EventQueue-0] INFO  gUI.panels.AboutSectionPanel - gUI.panels.AboutSectionPanel Starting...
+2019-04-14 14:32:42,996 [AWT-EventQueue-0] INFO  gUI.panels.AboutSectionPanel - gUI.panels.AboutSectionPanel Started
+2019-04-14 14:32:46,778 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:32:47,264 [AWT-EventQueue-0] INFO  gUI.panels.AboutSectionPanel - gUI.panels.AboutSectionPanel$1 Closed
+2019-04-14 14:32:54,778 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:33:02,779 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:33:10,779 [Thread-5] DEBUG gUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-04-14 14:33:11,619 [AWT-EventQueue-0] DEBUG gUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sun Apr 14 14:33:11 CEST 2019
+
+ScrYpT - V0.5 CLOSED!
+
+##################################################
+
+

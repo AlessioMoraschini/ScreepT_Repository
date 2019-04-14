@@ -166,6 +166,7 @@ public class mainGUI {
 	private JMenuItem mntmloadPrjSub;
 	private JMenuItem mntmExportPrjSub;
 	private JMenuItem mntmReloadPrjSub;
+	private JMenuItem mntmSaveCurrent;
 	private JMenuItem mntmSaveCurrentAs;
 	private JMenuItem mntmloadSrcrYptDefaultConf;
 	private JMenuItem mntmExit;
@@ -227,6 +228,7 @@ public class mainGUI {
 	private static boolean FLAG_mntmExit = false;
 	private static boolean FLAG_loadPrjSub = false;
 	private static boolean FLAG_savePrjSub = false;
+	private static boolean FLAG_savePrjSubAs = false;
 	private static boolean FLAG_loadDefaultPrjSub = false;
 	private static boolean FLAG_mntmSaveCurrentAs = false;
 	private static boolean FLAG_loadSrcrYptDefaultConf = false;
@@ -583,16 +585,27 @@ public class mainGUI {
 					}
 		    }
 		});
+		
+		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
+		mntmSaveCurrent = new JMenuItem(new AbstractAction("Save Current Configuration") {
+		    public void actionPerformed(ActionEvent ae) {
+		    	if (!FLAG_savePrjSub) {
+		    		FLAG_savePrjSub = true;
+		    		ChargeIniLog.saveCurrentConf(currentConfiguration, frmScryptV);
+		    		FLAG_savePrjSub = false;
+				}  	
+		    }
+		});
 
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
 		mntmExportPrjSub = new JMenuItem(new AbstractAction("Export Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (!FLAG_savePrjSub) {
-		    		FLAG_savePrjSub = true;
+		    	if (!FLAG_savePrjSubAs) {
+		    		FLAG_savePrjSubAs = true;
 					JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 					INIfileChoosER panel = new INIfileChoosER(currentConfiguration, (JLabel)null);
 					panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
-					FLAG_savePrjSub = false;
+					FLAG_savePrjSubAs = false;
 				}  	
 		    }
 		});
@@ -729,7 +742,7 @@ public class mainGUI {
 		});
 		
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT
-		mntmDeleteDirectoryContentRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (except selected)") {
+		mntmDeleteDirectoryContentRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (All except selected)") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
 					FLAG_mntmDeleteDirectoryContentRecursive = true;
@@ -1088,10 +1101,11 @@ public class mainGUI {
 			// SUB-MENU
 			mnFile.add(mntmInspectCurrentConfiguration);
 			mnFile.add(new JSeparator());
+			mnFile.add(mntmReloadPrjSub);
 			mnFile.add(mntmloadPrjSub);
 			mnFile.add(mntmExportPrjSub);
 			mnFile.add(new JSeparator());
-			mnFile.add(mntmReloadPrjSub);
+			mnFile.add(mntmSaveCurrent);
 			mnFile.add(mntmSaveCurrentAs);
 			mnFile.add(new JSeparator());
 			mnFile.add(mntmloadSrcrYptDefaultConf);
@@ -1162,6 +1176,7 @@ public class mainGUI {
 		mntmloadPrjSub.setFont(menuItemFont);
 		mntmExportPrjSub.setFont(menuItemFont);
 		mntmReloadPrjSub.setFont(menuItemFont);
+		mntmSaveCurrent.setFont(menuItemFont);
 		mntmSaveCurrentAs.setFont(menuItemFont);
 		mntmloadSrcrYptDefaultConf.setFont(menuItemFont);
 		
@@ -1224,6 +1239,7 @@ public class mainGUI {
 		mntmloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
 		mntmExportPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 		mntmReloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+		mntmSaveCurrent.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		mntmSaveCurrentAs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
 		mntmloadSrcrYptDefaultConf.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
 		mntmExit.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXIT));

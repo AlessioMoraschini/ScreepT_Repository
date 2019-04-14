@@ -10,6 +10,7 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import gUI.mainGUI;
+import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
@@ -26,6 +27,7 @@ import javax.swing.JOptionPane;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -72,6 +74,7 @@ public class ChargeIniLog extends JPanel{
 	private JSeparator separator;
 
 	private JTree tree;
+	private JButton btnSave;
 
 	public ChargeIniLog(INItializer configuration, mainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
@@ -84,7 +87,7 @@ public class ChargeIniLog extends JPanel{
 		
 		setBackground(new Color(211, 211, 211));
 		
-		setLayout(new MigLayout("", "[117.00][70px][30px][120px][30px][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:58.00:60px][35px][][20px][400px,grow]"));
+		setLayout(new MigLayout("", "[117.00][70px][50px][120px][30px][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:58.00:60px][35px][][20px][400px,grow]"));
 		
 		scrollPaneTextArea = new JScrollPane();
 		scrollPaneTextArea.setAutoscrolls(false);
@@ -97,23 +100,33 @@ public class ChargeIniLog extends JPanel{
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
 		textArea.append(config.toStringa()); 		
 		
-		btnExportConfig = new JButton("Export current");
+		btnExportConfig = new JButton("Export");
+		btnExportConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 		btnExportConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnExportConfig.setForeground(Color.BLACK);
 		btnExportConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnExportConfig.setBackground(new Color(176, 196, 222));
-		add(btnExportConfig, "cell 1 1 2 1,grow");
+		add(btnExportConfig, "cell 1 1,grow");
 		
-		btnSaveCurrentAsDefault = new JButton("Save current as Default");
+		btnSave = new JButton("Save");
+		btnSave.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
+		btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnSave.setForeground(Color.BLACK);
+		btnSave.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
+		btnSave.setBackground(new Color(176, 196, 222));
+		add(btnSave, "cell 2 1,grow");
+		
+		btnSaveCurrentAsDefault = new JButton("Save as Default");
+		btnSaveCurrentAsDefault.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
 		btnSaveCurrentAsDefault.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSaveCurrentAsDefault.setForeground(Color.BLACK);
 		btnSaveCurrentAsDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnSaveCurrentAsDefault.setBackground(new Color(176, 196, 222));
 		add(btnSaveCurrentAsDefault, "cell 3 1 2 1,grow");
 		
-		buttonReload = new JButton("");
+		buttonReload = new JButton("Reload");
 		buttonReload.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		buttonReload.setForeground(Color.WHITE);
+		buttonReload.setForeground(Color.BLACK);
 		buttonReload.setBackground(new Color(176, 196, 222));
 		buttonReload.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
 		add(buttonReload, "cell 5 1,grow");
@@ -133,7 +146,8 @@ public class ChargeIniLog extends JPanel{
 		config_PATH.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		config_PATH.setText(config.getIniFile().getFile().getPath());
 		
-		btnResetOriginalConfig = new JButton("Reset original Config");
+		btnResetOriginalConfig = new JButton("Reset Original");
+		btnResetOriginalConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
 		btnResetOriginalConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnResetOriginalConfig.setForeground(Color.BLACK);
 		btnResetOriginalConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
@@ -166,7 +180,8 @@ public class ChargeIniLog extends JPanel{
 		lblConfigurationManager.setBackground(SystemColor.activeCaptionBorder);
 		panel_1.add(lblConfigurationManager, "cell 0 0,alignx center");
 		
-		btnLoadCustomConfig = new JButton("Load Custom CONFIG");
+		btnLoadCustomConfig = new JButton("Load Custom");
+		btnLoadCustomConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
 		btnLoadCustomConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLoadCustomConfig.setForeground(Color.BLACK);
 		btnLoadCustomConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
@@ -223,6 +238,17 @@ public class ChargeIniLog extends JPanel{
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 				textAreaToTop();
 				parent.updateGuiFromCurrConfig();
+			}
+		});
+		
+		// SAVE CURRENT CONFIG
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				logger.debug("SAVE CONFIG clicked");
+				if(saveCurrentConf(config, parent.getMainFrame())) {
+					lblAvviso.setText("Configuration saved");
+					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+				}
 			}
 		});
 		
@@ -293,6 +319,7 @@ public class ChargeIniLog extends JPanel{
 					}
 					config.setIniFile(new Wini(backupIni));
 					config.setIniReadFile(new Ini(backupIni));
+					parent.updateGuiFromCurrConfig();
 					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
 				} catch (IOException e1) {
 					logger.error("Exception happened!", e1);
@@ -304,5 +331,15 @@ public class ChargeIniLog extends JPanel{
 	
 	private void textAreaToTop() {
 		scrollPaneTextArea.getViewport().setViewPosition(new Point(0,0));
+	}
+	
+	public static boolean saveCurrentConf(INItializer configuration, JFrame parent) {
+		int choose = JOptionPane.showConfirmDialog(parent, "Are you sure to overwrite current configuration?", "Overwrite current Config?", JOptionPane.YES_NO_CANCEL_OPTION);
+		if(choose == JOptionPane.OK_OPTION) {
+			configuration.writeCurrentConfigIniFile();
+			JOptionPane.showMessageDialog(parent,  configuration.getIniFile().getFile().getAbsolutePath() + " -> Saved", "Configuration saved", JOptionPane.INFORMATION_MESSAGE);
+			return true;
+		}
+		return false; 
 	}
 }
