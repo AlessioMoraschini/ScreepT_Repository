@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import gUI.om.ScalingAlgorithm;
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
@@ -31,6 +30,7 @@ import java.io.IOException;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
 
 import javax.swing.JLabel;

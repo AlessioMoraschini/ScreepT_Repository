@@ -33,11 +33,11 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import gUI.panels.CrypterPanel;
 import gUI.panels.KeyGenPanel;
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import local.HandleString;
 import menusettings.MenuSetter;
+import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
 
 public class TreeFileMouseListenerCrypter {

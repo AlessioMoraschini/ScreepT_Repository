@@ -12,8 +12,8 @@ import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
 
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
+import resources.IconsPathConfigurator;
 
 public class DragNDropVirtualCellRenderer implements TreeCellRenderer {
 

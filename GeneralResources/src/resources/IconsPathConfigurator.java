@@ -1,10 +1,8 @@
-package gUI.utils;
-
-import gUI.mainGUI;
+package resources;
 
 public class IconsPathConfigurator {
 	
-	public static final String RESOURCES_DIR = mainGUI.RESOURCES_DIR;
+	public static final String RESOURCES_DIR = "Resources_Scrypt/";
 	
 	///////////////// MENU ICONS /////////////////
 	
@@ -74,7 +72,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_CRYPT = RESOURCES_DIR + "Icons/Crypt.png";
 	public static final String ICON_DECRYPT = RESOURCES_DIR + "Icons/Decrypt.png";
 	public static final String ICON_SPEAKER = RESOURCES_DIR + "Icons/Speaker.png";
-	
+	public static final String ICON_SEARCH = RESOURCES_DIR + "Icons/Search.png";
 	
 	///////////////// TREE RENDERER ICONS /////////////////
 	public static final String iconFolderPath = RESOURCES_DIR + "Icons/Folder.png";

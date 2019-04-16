@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
 
 import org.apache.log4j.Logger;
@@ -43,7 +44,6 @@ import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import iNIT.INItializer;
 import gUI.om.KeyGenImageType;
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import java.awt.Cursor;

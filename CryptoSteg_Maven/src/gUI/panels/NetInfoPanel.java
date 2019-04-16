@@ -8,12 +8,12 @@ import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
 import frameutils.GuiUtils;
-import gUI.utils.IconsPathConfigurator;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkUtils;
 import network.om.FtpSpeedTestOptions;
 import network.om.NetworkAdapter;
+import resources.IconsPathConfigurator;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;

@@ -25,7 +25,6 @@ import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import gUI.mainGUI;
 import gUI.om.BufferedImageType;
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tree.FileTreeModel;
@@ -34,6 +33,7 @@ import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
 import iNIT.INItializer;
 import local.HandleString;
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
 
 import javax.swing.JLabel;

@@ -180,24 +180,33 @@ public class TextEditorListener implements KeyEventDispatcher{
 			}
 			
 			/**
-			 * 	SELECT TEXT
+			 * 	UPPERCASE SELECTED TEXT
 			 */
-			// case ctrl+A => SELECT/DESELECT ALL TEXT
-			if (e.getKeyCode()==65 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+			// case ctrl+shift+UP => UPPERCASE SELECTED
+			if (e.getKeyCode()==70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 			{
-				JTextArea textA = currentTextEditor.textArea_1;
-				int textLength = textA.getText().length();
-				
-				if (textA.getSelectedText() == "" || textA.getSelectedText() == null) {
-					textA.requestFocus();
-					textA.setSelectionStart(0);
-					textA.setSelectionEnd(textLength);
-				}else {
-					textA.setSelectionStart(0);
-					textA.setSelectionEnd(0);
-					textA.transferFocus();
-				}
+				currentTextEditor.btnFindText.doClick();
 			}
+			
+//			/**
+//			 * 	SELECT TEXT
+//			 */
+//			// case ctrl+A => SELECT/DESELECT ALL TEXT
+//			if (e.getKeyCode()==65 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+//			{
+//				JTextArea textA = currentTextEditor.textArea_1;
+//				int textLength = textA.getText().length();
+//				
+//				if (textA.getSelectedText() == "" || textA.getSelectedText() == null) {
+//					textA.requestFocus();
+//					textA.setSelectionStart(0);
+//					textA.setSelectionEnd(textLength);
+//				}else {
+//					textA.setSelectionStart(0);
+//					textA.setSelectionEnd(0);
+//					textA.transferFocus();
+//				}
+//			}
 	  
 	    }
 	    

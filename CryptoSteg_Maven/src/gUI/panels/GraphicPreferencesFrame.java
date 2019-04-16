@@ -2,6 +2,8 @@ package gUI.panels;
 
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -27,7 +29,6 @@ import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
 import gUI.mainGUI;
-import gUI.utils.IconsPathConfigurator;
 import iNIT.INItializer;
 
 import javax.swing.UIManager;

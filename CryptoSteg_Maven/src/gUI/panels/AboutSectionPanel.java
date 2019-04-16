@@ -8,11 +8,11 @@ import org.apache.log4j.Logger;
 import frameutils.BackgroundPanel;
 import frameutils.GuiUtils;
 import gUI.mainGUI;
-import gUI.utils.IconsPathConfigurator;
 import guistyle.TextGuiUtils;
 
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
 import utils.SysUtils;
 
 import javax.swing.JLabel;

@@ -20,9 +20,9 @@ import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
 import gUI.panels.CrypterPanel;
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import menusettings.MenuSetter;
+import resources.IconsPathConfigurator;
 
 public class TreeDragNDropListenerCrypter {
 	

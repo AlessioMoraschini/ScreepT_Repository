@@ -12,7 +12,7 @@ import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
 
-import gUI.utils.IconsPathConfigurator;
+import resources.IconsPathConfigurator;
 
 public class FileCellRendererIni implements TreeCellRenderer {
 

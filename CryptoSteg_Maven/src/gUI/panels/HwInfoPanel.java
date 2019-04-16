@@ -13,7 +13,6 @@ import org.hyperic.sigar.SigarException;
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import gUI.om.HDinfo;
-import gUI.utils.IconsPathConfigurator;
 import generic.LimitedList;
 import iNIT.INItializer;
 import local.DoubleListWorker;
@@ -23,6 +22,7 @@ import oshi.hardware.Baseboard;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.Display;
 import oshi.hardware.HWDiskStore;
+import resources.IconsPathConfigurator;
 
 import javax.swing.JPanel;
 import java.awt.Color;

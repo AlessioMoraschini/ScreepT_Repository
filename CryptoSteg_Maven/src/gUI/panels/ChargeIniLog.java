@@ -10,13 +10,13 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import gUI.mainGUI;
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
 
 import java.awt.Font;

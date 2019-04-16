@@ -44,7 +44,6 @@ import gUI.panels.GeneralOptionsFrame;
 import gUI.panels.KeyGenPanel;
 import gUI.panels.NetInfoPanel;
 import gUI.panels.TextEditor;
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
@@ -70,6 +69,7 @@ import java.awt.SystemColor;
 import java.awt.Window;
 
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
 import utils.SysUtils;
 
 import java.awt.Dialog.ModalExclusionType;

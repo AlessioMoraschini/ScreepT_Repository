@@ -8,11 +8,11 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import gUI.om.BufferedImageType;
-import gUI.utils.IconsPathConfigurator;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
 import iNIT.INItializer;
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
 
 import javax.swing.JPanel;
 import java.awt.SystemColor;
