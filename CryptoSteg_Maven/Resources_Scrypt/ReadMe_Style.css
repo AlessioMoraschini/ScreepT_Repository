@@ -1,0 +1,38 @@
+
+body{
+	background: #e6f2ff;
+	overflow: scroll;
+}
+
+#mainTitle{
+	margin: 0px;
+	font-weight: 900;
+	font-size: 1.2em;
+}
+
+#subTitle{
+	margin-top: -10px!important;
+	font-weight: bold;
+}
+
+.mainBlock{
+	margin-left: 5px;
+	margin-right: 5px;
+	font-size: 1em;
+	font-family: "Arial", Helvetica, sans-serif;
+}
+
+#desSrcYpTion{
+	margin-left: auto!important;
+	margin-right: auto!important;
+	text-align: center!important;
+}
+
+.center{
+	text-align: center;
+}
+
+.centerColoredSub1{
+	text-align: center;
+	color: #0000cc;
+}

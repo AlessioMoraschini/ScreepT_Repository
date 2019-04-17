@@ -91,7 +91,7 @@ public class SearchFrame extends JFrame{
 		getContentPane().add(btnNext, "cell 5 0,growx,aligny center");
 		
 //		getRootPane().setDefaultButton(btnPrev);
-//		getRootPane().setDefaultButton(btnNext);
+		getRootPane().setDefaultButton(btnNext);
 		
 		setupAudio();
 		

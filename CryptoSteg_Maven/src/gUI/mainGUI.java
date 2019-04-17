@@ -44,6 +44,7 @@ import gUI.panels.GeneralOptionsFrame;
 import gUI.panels.KeyGenPanel;
 import gUI.panels.NetInfoPanel;
 import gUI.panels.TextEditor;
+import gUI.panels.TutorialPanel;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
@@ -84,8 +85,6 @@ public class mainGUI {
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(mainGUI.class);
 
-	private static Date now; // date used for log operations
-
 ////////////////////// GENERAL STATIC ELEMENTS /////////////////////////
 ////////////////////////////////////////////////////////////////////////
 	
@@ -104,6 +103,7 @@ public class mainGUI {
 	public static final String DEFAULT_INI= RESOURCES_DIR + "CONFIG.ini";
 	public static final String BACKUP_INI= RESOURCES_DIR + "Backup/BACKUP_CONFIG.ini";
 	public static final String DEFAULT_INI_FOLDER= "INI_FILES/";
+	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./Resources_Scrypt/ReadMe.html";
 	
 	// icons and images
 	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
@@ -114,11 +114,10 @@ public class mainGUI {
 	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
-	
-	
 	// log_trace location
 	private static final String LOG_PROPERTIES_PATH = RESOURCES_DIR + "log4j.properties";
 	private static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
+	private static Date now; // date used for log operations
 	
 	// temp decryptedFolder
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
@@ -145,6 +144,7 @@ public class mainGUI {
 	private static NetInfoPanel panelNetInfo;
 	private static HwInfoPanel panelHwInfo;
 	private static AboutSectionPanel panelAbout;
+	private static TutorialPanel tutorialPanel;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	private TextEditor initTxtWriter;
@@ -223,6 +223,7 @@ public class mainGUI {
 	private static boolean flagNetInfoPanel = false;
 	private static boolean flagHwInfoPanel = false;
 	private static boolean flagAboutPanel = false;
+	private static boolean flagTutorialPanel = false;
 	
 	// flags for no-window operations
 	private static boolean FLAG_mntmExit = false;
@@ -342,6 +343,9 @@ public class mainGUI {
 									}
 									if(!AboutSectionPanel.active) {
 										flagAboutPanel=false;
+									}
+									if(!TutorialPanel.active) {
+										flagTutorialPanel=false;
 									}
 								} catch (InterruptedException e) {
 									logger.error("Exception happened!", e);
@@ -955,13 +959,21 @@ public class mainGUI {
 		// open in a new window - MANUAL
 		mntmUserDocumentation = new JMenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				if (!flagTutorialPanel) {
+					flagTutorialPanel = true;
+		    		tutorialPanel = new TutorialPanel();
+		    		tutorialPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//		    		tutorialPanel.setBounds(700, 200, 400, 345);
+		    		tutorialPanel.setResizable(true);
+		    		tutorialPanel.setVisible(true);
+		    		tutorialPanel.setTitle(APPLICATION_NAME + " - Tutorial");
+				}else {
+					tutorialPanel.setState(java.awt.Frame.NORMAL);
+					tutorialPanel.requestFocus();
+				}
 			}
 		});
 		
-		// temp tooltip
-		mntmUserDocumentation.setEnabled(false);
-		mntmUserDocumentation.setToolTipText("Cooming soon!");
 		
 	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		
