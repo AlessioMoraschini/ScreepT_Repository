@@ -180,9 +180,9 @@ public class TextEditorListener implements KeyEventDispatcher{
 			}
 			
 			/**
-			 * 	UPPERCASE SELECTED TEXT
+			 * 	FIND  TEXT
 			 */
-			// case ctrl+shift+UP => UPPERCASE SELECTED
+			// case ctrl+f=> FIND
 			if (e.getKeyCode()==70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 			{
 				currentTextEditor.btnFindText.doClick();

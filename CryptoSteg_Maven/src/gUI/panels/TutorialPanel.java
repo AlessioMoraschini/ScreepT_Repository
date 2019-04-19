@@ -1,5 +1,11 @@
 package gUI.panels;
 
+import java.awt.Color;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.io.File;
+
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
@@ -16,6 +22,7 @@ public class TutorialPanel extends JFrame{
 	static Logger logger = Logger.getLogger(TutorialPanel.class); 
 	
 	public HtmlPanel mainHtmlReadmePanel;
+	public TutorialPanel thisPanel;
 	
 	// flag to signal active
 	public static boolean active=false;
@@ -24,20 +31,31 @@ public class TutorialPanel extends JFrame{
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		setLayout(new MigLayout("", "[1000px,grow]", "[800px,grow]"));
+		setBackground(Color.BLACK);
 		
+		thisPanel = this;
 		active = true;
 		
 		// GUI SETTINGS
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
 		GuiUtils.centerComponent(this, 60);
 
-		mainHtmlReadmePanel = new HtmlPanel(80);
-		mainHtmlReadmePanel.loadHtml(mainGUI.SCRYPT_TUTORIAL_HTML_URL);
+		mainHtmlReadmePanel = new HtmlPanel(new Integer(0));
+		File f = new File(mainGUI.SCRYPT_TUTORIAL_HTML_PATH);
+		mainHtmlReadmePanel.loadHtmlFx(f.toURI().toString());
+		mainHtmlReadmePanel.jfxPanel.resizeComp(thisPanel.getWidth(), thisPanel.getHeight());
+		mainHtmlReadmePanel.setBorder(BorderFactory.createEmptyBorder());
+//		mainHtmlReadmePanel.loadHtml(mainGUI.SCRYPT_TUTORIAL_HTML_URL);
 		add(mainHtmlReadmePanel, "cell 0 0,grow");
 
 		// ADD HANDLERS AND NOTIFY LOG
 		addHandlers();
 		logger.info(this.getClass().getName() + " Started");
+	}
+	
+	public void reloadHtml() {
+		File f = new File(mainGUI.SCRYPT_TUTORIAL_HTML_PATH);
+		mainHtmlReadmePanel.loadHtmlFx(f.toURI().toString());
 	}
 	
 	private void addHandlers(){
@@ -47,8 +65,24 @@ public class TutorialPanel extends JFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				active = false;
 				logger.info(this.getClass().getName() + " Closed");
-				dispose();
+				try {
+					setVisible(false);
+				} catch (NullPointerException e) {
+				}
 		    }
+		});
+		
+		// BACKGROUND RESIZER //
+		thisPanel.addComponentListener(new ComponentListener() {
+			public void componentShown(ComponentEvent e) {
+			}
+			public void componentResized(ComponentEvent e) {
+				mainHtmlReadmePanel.jfxPanel.resizeComp(mainHtmlReadmePanel.getWidth(), mainHtmlReadmePanel.getHeight());
+			}
+			public void componentMoved(ComponentEvent e) {
+			}
+			public void componentHidden(ComponentEvent e) {
+			}
 		});
 	}
 }

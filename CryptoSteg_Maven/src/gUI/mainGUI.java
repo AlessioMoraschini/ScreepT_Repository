@@ -104,6 +104,7 @@ public class mainGUI {
 	public static final String BACKUP_INI= RESOURCES_DIR + "Backup/BACKUP_CONFIG.ini";
 	public static final String DEFAULT_INI_FOLDER= "INI_FILES/";
 	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./Resources_Scrypt/ReadMe.html";
+	public static final String SCRYPT_TUTORIAL_HTML_PATH = "Resources_Scrypt/ReadMe.html";
 	
 	// icons and images
 	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
@@ -956,18 +957,18 @@ public class mainGUI {
 			}
 		});
 		
-		// open in a new window - MANUAL
+		// open in a new window - MANUAL - preloading to improve performance
+		tutorialPanel = new TutorialPanel();
 		mntmUserDocumentation = new JMenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagTutorialPanel) {
 					flagTutorialPanel = true;
-		    		tutorialPanel = new TutorialPanel();
-		    		tutorialPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//		    		tutorialPanel.setBounds(700, 200, 400, 345);
-		    		tutorialPanel.setResizable(true);
+					tutorialPanel.setResizable(true);
 		    		tutorialPanel.setVisible(true);
 		    		tutorialPanel.setTitle(APPLICATION_NAME + " - Tutorial");
 				}else {
+					tutorialPanel.setVisible(true);
+					tutorialPanel.toFront();
 					tutorialPanel.setState(java.awt.Frame.NORMAL);
 					tutorialPanel.requestFocus();
 				}

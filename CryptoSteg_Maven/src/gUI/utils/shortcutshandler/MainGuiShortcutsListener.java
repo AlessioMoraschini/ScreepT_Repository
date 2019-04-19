@@ -28,10 +28,6 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED) {
 			
-			if (e.getKeyCode()==107 && e.isControlDown() && !e.isAltDown() && !e.isShiftDown())
-			{
-				
-			}
 
 		}
 		

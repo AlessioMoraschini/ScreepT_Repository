@@ -43,6 +43,7 @@ public class HtmlLoader {
 		panel.setEditorKit(editor);
 	}
 	
+	@Deprecated
 	public static void loadCss(JEditorPane panel, String pathToCss) throws MalformedURLException {
 		
 		editor = new HTMLEditorKit();

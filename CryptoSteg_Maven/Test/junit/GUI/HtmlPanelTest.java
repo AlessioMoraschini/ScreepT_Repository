@@ -2,13 +2,14 @@ package junit.GUI;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import javax.swing.JFrame;
 import javax.swing.text.BadLocationException;
 
-import frameutils.html.HtmlLoader;
+import frameutils.GuiUtils;
 import frameutils.html.HtmlPanel;
 
 public class HtmlPanelTest {
@@ -19,12 +20,15 @@ public class HtmlPanelTest {
 
 	public static void testHtmlPanel() throws MalformedURLException, IOException, BadLocationException {
 		JFrame testFrame = new JFrame("Test Html");
-		HtmlPanel htmlPane = new HtmlPanel(40);
+		HtmlPanel htmlPane = new HtmlPanel(new Integer(40));
 		testFrame.add(htmlPane);
-		htmlPane.loadHtml("File:./Resources_Scrypt/ReadMe.html");
+		File f = new File("Resources_Scrypt/ReadMe.html");
+		htmlPane.loadHtmlFx(f.toURI().toString());
 //		HtmlLoader.loadHtmlInEditPaneV2(htmlPane.getMainHtmlEditorPane(), "https://www.google.com");
-		testFrame.setBounds(400,400,500,500);
+		testFrame.setBounds(0,0,GuiUtils.getScreenSize().width, GuiUtils.getScreenSize().height);
 		testFrame.setVisible(true);
+		htmlPane.getFxHtmlPane().resizeComp(htmlPane.jfxPanel.getWidth(), htmlPane.jfxPanel.getHeight());
+		
 		
 		testFrame.addWindowListener(new WindowListener() {
 			public void windowOpened(WindowEvent e) {

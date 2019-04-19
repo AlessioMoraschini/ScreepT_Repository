@@ -2,22 +2,125 @@
 body{
 	background: #e6f2ff;
 	overflow: scroll;
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-bottom: 30px
+}
+
+p{
+	font-size: 17px;
+}
+
+a:visited{
+	/*color: #444444;*/
+	color:inherit;
+	font-size: 1.1em;
+}
+
+a:hover{
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+a{
+	/*color: #0000aa;*/
+	color:inherit;
+	font-size: 1.1em;
+	text-decoration:none;
+}
+
+h1{
+	font-size:1.1em;
+}
+
+h2{
+	font-size:1em;
 }
 
 #mainTitle{
 	margin: 0px;
+	margin-bottom:-10px;
 	font-weight: 900;
-	font-size: 1.2em;
+	font-size: 2.4em;
 }
 
 #subTitle{
-	margin-top: -10px!important;
+	margin-top: 0px!important;
 	font-weight: bold;
+	font-size: 1em;
+}
+
+.centerColoredSub1{
+	padding-top:5px;
+	text-align: center;
+	color: #000077;
+}
+
+.centerColoredSub2{
+	font-size: 1.2em!important;
+	text-align: center;
+	color: #050955;
+	line-height:1.6em;
+}
+
+#indexTitle{
+	font-size: 1.4em;
+}
+
+.sectionTitle{
+	font-size:25px;
+	color: #0A0099;
+	margin-left: 22px;
+}
+
+.sectionSubTitle{
+	font-size:20px;
+	color: #A00044;
+	margin-left: 24px;
+	margin-top: 20px;
+}
+
+#indexList{
+	margin: 0 auto;
+	line-height: 1.5em;
+}
+
+.subIndex1{
+	color:#0A0099;
+}
+
+.subIndex2{
+	color: #A00044!important;
+	font-size: 0.8em;
+}
+
+.subIndex3{
+	color: green;
+	font-size: 0.7em;
+}
+
+.shorctutsList{
+	line-height: 1.5em;
+	color: #777777;
+}
+
+.subMenuthirdLevel{
+	color: green;
+	font-weight:700;
+	font-size: 0.9em;
+	margin-top: 20px;
+	margin-bottom: -10px!important;
+	line-height:0px;
+}
+
+.SHCT_TEXT{
+	color: #040099;
+	line-height:25px;
 }
 
 .mainBlock{
 	margin-left: 5px;
-	margin-right: 5px;
+	margin-right: 10px;
 	font-size: 1em;
 	font-family: "Arial", Helvetica, sans-serif;
 }
@@ -32,7 +135,24 @@ body{
 	text-align: center;
 }
 
-.centerColoredSub1{
-	text-align: center;
-	color: #0000cc;
+.highlightBolded{
+	font-weight: bold;
+	color:#0880FF;
+	margin-bottom:15px;
+	font-size:0.9em;
 }
+
+.highlightBoldedGrey{
+	font-weight: bold;
+	color:red;
+	font-size:0.9em;
+}
+
+li{
+	line-height:22px;
+}
+
+.highLineHeigthList{
+	line-height:30px;
+}
+

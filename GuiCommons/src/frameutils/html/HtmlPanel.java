@@ -17,9 +17,14 @@ public class HtmlPanel extends JPanel{
 	static Logger logger = Logger.getLogger(HtmlPanel.class);
 		
 	private JPanel headerPanel;
-	private JScrollPane mainScrollPane;
+	public JavaFxPanelHtml jfxPanel;
+	public JScrollPane mainScrollPane;
 	private JEditorPane mainHtmlEditorPane;
 	
+	/**
+	 * Simple java swing version - limited css and effects
+	 * @param headerHeight
+	 */
 	public HtmlPanel(int headerHeight) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
@@ -47,8 +52,57 @@ public class HtmlPanel extends JPanel{
 		logger.info(this.getClass().getName() + " Initialized!");
 	}
 
+	/**
+	 * Java fx test contructor
+	 * @param headerHeight
+	 * @param URL
+	 */
+	public HtmlPanel(Integer headerHeight) {
+		
+		logger.info(this.getClass().getName() + " Starting...");
+		jfxPanel = new JavaFxPanelHtml();
+//		jfxPanel.add(new JLabel("Loading..."));
+		
+		setBorder(BorderFactory.createEmptyBorder());
+		setBackground(Color.BLACK);
+		setLayout(new MigLayout("", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
+		
+		headerPanel = new JPanel();
+		headerPanel.setBorder(new LineBorder(Color.GRAY, 2));
+		headerPanel.setBackground(Color.BLACK);
+		jfxPanel.setBorder(BorderFactory.createEmptyBorder());
+		if (headerHeight > 0) {
+			add(headerPanel, "cell 0 0 3 1,grow");
+			add(jfxPanel, "cell 0 1 3 1,grow");
+		}else {
+			add(jfxPanel, "cell 0 0 3 2,grow");
+		}
+
+//		mainScrollPane.setViewportView(jfxPanel);
+		
+		logger.info(this.getClass().getName() + " Initialized!");
+	}
+
+	/**
+	 * Load into javaFx version panel
+	 * @param pathToHtml
+	 */
+	public void loadHtmlFx(String pathToHtml) {
+		logger.info("Loading html from: " + pathToHtml);
+		jfxPanel.loadUrl(pathToHtml);
+		logger.info(pathToHtml + " : Loaded!");
+	}
+	
+	/**
+	 * Load into simple java swing version panel
+	 * @param pathToHtml
+	 */
 	public void loadHtml(String pathToHtml) {
 		HtmlLoader.loadHtmlInEditPane(mainHtmlEditorPane, pathToHtml);
+	}
+	
+	public JavaFxPanelHtml getFxHtmlPane() {
+		return jfxPanel;
 	}
 	
 	public JEditorPane getMainHtmlEditorPane() {
