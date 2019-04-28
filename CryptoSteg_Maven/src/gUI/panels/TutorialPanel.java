@@ -40,12 +40,11 @@ public class TutorialPanel extends JFrame{
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
 		GuiUtils.centerComponent(this, 60);
 
-		mainHtmlReadmePanel = new HtmlPanel(new Integer(0));
-		File f = new File(mainGUI.SCRYPT_TUTORIAL_HTML_PATH);
-		mainHtmlReadmePanel.loadHtmlFx(f.toURI().toString());
+		mainHtmlReadmePanel = new HtmlPanel(new Integer(40), "indexList");
+		File htmlTutorialFile = new File(mainGUI.SCRYPT_TUTORIAL_HTML_PATH);
+		mainHtmlReadmePanel.loadHtmlFx(htmlTutorialFile.toURI().toString());
 		mainHtmlReadmePanel.jfxPanel.resizeComp(thisPanel.getWidth(), thisPanel.getHeight());
 		mainHtmlReadmePanel.setBorder(BorderFactory.createEmptyBorder());
-//		mainHtmlReadmePanel.loadHtml(mainGUI.SCRYPT_TUTORIAL_HTML_URL);
 		add(mainHtmlReadmePanel, "cell 0 0,grow");
 
 		// ADD HANDLERS AND NOTIFY LOG
@@ -72,12 +71,12 @@ public class TutorialPanel extends JFrame{
 		    }
 		});
 		
-		// BACKGROUND RESIZER //
+		// htmlPane RESIZER //
 		thisPanel.addComponentListener(new ComponentListener() {
 			public void componentShown(ComponentEvent e) {
 			}
 			public void componentResized(ComponentEvent e) {
-				mainHtmlReadmePanel.jfxPanel.resizeComp(mainHtmlReadmePanel.getWidth(), mainHtmlReadmePanel.getHeight());
+				mainHtmlReadmePanel.jfxPanel.resizeComp(mainHtmlReadmePanel.getWidth()-30, mainHtmlReadmePanel.getHeight()-45);
 			}
 			public void componentMoved(ComponentEvent e) {
 			}

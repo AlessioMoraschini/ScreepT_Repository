@@ -20,6 +20,9 @@ public class HtmlPanel extends JPanel{
 	public JavaFxPanelHtml jfxPanel;
 	public JScrollPane mainScrollPane;
 	private JEditorPane mainHtmlEditorPane;
+	private String indexID = "indexList";
+
+	public boolean javaFxPaneSelected = false;
 	
 	/**
 	 * Simple java swing version - limited css and effects
@@ -57,9 +60,12 @@ public class HtmlPanel extends JPanel{
 	 * @param headerHeight
 	 * @param URL
 	 */
-	public HtmlPanel(Integer headerHeight) {
+	public HtmlPanel(Integer headerHeight, String indexID) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
+		
+		this.indexID = indexID;
+		javaFxPaneSelected = true;
 		jfxPanel = new JavaFxPanelHtml();
 //		jfxPanel.add(new JLabel("Loading..."));
 		
@@ -67,7 +73,7 @@ public class HtmlPanel extends JPanel{
 		setBackground(Color.BLACK);
 		setLayout(new MigLayout("", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
 		
-		headerPanel = new JPanel();
+		headerPanel = new HeaderPanelSearch(jfxPanel);
 		headerPanel.setBorder(new LineBorder(Color.GRAY, 2));
 		headerPanel.setBackground(Color.BLACK);
 		jfxPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -89,7 +95,7 @@ public class HtmlPanel extends JPanel{
 	 */
 	public void loadHtmlFx(String pathToHtml) {
 		logger.info("Loading html from: " + pathToHtml);
-		jfxPanel.loadUrl(pathToHtml);
+		jfxPanel.loadUrl(pathToHtml, indexID);
 		logger.info(pathToHtml + " : Loaded!");
 	}
 	

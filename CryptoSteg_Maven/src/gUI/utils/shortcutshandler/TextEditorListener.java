@@ -32,19 +32,14 @@ public class TextEditorListener implements KeyEventDispatcher{
 			 */
 			// case CTRL+Z -> undo
 			if (e.getKeyCode()==90 && e.isControlDown() && !e.isAltDown() && !e.isShiftDown()) {
-				if(currentTextEditor.manager.canUndo()) {
-					currentTextEditor.manager.undo();
-					
-				}
+				currentTextEditor.btnUndo.doClick();
 			}
 			
 			//case Ctrl+shift+Z -> undo5Steps
 			if (e.getKeyCode()==90 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
 			{
 				for(int i = 0; i<5; i++) {
-					if(currentTextEditor.manager.canUndo()) {
-						currentTextEditor.manager.undo();
-					}
+					currentTextEditor.btnUndo.doClick();
 				}
 			}
 			
@@ -54,18 +49,14 @@ public class TextEditorListener implements KeyEventDispatcher{
 			//case Ctrl+alt+Z -> redo
 			if (e.getKeyCode()==90 && e.isControlDown() && e.isAltDown() && !e.isShiftDown())
 			{
-				if(currentTextEditor.manager.canRedo()) {
-					currentTextEditor.manager.redo();
-				}
+				currentTextEditor.btnRedo.doClick();
 			}
 			
 			//case Ctrl+shift+Alt+z -> redo5steps
 			if (e.getKeyCode()==90 && e.isAltDown() && e.isControlDown() && e.isShiftDown())
 			{
 				for(int i = 0; i<5; i++) {
-					if (currentTextEditor.manager.canRedo()) {
-						currentTextEditor.manager.redo();
-					}
+					currentTextEditor.btnRedo.doClick();
 				}
 			}
 			

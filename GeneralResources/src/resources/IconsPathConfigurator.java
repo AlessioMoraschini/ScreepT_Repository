@@ -2,7 +2,7 @@ package resources;
 
 public class IconsPathConfigurator {
 	
-	public static final String RESOURCES_DIR = "Resources_Scrypt/";
+	public static String RESOURCES_DIR = "Resources_Scrypt/";
 	
 	///////////////// MENU ICONS /////////////////
 	
@@ -80,5 +80,13 @@ public class IconsPathConfigurator {
 	public static final String iconConfigFilePath = RESOURCES_DIR + "Icons/configFile.png";
 	public static final String iconRootPath = RESOURCES_DIR + "Icons/Root.png";
 	
+	
+	// MAIN RESOURCES DIR SETTER & GETTER //
+	public static String getRESOURCES_DIR() {
+		return RESOURCES_DIR;
+	}
+	public static void setRESOURCES_DIR(String rESOURCES_DIR) {
+		RESOURCES_DIR = rESOURCES_DIR;
+	}
 	
 }

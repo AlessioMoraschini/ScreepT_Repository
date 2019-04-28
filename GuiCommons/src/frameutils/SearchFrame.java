@@ -93,15 +93,9 @@ public class SearchFrame extends JFrame{
 //		getRootPane().setDefaultButton(btnPrev);
 		getRootPane().setDefaultButton(btnNext);
 		
-		setupAudio();
-		
 		adHandlersTextAreaSimple();
 		
 		logger.info(this.getClass().getName() + " Running");
-	}
-	
-	private void setupAudio() {
-		Sounds.setVolume(0.3f);
 	}
 	
 	private void adHandlersTextAreaSimple() {
@@ -223,10 +217,10 @@ public class SearchFrame extends JFrame{
 			textSearchArea.setSelectionStart(indexStart);
 			textSearchArea.setSelectionEnd(indexStart + match.length());
 			end = false;
-			Sounds.playSound(SoundsConfigurator.CLICK_2);
+			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		}else {
 			end = true;
-			Sounds.playSound(SoundsConfigurator.CLICK_1);
+			Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 		}
 	}
 	

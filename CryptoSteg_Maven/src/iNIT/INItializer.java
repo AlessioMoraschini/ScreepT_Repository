@@ -103,6 +103,11 @@ public class INItializer {
 		if(genOpt.getCharset().equals("")) {
 			genOpt.setCharset(GenericOption.DEFAULT_CHARSET);
 		}
+		try {
+			genOpt.setGeneralVolume(Float.parseFloat(iniReadFile.get(GEN_OPT, "generalVolume")));
+		} catch (Exception e1) {
+			genOpt.setGeneralVolume(GenericOption.DEFAULT_VOLUME);
+		}
 		
 		// LOAD GUI OPTIONS
 		
@@ -227,6 +232,7 @@ public class INItializer {
 		}
 		iniFile.put(GEN_OPT, "userName", genOpt.getUserName());
 		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
+		iniFile.put(GEN_OPT, "generalVolume", genOpt.getGeneralVolume());
 		
 		// set INIFILE-GUI OPTIONS
 		if(guiOpt.getPreferredStyle().equals("")) {
@@ -317,6 +323,24 @@ public class INItializer {
 	}
 	
 	/**
+	 * This method is used to write on file single opt values in a precise section
+	 * @return true if no exception is throwed
+	 */
+	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, float OPT_VALUE ) {
+		boolean OK = false;
+		
+		try {
+			iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE );
+			iniFile.store();
+			OK = true;
+		} catch (IOException e) {
+			OK = false;
+			logger.error("Exception happened!", e);
+		}
+		return OK;
+	}
+	
+	/**
 	 * This method is used to write on file single opt values in a precise section (INT value)
 	 * @return true if no exception is throwed
 	 */
@@ -369,6 +393,7 @@ public class INItializer {
 		// concat GENERAL OPTIONS
 		builder.append("\n\n ---- GENERAL OPTIONS -----\n\n")
 			   .append("USERNAME: ").append(genOpt.getUserName())
+			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION

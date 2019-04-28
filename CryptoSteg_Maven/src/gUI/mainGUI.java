@@ -23,7 +23,6 @@ import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 
@@ -49,13 +48,13 @@ import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
-import gUI.utils.shortcutshandler.TextEditorListener;
 import gui.utils.LauncherLoaderFrame;
 import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
 import iNIT.INItializer;
+import media.Sounds;
 import menusettings.MenuSetter;
 
 import javax.swing.JPanel;
@@ -71,6 +70,7 @@ import java.awt.Window;
 
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import resources.SoundsConfigurator;
 import utils.SysUtils;
 
 import java.awt.Dialog.ModalExclusionType;
@@ -298,6 +298,7 @@ public class mainGUI {
 					try {
 						currentConfiguration = new INItializer(new Wini(new File(DEFAULT_INI)));
 						currentConfiguration.readConfigIniFile();
+						SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 					} catch (IOException e) {
 						logger.error("Exception happened during loading of file [Resources_Scrypt/CONFIG.ini]!", e);
 					}
@@ -450,8 +451,9 @@ public class mainGUI {
 					window.startTitleUpdater();
 					
 					window.frmScryptV.setVisible(true);
+					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+
 					window.frmScryptV.requestFocus();
-					
 					Thread.sleep(300);
 					window.frmScryptV.toFront();
 					
@@ -581,6 +583,7 @@ public class mainGUI {
 		    public void actionPerformed(ActionEvent ae) {
 		   
 		    		if (!FLAG_loadPrjSub) {
+		    			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    			FLAG_loadPrjSub = true;
 						JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, DEFAULT_INI_FOLDER);
@@ -595,6 +598,7 @@ public class mainGUI {
 		mntmSaveCurrent = new JMenuItem(new AbstractAction("Save Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!FLAG_savePrjSub) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSub = true;
 		    		ChargeIniLog.saveCurrentConf(currentConfiguration, frmScryptV);
 		    		FLAG_savePrjSub = false;
@@ -606,6 +610,7 @@ public class mainGUI {
 		mntmExportPrjSub = new JMenuItem(new AbstractAction("Export Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!FLAG_savePrjSubAs) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSubAs = true;
 					JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 					INIfileChoosER panel = new INIfileChoosER(currentConfiguration, (JLabel)null);
@@ -620,6 +625,7 @@ public class mainGUI {
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadDefaultPrjSub) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadDefaultPrjSub = true;
 					if (JOptionPane.showConfirmDialog(frmScryptV,
 							"Really want to load default config(unsaved changes will be lost)? ",
@@ -651,6 +657,7 @@ public class mainGUI {
 		mntmSaveCurrentAs = new JMenuItem(new AbstractAction("Save Current as Default") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmSaveCurrentAs) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmSaveCurrentAs = true;
 					try {
 						currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
@@ -678,6 +685,7 @@ public class mainGUI {
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadSrcrYptDefaultConf) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadSrcrYptDefaultConf = true;
 					if (JOptionPane.showConfirmDialog(frmScryptV,
 							"Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ",
@@ -711,6 +719,7 @@ public class mainGUI {
 		mntmExportLog = new JMenuItem(new AbstractAction("Export Event Log") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExportLog) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmExportLog = true;
 					// show input dialog to select the file(gives null in case of no file selected)
 					File selected = fileLogWriteDialog(frmScryptV);
@@ -739,6 +748,7 @@ public class mainGUI {
 		mntmTouppercaseDirectory = new JMenuItem(new AbstractAction("Uppercase First letter - Files&Directories") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmTouppercaseDirectory) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmTouppercaseDirectory = true;
 					last_dir_used = DirectoryManagementGUI.renameFirstLetterDirNames(frmScryptV, last_dir_used);
 					FLAG_mntmTouppercaseDirectory = false;
@@ -750,6 +760,7 @@ public class mainGUI {
 		mntmDeleteDirectoryContentRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (All except selected)") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentRecursive = true;
 					DirectoryManagementGUI.deleteContentOfDir(frmScryptV, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentRecursive = false;
@@ -761,6 +772,7 @@ public class mainGUI {
 		mntmDeleteDirectoryContentDirsOnlyRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (files only)") {
 			public void actionPerformed(ActionEvent e) {
 				if(!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = true;
 					DirectoryManagementGUI.deleteDirContentFiles(frmScryptV, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
@@ -772,6 +784,7 @@ public class mainGUI {
 		mntmMakeDirsFromPath = new JMenuItem(new AbstractAction("Create directories from String path") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmMakeDirsFromPath) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmMakeDirsFromPath = true;
 					DirectoryManagementGUI.makeDirsFromPath(frmScryptV, currentConfiguration);
 					FLAG_mntmMakeDirsFromPath = false;
@@ -783,6 +796,7 @@ public class mainGUI {
 		mntmCopyDirStructure = new JMenuItem(new AbstractAction("Copy directory structure (folders only)") {
 			public void actionPerformed(ActionEvent e) {
 				if(!FLAG_mntmCopyDirStructure) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmCopyDirStructure = true;
 					DirectoryManagementGUI.copyDirStructure(frmScryptV, currentConfiguration);
 					FLAG_mntmCopyDirStructure = false;
@@ -796,6 +810,7 @@ public class mainGUI {
 		mntmCustomizeUIView = new JMenuItem(new AbstractAction("Customize Graphics") {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagFrameGuiOptions) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagFrameGuiOptions = true;
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
 					panelGuiOptions.setBounds(500, 300, 950, 330);
@@ -803,6 +818,7 @@ public class mainGUI {
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGuiOptions.setTitle("Apply/Save Preferences [Customize - Apply - Save]");
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelGuiOptions.setState(java.awt.Frame.NORMAL);
 					panelGuiOptions.requestFocus();
 				}
@@ -813,6 +829,7 @@ public class mainGUI {
 		mntmGenOpt = new JMenuItem(new AbstractAction("General Options") {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagFrameGenOptions) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagFrameGenOptions=true;
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
 					panelGeneralOptions.setBounds(400, 300, 700, 250);
@@ -820,6 +837,7 @@ public class mainGUI {
 					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGeneralOptions.setTitle("Apply/Save General Options [Customize - Apply - Save]");
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelGeneralOptions.setState(java.awt.Frame.NORMAL);
 					panelGeneralOptions.requestFocus();
 				}
@@ -830,6 +848,7 @@ public class mainGUI {
 		mntmgenerateKeyImageSub = new JMenuItem(new AbstractAction("Generate Key Image") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagFrameKeyGen) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		flagFrameKeyGen = true;
 		    		panelKeyGen = new KeyGenPanel(currentConfiguration);
 					panelKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -837,6 +856,7 @@ public class mainGUI {
 					panelKeyGen.setVisible(true);
 					panelKeyGen.setTitle("IMG Generator (V1.1) - A.M.2018");
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelKeyGen.setState(java.awt.Frame.NORMAL);
 					panelKeyGen.requestFocus();
 				}
@@ -847,6 +867,7 @@ public class mainGUI {
 		mntmnetInfo = new JMenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagNetInfoPanel) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		flagNetInfoPanel = true;
 		    		new Thread(new Runnable() {
 						
@@ -867,6 +888,7 @@ public class mainGUI {
 					}).start();
 		    		
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelNetInfo.setState(java.awt.Frame.NORMAL);
 					panelNetInfo.requestFocus();
 				}
@@ -877,6 +899,7 @@ public class mainGUI {
 		mntmhwInfo = new JMenuItem(new AbstractAction("System Info") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!flagHwInfoPanel) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		flagHwInfoPanel = true;
 		    		new Thread(new Runnable() {
 						
@@ -898,6 +921,7 @@ public class mainGUI {
 					}).start();
 		    		
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelHwInfo.setState(java.awt.Frame.NORMAL);
 					panelHwInfo.requestFocus();
 				}
@@ -908,6 +932,7 @@ public class mainGUI {
 		mntmViewKeyDictionary = new JMenuItem(new AbstractAction("View Key Dictionary") {
 		    public void actionPerformed(ActionEvent e) {
 		    	if (!flagFrameKeyDict) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		flagFrameKeyDict = true;
 		    		panelKeyDict = new KeyDictionaryPanel(currentConfiguration);
 		    		panelKeyDict.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -915,6 +940,7 @@ public class mainGUI {
 		    		panelKeyDict.setVisible(true);
 		    		panelKeyDict.setTitle("Key Dictionary Manager");
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelKeyDict.setState(java.awt.Frame.NORMAL);
 					panelKeyDict.requestFocus();
 				}
@@ -925,6 +951,7 @@ public class mainGUI {
 		mntmImageConverter = new JMenuItem(new AbstractAction("Image Converter") {
 			public void actionPerformed(ActionEvent e) {
 		    	if (!flagImgConv) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		flagImgConv = true;
 		    		panelImgConv = new ImageConverterFrame(currentConfiguration);
 		    		panelImgConv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -933,6 +960,7 @@ public class mainGUI {
 		    		panelImgConv.setVisible(true);
 		    		panelImgConv.setTitle("IMG Generator (V1.1) - A.M.2018");
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelImgConv.setState(java.awt.Frame.NORMAL);
 					panelImgConv.requestFocus();
 				}
@@ -943,6 +971,7 @@ public class mainGUI {
 		mntmAboutScreept = new JMenuItem(new AbstractAction("About - ScrYpt") {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagAboutPanel) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagAboutPanel = true;
 		    		panelAbout = new AboutSectionPanel(mainAPP);
 		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -951,6 +980,7 @@ public class mainGUI {
 		    		panelAbout.setVisible(true);
 		    		panelAbout.setTitle(APPLICATION_NAME);
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelAbout.setState(java.awt.Frame.NORMAL);
 					panelAbout.requestFocus();
 				}
@@ -958,15 +988,22 @@ public class mainGUI {
 		});
 		
 		// open in a new window - MANUAL - preloading to improve performance
-		tutorialPanel = new TutorialPanel();
+		new Thread(new Runnable() {
+			// async loading of html tutorial file
+			public void run() {
+				tutorialPanel = new TutorialPanel();				
+			}
+		}).start();
 		mntmUserDocumentation = new JMenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagTutorialPanel) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagTutorialPanel = true;
 					tutorialPanel.setResizable(true);
 		    		tutorialPanel.setVisible(true);
 		    		tutorialPanel.setTitle(APPLICATION_NAME + " - Tutorial");
 				}else {
+					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					tutorialPanel.setVisible(true);
 					tutorialPanel.toFront();
 					tutorialPanel.setState(java.awt.Frame.NORMAL);
@@ -983,6 +1020,7 @@ public class mainGUI {
 		    public void actionPerformed(ActionEvent ae) {
 		    	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 		    	if(panelCrypter == null) {
+		    		Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 			    	panelCrypter = new CrypterPanel(currentConfiguration, frmScryptV);
 		    	}
 		    	contentPane.removeAll();
@@ -998,6 +1036,7 @@ public class mainGUI {
 				   
 	    		JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 	    		if (configManagerPanel == null) {
+	    			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 					configManagerPanel = new ChargeIniLog(currentConfiguration, mainAPP);
 				}
 				contentPane.removeAll();
@@ -1013,6 +1052,7 @@ public class mainGUI {
 			
 				JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 				if(initTxtWriter == null) {
+					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 					initTxtWriter = new TextEditor(frmScryptV, currentConfiguration);
 				}		    	
 		    	contentPane.removeAll();
@@ -1026,6 +1066,7 @@ public class mainGUI {
 		// open in main frame - RETURN TO WELCOME PAGE
 		mntmReturnToWelcome = new JMenuItem(new AbstractAction("Return to Welcome Page") {
 			public void actionPerformed(ActionEvent e) {
+				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 				setBackgroundImage();
 			}
 		});
@@ -1519,6 +1560,8 @@ public class mainGUI {
       	logger.debug(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
 						+ APPLICATION_NAME+" CLOSED!\n\n"
 						+ "##################################################\n\n");
+      	
+      	Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.7f);
       	
       	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
       	Thread tempEraser = new Thread(tempDecryptedEraser());

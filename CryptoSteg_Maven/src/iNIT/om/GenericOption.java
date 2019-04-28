@@ -5,18 +5,21 @@ public class GenericOption {
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
 	public final static String DEFAULT_USERNAME = "";
 	public final static String DEFAULT_CHARSET = "UTF-8";
+	public final static float DEFAULT_VOLUME = 0.6F;
 
 	// FILEDS
 	private String userName;
 	private String charset;
+	private float generalVolume;
 	
 	public GenericOption() {
 		
 	}
 	
-	public GenericOption(String user, String chars, boolean ultraSec) {
+	public GenericOption(String user, String chars, boolean ultraSec, float genVolume) {
 		userName = user;
 		charset = chars;
+		generalVolume = genVolume;
 		
 	}
 
@@ -36,4 +39,16 @@ public class GenericOption {
 		this.charset = charset;
 	}
 
+	public float getGeneralVolume() {
+		return generalVolume;
+	}
+
+	public void setGeneralVolume(float generalVolume) {
+		this.generalVolume = generalVolume;
+	}
+	
+	public String getVolumeString() {
+		return String.format("%.2f", getGeneralVolume()*100)+"%";
+	}
+	
 }

@@ -62,6 +62,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JComboBox;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.ScrollPaneConstants;
@@ -77,7 +78,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
 import java.awt.Cursor;
 import javax.swing.JPasswordField;
-import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
 
 public class CrypterPanel extends JPanel {
 
@@ -138,7 +139,7 @@ public class CrypterPanel extends JPanel {
 	private JScrollPane mainScrollPane;
 	private JScrollPane scrollPaneText;
 	private JScrollPane scrollPaneLog;
-	private JScrollPane scrollPanelTab;
+	private JScrollPane scrollPanelTabImagePreview;
 
 	// info tabbed pane
 	private JTabbedPane tabbedPane;
@@ -202,6 +203,7 @@ public class CrypterPanel extends JPanel {
 	 * Create the application.
 	 */
 	public CrypterPanel(INItializer currentConfiguration, JFrame parent) {
+		setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 /////////////////////////////////////////////////////////////////////////////////////
 ///////////////					INITIALIZATION    				/////////////////////
@@ -299,43 +301,60 @@ public class CrypterPanel extends JPanel {
 	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
 	 */
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[1624px,grow]", "[711px,grow]"));
+		setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		
 		panelMainContainer = new JPanel();
+		panelMainContainer.setBorder(new LineBorder(Color.DARK_GRAY, 4, true));
 		panelMainContainer.setBackground(Color.BLACK);
-		panelMainContainer.setLayout(new MigLayout("", "[200:200:200][150:150:150][:10px:10px][130,grow][:80:130,grow][140][120,grow][250px:250px:250px][120px:120px:120px]", "[:40:50px,top][4px:4px:4px][35][4px][100,grow][140,grow][:30px:30px][280,grow][:1px:1px]"));
+		panelMainContainer.setLayout(new MigLayout("", "[200:200:200][150:205:205][:10px:10px][30,grow][50][250px:250px:250px][120px:120px:120px]", "[:40:50px,top][4px:4px:4px][35][4px][:100:100px,grow][:200px:200px,grow][:30px:30px][280,grow][:1px:1px]"));
 		mainScrollPane = new JScrollPane();
-		mainScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		mainScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		mainScrollPane.setViewportView(panelMainContainer);
 		add(mainScrollPane, "cell 0 0,grow");
 		
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
-		panelHeader.setBorder(new LineBorder(new Color(211, 211, 211), 2, true));
+		panelHeader.setBorder(new LineBorder(new Color(139, 0, 0), 3));
 		panelHeader.setBackground(new Color(205, 92, 92));
-		panelMainContainer.add(panelHeader, "cell 0 0 9 1,grow");
-		panelHeader.setLayout(new MigLayout("", "[400px,grow]", "[40]"));
+		panelMainContainer.add(panelHeader, "cell 0 0 7 1,grow");
+		panelHeader.setLayout(new MigLayout("", "[300px,grow][110px][130px]", "[40]"));
 		
 		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
 		lblScreeptHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		lblScreeptHeader.setForeground(new Color(0, 0, 0));
 		lblScreeptHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
 		lblScreeptHeader.setBackground(new Color(112, 128, 144));
-		panelHeader.add(lblScreeptHeader, "cell 0 0,growx");
+		panelHeader.add(lblScreeptHeader, "cell 0 0,growx,aligny center");
 		
-		scrollPanelTab = new JScrollPane();
-		scrollPanelTab.setBorder(new LineBorder(new Color(119, 136, 153), 3, true));
-		scrollPanelTab.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPanelTab.getViewport().setBackground(Color.DARK_GRAY);
+		btnCreept = new JButton("Creept");
+		btnCreept.setMinimumSize(new Dimension(0, 35));
+		panelHeader.add(btnCreept, "cell 1 0,grow");
+		btnCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnCreept.setRequestFocusEnabled(false);
+		btnCreept.setForeground(Color.BLACK);
+		btnCreept.setBorder(new LineBorder(Color.DARK_GRAY, 3, true));
+		btnCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
+		btnCreept.setBackground(new Color(127, 255, 0));
+		
+		btnDeCreept = new JButton("DeCreept");
+		btnDeCreept.setMinimumSize(new Dimension(0, 35));
+		panelHeader.add(btnDeCreept, "cell 2 0,grow");
+		btnDeCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnDeCreept.setMargin(new Insets(0, 0, 0, 20));
+		btnDeCreept.setRequestFocusEnabled(false);
+		btnDeCreept.setForeground(Color.BLACK);
+		btnDeCreept.setBorder(new LineBorder(Color.DARK_GRAY, 3, true));
+		btnDeCreept.setBackground(new Color(255, 0, 0));
+		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		
 		panelStatus = new JPanel();
 		panelStatus.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panelStatus.setBackground(Color.BLACK);
-		panelMainContainer.add(panelStatus, "cell 0 2 9 1,grow");
+		panelMainContainer.add(panelStatus, "cell 0 2 7 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 0, 70, 100, 80, 300, 120, 135, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{100, 0, 70, 60, 70, 150, 0, 70, 100, 80, 100, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
-		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelStatus.setLayout(gbl_panelStatus);
 		
@@ -441,48 +460,22 @@ public class CrypterPanel extends JPanel {
 		labelFlagCodeReady = new JLabel("");
 		labelFlagCodeReady.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_labelFlagCodeReady = new GridBagConstraints();
-		gbc_labelFlagCodeReady.insets = new Insets(0, 0, 0, 5);
 		gbc_labelFlagCodeReady.fill = GridBagConstraints.VERTICAL;
 		gbc_labelFlagCodeReady.gridx = 10;
 		gbc_labelFlagCodeReady.gridy = 0;
 		panelStatus.add(labelFlagCodeReady, gbc_labelFlagCodeReady);
 		labelFlagCodeReady.setBorder(null);
 		labelFlagCodeReady.setFont(new Font("SansSerif", Font.BOLD, 14));
+
+		scrollPanelTabImagePreview = new JScrollPane();
+		scrollPanelTabImagePreview.setBorder(new LineBorder(new Color(119, 136, 153), 3, true));
+		scrollPanelTabImagePreview.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPanelTabImagePreview.getViewport().setBackground(Color.DARK_GRAY);
 		
-		btnCreept = new JButton("Creept");
-		btnCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		GridBagConstraints gbc_btnCreept = new GridBagConstraints();
-		gbc_btnCreept.fill = GridBagConstraints.BOTH;
-		gbc_btnCreept.insets = new Insets(0, 0, 0, 5);
-		gbc_btnCreept.gridx = 11;
-		gbc_btnCreept.gridy = 0;
-		panelStatus.add(btnCreept, gbc_btnCreept);
-		btnCreept.setRequestFocusEnabled(false);
-		btnCreept.setForeground(Color.BLACK);
-		btnCreept.setBorder(null);
-		btnCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
-		btnCreept.setBackground(new Color(127, 255, 0));
-		
-		btnDeCreept = new JButton("DeCreept");
-		btnDeCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnDeCreept.setMargin(new Insets(0, 0, 0, 20));
-		GridBagConstraints gbc_btnDeCreept = new GridBagConstraints();
-		gbc_btnDeCreept.insets = new Insets(0, 0, 0, 5);
-		gbc_btnDeCreept.fill = GridBagConstraints.BOTH;
-		gbc_btnDeCreept.gridx = 12;
-		gbc_btnDeCreept.gridy = 0;
-		panelStatus.add(btnDeCreept, gbc_btnDeCreept);
-		btnDeCreept.setRequestFocusEnabled(false);
-		btnDeCreept.setForeground(Color.BLACK);
-		btnDeCreept.setBorder(null);
-		btnDeCreept.setBackground(new Color(255, 0, 0));
-		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
-		
-		panelMainContainer.add(scrollPanelTab, "cell 0 4 2 2,grow");
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		panelMainContainer.add(tabbedPane, "cell 0 4 2 2,grow");
 		tabbedPane.setBorder(null);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		scrollPanelTab.setViewportView(tabbedPane);
 		
 	}
 	
@@ -970,21 +963,22 @@ public class CrypterPanel extends JPanel {
 		scrollPaneLog.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		
 		textAreaLog = new JTextArea();
-		textAreaLog.setBorder(null);
+		textAreaLog.setBorder(new EmptyBorder(10, 10, 10, 10));
 		textAreaLog.setWrapStyleWord(true);
 		textAreaLog.setRequestFocusEnabled(false);
 		textAreaLog.setLineWrap(true);
-		textAreaLog.setMargin(new Insets(10, 10, 10, 10));
 		textAreaLog.setEditable(false);
 		textAreaLog.setBackground(new Color(255, 250, 205));
 		scrollPaneLog.setViewportView(textAreaLog);
+		textAreaLog.setMargin(new Insets(20, 20, 20, 20));
 		textAreaLog.setText("### WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files?\r\n\r\n Nobody knows how to crypt them better than me ;)"); 
 		
 		panelContainerKey = new JPanel();
 		panelContainerKey.setBackground(Color.DARK_GRAY);
 		panelContainerKey.setBorder(new LineBorder(new Color(0, 0, 0), 0));
-		tabbedPane.addTab("Img Preview", null, panelContainerKey, null);
-		panelContainerKey.setLayout(new MigLayout("", "[385:385:385,center]", "[:20:20][200px,grow,top]"));
+		scrollPanelTabImagePreview.setViewportView(panelContainerKey);
+		tabbedPane.addTab("Img Preview", null, scrollPanelTabImagePreview, null);
+		panelContainerKey.setLayout(new MigLayout("", "[385:385:385,center]", "[:20:20][:200px:250px,grow,top]"));
 		
 		lblDisplayedKey = new JLabel("to see image: Right click on img -> Load Image and Details");
 		lblDisplayedKey.setForeground(new Color(240, 230, 140));
@@ -1003,7 +997,7 @@ public class CrypterPanel extends JPanel {
 		
 		scrollPaneText = new JScrollPane();
 		scrollPaneText.setBorder(new LineBorder(Color.GRAY, 4));
-		panelMainContainer.add(scrollPaneText, "cell 2 4 5 4,grow");
+		panelMainContainer.add(scrollPaneText, "cell 2 4 3 4,grow");
 		
 		textAreaMain = new JTextArea();
 		textAreaMain.setWrapStyleWord(true);
@@ -1074,7 +1068,7 @@ public class CrypterPanel extends JPanel {
 		scrollPaneDragNDropSource = new JScrollPane();
 		scrollPaneDragNDropSource.setBackground(Color.LIGHT_GRAY);
 		scrollPaneDragNDropSource.setBorder(new LineBorder(new Color(119, 136, 153), 3, true));
-		panelMainContainer.add(scrollPaneDragNDropSource, "cell 7 4 2 4,grow");
+		panelMainContainer.add(scrollPaneDragNDropSource, "cell 5 4 2 4,grow");
 		
 		panelBackgroundDragSources = new JPanel();
 		panelBackgroundDragSources.setBackground(new Color(220, 220, 220));

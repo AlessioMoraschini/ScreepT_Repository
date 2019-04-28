@@ -13,33 +13,42 @@
 	<!--  START BODY  -->
 	<body>
 
-		<!--  TITLE SECTION  -->
-		<div id="mainTitle" class="center">
-			<h1>ScrYpT</h1>
+		<div id="titleBlock">
+			<div id="titleImage">
+				<image src="./icon.jpg" height="100px" width="auto"></image>
+			</div>
+			<!--  TITLE SECTION  -->
+			<div id="mainTitle" class="center">
+				<h1>ScrYpT</h1>
+			</div>
+			<div id="titleImage">
+				<image src="./icon.jpg" height="100px" width="auto"></image>
+			</div>
+			<br>
 		</div>
 		
-		<div class="centerColoredSub2">A smart crypter... and much more!</div>
-		<div id="subTitle" class="centerColoredSub1">
-			<span>By A.M. Design and Developement - 2019 - Version 0.5</span>
+		<div id="subTitleBlock"class="centerColoredSub2">A smart crypter... and much more!
+			<div id="subTitle" class="centerColoredSub1">
+				<span>By A.M. Design and Developement - 2019 - Version 0.5</span>
+			</div>
 		</div>
 		
 		<!--  MAIN SECTION  -->
 		<div class="mainBlock">
-		
-			<hr>
-			
+					
 			<!--  DESCTIPTION  -->
-			<div id="desSrcYpTion" align="center">
+			<div id="desSrcYpTion" align="center"><hr>
 				<p>Welcome to ScrYpT tutorial, here you can find all infos about
 					how to use Scrypt and his functions. ScrYpT was born as a crypter...
-					but it became a multi-tool writed for fun :) Hope you'll enjoy it!
+					but it became a multi-tool written for fun :) Hope you'll enjoy it!
 					If you find something you'lll like to improve, feel free to write
-					me, suggestions are welcome :)</p>
+					me, suggestions are welcome :)</p><hr>
 			</div>
 	
-			<hr><br>
+			<br>
 			
 			<!--  INDEX  -->
+			<a id="indexAnchor" href="#indexList"></a>
 			<div id="indexList">
 				<h1 id="indexTitle" class="sectionTitle">INDEX</h1> 
 				<ol>
@@ -72,18 +81,43 @@
 							<ul>
 								<li><div class="subIndex2">		
 									<a href="#funcFileSubMenu">File</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleConfigManager">CONFIGURATION MANAGER</a></li>
+										<li><a class="subIndex3" href="#subSectTitleReload">RELOAD CONFIGURATION</a></li>
+										<li><a class="subIndex3" href="#subSectTitleLoad">LOAD CONFIGURATION</a></li>
+										<li><a class="subIndex3" href="#subSectTitleExp">EXPORT CONFIGURATION</a></li>
+										<li><a class="subIndex3" href="#subSectTitleCurrAsDef">SAVE CURRENT AS DEFAULT</a></li>
+										<li><a class="subIndex3" href="#subSectTitleResetOrig">RESET ORIGINAL CONFIG</a></li>
+										<li><a class="subIndex3" href="#subSectTitleExit">EXIT</a></li>
+									<ul>
 								</div></li>
 								
 								<li><div class="subIndex2">		
 									<a href="#funcPreferencesSubMenu">Preferences</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleGraphOpt">GRAPHIC OPTIONS</a></li>
+										<li><a class="subIndex3" href="#subSectTitleGenOpt">GENERAL OPTIONS</a></li>
+									<ul>
 								</div></li>
 								
 								<li><div class="subIndex2">		
 									<a href="#funcScreeptSubMenu">ScreepT</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleCrypter">SCREEPT</a></li>
+										<li><a class="subIndex3" href="#subSectTitleKeyGenImg">KEY IMAGE GENERATOR</a></li>
+										<li><a class="subIndex3" href="#subSectTitleKeyDict">KEY DICTIONARY</a></li>
+									<ul>
 								</div></li>
 								
 								<li><div class="subIndex2">		
 									<a href="#funcVariousSubMenu">Various</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleTxtEditor">TEXT EDITOR</a></li>
+										<li><a class="subIndex3" href="#subSectTitleSysInfo">SYSTEM INFORMATIONS</a></li>
+										<li><a class="subIndex3" href="#subSectTitleNetInfo">NETWORK INFORMATIONS</a></li>
+										<li><a class="subIndex3" href="#subSectTitleImgConverter">IMAGE CONVERTER</a></li>
+										<li><a class="subIndex3" href="#subSectTitleFilesNFolders">FILES AND FOLDERS</a></li>
+									<ul>
 								</div></li>
 								
 								<li><div class="subIndex2">		
@@ -125,9 +159,10 @@
 			<div id="InstallationNusage">
 				<h1 class="sectionTitle">1 - INSTALLATION AND FIRST LAUNCH</h1>
 				<h2 id="subLauncherCompatibility" class="sectionSubTitle"> 1.1 - LAUNCHER/COMPATIBILITY</h2>
+				<li><span class="highlightBoldedGrey">ScrYpT is a ready to launch software</span> written in java, but, it has a built-in custom launcher meant to check the state of dependencies on your computer before to launch, and warn you if it found something missing (provinding different ways to install them). 
 				<p> 
-					ScrYpT is designed to be started from a launcher, that you can find inside main folder once it's extracted from 
-					the given .zip archive.
+					<li><span class="highlightBoldedGrey">You can find the launcher</span> inside main folder once it's extracted from 
+					the given .zip archive, just use the correct one for your OS.
 					Remember to download the right version for your OS! (The software is designed to run well under Windows, Linux, and MacOS, but it is possible to use it -with limited functions- under other OS with Java interpreter installed, AKA JVM/JRE/JDK ).<br><br>
 					<span class="highlightBolded">Notice</span>: it's still possible to just launch the "ScrYpt_Vxx.jar" that you find inside the "/application" folder, but remember: it's not designed to render and work the best this way... so you might have a non-optimal experience running the software this way.
 					<br><br>
@@ -179,19 +214,19 @@
 					Remember that newer version of ScrYpT can have some differences or not load some values, when loading configurations exported/saved in previous versions. 
 					Also notice that if you have Autosave option active, your configuration will be automatically saved in the current loaded every N seconds or when the program exits.<br><br>
 				
-					<li><span class="subMenuthirdLevel">CONFIGURATION MANAGER</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/manager.png"/> <span id="subSectTitleConfigManager" class="subMenuthirdLevel">CONFIGURATION MANAGER</span></li>
 						<p>
 						This view contain a tree visualisation of the loaded configuration, a text print with the values contained in the current one, and different functions tha are basically the same you can find in the main menu bar items under the "File" element.
 						<strong>By right clicking</strong> on an element in the list, you view different actions on the selected configuration from the loaded ones, such as select, delete, delete all or refresh.<br>
 						The actions that fire when clicking the action buttons are described in the next points.
 						</p>
 						
-					<li><span class="subMenuthirdLevel">RELOAD CONFIGURATION</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/reload.png"/> <span id="subSectTitleReload" class="subMenuthirdLevel">RELOAD CONFIGURATION</span></li>
 						<p>
 						By clicking on this element you can reload the current loaded configuration. Remember that any values that are not yet saved will be lost after the original one will be reloaded.
 						</p>
 						
-					<li><span class="subMenuthirdLevel">LOAD CUSTOM CONFIGURATION</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/loadConfig.png"/> <span id="subSectTitleLoad" class="subMenuthirdLevel">LOAD CUSTOM CONFIGURATION</span></li>
 						<p>
 						This function allows you to load previously saved/exported configuration by selecting them from your file System.
 						If for some reason any value is not found in the given configuration file, a default one will be loaded.
@@ -199,28 +234,28 @@
 						After a file-load, a copy of it can be found in the configuration manager inside the tree view of the user loaded files. Here resides the used file you load.
 						</p>
 						
-					<li><span class="subMenuthirdLevel">EXPORT CURRENT CONFIGURATION</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/export.png"/> <span id="subSectTitleExp" class="subMenuthirdLevel">EXPORT CURRENT CONFIGURATION</span></li>
 						<p>
 						This function allows you to export in a directory you choose the current values of the running instance of ScrYpT. Please remember that theese can differ from the ones that are actually present in the configuration file loaded, if the loaded ones are not yet saved to current file.
 						Exported configuration files can later be imported using the load function.
 						</p>
 						
-					<li><span class="subMenuthirdLevel">SAVE CURRENT CONFIGURATION</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/save.png"/> <span id="subSectTitleCurrSave" class="subMenuthirdLevel">SAVE CURRENT CONFIGURATION</span></li>
 						<p>
 						This function will save the configuration in the current loaded file, and will not be loaded in the next start unless you are using the default one, or you load it again. To save as default use the dedicated function.
 						</p>
 						
-					<li><span class="subMenuthirdLevel">SAVE CURRENT AS DEFAULT</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/saveAsDefault.png"/> <span id="subSectTitleCurrAsDef" class="subMenuthirdLevel">SAVE CURRENT AS DEFAULT</span></li>
 						<p>
 						When clicking this button, your configuration will be saved as default one, and the current loaded will be also default one. This permits you to find the next values saved as default, even after restarting ScrYpT next time, without having to manually reload them each time.
 						</p>
 						
-					<li><span class="subMenuthirdLevel">RESET ORIGINAL</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/reset.png"/> <span id="subSectTitleResetOrig" class="subMenuthirdLevel">RESET ORIGINAL</span></li>
 						<p>
 						After you click this you will be asked to confirm that you want to overwrite default configuration with the default one that you use first time you started ScrYpT. This is an empty configuration with default values.
 						</p>
 						
-					<li><span class="subMenuthirdLevel">EXIT</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/turnOff.png"/> <span id="subSectTitleExit" class="subMenuthirdLevel">EXIT</span></li>
 						<p>
 						This closes the software, deleting temporary files if present, and saving current configuration if autosave option is ON.
 						</p>						
@@ -230,7 +265,7 @@
 				<h2 id="funcPreferencesSubMenu" class="sectionSubTitle"> 2.2 - PREFERENCES SUBMENU</h2>
 				<p><ul>
 				
-					<li><span class="subMenuthirdLevel">GRAPHICS OPTIONS</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/graphics.png"/> <span id="subSectTitleGraphOpt" class="subMenuthirdLevel">GRAPHICS OPTIONS</span></li>
 						<p>
 						In this section you can choose between some graphic settings that will be mapped into current configuration file currently in use, such as:
 						</p>
@@ -242,7 +277,7 @@
 						
 						</ul><br>
 				
-					<li><span class="subMenuthirdLevel">GENERAL OPTIONS</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/options.png"/> <span id="subSectTitleGenOpt" class="subMenuthirdLevel">GENERAL OPTIONS</span></li>
 						<p>
 						Here you can change your general preferences that are contained in the loaded configuration. You can choose to save, discard, use them, or return to the settings read when opening this section.
 						In this panel you can configure things like: 
@@ -270,7 +305,7 @@
 					</p>
 					<span class="highlightBolded">IMPORTANT: </span>your source files will NOT be deleted or modified, only new ones will be created in the directory you choose to put them in.<br><br>
 					
-					<li><span class="subMenuthirdLevel">SCREEPT - CRYPT AND DECRIPT FILES</span></li><br>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/crypter.png"/> <span id="subSectTitleCrypter" class="subMenuthirdLevel">SCREEPT - CRYPT AND DECRIPT FILES</span></li><br>
 						When opening this subPanel, you'll find:
 						<ul class="subList2">
 						
@@ -317,7 +352,7 @@
 							</p>
 						</ul></p>
 				
-					<li><span class="subMenuthirdLevel">KEY IMAGE GENERATOR</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/imageWriter.png"/> <span id="subSectTitleKeyGenImg" class="subMenuthirdLevel">KEY IMAGE GENERATOR</span></li>
 						<p>
 						In this panel you can generate your own random key image... But remember where you put it: ScrYpT is so secure that loosing this key will result in the impossibility to recover your crypted files!
 						<br>I suggest to keep the keys in a pen drive, keeping it in a safe place maybe right next you heart :D
@@ -342,22 +377,112 @@
 						</ol></p>
 						</p>
 						
-					<li><span class="subMenuthirdLevel">KEY DICTIONARY</span></li>
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/keyDictionary.png"/> <span id="subSectTitleKeyDict" class="subMenuthirdLevel">KEY DICTIONARY</span></li>
 						<p>
-						
+						This is a function similar to the one you can find embedded on left panel in cripter, but with some extra option.
+						Using this functionality you can have a specific view on which PNG images you have loaded in your personal library, that is saved inside current ScrYpT source launch folder.<br>
+						The tree view of files is updated in real time, and by right click on it you can view different actions, such as delete all/selected files from dictionary, manual refresh and viewing informations about selected file.
+						In this panel you can also open the dictionary in system explorer to manage manually the files contained in it.</p>
+						<p><span class="highlightBoldedGrey">IMPORTANT: </span>always remember to do not delete ScrYpT folders when you view in system explorer, or the software may not work as expected or run into unexpected crashes.
+						However, if you experience any problem, you can run a new instance of ScrYpT and reimport keys manually. Always remember to backup in a safe place your encriptiion key images!! ;)
 						</p>
+						
 															
 				</p></ul>
 				
 				<h2 id="funcVariousSubMenu" class="sectionSubTitle"> 2.4 - VARIOUS SUBMENU</h2>
 				<p><ul>
 				
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">TEXT EDITOR</span></li>
+					<p>This is a minimal text editor with basic functions, with some extra functionality such as:
+					<ul>
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- you can use this by clicking on <image class="iconImg" src="./Icons/Speaker.png"/> or using the shortcut [Ctrl+spacebar]. This way you will hear the text visible in text-area with english pronunciation. You can also choose the voice speed rate, dragging the selector over the speaker button.</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT CRYPT/DECRYPT </span>- with a non-empty password specified in the password-field on top, you can encrypt/decrypt with AES (128bit) the text loaded in text-area, just by clicking on crypt <image class="iconImg" src="./Icons/Crypt.png"/> or decrypt <image class="iconImg" src="./Icons/Decrypt.png"/> (or using the shortcut [Ctrl+shift+C / Ctrl+shift+D]).</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT MANIPULATION </span>- There some built in function to manipulate selected/all text in ScrYpT. By clicking on <image class="iconImg" src="./Icons/Menu_Icons/uppercase.png"/> you can make all selected text uppercase, clicking <strong>[.Tt]</strong> can make all text after dots or separators be uppercase, while a click on <strong>[Tt Tt]</strong> make text separed by a space starting words with uppercase.</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">TEMPLATES INJECTION </span>- clicking on <strong>[Templates]</strong> button, a new dialog will open staying on top till close, and in which you can select an existing template, create one from your currently selected text, or even define your own template using current file.
+						<span class="highlightBoldedGrey">To use a template</span> just select it from the list and click on "Inject Template"</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE COLORS/FONT </span>- you can customize color of background <image class="iconImg" src="./Icons/BackgroundColor.png"/> and text <image class="iconImg" src="./Icons/TextColor_2.png"/> just by clicking on the relative button: a chooser dialog will appear and you'll be able to choose and preview the selected colors on the loaded text.<br>
+						With the same process is possible to select your preferred font, just by clicking on <image class="iconImg" src="./Icons/Font_2.png"/>.<br>
+						If you'll press OK the selected colors/font will be added to current volatile configuration (theese will not be written to configuration file until you explicitly save them, or until autosave will occur, if selected).</li>
+						
+					</ul>
+					</p>
+						
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/hardware.png"/> <span id="subSectTitleSysInfo" class="subMenuthirdLevel">SYSTEM INFORMATIONS</span></li>
+					<p><span class="highlightBoldedGrey">IMPORTANT: </span>enabled only with Java versions between 1.6.xx and 1.8.xx due to compatibility reasons.</p>
+					<p>
+						In this section you can find many informations about you system, the java version in use, and current usage of CPU and RAM by ScrYpT, but not only.
+						In fact, here you can find informations about your currently linked displays, HD, RAM, CPU. <br>
+						In next versions of ScrYpT many more options could appear, stay tuned!
+					</p>
+				
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/network.png"/> <span id="subSectTitleNetInfo" class="subMenuthirdLevel">NETWORK INFORMATIONS</span></li>
+					<p><span class="highlightBoldedGrey">IMPORTANT: </span>enabled only with Java versions between 1.6.xx and 1.8.xx due to compatibility reasons.</p>
+					<p>
+						In this section you can find many informations about you network cards, and their connection main info, such as 
+						local IP, public IP(only if connected to internet), MAC address, gateway, DNS, MTU, and delay.
+						<span class="highlightBolded">Just choose your network card </span>from the list on the top center area :)
+					</p>
+					<p>On the right you can find a panel with information about you connection speed, related to the selected network adapter from the list above. To discover up/down speed and delay of you network card, select a network card with active internet connection, press on "Calculate connection speed", and wait for the test to finish to read results. According to the test type selected (Short/medium/large) this can require up to some minutes.
+					<br><span class="highlightBoldedGrey">This button </span>will become clickable only when there is an active connection from the current selected network card.</p>
+					
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/imageConverter.png"/> <span id="subSectTitleImgConverter" class="subMenuthirdLevel">IMAGE CONVERTER</span></li>
+					<p>Here you can find a selection of useful conversion tools for image conversion. <span class="highlightBoldedGrey">Notice </span> that this is a beta version yet, it still has to improve in next versions of ScrYpT ;)
+					</p>
+					<p>
+						Let's see a list of some things this converter can do (for now):
+						<ul>
+							<li class="highLineHeigthList"><span class="highlightBolded">Change size </span>- Just change size of the ones you like. If you want to keep proportions between height and width, be sure "original ratio" is selected.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Change extension </span>- Just select the output extension you want to have after conversion. If you want to keep the original one, be sure "original format" is selected.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Choose resize algorithm </span>- An image can be resized in different ways, each one with different load on CPU (and this can have a big impact on time for conversion and final quality): you can select your preferred from the given list on the left.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Choose conversion quality </span>- Especially when using lossy output formats like "JPEG/JPG", changing the quality (from 1 to 100) you can choose the quality of the compression with selected algorithm.	<span class="highlightBoldedGrey">Notice </span> that with loseless types this will result in a small optimization or none. For example, PNG format is loseless, but it allows to have a little improvement in terms of disk space, optimizing pixel rapresentation.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Export/Add to dictionary </span>- when you have chosen image source (clicking the button on the right) and output parameters, you can either export to a external directory, or add it to key dictionary, to use it later in crypter section (notice that this way the image will be saved in PNG format in dictionary, cause screept handles only this exention).<br>
+							<strong>Just click</strong> on the relative button you can find on the right side of the panel.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Reset original size </span>- click on the <strong>reset size</strong> button to reset the output size to the original one.
+							</li>
+						</ul>
+					</p>
+					
+					<li><image class="iconImgTitleSect" src="./Icons/Menu_Icons/folderActions.png"/> <span id="subSectTitleFilesNFolders" class="subMenuthirdLevel">FILES AND FOLDERS ACTIONS</span></li>
+					<p>
+						In this panel you can find some useful functions to manage files and folders located on your File System.
+						<p>
+						You can choose between:
+						<ul>
+							<li class="highLineHeigthList"><image class="iconImg" src="./Icons/Menu_Icons/uppercase.png"/> <span class="highlightBolded">UpperCase files and folders </span>- just click and select a file or folder to make it (and all its contained files -even in subfolders- if it's a folder) start with an Uppercase letter.
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="./Icons/Menu_Icons/createFolder.png"/> <span class="highlightBolded">Create directories from string path </span>- click on this and type the path of the folder you want to create. ScrYpT will create all necessaries folders that are missing. 
+							<br> (Ex. "C:/folderA/folderB/folderC/newFolder").
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="./Icons/Menu_Icons/cloneDirectory.png"/> <span class="highlightBolded">Copy directory structure </span>- click on this if you want to recreate the structure of a directory without copying the files contained in it and its subfolders. In fact, you will only copy folders contained in the selected one.
+							<strong>You can select only folders in this function.</strong>
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="./Icons/Menu_Icons/deleteFolder.png"/> <span class="highlightBolded">Delete all directory's content (all except selected) </span>click this if you want to delete all content (both files and folders) of a root folder you have to specify. You will be asked to confirm before to continue, after the root folder to empty is selected.
+							<strong>You can select only folders in this function.</strong>
+							</li>
+
+							<li class="highLineHeigthList"><image class="iconImg" src="./Icons/Menu_Icons/emptyDirectory.png"/> <span class="highlightBolded">Delete all directory's content </span>- this function will delete all files contained in a root directory you have to specify, without deleting folders contained.
+							<strong>You can select only folders in this function.</strong>
+							</li>
+							
+						</ul></p>
+						</p>
+					
 				</p></ul>
 				
 				<h2 id="funcHelpSubMenu" class="sectionSubTitle"> 2.5 - HELP SUBMENU</h2>
 				<p><ul>
-				
-				</p></ul>
+				<li>Visit this section if you want to know more about ScrYpT fuctions, about A.M. Design 'N Developement, visit A.M. Official Website, or simply return to start page. </li>
+				<br><span class="highlightBoldedGrey">IMPORTANT: </span>Always remember that changing section you won't lose any progress of your current opened work, just go back with shortcuts or with the main menu to retrieve the stuff you were doing :)
+				<p><span class="highlightBoldedGrey">!!! IN CASE OF ANY PROBLEM </span> you can export the log with the special function "Export event log", that may contain useful information about the problem itself, and can help solving the bug if there is one, or understand more of what happened during execution. <strong>Send it to me </strong>for further bug examination! If you have problems launching the application and cannot extract this way the log, send me "/application/LOG" and "/application/LAUNCHER/LOG" folders in zip format :)</p>
+				</ul></p>
 			
 			</div>
 			
@@ -370,14 +495,15 @@
 				<h2 id="shctsMainGui" class="sectionSubTitle"> 3.1 - GENERAL PURPOSE SHORTCUTS</h2>
 				<p><ul class="shorctutsList">
 				
+					<li> <span class="SHCT_TEXT">OPEN CONFIGURATION MANAGER</span> - [Alt+Shift+1]</li>
 					<li> <span class="SHCT_TEXT">OPEN SCREEPT</span> - [Alt+Shift+S]</li>
+					<li> <span class="SHCT_TEXT">OPEN KEYGEN</span> - [Alt+Shift+K]</li>
 					<li> <span class="SHCT_TEXT">OPEN TEXT EDITOR</span> - [Alt+Shift+T]</li>
 					<li> <span class="SHCT_TEXT">OPEN IMAGE CONVERTER</span> - [Alt+Shift+I]</li>
 					<li> <span class="SHCT_TEXT">OPEN SYSTEM INFO</span> - [Alt+Shift+0]</li>
 					<li> <span class="SHCT_TEXT">OPEN NETWORK INFO</span> - [Alt+Shift+9]</li>
 					<li> <span class="SHCT_TEXT">OPEN ABOUT-INFO PANEL</span> - [Alt+Shift+.]</li>
-					<li> <span class="SHCT_TEXT">OPEN CONFIGURATION MANAGER</span> - [Alt+Shift+1]</li>
-					<li> <span class="SHCT_TEXT">OPEN KEYGEN</span> - [Alt+Shift+K]</li>
+					<li> <span class="SHCT_TEXT">OPEN TUTORIAL PANEL</span> - [Alt+Shift+?]</li>
 					<li> <span class="SHCT_TEXT">RETURN TO HOMEPAGE</span> - [Alt+Shift+H]</li>
 					
 				</ul></p>				
@@ -394,9 +520,9 @@
 					<li> <span class="SHCT_TEXT">REDO X 5</span> - [Ctrl+Shift+Alt+Z]</li>
 					<li> <span class="SHCT_TEXT">FONT SIZE ++</span> - [Ctrl+(Numpad+)]</li>
 					<li> <span class="SHCT_TEXT">FONT SIZE --</span> - [Ctrl+(Numpad-)]</li>
-					<li> <span class="SHCT_TEXT">SPEAK TEXT / STOP SPEAKER</span> - [Ctrl+(Numpad-)]</li>
-					<li> <span class="SHCT_TEXT">CRYPT TEXT</span> - [Ctrl+(Numpad-)]</li>
-					<li> <span class="SHCT_TEXT">DECRYPT TEXT</span> - [Ctrl+(Numpad-)]</li>
+					<li> <span class="SHCT_TEXT">SPEAK TEXT / STOP SPEAKER</span> - [Ctrl+spacebar]</li>
+					<li> <span class="SHCT_TEXT">CRYPT TEXT</span> - [Ctrl+shift+C]</li>
+					<li> <span class="SHCT_TEXT">DECRYPT TEXT</span> - [Ctrl+shift+D]</li>
 					<li> <span class="SHCT_TEXT">UPPERCASE ALL SELECTED</span> - [Ctrl+ArrowUp]</li>
 					<li> <span class="SHCT_TEXT">UPPERCASE AFTER DOTS/SEPARATORS</span> - [Ctrl+Shift+.]</li>
 					<li> <span class="SHCT_TEXT">FIND TEXT</span> - [Ctrl+F]</li>
@@ -412,17 +538,32 @@
 				<h1 class="sectionTitle">4 - CREDITS AND LINKS</h1>
 			
 				<p>
-					ScrYpT is an free software created with passion during my free time and my busy nights :)
-					Nice to meet you, I'm Alessio Moraschini, and I am the creator of ScrYpT <br><br>
-					The screept (AKA core crypter-algorithm), is the result of many crazy nights passed coding strange ideas born during university period. I've to thank google search, without it it should have been impossible to find all necessary informations about functions implemented in this software :)<br><br>
-					ScrYpT was created mainly with the aim to implement a new kind of crypter, more secure than existing algorithms (it improves AES-128 combining it with a new algorithm called "Steg-Crypt"). 
+					<span class="highlightBoldedGrey">ScrYpT is a free software</span> created with passion during my free time and my busy nights :)
+					Nice to meet you, I'm Alessio Moraschini, and I am the creator of ScrYpT!<br><br>
+					The <span class="highlightBoldedGrey">screept</span> (AKA core crypter-algorithm), is the result of many crazy nights passed coding strange ideas born during university period. I've to thank google search, without it it should have been impossible to find all necessary informations about functions implemented in this software :)<br><br>
+					<span class="highlightBolded">ScrYpT was created mainly with the aim to implement a new generation of crypters</span>, more secure than existing algorithms (it improves AES-128 combining it with a my algorithm called "Steg-Crypt"). 
 					
 					To create this software, I used different opensource public libraries, withouth them this software maybe could have not seen daylight.<br>
-					In this project are used:
+					In this project are used different open source libraries, to which I really want give some special thanks. 
+					Projects that are used in this software are:
+					
+					<ul>
+						<li><span class="highlightBolded">OSHI</span> is used to detect hardware and some network related informations. <a class="dependencyLink" target="_blank" href="https://github.com/oshi/oshi">[https://github.com/oshi/oshi]</a></li>
+												
+						<li><span class="highlightBolded">Sigar</span> is also used to detect hardware and some network related informations. <a class="dependencyLink" target="_blank" href="https://github.com/hyperic/sigar">[https://github.com/hyperic/sigar]</a></li>
+						
+						<li><span class="highlightBolded">Ini4J.Org</span> is used to manage configuration ".INI" files. <a class="dependencyLink" target="_blank" href="http://ini4j.sourceforge.net">[http://ini4j.sourceforge.net]</a></li>
+						
+						<li><span class="highlightBolded">PngTastic</span> is used to manage PNG conversion. <a class="dependencyLink" target="_blank" href="https://github.com/depsypher/pngtastic">[https://github.com/depsypher/pngtastic]</a></li>
+						
+						<li><span class="highlightBolded">Apache commons</span> are widely used both for some network communication and for file related stuff. <a class="dependencyLink" target="_blank" href="https://commons.apache.org">[https://commons.apache.org]</a></li>
+						
+						<li><span class="highlightBolded">FreeTTS</span> is used to implement text speaker. <a class="dependencyLink" target="_blank" href="https://freetts.sourceforge.io">[https://freetts.sourceforge.io]</a></li>
+
+					</ul>
 				</p>
-				<li></li>
 				
-				<p align="center" style="font-size:0.8em;color:#000999">ScrYpT&#9400; - Alessio Moraschini - A.M. Design &amp; Developement - Dalmine(BG) - Italy - 2019 </p>
+				<br><p align="center" style="font-size:0.8em;color:#000099; font-weight:bold">ScrYpT&#9400; - Alessio Moraschini - A.M. Design &amp; Developement - Dalmine(BG) - Italy - 2019 </p>
 			</div>
 			
 		</div>

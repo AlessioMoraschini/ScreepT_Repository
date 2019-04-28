@@ -4,15 +4,19 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import ButtonUtils.ButtonDefaults;
 import frameutils.GuiUtils;
 import gui.ScrYpTLauncher;
 import guistyle.GUIStyelSettings;
+import media.Sounds;
 
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import resources.SoundsConfigurator;
+
 import javax.swing.JLabel;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -23,6 +27,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.awt.Cursor;
+import java.awt.FocusTraversalPolicy;
 import java.awt.Insets;
 
 public class StartPanel extends JFrame{
@@ -42,10 +47,10 @@ public class StartPanel extends JFrame{
 	private JPanel mainPanel;
 	private JButton btnStartScrypt;
 	private JButton btnCustomizeParameters;
+	private JButton btnDependencyManager;
 	private JLabel lblScryptLauncher;
 	private JLabel label;
 	private JLabel lblAmDesign;
-	private JButton btnDependencyManager;
 	
 	private final int W = 480;
 	private final int H = 180;
@@ -74,7 +79,19 @@ public class StartPanel extends JFrame{
 		lblWelcomeToScrypt.setFont(new Font("Segoe UI Black", Font.PLAIN, 13));
 		mainPanel.add(lblWelcomeToScrypt, "cell 0 0 6 1,alignx center");
 		
+		btnStartScrypt = new JButton("Start ScrYpT");
+		btnStartScrypt.setFocusPainted(false);
+		btnStartScrypt.setMargin(new Insets(10, 10, 10, 10));
+		btnStartScrypt.setForeground(new Color(0, 0, 0));
+		btnStartScrypt.setBorder(null);
+		btnStartScrypt.setBackground(new Color(34, 139, 34));
+		btnStartScrypt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		mainPanel.add(btnStartScrypt, "cell 3 1 3 2,grow");
+		
 		btnCustomizeParameters = new JButton("Customize launch parameters");
+		btnCustomizeParameters.setFocusable(false);
+		btnCustomizeParameters.setRequestFocusEnabled(false);
 		btnCustomizeParameters.setFocusPainted(false);
 		btnCustomizeParameters.setBorder(null);
 		btnCustomizeParameters.setForeground(new Color(0, 0, 0));
@@ -83,16 +100,8 @@ public class StartPanel extends JFrame{
 		btnCustomizeParameters.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		mainPanel.add(btnCustomizeParameters, "cell 0 1 3 1,grow");
 		
-		btnStartScrypt = new JButton("Start ScrYpT");
-		btnStartScrypt.setMargin(new Insets(10, 10, 10, 10));
-		btnStartScrypt.setForeground(new Color(0, 0, 0));
-		btnStartScrypt.setBorder(null);
-		btnStartScrypt.setBackground(new Color(5, 125, 5));
-		btnStartScrypt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 18));
-		mainPanel.add(btnStartScrypt, "cell 3 1 3 2,grow");
-		
 		btnDependencyManager = new JButton("Open Dependency Manager");
+		btnDependencyManager.setFocusPainted(false);
 		btnDependencyManager.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDependencyManager.setForeground(Color.BLACK);
 		btnDependencyManager.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -117,7 +126,14 @@ public class StartPanel extends JFrame{
 	
 		addHandlers();
 		
+		ButtonDefaults.setDefaultOnFocus(btnDependencyManager, LAUNCHER_GUI);
+		ButtonDefaults.setDefaultOnFocus(btnCustomizeParameters, LAUNCHER_GUI);
+		ButtonDefaults.setDefaultOnFocus(btnStartScrypt, LAUNCHER_GUI);
 		LAUNCHER_GUI.getRootPane().setDefaultButton(btnStartScrypt);
+		btnStartScrypt.requestFocusInWindow();
+		btnStartScrypt.grabFocus();
+		
+		Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.8f);
 		logger.info(this.getClass().getName() + " Started");
 	}
 	
@@ -139,6 +155,11 @@ public class StartPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.7f);
+				try {
+					Thread.sleep(400);
+				} catch (InterruptedException e1) {
+				}
 				LAUNCHER.launchCommands();
 				LAUNCHER_GUI.dispatchEvent(new WindowEvent(LAUNCHER_GUI, WindowEvent.WINDOW_CLOSING));
 				

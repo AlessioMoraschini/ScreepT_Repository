@@ -13,7 +13,7 @@ public class AudioTest {
 		for (int i = 0; i < 5; i++) {
 			Printer.printl("Playing: " + SoundsConfigurator.CLICK_2);
 			Sounds.setVolume(0.15f*i);
-			Sounds.playSound(SoundsConfigurator.CLICK_2);
+			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 			Thread.sleep(300);
 		}
 	}

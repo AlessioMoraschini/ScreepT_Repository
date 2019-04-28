@@ -5,7 +5,6 @@ import java.awt.Font;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 
 import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
@@ -19,6 +18,7 @@ import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
+import uTILS.local.Text2Speech;
 
 import javax.swing.SwingConstants;
 
@@ -34,7 +34,6 @@ import frameutils.SearchFrame;
 import iNIT.INItializer;
 import iNIT.om.TextEditorOption;
 import local.HandleString;
-import local.Text2Speech;
 
 import java.awt.SystemColor;
 
@@ -69,6 +68,7 @@ import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorListener;
 import javax.swing.JPasswordField;
 import java.awt.Cursor;
+import javax.swing.border.EmptyBorder;
 
 public class TextEditor extends JPanel {
 
@@ -225,7 +225,7 @@ public class TextEditor extends JPanel {
 		
 		lblVoiceSpeed = new JLabel("Voice rate");
 		lblVoiceSpeed.setForeground(new Color(211, 211, 211));
-		mainPanel.add(lblVoiceSpeed, "cell 10 2 2 1,alignx center");
+		mainPanel.add(lblVoiceSpeed, "cell 11 2 2 1,alignx center");
 		
 		sliderSpokenSpeed = new JSlider();
 		sliderSpokenSpeed.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
@@ -324,6 +324,9 @@ public class TextEditor extends JPanel {
 		
 		JScrollPane textScrollPaneArea = new JScrollPane();
 		mainPanel.add(textScrollPaneArea, "cell 0 6 26 1,grow");
+		textScrollPaneArea.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
+		textScrollPaneArea.setBackground(new Color(112, 128, 144));
+		textScrollPaneArea.setBorder(new EmptyBorder(0, 0, 0, 0));
 		textScrollPaneArea.setFont(new Font("DejaVu Sans", Font.PLAIN, 18));
 		
 		textArea_1 = new JTextArea();
@@ -647,7 +650,7 @@ public class TextEditor extends JPanel {
 			}
 		});
 		
-		// SET DEFAULT TEXT AREA COLORS
+		// SET DEFAULT TEXT AREA VALUES
 		btnDefaultOpt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textArea_1.setFont(DEFAULT);

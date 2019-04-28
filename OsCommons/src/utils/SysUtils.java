@@ -218,6 +218,37 @@ public class SysUtils {
 		return false;
 	}
 
+	public static boolean openUrlInBrowserNative(String URL) {
+		OSinfo OS = retrieveOS();
+		Runtime runtime = Runtime.getRuntime();
+
+		if (OS.isLinux()) {
+			try {
+				runtime.exec("xdg-open " + URL);
+				return true;
+			} catch (IOException e) {
+				logger.error("Error opening URL with Linux Native command\n\n", e);
+			}
+		} else if (OS.isMac()) {
+			try {
+				runtime.exec("open " + URL);
+				return true;
+			} catch (IOException e) {
+				logger.error("Error opening URL with Mac-OS Native command\n\n", e);
+			}
+		} else if (OS.isWindows()) {
+			try {
+				runtime.exec("rundll32 url.dll,FileProtocolHandler " + URL);
+				return true;
+			} catch (IOException e) {
+				logger.error("Error opening URL with Windows Native command\n\n", e);
+			}
+		} 
+		
+		return false;
+		
+	}
+	
 	public static String readProcessOutput(InputStream inputStream) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		StringBuilder builder = new StringBuilder();

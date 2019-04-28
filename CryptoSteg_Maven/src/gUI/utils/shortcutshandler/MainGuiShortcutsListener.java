@@ -3,12 +3,9 @@ package gUI.utils.shortcutshandler;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JTextArea;
-
 import org.apache.log4j.Logger;
 
 import gUI.mainGUI;
-import gUI.panels.TextEditor;
 
 public class MainGuiShortcutsListener implements KeyEventDispatcher{
 	
@@ -18,6 +15,7 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 	mainGUI currentGui;
 	
 	public MainGuiShortcutsListener(mainGUI currentMainGui) {
+		logger.debug(this.getClass().getName() + " Started!");
 		currentGui = currentMainGui;
 	}
 	

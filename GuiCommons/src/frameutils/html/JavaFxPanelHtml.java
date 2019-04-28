@@ -3,18 +3,34 @@ package frameutils.html;
 import com.sun.javafx.application.PlatformImpl;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
+import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import media.Sounds;
 import net.miginfocom.swing.MigLayout;
+import resources.SoundsConfigurator;
+import utils.SysUtils;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.events.Event;
+import org.w3c.dom.events.EventTarget;
+import com.sun.webkit.dom.HTMLAnchorElementImpl;
+import com.sun.webkit.dom.HTMLElementImpl;
   
 /** 
  * SwingFXWebView 
@@ -23,6 +39,10 @@ public class JavaFxPanelHtml extends JPanel {
      
 	private int W = 1200;
 	private int H = 700;
+	public String URL_Loaded;
+	public HTMLElementImpl indexElement = null; 
+	public static final String DESELECT_NSTART = " if (window.getSelection) {window.getSelection().removeAllRanges();}\r\n" + 
+												 " else if (document.selection) {document.selection.empty();}";
 	
     private Stage stage;  
     private WebView browser;  
@@ -51,8 +71,8 @@ public class JavaFxPanelHtml extends JPanel {
 		}
     }
      
-    public void loadUrl(String url) {
-    	PlatformImpl.startup(new Runnable() {  
+    public void loadUrl(String url, String indexId) {
+    	PlatformImpl.runAndWait(new Runnable() {  
             @Override
             public void run() {  
                 
@@ -69,14 +89,94 @@ public class JavaFxPanelHtml extends JPanel {
                 browser = new WebView();
                 webEngine = browser.getEngine();
                 webEngine.load(url);
-
+                URL_Loaded = url;
+                
                 resizeComp(W, H);
                 
                 ObservableList<Node> children = root.getChildren();
                 children.add(browser);
-                jfxPanel.setScene(scene);  
+                jfxPanel.setScene(scene);
+                
+                // ON READY EVENTS (OPEN HTTP ANCHORS IN BROWSER)
+                addEventsHandlers(scene, indexId);
             }  
         });  
+    }
+    
+    public void addEventsHandlers(Scene scene, String indexId) {
+    	webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+        	
+        	@Override
+        	public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue) {
+        		if (webEngine.getLoadWorker().stateProperty().getValue().equals(State.SUCCEEDED)) {
+        			openClassAnchorsInExternalBrowser(webEngine.getDocument());
+        			indexElement = initIndex(indexId);
+        			
+        			scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+						@Override
+						public void handle(KeyEvent event) {
+							
+							// ALT PRESSED
+							if (event.isAltDown()) {
+								switch (event.getCode()) {
+									case LEFT: {
+										webEngine.executeScript("history.back()");
+										break;
+									}
+									case RIGHT: {
+										webEngine.executeScript("history.forward()");
+										break;
+									}
+								}
+								
+							// CTRL + SHIFT PRESSED
+							}else if (event.isControlDown() && event.isShiftDown()) {
+								switch (event.getCode()) {
+								case R:	{
+									webEngine.reload();
+									break;
+								}
+								default:
+									break;
+								}
+							}
+						}
+					});// end key released handler
+        		}
+        	}
+        });
+    }
+    
+    public HTMLElementImpl initIndex(String indexId) {
+    	if (webEngine != null) {
+			if (webEngine.getLoadWorker().stateProperty().getValue().equals(State.SUCCEEDED)) {
+				return (HTMLElementImpl) webEngine.getDocument().getElementById(indexId);
+			}
+		}
+    	
+    	return null;
+    }
+    
+    private void openClassAnchorsInExternalBrowser(Document document) {
+    	NodeList nodeList = document.getElementsByTagName("a");
+        for (int i = 0; i < nodeList.getLength(); i++)
+        {
+            org.w3c.dom.Node node= nodeList.item(i);
+            EventTarget eventTarget = (EventTarget) node;
+            eventTarget.addEventListener("click", new org.w3c.dom.events.EventListener()
+            {
+                public void handleEvent(Event evt)
+                {
+					EventTarget target = evt.getCurrentTarget();
+					HTMLAnchorElementImpl anchorElement = (HTMLAnchorElementImpl) target;
+					String href = anchorElement.getHref();
+					if (href.startsWith("http")) {
+						SysUtils.openUrlInBrowser(href);
+						evt.preventDefault();
+					}
+                }
+            }, false);
+        }
     }
     
     public void reload() {
@@ -85,7 +185,80 @@ public class JavaFxPanelHtml extends JPanel {
             @Override
             public void run() {
                 webEngine.reload();
+                indexElement = null;
             }
         });
+    }
+    
+    public void goBack() {
+    	Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+            	webEngine.executeScript("history.back()");
+            }
+        });
+    }
+    
+    public void goNext() {
+    	Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+            	webEngine.executeScript("history.forward()");
+            }
+        });
+    }
+    
+    public void findTextNHighLight(String targetText) {
+    	Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+            	
+        		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+        		webEngine.executeScript("window.find('" + targetText + "')");            		
+            }
+    	});
+    }
+    
+    public void deselectAll() {
+    	
+    	Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+            	webEngine.executeScript(DESELECT_NSTART);
+            }
+    	});
+    }
+    
+    public void goToIndex() {
+    	Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+		    	if(indexElement != null) {
+		    		//indexElement.scrollIntoView(true);
+		    		webEngine.executeScript(getToIndexJS());
+		    	}
+            }
+    	});
+    }
+    
+    private String getToIndexJS() {
+    	if(indexElement == null) {
+    		return "";
+    	}else {
+    		return " var elmnt = document.getElementById(\""+ indexElement.getId() +"\");\r\n elmnt.scrollIntoView();";
+    	}
+    }
+    
+    public boolean openInBrowser() {
+    	if (URL_Loaded != null && SysUtils.openUrlInBrowserNative(URL_Loaded)) {
+			return true;
+		}else {
+			return false;
+		}
     }
 }

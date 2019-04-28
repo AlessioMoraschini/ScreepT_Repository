@@ -1,9 +1,4 @@
-package local;
-import java.util.Locale;
-
-import javax.speech.Central;
-import javax.speech.synthesis.Synthesizer;
-import javax.speech.synthesis.SynthesizerModeDesc;
+package uTILS.local;
 
 import org.apache.log4j.Logger;
 

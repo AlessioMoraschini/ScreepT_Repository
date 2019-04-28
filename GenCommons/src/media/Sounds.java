@@ -11,18 +11,28 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import testUtils.Printer;
+import resources.SoundsConfigurator;
 
 public class Sounds {
 
-	private static float volume = 0.5f;
+	private static float volume = SoundsConfigurator.DEFAULT_EFFECTS_VOLUME;
 	private static AudioInputStream openStream = null;
 
-	public static void playSound(String pathToResource){
+	public static void playSound(String pathToResource, Float volum){
+		if(volum != null) {
+			setVolume(volum);
+		}else {
+			setVolume(SoundsConfigurator.DEFAULT_EFFECTS_VOLUME);
+		}
+		File audioFile = new File(pathToResource);
+		if(audioFile == null || !audioFile.exists()) {
+			return;
+		}
+		
 		AudioInputStream inputStream = null;
 		try {
 			Clip clip = AudioSystem.getClip();
-	        inputStream = AudioSystem.getAudioInputStream(new File(pathToResource));
+	        inputStream = AudioSystem.getAudioInputStream(audioFile);
 	        clip.open(inputStream);
 	        applyVolume(clip);
 	        clip.start();
