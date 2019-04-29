@@ -125,7 +125,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 			if (e.getKeyCode()==127 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 			{
 				// DELETE TEXT AREA CONTENT
-				currentTextEditor.textArea_1.setText("");
+				currentTextEditor.btnClear.doClick();
 			}
 			
 			/**

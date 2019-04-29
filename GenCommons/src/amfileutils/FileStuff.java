@@ -589,6 +589,10 @@ public class FileStuff {
 	 */
 	public static boolean appendFileTxtArea(File txtFile, JTextArea textArea_1) {
 
+		if(txtFile == null) {
+			return false;
+		}
+		
     	if(!FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals("txt")) {
 			JOptionPane.showMessageDialog(null, "Please select a valid txt file!");
     	}

@@ -239,4 +239,5 @@ public class SearchFrame extends JFrame{
 			textChanged = false;
 		}
 	}
+	
 }
