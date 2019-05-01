@@ -64,6 +64,11 @@ public class IconsPathConfigurator {
 	public static final String ICON_TEXT_COLOR = RESOURCES_DIR + "Icons/TextColor_2.png";
 	public static final String ICON_TEXT_BG_COLOR = RESOURCES_DIR + "Icons/BackgroundColor.png";
 	public static final String ICON_TEXT_FONT = RESOURCES_DIR + "Icons/Font_2.png";
+	public static final String ICON_NEW_FILE = RESOURCES_DIR + "Icons/Menu_Icons/loadConfig.png";
+	public static final String ICON_DOC_EMPTY = RESOURCES_DIR + "Icons/Menu_Icons/emptyDoc.png";
+	public static final String ICON_DOC_VOID = RESOURCES_DIR + "Icons/Menu_Icons/voidDoc.png";
+	public static final String ICON_DOC_SAVED = RESOURCES_DIR + "Icons/Menu_Icons/docSaved.png";
+	public static final String ICON_DOC_UNSAVED = RESOURCES_DIR + "Icons/Menu_Icons/starDoc.png";
 	public static final String ICON_FILE_SAVE_AS = RESOURCES_DIR + "Icons/saveFileAs.png";
 	public static final String ICON_FILE_SAVE = RESOURCES_DIR + "Icons/saveFile.png";
 	public static final String ICON_FILE_LOAD = RESOURCES_DIR + "Icons/LoadFile.png";

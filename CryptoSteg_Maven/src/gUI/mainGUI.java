@@ -1561,7 +1561,7 @@ public class mainGUI {
 						+ APPLICATION_NAME+" CLOSED!\n\n"
 						+ "##################################################\n\n");
       	
-      	Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.7f);
+      	Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
       	
       	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
       	Thread tempEraser = new Thread(tempDecryptedEraser());

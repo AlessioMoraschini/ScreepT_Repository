@@ -90,6 +90,22 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 			}
 			
 			/**
+			 *  OPEN GENERAL OPTIONS : ALT+SHIFT+2
+			 */
+			if (  e.getKeyCode()==50 && e.isAltDown() && !e.isControlDown() && e.isShiftDown())
+			{
+				currentGui.getMntmGenOpt().doClick();
+			}
+			
+			/**
+			 *  OPEN GUI OPTIONS : ALT+SHIFT+3
+			 */
+			if (  e.getKeyCode()==51 && e.isAltDown() && !e.isControlDown() && e.isShiftDown())
+			{
+				currentGui.getMntmCustomizeUIView().doClick();
+			}
+			
+			/**
 			 *  OPEN KEY-GEN : ALT+SHIFT+K
 			 */
 			if (  e.getKeyCode()==75 && e.isAltDown() && !e.isControlDown() && e.isShiftDown())

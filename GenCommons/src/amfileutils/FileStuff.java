@@ -527,6 +527,9 @@ public class FileStuff {
 	 * @throws IOException
 	 */
 	public static String readFileAsString(File toRead) throws IOException {
+		if(toRead == null || !toRead.exists()) {
+			throw new IOException();
+		}
 		FileInputStream readerStream = new FileInputStream(toRead);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
 		String read = "";
