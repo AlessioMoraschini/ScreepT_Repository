@@ -1,4 +1,4 @@
-package gUI;
+package maingUI;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,7 +31,6 @@ import javax.swing.JFileChooser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
@@ -94,10 +93,10 @@ public class mainGUI {
 		
 	// general application variables
 	public static final String APP_VERSION = "0.5";
+	public static final String APP_VERSION_DATE = "02/05/2019";
+	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
-	public static final String APP_VERSION_DATE = "4/4/2019";
-	public static final String WEBSITE = "www.am_design_developement.com";
 	
 	// constant files & directories prefix
 	public static final String RESOURCES_DIR= "Resources_Scrypt/";
@@ -116,8 +115,6 @@ public class mainGUI {
 	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
-	// log_trace location
-	private static final String LOG_PROPERTIES_PATH = RESOURCES_DIR + "log4j.properties";
 	private static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
 	private static Date now; // date used for log operations
 	
@@ -256,7 +253,7 @@ public class mainGUI {
 	 * 
 	 * Calls contructor, initialize & Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void mainApplicationGeneral() {
 		
 		// OPEN LOADING PANEL
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", LAUNCHER_BACK_IMAGE_PATH, 280);
@@ -288,12 +285,6 @@ public class mainGUI {
 //					} catch (FileNotFoundException e) {
 //						e.printStackTrace();
 //					}
-					
-					// Initialize logger properties
-					PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
-					logger.debug("\n\n##################################################\n\n"+now.toString()+"\n\n"
-							+ APPLICATION_NAME+" Started now!\n\n"
-							+ "##################################################\n\n");
 					
 					// INITIALIZE CONFIGURATION FROM CONFIG DEFAULT FILE
 					try {
@@ -1558,12 +1549,6 @@ public class mainGUI {
 			}
 		}
         
-      	logger.debug(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
-						+ APPLICATION_NAME+" CLOSED!\n\n"
-						+ "##################################################\n\n");
-      	
-      	Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
-      	
       	// SAVE CURRENTLY OPENED FILES
       	backupOpenedFiles();
       	
@@ -1588,6 +1573,12 @@ public class mainGUI {
 		}
       	
 		mainAppRunning = false;
+		
+		logger.debug(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
+				+ APPLICATION_NAME+" CLOSED!\n\n"
+				+ "##################################################\n\n");
+	
+		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
 		System.exit(0);
 	}

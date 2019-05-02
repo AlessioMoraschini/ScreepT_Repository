@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 
 import frameutils.BackgroundPanel;
 import frameutils.GuiUtils;
-import gUI.mainGUI;
 import guistyle.TextGuiUtils;
+import maingUI.mainGUI;
 
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;

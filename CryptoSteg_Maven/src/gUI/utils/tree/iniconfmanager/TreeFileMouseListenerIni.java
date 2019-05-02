@@ -22,11 +22,11 @@ import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
-import gUI.mainGUI;
 import gUI.panels.ChargeIniLog;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
 import iNIT.INItializer;
+import maingUI.mainGUI;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;

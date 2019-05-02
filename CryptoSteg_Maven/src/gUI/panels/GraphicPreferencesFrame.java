@@ -28,8 +28,8 @@ import javax.swing.event.DocumentListener;
 import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
-import gUI.mainGUI;
 import iNIT.INItializer;
+import maingUI.mainGUI;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;

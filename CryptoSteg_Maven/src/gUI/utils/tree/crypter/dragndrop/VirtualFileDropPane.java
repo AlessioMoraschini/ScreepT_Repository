@@ -31,9 +31,9 @@ import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 
 import frameutils.BackgroundPanel;
-import gUI.mainGUI;
 import gUI.panels.KeyDictionaryPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
+import maingUI.mainGUI;
 import net.miginfocom.swing.MigLayout;
 
 public class VirtualFileDropPane extends BackgroundPanel {

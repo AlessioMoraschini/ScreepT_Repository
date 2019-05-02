@@ -36,6 +36,7 @@ import frameutils.SearchFrame;
 import iNIT.INItializer;
 import iNIT.om.TextEditorOption;
 import local.HandleString;
+import maingUI.mainGUI;
 
 import java.awt.SystemColor;
 
@@ -66,7 +67,6 @@ import javax.swing.JComboBox;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 
-import gUI.mainGUI;
 import gUI.om.SupportedFileTextEditor;
 import gUI.om.TabTextEditorObj;
 import gUI.utils.filedialog.TemplatesChoosePanel;

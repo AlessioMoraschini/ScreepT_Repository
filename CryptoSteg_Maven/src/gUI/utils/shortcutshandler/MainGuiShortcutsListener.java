@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 import org.apache.log4j.Logger;
 
-import gUI.mainGUI;
+import maingUI.mainGUI;
 
 public class MainGuiShortcutsListener implements KeyEventDispatcher{
 	
