@@ -1,17 +1,19 @@
 package maingUI;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import resources.IconsPathConfigurator;
+
 public class MainGuiGeneralAppStarter {
 
 	// use this to test throwable launched
-	static boolean test = false;
+	private static final boolean TEST_ERROR_FLAG = false;
 	
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(MainGuiGeneralAppStarter.class);
@@ -32,7 +34,7 @@ public class MainGuiGeneralAppStarter {
 					+ mainGUI.APPLICATION_NAME+" Started now!\n\n"
 					+ "##################################################\n\n");
 			
-			if(test) {
+			if(TEST_ERROR_FLAG) {
 				throw new Error();
 			}else {
 				mainGUI.mainApplicationGeneral();
@@ -41,12 +43,13 @@ public class MainGuiGeneralAppStarter {
 		
 		} catch (Throwable e) {
 			logger.error(CRITICAL_ERROR_MSG, e);
-			JOptionPane.showMessageDialog(null, CRITICAL_ERROR_MSG+e.getClass().getName(), "Critical Error", JOptionPane.ERROR_MESSAGE);
-			doBeforeClose();
+			JOptionPane.showMessageDialog(null, CRITICAL_ERROR_MSG+e.getClass().getName(), "Critical Error",
+					JOptionPane.ERROR_MESSAGE, new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_ERROR));
+			doStuffBeforeClose();
 		}
 	}
 	
-	private static void doBeforeClose() {
+	private static void doStuffBeforeClose() {
 		now = new Date();
 		
 		logger.info("\n\n##################################################\n\n"+now.toString()+"\n\n"

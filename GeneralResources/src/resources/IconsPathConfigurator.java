@@ -85,6 +85,11 @@ public class IconsPathConfigurator {
 	public static final String iconConfigFilePath = RESOURCES_DIR + "Icons/configFile.png";
 	public static final String iconRootPath = RESOURCES_DIR + "Icons/Root.png";
 	
+	/////////////////  GENERAL PURPOSE  ///////////////////
+	public static final String ICON_GEN_WARNING = RESOURCES_DIR + "Icons/Warning.png";
+	public static final String ICON_BIG_GEN_WARNING = RESOURCES_DIR + "Icons/Warning_Big.png";
+	public static final String ICON_GEN_ERROR = RESOURCES_DIR + "Icons/Error.png";
+	public static final String ICON_BIG_GEN_ERROR = RESOURCES_DIR + "Icons/Error_Big.png";
 	
 	// MAIN RESOURCES DIR SETTER & GETTER //
 	public static String getRESOURCES_DIR() {
