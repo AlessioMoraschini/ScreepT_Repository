@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -188,15 +189,24 @@ public class INItializer {
 		textEditorOpt.setFont(font);
 		textEditorOpt.setBackCol(backCol);
 		textEditorOpt.setForeCol(foreCol);
+		// margin
 		try {
 			textEditorOpt.setMargin(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "margin")));
 		} catch (NumberFormatException e) {
 			textEditorOpt.setMargin(TextEditorOption.DEFAULT_MARGIN);
 		}
+		// voice rate
 		try {
 			textEditorOpt.setVoiceRate(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "voiceRate")));
 		} catch (NumberFormatException e) {
 			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_VOICE_RATE);
+		}
+		// file list
+		String pathsOpenFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedFilesAtStart");
+		StringTokenizer tokenizerOpenedFiles = new StringTokenizer(pathsOpenFilesString, ",");
+		textEditorOpt.getOpenedFileList().clear();		
+		while(tokenizerOpenedFiles.hasMoreTokens()) {
+			textEditorOpt.getOpenedFileList().add(tokenizerOpenedFiles.nextToken());
 		}
 		
 		// IMAGE CONVERTER OPTIONS
@@ -287,6 +297,8 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", HandleString.getRgbString(textEditorOpt.foreCol));
 		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
+//		String openedFiles = listToString(textEditorOpt.getOpenedFileList());
+//		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles );
 		
 		// IMAGE CONVERTER OPTIONS
 		iniFile.put(IMAGE_CONVERTER_OPT, "sameSize", imageConvertOption.sameSize);
@@ -425,6 +437,7 @@ public class INItializer {
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
+			   .append("\nOPENED FILE LIST AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate);
 		
 		// concat TEXT EDITOR OPTIONS
@@ -437,6 +450,18 @@ public class INItializer {
 		// create and return result string
 		result = builder.toString();
 		return result;
+	}
+	
+	public static String listToString(ArrayList<String> loadedFiles) {
+		String openedFiles = "";
+		// concateno gli elementi della lista e, tranne l'ultimo, aggiungo una virgola
+		for(String currentPath : loadedFiles) {
+			openedFiles += currentPath+",";
+		}
+		if(openedFiles.length() > 0) {
+			openedFiles = openedFiles.substring(0, openedFiles.length()-1);
+		}
+		return openedFiles;
 	}
 	
 	public GuiOption getGuiOpt() {

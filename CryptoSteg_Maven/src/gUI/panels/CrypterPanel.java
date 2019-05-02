@@ -60,9 +60,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTabbedPane;
 import javax.swing.JComboBox;
+import javax.activation.UnsupportedDataTypeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.ScrollPaneConstants;
@@ -124,6 +124,7 @@ public class CrypterPanel extends JPanel {
 
 	// frame of parent GUI-object (main-GUI)
 	private JFrame parentFrame;
+	private mainGUI mainApplication;
 	
 	// panels
 	private JPanel panelMainContainer;
@@ -202,7 +203,7 @@ public class CrypterPanel extends JPanel {
 	/**
 	 * Create the application.
 	 */
-	public CrypterPanel(INItializer currentConfiguration, JFrame parent) {
+	public CrypterPanel(INItializer currentConfiguration, mainGUI parent) {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 /////////////////////////////////////////////////////////////////////////////////////
@@ -212,7 +213,9 @@ public class CrypterPanel extends JPanel {
 		
 		thisPanel = this;
 		
-		parentFrame=parent;
+		parentFrame=parent.getMainFrame();
+		mainApplication = parent;
+		
 		// set the background of the entire panel
 		setBackground(SystemColor.desktop);
 		
@@ -601,10 +604,15 @@ public class CrypterPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				File dispoImgFile = GenericFileChooserDialog.fileImgRead(thisPanel, currentConf, "png");
-				if (dispoImgFile != null) {
-					useAsKeyImage(dispoImgFile);
-					loadInfo(dispoImgFile);
+				File dispoImgFile;
+				try {
+					dispoImgFile = GenericFileChooserDialog.fileImgRead(thisPanel, currentConf, "png");
+					if (dispoImgFile != null) {
+						useAsKeyImage(dispoImgFile);
+						loadInfo(dispoImgFile);
+					}
+				} catch (UnsupportedDataTypeException e1) {
+					showMessageImageNotSupported();
 				}
 			}
 		});
@@ -1553,6 +1561,13 @@ public class CrypterPanel extends JPanel {
 		textAreaLog.setFont(new Font(logFont.getName(), logFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()-1));
 		textAreaMain.setFont(new Font(mainAreaFont.getName(), mainAreaFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()));
 		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
+	}
+	
+	public void showMessageImageNotSupported() {
+		int choice = JOptionPane.showConfirmDialog(mainApplication.getMainFrame(), "Image type not supported! Do you want to open image converter tool to convert it?", "Image not Supported!", JOptionPane.YES_NO_OPTION);
+		if(choice == JOptionPane.YES_OPTION) {
+			mainApplication.getMntmImageConverter().doClick();
+		}
 	}
 	
 	// getters and setters

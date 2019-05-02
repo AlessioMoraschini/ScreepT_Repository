@@ -36,6 +36,7 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import gUI.om.TabTextEditorObj;
 import gUI.panels.AboutSectionPanel;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
@@ -148,7 +149,7 @@ public class mainGUI {
 	private static TutorialPanel tutorialPanel;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
-	private TextEditor initTxtWriter;
+	private static TextEditor initTxtWriter;
 	private CrypterPanel panelCrypter;
 	private ChargeIniLog configManagerPanel;
 	
@@ -1021,7 +1022,7 @@ public class mainGUI {
 		    	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 		    	if(panelCrypter == null) {
 		    		Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-			    	panelCrypter = new CrypterPanel(currentConfiguration, frmScryptV);
+			    	panelCrypter = new CrypterPanel(currentConfiguration, mainAPP);
 		    	}
 		    	contentPane.removeAll();
 		    	contentPane.add(panelCrypter);
@@ -1563,6 +1564,9 @@ public class mainGUI {
       	
       	Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
       	
+      	// SAVE CURRENTLY OPENED FILES
+      	backupOpenedFiles();
+      	
       	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
       	Thread tempEraser = new Thread(tempDecryptedEraser());
       	tempEraser.start();	
@@ -1595,6 +1599,20 @@ public class mainGUI {
 		
 		if(panelNetInfo != null) {
 			panelNetInfo.dispose();
+		}
+	}
+	
+	private static void backupOpenedFiles() {
+		if (initTxtWriter != null) {
+			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
+			for (TabTextEditorObj currentObj : initTxtWriter.loadedList) {
+				if (currentObj.loadedFile != null) {
+					currentConfiguration.getTextEditorOpt().getOpenedFileList()
+							.add(currentObj.loadedFile.getAbsolutePath());
+				}
+			}
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedFilesAtStart",
+					INItializer.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
 		}
 	}
 	

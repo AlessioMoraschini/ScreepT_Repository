@@ -3,6 +3,7 @@ package gUI.utils.filedialog;
 import java.io.File;
 import java.util.Arrays;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -48,8 +49,9 @@ public class GenericFileChooserDialog {
 	
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported images files),if nothing is selected returns null
+	 * @throws UnsupportedDataTypeException if image type is not supported 
 	 */
-	public static File fileImgRead(CrypterPanel parent, INItializer currentConf, String ext) {
+	public static File fileImgRead(CrypterPanel parent, INItializer currentConf, String ext) throws UnsupportedDataTypeException {
 
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input Image File");
@@ -77,7 +79,7 @@ public class GenericFileChooserDialog {
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null || !ext.equalsIgnoreCase(givenExtension)) {
-        		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		throw new UnsupportedDataTypeException("File extension not supported! Please select a valid file between "+Arrays.toString(writerNames));
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());

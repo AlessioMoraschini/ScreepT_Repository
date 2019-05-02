@@ -27,6 +27,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import testUtils.Printer;
+
 public class FileStuff {
 
 	// FileStuff logger creation		
@@ -600,23 +602,27 @@ public class FileStuff {
 			JOptionPane.showMessageDialog(null, "Please select a valid txt file!");
     	}
     	else {
-    		BufferedReader reader;
+    		BufferedReader reader = null;
 
     		try {
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(txtFile), System.getProperty("file.encoding")));
 
-				String line = reader.readLine();
-				while(line!=null) {
-					textArea_1.append(line);
-					textArea_1.append("\n");
-					line = reader.readLine();
-				}
-				reader.close();
+				textArea_1.read(reader, null);
+//				String line = reader.readLine();
+//				while(line!=null) {
+//					textArea_1.append(line);
+//					textArea_1.append("\n");
+//					line = reader.readLine();
+//				}
+//				Printer.print(textArea_1.getText());
 				
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(null, "[Error loading the selected file]");
 				logger.error("Exception happened!", e1);
 				return false;
+			} finally {
+				try {reader.close();} catch (IOException e) {}
+				textArea_1.requestFocus();
 			}
     		new Thread(new Runnable() {
 				

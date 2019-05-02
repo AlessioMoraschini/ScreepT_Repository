@@ -2,6 +2,7 @@ package iNIT.om;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 
 public class TextEditorOption {
 
@@ -18,12 +19,23 @@ public class TextEditorOption {
 	public Font font;
 	public Color backCol;
 	public Color foreCol;
+	public ArrayList<String> openedFileList;
 	
 	// CONSTRUCTOR
 	public TextEditorOption() {
+		openedFileList = new ArrayList<String>();
 	}
 
 	// GETTERS AND SETTERS
+	
+	public ArrayList<String> getOpenedFileList() {
+		return openedFileList;
+	}
+	
+	public void setOpenedFileList(ArrayList<String> openedList) {
+		this.openedFileList = openedList;
+	}
+	
 	public int getMargin() {
 		return margin;
 	}

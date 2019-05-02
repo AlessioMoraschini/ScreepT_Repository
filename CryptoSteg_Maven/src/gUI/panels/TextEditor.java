@@ -166,7 +166,7 @@ public class TextEditor extends JPanel {
 	public JSlider sliderFontSize;
 	public JSlider slider_margin;
 	
-	private LinkedList<TabTextEditorObj> loadedList;
+	public LinkedList<TabTextEditorObj> loadedList;
 	public TabTextEditorObj loadedTabObj;
 	private JScrollPane textScrollPaneArea;
 	public JTabbedPane mainTabList;
@@ -215,7 +215,8 @@ public class TextEditor extends JPanel {
 		
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
-		setLayout(new MigLayout("", "[1624px,grow]", "[711px,grow]"));
+		int maxWidth = GuiUtils.getScreenSize().width;
+		setLayout(new MigLayout("", "[:1624px:"+maxWidth+",grow]", "[711px,grow]"));
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -444,6 +445,7 @@ public class TextEditor extends JPanel {
 		mainPanel.add(separator_2, "cell 0 6 26 1,growx");
 		mainPanel.add(mainTabList, "cell 0 7 26 1,grow");
 		addTab(null, true);
+		loadOpenedFilesAtStart();
 //		textArea_1.getDocument().addUndoableEditListener(loadedTabObj.undoManager);
 		
 		sliderFontSize = new JSlider(4,100);
@@ -1165,21 +1167,26 @@ public class TextEditor extends JPanel {
 						} else {
 							
 							// add new tab with selected file
-							addTab(source, false);
-							BufferedReader reader;
-							textArea_1.setText("");
-
 							try {
-								//reader = new BufferedReader(new FileReader(source.getAbsolutePath()));
-								reader = new BufferedReader(new InputStreamReader(new FileInputStream(source), System.getProperty("file.encoding")));
-								String line = reader.readLine();
-								while (line != null) {
-									textArea_1.append(line);
-									textArea_1.append("\n");
-									line = reader.readLine();
-								}
-								infoAdvice("[New file loaded]");
-								reader.close();
+								addTab(source, false);
+							} catch (Throwable e1) {
+								e1.printStackTrace();
+							}
+
+//							BufferedReader reader;
+//							textArea_1.setText("");
+//
+//							try {
+//								//reader = new BufferedReader(new FileReader(source.getAbsolutePath()));
+//								reader = new BufferedReader(new InputStreamReader(new FileInputStream(source), System.getProperty("file.encoding")));
+//								String line = reader.readLine();
+//								while (line != null) {
+//									textArea_1.append(line);
+//									textArea_1.append("\n");
+//									line = reader.readLine();
+//								}
+//								infoAdvice("[New file loaded]");
+//								reader.close();
 								
 								loadedFile = source;
 								updateSavedLabelNTab(null);
@@ -1187,11 +1194,11 @@ public class TextEditor extends JPanel {
 								lblCurrentFile.setToolTipText(loadedFile.getAbsolutePath());
 								currentConfiguration.getFileOpt().setLastSrcFolderPath(source.getParentFile().getAbsolutePath());
 
-							} catch (Exception e1) {
-								JOptionPane.showMessageDialog(null, "[Error loading selected file]");
-								removeTab(mainTabList.getSelectedIndex());
-								errorAdvice("[Error loading selected file]");
-							}
+//							} catch (Exception e1) {
+//								JOptionPane.showMessageDialog(null, "[Error loading selected file]");
+//								removeTab(mainTabList.getSelectedIndex());
+//								errorAdvice("[Error loading selected file]");
+//							}
 						}
 					} 
 					alreadyLoading = false;
@@ -1241,7 +1248,8 @@ public class TextEditor extends JPanel {
 		int indexChange = mainTabList.getSelectedIndex();
 		try {
 			if (!tabJustSwitched && indexChange >= 0) {
-				loadedList.get(indexChange).unsaved = (alreadyLoading || isRemovingTab)? false : true;
+//				loadedList.get(indexChange).unsaved = (alreadyLoading || isRemovingTab)? false : true;
+				loadedTabObj.unsaved = true;
 				updateSavedLabelNTab(null);
 //				setIconToTab(IconsPathConfigurator.ICON_DOC_UNSAVED, indexChange);
 			}
@@ -1402,6 +1410,22 @@ public class TextEditor extends JPanel {
 		timeoutLblAdvice(3000);
 	}
 	
+	private void loadOpenedFilesAtStart() {
+		boolean loadedAlmostOne = false;
+		if (currentConfiguration.getTextEditorOpt().getOpenedFileList().size() != 0) {
+			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
+				File toLoadFile = new File(pathToOpen);
+				if(toLoadFile.exists()) {
+					addTab(toLoadFile, !loadedAlmostOne);
+					if(!loadedAlmostOne) loadedAlmostOne = true;
+				}
+			} 
+		}
+		if(loadedAlmostOne){
+			removeTab(0);
+		}
+	}
+	
 	// TABBED EDITOR FUNCTIONS //
 	
 	public void addTab(File file, boolean first) {
@@ -1413,20 +1437,22 @@ public class TextEditor extends JPanel {
 		String loadedString = "";
 		String name = (file != null)? file.getName() : DEFAULT_NEW_FILE_NAME;
 		int newIndex = mainTabList.getTabCount();
-		try {
-			loadedString = FileStuff.readFileAsString(file);
-		} catch (IOException e) {
-		}
+//T		try {
+//			FileStuff.appendFileTxtArea(file, textArea_1);
+//T			loadedString = FileStuff.readFileAsString(file);
+//T		} catch (IOException e) {
+//T		}
 		TabTextEditorObj newTabNode = new TabTextEditorObj(file, loadedString);
 		loadedList.add(newTabNode);
 		mainTabList.addTab(name, newTabNode.currentScrollPane);
 		newTabNode.currentScrollPane.setViewportView(textArea_1);
-		textArea_1.setText(loadedString);
+//T		textArea_1.setText(loadedString);
 		loadedFile = file;
 		loadedTabObj = newTabNode;
 		textArea_1.getDocument().addUndoableEditListener(loadedTabObj.undoManager);
 		mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(name, newIndex));
 		mainTabList.setSelectedIndex(newIndex);
+		loadedTabObj.loadedText = textArea_1.getText();
 		isAddingTab = false;
 	}
 	
@@ -1495,7 +1521,7 @@ public class TextEditor extends JPanel {
 		try {
 			TabTextEditorObj toSaveObj = loadedList.get(lastIndexTabbedPane);
 			toSaveObj.loadedFile = (loadedFile != null)? new File(loadedFile.getAbsolutePath()) : null;
-//			toSaveObj.unsaved = loadedTabObj.unsaved;
+			toSaveObj.unsaved = loadedTabObj.unsaved;
 			toSaveObj.loadedText = textArea_1.getText();
 		} catch (Exception e) {
 			logger.error(e);
@@ -1511,7 +1537,11 @@ public class TextEditor extends JPanel {
 		loadedTabObj = loadedList.get(mainTabList.getSelectedIndex());
 		loadedTabObj.currentScrollPane.setViewportView(textArea_1);
 		loadedFile = loadedTabObj.loadedFile;
-		textArea_1.setText(loadedTabObj.loadedText);
+		if (!loadedTabObj.unsaved && "".equals(loadedTabObj.loadedText) && loadedTabObj.loadedFile!=null && loadedTabObj.loadedFile.exists()) {
+			FileStuff.appendFileTxtArea(loadedTabObj.loadedFile, textArea_1); 
+		}else {
+			textArea_1.setText(loadedTabObj.loadedText);
+		}
 		updateSavedLabelNTab(null);
 		tabJustSwitched = false;
 		textArea_1.requestFocus();
@@ -1590,7 +1620,6 @@ public class TextEditor extends JPanel {
 		pnlTab.add(lblTitle, gbc); // 2 - TEXT TITLE
 		gbc.gridx++;
 		pnlTab.add(btnClose, gbc); // 3 - CLOSE BUTTON
-
 
 		return pnlTab;
 	}

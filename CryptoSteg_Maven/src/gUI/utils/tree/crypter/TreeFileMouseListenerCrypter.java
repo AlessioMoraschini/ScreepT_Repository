@@ -335,7 +335,7 @@ public class TreeFileMouseListenerCrypter {
 					TEXT_LOG.setText(msg);	
 					imgKeySelected.setForeground(SystemColor.GREEN);
 					
-					String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), cryptoPanel.labelLengthLimit);
+					String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), CrypterPanel.labelLengthLimit);
 
 					imgKeySelected.setText(newdisplayed);
 					cryptoPanel.setSrcKeyImageFile(thisFile);
@@ -344,8 +344,7 @@ public class TreeFileMouseListenerCrypter {
 				}else {
 					String msg = "File not recognized as Key: \n\n => "+thisFile.getName();
 					TEXT_LOG.append(msg);
-					JOptionPane.showMessageDialog(mainFrame, "Key Image file not recognized :(",
-							"Key Image not recognized :(", JOptionPane.ERROR_MESSAGE);
+					cryptoPanel.showMessageImageNotSupported();
 				}
 			} catch (IOException e) {
 				String msg = "Some Error Occurred... please reload key image!";
@@ -392,7 +391,6 @@ public class TreeFileMouseListenerCrypter {
         		optPane.showMessageDialog(parent, "Please select a valid '.png' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
-
         	}
         }else {
         	optPane.showMessageDialog(parent, "Skipped after user request.");
