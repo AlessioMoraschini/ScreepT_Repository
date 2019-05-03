@@ -9,8 +9,8 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import gui.ScrYpTLauncher;
 import launcherutils.om.DependencyModel;
+import mainlauncher.ScrYpTLauncher;
 
 import java.awt.Button;
 import java.awt.Color;

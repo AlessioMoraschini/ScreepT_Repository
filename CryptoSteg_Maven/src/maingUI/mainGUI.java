@@ -30,6 +30,8 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
@@ -54,6 +56,7 @@ import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
 import iNIT.INItializer;
+import mainlauncher.ScrYpTLauncher;
 import media.Sounds;
 import menusettings.MenuSetter;
 
@@ -84,7 +87,7 @@ public class mainGUI {
 
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(mainGUI.class);
-
+    public static Level LOG_LEVEL_AT_START;
 ////////////////////// GENERAL STATIC ELEMENTS /////////////////////////
 ////////////////////////////////////////////////////////////////////////
 	
@@ -103,6 +106,7 @@ public class mainGUI {
 	public static final String DEFAULT_INI= RESOURCES_DIR + "CONFIG.ini";
 	public static final String BACKUP_INI= RESOURCES_DIR + "Backup/BACKUP_CONFIG.ini";
 	public static final String DEFAULT_INI_FOLDER= "INI_FILES/";
+	public static Wini launcherConfig;
 	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./Resources_Scrypt/ReadMe.html";
 	public static final String SCRYPT_TUTORIAL_HTML_PATH = "Resources_Scrypt/ReadMe.html";
 	
@@ -288,12 +292,23 @@ public class mainGUI {
 					
 					// INITIALIZE CONFIGURATION FROM CONFIG DEFAULT FILE
 					try {
+						launcherConfig = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
+						LOG_LEVEL_AT_START = ScrYpTLauncher.getLogLevelFromString(launcherConfig.get(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting"));
+						logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
+						if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
+							logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
+						}
+						LogManager.getRootLogger().setLevel(LOG_LEVEL_AT_START);
+
 						currentConfiguration = new INItializer(new Wini(new File(DEFAULT_INI)));
 						currentConfiguration.readConfigIniFile();
+						
 						SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
+
 					} catch (IOException e) {
 						logger.error("Exception happened during loading of file [Resources_Scrypt/CONFIG.ini]!", e);
 					}
+					
 					
 		loaderGraphics.update("Initializing graphics... ", 15);
 					
@@ -1550,7 +1565,7 @@ public class mainGUI {
 		}
         
       	// SAVE CURRENTLY OPENED FILES
-      	backupOpenedFiles();
+      	backupOpenedFilesInConfig();
       	
       	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
       	Thread tempEraser = new Thread(tempDecryptedEraser());
@@ -1593,18 +1608,28 @@ public class mainGUI {
 		}
 	}
 	
-	private static void backupOpenedFiles() {
+	private static void backupOpenedFilesInConfig() {
 		if (initTxtWriter != null) {
+			// save list of non null and existing files in tabs
 			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
 			for (TabTextEditorObj currentObj : initTxtWriter.loadedList) {
-				if (currentObj.loadedFile != null) {
+				if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
 					currentConfiguration.getTextEditorOpt().getOpenedFileList()
 							.add(currentObj.loadedFile.getAbsolutePath());
 				}
 			}
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedFilesAtStart",
 					INItializer.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
+
+			// save current opened if it exists
+			if(initTxtWriter.loadedTabObj != null 
+					&& initTxtWriter.loadedTabObj.loadedFile!= null 
+					&& currentConfiguration.getTextEditorOpt().openedFileList.contains(initTxtWriter.loadedTabObj.loadedFile.getAbsolutePath()))
+			{
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "selectedFileAtStart", initTxtWriter.loadedTabObj.loadedFile.getAbsolutePath());
+			}
 		}
+		
 	}
 	
 	/**

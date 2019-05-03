@@ -1,4 +1,4 @@
-package testMain;
+package aES;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

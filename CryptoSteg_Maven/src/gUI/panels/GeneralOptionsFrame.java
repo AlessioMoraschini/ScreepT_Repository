@@ -7,10 +7,11 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
 import frameutils.GuiUtils;
-import gui.ScrYpTLauncher;
 import iNIT.INItializer;
 import iNIT.om.FileOptions;
 import local.ListCharsets;
+import maingUI.mainGUI;
+import mainlauncher.ScrYpTLauncher;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
@@ -85,6 +86,7 @@ public class GeneralOptionsFrame extends JFrame{
 	private JLabel lblVolume;
 	private JLabel lblDynVolume;
 	private JSlider sliderVolume;
+	private JLabel lblLogLevelChosen;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		
@@ -211,7 +213,11 @@ public class GeneralOptionsFrame extends JFrame{
 		textFieldUname.setColumns(10);
 		textFieldUname.setBorder(new LineBorder(Color.DARK_GRAY, 3));
 		textFieldUname.setBackground(new Color(224, 255, 255));
-		getContentPane().add(textFieldUname, "cell 2 5 8 1,growx");
+		getContentPane().add(textFieldUname, "cell 2 5 4 1,growx");
+		
+		lblLogLevelChosen = new JLabel("LogLevel: " + mainGUI.LOG_LEVEL_AT_START);
+		lblLogLevelChosen.setFont(new Font("Tahoma", Font.BOLD, 13));
+		getContentPane().add(lblLogLevelChosen, "cell 7 5 3 1,alignx center");
 		getContentPane().add(separator, "cell 1 7 9 1,growx");
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));

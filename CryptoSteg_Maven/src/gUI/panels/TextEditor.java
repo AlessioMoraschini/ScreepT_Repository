@@ -42,11 +42,8 @@ import java.awt.SystemColor;
 
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.awt.event.ActionEvent;
@@ -71,6 +68,7 @@ import gUI.om.SupportedFileTextEditor;
 import gUI.om.TabTextEditorObj;
 import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorListener;
+
 import javax.swing.JPasswordField;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -171,11 +169,13 @@ public class TextEditor extends JPanel {
 	private JScrollPane textScrollPaneArea;
 	public JTabbedPane mainTabList;
 	private JTextArea textArea_1;
+	private DocumentListener textAreaChangedListener;
 	private JPasswordField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as default
 	private int lastIndexTabbedPane=0;
 	private boolean isRemovingTab = false;
 	private boolean isAddingTab = false;
 	private boolean tabJustSwitched = false;
+	private boolean isCrypterOn = false;
 	
 	private JScrollPane mainScrollPane;
 	private JPanel mainPanel;
@@ -207,6 +207,8 @@ public class TextEditor extends JPanel {
 	
 	private File loadedFile;
 	
+//	private static TestUpdateProgress loaderGraphics;
+	
 //////////////// CONSTRUCTOR /////////////////////
 	
 	public TextEditor(JFrame parent, INItializer currentConf) {
@@ -219,6 +221,8 @@ public class TextEditor extends JPanel {
 		setLayout(new MigLayout("", "[:1624px:"+maxWidth+",grow]", "[711px,grow]"));
 		
 		logger.info(this.getClass().getName() + " Starting...");
+	
+//	loaderGraphics.update("Initializing graphics", 10);
 		
 		// initialize values used in gui //
 		currentConfiguration = currentConf;		
@@ -365,9 +369,9 @@ public class TextEditor extends JPanel {
 		btnFontChooser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnFontChooser.setToolTipText(tooltipFontChooser);
 		
-				btnFontChooser.setBackground(new Color(176, 196, 222));
-				btnFontChooser.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_FONT));
-				mainPanel.add(btnFontChooser, "cell 12 5,alignx center"); 
+		btnFontChooser.setBackground(new Color(176, 196, 222));
+		btnFontChooser.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_FONT));
+		mainPanel.add(btnFontChooser, "cell 12 5,alignx center"); 
 		
 		btnCrypt = new JButton("");
 		btnCrypt.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -444,9 +448,12 @@ public class TextEditor extends JPanel {
 		separator_2.setBackground(Color.GRAY);
 		mainPanel.add(separator_2, "cell 0 6 26 1,growx");
 		mainPanel.add(mainTabList, "cell 0 7 26 1,grow");
+		
+//	loaderGraphics.update("Loading files...", 20);
 		addTab(null, true);
-		loadOpenedFilesAtStart();
 //		textArea_1.getDocument().addUndoableEditListener(loadedTabObj.undoManager);
+	
+//	loaderGraphics.update("Initializing Other Elements", 60);
 		
 		sliderFontSize = new JSlider(4,100);
 		sliderFontSize.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
@@ -573,18 +580,25 @@ public class TextEditor extends JPanel {
 		btnItaliC.setBackground(new Color(176, 196, 222));
 		btnItaliC.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_ITALIC));
 		mainPanel.add(btnItaliC, "cell 8 5,alignx center");
-		
+	
+//	loaderGraphics.update("Adding handlers", 70);
 		addHandlers();
 		
+//	loaderGraphics.update("Adding shortcuts listener", 80);
 		// add custom keyboard listener
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
 		
+//	loaderGraphics.update("Starting keyChecker", 90);
 		startAesKeyCheckThread();
 		
+//	loaderGraphics.update("Applying preferencies from configuration", 95);
 		initGuiFromConfig();
+		
+		loadOpenedFilesAtStart();
 		
 		textArea_1.requestFocusInWindow();
 
+//	loaderGraphics.update("Ready", 100);
 		logger.debug("### TEXT WRITER module started");
 
 	}
@@ -649,43 +663,72 @@ public class TextEditor extends JPanel {
 		});
 		
 		// CRYPT TEXT
-		btnCrypt.addActionListener(new ActionListener() {
+		ActionListener cryptListener = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// this function is used to change color and tooltip text according to key lenght
-				AesCipher.check(txtAesKey);
 				
-				if (txtAesKey.getPassword().length != 0) {
-					try {
-						AesCipher crypter = new AesCipher(txtAesKey.getPassword());
-						textArea_1.setText(crypter.encrypt(textArea_1.getText()));
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
-						logger.error("Exception happened!", e);
-					} 
-				}else {
-					JOptionPane.showMessageDialog(currentTextEditor, "Please enter a password, empty key text!", "Empty password", JOptionPane.WARNING_MESSAGE);
+				if (!isCrypterOn) {
+					isCrypterOn = true;
+					AesCipher.check(txtAesKey);
+					String encoded = "";
+					if (txtAesKey.getPassword().length != 0) {
+						try {
+							textArea_1.getDocument().removeDocumentListener(textAreaChangedListener);
+							AesCipher crypter = new AesCipher(txtAesKey.getPassword());
+							String displayedSource = (loadedTabObj.loadedFile == null)?textArea_1.getText()
+									: FileStuff.readFileAsString(loadedTabObj.loadedFile);
+							encoded = crypter.encrypt(displayedSource);
+							// if lentgh more than admitted suggest to use screept
+							textArea_1.setText("");
+							textArea_1.append(encoded);
+							
+						} catch (Throwable e) {
+							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							logger.error("Exception happened!", e);
+						} finally {
+							textArea_1.getDocument().addDocumentListener(textAreaChangedListener);
+							loadedTabObj.unsaved = true;
+							updateSavedLabelNTab(null);
+						}
+					} else {
+						JOptionPane.showMessageDialog(currentTextEditor, "Please enter a password, empty key text!",
+								"Empty password", JOptionPane.WARNING_MESSAGE);
+					}
+					isCrypterOn = false;
 				}
 			}
-		});
+		};
+		btnCrypt.addActionListener(cryptListener);
 		
 		// DECRIPT TEXT
 		btnDecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {	
-				// this function is used to update bg color of textfield according to given key's lenght
-				AesCipher.check(txtAesKey);
-				
-				if (txtAesKey.getPassword().length != 0) {
-					try {
-						AesCipher decrypter = new AesCipher(txtAesKey.getPassword());
-						textArea_1.setText(decrypter.decrypt(textArea_1.getText()));
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error", JOptionPane.ERROR_MESSAGE);
-						logger.error("Exception happened!", e);
-					} 
-				}else {
-					JOptionPane.showMessageDialog(currentTextEditor, "Please enter a password, empty key text!", "Empty password", JOptionPane.WARNING_MESSAGE);
+
+				if (!isCrypterOn) {
+					isCrypterOn = true;
+					AesCipher.check(txtAesKey);
+					String decoded = "";
+					if (txtAesKey.getPassword().length != 0) {
+						try {
+							AesCipher decrypter = new AesCipher(txtAesKey.getPassword());
+							String displayedSource = textArea_1.getText();
+							decoded = decrypter.decrypt(displayedSource);
+							textArea_1.setText("");
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							logger.error("Exception happened!", e);
+						} finally {
+							textArea_1.getDocument().removeDocumentListener(textAreaChangedListener);
+							textArea_1.append(decoded);
+							textArea_1.getDocument().addDocumentListener(textAreaChangedListener);
+						}
+					} else {
+						JOptionPane.showMessageDialog(currentTextEditor, "Please enter a password, empty key text!",
+								"Empty password", JOptionPane.WARNING_MESSAGE);
+					}
+					isCrypterOn = false;
 				}
-				
 			}
 		});
 		
@@ -1082,7 +1125,7 @@ public class TextEditor extends JPanel {
 						successAdvice("[File saved]");
 						loadedTabObj.unsaved = false;
 						updateSavedLabelNTab(null);
-						lblCurrentFile.setForeground(ImageWorker.randomColorRGB(0.3f));
+						lblCurrentFile.setForeground(ImageWorker.randomColorRGB(0.2f));
 					}else {
 						errorAdvice("[Error - not saved]");
 						lblCurrentFile.setText("(*)"+loadedFile.getName());
@@ -1207,18 +1250,25 @@ public class TextEditor extends JPanel {
 		});
 		
 		// TEXT AREA LISTENER
-		textArea_1.getDocument().addDocumentListener(new DocumentListener() {
+		textAreaChangedListener = new DocumentListener() {
 			
 			public void removeUpdate(DocumentEvent e) {
-				fileChangedLblUpdate();
+				if (!isCrypterOn) {
+					fileChangedLblUpdate();
+				}
 			}
 			public void insertUpdate(DocumentEvent e) {
-				fileChangedLblUpdate();
+				if (!isCrypterOn) {
+					fileChangedLblUpdate();
+				}
 			}
 			public void changedUpdate(DocumentEvent e) {
-				fileChangedLblUpdate();
+				if (!isCrypterOn) {
+					fileChangedLblUpdate();
+				}
 			}
-		});
+		};
+		textArea_1.getDocument().addDocumentListener(textAreaChangedListener);
 		
 		// ADD NEW TAB
 		btnNewTab.addActionListener(new ActionListener() {
@@ -1244,15 +1294,15 @@ public class TextEditor extends JPanel {
 	}
 	
 	private void fileChangedLblUpdate() {
-
+		
 		int indexChange = mainTabList.getSelectedIndex();
 		try {
-			if (!tabJustSwitched && indexChange >= 0) {
+			if (!tabJustSwitched && indexChange >= 0 && !isCrypterOn) {
 //				loadedList.get(indexChange).unsaved = (alreadyLoading || isRemovingTab)? false : true;
 				loadedTabObj.unsaved = true;
 				updateSavedLabelNTab(null);
 //				setIconToTab(IconsPathConfigurator.ICON_DOC_UNSAVED, indexChange);
-			}
+			} 
 		} catch (Exception e) {
 			logger.error(e);
 		}
@@ -1270,9 +1320,9 @@ public class TextEditor extends JPanel {
 			if (indexChange >= 0 && !loadedTabObj.unsaved) {
 				// IF FILE IS DEFINED
 				if (loadedTabObj.loadedFile != null ) {
-					tabHeadLbl.setText(loadedTabObj.loadedFile.getName());
 					lblCurrentFile.setText(loadedTabObj.loadedFile.getName());
 					lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getAbsolutePath());
+					tabHeadLbl.setText(loadedTabObj.loadedFile.getName());
 				}else {
 				// IF FILE IS NOT DEFINED
 					if(tabHeadLbl.getText().startsWith("(*)")) {
@@ -1420,7 +1470,19 @@ public class TextEditor extends JPanel {
 					if(!loadedAlmostOne) loadedAlmostOne = true;
 				}
 			} 
+			// now try to select the old opened one
+			String toOpenAtStart = currentConfiguration.getTextEditorOpt().selectedAtStart;
+			try {
+				for (TabTextEditorObj iteratorObj : loadedList) {
+					if (iteratorObj.loadedFile != null && toOpenAtStart.equals(iteratorObj.loadedFile.getAbsolutePath())) {
+						mainTabList.setSelectedComponent(loadedTabObj.currentScrollPane);
+					} 
+				}
+			} catch (Exception e) {
+				logger.warn("Cannot select default file "+toOpenAtStart, e);
+			}
 		}
+		
 		if(loadedAlmostOne){
 			removeTab(0);
 		}

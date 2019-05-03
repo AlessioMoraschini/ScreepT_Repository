@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 
 import ButtonUtils.ButtonDefaults;
 import frameutils.GuiUtils;
-import gui.ScrYpTLauncher;
 import guistyle.GUIStyelSettings;
+import mainlauncher.ScrYpTLauncher;
 import media.Sounds;
 
 import javax.swing.JPanel;

@@ -21,6 +21,7 @@ import iNIT.om.ImgConverterOption;
 import iNIT.om.SteganOption;
 import iNIT.om.TextEditorOption;
 import local.HandleString;
+import maingUI.mainGUI;
 
 public class INItializer {
 
@@ -168,27 +169,31 @@ public class INItializer {
 			steganOpt.setDefaultWidth(SteganOption.DEFAULT_WIDTH);
 			logger.error("Exception happened!", e);
 		}
-		String pathsListString = iniReadFile.get(STEGA_OPT, "imgKeyRecentPath");
-		if(pathsListString.equals("")) {
+		String pathsListString;
+		try {
+			pathsListString = iniReadFile.get(STEGA_OPT, "imgKeyRecentPath");
+			StringTokenizer tokenizer = new StringTokenizer(pathsListString, ",");
+			steganOpt.getImgRecentPath().clear();
+			while(tokenizer.hasMoreTokens()) {
+				steganOpt.getImgRecentPath().add(tokenizer.nextToken());
+			}
+		} catch (Exception e1) {
 			pathsListString = SteganOption.DEFAULT_IMG_RECENT_PATH;
-		}
-		StringTokenizer tokenizer = new StringTokenizer(pathsListString, ",");
-		steganOpt.getImgRecentPath().clear();
-		
-		while(tokenizer.hasMoreTokens()) {
-			steganOpt.getImgRecentPath().add(tokenizer.nextToken());
 		}
 		
 		// TEXT EDITOR OPTIONS
 		String fontStr = iniReadFile.get(TEXT_EDITOR_OPT, "font");
 		String backColStr = iniReadFile.get(TEXT_EDITOR_OPT, "backgroundCol");
 		String foreColStr = iniReadFile.get(TEXT_EDITOR_OPT, "foregroundCol");
-		Font font = (fontStr != null && !fontStr.equals(""))? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
-		Color backCol = (backColStr != null && !backColStr.equals(""))? HandleString.getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
-		Color foreCol = (foreColStr != null && !foreColStr.equals(""))? HandleString.getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
+		String selectedAtStartStr = iniReadFile.get(TEXT_EDITOR_OPT, "selectedFileAtStart");
+		Font font = (!"".equals(fontStr))? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
+		Color backCol = (!"".equals(backColStr))? HandleString.getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
+		Color foreCol = (!"".equals(foreColStr))? HandleString.getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
+		String selectedFileAtStart = (!"".equals(selectedAtStartStr))? selectedAtStartStr : TextEditorOption.DEFAULT_SELECTED_FILE_AT_START;
 		textEditorOpt.setFont(font);
 		textEditorOpt.setBackCol(backCol);
 		textEditorOpt.setForeCol(foreCol);
+		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
 		// margin
 		try {
 			textEditorOpt.setMargin(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "margin")));
@@ -202,11 +207,16 @@ public class INItializer {
 			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_VOICE_RATE);
 		}
 		// file list
-		String pathsOpenFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedFilesAtStart");
-		StringTokenizer tokenizerOpenedFiles = new StringTokenizer(pathsOpenFilesString, ",");
-		textEditorOpt.getOpenedFileList().clear();		
-		while(tokenizerOpenedFiles.hasMoreTokens()) {
-			textEditorOpt.getOpenedFileList().add(tokenizerOpenedFiles.nextToken());
+		String pathsOpenFilesString;
+		try {
+			pathsOpenFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedFilesAtStart");
+			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(pathsOpenFilesString, ",");
+			textEditorOpt.getOpenedFileList().clear();		
+			while(tokenizerOpenedFiles.hasMoreTokens()) {
+				textEditorOpt.getOpenedFileList().add(tokenizerOpenedFiles.nextToken());
+			}
+		} catch (Exception e1) {
+			pathsOpenFilesString = "";
 		}
 		
 		// IMAGE CONVERTER OPTIONS
@@ -297,7 +307,7 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", HandleString.getRgbString(textEditorOpt.foreCol));
 		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
-//		String openedFiles = listToString(textEditorOpt.getOpenedFileList());
+//		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles );
 		
 		// IMAGE CONVERTER OPTIONS
@@ -406,6 +416,7 @@ public class INItializer {
 		builder.append("\n\n ---- GENERAL OPTIONS -----\n\n")
 			   .append("USERNAME: ").append(genOpt.getUserName())
 			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
+			   .append("\nSELECTED LOG LEVEL: ").append(mainGUI.LOG_LEVEL_AT_START)
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION
@@ -437,7 +448,8 @@ public class INItializer {
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
-			   .append("\nOPENED FILE LIST AT START: ").append(textEditorOpt.getOpenedFileList())
+			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
+			   .append("\n DEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
 			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate);
 		
 		// concat TEXT EDITOR OPTIONS

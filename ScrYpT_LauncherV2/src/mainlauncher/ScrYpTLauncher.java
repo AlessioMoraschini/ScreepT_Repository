@@ -1,4 +1,4 @@
-package gui;
+package mainlauncher;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.InvalidFileFormatException;
@@ -61,7 +62,8 @@ public class ScrYpTLauncher {
 	// jvm search fields default
 	public static String MIN_JRE_VERSION = "1.6"; // included MIN
 	public static String MAX_JRE_VERSION = "9.0"; // excluded MAX
-	public static String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512"; // default memory options
+	public static String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512m"; // default memory options
+	public static String JVM_STACK_SIZE = "-Xss128m"; // default stack size
 	public static final String JVM_URL_INSTALL = "https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html";
 	public static final String NOT_FOUND_JVM = "";
 	public static final String JVM_OK = "JVMOK";
@@ -70,13 +72,14 @@ public class ScrYpTLauncher {
 	
 	// DEFAULT INI
 	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "Launcher_Configuration.ini"; 
+	public final static Level DEFAULT_LOG_LEVEL = Level.ERROR;
 	public static final String INI_JVM_OPT = "JVM_OPTIONS";
 	public static final String INI_APP_OPT = "APPLICATION_OPTIONS";
 	
 	// use this as flag to signal that something is not ok with dependencies
 	public static  boolean criticalDependenciesOK = false;
 	public static ArrayList<DependencyModel> dependeciesMissing;
-	private static Wini iniConfigFile;
+	public static Wini iniConfigFile;
 	public static boolean showInstallOptions = true;
 	public static boolean hideNStartDirect = false;
 	
@@ -327,7 +330,7 @@ public class ScrYpTLauncher {
 	 */
 	private void addLaunchScrYpTCommand() {
 		
-		String complete_ARGS = JVM_MEMORY_OPTIONS + " -XshowSettings:vm " + JVM_ARGS;
+		String complete_ARGS = JVM_MEMORY_OPTIONS + JVM_STACK_SIZE + " -XshowSettings:vm " + JVM_ARGS;
 		execCommand.add(SysUtils.startJarCommand(complete_ARGS, MAIN_JAR_FILE));
 	}
 	
@@ -449,6 +452,8 @@ public class ScrYpTLauncher {
 			MIN_JRE_VERSION = (MIN_JVERSION_INI != null)? MIN_JVERSION_INI : MIN_JRE_VERSION;
 			String MEM_JOPTIONS_INI = iniConfigFile.get(INI_JVM_OPT, "memoryArgs");
 			JVM_MEMORY_OPTIONS = (MEM_JOPTIONS_INI != null)? MEM_JOPTIONS_INI : JVM_MEMORY_OPTIONS;
+			String MEM_STACK_INI = " -Xss" + iniConfigFile.get(INI_JVM_OPT, "stackSizeArgs")+"m";
+			JVM_STACK_SIZE = (MEM_STACK_INI != null)? MEM_STACK_INI : JVM_STACK_SIZE;
 			
 			// APPLICATION OPTIONS WITH NULL CHECK
 			String MAIN_JAR_INI = iniConfigFile.get(INI_APP_OPT, "jarToLaunch");
@@ -487,6 +492,33 @@ public class ScrYpTLauncher {
 			} 
 		}
 		return OK;
+	}
+	
+	public static Level getLogLevelFromString(String stringLevel) {
+		if(stringLevel == null) {
+			return DEFAULT_LOG_LEVEL;
+		}else if(stringLevel.equals("OFF")) {
+			return Level.OFF;
+		}else if(stringLevel.equals("FATAL")) {
+			return Level.FATAL;
+		}else if(stringLevel.equals("ERROR")) {
+			return Level.ERROR;
+		}else if(stringLevel.equals("WARN")) {
+			return Level.WARN;
+		}else if(stringLevel.equals("DEBUG")) {
+			return Level.DEBUG;
+		}else if(stringLevel.equals("INFO")) {
+			return Level.INFO;
+		}else if(stringLevel.equals("ALL")) {
+			return Level.ALL;
+		}else {
+			return DEFAULT_LOG_LEVEL;
+		}
+	}
+	
+	public static String[] getLogLevelsList() {
+		String[] levelArray = {"ALL","INFO","DEBUG","WARN","ERROR","FATAL","OFF"};
+		return levelArray;
 	}
 	
 	private static void appLogStart() {

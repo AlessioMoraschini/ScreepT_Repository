@@ -22,7 +22,7 @@ public class GenericOption {
 		generalVolume = genVolume;
 		
 	}
-
+	
 	public String getUserName() {
 		return userName;
 	}

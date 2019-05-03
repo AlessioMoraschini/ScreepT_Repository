@@ -34,12 +34,15 @@ public class MainGuiGeneralAppStarter {
 					+ mainGUI.APPLICATION_NAME+" Started now!\n\n"
 					+ "##################################################\n\n");
 			
-			if(TEST_ERROR_FLAG) {
-				throw new Error();
-			}else {
+			{
 				mainGUI.mainApplicationGeneral();
 			}
 			
+			// TODO test life cycle
+			if(TEST_ERROR_FLAG) {
+				Thread.sleep(2000);
+				throw new Error();
+			}
 		
 		} catch (Throwable e) {
 			logger.error(CRITICAL_ERROR_MSG, e);
@@ -53,7 +56,7 @@ public class MainGuiGeneralAppStarter {
 		now = new Date();
 		
 		logger.info("\n\n##################################################\n\n"+now.toString()+"\n\n"
-				+ mainGUI.APPLICATION_NAME+" HAD AN UNEXPECTED ERROR - CLOSING\n\n"
+				+ mainGUI.APPLICATION_NAME+" HAD AN UNEXPECTED ERROR - FORCING CLOSE\n\n"
 				+ "##################################################\n\n");
 		
 		System.exit(0);

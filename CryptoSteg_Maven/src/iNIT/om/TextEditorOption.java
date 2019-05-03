@@ -12,6 +12,7 @@ public class TextEditorOption {
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	public static final Color DEFAULT_BACKGROUND_COL = new Color(250,250,250);
 	public static final Color DEFAULT_FOREGROUND_COL = Color.BLACK;
+	public static final String DEFAULT_SELECTED_FILE_AT_START = "";
 	
 	// FIELDS	
 	public int margin;
@@ -20,6 +21,7 @@ public class TextEditorOption {
 	public Color backCol;
 	public Color foreCol;
 	public ArrayList<String> openedFileList;
+	public String selectedAtStart;
 	
 	// CONSTRUCTOR
 	public TextEditorOption() {
@@ -36,6 +38,14 @@ public class TextEditorOption {
 		this.openedFileList = openedList;
 	}
 	
+	public String getSelectedAtStart() {
+		return selectedAtStart;
+	}
+
+	public void setSelectedAtStart(String selectedAtStart) {
+		this.selectedAtStart = selectedAtStart;
+	}
+
 	public int getMargin() {
 		return margin;
 	}

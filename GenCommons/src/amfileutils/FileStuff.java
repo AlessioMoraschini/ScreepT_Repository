@@ -3,12 +3,14 @@ package amfileutils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -532,17 +534,22 @@ public class FileStuff {
 		if(toRead == null || !toRead.exists()) {
 			throw new IOException();
 		}
+		StringBuilder builder = new StringBuilder(100000);
 		FileInputStream readerStream = new FileInputStream(toRead);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
-		String read = "";
-		String line = reader.readLine();
-		while (line != null) {
-			read += line;
-			read += "\n";
-			line = reader.readLine();
+		try {
+			String line = reader.readLine();
+			while (line != null) {
+				builder.append(line).append("\n");
+				line = reader.readLine();
+			}
+		} catch (IOException e) {
+			throw e;
+		}finally {
+			reader.close();			
 		}
-		reader.close();
-		return read;
+		
+		return builder.toString();
 	}
 	
 	/**
@@ -600,43 +607,33 @@ public class FileStuff {
 		
     	if(!FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals("txt")) {
 			JOptionPane.showMessageDialog(null, "Please select a valid txt file!");
+			return false;
     	}
     	else {
-    		BufferedReader reader = null;
-
-    		try {
-				reader = new BufferedReader(new InputStreamReader(new FileInputStream(txtFile), System.getProperty("file.encoding")));
-
-				textArea_1.read(reader, null);
-//				String line = reader.readLine();
-//				while(line!=null) {
-//					textArea_1.append(line);
-//					textArea_1.append("\n");
-//					line = reader.readLine();
-//				}
-//				Printer.print(textArea_1.getText());
-				
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(null, "[Error loading the selected file]");
-				logger.error("Exception happened!", e1);
-				return false;
-			} finally {
-				try {reader.close();} catch (IOException e) {}
-				textArea_1.requestFocus();
-			}
-    		new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
+//				textArea_1.read(reader, null);
+				StringBuilder builder = new StringBuilder(100000);
+				try {
+					FileInputStream readerStream = new FileInputStream(txtFile);
+					BufferedReader reader;
+					reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
 					try {
-						Thread.sleep(4000);
-						//lblAdvice.setText("");
-					} catch (InterruptedException e) {
-						logger.error("Exception happened!", e);
+						String line = reader.readLine();
+						while (line != null) {
+							builder.append(line).append("\n");
+							line = reader.readLine();
+						}
+					} catch (IOException e) {
+						logger.error(e);
+						try {reader.close();} 
+						catch (IOException e1) {}			
 					}
+				} catch (UnsupportedEncodingException | FileNotFoundException e2) {
+					logger.error(e2);
+				}finally {
+					textArea_1.append(builder.toString());
 				}
-			}).start();
-    
+				textArea_1.requestFocus();
+
     	}
     	return true;
 	}

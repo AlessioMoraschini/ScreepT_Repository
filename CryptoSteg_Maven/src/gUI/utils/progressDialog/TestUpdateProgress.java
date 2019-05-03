@@ -47,9 +47,9 @@ public class TestUpdateProgress {
     
     public TestUpdateProgress() {
 		
-		initGraphics(1);
-		
-		initSpecBar();
+    	initGraphics(1);
+    	
+    	initSpecBar();
 		
 		new Thread(new Runnable() {
 
@@ -213,7 +213,12 @@ public class TestUpdateProgress {
             Thread.sleep(150);
             doneCheck(bar);
         }
-    }         
+    }        
+    
+    public void update(String label, int perc) {
+    	this.getPb().setValue(perc);
+    	this.getLabel().setText(label);
+    }
     
     public void forceClose() {
     	forceStop = true;
