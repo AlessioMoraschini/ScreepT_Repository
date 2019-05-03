@@ -82,6 +82,7 @@ import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 
 public class mainGUI {
 
@@ -128,6 +129,8 @@ public class mainGUI {
 	
 	public static String currentJvmVersion = "";
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = "1.9.0";
+	
+	public static final int TOOLTIP_DELAY = 400;
 	
 //////////////////////////// GUI ELEMENTS //////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -728,23 +731,33 @@ public class mainGUI {
 				if (!FLAG_mntmExportLog) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmExportLog = true;
-					// show input dialog to select the file(gives null in case of no file selected)
-					File selected = fileLogWriteDialog(frmScryptV);
-					if (selected != null) {
-						logger.debug("\n\n##################################################\n\n" + now.toString()
-								+ "\n\n" + APPLICATION_NAME + " EXPORT!\n\n"
-								+ "##################################################\n\n");
+					
+					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use launcher panel customize options)";
+					int choice = JOptionPane.YES_OPTION;
+					if(LOG_LEVEL_AT_START.equals(Level.OFF)) {
+						choice = JOptionPane.showConfirmDialog(frmScryptV, msg, "Logger turned OFF", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					}
+					
+					if (choice == JOptionPane.YES_OPTION) {
 
-						// give true to overwrite because fileWriteDialog already set the value to be unique
-						if (FileStuff.copyFile(new File(LOG_PATH), selected, true)) {
-							JOptionPane.showMessageDialog(frmScryptV, "File correctly saved in " + selected,
-									"Log File Exported :)", JOptionPane.INFORMATION_MESSAGE);
-							logger.debug("File :" + LOG_PATH + " Exported, exportFile: " + selected);
-						} else {
-							JOptionPane.showMessageDialog(frmScryptV, "File not saved [" + selected,
-									"]  Some error occurred :(", JOptionPane.ERROR_MESSAGE);
-							logger.error("File not saved, some error occurred :( ");
-						}
+						// show input dialog to select the file(gives null in case of no file selected)
+						File selected = fileLogWriteDialog(frmScryptV);
+						if (selected != null) {
+							logger.debug("\n\n##################################################\n\n" + now.toString()
+									+ "\n\n" + APPLICATION_NAME + " EXPORT!\n\n"
+									+ "##################################################\n\n");
+
+							// give true to overwrite because fileWriteDialog already set the value to be unique
+							if (FileStuff.copyFile(new File(LOG_PATH), selected, true)) {
+								JOptionPane.showMessageDialog(frmScryptV, "File correctly saved in " + selected,
+										"Log File Exported :)", JOptionPane.INFORMATION_MESSAGE);
+								logger.debug("File :" + LOG_PATH + " Exported, exportFile: " + selected);
+							} else {
+								JOptionPane.showMessageDialog(frmScryptV, "File not saved [" + selected,
+										"]  Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+								logger.error("File not saved, some error occurred :( ");
+							}
+						} 
 					}
 					FLAG_mntmExportLog = false;
 				}
@@ -1119,6 +1132,7 @@ public class mainGUI {
 		// initialize GUI default Style from ini
 		try {
 			UIManager.setLookAndFeel(preferredStyle);
+			ToolTipManager.sharedInstance().setInitialDelay(TOOLTIP_DELAY);
 			for(Window window: Window.getWindows()) {
     		    SwingUtilities.updateComponentTreeUI(window);
     		}

@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +35,15 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(CustomizeParametersPanel.class); 
+	
+	private static final String TOOLTIP_LEVEL_LOG = "Choose a value between 'OFF'(logging feature disabled) and 'ALL'. This can have an impact for overall speed and memory usage (OFF = max speed)";
+	private static final String TOOLTIP_STACK_SIZE = "This is the memory used by java JVM to store variables in ram memory called stack. \nHigh value = more reliability but less free memory for other dynamic values!";
+	private static final String TOOLTIP_MIN_RAM_SIZE = "It's recommended to use lower value for minimum memory than max, equal values cause performance decrease! ";
+	private static final String TOOLTIP_MAX_RAM_SIZE = "It's recommended to use bigger value for max memory than minimum, equal values cause performance decrease! ";
+	
+	private static final int DEF_FIXED_HEIGHT = 180;
+	private static final int DEF_FIXED_WIDTH = 495;
+	public static final Dimension DEF_DIMENSION = new Dimension(DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 	
 	public static boolean active = false;
 	private CustomizeParametersPanel thisPanel;
@@ -63,6 +74,8 @@ public class CustomizeParametersPanel extends JFrame{
 	private JLabel lblStackSize;
 	private JLabel lblLogLevel;
 	private JComboBox comboLogLevel;
+	private JLabel lblSTackSizeInfo;
+	private JLabel lblLogLevelInfo;
 	
 	public CustomizeParametersPanel(String title, StartPanel parentPanel) {
 		
@@ -71,17 +84,17 @@ public class CustomizeParametersPanel extends JFrame{
 		// CUSTOM SETTINGS
 		active = true;
 		thisPanel = this;
-		GuiUtils.centerFrame(this, 540, 190);
+		GuiUtils.centerFrame(this, DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 		thisPanel.setTitle(title);		
 		parentStarterPanel = parentPanel;
 		
 		// END CUSTOM SETTINGS
 		
-		getContentPane().setBackground(Color.WHITE);
-		getContentPane().setLayout(new MigLayout("", "[60px][70px][:20px:20px][:100px:100px][70px,grow][:100px:100px,grow]", "[grow][grow][grow]"));
+		getContentPane().setBackground(new Color(240, 248, 255));
+		getContentPane().setLayout(new MigLayout("", "[60px][40px][:20px:20px][:100px:100px][100px][:20px:20px][:100px:100px,grow]", "[grow][grow][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
-		getContentPane().add(lblMaxMemory, "cell 0 0 2 1,alignx center");
+		getContentPane().add(lblMaxMemory, "cell 0 0 2 1,alignx right");
 		
 		lblMaxWarninig = new JLabel("");
 		getContentPane().add(lblMaxWarninig, "cell 2 0");
@@ -92,15 +105,18 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(spinnerMaxMemoryMB, "cell 3 0,growx");
 		
 		lblStackSize = new JLabel("Stack Size(MB)");
-		getContentPane().add(lblStackSize, "cell 4 0,alignx center");
+		getContentPane().add(lblStackSize, "cell 4 0,alignx right");
+		
+		lblSTackSizeInfo = new JLabel("");
+		getContentPane().add(lblSTackSizeInfo, "cell 5 0,alignx right");
 		
 		spinnerXssMemory = new JSpinner();
 		spinnerXssMemory.setModel(new SpinnerNumberModel(4, 4, 256, 1));
 		spinnerXssMemory.setOpaque(true);
-		getContentPane().add(spinnerXssMemory, "cell 5 0,growx");
+		getContentPane().add(spinnerXssMemory, "cell 6 0,growx");
 		
 		lblMinMemory = new JLabel("Min memory (MB):");
-		getContentPane().add(lblMinMemory, "cell 0 1 2 1,alignx center");
+		getContentPane().add(lblMinMemory, "cell 0 1 2 1,alignx right");
 		
 		lblMinWarninig = new JLabel("");
 		getContentPane().add(lblMinWarninig, "cell 2 1");
@@ -111,23 +127,30 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(spinnerMinMemoryMB, "cell 3 1,growx");
 		
 		lblLogLevel = new JLabel("Log level");
-		getContentPane().add(lblLogLevel, "cell 4 1,alignx center");
+		getContentPane().add(lblLogLevel, "cell 4 1,alignx right");
+		
+		lblLogLevelInfo = new JLabel("");
+		getContentPane().add(lblLogLevelInfo, "cell 5 1,alignx right");
 		
 		comboLogLevel = new JComboBox<String>(ScrYpTLauncher.getLogLevelsList());
-		getContentPane().add(comboLogLevel, "cell 5 1,growx");
+//		comboLogLevel = new JComboBox<String>();
+		getContentPane().add(comboLogLevel, "cell 6 1,growx");
 		
 		btnExitConfiguration = new JButton("Discard");
-		btnExitConfiguration.setBackground(new Color(169, 169, 169));
+		btnExitConfiguration.setBackground(new Color(250, 128, 114));
+		btnExitConfiguration.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		getContentPane().add(btnExitConfiguration, "cell 0 2,growx");
 		
 		btnReloadInitialConfig = new JButton("Reset to Initial Config");
 		btnReloadInitialConfig.setEnabled(true);
-		btnReloadInitialConfig.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnReloadInitialConfig, "cell 1 2 2 1,growx");
+		btnReloadInitialConfig.setBackground(new Color(250, 250, 210));
+		btnReloadInitialConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		getContentPane().add(btnReloadInitialConfig, "cell 1 2 3 1,alignx left");
 		
 		btnSaveConfig = new JButton("Save Launch Options");
-		btnSaveConfig.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnSaveConfig, "cell 4 2 2 1,growx");
+		btnSaveConfig.setBackground(new Color(143, 188, 143));
+		btnSaveConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		getContentPane().add(btnSaveConfig, "cell 4 2 3 1,alignx right");
 		
 		// add custom behaviour to frame
 		
@@ -238,19 +261,14 @@ public class CustomizeParametersPanel extends JFrame{
 		if((max - min) < 100) {
 			lblMaxWarninig.setVisible(true);
 			lblMinWarninig.setVisible(true);
-			lblMaxWarninig.setToolTipText("It's recommended to use bigger value for max memory than minimum, equal values cause performance decrease! ");
-			lblMinWarninig.setToolTipText("It's recommended to use lower value for minimum memory than max, equal values cause performance decrease! ");
+			lblMaxWarninig.setToolTipText(TOOLTIP_MAX_RAM_SIZE);
+			lblMinWarninig.setToolTipText(TOOLTIP_MIN_RAM_SIZE);
 		}else {
 			lblMaxWarninig.setVisible(false);
 			lblMinWarninig.setVisible(false);
 			lblMaxWarninig.setToolTipText(null);
 			lblMinWarninig.setToolTipText(null);
 		}
-		
-		// TODO tooltip for xss option
-		
-		// TODO tooltip for logLevel
-		
 	}
 	
 	private void backupInitialValues() {
@@ -281,18 +299,17 @@ public class CustomizeParametersPanel extends JFrame{
 	}
 	
 	private void setGraphics() {
-		try {
-			thisPanel.setIconImage(ImageIO.read(new File("Resources_Scrypt/icon.jpg")));
-			logger.debug("icon image setted to main window");
-		} catch (IOException e1) {
-			logger.error("Exception happened!", e1);
-		}
+		
+		GuiUtils.setFrameIcon("Resources_Scrypt/icon.jpg", thisPanel);
 		
 		lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
 		lblMaxWarninig.setVisible(false);
 		lblMinWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
 		lblMinWarninig.setVisible(false);
 		
-		// TODO add icons for logLevel and xss
+		lblLogLevelInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		lblLogLevelInfo.setToolTipText(TOOLTIP_LEVEL_LOG);
+		lblSTackSizeInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		lblSTackSizeInfo.setToolTipText(TOOLTIP_STACK_SIZE);
 	}
 }

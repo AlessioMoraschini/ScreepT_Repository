@@ -86,6 +86,19 @@ public class AesCipher {
 	    return Base64.encodeBase64String(encrypted);
 	}
 	
+	public String encryptLines(String toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
+	    InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
+		cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+		String[] sourceLines = toBeEncrypt.split("\n");
+		byte[] encrypted;
+		StringBuilder builder = new StringBuilder(10000);
+		for(int i=0; i<sourceLines.length; i++) {
+			encrypted = cipher.doFinal(sourceLines[i].getBytes(System.getProperty("file.encoding")));
+			builder.append(Base64.encodeBase64String(encrypted)).append("\n");
+		}
+		return builder.toString();
+	}
+	
 	/**
 	 * Questo metodo si occupa di codificare tramite AES un array di byte passato come parametro. 
 	 * A differenza del metodo precedente ritorna anche un valore in formato byte[] 
@@ -125,6 +138,21 @@ public class AesCipher {
 	    byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encrypted.getBytes()));
 	    return new String(decryptedBytes,System.getProperty("file.encoding"));
 	}
+	
+	public String decryptLines(String encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
+	    	BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
+		
+		cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+		String[] sourceLines = encrypted.split("\n");
+		byte[] decrypted;
+		StringBuilder builder = new StringBuilder(10000);
+		for(int i=0; i<sourceLines.length; i++) {
+			decrypted = cipher.doFinal(Base64.decodeBase64(sourceLines[i].getBytes()));
+			builder.append(new String(decrypted,System.getProperty("file.encoding"))).append("\n");
+		}
+		return builder.toString();
+	}
+	
 	
 	/**
 	 * Questo metodo si occupa di decodificare tramite AES un array di byte passato come parametro. 

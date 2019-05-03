@@ -11,6 +11,7 @@ import mainlauncher.ScrYpTLauncher;
 import media.Sounds;
 
 import javax.swing.JPanel;
+import javax.swing.ToolTipManager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -27,13 +28,14 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.awt.Cursor;
-import java.awt.FocusTraversalPolicy;
 import java.awt.Insets;
 
 public class StartPanel extends JFrame{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(StartPanel.class); 
+	
+	public static final int TOOLTIP_DELAY = 200;
 			
 	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
@@ -173,6 +175,7 @@ public class StartPanel extends JFrame{
 				if(!CustomizeParametersPanel.active) {
 					customizerPanel = new CustomizeParametersPanel("Customize start options", LAUNCHER_GUI);
 					customizerPanel.setVisible(true);
+					customizerPanel.setAlwaysOnTop(true);
 				}else {
 					customizerPanel.setState(java.awt.Frame.NORMAL);
 					customizerPanel.requestFocus();
@@ -198,6 +201,7 @@ public class StartPanel extends JFrame{
 		try {
 			LAUNCHER_GUI.setIconImage(ImageIO.read(new File("Resources_Scrypt/icon.jpg")));
 			logger.debug("icon image setted to main window");
+			ToolTipManager.sharedInstance().setInitialDelay(TOOLTIP_DELAY);
 		} catch (IOException e1) {
 			logger.error("Exception happened!", e1);
 		}

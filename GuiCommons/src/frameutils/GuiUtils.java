@@ -39,6 +39,11 @@ public class GuiUtils {
 		return Toolkit.getDefaultToolkit().getScreenSize();
 	}
 	
+	public static Dimension getScreenSize(int marginLeftRight) {
+		Dimension screen = getScreenSize();
+		return new Dimension(screen.width-(marginLeftRight+marginLeftRight), screen.height);
+	}
+	
 	public static void centerComponent(Component targetComponent, int percentSize) {
 		float percent = (float)percentSize/100;
 		Dimension screenSize = getScreenSize();

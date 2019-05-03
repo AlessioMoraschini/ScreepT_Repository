@@ -87,6 +87,8 @@ public class TextEditor extends JPanel {
 	public static final int TAB_TITLE_ORDER = 1;
 	public static final int TAB_BUTTON_CLOSE_ORDER = 2;
 	
+	public static final int TEXT_AREA_TAB_SIZE = 2;
+	
 	//  RESOURCE FILES //
 	private final String LOREM_IPSUM = "Resources_Scrypt/Templates/LoremIpsum.txt";
 	
@@ -234,6 +236,7 @@ public class TextEditor extends JPanel {
 		uppercaseDots=true;
 		
 		textArea_1 = new JTextArea();
+		textArea_1.setTabSize(TEXT_AREA_TAB_SIZE);
 		textArea_1.setFont(currentConfiguration.getTextEditorOpt().getFont());
 		textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
 //		manager = new UndoManager();
@@ -441,6 +444,7 @@ public class TextEditor extends JPanel {
 		chkFitmantainwords.setEnabled(false);
 
 		mainTabList = new JTabbedPane(JTabbedPane.TOP);
+		mainTabList.setMaximumSize(GuiUtils.getScreenSize(15));
 		mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		textScrollPaneArea.setViewportView(textArea_1);
 		
@@ -676,7 +680,7 @@ public class TextEditor extends JPanel {
 							AesCipher crypter = new AesCipher(txtAesKey.getPassword());
 							String displayedSource = (loadedTabObj.loadedFile == null)?textArea_1.getText()
 									: FileStuff.readFileAsString(loadedTabObj.loadedFile);
-							encoded = crypter.encrypt(displayedSource);
+							encoded = crypter.encryptLines(displayedSource);
 							// if lentgh more than admitted suggest to use screept
 							textArea_1.setText("");
 							textArea_1.append(encoded);
@@ -712,7 +716,7 @@ public class TextEditor extends JPanel {
 						try {
 							AesCipher decrypter = new AesCipher(txtAesKey.getPassword());
 							String displayedSource = textArea_1.getText();
-							decoded = decrypter.decrypt(displayedSource);
+							decoded = decrypter.decryptLines(displayedSource);
 							textArea_1.setText("");
 						} catch (Exception e) {
 							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error",
@@ -1470,21 +1474,26 @@ public class TextEditor extends JPanel {
 					if(!loadedAlmostOne) loadedAlmostOne = true;
 				}
 			} 
+		}
+		
+		if(loadedAlmostOne){
+			// first remove first tab if at least one file is loaded
+			removeTab(0);
+			
 			// now try to select the old opened one
 			String toOpenAtStart = currentConfiguration.getTextEditorOpt().selectedAtStart;
 			try {
+				int i = 0;
 				for (TabTextEditorObj iteratorObj : loadedList) {
 					if (iteratorObj.loadedFile != null && toOpenAtStart.equals(iteratorObj.loadedFile.getAbsolutePath())) {
-						mainTabList.setSelectedComponent(loadedTabObj.currentScrollPane);
-					} 
+						mainTabList.setSelectedIndex(i);
+						break;
+					}
+					i++;
 				}
 			} catch (Exception e) {
 				logger.warn("Cannot select default file "+toOpenAtStart, e);
 			}
-		}
-		
-		if(loadedAlmostOne){
-			removeTab(0);
 		}
 	}
 	
@@ -1599,6 +1608,7 @@ public class TextEditor extends JPanel {
 		loadedTabObj = loadedList.get(mainTabList.getSelectedIndex());
 		loadedTabObj.currentScrollPane.setViewportView(textArea_1);
 		loadedFile = loadedTabObj.loadedFile;
+		textArea_1.setText("");
 		if (!loadedTabObj.unsaved && "".equals(loadedTabObj.loadedText) && loadedTabObj.loadedFile!=null && loadedTabObj.loadedFile.exists()) {
 			FileStuff.appendFileTxtArea(loadedTabObj.loadedFile, textArea_1); 
 		}else {
