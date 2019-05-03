@@ -37,6 +37,7 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import frameutils.GuiUtils;
 import gUI.om.TabTextEditorObj;
 import gUI.panels.AboutSectionPanel;
 import gUI.panels.ChargeIniLog;
@@ -1069,17 +1070,23 @@ public class mainGUI {
 		// open in main frame - TEXT EDITOR
 		mntmTextEditor = new JMenuItem(new AbstractAction("Text Editor") {
 			public void actionPerformed(ActionEvent e) {
-			
-				JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-				if(initTxtWriter == null) {
-					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					initTxtWriter = new TextEditor(frmScryptV, currentConfiguration);
-				}		    	
-		    	contentPane.removeAll();
-		    	contentPane.add(initTxtWriter);
-		    	contentPane.revalidate(); 
-		    	contentPane.repaint();
-			
+				
+				frmScryptV.setCursor(GuiUtils.CURSOR_WAIT);
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						JPanel contentPane = (JPanel) frmScryptV.getContentPane();
+						if(initTxtWriter == null) {
+							Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+							initTxtWriter = new TextEditor(frmScryptV, currentConfiguration);
+						}		    	
+				    	contentPane.removeAll();
+				    	contentPane.add(initTxtWriter);
+				    	contentPane.revalidate(); 
+				    	contentPane.repaint();
+				    	frmScryptV.setCursor(GuiUtils.CURSOR_DEFAULT);
+					}
+				});
 			}
 		});
 		

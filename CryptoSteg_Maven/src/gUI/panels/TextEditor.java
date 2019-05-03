@@ -1465,6 +1465,8 @@ public class TextEditor extends JPanel {
 	}
 	
 	private void loadOpenedFilesAtStart() {
+		textArea_1.setCursor(GuiUtils.CURSOR_WAIT);
+		
 		boolean loadedAlmostOne = false;
 		if (currentConfiguration.getTextEditorOpt().getOpenedFileList().size() != 0) {
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
@@ -1495,12 +1497,16 @@ public class TextEditor extends JPanel {
 				logger.warn("Cannot select default file "+toOpenAtStart, e);
 			}
 		}
+		
+		textArea_1.setCursor(GuiUtils.CURSOR_TEXT);
 	}
 	
 	// TABBED EDITOR FUNCTIONS //
 	
 	public void addTab(File file, boolean first) {
 		isAddingTab = true;
+		textArea_1.setCursor(GuiUtils.CURSOR_WAIT);
+		
 		if(!first) {
 			textArea_1.getDocument().removeUndoableEditListener(loadedTabObj.undoManager);
 		}
@@ -1524,6 +1530,8 @@ public class TextEditor extends JPanel {
 		mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(name, newIndex));
 		mainTabList.setSelectedIndex(newIndex);
 		loadedTabObj.loadedText = textArea_1.getText();
+		
+		textArea_1.setCursor(GuiUtils.CURSOR_TEXT);
 		isAddingTab = false;
 	}
 	
@@ -1601,6 +1609,8 @@ public class TextEditor extends JPanel {
 	
 	private void tabRefreshAfterUpdate() {
 		tabJustSwitched = true;
+		textArea_1.setCursor(GuiUtils.CURSOR_WAIT);
+		
 		textArea_1.getDocument().removeUndoableEditListener(loadedTabObj.undoManager);
 		if (!isAddingTab && !isRemovingTab) {
 			backupCurrentBeforeSwitch();
@@ -1614,7 +1624,9 @@ public class TextEditor extends JPanel {
 		}else {
 			textArea_1.setText(loadedTabObj.loadedText);
 		}
+		
 		updateSavedLabelNTab(null);
+		textArea_1.setCursor(GuiUtils.CURSOR_TEXT);
 		tabJustSwitched = false;
 		textArea_1.requestFocus();
 		textArea_1.getDocument().addUndoableEditListener(loadedTabObj.undoManager);

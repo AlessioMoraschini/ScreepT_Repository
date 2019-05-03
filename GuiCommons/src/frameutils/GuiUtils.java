@@ -2,6 +2,7 @@ package frameutils;
 
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JRootPane;
+import javax.swing.RootPaneContainer;
 
 import org.apache.log4j.Logger;
 
@@ -20,6 +23,10 @@ public class GuiUtils {
 	
 	// INItializer logger creation		
 	static Logger logger = Logger.getLogger(GuiUtils.class); 
+	
+	public static final Cursor CURSOR_WAIT = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
+	public static final Cursor CURSOR_DEFAULT = Cursor.getDefaultCursor();
+	public static final Cursor CURSOR_TEXT = new Cursor(Cursor.TEXT_CURSOR);
 	
 	public static boolean setFrameIcon(Image icon, JFrame frameToSet) {
 		if(icon != null) {
@@ -91,5 +98,51 @@ public class GuiUtils {
 			} 
 		}	
 	}
+	
+	public static void setCursor(JFrame frame, Cursor cursor) {
+        if (frame != null) {
+            RootPaneContainer root = (RootPaneContainer) frame.getRootPane().getTopLevelAncestor();
+            root.getGlassPane().setCursor(cursor);
+            root.getGlassPane().setVisible(true);
+        }
+    }
+	
+	public static void setCursor( JRootPane frame, Cursor cursor) {
+        if (frame != null) {
+            RootPaneContainer root = (RootPaneContainer) frame.getTopLevelAncestor();
+            root.getGlassPane().setCursor(cursor);
+            root.getGlassPane().setVisible(true);
+        }
+    }
+	
+	public static void setWaitCursor(JFrame frame) {
+        if (frame != null) {
+            RootPaneContainer root = (RootPaneContainer) frame.getRootPane().getTopLevelAncestor();
+            root.getGlassPane().setCursor(CURSOR_WAIT);
+            root.getGlassPane().setVisible(true);
+        }
+    }
+	
+	public static void setWaitCursor(JRootPane frame) {
+		if (frame != null) {
+			RootPaneContainer root = (RootPaneContainer) frame.getTopLevelAncestor();
+			root.getGlassPane().setCursor(CURSOR_WAIT);
+			root.getGlassPane().setVisible(true);
+		}
+	}
+
+    public static void setDefaultCursor(JFrame frame) {
+        if (frame != null) {
+            RootPaneContainer root = (RootPaneContainer) frame.getRootPane().getTopLevelAncestor();
+            root.getGlassPane().setCursor(CURSOR_DEFAULT);
+        }
+    }
+    
+    public static void setDefaultCursor(JRootPane frame) {
+        if (frame != null) {
+            RootPaneContainer root = (RootPaneContainer) frame.getTopLevelAncestor();
+            root.getGlassPane().setCursor(CURSOR_DEFAULT);
+        }
+    }
 	
 }
