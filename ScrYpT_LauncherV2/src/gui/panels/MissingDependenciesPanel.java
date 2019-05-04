@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import frameutils.GuiUtils;
 import launcherutils.om.DependencyModel;
 import mainlauncher.ScrYpTLauncher;
 
@@ -23,14 +23,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.sql.Date;
 
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -98,26 +95,31 @@ public class MissingDependenciesPanel extends JDialog{
 		btnRefreshNCheck = new JButton("Refresh and check again for dependencies");
 		btnRefreshNCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		btnRefreshNCheck.setBackground(Color.GRAY);
+		btnRefreshNCheck.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnRefreshNCheck, "cell 0 2,grow");
 		
 		btnInstallDependency = new JButton("Install Selected");
 		btnInstallDependency.setFont(new Font("SansSerif", Font.BOLD, 14));
+		btnInstallDependency.setCursor(GuiUtils.CURSOR_HAND);
 		btnInstallDependency.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnInstallDependency, "cell 1 2,grow");
 		
 		btnDownloadDependency = new JButton("Download Selected");
 		btnDownloadDependency.setFont(new Font("SansSerif", Font.BOLD, 14));
+		btnDownloadDependency.setCursor(GuiUtils.CURSOR_HAND);
 		btnDownloadDependency.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnDownloadDependency, "cell 2 2,grow");
 		
 		btnIgnoreWarnings = new JButton("Ignore warnings (some functions will be disabled)");
 		btnIgnoreWarnings.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		btnIgnoreWarnings.setBackground(new Color(255, 250, 205));
+		btnIgnoreWarnings.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnIgnoreWarnings, "cell 0 3,grow");
 		
 		btnLocateManually = new JButton("Add installation path manually");
 		btnLocateManually.setFont(new Font("SansSerif", Font.BOLD, 14));
 		btnLocateManually.setBackground(new Color(169, 169, 169));
+		btnLocateManually.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnLocateManually, "cell 1 3 2 1,grow");
 		
 		setGraphics();

@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import amfileutils.om.DeleteFilesByExtensionDTO;
 import iNIT.INItializer;
 
 public class DirectoryManagementGUI {
@@ -106,14 +107,23 @@ public class DirectoryManagementGUI {
 	
 	public static void deleteContentOfDirByExt(JFrame parent,INItializer currentConf) {
 		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		DeleteFilesByExtensionDTO response;
+		String notFoundExtensions = "";
+
 		if (selected != null) {
-			String deleteExtensionMatch = JOptionPane.showInputDialog("Specify wich extensions you want to delete, separeted by a comma (ex. 'jpg, txt, png')");
-			boolean res = FileStuff.emptyDirContentByExt(selected, deleteExtensionMatch);
-			if (res) {
-				JOptionPane.showMessageDialog(parent, "Completed, folders content deleted :)", "Completed, folders content deleted", JOptionPane.INFORMATION_MESSAGE);
+			String deleteExtensionMatch = JOptionPane.showInputDialog("Specify wich extensions you want to delete, separated by a comma (ex. 'jpg, txt, png')");
+			response = FileStuff.emptyDirContentByExt(selected, deleteExtensionMatch);
+			if (response.getNotFoundExtensionResult().size() != 0) {
+				notFoundExtensions = " These extensions have 0 matches: " + response.getNotFoundExtensionResult();
+			}
+			if (response.isEsit() && !response.isNothingFound()) {
+				JOptionPane.showMessageDialog(parent, "Completed, folders content deleted :)" + notFoundExtensions, "Completed, folders content deleted", JOptionPane.INFORMATION_MESSAGE);
+			} else if(response.isNothingFound()){
+				JOptionPane.showMessageDialog(parent, "Nothing found!" + notFoundExtensions, "Nothing found!", JOptionPane.WARNING_MESSAGE);
 			} else {
-				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
-			} 
+				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(" + notFoundExtensions, "Some Error occurred!", JOptionPane.WARNING_MESSAGE);
+			}
+			
 		}else {
 			JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.INFORMATION_MESSAGE);
 		}

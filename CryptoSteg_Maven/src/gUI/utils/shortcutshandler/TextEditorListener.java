@@ -105,9 +105,18 @@ public class TextEditorListener implements KeyEventDispatcher{
 		if (e.getID() == KeyEvent.KEY_RELEASED  && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 	      
 			/**
+			 *  RELOAD FROM DISK
+			 */
+			//case Ctrl+shift+R -> reload current file from Disk
+			if ( !currentTextEditor.alreadySaving && e.getKeyCode()==82 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
+			{
+				currentTextEditor.btnReloadFromDisk.doClick();
+			}
+			
+			/**
 			 *  SAVE FILE AS NEW
 			 */
-			//case Ctrl+shift+s -> Save file as new
+			//case Ctrl+shift+S -> Save file as new
 			if ( !currentTextEditor.alreadySaving && e.getKeyCode()==83 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
 			{
 				currentTextEditor.btnSaveTextFileAs.doClick();
@@ -116,7 +125,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 			/**
 			 *  SAVE FILE
 			 */
-			//case Ctrl+s -> Save file as new
+			//case Ctrl+S -> Save file as new
 			if ( !currentTextEditor.alreadySaving && e.getKeyCode()==83 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 			{
 				currentTextEditor.btnSaveTextFile.doClick();
@@ -125,7 +134,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 			/**
 			 *  LOAD FILE
 			 */
-			//case Ctrl+o -> Load file
+			//case Ctrl+O -> Load file
 			if (!currentTextEditor.alreadyLoading && e.getKeyCode()==79 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 			{
 				currentTextEditor.btnLoadTextFile.doClick();

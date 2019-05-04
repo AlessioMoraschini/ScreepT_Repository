@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -98,8 +97,8 @@ public class mainGUI {
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
 	// general application variables
-	public static final String APP_VERSION = "0.5";
-	public static final String APP_VERSION_DATE = "02/05/2019";
+	public static final String APP_VERSION = "0.5.2";
+	public static final String APP_VERSION_DATE = "04/05/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
@@ -817,7 +816,7 @@ public class mainGUI {
 		});
 
 		// NOT OPENING VIEW - MAKE DIRS FROM STRING PATH
-		mntmMakeDirsFromPath = new JMenuItem(new AbstractAction("Create directories from String path") {
+		mntmMakeDirsFromPath = new JMenuItem(new AbstractAction("Create directory from String path") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmMakeDirsFromPath) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -1047,7 +1046,6 @@ public class mainGUI {
 				}
 			}
 		});
-		
 		
 	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		

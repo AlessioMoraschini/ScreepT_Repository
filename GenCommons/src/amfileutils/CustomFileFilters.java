@@ -38,12 +38,13 @@ public class CustomFileFilters {
 	}
 	
 	/**
-	 * Return a custom file filter with a filter typte to select type of files to accept, and extension of files to accept (ignorecase)
+	 * Return a custom file filter with a filter typte to select type of files to accept, and extension of files to accept
 	 * @param filterType use values defined in this class
+	 * @param caseSensitive if true it consider different asD.tXt than asd.txt; otherwise they'll be recognized as equals
 	 * @param extension specify the extension, in case of null this work as the only filterType signature
 	 * @return the custom file filter
 	 */
-	public static FileFilter customTypeFilter(String filterType, String extension) {
+	public static FileFilter customTypeFilter(String filterType, String extension, boolean caseSensitive) {
 		
 		if(extension == null) {
 			return customTypeFilter(filterType);
@@ -65,7 +66,8 @@ public class CustomFileFilters {
 				
 				// if at least one match found for this file proceed with extension check
 				if(extensionCheck) {
-					if(pathname.getName().toLowerCase().endsWith("."+extension.toLowerCase())) {
+					boolean condition = (caseSensitive)? pathname.getName().endsWith(extension) : pathname.getName().toLowerCase().endsWith(extension.toLowerCase());
+					if(condition) {
 						return true;
 					}
 				}

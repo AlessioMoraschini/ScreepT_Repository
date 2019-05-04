@@ -27,6 +27,7 @@ public class GuiUtils {
 	public static final Cursor CURSOR_WAIT = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
 	public static final Cursor CURSOR_DEFAULT = Cursor.getDefaultCursor();
 	public static final Cursor CURSOR_TEXT = new Cursor(Cursor.TEXT_CURSOR);
+	public static final Cursor CURSOR_HAND = new Cursor(Cursor.HAND_CURSOR);
 	
 	public static boolean setFrameIcon(Image icon, JFrame frameToSet) {
 		if(icon != null) {

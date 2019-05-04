@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.om.DeleteFilesByExtensionDTO;
 import testUtils.Printer;
 
 public class FileStuff {
@@ -216,43 +217,78 @@ public class FileStuff {
 	 * @param extListCommaSeparated list of extension to delete separated by a comma (spaces will be removed)
 	 * @return true if all is deleted, false if something is still present
 	 */
-	public static boolean emptyDirContentByExt(File rootDir, String extListCommaSeparated) {
-		if(!rootDir.exists()) {
-			return false;
+	public static DeleteFilesByExtensionDTO emptyDirContentByExt(File rootDir, String extListCommaSeparated) {
+		DeleteFilesByExtensionDTO response = new DeleteFilesByExtensionDTO();
+
+		// validate input before start
+		if(rootDir== null || !rootDir.exists()) {
+			response.setEsit(false);
+			return response;
 		}
 		
 		boolean esit = true;
 		String[] extensionsList = extListCommaSeparated.split(",");
 		for(String currExtension : extensionsList) {
+			currExtension = currExtension.trim(); // remove whitespaces at start and at end
 			currExtension = removeIllegalCharsFromExtension(currExtension);
 			
 			// delete content of current cleaned extension
 			esit = true;
-			File[] foundCurrExtContent = rootDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.ALL_FOUND, currExtension));
+			File[] foundCurrExtContent = rootDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY, currExtension, true));
+			if(foundCurrExtContent.length != 0) {
+				response.setNothingFound(false);
+			}
+			
 			for(File current : foundCurrExtContent) {
 				// delete current if file
-				if(current.isFile() && !FileUtils.deleteQuietly(current)) {
+				if(!FileUtils.deleteQuietly(current)) {
 					esit = false;
 				}
+			}
+			
+			// if current extension has 0 results
+			if(foundCurrExtContent.length == 0) {
+				response.getNotFoundExtensionResult().add(currExtension);
 			}
 			
 			// recursion for found folders inside current
 			File[] foundCurrDirs = rootDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.DIR_ONLY));
 			for(File currentFoundDir : foundCurrDirs) {
-				esit = (emptyDirContentByExt(currentFoundDir, currExtension) == false)? false : esit;
+				DeleteFilesByExtensionDTO subResponse = emptyDirContentByExt(currentFoundDir, currExtension);
+				esit = (subResponse.isEsit() == false)? false : esit;
+				response.setNothingFound(response.isNothingFound() && subResponse.isNothingFound());
+				for (String subExt : subResponse.getNotFoundExtensionResult()) {
+					if (!response.getNotFoundExtensionResult().contains(subExt)) {
+						response.getNotFoundExtensionResult().add(subExt);
+					} 
+				}
 			}
 		}
 		
-		return esit;
+		response.setEsit(esit);
+		
+		return response;
 	}
 	
 	/**
 	 * Get a string without unsupported charachters for files extensions. This actually means only a-z or 0-9 digits are admitted (ignoring case)
+	 * extension can both contain part of the end of file's name, method will recognize to mantain dot or not based on last dot index
 	 * @param extension the given extension to filter out removing illegal chars
 	 * @return the cleaned string
 	 */
 	public static String removeIllegalCharsFromExtension(String extension) {
-		return extension.replaceAll("[^a-zA-Z0-9]", "");
+		String extensionIncipit = "";
+		String dot = ".";
+		String extensionAfterDot = "";
+		int dotIndex = extension.lastIndexOf(".");
+		if(dotIndex < 0) {
+			dotIndex = 0;
+			dot = "";
+		}
+		extensionIncipit = extension.substring(0, dotIndex);
+		extensionAfterDot = extension.substring(dotIndex).replaceAll("[^a-zA-Z0-9]", "");
+		
+		return extensionIncipit.concat(dot).concat(extensionAfterDot);
 	}
 	
 	/**
@@ -644,7 +680,7 @@ public class FileStuff {
 	 * @param textArea_1 the text area to be filled with file content
 	 * @return
 	 */
-	public static boolean appendFileTxtArea(File txtFile, JTextArea textArea_1) {
+	public static boolean appendFileTxtArea(File txtFile, JTextArea textArea_1, boolean goToStart) {
 
 		if(txtFile == null) {
 			return false;
@@ -678,7 +714,13 @@ public class FileStuff {
 					textArea_1.append(builder.toString());
 				}
 				textArea_1.requestFocus();
-
+				if (goToStart) {
+					textArea_1.setCaretPosition(0);
+				}else try{
+					textArea_1.setCaretPosition(textArea_1.getDocument().getLength()-1);
+				}catch (Exception e) {
+					// avoided outOfBounds
+				}
     	}
     	return true;
 	}
