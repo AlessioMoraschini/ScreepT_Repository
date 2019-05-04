@@ -93,6 +93,7 @@ public class ChargeIniLog extends JPanel{
 		scrollPaneTextArea.setAutoscrolls(false);
 		scrollPaneTextArea.setBorder(new LineBorder(new Color(64, 64, 64), 3, true));
 		textArea = new JTextArea();
+		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		textArea.setBorder(null);
 		scrollPaneTextArea.setViewportView(textArea);
 		textArea.setLineWrap(true);

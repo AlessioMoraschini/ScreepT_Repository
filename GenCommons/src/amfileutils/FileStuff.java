@@ -182,7 +182,7 @@ public class FileStuff {
 	}
 	
 	/**
-	 * this method delete recursively the given directory's contentent, without deleting the folders in it.
+	 * this method delete recursively the given directory's content, without deleting the folders in it.
 	 * @param dirToEmpy
 	 * @return true if all is deleted, false if something is still present
 	 */
@@ -208,6 +208,51 @@ public class FileStuff {
 		}
 		
 		return esit;
+	}
+	
+	/**
+	 * this method delete recursively the given directory's content, deleting only files that match the given extensions.
+	 * @param rootDir
+	 * @param extListCommaSeparated list of extension to delete separated by a comma (spaces will be removed)
+	 * @return true if all is deleted, false if something is still present
+	 */
+	public static boolean emptyDirContentByExt(File rootDir, String extListCommaSeparated) {
+		if(!rootDir.exists()) {
+			return false;
+		}
+		
+		boolean esit = true;
+		String[] extensionsList = extListCommaSeparated.split(",");
+		for(String currExtension : extensionsList) {
+			currExtension = removeIllegalCharsFromExtension(currExtension);
+			
+			// delete content of current cleaned extension
+			esit = true;
+			File[] foundCurrExtContent = rootDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.ALL_FOUND, currExtension));
+			for(File current : foundCurrExtContent) {
+				// delete current if file
+				if(current.isFile() && !FileUtils.deleteQuietly(current)) {
+					esit = false;
+				}
+			}
+			
+			// recursion for found folders inside current
+			File[] foundCurrDirs = rootDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.DIR_ONLY));
+			for(File currentFoundDir : foundCurrDirs) {
+				esit = (emptyDirContentByExt(currentFoundDir, currExtension) == false)? false : esit;
+			}
+		}
+		
+		return esit;
+	}
+	
+	/**
+	 * Get a string without unsupported charachters for files extensions. This actually means only a-z or 0-9 digits are admitted (ignoring case)
+	 * @param extension the given extension to filter out removing illegal chars
+	 * @return the cleaned string
+	 */
+	public static String removeIllegalCharsFromExtension(String extension) {
+		return extension.replaceAll("[^a-zA-Z0-9]", "");
 	}
 	
 	/**

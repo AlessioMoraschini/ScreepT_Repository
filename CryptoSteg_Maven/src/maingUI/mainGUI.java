@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -191,6 +192,7 @@ public class mainGUI {
 	private JMenuItem mntmAboutScreept;
 	private JMenuItem mntmExportLog; 
 	private JMenuItem mntmTouppercaseDirectory;
+	private JMenuItem mntmDeleteDirectoryContentByExtension;
 	private JMenuItem mntmDeleteDirectoryContentRecursive;
 	private JMenuItem mntmDeleteDirectoryContentDirsOnlyRecursive;
 	private JMenuItem mntmMakeDirsFromPath;
@@ -242,6 +244,7 @@ public class mainGUI {
 	private static boolean FLAG_loadSrcrYptDefaultConf = false;
 	private static boolean FLAG_mntmExportLog = false;
 	private static boolean FLAG_mntmTouppercaseDirectory = false;
+	private static boolean FLAG_mntmDeleteDirectoryContentByExtension = false;
 	private static boolean FLAG_mntmDeleteDirectoryContentRecursive = false;
 	private static boolean FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
 	private static boolean FLAG_mntmMakeDirsFromPath = false;
@@ -733,7 +736,7 @@ public class mainGUI {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmExportLog = true;
 					
-					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use launcher panel customize options)";
+					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScrYpT_launcher's customize options at start)";
 					int choice = JOptionPane.YES_OPTION;
 					if(LOG_LEVEL_AT_START.equals(Level.OFF)) {
 						choice = JOptionPane.showConfirmDialog(frmScryptV, msg, "Logger turned OFF", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -773,6 +776,18 @@ public class mainGUI {
 					FLAG_mntmTouppercaseDirectory = true;
 					last_dir_used = DirectoryManagementGUI.renameFirstLetterDirNames(frmScryptV, last_dir_used);
 					FLAG_mntmTouppercaseDirectory = false;
+				}
+			}
+		});
+		
+		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT BY EXTENSION
+		mntmDeleteDirectoryContentByExtension = new JMenuItem(new AbstractAction("Delete Directory's content by extension") {
+			public void actionPerformed(ActionEvent e) {
+				if (!FLAG_mntmDeleteDirectoryContentByExtension) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					FLAG_mntmDeleteDirectoryContentByExtension = true;
+					DirectoryManagementGUI.deleteContentOfDirByExt(frmScryptV, currentConfiguration);
+					FLAG_mntmDeleteDirectoryContentByExtension = false;
 				}
 			}
 		});
@@ -1222,6 +1237,7 @@ public class mainGUI {
 				mnFilesAndDirectories.add(mntmTouppercaseDirectory);
 				mnFilesAndDirectories.add(mntmMakeDirsFromPath);
 				mnFilesAndDirectories.add(mntmCopyDirStructure);
+				mnFilesAndDirectories.add(mntmDeleteDirectoryContentByExtension);
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentRecursive);
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentDirsOnlyRecursive);
 			
@@ -1282,6 +1298,7 @@ public class mainGUI {
 			// SUB-> FILES AND DIRECTORIES SECTION
 			mntmTouppercaseDirectory.setFont(menuItemFont);
 			mntmMakeDirsFromPath.setFont(menuItemFont);
+			mntmDeleteDirectoryContentByExtension.setFont(menuItemFont);
 			mntmDeleteDirectoryContentRecursive.setFont(menuItemFont);
 			mntmDeleteDirectoryContentDirsOnlyRecursive.setFont(menuItemFont);
 			mntmCopyDirStructure.setFont(menuItemFont);
@@ -1346,6 +1363,7 @@ public class mainGUI {
 		
 		mntmTouppercaseDirectory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPPERCASE_FIRST));
 		mntmMakeDirsFromPath.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
+		mntmDeleteDirectoryContentByExtension.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_TARGETED));
 		mntmDeleteDirectoryContentRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_FOLDER));
 		mntmDeleteDirectoryContentDirsOnlyRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_DIRS_ONLY));
 		mntmCopyDirStructure.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
@@ -1779,4 +1797,9 @@ public class mainGUI {
 	public JMenuItem getMntmMakeDirsFromPath() {
 		return mntmMakeDirsFromPath;
 	}
+
+	public JMenuItem getMntmDeleteDirectoryContentByExtension() {
+		return mntmDeleteDirectoryContentByExtension;
+	}
+	
 }

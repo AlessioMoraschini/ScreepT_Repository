@@ -36,9 +36,11 @@ public class IconsPathConfigurator {
 	
 	public static final String ICON_UPPERCASE_FIRST = RESOURCES_DIR + "Icons/Menu_Icons/uppercase.png";
 	public static final String ICON_CREATE_FOLDER = RESOURCES_DIR + "Icons/Menu_Icons/createFolder.png";
+	public static final String ICON_DELETE_TARGETED = RESOURCES_DIR + "Icons/Menu_Icons/targetedDelete.png";
 	public static final String ICON_DELETE_FOLDER = RESOURCES_DIR + "Icons/Menu_Icons/deleteFolder.png";
 	public static final String ICON_DELETE_DIRS_ONLY = RESOURCES_DIR + "Icons/Menu_Icons/emptyDirectory.png";
 	public static final String ICON_COPY_DIR_STRUCTURE = RESOURCES_DIR + "Icons/Menu_Icons/cloneDirectory.png";
+	public static final String ICON_FOLDER_WEB = RESOURCES_DIR + "Icons/Menu_Icons/webFolder.png";
 	
 		// help submenu
 	public static final String ICON_ABOUT = RESOURCES_DIR + "Icons/Menu_Icons/about.png";

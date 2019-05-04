@@ -59,6 +59,23 @@ public class DirectoryManagementGUI {
 		return defaultVisualizedDir;
 	}
 	
+	public static void makeDirsFromPath(JFrame parent,INItializer currentConf) {
+		
+		String dirToMake = JOptionPane.showInputDialog("Insert the complete Path of the directories to create (accepted separators=['\\','/'])");
+		if (!dirToMake.equals("")) {
+			File givenDir = new File(dirToMake);
+			// TODO check for root existing
+			boolean res = givenDir.mkdirs();
+			if (res) {
+				JOptionPane.showMessageDialog(parent, "Completed, Directories created!", "Directories created!", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(parent, "Some error occurred creating folders :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+			} 
+		}else {
+			JOptionPane.showMessageDialog(parent, "Void path, exiting.", "Some error occurred!", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
 	public static void deleteContentOfDir(JFrame parent,INItializer currentConf) {
 		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
 		if (selected!=null) {
@@ -73,26 +90,25 @@ public class DirectoryManagementGUI {
 		}
 	}
 	
-	public static void makeDirsFromPath(JFrame parent,INItializer currentConf) {
-		
-		String dirToMake = JOptionPane.showInputDialog("Insert the complete Path of the directories to create (accepted separators=['\\','/'])");
-		if (!dirToMake.equals("")) {
-			File givenDir = new File(dirToMake);
-			boolean res = givenDir.mkdirs();
-			if (res) {
-				JOptionPane.showMessageDialog(parent, "Completed, Directories created!", "Directories created!", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				JOptionPane.showMessageDialog(parent, "Some error occurred creating folders :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
-			} 
-		}else {
-			JOptionPane.showMessageDialog(parent, "Void path, exiting.", "Some error occurred!", JOptionPane.ERROR_MESSAGE);
-		}
-	}
-	
 	public static void deleteDirContentFiles(JFrame parent,INItializer currentConf) {
 		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
 		if (selected != null) {
 			boolean res = FileStuff.emptyDirContentFolderOnly(selected);
+			if (res) {
+				JOptionPane.showMessageDialog(parent, "Completed, folders content deleted :)", "Completed, folders content deleted", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+			} 
+		}else {
+			JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	
+	public static void deleteContentOfDirByExt(JFrame parent,INItializer currentConf) {
+		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		if (selected != null) {
+			String deleteExtensionMatch = JOptionPane.showInputDialog("Specify wich extensions you want to delete, separeted by a comma (ex. 'jpg, txt, png')");
+			boolean res = FileStuff.emptyDirContentByExt(selected, deleteExtensionMatch);
 			if (res) {
 				JOptionPane.showMessageDialog(parent, "Completed, folders content deleted :)", "Completed, folders content deleted", JOptionPane.INFORMATION_MESSAGE);
 			} else {

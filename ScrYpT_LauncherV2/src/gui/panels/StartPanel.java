@@ -135,7 +135,7 @@ public class StartPanel extends JFrame{
 		btnStartScrypt.requestFocusInWindow();
 		btnStartScrypt.grabFocus();
 		
-		Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.8f);
+		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 		logger.info(this.getClass().getName() + " Started");
 	}
 	
@@ -157,7 +157,7 @@ public class StartPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.7f);
+				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 				try {
 					Thread.sleep(400);
 				} catch (InterruptedException e1) {
