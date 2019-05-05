@@ -1,10 +1,8 @@
 package sTEG;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -18,11 +16,10 @@ import javax.imageio.ImageIO;
 
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
-import crypt.steg.STEGException;
 
 public class AesStegTest {
 
-	public static void main(String[] args) throws IOException, STEGException {
+	public static void main(String[] args) throws IOException, media.STEGException {
 		char[] key= "ST3G4N0cr1p74009".toCharArray();
 		String srcText = "Ciao, sono un testo di prova";
 		String coded = srcText;

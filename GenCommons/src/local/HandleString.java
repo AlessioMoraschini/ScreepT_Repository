@@ -19,9 +19,10 @@ import javax.xml.transform.stream.StreamSource;
 
 public class HandleString {
 
+	public static final String ERROR = "ERROR :(";
+
 	// this array contains all char that trigger uppercase next char
 	private static char [] upperCaseSignalList = {'.', '<', '>'};
-	
 	String currentString;	
 	
 	public HandleString(String input) {
@@ -92,7 +93,7 @@ public class HandleString {
 	        String outXML = xmlOutput.getWriter().toString();
 	        return outXML.substring(38,outXML.length());
 	    } catch (Exception e) {
-	        return "ERROR :("; // simple exception handling, please review it
+	        return ERROR; // simple exception handling, please review it
 	    }
 	}
 	

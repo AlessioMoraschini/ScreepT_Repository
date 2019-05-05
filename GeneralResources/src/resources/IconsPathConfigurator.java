@@ -4,6 +4,8 @@ public class IconsPathConfigurator {
 	
 	public static String RESOURCES_DIR = "Resources_Scrypt/";
 	
+	public static String MAIN_APP_ICON = RESOURCES_DIR + "icon.jpg";
+	
 	///////////////// MENU ICONS /////////////////
 	
 		// file submenu

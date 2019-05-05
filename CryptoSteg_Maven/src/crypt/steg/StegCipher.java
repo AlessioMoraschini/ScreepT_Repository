@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
-
+import media.STEGException;
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;

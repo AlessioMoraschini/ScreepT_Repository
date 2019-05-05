@@ -43,6 +43,7 @@ public class SearchFrame extends JFrame{
 	private JTextField searchTextField;
 	private JButton btnNext;
 	private JButton btnPrev;
+	private JFrame thisFrame;
 	
 	private String textTemp;
 	private boolean textChanged = true;
@@ -52,6 +53,8 @@ public class SearchFrame extends JFrame{
 	public SearchFrame(boolean undecorated, boolean alwaysOnTop, JTextArea targetSearchArea) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
+		
+		thisFrame = this;
 		
 		this.setUndecorated(undecorated);
 		this.setAlwaysOnTop(alwaysOnTop);
@@ -99,6 +102,17 @@ public class SearchFrame extends JFrame{
 	}
 	
 	private void adHandlersTextAreaSimple() {
+		
+		this.addFocusListener(new FocusListener() {
+			
+			public void focusLost(FocusEvent e) {
+			}
+			public void focusGained(FocusEvent e) {
+				textChanged = true;
+				textSearchArea.revalidate();
+				loadText();
+			}
+		});
 		
 		// FIND PREV OCCURRENCE
 		btnPrev.addActionListener(new ActionListener() {
@@ -148,7 +162,7 @@ public class SearchFrame extends JFrame{
 			}
 			
 			public void insertUpdate(DocumentEvent e) {
-				textChanged = false;
+				textChanged = true;
 				indexStart = textSearchArea.getSelectionStart();
 			}
 			
@@ -202,13 +216,12 @@ public class SearchFrame extends JFrame{
 	
 	private void searchTxtArea(String match, boolean forward) {
 		loadText();
-		ifEndGoToStart(match, forward);
 
 		int tempIndex = indexStart;
 		if(forward) {
-			tempIndex = textTemp.indexOf(match, indexStart+1);
+			tempIndex = textTemp.indexOf(match, indexStart);
 		}else {
-			tempIndex = textTemp.lastIndexOf(match, indexStart-1);
+			tempIndex = textTemp.lastIndexOf(match, indexStart);
 		}
 		// if found update reference, else use 0
 		indexStart = (tempIndex >= 0)? tempIndex : textSearchArea.getSelectionStart();
@@ -222,6 +235,8 @@ public class SearchFrame extends JFrame{
 			end = true;
 			Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 		}
+		
+		ifEndGoToStart(match, forward);
 	}
 	
 	private void ifEndGoToStart(String match, boolean forward) {
@@ -229,7 +244,13 @@ public class SearchFrame extends JFrame{
 		if(forward && end) {
 			indexStart = 0;
 		}else if(!forward && end) {
-			indexStart = totTxtAreaLength-1;
+			indexStart = totTxtAreaLength;
+		}else {
+			if(forward) {
+				indexStart++;
+			}else if(!forward) {
+				indexStart--;
+			}
 		}
 	}
 	

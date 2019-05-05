@@ -14,6 +14,7 @@ import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import iNIT.INItializer;
 import iNIT.om.ImgConverterOption;
 import local.HandleString;
+import media.ImageGeneralWorker;
 
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -542,7 +543,7 @@ public class ImageConverterFrame extends JFrame{
 							if (inputImg != null) {
 								
 								// create copy by reference
-								BufferedImage imageToConvert = ImageWorker.copyImage(inputImg);
+								BufferedImage imageToConvert = ImageGeneralWorker.copyImage(inputImg);
 							
 								progUpdater.getPb().setValue(30);
 								
@@ -572,7 +573,7 @@ public class ImageConverterFrame extends JFrame{
 									progUpdater.getPb().setValue(70);
 									progUpdater.getPb().setValue(90);
 									//if is selected an export file
-									ImageWorker.convertAndWrite(imageToConvert, ".png", selected);
+									ImageGeneralWorker.convertAndWrite(imageToConvert, ".png", selected);
 									String msg ="Image converted and added to dictionary: "+selected.getAbsolutePath();
 									JOptionPane.showMessageDialog(thisFrame, msg, "Image converted :)", JOptionPane.INFORMATION_MESSAGE);
 									logger.debug(msg);
@@ -621,7 +622,7 @@ public class ImageConverterFrame extends JFrame{
 							boolean PNG = ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("png");
 
 							// create copy by reference
-							BufferedImage imageToConvert = ImageWorker.copyImage(inputImg);
+							BufferedImage imageToConvert = ImageGeneralWorker.copyImage(inputImg);
 							
 							int X = (int)spinnerWidth.getValue();
 							int Y = (int)spinnerHeight.getValue();
@@ -656,7 +657,7 @@ public class ImageConverterFrame extends JFrame{
 								if(getCompressionFactor()==1f) {
 									
 									// IF DON'T COMPRESS
-									ImageWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
+									ImageGeneralWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
 									
 								}else {
 									
@@ -666,14 +667,14 @@ public class ImageConverterFrame extends JFrame{
 										
 										if (JPGorJPEG) {
 											// jpeg converter
-											fout.write(ImageWorker.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
+											fout.write(ImageGeneralWorker.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
 										}else if(PNG) {
 											// png converter
 											
-											fout.write(ImageWorker.compressIMGpng(imageToConvert, getCompressionFactorPng(), false));
+											fout.write(ImageGeneralWorker.compressIMGpng(imageToConvert, getCompressionFactorPng(), false));
 										}else {
 											// if no supported conversion type use default
-											ImageWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
+											ImageGeneralWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
 										}
 										
 										fout.flush();
@@ -766,7 +767,7 @@ public class ImageConverterFrame extends JFrame{
 								
 								// refresh image preview in gui
 								// way with custom repainter (keep type)
-								scaledImage = ImageWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
+								scaledImage = ImageGeneralWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
 								refreshImage(scaledImage);
 								
 								logger.debug("Image Loaded!");

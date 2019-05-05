@@ -295,7 +295,7 @@ public class ScreeptManagerFileOrFolder {
 		return screepTManager;
 	}
 
-	private static ScreeptManager initSTEG(File imageFile) throws IOException, STEGException {
+	private static ScreeptManager initSTEG(File imageFile) throws IOException, STEGException, media.STEGException {
 		if (imageFile == null) {
 			throw new STEGException();
 		}
@@ -306,7 +306,7 @@ public class ScreeptManagerFileOrFolder {
 	}
 
 	private static ScreeptManager initCOMPLETE(char[] AES_KEY, File imageFile)
-			throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException {
+			throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException, media.STEGException {
 		if (imageFile == null) {
 			throw new STEGException();
 		}

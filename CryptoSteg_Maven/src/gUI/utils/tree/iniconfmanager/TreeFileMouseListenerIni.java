@@ -27,9 +27,9 @@ import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
 import iNIT.INItializer;
 import maingUI.mainGUI;
+import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
-import uTILS.local.ImageWorker;
 
 public class TreeFileMouseListenerIni {
 	
@@ -277,7 +277,7 @@ public class TreeFileMouseListenerIni {
 			currentConfig.setIniReadFile(new Wini(iniFile));
 			currentConfig.readConfigIniFile();
 			
-			confManagerPanel.lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+			confManagerPanel.lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 			confManagerPanel.lblAvviso.setText("[Configuration Loaded!]");
 			confManagerPanel.config_PATH.setText(currentConfig.getIniFile().getFile().getPath());
 			confManagerPanel.textArea.setText("");

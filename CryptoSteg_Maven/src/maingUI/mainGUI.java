@@ -43,6 +43,7 @@ import gUI.panels.AboutSectionPanel;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.GeneralOptionsFrame;
+import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.KeyGenPanel;
 import gUI.panels.NetInfoPanel;
 import gUI.panels.TextEditor;
@@ -52,7 +53,6 @@ import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
 import gui.utils.LauncherLoaderFrame;
-import gUI.panels.GraphicPreferencesFrame;
 import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
@@ -1601,7 +1601,7 @@ public class mainGUI {
 			}
 		}
         
-      	// SAVE CURRENTLY OPENED FILES
+      	// SAVE CURRENTLY OPENED FILES reference only (in text-editor)
       	backupOpenedFilesInConfig();
       	
       	// START ERASING TEMP DECRYPTED IF THERE ARE SOME

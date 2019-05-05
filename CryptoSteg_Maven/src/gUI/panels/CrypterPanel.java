@@ -22,7 +22,6 @@ import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManager;
 import crypt.steg.StegCipher;
-import crypt.steg.STEGException;
 import gUI.om.BufferedImageType;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
@@ -32,9 +31,10 @@ import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
 import iNIT.INItializer;
 import local.HandleString;
 import maingUI.mainGUI;
+import media.ImageGeneralWorker;
+import media.STEGException;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
-import uTILS.local.ImageWorker;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -1447,7 +1447,7 @@ public class CrypterPanel extends JPanel {
 			
 			// read image from file
 			BufferedImage image = ImageIO.read(thisFile);
-			Image scaledImage = ImageWorker.scaleImage(image, image.getType(), panelKeyImgDisp.getWidth(), panelKeyImgDisp.getHeight());
+			Image scaledImage = ImageGeneralWorker.scaleImage(image, image.getType(), panelKeyImgDisp.getWidth(), panelKeyImgDisp.getHeight());
 		
 			refreshImage(scaledImage);
 			

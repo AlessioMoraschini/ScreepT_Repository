@@ -279,12 +279,12 @@ public class ScreepT_Test {
 		screepTManager = new ScreeptManagerStub(AEScoder);
 	}
 	
-	private void initSTEG() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException {
+	private void initSTEG() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, media.STEGException {
 		STEGcoder = new StegCipher(keyIMG);
 		screepTManager = new ScreeptManagerStub(STEGcoder);
 	}
 	
-	private void initCOMPLETE() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException {
+	private void initCOMPLETE() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, media.STEGException {
 		AEScoder = new AesCipher(AES_KEY);
 		STEGcoder = new StegCipher(keyIMG);
 		screepTManager = new ScreeptManagerStub(STEGcoder, AEScoder);

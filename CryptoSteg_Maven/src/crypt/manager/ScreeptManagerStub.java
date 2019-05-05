@@ -25,10 +25,9 @@ import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegOmResult;
-import iNIT.om.AesOption;
 import local.CustomFileComparator;
 import local.HandleString;
-import uTILS.local.ImageWorker;
+import media.ImageGeneralWorker;
 
 /**
  * 
@@ -766,7 +765,7 @@ public class ScreeptManagerStub {
 	 */
 	static public BufferedImage subImgMultOfNpx(BufferedImage key, int N) {
 		int newWidth = grantAreaMultipleOfN(key.getWidth(), key.getHeight(), N);
-		BufferedImage multNIMG = ImageWorker.getPortion(key, newWidth, key.getHeight());
+		BufferedImage multNIMG = ImageGeneralWorker.getPortion(key, newWidth, key.getHeight());
 		return multNIMG;
 	}
 	

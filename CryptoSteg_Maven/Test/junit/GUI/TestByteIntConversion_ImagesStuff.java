@@ -15,7 +15,7 @@ import configuration.RepeatedTestRule;
 import crypt.steg.StegCipher;
 import gUI.om.BufferedImageType;
 import local.ByteWorker;
-import uTILS.local.ImageWorker;
+import media.ImageGeneralWorker;
 
 import org.junit.Rule;
 
@@ -147,7 +147,7 @@ public class TestByteIntConversion_ImagesStuff {
 	public void testPossibleBitsPerPX() {
 		print(" => TEST image types bit X pixel\n");
 		for(BufferedImageType current : BufferedImageType.values()) {
-			int bitSize = ImageWorker.generaKeyImage(20, 20, current.getType()).getColorModel().getPixelSize();
+			int bitSize = ImageGeneralWorker.generaKeyImage(20, 20, current.getType()).getColorModel().getPixelSize();
 			print(" => Type: "+current+", SIZE in bits: "+bitSize);
 		}
 		separatorPrint();

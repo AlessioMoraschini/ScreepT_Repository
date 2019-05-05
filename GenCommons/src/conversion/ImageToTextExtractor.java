@@ -1,0 +1,60 @@
+package conversion;
+
+import java.io.File;
+
+import org.apache.log4j.Logger;
+
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+
+public class ImageToTextExtractor {
+	
+	// ImageToTextExtractor logger creation
+	static Logger logger = Logger.getLogger(ImageToTextExtractor.class);
+				
+	private ITesseract instanceOfExporter;
+	private String cachedText;
+	
+	/**
+	 * Uses default tessdata path "Resources_Scrypt/lib/tessdata"
+	 */
+	public ImageToTextExtractor() {
+		instanceOfExporter = new Tesseract();
+		instanceOfExporter.setDatapath("Resources_Scrypt/lib/tessdata");
+		cachedText = "";
+	}
+	
+	/**
+	 * Use custom tessDataFolderPath where you put the folder for configuration
+	 * @param tessDataFolderPath
+	 */
+	public ImageToTextExtractor(String tessDataFolderPath) {
+		instanceOfExporter = new Tesseract();
+		instanceOfExporter.setDatapath(tessDataFolderPath);
+		cachedText = "";
+	}
+
+	public String readTextFromImage(File imageFile) throws TesseractException {
+		
+		String result = "";
+		
+		result = instanceOfExporter.doOCR(imageFile);
+		cachedText = result;
+		
+		return result;
+	}
+
+	public ITesseract getInstanceOfExporter() {
+		return instanceOfExporter;
+	}
+
+	public void setInstanceOfExporter(Tesseract instanceOfExporter) {
+		this.instanceOfExporter = instanceOfExporter;
+	}
+
+	public String getCachedText() {
+		return cachedText;
+	}
+	
+}

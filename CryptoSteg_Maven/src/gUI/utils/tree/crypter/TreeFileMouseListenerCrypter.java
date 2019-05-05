@@ -36,9 +36,9 @@ import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
 import local.HandleString;
+import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
-import uTILS.local.ImageWorker;
 
 public class TreeFileMouseListenerCrypter {
 	
@@ -295,7 +295,7 @@ public class TreeFileMouseListenerCrypter {
 //			    Image scaledImage = image.getScaledInstance(imgKeyPanel.getWidth()-13, imgKeyPanel.getHeight()-13,Image.SCALE_FAST);
 
 				// way with custom repainter (keep type)
-				Image scaledImage = ImageWorker.scaleImage(image, image.getType(), imgKeyPanel.getWidth(), imgKeyPanel.getHeight());
+				Image scaledImage = ImageGeneralWorker.scaleImage(image, image.getType(), imgKeyPanel.getWidth(), imgKeyPanel.getHeight());
 			
 				refreshImage(scaledImage);
 				

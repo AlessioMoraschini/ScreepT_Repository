@@ -15,6 +15,7 @@ import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import iNIT.INItializer;
 import maingUI.mainGUI;
+import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
@@ -217,7 +218,7 @@ public class ChargeIniLog extends JPanel{
 					config.setIniFile(new Wini(config.getIniFile().getFile()));
 					config.setIniReadFile(new Wini(config.getIniFile().getFile()));
 					lblAvviso.setText("[Configuration re-loaded!]");
-					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 					textAreaToTop();
@@ -234,7 +235,7 @@ public class ChargeIniLog extends JPanel{
 				logger.debug("Load CONFIG clicked");
 				INIfileChoosER panel = new INIfileChoosER(config, textArea, lblAvviso);
 		    	panel.setBounds(20,20,parent.getMainFrame().getWidth(),parent.getMainFrame().getHeight()/2);  	
-				lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+				lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 				textAreaToTop();
@@ -248,7 +249,7 @@ public class ChargeIniLog extends JPanel{
 				logger.debug("SAVE CONFIG clicked");
 				if(saveCurrentConf(config, parent.getMainFrame())) {
 					lblAvviso.setText("Configuration saved");
-					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 				}
 			}
 		});
@@ -259,7 +260,7 @@ public class ChargeIniLog extends JPanel{
 				logger.debug("EXPORT CONFIG clicked");
 		    	INIfileChoosER panel = new INIfileChoosER(config, lblAvviso);
 		    	panel.setBounds(20,20,400,300);
-		    	lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+		    	lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 			}
 		});
 		
@@ -285,7 +286,7 @@ public class ChargeIniLog extends JPanel{
 						logger.error("Exception happened!", exc);
 					}
 					
-					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" +config.toStringa());
 					
@@ -321,7 +322,7 @@ public class ChargeIniLog extends JPanel{
 					config.setIniFile(new Wini(backupIni));
 					config.setIniReadFile(new Ini(backupIni));
 					parent.updateGuiFromCurrConfig();
-					lblAvviso.setForeground(ImageWorker.randomColorRGB(4f));
+					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 				} catch (IOException e1) {
 					logger.error("Exception happened!", e1);
 					JOptionPane.showMessageDialog(parent.getMainFrame(), "An error occurred :(", "Error", JOptionPane.ERROR_MESSAGE);

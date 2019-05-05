@@ -2,24 +2,21 @@ package sTEG;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import org.junit.Test;
 
-import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
-import uTILS.local.ImageWorker;
-import crypt.steg.STEGException;
+import media.ImageGeneralWorker;
 
 public class StegTest {
 
 	@Test
-	public void testCryptByte_1() throws STEGException {
+	public void testCryptByte_1() throws media.STEGException {
 		int testTypeImg = BufferedImage.TYPE_3BYTE_BGR;
 		
 		ArrayList<Byte> sourceBytes = generateRandomByteList(400);
-		BufferedImage generatedImage = ImageWorker.generaKeyImage(20, 20, testTypeImg);
+		BufferedImage generatedImage = ImageGeneralWorker.generaKeyImage(20, 20, testTypeImg);
 		StegCipher STEG = new StegCipher(generatedImage, testTypeImg); 
 		STEG.stegaCrypt(sourceBytes);
 		

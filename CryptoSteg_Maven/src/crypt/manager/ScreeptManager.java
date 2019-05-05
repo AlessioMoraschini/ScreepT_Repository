@@ -28,15 +28,12 @@ import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
-import crypt.steg.STEGException;
+import media.STEGException;
 import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
-import iNIT.INItializer;
-import iNIT.om.AesOption;
-import local.ByteArrayShuffler;
 import local.CustomFileComparator;
 import local.EntophyzerUtils;
-import uTILS.local.ImageWorker;
+import media.ImageGeneralWorker;
 
 /**
  * 
@@ -585,7 +582,7 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException {
 
-		int[] keyIndexes = ImageWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 		
 		if(progUpdater == null) progUpdater = new TestUpdateProgress();
 		progUpdater.getPb().setValue(0);
@@ -684,7 +681,7 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
 
-		int[] keyIndexes = ImageWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
 		if(progUpdater == null) progUpdater = new TestUpdateProgress();
 		progUpdater.getPb().setValue(0);
@@ -770,7 +767,7 @@ public class ScreeptManager {
 	// this is method for top security
 	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 				
-		int[] keyIndexes = ImageWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
 		if(progUpdater == null) progUpdater = new TestUpdateProgress();
 		progUpdater.getPb().setValue(0);
@@ -892,7 +889,7 @@ public class ScreeptManager {
 	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
 	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
 		
-		int[] keyIndexes = ImageWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
 		if(progUpdater == null) progUpdater = new TestUpdateProgress();
 		progUpdater.getPb().setValue(0);
@@ -1048,7 +1045,7 @@ public class ScreeptManager {
 	 */
 	static public BufferedImage subImgMultOfNpx(BufferedImage key, int N) {
 		int newWidth = grantAreaMultipleOfN(key.getWidth(), key.getHeight(), N);
-		BufferedImage multNIMG = ImageWorker.getPortion(key, newWidth, key.getHeight());
+		BufferedImage multNIMG = ImageGeneralWorker.getPortion(key, newWidth, key.getHeight());
 		return multNIMG;
 	}
 	

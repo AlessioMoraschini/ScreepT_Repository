@@ -83,8 +83,16 @@ public class GuiUtils {
 	}
 	
 	public static void moveFrame(Component element, int xDiff, int yDiff) {
-		int newX = ((element.getX() + xDiff) < 0)? 0 : (element.getX() + xDiff);
-		int newY = ((element.getY() + yDiff) < 0)? 0 : (element.getY() + yDiff);
+		int totX = (element.getX() + xDiff);
+		int totY = (element.getY() + yDiff);
+		int newX = (totX < 0)? 0 : totX;
+		int newY = (totY < 0)? 0 : totY;
+		int maxDeltaX = getScreenSize().width - newX - element.getWidth();
+		int maxDeltaY = getScreenSize().height - newY - element.getHeight();
+		
+		newX = (maxDeltaX < 0)? getScreenSize().width - element.getWidth() : newX;
+		newY = (maxDeltaY < 0)? getScreenSize().height - element.getHeight() : newY;
+		
 		element.setBounds(new Rectangle(newX, newY, element.getWidth(), element.getHeight()));
 	}
 	

@@ -18,10 +18,10 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import gUI.om.BufferedImageType;
 import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
+import media.ImageGeneralWorker;
 import uTILS.local.ImageWorker;
 
 public class ImageGenContainerPanel extends JPanel{
@@ -120,7 +120,7 @@ public class ImageGenContainerPanel extends JPanel{
     // constructor to print image on this.JPanel object extender, and save it on the given file
     public ImageGenContainerPanel(int width, int height,int type, File dest, String imgExtension, Panel thisPanel) throws IOException {
         
-        image = ImageWorker.generaKeyImageAndWrite(width, height, type, dest, imgExtension);
+        image = ImageGeneralWorker.generaKeyImageAndWrite(width, height, type, dest, imgExtension);
         scaledImage = image.getScaledInstance(thisPanel.getWidth(),thisPanel.getHeight(),Image.SCALE_FAST);
         JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
         add(picLabel);        
