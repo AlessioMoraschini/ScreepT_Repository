@@ -12,6 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import frameutils.GuiUtils;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
@@ -82,17 +83,21 @@ public class TemplatesChoosePanel extends JFrame{
 		panel.add(lblTemplates, "cell 5 0,alignx center");
 		
 		comboTemplateSelector = new JComboBox<String>(retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER));
+		comboTemplateSelector.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(comboTemplateSelector, "cell 0 1,growx");
 		
 		AddCustomFromFile = new JButton("Add Custom Template");
+		AddCustomFromFile.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(AddCustomFromFile, "cell 1 1,growx");
 		
 		btnInject = new JButton("Inject template");
+		btnInject.setCursor(GuiUtils.CURSOR_HAND);
 		btnInject.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnInject.setBackground(Color.GRAY);
 		getContentPane().add(btnInject, "cell 0 2,growx");
 		
 		btnAddSelectionToTemplates = new JButton("Add Selection to Templates");
+		btnAddSelectionToTemplates.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnAddSelectionToTemplates, "cell 1 2,growx");
 		
 		addHandlers();

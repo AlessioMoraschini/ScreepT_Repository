@@ -3,6 +3,7 @@ package gUI.utils.shortcutshandler;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -10,11 +11,14 @@ import javax.swing.undo.UndoManager;
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
+import resources.IconsPathConfigurator;
 
 public class TextEditorListener implements KeyEventDispatcher{
 	
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditorListener.class);
+	
+	public static volatile boolean flagCtrlPressed = false;
 	
 	TextEditor currentTextEditor;
 	
@@ -48,8 +52,17 @@ public class TextEditorListener implements KeyEventDispatcher{
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
+
+			/**
+			 * ONLY CTRL PRESSED FLAG
+			 */
+			if (e.isControlDown()) {
+				flagCtrlPressed = true;
+				doControlActions();
+			}
 			
 			if (isShortcutKey(e)) {
+				
 				
 				/**
 				 *  UNDO
@@ -107,6 +120,12 @@ public class TextEditorListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED  && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 	      
+			
+			if(!e.isControlDown()){
+				flagCtrlPressed = false;
+				doControlActions();
+			}
+			
 			if (isShortcutKey(e)) {
 				
 				/**
@@ -200,6 +219,14 @@ public class TextEditorListener implements KeyEventDispatcher{
 				 */
 				// case ctrl+f=> FIND
 				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					if(currentTextEditor.searchBox != null && currentTextEditor.searchBox.active){
+						String selected = currentTextEditor.textArea_1.getSelectedText();
+						if(selected != null && !selected.equals("")) {
+							currentTextEditor.searchBox.searchTextField.setText(selected);
+							currentTextEditor.searchBox.searchTextField.setSelectionStart(0);
+							currentTextEditor.searchBox.searchTextField.setSelectionEnd(selected.length());
+						}
+					}
 					currentTextEditor.btnFindText.doClick();
 				}
 				/**
@@ -260,5 +287,20 @@ public class TextEditorListener implements KeyEventDispatcher{
 	
 	private boolean isShortcutKey(KeyEvent e) {
 		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
+	}
+	
+	private void doControlActions() {
+		
+		if (flagCtrlPressed) {
+			currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditor.tooltipRemoveContent);
+			currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
+			currentTextEditor.btnViewInExplorer.setToolTipText(TextEditor.tooltipViewInCommandLine);
+			currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
+		}else {
+			currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditor.tooltipRemoveSpaces);
+			currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
+			currentTextEditor.btnViewInExplorer.setToolTipText(TextEditor.tooltipViewInSysExplorer);
+			currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
+		}
 	}
 }

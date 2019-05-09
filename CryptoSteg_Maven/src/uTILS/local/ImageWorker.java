@@ -103,7 +103,7 @@ public class ImageWorker {
 				generatedKeyimg.setRGB(j, i, pixelRGBValue);
 			}
 		}
-	   	loGGer.debug("Key generated!");
+	   	loGGer.info("Key generated!");
 		return generatedKeyimg;
 	}
 	
@@ -146,7 +146,7 @@ public class ImageWorker {
                   	esit = destFile.createNewFile();
         			esit = ImageIO.write(img, "png", destFile);
         			if(esit) {
-        				loGGer.debug("Image written: "+destFile.getAbsolutePath());
+        				loGGer.info("Image written: "+destFile.getAbsolutePath());
         			}
         		} catch (IOException e) {
         			loGGer.error("Exception happened!", e);
@@ -157,7 +157,7 @@ public class ImageWorker {
                		destFile = FileStuff.renameJavaObjFile(destFile);
         			esit = ImageIO.write(img, "png", destFile);
         			if(esit) {
-        				loGGer.debug("Image written: "+destFile.getAbsolutePath());
+        				loGGer.info("Image written: "+destFile.getAbsolutePath());
         			}
         		} catch (IOException e) {
         			loGGer.error("Exception happened!", e);

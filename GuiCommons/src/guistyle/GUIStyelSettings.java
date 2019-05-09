@@ -25,4 +25,8 @@ public class GUIStyelSettings{
 			return false;
 		}
     }
+    
+    public static void setFocusDefaultBtn() {
+    	UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE); 
+    }
 }

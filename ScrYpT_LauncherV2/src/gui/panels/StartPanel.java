@@ -82,19 +82,15 @@ public class StartPanel extends JFrame{
 		mainPanel.add(lblWelcomeToScrypt, "cell 0 0 6 1,alignx center");
 		
 		btnStartScrypt = new JButton("Start ScrYpT");
-		btnStartScrypt.setFocusPainted(false);
 		btnStartScrypt.setMargin(new Insets(10, 10, 10, 10));
 		btnStartScrypt.setForeground(new Color(0, 0, 0));
 		btnStartScrypt.setBorder(null);
-		btnStartScrypt.setBackground(new Color(34, 139, 34));
+		btnStartScrypt.setBackground(new Color(102, 153, 51));
 		btnStartScrypt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		mainPanel.add(btnStartScrypt, "cell 3 1 3 2,grow");
 		
 		btnCustomizeParameters = new JButton("Customize launch parameters");
-		btnCustomizeParameters.setFocusable(false);
-		btnCustomizeParameters.setRequestFocusEnabled(false);
-		btnCustomizeParameters.setFocusPainted(false);
 		btnCustomizeParameters.setBorder(null);
 		btnCustomizeParameters.setForeground(new Color(0, 0, 0));
 		btnCustomizeParameters.setBackground(new Color(169, 169, 169));
@@ -103,7 +99,6 @@ public class StartPanel extends JFrame{
 		mainPanel.add(btnCustomizeParameters, "cell 0 1 3 1,grow");
 		
 		btnDependencyManager = new JButton("Open Dependency Manager");
-		btnDependencyManager.setFocusPainted(false);
 		btnDependencyManager.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDependencyManager.setForeground(Color.BLACK);
 		btnDependencyManager.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -127,13 +122,6 @@ public class StartPanel extends JFrame{
 		mainPanel.add(label, "cell 4 3 2 1,alignx right,aligny bottom");
 	
 		addHandlers();
-		
-		ButtonDefaults.setDefaultOnFocus(btnDependencyManager, LAUNCHER_GUI);
-		ButtonDefaults.setDefaultOnFocus(btnCustomizeParameters, LAUNCHER_GUI);
-		ButtonDefaults.setDefaultOnFocus(btnStartScrypt, LAUNCHER_GUI);
-		LAUNCHER_GUI.getRootPane().setDefaultButton(btnStartScrypt);
-		btnStartScrypt.requestFocusInWindow();
-		btnStartScrypt.grabFocus();
 		
 		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 		logger.info(this.getClass().getName() + " Started");
@@ -207,6 +195,7 @@ public class StartPanel extends JFrame{
 		}
 		// initialize default UI
 		GUIStyelSettings.setStyle(GUIStyelSettings.NimbusLookAndFeel);
+		GUIStyelSettings.setFocusDefaultBtn();
 	}
 	
 }

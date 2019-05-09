@@ -14,6 +14,8 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
 
+import local.HandleString;
+
 
 public class GenericFileChooser {
 	
@@ -36,7 +38,7 @@ public class GenericFileChooser {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
-        	if(selectedFile==null||!Arrays.asList(writerNames).contains(givenExtension)) {
+        	if(selectedFile==null||!Arrays.asList(HandleString.getUpperCaseArray(writerNames)).contains(givenExtension.toUpperCase())) {
         		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
@@ -189,7 +191,7 @@ public class GenericFileChooser {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
-        	if(selectedFile==null||!Arrays.asList(writerNames).contains(givenExtension)) {
+        	if(selectedFile==null||!Arrays.asList(HandleString.getUpperCaseArray(writerNames)).contains(givenExtension.toUpperCase())) {
         		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;

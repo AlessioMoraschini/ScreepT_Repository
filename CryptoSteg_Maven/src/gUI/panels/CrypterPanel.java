@@ -17,6 +17,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import amfileutils.filechangewatcher.FileChangeMonitor;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
@@ -183,6 +184,8 @@ public class CrypterPanel extends JPanel {
 	private File srcKeyImageFile;
 	
 	// CODERS objects - shared by methods
+	private boolean flagCreateNewMonitor = false;
+	public static FileChangeMonitor fileMonitor;
 	private AesCipher AEScoder;
 	private StegCipher STEGcoder;	
 	private ScreeptManager screepTManager;
@@ -639,6 +642,12 @@ public class CrypterPanel extends JPanel {
 				if(deleteAfterClose == JOptionPane.YES_OPTION) {
 					// if temporary mode create temp folder ScrYpT on desktop
 					destinationDir = new File(mainGUI.TEMP_DECRIPTED_ROOT_PATH);
+					
+					if (fileMonitor == null) {
+						flagCreateNewMonitor = true;
+					}else {
+						flagCreateNewMonitor = false;
+					}
 				}else {
 					// get output asking to user
 					destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
@@ -783,6 +792,10 @@ public class CrypterPanel extends JPanel {
 					}else{
 						JOptionPane.showMessageDialog(thisPanel, "No directory selected, export aborted!", "No directory selected", JOptionPane.WARNING_MESSAGE);
 					}
+				}
+				
+				if (flagCreateNewMonitor && fileMonitor == null) {
+					fileMonitor = new FileChangeMonitor(destinationDir, null);
 				}
 				
 				coderUsed=false;

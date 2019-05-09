@@ -29,7 +29,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import java.awt.Color;
-import java.awt.Desktop;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

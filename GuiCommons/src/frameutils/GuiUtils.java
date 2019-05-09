@@ -4,6 +4,7 @@ package frameutils;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -39,6 +40,11 @@ public class GuiUtils {
 	}
 	
 	public static void setFrameIcon(String icon, JFrame frameToSet) {
+		ImageIcon imgIcon = new ImageIcon(icon);
+		frameToSet.setIconImage(imgIcon.getImage());
+	}
+	
+	public static void setFrameIcon(String icon, Dialog frameToSet) {
 		ImageIcon imgIcon = new ImageIcon(icon);
 		frameToSet.setIconImage(imgIcon.getImage());
 	}

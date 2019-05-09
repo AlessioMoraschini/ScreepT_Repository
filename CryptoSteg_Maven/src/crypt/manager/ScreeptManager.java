@@ -496,7 +496,7 @@ public class ScreeptManager {
 		
 		String msg = "AES crypt phase ended: Output file => "+result.getName()+"\n";
 		tempMSG += msg;
-		logger.debug(msg);
+		logger.info(msg);
 		
 	}
 	
@@ -574,7 +574,7 @@ public class ScreeptManager {
 		
 		String msg = "AES decrypt phase ended: Output file => "+result.getName()+"\n";
 		tempMSG += msg;
-		logger.debug(msg);
+		logger.info(msg);
 		
 	}
 	
@@ -655,7 +655,7 @@ public class ScreeptManager {
 			if(OK) {
 				String msg = "\n=> STEG image number "+n+" written: Output file => "+outFile.getAbsolutePath();
 				tempMSG += msg;
-				logger.debug(msg);
+				logger.info(msg);
 				
 			}else {
 				streamIN.close();
@@ -744,7 +744,7 @@ public class ScreeptManager {
 			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
 			String msg = "\nSTEG decripting current coded image: "+iFile.getName();
 			tempMSG += msg;
-			logger.debug(msg);
+			logger.info(msg);
 			
 			i++;
 		}
@@ -757,7 +757,7 @@ public class ScreeptManager {
 		
 		String msg = "STEG decrypt phase ended: Output file => "+outFile.getAbsolutePath()+"\n";
 		tempMSG += msg;
-		logger.debug(msg);
+		logger.info(msg);
 					
 	}
 	
@@ -861,7 +861,7 @@ public class ScreeptManager {
 			if(OK) {
 				String msg = "\n=> COMPLETE image number "+n+" written: Output file => "+outFile.getAbsolutePath();
 				tempMSG += msg;
-				logger.debug(msg);
+				logger.info(msg);
 			}else {
 				streamIN.close();
 				String msg = "\n=> Error ocurred writing "+outFile.getAbsolutePath()+" ... exiting";
@@ -874,7 +874,7 @@ public class ScreeptManager {
 			progUpdater.getPb().setValue((int)(((float)buffer.length/(float)srcFile.length())*n*100));
 			String msg = "\n COMPLETE crypt curent file ended: Output file => "+outFile.getAbsolutePath();
 			tempMSG += msg;
-			logger.debug(msg);			
+			logger.info(msg);			
 			
 			n++;
 		}		
@@ -962,7 +962,7 @@ public class ScreeptManager {
 			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
 			String msg = "\nCOMPLETE decripting current coded image: "+iFile.getName();
 			tempMSG += msg;
-			logger.debug(msg);
+			logger.info(msg);
 			
 			i++;
 		}
@@ -972,7 +972,7 @@ public class ScreeptManager {
 		
 		String msg = "COMPLETE decrypt phase ended: Output file => "+outFile.getAbsolutePath()+"\n";
 		tempMSG += msg;
-		logger.debug(msg);
+		logger.info(msg);
 	}
 	
 	private long getAvailable(File source, long progN) {

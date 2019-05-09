@@ -194,6 +194,7 @@ public class INItializer {
 		textEditorOpt.setBackCol(backCol);
 		textEditorOpt.setForeCol(foreCol);
 		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
+		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
 		// margin
 		try {
 			textEditorOpt.setMargin(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "margin")));
@@ -231,7 +232,7 @@ public class INItializer {
 		algo = (ScalingAlgorithm.isValidString(algo))? algo : ImgConverterOption.DEFAULT_ALGORITHM.toString();
 		imageConvertOption.setAlgorithm(ScalingAlgorithm.valueOf(algo));
 		
-		logger.debug("Loaded ini file: "+ this.toStringa());
+		logger.info("Loaded ini file: "+ this.toStringa());
 	}
 	
 	
@@ -302,6 +303,7 @@ public class INItializer {
 		iniFile.put(STEGA_OPT, "imgKeyRecentPath", accumulator );
 		
 		// TEXT EDITOR OPTIONS
+		iniFile.put(TEXT_EDITOR_OPT, "inlineTabs", textEditorOpt.isInlinedTabs());
 		iniFile.put(TEXT_EDITOR_OPT, "font", HandleString.getFontString(textEditorOpt.font));
 		iniFile.put(TEXT_EDITOR_OPT, "backgroundCol", HandleString.getRgbString(textEditorOpt.backCol));
 		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", HandleString.getRgbString(textEditorOpt.foreCol));
@@ -316,7 +318,7 @@ public class INItializer {
 		iniFile.put(IMAGE_CONVERTER_OPT, "quality", imageConvertOption.quality);
 		iniFile.put(IMAGE_CONVERTER_OPT, "algorithm", imageConvertOption.algorithm);
 
-	logger.debug("Configuration written to: "+iniFile.getFile().getAbsolutePath() + this.toStringa());
+	logger.info("Configuration written to: "+iniFile.getFile().getAbsolutePath() + this.toStringa());
 		
 		// WRITE ALL VALUES TO FILE
 		try {
@@ -445,6 +447,7 @@ public class INItializer {
 		// concat TEXT EDITOR OPTIONS
 		builder.append("\n\n ---- TEXT EDITOR -----\n\n")
 			   .append("FONT: ").append(textEditorOpt.font)
+			   .append("\nINLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)

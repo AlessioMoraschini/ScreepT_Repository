@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
 import iNIT.INItializer;
+import maingUI.mainGUI;
 
 public class TestUpdateProgress {
 	
@@ -163,7 +164,8 @@ public class TestUpdateProgress {
 		}
 		
 		dialog = new JDialog();
-        dialog.setMinimumSize(new Dimension(PanelWidth, PanelHeight));
+		GuiUtils.setFrameIcon(mainGUI.ICON_FILE_PATH, dialog);
+		dialog.setMinimumSize(new Dimension(PanelWidth, PanelHeight));
         dialog.setBounds(new Rectangle(LeftStart, TopStart, PanelWidth, PanelHeight));
         dialog.setTitle("Processing");
         GridBagLayout gridBagLayout = new GridBagLayout();

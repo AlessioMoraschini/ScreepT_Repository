@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import javax.swing.JTextArea;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -122,6 +123,38 @@ public class HandleString {
 		} catch(NullPointerException e) {
 			return source;
 		}
+	}
+	
+	/**
+	 * this function take a string parameter and a jtextarea to remove from all occurrences of parameter
+	 * 
+	 * @return the integer new selection end of the string
+	 */
+	public static int removeCharachterFromTxtArea(String toRemove, JTextArea textSourceArea, int startSel, int endSel) {
+		textSourceArea.requestFocus();
+		textSourceArea.setSelectionStart(startSel);
+		textSourceArea.setSelectionEnd(endSel);
+		String selText = textSourceArea.getSelectedText();
+		String allText = textSourceArea.getText();
+		
+		int newEnd = 0;
+		
+		if (selText == null || selText.equals("")) {
+			String text = allText;
+			text = text.replaceAll(toRemove, "");
+			textSourceArea.setText(text);
+			newEnd = text.length();
+			
+		}else {
+			
+			String prefix = textSourceArea.getText().substring(0, startSel);
+			String postFix = textSourceArea.getText().substring(endSel, allText.length());
+			selText = selText.replaceAll(toRemove, "");
+			newEnd = startSel + selText.length();
+			
+			textSourceArea.setText(prefix.concat(selText).concat(postFix));
+		}
+		return newEnd;
 	}
 	
 	/**
@@ -246,10 +279,38 @@ public class HandleString {
 		return result;
 	}
 	
+	public static String lowerAfterDots(String source, char trigger) {
+		String result="";
+		// first letter lowercase
+		boolean flagNewUp = false; 
+		
+		// for every char in string if flag is true makeLower case, else add the same original char
+		for(int i=0; i<source.length(); i++) {
+			char character_i = source.charAt(i);
+			if (flagNewUp==true) {
+				result+=String.valueOf(character_i).toLowerCase();
+				// space and still to uppercase handler
+				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='�'||character_i=='�')) {
+					flagNewUp=false;
+				}		
+			}
+			else {
+				result+=String.valueOf(character_i);
+			}
+			
+			// finally update flag according to char value il blacklist
+			if (character_i==trigger || character_i=='?' || character_i=='!'){
+				flagNewUp=true;
+			}
+		}
+		
+		return result;
+	}
+	
 	public static String upperAfterDots(String source, char trigger) {
 		String result="";
 		// first letter uppercase
-		boolean flagNewUp = true; 
+		boolean flagNewUp = false; 
 		
 		// for every char in string if flag is true makeUpper case, else add the same original char
 		for(int i=0; i<source.length(); i++) {
@@ -273,6 +334,26 @@ public class HandleString {
 		
 		
 		return result;
+	}
+	
+	public static String[] getUpperCaseArray(String[] sourceStringArr) {
+		String[] uppercaseNames = new String[sourceStringArr.length];
+		int i = 0;
+		for(String s : sourceStringArr) {
+			uppercaseNames[i] = s.toUpperCase();
+			i++;
+		}
+		return uppercaseNames;
+	}
+	
+	public static String[] getLowerCaseArray(String[] sourceStringArr) {
+		String[] lowercaseNames = new String[sourceStringArr.length];
+		int i = 0;
+		for(String s : sourceStringArr) {
+			lowercaseNames[i] = s.toLowerCase();
+			i++;
+		}
+		return lowercaseNames;
 	}
 	
 	/**
@@ -310,34 +391,6 @@ public class HandleString {
 		
 	}
 
-	public static String lowerAfterDots(String source, char trigger) {
-		String result="";
-		// first letter lowercase
-		boolean flagNewUp = true; 
-		
-		// for every char in string if flag is true makeLower case, else add the same original char
-		for(int i=0; i<source.length(); i++) {
-			char character_i = source.charAt(i);
-			if (flagNewUp==true) {
-				result+=String.valueOf(character_i).toLowerCase();
-				// space and still to uppercase handler
-				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='�'||character_i=='�')) {
-					flagNewUp=false;
-				}		
-			}
-			else {
-				result+=String.valueOf(character_i);
-			}
-			
-			// finally update flag according to char value il blacklist
-			if (character_i==trigger || character_i=='?' || character_i=='!'){
-				flagNewUp=true;
-			}
-		}
-		
-		return result;
-	}
-	
 	/**
 	 * This method prints key and values from map
 	 * @param map

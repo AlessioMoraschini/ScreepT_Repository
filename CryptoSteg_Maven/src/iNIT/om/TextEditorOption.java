@@ -9,6 +9,7 @@ public class TextEditorOption {
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
 	public static final int DEFAULT_MARGIN = 18;
 	public static final int DEFAULT_VOICE_RATE = 3;
+	public static final boolean DEFAULT_TAB_INLINE = true;
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	public static final Color DEFAULT_BACKGROUND_COL = new Color(250,250,250);
 	public static final Color DEFAULT_FOREGROUND_COL = Color.BLACK;
@@ -17,6 +18,7 @@ public class TextEditorOption {
 	// FIELDS	
 	public int margin;
 	public int voiceRate;
+	public boolean inlinedTabs;
 	public Font font;
 	public Color backCol;
 	public Color foreCol;
@@ -34,6 +36,14 @@ public class TextEditorOption {
 		return openedFileList;
 	}
 	
+	public boolean isInlinedTabs() {
+		return inlinedTabs;
+	}
+
+	public void setInlinedTabs(boolean inlinedTabs) {
+		this.inlinedTabs = inlinedTabs;
+	}
+
 	public void setOpenedFileList(ArrayList<String> openedList) {
 		this.openedFileList = openedList;
 	}

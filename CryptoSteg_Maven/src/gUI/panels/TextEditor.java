@@ -2,8 +2,6 @@ package gUI.panels;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,6 +18,9 @@ import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
+import tabbedpaneutils.TabUtils;
+import textareautil.SelectionDto;
+import utils.SysUtils;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -33,7 +34,6 @@ import conversion.Text2Speech;
 import crypt.aes.AesCipher;
 import dialogutils.ColorDialogUtils;
 import frameutils.GuiUtils;
-import frameutils.ImageSelector2TextFrame;
 import frameutils.SearchFrame;
 import iNIT.INItializer;
 import iNIT.om.TextEditorOption;
@@ -73,10 +73,10 @@ import gUI.om.SupportedFileTextEditor;
 import gUI.om.TabTextEditorObj;
 import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorListener;
+import gui.ImageSelector2TextFrame;
 
 import javax.swing.JPasswordField;
 import java.awt.Cursor;
-import java.awt.Dimension;
 
 import javax.swing.border.EmptyBorder;
 
@@ -88,46 +88,50 @@ public class TextEditor extends JPanel {
 	public static final char DEFAULT_PSW_CHAR = '\u25CF';
 	public static final String DEFAULT_NEW_FILE_NAME  = "New.txt";
 	
-	public static final int TAB_ICON_ORDER = 0;
-	public static final int TAB_TITLE_ORDER = 1;
-	public static final int TAB_BUTTON_CLOSE_ORDER = 2;
-	
 	public static final int TEXT_AREA_TAB_SIZE = 2;
+	
+	public static final int MAX_TAB_LABELENGHT = 14;
 	
 	//  RESOURCE FILES //
 	private final String LOREM_IPSUM = "Resources_Scrypt/Templates/LoremIpsum.txt";
 	
 	// TOOLTIPS //
-	private static final String tooltipSaveTextFile = "[Ctrl+S] Save current file";
-	private static final String tooltipSaveTextFileAs = "[Ctrl+Shift+S] Choose name and folder, save current file";
-	private static final String tooltipReloadFromDisk = "[Ctrl+Shift+R] Reload current file from Disk"; 
-	private static final String tooltipLoadTextFile = "[Ctrl+O] Load source File";
-	private static final String tooltipNewEmptyTab = "[Ctrl+N] Create a new empty tab";
-	private static final String tooltipSpeak = "[Ctrl+spacebar] Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable";
-	private static final String tooltipDecrypt = "[Ctrl+shift+D] Decrypt displayed text with given key";
-	private static final String tooltipCrypt = "[Ctrl+shift+C] Crypt displayed text with given key";
-	private static final String tooltipBackgroundColor = "Change background color (won't be saved in .txt)";
-	private static final String tooltipForegroundTxt = "Change text color (won't be saved in .txt)";
-	private static final String tooltipDarkSwitch = "[Ctrl+B] Switch upon dark and light text combination";
-	private static final String tooltipUpperPostDots = "Makes text uppercase after dots a significat line brokers";
-	private static final String tooltipTt = "[Ctrl+Shift+UP] Makes selected text uppercase";
-	private static final String tooltipTtTt = "[Ctrl+shift+dot] Makes al initial characters uppercase";
-	private static final String tooltipLoremIpsum = "Insert classic test text \"Lorem Ipsum\"";
-	private static final String tooltipParseImage = "Read Image and parse text";
-	private static final String tooltipFindText = "[Ctrl+F] Search text into current editor";
-	private static final String tooltipFontChooser = "Change font and text-properties";
-	private static final String tooltipComboFileFormat = "Choose file extension";
-	private static final String tooltipTemplates = "Choose between many different patterns of code to insert in you text";
-	private static final String tooltipCutWordsTo = "When selected, the text will be cropped to adapt the size of the text area";
-	private static final String tooltipFitMaintainWords = "When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)";
-	private static final String tooltipDefaultOpt = "Reset default text-graphics values";
-	private static final String tooltipUndo = "[Ctrl+Z] Undo Last";
-	private static final String tooltipClearText = "[Ctrl+canc] Erase the content of the current opened file displayed (without save)";
-	private static final String tooltipRedo = "[Alt+Z] Redo Last";
-	private static final String tooltipBoldText = "Set bold style to all text";
-	private static final String tooltipItalic = "Set italics style to all text"; 
+	public static final String tooltipSaveTextFile = "[Ctrl+S] Save current file";
+	public static final String tooltipSaveTextFileAs = "[Ctrl+Shift+S] Choose name and folder, save current file";
+	public static final String tooltipReloadFromDisk = "[Ctrl+Shift+R] Reload current file from Disk"; 
+	public static final String tooltipLoadTextFile = "[Ctrl+O] Load source File";
+	public static final String tooltipNewEmptyTab = "[Ctrl+N] Create a new empty tab";
+	public static final String tooltipSpeak = "[Ctrl+spacebar] Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable";
+	public static final String tooltipDecrypt = "[Ctrl+shift+D] Decrypt text with given key";
+	public static final String tooltipCrypt = "[Ctrl+shift+C] Crypt text with given key";
+	public static final String tooltipBackgroundColor = "Change background color (won't be saved in .txt)";
+	public static final String tooltipForegroundTxt = "Change text color (won't be saved in .txt)";
+	public static final String tooltipDarkSwitch = "[Ctrl+B] Switch upon dark and light text combination";
+	public static final String tooltipUpperPostDots = "Makes text uppercase after dots, or a significat line brokers";
+	public static final String tooltipLowerPostDots = "Makes text lowerCase after dots, or a significat line brokers";
+	public static final String tooltipTt = "[Ctrl+Shift+UP] Makes selected/all text uppercase";
+	public static final String tooltipTtTt = "[Ctrl+shift+dot] Makes selected/all initial characters uppercase";
+	public static final String tooltipLoremIpsum = "Insert classic test text \"Lorem Ipsum\"";
+	public static final String tooltipParseImage = "Read Image and parse text";
+	public static final String tooltipFindText = "[Ctrl+F] Search text into current editor";
+	public static final String tooltipFontChooser = "Change font and text-properties";
+	public static final String tooltipComboFileFormat = "Choose file extension";
+	public static final String tooltipTemplates = "Choose between many different patterns of code to insert in you text";
+	public static final String tooltipCutWordsTo = "When selected, the text will be cropped to adapt the size of the text area";
+	public static final String tooltipFitMaintainWords = "When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)";
+	public static final String tooltipDefaultOpt = "Reset default text-graphics values";
+	public static final String tooltipRemoveSpaces = "Remove spaces from selected/all text (press Ctrl to choose a character to remove)";
+	public static final String tooltipRemoveContent = "Remove specific words from selected/all text";
+	public static final String tooltipUndo = "[Ctrl+Z] Undo Last";
+	public static final String tooltipClearText = "[Ctrl+canc] Erase the content of the current opened file displayed (without save)";
+	public static final String tooltipRedo = "[Alt+Z] Redo Last";
+	public static final String tooltipBoldText = "Set bold style to all text";
+	public static final String tooltipItalic = "Set italics style to all text"; 
+	public static final String tooltipViewInSysExplorer = "View in System Explorer (press Ctrl to open in Command Line)";
+	public static final String tooltipViewInCommandLine = "View in Command line";
 	
 	// GUI Objects //
+	private JCheckBox checkBoxInlineTabs;
 	public JCheckBox chkFitmantainwords;
 	public JCheckBox chkCutWordsTo;
 	
@@ -135,6 +139,7 @@ public class TextEditor extends JPanel {
 	private JLabel lblNewLabel;
 	private JLabel lblTextEditor;
 	private JLabel lblMargin;
+	private JLabel lBLMargin;
 	private JLabel lblFontSize;
 	private JLabel lblCurrentFileLBL;
 	private JLabel lblCurrentFile;
@@ -151,6 +156,7 @@ public class TextEditor extends JPanel {
 	public JButton btnCrypt;
 	public JButton btnDark;
 	public JButton btnUpperPostDots;
+	private JButton btnLowerAfterDots;
 	public JButton btnTt;
 	public JButton btnTtTt;
 	public JButton btnBackgroundCol; 
@@ -166,7 +172,10 @@ public class TextEditor extends JPanel {
 	public JButton btnItaliC;
 	public JButton btnForegroundCol;
 	public JButton btnFindText;
-	private JButton btnNewTab;
+	public JButton btnNewTab;
+	public JButton btnRemoveSpaces;
+	public JButton btnViewInExplorer;
+	
 	private JSeparator separator_2;
 	
 	public JComboBox comboFileFormat;
@@ -179,10 +188,10 @@ public class TextEditor extends JPanel {
 	public TabTextEditorObj loadedTabObj;
 	private JScrollPane textScrollPaneArea;
 	public JTabbedPane mainTabList;
-	private JTextArea textArea_1;
+	public JTextArea textArea_1;
 	private DocumentListener textAreaChangedListener;
 	private JPasswordField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as default
-	private SearchFrame searchBox;
+	public SearchFrame searchBox;
 	private ImageSelector2TextFrame imageParserBox;
 	
 	private int lastIndexTabbedPane=0;
@@ -197,8 +206,6 @@ public class TextEditor extends JPanel {
 	public JFrame parentFrame; // the frame that instantiate this object
 
 	// GENERAL FIELDS //
-	// values used in editor functions Tt Tt and .Tt
-	private boolean uppercaseDots;
 	private boolean uppercase;
 	private String backupText;
 	
@@ -219,7 +226,6 @@ public class TextEditor extends JPanel {
 	private JCheckBox chckbxAesShowKey;
 	
 	private File loadedFile;
-	private JCheckBox checkBoxInlineTabs;
 	
 //	private static TestUpdateProgress loaderGraphics;
 	
@@ -243,7 +249,6 @@ public class TextEditor extends JPanel {
 		LBL_ADVICE_COLOR = new Color(124, 252, 0);
 		textMargin = 14;
 		uppercase = false;
-		uppercaseDots=true;
 		
 		textArea_1 = new JTextArea();
 		textArea_1.setTabSize(TEXT_AREA_TAB_SIZE);
@@ -255,7 +260,7 @@ public class TextEditor extends JPanel {
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMaximumSize(GuiUtils.getScreenSize(10));
-		mainPanel.setLayout(new MigLayout("", "[40][40][40px][40px][40px][40px][][][][:40:40][:40:40][:40:40][:40:40][:40px:40px][:50px:50px][:50px:50px][20][20][30][40.00][40,fill][:40px:40px][70][35px:35][35,grow][35,grow][70]", "[:20:50px,grow][][20][][25][25][][52.33%,grow]"));
+		mainPanel.setLayout(new MigLayout("", "[40][40][40px][40px][40px][40px][][][][:40:40][:40:40][:40:40][:40:40][:40px:40px][:50px:50px][:50px:50px][20][20][30][40.00][40,fill][:40px:40px][:55px:55px][35px:35:35px][35][35][70,grow]", "[:20:50px,grow][][20][][25][25][][52.33%,grow]"));
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		mainScrollPane.setBackground(Color.DARK_GRAY);
@@ -274,13 +279,13 @@ public class TextEditor extends JPanel {
 		
 		lblVoiceSpeed = new JLabel("Voice rate");
 		lblVoiceSpeed.setForeground(new Color(211, 211, 211));
-		mainPanel.add(lblVoiceSpeed, "cell 12 2 2 1,alignx center");
+		mainPanel.add(lblVoiceSpeed, "cell 19 2,alignx center");
 		
 		sliderSpokenSpeed = new JSlider();
 		sliderSpokenSpeed.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		sliderSpokenSpeed.setValue(currentConfiguration.getTextEditorOpt().getVoiceRate());
 		sliderSpokenSpeed.setMaximum(400);
-		mainPanel.add(sliderSpokenSpeed, "cell 14 2 2 1,alignx center");
+		mainPanel.add(sliderSpokenSpeed, "cell 20 2 3 1,alignx center");
 		
 		lblAdvice = new JLabel("");
 		lblAdvice.setBackground(SystemColor.info);
@@ -322,12 +327,13 @@ public class TextEditor extends JPanel {
 		btnReloadFromDisk.setBackground(SystemColor.inactiveCaption);
 		mainPanel.add(btnReloadFromDisk, "cell 4 4,grow");
 		
-		comboFileFormat = new JComboBox();
-		comboFileFormat.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		comboFileFormat.setToolTipText(tooltipComboFileFormat);
-		comboFileFormat.setBackground(Color.gray);
-		comboFileFormat.setModel(new DefaultComboBoxModel(SupportedFileTextEditor.values()));
-		mainPanel.add(comboFileFormat, "cell 5 4 2 1,growx");
+		btnDefaultOpt = new JButton("Default Opt");
+		btnDefaultOpt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnDefaultOpt.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnDefaultOpt.setToolTipText(tooltipDefaultOpt);
+		btnDefaultOpt.setForeground(SystemColor.menuText);
+		btnDefaultOpt.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnDefaultOpt, "cell 5 4 2 1,growx");
 		
 		btntTextFormat = new JButton("Format");
 		btntTextFormat.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -335,13 +341,55 @@ public class TextEditor extends JPanel {
 		btntTextFormat.setBackground(new Color(176, 196, 222));
 		mainPanel.add(btntTextFormat, "cell 7 4 2 1,growx");
 		
-		btnClear = new JButton("");
-		btnClear.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnClear.setToolTipText(tooltipClearText);
-		btnClear.setBackground(new Color(176, 196, 222));
-		btnClear.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
-		btnClear.setFont(new Font("Wide Latin", Font.BOLD, 14));
-		mainPanel.add(btnClear, "cell 11 4,alignx center,aligny center");
+		btnViewInExplorer = new JButton("");
+		btnViewInExplorer.setToolTipText(tooltipViewInSysExplorer);
+		btnViewInExplorer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
+		btnViewInExplorer.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnViewInExplorer, "cell 9 4,alignx center");
+		
+		btnUndo = new JButton("");
+		btnUndo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnUndo.setToolTipText(tooltipUndo);
+		btnUndo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
+		btnUndo.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnUndo, "cell 10 4,alignx center");
+		
+		btnRedo = new JButton("");
+		btnRedo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnRedo.setToolTipText(tooltipRedo);
+		btnRedo.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnRedo, "cell 11 4,alignx center");
+		btnRedo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
+		
+		btnBold = new JButton("");
+		btnBold.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnBold.setToolTipText(tooltipBoldText);
+		btnBold.setBackground(new Color(176, 196, 222));
+		btnBold.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BOLD));
+		mainPanel.add(btnBold, "cell 12 4,alignx center");
+		
+		btnItaliC = new JButton("");
+		btnItaliC.setToolTipText(tooltipItalic);
+		btnItaliC.setBackground(new Color(176, 196, 222));
+		btnItaliC.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnItaliC.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_ITALIC));
+		mainPanel.add(btnItaliC, "cell 13 4,alignx center");
+		
+		btnLoremIpsum = new JButton("Lorem Ipsum");
+		btnLoremIpsum.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnLoremIpsum.setToolTipText(tooltipLoremIpsum);
+		btnLoremIpsum.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnLoremIpsum.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnLoremIpsum, "cell 19 4,growx");
+		
+		btnSpeak = new JButton("");
+		btnSpeak.setCursor(GuiUtils.CURSOR_HAND);
+		btnSpeak.setToolTipText(tooltipSpeak);
+		btnSpeak.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPEAKER));
+		btnSpeak.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnSpeak.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnSpeak, "cell 20 4,alignx center");
 		
 		btnFindText = new JButton("");
 		btnFindText.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -350,22 +398,7 @@ public class TextEditor extends JPanel {
 		btnFindText.setBackground(SystemColor.activeCaption);
 		btnFindText.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnFindText.setBackground(new Color(176, 196, 222));
-		mainPanel.add(btnFindText, "cell 13 4,alignx center");
-		
-		btnLoremIpsum = new JButton("Lorem Ipsum");
-		btnLoremIpsum.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnLoremIpsum.setToolTipText(tooltipLoremIpsum);
-		btnLoremIpsum.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnLoremIpsum.setBackground(new Color(176, 196, 222));
-		mainPanel.add(btnLoremIpsum, "cell 19 4 1 1,growx");
-		
-		btnParseImageText = new JButton("");
-		btnParseImageText.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnParseImageText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
-		btnParseImageText.setToolTipText(tooltipParseImage);
-		btnParseImageText.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnParseImageText.setBackground(new Color(176, 196, 222));
-		mainPanel.add(btnParseImageText, "cell 20 4 1 1,growx");
+		mainPanel.add(btnFindText, "cell 21 4,alignx center");
 		
 		lblMargin = new JLabel("Margin:");
 		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
@@ -373,13 +406,53 @@ public class TextEditor extends JPanel {
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
 		mainPanel.add(lblMargin, "cell 22 4,alignx center");
 		
-		btnDefaultOpt = new JButton("Default Opt");
-		btnDefaultOpt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnDefaultOpt.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnDefaultOpt.setToolTipText(tooltipDefaultOpt);
-		btnDefaultOpt.setForeground(SystemColor.menuText);
-		btnDefaultOpt.setBackground(new Color(179, 179, 230));
-		mainPanel.add(btnDefaultOpt, "cell 3 5 3 1,growx");
+		lBLMargin = new JLabel("12");
+		lBLMargin.setForeground(Color.WHITE);
+		mainPanel.add(lBLMargin, "cell 23 4,alignx center");
+		
+		comboFileFormat = new JComboBox();
+		comboFileFormat.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		comboFileFormat.setToolTipText(tooltipComboFileFormat);
+		comboFileFormat.setBackground(Color.gray);
+		comboFileFormat.setModel(new DefaultComboBoxModel(SupportedFileTextEditor.values()));
+		mainPanel.add(comboFileFormat, "cell 3 5 2 1,growx");
+		
+		btnTtTt = new JButton("Tt Tt");
+		btnTtTt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnTtTt.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnTtTt.setBackground(new Color(176, 196, 222));
+		btnTtTt.setToolTipText(tooltipTtTt);
+		mainPanel.add(btnTtTt, "cell 5 5,growx");
+		
+		btnUpperPostDots = new JButton(".Tt");
+		btnUpperPostDots.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnUpperPostDots.setToolTipText(tooltipUpperPostDots);
+		btnUpperPostDots.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnUpperPostDots.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnUpperPostDots, "cell 7 5,growx");
+		
+		btnLowerAfterDots = new JButton(".tT");
+		btnLowerAfterDots.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnLowerAfterDots.setToolTipText(tooltipLowerPostDots);
+		btnLowerAfterDots.setToolTipText("Makes text uppercase after dots, or a significat line brokers");
+		btnLowerAfterDots.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnLowerAfterDots.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnLowerAfterDots, "cell 8 5");
+		
+		btnClear = new JButton("");
+		btnClear.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnClear.setToolTipText(tooltipClearText);
+		btnClear.setBackground(new Color(176, 196, 222));
+		btnClear.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+		btnClear.setFont(new Font("Wide Latin", Font.BOLD, 14));
+		mainPanel.add(btnClear, "cell 9 5,alignx center,aligny center");
+		
+		btnRemoveSpaces = new JButton("");
+		btnRemoveSpaces.setToolTipText(tooltipRemoveSpaces);
+		btnRemoveSpaces.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
+		btnRemoveSpaces.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnRemoveSpaces, "cell 10 5,alignx center");
 		
 		btnBackgroundCol = new JButton("");
 		btnBackgroundCol.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -433,7 +506,15 @@ public class TextEditor extends JPanel {
 		btnTemplates.setToolTipText(tooltipTemplates);
 		btnTemplates.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnTemplates.setBackground(new Color(176, 196, 222));
-		mainPanel.add(btnTemplates, "cell 19 5 2 1,growx");
+		mainPanel.add(btnTemplates, "cell 19 5,growx");
+		
+		btnParseImageText = new JButton("");
+		btnParseImageText.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnParseImageText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
+		btnParseImageText.setToolTipText(tooltipParseImage);
+		btnParseImageText.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnParseImageText.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnParseImageText, "cell 20 5,alignx center");
 		
 		lblFontSize = new JLabel("Font size: ");
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
@@ -479,6 +560,8 @@ public class TextEditor extends JPanel {
 		chkFitmantainwords.setEnabled(false);
 
 		mainTabList = new JTabbedPane(JTabbedPane.TOP);
+		mainTabList.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+		mainTabList.setBackground(Color.DARK_GRAY);
 		mainTabList.setMaximumSize(GuiUtils.getScreenSize(15));
 		mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		textScrollPaneArea.setViewportView(textArea_1);
@@ -488,7 +571,7 @@ public class TextEditor extends JPanel {
 		mainPanel.add(separator_2, "cell 0 6 27 1,growx");
 		mainPanel.add(mainTabList, "cell 0 7 27 1,grow");
 		
-		addTab(null, true);
+		addTab(null, true); // comment for editing in windowuilder
 //		textArea_1.getDocument().addUndoableEditListener(loadedTabObj.undoManager);
 		
 		sliderFontSize = new JSlider(4,100);
@@ -503,18 +586,10 @@ public class TextEditor extends JPanel {
 		mainPanel.add(lblSIZE, "cell 23 5,alignx center");
 		lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
 		
-		btnSpeak = new JButton("");
-		btnSpeak.setCursor(GuiUtils.CURSOR_HAND);
-		btnSpeak.setToolTipText(tooltipSpeak);
-		btnSpeak.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPEAKER));
-		btnSpeak.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnSpeak.setBackground(new Color(176, 196, 222));
-		mainPanel.add(btnSpeak, "cell 12 4,alignx center");
-		
 		lblNewLabel = new JLabel("\u2193  (AES KEY)  \u2193");
 		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblNewLabel.setForeground(new Color(211, 211, 211));
-		mainPanel.add(lblNewLabel, "cell 16 2 3 1,alignx center");
+		mainPanel.add(lblNewLabel, "cell 14 2 5 1,alignx center");
 		
 		JSeparator separator_1 = new JSeparator();
 		mainPanel.add(separator_1, "cell 0 3 27 1,growx");
@@ -538,7 +613,7 @@ public class TextEditor extends JPanel {
 		slider_margin = new JSlider(0,100,0);
 		slider_margin.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		mainPanel.add(slider_margin, "cell 23 4 4 1,growx");
+		mainPanel.add(slider_margin, "cell 24 4 3 1,growx");
 		
 		JSeparator separator = new JSeparator();
 		mainPanel.add(separator, "cell 0 1 27 1,growx");
@@ -551,45 +626,13 @@ public class TextEditor extends JPanel {
 		btnLoadTextFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
 		mainPanel.add(btnLoadTextFile, "cell 0 4,grow");
 		
-		btnUndo = new JButton("");
-		btnUndo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnUndo.setToolTipText(tooltipUndo);
-		btnUndo.setBackground(new Color(176, 196, 222));
-		mainPanel.add(btnUndo, "cell 9 4,alignx center");
-		btnUndo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
-		
-		btnRedo = new JButton("");
-		btnRedo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnRedo.setToolTipText(tooltipRedo);
-		btnRedo.setBackground(new Color(176, 196, 222));
-		mainPanel.add(btnRedo, "cell 10 4,alignx center");
-		btnRedo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
-		
-		btnUpperPostDots = new JButton(".Tt");
-		btnUpperPostDots.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnUpperPostDots.setToolTipText(tooltipUpperPostDots);
-		btnUpperPostDots.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnUpperPostDots.setBackground(new Color(176, 196, 222));
-		mainPanel.add(btnUpperPostDots, "cell 8 5,growx");
-		
-		btnBold = new JButton("");
-		btnBold.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnBold.setToolTipText(tooltipBoldText);
-		btnBold.setBackground(new Color(176, 196, 222));
-		btnBold.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BOLD));
-		mainPanel.add(btnBold, "cell 10 5,alignx center");
-		
 		btnDark = new JButton("Dark/Light");
+//		btnDark.setPreferredSize(btnBold.size());
+		btnDark.setMargin(new Insets(0, 0, 0, 0));
 		btnDark.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDark.setToolTipText(tooltipDarkSwitch);
 		btnDark.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnDark.setForeground(SystemColor.menuText);
-		btnDark.setBackground(SystemColor.controlShadow);
-		btnDark.setIcon(null);
-		btnDark.setPreferredSize(btnBold.size());
 		mainPanel.add(btnDark, "cell 0 5 3 1,growx,aligny center");
-		btnDark.setForeground(Color.LIGHT_GRAY);
-		btnDark.setBackground(Color.DARK_GRAY);
 		
 		btnTt = new JButton("TT");
 		btnTt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -598,24 +641,10 @@ public class TextEditor extends JPanel {
 		btnTt.setToolTipText(tooltipTt);
 		mainPanel.add(btnTt, "cell 6 5,growx");
 		
-		btnTtTt = new JButton("Tt Tt");
-		btnTtTt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnTtTt.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnTtTt.setBackground(new Color(176, 196, 222));
-		btnTtTt.setToolTipText(tooltipTtTt);
-		mainPanel.add(btnTtTt, "cell 7 5,growx");
-		
 		if(chkCutWordsTo.isSelected()) {
 			textArea_1.setLineWrap(true);
 			chkFitmantainwords.setEnabled(true);
 		}
-		
-		btnItaliC = new JButton("");
-		btnItaliC.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnItaliC.setToolTipText(tooltipItalic);
-		btnItaliC.setBackground(new Color(176, 196, 222));
-		btnItaliC.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_ITALIC));
-		mainPanel.add(btnItaliC, "cell 9 5,alignx center");
 	
 		addHandlers();
 		
@@ -630,7 +659,7 @@ public class TextEditor extends JPanel {
 		
 		textArea_1.requestFocusInWindow();
 		
-		mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, mainTabList, TAB_BUTTON_CLOSE_ORDER));
+		mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
 
 		logger.debug("### TEXT WRITER module started");
 
@@ -665,6 +694,21 @@ public class TextEditor extends JPanel {
 		final Color DEFAULT_BCKG_COL = textArea_1.getBackground(); 
 		final Color DEFAULT_FORE_COL = textArea_1.getForeground();
 		
+		// OPEN CURRENT IN SYSTEM EXPLORER
+		btnViewInExplorer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new Thread(new Runnable() {
+					public void run() {
+						if (TextEditorListener.flagCtrlPressed) {
+							SysUtils.cdIntoCommandLine(loadedTabObj.loadedFile.getParentFile());
+						} else {
+							GuiUtils.openInFileSystem(loadedTabObj.loadedFile.getParentFile());
+						}
+					}
+				}).start();
+			}
+		});
+		
 		// IMAGE PARSE INJECTOR
 		btnParseImageText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -683,11 +727,14 @@ public class TextEditor extends JPanel {
 		// SEARCH TEXT
 		btnFindText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(searchBox == null || !searchBox.isActive()) {
+				if(searchBox == null || !searchBox.active) {
 					searchBox = new SearchFrame(false, true, textArea_1);
+					GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
 					searchBox.setVisible(true);
-					GuiUtils.centerComponent(searchBox, 450, 110);
+					GuiUtils.centerComponent(searchBox, 450, 160);
+					searchBox.active = true;
 				}else {
+					searchBox.active = true;
 					searchBox.toFront();
 					searchBox.requestFocus();
 				}
@@ -710,8 +757,10 @@ public class TextEditor extends JPanel {
 		checkBoxInlineTabs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (checkBoxInlineTabs.isSelected()) {
+					currentConfiguration.getTextEditorOpt().inlinedTabs = true;
 					mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 				}else {
+					currentConfiguration.getTextEditorOpt().inlinedTabs = false;
 					mainTabList.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
 				}
 			}
@@ -723,6 +772,7 @@ public class TextEditor extends JPanel {
 				
 				if (!isCrypterOn) {
 					textArea_1.setCursor(GuiUtils.CURSOR_WAIT);
+					btnCrypt.setCursor(GuiUtils.CURSOR_WAIT);
 					isCrypterOn = true;
 					AesCipher.check(txtAesKey);
 					String encoded = "";
@@ -752,6 +802,7 @@ public class TextEditor extends JPanel {
 					}
 					isCrypterOn = false;
 					textArea_1.setCursor(GuiUtils.CURSOR_TEXT);
+					btnCrypt.setCursor(GuiUtils.CURSOR_HAND);
 				}
 			}
 		};
@@ -763,6 +814,7 @@ public class TextEditor extends JPanel {
 
 				if (!isCrypterOn) {
 					textArea_1.setCursor(GuiUtils.CURSOR_WAIT);
+					btnDecrypt.setCursor(GuiUtils.CURSOR_WAIT);
 					isCrypterOn = true;
 					AesCipher.check(txtAesKey);
 					String decoded = "";
@@ -787,6 +839,7 @@ public class TextEditor extends JPanel {
 					}
 					isCrypterOn = false;
 					textArea_1.setCursor(GuiUtils.CURSOR_TEXT);
+					btnDecrypt.setCursor(GuiUtils.CURSOR_HAND);
 				}
 			}
 		});
@@ -853,20 +906,21 @@ public class TextEditor extends JPanel {
 		btnDark.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(textArea_1.getForeground()==Color.BLACK || textArea_1.getBackground()==DEFAULT_BCKG_COL || textArea_1.getBackground()==Color.WHITE) {
-					textArea_1.setForeground(SystemColor.LIGHT_GRAY);
+					textArea_1.setForeground(new Color(235,235,235));
 					textArea_1.setBackground(Color.BLACK);
-					btnDark.setForeground(Color.DARK_GRAY);
-					btnDark.setBackground(SystemColor.controlHighlight);	
+					btnDark.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
 				 }else {
 					textArea_1.setForeground(Color.BLACK);
 					textArea_1.setBackground(SystemColor.controlHighlight);	
-					btnDark.setForeground(SystemColor.LIGHT_GRAY);
-					btnDark.setBackground(Color.DARK_GRAY);
+					btnDark.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
 				 }
+				btnDark.setForeground(textArea_1.getForeground());
+				btnDark.setBackground(textArea_1.getBackground());
 				currentConfiguration.getTextEditorOpt().setBackCol(textArea_1.getBackground());
 				currentConfiguration.getTextEditorOpt().setForeCol(textArea_1.getForeground());				
 			}
 		});
+		btnDark.doClick();
 		
 		// INSERT LOREM IPSUM
 		btnLoremIpsum.addActionListener(new ActionListener() {
@@ -961,18 +1015,43 @@ public class TextEditor extends JPanel {
 			}
 		});
 		
+		// MAKE LOWERCASE AFTER LINE ENDERS
+		btnLowerAfterDots.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				SelectionDto txtAreaDto = new SelectionDto(textArea_1);
+				String result = "";
+
+				if(txtAreaDto.selected) {
+					result = txtAreaDto.prefix.concat(HandleString.lowerAfterDots(txtAreaDto.selection, '.').concat(txtAreaDto.end));
+				}else {
+					result = HandleString.lowerAfterDots(txtAreaDto.getCompleteString(), '.');
+				}
+				
+				textArea_1.setText(result);
+				textArea_1.requestFocus();
+				textArea_1.setSelectionStart(txtAreaDto.first);
+				textArea_1.setSelectionEnd(txtAreaDto.last);
+			}
+		});
+		
 		// MAKE UPPER CASE AFTER LINE ENDERS
 		btnUpperPostDots.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (uppercaseDots) {
-					String result = HandleString.upperAfterDots(textArea_1.getText(), '.');
-					textArea_1.setText(result);
-					uppercaseDots=false;
+				SelectionDto txtAreaDto = new SelectionDto(textArea_1);
+				String result = "";
+				
+				if(txtAreaDto.selected) {
+					result = txtAreaDto.prefix.concat(HandleString.upperAfterDots(txtAreaDto.selection, '.').concat(txtAreaDto.end));
 				}else {
-					String result = HandleString.lowerAfterDots(textArea_1.getText(), '.');
-					textArea_1.setText(result);
-					uppercaseDots=true;
+					result = HandleString.upperAfterDots(txtAreaDto.getCompleteString(), '.');
 				}
+				
+				textArea_1.setText(result);
+				textArea_1.requestFocus();
+				textArea_1.setSelectionStart(txtAreaDto.first);
+				textArea_1.setSelectionEnd(txtAreaDto.last);
 			}
 		});
 		
@@ -1031,10 +1110,34 @@ public class TextEditor extends JPanel {
 		slider_margin.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 					textMargin=slider_margin.getValue();
+					lBLMargin.setText(""+textMargin);
 					textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
 					textArea_1.revalidate();
 					textArea_1.repaint();
 					currentConfiguration.getTextEditorOpt().setMargin(textMargin);
+			}
+		});
+		
+		// REMOVE WHITE SPACES OR CHARACHTER (CTRL PRESSED)
+		btnRemoveSpaces.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int start = textArea_1.getSelectionStart();
+				int end = textArea_1.getSelectionEnd();
+				int newEnd = 0;
+				if(TextEditorListener.flagCtrlPressed) {
+					// remove character - open panel ad hoc
+					String selection = JOptionPane.showInputDialog("Specify the charachter/string you want to remove");
+					if (selection != null && !selection.equals("")) {
+						newEnd = HandleString.removeCharachterFromTxtArea(selection, textArea_1, start, end);
+					}
+					TextEditorListener.flagCtrlPressed = false;
+				}else {
+					// remove whitespaces
+					newEnd = HandleString.removeCharachterFromTxtArea(" ", textArea_1, start, end);
+				}
+				textArea_1.requestFocus();
+				textArea_1.setSelectionStart(start);
+				textArea_1.setSelectionEnd(newEnd);
 			}
 		});
 		
@@ -1365,23 +1468,23 @@ public class TextEditor extends JPanel {
 		int indexChange = (sourceIndex == null)? mainTabList.getSelectedIndex() : sourceIndex;
 		try {
 			// reference to tabHeader title
-			JLabel tabHeadLbl = (JLabel)(getPanelFromTabHeader(indexChange)).getComponent(TAB_TITLE_ORDER);
+			JLabel tabHeadLbl = (JLabel)(getPanelFromTabHeader(indexChange)).getComponent(TabUtils.TAB_TITLE_ORDER);
 			// IF ALREADY SAVED
 			if (indexChange >= 0 && !loadedTabObj.unsaved) {
 				// IF FILE IS DEFINED
 				if (loadedTabObj.loadedFile != null ) {
 					lblCurrentFile.setText(loadedTabObj.loadedFile.getName());
 					lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getAbsolutePath());
-					tabHeadLbl.setText(loadedTabObj.loadedFile.getName());
+					tabHeadLbl.setText(HandleString.fitToMaxLentgh(loadedTabObj.loadedFile.getName(), MAX_TAB_LABELENGHT));
 				}else {
 				// IF FILE IS NOT DEFINED
 					if(tabHeadLbl.getText().startsWith("(*)")) {
-						tabHeadLbl.setText(tabHeadLbl.getText().substring(3, tabHeadLbl.getText().length()));
+						tabHeadLbl.setText(HandleString.fitToMaxLentgh(tabHeadLbl.getText().substring(3, tabHeadLbl.getText().length()), MAX_TAB_LABELENGHT));
 						if(lblCurrentFile.getText().startsWith("(*)")){
 							lblCurrentFile.setText(lblCurrentFile.getText().substring(3, lblCurrentFile.getText().length()));
 						}
 					}else {
-						tabHeadLbl.setText(tabHeadLbl.getText());
+						tabHeadLbl.setText(HandleString.fitToMaxLentgh(tabHeadLbl.getText(), MAX_TAB_LABELENGHT));
 						lblCurrentFile.setText(tabHeadLbl.getText());
 					}
 				}
@@ -1395,14 +1498,14 @@ public class TextEditor extends JPanel {
 			}else if (indexChange >= 0 && loadedTabObj.unsaved) {
 				// IF FILE IS DEFINED
 				if (loadedTabObj.loadedFile != null ) {
-					tabHeadLbl.setText("(*)"+loadedTabObj.loadedFile.getName());
+					tabHeadLbl.setText(HandleString.fitToMaxLentgh("(*)"+loadedTabObj.loadedFile.getName(), MAX_TAB_LABELENGHT));
 					lblCurrentFile.setText("(*)"+loadedTabObj.loadedFile.getName());
 					lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getAbsolutePath());
 				}else {
 				// IF FILE IS NOT DEFINED
 					lblCurrentFile.setText(tabHeadLbl.getText());
 					if(!tabHeadLbl.getText().startsWith("(*)")) {
-						tabHeadLbl.setText("(*)"+tabHeadLbl.getText());
+						tabHeadLbl.setText(HandleString.fitToMaxLentgh("(*)"+tabHeadLbl.getText(), MAX_TAB_LABELENGHT));
 					}
 					if(!lblCurrentFile.getText().startsWith("(*)")){
 						lblCurrentFile.setText(tabHeadLbl.getText());
@@ -1417,11 +1520,13 @@ public class TextEditor extends JPanel {
 	}
 	
 	private boolean askSave(int index) {
-		int askSave = JOptionPane.NO_OPTION;
+		int askSave = JOptionPane.CANCEL_OPTION;
 		TabTextEditorObj selected = loadedList.get(index);
 		if (selected.unsaved) {
 			askSave = JOptionPane.showConfirmDialog(currentTextEditor, "Do you want to save current file?",
 					"Save current file?", JOptionPane.YES_NO_CANCEL_OPTION);
+		}else {
+			return true;
 		}
 		if(askSave == JOptionPane.OK_OPTION){
 //			switchTab(index);
@@ -1439,6 +1544,7 @@ public class TextEditor extends JPanel {
 	}
 	
 	public void initGuiFromConfig(){
+		checkBoxInlineTabs.setSelected(currentConfiguration.getTextEditorOpt().isInlinedTabs());
 		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 		slider_margin.setValue(txtOptions.getMargin());
 		sliderFontSize.setValue(txtOptions.getFont().getSize());
@@ -1603,8 +1709,8 @@ public class TextEditor extends JPanel {
 				isRemovingTab = false;
 			}
 			isRemovingTab = false;
-			textArea_1.requestFocus();
 		}
+		textArea_1.requestFocus();
 	}
 	
 	public void goToPreviousTab() {
@@ -1635,7 +1741,7 @@ public class TextEditor extends JPanel {
 	
 	public void closeCurrentTab() {
 		try {
-			JButton closeTabButton = (JButton)(getPanelFromTabHeader(mainTabList.getSelectedIndex())).getComponent(TAB_BUTTON_CLOSE_ORDER);
+			JButton closeTabButton = (JButton)(getPanelFromTabHeader(mainTabList.getSelectedIndex())).getComponent(TabUtils.TAB_BUTTON_CLOSE_ORDER);
 			closeTabButton.doClick();
 		} catch (Exception e) {
 			logger.error(e);
@@ -1703,7 +1809,7 @@ public class TextEditor extends JPanel {
 	
 	private boolean setIconToTab(String iconPath, int index) {
 		try {
-			JLabel tabHeadIcon = (JLabel)(getPanelFromTabHeader(index)).getComponent(TAB_ICON_ORDER);
+			JLabel tabHeadIcon = (JLabel)(getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
 			tabHeadIcon.setIcon(new ImageIcon(iconPath));
 			return true;
 		} catch (Exception e) {
@@ -1712,16 +1818,23 @@ public class TextEditor extends JPanel {
 	}
 	
 	private JPanel getCustomClosableTab(String title, int index) {
-		JPanel pnlTab = new JPanel(new GridBagLayout());
-		pnlTab.setOpaque(false);
-		pnlTab.setPreferredSize(new Dimension(100,25));
-		if (loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
-			pnlTab.setToolTipText(loadedTabObj.loadedFile.getAbsolutePath());
-		}else {
-			pnlTab.setToolTipText(title);
-		}
+		String tooltip = "";
 		JScrollPane i_component = loadedList.get(index).currentScrollPane;
-		pnlTab.addMouseListener(new MouseListener() {
+
+		if (loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
+			tooltip = loadedTabObj.loadedFile.getAbsolutePath();
+		}else {
+			tooltip = title;
+		}
+		
+		String icon = "";
+		if (DEFAULT_NEW_FILE_NAME.equals(title)) {
+			icon = IconsPathConfigurator.ICON_DOC_EMPTY;
+		}else {
+			icon = IconsPathConfigurator.ICON_DOC_SAVED;
+		}
+		JPanel customTab = TabUtils.getCustomClosableTab(title, tooltip, icon, getTabCloseListener(index));
+		customTab.addMouseListener(new MouseListener() {
 			public void mouseReleased(MouseEvent e) {
 				mainTabList.setSelectedComponent(i_component);
 			}
@@ -1734,38 +1847,8 @@ public class TextEditor extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
-
-		// tab title
-		JLabel lblTitle = new JLabel(title);
 		
-		// image label
-		JLabel imageLbl = new JLabel();
-		
-		if (DEFAULT_NEW_FILE_NAME.equals(title)) {
-			imageLbl.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DOC_EMPTY));
-		}else {
-			imageLbl.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DOC_SAVED));
-		}
-		// button close
-		JButton btnClose = new JButton("X");
-		applyStyleToTabCloseBtn(btnClose);
-		btnClose.addActionListener(getTabCloseListener(index));
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.ipadx = 4;
-		gbc.ipady = 0;
-		gbc.weightx = 4;
-
-		// add elements to pnlTab : order must be same as "int TAB_XXX_ORDER" defined at start of this class
-		pnlTab.add(imageLbl, gbc); // 1 - ICON
-		gbc.gridx++;
-		pnlTab.add(lblTitle, gbc); // 2 - TEXT TITLE
-		gbc.gridx++;
-		pnlTab.add(btnClose, gbc); // 3 - CLOSE BUTTON
-
-		return pnlTab;
+		return customTab;
 	}
 	
 	private void updateTabTooltip(int index) {
@@ -1777,38 +1860,9 @@ public class TextEditor extends JPanel {
 		}
 	}
 	
-	public void applyStyleToTabCloseBtn(JButton btnClose) {
-		Color background = btnClose.getBackground();
-		Color foreground = new Color(210,210,210);
-		
-		btnClose.setFont(new Font("SansSerif", Font.BOLD, 9));
-		btnClose.setMaximumSize(new Dimension(10, 10));
-		btnClose.setBorder(BorderFactory.createEmptyBorder(4, 6, 4, 6));
-		btnClose.setMargin(new Insets(4, 4, 4, 4));
-		btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		btnClose.setBackground(background);
-		btnClose.setForeground(foreground);
-		btnClose.addMouseListener(new MouseListener() {
-			public void mouseReleased(MouseEvent e) {
-			}
-			public void mousePressed(MouseEvent e) {
-			}
-			public void mouseExited(MouseEvent e) {
-				btnClose.setForeground(foreground);
-				btnClose.setBackground(background);
-			}
-			public void mouseEntered(MouseEvent e) {
-				btnClose.setForeground(Color.WHITE);
-				btnClose.setBackground(background.brighter());
-			}
-			public void mouseClicked(MouseEvent e) {
-			}
-		});
-	}
-	
 	private ActionListener getTabCloseListener(int index) {
-		JScrollPane i_component = loadedList.get(index).currentScrollPane;
 		return new ActionListener() {
+			JScrollPane i_component = loadedList.get(index).currentScrollPane;
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {

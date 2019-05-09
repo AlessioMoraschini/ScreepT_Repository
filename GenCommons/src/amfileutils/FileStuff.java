@@ -74,34 +74,6 @@ public class FileStuff {
 
 	}
 	
-	/**
-	 * This method is meant to delete all folder content, deleting recursively also the folders inside it.
-	 * the given folder won't be deleted, only it's content will be.
-	 * 
-	 * @param folder the source folder to be emptied
-	 * @return deleted: false if at least one deletion have incurred in some errors
-	 */
-	public static boolean deleteDirContentRecursive(File folder) {
-		boolean deleted = true;
-		
-		File[] files = folder.listFiles();
-	    if(files!=null) { //some JVMs return null for empty dirs
-	        for(File f: files) {
-	            if(f.isDirectory()) {
-	                boolean del = deleteDirContentInclRoot(f);
-	                if(del==false) {
-	                	deleted = false;
-	                }
-	            } else {
-	                boolean del = f.delete();
-	                if(del==false) {
-	                	deleted = false;
-	                }
-	            }
-	        }
-	    }
-	    return deleted;	
-	}
 	
 	/**
 	 * This method copy the structure of the source dir, copying any found folder inside it (comprising source dir),
@@ -319,6 +291,36 @@ public class FileStuff {
 	    }
 	    return deleted;	
 	}
+	
+	/**
+	 * This method is meant to delete all folder content, deleting recursively also the folders inside it.
+	 * the given folder won't be deleted, only it's content will be.
+	 * 
+	 * @param folder the source folder to be emptied
+	 * @return deleted: false if at least one deletion have incurred in some errors
+	 */
+	public static boolean deleteDirContentRecursive(File folder) {
+		boolean deleted = true;
+		
+		File[] files = folder.listFiles();
+	    if(files!=null) { //some JVMs return null for empty dirs
+	        for(File f: files) {
+	            if(f.isDirectory()) {
+	                boolean del = deleteDirContentInclRoot(f);
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            } else {
+	                boolean del = f.delete();
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            }
+	        }
+	    }
+	    return deleted;	
+	}
+	
 	
 	/**
 	 * This method is meant to delete all folder content, excluding sub-directories and their content.
@@ -859,6 +861,7 @@ public class FileStuff {
 	 * function used to update safely the progressbar in asynchronous way
 	 * @param i
 	 */
+	@Deprecated
 	private static void updateProgressBar(int i, JProgressBar progBar) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {

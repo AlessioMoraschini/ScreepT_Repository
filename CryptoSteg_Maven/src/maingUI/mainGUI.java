@@ -37,6 +37,7 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import amfileutils.filechangewatcher.ChangeDTO;
 import frameutils.GuiUtils;
 import gUI.om.TabTextEditorObj;
 import gUI.panels.AboutSectionPanel;
@@ -53,6 +54,7 @@ import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
 import gui.utils.LauncherLoaderFrame;
+import guistyle.GUIStyelSettings;
 import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
@@ -118,6 +120,7 @@ public class mainGUI {
 	public static final String SCREEPT_BACKGROUND_DRAGNDROP = "DragNDropBackground.jpg";
 	public static Image SCREEPT_BACKGROUND_DRAGNDROP_IMAGE;
 	public static final String ICON_FILE_NAME = "icon.jpg";
+	public static final String ICON_FILE_PATH = RESOURCES_DIR + ICON_FILE_NAME;
 	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
@@ -212,8 +215,8 @@ public class mainGUI {
 	public static int screenHeight;
 
 	// some used lookAndFeel
-	public static String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-	public static String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	public static String preferredStyle = NimbusLookAndFeel; // preferredStyle (initialized to fully avoid null values)
 	public static boolean DARK_THEME; // true if dark theme is selected
 	
@@ -319,9 +322,9 @@ public class mainGUI {
 		loaderGraphics.update("Initializing graphics... ", 15);
 					
 					// START MAIN WINDOW CONSTRUCTOR
-					logger.debug("Initializing main GUI-start");
+					logger.info("Initializing main GUI-start");
 					mainGUI window = new mainGUI();
-					logger.debug("Main GUI initialized correctly.");
+					logger.info("Main GUI initialized correctly.");
 					
 		loaderGraphics.update("Starting autosave modules... ", 25);
 					
@@ -330,7 +333,7 @@ public class mainGUI {
 						
 						@Override
 						public void run() {
-							logger.debug("## MODULES FLAG UPDATER started");
+							logger.info("## MODULES FLAG UPDATER started");
 							while(mainAppRunning) {
 								try {
 									// sleep small time to adapt
@@ -374,7 +377,7 @@ public class mainGUI {
 					autosaveModule = new Thread(new Runnable() {
 						@Override
 						public void run() {
-							logger.debug("## AUTOSAVE module started, interval: "+currentConfiguration.getFileOpt().getAutosaveInterval() + " milliseconds");
+							logger.info("## AUTOSAVE module started, interval: "+currentConfiguration.getFileOpt().getAutosaveInterval() + " milliseconds");
 							while (mainAppRunning) {
 												
 								try {
@@ -386,14 +389,14 @@ public class mainGUI {
 								if(currentConfiguration.getFileOpt().isFlagAutosave()) {
 									try {
 										currentConfiguration.writeCurrentConfigIniFile();
-										logger.debug("AUTOSAVE ON: file saved ["
+										logger.info("AUTOSAVE ON: file saved ["
 												+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
 									} catch (Exception e) {
 										logger.error("Exception happened!", e);
 									}
 								}
 							}
-							logger.debug("## AUTOSAVE module Stopped (Closing ScrYpt)");
+							logger.info("## AUTOSAVE module Stopped (Closing ScrYpt)");
 						}
 					});
 					
@@ -402,7 +405,7 @@ public class mainGUI {
 						
 						@Override
 						public void run() {
-							logger.debug("## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: "+currentConfiguration.getFileOpt().isFlagAutosave());
+							logger.info("## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: "+currentConfiguration.getFileOpt().isFlagAutosave());
 							while(mainAppRunning) {
 								try {
 									// every period specified within the fields
@@ -418,7 +421,7 @@ public class mainGUI {
 										autosaveModule.interrupt();
 										logger.warn("## AUTOSAVE-MANAGER: [AUTOSAVE OFF] autosave module interrupted.");
 									}else {
-										logger.debug("## AUTOSAVE-MANAGER: [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
+										logger.info("## AUTOSAVE-MANAGER: [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
 									}
 									
 								} catch (InterruptedException e) {
@@ -438,13 +441,15 @@ public class mainGUI {
 					    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 					    	
 							Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
-					    	window.frmScryptV.setAlwaysOnTop(true);
 					    	
 					    	if (JOptionPane.showConfirmDialog(window.frmScryptV, "Really want to exit? :(", "Exit Program",
 									JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 					    		
-					    		// perform closing operation and exit
+					    		doIfTempDecryptedChanged(window.frmScryptV);
+					    		
+					    		window.frmScryptV.setAlwaysOnTop(true);
 					    		closeApplication();
+					    		
 					    	}else {
 					    		
 					    		window.frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -506,18 +511,18 @@ public class mainGUI {
 		
 		// INITIALIZE MAIN_GUI (See the initialize() function below this constructor)
 		initialize();
-		logger.debug("## GUI components started");
+		logger.info("## GUI components started");
 		
 		// SW window icon
 		try {
-			SW_ICON = ImageIO.read(new File(RESOURCES_DIR + ICON_FILE_NAME));
+			SW_ICON = ImageIO.read(new File(ICON_FILE_PATH));
 			frmScryptV.setIconImage(SW_ICON);
-			logger.debug("icon image setted to main window");
+			logger.info("icon image setted to main window");
 		} catch (IOException e1) {
 			logger.error("Exception happened!", e1);
 		}
 		
-		logger.debug("## TITLE UPDATER started.");
+		logger.info("## TITLE UPDATER started.");
 	}
 	// END CONSTRUCTOR
 	
@@ -746,7 +751,7 @@ public class mainGUI {
 						// show input dialog to select the file(gives null in case of no file selected)
 						File selected = fileLogWriteDialog(frmScryptV);
 						if (selected != null) {
-							logger.debug("\n\n##################################################\n\n" + now.toString()
+							logger.info("\n\n##################################################\n\n" + now.toString()
 									+ "\n\n" + APPLICATION_NAME + " EXPORT!\n\n"
 									+ "##################################################\n\n");
 
@@ -754,7 +759,7 @@ public class mainGUI {
 							if (FileStuff.copyFile(new File(LOG_PATH), selected, true)) {
 								JOptionPane.showMessageDialog(frmScryptV, "File correctly saved in " + selected,
 										"Log File Exported :)", JOptionPane.INFORMATION_MESSAGE);
-								logger.debug("File :" + LOG_PATH + " Exported, exportFile: " + selected);
+								logger.info("File :" + LOG_PATH + " Exported, exportFile: " + selected);
 							} else {
 								JOptionPane.showMessageDialog(frmScryptV, "File not saved [" + selected,
 										"]  Some error occurred :(", JOptionPane.ERROR_MESSAGE);
@@ -1148,7 +1153,7 @@ public class mainGUI {
 	private static void initGUI() {
 		// initialize style
 		preferredStyle = currentConfiguration.getGuiOpt().getPreferredStyle();
-		
+		GUIStyelSettings.setFocusDefaultBtn();
 		// initialize GUI default Style from ini
 		try {
 			UIManager.setLookAndFeel(preferredStyle);
@@ -1156,7 +1161,7 @@ public class mainGUI {
 			for(Window window: Window.getWindows()) {
     		    SwingUtilities.updateComponentTreeUI(window);
     		}
-			logger.debug(preferredStyle+" initialized correctly.");
+			logger.info(preferredStyle+" initialized correctly.");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e3) {
 			logger.error("Exception happened!", e3);
@@ -1465,7 +1470,7 @@ public class mainGUI {
 	public static String askUsername() {
 		boolean end=false;
 		String input="";
-		logger.debug("Current user input initialization: void user or lenght>20 detected!");
+		logger.info("Current user input initialization: void user or lenght>20 detected!");
 		do {
 			input = JOptionPane.showInputDialog("Please insert your name:", "U-sir");
 			if (input==null || input.equals("") || input.length() > 20) {
@@ -1478,7 +1483,7 @@ public class mainGUI {
 				end = true;
 			} 
 		} while (!end);
-		logger.debug("Name selected and saved username: "+input);
+		logger.info("Name selected and saved username: "+input);
 		return input;
 	}
 	
@@ -1508,7 +1513,7 @@ public class mainGUI {
 	    	contentPane.add(labelBACKground);
 	    	contentPane.revalidate(); 
 	    	contentPane.repaint();
-			logger.debug("Background of mainGUI setted: "+RESOURCES_DIR + APPLICATION_MAIN_BCKG);
+			logger.info("Background of mainGUI setted: "+RESOURCES_DIR + APPLICATION_MAIN_BCKG);
 
         } catch (IOException e2) {
 			logger.error("Exception happened!", e2);
@@ -1587,14 +1592,15 @@ public class mainGUI {
 	public static void closeApplication() {
 		
 		closeOpenBlockingFrames();
-
+		
+		
 		now=new Date();
 		
         // if autosave is on save before quit
         if(currentConfiguration.getFileOpt().isFlagAutosave()) {
 			try {
 				currentConfiguration.writeCurrentConfigIniFile();
-				logger.debug(" => AUTOSAVE ON: file saved before exiting ["
+				logger.info(" => AUTOSAVE ON: file saved before exiting ["
 						+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
 			} catch (Exception e) {
 				logger.error("Exception happened!", e);
@@ -1610,13 +1616,13 @@ public class mainGUI {
       	
 		String msg = "Deleting temp files and folders... please wait!";
 		
-		new Thread(new Runnable() {
-					
-			@Override
-			public void run() {
-				JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.INFORMATION_MESSAGE);
-			}
-		}).start();
+//		new Thread(new Runnable() {
+//					
+//			@Override
+//			public void run() {
+//				JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.INFORMATION_MESSAGE);
+//			}
+//		}).start();
 		
 		try {
 			tempEraser.join();
@@ -1626,7 +1632,7 @@ public class mainGUI {
       	
 		mainAppRunning = false;
 		
-		logger.debug(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
+		logger.info(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
 				+ APPLICATION_NAME+" CLOSED!\n\n"
 				+ "##################################################\n\n");
 	
@@ -1642,6 +1648,21 @@ public class mainGUI {
 		
 		if(panelNetInfo != null) {
 			panelNetInfo.dispose();
+		}
+	}
+	
+	public static void doIfTempDecryptedChanged(JFrame parent) {
+		logger.debug("Starting check on fileMonitor...");
+		try {
+			if (CrypterPanel.fileMonitor != null && CrypterPanel.fileMonitor.rootMonitorDir.exists()) {
+				ChangeDTO changesTempDecrypted = CrypterPanel.fileMonitor.checkForEverithing();
+				if (changesTempDecrypted.changedFiles.size() != 0) {
+					JOptionPane.showMessageDialog(parent, "There are Files changed... closing you'll lose them!"+changesTempDecrypted.changedFiles);
+				}
+			}
+			
+		} catch (InterruptedException e) {
+			logger.error("Error getting changes on tempFolder decrypted", e);
 		}
 	}
 	

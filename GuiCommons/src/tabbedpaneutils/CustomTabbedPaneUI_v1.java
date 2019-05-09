@@ -10,14 +10,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.lowagie.text.Font;
-
 public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPaneUI {
 
 	public static final Color DEFAULT_FILLING = Color.lightGray;
 	public static final Color DEFAULT_DARK_FILLING = DEFAULT_FILLING.darker();
 	public static final Color DEFAULT_BORDER = Color.DARK_GRAY;
-	public static final Color ACTIVE_BTN_CLOSE_COL = new Color(210, 0, 0);
+	public static final Color ACTIVE_BTN_CLOSE_COL = new Color(190, 10, 0);
 	public static final Color INACTIVE_BTN_CLOSE_COL = new Color(50, 0, 0);
 	
 	public static final int THICKNESS_BORDER = 3;
@@ -34,9 +32,24 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 	public JTabbedPane mainTabPane;
 	public int buttonOrdinalPos;
 	
+	/**
+	 * Use this if there is close button
+	 */
 	public CustomTabbedPaneUI_v1(Color filling, Color deselectedFilling, Color border, JTabbedPane mainPaneTabbed, int closeBtnPos) {
 		super();
 		buttonOrdinalPos = closeBtnPos;
+		fillingColor = (filling != null)? filling : DEFAULT_FILLING;
+		deSelfillingColor = (deselectedFilling != null)? deselectedFilling : DEFAULT_DARK_FILLING;
+		borderColor = (border != null)? border : DEFAULT_BORDER;
+		mainTabPane = mainPaneTabbed;
+	}
+	
+	/**
+	 * Use this if there is no close button
+	 */
+	public CustomTabbedPaneUI_v1(Color filling, Color deselectedFilling, Color border, JTabbedPane mainPaneTabbed) {
+		super();
+		buttonOrdinalPos = Integer.MAX_VALUE;
 		fillingColor = (filling != null)? filling : DEFAULT_FILLING;
 		deSelfillingColor = (deselectedFilling != null)? deselectedFilling : DEFAULT_DARK_FILLING;
 		borderColor = (border != null)? border : DEFAULT_BORDER;
@@ -47,20 +60,22 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
     protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects, 
                int tabIndex, Rectangle iconRect, Rectangle textRect) {
     	int selectedIndex = mainTabPane.getSelectedIndex();
-    	JButton currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
     	Color savedColor = g.getColor();
     	Graphics2D g2d = (Graphics2D)g;
         int x = rects[tabIndex].x+xGap;
         int y = rects[tabIndex].y+yGap;
         
-        if(selectedIndex == tabIndex) {
-        	g.setColor(fillingColor);
-        	currentButton.setBackground(ACTIVE_BTN_CLOSE_COL);
-        }else{
-        	g.setColor(deSelfillingColor);
-        	currentButton.setBackground(INACTIVE_BTN_CLOSE_COL);
-        }
-        g.fillRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);
+        if (buttonOrdinalPos != Integer.MAX_VALUE) {
+			JButton currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
+			if (selectedIndex == tabIndex) {
+				g.setColor(fillingColor);
+				currentButton.setBackground(ACTIVE_BTN_CLOSE_COL);
+			} else {
+				g.setColor(deSelfillingColor);
+				currentButton.setBackground(INACTIVE_BTN_CLOSE_COL);
+			} 
+		}
+		g.fillRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);
         
         g2d.setColor(borderColor);
         g2d.setStroke(new BasicStroke(THICKNESS_BORDER));

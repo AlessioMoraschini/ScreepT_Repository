@@ -244,7 +244,7 @@ public class StegCipher {
 		
 		SecureRandom rand = new SecureRandom();
 				
-		logger.debug("Started decripting byte array of " + AES_CODED_OUT.length);
+		logger.info("Started decripting byte array of " + AES_CODED_OUT.length);
 
 		BufferedImage codedImg = new BufferedImage(keyImage.getWidth(), keyImage.getHeight(), keyImage.getType());
 		
@@ -326,7 +326,7 @@ public class StegCipher {
 	    // end of image
 //	    return imgPixels;		
 		
-		logger.debug("Finished -> Bytes decripted: "+nBytesCoded+" ; Residual bytes: "+availableSrcBytes+" (must be 0)");
+		logger.info("Finished -> Bytes decripted: "+nBytesCoded+" ; Residual bytes: "+availableSrcBytes+" (must be 0)");
 	    
 		return new StegOmResult(codedImg, strBytesCoded);
 	}
@@ -341,7 +341,7 @@ public class StegCipher {
 		
 		SecureRandom rand = new SecureRandom();
 				
-		logger.debug("Started decripting byte array of " + AES_CODED_OUT.length);
+		logger.info("Started decripting byte array of " + AES_CODED_OUT.length);
 
 		BufferedImage codedImg = new BufferedImage(keyImage.getWidth(), keyImage.getHeight(), keyImage.getType());
 		
@@ -429,7 +429,7 @@ public class StegCipher {
 	    // end of image
 //	    return imgPixels;		
 		
-		logger.debug("Finished -> Bytes decripted: "+nBytesCoded+" ; Residual bytes: "+availableSrcBytes+" (must be 0)");
+		logger.info("Finished -> Bytes decripted: "+nBytesCoded+" ; Residual bytes: "+availableSrcBytes+" (must be 0)");
 	    
 		return new StegOmResult(codedImg, strBytesCoded);
 	}

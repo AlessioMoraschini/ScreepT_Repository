@@ -1,5 +1,7 @@
 package resources;
 
+import javax.swing.ImageIcon;
+
 public class IconsPathConfigurator {
 	
 	public static String RESOURCES_DIR = "Resources_Scrypt/";
@@ -65,6 +67,8 @@ public class IconsPathConfigurator {
 	public static final String ICON_TEXT_CLEAR = RESOURCES_DIR + "Icons/Clear.png";
 	public static final String ICON_TEXT_BOLD = RESOURCES_DIR + "Icons/Bold.png";
 	public static final String ICON_TEXT_ITALIC = RESOURCES_DIR + "Icons/Italic.png";
+	public static final String ICON_REMOVE_CONTENT = RESOURCES_DIR + "Icons/deleteContent.png";
+	public static final String ICON_REMOVE_WHITE_LINE = RESOURCES_DIR + "Icons/removeWhiteLine.png";
 	public static final String ICON_TEXT_COLOR = RESOURCES_DIR + "Icons/TextColor_2.png";
 	public static final String ICON_TEXT_BG_COLOR = RESOURCES_DIR + "Icons/BackgroundColor.png";
 	public static final String ICON_TEXT_FONT = RESOURCES_DIR + "Icons/Font_2.png";
@@ -94,6 +98,13 @@ public class IconsPathConfigurator {
 	public static final String ICON_BIG_GEN_WARNING = RESOURCES_DIR + "Icons/Warning_Big.png";
 	public static final String ICON_GEN_ERROR = RESOURCES_DIR + "Icons/Error.png";
 	public static final String ICON_BIG_GEN_ERROR = RESOURCES_DIR + "Icons/Error_Big.png";
+	public static final String ICON_LIGHT_ON = RESOURCES_DIR + "Icons/lightON.png";
+	public static final String ICON_LIGHT_OFF = RESOURCES_DIR + "Icons/lightOFF.png";
+	public static final String ICON_CONSOLE = RESOURCES_DIR + "Icons/console.png";
+	
+	////////////////    INSTANTIATED DEFAULT STATIC ICONS   ///////////////////
+	public static final ImageIcon IMG_ICON_LIGHT_ON = new ImageIcon(ICON_LIGHT_ON);
+	public static final ImageIcon IMG_ICON_LIGHT_OFF = new ImageIcon(ICON_LIGHT_OFF);
 	
 	// MAIN RESOURCES DIR SETTER & GETTER //
 	public static String getRESOURCES_DIR() {

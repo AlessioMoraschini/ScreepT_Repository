@@ -266,6 +266,34 @@ public class SysUtils {
 		return builder.toString();
 	}
 	
+	public static boolean cdIntoCommandLine(File directory) {
+		OSinfo OS = retrieveOS();
+		if(directory != null && directory.exists()) {
+			
+			if(OS.isWindows()) {
+				try {
+					Runtime rt = Runtime.getRuntime();
+//					rt.exec("cd "+directory.getAbsolutePath());
+					rt.exec("cmd.exe /c start dir /p", null, directory);
+					return true;
+				}catch(Exception e) {
+					logger.error(e);
+					return false;
+				}
+			}else{
+				try {
+					Runtime.getRuntime().exec("cd "+directory.getAbsolutePath());
+					return true;
+				} catch (IOException e) {
+					logger.error(e);
+					return false;
+				}
+			}
+		}			
+		
+		return false;
+	}
+	
 /////////////////////////////  WINDOWS ONLY  //////////////////////////////////////////
 	
 	public static ArrayList<String> findWindowsProgramPath(String programName) {
