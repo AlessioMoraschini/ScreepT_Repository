@@ -452,7 +452,7 @@ public class INItializer {
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
-			   .append("\n DEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
+			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
 			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate);
 		
 		// concat TEXT EDITOR OPTIONS

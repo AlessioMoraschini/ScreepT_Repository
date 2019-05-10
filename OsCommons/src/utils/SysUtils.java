@@ -268,12 +268,12 @@ public class SysUtils {
 	
 	public static boolean cdIntoCommandLine(File directory) {
 		OSinfo OS = retrieveOS();
+		directory = (directory.isDirectory())? directory : directory.getParentFile();
 		if(directory != null && directory.exists()) {
 			
 			if(OS.isWindows()) {
 				try {
 					Runtime rt = Runtime.getRuntime();
-//					rt.exec("cd "+directory.getAbsolutePath());
 					rt.exec("cmd.exe /c start dir /p", null, directory);
 					return true;
 				}catch(Exception e) {
@@ -282,7 +282,11 @@ public class SysUtils {
 				}
 			}else{
 				try {
-					Runtime.getRuntime().exec("cd "+directory.getAbsolutePath());
+					ProcessBuilder builder = new ProcessBuilder();
+					builder.command("sh", "-c", "ls");
+					builder.directory(directory);
+					builder.start();
+					
 					return true;
 				} catch (IOException e) {
 					logger.error(e);

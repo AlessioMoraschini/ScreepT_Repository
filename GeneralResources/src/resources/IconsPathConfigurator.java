@@ -101,6 +101,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_LIGHT_ON = RESOURCES_DIR + "Icons/lightON.png";
 	public static final String ICON_LIGHT_OFF = RESOURCES_DIR + "Icons/lightOFF.png";
 	public static final String ICON_CONSOLE = RESOURCES_DIR + "Icons/console.png";
+	public static final String ICON_SCREEPT = RESOURCES_DIR + "Icons/ScreepT.png";
 	
 	////////////////    INSTANTIATED DEFAULT STATIC ICONS   ///////////////////
 	public static final ImageIcon IMG_ICON_LIGHT_ON = new ImageIcon(ICON_LIGHT_ON);

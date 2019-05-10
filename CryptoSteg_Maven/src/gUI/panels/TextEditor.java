@@ -104,6 +104,7 @@ public class TextEditor extends JPanel {
 	public static final String tooltipSpeak = "[Ctrl+spacebar] Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable";
 	public static final String tooltipDecrypt = "[Ctrl+shift+D] Decrypt text with given key";
 	public static final String tooltipCrypt = "[Ctrl+shift+C] Crypt text with given key";
+	public static final String tooltipOpenInScreept = "Open current file in ScreepT";
 	public static final String tooltipBackgroundColor = "Change background color (won't be saved in .txt)";
 	public static final String tooltipForegroundTxt = "Change text color (won't be saved in .txt)";
 	public static final String tooltipDarkSwitch = "[Ctrl+B] Switch upon dark and light text combination";
@@ -226,12 +227,15 @@ public class TextEditor extends JPanel {
 	private JCheckBox chckbxAesShowKey;
 	
 	private File loadedFile;
+	private JButton btnOpenInScreepT;
+	
+	private mainGUI mainApplication;
 	
 //	private static TestUpdateProgress loaderGraphics;
 	
 //////////////// CONSTRUCTOR /////////////////////
 	
-	public TextEditor(JFrame parent, INItializer currentConf) {
+	public TextEditor(mainGUI mainGUI, INItializer currentConf) {
 
 		logger.info(this.getClass().getName() + " Starting...");
 
@@ -244,7 +248,8 @@ public class TextEditor extends JPanel {
 	
 		// initialize values used in gui //
 		currentConfiguration = currentConf;		
-		parentFrame = parent;		
+		parentFrame = mainGUI.getMainFrame();
+		mainApplication = mainGUI;
 		currentTextEditor=this;
 		LBL_ADVICE_COLOR = new Color(124, 252, 0);
 		textMargin = 14;
@@ -516,6 +521,14 @@ public class TextEditor extends JPanel {
 		btnParseImageText.setBackground(new Color(176, 196, 222));
 		mainPanel.add(btnParseImageText, "cell 20 5,alignx center");
 		
+		btnOpenInScreepT = new JButton("");
+		btnOpenInScreepT.setToolTipText(tooltipOpenInScreept);
+		btnOpenInScreepT.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnOpenInScreepT.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT));
+		btnOpenInScreepT.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnOpenInScreepT.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnOpenInScreepT, "cell 21 5,alignx center");
+		
 		lblFontSize = new JLabel("Font size: ");
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFontSize.setForeground(SystemColor.menu);
@@ -693,6 +706,47 @@ public class TextEditor extends JPanel {
 		final Font DEFAULT = textArea_1.getFont();
 		final Color DEFAULT_BCKG_COL = textArea_1.getBackground(); 
 		final Color DEFAULT_FORE_COL = textArea_1.getForeground();
+		
+		// OPEN IN SCREEPT CRYPTER
+		btnOpenInScreepT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boolean abort = false;
+				CrypterPanel cipherPanel = mainApplication.getPanelCrypter();
+				
+				// current file not saved
+				if(loadedTabObj.unsaved) {
+					String currFileName = (loadedTabObj.loadedFile != null)? loadedTabObj.loadedFile.getName() : lblCurrentFile.getText();
+					int choice = JOptionPane.showConfirmDialog(currentTextEditor, currFileName + " is not saved, do you want to save it before to crypt?");
+					if (choice == JOptionPane.OK_OPTION) {
+						btnSaveTextFile.doClick();
+					}else if (choice == JOptionPane.CANCEL_OPTION) {
+						return;
+					}
+				}
+				
+				// current file not exists or null
+				if(loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
+					return;
+				}
+				
+				if(cipherPanel != null) {
+					int openedFilesCrypter = cipherPanel.getPanelVDragNDropPane().getTreeNodes().length;
+					if (openedFilesCrypter != 0) {
+						String msg = "There are "+openedFilesCrypter+" loaded files in ScreepT: do you want to remove from loaded list?";
+						int choice = JOptionPane.showConfirmDialog(currentTextEditor, msg);
+						if(choice == JOptionPane.OK_OPTION) {
+							cipherPanel.getPanelVDragNDropPane().removeAll();
+						}else if(choice == JOptionPane.CANCEL_OPTION) {
+							return;
+						}
+					}
+				}
+					
+				mainApplication.getMntmCrypter().doClick();
+				cipherPanel = mainApplication.getPanelCrypter();
+				cipherPanel.addNewSourceFile(loadedTabObj.loadedFile);
+			}
+		});
 		
 		// OPEN CURRENT IN SYSTEM EXPLORER
 		btnViewInExplorer.addActionListener(new ActionListener() {
@@ -1255,12 +1309,12 @@ public class TextEditor extends JPanel {
 		btnSaveTextFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boolean done = false;
-				if(loadedFile == null) {
+				if(loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
 					btnSaveTextFileAs.doClick();
 					return;
 				}else {
 					try {
-						done = FileStuff.writeStringToFile(textArea_1.getText(), loadedFile, true);
+						done = FileStuff.writeStringToFile(textArea_1.getText(), loadedTabObj.loadedFile, true);
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(currentTextEditor, "error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
@@ -1271,10 +1325,10 @@ public class TextEditor extends JPanel {
 						refreshMessageAndTabTooltip("[File saved]");
 					}else {
 						errorAdvice("[Error - not saved]");
-						lblCurrentFile.setText("(*)"+loadedFile.getName());
+						lblCurrentFile.setText("(*)"+loadedTabObj.loadedFile.getName());
 						lblCurrentFile.setForeground(Color.RED);
 					}
-					lblCurrentFile.setToolTipText(loadedFile.getAbsolutePath());
+					lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getAbsolutePath());
 				}
 			}
 		});

@@ -586,18 +586,9 @@ public class CrypterPanel extends JPanel {
 				// select input file or directory with fileChooser
 				File selected = GenericFileChooserDialog.fileAndDirRead(thisPanel, currentConf);
 				
-				if (selected!=null && selected.exists()) {
-					srcFile = selected;
-					panelVDragNDropPane.addFileToTree(selected);
-					String newdisplayed = HandleString.fitToMaxLentgh(selected.getName(), labelLengthLimit);
-					// update gui
-					panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
-					
-					appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
-					
-					JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
-					logger.debug("File :" + selected.getName() + " correctly loaded");
-				}
+				addNewSourceFile(selected);
+
+				JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		
@@ -1522,6 +1513,20 @@ public class CrypterPanel extends JPanel {
 		return false;
 	}
 	
+	public void addNewSourceFile(File selected) {
+		if (selected!=null && selected.exists()) {
+			srcFile = selected;
+			panelVDragNDropPane.addFileToTree(selected);
+			String newdisplayed = HandleString.fitToMaxLentgh(selected.getName(), labelLengthLimit);
+			// update gui
+			panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
+			
+			appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
+			
+			logger.debug("File :" + selected.getName() + " correctly loaded");
+		}
+	}
+	
 	/**
 	 * This method is used only locally to refresh image with the given one
 	 */
@@ -1652,4 +1657,14 @@ public class CrypterPanel extends JPanel {
 	public JTabbedPane getTabbedPane() {
 		return tabbedPane;
 	}
+
+	public VirtualFileDropPane getPanelVDragNDropPane() {
+		return panelVDragNDropPane;
+	}
+
+	public void setPanelVDragNDropPane(VirtualFileDropPane panelVDragNDropPane) {
+		this.panelVDragNDropPane = panelVDragNDropPane;
+	}
+	
+	
 }

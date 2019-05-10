@@ -30,7 +30,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
+import java.util.regex.Pattern;
 import java.awt.Font;
 import java.awt.Dimension;
 import javax.swing.JButton;
@@ -261,15 +261,36 @@ public class SearchFrame extends JFrame{
 	
 	private void replaceTextSelected() {
 		SelectionDto selectionTxtArea = new SelectionDto(textSearchArea);
-		
 		int selStart = selectionTxtArea.first;
-		String output = selectionTxtArea.prefix.concat(txtReplaceSelection.getText()).concat(selectionTxtArea.end);
-		textSearchArea.setText("");
-		textSearchArea.append(output);
+		String output = "";
+		String center = "";
 		
-		textSearchArea.requestFocus();
-		textSearchArea.setSelectionStart(selStart);
-		textSearchArea.setSelectionEnd(selStart + txtReplaceSelection.getText().length());
+		if(textSearchArea.getSelectedText() != null) {
+			if (chckbxCaseSensitive.isSelected()) {
+				center = textSearchArea.getSelectedText().replaceAll(searchTextField.getText(),
+						txtReplaceSelection.getText());
+			}else {
+				center = textSearchArea.getSelectedText().replaceAll("(?i)"+Pattern.quote(searchTextField.getText()),
+						txtReplaceSelection.getText());
+			}
+			output = selectionTxtArea.prefix.concat(center).concat(selectionTxtArea.end);
+			textSearchArea.setText(output);
+			textSearchArea.requestFocus();
+			textSearchArea.setSelectionStart(selStart);
+		}else {
+			
+			textSearchArea.requestFocus();
+			textSearchArea.setSelectionStart(selStart);
+			textSearchArea.setSelectionEnd(selectionTxtArea.last);
+			btnNext.doClick();
+		}
+		
+		if(!center.equals("")) {
+			textSearchArea.setSelectionEnd(selStart + center.length());
+		}else {
+			textSearchArea.setSelectionEnd(selectionTxtArea.last);
+		}
+		
 	}
 	
 	public static void addPlacehoderActions(JTextField field, String placeholder) {

@@ -1096,7 +1096,7 @@ public class mainGUI {
 						JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 						if(initTxtWriter == null) {
 							Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-							initTxtWriter = new TextEditor(frmScryptV, currentConfiguration);
+							initTxtWriter = new TextEditor(mainAPP, currentConfiguration);
 						}		    	
 				    	contentPane.removeAll();
 				    	contentPane.add(initTxtWriter);
@@ -1820,5 +1820,14 @@ public class mainGUI {
 	public JMenuItem getMntmDeleteDirectoryContentByExtension() {
 		return mntmDeleteDirectoryContentByExtension;
 	}
+
+	public CrypterPanel getPanelCrypter() {
+		return panelCrypter;
+	}
+
+	public void setPanelCrypter(CrypterPanel panelCrypter) {
+		this.panelCrypter = panelCrypter;
+	}
+	
 	
 }
