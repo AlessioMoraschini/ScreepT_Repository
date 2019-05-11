@@ -10,6 +10,21 @@ public class IconsPathConfigurator {
 	
 	///////////////// MENU ICONS /////////////////
 	
+	// file extension types
+	public static final String F_ICON_PDF = RESOURCES_DIR + "Icons/File_Extensions/pdf.png";
+	public static final String F_ICON_PNG = RESOURCES_DIR + "Icons/File_Extensions/F_png.png";
+	public static final String F_ICON_JPG = RESOURCES_DIR + "Icons/File_Extensions/F_jpg.png";
+	public static final String F_ICON_TXT = RESOURCES_DIR + "Icons/File_Extensions/F_txt.png";
+	public static final String F_ICON_HTML = RESOURCES_DIR + "Icons/File_Extensions/F_html.png";
+	public static final String F_ICON_CSS = RESOURCES_DIR + "Icons/File_Extensions/F_css.png";
+	public static final String F_ICON_JS = RESOURCES_DIR + "Icons/File_Extensions/F_js.png";
+	public static final String F_ICON_JSON = RESOURCES_DIR + "Icons/File_Extensions/F_json.png";
+	public static final String F_ICON_AUDIO = RESOURCES_DIR + "Icons/File_Extensions/F_audio.png";
+	public static final String F_ICON_VIDEO = RESOURCES_DIR + "Icons/File_Extensions/F_movie.png";
+	public static final String F_ICON_IMAGE = RESOURCES_DIR + "Icons/File_Extensions/F_image.png";
+	public static final String F_ICON_EXE = RESOURCES_DIR + "Icons/File_Extensions/F_exe.png";
+	public static final String F_ICON_GENERIC = RESOURCES_DIR + "Icons/File_Extensions/F_genericFile.png";
+	
 		// file submenu
 	public static final String ICON_CONF_MANAGER = RESOURCES_DIR + "Icons/Menu_Icons/manager.png";
 	public static final String ICON_LOAD_CUSTOM_CONF = RESOURCES_DIR + "Icons/Menu_Icons/loadConfig.png";

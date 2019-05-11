@@ -21,6 +21,7 @@ public class GenericFileChooser {
 	
 	public static String writerNames[] = ImageIO.getWriterFileSuffixes();
 	public static String DEFAULT_HOME_PATH = "../";
+	public static MyFileView fileView = new MyFileView();
 	
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported images files),if nothing is selected returns null
@@ -30,7 +31,8 @@ public class GenericFileChooser {
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input Image File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));		
+		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
+		fileChooser.setFileView(fileView);
 		File correctFile = null;		
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -57,6 +59,7 @@ public class GenericFileChooser {
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input Image File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileView(fileView);
 		fileChooser.setFileFilter(new FileFilter() {
 			
 			@Override
@@ -98,7 +101,8 @@ public class GenericFileChooser {
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));		
+		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
+		fileChooser.setFileView(fileView);
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -112,8 +116,6 @@ public class GenericFileChooser {
         		correctFile = selectedFile;
         		DEFAULT_HOME_PATH = correctFile.getAbsolutePath();
         	}
-        }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
@@ -127,6 +129,7 @@ public class GenericFileChooser {
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileView(fileView);
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -139,8 +142,6 @@ public class GenericFileChooser {
         	}else {
         		correctFile = selectedFile;
         	}
-        }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
@@ -155,6 +156,7 @@ public class GenericFileChooser {
 		fileChooser.setDialogTitle("Select input File or Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));		
+		fileChooser.setFileView(fileView);
 		
 		File correctFile = null;
 		
@@ -169,8 +171,6 @@ public class GenericFileChooser {
         		correctFile = selectedFile;
         		DEFAULT_HOME_PATH = correctFile.getParentFile().getAbsolutePath();
         	}
-        }else {
-        	//JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
@@ -184,6 +184,7 @@ public class GenericFileChooser {
 		fileChooser.setDialogTitle("Save Image File");
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));	
 		fileChooser.setSelectedFile(new File(defaultName));
+		fileChooser.setFileView(fileView);
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showSaveDialog(parent);
@@ -211,7 +212,8 @@ public class GenericFileChooser {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Choose Input Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));		
+		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
+		fileChooser.setFileView(fileView);
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -224,8 +226,6 @@ public class GenericFileChooser {
         		correctFile = selectedFile;
         		DEFAULT_HOME_PATH = correctFile.getParentFile().getAbsolutePath();
         	}
-        }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
@@ -239,7 +239,8 @@ public class GenericFileChooser {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setDialogTitle("Choose output Directory");
-		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));	
+		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
+		fileChooser.setFileView(fileView);
 		File correctFile = null;
 		//JOptionPane optPane = new JOptionPane();
 		
@@ -254,8 +255,6 @@ public class GenericFileChooser {
         		correctFile = selectedFile;
         		DEFAULT_HOME_PATH = correctFile.getAbsolutePath();
         	}
-        }else {
-        	//JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
         return correctFile;
 	}
