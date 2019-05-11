@@ -53,6 +53,13 @@ public class GuiUtils {
 		return Toolkit.getDefaultToolkit().getScreenSize();
 	}
 	
+	public static Dimension getScreenSizePerc(int factorPerc) {
+		Dimension screen = getScreenSize();
+		int w = screen.width*factorPerc/100;
+		int h = screen.height*factorPerc/100;
+		return new Dimension(h, w);
+	}
+	
 	public static Dimension getScreenSize(int marginLeftRight) {
 		Dimension screen = getScreenSize();
 		return new Dimension(screen.width-(marginLeftRight+marginLeftRight), screen.height);

@@ -20,10 +20,10 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 	
 	public static final int THICKNESS_BORDER = 3;
 	
-	private static final int xGap = 0;
+	private static final int xGap = -1;
 	private static final int yGap = -2;
-	private static final int wPad = 3;
-	private static final int hPad = 4;
+	private static final int wPad = 0;
+	private static final int hPad = 6;
 	private static final int arch = 8;
 	
 	public Color fillingColor;

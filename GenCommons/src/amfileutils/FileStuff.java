@@ -705,9 +705,11 @@ public class FileStuff {
 							builder.append(line).append("\n");
 							line = reader.readLine();
 						}
+						reader.close(); 
+						readerStream.close();
 					} catch (IOException e) {
 						logger.error(e);
-						try {reader.close();} 
+						try {reader.close(); readerStream.close();} 
 						catch (IOException e1) {}			
 					}
 				} catch (UnsupportedEncodingException | FileNotFoundException e2) {
