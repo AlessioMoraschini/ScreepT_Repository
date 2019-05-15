@@ -9,16 +9,21 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
+import org.icepdf.ri.common.ComponentKeyBinding;
+import org.icepdf.ri.common.SwingController;
+import org.icepdf.ri.common.SwingViewBuilder;
 
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooser;
 import frameutils.GuiUtils;
+import media.ImageGeneralWorker;
 import resources.IconsPathConfigurator;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.tess4j.TesseractException;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,6 +37,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Image;
 
 public class PdfSelector2TextFrame extends JFrame{
 	
@@ -46,10 +52,9 @@ public class PdfSelector2TextFrame extends JFrame{
 	public int WIDTH = 800;
 	public int HEIGHT = GuiUtils.getScreenSize().height-200;
 	
-	private JPanel imageContainerPanel;
+	private JScrollPane imageContainerPanel;
 	private JTextArea txtAreaParsedText;
 	private JScrollPane textPreviewScrollPane;
-	private JLabel labelLoadedImage;
 	private JButton btnLoadImage;
 	private JButton btnParseImage;
 	private JButton btnInjectSelected;
@@ -60,6 +65,7 @@ public class PdfSelector2TextFrame extends JFrame{
 	
 	private File selectedImageSource;
 	public ImageToTextExtractor imageExtractor;
+	private SwingController controllerPdf;
 	
 	public PdfSelector2TextFrame(JFrame parentRootFrame, JTextArea outputTxtArea, String title) {
 		getContentPane().setBackground(Color.LIGHT_GRAY);
@@ -78,14 +84,12 @@ public class PdfSelector2TextFrame extends JFrame{
 		GuiUtils.moveFrame(this, GuiUtils.getScreenSize().width/4, 0);
 		getContentPane().setLayout(new MigLayout("", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 		
-		imageContainerPanel = new JPanel();
+		imageContainerPanel = new JScrollPane();
 		imageContainerPanel.setBackground(Color.BLACK);
 		imageContainerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 3, true));
 		getContentPane().add(imageContainerPanel, "cell 0 0 5 1,grow");
-		imageContainerPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
 		
-		labelLoadedImage = new JLabel("");
-		imageContainerPanel.add(labelLoadedImage, "cell 0 0");
+		initDisplayPanel(imageContainerPanel);
 		
 		textPreviewScrollPane = new JScrollPane();
 		textPreviewScrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 4));
@@ -227,10 +231,26 @@ public class PdfSelector2TextFrame extends JFrame{
 		});
 	}
 	
+	private void initDisplayPanel(JScrollPane father) {
+		controllerPdf = new SwingController();
+		// We created the SwingViewFactory configured with the controller
+		SwingViewBuilder factory = new SwingViewBuilder(controllerPdf);
+		// We use the factory to build a preconfigured JPanel
+		// with a full and active viewer user interface.
+		JPanel viewerComponentPanel = factory.buildViewerPanel();
+		viewerComponentPanel.setPreferredSize(new Dimension(400, 243));
+		viewerComponentPanel.setMaximumSize(new Dimension(400, 243));
+		// We add keyboard command
+		ComponentKeyBinding.install(controllerPdf, viewerComponentPanel);
+		// add interactive mouse link annotation support via callback
+		controllerPdf.getDocumentViewController().setAnnotationCallback(
+		              new org.icepdf.ri.common.MyAnnotationCallback(controllerPdf.getDocumentViewController()));
+		
+		father.setViewportView(viewerComponentPanel);
+	}
+	
 	private void displayPdf(File sourceFile) throws IOException {
-//		Image sourceFileImage = ImageIO.read(sourceFile);
-//		Image image = ImageGeneralWorker.scaleImage(sourceFileImage, imageContainerPanel.getWidth(), imageContainerPanel.getHeight(), Image.SCALE_REPLICATE);
-//		labelLoadedImage.setIcon(new ImageIcon(image));
+		controllerPdf.openDocument(sourceFile.getAbsolutePath());
 	}
 	
 }

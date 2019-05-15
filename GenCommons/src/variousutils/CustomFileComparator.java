@@ -1,4 +1,4 @@
-package local;
+package variousutils;
 
 import java.io.File;
 import java.util.Comparator;

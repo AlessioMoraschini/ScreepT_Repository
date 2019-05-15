@@ -35,5 +35,32 @@
 	  <artifactId>GuiCommons</artifactId>
 	  <version>0.0.1-SNAPSHOT</version>
  	 </dependency>
+ 	 
+	<dependency>
+	    <groupId>org.icepdf.os</groupId>
+	    <artifactId>icepdf-core</artifactId>
+	    <version>6.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.media</groupId>
+                    <artifactId>jai_core</artifactId>
+                </exclusion>
+            </exclusions>
+	</dependency>
+	<dependency>
+	    <groupId>org.icepdf.os</groupId>
+	    <artifactId>icepdf-viewer</artifactId>
+	    <version>6.2.2</version>
+	</dependency>
+
+ 	 
   </dependencies>
+  
+  <repositories>
+    	<repository>
+	        <id>mygrid-repository</id>
+            <name>myGrid Repository</name>
+	        <url>http://www.mygrid.org.uk/maven/repository</url>
+    	</repository>
+	</repositories>
 </project>

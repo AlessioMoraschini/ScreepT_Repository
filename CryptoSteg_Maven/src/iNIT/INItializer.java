@@ -20,8 +20,8 @@ import iNIT.om.GuiOption;
 import iNIT.om.ImgConverterOption;
 import iNIT.om.SteganOption;
 import iNIT.om.TextEditorOption;
-import local.HandleString;
 import maingUI.mainGUI;
+import variousutils.HandleString;
 
 public class INItializer {
 

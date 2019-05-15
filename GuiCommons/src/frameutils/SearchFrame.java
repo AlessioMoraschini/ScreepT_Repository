@@ -30,11 +30,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.regex.Pattern;
 import java.awt.Font;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.border.LineBorder;
+import javax.swing.JLabel;
 
 public class SearchFrame extends JFrame{
 
@@ -61,21 +65,27 @@ public class SearchFrame extends JFrame{
 	private int indexStart = 0;
 	
 	public volatile boolean active = false;
+	private JPanel headerPanel;
+	private JLabel lblTextSearch;
+	private JButton btnClose;
 	
-	public SearchFrame(boolean undecorated, boolean alwaysOnTop, JTextArea targetSearchArea) {
+	public SearchFrame(boolean alwaysOnTop, JTextArea targetSearchArea) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		thisFrame = this;
 		active = true;
 		
-		this.setUndecorated(undecorated);
+		this.setUndecorated(true);
 		this.setAlwaysOnTop(alwaysOnTop);
 		this.setTitle("Text Search");
+		MovePanelMouseListener.applyMoveListener(this);
+		
 		getContentPane().setBackground(Color.GRAY);
-			
+		
 		tabSearch = new JPanel();
-		tabSearch.setLayout(new MigLayout("", "[10px][100px,grow][100px,grow][100px,grow][100px][100px][120px,grow][10px]", "[50px,grow][50px]"));
+		tabSearch.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
+		tabSearch.setLayout(new MigLayout("", "[100px,grow][100px,grow][100px,grow][100px][100px][120px,grow]", "[:35px:40px][50px,grow][50px]"));
 		tabSearch.setBackground(Color.DARK_GRAY);
 		getContentPane().add(tabSearch);
 		
@@ -87,19 +97,52 @@ public class SearchFrame extends JFrame{
 				super.setSelectionVisible(true);
 			}
 		});
+		
+		headerPanel = new JPanel();
+		headerPanel.setForeground(Color.BLACK);
+		headerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		headerPanel.setBackground(new Color(112, 128, 144));
+		tabSearch.add(headerPanel, "cell 0 0 6 1,grow");
+		headerPanel.setLayout(new MigLayout("", "[][grow][]", "[::25px,fill]"));
+		
+		lblTextSearch = new JLabel("Text Search");
+		lblTextSearch.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblTextSearch.setForeground(new Color(255, 255, 255));
+		lblTextSearch.setFont(new Font("Lithos Pro Regular", Font.BOLD, 20));
+		lblTextSearch.setBackground(Color.LIGHT_GRAY);
+		headerPanel.add(lblTextSearch, "cell 1 0,alignx center,aligny top");
+		
+		btnNext = new JButton("Next");
+		btnNext.setMinimumSize(new Dimension(42, 35));
+		btnNext.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnNext.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnNext.setBackground(new Color(119, 136, 153));
+		tabSearch.add(btnNext, "cell 5 1,growx,aligny center");
+		
+		btnClose = new JButton("X");
+		btnClose.setPreferredSize(new Dimension(35, 35));
+		btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnClose.setMaximumSize(new Dimension(35, 35));
+		btnClose.setMinimumSize(new Dimension(22, 25));
+		btnClose.setBackground(new Color(255, 51, 51));
+		btnClose.setFont(new Font("SansSerif", Font.BOLD, 11));
+		headerPanel.add(btnClose, "cell 2 0,alignx right,aligny top");
 
 		searchTextField = new JTextField();
 		searchTextField.setMinimumSize(new Dimension(6, 35));
 		searchTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		searchTextField.setText(SEARCH_PLACEHOLDER);
 		searchTextField.setToolTipText("Search term");
-		tabSearch.add(searchTextField, "cell 1 0 3 1,growx,aligny center");
+		tabSearch.add(searchTextField, "cell 0 1 3 1,growx,aligny center");
 		searchTextField.setColumns(10);
 		
-		chckbxCaseSensitive = new JCheckBox("Case Sensitive");
-		chckbxCaseSensitive.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		chckbxCaseSensitive.setForeground(Color.WHITE);
-		tabSearch.add(chckbxCaseSensitive, "cell 4 0 2 1,alignx center");
+		btnChangeText = new JButton("Change text");
+		btnChangeText.setToolTipText("Replace selected text");
+		btnChangeText.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnChangeText.setMinimumSize(new Dimension(42, 35));
+		btnChangeText.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		btnChangeText.setBackground(new Color(128, 128, 128));
+		tabSearch.add(btnChangeText, "cell 3 1 2 1,growx,aligny center");
 		
 		txtReplaceSelection = new JTextField();
 		txtReplaceSelection.setToolTipText("Replace Selected text");
@@ -107,37 +150,40 @@ public class SearchFrame extends JFrame{
 		txtReplaceSelection.setMinimumSize(new Dimension(6, 35));
 		txtReplaceSelection.setHorizontalAlignment(SwingConstants.CENTER);
 		txtReplaceSelection.setColumns(10);
-		tabSearch.add(txtReplaceSelection, "cell 1 1 3 1,growx");
-		
-		btnChangeText = new JButton("Change text");
-		btnChangeText.setToolTipText("Replace selected text");
-		btnChangeText.setMinimumSize(new Dimension(42, 35));
-		btnChangeText.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		btnChangeText.setBackground(new Color(70, 130, 180));
-		tabSearch.add(btnChangeText, "cell 4 1 2 1,growx");
-		
-		btnNext = new JButton("Next");
-		btnNext.setMinimumSize(new Dimension(42, 35));
-		btnNext	.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		btnNext.setFont(new Font("SansSerif", Font.BOLD, 13));
-		btnNext.setBackground(new Color(119, 136, 153));
-		tabSearch.add(btnNext, "cell 6 0,growx,aligny center");
-		
-		getRootPane().setDefaultButton(btnNext);
+		tabSearch.add(txtReplaceSelection, "cell 0 2 3 1,growx");
+
+		chckbxCaseSensitive = new JCheckBox("Case Sensitive");
+		chckbxCaseSensitive.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		chckbxCaseSensitive.setForeground(Color.WHITE);
+		tabSearch.add(chckbxCaseSensitive, "cell 3 2 2 1,alignx center,aligny center");
 		
 		btnPrev = new JButton("Prev");
 		btnPrev.setMinimumSize(new Dimension(42, 35));
 		btnPrev.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnPrev.setFont(new Font("SansSerif", Font.BOLD, 13));
 		btnPrev.setBackground(new Color(119, 136, 153));
-		tabSearch.add(btnPrev, "cell 6 1,growx,aligny center");
+		tabSearch.add(btnPrev, "cell 5 2,growx,aligny center");
 
 		adHandlersTextAreaSimple();
+		
+		addWindowListener(new WindowAdapter() {
+		    public void windowGainedFocus(WindowEvent e) {
+				btnNext.requestFocusInWindow();
+		    }
+		});
 		
 		logger.info(this.getClass().getName() + " Running");
 	}
 	
 	private void adHandlersTextAreaSimple() {
+		
+		btnClose.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
+			}
+		});
 		
 		// window on close operations
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -277,6 +323,7 @@ public class SearchFrame extends JFrame{
 			textSearchArea.setText(output);
 			textSearchArea.requestFocus();
 			textSearchArea.setSelectionStart(selStart);
+			textSearchArea.setSelectionEnd(selStart+center.length());
 		}else {
 			
 			textSearchArea.requestFocus();

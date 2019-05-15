@@ -19,7 +19,7 @@ import org.junit.Test;
 import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
-import local.EntophyzerUtils;
+import variousutils.EntophyzerUtils;
 
 public class HashMapArrayReorderTest {
 

@@ -101,6 +101,8 @@ public class IconsPathConfigurator {
 	public static final String ICON_DECRYPT = RESOURCES_DIR + "Icons/Decrypt.png";
 	public static final String ICON_SPEAKER = RESOURCES_DIR + "Icons/Speaker.png";
 	public static final String ICON_SEARCH = RESOURCES_DIR + "Icons/Search.png";
+	public static final String ICON_CONVERT_OCR_IMAGE = RESOURCES_DIR + "Icons/OCR.png";
+	public static final String ICON_CONVERT_ESCAPES = RESOURCES_DIR + "Icons/convertEscapes.png";
 	
 	///////////////// TREE RENDERER ICONS /////////////////
 	public static final String iconFolderPath = RESOURCES_DIR + "Icons/Folder.png";

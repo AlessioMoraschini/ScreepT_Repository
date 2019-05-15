@@ -15,7 +15,6 @@ import frameutils.GuiUtils;
 import gUI.om.HDinfo;
 import generic.LimitedList;
 import iNIT.INItializer;
-import local.DoubleListWorker;
 import net.miginfocom.swing.MigLayout;
 import oshi.SystemInfo;
 import oshi.hardware.Baseboard;
@@ -23,6 +22,7 @@ import oshi.hardware.CentralProcessor;
 import oshi.hardware.Display;
 import oshi.hardware.HWDiskStore;
 import resources.IconsPathConfigurator;
+import variousutils.DoubleListWorker;
 
 import javax.swing.JPanel;
 import java.awt.Color;

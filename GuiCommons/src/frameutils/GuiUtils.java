@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
+import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
 
 import org.apache.log4j.Logger;
@@ -55,9 +56,9 @@ public class GuiUtils {
 	
 	public static Dimension getScreenSizePerc(int factorPerc) {
 		Dimension screen = getScreenSize();
-		int w = screen.width*factorPerc/100;
-		int h = screen.height*factorPerc/100;
-		return new Dimension(h, w);
+		int w = (screen.width*factorPerc)/100;
+		int h = (screen.height*factorPerc)/100;
+		return new Dimension(w, h);
 	}
 	
 	public static Dimension getScreenSize(int marginLeftRight) {
@@ -165,6 +166,12 @@ public class GuiUtils {
             RootPaneContainer root = (RootPaneContainer) frame.getTopLevelAncestor();
             root.getGlassPane().setCursor(CURSOR_DEFAULT);
         }
+    }
+    
+    public static void selectAllText(JTextField field) {
+    	field.requestFocus();
+    	field.setSelectionStart(0);
+    	field.setSelectionEnd(field.getText().length());
     }
 	
 }

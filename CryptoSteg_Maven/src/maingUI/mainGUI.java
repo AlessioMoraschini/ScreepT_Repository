@@ -38,6 +38,7 @@ import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
 import amfileutils.filechangewatcher.ChangeDTO;
+import dialogutils.GenericFileChooser;
 import frameutils.GuiUtils;
 import gUI.om.TabTextEditorObj;
 import gUI.panels.AboutSectionPanel;
@@ -80,7 +81,6 @@ import resources.SoundsConfigurator;
 import utils.SysUtils;
 
 import java.awt.Dialog.ModalExclusionType;
-import java.awt.Color;
 
 import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
@@ -186,7 +186,7 @@ public class mainGUI {
 	private JMenuItem mntmCrypter;
 	private JMenuItem mntmgenerateKeyImageSub;
 	private JMenuItem mntmViewKeyDictionary;
-	private JMenuItem mntmTextEditor;
+	private static JMenuItem mntmTextEditor;
 	private JMenuItem mntmnetInfo;
 	private JMenuItem mntmhwInfo;
 	private JMenuItem mntmImageConverter;
@@ -445,6 +445,11 @@ public class mainGUI {
 					    	if (JOptionPane.showConfirmDialog(window.frmScryptV, "Really want to exit? :(", "Exit Program",
 									JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 					    		
+					    		if(!askUnsavedTextFiles()) {
+					    			window.frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+									return;
+								}
+					    		
 					    		doIfTempDecryptedChanged(window.frmScryptV);
 					    		
 					    		window.frmScryptV.setAlwaysOnTop(true);
@@ -584,6 +589,15 @@ public class mainGUI {
 					if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 						
+						if(!askUnsavedTextFiles()) {
+							frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+							return;
+						}
+			    		
+			    		doIfTempDecryptedChanged(frmScryptV);
+			    		
+			    		frmScryptV.setAlwaysOnTop(true);
+			    		
 						// perform closing actions and exit application
 						closeApplication();
 					}
@@ -1178,9 +1192,9 @@ public class mainGUI {
 		DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
 		// adjust general look and feel opt
 		if(DARK_THEME) {
-			updateUIDarkNimbus();
+			DARK_THEME = !GUIStyelSettings.setLightNimbus();
 		}else {
-			updateUILightNimbus();
+			DARK_THEME = !GUIStyelSettings.setLightNimbus();
 		}
 	}
 	
@@ -1387,86 +1401,6 @@ public class mainGUI {
 	    SwingUtilities.updateComponentTreeUI(frmScryptV);
 	}
 	
-	public static void updateUIDarkNimbus() {
-//		UIManager.put( "control", new Color( 128, 128, 128) );
-//		  UIManager.put( "info", new Color(128,128,128) );
-		  UIManager.put( "nimbusBase", new Color( 18, 30, 49) );
-		  UIManager.put( "MenuBar.foreground", Color.white );
-//		  UIManager.put( "nimbusAlertYellow", new Color( 248, 187, 0) );
-//		  UIManager.put( "nimbusDisabledText", new Color( 128, 128, 128) );
-//		  UIManager.put( "nimbusFocus", new Color(115,164,209) );
-//		  UIManager.put( "nimbusGreen", new Color(176,179,50) );
-//		  UIManager.put( "nimbusInfoBlue", new Color( 66, 139, 221) );
-		  UIManager.put( "nimbusLightBackground", new Color( 250, 250, 250) );
-//		  UIManager.put( "nimbusOrange", new Color(191,98,4) );
-//		  UIManager.put( "nimbusRed", new Color(169,46,34) );
-//		  UIManager.put( "nimbusSelectedText", new Color( 255, 255, 255) );
-		  UIManager.put( "nimbusSelectionBackground", new Color( 150, 150, 150) );
-		 // UIManager.put( "text", new Color( 230, 230, 230) );
-		  try {
-		    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-		      if ("Nimbus".equals(info.getName())) {
-		          javax.swing.UIManager.setLookAndFeel(info.getClassName());
-		          break;
-		      }
-		    }
-		    DARK_THEME=true;
-		  } catch (ClassNotFoundException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (InstantiationException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (IllegalAccessException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (javax.swing.UnsupportedLookAndFeelException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (Exception e) {
-			  logger.error("Exception happened!", e);
-		  }
-		  // Show your JFrame
-	}
-	
-	public static void updateUILightNimbus() {
-		
-		UIManager.put("nimbusOrange", Color.GREEN);
-//		UIManager.put( "control", new Color( 128, 128, 128) );
-//		  UIManager.put( "info", new Color(128,128,128) );
-		  UIManager.put( "nimbusBase", new Color(51,98,140) );
-		  UIManager.put( "MenuBar.foreground", Color.black );
-//		  UIManager.put( "nimbusAlertYellow", new Color( 248, 187, 0) );
-//		  UIManager.put( "nimbusDisabledText", new Color( 128, 128, 128) );
-//		  UIManager.put( "nimbusFocus", new Color(115,164,209) );
-//		  UIManager.put( "nimbusGreen", new Color(176,179,50) );
-//		  UIManager.put( "nimbusInfoBlue", new Color( 66, 139, 221) );
-//		  UIManager.put( "Tree.selectionBackground", Color.BLACK );
-		  UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
-//		  UIManager.put( "nimbusOrange", new Color(191,98,4) );
-//		  UIManager.put( "nimbusRed", new Color(169,46,34) );
-//		  UIManager.put( "nimbusSelectedText", new Color( 255, 255, 255) );
-		  UIManager.put( "MenuItem.textIconGap", 18);
-		  UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
-		 // UIManager.put( "text", new Color( 230, 230, 230) );
-		  try {
-		    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-		      if ("Nimbus".equals(info.getName())) {
-		          javax.swing.UIManager.setLookAndFeel(info.getClassName());
-		          break;
-		      }
-		    }
-			DARK_THEME=false;
-		  } catch (ClassNotFoundException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (InstantiationException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (IllegalAccessException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (javax.swing.UnsupportedLookAndFeelException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (Exception e) {
-			  logger.error("Exception happened!", e);
-		  }
-		  // Show your JFrame
-	}
-	
 	public static String askUsername() {
 		boolean end=false;
 		String input="";
@@ -1593,7 +1527,6 @@ public class mainGUI {
 		
 		closeOpenBlockingFrames();
 		
-		
 		now=new Date();
 		
         // if autosave is on save before quit
@@ -1614,18 +1547,13 @@ public class mainGUI {
       	Thread tempEraser = new Thread(tempDecryptedEraser());
       	tempEraser.start();	
       	
-		String msg = "Deleting temp files and folders... please wait!";
-		
-//		new Thread(new Runnable() {
-//					
-//			@Override
-//			public void run() {
-//				JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.INFORMATION_MESSAGE);
-//			}
-//		}).start();
+		String msg = "Deleting temp files and folders...";
 		
 		try {
+			logger.info(msg+ "please wait!");
 			tempEraser.join();
+			logger.info(msg+ "COMPLETED :)");
+			
 		} catch (InterruptedException e) {
 			logger.error("Some error occurred deleting temporary Decrypted files");
 		}
@@ -1666,11 +1594,64 @@ public class mainGUI {
 		}
 	}
 	
+	/**
+	 * return false if not exit, true if has to exit;
+	 * @return
+	 */
+	public static boolean askUnsavedTextFiles() {
+		if (TextEditor.loadedList == null) {
+			return true;
+		}
+
+		boolean askCondition;
+		boolean atLeastOneTemp;
+		
+		askCondition = false;
+		atLeastOneTemp = false;
+		for (TabTextEditorObj tabElement : TextEditor.loadedList) {
+			if (tabElement.unsaved || (tabElement.loadedFile != null)) {
+				if (tabElement.loadedFile == null) {
+					atLeastOneTemp = true;
+				}
+				askCondition = true;
+				break;
+			}
+		} 
+		Boolean choiceY = GenericFileChooser.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", null, askCondition);
+		if(choiceY == null) {
+			// cancel -> don't exit
+			return false;
+		}else if(choiceY) {
+			try {
+				TextEditor.saveAllUnsavedExisting();
+			} catch (IOException e) {
+				logger.error(e);
+				int choiceError = JOptionPane.showConfirmDialog(null, "Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?");
+				if(!(choiceError == JOptionPane.OK_OPTION)) {
+					mntmTextEditor.doClick();
+					return false; // no -> don't exit after error
+				}
+			}
+			if(atLeastOneTemp) {
+				mntmTextEditor.doClick();
+				for(TabTextEditorObj tabElement : TextEditor.loadedList) {
+					if(tabElement.unsaved && tabElement.loadedFile == null) {
+						initTxtWriter.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
+						return false; // don't exit
+					}
+				}
+			}
+			return true;
+		}else {
+			return true;
+		}
+	}
+	
 	private static void backupOpenedFilesInConfig() {
 		if (initTxtWriter != null) {
 			// save list of non null and existing files in tabs
 			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
-			for (TabTextEditorObj currentObj : initTxtWriter.loadedList) {
+			for (TabTextEditorObj currentObj : TextEditor.loadedList) {
 				if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
 					currentConfiguration.getTextEditorOpt().getOpenedFileList()
 							.add(currentObj.loadedFile.getAbsolutePath());
@@ -1680,11 +1661,11 @@ public class mainGUI {
 					INItializer.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
 
 			// save current opened if it exists
-			if(initTxtWriter.loadedTabObj != null 
-					&& initTxtWriter.loadedTabObj.loadedFile!= null 
-					&& currentConfiguration.getTextEditorOpt().openedFileList.contains(initTxtWriter.loadedTabObj.loadedFile.getAbsolutePath()))
+			if(TextEditor.loadedTabObj != null 
+					&& TextEditor.loadedTabObj.loadedFile!= null 
+					&& currentConfiguration.getTextEditorOpt().openedFileList.contains(TextEditor.loadedTabObj.loadedFile.getAbsolutePath()))
 			{
-				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "selectedFileAtStart", initTxtWriter.loadedTabObj.loadedFile.getAbsolutePath());
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "selectedFileAtStart", TextEditor.loadedTabObj.loadedFile.getAbsolutePath());
 			}
 		}
 		
@@ -1828,6 +1809,5 @@ public class mainGUI {
 	public void setPanelCrypter(CrypterPanel panelCrypter) {
 		this.panelCrypter = panelCrypter;
 	}
-	
 	
 }

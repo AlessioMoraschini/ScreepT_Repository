@@ -14,8 +14,8 @@ import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import crypt.steg.StegCipher;
 import gUI.om.BufferedImageType;
-import local.ByteWorker;
 import media.ImageGeneralWorker;
+import variousutils.ByteWorker;
 
 import org.junit.Rule;
 

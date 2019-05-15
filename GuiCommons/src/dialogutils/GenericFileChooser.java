@@ -10,12 +10,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
 
-import local.HandleString;
-
+import variousutils.HandleString;
 
 public class GenericFileChooser {
 	
@@ -257,6 +257,32 @@ public class GenericFileChooser {
         	}
         }
         return correctFile;
+	}
+	
+	/**
+	 * open dialog in parent JComponent, displaying msg
+	 * Check first precondition, if true ask to user else return false.
+	 * After, if OK executes actionOK.
+	 * 
+	 * @return if OK return true, NO return false, else return null if cancel is pressed or window closed
+	 */
+	public static Boolean askYorN(String title, String msg, JComponent parent, boolean precondition) {
+			int askSave = JOptionPane.CANCEL_OPTION;
+			
+			if (precondition) {
+				askSave = JOptionPane.showConfirmDialog(parent, msg, title, JOptionPane.YES_NO_CANCEL_OPTION);
+			}else {
+				return false;
+			}
+			
+			if(askSave == JOptionPane.OK_OPTION){
+				return true;
+				
+			}else if(askSave == JOptionPane.NO_OPTION) {
+				return false;
+			}
+			
+			return null;
 	}
 
 	public static String getDEFAULT_HOME_PATH() {

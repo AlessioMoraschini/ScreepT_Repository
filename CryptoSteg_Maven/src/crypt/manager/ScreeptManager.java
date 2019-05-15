@@ -29,10 +29,10 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import media.STEGException;
+import variousutils.CustomFileComparator;
+import variousutils.EntophyzerUtils;
 import crypt.steg.StegOmResult;
 import gUI.utils.progressDialog.TestUpdateProgress;
-import local.CustomFileComparator;
-import local.EntophyzerUtils;
 import media.ImageGeneralWorker;
 
 /**

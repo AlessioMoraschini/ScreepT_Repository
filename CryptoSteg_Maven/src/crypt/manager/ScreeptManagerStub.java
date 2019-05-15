@@ -25,9 +25,9 @@ import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegOmResult;
-import local.CustomFileComparator;
-import local.HandleString;
 import media.ImageGeneralWorker;
+import variousutils.CustomFileComparator;
+import variousutils.HandleString;
 
 /**
  * 

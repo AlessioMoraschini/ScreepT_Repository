@@ -13,7 +13,6 @@ import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import iNIT.INItializer;
 import iNIT.om.ImgConverterOption;
-import local.HandleString;
 import media.ImageGeneralWorker;
 
 import java.awt.GridBagLayout;
@@ -33,6 +32,7 @@ import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
+import variousutils.HandleString;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

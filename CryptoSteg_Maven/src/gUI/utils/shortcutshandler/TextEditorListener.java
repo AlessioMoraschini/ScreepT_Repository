@@ -20,6 +20,9 @@ public class TextEditorListener implements KeyEventDispatcher{
 	
 	public static volatile boolean flagCtrlPressed = false;
 	
+	public volatile boolean flagHoverBtnViewExpCmd = false;
+	public volatile boolean flagHoverBtnRemoveSpaces = false;
+	
 	TextEditor currentTextEditor;
 	
 	public TextEditorListener(TextEditor currentTextEdit) {
@@ -129,7 +132,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 			if (isShortcutKey(e)) {
 				
 				/**
-				 *  RELOAD FROM DISK
+				 *  RELOAD FROM DISK -> CTRL+Shift+R
 				 */
 				//case Ctrl+shift+R -> reload current file from Disk
 				if (!currentTextEditor.alreadySaving && e.getKeyCode() == 82 && !e.isAltDown() && e.isControlDown()
@@ -137,87 +140,75 @@ public class TextEditorListener implements KeyEventDispatcher{
 					currentTextEditor.btnReloadFromDisk.doClick();
 				}
 				/**
-				 *  SAVE FILE AS NEW
+				 *  SAVE FILE AS NEW -> CTRL+Shift+S
 				 */
-				//case Ctrl+shift+S -> Save file as new
 				if (!currentTextEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()
 						&& e.isShiftDown()) {
 					currentTextEditor.btnSaveTextFileAs.doClick();
 				}
 				/**
-				 *  SAVE FILE
+				 *  SAVE FILE -> CTRL+S
 				 */
-				//case Ctrl+S -> Save file as new
 				if (!currentTextEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()
 						&& !e.isShiftDown()) {
 					currentTextEditor.btnSaveTextFile.doClick();
 				}
 				/**
-				 *  LOAD FILE
+				 *  LOAD FILE -> CTRL+O
 				 */
-				//case Ctrl+O -> Load file
 				if (!currentTextEditor.alreadyLoading && e.getKeyCode() == 79 && !e.isAltDown() && e.isControlDown()
 						&& !e.isShiftDown()) {
 					currentTextEditor.btnLoadTextFile.doClick();
 				}
 				/**
-				 * 	READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker
+				 * 	READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker -> CTRL+Space
 				 */
-				//case Ctrl+Space -> listen/stop playing
 				if (e.getKeyCode() == 32 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.btnSpeak.doClick();
 				}
 				/**
-				 * 	CLEAN TEXT
+				 * 	CLEAN TEXT -> CTRL+Canc
 				 */
-				// case ctrl+canc
 				if (e.getKeyCode() == 127 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					// DELETE TEXT AREA CONTENT
 					currentTextEditor.btnClear.doClick();
 				}
 				/**
-				 * 	CRYPT-DECRYPT
+				 * 	CRYPT-DECRYPT -> CTRL+Shift+C  ## CTRL+Shift+D
 				 */
-				// case ctrl+shift+C => CRYPT
 				if (e.getKeyCode() == 67 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.btnCrypt.doClick();
 				}
-				// case ctrl+shift+D => DECRYPT
 				if (e.getKeyCode() == 68 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.btnDecrypt.doClick();
 				}
 				/**
-				 * 	DARK/LIGHT VIEW
+				 * 	DARK/LIGHT VIEW -> CTRL+B
 				 */
-				// case ctrl+B => DARK/LIGHT
 				if (e.getKeyCode() == 66 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.btnDark.doClick();
 				}
 				/**
-				 * 	UPPERCASE AFTER DOTS-SEPARATOR
+				 * 	UPPERCASE AFTER DOTS-SEPARATOR -> CTRL+Shift+[.]
 				 */
-				// case ctrl+shift+. => UPPERCASE AFTER DOTS
 				if (e.getKeyCode() == 46 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.btnUpperPostDots.doClick();
 				}
 				/**
-				 * 	UPPERCASE SELECTED TEXT
+				 * 	UPPERCASE SELECTED TEXT -> CTRL+Shift+UP_Arrow
 				 */
-				// case ctrl+shift+UP => UPPERCASE SELECTED
 				if (e.getKeyCode() == 38 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.btnTt.doClick();
 				}
 				/**
-				 * 	OPEN TEMPLATES PANEL
+				 * 	OPEN TEMPLATES PANEL -> CTRL+Shift+T
 				 */
-				// case ctrl+shift+T => UPPERCASE SELECTED
 				if (e.getKeyCode() == 84 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.btnTemplates.doClick();
 				}
+				
 				/**
-				 * 	FIND  TEXT
+				 * 	FIND  TEXT -> CTRL+F
 				 */
-				// case ctrl+f=> FIND
 				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					if(currentTextEditor.searchBox != null && currentTextEditor.searchBox.active){
 						String selected = currentTextEditor.textArea_1.getSelectedText();
@@ -229,31 +220,43 @@ public class TextEditorListener implements KeyEventDispatcher{
 					}
 					currentTextEditor.btnFindText.doClick();
 				}
+				
 				/**
-				 * 	NEXT TAB
+				 * 	REPLACE SPECIALS/ESCAPES -> CTRL+R
 				 */
-				// case ctrl+TAB=> NEXT TAB
+				if (e.getKeyCode() == 82 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.btnReplaceEscapesSeq.doClick();
+				}
+				
+				/**
+				 * 	REMOVE SPACES/WORD -> CTRL+[-]
+				 */
+				if (e.getKeyCode() == 45 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.btnRemoveSpaces.doClick();
+				}
+				
+				/**
+				 * 	NEXT TAB -> CTRL+TAB
+				 */
 				if (e.getKeyCode() == 9 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.goToNextTab();
 				}
+				
 				/**
-				 * 	PREVIOUS TAB
+				 * 	PREVIOUS TAB -> CTRL+Shift+TAB
 				 */
-				// case ctrl+shift+TAB=> PREVIOUS TAB
 				if (e.getKeyCode() == 9 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.goToPreviousTab();
 				}
 				/**
-				 * 	NEW TAB
+				 * 	NEW TAB -> CTRL+N
 				 */
-				// case ctrl+N=> new TAB
 				if (e.getKeyCode() == 78 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.addTab(null, false);
 				}
 				/**
-				 * 	CLOSE CURRENT TAB
+				 * 	CLOSE CURRENT TAB -> CTRL+W
 				 */
-				// case ctrl+W=> close TAB
 				if (e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.closeCurrentTab();
 				} 
@@ -281,7 +284,6 @@ public class TextEditorListener implements KeyEventDispatcher{
 	  
 	    }
 	    
-	// Pass the KeyEvent to the next KeyEventDispatcher in the chain
     return false;
 	}
 	
@@ -289,18 +291,28 @@ public class TextEditorListener implements KeyEventDispatcher{
 		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
 	}
 	
-	private void doControlActions() {
+	public void doControlActions() {
 		
 		if (flagCtrlPressed) {
-			currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditor.tooltipRemoveContent);
-			currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
-			currentTextEditor.btnViewInExplorer.setToolTipText(TextEditor.tooltipViewInCommandLine);
-			currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
-		}else {
+			if (flagHoverBtnRemoveSpaces) {
+				currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditor.tooltipRemoveContent);
+				currentTextEditor.btnRemoveSpaces
+						.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
+			}
+			if (flagHoverBtnViewExpCmd) {
+				currentTextEditor.btnViewInExplorer.setToolTipText(TextEditor.tooltipViewInCommandLine);
+				currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
+			}
+		}
+
+		if(!flagCtrlPressed || !flagHoverBtnRemoveSpaces){
 			currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditor.tooltipRemoveSpaces);
 			currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
+		}
+		if(!flagCtrlPressed || !flagHoverBtnViewExpCmd){
 			currentTextEditor.btnViewInExplorer.setToolTipText(TextEditor.tooltipViewInSysExplorer);
 			currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
 		}
+		
 	}
 }

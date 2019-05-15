@@ -17,8 +17,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import local.HandleString;
 import net.miginfocom.swing.MigLayout;
+import variousutils.HandleString;
 
 public class TabUtils {
 	

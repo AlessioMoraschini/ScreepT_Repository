@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.Insets;
-import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 
 import javax.swing.JButton;
@@ -21,6 +20,7 @@ import tabbedpaneutils.TabUtils;
 import textareautil.SelectionDto;
 import textareautil.TextLineNumber;
 import utils.SysUtils;
+import variousutils.HandleString;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -34,18 +34,21 @@ import conversion.Text2Speech;
 import crypt.aes.AesCipher;
 import dialogutils.ColorDialogUtils;
 import dialogutils.GenericFileChooser;
+import frameutils.EscapeReplacerPanel;
 import frameutils.GuiUtils;
 import frameutils.SearchFrame;
 import iNIT.INItializer;
 import iNIT.om.TextEditorOption;
-import local.HandleString;
 import maingUI.mainGUI;
 import media.ImageGeneralWorker;
 
 import java.awt.SystemColor;
 
 import javax.swing.JTextArea;
+
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -135,7 +138,8 @@ public class TextEditor extends JPanel {
 	public static final String tooltipItalic = "Set italics style to all text"; 
 	public static final String tooltipViewInSysExplorer = "View in System Explorer (press Ctrl to open in Command Line)";
 	public static final String tooltipViewInCommandLine = "View in Command line";
-	
+	public static final String tooltipReplaceEscapes = "Open Escape sequences / special characters replacement panel - Selected/all text";
+			
 	// GUI Objects //
 	private JCheckBox checkBoxInlineTabs;
 	public JCheckBox chkFitmantainwords;
@@ -180,6 +184,7 @@ public class TextEditor extends JPanel {
 	public JButton btnItaliC;
 	public JButton btnForegroundCol;
 	public JButton btnFindText;
+	public JButton btnReplaceEscapesSeq;
 	public JButton btnNewTab;
 	public JButton btnRemoveSpaces;
 	public JButton btnViewInExplorer;
@@ -192,27 +197,26 @@ public class TextEditor extends JPanel {
 	public JSlider sliderFontSize;
 	public JSlider slider_margin;
 	
-	public LinkedList<TabTextEditorObj> loadedList;
-	public TabTextEditorObj loadedTabObj;
+	public static LinkedList<TabTextEditorObj> loadedList;
+	public static TabTextEditorObj loadedTabObj;
 	private JScrollPane textScrollPaneArea;
 	public JTabbedPane mainTabList;
-	public JTextArea textArea_1;
+	public static JTextArea textArea_1;
 	private DocumentListener textAreaChangedListener;
 	private JPasswordField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as default
 	public SearchFrame searchBox;
 	private ImageSelector2TextFrame imageParserBox;
 	private PdfSelector2TextFrame pdfParserBox;
-	private TextLineNumber lineNumberPanel;
+	public TextLineNumber lineNumberPanel;
 	
 	private int lastIndexTabbedPane=0;
-	private boolean isRemovingTab = false;
-	private boolean isAddingTab = false;
+	public boolean isRemovingTab = false;
+	public boolean isAddingTab = false;
 	private boolean tabJustSwitched = false;
 	private boolean isCrypterOn = false;
 	
 	private JScrollPane mainScrollPane;
 	private JPanel mainPanel;
-	private JPanel lineNumberContainerPanel;
 	
 	public JFrame parentFrame; // the frame that instantiate this object
 
@@ -226,6 +230,7 @@ public class TextEditor extends JPanel {
 	// flag to signal if function is already running
 	public boolean alreadySaving = false;
 	public boolean alreadyLoading = false;
+	public boolean askSaveBeforeClose = true;
 	
 	public String CURRENT_EXT_OUT = ".txt";
 	public Color LBL_ADVICE_COLOR;
@@ -236,11 +241,11 @@ public class TextEditor extends JPanel {
 	private Text2Speech objSpeaker; // field containing the current object used to speak text
 	private JCheckBox chckbxAesShowKey;
 	
-	private File loadedFile;
+	public File loadedFile;
 	
 	private mainGUI mainApplication;
 	
-//	private static TestUpdateProgress loaderGraphics;
+	private TextEditorListener shortcutsListener;
 	
 //////////////// CONSTRUCTOR /////////////////////
 	
@@ -253,7 +258,7 @@ public class TextEditor extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
 		Dimension maxSize = GuiUtils.getScreenSize();
-		setLayout(new MigLayout("", "[:1624px:"+maxSize.width+",grow]", "[:711px:"+maxSize.height+",grow]"));
+		setLayout(new MigLayout("", "[:1624px:1920,grow]", "[:711px:1080,grow]"));
 	
 		// initialize values used in gui //
 		currentConfiguration = currentConf;		
@@ -268,8 +273,6 @@ public class TextEditor extends JPanel {
 		textArea_1.setTabSize(TEXT_AREA_TAB_SIZE);
 		textArea_1.setFont(currentConfiguration.getTextEditorOpt().getFont());
 		textArea_1.setMargin(new Insets(textMargin/2, textMargin, textMargin/2, textMargin));
-//		manager = new UndoManager();
-//		textArea_1.getDocument().addUndoableEditListener(manager);
 		
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
@@ -407,7 +410,7 @@ public class TextEditor extends JPanel {
 		
 		btnParseImageText = new JButton("");
 		btnParseImageText.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnParseImageText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
+		btnParseImageText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERT_OCR_IMAGE));
 		btnParseImageText.setToolTipText(tooltipParseImage);
 		btnParseImageText.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnParseImageText.setBackground(new Color(176, 196, 222));
@@ -546,6 +549,14 @@ public class TextEditor extends JPanel {
 		btnOpenInScreepT.setBackground(new Color(176, 196, 222));
 		mainPanel.add(btnOpenInScreepT, "cell 22 5,alignx center");
 		
+		btnReplaceEscapesSeq = new JButton("");
+		btnReplaceEscapesSeq.setToolTipText(tooltipReplaceEscapes);
+		btnReplaceEscapesSeq.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnReplaceEscapesSeq.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES));
+		btnReplaceEscapesSeq.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnReplaceEscapesSeq.setBackground(new Color(176, 196, 222));
+		mainPanel.add(btnReplaceEscapesSeq, "cell 23 5,alignx center");
+		
 		lblFontSize = new JLabel("Font size: ");
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFontSize.setForeground(SystemColor.menu);
@@ -593,7 +604,7 @@ public class TextEditor extends JPanel {
 		mainTabList = new JTabbedPane(JTabbedPane.TOP);
 		mainTabList.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 		mainTabList.setBackground(Color.DARK_GRAY);
-		mainTabList.setMaximumSize(new Dimension(GuiUtils.getScreenSize().width, GuiUtils.getScreenSize(70).height));
+		mainTabList.setMaximumSize(new Dimension(parentFrame.getWidth(), parentFrame.getHeight()-280));	
 		mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		separator_2 = new JSeparator();
@@ -691,7 +702,8 @@ public class TextEditor extends JPanel {
 		addHandlers();
 		
 		// add custom keyboard listener
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
+		shortcutsListener = getKeyEventHandler();
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(shortcutsListener);
 		
 		startAesKeyCheckThread();
 		
@@ -735,6 +747,19 @@ public class TextEditor extends JPanel {
 		final Font DEFAULT = textArea_1.getFont();
 		final Color DEFAULT_BCKG_COL = textArea_1.getBackground(); 
 		final Color DEFAULT_FORE_COL = textArea_1.getForeground();
+		
+		// resizeListener tabListContainer
+		parentFrame.addComponentListener(new ComponentListener() {
+			public void componentShown(ComponentEvent e) {
+			}
+			public void componentResized(ComponentEvent e) {
+				mainTabList.setMaximumSize(new Dimension(parentFrame.getWidth(), parentFrame.getHeight()-280));	
+			}
+			public void componentMoved(ComponentEvent e) {
+			}
+			public void componentHidden(ComponentEvent e) {
+			}
+		});
 		
 		// OPEN IN SCREEPT CRYPTER
 		btnOpenInScreepT.addActionListener(new ActionListener() {
@@ -796,6 +821,38 @@ public class TextEditor extends JPanel {
 			}
 		});
 		
+		btnViewInExplorer.addMouseListener(new MouseListener() {
+			public void mouseReleased(MouseEvent e) {
+			}
+			public void mousePressed(MouseEvent e) {
+			}
+			public void mouseExited(MouseEvent e) {
+				shortcutsListener.flagHoverBtnViewExpCmd = false;
+				shortcutsListener.doControlActions();
+			}
+			public void mouseEntered(MouseEvent e) {
+				shortcutsListener.flagHoverBtnViewExpCmd = true;
+				shortcutsListener.doControlActions();
+			}
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		
+		// OPEN TEMPLATES PANEL
+		btnReplaceEscapesSeq.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!EscapeReplacerPanel.active) {
+					JFrame panel = new EscapeReplacerPanel(textArea_1, btnTemplates);
+					panel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					panel.setBounds(750, 140, 650, 230);
+					panel.setAlwaysOnTop(true);
+					panel.setVisible(true);
+					panel.setTitle("TEMPLATES manager - " + mainGUI.APPLICATION_NAME);
+					btnTemplates.setEnabled(false);
+				}
+			}
+		});
+		
 		// IMAGE PARSE INJECTOR
 		btnParseImageText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -827,10 +884,10 @@ public class TextEditor extends JPanel {
 		btnFindText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(searchBox == null || !searchBox.active) {
-					searchBox = new SearchFrame(false, true, textArea_1);
+					searchBox = new SearchFrame(true, textArea_1);
 					GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
 					searchBox.setVisible(true);
-					GuiUtils.centerComponent(searchBox, 450, 160);
+					GuiUtils.centerComponent(searchBox, 450, 145);
 					searchBox.active = true;
 				}else {
 					searchBox.active = true;
@@ -1240,6 +1297,23 @@ public class TextEditor extends JPanel {
 			}
 		});
 		
+		btnRemoveSpaces.addMouseListener(new MouseListener() {
+			public void mouseReleased(MouseEvent e) {
+			}
+			public void mousePressed(MouseEvent e) {
+			}
+			public void mouseExited(MouseEvent e) {
+				shortcutsListener.flagHoverBtnRemoveSpaces = false;
+				shortcutsListener.doControlActions();
+			}
+			public void mouseEntered(MouseEvent e) {
+				shortcutsListener.flagHoverBtnRemoveSpaces = true;
+				shortcutsListener.doControlActions();
+			}
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		
 		// SET TEXT STYLE TO ITALICS
 		btnItaliC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1622,7 +1696,7 @@ public class TextEditor extends JPanel {
 			return true;
 		}
 		if(askSave == JOptionPane.OK_OPTION){
-//			switchTab(index);
+
 			if(loadedFile != null) {
 				currentTextEditor.btnSaveTextFile.doClick();
 			}else {
@@ -1633,7 +1707,6 @@ public class TextEditor extends JPanel {
 			return true;
 		}
 		return false;
-
 	}
 	
 	public void initGuiFromConfig(){
@@ -1651,7 +1724,7 @@ public class TextEditor extends JPanel {
 	/**
 	 *  KEYBOARD SHORTCUTS - use custom listener
 	 */
-	private KeyEventDispatcher getKeyEventHandler() {
+	private TextEditorListener getKeyEventHandler() {
 		return new TextEditorListener(currentTextEditor); 
 	}
 	
@@ -1991,5 +2064,17 @@ public class TextEditor extends JPanel {
 		if(!error && !source.equals(old)) {
 			textArea_1.setText(source);
 		}
+	}
+	
+	public static boolean saveAllUnsavedExisting() throws IOException {
+		boolean done = true;
+		for(TabTextEditorObj element : loadedList) {
+			if(element.loadedFile != null && element.loadedFile.exists()) {
+				if(!FileStuff.writeStringToFile(textArea_1.getText(), loadedTabObj.loadedFile, true)) {
+					done = false;
+				}
+			}
+		}
+		return done;
 	}
 }

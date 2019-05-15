@@ -1,4 +1,4 @@
-package local;
+package variousutils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

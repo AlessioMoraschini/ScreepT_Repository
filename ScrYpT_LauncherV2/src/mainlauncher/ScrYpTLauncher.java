@@ -75,6 +75,7 @@ public class ScrYpTLauncher {
 	public final static Level DEFAULT_LOG_LEVEL = Level.ERROR;
 	public static final String INI_JVM_OPT = "JVM_OPTIONS";
 	public static final String INI_APP_OPT = "APPLICATION_OPTIONS";
+	public static boolean viewShellAfterStart = false;
 	
 	// use this as flag to signal that something is not ok with dependencies
 	public static  boolean criticalDependenciesOK = false;
@@ -149,6 +150,8 @@ public class ScrYpTLauncher {
 	// CONSTRUCTOR
 	public ScrYpTLauncher() {
 		
+		currentOS = SysUtils.retrieveOS();
+		
 		defineActionListeners();
 		
 		analyzeBeforeLauncher();
@@ -189,8 +192,6 @@ public class ScrYpTLauncher {
 		execCommand = new LinkedList<String>();	
 		dependeciesMissing = new ArrayList<DependencyModel>();
 		
-		currentOS = SysUtils.retrieveOS();
-		
 		javaPath = retrieveCorrectJVMS();
 		
 		if(javaPath.equals(NOT_FOUND_JVM)) {
@@ -227,10 +228,19 @@ public class ScrYpTLauncher {
 		
 		String combinedCommands = getCombinedCommandList();
 		
+		Runtime runtime = Runtime.getRuntime();
+		
 		try {
 			String initPath = writeInitBatShAndGetPath(combinedCommands);
-			Runtime.getRuntime().exec(initPath);
-			
+			if (currentOS.isWindows()) {
+				if (viewShellAfterStart) {
+					runtime.exec("cmd /c start \"\" " + initPath);
+				}else {
+					runtime.exec(initPath);
+				}
+			}else {
+				runtime.exec(initPath);
+			}
 			logger.info("Commands launched without exceptions :)"); 
 		} catch (IOException e) {
 			logger.error(" !!! Error launching generated commands file !!!\n\n", e);
@@ -456,6 +466,8 @@ public class ScrYpTLauncher {
 			JVM_STACK_SIZE = (MEM_STACK_INI != null)? MEM_STACK_INI : JVM_STACK_SIZE;
 			
 			// APPLICATION OPTIONS WITH NULL CHECK
+			String viewShell = iniConfigFile.get(INI_APP_OPT, "viewCmdConsole");
+			viewShellAfterStart = (!"".equals(viewShell) && Boolean.parseBoolean(viewShell))? true : false;
 			String MAIN_JAR_INI = iniConfigFile.get(INI_APP_OPT, "jarToLaunch");
 			MAIN_JAR_FILE = (MAIN_JAR_INI != null)? MAIN_JAR_INI : MAIN_JAR_FILE;
 			String autoInstallerOpt = iniConfigFile.get(INI_APP_OPT, "autoShowInstallOpt");

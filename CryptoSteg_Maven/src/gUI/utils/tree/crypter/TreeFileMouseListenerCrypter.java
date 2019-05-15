@@ -35,10 +35,10 @@ import gUI.panels.CrypterPanel;
 import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import iNIT.INItializer;
-import local.HandleString;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
+import variousutils.HandleString;
 
 public class TreeFileMouseListenerCrypter {
 	

@@ -30,12 +30,12 @@ import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
 import iNIT.INItializer;
-import local.HandleString;
 import maingUI.mainGUI;
 import media.ImageGeneralWorker;
 import media.STEGException;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import variousutils.HandleString;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

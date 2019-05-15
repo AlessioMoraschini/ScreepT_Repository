@@ -1,4 +1,4 @@
-package local;
+package variousutils;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -18,9 +18,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 public class HandleString {
 
 	public static final String ERROR = "ERROR :(";
+	
+	public static final String UNPRINTABLE_ESCAPES = "[^\\x20-\\x7e]";
 
 	// this array contains all char that trigger uppercase next char
 	private static char [] upperCaseSignalList = {'.', '<', '>'};
@@ -516,5 +520,59 @@ public class HandleString {
     	int size = Integer.parseInt(font[2]);
     	
     	return new Font(type, style, size);
+    }
+    
+    /**
+     * Convert given string to the same string but with replaced special chars with escape sequences.
+     * The language used correspond to the type specified in type parameter.
+     * @param source the source string into which replace found special chars
+     * @param type the type of language to convert from/to
+     * @return the source string with replaced special charachters
+     */
+    public static String replaceSpecialWithEscapes(String source, EscapeType type) {
+    	if (EscapeType.HTML_3.equals(type)) {
+			return StringEscapeUtils.escapeHtml3(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+		}else if (EscapeType.HTML_4.equals(type)) {
+			return StringEscapeUtils.escapeHtml4(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+		}else if (EscapeType.ECMASCRIPT.equals(type)) {
+			return StringEscapeUtils.escapeEcmaScript(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+		}else if (EscapeType.JSON.equals(type)) {
+			return StringEscapeUtils.escapeJson(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+		}else if (EscapeType.JAVA.equals(type)) {
+			return StringEscapeUtils.escapeJava(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+		}else if (EscapeType.XML_10.equals(type)) {
+			return StringEscapeUtils.escapeXml10(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+		}else if (EscapeType.XML_11.equals(type)) {
+			return StringEscapeUtils.escapeXml11(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+		}else {
+			// if no match found
+			return source;
+		}
+    }
+    
+    /**
+     * Convert given string to the same string but with replaced escape sequences with original special chars.
+     * The language used correspond to the type specified in type parameter.
+     * @param source the source string into which replace found escape sequences.
+     * @param type the type of language to convert from/to
+     * @return the source string with replaced escape sequences.
+     */
+    public static String replaceEscapesWithSpecials(String source, EscapeType type) {
+    	if (EscapeType.HTML_3.equals(type)) {
+			return StringEscapeUtils.unescapeHtml3(source);
+		}else if (EscapeType.HTML_4.equals(type)) {
+			return StringEscapeUtils.unescapeHtml4(source);
+		}else if (EscapeType.ECMASCRIPT.equals(type)) {
+			return StringEscapeUtils.unescapeEcmaScript(source);
+		}else if (EscapeType.JSON.equals(type)) {
+			return StringEscapeUtils.unescapeJson(source);
+		}else if (EscapeType.JAVA.equals(type)) {
+			return StringEscapeUtils.unescapeJava(source);
+		}else if (EscapeType.XML_10.equals(type) || EscapeType.XML_11.equals(type)) {
+			return StringEscapeUtils.unescapeXml(source);
+		}else {
+			// if no match found
+			return source;
+		}
     }
 }

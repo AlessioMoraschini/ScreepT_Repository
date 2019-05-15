@@ -9,12 +9,12 @@ import org.ini4j.Wini;
 import frameutils.GuiUtils;
 import iNIT.INItializer;
 import iNIT.om.FileOptions;
-import local.ListCharsets;
 import maingUI.mainGUI;
 import mainlauncher.ScrYpTLauncher;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
+import variousutils.ListCharsets;
 
 import javax.swing.JPanel;
 import java.awt.Color;

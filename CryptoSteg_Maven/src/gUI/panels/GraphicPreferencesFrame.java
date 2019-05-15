@@ -28,8 +28,8 @@ import javax.swing.event.DocumentListener;
 import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
+import guistyle.GUIStyelSettings;
 import iNIT.INItializer;
-import maingUI.mainGUI;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -247,13 +247,11 @@ public class GraphicPreferencesFrame extends JFrame{
 		chckbxDarklight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!chckbxDarklight.isSelected()) {
-					mainGUI.updateUILightNimbus();
+					DARK_THEME = !GUIStyelSettings.setLightNimbus();
 					currentConfiguration.getGuiOpt().setDarkGuiNimbus(false);
-					DARK_THEME=false;
 				}else {
-					mainGUI.updateUIDarkNimbus();
+					DARK_THEME = GUIStyelSettings.setDarkNimbus();
 					currentConfiguration.getGuiOpt().setDarkGuiNimbus(true);
-					DARK_THEME=true;
 				}
 				for(Window window: Window.getWindows()) {
 	    		    SwingUtilities.updateComponentTreeUI(window);
@@ -469,9 +467,9 @@ public class GraphicPreferencesFrame extends JFrame{
 		}
 		
 		if(!DARK_THEME) {
-			mainGUI.updateUILightNimbus();
+			GUIStyelSettings.setLightNimbus();
 		}else {
-			mainGUI.updateUIDarkNimbus();
+			GUIStyelSettings.setDarkNimbus();
 		}
 		for(Window window: Window.getWindows()) {
 		    SwingUtilities.updateComponentTreeUI(window);

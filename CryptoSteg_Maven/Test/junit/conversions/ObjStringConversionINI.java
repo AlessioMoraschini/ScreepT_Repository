@@ -6,8 +6,8 @@ import java.awt.Font;
 import org.junit.Test;
 
 import gUI.om.ScalingAlgorithm;
-import local.HandleString;
 import testUtils.Printer;
+import variousutils.HandleString;
 
 public class ObjStringConversionINI {
 

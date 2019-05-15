@@ -1,4 +1,4 @@
-package local;
+package variousutils;
 
 import java.nio.charset.Charset;
 import java.util.Iterator;
