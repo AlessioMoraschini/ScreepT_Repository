@@ -45053,3 +45053,2069 @@ ScrYpT - V0.5.2 CLOSED!
 ##################################################
 
 
+2019-05-16 08:45:01,029 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 08:45:00 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 08:45:01,503 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 08:45:01,751 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 08:45:02,936 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 08:45:02,978 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 08:45:02,982 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 08:45:03,496 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 08:45:03,581 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 08:45:03,595 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 08:45:03,618 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 08:45:04,036 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 08:45:04,040 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 08:45:04,040 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 08:45:04,040 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 08:45:04,056 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 08:45:04,056 [Thread-5] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 08:45:04,216 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 08:45:04,217 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 08:45:04,298 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 08:45:04,299 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 08:45:05,428 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 08:45:05,431 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 08:45:09,410 [AWT-EventQueue-0] INFO  gUI.panels.ChargeIniLog - gUI.panels.ChargeIniLog Starting...
+2019-05-16 08:45:09,793 [AWT-EventQueue-0] INFO  gUI.panels.ChargeIniLog - gUI.panels.ChargeIniLog Started
+2019-05-16 08:45:11,759 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Starting...
+2019-05-16 08:45:12,057 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 08:45:12,192 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 08:45:12,192 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Started
+2019-05-16 08:45:14,185 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 08:45:14,186 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 08:45:20,058 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 08:45:25,055 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 08:45:25,056 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 08:45:28,059 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 08:45:30,207 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - DISCARD => Closing General Options
+2019-05-16 08:45:30,208 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 08:45:30,209 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$8 - Configuration resetted.
+
+2019-05-16 08:45:30,209 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-05-16 08:45:30,209 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 08:45:30,209 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$1 - Configuration resetted.
+
+2019-05-16 08:45:34,242 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Starting...
+2019-05-16 08:45:34,268 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 08:45:34,268 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Started
+2019-05-16 08:45:36,059 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 08:45:38,709 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-05-16 08:45:38,710 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 08:45:38,711 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$1 - Configuration resetted.
+
+2019-05-16 08:45:39,788 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Starting...
+2019-05-16 08:45:39,825 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 08:45:39,825 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Started
+2019-05-16 08:45:40,939 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 08:45:40,940 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 08:45:44,059 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 08:45:48,965 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - DISCARD => Closing GUI_Preferences
+2019-05-16 08:45:49,409 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 08:45:49,410 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 08:45:49,410 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 08:45:52,059 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 08:45:52,063 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 08:45:52,068 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-05-16 08:45:52,069 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 08:45:52,069 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$1 - Configuration resetted.
+
+2019-05-16 08:45:53,518 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-05-16 08:45:53,525 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-05-16 08:45:53,530 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-05-16 08:45:53,531 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Thu May 16 08:45:53 CEST 2019
+
+ScrYpT - V0.5.2 CLOSED!
+
+##################################################
+
+
+2019-05-16 09:01:20,894 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 09:01:20 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 09:01:21,578 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 09:01:22,051 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 09:01:23,319 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 09:01:23,384 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:01:23,392 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 09:01:23,994 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 09:01:24,110 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 09:01:24,140 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 09:01:24,155 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 09:01:24,514 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 09:01:24,515 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 09:01:24,600 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 09:01:24,604 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 09:01:24,604 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 09:01:24,604 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 09:01:24,611 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 09:01:24,620 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 09:01:24,813 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 09:01:24,817 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 09:01:25,523 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 09:01:25,527 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 09:01:28,779 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 09:01:28,780 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 09:01:32,620 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:01:34,999 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - DISCARD => Closing GUI_Preferences
+2019-05-16 09:01:35,262 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:01:35,263 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 09:01:35,264 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:01:37,399 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-05-16 09:01:37,509 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+2019-05-16 09:01:40,622 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:01:43,825 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-05-16 09:01:46,687 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 09:01:46,687 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 09:01:48,622 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:01:56,623 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:02:04,624 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:02:12,624 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:02:16,284 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - DISCARD => Closing GUI_Preferences
+2019-05-16 09:02:16,524 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:02:16,524 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 09:02:16,525 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:02:19,059 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 09:02:19,060 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 09:02:20,186 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 09:02:20,187 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:02:20,625 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:02:24,764 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-05-16 09:02:24,787 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-05-16 09:02:24,794 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-05-16 09:02:24,794 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Thu May 16 09:02:24 CEST 2019
+
+ScrYpT - V0.5.2 CLOSED!
+
+##################################################
+
+
+2019-05-16 09:09:12,796 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 09:09:12 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 09:09:13,253 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 09:09:13,499 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 09:09:14,662 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 09:09:14,696 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:09:14,699 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 09:09:15,191 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 09:09:15,244 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 09:09:15,254 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 09:09:15,275 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 09:09:15,543 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 09:09:15,544 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 09:09:15,662 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 09:09:15,666 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 09:09:15,666 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 09:09:15,666 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 09:09:15,674 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 09:09:15,676 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 09:09:15,851 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 09:09:15,851 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 09:09:16,454 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 09:09:16,456 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 09:09:16,817 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-05-16 09:09:16,963 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+2019-05-16 09:09:17,092 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-05-16 09:09:23,675 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:09:31,675 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:09:39,676 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:09:47,676 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:09:55,676 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:10:03,677 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:10:11,155 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-05-16 09:10:11,168 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-05-16 09:10:11,173 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-05-16 09:10:11,173 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Thu May 16 09:10:11 CEST 2019
+
+ScrYpT - V0.5.2 CLOSED!
+
+##################################################
+
+
+2019-05-16 09:10:24,293 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 09:10:24 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 09:10:24,781 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 09:10:25,027 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 09:10:26,191 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 09:10:26,232 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:10:26,236 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 09:10:26,730 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 09:10:26,784 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 09:10:26,794 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 09:10:26,826 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 09:10:27,093 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 09:10:27,094 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 09:10:27,221 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 09:10:27,224 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 09:10:27,224 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 09:10:27,224 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 09:10:27,231 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 09:10:27,233 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 09:10:27,406 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 09:10:27,407 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 09:10:28,003 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 09:10:28,005 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 09:10:30,692 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 09:10:30,693 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 09:10:35,234 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:10:41,086 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - DISCARD => Closing GUI_Preferences
+2019-05-16 09:10:41,325 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:10:41,326 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 09:10:41,327 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:10:43,235 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:10:43,775 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-05-16 09:10:43,782 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-05-16 09:10:43,787 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-05-16 09:10:43,787 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Thu May 16 09:10:43 CEST 2019
+
+ScrYpT - V0.5.2 CLOSED!
+
+##################################################
+
+
+2019-05-16 09:11:21,281 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 09:11:21 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 09:11:21,827 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 09:11:22,080 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 09:11:23,285 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 09:11:23,323 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:11:23,327 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 09:11:23,906 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 09:11:23,963 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 09:11:23,974 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 09:11:23,994 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 09:11:24,341 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 09:11:24,342 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 09:11:24,448 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 09:11:24,451 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 09:11:24,451 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 09:11:24,451 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 09:11:24,458 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 09:11:24,467 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 09:11:24,655 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 09:11:24,659 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 09:11:25,349 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 09:11:25,352 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 09:11:27,138 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 09:11:27,139 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 09:11:32,468 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:11:40,468 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:11:48,469 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:11:56,469 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:12:04,470 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:12:12,470 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:12:20,470 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:12:26,817 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-05-16 09:12:26,829 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-05-16 09:12:26,839 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-05-16 09:12:26,839 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Thu May 16 09:12:26 CEST 2019
+
+ScrYpT - V0.5.2 CLOSED!
+
+##################################################
+
+
+2019-05-16 09:19:39,833 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 09:19:39 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 09:19:40,708 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 09:19:41,000 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 09:19:42,282 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 09:19:42,344 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:19:42,344 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 09:19:42,875 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 09:19:42,953 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 09:19:42,969 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 09:19:42,984 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 09:19:43,375 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 09:19:43,375 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 09:19:43,375 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 09:19:43,375 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 09:19:43,413 [Thread-5] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 09:19:43,413 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 09:19:43,609 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 09:19:43,610 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 09:19:43,772 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 09:19:43,773 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 09:19:44,875 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 09:19:44,878 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 09:19:45,721 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 09:19:45,722 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 09:19:51,414 [Thread-7] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:19:53,348 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - DISCARD => Closing GUI_Preferences
+2019-05-16 09:19:53,587 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:19:53,588 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 09:19:53,589 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:19:55,820 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 09:19:55,821 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 09:19:57,261 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 09:19:57,262 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:19:58,438 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-05-16 09:19:58,447 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-05-16 09:19:58,453 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-05-16 09:19:58,454 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Thu May 16 09:19:58 CEST 2019
+
+ScrYpT - V0.5.2 CLOSED!
+
+##################################################
+
+
+2019-05-16 09:20:27,544 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 09:20:27 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 09:20:28,055 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 09:20:28,305 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 09:20:29,586 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 09:20:29,629 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 09:20:29,629 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 09:20:30,197 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 09:20:30,244 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 09:20:30,260 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 09:20:30,306 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 09:20:30,611 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 09:20:30,611 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 09:20:30,728 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 09:20:30,731 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 09:20:30,731 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 09:20:30,731 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 09:20:30,741 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 09:20:30,757 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 09:20:30,970 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 09:20:30,974 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 09:20:31,810 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 09:20:31,814 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 09:20:33,826 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 09:20:33,828 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 09:20:38,758 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:20:46,759 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:20:54,759 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:21:02,759 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:21:10,759 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:21:18,760 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:21:26,760 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 09:21:34,760 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:51:43,251 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 18:51:43 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 18:51:44,741 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 18:51:45,045 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 18:51:46,326 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 18:51:46,360 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 18:51:46,376 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 18:51:47,063 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 18:51:47,126 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 18:51:47,141 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 18:51:47,157 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 18:51:47,610 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 18:51:47,621 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 18:51:47,621 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 18:51:47,621 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 18:51:47,621 [Thread-4] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 18:51:47,621 [Thread-6] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 18:51:47,809 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 18:51:47,809 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 18:51:48,319 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 18:51:48,326 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 18:51:49,969 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 18:51:49,973 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 18:51:55,622 [Thread-6] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:51:57,764 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-05-16 18:51:57,906 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+2019-05-16 18:51:58,063 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-05-16 18:52:02,426 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Starting...
+2019-05-16 18:52:02,659 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 18:52:02,659 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Started
+2019-05-16 18:52:03,623 [Thread-6] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:52:07,224 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-05-16 18:52:07,225 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 18:52:07,225 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$1 - Configuration resetted.
+
+2019-05-16 18:52:08,447 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 18:52:08,448 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 18:52:11,624 [Thread-6] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:52:19,624 [Thread-6] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:52:20,501 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 18:52:20,501 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 18:52:27,625 [Thread-6] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:52:35,626 [Thread-6] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:52:36,585 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-05-16 18:52:36,601 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-05-16 18:52:36,606 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-05-16 18:52:36,606 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Thu May 16 18:52:36 CEST 2019
+
+ScrYpT - V0.5.2 CLOSED!
+
+##################################################
+
+
+2019-05-16 18:53:08,777 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu May 16 18:53:08 CEST 2019
+
+ScrYpT - V0.5.2 Started now!
+
+##################################################
+
+
+2019-05-16 18:53:09,355 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-05-16 18:53:09,615 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-05-16 18:53:10,865 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-05-16 18:53:10,913 [Thread-2] INFO  iNIT.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=250,g=250,b=250]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 18:53:10,913 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-05-16 18:53:11,444 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-05-16 18:53:11,507 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-05-16 18:53:11,522 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-05-16 18:53:11,538 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-05-16 18:53:11,852 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-05-16 18:53:11,852 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-05-16 18:53:11,942 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-05-16 18:53:11,945 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-05-16 18:53:11,945 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-05-16 18:53:11,945 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-05-16 18:53:11,955 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-05-16 18:53:11,956 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-05-16 18:53:12,155 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-05-16 18:53:12,155 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-05-16 18:53:12,919 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-05-16 18:53:12,921 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-05-16 18:53:13,104 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-05-16 18:53:13,304 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+2019-05-16 18:53:13,439 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-05-16 18:53:15,771 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Starting...
+2019-05-16 18:53:15,989 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 18:53:15,989 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - gUI.panels.GeneralOptionsFrame Started
+2019-05-16 18:53:17,328 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing GUI_Preferences
+2019-05-16 18:53:17,329 [AWT-EventQueue-0] INFO  gUI.panels.GeneralOptionsFrame - Default charset: UTF-8
+2019-05-16 18:53:17,329 [AWT-EventQueue-0] DEBUG gUI.panels.GeneralOptionsFrame - Closing gUI.panels.GeneralOptionsFrame$1 - Configuration resetted.
+
+2019-05-16 18:53:18,394 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 18:53:18,394 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 18:53:19,956 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:53:27,958 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:53:31,922 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - DISCARD => Closing GUI_Preferences
+2019-05-16 18:53:32,168 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 18:53:32,169 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 18:53:32,169 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 18:53:35,958 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:53:38,332 [AWT-EventQueue-0] INFO  gUI.panels.GraphicPreferencesFrame - gUI.panels.GraphicPreferencesFrame Starting...
+2019-05-16 18:53:38,332 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Initialized.
+2019-05-16 18:53:42,453 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - DISCARD => Closing GUI_Preferences
+2019-05-16 18:53:42,703 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 18:53:42,703 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing GUI_Preferences
+2019-05-16 18:53:42,704 [AWT-EventQueue-0] DEBUG gUI.panels.GraphicPreferencesFrame - Closing gUI.panels.GraphicPreferencesFrame$1 - Configuration resetted: 
+
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+SELECTED LOG LEVEL: ALL
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 19
+LOG_FONT_SIZE: 16
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:\Users\xx\Desktop\LogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=21]
+INLINE TABS MODE: true
+MARGIN: 12
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+OPENED FILES AT START: []
+DEFAULT OPENED FILE AT START: C:\Users\xx\Documents\FCP Translation Results 2017-04-09 23-46.txt
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-05-16 18:53:43,958 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: [AUTOSAVE false] -> autosave Module running[false] - Interval: 600s
+2019-05-16 18:53:45,853 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-05-16 18:53:45,867 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-05-16 18:53:45,872 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-05-16 18:53:45,872 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Thu May 16 18:53:45 CEST 2019
+
+ScrYpT - V0.5.2 CLOSED!
+
+##################################################
+
+

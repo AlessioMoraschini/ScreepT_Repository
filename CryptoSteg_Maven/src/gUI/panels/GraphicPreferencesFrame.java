@@ -266,11 +266,12 @@ public class GraphicPreferencesFrame extends JFrame{
 		    		LookAndFeelInfo laf = (LookAndFeelInfo)comboStyleLaF.getSelectedItem();		    		
 		    		PREFERRED_STYLE = laf.getClassName();
 		    		currentConfiguration.getGuiOpt().setPreferredStyle(PREFERRED_STYLE); 
-		    		UIManager.setLookAndFeel(laf.getClassName());
+//		    		UIManager.setLookAndFeel(laf.getClassName());
+		    		GUIStyelSettings.setStyle(laf.getClassName());
 		    		for(Window window: Window.getWindows()) {
 		    		    SwingUtilities.updateComponentTreeUI(window);
 		    		}
-				} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+				} catch (Exception e1) {
 				JOptionPane.showMessageDialog(thisFrame, "Sorry, something went wrong :(", e1.getClass().getName(), JOptionPane.ERROR_MESSAGE);
 				logger.error("Exception happened!", e1);	
 				PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;

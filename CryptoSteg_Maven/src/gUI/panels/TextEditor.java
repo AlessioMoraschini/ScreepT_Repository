@@ -277,7 +277,7 @@ public class TextEditor extends JPanel {
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(95));
-		mainPanel.setLayout(new MigLayout("", "[20][:16:16px][40][40px][40px][40px][40px][][][][:40:40][:40:40][:40:40][:40:40][:40px:40px][:50px:50px][:50px:50px][20][20][30][40.00][40,fill][:40px:40px][:40px:40px][:55px:55px][35px:35:35px][35][35][70,grow]", "[:20:50px,grow][][20][][25][25][][15px][200px,grow]"));
+		mainPanel.setLayout(new MigLayout("", "[20][:16:16px][40][40px][40px][40px][40px][][][][:40:40][:40:40][:40:40][:40:40][:40px:40px][:50px:50px][:50px:50px][20][20][30][40.00][40,fill][:40px:40px][:40px:40px][:40px:40px][35px:35:35px][35][35][70,grow]", "[:20:50px,grow][][20][][25][25][][15px][200px,grow]"));
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		mainScrollPane.setBackground(Color.DARK_GRAY);
@@ -428,11 +428,11 @@ public class TextEditor extends JPanel {
 		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMargin.setForeground(SystemColor.menu);
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		mainPanel.add(lblMargin, "cell 24 4,alignx center");
+		mainPanel.add(lblMargin, "cell 26 4,alignx center");
 		
 		lBLMargin = new JLabel("12");
 		lBLMargin.setForeground(Color.WHITE);
-		mainPanel.add(lBLMargin, "cell 25 4,alignx center");
+		mainPanel.add(lBLMargin, "cell 27 4,alignx center");
 		
 		comboFileFormat = new JComboBox();
 		comboFileFormat.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -557,11 +557,6 @@ public class TextEditor extends JPanel {
 		btnReplaceEscapesSeq.setBackground(new Color(176, 196, 222));
 		mainPanel.add(btnReplaceEscapesSeq, "cell 23 5,alignx center");
 		
-		lblFontSize = new JLabel("Font size: ");
-		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFontSize.setForeground(SystemColor.menu);
-		mainPanel.add(lblFontSize, "cell 24 5,alignx center");
-		
 		textScrollPaneArea = new JScrollPane();
 		textScrollPaneArea.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
 		textScrollPaneArea.setBackground(new Color(112, 128, 144));
@@ -606,6 +601,16 @@ public class TextEditor extends JPanel {
 		mainTabList.setBackground(Color.DARK_GRAY);
 		mainTabList.setMaximumSize(new Dimension(parentFrame.getWidth(), parentFrame.getHeight()-280));	
 		mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+				
+				lblFontSize = new JLabel("Font size: ");
+				lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
+				lblFontSize.setForeground(SystemColor.menu);
+				mainPanel.add(lblFontSize, "cell 26 5,alignx center");
+		
+				lblSIZE = new JLabel("");
+				lblSIZE.setForeground(SystemColor.window);
+				mainPanel.add(lblSIZE, "cell 27 5,alignx center");
+				lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
 		
 		separator_2 = new JSeparator();
 		separator_2.setBackground(Color.GRAY);
@@ -621,8 +626,6 @@ public class TextEditor extends JPanel {
 		lineNumberPanel.setBorder(new LineBorder(Color.GRAY,2));
 		lineNumberPanel.setForeground(Color.gray);
 		lineNumberPanel.setBackground(new Color(50, 50, 50));
-//		lineNumberPanel.setMaximumSize(new Dimension(25, 800));
-//		lineNumberPanel.setPreferredSize(new Dimension(25, 800));
 		
 		mainPanel.add(mainTabList, "cell 0 7 29 2,grow");
 		addTab(null, true); // comment for editing in windowuilder
@@ -632,12 +635,7 @@ public class TextEditor extends JPanel {
 		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
 		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
 		sliderFontSize.setValue(textArea_1.getFont().getSize());
-		mainPanel.add(sliderFontSize, "cell 26 5 3 1,growx");
-
-		lblSIZE = new JLabel("");
-		lblSIZE.setForeground(SystemColor.window);
-		mainPanel.add(lblSIZE, "cell 25 5,alignx center");
-		lblSIZE.setText(String.valueOf(textArea_1.getFont().getSize())+" Px");
+		mainPanel.add(sliderFontSize, "cell 28 5,growx");
 		
 		lblNewLabel = new JLabel("\u2193  (AES KEY)  \u2193");
 		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
@@ -666,7 +664,7 @@ public class TextEditor extends JPanel {
 		slider_margin = new JSlider(0,100,0);
 		slider_margin.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		mainPanel.add(slider_margin, "cell 26 4 3 1,growx");
+		mainPanel.add(slider_margin, "cell 28 4,growx");
 		
 		JSeparator separator = new JSeparator();
 		mainPanel.add(separator, "cell 0 1 29 1,growx");

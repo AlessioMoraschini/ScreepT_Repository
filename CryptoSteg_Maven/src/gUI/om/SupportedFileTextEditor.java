@@ -1,23 +1,28 @@
 package gUI.om;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.List;
 
-public enum SupportedFileTextEditor {TXT(".txt","txt"),
-									 XML(".xml","xml"),
-									 HTML(".html","html"),
-									 CSS(".css","css"),
-									 JSON(".JSON","JSON"),
-									 JAVA(".java","java"),
-									 JS(".js","js");
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+
+public enum SupportedFileTextEditor {TXT(".txt","txt", SyntaxConstants.SYNTAX_STYLE_NONE),
+									 XML(".xml","xml", SyntaxConstants.SYNTAX_STYLE_XML),
+									 HTML(".html","html", SyntaxConstants.SYNTAX_STYLE_HTML),
+									 CSS(".css","css", SyntaxConstants.SYNTAX_STYLE_CSS),
+									 JSON(".JSON","JSON", SyntaxConstants.SYNTAX_STYLE_JSON_WITH_COMMENTS),
+									 JAVA(".java","java", SyntaxConstants.SYNTAX_STYLE_JAVA),
+									 Cpp(".cpp","C++", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS),
+									 CSHARP(".csh","C#", SyntaxConstants.SYNTAX_STYLE_CSHARP),
+									 C(".h","C", SyntaxConstants.SYNTAX_STYLE_C),
+									 JS(".js","js", SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
 							   
 	public String senzapunto;
 	public String nomeStringa;
+	public String syntax;
 	
-	SupportedFileTextEditor(String extension, String senzapunto) {
+	SupportedFileTextEditor(String extension, String senzapunto, String syntax) {
 		this.senzapunto = senzapunto;
 		this.nomeStringa = extension;
+		this.syntax = syntax;
 	}
 	
 	public static ArrayList<String> getSupportedExtensions(){

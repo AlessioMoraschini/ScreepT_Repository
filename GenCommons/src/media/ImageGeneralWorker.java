@@ -603,6 +603,15 @@ public class ImageGeneralWorker {
 
 		return new Color(r, g, b, a);
 	}
+	
+	public static int getColorComponentsTotRGBA(Color color) {
+		int a = color.getAlpha();
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+		
+		return a+r+g+b;
+	}
 
 	/**
 	 * this method is used to convert an image in another format and write it on

@@ -148,3 +148,60 @@ java -Xmx1026m -Xms514m -Xss125m -XshowSettings:vm -Dsun.java2d.uiScale=1 -Dfile
 2019-05-09 19:08:00,194 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
 2019-05-09 19:08:00,444 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
 2019-05-09 19:08:03,069 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-05-16 09:05:28,553 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Thu May 16 09:05:28 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-05-16 09:05:28,555 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-05-16 09:05:28,600 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-05-16 09:05:28,616 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-05-16 09:05:28,617 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-05-16 09:05:28,618 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-05-16 09:05:28,619 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx1026m -Xms514m -Xss125m -XshowSettings:vm -Dsun.java2d.uiScale=1 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar
+2019-05-16 09:05:28,622 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-05-16 09:05:28,626 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-05-16 09:05:28,715 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-05-16 09:05:28,987 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-05-16 09:05:33,837 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-05-16 09:05:34,023 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-05-16 09:05:45,204 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-05-16 09:05:48,445 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-05-16 09:05:48,468 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-05-16 09:06:04,423 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-05-16 09:06:05,567 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-05-16 09:08:34,439 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Thu May 16 09:08:34 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-05-16 09:08:34,441 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-05-16 09:08:34,499 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-05-16 09:08:34,513 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-05-16 09:08:34,513 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-05-16 09:08:34,514 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-05-16 09:08:34,514 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx1026m -Xms514m -Xss125m -XshowSettings:vm -Dsun.java2d.uiScale=1 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar
+2019-05-16 09:08:34,518 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-05-16 09:08:34,521 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-05-16 09:08:34,607 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-05-16 09:08:34,856 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-05-16 09:08:36,381 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-05-16 09:08:36,549 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-05-16 09:08:42,053 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-05-16 09:08:42,456 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel

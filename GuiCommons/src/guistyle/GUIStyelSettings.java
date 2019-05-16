@@ -8,6 +8,8 @@ import javax.swing.plaf.ColorUIResource;
 
 import org.apache.log4j.Logger;
 
+import media.ImageGeneralWorker;
+
 public class GUIStyelSettings{
 
 	static Logger logger = Logger.getLogger(GUIStyelSettings.class);
@@ -25,7 +27,13 @@ public class GUIStyelSettings{
 			UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
 			UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
 			UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
-    		UIManager.setLookAndFeel(style);
+			UIManager.setLookAndFeel(style);
+			Color buttonBackG = (Color)UIManager.get("Button.background");
+			if (ImageGeneralWorker.getColorComponentsTotRGBA(buttonBackG) < 350) {
+				UIManager.put("Button.foreground", Color.WHITE);
+			}else {
+				UIManager.put("Button.foreground", Color.BLACK);
+			}
     		return true;
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e3) {
