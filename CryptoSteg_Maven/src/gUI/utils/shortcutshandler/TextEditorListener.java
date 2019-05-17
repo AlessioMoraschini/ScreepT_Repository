@@ -9,6 +9,7 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 import org.apache.log4j.Logger;
+import org.fife.ui.rtextarea.RUndoManager;
 
 import gUI.panels.TextEditor;
 import resources.IconsPathConfigurator;
@@ -29,23 +30,15 @@ public class TextEditorListener implements KeyEventDispatcher{
 		currentTextEditor = currentTextEdit;
 	}
 	
-	private void undo(UndoManager undoManager) {
-		try {
-			if (undoManager.canUndo()) {
-				undoManager.undo();
-			}
-		} catch (CannotUndoException e) {
-			logger.error(e);
+	private void undo(UndoManager undoManager) throws CannotUndoException{
+		if (undoManager.canUndo()) {
+			undoManager.undo();
 		}
 	}
 	
-	private void redo(UndoManager undoManager) {
-		try {
-			if (undoManager.canRedo()) {
-				undoManager.redo();
-			}
-		} catch (CannotRedoException e) {
-			logger.error(e);
+	private void redo(UndoManager undoManager)throws CannotRedoException{
+		if (undoManager.canRedo()) {
+			undoManager.redo();
 		}
 	}
 	
@@ -72,14 +65,24 @@ public class TextEditorListener implements KeyEventDispatcher{
 				 */
 				// case CTRL+Z -> undo
 				if (e.getKeyCode()==90 && e.isControlDown() && !e.isAltDown() && !e.isShiftDown()) {
-					undo(currentTextEditor.loadedTabObj.undoManager);
+					try {
+//						TextEditor.textArea_1.undoLastAction();
+//						undo(TextEditor.loadedTabObj.undoManager);
+					} catch (Throwable e2) {
+						logger.warn(e2);
+					}
 				}
 				
 				//case Ctrl+shift+Z -> undo5Steps
 				if (e.getKeyCode()==90 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
 				{
-					for(int i = 0; i<5; i++) {
-						undo(currentTextEditor.loadedTabObj.undoManager);
+					try {
+						for(int i = 0; i<5; i++) {
+//							TextEditor.textArea_1.undoLastAction();
+//							undo(TextEditor.loadedTabObj.undoManager);
+						}
+					} catch (Throwable e2) {
+							logger.warn(e2);
 					}
 				}
 				
@@ -89,14 +92,24 @@ public class TextEditorListener implements KeyEventDispatcher{
 				//case Ctrl+alt+Z -> redo
 				if (e.getKeyCode()==90 && e.isControlDown() && e.isAltDown() && !e.isShiftDown())
 				{
-					redo(currentTextEditor.loadedTabObj.undoManager);
+					try {
+//						TextEditor.textArea_1.redoLastAction();
+//						redo(TextEditor.loadedTabObj.undoManager);
+					} catch (Throwable e2) {
+							logger.warn(e2);
+					}
 				}
 				
 				//case Ctrl+shift+Alt+z -> redo5steps
 				if (e.getKeyCode()==90 && e.isAltDown() && e.isControlDown() && e.isShiftDown())
 				{
-					for(int i = 0; i<5; i++) {
-						redo(currentTextEditor.loadedTabObj.undoManager);
+					try {
+						for(int i = 0; i<5; i++) {
+//							TextEditor.textArea_1.redoLastAction();
+//							redo(TextEditor.loadedTabObj.undoManager);
+						}
+					} catch (Throwable e2) {
+							logger.warn(e2);
 					}
 				}
 				

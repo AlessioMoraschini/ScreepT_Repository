@@ -1,6 +1,7 @@
 package dialogutils;
 
 import java.awt.Color;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,6 +10,10 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+
+import rsyntaxareautil.RsyntaxUtils;
 
 public class ColorDialogUtils extends JColorChooser{
 	
@@ -27,6 +32,7 @@ public class ColorDialogUtils extends JColorChooser{
 		thisChooser = this;
 		colorEsit = false;
 		String title = (foreground)? "Choose Text color" : "Choose Background color";
+		Color selectedLineBackup = ((RSyntaxTextArea)targetComponent).getCurrentLineHighlightColor();
 		Color backupColor = (foreground)? targetComponent.getForeground() : targetComponent.getBackground();
 		
 		thisChooser.getSelectionModel().setSelectedColor(backupColor);
@@ -36,8 +42,14 @@ public class ColorDialogUtils extends JColorChooser{
 			public void stateChanged(ChangeEvent e) {
 				if (foreground) {
 					targetComponent.setForeground(thisChooser.getColor());
+					if (targetComponent instanceof RSyntaxTextArea) {
+						RsyntaxUtils.setForeground((RSyntaxTextArea)targetComponent, thisChooser.getColor());
+					}
 				}else {
 					targetComponent.setBackground(thisChooser.getColor());
+					if (targetComponent instanceof RSyntaxTextArea) {
+						RsyntaxUtils.setBackground((RSyntaxTextArea)targetComponent, thisChooser.getColor());
+					}
 				}
 			}
 		});
@@ -49,8 +61,10 @@ public class ColorDialogUtils extends JColorChooser{
 				Color color = thisChooser.getColor();
 				if (color != null) {
 					if (foreground) {
+						RsyntaxUtils.setForeground((RSyntaxTextArea)targetComponent, color);
 						targetComponent.setForeground(color);
 					}else {
+						RsyntaxUtils.setBackground((RSyntaxTextArea)targetComponent, color);
 						targetComponent.setBackground(color);
 					}
 					colorEsit = true;
@@ -61,8 +75,10 @@ public class ColorDialogUtils extends JColorChooser{
 			public void actionPerformed(ActionEvent e) {
 				if (foreground) {
 					targetComponent.setForeground(backupColor);
+					RsyntaxUtils.setForeground((RSyntaxTextArea)targetComponent, backupColor);
 				}else {
 					targetComponent.setBackground(backupColor);
+					RsyntaxUtils.setBackground((RSyntaxTextArea)targetComponent, backupColor);
 				}
 				colorEsit = false;
 			}
@@ -72,6 +88,7 @@ public class ColorDialogUtils extends JColorChooser{
 		if(colorEsit) {
 			return thisChooser.getColor();
 		}else {
+			((RSyntaxTextArea)targetComponent).setCurrentLineHighlightColor(selectedLineBackup);
 			return null;
 		}
 	}

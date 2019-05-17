@@ -531,19 +531,19 @@ public class HandleString {
      */
     public static String replaceSpecialWithEscapes(String source, EscapeType type) {
     	if (EscapeType.HTML_3.equals(type)) {
-			return StringEscapeUtils.escapeHtml3(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+			return StringEscapeUtils.escapeHtml3(source);
 		}else if (EscapeType.HTML_4.equals(type)) {
-			return StringEscapeUtils.escapeHtml4(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+			return StringEscapeUtils.escapeHtml4(source);
 		}else if (EscapeType.ECMASCRIPT.equals(type)) {
-			return StringEscapeUtils.escapeEcmaScript(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+			return StringEscapeUtils.escapeEcmaScript(source);
 		}else if (EscapeType.JSON.equals(type)) {
-			return StringEscapeUtils.escapeJson(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+			return StringEscapeUtils.escapeJson(source);
 		}else if (EscapeType.JAVA.equals(type)) {
-			return StringEscapeUtils.escapeJava(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+			return StringEscapeUtils.escapeJava(source);
 		}else if (EscapeType.XML_10.equals(type)) {
-			return StringEscapeUtils.escapeXml10(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+			return StringEscapeUtils.escapeXml10(source);
 		}else if (EscapeType.XML_11.equals(type)) {
-			return StringEscapeUtils.escapeXml11(source).replaceAll(UNPRINTABLE_ESCAPES, "");
+			return StringEscapeUtils.escapeXml11(source);
 		}else {
 			// if no match found
 			return source;

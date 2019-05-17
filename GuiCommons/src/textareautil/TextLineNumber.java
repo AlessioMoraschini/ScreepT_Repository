@@ -73,7 +73,7 @@ public class TextLineNumber extends JPanel
 
 		setFont( component.getFont() );
 
-		setCurrentLineForeground( Color.RED );
+		setCurrentLineForeground( Color.CYAN );
 		setDigitAlignment( CENTER );
 		setBorderGap(5);
 		setMinimumDisplayDigits( minimumDisplayDigits );
@@ -259,7 +259,10 @@ public class TextLineNumber extends JPanel
     			//  "X" and "Y" offsets for drawing the string.
 
     			String lineNumber = getTextLineNumber(rowStartOffset);
-    			int stringWidth = fontMetrics.stringWidth( lineNumber );
+    			int stringWidth = 4;
+    			if(updateFont) {
+    				stringWidth = fontMetrics.stringWidth( lineNumber );
+    			}
     			int x = getOffsetX(availableWidth, stringWidth) + insets.left;
 				int y = getOffsetY(rowStartOffset, fontMetrics);
     			g.drawString(lineNumber, x, y);

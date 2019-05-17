@@ -612,6 +612,17 @@ public class ImageGeneralWorker {
 		
 		return a+r+g+b;
 	}
+	
+	/**
+	 * return the percent integer from 0 to 100 representing how much a color is light
+	 * @param color
+	 * @return lightness in perceptual
+	 */
+	public static int getPercentOfLightness(Color color) {
+		int sum = getColorComponentsTotRGBA(color);
+		int max = 255*4;
+		return ((max/sum)*100);
+	}
 
 	/**
 	 * this method is used to convert an image in another format and write it on
