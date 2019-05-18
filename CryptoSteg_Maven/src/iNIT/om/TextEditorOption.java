@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 
+import utils.Themes;
+
 public class TextEditorOption {
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
@@ -14,6 +16,7 @@ public class TextEditorOption {
 	public static final Color DEFAULT_BACKGROUND_COL = new Color(250,250,250);
 	public static final Color DEFAULT_FOREGROUND_COL = Color.BLACK;
 	public static final String DEFAULT_SELECTED_FILE_AT_START = "";
+	public static final Themes DEFAULT_SELECTED_THEME = Themes.DARK;
 	
 	// FIELDS	
 	public int margin;
@@ -24,6 +27,7 @@ public class TextEditorOption {
 	public Color foreCol;
 	public ArrayList<String> openedFileList;
 	public String selectedAtStart;
+	public Themes selectedTheme;
 	
 	// CONSTRUCTOR
 	public TextEditorOption() {
@@ -32,20 +36,29 @@ public class TextEditorOption {
 
 	// GETTERS AND SETTERS
 	
+	
 	public ArrayList<String> getOpenedFileList() {
 		return openedFileList;
+	}
+	
+	public void setOpenedFileList(ArrayList<String> openedList) {
+		this.openedFileList = openedList;
+	}
+	
+	public void setInlinedTabs(boolean inlinedTabs) {
+		this.inlinedTabs = inlinedTabs;
 	}
 	
 	public boolean isInlinedTabs() {
 		return inlinedTabs;
 	}
-
-	public void setInlinedTabs(boolean inlinedTabs) {
-		this.inlinedTabs = inlinedTabs;
+	
+	public Themes getSelectedTheme() {
+		return selectedTheme;
 	}
 
-	public void setOpenedFileList(ArrayList<String> openedList) {
-		this.openedFileList = openedList;
+	public void setSelectedTheme(Themes selectedTheme) {
+		this.selectedTheme = selectedTheme;
 	}
 	
 	public String getSelectedAtStart() {

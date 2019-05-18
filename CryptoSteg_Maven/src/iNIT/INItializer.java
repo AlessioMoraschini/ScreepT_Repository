@@ -21,6 +21,7 @@ import iNIT.om.ImgConverterOption;
 import iNIT.om.SteganOption;
 import iNIT.om.TextEditorOption;
 import maingUI.mainGUI;
+import utils.Themes;
 import variousutils.HandleString;
 
 public class INItializer {
@@ -219,6 +220,10 @@ public class INItializer {
 		} catch (Exception e1) {
 			pathsOpenFilesString = "";
 		}
+		// selected theme
+		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
+		Themes theme = (themeRead != null && !themeRead.equals(""))? Themes.valueOf(themeRead): TextEditorOption.DEFAULT_SELECTED_THEME;
+		textEditorOpt.setSelectedTheme(theme);
 		
 		// IMAGE CONVERTER OPTIONS
 		imageConvertOption.setSameSize(Boolean.parseBoolean(iniReadFile.get(IMAGE_CONVERTER_OPT, "sameSize")));
@@ -309,6 +314,7 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", HandleString.getRgbString(textEditorOpt.foreCol));
 		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
+		iniFile.put(TEXT_EDITOR_OPT, "preferredTheme", textEditorOpt.selectedTheme);
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles );
 		
@@ -449,6 +455,7 @@ public class INItializer {
 			   .append("FONT: ").append(textEditorOpt.font)
 			   .append("\nINLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
+			   .append("\nPREFERRED_THEME: ").append(textEditorOpt.selectedTheme)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())

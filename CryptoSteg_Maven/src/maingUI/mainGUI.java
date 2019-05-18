@@ -1525,6 +1525,8 @@ public class mainGUI {
 	
 	public static void closeApplication() {
 		
+		logger.info("\n\n => Starting exit procedure...\n\n");
+		
 		closeOpenBlockingFrames();
 		
 		now=new Date();
@@ -1538,6 +1540,8 @@ public class mainGUI {
 			} catch (Exception e) {
 				logger.error("Exception happened!", e);
 			}
+		}else {
+			logger.info("\n => Autosave OFF -> configuration saving skipped");
 		}
         
       	// SAVE CURRENTLY OPENED FILES reference only (in text-editor)
@@ -1570,6 +1574,8 @@ public class mainGUI {
 	}
 	
 	public static void closeOpenBlockingFrames(){
+		logger.info("\n => Closing blocking frames");
+		
 		if(panelHwInfo != null) {
 			panelHwInfo.dispose();
 		}
@@ -1577,6 +1583,8 @@ public class mainGUI {
 		if(panelNetInfo != null) {
 			panelNetInfo.dispose();
 		}
+		
+		logger.info("\n => Blocking frames closed");
 	}
 	
 	public static void doIfTempDecryptedChanged(JFrame parent) {
@@ -1609,12 +1617,11 @@ public class mainGUI {
 		askCondition = false;
 		atLeastOneTemp = false;
 		for (TabTextEditorObj tabElement : TextEditor.loadedList) {
-			if (tabElement.unsaved || (tabElement.loadedFile != null)) {
-				if (tabElement.loadedFile == null) {
-					atLeastOneTemp = true;
-				}
+			if (tabElement.unsaved && (tabElement.loadedFile != null)) {
 				askCondition = true;
-				break;
+			}
+			if (tabElement.loadedFile == null) {
+				atLeastOneTemp = true;
 			}
 		} 
 		Boolean choiceY = GenericFileChooser.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", null, askCondition);
@@ -1668,7 +1675,7 @@ public class mainGUI {
 				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "selectedFileAtStart", TextEditor.loadedTabObj.loadedFile.getAbsolutePath());
 			}
 		}
-		
+		logger.info("\n => Opened files in textEditor added to configuration");
 	}
 	
 	/**

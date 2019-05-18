@@ -6,22 +6,32 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 public enum SupportedFileTextEditor {TXT(".txt","txt", SyntaxConstants.SYNTAX_STYLE_NONE),
 									 XML(".xml","xml", SyntaxConstants.SYNTAX_STYLE_XML),
+									 YAML(".yml","yml", SyntaxConstants.SYNTAX_STYLE_YAML),
 									 HTML(".html","html", SyntaxConstants.SYNTAX_STYLE_HTML),
+									 JS(".js","js", SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT),
+									 JSON(".json","json", SyntaxConstants.SYNTAX_STYLE_JSON_WITH_COMMENTS),
 									 CSS(".css","css", SyntaxConstants.SYNTAX_STYLE_CSS),
-									 JSON(".JSON","JSON", SyntaxConstants.SYNTAX_STYLE_JSON_WITH_COMMENTS),
 									 JAVA(".java","java", SyntaxConstants.SYNTAX_STYLE_JAVA),
-									 Cpp(".cpp","C++", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS),
-									 CSHARP(".csh","C#", SyntaxConstants.SYNTAX_STYLE_CSHARP),
-									 C(".h","C", SyntaxConstants.SYNTAX_STYLE_C),
-									 JS(".js","js", SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
+									 JSP(".jsp","jsp", SyntaxConstants.SYNTAX_STYLE_JSP),
+									 PHP(".php", "php", SyntaxConstants.SYNTAX_STYLE_PHP),
+									 PYTHON(".py", "py", SyntaxConstants.SYNTAX_STYLE_PYTHON),
+									 C(".c","c", SyntaxConstants.SYNTAX_STYLE_C),
+									 CSHARP(".cs","cs", SyntaxConstants.SYNTAX_STYLE_CSHARP),
+									 CPLUSPLUS(".cpp","cpp", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS),
+									 SQL(".sql", "sql", SyntaxConstants.SYNTAX_STYLE_SQL),
+									 WINDOWS_BATCH(".bat","bat", SyntaxConstants.SYNTAX_STYLE_WINDOWS_BATCH),
+									 UNIX_SHELL(".sh","sh", SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL),
+									 INI(".ini", "ini", SyntaxConstants.SYNTAX_STYLE_INI),
+									 HOSTS("", "", SyntaxConstants.SYNTAX_STYLE_HOSTS),
+									 HTACCESS(".htaccess", "htaccess", SyntaxConstants.SYNTAX_STYLE_HTACCESS);
 							   
-	public String senzapunto;
 	public String nomeStringa;
+	public String senzapunto;
 	public String syntax;
 	
 	SupportedFileTextEditor(String extension, String senzapunto, String syntax) {
-		this.senzapunto = senzapunto;
 		this.nomeStringa = extension;
+		this.senzapunto = senzapunto;
 		this.syntax = syntax;
 	}
 	
@@ -33,5 +43,25 @@ public enum SupportedFileTextEditor {TXT(".txt","txt", SyntaxConstants.SYNTAX_ST
 		}
 		
 		return extensions;
+	}
+	
+	public static ArrayList<String> getSupportedExtensionsWithDots(){
+		ArrayList<String> dotsExtensions = new ArrayList<String>();
+		
+		for(SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
+			dotsExtensions.add(current.nomeStringa);
+		}
+		
+		return dotsExtensions;
+	}
+	
+	public static ArrayList<String> getSupportedSyntaxList(){
+		ArrayList<String> syntaxList = new ArrayList<String>();
+		
+		for(SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
+			syntaxList.add(current.syntax);
+		}
+		
+		return syntaxList;
 	}
 }

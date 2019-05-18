@@ -206,7 +206,7 @@ public class ScrYpTLauncher {
 		
 		addLaunchScrYpTCommand();
 		
-		logger.info("Launch command generated:\n\n" + getCombinedCommandList());
+		logger.info("Launch command generated:\n\n" + getCombinedCommandList() +"\n\n");
 	}
 	
 	public void addToMissingDependenciesJVM() {
@@ -352,14 +352,13 @@ public class ScrYpTLauncher {
 		StringBuilder builder = new StringBuilder();
 		builder.ensureCapacity(execCommand.size());
 		
-		int i = 1;
 		for(String currentCommand : execCommand) {
 			builder.append(currentCommand);
-			if(i < execCommand.size()) {
-				builder.append(" \n\n");
-			}
-			i++;
+			builder.append(" \n\n");
 		}
+		// add exit command to end of batch/bash
+		builder.append("exit 0");
+		
 		return builder.toString();
 	}
 	

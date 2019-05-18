@@ -687,12 +687,8 @@ public class FileStuff {
 		if(txtFile == null) {
 			return false;
 		}
-		
-    	if(!FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals("txt")) {
-			JOptionPane.showMessageDialog(null, "Please select a valid txt file!");
-			return false;
-    	}
-    	else {
+
+		else {
 //				textArea_1.read(reader, null);
 				StringBuilder builder = new StringBuilder(100000);
 				try {

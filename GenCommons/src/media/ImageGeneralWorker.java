@@ -623,6 +623,26 @@ public class ImageGeneralWorker {
 		int max = 255*4;
 		return ((max/sum)*100);
 	}
+	
+	 /**
+	   * Returns the complimentary (opposite) color.
+	   * @param color int RGB color to return the compliment of
+	   * @return int RGB of compliment color
+	   */
+	  public static Color getComplimentColor(Color color) {
+	    // get existing colors
+	    int alpha = color.getAlpha();
+	    int red = color.getRed();
+	    int blue = color.getBlue();
+	    int green = color.getGreen();
+
+	    // find compliments
+	    red = (~red) & 0xff;
+	    blue = (~blue) & 0xff;
+	    green = (~green) & 0xff;
+
+	    return new Color(alpha, red, green, blue);
+	  }
 
 	/**
 	 * this method is used to convert an image in another format and write it on

@@ -4,12 +4,8 @@ import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
 
 import org.apache.log4j.Logger;
-import org.fife.ui.rtextarea.RUndoManager;
 
 import gUI.panels.TextEditor;
 import resources.IconsPathConfigurator;
@@ -30,18 +26,6 @@ public class TextEditorListener implements KeyEventDispatcher{
 		currentTextEditor = currentTextEdit;
 	}
 	
-	private void undo(UndoManager undoManager) throws CannotUndoException{
-		if (undoManager.canUndo()) {
-			undoManager.undo();
-		}
-	}
-	
-	private void redo(UndoManager undoManager)throws CannotRedoException{
-		if (undoManager.canRedo()) {
-			undoManager.redo();
-		}
-	}
-	
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
 	    
@@ -59,27 +43,16 @@ public class TextEditorListener implements KeyEventDispatcher{
 			
 			if (isShortcutKey(e)) {
 				
-				
 				/**
-				 *  UNDO
+				 * UNDO x5 -  Ctrl+Alt+Z
 				 */
-				// case CTRL+Z -> undo
-				if (e.getKeyCode()==90 && e.isControlDown() && !e.isAltDown() && !e.isShiftDown()) {
-					try {
-//						TextEditor.textArea_1.undoLastAction();
-//						undo(TextEditor.loadedTabObj.undoManager);
-					} catch (Throwable e2) {
-						logger.warn(e2);
-					}
-				}
-				
-				//case Ctrl+shift+Z -> undo5Steps
-				if (e.getKeyCode()==90 && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
+				if (e.getKeyCode()==90 && e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 				{
 					try {
 						for(int i = 0; i<5; i++) {
-//							TextEditor.textArea_1.undoLastAction();
-//							undo(TextEditor.loadedTabObj.undoManager);
+							if (TextEditor.loadedTabObj.textArea.canUndo()) {
+								TextEditor.loadedTabObj.textArea.undoLastAction();
+							}
 						}
 					} catch (Throwable e2) {
 							logger.warn(e2);
@@ -87,26 +60,15 @@ public class TextEditorListener implements KeyEventDispatcher{
 				}
 				
 				/**
-				 *  REDO
+				 *  REDO x5 - Ctrl+Alt+Y
 				 */
-				//case Ctrl+alt+Z -> redo
-				if (e.getKeyCode()==90 && e.isControlDown() && e.isAltDown() && !e.isShiftDown())
+				if (e.getKeyCode()==89 && e.isAltDown() && e.isControlDown() && e.isShiftDown())
 				{
 					try {
-//						TextEditor.textArea_1.redoLastAction();
-//						redo(TextEditor.loadedTabObj.undoManager);
-					} catch (Throwable e2) {
-							logger.warn(e2);
-					}
-				}
-				
-				//case Ctrl+shift+Alt+z -> redo5steps
-				if (e.getKeyCode()==90 && e.isAltDown() && e.isControlDown() && e.isShiftDown())
-				{
-					try {
-						for(int i = 0; i<5; i++) {
-//							TextEditor.textArea_1.redoLastAction();
-//							redo(TextEditor.loadedTabObj.undoManager);
+						for (int i = 0; i < 5; i++) {
+							if (TextEditor.loadedTabObj.textArea.canRedo()) {
+								TextEditor.loadedTabObj.textArea.redoLastAction();
+							} 
 						}
 					} catch (Throwable e2) {
 							logger.warn(e2);
@@ -169,7 +131,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 				/**
 				 *  LOAD FILE -> CTRL+O
 				 */
-				if (!currentTextEditor.alreadyLoading && e.getKeyCode() == 79 && !e.isAltDown() && e.isControlDown()
+				if (!TextEditor.alreadyLoading && e.getKeyCode() == 79 && !e.isAltDown() && e.isControlDown()
 						&& !e.isShiftDown()) {
 					currentTextEditor.btnLoadTextFile.doClick();
 				}
@@ -224,7 +186,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 				 */
 				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					if(currentTextEditor.searchBox != null && currentTextEditor.searchBox.active){
-						String selected = currentTextEditor.textArea_1.getSelectedText();
+						String selected = TextEditor.loadedTabObj.textArea.getSelectedText();
 						if(selected != null && !selected.equals("")) {
 							currentTextEditor.searchBox.searchTextField.setText(selected);
 							currentTextEditor.searchBox.searchTextField.setSelectionStart(0);
@@ -275,26 +237,6 @@ public class TextEditorListener implements KeyEventDispatcher{
 				} 
 			}
 			
-//			/**
-//			 * 	SELECT TEXT
-//			 */
-//			// case ctrl+A => SELECT/DESELECT ALL TEXT
-//			if (e.getKeyCode()==65 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-//			{
-//				JTextArea textA = currentTextEditor.textArea_1;
-//				int textLength = textA.getText().length();
-//				
-//				if (textA.getSelectedText() == "" || textA.getSelectedText() == null) {
-//					textA.requestFocus();
-//					textA.setSelectionStart(0);
-//					textA.setSelectionEnd(textLength);
-//				}else {
-//					textA.setSelectionStart(0);
-//					textA.setSelectionEnd(0);
-//					textA.transferFocus();
-//				}
-//			}
-	  
 	    }
 	    
     return false;
