@@ -16,6 +16,13 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>nexus.talanlabs.com</id>
+      <name>Talan repo</name>
+      <url>http://nexus.talanlabs.com/content/repositories/releases/</url>
+    </repository>
+  </repositories>
   <dependencies>
   		
 	<dependency>
@@ -23,6 +30,13 @@
 	    <artifactId>rsyntaxtextarea</artifactId>
 	    <version>3.0.3</version>
 	</dependency>
+	
+	<dependency>
+	    <groupId>org.fife</groupId>
+	    <artifactId>RAutocomplete</artifactId>
+	    <version>2.5.1</version>
+	</dependency>
+		
 			
 	<dependency>
 		<groupId>GenCommons</groupId>

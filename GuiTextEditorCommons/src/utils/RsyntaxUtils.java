@@ -2,10 +2,18 @@ package utils;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+
+import org.fife.ui.autocomplete.AutoCompletion;
+import org.fife.ui.autocomplete.CompletionProvider;
+import org.fife.ui.autocomplete.DefaultCompletionProvider;
+import org.fife.ui.autocomplete.LanguageAwareCompletionProvider;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Style;
 import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
@@ -56,6 +64,21 @@ public class RsyntaxUtils {
 	         textArea.revalidate();
 	      }
 
+	   }
+	   
+	   public static boolean addAutoCompletion(RSyntaxTextArea textArea, String wordlistFilePath) {
+		   if(wordlistFilePath == null) {
+			return false;   
+		   }
+		   
+		   File wordlist = new File(wordlistFilePath);
+		   if (textArea != null && wordlist.exists()) {
+			AutoComplete autoComplete = new AutoComplete(textArea);
+			autoComplete.installGrammar(wordlistFilePath);
+			return true;
+		   }else {
+			   return false;
+		   }
 	   }
 	   
 	   /**

@@ -217,6 +217,7 @@ public class CustomizeParametersPanel extends JFrame{
 				// update launcher vars and write to config INI file
 				ScrYpTLauncher.JVM_MEMORY_OPTIONS = args;
 				ScrYpTLauncher.JVM_STACK_SIZE = stackString;
+				ScrYpTLauncher.viewShellAfterStart = viewShell;
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_JVM_OPT, "memoryArgs", args);
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_JVM_OPT, "stackSizeArgs", stackSize);
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting", logLevel);

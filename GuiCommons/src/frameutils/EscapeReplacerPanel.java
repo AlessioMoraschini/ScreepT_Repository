@@ -28,6 +28,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
+import java.awt.Dimension;
 
 public class EscapeReplacerPanel extends JFrame{
 	
@@ -46,7 +47,7 @@ public class EscapeReplacerPanel extends JFrame{
 	private JComboBox comboEscapeType;
 	private JButton btnConvertSpecialToEsc;
 	private JButton buttonInvoker;
-	private JTextArea outputTextArea;
+	public JTextArea outputTextArea;
 	private JButton btnConvertEscapesTo;
 	private JTextField textFieldTry;
 	private JButton btnTryEscapeTo;
@@ -61,7 +62,7 @@ public class EscapeReplacerPanel extends JFrame{
 		buttonInvoker = buttonInvoke;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[250px][120px,grow]", "[42px][30px,grow][30px,grow][30px,grow]"));
+		getContentPane().setLayout(new MigLayout("", "[250px,grow][220px]", "[30px][30px,grow][20px][20px,grow]"));
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES, this);
 		
 		panel = new JPanel();
@@ -74,7 +75,7 @@ public class EscapeReplacerPanel extends JFrame{
 		lblEscapesHeader = new JLabel("Escape sequence Replacer");
 		lblEscapesHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEscapesHeader.setForeground(Color.LIGHT_GRAY);
-		lblEscapesHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 19));
+		lblEscapesHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 15));
 		lblEscapesHeader.setBackground(SystemColor.activeCaptionBorder);
 		panel.add(lblEscapesHeader, "cell 1 0,alignx center");
 		
@@ -84,39 +85,43 @@ public class EscapeReplacerPanel extends JFrame{
 		textFieldTry.setColumns(10);
 		
 		comboEscapeType = new JComboBox<>(EscapeType.getTypesString());
-		comboEscapeType.setSelectedItem(EscapeType.HTML_4);
 //		comboEscapeType = new JComboBox<>();
+		comboEscapeType.setSelectedItem(EscapeType.HTML_4);
 		comboEscapeType.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		comboEscapeType.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(comboEscapeType, "cell 1 1,growx");
 		
 		btnTrySpecialTo = new JButton("Try special To escape");
-		btnTrySpecialTo.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		btnTrySpecialTo.setMinimumSize(new Dimension(148, 26));
+		btnTrySpecialTo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		btnTrySpecialTo.setToolTipText(tooltipTrySpecialToEscape);
 		btnTrySpecialTo.setCursor(GuiUtils.CURSOR_HAND);
 		btnTrySpecialTo.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnTrySpecialTo, "cell 0 2,growx");
 		
 		btnConvertSpecialToEsc = new JButton("Convert Special to escapes");
+		btnConvertSpecialToEsc.setMinimumSize(new Dimension(178, 30));
 		btnConvertSpecialToEsc.setCursor(GuiUtils.CURSOR_HAND);
 		btnConvertSpecialToEsc.setToolTipText(tooltipReplaceSpecToEscapes);
-		btnConvertSpecialToEsc.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnConvertSpecialToEsc.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnConvertSpecialToEsc.setBackground(Color.GRAY);
 		getContentPane().add(btnConvertSpecialToEsc, "cell 1 2,growx");
 		
 		btnTryEscapeTo = new JButton("Try escape To special");
+		btnTryEscapeTo.setMinimumSize(new Dimension(148, 26));
 		btnTryEscapeTo.setCursor(GuiUtils.CURSOR_HAND);
 		btnTryEscapeTo.setToolTipText(tooltipTryEscapeToSpec);
-		btnTryEscapeTo.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		btnTryEscapeTo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		btnTryEscapeTo.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnTryEscapeTo, "cell 0 3,growx");
+		getContentPane().add(btnTryEscapeTo, "cell 0 3,growx,aligny top");
 		
 		btnConvertEscapesTo = new JButton("Convert escapes to Special");
-		btnConvertEscapesTo.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnConvertEscapesTo.setMinimumSize(new Dimension(178, 30));
+		btnConvertEscapesTo.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnConvertEscapesTo.setToolTipText(tooltipReplaceEscapesToSpec);
 		btnConvertEscapesTo.setCursor(GuiUtils.CURSOR_HAND);
 		btnConvertEscapesTo.setBackground(Color.GRAY);
-		getContentPane().add(btnConvertEscapesTo, "cell 1 3,growx");
+		getContentPane().add(btnConvertEscapesTo, "cell 1 3,growx,aligny top");
 		
 		addHandlers();
 		

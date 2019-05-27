@@ -1,5 +1,6 @@
 package mainlauncher;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import frameutils.GuiUtils;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
 import gui.utils.LauncherLoaderFrame;
@@ -102,10 +104,13 @@ public class ScrYpTLauncher {
 	public static ScrYpTLauncher LAUNCHER;
 	public static LauncherLoaderFrame loaderGraphics;
 	
+	public static final float launcherRatio = 0.2f;
+	public static final Dimension screenSize = GuiUtils.getScreenSize();
+	
 	// MAIN START POINT
 	public static void main(String[] args) {
 		
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", 250);
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", (int)(screenSize.height*launcherRatio));
 		for (int i = 0; i < 25; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing launcher" + dots;
@@ -340,7 +345,7 @@ public class ScrYpTLauncher {
 	 */
 	private void addLaunchScrYpTCommand() {
 		
-		String complete_ARGS = JVM_MEMORY_OPTIONS + JVM_STACK_SIZE + " -XshowSettings:vm " + JVM_ARGS;
+		String complete_ARGS = JVM_MEMORY_OPTIONS + JVM_STACK_SIZE + " -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true " + JVM_ARGS;
 		execCommand.add(SysUtils.startJarCommand(complete_ARGS, MAIN_JAR_FILE));
 	}
 	
@@ -426,7 +431,7 @@ public class ScrYpTLauncher {
 		try {
 			version = SysUtils.getJavaVersionFromBin(manualPath_Jvm);
 		} catch (IOException e) {
-			logger.error("Error checkin java version from release file in /bin directory", e);
+			logger.error("Error checking java version from release file in /bin directory", e);
 			return false;
 		}
 		boolean errorCondition2 = !checkSingleJavaVersionOK(version) ;

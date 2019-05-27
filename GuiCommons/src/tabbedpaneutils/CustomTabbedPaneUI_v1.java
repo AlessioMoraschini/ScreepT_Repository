@@ -15,16 +15,16 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 	public static final Color DEFAULT_FILLING = Color.lightGray;
 	public static final Color DEFAULT_DARK_FILLING = DEFAULT_FILLING.darker();
 	public static final Color DEFAULT_BORDER = Color.DARK_GRAY;
-	public static final Color ACTIVE_BTN_CLOSE_COL = new Color(190, 10, 0);
-	public static final Color INACTIVE_BTN_CLOSE_COL = new Color(50, 0, 0);
+	public static final Color ACTIVE_BTN_CLOSE_COL = new Color(180, 10, 0);
+	public static final Color INACTIVE_BTN_CLOSE_COL = new Color(40, 0, 0);
 	
-	public static final int THICKNESS_BORDER = 3;
+	public static final int THICKNESS_BORDER = 2;
 	
 	private static final int xGap = -1;
 	private static final int yGap = -2;
-	private static final int wPad = 0;
-	private static final int hPad = 6;
-	private static final int arch = 8;
+	private static final int wPad = 2;
+	private static final int hPad = 4;
+	private static final int arch = 10;
 	
 	public Color fillingColor;
 	public Color deSelfillingColor;

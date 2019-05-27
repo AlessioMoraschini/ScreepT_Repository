@@ -400,49 +400,59 @@ public class KeyGenPanel extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				updateBTNenabled(false);				
-				Date now = new Date();
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
+				final Date now = new Date();
+				final DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
 	
-				// only if the container contains an image!
-				if(imageContainer!=null && imageContainer.getImage()!=null) {
-					BufferedImage IMG = imageContainer.getImage();
-					textLog.append("\n [Started] adding key to dictionary...");
-					String inputName = JOptionPane.showInputDialog(thisFrame,"Please insert a name for the image to be added (Otherwise current date will be used as filename)", "Choose a name for the File.",JOptionPane.QUESTION_MESSAGE);
-					if( inputName!=null && inputName.equals("")) {
-						inputName = "ScreepT-Key"+df.format(now)+".png";
-						logger.debug("No input by user... current date used as name: "+inputName);
-					}
-					// now if user pressed cancel input is null, let's check
-					if(inputName != null){
-						progUpdater = new TestUpdateProgress(currentConfig);
-			    		progUpdater.getPb().setValue(0);
-			    		progUpdater.getPb().setIndeterminate(true);
-			    		
-						String out="An error occurred :(";
-						try {
-							textLog.append("\nI'm workin'... just a second (or maybe two!) :)");
-							textLog.setSelectionStart(textLog.getText().length());
-							File result = ImageWorker.addKeyImgToDictionary(inputName, IMG, thisFrame);
-							out = result.getName() + " => Added to dictionary :)";
-							textLog.append(out);
-							logger.debug(out);
-						} catch (Exception e2) {
-							logger.error("An error occurred importing to dictionary :("+e2);
-						}
-			    		progUpdater.getPb().setValue(100);
-						
-			    		updateBTNenabled(true);
-						JOptionPane.showMessageDialog(thisFrame, out);
-					}else {
-						// case of null input (cancel pressed by user)
-						updateBTNenabled(true);
-						JOptionPane.showMessageDialog(thisFrame, "Process killed by user, not added to dictionary.", "Cancelled", JOptionPane.WARNING_MESSAGE);
-					}
-				}else {
-					updateBTNenabled(true);
-					JOptionPane.showMessageDialog(thisFrame, "Image is null, first you have to generate an image!", "NULL image Error",JOptionPane.ERROR_MESSAGE );
-				}
+				Thread runnerThread =  new Thread(new Runnable() {
+					public void run() {
+						// only if the container contains an image!
+						if (imageContainer != null && imageContainer.getImage() != null) {
+							BufferedImage IMG = imageContainer.getImage();
+							textLog.append("\n [Started] adding key to dictionary...");
+							String inputName = JOptionPane.showInputDialog(thisFrame,
+									"Please insert a name for the image to be added (Otherwise current date will be used as filename)",
+									"Choose a name for the File.", JOptionPane.QUESTION_MESSAGE);
+							if (inputName != null && inputName.equals("")) {
+								inputName = "ScreepT-Key" + df.format(now) + ".png";
+								logger.debug("No input by user... current date used as name: " + inputName);
+							}
+							// now if user pressed cancel input is null, let's check
+							if (inputName != null) {
+								progUpdater = new TestUpdateProgress(currentConfig);
+								progUpdater.getPb().setValue(0);
+								progUpdater.getPb().setIndeterminate(true);
 
+								String out = "An error occurred :(";
+								try {
+									textLog.append("\nI'm workin'... just a second (or maybe two!) :)");
+									textLog.setSelectionStart(textLog.getText().length());
+									File result = ImageWorker.addKeyImgToDictionary(inputName, IMG, thisFrame);
+									out = result.getName() + " => Added to dictionary :)";
+									textLog.append(out);
+									logger.debug(out);
+								} catch (Exception e2) {
+									logger.error("An error occurred importing to dictionary :(" + e2);
+								}
+								progUpdater.getPb().setValue(100);
+
+								updateBTNenabled(true);
+								JOptionPane.showMessageDialog(thisFrame, out);
+							} else {
+								// case of null input (cancel pressed by user)
+								updateBTNenabled(true);
+								JOptionPane.showMessageDialog(thisFrame,
+										"Process killed by user, not added to dictionary.", "Cancelled",
+										JOptionPane.WARNING_MESSAGE);
+							}
+						} else {
+							updateBTNenabled(true);
+							JOptionPane.showMessageDialog(thisFrame,
+									"Image is null, first you have to generate an image!", "NULL image Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				});
+				runnerThread.start();
 			}
 		});
 		
@@ -455,7 +465,7 @@ public class KeyGenPanel extends JFrame {
 				
 				updateBTNenabled(false);
 				
-				textInfo.setText("Conversion started with:\n\n# width of generated key: "+CURRENT_SEL_W+"Px\n# height of generated key: "+CURRENT_SEL_H+"Px");
+				textInfo.setText("\n\nConversion started with:\n\n# width of generated key: "+CURRENT_SEL_W+"Px\n# height of generated key: "+CURRENT_SEL_H+"Px");
 				textInfo.append("\nAfter Key is generated pressing the 'generate' button,you can see a quick preview on the right :)");
 				textInfo.append("\nNB -> It's recommended to use 4byte types to cript files!");
 				textLog.setText("\n[Started] "+now.toString()+"\n-> I'm reading input values...");

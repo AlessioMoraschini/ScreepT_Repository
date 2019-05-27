@@ -1,8 +1,11 @@
 package guistyle;
 
 import java.awt.Color;
+import java.awt.Window;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.ColorUIResource;
 
@@ -17,12 +20,16 @@ public class GUIStyelSettings{
 	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	public static final String PlafLookAndFeels = "javax.swing.plaf.metal.MetalLookAndFeel";
-	
+	public static final String jtatooLookAndFeel = "com.jtattoo.plaf.smart.SmartLookAndFeel";
+	public static final String jtatooNoireLNF = "com.jtattoo.plaf.noire.NoireLookAndFeel";
+	public static final String jtatooGraphiteLNF = "com.jtattoo.plaf.graphite.GraphiteLookAndFeel";
+	public static final String jtatooMintLNF = "com.jtattoo.plaf.noire.MintLookAndFeel";
+	public static final String jtatooLunaLNF = "com.jtattoo.plaf.luna.LunaLookAndFeel";
+
 	public static int focusOpacity = 20;
 
     public static boolean setStyle(String style) {
     	try {
-    		UIManager.put( "nimbusBase", new Color(51,98,140) );
 			UIManager.put( "MenuBar.foreground", Color.black );
 			UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
 			UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
@@ -34,6 +41,10 @@ public class GUIStyelSettings{
 			}else {
 				UIManager.put("Button.foreground", Color.BLACK);
 			}
+			// update all windows
+			for(Window window: Window.getWindows()) {
+    		    SwingUtilities.updateComponentTreeUI(window);
+    		}
     		return true;
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e3) {
@@ -126,5 +137,33 @@ public class GUIStyelSettings{
 		  }
 		  
 		  return false;
+	}
+	
+	public static LookAndFeelInfo[] getLookAndFeelList() {
+		LookAndFeelInfo[] lookNFeelArray = UIManager.getInstalledLookAndFeels();
+		LookAndFeelInfo[] jtatooInfo = getJTatooLAF();
+		LookAndFeelInfo[] outList = new LookAndFeelInfo[lookNFeelArray.length + jtatooInfo.length]; // modify equals to custom's total
+		int i = 0;
+		for(LookAndFeelInfo current : lookNFeelArray) {
+			outList[i] = current;
+			i++;
+		}
+		
+		for(LookAndFeelInfo currentJtatoo : jtatooInfo) {
+			outList[i] = currentJtatoo;
+			i++;
+		}
+		
+		return outList;
+	}
+	
+	public static LookAndFeelInfo[] getJTatooLAF() {
+		LookAndFeelInfo[] lookNFeelJtatoos = {/**new LookAndFeelInfo("jtatooNoireLNF", jtatooNoireLNF),
+											new LookAndFeelInfo("jtatooLookAndFeel", jtatooLookAndFeel),
+											new LookAndFeelInfo("jtatooGraphiteLNF", jtatooGraphiteLNF),
+											new LookAndFeelInfo("jtatooLunaLNF", jtatooLunaLNF),
+											new LookAndFeelInfo("jtatooMintLNF", jtatooMintLNF)**/};
+		
+		return lookNFeelJtatoos;
 	}
 }

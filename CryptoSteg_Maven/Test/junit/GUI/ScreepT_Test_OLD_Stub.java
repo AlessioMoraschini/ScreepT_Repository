@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Random;
 
 import javax.crypto.NoSuchPaddingException;
 
@@ -18,11 +17,12 @@ import org.junit.Test;
 import amfileutils.FileStuff;
 import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
+import crypt.manager.ScreeptManagerFileOrFolder;
 import crypt.manager.ScreeptManagerStub;
 import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 
-public class ScreepT_Test {
+public class ScreepT_Test_OLD_Stub {
 	
 ///////////////////////////////////////////////////////////////////
 ////////////////// INITIALIZE VARIABLES FOR TEST //////////////////

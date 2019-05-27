@@ -66,6 +66,7 @@ public class MyFileView extends FileView{
 	    table.put(".json",new ImageIcon(IconsPathConfigurator.F_ICON_JSON));
 	    table.put(".css",new ImageIcon(IconsPathConfigurator.F_ICON_CSS));
 	    table.put(".exe",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
+	    table.put(".php",new ImageIcon(IconsPathConfigurator.F_ICON_PHP));
 	    
 	    // generics video
 	    table.put(".mov",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
@@ -77,7 +78,7 @@ public class MyFileView extends FileView{
 	    
 	    // generics audio
 	    table.put(".mp3",new ImageIcon(IconsPathConfigurator.F_ICON_AUDIO));
-	    table.put(".wav",new ImageIcon(IconsPathConfigurator.F_ICON_AUDIO));
+	    table.put(".wav",new ImageIcon(IconsPathConfigurator.F_ICON_WAV));
 	    
 	    // generics image
 	    table.put(".tiff",new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));

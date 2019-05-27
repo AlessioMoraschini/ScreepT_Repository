@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -99,8 +100,8 @@ public class mainGUI {
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
 	// general application variables
-	public static final String APP_VERSION = "0.5.2";
-	public static final String APP_VERSION_DATE = "04/05/2019";
+	public static final String APP_VERSION = "0.6";
+	public static final String APP_VERSION_DATE = "27/05/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
@@ -125,7 +126,7 @@ public class mainGUI {
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
 	private static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
-	private static Date now; // date used for log operations
+	public static Date now; // date used for log operations
 	
 	// temp decryptedFolder
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
@@ -135,6 +136,11 @@ public class mainGUI {
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = "1.9.0";
 	
 	public static final int TOOLTIP_DELAY = 400;
+	
+	// default button and generic font definitions
+	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(16, 12);
+	public static final Font BUTTON_DEFAULT_FONT =  new Font("SansSerif", Font.BOLD, 12);
+	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	
 //////////////////////////// GUI ELEMENTS //////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -158,7 +164,7 @@ public class mainGUI {
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	private static TextEditor initTxtWriter;
-	private CrypterPanel panelCrypter;
+	private static CrypterPanel panelCrypter;
 	private ChargeIniLog configManagerPanel;
 	
 	// MENU ITEMS
@@ -183,7 +189,7 @@ public class mainGUI {
 	private JMenuItem mntmUserDocumentation;
 	private JMenuItem mntmGenOpt;
 	private JMenuItem mntmCustomizeUIView;
-	private JMenuItem mntmCrypter;
+	private static JMenuItem mntmCrypter;
 	private JMenuItem mntmgenerateKeyImageSub;
 	private JMenuItem mntmViewKeyDictionary;
 	private static JMenuItem mntmTextEditor;
@@ -253,13 +259,15 @@ public class mainGUI {
 	private static boolean FLAG_mntmCopyDirStructure = false; 
 	
 	// flag to close all suspended threads when exitings Main App
-	volatile private static boolean mainAppRunning = false;
+	volatile public static boolean mainAppRunning = false;
 	
 	// main app object reference
 	private mainGUI mainAPP = this;
 	
 	// loader to visualize while loading application
 	public static LauncherLoaderFrame loaderGraphics;
+	public static final float launcherRatio = 0.25f;
+	public static final Dimension screenSize = GuiUtils.getScreenSize();
 	
 	/**
 	 * MAIN METHOD
@@ -269,7 +277,7 @@ public class mainGUI {
 	public static void mainApplicationGeneral() {
 		
 		// OPEN LOADING PANEL
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", LAUNCHER_BACK_IMAGE_PATH, 280);
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
 		for (int i = 0; i < 10; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing "+ APPLICATION_NAME + dots;
@@ -421,7 +429,7 @@ public class mainGUI {
 										autosaveModule.interrupt();
 										logger.warn("## AUTOSAVE-MANAGER: [AUTOSAVE OFF] autosave module interrupted.");
 									}else {
-										logger.info("## AUTOSAVE-MANAGER: [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
+										logger.info("## AUTOSAVE-MANAGER: running -> [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
 									}
 									
 								} catch (InterruptedException e) {
@@ -450,7 +458,10 @@ public class mainGUI {
 									return;
 								}
 					    		
-					    		doIfTempDecryptedChanged(window.frmScryptV);
+					    		if(doIfTempDecryptedChanged(window.frmScryptV)) {
+					    			window.frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+									return;
+					    		}
 					    		
 					    		window.frmScryptV.setAlwaysOnTop(true);
 					    		closeApplication();
@@ -594,7 +605,10 @@ public class mainGUI {
 							return;
 						}
 			    		
-			    		doIfTempDecryptedChanged(frmScryptV);
+						if(doIfTempDecryptedChanged(frmScryptV)) {
+			    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+							return;
+			    		}
 			    		
 			    		frmScryptV.setAlwaysOnTop(true);
 			    		
@@ -882,7 +896,7 @@ public class mainGUI {
 		// open in a new window - GENERAL OPTIONS
 		mntmGenOpt = new JMenuItem(new AbstractAction("General Options") {
 			public void actionPerformed(ActionEvent e) {
-				if (!flagFrameGenOptions) {
+				if (!flagFrameGenOptions || panelGeneralOptions == null) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagFrameGenOptions=true;
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
@@ -1135,7 +1149,7 @@ public class mainGUI {
 			public void componentShown(ComponentEvent e) {
 			}
 			public void componentResized(ComponentEvent e) {
-				labelBACKground.setSize(frmScryptV.getContentPane().getSize());
+				resizeMainFrameDefaults();
 			}
 			public void componentMoved(ComponentEvent e) {
 			}
@@ -1163,6 +1177,13 @@ public class mainGUI {
 	
 	
 //////////	NOW SOME USEFUL METHOD  ////////////////
+	
+	public void resizeMainFrameDefaults() {
+		labelBACKground.setSize(frmScryptV.getContentPane().getSize());
+		if(initTxtWriter != null && TextEditor.mainTabList != null) {
+			initTxtWriter.resizeFrameToDefault();
+		}
+	}
 	
 	private static void initGUI() {
 		// initialize style
@@ -1365,7 +1386,7 @@ public class mainGUI {
 		mntmGenOpt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_OPT));
 		
 		// ScreepT submenu
-		mntmCrypter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_CRYPTER));
+		mntmCrypter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT));
 		mntmgenerateKeyImageSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN));
 		mntmViewKeyDictionary.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
 		
@@ -1587,19 +1608,32 @@ public class mainGUI {
 		logger.info("\n => Blocking frames closed");
 	}
 	
-	public static void doIfTempDecryptedChanged(JFrame parent) {
+	public static boolean doIfTempDecryptedChanged(JFrame parent) {
 		logger.debug("Starting check on fileMonitor...");
+		boolean result = false;
 		try {
 			if (CrypterPanel.fileMonitor != null && CrypterPanel.fileMonitor.rootMonitorDir.exists()) {
 				ChangeDTO changesTempDecrypted = CrypterPanel.fileMonitor.checkForEverithing();
 				if (changesTempDecrypted.changedFiles.size() != 0) {
-					JOptionPane.showMessageDialog(parent, "There are Files changed... closing you'll lose them!"+changesTempDecrypted.changedFiles);
+					int choice = JOptionPane.showConfirmDialog(parent, "There are Files changed after decrypt.. do you want to return to ScreepT view? "+changesTempDecrypted.changedFiles);
+					if(choice == JOptionPane.YES_OPTION) {
+						result = false;
+						mntmCrypter.doClick();
+						// add unsaved as source for crypterPanel
+						CrypterPanel.panelVDragNDropPane.removeAll();
+						for(File unsaved : CrypterPanel.fileMonitor.rootMonitorDir.listFiles()) {
+							CrypterPanel.panelVDragNDropPane.addFileToTree(unsaved);
+						}
+					}else {
+						result = false;
+					}
 				}
 			}
 			
 		} catch (InterruptedException e) {
 			logger.error("Error getting changes on tempFolder decrypted", e);
 		}
+		return result;
 	}
 	
 	/**
@@ -1617,7 +1651,7 @@ public class mainGUI {
 		askCondition = false;
 		atLeastOneTemp = false;
 		for (TabTextEditorObj tabElement : TextEditor.loadedList) {
-			if (tabElement.unsaved && (tabElement.loadedFile != null)) {
+			if (tabElement.unsaved) {
 				askCondition = true;
 			}
 			if (tabElement.loadedFile == null) {
@@ -1705,6 +1739,8 @@ public class mainGUI {
 		if(panelGeneralOptions != null && panelGeneralOptions.isVisible()) {
 			panelGeneralOptions.initGuiFromConfig();
 		}
+		
+		TextEditor.applyStyleToTabs();
 	}
 	
 	// GETTERS //

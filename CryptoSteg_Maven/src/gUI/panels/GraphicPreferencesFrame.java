@@ -3,6 +3,8 @@ package gUI.panels;
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import tabbedpaneutils.CustomTabbedPaneUI_v1;
+import tabbedpaneutils.TabUtils;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -134,7 +136,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		lblGuiType.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblGuiType, "cell 1 4,alignx center");
 		
-		comboStyleLaF = new JComboBox(UIManager.getInstalledLookAndFeels());
+		comboStyleLaF = new JComboBox(GUIStyelSettings.getLookAndFeelList());
 		comboStyleLaF.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboStyleLaF.setMaximumRowCount(10);
 		updateComboLaFGUI(PREFERRED_STYLE);
@@ -248,9 +250,11 @@ public class GraphicPreferencesFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if(!chckbxDarklight.isSelected()) {
 					DARK_THEME = !GUIStyelSettings.setLightNimbus();
+					TextEditor.applyStyleToTabs();
 					currentConfiguration.getGuiOpt().setDarkGuiNimbus(false);
 				}else {
 					DARK_THEME = GUIStyelSettings.setDarkNimbus();
+					TextEditor.applyStyleToTabs();
 					currentConfiguration.getGuiOpt().setDarkGuiNimbus(true);
 				}
 				for(Window window: Window.getWindows()) {
@@ -271,6 +275,7 @@ public class GraphicPreferencesFrame extends JFrame{
 		    		for(Window window: Window.getWindows()) {
 		    		    SwingUtilities.updateComponentTreeUI(window);
 		    		}
+		    		TextEditor.applyStyleToTabs();
 				} catch (Exception e1) {
 				JOptionPane.showMessageDialog(thisFrame, "Sorry, something went wrong :(", e1.getClass().getName(), JOptionPane.ERROR_MESSAGE);
 				logger.error("Exception happened!", e1);	
@@ -296,6 +301,8 @@ public class GraphicPreferencesFrame extends JFrame{
 				
 				// reset gui (sliders changement will trigger jtextfield, see action listener)
 				updateGUI();
+				
+				TextEditor.applyStyleToTabs();
 				
 				logger.debug("Configuration resetted: \n"+currentConfiguration.toStringa());
 			}
@@ -469,8 +476,10 @@ public class GraphicPreferencesFrame extends JFrame{
 		
 		if(!DARK_THEME) {
 			GUIStyelSettings.setLightNimbus();
+			TextEditor.applyStyleToTabs();
 		}else {
 			GUIStyelSettings.setDarkNimbus();
+			TextEditor.applyStyleToTabs();
 		}
 		for(Window window: Window.getWindows()) {
 		    SwingUtilities.updateComponentTreeUI(window);

@@ -26,17 +26,21 @@ public class ScreeptManagerFileOrFolder {
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	
 	// CODERS objects - shared by methods
-	private static AesCipher AEScoder;
-	private static StegCipher STEGcoder;	
-	private static ScreeptManager screepTManager;
-	private static boolean shuffle = true;
+	private AesCipher AEScoder;
+	private StegCipher STEGcoder;	
+	public ScreeptManager screepTManager;
+	private boolean shuffle = true;
 	
 	private static String opInfo = "Nothing to display";
 	
 	public static boolean coderUsed = false;
 	
+	public ScreeptManagerFileOrFolder() {
+		
+	}
+	
 ////////////////////////// MAIN METHODS ////////////////////////////////
-	public static boolean crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile) {
+	public boolean crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile) {
 		boolean resultOK = false;
 
 		// notify that method is running
@@ -161,11 +165,13 @@ public class ScreeptManagerFileOrFolder {
 		
 		coderUsed=false;
 		opInfo = screepTManager.getOutputStats();
+		screepTManager.killOpenStreams();
+		screepTManager.getAesCoder().clearSensitiveData();
 		
 		return resultOK;
 	}
 	
-	public static boolean decrYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean deleteAfterClose) {
+	public boolean decrYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean deleteAfterClose) {
 		boolean resultOK = false;
 
 		if(deleteAfterClose) {
@@ -274,6 +280,8 @@ public class ScreeptManagerFileOrFolder {
 		
 		coderUsed=false;
 		opInfo = screepTManager.getOutputStats();
+		screepTManager.killOpenStreams();
+		screepTManager.getAesCoder().clearSensitiveData();
 
 		return resultOK;
 	}
@@ -288,14 +296,14 @@ public class ScreeptManagerFileOrFolder {
 	}
 	
 ///////////////////////////////////////////////////////// CRYPT INITIALIZERS /////////////////////////////////////////////////////////
-	private static ScreeptManager initAES(char[] AES_KEY)
+	private ScreeptManager initAES(char[] AES_KEY)
 			throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
 		return screepTManager;
 	}
 
-	private static ScreeptManager initSTEG(File imageFile) throws IOException, STEGException, media.STEGException {
+	private ScreeptManager initSTEG(File imageFile) throws IOException, STEGException, media.STEGException {
 		if (imageFile == null) {
 			throw new STEGException();
 		}
@@ -305,7 +313,7 @@ public class ScreeptManagerFileOrFolder {
 		return screepTManager;
 	}
 
-	private static ScreeptManager initCOMPLETE(char[] AES_KEY, File imageFile)
+	private ScreeptManager initCOMPLETE(char[] AES_KEY, File imageFile)
 			throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException, media.STEGException {
 		if (imageFile == null) {
 			throw new STEGException();
@@ -322,7 +330,7 @@ public class ScreeptManagerFileOrFolder {
 
 	///////////////////////////////////////////////////////// CRYPT METHODS
 	///////////////////////////////////////////////////////// /////////////////////////////////////////////////////////
-	private static boolean cryptCurrentFile(File src, File destinationDir) throws IOException {
+	private boolean cryptCurrentFile(File src, File destinationDir) throws IOException {
 		boolean resultOK = false;
 		if (destinationDir != null) {
 
@@ -331,14 +339,14 @@ public class ScreeptManagerFileOrFolder {
 			}
 
 			screepTManager.setOutPath(destinationDir.getCanonicalPath());
-			resultOK = screepTManager.crypt(src);
+			resultOK = screepTManager.crypt(src, null);
 
 		}
 
 		return resultOK;
 	}
 
-	private static boolean cryptDir(File src, File destinationDir) throws IOException {
+	private boolean cryptDir(File src, File destinationDir) throws IOException {
 		boolean resultOK = false;
 
 		if (src.isFile()) {
@@ -374,7 +382,7 @@ public class ScreeptManagerFileOrFolder {
 	}
 
 ///////////////////////////////////////////////////////// DECRYPT METHODS /////////////////////////////////////////////////////////
-	private static boolean deCryptCurrentFile(File src, File destinationDir) throws IOException {
+	private boolean deCryptCurrentFile(File src, File destinationDir) throws IOException {
 		boolean resultOK = false;
 		if (destinationDir != null) {
 
@@ -383,13 +391,13 @@ public class ScreeptManagerFileOrFolder {
 			}
 
 			screepTManager.setOutPath(destinationDir.getCanonicalPath());
-			resultOK = screepTManager.deCrypt(src);
+			resultOK = screepTManager.deCrypt(src, null);
 
 		}
 		return resultOK;
 	}
 
-	private static boolean deCryptDirAES(File src, File destinationDir) throws IOException {
+	private boolean deCryptDirAES(File src, File destinationDir) throws IOException {
 		boolean resultOK = false;
 
 		if (src.isFile()) {
@@ -427,7 +435,7 @@ public class ScreeptManagerFileOrFolder {
 
 	// use this to recognize folder containing STEG/COMPLETE folders that contains
 	// result instead of generic folder
-	private static boolean deCryptDirSTEG(File src, File destinationDir) throws IOException {
+	private boolean deCryptDirSTEG(File src, File destinationDir) throws IOException {
 		boolean resultOK = false;
 
 		if (src.isDirectory()) {
@@ -480,12 +488,12 @@ public class ScreeptManagerFileOrFolder {
 		return resultOK;
 	}
 
-	public static boolean isShuffle() {
+	public boolean isShuffle() {
 		return shuffle;
 	}
 
-	public static void setShuffle(boolean shuffle) {
-		ScreeptManagerFileOrFolder.shuffle = shuffle;
+	public void setShuffle(boolean shuffle) {
+		this.shuffle = shuffle;
 	}
 
 	public String getOpInfo() {

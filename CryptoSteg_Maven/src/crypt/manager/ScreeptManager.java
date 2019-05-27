@@ -172,9 +172,11 @@ public class ScreeptManager {
 	 * @throws InvalidKeyException 
 	 * @throws STEGException 
 	 */
-	public Boolean crypt(File srcFile) {
+	public Boolean crypt(File srcFile, TestUpdateProgress progressBarGeneral) {
 
 		buffer = new byte[AES_BUFFER_SIZE];
+		
+		progUpdater = progressBarGeneral;
 		
 //    	progUpdater = new TestUpdateProgress(currentConf);
 //		progUpdater.getPb().setValue(0);
@@ -297,7 +299,9 @@ public class ScreeptManager {
 	 * incremental names found in the same folder
 	 * 
 	 */
-	public Boolean deCrypt(File srcFile) {
+	public Boolean deCrypt(File srcFile, TestUpdateProgress progressBarGeneral) {
+		
+		progUpdater = progressBarGeneral;
 		
 		// aes source arrays were multiple of 16, so result array each time is 32 byte more cause of aes padding structure and random IV size
 		// to avoid errors i've to include that bytes during the read plus the IV size

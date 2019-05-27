@@ -54,14 +54,9 @@ public class ImageGenContainerPanel extends JPanel{
     	logger.info(this.getClass().getName() + " Starting...");
     	
     	genContPane = this;
-    	
-    	progUpdater = new TestUpdateProgress(currentConf);
-		progUpdater.getPb().setValue(0);
-    	
     	width= w;
     	height= h;
     	
-    	bar = thisFrame.getProgressBar();
     	jtext = thisFrame.getTextLog();
     	btnAddDict = thisFrame.getBtnAddInDictionary();
     	btnExp = thisFrame.getBtnExport();
@@ -72,6 +67,10 @@ public class ImageGenContainerPanel extends JPanel{
 			
 			@Override
 			public void run() {
+				
+				progUpdater = new TestUpdateProgress(currentConf);
+				progUpdater.getPb().setValue(0);
+				bar = thisFrame.getProgressBar();
 				
 				bar.setValue(20);
 				bar.setString("Workin...");

@@ -6,6 +6,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.DisplayMode;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -54,8 +55,13 @@ public class GuiUtils {
 		return Toolkit.getDefaultToolkit().getScreenSize();
 	}
 	
-	public static Dimension getScreenSizePerc(int factorPerc) {
-		Dimension screen = getScreenSize();
+	public static Dimension getScreenSize(JFrame frame) {
+		DisplayMode mode = frame.getGraphicsConfiguration().getDevice().getDisplayMode();
+		return new Dimension(mode.getWidth(), mode.getHeight());
+	}
+	
+	public static Dimension getScreenSizePerc(int factorPerc, JFrame frame) {
+		Dimension screen = getScreenSize(frame);
 		int w = (screen.width*factorPerc)/100;
 		int h = (screen.height*factorPerc)/100;
 		return new Dimension(w, h);

@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 import variousutils.HandleString;
@@ -36,11 +37,12 @@ public class TabUtils {
 	public static JPanel getCustomClosableTab(String title, String tooltip, String iconPath, ActionListener tabCloseListener) {
 		JPanel pnlTab = new JPanel();
 		pnlTab.setOpaque(false);
-		pnlTab.setPreferredSize(new Dimension(130,27));
+		pnlTab.setPreferredSize(new Dimension(150,27));
 		pnlTab.setToolTipText(tooltip);
 
 		// tab title
 		JLabel lblTitle = new JLabel();
+		lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		lblTitle.setText(HandleString.fitToMaxLentgh(title, 30));
 		
 		// image label
@@ -66,15 +68,18 @@ public class TabUtils {
 		gbc.weightx = 4;
 		pnlTab.add(lblTitle, gbc); // 2 - TEXT TITLE
 		gbc.gridx++;
-		gbc.ipadx = 6;
-		gbc.weightx = 6;
+		gbc.ipadx = 9;
+		gbc.weightx = 3;
 		JButton btnClose = new JButton();
 		
 		btnClose = applyStyleToTabCloseBtn(btnClose);
-		Dimension btnDimension = new Dimension(22, 20) ;
+		Dimension btnDimension = new Dimension(24, 24) ;
+		btnClose.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		btnClose.setMinimumSize(btnDimension);
 		btnClose.setPreferredSize(btnDimension);
 		btnClose.setMaximumSize(btnDimension);
+		btnClose.setVerticalTextPosition(SwingConstants.CENTER);
+		btnClose.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnClose.setText("X");
 		btnClose.addActionListener(tabCloseListener);
 

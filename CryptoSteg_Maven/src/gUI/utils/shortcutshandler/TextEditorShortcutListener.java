@@ -10,19 +10,20 @@ import org.apache.log4j.Logger;
 import gUI.panels.TextEditor;
 import resources.IconsPathConfigurator;
 
-public class TextEditorListener implements KeyEventDispatcher{
+public class TextEditorShortcutListener implements KeyEventDispatcher{
 	
 	// TextFileWriter logger creation
-	static Logger logger = Logger.getLogger(TextEditorListener.class);
+	static Logger logger = Logger.getLogger(TextEditorShortcutListener.class);
 	
 	public static volatile boolean flagCtrlPressed = false;
+	public static volatile boolean flagShiftPressed = false;
 	
 	public volatile boolean flagHoverBtnViewExpCmd = false;
 	public volatile boolean flagHoverBtnRemoveSpaces = false;
 	
 	TextEditor currentTextEditor;
 	
-	public TextEditorListener(TextEditor currentTextEdit) {
+	public TextEditorShortcutListener(TextEditor currentTextEdit) {
 		currentTextEditor = currentTextEdit;
 	}
 	
@@ -34,11 +35,18 @@ public class TextEditorListener implements KeyEventDispatcher{
 		if (e.getID() == KeyEvent.KEY_PRESSED && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 
 			/**
-			 * ONLY CTRL PRESSED FLAG
+			 * CTRL PRESSED FLAG
 			 */
 			if (e.isControlDown()) {
 				flagCtrlPressed = true;
 				doControlActions();
+			}
+			
+			/**
+			 * SHIFT PRESSED FLAG
+			 */
+			if (e.isShiftDown()) {
+				flagShiftPressed = true;
 			}
 			
 			if (isShortcutKey(e)) {
@@ -62,7 +70,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 				/**
 				 *  REDO x5 - Ctrl+Alt+Y
 				 */
-				if (e.getKeyCode()==89 && e.isAltDown() && e.isControlDown() && e.isShiftDown())
+				if (e.getKeyCode()==89 && e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 				{
 					try {
 						for (int i = 0; i < 5; i++) {
@@ -98,10 +106,18 @@ public class TextEditorListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED  && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 	      
-			
+			/**
+			 * CTRL RELEASED FLAG
+			 */
 			if(!e.isControlDown()){
 				flagCtrlPressed = false;
 				doControlActions();
+			}
+			/**
+			 * SHIFT RELEASED FLAG
+			 */
+			if (!e.isShiftDown()) {
+				flagShiftPressed = false;
 			}
 			
 			if (isShortcutKey(e)) {
@@ -136,9 +152,9 @@ public class TextEditorListener implements KeyEventDispatcher{
 					currentTextEditor.btnLoadTextFile.doClick();
 				}
 				/**
-				 * 	READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker -> CTRL+Space
+				 * 	READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker -> CTRL+Alt+Space
 				 */
-				if (e.getKeyCode() == 32 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+				if (e.getKeyCode() == 32 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.btnSpeak.doClick();
 				}
 				/**
@@ -185,6 +201,7 @@ public class TextEditorListener implements KeyEventDispatcher{
 				 * 	FIND  TEXT -> CTRL+F
 				 */
 				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.btnFindText.doClick();
 					if(currentTextEditor.searchBox != null && currentTextEditor.searchBox.active){
 						String selected = TextEditor.loadedTabObj.textArea.getSelectedText();
 						if(selected != null && !selected.equals("")) {
@@ -193,7 +210,6 @@ public class TextEditorListener implements KeyEventDispatcher{
 							currentTextEditor.searchBox.searchTextField.setSelectionEnd(selected.length());
 						}
 					}
-					currentTextEditor.btnFindText.doClick();
 				}
 				
 				/**

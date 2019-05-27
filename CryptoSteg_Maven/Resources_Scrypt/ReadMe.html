@@ -29,7 +29,7 @@
 		
 		<div id="subTitleBlock"class="centerColoredSub2">A smart crypter... and much more!
 			<div id="subTitle" class="centerColoredSub1">
-				<span>By A.M. Design and Developement - 2019 - Version 0.5</span>
+				<span>By A.M. Design and Developement - 2019 - Version 0.6</span>
 			</div>
 		</div>
 		
@@ -182,10 +182,9 @@
 				<h2 id="subSettings" class="sectionSubTitle"> 1.2 - LAUNCHER SETTINGS</h2>
 				<p>
 					As sayd before, you can customize settings of your launcher, by clicking "Customize launch parameters".
-					A new window will be opened: here you can set max and min ram memory allocated when using ScrYpT.
-					<p><strong>IMPORTANT: </strong> remember that when using values that are very similar or the same, the software 
-						can use more than needed OS calls to stay in the small gap between them, resulting in a slow execution.
-						You are advised to use default values if you don't have any particular needing or you are an expert user.
+					A new window will be opened: here you can set max and min ram memory allocated when using ScrYpT. Also the stack size and LOGGING LEVEL can be adjusted in this section.
+					<p><strong>IMPORTANT: </strong> remember that when using values that are very similar or the same, the software can use more than needed OS calls to stay in the small gap between them, resulting in a slow execution.
+					You are advised to use default values if you don't have any particular needing or you are an expert user.
 					</p>
 				</p>
 				
@@ -460,10 +459,6 @@
 							<br> (Ex. "C:/folderA/folderB/folderC/newFolder").
 							</li>
 							
-							<li class="highLineHeigthList"><image class="iconImg" src="./Icons/Menu_Icons/createFolder.png"/> <span class="highlightBolded">Delete directory content by extension </span>- click on this and type the extensions of files you want to delete, separed by a comma. Notica that you can include part of the end of file's name, it will be recognized aniway. 
-							<br><strong>You can select only folders in this function.</strong>
-							</li>
-							
 							<li class="highLineHeigthList"><image class="iconImg" src="./Icons/Menu_Icons/cloneDirectory.png"/> <span class="highlightBolded">Copy directory structure </span>- click on this if you want to recreate the structure of a directory without copying the files contained in it and its subfolders. In fact, you will only copy folders contained in the selected one.
 							<strong>You can select only folders in this function.</strong>
 							</li>
@@ -522,23 +517,32 @@
 					<li> <span class="SHCT_TEXT">SAVE FILE</span> - [Ctrl+S]</li>
 					<li> <span class="SHCT_TEXT">SAVE FILE AS</span> - [Ctrl+Shif+S]</li>
 					<li> <span class="SHCT_TEXT">UNDO</span> - [Ctrl+Z]</li>
-					<li> <span class="SHCT_TEXT">UNDO X5</span> - [Ctrl+Shift+Z]</li>
-					<li> <span class="SHCT_TEXT">REDO</span> - [Ctrl+Alt+Z]</li>
-					<li> <span class="SHCT_TEXT">REDO X 5</span> - [Ctrl+Shift+Alt+Z]</li>
+					<li> <span class="SHCT_TEXT">UNDO X5</span> - [Ctrl+Alt+Z]</li>
+					<li> <span class="SHCT_TEXT">REDO</span> - [Ctrl+Y]</li>
+					<li> <span class="SHCT_TEXT">REDO X 5</span> - [Ctrl+Alt+Y]</li>
 					<li> <span class="SHCT_TEXT">FONT SIZE ++</span> - [Ctrl+(Numpad+)]</li>
 					<li> <span class="SHCT_TEXT">FONT SIZE --</span> - [Ctrl+(Numpad-)]</li>
-					<li> <span class="SHCT_TEXT">SPEAK TEXT / STOP SPEAKER</span> - [Ctrl+spacebar]</li>
+					<li> <span class="SHCT_TEXT">SPEAK TEXT / STOP SPEAKER</span> - [Ctrl+Alt+spacebar]</li>
 					<li> <span class="SHCT_TEXT">CRYPT TEXT</span> - [Ctrl+shift+C]</li>
 					<li> <span class="SHCT_TEXT">DECRYPT TEXT</span> - [Ctrl+shift+D]</li>
 					<li> <span class="SHCT_TEXT">UPPERCASE ALL SELECTED</span> - [Ctrl+ArrowUp]</li>
 					<li> <span class="SHCT_TEXT">UPPERCASE AFTER DOTS/SEPARATORS</span> - [Ctrl+Shift+.]</li>
 					<li> <span class="SHCT_TEXT">OPEN SEARCH PANEL</span> - [Ctrl+F]</li>
+					<li> <span class="SHCT_TEXT">OPEN SPECIAL/ESCAPES PANEL</span> - [Ctrl+R]</li>
 					<li> <span class="SHCT_TEXT">OPEN TEMPLATES PANEL</span> - [Ctrl+T]</li>
+					<li> <span class="SHCT_TEXT">SHOW AUTOCOMPLETE OPTIONS</span> - [Ctrl+Spacebar]</li>
+					<li> <span class="SHCT_TEXT">DELETE LINE</span> - [Ctrl+D]</li>
+					<li> <span class="SHCT_TEXT">REMOVE SPACES IN SELECTION</span> - [Ctrl+(-)]</li>
+					<li> <span class="SHCT_TEXT">DELETE CURRENT LINE</span> - [Ctrl+D]</li>
+					<li> <span class="SHCT_TEXT">MOVE CURRENT LINE UP/DOWN</span> - [Alt+Up/Down]</li>
 					<br>
 					<li> <span class="SHCT_TEXT">NEW TAB</span> - [Ctrl+N]</li>
 					<li> <span class="SHCT_TEXT">CLOSE CURRENT TAB</span> - [Ctrl+W]</li>
 					<li> <span class="SHCT_TEXT">NEXT TAB</span> - [Ctrl+TAB]</li>
 					<li> <span class="SHCT_TEXT">PREVIOUS TAB</span> - [Ctrl+Shift+TAB]</li>
+					<br>
+					<li> <span class="SHCT_TEXT">INCREASE SCROLL SPEED</span> - [Ctrl+MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">CHANGE FONT SIZE</span> - [Ctrl+Shift+MouseWheel]</li>
 					
 				</ul></p>	
 			
@@ -570,6 +574,10 @@
 						<li><span class="highlightBolded">PngTastic</span> is used to manage PNG conversion. <a class="dependencyLink" target="_blank" href="https://github.com/depsypher/pngtastic">[https://github.com/depsypher/pngtastic]</a></li>
 						
 						<li><span class="highlightBolded">Apache commons</span> are widely used both for some network communication and for file related stuff. <a class="dependencyLink" target="_blank" href="https://commons.apache.org">[https://commons.apache.org]</a></li>
+						
+						<li><span class="highlightBolded">RsyntaxTextArea</span> Is widely used in text editor, ScreepT, and aso configuration manager. <a class="dependencyLink" target="_blank" href="">[]</a></li>
+						
+						<li><span class="highlightBolded">Tesseract</span> Is used for image-pdf-text conversion and parsing <a class="dependencyLink" target="_blank" href="">[]</a></li>
 						
 						<li><span class="highlightBolded">FreeTTS</span> is used to implement text speaker. <a class="dependencyLink" target="_blank" href="https://freetts.sourceforge.io">[https://freetts.sourceforge.io]</a></li>
 

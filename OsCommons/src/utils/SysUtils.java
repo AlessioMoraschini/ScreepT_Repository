@@ -268,9 +268,9 @@ public class SysUtils {
 	
 	public static boolean cdIntoCommandLine(File directory) {
 		OSinfo OS = retrieveOS();
-		directory = (directory.isDirectory())? directory : directory.getParentFile();
-		if(directory != null && directory.exists()) {
 			
+		if(directory != null && directory.exists()) {
+			directory = (directory.isDirectory())? directory : directory.getParentFile();
 			if(OS.isWindows()) {
 				try {
 					Runtime rt = Runtime.getRuntime();

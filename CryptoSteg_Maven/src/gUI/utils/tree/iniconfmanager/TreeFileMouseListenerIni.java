@@ -57,20 +57,26 @@ public class TreeFileMouseListenerIni {
 	        @Override
 	        public void mousePressed(MouseEvent arg0) {
 	            if(arg0.getButton() == MouseEvent.BUTTON3){
-	                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
-	                if(pathForLocation != null){
-	                    selectedNode = (File) pathForLocation.getLastPathComponent();
-	                } else{
-	                    selectedNode = null;
-	                }
+	            
+		            TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
+		            if(pathForLocation != null){
+		            	selectedNode = (File) pathForLocation.getLastPathComponent();
+		            } else{
+		            	selectedNode = null;
+		            }
+		           
+		            super.mousePressed(arg0);
 	            }
-	            super.mousePressed(arg0);
 	        }
 	    };
 	}
 
 	private JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
+	    
+	    JMenuItem previewFileItem = new JMenuItem("Preview selected configuration");
+	    previewFileItem.addActionListener(previewSelected());
+	    menu.add(previewFileItem);
 	    
 	    JMenuItem loadItem = new JMenuItem("Load Selected configuration");
 	    loadItem.addActionListener(loadSelectedConfiguration());
@@ -103,6 +109,7 @@ public class TreeFileMouseListenerIni {
 	    // set menu icons
 	    MenuSetter.setIconTextGap(menu, 12);
 	    
+	    previewFileItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
 	    loadItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD));
 	    sysExplorerItem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 	    addCurrentItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
@@ -112,6 +119,18 @@ public class TreeFileMouseListenerIni {
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 	    
 	    return menu;
+	}
+	
+	private ActionListener previewSelected() {
+		 return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// update textArea with preview of content
+		        confManagerPanel.textArea.setText("Previewing: ["+selectedNode.getAbsolutePath()+"]\n\n");
+		        FileStuff.appendFileTxtArea(selectedNode, confManagerPanel.textArea, false);
+			}
+		};
 	}
 	
 	private ActionListener openInSystemExplorer() {

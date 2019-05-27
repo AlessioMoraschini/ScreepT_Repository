@@ -17,6 +17,8 @@ public class IconsPathConfigurator {
 	public static final String F_ICON_TXT = RESOURCES_DIR + "Icons/File_Extensions/F_txt.png";
 	public static final String F_ICON_HTML = RESOURCES_DIR + "Icons/File_Extensions/F_html.png";
 	public static final String F_ICON_CSS = RESOURCES_DIR + "Icons/File_Extensions/F_css.png";
+	public static final String F_ICON_PHP = RESOURCES_DIR + "Icons/File_Extensions/F_php.png";
+	public static final String F_ICON_WAV = RESOURCES_DIR + "Icons/File_Extensions/F_wav.png";
 	public static final String F_ICON_JS = RESOURCES_DIR + "Icons/File_Extensions/F_js.png";
 	public static final String F_ICON_JSON = RESOURCES_DIR + "Icons/File_Extensions/F_json.png";
 	public static final String F_ICON_AUDIO = RESOURCES_DIR + "Icons/File_Extensions/F_audio.png";

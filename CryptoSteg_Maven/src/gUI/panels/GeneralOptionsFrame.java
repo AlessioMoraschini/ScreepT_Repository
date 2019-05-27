@@ -163,7 +163,7 @@ public class GeneralOptionsFrame extends JFrame{
 		// update only local variable fields, INItializer will be updated on exit/save/use/discard
 		spinnerInterval = new JSpinner();
 		spinnerInterval.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		spinnerInterval.setModel(new SpinnerNumberModel(AUTOSAVE_INTERVAL, FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600, 1));
+		spinnerInterval.setModel(new SpinnerNumberModel(AUTOSAVE_INTERVAL, FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600000, 1));
 		getContentPane().add(spinnerInterval, "cell 2 2 2 1,growx,aligny center");
 		spinnerInterval.setValue(AUTOSAVE_INTERVAL);
 		if(AUTOSAVE_FLAG) {

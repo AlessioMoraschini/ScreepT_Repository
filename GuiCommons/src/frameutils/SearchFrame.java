@@ -181,6 +181,9 @@ public class SearchFrame extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				textSearchArea.requestFocus();
+				textSearchArea.setSelectionStart(textSearchArea.getSelectionStart());
+				textSearchArea.setSelectionEnd(textSearchArea.getSelectionStart());
 				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});

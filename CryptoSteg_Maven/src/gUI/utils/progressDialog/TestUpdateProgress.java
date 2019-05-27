@@ -99,8 +99,6 @@ public class TestUpdateProgress {
 		
 		initSpecBar();
 		
-		initGeneralBar();
-		
         if(secondBar) {
         	initGeneralBar();
         }
@@ -211,7 +209,7 @@ public class TestUpdateProgress {
     }
 
     protected void doInBackground(JProgressBar bar) throws Exception {
-        while(pb.getValue()<100 || !forceStop) {
+        while(bar.getValue()<100 || !forceStop) {
             Thread.sleep(150);
             doneCheck(bar);
         }
@@ -264,13 +262,22 @@ public class TestUpdateProgress {
 	 * @param value integer progress from 1 to 100: if more or equal to 100 dialog will close
 	 * @param msg can be null, will be display on dialog
 	 */
-	public synchronized void update( int value, String msg) {
+	public synchronized void update( int value, String msg, boolean useGeneralBar) {
 		
-		this.pb.setValue(value);
-		this.pb.setStringPainted(true);
-		this.pb.setString(value+"%");
-		if(msg != null) {
-			this.label.setText(msg);
+		if (!useGeneralBar) {
+			this.pb.setValue(value);
+			this.pb.setStringPainted(true);
+			this.pb.setString(value + "%");
+			if (msg != null) {
+				this.label.setText(msg);
+			} 
+		}else if(GeneralBar != null){
+			this.GeneralBar.setValue(value);
+			this.GeneralBar.setStringPainted(true);
+			this.GeneralBar.setString(value + "%");
+			if (msg != null) {
+				this.label.setText(msg);
+			} 
 		}
 	}
 	

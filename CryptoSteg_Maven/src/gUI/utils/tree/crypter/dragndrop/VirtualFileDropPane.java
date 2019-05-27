@@ -34,7 +34,6 @@ import frameutils.BackgroundPanel;
 import gUI.panels.KeyDictionaryPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import maingUI.mainGUI;
-import net.miginfocom.swing.MigLayout;
 
 public class VirtualFileDropPane extends BackgroundPanel {
 
