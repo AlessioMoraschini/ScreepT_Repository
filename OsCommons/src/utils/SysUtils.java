@@ -41,6 +41,21 @@ public class SysUtils {
 		return command;
 	}
 	
+	public static String startJarCommand(String jvmArgs, String jarPath, File[] filteredArgsFiles) {
+		String filesParams = "";
+		StringBuilder builder = new StringBuilder();
+		
+		for(File file : filteredArgsFiles) {
+			builder.append(" \"").append(file.getAbsolutePath()).append("\"");
+		}
+		filesParams = builder.toString();
+		
+		builder = new StringBuilder();
+		builder.append("java ").append(jvmArgs).append(" -jar ").append(jarPath).append(filesParams);
+		String command = builder.toString();
+		return command;
+	}
+	
 	/**
 	 * According to given OS, search for installed JVM paths
 	 * @param OS

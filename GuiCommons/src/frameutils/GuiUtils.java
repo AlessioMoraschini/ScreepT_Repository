@@ -14,11 +14,10 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
-import javax.swing.JTextField;
 import javax.swing.RootPaneContainer;
+import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
@@ -119,7 +118,11 @@ public class GuiUtils {
 	public static void openInFileSystem(File destination) {
 		if (destination != null && destination.exists()) {
 			try {
-				Desktop.getDesktop().open(destination);
+				if (destination.isDirectory()) {
+					Desktop.getDesktop().open(destination);
+				}else {
+					Desktop.getDesktop().open(destination.getParentFile());
+				}
 				logger.debug(destination.getAbsolutePath()+" Opened in system explorer");
 
 			} catch (IOException e1) {
@@ -174,7 +177,7 @@ public class GuiUtils {
         }
     }
     
-    public static void selectAllText(JTextField field) {
+    public static void selectAllText(JTextComponent field) {
     	field.requestFocus();
     	field.setSelectionStart(0);
     	field.setSelectionEnd(field.getText().length());

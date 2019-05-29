@@ -1,5 +1,6 @@
 package maingUI;
 
+import java.io.File;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -8,6 +9,7 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import amfileutils.FileStuff;
 import resources.IconsPathConfigurator;
 
 public class MainGuiGeneralAppStarter {
@@ -23,13 +25,18 @@ public class MainGuiGeneralAppStarter {
 	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: ";
 	private static Date now;
 	
+	public static String[] ARGS;
+	public static File[] argumentsFiles;
+	
 	public static void main(String[] args) {
 		try {
+			
 			now = new Date();
 			
 			// Initialize logger properties
 			PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
 			
+			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 			logger.info("\n\n##################################################\n\n"+now.toString()+"\n\n"
 					+ mainGUI.APPLICATION_NAME+" Started now!\n\n"
 					+ "##################################################\n\n");

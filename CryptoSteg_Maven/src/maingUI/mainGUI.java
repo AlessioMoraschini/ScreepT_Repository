@@ -491,6 +491,11 @@ public class mainGUI {
 					Thread.sleep(300);
 					window.frmScryptV.toFront();
 					
+					// RUN ARGUMENTS IF THERE ARE
+					if(MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
+						mntmTextEditor.doClick();
+					}
+										
 					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 				} catch (Exception e) {
 					logger.error("Exception happened!", e);

@@ -45,7 +45,7 @@ public class MyFileView extends FileView{
         String ext=name.substring(idx);
             if(table.containsKey(ext.toLowerCase()))
         return table.get(ext.toLowerCase());
-        }
+    }
 
     // For other files
     return new ImageIcon(IconsPathConfigurator.F_ICON_GENERIC);
@@ -67,6 +67,7 @@ public class MyFileView extends FileView{
 	    table.put(".css",new ImageIcon(IconsPathConfigurator.F_ICON_CSS));
 	    table.put(".exe",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
 	    table.put(".php",new ImageIcon(IconsPathConfigurator.F_ICON_PHP));
+	    table.put(".xml",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
 	    
 	    // generics video
 	    table.put(".mov",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));

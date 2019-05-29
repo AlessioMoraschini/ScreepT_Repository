@@ -24,6 +24,7 @@
 	    <version>1.2.16</version>
 	</dependency> 	
 	
+	
 	<dependency>
 	    <groupId>org.apache.commons</groupId>
 	    <artifactId>commons-text</artifactId>
@@ -72,4 +73,12 @@
   	</dependency>
   	
   </dependencies>
+  
+    	<repositories>
+    	<repository>
+	        <id>atlassian</id>
+	        <name>jcenter</name>
+	        <url>https://maven.ej-technologies.com/repository/</url>
+    	</repository>
+	</repositories>
 </project>

@@ -20,6 +20,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import amfileutils.FileStuff;
 import frameutils.GuiUtils;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
@@ -59,7 +60,7 @@ public class ScrYpTLauncher {
 	private static final String LOG_PROPERTIES_PATH = LAUNCHER_CONTAINER_PATH+"Config/log4j.properties";
 	
 	// main application path default
-	public static String MAIN_JAR_FILE = "SCreepT_V0.3.1_X.jar";
+	public static String MAIN_JAR_FILE = "SCreepT_V0.6.0_X.jar";
 	
 	// jvm search fields default
 	public static String MIN_JRE_VERSION = "1.6"; // included MIN
@@ -107,8 +108,18 @@ public class ScrYpTLauncher {
 	public static final float launcherRatio = 0.2f;
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
 	
+	public static String[] ARGS;
+	public static File[] argumentsFiles;
+	public static final String END_ARGS_SECTION = "###_END_SECTION";
+	
 	// MAIN START POINT
 	public static void main(String[] args) {
+		// Initialize logger properties
+		PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
+		appLogStart();
+
+		ARGS = args;
+		argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 		
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", (int)(screenSize.height*launcherRatio));
 		for (int i = 0; i < 25; i++) {
@@ -121,9 +132,6 @@ public class ScrYpTLauncher {
 				logger.error("Error waiting before starting launcher", e);
 			} 
 		}
-		// Initialize logger properties
-		PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
-		appLogStart();
 		
 		loaderGraphics.update("Reading Configuration File "+DEFAULT_INI_PATH, 15);
 		initFromINIFile();
@@ -162,7 +170,7 @@ public class ScrYpTLauncher {
 		analyzeBeforeLauncher();
 		
 		// if direct launch configured launch directly commands
-		if(hideNStartDirect) {
+		if(hideNStartDirect || ARGS.length != 0) {
 			appLogEnd();
 			loaderGraphics.update("Ready", 100);
 			launchCommands();
@@ -346,7 +354,11 @@ public class ScrYpTLauncher {
 	private void addLaunchScrYpTCommand() {
 		
 		String complete_ARGS = JVM_MEMORY_OPTIONS + JVM_STACK_SIZE + " -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true " + JVM_ARGS;
-		execCommand.add(SysUtils.startJarCommand(complete_ARGS, MAIN_JAR_FILE));
+		if (ARGS != null && ARGS.length > 0) {
+			execCommand.add(SysUtils.startJarCommand(complete_ARGS, MAIN_JAR_FILE, argumentsFiles));
+		}else {
+			execCommand.add(SysUtils.startJarCommand(complete_ARGS, MAIN_JAR_FILE));
+		}
 	}
 	
 	/**

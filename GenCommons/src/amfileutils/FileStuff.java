@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,13 +31,30 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.om.DeleteFilesByExtensionDTO;
-import testUtils.Printer;
 
 public class FileStuff {
+	
+	public static final String END_ARGS_SECTION = "###_END_SECTION";
 
 	// FileStuff logger creation		
 	static Logger logger = Logger.getLogger(FileStuff.class); 
 		
+	public static File[] getFileArrayFromStrings(String[] filePaths){
+		logger.debug("ARGUMENT FILES:" + Arrays.toString(filePaths));
+		
+		File[] argumentsFiles = new File[filePaths.length];
+		int j = 0;
+		for(String s : filePaths) {
+			if (!END_ARGS_SECTION.equals(s)) {
+				argumentsFiles[j] = new File(s);
+			}else {
+				break;
+			}
+			j++;
+		}
+		return argumentsFiles;
+	}
+	
 	/**
 	 * Change extension to the given one and return the new file reference. Be careful, the returned file is not physically created!
 	 * NB the extension must be preceeded by a dot
@@ -53,6 +71,23 @@ public class FileStuff {
 		file= new File(noExt + newExtension);
 		logger.debug("NEW NAME: "+file.getAbsolutePath());
 		return file;
+	}
+	
+	public static String getNAncestorsPath(File file, int nLevels) {
+		String result = "";
+		if (file != null) {
+			result = result.concat(file.getName());
+			File clone = new File(file.getAbsolutePath());
+			while ((nLevels -1) >= 0 && clone.exists()) {
+				String father = clone.getParentFile().getName();
+				int separatorPos = clone.getAbsolutePath().length() - clone.getName().length();
+				String separator = clone.getAbsolutePath().substring(separatorPos-1, separatorPos);
+				result = father.concat(separator).concat(result);
+				clone = clone.getParentFile();
+				nLevels--;
+			} 
+		}
+		return result;
 	}
 	
 	/**

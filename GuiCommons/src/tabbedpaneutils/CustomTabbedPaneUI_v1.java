@@ -65,8 +65,8 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
         int x = rects[tabIndex].x+xGap;
         int y = rects[tabIndex].y+yGap;
         
-        if (buttonOrdinalPos != Integer.MAX_VALUE) {
-			JButton currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
+        JButton currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
+        if (buttonOrdinalPos != Integer.MAX_VALUE && currentButton != null) {
 			if (selectedIndex == tabIndex) {
 				g.setColor(fillingColor);
 				currentButton.setBackground(ACTIVE_BTN_CLOSE_COL);
