@@ -18,9 +18,9 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import gUI.om.KeyGenImageType;
+import enums.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
-import iNIT.INItializer;
+import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import uTILS.local.ImageWorker;
 

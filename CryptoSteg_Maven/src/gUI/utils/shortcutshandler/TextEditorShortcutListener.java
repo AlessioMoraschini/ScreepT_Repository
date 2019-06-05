@@ -202,21 +202,42 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				 */
 				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.btnFindText.doClick();
-					if(currentTextEditor.searchBox != null && currentTextEditor.searchBox.active){
-						String selected = TextEditor.loadedTabObj.textArea.getSelectedText();
-						if(selected != null && !selected.equals("")) {
-							currentTextEditor.searchBox.searchTextField.setText(selected);
-							currentTextEditor.searchBox.searchTextField.setSelectionStart(0);
-							currentTextEditor.searchBox.searchTextField.setSelectionEnd(selected.length());
-						}
-					}
+//					if(currentTextEditor.searchBox != null && currentTextEditor.searchBox.active){
+//						String selected = TextEditor.loadedTabObj.textArea.getSelectedText();
+//						if(selected != null && !selected.equals("")) {
+//							currentTextEditor.searchBox.searchTextField.setText(selected);
+//							currentTextEditor.searchBox.searchTextField.setSelectionStart(0);
+//							currentTextEditor.searchBox.searchTextField.setSelectionEnd(selected.length());
+//						}
+//					}
 				}
 				
 				/**
-				 * 	REPLACE SPECIALS/ESCAPES -> CTRL+R
+				 * 	REPLACE SPECIALS/ESCAPES -> CTRL+E
+				 */
+				if (e.getKeyCode() == 69 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.btnReplaceEscapesSeq.doClick();
+				}
+				
+				/**
+				 * 	REPLACE TEXT -> CTRL+R
 				 */
 				if (e.getKeyCode() == 82 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnReplaceEscapesSeq.doClick();
+					currentTextEditor.btnReplaceText.doClick();
+				}
+				
+				/**
+				 * 	GOTO LINE NUMBER -> CTRL+L
+				 */
+				if (e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.btnGoToLine.doClick();
+				}
+				
+				/**
+				 * 	OPEN/CLOSE FILE TREE PANEL -> ALT+Q
+				 */
+				if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.btnToggleFileView.doClick();
 				}
 				
 				/**

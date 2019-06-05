@@ -31,17 +31,37 @@
 	    <version>3.0.3</version>
 	</dependency>
 	
-	<dependency>
+<!-- 	<dependency>
 	    <groupId>org.fife</groupId>
 	    <artifactId>RAutocomplete</artifactId>
 	    <version>2.5.1</version>
-	</dependency>
+	</dependency> -->
 		
+    <!-- https://mvnrepository.com/artifact/com.fifesoft/spellchecker -->
+	<dependency>
+	    <groupId>com.fifesoft</groupId>
+	    <artifactId>spellchecker</artifactId>
+	    <version>3.0.0</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/com.fifesoft/rstaui -->
+	<dependency>
+	    <groupId>com.fifesoft</groupId>
+	    <artifactId>rstaui</artifactId>
+	    <version>3.0.0</version>
+	</dependency>
 			
 	<dependency>
 		<groupId>GenCommons</groupId>
 		<artifactId>GenCommons</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
+	
+	<dependency>
+		<groupId>GuiCommons</groupId>
+		<artifactId>GuiCommons</artifactId>
+	 	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
   </dependencies>
 </project>

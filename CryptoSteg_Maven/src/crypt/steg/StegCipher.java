@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
-import gUI.om.BufferedImageType;
+import enums.BufferedImageType;
 
 /**
  * this class represent the coding/decoding of source byte list or array, implementing simil-steganography

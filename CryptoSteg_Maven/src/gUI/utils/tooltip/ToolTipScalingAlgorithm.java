@@ -5,7 +5,7 @@ import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-import gUI.om.ScalingAlgorithm;
+import enums.ScalingAlgorithm;
 
 public class ToolTipScalingAlgorithm extends DefaultListCellRenderer {
 

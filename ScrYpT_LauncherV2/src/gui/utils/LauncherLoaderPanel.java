@@ -57,7 +57,8 @@ public class LauncherLoaderPanel extends JPanel{
 		progressBar.setForeground(Color.GREEN);
 		layeredPane.add(progressBar, "cell 0 2,growx,aligny baseline");
 		
-		GUIStyelSettings.setStyle(GUIStyelSettings.WindowsLookAndFeel);
+//		GUIStyelSettings.setStyle(GUIStyelSettings.NimbusLookAndFeel, 0);
+		GUIStyelSettings.applyNimbusSize(0, progressBar);
 		
 		logger.info(this.getClass().getName() + " Started");
 	}

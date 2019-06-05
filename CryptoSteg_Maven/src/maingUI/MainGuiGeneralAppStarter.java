@@ -32,14 +32,20 @@ public class MainGuiGeneralAppStarter {
 		try {
 			
 			now = new Date();
+
+			// if local test mode keep log clean after start
+			if (!mainGUI.PRODUCTION_VERSION) {
+				FileStuff.clearFileContent(mainGUI.LOG_PATH);
+			}
 			
 			// Initialize logger properties
 			PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
 			
-			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 			logger.info("\n\n##################################################\n\n"+now.toString()+"\n\n"
 					+ mainGUI.APPLICATION_NAME+" Started now!\n\n"
 					+ "##################################################\n\n");
+
+			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 			
 			{
 				mainGUI.mainApplicationGeneral();

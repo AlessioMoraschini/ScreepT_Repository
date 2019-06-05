@@ -34,7 +34,7 @@ import amfileutils.FileStuff;
 import gUI.panels.CrypterPanel;
 import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
-import iNIT.INItializer;
+import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;

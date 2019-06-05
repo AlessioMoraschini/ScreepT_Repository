@@ -12,9 +12,9 @@ import org.hyperic.sigar.SigarException;
 
 import amfileutils.FileStuff;
 import frameutils.GuiUtils;
-import gUI.om.HDinfo;
 import generic.LimitedList;
-import iNIT.INItializer;
+import local.om.HDinfo;
+import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import oshi.SystemInfo;
 import oshi.hardware.Baseboard;
@@ -162,6 +162,8 @@ public class HwInfoPanel extends JFrame{
 	private JTextField dynLblScryptCpuPerc;
 	private JLabel lblScryptRamUsage;
 	
+	private long currentPid;
+	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
 	public HwInfoPanel(INItializer currentConfig) {
@@ -182,9 +184,16 @@ public class HwInfoPanel extends JFrame{
 		
 		initialize();
 		
-		addValuesInitThreads();
-		
 		addEventHandlers();
+		
+		try {
+			Sigar tempSigar = new Sigar();
+			currentPid = tempSigar.getPid();
+		} catch (Exception e) {
+			logger.error("An error occurred while getting the process ID via Sigar", e);
+		}
+		
+		addValuesInitThreads();
 		
 		logger.info(this.getClass().getName() + " Started");
 	}
@@ -753,7 +762,6 @@ public class HwInfoPanel extends JFrame{
 	
 	private void updateScryptResourcesUsage(){
 		Sigar tempSigar = new Sigar();
-		long currentPid = tempSigar.getPid();
 		try {
 			scryptCpuUsage = tempSigar.getProcCpu(currentPid);
 			scryptMemUsage = tempSigar.getProcMem(currentPid);

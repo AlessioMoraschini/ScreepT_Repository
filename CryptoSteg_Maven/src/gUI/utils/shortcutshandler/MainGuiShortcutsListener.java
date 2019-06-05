@@ -35,6 +35,13 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 	      
 			if (isShortcutKey(e)) {
 				/**
+				 *  TOGGLE FULL SCREEN : Alt+Shift+Enter
+				 */
+				if (e.getKeyCode() == 10 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.mntmFullScreenMode.doClick();
+				}
+				
+				/**
 				 *  OPEN CRYPTER : ALT+SHIFT+S
 				 */
 				if (e.getKeyCode() == 83 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {

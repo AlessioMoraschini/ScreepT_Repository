@@ -6,13 +6,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import enums.ScalingAlgorithm;
 import frameutils.GuiUtils;
-import gUI.om.ScalingAlgorithm;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
-import iNIT.INItializer;
-import iNIT.om.ImgConverterOption;
+import mainobj.INItializer;
 import media.ImageGeneralWorker;
 
 import java.awt.GridBagLayout;
@@ -30,6 +29,7 @@ import java.io.IOException;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import om.ImgConverterOption;
 import resources.IconsPathConfigurator;
 import uTILS.local.ImageWorker;
 import variousutils.HandleString;

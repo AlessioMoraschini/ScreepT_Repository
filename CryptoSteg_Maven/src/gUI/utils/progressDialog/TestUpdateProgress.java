@@ -16,8 +16,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
-import iNIT.INItializer;
 import maingUI.mainGUI;
+import mainobj.INItializer;
 
 public class TestUpdateProgress {
 	

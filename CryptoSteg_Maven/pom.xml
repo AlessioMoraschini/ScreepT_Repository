@@ -54,6 +54,12 @@
 		<!-- IMPORTS FROM OTHER PROJECTS -->
 		
 		<dependency>
+			<groupId>Initializer_Configs</groupId>
+		    <artifactId>Initializer_Configs</artifactId>
+		    <version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>GuiTextEditorCommons</groupId>
 		   	<artifactId>GuiTextEditorCommons</artifactId>
 		  	<version>0.0.1-SNAPSHOT</version>

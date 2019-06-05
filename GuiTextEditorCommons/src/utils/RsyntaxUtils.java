@@ -10,6 +10,7 @@ import java.io.InputStream;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
+import org.apache.log4j.Logger;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
@@ -23,6 +24,9 @@ import org.fife.ui.rsyntaxtextarea.Token;
 import media.ImageGeneralWorker;
 
 public class RsyntaxUtils {
+	
+	// TextFileWriter logger creation
+	static Logger logger = Logger.getLogger(RsyntaxUtils.class);
 	
 	public static final String THEME_DARK = "/org/fife/ui/rsyntaxtextarea/themes/dark.xml";
 	public static final String THEME_DEFAULT = "/org/fife/ui/rsyntaxtextarea/themes/default.xml";
@@ -40,6 +44,9 @@ public class RsyntaxUtils {
 	    */
 	   public static void changeStyleViaThemeXml(RSyntaxTextArea textArea, String themeFilePath) {
 		  FileInputStream inputStream = null;
+		  if(textArea == null) {
+			  return;
+		  }
 		  Font backup = textArea.getFont();
 	      try {
 //	         Theme theme = Theme.load(textArea.getClass().getResourceAsStream(themeFilePath));
@@ -47,13 +54,13 @@ public class RsyntaxUtils {
 	    	 Theme theme = Theme.load(inputStream);
 	         theme.apply(textArea);
 	      } catch (IOException ioe) {
-	         ioe.printStackTrace();
+	    	  logger.error(ioe);
 	         try {
 	        	 // fallback case
 	        	 Theme theme = Theme.load(textArea.getClass().getResourceAsStream(themeFilePath));
 				 theme.apply(textArea);
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				logger.error(e);
 			}
 	      } finally {
 	         try {

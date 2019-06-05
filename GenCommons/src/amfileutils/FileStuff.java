@@ -56,6 +56,27 @@ public class FileStuff {
 	}
 	
 	/**
+	 * This method delete all the content from the file located at given String path, without deleting the file.
+	 * @param filePath this is the path - relative or absolute - used to locate target file
+	 * @return true if file is successfully emptied, false in the other cases
+	 */
+	public static boolean clearFileContent(String filePath) {
+		PrintWriter writer;
+		boolean esit = false;
+		try {
+			writer = new PrintWriter(filePath);
+			writer.print("");
+			esit = true;
+			writer.close();
+			
+		} catch (FileNotFoundException e) {
+			esit = false;
+			logger.error(e);
+		}
+		return esit;
+	}
+	
+	/**
 	 * Change extension to the given one and return the new file reference. Be careful, the returned file is not physically created!
 	 * NB the extension must be preceeded by a dot
 	 */

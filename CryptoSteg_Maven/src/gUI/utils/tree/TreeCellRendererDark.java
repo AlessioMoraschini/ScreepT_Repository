@@ -19,12 +19,12 @@ public class TreeCellRendererDark extends DefaultTreeCellRenderer{
 
     @Override
     public Color getBackground() {
-        return (null);
+        return Color.BLACK;
     }
     
     @Override
     public Color getForeground() {
-        return Color.LIGHT_GRAY;
+        return new Color(20,20,20,30);
     }
 
 //    @Override

@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import amfileutils.om.DeleteFilesByExtensionDTO;
-import iNIT.INItializer;
+import mainobj.INItializer;
 
 public class DirectoryManagementGUI {
 	

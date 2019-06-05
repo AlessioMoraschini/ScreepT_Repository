@@ -36,7 +36,7 @@ public class FileTreeNamedModel implements TreeModel {
 	        if (!f.isDirectory()) {
 	            return 0;
 	        } else {
-		        if (sons.length!=0) {
+		        if (sons != null && sons.length!=0) {
 		        	return sons.length;
 		        }else return 0;  
 	        }

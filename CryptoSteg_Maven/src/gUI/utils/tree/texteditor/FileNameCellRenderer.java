@@ -24,7 +24,7 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 	public FileNameCellRenderer() {
 		iconContainer = new JLabel();
 		oldFont = iconContainer.getFont();
-		iconContainer.setFont(new Font(oldFont.getFontName(), oldFont.getStyle(), 15));
+		iconContainer.setFont(new Font(oldFont.getFontName(), oldFont.getStyle(), 13));
     }
 
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,

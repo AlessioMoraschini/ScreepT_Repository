@@ -63,15 +63,18 @@ public class ScrYpTLauncher {
 	public static String MAIN_JAR_FILE = "SCreepT_V0.6.0_X.jar";
 	
 	// jvm search fields default
-	public static String MIN_JRE_VERSION = "1.6"; // included MIN
+	public static final String JVM_ARGS = " -Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
+	public static final String GUI_SCALE_ARG = "-Dsun.java2d.uiScale=";
+	public static String GUI_SCALE_ARG_VALUE = "1"; //
+	public static String MIN_JRE_VERSION = "1.8"; // included MIN
 	public static String MAX_JRE_VERSION = "9.0"; // excluded MAX
 	public static String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512m"; // default memory options
 	public static String JVM_STACK_SIZE = "-Xss128m"; // default stack size
+	
 	public static final String JVM_URL_INSTALL = "https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html";
 	public static final String NOT_FOUND_JVM = "";
 	public static final String JVM_OK = "JVMOK";
 	public static boolean ignoreWarnings = false;
-	public static final String JVM_ARGS = "-Dsun.java2d.uiScale=1 -Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
 	
 	// DEFAULT INI
 	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "Launcher_Configuration.ini"; 
@@ -122,7 +125,7 @@ public class ScrYpTLauncher {
 		argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 		
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", (int)(screenSize.height*launcherRatio));
-		for (int i = 0; i < 25; i++) {
+		for (int i = 0; i < 20; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing launcher" + dots;
 			loaderGraphics.update(msg, i/2);
@@ -353,7 +356,7 @@ public class ScrYpTLauncher {
 	 */
 	private void addLaunchScrYpTCommand() {
 		
-		String complete_ARGS = JVM_MEMORY_OPTIONS + JVM_STACK_SIZE + " -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true " + JVM_ARGS;
+		String complete_ARGS = JVM_MEMORY_OPTIONS + JVM_STACK_SIZE + " -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale="+ GUI_SCALE_ARG_VALUE + JVM_ARGS;
 		if (ARGS != null && ARGS.length > 0) {
 			execCommand.add(SysUtils.startJarCommand(complete_ARGS, MAIN_JAR_FILE, argumentsFiles));
 		}else {
@@ -482,6 +485,8 @@ public class ScrYpTLauncher {
 			JVM_STACK_SIZE = (MEM_STACK_INI != null)? MEM_STACK_INI : JVM_STACK_SIZE;
 			
 			// APPLICATION OPTIONS WITH NULL CHECK
+			String GUI_SCALE = iniConfigFile.get(INI_APP_OPT, "scaleGuiPerc").replace(",", ".");
+			GUI_SCALE_ARG_VALUE = (GUI_SCALE == null || GUI_SCALE.equals(""))? GUI_SCALE_ARG_VALUE : GUI_SCALE;
 			String viewShell = iniConfigFile.get(INI_APP_OPT, "viewCmdConsole");
 			viewShellAfterStart = (!"".equals(viewShell) && Boolean.parseBoolean(viewShell))? true : false;
 			String MAIN_JAR_INI = iniConfigFile.get(INI_APP_OPT, "jarToLaunch");

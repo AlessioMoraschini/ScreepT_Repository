@@ -10,6 +10,7 @@ import java.awt.DisplayMode;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 
@@ -54,7 +55,16 @@ public class GuiUtils {
 		return Toolkit.getDefaultToolkit().getScreenSize();
 	}
 	
-	public static Dimension getScreenSize(JFrame frame) {
+	public static Dimension makeFullScreen(Component element) {
+		Dimension screen = getScreenSize(element);
+		if(element instanceof JFrame) {
+			((JFrame) element).setUndecorated(true);
+		}
+		element.setPreferredSize(screen);
+		return new Dimension(screen.width, screen.height);
+	}
+	
+	public static Dimension getScreenSize(Component frame) {
 		DisplayMode mode = frame.getGraphicsConfiguration().getDevice().getDisplayMode();
 		return new Dimension(mode.getWidth(), mode.getHeight());
 	}
@@ -73,7 +83,7 @@ public class GuiUtils {
 	
 	public static void centerComponent(Component targetComponent, int percentSize) {
 		float percent = (float)percentSize/100;
-		Dimension screenSize = getScreenSize();
+		Dimension screenSize = (targetComponent instanceof JFrame)? getScreenSize((JFrame)targetComponent): getScreenSize();
 		int W = (int)(screenSize.width * percent);
 		int H = (int)(screenSize.height * percent);
 		targetComponent.setSize(W, H);
@@ -81,14 +91,27 @@ public class GuiUtils {
 	}
 	
 	public static void centerComponent(Component targetFrame, int W, int H) {
-		Dimension screenSize = getScreenSize();
+		Dimension screenSize = (targetFrame instanceof JFrame)? getScreenSize((JFrame)targetFrame): getScreenSize();
 		targetFrame.setSize(W, H);
+		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
+	}
+	
+	public static void centerComponent(Component targetFrame) {
+		if(targetFrame == null) {
+			return;
+		}
+		Dimension screenSize = (targetFrame instanceof JFrame)? getScreenSize((JFrame)targetFrame): getScreenSize();
+		Dimension frameSize = null;
+		frameSize = targetFrame.getSize();
+		int W = frameSize.width;
+		int H = frameSize.height;
+		
 		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
 	}
 	
 	public static void centerFrame(JFrame targetFrame, int percentSize) {
 		float percent = (float)percentSize/100;
-		Dimension screenSize = getScreenSize();
+		Dimension screenSize = getScreenSize(targetFrame);
 		int W = (int)(screenSize.width * percent);
 		int H = (int)(screenSize.height * percent);
 		targetFrame.setSize(W, H);
@@ -96,7 +119,7 @@ public class GuiUtils {
 	}
 	
 	public static void centerFrame(JFrame targetFrame, int W, int H) {
-		Dimension screenSize = getScreenSize();
+		Dimension screenSize = getScreenSize(targetFrame);
 		targetFrame.setSize(W, H);
 		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
 	}
@@ -106,11 +129,12 @@ public class GuiUtils {
 		int totY = (element.getY() + yDiff);
 		int newX = (totX < 0)? 0 : totX;
 		int newY = (totY < 0)? 0 : totY;
-		int maxDeltaX = getScreenSize().width - newX - element.getWidth();
-		int maxDeltaY = getScreenSize().height - newY - element.getHeight();
+		Dimension screenSize = (element instanceof JFrame)? getScreenSize((JFrame)element): getScreenSize();
+		int maxDeltaX = screenSize.width - newX - element.getWidth();
+		int maxDeltaY = screenSize.height - newY - element.getHeight();
 		
-		newX = (maxDeltaX < 0)? getScreenSize().width - element.getWidth() : newX;
-		newY = (maxDeltaY < 0)? getScreenSize().height - element.getHeight() : newY;
+		newX = (maxDeltaX < 0)? screenSize.width - element.getWidth() : newX;
+		newY = (maxDeltaY < 0)? screenSize.height - element.getHeight() : newY;
 		
 		element.setBounds(new Rectangle(newX, newY, element.getWidth(), element.getHeight()));
 	}

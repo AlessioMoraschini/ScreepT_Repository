@@ -7,11 +7,11 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
 import frameutils.GuiUtils;
-import iNIT.INItializer;
-import iNIT.om.FileOptions;
 import maingUI.mainGUI;
 import mainlauncher.ScrYpTLauncher;
+import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
+import om.FileOptions;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import variousutils.ListCharsets;

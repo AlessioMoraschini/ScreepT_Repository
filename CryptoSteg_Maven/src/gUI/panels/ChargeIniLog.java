@@ -12,17 +12,17 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import enums.Themes;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
-import iNIT.INItializer;
 import maingUI.mainGUI;
+import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
-import utils.Themes;
 
 import java.awt.Font;
 import java.awt.Insets;

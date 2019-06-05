@@ -6,11 +6,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import enums.BufferedImageType;
 import frameutils.GuiUtils;
-import gUI.om.BufferedImageType;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
-import iNIT.INItializer;
+import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 

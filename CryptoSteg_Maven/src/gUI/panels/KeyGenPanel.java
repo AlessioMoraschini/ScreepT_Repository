@@ -41,11 +41,12 @@ import uTILS.local.ImageWorker;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import enums.KeyGenImageType;
 import frameutils.GuiUtils;
-import iNIT.INItializer;
-import gUI.om.KeyGenImageType;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
+import mainobj.INItializer;
+
 import java.awt.Cursor;
 
 public class KeyGenPanel extends JFrame {

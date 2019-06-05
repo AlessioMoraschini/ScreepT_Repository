@@ -8,7 +8,7 @@ import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
 import frameutils.GuiUtils;
-import iNIT.INItializer;
+import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkUtils;
 import network.om.FtpSpeedTestOptions;

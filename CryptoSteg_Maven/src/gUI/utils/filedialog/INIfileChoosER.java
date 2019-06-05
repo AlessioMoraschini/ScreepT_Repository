@@ -12,7 +12,7 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
-import iNIT.INItializer;
+import mainobj.INItializer;
 
 import java.awt.BorderLayout;
 import java.io.File;

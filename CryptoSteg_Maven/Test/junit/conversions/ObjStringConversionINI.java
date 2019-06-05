@@ -5,7 +5,7 @@ import java.awt.Font;
 
 import org.junit.Test;
 
-import gUI.om.ScalingAlgorithm;
+import enums.ScalingAlgorithm;
 import testUtils.Printer;
 import variousutils.HandleString;
 

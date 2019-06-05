@@ -20,6 +20,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -41,7 +42,6 @@ import amfileutils.FileStuff;
 import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.GenericFileChooser;
 import frameutils.GuiUtils;
-import gUI.om.TabTextEditorObj;
 import gUI.panels.AboutSectionPanel;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
@@ -60,8 +60,8 @@ import guistyle.GUIStyelSettings;
 import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
-import iNIT.INItializer;
 import mainlauncher.ScrYpTLauncher;
+import mainobj.INItializer;
 import media.Sounds;
 import menusettings.MenuSetter;
 
@@ -77,6 +77,7 @@ import java.awt.SystemColor;
 import java.awt.Window;
 
 import net.miginfocom.swing.MigLayout;
+import om.TabTextEditorObj;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import utils.SysUtils;
@@ -100,6 +101,7 @@ public class mainGUI {
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
 	// general application variables
+	public static final boolean PRODUCTION_VERSION = false;
 	public static final String APP_VERSION = "0.6";
 	public static final String APP_VERSION_DATE = "27/05/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
@@ -115,6 +117,9 @@ public class mainGUI {
 	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./Resources_Scrypt/ReadMe.html";
 	public static final String SCRYPT_TUTORIAL_HTML_PATH = "Resources_Scrypt/ReadMe.html";
 	
+	public static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
+	public static Date now; // date used for log operations
+	
 	// icons and images
 	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
 	public static Image APPLICATION_MAIN_BCKG_IMAGE;
@@ -124,9 +129,6 @@ public class mainGUI {
 	public static final String ICON_FILE_PATH = RESOURCES_DIR + ICON_FILE_NAME;
 	public static Image SW_ICON;
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
-	
-	private static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
-	public static Date now; // date used for log operations
 	
 	// temp decryptedFolder
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
@@ -163,7 +165,7 @@ public class mainGUI {
 	private static TutorialPanel tutorialPanel;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
-	private static TextEditor initTxtWriter;
+	public static TextEditor initTxtWriter;
 	private static CrypterPanel panelCrypter;
 	private ChargeIniLog configManagerPanel;
 	
@@ -189,6 +191,7 @@ public class mainGUI {
 	private JMenuItem mntmUserDocumentation;
 	private JMenuItem mntmGenOpt;
 	private JMenuItem mntmCustomizeUIView;
+	public JMenuItem mntmFullScreenMode;
 	private static JMenuItem mntmCrypter;
 	private JMenuItem mntmgenerateKeyImageSub;
 	private JMenuItem mntmViewKeyDictionary;
@@ -269,6 +272,8 @@ public class mainGUI {
 	public static final float launcherRatio = 0.25f;
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
 	
+	public static Dimension preFullScreenSize = null;
+	
 	/**
 	 * MAIN METHOD
 	 * 
@@ -283,7 +288,7 @@ public class mainGUI {
 			String msg = "Initializing "+ APPLICATION_NAME + dots;
 			loaderGraphics.update(msg, i/2);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(60);
 			} catch (InterruptedException e) {
 				logger.error("Error waiting before starting launcher", e);
 			} 
@@ -295,17 +300,6 @@ public class mainGUI {
 					
 					now = new Date();
 					mainAppRunning = true;
-
-					// empty old log file
-					// useful for test phase
-//					PrintWriter writer;
-//					try {
-//						writer = new PrintWriter(LOG_PATH);
-//						writer.print("");
-//						writer.close();
-//					} catch (FileNotFoundException e) {
-//						e.printStackTrace();
-//					}
 					
 					// INITIALIZE CONFIGURATION FROM CONFIG DEFAULT FILE
 					try {
@@ -488,8 +482,9 @@ public class mainGUI {
 					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 
 					window.frmScryptV.requestFocus();
-					Thread.sleep(300);
 					window.frmScryptV.toFront();
+					
+//					updateGuiFromCurrConfig();
 					
 					// RUN ARGUMENTS IF THERE ARE
 					if(MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
@@ -542,7 +537,7 @@ public class mainGUI {
 		} catch (IOException e1) {
 			logger.error("Exception happened!", e1);
 		}
-		
+
 		logger.info("## TITLE UPDATER started.");
 	}
 	// END CONSTRUCTOR
@@ -886,7 +881,8 @@ public class mainGUI {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagFrameGuiOptions = true;
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
-					panelGuiOptions.setBounds(500, 300, 950, 330);
+					panelGuiOptions.setPreferredSize(new Dimension(800, 340));
+					GuiUtils.centerComponent(panelGuiOptions, 800, 340);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGuiOptions.setTitle("Apply/Save Preferences [Customize - Apply - Save]");
@@ -895,6 +891,33 @@ public class mainGUI {
 					panelGuiOptions.setState(java.awt.Frame.NORMAL);
 					panelGuiOptions.requestFocus();
 				}
+			}
+		});
+		
+		// fullScreen mode toggle
+		mntmFullScreenMode = new JMenuItem(new AbstractAction("Full Screen Mode") {
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (frmScryptV.isUndecorated()) {
+							if(preFullScreenSize == null) {
+								preFullScreenSize = GuiUtils.getScreenSize(frmScryptV);
+							}
+							frmScryptV.setPreferredSize(preFullScreenSize);
+							frmScryptV.dispose();
+							frmScryptV.setUndecorated(false);
+							frmScryptV.setLocationRelativeTo(null);
+							frmScryptV.setVisible(true);
+							mntmFullScreenMode.setIcon(null);
+						} else {
+							frmScryptV.dispose();
+							preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
+							frmScryptV.setLocationRelativeTo(null);
+							frmScryptV.setVisible(true);
+							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
+						}
+					}
+				});
 			}
 		});
 		
@@ -1195,17 +1218,16 @@ public class mainGUI {
 		preferredStyle = currentConfiguration.getGuiOpt().getPreferredStyle();
 		GUIStyelSettings.setFocusDefaultBtn();
 		// initialize GUI default Style from ini
-		try {
-			UIManager.setLookAndFeel(preferredStyle);
-			ToolTipManager.sharedInstance().setInitialDelay(TOOLTIP_DELAY);
-			for(Window window: Window.getWindows()) {
-    		    SwingUtilities.updateComponentTreeUI(window);
-    		}
-			logger.info(preferredStyle+" initialized correctly.");
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e3) {
-			logger.error("Exception happened!", e3);
+		for(Window window: Window.getWindows()) {
+			try {
+				UIManager.setLookAndFeel(preferredStyle);
+	   		    SwingUtilities.updateComponentTreeUI(window);
+	   		    logger.info(preferredStyle+" initialized correctly.");
+			} catch (Exception e3) {
+				logger.error("Exception happened!", e3);
+			}
 		}
+		ToolTipManager.sharedInstance().setInitialDelay(TOOLTIP_DELAY);
 		
 		// try to set preferred charset
 		try {
@@ -1218,9 +1240,9 @@ public class mainGUI {
 		DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
 		// adjust general look and feel opt
 		if(DARK_THEME) {
-			DARK_THEME = !GUIStyelSettings.setLightNimbus();
+			DARK_THEME = GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 		}else {
-			DARK_THEME = !GUIStyelSettings.setLightNimbus();
+			DARK_THEME = !GUIStyelSettings.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 		}
 	}
 	
@@ -1254,6 +1276,7 @@ public class mainGUI {
 			
 			mnPreferences.add(mntmCustomizeUIView);
 			mnPreferences.add(mntmGenOpt);
+			mnPreferences.add(mntmFullScreenMode);
 			
 			mnCryptoSteg.add(mntmCrypter);
 			mnCryptoSteg.add(new JSeparator());
@@ -1324,6 +1347,7 @@ public class mainGUI {
 		// PREFERENCES SECTION
 		mntmCustomizeUIView.setFont(menuItemFont);
 		mntmGenOpt.setFont(menuItemFont);
+		mntmFullScreenMode.setFont(menuItemFont);
 		
 		// SCREEPT SECTION
 		mntmCrypter.setFont(menuItemFont);
@@ -1724,7 +1748,7 @@ public class mainGUI {
 		return new MainGuiShortcutsListener(mainAPP); 
 	}
 	
-	public void updateGuiFromCurrConfig() {
+	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
 		if(initTxtWriter != null) {
 			initTxtWriter.initGuiFromConfig();
@@ -1745,6 +1769,13 @@ public class mainGUI {
 			panelGeneralOptions.initGuiFromConfig();
 		}
 		
+		if(currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
+			GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+		}else {
+			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
+		}
+		
+		GUIStyelSettings.updateAllWindowsLaf();
 		TextEditor.applyStyleToTabs();
 	}
 	

@@ -16,6 +16,7 @@ import frameutils.GuiUtils;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
+import om.SupportedFileTextEditor;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
@@ -25,9 +26,6 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
-
-import gUI.om.SupportedFileTextEditor;
-
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.File;

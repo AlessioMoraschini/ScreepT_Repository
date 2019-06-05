@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import ButtonUtils.ButtonDefaults;
 import frameutils.GuiUtils;
 import guistyle.GUIStyelSettings;
 import mainlauncher.ScrYpTLauncher;
@@ -54,8 +53,8 @@ public class StartPanel extends JFrame{
 	private JLabel label;
 	private JLabel lblAmDesign;
 	
-	private final int W = 480;
-	private final int H = 180;
+	private final int W = 500;
+	private final int H = 170;
 	
 	public StartPanel(String frameTitle, ScrYpTLauncher launcher) {
 		
@@ -194,7 +193,7 @@ public class StartPanel extends JFrame{
 			logger.error("Exception happened!", e1);
 		}
 		// initialize default UI
-		GUIStyelSettings.setStyle(GUIStyelSettings.NimbusLookAndFeel);
+		GUIStyelSettings.setStyle(GUIStyelSettings.NimbusLookAndFeel, 1);
 		GUIStyelSettings.setFocusDefaultBtn();
 	}
 	

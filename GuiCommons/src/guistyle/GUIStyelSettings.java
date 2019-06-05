@@ -1,8 +1,15 @@
 package guistyle;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Frame;
 import java.awt.Window;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -28,7 +35,7 @@ public class GUIStyelSettings{
 
 	public static int focusOpacity = 20;
 
-    public static boolean setStyle(String style) {
+    public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
 			UIManager.put( "MenuBar.foreground", Color.black );
 			UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
@@ -41,10 +48,9 @@ public class GUIStyelSettings{
 			}else {
 				UIManager.put("Button.foreground", Color.BLACK);
 			}
-			// update all windows
-			for(Window window: Window.getWindows()) {
-    		    SwingUtilities.updateComponentTreeUI(window);
-    		}
+			
+			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, true);
+			
     		return true;
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e3) {
@@ -52,28 +58,28 @@ public class GUIStyelSettings{
 		}
     }
     
+    public static synchronized void updateAllWindowsLaf() {
+    	// update all windows
+		for(Window window: Window.getWindows()) {
+		    try {
+				SwingUtilities.updateComponentTreeUI(window);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+    }
+    
     public static void setFocusDefaultBtn() {
     	UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE); 
     }
     
-    public static boolean setDarkNimbus() {
+    public static synchronized boolean setDarkNimbus(int nimbusSize) {
     	
-//    	UIManager.put( "control", new Color( 128, 128, 128) );
-//  	  UIManager.put( "info", new Color(128,128,128) );
   	  UIManager.put( "nimbusBase", new Color( 18, 30, 49) );
   	  UIManager.put( "MenuBar.foreground", Color.white );
-//  	  UIManager.put( "nimbusAlertYellow", new Color( 248, 187, 0) );
-//  	  UIManager.put( "nimbusDisabledText", new Color( 128, 128, 128) );
-//  	  UIManager.put( "nimbusFocus", new Color(115,164,209) );
-//  	  UIManager.put( "nimbusGreen", new Color(176,179,50) );
-//  	  UIManager.put( "nimbusInfoBlue", new Color( 66, 139, 221) );
   	  UIManager.put( "nimbusLightBackground", new Color( 250, 250, 250) );
-//  	  UIManager.put( "nimbusOrange", new Color(191,98,4) );
-//  	  UIManager.put( "nimbusRed", new Color(169,46,34) );
-//  	  UIManager.put( "nimbusSelectedText", new Color( 255, 255, 255) );
   	  UIManager.put( "nimbusSelectionBackground", new Color( 150, 150, 150) );
   	  UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
-  	 // UIManager.put( "text", new Color( 230, 230, 230) );
   	  try {
   	    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
   	      if ("Nimbus".equals(info.getName())) {
@@ -81,6 +87,7 @@ public class GUIStyelSettings{
   	          return true;
   	      }
   	    }
+  	    GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, false);
   	  } catch (ClassNotFoundException e) {
   		  logger.error("Exception happened!", e);
   	  } catch (InstantiationException e) {
@@ -93,50 +100,43 @@ public class GUIStyelSettings{
   		  logger.error("Exception happened!", e);
   	  }
   	  
+  	  updateAllWindowsLaf();
+  	  
   	  return false;
     }
     
-	public static boolean setLightNimbus() {
+	public static synchronized boolean setLightNimbus(int nimbusSize) {
 		
 		UIManager.put("nimbusOrange", Color.GREEN);
-//		UIManager.put( "control", new Color( 128, 128, 128) );
-//		  UIManager.put( "info", new Color(128,128,128) );
-		  UIManager.put( "nimbusBase", new Color(51,98,140) );
-		  UIManager.put( "MenuBar.foreground", Color.black );
-//		  UIManager.put( "nimbusAlertYellow", new Color( 248, 187, 0) );
-//		  UIManager.put( "nimbusDisabledText", new Color( 128, 128, 128) );
-//		  UIManager.put( "nimbusFocus", new Color(115,164,209) );
-//		  UIManager.put( "nimbusGreen", new Color(176,179,50) );
-//		  UIManager.put( "nimbusInfoBlue", new Color( 66, 139, 221) );
-//		  UIManager.put( "Tree.selectionBackground", Color.BLACK );
-		  UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
-//		  UIManager.put( "nimbusOrange", new Color(191,98,4) );
-//		  UIManager.put( "nimbusRed", new Color(169,46,34) );
-//		  UIManager.put( "nimbusSelectedText", new Color( 255, 255, 255) );
-		  UIManager.put( "MenuItem.textIconGap", 18);
-		  UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
-		  UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
-		 // UIManager.put( "text", new Color( 230, 230, 230) );
-		  try {
-		    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-		      if ("Nimbus".equals(info.getName())) {
-		          javax.swing.UIManager.setLookAndFeel(info.getClassName());
-		          return true;
-		      }
-		    }
-		  } catch (ClassNotFoundException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (InstantiationException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (IllegalAccessException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (javax.swing.UnsupportedLookAndFeelException e) {
-			  logger.error("Exception happened!", e);
-		  } catch (Exception e) {
-			  logger.error("Exception happened!", e);
-		  }
-		  
-		  return false;
+		UIManager.put("nimbusBase", new Color(51, 98, 140));
+		UIManager.put("MenuBar.foreground", Color.black);
+		UIManager.put("nimbusLightBackground", new Color(240, 240, 240));
+		UIManager.put("MenuItem.textIconGap", 18);
+		UIManager.put("nimbusSelectionBackground", new Color(57, 105, 138));
+		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
+		try {
+			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+					return true;
+				}
+			}
+			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, true);
+		} catch (ClassNotFoundException e) {
+			logger.error("Exception happened!", e);
+		} catch (InstantiationException e) {
+			logger.error("Exception happened!", e);
+		} catch (IllegalAccessException e) {
+			logger.error("Exception happened!", e);
+		} catch (javax.swing.UnsupportedLookAndFeelException e) {
+			logger.error("Exception happened!", e);
+		} catch (Exception e) {
+			logger.error("Exception happened!", e);
+		}
+
+		updateAllWindowsLaf();
+		
+		return false;
 	}
 	
 	public static LookAndFeelInfo[] getLookAndFeelList() {
@@ -166,4 +166,123 @@ public class GUIStyelSettings{
 		
 		return lookNFeelJtatoos;
 	}
+	
+	/**
+	 * PUBLIC METHOD THAT USES PRIVATE ONE
+	 * 
+	 * Apply general nimbus LAF size for all components in the parentFrame Container, according to the int value given as param:
+	 * 0=mini; 1=small; 2= large.  Other values use small as default.
+	 */
+	public static void applySizeToAllWindowsNimbus(int size, boolean updateUI) {
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				applyNimbusSize(size);
+				if(updateUI) {
+					updateAllWindowsLaf();
+				}
+			}
+		});
+	}
+	
+	
+	/**
+	 * Apply to all windows general nimbus LAF size for all components in the parentFrame Container, according to the int value given as param:
+	 * 0=mini; 1=small; 2= large.  Other values use small as default.
+	 */
+	public static void applyNimbusSize(int size) {
+		try {
+			String nameLaf = UIManager.getLookAndFeel().getName();
+			if (!"Nimbus".equals(nameLaf)) {
+				return;
+			}
+		} catch (Exception e) {
+			return;
+		}
+		String level = "mini";
+		switch (size) {
+			case 0: {
+				level = "mini";
+				break;
+			}
+			case 1: {
+				level = "small";
+				break;
+			}
+			case 2: {
+				level = "large";
+				break;
+			}
+			default: {
+				level = "large";
+				break;
+			}
+		}
+		
+		for (Window currWin : Window.getWindows()) {
+			// for every component in the given root one apply the new size
+			for (Component curr : getAllComponents(currWin)) {
+				try {
+					if (curr instanceof JComponent && curr != null) {
+						((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			} 
+		}
+	}
+	
+	/**
+	 * Apply to single target general nimbus LAF size for all components in the parentFrame Container, according to the int value given as param:
+	 * 0=mini; 1=small; 2= large.  Other values use small as default.
+	 */
+	public static void applyNimbusSize(int size, Component target) {
+		try {
+			String nameLaf = UIManager.getLookAndFeel().getName();
+			if (!"Nimbus".equals(nameLaf)) {
+				return;
+			}
+		} catch (Exception e) {
+			return;
+		}
+		String level = "mini";
+		switch (size) {
+			case 0: {
+				level = "mini";
+				break;
+			}
+			case 1: {
+				level = "small";
+				break;
+			}
+			case 2: {
+				level = "large";
+				break;
+			}
+			default: {
+				level = "large";
+				break;
+			}
+		}
+		((JComponent) target).putClientProperty("JComponent.sizeVariant", level);
+		
+	}
+
+	/**
+	 * Get all components that are sons of the given container
+	 * @param c
+	 * @return
+	 */
+	public static List<Component> getAllComponents(final Container c) {
+		Component[] comps = c.getComponents();
+		List<Component> compList = new ArrayList<Component>();
+		for (Component comp : comps) {
+			compList.add(comp);
+			if (comp instanceof Container)
+				compList.addAll(getAllComponents((Container) comp));
+		}
+		return compList;
+	}
+
 }

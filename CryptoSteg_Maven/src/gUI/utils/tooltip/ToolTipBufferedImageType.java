@@ -5,9 +5,9 @@ import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-import gUI.om.BufferedImageType;
-import gUI.om.KeyGenImageType;
-import gUI.om.ScalingAlgorithm;
+import enums.BufferedImageType;
+import enums.KeyGenImageType;
+import enums.ScalingAlgorithm;
 
 public class ToolTipBufferedImageType extends DefaultListCellRenderer {
 

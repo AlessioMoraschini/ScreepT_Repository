@@ -18,6 +18,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -28,19 +29,21 @@ import javax.swing.event.ChangeListener;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import java.awt.Font;
+import javax.swing.JSlider;
 
 public class CustomizeParametersPanel extends JFrame{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(CustomizeParametersPanel.class); 
 	
+	public static final DecimalFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
 	private static final String TOOLTIP_LEVEL_LOG = "Choose a value between 'OFF'(logging feature disabled) and 'ALL'. This can have an impact for overall speed and memory usage (OFF = max speed)";
 	private static final String TOOLTIP_STACK_SIZE = "This is the memory used by java JVM to store variables in ram memory called stack. \nHigh value = more reliability but less free memory for other dynamic values!";
 	private static final String TOOLTIP_MIN_RAM_SIZE = "It's recommended to use lower value for minimum memory than max, equal values cause performance decrease! ";
 	private static final String TOOLTIP_MAX_RAM_SIZE = "It's recommended to use bigger value for max memory than minimum, equal values cause performance decrease! ";
 	
-	private static final int DEF_FIXED_HEIGHT = 180;
-	private static final int DEF_FIXED_WIDTH = 525;
+	private static final int DEF_FIXED_HEIGHT = 190;
+	private static final int DEF_FIXED_WIDTH = 550;
 	public static final Dimension DEF_DIMENSION = new Dimension(DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 	
 	public static boolean active = false;
@@ -59,12 +62,14 @@ public class CustomizeParametersPanel extends JFrame{
 	private int backupStackSize;
 	private String backupLogLevel;
 	private boolean backupViewShell;
+	private float backupScaleGuiPerc;
 	
 	private static final int defaultMinMemXms = 512;
 	private static final int defaultMaxMemXmx = 1024;
 	private static final int defaultStackSize = 128;
 	private static final String defaultLogLevel = ScrYpTLauncher.DEFAULT_LOG_LEVEL+"";
 	private static final boolean defaultViewShell = false;
+	private static final float defaultScaleGuiPerc = 1.0f;
 	
 	private JLabel lblMaxWarninig;
 	private JLabel lblMinWarninig;
@@ -76,6 +81,9 @@ public class CustomizeParametersPanel extends JFrame{
 	private JLabel lblLogLevelInfo;
 	private JComboBox comboLogLevel;
 	private JCheckBox chckbxActiveShell;
+	private JSlider sliderGuiScale;
+	private JLabel dynLblScaleGui;
+	private JLabel labelGuiScale;
 	
 	public CustomizeParametersPanel(String title, StartPanel parentPanel) {
 		
@@ -91,7 +99,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(new Color(240, 248, 255));
-		getContentPane().setLayout(new MigLayout("", "[60px][40px][:20px:20px][:100px:100px][100px][:20px:20px][:100px:100px,grow]", "[grow][grow][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px][40px][:20px:20px][:100px:100px][100px][:30px:30px][:100px:100px,grow]", "[grow][grow][grow][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		getContentPane().add(lblMaxMemory, "cell 0 0 2 1,alignx right");
@@ -104,16 +112,12 @@ public class CustomizeParametersPanel extends JFrame{
 		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(defaultMaxMemXmx, 256, SysUtils.getMaxMemoryAdmitted(), 20));
 		getContentPane().add(spinnerMaxMemoryMB, "cell 3 0,growx");
 		
-		lblStackSize = new JLabel("Stack Size(MB)");
-		getContentPane().add(lblStackSize, "cell 4 0,alignx right");
+		lblLogLevel = new JLabel("Log level:");
+		getContentPane().add(lblLogLevel, "cell 4 0,alignx right");
 		
-		lblSTackSizeInfo = new JLabel("");
-		getContentPane().add(lblSTackSizeInfo, "cell 5 0,alignx right");
-		
-		spinnerXssMemory = new JSpinner();
-		spinnerXssMemory.setModel(new SpinnerNumberModel(4, 4, 256, 1));
-		spinnerXssMemory.setOpaque(true);
-		getContentPane().add(spinnerXssMemory, "cell 6 0,growx");
+		comboLogLevel = new JComboBox<String>(ScrYpTLauncher.getLogLevelsList());
+//		comboLogLevel = new JComboBox<String>();
+		getContentPane().add(comboLogLevel, "cell 6 0,growx");
 		
 		lblMinMemory = new JLabel("Min memory (MB):");
 		getContentPane().add(lblMinMemory, "cell 0 1 2 1,alignx right");
@@ -126,35 +130,53 @@ public class CustomizeParametersPanel extends JFrame{
 		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(defaultMinMemXms, 128, SysUtils.getMaxMemoryAdmitted(), 20));
 		getContentPane().add(spinnerMinMemoryMB, "cell 3 1,growx");
 		
-		lblLogLevel = new JLabel("Log level");
-		getContentPane().add(lblLogLevel, "cell 4 1,alignx right");
-		
 		lblLogLevelInfo = new JLabel("");
-		getContentPane().add(lblLogLevelInfo, "cell 5 1,alignx right");
+		getContentPane().add(lblLogLevelInfo, "cell 5 0,alignx right");
 		
-		comboLogLevel = new JComboBox<String>(ScrYpTLauncher.getLogLevelsList());
-//		comboLogLevel = new JComboBox<String>();
-		getContentPane().add(comboLogLevel, "cell 6 1,growx");
+		labelGuiScale = new JLabel("Graphics Scale:");
+		getContentPane().add(labelGuiScale, "cell 4 1,alignx right");
+		
+		dynLblScaleGui = new JLabel("1");
+		getContentPane().add(dynLblScaleGui, "cell 5 1,alignx center");
+		
+		sliderGuiScale = new JSlider();
+		sliderGuiScale.setMinimum(0);
+		sliderGuiScale.setMaximum(100);
+		getContentPane().add(sliderGuiScale, "cell 6 1");
+		
+		lblStackSize = new JLabel("Stack Size(MB)");
+		getContentPane().add(lblStackSize, "cell 0 2 2 1,alignx right");
+		
+		lblSTackSizeInfo = new JLabel("");
+		getContentPane().add(lblSTackSizeInfo, "cell 2 2,alignx right");
+		
+		spinnerXssMemory = new JSpinner();
+		spinnerXssMemory.setModel(new SpinnerNumberModel(4, 4, 256, 1));
+		spinnerXssMemory.setOpaque(true);
+		getContentPane().add(spinnerXssMemory, "cell 3 2,growx");
+		
+		chckbxActiveShell = new JCheckBox("Display Cmd/Shell");
+		chckbxActiveShell.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		getContentPane().add(chckbxActiveShell, "cell 4 2 3 1,alignx center");
 		
 		btnExitConfiguration = new JButton("Discard");
 		btnExitConfiguration.setBackground(new Color(250, 128, 114));
+		btnExitConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
 		btnExitConfiguration.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getContentPane().add(btnExitConfiguration, "cell 0 2,growx");
+		getContentPane().add(btnExitConfiguration, "cell 0 3,growx");
 		
 		btnReloadInitialConfig = new JButton("Reset to Initial Config");
 		btnReloadInitialConfig.setEnabled(true);
 		btnReloadInitialConfig.setBackground(new Color(250, 250, 210));
+		btnReloadInitialConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		btnReloadInitialConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getContentPane().add(btnReloadInitialConfig, "cell 1 2 3 1,alignx left");
-		
-		chckbxActiveShell = new JCheckBox("Shell");
-		chckbxActiveShell.setFont(new Font("Segoe UI", Font.BOLD, 13));
-		getContentPane().add(chckbxActiveShell, "cell 4 2,alignx center");
+		getContentPane().add(btnReloadInitialConfig, "cell 1 3 3 1,alignx left");
 		
 		btnSaveConfig = new JButton("Save Launch Options");
 		btnSaveConfig.setBackground(new Color(143, 188, 143));
+		btnSaveConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSaveConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getContentPane().add(btnSaveConfig, "cell 5 2 2 1,alignx right");
+		getContentPane().add(btnSaveConfig, "cell 4 3 3 1,alignx right");
 		
 		// add custom behaviour to frame
 		
@@ -180,6 +202,15 @@ public class CustomizeParametersPanel extends JFrame{
 		    }
 		});
 		
+		sliderGuiScale.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int perc = sliderGuiScale.getValue();
+				String retrieved = getScaleFromPerc(perc);
+				dynLblScaleGui.setText(String.valueOf(retrieved));
+			}
+		});
+		
 		btnExitConfiguration.addActionListener(new ActionListener() {
 			
 			@Override
@@ -198,6 +229,7 @@ public class CustomizeParametersPanel extends JFrame{
 				spinnerXssMemory.setValue(backupStackSize);
 				comboLogLevel.setSelectedItem(backupLogLevel);
 				chckbxActiveShell.setSelected(backupViewShell);
+				sliderGuiScale.setValue(getPercFromScale(backupScaleGuiPerc));
 			}
 		});
 		
@@ -206,6 +238,7 @@ public class CustomizeParametersPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				// pre-calculate values
 				String maxMemory = String.valueOf((Integer)spinnerMaxMemoryMB.getValue());
 				String minMemory = String.valueOf((Integer)spinnerMinMemoryMB.getValue());
 				String stackSize = String.valueOf((Integer)spinnerXssMemory.getValue());
@@ -213,15 +246,19 @@ public class CustomizeParametersPanel extends JFrame{
 				String args = "-Xmx"+maxMemory+"m -Xms"+minMemory+"m";
 				String stackString = " -Xss"+stackSize+"m";
 				boolean viewShell = chckbxActiveShell.isSelected();
+				String stringGuiPerc = getScaleFromPerc((Integer)sliderGuiScale.getValue());
 				
 				// update launcher vars and write to config INI file
 				ScrYpTLauncher.JVM_MEMORY_OPTIONS = args;
 				ScrYpTLauncher.JVM_STACK_SIZE = stackString;
 				ScrYpTLauncher.viewShellAfterStart = viewShell;
+				ScrYpTLauncher.GUI_SCALE_ARG_VALUE = stringGuiPerc;
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_JVM_OPT, "memoryArgs", args);
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_JVM_OPT, "stackSizeArgs", stackSize);
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting", logLevel);
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "viewCmdConsole", String.valueOf(viewShell));
+				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "scaleGuiPerc", stringGuiPerc);
+				
 				// regenerate command list with new args
 				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();
 				JOptionPane.showMessageDialog(thisPanel, "Settings saved :)", "Settings saved", JOptionPane.INFORMATION_MESSAGE);
@@ -301,12 +338,33 @@ public class CustomizeParametersPanel extends JFrame{
 		}
 		backupViewShell = Boolean.parseBoolean(ScrYpTLauncher.iniConfigFile.get(ScrYpTLauncher.INI_APP_OPT, "viewCmdConsole"));
 		
+		try {
+			backupScaleGuiPerc = Float.parseFloat(ScrYpTLauncher.iniConfigFile.get(ScrYpTLauncher.INI_APP_OPT, "scaleGuiPerc"));
+		} catch (NumberFormatException e) {
+			logger.warn(e);
+			backupScaleGuiPerc = defaultScaleGuiPerc;
+		}
+		
 		// apply to gui elements
 		chckbxActiveShell.setSelected(backupViewShell);
 		spinnerXssMemory.setValue(backupStackSize);
 		spinnerMaxMemoryMB.setValue(backupMaxMemoryXmx);
 		spinnerMinMemoryMB.setValue(backupMinMemoryXms);
 		comboLogLevel.setSelectedItem(backupLogLevel);
+		sliderGuiScale.setValue(getPercFromScale(backupScaleGuiPerc));
+	}
+	
+	private String getScaleFromPerc(int perc) {
+		float base = 1.0f;
+		float result = base + (float)perc/100;
+		
+		return TWO_DECIMAL_FORMATTER.format(result).replace(",", ".");
+	}
+	
+	private int getPercFromScale(float scale) {
+		int base = 1;
+		int result = (int)((scale - base)*100);
+		return result;
 	}
 	
 	private void setGraphics() {

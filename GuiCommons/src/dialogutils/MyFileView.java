@@ -62,12 +62,23 @@ public class MyFileView extends FileView{
 	    table.put(".txt",new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
 	    table.put(".pdf",new ImageIcon(IconsPathConfigurator.F_ICON_PDF));
 	    table.put(".html",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".class",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
+	    table.put(".java",new ImageIcon(IconsPathConfigurator.F_ICON_JAVA));
+	    table.put(".jar",new ImageIcon(IconsPathConfigurator.F_ICON_JAR));
 	    table.put(".js",new ImageIcon(IconsPathConfigurator.F_ICON_JS));
 	    table.put(".json",new ImageIcon(IconsPathConfigurator.F_ICON_JSON));
 	    table.put(".css",new ImageIcon(IconsPathConfigurator.F_ICON_CSS));
 	    table.put(".exe",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
+	    table.put(".bat",new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
+	    table.put(".sh",new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 	    table.put(".php",new ImageIcon(IconsPathConfigurator.F_ICON_PHP));
 	    table.put(".xml",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".zip",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
+	    table.put(".sql",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
+	    table.put(".db",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
+	    table.put(".log",new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
+	    table.put(".lnk",new ImageIcon(IconsPathConfigurator.F_ICON_LINK));
+	    table.put(".properties",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
 	    
 	    // generics video
 	    table.put(".mov",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
@@ -83,6 +94,7 @@ public class MyFileView extends FileView{
 	    
 	    // generics image
 	    table.put(".tiff",new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
+	    table.put(".gif",new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
 	    
 	    return table;
     }

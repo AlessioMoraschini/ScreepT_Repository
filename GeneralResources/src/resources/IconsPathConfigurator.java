@@ -19,13 +19,19 @@ public class IconsPathConfigurator {
 	public static final String F_ICON_CSS = RESOURCES_DIR + "Icons/File_Extensions/F_css.png";
 	public static final String F_ICON_PHP = RESOURCES_DIR + "Icons/File_Extensions/F_php.png";
 	public static final String F_ICON_WAV = RESOURCES_DIR + "Icons/File_Extensions/F_wav.png";
+	public static final String F_ICON_JAVA = RESOURCES_DIR + "Icons/File_Extensions/F_Java.png";
 	public static final String F_ICON_JS = RESOURCES_DIR + "Icons/File_Extensions/F_js.png";
 	public static final String F_ICON_JSON = RESOURCES_DIR + "Icons/File_Extensions/F_json.png";
 	public static final String F_ICON_AUDIO = RESOURCES_DIR + "Icons/File_Extensions/F_audio.png";
 	public static final String F_ICON_VIDEO = RESOURCES_DIR + "Icons/File_Extensions/F_movie.png";
 	public static final String F_ICON_IMAGE = RESOURCES_DIR + "Icons/File_Extensions/F_image.png";
-	public static final String F_ICON_EXE = RESOURCES_DIR + "Icons/File_Extensions/F_exe.png";
+	public static final String F_ICON_EXE = RESOURCES_DIR + "Icons/File_Extensions/F_Exe.png";
 	public static final String F_ICON_GENERIC = RESOURCES_DIR + "Icons/File_Extensions/F_genericFile.png";
+	public static final String F_ICON_JAR = RESOURCES_DIR + "Icons/File_Extensions/F_Jar.png";
+	public static final String F_ICON_ZIP = RESOURCES_DIR + "Icons/File_Extensions/F_Zip.png";
+	public static final String F_ICON_DATABASE = RESOURCES_DIR + "Icons/File_Extensions/F_Database.png";
+	public static final String F_ICON_LINK = RESOURCES_DIR + "Icons/File_Extensions/F_Link.png";
+	public static final String F_ICON_PROPERTIES = RESOURCES_DIR + "Icons/File_Extensions/F_Properties.png";
 	
 		// file submenu
 	public static final String ICON_CONF_MANAGER = RESOURCES_DIR + "Icons/Menu_Icons/manager.png";
@@ -105,6 +111,9 @@ public class IconsPathConfigurator {
 	public static final String ICON_SEARCH = RESOURCES_DIR + "Icons/Search.png";
 	public static final String ICON_CONVERT_OCR_IMAGE = RESOURCES_DIR + "Icons/OCR.png";
 	public static final String ICON_CONVERT_ESCAPES = RESOURCES_DIR + "Icons/convertEscapes.png";
+	public static final String ICON_REPLACE_TXT = RESOURCES_DIR + "Icons/replace.png";
+	public static final String ICON_GOTO_LINE = RESOURCES_DIR + "Icons/goToLine.png";
+	public static final String ICON_NUMBERED_LINES = RESOURCES_DIR + "Icons/numberedLines.png";
 	
 	///////////////// TREE RENDERER ICONS /////////////////
 	public static final String iconFolderPath = RESOURCES_DIR + "Icons/Folder.png";

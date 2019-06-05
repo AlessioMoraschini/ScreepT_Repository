@@ -13,7 +13,7 @@ import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import crypt.steg.StegCipher;
-import gUI.om.BufferedImageType;
+import enums.BufferedImageType;
 import media.ImageGeneralWorker;
 import variousutils.ByteWorker;
 
