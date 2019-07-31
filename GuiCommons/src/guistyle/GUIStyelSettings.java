@@ -40,7 +40,7 @@ public class GUIStyelSettings{
 			UIManager.put( "MenuBar.foreground", Color.black );
 			UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
 			UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
-			UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
+//			UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
 			UIManager.setLookAndFeel(style);
 			Color buttonBackG = (Color)UIManager.get("Button.background");
 			if (ImageGeneralWorker.getColorComponentsTotRGBA(buttonBackG) < 350) {
@@ -175,14 +175,18 @@ public class GUIStyelSettings{
 	 */
 	public static void applySizeToAllWindowsNimbus(int size, boolean updateUI) {
 		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			public void run() {
+//				applyNimbusSize(size);
+//				if(updateUI) {
+//					updateAllWindowsLaf();
+//				}
+//			}
+//		});
 				applyNimbusSize(size);
 				if(updateUI) {
 					updateAllWindowsLaf();
 				}
-			}
-		});
 	}
 	
 	

@@ -55,13 +55,14 @@ public class TemplatesChoosePanel extends JFrame{
 	private JComboBox templatesCombo;
 	
 	// MAIN CONSTRUCTOR //
-	public TemplatesChoosePanel(JTextArea outputText, JComboBox templatesComb, JButton buttonInvoke) {
+	public TemplatesChoosePanel(JFrame parent, JTextArea outputText, JComboBox templatesComb, JButton buttonInvoke) {
 		
 		active = true;
 		
 		outputTextArea = outputText;
 		templatesCombo = templatesComb;
 		buttonInvoker = buttonInvoke;
+		GuiUtils.showOnSameScreen(parent);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[100px,grow][70px]", "[42px][30px,grow][30px,grow]"));

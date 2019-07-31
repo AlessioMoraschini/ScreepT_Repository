@@ -31,17 +31,18 @@ import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 
-public class TreeFileMouseListenerIni {
+public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBasic{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TreeFileMouseListenerIni.class); 
 	
 	// gui elements
-	private JTree tree;
-	private File selectedNode;
 	private INItializer currentConfig;
 	private ChargeIniLog confManagerPanel;
 
+	public TreeFileMouseListenerIni() {
+		super();
+	};
 	// constructor
 	public TreeFileMouseListenerIni(INItializer currentConf, ChargeIniLog parent, JTree treeIn) {
 		currentConfig = currentConf;
@@ -105,6 +106,10 @@ public class TreeFileMouseListenerIni {
 	    JMenuItem refreshItem = new JMenuItem("Refresh tree");
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
+	    
+	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    propertiesItem.addActionListener(propertiesListener());
+	    menu.add(propertiesItem);
 
 	    // set menu icons
 	    MenuSetter.setIconTextGap(menu, 12);
@@ -117,6 +122,7 @@ public class TreeFileMouseListenerIni {
 	    importItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT));
 	    exportItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 	    
 	    return menu;
 	}

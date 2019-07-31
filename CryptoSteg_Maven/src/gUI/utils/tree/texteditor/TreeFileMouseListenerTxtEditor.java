@@ -138,10 +138,10 @@ public class TreeFileMouseListenerTxtEditor {
 						public void run() {
 							try {
 								if (selectedNode != null && selectedNode.mFile != null) {
-								propertiesFrame = new FilePropertiesFrame(selectedNode.mFile);
+								propertiesFrame = new FilePropertiesFrame(selectedNode.mFile, true);
 								propertiesFrame.setTitle(selectedNode.mFile.getAbsolutePath());
 								propertiesFrame.setVisible(true);
-								GuiUtils.centerComponent(propertiesFrame, 600, 200);
+								GuiUtils.centerComponent(propertiesFrame, 650, 240);
 								}
 							} catch (Exception e) {
 								logger.error(e);

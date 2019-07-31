@@ -11,27 +11,23 @@ import resources.IconsPathConfigurator;
 
 public class MyFileView extends FileView{
 	Hashtable<String,ImageIcon> table;
-	ImageIcon dirIcon;
+	public static ImageIcon dirIcon = new ImageIcon(IconsPathConfigurator.iconFolderPath);
 
     public MyFileView()
     {
         this.table = defaultFileIcons();
-        this.dirIcon = new ImageIcon(IconsPathConfigurator.iconFolderPath);
     }
     
     public MyFileView(Hashtable<String,ImageIcon> table,ImageIcon dirIcon)
     {
         this.table = (table != null)? table : defaultFileIcons();
-        this.dirIcon = (dirIcon != null)? dirIcon : new ImageIcon(IconsPathConfigurator.iconFolderPath);
+        dirIcon = (dirIcon != null)? dirIcon : new ImageIcon(IconsPathConfigurator.iconFolderPath);
     }
 
-    public Icon getIcon(File f)
-    {
-    // Do display custom icons
+    public Icon getIcon(File f){
 
         // If dir
-        if(f.isDirectory()) 
-        {
+        if(f.isDirectory()) {
             if(dirIcon!=null) 
             	return dirIcon;
         }
@@ -40,18 +36,44 @@ public class MyFileView extends FileView{
         String name=f.getName();
         int idx=name.lastIndexOf(".");
 
-        if(idx>-1)
-        {
-        String ext=name.substring(idx);
+        if(idx>-1){
+        	String ext=name.substring(idx);
             if(table.containsKey(ext.toLowerCase()))
-        return table.get(ext.toLowerCase());
+            	return table.get(ext.toLowerCase());
+        }
+        
+        // For other files
+	    return new ImageIcon(IconsPathConfigurator.F_ICON_GENERIC);
     }
+        
+    public static ImageIcon getExtIcon(File f){
 
-    // For other files
-    return new ImageIcon(IconsPathConfigurator.F_ICON_GENERIC);
+    	// null check
+    	if(f == null || !f.exists()) {
+    		return new ImageIcon();
+    	}
+    	
+    	// If dir
+		if (f.isDirectory()) {
+			if (dirIcon != null)
+				return dirIcon;
+		}
+
+		// Get the name
+		String name = f.getName();
+		int idx = name.lastIndexOf(".");
+
+		if (idx > -1) {
+			String ext = name.substring(idx);
+			if (defaultFileIcons().containsKey(ext.toLowerCase()))
+				return defaultFileIcons().get(ext.toLowerCase());
+		}
+
+	    // For other files
+	    return new ImageIcon(IconsPathConfigurator.F_ICON_GENERIC);
     }
     
-    public Hashtable<String,ImageIcon> defaultFileIcons() {
+    public static Hashtable<String,ImageIcon> defaultFileIcons() {
     	
     	Hashtable<String,ImageIcon> table=new Hashtable<>();
 

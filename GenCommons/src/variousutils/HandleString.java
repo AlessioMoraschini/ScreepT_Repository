@@ -78,7 +78,7 @@ public class HandleString {
 		
 		if (length > lim) {
 			int half = (int)(float)lim/2;
-			res = source.substring(0, half-3)+" ... "+source.substring(length-half-2, length);
+			res = source.substring(0, half-3)+".."+source.substring(length-half-2, length);
 		}
 		
 		return res;

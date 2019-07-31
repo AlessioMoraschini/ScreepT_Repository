@@ -28,7 +28,7 @@ public class SplitPaneUtils {
 	            		}else {
 	            			g.setColor(back);
 	            		}
-	                    g.fillRoundRect(0, -5, getSize().width, getSize().height+10, 10, 10);
+	            		g.fillRoundRect(0, -5, getSize().width-5, getSize().height+10, 10, 10);
                         super.paint(g);
                     }
             };

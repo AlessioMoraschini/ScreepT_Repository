@@ -54,10 +54,10 @@ public class HwInfoPanel extends JFrame{
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
 	
-	private static final int RAM_REFRESH_RATE = 500;
-	private static final int CPU_REFRESH_RATE = 1000;
-	private static final int HD_REFRESH_RATE = 2000;
-	private static final int SCRYPT_REFRESH_RATE = 800;
+	private static final int RAM_REFRESH_RATE = 1000;
+	private static final int CPU_REFRESH_RATE = 2000;
+	private static final int HD_REFRESH_RATE = 1500;
+	private static final int SCRYPT_REFRESH_RATE = 1500;
 
 	// flag to signal active
 	public static boolean active=false;
@@ -162,7 +162,7 @@ public class HwInfoPanel extends JFrame{
 	private JTextField dynLblScryptCpuPerc;
 	private JLabel lblScryptRamUsage;
 	
-	private long currentPid;
+	long currentPid; 
 	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
@@ -184,16 +184,9 @@ public class HwInfoPanel extends JFrame{
 		
 		initialize();
 		
-		addEventHandlers();
-		
-		try {
-			Sigar tempSigar = new Sigar();
-			currentPid = tempSigar.getPid();
-		} catch (Exception e) {
-			logger.error("An error occurred while getting the process ID via Sigar", e);
-		}
-		
 		addValuesInitThreads();
+		
+		addEventHandlers();
 		
 		logger.info(this.getClass().getName() + " Started");
 	}
@@ -744,6 +737,7 @@ public class HwInfoPanel extends JFrame{
 		cpuUsageHystory = new LimitedList<Double>(1000);
 		sysINFO = new SystemInfo();
 		sigar = new Sigar();
+		currentPid = sigar.getPid();
 		MOBO = sysINFO.getHardware().getComputerSystem().getBaseboard();
 		displays = sysINFO.getHardware().getDisplays();
 		displayIndexer = initDisplayIndexer();
@@ -761,11 +755,12 @@ public class HwInfoPanel extends JFrame{
 //////////////////////////AND NOW SOME USEFUL METHOD //////////////////////////
 	
 	private void updateScryptResourcesUsage(){
-		Sigar tempSigar = new Sigar();
+//		Sigar tempSigar = new Sigar();
+//		long currentPid = tempSigar.getPid();
 		try {
-			scryptCpuUsage = tempSigar.getProcCpu(currentPid);
-			scryptMemUsage = tempSigar.getProcMem(currentPid);
-			scryptCpuUsage.gather(tempSigar, currentPid);
+			scryptCpuUsage = sigar.getProcCpu(currentPid);
+			scryptMemUsage = sigar.getProcMem(currentPid);
+//			scryptCpuUsage.gather(tempSigar, currentPid);
 //			scryptMemUsage.gather(tempSigar, currentPid);
 			dynLblScryptCpuPerc.setText(new DecimalFormat("#,##0.##").format(scryptCpuUsage.getPercent())+"%");
 			dynLblScryptRamUsage.setText(FileStuff.coolFileSize(scryptMemUsage.getResident()));

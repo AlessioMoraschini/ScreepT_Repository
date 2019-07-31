@@ -11,6 +11,7 @@ import frameutils.GuiUtils;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
+import maingUI.mainGUI;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 
@@ -31,7 +32,6 @@ import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import om.ImgConverterOption;
 import resources.IconsPathConfigurator;
-import uTILS.local.ImageWorker;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
@@ -162,6 +162,7 @@ public class ImageConverterFrame extends JFrame{
 		currentConfiguration = currentConf;
 		
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER, this);
+		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		

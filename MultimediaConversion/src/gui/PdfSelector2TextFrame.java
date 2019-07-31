@@ -16,8 +16,8 @@ import org.icepdf.ri.common.SwingViewBuilder;
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooser;
 import frameutils.GuiUtils;
-import media.ImageGeneralWorker;
 import resources.IconsPathConfigurator;
+import splitpanel.SplitPaneUtils;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.tess4j.TesseractException;
 
@@ -25,11 +25,12 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +38,6 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
-import java.awt.Image;
 
 public class PdfSelector2TextFrame extends JFrame{
 	
@@ -58,6 +58,8 @@ public class PdfSelector2TextFrame extends JFrame{
 	private JButton btnLoadImage;
 	private JButton btnParseImage;
 	private JButton btnInjectSelected;
+	
+	public JSplitPane splitMainPane;
 	
 	public JFrame mainFrameParent;
 	public JFrame thisFrame;
@@ -82,19 +84,26 @@ public class PdfSelector2TextFrame extends JFrame{
 		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, this);
 		GuiUtils.centerFrame(this, WIDTH, HEIGHT);
 		GuiUtils.moveFrame(this, GuiUtils.getScreenSize().width/4, 0);
+		GuiUtils.showOnSameScreen(mainFrameParent);
 		getContentPane().setLayout(new MigLayout("", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 		
 		imageContainerPanel = new JScrollPane();
 		imageContainerPanel.setBackground(Color.BLACK);
-		imageContainerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 3, true));
-		getContentPane().add(imageContainerPanel, "cell 0 0 5 1,grow");
+		imageContainerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		
 		initDisplayPanel(imageContainerPanel);
 		
 		textPreviewScrollPane = new JScrollPane();
 		textPreviewScrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		textPreviewScrollPane.setBackground(Color.WHITE);
-		getContentPane().add(textPreviewScrollPane, "cell 0 1 5 1,grow");
+		
+		splitMainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitMainPane.setBackground(Color.BLACK);
+		splitMainPane.setTopComponent(imageContainerPanel);
+		splitMainPane.setBottomComponent(textPreviewScrollPane);
+		splitMainPane.setDividerLocation(HEIGHT-300);
+		SplitPaneUtils.setDividerColors(Color.BLACK, Color.GRAY, splitMainPane);
+		getContentPane().add(splitMainPane, "cell 0 0 5 2,grow");
 		
 		txtAreaParsedText = new JTextArea();
 		txtAreaParsedText.setWrapStyleWord(true);

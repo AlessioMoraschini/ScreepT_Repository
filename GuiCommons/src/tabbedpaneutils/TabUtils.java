@@ -27,6 +27,8 @@ public class TabUtils {
 	public static final int TAB_TITLE_ORDER = 1;
 	public static final int TAB_BUTTON_CLOSE_ORDER = 2;
 	
+	public static final int MAX_TAB_LABELENGHT = 30;
+	
 	/**
 	 * Tab style = title + icon + tooltip + close button (action listener correlated)
 	 * @param title
@@ -37,27 +39,25 @@ public class TabUtils {
 	public static JPanel getCustomClosableTab(String title, String tooltip, String iconPath, ActionListener tabCloseListener) {
 		JPanel pnlTab = new JPanel();
 		pnlTab.setOpaque(false);
-		pnlTab.setPreferredSize(new Dimension(150,27));
 		pnlTab.setToolTipText(tooltip);
 
 		// tab title
 		JLabel lblTitle = new JLabel();
-		lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-		lblTitle.setText(HandleString.fitToMaxLentgh(title, 30));
+		lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 9));
+		lblTitle.setText(HandleString.fitToMaxLentgh(title, MAX_TAB_LABELENGHT));
 		
 		// image label
 		JLabel imageLbl = new JLabel();
 		imageLbl.setIcon(new ImageIcon(iconPath));
 		imageLbl.setPreferredSize(new Dimension(15, 20));
-		imageLbl.setMaximumSize(new Dimension(60, 20));
+		imageLbl.setMaximumSize(new Dimension(25, 20));
 		
-		// button close
 		pnlTab.setLayout(new GridBagLayout());
 //		pnlTab.setLayout(new MigLayout("", "[16.00px][25.00px:35.00px,grow][15.00px]", "[16.00px,grow]"));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.ipadx = 2;
+		gbc.ipadx = 5;
 		gbc.ipady = 0;
 		gbc.weightx = 2;
 
@@ -70,17 +70,18 @@ public class TabUtils {
 		gbc.gridx++;
 		gbc.ipadx = 9;
 		gbc.weightx = 3;
-		JButton btnClose = new JButton();
 		
+		// button close
+		JButton btnClose = new JButton();
 		btnClose = applyStyleToTabCloseBtn(btnClose);
-		Dimension btnDimension = new Dimension(24, 24) ;
+		Dimension btnDimension = new Dimension(14, 20) ;
 		btnClose.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		btnClose.setMinimumSize(btnDimension);
 		btnClose.setPreferredSize(btnDimension);
 		btnClose.setMaximumSize(btnDimension);
-		btnClose.setVerticalTextPosition(SwingConstants.CENTER);
+		btnClose.setVerticalTextPosition(SwingConstants.TOP);
 		btnClose.setHorizontalTextPosition(SwingConstants.CENTER);
-		btnClose.setText("X");
+		btnClose.setText("x");
 		btnClose.addActionListener(tabCloseListener);
 
 		pnlTab.add(btnClose, gbc); // 3 - CLOSE BUTTON

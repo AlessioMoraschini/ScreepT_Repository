@@ -79,6 +79,7 @@ public class FileDragNDropManager extends JTabbedPane{
             g2d.setColor(new Color(92, 133, 214));
             g2d.fill(new Rectangle(getWidth(), getHeight()));
             g2d.dispose();
+            
         }
     }
 

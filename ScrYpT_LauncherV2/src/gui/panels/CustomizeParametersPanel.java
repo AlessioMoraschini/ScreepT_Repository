@@ -90,12 +90,16 @@ public class CustomizeParametersPanel extends JFrame{
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		// CUSTOM SETTINGS
+		
 		active = true;
 		thisPanel = this;
-		GuiUtils.centerFrame(this, DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
+		
 		thisPanel.setTitle(title);		
 		parentStarterPanel = parentPanel;
 		
+		GuiUtils.centerFrame(this, DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
+		GuiUtils.showOnSameScreen(parentStarterPanel);
+
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(new Color(240, 248, 255));

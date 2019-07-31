@@ -33,11 +33,6 @@ public class MainGuiGeneralAppStarter {
 			
 			now = new Date();
 
-			// if local test mode keep log clean after start
-			if (!mainGUI.PRODUCTION_VERSION) {
-				FileStuff.clearFileContent(mainGUI.LOG_PATH);
-			}
-			
 			// Initialize logger properties
 			PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
 			

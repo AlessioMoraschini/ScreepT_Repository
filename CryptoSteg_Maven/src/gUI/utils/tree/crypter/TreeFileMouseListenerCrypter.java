@@ -24,7 +24,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
-import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FilenameUtils;
@@ -40,14 +39,12 @@ import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 import variousutils.HandleString;
 
-public class TreeFileMouseListenerCrypter {
+public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListenerBasic{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TreeFileMouseListenerCrypter.class); 
 	
 	// gui elements
-	private JTree tree;
-	private File selectedNode;
 	private JTextArea TEXT_LOG = new JTextArea();
 	private JTextArea TEXT_MAIN = new JTextArea();
 	private JFrame mainFrame;
@@ -119,6 +116,10 @@ public class TreeFileMouseListenerCrypter {
 	    itemDelete.addActionListener(getDeleteActionListener());
 	    menu.add(itemDelete);
 	    
+	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    propertiesItem.addActionListener(propertiesListener());
+	    menu.add(propertiesItem);
+	    
 	    // set menu icons
 	    MenuSetter.setIconTextGap(menu, 12);
 	    
@@ -127,6 +128,7 @@ public class TreeFileMouseListenerCrypter {
 	    itemAddKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT));
 	    itemExportKeys.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 	    itemDelete.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 
 	    return menu;
 	}

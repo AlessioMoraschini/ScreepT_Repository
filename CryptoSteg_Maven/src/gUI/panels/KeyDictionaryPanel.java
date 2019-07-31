@@ -10,6 +10,7 @@ import enums.BufferedImageType;
 import frameutils.GuiUtils;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
+import maingUI.mainGUI;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
@@ -83,6 +84,7 @@ public class KeyDictionaryPanel extends JFrame{
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);
+		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
 		
 		thisPanel = this;
 		// initialize configuration

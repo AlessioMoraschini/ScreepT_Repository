@@ -31,7 +31,7 @@ public class TextAreaDialogs {
 	// SEARCH
 	public static FindDialog getSearchDialog(JFrame owner, RSyntaxTextArea txtArea, JComponent targetResultPrinter){
 		FindDialog searchDial = new FindDialog(owner, getSearchListener(txtArea, targetResultPrinter));
-		GuiUtils.centerComponent(searchDial);
+		GuiUtils.showOnSameScreen(owner);
 		applyGUIEffects(searchDial);
 		searchDial.setPreferredSize(DEFAULT_SIZE);
 		searchDial.setVisible(true);
@@ -44,7 +44,7 @@ public class TextAreaDialogs {
 	// REPLACE
 	public static ReplaceDialog getReplaceDialog(JFrame owner, RSyntaxTextArea txtArea, JComponent targetResultPrinter){
 		ReplaceDialog replaceDial = new ReplaceDialog(owner, getSearchListener(txtArea, targetResultPrinter));
-		GuiUtils.centerComponent(replaceDial);
+		GuiUtils.showOnSameScreen(owner);
 		replaceDial.setVisible(true);
 		replaceDial.setEscapeClosesDialog(true);
 		replaceDial.setPreferredSize(DEFAULT_SIZE);
@@ -55,7 +55,7 @@ public class TextAreaDialogs {
 	// GO TO LINE
 	public static GoToDialog getGoToLineDialog(JFrame owner, RSyntaxTextArea txtArea){
 		GoToDialog dialog = new GoToDialog(owner);
-		GuiUtils.centerComponent(dialog);
+		GuiUtils.showOnSameScreen(owner);
 		dialog.setMaxLineNumberAllowed(txtArea.getLineCount());
 		dialog.setEscapeClosesDialog(true);
 		dialog.setVisible(true);

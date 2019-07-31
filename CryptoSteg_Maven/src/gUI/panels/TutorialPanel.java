@@ -39,6 +39,7 @@ public class TutorialPanel extends JFrame{
 		// GUI SETTINGS
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
 		GuiUtils.centerComponent(this, 60);
+//		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
 
 		mainHtmlReadmePanel = new HtmlPanel(new Integer(40), "indexList");
 		File htmlTutorialFile = new File(mainGUI.SCRYPT_TUTORIAL_HTML_PATH);

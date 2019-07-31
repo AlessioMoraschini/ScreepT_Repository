@@ -15,6 +15,7 @@ import dialogutils.GenericFileChooser;
 import frameutils.GuiUtils;
 import media.ImageGeneralWorker;
 import resources.IconsPathConfigurator;
+import splitpanel.SplitPaneUtils;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.tess4j.TesseractException;
 
@@ -26,6 +27,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,6 +60,8 @@ public class ImageSelector2TextFrame extends JFrame{
 	private JButton btnParseImage;
 	private JButton btnInjectSelected;
 	
+	public JSplitPane splitMainPane;
+	
 	public JFrame mainFrameParent;
 	public JFrame thisFrame;
 	public JTextArea outputTEXTarea;
@@ -78,13 +83,13 @@ public class ImageSelector2TextFrame extends JFrame{
 		this.setTitle(title);
 		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, this);
 		GuiUtils.centerFrame(this, WIDTH, HEIGHT);
-		GuiUtils.moveFrame(this, GuiUtils.getScreenSize().width/4, 0);
+		GuiUtils.moveFrame(this, GuiUtils.getScreenSize(mainFrameParent).width/4, 0);
+		GuiUtils.showOnSameScreen(mainFrameParent);
 		getContentPane().setLayout(new MigLayout("", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 		
 		imageContainerPanel = new JPanel();
 		imageContainerPanel.setBackground(Color.BLACK);
 		imageContainerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 3, true));
-		getContentPane().add(imageContainerPanel, "cell 0 0 5 1,grow");
 		imageContainerPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
 		
 		labelLoadedImage = new JLabel("");
@@ -93,7 +98,15 @@ public class ImageSelector2TextFrame extends JFrame{
 		textPreviewScrollPane = new JScrollPane();
 		textPreviewScrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		textPreviewScrollPane.setBackground(Color.WHITE);
-		getContentPane().add(textPreviewScrollPane, "cell 0 1 5 1,grow");
+//		getContentPane().add(textPreviewScrollPane, "cell 0 1 5 1,grow");
+		
+		splitMainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitMainPane.setBackground(Color.BLACK);
+		splitMainPane.setTopComponent(imageContainerPanel);
+		splitMainPane.setBottomComponent(textPreviewScrollPane);
+		splitMainPane.setDividerLocation(HEIGHT-300);
+		getContentPane().add(splitMainPane, "cell 0 0 5 2,grow");
+		SplitPaneUtils.setDividerColors(Color.BLACK, Color.GRAY, splitMainPane);
 		
 		txtAreaParsedText = new JTextArea();
 		txtAreaParsedText.setWrapStyleWord(true);

@@ -3,7 +3,6 @@ package gUI.panels;
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
-import splitpanel.SplitPaneUtils;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -11,7 +10,6 @@ import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -30,6 +28,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
 import guistyle.GUIStyelSettings;
+import maingUI.mainGUI;
 import mainobj.INItializer;
 
 import javax.swing.UIManager;
@@ -57,6 +56,7 @@ public class GraphicPreferencesFrame extends JFrame {
 	private JSlider sliderLogSize;
 	private JComboBox comboStyleLaF;
 	private JCheckBox chckbxDarklight;
+	private JCheckBox chckBoxAntiAliasingON;
 
 	private JButton btnDiscard;
 	private JButton btnUseSettings;
@@ -64,9 +64,11 @@ public class GraphicPreferencesFrame extends JFrame {
 	private JButton btnResetValues;
 	private JLabel lblUsername;
 	private JLabel lblNimbusSize;
+	private JLabel lblTextAreaDetail;
 	private JSpinner spinnerMenuSize;
 	private JSpinner spinnerLogSize;
 	private JSpinner spinnerNimbusSize;
+	private JSpinner spinnerDetailTxtArea;
 
 	// actual values
 	private static String CURRENT_USERNAME;
@@ -92,9 +94,6 @@ public class GraphicPreferencesFrame extends JFrame {
 	public static boolean active = false;
 
 	private INItializer currentConfiguration;
-	private JCheckBox chckBoxAntiAliasingON;
-	private JLabel lblTextAreaDetail;
-	private JSpinner spinnerDetailTxtArea;
 
 	public GraphicPreferencesFrame(INItializer currentConf) {
 
@@ -104,7 +103,8 @@ public class GraphicPreferencesFrame extends JFrame {
 		active = true;
 
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
-
+		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
+		
 		initValues(currentConfiguration);
 
 		logger.debug("Initialized.");
@@ -562,11 +562,12 @@ public class GraphicPreferencesFrame extends JFrame {
 		chckBoxAntiAliasingON.setSelected(TXTAREA_ANTIALIASED);
 		spinnerDetailTxtArea.setValue(TXTAREA_DETAIL);
 
-		if (!DARK_THEME) {
-			GUIStyelSettings.setLightNimbus(NIMBUS_SIZE);
-		} else {
+		if (DARK_THEME) {
 			GUIStyelSettings.setDarkNimbus(NIMBUS_SIZE);
-		}
+		} 
+//		else {
+//			GUIStyelSettings.setLightNimbus(NIMBUS_SIZE);
+//		}
 
 		spinnerNimbusSize.setValue(NIMBUS_SIZE);
 

@@ -54,7 +54,7 @@ public class EscapeReplacerPanel extends JFrame{
 	private JButton btnTrySpecialTo;
 	
 	// MAIN CONSTRUCTOR //
-	public EscapeReplacerPanel(JTextArea outputText, JButton buttonInvoke) {
+	public EscapeReplacerPanel(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
 		
 		active = true;
 		
@@ -62,8 +62,9 @@ public class EscapeReplacerPanel extends JFrame{
 		buttonInvoker = buttonInvoke;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[250px,grow][220px]", "[30px][30px,grow][20px][20px,grow]"));
+		getContentPane().setLayout(new MigLayout("", "[250px][220px,grow]", "[30px][30px,grow][20px][20px,grow]"));
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES, this);
+		GuiUtils.showOnSameScreen(parent);
 		
 		panel = new JPanel();
 		panel.setForeground(Color.WHITE);
@@ -92,12 +93,13 @@ public class EscapeReplacerPanel extends JFrame{
 		getContentPane().add(comboEscapeType, "cell 1 1,growx");
 		
 		btnTrySpecialTo = new JButton("Try special To escape");
-		btnTrySpecialTo.setMinimumSize(new Dimension(148, 26));
+		btnTrySpecialTo.setMaximumSize(new Dimension(250, 25));
+		btnTrySpecialTo.setMinimumSize(new Dimension(148, 25));
 		btnTrySpecialTo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		btnTrySpecialTo.setToolTipText(tooltipTrySpecialToEscape);
 		btnTrySpecialTo.setCursor(GuiUtils.CURSOR_HAND);
 		btnTrySpecialTo.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnTrySpecialTo, "cell 0 2,growx");
+		getContentPane().add(btnTrySpecialTo, "cell 0 2,growx,aligny center");
 		
 		btnConvertSpecialToEsc = new JButton("Convert Special to escapes");
 		btnConvertSpecialToEsc.setMinimumSize(new Dimension(178, 30));
@@ -108,7 +110,8 @@ public class EscapeReplacerPanel extends JFrame{
 		getContentPane().add(btnConvertSpecialToEsc, "cell 1 2,growx");
 		
 		btnTryEscapeTo = new JButton("Try escape To special");
-		btnTryEscapeTo.setMinimumSize(new Dimension(148, 26));
+		btnTryEscapeTo.setMaximumSize(new Dimension(250, 25));
+		btnTryEscapeTo.setMinimumSize(new Dimension(148, 25));
 		btnTryEscapeTo.setCursor(GuiUtils.CURSOR_HAND);
 		btnTryEscapeTo.setToolTipText(tooltipTryEscapeToSpec);
 		btnTryEscapeTo.setFont(new Font("Segoe UI", Font.PLAIN, 14));

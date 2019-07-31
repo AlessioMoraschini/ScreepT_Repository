@@ -26,6 +26,7 @@ public class LauncherLoaderFrame extends JFrame{
 		
 		this.setUndecorated(true);
 		this.setAlwaysOnTop(true);
+		this.setCursor(GuiUtils.CURSOR_WAIT);
 		Image background;
 		try {
 			background = ImageIO.read(new File(backImagePath));

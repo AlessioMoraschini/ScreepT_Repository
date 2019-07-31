@@ -103,6 +103,8 @@ public class GeneralOptionsFrame extends JFrame{
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GEN_OPT, this);
 		
+		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
+		
 		try {
 			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
 		} catch (InvalidFileFormatException e1) {
@@ -444,6 +446,8 @@ public class GeneralOptionsFrame extends JFrame{
     	chckbxAutosave.setSelected(AUTOSAVE_FLAG);
     	comboCharsets.setSelectedItem(CHARSET);
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
+//    	GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
+//		GUIStyelSettings.updateAllWindowsLaf();
 	}
 		
 	/**

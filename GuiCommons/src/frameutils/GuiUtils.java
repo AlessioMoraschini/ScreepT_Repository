@@ -7,6 +7,8 @@ import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -41,6 +43,15 @@ public class GuiUtils {
 		}
 	}
 	
+	public static boolean setFrameIcon(ImageIcon icon, JFrame frameToSet) {
+		if(icon != null) {
+			frameToSet.setIconImage(icon.getImage());
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
 	public static void setFrameIcon(String icon, JFrame frameToSet) {
 		ImageIcon imgIcon = new ImageIcon(icon);
 		frameToSet.setIconImage(imgIcon.getImage());
@@ -51,17 +62,44 @@ public class GuiUtils {
 		frameToSet.setIconImage(imgIcon.getImage());
 	}
 	
+	/**
+	 * this method makes the current frame that's invoking this method to move on same monitor as the given frame
+	 * @param frame his monitor will be the target for the current window
+	 * @return the found graphicsDevice obj of target frame
+	 */
+	public static GraphicsDevice showOnSameScreen(Window frame) {
+		GraphicsDevice result = null;
+		if (frame != null) {
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice[] gd = ge.getScreenDevices();
+			final GraphicsDevice frameDevice = frame.getGraphicsConfiguration().getDevice();
+			for (GraphicsDevice graphicsDevice : gd) {
+				if (frameDevice.equals(graphicsDevice)
+						|| frameDevice.getIDstring().equals(graphicsDevice.getIDstring())) {
+					final Rectangle monitorBounds = graphicsDevice.getDefaultConfiguration().getBounds();
+					final int x = monitorBounds.x + (monitorBounds.width - frame.getWidth()) / 2;
+					final int y = monitorBounds.y + (monitorBounds.height - frame.getHeight()) / 2;
+					frame.setLocation(x, y);
+					result = graphicsDevice;
+					break;
+				}
+			} 
+		}
+		return result;
+	}
+	
 	public static Dimension getScreenSize() {
 		return Toolkit.getDefaultToolkit().getScreenSize();
 	}
 	
 	public static Dimension makeFullScreen(Component element) {
-		Dimension screen = getScreenSize(element);
+//		Dimension screen = getScreenSize(element);
+		Dimension returnDim = new Dimension(element.getWidth(), element.getHeight());
 		if(element instanceof JFrame) {
 			((JFrame) element).setUndecorated(true);
 		}
-		element.setPreferredSize(screen);
-		return new Dimension(screen.width, screen.height);
+//		element.setMinimumSize(screen);
+		return returnDim;
 	}
 	
 	public static Dimension getScreenSize(Component frame) {

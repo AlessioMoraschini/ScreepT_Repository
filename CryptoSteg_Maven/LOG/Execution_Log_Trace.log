@@ -1,19 +1,58 @@
-2019-06-05 20:58:15,426 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+2019-06-08 00:40:37,326 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:40:45,326 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:40:53,326 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:40:54,359 [AWT-EventQueue-0] ERROR maingUI.mainGUI - Files deleted
+2019-06-08 00:40:54,359 [AWT-EventQueue-0] DEBUG maingUI.mainGUI -  => Logs erasing procedure ended.
+2019-06-08 00:41:01,326 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:41:09,326 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:41:17,327 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:41:25,327 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:41:33,327 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:41:41,327 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:41:49,328 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:41:51,385 [Thread-16] INFO  gUI.panels.HwInfoPanel - gUI.panels.HwInfoPanel Starting...
+2019-06-08 00:41:53,914 [Thread-16] INFO  gUI.panels.HwInfoPanel - gUI.panels.HwInfoPanel Started
+2019-06-08 00:41:57,328 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:42:05,328 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:42:13,329 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:42:14,128 [AWT-EventQueue-0] DEBUG gUI.panels.HwInfoPanel - Closing Frame: gUI.panels.HwInfoPanel
+2019-06-08 00:42:21,329 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:42:29,330 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:42:29,342 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 00:42:37,331 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:42:45,331 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:42:53,331 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:43:01,331 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:43:09,331 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:43:17,331 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:43:25,332 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:43:33,332 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:43:41,332 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:43:49,333 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:43:57,334 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:44:05,334 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:44:13,335 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:44:21,335 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:44:29,335 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 00:44:30,491 [AWT-EventQueue-0] INFO  gUI.panels.CrypterPanel - gUI.panels.CrypterPanel Starting...
+2019-06-08 00:44:31,238 [AWT-EventQueue-0] INFO  gUI.panels.CrypterPanel - gUI.panels.CrypterPanel Started
+2019-06-08 00:44:37,336 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:03:17,893 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
 
 ##################################################
 
-Wed Jun 05 20:58:15 CEST 2019
+Sat Jun 08 01:03:17 CEST 2019
 
-ScrYpT - V0.6 Started now!
+ScrYpT - V0.6g Started now!
 
 ##################################################
 
 
-2019-06-05 20:58:15,427 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
-2019-06-05 20:58:15,970 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
-2019-06-05 20:58:16,183 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
-2019-06-05 20:58:16,962 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
-2019-06-05 20:58:17,204 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+2019-06-08 01:03:17,903 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-06-08 01:03:18,469 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-06-08 01:03:18,706 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-06-08 01:03:19,483 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-06-08 01:03:19,749 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
 
 ### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
 
@@ -33,7 +72,7 @@ CHARSET: UTF-8
 PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
 MENU_FONT_SIZE: 18
 LOG_FONT_SIZE: 14
-NIMBUS_SIZE_VAR: 1
+NIMBUS_SIZE_VAR: 0
 DARK_GUI_NUMBUS: false
 
  ---- FILE OPTIONS -----
@@ -62,8 +101,8 @@ BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
 FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
 FILE TREE VIEW ACTIVE: true
 PREFERRED DIVIDER FILETREE POSITION: 266
-OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\text.txt]
-DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\text.txt
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\AAAAAAAAdddddddddddddddddd.txt]
+DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
 AUTO-BREAKLINE ACTIVE: false
 ANTIALIASED TEXT AREA: true
 TEXT-AREA DETAIL LEVEL (0-3): 3
@@ -75,34 +114,34 @@ SAME_SIZE: true
 SAME_EXTENSION: true
 QUALITY: 100
 ALGORITHM: REPLICATE
-2019-06-05 20:58:17,207 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
-2019-06-05 20:58:17,693 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
-2019-06-05 20:58:17,752 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
-2019-06-05 20:58:17,758 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
-2019-06-05 20:58:17,762 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
-2019-06-05 20:58:18,047 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
-2019-06-05 20:58:18,048 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
-2019-06-05 20:58:18,178 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
-2019-06-05 20:58:18,182 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
-2019-06-05 20:58:18,182 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
-2019-06-05 20:58:18,182 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
-2019-06-05 20:58:18,190 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
-2019-06-05 20:58:18,190 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
-2019-06-05 20:58:18,337 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
-2019-06-05 20:58:18,427 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
-2019-06-05 20:58:18,448 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
-2019-06-05 20:58:18,449 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
-2019-06-05 20:58:19,146 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
-2019-06-05 20:58:19,148 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
-2019-06-05 20:58:19,957 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
-2019-06-05 20:58:20,134 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
+2019-06-08 01:03:19,751 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-06-08 01:03:20,320 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 01:03:20,383 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-06-08 01:03:20,388 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-06-08 01:03:20,391 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-06-08 01:03:20,706 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-06-08 01:03:20,706 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-06-08 01:03:20,808 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-06-08 01:03:20,812 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-06-08 01:03:20,812 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-06-08 01:03:20,817 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-06-08 01:03:20,820 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-06-08 01:03:20,826 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-06-08 01:03:20,992 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:03:21,076 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:03:21,107 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:03:21,111 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-06-08 01:03:21,883 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-06-08 01:03:21,887 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-06-08 01:03:24,342 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-06-08 01:03:24,542 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
 java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
 	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
 	at java.util.LinkedList.get(LinkedList.java:476)
-	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2357)
-	at gUI.panels.TextEditor.addTab(TextEditor.java:2268)
-	at gUI.panels.TextEditor.<init>(TextEditor.java:752)
-	at maingUI.mainGUI$30$1.run(mainGUI.java:1155)
+	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2418)
+	at gUI.panels.TextEditor.addTab(TextEditor.java:2329)
+	at gUI.panels.TextEditor.<init>(TextEditor.java:769)
+	at gUI.utils.panelmainutils.MainGuiUtils$1.run(MainGuiUtils.java:74)
 	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
 	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
 	at java.awt.EventQueue.access$500(EventQueue.java:97)
@@ -117,43 +156,1094 @@ java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
 	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
 	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
-2019-06-05 20:58:21,032 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
-2019-06-05 20:58:26,190 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:58:34,191 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:58:42,191 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:58:50,191 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:58:58,192 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:59:06,192 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:59:14,192 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:59:22,192 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:59:30,192 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:59:38,192 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:59:46,192 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 20:59:54,193 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 21:00:02,193 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
-2019-06-05 21:00:03,444 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
-2019-06-05 21:00:03,449 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+2019-06-08 01:03:25,597 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-06-08 01:03:28,269 [AWT-EventQueue-0] INFO  gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame Starting...
+2019-06-08 01:03:29,076 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame### started
+2019-06-08 01:03:30,826 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:03:40,827 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:03:44,173 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - Closing gui.PdfSelector2TextFrame$1
+2019-06-08 01:03:46,310 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-06-08 01:03:46,319 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
 
  => Starting exit procedure...
 
 
-2019-06-05 21:00:03,449 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+2019-06-08 01:03:46,319 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
  => Closing blocking frames
-2019-06-05 21:00:03,449 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+2019-06-08 01:03:46,319 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
  => Blocking frames closed
-2019-06-05 21:00:03,449 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+2019-06-08 01:03:46,319 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
  => Autosave OFF -> configuration saving skipped
-2019-06-05 21:00:03,463 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+2019-06-08 01:03:46,336 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
  => Opened files in textEditor added to configuration
-2019-06-05 21:00:03,465 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
-2019-06-05 21:00:03,468 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
-2019-06-05 21:00:03,469 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+2019-06-08 01:03:46,337 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-06-08 01:03:46,345 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-06-08 01:03:46,345 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
 
 ##################################################
 
-Wed Jun 05 21:00:03 CEST 2019
+Sat Jun 08 01:03:46 CEST 2019
 
-ScrYpT - V0.6 CLOSED!
+ScrYpT - V0.6g CLOSED!
+
+##################################################
+
+
+2019-06-08 01:03:50,886 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Sat Jun 08 01:03:50 CEST 2019
+
+ScrYpT - V0.6g Started now!
+
+##################################################
+
+
+2019-06-08 01:03:50,959 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-06-08 01:03:51,626 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-06-08 01:03:51,907 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-06-08 01:03:52,758 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-06-08 01:03:53,049 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_6\Application\Resources_Scrypt
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Consolas,name=Consolas,style=plain,size=13]
+INLINE TABS MODE: true
+MARGIN: 12
+PREFERRED_THEME: DARK
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FILE TREE VIEW ACTIVE: true
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\AAAAAAAAdddddddddddddddddd.txt]
+DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-06-08 01:03:53,054 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-06-08 01:03:53,678 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 01:03:53,791 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-06-08 01:03:53,798 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-06-08 01:03:53,815 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-06-08 01:03:54,170 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-06-08 01:03:54,170 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-06-08 01:03:54,252 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-06-08 01:03:54,256 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-06-08 01:03:54,256 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-06-08 01:03:54,262 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-06-08 01:03:54,267 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-06-08 01:03:54,279 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-06-08 01:03:54,476 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:03:54,626 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:03:54,658 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:03:54,664 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-06-08 01:03:56,262 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-06-08 01:03:56,267 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-06-08 01:04:00,605 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-06-08 01:04:00,809 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
+	at java.util.LinkedList.get(LinkedList.java:476)
+	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2418)
+	at gUI.panels.TextEditor.addTab(TextEditor.java:2329)
+	at gUI.panels.TextEditor.<init>(TextEditor.java:769)
+	at gUI.utils.panelmainutils.MainGuiUtils$1.run(MainGuiUtils.java:74)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-06-08 01:04:01,942 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-06-08 01:04:03,478 [AWT-EventQueue-0] INFO  gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame Starting...
+2019-06-08 01:04:04,280 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:04:04,507 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame### started
+2019-06-08 01:04:14,282 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:04:21,578 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - Closing gui.PdfSelector2TextFrame$1
+2019-06-08 01:04:24,282 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:04:34,282 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:04:44,283 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:04:54,284 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:05:04,285 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:05:14,285 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:05:24,286 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:05:34,287 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:05:44,287 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:05:54,216 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-06-08 01:05:54,223 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-06-08 01:05:54,223 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Closing blocking frames
+2019-06-08 01:05:54,223 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Blocking frames closed
+2019-06-08 01:05:54,223 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Autosave OFF -> configuration saving skipped
+2019-06-08 01:05:54,238 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Opened files in textEditor added to configuration
+2019-06-08 01:05:54,240 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-06-08 01:05:54,243 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-06-08 01:05:54,244 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sat Jun 08 01:05:54 CEST 2019
+
+ScrYpT - V0.6g CLOSED!
+
+##################################################
+
+
+2019-06-08 01:05:54,288 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:05:54,288 [Thread-9] WARN  maingUI.mainGUI - ## AUTOSAVE-MANAGER Stopped (Closing ScrYpt)
+2019-06-08 01:09:53,346 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Sat Jun 08 01:09:53 CEST 2019
+
+ScrYpT - V0.6g Started now!
+
+##################################################
+
+
+2019-06-08 01:09:53,374 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-06-08 01:09:53,985 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-06-08 01:09:54,244 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-06-08 01:09:55,055 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-06-08 01:09:55,343 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_6\Application\Resources_Scrypt
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Consolas,name=Consolas,style=plain,size=13]
+INLINE TABS MODE: true
+MARGIN: 12
+PREFERRED_THEME: DARK
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FILE TREE VIEW ACTIVE: true
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\AAAAAAAAdddddddddddddddddd.txt]
+DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-06-08 01:09:55,346 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-06-08 01:09:56,002 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 01:09:56,073 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-06-08 01:09:56,080 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-06-08 01:09:56,087 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-06-08 01:09:56,437 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-06-08 01:09:56,438 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-06-08 01:09:56,522 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-06-08 01:09:56,525 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-06-08 01:09:56,525 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-06-08 01:09:56,529 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-06-08 01:09:56,540 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-06-08 01:09:56,542 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-06-08 01:09:56,725 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:09:56,813 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:09:56,848 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:09:56,852 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-06-08 01:09:57,764 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-06-08 01:09:57,771 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-06-08 01:09:58,657 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-06-08 01:09:58,856 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
+	at java.util.LinkedList.get(LinkedList.java:476)
+	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2418)
+	at gUI.panels.TextEditor.addTab(TextEditor.java:2329)
+	at gUI.panels.TextEditor.<init>(TextEditor.java:769)
+	at gUI.utils.panelmainutils.MainGuiUtils$1.run(MainGuiUtils.java:74)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-06-08 01:10:00,124 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-06-08 01:10:03,620 [AWT-EventQueue-0] INFO  gui.ImageSelector2TextFrame - gui.ImageSelector2TextFrame Starting...
+2019-06-08 01:10:03,838 [AWT-EventQueue-0] DEBUG gui.ImageSelector2TextFrame - gui.ImageSelector2TextFrame### started
+2019-06-08 01:10:06,543 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:10:09,763 [AWT-EventQueue-0] DEBUG gui.ImageSelector2TextFrame - Closing gui.ImageSelector2TextFrame$1
+2019-06-08 01:10:11,716 [AWT-EventQueue-0] INFO  gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame Starting...
+2019-06-08 01:10:12,464 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame### started
+2019-06-08 01:10:16,543 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:10:18,346 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - Closing gui.PdfSelector2TextFrame$1
+2019-06-08 01:10:19,536 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-06-08 01:10:19,544 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-06-08 01:10:19,544 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Closing blocking frames
+2019-06-08 01:10:19,544 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Blocking frames closed
+2019-06-08 01:10:19,544 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Autosave OFF -> configuration saving skipped
+2019-06-08 01:10:19,559 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Opened files in textEditor added to configuration
+2019-06-08 01:10:19,560 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-06-08 01:10:19,564 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-06-08 01:10:19,564 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sat Jun 08 01:10:19 CEST 2019
+
+ScrYpT - V0.6g CLOSED!
+
+##################################################
+
+
+2019-06-08 01:10:59,657 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Sat Jun 08 01:10:59 CEST 2019
+
+ScrYpT - V0.6g Started now!
+
+##################################################
+
+
+2019-06-08 01:10:59,668 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-06-08 01:11:00,221 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-06-08 01:11:00,467 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-06-08 01:11:01,268 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-06-08 01:11:01,517 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_6\Application\Resources_Scrypt
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Consolas,name=Consolas,style=plain,size=13]
+INLINE TABS MODE: true
+MARGIN: 12
+PREFERRED_THEME: DARK
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FILE TREE VIEW ACTIVE: true
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\AAAAAAAAdddddddddddddddddd.txt]
+DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-06-08 01:11:01,520 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-06-08 01:11:02,089 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 01:11:02,149 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-06-08 01:11:02,156 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-06-08 01:11:02,159 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-06-08 01:11:02,471 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-06-08 01:11:02,471 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-06-08 01:11:02,582 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-06-08 01:11:02,585 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-06-08 01:11:02,586 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-06-08 01:11:02,590 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-06-08 01:11:02,600 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-06-08 01:11:02,604 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-06-08 01:11:02,762 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:11:02,838 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:11:02,878 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:11:02,879 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-06-08 01:11:03,692 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-06-08 01:11:03,695 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-06-08 01:11:03,863 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-06-08 01:11:04,171 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
+	at java.util.LinkedList.get(LinkedList.java:476)
+	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2418)
+	at gUI.panels.TextEditor.addTab(TextEditor.java:2329)
+	at gUI.panels.TextEditor.<init>(TextEditor.java:769)
+	at gUI.utils.panelmainutils.MainGuiUtils$1.run(MainGuiUtils.java:74)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-06-08 01:11:05,190 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-06-08 01:11:07,132 [AWT-EventQueue-0] INFO  gui.ImageSelector2TextFrame - gui.ImageSelector2TextFrame Starting...
+2019-06-08 01:11:07,347 [AWT-EventQueue-0] DEBUG gui.ImageSelector2TextFrame - gui.ImageSelector2TextFrame### started
+2019-06-08 01:11:10,125 [AWT-EventQueue-0] DEBUG gui.ImageSelector2TextFrame - Closing gui.ImageSelector2TextFrame$1
+2019-06-08 01:11:12,080 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-06-08 01:11:12,088 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-06-08 01:11:12,088 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Closing blocking frames
+2019-06-08 01:11:12,088 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Blocking frames closed
+2019-06-08 01:11:12,088 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Autosave OFF -> configuration saving skipped
+2019-06-08 01:11:12,102 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Opened files in textEditor added to configuration
+2019-06-08 01:11:12,104 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-06-08 01:11:12,105 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-06-08 01:11:12,105 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sat Jun 08 01:11:12 CEST 2019
+
+ScrYpT - V0.6g CLOSED!
+
+##################################################
+
+
+2019-06-08 01:12:18,105 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Sat Jun 08 01:12:17 CEST 2019
+
+ScrYpT - V0.6g Started now!
+
+##################################################
+
+
+2019-06-08 01:12:18,114 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-06-08 01:12:18,636 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-06-08 01:12:18,861 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-06-08 01:12:19,635 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-06-08 01:12:19,893 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_6\Application\Resources_Scrypt
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Consolas,name=Consolas,style=plain,size=13]
+INLINE TABS MODE: true
+MARGIN: 12
+PREFERRED_THEME: DARK
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FILE TREE VIEW ACTIVE: true
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\AAAAAAAAdddddddddddddddddd.txt]
+DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-06-08 01:12:19,895 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-06-08 01:12:20,474 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 01:12:20,536 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-06-08 01:12:20,541 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-06-08 01:12:20,547 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-06-08 01:12:20,865 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-06-08 01:12:20,866 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-06-08 01:12:20,960 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-06-08 01:12:20,964 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-06-08 01:12:20,964 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-06-08 01:12:20,970 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-06-08 01:12:20,982 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-06-08 01:12:20,985 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-06-08 01:12:21,155 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:12:21,230 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:12:21,249 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:12:21,253 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-06-08 01:12:22,017 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-06-08 01:12:22,122 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-06-08 01:12:22,125 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-06-08 01:12:22,455 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
+	at java.util.LinkedList.get(LinkedList.java:476)
+	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2418)
+	at gUI.panels.TextEditor.addTab(TextEditor.java:2329)
+	at gUI.panels.TextEditor.<init>(TextEditor.java:769)
+	at gUI.utils.panelmainutils.MainGuiUtils$1.run(MainGuiUtils.java:74)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-06-08 01:12:23,585 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-06-08 01:12:25,771 [AWT-EventQueue-0] INFO  gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame Starting...
+2019-06-08 01:12:26,516 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame### started
+2019-06-08 01:12:30,470 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - Closing gui.PdfSelector2TextFrame$1
+2019-06-08 01:12:30,988 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:12:31,789 [AWT-EventQueue-0] INFO  gui.ImageSelector2TextFrame - gui.ImageSelector2TextFrame Starting...
+2019-06-08 01:12:31,799 [AWT-EventQueue-0] DEBUG gui.ImageSelector2TextFrame - gui.ImageSelector2TextFrame### started
+2019-06-08 01:12:35,558 [AWT-EventQueue-0] DEBUG gui.ImageSelector2TextFrame - Closing gui.ImageSelector2TextFrame$1
+2019-06-08 01:12:37,158 [AWT-EventQueue-0] INFO  gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame Starting...
+2019-06-08 01:12:37,331 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame### started
+2019-06-08 01:12:40,988 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:12:44,703 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - Closing gui.PdfSelector2TextFrame$1
+2019-06-08 01:12:45,828 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-06-08 01:12:45,835 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-06-08 01:12:45,835 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Closing blocking frames
+2019-06-08 01:12:45,835 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Blocking frames closed
+2019-06-08 01:12:45,835 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Autosave OFF -> configuration saving skipped
+2019-06-08 01:12:45,849 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Opened files in textEditor added to configuration
+2019-06-08 01:12:45,850 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-06-08 01:12:45,852 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-06-08 01:12:45,852 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sat Jun 08 01:12:45 CEST 2019
+
+ScrYpT - V0.6g CLOSED!
+
+##################################################
+
+
+2019-06-08 01:14:07,056 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Sat Jun 08 01:14:06 CEST 2019
+
+ScrYpT - V0.6g Started now!
+
+##################################################
+
+
+2019-06-08 01:14:07,071 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-06-08 01:14:07,600 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-06-08 01:14:07,820 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-06-08 01:14:08,603 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-06-08 01:14:08,867 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_6\Application\Resources_Scrypt
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Consolas,name=Consolas,style=plain,size=13]
+INLINE TABS MODE: true
+MARGIN: 12
+PREFERRED_THEME: DARK
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FILE TREE VIEW ACTIVE: true
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\AAAAAAAAdddddddddddddddddd.txt]
+DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-06-08 01:14:08,869 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-06-08 01:14:09,459 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 01:14:09,523 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-06-08 01:14:09,531 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-06-08 01:14:09,534 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-06-08 01:14:09,865 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-06-08 01:14:09,865 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-06-08 01:14:09,965 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-06-08 01:14:09,969 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-06-08 01:14:09,969 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-06-08 01:14:09,974 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-06-08 01:14:09,986 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-06-08 01:14:09,986 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-06-08 01:14:10,157 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:14:10,234 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:14:10,253 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:14:10,257 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-06-08 01:14:11,052 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-06-08 01:14:11,200 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-06-08 01:14:11,203 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-06-08 01:14:11,599 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
+	at java.util.LinkedList.get(LinkedList.java:476)
+	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2418)
+	at gUI.panels.TextEditor.addTab(TextEditor.java:2329)
+	at gUI.panels.TextEditor.<init>(TextEditor.java:769)
+	at gUI.utils.panelmainutils.MainGuiUtils$1.run(MainGuiUtils.java:74)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-06-08 01:14:12,697 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-06-08 01:14:19,988 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:14:29,988 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:14:39,989 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:14:49,990 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:16:22,111 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Sat Jun 08 01:16:21 CEST 2019
+
+ScrYpT - V0.6g Started now!
+
+##################################################
+
+
+2019-06-08 01:16:22,165 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-06-08 01:16:22,818 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-06-08 01:16:23,108 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-06-08 01:16:23,915 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-06-08 01:16:24,190 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_6\Application\Resources_Scrypt
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Consolas,name=Consolas,style=plain,size=13]
+INLINE TABS MODE: true
+MARGIN: 12
+PREFERRED_THEME: DARK
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FILE TREE VIEW ACTIVE: true
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\AAAAAAAAdddddddddddddddddd.txt]
+DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-06-08 01:16:24,193 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-06-08 01:16:24,731 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 01:16:24,800 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-06-08 01:16:24,808 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-06-08 01:16:24,813 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-06-08 01:16:25,137 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-06-08 01:16:25,138 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-06-08 01:16:25,230 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-06-08 01:16:25,233 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-06-08 01:16:25,233 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-06-08 01:16:25,242 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-06-08 01:16:25,245 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-06-08 01:16:25,248 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-06-08 01:16:25,429 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:16:25,515 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:16:25,553 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:16:25,557 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-06-08 01:16:26,347 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-06-08 01:16:26,349 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-06-08 01:16:26,602 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-06-08 01:16:26,871 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
+	at java.util.LinkedList.get(LinkedList.java:476)
+	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2418)
+	at gUI.panels.TextEditor.addTab(TextEditor.java:2329)
+	at gUI.panels.TextEditor.<init>(TextEditor.java:769)
+	at gUI.utils.panelmainutils.MainGuiUtils$1.run(MainGuiUtils.java:74)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-06-08 01:16:28,027 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-06-08 01:16:35,251 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:16:42,447 [AWT-EventQueue-0] INFO  gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame Starting...
+2019-06-08 01:16:43,279 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame### started
+2019-06-08 01:16:45,252 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:16:48,216 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - Closing gui.PdfSelector2TextFrame$1
+2019-06-08 01:16:49,309 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-06-08 01:16:49,316 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-06-08 01:16:49,317 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Closing blocking frames
+2019-06-08 01:16:49,317 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Blocking frames closed
+2019-06-08 01:16:49,317 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Autosave OFF -> configuration saving skipped
+2019-06-08 01:16:49,332 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Opened files in textEditor added to configuration
+2019-06-08 01:16:49,333 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-06-08 01:16:49,335 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-06-08 01:16:49,335 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sat Jun 08 01:16:49 CEST 2019
+
+ScrYpT - V0.6g CLOSED!
+
+##################################################
+
+
+2019-06-08 01:29:11,569 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Sat Jun 08 01:29:11 CEST 2019
+
+ScrYpT - V0.6g Started now!
+
+##################################################
+
+
+2019-06-08 01:29:11,581 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-06-08 01:29:12,103 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-06-08 01:29:12,331 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-06-08 01:29:13,108 [Thread-2] INFO  maingUI.mainGUI - Chosen log level: ALL
+2019-06-08 01:29:13,373 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_6\Application\Resources_Scrypt
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+FONT: java.awt.Font[family=Consolas,name=Consolas,style=plain,size=13]
+INLINE TABS MODE: true
+MARGIN: 12
+PREFERRED_THEME: DARK
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FILE TREE VIEW ACTIVE: true
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\AAAAAAAAdddddddddddddddddd.txt]
+DEFAULT OPENED FILE AT START: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-06-08 01:29:13,375 [Thread-2] INFO  maingUI.mainGUI - Initializing main GUI-start
+2019-06-08 01:29:13,887 [Thread-2] INFO  maingUI.mainGUI - Background of mainGUI setted: Resources_Scrypt/Logo-AM_v2.jpg
+2019-06-08 01:29:13,955 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-06-08 01:29:13,961 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-06-08 01:29:13,965 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-06-08 01:29:14,282 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-06-08 01:29:14,282 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html
+2019-06-08 01:29:14,394 [Thread-2] INFO  maingUI.mainGUI - ## GUI components started
+2019-06-08 01:29:14,397 [Thread-2] INFO  maingUI.mainGUI - icon image setted to main window
+2019-06-08 01:29:14,398 [Thread-2] INFO  maingUI.mainGUI - ## TITLE UPDATER started.
+2019-06-08 01:29:14,403 [Thread-2] INFO  maingUI.mainGUI - Main GUI initialized correctly.
+2019-06-08 01:29:14,408 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-06-08 01:29:14,409 [Thread-7] INFO  maingUI.mainGUI - ## MODULES FLAG UPDATER started
+2019-06-08 01:29:14,582 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:29:14,657 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:29:14,698 [Thread-2] INFO  maingUI.mainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-06-08 01:29:14,700 [Thread-2] INFO  maingUI.mainGUI - Charset setted: UTF-8
+2019-06-08 01:29:15,486 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/ReadMe.html : Loaded!
+2019-06-08 01:29:15,489 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-06-08 01:29:17,049 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-06-08 01:29:17,233 [AWT-EventQueue-0] ERROR gUI.panels.TextEditor - Error during backup before switch :(
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.LinkedList.checkElementIndex(LinkedList.java:555)
+	at java.util.LinkedList.get(LinkedList.java:476)
+	at gUI.panels.TextEditor.backupCurrentBeforeSwitch(TextEditor.java:2418)
+	at gUI.panels.TextEditor.addTab(TextEditor.java:2329)
+	at gUI.panels.TextEditor.<init>(TextEditor.java:769)
+	at gUI.utils.panelmainutils.MainGuiUtils$1.run(MainGuiUtils.java:74)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-06-08 01:29:18,211 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-06-08 01:29:23,550 [AWT-EventQueue-0] INFO  gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame Starting...
+2019-06-08 01:29:24,408 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:29:24,411 [AWT-EventQueue-0] DEBUG gui.PdfSelector2TextFrame - gui.PdfSelector2TextFrame### started
+2019-06-08 01:29:28,216 [AWT-EventQueue-0] INFO  gui.ImageSelector2TextFrame - gui.ImageSelector2TextFrame Starting...
+2019-06-08 01:29:28,228 [AWT-EventQueue-0] DEBUG gui.ImageSelector2TextFrame - gui.ImageSelector2TextFrame### started
+2019-06-08 01:29:34,408 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:29:44,408 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:29:45,555 [AWT-EventQueue-0] DEBUG gui.ImageSelector2TextFrame - Closing gui.ImageSelector2TextFrame$1
+2019-06-08 01:29:54,409 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:30:04,409 [Thread-9] INFO  maingUI.mainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-06-08 01:30:09,863 [AWT-EventQueue-0] DEBUG maingUI.mainGUI - Starting check on fileMonitor...
+2019-06-08 01:30:09,869 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-06-08 01:30:09,869 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Closing blocking frames
+2019-06-08 01:30:09,869 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Blocking frames closed
+2019-06-08 01:30:09,869 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Autosave OFF -> configuration saving skipped
+2019-06-08 01:30:09,885 [AWT-EventQueue-0] INFO  maingUI.mainGUI - 
+ => Opened files in textEditor added to configuration
+2019-06-08 01:30:09,886 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...please wait!
+2019-06-08 01:30:09,887 [AWT-EventQueue-0] INFO  maingUI.mainGUI - Deleting temp files and folders...COMPLETED :)
+2019-06-08 01:30:09,887 [AWT-EventQueue-0] INFO  maingUI.mainGUI -  ## CLOSING APPLICATION:
+
+##################################################
+
+Sat Jun 08 01:30:09 CEST 2019
+
+ScrYpT - V0.6g CLOSED!
 
 ##################################################
 

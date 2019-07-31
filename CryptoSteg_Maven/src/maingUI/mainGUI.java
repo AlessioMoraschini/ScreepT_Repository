@@ -20,7 +20,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -41,7 +40,9 @@ import org.ini4j.Wini;
 import amfileutils.FileStuff;
 import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.GenericFileChooser;
+import frameutils.ComponentResizer;
 import frameutils.GuiUtils;
+import frameutils.MovePanelMouseListener;
 import gUI.panels.AboutSectionPanel;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
@@ -53,6 +54,7 @@ import gUI.panels.TextEditor;
 import gUI.panels.TutorialPanel;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
+import gUI.utils.panelmainutils.MainGuiUtils;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
 import gui.utils.LauncherLoaderFrame;
@@ -67,7 +69,6 @@ import menusettings.MenuSetter;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,13 +98,12 @@ public class mainGUI {
 ////////////////////// GENERAL STATIC ELEMENTS /////////////////////////
 ////////////////////////////////////////////////////////////////////////
 	
-	private static final long AUTOSAVE_MANAGER_PERIOD=8000; // autosave manager constant check refresh period in millisecond
+	private static final long AUTOSAVE_MANAGER_PERIOD=10000; // autosave manager constant check refresh period in millisecond
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
 	// general application variables
-	public static final boolean PRODUCTION_VERSION = false;
-	public static final String APP_VERSION = "0.6";
-	public static final String APP_VERSION_DATE = "27/05/2019";
+	public static final String APP_VERSION = "0.6g";
+	public static final String APP_VERSION_DATE = "8/06/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
@@ -118,6 +118,7 @@ public class mainGUI {
 	public static final String SCRYPT_TUTORIAL_HTML_PATH = "Resources_Scrypt/ReadMe.html";
 	
 	public static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
+	public static final String LOG_LAUNCHER_PATH = "LAUNCHER/LOG/Launcher_Log_Trace.log";
 	public static Date now; // date used for log operations
 	
 	// icons and images
@@ -151,7 +152,7 @@ public class mainGUI {
 	private JLabel labelBACKground;
 	
 	// the main frame for placing the content
-	volatile private JFrame frmScryptV;
+	static public JFrame frmScryptV;
 	
 	// FRAMES THAT OPEN IN A NEW DIALOG
 	private static GraphicPreferencesFrame panelGuiOptions;
@@ -166,8 +167,8 @@ public class mainGUI {
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	public static TextEditor initTxtWriter;
-	private static CrypterPanel panelCrypter;
-	private ChargeIniLog configManagerPanel;
+	public static CrypterPanel panelCrypter;
+	public ChargeIniLog configManagerPanel;
 	
 	// MENU ITEMS
 	private JMenuBar menuBar;
@@ -202,6 +203,7 @@ public class mainGUI {
 	private JMenuItem mntmReturnToWelcome;
 	private JMenuItem mntmAboutScreept;
 	private JMenuItem mntmExportLog; 
+	private JMenuItem mntmEraseLogs;
 	private JMenuItem mntmTouppercaseDirectory;
 	private JMenuItem mntmDeleteDirectoryContentByExtension;
 	private JMenuItem mntmDeleteDirectoryContentRecursive;
@@ -254,6 +256,7 @@ public class mainGUI {
 	private static boolean FLAG_mntmSaveCurrentAs = false;
 	private static boolean FLAG_loadSrcrYptDefaultConf = false;
 	private static boolean FLAG_mntmExportLog = false;
+	private static boolean FLAG_mntmEraseLogs = false;
 	private static boolean FLAG_mntmTouppercaseDirectory = false;
 	private static boolean FLAG_mntmDeleteDirectoryContentByExtension = false;
 	private static boolean FLAG_mntmDeleteDirectoryContentRecursive = false;
@@ -266,6 +269,7 @@ public class mainGUI {
 	
 	// main app object reference
 	private mainGUI mainAPP = this;
+	public static MainGuiUtils mainGuiUtils;
 	
 	// loader to visualize while loading application
 	public static LauncherLoaderFrame loaderGraphics;
@@ -326,6 +330,7 @@ public class mainGUI {
 					// START MAIN WINDOW CONSTRUCTOR
 					logger.info("Initializing main GUI-start");
 					mainGUI window = new mainGUI();
+					mainGuiUtils = new MainGuiUtils(window);
 					logger.info("Main GUI initialized correctly.");
 					
 		loaderGraphics.update("Starting autosave modules... ", 25);
@@ -474,7 +479,7 @@ public class mainGUI {
 					
 					// ASK FOR USERNAME IF NULL OR FIRST TIME
 					if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-						currentConfiguration.getGenOpt().setUserName(window.askUsername());
+						currentConfiguration.getGenOpt().setUserName(mainGUI.askUsername());
 					}
 					window.startTitleUpdater();
 					
@@ -545,6 +550,7 @@ public class mainGUI {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	@SuppressWarnings("serial")
 	private void initialize() {
 
  loaderGraphics.update("Initializing screen properties...", 30);
@@ -561,12 +567,13 @@ public class mainGUI {
 		frmScryptV = new JFrame();
 		frmScryptV.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		frmScryptV.getContentPane().setBackground(SystemColor.windowText);
-		frmScryptV.setBounds(0, 0, 1600, 900 );
+		frmScryptV.setBounds(0, 0, 1500, 850 );
+		MovePanelMouseListener.applyMoveListener(frmScryptV);
+		frmScryptV.addMouseListener(new ComponentResizer());
 		
 		// FULL SCREEN SETTING
 	    frmScryptV.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frmScryptV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frmScryptV.setVisible(true);
         
         setBackgroundImage();
         
@@ -631,7 +638,6 @@ public class mainGUI {
 		    		if (!FLAG_loadPrjSub) {
 		    			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    			FLAG_loadPrjSub = true;
-						JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, DEFAULT_INI_FOLDER);
 						panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
 						FLAG_loadPrjSub = false;
@@ -658,7 +664,6 @@ public class mainGUI {
 		    	if (!FLAG_savePrjSubAs) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSubAs = true;
-					JPanel contentPane = (JPanel) frmScryptV.getContentPane();
 					INIfileChoosER panel = new INIfileChoosER(currentConfiguration, (JLabel)null);
 					panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
 					FLAG_savePrjSubAs = false;
@@ -765,6 +770,7 @@ public class mainGUI {
 		mntmExportLog = new JMenuItem(new AbstractAction("Export Event Log") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExportLog) {
+					logger.debug(" => User started logs exporting procedure.");
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmExportLog = true;
 					
@@ -784,7 +790,7 @@ public class mainGUI {
 									+ "##################################################\n\n");
 
 							// give true to overwrite because fileWriteDialog already set the value to be unique
-							if (FileStuff.copyFile(new File(LOG_PATH), selected, true)) {
+							if (FileStuff.copyFile(new File(LOG_PATH), selected, true) && FileStuff.copyFile(new File(LOG_LAUNCHER_PATH), selected, false)) {
 								JOptionPane.showMessageDialog(frmScryptV, "File correctly saved in " + selected,
 										"Log File Exported :)", JOptionPane.INFORMATION_MESSAGE);
 								logger.info("File :" + LOG_PATH + " Exported, exportFile: " + selected);
@@ -796,7 +802,39 @@ public class mainGUI {
 						} 
 					}
 					FLAG_mntmExportLog = false;
+					logger.debug(" => Logs exporting procedure ended.");
 				}
+			}
+		});
+		
+		// NOT OPENING VIEW - LOG ERASE
+		mntmEraseLogs = new JMenuItem(new AbstractAction("Erase Logs") {
+			public void actionPerformed(ActionEvent e) {
+				if (!FLAG_mntmEraseLogs) {
+					logger.debug(" => User started logs erasing procedure.");
+					Sounds.playSound(SoundsConfigurator.SOUND_CLOCK, null);
+					FLAG_mntmEraseLogs = true;
+					File LOG_MAIN_FILE = new File(LOG_PATH);
+					String coolFileSize = FileStuff.coolFileSize(LOG_MAIN_FILE.length());
+					int choice = JOptionPane.NO_OPTION;
+					String msg =  " Are you sure you to want to erase your logs? \n\n => If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]";
+					choice = JOptionPane.showConfirmDialog(frmScryptV, msg, "Erase Logs content?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					if(choice == JOptionPane.YES_OPTION) {
+						if (FileStuff.clearFileContent(LOG_PATH) && FileStuff.clearFileContent(LOG_LAUNCHER_PATH)) {
+							JOptionPane.showMessageDialog(frmScryptV, "Logs deleted - as you asked ;)", "Logs deleted", JOptionPane.INFORMATION_MESSAGE);
+							logger.debug("Files deleted");
+						}else {
+							JOptionPane.showMessageDialog(frmScryptV, "Something went wrong :( Some files may still contain stuff.", "An error occurred :(", JOptionPane.ERROR_MESSAGE);
+							logger.error("Files not deleted :: An error occurred :(");
+						}
+					} else {
+						JOptionPane.showMessageDialog(frmScryptV, "Logs not deleted - as you asked ;)", "Logs not deleted", JOptionPane.INFORMATION_MESSAGE);
+						logger.debug("Logs not deleted :: skipped by user.");
+					}
+				}
+
+				FLAG_mntmEraseLogs = false;
+				logger.debug(" => Logs erasing procedure ended.");
 			}
 		});
 
@@ -903,15 +941,18 @@ public class mainGUI {
 							if(preFullScreenSize == null) {
 								preFullScreenSize = GuiUtils.getScreenSize(frmScryptV);
 							}
-							frmScryptV.setPreferredSize(preFullScreenSize);
 							frmScryptV.dispose();
 							frmScryptV.setUndecorated(false);
 							frmScryptV.setLocationRelativeTo(null);
+							frmScryptV.setMinimumSize(new Dimension(100,100));
+							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
 							mntmFullScreenMode.setIcon(null);
 						} else {
 							frmScryptV.dispose();
 							preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
+							frmScryptV.setSize(preFullScreenSize);
+							frmScryptV.setMinimumSize(GuiUtils.getScreenSize(frmScryptV));
 							frmScryptV.setLocationRelativeTo(null);
 							frmScryptV.setVisible(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
@@ -1113,15 +1154,7 @@ public class mainGUI {
 		// open in main frame - FILE CRYPTER
 		mntmCrypter = new JMenuItem(new AbstractAction("ScreepT - Crypt and Decrypt files") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-		    	if(panelCrypter == null) {
-		    		Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-			    	panelCrypter = new CrypterPanel(currentConfiguration, mainAPP);
-		    	}
-		    	contentPane.removeAll();
-		    	contentPane.add(panelCrypter);
-		    	contentPane.revalidate(); 
-		    	contentPane.repaint();
+		    	mainGuiUtils.startCrypterPanel(false);
 		    }
 		});
 		
@@ -1129,15 +1162,7 @@ public class mainGUI {
 		mntmInspectCurrentConfiguration = new JMenuItem(new AbstractAction("Configuration Manager") {
 		    public void actionPerformed(ActionEvent ae) {
 				   
-	    		JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-	    		if (configManagerPanel == null) {
-	    			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					configManagerPanel = new ChargeIniLog(currentConfiguration, mainAPP);
-				}
-				contentPane.removeAll();
-		    	contentPane.add(configManagerPanel);
-		    	contentPane.revalidate(); 
-		    	contentPane.repaint();
+	    		mainGuiUtils.startConfigManagerPanel(false);
 		    }
 		});
 		
@@ -1145,22 +1170,7 @@ public class mainGUI {
 		mntmTextEditor = new JMenuItem(new AbstractAction("Text Editor") {
 			public void actionPerformed(ActionEvent e) {
 				
-				frmScryptV.setCursor(GuiUtils.CURSOR_WAIT);
-				
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						JPanel contentPane = (JPanel) frmScryptV.getContentPane();
-						if(initTxtWriter == null) {
-							Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-							initTxtWriter = new TextEditor(mainAPP, currentConfiguration);
-						}		    	
-				    	contentPane.removeAll();
-				    	contentPane.add(initTxtWriter);
-				    	contentPane.revalidate(); 
-				    	contentPane.repaint();
-				    	frmScryptV.setCursor(GuiUtils.CURSOR_DEFAULT);
-					}
-				});
+				mainGuiUtils.startTextEditor(false);
 			}
 		});
 		
@@ -1293,6 +1303,7 @@ public class mainGUI {
 			mnHelp.add(mntmAboutScreept);		
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmExportLog);
+			mnHelp.add(mntmEraseLogs);
 			mnHelp.add(mntmUserDocumentation);
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmReturnToWelcome);
@@ -1374,6 +1385,7 @@ public class mainGUI {
 		mntmReturnToWelcome.setFont(menuItemFont);
 		mntmAboutScreept.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
+		mntmEraseLogs.setFont(menuItemFont);
 		mntmUserDocumentation.setFont(menuItemFont);
 	}
 	
@@ -1438,6 +1450,7 @@ public class mainGUI {
 		// Help submenu
 		mntmAboutScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
+		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
 		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));
 	}
@@ -1634,6 +1647,12 @@ public class mainGUI {
 			panelNetInfo.dispose();
 		}
 		
+		if(initTxtWriter != null) {
+			if(initTxtWriter.propertiesFrame != null) {
+				initTxtWriter.propertiesFrame.dispose();
+			}
+		}
+		
 		logger.info("\n => Blocking frames closed");
 	}
 	
@@ -1706,7 +1725,7 @@ public class mainGUI {
 				mntmTextEditor.doClick();
 				for(TabTextEditorObj tabElement : TextEditor.loadedList) {
 					if(tabElement.unsaved && tabElement.loadedFile == null) {
-						initTxtWriter.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
+						TextEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
 						return false; // don't exit
 					}
 				}
@@ -1885,8 +1904,8 @@ public class mainGUI {
 		return panelCrypter;
 	}
 
-	public void setPanelCrypter(CrypterPanel panelCrypter) {
-		this.panelCrypter = panelCrypter;
+	public static void setPanelCrypter(CrypterPanel panelCrypteR) {
+		panelCrypter = panelCrypteR;
 	}
 	
 }

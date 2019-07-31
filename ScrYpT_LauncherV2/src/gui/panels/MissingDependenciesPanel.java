@@ -16,6 +16,7 @@ import java.awt.Button;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import om.OSinfo;
+import resources.IconsPathConfigurator;
 import utils.SysUtils;
 
 import javax.swing.JLabel;
@@ -38,6 +39,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
@@ -258,13 +260,10 @@ public class MissingDependenciesPanel extends JDialog{
 	}
 	
 	private void setGraphics(){
-		try {
-			thisPanel.setIconImage(ImageIO.read(new File("Resources_Scrypt/icon.jpg")));
-			logger.debug("icon image setted to main window");
-		} catch (IOException e1) {
-			logger.error("Exception happened!", e1);
-		}
+		thisPanel.setIconImage(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT).getImage());
+		GuiUtils.showOnSameScreen(parentStarterFrame);
 		
+		logger.debug("icon image setted to main window");
 		UIManager.put("ToolTip.background", new Color(255, 250, 205));
 	}
 	

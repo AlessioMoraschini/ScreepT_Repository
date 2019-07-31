@@ -33,6 +33,7 @@ import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
+import guistyle.GUIStyelSettings;
 import maingUI.mainGUI;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
@@ -41,7 +42,6 @@ import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
-import utils.SysUtils;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
@@ -1037,15 +1037,17 @@ public class CrypterPanel extends JPanel {
 		panelMainContainer.add(scrollPaneText, "cell 2 4 1 4,grow");
 		
 		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");
-		textAreaMain.append("\n\n#####################################################################################\n");
-		textAreaMain.append(    "###############################__I'M READY__#########################################");
-		textAreaMain.append("  \n#####################################################################################\n");
-		textAreaMain.append("\n\n => 1 load source files or drop them on right panel with file tree");
-		textAreaMain.append("\n\n => 2 choose a modality between only aes, only steg or complete using the selector on top-left bar");
-		textAreaMain.append("\n\n => 2a if complete or steg mode is selected, you have to import fom dictionary a key Image, or use the one-use button to specify an image that will not be remembered");
-		textAreaMain.append("\n\n => 3 enter a password in the given field");
-		textAreaMain.append("\n\n => 4 press creept or drecreept to start process :)");
-		textAreaMain.append("\n\n PS: right click is your friend ;)");
+		StringBuilder builder = new StringBuilder();
+		builder.append("\n\n#####################################################################################\n")
+			   .append(    "###############################__I'M READY__#########################################")
+			   .append("  \n#####################################################################################\n")
+			   .append("\n\n => 1 load source files or drop them on right panel with file tree")
+			   .append("\n\n => 2 choose a modality between only aes, only steg or complete using the selector on top-left bar")
+			   .append("\n\n => 2a if complete or steg mode is selected, you have to import fom dictionary a key Image,")
+			   .append("or use the one-use button to specify an image that will not be remembered")
+		 	   .append("\n\n => 3 enter a password in the given field")
+		 	   .append("\n\n => 4 press creept or drecreept to start process :)")
+		       .append("\n\n PS: right click is your friend ;)");
 
 	}
 	
@@ -1601,6 +1603,8 @@ public class CrypterPanel extends JPanel {
 		textAreaLog.setFont(new Font(logFont.getName(), logFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()-1));
 		textAreaMain.setFont(new Font(mainAreaFont.getName(), mainAreaFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()));
 		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
+		GUIStyelSettings.applyNimbusSize(currentConf.getGuiOpt().nimbusSize);
+		GUIStyelSettings.updateAllWindowsLaf();
 	}
 	
 	public void showMessageImageNotSupported() {

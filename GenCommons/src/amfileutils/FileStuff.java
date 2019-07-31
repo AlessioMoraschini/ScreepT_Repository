@@ -71,7 +71,7 @@ public class FileStuff {
 			
 		} catch (FileNotFoundException e) {
 			esit = false;
-			logger.error(e);
+			logger.error("FILE NOT CLEARED!", e);
 		}
 		return esit;
 	}

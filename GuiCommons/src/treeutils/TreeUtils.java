@@ -52,6 +52,10 @@ public class TreeUtils {
 	 */
 	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree){
 		
+		if(fileToSelect == null || tree == null) {
+			return;
+		}
+		
 		File root = ((FileNamed)tree.getModel().getRoot()).mFile;
 		LinkedList<File> nodes = new LinkedList<File>();
 		File current = new File(fileToSelect.getAbsolutePath());

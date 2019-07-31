@@ -32,12 +32,12 @@ public class TabTextEditorObj {
 		loadedFile = file;
 		txtAreaInitType = (initTxtAreaType != null && initTxtAreaType >= 0 && initTxtAreaType < 4)? initTxtAreaType : txtAreaInitType;
 		textArea = new RSyntaxTextArea();
-		textArea.setMinimumSize(new Dimension(300,200));
+		textArea.setMinimumSize(new Dimension(300,100));
 		
 		currentScrollPane = new RTextScrollPane(textArea);
 		currentScrollPane.setBorder(new LineBorder(Color.GRAY, 2));
 		currentScrollPane.setBackground(Color.DARK_GRAY);
-		currentScrollPane.setMinimumSize(new Dimension(300,200));
+		currentScrollPane.setMinimumSize(new Dimension(300,100));
 		currentScrollPane.getGutter().setBackground(new Color(30,30,30));
 		currentScrollPane.getGutter().setForeground(Color.LIGHT_GRAY);
 		currentScrollPane.getGutter().setLineNumberFont(DEFAULT_FONT);
