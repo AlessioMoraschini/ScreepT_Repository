@@ -64,22 +64,18 @@ public class MainGuiUtils {
 	}
 	
 	public void startTextEditor(boolean forceRestart) {
-		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
 		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-				if(mainGUI.initTxtWriter == null || forceRestart) {
-					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					mainGUI.initTxtWriter = new TextEditor(mainAppReference, mainGUI.currentConfiguration);
-				}		    	
-		    	contentPane.removeAll();
-		    	contentPane.add(mainGUI.initTxtWriter);
-		    	contentPane.revalidate(); 
-		    	contentPane.repaint();
-		    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
-			}
-		});
+		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
+		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+		if(mainGUI.initTxtWriter == null || forceRestart) {
+			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+			mainGUI.initTxtWriter = new TextEditor(mainAppReference, mainGUI.currentConfiguration);
+		}		    	
+    	contentPane.removeAll();
+    	contentPane.add(mainGUI.initTxtWriter);
+    	contentPane.revalidate(); 
+    	contentPane.repaint();
+    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 	}
 	
 	/**

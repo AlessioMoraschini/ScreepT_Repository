@@ -29,8 +29,15 @@ public class ColorDialogUtils extends JColorChooser{
 		thisChooser = this;
 		colorEsit = false;
 		String title = (foreground)? "Choose Text color" : "Choose Background color";
-		Color selectedLineBackup = ((RSyntaxTextArea)targetComponent).getCurrentLineHighlightColor();
-		Color backupColor = (foreground)? targetComponent.getForeground() : targetComponent.getBackground();
+		Color selectedLineBackup;
+		Color backupColor;
+		if (targetComponent instanceof RSyntaxTextArea) {
+			selectedLineBackup = ((RSyntaxTextArea)targetComponent).getCurrentLineHighlightColor();
+			backupColor = (foreground)? targetComponent.getForeground() : targetComponent.getBackground();
+		}else {
+			selectedLineBackup = targetComponent.getBackground();
+			backupColor = (foreground)? targetComponent.getForeground() : targetComponent.getBackground();
+		}
 		
 		thisChooser.getSelectionModel().setSelectedColor(backupColor);
 		thisChooser.getSelectionModel().addChangeListener(new ChangeListener() {
@@ -58,10 +65,14 @@ public class ColorDialogUtils extends JColorChooser{
 				Color color = thisChooser.getColor();
 				if (color != null) {
 					if (foreground) {
-						RsyntaxUtils.setForeground((RSyntaxTextArea)targetComponent, color);
+						if (targetComponent instanceof RSyntaxTextArea) {
+							RsyntaxUtils.setForeground((RSyntaxTextArea)targetComponent, color);
+						}
 						targetComponent.setForeground(color);
 					}else {
-						RsyntaxUtils.setBackground((RSyntaxTextArea)targetComponent, color);
+						if (targetComponent instanceof RSyntaxTextArea) {
+							RsyntaxUtils.setBackground((RSyntaxTextArea)targetComponent, color);
+						}
 						targetComponent.setBackground(color);
 					}
 					colorEsit = true;
@@ -72,10 +83,14 @@ public class ColorDialogUtils extends JColorChooser{
 			public void actionPerformed(ActionEvent e) {
 				if (foreground) {
 					targetComponent.setForeground(backupColor);
-					RsyntaxUtils.setForeground((RSyntaxTextArea)targetComponent, backupColor);
+					if (targetComponent instanceof RSyntaxTextArea) {
+						RsyntaxUtils.setForeground((RSyntaxTextArea)targetComponent, backupColor);
+					}
 				}else {
 					targetComponent.setBackground(backupColor);
-					RsyntaxUtils.setBackground((RSyntaxTextArea)targetComponent, backupColor);
+					if (targetComponent instanceof RSyntaxTextArea) {
+						RsyntaxUtils.setBackground((RSyntaxTextArea)targetComponent, backupColor);
+					}
 				}
 				colorEsit = false;
 			}
@@ -85,7 +100,9 @@ public class ColorDialogUtils extends JColorChooser{
 		if(colorEsit) {
 			return thisChooser.getColor();
 		}else {
-			((RSyntaxTextArea)targetComponent).setCurrentLineHighlightColor(selectedLineBackup);
+			if (targetComponent instanceof RSyntaxTextArea) {
+				((RSyntaxTextArea)targetComponent).setCurrentLineHighlightColor(selectedLineBackup);
+			}
 			return null;
 		}
 	}

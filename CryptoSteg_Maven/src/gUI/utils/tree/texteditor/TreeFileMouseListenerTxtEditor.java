@@ -1,21 +1,27 @@
 package gUI.utils.tree.texteditor;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import frameutils.FilePropertiesFrame;
 import frameutils.GuiUtils;
 import gUI.panels.TextEditor;
@@ -23,6 +29,9 @@ import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 import splitpanel.FileNamed;
 import treeutils.TreeUtils;
+import utils.ColorDialogUtils;
+import utils.RsyntaxUtils;
+import variousutils.HandleString;
 
 public class TreeFileMouseListenerTxtEditor {
 	
@@ -34,6 +43,13 @@ public class TreeFileMouseListenerTxtEditor {
 	private FileNamed selectedNode;
 	private TextEditor textEditor;
 	private JFrame propertiesFrame = null; 
+	
+	public JMenuItem itemLoadFile;
+	public JMenuItem itemNewFile;
+	public JMenuItem sysExplorerItem;
+	public JMenuItem refreshItem;
+	public JMenuItem propertiesItem;
+	public JMenuItem changeBckgItem;
 	
 	// constructor
 	public TreeFileMouseListenerTxtEditor(JTree tree, TextEditor textEdit){
@@ -86,21 +102,29 @@ public class TreeFileMouseListenerTxtEditor {
 	private JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
-	    JMenuItem itemLoadFile = new JMenuItem("Open File");
+	    itemLoadFile = new JMenuItem("Open File");
 	    itemLoadFile.addActionListener(getLoadActionListener());
 	    menu.add(itemLoadFile);
+
+	    itemNewFile = new JMenuItem("New File");
+	    itemNewFile.addActionListener(getNewFileActionListener());
+	    menu.add(itemNewFile);
 	    
-	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    sysExplorerItem = new JMenuItem("View in system explorer");
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 	    
-	    JMenuItem refreshItem = new JMenuItem("Refresh tree");
+	    refreshItem = new JMenuItem("Refresh tree");
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 	    
-	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    propertiesItem = new JMenuItem("File Properties");
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);
+	    
+	    changeBckgItem = new JMenuItem("Change file Panel background");
+	    changeBckgItem.addActionListener(ChangeBckgNewFileActionListener());
+	    menu.add(changeBckgItem);
 	       
 	    // set menu icons
 	    MenuSetter.setIconTextGap(menu, 12);
@@ -109,23 +133,44 @@ public class TreeFileMouseListenerTxtEditor {
 	    itemLoadFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD));
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+	    itemNewFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
+	    changeBckgItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BG_COLOR));
 
 	    return menu;
 	}
+	
 	
 	private ActionListener refreshListener() {
 		return new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (TextEditor.loadedTabObj != null && TextEditor.loadedTabObj.loadedFile != null) {
-					tree.setModel(new FileTreeNamedModel(new FileNamed(TextEditor.loadedTabObj.loadedFile.getParentFile().getParentFile())));
-					tree.revalidate();
-					tree.repaint();
-					TreeUtils.selectFileInNamedFileTree(TextEditor.loadedTabObj.loadedFile, tree);
+				if (TextEditor.loadedTabObj != null) {
+					refreshPathFromAncestor(TextEditor.loadedTabObj.loadedFile);
 				}
 			}
 		};
+	}
+	
+	private boolean refreshPathFromAncestor(File currentFile) {
+		File ancestor = null;
+		if (currentFile != null) {
+			ancestor = currentFile.getParentFile().getParentFile();
+			if(!currentFile.exists()) {
+				TextEditor.loadedTabObj.unsaved = true;
+				TextEditor.updateSavedLabelNTab(null);
+			}
+		}else {
+			return false;
+		}
+		
+		if(ancestor != null) {
+			tree.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
+			tree.revalidate();
+			tree.repaint();
+			TreeUtils.selectFileInNamedFileTree(currentFile, tree);
+		}
+		return true;
 	}
 	
 	private ActionListener propertiesListener() {
@@ -178,6 +223,71 @@ public class TreeFileMouseListenerTxtEditor {
 			}
 		};
 	}
+	public ActionListener ChangeBckgNewFileActionListener() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Color esit = new ColorDialogUtils().askForColor(textEditor.leftSplitTreeFiles, false);
+				if (esit != null) {
+					textEditor.currentConfiguration.getTextEditorOpt().setFilePanelBackCol(esit);
+					textEditor.leftSplitTreeFiles.setBackground(esit);
+					logger.debug("File panel Background color changed to : " + HandleString.getRgbString(esit));
+				}
+			}
+		};
+	}
+	
+	private ActionListener getNewFileActionListener() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+				File selected = new File(""); 
+				if(selectedNode != null && selectedNode.mFile != null && !TextEditor.alreadyLoading) {
+					selected = selectedNode.mFile;
+				}else if(textEditor.loadedTabObj.loadedFile != null) {
+					selected = textEditor.loadedTabObj.loadedFile;
+				}else {
+					TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+					return;
+				}
+				
+				selected = FileStuff.renameJavaObjFile(selected);
+				String newName = JOptionPane.showInputDialog("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
+				if(newName == null) {
+					TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+					return;
+				}
+				newName = (!newName.equals(""))? newName : "NewFile.txt";
+				selected = new File(selected.getParentFile().getAbsolutePath() + "/" + newName);
+				selected = FileStuff.renameJavaObjFile(selected);
+				
+				try {
+					// create, load, and refresh tree
+					if (!selected.createNewFile()) {
+						String msg = "File not created";
+						logger.warn(msg);
+						JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.WARNING_MESSAGE);
+						TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						return;
+					}
+					textEditor.loadFile(selected);
+					if (TextEditor.loadedTabObj != null) {
+						refreshPathFromAncestor(TextEditor.loadedTabObj.loadedFile);
+					}
+				} catch (IOException e1) {
+					String msg = "Error creating new file";
+					logger.error(msg, e1);
+					JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.ERROR_MESSAGE);
+				}
+				
+				TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						
+			}
+		};
+	}
 	
 	private ActionListener openInSystemExplorer() {
 		return new ActionListener() {
@@ -188,5 +298,48 @@ public class TreeFileMouseListenerTxtEditor {
 			}
 		};
 	}
+
+	public JMenuItem getItemLoadFile() {
+		return itemLoadFile;
+	}
+
+	public void setItemLoadFile(JMenuItem itemLoadFile) {
+		this.itemLoadFile = itemLoadFile;
+	}
+
+	public JMenuItem getItemNewFile() {
+		return itemNewFile;
+	}
+
+	public void setItemNewFile(JMenuItem itemNewFile) {
+		this.itemNewFile = itemNewFile;
+	}
+
+	public JMenuItem getSysExplorerItem() {
+		return sysExplorerItem;
+	}
+
+	public void setSysExplorerItem(JMenuItem sysExplorerItem) {
+		this.sysExplorerItem = sysExplorerItem;
+	}
+
+	public JMenuItem getRefreshItem() {
+		return refreshItem;
+	}
+
+	public void setRefreshItem(JMenuItem refreshItem) {
+		this.refreshItem = refreshItem;
+	}
+
+	public JMenuItem getPropertiesItem() {
+		return propertiesItem;
+	}
+
+	public void setPropertiesItem(JMenuItem propertiesItem) {
+		this.propertiesItem = propertiesItem;
+	}
+	
+	// GETTERS AND SETTERS FOR MENU CLICKABLE
+	
 	
 }

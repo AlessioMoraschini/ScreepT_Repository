@@ -3,6 +3,7 @@ package guistyle;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Window;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class GUIStyelSettings{
     public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
 			UIManager.put( "MenuBar.foreground", Color.black );
+			UIManager.put("ToolTip.font", new Font("Segoe UI", Font.PLAIN, 18));
 			UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
 			UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
 //			UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));

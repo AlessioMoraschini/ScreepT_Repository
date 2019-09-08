@@ -115,23 +115,25 @@ public class INItializer {
 	 */
 	public synchronized void writeCurrentConfigIniFile() {
 		
-		// set INIFILE-AES OPTIONS
-		iniFile.put(AES_OPT, "flagCodificaAes", aesOpt.isFlagAes());
-		
-		writeFileOptions();
-		writeGeneralOptions();
-		writeGuiOptions();
-		writeImgConverterOptions();
-		writeTxtEditOptions();
-		writeSteganoOptions();
-		
-	logger.info("Configuration written to: "+iniFile.getFile().getAbsolutePath() + this.toStringa());
-		
-		// WRITE ALL VALUES TO FILE
-		try {
-			iniFile.store();
-		} catch (IOException e) {
-			logger.error("Exception happened!", e);
+		synchronized(iniFile) {
+			// set INIFILE-AES OPTIONS
+			iniFile.put(AES_OPT, "flagCodificaAes", aesOpt.isFlagAes());
+			
+			writeFileOptions();
+			writeGeneralOptions();
+			writeGuiOptions();
+			writeImgConverterOptions();
+			writeTxtEditOptions();
+			writeSteganoOptions();
+			
+			logger.info("Configuration written to: "+iniFile.getFile().getAbsolutePath() + this.toStringa());
+			
+			// WRITE ALL VALUES TO FILE
+			try {
+				iniFile.store();
+			} catch (IOException e) {
+				logger.error("Exception happened!", e);
+			}
 		}
 	}
 	
@@ -241,15 +243,25 @@ public class INItializer {
 	public void loadTxtEditorOptions() {
 		// TEXT EDITOR OPTIONS
 		String fontStr = iniReadFile.get(TEXT_EDITOR_OPT, "font");
+		String FilePanelbackColStr = iniReadFile.get(TEXT_EDITOR_OPT, "filePanelBackgroundCol");
 		String backColStr = iniReadFile.get(TEXT_EDITOR_OPT, "backgroundCol");
 		String foreColStr = iniReadFile.get(TEXT_EDITOR_OPT, "foregroundCol");
 		String selectedAtStartStr = iniReadFile.get(TEXT_EDITOR_OPT, "selectedFileAtStart");
-		Font font = (!"".equals(fontStr))? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
-		Color backCol = (!"".equals(backColStr))? HandleString.getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
-		Color foreCol = (!"".equals(foreColStr))? HandleString.getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
-		String selectedFileAtStart = (!"".equals(selectedAtStartStr))? selectedAtStartStr : TextEditorOption.DEFAULT_SELECTED_FILE_AT_START;
+		Font font = (!"".equals(fontStr) && fontStr!= null)? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
+		Color backCol = (!"".equals(backColStr) && backColStr!= null)? HandleString.getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
+		Color filePanelBackCol = (!"".equals(FilePanelbackColStr) && FilePanelbackColStr!= null)? HandleString.getRgbColorFromString(FilePanelbackColStr) : TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
+		Color foreCol = (!"".equals(foreColStr) && foreColStr!= null)? HandleString.getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
+		String selectedFileAtStart = (!"".equals(selectedAtStartStr) && selectedAtStartStr!= null)? selectedAtStartStr : TextEditorOption.DEFAULT_SELECTED_FILE_AT_START;
+		int tabSize = 2;
+		try {
+			tabSize = Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "tabSize"));
+		} catch (Exception e) {
+			logger.error("Exception happened!", e);
+		}
 		
 		textEditorOpt.setFont(font);
+		textEditorOpt.setTabSize(tabSize);
+		textEditorOpt.setFilePanelBackCol(filePanelBackCol);
 		textEditorOpt.setBackCol(backCol);
 		textEditorOpt.setForeCol(foreCol);
 		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
@@ -329,7 +341,7 @@ public class INItializer {
 		imageConvertOption.setAlgorithm(ScalingAlgorithm.valueOf(algo));
 	}
 	
-	// READ PROPERTIES
+	// WRITE PROPERTIES
 	
 	public void writeFileOptions() {
 		// set INIFILE-FILE OPTIONS
@@ -408,9 +420,11 @@ public class INItializer {
 		// TEXT EDITOR OPTIONS
 		iniFile.put(TEXT_EDITOR_OPT, "inlineTabs", textEditorOpt.isInlinedTabs());
 		iniFile.put(TEXT_EDITOR_OPT, "font", HandleString.getFontString(textEditorOpt.font));
+		iniFile.put(TEXT_EDITOR_OPT, "filePanelBackgroundCol", HandleString.getRgbString(textEditorOpt.filePanelBackCol));
 		iniFile.put(TEXT_EDITOR_OPT, "backgroundCol", HandleString.getRgbString(textEditorOpt.backCol));
 		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", HandleString.getRgbString(textEditorOpt.foreCol));
 		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
+		iniFile.put(TEXT_EDITOR_OPT, "tabSize", textEditorOpt.tabSize);
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredTheme", textEditorOpt.selectedTheme);
 		iniFile.put(TEXT_EDITOR_OPT, "fileTreeActive", textEditorOpt.fileTreeActive);
@@ -419,7 +433,7 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "breakLineActive", textEditorOpt.breaklineActive);
 		iniFile.put(TEXT_EDITOR_OPT, "txtAreaDetailLevel", textEditorOpt.txtAreaDetailLevel);
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
-//		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles );
+//		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
 	}
 	
 	/**
@@ -543,7 +557,9 @@ public class INItializer {
 			   .append("FONT: ").append(textEditorOpt.font)
 			   .append("\nINLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
+			   .append("\nTAB_SIZE: ").append(textEditorOpt.tabSize)
 			   .append("\nPREFERRED_THEME: ").append(textEditorOpt.selectedTheme)
+			   .append("\nFILE_PANEL_BACKGROUND_COLOR: ").append(textEditorOpt.filePanelBackCol)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
 			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)

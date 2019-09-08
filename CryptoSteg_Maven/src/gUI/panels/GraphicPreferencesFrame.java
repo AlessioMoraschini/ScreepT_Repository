@@ -94,6 +94,8 @@ public class GraphicPreferencesFrame extends JFrame {
 	public static boolean active = false;
 
 	private INItializer currentConfiguration;
+	
+	private Font initialTxtEditorFont; 
 
 	public GraphicPreferencesFrame(INItializer currentConf) {
 
@@ -101,6 +103,7 @@ public class GraphicPreferencesFrame extends JFrame {
 
 		currentConfiguration = currentConf;
 		active = true;
+		initialTxtEditorFont = currentConfiguration.getTextEditorOpt().getFont();
 
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
 		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
@@ -277,6 +280,7 @@ public class GraphicPreferencesFrame extends JFrame {
 		addHandlers();
 		
 		initGuiFromConfig();
+		TextEditor.loadedTabObj.textArea.setFont(initialTxtEditorFont);
 	}
 
 	private void addHandlers() {
@@ -393,14 +397,21 @@ public class GraphicPreferencesFrame extends JFrame {
 					JOptionPane.showMessageDialog(thisFrame,
 							"Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.",
 							"Saved!", JOptionPane.INFORMATION_MESSAGE);
+					TextEditor.resetDividerColor();
+					TextEditor.applyStyleToTabs();
+					logger.debug("Configuration saved: \n" + currentConfiguration.toStringa());
+
+					// dispose();
+					dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
+					
 
 				} else {
 					JOptionPane.showMessageDialog(thisFrame, "Ok, I wont save theese settings ;)", "Not saved!",
 							JOptionPane.WARNING_MESSAGE);
+					TextEditor.resetDividerColor();
+					TextEditor.applyStyleToTabs();
 				}
-				TextEditor.resetDividerColor();
-//				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditor.applyStyleToTabs();
+				
 			}
 		});
 

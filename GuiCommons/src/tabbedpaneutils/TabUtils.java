@@ -27,7 +27,7 @@ public class TabUtils {
 	public static final int TAB_TITLE_ORDER = 1;
 	public static final int TAB_BUTTON_CLOSE_ORDER = 2;
 	
-	public static final int MAX_TAB_LABELENGHT = 30;
+	public static final int MAX_TAB_LABELENGHT = 120;
 	
 	/**
 	 * Tab style = title + icon + tooltip + close button (action listener correlated)
@@ -43,7 +43,7 @@ public class TabUtils {
 
 		// tab title
 		JLabel lblTitle = new JLabel();
-		lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 9));
+		lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		lblTitle.setText(HandleString.fitToMaxLentgh(title, MAX_TAB_LABELENGHT));
 		
 		// image label
@@ -74,7 +74,7 @@ public class TabUtils {
 		// button close
 		JButton btnClose = new JButton();
 		btnClose = applyStyleToTabCloseBtn(btnClose);
-		Dimension btnDimension = new Dimension(14, 20) ;
+		Dimension btnDimension = new Dimension(16, 22) ;
 		btnClose.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		btnClose.setMinimumSize(btnDimension);
 		btnClose.setPreferredSize(btnDimension);
@@ -144,10 +144,12 @@ public class TabUtils {
 			public void mouseExited(MouseEvent e) {
 				btnClose.setForeground(foreground);
 				btnClose.setBackground(background);
+				btnClose.setText("x");
 			}
 			public void mouseEntered(MouseEvent e) {
 				btnClose.setForeground(Color.WHITE);
 				btnClose.setBackground(background.brighter());
+				btnClose.setText("X");
 			}
 			public void mouseClicked(MouseEvent e) {
 			}

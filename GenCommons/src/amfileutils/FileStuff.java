@@ -739,13 +739,12 @@ public class FileStuff {
 	 * @return
 	 */
 	public static boolean appendFileTxtArea(File txtFile, JTextArea textArea_1, boolean goToStart) {
-
+		
+		int originalPosition = textArea_1.getCaretPosition();
+		
 		if(txtFile == null) {
 			return false;
-		}
-
-		else {
-//				textArea_1.read(reader, null);
+		}else {
 				StringBuilder builder = new StringBuilder(100000);
 				try {
 					FileInputStream readerStream = new FileInputStream(txtFile);
@@ -773,7 +772,11 @@ public class FileStuff {
 				if (goToStart) {
 					textArea_1.setCaretPosition(0);
 				}else try{
-					textArea_1.setCaretPosition(textArea_1.getDocument().getLength()-1);
+					if(originalPosition > textArea_1.getText().length()) {
+						textArea_1.setCaretPosition(textArea_1.getDocument().getLength()-1);						
+					}else {
+						textArea_1.setCaretPosition(originalPosition);
+					}
 				}catch (Exception e) {
 					// avoided outOfBounds
 				}

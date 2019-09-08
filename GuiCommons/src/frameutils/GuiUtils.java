@@ -7,6 +7,7 @@ import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -20,6 +21,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.RootPaneContainer;
+import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
@@ -33,6 +36,13 @@ public class GuiUtils {
 	public static final Cursor CURSOR_DEFAULT = Cursor.getDefaultCursor();
 	public static final Cursor CURSOR_TEXT = new Cursor(Cursor.TEXT_CURSOR);
 	public static final Cursor CURSOR_HAND = new Cursor(Cursor.HAND_CURSOR);
+	
+	public static void setupTooltips(int delay, int timeout, Font font) {
+		// Tooltip General settings
+		ToolTipManager.sharedInstance().setInitialDelay(delay);
+		ToolTipManager.sharedInstance().setDismissDelay(timeout);
+		UIManager.put("ToolTip.font", font);
+	}
 	
 	public static boolean setFrameIcon(Image icon, JFrame frameToSet) {
 		if(icon != null) {
@@ -90,6 +100,11 @@ public class GuiUtils {
 	
 	public static Dimension getScreenSize() {
 		return Toolkit.getDefaultToolkit().getScreenSize();
+	}
+	
+	public static void maximizeFrameSize(JFrame targetFrame) {
+	    Dimension screenSize = getScreenSize();
+	    targetFrame.setSize(screenSize.width, screenSize.height);
 	}
 	
 	public static Dimension makeFullScreen(Component element) {

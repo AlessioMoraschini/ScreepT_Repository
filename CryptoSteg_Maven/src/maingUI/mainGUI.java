@@ -102,8 +102,8 @@ public class mainGUI {
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
 	// general application variables
-	public static final String APP_VERSION = "0.6g";
-	public static final String APP_VERSION_DATE = "8/06/2019";
+	public static final String APP_VERSION = "0.7";
+	public static final String APP_VERSION_DATE = "04/09/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
@@ -138,7 +138,8 @@ public class mainGUI {
 	public static String currentJvmVersion = "";
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = "1.9.0";
 	
-	public static final int TOOLTIP_DELAY = 400;
+	public static final int TOOLTIP_DELAY = 400; // 0,4 seconds
+	public static final int TOOLTIP_TIMEOUT = 30000; // 30 seconds
 	
 	// default button and generic font definitions
 	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(16, 12);
@@ -428,7 +429,7 @@ public class mainGUI {
 										autosaveModule.interrupt();
 										logger.warn("## AUTOSAVE-MANAGER: [AUTOSAVE OFF] autosave module interrupted.");
 									}else {
-										logger.info("## AUTOSAVE-MANAGER: running -> [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
+										logger.debug("## AUTOSAVE-MANAGER: running -> [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
 									}
 									
 								} catch (InterruptedException e) {
@@ -1237,7 +1238,8 @@ public class mainGUI {
 				logger.error("Exception happened!", e3);
 			}
 		}
-		ToolTipManager.sharedInstance().setInitialDelay(TOOLTIP_DELAY);
+		
+		GuiUtils.setupTooltips(TOOLTIP_DELAY, TOOLTIP_TIMEOUT, new Font("Segoe UI", Font.PLAIN, 16));
 		
 		// try to set preferred charset
 		try {
@@ -1824,6 +1826,14 @@ public class mainGUI {
 		return mntmSaveCurrentAs;
 	}
 
+	public JMenuItem getMntmSaveCurrent() {
+		return mntmSaveCurrent;
+	}
+
+	public void setMntmSaveCurrent(JMenuItem mntmSaveCurrent) {
+		this.mntmSaveCurrent = mntmSaveCurrent;
+	}
+	
 	public JMenuItem getMntmloadSrcrYptDefaultConf() {
 		return mntmloadSrcrYptDefaultConf;
 	}

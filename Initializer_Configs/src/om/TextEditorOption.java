@@ -15,12 +15,14 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_TAB_INLINE = true;
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	public static final Color DEFAULT_BACKGROUND_COL = new Color(250,250,250);
+	public static final Color DEFAULT_FILE_PANEL_BACKGROUND_COL = new Color(41, 49, 52);
 	public static final Color DEFAULT_FOREGROUND_COL = Color.BLACK;
 	public static final String DEFAULT_SELECTED_FILE_AT_START = "";
 	public static final Themes DEFAULT_SELECTED_THEME = Themes.DARK;
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
 	public static final int DEFAULT_DIVIDER_POS_X = 230;
 	public static final int DEFAULT_TXT_AREA_DETAIL = 2;
+	public static final int DEFAULT_TAB_SIZE = 2;
 	public static final boolean DEFAULT_ANTIALIASED_TXT_AREA = false;
 	public static final boolean DEFAULT_BREAK_LINE = false;
 	
@@ -29,6 +31,7 @@ public class TextEditorOption {
 	public int voiceRate;
 	public boolean inlinedTabs;
 	public Font font;
+	public Color filePanelBackCol;
 	public Color backCol;
 	public Color foreCol;
 	public ArrayList<String> openedFileList;
@@ -36,6 +39,7 @@ public class TextEditorOption {
 	public Themes selectedTheme;
 	public boolean fileTreeActive;
 	public int dividerFileTreePosX;
+	public int tabSize = 2;
 	
 	public boolean breaklineActive;
 	public boolean antialiasedTxtArea;
@@ -54,6 +58,14 @@ public class TextEditorOption {
 	
 	public boolean isBreaklineActive() {
 		return breaklineActive;
+	}
+
+	public int getTabSize() {
+		return tabSize;
+	}
+
+	public void setTabSize(int tabSize) {
+		this.tabSize = tabSize;
 	}
 
 	public void setBreaklineActive(boolean breaklineActive) {
@@ -150,6 +162,14 @@ public class TextEditorOption {
 
 	public void setForeCol(Color foreCol) {
 		this.foreCol = foreCol;
+	}
+	
+	public Color getFilePanelBackCol() {
+		return filePanelBackCol;
+	}
+
+	public void setFilePanelBackCol(Color filePanelBackCol) {
+		this.filePanelBackCol = filePanelBackCol;
 	}
 
 	public int getVoiceRate() {

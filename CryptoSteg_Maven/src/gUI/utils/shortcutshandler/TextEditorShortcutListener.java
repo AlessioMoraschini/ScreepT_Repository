@@ -122,6 +122,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 			
 			if (isShortcutKey(e)) {
 				
+								
 				/*
 				 *  RELOAD FROM DISK -> CTRL+Shift+R
 				 */
@@ -241,6 +242,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				}
 				
 				/*
+				 *  REFRESH TREE -> Ctrl+F5
+				 */
+				if(e.getKeyCode() == 116 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.mouseListenerTreeFilePanel.getRefreshItem().doClick();
+				}
+				
+				/*
 				 * 	REMOVE SPACES/WORD -> CTRL+[-]
 				 */
 				if (e.getKeyCode() == 45 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
@@ -279,6 +287,14 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if (e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.closeCurrentTab();
 				} 
+				
+				/*
+				 *  SWITCH INLINE TABS ON/OFF -> Ctrl+shift+I
+				 */
+				if(e.getKeyCode() == 73 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentTextEditor.checkBoxInlineTabs.doClick();
+				}
+				
 			}
 			
 	    }
@@ -286,6 +302,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
     return false;
 	}
 	
+	/**
+	 * This functions is to optimize performance, since controls will be fired only if ctrl/shift/alt is pressed
+	 * @param e
+	 * @return
+	 */
 	private boolean isShortcutKey(KeyEvent e) {
 		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
 	}

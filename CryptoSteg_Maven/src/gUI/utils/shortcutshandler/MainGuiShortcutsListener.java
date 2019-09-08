@@ -42,6 +42,20 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				}
 				
 				/**
+				 *  SAVE CURRENT CONFIGURATION : Ctrl+Alt+Shift+S
+				 */
+				if (e.getKeyCode() == 83 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmSaveCurrent().doClick();
+				}
+				
+				/**
+				 *  EXPORT CURRENT CONFIGURATION : Ctrl+Alt+Shift+E
+				 */
+				if (e.getKeyCode() == 69 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmSaveCurrentAs().doClick();
+				}
+				
+				/**
 				 *  OPEN CRYPTER : ALT+SHIFT+S
 				 */
 				if (e.getKeyCode() == 83 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {

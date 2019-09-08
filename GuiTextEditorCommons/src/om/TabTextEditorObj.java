@@ -14,7 +14,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 public class TabTextEditorObj {
 	
-	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.BOLD, 14);
+	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.BOLD, 18);
 
 	public static final int TXT_AREA_BASE = 0;
 	public static final int TXT_AREA_MEDIUM = 1;
