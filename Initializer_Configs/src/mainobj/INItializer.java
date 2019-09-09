@@ -266,6 +266,23 @@ public class INItializer {
 		textEditorOpt.setForeCol(foreCol);
 		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
+		
+		// CONVERTED/PARSED TYPES
+		
+		// file tree locked
+		try {
+			textEditorOpt.setTreeLocked(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "isTreeLocked")));
+		} catch (NumberFormatException e) {
+			textEditorOpt.setTreeLocked(TextEditorOption.DEFAULT_TREE_LOCKED);
+		}
+		
+		// tabLineVisible
+		try {
+			textEditorOpt.setTabLineVisible(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "tabLineVisibleFlag")));
+		} catch (NumberFormatException e) {
+			textEditorOpt.setTabLineVisible(TextEditorOption.DEFAULT_TAB_LINE_VISIBLE);
+		}
+				
 		// margin
 		try {
 			textEditorOpt.setMargin(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "margin")));
@@ -425,6 +442,7 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", HandleString.getRgbString(textEditorOpt.foreCol));
 		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
 		iniFile.put(TEXT_EDITOR_OPT, "tabSize", textEditorOpt.tabSize);
+		iniFile.put(TEXT_EDITOR_OPT, "tabLineVisibleFlag", textEditorOpt.tabLineVisible);
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredTheme", textEditorOpt.selectedTheme);
 		iniFile.put(TEXT_EDITOR_OPT, "fileTreeActive", textEditorOpt.fileTreeActive);
@@ -432,6 +450,9 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "antialiasedTxtArea", textEditorOpt.antialiasedTxtArea);
 		iniFile.put(TEXT_EDITOR_OPT, "breakLineActive", textEditorOpt.breaklineActive);
 		iniFile.put(TEXT_EDITOR_OPT, "txtAreaDetailLevel", textEditorOpt.txtAreaDetailLevel);
+		iniFile.put(TEXT_EDITOR_OPT, "isTreeLocked", textEditorOpt.treeLocked);
+		
+		
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
 	}
@@ -558,6 +579,8 @@ public class INItializer {
 			   .append("\nINLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
 			   .append("\nTAB_SIZE: ").append(textEditorOpt.tabSize)
+			   .append("\nTAB_LINE_VISIBLE: ").append(textEditorOpt.tabLineVisible)
+			   .append("\nFILE TREE LOCKED: ").append(textEditorOpt.treeLocked)
 			   .append("\nPREFERRED_THEME: ").append(textEditorOpt.selectedTheme)
 			   .append("\nFILE_PANEL_BACKGROUND_COLOR: ").append(textEditorOpt.filePanelBackCol)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)

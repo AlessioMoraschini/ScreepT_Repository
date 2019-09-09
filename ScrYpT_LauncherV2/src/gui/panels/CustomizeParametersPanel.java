@@ -373,7 +373,7 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	private void setGraphics() {
 		
-		GuiUtils.setFrameIcon("Resources_Scrypt/icon.jpg", thisPanel);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, thisPanel);
 		
 		lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
 		lblMaxWarninig.setVisible(false);

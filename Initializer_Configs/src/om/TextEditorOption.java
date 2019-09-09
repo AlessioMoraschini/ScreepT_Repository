@@ -23,8 +23,10 @@ public class TextEditorOption {
 	public static final int DEFAULT_DIVIDER_POS_X = 230;
 	public static final int DEFAULT_TXT_AREA_DETAIL = 2;
 	public static final int DEFAULT_TAB_SIZE = 2;
+	public static final boolean DEFAULT_TAB_LINE_VISIBLE = false;
 	public static final boolean DEFAULT_ANTIALIASED_TXT_AREA = false;
 	public static final boolean DEFAULT_BREAK_LINE = false;
+	public static final boolean DEFAULT_TREE_LOCKED = false;
 	
 	// FIELDS	
 	public int margin;
@@ -40,17 +42,38 @@ public class TextEditorOption {
 	public boolean fileTreeActive;
 	public int dividerFileTreePosX;
 	public int tabSize = 2;
+	public boolean tabLineVisible;
 	
 	public boolean breaklineActive;
 	public boolean antialiasedTxtArea;
+	public boolean treeLocked;
 	public int txtAreaDetailLevel;
+	
 	
 	// CONSTRUCTOR
 	public TextEditorOption() {
 		openedFileList = new ArrayList<String>();
 	}
 
+	
 	// GETTERS AND SETTERS
+	
+	public boolean isTabLineVisible() {
+		return tabLineVisible;
+	}
+	
+	public boolean isTreeLocked() {
+		return treeLocked;
+	}
+
+	public void setTreeLocked(boolean treeLocked) {
+		this.treeLocked = treeLocked;
+	}
+
+
+	public void setTabLineVisible(boolean tabLineVisible) {
+		this.tabLineVisible = tabLineVisible;
+	}
 	
 	public ArrayList<String> getOpenedFileList() {
 		return openedFileList;

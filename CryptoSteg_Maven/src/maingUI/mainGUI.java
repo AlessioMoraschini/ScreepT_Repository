@@ -79,7 +79,9 @@ import java.awt.Window;
 
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import utils.SysUtils;
 
@@ -102,44 +104,21 @@ public class mainGUI {
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
 	// general application variables
-	public static final String APP_VERSION = "0.7";
-	public static final String APP_VERSION_DATE = "04/09/2019";
+	public static final String APP_VERSION = "0.7.1b";
+	public static final String APP_VERSION_DATE = "09/09/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
 	
-	// constant files & directories prefix
-	public static final String RESOURCES_DIR= "Resources_Scrypt/";
-	public static final String DEFAULT_INI= RESOURCES_DIR + "CONFIG.ini";
-	public static final String BACKUP_INI= RESOURCES_DIR + "Backup/BACKUP_CONFIG.ini";
-	public static final String DEFAULT_INI_FOLDER= "INI_FILES/";
-	public static Wini launcherConfig;
-	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./Resources_Scrypt/ReadMe.html";
-	public static final String SCRYPT_TUTORIAL_HTML_PATH = "Resources_Scrypt/ReadMe.html";
-	
-	public static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
-	public static final String LOG_LAUNCHER_PATH = "LAUNCHER/LOG/Launcher_Log_Trace.log";
 	public static Date now; // date used for log operations
+	public static Wini launcherConfig;
 	
 	// icons and images
-	public static final String APPLICATION_MAIN_BCKG = "Logo-AM_v2.jpg";
 	public static Image APPLICATION_MAIN_BCKG_IMAGE;
-	public static final String SCREEPT_BACKGROUND_DRAGNDROP = "DragNDropBackground.jpg";
 	public static Image SCREEPT_BACKGROUND_DRAGNDROP_IMAGE;
-	public static final String ICON_FILE_NAME = "icon.jpg";
-	public static final String ICON_FILE_PATH = RESOURCES_DIR + ICON_FILE_NAME;
 	public static Image SW_ICON;
-	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
-	
-	// temp decryptedFolder
-	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
-	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	
 	public static String currentJvmVersion = "";
-	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = "1.9.0";
-	
-	public static final int TOOLTIP_DELAY = 400; // 0,4 seconds
-	public static final int TOOLTIP_TIMEOUT = 30000; // 30 seconds
 	
 	// default button and generic font definitions
 	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(16, 12);
@@ -227,9 +206,7 @@ public class mainGUI {
 	public static int screenHeight;
 
 	// some used lookAndFeel
-	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-	public static String preferredStyle = NimbusLookAndFeel; // preferredStyle (initialized to fully avoid null values)
+	public static String preferredStyle = GUIStyelSettings.NimbusLookAndFeel; // preferredStyle (initialized to fully avoid null values)
 	public static boolean DARK_THEME; // true if dark theme is selected
 	
 	private int menuSize;
@@ -287,7 +264,7 @@ public class mainGUI {
 	public static void mainApplicationGeneral() {
 		
 		// OPEN LOADING PANEL
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
 		for (int i = 0; i < 10; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing "+ APPLICATION_NAME + dots;
@@ -316,7 +293,7 @@ public class mainGUI {
 						}
 						LogManager.getRootLogger().setLevel(LOG_LEVEL_AT_START);
 
-						currentConfiguration = new INItializer(new Wini(new File(DEFAULT_INI)));
+						currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						currentConfiguration.readConfigIniFile();
 						
 						SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
@@ -537,7 +514,7 @@ public class mainGUI {
 		
 		// SW window icon
 		try {
-			SW_ICON = ImageIO.read(new File(ICON_FILE_PATH));
+			SW_ICON = ImageIO.read(new File(IconsPathConfigurator.MAIN_APP_ICON));
 			frmScryptV.setIconImage(SW_ICON);
 			logger.info("icon image setted to main window");
 		} catch (IOException e1) {
@@ -639,7 +616,7 @@ public class mainGUI {
 		    		if (!FLAG_loadPrjSub) {
 		    			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    			FLAG_loadPrjSub = true;
-						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, DEFAULT_INI_FOLDER);
+						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, GeneralConfig.DEFAULT_INI_FOLDER);
 						panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
 						FLAG_loadPrjSub = false;
 						updateGuiFromCurrConfig();
@@ -684,12 +661,12 @@ public class mainGUI {
 							"Warning - Reload INI default config?",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 						try {
-							currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
-							currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
+							currentConfiguration.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
+							currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 							JOptionPane.showMessageDialog(frmScryptV, "Configuration reloaded!");
 						} catch (IOException e) {
 							JOptionPane.showMessageDialog(frmScryptV,
-									"Error opening: " + DEFAULT_INI + " -> maybe it does not exist?");
+									"Error opening: " + GeneralConfig.DEFAULT_INI + " -> maybe it does not exist?");
 							logger.error("Exception happened!", e);
 						}
 						currentConfiguration.readConfigIniFile();
@@ -712,8 +689,8 @@ public class mainGUI {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmSaveCurrentAs = true;
 					try {
-						currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
-						currentConfiguration.setIniReadFile(new Ini(new File(DEFAULT_INI)));
+						currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
+						currentConfiguration.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
 
 					} catch (IOException e1) {
 						logger.error("Exception happened!", e1);
@@ -744,9 +721,9 @@ public class mainGUI {
 							"Warning - Reset INI standard config?",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 						try {
-							FileUtils.copyFile(new File(BACKUP_INI), new File(DEFAULT_INI));
-							currentConfiguration.setIniReadFile(new Wini(new File(DEFAULT_INI)));
-							currentConfiguration.setIniFile(new Wini(new File(DEFAULT_INI)));
+							FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
+							currentConfiguration.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
+							currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						} catch (IOException e) {
 							JOptionPane.showMessageDialog(frmScryptV,
 									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
@@ -791,10 +768,10 @@ public class mainGUI {
 									+ "##################################################\n\n");
 
 							// give true to overwrite because fileWriteDialog already set the value to be unique
-							if (FileStuff.copyFile(new File(LOG_PATH), selected, true) && FileStuff.copyFile(new File(LOG_LAUNCHER_PATH), selected, false)) {
+							if (FileStuff.copyFile(new File(GeneralConfig.LOG_PATH), selected, true) && FileStuff.copyFile(new File(GeneralConfig.LOG_LAUNCHER_PATH), selected, false)) {
 								JOptionPane.showMessageDialog(frmScryptV, "File correctly saved in " + selected,
 										"Log File Exported :)", JOptionPane.INFORMATION_MESSAGE);
-								logger.info("File :" + LOG_PATH + " Exported, exportFile: " + selected);
+								logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + selected);
 							} else {
 								JOptionPane.showMessageDialog(frmScryptV, "File not saved [" + selected,
 										"]  Some error occurred :(", JOptionPane.ERROR_MESSAGE);
@@ -815,13 +792,13 @@ public class mainGUI {
 					logger.debug(" => User started logs erasing procedure.");
 					Sounds.playSound(SoundsConfigurator.SOUND_CLOCK, null);
 					FLAG_mntmEraseLogs = true;
-					File LOG_MAIN_FILE = new File(LOG_PATH);
+					File LOG_MAIN_FILE = new File(GeneralConfig.LOG_PATH);
 					String coolFileSize = FileStuff.coolFileSize(LOG_MAIN_FILE.length());
 					int choice = JOptionPane.NO_OPTION;
 					String msg =  " Are you sure you to want to erase your logs? \n\n => If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]";
 					choice = JOptionPane.showConfirmDialog(frmScryptV, msg, "Erase Logs content?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 					if(choice == JOptionPane.YES_OPTION) {
-						if (FileStuff.clearFileContent(LOG_PATH) && FileStuff.clearFileContent(LOG_LAUNCHER_PATH)) {
+						if (FileStuff.clearFileContent(GeneralConfig.LOG_PATH) && FileStuff.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
 							JOptionPane.showMessageDialog(frmScryptV, "Logs deleted - as you asked ;)", "Logs deleted", JOptionPane.INFORMATION_MESSAGE);
 							logger.debug("Files deleted");
 						}else {
@@ -1239,7 +1216,7 @@ public class mainGUI {
 			}
 		}
 		
-		GuiUtils.setupTooltips(TOOLTIP_DELAY, TOOLTIP_TIMEOUT, new Font("Segoe UI", Font.PLAIN, 16));
+		GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, new Font("Segoe UI", Font.PLAIN, 16));
 		
 		// try to set preferred charset
 		try {
@@ -1487,10 +1464,10 @@ public class mainGUI {
 	}
 	
 	public void readBackgroundImage() throws IOException {
-		BufferedImage image = ImageIO.read(new File(RESOURCES_DIR + APPLICATION_MAIN_BCKG));
+		BufferedImage image = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN));
         APPLICATION_MAIN_BCKG_IMAGE = image.getScaledInstance(screenWidth-100, screenHeight-100,Image.SCALE_SMOOTH);
         
-        BufferedImage screeptImageDnD = ImageIO.read(new File(RESOURCES_DIR + SCREEPT_BACKGROUND_DRAGNDROP));
+        BufferedImage screeptImageDnD = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_BCKG_DRAGNDROP));
         SCREEPT_BACKGROUND_DRAGNDROP_IMAGE = screeptImageDnD.getScaledInstance(screeptImageDnD.getWidth(), screeptImageDnD.getHeight(), Image.SCALE_SMOOTH);
 	}
 	
@@ -1512,7 +1489,7 @@ public class mainGUI {
 	    	contentPane.add(labelBACKground);
 	    	contentPane.revalidate(); 
 	    	contentPane.repaint();
-			logger.info("Background of mainGUI setted: "+RESOURCES_DIR + APPLICATION_MAIN_BCKG);
+			logger.info("Background of mainGUI setted: "+GeneralConfig.RESOURCES_DIR + ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN);
 
         } catch (IOException e2) {
 			logger.error("Exception happened!", e2);
@@ -1560,7 +1537,7 @@ public class mainGUI {
 			
 			@Override
 			public void run() {
-				File[] decryptedList = TEMP_DECRIPTED_ROOT.listFiles();
+				File[] decryptedList = GeneralConfig.TEMP_DECRIPTED_ROOT.listFiles();
 				if (decryptedList!= null && decryptedList.length!=0) {
 					// while there are temp decripted delete them
 					for (File temp : decryptedList) {
@@ -1568,7 +1545,7 @@ public class mainGUI {
 					} 
 				}	
 				// now delete temp folder, and retry if something has not been deleted
-				FileStuff.deleteDirContentInclRoot(TEMP_DECRIPTED_ROOT);
+				FileStuff.deleteDirContentInclRoot(GeneralConfig.TEMP_DECRIPTED_ROOT);
 			}
 		};
 	}
@@ -1576,9 +1553,9 @@ public class mainGUI {
 	private void checkVersionAndDisableUnsupportedOpt() {
 		currentJvmVersion = System.getProperty("java.version");
 		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(currentJvmVersion);
-		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, MAX_JVM_COMPLETE_COMPATIBILITY);
+		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
 		if(compareRes == 1) {
-			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion + "). Install version under "+MAX_JVM_COMPLETE_COMPATIBILITY;
+			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion + "). Install version under "+GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY;
 			// Disable non compatible options
 			mntmhwInfo.setEnabled(false);
 			mntmnetInfo.setEnabled(false);

@@ -15,6 +15,7 @@ import dialogutils.GenericFileChooser;
 import frameutils.GuiUtils;
 import media.ImageGeneralWorker;
 import resources.IconsPathConfigurator;
+import resources.ImagesPathConfigurator;
 import splitpanel.SplitPaneUtils;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.tess4j.TesseractException;

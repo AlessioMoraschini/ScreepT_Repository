@@ -17,6 +17,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 	
 	public static volatile boolean flagCtrlPressed = false;
 	public static volatile boolean flagShiftPressed = false;
+	public static volatile boolean flagAltPressed = false;
 	
 	public volatile boolean flagHoverBtnViewExpCmd = false;
 	public volatile boolean flagHoverBtnRemoveSpaces = false;
@@ -34,20 +35,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 
-			/*
-			 * CTRL PRESSED FLAG
-			 */
-			if (e.isControlDown()) {
-				flagCtrlPressed = true;
-				doControlActions();
-			}
-			
-			/*
-			 * SHIFT PRESSED FLAG
-			 */
-			if (e.isShiftDown()) {
-				flagShiftPressed = true;
-			}
+			updateCtrlAltShift(e);
 			
 			if (isShortcutKey(e)) {
 				
@@ -106,19 +94,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED  && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 	      
-			/*
-			 * CTRL RELEASED FLAG
-			 */
-			if(!e.isControlDown()){
-				flagCtrlPressed = false;
-				doControlActions();
-			}
-			/*
-			 * SHIFT RELEASED FLAG
-			 */
-			if (!e.isShiftDown()) {
-				flagShiftPressed = false;
-			}
+			updateCtrlAltShift(e);
 			
 			if (isShortcutKey(e)) {
 				
@@ -242,6 +218,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				}
 				
 				/*
+				 *  FILE TREE AUTO UPDATE on CURRENT FILE ON/OFF -> Ctrl+shift+U
+				 */
+				if(e.getKeyCode() == 85 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentTextEditor.toggleButtonFileTreeLocked.doClick();
+				}
+				
+				/*
 				 *  REFRESH TREE -> Ctrl+F5
 				 */
 				if(e.getKeyCode() == 116 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
@@ -295,6 +278,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 					currentTextEditor.checkBoxInlineTabs.doClick();
 				}
 				
+				/*
+				 *  ADAPT WIDTH TO SCREEN SIZE -> Ctrl+shift+A
+				 */
+				if(e.getKeyCode() == 65 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentTextEditor.chkCutWordsTo.doClick();
+				}
+				
 			}
 			
 	    }
@@ -334,5 +324,36 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 			currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
 		}
 		
+	}
+	
+	private void updateCtrlAltShift(final KeyEvent e) {
+		
+		/*
+		 * CTRL PRESSED FLAG
+		 */
+		if (e.isControlDown()) {
+			flagCtrlPressed = true;
+			doControlActions();
+		}else {
+			flagCtrlPressed = false;
+		}
+		
+		/*
+		 * ALT PRESSED FLAG
+		 */
+		if (e.isAltDown()) {
+			flagAltPressed = true;
+		}else {
+			flagAltPressed = false;
+		}
+		
+		/*
+		 * SHIFT PRESSED FLAG
+		 */
+		if (e.isShiftDown()) {
+			flagShiftPressed = true;
+		}else {
+			flagShiftPressed = false;
+		}
 	}
 }

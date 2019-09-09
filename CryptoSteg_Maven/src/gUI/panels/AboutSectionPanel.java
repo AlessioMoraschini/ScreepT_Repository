@@ -13,6 +13,7 @@ import maingUI.mainGUI;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import resources.ImagesPathConfigurator;
 import utils.SysUtils;
 
 import javax.swing.JLabel;
@@ -64,7 +65,7 @@ public class AboutSectionPanel extends JFrame{
 		
 		BufferedImage image = null;
 		try {
-			image = ImageIO.read(new File(mainGUI.RESOURCES_DIR + "AboutBackground.jpg"));
+			image = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_BCKG_ABOUT));
 		} catch (IOException e) {
 			logger.error("cannot retrieve background image", e);
 			thisFrame.setBackground(Color.BLACK);

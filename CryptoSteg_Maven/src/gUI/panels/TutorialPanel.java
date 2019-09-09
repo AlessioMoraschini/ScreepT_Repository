@@ -14,6 +14,7 @@ import frameutils.GuiUtils;
 import frameutils.html.HtmlPanel;
 import maingUI.mainGUI;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class TutorialPanel extends JFrame{
@@ -42,7 +43,7 @@ public class TutorialPanel extends JFrame{
 //		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
 
 		mainHtmlReadmePanel = new HtmlPanel(new Integer(40), "indexList");
-		File htmlTutorialFile = new File(mainGUI.SCRYPT_TUTORIAL_HTML_PATH);
+		File htmlTutorialFile = new File(GeneralConfig.SCRYPT_TUTORIAL_HTML_PATH);
 		mainHtmlReadmePanel.loadHtmlFx(htmlTutorialFile.toURI().toString());
 		mainHtmlReadmePanel.jfxPanel.resizeComp(thisPanel.getWidth(), thisPanel.getHeight());
 		mainHtmlReadmePanel.setBorder(BorderFactory.createEmptyBorder());
@@ -54,7 +55,7 @@ public class TutorialPanel extends JFrame{
 	}
 	
 	public void reloadHtml() {
-		File f = new File(mainGUI.SCRYPT_TUTORIAL_HTML_PATH);
+		File f = new File(GeneralConfig.SCRYPT_TUTORIAL_HTML_PATH);
 		mainHtmlReadmePanel.loadHtmlFx(f.toURI().toString());
 	}
 	

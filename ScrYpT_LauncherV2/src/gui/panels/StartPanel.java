@@ -15,6 +15,7 @@ import javax.swing.ToolTipManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 
 import javax.swing.JLabel;
@@ -186,7 +187,7 @@ public class StartPanel extends JFrame{
 	private void setGraphics(){
 		// SW window icon
 		try {
-			LAUNCHER_GUI.setIconImage(ImageIO.read(new File("Resources_Scrypt/icon.jpg")));
+			LAUNCHER_GUI.setIconImage(ImageIO.read(new File(IconsPathConfigurator.MAIN_APP_ICON)));
 			logger.debug("icon image setted to main window");
 			ToolTipManager.sharedInstance().setInitialDelay(TOOLTIP_DELAY);
 		} catch (IOException e1) {

@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import frameutils.GuiUtils;
 import maingUI.mainGUI;
 import mainobj.INItializer;
+import resources.IconsPathConfigurator;
 
 public class TestUpdateProgress {
 	
@@ -162,7 +163,7 @@ public class TestUpdateProgress {
 		}
 		
 		dialog = new JDialog();
-		GuiUtils.setFrameIcon(mainGUI.ICON_FILE_PATH, dialog);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, dialog);
 		dialog.setMinimumSize(new Dimension(PanelWidth, PanelHeight));
         dialog.setBounds(new Rectangle(LeftStart, TopStart, PanelWidth, PanelHeight));
         dialog.setTitle("Processing");

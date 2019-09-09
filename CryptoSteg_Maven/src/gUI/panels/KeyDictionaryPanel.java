@@ -186,7 +186,7 @@ public class KeyDictionaryPanel extends JFrame{
 		JButton btnReloadImgTree = new JButton("");
 		btnReloadImgTree.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnReloadImgTree.setBackground(Color.BLACK);
-		btnReloadImgTree.setIcon(new ImageIcon(ChargeIniLog.ICON_RELOAD_BLUE));
+		btnReloadImgTree.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD));
 		btnReloadImgTree.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tree.setModel(treeModel);

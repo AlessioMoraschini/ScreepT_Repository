@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import amfileutils.FileStuff;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class MainGuiGeneralAppStarter {
@@ -20,7 +21,6 @@ public class MainGuiGeneralAppStarter {
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(MainGuiGeneralAppStarter.class);
 	// log_trace location
-	private static final String LOG_PROPERTIES_PATH = mainGUI.RESOURCES_DIR + "log4j.properties";
 		
 	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: ";
 	private static Date now;
@@ -34,7 +34,7 @@ public class MainGuiGeneralAppStarter {
 			now = new Date();
 
 			// Initialize logger properties
-			PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
+			PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
 			
 			logger.info("\n\n##################################################\n\n"+now.toString()+"\n\n"
 					+ mainGUI.APPLICATION_NAME+" Started now!\n\n"

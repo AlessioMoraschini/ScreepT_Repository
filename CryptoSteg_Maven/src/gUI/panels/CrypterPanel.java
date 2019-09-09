@@ -40,6 +40,7 @@ import media.ImageGeneralWorker;
 import media.STEGException;
 import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
 import variousutils.HandleString;
@@ -633,7 +634,7 @@ public class CrypterPanel extends JPanel {
 				
 				if(deleteAfterClose == JOptionPane.YES_OPTION) {
 					// if temporary mode create temp folder ScrYpT on desktop
-					destinationDir = new File(mainGUI.TEMP_DECRIPTED_ROOT_PATH);
+					destinationDir = new File(GeneralConfig.TEMP_DECRIPTED_ROOT_PATH);
 					
 					if (fileMonitor == null) {
 						flagCreateNewMonitor = true;

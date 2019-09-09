@@ -21,6 +21,7 @@ import maingUI.mainGUI;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
 
@@ -57,9 +58,6 @@ public class ChargeIniLog extends JPanel{
 	
 	// INItializer logger creation		
 	static Logger logger = Logger.getLogger(ChargeIniLog.class); 
-	
-	// name used when using icons, remember to put in the correct folder or it will lanuch nullpointerException
-	public final static String ICON_RELOAD_BLUE = "Resources_Scrypt/Icons/Reload.png";
 	
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hh:mm:ss");
 	
@@ -138,7 +136,7 @@ public class ChargeIniLog extends JPanel{
 		
 		btnViewCurrentFile = new JButton("Current Config. File");
 		btnViewCurrentFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnViewCurrentFile.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
+		btnViewCurrentFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD));
 		btnViewCurrentFile.setForeground(Color.BLACK);
 		btnViewCurrentFile.setBackground(new Color(176, 196, 222));
 		add(btnViewCurrentFile, "cell 5 1,grow");
@@ -147,7 +145,7 @@ public class ChargeIniLog extends JPanel{
 		btnCurrentRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnCurrentRefresh.setForeground(Color.BLACK);
 		btnCurrentRefresh.setBackground(new Color(176, 196, 222));
-		btnCurrentRefresh.setIcon(new ImageIcon(ICON_RELOAD_BLUE));
+		btnCurrentRefresh.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD));
 		add(btnCurrentRefresh, "cell 6 1,grow");
 		
 		panelDynPath = new JPanel();
@@ -213,7 +211,7 @@ public class ChargeIniLog extends JPanel{
 		scrollPaneTreeConfigs.setBackground(new Color(255, 255, 240));
 		add(scrollPaneTreeConfigs, "cell 0 4 4 1,grow");
 		
-		TreeModel treeModel = new FileTreeModel(new File(mainGUI.DEFAULT_INI_FOLDER));
+		TreeModel treeModel = new FileTreeModel(new File(GeneralConfig.DEFAULT_INI_FOLDER));
 		tree = new JTree(treeModel);
 		menuMouseListener = new TreeFileMouseListenerIni(config, this, tree);
 		tree.setCellRenderer(new FileCellRendererIni());
@@ -323,9 +321,9 @@ public class ChargeIniLog extends JPanel{
 						"Warning - Reset INI standard config?",
 						JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 					try {
-						FileUtils.copyFile(new File(mainGUI.BACKUP_INI), new File(mainGUI.DEFAULT_INI));
-						config.setIniReadFile(new Wini(new File(mainGUI.DEFAULT_INI)));
-						config.setIniFile(new Wini(new File(mainGUI.DEFAULT_INI)));
+						FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
+						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
+						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						lblAvviso.setText("[Configuration Resetted!]");
 						String name = mainGUI.askUsername();
 						JOptionPane.showMessageDialog(parent.getMainFrame(), "File '" + config.getIniFile().getFile().getName() + "' loaded!");
@@ -361,8 +359,8 @@ public class ChargeIniLog extends JPanel{
 							"Warning - Overwrite default configuration?",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 						
-						config.setIniFile(new Wini(new File(mainGUI.DEFAULT_INI)));
-						config.setIniReadFile(new Ini(new File(mainGUI.DEFAULT_INI)));
+						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
+						config.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
 						config.writeCurrentConfigIniFile();
 						lblAvviso.setText("[Configuration Saved as new Default!]");
 						config_PATH.setText(config.getIniFile().getFile().getPath());

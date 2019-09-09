@@ -29,6 +29,7 @@ import maingUI.mainGUI;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBasic{
@@ -144,7 +145,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GuiUtils.openInFileSystem(new File(mainGUI.DEFAULT_INI_FOLDER));
+				GuiUtils.openInFileSystem(new File(GeneralConfig.DEFAULT_INI_FOLDER));
 			}
 		};
 	}
@@ -156,7 +157,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 			public void actionPerformed(ActionEvent e) {
 				
 				File currentIniFile = currentConfig.getIniFile().getFile();
-				File defaultFolder = new File(mainGUI.DEFAULT_INI_FOLDER);
+				File defaultFolder = new File(GeneralConfig.DEFAULT_INI_FOLDER);
 				
 				String newName = "";
 				newName = JOptionPane.showInputDialog("Choose a name for the configuration to save");
@@ -275,24 +276,24 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	// utility methods //
 	
 	private void refreshTree() {
-		tree.setModel(new FileTreeModel(new File(mainGUI.DEFAULT_INI_FOLDER)));
+		tree.setModel(new FileTreeModel(new File(GeneralConfig.DEFAULT_INI_FOLDER)));
 	}
 	
 	private void importIniFileOrDir() {
 		File selectedImportDir = GenericFileChooserDialog.fileAndDirRead(confManagerPanel, currentConfig);
 		if (selectedImportDir!=null && selectedImportDir.isDirectory()) {
 			try {
-				FileStuff.copyDirectoryContents(selectedImportDir, new File(mainGUI.DEFAULT_INI_FOLDER), false, "ini");
+				FileStuff.copyDirectoryContents(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false, "ini");
 				JOptionPane.showMessageDialog(confManagerPanel,"Directory :" + selectedImportDir.getName() + " added in the configurations -> "
-								+ mainGUI.DEFAULT_INI_FOLDER, "Directory added to config pool :)", JOptionPane.INFORMATION_MESSAGE);
-				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + mainGUI.DEFAULT_INI_FOLDER);
+								+ GeneralConfig.DEFAULT_INI_FOLDER, "Directory added to config pool :)", JOptionPane.INFORMATION_MESSAGE);
+				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
 			} catch (IOException e1) {
-				JOptionPane.showMessageDialog(confManagerPanel, "Directory not imported in " + mainGUI.DEFAULT_INI_FOLDER,	". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(confManagerPanel, "Directory not imported in " + GeneralConfig.DEFAULT_INI_FOLDER,	". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
 				logger.error("Directory not imported, some error occurred :( ");
 			} 
 		}else if(selectedImportDir!=null && selectedImportDir.isFile() && selectedImportDir.getName().toLowerCase().endsWith(".ini")) {
-			FileStuff.copyFileIntoDir(selectedImportDir, new File(mainGUI.DEFAULT_INI_FOLDER), false);
-			logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + mainGUI.DEFAULT_INI_FOLDER);
+			FileStuff.copyFileIntoDir(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false);
+			logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
 		}
 	}
 	
