@@ -21,6 +21,7 @@ import om.GuiOption;
 import om.ImgConverterOption;
 import om.SteganOption;
 import om.TextEditorOption;
+import resources.GeneralConfig;
 import variousutils.HandleString;
 
 public class INItializer {
@@ -30,7 +31,7 @@ public class INItializer {
 		
 	
 	// DEFAULT INI
-	public final static String DEFAULT_INI_PATH = "Resources_Scrypt/CONFIG.ini"; 
+	public final static String DEFAULT_INI_PATH = GeneralConfig.RESOURCES_DIR  + "CONFIG.ini"; 
 	
 	// FILEDS
 	private Ini iniReadFile;
@@ -464,13 +465,15 @@ public class INItializer {
 	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, String OPT_VALUE ) {
 		boolean OK = false;
 		
-		try {
-			iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE );
-			iniFile.store();
-			OK = true;
-		} catch (IOException e) {
-			OK = false;
-			logger.error("Exception happened!", e);
+		synchronized (iniFile) {
+			try {
+				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
+				iniFile.store();
+				OK = true;
+			} catch (IOException e) {
+				OK = false;
+				logger.error("Exception happened!", e);
+			}
 		}
 		return OK;
 	}
@@ -482,13 +485,15 @@ public class INItializer {
 	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, float OPT_VALUE ) {
 		boolean OK = false;
 		
-		try {
-			iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE );
-			iniFile.store();
-			OK = true;
-		} catch (IOException e) {
-			OK = false;
-			logger.error("Exception happened!", e);
+		synchronized (iniFile) {
+			try {
+				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
+				iniFile.store();
+				OK = true;
+			} catch (IOException e) {
+				OK = false;
+				logger.error("Exception happened!", e);
+			}
 		}
 		return OK;
 	}
@@ -500,13 +505,15 @@ public class INItializer {
 	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, int OPT_VALUE ) {
 		boolean OK = false;
 		
-		try {
-			iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE );
-			iniFile.store();
-			OK = true;
-		} catch (IOException e) {
-			OK = false;
-			logger.error("Exception happened!", e);
+		synchronized (iniFile) {
+			try {
+				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
+				iniFile.store();
+				OK = true;
+			} catch (IOException e) {
+				OK = false;
+				logger.error("Exception happened!", e);
+			}
 		}
 		return OK;
 	}
@@ -518,13 +525,15 @@ public class INItializer {
 	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, boolean OPT_VALUE ) {
 		boolean OK = false;
 		
-		try {
-			iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE );
-			iniFile.store();
-			OK = true;
-		} catch (IOException e) {
-			OK = false;
-			logger.error("Exception happened!", e);
+		synchronized (iniFile) {
+			try {
+				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
+				iniFile.store();
+				OK = true;
+			} catch (IOException e) {
+				OK = false;
+				logger.error("Exception happened!", e);
+			}
 		}
 		return OK;
 	}
@@ -575,17 +584,17 @@ public class INItializer {
 
 		// concat TEXT EDITOR OPTIONS
 		builder.append("\n\n ---- TEXT EDITOR -----\n\n")
-			   .append("FONT: ").append(textEditorOpt.font)
-			   .append("\nINLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
+			   .append("INLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
 			   .append("\nTAB_SIZE: ").append(textEditorOpt.tabSize)
 			   .append("\nTAB_LINE_VISIBLE: ").append(textEditorOpt.tabLineVisible)
+			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)
 			   .append("\nFILE TREE LOCKED: ").append(textEditorOpt.treeLocked)
 			   .append("\nPREFERRED_THEME: ").append(textEditorOpt.selectedTheme)
 			   .append("\nFILE_PANEL_BACKGROUND_COLOR: ").append(textEditorOpt.filePanelBackCol)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
-			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)
+			   .append("\nFONT: ").append(textEditorOpt.font)
 			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)

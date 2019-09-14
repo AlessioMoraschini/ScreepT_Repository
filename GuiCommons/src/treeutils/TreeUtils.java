@@ -50,9 +50,11 @@ public class TreeUtils {
 	 * @param root
 	 * @param tree
 	 */
-	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree){
+	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree, boolean checkExistance){
 		
-		if(fileToSelect == null || tree == null) {
+		boolean error = fileToSelect == null || tree == null || (checkExistance && !fileToSelect.exists());
+		
+		if(error) {
 			return;
 		}
 		

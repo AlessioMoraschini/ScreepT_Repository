@@ -2,6 +2,8 @@ package frameutils.html;
 
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
+
 import java.awt.Color;
 import javax.swing.border.LineBorder;
 
@@ -34,7 +36,7 @@ public class HtmlPanel extends JPanel{
 		
 		setBorder(new LineBorder(Color.GRAY, 2, true));
 		setBackground(Color.BLACK);
-		setLayout(new MigLayout("", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
 		
 		headerPanel = new JPanel();
 		headerPanel.setBorder(new LineBorder(Color.GRAY, 2));
@@ -71,7 +73,7 @@ public class HtmlPanel extends JPanel{
 		
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
-		setLayout(new MigLayout("", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
 		
 		headerPanel = new HeaderPanelSearch(jfxPanel);
 		headerPanel.setBorder(new LineBorder(Color.GRAY, 2));

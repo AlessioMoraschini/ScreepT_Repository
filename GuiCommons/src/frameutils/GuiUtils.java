@@ -18,9 +18,11 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
@@ -42,6 +44,66 @@ public class GuiUtils {
 		ToolTipManager.sharedInstance().setInitialDelay(delay);
 		ToolTipManager.sharedInstance().setDismissDelay(timeout);
 		UIManager.put("ToolTip.font", font);
+	}
+	
+	/**
+	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
+	 * Prevent maximize if before was not maxified
+	 * 
+	 * <b>if toFront is not null it will be take to front last</b>
+	 */
+	public static void changeFrameStateLater(JFrame frame, JFrame toFront, int finalState) {
+		if((frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) && finalState == JFrame.MAXIMIZED_BOTH ) {
+			return; // if was not max then skip
+		}
+		changeFrameStateLaterUnchecked(frame, toFront, finalState);
+	}
+	
+	/**
+	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
+	 * Prevent maximize if before was not maxified
+	 * 
+	 * <b>if toFront is not null it will be take to front last</b>
+	 */
+	public static void changeFrameStateLater(JFrame frame, JDialog toFront, int finalState) {
+		if((frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) && finalState == JFrame.MAXIMIZED_BOTH ) {
+			return; // if was not max then skip
+		}
+		changeFrameStateLaterUnchecked(frame, toFront, finalState);
+	}
+	
+	/**
+	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
+	 * Prevent maximize if before was not maxified
+	 * 
+	 * <b>if toFront is not null it will be take to front last</b>
+	 */
+	public static void changeFrameStateLaterUnchecked(JFrame frame, JFrame toFront, int finalState) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				frame.setExtendedState(finalState);
+				if(toFront != null) {
+					toFront.toFront();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
+	 * Prevent maximize if before was not maxified
+	 * 
+	 * <b>if toFront is not null it will be take to front last</b>
+	 */
+	public static void changeFrameStateLaterUnchecked(JFrame frame, JDialog toFront, int finalState) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				frame.setExtendedState(finalState);
+				if(toFront != null) {
+					toFront.toFront();
+				}
+			}
+		});
 	}
 	
 	public static boolean setFrameIcon(Image icon, JFrame frameToSet) {

@@ -24,6 +24,7 @@ public class MainGuiGeneralAppStarter {
 		
 	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: ";
 	private static Date now;
+	private GeneralConfig configStarter;
 	
 	public static String[] ARGS;
 	public static File[] argumentsFiles;

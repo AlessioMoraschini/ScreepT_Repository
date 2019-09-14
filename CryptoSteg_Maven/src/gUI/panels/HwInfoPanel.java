@@ -1,5 +1,6 @@
 package gUI.panels;
 
+import resources.GeneralConfig;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
@@ -196,7 +197,7 @@ public class HwInfoPanel extends JFrame{
 	private void initialize() {
 		
 		getContentPane().setBackground(new Color(255, 255, 255));
-		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[65px][60px][75%,grow]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[65px][60px][75%,grow]"));
 		
 		panelHeaderTitle = new JPanel();
 		panelHeaderTitle.setMinimumSize(new Dimension(100, 10));
@@ -204,7 +205,7 @@ public class HwInfoPanel extends JFrame{
 		panelHeaderTitle.setBorder(new LineBorder(new Color(119, 136, 153), 4));
 		panelHeaderTitle.setBackground(Color.BLACK);
 		getContentPane().add(panelHeaderTitle, "cell 0 0 4 1,grow");
-		panelHeaderTitle.setLayout(new MigLayout("", "[50%,grow,center][45%,grow,center]", "[20px,fill]"));
+		panelHeaderTitle.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[50%,grow,center][45%,grow,center]", "[20px,fill]"));
 		
 		lblHardwareInfoTool = new JLabel("System Info Tool");
 		lblHardwareInfoTool.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -219,7 +220,7 @@ public class HwInfoPanel extends JFrame{
 		ScryptInfoPanel.setBorder(new LineBorder(new Color(192, 192, 192), 0));
 		ScryptInfoPanel.setBackground(Color.DARK_GRAY);
 		panelHeaderTitle.add(ScryptInfoPanel, "cell 1 0,growx,aligny center");
-		ScryptInfoPanel.setLayout(new MigLayout("", "[grow][80][grow][100px]", "[fill]"));
+		ScryptInfoPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[grow][80][grow][100px]", "[fill]"));
 		
 		lblScrYptCpuUsage = new JLabel("ScrYpT Cpu");
 		lblScrYptCpuUsage.setForeground(Color.LIGHT_GRAY);
@@ -251,12 +252,12 @@ public class HwInfoPanel extends JFrame{
 		mainContainerPanel = new JPanel();
 		mainContainerPanel.setBackground(new Color(211, 211, 211));
 		ConncetionInfoScrollPanel.setViewportView(mainContainerPanel);
-		mainContainerPanel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][12.5%,grow]", "[50,grow][5][50,grow][50,grow][50,grow][40,grow][40,grow][40,grow][40,grow][40][80,grow]"));
+		mainContainerPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[12.5%,grow][12.5%,grow][12.5%,grow][12.5%,grow]", "[50,grow][5][50,grow][50,grow][50,grow][40,grow][40,grow][40,grow][40,grow][40][80,grow]"));
 		
 		panelGeneral = new JPanel();
 		panelGeneral.setBackground(new Color(0, 0, 0));
 		mainContainerPanel.add(panelGeneral, "cell 0 0 4 1,grow");
-		panelGeneral.setLayout(new MigLayout("", "[100][grow][grow][grow][grow][grow][grow][grow]", "[grow]"));
+		panelGeneral.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][grow][grow][grow][grow][grow][grow][grow]", "[grow]"));
 		
 		lblArchitecture = new JLabel("Architecture:");
 		lblArchitecture.setForeground(Color.LIGHT_GRAY);
@@ -311,7 +312,7 @@ public class HwInfoPanel extends JFrame{
 		panelRAM.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
 		panelRAM.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelRAM, "cell 0 2 4 1,grow");
-		panelRAM.setLayout(new MigLayout("", "[100][160,grow][80][40,grow][100][40,grow]", "[15px][grow]"));
+		panelRAM.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][160,grow][80][40,grow][100][40,grow]", "[15px][grow]"));
 		
 		lblRam = new JLabel("RAM:");
 		panelRAM.add(lblRam, "cell 0 0 1 2,alignx center");
@@ -347,7 +348,7 @@ public class HwInfoPanel extends JFrame{
 		panelCPU.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelCPU.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelCPU, "cell 0 3 4 3,grow");
-		panelCPU.setLayout(new MigLayout("", "[100][160px,grow][150][60][150][150]", "[grow][grow][grow]"));
+		panelCPU.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][160px,grow][150][60][150][150]", "[grow][grow][grow]"));
 		
 		lblCPU = new JLabel("CPU:");
 		lblCPU.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -413,7 +414,7 @@ public class HwInfoPanel extends JFrame{
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.DARK_GRAY);
 		panelCPU.add(panel, "cell 0 2 6 1,grow");
-		panel.setLayout(new MigLayout("", "[60][grow][60][grow][50][grow][60][grow]", "[grow]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[60][grow][60][grow][50][grow][60][grow]", "[grow]"));
 		
 		lblUsage = new JLabel("Usage:");
 		lblUsage.setForeground(Color.WHITE);
@@ -463,7 +464,7 @@ public class HwInfoPanel extends JFrame{
 		panelMOBO.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelMOBO.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelMOBO, "cell 0 6 4 1,grow");
-		panelMOBO.setLayout(new MigLayout("", "[100][160][70][grow][70][70][110][grow]", "[grow]"));
+		panelMOBO.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][160][70][grow][70][70][110][grow]", "[grow]"));
 		
 		lblMotherboard = new JLabel("MOBO:");
 		lblMotherboard.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -509,7 +510,7 @@ public class HwInfoPanel extends JFrame{
 		panelHD.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelHD.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelHD, "cell 0 7 4 2,grow");
-		panelHD.setLayout(new MigLayout("", "[100][220][60][100px][100px][90px][110px][100px,grow]", "[grow][grow]"));
+		panelHD.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][220][60][100px][100px][90px][110px][100px,grow]", "[grow][grow]"));
 		
 		lblHd = new JLabel("HD:");
 		lblHd.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -598,7 +599,7 @@ public class HwInfoPanel extends JFrame{
 		panelMonitors.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelMonitors.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelMonitors, "cell 0 9 4 2,grow");
-		panelMonitors.setLayout(new MigLayout("", "[100][160][110][grow]", "[][grow]"));
+		panelMonitors.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][160][110][grow]", "[][grow]"));
 		
 		lblDisplay = new JLabel("DISPLAY:");
 		lblDisplay.setFont(new Font("Segoe UI", Font.BOLD, 20));

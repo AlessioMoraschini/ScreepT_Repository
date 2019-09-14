@@ -1,5 +1,6 @@
 package gUI.panels;
 
+import resources.GeneralConfig;
 import javax.swing.JFrame;
 
 import org.apache.commons.io.FilenameUtils;
@@ -167,14 +168,14 @@ public class ImageConverterFrame extends JFrame{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		
 		String writerNames[] = ImageIO.getWriterFileSuffixes();
-		getContentPane().setLayout(new MigLayout("", "[100px][80px][:80px:80px][:100px:110px][80px][:80px:80px][20px:20px:20px,grow][15px][100px:100px:100px][120px:120px:120px]", "[45px][10px][22px,grow][22px,grow][][25px][25px,grow][5px][25px,grow]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px][80px][:80px:80px][:100px:110px][80px][:80px:80px][20px:20px:20px,grow][15px][100px:100px:100px][120px:120px:120px]", "[45px][10px][22px,grow][22px,grow][][25px][25px,grow][5px][25px,grow]"));
 
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
 		panelHeader.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		panelHeader.setBackground(new Color(210, 180, 140));
 		getContentPane().add(panelHeader, "cell 0 0 10 1,grow");
-		panelHeader.setLayout(new MigLayout("", "[100%]", "[]"));
+		panelHeader.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100%]", "[]"));
 		
 		lblImageConverterHeader = new JLabel("Image Converter");
 		lblImageConverterHeader.setHorizontalAlignment(SwingConstants.CENTER);
@@ -279,7 +280,7 @@ public class ImageConverterFrame extends JFrame{
 		panel.setBorder(new LineBorder(Color.GRAY, 3, true));
 		panel.setBackground(new Color(192, 192, 192));
 		getContentPane().add(panel, "cell 0 8 10 1,grow");
-		panel.setLayout(new MigLayout("", "[45px][15px][100px:n:100px][10px][][15px][100px:n:100px][][grow][grow]", "[][5px][30px][30px][30px][30px]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[45px][15px][100px:n:100px][10px][][15px][100px:n:100px][][grow][grow]", "[][5px][30px][30px][30px][30px]"));
 		
 		lblInputFile = new JLabel("Input File");
 		lblInputFile.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 16));

@@ -13,6 +13,7 @@ import frameutils.GuiUtils;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.SelectionDto;
 import variousutils.EscapeType;
@@ -62,7 +63,7 @@ public class EscapeReplacerPanel extends JFrame{
 		buttonInvoker = buttonInvoke;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[250px][220px,grow]", "[30px][30px,grow][20px][20px,grow]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[250px][220px,grow]", "[30px][30px,grow][20px][20px,grow]"));
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES, this);
 		GuiUtils.showOnSameScreen(parent);
 		
@@ -71,7 +72,7 @@ public class EscapeReplacerPanel extends JFrame{
 		panel.setBorder(new LineBorder(Color.GRAY, 4));
 		panel.setBackground(Color.BLACK);
 		getContentPane().add(panel, "cell 0 0 2 1,growx,aligny top");
-		panel.setLayout(new MigLayout("", "[][grow][]", "[]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][grow][]", "[]"));
 		
 		lblEscapesHeader = new JLabel("Escape sequence Replacer");
 		lblEscapesHeader.setHorizontalAlignment(SwingConstants.CENTER);

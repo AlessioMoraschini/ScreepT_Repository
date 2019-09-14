@@ -16,6 +16,7 @@ import org.icepdf.ri.common.SwingViewBuilder;
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooser;
 import frameutils.GuiUtils;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import splitpanel.SplitPaneUtils;
@@ -86,7 +87,7 @@ public class PdfSelector2TextFrame extends JFrame{
 		GuiUtils.centerFrame(this, WIDTH, HEIGHT);
 		GuiUtils.moveFrame(this, GuiUtils.getScreenSize().width/4, 0);
 		GuiUtils.showOnSameScreen(mainFrameParent);
-		getContentPane().setLayout(new MigLayout("", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 		
 		imageContainerPanel = new JScrollPane();
 		imageContainerPanel.setBackground(Color.BLACK);

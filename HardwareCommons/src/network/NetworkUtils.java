@@ -35,6 +35,7 @@ import org.hyperic.sigar.SigarException;
 import amfileutils.FileStuff;
 import network.om.FtpSpeedTestOptions;
 import network.om.NetworkAdapter;
+import resources.GeneralConfig;
 
 public class NetworkUtils {
 
@@ -45,7 +46,7 @@ public class NetworkUtils {
 	
 	public final static String testAddress = "www.google.com";
 	
-	private static final String tempFile = "Resources_Scrypt/temp/temp.txt";
+	private static final String tempFile = GeneralConfig.RESOURCES_DIR + "temp/temp.txt";
 	
 	//private static final Random RANDOM_GENERATOR = new Random();
 

@@ -17,6 +17,7 @@ import frameutils.GuiUtils;
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
+import resources.GeneralConfig;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
@@ -39,7 +40,7 @@ public class TemplatesChoosePanel extends JFrame{
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TemplatesChoosePanel.class);
 		
-	private final static String TEMPLATES_FOLDER_NAME = "Resources_Scrypt/Templates/";
+	private final static String TEMPLATES_FOLDER_NAME = GeneralConfig.RESOURCES_DIR  + "Templates/";
 	private final static File TEMPLATES_FOLDER = new File(TEMPLATES_FOLDER_NAME);
 
 	public static boolean active = false;
@@ -65,14 +66,14 @@ public class TemplatesChoosePanel extends JFrame{
 		GuiUtils.showOnSameScreen(parent);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[100px,grow][70px]", "[42px][30px,grow][30px,grow]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px,grow][70px]", "[42px][30px,grow][30px,grow]"));
 		
 		panel = new JPanel();
 		panel.setForeground(Color.WHITE);
 		panel.setBorder(new LineBorder(Color.GRAY, 4));
 		panel.setBackground(Color.BLACK);
 		getContentPane().add(panel, "cell 0 0 2 1,growx,aligny top");
-		panel.setLayout(new MigLayout("", "[][][][][][]", "[]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][][][][][]", "[]"));
 		
 		lblTemplates = new JLabel("Templates");
 		lblTemplates.setHorizontalAlignment(SwingConstants.CENTER);

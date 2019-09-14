@@ -31,7 +31,7 @@ public class TutorialPanel extends JFrame{
 	public TutorialPanel() {
 		
 		logger.info(this.getClass().getName() + " Starting...");
-		setLayout(new MigLayout("", "[1000px,grow]", "[800px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[1000px,grow]", "[800px,grow]"));
 		setBackground(Color.BLACK);
 		
 		thisPanel = this;

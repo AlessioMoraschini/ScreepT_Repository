@@ -12,6 +12,7 @@ import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.FileOptions;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import variousutils.ListCharsets;
@@ -116,7 +117,7 @@ public class GeneralOptionsFrame extends JFrame{
 		initializeValues();		
 		
 		getContentPane().setBackground(new Color(119, 136, 153));
-		getContentPane().setLayout(new MigLayout("", "[:10px:100px,grow][:110px:110px][:80:180,grow][130,grow][110,grow][:100px:100px,grow][:100px:170px][:100px:100px][:75px:75px][:75px:75px][:10px:100px,grow]", "[:50:70px][5][][:5:5px][30][30][10][][:5:5px][10%,grow,baseline]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[:10px:100px,grow][:110px:110px][:80:180,grow][130,grow][110,grow][:100px:100px,grow][:100px:170px][:100px:100px][:75px:75px][:75px:75px][:10px:100px,grow]", "[:50:70px][5][][:5:5px][30][30][10][][:5:5px][10%,grow,baseline]"));
 		
 		JPanel panel = new JPanel();
 		panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -124,7 +125,7 @@ public class GeneralOptionsFrame extends JFrame{
 		panel.setBorder(new LineBorder(Color.BLACK, 4));
 		panel.setBackground(Color.DARK_GRAY);
 		getContentPane().add(panel, "cell 1 0 9 1,grow");
-		panel.setLayout(new MigLayout("", "[10,grow][10,grow][200px,grow]", "[]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[10,grow][10,grow][200px,grow]", "[]"));
 		
 		chckbxAutosave = new JCheckBox("Autosave");
 		chckbxAutosave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

@@ -99,7 +99,7 @@ public class ChargeIniLog extends JPanel{
 		
 		setBackground(new Color(211, 211, 211));
 		
-		setLayout(new MigLayout("", "[117.00][70px][50px][120px][30px][][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:40px:45px][35px][][20px][400px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[117.00][70px][50px][120px][30px][][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:40px:45px][35px][][20px][400px,grow]"));
 		
 		textArea = new RSyntaxTextArea();
 		textArea.setUseSelectedTextColor(true);
@@ -151,7 +151,7 @@ public class ChargeIniLog extends JPanel{
 		panelDynPath = new JPanel();
 		panelDynPath.setOpaque(false);
 		add(panelDynPath, "cell 8 1 3 1,alignx center,growy");
-		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
+		panelDynPath.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[grow][150px,grow]", "[]"));
 		
 		btnResetOriginalConfig = new JButton("Reset Original");
 		btnResetOriginalConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
@@ -188,7 +188,7 @@ public class ChargeIniLog extends JPanel{
 		panel_1.setBorder(new LineBorder(Color.DARK_GRAY, 4));
 		panel_1.setBackground(new Color(176, 196, 222));
 		add(panel_1, "cell 0 0 12 1,grow");
-		panel_1.setLayout(new MigLayout("", "[100%]", "[grow]"));
+		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100%]", "[grow]"));
 		
 		JLabel lblConfigurationManager = new JLabel("Configuration Manager");
 		lblConfigurationManager.setHorizontalAlignment(SwingConstants.CENTER);

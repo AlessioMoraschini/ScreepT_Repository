@@ -11,6 +11,7 @@ import javax.swing.text.BadLocationException;
 
 import frameutils.GuiUtils;
 import frameutils.html.HtmlPanel;
+import resources.GeneralConfig;
 
 public class HtmlPanelTest {
 
@@ -22,7 +23,7 @@ public class HtmlPanelTest {
 		JFrame testFrame = new JFrame("Test Html");
 		HtmlPanel htmlPane = new HtmlPanel(new Integer(40));
 		testFrame.add(htmlPane);
-		File f = new File("Resources_Scrypt/Readme/ReadMe.html");
+		File f = new File(GeneralConfig.RESOURCES_DIR  + "Readme/ReadMe.html");
 		htmlPane.loadHtmlFx(f.toURI().toString());
 //		HtmlLoader.loadHtmlInEditPaneV2(htmlPane.getMainHtmlEditorPane(), "https://www.google.com");
 		testFrame.setBounds(0,0,GuiUtils.getScreenSize().width, GuiUtils.getScreenSize().height);

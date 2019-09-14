@@ -1,5 +1,6 @@
 package gUI.panels;
 
+import resources.GeneralConfig;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
@@ -114,13 +115,13 @@ public class KeyGenPanel extends JFrame {
 		CURRENT_IMG_TYPE = KeyGenImageType.TOP_SECURITY;
 		
 		getContentPane().setBackground(SystemColor.textInactiveText);
-		getContentPane().setLayout(new MigLayout("", "[88.00px,grow][93.00][89.00px,grow][89.00px,grow][:100:10%][:100:10%][:100:8%][:100:8%][:100:14%]", "[35px][50][30%,grow][10%][30px][80px:130,grow][50]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[88.00px,grow][93.00][89.00px,grow][89.00px,grow][:100:10%][:100:10%][:100:8%][:100:8%][:100:14%]", "[35px][50][30%,grow][10%][30px][80px:130,grow][50]"));
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.DARK_GRAY);
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		getContentPane().add(panel_1, "cell 0 2 4 4,grow");
-		panel_1.setLayout(new MigLayout("", "[8][:55px:100px,grow][65px][55px,grow][8]", "[:10:15][:60:100][:60:100][:60:100][10][10][10][10][10][150,grow][10]"));
+		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[8][:55px:100px,grow][65px][55px,grow][8]", "[:10:15][:60:100][:60:100][:60:100][10][10][10][10][10][150,grow][10]"));
 		
 		JLabel lblNewLabel = new JLabel("Image Width (Px):");
 		lblNewLabel.setForeground(Color.WHITE);
@@ -132,7 +133,7 @@ public class KeyGenPanel extends JFrame {
 		panel_2.setBackground(Color.DARK_GRAY);
 		panel_2.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		getContentPane().add(panel_2, "cell 4 5 5 1,grow");
-		panel_2.setLayout(new MigLayout("", "[grow]", "[grow]"));
+		panel_2.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[grow]", "[grow]"));
 		
 		JScrollPane textAreaLog = new JScrollPane();
 		panel_2.add(textAreaLog, "cell 0 0,grow");
@@ -251,7 +252,7 @@ public class KeyGenPanel extends JFrame {
 		panel.setForeground(SystemColor.menu);
 		panel.setBackground(SystemColor.activeCaption);
 		getContentPane().add(panel, "cell 0 0 9 1,grow");
-		panel.setLayout(new MigLayout("", "[][][][][][][][][100%][]", "[]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][][][][][][][][100%][]", "[]"));
 		
 		
 		JLabel lblKeyImageGenerator = new JLabel("Key Image Generator");

@@ -4,10 +4,12 @@ import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
+import gUI.utils.TextEditorUtils;
 import resources.IconsPathConfigurator;
 
 public class TextEditorShortcutListener implements KeyEventDispatcher{
@@ -211,6 +213,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				}
 				
 				/*
+				 * 	SHOW TABS GRID -> CTRL+Shift+G
+				 */
+				if (e.getKeyCode() == 71 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.chckbxShowTabGrid.doClick();
+				}
+				
+				/*
 				 * 	OPEN/CLOSE FILE TREE PANEL -> ALT+Q
 				 */
 				if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
@@ -284,6 +293,31 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 65 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.chkCutWordsTo.doClick();
 				}
+				
+				/*
+				 *  HIDE/SHOW header panel -> Ctrl+shift+Alt+H
+				 */
+				if(e.getKeyCode() == 72 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							TextEditorUtils.hideOrShowHeaderPanel();
+						}
+					});
+				}
+				
+//				/*
+//				 *  TEST MOVE TABS : Ctrl + shift + Alt + [->|<-]
+//				 */
+//				if(e.getKeyCode() == 37 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+//					currentTextEditor.moveCurrentTab(true);
+//				}
+//				
+//				/*
+//				 *  TEST MOVE TABS : Ctrl + shift + Alt + [->|<-]
+//				 */
+//				if(e.getKeyCode() == 39 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+//					currentTextEditor.moveCurrentTab(false);
+//				}
 				
 			}
 			

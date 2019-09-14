@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 
 public class CustomClosableTab extends JPanel{
 	
@@ -22,7 +23,7 @@ public class CustomClosableTab extends JPanel{
 //		pnlTab.setOpaque(false);
 //		pnlTab.setPreferredSize(new Dimension(130,25));
 		setToolTipText(tooltip);
-		setLayout(new MigLayout("", "[25.00px,grow]", "[16.00px, grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[25.00px,grow]", "[16.00px, grow]"));
 //		add(pnlTab, "cell 0 0,alignx left,aligny top");
 
 		// tab title
@@ -36,7 +37,7 @@ public class CustomClosableTab extends JPanel{
 		imageLbl.setMaximumSize(new Dimension(15, 20));
 		
 		// button close
-		setLayout(new MigLayout("", "[16.00px][25.00px:35.00px,grow][15.00px]", "[16.00px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[16.00px][25.00px:35.00px,grow][15.00px]", "[16.00px,grow]"));
 //		GridBagConstraints gbc = new GridBagConstraints();
 //		gbc.gridx = 0;
 //		gbc.gridy = 0;

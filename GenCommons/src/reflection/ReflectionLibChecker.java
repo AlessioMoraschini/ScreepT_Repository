@@ -1,4 +1,4 @@
-package dependencycheck;
+package reflection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -12,10 +12,10 @@ import org.apache.log4j.Logger;
  * @author Alessio Moraschini
  *
  */
-public class LibChecker {
+public class ReflectionLibChecker {
 	
 	// mainGUI logger
-	static Logger logger = Logger.getLogger(LibChecker.class);	
+	static Logger logger = Logger.getLogger(ReflectionLibChecker.class);	
 	static boolean loggerEnabled = true;
 	
 	/**
@@ -152,7 +152,7 @@ public class LibChecker {
 	}
 
 	public static void setLoggerEnabled(boolean loggerEnabled) {
-		LibChecker.loggerEnabled = loggerEnabled;
+		ReflectionLibChecker.loggerEnabled = loggerEnabled;
 	}
 	
 	

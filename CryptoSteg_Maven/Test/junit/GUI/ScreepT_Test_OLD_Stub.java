@@ -20,6 +20,7 @@ import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import crypt.manager.ScreeptManagerStub;
 import crypt.steg.StegCipher;
+import resources.GeneralConfig;
 import crypt.steg.STEGException;
 
 public class ScreepT_Test_OLD_Stub {
@@ -29,7 +30,7 @@ public class ScreepT_Test_OLD_Stub {
 ///////////////////////////////////////////////////////////////////
 	
 	// DIRECTORIES 
-	private final String TEMP_DIR = "Resources_Scrypt/temp/";
+	private final String TEMP_DIR = GeneralConfig.RESOURCES_DIR  + "temp/";
 	
 	// KEY INITIALIZATION
 	private final char[] AES_KEY = "ciaosonoalessio".toCharArray();

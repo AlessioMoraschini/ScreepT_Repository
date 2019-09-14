@@ -10,15 +10,13 @@ import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
-import resources.IconsPathConfigurator;
+import resources.GeneralConfig;
 
 import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
-
-import org.apache.commons.io.FileUtils;
 
 import amfileutils.FileStuff;
 import dialogutils.MyFileView;
@@ -60,7 +58,7 @@ public class FilePropertiesFrame extends JFrame{
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(new Color(255, 255, 240));
-		panel.setLayout(new MigLayout("", "[][25%][][grow]", "[grow][][grow][][grow][30px:n:40px]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][25%][][grow]", "[grow][][grow][][grow][30px:n:40px]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportView(panel);
@@ -108,7 +106,7 @@ public class FilePropertiesFrame extends JFrame{
 		footerPanel.setForeground(Color.WHITE);
 		footerPanel.setBackground(Color.DARK_GRAY);
 		panel.add(footerPanel, "cell 0 5 4 1,grow");
-		footerPanel.setLayout(new MigLayout("", "[1px,grow][1px,grow][1px,grow][1px,grow]", "[1px,grow]"));
+		footerPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[1px,grow][1px,grow][1px,grow][1px,grow]", "[1px,grow]"));
 		
 		dynLblCanRead = new JLabel((String) null);
 		dynLblCanRead.setForeground(Color.DARK_GRAY);

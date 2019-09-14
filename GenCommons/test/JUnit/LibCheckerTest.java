@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import dependencycheck.LibChecker;
+import reflection.ReflectionLibChecker;
 
 public class LibCheckerTest {
 	
@@ -15,24 +15,24 @@ public class LibCheckerTest {
 	@Test
 	@Ignore
 	public void TestClass() {
-		LibChecker.setLoggerEnabled(loggerEnabled);
+		ReflectionLibChecker.setLoggerEnabled(loggerEnabled);
 		
-		assertFalse(LibChecker.checkClassInstantiation("fakeClass", null));
-		assertTrue(LibChecker.checkClassExisting("org.junit.Test"));
+		assertFalse(ReflectionLibChecker.checkClassInstantiation("fakeClass", null));
+		assertTrue(ReflectionLibChecker.checkClassExisting("org.junit.Test"));
 	}
 	
 	@Test
 	public void TestClassInstantioation() {
-		LibChecker.setLoggerEnabled(loggerEnabled);
+		ReflectionLibChecker.setLoggerEnabled(loggerEnabled);
 		String[] args = {""};
-		assertTrue(LibChecker.checkClassInstantiation("java.lang.String", args));
+		assertTrue(ReflectionLibChecker.checkClassInstantiation("java.lang.String", args));
 //		assertTrue(LibChecker.checkClassInstantiation("org.junit.Assert", new Boolean(true)));
 	}
 	
 	@Test
 	@Ignore
 	public void TestMethod() {
-		LibChecker.setLoggerEnabled(loggerEnabled);
-		assertTrue(LibChecker.checkMethod("java.lang.String", "equals", Object.class));
+		ReflectionLibChecker.setLoggerEnabled(loggerEnabled);
+		assertTrue(ReflectionLibChecker.checkMethod("java.lang.String", "equals", Object.class));
 	}
 }

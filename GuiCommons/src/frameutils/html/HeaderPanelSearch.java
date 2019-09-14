@@ -13,6 +13,7 @@ import javax.swing.event.DocumentListener;
 import ButtonUtils.ButtonDefaults;
 import media.Sounds;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 
@@ -42,7 +43,7 @@ public class HeaderPanelSearch extends JPanel{
 		
 		setBorder(new LineBorder(Color.white, 2));
 		setBackground(Color.gray);
-		setLayout(new MigLayout("", "[50px][50px][50px][50px][50px][grow][50px]", "[30px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[50px][50px][50px][50px][50px][grow][50px]", "[30px,grow]"));
 		
 		btnGoBack = new JButton("Back");
 		btnGoBack.setOpaque(true);

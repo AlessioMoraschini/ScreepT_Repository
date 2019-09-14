@@ -1,5 +1,6 @@
 package gUI.panels;
 
+import resources.GeneralConfig;
 import javax.swing.JFrame;
 
 import org.apache.commons.io.FilenameUtils;
@@ -92,14 +93,14 @@ public class KeyDictionaryPanel extends JFrame{
 		
 		logger.debug("## KeyDictionary panel started!");
 		getContentPane().setBackground(new Color(211, 211, 211));
-		getContentPane().setLayout(new MigLayout("", "[88.00px][93.00][89.00px][10.00px][10px:100:500,grow 500][:100:10%][:100:8%][:100:8%][:100:14%]", "[35px][:25:25px][40%,grow]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[88.00px][93.00][89.00px][10.00px][10px:100:500,grow 500][:100:10%][:100:8%][:100:8%][:100:14%]", "[35px][:25:25px][40%,grow]"));
 		
 		JPanel panel = new JPanel();
 		panel.setForeground(SystemColor.menu);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 3));
 		panel.setBackground(new Color(176, 196, 222));
 		getContentPane().add(panel, "cell 0 0 9 1,growx,aligny center");
-		panel.setLayout(new MigLayout("", "[][][][][][][][][][grow][][][]", "[]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][][][][][][][][][grow][][][]", "[]"));
 		
 		JLabel lblKeyDictionary = new JLabel("Key Dictionary");
 		lblKeyDictionary.setHorizontalAlignment(SwingConstants.CENTER);
@@ -118,7 +119,7 @@ public class KeyDictionaryPanel extends JFrame{
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel_1.setBackground(Color.DARK_GRAY);
 		getContentPane().add(panel_1, "cell 0 2 9 1,grow");
-		panel_1.setLayout(new MigLayout("", "[:10px:10px][:50:50px][:100:60%,grow][:10px:10px][][10][][5%][20px:12.5%,grow]", "[:20px:30px][20][20][20][20][10,grow]"));
+		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[:10px:10px][:50:50px][:100:60%,grow][:10px:10px][][10][][5%][20px:12.5%,grow]", "[:20px:30px][20][20][20][20][10,grow]"));
 		
 		
 		scrollPane = new JScrollPane();

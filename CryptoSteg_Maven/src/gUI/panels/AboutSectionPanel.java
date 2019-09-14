@@ -12,6 +12,7 @@ import maingUI.mainGUI;
 
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import utils.SysUtils;
@@ -74,7 +75,7 @@ public class AboutSectionPanel extends JFrame{
 		
 		backPanel = new BackgroundPanel(background);
 		backPanel.setBackground(Color.BLACK);
-		backPanel.setLayout(new MigLayout("", "[20px][25%][25%][25%][25%][20px]", "[5px][40px][30px][grow][30px][grow][30px][grow][30px]"));
+		backPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[20px][25%][25%][25%][25%][20px]", "[5px][40px][30px][grow][30px][grow][30px][grow][30px]"));
 		getContentPane().add(backPanel);
 		
 		lblTitle = new JLabel(mainGUI.APPLICATION_NAME);

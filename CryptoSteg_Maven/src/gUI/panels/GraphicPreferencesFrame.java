@@ -1,8 +1,10 @@
 package gUI.panels;
 
+import resources.GeneralConfig;
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import utils.RsyntaxUtils;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -118,14 +120,14 @@ public class GraphicPreferencesFrame extends JFrame {
 
 		setBackground(new Color(0, 0, 0));
 		getContentPane().setBackground(new Color(112, 128, 144));
-		getContentPane().setLayout(new MigLayout("", "[:140px:180px][:80:80,grow][70][90][:10px:100px,grow][:100px:100px][:75px:75px][:75px:75px]", "[:50:70px][5][][15][30][10][30][30][50][30][:5px:10px,grow][10%,grow,baseline]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[:140px:180px][:80:80,grow][70][90][:10px:100px,grow][:100px:100px][:75px:75px][:75px:75px]", "[:50:70px][5][][15][30][10][30][30][50][30][:5px:10px,grow][10%,grow,baseline]"));
 
 		JPanel panel = new JPanel();
 		panel.setForeground(SystemColor.controlText);
 		panel.setBorder(new LineBorder(null, 4));
 		panel.setBackground(new Color(211, 211, 211));
 		getContentPane().add(panel, "cell 0 0 8 1,grow");
-		panel.setLayout(new MigLayout("", "[100px][][70px][][][][][][][][][][][][][][][][][grow 1000][][][][][100px]", "[100]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px][][70px][][][][][][][][][][][][][][][][][grow 1000][][][][][100px]", "[100]"));
 		
 		JLabel lblGraphicInterfaceSettings = new JLabel("GUI   Preferences");
 		panel.add(lblGraphicInterfaceSettings, "cell 2 0 22 1,alignx center");
@@ -280,7 +282,11 @@ public class GraphicPreferencesFrame extends JFrame {
 		addHandlers();
 		
 		initGuiFromConfig();
-		TextEditor.loadedTabObj.textArea.setFont(initialTxtEditorFont);
+		
+//		if (TextEditor.loadedTabObj != null) {
+//			TextEditor.loadedTabObj.textArea.setFont(initialTxtEditorFont);
+//			RsyntaxUtils.setFont(TextEditor.loadedTabObj.textArea, initialTxtEditorFont);
+//		}
 	}
 
 	private void addHandlers() {
@@ -585,7 +591,15 @@ public class GraphicPreferencesFrame extends JFrame {
 		GUIStyelSettings.setStyle(PREFERRED_STYLE, NIMBUS_SIZE);
 		TextEditor.resetDividerColor();
 		TextEditor.applyStyleToTabs();
-
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (TextEditor.loadedTabObj != null) {
+					TextEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
+					RsyntaxUtils.setFont(TextEditor.loadedTabObj.textArea, currentConfiguration.getTextEditorOpt().getFont());
+				}
+			}
+		});
 	}
 
 	private void updateBackup() {

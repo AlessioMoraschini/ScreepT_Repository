@@ -1,5 +1,6 @@
 package gUI.panels;
 
+import resources.GeneralConfig;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
@@ -133,7 +134,7 @@ public class NetInfoPanel extends JFrame{
 	private void initialize() {
 	
 		getContentPane().setBackground(Color.BLACK);
-		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[60px][60px][75%,grow]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[60px][60px][75%,grow]"));
 		
 		headerPanelTitle = new JPanel();
 		headerPanelTitle.setMinimumSize(new Dimension(100, 10));
@@ -141,7 +142,7 @@ public class NetInfoPanel extends JFrame{
 		headerPanelTitle.setBorder(new LineBorder(Color.DARK_GRAY, 4));
 		headerPanelTitle.setBackground(new Color(119, 136, 153));
 		getContentPane().add(headerPanelTitle, "cell 0 0 4 1,grow");
-		headerPanelTitle.setLayout(new MigLayout("", "[grow,trailing][100%,grow,center][grow,trailing]", "[20px,grow]"));
+		headerPanelTitle.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[grow,trailing][100%,grow,center][grow,trailing]", "[20px,grow]"));
 		
 		lblNetworkInfoTool = new JLabel("Network Info Tool");
 		lblNetworkInfoTool.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -175,7 +176,7 @@ public class NetInfoPanel extends JFrame{
 		panel = new JPanel();
 		panel.setBackground(new Color(255, 250, 240));
 		ConncetionInfoScrollPanel.setViewportView(panel);
-		panel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][10px][12.5%,grow][12.5%,grow][12.5%,grow]", "[40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[12.5%,grow][12.5%,grow][12.5%,grow][10px][12.5%,grow][12.5%,grow][12.5%,grow]", "[40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow]"));
 		
 		lblAdapterName = new JLabel("Adapter Name:");
 		lblAdapterName.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -228,7 +229,7 @@ public class NetInfoPanel extends JFrame{
 		panel_1.setBackground(Color.LIGHT_GRAY);
 		panel_1.setBorder(new LineBorder(new Color(0, 51, 51), 2));
 		panel.add(panel_1, "cell 4 1 3 4,grow");
-		panel_1.setLayout(new MigLayout("", "[10%,grow][50%,grow]", "[15px][30px,grow][10px][10px][30px,grow][10px][10px][30px,grow]"));
+		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[10%,grow][50%,grow]", "[15px][30px,grow][10px][10px][30px,grow][10px][10px][30px,grow]"));
 		
 		progressBarUp = new JProgressBar();
 		progressBarUp.setBackground(Color.DARK_GRAY);

@@ -29,6 +29,7 @@ import launcherutils.FileUtils;
 import launcherutils.om.DependencyLocalPath;
 import launcherutils.om.DependencyModel;
 import om.OSinfo;
+import resources.GeneralConfig;
 import utils.SysUtils;
 
 /**
@@ -63,7 +64,7 @@ public class ScrYpTLauncher {
 	public static String MAIN_JAR_FILE = "SCreepT_V0.6.0_X.jar";
 	
 	// jvm search fields default
-	public static final String JVM_ARGS = " -Dfile.encoding=UTF8 -Djava.library.path=\"./Resources_Scrypt/lib\"";
+	public static final String JVM_ARGS = " -Dfile.encoding=UTF8 -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
 	public static final String GUI_SCALE_ARG = "-Dsun.java2d.uiScale=";
 	public static String GUI_SCALE_ARG_VALUE = "1"; //
 	public static String MIN_JRE_VERSION = "1.8"; // included MIN

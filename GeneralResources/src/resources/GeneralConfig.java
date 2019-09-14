@@ -2,46 +2,69 @@ package resources;
 
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Properties;
 
 import javax.swing.ImageIcon;
 
 public class GeneralConfig {
 	
+	// general properties file containing mappings (this way you can change them without rebuild)
+	public static final String resourcesMappingDefPath = "resourcesFilePathsMappings.properties";
+	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
+	public static Properties linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
+	
 	// General Folders
-	public static final String RESOURCES_DIR = "Resources_Scrypt/";
-	public static final String DEFAULT_IMAGE_FOLDER = RESOURCES_DIR + "Images/";
-	public static final String SOUNDS_FOLDER = "Resources_Scrypt/sounds/";
-	public static final String WORDLIST_FOLDER = RESOURCES_DIR + "ProgrammingLanguagesWords/";
-	public static final String DEFAULT_INI_FOLDER= "INI_FILES/";
+	public static final String RESOURCES_DIR = linkedMappings.getProperty("RESOURCES_DIR");
+	public static final String DEFAULT_IMAGE_FOLDER = linkedMappings.getProperty("DEFAULT_IMAGE_FOLDER");
+	public static final String SOUNDS_FOLDER = linkedMappings.getProperty("SOUNDS_FOLDER");
+	public static final String WORDLIST_FOLDER = linkedMappings.getProperty("WORDLIST_FOLDER");
+	public static final String DEFAULT_INI_FOLDER = linkedMappings.getProperty("DEFAULT_INI_FOLDER");
+	
+	static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
+	private static final boolean FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
+	public static final String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
 	
 	// Temp decryptedFolder
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 
 	// Ini files configuration
-	public static final String DEFAULT_INI= RESOURCES_DIR + "CONFIG.ini";
-	public static final String BACKUP_INI= RESOURCES_DIR + "Backup/BACKUP_CONFIG.ini";
+	public static final String DEFAULT_INI= linkedMappings.getProperty("DEFAULT_INI");
+	public static final String BACKUP_INI= linkedMappings.getProperty("BACKUP_INI");
 	
 	// Readme File
-	public static final String SCRYPT_TUTORIAL_HTML_PATH = "Resources_Scrypt/Readme/ReadMe.html";
+	public static final String SCRYPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
 	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
 	
 	// Logs configuration
-	public static final String LOG_PATH = "LOG/Execution_Log_Trace.log";
-	public static final String LOG_PROPERTIES_PATH = RESOURCES_DIR + "log4j.properties";
-	public static final String LOG_LAUNCHER_PATH = "LAUNCHER/LOG/Launcher_Log_Trace.log";
+	public static final String LOG_PATH = linkedMappings.getProperty("LOG_PATH");
+	public static final String LOG_PROPERTIES_PATH = linkedMappings.getProperty("LOG_PROPERTIES_PATH");
+	public static final String LOG_LAUNCHER_PATH = linkedMappings.getProperty("LOG_LAUNCHER_PATH");
 	
 	// JVM
-	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = "1.9.0";
+	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = linkedMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 	
 	// Tooltips
-	public static final int TOOLTIP_DELAY = 400; // 0,4 seconds
-	public static final int TOOLTIP_TIMEOUT = 30000; // 30 seconds
+	public static int TOOLTIP_DELAY;
+	public static int TOOLTIP_TIMEOUT;
+	
+	static {
+		try {
+			TOOLTIP_DELAY = Integer.parseInt(linkedMappings.getProperty("TOOLTIP_DELAY"));// 0,4 seconds
+			TOOLTIP_TIMEOUT = Integer.parseInt(linkedMappings.getProperty("TOOLTIP_TIMEOUT")); // 30 seconds
+		}catch(Exception e) {
+			TOOLTIP_DELAY = 400;// 0,4 seconds
+			TOOLTIP_TIMEOUT = 30000; // 30 seconds
+		}
+	}
 	
 	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
 	
-	// Icons <-> File Image Mappings - (Used in Text Editor tabs)
-	private static Hashtable<String,ImageIcon> defaultFileIcons() {
+	/** Icons <-> File Image Mappings - (Used in Text Editor tabs)
+	 * 
+	 * @return hashtable of extensions linked to related icons
+	 */
+	public static Hashtable<String,ImageIcon> defaultFileIcons() {
     	
     	Hashtable<String,ImageIcon> table=new Hashtable<>();
 

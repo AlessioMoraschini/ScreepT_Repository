@@ -29,6 +29,7 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import media.STEGException;
+import resources.GeneralConfig;
 import variousutils.CustomFileComparator;
 import variousutils.EntophyzerUtils;
 import crypt.steg.StegOmResult;
@@ -51,7 +52,7 @@ public class ScreeptManager {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ScreeptManager.class);
 	
-	private final String TEMP_PATH = "Resources_Scrypt/temp/";
+	private final String TEMP_PATH = GeneralConfig.RESOURCES_DIR  + "temp/";
 	// temp file path - default value after initializing with constructor
 	private String OUT_PATH = TEMP_PATH;
 	private String RESULT_PATH = TEMP_PATH;

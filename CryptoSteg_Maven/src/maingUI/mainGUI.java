@@ -121,7 +121,7 @@ public class mainGUI {
 	public static String currentJvmVersion = "";
 	
 	// default button and generic font definitions
-	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(16, 12);
+	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(16, 0);
 	public static final Font BUTTON_DEFAULT_FONT =  new Font("SansSerif", Font.BOLD, 12);
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	
@@ -299,7 +299,7 @@ public class mainGUI {
 						SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 
 					} catch (IOException e) {
-						logger.error("Exception happened during loading of file [Resources_Scrypt/CONFIG.ini]!", e);
+						logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);
 					}
 					
 					
@@ -897,7 +897,7 @@ public class mainGUI {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagFrameGuiOptions = true;
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
-					panelGuiOptions.setPreferredSize(new Dimension(800, 340));
+					panelGuiOptions.setPreferredSize(new Dimension(800, 355));
 					GuiUtils.centerComponent(panelGuiOptions, 800, 340);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -907,6 +907,7 @@ public class mainGUI {
 					panelGuiOptions.setState(java.awt.Frame.NORMAL);
 					panelGuiOptions.requestFocus();
 				}
+				GuiUtils.changeFrameStateLater(frmScryptV, panelGuiOptions, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		
@@ -947,7 +948,7 @@ public class mainGUI {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagFrameGenOptions=true;
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
-					panelGeneralOptions.setBounds(400, 300, 700, 250);
+					panelGeneralOptions.setBounds(400, 300, 700, 265);
 					panelGeneralOptions.setVisible(true);
 					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGeneralOptions.setTitle("Apply/Save General Options [Customize - Apply - Save]");
@@ -956,6 +957,7 @@ public class mainGUI {
 					panelGeneralOptions.setState(java.awt.Frame.NORMAL);
 					panelGeneralOptions.requestFocus();
 				}
+				GuiUtils.changeFrameStateLater(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		
@@ -975,6 +977,7 @@ public class mainGUI {
 					panelKeyGen.setState(java.awt.Frame.NORMAL);
 					panelKeyGen.requestFocus();
 				}
+		    	GuiUtils.changeFrameStateLater(frmScryptV, panelKeyGen,JFrame.MAXIMIZED_BOTH);
 		    }
 		});
 		
@@ -1007,6 +1010,7 @@ public class mainGUI {
 					panelNetInfo.setState(java.awt.Frame.NORMAL);
 					panelNetInfo.requestFocus();
 				}
+		    	GuiUtils.changeFrameStateLater(frmScryptV, panelNetInfo, JFrame.MAXIMIZED_BOTH);
 		    }
 		});
 		
@@ -1040,6 +1044,7 @@ public class mainGUI {
 					panelHwInfo.setState(java.awt.Frame.NORMAL);
 					panelHwInfo.requestFocus();
 				}
+		    	GuiUtils.changeFrameStateLater(frmScryptV, panelHwInfo, JFrame.MAXIMIZED_BOTH);
 		    }
 		});
 		
@@ -1059,6 +1064,7 @@ public class mainGUI {
 					panelKeyDict.setState(java.awt.Frame.NORMAL);
 					panelKeyDict.requestFocus();
 				}
+		    	GuiUtils.changeFrameStateLater(frmScryptV, panelKeyDict,JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		
@@ -1099,6 +1105,7 @@ public class mainGUI {
 					panelAbout.setState(java.awt.Frame.NORMAL);
 					panelAbout.requestFocus();
 				}
+				GuiUtils.changeFrameStateLater(frmScryptV, panelAbout, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		
@@ -1477,7 +1484,7 @@ public class mainGUI {
 			JPanel MAIN_PANEL = new JPanel();
 			MAIN_PANEL.setBackground(SystemColor.infoText);
             frmScryptV.getContentPane().add(MAIN_PANEL);
-            MAIN_PANEL.setLayout(new MigLayout("", "[90%]", "[1.00][100.52%,baseline]"));
+            MAIN_PANEL.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[90%]", "[1.00][100.52%,baseline]"));
             
             if(APPLICATION_MAIN_BCKG_IMAGE == null) {
             	readBackgroundImage();

@@ -53,7 +53,7 @@ public class TabUtils {
 		imageLbl.setMaximumSize(new Dimension(25, 20));
 		
 		pnlTab.setLayout(new GridBagLayout());
-//		pnlTab.setLayout(new MigLayout("", "[16.00px][25.00px:35.00px,grow][15.00px]", "[16.00px,grow]"));
+//		pnlTab.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[16.00px][25.00px:35.00px,grow][15.00px]", "[16.00px,grow]"));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;

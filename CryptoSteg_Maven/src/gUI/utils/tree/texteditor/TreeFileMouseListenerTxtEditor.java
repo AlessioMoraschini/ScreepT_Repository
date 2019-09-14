@@ -13,25 +13,23 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import frameutils.FilePropertiesFrame;
 import frameutils.GuiUtils;
 import gUI.panels.TextEditor;
+import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 import splitpanel.FileNamed;
 import treeutils.TreeUtils;
 import utils.ColorDialogUtils;
-import utils.RsyntaxUtils;
 import variousutils.HandleString;
 
 public class TreeFileMouseListenerTxtEditor {
@@ -169,7 +167,7 @@ public class TreeFileMouseListenerTxtEditor {
 			tree.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
 			tree.revalidate();
 			tree.repaint();
-			TreeUtils.selectFileInNamedFileTree(currentFile, tree);
+			TreeUtils.selectFileInNamedFileTree(currentFile, tree, true);
 		}
 		return true;
 	}
@@ -229,10 +227,12 @@ public class TreeFileMouseListenerTxtEditor {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Color esit = new ColorDialogUtils().askForColor(TextEditor.leftSplitContainer, false);
+				Color esit = new ColorDialogUtils().askForColor(TextEditor.leftSplitTreeFiles, false);
 				if (esit != null) {
 					textEditor.currentConfiguration.getTextEditorOpt().setFilePanelBackCol(esit);
-					TextEditor.leftSplitContainer.setBackground(esit);
+					textEditor.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "filePanelBackgroundCol", HandleString.getRgbString(esit));
+//					TextEditor.leftSplitContainer.setBackground(esit);
+					TextEditor.leftSplitTreeFiles.setBackground(esit);
 					logger.debug("File panel Background color changed to : " + HandleString.getRgbString(esit));
 				}
 			}

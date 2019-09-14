@@ -19,6 +19,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import media.Sounds;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import utils.SysUtils;
 
@@ -52,7 +53,7 @@ public class JavaFxPanelHtml extends JPanel {
     public JavaFxPanelHtml(){  
     	jfxPanel = new JFXPanel();  
     	setBorder(BorderFactory.createEmptyBorder());
-        setLayout(new MigLayout("", "[1000px,grow]", "[1000px,grow]"));
+        setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[1000px,grow]", "[1000px,grow]"));
         add(jfxPanel, "cell 0 0,grow");
         
     }

@@ -13,6 +13,8 @@ import gUI.utils.tree.crypter.dragndrop.DragNDropVirtualCellRenderer;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -44,7 +46,7 @@ public class TestDragNDropFiles {
                 JFrame frame = new JFrame("Testing Drag N' Drop files");
                 frame.getContentPane().setBackground(Color.LIGHT_GRAY);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.getContentPane().setLayout(new MigLayout("", "[600px,grow]", "[200px,grow][][200px,grow][150px,grow]"));
+                frame.getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+GeneralConfig.DEBUG_GRAPHICS+"", "[600px,grow]", "[200px,grow][][200px,grow][150px,grow]"));
                 
                 JTree tree = new JTree();
                 VirtualFileDropPane dropPane = new VirtualFileDropPane(tree, frame); // link drop pane to update tree

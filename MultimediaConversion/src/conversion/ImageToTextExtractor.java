@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import resources.GeneralConfig;
 
 public class ImageToTextExtractor {
 	
@@ -17,11 +18,11 @@ public class ImageToTextExtractor {
 	private String cachedText;
 	
 	/**
-	 * Uses default tessdata path "Resources_Scrypt/lib/tessdata"
+	 * Uses default tessdata path = GeneralConfig.RESOURCES_DIR  + "lib/tessdata"
 	 */
 	public ImageToTextExtractor() {
 		instanceOfExporter = new Tesseract();
-		instanceOfExporter.setDatapath("Resources_Scrypt/lib/tessdata");
+		instanceOfExporter.setDatapath(GeneralConfig.RESOURCES_DIR  + "lib/tessdata");
 		cachedText = "";
 	}
 	

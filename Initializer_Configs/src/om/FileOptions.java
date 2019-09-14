@@ -1,7 +1,5 @@
 package om;
 
-import java.io.File;
-
 public class FileOptions {
 	
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
@@ -30,6 +28,8 @@ public class FileOptions {
 		lastDstFolderPath = lastDstPath;
 		autosaveInterval = autosaveInt;
 	}
+	
+	// GETTERS AND SETTERS
 
 	public boolean isFlagAutosave() {
 		return flagAutosave;

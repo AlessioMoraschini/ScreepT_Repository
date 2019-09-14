@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import textareautil.SelectionDto;
 
@@ -85,7 +86,7 @@ public class SearchFrame extends JFrame{
 		
 		tabSearch = new JPanel();
 		tabSearch.setBorder(new LineBorder(Color.LIGHT_GRAY, 2));
-		tabSearch.setLayout(new MigLayout("", "[100px,grow][100px,grow][100px,grow][100px][100px][120px,grow]", "[:35px:40px][50px,grow][50px]"));
+		tabSearch.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px,grow][100px,grow][100px,grow][100px][100px][120px,grow]", "[:35px:40px][50px,grow][50px]"));
 		tabSearch.setBackground(Color.DARK_GRAY);
 		getContentPane().add(tabSearch);
 		
@@ -103,7 +104,7 @@ public class SearchFrame extends JFrame{
 		headerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		headerPanel.setBackground(new Color(112, 128, 144));
 		tabSearch.add(headerPanel, "cell 0 0 6 1,grow");
-		headerPanel.setLayout(new MigLayout("", "[][grow][]", "[::25px,fill]"));
+		headerPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][grow][]", "[::25px,fill]"));
 		
 		lblTextSearch = new JLabel("Text Search");
 		lblTextSearch.setHorizontalAlignment(SwingConstants.RIGHT);

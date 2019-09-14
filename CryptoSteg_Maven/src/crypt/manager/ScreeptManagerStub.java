@@ -26,6 +26,7 @@ import crypt.steg.StegCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegOmResult;
 import media.ImageGeneralWorker;
+import resources.GeneralConfig;
 import variousutils.CustomFileComparator;
 import variousutils.HandleString;
 
@@ -46,7 +47,7 @@ public class ScreeptManagerStub {
 	static Logger logger = Logger.getLogger(ScreeptManagerStub.class);
 	
 	// temp file path - default value after initializing with constructor
-	private final String TEMP_PATH = "Resources_Scrypt/temp/";
+	private final String TEMP_PATH = GeneralConfig.RESOURCES_DIR  + "temp/";
 	private String RESULT_PATH = TEMP_PATH;
 	
 	// temp crypted/decrypted file name

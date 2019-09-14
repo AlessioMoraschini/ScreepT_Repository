@@ -14,6 +14,7 @@ import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooser;
 import frameutils.GuiUtils;
 import media.ImageGeneralWorker;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import splitpanel.SplitPaneUtils;
@@ -86,12 +87,12 @@ public class ImageSelector2TextFrame extends JFrame{
 		GuiUtils.centerFrame(this, WIDTH, HEIGHT);
 		GuiUtils.moveFrame(this, GuiUtils.getScreenSize(mainFrameParent).width/4, 0);
 		GuiUtils.showOnSameScreen(mainFrameParent);
-		getContentPane().setLayout(new MigLayout("", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 		
 		imageContainerPanel = new JPanel();
 		imageContainerPanel.setBackground(Color.BLACK);
 		imageContainerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 3, true));
-		imageContainerPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
+		imageContainerPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[grow]", "[grow]"));
 		
 		labelLoadedImage = new JLabel("");
 		imageContainerPanel.add(labelLoadedImage, "cell 0 0");
