@@ -28,6 +28,7 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_BREAK_LINE = false;
 	public static final boolean DEFAULT_TREE_LOCKED = false;
 	public static final boolean DEFAULT_WORKSPACE_VIEW_SELECTED = false;
+	public static final boolean DFAULT_AUTO_SYNTAX_SYN_FLAG = true;
 	public static final String DEFAULT_WORKSPACE_LOCATION = System.getProperty("user.home");
 	
 	// FIELDS	
@@ -48,6 +49,7 @@ public class TextEditorOption {
 	public boolean fileTreeActive;
 	public boolean treeLocked;
 	public boolean workspaceViewSelected;
+	public boolean defaultAutoSyntaxSync;
 	
 	public boolean breaklineActive;
 	public boolean antialiasedTxtArea;
@@ -66,6 +68,16 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public boolean isDefaultAutoSyntaxSync() {
+		return defaultAutoSyntaxSync;
+	}
+
+
+	public void setDefaultAutoSyntaxSync(boolean defaultAutoSyntax) {
+		this.defaultAutoSyntaxSync = defaultAutoSyntax;
+	}
+
+
 	public boolean isWorkspaceViewSelected() {
 		return workspaceViewSelected;
 	}

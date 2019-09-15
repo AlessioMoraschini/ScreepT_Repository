@@ -1,4 +1,4 @@
-package gUI.utils.panelmainutils;
+package gUI.utils.mainGui;
 
 import java.util.ArrayList;
 

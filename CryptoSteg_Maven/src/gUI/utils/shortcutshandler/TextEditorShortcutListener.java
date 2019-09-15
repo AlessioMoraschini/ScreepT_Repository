@@ -9,8 +9,8 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
-import gUI.utils.TextEditorUtils;
-import gUI.utils.texteditor.TextEditorTooltips;
+import gUI.utils.texteditor.TextEditorUtils;
+import gUI.utils.tooltip.TextEditorTooltips;
 import resources.IconsPathConfigurator;
 
 public class TextEditorShortcutListener implements KeyEventDispatcher{
@@ -335,6 +335,17 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							TextEditorUtils.hideOrShowFooterPanel();
+						}
+					});
+				}
+				
+				/*
+				 *  ON/OFF autoSync language from file type -> Ctrl+shift+L
+				 */
+				if(e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							TextEditor.chckbxLockLanguage.doClick();
 						}
 					});
 				}

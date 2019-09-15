@@ -49,6 +49,9 @@ public class GeneralConfig {
 	// JVM
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = linkedMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 	
+	// file icons defaults 
+	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
+	
 	// Tooltips
 	public static int TOOLTIP_DELAY;
 	public static int TOOLTIP_TIMEOUT;
@@ -83,7 +86,16 @@ public class GeneralConfig {
 		}
 	}
 	
-	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
+	///////////////////////////////////////////////// METHODS ///////////////////////////////////////////////
+	
+	/**
+	 * Properties reloader
+	 */
+	public static void reloadProperties () {
+		resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
+		linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
+	}
+	
 	
 	/** Icons <-> File Image Mappings - (Used in Text Editor tabs)
 	 * 
@@ -136,10 +148,5 @@ public class GeneralConfig {
 	    
 	    return table;
     }
-	
-	public static void reloadProperties () {
-		resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
-		linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
-	}
 	
 }

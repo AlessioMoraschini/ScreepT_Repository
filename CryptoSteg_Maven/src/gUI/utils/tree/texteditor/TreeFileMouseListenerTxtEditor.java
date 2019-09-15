@@ -24,7 +24,7 @@ import amfileutils.FileStuff;
 import frameutils.FilePropertiesFrame;
 import frameutils.GuiUtils;
 import gUI.panels.TextEditor;
-import gUI.utils.TextEditorUtils;
+import gUI.utils.texteditor.TextEditorUtils;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;

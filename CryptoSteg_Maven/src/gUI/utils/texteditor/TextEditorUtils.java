@@ -1,4 +1,4 @@
-package gUI.utils;
+package gUI.utils.texteditor;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
@@ -22,11 +23,12 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import gUI.panels.TextEditor;
-import gUI.panels.TextEditor.*;
+import gUI.utils.tooltip.TextEditorTooltips;
 import gUI.utils.tree.texteditor.FileNameCellRenderer;
 import gUI.utils.tree.texteditor.FileTreeNamedModel;
 import guistyle.GUIStyelSettings;
 import maingUI.mainGUI;
+import media.ImageGeneralWorker;
 import om.TextEditorOption;
 import reflection.ReflectionUtils;
 import resources.GeneralConfig;
@@ -137,7 +139,6 @@ public class TextEditorUtils {
 	
 	private static void refresh(File currentFile) {
 		
-		FileNamed root = (FileNamed)TextEditor.leftSplitTreeFiles.getModel().getRoot();
 		File ancestor = new File("");
 		try {
 			ancestor = FileStuff.getNlevelsAncestor(currentFile.getCanonicalFile(), TextEditor.fileTreeAncestorLevel);
@@ -229,21 +230,18 @@ public class TextEditorUtils {
 	
 	public static void resizeFrameToDefault(mainGUI mainApplication) {
 		Rectangle currSize = mainApplication.getMainFrame().getBounds();
-		Dimension high = new Dimension(currSize.width - 60, currSize.height - 260);
-		Dimension max = new Dimension(currSize.width - 45, currSize.height - 200);
+		Dimension high = new Dimension(currSize.width - 60, currSize.height - 280);
+		Dimension med = new Dimension(currSize.width - TextEditor.loadedTabObj.currentScrollPane.getGutter().getWidth(),currSize.height - 280);
+		Dimension max = new Dimension(currSize.width - 45, currSize.height - 220);
+		
 		TextEditor.mainTabList.setPreferredSize(high);
 		TextEditor.mainTabList.setMaximumSize(max);
-		// mainTabList.setMinimumSize(max);
 		TextEditor.loadedTabObj.currentScrollPane.setPreferredSize(high);
-		// loadedTabObj.currentScrollPane.setMinimumSize(high);
-		Dimension med = new Dimension(currSize.width - TextEditor.loadedTabObj.currentScrollPane.getGutter().getWidth(),
-				currSize.height - 300);
 		TextEditor.loadedTabObj.textArea.setMaximumSize(med);
+		
 		if (!TextEditor.btnToggleFileView.isSelected()) {
 			TextEditor.splitPaneMain.setDividerLocation(0);
 		}
-		// loadedTabObj.textArea.setMinimumSize(high);
-		// currentTextEditor.revalidate();
 		TextEditor.currentTextEditor.repaint();
 	}
 	
@@ -282,6 +280,74 @@ public class TextEditorUtils {
 	public static void hideOrShowFooterPanel() {
 		TextEditor.currentTextEditor.footerPanel.setVisible(!TextEditor.currentTextEditor.footerPanel.isVisible());
 	}
+	
+	// START ADVICE TEMPORIZATION AND VISUALIZTION METHODS
+		
+		public static void refreshMessageAndTabTooltip(String message) {
+			logger.debug("Starting TextEditor.refreshMessageAndTabTooltip() with message: "+message);
+			successAdvice(message);
+			updateTabTooltip(TextEditor.mainTabList.getSelectedIndex());
+			TextEditor.lblCurrentFile.setForeground(ImageGeneralWorker.randomColorRGB(0.1f));
+			logger.debug("TextEditor.refreshMessageAndTabTooltip() completed - Exiting");
+		}
+	
+		public static void errorAdvice(String msg) {
+			TextEditor.dynLblSearchEsit.setForeground(Color.RED);
+			TextEditor.dynLblSearchEsit.setText(msg);
+			timeoutLblAdvice(TextEditor.timeoutAdvice);
+		}
+	
+		public static void successAdvice(String msg) {
+			TextEditor.dynLblSearchEsit.setForeground(Color.GREEN);
+			TextEditor.dynLblSearchEsit.setText(msg);
+			timeoutLblAdvice(TextEditor.timeoutAdvice);
+		}
+	
+		public static void infoAdvice(String msg) {
+			TextEditor.lblAdvice.setForeground(Color.BLUE);
+			TextEditor.lblAdvice.setText(msg);
+			timeoutLblAdvice(TextEditor.timeoutAdvice);
+		}
+	
+		public static void updateTabTooltip(int index) {
+			JPanel tabPanel = getPanelFromTabHeader(index);
+			if (TextEditor.loadedTabObj.loadedFile != null && TextEditor.loadedTabObj.loadedFile.exists()) {
+				tabPanel.setToolTipText(TextEditor.loadedTabObj.loadedFile.getAbsolutePath()+TextEditorTooltips.tooltipScrollTabsWithMouseWheel);
+			} else {
+				tabPanel.setToolTipText(TextEditor.DEFAULT_NEW_FILE_NAME+TextEditorTooltips.tooltipScrollTabsWithMouseWheel);
+			}
+		}
+		
+		public static void timeoutLblAdvice(int millisec) {
+			new Thread(new Runnable() {
+	
+				@Override
+				public void run() {
+					try {
+						TextEditor.renewedAdviceTimeout = true;
+						Thread.sleep(millisec);
+						TextEditor.renewedAdviceTimeout = false;
+						if(!TextEditor.renewedAdviceTimeout) {
+							TextEditor.dynLblSearchEsit.setText("");
+						}
+					} catch (InterruptedException e) {
+						logger.error("Exception happened!", e);
+					}
+				}
+			}).start();
+		}
+	
+		public static JPanel getPanelFromTabHeader(int index) {
+			JPanel tabPanel = null;
+			try {
+				tabPanel = (JPanel) TextEditor.mainTabList.getTabComponentAt(index);
+			} catch (Exception e) {
+				logger.error("Error retrieving panel from header tabbed pane panel", e);
+			}
+			return tabPanel;
+		}
+		
+	// END ADVICE TEMPORIZATION AND VISUALIZTION METHODS
 	
 	/**
 	 * Retrieve all elements of type JButton or JComboBox contained in TextEditor
