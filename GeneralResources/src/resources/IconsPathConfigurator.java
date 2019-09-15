@@ -136,6 +136,11 @@ public class IconsPathConfigurator {
 	public static final String ICON_CONSOLE = GeneralConfig.RESOURCES_DIR + "Icons/General/console.png";
 	public static final String ICON_SCREEPT = GeneralConfig.RESOURCES_DIR + "Icons/General/ScreepT.png";
 	public static final String ICON_RELOAD = GeneralConfig.RESOURCES_DIR + "Icons/General/reload.png";
+	public static final String ICON_LESS = GeneralConfig.RESOURCES_DIR + "Icons/General/less.png";
+	public static final String ICON_MORE = GeneralConfig.RESOURCES_DIR + "Icons/General/more.png";
+	public static final String ICON_JOB_ON = GeneralConfig.RESOURCES_DIR + "Icons/General/job_ON.png";
+	public static final String ICON_JOB_OFF = GeneralConfig.RESOURCES_DIR + "Icons/General/job_OFF.png";
+	public static final String ICON_JOB_SEARCH = GeneralConfig.RESOURCES_DIR + "Icons/General/job_search.png";
 	
 	////////////////    INSTANTIATED DEFAULT STATIC ICONS   ///////////////////
 	public static final ImageIcon IMG_ICON_LIGHT_ON = new ImageIcon(ICON_LIGHT_ON);

@@ -1,6 +1,7 @@
 package resources;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -13,6 +14,8 @@ public class GeneralConfig {
 	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
 	public static Properties linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
 	
+	public static final SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
+	
 	// General Folders
 	public static final String RESOURCES_DIR = linkedMappings.getProperty("RESOURCES_DIR");
 	public static final String DEFAULT_IMAGE_FOLDER = linkedMappings.getProperty("DEFAULT_IMAGE_FOLDER");
@@ -20,7 +23,7 @@ public class GeneralConfig {
 	public static final String WORDLIST_FOLDER = linkedMappings.getProperty("WORDLIST_FOLDER");
 	public static final String DEFAULT_INI_FOLDER = linkedMappings.getProperty("DEFAULT_INI_FOLDER");
 	
-	static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
+	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
 	private static final boolean FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
 	public static final String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
 	
@@ -35,6 +38,7 @@ public class GeneralConfig {
 	// Readme File
 	public static final String SCRYPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
 	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
+	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(linkedMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
 	
 	// Logs configuration
 	public static final String LOG_PATH = linkedMappings.getProperty("LOG_PATH");
@@ -55,6 +59,16 @@ public class GeneralConfig {
 		}catch(Exception e) {
 			TOOLTIP_DELAY = 400;// 0,4 seconds
 			TOOLTIP_TIMEOUT = 30000; // 30 seconds
+		}
+	}
+	
+	// TEXT EDITOR
+	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL;
+	static {
+		try {
+			DEFAULT_FILE_TREE_ANCESTOR_LEVEL = Integer.parseInt(linkedMappings.getProperty("DEFAULT_FILE_TREE_ANCESTOR_LEVEL"));
+		}catch(Exception e) {
+			DEFAULT_FILE_TREE_ANCESTOR_LEVEL = 2;
 		}
 	}
 	
@@ -111,5 +125,10 @@ public class GeneralConfig {
 	    
 	    return table;
     }
+	
+	public static void reloadProperties () {
+		resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
+		linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
+	}
 	
 }

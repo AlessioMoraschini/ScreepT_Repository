@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import frameutils.GuiUtils;
 import mainlauncher.ScrYpTLauncher;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.SysUtils;
 
@@ -18,7 +19,10 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -39,8 +43,13 @@ public class CustomizeParametersPanel extends JFrame{
 	public static final DecimalFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
 	private static final String TOOLTIP_LEVEL_LOG = "Choose a value between 'OFF'(logging feature disabled) and 'ALL'. This can have an impact for overall speed and memory usage (OFF = max speed)";
 	private static final String TOOLTIP_STACK_SIZE = "This is the memory used by java JVM to store variables in ram memory called stack. \nHigh value = more reliability but less free memory for other dynamic values!";
-	private static final String TOOLTIP_MIN_RAM_SIZE = "It's recommended to use lower value for minimum memory than max, equal values cause performance decrease! ";
-	private static final String TOOLTIP_MAX_RAM_SIZE = "It's recommended to use bigger value for max memory than minimum, equal values cause performance decrease! ";
+	private static final String TOOLTIP_WARN_MIN_RAM_SIZE = "It's recommended to use lower value for minimum memory than max, equal values cause performance decrease! ";
+	private static final String TOOLTIP_WARN_MAX_RAM_SIZE = "It's recommended to use bigger value for max memory than minimum, equal values cause performance decrease! ";
+	private static final String TOOLTIP_MIN_RAM_SIZE = "This is the minimum heap ram value used bj JVM to start ScrYpT dynamic data allocation";
+	private static final String TOOLTIP_MAX_RAM_SIZE = "This is the maximum heap ram value used bj JVM allocated to ScrYpT for dynamic data allocation";
+	private static final String TOOLTIP_DISPLAY_SHELL = "When checked, the launcher will keep an open active command line shell with the logger's output";
+	private static final String TOOLTIP_DEBUG_GUI = "When checked, MigLayout Components composing the graphic interface will be highlighted";
+	
 	
 	private static final int DEF_FIXED_HEIGHT = 190;
 	private static final int DEF_FIXED_WIDTH = 550;
@@ -62,6 +71,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private int backupStackSize;
 	private String backupLogLevel;
 	private boolean backupViewShell;
+	private boolean backupDebugGui;
 	private float backupScaleGuiPerc;
 	
 	private static final int defaultMinMemXms = 512;
@@ -69,6 +79,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final int defaultStackSize = 128;
 	private static final String defaultLogLevel = ScrYpTLauncher.DEFAULT_LOG_LEVEL+"";
 	private static final boolean defaultViewShell = false;
+	private static final boolean defaultDebugGui = false;
 	private static final float defaultScaleGuiPerc = 1.0f;
 	
 	private JLabel lblMaxWarninig;
@@ -81,6 +92,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private JLabel lblLogLevelInfo;
 	private JComboBox comboLogLevel;
 	private JCheckBox chckbxActiveShell;
+	private JCheckBox chckBoxDebugGraphics;
 	private JSlider sliderGuiScale;
 	private JLabel dynLblScaleGui;
 	private JLabel labelGuiScale;
@@ -103,13 +115,19 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(new Color(240, 248, 255));
-		getContentPane().setLayout(new MigLayout("", "[60px][40px][:20px:20px][:100px:100px][100px][:30px:30px][:100px:100px,grow]", "[grow][grow][grow][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px][40px][:20px:20px][:100px:100px][100px][:20px:20px][:100px:100px,grow]", "[grow][grow][grow][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		getContentPane().add(lblMaxMemory, "cell 0 0 2 1,alignx right");
 		
 		lblMaxWarninig = new JLabel("");
 		getContentPane().add(lblMaxWarninig, "cell 2 0");
+		
+		lblMinMemory = new JLabel("Min memory (MB):");
+		getContentPane().add(lblMinMemory, "cell 0 1 2 1,alignx right");
+		
+		lblMinWarninig = new JLabel("");
+		getContentPane().add(lblMinWarninig, "cell 2 1");
 		
 		spinnerMaxMemoryMB = new JSpinner();
 		spinnerMaxMemoryMB.setOpaque(true);
@@ -122,12 +140,6 @@ public class CustomizeParametersPanel extends JFrame{
 		comboLogLevel = new JComboBox<String>(ScrYpTLauncher.getLogLevelsList());
 //		comboLogLevel = new JComboBox<String>();
 		getContentPane().add(comboLogLevel, "cell 6 0,growx");
-		
-		lblMinMemory = new JLabel("Min memory (MB):");
-		getContentPane().add(lblMinMemory, "cell 0 1 2 1,alignx right");
-		
-		lblMinWarninig = new JLabel("");
-		getContentPane().add(lblMinWarninig, "cell 2 1");
 		
 		spinnerMinMemoryMB = new JSpinner();
 		spinnerMinMemoryMB.setOpaque(true);
@@ -159,9 +171,16 @@ public class CustomizeParametersPanel extends JFrame{
 		spinnerXssMemory.setOpaque(true);
 		getContentPane().add(spinnerXssMemory, "cell 3 2,growx");
 		
-		chckbxActiveShell = new JCheckBox("Display Cmd/Shell");
-		chckbxActiveShell.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		getContentPane().add(chckbxActiveShell, "cell 4 2 3 1,alignx center");
+		chckBoxDebugGraphics = new JCheckBox("Debug GUI:");
+		chckBoxDebugGraphics.setToolTipText(TOOLTIP_DEBUG_GUI);
+		chckBoxDebugGraphics.setSelected(false);
+		chckBoxDebugGraphics.setFont(new Font("SansSerif", Font.BOLD, 12));
+		getContentPane().add(chckBoxDebugGraphics, "cell 4 2,alignx right");
+		
+		chckbxActiveShell = new JCheckBox("Display Shell");
+		chckbxActiveShell.setToolTipText(TOOLTIP_DISPLAY_SHELL);
+		chckbxActiveShell.setFont(new Font("SansSerif", Font.BOLD, 12));
+		getContentPane().add(chckbxActiveShell, "cell 5 2 2 1,alignx center");
 		
 		btnExitConfiguration = new JButton("Discard");
 		btnExitConfiguration.setBackground(new Color(250, 128, 114));
@@ -224,6 +243,17 @@ public class CustomizeParametersPanel extends JFrame{
 			}
 		});
 		
+		chckBoxDebugGraphics.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(chckBoxDebugGraphics.isSelected()) {
+					GeneralConfig.linkedMappings.setProperty("FLAG_DEBUG_GRAPHICS", ((chckBoxDebugGraphics.isSelected())? "true" : "false"));
+					GeneralConfig.reloadProperties();
+				}
+			}
+		});
+		
 		btnReloadInitialConfig.addActionListener(new ActionListener() {
 			
 			@Override
@@ -233,6 +263,7 @@ public class CustomizeParametersPanel extends JFrame{
 				spinnerXssMemory.setValue(backupStackSize);
 				comboLogLevel.setSelectedItem(backupLogLevel);
 				chckbxActiveShell.setSelected(backupViewShell);
+				chckBoxDebugGraphics.setSelected(backupDebugGui);
 				sliderGuiScale.setValue(getPercFromScale(backupScaleGuiPerc));
 			}
 		});
@@ -251,6 +282,7 @@ public class CustomizeParametersPanel extends JFrame{
 				String stackString = " -Xss"+stackSize+"m";
 				boolean viewShell = chckbxActiveShell.isSelected();
 				String stringGuiPerc = getScaleFromPerc((Integer)sliderGuiScale.getValue());
+				String stringDebugGui = (chckBoxDebugGraphics.isSelected())? "true" : "";
 				
 				// update launcher vars and write to config INI file
 				ScrYpTLauncher.JVM_MEMORY_OPTIONS = args;
@@ -262,6 +294,24 @@ public class CustomizeParametersPanel extends JFrame{
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting", logLevel);
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "viewCmdConsole", String.valueOf(viewShell));
 				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "scaleGuiPerc", stringGuiPerc);
+				GeneralConfig.linkedMappings.put("FLAG_DEBUG_GRAPHICS", stringDebugGui);
+				java.io.OutputStream out = null;
+				try {
+					out = new FileOutputStream(GeneralConfig.resourcesMappingDefPath);
+					GeneralConfig.linkedMappings.store(out, "# Updated on "+GeneralConfig.GENERIC_FORMATTER.format(new Date()));
+					logger.debug(GeneralConfig.resourcesMappingDefPath +"updated with FLAG_DEBUG_GRAPHICS="+stringDebugGui);
+				} catch (IOException e1) {
+					logger.error(e1);
+				} finally {
+					try {
+						out.flush();
+						out.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					GeneralConfig.reloadProperties();
+				}
 				
 				// regenerate command list with new args
 				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();
@@ -308,15 +358,15 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	private void checkWarningsAndTooltips(int max, int min) {
 		if((max - min) < 100) {
-			lblMaxWarninig.setVisible(true);
-			lblMinWarninig.setVisible(true);
+			lblMaxWarninig.setToolTipText(TOOLTIP_WARN_MAX_RAM_SIZE);
+			lblMinWarninig.setToolTipText(TOOLTIP_WARN_MIN_RAM_SIZE);
+			lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
+			lblMinWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
+		}else {
 			lblMaxWarninig.setToolTipText(TOOLTIP_MAX_RAM_SIZE);
 			lblMinWarninig.setToolTipText(TOOLTIP_MIN_RAM_SIZE);
-		}else {
-			lblMaxWarninig.setVisible(false);
-			lblMinWarninig.setVisible(false);
-			lblMaxWarninig.setToolTipText(null);
-			lblMinWarninig.setToolTipText(null);
+			lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+			lblMinWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 		}
 	}
 	
@@ -348,9 +398,11 @@ public class CustomizeParametersPanel extends JFrame{
 			logger.warn(e);
 			backupScaleGuiPerc = defaultScaleGuiPerc;
 		}
+		backupDebugGui = Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS"))? true : false;
 		
 		// apply to gui elements
 		chckbxActiveShell.setSelected(backupViewShell);
+		chckBoxDebugGraphics.setSelected(backupDebugGui);
 		spinnerXssMemory.setValue(backupStackSize);
 		spinnerMaxMemoryMB.setValue(backupMaxMemoryXmx);
 		spinnerMinMemoryMB.setValue(backupMinMemoryXms);
@@ -375,14 +427,18 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, thisPanel);
 		
-		lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
-		lblMaxWarninig.setVisible(false);
-		lblMinWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
-		lblMinWarninig.setVisible(false);
+		lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		lblMaxWarninig.setVisible(true);
+		lblMaxWarninig.setToolTipText(TOOLTIP_MAX_RAM_SIZE);
+		lblMinWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		lblMinWarninig.setVisible(true);
+		lblMinWarninig.setToolTipText(TOOLTIP_MIN_RAM_SIZE);
 		
 		lblLogLevelInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 		lblLogLevelInfo.setToolTipText(TOOLTIP_LEVEL_LOG);
+		lblLogLevelInfo.setVisible(true);
 		lblSTackSizeInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 		lblSTackSizeInfo.setToolTipText(TOOLTIP_STACK_SIZE);
+		lblSTackSizeInfo.setVisible(true);
 	}
 }

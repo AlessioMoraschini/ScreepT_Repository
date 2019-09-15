@@ -31,6 +31,12 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
 	
+	<dependency>
+		<groupId>Resources</groupId>
+	  	<artifactId>Resources</artifactId>
+	  	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
 	<dependency>	
 		<groupId>OsCommons</groupId>
 	  	<artifactId>OsCommons</artifactId>

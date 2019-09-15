@@ -243,16 +243,23 @@ public class INItializer {
 	
 	public void loadTxtEditorOptions() {
 		// TEXT EDITOR OPTIONS
+		
+		// INI read
 		String fontStr = iniReadFile.get(TEXT_EDITOR_OPT, "font");
 		String FilePanelbackColStr = iniReadFile.get(TEXT_EDITOR_OPT, "filePanelBackgroundCol");
 		String backColStr = iniReadFile.get(TEXT_EDITOR_OPT, "backgroundCol");
 		String foreColStr = iniReadFile.get(TEXT_EDITOR_OPT, "foregroundCol");
 		String selectedAtStartStr = iniReadFile.get(TEXT_EDITOR_OPT, "selectedFileAtStart");
+		String defaultWorspaceLocationStr = iniReadFile.get(TEXT_EDITOR_OPT, "defaultWorspaceLocation");
+		
+		// validation
 		Font font = (!"".equals(fontStr) && fontStr!= null)? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
 		Color backCol = (!"".equals(backColStr) && backColStr!= null)? HandleString.getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
 		Color filePanelBackCol = (!"".equals(FilePanelbackColStr) && FilePanelbackColStr!= null)? HandleString.getRgbColorFromString(FilePanelbackColStr) : TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
 		Color foreCol = (!"".equals(foreColStr) && foreColStr!= null)? HandleString.getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
 		String selectedFileAtStart = (!"".equals(selectedAtStartStr) && selectedAtStartStr!= null)? selectedAtStartStr : TextEditorOption.DEFAULT_SELECTED_FILE_AT_START;
+		String defaultWorspaceLocation = (!"".equals(defaultWorspaceLocationStr) && defaultWorspaceLocationStr!= null)? defaultWorspaceLocationStr : TextEditorOption.DEFAULT_WORKSPACE_LOCATION;
+		
 		int tabSize = 2;
 		try {
 			tabSize = Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "tabSize"));
@@ -260,6 +267,7 @@ public class INItializer {
 			logger.error("Exception happened!", e);
 		}
 		
+		// update Object
 		textEditorOpt.setFont(font);
 		textEditorOpt.setTabSize(tabSize);
 		textEditorOpt.setFilePanelBackCol(filePanelBackCol);
@@ -267,6 +275,7 @@ public class INItializer {
 		textEditorOpt.setForeCol(foreCol);
 		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
+		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
 		
 		// CONVERTED/PARSED TYPES
 		
@@ -452,7 +461,7 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "breakLineActive", textEditorOpt.breaklineActive);
 		iniFile.put(TEXT_EDITOR_OPT, "txtAreaDetailLevel", textEditorOpt.txtAreaDetailLevel);
 		iniFile.put(TEXT_EDITOR_OPT, "isTreeLocked", textEditorOpt.treeLocked);
-		
+		iniFile.put(TEXT_EDITOR_OPT, "defaultWorspaceLocation", textEditorOpt.defaultWorkspacePath);
 		
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
@@ -470,6 +479,7 @@ public class INItializer {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 				iniFile.store();
 				OK = true;
+				logger.info(iniFile.getFile().getCanonicalPath()+" - Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
 			} catch (IOException e) {
 				OK = false;
 				logger.error("Exception happened!", e);
@@ -490,6 +500,7 @@ public class INItializer {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 				iniFile.store();
 				OK = true;
+				logger.info(iniFile.getFile().getCanonicalPath()+" - Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
 			} catch (IOException e) {
 				OK = false;
 				logger.error("Exception happened!", e);
@@ -510,6 +521,7 @@ public class INItializer {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 				iniFile.store();
 				OK = true;
+				logger.info(iniFile.getFile().getCanonicalPath()+" - Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
 			} catch (IOException e) {
 				OK = false;
 				logger.error("Exception happened!", e);
@@ -530,6 +542,7 @@ public class INItializer {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 				iniFile.store();
 				OK = true;
+				logger.info(iniFile.getFile().getCanonicalPath()+" - Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
 			} catch (IOException e) {
 				OK = false;
 				logger.error("Exception happened!", e);
@@ -590,6 +603,7 @@ public class INItializer {
 			   .append("\nTAB_LINE_VISIBLE: ").append(textEditorOpt.tabLineVisible)
 			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)
 			   .append("\nFILE TREE LOCKED: ").append(textEditorOpt.treeLocked)
+			   .append("\nDEFAULT WORKSPACE LOCATION: ").append(textEditorOpt.defaultWorkspacePath)
 			   .append("\nPREFERRED_THEME: ").append(textEditorOpt.selectedTheme)
 			   .append("\nFILE_PANEL_BACKGROUND_COLOR: ").append(textEditorOpt.filePanelBackCol)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)

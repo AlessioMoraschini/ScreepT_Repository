@@ -24,6 +24,7 @@ import amfileutils.FileStuff;
 import frameutils.FilePropertiesFrame;
 import frameutils.GuiUtils;
 import gUI.panels.TextEditor;
+import gUI.utils.TextEditorUtils;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
@@ -144,32 +145,13 @@ public class TreeFileMouseListenerTxtEditor {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (TextEditor.loadedTabObj != null) {
-					refreshPathFromAncestor(TextEditor.loadedTabObj.loadedFile);
+				if (selectedNode!= null ) {
+					TextEditorUtils.refreshTree(selectedNode.mFile, true);
+				}else if(TextEditor.loadedTabObj != null){
+					TextEditorUtils.refreshTree(TextEditor.loadedTabObj.loadedFile, true);
 				}
 			}
 		};
-	}
-	
-	private boolean refreshPathFromAncestor(File currentFile) {
-		File ancestor = null;
-		if (currentFile != null) {
-			ancestor = currentFile.getParentFile().getParentFile();
-			if(!currentFile.exists()) {
-				TextEditor.loadedTabObj.unsaved = true;
-				TextEditor.updateSavedLabelNTab(null);
-			}
-		}else {
-			return false;
-		}
-		
-		if(ancestor != null) {
-			tree.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
-			tree.revalidate();
-			tree.repaint();
-			TreeUtils.selectFileInNamedFileTree(currentFile, tree, true);
-		}
-		return true;
 	}
 	
 	private ActionListener propertiesListener() {
@@ -276,7 +258,7 @@ public class TreeFileMouseListenerTxtEditor {
 					}
 					textEditor.loadFile(selected);
 					if (TextEditor.loadedTabObj != null) {
-						refreshPathFromAncestor(TextEditor.loadedTabObj.loadedFile);
+						TextEditorUtils.refreshTree(TextEditor.loadedTabObj.loadedFile, false);
 					}
 				} catch (IOException e1) {
 					String msg = "Error creating new file";

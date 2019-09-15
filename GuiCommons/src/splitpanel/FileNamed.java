@@ -1,6 +1,7 @@
 package splitpanel;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FileNamed{
 	
@@ -29,6 +30,18 @@ public class FileNamed{
 
     public File getFile() {
         return mFile;
+    }
+    
+    public String getFileName() {
+        return mFile.getName();
+    }
+    
+    public String getFileAbsPath() {
+        return mFile.getAbsolutePath();
+    }
+    
+    public String getCanonicalAbsPath() throws IOException {
+        return mFile.getCanonicalPath();
     }
 
     @Override 

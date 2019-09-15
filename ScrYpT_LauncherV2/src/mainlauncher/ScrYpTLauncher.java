@@ -53,6 +53,8 @@ public class ScrYpTLauncher {
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ScrYpTLauncher.class); 
+	
+	public static GeneralConfig mainConfigInitializer;
 		
 	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	public static final String LAUNCHER_CONTAINER_PATH = "LAUNCHER/";

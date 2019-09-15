@@ -787,3 +787,806 @@ exit 0
 2019-05-30 21:37:30,070 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Write completed correctly :)
 2019-05-30 21:37:30,086 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Commands launched without exceptions :)
 2019-05-30 21:37:30,086 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:20:47,580 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:20:47 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:20:47,586 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:20:47,767 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:20:47,962 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:20:48,496 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:20:48,561 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:20:48,576 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:20:48,576 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:20:48,578 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:20:48,578 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx1026m -Xms514m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.55 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:20:48,581 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:20:48,584 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:185)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:158)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:20:48,735 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:20:49,061 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:20:49,947 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:20:50,093 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:20:54,252 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=true
+2019-09-14 19:20:54,253 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:20:54,253 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:20:54,254 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:20:54,254 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx1026m -Xms514m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.54 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:20:55,927 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:24:36,332 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:24:36 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:24:36,338 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:24:36,519 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:24:36,708 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:24:37,251 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:24:37,316 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:24:37,330 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:24:37,331 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:24:37,332 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:24:37,333 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx1026m -Xms514m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.54 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:24:37,336 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:24:37,338 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:24:37,489 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:24:37,791 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:24:44,314 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:24:44,479 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:24:50,261 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=true
+2019-09-14 19:24:50,261 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:24:50,261 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:24:50,262 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:24:50,262 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx1026m -Xms514m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.53 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:24:59,940 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:24:59,977 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:25:08,804 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-09-14 19:25:11,016 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:30:41,940 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:30:41 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:30:41,948 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:30:42,161 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:30:42,382 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:30:42,940 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:30:43,008 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:30:43,026 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:30:43,026 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:30:43,028 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:30:43,028 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx1026m -Xms514m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.53 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:30:43,032 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:30:43,035 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:30:43,191 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:30:43,513 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:30:45,019 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:30:45,187 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:31:08,008 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-09-14 19:31:09,394 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:31:09,432 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:31:42,372 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=true
+2019-09-14 19:31:42,373 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:31:42,373 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:31:42,374 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:31:42,374 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:34:01,061 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:34:01 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:34:01,067 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:34:01,258 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:34:01,461 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:34:02,011 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:34:02,075 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:34:02,090 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:34:02,091 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:34:02,093 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:34:02,093 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:34:02,097 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:34:02,099 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:34:02,245 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:34:02,553 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:34:46,114 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:34:46 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:34:46,120 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:34:46,297 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:34:46,503 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:34:47,027 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:34:47,093 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:34:47,106 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:34:47,106 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:34:47,108 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:34:47,109 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:34:47,115 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:34:47,118 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:34:47,260 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:34:47,570 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:34:48,806 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:34:48,962 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:34:51,372 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=true
+2019-09-14 19:34:51,373 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:34:51,374 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:34:51,374 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:34:51,374 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:34:53,224 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:34:53,257 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:34:55,053 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=true
+2019-09-14 19:34:55,054 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:34:55,054 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:34:55,055 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:34:55,055 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:35:23,152 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:35:25,455 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:36:45,530 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:36:45 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:36:45,537 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:36:45,714 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:36:45,911 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:36:46,441 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:36:46,504 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:36:46,518 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:36:46,518 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:36:46,520 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:36:46,520 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:36:46,524 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:36:46,526 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:36:46,675 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:36:46,990 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:36:48,066 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:36:48,224 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:36:50,692 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=
+2019-09-14 19:36:50,693 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:36:50,693 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:36:50,694 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:36:50,694 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:37:38,360 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:37:42,677 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:37:42 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:37:42,684 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:37:42,899 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:37:43,110 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:37:43,686 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:37:43,759 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:37:43,775 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:37:43,776 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:37:43,778 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:37:43,779 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:37:43,786 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:37:43,789 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:37:43,946 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:37:44,294 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:37:45,289 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:37:45,445 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:37:49,271 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=true
+2019-09-14 19:37:49,272 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:37:49,273 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:37:49,273 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:37:49,273 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:37:50,931 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:37:50,964 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:37:57,476 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-09-14 19:38:57,059 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:38:57 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:38:57,069 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:38:57,273 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:38:57,494 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:38:58,037 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:38:58,110 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:38:58,126 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:38:58,127 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:38:58,129 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:38:58,130 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:38:58,133 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:38:58,136 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:38:58,295 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:38:58,620 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:38:59,586 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:38:59,737 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:39:01,998 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=
+2019-09-14 19:39:01,999 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:39:01,999 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:39:02,000 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:39:02,000 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:39:03,437 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:39:03,471 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:39:06,458 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - resourcesFilePathsMappings.propertiesupdated with DEBUG_GRAPHICS=true
+2019-09-14 19:39:06,459 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:39:06,459 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:39:06,460 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:39:06,460 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:39:07,732 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:39:24,325 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:44:22,825 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:44:22 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:44:22,833 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:44:23,018 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:44:23,240 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:44:23,777 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:44:23,852 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:44:23,870 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:44:23,870 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:44:23,872 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:44:23,872 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:44:23,875 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:44:23,879 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:44:24,045 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:44:24,376 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:44:25,169 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:44:25,333 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:44:41,002 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-09-14 19:52:28,954 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:52:28 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:52:28,960 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:52:29,162 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:52:29,460 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:52:30,013 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:52:30,112 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:52:30,128 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:52:30,128 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:52:30,130 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:52:30,131 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:52:30,135 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:52:30,139 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:52:30,301 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:52:30,675 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:52:30,932 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:52:33,021 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:52:33,188 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:52:35,892 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-09-14 19:52:36,983 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:52:40,519 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:52:40 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:52:40,526 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:52:40,705 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:52:40,895 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:52:41,418 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:52:41,482 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:52:41,495 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:52:41,495 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:52:41,498 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:52:41,498 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:52:41,502 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:52:41,504 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:52:41,645 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:52:41,940 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:52:43,055 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:52:43,202 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:52:52,155 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-09-14 19:52:54,391 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:54:08,276 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:54:08 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:54:08,283 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:54:08,490 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:54:08,713 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:54:09,245 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:54:09,316 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:54:09,331 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:54:09,331 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:54:09,334 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:54:09,334 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:54:09,341 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:54:09,344 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:54:09,494 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:54:09,817 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:54:11,332 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:54:11,502 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:54:18,054 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-09-14 19:54:19,518 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-09-14 19:57:12,494 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Sat Sep 14 19:57:12 CEST 2019
+
+Launcher Started now!
+
+##################################################
+
+
+2019-09-14 19:57:12,503 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-09-14 19:57:12,680 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-09-14 19:57:12,884 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-09-14 19:57:13,441 [main] INFO  mainlauncher.ScrYpTLauncher - Loading INI launcher_configuration file...
+2019-09-14 19:57:13,509 [main] INFO  mainlauncher.ScrYpTLauncher - Launcher_configuration file loaded!
+2019-09-14 19:57:13,523 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-09-14 19:57:13,523 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started java installed versions check!
+2019-09-14 19:57:13,525 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-09-14 19:57:13,525 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+java -Xmx306m -Xms306m -Xss125m -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1.23 -Dfile.encoding=UTF8 -Djava.library.path="./Resources_Scrypt/lib" -jar SCreepT_V0.3.1.X.jar 
+
+exit 0
+
+
+2019-09-14 19:57:13,528 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-09-14 19:57:13,531 [AWT-EventQueue-0] ERROR gui.panels.StartPanel - Exception happened!
+javax.imageio.IIOException: Can't read input file!
+	at javax.imageio.ImageIO.read(ImageIO.java:1301)
+	at gui.panels.StartPanel.setGraphics(StartPanel.java:190)
+	at gui.panels.StartPanel.<init>(StartPanel.java:66)
+	at mainlauncher.ScrYpTLauncher.<init>(ScrYpTLauncher.java:187)
+	at mainlauncher.ScrYpTLauncher$1.run(ScrYpTLauncher.java:160)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:80)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+2019-09-14 19:57:13,677 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-09-14 19:57:13,979 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-09-14 19:57:14,589 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-09-14 19:57:14,728 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-09-14 19:57:21,507 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-09-14 19:57:22,695 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel

@@ -38,6 +38,63 @@ public class FileStuff {
 
 	// FileStuff logger creation		
 	static Logger logger = Logger.getLogger(FileStuff.class); 
+	
+	public static File getNlevelsAncestor(File son, int levelsUp) {
+		int originalLevels = levelsUp;
+		try {
+			File result = son.getParentFile().getAbsoluteFile();
+			if (levelsUp > 0) {
+				if (levelsUp == 0) {
+					levelsUp = 1;
+				}
+
+				while (levelsUp > 1) {
+					if(result.getParentFile() == null || !result.getParentFile().exists()) {
+						break;
+					}
+					result = result.getParentFile();
+					levelsUp--;
+				}
+			} 
+			logger.debug("\n\n=> Parent file search result [son:"+son.getCanonicalPath()
+					+", levelsUp:"+originalLevels+"]: "+result.getCanonicalPath()+"\n");
+			return result;
+		} catch (Exception e) {
+			logger.error("Error finding parent file, returning given son", e);
+			return son;
+		}
+	}
+	
+	public static String getNlevelsPathString(File son, int levelsUp) {
+		int originalLevels = levelsUp;
+		String result = "";
+		try {
+			File temp = son.getCanonicalFile();
+			if (levelsUp > 0) {
+				if (levelsUp == 0) {
+					levelsUp = 1;
+				}
+
+				while (levelsUp > 0) {
+					result = temp.getName() + File.separator+result;
+					if(temp.getParentFile() == null || !temp.getParentFile().exists()) {
+						break;
+					}
+					temp = temp.getParentFile();
+					levelsUp--;
+				}
+				if (result.length() > 0) {
+					result = result.substring(0, result.length() - 1);
+				}
+			} 
+			logger.debug("\n\n=> Parent file search result [son:"+son.getCanonicalPath()
+					+", levelsUp:"+originalLevels+"]: "+result+"\n");
+			return result;
+		} catch (Exception e) {
+			logger.error("Error finding parent file, returning given son", e);
+			return result;
+		}
+	}
 		
 	public static File[] getFileArrayFromStrings(String[] filePaths){
 		logger.debug("ARGUMENT FILES:" + Arrays.toString(filePaths));

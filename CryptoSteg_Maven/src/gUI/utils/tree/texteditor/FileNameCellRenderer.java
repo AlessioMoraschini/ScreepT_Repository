@@ -3,6 +3,8 @@ package gUI.utils.tree.texteditor;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.JTree;
@@ -33,9 +35,22 @@ public class FileNameCellRenderer implements TreeCellRenderer {
         if (value instanceof FileNamed) {
 			// custom icon setter
 			FileNamed nodeFileObj = (FileNamed) value;
+			File selectedFile = nodeFileObj.mFile;
+			FileNamed nodeFileObjRoot = (FileNamed) tree.getModel().getRoot();
+			File root = nodeFileObjRoot.getFile();
+			
 			MyFileView fileView = new MyFileView();
 			iconContainer.setIcon(fileView.getIcon(nodeFileObj.mFile));
-			iconContainer.setText(nodeFileObj.mFile.getName());
+			try {
+				File absoluteFile = selectedFile.getAbsoluteFile();
+				if (root.getAbsolutePath().equals(selectedFile.getAbsolutePath())) {
+					iconContainer.setText(selectedFile.getCanonicalPath());
+				}else {
+					iconContainer.setText(absoluteFile.getName());
+				}
+			} catch (IOException e) {
+				logger.error(e);
+			}
 		}
         
         iconContainer.setForeground(Color.LIGHT_GRAY);

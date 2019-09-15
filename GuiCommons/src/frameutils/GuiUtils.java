@@ -18,9 +18,11 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
+import javax.swing.JToggleButton;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -44,6 +46,30 @@ public class GuiUtils {
 		ToolTipManager.sharedInstance().setInitialDelay(delay);
 		ToolTipManager.sharedInstance().setDismissDelay(timeout);
 		UIManager.put("ToolTip.font", font);
+	}
+	
+	public static void makeTransparentJButton(JButton targetButton) {
+		targetButton.setOpaque(false);
+		targetButton.setContentAreaFilled(false);
+		targetButton.setBorderPainted(false);
+	}
+	
+	public static void makeOpaqueJButton(JButton targetButton) {
+		targetButton.setOpaque(true);
+		targetButton.setContentAreaFilled(true);
+		targetButton.setBorderPainted(true);
+	}
+	
+	public static void makeTransparentJToggleButton(JToggleButton targetButton) {
+		targetButton.setOpaque(false);
+		targetButton.setContentAreaFilled(false);
+		targetButton.setBorderPainted(false);
+	}
+	
+	public static void makeOpaqueJToggleButton(JToggleButton targetButton) {
+		targetButton.setOpaque(true);
+		targetButton.setContentAreaFilled(true);
+		targetButton.setBorderPainted(true);
 	}
 	
 	/**

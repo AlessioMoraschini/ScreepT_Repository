@@ -27,6 +27,7 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_ANTIALIASED_TXT_AREA = false;
 	public static final boolean DEFAULT_BREAK_LINE = false;
 	public static final boolean DEFAULT_TREE_LOCKED = false;
+	public static final String DEFAULT_WORKSPACE_LOCATION = System.getProperty("user.home");
 	
 	// FIELDS	
 	public int margin;
@@ -38,6 +39,7 @@ public class TextEditorOption {
 	public Color foreCol;
 	public ArrayList<String> openedFileList;
 	public String selectedAtStart;
+	public String defaultWorkspacePath;
 	public Themes selectedTheme;
 	public boolean fileTreeActive;
 	public int dividerFileTreePosX;
@@ -202,5 +204,17 @@ public class TextEditorOption {
 	public void setVoiceRate(int voiceRate) {
 		this.voiceRate = voiceRate;
 	}
+
+
+	public String getDefaultWorkspacePath() {
+		return defaultWorkspacePath;
+	}
+
+
+	public void setDefaultWorkspacePath(String defaultWorkspacePath) {
+		this.defaultWorkspacePath = defaultWorkspacePath;
+	}
+	
+	
 	
 }

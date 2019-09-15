@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
 import gUI.utils.TextEditorUtils;
+import gUI.utils.texteditor.TextEditorTooltips;
 import resources.IconsPathConfigurator;
 
 public class TextEditorShortcutListener implements KeyEventDispatcher{
@@ -223,14 +224,36 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				 * 	OPEN/CLOSE FILE TREE PANEL -> ALT+Q
 				 */
 				if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnToggleFileView.doClick();
+					TextEditor.btnToggleFileView.doClick();
 				}
 				
 				/*
 				 *  FILE TREE AUTO UPDATE on CURRENT FILE ON/OFF -> Ctrl+shift+U
 				 */
 				if(e.getKeyCode() == 85 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.toggleButtonFileTreeLocked.doClick();
+					TextEditor.toggleButtonFileTreeLocked.doClick();
+				}
+				
+				/*
+				 *  HIDE/SHOW current workspace -> Ctrl+Shift+W
+				 */
+				if(e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							TextEditor.toggleButtonFileTreeWorkspace.doClick();
+						}
+					});
+				}
+				
+				/*
+				 *  SELECT NEW workspace -> Ctrl+Alt+Shift+W
+				 */
+				if(e.getKeyCode() == 87 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							TextEditor.toggleButtonFileTreeNewWorkspace.doClick();
+						}
+					});
 				}
 				
 				/*
@@ -248,7 +271,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				}
 				
 				/*
-				 * OPEN CURRENT FILE PROPERTIES -> ALT+ENTER
+				 * OPEN CURRENT FILE'S PROPERTIES -> ALT+ENTER
 				 */
 				if (e.getKeyCode() == 10 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.btnPropertiesPanel.doClick();
@@ -300,7 +323,18 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 72 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TextEditorUtils.hideOrShowHeaderPanel();
+							TextEditorUtils.hideOrShowHeaderPanelLevel1();
+						}
+					});
+				}
+				
+				/*
+				 *  HIDE/SHOW footer panel -> Ctrl+shift+Alt+L
+				 */
+				if(e.getKeyCode() == 76 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							TextEditorUtils.hideOrShowFooterPanel();
 						}
 					});
 				}
@@ -339,22 +373,22 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		
 		if (flagCtrlPressed) {
 			if (flagHoverBtnRemoveSpaces) {
-				currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditor.tooltipRemoveContent);
+				currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveContent);
 				currentTextEditor.btnRemoveSpaces
 						.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
 			}
 			if (flagHoverBtnViewExpCmd) {
-				currentTextEditor.btnViewInExplorer.setToolTipText(TextEditor.tooltipViewInCommandLine);
+				currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInCommandLine);
 				currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 			}
 		}
 
 		if(!flagCtrlPressed || !flagHoverBtnRemoveSpaces){
-			currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditor.tooltipRemoveSpaces);
+			currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
 			currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
 		}
 		if(!flagCtrlPressed || !flagHoverBtnViewExpCmd){
-			currentTextEditor.btnViewInExplorer.setToolTipText(TextEditor.tooltipViewInSysExplorer);
+			currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInSysExplorer);
 			currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
 		}
 		

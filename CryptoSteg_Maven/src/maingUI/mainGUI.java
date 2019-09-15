@@ -52,6 +52,7 @@ import gUI.panels.KeyGenPanel;
 import gUI.panels.NetInfoPanel;
 import gUI.panels.TextEditor;
 import gUI.panels.TutorialPanel;
+import gUI.utils.TextEditorUtils;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.panelmainutils.MainGuiUtils;
@@ -104,8 +105,8 @@ public class mainGUI {
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
 	// general application variables
-	public static final String APP_VERSION = "0.7.1b";
-	public static final String APP_VERSION_DATE = "09/09/2019";
+	public static final String APP_VERSION = "0.7.1c";
+	public static final String APP_VERSION_DATE = "13/09/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
@@ -926,7 +927,7 @@ public class mainGUI {
 							frmScryptV.setMinimumSize(new Dimension(100,100));
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
-							mntmFullScreenMode.setIcon(null);
+							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 						} else {
 							frmScryptV.dispose();
 							preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
@@ -934,12 +935,14 @@ public class mainGUI {
 							frmScryptV.setMinimumSize(GuiUtils.getScreenSize(frmScryptV));
 							frmScryptV.setLocationRelativeTo(null);
 							frmScryptV.setVisible(true);
-							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
+							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
 						}
 					}
 				});
 			}
 		});
+		// initialize
+		mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 		
 		// open in a new window - GENERAL OPTIONS
 		mntmGenOpt = new JMenuItem(new AbstractAction("General Options") {
@@ -1204,7 +1207,7 @@ public class mainGUI {
 	public void resizeMainFrameDefaults() {
 		labelBACKground.setSize(frmScryptV.getContentPane().getSize());
 		if(initTxtWriter != null && TextEditor.mainTabList != null) {
-			initTxtWriter.resizeFrameToDefault();
+			TextEditorUtils.resizeFrameToDefault(mainAPP);
 		}
 	}
 	
