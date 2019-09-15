@@ -301,7 +301,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 			
 				refreshImage(scaledImage);
 				
-				String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getAbsolutePath(), cryptoPanel.labelLengthLimit);
+				String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getAbsolutePath(), CrypterPanel.labelLengthLimit);
 
 				lblKeyDisp.setText("Displayed: " + newdisplayed);
 				

@@ -138,7 +138,11 @@ public class TextEditor extends JPanel {
 	private final static String LOREM_IPSUM = GeneralConfig.RESOURCES_DIR  + "Templates/LoremIpsum.txt";
 
 	public boolean isFirstTabAdded = false;
-
+	
+	// STATIC phrases
+	public static final String ROOT_WORKSPACE_LBL = "Workspace: ";
+	public static final String ROOT_STANDARD_LBL = "Root: ";
+	
 	// GUI Objects //
 	public JCheckBox checkBoxInlineTabs;
 	public JCheckBox chkFitmantainwords;
@@ -173,7 +177,7 @@ public class TextEditor extends JPanel {
 	private JLabel dynLblSearchEsit;
 	
 	private JLabel lblLockNavigator;
-	private JLabel lblCurrentDir;
+	public static JLabel lblCurrentDir;
 	public static volatile JLabel dynLblCurrentDir;
 
 	public JButton btnFindText;
@@ -213,8 +217,8 @@ public class TextEditor extends JPanel {
 	public JButton btnPropertiesPanel;
 
 	public static JButton toggleButtonFileTreeNewWorkspace;
-	public static JToggleButton toggleButtonFileTreeWorkspace;
-	public static JToggleButton toggleButtonFileTreeLocked;
+	public static JButton toggleButtonFileTreeWorkspace;
+	public static JButton toggleButtonFileTreeLocked;
 	public static JToggleButton btnToggleFileView;
 	private JRadioButton rdbtnShowCompletePath;
 	
@@ -768,7 +772,7 @@ public class TextEditor extends JPanel {
 		leftSplitContainer = new JPanel();
 		leftSplitContainer.setBackground(fileNavColorBckg);
 		leftSplitContainer.setForeground(Color.GRAY);
-		leftSplitContainer.setLayout(new MigLayout("", "[30px:40px][40px][2px:4px,grow][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[:25px:25px][:1px:1px][90%,grow][1px][:20px:20px]"));
+		leftSplitContainer.setLayout(new MigLayout("", "[30px:40px][40px][2px:4px,grow][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
 		 
 		lblLockNavigator = new JLabel("File Navigator");
 		lblLockNavigator.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -784,10 +788,8 @@ public class TextEditor extends JPanel {
 		toggleButtonFileTreeNewWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_SEARCH));
 		leftSplitContainer.add(toggleButtonFileTreeNewWorkspace, "cell 3 0");
 		
-		toggleButtonFileTreeWorkspace = new JToggleButton("");
-		GuiUtils.makeTransparentJToggleButton(toggleButtonFileTreeWorkspace);
-//		toggleButtonFileTreeWorkspace.setSelected(true);
-		toggleButtonFileTreeWorkspace.doClick();
+		toggleButtonFileTreeWorkspace = new JButton("");
+		GuiUtils.makeTransparentJButton(toggleButtonFileTreeWorkspace);
 		File workspace = new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
 		toggleButtonFileTreeWorkspace.setEnabled(workspace != null && !workspace.getName().equals("") && workspace.exists());
 		toggleButtonFileTreeWorkspace.setMaximumSize(new Dimension(20, 12));
@@ -796,10 +798,8 @@ public class TextEditor extends JPanel {
 		toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_ON));
 		leftSplitContainer.add(toggleButtonFileTreeWorkspace, "cell 4 0");
 		
-		toggleButtonFileTreeLocked = new JToggleButton("");
-		GuiUtils.makeTransparentJToggleButton(toggleButtonFileTreeLocked);
-		toggleButtonFileTreeLocked.setSelected(true);
-		toggleButtonFileTreeLocked.doClick();
+		toggleButtonFileTreeLocked = new JButton("");
+		GuiUtils.makeTransparentJButton(toggleButtonFileTreeLocked);
 		toggleButtonFileTreeLocked.setMaximumSize(new Dimension(20, 12));
 		toggleButtonFileTreeLocked.setToolTipText(TextEditorTooltips.tooltipFileViewLock);
 		toggleButtonFileTreeLocked.setCursor(GuiUtils.CURSOR_HAND);
@@ -823,18 +823,21 @@ public class TextEditor extends JPanel {
 		separator_3.setBackground(Color.GRAY);
 		leftSplitContainer.add(separator_3, "cell 0 3 6 1,growx");
 		
-		lblCurrentDir = new JLabel("Root:");
-		lblCurrentDir.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCurrentDir = new JLabel(ROOT_STANDARD_LBL);
+		lblCurrentDir.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblCurrentDir.setMaximumSize(new Dimension(100, 16));
+		lblCurrentDir.setMinimumSize(new Dimension(75, 16));
+		lblCurrentDir.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCurrentDir.setForeground(SystemColor.menu);
 		lblCurrentDir.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		leftSplitContainer.add(lblCurrentDir, "cell 0 4");
+		leftSplitContainer.add(lblCurrentDir, "cell 0 4 2 1,alignx left");
 		
 		dynLblCurrentDir = new JLabel("");
 		dynLblCurrentDir.setHorizontalTextPosition(SwingConstants.RIGHT);
 		dynLblCurrentDir.setHorizontalAlignment(SwingConstants.RIGHT);
 		dynLblCurrentDir.setForeground(SystemColor.menu);
 		dynLblCurrentDir.setFont(new Font("SansSerif", Font.BOLD, 12));
-		leftSplitContainer.add(dynLblCurrentDir, "cell 1 4 5 1,alignx right");
+		leftSplitContainer.add(dynLblCurrentDir, "cell 2 4 4 1,alignx right");
 		splitPaneMain.setContinuousLayout(true);
 
 		separator_2 = new JSeparator();
@@ -1066,15 +1069,19 @@ public class TextEditor extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (toggleButtonFileTreeLocked.isSelected()) {
+				if (!currentConfiguration.getTextEditorOpt().treeLocked) {
 					toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN));
 					toggleButtonFileTreeLocked.setBackground(new Color(30,30,30));
 					currentConfiguration.getTextEditorOpt().setTreeLocked(true);
+					// SYNC config file
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "isTreeLocked", true);
 				}else {
 					toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
 					toggleButtonFileTreeLocked.setBackground(new Color(30,30,30));
 					TextEditorUtils.refreshTree(loadedTabObj.loadedFile, true);
 					currentConfiguration.getTextEditorOpt().setTreeLocked(false);
+					// SYNC config file
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "isTreeLocked", false);
 				}
 			}
 		});
@@ -1084,13 +1091,34 @@ public class TextEditor extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (toggleButtonFileTreeWorkspace.isSelected()) {
+				// pre disable file tree lock
+				boolean toggleTreeLockToReset = false;
+				if(currentConfiguration.getTextEditorOpt().treeLocked) {
+					toggleButtonFileTreeLocked.doClick();
+					toggleTreeLockToReset = true;
+				}
+				
+				// INVERT CURRENT TEXT EDITOR VALUES ON CLICK - AND ICONS ACCORING TO
+				if (!currentConfiguration.getTextEditorOpt().workspaceViewSelected) {
 					toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_ON));
+					currentConfiguration.getTextEditorOpt().setWorkspaceViewSelected(true);
+					// SYNC config file
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "workspaceViewSelected", true);
+
 				}else {
 					toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_OFF));
+					currentConfiguration.getTextEditorOpt().setWorkspaceViewSelected(false);
+					// SYNC config file
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "workspaceViewSelected", false);
 				}
+				
 				// FILE TREE LOCK SYNC
 				TextEditorUtils.refreshTree(loadedTabObj.loadedFile, false);
+				
+				if(toggleTreeLockToReset) {
+					toggleButtonFileTreeLocked.doClick();
+				}
+				
 			}
 		});
 		
@@ -1105,8 +1133,12 @@ public class TextEditor extends JPanel {
 					
 					try {
 						currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getCanonicalPath();
-						currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "defaultWorspaceLocation", directory.getCanonicalPath());
+						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "defaultWorspaceLocation", directory.getCanonicalPath());
 						logger.info("Loaded new workspace: "+directory.getAbsolutePath());
+						
+						// to enable first time if it was disabled by default protection dir null
+						toggleButtonFileTreeWorkspace.setEnabled(true);
+						
 					} catch (IOException e1) {
 						currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getAbsolutePath();
 						logger.warn("Loaded new workspace [Error parsing canonical path, using asolute]: "+directory.getAbsolutePath(), e1);
@@ -2265,6 +2297,7 @@ public class TextEditor extends JPanel {
 	public void initGuiFromConfig() {
 		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 
+		// TEXT AREA
 		checkBoxInlineTabs.setSelected(txtOptions.isInlinedTabs());
 		chkCutWordsTo.setSelected(txtOptions.isBreaklineActive());
 		loadedTabObj.textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
@@ -2279,10 +2312,23 @@ public class TextEditor extends JPanel {
 		loadedTabObj.textArea.setFont(txtOptions.getFont());
 		loadedTabObj.textArea.setPaintTabLines(txtOptions.isTabLineVisible());
 		comboStylesScheme.setSelectedItem(txtOptions.selectedTheme);
+		
+		// TREE LOCKED
+		if (txtOptions.treeLocked) {
+			toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN));
+		}else {
+			toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
+		}
+		
+		// WORKSPACE VIEW ACTIVE ON/OFF
+		if (txtOptions.workspaceViewSelected) {
+			toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_ON));
+		}else {
+			toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_OFF));
+		}
+		
+		// FILE TREE PANEL ON/OFF
 		btnToggleFileView.setSelected(txtOptions.fileTreeActive);
-
-		splitPaneMain.setDividerLocation(250);
-
 		if (txtOptions.fileTreeActive) {
 			if (loadedTabObj.loadedFile == null) {
 				splitPaneMain.setDividerLocation(0);
@@ -2292,19 +2338,9 @@ public class TextEditor extends JPanel {
 			btnToggleFileView.setBackground(SystemColor.inactiveCaption);
 		}
 
-		// SwingUtilities.invokeLater(new Runnable() {
-		// public void run() {
-		// GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
-		// GUIStyelSettings.updateAllWindowsLaf();
-		// mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, mainTabList,
-		// TabUtils.TAB_BUTTON_CLOSE_ORDER));
-		// TextEditor.resetDividerColor();
-		// applyStyleToTabs();
-		// }
-		// });
+		splitPaneMain.setDividerLocation(250);
 
 		TextEditorUtils.updateGuiLafWindows(currentTextEditor);
-
 	}
 
 	/**
@@ -2421,6 +2457,7 @@ public class TextEditor extends JPanel {
 		}
 		alreadyLoading = false;
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+		TextEditorUtils.refreshTree(loadedTabObj.loadedFile, true);
 	}
 
 	public void findRightStyleFromComboNSelect(File source) {

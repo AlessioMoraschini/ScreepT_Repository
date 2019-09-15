@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
+import logger.LoggerUtils;
 import mainlauncher.ScrYpTLauncher;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
@@ -77,7 +78,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final int defaultMinMemXms = 512;
 	private static final int defaultMaxMemXmx = 1024;
 	private static final int defaultStackSize = 128;
-	private static final String defaultLogLevel = ScrYpTLauncher.DEFAULT_LOG_LEVEL+"";
+	private static final String defaultLogLevel = LoggerUtils.DEFAULT_LOG_LEVEL+"";
 	private static final boolean defaultViewShell = false;
 	private static final boolean defaultDebugGui = false;
 	private static final float defaultScaleGuiPerc = 1.0f;

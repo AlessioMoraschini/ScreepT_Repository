@@ -27,6 +27,7 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_ANTIALIASED_TXT_AREA = false;
 	public static final boolean DEFAULT_BREAK_LINE = false;
 	public static final boolean DEFAULT_TREE_LOCKED = false;
+	public static final boolean DEFAULT_WORKSPACE_VIEW_SELECTED = false;
 	public static final String DEFAULT_WORKSPACE_LOCATION = System.getProperty("user.home");
 	
 	// FIELDS	
@@ -41,14 +42,15 @@ public class TextEditorOption {
 	public String selectedAtStart;
 	public String defaultWorkspacePath;
 	public Themes selectedTheme;
-	public boolean fileTreeActive;
 	public int dividerFileTreePosX;
 	public int tabSize = 2;
 	public boolean tabLineVisible;
+	public boolean fileTreeActive;
+	public boolean treeLocked;
+	public boolean workspaceViewSelected;
 	
 	public boolean breaklineActive;
 	public boolean antialiasedTxtArea;
-	public boolean treeLocked;
 	public int txtAreaDetailLevel;
 	
 	
@@ -64,6 +66,14 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public boolean isWorkspaceViewSelected() {
+		return workspaceViewSelected;
+	}
+
+	public void setWorkspaceViewSelected(boolean workspaceViewSelected) {
+		this.workspaceViewSelected = workspaceViewSelected;
+	}
+
 	public boolean isTreeLocked() {
 		return treeLocked;
 	}
@@ -71,7 +81,6 @@ public class TextEditorOption {
 	public void setTreeLocked(boolean treeLocked) {
 		this.treeLocked = treeLocked;
 	}
-
 
 	public void setTabLineVisible(boolean tabLineVisible) {
 		this.tabLineVisible = tabLineVisible;

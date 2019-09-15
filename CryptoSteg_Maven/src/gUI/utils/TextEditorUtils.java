@@ -27,12 +27,15 @@ import gUI.utils.tree.texteditor.FileNameCellRenderer;
 import gUI.utils.tree.texteditor.FileTreeNamedModel;
 import guistyle.GUIStyelSettings;
 import maingUI.mainGUI;
+import om.TextEditorOption;
 import reflection.ReflectionUtils;
+import resources.GeneralConfig;
 import splitpanel.FileNamed;
 import splitpanel.SplitPaneUtils;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import treeutils.TreeUtils;
+import variousutils.HandleString;
 
 public class TextEditorUtils {
 	
@@ -41,13 +44,17 @@ public class TextEditorUtils {
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditorUtils.class);
 	
+	static final int LEVEL_ANCESTOR_LABEL_DIR = 1;
+	
 	public static boolean checkWorkspaceExistNsel() {
 		File workspace = new File (TextEditor.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
 		return(TextEditor.toggleButtonFileTreeWorkspace.isSelected() && workspace.exists());
 	}
 	
 	public static void refreshTree(File currentFile, boolean forceRefresh) {
-		workspaceRoot = new File(TextEditor.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+		TextEditorOption options = TextEditor.currentConfiguration.getTextEditorOpt();
+		workspaceRoot = new File(options.defaultWorkspacePath);
+		
 		try {
 			workspaceRoot = workspaceRoot.getCanonicalFile();
 		} catch (IOException e) {
@@ -55,13 +62,13 @@ public class TextEditorUtils {
 		}
 		
 		// refresh only if tree is not locked
-		if (!TextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
+		if (!options.treeLocked) {
 			// TREE UNPINNED
-			if(TextEditor.toggleButtonFileTreeWorkspace.isSelected()) {
+			if(options.workspaceViewSelected) {
 				// SELECTED WORKSPACE
 				if (workspaceRoot != null && workspaceRoot.exists()) {
 					// EXISTING WORKSPACE
-					refreshFromWorkspace();
+					refreshFromWorkspace(workspaceRoot);
 				}else {
 					// NOT EXISTING WORKSPACE
 					refresh(currentFile);
@@ -71,12 +78,61 @@ public class TextEditorUtils {
 				refresh(currentFile);
 			}
 		}else if(forceRefresh) {
-			refreshFromWorkspace();
+			if (options.workspaceViewSelected) {
+				refreshFromWorkspace(workspaceRoot);
+			}else {
+				refresh(currentFile);
+			}
 		}
 		
+		// Validate dir string length
+		TextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(TextEditor.dynLblCurrentDir.getText()));
 		
 		TextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 		SplitPaneUtils.setDividerColors(null, Color.BLACK, TextEditor.splitPaneMain);
+	}
+	
+	public static void refreshTreeFromFolder(File folder, File currentFile, boolean forceRefresh) {
+		TextEditorOption options = TextEditor.currentConfiguration.getTextEditorOpt();
+		folder = (folder.isDirectory())? folder : folder.getParentFile();
+		File workspaceRoot = folder;
+		
+		try {
+			workspaceRoot = workspaceRoot.getCanonicalFile();
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		
+		// refresh only if tree is not locked
+		if (!options.treeLocked) {
+			// TREE UNPINNED
+			if(options.workspaceViewSelected) {
+				// SELECTED WORKSPACE
+				if (workspaceRoot != null && workspaceRoot.exists()) {
+					// EXISTING WORKSPACE
+					refreshFromWorkspace(workspaceRoot);
+				}
+			}
+		}else if(forceRefresh) {
+			refreshFromWorkspace(workspaceRoot);
+		}
+		
+		// Validate dir string length
+		TextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(TextEditor.dynLblCurrentDir.getText()));
+		TextEditor.splitPaneMain.setDividerLocation(getMinimumLeftPaneSize()+10);
+		
+		TextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
+		SplitPaneUtils.setDividerColors(null, Color.BLACK, TextEditor.splitPaneMain);
+	}
+	
+	public static String getFooterPanelAdaptedDirString(String rawText) {
+		
+		rawText = HandleString.fitToMaxLentgh(rawText, GeneralConfig.FOOTER_MAX_DIR_LABEL_LENGTH);
+		return rawText;
+	}
+	
+	private static int getMinimumLeftPaneSize() {
+		return (TextEditor.dynLblCurrentDir.getWidth() + TextEditor.lblCurrentDir.getWidth()); 
 	}
 	
 	private static void refresh(File currentFile) {
@@ -97,8 +153,12 @@ public class TextEditorUtils {
 			
 			TextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
 			
-			TreeUtils.selectFileInNamedFileTree(currentFile, TextEditor.leftSplitTreeFiles, true);
-			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(FileStuff.getNlevelsAncestor(currentFile, TextEditor.fileTreeAncestorLevel), 2));
+			try {
+				TreeUtils.selectFileInNamedFileTree(currentFile, TextEditor.leftSplitTreeFiles, true);
+			} catch (IOException e1) {
+				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
+			}
+			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(FileStuff.getNlevelsAncestor(currentFile, TextEditor.fileTreeAncestorLevel), LEVEL_ANCESTOR_LABEL_DIR));
 			try {
 				TextEditor.dynLblCurrentDir.setToolTipText(currentFile.getCanonicalPath());
 			} catch (IOException e) {
@@ -110,7 +170,7 @@ public class TextEditorUtils {
 			if(!currentFile.exists()) {
 				TextEditor.loadedTabObj.unsaved = true;
 				TextEditor.updateSavedLabelNTab(null);
-				TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, 2));
+				TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
 				try {
 					TextEditor.dynLblCurrentDir.setToolTipText(ancestor.getCanonicalPath());
 				} catch (IOException e) {
@@ -123,9 +183,10 @@ public class TextEditorUtils {
 			TextEditor.dynLblCurrentDir.setText(" - ");
 			logger.warn("Tree refresh skipped, file is null");
 		} 
+		TextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
 	}
 	
-	private static void refreshFromWorkspace() {
+	private static void refreshFromWorkspace(File workspaceRoot) {
 		
 		// WORKSPACE VALIDATION
 		if(workspaceRoot == null || workspaceRoot.getName().equals("") || !workspaceRoot.exists()) {
@@ -139,9 +200,13 @@ public class TextEditorUtils {
 			TextEditor.splitPaneMain.setDividerLocation(TextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
 			TextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(workspaceRoot)));
-			TreeUtils.selectFileInNamedFileTree(TextEditor.loadedTabObj.loadedFile, TextEditor.leftSplitTreeFiles, true);
+			try {
+				TreeUtils.selectFileInNamedFileTree(TextEditor.loadedTabObj.loadedFile, TextEditor.leftSplitTreeFiles, true);
+			} catch (IOException e1) {
+				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
+			}
 			
-			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(workspaceRoot, 2));
+			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(workspaceRoot, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
 				TextEditor.dynLblCurrentDir.setToolTipText(workspaceRoot.getCanonicalPath());
 				logger.debug("Tree refreshed from workspace: "+workspaceRoot.getCanonicalPath());
@@ -157,6 +222,8 @@ public class TextEditorUtils {
 		}else {
 			logger.warn("\"btnToggleFileView\" is not selected, refresh skipped!");
 		}
+		
+		TextEditor.lblCurrentDir.setText(TextEditor.ROOT_WORKSPACE_LBL);
 		
 	}
 	

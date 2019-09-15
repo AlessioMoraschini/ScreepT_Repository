@@ -1,6 +1,7 @@
 package treeutils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,8 +50,9 @@ public class TreeUtils {
 	 * @param fileToSelect
 	 * @param root
 	 * @param tree
+	 * @throws IOException 
 	 */
-	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree, boolean checkExistance){
+	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree, boolean checkExistance) throws IOException{
 		
 		boolean error = fileToSelect == null || tree == null || (checkExistance && !fileToSelect.exists());
 		
@@ -58,16 +60,16 @@ public class TreeUtils {
 			return;
 		}
 		
-		File root = ((FileNamed)tree.getModel().getRoot()).mFile;
+		File root = ((FileNamed)tree.getModel().getRoot()).mFile.getCanonicalFile();
 		LinkedList<File> nodes = new LinkedList<File>();
-		File current = new File(fileToSelect.getAbsolutePath());
+		File current = new File(fileToSelect.getCanonicalPath());
 		
 		// find all nodes till root
 		while((current != null && current.exists()) && !current.getName().equals(root.getName())){
 			nodes.add(current);
 			current = current.getParentFile();
 		}
-		nodes.add(new File(root.getAbsolutePath()));
+		nodes.add(new File(root.getCanonicalPath()));
 		
 		// start selection from root node
 		while(nodes.size() > 0){

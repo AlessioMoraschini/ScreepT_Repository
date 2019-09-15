@@ -49,10 +49,10 @@ public class FileStuff {
 				}
 
 				while (levelsUp > 1) {
-					if(result.getParentFile() == null || !result.getParentFile().exists()) {
+					if(result.getParentFile() == null || !result.getParentFile().getAbsoluteFile().exists()) {
 						break;
 					}
-					result = result.getParentFile();
+					result = result.getParentFile().getAbsoluteFile();
 					levelsUp--;
 				}
 			} 

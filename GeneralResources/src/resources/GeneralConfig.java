@@ -1,5 +1,6 @@
 package resources;
 
+import java.awt.Font;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
@@ -51,6 +52,7 @@ public class GeneralConfig {
 	// Tooltips
 	public static int TOOLTIP_DELAY;
 	public static int TOOLTIP_TIMEOUT;
+	public static String TOOLTIP_FONT = linkedMappings.getProperty("TOOLTIP_FONT");
 	
 	static {
 		try {
@@ -59,10 +61,19 @@ public class GeneralConfig {
 		}catch(Exception e) {
 			TOOLTIP_DELAY = 400;// 0,4 seconds
 			TOOLTIP_TIMEOUT = 30000; // 30 seconds
+			TOOLTIP_FONT = "";
 		}
 	}
 	
 	// TEXT EDITOR
+	public static int FOOTER_MAX_DIR_LABEL_LENGTH;
+	static {
+		try {
+			FOOTER_MAX_DIR_LABEL_LENGTH = Integer.parseInt(linkedMappings.getProperty("FOOTER_MAX_DIR_LABEL_LENGTH"));
+		}catch(Exception e) {
+			FOOTER_MAX_DIR_LABEL_LENGTH = 30;
+		}
+	}
 	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL;
 	static {
 		try {

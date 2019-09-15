@@ -8,13 +8,11 @@ import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.InvalidFileFormatException;
@@ -28,6 +26,7 @@ import gui.utils.LauncherLoaderFrame;
 import launcherutils.FileUtils;
 import launcherutils.om.DependencyLocalPath;
 import launcherutils.om.DependencyModel;
+import logger.LoggerUtils;
 import om.OSinfo;
 import resources.GeneralConfig;
 import utils.SysUtils;
@@ -81,7 +80,6 @@ public class ScrYpTLauncher {
 	
 	// DEFAULT INI
 	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "Launcher_Configuration.ini"; 
-	public final static Level DEFAULT_LOG_LEVEL = Level.ERROR;
 	public static final String INI_JVM_OPT = "JVM_OPTIONS";
 	public static final String INI_APP_OPT = "APPLICATION_OPTIONS";
 	public static boolean viewShellAfterStart = false;
@@ -530,44 +528,16 @@ public class ScrYpTLauncher {
 		return OK;
 	}
 	
-	public static Level getLogLevelFromString(String stringLevel) {
-		if(stringLevel == null) {
-			return DEFAULT_LOG_LEVEL;
-		}else if(stringLevel.equals("OFF")) {
-			return Level.OFF;
-		}else if(stringLevel.equals("FATAL")) {
-			return Level.FATAL;
-		}else if(stringLevel.equals("ERROR")) {
-			return Level.ERROR;
-		}else if(stringLevel.equals("WARN")) {
-			return Level.WARN;
-		}else if(stringLevel.equals("DEBUG")) {
-			return Level.DEBUG;
-		}else if(stringLevel.equals("INFO")) {
-			return Level.INFO;
-		}else if(stringLevel.equals("ALL")) {
-			return Level.ALL;
-		}else {
-			return DEFAULT_LOG_LEVEL;
-		}
-	}
-	
 	public static String[] getLogLevelsList() {
 		String[] levelArray = {"ALL","INFO","DEBUG","WARN","ERROR","FATAL","OFF"};
 		return levelArray;
 	}
 	
 	private static void appLogStart() {
-		Date now = new Date();
-		logger.debug("\n\n##################################################\n\n"+now.toString()+"\n\n"
-				+ "Launcher Started now!\n\n"
-				+ "##################################################\n\n");
+		logger.debug(LoggerUtils.getStartString("ScrYpT - Launcher", true));
 	}
 	
 	private static void appLogEnd() {
-		Date now = new Date();
-		logger.debug("\n\n##################################################\n\n"+now.toString()+"\n\n"
-				+ "Launcher Closed now!\n\n"
-				+ "##################################################\n\n");
+		logger.debug(LoggerUtils.getExitString("ScrYpT - Launcher", true));
 	}
 }

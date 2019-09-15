@@ -279,6 +279,9 @@ public class INItializer {
 		
 		// CONVERTED/PARSED TYPES
 		
+		// workspace view selected
+		textEditorOpt.setWorkspaceViewSelected(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "workspaceViewSelected")));
+		
 		// file tree locked
 		try {
 			textEditorOpt.setTreeLocked(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "isTreeLocked")));
@@ -462,6 +465,7 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "txtAreaDetailLevel", textEditorOpt.txtAreaDetailLevel);
 		iniFile.put(TEXT_EDITOR_OPT, "isTreeLocked", textEditorOpt.treeLocked);
 		iniFile.put(TEXT_EDITOR_OPT, "defaultWorspaceLocation", textEditorOpt.defaultWorkspacePath);
+		iniFile.put(TEXT_EDITOR_OPT, "workspaceViewSelected", textEditorOpt.workspaceViewSelected);
 		
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
@@ -603,6 +607,7 @@ public class INItializer {
 			   .append("\nTAB_LINE_VISIBLE: ").append(textEditorOpt.tabLineVisible)
 			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)
 			   .append("\nFILE TREE LOCKED: ").append(textEditorOpt.treeLocked)
+			   .append("\nWORKSPACE VIEW SELECTED: ").append(textEditorOpt.workspaceViewSelected)
 			   .append("\nDEFAULT WORKSPACE LOCATION: ").append(textEditorOpt.defaultWorkspacePath)
 			   .append("\nPREFERRED_THEME: ").append(textEditorOpt.selectedTheme)
 			   .append("\nFILE_PANEL_BACKGROUND_COLOR: ").append(textEditorOpt.filePanelBackCol)

@@ -1,5 +1,6 @@
 package maingUI;
 
+import java.awt.Font;
 import java.io.File;
 import java.util.Date;
 
@@ -10,8 +11,11 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import amfileutils.FileStuff;
+import frameutils.GuiUtils;
+import logger.LoggerUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import variousutils.HandleString;
 
 public class MainGuiGeneralAppStarter {
 
@@ -37,15 +41,16 @@ public class MainGuiGeneralAppStarter {
 			// Initialize logger properties
 			PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
 			
-			logger.info("\n\n##################################################\n\n"+now.toString()+"\n\n"
-					+ mainGUI.APPLICATION_NAME+" Started now!\n\n"
-					+ "##################################################\n\n");
+			logger.info(LoggerUtils.getStartString(mainGUI.APPLICATION_NAME, true));
 
 			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 			
-			{
-				mainGUI.mainApplicationGeneral();
-			}
+			// SETUP TOOLTIPS PROPERTIES
+			Font tooltipFontFromProps = (GeneralConfig.TOOLTIP_FONT.equals(""))? new Font("Segoe UI", Font.PLAIN, 14) : HandleString.getFontFromString(GeneralConfig.TOOLTIP_FONT);
+			GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, tooltipFontFromProps);
+			
+			// LAUNCH MAIN APPLICATION
+			mainGUI.mainApplicationGeneral();
 			
 			// TODO test life cycle
 			if(TEST_ERROR_FLAG) {
@@ -57,16 +62,14 @@ public class MainGuiGeneralAppStarter {
 			logger.error(CRITICAL_ERROR_MSG, e);
 			JOptionPane.showMessageDialog(null, CRITICAL_ERROR_MSG+e.getClass().getName(), "Critical Error",
 					JOptionPane.ERROR_MESSAGE, new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_ERROR));
-			doStuffBeforeClose();
+			doStuffBeforeErrorClose();
 		}
 	}
 	
-	private static void doStuffBeforeClose() {
+	private static void doStuffBeforeErrorClose() {
 		now = new Date();
 		
-		logger.info("\n\n##################################################\n\n"+now.toString()+"\n\n"
-				+ mainGUI.APPLICATION_NAME+" HAD AN UNEXPECTED ERROR - FORCING CLOSE\n\n"
-				+ "##################################################\n\n");
+		logger.info(LoggerUtils.getGeneralErrorExitMsg(mainGUI.APPLICATION_NAME, true));
 		
 		System.exit(0);
 	}

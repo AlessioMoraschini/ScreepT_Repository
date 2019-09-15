@@ -60,6 +60,7 @@ import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
 import gui.utils.LauncherLoaderFrame;
 import guistyle.GUIStyelSettings;
+import logger.LoggerUtils;
 import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
 import gUI.panels.KeyDictionaryPanel;
@@ -85,6 +86,7 @@ import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import utils.SysUtils;
+import variousutils.HandleString;
 
 import java.awt.Dialog.ModalExclusionType;
 
@@ -287,7 +289,7 @@ public class mainGUI {
 					// INITIALIZE CONFIGURATION FROM CONFIG DEFAULT FILE
 					try {
 						launcherConfig = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
-						LOG_LEVEL_AT_START = ScrYpTLauncher.getLogLevelFromString(launcherConfig.get(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting"));
+						LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting"));
 						logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
 						if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
 							logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
@@ -1226,8 +1228,6 @@ public class mainGUI {
 			}
 		}
 		
-		GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, new Font("Segoe UI", Font.PLAIN, 16));
-		
 		// try to set preferred charset
 		try {
 			System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
@@ -1616,9 +1616,7 @@ public class mainGUI {
       	
 		mainAppRunning = false;
 		
-		logger.info(" ## CLOSING APPLICATION:"+"\n\n##################################################\n\n"+now.toString()+"\n\n"
-				+ APPLICATION_NAME+" CLOSED!\n\n"
-				+ "##################################################\n\n");
+		logger.info(LoggerUtils.getExitString(mainGUI.APPLICATION_NAME, true));
 	
 		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
