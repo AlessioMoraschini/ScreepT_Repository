@@ -1,5 +1,6 @@
 package resources;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -85,6 +86,11 @@ public class GeneralConfig {
 			DEFAULT_FILE_TREE_ANCESTOR_LEVEL = 2;
 		}
 	}
+	
+	// default button and generic font definitions
+	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(16, 0);
+	public static final Font BUTTON_DEFAULT_FONT =  new Font("SansSerif", Font.BOLD, 12);
+	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	
 	///////////////////////////////////////////////// METHODS ///////////////////////////////////////////////
 	

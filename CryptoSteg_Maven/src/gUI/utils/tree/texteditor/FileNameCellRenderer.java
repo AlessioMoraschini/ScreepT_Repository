@@ -17,7 +17,6 @@ import splitpanel.FileNamed;
 
 public class FileNameCellRenderer implements TreeCellRenderer {
 
-	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(FileNameCellRenderer.class); 
 		
 	private JLabel iconContainer;

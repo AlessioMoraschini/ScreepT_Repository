@@ -5,6 +5,7 @@ public class TextEditorTooltips {
 	// TOOLTIPS //
 	public static final String tooltipFindText = "[Ctrl+F] Search text into current editor";
 	public static final String tooltipReplaceEscapes = "[Ctrl+E] Open Escape sequences / special characters replacement panel - Selected/all text";
+	public static final String tooltipBtnCalculator = "[Ctrl+Alt+C] Open calculator";
 	public static final String tooltipGoToLine = "[Ctrl+L] Go to Line number";
 	public static final String tooltipReplaceText = "[Ctrl+R] Replace text";
 	public static final String tooltipSaveTextFile = "[Ctrl+S] Save current file";

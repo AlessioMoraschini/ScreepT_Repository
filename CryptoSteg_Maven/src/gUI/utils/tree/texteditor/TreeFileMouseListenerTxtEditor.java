@@ -87,7 +87,7 @@ public class TreeFileMouseListenerTxtEditor {
 		        if(selRow != -1 && e.getClickCount() == 2) {
 		        	if(selPath != null){
 	                    selectedNode = (FileNamed) selPath.getLastPathComponent();
-	                    if (selectedNode.mFile != null && selectedNode.mFile.exists()) {
+	                    if (selectedNode.mFile != null && selectedNode.mFile.exists() && selectedNode.mFile.isFile()) {
 	                    	//	                myDoubleClick(selRow, selPath);
 	                    	textEditor.loadFile(selectedNode.mFile);
 	                    }

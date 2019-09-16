@@ -350,6 +350,18 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 					});
 				}
 				
+				
+				/*
+				 *  OPEN CALCULATOR -> Ctrl+Alt+C
+				 */
+				if(e.getKeyCode() == 67 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							TextEditor.btnCalculator.doClick();
+						}
+					});
+				}
+				
 //				/*
 //				 *  TEST MOVE TABS : Ctrl + shift + Alt + [->|<-]
 //				 */

@@ -1,7 +1,6 @@
 package junit.GUI;
 
 import java.awt.KeyboardFocusManager;
-import java.awt.TextArea;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 

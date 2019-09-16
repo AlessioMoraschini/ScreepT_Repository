@@ -2,6 +2,7 @@ package gUI.utils.texteditor;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.io.File;
@@ -19,6 +20,7 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
@@ -29,6 +31,7 @@ import gUI.utils.tree.texteditor.FileTreeNamedModel;
 import guistyle.GUIStyelSettings;
 import maingUI.mainGUI;
 import media.ImageGeneralWorker;
+import om.SupportedFileTextEditor;
 import om.TextEditorOption;
 import reflection.ReflectionUtils;
 import resources.GeneralConfig;
@@ -47,6 +50,45 @@ public class TextEditorUtils {
 	static Logger logger = Logger.getLogger(TextEditorUtils.class);
 	
 	static final int LEVEL_ANCESTOR_LABEL_DIR = 1;
+	
+	public static void applyStyleToButtons() throws IllegalArgumentException, IllegalAccessException {
+		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByType(TextEditor.currentTextEditor, JButton.class);
+		for(JButton button : textEditorButtons) {
+			button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			button.setBackground(new Color(200,200,200));
+			button.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+			button.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
+		}
+	}
+	
+	/**
+	 * @param source the source file
+	 * @param autosync if this is true, syntax will be auto synched with current file type
+	 */
+	public static void findRightStyleFromComboNSelect(File source, boolean autosync) {
+
+		if (source == null) {
+			return;
+		}
+		
+		// default target current selected as default
+		SupportedFileTextEditor chosenType = (SupportedFileTextEditor)TextEditor.comboFileFormat.getSelectedItem();
+		
+		if (autosync) {
+			// IF AUTOSYNC FIND RIGHT TYPE BY FILE EXTENSION AND SELECT
+			for (SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
+				if (FilenameUtils.getExtension(source.getName()).toLowerCase().endsWith(current.senzapunto.toLowerCase())) {
+					// match found
+					chosenType = current;
+					TextEditor.comboFileFormat.setSelectedItem(chosenType);
+				}
+			}
+		}
+
+		// APPLY SELECTED
+		TextEditor.applyFileFormatFromCombo();
+
+	}
 	
 	public static boolean checkWorkspaceExistNsel() {
 		File workspace = new File (TextEditor.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);

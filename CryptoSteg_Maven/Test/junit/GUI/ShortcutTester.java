@@ -19,7 +19,7 @@ public class ShortcutTester implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED) {
 			if (e.getKeyChar() != lastPressed) {
-				Printer.printl(" => PRESSED: " + "KeyChar: " + e.getKeyChar() + " - KeyCode: " + e.getKeyCode()
+				Printer.printl(" => PRESSED: " + "KeyCodeString: "+ e.getKeyText(e.getKeyCode()) + " - KeyChar: " + e.getKeyChar() + " - KeyCode: " + e.getKeyCode()
 						+ " - ALT: " + e.isAltDown() + " - CTRL: " + e.isControlDown() + " - SHIFT: "
 						+ e.isShiftDown());
 			}

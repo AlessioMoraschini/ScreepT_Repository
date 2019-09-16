@@ -141,6 +141,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_JOB_ON = GeneralConfig.RESOURCES_DIR + "Icons/General/job_ON.png";
 	public static final String ICON_JOB_OFF = GeneralConfig.RESOURCES_DIR + "Icons/General/job_OFF.png";
 	public static final String ICON_JOB_SEARCH = GeneralConfig.RESOURCES_DIR + "Icons/General/job_search.png";
+	public static final String ICON_CALCULATOR = GeneralConfig.RESOURCES_DIR + "Icons/General/calculator.png";
 	
 	////////////////    INSTANTIATED DEFAULT STATIC ICONS   ///////////////////
 	public static final ImageIcon IMG_ICON_LIGHT_ON = new ImageIcon(ICON_LIGHT_ON);

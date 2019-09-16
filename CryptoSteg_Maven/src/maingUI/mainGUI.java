@@ -78,6 +78,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.SystemColor;
 import java.awt.Window;
+import java.awt.Dialog.ModalExclusionType;
 
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
@@ -86,14 +87,10 @@ import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import utils.SysUtils;
-import variousutils.HandleString;
-
-import java.awt.Dialog.ModalExclusionType;
 
 import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
 
 public class mainGUI {
 
@@ -107,8 +104,8 @@ public class mainGUI {
 	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 		
 	// general application variables
-	public static final String APP_VERSION = "0.7.1c";
-	public static final String APP_VERSION_DATE = "13/09/2019";
+	public static final String APP_VERSION = "0.7.2";
+	public static final String APP_VERSION_DATE = "16/09/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
@@ -122,11 +119,6 @@ public class mainGUI {
 	public static Image SW_ICON;
 	
 	public static String currentJvmVersion = "";
-	
-	// default button and generic font definitions
-	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(16, 0);
-	public static final Font BUTTON_DEFAULT_FONT =  new Font("SansSerif", Font.BOLD, 12);
-	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	
 //////////////////////////// GUI ELEMENTS //////////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -1114,13 +1106,18 @@ public class mainGUI {
 			}
 		});
 		
-		// open in a new window - MANUAL - preloading to improve performance
-		new Thread(new Runnable() {
-			// async loading of html tutorial file
+		// ASYNC HTML TUTORIAL PANE
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				tutorialPanel = new TutorialPanel();				
+				// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
+				new Thread(new Runnable() {
+					public void run() {
+						tutorialPanel = new TutorialPanel();
+					}
+				}).start();
 			}
-		}).start();
+		});
+		
 		mntmUserDocumentation = new JMenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
 				if (!flagTutorialPanel) {

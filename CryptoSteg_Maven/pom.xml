@@ -33,22 +33,10 @@
 	    	<version>2.4</version>
 		</dependency>
 		
-	  	<dependency>
-	  		<groupId>commons-codec</groupId>
-	  		<artifactId>commons-codec</artifactId>
-	  		<version>1.11</version>
-	  	</dependency>
-		
 		<dependency>
 		    <groupId>com.1stleg</groupId>
 		    <artifactId>jnativehook</artifactId>
 		    <version>2.1.0</version>
-		</dependency>
-				
-		<dependency>
-		    <groupId>net.java.dev.jna</groupId>
-		    <artifactId>jna</artifactId>
-		    <version>5.2.0</version>
 		</dependency>
 		
 		<!-- IMPORTS FROM OTHER PROJECTS -->
@@ -99,6 +87,12 @@
 	 		<groupId>HardwareCommons</groupId>
 	  		<artifactId>HardwareCommons</artifactId>
 	  		<version>0.0.1-SNAPSHOT</version>
+ 		</dependency>
+ 		
+ 		<dependency>
+			<groupId>UltimateCalculator</groupId>
+			<artifactId>UltimateCalculator</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
  		</dependency>
 		
   	</dependencies>
