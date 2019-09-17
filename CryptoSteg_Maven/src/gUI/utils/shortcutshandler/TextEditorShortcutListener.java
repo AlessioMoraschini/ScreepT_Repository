@@ -281,26 +281,26 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				 * 	NEXT TAB -> CTRL+TAB
 				 */
 				if (e.getKeyCode() == 9 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.goToNextTab();
+					TextEditorUtils.goToNextTab();
 				}
 				
 				/*
 				 * 	PREVIOUS TAB -> CTRL+Shift+TAB
 				 */
 				if (e.getKeyCode() == 9 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.goToPreviousTab();
+					TextEditorUtils.goToPreviousTab();
 				}
 				/*
 				 * 	NEW TAB -> CTRL+N
 				 */
 				if (e.getKeyCode() == 78 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.addTab(null, false);
+					TextEditorUtils.addTab(null, false);
 				}
 				/*
 				 * 	CLOSE CURRENT TAB -> CTRL+W
 				 */
 				if (e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.closeCurrentTab();
+					TextEditorUtils.closeCurrentTab();
 				} 
 				
 				/*

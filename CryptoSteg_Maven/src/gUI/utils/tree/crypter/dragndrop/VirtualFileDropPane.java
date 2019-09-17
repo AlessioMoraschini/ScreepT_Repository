@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 import frameutils.BackgroundPanel;
 import gUI.panels.KeyDictionaryPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 
 public class VirtualFileDropPane extends BackgroundPanel {
 
@@ -55,7 +55,7 @@ public class VirtualFileDropPane extends BackgroundPanel {
 
     // constructor
     public VirtualFileDropPane(JTree targetTree, Component targetDrop) {
-    	super(mainGUI.SCREEPT_BACKGROUND_DRAGNDROP_IMAGE, false);
+    	super(MainGUI.SCREEPT_BACKGROUND_DRAGNDROP_IMAGE, false);
     	
     	targetDropComponent = (targetDrop == null)? this : targetDrop;
     	filesTree = targetTree;

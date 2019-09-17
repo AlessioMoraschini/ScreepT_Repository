@@ -5,16 +5,16 @@ import java.awt.event.KeyEvent;
 
 import org.apache.log4j.Logger;
 
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 
 public class MainGuiShortcutsListener implements KeyEventDispatcher{
 	
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(MainGuiShortcutsListener.class);
 	
-	mainGUI currentGui;
+	MainGUI currentGui;
 	
-	public MainGuiShortcutsListener(mainGUI currentMainGui) {
+	public MainGuiShortcutsListener(MainGUI currentMainGui) {
 		logger.debug(this.getClass().getName() + " Started!");
 		currentGui = currentMainGui;
 	}

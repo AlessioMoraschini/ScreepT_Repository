@@ -34,7 +34,7 @@ import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
 import guistyle.GUIStyelSettings;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import media.STEGException;
@@ -133,7 +133,7 @@ public class CrypterPanel extends JPanel {
 
 	// frame of parent GUI-object (main-GUI)
 	private JFrame parentFrame;
-	private mainGUI mainApplication;
+	private MainGUI mainApplication;
 	
 	// panels
 	private JPanel panelMainContainer;
@@ -216,7 +216,7 @@ public class CrypterPanel extends JPanel {
 	/**
 	 * Create the application.
 	 */
-	public CrypterPanel(INItializer currentConfiguration, mainGUI parent) {
+	public CrypterPanel(INItializer currentConfiguration, MainGUI parent) {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 /////////////////////////////////////////////////////////////////////////////////////

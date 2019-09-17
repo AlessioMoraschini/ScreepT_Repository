@@ -16,7 +16,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import mainobj.INItializer;
 import resources.IconsPathConfigurator;
 

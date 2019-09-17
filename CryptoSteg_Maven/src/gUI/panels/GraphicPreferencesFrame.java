@@ -29,8 +29,9 @@ import javax.swing.event.DocumentListener;
 import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
+import gUI.utils.texteditor.TextEditorUtils;
 import guistyle.GUIStyelSettings;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import mainobj.INItializer;
 
 import javax.swing.UIManager;
@@ -108,7 +109,7 @@ public class GraphicPreferencesFrame extends JFrame {
 		initialTxtEditorFont = currentConfiguration.getTextEditorOpt().getFont();
 
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
-		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(MainGUI.frmScryptV);
 		
 		initValues(currentConfiguration);
 
@@ -302,7 +303,7 @@ public class GraphicPreferencesFrame extends JFrame {
 					currentConfiguration.getGuiOpt().setDarkGuiNimbus(true);
 				}
 				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditor.applyStyleToTabs();
+				TextEditorUtils.applyStyleToTabs();
 			}
 		});
 		
@@ -332,8 +333,8 @@ public class GraphicPreferencesFrame extends JFrame {
 							PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
 						} finally {
 							GUIStyelSettings.updateAllWindowsLaf();
-							TextEditor.applyStyleToTabs();
-							TextEditor.resetDividerColor();
+							TextEditorUtils.applyStyleToTabs();
+							TextEditorUtils.resetDividerColor();
 						}
 					}
 				});
@@ -359,7 +360,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				updateGUI();
 
 //				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditor.applyStyleToTabs();
+				TextEditorUtils.applyStyleToTabs();
 
 				logger.debug("Configuration resetted: \n" + currentConfiguration.toStringa());
 			}
@@ -403,8 +404,8 @@ public class GraphicPreferencesFrame extends JFrame {
 					JOptionPane.showMessageDialog(thisFrame,
 							"Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.",
 							"Saved!", JOptionPane.INFORMATION_MESSAGE);
-					TextEditor.resetDividerColor();
-					TextEditor.applyStyleToTabs();
+					TextEditorUtils.resetDividerColor();
+					TextEditorUtils.applyStyleToTabs();
 					logger.debug("Configuration saved: \n" + currentConfiguration.toStringa());
 
 					// dispose();
@@ -414,8 +415,8 @@ public class GraphicPreferencesFrame extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(thisFrame, "Ok, I wont save theese settings ;)", "Not saved!",
 							JOptionPane.WARNING_MESSAGE);
-					TextEditor.resetDividerColor();
-					TextEditor.applyStyleToTabs();
+					TextEditorUtils.resetDividerColor();
+					TextEditorUtils.applyStyleToTabs();
 				}
 				
 			}
@@ -436,8 +437,8 @@ public class GraphicPreferencesFrame extends JFrame {
 				// reset gui (sliders changement will trigger jtextfield, see action listener)
 				updateGUI();
 //				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditor.applyStyleToTabs();
-				TextEditor.resetDividerColor();
+				TextEditorUtils.applyStyleToTabs();
+				TextEditorUtils.resetDividerColor();
 
 				logger.debug("Configuration resetted: \n" + currentConfiguration.toStringa());
 
@@ -452,9 +453,9 @@ public class GraphicPreferencesFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// update (locally)BACKUP_VALUES as the new ones
 				updateBackup();
-				TextEditor.resetDividerColor();
+				TextEditorUtils.resetDividerColor();
 //				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditor.applyStyleToTabs();
+				TextEditorUtils.applyStyleToTabs();
 
 				// close and apply new values without saving
 				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
@@ -498,8 +499,8 @@ public class GraphicPreferencesFrame extends JFrame {
 				NIMBUS_SIZE = (int) spinnerNimbusSize.getValue();
 				GUIStyelSettings.applyNimbusSize(NIMBUS_SIZE);
 				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditor.resetDividerColor();
-				TextEditor.applyStyleToTabs();
+				TextEditorUtils.resetDividerColor();
+				TextEditorUtils.applyStyleToTabs();
 			}
 		});
 
@@ -589,8 +590,8 @@ public class GraphicPreferencesFrame extends JFrame {
 		spinnerNimbusSize.setValue(NIMBUS_SIZE);
 
 		GUIStyelSettings.setStyle(PREFERRED_STYLE, NIMBUS_SIZE);
-		TextEditor.resetDividerColor();
-		TextEditor.applyStyleToTabs();
+		TextEditorUtils.resetDividerColor();
+		TextEditorUtils.applyStyleToTabs();
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

@@ -17,7 +17,7 @@ import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
@@ -64,7 +64,7 @@ public class ChargeIniLog extends JPanel{
 	public TreeFileMouseListenerIni menuMouseListener;
 	
 	private INItializer config;
-	public mainGUI parent;
+	public MainGUI parent;
 	private ChargeIniLog thisPanel;
 	
 	// GUI ELEMENTS //
@@ -88,7 +88,7 @@ public class ChargeIniLog extends JPanel{
 	private JButton btnSave;
 	private JButton btnViewCurrentFile;
 
-	public ChargeIniLog(INItializer configuration, mainGUI parentFrame) {
+	public ChargeIniLog(INItializer configuration, MainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
 		
 		thisPanel = this;
@@ -265,8 +265,8 @@ public class ChargeIniLog extends JPanel{
 					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES (in Volatile Memory) ###\n\n");
-					mainGUI.now = new Date();
-					textArea.append("#### "+sdf.format(mainGUI.now) + " ####\n\n");
+					MainGUI.now = new Date();
+					textArea.append("#### "+sdf.format(MainGUI.now) + " ####\n\n");
 					textArea.append(config.toStringa());
 					textAreaToTop();
 					// update all panels with current configuration
@@ -324,7 +324,7 @@ public class ChargeIniLog extends JPanel{
 						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						lblAvviso.setText("[Configuration Resetted!]");
-						String name = mainGUI.askUsername();
+						String name = MainGUI.askUsername();
 						JOptionPane.showMessageDialog(parent.getMainFrame(), "File '" + config.getIniFile().getFile().getName() + "' loaded!");
 						config.readConfigIniFile();
 						config.getGenOpt().setUserName(name);

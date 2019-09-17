@@ -42,22 +42,32 @@ public class FileStuff {
 	public static File getNlevelsAncestor(File son, int levelsUp) {
 		int originalLevels = levelsUp;
 		try {
-			File result = son.getParentFile().getAbsoluteFile();
-			if (levelsUp > 0) {
-				if (levelsUp == 0) {
-					levelsUp = 1;
-				}
-
-				while (levelsUp > 1) {
-					if(result.getParentFile() == null || !result.getParentFile().getAbsoluteFile().exists()) {
-						break;
+			File result = null;
+			if (son != null) {
+				result = son.getParentFile().getAbsoluteFile();
+				if (levelsUp > 0) {
+					if (levelsUp == 0) {
+						levelsUp = 1;
 					}
-					result = result.getParentFile().getAbsoluteFile();
-					levelsUp--;
-				}
-			} 
-			logger.debug("\n\n=> Parent file search result [son:"+son.getCanonicalPath()
-					+", levelsUp:"+originalLevels+"]: "+result.getCanonicalPath()+"\n");
+
+					while (levelsUp > 1) {
+						if (result.getParentFile() == null || !result.getParentFile().getAbsoluteFile().exists()) {
+							break;
+						}
+						result = result.getParentFile().getAbsoluteFile();
+						levelsUp--;
+					}
+				} 
+				
+				logger.debug("\n\n=> Parent file search result [son:"+son.getCanonicalPath()
+				+", levelsUp:"+originalLevels+"]: "+result.getCanonicalPath()+"\n");
+				
+			}else {
+				logger.warn("\n\n=> Parent file search result FAILED! [son:"+son
+				+", levelsUp:"+originalLevels+"]: "+result+"\n");
+				return son;
+			}
+			
 			return result;
 		} catch (Exception e) {
 			logger.error("Error finding parent file, returning given son", e);
@@ -69,26 +79,27 @@ public class FileStuff {
 		int originalLevels = levelsUp;
 		String result = "";
 		try {
-			File temp = son.getCanonicalFile();
-			if (levelsUp > 0) {
-				if (levelsUp == 0) {
-					levelsUp = 1;
-				}
-
-				while (levelsUp > 0) {
-					result = temp.getName() + File.separator+result;
-					if(temp.getParentFile() == null || !temp.getParentFile().exists()) {
-						break;
+			if (son != null && son.exists()) {
+				File temp = son.getCanonicalFile();
+				if (levelsUp > 0) {
+					if (levelsUp == 0) {
+						levelsUp = 1;
 					}
-					temp = temp.getParentFile();
-					levelsUp--;
+
+					while (levelsUp > 0) {
+						result = temp.getName() + File.separator + result;
+						if (temp.getParentFile() == null || !temp.getParentFile().exists()) {
+							break;
+						}
+						temp = temp.getParentFile();
+						levelsUp--;
+					}
+					if (result.length() > 0) {
+						result = result.substring(0, result.length() - 1);
+					}
 				}
-				if (result.length() > 0) {
-					result = result.substring(0, result.length() - 1);
-				}
-			} 
-			logger.debug("\n\n=> Parent file search result [son:"+son.getCanonicalPath()
-					+", levelsUp:"+originalLevels+"]: "+result+"\n");
+				logger.debug("\n\n=> Parent file search result [son:" + son.getCanonicalPath() + ", levelsUp:" + originalLevels + "]: " + result + "\n");
+			}
 			return result;
 		} catch (Exception e) {
 			logger.error("Error finding parent file, returning given son", e);

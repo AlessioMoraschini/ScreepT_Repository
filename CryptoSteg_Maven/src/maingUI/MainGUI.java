@@ -67,7 +67,6 @@ import gUI.panels.KeyDictionaryPanel;
 import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import media.Sounds;
-import menusettings.MenuSetter;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -88,46 +87,17 @@ import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import utils.SysUtils;
 
-import javax.swing.JSeparator;
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
 
-public class mainGUI {
+public class MainGUI extends MainGuiParent{
 
-	// mainGUI logger
-	static Logger logger = Logger.getLogger(mainGUI.class);
-    public static Level LOG_LEVEL_AT_START;
-////////////////////// GENERAL STATIC ELEMENTS /////////////////////////
-////////////////////////////////////////////////////////////////////////
-	
-	private static final long AUTOSAVE_MANAGER_PERIOD=10000; // autosave manager constant check refresh period in millisecond
-	private static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
-		
-	// general application variables
-	public static final String APP_VERSION = "0.7.2";
-	public static final String APP_VERSION_DATE = "16/09/2019";
-	public static final String WEBSITE = "www.am_design_developement.com";
-	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
-	public static final String AUTHOR = "A.M. Design and Developement";
-	
-	public static Date now; // date used for log operations
-	public static Wini launcherConfig;
-	
-	// icons and images
-	public static Image APPLICATION_MAIN_BCKG_IMAGE;
-	public static Image SCREEPT_BACKGROUND_DRAGNDROP_IMAGE;
-	public static Image SW_ICON;
-	
-	public static String currentJvmVersion = "";
 	
 //////////////////////////// GUI ELEMENTS //////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 	
 	// background image
 	private JLabel labelBACKground;
-	
-	// the main frame for placing the content
-	static public JFrame frmScryptV;
 	
 	// FRAMES THAT OPEN IN A NEW DIALOG
 	private static GraphicPreferencesFrame panelGuiOptions;
@@ -145,53 +115,8 @@ public class mainGUI {
 	public static CrypterPanel panelCrypter;
 	public ChargeIniLog configManagerPanel;
 	
-	// MENU ITEMS
-	private JMenuBar menuBar;
-	
-	private JMenu mnFile;
-	private JMenu mnPreferences;
-	private JMenu mnCryptoSteg; 
-	private JMenu mnVarious;
-	private JMenu mnConversionsAndOther;
-	private JMenu mnFilesAndDirectories;
-	private JMenu mnHelp;
-	
-	private JMenuItem mntmInspectCurrentConfiguration;
-	private JMenuItem mntmloadPrjSub;
-	private JMenuItem mntmExportPrjSub;
-	private JMenuItem mntmReloadPrjSub;
-	private JMenuItem mntmSaveCurrent;
-	private JMenuItem mntmSaveCurrentAs;
-	private JMenuItem mntmloadSrcrYptDefaultConf;
-	private JMenuItem mntmExit;
-	private JMenuItem mntmUserDocumentation;
-	private JMenuItem mntmGenOpt;
-	private JMenuItem mntmCustomizeUIView;
-	public JMenuItem mntmFullScreenMode;
-	private static JMenuItem mntmCrypter;
-	private JMenuItem mntmgenerateKeyImageSub;
-	private JMenuItem mntmViewKeyDictionary;
-	private static JMenuItem mntmTextEditor;
-	private JMenuItem mntmnetInfo;
-	private JMenuItem mntmhwInfo;
-	private JMenuItem mntmImageConverter;
-	private JMenuItem mntmReturnToWelcome;
-	private JMenuItem mntmAboutScreept;
-	private JMenuItem mntmExportLog; 
-	private JMenuItem mntmEraseLogs;
-	private JMenuItem mntmTouppercaseDirectory;
-	private JMenuItem mntmDeleteDirectoryContentByExtension;
-	private JMenuItem mntmDeleteDirectoryContentRecursive;
-	private JMenuItem mntmDeleteDirectoryContentDirsOnlyRecursive;
-	private JMenuItem mntmMakeDirsFromPath;
-	private JMenuItem mntmCopyDirStructure;
-	
 ////////////////////////// MAIN GUI ELEMENTS ///////////////////////////
 ////////////////////////////////////////////////////////////////////////
-	
-	// this file is the abstraction of the current settings used by various sub-programs and application of this main_GUI.
-	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.	
-	public static INItializer currentConfiguration;
 	
 	// Filed for uppercaseFirstLetter "various' function"
 	private String last_dir_used; 
@@ -203,9 +128,6 @@ public class mainGUI {
 	// some used lookAndFeel
 	public static String preferredStyle = GUIStyelSettings.NimbusLookAndFeel; // preferredStyle (initialized to fully avoid null values)
 	public static boolean DARK_THEME; // true if dark theme is selected
-	
-	private int menuSize;
-	private int subMenuSize;
 	
 	// FLAGS TO SIGNAL THAT A MODULE IS OPENED (JDIALOG) 
 	// for jpanels they refresh only the first time opened or if manually refreshed 
@@ -237,25 +159,19 @@ public class mainGUI {
 	private static boolean FLAG_mntmMakeDirsFromPath = false;
 	private static boolean FLAG_mntmCopyDirStructure = false; 
 	
-	// flag to close all suspended threads when exitings Main App
-	volatile public static boolean mainAppRunning = false;
-	
 	// main app object reference
-	private mainGUI mainAPP = this;
-	public static MainGuiUtils mainGuiUtils;
-	
-	// loader to visualize while loading application
-	public static LauncherLoaderFrame loaderGraphics;
-	public static final float launcherRatio = 0.25f;
-	public static final Dimension screenSize = GuiUtils.getScreenSize();
-	
+	private MainGUI mainAPP = this;
 	public static Dimension preFullScreenSize = null;
 	
-	/**
-	 * MAIN METHOD
+	
+	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
 	 * 
-	 * Calls contructor, initialize & Launch the application.
-	 */
+	 * 			Calls contructor, initialize & Launch the application.
+	 * 
+	 * 				 (Called from MainGuiGeneralAppStarter())
+	 * 
+	 ************* BEGIN MAIN APPLICATION GENERAL METHOD  ****************************/
+	
 	public static void mainApplicationGeneral() {
 		
 		// OPEN LOADING PANEL
@@ -302,7 +218,7 @@ public class mainGUI {
 					
 					// START MAIN WINDOW CONSTRUCTOR
 					logger.info("Initializing main GUI-start");
-					mainGUI window = new mainGUI();
+					MainGUI window = new MainGUI();
 					mainGuiUtils = new MainGuiUtils(window);
 					logger.info("Main GUI initialized correctly.");
 					
@@ -416,32 +332,32 @@ public class mainGUI {
 					autosaveManager.start();
 					
 					// WINDOW CLOSE LISTENER
-					window.frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
+					frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
 					    @Override
 					    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 					    	
 							Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
 					    	
-					    	if (JOptionPane.showConfirmDialog(window.frmScryptV, "Really want to exit? :(", "Exit Program",
+					    	if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
 									JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 					    		
 					    		if(!askUnsavedTextFiles()) {
-					    			window.frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 									return;
 								}
 					    		
-					    		if(doIfTempDecryptedChanged(window.frmScryptV)) {
-					    			window.frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					    		if(doIfTempDecryptedChanged(frmScryptV)) {
+					    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 									return;
 					    		}
 					    		
-					    		window.frmScryptV.setAlwaysOnTop(true);
+					    		frmScryptV.setAlwaysOnTop(true);
 					    		closeApplication();
 					    		
 					    	}else {
 					    		
-					    		window.frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-					    		window.frmScryptV.setAlwaysOnTop(false);
+					    		frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+					    		frmScryptV.setAlwaysOnTop(false);
 					    		activeWindow.toFront();
 					    		activeWindow.requestFocus();
 					    	}
@@ -452,15 +368,15 @@ public class mainGUI {
 					
 					// ASK FOR USERNAME IF NULL OR FIRST TIME
 					if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-						currentConfiguration.getGenOpt().setUserName(mainGUI.askUsername());
+						currentConfiguration.getGenOpt().setUserName(MainGUI.askUsername());
 					}
 					window.startTitleUpdater();
 					
-					window.frmScryptV.setVisible(true);
+					frmScryptV.setVisible(true);
 					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 
-					window.frmScryptV.requestFocus();
-					window.frmScryptV.toFront();
+					frmScryptV.requestFocus();
+					frmScryptV.toFront();
 					
 //					updateGuiFromCurrConfig();
 					
@@ -476,35 +392,23 @@ public class mainGUI {
 			}
 		}).start();
 	}
-	
-	public void startTitleUpdater() {
-		// TITLE UPDATER - Thread that refreshes every second the username of the title
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (mainAppRunning) {
-					frmScryptV.setTitle(currentConfiguration.getGenOpt().getUserName()+" is using " + APPLICATION_NAME);				
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						frmScryptV.setTitle(APPLICATION_NAME+" - A.M. developement");	
-					}
-				}
-			}
-		}).start();
-	}
+	/************  END MAIN APPLICATION GENERAL METHOD  ****************************/
 
 	/**
-	 * Constructor: it creates the application, and initialize components 
-	 * of main window using the function initialize()
+	 * => CONSTRUCTOR
+	 * 
+	 * it creates the application, initializing components of main window using the function initialize().
+	 * 
+	 * Called from MainGUI.mainApplicationGeneral()
 	 */
-	public mainGUI() {
+	public MainGUI() {
 		
 		// initialize value for function uppercaseDirectories ()
-		last_dir_used=currentConfiguration.getFileOpt().getLastSrcFolderPath();
+		last_dir_used = currentConfiguration.getFileOpt().getLastSrcFolderPath();
 		
 		// INITIALIZE MAIN_GUI (See the initialize() function below this constructor)
 		initialize();
+		
 		logger.info("## GUI components started");
 		
 		// SW window icon
@@ -783,8 +687,9 @@ public class mainGUI {
 		// NOT OPENING VIEW - LOG ERASE
 		mntmEraseLogs = new JMenuItem(new AbstractAction("Erase Logs") {
 			public void actionPerformed(ActionEvent e) {
+				logger.debug(" => User started logs erasing procedure.");
+
 				if (!FLAG_mntmEraseLogs) {
-					logger.debug(" => User started logs erasing procedure.");
 					Sounds.playSound(SoundsConfigurator.SOUND_CLOCK, null);
 					FLAG_mntmEraseLogs = true;
 					File LOG_MAIN_FILE = new File(GeneralConfig.LOG_PATH);
@@ -794,20 +699,21 @@ public class mainGUI {
 					choice = JOptionPane.showConfirmDialog(frmScryptV, msg, "Erase Logs content?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 					if(choice == JOptionPane.YES_OPTION) {
 						if (FileStuff.clearFileContent(GeneralConfig.LOG_PATH) && FileStuff.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
-							JOptionPane.showMessageDialog(frmScryptV, "Logs deleted - as you asked ;)", "Logs deleted", JOptionPane.INFORMATION_MESSAGE);
 							logger.debug("Files deleted");
+							JOptionPane.showMessageDialog(frmScryptV, "Logs deleted - as you asked ;)", "Logs deleted", JOptionPane.INFORMATION_MESSAGE);
 						}else {
-							JOptionPane.showMessageDialog(frmScryptV, "Something went wrong :( Some files may still contain stuff.", "An error occurred :(", JOptionPane.ERROR_MESSAGE);
 							logger.error("Files not deleted :: An error occurred :(");
+							JOptionPane.showMessageDialog(frmScryptV, "Something went wrong :( Some files may still contain stuff.", "An error occurred :(", JOptionPane.ERROR_MESSAGE);
 						}
 					} else {
-						JOptionPane.showMessageDialog(frmScryptV, "Logs not deleted - as you asked ;)", "Logs not deleted", JOptionPane.INFORMATION_MESSAGE);
 						logger.debug("Logs not deleted :: skipped by user.");
+						JOptionPane.showMessageDialog(frmScryptV, "Logs not deleted - as you asked ;)", "Logs not deleted", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
-
+				
 				FLAG_mntmEraseLogs = false;
-				logger.debug(" => Logs erasing procedure ended.");
+				logger.debug(" => Logs erasing procedure ended. User exited esit advice");
+
 			}
 		});
 
@@ -1242,139 +1148,6 @@ public class mainGUI {
 		}
 	}
 	
-	private void structureMenuBar() {
-		
-		// INITIALIZE FONTS BY TYPE
-		Font menuBarFont = new Font("Segoe UI", Font.BOLD, menuSize);
-		Font subMenuFont = new Font("Gadugi", Font.BOLD, subMenuSize);
-		Font menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
-		
-		// CREATE MENU-BAR STRUCTURE
-		menuBar.add(mnFile);
-		menuBar.add(mnPreferences);
-		menuBar.add(mnCryptoSteg);
-		menuBar.add(mnVarious);
-		menuBar.add(mnHelp);
-		
-			// SUB-MENU
-			mnFile.add(mntmInspectCurrentConfiguration);
-			mnFile.add(new JSeparator());
-			mnFile.add(mntmReloadPrjSub);
-			mnFile.add(mntmloadPrjSub);
-			mnFile.add(mntmExportPrjSub);
-			mnFile.add(new JSeparator());
-			mnFile.add(mntmSaveCurrent);
-			mnFile.add(mntmSaveCurrentAs);
-			mnFile.add(new JSeparator());
-			mnFile.add(mntmloadSrcrYptDefaultConf);
-			mnFile.add(new JSeparator());
-			mnFile.add(mntmExit);
-			
-			mnPreferences.add(mntmCustomizeUIView);
-			mnPreferences.add(mntmGenOpt);
-			mnPreferences.add(mntmFullScreenMode);
-			
-			mnCryptoSteg.add(mntmCrypter);
-			mnCryptoSteg.add(new JSeparator());
-			mnCryptoSteg.add(mntmgenerateKeyImageSub);
-			mnCryptoSteg.add(mntmViewKeyDictionary);
-	
-			mnVarious.add(mntmTextEditor);
-			mnVarious.add(new JSeparator());
-			mnVarious.add(mntmnetInfo);
-			mnVarious.add(mntmhwInfo);
-			mnVarious.add(mnConversionsAndOther);
-			mnVarious.add(mnFilesAndDirectories);
-			
-			mnHelp.add(mntmAboutScreept);		
-			mnHelp.add(new JSeparator());
-			mnHelp.add(mntmExportLog);
-			mnHelp.add(mntmEraseLogs);
-			mnHelp.add(mntmUserDocumentation);
-			mnHelp.add(new JSeparator());
-			mnHelp.add(mntmReturnToWelcome);
-			
-				// UNDER-SUB-MENU
-				mnConversionsAndOther.add(mntmImageConverter);
-				
-				mnFilesAndDirectories.add(mntmTouppercaseDirectory);
-				mnFilesAndDirectories.add(mntmMakeDirsFromPath);
-				mnFilesAndDirectories.add(mntmCopyDirStructure);
-				mnFilesAndDirectories.add(mntmDeleteDirectoryContentByExtension);
-				mnFilesAndDirectories.add(mntmDeleteDirectoryContentRecursive);
-				mnFilesAndDirectories.add(mntmDeleteDirectoryContentDirsOnlyRecursive);
-			
-		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
-		
-		addMenuIcons();
-	}
-	
-	/**
-	 * Method to update the font of main menu
-	 *  
-	 * @param menuBarFont Font for main menuBar
-	 * @param subMenuFont Font for sub menu containers
-	 * @param menuItemFont Font for clickable items
-	 */
-	public void updateMenuFonts(Font menuBarFont, Font subMenuFont, Font menuItemFont) {
-
-		menuBar.setFont(menuBarFont);
-		
-		// MAIN MENU ENTRIES
-		mnFile.setFont(menuBarFont);
-		mnHelp.setFont(menuBarFont);
-		mnPreferences.setFont(menuBarFont);
-		mnCryptoSteg.setFont(menuBarFont);
-		mnVarious.setFont(menuBarFont);
-
-		// SUBDIRECTORIES
-		mnFilesAndDirectories.setFont(subMenuFont);
-		mnConversionsAndOther.setFont(subMenuFont);
-		
-		// FILE SECTION
-		mntmExit.setFont(menuItemFont);
-		mntmInspectCurrentConfiguration.setFont(menuItemFont);
-		mntmloadPrjSub.setFont(menuItemFont);
-		mntmExportPrjSub.setFont(menuItemFont);
-		mntmReloadPrjSub.setFont(menuItemFont);
-		mntmSaveCurrent.setFont(menuItemFont);
-		mntmSaveCurrentAs.setFont(menuItemFont);
-		mntmloadSrcrYptDefaultConf.setFont(menuItemFont);
-		
-		// PREFERENCES SECTION
-		mntmCustomizeUIView.setFont(menuItemFont);
-		mntmGenOpt.setFont(menuItemFont);
-		mntmFullScreenMode.setFont(menuItemFont);
-		
-		// SCREEPT SECTION
-		mntmCrypter.setFont(menuItemFont);
-		mntmgenerateKeyImageSub.setFont(menuItemFont);
-		mntmViewKeyDictionary.setFont(menuItemFont);
-
-		// VARIOUS SECTION
-		mntmnetInfo.setFont(menuItemFont);
-		mntmhwInfo.setFont(menuItemFont);
-		mntmTextEditor.setFont(menuItemFont);
-		
-			// SUB -> CONVERSION UTILS SECTION
-			mntmImageConverter.setFont(menuItemFont);
-			
-			// SUB-> FILES AND DIRECTORIES SECTION
-			mntmTouppercaseDirectory.setFont(menuItemFont);
-			mntmMakeDirsFromPath.setFont(menuItemFont);
-			mntmDeleteDirectoryContentByExtension.setFont(menuItemFont);
-			mntmDeleteDirectoryContentRecursive.setFont(menuItemFont);
-			mntmDeleteDirectoryContentDirsOnlyRecursive.setFont(menuItemFont);
-			mntmCopyDirStructure.setFont(menuItemFont);
-		
-		// HELP SECTION
-		mntmReturnToWelcome.setFont(menuItemFont);
-		mntmAboutScreept.setFont(menuItemFont);
-		mntmExportLog.setFont(menuItemFont);
-		mntmEraseLogs.setFont(menuItemFont);
-		mntmUserDocumentation.setFont(menuItemFont);
-	}
-	
 	public void addHandlers() {
 		
 		// DEACTIVATE OPEN MENU ON CLICK OUTSIDE IT WHEN OPEN
@@ -1392,62 +1165,6 @@ public class mainGUI {
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
-	}
-	
-	public void addMenuIcons() {
-		
-		MenuSetter.setIconTextGap(menuBar, 15);
-		
-		// file submenu
-		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
-		mntmloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
-		mntmExportPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
-		mntmReloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
-		mntmSaveCurrent.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
-		mntmSaveCurrentAs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
-		mntmloadSrcrYptDefaultConf.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
-		mntmExit.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXIT));
-		
-		// preferences submenu
-		mntmCustomizeUIView.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GUI_OPT));
-		mntmGenOpt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_OPT));
-		
-		// ScreepT submenu
-		mntmCrypter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT));
-		mntmgenerateKeyImageSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN));
-		mntmViewKeyDictionary.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
-		
-		// Various submenu
-		mntmTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));
-		mntmnetInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NET_INFO));
-		mntmhwInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HW_INFO));
-		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
-		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
-		
-		mntmImageConverter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
-		
-		mntmTouppercaseDirectory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPPERCASE_FIRST));
-		mntmMakeDirsFromPath.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
-		mntmDeleteDirectoryContentByExtension.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_TARGETED));
-		mntmDeleteDirectoryContentRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_FOLDER));
-		mntmDeleteDirectoryContentDirsOnlyRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_DIRS_ONLY));
-		mntmCopyDirStructure.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
-
-		// Help submenu
-		mntmAboutScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
-		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
-		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
-		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
-		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));
-	}
-	
-	public void updateMenuAndLogFontSize(int fontSize){
-
-		// use the same font as main gui but change font size
-		UIManager.put("JMenuBar.font", new Font("Segoe UI", Font.BOLD, fontSize ));
-		UIManager.put("JMenu.font", new Font("Segoe UI", Font.BOLD, fontSize ));
-		UIManager.put("JMenuItem.font", new Font("Segoe UI", Font.BOLD, fontSize-2 ));
-	    SwingUtilities.updateComponentTreeUI(frmScryptV);
 	}
 	
 	public static String askUsername() {
@@ -1613,7 +1330,7 @@ public class mainGUI {
       	
 		mainAppRunning = false;
 		
-		logger.info(LoggerUtils.getExitString(mainGUI.APPLICATION_NAME, true));
+		logger.info(LoggerUtils.getExitString(MainGUI.APPLICATION_NAME, true));
 	
 		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
@@ -1696,7 +1413,7 @@ public class mainGUI {
 			return false;
 		}else if(choiceY) {
 			try {
-				TextEditor.saveAllUnsavedExisting();
+				TextEditorUtils.saveAllUnsavedExisting();
 			} catch (IOException e) {
 				logger.error(e);
 				int choiceError = JOptionPane.showConfirmDialog(null, "Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?");
@@ -1779,118 +1496,10 @@ public class mainGUI {
 		}
 		
 		GUIStyelSettings.updateAllWindowsLaf();
-		TextEditor.applyStyleToTabs();
+		TextEditorUtils.applyStyleToTabs();
 	}
 	
 	// GETTERS //
-	
-	public JFrame getMainFrame() {
-		return frmScryptV;
-	}
-
-	public JMenuItem getMntmInspectCurrentConfiguration() {
-		return mntmInspectCurrentConfiguration;
-	}
-
-	public JMenuItem getMntmloadPrjSub() {
-		return mntmloadPrjSub;
-	}
-
-	public JMenuItem getMntmExportPrjSub() {
-		return mntmExportPrjSub;
-	}
-
-	public JMenuItem getMntmReloadPrjSub() {
-		return mntmReloadPrjSub;
-	}
-
-	public JMenuItem getMntmSaveCurrentAs() {
-		return mntmSaveCurrentAs;
-	}
-
-	public JMenuItem getMntmSaveCurrent() {
-		return mntmSaveCurrent;
-	}
-
-	public void setMntmSaveCurrent(JMenuItem mntmSaveCurrent) {
-		this.mntmSaveCurrent = mntmSaveCurrent;
-	}
-	
-	public JMenuItem getMntmloadSrcrYptDefaultConf() {
-		return mntmloadSrcrYptDefaultConf;
-	}
-
-	public JMenuItem getMntmExit() {
-		return mntmExit;
-	}
-
-	public JMenuItem getMntmUserDocumentation() {
-		return mntmUserDocumentation;
-	}
-
-	public JMenuItem getMntmGenOpt() {
-		return mntmGenOpt;
-	}
-
-	public JMenuItem getMntmCustomizeUIView() {
-		return mntmCustomizeUIView;
-	}
-
-	public JMenuItem getMntmCrypter() {
-		return mntmCrypter;
-	}
-
-	public JMenuItem getMntmgenerateKeyImageSub() {
-		return mntmgenerateKeyImageSub;
-	}
-
-	public JMenuItem getMntmViewKeyDictionary() {
-		return mntmViewKeyDictionary;
-	}
-
-	public JMenuItem getMntmTextEditor() {
-		return mntmTextEditor;
-	}
-
-	public JMenuItem getMntmnetInfo() {
-		return mntmnetInfo;
-	}
-
-	public JMenuItem getMntmhwInfo() {
-		return mntmhwInfo;
-	}
-
-	public JMenuItem getMntmImageConverter() {
-		return mntmImageConverter;
-	}
-
-	public JMenuItem getMntmReturnToWelcome() {
-		return mntmReturnToWelcome;
-	}
-
-	public JMenuItem getMntmAboutScreept() {
-		return mntmAboutScreept;
-	}
-
-	public JMenuItem getMntmExportLog() {
-		return mntmExportLog;
-	}
-
-	public JMenuItem getMntmTouppercaseDirectory() {
-		return mntmTouppercaseDirectory;
-	}
-
-	public JMenuItem getMntmDeleteDirectoryContentRecursive() {
-		return mntmDeleteDirectoryContentRecursive;
-	}
-
-	public JMenuItem getMntmMakeDirsFromPath() {
-		return mntmMakeDirsFromPath;
-	}
-
-	public JMenuItem getMntmDeleteDirectoryContentByExtension() {
-		return mntmDeleteDirectoryContentByExtension;
-	}
 
 	public CrypterPanel getPanelCrypter() {
 		return panelCrypter;

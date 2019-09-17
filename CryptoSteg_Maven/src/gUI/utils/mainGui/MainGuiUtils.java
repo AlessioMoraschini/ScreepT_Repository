@@ -9,15 +9,15 @@ import frameutils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import media.Sounds;
 import resources.SoundsConfigurator;
 
 public class MainGuiUtils {
 
-	public mainGUI mainAppReference;
+	public MainGUI mainAppReference;
 	
-	public MainGuiUtils(mainGUI mainApp) {
+	public MainGuiUtils(MainGUI mainApp) {
 		mainAppReference = mainApp;
 	}
 	
@@ -43,7 +43,7 @@ public class MainGuiUtils {
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
 		if (mainAppReference.configManagerPanel == null || forceStart) {
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-			mainAppReference.configManagerPanel = new ChargeIniLog(mainGUI.currentConfiguration, mainAppReference);
+			mainAppReference.configManagerPanel = new ChargeIniLog(MainGUI.currentConfiguration, mainAppReference);
 		}
 		contentPane.removeAll();
     	contentPane.add(mainAppReference.configManagerPanel);
@@ -53,12 +53,12 @@ public class MainGuiUtils {
 	
 	public void startCrypterPanel(boolean forceStart) {
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-    	if(mainGUI.panelCrypter == null || forceStart) {
+    	if(MainGUI.panelCrypter == null || forceStart) {
     		Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-    		mainGUI.panelCrypter = new CrypterPanel(mainGUI.currentConfiguration, mainAppReference);
+    		MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
     	}
     	contentPane.removeAll();
-    	contentPane.add(mainGUI.panelCrypter);
+    	contentPane.add(MainGUI.panelCrypter);
     	contentPane.revalidate(); 
     	contentPane.repaint();
 	}
@@ -67,12 +67,12 @@ public class MainGuiUtils {
 		
 		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-		if(mainGUI.initTxtWriter == null || forceRestart) {
+		if(MainGUI.initTxtWriter == null || forceRestart) {
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-			mainGUI.initTxtWriter = new TextEditor(mainAppReference, mainGUI.currentConfiguration);
+			MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
 		}		    	
     	contentPane.removeAll();
-    	contentPane.add(mainGUI.initTxtWriter);
+    	contentPane.add(MainGUI.initTxtWriter);
     	contentPane.revalidate(); 
     	contentPane.repaint();
     	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);

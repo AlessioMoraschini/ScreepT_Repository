@@ -41,7 +41,7 @@ public class MainGuiGeneralAppStarter {
 			// Initialize logger properties
 			PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
 			
-			logger.info(LoggerUtils.getStartString(mainGUI.APPLICATION_NAME, true));
+			logger.info(LoggerUtils.getStartString(MainGUI.APPLICATION_NAME, true));
 
 			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 			
@@ -50,7 +50,7 @@ public class MainGuiGeneralAppStarter {
 			GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, tooltipFontFromProps);
 			
 			// LAUNCH MAIN APPLICATION
-			mainGUI.mainApplicationGeneral();
+			MainGUI.mainApplicationGeneral();
 			
 			// TODO test life cycle
 			if(TEST_ERROR_FLAG) {
@@ -69,7 +69,7 @@ public class MainGuiGeneralAppStarter {
 	private static void doStuffBeforeErrorClose() {
 		now = new Date();
 		
-		logger.info(LoggerUtils.getGeneralErrorExitMsg(mainGUI.APPLICATION_NAME, true));
+		logger.info(LoggerUtils.getGeneralErrorExitMsg(MainGUI.APPLICATION_NAME, true));
 		
 		System.exit(0);
 	}

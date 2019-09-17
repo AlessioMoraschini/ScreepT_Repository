@@ -12,7 +12,7 @@ import frameutils.GuiUtils;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 
@@ -163,7 +163,7 @@ public class ImageConverterFrame extends JFrame{
 		currentConfiguration = currentConf;
 		
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER, this);
-		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(MainGUI.frmScryptV);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		

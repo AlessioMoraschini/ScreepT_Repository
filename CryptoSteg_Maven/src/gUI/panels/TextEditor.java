@@ -19,7 +19,6 @@ import om.TabTextEditorObj;
 import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import splitpanel.SplitPaneUtils;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
@@ -49,14 +48,13 @@ import amfileutils.FileStuff;
 import conversion.Text2Speech;
 import crypt.aes.AesCipher;
 import dialogutils.GenericFileChooser;
-import dialogutils.MyFileView;
 import enums.Themes;
 import frameutils.EscapeReplacerPanel;
 import frameutils.FileDragNDropManager;
 import frameutils.FilePropertiesFrame;
 import frameutils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import mainobj.INItializer;
 
 import java.awt.SystemColor;
@@ -96,7 +94,6 @@ import javax.swing.DefaultComboBoxModel;
 
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.filedialog.TemplatesChoosePanel;
-import gUI.utils.shortcutshandler.TextEditorMouseWheelListener;
 import gUI.utils.shortcutshandler.TextEditorShortcutListener;
 import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tooltip.TextEditorTooltips;
@@ -136,8 +133,6 @@ public class TextEditor extends JPanel {
 	// RESOURCE FILES //
 	private final static String LOREM_IPSUM = GeneralConfig.RESOURCES_DIR  + "Templates/LoremIpsum.txt";
 
-	public boolean isFirstTabAdded = false;
-	
 	// STATIC phrases
 	public static final String ROOT_WORKSPACE_LBL = "Workspace: ";
 	public static final String ROOT_STANDARD_LBL = "Root: ";
@@ -259,10 +254,6 @@ public class TextEditor extends JPanel {
 	public CalculatorMainApp calculatorFrame;
 	public Thread calculatorMainThread;
 
-	private int lastIndexTabbedPane = 0;
-	public boolean isRemovingTab = false;
-	public boolean isAddingTab = false;
-	private static boolean tabJustSwitched = false;
 	public static boolean isCrypterOn = false;
 
 	public JFrame parentFrame; // the frame that instantiate this object
@@ -289,10 +280,10 @@ public class TextEditor extends JPanel {
 
 	public RUndoManager manager;
 	public static INItializer currentConfiguration;
-	public static TextEditor currentTextEditor; // current object
+	public TextEditor currentTextEditor; // current object
 	private Text2Speech objSpeaker; // field containing the current object used to speak text
 
-	public mainGUI mainApplication;
+	public MainGUI mainApplication;
 
 	private TextEditorShortcutListener shortcutsListener;
 	
@@ -300,7 +291,10 @@ public class TextEditor extends JPanel {
 	
 	//////////////// CONSTRUCTOR /////////////////////
 
-	public TextEditor(mainGUI mainGui, INItializer currentConf) {
+	public TextEditor(MainGUI mainGui, INItializer currentConf) {
+		
+		// Initialize text editor Utils reference
+		TextEditorUtils.currentTextEditor = this;
 
 		logger.info(this.getClass().getName() + " Starting...");
 
@@ -309,8 +303,8 @@ public class TextEditor extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
 		Dimension maxSize = GuiUtils.getScreenSize();
-		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2","[300px:"+mainGUI.screenSize.getWidth()+"px:"+mainGUI.screenSize.getWidth()+"px,grow]",
-										"[300px:"+mainGUI.screenSize.getHeight()+"px:"+mainGUI.screenSize.getHeight()+"px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2","[300px:"+MainGUI.screenSize.getWidth()+"px:"+MainGUI.screenSize.getWidth()+"px,grow]",
+										"[300px:"+MainGUI.screenSize.getHeight()+"px:"+MainGUI.screenSize.getHeight()+"px,grow]"));
 
 		// initialize values used in gui //
 		currentConfiguration = currentConf;
@@ -516,7 +510,6 @@ public class TextEditor extends JPanel {
 
 		btnFontChooser = new JButton("");
 		btnFontChooser.setToolTipText(TextEditorTooltips.tooltipFontChooser);
-
 		btnFontChooser.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_FONT));
 		mainPanel.add(btnFontChooser, "cell 16 3,alignx center");
 
@@ -591,6 +584,7 @@ public class TextEditor extends JPanel {
 		chkFitmantainwords.setBackground(Color.DARK_GRAY);
 		chkFitmantainwords.setEnabled(false);
 
+		// DRAG 'N DROP IMPLEMENTATION FOR TABS		
 		Runnable fileDropLoader = new Runnable() {
 			@Override
 			public void run() {
@@ -743,8 +737,8 @@ public class TextEditor extends JPanel {
 		separator_2.setBackground(Color.GRAY);
 		mainPanel.add(separator_2, "cell 0 4 35 1,growx");
 
-		addTab(null, true); // comment for editing in windowuilder
-		isFirstTabAdded = true;
+		TextEditorUtils.addTab(null, true); // comment for editing in windowuilder
+		TextEditorUtils.isFirstTabAdded = true;
 
 		sliderFontSize = new JSlider(4, 100);
 		sliderFontSize.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
@@ -892,7 +886,7 @@ public class TextEditor extends JPanel {
 		startAesKeyCheckThread();
 
 		try {
-			TextEditorUtils.applyStyleToButtons();
+			TextEditorUtils.applyStyleToButtons(currentTextEditor);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			logger.warn("Buttons styling gone wrong: ", e);
 		}
@@ -1271,7 +1265,7 @@ public class TextEditor extends JPanel {
 					escapeReplacerPanel.setBounds(750, 140, 500, 210);
 					escapeReplacerPanel.setAlwaysOnTop(true);
 					escapeReplacerPanel.setVisible(true);
-					escapeReplacerPanel.setTitle("Escape<->Special converter - " + mainGUI.APPLICATION_NAME);
+					escapeReplacerPanel.setTitle("Escape<->Special converter - " + MainGUI.APPLICATION_NAME);
 					btnTemplates.setEnabled(false);
 					GuiUtils.changeFrameStateLater(mainApplication.getMainFrame(), escapeReplacerPanel, JFrame.MAXIMIZED_BOTH);
 				}
@@ -1302,7 +1296,7 @@ public class TextEditor extends JPanel {
 
 				if (imageParserBox == null || !ImageSelector2TextFrame.active) {
 					imageParserBox = new ImageSelector2TextFrame(parentFrame, loadedTabObj.textArea,
-							mainGUI.APPLICATION_NAME + " - Image2Text");
+							MainGUI.APPLICATION_NAME + " - Image2Text");
 					imageParserBox.setVisible(true);
 				} else {
 					imageParserBox.toFront();
@@ -1316,7 +1310,7 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (pdfParserBox == null || !PdfSelector2TextFrame.active) {
 					pdfParserBox = new PdfSelector2TextFrame(parentFrame, loadedTabObj.textArea,
-							mainGUI.APPLICATION_NAME + " - Pdf2Text");
+							MainGUI.APPLICATION_NAME + " - Pdf2Text");
 					pdfParserBox.setVisible(true);
 				} else {
 					pdfParserBox.toFront();
@@ -1750,7 +1744,7 @@ public class TextEditor extends JPanel {
 					panel.setBounds(750, 140, 500, 170);
 					panel.setAlwaysOnTop(true);
 					panel.setVisible(true);
-					panel.setTitle("TEMPLATES manager - " + mainGUI.APPLICATION_NAME);
+					panel.setTitle("TEMPLATES manager - " + MainGUI.APPLICATION_NAME);
 					btnTemplates.setEnabled(false);
 					GuiUtils.changeFrameStateLater(mainApplication.getMainFrame(), panel, JFrame.MAXIMIZED_BOTH);
 				}
@@ -2095,7 +2089,7 @@ public class TextEditor extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addTab(null, false);
+				TextEditorUtils.addTab(null, false);
 			}
 		});
 
@@ -2104,9 +2098,9 @@ public class TextEditor extends JPanel {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				if (lastIndexTabbedPane != mainTabList.getSelectedIndex()) {
-					tabRefreshAfterUpdate();
-					lastIndexTabbedPane = mainTabList.getSelectedIndex();
+				if (TextEditorUtils.lastIndexTabbedPane != mainTabList.getSelectedIndex()) {
+					TextEditorUtils.tabRefreshAfterUpdate();
+					TextEditorUtils.lastIndexTabbedPane = mainTabList.getSelectedIndex();
 				}
 				TextEditorUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !chckbxLockLanguage.isSelected());
 			}
@@ -2117,7 +2111,7 @@ public class TextEditor extends JPanel {
 
 		int indexChange = mainTabList.getSelectedIndex();
 		try {
-			if (!tabJustSwitched && indexChange >= 0 && !isCrypterOn && !alreadyLoading) {
+			if (!TextEditorUtils.tabJustSwitched && indexChange >= 0 && !isCrypterOn && !alreadyLoading) {
 				loadedTabObj.unsaved = true;
 				updateSavedLabelNTab(null);
 			}
@@ -2161,9 +2155,9 @@ public class TextEditor extends JPanel {
 				// UPDATE ICON
 				if (tabHeadLbl.getText().equals(DEFAULT_NEW_FILE_NAME)
 						&& ("".equals(loadedTabObj.textArea.getText()) || alreadyLoading)) {
-					setIconToTab(IconsPathConfigurator.ICON_DOC_EMPTY, indexChange);
+					TextEditorUtils.setIconToTab(IconsPathConfigurator.ICON_DOC_EMPTY, indexChange);
 				} else {
-					setIconToTab(IconsPathConfigurator.ICON_DOC_SAVED, indexChange);
+					TextEditorUtils.setIconToTab(IconsPathConfigurator.ICON_DOC_SAVED, indexChange);
 				}
 				// ELSE IF NOT YET SAVED
 			} else if (indexChange >= 0 && loadedTabObj.unsaved) {
@@ -2185,14 +2179,14 @@ public class TextEditor extends JPanel {
 					}
 				}
 				// UPDATE ICON
-				setIconToTab(IconsPathConfigurator.ICON_DOC_UNSAVED, indexChange);
+				TextEditorUtils.setIconToTab(IconsPathConfigurator.ICON_DOC_UNSAVED, indexChange);
 			}
 		} catch (Exception e) {
 			logger.error("Error refreshing informations abount unsaved obj", e);
 		}
 	}
 
-	private boolean askSave(int index) {
+	public boolean askSave(int index) {
 		int askSave = JOptionPane.CANCEL_OPTION;
 		TabTextEditorObj selected = loadedList.get(index);
 		if (selected.unsaved) {
@@ -2308,7 +2302,7 @@ public class TextEditor extends JPanel {
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
-					addTab(toLoadFile, !loadedAlmostOne);
+					TextEditorUtils.addTab(toLoadFile, !loadedAlmostOne);
 					if (!loadedAlmostOne)
 						loadedAlmostOne = true;
 				}
@@ -2326,7 +2320,7 @@ public class TextEditor extends JPanel {
 
 		if (loadedAlmostOne) {
 			// first remove first tab if at least one file is loaded
-			removeTab(0);
+			TextEditorUtils.removeTab(0);
 
 			// now try to select the old opened one
 			String toOpenAtStart = currentConfiguration.getTextEditorOpt().selectedAtStart;
@@ -2366,19 +2360,6 @@ public class TextEditor extends JPanel {
 		logger.debug("applyFileFormatFromCombo - FINISH");
 	}
 
-	public int checkFilePresence(File match) {
-		int i = 0;
-		for (TabTextEditorObj iterator : loadedList) {
-			if (iterator.loadedFile != null && iterator.loadedFile.equals(match)) {
-				mainTabList.setSelectedComponent(iterator.currentScrollPane);
-				i++;
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
 	// TABBED EDITOR FUNCTIONS //
 
 	public void loadFile(final File fileToLoad) {
@@ -2388,7 +2369,7 @@ public class TextEditor extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				alreadyLoading = true;
-				boolean fileAlreadyPresent = checkFilePresence(fileToLoad) >= 0;
+				boolean fileAlreadyPresent = TextEditorUtils.checkFilePresence(fileToLoad) >= 0;
 				if (fileToLoad == null || !fileToLoad.exists() || fileAlreadyPresent) {
 					alreadyLoading = false;
 					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
@@ -2397,7 +2378,7 @@ public class TextEditor extends JPanel {
 
 					// add new tab with selected file
 					try {
-						addTab(fileToLoad, false);
+						TextEditorUtils.addTab(fileToLoad, false);
 						logger.debug(fileToLoad.getAbsolutePath()+" -> Loaded!");
 					} catch (Throwable e1) {
 						String msg = "Error occurred loading file into new tab: "+fileToLoad.getAbsolutePath()+"\n\n";
@@ -2428,141 +2409,6 @@ public class TextEditor extends JPanel {
 
 	}
 
-	public void addTab(File file, boolean first) {
-		isAddingTab = true;
-		backupCurrentBeforeSwitch();
-		String name = (file != null) ? file.getName() : DEFAULT_NEW_FILE_NAME;
-		int newIndex = mainTabList.getTabCount();
-
-		TabTextEditorObj newTabNode = new TabTextEditorObj(file, "", getChangeListener(),
-		currentConfiguration.getTextEditorOpt().txtAreaDetailLevel);
-
-		loadedList.add(newTabNode);
-		mainTabList.addTab(name, newTabNode.currentScrollPane);
-		loadedTabObj = newTabNode;
-		FileStuff.appendFileTxtArea(file, loadedTabObj.textArea, true);
-		mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(name, newIndex));
-		mainTabList.setSelectedIndex(newIndex);
-		loadedTabObj.textArea.discardAllEdits();
-
-		loadedTabObj.textArea.addMouseWheelListener(new TextEditorMouseWheelListener(currentTextEditor));
-		loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
-		loadedTabObj.unsaved = false;
-		isAddingTab = false;
-	}
-
-	private void removeTab(int index) {
-
-		if (askSave(index)) {
-			isRemovingTab = true;
-			if (index > 0 && mainTabList.getTabCount() > 1) {
-				loadedList.remove(index);
-				mainTabList.remove(index);
-				if (mainTabList.getTabCount() > index) {
-					mainTabList.setSelectedIndex(index);
-				} else {
-					mainTabList.setSelectedIndex(index - 1);
-					updateSavedLabelNTab(index - 1);
-				}
-				tabRefreshAfterUpdate();
-
-			} else if (index == 0 && mainTabList.getTabCount() > 1) {
-				loadedList.remove(0);
-				mainTabList.remove(0);
-				mainTabList.setSelectedComponent(loadedList.get(0).currentScrollPane);
-				tabRefreshAfterUpdate();
-
-			} else if (index == 0) {
-				addTab(null, true);
-				loadedList.remove(0);
-				mainTabList.remove(0);
-				isRemovingTab = false;
-			}
-			isRemovingTab = false;
-		}
-		loadedTabObj.textArea.requestFocus();
-	}
-
-	public void goToPreviousTab() {
-		try {
-			int index = mainTabList.getSelectedIndex() - 1;
-			if (index < 0) {
-				index = mainTabList.getTabCount() - 1;
-			}
-			mainTabList.setSelectedIndex(index);
-		} catch (Exception e) {
-			logger.error("Cannot go to previous tab!", e);
-		}
-	}
-
-	public void goToNextTab() {
-		try {
-			int index = mainTabList.getSelectedIndex() + 1;
-			if (index >= mainTabList.getTabCount()) {
-				index = 0;
-			}
-			mainTabList.setSelectedIndex(index);
-		} catch (Exception e) {
-			logger.error("Cannot go to next tab!", e);
-		}
-	}
-
-	public void closeCurrentTab() {
-		int index = mainTabList.getSelectedIndex();
-		try {
-			logger.debug("closeCurrentTab() - closing tab: "+mainTabList.getTitleAt(index));
-			JButton closeTabButton = (JButton) (TextEditorUtils.getPanelFromTabHeader(index))
-					.getComponent(TabUtils.TAB_BUTTON_CLOSE_ORDER);
-			closeTabButton.doClick();
-		} catch (Exception e) {
-			logger.error("Error closing current tab: " + index, e);
-		}
-	}
-
-	private void backupCurrentBeforeSwitch() {
-		
-		if (isFirstTabAdded && GeneralConfig.TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED) {
-			try {
-				logger.debug("backupCurrentBeforeSwitch() - starting");
-				TabTextEditorObj toSaveObj = loadedList.get(lastIndexTabbedPane);
-				toSaveObj.loadedFile = (loadedTabObj.loadedFile != null) ? new File(loadedTabObj.loadedFile.getAbsolutePath()) : null;
-				toSaveObj.unsaved = loadedTabObj.unsaved;
-				logger.debug("backupCurrentBeforeSwitch() - completed");
-			} catch (Exception e) {
-				logger.error("Error during backup before switch :(", e);
-			} 
-		}
-	}
-
-	private void tabRefreshAfterUpdate() {
-		tabJustSwitched = true;
-		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
-
-		if (!isAddingTab && !isRemovingTab) {
-			backupCurrentBeforeSwitch();
-		}
-		loadedTabObj = loadedList.get(mainTabList.getSelectedIndex());
-		updateSavedLabelNTab(null);
-		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
-		tabJustSwitched = false;
-		loadedTabObj.textArea.requestFocus();
-		applyCurrentGraphicsTextArea(loadedTabObj.textArea);
-
-		// update load target textArea
-		refreshTxtAreaReference();
-		TextEditorUtils.resizeFrameToDefault(mainApplication);
-
-		TextEditorUtils.refreshTree(loadedTabObj.loadedFile, false);
-
-		// update eventually opened info frames
-		if (propertiesFrame != null) {
-			if (loadedTabObj != null && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
-				propertiesFrame.refreshValues(loadedTabObj.loadedFile);
-			}
-		}
-	}
-
-
 	/** updates textArea reference in panels **/
 	public void refreshTxtAreaReference() {
 
@@ -2575,7 +2421,7 @@ public class TextEditor extends JPanel {
 		}
 	}
 
-	private void applyCurrentGraphicsTextArea(RSyntaxTextArea textArea) {
+	public void applyCurrentGraphicsTextArea(RSyntaxTextArea textArea) {
 		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 
 		textArea.setBackground(txtOptions.backCol);
@@ -2622,78 +2468,7 @@ public class TextEditor extends JPanel {
 		loadedTabObj.unsaved = unsaved;
 	}
 
-	private static boolean setIconToTab(String iconPath, int index) {
-		try {
-			SupportedFileTextEditor fileType = (SupportedFileTextEditor) comboFileFormat.getSelectedItem();
-			JLabel tabHeadIcon = (JLabel) (TextEditorUtils.getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
-			if (loadedTabObj.loadedFile == null || loadedTabObj.unsaved) {
-				tabHeadIcon.setIcon(new ImageIcon(iconPath));
-			} else if (fileType.equals(SupportedFileTextEditor.TXT)) {
-				tabHeadIcon.setIcon(new ImageIcon(iconPath));
-			} else {
-				MyFileView fileView = new MyFileView();
-				tabHeadIcon.setIcon(fileView.getIcon(loadedTabObj.loadedFile));
-			}
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	private JPanel getCustomClosableTab(String title, int index) {
-		String tooltip = "";
-		JScrollPane i_component = loadedList.get(index).currentScrollPane;
-
-		if (loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
-			tooltip = loadedTabObj.loadedFile.getAbsolutePath() + TextEditorTooltips.tooltipScrollTabsWithMouseWheel;
-		} else {
-			tooltip = title + TextEditorTooltips.tooltipScrollTabsWithMouseWheel;
-		}
-
-		String icon = "";
-		if (DEFAULT_NEW_FILE_NAME.equals(title)) {
-			icon = IconsPathConfigurator.ICON_DOC_EMPTY;
-		} else {
-			icon = IconsPathConfigurator.ICON_DOC_SAVED;
-		}
-		JPanel customTab = TabUtils.getCustomClosableTab(title, tooltip, icon, getTabCloseListener(index));
-		customTab.setMinimumSize(new Dimension(150, 18));
-		customTab.setMaximumSize(new Dimension(1000, 18)); // "FACCIAMO... MILLE!" (cit.)
-		customTab.addMouseListener(new MouseListener() {
-			public void mouseReleased(MouseEvent e) {
-				mainTabList.setSelectedComponent(i_component);
-			}
-
-			public void mousePressed(MouseEvent e) {
-			}
-
-			public void mouseExited(MouseEvent e) {
-			}
-
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			public void mouseClicked(MouseEvent e) {
-			}
-		});
-
-		return customTab;
-	}
-	
-
-	private ActionListener getTabCloseListener(int index) {
-		return new ActionListener() {
-			JScrollPane i_component = loadedList.get(index).currentScrollPane;
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainTabList.setSelectedComponent(i_component);
-				removeTab(mainTabList.getSelectedIndex());
-			}
-		};
-	}
-
-	private DocumentListener getChangeListener() {
+	public DocumentListener getChangeListener() {
 		return new DocumentListener() {
 
 			public void removeUpdate(DocumentEvent e) {
@@ -2738,38 +2513,12 @@ public class TextEditor extends JPanel {
 		}
 	}
 
-	public static boolean saveAllUnsavedExisting() throws IOException {
-		boolean done = true;
-		for (TabTextEditorObj element : loadedList) {
-			if (element.loadedFile != null && element.loadedFile.exists()) {
-				if (!FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true)) {
-					done = false;
-				}
-			}
-		}
-		return done;
-	}
-
-	public static void applyStyleToTabs() {
-		if (mainTabList != null) {
-			mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, TextEditor.mainTabList,
-					TabUtils.TAB_BUTTON_CLOSE_ORDER));
-		}
-		resetDividerColor();
-	}
-
-	public static void resetDividerColor() {
-		if (TextEditor.splitPaneMain != null) {
-			SplitPaneUtils.setDividerColors(null, Color.DARK_GRAY, TextEditor.splitPaneMain);
-		}
-	}
-
 	public void startRefreshLabelCurrFIleThread() {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				while (mainGUI.mainAppRunning) {
+				while (MainGUI.mainAppRunning) {
 					if (loadedTabObj != null && loadedTabObj.textArea != null) {
 						int selectionLength = loadedTabObj.textArea.getSelectionEnd()
 								- loadedTabObj.textArea.getSelectionStart();

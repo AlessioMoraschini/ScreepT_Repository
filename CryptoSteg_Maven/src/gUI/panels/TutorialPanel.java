@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
 import frameutils.html.HtmlPanel;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;

@@ -7,7 +7,7 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
 import frameutils.GuiUtils;
-import maingUI.mainGUI;
+import maingUI.MainGUI;
 import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
@@ -104,7 +104,7 @@ public class GeneralOptionsFrame extends JFrame{
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GEN_OPT, this);
 		
-		GuiUtils.showOnSameScreen(mainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(MainGUI.frmScryptV);
 		
 		try {
 			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
@@ -218,7 +218,7 @@ public class GeneralOptionsFrame extends JFrame{
 		textFieldUname.setBackground(new Color(224, 255, 255));
 		getContentPane().add(textFieldUname, "cell 2 5 4 1,growx");
 		
-		lblLogLevelChosen = new JLabel("LogLevel: " + mainGUI.LOG_LEVEL_AT_START);
+		lblLogLevelChosen = new JLabel("LogLevel: " + MainGUI.LOG_LEVEL_AT_START);
 		lblLogLevelChosen.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblLogLevelChosen, "cell 7 5 3 1,alignx center");
 		getContentPane().add(separator, "cell 1 7 9 1,growx");
