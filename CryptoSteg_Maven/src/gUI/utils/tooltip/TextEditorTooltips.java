@@ -55,5 +55,5 @@ public class TextEditorTooltips {
 	public static final String tooltipComboFileFormat = "Choose file extension";
 	public static final String tooltipComboStyleScheme = "Choose preferred style scheme";
 	
-	public static final String tooltipScrollTabsWithMouseWheel = "  (Scroll tabs with mouse wheel or shortcuts to change tab)";
+	public static final String tooltipScrollTabsWithMouseWheel = " ## [Scroll tabs with mouse wheel]";
 }

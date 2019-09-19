@@ -98,7 +98,7 @@ public class FileStuff {
 						result = result.substring(0, result.length() - 1);
 					}
 				}
-				logger.debug("\n\n=> Parent file search result [son:" + son.getCanonicalPath() + ", levelsUp:" + originalLevels + "]: " + result + "\n");
+				logger.debug("\n\n=> Parent file toStringPath search result [son:" + son.getCanonicalPath() + ", levelsUp:" + originalLevels + "]: " + result + "\n");
 			}
 			return result;
 		} catch (Exception e) {

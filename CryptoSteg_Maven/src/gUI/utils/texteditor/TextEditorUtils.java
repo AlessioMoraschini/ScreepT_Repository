@@ -57,11 +57,12 @@ import variousutils.HandleString;
 public class TextEditorUtils {
 	
 	public static File workspaceRoot;
-	public static boolean tabJustSwitched = false;
+	public static volatile boolean tabJustSwitched = false;
 	public static int lastIndexTabbedPane = 0;
-	public static boolean isRemovingTab = false;
-	public static boolean isAddingTab = false;
-	public static boolean isFirstTabAdded = false;
+	public static volatile boolean isRemovingTab = false;
+	public static volatile boolean isAddingTab = false;
+	public static volatile boolean isFirstTabAdded = false;
+	public static volatile boolean alreadyrefreshing = false;
 	
 	// reference to main text editor
 	public static TextEditor currentTextEditor;
@@ -102,14 +103,11 @@ public class TextEditorUtils {
 				if (FilenameUtils.getExtension(source.getName()).toLowerCase().endsWith(current.senzapunto.toLowerCase())) {
 					// match found
 					chosenType = current;
-					TextEditor.comboFileFormat.setSelectedItem(chosenType);
 				}
 			}
 		}
-
 		// APPLY SELECTED
-		TextEditor.applyFileFormatFromCombo();
-
+		TextEditor.comboFileFormat.setSelectedItem(chosenType);
 	}
 	
 	public static boolean checkWorkspaceExistNsel() {
@@ -213,7 +211,7 @@ public class TextEditorUtils {
 			} catch (IOException e1) {
 				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
 			}
-			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(FileStuff.getNlevelsAncestor(currentFile, TextEditor.fileTreeAncestorLevel), LEVEL_ANCESTOR_LABEL_DIR));
+			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
 				TextEditor.dynLblCurrentDir.setToolTipText(currentFile.getCanonicalPath());
 			} catch (IOException e) {

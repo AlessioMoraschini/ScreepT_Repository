@@ -20,7 +20,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -33,7 +32,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 

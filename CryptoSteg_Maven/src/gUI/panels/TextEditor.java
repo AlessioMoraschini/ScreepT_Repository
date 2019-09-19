@@ -1,5 +1,6 @@
 package gUI.panels;
 
+import static gUI.utils.texteditor.TextEditorUtils.*;
 import java.awt.Color;
 import java.awt.Font;
 
@@ -2098,11 +2099,16 @@ public class TextEditor extends JPanel {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				if (TextEditorUtils.lastIndexTabbedPane != mainTabList.getSelectedIndex()) {
+				
+				if (!alreadyrefreshing && TextEditorUtils.lastIndexTabbedPane != mainTabList.getSelectedIndex()) {
+					alreadyrefreshing = true;
+					logger.debug("\n\n=>Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
+
 					TextEditorUtils.tabRefreshAfterUpdate();
 					TextEditorUtils.lastIndexTabbedPane = mainTabList.getSelectedIndex();
+					TextEditorUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !chckbxLockLanguage.isSelected());
+					alreadyrefreshing = false;
 				}
-				TextEditorUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !chckbxLockLanguage.isSelected());
 			}
 		});
 	}

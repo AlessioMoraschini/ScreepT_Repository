@@ -120,4 +120,14 @@ public class TabTextEditorObj {
 			}
 		}
 	}
+
+	@Override
+	public String toString() {
+		try {
+			return "TabTextEditorObj [txtAreaInitType=" + txtAreaInitType + ", loadedFile=" + loadedFile + ", currentScrollPane=" + currentScrollPane
+					+ ", textArea=" + textArea + ", unsaved=" + unsaved + "]";
+		} catch (Exception e) {
+			return "EXCEPTION_WHILE_LOGGING";
+		}
+	}
 }
