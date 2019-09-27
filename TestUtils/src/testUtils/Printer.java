@@ -18,12 +18,12 @@ public class Printer {
 	public static void print(String S){
 		System.out.print(S);
 	}
-	
+
 	// local lazy printer
 	public static void printl(String S){
 		System.out.println(S);
 	}
-	
+
 	// print a line separator
 	public static void printSeparator(int n){
 		int curr = 0;
@@ -32,6 +32,45 @@ public class Printer {
 			print("#");
 			curr++;
 		}
+	}
+
+	/**
+	 * A. Moraschini
+	 * 
+	 * Prints a separator n-times charachter
+	 */
+	public static void printSeparator(char character, int n){
+		int curr = 0;
+		print("\n");
+		while (curr < n) {
+			print(String.valueOf(character));
+			curr++;
+		}
+	}
+
+	/**
+	 * A. Moraschini
+	 * 
+	 * Prints a separator n-times charachter
+	 */
+	public static void printHeader(char character, int n, String title){
+
+	    int newN = (n >= title.length()+4)? n : title.length()+4;
+	    String leftSpaces = getNspacesString((newN - title.length() -2)/2);
+
+		printSeparator(character, newN);
+		print("\n" + character + leftSpaces + title + leftSpaces + character );
+		printSeparator(character, newN);
+		printl("\n");
+	}
+
+	private static String getNspacesString(int n) {
+		String result = "";
+		for(int i = 0; i<n; i++) {
+			result = result.concat(" ");
+		}
+
+		return result;
 	}
 	
     // pretty print a map
