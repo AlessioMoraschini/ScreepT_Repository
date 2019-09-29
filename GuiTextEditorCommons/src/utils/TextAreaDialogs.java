@@ -73,6 +73,7 @@ public class TextAreaDialogs {
 		GuiUtils.showOnSameScreen(owner);
 		dialog.setMaxLineNumberAllowed(txtArea.getLineCount());
 		dialog.setEscapeClosesDialog(true);
+		dialog.setLocationRelativeTo(owner);
 		dialog.setVisible(true);
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GOTO_LINE, dialog);
 		dialog.setPreferredSize(DEFAULT_SIZE);
@@ -85,6 +86,15 @@ public class TextAreaDialogs {
 				ble.printStackTrace();
 			}
 		}
+		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+
+				logger.debug("Closing goToLine Panel");
+				dialog.dispose();
+			}
+		});
+		
 		return dialog;
 	}
 	

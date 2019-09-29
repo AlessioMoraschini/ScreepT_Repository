@@ -130,11 +130,15 @@ public class GeneralConfig {
 	    table.put(".php",new ImageIcon(IconsPathConfigurator.F_ICON_PHP));
 	    table.put(".xml",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
 	    table.put(".zip",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
+	    table.put(".rar",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
 	    table.put(".sql",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
 	    table.put(".db",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
 	    table.put(".log",new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
 	    table.put(".lnk",new ImageIcon(IconsPathConfigurator.F_ICON_LINK));
 	    table.put(".properties",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
+	    table.put(".config",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
+	    table.put(".ini",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
+	    table.put(".yml",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
 	    
 	    // generics video
 	    table.put(".mov",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));

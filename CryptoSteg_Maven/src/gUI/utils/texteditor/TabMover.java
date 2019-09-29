@@ -6,6 +6,7 @@ import java.util.Collections;
 import frameutils.FileDragNDropManager;
 import gUI.panels.TextEditor;
 
+@Deprecated
 public class TabMover {
 	
 	private static volatile boolean movingTab = false;

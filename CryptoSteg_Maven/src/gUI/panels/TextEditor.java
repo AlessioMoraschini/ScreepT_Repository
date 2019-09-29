@@ -65,6 +65,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -259,7 +260,7 @@ public class TextEditor extends JPanel {
 
 	public JFrame parentFrame; // the frame that instantiate this object
 
-	private JScrollPane mainScrollPane;
+	public JScrollPane mainScrollPane;
 	public JPanel mainPanel;
 	public JPanel headerPanel;
 	public JPanel footerPanel;
@@ -321,9 +322,11 @@ public class TextEditor extends JPanel {
 		mainPanel = new JPanel();
 		mainPanel.setMinimumSize(new Dimension(20, 0));
 		mainPanel.setBackground(Color.DARK_GRAY);
+		mainPanel.setMinimumSize(new Dimension(800, 300));
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(98, parentFrame));
 		mainPanel.setLayout(new MigLayout("fill, insets 1, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][20px:n:60px][30px:30px:30px][:3%:4%][:60px:70px][40px:2%:50px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][50px:2%:3.5%][:50px:50px][20][30][][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:35px][0px:5px][:0px:25px][:0px:25px][0px:4px][0px:4px][300px,grow 300,fill][:0px:28px]"));
 		mainScrollPane = new JScrollPane();
+		mainScrollPane.setMinimumSize(new Dimension(1100, 300));
 		mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		mainScrollPane.setBackground(Color.DARK_GRAY);
 		mainScrollPane.setViewportView(mainPanel);
@@ -1268,7 +1271,9 @@ public class TextEditor extends JPanel {
 					escapeReplacerPanel.setVisible(true);
 					escapeReplacerPanel.setTitle("Escape<->Special converter - " + MainGUI.APPLICATION_NAME);
 					btnTemplates.setEnabled(false);
-					GuiUtils.changeFrameStateLater(mainApplication.getMainFrame(), escapeReplacerPanel, JFrame.MAXIMIZED_BOTH);
+					GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), escapeReplacerPanel, JFrame.MAXIMIZED_BOTH);
+				}else{
+					escapeReplacerPanel.dispatchEvent(new WindowEvent(escapeReplacerPanel, WindowEvent.WINDOW_CLOSING));
 				}
 			}
 		});
@@ -1299,9 +1304,9 @@ public class TextEditor extends JPanel {
 					imageParserBox = new ImageSelector2TextFrame(parentFrame, loadedTabObj.textArea,
 							MainGUI.APPLICATION_NAME + " - Image2Text");
 					imageParserBox.setVisible(true);
+					GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), imageParserBox, JFrame.MAXIMIZED_BOTH);
 				} else {
-					imageParserBox.toFront();
-					imageParserBox.requestFocus();
+					imageParserBox.dispatchEvent(new WindowEvent(imageParserBox, WindowEvent.WINDOW_CLOSING));
 				}
 			}
 		});
@@ -1313,11 +1318,10 @@ public class TextEditor extends JPanel {
 					pdfParserBox = new PdfSelector2TextFrame(parentFrame, loadedTabObj.textArea,
 							MainGUI.APPLICATION_NAME + " - Pdf2Text");
 					pdfParserBox.setVisible(true);
+					GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), pdfParserBox, JFrame.MAXIMIZED_BOTH);
 				} else {
-					pdfParserBox.toFront();
-					pdfParserBox.requestFocus();
+					pdfParserBox.dispatchEvent(new WindowEvent(pdfParserBox, WindowEvent.WINDOW_CLOSING));
 				}
-				GuiUtils.changeFrameStateLater(mainApplication.getMainFrame(), pdfParserBox, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 
@@ -1327,24 +1331,24 @@ public class TextEditor extends JPanel {
 				if (searchBox == null || !searchBox.isVisible()) {
 					searchBox = TextAreaDialogs.getSearchDialog(parentFrame, loadedTabObj.textArea, null, currentTextEditor,  "successAdvice", "errorAdvice");
 					GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
+					GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
 				} else {
-					searchBox.toFront();
-					searchBox.requestFocus();
+					searchBox.dispatchEvent(new WindowEvent(searchBox, WindowEvent.WINDOW_CLOSING));
 				}
-				GuiUtils.changeFrameStateLater(mainApplication.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 
 		// GOTO LINE
 		btnGoToLine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (goToLineDialog == null || !goToLineDialog.isVisible()) {
+				if (goToLineDialog == null || !goToLineDialog.isActive()) {
 					goToLineDialog = TextAreaDialogs.getGoToLineDialog(parentFrame, loadedTabObj.textArea);
-					GuiUtils.changeFrameStateLater(mainApplication.getMainFrame(), goToLineDialog, JFrame.MAXIMIZED_BOTH);
 				} else {
 					goToLineDialog.toFront();
 					goToLineDialog.requestFocus();
+					goToLineDialog.dispatchEvent(new WindowEvent(goToLineDialog, WindowEvent.WINDOW_CLOSING));
 				}
+				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), goToLineDialog, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 
@@ -1354,11 +1358,12 @@ public class TextEditor extends JPanel {
 				if (replaceDialog == null || !replaceDialog.isVisible()) {
 					replaceDialog = TextAreaDialogs.getReplaceDialog(parentFrame, loadedTabObj.textArea, null, currentTextEditor,  "successAdvice", "errorAdvice");
 					GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_REPLACE_TXT, replaceDialog);
+					GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), replaceDialog, JFrame.MAXIMIZED_BOTH);
 				} else {
 					replaceDialog.toFront();
 					replaceDialog.requestFocus();
+					replaceDialog.dispatchEvent(new WindowEvent(replaceDialog, WindowEvent.WINDOW_CLOSING));
 				}
-				GuiUtils.changeFrameStateLater(mainApplication.getMainFrame(), replaceDialog, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 
@@ -1589,7 +1594,6 @@ public class TextEditor extends JPanel {
 				int oldCaretPLinePos = loadedTabObj.textArea.getCaretPosition();
 				font = new Font(font.getName(), font.getStyle(), sliderFontSize.getValue());
 				loadedTabObj.textArea.setFont(font);
-				loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos-1);
 				loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos);
 				lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
 				currentConfiguration.getTextEditorOpt().setFont(loadedTabObj.textArea.getFont());
@@ -1747,7 +1751,7 @@ public class TextEditor extends JPanel {
 					panel.setVisible(true);
 					panel.setTitle("TEMPLATES manager - " + MainGUI.APPLICATION_NAME);
 					btnTemplates.setEnabled(false);
-					GuiUtils.changeFrameStateLater(mainApplication.getMainFrame(), panel, JFrame.MAXIMIZED_BOTH);
+					GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panel, JFrame.MAXIMIZED_BOTH);
 				}
 			}
 		});

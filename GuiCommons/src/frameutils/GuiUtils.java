@@ -22,6 +22,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
@@ -46,6 +48,18 @@ public class GuiUtils {
 		ToolTipManager.sharedInstance().setInitialDelay(delay);
 		ToolTipManager.sharedInstance().setDismissDelay(timeout);
 		UIManager.put("ToolTip.font", font);
+	}
+	
+	public static void scrollJScrollPane(JScrollPane scrollPane, boolean bottom) {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				JScrollBar vertical = scrollPane.getVerticalScrollBar();
+				int value = (bottom)? vertical.getMaximum() : vertical.getMinimum();
+				vertical.setValue(value);
+			}
+		});
 	}
 	
 	public static void makeTransparentJButton(JButton targetButton) {
@@ -167,6 +181,7 @@ public class GuiUtils {
 	 */
 	public static GraphicsDevice showOnSameScreen(Window frame) {
 		GraphicsDevice result = null;
+		frame.setLocationRelativeTo(frame);
 		if (frame != null) {
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			GraphicsDevice[] gd = ge.getScreenDevices();

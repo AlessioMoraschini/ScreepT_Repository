@@ -50,8 +50,8 @@ public class MainGuiParent {
 	static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 	
 	// AUTHOR AND GENERAL INFORMATIONS
-	public static final String APP_VERSION = "0.7.2";
-	public static final String APP_VERSION_DATE = "16/09/2019";
+	public static final String APP_VERSION = "0.7.3";
+	public static final String APP_VERSION_DATE = "29/09/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
@@ -73,6 +73,7 @@ public class MainGuiParent {
 	public static LauncherLoaderFrame loaderGraphics;
 	public static final float launcherRatio = 0.25f;
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
+	public static final Dimension minimumSize = new Dimension(1100,650);
 	
 	// MENU ITEMS
 	int menuSize;

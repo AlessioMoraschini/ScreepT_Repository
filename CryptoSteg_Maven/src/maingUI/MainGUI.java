@@ -67,6 +67,7 @@ import mainobj.INItializer;
 import media.Sounds;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 import java.io.File;
@@ -443,6 +444,7 @@ public class MainGUI extends MainGuiParent{
 		frmScryptV.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		frmScryptV.getContentPane().setBackground(SystemColor.windowText);
 		frmScryptV.setBounds(0, 0, 1500, 850 );
+		frmScryptV.setMinimumSize(MainGuiParent.minimumSize);
 		MovePanelMouseListener.applyMoveListener(frmScryptV);
 		frmScryptV.addMouseListener(new ComponentResizer());
 		
@@ -806,7 +808,7 @@ public class MainGUI extends MainGuiParent{
 					panelGuiOptions.setState(java.awt.Frame.NORMAL);
 					panelGuiOptions.requestFocus();
 				}
-				GuiUtils.changeFrameStateLater(frmScryptV, panelGuiOptions, JFrame.MAXIMIZED_BOTH);
+				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGuiOptions, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		
@@ -821,8 +823,8 @@ public class MainGUI extends MainGuiParent{
 							}
 							frmScryptV.dispose();
 							frmScryptV.setUndecorated(false);
-							frmScryptV.setLocationRelativeTo(null);
-							frmScryptV.setMinimumSize(new Dimension(100,100));
+							frmScryptV.setLocationRelativeTo(frmScryptV);
+							frmScryptV.setMinimumSize(MainGuiParent.minimumSize);
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
@@ -831,9 +833,16 @@ public class MainGUI extends MainGuiParent{
 							preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setMinimumSize(GuiUtils.getScreenSize(frmScryptV));
-							frmScryptV.setLocationRelativeTo(null);
+							frmScryptV.setLocationRelativeTo(frmScryptV);
 							frmScryptV.setVisible(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
+						}
+						
+						// RESYNC JSCROLL BUG WORKAROUND
+						if (MainGUI.initTxtWriter != null && MainGUI.initTxtWriter instanceof TextEditor) {
+							JScrollPane target = ((TextEditor)MainGUI.initTxtWriter).mainScrollPane;
+							GuiUtils.scrollJScrollPane(target, true);
+							TextEditorUtils.resizeFrameToDefault(mainAPP);
 						}
 					}
 				});
@@ -858,7 +867,7 @@ public class MainGUI extends MainGuiParent{
 					panelGeneralOptions.setState(java.awt.Frame.NORMAL);
 					panelGeneralOptions.requestFocus();
 				}
-				GuiUtils.changeFrameStateLater(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
+				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		
@@ -878,7 +887,7 @@ public class MainGUI extends MainGuiParent{
 					panelKeyGen.setState(java.awt.Frame.NORMAL);
 					panelKeyGen.requestFocus();
 				}
-		    	GuiUtils.changeFrameStateLater(frmScryptV, panelKeyGen,JFrame.MAXIMIZED_BOTH);
+		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyGen,JFrame.MAXIMIZED_BOTH);
 		    }
 		});
 		
@@ -911,7 +920,7 @@ public class MainGUI extends MainGuiParent{
 					panelNetInfo.setState(java.awt.Frame.NORMAL);
 					panelNetInfo.requestFocus();
 				}
-		    	GuiUtils.changeFrameStateLater(frmScryptV, panelNetInfo, JFrame.MAXIMIZED_BOTH);
+		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelNetInfo, JFrame.MAXIMIZED_BOTH);
 		    }
 		});
 		
@@ -945,7 +954,7 @@ public class MainGUI extends MainGuiParent{
 					panelHwInfo.setState(java.awt.Frame.NORMAL);
 					panelHwInfo.requestFocus();
 				}
-		    	GuiUtils.changeFrameStateLater(frmScryptV, panelHwInfo, JFrame.MAXIMIZED_BOTH);
+		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelHwInfo, JFrame.MAXIMIZED_BOTH);
 		    }
 		});
 		
@@ -965,7 +974,7 @@ public class MainGUI extends MainGuiParent{
 					panelKeyDict.setState(java.awt.Frame.NORMAL);
 					panelKeyDict.requestFocus();
 				}
-		    	GuiUtils.changeFrameStateLater(frmScryptV, panelKeyDict,JFrame.MAXIMIZED_BOTH);
+		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyDict,JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		
@@ -1006,7 +1015,7 @@ public class MainGUI extends MainGuiParent{
 					panelAbout.setState(java.awt.Frame.NORMAL);
 					panelAbout.requestFocus();
 				}
-				GuiUtils.changeFrameStateLater(frmScryptV, panelAbout, JFrame.MAXIMIZED_BOTH);
+				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelAbout, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		

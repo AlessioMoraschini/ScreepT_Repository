@@ -66,16 +66,23 @@ public class MainGuiUtils {
 	public void startTextEditor(boolean forceRestart) {
 		
 		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
-		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-		if(MainGUI.initTxtWriter == null || forceRestart) {
-			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-			MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
-		}		    	
-    	contentPane.removeAll();
-    	contentPane.add(MainGUI.initTxtWriter);
-    	contentPane.revalidate(); 
-    	contentPane.repaint();
-    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+				if(MainGUI.initTxtWriter == null || forceRestart) {
+					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+					MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
+				}		    	
+		    	contentPane.removeAll();
+		    	contentPane.add(MainGUI.initTxtWriter);
+		    	contentPane.revalidate(); 
+		    	contentPane.repaint();
+		    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
+			}
+		});
 	}
 	
 	/**
