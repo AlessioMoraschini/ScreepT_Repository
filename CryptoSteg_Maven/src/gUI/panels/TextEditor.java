@@ -1993,9 +1993,10 @@ public class TextEditor extends JPanel {
 					// update signal value
 					alreadySaving = true;
 					boolean done = false;
-					String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))? loadedTabObj.loadedFile.getName() : "New."+comboFileFormat.getSelectedItem();
+					String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))? loadedTabObj.loadedFile.getName() : "New."+comboFileFormat.getSelectedItem().toString().toLowerCase();
+					exportNamePreset = ("".equals(FilenameUtils.getExtension(exportNamePreset)))? exportNamePreset.concat(comboFileFormat.getSelectedItem().toString().toLowerCase()): exportNamePreset;
 					try {
-						File selectedFile = GenericFileChooserDialog.fileWrite(parentFrame, currentConfiguration, exportNamePreset + CURRENT_EXT_OUT);
+						File selectedFile = GenericFileChooserDialog.fileWrite(parentFrame, currentConfiguration, exportNamePreset);
 
 						if (selectedFile != null) {
 							selectedFile = adaptFileExt(selectedFile);
@@ -2037,6 +2038,7 @@ public class TextEditor extends JPanel {
 				}
 				// update signal value
 				alreadySaving = false;
+				TextEditorUtils.refreshTree(loadedTabObj.loadedFile, true);
 			}
 		});
 
