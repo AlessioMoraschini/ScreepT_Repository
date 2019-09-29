@@ -68,20 +68,6 @@ public class EntroPieTest {
 		System.out.println(Arrays.toString(Arrays.copyOfRange(array, progr, array.length-1)));
 	}
 	
-	private boolean printEnabled(boolean DEBUG) {
-        if (!DEBUG) {
-            System.setOut(new PrintStream(new OutputStream() {
-                public void close() {}
-                public void flush() {}
-                public void write(byte[] b) {}
-                public void write(byte[] b, int off, int len) {}
-                public void write(int b) {
-                }
-            }));
-        }
-        return DEBUG;
-	}
-	
 	// lazy printer
 	private void print(Object src) {
 		System.out.println(src);

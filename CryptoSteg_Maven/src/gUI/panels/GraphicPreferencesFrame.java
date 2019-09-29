@@ -280,9 +280,9 @@ public class GraphicPreferencesFrame extends JFrame {
 			}
 		});
 
-		addHandlers();
-		
 		initGuiFromConfig();
+		
+		addHandlers();
 		
 //		if (TextEditor.loadedTabObj != null) {
 //			TextEditor.loadedTabObj.textArea.setFont(initialTxtEditorFont);
@@ -311,8 +311,10 @@ public class GraphicPreferencesFrame extends JFrame {
 		chckBoxAntiAliasingON.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TXTAREA_ANTIALIASED = chckBoxAntiAliasingON.isSelected();
-				currentConfiguration.getTextEditorOpt().antialiasedTxtArea = chckBoxAntiAliasingON.isSelected();
+				boolean antialiasing = chckBoxAntiAliasingON.isSelected();
+				TXTAREA_ANTIALIASED = antialiasing;
+				currentConfiguration.getTextEditorOpt().antialiasedTxtArea = antialiasing;
+				antialiasingApply(antialiasing);
 			}
 		});
 
@@ -397,10 +399,12 @@ public class GraphicPreferencesFrame extends JFrame {
 
 					// write single values to file ini associated to currentConf
 					writeValuesToConfFile(currentConfiguration);
-
+					
 					// update BACKUP_VALUES as the new ones
 					updateBackup();
 
+					antialiasingApply(TXTAREA_ANTIALIASED);
+					
 					JOptionPane.showMessageDialog(thisFrame,
 							"Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.",
 							"Saved!", JOptionPane.INFORMATION_MESSAGE);
@@ -427,9 +431,11 @@ public class GraphicPreferencesFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				logger.debug("DISCARD => Closing GUI_Preferences");
-
+				
 				// reset current values
 				resetToBackup();
+
+				antialiasingApply(TXTAREA_ANTIALIASED);
 
 				// reset INItializer reference currentConf too
 				resetConfigValues(currentConfiguration);
@@ -580,6 +586,8 @@ public class GraphicPreferencesFrame extends JFrame {
 		chckBoxAntiAliasingON.setSelected(TXTAREA_ANTIALIASED);
 		spinnerDetailTxtArea.setValue(TXTAREA_DETAIL);
 
+		antialiasingApply(TXTAREA_ANTIALIASED);
+
 		if (DARK_THEME) {
 			GUIStyelSettings.setDarkNimbus(NIMBUS_SIZE);
 		} 
@@ -650,5 +658,13 @@ public class GraphicPreferencesFrame extends JFrame {
 	public void initGuiFromConfig() {
 		initValues(currentConfiguration);
 		updateGUI();
+	}
+	
+	private void antialiasingApply(boolean antialiasing) {
+		try {
+			TextEditor.loadedTabObj.textArea.setAntiAliasingEnabled(antialiasing);
+		} catch (Exception e1) {
+			logger.warn("Error while preiewing antialising effect on textarea", e1);
+		}
 	}
 }

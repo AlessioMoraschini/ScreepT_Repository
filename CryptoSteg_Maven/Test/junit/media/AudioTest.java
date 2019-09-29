@@ -4,14 +4,14 @@ import org.junit.Test;
 
 import media.Sounds;
 import resources.SoundsConfigurator;
-import testUtils.Printer;
+import testUtils.TestUtils;
 
 public class AudioTest {
 	
 	@Test
 	public void TestAudioClip() throws InterruptedException {
 		for (int i = 0; i < 5; i++) {
-			Printer.printl("Playing: " + SoundsConfigurator.CLICK_2);
+			TestUtils.printl("Playing: " + SoundsConfigurator.CLICK_2);
 			Sounds.setVolume(0.15f*i);
 			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 			Thread.sleep(300);

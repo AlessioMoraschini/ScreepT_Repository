@@ -222,10 +222,10 @@ public class TextEditor extends JPanel {
 	private JSpinner tabSizeSpinner;
 
 
-	private JSeparator separator;
+	private JSeparator separator_NO_HIDE;
+	private JSeparator separator_NO_HIDE_2;
 	public JSeparator separator_1;
 	public JSeparator separator_2;
-	private JSeparator separator_3;
 
 	public static JComboBox comboFileFormat;
 	private JComboBox comboStylesScheme;
@@ -696,26 +696,26 @@ public class TextEditor extends JPanel {
 		toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
 		leftSplitContainer.add(toggleButtonFileTreeLocked, "cell 5 0,alignx center,growy");
 		
-		separator = new JSeparator();
-		separator.setSize(new Dimension(50, 2));
-		separator.setMinimumSize(new Dimension(50, 2));
-		separator.setBackground(Color.GRAY);
-		separator.setOpaque(true);
-		separator.setForeground(Color.LIGHT_GRAY);
-		leftSplitContainer.add(separator, "cell 0 1 6 1,growx");
+		separator_NO_HIDE = new JSeparator();
+		separator_NO_HIDE.setSize(new Dimension(50, 2));
+		separator_NO_HIDE.setMinimumSize(new Dimension(50, 2));
+		separator_NO_HIDE.setBackground(Color.GRAY);
+		separator_NO_HIDE.setOpaque(true);
+		separator_NO_HIDE.setForeground(Color.LIGHT_GRAY);
+		leftSplitContainer.add(separator_NO_HIDE, "cell 0 1 6 1,growx");
 		leftSplitContainer.add(leftSplitPane, "cell 0 2 6 1,grow");
 
 		mainPanel.add(splitPaneMain, "cell 0 5 35 2,grow");
 		splitPaneMain.setRightComponent(mainTabList);
 		splitPaneMain.setLeftComponent(leftSplitContainer);
 		
-		separator_3 = new JSeparator();
-		separator_3.setSize(new Dimension(50, 2));
-		separator_3.setPreferredSize(new Dimension(50, 2));
-		separator_3.setOpaque(true);
-		separator_3.setForeground(Color.GRAY);
-		separator_3.setBackground(Color.GRAY);
-		leftSplitContainer.add(separator_3, "cell 0 3 6 1,growx");
+		separator_NO_HIDE_2 = new JSeparator();
+		separator_NO_HIDE_2.setSize(new Dimension(50, 2));
+		separator_NO_HIDE_2.setPreferredSize(new Dimension(50, 2));
+		separator_NO_HIDE_2.setOpaque(true);
+		separator_NO_HIDE_2.setForeground(Color.GRAY);
+		separator_NO_HIDE_2.setBackground(Color.GRAY);
+		leftSplitContainer.add(separator_NO_HIDE_2, "cell 0 3 6 1,growx");
 		
 		lblCurrentDir = new JLabel(ROOT_STANDARD_LBL);
 		lblCurrentDir.setHorizontalTextPosition(SwingConstants.LEFT);

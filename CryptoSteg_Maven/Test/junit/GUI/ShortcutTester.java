@@ -3,7 +3,7 @@ package junit.GUI;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
-import testUtils.Printer;
+import testUtils.TestUtils;
 
 public class ShortcutTester implements KeyEventDispatcher{
 	
@@ -19,7 +19,7 @@ public class ShortcutTester implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED) {
 			if (e.getKeyChar() != lastPressed) {
-				Printer.printl(" => PRESSED: " + "KeyCodeString: "+ e.getKeyText(e.getKeyCode()) + " - KeyChar: " + e.getKeyChar() + " - KeyCode: " + e.getKeyCode()
+				TestUtils.printl(" => PRESSED: " + "KeyCodeString: "+ e.getKeyText(e.getKeyCode()) + " - KeyChar: " + e.getKeyChar() + " - KeyCode: " + e.getKeyCode()
 						+ " - ALT: " + e.isAltDown() + " - CTRL: " + e.isControlDown() + " - SHIFT: "
 						+ e.isShiftDown());
 			}
@@ -31,7 +31,7 @@ public class ShortcutTester implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
 	      
-			Printer.printl(" => RELEASED: "+"KeyChar: "+e.getKeyChar()+" - KeyCode: "+e.getKeyCode()+" - ALT: "+e.isAltDown()+" - CTRL: "+e.isControlDown()+" - SHIFT: "+e.isShiftDown());
+			TestUtils.printl(" => RELEASED: "+"KeyChar: "+e.getKeyChar()+" - KeyCode: "+e.getKeyCode()+" - ALT: "+e.isAltDown()+" - CTRL: "+e.isControlDown()+" - SHIFT: "+e.isShiftDown());
 	  
 	    }
 	    

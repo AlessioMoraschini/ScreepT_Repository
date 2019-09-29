@@ -7,7 +7,7 @@ import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapIf;
 import org.junit.Test;
 
-import testUtils.Printer;
+import testUtils.TestUtils;
 
 public class DllClassOKTest {
 	
@@ -19,7 +19,7 @@ public class DllClassOKTest {
 //			StringBuilder errbuf = new StringBuilder();  
 //			int r = Pcap.findAllDevs(alldevs, errbuf);
 			Pcap.libVersion();
-			Printer.print("=> OK");
+			TestUtils.print("=> OK");
 		} catch (UnsatisfiedLinkError e) {
 			e.printStackTrace();
 		}  

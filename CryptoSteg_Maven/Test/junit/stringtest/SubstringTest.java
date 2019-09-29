@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
-import testUtils.Printer;
+import testUtils.TestUtils;
 import variousutils.ByteArrayShuffler;
 
 public class SubstringTest {
@@ -47,9 +47,9 @@ public class SubstringTest {
 				}
 				
 				String feedbackString = " => Current char ("+(i+1)+") = " + currentChar + " - NofBytes: " + byteChar.length;
-				Printer.printl(feedbackString);
+				TestUtils.printl(feedbackString);
 			}
-			Printer.printl("Integral byte coded: " + extractedList.size());
+			TestUtils.printl("Integral byte coded: " + extractedList.size());
 			
 			int i = 0;
 			for(byte by : extractedList) {
@@ -60,7 +60,7 @@ public class SubstringTest {
 				i++;
 			}
 			
-			Printer.printl("Extracted: "+String.valueOf(Arrays.toString(extractedBytes)));
+			TestUtils.printl("Extracted: "+String.valueOf(Arrays.toString(extractedBytes)));
 			
 			assertTrue(extractedBytes.length == sourceLength);
 

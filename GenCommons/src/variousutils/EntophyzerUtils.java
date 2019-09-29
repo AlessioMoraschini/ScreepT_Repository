@@ -2,7 +2,6 @@ package variousutils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +61,21 @@ public class EntophyzerUtils {
 		
 		for(int i=0 ; i<valuesArray.length; i++){
 			map.put(i, valuesArray[i]);
+		}
+		
+		return map;
+	}
+	
+	/**
+	 * Integer keys map-array mapper
+	 * @param keyArray
+	 * @return
+	 */
+	public Map<Integer, Integer> arrayToIndexedIntMap(int[] keyArray){
+		Map<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
+		
+		for(int i=0 ; i<keyArray.length; i++){
+			map.put(i, keyArray[i]);
 		}
 		
 		return map;
@@ -214,7 +228,7 @@ public class EntophyzerUtils {
 	 * @param indexes
 	 * @return null if length of source differ from indexes length
 	 */
-    private static<E> E[] orderFromIndexes(E[] source, Integer[] indexes) {
+    public static<E> E[] orderFromIndexes(E[] source, Integer[] indexes) {
     	if(source.length!=indexes.length) {
     		return null;
     	}
@@ -234,7 +248,7 @@ public class EntophyzerUtils {
 	 * @param indexes
 	 * @return null if length of source differ from indexes length
 	 */
-    private static<E> E[] reorderBackFromIndexes(E[] ordered, Integer[] indexes) {
+    public static<E> E[] reorderBackFromIndexes(E[] ordered, Integer[] indexes) {
     	if(ordered.length!=indexes.length) {
     		return null;
     	}

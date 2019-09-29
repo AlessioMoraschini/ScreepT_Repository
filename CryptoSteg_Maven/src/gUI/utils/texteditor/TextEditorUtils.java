@@ -72,6 +72,8 @@ public class TextEditorUtils {
 	
 	static final int LEVEL_ANCESTOR_LABEL_DIR = 1;
 	
+	public static final String NO_HIDE_ELEMENT = "NO_HIDE";
+	
 	////////////////////////////////////////////////////////////////////////////////////
 	
 	public static void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
@@ -250,6 +252,12 @@ public class TextEditorUtils {
 		if(workspaceRoot == null || workspaceRoot.getName().equals("") || !workspaceRoot.exists()) {
 			TextEditor.toggleButtonFileTreeNewWorkspace.doClick();
 			logger.info("Tree refresh from workspace skipped, workspace is null or it doese not exist. Redirecting to new workspace selection");
+			return;
+		}
+		
+		// loadedTabObj VALIDATION
+		if(TextEditor.loadedTabObj == null || TextEditor.loadedTabObj.loadedFile == null) {
+			logger.error("Invalid data for TextEditorUtils.refreshFromWorkspace -> loadedTabObj: " + TextEditor.loadedTabObj);
 			return;
 		}
 		
@@ -441,7 +449,7 @@ public class TextEditorUtils {
 			headerList.addAll(jsliders);
 			
 			// JSEPARATORS
-			List<JSeparator> jseparators = ReflectionUtils.retrieveFieldsByType(currentTextEditor, JSeparator.class);
+			List<JSeparator> jseparators = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor , JSeparator.class, NO_HIDE_ELEMENT, true, false);
 			headerList.addAll(jseparators);
 			
 			// AD-HOC COMPONENTS
@@ -485,7 +493,7 @@ public class TextEditorUtils {
 		try {
 						
 			// JSEPARATORS
-			List<JSeparator> jseparators = ReflectionUtils.retrieveFieldsByType(currentTextEditor, JSeparator.class);
+			List<JSeparator> jseparators = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor , JSeparator.class, NO_HIDE_ELEMENT, true, false);
 			headerList.addAll(jseparators);
 			
 		} catch (IllegalArgumentException | IllegalAccessException e) {

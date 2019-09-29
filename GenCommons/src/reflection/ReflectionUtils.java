@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ReflectionUtils {
 
 	public static List<Field> retrieveAllFields(Class srcClass) {
@@ -31,6 +33,91 @@ public class ReflectionUtils {
 			if(testVar || filterType.isAssignableFrom(i_field.getType())) {
 				T positiveMatch = filterType.cast(i_field.get(parentObjInstance));
 				result.add(positiveMatch);
+			}
+		}
+        
+        return result;
+	}
+	
+	/**
+	 * Search all fields in src class, and filter only the ones that are of generic type T
+	 * @param srcClass
+	 * @param filterType
+	 * @param fieldNameFilter use the pattern to match in field name to discard/accept it. You can use a regular expression here
+	 * @param discardMatches if true fields with name matching will be discarded, else if false they'll be accepted
+	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static <T,E> List<T> retrieveFieldsByTypeMatchingRegex(E parentObjInstance, Class<T> filterType, String fieldNameFilter, boolean discardMatches) throws IllegalArgumentException, IllegalAccessException {
+		List<Field> fields = retrieveAllFields(parentObjInstance.getClass());
+		List<T> result = new ArrayList<>();
+		
+		for(Field i_field : fields) {
+			i_field.setAccessible(true);
+			
+			if(filterType.isAssignableFrom(i_field.getType())) {
+				T positiveMatch = filterType.cast(i_field.get(parentObjInstance));
+				
+				if (discardMatches) {
+					if (!i_field.getName().matches(fieldNameFilter)) {
+						// discard when matching string filter
+						result.add(positiveMatch);
+					}
+				}
+				
+				if (!discardMatches) {
+					if (i_field.getName().matches(fieldNameFilter)) {
+						// accept when matching string filter
+						result.add(positiveMatch);
+					}
+				}
+			}
+		}
+        
+        return result;
+	}
+	
+	/**
+	 * Search all fields in src class, and filter only the ones that are of generic type T
+	 * @param srcClass
+	 * @param filterType
+	 * @param fieldNameFilter if contained in field name will be discard/accept it.
+	 * @param discardMatches if true fields wich name contains filter will be discarded, else if false only them will be accepted
+	 * @param ignoreCase if true it will check even if field name contains filter with different case but same letters
+	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static <T,E> List<T> retrieveFieldsByTypeContaininingFilter(E parentObjInstance, Class<T> filterType, String fieldNameFilter, boolean discardMatches, boolean ignoreCase) throws IllegalArgumentException, IllegalAccessException {
+		List<Field> fields = retrieveAllFields(parentObjInstance.getClass());
+		List<T> result = new ArrayList<>();
+		
+		for(Field i_field : fields) {
+			i_field.setAccessible(true);
+			
+			if(filterType.isAssignableFrom(i_field.getType())) {
+				T positiveMatch = filterType.cast(i_field.get(parentObjInstance));
+				
+				if (discardMatches) {
+					if (ignoreCase && !StringUtils.containsIgnoreCase(i_field.getName(), fieldNameFilter)) {
+						// discard when matching string filter
+						result.add(positiveMatch);
+					}else if (!ignoreCase && !StringUtils.contains(i_field.getName(), fieldNameFilter)) {
+						// accept when matching string filter
+						result.add(positiveMatch);
+					}
+				}
+				
+				if (!discardMatches) {
+					if (ignoreCase && StringUtils.containsIgnoreCase(i_field.getName(), fieldNameFilter)) {
+						// accept when matching string filter
+						result.add(positiveMatch);
+					}else if (!ignoreCase && StringUtils.contains(i_field.getName(), fieldNameFilter)) {
+						// accept when matching string filter
+						result.add(positiveMatch);
+					}
+				}
 			}
 		}
         

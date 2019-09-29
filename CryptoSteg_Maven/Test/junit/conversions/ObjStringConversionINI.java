@@ -6,7 +6,7 @@ import java.awt.Font;
 import org.junit.Test;
 
 import enums.ScalingAlgorithm;
-import testUtils.Printer;
+import testUtils.TestUtils;
 import variousutils.HandleString;
 
 public class ObjStringConversionINI {
@@ -17,12 +17,12 @@ public class ObjStringConversionINI {
 		Color dynColor = new Color(50,120,200);
 		
 		String colorY = HandleString.getRgbString(black);
-		Printer.printl("Stringed: "+colorY);
+		TestUtils.printl("Stringed: "+colorY);
 		
 		Color parsed = HandleString.getRgbColorFromString(colorY);
-		Printer.printl("Parsed: "+parsed);
+		TestUtils.printl("Parsed: "+parsed);
 		
-		Printer.printSeparator(40);
+		TestUtils.printSeparator(40);
 	}
 	
 	@Test
@@ -30,24 +30,24 @@ public class ObjStringConversionINI {
 		Font testFont = new Font("Segoe UI", Font.PLAIN, 20);
 		
 		String fontString = HandleString.getFontString(testFont);
-		Printer.printl("\nString font: "+fontString);
+		TestUtils.printl("\nString font: "+fontString);
 		
 		Font parsed = HandleString.getFontFromString(fontString);
-		Printer.printl("Parsed: "+parsed);
+		TestUtils.printl("Parsed: "+parsed);
 		
-		Printer.printSeparator(40);
+		TestUtils.printSeparator(40);
 	}
 	
 	@Test
 	public void floatTest() {
-		Printer.printl("Float parsed: " + Float.parseFloat("0.8"));
-		Printer.printSeparator(50);
+		TestUtils.printl("Float parsed: " + Float.parseFloat("0.8"));
+		TestUtils.printSeparator(50);
 	}
 	
 	@Test
 	public void enumAlgoTest() {
 		ScalingAlgorithm algo = ScalingAlgorithm.valueOf("REPLICATE");
-		Printer.print("\n"+algo.toString()+algo.getDescription());
+		TestUtils.print("\n"+algo.toString()+algo.getDescription());
 	}
 	
 }

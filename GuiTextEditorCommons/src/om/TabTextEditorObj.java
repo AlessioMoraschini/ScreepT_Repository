@@ -8,20 +8,31 @@ import java.io.File;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
+import utils.SysUtils;
 
 public class TabTextEditorObj {
 	
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.BOLD, 18);
 
+	// TEXT AREA DETAIL LEVELS
 	public static final int TXT_AREA_BASE = 0;
 	public static final int TXT_AREA_MEDIUM = 1;
 	public static final int TXT_AREA_HIGH = 2;
 	public static final int TXT_AREA_MAX = 3;
 	
 	public int txtAreaInitType = TXT_AREA_HIGH; // default value
+	
+	public static final boolean TXT_AREA_CLEAR_LINES_WSPACES_ONLY = false;
+	public static final boolean TXT_AREA_HILIGHT_SECONDARY_LANGUAGE = false;
+	public static final boolean TXT_AREA_FRACTIONAL_FONT_ENABLED = true;
+	public static final int TXT_AREA_PARSER_DELAY = 500;
+	public static final boolean TXT_AREA_HYPERLINKS_ENABLED = true;
 	
 	public File loadedFile;
 	public RTextScrollPane currentScrollPane;
@@ -33,6 +44,18 @@ public class TabTextEditorObj {
 		txtAreaInitType = (initTxtAreaType != null && initTxtAreaType >= 0 && initTxtAreaType < 4)? initTxtAreaType : txtAreaInitType;
 		textArea = new RSyntaxTextArea();
 		textArea.setMinimumSize(new Dimension(300,100));
+		textArea.setClearWhitespaceLinesEnabled(TXT_AREA_CLEAR_LINES_WSPACES_ONLY);
+		textArea.setHighlightSecondaryLanguages(TXT_AREA_HILIGHT_SECONDARY_LANGUAGE);
+		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
+		textArea.setFractionalFontMetricsEnabled(TXT_AREA_FRACTIONAL_FONT_ENABLED);
+		textArea.setHyperlinksEnabled(TXT_AREA_HYPERLINKS_ENABLED);
+		textArea.addHyperlinkListener(new HyperlinkListener() {
+			
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				SysUtils.openUrlInBrowserNative(e.getURL().toString());
+			}
+		});
 		
 		currentScrollPane = new RTextScrollPane(textArea);
 		currentScrollPane.setBorder(new LineBorder(Color.GRAY, 2));

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import conversion.ImageToTextExtractor;
 import net.sourceforge.tess4j.TesseractException;
-import testUtils.Printer;
+import testUtils.TestUtils;
 
 public class ImageToTextReaderTest {
 	
@@ -14,9 +14,9 @@ public class ImageToTextReaderTest {
 	
 	 @Test
 	 public void testExtractor() throws TesseractException {
-		 Printer.printSeparator(80);
-		 Printer.print("\n\n");
+		 TestUtils.printSeparator(80);
+		 TestUtils.print("\n\n");
 		 ImageToTextExtractor extractor = new ImageToTextExtractor();
-		 Printer.printl(extractor.readTextFromImage(new File(SOURCE_IMAGE_PATH)));
+		 TestUtils.printl(extractor.readTextFromImage(new File(SOURCE_IMAGE_PATH)));
 	 }
 }

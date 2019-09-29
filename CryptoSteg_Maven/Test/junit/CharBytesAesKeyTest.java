@@ -21,7 +21,7 @@ import org.junit.Test;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import crypt.aes.AesCipher;
-import testUtils.Printer;
+import testUtils.TestUtils;
 
 public class CharBytesAesKeyTest {
 	
@@ -50,9 +50,9 @@ public class CharBytesAesKeyTest {
 			ByteBuffer byBuff = Charset.forName("UTF-8").encode(chBuff);
 			byte[] fullBytes = byBuff.array();
 			
-			Printer.printl("=> Char array key length: " + password.length);
-			Printer.printl("=> Encoded full bytes length: " + fullBytes.length + "\n" + Arrays.toString(fullBytes));
-			Printer.printl("=> byte array limited length: " + byteKey.length + "\n" + Arrays.toString(byteKey));
+			TestUtils.printl("=> Char array key length: " + password.length);
+			TestUtils.printl("=> Encoded full bytes length: " + fullBytes.length + "\n" + Arrays.toString(fullBytes));
+			TestUtils.printl("=> byte array limited length: " + byteKey.length + "\n" + Arrays.toString(byteKey));
 			
 			assertTrue(byteKey.length == AesCipher.limit);
 			assertTrue(cipher.decrypt(cipher.encrypt(source)).equals(source));

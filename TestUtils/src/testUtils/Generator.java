@@ -37,4 +37,13 @@ public class Generator {
 		
 		return map;
 	}
+	
+    // byte array source seq generator
+    public static byte[] initSrcBytes(int dim) {
+		byte[] srcBytes = new byte[dim];
+    	for(int i = 0; i<srcBytes.length; i++) {
+    		srcBytes[i] = (byte)i;
+		}
+    	return srcBytes;
+	}
 }

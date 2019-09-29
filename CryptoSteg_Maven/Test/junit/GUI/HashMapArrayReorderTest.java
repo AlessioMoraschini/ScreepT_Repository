@@ -2,16 +2,15 @@ package junit.GUI;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
+import static testUtils.TestUtils.*;
+import static testUtils.Generator.*;
+import static variousutils.EntophyzerUtils.*;
+
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.TreeMap;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,6 +18,7 @@ import org.junit.Test;
 import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
+import testUtils.TestTimer;
 import variousutils.EntophyzerUtils;
 
 public class HashMapArrayReorderTest {
@@ -26,12 +26,18 @@ public class HashMapArrayReorderTest {
 	@Rule
 	public RepeatedTestRule repeatRule = new RepeatedTestRule();
 
-	private long startTime=0;
-	private long endTime=0;
 	private static final int SRC_BYTES = 40000000;  // number of source bytes to generate
 	private static final int KEY_LENGTH = 256; // length of key image pixels values to generate
 	
 	private boolean printOutput = false;
+	private TestTimer timerManager;
+	
+	@Before
+	public void initTest(){
+		timerManager = new TestTimer();
+		timerManager.updateStart();
+	}
+	
 	
 	@Test
 	@Ignore
@@ -40,15 +46,15 @@ public class HashMapArrayReorderTest {
 		print("Test One");
 		printSeparator(100);
 		
-		updateStart();
+		timerManager.updateStart();
 		
 		int[] arr = randomIntArray(10000);
 		
-		updateEnd();
+		timerManager.updateEnd();
 		print("\n"+Arrays.toString(arr));
 		
 		printSeparator(100);
-		print("\nElapsed: "+getElapsed()+" ms");
+		print("\nElapsed: "+timerManager.getElapsed(true)+" ms");
 	}
 	
 	@Test
@@ -66,15 +72,15 @@ public class HashMapArrayReorderTest {
 		// init array that represents source bytes to sort
 		byte[] bytesToCode = initSrcBytes(SRC_BYTES);
 		
-		updateStart();
+		timerManager.updateStart();
 		byte[] codedBytes = EntophyzerUtils.orderArrayByKey(bytesToCode, keyArray);
-		updateEnd();
-		int codeTime = getElapsed();
+		timerManager.updateEnd();
+		long codeTime = timerManager.getElapsed(true);
 		
-		updateStart();
+		timerManager.updateStart();
 		byte[] originalBytesFromCoded = EntophyzerUtils.reorderBackArrayByKey(codedBytes, keyArray);
-		updateEnd();
-		int decodeTime = getElapsed();
+		timerManager.updateEnd();
+		long decodeTime = timerManager.getElapsed(true);
 		
 		byte[] wrongKeyDecodedBytes = EntophyzerUtils.reorderBackArrayByKey(codedBytes, wrongKey);
 		
@@ -111,12 +117,12 @@ public class HashMapArrayReorderTest {
 		// init array that represents source bytes to sort
 		byte[] bytesToCode = initSrcBytes(SRC_BYTES);
 		
-		Map<Integer, Integer> keysMap = arrayToMap(keyArray);
+		Map<Integer, Integer> keysMap = EntophyzerUtils.arrayToIndexedMap(keyArray);
 //		Map<Integer, Integer> map = getRandMap(256);
 		Map<Integer, Integer> keySortedMap = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> valSortedMap = new HashMap<Integer, Integer>();
 
-		updateStart();
+		timerManager.updateStart();
 		
 		//keySortedMap = sortMapByKey(keysMap);
 		
@@ -128,7 +134,7 @@ public class HashMapArrayReorderTest {
 		byte[] sortedBytes = orderFromIndexes(bytesToCode, indexSortedArray);
 		byte[] reorderedBytes = reorderBackFromIndexes(sortedBytes, indexSortedArray);
 		
-		updateEnd();
+		timerManager.updateEnd();
 		
 		if (printOutput) {
 //			print("\n\n => Sorted MAP (BY KEY):\n");
@@ -151,32 +157,10 @@ public class HashMapArrayReorderTest {
 			print("\n\n # Keys:" + Arrays.toString(valSortedMap.keySet().toArray().clone()));
 		}
 		printSeparator(100);
-		print("\nElapsed: "+getElapsed()+" ms");
+		print("\nElapsed: "+timerManager.getElapsed(true)+" ms");
 
 	}
 	
-	
-	// local lazy printer
-	private void print(String S){
-		System.out.print(S);
-	}
-	
-	private void printSeparator(int n){
-		int curr = 0;
-		print("\n");
-		while (curr < n) {
-			print("#");
-			curr++;
-		}
-	}
-	
-    //pretty print a map
-    public static <K, V> void printMap(Map<K, V> map) {
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            System.out.println("Key : " + entry.getKey() 
-				+ " <=> Value : " + entry.getValue());
-        }
-    }
     
     // printer for array
     public static void printArray(byte[] array) {
@@ -225,93 +209,4 @@ public class HashMapArrayReorderTest {
     }
     
     
-    // byte array source seq generator
-    private byte[] initSrcBytes(int dim) {
-		byte[] srcBytes = new byte[dim];
-    	for(int i = 0; i<srcBytes.length; i++) {
-    		srcBytes[i] = (byte)i;
-		}
-    	return srcBytes;
-	}
-    
-	// static array generator
-	private int[] initSrc(int dim) {
-		int[] sourceArray = new int[dim];
-		for(int i = 0; i<dim; i++) {
-			sourceArray[i] = i;
-		}
-		return sourceArray;
-	}
-	
-	// random int array generator
-	private int[] randomIntArray (int dim){
-		Random rand = new Random();
-		int[]res = new int[dim];
-		for(int i=0 ; i<res.length; i++){
-			res[i] = rand.nextInt(Integer.MAX_VALUE)-rand.nextInt(Integer.MAX_VALUE) ;
-		}
-		return res; 
-	}
-	
-	// HASHMAP GENERATOR
-	private Map<Integer, Integer> getRandMap(int dim){
-		Map<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
-		Random rand = new Random();
-		
-		map.put(0, 105);
-		map.put(1, 105);
-		
-		for(int i=dim-1 ; i>=2; i--){
-			Integer val = rand.nextInt(Integer.MAX_VALUE)-rand.nextInt(Integer.MAX_VALUE) ;
-			map.put(i, val);
-		}
-		
-		return map;
-	}
-	
-	// array hasmap mapper
-	private Map<Integer, Integer> arrayToMap(int[] keyArray){
-		Map<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
-		
-		for(int i=0 ; i<keyArray.length; i++){
-			map.put(i, keyArray[i]);
-		}
-		
-		return map;
-	}
-	
-	// MAP SORTER BY KEY
-	private TreeMap<Integer, Integer> sortMapByKey(Map<Integer, Integer> map){
-        TreeMap<Integer, Integer> treeMap = new TreeMap<Integer, Integer>(map);
-
-		return treeMap;
-	}
-	
-	// MAP SORTER BY VALUE
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map) {
-        List<Entry<K, V>> list = new ArrayList<>(map.entrySet());
-        list.sort(Entry.comparingByValue());
-
-        Map<K, V> result = new LinkedHashMap<>();
-        for (Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-
-        return result;
-    }
-	
-	
-	private void updateStart(){
-		startTime = System.nanoTime();
-	}
-	
-	private void updateEnd(){
-		endTime = System.nanoTime();
-	}
-	
-	private int getElapsed(){
-		return (int)((endTime-startTime)/1000000);
-	}
-	
-	
 }
