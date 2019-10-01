@@ -55,6 +55,19 @@ public class InputValidationTestHelper {
         validator = null;
     }
 
+    /**
+     * Crea un oggetto helper, sul quale è possibile invocare i metodi di test positivo e negativo, passando la classe
+     * che contiene gli array di stringhe json: i casi di test OK/KO. Per far ciò basta creare una classe che implementa l'interfaccia
+     * <b>InputJsonTestCases</b>.
+     * 
+     * Quindi, per testare il parsing e la validazione con semplicità, basta instanziare un oggetto InputValidationTestHelper e chiamarne i metodi di test [Setup,OKTest,KOTest] :)
+     * 
+     * @param testCaseSource -> la classe che implementa InputJsonTestCases e fornisce i json di test in formato stringa
+     * @param clazz -> la classe della request contenente le annotazione di validazione <i>javax.validation</i>
+     * 
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
     public <E extends InputJsonTestCases,T> InputValidationTestHelper(Validator validatorCustom, Class<E> testCaseSourceClass, Class<T> clazz) throws InstantiationException, IllegalAccessException {
     	this.testCaseSource = testCaseSourceClass.newInstance();
     	requestClass = clazz;
@@ -62,6 +75,19 @@ public class InputValidationTestHelper {
         mapper = new ObjectMapper();
     }
 
+    /**
+     * Crea un oggetto helper, sul quale è possibile invocare i metodi di test positivo e negativo, passando la classe
+     * che contiene gli array di stringhe json: i casi di test OK/KO. Per far ciò basta creare una classe che implementa l'interfaccia
+     * <b>InputJsonTestCases</b>.
+     * 
+     * Quindi, per testare il parsing e la validazione con semplicità, basta instanziare un oggetto InputValidationTestHelper e chiamarne i metodi di test [Setup,OKTest,KOTest] :)
+     * 
+     * @param testCaseSource -> la classe che implementa InputJsonTestCases e fornisce i json di test in formato stringa
+     * @param clazz -> la classe della request contenente le annotazione di validazione <i>javax.validation</i>
+     * 
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
     public <E extends InputJsonTestCases,T> InputValidationTestHelper(ObjectMapper mapperCustom, Validator validatorCustom, Class<E> testCaseSourceClass, Class<T> clazz) throws InstantiationException, IllegalAccessException {
     	this.testCaseSource = testCaseSourceClass.newInstance();
     	requestClass = clazz;
@@ -86,7 +112,7 @@ public class InputValidationTestHelper {
     }
 
     /**
-     * Richiamare questo metodo nel Test positivo
+     * Richiama questo metodo nel Test positivo... e dovrebbe far tutto lui :)
      */
 	public void inputValidationOkTest() throws IOException {
 		
@@ -133,7 +159,7 @@ public class InputValidationTestHelper {
 	}
 	
     /**
-     * Richiamare questo metodo nel Test negativo
+     * Richiama questo metodo nel Test negativo... e dovrebbe far tutto lui :)
      */
 	public void inputValidationKoTest() throws IOException {
 		
@@ -187,6 +213,9 @@ public class InputValidationTestHelper {
 		}
 	}
 	
+	/**
+	 * Richiamare questo metodo per stampare i risultati del test (utilizzare @AfterClass a questo scopo)
+	 */
 	public void printTestEsit() {
 		TestUtils.printHeader("?", 80, " ESITI DEL TEST ");
 		TestUtils.printArrayAsLines(1, esitList.toArray());

@@ -25,7 +25,6 @@ import frameutils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;
-import maingUI.MainGUI;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;

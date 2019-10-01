@@ -8,9 +8,9 @@ import tabbededitor.CustomTabbedEditor;
 
 public class TextEditorMouseWheelListener implements MouseWheelListener{
 	
-	public static final int normalSpeed = 15;
-	public static final int fastSpeed = 100;
-	public static final int ultraFastSpeed = 350;
+	public static final int normalSpeed = 14;
+	public static final int fastSpeed = 150;
+	public static final int ultraFastSpeed = 450;
 	private TextEditor currentEditor;
 	private CustomTabbedEditor currentTabEditor;
 	
@@ -64,7 +64,7 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 	
 	private void adjustFontSize(int delta) {
 		if(currentTabEditor.loadedTabObj != null) {
-			currentEditor.sliderFontSize.setValue(currentEditor.sliderFontSize.getValue() - (delta*3));
+			currentEditor.sliderFontSize.setValue(currentEditor.sliderFontSize.getValue() - (delta*4));
 		}
 	}
 }

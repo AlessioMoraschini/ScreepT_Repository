@@ -4,6 +4,14 @@
   <artifactId>CryptoSteg_Maven</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>CryptoSteg_Maven</name>
+  
+  <!-- <modules>
+    <module>../GeneralResources</module>
+    <module>../GenCommons</module>
+    <module>../Initializer</module>
+    <module>../Initializer</module>
+  </modules> -->
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
 	    <resources>
@@ -57,12 +65,6 @@
 			<groupId>ScrYpT_LauncherV2</groupId>
 			<artifactId>ScrYpT_LauncherV2</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-		  <groupId>testUtils</groupId>
-		  <artifactId>testUtils</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>

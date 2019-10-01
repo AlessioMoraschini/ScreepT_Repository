@@ -1,7 +1,7 @@
 package gUI.utils.tree.texteditor;
 
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +13,13 @@ import javax.swing.tree.TreeCellRenderer;
 import org.apache.log4j.Logger;
 
 import dialogutils.MyFileView;
+import media.ImageGeneralWorker;
 import splitpanel.FileNamed;
 
 public class FileNameCellRenderer implements TreeCellRenderer {
+	
+	private static final int FOLDER_TEXT_HEIGHT = 15;
+	private static final int FILE_TEXT_HEIGHT = 8;
 
 	static Logger logger = Logger.getLogger(FileNameCellRenderer.class); 
 		
@@ -25,7 +29,6 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 	public FileNameCellRenderer() {
 		iconContainer = new JLabel();
 		oldFont = iconContainer.getFont();
-		iconContainer.setFont(new Font(oldFont.getFontName(), oldFont.getStyle(), 13));
     }
 
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
@@ -50,9 +53,17 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 			} catch (IOException e) {
 				logger.error(e);
 			}
+			
+			if(selectedFile.isFile()) {
+				iconContainer.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+				iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FILE_TEXT_HEIGHT));
+			}else {
+				iconContainer.setFont(new Font("Segoe UI", Font.BOLD, 14));
+				iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FOLDER_TEXT_HEIGHT));
+			}
 		}
         
-        iconContainer.setForeground(Color.LIGHT_GRAY);
+        iconContainer.setForeground(ImageGeneralWorker.getComplimentColor(tree.getBackground()));
 		return iconContainer;
     }
 

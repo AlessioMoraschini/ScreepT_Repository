@@ -19,5 +19,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="miglayout15-swing.jar"/>
+	<classpathentry kind="lib" path="lib/freetts-1.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/lept4j-1.10.0.jar"/>
+	<classpathentry kind="lib" path="lib/tess4j-4.3.1.jar"/>
+	<classpathentry kind="lib" path="/TestUtils/testUtils-1.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

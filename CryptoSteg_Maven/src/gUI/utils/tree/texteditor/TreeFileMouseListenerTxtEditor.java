@@ -24,13 +24,11 @@ import amfileutils.FileStuff;
 import frameutils.FilePropertiesFrame;
 import frameutils.GuiUtils;
 import gUI.panels.TextEditor;
-import gUI.utils.texteditor.TextEditorUtils;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 import splitpanel.FileNamed;
 import tabbededitor.CustomTabbedEditor;
-import treeutils.TreeUtils;
 import utils.ColorDialogUtils;
 import variousutils.HandleString;
 
@@ -127,7 +125,8 @@ public class TreeFileMouseListenerTxtEditor {
 	    
 	    changeBckgItem = new JMenuItem("Change file Panel background");
 	    changeBckgItem.addActionListener(ChangeBckgNewFileActionListener());
-	    menu.add(changeBckgItem);
+//	    menu.add(changeBckgItem); 
+//	    DEACTIVATED BECAUSE BUGGY AND UGLY :(
 	       
 	    // set menu icons
 	    MenuSetter.setIconTextGap(menu, 12);
@@ -216,7 +215,7 @@ public class TreeFileMouseListenerTxtEditor {
 				if (esit != null) {
 					textEditor.currentConfiguration.getTextEditorOpt().setFilePanelBackCol(esit);
 					textEditor.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "filePanelBackgroundCol", HandleString.getRgbString(esit));
-//					TextEditor.leftSplitContainer.setBackground(esit);
+					TextEditor.leftSplitContainer.setBackground(esit);
 					TextEditor.leftSplitTreeFiles.setBackground(esit);
 					logger.debug("File panel Background color changed to : " + HandleString.getRgbString(esit));
 				}

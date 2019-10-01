@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rtextarea.SearchContext;
 
 import amfileutils.FileStuff;
 import enums.Themes;
@@ -49,6 +51,7 @@ import tabbededitor.CustomTabbedEditor;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import treeutils.TreeUtils;
+import utils.ITextAreaDialogs;
 import utils.RsyntaxUtils;
 import utils.TextAreaDialogs;
 import variousutils.HandleString;
@@ -60,6 +63,8 @@ public class TextEditorUtils {
 	// reference to main text editor
 	public TextEditor currentTextEditor;
 	
+	public TextAreaDialogs textAreaDialogs;
+	
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditorUtils.class);
 	
@@ -69,9 +74,31 @@ public class TextEditorUtils {
 	
 	public TextEditorUtils(TextEditor currentTextEditor) {
 		this.currentTextEditor = currentTextEditor;
+		this.textAreaDialogs = new TextAreaDialogs(getDialogManager());
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the interface with custom method to retrieve target text area in real time for dialogs
+	 * (search/replace/gotoline)
+	 * 
+	 * @return
+	 */
+	public ITextAreaDialogs getDialogManager() {
+		return new ITextAreaDialogs() {
+			@Override
+			public RSyntaxTextArea getTargetTextArea() {
+				RSyntaxTextArea result = new RSyntaxTextArea();
+				try {
+					result = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
+				}catch(Exception e) {
+					logger.error("ITextAreaDialogs() embedded in TextEditorutils: Error while retrieving textArea.", e);
+				}
+				return result;
+			}
+		};
+	}
 	
 	public static void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
 		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByType(currentTextEditor, JButton.class);
@@ -379,7 +406,7 @@ public class TextEditorUtils {
 	}
 
 	public static void errorAdvice(String msg) {
-		TextEditor.dynLblSearchEsit.setForeground(Color.RED);
+		TextEditor.dynLblSearchEsit.setForeground(new Color(232, 102, 46));
 		TextEditor.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(TextEditor.timeoutAdvice);
 	}
@@ -585,18 +612,14 @@ public class TextEditorUtils {
 	/** updates textArea reference in search/replace panels **/
 	public void refreshTxtAreaReference() {
 
-		if (currentTextEditor.searchBox != null && currentTextEditor.searchBox.isVisible()) {
-			currentTextEditor.searchBox = TextAreaDialogs.getSearchDialog(
-					currentTextEditor.parentFrame, 
-					currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, 
-					null, 
-					currentTextEditor,  
-					"successAdvice", 
-					"errorAdvice");
-		}
-
-		if (currentTextEditor.escapeReplacerPanel != null && EscapeReplacerPanel.active) {
+		if (currentTextEditor.escapeReplacerPanel != null) {
 			currentTextEditor.escapeReplacerPanel.outputTextArea = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
+		}
+		if (currentTextEditor.pdfParserBox != null) {
+			currentTextEditor.pdfParserBox.outputTEXTarea = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
+		}
+		if (currentTextEditor.imageParserBox != null) {
+			currentTextEditor.imageParserBox.outputTEXTarea = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
 		}
 	}
 

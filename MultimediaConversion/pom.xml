@@ -18,11 +18,11 @@
   </build>
   
   <dependencies>
-  	<dependency>
+  	<!-- <dependency>
 	    <groupId>net.sourceforge.tess4j</groupId>
 	    <artifactId>tess4j</artifactId>
 	    <version>4.3.1</version>
-	</dependency>
+	</dependency> -->
 	
  	<dependency>
     	<groupId>net.sf.sociaal</groupId>

@@ -630,18 +630,9 @@ public class ImageGeneralWorker {
 	   * @return int RGB of compliment color
 	   */
 	  public static Color getComplimentColor(Color color) {
-	    // get existing colors
-	    int alpha = color.getAlpha();
-	    int red = color.getRed();
-	    int blue = color.getBlue();
-	    int green = color.getGreen();
-
-	    // find compliments
-	    red = (~red) & 0xff;
-	    blue = (~blue) & 0xff;
-	    green = (~green) & 0xff;
-
-	    return new Color(alpha, red, green, blue);
+	    
+	    int colorSrc = color.getRGB();
+	    return new Color(colorSrc ^ 0x00ffffff);
 	  }
 
 	/**

@@ -18,7 +18,6 @@ import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
@@ -30,21 +29,25 @@ import resources.IconsPathConfigurator;
 public class TextAreaDialogs {
 
 	static Logger logger = Logger.getLogger(TextAreaDialogs.class);
+	public ITextAreaDialogs dialogManager;
 	
 	public static final Dimension DEFAULT_SIZE = new Dimension(500, 600);
-	public Object fallbackMethodInstance;
-	public String fallbackMethod;
+	
+	public TextAreaDialogs(ITextAreaDialogs dialogManager) {
+		this.dialogManager = dialogManager;
+	}
 
 	/**
 	 * Returns a dialogs to search text inside given txtArea, printing result into targetResultPrinter if not null.
 	 * Plus, if methodClass and method are defined, and method accept only a String param,
 	 * then the funtion will be called on search function text output. 
 	 **/
-	public static FindDialog getSearchDialog(JFrame owner, RSyntaxTextArea txtArea, JComponent targetResultPrinter, Object methodClass, String methodStringOK, String methodStringKO){
-		FindDialog searchDial = new FindDialog(owner, getSearchListener(txtArea, targetResultPrinter, methodClass, methodStringOK, methodStringKO));
+	public FindDialog getSearchDialog(JFrame owner, JComponent targetResultPrinter, Object methodClass, String methodStringOK, String methodStringKO){
+		FindDialog searchDial = new FindDialog(owner, getSearchListener(dialogManager, targetResultPrinter, methodClass, methodStringOK, methodStringKO));
 		GuiUtils.showOnSameScreen(owner);
 		applyGUIEffects(searchDial);
 		searchDial.setPreferredSize(DEFAULT_SIZE);
+		searchDial.setEscapeClosesDialog(true);
 		searchDial.setVisible(true);
 		searchDial.setAlwaysOnTop(true);
 		searchDial.repaint();
@@ -57,31 +60,35 @@ public class TextAreaDialogs {
 	 * Plus, if methodClass and method are defined, and method accept only a String param,
 	 * then the funtion will be called on replace function text output. 
 	 **/
-	public static ReplaceDialog getReplaceDialog(JFrame owner, RSyntaxTextArea txtArea, JComponent targetResultPrinter, Object methodClass, String methodStringOK, String methodStringKO){
-		ReplaceDialog replaceDial = new ReplaceDialog(owner, getSearchListener(txtArea, targetResultPrinter, methodClass, methodStringOK, methodStringKO));
+	public ReplaceDialog getReplaceDialog(JFrame owner, JComponent targetResultPrinter, Object methodClass, String methodStringOK, String methodStringKO){
+		ReplaceDialog replaceDial = new ReplaceDialog(owner, getSearchListener(dialogManager, targetResultPrinter, methodClass, methodStringOK, methodStringKO));
 		GuiUtils.showOnSameScreen(owner);
 		replaceDial.setVisible(true);
 		replaceDial.setEscapeClosesDialog(true);
 		replaceDial.setPreferredSize(DEFAULT_SIZE);
+		replaceDial.setEscapeClosesDialog(true);
 		
 		return replaceDial;
 	}
 	
 	// GO TO LINE
-	public static GoToDialog getGoToLineDialog(JFrame owner, RSyntaxTextArea txtArea){
+	public GoToDialog getGoToLineDialog(JFrame owner){
 		GoToDialog dialog = new GoToDialog(owner);
 		GuiUtils.showOnSameScreen(owner);
-		dialog.setMaxLineNumberAllowed(txtArea.getLineCount());
+		dialog.setMaxLineNumberAllowed(dialogManager.getTargetTextArea().getLineCount());
 		dialog.setEscapeClosesDialog(true);
 		dialog.setLocationRelativeTo(owner);
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GOTO_LINE, dialog);
 		dialog.setPreferredSize(DEFAULT_SIZE);
+		dialog.setVisible(true);
+		dialog.toFront();
+		dialog.requestFocus();
 		int line = dialog.getLineNumber();
 		if (line>0) {
 			try {
-				txtArea.setCaretPosition(txtArea.getLineStartOffset(line-1));
+				dialogManager.getTargetTextArea().setCaretPosition(dialogManager.getTargetTextArea().getLineStartOffset(line-1));
 			} catch (BadLocationException ble) { // Never happens
-				UIManager.getLookAndFeel().provideErrorFeedback(txtArea);
+				UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 				ble.printStackTrace();
 			}
 		}
@@ -100,7 +107,7 @@ public class TextAreaDialogs {
 	/**
 	 *  This ties the properties of the two dialogs together (match case, regex, etc.)
 	 */
-	public static void allineateReplaceToFindDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
+	public void allineateReplaceToFindDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
 		// This ties the properties of the two dialogs together (match case, regex, etc.)
 		SearchContext context = findDialog.getSearchContext();
 		replaceDialog.setSearchContext(context);
@@ -109,13 +116,13 @@ public class TextAreaDialogs {
 	/**
 	 *  This ties the properties of the two dialogs together (match case, regex, etc.)
 	 */
-	public static void allineateFindToReplaceDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
+	public void allineateFindToReplaceDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
 		
 		SearchContext context = replaceDialog.getSearchContext();
 		findDialog.setSearchContext(context);
 	}
 	
-	private static boolean checkReflection(Object methodClass, String method) {
+	private boolean checkReflection(Object methodClass, String method) {
 		
 		Class<?> clazz = (methodClass instanceof Class<?>)? (Class<?>)methodClass : methodClass.getClass();
 		
@@ -130,7 +137,7 @@ public class TextAreaDialogs {
 	}
 	
 	// SEARCH LISTENER
-	private static SearchListener getSearchListener(RSyntaxTextArea textArea, JComponent targetResultPrinter, Object methodClassInstance, String methodStringOK, String methodStringKO){
+	private SearchListener getSearchListener(ITextAreaDialogs dialogManager, JComponent targetResultPrinter, Object methodClassInstance, String methodStringOK, String methodStringKO){
 		return new SearchListener() {
 			
 			@Override
@@ -145,22 +152,22 @@ public class TextAreaDialogs {
 				switch (type) {
 					default: // Prevent FindBugs warning later
 					case MARK_ALL:
-						result = SearchEngine.markAll(textArea, context);
+						result = SearchEngine.markAll(dialogManager.getTargetTextArea(), context);
 						break;
 					case FIND:
-						result = SearchEngine.find(textArea, context);
+						result = SearchEngine.find(dialogManager.getTargetTextArea(), context);
 						if (!result.wasFound()) {
-							UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+							UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 						}
 						break;
 					case REPLACE:
-						result = SearchEngine.replace(textArea, context);
+						result = SearchEngine.replace(dialogManager.getTargetTextArea(), context);
 						if (!result.wasFound()) {
-							UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+							UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 						}
 						break;
 					case REPLACE_ALL:
-						result = SearchEngine.replaceAll(textArea, context);
+						result = SearchEngine.replaceAll(dialogManager.getTargetTextArea(), context);
 						JOptionPane.showMessageDialog(null, result.getCount() +
 								" occurrences replaced.");
 						break;
@@ -220,7 +227,7 @@ public class TextAreaDialogs {
 			
 			@Override
 			public String getSelectedText() {
-				return textArea.getSelectedText();
+				return dialogManager.getTargetTextArea().getSelectedText();
 			}
 		};
 	}

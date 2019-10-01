@@ -3,12 +3,13 @@ package treeutils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JTree;
-import javax.swing.text.Position;
 import javax.swing.text.Position.Bias;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -55,12 +56,11 @@ public class TreeUtils {
 	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree, boolean checkExistance) throws IOException{
 		
 		boolean error = fileToSelect == null || tree == null || (checkExistance && !fileToSelect.exists());
-		
 		if(error) {
 			return;
 		}
 		
-		File root = ((FileNamed)tree.getModel().getRoot()).mFile.getCanonicalFile();
+		File root = ((FileNamed)tree.getModel().getRoot()).mFile.getAbsoluteFile();
 		LinkedList<File> nodes = new LinkedList<File>();
 		File current = new File(fileToSelect.getCanonicalPath());
 		
@@ -80,5 +80,26 @@ public class TreeUtils {
 			tree.expandPath(nodePath);
 			nodes.removeLast();
 		}		
+	}
+
+	public static void setTreeExpandedState(JTree tree, boolean expanded) {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getModel().getRoot();
+		setNodeExpandedState(tree, node, expanded);
+	}
+
+	public static void setNodeExpandedState(JTree tree, DefaultMutableTreeNode node, boolean expanded) {
+		ArrayList<DefaultMutableTreeNode> list = Collections.list(node.children());
+		for (DefaultMutableTreeNode treeNode : list) {
+			setNodeExpandedState(tree, treeNode, expanded);
+		}
+		if (!expanded && node.isRoot()) {
+			return;
+		}
+		TreePath path = new TreePath(node.getPath());
+		if (expanded) {
+			tree.expandPath(path);
+		} else {
+			tree.collapsePath(path);
+		}
 	}
 }
