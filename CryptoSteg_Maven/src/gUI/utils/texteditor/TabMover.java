@@ -5,15 +5,18 @@ import java.util.Collections;
 
 import frameutils.FileDragNDropManager;
 import gUI.panels.TextEditor;
+import tabbededitor.CustomTabbedEditor;
 
 @Deprecated
 public class TabMover {
 	
 	private static volatile boolean movingTab = false;
 	FileDragNDropManager tabReferenceDraggable;
+	CustomTabbedEditor currrentTabbedEditor;
 	
-	public TabMover(FileDragNDropManager tabRef) {
-		tabReferenceDraggable = tabRef;
+	public TabMover(CustomTabbedEditor tabRef) {
+		currrentTabbedEditor = tabRef;
+		tabReferenceDraggable = currrentTabbedEditor.mainTabList;
 	}
 	
 	/**
@@ -45,7 +48,7 @@ public class TabMover {
 	}
 	
 	private boolean switchTwoTabs(int indexA, int indexB) {
-		int maxIndex = TextEditor.mainTabList.getTabCount()-1;
+		int maxIndex = currrentTabbedEditor.mainTabList.getTabCount()-1;
 		boolean error1 = indexA > maxIndex || indexB > maxIndex;
 		boolean error2 = indexA < 0 || indexB < 0;
 		if(error1 || error2) {
@@ -67,7 +70,7 @@ public class TabMover {
         tabReferenceDraggable.insertTab(tabReferenceDraggable.getTitleAt(indexB), null, tabReferenceDraggable.getComponentAt(indexB), null, indexA);
         tabReferenceDraggable.setTabComponentAt(indexB, tabHeadA);
         tabReferenceDraggable.insertTab(titleA, null, compA, null, indexB);
-        Collections.swap(TextEditor.loadedList, indexA, indexB);
+        Collections.swap(currrentTabbedEditor.loadedList, indexA, indexB);
         
 	}
 	

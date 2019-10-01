@@ -1,4 +1,4 @@
-package junit.GUI;
+package shortcutstester;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;

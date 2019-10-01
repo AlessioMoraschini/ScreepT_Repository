@@ -59,6 +59,26 @@ public class TextEditorOption {
 	// CONSTRUCTOR
 	public TextEditorOption() {
 		openedFileList = new ArrayList<String>();
+		margin = DEFAULT_MARGIN;
+		voiceRate = DEFAULT_VOICE_RATE;
+		inlinedTabs = DEFAULT_TAB_INLINE;
+		font = DEFAULT_FONT;
+		filePanelBackCol = DEFAULT_FILE_PANEL_BACKGROUND_COL;
+		backCol = DEFAULT_BACKGROUND_COL;
+		foreCol = DEFAULT_FOREGROUND_COL;
+		selectedAtStart = DEFAULT_SELECTED_FILE_AT_START;
+		defaultWorkspacePath = DEFAULT_WORKSPACE_LOCATION;
+		selectedTheme = DEFAULT_SELECTED_THEME;
+		dividerFileTreePosX = DEFAULT_DIVIDER_POS_X;
+		tabSize = DEFAULT_TAB_SIZE;
+		tabLineVisible = DEFAULT_TAB_LINE_VISIBLE;
+		fileTreeActive = DEFAULT_FTREE_ACTIVE;
+		treeLocked = DEFAULT_TREE_LOCKED;
+		workspaceViewSelected = DEFAULT_WORKSPACE_VIEW_SELECTED;
+		defaultAutoSyntaxSync = DFAULT_AUTO_SYNTAX_SYN_FLAG;
+		breaklineActive = DEFAULT_BREAK_LINE;
+		antialiasedTxtArea = DEFAULT_ANTIALIASED_TXT_AREA;
+		txtAreaDetailLevel = DEFAULT_TXT_AREA_DETAIL;
 	}
 
 	

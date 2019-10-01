@@ -88,6 +88,7 @@ public class MainGuiParent {
 	JMenu mnConversionsAndOther;
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
+	JMenu mnrestartPanel;
 	
 	JMenuItem mntmInspectCurrentConfiguration;
 	JMenuItem mntmloadPrjSub;
@@ -118,6 +119,7 @@ public class MainGuiParent {
 	JMenuItem mntmDeleteDirectoryContentDirsOnlyRecursive;
 	JMenuItem mntmMakeDirsFromPath;
 	JMenuItem mntmCopyDirStructure;
+	JMenuItem mntmResetAllPanels;
 	
 	/******************  BEGIN UTILITY METHODS  *****************************/
 	
@@ -193,6 +195,8 @@ public class MainGuiParent {
 			mnHelp.add(mntmExportLog);
 			mnHelp.add(mntmEraseLogs);
 			mnHelp.add(mntmUserDocumentation);
+			mnHelp.add(mnrestartPanel);
+				mnrestartPanel.add(mntmResetAllPanels);
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmReturnToWelcome);
 			
@@ -224,10 +228,10 @@ public class MainGuiParent {
 		
 		// MAIN MENU ENTRIES
 		mnFile.setFont(menuBarFont);
-		mnHelp.setFont(menuBarFont);
 		mnPreferences.setFont(menuBarFont);
 		mnCryptoSteg.setFont(menuBarFont);
 		mnVarious.setFont(menuBarFont);
+		mnHelp.setFont(menuBarFont);
 
 		// SUBDIRECTORIES
 		mnFilesAndDirectories.setFont(subMenuFont);
@@ -275,6 +279,8 @@ public class MainGuiParent {
 		mntmExportLog.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
 		mntmUserDocumentation.setFont(menuItemFont);
+		mnrestartPanel.setFont(subMenuFont);
+		mntmResetAllPanels.setFont(menuItemFont);
 	}
 	
 	void addMenuIcons() {
@@ -322,6 +328,10 @@ public class MainGuiParent {
 		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
 		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));
+		
+		MenuSetter.setIconTextGap(mnrestartPanel, 20);
+		mnrestartPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+		mntmResetAllPanels.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 	}
 	
 	void updateMenuAndLogFontSize(int fontSize){
@@ -444,4 +454,20 @@ public class MainGuiParent {
 	public JMenuItem getMntmDeleteDirectoryContentByExtension() {
 		return mntmDeleteDirectoryContentByExtension;
 	}
+
+
+	public JMenuItem getMntmResetAllPanels() {
+		return mntmResetAllPanels;
+	}
+
+
+	public void setMntmResetAllPanels(JMenuItem mntmResetAllPanels) {
+		this.mntmResetAllPanels = mntmResetAllPanels;
+	}
+
+
+	public void setMntmReturnToWelcome(JMenuItem mntmReturnToWelcome) {
+		this.mntmReturnToWelcome = mntmReturnToWelcome;
+	}
+	
 }

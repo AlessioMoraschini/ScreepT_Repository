@@ -10,6 +10,7 @@ public class SteganOption {
 	public final static int DEFAULT_HEIGHT= 1000;
 	public final static String DEFAULT_IMG_RECENT_PATH = "IMG";
 	public final static boolean DEFAULT_FLAG_STEG = true;
+	public final static boolean DEFAULT_FLAG_ULTRASECURE = true;
 	
 	// FIELDS
 	private int defaultWidth;
@@ -20,6 +21,10 @@ public class SteganOption {
 	
 	public SteganOption () {
 		imgRecentPath = new Vector<String>();
+		defaultWidth = DEFAULT_WIDTH;
+		defaultHeight = DEFAULT_HEIGHT;
+		ultraSecure = DEFAULT_FLAG_ULTRASECURE;
+		flagSteg = DEFAULT_FLAG_STEG;
 	}
 	
 	public SteganOption(int defWidth, int defHeight, String imgRecPath, boolean STEG, boolean ultraSec) {

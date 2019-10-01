@@ -11,6 +11,7 @@ public class AesOption {
 	// constructors //
 	
 	public AesOption() {
+		flagAes = DEFAULT_FLAG_AES;
 	}
 	
 	public AesOption(boolean AES) {

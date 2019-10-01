@@ -12,6 +12,7 @@ import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tooltip.TextEditorTooltips;
 import resources.IconsPathConfigurator;
+import tabbededitor.CustomTabbedEditor;
 
 public class TextEditorShortcutListener implements KeyEventDispatcher{
 	
@@ -25,10 +26,12 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 	public volatile boolean flagHoverBtnViewExpCmd = false;
 	public volatile boolean flagHoverBtnRemoveSpaces = false;
 	
-	TextEditor currentTextEditor;
+	private TextEditor currentTextEditor;
+	private CustomTabbedEditor currentTabEditor;
 	
 	public TextEditorShortcutListener(TextEditor currentTextEdit) {
-		currentTextEditor = currentTextEdit;
+		this.currentTextEditor = currentTextEdit;
+		this.currentTabEditor = currentTextEditor.getCurrentTabEditor();
 	}
 	
 	@Override
@@ -49,8 +52,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				{
 					try {
 						for(int i = 0; i<5; i++) {
-							if (TextEditor.loadedTabObj.textArea.canUndo()) {
-								TextEditor.loadedTabObj.textArea.undoLastAction();
+							if (currentTabEditor.loadedTabObj.textArea.canUndo()) {
+								currentTabEditor.loadedTabObj.textArea.undoLastAction();
 							}
 						}
 					} catch (Throwable e2) {
@@ -65,8 +68,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				{
 					try {
 						for (int i = 0; i < 5; i++) {
-							if (TextEditor.loadedTabObj.textArea.canRedo()) {
-								TextEditor.loadedTabObj.textArea.redoLastAction();
+							if (currentTabEditor.loadedTabObj.textArea.canRedo()) {
+								currentTabEditor.loadedTabObj.textArea.redoLastAction();
 							} 
 						}
 					} catch (Throwable e2) {
@@ -106,28 +109,28 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				 *  RELOAD FROM DISK -> CTRL+Shift+R
 				 */
 				//case Ctrl+shift+R -> reload current file from Disk
-				if (!currentTextEditor.alreadySaving && e.getKeyCode() == 82 && !e.isAltDown() && e.isControlDown()
+				if (!currentTabEditor.alreadySaving && e.getKeyCode() == 82 && !e.isAltDown() && e.isControlDown()
 						&& e.isShiftDown()) {
 					currentTextEditor.btnReloadFromDisk.doClick();
 				}
 				/*
 				 *  SAVE FILE AS NEW -> CTRL+Shift+S
 				 */
-				if (!currentTextEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()
+				if (!currentTabEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()
 						&& e.isShiftDown()) {
 					currentTextEditor.btnSaveTextFileAs.doClick();
 				}
 				/*
 				 *  SAVE FILE -> CTRL+S
 				 */
-				if (!currentTextEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()
+				if (!currentTabEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()
 						&& !e.isShiftDown()) {
 					currentTextEditor.btnSaveTextFile.doClick();
 				}
 				/*
 				 *  LOAD FILE -> CTRL+O
 				 */
-				if (!TextEditor.alreadyLoading && e.getKeyCode() == 79 && !e.isAltDown() && e.isControlDown()
+				if (!currentTabEditor.alreadyLoading && e.getKeyCode() == 79 && !e.isAltDown() && e.isControlDown()
 						&& !e.isShiftDown()) {
 					currentTextEditor.btnLoadTextFile.doClick();
 				}
@@ -281,26 +284,26 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				 * 	NEXT TAB -> CTRL+TAB
 				 */
 				if (e.getKeyCode() == 9 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					TextEditorUtils.goToNextTab();
+					currentTabEditor.goToNextTab();
 				}
 				
 				/*
 				 * 	PREVIOUS TAB -> CTRL+Shift+TAB
 				 */
 				if (e.getKeyCode() == 9 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					TextEditorUtils.goToPreviousTab();
+					currentTabEditor.goToPreviousTab();
 				}
 				/*
 				 * 	NEW TAB -> CTRL+N
 				 */
 				if (e.getKeyCode() == 78 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					TextEditorUtils.addTab(null, false);
+					currentTabEditor.addTab(null, false);
 				}
 				/*
 				 * 	CLOSE CURRENT TAB -> CTRL+W
 				 */
 				if (e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					TextEditorUtils.closeCurrentTab();
+					currentTabEditor.closeCurrentTab();
 				} 
 				
 				/*
@@ -323,7 +326,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 72 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TextEditorUtils.hideOrShowHeaderPanelLevel1();
+							currentTextEditor.textEditorUtils.hideOrShowHeaderPanelLevel1();
 						}
 					});
 				}
@@ -334,7 +337,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 76 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TextEditorUtils.hideOrShowFooterPanel();
+							currentTextEditor.textEditorUtils.hideOrShowFooterPanel();
 						}
 					});
 				}

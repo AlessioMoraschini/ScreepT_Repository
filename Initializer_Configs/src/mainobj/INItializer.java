@@ -55,7 +55,13 @@ public class INItializer {
 	public final static String IMAGE_CONVERTER_OPT = "IMAGE_CONVERTER";
 	
 	public INItializer() {
-		
+		genOpt = new GenericOption();
+		fileOpt = new FileOptions();
+		steganOpt = new SteganOption();
+		aesOpt = new AesOption();
+		guiOpt = new GuiOption();
+		textEditorOpt = new TextEditorOption();
+		imageConvertOption = new ImgConverterOption();
 	}
 	
 //	public INItializer(Ini ini) {

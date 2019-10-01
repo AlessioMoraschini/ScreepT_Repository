@@ -18,7 +18,11 @@ public class GuiOption {
 	public int nimbusSize = 1;
 	
 	public GuiOption() {
-		
+		preferredStyle = DEFAULT_GUI_STYLE;
+		menuFontSize = DEFAULT_MENU_FONT_SIZE;
+		logFontSize = DEFAULT_LOG_FONT_SIZE;
+		darkGuiNimbus = DEFAULT_GUI_DARK_NIMBUS;
+		nimbusSize = DEFAULT_NIMBUS_SIZE;
 	}
 	
 	public GuiOption(int menuSize, int logSize, String style, boolean darkGuiNim, int nimbusSize) {

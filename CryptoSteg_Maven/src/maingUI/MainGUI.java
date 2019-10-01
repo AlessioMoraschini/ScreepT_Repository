@@ -55,7 +55,6 @@ import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.mainGui.MainGuiUtils;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
-import gUI.utils.texteditor.TextEditorUtils;
 import gui.utils.LauncherLoaderFrame;
 import guistyle.GUIStyelSettings;
 import logger.LoggerUtils;
@@ -84,6 +83,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
+import tabbededitor.CustomTabbedEditor;
 import utils.SysUtils;
 
 import javax.swing.MenuSelectionManager;
@@ -466,6 +466,7 @@ public class MainGUI extends MainGuiParent{
 		mnConversionsAndOther = new JMenu("Conversions and Media");
 		mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnHelp = new JMenu("Help");
+		mnrestartPanel = new JMenu("Reset panels...");
 	
  loaderGraphics.update("Defining handlers...", 40);
 		
@@ -522,6 +523,14 @@ public class MainGUI extends MainGuiParent{
 					}
 		    }
 		});
+		// NOT OPENING VIEW - RESET ALL PANELS
+		mntmResetAllPanels = new JMenuItem(new AbstractAction("Reset all Panels") {
+		    public void actionPerformed(ActionEvent ae) {
+				   
+	    			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+	    			mainGuiUtils.resetPanel(null, mainAPP.frmScryptV.getClass(), mainAPP.frmScryptV);
+				}
+	    });
 		
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
 		mntmSaveCurrent = new JMenuItem(new AbstractAction("Save Current Configuration") {
@@ -842,7 +851,7 @@ public class MainGUI extends MainGuiParent{
 						if (MainGUI.initTxtWriter != null && MainGUI.initTxtWriter instanceof TextEditor) {
 							JScrollPane target = ((TextEditor)MainGUI.initTxtWriter).mainScrollPane;
 							GuiUtils.scrollJScrollPane(target, true);
-							TextEditorUtils.resizeFrameToDefault(mainAPP);
+							initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
 						}
 					}
 				});
@@ -1118,8 +1127,8 @@ public class MainGUI extends MainGuiParent{
 	
 	public void resizeMainFrameDefaults() {
 		labelBACKground.setSize(frmScryptV.getContentPane().getSize());
-		if(initTxtWriter != null && TextEditor.mainTabList != null) {
-			TextEditorUtils.resizeFrameToDefault(mainAPP);
+		if(initTxtWriter != null && initTxtWriter.getCurrentTabEditor().mainTabList != null) {
+			initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
 		}
 	}
 	
@@ -1397,16 +1406,19 @@ public class MainGUI extends MainGuiParent{
 	 * @return
 	 */
 	public static boolean askUnsavedTextFiles() {
-		if (TextEditor.loadedList == null) {
+		
+		if (initTxtWriter == null || initTxtWriter.getCurrentTabEditor() == null) {
 			return true;
 		}
+		
+		CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
 
 		boolean askCondition;
 		boolean atLeastOneTemp;
 		
 		askCondition = false;
 		atLeastOneTemp = false;
-		for (TabTextEditorObj tabElement : TextEditor.loadedList) {
+		for (TabTextEditorObj tabElement : currentTabEditor.loadedList) {
 			if (tabElement.unsaved) {
 				askCondition = true;
 			}
@@ -1420,7 +1432,7 @@ public class MainGUI extends MainGuiParent{
 			return false;
 		}else if(choiceY) {
 			try {
-				TextEditorUtils.saveAllUnsavedExisting();
+				currentTabEditor.saveAllUnsavedExisting();
 			} catch (IOException e) {
 				logger.error(e);
 				int choiceError = JOptionPane.showConfirmDialog(null, "Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?");
@@ -1431,9 +1443,9 @@ public class MainGUI extends MainGuiParent{
 			}
 			if(atLeastOneTemp) {
 				mntmTextEditor.doClick();
-				for(TabTextEditorObj tabElement : TextEditor.loadedList) {
+				for(TabTextEditorObj tabElement : currentTabEditor.loadedList) {
 					if(tabElement.unsaved && tabElement.loadedFile == null) {
-						TextEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
+						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
 						return false; // don't exit
 					}
 				}
@@ -1446,9 +1458,11 @@ public class MainGUI extends MainGuiParent{
 	
 	private static void backupOpenedFilesInConfig() {
 		if (initTxtWriter != null) {
+			CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
+			
 			// save list of non null and existing files in tabs
 			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
-			for (TabTextEditorObj currentObj : TextEditor.loadedList) {
+			for (TabTextEditorObj currentObj : currentTabEditor.loadedList) {
 				if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
 					currentConfiguration.getTextEditorOpt().getOpenedFileList()
 							.add(currentObj.loadedFile.getAbsolutePath());
@@ -1458,11 +1472,11 @@ public class MainGUI extends MainGuiParent{
 					INItializer.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
 
 			// save current opened if it exists
-			if(TextEditor.loadedTabObj != null 
-					&& TextEditor.loadedTabObj.loadedFile!= null 
-					&& currentConfiguration.getTextEditorOpt().openedFileList.contains(TextEditor.loadedTabObj.loadedFile.getAbsolutePath()))
+			if(currentTabEditor.loadedTabObj != null 
+					&& currentTabEditor.loadedTabObj.loadedFile!= null 
+					&& currentConfiguration.getTextEditorOpt().openedFileList.contains(currentTabEditor.loadedTabObj.loadedFile.getAbsolutePath()))
 			{
-				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "selectedFileAtStart", TextEditor.loadedTabObj.loadedFile.getAbsolutePath());
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "selectedFileAtStart", currentTabEditor.loadedTabObj.loadedFile.getAbsolutePath());
 			}
 		}
 		logger.info("\n => Opened files in textEditor added to configuration");
@@ -1503,7 +1517,10 @@ public class MainGUI extends MainGuiParent{
 		}
 		
 		GUIStyelSettings.updateAllWindowsLaf();
-		TextEditorUtils.applyStyleToTabs();
+		
+		if(initTxtWriter != null) {
+			initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
+		}
 	}
 	
 	// GETTERS //

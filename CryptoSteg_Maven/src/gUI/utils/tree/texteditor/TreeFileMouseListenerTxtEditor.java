@@ -29,6 +29,7 @@ import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 import splitpanel.FileNamed;
+import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import utils.ColorDialogUtils;
 import variousutils.HandleString;
@@ -42,6 +43,7 @@ public class TreeFileMouseListenerTxtEditor {
 	private JTree tree;
 	private FileNamed selectedNode;
 	private TextEditor textEditor;
+	private CustomTabbedEditor currentTabEditor;
 	private JFrame propertiesFrame = null; 
 	
 	public JMenuItem itemLoadFile;
@@ -58,6 +60,7 @@ public class TreeFileMouseListenerTxtEditor {
 		this.tree.addMouseListener(getMouseListener());
 		this.tree.addMouseListener(getDoubleCLickListener());
 		textEditor = textEdit;
+		currentTabEditor = textEditor.getCurrentTabEditor();
 	}
 	
 	public MouseListener getMouseListener() {
@@ -89,7 +92,7 @@ public class TreeFileMouseListenerTxtEditor {
 	                    selectedNode = (FileNamed) selPath.getLastPathComponent();
 	                    if (selectedNode.mFile != null && selectedNode.mFile.exists() && selectedNode.mFile.isFile()) {
 	                    	//	                myDoubleClick(selRow, selPath);
-	                    	textEditor.loadFile(selectedNode.mFile);
+	                    	currentTabEditor.loadFile(selectedNode.mFile);
 	                    }
 	                } else{
 	                    selectedNode = null;
@@ -146,9 +149,9 @@ public class TreeFileMouseListenerTxtEditor {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (selectedNode!= null ) {
-					TextEditorUtils.refreshTree(selectedNode.mFile, true);
-				}else if(TextEditor.loadedTabObj != null){
-					TextEditorUtils.refreshTree(TextEditor.loadedTabObj.loadedFile, true);
+					textEditor.textEditorUtils.refreshTree(selectedNode.mFile, true);
+				}else if(currentTabEditor.loadedTabObj != null){
+					textEditor.textEditorUtils.refreshTree(currentTabEditor.loadedTabObj.loadedFile, true);
 				}
 			}
 		};
@@ -159,7 +162,7 @@ public class TreeFileMouseListenerTxtEditor {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (propertiesFrame == null || !propertiesFrame.isVisible()) {
-					TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							try {
@@ -172,7 +175,7 @@ public class TreeFileMouseListenerTxtEditor {
 							} catch (Exception e) {
 								logger.error(e);
 							}
-							TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+							currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 						}
 					});
 				}else {
@@ -188,13 +191,13 @@ public class TreeFileMouseListenerTxtEditor {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							if (selectedNode != null && selectedNode.mFile != null && !TextEditor.alreadyLoading) {
-								textEditor.loadFile(selectedNode.mFile);
-								TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+							if (selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
+								currentTabEditor.loadFile(selectedNode.mFile);
+								currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 							}
 						} catch (Exception e) {
 							logger.error(e);
@@ -226,21 +229,21 @@ public class TreeFileMouseListenerTxtEditor {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 				File selected = new File(""); 
-				if(selectedNode != null && selectedNode.mFile != null && !TextEditor.alreadyLoading) {
+				if(selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
 					selected = selectedNode.mFile;
-				}else if(textEditor.loadedTabObj.loadedFile != null) {
-					selected = textEditor.loadedTabObj.loadedFile;
+				}else if(currentTabEditor.loadedTabObj.loadedFile != null) {
+					selected = currentTabEditor.loadedTabObj.loadedFile;
 				}else {
-					TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					return;
 				}
 				
 				selected = FileStuff.renameJavaObjFile(selected);
 				String newName = JOptionPane.showInputDialog("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
 				if(newName == null) {
-					TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					return;
 				}
 				newName = (!newName.equals(""))? newName : "NewFile.txt";
@@ -253,12 +256,12 @@ public class TreeFileMouseListenerTxtEditor {
 						String msg = "File not created";
 						logger.warn(msg);
 						JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.WARNING_MESSAGE);
-						TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 						return;
 					}
-					textEditor.loadFile(selected);
-					if (TextEditor.loadedTabObj != null) {
-						TextEditorUtils.refreshTree(TextEditor.loadedTabObj.loadedFile, false);
+					currentTabEditor.loadFile(selected);
+					if (currentTabEditor.loadedTabObj != null) {
+						textEditor.textEditorUtils.refreshTree(currentTabEditor.loadedTabObj.loadedFile, false);
 					}
 				} catch (IOException e1) {
 					String msg = "Error creating new file";
@@ -266,7 +269,7 @@ public class TreeFileMouseListenerTxtEditor {
 					JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.ERROR_MESSAGE);
 				}
 				
-				TextEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 						
 			}
 		};

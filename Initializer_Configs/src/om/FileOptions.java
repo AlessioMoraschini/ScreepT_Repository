@@ -18,7 +18,11 @@ public class FileOptions {
 	private String lastDstFolderPath;
 	
 	public FileOptions() {
-		
+		flagAutosave = DEFAULT_FLAG_AUTOSAVE;
+		flagOverwrite = DEFAULT_FLAG_OVERWRITE;
+		autosaveInterval = DEFAULT_AUTOSAVE_INTERVAL;
+		lastSrcFolderPath = DEFAULT_LAST_SRC_FOLDER_PATH;
+		lastDstFolderPath = DEFAULT_LAST_DEST_FOLDER_PATH;
 	}
 	
 	public FileOptions(boolean autosave, boolean overwrite, String lastSrcPath, String lastDstPath, int autosaveInt) {

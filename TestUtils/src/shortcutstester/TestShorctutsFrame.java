@@ -1,16 +1,13 @@
-package junit.GUI;
+package shortcutstester;
 
 import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
-
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
-
-import frameutils.GuiUtils;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class TestShorctutsFrame {
 
@@ -21,16 +18,14 @@ public class TestShorctutsFrame {
 	
 	public static void analyzeTextInput() {
 		JFrame frame = new JFrame("Test shortcuts");
-		GuiUtils.centerFrame(frame, 20);
-		RSyntaxTextArea textAreaS = new RSyntaxTextArea();
-		textAreaS.setCodeFoldingEnabled(true);
-		textAreaS.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		RTextScrollPane scrollPane = new RTextScrollPane(textAreaS);
+		JTextArea textAreaS = new JTextArea();
+		JScrollPane scrollPane = new JScrollPane(textAreaS);
+		scrollPane.setViewportView(textAreaS);
 		frame.add(scrollPane);
 		frame.setVisible(true);
 		frame.setAlwaysOnTop(true);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new ShortcutTester());
-		
+		frame.setBounds(new Rectangle(100, 100, 400, 300));
 		frame.addWindowListener(new WindowListener() {
 			
 			public void windowOpened(WindowEvent e) {

@@ -74,7 +74,6 @@ public class TextAreaDialogs {
 		dialog.setMaxLineNumberAllowed(txtArea.getLineCount());
 		dialog.setEscapeClosesDialog(true);
 		dialog.setLocationRelativeTo(owner);
-		dialog.setVisible(true);
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GOTO_LINE, dialog);
 		dialog.setPreferredSize(DEFAULT_SIZE);
 		int line = dialog.getLineNumber();
@@ -117,8 +116,11 @@ public class TextAreaDialogs {
 	}
 	
 	private static boolean checkReflection(Object methodClass, String method) {
+		
+		Class<?> clazz = (methodClass instanceof Class<?>)? (Class<?>)methodClass : methodClass.getClass();
+		
 		if(methodClass != null && method != null && !method.equals("")) {
-			if (ReflectionLibChecker.checkMethod(methodClass.getClass(), method, String.class)) {
+			if (ReflectionLibChecker.checkMethod(clazz, method, String.class)) {
 				return true;
 			}
 			return false;
@@ -196,7 +198,8 @@ public class TextAreaDialogs {
 					//CASE OK
 					if (checkReflection(methodClassInstance, methodStringOK)) {
 						try {
-							method = methodClassInstance.getClass().getMethod(methodStringOK, String.class);
+							Class<?> clazz = (methodClassInstance instanceof Class<?>)? (Class<?>)methodClassInstance : methodClassInstance.getClass();
+							method = clazz.getMethod(methodStringOK, String.class);
 							method.invoke(methodClassInstance, text);
 						} catch (Exception e1) {
 							logger.error("Error on Launching reflection callback to print out text: ");

@@ -2,6 +2,7 @@ package gUI.utils.mainGui;
 
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -23,20 +24,42 @@ public class MainGuiUtils {
 	
 	/**
 	 * Use this function to reset panel to initial state
+	 * @param <T>
 	 * @param className
 	 */
-	public void resetPanel(String className) {
-		if(TextEditor.class.getSimpleName().equals(className)) {
-			startTextEditor(true);
-		}else if(CrypterPanel.class.getSimpleName().equals(className)) {
-			startCrypterPanel(true);
-		}else if(ChargeIniLog.class.getSimpleName().equals(className)) {
-			startConfigManagerPanel(true);
-		}else if("ALL".equalsIgnoreCase(className)) {
-			startTextEditor(true);
-			startCrypterPanel(true);
-			startConfigManagerPanel(true);
-		}
+	public <T> void resetPanel(Class<T>target, Class<?> selectednow, JFrame instance) {
+		final boolean txtEditor, crypter, configuration, home;
+		
+		txtEditor = (instance.getContentPane().getComponent(0).equals(MainGUI.initTxtWriter))? true : false;
+		crypter = (instance.getContentPane().getComponent(0).equals(MainGUI.panelCrypter))? true : false;
+		configuration = (instance.getContentPane().getComponent(0).equals(mainAppReference.configManagerPanel))? true : false;
+		home = (!txtEditor && !crypter && !configuration)? true : false;
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if(ChargeIniLog.class.equals(target)) {
+					startConfigManagerPanel(true);
+				}else if(TextEditor.class.equals(target)) {
+					startTextEditor(true);
+				}else if(CrypterPanel.class.equals(target)) {
+					startCrypterPanel(true);
+				}else if(target == null) {
+					startConfigManagerPanel(true);
+					startCrypterPanel(true);
+					startTextEditor(true);
+				}
+		
+				if (txtEditor) {
+					mainAppReference.getMntmTextEditor().doClick();
+				} else if (crypter) {
+					mainAppReference.getMntmCrypter().doClick();
+				} else if (configuration) {
+					mainAppReference.getMntmInspectCurrentConfiguration().doClick();
+				} else if (home) {
+					mainAppReference.getMntmReturnToWelcome().doClick();
+				}
+			}
+		});
 	}
 	
 	public void startConfigManagerPanel(boolean forceStart) {
@@ -67,22 +90,17 @@ public class MainGuiUtils {
 		
 		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
 		
-		SwingUtilities.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-				if(MainGUI.initTxtWriter == null || forceRestart) {
-					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
-				}		    	
-		    	contentPane.removeAll();
-		    	contentPane.add(MainGUI.initTxtWriter);
-		    	contentPane.revalidate(); 
-		    	contentPane.repaint();
-		    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
-			}
-		});
+		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+		if(MainGUI.initTxtWriter == null || forceRestart) {
+			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+			MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
+		}		    	
+    	contentPane.removeAll();
+    	contentPane.add(MainGUI.initTxtWriter);
+    	contentPane.revalidate(); 
+    	contentPane.repaint();
+    	
+    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 	}
 	
 	/**

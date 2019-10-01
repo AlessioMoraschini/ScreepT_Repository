@@ -129,6 +129,9 @@ public class GeneralConfig {
 	    table.put(".sh",new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 	    table.put(".php",new ImageIcon(IconsPathConfigurator.F_ICON_PHP));
 	    table.put(".xml",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".pom",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".xsd",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".wsdl",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
 	    table.put(".zip",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
 	    table.put(".rar",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
 	    table.put(".sql",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));

@@ -18,6 +18,10 @@ public class ImgConverterOption {
 	
 	// CONSTRUCTOR
 	public ImgConverterOption() {
+		sameSize = DEFAULT_SAME_SIZE;
+		sameExtension = DEFAULT_SAME_EXT;
+		quality = DEFAULT_QUALITY;
+		algorithm = DEFAULT_ALGORITHM;
 	}
 
 	// GETTERS AND SETTERS

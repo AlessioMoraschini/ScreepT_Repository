@@ -13,7 +13,9 @@ public class GenericOption {
 	private float generalVolume;
 	
 	public GenericOption() {
-		
+		userName = DEFAULT_USERNAME;
+		charset = DEFAULT_CHARSET;
+		generalVolume = DEFAULT_VOLUME;
 	}
 	
 	public GenericOption(String user, String chars, boolean ultraSec, float genVolume) {

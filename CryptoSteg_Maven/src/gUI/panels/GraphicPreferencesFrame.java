@@ -4,6 +4,7 @@ import resources.GeneralConfig;
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import tabbededitor.CustomTabbedEditor;
 import utils.RsyntaxUtils;
 
 import javax.swing.JLabel;
@@ -98,15 +99,18 @@ public class GraphicPreferencesFrame extends JFrame {
 
 	private INItializer currentConfiguration;
 	
-	private Font initialTxtEditorFont; 
-
+	private TextEditor currentEditor;
+	private CustomTabbedEditor currentTabEditor;
+	
 	public GraphicPreferencesFrame(INItializer currentConf) {
 
+		currentEditor = MainGUI.initTxtWriter;
+		currentTabEditor = MainGUI.initTxtWriter.getCurrentTabEditor();
+		
 		logger.info(this.getClass().getName() + " Starting...");
 
 		currentConfiguration = currentConf;
 		active = true;
-		initialTxtEditorFont = currentConfiguration.getTextEditorOpt().getFont();
 
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
 		GuiUtils.showOnSameScreen(MainGUI.frmScryptV);
@@ -303,7 +307,9 @@ public class GraphicPreferencesFrame extends JFrame {
 					currentConfiguration.getGuiOpt().setDarkGuiNimbus(true);
 				}
 				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditorUtils.applyStyleToTabs();
+				if (MainGUI.initTxtWriter != null) {
+					MainGUI.initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
+				}
 			}
 		});
 		
@@ -335,7 +341,7 @@ public class GraphicPreferencesFrame extends JFrame {
 							PREFERRED_STYLE = BACKUP_PREFERRED_STYLE;
 						} finally {
 							GUIStyelSettings.updateAllWindowsLaf();
-							TextEditorUtils.applyStyleToTabs();
+							currentEditor.getCurrentTabEditor().applyStyleToTabs();
 							TextEditorUtils.resetDividerColor();
 						}
 					}
@@ -362,7 +368,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				updateGUI();
 
 //				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditorUtils.applyStyleToTabs();
+				currentTabEditor.applyStyleToTabs();
 
 				logger.debug("Configuration resetted: \n" + currentConfiguration.toStringa());
 			}
@@ -409,7 +415,7 @@ public class GraphicPreferencesFrame extends JFrame {
 							"Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.",
 							"Saved!", JOptionPane.INFORMATION_MESSAGE);
 					TextEditorUtils.resetDividerColor();
-					TextEditorUtils.applyStyleToTabs();
+					currentTabEditor.applyStyleToTabs();
 					logger.debug("Configuration saved: \n" + currentConfiguration.toStringa());
 
 					// dispose();
@@ -420,7 +426,7 @@ public class GraphicPreferencesFrame extends JFrame {
 					JOptionPane.showMessageDialog(thisFrame, "Ok, I wont save theese settings ;)", "Not saved!",
 							JOptionPane.WARNING_MESSAGE);
 					TextEditorUtils.resetDividerColor();
-					TextEditorUtils.applyStyleToTabs();
+					currentTabEditor.applyStyleToTabs();
 				}
 				
 			}
@@ -443,7 +449,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				// reset gui (sliders changement will trigger jtextfield, see action listener)
 				updateGUI();
 //				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditorUtils.applyStyleToTabs();
+				currentTabEditor.applyStyleToTabs();
 				TextEditorUtils.resetDividerColor();
 
 				logger.debug("Configuration resetted: \n" + currentConfiguration.toStringa());
@@ -461,7 +467,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				updateBackup();
 				TextEditorUtils.resetDividerColor();
 //				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditorUtils.applyStyleToTabs();
+				currentTabEditor.applyStyleToTabs();
 
 				// close and apply new values without saving
 				dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
@@ -506,7 +512,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				GUIStyelSettings.applyNimbusSize(NIMBUS_SIZE);
 				GUIStyelSettings.updateAllWindowsLaf();
 				TextEditorUtils.resetDividerColor();
-				TextEditorUtils.applyStyleToTabs();
+				currentTabEditor.applyStyleToTabs();
 			}
 		});
 
@@ -599,13 +605,13 @@ public class GraphicPreferencesFrame extends JFrame {
 
 		GUIStyelSettings.setStyle(PREFERRED_STYLE, NIMBUS_SIZE);
 		TextEditorUtils.resetDividerColor();
-		TextEditorUtils.applyStyleToTabs();
+		currentTabEditor.applyStyleToTabs();
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if (TextEditor.loadedTabObj != null) {
-					TextEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
-					RsyntaxUtils.setFont(TextEditor.loadedTabObj.textArea, currentConfiguration.getTextEditorOpt().getFont());
+				if (currentTabEditor.loadedTabObj != null) {
+					currentTabEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
+					RsyntaxUtils.setFont(currentTabEditor.loadedTabObj.textArea, currentConfiguration.getTextEditorOpt().getFont());
 				}
 			}
 		});
@@ -662,7 +668,7 @@ public class GraphicPreferencesFrame extends JFrame {
 	
 	private void antialiasingApply(boolean antialiasing) {
 		try {
-			TextEditor.loadedTabObj.textArea.setAntiAliasingEnabled(antialiasing);
+			currentTabEditor.loadedTabObj.textArea.setAntiAliasingEnabled(antialiasing);
 		} catch (Exception e1) {
 			logger.warn("Error while preiewing antialising effect on textarea", e1);
 		}
