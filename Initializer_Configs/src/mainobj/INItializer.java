@@ -240,6 +240,12 @@ public class INItializer {
 		if(genOpt.getCharset().equals("")) {
 			genOpt.setCharset(GenericOption.DEFAULT_CHARSET);
 		}
+		
+		try {
+			genOpt.setLastPanelOpened(Class.forName(iniReadFile.get(GEN_OPT, "lastPanelOpened")));
+		} catch (Exception e) {
+			genOpt.setLastPanelOpened(GenericOption.DEFAULT_PANEL_CLASS_AT_START);
+		}
 		try {
 			genOpt.setGeneralVolume(Float.parseFloat(iniReadFile.get(GEN_OPT, "generalVolume")));
 		} catch (Exception e1) {
@@ -445,6 +451,7 @@ public class INItializer {
 		iniFile.put(GEN_OPT, "userName", genOpt.getUserName());
 		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
 		iniFile.put(GEN_OPT, "generalVolume", genOpt.getGeneralVolume());
+		iniFile.put(GEN_OPT, "lastPanelOpened", genOpt.getLastPanelOpened().getName());
 	}
 	
 	public void writeImgConverterOptions() {
@@ -493,7 +500,7 @@ public class INItializer {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 				iniFile.store();
 				OK = true;
-				logger.info(iniFile.getFile().getCanonicalPath()+" - Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
+				logger.info(iniFile.getFile().getCanonicalPath()+" \n\n Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
 			} catch (IOException e) {
 				OK = false;
 				logger.error("Exception happened!", e);
@@ -514,7 +521,7 @@ public class INItializer {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 				iniFile.store();
 				OK = true;
-				logger.info(iniFile.getFile().getCanonicalPath()+" - Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
+				logger.info(iniFile.getFile().getCanonicalPath()+" \n\n Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
 			} catch (IOException e) {
 				OK = false;
 				logger.error("Exception happened!", e);
@@ -535,7 +542,7 @@ public class INItializer {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 				iniFile.store();
 				OK = true;
-				logger.info(iniFile.getFile().getCanonicalPath()+" - Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
+				logger.info(iniFile.getFile().getCanonicalPath()+" \n\n Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
 			} catch (IOException e) {
 				OK = false;
 				logger.error("Exception happened!", e);
@@ -556,7 +563,7 @@ public class INItializer {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 				iniFile.store();
 				OK = true;
-				logger.info(iniFile.getFile().getCanonicalPath()+" - Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
+				logger.info(iniFile.getFile().getCanonicalPath()+" \n\n Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
 			} catch (IOException e) {
 				OK = false;
 				logger.error("Exception happened!", e);
@@ -583,6 +590,7 @@ public class INItializer {
 		builder.append("\n\n ---- GENERAL OPTIONS -----\n\n")
 			   .append("USERNAME: ").append(genOpt.getUserName())
 			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
+			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION

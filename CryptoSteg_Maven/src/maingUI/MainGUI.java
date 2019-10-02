@@ -382,8 +382,17 @@ public class MainGUI extends MainGuiParent{
 					// RUN ARGUMENTS IF THERE ARE
 					if(MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
 						mntmTextEditor.doClick();
+					}else {
+						Class lastOpened = currentConfiguration.getGenOpt().getLastPanelOpened();
+						if(lastOpened.equals(TextEditor.class)) {
+							mntmTextEditor.doClick();
+						}else if(lastOpened.equals(CrypterPanel.class)) {
+							mntmCrypter.doClick();
+						}else if(lastOpened.equals(ChargeIniLog.class)) {
+							mntmInspectCurrentConfiguration.doClick();
+						}
 					}
-										
+					
 					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 				} catch (Exception e) {
 					logger.error("Exception happened!", e);

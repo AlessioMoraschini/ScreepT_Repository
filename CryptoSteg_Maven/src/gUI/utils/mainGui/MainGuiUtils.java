@@ -11,6 +11,7 @@ import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import maingUI.MainGUI;
+import mainobj.INItializer;
 import media.Sounds;
 import resources.SoundsConfigurator;
 
@@ -72,6 +73,9 @@ public class MainGuiUtils {
     	contentPane.add(mainAppReference.configManagerPanel);
     	contentPane.revalidate(); 
     	contentPane.repaint();
+    	
+    	mainAppReference.currentConfiguration.writeSingleValue(
+    			INItializer.GEN_OPT, "lastPanelOpened", ChargeIniLog.class.getCanonicalName());
 	}
 	
 	public void startCrypterPanel(boolean forceStart) {
@@ -84,6 +88,8 @@ public class MainGuiUtils {
     	contentPane.add(MainGUI.panelCrypter);
     	contentPane.revalidate(); 
     	contentPane.repaint();
+    	mainAppReference.currentConfiguration.writeSingleValue(
+    			INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
 	}
 	
 	public void startTextEditor(boolean forceRestart) {
@@ -100,6 +106,8 @@ public class MainGuiUtils {
     	contentPane.revalidate(); 
     	contentPane.repaint();
     	
+    	mainAppReference.currentConfiguration.writeSingleValue(
+    			INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
     	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 	}
 	

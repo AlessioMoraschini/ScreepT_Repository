@@ -33,6 +33,9 @@ public class GeneralConfig {
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 
+	public static final String TEMP_DIRECTORY = RESOURCES_DIR + "temp/";
+	public static final File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
+	
 	// Ini files configuration
 	public static final String DEFAULT_INI= linkedMappings.getProperty("DEFAULT_INI");
 	public static final String BACKUP_INI= linkedMappings.getProperty("BACKUP_INI");

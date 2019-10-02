@@ -17,6 +17,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
@@ -255,7 +256,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	        	exportDir.mkdirs();
 	        	
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
-            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(confManagerPanel, "Are you sure to delete?")==JOptionPane.OK_OPTION){	        		
+            	if(treeSelArr.length!= 0){	        		
 		            for(TreePath tp : treeSelArr) {
 		            	
 	            		String path = tp.getLastPathComponent().toString();
@@ -263,7 +264,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 		            	if(selectedFile.isFile() && selectedFile.exists()) {	
 		            		FileStuff.copyFileIntoDir(selectedFile, exportDir, false);
 		            	}else {
-		            		logger.warn(path + " Not existing: out of sync");
+		            		logger.warn(path + "Not a File or Not existing: out of sync");
 		            	}
 			        }
 	            }
@@ -291,8 +292,13 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 				logger.error("Directory not imported, some error occurred :( ");
 			} 
 		}else if(selectedImportDir!=null && selectedImportDir.isFile() && selectedImportDir.getName().toLowerCase().endsWith(".ini")) {
-			FileStuff.copyFileIntoDir(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false);
-			logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
+			try {
+				FileUtils.copyFileToDirectory(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER));
+				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
+			} catch (IOException e) {
+				logger.error("An error occurred during import :(");
+				JOptionPane.showMessageDialog(null, "Ooooops... An Error occurred during Import!", "An Error Occurred", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 	

@@ -90,7 +90,7 @@ public class MainGuiParent {
 	JMenu mnHelp;
 	JMenu mnrestartPanel;
 	
-	JMenuItem mntmInspectCurrentConfiguration;
+	static JMenuItem mntmInspectCurrentConfiguration;
 	JMenuItem mntmloadPrjSub;
 	JMenuItem mntmExportPrjSub;
 	JMenuItem mntmReloadPrjSub;

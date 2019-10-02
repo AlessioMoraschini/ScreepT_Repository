@@ -27,7 +27,6 @@ import textareautil.TextLineNumber;
 import utils.ColorDialogUtils;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
-import utils.TextAreaDialogs;
 import variousutils.HandleString;
 
 import javax.swing.SwingConstants;
@@ -109,7 +108,6 @@ import javax.swing.JToggleButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.ScrollPaneConstants;
 
 public class TextEditor extends JPanel {
 	
