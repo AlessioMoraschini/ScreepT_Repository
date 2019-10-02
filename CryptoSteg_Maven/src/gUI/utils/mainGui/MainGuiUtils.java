@@ -74,6 +74,7 @@ public class MainGuiUtils {
     	contentPane.revalidate(); 
     	contentPane.repaint();
     	
+    	mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(ChargeIniLog.class);
     	mainAppReference.currentConfiguration.writeSingleValue(
     			INItializer.GEN_OPT, "lastPanelOpened", ChargeIniLog.class.getCanonicalName());
 	}
@@ -88,6 +89,8 @@ public class MainGuiUtils {
     	contentPane.add(MainGUI.panelCrypter);
     	contentPane.revalidate(); 
     	contentPane.repaint();
+    	
+    	mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
     	mainAppReference.currentConfiguration.writeSingleValue(
     			INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
 	}
@@ -106,6 +109,7 @@ public class MainGuiUtils {
     	contentPane.revalidate(); 
     	contentPane.repaint();
     	
+    	mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
     	mainAppReference.currentConfiguration.writeSingleValue(
     			INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
     	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
