@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <properties>
+  	<parent.build.version.scrypt>0.7.3</parent.build.version.scrypt>
+  </properties>
+  
+  <groupId>Parent_Project</groupId>
+  <artifactId>Parent_Project</artifactId>
+  <version>${parent.build.version.scrypt}</version>
+  <packaging>pom</packaging>
+  
+  <modules>
+  	<module>../GenCommons</module>
+  	<module>../GeneralResources</module>
+  	<module>../OsCommons</module>
+  	<module>../Initializer_Configs</module>
+  	<module>../GuiCommons</module>
+  	<module>../HardwareCommons</module>
+  	<module>../GuiTextEditorCommons</module>
+  	<module>../MultimediaConversion</module>
+  	<module>../UltimateCalculator</module>
+  	<module>../ScrYpT_LauncherV2</module>
+  	<module>../CryptoSteg_Maven</module>
+  </modules>
+</project>
