@@ -18,6 +18,12 @@ public class GeneralConfig {
 	
 	public static final SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
+	public static final String APP_VERSION = linkedMappings.getProperty("APP_VERSION");
+	public static final String BUILD_TS_DATE = linkedMappings.getProperty("BUILD_TIMESTAMP")
+										.replaceAll("T", " at ")
+										.replaceAll("Z", "")
+										.replaceAll("-", "/");
+	
 	// General Folders
 	public static final String RESOURCES_DIR = linkedMappings.getProperty("RESOURCES_DIR");
 	public static final String DEFAULT_IMAGE_FOLDER = linkedMappings.getProperty("DEFAULT_IMAGE_FOLDER");

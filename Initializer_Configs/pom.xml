@@ -3,6 +3,16 @@
   <groupId>Initializer_Configs</groupId>
   <artifactId>Initializer_Configs</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+    
+  <parent>
+  	<groupId>Parent_Project</groupId>
+  	<artifactId>Parent_Project</artifactId>
+  	<version>${parent.build.version.scrypt}</version>
+  	<relativePath>../Parent_Project</relativePath>
+  </parent>
+  
+  <packaging>jar</packaging>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>

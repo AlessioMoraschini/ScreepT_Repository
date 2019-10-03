@@ -23,6 +23,8 @@ public class GUIStyelSettings{
 
 	static Logger logger = Logger.getLogger(GUIStyelSettings.class);
 	
+	private static String level = "mini";
+	
 	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	public static final String PlafLookAndFeels = "javax.swing.plaf.metal.MetalLookAndFeel";
@@ -206,7 +208,7 @@ public class GUIStyelSettings{
 		} catch (Exception e) {
 			return;
 		}
-		String level = "mini";
+		level = "mini";
 		switch (size) {
 			case 0: {
 				level = "mini";
@@ -221,7 +223,7 @@ public class GUIStyelSettings{
 				break;
 			}
 			default: {
-				level = "large";
+				level = "small";
 				break;
 			}
 		}
@@ -236,7 +238,7 @@ public class GUIStyelSettings{
 				} catch (Exception e) {
 					logger.error(e);
 				}
-			} 
+			}
 		}
 	}
 	

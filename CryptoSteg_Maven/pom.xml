@@ -2,108 +2,212 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>CryptoSteg_Maven</groupId>
   <artifactId>CryptoSteg_Maven</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>${parent.build.version.scrypt}</version>
   <name>CryptoSteg_Maven</name>
   
-  <!-- <modules>
-    <module>../GeneralResources</module>
-    <module>../GenCommons</module>
-    <module>../Initializer</module>
-    <module>../Initializer</module>
-  </modules> -->
+  <parent>
+  	<groupId>Parent_Project</groupId>
+  	<artifactId>Parent_Project</artifactId>
+  	<version>${parent.build.version.scrypt}</version>
+  	<relativePath>../Parent_Project</relativePath>
+  </parent>
+  
+  <packaging>jar</packaging>
+  
+  <properties>
+    <export.jar.name>ScrYpT_${project.version}</export.jar.name>
+  </properties>
   
   <build>
+    <finalName>${export.jar.name}</finalName>
     <sourceDirectory>src</sourceDirectory>
-	    <resources>
-	      <resource>
-	        <directory>src</directory>
-	        <excludes>
-	          <exclude>**/*.java</exclude>
-	        </excludes>
-	      </resource>
-	    </resources>
-	    <plugins>
-	      <plugin>
-	        <artifactId>maven-compiler-plugin</artifactId>
-	        <version>3.7.0</version>
-	        <configuration>
-	          <source>1.8</source>
-	          <target>1.8</target>
-	        </configuration>
-	      </plugin>
-	    </plugins>
-  	</build>
-  	<dependencies>
-  	
-	  	<dependency>
-	    	<groupId>org.drjekyll</groupId>
-	    	<artifactId>fontchooser</artifactId>
-	    	<version>2.4</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>com.1stleg</groupId>
-		    <artifactId>jnativehook</artifactId>
-		    <version>2.1.0</version>
-		</dependency>
-		
-		<!-- IMPORTS FROM OTHER PROJECTS -->
-		
-		<dependency>
-			<groupId>Initializer_Configs</groupId>
-		    <artifactId>Initializer_Configs</artifactId>
-		    <version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>GuiTextEditorCommons</groupId>
-		   	<artifactId>GuiTextEditorCommons</artifactId>
-		  	<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>ScrYpT_LauncherV2</groupId>
-			<artifactId>ScrYpT_LauncherV2</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>GuiCommons</groupId>
-			<artifactId>GuiCommons</artifactId>
-		 	<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-		  <groupId>GenCommons</groupId>
-		  <artifactId>GenCommons</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>	
-		</dependency>
-		
-		<dependency>
-			<groupId>MultimediaConversion</groupId>
-		  	<artifactId>MultimediaConversion</artifactId>
-		 	<version>0.0.1-SNAPSHOT</version>
- 		</dependency>
- 		
- 		<dependency>
-	 		<groupId>HardwareCommons</groupId>
-	  		<artifactId>HardwareCommons</artifactId>
-	  		<version>0.0.1-SNAPSHOT</version>
- 		</dependency>
- 		
- 		<dependency>
-			<groupId>UltimateCalculator</groupId>
-			<artifactId>UltimateCalculator</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
- 		</dependency>
-		
-  	</dependencies>
+    
+    <plugins>
+    
+      <!-- download source code in Eclipse, best practice -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>false</downloadJavadocs>
+        </configuration>
+      </plugin>
+      
+      <!-- COMPILER -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      
+      <!-- DEPENDENCY EXTRACTOR - If want to export single jars into LIBS -->
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.1.1</version>
+          <executions>
+              <execution>
+                  <id>copy-dependencies</id>
+                  <phase>prepare-package</phase>
+                  <goals>
+                      <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                      <outputDirectory>
+                          ${project.build.directory}/libs
+                      </outputDirectory>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
+      
+      <!-- JAR ASSEMBLER -->
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-assembly-plugin</artifactId>
+	    <version>2.4.1</version>
+	    <executions>
+	        <execution>
+	            <id>make-assembly</id>
+	            <phase>package</phase>
+	            <goals>
+	                <goal>single</goal>
+	            </goals>
+	            <configuration>
+	                <outputDirectory>
+	                       ${project.build.directory}/CENTRALIZED
+                   	</outputDirectory>
+                	<archive>
+		                <manifest>
+		                    <mainClass>
+		                        maingUI.MainGuiGeneralAppStarter
+		                    </mainClass>
+		                </manifest>
+	                </archive>
+	                <descriptorRefs>
+	                    <descriptorRef>jar-with-dependencies</descriptorRef>
+	                </descriptorRefs>
+	                <appendAssemblyId>false</appendAssemblyId>
+	            </configuration>
+	        </execution>
+	    </executions>
+	  </plugin>
+	  
+	  <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              	<outputDirectory>${basedir}/target/extra-resources</outputDirectory>
+               	<name>timestamp</name>
+               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+               	<timeZone>Europe/Zurich</timeZone>
+			    <resources>
+				     <resource>
+					    <filtering>true</filtering>
+					    <directory>./</directory>
+					    <includes>
+					        <include>resourcesFilePathsMappings.properties</include>
+					    </includes>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
+	  
+ 	</plugins>
+  </build>
   
-  	<repositories>
-    	<repository>
+  <dependencies>
+  	
+	 	<dependency>
+	   	<groupId>org.drjekyll</groupId>
+	   	<artifactId>fontchooser</artifactId>
+	   	<version>2.4</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>com.1stleg</groupId>
+	    <artifactId>jnativehook</artifactId>
+	    <version>2.1.0</version>
+	</dependency>
+	
+	<!-- IMPORTS FROM OTHER PROJECTS -->
+	
+	<dependency>
+		<groupId>Initializer_Configs</groupId>
+	    <artifactId>Initializer_Configs</artifactId>
+	    <version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>GuiTextEditorCommons</groupId>
+	   	<artifactId>GuiTextEditorCommons</artifactId>
+	  	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>ScrYpT_LauncherV2</groupId>
+		<artifactId>ScrYpT_LauncherV2</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<scope>compile</scope>
+	</dependency>
+	
+	<dependency>
+		<groupId>GuiCommons</groupId>
+		<artifactId>GuiCommons</artifactId>
+	 	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
+	<dependency>
+	  <groupId>GenCommons</groupId>
+	  <artifactId>GenCommons</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>	
+	</dependency>
+	
+	<dependency>
+		<groupId>MultimediaConversion</groupId>
+	  	<artifactId>MultimediaConversion</artifactId>
+	 	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+		
+	<dependency>
+		<groupId>HardwareCommons</groupId>
+ 		<artifactId>HardwareCommons</artifactId>
+ 		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
+	<dependency>
+	<groupId>UltimateCalculator</groupId>
+	<artifactId>UltimateCalculator</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+
+  </dependencies>
+  
+	<repositories>
+	   	<repository>
 	        <id>central</id>
 	        <name>jcenter</name>
 	        <url>http://jcenter.bintray.com</url>
-    	</repository>
+	   	</repository>
+   	    <repository>
+	      	<id>Local-repository-Main</id>
+	      	<name>Main LOCAL Repository</name>
+	      	<url>file:C:\Users\xx\.m2\repository</url>
+	    </repository>
 	</repositories>
 </project>

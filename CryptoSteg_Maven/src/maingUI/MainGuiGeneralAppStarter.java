@@ -28,7 +28,7 @@ public class MainGuiGeneralAppStarter {
 		
 	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: ";
 	private static Date now;
-	private GeneralConfig configStarter;
+	private static GeneralConfig configStarter;
 	
 	public static String[] ARGS;
 	public static File[] argumentsFiles;
@@ -37,6 +37,8 @@ public class MainGuiGeneralAppStarter {
 		try {
 			
 			now = new Date();
+			
+			configStarter = new GeneralConfig();
 
 			// Initialize logger properties
 			PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);

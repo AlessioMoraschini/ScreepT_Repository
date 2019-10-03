@@ -23,6 +23,7 @@ import gUI.utils.mainGui.MainGuiUtils;
 import gui.utils.LauncherLoaderFrame;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class MainGuiParent {
@@ -50,10 +51,12 @@ public class MainGuiParent {
 	static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 	
 	// AUTHOR AND GENERAL INFORMATIONS
-	public static final String APP_VERSION = "0.7.3bis";
-	public static final String APP_VERSION_DATE = "01/10/2019";
+
+	// now theese are in properties file updated automatically by maven
+//	public static final String APP_VERSION = "0.7.4";
+//	public static final String APP_VERSION_DATE = "02/10/2019";
 	public static final String WEBSITE = "www.am_design_developement.com";
-	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
+	public static final String APPLICATION_NAME = "ScrYpT - V" + GeneralConfig.APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Developement";
 	
 	// STATIC MAIN IMAGES REFERENCES

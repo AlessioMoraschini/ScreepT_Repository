@@ -3,6 +3,16 @@
   <groupId>HardwareCommons</groupId>
   <artifactId>HardwareCommons</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+    
+  <parent>
+  	<groupId>Parent_Project</groupId>
+  	<artifactId>Parent_Project</artifactId>
+  	<version>${parent.build.version.scrypt}</version>
+  	<relativePath>../Parent_Project</relativePath>
+  </parent>
+  
+  <packaging>jar</packaging>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -56,5 +66,17 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
 	
+	<dependency>
+	    <groupId>jnetpcap</groupId>
+	    <artifactId>jnetpcap</artifactId>
+	    <version>1.4.r1425-1g</version>
+	</dependency>
   </dependencies>
+	<repositories>
+	   	<repository>
+	        <id>clojars</id>
+	        <name>clojars_Repo</name>
+	        <url>https://clojars.org/repo/</url>
+	   	</repository>
+	</repositories>
 </project>

@@ -3,6 +3,16 @@
   <groupId>GuiCommons</groupId>
   <artifactId>GuiCommons</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
+  <parent>
+  	<groupId>Parent_Project</groupId>
+  	<artifactId>Parent_Project</artifactId>
+  	<version>${parent.build.version.scrypt}</version>
+  	<relativePath>../Parent_Project</relativePath>
+  </parent>
+  
+  <packaging>jar</packaging>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -31,6 +41,12 @@
 	    <artifactId>JTattoo</artifactId>
 	    <version>1.6.11</version>
 	</dependency> -->
+	
+	<dependency>
+	    <groupId>com.miglayout</groupId>
+	    <artifactId>miglayout</artifactId>
+	    <version>3.7.4</version>
+	</dependency>
 
 	<dependency>
 		<groupId>GenCommons</groupId>

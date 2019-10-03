@@ -3,7 +3,21 @@
   <groupId>ScrYpT_LauncherV2</groupId>
   <artifactId>ScrYpT_LauncherV2</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <parent>
+  	<groupId>Parent_Project</groupId>
+  	<artifactId>Parent_Project</artifactId>
+  	<version>${parent.build.version.scrypt}</version>
+  	<relativePath>../Parent_Project</relativePath>
+  </parent>
+  
+  <packaging>jar</packaging>
+  
+  <properties>
+	<export.jar.name>ScrYpT_Launcher</export.jar.name>
+  </properties>
+  
   <build>
+  	<finalName>${export.jar.name}</finalName>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
@@ -14,8 +28,72 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      	
+      <!-- JAR ASSEMBLER -->
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-assembly-plugin</artifactId>
+	    <version>2.4.1</version>
+	    <executions>
+	        <execution>
+	            <id>make-assembly</id>
+	            <phase>package</phase>
+	            <goals>
+	                <goal>single</goal>
+	            </goals>
+	            <configuration>
+	                <outputDirectory>
+	                       ${project.build.directory}/CENTRALIZED
+                   	</outputDirectory>
+                	<archive>
+		                <manifest>
+		                    <mainClass>
+		                        mainlauncher.ScrYpTLauncher
+		                    </mainClass>
+		                </manifest>
+	                </archive>
+	                <descriptorRefs>
+	                    <descriptorRef>jar-with-dependencies</descriptorRef>
+	                </descriptorRefs>
+	                <appendAssemblyId>false</appendAssemblyId>
+	            </configuration>
+	        </execution>
+	    </executions>
+	  </plugin>
+	  
+	  <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              	<outputDirectory>${basedir}/target/extra-resources</outputDirectory>
+               	<name>timestamp</name>
+               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+               	<timeZone>Europe/Zurich</timeZone>
+			    <resources>
+				     <resource>
+					    <filtering>true</filtering>
+					    <directory>./</directory>
+					    <includes>
+					        <include>resourcesFilePathsMappings.properties</include>
+					    </includes>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+  
+  
   
   <dependencies>
 	<dependency>
@@ -44,4 +122,6 @@
  	</dependency>
 
   </dependencies>
+  
+  
 </project>

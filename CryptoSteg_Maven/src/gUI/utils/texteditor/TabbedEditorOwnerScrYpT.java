@@ -26,7 +26,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public void doAfterApplyingStyleToTabs() {
-		textEditor.textEditorUtils.resetDividerColor();
+		TextEditorUtils.resetDividerColor();
 	}
 
 	@Override

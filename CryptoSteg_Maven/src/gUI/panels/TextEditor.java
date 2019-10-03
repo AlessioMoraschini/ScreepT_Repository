@@ -2218,7 +2218,7 @@ public class TextEditor extends JPanel {
 			btnToggleFileView.setBackground(SystemColor.inactiveCaption);
 		}
 
-		splitPaneMain.setDividerLocation(250);
+		splitPaneMain.setDividerLocation(currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 
 		textEditorUtils.updateGuiLafWindows(currentTextEditor);
 	}

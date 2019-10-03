@@ -3,6 +3,16 @@
   <groupId>MultimediaConversion</groupId>
   <artifactId>MultimediaConversion</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
+  <parent>
+  	<groupId>Parent_Project</groupId>
+  	<artifactId>Parent_Project</artifactId>
+  	<version>${parent.build.version.scrypt}</version>
+  	<relativePath>../Parent_Project</relativePath>
+  </parent>
+  
+  <packaging>jar</packaging>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -18,23 +28,17 @@
   </build>
   
   <dependencies>
-  	<!-- <dependency>
+  	<dependency>
 	    <groupId>net.sourceforge.tess4j</groupId>
 	    <artifactId>tess4j</artifactId>
 	    <version>4.3.1</version>
-	</dependency> -->
+	</dependency>
 	
  	<dependency>
     	<groupId>net.sf.sociaal</groupId>
     	<artifactId>freetts</artifactId>
     	<version>1.2.2</version>
  	</dependency>
- 	
- 	<dependency>
- 	 <groupId>GuiCommons</groupId>
-	  <artifactId>GuiCommons</artifactId>
-	  <version>0.0.1-SNAPSHOT</version>
- 	 </dependency>
  	 
 	<dependency>
 	    <groupId>org.icepdf.os</groupId>
@@ -52,6 +56,14 @@
 	    <artifactId>icepdf-viewer</artifactId>
 	    <version>6.2.2</version>
 	</dependency>
+ 	
+ 	<!-- Modules dependencies -->
+ 	
+ 	<dependency>
+ 	 <groupId>GuiCommons</groupId>
+	  <artifactId>GuiCommons</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+ 	 </dependency>
 
  	 
   </dependencies>

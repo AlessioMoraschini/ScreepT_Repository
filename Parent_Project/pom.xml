@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <properties>
-  	<parent.build.version.scrypt>0.7.3</parent.build.version.scrypt>
+  	<parent.build.version.scrypt>0.7.4</parent.build.version.scrypt>
   </properties>
   
   <groupId>Parent_Project</groupId>
