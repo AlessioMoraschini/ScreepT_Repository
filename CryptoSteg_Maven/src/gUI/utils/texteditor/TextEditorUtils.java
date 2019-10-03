@@ -353,20 +353,21 @@ public class TextEditorUtils {
 		currentTextEditor.repaint();
 	}
 	
-	public void updateGuiLafWindows(final TextEditor editor) {
+	public void updateGuiLafWindows(TextEditor editor) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
+				GUIStyelSettings.applyNimbusSize(editor.currentConfiguration.getGuiOpt().nimbusSize);
+				GUIStyelSettings.updateAllWindowsLaf();
+				currentTabEditor.mainTabList.setUI(new CustomTabbedPaneUI_v1(
+						null, null, null, currentTabEditor.mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
+				resetDividerColor();
+				currentTabEditor.applyStyleToTabs();
 				try {
 					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, TextEditor.leftSplitTreeFiles, true);
 				} catch (Exception e) {
 					logger.debug("Error during current file highlighting in file tree - textEditor");
 				}
-				GUIStyelSettings.applyNimbusSize(editor.currentConfiguration.getGuiOpt().nimbusSize);
-				GUIStyelSettings.updateAllWindowsLaf();
-				currentTabEditor.mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, currentTabEditor.mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
-				resetDividerColor();
-				currentTabEditor.applyStyleToTabs();
 			}
 		});
 	}

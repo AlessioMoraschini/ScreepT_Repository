@@ -7,6 +7,7 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
 import frameutils.GuiUtils;
+import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
@@ -508,7 +509,7 @@ public class GeneralOptionsFrame extends JFrame{
 	private void writeLauncherHidingOption(boolean hideLauncher) {
 		try {
 			String valueHidden = (hideLauncher)? "true" : "false";
-			launcherConfiguration.put(ScrYpTLauncher.INI_APP_OPT, "flagHideNStartDirect", valueHidden );
+			launcherConfiguration.put(IniFileManager.INI_APP_OPT, "flagHideNStartDirect", valueHidden );
 			launcherConfiguration.store();
 		} catch (IOException e) {
 			logger.error("Exception happened writing launcher configuration!", e);
@@ -516,7 +517,7 @@ public class GeneralOptionsFrame extends JFrame{
 	}
 	
 	private boolean readLauncherHidingOption() {
-		String startDirectString = launcherConfiguration.get(ScrYpTLauncher.INI_APP_OPT, "flagHideNStartDirect");
+		String startDirectString = launcherConfiguration.get(IniFileManager.INI_APP_OPT, "flagHideNStartDirect");
 		boolean startDirect = (startDirectString.equalsIgnoreCase("true"))? true : false;
 		return startDirect;
 	}

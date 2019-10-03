@@ -20,10 +20,11 @@ import om.OSinfo;
 
 public class SysUtils {
 	
-	// GraphicPreferencesFrame logger
+	// SysUtils logger
 	static Logger logger = Logger.getLogger(SysUtils.class); 
 	
 	// STATIC METHODS
+	private static final OSinfo OS_INFO_LAZY = new OSinfo();
 	
 	public static OSinfo retrieveOS() {
 		return new OSinfo();
@@ -36,12 +37,29 @@ public class SysUtils {
 
 ///////////////////////////////// GENERIC STUFF ////////////////////////////////////////////////
 	
-	public static String startJarCommand(String jvmArgs, String jarPath) {
-		String command = "java " + jvmArgs + " -jar " + jarPath;
-		return command;
+	/**
+  	 * @param main class must be a full package and class name (Ex => [Java.Lang.String])
+	 * 
+	 * other params must not be null
+	 */
+	private static String startJarCommand(String jvmArgs, String jarPath) {
+		return "java " + jvmArgs + " -jar " + jarPath;
 	}
 	
+	/**
+	 * SIGNATURE2 : START .JAR with ARGS FILES
+	 * @param main class must be a full package and class name (Ex => [Java.Lang.String])
+	 * 
+	 * filteredArgsFiles can be null
+	 * 
+	 * params must not be null
+	 */
 	public static String startJarCommand(String jvmArgs, String jarPath, File[] filteredArgsFiles) {
+		
+		if(filteredArgsFiles == null || filteredArgsFiles.length == 0) {
+			return startJarCommand(jvmArgs, jarPath);
+		}
+		
 		String filesParams = "";
 		StringBuilder builder = new StringBuilder();
 		
@@ -56,7 +74,48 @@ public class SysUtils {
 		return command;
 	}
 	
+	
 	/**
+  	 * @param main class must be a full package and class name (Ex => [Java.Lang.String])
+	 * 
+	 * params must not be null
+	 */
+	private static String startClassCommand(String jvmArgs, String classPath, String mainClass) {
+		return "java " + jvmArgs + " -cp " + classPath + " " + mainClass;
+	}
+
+	/**
+	 * SIGNATURE2 : START .CLASS with ARGS FILES
+	 * @param main class must be a full package and class name (Ex => [Java.Lang.String])
+	 * 
+	 * filteredArgsFiles can be null
+	 * 
+	 * other params must not be null
+	 */
+	public static String startClassCommand(String jvmArgs, String classPath, String mainClass, File[] filteredArgsFiles) {
+		
+		if(filteredArgsFiles == null || filteredArgsFiles.length == 0) {
+			return startClassCommand(jvmArgs, classPath, mainClass);
+		}
+		
+		String filesParams = "";
+		StringBuilder builder = new StringBuilder();
+		
+		for(File file : filteredArgsFiles) {
+			builder.append(" \"").append(file.getAbsolutePath()).append("\"");
+		}
+		filesParams = builder.toString();
+		
+		builder = new StringBuilder();
+		builder.append("java ").append(jvmArgs)
+			   .append(" -cp ").append(classPath)
+			   .append(" ").append(mainClass)
+			   .append(filesParams);
+		String command = builder.toString();
+		return command;
+	}
+	
+	/** TODO
 	 * According to given OS, search for installed JVM paths
 	 * @param OS
 	 * @return the list of JVMs home directory (EX. "jdk1.8.0_201")
@@ -65,10 +124,10 @@ public class SysUtils {
 		ArrayList<String> foundJVMS = new ArrayList<String>();
 		
 		if(OS.isLinux()) {
-			
+			// TODO
 			// END LINUX
 		}else if(OS.isMac()) {
-			
+			// TODO
 			// END MAC
 		}else if(OS.isWindows()) {
 			
@@ -372,6 +431,8 @@ public class SysUtils {
 		return stringRetrievedPaths;
 		
 	}
-	
 
+	public static OSinfo getOsInfoLazy() {
+		return (OS_INFO_LAZY!=null)? OS_INFO_LAZY : retrieveOS();
+	}
 }

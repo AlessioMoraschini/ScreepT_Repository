@@ -15538,3 +15538,436 @@ ScrYpT - V${project.version} Closing Application!
 ##################################################
 
 
+2019-10-03 02:52:06,836 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu Oct 03 02:52:06 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-03 02:52:06,851 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-03 02:52:07,070 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-03 02:52:07,242 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-03 02:52:07,989 [Thread-2] INFO  maingUI.MainGUI - Chosen log level: ALL
+2019-10-03 02:52:08,020 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+LAST PANEL OPENED: gUI.panels.TextEditor
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: E:\Eclipse NDCE
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+INLINE TABS MODE: true
+MARGIN: 12
+TAB_SIZE: 2
+TAB_LINE_VISIBLE: false
+FILE TREE VIEW ACTIVE: true
+FILE TREE LOCKED: false
+WORKSPACE VIEW SELECTED: false
+DEFAULT WORKSPACE LOCATION: E:\Eclipse NDCE\Workspace_esperimenti
+DEFAULT AUTOMATIC SYNTAX SYNC: true
+PREFERRED_THEME: DARK
+FILE_PANEL_BACKGROUND_COLOR: java.awt.Color[r=41,g=49,b=52]
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=28]
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\alessio.txt, E:\Eclipse NDCE\settings.xml, E:\Eclipse NDCE\Workspace_esperimenti\SpringIntegrationMvcExample\pom.xml, E:\Eclipse NDCE\TsToDateConverter.java]
+DEFAULT OPENED FILE AT START: E:\Eclipse NDCE\TsToDateConverter.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-10-03 02:52:08,020 [Thread-2] INFO  maingUI.MainGUI - Initializing main GUI-start
+2019-10-03 02:52:08,364 [Thread-2] INFO  maingUI.MainGUI - Background of mainGUI setted: Resources_Scrypt/Resources_Scrypt/Images/Logo-AM_v2.jpg
+2019-10-03 02:52:08,501 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-10-03 02:52:08,501 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-10-03 02:52:08,517 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-10-03 02:52:08,748 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-10-03 02:52:08,749 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/Readme/ReadMe.html
+2019-10-03 02:52:08,924 [Thread-2] INFO  maingUI.MainGUI - ## GUI components started
+2019-10-03 02:52:08,926 [Thread-2] INFO  maingUI.MainGUI - icon image setted to main window
+2019-10-03 02:52:08,926 [Thread-2] INFO  maingUI.MainGUI - ## TITLE UPDATER started.
+2019-10-03 02:52:08,951 [Thread-2] INFO  maingUI.MainGUI - Main GUI initialized correctly.
+2019-10-03 02:52:08,957 [Thread-8] INFO  maingUI.MainGUI - ## MODULES FLAG UPDATER started
+2019-10-03 02:52:08,969 [Thread-10] INFO  maingUI.MainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-10-03 02:52:09,027 [Thread-2] INFO  maingUI.MainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-10-03 02:52:09,066 [Thread-2] INFO  maingUI.MainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-10-03 02:52:09,080 [Thread-2] INFO  maingUI.MainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-10-03 02:52:09,082 [Thread-2] INFO  maingUI.MainGUI - Charset setted: UTF-8
+2019-10-03 02:52:09,432 [Thread-2] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-10-03 02:52:09,692 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/Readme/ReadMe.html : Loaded!
+2019-10-03 02:52:09,701 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-10-03 02:52:10,631 [Thread-2] DEBUG tabbededitor.CustomTabbedEditor - 
+
+=>Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [txtAreaInitType=3, loadedFile=E:\Eclipse NDCE\TsToDateConverter.java, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,0,0,0x0,invalid,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@64701b10,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@329ab4b5,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@6c504808,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@605d6277], textArea=org.fife.ui.rsyntaxtextarea.RSyntaxTextArea[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@6f358333,flags=16777512,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=javax.swing.plaf.ColorUIResource[r=255,g=51,b=51],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=javax.swing.plaf.InsetsUIResource[top=2,left=2,bottom=2,right=2],selectedTextColor=javax.swing.plaf.ColorUIResource[r=255,g=255,b=255],selectionColor=java.awt.Color[r=200,g=200,b=255],colums=0,columWidth=0,rows=0,rowHeight=0,word=true,wrap=false], unsaved=false]
+2019-10-03 02:52:10,656 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:E:\Eclipse NDCE\TsToDateConverter.java, levelsUp:2]: E:\
+
+2019-10-03 02:52:10,701 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\, levelsUp:1]: 
+
+2019-10-03 02:52:10,701 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 02:52:10,794 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-03 02:52:10,859 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-03 02:52:10,861 [Thread-2] DEBUG tabbededitor.CustomTabbedEditor - 
+
+=>Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [txtAreaInitType=3, loadedFile=E:\Eclipse NDCE\TsToDateConverter.java, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,0,0,0x0,invalid,hidden,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@64701b10,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=java.awt.Dimension[width=1918,height=984],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@329ab4b5,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@6c504808,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@605d6277], textArea=org.fife.ui.rsyntaxtextarea.RSyntaxTextArea[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@6f358333,flags=16777512,maximumSize=java.awt.Dimension[width=1918,height=974],minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=java.awt.Color[r=193,g=203,b=194],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=java.awt.Insets[top=12,left=12,bottom=12,right=12],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=java.awt.Color[r=64,g=78,b=81],colums=0,columWidth=0,rows=0,rowHeight=0,word=false,wrap=false], unsaved=false]
+2019-10-03 02:52:10,882 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, levelsUp:2]: C:\Users\xx\Desktop\Crypter Test
+
+2019-10-03 02:52:10,912 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:C:\Users\xx\Desktop\Crypter Test, levelsUp:1]: Crypter Test
+
+2019-10-03 02:52:10,913 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+2019-10-03 02:52:10,938 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-03 02:52:10,941 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-03 02:52:10,959 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, levelsUp:2]: C:\Users\xx\Desktop\Crypter Test
+
+2019-10-03 02:52:10,977 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:C:\Users\xx\Desktop\Crypter Test, levelsUp:1]: Crypter Test
+
+2019-10-03 02:52:10,977 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+2019-10-03 02:52:10,992 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-03 02:52:10,997 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-03 02:52:10,999 [Thread-2] DEBUG tabbededitor.CustomTabbedEditor - 
+
+=>Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [txtAreaInitType=3, loadedFile=C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,0,0,0x0,invalid,hidden,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@396f438e,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=java.awt.Dimension[width=1918,height=984],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@1256b337,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@7d40a35b,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@4236ba3a], textArea=org.fife.ui.rsyntaxtextarea.RSyntaxTextArea[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@4effd9f3,flags=16777512,maximumSize=java.awt.Dimension[width=1918,height=974],minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=java.awt.Color[r=193,g=203,b=194],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=java.awt.Insets[top=12,left=12,bottom=12,right=12],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=java.awt.Color[r=64,g=78,b=81],colums=0,columWidth=0,rows=0,rowHeight=0,word=false,wrap=false], unsaved=false]
+2019-10-03 02:52:11,016 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:E:\Eclipse NDCE\TsToDateConverter.java, levelsUp:2]: E:\
+
+2019-10-03 02:52:11,031 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\, levelsUp:1]: 
+
+2019-10-03 02:52:11,032 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 02:52:11,052 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-03 02:52:11,055 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-03 02:52:11,055 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:E:\Eclipse NDCE\TsToDateConverter.java, levelsUp:2]: E:\
+
+2019-10-03 02:52:11,067 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\, levelsUp:1]: 
+
+2019-10-03 02:52:11,067 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 02:52:11,074 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:E:\Eclipse NDCE\TsToDateConverter.java, levelsUp:2]: E:\
+
+2019-10-03 02:52:11,085 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\, levelsUp:1]: 
+
+2019-10-03 02:52:11,085 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 02:52:11,098 [Thread-2] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-10-03 02:52:11,250 [Thread-2] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> GENERIC_OPTIONS - lastPanelOpened : gUI.panels.TextEditor
+2019-10-03 02:52:18,970 [Thread-10] DEBUG maingUI.MainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE false] -> autosave Module running[false] - Interval: 6000s
+2019-10-03 02:52:20,192 [AWT-EventQueue-0] DEBUG maingUI.MainGUI - Starting check on fileMonitor...
+2019-10-03 02:52:20,201 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-10-03 02:52:20,201 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Closing blocking frames
+2019-10-03 02:52:20,201 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Blocking frames closed
+2019-10-03 02:52:20,201 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Autosave OFF -> configuration saving skipped
+2019-10-03 02:52:20,204 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - loadedFilesAtStart : C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java,C:\Users\xx\Desktop\Crypter Test\various files\alessio.txt,E:\Eclipse NDCE\settings.xml,E:\Eclipse NDCE\Workspace_esperimenti\SpringIntegrationMvcExample\pom.xml,E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 02:52:20,209 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - selectedFileAtStart : E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 02:52:20,210 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Opened files in textEditor added to configuration
+2019-10-03 02:52:20,213 [AWT-EventQueue-0] INFO  maingUI.MainGUI - Deleting temp files and folders...please wait!
+2019-10-03 02:52:20,213 [AWT-EventQueue-0] INFO  maingUI.MainGUI - Deleting temp files and folders...COMPLETED :)
+2019-10-03 02:52:20,214 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+
+##################################################
+
+Thu Oct 03 02:52:20 CEST 2019
+
+ScrYpT - V${project.version} Closing Application!
+
+##################################################
+
+
+2019-10-03 08:49:28,090 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Thu Oct 03 08:49:28 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-03 08:49:28,101 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-03 08:49:28,413 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-03 08:49:28,757 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-03 08:49:29,569 [Thread-2] INFO  maingUI.MainGUI - Chosen log level: ALL
+2019-10-03 08:49:29,606 [Thread-2] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: Alessio
+GENERAL VOLUME: 34,00%
+LAST PANEL OPENED: gUI.panels.TextEditor
+CHARSET: UTF-8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: false
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: E:\Eclipse NDCE
+FLAG_AUTOSAVE: false
+AUTOSAVE_INTERVAL: 6000000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [C:UsersxxDesktopalessioVOID.png, C:Users/xx/Desktop,  C:Users/xx]
+
+ ---- TEXT EDITOR -----
+
+INLINE TABS MODE: true
+MARGIN: 12
+TAB_SIZE: 2
+TAB_LINE_VISIBLE: false
+FILE TREE VIEW ACTIVE: true
+FILE TREE LOCKED: false
+WORKSPACE VIEW SELECTED: false
+DEFAULT WORKSPACE LOCATION: E:\Eclipse NDCE\Workspace_esperimenti
+DEFAULT AUTOMATIC SYNTAX SYNC: true
+PREFERRED_THEME: DARK
+FILE_PANEL_BACKGROUND_COLOR: java.awt.Color[r=41,g=49,b=52]
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=28]
+PREFERRED DIVIDER FILETREE POSITION: 266
+OPENED FILES AT START: [C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, C:\Users\xx\Desktop\Crypter Test\various files\alessio.txt, E:\Eclipse NDCE\settings.xml, E:\Eclipse NDCE\Workspace_esperimenti\SpringIntegrationMvcExample\pom.xml, E:\Eclipse NDCE\TsToDateConverter.java]
+DEFAULT OPENED FILE AT START: E:\Eclipse NDCE\TsToDateConverter.java
+AUTO-BREAKLINE ACTIVE: false
+ANTIALIASED TEXT AREA: true
+TEXT-AREA DETAIL LEVEL (0-3): 3
+VOICE_RATE: 105
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME_EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-10-03 08:49:29,606 [Thread-2] INFO  maingUI.MainGUI - Initializing main GUI-start
+2019-10-03 08:49:30,106 [Thread-2] INFO  maingUI.MainGUI - Background of mainGUI setted: Resources_Scrypt/Resources_Scrypt/Images/Logo-AM_v2.jpg
+2019-10-03 08:49:30,184 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Starting...
+2019-10-03 08:49:30,184 [Thread-2] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-10-03 08:49:30,184 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-10-03 08:49:30,484 [Thread-3] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-10-03 08:49:30,485 [Thread-3] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/Readme/ReadMe.html
+2019-10-03 08:49:30,621 [Thread-2] INFO  maingUI.MainGUI - ## GUI components started
+2019-10-03 08:49:30,625 [Thread-2] INFO  maingUI.MainGUI - icon image setted to main window
+2019-10-03 08:49:30,625 [Thread-2] INFO  maingUI.MainGUI - ## TITLE UPDATER started.
+2019-10-03 08:49:30,635 [Thread-2] INFO  maingUI.MainGUI - Main GUI initialized correctly.
+2019-10-03 08:49:30,640 [Thread-7] INFO  maingUI.MainGUI - ## MODULES FLAG UPDATER started
+2019-10-03 08:49:30,753 [Thread-9] INFO  maingUI.MainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: false
+2019-10-03 08:49:30,836 [Thread-2] INFO  maingUI.MainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-10-03 08:49:30,908 [Thread-2] INFO  maingUI.MainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-10-03 08:49:30,933 [Thread-2] INFO  maingUI.MainGUI - javax.swing.plaf.nimbus.NimbusLookAndFeel initialized correctly.
+2019-10-03 08:49:30,936 [Thread-2] INFO  maingUI.MainGUI - Charset setted: UTF-8
+2019-10-03 08:49:31,209 [Thread-2] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-10-03 08:49:31,753 [Thread-3] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/Readme/ReadMe.html : Loaded!
+2019-10-03 08:49:31,763 [Thread-3] INFO  gUI.panels.TutorialPanel - gUI.panels.TutorialPanel Started
+2019-10-03 08:49:32,638 [Thread-2] DEBUG tabbededitor.CustomTabbedEditor - 
+
+=>Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [txtAreaInitType=3, loadedFile=E:\Eclipse NDCE\TsToDateConverter.java, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,0,0,0x0,invalid,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@3309880,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@7e097ca6,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@14e9375b,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@18028df3], textArea=org.fife.ui.rsyntaxtextarea.RSyntaxTextArea[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@f51f000,flags=16777512,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=javax.swing.plaf.ColorUIResource[r=255,g=51,b=51],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=javax.swing.plaf.InsetsUIResource[top=2,left=2,bottom=2,right=2],selectedTextColor=javax.swing.plaf.ColorUIResource[r=255,g=255,b=255],selectionColor=java.awt.Color[r=200,g=200,b=255],colums=0,columWidth=0,rows=0,rowHeight=0,word=true,wrap=false], unsaved=false]
+2019-10-03 08:49:32,681 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:E:\Eclipse NDCE\TsToDateConverter.java, levelsUp:2]: E:\
+
+2019-10-03 08:49:32,745 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\, levelsUp:1]: 
+
+2019-10-03 08:49:32,745 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 08:49:32,848 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-03 08:49:32,913 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-03 08:49:32,919 [Thread-2] DEBUG tabbededitor.CustomTabbedEditor - 
+
+=>Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [txtAreaInitType=3, loadedFile=E:\Eclipse NDCE\TsToDateConverter.java, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,0,0,0x0,invalid,hidden,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@3309880,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=java.awt.Dimension[width=1918,height=984],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@7e097ca6,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@14e9375b,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@18028df3], textArea=org.fife.ui.rsyntaxtextarea.RSyntaxTextArea[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@f51f000,flags=16777512,maximumSize=java.awt.Dimension[width=1918,height=974],minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=java.awt.Color[r=193,g=203,b=194],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=java.awt.Insets[top=12,left=12,bottom=12,right=12],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=java.awt.Color[r=64,g=78,b=81],colums=0,columWidth=0,rows=0,rowHeight=0,word=false,wrap=false], unsaved=false]
+2019-10-03 08:49:32,949 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, levelsUp:2]: C:\Users\xx\Desktop\Crypter Test
+
+2019-10-03 08:49:32,982 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:C:\Users\xx\Desktop\Crypter Test, levelsUp:1]: Crypter Test
+
+2019-10-03 08:49:32,983 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+2019-10-03 08:49:32,999 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-03 08:49:33,002 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-03 08:49:33,028 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, levelsUp:2]: C:\Users\xx\Desktop\Crypter Test
+
+2019-10-03 08:49:33,050 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:C:\Users\xx\Desktop\Crypter Test, levelsUp:1]: Crypter Test
+
+2019-10-03 08:49:33,050 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java
+2019-10-03 08:49:33,067 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-03 08:49:33,069 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-03 08:49:33,071 [Thread-2] DEBUG tabbededitor.CustomTabbedEditor - 
+
+=>Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [txtAreaInitType=3, loadedFile=C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,0,0,0x0,invalid,hidden,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@510ec23a,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=java.awt.Dimension[width=1918,height=984],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@7c537f03,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@72dc5a73,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@3e75eef2], textArea=org.fife.ui.rsyntaxtextarea.RSyntaxTextArea[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@409db497,flags=16777512,maximumSize=java.awt.Dimension[width=1918,height=974],minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=java.awt.Color[r=193,g=203,b=194],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=java.awt.Insets[top=12,left=12,bottom=12,right=12],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=java.awt.Color[r=64,g=78,b=81],colums=0,columWidth=0,rows=0,rowHeight=0,word=false,wrap=false], unsaved=false]
+2019-10-03 08:49:33,090 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:E:\Eclipse NDCE\TsToDateConverter.java, levelsUp:2]: E:\
+
+2019-10-03 08:49:33,109 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\, levelsUp:1]: 
+
+2019-10-03 08:49:33,110 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 08:49:33,121 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-03 08:49:33,124 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-03 08:49:33,125 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:E:\Eclipse NDCE\TsToDateConverter.java, levelsUp:2]: E:\
+
+2019-10-03 08:49:33,143 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\, levelsUp:1]: 
+
+2019-10-03 08:49:33,143 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 08:49:33,153 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file search result [son:E:\Eclipse NDCE\TsToDateConverter.java, levelsUp:2]: E:\
+
+2019-10-03 08:49:33,167 [Thread-2] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\, levelsUp:1]: 
+
+2019-10-03 08:49:33,167 [Thread-2] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from file: E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 08:49:33,184 [Thread-2] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-10-03 08:49:33,398 [Thread-2] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> GENERIC_OPTIONS - lastPanelOpened : gUI.panels.TextEditor
+2019-10-03 08:49:36,513 [AWT-EventQueue-0] DEBUG maingUI.MainGUI - Starting check on fileMonitor...
+2019-10-03 08:49:36,520 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-10-03 08:49:36,520 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Closing blocking frames
+2019-10-03 08:49:36,520 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Blocking frames closed
+2019-10-03 08:49:36,520 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Autosave OFF -> configuration saving skipped
+2019-10-03 08:49:36,525 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - loadedFilesAtStart : C:\Users\xx\Desktop\Crypter Test\various files\io sono alessio.java,C:\Users\xx\Desktop\Crypter Test\various files\alessio.txt,E:\Eclipse NDCE\settings.xml,E:\Eclipse NDCE\Workspace_esperimenti\SpringIntegrationMvcExample\pom.xml,E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 08:49:36,530 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - selectedFileAtStart : E:\Eclipse NDCE\TsToDateConverter.java
+2019-10-03 08:49:36,530 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Opened files in textEditor added to configuration
+2019-10-03 08:49:36,532 [AWT-EventQueue-0] INFO  maingUI.MainGUI - Deleting temp files and folders...please wait!
+2019-10-03 08:49:36,536 [AWT-EventQueue-0] INFO  maingUI.MainGUI - Deleting temp files and folders...COMPLETED :)
+2019-10-03 08:49:36,537 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+
+##################################################
+
+Thu Oct 03 08:49:36 CEST 2019
+
+ScrYpT - V${project.version} Closing Application!
+
+##################################################
+
+

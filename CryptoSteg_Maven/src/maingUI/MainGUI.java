@@ -57,6 +57,7 @@ import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
 import gui.utils.LauncherLoaderFrame;
 import guistyle.GUIStyelSettings;
+import launcherutils.IniFileManager;
 import logger.LoggerUtils;
 import gUI.panels.HwInfoPanel;
 import gUI.panels.ImageConverterFrame;
@@ -196,7 +197,7 @@ public class MainGUI extends MainGuiParent{
 					// INITIALIZE CONFIGURATION FROM CONFIG DEFAULT FILE
 					try {
 						launcherConfig = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
-						LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting"));
+						LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(IniFileManager.INI_APP_OPT, "logLevelSetting"));
 						logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
 						if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
 							logger.warn("Logger disabled by user choice: nothing will be logged in this session.");

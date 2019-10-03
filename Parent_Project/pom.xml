@@ -3,6 +3,29 @@
   
   <properties>
   	<parent.build.version.scrypt>0.7.4</parent.build.version.scrypt>
+  	
+  	<!-- FATJAR EXPORT -->
+  	<export.directory.fatjar.main>
+  		<!-- 
+  			C:\Users\xx\Desktop\Crypter Test\TestMavenBuild
+		-->
+		C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_7.4_BuildMaven_fatjar\Application
+		
+	</export.directory.fatjar.main>
+  	<export.directory.fatjar.libs>
+  		${export.directory.fatjar.main}\Resources_Scrypt\lib
+	</export.directory.fatjar.libs>
+  	
+  	<!-- MULTIJAR EXPORT -->
+  	<export.directory.multijar.main>
+  		<!-- C:\Users\xx\Desktop\Crypter Test\TestMavenBuild
+		 -->
+		 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_7.4_BuildMaven\Application
+		 
+	</export.directory.multijar.main>
+  	<export.directory.multijar.libs>
+		${export.directory.multijar.main}\Resources_Scrypt\lib
+	</export.directory.multijar.libs>
   </properties>
   
   <groupId>Parent_Project</groupId>

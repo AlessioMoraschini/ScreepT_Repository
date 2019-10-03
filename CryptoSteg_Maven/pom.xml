@@ -58,8 +58,11 @@
                       <goal>copy-dependencies</goal>
                   </goals>
                   <configuration>
+                  <overwrite>true</overwrite>
                       <outputDirectory>
-                          ${project.build.directory}/libs
+                      	<!-- FATJAR ONLY FOR NOW = NO LIBS UPDATE -->
+                          <!-- ${project.build.directory}/libs -->
+                          ${export.directory.multijar.libs}
                       </outputDirectory>
                   </configuration>
               </execution>
@@ -79,8 +82,12 @@
 	                <goal>single</goal>
 	            </goals>
 	            <configuration>
+	            	<overwrite>true</overwrite>
 	                <outputDirectory>
-	                       ${project.build.directory}/CENTRALIZED
+	                <!-- FATJAR ONLY FOR NOW -->
+	                       <!-- ${project.build.directory}/CENTRALIZED -->
+	                       <!-- ${export.directory.fatjar.main} -->
+	                       ${export.directory.fatjar.main}
                    	</outputDirectory>
                 	<archive>
 		                <manifest>
@@ -98,19 +105,51 @@
 	    </executions>
 	  </plugin>
 	  
-	  <plugin>
+	  <!-- EXPORT .PROPERTIES TO BOTH MULTIJAR AND FATJAR EXPORT DIRS -->
+  	  <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
           <execution>
-            <id>copy-resources</id>
+            <id>copy-resources -> ${export.directory.multijar.main}</id>
             <!-- here the phase you need -->
             <phase>validate</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              	<outputDirectory>${basedir}/target/extra-resources</outputDirectory>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		<!-- ${basedir}/target/extra-resources -->
+              		${export.directory.multijar.main}
+              	</outputDirectory>
+               	<name>timestamp</name>
+               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+               	<timeZone>Europe/Zurich</timeZone>
+			    <resources>
+				     <resource>
+					    <filtering>true</filtering>
+					    <directory>./</directory>
+					    <includes>
+					        <include>resourcesFilePathsMappings.properties</include>
+					    </includes>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+          <execution>
+            <id>copy-resources -> ${export.directory.fatjar.main}</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		<!-- ${basedir}/target/extra-resources -->
+              		${export.directory.fatjar.main}
+              	</outputDirectory>
                	<name>timestamp</name>
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
                	<timeZone>Europe/Zurich</timeZone>
@@ -163,7 +202,7 @@
 		<groupId>ScrYpT_LauncherV2</groupId>
 		<artifactId>ScrYpT_LauncherV2</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<scope>compile</scope>
+		<!-- <scope>compile</scope> -->
 	</dependency>
 	
 	<dependency>

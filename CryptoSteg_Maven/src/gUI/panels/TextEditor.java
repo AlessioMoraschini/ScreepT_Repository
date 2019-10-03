@@ -868,6 +868,7 @@ public class TextEditor extends JPanel {
 			logger.warn("Buttons styling gone wrong: ", e);
 		}
 		
+		// TODO Still to fix nimbus size initFromConfig
 		initGuiFromConfig();
 		
 		loadOpenedFilesAtStart();
@@ -878,6 +879,7 @@ public class TextEditor extends JPanel {
 		
 		getCurrentTabEditor().loadedTabObj.textArea.requestFocusInWindow();
 		
+		// TODO REMOVE THIS?
 		getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(
 				null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
 

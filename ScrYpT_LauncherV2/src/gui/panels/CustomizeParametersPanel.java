@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
-import logger.LoggerUtils;
+import launcherutils.IniFileManager;
 import mainlauncher.ScrYpTLauncher;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
@@ -49,8 +49,11 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TOOLTIP_MIN_RAM_SIZE = "This is the minimum heap ram value used bj JVM to start ScrYpT dynamic data allocation";
 	private static final String TOOLTIP_MAX_RAM_SIZE = "This is the maximum heap ram value used bj JVM allocated to ScrYpT for dynamic data allocation";
 	private static final String TOOLTIP_DISPLAY_SHELL = "When checked, the launcher will keep an open active command line shell with the logger's output";
-	private static final String TOOLTIP_DEBUG_GUI = "When checked, MigLayout Components composing the graphic interface will be highlighted";
+	private static final String TOOLTIP_LAUNCH_AS_JAR = "ScrYpT will be launched as Jar (works only with centralized build)";
+	private static final String TOOLTIP_LAUNCH_AS_CLASS = "ScrYpT will be launched as .Class (works with centralized build and even with multimodule)";
 	
+	private static final String TITLE_LAUNCH_AS_JAR = "Launch as .Jar:";
+	private static final String TITLE_LAUNCH_AS_CLASS = "Launch as .Class:";
 	
 	private static final int DEF_FIXED_HEIGHT = 190;
 	private static final int DEF_FIXED_WIDTH = 550;
@@ -72,15 +75,12 @@ public class CustomizeParametersPanel extends JFrame{
 	private int backupStackSize;
 	private String backupLogLevel;
 	private boolean backupViewShell;
-	private boolean backupDebugGui;
+	private boolean backupLaunchAsJar;
 	private float backupScaleGuiPerc;
 	
 	private static final int defaultMinMemXms = 512;
 	private static final int defaultMaxMemXmx = 1024;
 	private static final int defaultStackSize = 128;
-	private static final String defaultLogLevel = LoggerUtils.DEFAULT_LOG_LEVEL+"";
-	private static final boolean defaultViewShell = false;
-	private static final boolean defaultDebugGui = false;
 	private static final float defaultScaleGuiPerc = 1.0f;
 	
 	private JLabel lblMaxWarninig;
@@ -93,7 +93,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private JLabel lblLogLevelInfo;
 	private JComboBox comboLogLevel;
 	private JCheckBox chckbxActiveShell;
-	private JCheckBox chckBoxDebugGraphics;
+	private JCheckBox chckBoxLaunchAsJar;
 	private JSlider sliderGuiScale;
 	private JLabel dynLblScaleGui;
 	private JLabel labelGuiScale;
@@ -116,7 +116,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(new Color(240, 248, 255));
-		getContentPane().setLayout(new MigLayout("", "[60px][40px][:20px:20px][:100px:100px][100px][:20px:20px][:100px:100px,grow]", "[grow][grow][grow][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px][40px][:20px:20px][:100px:100px][130px][:20px:20px][:100px:100px,grow]", "[grow][grow][grow][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		getContentPane().add(lblMaxMemory, "cell 0 0 2 1,alignx right");
@@ -138,8 +138,8 @@ public class CustomizeParametersPanel extends JFrame{
 		lblLogLevel = new JLabel("Log level:");
 		getContentPane().add(lblLogLevel, "cell 4 0,alignx right");
 		
-		comboLogLevel = new JComboBox<String>(ScrYpTLauncher.getLogLevelsList());
-//		comboLogLevel = new JComboBox<String>();
+		comboLogLevel = new JComboBox<String>(IniFileManager.getLogLevelsList());
+//		comboLogLevel = new JComboBox<String>(); // ONLY FOR VISUALIZE IN WINDOWBUILDER
 		getContentPane().add(comboLogLevel, "cell 6 0,growx");
 		
 		spinnerMinMemoryMB = new JSpinner();
@@ -172,11 +172,11 @@ public class CustomizeParametersPanel extends JFrame{
 		spinnerXssMemory.setOpaque(true);
 		getContentPane().add(spinnerXssMemory, "cell 3 2,growx");
 		
-		chckBoxDebugGraphics = new JCheckBox("Debug GUI:");
-		chckBoxDebugGraphics.setToolTipText(TOOLTIP_DEBUG_GUI);
-		chckBoxDebugGraphics.setSelected(false);
-		chckBoxDebugGraphics.setFont(new Font("SansSerif", Font.BOLD, 12));
-		getContentPane().add(chckBoxDebugGraphics, "cell 4 2,alignx right");
+		chckBoxLaunchAsJar = new JCheckBox(TITLE_LAUNCH_AS_JAR);
+		chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
+		chckBoxLaunchAsJar.setSelected(true);
+		chckBoxLaunchAsJar.setFont(new Font("SansSerif", Font.BOLD, 12));
+		getContentPane().add(chckBoxLaunchAsJar, "cell 4 2,alignx center");
 		
 		chckbxActiveShell = new JCheckBox("Display Shell");
 		chckbxActiveShell.setToolTipText(TOOLTIP_DISPLAY_SHELL);
@@ -244,13 +244,18 @@ public class CustomizeParametersPanel extends JFrame{
 			}
 		});
 		
-		chckBoxDebugGraphics.addActionListener(new ActionListener() {
+		chckBoxLaunchAsJar.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(chckBoxDebugGraphics.isSelected()) {
-					GeneralConfig.linkedMappings.setProperty("FLAG_DEBUG_GRAPHICS", ((chckBoxDebugGraphics.isSelected())? "true" : "false"));
-					GeneralConfig.reloadProperties();
+				GeneralConfig.linkedMappings.setProperty("FLAG_LAUNCH_JAR_COMMAND", ((chckBoxLaunchAsJar.isSelected())? "true" : "false"));
+				GeneralConfig.reloadProperties();
+				if(chckBoxLaunchAsJar.isSelected()) {
+					chckBoxLaunchAsJar.setText(TITLE_LAUNCH_AS_JAR);
+					chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
+				}else {
+					chckBoxLaunchAsJar.setText((TITLE_LAUNCH_AS_CLASS));
+					chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_CLASS);
 				}
 			}
 		});
@@ -264,7 +269,7 @@ public class CustomizeParametersPanel extends JFrame{
 				spinnerXssMemory.setValue(backupStackSize);
 				comboLogLevel.setSelectedItem(backupLogLevel);
 				chckbxActiveShell.setSelected(backupViewShell);
-				chckBoxDebugGraphics.setSelected(backupDebugGui);
+				chckBoxLaunchAsJar.setSelected(backupLaunchAsJar);
 				sliderGuiScale.setValue(getPercFromScale(backupScaleGuiPerc));
 			}
 		});
@@ -283,18 +288,23 @@ public class CustomizeParametersPanel extends JFrame{
 				String stackString = " -Xss"+stackSize+"m";
 				boolean viewShell = chckbxActiveShell.isSelected();
 				String stringGuiPerc = getScaleFromPerc((Integer)sliderGuiScale.getValue());
-				String stringDebugGui = (chckBoxDebugGraphics.isSelected())? "true" : "";
+				String stringDebugGui = (chckBoxLaunchAsJar.isSelected())? "true" : "";
 				
+				IniFileManager iniFileManager = ScrYpTLauncher.iniFileManager;
 				// update launcher vars and write to config INI file
-				ScrYpTLauncher.JVM_MEMORY_OPTIONS = args;
-				ScrYpTLauncher.JVM_STACK_SIZE = stackString;
-				ScrYpTLauncher.viewShellAfterStart = viewShell;
-				ScrYpTLauncher.GUI_SCALE_ARG_VALUE = stringGuiPerc;
-				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_JVM_OPT, "memoryArgs", args);
-				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_JVM_OPT, "stackSizeArgs", stackSize);
-				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting", logLevel);
-				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "viewCmdConsole", String.valueOf(viewShell));
-				ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "scaleGuiPerc", stringGuiPerc);
+				iniFileManager.JVM_MEMORY_OPTIONS = args;
+				iniFileManager.JVM_STACK_SIZE = stackString;
+				iniFileManager.viewShellAfterStart = viewShell;
+				iniFileManager.GUI_SCALE_ARG_VALUE = stringGuiPerc;
+				
+				// WRITE VALUES ON INI FILE
+				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "memoryArgs", args);
+				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "stackSizeArgs", stackSize);
+				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "logLevelSetting", logLevel);
+				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "viewCmdConsole", String.valueOf(viewShell));
+				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "scaleGuiPerc", stringGuiPerc);
+				
+				// UPDATE PROPERTIES FILE TOO
 				GeneralConfig.linkedMappings.put("FLAG_DEBUG_GRAPHICS", stringDebugGui);
 				java.io.OutputStream out = null;
 				try {
@@ -308,8 +318,7 @@ public class CustomizeParametersPanel extends JFrame{
 						out.flush();
 						out.close();
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						logger.error(e1);
 					}
 					GeneralConfig.reloadProperties();
 				}
@@ -372,9 +381,10 @@ public class CustomizeParametersPanel extends JFrame{
 	}
 	
 	private void backupInitialValues() {
-		backupLogLevel = ScrYpTLauncher.iniConfigFile.get(ScrYpTLauncher.INI_APP_OPT, "logLevelSetting");
+		IniFileManager iniFileManager = ScrYpTLauncher.iniFileManager;
+		backupLogLevel = ScrYpTLauncher.iniFileManager.iniConfigFile.get(IniFileManager.INI_APP_OPT, "logLevelSetting");
 		try {
-			String memArgsBackup = ScrYpTLauncher.JVM_MEMORY_OPTIONS;
+			String memArgsBackup = iniFileManager.JVM_MEMORY_OPTIONS;
 			String[] splittedStringArgs = memArgsBackup.split(" ");
 			for(String currentParam : splittedStringArgs) {
 				if(currentParam.indexOf("-Xmx") >= 0) {
@@ -384,26 +394,26 @@ public class CustomizeParametersPanel extends JFrame{
 					backupMinMemoryXms = Integer.valueOf(currentParam.replaceAll("\\D+",""));
 				}
 			}
-			backupStackSize = Integer.valueOf(ScrYpTLauncher.iniConfigFile.get(ScrYpTLauncher.INI_JVM_OPT, "stackSizeArgs"));
+			backupStackSize = Integer.valueOf(iniFileManager.iniConfigFile.get(IniFileManager.INI_JVM_OPT, "stackSizeArgs"));
 		} catch (NumberFormatException e) {
 			logger.error("Error parsing memory args from string", e);
 			backupMaxMemoryXmx = defaultMaxMemXmx;
 			backupMinMemoryXms = defaultMinMemXms;
 			backupStackSize = defaultStackSize;
 		}
-		backupViewShell = Boolean.parseBoolean(ScrYpTLauncher.iniConfigFile.get(ScrYpTLauncher.INI_APP_OPT, "viewCmdConsole"));
+		backupViewShell = Boolean.parseBoolean(iniFileManager.iniConfigFile.get(IniFileManager.INI_APP_OPT, "viewCmdConsole"));
 		
 		try {
-			backupScaleGuiPerc = Float.parseFloat(ScrYpTLauncher.iniConfigFile.get(ScrYpTLauncher.INI_APP_OPT, "scaleGuiPerc"));
+			backupScaleGuiPerc = Float.parseFloat(iniFileManager.iniConfigFile.get(IniFileManager.INI_APP_OPT, "scaleGuiPerc"));
 		} catch (NumberFormatException e) {
 			logger.warn(e);
 			backupScaleGuiPerc = defaultScaleGuiPerc;
 		}
-		backupDebugGui = Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS"))? true : false;
+		backupLaunchAsJar = Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"))? true : false;
 		
 		// apply to gui elements
 		chckbxActiveShell.setSelected(backupViewShell);
-		chckBoxDebugGraphics.setSelected(backupDebugGui);
+		chckBoxLaunchAsJar.setSelected(backupLaunchAsJar);
 		spinnerXssMemory.setValue(backupStackSize);
 		spinnerMaxMemoryMB.setValue(backupMaxMemoryXmx);
 		spinnerMinMemoryMB.setValue(backupMinMemoryXms);

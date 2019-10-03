@@ -18,6 +18,14 @@ public class GeneralConfig {
 	
 	public static final SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
+	/**
+	 * Used in launcher to choose right type of launch command for system
+	 */
+	public static final boolean FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
+	
+	public static final String MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
+	public static final String MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
+
 	public static final String APP_VERSION = linkedMappings.getProperty("APP_VERSION");
 	public static final String BUILD_TS_DATE = linkedMappings.getProperty("BUILD_TIMESTAMP")
 										.replaceAll("T", " at ")

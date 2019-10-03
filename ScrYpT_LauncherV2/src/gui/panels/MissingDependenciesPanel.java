@@ -9,6 +9,7 @@ import javax.swing.JDialog;
 import org.apache.log4j.Logger;
 
 import frameutils.GuiUtils;
+import launcherutils.IniFileManager;
 import launcherutils.om.DependencyModel;
 import mainlauncher.ScrYpTLauncher;
 
@@ -337,7 +338,8 @@ public class MissingDependenciesPanel extends JDialog{
 					JOptionPane.WARNING_MESSAGE);
 			if (response == JOptionPane.OK_OPTION) {
 				if (checkbox.isSelected()) {
-					ScrYpTLauncher.writeValueToIniConfiguration(ScrYpTLauncher.INI_APP_OPT, "autoShowInstallOpt", "false");
+					IniFileManager iniFileManager = parentStarterFrame.LAUNCHER.iniFileManager;
+					iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "autoShowInstallOpt", "false");
 				}
 				ScrYpTLauncher.ignoreWarnings = true;
 				parentStarterFrame.setEnabled(true);
