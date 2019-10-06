@@ -18,7 +18,7 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import menusettings.MenuSetter;

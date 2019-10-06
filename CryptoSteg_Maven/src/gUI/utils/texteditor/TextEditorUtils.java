@@ -2,12 +2,10 @@ package gUI.utils.texteditor;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,12 +25,10 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rtextarea.SearchContext;
 
 import amfileutils.FileStuff;
 import enums.Themes;
-import frameutils.EscapeReplacerPanel;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
 import gUI.utils.tree.texteditor.FileNameCellRenderer;
@@ -45,12 +41,12 @@ import om.TabTextEditorObj;
 import om.TextEditorOption;
 import reflection.ReflectionUtils;
 import resources.GeneralConfig;
-import splitpanel.FileNamed;
 import splitpanel.SplitPaneUtils;
 import tabbededitor.CustomTabbedEditor;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import treeutils.TreeUtils;
+import treeutils.om.FileNamed;
 import utils.ITextAreaDialogs;
 import utils.RsyntaxUtils;
 import utils.TextAreaDialogs;
@@ -58,15 +54,15 @@ import variousutils.HandleString;
 
 public class TextEditorUtils {
 	
+	// TextFileWriter logger creation
+	static Logger logger = Logger.getLogger(TextEditorUtils.class);
+
 	public static File workspaceRoot;
 	
 	// reference to main text editor
 	public TextEditor currentTextEditor;
 	
 	public TextAreaDialogs textAreaDialogs;
-	
-	// TextFileWriter logger creation
-	static Logger logger = Logger.getLogger(TextEditorUtils.class);
 	
 	static final int LEVEL_ANCESTOR_LABEL_DIR = 1;
 	
@@ -103,8 +99,8 @@ public class TextEditorUtils {
 	public static void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
 		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByType(currentTextEditor, JButton.class);
 		for(JButton button : textEditorButtons) {
-			button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			button.setBackground(new Color(150,150,150));
+			button.setCursor(GuiUtils.CURSOR_HAND);
+			button.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			button.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 			button.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
 		}
@@ -121,7 +117,7 @@ public class TextEditorUtils {
 		}
 		
 		// default target current selected as default
-		SupportedFileTextEditor chosenType = (SupportedFileTextEditor)TextEditor.comboFileFormat.getSelectedItem();
+		SupportedFileTextEditor chosenType = (SupportedFileTextEditor)currentTextEditor.comboFileFormat.getSelectedItem();
 		
 		if (autosync) {
 			// IF AUTOSYNC FIND RIGHT TYPE BY FILE EXTENSION AND SELECT
@@ -133,16 +129,16 @@ public class TextEditorUtils {
 			}
 		}
 		// APPLY SELECTED
-		TextEditor.comboFileFormat.setSelectedItem(chosenType);
+		currentTextEditor.comboFileFormat.setSelectedItem(chosenType);
 	}
 	
-	public static boolean checkWorkspaceExistNsel() {
-		File workspace = new File (TextEditor.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
-		return(TextEditor.toggleButtonFileTreeWorkspace.isSelected() && workspace.exists());
+	public boolean checkWorkspaceExistNsel() {
+		File workspace = new File (currentTextEditor.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+		return(currentTextEditor.toggleButtonFileTreeWorkspace.isSelected() && workspace.exists());
 	}
 	
 	public void refreshTree(File currentFile, boolean forceRefresh) {
-		TextEditorOption options = TextEditor.currentConfiguration.getTextEditorOpt();
+		TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		workspaceRoot = new File(options.defaultWorkspacePath);
 		
 		// refresh only if tree is not locked
@@ -170,14 +166,14 @@ public class TextEditorUtils {
 		}
 		
 		// Validate dir string length
-		TextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(TextEditor.dynLblCurrentDir.getText()));
+		currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
 		
-		TextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
-		SplitPaneUtils.setDividerColors(null, Color.BLACK, TextEditor.splitPaneMain);
+		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
+		SplitPaneUtils.setDividerColors(null, Color.BLACK, currentTextEditor.splitPaneMain);
 	}
 	
 	public void refreshTreeFromFolder(File folder, File currentFile, boolean forceRefresh) {
-		TextEditorOption options = TextEditor.currentConfiguration.getTextEditorOpt();
+		TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		folder = (folder.isDirectory())? folder : folder.getParentFile();
 		File workspaceRoot = folder;
 		
@@ -196,21 +192,21 @@ public class TextEditorUtils {
 		}
 		
 		// Validate dir string length
-		TextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(TextEditor.dynLblCurrentDir.getText()));
-		TextEditor.splitPaneMain.setDividerLocation(getMinimumLeftPaneSize()+10);
+		currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
+		currentTextEditor.splitPaneMain.setDividerLocation(getMinimumLeftPaneSize()+10);
 		
-		TextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
-		SplitPaneUtils.setDividerColors(null, Color.BLACK, TextEditor.splitPaneMain);
+		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
+		SplitPaneUtils.setDividerColors(null, Color.BLACK, currentTextEditor.splitPaneMain);
 	}
 	
-	public static String getFooterPanelAdaptedDirString(String rawText) {
+	public String getFooterPanelAdaptedDirString(String rawText) {
 		
 		rawText = HandleString.fitToMaxLentgh(rawText, GeneralConfig.FOOTER_MAX_DIR_LABEL_LENGTH);
 		return rawText;
 	}
 	
-	private static int getMinimumLeftPaneSize() {
-		return (TextEditor.dynLblCurrentDir.getWidth() + TextEditor.lblCurrentDir.getWidth()); 
+	private int getMinimumLeftPaneSize() {
+		return (currentTextEditor.dynLblCurrentDir.getWidth() + currentTextEditor.lblCurrentDir.getWidth()); 
 	}
 	
 	private void refresh(File currentFile) {
@@ -218,30 +214,30 @@ public class TextEditorUtils {
 		CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
 		
 		File ancestor = new File("");
-		ancestor = FileStuff.getNlevelsAncestor(currentFile, TextEditor.fileTreeAncestorLevel);
+		ancestor = FileStuff.getNlevelsAncestor(currentFile, currentTextEditor.fileTreeAncestorLevel);
 
 		// ANCESTOR CHECK
 		if(ancestor == null || !ancestor.exists()) {
-			TextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
+			currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
 			return;
 		}
 		
 		// CURRENT FILE CHECK
-		if (currentFile != null && currentFile.exists() && TextEditor.btnToggleFileView.isSelected()) {
+		if (currentFile != null && currentFile.exists() && currentTextEditor.btnToggleFileView.isSelected()) {
 
-			TextEditor.splitPaneMain.getLeftComponent().setVisible(true);
-			TextEditor.splitPaneMain.setDividerLocation(TextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
+			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
+			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
-			TextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
+			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
 			
 			try {
-				TreeUtils.selectFileInNamedFileTree(currentFile, TextEditor.leftSplitTreeFiles, true);
+				TreeUtils.selectFileInNamedFileTree(currentFile, currentTextEditor.leftSplitTreeFiles, true);
 			} catch (IOException e1) {
 				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
 			}
-			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
+			currentTextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
-				TextEditor.dynLblCurrentDir.setToolTipText(currentFile.getCanonicalPath());
+				currentTextEditor.dynLblCurrentDir.setToolTipText(currentFile.getCanonicalPath());
 			} catch (IOException e) {
 				logger.error(e);
 			}
@@ -251,25 +247,25 @@ public class TextEditorUtils {
 			
 			currentTabEditor.loadedTabObj.unsaved = true;
 			currentTabEditor.updateSavedLabelNTab(null);
-			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
+			currentTextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
-				TextEditor.dynLblCurrentDir.setToolTipText(ancestor.getCanonicalPath());
+				currentTextEditor.dynLblCurrentDir.setToolTipText(ancestor.getCanonicalPath());
 			} catch (IOException e) {
 				logger.error(e);
 			}
 			logger.warn("Tree refresh skipped, file is does not exist or it's null");
 			
-			TextEditor.splitPaneMain.setDividerLocation(0.0);
-			TextEditor.dynLblCurrentDir.setText(" - ");
+			currentTextEditor.splitPaneMain.setDividerLocation(0.0);
+			currentTextEditor.dynLblCurrentDir.setText(" - ");
 			logger.warn("Tree refresh skipped, file is null");
 			
 		} else {
-			TextEditor.splitPaneMain.setDividerLocation(0.0);
-			TextEditor.dynLblCurrentDir.setText(" - ");
+			currentTextEditor.splitPaneMain.setDividerLocation(0.0);
+			currentTextEditor.dynLblCurrentDir.setText(" - ");
 			logger.warn("Tree refresh skipped, file is null");
 		}
 		
-		TextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
+		currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
 	}
 	
 	private void refreshFromWorkspace(File workspaceRoot) {
@@ -278,7 +274,7 @@ public class TextEditorUtils {
 		
 		// WORKSPACE VALIDATION
 		if(workspaceRoot == null || workspaceRoot.getName().equals("") || !workspaceRoot.exists()) {
-			TextEditor.toggleButtonFileTreeNewWorkspace.doClick();
+			currentTextEditor.toggleButtonFileTreeNewWorkspace.doClick();
 			logger.info("Tree refresh from workspace skipped, workspace is null or it doese not exist. Redirecting to new workspace selection");
 			return;
 		}
@@ -289,20 +285,20 @@ public class TextEditorUtils {
 			return;
 		}
 		
-		if (TextEditor.btnToggleFileView.isSelected()) {
-			TextEditor.splitPaneMain.getLeftComponent().setVisible(true);
-			TextEditor.splitPaneMain.setDividerLocation(TextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
+		if (currentTextEditor.btnToggleFileView.isSelected()) {
+			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
+			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
-			TextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(workspaceRoot)));
+			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(workspaceRoot)));
 			try {
-				TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, TextEditor.leftSplitTreeFiles, true);
+				TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
 			} catch (IOException e1) {
 				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
 			}
 			
-			TextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(workspaceRoot, LEVEL_ANCESTOR_LABEL_DIR));
+			currentTextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(workspaceRoot, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
-				TextEditor.dynLblCurrentDir.setToolTipText(workspaceRoot.getCanonicalPath());
+				currentTextEditor.dynLblCurrentDir.setToolTipText(workspaceRoot.getCanonicalPath());
 				logger.debug("Tree refreshed from workspace: "+workspaceRoot.getCanonicalPath());
 			} catch (IOException e) {
 				logger.error(e);
@@ -317,7 +313,7 @@ public class TextEditorUtils {
 			logger.warn("\"btnToggleFileView\" is not selected, refresh skipped!");
 		}
 		
-		TextEditor.lblCurrentDir.setText(TextEditor.ROOT_WORKSPACE_LBL);
+		currentTextEditor.lblCurrentDir.setText(currentTextEditor.ROOT_WORKSPACE_LBL);
 		
 	}
 	
@@ -347,8 +343,8 @@ public class TextEditorUtils {
 			}
 		}
 		
-		if (!TextEditor.btnToggleFileView.isSelected()) {
-			TextEditor.splitPaneMain.setDividerLocation(0);
+		if (!currentTextEditor.btnToggleFileView.isSelected()) {
+			currentTextEditor.splitPaneMain.setDividerLocation(0);
 		}
 		currentTextEditor.repaint();
 	}
@@ -364,7 +360,7 @@ public class TextEditorUtils {
 				resetDividerColor();
 				currentTabEditor.applyStyleToTabs();
 				try {
-					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, TextEditor.leftSplitTreeFiles, true);
+					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
 				} catch (Exception e) {
 					logger.debug("Error during current file highlighting in file tree - textEditor");
 				}
@@ -398,28 +394,28 @@ public class TextEditorUtils {
 	// START ADVICE TEMPORIZATION AND VISUALIZTION METHODS
 		
 	public void refreshMessageAndTabTooltip(String message) {
-		logger.debug("Starting TextEditor.refreshMessageAndTabTooltip() with message: "+message);
+		logger.debug("Starting currentTextEditor.refreshMessageAndTabTooltip() with message: "+message);
 		successAdvice(message);
 		updateTabTooltip(currentTextEditor.getCurrentTabEditor().mainTabList.getSelectedIndex());
-		TextEditor.lblCurrentFile.setForeground(ImageGeneralWorker.randomColorRGB(0.1f));
-		logger.debug("TextEditor.refreshMessageAndTabTooltip() completed - Exiting");
+		currentTextEditor.lblCurrentFile.setForeground(ImageGeneralWorker.randomColorRGB(0.1f));
+		logger.debug("currentTextEditor.refreshMessageAndTabTooltip() completed - Exiting");
 	}
 
-	public static void errorAdvice(String msg) {
-		TextEditor.dynLblSearchEsit.setForeground(new Color(232, 102, 46));
-		TextEditor.dynLblSearchEsit.setText(msg);
+	public void errorAdvice(String msg) {
+		currentTextEditor.dynLblSearchEsit.setForeground(new Color(232, 102, 46));
+		currentTextEditor.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(TextEditor.timeoutAdvice);
 	}
 
-	public static void successAdvice(String msg) {
-		TextEditor.dynLblSearchEsit.setForeground(Color.GREEN);
-		TextEditor.dynLblSearchEsit.setText(msg);
+	public void successAdvice(String msg) {
+		currentTextEditor.dynLblSearchEsit.setForeground(Color.GREEN);
+		currentTextEditor.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(TextEditor.timeoutAdvice);
 	}
 
-	public static void infoAdvice(String msg) {
-		TextEditor.lblAdvice.setForeground(Color.BLUE);
-		TextEditor.lblAdvice.setText(msg);
+	public void infoAdvice(String msg) {
+		currentTextEditor.lblAdvice.setForeground(Color.BLUE);
+		currentTextEditor.lblAdvice.setText(msg);
 		timeoutLblAdvice(TextEditor.timeoutAdvice);
 	}
 
@@ -436,17 +432,17 @@ public class TextEditorUtils {
 		}
 	}
 	
-	public static void timeoutLblAdvice(int millisec) {
+	public void timeoutLblAdvice(int millisec) {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					TextEditor.renewedAdviceTimeout = true;
+					currentTextEditor.renewedAdviceTimeout = true;
 					Thread.sleep(millisec);
-					TextEditor.renewedAdviceTimeout = false;
-					if(!TextEditor.renewedAdviceTimeout) {
-						TextEditor.dynLblSearchEsit.setText("");
+					currentTextEditor.renewedAdviceTimeout = false;
+					if(!currentTextEditor.renewedAdviceTimeout) {
+						currentTextEditor.dynLblSearchEsit.setText("");
 					}
 				} catch (InterruptedException e) {
 					logger.error("Exception happened!", e);
@@ -546,9 +542,9 @@ public class TextEditorUtils {
 		return headerList;
 	}
 	
-	public static void resetDividerColor() {
-		if (TextEditor.splitPaneMain != null) {
-			SplitPaneUtils.setDividerColors(null, Color.DARK_GRAY, TextEditor.splitPaneMain);
+	public void resetDividerColor() {
+		if (currentTextEditor.splitPaneMain != null) {
+			SplitPaneUtils.setDividerColors(null, Color.DARK_GRAY, currentTextEditor.splitPaneMain);
 		}
 	}
 	

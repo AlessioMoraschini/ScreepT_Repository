@@ -1,4 +1,4 @@
-package dialogutils;
+package general;
 
 import java.io.File;
 import java.util.Hashtable;

@@ -29,13 +29,13 @@
         </configuration>
       </plugin>
       	
-      <!-- JAR ASSEMBLER -->
+      <!-- JAR ASSEMBLER : LAUNCHER -->
       <plugin>
 	    <groupId>org.apache.maven.plugins</groupId>
 	    <artifactId>maven-assembly-plugin</artifactId>
 	    <version>2.4.1</version>
 	    <executions>
-        	<!-- FATJAR -->
+        	<!-- FATJAR DIR -->
 	        <execution>
 	            <id>make-assembly -> ${export.directory.fatjar.main}</id>
 	            <phase>package</phase>
@@ -43,10 +43,11 @@
 	                <goal>single</goal>
 	            </goals>
 	            <configuration>
+	            	<skipAssembly>${export.fatjar.launcher.skip}</skipAssembly>
 	                <outputDirectory>
-	                       <!-- ${project.build.directory}/CENTRALIZED -->
-	                       <!-- ${export.directory.multijar.main} -->
-	                       ${export.directory.fatjar.main}
+	                    <!-- ${project.build.directory}/CENTRALIZED -->
+	                    <!-- ${export.directory.multijar.main} -->
+	                    ${export.directory.fatjar.main}
                    	</outputDirectory>
                 	<archive>
 		                <manifest>
@@ -69,6 +70,7 @@
 	                <goal>single</goal>
 	            </goals>
 	            <configuration>
+	            	<skipAssembly>${export.multijar.launcher.skip}</skipAssembly>
 	                <outputDirectory>
 	                       <!-- ${project.build.directory}/CENTRALIZED -->
 	                       ${export.directory.multijar.main}

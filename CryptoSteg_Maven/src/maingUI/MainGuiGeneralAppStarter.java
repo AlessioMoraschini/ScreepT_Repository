@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import amfileutils.FileStuff;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import logger.LoggerUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;

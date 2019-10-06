@@ -18,6 +18,7 @@ import guistyle.GUIStyelSettings;
 import javax.swing.JLabel;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 
 public class LauncherLoaderPanel extends JPanel{
 	
@@ -49,6 +50,7 @@ public class LauncherLoaderPanel extends JPanel{
 		
 		lblText = new JLabel("Loading...");
 		lblText.setForeground(new Color(255, 255, 255));
+		lblText.setFont(new Font("Segoe UI", Font.BOLD, 12));
 		layeredPane.add(lblText, "cell 0 1,alignx left,aligny center");
 		
 		progressBar = new JProgressBar();

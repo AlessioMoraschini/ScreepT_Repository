@@ -47,12 +47,14 @@ import conversion.Text2Speech;
 import crypt.aes.AesCipher;
 import dialogutils.GenericFileChooser;
 import enums.Themes;
-import frameutils.EscapeReplacerPanel;
-import frameutils.FilePropertiesFrame;
-import frameutils.GuiUtils;
+import frameutils.frame.ColorPickerFrame;
+import frameutils.frame.EscapeReplacerFrame;
+import frameutils.frame.FilePropertiesFrame;
+import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGUI;
 import mainobj.INItializer;
+import mouseutils.MousePointerUtils;
 
 import java.awt.SystemColor;
 
@@ -115,15 +117,15 @@ public class TextEditor extends JPanel {
 	static Logger logger = Logger.getLogger(TextEditor.class);
 	
 	public static final int timeoutAdvice = 9000;
-	public static volatile boolean renewedAdviceTimeout = false;
+	public volatile boolean renewedAdviceTimeout = false;
 	
-	public static int fileTreeAncestorLevel = GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL;
+	public int fileTreeAncestorLevel = GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL;
 
 	public static final String AES_KEY_PLACEHOLDER = "#### (AES KEY) ####";
 	public static final char DEFAULT_PSW_CHAR = '\u25CF';
 	
 	// this is the color of the left panel file navigator
-	public static Color fileNavColorBckg = TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
+	public Color fileNavColorBckg = TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
 
 	// RESOURCE FILES //
 	private final static String LOREM_IPSUM = GeneralConfig.RESOURCES_DIR  + "Templates/LoremIpsum.txt";
@@ -138,9 +140,9 @@ public class TextEditor extends JPanel {
 	public JCheckBox chkCutWordsTo;
 	public JCheckBox chckbxAesShowKey;
 	public JCheckBox chckbxShowTabGrid;
-	public static JCheckBox chckbxLockLanguage;
+	public JCheckBox chckbxLockLanguage;
 
-	public static JTextField lblCurrentFile;
+	public JTextField lblCurrentFile;
 	private JLabel lblTextEditor;
 	private JLabel lblCurrentFileLBL;
 	private JLabel lblVoiceSpeed;
@@ -157,18 +159,18 @@ public class TextEditor extends JPanel {
 	public JLabel lBLMargin;
 	public JLabel lblFontSize;
 	public JLabel labelTabSize;
-	public static JLabel lblAdvice;
+	public JLabel lblAdvice;
 
 	// footer
-	public static JLabel lblColumn;
-	public static JLabel dynLblColumn;
-	public static JLabel lblLine;
-	public static JLabel dynLblCurrLine;
-	public static JLabel dynLblSearchEsit;
+	public JLabel lblColumn;
+	public JLabel dynLblColumn;
+	public JLabel lblLine;
+	public JLabel dynLblCurrLine;
+	public JLabel dynLblSearchEsit;
 	
 	private JLabel lblLockNavigator;
-	public static JLabel lblCurrentDir;
-	public static volatile JLabel dynLblCurrentDir;
+	public JLabel lblCurrentDir;
+	public volatile JLabel dynLblCurrentDir;
 
 	public JButton btnFindText;
 	public JButton btnReplaceText;
@@ -176,7 +178,7 @@ public class TextEditor extends JPanel {
 	public JButton btnGoToLine;
 	public JButton btntTextFormat;
 	public JButton btnLoadTextFile;
-	public static JButton btnSaveTextFileAs;
+	public JButton btnSaveTextFileAs;
 	public JButton btnSaveTextFile;
 	public JButton btnReloadFromDisk;
 	public JButton btnSpeak;
@@ -205,12 +207,13 @@ public class TextEditor extends JPanel {
 	public JButton btnRemoveSpaces;
 	public JButton btnViewInExplorer;
 	public JButton btnPropertiesPanel;
-	public static JButton btnCalculator;
+	public JButton btnCalculator;
+	public JButton btnColorSampler;
 
-	public static JButton toggleButtonFileTreeNewWorkspace;
-	public static JButton toggleButtonFileTreeWorkspace;
-	public static JButton toggleButtonFileTreeLocked;
-	public static JToggleButton btnToggleFileView;
+	public JButton toggleButtonFileTreeNewWorkspace;
+	public JButton toggleButtonFileTreeWorkspace;
+	public JButton toggleButtonFileTreeLocked;
+	public JToggleButton btnToggleFileView;
 	private JRadioButton rdbtnShowCompletePath;
 	
 	private JSpinner tabSizeSpinner;
@@ -220,32 +223,33 @@ public class TextEditor extends JPanel {
 	public JSeparator separator_1;
 	public JSeparator separator_2;
 
-	public static JComboBox comboFileFormat;
+	public JComboBox comboFileFormat;
 	public JComboBox comboStylesScheme;
 
 	public JSlider sliderSpokenSpeed;
 	public JSlider sliderFontSize;
 	public JSlider slider_margin;
 
-	public static JSplitPane splitPaneMain;
-	public static JScrollPane leftSplitPane;
-	public static JPanel leftSplitContainer; 
-	public static JTree leftSplitTreeFiles;
+	public JSplitPane splitPaneMain;
+	public JScrollPane leftSplitPane;
+	public JPanel leftSplitContainer; 
+	public JTree leftSplitTreeFiles;
 	private JPasswordField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as
 
 	// DIALOGS AND JFRAMES
 	public FindDialog searchBox;
 	public ReplaceDialog replaceDialog;
 	public GoToDialog goToLineDialog;
-	public EscapeReplacerPanel escapeReplacerPanel;
+	public EscapeReplacerFrame escapeReplacerPanel;
 	public ImageSelector2TextFrame imageParserBox;
 	public PdfSelector2TextFrame pdfParserBox;
 	public TextLineNumber lineNumberPanel;
 	public FilePropertiesFrame propertiesFrame;
 	public CalculatorMainApp calculatorFrame;
 	public Thread calculatorMainThread;
+	public ColorPickerFrame colorPickerFrame;
 
-	public static boolean isCrypterOn = false;
+	public boolean isCrypterOn = false;
 
 	public JFrame parentFrame; // the frame that instantiate this object
 
@@ -264,18 +268,18 @@ public class TextEditor extends JPanel {
 	// flag to signal if function is already running
 	public boolean askSaveBeforeClose = true;
 
-	public static String CURRENT_EXT_OUT = ".txt";
+	public String CURRENT_EXT_OUT = ".txt";
 	public Color LBL_ADVICE_COLOR;
 
 	public RUndoManager manager;
-	public static INItializer currentConfiguration;
+	public INItializer currentConfiguration;
 	public TextEditor currentTextEditor; // current object
 	private Text2Speech objSpeaker; // field containing the current object used to speak text
 
 	public MainGUI mainApplication;
 	public TextEditorUtils textEditorUtils;
 
-	private TextEditorShortcutListener shortcutsListener;
+	public TextEditorShortcutListener shortcutsListener;
 	public TreeFileMouseListenerTxtEditor mouseListenerTreeFilePanel;
 	
 	public ArrayList<CustomTabbedEditor> tabbedEditorsList;
@@ -295,8 +299,8 @@ public class TextEditor extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
 		Dimension maxSize = GuiUtils.getScreenSize();
-		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2","[300px:"+MainGUI.screenSize.getWidth()+"px:"+MainGUI.screenSize.getWidth()+"px,grow]",
-										"[300px:"+MainGUI.screenSize.getHeight()+"px:"+MainGUI.screenSize.getHeight()+"px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS + "fill, insets 1, hidemode 2","[300px:"+MainGUI.screenSize.getWidth()+"px:"+MainGUI.screenSize.getWidth()+"px,grow]",
+				"[300px:"+MainGUI.screenSize.getHeight()+"px:"+MainGUI.screenSize.getHeight()+"px,grow]"));
 
 		// initialize OBJECTS used in GUI //
 		currentConfiguration = currentConf;
@@ -324,7 +328,7 @@ public class TextEditor extends JPanel {
 		
 		comboFileFormat = new JComboBox();
 		comboFileFormat.setToolTipText(TextEditorTooltips.tooltipComboFileFormat);
-		comboFileFormat.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboFileFormat.setCursor(GuiUtils.CURSOR_HAND);
 		comboFileFormat.setBackground(new Color(100, 149, 237));
 		comboFileFormat.setModel(new DefaultComboBoxModel(SupportedFileTextEditor.values()));
 		mainPanel.add(comboFileFormat, "cell 4 3 3 1,growx");
@@ -421,14 +425,14 @@ public class TextEditor extends JPanel {
 		mainPanel.add(btnLoremIpsum, "cell 21 2,growx");
 
 		btnParseImageText = new JButton("");
-		btnParseImageText.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnParseImageText.setCursor(GuiUtils.CURSOR_HAND);
 		btnParseImageText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERT_OCR_IMAGE));
 		btnParseImageText.setToolTipText(TextEditorTooltips.tooltipParseImage);
 		mainPanel.add(btnParseImageText, "cell 22 2,alignx center");
 
 		btnParsePdfText = new JButton("");
 		btnParsePdfText.setToolTipText(TextEditorTooltips.tooltipParsePdfTxt);
-		btnParsePdfText.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnParsePdfText.setCursor(GuiUtils.CURSOR_HAND);
 		btnParsePdfText.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_PDF));
 		mainPanel.add(btnParsePdfText, "cell 23 2,alignx center");
 
@@ -441,6 +445,11 @@ public class TextEditor extends JPanel {
 		btnCalculator.setToolTipText(TextEditorTooltips.tooltipBtnCalculator);
 		btnCalculator.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CALCULATOR));
 		mainPanel.add(btnCalculator, "cell 26 2");
+
+		btnColorSampler = new JButton("");
+		btnColorSampler.setToolTipText(TextEditorTooltips.tooltipBtnColorSampler);
+		btnColorSampler.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
+		mainPanel.add(btnColorSampler, "cell 26 3");
 		
 		labelTabSize = new JLabel("Tab Size:");
 		mainPanel.add(labelTabSize, "cell 28 2");
@@ -466,7 +475,7 @@ public class TextEditor extends JPanel {
 		btnToggleFileView = new JToggleButton("");
 		btnToggleFileView.setMinimumSize(new Dimension(16, 0));
 		btnToggleFileView.setToolTipText(TextEditorTooltips.tooltipFileViewBtn);
-		btnToggleFileView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnToggleFileView.setCursor(GuiUtils.CURSOR_HAND);
 		btnToggleFileView.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 		mainPanel.add(btnToggleFileView, "cell 0 3,grow");
 
@@ -482,7 +491,7 @@ public class TextEditor extends JPanel {
 
 		chckbxLockLanguage = new JCheckBox("Lock");
 		chckbxLockLanguage.setToolTipText(TextEditorTooltips.tooltipChckbxLockLanguage);
-		chckbxLockLanguage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxLockLanguage.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxLockLanguage.setIconTextGap(1);
 		chckbxLockLanguage.setForeground(Color.WHITE);
 		chckbxLockLanguage.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -490,7 +499,7 @@ public class TextEditor extends JPanel {
 
 		comboStylesScheme = new JComboBox();
 		comboStylesScheme.setToolTipText(TextEditorTooltips.tooltipComboStyleScheme);
-		comboStylesScheme.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboStylesScheme.setCursor(GuiUtils.CURSOR_HAND);
 		comboStylesScheme.setModel(new DefaultComboBoxModel<>(Themes.values()));
 		comboStylesScheme.setSelectedIndex(0);
 		comboStylesScheme.setBackground(new Color(100, 149, 237));
@@ -612,7 +621,7 @@ public class TextEditor extends JPanel {
 						
 		chckbxShowTabGrid = new JCheckBox("Show tab grid");
 		chckbxShowTabGrid.setHorizontalAlignment(SwingConstants.LEFT);
-		chckbxShowTabGrid.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxShowTabGrid.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxShowTabGrid.setToolTipText(TextEditorTooltips.tooltipShowTabGrid);
 		chckbxShowTabGrid.setSelected(currentConfiguration.getTextEditorOpt().isTabLineVisible());
 		chckbxShowTabGrid.setForeground(SystemColor.menu);
@@ -1084,12 +1093,12 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
 				if (btnToggleFileView.isSelected()) {
-					btnToggleFileView.setBackground(new Color(120, 0, 0));
+					btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 					splitPaneMain.setDividerLocation(currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 					currentConfiguration.getTextEditorOpt().fileTreeActive = true;
 				} else {
 					splitPaneMain.setDividerLocation(0);
-					btnToggleFileView.setBackground(SystemColor.inactiveCaption);
+					btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 					currentConfiguration.getTextEditorOpt().fileTreeActive = false;
 				}
 			}
@@ -1248,8 +1257,8 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (!EscapeReplacerPanel.active) {
-							escapeReplacerPanel = new EscapeReplacerPanel(mainApplication.getMainFrame(), getCurrentTabEditor().loadedTabObj.textArea,
+						if (!EscapeReplacerFrame.active) {
+							escapeReplacerPanel = new EscapeReplacerFrame(mainApplication.getMainFrame(), getCurrentTabEditor().loadedTabObj.textArea,
 									btnTemplates);
 							escapeReplacerPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 							escapeReplacerPanel.setBounds(750, 140, 500, 210);
@@ -1275,12 +1284,33 @@ public class TextEditor extends JPanel {
 						if (calculatorFrame == null || !CalculatorMainApp.active) {
 							calculatorMainThread = new Thread(new Runnable() {
 								public void run() {
-									calculatorFrame = new CalculatorMainApp();
-									CalculatorMainApp.getCalculatorGuiSingleton().gui.setAlwaysOnTop(true);
-
+									try {
+										calculatorFrame = new CalculatorMainApp();
+										CalculatorMainApp.getCalculatorGuiSingleton().gui.setAlwaysOnTop(true);
+									} catch (SecurityException e) {
+										logger.error("Error in Calculator module ["+CalculatorMainApp.class+"]", e);
+									}
 								}
 							});
 							calculatorMainThread.start();
+						}
+					}
+				});
+			}
+		});
+		
+		// COLOR SAMPLER
+		btnColorSampler.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (colorPickerFrame == null || !ColorPickerFrame.active) {
+							colorPickerFrame = new ColorPickerFrame();
+							GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), colorPickerFrame, JFrame.MAXIMIZED_BOTH);
+						}else {
+							colorPickerFrame.dispatchEvent(new WindowEvent(colorPickerFrame, WindowEvent.WINDOW_CLOSING));
 						}
 					}
 				});
@@ -2215,9 +2245,9 @@ public class TextEditor extends JPanel {
 			if (loadedTabObj.loadedFile == null) {
 				splitPaneMain.setDividerLocation(0);
 			}
-			btnToggleFileView.setBackground(new Color(120, 0, 0));
+			btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 		} else {
-			btnToggleFileView.setBackground(SystemColor.inactiveCaption);
+			btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		}
 
 		splitPaneMain.setDividerLocation(currentConfiguration.getTextEditorOpt().dividerFileTreePosX);

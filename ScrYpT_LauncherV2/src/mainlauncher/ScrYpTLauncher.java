@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import amfileutils.FileStuff;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
 import gui.utils.LauncherLoaderFrame;
@@ -67,7 +67,7 @@ public class ScrYpTLauncher {
 
 	// jvm search fields default
 	public static final String JVM_ARGS = " -Dfile.encoding=UTF8 -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
-	public static final String GUI_SCALE_ARG = "-Dsun.java2d.uiScale=";
+	public static final String GUI_SCALE_ARG = "-Dsun.java2d.d3d=false -Dsun.java2d.uiScale=";
 	
 	public static boolean ignoreWarnings = false;
 	

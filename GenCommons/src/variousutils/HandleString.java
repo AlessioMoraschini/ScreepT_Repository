@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -18,7 +19,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+
+import media.color.HslColor;
 
 public class HandleString {
 
@@ -472,7 +476,7 @@ public class HandleString {
     }
     
     /**
-     * Convert color to string
+     * Convert color to string RGB
      */
     public static String getRgbString(Color sourceColor) {
     	StringBuilder builder = new StringBuilder();
@@ -480,6 +484,60 @@ public class HandleString {
     		   .append(sourceColor.getGreen()).append("-")
     		   .append(sourceColor.getBlue());
     	String result = builder.toString();
+    	return result;
+    }
+    
+    /**
+     * Convert color to string RGB with custom separator
+     */
+    public static String getRgbString(Color sourceColor, String separator) {
+    	separator = (StringUtils.isEmpty(separator))? "-" : separator;
+    	StringBuilder builder = new StringBuilder();
+    	builder.append(sourceColor.getRed()).append(separator)
+    		   .append(sourceColor.getGreen()).append(separator)
+    		   .append(sourceColor.getBlue());
+    	String result = builder.toString();
+    	return result;
+    }
+    
+    /**
+     * Convert color to string Hexadecimal
+     */
+    public static String getHexString(Color sourceColor) {
+    	String hex = String.format("#%02x%02x%02x", sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue());
+    	return hex;
+    }
+    
+    /**
+     * Convert color to string HSB (where B is brightness, same as Value where referred as HSV)
+     */
+    public static String getHsbString(Color sourceColor, String separator) {
+    	float[] hsv = new float[3];
+    	float[] hsb = Color.RGBtoHSB(sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue(), hsv);
+    	String result = "";
+    	for(float curr : hsb) {
+    		String currString = String.format("%.2f", curr);
+    		result = result.concat(currString).concat(separator);
+    	}
+    	if (result.length() > 1) {
+			result = result.substring(0, result.length()-2);
+		}
+		return result;
+    }
+    
+    /**
+     * Convert color to string HSL
+     */
+    public static String getHslString(Color sourceColor, String separator) {
+    	float[] hsl = HslColor.fromRGB(sourceColor);
+    	String result = "";
+    	for(float curr : hsl) {
+    		String currString = String.valueOf((int)curr);
+    		result = result.concat(currString).concat(separator);
+    	}
+    	if (result.length() > 1) {
+			result = result.substring(0, result.length()-2);
+		}    	
     	return result;
     }
     
@@ -496,6 +554,26 @@ public class HandleString {
     	int blue = Integer.parseInt(rgb[2]);
     	
     	return new Color(red, green, blue);
+    }
+    
+    public static Color hsvToRgb(float hue, float saturation, float value) throws RuntimeException{
+
+        int h = (int)(hue * 6);
+        value = value * 256;
+        int f = (int)hue * 6 - h * 256;
+        int p = (int)(value * (1 - saturation) * 256);
+        int q = (int)(value * (1 - f * saturation) * 256);
+        int t = (int)(value * (1 - (1 - f) * saturation) * 256);
+
+        switch (h) {
+          case 0: return new Color(value, t, p);
+          case 1: return new Color(q, value, p);
+          case 2: return new Color(p, value, t);
+          case 3: return new Color(p, q, value);
+          case 4: return new Color(t, p, value);
+          case 5: return new Color(value, p, q);
+          default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
+        }
     }
     
     /**

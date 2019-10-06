@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 
 public class LauncherLoaderFrame extends JFrame{
 

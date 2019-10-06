@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.frames;
 
 import resources.GeneralConfig;
 import javax.swing.JFrame;
@@ -12,7 +12,7 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
 import amfileutils.FileStuff;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import generic.LimitedList;
 import local.om.HDinfo;
 import mainobj.INItializer;
@@ -47,10 +47,10 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 
-public class HwInfoPanel extends JFrame{
+public class HwInfoFrame extends JFrame{
 	
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(HwInfoPanel.class); 
+	static Logger logger = Logger.getLogger(HwInfoFrame.class); 
 	
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
@@ -144,7 +144,7 @@ public class HwInfoPanel extends JFrame{
 	private ProcMem scryptMemUsage;
 	
 	// network related objects
-	public HwInfoPanel thisPanel;
+	public HwInfoFrame thisPanel;
 	private JLabel lblWrites;
 	private JTextField dynLblHDWriteBytes;
 	private JLabel lblHDCapacity;
@@ -167,7 +167,7 @@ public class HwInfoPanel extends JFrame{
 	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
-	public HwInfoPanel(INItializer currentConfig) {
+	public HwInfoFrame(INItializer currentConfig) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -631,7 +631,7 @@ public class HwInfoPanel extends JFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
-	        	logger.debug("Closing Frame: "+HwInfoPanel.class.getName());	        	
+	        	logger.debug("Closing Frame: "+HwInfoFrame.class.getName());	        	
 				active = false;
 	        	dispose();
 		    }

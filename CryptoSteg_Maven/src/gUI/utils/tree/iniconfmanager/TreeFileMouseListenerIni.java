@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.FileTreeModel;

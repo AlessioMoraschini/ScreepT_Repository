@@ -1,38 +1,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
-  <properties>
-  	<parent.build.version.scrypt>0.7.4</parent.build.version.scrypt>
-  	
-  	<!-- FATJAR EXPORT -->
-  	<export.directory.fatjar.main>
-  		<!-- 
-  			C:\Users\xx\Desktop\Crypter Test\TestMavenBuild
-		-->
-		C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_7.4_BuildMaven_fatjar\Application
-		
-	</export.directory.fatjar.main>
-  	<export.directory.fatjar.libs>
-  		${export.directory.fatjar.main}\Resources_Scrypt\lib
-	</export.directory.fatjar.libs>
-  	
-  	<!-- MULTIJAR EXPORT -->
-  	<export.directory.multijar.main>
-  		<!-- C:\Users\xx\Desktop\Crypter Test\TestMavenBuild
-		 -->
-		 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_7.4_BuildMaven\Application
-		 
-	</export.directory.multijar.main>
-  	<export.directory.multijar.libs>
-		${export.directory.multijar.main}\Resources_Scrypt\lib
-	</export.directory.multijar.libs>
-  </properties>
-  
   <groupId>Parent_Project</groupId>
   <artifactId>Parent_Project</artifactId>
   <version>${parent.build.version.scrypt}</version>
   <packaging>pom</packaging>
   
+  <properties>
+  	<parent.build.version.scrypt>0.7.4</parent.build.version.scrypt>
+  	
+  	<!-- FATJAR EXPORT -->
+	  	<export.fatjar.skip>false</export.fatjar.skip>
+	  	<export.fatjar.launcher.skip>false</export.fatjar.launcher.skip>
+	  	<export.directory.fatjar.main>
+			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_7.4_BuildMaven_fatjar\Application
+		</export.directory.fatjar.main>
+	  	<export.directory.fatjar.resources>
+	  		${export.directory.fatjar.main}\Resources_Scrypt
+		</export.directory.fatjar.resources>
+	  	<export.directory.fatjar.libs>
+	  		${export.directory.fatjar.resources}\lib
+		</export.directory.fatjar.libs>
+  	
+  	<!-- MULTIJAR EXPORT -->
+	  	<export.multijar.skip>false</export.multijar.skip>
+	  	<export.multijar.launcher.skip>false</export.multijar.launcher.skip>
+	  	<export.directory.multijar.main>
+			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0_7.4_BuildMaven\Application
+		</export.directory.multijar.main>
+		<export.directory.multijar.resources>
+	  		${export.directory.multijar.main}\Resources_Scrypt
+		</export.directory.multijar.resources>
+	  	<export.directory.multijar.libs>
+			${export.directory.multijar.resources}\lib
+		</export.directory.multijar.libs>
+  </properties>
+  
+  <!-- MODULES BUILD -->
   <modules>
   	<module>../GenCommons</module>
   	<module>../GeneralResources</module>

@@ -22,7 +22,7 @@ import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import reflection.ReflectionLibChecker;
 import resources.IconsPathConfigurator;
 

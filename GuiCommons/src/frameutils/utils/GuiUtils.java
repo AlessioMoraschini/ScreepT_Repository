@@ -1,4 +1,4 @@
-package frameutils;
+package frameutils.utils;
 
 
 import java.awt.Component;
@@ -11,9 +11,11 @@ import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,6 +35,8 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
+import resources.IconsPathConfigurator;
+
 public class GuiUtils {
 	
 	// INItializer logger creation		
@@ -42,6 +46,22 @@ public class GuiUtils {
 	public static final Cursor CURSOR_DEFAULT = Cursor.getDefaultCursor();
 	public static final Cursor CURSOR_TEXT = new Cursor(Cursor.TEXT_CURSOR);
 	public static final Cursor CURSOR_HAND = new Cursor(Cursor.HAND_CURSOR);
+	
+	public static final Cursor CURSOR_COLOR_PICK = getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER);
+	
+	public static Cursor getCustomCursor(String imgPath) {
+		Cursor result = CURSOR_DEFAULT;
+		try {
+			Dimension prefSize = Toolkit.getDefaultToolkit().getBestCursorSize(8, 8);
+			Point hotSpot = new Point(prefSize.width, prefSize.height);
+			Image cursorImage = new ImageIcon(imgPath).getImage();
+			result = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, hotSpot, imgPath);
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		
+		return result;
+	}
 	
 	public static void setupTooltips(int delay, int timeout, Font font) {
 		// Tooltip General settings
@@ -144,6 +164,17 @@ public class GuiUtils {
 				}
 			}
 		});
+	}
+	
+	public static boolean removeKeyListeners(Component target) {
+		try {
+			for (KeyListener key : target.getKeyListeners()) {
+				target.removeKeyListener(key);
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public static boolean setFrameIcon(Image icon, JFrame frameToSet) {

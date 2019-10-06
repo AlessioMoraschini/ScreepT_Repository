@@ -15,7 +15,7 @@ import org.icepdf.ri.common.SwingViewBuilder;
 
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooser;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;

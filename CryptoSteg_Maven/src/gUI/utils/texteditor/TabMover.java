@@ -3,9 +3,9 @@ package gUI.utils.texteditor;
 import java.awt.Component;
 import java.util.Collections;
 
-import frameutils.FileDragNDropManager;
 import gUI.panels.TextEditor;
 import tabbededitor.CustomTabbedEditor;
+import tabbedpaneutils.FileDragNDropManager;
 
 @Deprecated
 public class TabMover {

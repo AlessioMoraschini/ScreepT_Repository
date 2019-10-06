@@ -3,6 +3,7 @@ package maingUI;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Insets;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -18,7 +19,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import gUI.utils.mainGui.MainGuiUtils;
 import gui.utils.LauncherLoaderFrame;
 import mainobj.INItializer;
@@ -30,6 +31,7 @@ public class MainGuiParent {
 	
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(MainGUI.class);
+	
 	// date used for log operations
 	public static Date now;
     public static Level LOG_LEVEL_AT_START;
@@ -157,11 +159,20 @@ public class MainGuiParent {
 		Font menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
 		
 		// CREATE MENU-BAR STRUCTURE
+		Insets mainMargin = new Insets(0, 1, 1, 1);
+		menuBar.setMargin(mainMargin);
+
+		Insets menuEntryMargin = new Insets(0, 0, 0, 2);
 		menuBar.add(mnFile);
+		mnFile.setMargin(menuEntryMargin);
 		menuBar.add(mnPreferences);
+		mnPreferences.setMargin(menuEntryMargin);
 		menuBar.add(mnCryptoSteg);
+		mnCryptoSteg.setMargin(menuEntryMargin);
 		menuBar.add(mnVarious);
+		mnVarious.setMargin(menuEntryMargin);
 		menuBar.add(mnHelp);
+		mnHelp.setMargin(menuEntryMargin);
 		
 			// SUB-MENU
 			mnFile.add(mntmInspectCurrentConfiguration);
@@ -191,27 +202,27 @@ public class MainGuiParent {
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
 			mnVarious.add(mnConversionsAndOther);
-			mnVarious.add(mnFilesAndDirectories);
-			
-			mnHelp.add(mntmAboutScreept);		
-			mnHelp.add(new JSeparator());
-			mnHelp.add(mntmExportLog);
-			mnHelp.add(mntmEraseLogs);
-			mnHelp.add(mntmUserDocumentation);
-			mnHelp.add(mnrestartPanel);
-				mnrestartPanel.add(mntmResetAllPanels);
-			mnHelp.add(new JSeparator());
-			mnHelp.add(mntmReturnToWelcome);
-			
-				// UNDER-SUB-MENU
+				// SUB-MENU
 				mnConversionsAndOther.add(mntmImageConverter);
-				
+			mnVarious.add(mnFilesAndDirectories);
+				// SUB-MENU
 				mnFilesAndDirectories.add(mntmTouppercaseDirectory);
 				mnFilesAndDirectories.add(mntmMakeDirsFromPath);
 				mnFilesAndDirectories.add(mntmCopyDirStructure);
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentByExtension);
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentRecursive);
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentDirsOnlyRecursive);
+			
+			mnHelp.add(mntmAboutScreept);		
+			mnHelp.add(new JSeparator());
+			mnHelp.add(mntmExportLog);
+			mnHelp.add(mntmEraseLogs);
+			mnHelp.add(mntmUserDocumentation);
+			mnHelp.add(new JSeparator());
+			mnHelp.add(mntmReturnToWelcome);
+			mnHelp.add(mnrestartPanel);
+				// SUB-MENU
+				mnrestartPanel.add(mntmResetAllPanels);
 			
 		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
 		

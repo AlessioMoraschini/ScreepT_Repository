@@ -1,4 +1,4 @@
-package frameutils;
+package frameutils.utils;
 
 import java.awt.*;
 import java.awt.event.*;

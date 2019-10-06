@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import guistyle.GUIStyelSettings;
 import mainlauncher.ScrYpTLauncher;
 import media.Sounds;

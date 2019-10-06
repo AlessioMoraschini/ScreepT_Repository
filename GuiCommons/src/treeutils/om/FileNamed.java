@@ -1,4 +1,4 @@
-package splitpanel;
+package treeutils.om;
 
 import java.io.File;
 import java.io.IOException;

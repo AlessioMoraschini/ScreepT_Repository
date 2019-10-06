@@ -1,4 +1,4 @@
-	package frameutils;
+	package tabbedpaneutils;
 
 import java.awt.Color;
 import java.awt.Component;

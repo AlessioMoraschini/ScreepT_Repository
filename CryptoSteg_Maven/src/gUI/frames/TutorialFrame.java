@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.frames;
 
 import java.awt.Color;
 import java.awt.event.ComponentEvent;
@@ -10,25 +10,25 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import frameutils.GuiUtils;
 import frameutils.html.HtmlPanel;
+import frameutils.utils.GuiUtils;
 import maingUI.MainGUI;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
-public class TutorialPanel extends JFrame{
+public class TutorialFrame extends JFrame{
 
 	// initialize Logger
-	static Logger logger = Logger.getLogger(TutorialPanel.class); 
+	static Logger logger = Logger.getLogger(TutorialFrame.class); 
 	
 	public HtmlPanel mainHtmlReadmePanel;
-	public TutorialPanel thisPanel;
+	public TutorialFrame thisPanel;
 	
 	// flag to signal active
 	public static boolean active=false;
 	
-	public TutorialPanel() {
+	public TutorialFrame() {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[1000px,grow]", "[800px,grow]"));

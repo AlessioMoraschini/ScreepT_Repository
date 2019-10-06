@@ -1,12 +1,12 @@
-package gUI.panels;
+package gUI.frames;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import frameutils.BackgroundPanel;
-import frameutils.GuiUtils;
+import frameutils.frame.BackgroundFrame;
+import frameutils.utils.GuiUtils;
 import guistyle.TextGuiUtils;
 import maingUI.MainGUI;
 
@@ -31,17 +31,17 @@ import javax.swing.JButton;
 import java.awt.Cursor;
 import java.awt.Insets;
 
-public class AboutSectionPanel extends JFrame{
+public class AboutSectionFrame extends JFrame{
 
 	// initialize Logger
-	static Logger logger = Logger.getLogger(AboutSectionPanel.class); 
+	static Logger logger = Logger.getLogger(AboutSectionFrame.class); 
 	
 	// GUI ELEMENTS //
 	private JLabel lblTitle;
 	private JLabel dynLblReleaseDate;
 	private JLabel dynLblAuthor;
 	private JButton dynLblWebsite;
-	private BackgroundPanel backPanel; 
+	private BackgroundFrame backPanel; 
 
 	// GENERAL FIELDS //
 	private final JFrame thisFrame;
@@ -51,7 +51,7 @@ public class AboutSectionPanel extends JFrame{
 	// flag to signal active
 	public static boolean active=false;
 	
-	public AboutSectionPanel(MainGUI main) {
+	public AboutSectionFrame(MainGUI main) {
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		// INIT REFERENCES
@@ -73,7 +73,7 @@ public class AboutSectionPanel extends JFrame{
 		}
         Image background = image.getScaledInstance(image.getWidth(),image.getHeight(), Image.SCALE_SMOOTH);
 		
-		backPanel = new BackgroundPanel(background);
+		backPanel = new BackgroundFrame(background);
 		backPanel.setBackground(Color.BLACK);
 		backPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[20px][25%][25%][25%][25%][20px]", "[5px][40px][30px][grow][30px][grow][30px][grow][30px]"));
 		getContentPane().add(backPanel);

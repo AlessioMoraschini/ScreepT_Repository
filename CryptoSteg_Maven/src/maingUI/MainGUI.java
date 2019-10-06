@@ -38,18 +38,21 @@ import org.ini4j.Wini;
 import amfileutils.FileStuff;
 import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.GenericFileChooser;
-import frameutils.ComponentResizer;
-import frameutils.GuiUtils;
-import frameutils.MovePanelMouseListener;
-import gUI.panels.AboutSectionPanel;
+import dialogutils.JOptionHelper;
+import frameutils.utils.ComponentResizer;
+import frameutils.utils.GuiUtils;
+import gUI.frames.AboutSectionFrame;
+import gUI.frames.GeneralOptionsFrame;
+import gUI.frames.GraphicPreferencesFrame;
+import gUI.frames.HwInfoFrame;
+import gUI.frames.ImageConverterFrame;
+import gUI.frames.KeyDictionaryPanel;
+import gUI.frames.KeyGenFrame;
+import gUI.frames.NetInfoFrame;
+import gUI.frames.TutorialFrame;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
-import gUI.panels.GeneralOptionsFrame;
-import gUI.panels.GraphicPreferencesFrame;
-import gUI.panels.KeyGenPanel;
-import gUI.panels.NetInfoPanel;
 import gUI.panels.TextEditor;
-import gUI.panels.TutorialPanel;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.mainGui.MainGuiUtils;
@@ -59,12 +62,10 @@ import gui.utils.LauncherLoaderFrame;
 import guistyle.GUIStyelSettings;
 import launcherutils.IniFileManager;
 import logger.LoggerUtils;
-import gUI.panels.HwInfoPanel;
-import gUI.panels.ImageConverterFrame;
-import gUI.panels.KeyDictionaryPanel;
 import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import media.Sounds;
+import mouseutils.MovePanelMouseListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -101,14 +102,14 @@ public class MainGUI extends MainGuiParent{
 	
 	// FRAMES THAT OPEN IN A NEW DIALOG
 	private static GraphicPreferencesFrame panelGuiOptions;
-	private static KeyGenPanel panelKeyGen;
+	private static KeyGenFrame panelKeyGen;
 	private static KeyDictionaryPanel panelKeyDict;
 	private static GeneralOptionsFrame panelGeneralOptions;
 	private static ImageConverterFrame panelImgConv;
-	private static NetInfoPanel panelNetInfo;
-	private static HwInfoPanel panelHwInfo;
-	private static AboutSectionPanel panelAbout;
-	private static TutorialPanel tutorialPanel;
+	private static NetInfoFrame panelNetInfo;
+	private static HwInfoFrame panelHwInfo;
+	private static AboutSectionFrame panelAbout;
+	private static TutorialFrame tutorialPanel;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	public static TextEditor initTxtWriter;
@@ -120,6 +121,8 @@ public class MainGUI extends MainGuiParent{
 	
 	// Filed for uppercaseFirstLetter "various' function"
 	private String last_dir_used; 
+	
+	private MovePanelMouseListener movePanelMouseListener;
 	
 	// global values representing the screen size
 	public static int screenWidth;
@@ -162,6 +165,8 @@ public class MainGUI extends MainGuiParent{
 	// main app object reference
 	private MainGUI mainAPP = this;
 	public static Dimension preFullScreenSize = null;
+	
+	public static JOptionHelper dialogHelper;
 	
 	
 	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
@@ -237,7 +242,7 @@ public class MainGUI extends MainGuiParent{
 									if(!GraphicPreferencesFrame.active) {
 										flagFrameGuiOptions=false;
 									}
-									if(!KeyGenPanel.active){
+									if(!KeyGenFrame.active){
 										flagFrameKeyGen=false;
 									}
 									if(!KeyDictionaryPanel.active) {
@@ -249,16 +254,16 @@ public class MainGUI extends MainGuiParent{
 									if(!ImageConverterFrame.active) {
 										flagImgConv=false;
 									}
-									if(!NetInfoPanel.active) {
+									if(!NetInfoFrame.active) {
 										flagNetInfoPanel=false;
 									}
-									if(!HwInfoPanel.active) {
+									if(!HwInfoFrame.active) {
 										flagHwInfoPanel=false;
 									}
-									if(!AboutSectionPanel.active) {
+									if(!AboutSectionFrame.active) {
 										flagAboutPanel=false;
 									}
-									if(!TutorialPanel.active) {
+									if(!TutorialFrame.active) {
 										flagTutorialPanel=false;
 									}
 								} catch (InterruptedException e) {
@@ -380,19 +385,23 @@ public class MainGUI extends MainGuiParent{
 					
 //					updateGuiFromCurrConfig();
 					
-					// RUN ARGUMENTS IF THERE ARE
-					if(MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
-						mntmTextEditor.doClick();
-					}else {
-						Class lastOpened = currentConfiguration.getGenOpt().getLastPanelOpened();
-						if(lastOpened.equals(TextEditor.class)) {
-							mntmTextEditor.doClick();
-						}else if(lastOpened.equals(CrypterPanel.class)) {
-							mntmCrypter.doClick();
-						}else if(lastOpened.equals(ChargeIniLog.class)) {
-							mntmInspectCurrentConfiguration.doClick();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							// RUN ARGUMENTS IF THERE ARE
+							if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
+								mntmTextEditor.doClick();
+							} else {
+								Class lastOpened = currentConfiguration.getGenOpt().getLastPanelOpened();
+								if (lastOpened.equals(TextEditor.class)) {
+									mainGuiUtils.startTextEditor(true);
+								} else if (lastOpened.equals(CrypterPanel.class)) {
+									mainGuiUtils.startCrypterPanel(true);
+								} else if (lastOpened.equals(ChargeIniLog.class)) {
+									mainGuiUtils.startConfigManagerPanel(true);
+								}
+							}
 						}
-					}
+					});
 					
 					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 				} catch (Exception e) {
@@ -455,7 +464,6 @@ public class MainGUI extends MainGuiParent{
 		frmScryptV.getContentPane().setBackground(SystemColor.windowText);
 		frmScryptV.setBounds(0, 0, 1500, 850 );
 		frmScryptV.setMinimumSize(MainGuiParent.minimumSize);
-		MovePanelMouseListener.applyMoveListener(frmScryptV);
 		frmScryptV.addMouseListener(new ComponentResizer());
 		
 		// FULL SCREEN SETTING
@@ -533,6 +541,7 @@ public class MainGUI extends MainGuiParent{
 					}
 		    }
 		});
+		
 		// NOT OPENING VIEW - RESET ALL PANELS
 		mntmResetAllPanels = new JMenuItem(new AbstractAction("Reset all Panels") {
 		    public void actionPerformed(ActionEvent ae) {
@@ -847,6 +856,7 @@ public class MainGUI extends MainGuiParent{
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
+							movePanelMouseListener = MovePanelMouseListener.applyMoveListenerR(frmScryptV);
 						} else {
 							frmScryptV.dispose();
 							preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
@@ -855,6 +865,7 @@ public class MainGUI extends MainGuiParent{
 							frmScryptV.setLocationRelativeTo(frmScryptV);
 							frmScryptV.setVisible(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
+							MovePanelMouseListener.removeMoveListener(frmScryptV, movePanelMouseListener);
 						}
 						
 						// RESYNC JSCROLL BUG WORKAROUND
@@ -896,7 +907,7 @@ public class MainGUI extends MainGuiParent{
 		    	if (!flagFrameKeyGen) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		flagFrameKeyGen = true;
-		    		panelKeyGen = new KeyGenPanel(currentConfiguration);
+		    		panelKeyGen = new KeyGenFrame(currentConfiguration);
 					panelKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelKeyGen.setBounds(150, 150, 1100, 800);
 					panelKeyGen.setVisible(true);
@@ -924,7 +935,7 @@ public class MainGUI extends MainGuiParent{
 							prog.getPb().setIndeterminate(true);
 							prog.getLabel().setText("Loading Network informations...");
 							prog.getPb().setString("Loading...");
-							panelNetInfo = new NetInfoPanel(currentConfiguration);	
+							panelNetInfo = new NetInfoFrame(currentConfiguration);	
 							panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 							panelNetInfo.setAlwaysOnTop(true);
 							panelNetInfo.setBounds(150, 150, 950, 700);
@@ -957,7 +968,7 @@ public class MainGUI extends MainGuiParent{
 							prog.getPb().setIndeterminate(true);
 							prog.getLabel().setText("Loading System informations...");
 							prog.getPb().setString("Loading...");
-							panelHwInfo = new HwInfoPanel(currentConfiguration);	
+							panelHwInfo = new HwInfoFrame(currentConfiguration);	
 							panelHwInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 							panelHwInfo.setBounds(250, 200, 1000, 750);
 							panelHwInfo.setAlwaysOnTop(true);
@@ -1023,7 +1034,7 @@ public class MainGUI extends MainGuiParent{
 				if (!flagAboutPanel) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagAboutPanel = true;
-		    		panelAbout = new AboutSectionPanel(mainAPP);
+		    		panelAbout = new AboutSectionFrame(mainAPP);
 		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    		panelAbout.setBounds(700, 200, 400, 345);
 		    		panelAbout.setResizable(false);
@@ -1044,7 +1055,7 @@ public class MainGUI extends MainGuiParent{
 				// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
 				new Thread(new Runnable() {
 					public void run() {
-						tutorialPanel = new TutorialPanel();
+						tutorialPanel = new TutorialFrame();
 					}
 				}).start();
 			}

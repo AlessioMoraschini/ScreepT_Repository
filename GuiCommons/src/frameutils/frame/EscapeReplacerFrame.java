@@ -1,4 +1,4 @@
-package frameutils;
+package frameutils.frame;
 
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -9,7 +9,7 @@ import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
@@ -31,10 +31,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import java.awt.Dimension;
 
-public class EscapeReplacerPanel extends JFrame{
+public class EscapeReplacerFrame extends JFrame{
 	
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(EscapeReplacerPanel.class);
+	static Logger logger = Logger.getLogger(EscapeReplacerFrame.class);
 	
 	public static final String tooltipTryEscapeToSpec = "Try conversion from escape sequence to special characters in text field";
 	public static final String tooltipTrySpecialToEscape = "Try conversion from special characters to escape sequence in text field";
@@ -55,7 +55,7 @@ public class EscapeReplacerPanel extends JFrame{
 	private JButton btnTrySpecialTo;
 	
 	// MAIN CONSTRUCTOR //
-	public EscapeReplacerPanel(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
+	public EscapeReplacerFrame(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
 		
 		active = true;
 		

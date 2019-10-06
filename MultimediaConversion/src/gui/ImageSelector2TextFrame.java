@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooser;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import media.ImageGeneralWorker;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;

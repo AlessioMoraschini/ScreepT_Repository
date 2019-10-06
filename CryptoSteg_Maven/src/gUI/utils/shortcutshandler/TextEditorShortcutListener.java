@@ -9,7 +9,6 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
-import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tooltip.TextEditorTooltips;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
@@ -227,14 +226,14 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				 * 	OPEN/CLOSE FILE TREE PANEL -> ALT+Q
 				 */
 				if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
-					TextEditor.btnToggleFileView.doClick();
+					currentTextEditor.btnToggleFileView.doClick();
 				}
 				
 				/*
 				 *  FILE TREE AUTO UPDATE on CURRENT FILE ON/OFF -> Ctrl+shift+U
 				 */
 				if(e.getKeyCode() == 85 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					TextEditor.toggleButtonFileTreeLocked.doClick();
+					currentTextEditor.toggleButtonFileTreeLocked.doClick();
 				}
 				
 				/*
@@ -243,7 +242,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TextEditor.toggleButtonFileTreeWorkspace.doClick();
+							currentTextEditor.toggleButtonFileTreeWorkspace.doClick();
 						}
 					});
 				}
@@ -254,7 +253,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 87 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TextEditor.toggleButtonFileTreeNewWorkspace.doClick();
+							currentTextEditor.toggleButtonFileTreeNewWorkspace.doClick();
 						}
 					});
 				}
@@ -348,7 +347,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TextEditor.chckbxLockLanguage.doClick();
+							currentTextEditor.chckbxLockLanguage.doClick();
 						}
 					});
 				}
@@ -360,7 +359,18 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 67 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TextEditor.btnCalculator.doClick();
+							currentTextEditor.btnCalculator.doClick();
+						}
+					});
+				}
+
+				/*
+				 *  OPEN COLOR SAMPLER -> Ctrl+Alt+Shift+P
+				 */
+				if(e.getKeyCode() == 80 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentTextEditor.btnColorSampler.doClick();
 						}
 					});
 				}

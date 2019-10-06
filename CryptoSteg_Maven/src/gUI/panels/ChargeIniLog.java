@@ -12,6 +12,7 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelper;
 import enums.Themes;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.FileTreeModel;
@@ -87,6 +88,8 @@ public class ChargeIniLog extends JPanel{
 	private JTree tree;
 	private JButton btnSave;
 	private JButton btnViewCurrentFile;
+	
+	private JOptionHelper dialogHelper;
 
 	public ChargeIniLog(INItializer configuration, MainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
@@ -94,6 +97,8 @@ public class ChargeIniLog extends JPanel{
 		thisPanel = this;
 		parent = parentFrame;
 		config = configuration;
+		
+		dialogHelper = new JOptionHelper(parent.getMainFrame());
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -272,7 +277,7 @@ public class ChargeIniLog extends JPanel{
 					// update all panels with current configuration
 					//parent.updateGuiFromCurrConfig();
 				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(parent.getMainFrame(), "Error during read of the file: " + config.getIniFile().getFile().getName(), "Load Error", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.error("Error during read of the file: " + config.getIniFile().getFile().getName(), "Load Error");
 				}
 			}
 		});
@@ -325,13 +330,12 @@ public class ChargeIniLog extends JPanel{
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						lblAvviso.setText("[Configuration Resetted!]");
 						String name = MainGUI.askUsername();
-						JOptionPane.showMessageDialog(parent.getMainFrame(), "File '" + config.getIniFile().getFile().getName() + "' loaded!");
+						dialogHelper.info("File '" + config.getIniFile().getFile().getName() + "' loaded!", "");
 						config.readConfigIniFile();
 						config.getGenOpt().setUserName(name);
 						parent.updateGuiFromCurrConfig();
 					} catch (IOException exc) {
-						JOptionPane.showMessageDialog(parent.getMainFrame(),
-								"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
+						dialogHelper.error("Error resetting standard configuration: it does not exist or IO error occurred, retry later!", "");
 						logger.error("Exception happened!", exc);
 					}
 					
@@ -342,7 +346,7 @@ public class ChargeIniLog extends JPanel{
 					
 					textAreaToTop();
 				} else {
-					JOptionPane.showMessageDialog(parent.getMainFrame(),"Configuration not loaded, current CONFIG mantained!");
+					dialogHelper.warn("Configuration not loaded, current CONFIG mantained!", "");
 				} 
 			}
 		});
@@ -366,9 +370,9 @@ public class ChargeIniLog extends JPanel{
 						textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" );
 						FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
 						textAreaToTop();
-						JOptionPane.showMessageDialog(parent.getMainFrame(),"File " + config.getIniFile().getFile().getAbsolutePath() + " saved!");
+						dialogHelper.info("File " + config.getIniFile().getFile().getAbsolutePath() + " saved!", "");
 					} else {
-						JOptionPane.showMessageDialog(parent.getMainFrame(), "Configuration not saved!");
+						dialogHelper.info("Configuration not saved!", "");
 					}
 					config.setIniFile(new Wini(backupIni));
 					config.setIniReadFile(new Ini(backupIni));
@@ -376,7 +380,7 @@ public class ChargeIniLog extends JPanel{
 					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 				} catch (IOException e1) {
 					logger.error("Exception happened!", e1);
-					JOptionPane.showMessageDialog(parent.getMainFrame(), "An error occurred :(", "Error", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.error("An error occurred :(", "Error");
 				}
 			}
 		});

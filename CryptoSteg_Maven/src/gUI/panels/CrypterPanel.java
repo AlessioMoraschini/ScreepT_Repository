@@ -27,7 +27,8 @@ import crypt.manager.ScreeptManager;
 import crypt.steg.StegCipher;
 import enums.BufferedImageType;
 import enums.Themes;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
+import gUI.frames.KeyGenFrame;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tree.FileTreeModel;
@@ -176,7 +177,7 @@ public class CrypterPanel extends JPanel {
 		////////////////////////////
 	
 	// static path of keyDictionary
-	public static final String KEY_DICTIONARY = KeyGenPanel.KEY_DICTIONARY;
+	public static final String KEY_DICTIONARY = KeyGenFrame.KEY_DICTIONARY;
 		
 	// file representing dictionary
 	public static final File KEY_DICTIONARY_FILE = new File(KEY_DICTIONARY);

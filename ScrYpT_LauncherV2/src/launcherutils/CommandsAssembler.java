@@ -61,16 +61,19 @@ public class CommandsAssembler {
 		dto = (dto != null)? dto : new JvmArgumentsDTO();
 		argumentsFiles = (argumentsFiles != null)? argumentsFiles : new File[0];
 		
-		String complete_ARGS = dto.JVM_MEMORY_OPTIONS 
-							 + dto.JVM_STACK_SIZE 
-							 + " -XshowSettings:vm -Dawt.useSystemAAFontSettings=on -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale="
-							 + dto.GUI_SCALE_ARG_VALUE 
-							 + dto.JVM_ARGS;
+		StringBuilder builder = new StringBuilder();
+		builder.append(dto.JVM_MEMORY_OPTIONS)
+			   .append(dto.JVM_STACK_SIZE)
+			   .append(" ").append(GeneralConfig.JVM_CUSTOM_CUSTOM_SETTINGS)
+			   .append(" -Dsun.java2d.uiScale=")
+			   .append(dto.GUI_SCALE_ARG_VALUE)
+			   .append(dto.JVM_ARGS);
 		
-		if (GeneralConfig.FLAG_LAUNCH_JAR_COMMAND) {
+		String complete_ARGS = builder.toString();
+
+		if (Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"))) {
 			// THIS USES JAR WITH NO CLASSPATH - USEFUL FOR CENTRALIZED BUILD
 			execCommand.add(SysUtils.startJarCommand(complete_ARGS, dto.MAIN_JAR_FILE, argumentsFiles));
-		
 		}else {
 			// THIS USES MAIN CLASS WITH CLASSPATH - USEFUL FOR FRAGMENTED BUILD JARS OR CLASSES
 			execCommand.add(SysUtils.startClassCommand(complete_ARGS, 

@@ -30,12 +30,12 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
-import frameutils.BackgroundPanel;
-import gUI.panels.KeyDictionaryPanel;
+import frameutils.frame.BackgroundFrame;
+import gUI.frames.KeyDictionaryPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import maingUI.MainGUI;
 
-public class VirtualFileDropPane extends BackgroundPanel {
+public class VirtualFileDropPane extends BackgroundFrame {
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(KeyDictionaryPanel.class); 

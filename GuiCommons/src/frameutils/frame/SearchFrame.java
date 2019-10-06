@@ -1,4 +1,4 @@
-package frameutils;
+package frameutils.frame;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 import org.apache.log4j.Logger;
 
 import media.Sounds;
+import mouseutils.MovePanelMouseListener;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

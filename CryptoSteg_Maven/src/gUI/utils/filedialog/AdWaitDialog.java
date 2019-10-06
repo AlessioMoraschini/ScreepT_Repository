@@ -6,7 +6,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
-import javax.swing.WindowConstants;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;

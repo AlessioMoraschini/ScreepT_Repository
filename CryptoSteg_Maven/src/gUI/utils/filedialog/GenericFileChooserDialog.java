@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.commons.io.FilenameUtils;
 import dialogutils.*;
 import gUI.panels.CrypterPanel;
+import general.MyFileView;
 import mainobj.INItializer;
 
 public class GenericFileChooserDialog {

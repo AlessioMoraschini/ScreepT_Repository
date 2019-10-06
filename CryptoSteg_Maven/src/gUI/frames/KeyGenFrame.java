@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.frames;
 
 import resources.GeneralConfig;
 import javax.swing.JFrame;
@@ -42,18 +42,20 @@ import uTILS.local.ImageWorker;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelper;
 import enums.KeyGenImageType;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
+import gUI.panels.subpanels.ImageGenContainerPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import mainobj.INItializer;
 
 import java.awt.Cursor;
 
-public class KeyGenPanel extends JFrame {
+public class KeyGenFrame extends JFrame {
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(KeyGenPanel.class); 
+	static Logger logger = Logger.getLogger(KeyGenFrame.class); 
 	
 	// static path of keyDictionary
 	public static final String KEY_DICTIONARY = "IMG/KEY_DICTIONARY/";
@@ -84,7 +86,7 @@ public class KeyGenPanel extends JFrame {
 	// container of the image from which generated original image will be taken
 	private volatile TestUpdateProgress progUpdater;
 	private ImageGenContainerPanel imageContainer;
-	private KeyGenPanel thisFrame;
+	private KeyGenFrame thisFrame;
 	
 	// flag to signal active
 	public static boolean active=false;
@@ -93,16 +95,20 @@ public class KeyGenPanel extends JFrame {
 	
 	private INItializer currentConfig;
 	
+	private JOptionHelper dialogHelper;
+	
 	/**
 	 * Create the application.
 	 */
-	public KeyGenPanel(INItializer currentConf) {
+	public KeyGenFrame(INItializer currentConf) {
 
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		active = true;
 		thisFrame = this;
 		currentConfig = currentConf;
+		
+		dialogHelper = new JOptionHelper(thisFrame);
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEYGEN, this);
@@ -353,7 +359,7 @@ public class KeyGenPanel extends JFrame {
 					        				logger.debug(selectedFile.getCanonicalPath()+" deleted & re-saved.");
 
 					            		}else {
-					        				JOptionPane.showMessageDialog(thisFrame, "Operation cancelled");
+					            			dialogHelper.info("Operation cancelled", null);
 					        				logger.debug("Canceled by user.");
 					            		}
 					            	}else {
@@ -365,7 +371,7 @@ public class KeyGenPanel extends JFrame {
 					            	}
 						    		progUpdater.getPb().setValue(100);
 					               	if(done) {
-					    				JOptionPane.showMessageDialog(thisFrame, "File "+selectedFile.getName()+" succesfully saved!");
+					               		dialogHelper.info("File "+selectedFile.getName()+" succesfully saved!", "");
 					    				currentConfig.getSteganOpt().getImgRecentPath().add(0, selectedFile.getAbsolutePath());
 					    				if(currentConfig.getSteganOpt().getImgRecentPath().size()>10) {
 					    					currentConfig.getSteganOpt().getImgRecentPath().remove(currentConfig.getSteganOpt().getImgRecentPath().size());
@@ -374,19 +380,19 @@ public class KeyGenPanel extends JFrame {
 					               	}
 								} catch (Exception e1) {
 						    		progUpdater.getPb().setValue(100);
-									JOptionPane.showMessageDialog(thisFrame, "error Saving the selected file :(");
+						    		dialogHelper.error("error Saving the selected file :(", "");
 				        			logger.error(" Error saving the file!"+e1.toString());
 				    		        textLog.append("\n -> ERROR Saving file :(");
 								}		        	
 					        }else {
 					        	updateBTNenabled(true);
 					        	logger.warn("EXPORT ABORTED by user");
-								JOptionPane.showMessageDialog(thisFrame, "Process killed by user, not exported.", "Cancelled by user", JOptionPane.WARNING_MESSAGE);
+					        	dialogHelper.warn("Process killed by user, not exported.", "Cancelled by user");
 					        }
 							
 						}else {
 							updateBTNenabled(true);
-							JOptionPane.showMessageDialog(thisFrame, "Image is null, first you have to generate an image!", "NULL image Error",JOptionPane.ERROR_MESSAGE );
+							dialogHelper.error("Image is null, first you have to generate an image!", "NULL image Error");
 						}
 						updateBTNenabled(true);
 					}
@@ -438,19 +444,15 @@ public class KeyGenPanel extends JFrame {
 								progUpdater.getPb().setValue(100);
 
 								updateBTNenabled(true);
-								JOptionPane.showMessageDialog(thisFrame, out);
+								dialogHelper.info(out, "");
 							} else {
 								// case of null input (cancel pressed by user)
 								updateBTNenabled(true);
-								JOptionPane.showMessageDialog(thisFrame,
-										"Process killed by user, not added to dictionary.", "Cancelled",
-										JOptionPane.WARNING_MESSAGE);
+								dialogHelper.warn("Process killed by user, not added to dictionary.", "Cancelled");
 							}
 						} else {
 							updateBTNenabled(true);
-							JOptionPane.showMessageDialog(thisFrame,
-									"Image is null, first you have to generate an image!", "NULL image Error",
-									JOptionPane.ERROR_MESSAGE);
+							dialogHelper.info("Image is null, first you have to generate an image!", "NULL image Error");
 						}
 					}
 				});

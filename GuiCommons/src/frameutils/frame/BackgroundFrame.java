@@ -1,4 +1,4 @@
-package frameutils;
+package frameutils.frame;
 
 
 import java.awt.Graphics;
@@ -6,23 +6,23 @@ import java.awt.Image;
 
 import javax.swing.JPanel;
 
-public class BackgroundPanel extends JPanel{
+public class BackgroundFrame extends JPanel{
 	
 		
 	private Image backgroundImage;
 	private boolean scaleIMG;
 	
-	public BackgroundPanel() {
+	public BackgroundFrame() {
 		scaleIMG = true;
 	}
 	
-	public BackgroundPanel(Image background) {
+	public BackgroundFrame(Image background) {
 		
 		backgroundImage = background;
 		scaleIMG = true;
 	}
 	
-	public BackgroundPanel(Image background, boolean scaleImage) {
+	public BackgroundFrame(Image background, boolean scaleImage) {
 		backgroundImage = background;
 		scaleIMG = scaleImage;
 	}

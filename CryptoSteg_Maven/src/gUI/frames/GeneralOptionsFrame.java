@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.frames;
 
 import javax.swing.JFrame;
 
@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import mainlauncher.ScrYpTLauncher;

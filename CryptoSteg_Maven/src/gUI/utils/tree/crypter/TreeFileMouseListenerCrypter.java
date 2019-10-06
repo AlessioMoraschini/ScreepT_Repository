@@ -30,8 +30,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
-import gUI.panels.KeyGenPanel;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
@@ -201,12 +201,12 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 				// show input dialog to select the file(gives null in case of no file selected)
 				File selected = fileRead(TEXT_LOG);
 				if (selected!=null) {
-					if (FileStuff.copyFile(selected, new File(KeyGenPanel.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite())) {
-						JOptionPane.showMessageDialog(TEXT_LOG, "File correctly saved in " + KeyGenPanel.KEY_DICTIONARY,
+					if (FileStuff.copyFile(selected, new File(KeyGenFrame.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite())) {
+						JOptionPane.showMessageDialog(TEXT_LOG, "File correctly saved in " + KeyGenFrame.KEY_DICTIONARY,
 								"File added to dictionary :)", JOptionPane.INFORMATION_MESSAGE);
-						logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KeyGenPanel.KEY_DICTIONARY);
+						logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KeyGenFrame.KEY_DICTIONARY);
 					} else {
-						JOptionPane.showMessageDialog(TEXT_LOG, "File not saved in " + KeyGenPanel.KEY_DICTIONARY,
+						JOptionPane.showMessageDialog(TEXT_LOG, "File not saved in " + KeyGenFrame.KEY_DICTIONARY,
 								". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
 						logger.error("File not saved, some error occurred :( ");
 					}

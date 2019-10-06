@@ -1,4 +1,4 @@
-package frameutils;
+package frameutils.frame;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -19,7 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
 import amfileutils.FileStuff;
-import dialogutils.MyFileView;
+import frameutils.utils.GuiUtils;
+import general.MyFileView;
 
 import java.awt.Font;
 import javax.swing.JSeparator;

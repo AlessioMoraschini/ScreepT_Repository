@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import launcherutils.IniFileManager;
 import mainlauncher.ScrYpTLauncher;
 import net.miginfocom.swing.MigLayout;
@@ -38,7 +38,7 @@ import javax.swing.JSlider;
 
 public class CustomizeParametersPanel extends JFrame{
 	
-	// KeyGenPanel logger
+	// CustomizeParametersPanel logger
 	static Logger logger = Logger.getLogger(CustomizeParametersPanel.class); 
 	
 	public static final DecimalFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
@@ -288,7 +288,7 @@ public class CustomizeParametersPanel extends JFrame{
 				String stackString = " -Xss"+stackSize+"m";
 				boolean viewShell = chckbxActiveShell.isSelected();
 				String stringGuiPerc = getScaleFromPerc((Integer)sliderGuiScale.getValue());
-				String stringDebugGui = (chckBoxLaunchAsJar.isSelected())? "true" : "";
+				String stringLaunchAsJar = (chckBoxLaunchAsJar.isSelected())? "true" : "false";
 				
 				IniFileManager iniFileManager = ScrYpTLauncher.iniFileManager;
 				// update launcher vars and write to config INI file
@@ -305,23 +305,8 @@ public class CustomizeParametersPanel extends JFrame{
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "scaleGuiPerc", stringGuiPerc);
 				
 				// UPDATE PROPERTIES FILE TOO
-				GeneralConfig.linkedMappings.put("FLAG_DEBUG_GRAPHICS", stringDebugGui);
-				java.io.OutputStream out = null;
-				try {
-					out = new FileOutputStream(GeneralConfig.resourcesMappingDefPath);
-					GeneralConfig.linkedMappings.store(out, "# Updated on "+GeneralConfig.GENERIC_FORMATTER.format(new Date()));
-					logger.debug(GeneralConfig.resourcesMappingDefPath +"updated with FLAG_DEBUG_GRAPHICS="+stringDebugGui);
-				} catch (IOException e1) {
-					logger.error(e1);
-				} finally {
-					try {
-						out.flush();
-						out.close();
-					} catch (IOException e1) {
-						logger.error(e1);
-					}
-					GeneralConfig.reloadProperties();
-				}
+				GeneralConfig.resourcesFilePathsMappings.savePropertiesLayoutApache("FLAG_LAUNCH_JAR_COMMAND", stringLaunchAsJar);
+				GeneralConfig.reloadProperties();
 				
 				// regenerate command list with new args
 				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();

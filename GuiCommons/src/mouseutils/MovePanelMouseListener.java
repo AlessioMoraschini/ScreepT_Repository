@@ -1,4 +1,4 @@
-package frameutils;
+package mouseutils;
 
 import java.awt.Frame;
 import java.awt.Point;
@@ -23,8 +23,12 @@ public class MovePanelMouseListener implements MouseListener, MouseMotionListene
 		private Point startClick;
 	
 		public void mouseDragged(MouseEvent e) {
-			int deltaX = e.getX() - startClick.x;
-			int deltaY = e.getY() - startClick.y;
+			int deltaX = 0;
+			int deltaY = 0;
+			if (e != null) {
+				deltaX = e.getX() - startClick.x;
+				deltaY = e.getY() - startClick.y;
+			}
 			
 			theFrame.setBounds(theFrame.getLocation().x + deltaX, theFrame.getLocation().y + deltaY, theFrame.getWidth(), theFrame.getHeight());
 		}
@@ -57,5 +61,19 @@ public class MovePanelMouseListener implements MouseListener, MouseMotionListene
 		MovePanelMouseListener IMove = new MovePanelMouseListener(frame);      
 		frame.addMouseListener(IMove);
 		frame.addMouseMotionListener(IMove);
+	}
+
+	public static void removeMoveListener(Frame frame, MovePanelMouseListener IMove) {
+		frame.removeMouseListener(IMove);
+		frame.removeMouseMotionListener(IMove);
+	}
+	
+	
+	public static MovePanelMouseListener applyMoveListenerR(Frame frame) {
+		MovePanelMouseListener IMove = new MovePanelMouseListener(frame);      
+		frame.addMouseListener(IMove);
+		frame.addMouseMotionListener(IMove);
+		
+		return IMove;
 	}
 }

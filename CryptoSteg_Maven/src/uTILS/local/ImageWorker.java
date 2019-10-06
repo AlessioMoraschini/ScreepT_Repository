@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
 
 
 import amfileutils.FileStuff;
-import gUI.panels.ImageGenContainerPanel;
-import gUI.panels.KeyGenPanel;
+import gUI.frames.KeyGenFrame;
+import gUI.panels.subpanels.ImageGenContainerPanel;
 
 public class ImageWorker {
 
@@ -114,11 +114,11 @@ public class ImageWorker {
 	 * @param img the image to write on file
 	 * @return esit of the write operation
 	 */
-	public static File addKeyImgToDictionary(String imageName, BufferedImage img, KeyGenPanel parent){
+	public static File addKeyImgToDictionary(String imageName, BufferedImage img, KeyGenFrame parent){
 				
 //		updateProgressBar(20, progBar);
 		boolean esit = false;
-		File destFile = new File(KeyGenPanel.KEY_DICTIONARY+imageName);
+		File destFile = new File(KeyGenFrame.KEY_DICTIONARY+imageName);
 	
 		destFile = FileStuff.changeExtension(destFile, ".png");
 		// if directory does not exist create it

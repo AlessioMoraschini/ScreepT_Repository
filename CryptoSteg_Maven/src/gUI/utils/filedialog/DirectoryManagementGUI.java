@@ -12,14 +12,17 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import amfileutils.om.DeleteFilesByExtensionDTO;
+import dialogutils.JOptionHelper;
 import mainobj.INItializer;
 
 public class DirectoryManagementGUI {
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(DirectoryManagementGUI.class); 
-	
+			
 	public static String renameFirstLetterDirNames(Component parent, String defaultVisualizedDir) {
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		int errors=0;
 		File selectedFile;
 		JFileChooser fileChooser = new JFileChooser();
@@ -35,7 +38,7 @@ public class DirectoryManagementGUI {
 	            			"'?")==JOptionPane.OK_OPTION) {
             			defaultVisualizedDir = selectedFile.getParentFile().getAbsolutePath();
 		            	errors=FileStuff.upperCaseSubFolder(selectedFile);
-		            	JOptionPane.showMessageDialog(parent, "Renaming completed! \n\nCompleted with: "+errors+" Errors.");
+		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
             		}
             	}//END FILE
             	else if(selectedFile.isDirectory()) {
@@ -43,69 +46,76 @@ public class DirectoryManagementGUI {
 	            			"' and all files/directory in it?")==JOptionPane.OK_OPTION) {
             			defaultVisualizedDir = selectedFile.getAbsolutePath();
 		            	errors=FileStuff.upperCaseSubFolder(selectedFile);
-		            	JOptionPane.showMessageDialog(parent, "Renaming completed! \n\nCompleted with: "+errors+" Errors.");
+		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
             		}	
             	}// END DIRECTORY
             	if(!selectedFile.exists()) {
-	            	JOptionPane.showMessageDialog(parent, "File does not exist! \nChoose an existing File or Directory ;)", "Error Executin' requested Action", JOptionPane.WARNING_MESSAGE);
+            		dialog.warn("File does not exist! \nChoose an existing File or Directory ;)", "Error Executin' requested Action");
             	}
             }catch(Exception exc) {
-				JOptionPane.showMessageDialog(parent, "Renaming cancelled! \n An error occurred.", "Error Executin' requested Action", JOptionPane.ERROR_MESSAGE);
+				dialog.error("Renaming cancelled! \n An error occurred.", "Error Executin' requested Action");
 				logger.error("Exception happened!", exc);
             }
 		}else {
-			JOptionPane.showMessageDialog(parent, "Renaming cancelled! ", "Skipped by user", JOptionPane.INFORMATION_MESSAGE);
+			dialog.info("Renaming cancelled! ", "Skipped by user");
 		}
 		
 		return defaultVisualizedDir;
 	}
 	
 	public static void makeDirsFromPath(JFrame parent,INItializer currentConf) {
-		
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		String dirToMake = JOptionPane.showInputDialog("Insert the complete Path of the directories to create (accepted separators=['\\','/'])");
 		if (!dirToMake.equals("")) {
 			File givenDir = new File(dirToMake);
 			// TODO check for root existing
 			boolean res = givenDir.mkdirs();
 			if (res) {
-				JOptionPane.showMessageDialog(parent, "Completed, Directories created!", "Directories created!", JOptionPane.INFORMATION_MESSAGE);
+				dialog.info("Completed, Directories created!", "Directories created!");
 			} else {
-				JOptionPane.showMessageDialog(parent, "Some error occurred creating folders :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+				dialog.error("Some error occurred creating folders :(", "Some Error occurred!");
 			} 
 		}else {
-			JOptionPane.showMessageDialog(parent, "Void path, exiting.", "Some error occurred!", JOptionPane.ERROR_MESSAGE);
+			dialog.error("Void path, exiting.", "Some error occurred!");
 		}
 	}
 	
 	public static void deleteContentOfDir(JFrame parent,INItializer currentConf) {
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
 		if (selected!=null) {
 			boolean res = FileStuff.deleteDirContentRecursive(selected);
 			if (res) {
-				JOptionPane.showMessageDialog(parent, "Completed, content deleted :)", "Completed, content deleted", JOptionPane.INFORMATION_MESSAGE);
+				dialog.info("Completed, content deleted :)", "Completed, content deleted");
 			} else {
-				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+				dialog.error("Some error occurred, some files could be still present :(", "Some Error occurred!");
 			} 
 		}else {
-			JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.INFORMATION_MESSAGE);
+			dialog.info("No directory selected, exiting.", "No directory selected!");
 		}
 	}
 	
 	public static void deleteDirContentFiles(JFrame parent,INItializer currentConf) {
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
 		if (selected != null) {
 			boolean res = FileStuff.emptyDirContentFolderOnly(selected);
 			if (res) {
-				JOptionPane.showMessageDialog(parent, "Completed, folders content deleted :)", "Completed, folders content deleted", JOptionPane.INFORMATION_MESSAGE);
+				dialog.info("Completed, folders content deleted :)", "Completed, folders content deleted");
 			} else {
-				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(", "Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+				dialog.error("Some error occurred, some files could be still present :(", "Some Error occurred!");
 			} 
 		}else {
-			JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.INFORMATION_MESSAGE);
+			dialog.warn("No directory selected, exiting.", "No directory selected!");
 		}
 	}
 	
 	public static void deleteContentOfDirByExt(JFrame parent,INItializer currentConf) {
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
 		DeleteFilesByExtensionDTO response;
 		String notFoundExtensions = "";
@@ -117,19 +127,21 @@ public class DirectoryManagementGUI {
 				notFoundExtensions = " These extensions have 0 matches: " + response.getNotFoundExtensionResult();
 			}
 			if (response.isEsit() && !response.isNothingFound()) {
-				JOptionPane.showMessageDialog(parent, "Completed, folders content deleted :)" + notFoundExtensions, "Completed, folders content deleted", JOptionPane.INFORMATION_MESSAGE);
+				dialog.info("Completed, folders content deleted :)" + notFoundExtensions, "Completed, folders content deleted");
 			} else if(response.isNothingFound()){
-				JOptionPane.showMessageDialog(parent, "Nothing found!" + notFoundExtensions, "Nothing found!", JOptionPane.WARNING_MESSAGE);
+				dialog.warn("Nothing found!" + notFoundExtensions, "Nothing found!");
 			} else {
-				JOptionPane.showMessageDialog(parent, "Some error occurred, some files could be still present :(" + notFoundExtensions, "Some Error occurred!", JOptionPane.WARNING_MESSAGE);
+				dialog.error("Some error occurred, some files could be still present :(" + notFoundExtensions, "Some Error occurred!");
 			}
 			
 		}else {
-			JOptionPane.showMessageDialog(parent, "No directory selected, exiting.", "No directory selected!", JOptionPane.INFORMATION_MESSAGE);
+			dialog.warn("No directory selected, exiting.", "No directory selected!");
 		}
 	}
 	
 	public static void copyDirStructure(JFrame parent,INItializer currentConf) {
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
 		if (selected != null) {
 			File destination = GenericFileChooserDialog.directoWrite(parent, currentConf);
@@ -139,22 +151,22 @@ public class DirectoryManagementGUI {
 					res = FileStuff.copyDirStructure(selected, destination, true);
 				} catch (IOException e) {
 					logger.error(e);
-					JOptionPane.showMessageDialog(parent, "IO Error: you cannot put destination inside source, choose another destination",
-							"IO Error: cannot put destination inside source", JOptionPane.ERROR_MESSAGE);
+					dialog.error("IO Error: you cannot put destination inside source, choose another destination",
+							"IO Error: cannot put destination inside source");
 					return;
 				}
 				if (res) {
-					JOptionPane.showMessageDialog(parent, "Completed, folder directories content copied :)",
-							"Completed, folders directories content copied", JOptionPane.INFORMATION_MESSAGE);
+					dialog.info("Completed, folder directories content copied :)",
+							"Completed, folders directories content copied");
 				} else {
-					JOptionPane.showMessageDialog(parent, "Some error occurred, some folders could be missing :(",
-							"Some Error occurred!", JOptionPane.ERROR_MESSAGE);
+					dialog.error("Some error occurred, some folders could be missing :(",
+							"Some Error occurred!");
 				} 
 			}else {
-				JOptionPane.showMessageDialog(parent, "No destination directory selected, exiting.", "Destination directory missing!", JOptionPane.INFORMATION_MESSAGE);
+				dialog.warn("No destination directory selected, exiting.", "Destination directory missing!");
 			}
 		}else {
-			JOptionPane.showMessageDialog(parent, "No source directory selected, exiting.", "Source directory missing!", JOptionPane.INFORMATION_MESSAGE);
+			dialog.warn("No source directory selected, exiting.", "Source directory missing!");
 		}
 	}
 }

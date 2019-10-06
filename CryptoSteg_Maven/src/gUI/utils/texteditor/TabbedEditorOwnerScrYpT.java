@@ -26,12 +26,12 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public void doAfterApplyingStyleToTabs() {
-		TextEditorUtils.resetDividerColor();
+		textEditor.textEditorUtils.resetDividerColor();
 	}
 
 	@Override
 	public JTextComponent getNewFileStringTarget() {
-		return TextEditor.lblCurrentFile;
+		return textEditor.lblCurrentFile;
 	}
 
 	@Override

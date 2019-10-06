@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.frames;
 
 import resources.GeneralConfig;
 import javax.swing.JFrame;
@@ -29,7 +29,8 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.log4j.Logger;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
+import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
@@ -342,7 +343,7 @@ public class GraphicPreferencesFrame extends JFrame {
 						} finally {
 							GUIStyelSettings.updateAllWindowsLaf();
 							currentEditor.getCurrentTabEditor().applyStyleToTabs();
-							TextEditorUtils.resetDividerColor();
+							currentEditor.textEditorUtils.resetDividerColor();
 						}
 					}
 				});
@@ -414,7 +415,7 @@ public class GraphicPreferencesFrame extends JFrame {
 					JOptionPane.showMessageDialog(thisFrame,
 							"Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.",
 							"Saved!", JOptionPane.INFORMATION_MESSAGE);
-					TextEditorUtils.resetDividerColor();
+					currentEditor.textEditorUtils.resetDividerColor();
 					currentTabEditor.applyStyleToTabs();
 					logger.debug("Configuration saved: \n" + currentConfiguration.toStringa());
 
@@ -425,7 +426,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(thisFrame, "Ok, I wont save theese settings ;)", "Not saved!",
 							JOptionPane.WARNING_MESSAGE);
-					TextEditorUtils.resetDividerColor();
+					currentEditor.textEditorUtils.resetDividerColor();
 					currentTabEditor.applyStyleToTabs();
 				}
 				
@@ -450,7 +451,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				updateGUI();
 //				GUIStyelSettings.updateAllWindowsLaf();
 				currentTabEditor.applyStyleToTabs();
-				TextEditorUtils.resetDividerColor();
+				currentEditor.textEditorUtils.resetDividerColor();
 
 				logger.debug("Configuration resetted: \n" + currentConfiguration.toStringa());
 
@@ -465,7 +466,7 @@ public class GraphicPreferencesFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// update (locally)BACKUP_VALUES as the new ones
 				updateBackup();
-				TextEditorUtils.resetDividerColor();
+				currentEditor.textEditorUtils.resetDividerColor();
 //				GUIStyelSettings.updateAllWindowsLaf();
 				currentTabEditor.applyStyleToTabs();
 
@@ -511,7 +512,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				NIMBUS_SIZE = (int) spinnerNimbusSize.getValue();
 				GUIStyelSettings.applyNimbusSize(NIMBUS_SIZE);
 				GUIStyelSettings.updateAllWindowsLaf();
-				TextEditorUtils.resetDividerColor();
+				currentEditor.textEditorUtils.resetDividerColor();
 				currentTabEditor.applyStyleToTabs();
 			}
 		});
@@ -604,7 +605,7 @@ public class GraphicPreferencesFrame extends JFrame {
 		spinnerNimbusSize.setValue(NIMBUS_SIZE);
 
 		GUIStyelSettings.setStyle(PREFERRED_STYLE, NIMBUS_SIZE);
-		TextEditorUtils.resetDividerColor();
+		currentEditor.textEditorUtils.resetDividerColor();
 		currentTabEditor.applyStyleToTabs();
 		
 		SwingUtilities.invokeLater(new Runnable() {

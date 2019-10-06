@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.frames;
 
 import resources.GeneralConfig;
 import javax.swing.JFrame;
@@ -8,7 +8,8 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import enums.ScalingAlgorithm;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
+import gUI.panels.CrypterPanel;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
@@ -567,7 +568,7 @@ public class ImageConverterFrame extends JFrame{
 								
 								progUpdater.getLabel().setText("I'm writing the image...");
 								
-								File selected = new File(KeyGenPanel.KEY_DICTIONARY + inputImgFile.getName());
+								File selected = new File(KeyGenFrame.KEY_DICTIONARY + inputImgFile.getName());
 								selected = FileStuff.renameJavaObjFile(selected);
 								selected = FileStuff.changeExtension(selected, ".png");
 								

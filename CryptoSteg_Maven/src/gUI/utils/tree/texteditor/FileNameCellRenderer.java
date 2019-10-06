@@ -12,9 +12,9 @@ import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
 
-import dialogutils.MyFileView;
+import general.MyFileView;
 import media.ImageGeneralWorker;
-import splitpanel.FileNamed;
+import treeutils.om.FileNamed;
 
 public class FileNameCellRenderer implements TreeCellRenderer {
 	

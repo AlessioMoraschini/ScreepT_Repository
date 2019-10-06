@@ -1,5 +1,6 @@
 package resources;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
@@ -41,7 +42,7 @@ public class GeneralConfig {
 	
 	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
 	private static final boolean FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
-	public static final String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
+	public static String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
 	
 	// Temp decryptedFolder
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
@@ -57,8 +58,7 @@ public class GeneralConfig {
 	// Readme File
 	public static final String SCRYPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
 	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
-	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(linkedMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
-	
+
 	// Logs configuration
 	public static final String LOG_PATH = linkedMappings.getProperty("LOG_PATH");
 	public static final String LOG_PROPERTIES_PATH = linkedMappings.getProperty("LOG_PROPERTIES_PATH");
@@ -66,7 +66,7 @@ public class GeneralConfig {
 	
 	// JVM
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = linkedMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
-	
+	public static final String JVM_CUSTOM_CUSTOM_SETTINGS = linkedMappings.getProperty("JVM_CUSTOM_CUSTOM_SETTINGS");
 	// file icons defaults 
 	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
 	
@@ -86,7 +86,15 @@ public class GeneralConfig {
 		}
 	}
 	
-	// TEXT EDITOR
+	// TEXT EDITOR DEFAULTS
+	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(linkedMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
+	
+	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(18, 18);
+	public static final Font BUTTON_DEFAULT_FONT =  new Font("Segoe UI", Font.BOLD, 12);
+	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
+	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
+	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
+	
 	public static int FOOTER_MAX_DIR_LABEL_LENGTH;
 	static {
 		try {
@@ -103,11 +111,6 @@ public class GeneralConfig {
 			DEFAULT_FILE_TREE_ANCESTOR_LEVEL = 2;
 		}
 	}
-	
-	// default button and generic font definitions
-	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(16, 0);
-	public static final Font BUTTON_DEFAULT_FONT =  new Font("SansSerif", Font.BOLD, 12);
-	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	
 	///////////////////////////////////////////////// METHODS ///////////////////////////////////////////////
 	

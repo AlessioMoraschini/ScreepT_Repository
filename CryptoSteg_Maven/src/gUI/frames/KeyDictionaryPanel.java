@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.frames;
 
 import resources.GeneralConfig;
 import javax.swing.JFrame;
@@ -7,8 +7,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelper;
 import enums.BufferedImageType;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
 import maingUI.MainGUI;
@@ -55,7 +56,7 @@ public class KeyDictionaryPanel extends JFrame{
 	static Logger logger = Logger.getLogger(KeyDictionaryPanel.class); 
 	
 	// static path of keyDictionary
-	public static final String KEY_DICTIONARY = KeyGenPanel.KEY_DICTIONARY;
+	public static final String KEY_DICTIONARY = KeyGenFrame.KEY_DICTIONARY;
 	
 	// file representing dictionary
 	public static final File KEY_DICTIONARY_FILE = new File(KEY_DICTIONARY);
@@ -75,6 +76,8 @@ public class KeyDictionaryPanel extends JFrame{
 	// flag to signal active
 	public static boolean active = false;
 	
+	private JOptionHelper dialogHelper;
+	
 	// constructor
 	public KeyDictionaryPanel(INItializer currentConfiguration) {
 		setBackground(new Color(255, 228, 225));
@@ -82,6 +85,8 @@ public class KeyDictionaryPanel extends JFrame{
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		active = true;
+		
+		dialogHelper = new JOptionHelper(this);
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);
@@ -234,8 +239,7 @@ public class KeyDictionaryPanel extends JFrame{
 						if(BufferedImageType.checkIfAdmittedType(tempImg.getType())) {
 							
 							if (FileStuff.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()),currentConf.getFileOpt().isFlagOverwrite())) {
-								JOptionPane.showMessageDialog(thisPanel, "File correctly saved in " + KEY_DICTIONARY,
-										"File added to dictionary :)", JOptionPane.INFORMATION_MESSAGE);
+								dialogHelper.info("File correctly saved in " + KEY_DICTIONARY, "File added to dictionary :)");
 								logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KEY_DICTIONARY);
 							}else{
 								erorrLogNmsg();
@@ -274,15 +278,12 @@ public class KeyDictionaryPanel extends JFrame{
 				if (selectedImportDir!=null) {
 					try {
 						FileStuff.copyDirectoryContents(selectedImportDir, KEY_DICTIONARY_FILE, currentConf.getFileOpt().isFlagOverwrite(), "png");
-						JOptionPane.showMessageDialog(thisPanel,
-								"Directory :" + selectedImportDir.getName() + " added in the dictionary -> "
-										+ KEY_DICTIONARY,
-								"Directory added to dictionary :)", JOptionPane.INFORMATION_MESSAGE);
-						logger.debug("Directory :" + selectedImportDir.getName() + " added in the dictionary -> "
-								+ KEY_DICTIONARY);
+						dialogHelper.info(
+								"Directory :" + selectedImportDir.getName() + " added in the dictionary -> " + KEY_DICTIONARY,
+								"Directory added to dictionary :)");
+						logger.debug("Directory :" + selectedImportDir.getName() + " added in the dictionary -> " + KEY_DICTIONARY);
 					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(thisPanel, "Directory not imported in " + KEY_DICTIONARY,
-								". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+						dialogHelper.error("Directory not imported in " + KEY_DICTIONARY, ". Some error occurred :(");
 						logger.error("Directory not imported, some error occurred :( ");
 					} 
 				}
@@ -308,11 +309,11 @@ public class KeyDictionaryPanel extends JFrame{
 					try {
 						String msg = "Export completed in Target Directory ->" + selectedExportDir.getAbsolutePath();
 						FileStuff.copyDirectoryContents(KEY_DICTIONARY_FILE,selectedExportDir, false, "png");
-						JOptionPane.showMessageDialog(thisPanel,msg,"Dictionary exported", JOptionPane.INFORMATION_MESSAGE);
+						dialogHelper.info(msg,"Dictionary exported");
 						logger.debug(msg);
 					} catch (IOException e1) {
 						String msg = "Directory not exported"+e1.toString();
-						JOptionPane.showMessageDialog(thisPanel, msg,". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+						dialogHelper.error( msg,". Some error occurred :(");
 						logger.error(msg);
 					} 
 				}
@@ -375,14 +376,14 @@ public class KeyDictionaryPanel extends JFrame{
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("png")) {
-        		JOptionPane.showMessageDialog(parent, "Please select a valid '.png' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a valid '.png' file!", "Wrong File format");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
 
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.warn("Skipped after user request.", null);
         }
         return correctFile;
 	}
@@ -404,13 +405,13 @@ public class KeyDictionaryPanel extends JFrame{
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a directory!", "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.warn("Skipped after user request.", null);
         }
         return correctFile;
 	}
@@ -432,20 +433,20 @@ public class KeyDictionaryPanel extends JFrame{
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a directory!", "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.warn("Skipped after user request.", null);
         }
         return correctFile;
 	}
 	
 	private void erorrLogNmsg() {
-		JOptionPane.showMessageDialog(thisPanel, "File not saved in " + KEY_DICTIONARY,
-				"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+		dialogHelper.error( "File not saved in " + KEY_DICTIONARY,
+				"Some error occurred :(");
 		logger.error("File not saved, some error occurred :( ");
 	}
 	

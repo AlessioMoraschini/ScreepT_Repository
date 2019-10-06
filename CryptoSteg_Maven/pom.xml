@@ -58,11 +58,12 @@
                       <goal>copy-dependencies</goal>
                   </goals>
                   <configuration>
-                  <overwrite>true</overwrite>
+	                  <skip>${export.multijar.skip}</skip>
+	                  <overwrite>true</overwrite>
                       <outputDirectory>
-                      	<!-- FATJAR ONLY FOR NOW = NO LIBS UPDATE -->
-                          <!-- ${project.build.directory}/libs -->
+                      	<!-- MULTIJAR LIBS UPDATE -->
                           ${export.directory.multijar.libs}
+                          <!-- ECLIPSE_PRJ - ${project.build.directory}/libs -->
                       </outputDirectory>
                   </configuration>
               </execution>
@@ -75,6 +76,8 @@
 	    <artifactId>maven-assembly-plugin</artifactId>
 	    <version>2.4.1</version>
 	    <executions>
+
+            <!-- FATJAR -->
 	        <execution>
 	            <id>make-assembly</id>
 	            <phase>package</phase>
@@ -82,11 +85,10 @@
 	                <goal>single</goal>
 	            </goals>
 	            <configuration>
+	            	<skipAssembly>${export.fatjar.skip}</skipAssembly>
 	            	<overwrite>true</overwrite>
 	                <outputDirectory>
-	                <!-- FATJAR ONLY FOR NOW -->
 	                       <!-- ${project.build.directory}/CENTRALIZED -->
-	                       <!-- ${export.directory.fatjar.main} -->
 	                       ${export.directory.fatjar.main}
                    	</outputDirectory>
                 	<archive>
@@ -105,22 +107,27 @@
 	    </executions>
 	  </plugin>
 	  
-	  <!-- EXPORT .PROPERTIES TO BOTH MULTIJAR AND FATJAR EXPORT DIRS -->
+	  <!-- EXPORT RESOURCES TO BOTH MULTIJAR AND FATJAR EXPORT DIRS -->
   	  <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
+
+          <!-- MULTIJAR : .root -->
           <execution>
             <id>copy-resources -> ${export.directory.multijar.main}</id>
-            <!-- here the phase you need -->
-            <phase>validate</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<tasks>
+					<echo>SINGLE_MAIN_JAR SOURCE: /target/ScrYpT_${parent.build.version.scrypt}.jar</echo>
+				</tasks>
+            	<skip>${export.multijar.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>
-              		<!-- ${basedir}/target/extra-resources -->
+              		<!-- ${basedir}/target/ScrYpT_${parent.build.version.scrypt}.jar -->
               		${export.directory.multijar.main}
               	</outputDirectory>
                	<name>timestamp</name>
@@ -132,19 +139,56 @@
 					    <directory>./</directory>
 					    <includes>
 					        <include>resourcesFilePathsMappings.properties</include>
+     					    <include>LAUNCHER/**/*</include>
+					        <include>LAUNCHER/*</include>
+					    </includes>
+					 </resource>
+				     <resource>
+					    <filtering>false</filtering>
+					    <directory>target/</directory>
+					    <includes>
+					        <include>ScrYpT_0.7.4.jar</include>
 					    </includes>
 					</resource>
 			    </resources>     
             </configuration>            
           </execution>
+          <!-- MULTIJAR : Resources_ScrYpt -->
           <execution>
-            <id>copy-resources -> ${export.directory.fatjar.main}</id>
-            <!-- here the phase you need -->
+            <id>copy-resources -> ${export.directory.multijar.resources}</id>
             <phase>validate</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<skip>${export.multijar.skip}</skip>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		<!-- ${basedir}/target/extra-resources -->
+              		${export.directory.multijar.resources}
+              	</outputDirectory>
+               	<name>timestamp</name>
+               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+               	<timeZone>Europe/Zurich</timeZone>
+			    <resources>
+				     <resource>
+					    <filtering>true</filtering>
+					    <directory>./Resources_Scrypt/Readme</directory>
+				        <directory>./Resources_Scrypt/Images</directory>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+          
+          <!-- FATJAR -->
+          <execution>
+            <id>copy-resources -> ${export.directory.fatjar.main}</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+            	<skip>${export.fatjar.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>
               		<!-- ${basedir}/target/extra-resources -->
@@ -159,7 +203,35 @@
 					    <directory>./</directory>
 					    <includes>
 					        <include>resourcesFilePathsMappings.properties</include>
+					        <include>LAUNCHER/**</include>
+					        <include>LAUNCHER/*</include>
 					    </includes>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+          <!-- FATJAR : Resources_ScrYpt -->
+          <execution>
+            <id>copy-resources -> ${export.directory.fatjar.resources}</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+            	<skip>${export.fatjar.skip}</skip>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		<!-- ${basedir}/target/extra-resources -->
+              		${export.directory.fatjar.resources}
+              	</outputDirectory>
+               	<name>timestamp</name>
+               	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+               	<timeZone>Europe/Zurich</timeZone>
+			    <resources>
+				     <resource>
+					    <filtering>true</filtering>
+					    <directory>./Resources_Scrypt/Readme</directory>
+				        <directory>./Resources_Scrypt/Images</directory>
 					</resource>
 			    </resources>     
             </configuration>            

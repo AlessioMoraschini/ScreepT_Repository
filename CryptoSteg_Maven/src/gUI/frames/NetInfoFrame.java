@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.frames;
 
 import resources.GeneralConfig;
 import javax.swing.JFrame;
@@ -8,7 +8,7 @@ import org.hyperic.sigar.NetInfo;
 import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkUtils;
@@ -41,10 +41,10 @@ import javax.swing.JButton;
 import javax.swing.JProgressBar;
 import java.awt.Cursor;
 
-public class NetInfoPanel extends JFrame{
+public class NetInfoFrame extends JFrame{
 	
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(NetInfoPanel.class); 
+	static Logger logger = Logger.getLogger(NetInfoFrame.class); 
 	
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
@@ -99,13 +99,13 @@ public class NetInfoPanel extends JFrame{
 	private JTextField dynLblBroadcastAddr;
 	
 	// network related objects
-	public NetInfoPanel thisPanel;
+	public NetInfoFrame thisPanel;
 	private NetworkUtils netUtils;
 	public NetworkAdapter currentSelAdapter;
 	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
-	public NetInfoPanel(INItializer currentConfig) {
+	public NetInfoFrame(INItializer currentConfig) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -366,7 +366,7 @@ public class NetInfoPanel extends JFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
-	        	logger.debug("Closing Frame: "+NetInfoPanel.class.getName());	        	
+	        	logger.debug("Closing Frame: "+NetInfoFrame.class.getName());	        	
 				active = false;
 	        	dispose();
 		    }

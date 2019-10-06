@@ -1,12 +1,18 @@
 package gUI.utils.mainGui;
 
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -26,7 +32,7 @@ public class MainGuiUtils {
 	/**
 	 * Use this function to reset panel to initial state
 	 * @param <T>
-	 * @param className
+	 * @param target if null all will be resetted, else use this to specify class to reset
 	 */
 	public <T> void resetPanel(Class<T>target, Class<?> selectednow, JFrame instance) {
 		final boolean txtEditor, crypter, configuration, home;
@@ -38,6 +44,8 @@ public class MainGuiUtils {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				
+				// start correct panel
 				if(ChargeIniLog.class.equals(target)) {
 					startConfigManagerPanel(true);
 				}else if(TextEditor.class.equals(target)) {
@@ -50,6 +58,7 @@ public class MainGuiUtils {
 					startTextEditor(true);
 				}
 		
+				// Now select last selected before refresh
 				if (txtEditor) {
 					mainAppReference.getMntmTextEditor().doClick();
 				} else if (crypter) {
@@ -64,11 +73,18 @@ public class MainGuiUtils {
 	}
 	
 	public void startConfigManagerPanel(boolean forceStart) {
+		
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+
+		if (forceStart) {
+			removeAllListeners(mainAppReference.configManagerPanel);
+		}
+		
 		if (mainAppReference.configManagerPanel == null || forceStart) {
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 			mainAppReference.configManagerPanel = new ChargeIniLog(MainGUI.currentConfiguration, mainAppReference);
 		}
+		
 		contentPane.removeAll();
     	contentPane.add(mainAppReference.configManagerPanel);
     	contentPane.revalidate(); 
@@ -81,10 +97,16 @@ public class MainGuiUtils {
 	
 	public void startCrypterPanel(boolean forceStart) {
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-    	if(MainGUI.panelCrypter == null || forceStart) {
+
+		if (forceStart) {
+			removeAllListeners(MainGUI.panelCrypter);
+		}
+		
+		if(MainGUI.panelCrypter == null || forceStart) {
     		Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
     		MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
     	}
+
     	contentPane.removeAll();
     	contentPane.add(MainGUI.panelCrypter);
     	contentPane.revalidate(); 
@@ -100,10 +122,17 @@ public class MainGuiUtils {
 		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
 		
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+		
+		if(forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
+			KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.initTxtWriter.shortcutsListener);
+			removeAllListeners(MainGUI.panelCrypter);
+		}
+
 		if(MainGUI.initTxtWriter == null || forceRestart) {
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 			MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
 		}		    	
+		
     	contentPane.removeAll();
     	contentPane.add(MainGUI.initTxtWriter);
     	contentPane.revalidate(); 
@@ -121,12 +150,54 @@ public class MainGuiUtils {
 	 * the reset all panels
 	 * @return
 	 */
+	@Deprecated
 	public static ArrayList<String> getResettablePanels() {
 		ArrayList<String> resettablePanels = new ArrayList<String>();
 		resettablePanels.add(TextEditor.class.getSimpleName());
 		resettablePanels.add(CrypterPanel.class.getSimpleName());
 		resettablePanels.add(ChargeIniLog.class.getSimpleName());
 		return resettablePanels;
+	}
+	
+	private void removeAllListeners(Component target) {
+		if(target == null) {
+			return;
+		}
+		ComponentListener[] listeners = target.getComponentListeners();
+		for(ComponentListener listener : listeners) {
+			target.removeComponentListener(listener);
+		}
+		
+	}
+	
+	private void removeKeyListeners(Component target) {
+		if(target == null) {
+			return;
+		}
+		KeyListener[] listeners = target.getKeyListeners();
+		for(KeyListener listener : listeners) {
+			target.removeKeyListener(listener);
+		}
+	}
+
+	private void removeMouseListeners(Component target) {
+		if(target == null) {
+			return;
+		}
+		MouseListener[] listeners = target.getMouseListeners();
+		for(MouseListener listener : listeners) {
+			target.removeMouseListener(listener);
+		}
+	}
+
+	private void removeMouseWheelListeners(Component target) {
+		if(target == null) {
+			return;
+		}
+		MouseWheelListener[] listeners = target.getMouseWheelListeners();
+		for(MouseWheelListener listener : listeners) {
+			target.removeMouseWheelListener(listener);
+		}
 	}
 	
 }

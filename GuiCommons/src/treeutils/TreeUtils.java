@@ -13,7 +13,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import splitpanel.FileNamed;
+import treeutils.om.FileNamed;
 
 public class TreeUtils {
 	

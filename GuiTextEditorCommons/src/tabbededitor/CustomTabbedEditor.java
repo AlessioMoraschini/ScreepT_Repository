@@ -27,15 +27,15 @@ import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.MyFileView;
-import frameutils.FileDragNDropManager;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
+import general.MyFileView;
 import mainobj.INItializer;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
+import tabbedpaneutils.FileDragNDropManager;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
 import variousutils.HandleString;

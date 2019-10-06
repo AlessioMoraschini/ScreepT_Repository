@@ -12,7 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import frameutils.GuiUtils;
+import frameutils.utils.GuiUtils;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;

@@ -29,8 +29,9 @@
 		
 		<div id="subTitleBlock"class="centerColoredSub2">A smart crypter... and much more!
 			<div id="subTitle" class="centerColoredSub1">
-				<span>By A.M. Design and Developement - 2019 - Version 0.7</span>
+				<span>By A.M. Design and Developement - 2019 - Version ${project.version}</span>
 			</div>
+			<p style="font-size:10px;"><b>(This version was builded on: ${maven.build.timestamp})</b></p>
 		</div>
 		
 		<!--  MAIN SECTION  -->
@@ -499,6 +500,9 @@
 				<p><ul class="shorctutsList">
 					
 					<li> <span class="SHCT_TEXT">TOGGLE FULL SCREEN MODE</span> - [Alt  +  Shift  +  Enter]</li>
+					<li> <span class="SHCT_TEXT">HIDE/SHOW HEADER PANEL</span> - [Ctrl + Alt  +  Shift  +  H]</li>
+					<li> <span class="SHCT_TEXT">HIDE/SHOW FOOTER PANEL</span> - [Ctrl + Alt  +  Shift  +  L]</li>
+					<hr>
 					<li> <span class="SHCT_TEXT">OPEN CONFIGURATION MANAGER</span> - [Alt + Shift + 1]</li>
 					<li> <span class="SHCT_TEXT">OPEN GENERAL OPTIONS</span> - [Alt + Shift + 2]</li>
 					<li> <span class="SHCT_TEXT">OPEN GRAPHICS OPTIONS</span> - [Alt + Shift + 3]</li>
@@ -511,7 +515,7 @@
 					<li> <span class="SHCT_TEXT">OPEN ABOUT-INFO PANEL</span> - [Alt + Shift + .]</li>
 					<li> <span class="SHCT_TEXT">OPEN TUTORIAL PANEL</span> - [Alt + Shift + ?]</li>
 					<li> <span class="SHCT_TEXT">RETURN TO HOMEPAGE</span> - [Alt + Shift + H]</li>
-					<br>
+					<hr>
 					<li> <span class="SHCT_TEXT">SAVE CURRENT CONFIGURATION</span> - [Ctrl + Alt + Shift + S]</li>
 					<li> <span class="SHCT_TEXT">EXPORT CURRENT CONFIGURATION</span> - [Ctrl + Alt + Shift + E}</li>
 				</ul></p>				
@@ -549,7 +553,8 @@
 					<li> <span class="SHCT_TEXT">SHOW/HIDE SCRYPT TEXT EDITOR'S HEADER</span> - [Ctrl + Shift + Alt + H]</li>
 					<li> <span class="SHCT_TEXT">SHOW/HIDE SCRYPT TEXT EDITOR'S FOOTER</span> - [Ctrl + Shift + Alt + L]</li>
 					<li> <span class="SHCT_TEXT">OPEN CALCULATOR</span> - [Ctrl + Alt + C]</li>
-					<br>
+					<li> <span class="SHCT_TEXT">OPEN COLOR PICKER</span> - [Ctrl + Alt  +  Shift  +  P]</li>
+					<hr>
 					<li> <span class="SHCT_TEXT">FILE TYPE LANGUAGE AUTO SYNC</span> - [Ctrl + Shift + L]</li>
 					<li> <span class="SHCT_TEXT">OPEN/CLOSE FILE TREE PANEL</span> - [Alt + Q]</li>
 					<li> <span class="SHCT_TEXT">WORKSPACE SYNC ON/OFF</span> - [Ctrl + Shift + W]</li>
@@ -562,7 +567,7 @@
 					<li> <span class="SHCT_TEXT">INLINE TABS ON/OFF</span> - [Ctrl + Shift + I]</li>
 					<li> <span class="SHCT_TEXT">ADAPT WIDTH TO SCREEN SIZE</span> - [Ctrl + Shift + A]</li>
 					<li> <span class="SHCT_TEXT">REFRESH FILE LIST IF PRESENT</span> - [Ctrl + F5]</li>
-					<br>
+					<hr>
 					<li> <span class="SHCT_TEXT">CHANGE FONT SIZE</span> - [Ctrl + Shift + MouseWheel]</li>
 					<li> <span class="SHCT_TEXT"> +  VERTICAL SCROLL SPEED</span> - [Ctrl + MouseWheel]</li>
 					<li> <span class="SHCT_TEXT"> +  +  VERTICAL SCROLL SPEED</span> - [Ctrl + Alt + MouseWheel]</li>
@@ -605,6 +610,8 @@
 						<li><span class="highlightBolded">Tesseract</span> Is used for image-pdf-text conversion and parsing <a class="dependencyLink" target="_blank" href="">[]</a></li>
 						
 						<li><span class="highlightBolded">FreeTTS</span> is used to implement text speaker. <a class="dependencyLink" target="_blank" href="https://freetts.sourceforge.io">[https://freetts.sourceforge.io]</a></li>
+
+						<li><span class="highlightBolded">Icons8</span> has been used to find ScrYpT's most icons. <a class="dependencyLink" target="_blank" href="https://icons8.com">[https://icons8.com]</a></li>
 
 					</ul>
 				</p>

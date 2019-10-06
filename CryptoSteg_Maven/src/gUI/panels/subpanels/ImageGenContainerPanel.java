@@ -1,4 +1,4 @@
-package gUI.panels;
+package gUI.panels.subpanels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -19,6 +19,7 @@ import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 
 import enums.KeyGenImageType;
+import gUI.frames.KeyGenFrame;
 import gUI.utils.progressDialog.TestUpdateProgress;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
@@ -49,7 +50,7 @@ public class ImageGenContainerPanel extends JPanel{
 
 	
 	// constructor that create a random img and adds it to obj panel (this class extends JPanel)
-    public ImageGenContainerPanel(KeyGenImageType imgEnumType, int w, int h, KeyGenPanel thisFrame, INItializer currentConf) {
+    public ImageGenContainerPanel(KeyGenImageType imgEnumType, int w, int h, KeyGenFrame thisFrame, INItializer currentConf) {
     	
     	logger.info(this.getClass().getName() + " Starting...");
     	

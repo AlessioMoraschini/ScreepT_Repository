@@ -18,8 +18,8 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
-import frameutils.FilePropertiesFrame;
-import frameutils.GuiUtils;
+import frameutils.frame.FilePropertiesFrame;
+import frameutils.utils.GuiUtils;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 

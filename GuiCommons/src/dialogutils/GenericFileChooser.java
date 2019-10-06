@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
 
+import general.MyFileView;
 import variousutils.HandleString;
 
 public class GenericFileChooser {
@@ -125,6 +126,7 @@ public class GenericFileChooser {
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
 	public static File fileRead(JPanel parent) {
+		JOptionHelper dialog = new JOptionHelper(parent);
 		
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input File");
@@ -138,7 +140,7 @@ public class GenericFileChooser {
         	File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null) {
-        		JOptionPane.showMessageDialog(parent, "Please select a file!", "File not selected", JOptionPane.ERROR_MESSAGE);
+        		dialog.error("Please select a file!", "File not selected");
         	}else {
         		correctFile = selectedFile;
         	}
@@ -151,7 +153,8 @@ public class GenericFileChooser {
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
 	public static File fileAndDirRead(JComponent parent) {
-		
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input File or Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -166,7 +169,7 @@ public class GenericFileChooser {
         	File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null) {
-        		JOptionPane.showMessageDialog(parent, "Please select a file!", "File not selected", JOptionPane.ERROR_MESSAGE);
+        		dialog.error("Please select a file!", "File not selected");
         	}else {
         		correctFile = selectedFile;
         		DEFAULT_HOME_PATH = correctFile.getParentFile().getAbsolutePath();
@@ -179,6 +182,7 @@ public class GenericFileChooser {
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
 	 */
 	public static File fileImgWrite(JFrame parent, String defaultName) {
+		JOptionHelper dialog = new JOptionHelper(parent);
 
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Save Image File");
@@ -193,13 +197,13 @@ public class GenericFileChooser {
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!Arrays.asList(HandleString.getUpperCaseArray(writerNames)).contains(givenExtension.toUpperCase())) {
-        		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		dialog.error("Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format");
         	}else {
         		correctFile = selectedFile;
         		DEFAULT_HOME_PATH = correctFile.getParentFile().getAbsolutePath();
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialog.info("Skipped after user request.", null);
         }
         return correctFile;
 	}
@@ -208,7 +212,8 @@ public class GenericFileChooser {
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */
 	public static File directoRead(JFrame parent) {
-		
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Choose Input Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -221,7 +226,7 @@ public class GenericFileChooser {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialog.error("Please select a directory!", "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		DEFAULT_HOME_PATH = correctFile.getParentFile().getAbsolutePath();
@@ -261,7 +266,8 @@ public class GenericFileChooser {
 	 * folder, if nothing is selected returns null
 	 */
 	public static File directoWrite(JFrame parent) {
-		
+		JOptionHelper dialog = new JOptionHelper(parent);
+
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setDialogTitle("Choose output Directory");
@@ -276,7 +282,7 @@ public class GenericFileChooser {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialog.error("Please select a directory!", "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		DEFAULT_HOME_PATH = correctFile.getAbsolutePath();
