@@ -826,7 +826,7 @@ public class MainGUI extends MainGuiParent{
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagFrameGuiOptions = true;
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
-					panelGuiOptions.setPreferredSize(new Dimension(800, 355));
+					panelGuiOptions.setPreferredSize(new Dimension(800, 375));
 					GuiUtils.centerComponent(panelGuiOptions, 800, 340);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1490,7 +1490,7 @@ public class MainGUI extends MainGuiParent{
 				}
 			}
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedFilesAtStart",
-					INItializer.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
+					currentConfiguration.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
 
 			// save current opened if it exists
 			if(currentTabEditor.loadedTabObj != null 
@@ -1513,7 +1513,7 @@ public class MainGUI extends MainGuiParent{
 	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
 		if(initTxtWriter != null) {
-			initTxtWriter.initGuiFromConfig();
+			initTxtWriter.initGuiFromConfig(true);
 		}
 		
 		// CRYPTER REFRESH

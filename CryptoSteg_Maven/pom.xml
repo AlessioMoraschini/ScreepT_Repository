@@ -134,6 +134,7 @@
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
                	<timeZone>Europe/Zurich</timeZone>
 			    <resources>
+			    	 <!-- Resources -->
 				     <resource>
 					    <filtering>true</filtering>
 					    <directory>./</directory>
@@ -143,11 +144,12 @@
 					        <include>LAUNCHER/*</include>
 					    </includes>
 					 </resource>
+					 <!-- Main scrypt's jar (not fatjar) just compiled in /target -->
 				     <resource>
 					    <filtering>false</filtering>
 					    <directory>target/</directory>
 					    <includes>
-					        <include>ScrYpT_0.7.4.jar</include>
+					        <include>${export.jar.name}.jar</include>
 					    </includes>
 					</resource>
 			    </resources>     
@@ -173,8 +175,27 @@
 			    <resources>
 				     <resource>
 					    <filtering>true</filtering>
-					    <directory>./Resources_Scrypt/Readme</directory>
-				        <directory>./Resources_Scrypt/Images</directory>
+					    <directory>./Resources_Scrypt</directory>
+					    <includes>
+					    	<include>/Readme/**</include>
+					    	<include>/Readme/**/*</include>
+					    </includes>
+					    <excludes>
+					    	/**/*Thumbs.db
+					    </excludes>
+					</resource>
+					<resource>
+						<filtering>false</filtering>
+				        <directory>./Resources_Scrypt</directory>
+    					<includes>
+    						<include>/Images/*</include>
+					        <include>/Icons/*</include>
+    						<include>/Images/**</include>
+					        <include>/Icons/**</include>
+					    </includes>
+					    <excludes>
+					    	/**/*Thumbs.db
+					    </excludes>
 					</resource>
 			    </resources>     
             </configuration>            
@@ -203,7 +224,7 @@
 					    <directory>./</directory>
 					    <includes>
 					        <include>resourcesFilePathsMappings.properties</include>
-					        <include>LAUNCHER/**</include>
+					        <include>LAUNCHER/**/*</include>
 					        <include>LAUNCHER/*</include>
 					    </includes>
 					</resource>
@@ -230,8 +251,27 @@
 			    <resources>
 				     <resource>
 					    <filtering>true</filtering>
-					    <directory>./Resources_Scrypt/Readme</directory>
-				        <directory>./Resources_Scrypt/Images</directory>
+					    <directory>./Resources_Scrypt</directory>
+					    <includes>
+					    	<include>/Readme/**</include>
+					    	<include>/Readme/**/*</include>
+					    </includes>
+					    <excludes>
+					    	/**/*Thumbs.db
+					    </excludes>
+					</resource>
+					<resource>
+						<filtering>false</filtering>
+				        <directory>./Resources_Scrypt</directory>
+    					<includes>
+    						<include>/Images/**/*</include>
+    						<include>/Images/**</include>
+					        <include>/Icons/**/*</include>
+					        <include>/Icons/**</include>
+					    </includes>
+					    <excludes>
+					    	/**/*Thumbs.db
+					    </excludes>
 					</resource>
 			    </resources>     
             </configuration>            

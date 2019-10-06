@@ -148,7 +148,7 @@ public class CustomTabbedEditor {
 
 	public void loadFile(final File fileToLoad) {
 		
-		logger.debug("Started file loading into new tab: "+fileToLoad.getAbsolutePath()+"\n\n");
+		logger.debug("Started file loading into new tab: "+fileToLoad+"\n\n");
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -237,8 +237,7 @@ public class CustomTabbedEditor {
 		String name = (file != null) ? file.getName() : DEFAULT_NEW_FILE_NAME;
 		int newIndex = mainTabList.getTabCount();
 
-		TabTextEditorObj newTabNode = new TabTextEditorObj(file, "", getChangeListener(),
-		currentConfiguration.getTextEditorOpt().txtAreaDetailLevel);
+		TabTextEditorObj newTabNode = new TabTextEditorObj(file, "", getChangeListener(), currentConfiguration.getTextEditorOpt());
 
 		loadedList.add(newTabNode);
 		mainTabList.addTab(name, newTabNode.currentScrollPane);

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
@@ -43,8 +42,6 @@ import reflection.ReflectionUtils;
 import resources.GeneralConfig;
 import splitpanel.SplitPaneUtils;
 import tabbededitor.CustomTabbedEditor;
-import tabbedpaneutils.CustomTabbedPaneUI_v1;
-import tabbedpaneutils.TabUtils;
 import treeutils.TreeUtils;
 import treeutils.om.FileNamed;
 import utils.ITextAreaDialogs;
@@ -322,9 +319,9 @@ public class TextEditorUtils {
 
 		Rectangle currSize = mainApplication.getMainFrame().getBounds();
 		
-		Dimension med = new Dimension(currSize.width-20,currSize.height - 90);
-		Dimension high = new Dimension(currSize.width -20, currSize.height - 80);
-		Dimension max = new Dimension(currSize.width - 20, currSize.height - 70);
+		Dimension med = new Dimension(currSize.width-20,currSize.height - 100);
+		Dimension high = new Dimension(currSize.width -20, currSize.height - 90);
+		Dimension max = new Dimension(currSize.width - 20, currSize.height - 85);
 		
 		currentTabEditor.mainTabList.setPreferredSize(high);
 		currentTabEditor.mainTabList.setMaximumSize(max);
@@ -355,8 +352,6 @@ public class TextEditorUtils {
 				CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
 				GUIStyelSettings.applyNimbusSize(editor.currentConfiguration.getGuiOpt().nimbusSize);
 				GUIStyelSettings.updateAllWindowsLaf();
-				currentTabEditor.mainTabList.setUI(new CustomTabbedPaneUI_v1(
-						null, null, null, currentTabEditor.mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
 				resetDividerColor();
 				currentTabEditor.applyStyleToTabs();
 				try {
@@ -620,25 +615,8 @@ public class TextEditorUtils {
 	}
 
 	public void applyCurrentGraphicsTextArea(RSyntaxTextArea textArea) {
-		TextEditorOption txtOptions = currentTextEditor.currentConfiguration.getTextEditorOpt();
-
-		textArea.setBackground(txtOptions.backCol);
-		textArea.setForeground(txtOptions.foreCol);
-		currentTextEditor.chkCutWordsTo.setSelected(txtOptions.isBreaklineActive());
-		textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
-		currentTextEditor.getCurrentTabEditor().loadedTabObj.setPreferences(txtOptions.txtAreaDetailLevel);
-		textArea.setFont(txtOptions.font);
-		textArea.setLineWrap(currentTextEditor.chkCutWordsTo.isSelected());
-		textArea.setWrapStyleWord(currentTextEditor.chkFitmantainwords.isSelected());
-
-		int margin = currentTextEditor.slider_margin.getValue();
-		textArea.setMargin(new Insets(margin, margin, margin, margin));
-		textArea.setTabSize(currentTextEditor.currentConfiguration.getTextEditorOpt().tabSize);
-		textArea.setPaintTabLines(txtOptions.isTabLineVisible());
-		applySelectedTheme();
-		SupportedFileTextEditor selExtension = (SupportedFileTextEditor) currentTextEditor.comboFileFormat.getSelectedItem();
-		RsyntaxUtils.addAutoCompletion(textArea, selExtension.languageWordsFile);
-
+		
+		currentTextEditor.initGuiFromConfig(false);
 		textArea.revalidate();
 		textArea.repaint();
 	}

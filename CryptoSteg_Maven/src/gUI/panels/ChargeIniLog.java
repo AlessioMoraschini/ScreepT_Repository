@@ -102,7 +102,7 @@ public class ChargeIniLog extends JPanel{
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
-		setBackground(new Color(211, 211, 211));
+		setBackground(Color.DARK_GRAY);
 		
 		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[117.00][70px][50px][120px][30px][][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:40px:45px][35px][][20px][400px,grow]"));
 		
@@ -170,14 +170,17 @@ public class ChargeIniLog extends JPanel{
 		add(separator, "cell 0 2 12 1,growx");
 		
 		lblPreferredConfigurations = new JLabel("Preferred Configurations");
+		lblPreferredConfigurations.setForeground(Color.WHITE);
 		lblPreferredConfigurations.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		add(lblPreferredConfigurations, "cell 0 3 4 1,alignx center,aligny bottom");
 		
 		JLabel lblInitializationFrom = new JLabel("Current .ini file: ");
+		lblInitializationFrom.setForeground(Color.WHITE);
 		add(lblInitializationFrom, "cell 5 3 2 1");
 		lblInitializationFrom.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		
 		config_PATH = new JLabel("");
+		config_PATH.setForeground(Color.WHITE);
 		add(config_PATH, "cell 7 3 5 1");
 		config_PATH.setHorizontalAlignment(SwingConstants.LEFT);
 		config_PATH.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -190,8 +193,8 @@ public class ChargeIniLog extends JPanel{
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(SystemColor.menu);
-		panel_1.setBorder(new LineBorder(Color.DARK_GRAY, 4));
-		panel_1.setBackground(new Color(176, 196, 222));
+		panel_1.setBorder(new LineBorder(Color.BLACK, 2));
+		panel_1.setBackground(Color.LIGHT_GRAY);
 		add(panel_1, "cell 0 0 12 1,grow");
 		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100%]", "[grow]"));
 		

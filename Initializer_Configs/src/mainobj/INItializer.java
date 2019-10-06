@@ -144,6 +144,15 @@ public class INItializer {
 		}
 	}
 	
+	public void store() {
+		// WRITE ALL VALUES TO FILE
+		try {
+			iniFile.store();
+		} catch (IOException e) {
+			logger.error("Exception happened!", e);
+		}
+	}
+	
 	// READ PROPERTIES
 	
 	public void loadFileOptions() {
@@ -290,27 +299,6 @@ public class INItializer {
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
 		
 		// CONVERTED/PARSED TYPES
-		
-		// automatic syntax selection file-extension-based
-		textEditorOpt.setDefaultAutoSyntaxSync(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync")));
-		
-		// workspace view selected
-		textEditorOpt.setWorkspaceViewSelected(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "workspaceViewSelected")));
-		
-		// file tree locked
-		try {
-			textEditorOpt.setTreeLocked(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "isTreeLocked")));
-		} catch (NumberFormatException e) {
-			textEditorOpt.setTreeLocked(TextEditorOption.DEFAULT_TREE_LOCKED);
-		}
-		
-		// tabLineVisible
-		try {
-			textEditorOpt.setTabLineVisible(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "tabLineVisibleFlag")));
-		} catch (NumberFormatException e) {
-			textEditorOpt.setTabLineVisible(TextEditorOption.DEFAULT_TAB_LINE_VISIBLE);
-		}
-				
 		// margin
 		try {
 			textEditorOpt.setMargin(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "margin")));
@@ -329,30 +317,35 @@ public class INItializer {
 		} catch (NumberFormatException e) {
 			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_DIVIDER_POS_X);
 		}
+		
+		// automatic syntax selection file-extension-based
+		textEditorOpt.setDefaultAutoSyntaxSync(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync")));
+		
+		// workspace view selected
+		textEditorOpt.setWorkspaceViewSelected(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "workspaceViewSelected")));
+		
 		// txtArea detail
-		try {
-			textEditorOpt.setTxtAreaDetailLevel(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "txtAreaDetailLevel")));
-		} catch (NumberFormatException e) {
-			textEditorOpt.setTxtAreaDetailLevel(TextEditorOption.DEFAULT_TXT_AREA_DETAIL);
-		}
-		// file visibility
-		try {
-			textEditorOpt.setFileTreeActive(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "fileTreeActive")));
-		} catch (NumberFormatException e) {
-			textEditorOpt.setFileTreeActive(TextEditorOption.DEFAULT_FTREE_ACTIVE);
-		}
-		// linebreak active
-		try {
-			textEditorOpt.setBreaklineActive(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "breakLineActive")));
-		} catch (NumberFormatException e) {
-			textEditorOpt.setBreaklineActive(TextEditorOption.DEFAULT_BREAK_LINE);
-		}
-		// antialiasing textarea active
-		try {
-			textEditorOpt.setAntialiasedTxtArea(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "antialiasedTxtArea")));
-		} catch (NumberFormatException e) {
-			textEditorOpt.setAntialiasedTxtArea(TextEditorOption.DEFAULT_ANTIALIASED_TXT_AREA);
-		}
+		textEditorOpt.setTreeLocked(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "isTreeLocked"), TextEditorOption.DEFAULT_TREE_LOCKED));
+		textEditorOpt.setTabLineVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabLineVisibleFlag"), TextEditorOption.DEFAULT_TAB_LINE_VISIBLE));
+		textEditorOpt.setFileTreeActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fileTreeActive"), TextEditorOption.DEFAULT_FTREE_ACTIVE));
+		textEditorOpt.setBreaklineActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "breakLineActive"), TextEditorOption.DEFAULT_BREAK_LINE));
+		textEditorOpt.setAntialiasedTxtArea(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "antialiasedTxtArea"), TextEditorOption.DEF_antialiasedTxtArea));
+		textEditorOpt.setCodeFoldingEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "codeFoldingEnabled"), TextEditorOption.DEF_codeFoldingEnabled));
+		textEditorOpt.setAutoIndentEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "autoIndentEnabled"), TextEditorOption.DEF_autoIndentEnabled));
+		textEditorOpt.setMarkOccurrences(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "markOccurrences"), TextEditorOption.DEF_markOccurrences));
+		textEditorOpt.setCloseMarkupTags(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "closeMarkupTags"), TextEditorOption.DEF_closeMarkupTags));
+		textEditorOpt.setCloseCurlyBraces(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "closeCurlyBraces"), TextEditorOption.DEF_closeCurlyBraces));
+		textEditorOpt.setBracketMatchingEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "bracketMatchingEnabled"), TextEditorOption.DEF_bracketMatchingEnabled));
+		textEditorOpt.setAnimateBracketMatching(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "animateBracketMatching"), TextEditorOption.DEF_animateBracketMatching));
+		textEditorOpt.setFadeCurrentLineHighlight(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fadeCurrentLineHighlight"), TextEditorOption.DEF_fadeCurrentLineHighlight));
+		textEditorOpt.setUseFocusableTips(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "useFocusableTips"), TextEditorOption.DEF_useFocusableTips));
+		textEditorOpt.setRoundedSelectionEdges(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "roundedSelectionEdges"), TextEditorOption.DEF_roundedSelectionEdges));
+		textEditorOpt.setPaintMarkOccurrencesBorder(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "paintMarkOccurrencesBorder"), TextEditorOption.DEF_paintMarkOccurrencesBorder));
+		textEditorOpt.setClearWhitespaceLinesEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "clearWhitespaceLinesEnabled"), TextEditorOption.DEF_clearWhitespaceLinesEnabled));
+		textEditorOpt.setHighlightSecondaryLanguages(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "highlightSecondaryLanguages"), TextEditorOption.DEF_highlightSecondaryLanguages));
+		textEditorOpt.setFractionalFontMetricsEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fractionalFontMetricsEnabled"), TextEditorOption.DEF_fractionalFontMetricsEnabled));
+		textEditorOpt.setHyperLinksEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "hyperLinksEnabled"), TextEditorOption.DEF_hyperLinksEnabled));
+		textEditorOpt.setTabSpacesEmulated(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabSpacesEmulated"), TextEditorOption.DEF_tabsSpacesEmulated));
 		
 		// file list
 		String pathsOpenFilesString;
@@ -478,11 +471,28 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "dividerFileTreePosX", textEditorOpt.dividerFileTreePosX);
 		iniFile.put(TEXT_EDITOR_OPT, "antialiasedTxtArea", textEditorOpt.antialiasedTxtArea);
 		iniFile.put(TEXT_EDITOR_OPT, "breakLineActive", textEditorOpt.breaklineActive);
-		iniFile.put(TEXT_EDITOR_OPT, "txtAreaDetailLevel", textEditorOpt.txtAreaDetailLevel);
 		iniFile.put(TEXT_EDITOR_OPT, "isTreeLocked", textEditorOpt.treeLocked);
 		iniFile.put(TEXT_EDITOR_OPT, "defaultWorspaceLocation", textEditorOpt.defaultWorkspacePath);
 		iniFile.put(TEXT_EDITOR_OPT, "workspaceViewSelected", textEditorOpt.workspaceViewSelected);
 		iniFile.put(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync", textEditorOpt.defaultAutoSyntaxSync);
+		
+		// DETAIL
+		iniFile.put(TEXT_EDITOR_OPT, "codeFoldingEnabled", textEditorOpt.defaultAutoSyntaxSync);
+		iniFile.put(TEXT_EDITOR_OPT, "autoIndentEnabled", textEditorOpt.defaultAutoSyntaxSync);
+		iniFile.put(TEXT_EDITOR_OPT, "markOccurrences", textEditorOpt.defaultAutoSyntaxSync);
+		iniFile.put(TEXT_EDITOR_OPT, "closeMarkupTags", textEditorOpt.defaultAutoSyntaxSync);
+		iniFile.put(TEXT_EDITOR_OPT, "closeCurlyBraces", textEditorOpt.defaultAutoSyntaxSync);
+		iniFile.put(TEXT_EDITOR_OPT, "bracketMatchingEnabled", textEditorOpt.defaultAutoSyntaxSync);
+		iniFile.put(TEXT_EDITOR_OPT, "animateBracketMatching", textEditorOpt.animateBracketMatching);
+		iniFile.put(TEXT_EDITOR_OPT, "fadeCurrentLineHighlight", textEditorOpt.fadeCurrentLineHighlight);
+		iniFile.put(TEXT_EDITOR_OPT, "useFocusableTips", textEditorOpt.useFocusableTips);
+		iniFile.put(TEXT_EDITOR_OPT, "roundedSelectionEdges", textEditorOpt.roundedSelectionEdges);
+		iniFile.put(TEXT_EDITOR_OPT, "paintMarkOccurrencesBorder", textEditorOpt.paintMarkOccurrencesBorder);
+		iniFile.put(TEXT_EDITOR_OPT, "clearWhitespaceLinesEnabled", textEditorOpt.clearWhitespaceLinesEnabled);
+		iniFile.put(TEXT_EDITOR_OPT, "highlightSecondaryLanguages", textEditorOpt.highlightSecondaryLanguages);
+		iniFile.put(TEXT_EDITOR_OPT, "fractionalFontMetricsEnabled", textEditorOpt.fractionalFontMetricsEnabled);
+		iniFile.put(TEXT_EDITOR_OPT, "hyperLinksEnabled", textEditorOpt.hyperLinksEnabled);
+		iniFile.put(TEXT_EDITOR_OPT, "tabSpacesEmulated", textEditorOpt.tabSpacesEmulated);
 		
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
@@ -621,30 +631,48 @@ public class INItializer {
 		builder.append("\n\n ---- TEXT EDITOR -----\n\n")
 			   .append("INLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
-			   .append("\nTAB_SIZE: ").append(textEditorOpt.tabSize)
-			   .append("\nTAB_LINE_VISIBLE: ").append(textEditorOpt.tabLineVisible)
-			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)
-			   .append("\nFILE TREE LOCKED: ").append(textEditorOpt.treeLocked)
-			   .append("\nWORKSPACE VIEW SELECTED: ").append(textEditorOpt.workspaceViewSelected)
-			   .append("\nDEFAULT WORKSPACE LOCATION: ").append(textEditorOpt.defaultWorkspacePath)
-			   .append("\nDEFAULT AUTOMATIC SYNTAX SYNC: ").append(textEditorOpt.defaultAutoSyntaxSync)
 			   .append("\nPREFERRED_THEME: ").append(textEditorOpt.selectedTheme)
 			   .append("\nFILE_PANEL_BACKGROUND_COLOR: ").append(textEditorOpt.filePanelBackCol)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
 			   .append("\nFONT: ").append(textEditorOpt.font)
+			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate)
 			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
-			   .append("\nAUTO-BREAKLINE ACTIVE: ").append(textEditorOpt.isBreaklineActive())
+
+			   .append("\n\n TEXT AREA DETAIL VALUES: \n\n")
+			   
+			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)
+			   .append("\nFILE TREE LOCKED: ").append(textEditorOpt.treeLocked)
+			   .append("\nWORKSPACE VIEW SELECTED: ").append(textEditorOpt.workspaceViewSelected)
+			   .append("\nDEFAULT WORKSPACE LOCATION: ").append(textEditorOpt.defaultWorkspacePath)
+			   .append("\nDEFAULT AUTOMATIC SYNTAX SYNC: ").append(textEditorOpt.defaultAutoSyntaxSync)
 			   .append("\nANTIALIASED TEXT AREA: ").append(textEditorOpt.isAntialiasedTxtArea())
-			   .append("\nTEXT-AREA DETAIL LEVEL (0-3): ").append(textEditorOpt.getTxtAreaDetailLevel())
-			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate);
+			   .append("\nTAB SIZE: ").append(textEditorOpt.tabSize)
+			   .append("\nTAB LINE VISIBLE: ").append(textEditorOpt.tabLineVisible)
+			   .append("\nBRACKET MATCHING: ").append(textEditorOpt.bracketMatchingEnabled)
+			   .append("\nANIMATED BRACKETS MATCH: ").append(textEditorOpt.animateBracketMatching)
+			   .append("\nAUTO INDENT: ").append(textEditorOpt.autoIndentEnabled)
+			   .append("\nAUTO-BREAKLINE ACTIVE: ").append(textEditorOpt.breaklineActive)
+			   .append("\nCLEAR WHITESPACES LINES: ").append(textEditorOpt.clearWhitespaceLinesEnabled)
+			   .append("\nCLOSE CURLY BRACES: ").append(textEditorOpt.closeCurlyBraces)
+			   .append("\nCLOSE MARKUP TAGS: ").append(textEditorOpt.closeMarkupTags)
+			   .append("\nCODE FOLDING ENABLED: ").append(textEditorOpt.codeFoldingEnabled)
+			   .append("\nFADE CURRENT LINE HIGHLIGHT: ").append(textEditorOpt.fadeCurrentLineHighlight)
+			   .append("\nFRACTIONAL FONT METRICS: ").append(textEditorOpt.fractionalFontMetricsEnabled)
+			   .append("\nHIGHLIGHT SECONDARY LANGUAGES: ").append(textEditorOpt.highlightSecondaryLanguages)
+			   .append("\nHYPERLINKS ENABLED: ").append(textEditorOpt.hyperLinksEnabled)
+			   .append("\nMARK OCCURRENCES: ").append(textEditorOpt.markOccurrences)
+			   .append("\nPAINT OCCURRENCES MARKES BORDER: ").append(textEditorOpt.paintMarkOccurrencesBorder)
+			   .append("\nROUND SELECTION EDGES: ").append(textEditorOpt.roundedSelectionEdges)
+			   .append("\nTAB SPACES EMULATED: ").append(textEditorOpt.roundedSelectionEdges)
+			   .append("\nFOCUSABLE TIPS FLAG: ").append(textEditorOpt.useFocusableTips);
 		
 		// concat TEXT EDITOR OPTIONS
 		builder.append("\n\n ---- IMAGE CONVERTER -----\n\n")
 			   .append("SAME_SIZE: ").append(imageConvertOption.sameSize)
-			   .append("\nSAME_EXTENSION: ").append(imageConvertOption.sameExtension)
+			   .append("\nSAME EXTENSION: ").append(imageConvertOption.sameExtension)
 			   .append("\nQUALITY: ").append(imageConvertOption.quality)
 			   .append("\nALGORITHM: ").append(imageConvertOption.algorithm);
 		
@@ -653,7 +681,18 @@ public class INItializer {
 		return result;
 	}
 	
-	public static String listToString(ArrayList<String> loadedFiles) {
+	private boolean getBooleanFromString(String value, boolean defIfBlank) {
+		boolean result = false;
+		if(value == null || "".equals(value)) {
+			result = defIfBlank;
+		}else {
+			result = Boolean.valueOf(value);
+		}
+		
+		return result;
+	}
+	
+	public String listToString(ArrayList<String> loadedFiles) {
 		String openedFiles = "";
 		// concateno gli elementi della lista e, tranne l'ultimo, aggiungo una virgola
 		for(String currentPath : loadedFiles) {

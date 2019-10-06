@@ -54,11 +54,10 @@ public class MainGuiGeneralAppStarter {
 			// LAUNCH MAIN APPLICATION
 			MainGUI.mainApplicationGeneral();
 			
-			// TODO test life cycle
-			if(TEST_ERROR_FLAG) {
+			while(MainGUI.mainAppRunning) {
 				Thread.sleep(2000);
-				throw new Error();
 			}
+			
 		
 		} catch (Throwable e) {
 			logger.error(CRITICAL_ERROR_MSG, e);

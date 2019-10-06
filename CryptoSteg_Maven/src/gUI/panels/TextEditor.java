@@ -54,7 +54,6 @@ import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGUI;
 import mainobj.INItializer;
-import mouseutils.MousePointerUtils;
 
 import java.awt.SystemColor;
 
@@ -878,7 +877,7 @@ public class TextEditor extends JPanel {
 		}
 		
 		// TODO Still to fix nimbus size initFromConfig
-		initGuiFromConfig();
+		initGuiFromConfig(true);
 		
 		loadOpenedFilesAtStart();
 
@@ -1282,17 +1281,8 @@ public class TextEditor extends JPanel {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						if (calculatorFrame == null || !CalculatorMainApp.active) {
-							calculatorMainThread = new Thread(new Runnable() {
-								public void run() {
-									try {
-										calculatorFrame = new CalculatorMainApp();
-										CalculatorMainApp.getCalculatorGuiSingleton().gui.setAlwaysOnTop(true);
-									} catch (SecurityException e) {
-										logger.error("Error in Calculator module ["+CalculatorMainApp.class+"]", e);
-									}
-								}
-							});
-							calculatorMainThread.start();
+							calculatorMainThread = new CalculatorMainApp(); 
+							// STarts automatically
 						}
 					}
 				});
@@ -2064,6 +2054,7 @@ public class TextEditor extends JPanel {
 		btnSaveTextFileAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
+				boolean skipRefresh = true;
 
 				if (!getCurrentTabEditor().alreadySaving) {
 					// update signal value
@@ -2075,6 +2066,7 @@ public class TextEditor extends JPanel {
 						File selectedFile = GenericFileChooserDialog.fileWrite(parentFrame, currentConfiguration, exportNamePreset);
 
 						if (selectedFile != null) {
+							skipRefresh = false;
 							selectedFile = textEditorUtils.adaptFileExt(selectedFile);
 							if (selectedFile.exists()) {
 								if (JOptionPane.showConfirmDialog(parentFrame, "File " + selectedFile.getName()
@@ -2103,10 +2095,12 @@ public class TextEditor extends JPanel {
 								currentConfiguration.getFileOpt().setLastDstFolderPath(
 										loadedTabObj.loadedFile.getParentFile().getAbsolutePath());
 							} else {
+								skipRefresh = true;
 								textEditorUtils.errorAdvice("[Error Saving selected file]");
 							}
 						}
 					} catch (IOException e1) {
+						skipRefresh = true;
 						textEditorUtils.errorAdvice("[Error Saving selected file]");
 						JOptionPane.showMessageDialog(currentTextEditor, "error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
@@ -2114,7 +2108,9 @@ public class TextEditor extends JPanel {
 				}
 				// update signal value
 				getCurrentTabEditor().alreadySaving = false;
-				textEditorUtils.refreshTree(loadedTabObj.loadedFile, true);
+				if (!skipRefresh) {
+					textEditorUtils.refreshTree(loadedTabObj.loadedFile, true);
+				}
 			}
 		});
 
@@ -2161,8 +2157,7 @@ public class TextEditor extends JPanel {
 					File source = GenericFileChooser.fileRead(currentTextEditor);
 
 					getCurrentTabEditor().loadFile(source);
-
-				} // end if !already loading
+				}
 			}
 		});
 
@@ -2200,28 +2195,22 @@ public class TextEditor extends JPanel {
 		return false;
 	}
 
-	public void initGuiFromConfig() {
-		TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
-		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
+	public void initGuiFromConfig(boolean refreshGuiStyle) {
+		final TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
+		final TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
+
 
 		// TEXT AREA
 		checkBoxInlineTabs.setSelected(txtOptions.isInlinedTabs());
 		chkCutWordsTo.setSelected(txtOptions.isBreaklineActive());
-		loadedTabObj.textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
-		loadedTabObj.setPreferences(txtOptions.txtAreaDetailLevel);
-		slider_margin.setValue(txtOptions.getMargin());
-		sliderFontSize.setValue(txtOptions.getFont().getSize());
-		sliderSpokenSpeed.setValue(txtOptions.getVoiceRate());
-		loadedTabObj.textArea.setBackground(txtOptions.getBackCol());
-		RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOptions.backCol);
-		loadedTabObj.textArea.setForeground(txtOptions.getForeCol());
-		RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOptions.foreCol);
-		loadedTabObj.textArea.setFont(txtOptions.getFont());
-		loadedTabObj.textArea.setPaintTabLines(txtOptions.isTabLineVisible());
 		comboStylesScheme.setSelectedItem(txtOptions.selectedTheme);
 		leftSplitContainer.setBackground(txtOptions.filePanelBackCol);
 		leftSplitTreeFiles.setBackground(txtOptions.filePanelBackCol);
+		sliderSpokenSpeed.setValue(txtOptions.getVoiceRate());
 		
+		// UPDATE DETAIL
+		loadedTabObj.updateTextAreaPreferences(txtOptions);
+
 		// TREE LOCKED
 		if (txtOptions.treeLocked) {
 			toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN));
@@ -2251,8 +2240,30 @@ public class TextEditor extends JPanel {
 		}
 
 		splitPaneMain.setDividerLocation(currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
-
-		textEditorUtils.updateGuiLafWindows(currentTextEditor);
+		textEditorUtils.resetDividerColor();
+		getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(
+				null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
+		
+//		currentTextEditor.revalidate();
+//		currentTextEditor.repaint();
+		
+		if (refreshGuiStyle) {
+			textEditorUtils.updateGuiLafWindows(currentTextEditor);// was causing temporization bug cause of invokelater;
+		}
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				slider_margin.setValue(txtOptions.getMargin());
+				sliderFontSize.setValue(txtOptions.getFont().getSize());
+				loadedTabObj.textArea.setFont(txtOptions.getFont());
+				if (txtOptions.selectedTheme.equals(Themes.NONE)) {
+					loadedTabObj.textArea.setBackground(txtOptions.getBackCol());
+					RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOptions.backCol);
+					loadedTabObj.textArea.setForeground(txtOptions.getForeCol());
+					RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOptions.foreCol);
+				}
+			}
+		});
 	}
 
 	private void loadOpenedFilesAtStart() {

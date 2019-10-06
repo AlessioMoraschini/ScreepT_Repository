@@ -9,13 +9,14 @@
 package com.minhasKamal.ultimateCalculator;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.minhasKamal.ultimateCalculator.calculators.simpleCalculator.SimpleCalculator;
 
 
-public class CalculatorMainApp {
+public class CalculatorMainApp extends Thread{
 	
 	public static volatile boolean active = false;
 	
@@ -27,9 +28,11 @@ public class CalculatorMainApp {
 	
 	// constructor - for calling from others softwares
 	public CalculatorMainApp() {
-		active = true;
-		calculatorGuiSingleton = new SimpleCalculator();
-		calculatorGuiSingleton.gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				start();
+			}
+		});
 	}
 	
 	// main - for direct launch
@@ -44,6 +47,14 @@ public class CalculatorMainApp {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void run() {
+		active = true;
+		calculatorGuiSingleton = new SimpleCalculator();
+		calculatorGuiSingleton.gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+	
 
 	public static SimpleCalculator getCalculatorGuiSingleton() {
 		return calculatorGuiSingleton;

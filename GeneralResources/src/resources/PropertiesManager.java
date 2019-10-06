@@ -2,7 +2,6 @@ package resources;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -91,7 +90,7 @@ public class PropertiesManager {
 	 */
 	public void savePropertiesLayoutApache(String propertyName, String value) {
 		try {
-			saveProperty(propertyName, value);
+			GeneralConfig.linkedMappings.setProperty(propertyName, value);
         	layoutApacheCommons.load(new InputStreamReader(new FileInputStream(dynamicFileBindingsDefSource)));
         	layoutApacheCommons.getConfiguration().setProperty(propertyName, value);
         	logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);

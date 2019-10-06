@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import net.miginfocom.swing.MigLayout;
 import variousutils.HandleString;
 
 public class TabUtils {
@@ -74,9 +73,10 @@ public class TabUtils {
 		// button close
 		JButton btnClose = new JButton();
 		btnClose = applyStyleToTabCloseBtn(btnClose);
-		Dimension btnDimension = new Dimension(16, 22) ;
-		btnClose.setFont(new Font("SansSerif", Font.PLAIN, 10));
-		btnClose.setMinimumSize(btnDimension);
+		Dimension btnMinDimension = new Dimension(20, 20) ;
+		Dimension btnDimension = new Dimension(20, 20) ;
+		btnClose.setFont(new Font("SansSerif", Font.PLAIN, 9));
+		btnClose.setMinimumSize(btnMinDimension);
 		btnClose.setPreferredSize(btnDimension);
 		btnClose.setMaximumSize(btnDimension);
 		btnClose.setVerticalTextPosition(SwingConstants.TOP);

@@ -128,6 +128,8 @@ public class IconsPathConfigurator {
 	public static final String iconRootPath = GeneralConfig.RESOURCES_DIR + "Icons/General/Root.png";
 	
 	/////////////////  GENERAL PURPOSE  ///////////////////
+	public static final String ICON_GEN_INFO = GeneralConfig.RESOURCES_DIR + "Icons/General/info.png";
+	public static final String ICON_GEN_QUESTION = GeneralConfig.RESOURCES_DIR + "Icons/General/question.png";
 	public static final String ICON_GEN_WARNING = GeneralConfig.RESOURCES_DIR + "Icons/General/Warning.png";
 	public static final String ICON_BIG_GEN_WARNING = GeneralConfig.RESOURCES_DIR + "Icons/General/Warning_Big.png";
 	public static final String ICON_GEN_ERROR = GeneralConfig.RESOURCES_DIR + "Icons/General/Error.png";
