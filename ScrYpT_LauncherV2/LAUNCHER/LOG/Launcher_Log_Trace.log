@@ -2010,3 +2010,79 @@ javax.imageio.IIOException: Can't read input file!
 2019-10-06 02:25:06,303 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
 2019-10-06 02:25:06,303 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
 2019-10-06 02:25:06,306 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-10-07 19:42:39,193 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 07 19:42:39 CEST 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-07 19:42:39,219 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-07 19:42:39,399 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-07 19:42:39,619 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-07 19:42:40,103 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-07 19:42:40,145 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-07 19:42:40,194 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-07 19:42:40,196 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-07 19:42:40,200 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-10-07 20:34:25,313 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 07 20:34:25 CEST 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-07 20:34:25,335 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-07 20:34:25,449 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-07 20:34:25,577 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-07 20:34:26,079 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-07 20:34:26,116 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-07 20:34:26,150 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-07 20:34:26,151 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-07 20:34:26,152 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-10-07 20:37:49,976 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 07 20:37:49 CEST 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-07 20:37:50,001 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-07 20:37:50,118 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-07 20:37:50,250 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-07 20:37:50,720 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-07 20:37:50,760 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-07 20:37:50,793 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-07 20:37:50,793 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-07 20:37:50,794 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Current JVM(1.8.0_162) is OK -> selected and skipping search
+2019-10-07 20:44:09,781 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 07 20:44:09 CEST 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-07 20:44:09,814 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-07 20:44:09,935 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-07 20:44:10,065 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-07 20:44:10,539 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-07 20:44:10,569 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-07 20:44:10,591 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-07 20:44:10,591 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-07 20:44:10,593 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Current JVM(1.8.0_162) is OK -> selected and skipping search

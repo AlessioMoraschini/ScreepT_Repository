@@ -70,7 +70,7 @@ public class TabMover {
         tabReferenceDraggable.insertTab(tabReferenceDraggable.getTitleAt(indexB), null, tabReferenceDraggable.getComponentAt(indexB), null, indexA);
         tabReferenceDraggable.setTabComponentAt(indexB, tabHeadA);
         tabReferenceDraggable.insertTab(titleA, null, compA, null, indexB);
-        Collections.swap(currrentTabbedEditor.loadedList, indexA, indexB);
+        Collections.swap(currrentTabbedEditor.loadedList.getList(), indexA, indexB);
         
 	}
 	

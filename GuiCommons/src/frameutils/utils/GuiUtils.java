@@ -16,9 +16,11 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -52,10 +54,9 @@ public class GuiUtils {
 	public static Cursor getCustomCursor(String imgPath) {
 		Cursor result = CURSOR_DEFAULT;
 		try {
-			Dimension prefSize = Toolkit.getDefaultToolkit().getBestCursorSize(8, 8);
-			Point hotSpot = new Point(prefSize.width, prefSize.height);
-			Image cursorImage = new ImageIcon(imgPath).getImage();
-			result = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, hotSpot, imgPath);
+			Point hotSpot = new Point(0, 0);
+	        BufferedImage cursorImg = ImageIO.read(new File(IconsPathConfigurator.ICON_COLOR_SAMPLER));
+			result = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, hotSpot, imgPath);
 		} catch (Exception e) {
 			logger.error(e);
 		}

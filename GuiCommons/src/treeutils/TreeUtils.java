@@ -4,15 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-
 import javax.swing.JTree;
 import javax.swing.text.Position.Bias;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import generic.LimitedConcurrentList;
 import treeutils.om.FileNamed;
 
 public class TreeUtils {
@@ -61,7 +60,7 @@ public class TreeUtils {
 		}
 		
 		File root = ((FileNamed)tree.getModel().getRoot()).mFile.getAbsoluteFile();
-		LinkedList<File> nodes = new LinkedList<File>();
+		LimitedConcurrentList<File> nodes = new LimitedConcurrentList<File>(Integer.MAX_VALUE);
 		File current = new File(fileToSelect.getCanonicalPath());
 		
 		// find all nodes till root
@@ -72,7 +71,7 @@ public class TreeUtils {
 		nodes.add(new File(root.getCanonicalPath()));
 		
 		// start selection from root node
-		while(nodes.size() > 0){
+		while(nodes.getList().size() > 0){
 			File currentSelection = nodes.getLast();
 			TreePath nodePath = tree.getNextMatch(currentSelection.getName(), 0, Bias.Forward);
 			tree.setExpandsSelectedPaths(true);

@@ -19,21 +19,24 @@ public class GeneralConfig {
 	
 	public static final SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
-	/**
-	 * Used in launcher to choose right type of launch command for system
-	 */
-	public static final boolean FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
-	
-	public static final String MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
-	public static final String MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
 
 	public static final String APP_VERSION = linkedMappings.getProperty("APP_VERSION");
 	public static final String BUILD_TS_DATE = linkedMappings.getProperty("BUILD_TIMESTAMP")
 										.replaceAll("T", " at ")
 										.replaceAll("Z", "")
 										.replaceAll("-", "/");
+	public static final String WEBSITE = "www.am_design_developement.com";
+	public static final String APPLICATION_NAME = "ScrYpT - V" + GeneralConfig.APP_VERSION;
+	public static final String AUTHOR = "A.M. Design and Developement";
+	
+	/**
+	 * Used in launcher to choose right type of launch command for system
+	 */
+	public static final boolean FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
+	public static final String MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
 	
 	// General Folders
+	public static final String MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
 	public static final String RESOURCES_DIR = linkedMappings.getProperty("RESOURCES_DIR");
 	public static final String DEFAULT_IMAGE_FOLDER = linkedMappings.getProperty("DEFAULT_IMAGE_FOLDER");
 	public static final String SOUNDS_FOLDER = linkedMappings.getProperty("SOUNDS_FOLDER");
@@ -91,6 +94,7 @@ public class GeneralConfig {
 	
 	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(18, 18);
 	public static final Font BUTTON_DEFAULT_FONT =  new Font("Segoe UI", Font.BOLD, 12);
+	public static final Font BUTTON_TAB_HEAD_FONT =  new Font("Segoe UI", Font.PLAIN, 14);
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);

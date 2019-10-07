@@ -78,7 +78,7 @@ public class AboutSectionFrame extends JFrame{
 		backPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[20px][25%][25%][25%][25%][20px]", "[5px][40px][30px][grow][30px][grow][30px][grow][30px]"));
 		getContentPane().add(backPanel);
 		
-		lblTitle = new JLabel(MainGUI.APPLICATION_NAME);
+		lblTitle = new JLabel(GeneralConfig.APPLICATION_NAME);
 		lblTitle.setBorder(null);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setBackground(Color.DARK_GRAY);
@@ -102,7 +102,7 @@ public class AboutSectionFrame extends JFrame{
 		lblMadeBy.setForeground(new Color(211, 211, 211));
 		backPanel.add(lblMadeBy, "cell 1 4 4 1,alignx center,aligny bottom");
 		
-		dynLblAuthor = new JLabel(MainGUI.AUTHOR);
+		dynLblAuthor = new JLabel(GeneralConfig.AUTHOR);
 		dynLblAuthor.setHorizontalAlignment(SwingConstants.CENTER);
 		dynLblAuthor.setForeground(new Color(255, 248, 220));
 		dynLblAuthor.setFont(new Font("Segoe UI", Font.PLAIN, 17));
@@ -113,7 +113,7 @@ public class AboutSectionFrame extends JFrame{
 		lblOfficialWebsite.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		backPanel.add(lblOfficialWebsite, "cell 1 6 4 1,alignx center,aligny bottom");
 		
-		dynLblWebsite = new JButton(MainGUI.WEBSITE);
+		dynLblWebsite = new JButton(GeneralConfig.WEBSITE);
 		dynLblWebsite.setBorder(null);
 		dynLblWebsite.setInheritsPopupMenu(true);
 		dynLblWebsite.setIgnoreRepaint(true);
@@ -157,7 +157,7 @@ public class AboutSectionFrame extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SysUtils.openUrlInBrowser("https://"+MainGUI.WEBSITE);
+				SysUtils.openUrlInBrowser("https://"+GeneralConfig.WEBSITE);
 			}
 		});
 	}

@@ -75,8 +75,12 @@ public class TabTextEditorObj {
 		textArea.setFractionalFontMetricsEnabled(txtOptions.fractionalFontMetricsEnabled);
 		textArea.setTabsEmulated(txtOptions.tabSpacesEmulated);
 		hyperLinksEnabled(txtOptions.hyperLinksEnabled);
-		textArea.setShowMatchedBracketPopup(true);
+		textArea.setShowMatchedBracketPopup(txtOptions.showBracketsPopup);
+		textArea.setEOLMarkersVisible(txtOptions.markEndOfLine);
 		textArea.setDragEnabled(true);// try
+		textArea.setMarkOccurrencesDelay(100);
+		
+		RSyntaxTextArea.setTemplatesEnabled(false); // TODO
 	}
 
 	public void hyperLinksEnabled(boolean enabled) {

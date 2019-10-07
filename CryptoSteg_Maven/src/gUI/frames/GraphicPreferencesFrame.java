@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import om.GuiOption;
 import om.TextEditorOption;
-import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import utils.RsyntaxUtils;
@@ -29,6 +28,7 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
+import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettings;
@@ -43,7 +43,6 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JCheckBox;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.ComponentOrientation;
 
@@ -70,8 +69,6 @@ public class GraphicPreferencesFrame extends JFrame {
 	private JSpinner spinnerLogSize;
 	private JSpinner spinnerNimbusSize;
 	
-	private static boolean DARK_THEME;
-
 	// default values
 	private static String BACKUP_PREFERRED_STYLE;
 	private static int BACKUP_MENU_FONT_SIZE;
@@ -96,6 +93,8 @@ public class GraphicPreferencesFrame extends JFrame {
 	private static boolean BACKUP_TXTAREA_ROUND_SEL_EDGES;
 	private static boolean BACKUP_TXTAREA_FOCUSABLE_TIPS;
 	private static boolean BACKUP_TXTAREA_TABSPACES_EMULATED;
+	private static boolean BACKUP_TXTAREA_SHOW_BRACKETS_POPUP;
+	private static boolean BACKUP_TXTAREA_SHOW_EOL_DELIM;
 
 	// flag to signal active
 	public static boolean active = false;
@@ -121,6 +120,10 @@ public class GraphicPreferencesFrame extends JFrame {
 	private JCheckBox chckbxRoundSelectionEdges;
 	private JCheckBox chckbxEmulatedTabsWith;
 	
+	JOptionHelper dialogHelper;
+	private JCheckBox chckbxMarkEOL;
+	private JCheckBox chckbxShowBracket;
+	
 	public GraphicPreferencesFrame(INItializer currentConf) {
 		
 		currentEditor = MainGUI.initTxtWriter;
@@ -130,6 +133,8 @@ public class GraphicPreferencesFrame extends JFrame {
 
 		currentConfiguration = currentConf;
 		active = true;
+		
+		dialogHelper = new JOptionHelper(this);
 		
 		this.setAlwaysOnTop(true);
 		this.setResizable(false);
@@ -145,8 +150,6 @@ public class GraphicPreferencesFrame extends JFrame {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		TextEditorOption txtOpt = currentConf.getTextEditorOpt(); 
-
 		setBackground(new Color(0, 0, 0));
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[:110px:110px][40px,grow][70][90,grow][100px:100px][:40px:60px,grow][:75px:75px][75px,grow]", "[:50:70px][5][30][10][30][10][30][30][30][30][30][:5px:10px,grow][10%,grow,baseline]"));
@@ -324,11 +327,23 @@ public class GraphicPreferencesFrame extends JFrame {
 		chckbxRoundSelectionEdges.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxRoundSelectionEdges, "cell 6 9 2 1");
 		
+		chckbxMarkEOL = new JCheckBox("Mark end of line");
+		chckbxMarkEOL.setCursor(GuiUtils.CURSOR_HAND);
+		chckbxMarkEOL.setSelected(false);
+		chckbxMarkEOL.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		getContentPane().add(chckbxMarkEOL, "cell 0 10");
+		
 		chckbxEmulatedTabsWith = new JCheckBox("Emulated tabs with spaces");
 		chckbxEmulatedTabsWith.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxEmulatedTabsWith.setSelected(false);
 		chckbxEmulatedTabsWith.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		getContentPane().add(chckbxEmulatedTabsWith, "cell 0 10 2 1");
+		getContentPane().add(chckbxEmulatedTabsWith, "cell 2 10 2 1");
+		
+		chckbxShowBracket = new JCheckBox("Show bracket popup");
+		chckbxShowBracket.setCursor(GuiUtils.CURSOR_HAND);
+		chckbxShowBracket.setSelected(false);
+		chckbxShowBracket.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		getContentPane().add(chckbxShowBracket, "cell 4 10 2 1");
 						
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBackground(Color.GRAY);
@@ -400,11 +415,11 @@ public class GraphicPreferencesFrame extends JFrame {
 		chckbxDarklight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!chckbxDarklight.isSelected()) {
-					DARK_THEME = !GUIStyelSettings.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
-					currentConfiguration.getGuiOpt().setDarkGuiNimbus(false);
+					boolean res = !GUIStyelSettings.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+					currentConfiguration.getGuiOpt().setDarkGuiNimbus(res);
 				} else {
-					DARK_THEME = GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
-					currentConfiguration.getGuiOpt().setDarkGuiNimbus(true);
+					boolean res = GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+					currentConfiguration.getGuiOpt().setDarkGuiNimbus(res);
 				}
 				GUIStyelSettings.updateAllWindowsLaf();
 				if (MainGUI.initTxtWriter != null) {
@@ -553,6 +568,22 @@ public class GraphicPreferencesFrame extends JFrame {
 				currentConfiguration.getTextEditorOpt().tabSpacesEmulated = chckbxEmulatedTabsWith.isSelected();
 			}
 		});
+
+		// showBracketsPopup SELECTOR HANDLER
+		chckbxShowBracket.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentConfiguration.getTextEditorOpt().showBracketsPopup = chckbxShowBracket.isSelected();
+			}
+		});
+
+		// markEndOfLine SELECTOR HANDLER
+		chckbxMarkEOL.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentConfiguration.getTextEditorOpt().markEndOfLine = chckbxMarkEOL.isSelected();
+			}
+		});
 		
 		// END TXT AREA DETAIL //
 
@@ -566,8 +597,7 @@ public class GraphicPreferencesFrame extends JFrame {
 							currentConfiguration.getGuiOpt().setPreferredStyle(laf.getClassName());
 							GUIStyelSettings.setStyle(laf.getClassName(), currentConfiguration.getGuiOpt().nimbusSize);
 						} catch (Exception e1) {
-							JOptionPane.showMessageDialog(thisFrame, "Sorry, something went wrong :(",
-									e1.getClass().getName(), JOptionPane.ERROR_MESSAGE);
+							dialogHelper.error("Sorry, something went wrong :(", e1.getClass().getName());
 							logger.error("Exception happened!", e1);
 							currentConfiguration.getGuiOpt().setPreferredStyle(BACKUP_PREFERRED_STYLE);
 						} finally {
@@ -603,7 +633,6 @@ public class GraphicPreferencesFrame extends JFrame {
 		// SAVE CONFIG BUTTON HANDLER
 		btnSaveConf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TextEditorOption txtOpt = currentConfiguration.getTextEditorOpt();
 				int chosenOption = JOptionPane.showConfirmDialog(thisFrame,
 						"Are you sure you want to overwrite " + currentConfiguration.getIniFile().getFile().getPath()
 								+ "(ONLY GUI_OPTIONS)?",
@@ -618,9 +647,7 @@ public class GraphicPreferencesFrame extends JFrame {
 
 					updateGUI(true);
 					
-					JOptionPane.showMessageDialog(thisFrame,
-							"Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.",
-							"Saved!", JOptionPane.INFORMATION_MESSAGE);
+					dialogHelper.info( "Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.", "Saved!");
 					currentEditor.textEditorUtils.resetDividerColor();
 					currentTabEditor.applyStyleToTabs();
 					logger.debug("Configuration saved: \n" + currentConfiguration.toStringa());
@@ -630,8 +657,7 @@ public class GraphicPreferencesFrame extends JFrame {
 					
 
 				} else {
-					JOptionPane.showMessageDialog(thisFrame, "Ok, I wont save theese settings ;)", "Not saved!",
-							JOptionPane.WARNING_MESSAGE);
+					dialogHelper.warn( "Ok, I wont save theese settings ;)", "Not saved!");
 					currentEditor.textEditorUtils.resetDividerColor();
 					currentTabEditor.applyStyleToTabs();
 				}
@@ -723,11 +749,9 @@ public class GraphicPreferencesFrame extends JFrame {
 	private boolean writeValuesToConfFile(INItializer currentConf) {
 		
 		currentConf.writeGuiOptions();
-		currentConf.store();
-		currentConf.writeSingleValue(INItializer.GUI_OPT, "darkGuiNimbus", DARK_THEME);
-		
 		currentConf.writeTxtEditOptions();
 		currentConf.store();
+		currentConf.writeSingleValue(INItializer.GUI_OPT, "darkGuiNimbus", currentConfiguration.getGuiOpt().isDarkGuiNimbus());
 
 		return true;
 	}
@@ -763,6 +787,8 @@ public class GraphicPreferencesFrame extends JFrame {
 		chckbxMarkOccurrencesPaintBorder.setSelected(txtOpt.paintMarkOccurrencesBorder);
 		chckbxRoundSelectionEdges.setSelected(txtOpt.roundedSelectionEdges);
 		chckbxEmulatedTabsWith.setSelected(txtOpt.tabSpacesEmulated);
+		chckbxMarkEOL.setSelected(txtOpt.markEndOfLine);
+		chckbxShowBracket.setSelected(txtOpt.showBracketsPopup);
 		
 		// REFRESH GUI GENERAL
 		if (guiOpt.isDarkGuiNimbus()) {
@@ -792,9 +818,6 @@ public class GraphicPreferencesFrame extends JFrame {
 		TextEditorOption txtOpt = currentConf.getTextEditorOpt();
 		GuiOption guiOpt = currentConf.getGuiOpt();
 		
-		// initialize values from currentConfig
-		DARK_THEME = guiOpt.isDarkGuiNimbus();
-
 		// initialize default values (by value)
 		BACKUP_MENU_FONT_SIZE = guiOpt.getMenuFontSize();
 		BACKUP_LOG_PANEL_FONT_SIZE = guiOpt.getLogFontSize();
@@ -820,6 +843,8 @@ public class GraphicPreferencesFrame extends JFrame {
 		BACKUP_TXTAREA_ROUND_SEL_EDGES = txtOpt.roundedSelectionEdges;
 		BACKUP_TXTAREA_FOCUSABLE_TIPS = txtOpt.useFocusableTips;	
 		BACKUP_TXTAREA_TABSPACES_EMULATED = txtOpt.tabSpacesEmulated;
+		BACKUP_TXTAREA_SHOW_BRACKETS_POPUP = txtOpt.showBracketsPopup;
+		BACKUP_TXTAREA_SHOW_EOL_DELIM = txtOpt.markEndOfLine;
 	}
 	
 	/**
@@ -853,6 +878,8 @@ public class GraphicPreferencesFrame extends JFrame {
 		txtOpt.setRoundedSelectionEdges(BACKUP_TXTAREA_ROUND_SEL_EDGES);
 		txtOpt.setUseFocusableTips(BACKUP_TXTAREA_FOCUSABLE_TIPS);
 		txtOpt.setTabSpacesEmulated(BACKUP_TXTAREA_TABSPACES_EMULATED);
+		txtOpt.setMarkEndOfLine(BACKUP_TXTAREA_SHOW_EOL_DELIM);
+		txtOpt.setShowBracketsPopup(BACKUP_TXTAREA_SHOW_BRACKETS_POPUP);
 	}
 
 	

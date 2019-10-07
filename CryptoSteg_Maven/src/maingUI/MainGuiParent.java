@@ -1,5 +1,6 @@
 package maingUI;
 
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -54,13 +55,6 @@ public class MainGuiParent {
 	
 	// AUTHOR AND GENERAL INFORMATIONS
 
-	// now theese are in properties file updated automatically by maven
-//	public static final String APP_VERSION = "0.7.4";
-//	public static final String APP_VERSION_DATE = "02/10/2019";
-	public static final String WEBSITE = "www.am_design_developement.com";
-	public static final String APPLICATION_NAME = "ScrYpT - V" + GeneralConfig.APP_VERSION;
-	public static final String AUTHOR = "A.M. Design and Developement";
-	
 	// STATIC MAIN IMAGES REFERENCES
 	public static Image APPLICATION_MAIN_BCKG_IMAGE;
 	public static Image SCREEPT_BACKGROUND_DRAGNDROP_IMAGE;
@@ -76,7 +70,7 @@ public class MainGuiParent {
 	
 	// LOADER
 	public static LauncherLoaderFrame loaderGraphics;
-	public static final float launcherRatio = 0.25f;
+	public static final float launcherRatio = 0.3f;
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
 	public static final Dimension minimumSize = new Dimension(1100,650);
 	
@@ -94,6 +88,7 @@ public class MainGuiParent {
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
 	JMenu mnrestartPanel;
+	JMenuItem mntmPinApplicationOnTop;
 	
 	static JMenuItem mntmInspectCurrentConfiguration;
 	JMenuItem mntmloadPrjSub;
@@ -137,11 +132,11 @@ public class MainGuiParent {
 			@Override
 			public void run() {
 				while (mainAppRunning) {
-					frmScryptV.setTitle(currentConfiguration.getGenOpt().getUserName()+" is using " + APPLICATION_NAME);				
+					frmScryptV.setTitle(currentConfiguration.getGenOpt().getUserName()+" is using " + GeneralConfig.APPLICATION_NAME);				
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
-						frmScryptV.setTitle(APPLICATION_NAME+" - A.M. developement");	
+						frmScryptV.setTitle(GeneralConfig.APPLICATION_NAME+" - A.M. developement");	
 					}
 				}
 			}
@@ -173,6 +168,9 @@ public class MainGuiParent {
 		mnVarious.setMargin(menuEntryMargin);
 		menuBar.add(mnHelp);
 		mnHelp.setMargin(menuEntryMargin);
+		
+		menuBar.add(mntmPinApplicationOnTop);
+		mntmPinApplicationOnTop.setMargin(menuEntryMargin);
 		
 			// SUB-MENU
 			mnFile.add(mntmInspectCurrentConfiguration);
@@ -246,6 +244,10 @@ public class MainGuiParent {
 		mnCryptoSteg.setFont(menuBarFont);
 		mnVarious.setFont(menuBarFont);
 		mnHelp.setFont(menuBarFont);
+		
+		// ICON ON RIGHT OF BAR
+		mntmPinApplicationOnTop.setFont(menuBarFont);
+		mntmPinApplicationOnTop.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 		// SUBDIRECTORIES
 		mnFilesAndDirectories.setFont(subMenuFont);
@@ -300,6 +302,10 @@ public class MainGuiParent {
 	void addMenuIcons() {
 		
 		MenuSetter.setIconTextGap(menuBar, 15);
+		
+		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
+		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);
+		mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
 		
 		// file submenu
 		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));

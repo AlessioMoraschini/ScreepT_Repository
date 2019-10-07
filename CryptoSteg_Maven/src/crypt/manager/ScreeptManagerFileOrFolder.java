@@ -16,6 +16,7 @@ import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
+import dialogutils.JOptionHelper;
 import crypt.steg.STEGException;
 
 public class ScreeptManagerFileOrFolder {
@@ -35,13 +36,17 @@ public class ScreeptManagerFileOrFolder {
 	
 	public static boolean coderUsed = false;
 	
+	public JOptionHelper dialogHelper;
+	
 	public ScreeptManagerFileOrFolder() {
 		
 	}
 	
 ////////////////////////// MAIN METHODS ////////////////////////////////
 	public boolean crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile) {
+		
 		boolean resultOK = false;
+		dialogHelper = new JOptionHelper(null, false);
 
 		// notify that method is running
 		coderUsed=true;
@@ -148,18 +153,18 @@ public class ScreeptManagerFileOrFolder {
 		// INFORM USER ABOUT ESIT OF CRYPT OPERATION
 		if(resultOK) {
 			String msg = "Operation completed succesfully :)";
-			JOptionPane.showMessageDialog(null, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
+			dialogHelper.info(msg, "SUCCESS!");
 			logger.info(msg);
 			srcFile = null;
 
 		}else {
 			if(destinationDir != null) {
 				String msg = "Something went wrong :(";
-				JOptionPane.showMessageDialog(null, msg,"SUCCESS!", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error(msg,"SUCCESS!");
 				logger.error(msg);
 			}
 			else{
-				JOptionPane.showMessageDialog(null, "No directory selected, export aborted!", "No directory selected", JOptionPane.WARNING_MESSAGE);
+				dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
 			}
 		}
 		
@@ -264,17 +269,17 @@ public class ScreeptManagerFileOrFolder {
 		// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
 		if(resultOK) {
 			String msg = "Operation completed succesfully :)";
-			JOptionPane.showMessageDialog(null, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE);
+			dialogHelper.info(msg,"SUCCESS!");
 			logger.info(msg);
 			srcFile = null;
 
 		}else {					
 			if (destinationDir != null) {
 				String msg = "Something went wrong :(";
-				JOptionPane.showMessageDialog(null, msg, "SUCCESS!", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error(msg, "SUCCESS!");
 				logger.error(msg);
 			}else{
-				JOptionPane.showMessageDialog(null, "No directory selected, export aborted!", "No directory selected", JOptionPane.WARNING_MESSAGE);
+				dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
 			}
 		}
 		
@@ -488,6 +493,10 @@ public class ScreeptManagerFileOrFolder {
 		return resultOK;
 	}
 
+	public void setAdvicesEnabled(boolean enabled) {
+		this.dialogHelper.setAdvicesEnabled(enabled);
+	}
+	
 	public boolean isShuffle() {
 		return shuffle;
 	}

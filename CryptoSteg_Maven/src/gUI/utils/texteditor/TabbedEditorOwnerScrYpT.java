@@ -2,15 +2,22 @@ package gUI.utils.texteditor;
 
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
+
+import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
 import gUI.utils.shortcutshandler.TextEditorMouseWheelListener;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
+import tabbededitor.CustomTabbedEditor;
 import tabbededitor.ITabbedEditorOwner;
 
 public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
+	
+	// TabbedEditorOwnerScrYpT logger creation
+	static Logger logger = Logger.getLogger(TabbedEditorOwnerScrYpT.class);
 
 	public TextEditor textEditor;
 	
@@ -31,7 +38,12 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public JTextComponent getNewFileStringTarget() {
-		return textEditor.lblCurrentFile;
+		if(textEditor != null && textEditor.footerPanel != null && textEditor.footerPanel.lblCurrentFile != null) {
+			return textEditor.footerPanel.lblCurrentFile;
+		}else {
+			logger.warn("\n\n => Cannot getStringTarget JText component cause something in (textEditor.footerPanel.lblCurrentFile) is null: \n\n");
+			return new JTextComponent() {};
+		}
 	}
 
 	@Override

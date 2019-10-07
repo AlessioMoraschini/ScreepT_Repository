@@ -2,6 +2,7 @@ package gUI.utils.shortcutshandler;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
@@ -19,12 +20,12 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditorShortcutListener.class);
 	
-	public static volatile boolean flagCtrlPressed = false;
-	public static volatile boolean flagShiftPressed = false;
-	public static volatile boolean flagAltPressed = false;
+	public static AtomicBoolean flagCtrlPressed = new AtomicBoolean(false);
+	public static AtomicBoolean flagShiftPressed = new AtomicBoolean(false);
+	public static AtomicBoolean flagAltPressed = new AtomicBoolean(false);
 	
-	public volatile boolean flagHoverBtnViewExpCmd = false;
-	public volatile boolean flagHoverBtnRemoveSpaces = false;
+	public AtomicBoolean flagHoverBtnViewExpCmd = new AtomicBoolean(false);
+	public AtomicBoolean flagHoverBtnRemoveSpaces = new AtomicBoolean(false);
 	
 	private TextEditor currentTextEditor;
 	private CustomTabbedEditor currentTabEditor;
@@ -428,28 +429,30 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
 	}
 	
-	public void doControlActions() {
+	public synchronized void doControlActions() {
 		
-		if (flagCtrlPressed) {
-			if (flagHoverBtnRemoveSpaces) {
-				currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveContent);
-				currentTextEditor.btnRemoveSpaces
-						.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (flagCtrlPressed.get()) {
+					if (flagHoverBtnRemoveSpaces.get()) {
+						currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveContent);
+						currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
+					}
+					if (flagHoverBtnViewExpCmd.get()) {
+						currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInCommandLine);
+						currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
+					}
+				}
+				if (!flagCtrlPressed.get() || !flagHoverBtnRemoveSpaces.get()) {
+					currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
+					currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
+				}
+				if (!flagCtrlPressed.get() || !flagHoverBtnViewExpCmd.get()) {
+					currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInSysExplorer);
+					currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
+				}
 			}
-			if (flagHoverBtnViewExpCmd) {
-				currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInCommandLine);
-				currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
-			}
-		}
-
-		if(!flagCtrlPressed || !flagHoverBtnRemoveSpaces){
-			currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
-			currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
-		}
-		if(!flagCtrlPressed || !flagHoverBtnViewExpCmd){
-			currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInSysExplorer);
-			currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
-		}
+		});
 		
 	}
 	
@@ -459,28 +462,28 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		 * CTRL PRESSED FLAG
 		 */
 		if (e.isControlDown()) {
-			flagCtrlPressed = true;
+			flagCtrlPressed.set(true);
 			doControlActions();
 		}else {
-			flagCtrlPressed = false;
+			flagCtrlPressed.set(false);
 		}
 		
 		/*
 		 * ALT PRESSED FLAG
 		 */
 		if (e.isAltDown()) {
-			flagAltPressed = true;
+			flagAltPressed.set(true);
 		}else {
-			flagAltPressed = false;
+			flagAltPressed.set(false);
 		}
 		
 		/*
 		 * SHIFT PRESSED FLAG
 		 */
 		if (e.isShiftDown()) {
-			flagShiftPressed = true;
+			flagShiftPressed.set(true);
 		}else {
-			flagShiftPressed = false;
+			flagShiftPressed.set(false);
 		}
 	}
 }

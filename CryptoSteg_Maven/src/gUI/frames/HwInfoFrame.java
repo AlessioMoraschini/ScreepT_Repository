@@ -13,7 +13,7 @@ import org.hyperic.sigar.SigarException;
 
 import amfileutils.FileStuff;
 import frameutils.utils.GuiUtils;
-import generic.LimitedList;
+import generic.LimitedConcurrentList;
 import local.om.HDinfo;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
@@ -138,7 +138,7 @@ public class HwInfoFrame extends JFrame{
 	private Display[] displays;
 	private Integer[] displayIndexer;
 	private CentralProcessor genCPU;
-	private LimitedList<Double> cpuUsageHystory;
+	private LimitedConcurrentList<Double> cpuUsageHystory;
 	private HDinfo[] HDList;
 	private ProcCpu scryptCpuUsage;
 	private ProcMem scryptMemUsage;
@@ -735,7 +735,7 @@ public class HwInfoFrame extends JFrame{
 ////////////////////////// SYSTEM VARIABLES INITIALIZER //////////////////////////	
 	
 	private void initSystemVars() {
-		cpuUsageHystory = new LimitedList<Double>(1000);
+		cpuUsageHystory = new LimitedConcurrentList<Double>(1000);
 		sysINFO = new SystemInfo();
 		sigar = new Sigar();
 		currentPid = sigar.getPid();

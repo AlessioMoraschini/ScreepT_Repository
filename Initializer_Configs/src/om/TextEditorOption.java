@@ -49,6 +49,8 @@ public class TextEditorOption {
 	public static final boolean DEF_fractionalFontMetricsEnabled = true;
 	public static final boolean DEF_hyperLinksEnabled = false;
 	public static final boolean DEF_tabsSpacesEmulated = false;
+	public static final boolean DEF_markEndOfLine = false;
+	public static final boolean DEF_showBracketsPopup = false;
 	
 	// FIELDS	
 	public int margin;
@@ -90,6 +92,8 @@ public class TextEditorOption {
 	public boolean roundedSelectionEdges;
 	public boolean useFocusableTips;
 	public boolean tabSpacesEmulated;
+	public boolean markEndOfLine;
+	public boolean showBracketsPopup;
 	
 	
 	// CONSTRUCTOR
@@ -131,6 +135,8 @@ public class TextEditorOption {
 		fractionalFontMetricsEnabled = DEF_fractionalFontMetricsEnabled;
 		hyperLinksEnabled = DEF_fractionalFontMetricsEnabled;
 		tabSpacesEmulated = DEF_tabsSpacesEmulated;
+		markEndOfLine = DEF_markEndOfLine;
+		showBracketsPopup = DEF_showBracketsPopup;
 	}
 
 	
@@ -458,6 +464,26 @@ public class TextEditorOption {
 
 	public void setTabSpacesEmulated(boolean tabSpacesEmulated) {
 		this.tabSpacesEmulated = tabSpacesEmulated;
+	}
+
+
+	public boolean isMarkEndOfLine() {
+		return markEndOfLine;
+	}
+
+
+	public void setMarkEndOfLine(boolean markEndOfLine) {
+		this.markEndOfLine = markEndOfLine;
+	}
+
+
+	public boolean isShowBracketsPopup() {
+		return showBracketsPopup;
+	}
+
+
+	public void setShowBracketsPopup(boolean showBracketsPopup) {
+		this.showBracketsPopup = showBracketsPopup;
 	}
 	
 }

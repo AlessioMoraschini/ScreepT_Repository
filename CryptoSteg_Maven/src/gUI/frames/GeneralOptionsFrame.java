@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
@@ -90,11 +91,14 @@ public class GeneralOptionsFrame extends JFrame{
 	private JSlider sliderVolume;
 	private JLabel lblLogLevelChosen;
 	
+	JOptionHelper dialogHelper;
+	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
-		
 		active = true;
+		
+		dialogHelper = new JOptionHelper(this);
 		
 		// assign this frame to variable
 		thisFrame = this;
@@ -391,12 +395,12 @@ public class GeneralOptionsFrame extends JFrame{
 					setValuesAndAdd();
 
 					logger.debug("SAVE => General Options saved.");
-					JOptionPane.showMessageDialog(thisFrame, "General Options Saved :)", "Saved!", JOptionPane.INFORMATION_MESSAGE);
+					dialogHelper.info("General Options Saved :)", "Saved!");
 					
 					dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 					
 				}else {
-					JOptionPane.showMessageDialog(thisFrame, "Ok, I wont save theese settings ;)", "Not saved!", JOptionPane.WARNING_MESSAGE);
+					dialogHelper.warn("Ok, I wont save theese settings ;)", "Not saved!");
 				}
 			}
 		});

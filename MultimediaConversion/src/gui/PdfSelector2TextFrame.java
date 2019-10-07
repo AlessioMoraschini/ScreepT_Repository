@@ -15,10 +15,10 @@ import org.icepdf.ri.common.SwingViewBuilder;
 
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooser;
+import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import resources.ImagesPathConfigurator;
 import splitpanel.SplitPaneUtils;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.tess4j.TesseractException;
@@ -27,7 +27,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.JScrollPane;
@@ -71,10 +70,14 @@ public class PdfSelector2TextFrame extends JFrame{
 	public ImageToTextExtractor imageExtractor;
 	private SwingController controllerPdf;
 	
+	JOptionHelper dialogHelper;
+	
 	public PdfSelector2TextFrame(JFrame parentRootFrame, JTextArea outputTxtArea, String title) {
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		logger.info(this.getClass().getName() + " Starting...");
 		active = true;
+		
+		dialogHelper = new JOptionHelper(this);
 		
 		imageExtractor = new ImageToTextExtractor();
 		mainFrameParent = parentRootFrame;
@@ -165,8 +168,7 @@ public class PdfSelector2TextFrame extends JFrame{
 								displayPdf(selected);
 								selectedImageSource = selected;
 							} catch (IOException e1) {
-								JOptionPane.showMessageDialog(thisFrame, "An error occurred, cannot load pdf :(",
-										"IO Error", JOptionPane.ERROR_MESSAGE);
+								dialogHelper.error("An error occurred, cannot load pdf :(",	"IO Error");
 								logger.error(e);
 							} finally {
 
@@ -196,7 +198,7 @@ public class PdfSelector2TextFrame extends JFrame{
 						} catch (TesseractException e1) {
 							logger.error(e1);
 							result = false;
-							JOptionPane.showMessageDialog(thisFrame, "An error occurred parsing the image :(","Parse Error", JOptionPane.ERROR_MESSAGE);
+							dialogHelper.error("An error occurred parsing the image :(","Parse Error");
 						} 
 						imageContainerPanel.setCursor(GuiUtils.CURSOR_DEFAULT);
 						txtAreaParsedText.setCursor(GuiUtils.CURSOR_TEXT);

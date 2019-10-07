@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import resources.GeneralConfig;
 import variousutils.HandleString;
 
 public class TabUtils {
@@ -42,7 +43,7 @@ public class TabUtils {
 
 		// tab title
 		JLabel lblTitle = new JLabel();
-		lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		lblTitle.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT);
 		lblTitle.setText(HandleString.fitToMaxLentgh(title, MAX_TAB_LABELENGHT));
 		
 		// image label
@@ -68,13 +69,13 @@ public class TabUtils {
 		pnlTab.add(lblTitle, gbc); // 2 - TEXT TITLE
 		gbc.gridx++;
 		gbc.ipadx = 9;
-		gbc.weightx = 3;
+		gbc.weightx = 2;
 		
 		// button close
 		JButton btnClose = new JButton();
 		btnClose = applyStyleToTabCloseBtn(btnClose);
 		Dimension btnMinDimension = new Dimension(17, 20) ;
-		Dimension btnDimension = new Dimension(18, 20) ;
+		Dimension btnDimension = new Dimension(17, 20) ;
 		btnClose.setFont(new Font("SansSerif", Font.PLAIN, 9));
 		btnClose.setMinimumSize(btnMinDimension);
 		btnClose.setPreferredSize(btnDimension);

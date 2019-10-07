@@ -43,7 +43,7 @@ public class MainGuiGeneralAppStarter {
 			// Initialize logger properties
 			PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
 			
-			logger.info(LoggerUtils.getStartString(MainGUI.APPLICATION_NAME, true));
+			logger.info(LoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
 
 			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 			
@@ -55,10 +55,13 @@ public class MainGuiGeneralAppStarter {
 			MainGUI.mainApplicationGeneral();
 			
 			while(MainGUI.mainAppRunning) {
-				Thread.sleep(2000);
+				try {
+					Thread.sleep(20000);
+				} catch (InterruptedException e) {
+					logger.warn("\n\n\n THE ERROR WAITER MODULE HAS BEEN INTERRUPTED! (if not followed by exit log this could mean there was some problems) \n\n\n");
+				}
 			}
 			
-		
 		} catch (Throwable e) {
 			logger.error(CRITICAL_ERROR_MSG, e);
 			JOptionPane.showMessageDialog(null, CRITICAL_ERROR_MSG+e.getClass().getName(), "Critical Error",
@@ -70,7 +73,7 @@ public class MainGuiGeneralAppStarter {
 	private static void doStuffBeforeErrorClose() {
 		now = new Date();
 		
-		logger.info(LoggerUtils.getGeneralErrorExitMsg(MainGUI.APPLICATION_NAME, true));
+		logger.info(LoggerUtils.getGeneralErrorExitMsg(GeneralConfig.APPLICATION_NAME, true));
 		
 		System.exit(0);
 	}

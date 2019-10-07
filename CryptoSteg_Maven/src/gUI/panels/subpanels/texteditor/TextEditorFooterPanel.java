@@ -1,0 +1,174 @@
+package gUI.panels.subpanels.texteditor;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
+
+import gUI.panels.TextEditor;
+import gUI.utils.texteditor.TextEditorUtils;
+import mainobj.INItializer;
+import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
+
+public class TextEditorFooterPanel extends JPanel{
+	
+	public TextEditor parent;
+	public TextEditorUtils parentUtils;
+	public INItializer currentConfiguration;
+	
+	public JRadioButton rdbtnShowCompletePath;
+
+	public JLabel lblCurrentFileLBL;
+	public JLabel labelTotLines;
+	public JLabel labelTotalChars;
+	public JLabel labelSelectionLength;
+	public JLabel labelCharset;
+	public JLabel dynLblTotLines;
+	public JLabel dynLblTotChars;
+	public JLabel dynLblSelLength;
+	public JLabel dynLabelCharset;
+	public JLabel lblColumn;
+	public JLabel dynLblColumn;
+	public JLabel lblLine;
+	public JLabel dynLblCurrLine;
+	public JLabel dynLblSearchEsit;
+	public JLabel lblAdvice;
+
+	public JTextField lblCurrentFile;
+	
+	public TextEditorFooterPanel(TextEditor parent) {
+		super();
+		this.parent = parent;
+		this.parentUtils = parent.textEditorUtils;
+		this.currentConfiguration = parent.currentConfiguration;
+		
+		setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		setBackground(Color.GRAY);
+		setLayout(new MigLayout("fill,insets 3", "[][200px,grow][grow][][:60px:120px][][:60px:120px][][:60px:120px][][:20px:120px][][:20px:120px][][:60px:120px][grow][]", "[fill]"));
+
+		lblCurrentFileLBL = new JLabel("   Current file:");
+		add(lblCurrentFileLBL, "cell 0 0,growy");
+		lblCurrentFileLBL.setForeground(SystemColor.controlHighlight);
+		lblCurrentFileLBL.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+
+		lblCurrentFile = new JTextField("\\*.txt");
+		lblCurrentFile.setMinimumSize(new Dimension(280, 22));
+		lblCurrentFile.setBackground(Color.DARK_GRAY);
+		lblCurrentFile.setOpaque(true);
+		lblCurrentFile.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblCurrentFile.setForeground(SystemColor.activeCaption);
+		add(lblCurrentFile, "cell 1 0,growx");
+
+		rdbtnShowCompletePath = new JRadioButton("Complete Path");
+		rdbtnShowCompletePath.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		add(rdbtnShowCompletePath, "cell 2 0");
+		rdbtnShowCompletePath.setSelected(true);
+
+		labelCharset = new JLabel("Charset:");
+		labelCharset.setForeground(SystemColor.controlHighlight);
+		labelCharset.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		add(labelCharset, "cell 3 0");
+
+		dynLabelCharset = new JLabel("");
+		dynLabelCharset.setForeground(SystemColor.inactiveCaptionBorder);
+		dynLabelCharset.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		add(dynLabelCharset, "cell 4 0");
+
+		labelTotLines = new JLabel("Tot Lines:");
+		labelTotLines.setForeground(SystemColor.controlHighlight);
+		labelTotLines.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		add(labelTotLines, "cell 5 0,alignx right,aligny center");
+
+		dynLblTotLines = new JLabel("");
+		dynLblTotLines.setForeground(SystemColor.inactiveCaptionBorder);
+		dynLblTotLines.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		add(dynLblTotLines, "cell 6 0");
+
+		labelTotalChars = new JLabel("Tot. Chars:");
+		labelTotalChars.setForeground(SystemColor.controlHighlight);
+		labelTotalChars.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		add(labelTotalChars, "cell 7 0,alignx right");
+
+		dynLblTotChars = new JLabel("");
+		dynLblTotChars.setForeground(SystemColor.inactiveCaptionBorder);
+		dynLblTotChars.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		add(dynLblTotChars, "cell 8 0");
+
+		lblLine = new JLabel("Sel. Line:");
+		lblLine.setForeground(SystemColor.controlHighlight);
+		lblLine.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		add(lblLine, "cell 9 0");
+
+		dynLblCurrLine = new JLabel("");
+		dynLblCurrLine.setForeground(SystemColor.inactiveCaptionBorder);
+		dynLblCurrLine.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		add(dynLblCurrLine, "cell 10 0");
+
+		lblColumn = new JLabel("Sel. Column:");
+		lblColumn.setForeground(SystemColor.controlHighlight);
+		lblColumn.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		add(lblColumn, "cell 11 0");
+
+		dynLblColumn = new JLabel("");
+		dynLblColumn.setForeground(SystemColor.inactiveCaptionBorder);
+		dynLblColumn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		add(dynLblColumn, "cell 12 0");
+
+		labelSelectionLength = new JLabel("Sel. length:");
+		labelSelectionLength.setForeground(SystemColor.controlHighlight);
+		labelSelectionLength.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		add(labelSelectionLength, "cell 13 0,alignx right");
+
+		dynLblSelLength = new JLabel("");
+		dynLblSelLength.setForeground(SystemColor.inactiveCaptionBorder);
+		dynLblSelLength.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		add(dynLblSelLength, "cell 14 0");
+
+		dynLblSearchEsit = new JLabel("");
+		dynLblSearchEsit.setHorizontalAlignment(SwingConstants.CENTER);
+		dynLblSearchEsit.setForeground(new Color(255, 222, 173));
+		dynLblSearchEsit.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		dynLblSearchEsit.setBackground(Color.WHITE);
+		add(dynLblSearchEsit, "cell 15 0,alignx center");
+
+		lblAdvice = new JLabel("");
+		add(lblAdvice, "cell 16 0,alignx right,aligny center");
+		lblAdvice.setBackground(SystemColor.info);
+		lblAdvice.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		lblAdvice.setForeground(new Color(176, 224, 230));
+		lblAdvice.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAdvice.setText(" [Current output: .txt]");
+		
+		addHandlers();
+		
+	}
+	
+	private void addHandlers() {
+		// FOOTER UI RADIOBOX COMPLETE PATH (current file)
+		rdbtnShowCompletePath.setForeground(Color.LIGHT_GRAY);
+		rdbtnShowCompletePath.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (rdbtnShowCompletePath.isSelected()) {
+							rdbtnShowCompletePath.setForeground(Color.WHITE);
+						} else {
+							rdbtnShowCompletePath.setForeground(Color.LIGHT_GRAY);
+						}
+					}
+				});
+			}
+		});
+	}
+}

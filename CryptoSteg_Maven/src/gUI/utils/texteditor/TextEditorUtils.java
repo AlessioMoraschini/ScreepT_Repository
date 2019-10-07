@@ -401,25 +401,25 @@ public class TextEditorUtils {
 		logger.debug("Starting currentTextEditor.refreshMessageAndTabTooltip() with message: "+message);
 		successAdvice(message);
 		updateTabTooltip(currentTextEditor.getCurrentTabEditor().mainTabList.getSelectedIndex());
-		currentTextEditor.lblCurrentFile.setForeground(ImageGeneralWorker.randomColorRGB(0.1f));
+		currentTextEditor.footerPanel.lblCurrentFile.setForeground(ImageGeneralWorker.randomColorRGB(0.1f));
 		logger.debug("currentTextEditor.refreshMessageAndTabTooltip() completed - Exiting");
 	}
 
 	public void errorAdvice(String msg) {
-		currentTextEditor.dynLblSearchEsit.setForeground(new Color(232, 102, 46));
-		currentTextEditor.dynLblSearchEsit.setText(msg);
+		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(new Color(232, 102, 46));
+		currentTextEditor.footerPanel.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(TextEditor.timeoutAdvice);
 	}
 
 	public void successAdvice(String msg) {
-		currentTextEditor.dynLblSearchEsit.setForeground(Color.GREEN);
-		currentTextEditor.dynLblSearchEsit.setText(msg);
+		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(Color.GREEN);
+		currentTextEditor.footerPanel.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(TextEditor.timeoutAdvice);
 	}
 
 	public void infoAdvice(String msg) {
-		currentTextEditor.lblAdvice.setForeground(Color.BLUE);
-		currentTextEditor.lblAdvice.setText(msg);
+		currentTextEditor.footerPanel.lblAdvice.setForeground(Color.BLUE);
+		currentTextEditor.footerPanel.lblAdvice.setText(msg);
 		timeoutLblAdvice(TextEditor.timeoutAdvice);
 	}
 
@@ -446,7 +446,7 @@ public class TextEditorUtils {
 					Thread.sleep(millisec);
 					currentTextEditor.renewedAdviceTimeout = false;
 					if(!currentTextEditor.renewedAdviceTimeout) {
-						currentTextEditor.dynLblSearchEsit.setText("");
+						currentTextEditor.footerPanel.dynLblSearchEsit.setText("");
 					}
 				} catch (InterruptedException e) {
 					logger.error("Exception happened!", e);
@@ -602,7 +602,7 @@ public class TextEditorUtils {
 		RsyntaxUtils.addAutoCompletion(loadedTabObj.textArea, selExtension.languageWordsFile);
 		loadedTabObj.textArea.revalidate();
 		currentTextEditor.CURRENT_EXT_OUT = selected.nomeStringa;
-		currentTextEditor.lblAdvice.setText("[Current output: " + currentTextEditor.CURRENT_EXT_OUT + "]");
+		currentTextEditor.footerPanel.lblAdvice.setText("[Current output: " + currentTextEditor.CURRENT_EXT_OUT + "]");
 		currentTextEditor.btnSaveTextFileAs.setToolTipText("Choose name and folder, save " + currentTextEditor.CURRENT_EXT_OUT + " file!");
 
 		loadedTabObj.unsaved = unsaved;

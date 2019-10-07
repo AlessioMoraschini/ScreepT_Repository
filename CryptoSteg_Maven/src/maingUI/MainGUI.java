@@ -183,7 +183,7 @@ public class MainGUI extends MainGuiParent{
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
 		for (int i = 0; i < 10; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
-			String msg = "Initializing "+ APPLICATION_NAME + dots;
+			String msg = "Initializing "+ GeneralConfig.APPLICATION_NAME + dots;
 			loaderGraphics.update(msg, i/2);
 			try {
 				Thread.sleep(60);
@@ -409,6 +409,7 @@ public class MainGUI extends MainGuiParent{
 				}
 			}
 		}).start();
+		
 	}
 	/************  END MAIN APPLICATION GENERAL METHOD  ****************************/
 
@@ -439,6 +440,7 @@ public class MainGUI extends MainGuiParent{
 		}
 
 		logger.info("## TITLE UPDATER started.");
+		
 	}
 	// END CONSTRUCTOR
 	
@@ -466,6 +468,8 @@ public class MainGUI extends MainGuiParent{
 		frmScryptV.setMinimumSize(MainGuiParent.minimumSize);
 		frmScryptV.addMouseListener(new ComponentResizer());
 		
+		dialogHelper = new JOptionHelper(frmScryptV);
+		
 		// FULL SCREEN SETTING
 	    frmScryptV.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frmScryptV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -490,6 +494,27 @@ public class MainGUI extends MainGuiParent{
 		
 		//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
 		
+ 		mntmPinApplicationOnTop = new JMenuItem(new AbstractAction("") {
+			public void actionPerformed(ActionEvent e) {
+				if (!mainAPP.getMainFrame().isAlwaysOnTop()) {
+					
+					if(!mainAPP.getMainFrame().isAlwaysOnTopSupported()) {
+						logger.warn("User tried to set Always on top, but it seems it's not supported in this device!");
+						dialogHelper.warn("It seems that \"Always on top\" is not supported on this system :(", "\"Always on top\" not supported");
+					}
+
+					getMainFrame().setAlwaysOnTop(true);
+					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN));
+					mntmPinApplicationOnTop.setToolTipText("Disable \"always on top\" over other windows (if supported)");
+					
+				}else{
+					getMainFrame().setAlwaysOnTop(false);
+					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
+					mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
+				}
+			}
+ 		});
+ 
 		// NOT OPENING VIEW - EXIT AND CLOSE SCRYPT
 		mntmExit = new JMenuItem(new AbstractAction("Exit") {
 			public void actionPerformed(ActionEvent e) {
@@ -691,7 +716,7 @@ public class MainGUI extends MainGuiParent{
 						File selected = fileLogWriteDialog(frmScryptV);
 						if (selected != null) {
 							logger.info("\n\n##################################################\n\n" + now.toString()
-									+ "\n\n" + APPLICATION_NAME + " EXPORT!\n\n"
+									+ "\n\n" + GeneralConfig.APPLICATION_NAME + " EXPORT!\n\n"
 									+ "##################################################\n\n");
 
 							// give true to overwrite because fileWriteDialog already set the value to be unique
@@ -1039,7 +1064,7 @@ public class MainGUI extends MainGuiParent{
 		    		panelAbout.setBounds(700, 200, 400, 345);
 		    		panelAbout.setResizable(false);
 		    		panelAbout.setVisible(true);
-		    		panelAbout.setTitle(APPLICATION_NAME);
+		    		panelAbout.setTitle(GeneralConfig.APPLICATION_NAME);
 				}else {
 					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelAbout.setState(java.awt.Frame.NORMAL);
@@ -1068,7 +1093,7 @@ public class MainGUI extends MainGuiParent{
 					flagTutorialPanel = true;
 					tutorialPanel.setResizable(true);
 		    		tutorialPanel.setVisible(true);
-		    		tutorialPanel.setTitle(APPLICATION_NAME + " - Tutorial");
+		    		tutorialPanel.setTitle(GeneralConfig.APPLICATION_NAME + " - Tutorial");
 				}else {
 					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					tutorialPanel.setVisible(true);
@@ -1367,7 +1392,7 @@ public class MainGUI extends MainGuiParent{
       	
 		mainAppRunning = false;
 		
-		logger.info(LoggerUtils.getExitString(MainGUI.APPLICATION_NAME, true));
+		logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 	
 		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
@@ -1439,7 +1464,7 @@ public class MainGUI extends MainGuiParent{
 		
 		askCondition = false;
 		atLeastOneTemp = false;
-		for (TabTextEditorObj tabElement : currentTabEditor.loadedList) {
+		for (TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
 			if (tabElement.unsaved) {
 				askCondition = true;
 			}
@@ -1464,7 +1489,7 @@ public class MainGUI extends MainGuiParent{
 			}
 			if(atLeastOneTemp) {
 				mntmTextEditor.doClick();
-				for(TabTextEditorObj tabElement : currentTabEditor.loadedList) {
+				for(TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
 					if(tabElement.unsaved && tabElement.loadedFile == null) {
 						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
 						return false; // don't exit
@@ -1483,7 +1508,7 @@ public class MainGUI extends MainGuiParent{
 			
 			// save list of non null and existing files in tabs
 			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
-			for (TabTextEditorObj currentObj : currentTabEditor.loadedList) {
+			for (TabTextEditorObj currentObj : currentTabEditor.loadedList.getList()) {
 				if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
 					currentConfiguration.getTextEditorOpt().getOpenedFileList()
 							.add(currentObj.loadedFile.getAbsolutePath());

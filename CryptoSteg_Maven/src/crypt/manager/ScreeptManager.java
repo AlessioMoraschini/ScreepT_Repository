@@ -13,8 +13,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -92,7 +92,7 @@ public class ScreeptManager {
 	private String tempMSG="";
 		
 	// list to keep memory of open streams in case of error
-	private List<Closeable> closeables = new LinkedList<Closeable>();
+	private List<Closeable> closeables = new Vector<Closeable>();
 	
 	// reference to keep memory of outFile/dir (in case of steg delete all out dir representing crypted single file) in case of error
 	public File currentOutFile;

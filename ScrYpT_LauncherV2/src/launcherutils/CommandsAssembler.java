@@ -1,10 +1,10 @@
 package launcherutils;
 
 import java.io.File;
-import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
+import generic.LimitedConcurrentList;
 import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;
@@ -16,11 +16,11 @@ public class CommandsAssembler {
 	static Logger logger = Logger.getLogger(CommandsAssembler.class);
 		
 	// OBJECT FIELDS
-	private LinkedList<String> execCommand;
+	private LimitedConcurrentList<String> execCommand;
 	public JvmHelper jvmHelper;
 	
 	public CommandsAssembler(JvmHelper jvmHelper) {
-		this.execCommand = new LinkedList<String>();	
+		this.execCommand = new LimitedConcurrentList<String>(Integer.MAX_VALUE);	
 		this.jvmHelper = jvmHelper;
 	}
 	
@@ -34,7 +34,7 @@ public class CommandsAssembler {
 
 		OSinfo currentOS = SysUtils.getOsInfoLazy();
 		
-		if (!jvmHelper.javaPath.equals(JvmHelper.JVM_OK)) {
+		if (!pathEntry.equals(JvmHelper.JVM_OK)) {
 			if (currentOS.isWindows()) {
 				execCommand.add("set JDK_PATH=" + pathEntry + ";");
 				execCommand.add("set PATH=%JDK_PATH%%PATH%");
@@ -89,9 +89,9 @@ public class CommandsAssembler {
 	 */
 	public String getCombinedCommandList() {
 		StringBuilder builder = new StringBuilder();
-		builder.ensureCapacity(execCommand.size());
+		builder.ensureCapacity(execCommand.getList().size());
 		
-		for(String currentCommand : execCommand) {
+		for(String currentCommand : execCommand.getList()) {
 			builder.append(currentCommand);
 			builder.append(" \n\n");
 		}
@@ -102,9 +102,9 @@ public class CommandsAssembler {
 	}
 	
 	/**
-	 * this will empty the current list of eventually loaded commands, refreshing to new LinkedList()
+	 * this will empty the current list of eventually loaded commands, refreshing to new LimitedList()
 	 */
 	public void emptyCommandsList() {
-		this.execCommand = new LinkedList<String>();	
+		this.execCommand = new LimitedConcurrentList<String>(Integer.MAX_VALUE);	
 	}
 }

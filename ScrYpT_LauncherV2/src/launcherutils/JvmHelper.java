@@ -67,8 +67,7 @@ public class JvmHelper {
 		String foundCorrect = compareWithAdmittedJVMS(foundJvmHomeList);
 		foundCorrect = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
 		
-		logger.info("Versions found: " + foundJvmHomeList);
-		logger.info("Found correct one: " + foundCorrect);
+		logger.info("\n\n => Versions found: " + foundJvmHomeList + "\n\n => Found correct one: " + foundCorrect + "\n");
 		
 		return foundCorrect;
 	}

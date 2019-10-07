@@ -346,6 +346,8 @@ public class INItializer {
 		textEditorOpt.setFractionalFontMetricsEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fractionalFontMetricsEnabled"), TextEditorOption.DEF_fractionalFontMetricsEnabled));
 		textEditorOpt.setHyperLinksEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "hyperLinksEnabled"), TextEditorOption.DEF_hyperLinksEnabled));
 		textEditorOpt.setTabSpacesEmulated(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabSpacesEmulated"), TextEditorOption.DEF_tabsSpacesEmulated));
+		textEditorOpt.setMarkEndOfLine(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "markEndOfLine"), TextEditorOption.DEF_markEndOfLine));
+		textEditorOpt.setShowBracketsPopup(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "showBracketsPopup"), TextEditorOption.DEF_showBracketsPopup));
 		
 		// file list
 		String pathsOpenFilesString;
@@ -493,6 +495,8 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "fractionalFontMetricsEnabled", textEditorOpt.fractionalFontMetricsEnabled);
 		iniFile.put(TEXT_EDITOR_OPT, "hyperLinksEnabled", textEditorOpt.hyperLinksEnabled);
 		iniFile.put(TEXT_EDITOR_OPT, "tabSpacesEmulated", textEditorOpt.tabSpacesEmulated);
+		iniFile.put(TEXT_EDITOR_OPT, "markEndOfLine", textEditorOpt.markEndOfLine);
+		iniFile.put(TEXT_EDITOR_OPT, "showBracketsPopup", textEditorOpt.showBracketsPopup);
 		
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
@@ -667,6 +671,8 @@ public class INItializer {
 			   .append("\nPAINT OCCURRENCES MARKES BORDER: ").append(textEditorOpt.paintMarkOccurrencesBorder)
 			   .append("\nROUND SELECTION EDGES: ").append(textEditorOpt.roundedSelectionEdges)
 			   .append("\nTAB SPACES EMULATED: ").append(textEditorOpt.roundedSelectionEdges)
+			   .append("\nSHOW END OF LINE: ").append(textEditorOpt.markEndOfLine)
+			   .append("\nSHOW BRACKETS MATCH POPUP: ").append(textEditorOpt.showBracketsPopup)
 			   .append("\nFOCUSABLE TIPS FLAG: ").append(textEditorOpt.useFocusableTips);
 		
 		// concat TEXT EDITOR OPTIONS

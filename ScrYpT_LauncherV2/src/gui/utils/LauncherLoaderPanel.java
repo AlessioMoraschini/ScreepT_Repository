@@ -19,6 +19,8 @@ import javax.swing.JLabel;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 public class LauncherLoaderPanel extends JPanel{
 	
@@ -43,21 +45,26 @@ public class LauncherLoaderPanel extends JPanel{
 		
 		layeredPane = new JLayeredPane();
 		add(layeredPane, "name_9667472767499");
-		layeredPane.setLayout(new MigLayout("", "[grow]", "[grow][][:20px:20px]"));
+		layeredPane.setLayout(new MigLayout("", "[2px][4px][grow][2px]", "[grow][][:20px:20px]"));
 		
 		JLabel lblBackgroundImage = new JLabel("");
-		layeredPane.add(lblBackgroundImage, "cell 0 0,aligny baseline");
+		layeredPane.add(lblBackgroundImage, "cell 0 0 4 1,aligny baseline");
 		
 		lblText = new JLabel("Loading...");
 		lblText.setForeground(new Color(255, 255, 255));
 		lblText.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		layeredPane.add(lblText, "cell 0 1,alignx left,aligny center");
+		layeredPane.add(lblText, "cell 2 1,alignx left,aligny center");
 		
 		progressBar = new JProgressBar();
-		progressBar.setSize(new Dimension(0, 20));
+		progressBar.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		progressBar.setBorderPainted(false);
+		progressBar.setBackground(Color.BLACK);
+		progressBar.setOpaque(true);
+		progressBar.setMinimumSize(new Dimension(10, 10));
+		progressBar.setSize(new Dimension(0, 10));
 		layeredPane.setLayer(progressBar, 1);
 		progressBar.setForeground(Color.GREEN);
-		layeredPane.add(progressBar, "cell 0 2,growx,aligny baseline");
+		layeredPane.add(progressBar, "cell 1 2 2 1,growx,aligny baseline");
 		
 //		GUIStyelSettings.setStyle(GUIStyelSettings.NimbusLookAndFeel, 0);
 		GUIStyelSettings.applyNimbusSize(0, progressBar);

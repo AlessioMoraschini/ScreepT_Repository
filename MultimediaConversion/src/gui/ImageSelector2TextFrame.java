@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooser;
+import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import media.ImageGeneralWorker;
 import resources.GeneralConfig;
@@ -24,7 +25,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import javax.swing.JScrollPane;
@@ -70,10 +70,15 @@ public class ImageSelector2TextFrame extends JFrame{
 	private File selectedImageSource;
 	public ImageToTextExtractor imageExtractor;
 	
+	JOptionHelper dialogHelper;
+
+	
 	public ImageSelector2TextFrame(JFrame parentRootFrame, JTextArea outputTxtArea, String title) {
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		logger.info(this.getClass().getName() + " Starting...");
 		active = true;
+		
+		dialogHelper = new JOptionHelper(this);
 		
 		imageExtractor = new ImageToTextExtractor();
 		mainFrameParent = parentRootFrame;
@@ -167,8 +172,7 @@ public class ImageSelector2TextFrame extends JFrame{
 								displayImage(selected);
 								selectedImageSource = selected;
 							} catch (IOException e1) {
-								JOptionPane.showMessageDialog(thisFrame, "An error occurred, cannot load image :(",
-										"IO Error", JOptionPane.ERROR_MESSAGE);
+								dialogHelper.error("An error occurred, cannot load image :(", "IO Error");
 								logger.error(e);
 							} finally {
 
@@ -198,7 +202,7 @@ public class ImageSelector2TextFrame extends JFrame{
 						} catch (TesseractException e1) {
 							logger.error(e1);
 							result = false;
-							JOptionPane.showMessageDialog(thisFrame, "An error occurred parsing the image :(","Parse Error", JOptionPane.ERROR_MESSAGE);
+							dialogHelper.error("An error occurred parsing the image :(","Parse Error");
 						} 
 						imageContainerPanel.setCursor(GuiUtils.CURSOR_DEFAULT);
 						txtAreaParsedText.setCursor(GuiUtils.CURSOR_TEXT);

@@ -1,25 +1,13 @@
 package aES;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
 
-import org.ini4j.Ini;
-import org.ini4j.Wini;
-
-import amfileutils.FileStuff;
 import crypt.aes.AesCipher;
-import gUI.panels.KeyGenPanel;
-import mainobj.INItializer;
-import uTILS.local.ImageWorker;
 
 public class prova_byte_AES {
 	
