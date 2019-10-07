@@ -167,6 +167,12 @@ public class TextEditorUtils {
 		
 		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 		SplitPaneUtils.setDividerColors(null, Color.BLACK, currentTextEditor.splitPaneMain);
+		
+		if(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile != null) {
+			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
+		}else if(!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked){
+			currentTextEditor.splitPaneMain.setDividerLocation(0);
+		}
 	}
 	
 	public void refreshTreeFromFolder(File folder, File currentFile, boolean forceRefresh) {
@@ -252,12 +258,16 @@ public class TextEditorUtils {
 			}
 			logger.warn("Tree refresh skipped, file is does not exist or it's null");
 			
-			currentTextEditor.splitPaneMain.setDividerLocation(0.0);
+			if (!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
+				currentTextEditor.splitPaneMain.setDividerLocation(0.0);
+			}
 			currentTextEditor.dynLblCurrentDir.setText(" - ");
 			logger.warn("Tree refresh skipped, file is null");
 			
 		} else {
-			currentTextEditor.splitPaneMain.setDividerLocation(0.0);
+			if (!!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
+				currentTextEditor.splitPaneMain.setDividerLocation(0.0);
+			}
 			currentTextEditor.dynLblCurrentDir.setText(" - ");
 			logger.warn("Tree refresh skipped, file is null");
 		}
@@ -276,19 +286,18 @@ public class TextEditorUtils {
 			return;
 		}
 		
-		// loadedTabObj VALIDATION
-		if(currentTabEditor.loadedTabObj == null || currentTabEditor.loadedTabObj.loadedFile == null) {
-			logger.error("Invalid data for TextEditorUtils.refreshFromWorkspace -> loadedTabObj: " + currentTabEditor.loadedTabObj);
-			return;
-		}
-		
 		if (currentTextEditor.btnToggleFileView.isSelected()) {
 			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
 			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
 			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(workspaceRoot)));
 			try {
-				TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
+				// loadedTabObj VALIDATION
+				if(currentTabEditor.loadedTabObj == null || currentTabEditor.loadedTabObj.loadedFile == null) {
+					logger.warn("Cannot select current file... Null data for TextEditorUtils.refreshFromWorkspace -> loadedTabObj or loaded file is NULL - index is " + currentTabEditor.mainTabList.getSelectedIndex());
+				}else {
+					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
+				}
 			} catch (IOException e1) {
 				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
 			}
@@ -301,7 +310,7 @@ public class TextEditorUtils {
 				logger.error(e);
 			}
 			
-			if(!currentTabEditor.loadedTabObj.loadedFile.exists()) {
+			if(currentTabEditor.loadedTabObj != null && currentTabEditor.loadedTabObj.loadedFile != null && !currentTabEditor.loadedTabObj.loadedFile.exists()) {
 				currentTabEditor.loadedTabObj.unsaved = true;
 				currentTabEditor.updateSavedLabelNTab(null);
 			}
@@ -340,7 +349,7 @@ public class TextEditorUtils {
 			}
 		}
 		
-		if (!currentTextEditor.btnToggleFileView.isSelected()) {
+		if (!currentTextEditor.btnToggleFileView.isSelected() && !currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
 			currentTextEditor.splitPaneMain.setDividerLocation(0);
 		}
 		currentTextEditor.repaint();

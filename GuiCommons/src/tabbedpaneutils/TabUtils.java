@@ -73,8 +73,8 @@ public class TabUtils {
 		// button close
 		JButton btnClose = new JButton();
 		btnClose = applyStyleToTabCloseBtn(btnClose);
-		Dimension btnMinDimension = new Dimension(20, 20) ;
-		Dimension btnDimension = new Dimension(20, 20) ;
+		Dimension btnMinDimension = new Dimension(17, 20) ;
+		Dimension btnDimension = new Dimension(18, 20) ;
 		btnClose.setFont(new Font("SansSerif", Font.PLAIN, 9));
 		btnClose.setMinimumSize(btnMinDimension);
 		btnClose.setPreferredSize(btnDimension);

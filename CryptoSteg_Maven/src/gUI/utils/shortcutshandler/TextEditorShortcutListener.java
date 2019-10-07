@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
@@ -306,17 +307,39 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				} 
 				
 				/*
+				 *  NEXT TAB IN HYSTORY -> Ctrl+Alt+ ->
+				 */
+				if(e.getKeyCode() == 39 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentTextEditor.getCurrentTabEditor().goToNextInHistory();
+						}
+					});
+				}
+
+				/*
+				 *  NEXT TAB IN HYSTORY -> Ctrl+Alt+ <-
+				 */
+				if(e.getKeyCode() == 37 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentTextEditor.getCurrentTabEditor().goToPreviousInHistory();
+						}
+					});
+				}
+				
+				/*
 				 *  SWITCH INLINE TABS ON/OFF -> Ctrl+shift+I
 				 */
 				if(e.getKeyCode() == 73 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.checkBoxInlineTabs.doClick();
+					currentTextEditor.headerPanel.checkBoxInlineTabs.doClick();
 				}
 				
 				/*
 				 *  ADAPT WIDTH TO SCREEN SIZE -> Ctrl+shift+A
 				 */
 				if(e.getKeyCode() == 65 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.chkCutWordsTo.doClick();
+					currentTextEditor.headerPanel.chkCutWordsTo.doClick();
 				}
 				
 				/*

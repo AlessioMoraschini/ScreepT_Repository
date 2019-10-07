@@ -9,7 +9,7 @@ public class LimitedList <T>{
 	
 	// constructor
 	
-	public <T>LimitedList(int maxSize){
+	public LimitedList(int maxSize){
 		this.maxSize = maxSize;
 		list = new LinkedList();
 	}
@@ -25,6 +25,19 @@ public class LimitedList <T>{
 		}
 		
 		list.add(element);
+		
+		return maxReached;
+	}
+	
+	public boolean addLast(T element) {
+		boolean condition = list.size() > maxSize;
+		boolean maxReached = (condition) ? true : false;
+		
+		if(condition && !list.isEmpty()) {
+			list.removeFirst();
+		}
+		
+		list.addLast(element);
 		
 		return maxReached;
 	}

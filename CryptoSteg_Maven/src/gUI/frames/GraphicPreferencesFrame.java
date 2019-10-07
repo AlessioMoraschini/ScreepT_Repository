@@ -231,103 +231,103 @@ public class GraphicPreferencesFrame extends JFrame {
 		
 		chckBoxAntiAliasingON = new JCheckBox("Antialiasing enabled");
 		chckBoxAntiAliasingON.setCursor(GuiUtils.CURSOR_HAND);
-		chckBoxAntiAliasingON.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckBoxAntiAliasingON.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckBoxAntiAliasingON, "cell 0 6 2 1,alignx left");
 		
 		chckbxAutoindentation = new JCheckBox("Auto-Indentation");
 		chckbxAutoindentation.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxAutoindentation.setSelected(false);
-		chckbxAutoindentation.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxAutoindentation.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxAutoindentation, "cell 2 6 2 1,alignx left");
 		
 		chckbxAnimateBrackets = new JCheckBox("Animate Brackets");
 		chckbxAnimateBrackets.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxAnimateBrackets.setSelected(false);
-		chckbxAnimateBrackets.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxAnimateBrackets.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxAnimateBrackets, "cell 4 6 2 1,alignx left");
 		
 		chckbxBracketsMatching = new JCheckBox("Brackets Matching");
 		chckbxBracketsMatching.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxBracketsMatching.setSelected(false);
-		chckbxBracketsMatching.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxBracketsMatching.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxBracketsMatching, "cell 6 6 2 1,alignx left");
 		
 		chckbxClearWhitespaceLines = new JCheckBox("Clear whitespace lines");
 		chckbxClearWhitespaceLines.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxClearWhitespaceLines.setSelected(false);
-		chckbxClearWhitespaceLines.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxClearWhitespaceLines.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxClearWhitespaceLines, "cell 0 7 2 1,alignx left");
 		
 		chckbxCloseCurlybraces = new JCheckBox("Close Curly-Braces");
 		chckbxCloseCurlybraces.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxCloseCurlybraces.setSelected(false);
-		chckbxCloseCurlybraces.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxCloseCurlybraces.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxCloseCurlybraces, "cell 2 7 2 1,alignx left");
 		
 		chckbxCloseMarkuptags = new JCheckBox("Close Markup-Tags");
 		chckbxCloseMarkuptags.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxCloseMarkuptags.setSelected(false);
-		chckbxCloseMarkuptags.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxCloseMarkuptags.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxCloseMarkuptags, "cell 4 7 2 1,alignx left");
 		
 		chckbxFocusableTips = new JCheckBox("Focusable Tips:");
 		chckbxFocusableTips.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxFocusableTips.setSelected(false);
-		chckbxFocusableTips.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxFocusableTips.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxFocusableTips, "cell 6 7 2 1,alignx left");
 		
 		chckbxCodeFolding = new JCheckBox("Code Folding");
 		chckbxCodeFolding.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxCodeFolding.setSelected(false);
-		chckbxCodeFolding.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxCodeFolding.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxCodeFolding, "cell 0 8 2 1,alignx left");
 		
 		chckbxAllowFractionalFonts = new JCheckBox("Allow Fractional Fonts");
 		chckbxAllowFractionalFonts.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxAllowFractionalFonts.setSelected(false);
-		chckbxAllowFractionalFonts.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxAllowFractionalFonts.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxAllowFractionalFonts, "cell 2 8 2 1,alignx left");
 		
 		chckbxFadeHighlight = new JCheckBox("Fade Highlight");
 		chckbxFadeHighlight.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxFadeHighlight.setSelected(false);
-		chckbxFadeHighlight.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxFadeHighlight.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxFadeHighlight, "cell 4 8 2 1,alignx left");
 		
 		chckbxHighlightndLanguages = new JCheckBox("Highlight 2nd Languages");
 		chckbxHighlightndLanguages.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxHighlightndLanguages.setSelected(false);
-		chckbxHighlightndLanguages.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxHighlightndLanguages.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxHighlightndLanguages, "cell 6 8 2 1,alignx left");
 		
 		chckbxHyperlinksEnabled = new JCheckBox("Hyperlinks Enabled");
 		chckbxHyperlinksEnabled.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxHyperlinksEnabled.setSelected(false);
-		chckbxHyperlinksEnabled.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxHyperlinksEnabled.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxHyperlinksEnabled, "cell 0 9 2 1");
 		
 		chckbxMarkOccurrencesPaintBorder = new JCheckBox("Paint Occurrences Border");
 		chckbxMarkOccurrencesPaintBorder.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxMarkOccurrencesPaintBorder.setSelected(false);
-		chckbxMarkOccurrencesPaintBorder.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxMarkOccurrencesPaintBorder.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxMarkOccurrencesPaintBorder, "cell 2 9 2 1");
 		
 		checkBoxMarkOccurrences = new JCheckBox("Mark Occurrences");
 		checkBoxMarkOccurrences.setCursor(GuiUtils.CURSOR_HAND);
 		checkBoxMarkOccurrences.setSelected(false);
-		checkBoxMarkOccurrences.setFont(new Font("SansSerif", Font.BOLD, 13));
+		checkBoxMarkOccurrences.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(checkBoxMarkOccurrences, "cell 4 9 2 1");
 		
 		chckbxRoundSelectionEdges = new JCheckBox("Round Selection Edges");
 		chckbxRoundSelectionEdges.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxRoundSelectionEdges.setSelected(false);
-		chckbxRoundSelectionEdges.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxRoundSelectionEdges.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxRoundSelectionEdges, "cell 6 9 2 1");
 		
 		chckbxEmulatedTabsWith = new JCheckBox("Emulated tabs with spaces");
 		chckbxEmulatedTabsWith.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxEmulatedTabsWith.setSelected(false);
-		chckbxEmulatedTabsWith.setFont(new Font("SansSerif", Font.BOLD, 13));
+		chckbxEmulatedTabsWith.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		getContentPane().add(chckbxEmulatedTabsWith, "cell 0 10 2 1");
 						
 		JSeparator separator_1 = new JSeparator();
