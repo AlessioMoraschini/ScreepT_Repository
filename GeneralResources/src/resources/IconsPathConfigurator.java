@@ -16,10 +16,11 @@ public class IconsPathConfigurator {
 	public static final String F_ICON_HTML = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_html.png";
 	public static final String F_ICON_CSS = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_css.png";
 	public static final String F_ICON_PHP = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_php.png";
-	public static final String F_ICON_WAV = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_wav.png";
 	public static final String F_ICON_JAVA = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_Java.png";
-	public static final String F_ICON_JS = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_js.png";
+	public static final String F_ICON_PYTHON = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_python.png";
+	public static final String F_ICON_JS = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_javascript.png";
 	public static final String F_ICON_JSON = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_json.png";
+	public static final String F_ICON_TYPESCRIPT = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_typescript.png";
 	public static final String F_ICON_AUDIO = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_audio.png";
 	public static final String F_ICON_VIDEO = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_movie.png";
 	public static final String F_ICON_IMAGE = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_image.png";
@@ -30,6 +31,9 @@ public class IconsPathConfigurator {
 	public static final String F_ICON_DATABASE = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_Database.png";
 	public static final String F_ICON_LINK = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_Link.png";
 	public static final String F_ICON_PROPERTIES = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_Properties.png";
+	public static final String F_ICON_CODE = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_code.png";
+	public static final String F_ICON_RUNNABLE = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_runnable.png";
+	public static final String F_ICON_WAV = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_wav.png";
 	
 		// file submenu
 	public static final String ICON_CONF_MANAGER = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/manager.png";

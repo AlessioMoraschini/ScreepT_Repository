@@ -107,7 +107,7 @@ public class Instruction extends JFrame {
 		setIconImage(new ImageIcon(getClass().getResource("/res/imgs/InstructionIcon.png")).getImage());
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle("Instruction");
-		setBounds(200, 150, 355, 405);
+		setBounds(200, 150, 355, 435);
 		getContentPane().setLayout(null);
 		setResizable(false);
 		getContentPane().add(jPanelMain); getContentPane().add(jButtonOK);

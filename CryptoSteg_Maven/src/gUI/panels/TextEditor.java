@@ -235,9 +235,6 @@ public class TextEditor extends JPanel {
 	private boolean uppercase;
 	private String backupText;
 
-	// value used for margins of text
-	private int textMargin;
-
 	// flag to signal if function is already running
 	public boolean askSaveBeforeClose = true;
 
@@ -281,7 +278,6 @@ public class TextEditor extends JPanel {
 		mainApplication = mainGui;
 		currentTextEditor = this;
 		LBL_ADVICE_COLOR = new Color(124, 252, 0);
-		textMargin = 14;
 		uppercase = false;
 
 		fileNavColorBckg = currentConfiguration.getTextEditorOpt().filePanelBackCol;
@@ -1085,6 +1081,7 @@ public class TextEditor extends JPanel {
 						} else {
 							escapeReplacerPanel.dispatchEvent(new WindowEvent(escapeReplacerPanel, WindowEvent.WINDOW_CLOSING));
 						}
+						escapeReplacerPanel.setLocationRelativeTo(mainPanel);
 						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), escapeReplacerPanel, JFrame.MAXIMIZED_BOTH);
 					}
 				});
@@ -1115,10 +1112,11 @@ public class TextEditor extends JPanel {
 					public void run() {
 						if (colorPickerFrame == null || !ColorPickerFrame.active) {
 							colorPickerFrame = new ColorPickerFrame();
-							GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), colorPickerFrame, JFrame.MAXIMIZED_BOTH);
 						}else {
 							colorPickerFrame.dispatchEvent(new WindowEvent(colorPickerFrame, WindowEvent.WINDOW_CLOSING));
 						}
+						colorPickerFrame.setLocationRelativeTo(mainApplication.getMainFrame());
+						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), colorPickerFrame, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -1133,10 +1131,11 @@ public class TextEditor extends JPanel {
 							imageParserBox = new ImageSelector2TextFrame(parentFrame, getCurrentTabEditor().loadedTabObj.textArea,
 									GeneralConfig.APPLICATION_NAME + " - Image2Text");
 							imageParserBox.setVisible(true);
-							GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), imageParserBox, JFrame.MAXIMIZED_BOTH);
 						} else {
 							imageParserBox.dispatchEvent(new WindowEvent(imageParserBox, WindowEvent.WINDOW_CLOSING));
 						}
+						imageParserBox.setLocationRelativeTo(mainApplication.getMainFrame());
+						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), imageParserBox, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -1151,10 +1150,11 @@ public class TextEditor extends JPanel {
 							pdfParserBox = new PdfSelector2TextFrame(parentFrame, getCurrentTabEditor().loadedTabObj.textArea,
 									GeneralConfig.APPLICATION_NAME + " - Pdf2Text");
 							pdfParserBox.setVisible(true);
-							GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), pdfParserBox, JFrame.MAXIMIZED_BOTH);
 						} else {
 							pdfParserBox.dispatchEvent(new WindowEvent(pdfParserBox, WindowEvent.WINDOW_CLOSING));
 						}
+						pdfParserBox.setLocationRelativeTo(mainApplication.getMainFrame());
+						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), pdfParserBox, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -1168,12 +1168,13 @@ public class TextEditor extends JPanel {
 						if (searchBox == null) {
 							searchBox = textEditorUtils.textAreaDialogs.getSearchDialog(parentFrame,  null, textEditorUtils,"successAdvice", "errorAdvice");
 							GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
-							GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
 						} else {
 							searchBox.setVisible(true);
 							searchBox.toFront();
 							searchBox.requestFocus();
 						}
+						searchBox.setLocationRelativeTo(mainApplication.getMainFrame());
+						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -1184,13 +1185,14 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), goToLineDialog, JFrame.MAXIMIZED_BOTH);
 						if (goToLineDialog == null) {
 							goToLineDialog = textEditorUtils.textAreaDialogs.getGoToLineDialog(parentFrame);
 						} else {
-							currentTextEditor.goToLineDialog.dispatchEvent(new WindowEvent(currentTextEditor.mainApplication.getMainFrame(), WindowEvent.WINDOW_CLOSING));
-							currentTextEditor.goToLineDialog = textEditorUtils.textAreaDialogs.getGoToLineDialog(currentTextEditor.parentFrame);
+							goToLineDialog.dispatchEvent(new WindowEvent(mainApplication.getMainFrame(), WindowEvent.WINDOW_CLOSING));
+							goToLineDialog = textEditorUtils.textAreaDialogs.getGoToLineDialog(parentFrame);
 						}
+						goToLineDialog.setLocationRelativeTo(mainApplication.getMainFrame());
+						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), goToLineDialog, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -1209,8 +1211,8 @@ public class TextEditor extends JPanel {
 							replaceDialog.setVisible(true);
 							replaceDialog.toFront();
 							replaceDialog.requestFocus();
-							//					replaceDialog.dispatchEvent(new WindowEvent(replaceDialog, WindowEvent.WINDOW_CLOSING));
 						}
+						replaceDialog.setLocationRelativeTo(mainApplication.getMainFrame());
 						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), replaceDialog, JFrame.MAXIMIZED_BOTH);
 					}
 				});
@@ -1346,7 +1348,6 @@ public class TextEditor extends JPanel {
 		// BACKGROUND TEXT COLOR
 		btnBackgroundCol.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				btnBackgroundCol.setEnabled(false);
 				Color esit = new ColorDialogUtils().askForColor(getCurrentTabEditor().loadedTabObj.textArea, false);
 				if (esit != null) {
@@ -1448,7 +1449,8 @@ public class TextEditor extends JPanel {
 						lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
 						currentConfiguration.getTextEditorOpt().setFont(loadedTabObj.textArea.getFont());
 						loadedTabObj.textArea.setFont(font);
-						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos);
+						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos-1);
+						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos+1);
 						loadedTabObj.textArea.revalidate();
 					}
 				});
@@ -1590,8 +1592,9 @@ public class TextEditor extends JPanel {
 		// OPEN TEMPLATES PANEL
 		btnTemplates.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				JFrame panel = new JFrame();
 				if (!TemplatesChoosePanel.active) {
-					JFrame panel = new TemplatesChoosePanel(mainApplication.getMainFrame(), getCurrentTabEditor().loadedTabObj.textArea,
+					panel = new TemplatesChoosePanel(mainApplication.getMainFrame(), getCurrentTabEditor().loadedTabObj.textArea,
 							comboFileFormat, btnTemplates);
 					panel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panel.setBounds(750, 140, 500, 170);
@@ -1599,22 +1602,16 @@ public class TextEditor extends JPanel {
 					panel.setVisible(true);
 					panel.setTitle("TEMPLATES manager - " + GeneralConfig.APPLICATION_NAME);
 					btnTemplates.setEnabled(false);
-					GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panel, JFrame.MAXIMIZED_BOTH);
 				}
+				panel.setLocationRelativeTo(mainPanel);
+				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panel, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 
 		// MARGIN TEXT AREA SELECTOR
 		slider_margin.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
-
-				textMargin = slider_margin.getValue();
-				lBLMargin.setText("" + textMargin);
-				loadedTabObj.textArea.setMargin(new Insets(textMargin / 2, textMargin, textMargin / 2, textMargin));
-				loadedTabObj.textArea.revalidate();
-				loadedTabObj.textArea.repaint();
-				currentConfiguration.getTextEditorOpt().setMargin(textMargin);
+				textEditorUtils.updateMargin();
 			}
 		});
 
@@ -2009,16 +2006,12 @@ public class TextEditor extends JPanel {
 		getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(
 				null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
 		
-//		currentTextEditor.revalidate();
-//		currentTextEditor.repaint();
-		
 		if (refreshGuiStyle) {
 			textEditorUtils.updateGuiLafWindows(currentTextEditor);// was causing temporization bug cause of invokelater;
 		}
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				slider_margin.setValue(txtOptions.getMargin());
 				sliderFontSize.setValue(txtOptions.getFont().getSize());
 				loadedTabObj.textArea.setFont(txtOptions.getFont());
 				if (txtOptions.selectedTheme.equals(Themes.NONE)) {
@@ -2029,6 +2022,10 @@ public class TextEditor extends JPanel {
 				}
 			}
 		});
+		slider_margin.setValue(txtOptions.getMargin());
+		textEditorUtils.updateMargin();
+		currentTextEditor.revalidate();
+		currentTextEditor.repaint();
 	}
 
 	private void loadOpenedFilesAtStart() {
@@ -2136,7 +2133,7 @@ public class TextEditor extends JPanel {
 					}
 					
 					try {
-						Thread.sleep(300);
+						Thread.sleep(GeneralConfig.TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS);
 					} catch (InterruptedException e) {
 					}
 				}

@@ -5,10 +5,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
+
+import org.apache.commons.lang.StringUtils;
 
 public class GeneralConfig {
 	
@@ -20,14 +23,15 @@ public class GeneralConfig {
 	public static final SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 
+	// MAIN PROPERTIES
 	public static final String APP_VERSION = linkedMappings.getProperty("APP_VERSION");
+	public static final String WEBSITE = "www.am_design_developement.com";
+	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
+	public static final String AUTHOR = "A.M. Design and Developement";
 	public static final String BUILD_TS_DATE = linkedMappings.getProperty("BUILD_TIMESTAMP")
 										.replaceAll("T", " at ")
 										.replaceAll("Z", "")
 										.replaceAll("-", "/");
-	public static final String WEBSITE = "www.am_design_developement.com";
-	public static final String APPLICATION_NAME = "ScrYpT - V" + GeneralConfig.APP_VERSION;
-	public static final String AUTHOR = "A.M. Design and Developement";
 	
 	/**
 	 * Used in launcher to choose right type of launch command for system
@@ -43,14 +47,14 @@ public class GeneralConfig {
 	public static final String WORDLIST_FOLDER = linkedMappings.getProperty("WORDLIST_FOLDER");
 	public static final String DEFAULT_INI_FOLDER = linkedMappings.getProperty("DEFAULT_INI_FOLDER");
 	
+	// DEBUG GUI FLAG
 	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
 	private static final boolean FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
 	public static String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
 	
-	// Temp decryptedFolder
+	// Temp Folders and Files
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
-
 	public static final String TEMP_DIRECTORY = RESOURCES_DIR + "temp/";
 	public static final File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
 	
@@ -70,8 +74,9 @@ public class GeneralConfig {
 	// JVM
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = linkedMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 	public static final String JVM_CUSTOM_CUSTOM_SETTINGS = linkedMappings.getProperty("JVM_CUSTOM_CUSTOM_SETTINGS");
-	// file icons defaults 
-	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
+
+	// NETWORK OPTIONS
+	public static final String testAddress = linkedMappings.getProperty("testAddress");
 	
 	// Tooltips
 	public static int TOOLTIP_DELAY;
@@ -98,6 +103,7 @@ public class GeneralConfig {
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
+	public static final int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS");
 	
 	public static int FOOTER_MAX_DIR_LABEL_LENGTH;
 	static {
@@ -126,6 +132,10 @@ public class GeneralConfig {
 		linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
 	}
 	
+	/**
+	 * Same as defaultFileIcons(), but this one is already lazy initialized
+	 */
+	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
 	
 	/** Icons <-> File Image Mappings - (Used in Text Editor tabs)
 	 * 
@@ -141,27 +151,36 @@ public class GeneralConfig {
 	    table.put(".png",new ImageIcon(IconsPathConfigurator.F_ICON_PNG));
 	    table.put(".txt",new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
 	    table.put(".pdf",new ImageIcon(IconsPathConfigurator.F_ICON_PDF));
-	    table.put(".html",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
 	    table.put(".class",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
 	    table.put(".java",new ImageIcon(IconsPathConfigurator.F_ICON_JAVA));
+	    table.put(".py",new ImageIcon(IconsPathConfigurator.F_ICON_PYTHON));
 	    table.put(".jar",new ImageIcon(IconsPathConfigurator.F_ICON_JAR));
 	    table.put(".js",new ImageIcon(IconsPathConfigurator.F_ICON_JS));
+	    table.put(".ts",new ImageIcon(IconsPathConfigurator.F_ICON_TYPESCRIPT));
 	    table.put(".json",new ImageIcon(IconsPathConfigurator.F_ICON_JSON));
 	    table.put(".css",new ImageIcon(IconsPathConfigurator.F_ICON_CSS));
 	    table.put(".exe",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
-	    table.put(".bat",new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
-	    table.put(".sh",new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
+	    table.put(".bat",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
+	    table.put(".sh",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
+	    table.put(".bin",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
 	    table.put(".php",new ImageIcon(IconsPathConfigurator.F_ICON_PHP));
-	    table.put(".xml",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
-	    table.put(".pom",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
-	    table.put(".xsd",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
-	    table.put(".wsdl",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".html",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".xsl",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".vm",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".pom",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".xml",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".pom",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".xsd",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".wsdl",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
 	    table.put(".zip",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
+	    table.put(".7z",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
 	    table.put(".rar",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
+	    table.put(".lz",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
 	    table.put(".sql",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
 	    table.put(".db",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
 	    table.put(".log",new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
 	    table.put(".lnk",new ImageIcon(IconsPathConfigurator.F_ICON_LINK));
+	    table.put(".desktop",new ImageIcon(IconsPathConfigurator.F_ICON_LINK));
 	    table.put(".properties",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
 	    table.put(".config",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
 	    table.put(".ini",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
@@ -185,5 +204,21 @@ public class GeneralConfig {
 	    
 	    return table;
     }
+	
+	public static String[] getPubIpProvList() {
+		String list = linkedMappings.getProperty("PUB_IP_PROV_LIST");
+		String[] providers = list.split(",");
+		
+		return providers;
+	}
+	
+	private static int getIntVarFromProps(String key) {
+		String val = linkedMappings.getProperty(key);
+		try {
+			return Integer.valueOf(val);
+		}catch(Exception e){
+			return 300;
+		}
+	}
 	
 }

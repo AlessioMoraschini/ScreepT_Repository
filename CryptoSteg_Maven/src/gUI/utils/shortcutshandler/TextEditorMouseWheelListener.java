@@ -64,9 +64,7 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 	
 	private void adjustFontSize(int delta) {
 		if(currentTabEditor.loadedTabObj != null) {
-			int position = currentTabEditor.loadedTabObj.textArea.getCaretPosition();
 			currentEditor.sliderFontSize.setValue(currentEditor.sliderFontSize.getValue() - (delta*4));
-			currentTabEditor.loadedTabObj.textArea.setCaretPosition(position);
 		}
 	}
 }

@@ -132,7 +132,7 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		spinnerMaxMemoryMB = new JSpinner();
 		spinnerMaxMemoryMB.setOpaque(true);
-		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(defaultMaxMemXmx, 256, SysUtils.getMaxMemoryAdmitted(), 20));
+		spinnerMaxMemoryMB.setModel(new SpinnerNumberModel(defaultMaxMemXmx, 128, SysUtils.getMaxMemoryAdmitted(), 20));
 		getContentPane().add(spinnerMaxMemoryMB, "cell 3 0,growx");
 		
 		lblLogLevel = new JLabel("Log level:");
@@ -144,7 +144,7 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		spinnerMinMemoryMB = new JSpinner();
 		spinnerMinMemoryMB.setOpaque(true);
-		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(defaultMinMemXms, 128, SysUtils.getMaxMemoryAdmitted(), 20));
+		spinnerMinMemoryMB.setModel(new SpinnerNumberModel(defaultMinMemXms, 64, SysUtils.getMaxMemoryAdmitted(), 20));
 		getContentPane().add(spinnerMinMemoryMB, "cell 3 1,growx");
 		
 		lblLogLevelInfo = new JLabel("");

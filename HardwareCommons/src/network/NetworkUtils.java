@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import javax.swing.JProgressBar;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import org.apache.http.HttpEntity;
@@ -44,8 +45,6 @@ public class NetworkUtils {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(NetworkUtils.class); 
 	
-	public final static String testAddress = "www.google.com";
-	
 	private static final String tempFile = GeneralConfig.RESOURCES_DIR + "temp/temp.txt";
 	
 	//private static final Random RANDOM_GENERATOR = new Random();
@@ -58,7 +57,7 @@ public class NetworkUtils {
 	
 	public Enumeration<NetworkInterface> networkInterfaces;
 	
-	public static Sigar sysINFO;
+	public static volatile Sigar sysINFO;
 	
 ////////////////////////  CONSTRUCTORS  ////////////////////////
 	
@@ -79,13 +78,13 @@ public class NetworkUtils {
 		timeout = 8000;
 	}
 	
-	private static Vector<URI> getURLSservicesPUBIP(){
+	private static synchronized Vector<URI> getURLSservicesPUBIP(){
 		Vector<URI> listWS = new Vector<URI>();
-		
+		String[] propertiesVal = GeneralConfig.getPubIpProvList();
 		try {
-			listWS.add(new URI("http://checkip.amazonaws.com"));
-			listWS.add(new URI("http://www.icanhazip.com"));
-			listWS.add(new URI("http://www.ipinfo.io/ip"));
+			for(String address : propertiesVal) {
+				listWS.add(new URI(StringUtils.trim(address)));
+			}
 		} catch (URISyntaxException e) {
 			logger.error("Error in URI format", e);
 		}
@@ -95,14 +94,14 @@ public class NetworkUtils {
 	
 ////////////////////////  PUBLIC METHODS  ////////////////////////
 
-	public static RequestConfig configureCustomRequest(RequestConfig.Builder builder) {
+	public static synchronized RequestConfig configureCustomRequest(RequestConfig.Builder builder) {
 		
 		RequestConfig requestConfig = builder.build();
 		return requestConfig;
 		
 	}
 	
-	private void retrieveAvailableAdapters() throws IOException {
+	private synchronized void retrieveAvailableAdapters() throws IOException {
 		
 		init();
 		
@@ -165,14 +164,13 @@ public class NetworkUtils {
 		int times = 5;
 		long start = System.nanoTime();
 		for (int i = 0; i < times; i++) {
-			InetAddress.getByName(testAddress).isReachable(netInf, 0, timeout);
+			InetAddress.getByName(GeneralConfig.testAddress).isReachable(netInf, 0, timeout);
 		}		
 		long end = System.nanoTime();
 		int avg_ms = (int)((end-start)/(1000000*times));
 		return avg_ms;
 	}
 	
-	// TODO  reorder to separate ftp functions and unify them
 	public static String retrieveUpSpeed(InetAddress localAddress, FtpSpeedTestOptions testOptions, JProgressBar progress) throws SocketException, IOException, InterruptedException {
 
 		if(!localAddress.isReachable(2000)) {

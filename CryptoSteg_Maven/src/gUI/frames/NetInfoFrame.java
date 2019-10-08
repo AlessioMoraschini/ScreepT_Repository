@@ -449,7 +449,7 @@ public class NetInfoFrame extends JFrame{
 					progressBarLatency.setValue(100);
 					progressBarLatency.setForeground(Color.blue);
 				} catch (UnknownHostException e) {
-					String msg = "Host "+NetworkUtils.testAddress+" not recognized";
+					String msg = "Host "+GeneralConfig.testAddress+" not recognized";
 					dynLblLatency.setText(msg);
 					logger.error(msg, e);
 					progressBarLatency.setValue(0);

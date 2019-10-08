@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import com.minhasKamal.ultimateCalculator.mainFrame.UltimateCalculatorFrame;
@@ -115,19 +116,27 @@ public class PrimeNumberHunter extends UltimateCalculatorFrame{
 	// Action Events 																			#*******AE*******#
 	//**
 	private void jButtonFindActionPerformed(ActionEvent evt){
-	    try{
-    		long start=Long.parseLong(jTFieldFT[0].getText());
-	    	long finish=Long.parseLong(jTFieldFT[1].getText());
-	    	
-	    	String Data = pnhOperation.primeNumberFinder(start, finish);
-	    	jTPaneOutput.setText(Data);
-	    	
-	    	long NumOfPrimes = pnhOperation.charNumber(Data, ',');
-	    	jTFieldOutput.setText("    " + NumOfPrimes);
-	    	
-	    }catch(Exception e){
-	    	new Message("Input Correctly. \nOnly numbers are allowed. \nor, You may have exceeded the range!", 420);
-	    }
+	    SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new Thread(new Runnable() {
+					public void run() {
+						try {
+							long start = Long.parseLong(jTFieldFT[0].getText());
+							long finish = Long.parseLong(jTFieldFT[1].getText());
+
+							String Data = pnhOperation.primeNumberFinder(start, finish);
+							jTPaneOutput.setText(Data);
+
+							long NumOfPrimes = pnhOperation.charNumber(Data, ',');
+							jTFieldOutput.setText("    " + NumOfPrimes);
+
+						} catch (Exception e) {
+							new Message("Input Correctly. \nOnly numbers are allowed. \nor, You may have exceeded the range!", 420);
+						}
+					}
+				}).start();
+			}
+		});
     }
 	// End of Action Events 																	#_______AE_______#
 

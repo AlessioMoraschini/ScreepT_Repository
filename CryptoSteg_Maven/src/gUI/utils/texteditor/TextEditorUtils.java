@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
@@ -353,6 +354,17 @@ public class TextEditorUtils {
 			currentTextEditor.splitPaneMain.setDividerLocation(0);
 		}
 		currentTextEditor.repaint();
+	}
+	
+	public void updateMargin() {
+		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+
+		int textMargin = currentTextEditor.slider_margin.getValue();
+		currentTextEditor.lBLMargin.setText("" + textMargin);
+		loadedTabObj.textArea.setMargin(new Insets(textMargin / 2, textMargin, textMargin / 2, textMargin));
+		loadedTabObj.textArea.revalidate();
+		loadedTabObj.textArea.repaint();
+		currentTextEditor.currentConfiguration.getTextEditorOpt().setMargin(textMargin);
 	}
 	
 	public void updateGuiLafWindows(TextEditor editor) {

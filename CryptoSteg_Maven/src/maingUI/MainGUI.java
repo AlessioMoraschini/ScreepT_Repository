@@ -861,6 +861,7 @@ public class MainGUI extends MainGuiParent{
 					panelGuiOptions.setState(java.awt.Frame.NORMAL);
 					panelGuiOptions.requestFocus();
 				}
+				panelGuiOptions.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGuiOptions, JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -922,6 +923,7 @@ public class MainGUI extends MainGuiParent{
 					panelGeneralOptions.setState(java.awt.Frame.NORMAL);
 					panelGeneralOptions.requestFocus();
 				}
+				panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -942,6 +944,7 @@ public class MainGUI extends MainGuiParent{
 					panelKeyGen.setState(java.awt.Frame.NORMAL);
 					panelKeyGen.requestFocus();
 				}
+		    	panelKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyGen,JFrame.MAXIMIZED_BOTH);
 		    }
 		});
@@ -952,29 +955,34 @@ public class MainGUI extends MainGuiParent{
 		    	if (!flagNetInfoPanel) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		flagNetInfoPanel = true;
-		    		new Thread(new Runnable() {
-						
-						@Override
+		    		SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TestUpdateProgress prog = new TestUpdateProgress();
-							prog.getPb().setIndeterminate(true);
-							prog.getLabel().setText("Loading Network informations...");
-							prog.getPb().setString("Loading...");
-							panelNetInfo = new NetInfoFrame(currentConfiguration);	
-							panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-							panelNetInfo.setAlwaysOnTop(true);
-							panelNetInfo.setBounds(150, 150, 950, 700);
-							panelNetInfo.setVisible(true);
-							panelNetInfo.setTitle("Network info - ScrYpT");
-				    		prog.getPb().setValue(100);
+							new Thread(new Runnable() {
+
+								@Override
+								public void run() {
+									TestUpdateProgress prog = new TestUpdateProgress();
+									prog.getPb().setIndeterminate(true);
+									prog.getLabel().setText("Loading Network informations...");
+									prog.getPb().setString("Loading...");
+									panelNetInfo = new NetInfoFrame(currentConfiguration);
+									panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+									panelNetInfo.setAlwaysOnTop(true);
+									panelNetInfo.setBounds(150, 150, 950, 700);
+									panelNetInfo.setVisible(true);
+									panelNetInfo.setTitle("Network info - ScrYpT");
+									prog.getPb().setValue(100);
+								}
+							}).start();
 						}
-					}).start();
+					});
 		    		
 				}else {
 					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelNetInfo.setState(java.awt.Frame.NORMAL);
 					panelNetInfo.requestFocus();
 				}
+		    	panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelNetInfo, JFrame.MAXIMIZED_BOTH);
 		    }
 		});
@@ -985,30 +993,35 @@ public class MainGUI extends MainGuiParent{
 		    	if (!flagHwInfoPanel) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		flagHwInfoPanel = true;
-		    		new Thread(new Runnable() {
-						
-						@Override
+		    		SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							TestUpdateProgress prog = new TestUpdateProgress();
-							prog.getPb().setIndeterminate(true);
-							prog.getLabel().setText("Loading System informations...");
-							prog.getPb().setString("Loading...");
-							panelHwInfo = new HwInfoFrame(currentConfiguration);	
-							panelHwInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-							panelHwInfo.setBounds(250, 200, 1000, 750);
-							panelHwInfo.setAlwaysOnTop(true);
-							panelHwInfo.setResizable(false);
-							panelHwInfo.setVisible(true);
-							panelHwInfo.setTitle("Hardware info - ScrYpT");
-				    		prog.getPb().setValue(100);
+							new Thread(new Runnable() {
+
+								@Override
+								public void run() {
+									TestUpdateProgress prog = new TestUpdateProgress();
+									prog.getPb().setIndeterminate(true);
+									prog.getLabel().setText("Loading System informations...");
+									prog.getPb().setString("Loading...");
+									panelHwInfo = new HwInfoFrame(currentConfiguration);
+									panelHwInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+									panelHwInfo.setBounds(250, 200, 1000, 750);
+									panelHwInfo.setAlwaysOnTop(true);
+									panelHwInfo.setResizable(false);
+									panelHwInfo.setVisible(true);
+									panelHwInfo.setTitle("Hardware info - ScrYpT");
+									prog.getPb().setValue(100);
+								}
+							}).start();
 						}
-					}).start();
+					});
 		    		
 				}else {
 					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelHwInfo.setState(java.awt.Frame.NORMAL);
 					panelHwInfo.requestFocus();
 				}
+		    	panelHwInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelHwInfo, JFrame.MAXIMIZED_BOTH);
 		    }
 		});
@@ -1029,6 +1042,7 @@ public class MainGUI extends MainGuiParent{
 					panelKeyDict.setState(java.awt.Frame.NORMAL);
 					panelKeyDict.requestFocus();
 				}
+		    	panelKeyDict.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyDict,JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -1050,6 +1064,8 @@ public class MainGUI extends MainGuiParent{
 					panelImgConv.setState(java.awt.Frame.NORMAL);
 					panelImgConv.requestFocus();
 				}
+		    	panelImgConv.setLocationRelativeTo(mainAPP.getMainFrame());
+		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelImgConv,JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		
@@ -1070,6 +1086,7 @@ public class MainGUI extends MainGuiParent{
 					panelAbout.setState(java.awt.Frame.NORMAL);
 					panelAbout.requestFocus();
 				}
+				panelAbout.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelAbout, JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -1101,6 +1118,7 @@ public class MainGUI extends MainGuiParent{
 					tutorialPanel.setState(java.awt.Frame.NORMAL);
 					tutorialPanel.requestFocus();
 				}
+				tutorialPanel.setLocationRelativeTo(mainAPP.getMainFrame());
 			}
 		});
 		

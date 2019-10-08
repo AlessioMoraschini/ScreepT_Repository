@@ -755,7 +755,7 @@ public class HwInfoFrame extends JFrame{
 	
 //////////////////////////AND NOW SOME USEFUL METHOD //////////////////////////
 	
-	private void updateScryptResourcesUsage(){
+	private synchronized void updateScryptResourcesUsage(){
 //		Sigar tempSigar = new Sigar();
 //		long currentPid = tempSigar.getPid();
 		try {
@@ -770,14 +770,14 @@ public class HwInfoFrame extends JFrame{
 		}
 	}
 	
-	private void updateGenInfo() {
+	private synchronized void updateGenInfo() {
 		dynLblArch.setText(System.getProperty("os.arch"));
 		dynLblOsName.setText(System.getProperty("os.name"));
 		dynLblOsVersion.setText(System.getProperty("os.version"));
 		dynLblJavaVersion.setText(System.getProperty("java.version"));
 	}
 	
-	private void updateCpuInfo() {
+	private synchronized void updateCpuInfo() {
 		try {
 			cpuInfos = sigar.getCpuInfoList();
 		} catch (SigarException e) {
@@ -793,7 +793,7 @@ public class HwInfoFrame extends JFrame{
 		dynLblCPUCacheSize.setText(cacheSize);
 	}
 	
-	private void updateMoboInfo() {
+	private synchronized void updateMoboInfo() {
 		String vendor = (!MOBO.getManufacturer().equals(""))? MOBO.getManufacturer(): UNSELECTED;
 		String model = (!MOBO.getModel().equals(""))? MOBO.getModel(): UNSELECTED;
 		String version = (!MOBO.getVersion().equals(""))? MOBO.getVersion(): UNSELECTED;
@@ -803,7 +803,7 @@ public class HwInfoFrame extends JFrame{
 		dynLblMoboSerialNumber.setText(MOBO.getSerialNumber());
 	}
 	
-	private void updateRamInfo() {
+	private synchronized void updateRamInfo() {
 		try {
 			memoryRam = sigar.getMem();
 			String usedPerc = String.valueOf(Math.round(memoryRam.getUsedPercent()))+"%";
@@ -819,7 +819,7 @@ public class HwInfoFrame extends JFrame{
 		}
 	}
 	
-	private void updateCpuUsageInfo() {
+	private synchronized void updateCpuUsageInfo() {
 		double currentUsage = genCPU.getSystemCpuLoadBetweenTicks();
 		cpuUsageHystory.add(currentUsage);
 		double avgUsageCurrent = DoubleListWorker.getAvgValue(cpuUsageHystory.getList());
@@ -835,7 +835,7 @@ public class HwInfoFrame extends JFrame{
 		dynLblCpuTemp.setText(cputemperature);
 	}
 	
-	private void updateHdInfo() {
+	private synchronized void updateHdInfo() {
 		try {
 			HDinfo selected = (HDinfo) comboSelectedHd.getSelectedItem();
 			HWDiskStore disk = selected.getDisk();
@@ -852,7 +852,7 @@ public class HwInfoFrame extends JFrame{
 		}
 	}
 
-	private void updateDisplayInfo() {
+	private synchronized void updateDisplayInfo() {
 		int iDisp = comboSelectedDisplay.getSelectedIndex();
 		Display selDisplay = displays[iDisp];
 		String displayInfoString = selDisplay.toString();
@@ -871,7 +871,7 @@ public class HwInfoFrame extends JFrame{
 		}
 	}
 	
-	private Integer[] initDisplayIndexer() {
+	private synchronized Integer[] initDisplayIndexer() {
 		Integer[] indexer = new Integer[displays.length];
 		for(int i=0; i<displays.length; i++) {
 			indexer[i] = i;
