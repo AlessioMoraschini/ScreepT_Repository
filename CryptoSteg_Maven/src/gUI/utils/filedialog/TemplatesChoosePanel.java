@@ -63,7 +63,7 @@ public class TemplatesChoosePanel extends JFrame{
 		outputTextArea = outputText;
 		templatesCombo = templatesComb;
 		buttonInvoker = buttonInvoke;
-		GuiUtils.showOnSameScreen(parent);
+		GuiUtils.showOnSameScreen(this, parent);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px,grow][70px]", "[42px][30px,grow][30px,grow]"));

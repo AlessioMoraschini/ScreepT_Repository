@@ -28,6 +28,7 @@ import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
+import treeutils.TreeUtils;
 import treeutils.om.FileNamed;
 import utils.ColorDialogUtils;
 import variousutils.HandleString;
@@ -57,6 +58,7 @@ public class TreeFileMouseListenerTxtEditor {
 		this.tree.setComponentPopupMenu(getPopUpMenu());
 		this.tree.addMouseListener(getMouseListener());
 		this.tree.addMouseListener(getDoubleCLickListener());
+		this.tree.addMouseMotionListener(TreeUtils.getHoverOnNodesListener());
 		textEditor = textEdit;
 		currentTabEditor = textEditor.getCurrentTabEditor();
 	}

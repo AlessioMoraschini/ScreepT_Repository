@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -33,19 +32,14 @@ public class GeneralConfig {
 										.replaceAll("Z", "")
 										.replaceAll("-", "/");
 	
-	/**
-	 * Used in launcher to choose right type of launch command for system
-	 */
-	public static final boolean FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
-	public static final String MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
-	
 	// General Folders
-	public static final String MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
 	public static final String RESOURCES_DIR = linkedMappings.getProperty("RESOURCES_DIR");
 	public static final String DEFAULT_IMAGE_FOLDER = linkedMappings.getProperty("DEFAULT_IMAGE_FOLDER");
 	public static final String SOUNDS_FOLDER = linkedMappings.getProperty("SOUNDS_FOLDER");
 	public static final String WORDLIST_FOLDER = linkedMappings.getProperty("WORDLIST_FOLDER");
 	public static final String DEFAULT_INI_FOLDER = linkedMappings.getProperty("DEFAULT_INI_FOLDER");
+	public static final String THEMES_FOLDER_DEFAULT = linkedMappings.getProperty("THEMES_FOLDER_DEFAULT");
+	public static final String THEMES_FOLDER_CUSTOM = linkedMappings.getProperty("THEMES_FOLDER_CUSTOM");
 	
 	// DEBUG GUI FLAG
 	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
@@ -71,11 +65,19 @@ public class GeneralConfig {
 	public static final String LOG_PROPERTIES_PATH = linkedMappings.getProperty("LOG_PROPERTIES_PATH");
 	public static final String LOG_LAUNCHER_PATH = linkedMappings.getProperty("LOG_LAUNCHER_PATH");
 	
-	// JVM
+	// JVM and Launcher
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = linkedMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 	public static final String JVM_CUSTOM_CUSTOM_SETTINGS = linkedMappings.getProperty("JVM_CUSTOM_CUSTOM_SETTINGS");
+	
+	/**
+	 * Used in launcher to choose right type of launch command for system
+	 */
+	public static final boolean FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
+	public static final String MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
+	public static final String MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
 
 	// NETWORK OPTIONS
+	public static final int NETWORK_UTILS_TIMEOUT  = getIntVarFromProps("NETWORK_UTILS_TIMEOUT", 5000);
 	public static final String testAddress = linkedMappings.getProperty("testAddress");
 	
 	// Tooltips
@@ -103,7 +105,7 @@ public class GeneralConfig {
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
-	public static final int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS");
+	public static final int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
 	
 	public static int FOOTER_MAX_DIR_LABEL_LENGTH;
 	static {
@@ -132,79 +134,6 @@ public class GeneralConfig {
 		linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
 	}
 	
-	/**
-	 * Same as defaultFileIcons(), but this one is already lazy initialized
-	 */
-	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
-	
-	/** Icons <-> File Image Mappings - (Used in Text Editor tabs)
-	 * 
-	 * @return hashtable of extensions linked to related icons
-	 */
-	public static Hashtable<String,ImageIcon> defaultFileIcons() {
-    	
-    	Hashtable<String,ImageIcon> table=new Hashtable<>();
-
-	    // Add extensions and icons
-	    table.put(".jpg",new ImageIcon(IconsPathConfigurator.F_ICON_JPG));
-	    table.put(".jpeg",new ImageIcon(IconsPathConfigurator.F_ICON_JPG));
-	    table.put(".png",new ImageIcon(IconsPathConfigurator.F_ICON_PNG));
-	    table.put(".txt",new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
-	    table.put(".pdf",new ImageIcon(IconsPathConfigurator.F_ICON_PDF));
-	    table.put(".class",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
-	    table.put(".java",new ImageIcon(IconsPathConfigurator.F_ICON_JAVA));
-	    table.put(".py",new ImageIcon(IconsPathConfigurator.F_ICON_PYTHON));
-	    table.put(".jar",new ImageIcon(IconsPathConfigurator.F_ICON_JAR));
-	    table.put(".js",new ImageIcon(IconsPathConfigurator.F_ICON_JS));
-	    table.put(".ts",new ImageIcon(IconsPathConfigurator.F_ICON_TYPESCRIPT));
-	    table.put(".json",new ImageIcon(IconsPathConfigurator.F_ICON_JSON));
-	    table.put(".css",new ImageIcon(IconsPathConfigurator.F_ICON_CSS));
-	    table.put(".exe",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
-	    table.put(".bat",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
-	    table.put(".sh",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
-	    table.put(".bin",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
-	    table.put(".php",new ImageIcon(IconsPathConfigurator.F_ICON_PHP));
-	    table.put(".html",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
-	    table.put(".xsl",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
-	    table.put(".vm",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
-	    table.put(".pom",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
-	    table.put(".xml",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
-	    table.put(".pom",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
-	    table.put(".xsd",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
-	    table.put(".wsdl",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
-	    table.put(".zip",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
-	    table.put(".7z",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
-	    table.put(".rar",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
-	    table.put(".lz",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
-	    table.put(".sql",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
-	    table.put(".db",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
-	    table.put(".log",new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
-	    table.put(".lnk",new ImageIcon(IconsPathConfigurator.F_ICON_LINK));
-	    table.put(".desktop",new ImageIcon(IconsPathConfigurator.F_ICON_LINK));
-	    table.put(".properties",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
-	    table.put(".config",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
-	    table.put(".ini",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
-	    table.put(".yml",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
-	    
-	    // generics video
-	    table.put(".mov",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
-	    table.put(".mpeg",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
-	    table.put(".mpg",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
-	    table.put(".flv",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
-	    table.put(".mp4",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
-	    table.put(".gif",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
-	    
-	    // generics audio
-	    table.put(".mp3",new ImageIcon(IconsPathConfigurator.F_ICON_AUDIO));
-	    table.put(".wav",new ImageIcon(IconsPathConfigurator.F_ICON_WAV));
-	    
-	    // generics image
-	    table.put(".tiff",new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
-	    table.put(".gif",new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
-	    
-	    return table;
-    }
-	
 	public static String[] getPubIpProvList() {
 		String list = linkedMappings.getProperty("PUB_IP_PROV_LIST");
 		String[] providers = list.split(",");
@@ -212,12 +141,12 @@ public class GeneralConfig {
 		return providers;
 	}
 	
-	private static int getIntVarFromProps(String key) {
+	private static int getIntVarFromProps(String key, int defaultVal) {
 		String val = linkedMappings.getProperty(key);
 		try {
 			return Integer.valueOf(val);
 		}catch(Exception e){
-			return 300;
+			return defaultVal;
 		}
 	}
 	

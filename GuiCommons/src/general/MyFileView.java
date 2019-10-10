@@ -7,7 +7,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.filechooser.FileView;
 
-import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class MyFileView extends FileView{
@@ -35,8 +34,8 @@ public class MyFileView extends FileView{
 
         if(idx>-1){
         	String ext=name.substring(idx);
-            if(GeneralConfig.FILE_TYPE_ICONS_MAP.containsKey(ext.toLowerCase()))
-            	return GeneralConfig.FILE_TYPE_ICONS_MAP.get(ext.toLowerCase());
+            if(IconsPathConfigurator.FILE_TYPE_ICONS_MAP.containsKey(ext.toLowerCase()))
+            	return IconsPathConfigurator.FILE_TYPE_ICONS_MAP.get(ext.toLowerCase());
         }
         
         // For other files
@@ -62,8 +61,8 @@ public class MyFileView extends FileView{
 
 		if (idx > -1) {
 			String ext = name.substring(idx);
-			if (GeneralConfig.FILE_TYPE_ICONS_MAP.containsKey(ext.toLowerCase())) {
-				return GeneralConfig.FILE_TYPE_ICONS_MAP.get(ext.toLowerCase());
+			if (IconsPathConfigurator.FILE_TYPE_ICONS_MAP.containsKey(ext.toLowerCase())) {
+				return IconsPathConfigurator.FILE_TYPE_ICONS_MAP.get(ext.toLowerCase());
 			}
 		}
 

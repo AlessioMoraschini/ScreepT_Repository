@@ -115,7 +115,7 @@ public class SysUtils {
 		return command;
 	}
 	
-	/** TODO
+	/**
 	 * According to given OS, search for installed JVM paths
 	 * @param OS
 	 * @return the list of JVMs home directory (EX. "jdk1.8.0_201")

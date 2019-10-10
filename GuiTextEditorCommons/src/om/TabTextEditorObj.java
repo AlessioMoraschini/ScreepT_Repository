@@ -80,7 +80,7 @@ public class TabTextEditorObj {
 		textArea.setDragEnabled(true);// try
 		textArea.setMarkOccurrencesDelay(100);
 		
-		RSyntaxTextArea.setTemplatesEnabled(false); // TODO
+		RSyntaxTextArea.setTemplatesEnabled(false);
 	}
 
 	public void hyperLinksEnabled(boolean enabled) {

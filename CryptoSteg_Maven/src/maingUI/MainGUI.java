@@ -8,6 +8,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JMenuBar;
@@ -134,7 +135,6 @@ public class MainGUI extends MainGuiParent{
 	
 	// FLAGS TO SIGNAL THAT A MODULE IS OPENED (JDIALOG) 
 	// for jpanels they refresh only the first time opened or if manually refreshed 
-	// (-> TODO manual refresh)
 	private static boolean flagFrameKeyGen = false;
 	private static boolean flagFrameGenOptions = false;
 	private static boolean flagFrameGuiOptions = false;
@@ -163,7 +163,7 @@ public class MainGUI extends MainGuiParent{
 	private static boolean FLAG_mntmCopyDirStructure = false; 
 	
 	// main app object reference
-	private MainGUI mainAPP = this;
+	private static MainGUI mainAPP;
 	public static Dimension preFullScreenSize = null;
 	
 	public static JOptionHelper dialogHelper;
@@ -338,6 +338,14 @@ public class MainGUI extends MainGuiParent{
 					
 					// WINDOW CLOSE LISTENER
 					frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
+						
+						@Override
+					    public void windowDeiconified(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+					    @Override
+					    public void windowActivated(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+					    @Override
+					    public void windowGainedFocus(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+						
 					    @Override
 					    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 					    	
@@ -422,6 +430,8 @@ public class MainGUI extends MainGuiParent{
 	 */
 	public MainGUI() {
 		
+		mainAPP = this;
+		
 		// initialize value for function uppercaseDirectories ()
 		last_dir_used = currentConfiguration.getFileOpt().getLastSrcFolderPath();
 		
@@ -504,12 +514,12 @@ public class MainGUI extends MainGuiParent{
 					}
 
 					getMainFrame().setAlwaysOnTop(true);
-					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN));
+					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_GREEN));
 					mntmPinApplicationOnTop.setToolTipText("Disable \"always on top\" over other windows (if supported)");
 					
 				}else{
 					getMainFrame().setAlwaysOnTop(false);
-					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
+					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 					mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
 				}
 			}
@@ -872,6 +882,7 @@ public class MainGUI extends MainGuiParent{
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						if (frmScryptV.isUndecorated()) {
+//							MovePanelMouseListener.removeMoveListener(frmScryptV, movePanelMouseListener); // USE TO REMOVE LISTENER DRAG PANEL
 							if(preFullScreenSize == null) {
 								preFullScreenSize = GuiUtils.getScreenSize(frmScryptV);
 							}
@@ -882,7 +893,6 @@ public class MainGUI extends MainGuiParent{
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
-							movePanelMouseListener = MovePanelMouseListener.applyMoveListenerR(frmScryptV);
 						} else {
 							frmScryptV.dispose();
 							preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
@@ -891,7 +901,12 @@ public class MainGUI extends MainGuiParent{
 							frmScryptV.setLocationRelativeTo(frmScryptV);
 							frmScryptV.setVisible(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
-							MovePanelMouseListener.removeMoveListener(frmScryptV, movePanelMouseListener);
+//							movePanelMouseListener = MovePanelMouseListener.applyMoveListenerR(frmScryptV); // USE TO ADD LISTENER DRAG PANEL
+						}
+						
+						// Update txtArea to adapt new size
+						if(initTxtWriter != null && initTxtWriter.textEditorUtils != null) {
+							initTxtWriter.initGuiFromConfig(false);
 						}
 						
 						// RESYNC JSCROLL BUG WORKAROUND
@@ -965,8 +980,9 @@ public class MainGUI extends MainGuiParent{
 									prog.getPb().setIndeterminate(true);
 									prog.getLabel().setText("Loading Network informations...");
 									prog.getPb().setString("Loading...");
-									panelNetInfo = new NetInfoFrame(currentConfiguration);
+									panelNetInfo = new NetInfoFrame();
 									panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+									panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 									panelNetInfo.setAlwaysOnTop(true);
 									panelNetInfo.setBounds(150, 150, 950, 700);
 									panelNetInfo.setVisible(true);
@@ -980,9 +996,9 @@ public class MainGUI extends MainGuiParent{
 				}else {
 					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 					panelNetInfo.setState(java.awt.Frame.NORMAL);
+					panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 					panelNetInfo.requestFocus();
 				}
-		    	panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelNetInfo, JFrame.MAXIMIZED_BOTH);
 		    }
 		});
@@ -1003,7 +1019,8 @@ public class MainGUI extends MainGuiParent{
 									prog.getPb().setIndeterminate(true);
 									prog.getLabel().setText("Loading System informations...");
 									prog.getPb().setString("Loading...");
-									panelHwInfo = new HwInfoFrame(currentConfiguration);
+									panelHwInfo = new HwInfoFrame();
+									panelHwInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 									panelHwInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 									panelHwInfo.setBounds(250, 200, 1000, 750);
 									panelHwInfo.setAlwaysOnTop(true);
@@ -1021,7 +1038,6 @@ public class MainGUI extends MainGuiParent{
 					panelHwInfo.setState(java.awt.Frame.NORMAL);
 					panelHwInfo.requestFocus();
 				}
-		    	panelHwInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelHwInfo, JFrame.MAXIMIZED_BOTH);
 		    }
 		});
@@ -1190,6 +1206,7 @@ public class MainGUI extends MainGuiParent{
 //////////	NOW SOME USEFUL METHOD  ////////////////
 	
 	public void resizeMainFrameDefaults() {
+
 		labelBACKground.setSize(frmScryptV.getContentPane().getSize());
 		if(initTxtWriter != null && initTxtWriter.getCurrentTabEditor().mainTabList != null) {
 			initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);

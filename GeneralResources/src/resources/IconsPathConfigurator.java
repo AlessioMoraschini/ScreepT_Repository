@@ -1,5 +1,7 @@
 package resources;
 
+import java.util.Hashtable;
+
 import javax.swing.ImageIcon;
 
 public class IconsPathConfigurator {
@@ -16,6 +18,8 @@ public class IconsPathConfigurator {
 	public static final String F_ICON_HTML = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_html.png";
 	public static final String F_ICON_CSS = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_css.png";
 	public static final String F_ICON_PHP = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_php.png";
+	public static final String F_ICON_C_PLUS_PLUS = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_cpp.png";
+	public static final String F_ICON_C_SHARP = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_Csharp.png";
 	public static final String F_ICON_JAVA = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_Java.png";
 	public static final String F_ICON_PYTHON = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_python.png";
 	public static final String F_ICON_JS = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_javascript.png";
@@ -121,7 +125,8 @@ public class IconsPathConfigurator {
 	public static final String ICON_REPLACE_TXT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/replace.png";
 	public static final String ICON_GOTO_LINE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/goToLine.png";
 	public static final String ICON_NUMBERED_LINES = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/numberedLines.png";
-	public static final String ICON_PIN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/pin.png";
+	public static final String ICON_PIN_GREEN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/pin.png";
+	public static final String ICON_PIN_RED = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/pinRed.png";
 	public static final String ICON_UNPIN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/unpin.png";
 	public static final String ICON_COLOR_SAMPLER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropper.png";
 	
@@ -155,6 +160,82 @@ public class IconsPathConfigurator {
 	////////////////    INSTANTIATED DEFAULT STATIC ICONS   ///////////////////
 	public static final ImageIcon IMG_ICON_LIGHT_ON = new ImageIcon(ICON_LIGHT_ON);
 	public static final ImageIcon IMG_ICON_LIGHT_OFF = new ImageIcon(ICON_LIGHT_OFF);
+	
+	/**
+	 * Same as defaultFileIcons(), but this one is already lazy initialized
+	 */
+	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
+	
+	/** Icons <-> File Image Mappings - (Used in Text Editor tabs)
+	 * 
+	 * @return hashtable of extensions linked to related icons
+	 */
+	public static Hashtable<String,ImageIcon> defaultFileIcons() {
+    	
+    	Hashtable<String,ImageIcon> table=new Hashtable<>();
+
+	    // Add extensions and icons
+	    table.put(".jpg",new ImageIcon(IconsPathConfigurator.F_ICON_JPG));
+	    table.put(".jpeg",new ImageIcon(IconsPathConfigurator.F_ICON_JPG));
+	    table.put(".png",new ImageIcon(IconsPathConfigurator.F_ICON_PNG));
+	    table.put(".txt",new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
+	    table.put(".pdf",new ImageIcon(IconsPathConfigurator.F_ICON_PDF));
+	    table.put(".class",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
+	    table.put(".java",new ImageIcon(IconsPathConfigurator.F_ICON_JAVA));
+	    table.put(".cpp",new ImageIcon(IconsPathConfigurator.F_ICON_C_PLUS_PLUS));
+	    table.put(".c",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".cs",new ImageIcon(IconsPathConfigurator.F_ICON_C_SHARP));
+	    table.put(".py",new ImageIcon(IconsPathConfigurator.F_ICON_PYTHON));
+	    table.put(".jar",new ImageIcon(IconsPathConfigurator.F_ICON_JAR));
+	    table.put(".js",new ImageIcon(IconsPathConfigurator.F_ICON_JS));
+	    table.put(".ts",new ImageIcon(IconsPathConfigurator.F_ICON_TYPESCRIPT));
+	    table.put(".json",new ImageIcon(IconsPathConfigurator.F_ICON_JSON));
+	    table.put(".css",new ImageIcon(IconsPathConfigurator.F_ICON_CSS));
+	    table.put(".exe",new ImageIcon(IconsPathConfigurator.F_ICON_EXE));
+	    table.put(".bat",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
+	    table.put(".sh",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
+	    table.put(".bin",new ImageIcon(IconsPathConfigurator.F_ICON_RUNNABLE));
+	    table.put(".php",new ImageIcon(IconsPathConfigurator.F_ICON_PHP));
+	    table.put(".html",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".xsl",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".vm",new ImageIcon(IconsPathConfigurator.F_ICON_HTML));
+	    table.put(".pom",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".xml",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".pom",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".xsd",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".wsdl",new ImageIcon(IconsPathConfigurator.F_ICON_CODE));
+	    table.put(".zip",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
+	    table.put(".7z",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
+	    table.put(".rar",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
+	    table.put(".lz",new ImageIcon(IconsPathConfigurator.F_ICON_ZIP));
+	    table.put(".sql",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
+	    table.put(".db",new ImageIcon(IconsPathConfigurator.F_ICON_DATABASE));
+	    table.put(".log",new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
+	    table.put(".lnk",new ImageIcon(IconsPathConfigurator.F_ICON_LINK));
+	    table.put(".desktop",new ImageIcon(IconsPathConfigurator.F_ICON_LINK));
+	    table.put(".properties",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
+	    table.put(".config",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
+	    table.put(".ini",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
+	    table.put(".yml",new ImageIcon(IconsPathConfigurator.F_ICON_PROPERTIES));
+	    
+	    // generics video
+	    table.put(".mov",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
+	    table.put(".mpeg",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
+	    table.put(".mpg",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
+	    table.put(".flv",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
+	    table.put(".mp4",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
+	    table.put(".gif",new ImageIcon(IconsPathConfigurator.F_ICON_VIDEO));
+	    
+	    // generics audio
+	    table.put(".mp3",new ImageIcon(IconsPathConfigurator.F_ICON_AUDIO));
+	    table.put(".wav",new ImageIcon(IconsPathConfigurator.F_ICON_WAV));
+	    
+	    // generics image
+	    table.put(".tiff",new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
+	    table.put(".gif",new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
+	    
+	    return table;
+    }
 	
 	// MAIN RESOURCES DIR SETTER & GETTER //
 	public static String getRESOURCES_DIR() {

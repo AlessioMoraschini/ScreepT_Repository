@@ -111,7 +111,7 @@ public class CustomizeParametersPanel extends JFrame{
 		parentStarterPanel = parentPanel;
 		
 		GuiUtils.centerFrame(this, DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
-		GuiUtils.showOnSameScreen(parentStarterPanel);
+		GuiUtils.showOnSameScreen(this, parentStarterPanel);
 
 		// END CUSTOM SETTINGS
 		

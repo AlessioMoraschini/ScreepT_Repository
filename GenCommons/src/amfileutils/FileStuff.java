@@ -860,7 +860,7 @@ public class FileStuff {
 	public static String coolFileSize(File file){
 		long size = file.length();
 		if(size <= 0) return "0";
-	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "ExaB" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.###").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
@@ -872,7 +872,7 @@ public class FileStuff {
 	 */
 	public static String coolFileSize(Long size){
 		if(size <= 0) return "0";
-	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "ExaB" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.###").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
@@ -885,7 +885,7 @@ public class FileStuff {
 	public static String coolFileSizeBits(File file){
 		long size = file.length();
 		if(size <= 0) return "0";
-	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb" };
+	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Exab" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.###").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
@@ -897,7 +897,7 @@ public class FileStuff {
 	 */
 	public static String coolFileSizeBits(Long size){
 		if(size <= 0) return "0";
-	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb" };
+	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Exab" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.###").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}

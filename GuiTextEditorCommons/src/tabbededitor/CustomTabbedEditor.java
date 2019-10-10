@@ -121,7 +121,7 @@ public class CustomTabbedEditor {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-		
+				
 				if (tabEditorManager.isEnabledRefresh() && !alreadyrefreshing && lastIndexTabbedPane != mainTabList.getSelectedIndex()) {
 					alreadyrefreshing = true;
 	
@@ -345,11 +345,22 @@ public class CustomTabbedEditor {
 
 	public void closeCurrentTab() {
 		int index = mainTabList.getSelectedIndex();
+		final JScrollPane i_component = loadedList.getList().get(lastIndexTabbedPane).currentScrollPane;
+		
 		try {
 			logger.debug("closeCurrentTab() - closing tab: "+mainTabList.getTitleAt(index));
 			JButton closeTabButton = (JButton) (getPanelFromTabHeader(index))
 					.getComponent(TabUtils.TAB_BUTTON_CLOSE_ORDER);
 			closeTabButton.doClick();
+			
+			if (i_component != null) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						mainTabList.setSelectedComponent(i_component);
+					}
+				});
+			}
+
 		} catch (Exception e) {
 			logger.error("Error closing current tab: " + index, e);
 		}

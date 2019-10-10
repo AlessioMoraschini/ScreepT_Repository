@@ -164,7 +164,7 @@ public class ImageConverterFrame extends JFrame{
 		currentConfiguration = currentConf;
 		
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER, this);
-		GuiUtils.showOnSameScreen(MainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		

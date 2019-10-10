@@ -23,12 +23,10 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 
 	static Logger logger = Logger.getLogger(FileNameCellRenderer.class); 
 		
-	private JLabel iconContainer;
-	private Font oldFont;
+	public JLabel iconContainer;
 	
 	public FileNameCellRenderer() {
 		iconContainer = new JLabel();
-		oldFont = iconContainer.getFont();
     }
 
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,

@@ -19,7 +19,6 @@ import networkscanner.csd.CaptureCycle;
 public class ProvaSplit {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		System.out.println("Benvenuto in csNd, creato da Alessio Moraschini"
 				+ " per ottimizzare gli scan della tua rete. \n"

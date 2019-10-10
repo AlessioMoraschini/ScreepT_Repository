@@ -90,7 +90,7 @@ public class KeyDictionaryPanel extends JFrame{
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);
-		GuiUtils.showOnSameScreen(MainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
 		
 		thisPanel = this;
 		// initialize configuration
@@ -269,8 +269,6 @@ public class KeyDictionaryPanel extends JFrame{
 		btnImportDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));
 		btnImportDictionary.addActionListener(new ActionListener() {
 			
-			// TODO check image type and extension of file before to load! 
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				File selectedImportDir = directoRead(thisPanel);
@@ -347,7 +345,6 @@ public class KeyDictionaryPanel extends JFrame{
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

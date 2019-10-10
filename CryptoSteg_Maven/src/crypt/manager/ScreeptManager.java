@@ -86,7 +86,7 @@ public class ScreeptManager {
 	
 	boolean wellDone = false;
 	
-	// TODO use this to keep memory of written files
+	// use this to keep memory of written files
 	public ArrayList<String> writtenPathsList = new ArrayList<String>();
 	
 	private String tempMSG="";
@@ -287,7 +287,6 @@ public class ScreeptManager {
 		logger.debug("Streams closed, exiting encription.");
 		tempMSG += "\n => Streams closed, exiting encription.";
 		
-		// TODO check welldone usage
 		return wellDone;
 	}
 	
@@ -379,7 +378,6 @@ public class ScreeptManager {
 		logger.debug("Streams closed, exiting decription.");
 		tempMSG += "\n => Streams closed, exiting decription.";
 
-		// TODO check welldone usage
 		return wellDone;
 	}
 	

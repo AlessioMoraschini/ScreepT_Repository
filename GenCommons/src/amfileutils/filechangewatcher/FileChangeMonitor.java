@@ -11,6 +11,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class FileChangeMonitor {
+	
+	public boolean MOD_FLAG = true;
+	public boolean DEL_FLAG = true;
+	public boolean NEW_FLAG = true;
 
 	// FIELDS // 
 	private boolean monitorAllContents = false;
@@ -47,7 +51,16 @@ public class FileChangeMonitor {
 		final Path rootPath = FileSystems.getDefault().getPath(rootMonitorDir.getAbsolutePath());
 		try {
 			watchService = FileSystems.getDefault().newWatchService();
-		    watchKeyAll = rootPath.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_CREATE);
+
+			if(MOD_FLAG && DEL_FLAG && NEW_FLAG) {
+				watchKeyAll = rootPath.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_CREATE);
+			}else if(DEL_FLAG) {
+				watchKeyAll = rootPath.register(watchService, StandardWatchEventKinds.ENTRY_DELETE);
+			}else if(MOD_FLAG){
+				watchKeyAll = rootPath.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+			}else if(NEW_FLAG){
+				watchKeyAll = rootPath.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+			}
 	    }catch(Exception e){
 	    	e.printStackTrace();
 	    }
@@ -82,16 +95,16 @@ public class FileChangeMonitor {
             	File currentFileInMonitored = iteratorMonitored.next();
             	File currentChange = new File(changed.toUri());
             	
-				if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY && !justAdded && currentFileInMonitored.toPath().endsWith(currentChange.getAbsolutePath())) {
+				if (MOD_FLAG && event.kind() == StandardWatchEventKinds.ENTRY_MODIFY && !justAdded && currentFileInMonitored.toPath().endsWith(currentChange.getAbsolutePath())) {
 					changedsResponse.changedFiles.add(currentChange);
-				} else if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE  && !fileAlreadyAdded) {
+				} else if (NEW_FLAG && event.kind() == StandardWatchEventKinds.ENTRY_CREATE  && !fileAlreadyAdded) {
 					changedsResponse.addedFiles.add(currentChange);
 					justAdded = true;
 					if(monitorAllContents){
 						thingsToBeAddToMonitored.add(currentChange);
 					}
 					fileAlreadyAdded = true;
-				} else if (event.kind() == StandardWatchEventKinds.ENTRY_DELETE && currentFileInMonitored.toPath().endsWith(currentChange.getAbsolutePath())) {
+				} else if (DEL_FLAG && event.kind() == StandardWatchEventKinds.ENTRY_DELETE && currentFileInMonitored.toPath().endsWith(currentChange.getAbsolutePath())) {
 					changedsResponse.removedFiles.add(currentChange);
 					if(monitoredFileList.contains(currentChange)){
 						iteratorMonitored.remove();

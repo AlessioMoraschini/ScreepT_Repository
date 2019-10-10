@@ -336,7 +336,6 @@ public class StegCipher {
 	 * @param AES_CODED_OUT
 	 * @return
 	 */
-	// TODO
 	public StegOmResult stegaCrypt4ByteXor(byte[] AES_CODED_OUT) {
 		
 		SecureRandom rand = new SecureRandom();
@@ -409,8 +408,6 @@ public class StegCipher {
 	    		Integer pxKey = keyImage.getRGB(j, i);
 //	    		Integer securePxKey = secForConversion(pxKey); 
 	    		
-	    		// TODO improve secureKey version to avoid getting key knowing (criptedPX, sourcePX)
-
 	    		Integer codedPX;
 	    		// set new value - core of algorithm
 	    		if(availableSrcBytes!=0) {
@@ -818,7 +815,6 @@ public class StegCipher {
 	 * @return the 16 bytes equivalent integer(16 zeros and 16 bits) made by the three bytes in the order: [0,0,b1,b2]. 
 	 * So, result is wrapped in integer padding left with zeros (useful to avoid overflows in operations with integer retrieved from byte stream)
 	 */
-	// TODO da testare
 	public static int twoBytesToIntShift(byte b1, byte b2) {
 		int r = (b2 & 0xFF) | ((b1 & 0xFF) << 8) ;
 		return r;

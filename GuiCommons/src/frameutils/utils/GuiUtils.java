@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -211,25 +210,25 @@ public class GuiUtils {
 	 * @param frame his monitor will be the target for the current window
 	 * @return the found graphicsDevice obj of target frame
 	 */
-	public static GraphicsDevice showOnSameScreen(Window frame) {
-		GraphicsDevice result = null;
-		frame.setLocationRelativeTo(frame);
-		if (frame != null) {
-			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			GraphicsDevice[] gd = ge.getScreenDevices();
-			final GraphicsDevice frameDevice = frame.getGraphicsConfiguration().getDevice();
-			for (GraphicsDevice graphicsDevice : gd) {
-				if (frameDevice.equals(graphicsDevice)
-						|| frameDevice.getIDstring().equals(graphicsDevice.getIDstring())) {
-					final Rectangle monitorBounds = graphicsDevice.getDefaultConfiguration().getBounds();
-					final int x = monitorBounds.x + (monitorBounds.width - frame.getWidth()) / 2;
-					final int y = monitorBounds.y + (monitorBounds.height - frame.getHeight()) / 2;
-					frame.setLocation(x, y);
-					result = graphicsDevice;
-					break;
-				}
-			} 
-		}
+	public static GraphicsDevice showOnSameScreen(JFrame son, Window frame) {
+		GraphicsDevice result = frame.getGraphicsConfiguration().getDevice();
+		son.setLocationRelativeTo(frame);
+//		if (frame != null) {
+//			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//			GraphicsDevice[] gd = ge.getScreenDevices();
+//			final GraphicsDevice frameDevice = frame.getGraphicsConfiguration().getDevice();
+//			for (GraphicsDevice graphicsDevice : gd) {
+//				if (frameDevice.equals(graphicsDevice)
+//						|| frameDevice.getIDstring().equals(graphicsDevice.getIDstring())) {
+//					final Rectangle monitorBounds = graphicsDevice.getDefaultConfiguration().getBounds();
+//					final int x = monitorBounds.x + (monitorBounds.width - frame.getWidth()) / 2;
+//					final int y = monitorBounds.y + (monitorBounds.height - frame.getHeight()) / 2;
+//					frame.setLocation(x, y);
+//					result = graphicsDevice;
+//					break;
+//				}
+//			} 
+//		}
 		return result;
 	}
 	
@@ -275,13 +274,13 @@ public class GuiUtils {
 		int W = (int)(screenSize.width * percent);
 		int H = (int)(screenSize.height * percent);
 		targetComponent.setSize(W, H);
-		targetComponent.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
+		targetComponent.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
 	}
 	
 	public static void centerComponent(Component targetFrame, int W, int H) {
 		Dimension screenSize = (targetFrame instanceof JFrame)? getScreenSize((JFrame)targetFrame): getScreenSize();
 		targetFrame.setSize(W, H);
-		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
+		targetFrame.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
 	}
 	
 	public static void centerComponent(Component targetFrame) {
@@ -294,7 +293,7 @@ public class GuiUtils {
 		int W = frameSize.width;
 		int H = frameSize.height;
 		
-		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
+		targetFrame.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
 	}
 	
 	public static void centerFrame(JFrame targetFrame, int percentSize) {
@@ -303,13 +302,13 @@ public class GuiUtils {
 		int W = (int)(screenSize.width * percent);
 		int H = (int)(screenSize.height * percent);
 		targetFrame.setSize(W, H);
-		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
+		targetFrame.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
 	}
 	
 	public static void centerFrame(JFrame targetFrame, int W, int H) {
 		Dimension screenSize = getScreenSize(targetFrame);
 		targetFrame.setSize(W, H);
-		targetFrame.setLocation(screenSize.width/2-W/2, screenSize.height/2-H/2);
+		targetFrame.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
 	}
 	
 	public static void moveFrame(Component element, int xDiff, int yDiff) {
@@ -324,7 +323,7 @@ public class GuiUtils {
 		newX = (maxDeltaX < 0)? screenSize.width - element.getWidth() : newX;
 		newY = (maxDeltaY < 0)? screenSize.height - element.getHeight() : newY;
 		
-		element.setBounds(new Rectangle(newX, newY, element.getWidth(), element.getHeight()));
+		element.setBounds(newX, newY, element.getWidth(), element.getHeight());
 	}
 	
 	public static void openInFileSystem(File destination) {

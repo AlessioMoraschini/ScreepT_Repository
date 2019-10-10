@@ -10,7 +10,6 @@ import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
-import resources.GeneralConfig;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,8 +27,8 @@ import javax.swing.JTextField;
 
 public class FilePropertiesFrame extends JFrame{
 
-	public static final Color defaultRed = Color.RED;
-	public static final Color defaultBlue = Color.BLUE;
+	public static final Color defaultRed = Color.ORANGE;
+	public static final Color defaultBlue = Color.CYAN;
 	public static final Color defaultGreen = Color.GREEN;
 	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
@@ -58,14 +57,15 @@ public class FilePropertiesFrame extends JFrame{
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBackground(new Color(255, 255, 240));
-		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][25%][][grow]", "[grow][][grow][][grow][30px:n:40px]"));
+		panel.setBackground(Color.DARK_GRAY);
+		panel.setLayout(new MigLayout("", "[][25%][][grow]", "[grow][][grow][][grow][30px:n:40px]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportView(panel);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
 		lblFileName = new JLabel("File Name:");
+		lblFileName.setForeground(Color.LIGHT_GRAY);
 		lblFileName.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblFileName, "cell 0 0,alignx center");
 		
@@ -77,6 +77,7 @@ public class FilePropertiesFrame extends JFrame{
 		panel.add(separator, "cell 0 1 4 1,growx");
 		
 		lblPath = new JLabel("File Path:");
+		lblPath.setForeground(Color.LIGHT_GRAY);
 		lblPath.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblPath, "cell 0 2,alignx center");
 		
@@ -88,41 +89,44 @@ public class FilePropertiesFrame extends JFrame{
 		panel.add(separator_1, "cell 0 3 4 1,growx");
 		
 		lblSize = new JLabel("File Size:");
+		lblSize.setForeground(Color.LIGHT_GRAY);
 		lblSize.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblSize, "cell 0 4,alignx center");
 		
 		dynLblSize = new JLabel("");
-		dynLblSize.setForeground(Color.DARK_GRAY);
+		dynLblSize.setForeground(new Color(176, 196, 222));
 		panel.add(dynLblSize, "cell 1 4,growx");
 		
 		lblLastModified = new JLabel("Last Change:");
+		lblLastModified.setForeground(Color.LIGHT_GRAY);
 		lblLastModified.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblLastModified, "cell 2 4,alignx center");
 		
 		dynLblLastChange = new JLabel((String) null);
-		dynLblLastChange.setForeground(Color.DARK_GRAY);
+		dynLblLastChange.setForeground(new Color(176, 196, 222));
 		panel.add(dynLblLastChange, "cell 3 4,alignx left");
 		
 		footerPanel = new JPanel();
+		footerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		footerPanel.setForeground(Color.WHITE);
-		footerPanel.setBackground(Color.DARK_GRAY);
+		footerPanel.setBackground(Color.GRAY);
 		panel.add(footerPanel, "cell 0 5 4 1,grow");
-		footerPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[1px,grow][1px,grow][1px,grow][1px,grow]", "[1px,grow]"));
+		footerPanel.setLayout(new MigLayout("", "[1px,grow][1px,grow][1px,grow][1px,grow]", "[1px,grow]"));
 		
 		dynLblCanRead = new JLabel((String) null);
-		dynLblCanRead.setForeground(Color.DARK_GRAY);
+		dynLblCanRead.setForeground(Color.WHITE);
 		footerPanel.add(dynLblCanRead, "cell 0 0,alignx center,growy");
 		
 		dynLblCanWrite = new JLabel((String) null);
-		dynLblCanWrite.setForeground(Color.DARK_GRAY);
+		dynLblCanWrite.setForeground(Color.WHITE);
 		footerPanel.add(dynLblCanWrite, "cell 1 0");
 		
 		dynLblCanExecute = new JLabel((String) null);
-		dynLblCanExecute.setForeground(Color.DARK_GRAY);
+		dynLblCanExecute.setForeground(Color.WHITE);
 		footerPanel.add(dynLblCanExecute, "cell 2 0");
 		
 		dynLblIsHidden = new JLabel((String) null);
-		dynLblIsHidden.setForeground(Color.DARK_GRAY);
+		dynLblIsHidden.setForeground(Color.WHITE);
 		footerPanel.add(dynLblIsHidden, "cell 3 0");
 		fileUnderAnalysis = targetFile;
 		
@@ -132,8 +136,8 @@ public class FilePropertiesFrame extends JFrame{
 	}
 	
 	public void adjustLabelsLength() {
-		dynLblFileName.setPreferredSize(new Dimension(fileUnderAnalysis.getAbsolutePath().length()*2, 35));
-		dynLblPath.setPreferredSize(new Dimension(fileUnderAnalysis.getAbsolutePath().length()*2, 35));
+		dynLblFileName.setPreferredSize(new Dimension(18, 25));
+		dynLblPath.setPreferredSize(new Dimension(18, 25));
 	}
 	
 	public void initializeValues() {

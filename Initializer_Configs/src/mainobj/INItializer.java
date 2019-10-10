@@ -272,6 +272,7 @@ public class INItializer {
 		String foreColStr = iniReadFile.get(TEXT_EDITOR_OPT, "foregroundCol");
 		String selectedAtStartStr = iniReadFile.get(TEXT_EDITOR_OPT, "selectedFileAtStart");
 		String defaultWorspaceLocationStr = iniReadFile.get(TEXT_EDITOR_OPT, "defaultWorspaceLocation");
+		String lastEscapeLanguageStr = iniReadFile.get(TEXT_EDITOR_OPT, "lastEscapeLanguage");
 		
 		// validation
 		Font font = (!"".equals(fontStr) && fontStr!= null)? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
@@ -280,6 +281,7 @@ public class INItializer {
 		Color foreCol = (!"".equals(foreColStr) && foreColStr!= null)? HandleString.getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
 		String selectedFileAtStart = (!"".equals(selectedAtStartStr) && selectedAtStartStr!= null)? selectedAtStartStr : TextEditorOption.DEFAULT_SELECTED_FILE_AT_START;
 		String defaultWorspaceLocation = (!"".equals(defaultWorspaceLocationStr) && defaultWorspaceLocationStr!= null)? defaultWorspaceLocationStr : TextEditorOption.DEFAULT_WORKSPACE_LOCATION;
+		String lastEscapeLanguage = (!"".equals(lastEscapeLanguageStr) && lastEscapeLanguageStr!= null)? lastEscapeLanguageStr : TextEditorOption.DEF_LastEscapeLanguage;
 		
 		int tabSize = 2;
 		try {
@@ -297,6 +299,7 @@ public class INItializer {
 		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
+		textEditorOpt.setLastEscapeLanguage(lastEscapeLanguage);
 		
 		// CONVERTED/PARSED TYPES
 		// margin
@@ -363,7 +366,7 @@ public class INItializer {
 		}
 		// selected theme
 		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
-		Themes theme = (themeRead != null && !themeRead.equals(""))? Themes.valueOf(themeRead): TextEditorOption.DEFAULT_SELECTED_THEME;
+		String theme = (themeRead != null && !themeRead.equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
 		textEditorOpt.setSelectedTheme(theme);
 	}
 	
@@ -467,6 +470,7 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
 		iniFile.put(TEXT_EDITOR_OPT, "tabSize", textEditorOpt.tabSize);
 		iniFile.put(TEXT_EDITOR_OPT, "tabLineVisibleFlag", textEditorOpt.tabLineVisible);
+		iniFile.put(TEXT_EDITOR_OPT, "lastEscapeLanguage", textEditorOpt.lastEscapeLanguage);
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredTheme", textEditorOpt.selectedTheme);
 		iniFile.put(TEXT_EDITOR_OPT, "fileTreeActive", textEditorOpt.fileTreeActive);
@@ -644,6 +648,7 @@ public class INItializer {
 			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
+			   .append("\nLAST CODE ESCAPE LANGUAGE: ").append(textEditorOpt.lastEscapeLanguage)
 
 			   .append("\n\n TEXT AREA DETAIL VALUES: \n\n")
 			   

@@ -15,7 +15,6 @@ import amfileutils.FileStuff;
 import frameutils.utils.GuiUtils;
 import generic.LimitedConcurrentList;
 import local.om.HDinfo;
-import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import oshi.SystemInfo;
 import oshi.hardware.Baseboard;
@@ -167,7 +166,7 @@ public class HwInfoFrame extends JFrame{
 	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
-	public HwInfoFrame(INItializer currentConfig) {
+	public HwInfoFrame() {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		

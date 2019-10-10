@@ -57,7 +57,7 @@ public class NetworkUtils {
 	
 	public Enumeration<NetworkInterface> networkInterfaces;
 	
-	public static volatile Sigar sysINFO;
+	public static Sigar sysINFO;
 	
 ////////////////////////  CONSTRUCTORS  ////////////////////////
 	
@@ -75,7 +75,7 @@ public class NetworkUtils {
 		networkAdapters = new Vector<NetworkAdapter>();
 		pubIPServices = getURLSservicesPUBIP();
 		networkInterfaces = NetworkInterface.getNetworkInterfaces();
-		timeout = 8000;
+		timeout = GeneralConfig.NETWORK_UTILS_TIMEOUT;
 	}
 	
 	private static synchronized Vector<URI> getURLSservicesPUBIP(){
@@ -130,15 +130,17 @@ public class NetworkUtils {
 	private void associateNetAdaptersWithConfig() {
 		String[] interfaces = new String[1];
 		try {
-			interfaces = sysINFO.getNetInterfaceList();
-			for(String interfName : interfaces) {
-				NetInterfaceConfig currentConf = sysINFO.getNetInterfaceConfig(interfName);
-				for(NetworkAdapter adapterIter : networkAdapters) {
-					boolean condition = currentConf.getHwaddr().equals(adapterIter.locMAC)
-							&& currentConf.getAddress().equals(adapterIter.locIP); 
-//							&& currentConf.getDescription().equals(adapterIter.getName());
-					if(condition) {
-						adapterIter.setInterfaceConfig(currentConf);
+			synchronized (sysINFO) {
+				NetInterfaceConfig currentConf;
+				interfaces = sysINFO.getNetInterfaceList();
+				for (String interfName : interfaces) {
+					currentConf = sysINFO.getNetInterfaceConfig(interfName);
+					for (NetworkAdapter adapterIter : networkAdapters) {
+						boolean condition = currentConf.getHwaddr().equals(adapterIter.locMAC) && currentConf.getAddress().equals(adapterIter.locIP);
+						//							&& currentConf.getDescription().equals(adapterIter.getName());
+						if (condition) {
+							adapterIter.setInterfaceConfig(currentConf);
+						}
 					}
 				}
 			}
@@ -231,7 +233,6 @@ public class NetworkUtils {
 		ftpClient.logout();
 		downStream.close();
 		
-		// calculate speed TODO
 		int downSpeed = (int)(testOptions.downSize/((end-start)/(1000F)));
 		String DOWN_Speed = FileStuff.coolFileSize((long)downSpeed)+"/s  ["+FileStuff.coolFileSizeBits((long)downSpeed)+"ps]";
 		

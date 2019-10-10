@@ -7,14 +7,14 @@ import java.util.Vector;
 
 import resources.GeneralConfig;
 
-public enum Themes {DARK(GeneralConfig.RESOURCES_DIR + "themes/dark.xml"),
-					DEFAULT(GeneralConfig.RESOURCES_DIR + "themes/default.xml"),
-					DEFAULT_V2(GeneralConfig.RESOURCES_DIR + "themes/default-alt.xml"),
-					ECLIPSE(GeneralConfig.RESOURCES_DIR + "themes/eclipse.xml"),
-					IDEA(GeneralConfig.RESOURCES_DIR + "themes/idea.xml"),
-					MONOKAI(GeneralConfig.RESOURCES_DIR + "themes/monokai.xml"),
-					THEMEVS(GeneralConfig.RESOURCES_DIR + "themes/vs.xml"),
-					NONE("");
+public enum Themes {DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml"),
+					DEFAULT(GeneralConfig.THEMES_FOLDER_DEFAULT + "default.xml"),
+					DEFAULT_V2(GeneralConfig.THEMES_FOLDER_DEFAULT + "default-alt.xml"),
+					ECLIPSE(GeneralConfig.THEMES_FOLDER_DEFAULT + "eclipse.xml"),
+					IDEA(GeneralConfig.THEMES_FOLDER_DEFAULT + "idea.xml"),
+					MONOKAI(GeneralConfig.THEMES_FOLDER_DEFAULT + "monokai.xml"),
+					THEMEVS(GeneralConfig.THEMES_FOLDER_DEFAULT + "vs.xml"),
+					NONE("NO_STYLE");
 	
 	public String defaultPath;
 	
@@ -22,14 +22,23 @@ public enum Themes {DARK(GeneralConfig.RESOURCES_DIR + "themes/dark.xml"),
 		this.defaultPath = path;
 	}
 	
+	public static Vector<String> getStringValuesPath() {
+		Vector<String> vector = new Vector<String>();
+		for(Themes i : Themes.values()) {
+			vector.add(i.defaultPath);
+		}
+		
+		return vector;
+	}
+	
 	/**
-	 * Retrieve all custom themes in a source directory (only .xml will be considered) and add them to a list with default ones
+	 * Retrieve all paths for custom themes in a source directory (only .xml will be considered) and add them to a list with default ones
 	 * 
 	 * @param customThemesFolder
 	 * @return
 	 * @throws IOException 
 	 */
-	public Vector<String>getAllThemesPlusCustom(File customThemesFolder) throws IOException {
+	public static Vector<String> getAllXmlThemesPlusCustom(File customThemesFolder) throws IOException {
 		
 		Vector<String> allThemes = new Vector<String>();
 
@@ -64,5 +73,6 @@ public enum Themes {DARK(GeneralConfig.RESOURCES_DIR + "themes/dark.xml"),
 		
 		return allThemes;
 	}
+	
 
 }

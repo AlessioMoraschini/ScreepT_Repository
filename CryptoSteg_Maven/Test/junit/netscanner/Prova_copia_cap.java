@@ -9,7 +9,6 @@ import networkscanner.dmad.CapMerger;
 public class Prova_copia_cap {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		String in1="Files_FTP/Local_NOfilter-192.168.1.9-2018_03_10.02_14.cap";
 		String in2="Files_FTP/NOfilter--2018_03_10_00_25_30.cap";

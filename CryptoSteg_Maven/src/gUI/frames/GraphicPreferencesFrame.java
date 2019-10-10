@@ -140,13 +140,11 @@ public class GraphicPreferencesFrame extends JFrame {
 		this.setResizable(false);
 
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
-		GuiUtils.showOnSameScreen(MainGUI.frmScryptV);
+		setLocationRelativeTo(MainGUI.frmScryptV);
 		
 		updateBackup(currentConfiguration);
 
 		logger.debug("Initialized.");
-
-		// TODO initialize size (add to ini fields before)
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -403,6 +401,8 @@ public class GraphicPreferencesFrame extends JFrame {
 		
 		addHandlers();
 		
+		MainGUI.initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
+		
 //		if (TextEditor.loadedTabObj != null) {
 //			TextEditor.loadedTabObj.textArea.setFont(initialTxtEditorFont);
 //			RsyntaxUtils.setFont(TextEditor.loadedTabObj.textArea, initialTxtEditorFont);
@@ -421,11 +421,11 @@ public class GraphicPreferencesFrame extends JFrame {
 					boolean res = GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 					currentConfiguration.getGuiOpt().setDarkGuiNimbus(res);
 				}
-				GUIStyelSettings.updateAllWindowsLaf();
-				if (MainGUI.initTxtWriter != null) {
-					MainGUI.initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
-				}
-				currentEditor.initGuiFromConfig(true);
+				SwingUtilities.invokeLater(styleChangedRunnable());
+//				if (MainGUI.initTxtWriter != null) {
+//					MainGUI.initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
+//				}
+//				currentEditor.initGuiFromConfig(true);
 			}
 		});
 		
@@ -590,21 +590,7 @@ public class GraphicPreferencesFrame extends JFrame {
 		// COMBO STYLE HANDLER
 		comboStyleLaF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							LookAndFeelInfo laf = (LookAndFeelInfo) comboStyleLaF.getSelectedItem();
-							currentConfiguration.getGuiOpt().setPreferredStyle(laf.getClassName());
-							GUIStyelSettings.setStyle(laf.getClassName(), currentConfiguration.getGuiOpt().nimbusSize);
-						} catch (Exception e1) {
-							dialogHelper.error("Sorry, something went wrong :(", e1.getClass().getName());
-							logger.error("Exception happened!", e1);
-							currentConfiguration.getGuiOpt().setPreferredStyle(BACKUP_PREFERRED_STYLE);
-						} finally {
-							currentEditor.initGuiFromConfig(true);
-						}
-					}
-				});
+				SwingUtilities.invokeLater(styleChangedRunnable());
 			}
 		});
 
@@ -915,5 +901,27 @@ public class GraphicPreferencesFrame extends JFrame {
 		} catch (Exception e1) {
 			logger.warn("Error while preiewing antialising effect on textarea", e1);
 		}
+	}
+	
+	private Runnable styleChangedRunnable() {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					LookAndFeelInfo laf = (LookAndFeelInfo) comboStyleLaF.getSelectedItem();
+					currentConfiguration.getGuiOpt().setPreferredStyle(laf.getClassName());
+					GUIStyelSettings.setStyle(laf.getClassName(), currentConfiguration.getGuiOpt().nimbusSize);
+				} catch (Exception e1) {
+					GUIStyelSettings.setStyle(BACKUP_PREFERRED_STYLE, currentConfiguration.getGuiOpt().nimbusSize);
+					currentConfiguration.getGuiOpt().setPreferredStyle(BACKUP_PREFERRED_STYLE);
+					dialogHelper.error("Sorry, something went wrong :(", e1.getClass().getName());
+					logger.error("Exception happened!", e1);
+				} finally {
+					GUIStyelSettings.updateAllWindowsLaf();
+					currentEditor.initGuiFromConfig(true);
+				}
+			}
+		};
 	}
 }

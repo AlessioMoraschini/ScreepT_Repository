@@ -9,7 +9,6 @@ import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
 import frameutils.utils.GuiUtils;
-import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkUtils;
 import network.om.FtpSpeedTestOptions;
@@ -105,7 +104,7 @@ public class NetInfoFrame extends JFrame{
 	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
-	public NetInfoFrame(INItializer currentConfig) {
+	public NetInfoFrame() {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		

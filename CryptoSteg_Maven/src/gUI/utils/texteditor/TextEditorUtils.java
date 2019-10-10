@@ -27,7 +27,9 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelper;
 import enums.Themes;
+import enums.ThemesWrapper;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
@@ -66,9 +68,12 @@ public class TextEditorUtils {
 	
 	public static final String NO_HIDE_ELEMENT = "NO_HIDE";
 	
+	JOptionHelper dialogHelper;
+	
 	public TextEditorUtils(TextEditor currentTextEditor) {
 		this.currentTextEditor = currentTextEditor;
 		this.textAreaDialogs = new TextAreaDialogs(getDialogManager());
+		this.dialogHelper = new JOptionHelper(currentTextEditor);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////
@@ -223,6 +228,7 @@ public class TextEditorUtils {
 		// ANCESTOR CHECK
 		if(ancestor == null || !ancestor.exists()) {
 			currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
+			refreshFromWorkspace(workspaceRoot);
 			return;
 		}
 		
@@ -263,10 +269,11 @@ public class TextEditorUtils {
 				currentTextEditor.splitPaneMain.setDividerLocation(0.0);
 			}
 			currentTextEditor.dynLblCurrentDir.setText(" - ");
-			logger.warn("Tree refresh skipped, file is null");
+			logger.warn("Tree refresh skipped, file does not exist");
 			
+			refreshFromWorkspace(ancestor);
 		} else {
-			if (!!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
+			if (!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
 				currentTextEditor.splitPaneMain.setDividerLocation(0.0);
 			}
 			currentTextEditor.dynLblCurrentDir.setText(" - ");
@@ -287,9 +294,9 @@ public class TextEditorUtils {
 			return;
 		}
 		
-		if (currentTextEditor.btnToggleFileView.isSelected()) {
-			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
-			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
+		if (currentTextEditor.currentConfiguration.getTextEditorOpt().fileTreeActive) {
+//			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
+//			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
 			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(workspaceRoot)));
 			try {
@@ -567,19 +574,24 @@ public class TextEditorUtils {
 	public void applySelectedTheme() {
 		
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
-
+		TextEditorOption txtOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		// backup unsaved to avoid changing saved info with theme change
 		boolean unsaved = loadedTabObj.unsaved;
 
-		Themes theme = (Themes) currentTextEditor.comboStylesScheme.getSelectedItem();
-		if (theme.equals(Themes.NONE)) {
+		ThemesWrapper theme = (ThemesWrapper) currentTextEditor.comboStylesScheme.getSelectedItem();
+		File pathFile = new File(theme.path);
+		
+		// If none selected or style definition not found on file system -> use default
+		if (theme.path.equals(Themes.NONE.defaultPath) || !pathFile.exists()) {
 			loadedTabObj.textArea.setHighlightCurrentLine(false);
-			RsyntaxUtils.setBackground(loadedTabObj.textArea, currentTextEditor.currentConfiguration.getTextEditorOpt().backCol);
-			RsyntaxUtils.setForeground(loadedTabObj.textArea, currentTextEditor.currentConfiguration.getTextEditorOpt().foreCol);
+			loadedTabObj.currentScrollPane.getGutter().setBackground(txtOpt.backCol.darker());
+			RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOpt.backCol);
+			RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOpt.foreCol);
+			txtOpt.setSelectedTheme(theme.path);
 		} else {
 			loadedTabObj.textArea.setHighlightCurrentLine(true);
-			currentTextEditor.currentConfiguration.getTextEditorOpt().setSelectedTheme(theme);
-			RsyntaxUtils.changeStyleViaThemeXml(loadedTabObj.textArea, theme.defaultPath);
+			txtOpt.setSelectedTheme(theme.path);
+			RsyntaxUtils.changeStyleViaThemeXml(loadedTabObj.textArea, theme.path);
 		}
 		// loadedTabObj.textArea.revalidate();
 		loadedTabObj.textArea.repaint();

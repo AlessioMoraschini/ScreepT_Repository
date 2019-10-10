@@ -26,7 +26,6 @@ import org.jnetpcap.protocol.tcpip.Tcp;
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		charAnimationPrinter ConsoleAnimated=new charAnimationPrinter();
 		String out_msg=  "*  Benvenuto in csNd, creato da Alessio Moraschini per ottimizzare gli scan della tua rete.  *\n"
 				        +"*  Consulta la guida prima di iniziare...e fanne buon uso! ;)                                *\n";

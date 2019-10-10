@@ -262,7 +262,7 @@ public class MissingDependenciesPanel extends JDialog{
 	
 	private void setGraphics(){
 		thisPanel.setIconImage(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT).getImage());
-		GuiUtils.showOnSameScreen(parentStarterFrame);
+		setLocationRelativeTo(parentStarterFrame);
 		
 		logger.debug("icon image setted to main window");
 		UIManager.put("ToolTip.background", new Color(255, 250, 205));

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.util.ArrayList;
 
 import enums.Themes;
+import resources.GeneralConfig;
 
 
 public class TextEditorOption {
@@ -18,9 +19,10 @@ public class TextEditorOption {
 	public static final Color DEFAULT_FILE_PANEL_BACKGROUND_COL = new Color(41, 49, 52);
 	public static final Color DEFAULT_FOREGROUND_COL = Color.BLACK;
 	public static final String DEFAULT_SELECTED_FILE_AT_START = "";
+	public static final String DEF_LastEscapeLanguage = "HTML_4";
 	
 	//TEXT AREA
-	public static final Themes DEFAULT_SELECTED_THEME = Themes.DARK;
+	public static final String DEFAULT_SELECTED_THEME = Themes.DARK.defaultPath;
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
 	public static final int DEFAULT_DIVIDER_POS_X = 230;
 	public static final int DEFAULT_TAB_SIZE = 2;
@@ -62,10 +64,11 @@ public class TextEditorOption {
 	public Color foreCol;
 	public ArrayList<String> openedFileList;
 	public String selectedAtStart;
+	public String lastEscapeLanguage;
 	
 	// TEXT AREA
 	public String defaultWorkspacePath;
-	public Themes selectedTheme;
+	public String selectedTheme;
 	public int dividerFileTreePosX;
 	public int tabSize = 2;
 	public boolean tabLineVisible;
@@ -107,6 +110,7 @@ public class TextEditorOption {
 		backCol = DEFAULT_BACKGROUND_COL;
 		foreCol = DEFAULT_FOREGROUND_COL;
 		selectedAtStart = DEFAULT_SELECTED_FILE_AT_START;
+		lastEscapeLanguage = DEF_LastEscapeLanguage;
 		defaultWorkspacePath = DEFAULT_WORKSPACE_LOCATION;
 		selectedTheme = DEFAULT_SELECTED_THEME;
 		dividerFileTreePosX = DEFAULT_DIVIDER_POS_X;
@@ -232,11 +236,11 @@ public class TextEditorOption {
 		return inlinedTabs;
 	}
 	
-	public Themes getSelectedTheme() {
+	public String getSelectedTheme() {
 		return selectedTheme;
 	}
 
-	public void setSelectedTheme(Themes selectedTheme) {
+	public void setSelectedTheme(String selectedTheme) {
 		this.selectedTheme = selectedTheme;
 	}
 	
@@ -485,5 +489,16 @@ public class TextEditorOption {
 	public void setShowBracketsPopup(boolean showBracketsPopup) {
 		this.showBracketsPopup = showBracketsPopup;
 	}
+
+
+	public String getLastEscapeLanguage() {
+		return lastEscapeLanguage;
+	}
+
+
+	public void setLastEscapeLanguage(String lastEscapeLanguage) {
+		this.lastEscapeLanguage = lastEscapeLanguage;
+	}
+	
 	
 }

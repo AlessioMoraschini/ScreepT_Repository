@@ -231,7 +231,6 @@ public class ScreeptManagerStub {
 		}
 			
 		logger.debug("Streams closed, exiting encription.");
-		// TODO check welldone usage
 		return wellDone;
 	}
 	
@@ -302,7 +301,6 @@ public class ScreeptManagerStub {
 		}
 		
 		logger.debug("Streams closed, exiting decription.");
-		// TODO check welldone usage
 		return wellDone;
 	}
 	
@@ -696,8 +694,6 @@ public class ScreeptManagerStub {
 			// now decript with aes and write to out file
 			fout.write(aesCoder.decrypt(partial_res));
 		}
-		
-		// TODO first save aescoded to file then decript
 		
 		// close streams to avoid memory leaks
 		fout.close();

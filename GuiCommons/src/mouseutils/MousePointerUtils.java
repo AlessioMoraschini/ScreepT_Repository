@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
@@ -29,12 +30,14 @@ public class MousePointerUtils {
 	Runnable onClickAction;
 	Thread actionClickThread;
 	MousePointerCaller owner;
+	public Component disabledTarget;
 	
-	private volatile boolean ListenerRemoved = false;
+	private AtomicBoolean enabled = new AtomicBoolean(false);
 	
-	public MousePointerUtils(Runnable onClickAction, MousePointerCaller owner) {
+	public MousePointerUtils(Runnable onClickAction, MousePointerCaller owner, Component disabledTarget) {
 		this.onClickAction = (onClickAction != null)? onClickAction : getVoidAction();
 		this.owner = owner;
+		this.disabledTarget = disabledTarget;
 		
 		try {
 			mouseListener = addMouseListener();
@@ -52,12 +55,30 @@ public class MousePointerUtils {
 		return pixelCurrColor;
 	}
 
-	public AWTEventListener addMouseListener() {
-		ListenerRemoved = false;
+	public synchronized AWTEventListener addMouseListener() {
+		enabled.set(true);
+		
 		AWTEventListener listener = new AWTEventListener() {
-			
 			@Override
 			public void eventDispatched(AWTEvent event) {
+				
+				if(!enabled.get()) {return;}
+				
+				Point currentPos = MouseInfo.getPointerInfo().getLocation();
+				Point absTargPos = disabledTarget.getParent().getBounds().getLocation();
+				try {
+					absTargPos = disabledTarget.getLocationOnScreen();
+				}catch(Exception e) {}
+				
+				Rectangle absoluteBounds = new Rectangle(
+						absTargPos.x,
+						absTargPos.y,
+						disabledTarget.getWidth(),
+						disabledTarget.getHeight()
+					);
+				boolean hoverExcludedComponent = absoluteBounds.contains(currentPos);
+				
+				if(hoverExcludedComponent) {return;}
 				
 				if (event instanceof MouseEvent) {
 					MouseEvent me = (MouseEvent)event;
@@ -65,7 +86,6 @@ public class MousePointerUtils {
 						logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
 						logger.debug(event);
 						
-						Point currentPos = MouseInfo.getPointerInfo().getLocation();
 						pixelCurrColor = robot.getPixelColor(currentPos.x, currentPos.y);
 						
 						actionClickThread = new Thread(onClickAction);
@@ -95,7 +115,6 @@ public class MousePointerUtils {
 					logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
 					logger.debug(event);
 					
-					Point currentPos = MouseInfo.getPointerInfo().getLocation();
 					pixelCurrColor = robot.getPixelColor(currentPos.x, currentPos.y);
 					
 					actionClickThread = new Thread(onClickAction);
@@ -106,7 +125,6 @@ public class MousePointerUtils {
 					} catch (InterruptedException e) {
 						logger.error(this.getClass(), e);
 					}
-					
 				} 
 //				Thread listenerRemover = new Thread(removeMouseListenerRunnable());
 //				listenerRemover.start();
@@ -118,13 +136,21 @@ public class MousePointerUtils {
 		return listener;
 	}
 	
-	public boolean isListenerRemoved() {
-		return (ListenerRemoved);
+	public synchronized boolean isEnabled() {
+		return (enabled.get());
 	}
 	
-	public void removeMouseListener() {
-		ListenerRemoved = true;
+	public synchronized void removeMouseListener() {
 		Toolkit.getDefaultToolkit().removeAWTEventListener(mouseListener);
+		enabled.set(false);
+	}
+
+	public AtomicBoolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(AtomicBoolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public Runnable removeMouseListenerRunnable() {

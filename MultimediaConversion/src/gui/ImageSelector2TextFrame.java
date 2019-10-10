@@ -90,7 +90,7 @@ public class ImageSelector2TextFrame extends JFrame{
 		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, this);
 		GuiUtils.centerFrame(this, WIDTH, HEIGHT);
 		GuiUtils.moveFrame(this, GuiUtils.getScreenSize(mainFrameParent).width/4, 0);
-		GuiUtils.showOnSameScreen(mainFrameParent);
+		GuiUtils.showOnSameScreen(this, mainFrameParent);
 		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 		
 		imageContainerPanel = new JPanel();

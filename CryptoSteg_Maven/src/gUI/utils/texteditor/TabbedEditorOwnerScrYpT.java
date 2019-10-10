@@ -2,7 +2,6 @@ package gUI.utils.texteditor;
 
 import java.awt.event.MouseWheelListener;
 
-import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
@@ -11,7 +10,6 @@ import gUI.panels.TextEditor;
 import gUI.utils.shortcutshandler.TextEditorMouseWheelListener;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
-import tabbededitor.CustomTabbedEditor;
 import tabbededitor.ITabbedEditorOwner;
 
 public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{

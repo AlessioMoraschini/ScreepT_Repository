@@ -22,7 +22,10 @@ import variousutils.HandleString;
 import javax.swing.JLabel;
 
 import java.awt.Font;
+import java.awt.Rectangle;
+
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JComboBox;
 
 import javax.swing.JButton;
@@ -45,7 +48,7 @@ public class EscapeReplacerFrame extends JFrame{
 	
 	private JLabel lblEscapesHeader;
 	private JPanel panel;
-	private JComboBox comboEscapeType;
+	private JComboBox<String> comboEscapeType;
 	private JButton btnConvertSpecialToEsc;
 	private JButton buttonInvoker;
 	public JTextArea outputTextArea;
@@ -53,30 +56,38 @@ public class EscapeReplacerFrame extends JFrame{
 	private JTextField textFieldTry;
 	private JButton btnTryEscapeTo;
 	private JButton btnTrySpecialTo;
+	private JFrame parentFrame;
+	Runnable comboClickAction;
 	
 	// MAIN CONSTRUCTOR //
-	public EscapeReplacerFrame(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
+	public EscapeReplacerFrame(JFrame parent, JTextArea outputText, JButton buttonInvoke, Runnable comboClickAction) {
 		
 		active = true;
 		
+		this.comboClickAction = comboClickAction;
+		
+		setBounds(new Rectangle(700,200));
+		GuiUtils.centerComponent(this);
+		
+		parentFrame = parent;
 		outputTextArea = outputText;
 		buttonInvoker = buttonInvoke;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[250px][220px,grow]", "[30px][30px,grow][20px][20px,grow]"));
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES, this);
-		GuiUtils.showOnSameScreen(parent);
+		setLocationRelativeTo(parentFrame);
 		
 		panel = new JPanel();
 		panel.setForeground(Color.WHITE);
-		panel.setBorder(new LineBorder(Color.GRAY, 4));
+		panel.setBorder(new LineBorder(Color.GRAY, 2, true));
 		panel.setBackground(Color.BLACK);
 		getContentPane().add(panel, "cell 0 0 2 1,growx,aligny top");
-		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][grow][]", "[]"));
+		panel.setLayout(new MigLayout("", "[][grow][]", "[]"));
 		
 		lblEscapesHeader = new JLabel("Escape sequence Replacer");
 		lblEscapesHeader.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEscapesHeader.setForeground(Color.LIGHT_GRAY);
+		lblEscapesHeader.setForeground(Color.WHITE);
 		lblEscapesHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 15));
 		lblEscapesHeader.setBackground(SystemColor.activeCaptionBorder);
 		panel.add(lblEscapesHeader, "cell 1 0,alignx center");
@@ -86,15 +97,17 @@ public class EscapeReplacerFrame extends JFrame{
 		getContentPane().add(textFieldTry, "cell 0 1,growx");
 		textFieldTry.setColumns(10);
 		
-		comboEscapeType = new JComboBox<>(EscapeType.getTypesString());
+		comboEscapeType = new JComboBox<String>(EscapeType.getTypesString());
 //		comboEscapeType = new JComboBox<>();
+		comboEscapeType.setPreferredSize(new Dimension(33, 34));
+		comboEscapeType.setMinimumSize(new Dimension(33, 28));
 		comboEscapeType.setSelectedItem(EscapeType.HTML_4);
 		comboEscapeType.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		comboEscapeType.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(comboEscapeType, "cell 1 1,growx");
 		
 		btnTrySpecialTo = new JButton("Try special To escape");
-		btnTrySpecialTo.setMaximumSize(new Dimension(250, 25));
+		btnTrySpecialTo.setMaximumSize(new Dimension(250, 30));
 		btnTrySpecialTo.setMinimumSize(new Dimension(148, 25));
 		btnTrySpecialTo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		btnTrySpecialTo.setToolTipText(tooltipTrySpecialToEscape);
@@ -111,7 +124,7 @@ public class EscapeReplacerFrame extends JFrame{
 		getContentPane().add(btnConvertSpecialToEsc, "cell 1 2,growx");
 		
 		btnTryEscapeTo = new JButton("Try escape To special");
-		btnTryEscapeTo.setMaximumSize(new Dimension(250, 25));
+		btnTryEscapeTo.setMaximumSize(new Dimension(250, 30));
 		btnTryEscapeTo.setMinimumSize(new Dimension(148, 25));
 		btnTryEscapeTo.setCursor(GuiUtils.CURSOR_HAND);
 		btnTryEscapeTo.setToolTipText(tooltipTryEscapeToSpec);
@@ -189,6 +202,36 @@ public class EscapeReplacerFrame extends JFrame{
 			}
 		});
 		
+		// ESCAPE MEMORY IN CONFIGURATION 
+		comboEscapeType.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (comboClickAction != null) {
+					SwingUtilities.invokeLater(comboClickAction);
+				}
+			}
+		});
+	}
+	
+	public String getCurrentComboLang() {
+		try {
+			return (String) comboEscapeType.getSelectedItem();
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	public boolean initComboLang(String language) {
+		try {
+			comboEscapeType.setSelectedItem(language);
+			comboEscapeType.revalidate();
+			comboEscapeType.repaint();
+			
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	// USEFUL METHODS //

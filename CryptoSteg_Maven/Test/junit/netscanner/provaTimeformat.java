@@ -8,7 +8,6 @@ import java.util.Vector;
 public class provaTimeformat {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
 		Calendar cal = Calendar.getInstance();

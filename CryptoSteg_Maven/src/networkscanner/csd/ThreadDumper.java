@@ -30,7 +30,6 @@ public class ThreadDumper implements Runnable{
 		try {
 			INI= new Ini(new FileReader("CONFIG.ini"));
 		}catch (Exception e) {
-			// TODO: handle exception
 			System.out.println("Errore nell'apertura di CONFIG.ini");
 		}
 		

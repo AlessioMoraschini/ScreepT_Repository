@@ -14,6 +14,7 @@ import variousutils.HandleString;
 
 import javax.swing.JPanel;
 import java.awt.Color;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -60,9 +61,9 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 		
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER, this);
 		
-		pointerUtils = new MousePointerUtils(getOnClickAction(), this);
-		
 		initializeGui();
+		
+		pointerUtils = new MousePointerUtils(getOnClickAction(), this, btnPickerOn);
 		
 		addHandlers();
 		
@@ -127,12 +128,12 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(pointerUtils.isListenerRemoved()) {
+				if(!pointerUtils.isEnabled()) {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
-					pointerUtils.addMouseListener();
+					pointerUtils.setEnabled(new AtomicBoolean(true));
 				}else {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
-					pointerUtils.removeMouseListener();
+					pointerUtils.setEnabled(new AtomicBoolean(false));
 				}
 			}
 		});

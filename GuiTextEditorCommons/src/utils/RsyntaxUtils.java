@@ -5,16 +5,7 @@ import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
-
 import org.apache.log4j.Logger;
-import org.fife.ui.autocomplete.AutoCompletion;
-import org.fife.ui.autocomplete.CompletionProvider;
-import org.fife.ui.autocomplete.DefaultCompletionProvider;
-import org.fife.ui.autocomplete.LanguageAwareCompletionProvider;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Style;
 import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
@@ -36,8 +27,6 @@ public class RsyntaxUtils {
 	public static final String THEME_MONOKAI = "/org/fife/ui/rsyntaxtextarea/themes/monokai.xml";
 	public static final String THEME_VS = "/org/fife/ui/rsyntaxtextarea/themes/vs.xml";
 	
-	// TODO aggiungi stringhe configurazioni possibili
-
 	   /**
 	    * Changes the styles used by the editor via an XML file specification. This
 	    * method is preferred because of its ease and modularity.
@@ -49,23 +38,26 @@ public class RsyntaxUtils {
 		  }
 		  Font backup = textArea.getFont();
 	      try {
-//	         Theme theme = Theme.load(textArea.getClass().getResourceAsStream(themeFilePath));
-	    	 inputStream = new FileInputStream(themeFilePath);
-	    	 Theme theme = Theme.load(inputStream);
-	         theme.apply(textArea);
-	      } catch (IOException ioe) {
+	    	  if (new File(themeFilePath).exists()) {
+		    	 inputStream = new FileInputStream(themeFilePath);
+		    	 Theme theme = Theme.load(inputStream);
+		         theme.apply(textArea);
+	    	  }
+	      } catch (Exception ioe) {
 	    	  logger.error(ioe);
 	         try {
-	        	 // fallback case
-	        	 Theme theme = Theme.load(textArea.getClass().getResourceAsStream(themeFilePath));
-				 theme.apply(textArea);
+				// fallback case
+				Theme theme = Theme.load(textArea.getClass().getResourceAsStream(themeFilePath));
+				if (theme != null) {
+					theme.apply(textArea);
+				} 
 			} catch (Exception e) {
-				logger.error(e);
+				logger.error("Xml scheme definition not found at given address ("+themeFilePath+")");
 			}
 	      } finally {
 	         try {
 				inputStream.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 			}
 	         textArea.setFont(backup);
 	         textArea.revalidate();

@@ -72,7 +72,7 @@ public class MainGuiParent {
 	public static LauncherLoaderFrame loaderGraphics;
 	public static final float launcherRatio = 0.3f;
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
-	public static final Dimension minimumSize = new Dimension(1100,650);
+	public static final Dimension minimumSize = new Dimension(1200,650);
 	
 	// MENU ITEMS
 	int menuSize;
@@ -88,6 +88,7 @@ public class MainGuiParent {
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
 	JMenu mnrestartPanel;
+	JMenuItem mntmpadding = new JMenuItem();
 	JMenuItem mntmPinApplicationOnTop;
 	
 	static JMenuItem mntmInspectCurrentConfiguration;
@@ -156,8 +157,11 @@ public class MainGuiParent {
 		// CREATE MENU-BAR STRUCTURE
 		Insets mainMargin = new Insets(0, 1, 1, 1);
 		menuBar.setMargin(mainMargin);
-
-		Insets menuEntryMargin = new Insets(0, 0, 0, 2);
+		// prepare padding to right for pinApplication
+		mntmpadding.setPreferredSize(new Dimension(800, 20));
+ 		mntmpadding.setEnabled(false);
+ 		
+		Insets menuEntryMargin = new Insets(0, 0, 0, 6);
 		menuBar.add(mnFile);
 		mnFile.setMargin(menuEntryMargin);
 		menuBar.add(mnPreferences);
@@ -169,6 +173,7 @@ public class MainGuiParent {
 		menuBar.add(mnHelp);
 		mnHelp.setMargin(menuEntryMargin);
 		
+		menuBar.add(mntmpadding);
 		menuBar.add(mntmPinApplicationOnTop);
 		mntmPinApplicationOnTop.setMargin(menuEntryMargin);
 		
@@ -247,6 +252,8 @@ public class MainGuiParent {
 		
 		// ICON ON RIGHT OF BAR
 		mntmPinApplicationOnTop.setFont(menuBarFont);
+		mntmPinApplicationOnTop.setAlignmentX(1);
+		mntmpadding.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); // ONLY TO PAD RIGHT Pin On Top
 		mntmPinApplicationOnTop.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 		// SUBDIRECTORIES
@@ -303,7 +310,7 @@ public class MainGuiParent {
 		
 		MenuSetter.setIconTextGap(menuBar, 15);
 		
-		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
+		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);
 		mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
 		

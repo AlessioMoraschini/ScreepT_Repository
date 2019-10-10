@@ -66,8 +66,7 @@ public class ScrYpTLauncher {
 	private static final String LOG_PROPERTIES_PATH = LAUNCHER_CONTAINER_PATH+"Config/log4j.properties";
 
 	// jvm search fields default
-	public static final String JVM_ARGS = " -Dfile.encoding=UTF8 -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
-	public static final String GUI_SCALE_ARG = "-Dsun.java2d.d3d=false -Dsun.java2d.uiScale=";
+	public static final String JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
 	
 	public static boolean ignoreWarnings = false;
 	

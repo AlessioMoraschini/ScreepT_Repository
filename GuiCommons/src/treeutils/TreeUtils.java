@@ -1,5 +1,8 @@
 package treeutils;
 
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import frameutils.utils.GuiUtils;
 import generic.LimitedConcurrentList;
 import treeutils.om.FileNamed;
 
@@ -41,6 +45,27 @@ public class TreeUtils {
 			}
 		}
 		return new TreePath(result);
+	}
+	
+	public static MouseMotionListener getHoverOnNodesListener() {
+		return new MouseMotionListener() {
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				JTree source = (JTree) e.getSource();
+				TreePath tp = source.getPathForLocation(e.getX(), e.getY());
+
+				if (tp != null) {
+					source.setCursor(GuiUtils.CURSOR_HAND);
+				} else {
+					source.setCursor(GuiUtils.CURSOR_DEFAULT);
+				}
+			}
+		};
 	}
 	
 	/**

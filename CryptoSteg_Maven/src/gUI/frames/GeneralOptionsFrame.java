@@ -109,7 +109,7 @@ public class GeneralOptionsFrame extends JFrame{
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GEN_OPT, this);
 		
-		GuiUtils.showOnSameScreen(MainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
 		
 		try {
 			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
