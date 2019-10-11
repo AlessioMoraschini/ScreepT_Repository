@@ -442,7 +442,7 @@ public class MainGUI extends MainGuiParent{
 		
 		// SW window icon
 		try {
-			SW_ICON = ImageIO.read(new File(IconsPathConfigurator.MAIN_APP_ICON));
+			SW_ICON = ImageIO.read(new File(ImagesPathConfigurator.MAIN_APP_ICON));
 			frmScryptV.setIconImage(SW_ICON);
 			logger.info("icon image setted to main window");
 		} catch (IOException e1) {
@@ -1476,7 +1476,7 @@ public class MainGUI extends MainGuiParent{
 				}
 			}
 			
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			logger.error("Error getting changes on tempFolder decrypted", e);
 		}
 		return result;

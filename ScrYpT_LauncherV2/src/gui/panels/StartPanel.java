@@ -16,6 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 
 import javax.swing.JLabel;
@@ -106,7 +107,7 @@ public class StartPanel extends JFrame{
 		btnDependencyManager.setBackground(new Color(169, 169, 169));
 		mainPanel.add(btnDependencyManager, "cell 0 2 3 1,grow");
 		
-		lblAmDesign = new JLabel("A.M. Design & Developement");
+		lblAmDesign = new JLabel("A.M. Design & Development");
 		lblAmDesign.setForeground(Color.LIGHT_GRAY);
 		lblAmDesign.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		mainPanel.add(lblAmDesign, "cell 0 3 2 1,alignx left,aligny bottom");
@@ -187,7 +188,7 @@ public class StartPanel extends JFrame{
 	private void setGraphics(){
 		// SW window icon
 		try {
-			LAUNCHER_GUI.setIconImage(ImageIO.read(new File(IconsPathConfigurator.MAIN_APP_ICON)));
+			LAUNCHER_GUI.setIconImage(ImageIO.read(new File(ImagesPathConfigurator.MAIN_APP_ICON)));
 			logger.debug("icon image setted to main window");
 			ToolTipManager.sharedInstance().setInitialDelay(TOOLTIP_DELAY);
 		} catch (IOException e1) {

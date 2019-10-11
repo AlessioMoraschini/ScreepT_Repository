@@ -19,10 +19,27 @@
   </properties>
   
   <build>
-    <finalName>${export.jar.name}</finalName>
+    <finalName>${export.jar.name}.${buildNumber}</finalName>
     <sourceDirectory>src</sourceDirectory>
     
     <plugins>
+
+		<!-- Generate sequential build number - plugin -->
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>buildnumber-maven-plugin</artifactId>
+			<executions>
+				<execution>
+					<id>useLastCommittedRevision</id>
+					<goals>
+						<goal>create</goal>
+					</goals>
+					<configuration>
+						<useLastCommittedRevision>true</useLastCommittedRevision>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
     
       <!-- download source code in Eclipse, best practice -->
       <plugin>
@@ -65,6 +82,7 @@
                           ${export.directory.multijar.libs}
                           <!-- ECLIPSE_PRJ - ${project.build.directory}/libs -->
                       </outputDirectory>
+                      <exclude>/**/*humbs.db</exclude>
                   </configuration>
               </execution>
           </executions>
@@ -102,6 +120,8 @@
 	                    <descriptorRef>jar-with-dependencies</descriptorRef>
 	                </descriptorRefs>
 	                <appendAssemblyId>false</appendAssemblyId>
+	                
+	                <exclude>/**/*humbs.db</exclude>
 	            </configuration>
 	        </execution>
 	    </executions>
@@ -143,6 +163,7 @@
      					    <include>LAUNCHER/**/*</include>
 					        <include>LAUNCHER/*</include>
 					    </includes>
+					    <excludes>/**/*humbs.db</excludes>
 					 </resource>
 					 <!-- Main scrypt's jar (not fatjar) just compiled in /target -->
 				     <resource>

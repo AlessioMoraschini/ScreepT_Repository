@@ -24,9 +24,9 @@ public class GeneralConfig {
 
 	// MAIN PROPERTIES
 	public static final String APP_VERSION = linkedMappings.getProperty("APP_VERSION");
-	public static final String WEBSITE = "www.am_design_developement.com";
+	public static final String WEBSITE = "www.am_design_development.com";
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
-	public static final String AUTHOR = "A.M. Design and Developement";
+	public static final String AUTHOR = "A.M. Design and Development";
 	public static final String BUILD_TS_DATE = linkedMappings.getProperty("BUILD_TIMESTAMP")
 										.replaceAll("T", " at ")
 										.replaceAll("Z", "")

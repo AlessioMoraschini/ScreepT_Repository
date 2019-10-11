@@ -16,9 +16,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.log4j.Logger;
 
 import frameutils.utils.GuiUtils;
-import maingUI.MainGUI;
 import mainobj.INItializer;
-import resources.IconsPathConfigurator;
+import resources.ImagesPathConfigurator;
 
 public class TestUpdateProgress {
 	
@@ -163,7 +162,7 @@ public class TestUpdateProgress {
 		}
 		
 		dialog = new JDialog();
-		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, dialog);
+		GuiUtils.setFrameIcon(ImagesPathConfigurator.MAIN_APP_ICON, dialog);
 		dialog.setMinimumSize(new Dimension(PanelWidth, PanelHeight));
         dialog.setBounds(new Rectangle(LeftStart, TopStart, PanelWidth, PanelHeight));
         dialog.setTitle("Processing");

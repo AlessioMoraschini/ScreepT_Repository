@@ -17,6 +17,7 @@ import frameutils.utils.GuiUtils;
 import media.ImageGeneralWorker;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import resources.ImagesPathConfigurator;
 import splitpanel.SplitPaneUtils;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.tess4j.TesseractException;
@@ -87,7 +88,7 @@ public class ImageSelector2TextFrame extends JFrame{
 
 		this.setAlwaysOnTop(true);
 		this.setTitle(title);
-		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, this);
+		GuiUtils.setFrameIcon(ImagesPathConfigurator.MAIN_APP_ICON, this);
 		GuiUtils.centerFrame(this, WIDTH, HEIGHT);
 		GuiUtils.moveFrame(this, GuiUtils.getScreenSize(mainFrameParent).width/4, 0);
 		GuiUtils.showOnSameScreen(this, mainFrameParent);

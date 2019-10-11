@@ -9,9 +9,7 @@ import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import gUI.utils.tree.crypter.dragndrop.DragNDropVirtualCellRenderer;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
-import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 

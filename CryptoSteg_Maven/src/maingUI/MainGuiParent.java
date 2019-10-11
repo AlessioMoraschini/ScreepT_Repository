@@ -137,7 +137,7 @@ public class MainGuiParent {
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
-						frmScryptV.setTitle(GeneralConfig.APPLICATION_NAME+" - A.M. developement");	
+						frmScryptV.setTitle(GeneralConfig.APPLICATION_NAME+" - A.M. development");	
 					}
 				}
 			}

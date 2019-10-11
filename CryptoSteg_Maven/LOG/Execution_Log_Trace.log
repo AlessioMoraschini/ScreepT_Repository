@@ -2014,3 +2014,78 @@ ScrYpT - V${project.version} Started now!
 2019-10-11 01:11:50,309 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
 2019-10-11 01:11:50,477 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
 2019-10-11 01:11:51,218 [Thread-1] INFO  maingUI.MainGUI - Chosen log level: ERROR
+2019-10-11 08:47:03,800 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Fri Oct 11 08:47:03 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-11 08:47:03,804 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-11 08:47:04,161 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-11 08:47:04,336 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-11 08:47:05,063 [Thread-1] INFO  maingUI.MainGUI - Chosen log level: ERROR
+2019-10-11 08:47:22,428 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Fri Oct 11 08:47:22 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-11 08:47:22,433 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-11 08:47:22,769 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-11 08:47:22,958 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-11 08:47:23,717 [Thread-1] INFO  maingUI.MainGUI - Chosen log level: ERROR
+2019-10-11 21:02:03,823 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Fri Oct 11 21:02:03 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-11 21:02:03,827 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-11 21:02:04,228 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-11 21:02:04,388 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-11 21:02:05,119 [Thread-1] INFO  maingUI.MainGUI - Chosen log level: ERROR
+2019-10-11 21:04:41,572 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Fri Oct 11 21:04:41 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-11 21:04:41,577 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-11 21:04:41,923 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-11 21:04:42,079 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-11 21:04:42,821 [Thread-1] INFO  maingUI.MainGUI - Chosen log level: ERROR
+2019-10-11 21:08:43,904 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Fri Oct 11 21:08:43 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-11 21:08:43,909 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-11 21:08:44,221 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-11 21:08:44,378 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-11 21:08:45,108 [Thread-1] INFO  maingUI.MainGUI - Chosen log level: ERROR

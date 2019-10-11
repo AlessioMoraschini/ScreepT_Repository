@@ -10,6 +10,7 @@ import mainlauncher.ScrYpTLauncher;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import resources.ImagesPathConfigurator;
 import utils.SysUtils;
 
 import javax.swing.JLabel;
@@ -20,10 +21,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -421,7 +419,7 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	private void setGraphics() {
 		
-		GuiUtils.setFrameIcon(IconsPathConfigurator.MAIN_APP_ICON, thisPanel);
+		GuiUtils.setFrameIcon(ImagesPathConfigurator.MAIN_APP_ICON, thisPanel);
 		
 		lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 		lblMaxWarninig.setVisible(true);

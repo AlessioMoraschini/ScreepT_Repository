@@ -62,15 +62,14 @@ public class INItializer {
 		guiOpt = new GuiOption();
 		textEditorOpt = new TextEditorOption();
 		imageConvertOption = new ImgConverterOption();
+		
+		try {
+			iniReadFile = new Wini(new File(DEFAULT_INI_PATH));
+			iniFile = new Wini(new File(DEFAULT_INI_PATH));
+		} catch (IOException e) {
+			logger.error("INItializer() -> Exception happened initializing configuration!", e);
+		}
 	}
-	
-//	public INItializer(Ini ini) {
-//		iniReadFile = ini;
-//		genOpt = new GenericOption();
-//		fileOpt = new FileOptions();
-//		steganOpt = new SteganOption();
-//		aesOpt = new AesOption();
-//	}
 	
 	public INItializer(Wini configFile) {
 		// initialize both read and write ini variable, to keep them synchronyzed
@@ -81,7 +80,7 @@ public class INItializer {
 			iniReadFile = new Wini(new File(DEFAULT_INI_PATH));
 			iniFile = new Wini(new File(DEFAULT_INI_PATH));
 		} catch (IOException e) {
-			logger.error("Exception happened!", e);
+			logger.error("INItializer(Wini configFile) -> Exception happened initializing configuration!", e);
 		}
 		genOpt = new GenericOption();
 		fileOpt = new FileOptions();
@@ -144,6 +143,9 @@ public class INItializer {
 		}
 	}
 	
+	/**
+	 * Use this to store all pending changes to file (options must have been pre-written with <b>writeXxxOptions()</b>)
+	 */
 	public void store() {
 		// WRITE ALL VALUES TO FILE
 		try {
@@ -155,6 +157,9 @@ public class INItializer {
 	
 	// READ PROPERTIES
 	
+	/**
+	 * Load file properties from file into volatile memory
+	 */
 	public void loadFileOptions() {
 		// LOAD FILE OPTIONS
 		
@@ -185,6 +190,9 @@ public class INItializer {
 		}
 	}
 	
+	/**
+	 * Load GUI properties from file into volatile memory
+	 */
 	public void loadGuiOptions() {
 		
 		// LOAD GUI OPTIONS
@@ -213,6 +221,9 @@ public class INItializer {
 				
 	}
 	
+	/**
+	 * Load Stegano crypter properties from file into volatile memory
+	 */
 	public void loadSteganoOptions() {
 		// LOAD STEGANO OPTIONS
 		steganOpt.setUltraSecure(Boolean.parseBoolean(iniReadFile.get(STEGA_OPT, "flagUltraSecure")));
@@ -239,6 +250,9 @@ public class INItializer {
 		
 	}
 	
+	/**
+	 * Load Generic properties from file into volatile memory
+	 */
 	public void loadGeneralOptions() {
 		// LOAD GENERAL OPTIONS
 		genOpt.setUserName(iniReadFile.get(GEN_OPT, "userName"));
@@ -260,8 +274,13 @@ public class INItializer {
 		} catch (Exception e1) {
 			genOpt.setGeneralVolume(GenericOption.DEFAULT_VOLUME);
 		}
+		
+		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
 	}
 	
+	/**
+	 * Load TextEditor properties from file into volatile memory
+	 */
 	public void loadTxtEditorOptions() {
 		// TEXT EDITOR OPTIONS
 		
@@ -370,6 +389,9 @@ public class INItializer {
 		textEditorOpt.setSelectedTheme(theme);
 	}
 	
+	/**
+	 * Load image converter module properties from file into volatile memory
+	 */
 	public void loadImageConverterOptions() {
 		// IMAGE CONVERTER OPTIONS
 		imageConvertOption.setSameSize(Boolean.parseBoolean(iniReadFile.get(IMAGE_CONVERTER_OPT, "sameSize")));
@@ -450,6 +472,7 @@ public class INItializer {
 		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
 		iniFile.put(GEN_OPT, "generalVolume", genOpt.getGeneralVolume());
 		iniFile.put(GEN_OPT, "lastPanelOpened", genOpt.getLastPanelOpened().getName());
+		iniFile.put(GEN_OPT, "txtEditorFileMonitorActive", genOpt.isTxtEditorFileMonitorActive());
 	}
 	
 	public void writeImgConverterOptions() {
@@ -609,6 +632,7 @@ public class INItializer {
 			   .append("USERNAME: ").append(genOpt.getUserName())
 			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
 			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
+			   .append("\nTxt Editor File Changes Listen for changes: ").append(genOpt.isTxtEditorFileMonitorActive())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION

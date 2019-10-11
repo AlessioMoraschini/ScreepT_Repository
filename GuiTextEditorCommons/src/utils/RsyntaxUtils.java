@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Style;
@@ -16,7 +15,7 @@ import media.ImageGeneralWorker;
 
 public class RsyntaxUtils {
 	
-	// TextFileWriter logger creation
+	// RsyntaxUtils logger creation
 	static Logger logger = Logger.getLogger(RsyntaxUtils.class);
 	
 	public static final String THEME_DARK = "/org/fife/ui/rsyntaxtextarea/themes/dark.xml";

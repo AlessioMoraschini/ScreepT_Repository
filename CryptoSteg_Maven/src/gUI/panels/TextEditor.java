@@ -1469,8 +1469,16 @@ public class TextEditor extends JPanel {
 						lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
 						currentConfiguration.getTextEditorOpt().setFont(loadedTabObj.textArea.getFont());
 						loadedTabObj.textArea.setFont(font);
-						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos-1);
-						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos+1);
+						
+						if(oldCaretPLinePos > 0 ) {
+							loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos - 1);
+							loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos + 1);
+						} else try {
+							loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos + 1);
+							loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos - 1);
+						}catch(Exception e) {
+						}
+						
 						loadedTabObj.textArea.revalidate();
 					}
 				});
@@ -2076,7 +2084,7 @@ public class TextEditor extends JPanel {
 
 	private void loadOpenedFilesAtStart() {
 		
-		CustomTabbedEditor currentTabbedEditor = getCurrentTabEditor();
+		final CustomTabbedEditor currentTabbedEditor = getCurrentTabEditor();
 		
 		currentTabbedEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 
@@ -2132,7 +2140,11 @@ public class TextEditor extends JPanel {
 		}
 		currentTabbedEditor.alreadyLoading = false;
 		currentTabbedEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
-		textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);
+			}
+		});
 	}
 
 	public void startRefreshFooterThread() {

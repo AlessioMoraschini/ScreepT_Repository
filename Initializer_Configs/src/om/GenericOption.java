@@ -8,18 +8,21 @@ public class GenericOption {
 	public final static String DEFAULT_USERNAME = "";
 	public final static String DEFAULT_CHARSET = "UTF-8";
 	public final static float DEFAULT_VOLUME = 0.6F;
+	public final static boolean DEF_TxtEditorFileMonitorActive = true;
 	public final static Class DEFAULT_PANEL_CLASS_AT_START = JPanel.class;
 
 	// FILEDS
 	private String userName;
 	private String charset;
 	private float generalVolume;
+	private boolean TxtEditorFileMonitorActive;
 	private Class lastPanelOpened;
 	
 	public GenericOption() {
 		userName = DEFAULT_USERNAME;
 		charset = DEFAULT_CHARSET;
 		generalVolume = DEFAULT_VOLUME;
+		TxtEditorFileMonitorActive = DEF_TxtEditorFileMonitorActive;
 		lastPanelOpened = DEFAULT_PANEL_CLASS_AT_START;
 	}
 	
@@ -30,6 +33,14 @@ public class GenericOption {
 		
 	}
 	
+	public boolean isTxtEditorFileMonitorActive() {
+		return TxtEditorFileMonitorActive;
+	}
+
+	public void setTxtEditorFileMonitorActive(boolean txtEditorFileMonitorActive) {
+		TxtEditorFileMonitorActive = txtEditorFileMonitorActive;
+	}
+
 	public String getUserName() {
 		return userName;
 	}

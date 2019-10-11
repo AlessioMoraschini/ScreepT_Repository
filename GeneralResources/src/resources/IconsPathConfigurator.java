@@ -6,8 +6,6 @@ import javax.swing.ImageIcon;
 
 public class IconsPathConfigurator {
 	
-	public static final String MAIN_APP_ICON = GeneralConfig.DEFAULT_IMAGE_FOLDER + "icon.jpg";
-	
 	///////////////// MENU ICONS /////////////////
 	
 	// file extension types
