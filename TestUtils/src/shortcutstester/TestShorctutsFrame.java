@@ -2,12 +2,16 @@ package shortcutstester;
 
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import testUtils.TestUtils;
 
 public class TestShorctutsFrame {
 
@@ -42,6 +46,19 @@ public class TestShorctutsFrame {
 			public void windowClosed(WindowEvent e) {
 			}
 			public void windowActivated(WindowEvent e) {
+			}
+		});
+		
+		textAreaS.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				TestUtils.printl("\n=> Focus lost\n");
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				TestUtils.printl("\n=> Focus gained\n");
 			}
 		});
 	}

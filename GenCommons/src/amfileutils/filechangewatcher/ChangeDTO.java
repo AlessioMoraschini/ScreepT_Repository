@@ -1,5 +1,6 @@
 package amfileutils.filechangewatcher;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ChangeDTO {
@@ -26,6 +27,59 @@ public class ChangeDTO {
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * Updates current obj with given change DTO (existing changes will be skipped to avoid duplicates)
+	 * 
+	 * @param changeDto
+	 */
+	public void update(ChangeDTO changeDto){
+		for(File changed : changeDto.changedFiles) {
+			if(!changedFiles.contains(changed)) {
+				changedFiles.add(changed);
+			}
+		}
+		for(File removed : changeDto.removedFiles) {
+			if(!removedFiles.contains(removed)) {
+				removedFiles.add(removed);
+			}
+		}
+		for(File created : changeDto.addedFiles) {
+			if(!addedFiles.contains(created)) {
+				addedFiles.add(created);
+			}
+		}
+	}
+	
+	public File findChangedFile(File target) throws IOException {
+		for(File iterator : changedFiles) {
+			if(iterator.getCanonicalFile().equals(target)) {
+				return iterator;
+			}
+		}
+		
+		return null;
+	}
+	
+	public File findAddeddFile(File target) throws IOException {
+		for(File iterator : addedFiles) {
+			if(iterator.getCanonicalFile().equals(target)) {
+				return iterator;
+			}
+		}
+		
+		return null;
+	}
+
+	public File findRemovedFile(File target) throws IOException {
+		for(File iterator : removedFiles) {
+			if(iterator.getCanonicalFile().equals(target)) {
+				return iterator;
+			}
+		}
+		
+		return null;
 	}
 	
 }

@@ -42,20 +42,9 @@ public class FileChangeMonitor {
 		logger.info("FileChangeMonitor() -> Start - Creating a new monitor instance with MOD/CREATE/DELETE \n\n[rootMonitorFolder:"+rootMonitorFolder+"]");
 		
 		rootMonitorDir = rootMonitorFolder;
-		if(monitoredInitialFiles != null){
-			monitoredFileList = new ArrayList<File>();
-			// test for folder nested and add files contained to monitor list
-			monitoredFileList.addAll(monitoredInitialFiles);
-			for(File subFile : monitoredInitialFiles) {
-				if(subFile.isDirectory()) {
-					addFolderContent(subFile);
-				}
-			}
-		}else{
-			monitorAllContents = true;
-			monitoredFileList = new ArrayList<File>();
-			addFolderContent(rootMonitorDir);
-		}
+		
+		preloadInitialFiles(monitoredInitialFiles);
+		
 		initialize();
 		
 		logger.info("FileChangeMonitor() -> Ready - Monitor instance created");
@@ -78,6 +67,14 @@ public class FileChangeMonitor {
 		
 		rootMonitorDir = rootMonitorFolder;
 		
+		preloadInitialFiles(monitoredInitialFiles);
+		
+		initialize();
+		
+		logger.info("FileChangeMonitor() -> Ready - Monitor instance created");
+	}
+	
+	private void preloadInitialFiles(ArrayList<File> monitoredInitialFiles) {
 		if(monitoredInitialFiles != null){
 			monitoredFileList = new ArrayList<File>();
 			// test for folder nested and add files contained to monitor list
@@ -88,13 +85,11 @@ public class FileChangeMonitor {
 				}
 			}
 		}else{
-			monitorAllContents = true;
 			monitoredFileList = new ArrayList<File>();
-			addFolderContent(rootMonitorDir);
+			if(monitorAllContents) {
+				addFolderContent(rootMonitorDir);
+			}
 		}
-		initialize();
-		
-		logger.info("FileChangeMonitor() -> Ready - Monitor instance created");
 	}
 	
 	// METHODS //
@@ -305,7 +300,23 @@ public class FileChangeMonitor {
 		}
 		
 		synchronized (monitoredFileList) {
-			monitoredFileList.remove(toRemove);
+			if (monitoredFileList.contains(toRemove)) {
+				monitoredFileList.remove(toRemove);
+			}
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Thread safe method to remove all files from the monitored list
+	 * @param fileToAdd
+	 * @return
+	 */
+	public boolean removeAllFromListener() {
+		
+		synchronized (monitoredFileList) {
+			monitoredFileList.clear();
 		}
 		
 		return true;
@@ -354,10 +365,11 @@ public class FileChangeMonitor {
 		NEW_FLAG = nEW_FLAG;
 	}
 
+	@Deprecated
 	public void removeFileFromList(int index){
 		monitoredFileList.remove(index);
 	}
-	
+	@Deprecated
 	public void removeFileFromList(File fileToRemove){
 		monitoredFileList.remove(fileToRemove);
 	}

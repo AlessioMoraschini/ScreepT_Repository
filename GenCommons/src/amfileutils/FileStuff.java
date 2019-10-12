@@ -39,6 +39,30 @@ public class FileStuff {
 	// FileStuff logger creation		
 	static Logger logger = Logger.getLogger(FileStuff.class); 
 	
+	public static boolean isFileSonOfDir(File file, File dir) {
+		
+		if(file == null || dir == null) return false;
+		
+		File tempUpperDir;
+		try {
+			tempUpperDir = file.getCanonicalFile().getParentFile();
+			dir = dir.getCanonicalFile();
+		} catch (IOException e) {
+			tempUpperDir = file.getParentFile();
+		}
+
+		while(tempUpperDir != null) {
+		    
+			if(dir.equals(tempUpperDir)) {
+		    	return true;
+		    }
+
+		    tempUpperDir = tempUpperDir.getParentFile();
+		}
+
+		return false;
+	}
+	
 	public static File getNlevelsAncestor(File son, int levelsUp) {
 		int originalLevels = levelsUp;
 		try {
@@ -707,17 +731,24 @@ public class FileStuff {
     	}
     	else {
     		BufferedReader reader;
+    		StringBuilder builder = new StringBuilder();
     		textArea_1.setText("");
 
     		try {
 				reader = new BufferedReader(new FileReader(txtFile.getAbsolutePath()));
 
 				String line = reader.readLine();
+				line = (line != null)? line : "";
+				builder.append(line);
+				line = reader.readLine();
+				
 				while(line!=null) {
-					textArea_1.append(line);
-					textArea_1.append("\n");
+					builder.append("\n");
+					builder.append(line);
 					line = reader.readLine();
 				}
+				
+				textArea_1.append(builder.toString());
 				reader.close();
 				lblCurrentFile.setText(txtFile.getParentFile().getName()+"\\"+txtFile.getName());
 				
@@ -820,8 +851,12 @@ public class FileStuff {
 					reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
 					try {
 						String line = reader.readLine();
+						line = (line != null)? line : "";
+						builder.append(line);
+						line = reader.readLine();
+						
 						while (line != null) {
-							builder.append(line).append("\n");
+							builder.append("\n").append(line);
 							line = reader.readLine();
 						}
 						reader.close(); 

@@ -3,9 +3,12 @@ package om;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
@@ -14,6 +17,8 @@ import javax.swing.event.HyperlinkListener;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import amfileutils.filechangewatcher.FileChangeMonitor;
+import tabbededitor.IChangeMonManager;
 import utils.SysUtils;
 
 public class TabTextEditorObj {
@@ -25,9 +30,11 @@ public class TabTextEditorObj {
 	public File loadedFile;
 	public RTextScrollPane currentScrollPane;
 	public RSyntaxTextArea textArea;
+	public FileChangeMonitor fileMonitorManager;
+	public FocusListener focusTxtAreaMonitor; 
 	public boolean unsaved = false;
 	
-	public TabTextEditorObj(File file, String text, DocumentListener docListener, TextEditorOption txtOptions) {
+	public TabTextEditorObj(File file, String text, DocumentListener docListener, TextEditorOption txtOptions, final IChangeMonManager checkChangesMonitor) {
 		
 		loadedFile = file;
 		textArea = new RSyntaxTextArea();
@@ -49,6 +56,24 @@ public class TabTextEditorObj {
 
 		// TEXT AREA LISTENER
 		textArea.getDocument().addDocumentListener(docListener);
+		focusTxtAreaMonitor = new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						checkChangesMonitor.checkChanges();
+					}
+				});
+			}
+		};
+		
+		// TAB FOCUS CHANGES LISTENER
+		textArea.addFocusListener(focusTxtAreaMonitor);
 		
 		updateTextAreaPreferences(txtOptions);
 	}

@@ -93,4 +93,9 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 	public boolean isEnabledRefresh() {
 		return !textEditor.isPreloading;
 	}
+
+	@Override
+	public boolean isEnabledAutoFileMonitor() {
+		return textEditor.currentConfiguration.getGenOpt().isTxtEditorFileMonitorActive();
+	}
 }

@@ -861,8 +861,7 @@ public class MainGUI extends MainGuiParent{
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					flagFrameGuiOptions = true;
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
-					panelGuiOptions.setPreferredSize(new Dimension(800, 375));
-					GuiUtils.centerComponent(panelGuiOptions, 800, 340);
+					GuiUtils.centerComponent(panelGuiOptions, 800, 440);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGuiOptions.setTitle("Apply/Save Preferences [Customize - Apply - Save]");

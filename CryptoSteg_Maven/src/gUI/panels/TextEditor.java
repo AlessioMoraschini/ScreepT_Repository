@@ -290,7 +290,52 @@ public class TextEditor extends JPanel {
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMinimumSize(new Dimension(800, 300));
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(98, parentFrame));
-		mainPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][20px:n:60px][30px:30px:30px][:3%:4%][:60px:70px][40px:2%:50px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][50px:2%:3.5%][:50px:50px][20][30][][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:35px][0px:5px][:0px:25px][:0px:25px][0px:4px][0px:4px][300px,grow 300,fill][:0px:28px]"));
+		mainPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2",
+				  "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[20px:n:60px]"
+				+ "[30px:30px:30px]"
+				+ "[:3%:4%]"
+				+ "[:60px:70px]"
+				+ "[40px:2%:50px]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[50px:2%:3.5%]"
+				+ "[:50px:50px]"
+				+ "[20]"
+				+ "[30]"
+				+ "[]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[25px:2%:2.5%]"
+				+ "[5px:5px:5px]"
+				+ "[25px:50px:60px]"
+				+ "[25px:50px:60px]"
+				+ "[55px:55px:55px]"
+				+ "[40px:40px:40px]"
+				+ "[45px:45px:45px]"
+				+ "[30px:35px:35px]"
+				+ "[10px:30px,grow]", 
+				
+				"[:0px:35px]"
+				+ "[0px:5px]"
+				+ "[:0px:25px]"
+				+ "[:0px:25px]"
+				+ "[0px:4px]"
+				+ "[0px:4px]"
+				+ "[300px,grow 300,fill]"
+				+ "[:0px:30px]"));
+		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMinimumSize(new Dimension(1100, 300));
 		mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -1876,19 +1921,25 @@ public class TextEditor extends JPanel {
 							if (done) {
 								JOptionPane.showMessageDialog(parentFrame,
 										"File " + selectedFile.getName() + " succesfully saved!");
+								
+								getCurrentTabEditor().loadedTabObj.fileMonitorManager.removeFromListener(loadedTabObj.loadedFile);
 								loadedTabObj.loadedFile = selectedFile;
+								
 								loadedTabObj.unsaved = false;
 								getCurrentTabEditor().updateSavedLabelNTab(null);
+								
 								footerPanel.lblCurrentFile.setText(loadedTabObj.loadedFile.getName());
 								footerPanel.lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
 								textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
 								currentConfiguration.getFileOpt().setLastDstFolderPath(
 										loadedTabObj.loadedFile.getParentFile().getAbsolutePath());
+								getCurrentTabEditor().changeMonManager.updateCurrMonitor(loadedTabObj.loadedFile);
 							} else {
 								skipRefresh = true;
 								textEditorUtils.errorAdvice("[Error Saving selected file]");
 							}
 						}
+						
 					} catch (IOException e1) {
 						skipRefresh = true;
 						textEditorUtils.errorAdvice("[Error Saving selected file]");
@@ -1907,32 +1958,10 @@ public class TextEditor extends JPanel {
 		// RELOAD INTO TEXT AREA FROM DISK
 		btnReloadFromDisk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
-
-				loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (!getCurrentTabEditor().alreadyLoading && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
-							// if unsaved ask to reload
-							if (!(JOptionPane.showConfirmDialog(currentTextEditor,
-									"If document is different or changed by another application, you will lose all unsaved changes. Continue?") == JOptionPane.YES_OPTION)) {
-								loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
-								getCurrentTabEditor().alreadyLoading = false;
-								return;
-							}
-							getCurrentTabEditor().alreadyLoading = true;
-							loadedTabObj.textArea.setText("");
-							FileStuff.appendFileTxtArea(new File(loadedTabObj.loadedFile.getAbsolutePath()), loadedTabObj.textArea, false);
-							loadedTabObj.unsaved = false;
-							getCurrentTabEditor().updateSavedLabelNTab(null);
-							textEditorUtils.refreshMessageAndTabTooltip("[File Reloaded]");
-							getCurrentTabEditor().alreadyLoading = false;
-
-						} else if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
-							String msg = "File does not exist";
-							JOptionPane.showMessageDialog(currentTextEditor, msg, msg, JOptionPane.ERROR_MESSAGE);
-						}
-						loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						getCurrentTabEditor().reloadCurrentTab(true);
+						textEditorUtils.refreshMessageAndTabTooltip("[File Reloaded]");
 					}
 				});
 			}

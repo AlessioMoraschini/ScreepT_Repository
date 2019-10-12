@@ -51,6 +51,11 @@ public interface ITabbedEditorOwner {
 	 * @return
 	 */
 	public boolean isEnabledRefresh();
+
+	/**
+	 * @return when this returns true tabEditor will check for current file existance automatically when a change in current file is detected
+	 */
+	public boolean isEnabledAutoFileMonitor();
 	
 	/**
 	 * @return use this to return the right type of file to sync (o choose always the same from SupportedFileTextEditor enum)

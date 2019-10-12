@@ -52,7 +52,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		this.currentConfiguration = parent.currentConfiguration;
 		
 		
-		setLayout(new MigLayout("hidemode 2", "[160px,left][][][][grow][20px:24px:24px][20px:24px:24px][10px:10px:10px][][][]", "[grow]"));
+		setLayout(new MigLayout("hidemode 2", "[160px,left][][][][grow][20px:24px:24px][20px:24px:24px][20px:24px:24px][10px:10px:10px][][][]", "[grow]"));
 		setForeground(SystemColor.menu);
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(new Color(30,30,30));
@@ -73,14 +73,14 @@ public class TextEditorHeaderPanel extends JPanel{
 		btnPrevHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PREV));
 		btnPrevHistory.setToolTipText(TextEditorTooltips.tooltipHystoryPrev);
 		GuiUtils.makeTransparentJButton(btnPrevHistory);
-		add(btnPrevHistory, "cell 5 0,alignx center,growy");
+		add(btnPrevHistory, "cell 6 0,alignx center,growy");
 		
 		btnNextHistory = new JButton("");
 		btnNextHistory.setCursor(GuiUtils.CURSOR_HAND);
 		btnNextHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NEXT));
 		btnNextHistory.setToolTipText(TextEditorTooltips.tooltipHystoryNext);
 		GuiUtils.makeTransparentJButton(btnNextHistory);
-		add(btnNextHistory, "cell 6 0,alignx center,growy");
+		add(btnNextHistory, "cell 7 0,alignx center,growy");
 		
 		checkBoxInlineTabs = new JCheckBox("Inline Tabs  ");
 		checkBoxInlineTabs.setSelected(true);
@@ -88,7 +88,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		checkBoxInlineTabs.setCursor(GuiUtils.CURSOR_HAND);
 		checkBoxInlineTabs.setForeground(SystemColor.control);
 		checkBoxInlineTabs.setBackground(Color.DARK_GRAY);
-		add(checkBoxInlineTabs, "cell 8 0,alignx center,aligny center");
+		add(checkBoxInlineTabs, "cell 9 0,alignx center,aligny center");
 		
 		chkCutWordsTo = new JCheckBox("Adapt Text Width  ");
 		chkCutWordsTo.setCursor(GuiUtils.CURSOR_HAND);
@@ -96,7 +96,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkCutWordsTo.setSelected(false);
 		chkCutWordsTo.setForeground(SystemColor.control);
 		chkCutWordsTo.setBackground(Color.DARK_GRAY);
-		add(chkCutWordsTo, "cell 9 0,alignx center,aligny center");
+		add(chkCutWordsTo, "cell 10 0,alignx center,aligny center");
 
 		chkFitmantainwords = new JCheckBox("Don't cut words");
 		chkFitmantainwords.setCursor(GuiUtils.CURSOR_HAND);
@@ -104,7 +104,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkFitmantainwords.setForeground(SystemColor.control);
 		chkFitmantainwords.setBackground(Color.DARK_GRAY);
 		chkFitmantainwords.setEnabled(false);
-		add(chkFitmantainwords, "cell 10 0,alignx right,aligny center");
+		add(chkFitmantainwords, "cell 11 0,alignx right,aligny center");
 		
 		lblTextEditor = new JLabel("Text Editor");
 		lblTextEditor.setHorizontalAlignment(SwingConstants.CENTER);

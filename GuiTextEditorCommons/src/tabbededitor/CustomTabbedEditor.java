@@ -5,10 +5,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -30,6 +33,9 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.FileStuff;
+import amfileutils.filechangewatcher.ChangeDTO;
+import amfileutils.filechangewatcher.FileChangeMonitor;
+import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import general.MyFileView;
 import generic.LimitedConcurrentList;
@@ -51,7 +57,11 @@ public class CustomTabbedEditor {
 	
 /////////////////////////////////// FIELDS ///////////////////////////////////
 	
+	public static final int maxNavigationHistorySize = 30;
 	public static final String DEFAULT_NEW_FILE_NAME = "New.txt";
+
+	// Custom class used to display dialog messages
+	public JOptionHelper dialogHelper;
 	
 	public volatile boolean alreadySaving = false;
 	public volatile boolean alreadyLoading = false;
@@ -69,7 +79,6 @@ public class CustomTabbedEditor {
 	public FileDragNDropManager mainTabList;
 	
 	/* THEESE ARE THE LOADED TABS, AND A REFERENCE TO THE CURRENT SELECTED */
-	public static final int maxNavigationHistorySize = 30;
 	public LimitedConcurrentList<RTextScrollPane> navigationHistory;
 	public LimitedConcurrentList<TabTextEditorObj> loadedList;
 	public volatile TabTextEditorObj loadedTabObj;
@@ -77,6 +86,9 @@ public class CustomTabbedEditor {
 	public INItializer currentConfiguration;
 	public ITabbedEditorOwner tabEditorManager;
 	public JTextComponent newFileStringTarget;
+	
+	ChangeDTO changesHistory;
+	public IChangeMonManager changeMonManager;
 	
 /////////////////////////////////// CONSTRUCTOR ///////////////////////////////////
 	
@@ -86,7 +98,10 @@ public class CustomTabbedEditor {
 		this.currentConfiguration = (configuration != null)? configuration : new INItializer();
 		this.loadedList = new LimitedConcurrentList<TabTextEditorObj>(Integer.MAX_VALUE);
 		this.navigationHistory = new LimitedConcurrentList<RTextScrollPane>(maxNavigationHistorySize);
-
+		this.dialogHelper = new JOptionHelper(mainTabList);
+		this.changesHistory = new ChangeDTO();
+		this.changeMonManager = new ChangeMonitorManager(this);
+		
 		initMainTabList();
 	}
 	
@@ -123,18 +138,20 @@ public class CustomTabbedEditor {
 			public void stateChanged(ChangeEvent e) {
 				
 				if (tabEditorManager.isEnabledRefresh() && !alreadyrefreshing && lastIndexTabbedPane != mainTabList.getSelectedIndex()) {
+					
 					alreadyrefreshing = true;
-	
-					logger.debug("\n\n=>Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
+					logger.debug("\n\n ## Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
 	
 					tabRefreshAfterUpdate();
 					lastIndexTabbedPane = mainTabList.getSelectedIndex();
+					
 					alreadyrefreshing = false;
-	
 					addToHystory(loadedTabObj.currentScrollPane);
+					
 				}
 			}
 		});
+		
 	}
 	
 	// TABBED PAIN - RELATED FUNCTIONS
@@ -245,11 +262,12 @@ public class CustomTabbedEditor {
 	public void addTab(File file, boolean first) {
 		try {
 			isAddingTab = true;
+			
 			backupCurrentBeforeSwitch();
 			String name = (file != null) ? file.getName() : DEFAULT_NEW_FILE_NAME;
 			int newIndex = mainTabList.getTabCount();
 
-			TabTextEditorObj newTabNode = new TabTextEditorObj(file, "", getChangeListener(), currentConfiguration.getTextEditorOpt());
+			TabTextEditorObj newTabNode = new TabTextEditorObj(file, "", getChangeListener(), currentConfiguration.getTextEditorOpt(), changeMonManager);
 
 			mainTabList.addTab(name, newTabNode.currentScrollPane);
 			loadedList.add(newTabNode);
@@ -263,10 +281,38 @@ public class CustomTabbedEditor {
 			loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
 			loadedTabObj.unsaved = false;
 			addToHystory(loadedTabObj.currentScrollPane);
+			
+			changeMonManager.updateCurrMonitor(file);
+			
 		} catch (Exception e) {
 			logger.error(e);
 		}
 		isAddingTab = false;
+	}
+	
+	public void reloadCurrentTab(boolean askDialogOn) {
+
+		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+		if (!alreadyLoading && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
+			// if unsaved ask to reload
+			if (askDialogOn && !(dialogHelper.yesOrNo("Wanna reload? If document is different or changed by another application, you will lose all unsaved changes... Continue?", "Reload file"))) {
+				loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				alreadyLoading = false;
+				return;
+			}
+			
+			alreadyLoading = true;
+			loadedTabObj.textArea.setText("");
+			FileStuff.appendFileTxtArea(new File(loadedTabObj.loadedFile.getAbsolutePath()), loadedTabObj.textArea, false);
+			loadedTabObj.unsaved = false;
+			updateSavedLabelNTab(null);
+			alreadyLoading = false;
+
+		} else if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
+			String msg = "File does not exist";
+			dialogHelper.error(msg, msg);
+		}
+		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 	}
 	
 	public void removeTab(final int index) {
@@ -307,6 +353,7 @@ public class CustomTabbedEditor {
 		}
 		loadedTabObj.textArea.requestFocus();
 		
+		// GO TO LAST IN HISTORY WHEN CLOSING
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try{
@@ -329,6 +376,8 @@ public class CustomTabbedEditor {
 		} catch (Exception e) {
 			logger.error("Cannot go to previous tab!", e);
 		}
+		
+		changeMonManager.checkChanges();
 	}
 
 	public void goToNextTab() {
@@ -341,6 +390,8 @@ public class CustomTabbedEditor {
 		} catch (Exception e) {
 			logger.error("Cannot go to next tab!", e);
 		}
+		
+		changeMonManager.checkChanges();
 	}
 
 	public void closeCurrentTab() {
@@ -398,6 +449,7 @@ public class CustomTabbedEditor {
 		customTab.addMouseListener(new MouseListener() {
 			public void mouseReleased(MouseEvent e) {
 				mainTabList.setSelectedComponent(i_component);
+				changeMonManager.checkChanges();
 			}
 			public void mousePressed(MouseEvent e) {
 			}
@@ -553,12 +605,7 @@ public class CustomTabbedEditor {
 		
 		// if already last skip
 		if (!historyActionChanging.get() && (navigationHistory.getList().isEmpty() || !navigationHistory.getLast().equals(scrollPane))) {
-			
-//			// if contained before remove
-//			if (navigationHistory.getList().contains(scrollPane)) {
-//				navigationHistory.getList().remove(scrollPane);
-//			}
-			
+			// TODO Manage caret position history (selectable as user preference aside arrows in header)!
 			navigationHistory.addLast(scrollPane);
 		}
 	}

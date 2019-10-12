@@ -9,13 +9,17 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
 
@@ -193,6 +197,15 @@ public class AesCipher {
         	aesKey.setBackground(Color.green);
 			aesKey.setToolTipText("WOW! 16 char is perfect! :D");
 		}	
+	}
+	
+	private byte[] hashPsw(char[] psw) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		SecureRandom random = new SecureRandom();
+		byte[] salt = new byte[16];
+		random.nextBytes(salt);
+		KeySpec spec = new PBEKeySpec(psw, salt, 65536, 128);
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		return factory.generateSecret(spec).getEncoded();
 	}
 	
 	private byte[] generateIV() {

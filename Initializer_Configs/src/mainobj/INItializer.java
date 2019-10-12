@@ -13,7 +13,6 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import enums.ScalingAlgorithm;
-import enums.Themes;
 import om.AesOption;
 import om.FileOptions;
 import om.GenericOption;
@@ -632,7 +631,7 @@ public class INItializer {
 			   .append("USERNAME: ").append(genOpt.getUserName())
 			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
 			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
-			   .append("\nTxt Editor File Changes Listen for changes: ").append(genOpt.isTxtEditorFileMonitorActive())
+			   .append("\nTxt Editor: Listen for changes in current file -> ").append(genOpt.isTxtEditorFileMonitorActive())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION
