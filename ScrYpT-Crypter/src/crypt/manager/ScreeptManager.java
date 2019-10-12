@@ -33,7 +33,7 @@ import resources.GeneralConfig;
 import variousutils.CustomFileComparator;
 import variousutils.EntophyzerUtils;
 import crypt.steg.StegOmResult;
-import gUI.utils.progressDialog.TestUpdateProgress;
+import dialogutils.TestUpdateProgress;
 import media.ImageGeneralWorker;
 
 /**

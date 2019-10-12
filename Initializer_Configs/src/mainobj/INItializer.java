@@ -332,11 +332,18 @@ public class INItializer {
 		} catch (NumberFormatException e) {
 			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_VOICE_RATE);
 		}
-		// divider size
+		// left divider size
 		try {
 			textEditorOpt.setDividerFileTreePosX(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerFileTreePosX")));
 		} catch (NumberFormatException e) {
-			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_DIVIDER_POS_X);
+			textEditorOpt.setDividerFileTreePosX(TextEditorOption.DEFAULT_DIVIDER_POS_X);
+		}
+
+		// right divider size
+		try {
+			textEditorOpt.setDividerRightPanePosX(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosX")));
+		} catch (NumberFormatException e) {
+			textEditorOpt.setDividerRightPanePosX(TextEditorOption.DEF_dividerRightPanePosX);
 		}
 		
 		// automatic syntax selection file-extension-based
@@ -349,6 +356,8 @@ public class INItializer {
 		textEditorOpt.setTreeLocked(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "isTreeLocked"), TextEditorOption.DEFAULT_TREE_LOCKED));
 		textEditorOpt.setTabLineVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabLineVisibleFlag"), TextEditorOption.DEFAULT_TAB_LINE_VISIBLE));
 		textEditorOpt.setFileTreeActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fileTreeActive"), TextEditorOption.DEFAULT_FTREE_ACTIVE));
+		textEditorOpt.setMapViewActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "mapViewActive"), TextEditorOption.DEF_mapViewActive));
+		textEditorOpt.setClipboardViewActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "clipboardViewActive"), TextEditorOption.DEF_clipboardViewActive));
 		textEditorOpt.setBreaklineActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "breakLineActive"), TextEditorOption.DEFAULT_BREAK_LINE));
 		textEditorOpt.setAntialiasedTxtArea(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "antialiasedTxtArea"), TextEditorOption.DEF_antialiasedTxtArea));
 		textEditorOpt.setCodeFoldingEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "codeFoldingEnabled"), TextEditorOption.DEF_codeFoldingEnabled));
@@ -496,7 +505,10 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredTheme", textEditorOpt.selectedTheme);
 		iniFile.put(TEXT_EDITOR_OPT, "fileTreeActive", textEditorOpt.fileTreeActive);
+		iniFile.put(TEXT_EDITOR_OPT, "clipboardViewActive", textEditorOpt.clipboardViewActive);
+		iniFile.put(TEXT_EDITOR_OPT, "mapViewActive", textEditorOpt.mapViewActive);
 		iniFile.put(TEXT_EDITOR_OPT, "dividerFileTreePosX", textEditorOpt.dividerFileTreePosX);
+		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosX", textEditorOpt.dividerRightPanePosX);
 		iniFile.put(TEXT_EDITOR_OPT, "antialiasedTxtArea", textEditorOpt.antialiasedTxtArea);
 		iniFile.put(TEXT_EDITOR_OPT, "breakLineActive", textEditorOpt.breaklineActive);
 		iniFile.put(TEXT_EDITOR_OPT, "isTreeLocked", textEditorOpt.treeLocked);
@@ -669,6 +681,7 @@ public class INItializer {
 			   .append("\nFONT: ").append(textEditorOpt.font)
 			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate)
 			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)
+			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION: ").append(textEditorOpt.dividerRightPanePosX)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
 			   .append("\nLAST CODE ESCAPE LANGUAGE: ").append(textEditorOpt.lastEscapeLanguage)
@@ -676,6 +689,8 @@ public class INItializer {
 			   .append("\n\n TEXT AREA DETAIL VALUES: \n\n")
 			   
 			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)
+			   .append("\nMAP VIEW ACTIVE: ").append(textEditorOpt.mapViewActive)
+			   .append("\nCLIPBOARD VIEW ACTIVE: ").append(textEditorOpt.clipboardViewActive)
 			   .append("\nFILE TREE LOCKED: ").append(textEditorOpt.treeLocked)
 			   .append("\nWORKSPACE VIEW SELECTED: ").append(textEditorOpt.workspaceViewSelected)
 			   .append("\nDEFAULT WORKSPACE LOCATION: ").append(textEditorOpt.defaultWorkspacePath)

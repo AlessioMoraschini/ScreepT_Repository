@@ -1,6 +1,6 @@
 package uTILS.local;
 
-import gUI.utils.progressDialog.TestUpdateProgress;
+import dialogutils.TestUpdateProgress;
 
 
 public class FileProgressMonitor_KO {

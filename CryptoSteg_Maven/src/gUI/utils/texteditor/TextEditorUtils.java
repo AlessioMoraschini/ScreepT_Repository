@@ -20,6 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FilenameUtils;
@@ -172,13 +173,11 @@ public class TextEditorUtils {
 		currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
 		
 		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
-		SplitPaneUtils.setDividerColors(null, Color.BLACK, currentTextEditor.splitPaneMain);
 		
-		if(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile != null) {
-			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
-		}else if(!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked){
-			currentTextEditor.splitPaneMain.setDividerLocation(0);
-		}
+		resetAllDIviderColors();
+		
+		currentTextEditor.fileTreeShowOrHide(options);
+		currentTextEditor.rightPaneShowOrHide(options);
 	}
 	
 	public void refreshTreeFromFolder(File folder, File currentFile, boolean forceRefresh) {
@@ -205,7 +204,19 @@ public class TextEditorUtils {
 		currentTextEditor.splitPaneMain.setDividerLocation(getMinimumLeftPaneSize()+10);
 		
 		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
-		SplitPaneUtils.setDividerColors(null, Color.BLACK, currentTextEditor.splitPaneMain);
+		resetAllDIviderColors();
+//		SplitPaneUtils.setDividerColors(null, Color.BLACK, currentTextEditor.splitPaneMain);
+	}
+	
+	public void resetAllDIviderColors() {
+		// Reset all divider colors
+		try {
+			for(JSplitPane i : ReflectionUtils.retrieveFieldsByType(currentTextEditor, JSplitPane.class)) {
+				SplitPaneUtils.setDividerColors(new Color(25,25,25), Color.BLACK, i);
+			}
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			logger.error("Error resetting divider colors: ", e);
+		}
 	}
 	
 	public String getFooterPanelAdaptedDirString(String rawText) {
@@ -237,6 +248,11 @@ public class TextEditorUtils {
 
 			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
 			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
+			
+			currentTextEditor.toggleBtnMap.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().mapViewActive);
+			currentTextEditor.toggleBtnClipboard.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().clipboardViewActive);
+
+			currentTextEditor.rightPaneShowOrHide(currentTextEditor.currentConfiguration.getTextEditorOpt());
 			
 			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
 			
@@ -567,7 +583,8 @@ public class TextEditorUtils {
 	
 	public void resetDividerColor() {
 		if (currentTextEditor.splitPaneMain != null) {
-			SplitPaneUtils.setDividerColors(null, Color.DARK_GRAY, currentTextEditor.splitPaneMain);
+			resetAllDIviderColors();
+//			SplitPaneUtils.setDividerColors(null, Color.DARK_GRAY, currentTextEditor.splitPaneMain);
 		}
 	}
 	

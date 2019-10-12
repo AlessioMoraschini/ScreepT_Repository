@@ -1,7 +1,10 @@
 package utils;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.WindowListener;
 import java.lang.reflect.Method;
+import java.rmi.server.UID;
+import java.util.UUID;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -52,6 +55,8 @@ public class TextAreaDialogs {
 		searchDial.setAlwaysOnTop(true);
 		searchDial.repaint();
 		
+		searchDial.addWindowListener(getWindowListener());
+		
 		return searchDial;
 	}
 	
@@ -67,6 +72,8 @@ public class TextAreaDialogs {
 		replaceDial.setEscapeClosesDialog(true);
 		replaceDial.setPreferredSize(DEFAULT_SIZE);
 		replaceDial.setEscapeClosesDialog(true);
+		
+		replaceDial.addWindowListener(getWindowListener());
 		
 		return replaceDial;
 	}
@@ -102,6 +109,18 @@ public class TextAreaDialogs {
 		});
 		
 		return dialog;
+	}
+	
+	public WindowListener getWindowListener() {
+		return new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	String searchFor = UUID.randomUUID().toString();
+		    	// RANDOM STRING TO DESELECT ALL
+		    	SearchEngine.markAll(dialogManager.getTargetTextArea(), new SearchContext(searchFor));
+				logger.debug("Closing dialog "+getClass().getName());
+		    }
+		};
 	}
 	
 	/**

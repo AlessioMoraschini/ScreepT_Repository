@@ -1,4 +1,4 @@
-package hcks.keylogger;
+package keylogger;
 
 import java.io.File;
 import java.io.IOException;

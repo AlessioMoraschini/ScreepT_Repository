@@ -7,11 +7,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import dialogutils.TestUpdateProgress;
 import enums.ScalingAlgorithm;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
 import gUI.utils.filedialog.GenericFileChooserDialog;
-import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import maingUI.MainGUI;
 import mainobj.INItializer;

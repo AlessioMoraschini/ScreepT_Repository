@@ -112,6 +112,8 @@ public class IconsPathConfigurator {
 	public static final String ICON_FILE_SAVE_AS = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFileAs.png";
 	public static final String ICON_FILE_SAVE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFile.png";
 	public static final String ICON_FILE_LOAD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/LoadFile.png";
+	public static final String ICON_MAP = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/map.png";
+	public static final String ICON_CLIPBOARD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/clipboard.png";
 	public static final String ICON_REDO = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Redo.png";
 	public static final String ICON_UNDO = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Undo.png";
 	public static final String ICON_CRYPT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Crypt.png";

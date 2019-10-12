@@ -232,6 +232,20 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				}
 				
 				/*
+				 * 	OPEN/CLOSE CLIPBOARD PANEL -> ALT+W
+				 */
+				if (e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.toggleBtnClipboard.doClick();
+				}
+
+				/*
+				 * 	OPEN/CLOSE MAP PANEL -> ALT+A
+				 */
+				if (e.getKeyCode() == 65 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.toggleBtnMap.doClick();
+				}
+				
+				/*
 				 *  FILE TREE AUTO UPDATE on CURRENT FILE ON/OFF -> Ctrl+shift+U
 				 */
 				if(e.getKeyCode() == 85 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {

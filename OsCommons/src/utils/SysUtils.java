@@ -131,8 +131,7 @@ public class SysUtils {
 			// END MAC
 		}else if(OS.isWindows()) {
 			
-			ArrayList<String> foundJavaRootFolders = new ArrayList<String>();
-			foundJavaRootFolders = findWindowsProgramPath("java");
+			ArrayList<String> foundJavaRootFolders = findWindowsProgramPath("java");
 			for(String currFolder : foundJavaRootFolders) {
 				ArrayList<String> foundVersions = getAllJavaWinVersionFromRoot(currFolder);
 				for (String currVersionPath : foundVersions) {

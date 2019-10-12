@@ -17,21 +17,21 @@ public class SplitPaneUtils {
 	public static void setDividerColors(Color back, Color border, JSplitPane panel) {
 		panel.setUI(new BasicSplitPaneUI() {
             public BasicSplitPaneDivider createDefaultDivider() {
-            return new BasicSplitPaneDivider(this) {
-                public void setBorder(Border b) {
-                }
-
-                @Override
-                    public void paint(Graphics g) {
-	            		if(back == null) {
-	            			g.setColor(defaultBackgroundDivider);
-	            		}else {
-	            			g.setColor(back);
-	            		}
-	            		g.fillRoundRect(0, -5, getSize().width-5, getSize().height+10, 10, 10);
-                        super.paint(g);
-                    }
-            };
+	            return new BasicSplitPaneDivider(this) {
+	                public void setBorder(Border b) {
+	                }
+	
+	                @Override
+	                    public void paint(Graphics g) {
+		            		if(back == null) {
+		            			g.setColor(defaultBackgroundDivider);
+		            		}else {
+		            			g.setColor(back);
+		            		}
+		            		g.fillRoundRect(0, 0, getSize().width-2, getSize().height+4, 8, 8);
+	                        super.paint(g);
+	                    }
+	            };
             }
         });
         panel.setBorder(new LineBorder(border));
@@ -41,14 +41,14 @@ public class SplitPaneUtils {
 
 		panel.setUI(new BasicSplitPaneUI() {
             public BasicSplitPaneDivider createDefaultDivider() {
-            return new BasicSplitPaneDivider(this) {
-                public void setBorder(Border b) {
-                }
-
-                @Override
-                public void paint(Graphics g) {
-                }
-            };
+	            return new BasicSplitPaneDivider(this) {
+	                public void setBorder(Border b) {
+	                }
+	
+	                @Override
+	                public void paint(Graphics g) {
+	                }
+	            };
             }
         });
 	}

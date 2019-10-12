@@ -24,7 +24,10 @@ public class TextEditorOption {
 	//TEXT AREA
 	public static final String DEFAULT_SELECTED_THEME = Themes.DARK.defaultPath;
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
+	public static final boolean DEF_mapViewActive = false;
+	public static final boolean DEF_clipboardViewActive = false;
 	public static final int DEFAULT_DIVIDER_POS_X = 230;
+	public static final int DEF_dividerRightPanePosX = 100;
 	public static final int DEFAULT_TAB_SIZE = 2;
 	public static final boolean DEFAULT_TAB_LINE_VISIBLE = false;
 	public static final boolean DEFAULT_BREAK_LINE = false;
@@ -70,9 +73,12 @@ public class TextEditorOption {
 	public String defaultWorkspacePath;
 	public String selectedTheme;
 	public int dividerFileTreePosX;
+	public int dividerRightPanePosX;
 	public int tabSize = 2;
 	public boolean tabLineVisible;
 	public boolean fileTreeActive;
+	public boolean mapViewActive;
+	public boolean clipboardViewActive;
 	public boolean treeLocked;
 	public boolean workspaceViewSelected;
 	public boolean defaultAutoSyntaxSync;
@@ -115,12 +121,16 @@ public class TextEditorOption {
 		selectedTheme = DEFAULT_SELECTED_THEME;
 		dividerFileTreePosX = DEFAULT_DIVIDER_POS_X;
 		tabSize = DEFAULT_TAB_SIZE;
-		tabLineVisible = DEFAULT_TAB_LINE_VISIBLE;
+		
 		fileTreeActive = DEFAULT_FTREE_ACTIVE;
+		clipboardViewActive = DEF_clipboardViewActive;
+		mapViewActive = DEF_mapViewActive;
+		dividerRightPanePosX = DEF_dividerRightPanePosX;
 		treeLocked = DEFAULT_TREE_LOCKED;
 		workspaceViewSelected = DEFAULT_WORKSPACE_VIEW_SELECTED;
 		defaultAutoSyntaxSync = DFAULT_AUTO_SYNTAX_SYN_FLAG;
 		
+		tabLineVisible = DEFAULT_TAB_LINE_VISIBLE;
 		breaklineActive = DEFAULT_BREAK_LINE;
 		antialiasedTxtArea = DEF_antialiasedTxtArea;
 		codeFoldingEnabled = DEF_codeFoldingEnabled;
@@ -499,6 +509,35 @@ public class TextEditorOption {
 	public void setLastEscapeLanguage(String lastEscapeLanguage) {
 		this.lastEscapeLanguage = lastEscapeLanguage;
 	}
-	
+
+
+	public boolean isMapViewActive() {
+		return mapViewActive;
+	}
+
+
+	public void setMapViewActive(boolean mapViewActive) {
+		this.mapViewActive = mapViewActive;
+	}
+
+
+	public boolean isClipboardViewActive() {
+		return clipboardViewActive;
+	}
+
+
+	public void setClipboardViewActive(boolean clipboardViewActive) {
+		this.clipboardViewActive = clipboardViewActive;
+	}
+
+
+	public int getDividerRightPanePosX() {
+		return dividerRightPanePosX;
+	}
+
+
+	public void setDividerRightPanePosX(int dividerRightPanePosX) {
+		this.dividerRightPanePosX = dividerRightPanePosX;
+	}
 	
 }

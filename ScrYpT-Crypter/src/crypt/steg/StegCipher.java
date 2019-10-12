@@ -500,7 +500,6 @@ public class StegCipher {
 		    		// retrieve original int value from key and coded values - core of algorithm
 		    		int decodedPX = secureKeyPx - codedPx;
 		    		
-		    		// TODO return dinamyc size array avoiding to have null bytes (0)
 		    		stegDecodedAesIn[k] = (byte)(decodedPX);
 		    		k++;
 		    	}
@@ -544,7 +543,6 @@ public class StegCipher {
 			    		// retrieve original int value from key and coded values - core of algorithm
 			    		int decodedPX = secureKeyPx - codedPx;
 			    		
-						// TODO return dinamyc size array avoiding to have null bytes (0)
 						stegDecodedAesIn[k] = (byte) (decodedPX);
 					}
 					k++;

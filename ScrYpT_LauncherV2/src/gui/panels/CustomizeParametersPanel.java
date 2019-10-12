@@ -2,12 +2,15 @@ package gui.panels;
 
 import javax.swing.JFrame;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import frameutils.utils.GuiUtils;
 import launcherutils.IniFileManager;
+import launcherutils.JvmHelper;
 import mainlauncher.ScrYpTLauncher;
 import net.miginfocom.swing.MigLayout;
+import om.OSinfo;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
@@ -21,18 +24,22 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.DecimalFormat;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListDataListener;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import java.awt.Font;
 import javax.swing.JSlider;
+import javax.swing.JSeparator;
 
 public class CustomizeParametersPanel extends JFrame{
 	
@@ -53,7 +60,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TITLE_LAUNCH_AS_JAR = "Launch as .Jar:";
 	private static final String TITLE_LAUNCH_AS_CLASS = "Launch as .Class:";
 	
-	private static final int DEF_FIXED_HEIGHT = 190;
+	private static final int DEF_FIXED_HEIGHT = 240;
 	private static final int DEF_FIXED_WIDTH = 550;
 	public static final Dimension DEF_DIMENSION = new Dimension(DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 	
@@ -75,6 +82,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private boolean backupViewShell;
 	private boolean backupLaunchAsJar;
 	private float backupScaleGuiPerc;
+	private String backupPreferredJvm;
 	
 	private static final int defaultMinMemXms = 512;
 	private static final int defaultMaxMemXmx = 1024;
@@ -95,8 +103,16 @@ public class CustomizeParametersPanel extends JFrame{
 	private JSlider sliderGuiScale;
 	private JLabel dynLblScaleGui;
 	private JLabel labelGuiScale;
+	private JComboBox<String> comboPrefJvm;
+	private JLabel lblPreferredJvm;
+	
+	private OSinfo currentOS = new OSinfo();
+	private JSeparator separator;
+	
+	//ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 	
 	public CustomizeParametersPanel(String title, StartPanel parentPanel) {
+		getContentPane().setForeground(new Color(220, 220, 220));
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -113,17 +129,19 @@ public class CustomizeParametersPanel extends JFrame{
 
 		// END CUSTOM SETTINGS
 		
-		getContentPane().setBackground(new Color(240, 248, 255));
-		getContentPane().setLayout(new MigLayout("", "[60px][40px][:20px:20px][:100px:100px][130px][:20px:20px][:100px:100px,grow]", "[grow][grow][grow][grow]"));
+		getContentPane().setBackground(Color.DARK_GRAY);
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:100px:100px][130px][:20px:20px][:100px:100px,grow]", "[grow][grow][grow][grow][][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
-		getContentPane().add(lblMaxMemory, "cell 0 0 2 1,alignx right");
+		lblMaxMemory.setForeground(new Color(220, 220, 220));
+		getContentPane().add(lblMaxMemory, "cell 0 0 2 1,alignx center");
 		
 		lblMaxWarninig = new JLabel("");
 		getContentPane().add(lblMaxWarninig, "cell 2 0");
 		
 		lblMinMemory = new JLabel("Min memory (MB):");
-		getContentPane().add(lblMinMemory, "cell 0 1 2 1,alignx right");
+		lblMinMemory.setForeground(new Color(220, 220, 220));
+		getContentPane().add(lblMinMemory, "cell 0 1 2 1,alignx center");
 		
 		lblMinWarninig = new JLabel("");
 		getContentPane().add(lblMinWarninig, "cell 2 1");
@@ -134,6 +152,7 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(spinnerMaxMemoryMB, "cell 3 0,growx");
 		
 		lblLogLevel = new JLabel("Log level:");
+		lblLogLevel.setForeground(new Color(220, 220, 220));
 		getContentPane().add(lblLogLevel, "cell 4 0,alignx right");
 		
 		comboLogLevel = new JComboBox<String>(IniFileManager.getLogLevelsList());
@@ -149,9 +168,11 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(lblLogLevelInfo, "cell 5 0,alignx right");
 		
 		labelGuiScale = new JLabel("Graphics Scale:");
+		labelGuiScale.setForeground(new Color(220, 220, 220));
 		getContentPane().add(labelGuiScale, "cell 4 1,alignx right");
 		
 		dynLblScaleGui = new JLabel("1");
+		dynLblScaleGui.setForeground(new Color(220, 220, 220));
 		getContentPane().add(dynLblScaleGui, "cell 5 1,alignx center");
 		
 		sliderGuiScale = new JSlider();
@@ -160,7 +181,8 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(sliderGuiScale, "cell 6 1");
 		
 		lblStackSize = new JLabel("Stack Size(MB)");
-		getContentPane().add(lblStackSize, "cell 0 2 2 1,alignx right");
+		lblStackSize.setForeground(new Color(220, 220, 220));
+		getContentPane().add(lblStackSize, "cell 0 2 2 1,alignx center");
 		
 		lblSTackSizeInfo = new JLabel("");
 		getContentPane().add(lblSTackSizeInfo, "cell 2 2,alignx right");
@@ -171,34 +193,49 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(spinnerXssMemory, "cell 3 2,growx");
 		
 		chckBoxLaunchAsJar = new JCheckBox(TITLE_LAUNCH_AS_JAR);
+		chckBoxLaunchAsJar.setForeground(new Color(220, 220, 220));
 		chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
 		chckBoxLaunchAsJar.setSelected(true);
 		chckBoxLaunchAsJar.setFont(new Font("SansSerif", Font.BOLD, 12));
 		getContentPane().add(chckBoxLaunchAsJar, "cell 4 2,alignx center");
 		
 		chckbxActiveShell = new JCheckBox("Display Shell");
+		chckbxActiveShell.setForeground(new Color(220, 220, 220));
 		chckbxActiveShell.setToolTipText(TOOLTIP_DISPLAY_SHELL);
 		chckbxActiveShell.setFont(new Font("SansSerif", Font.BOLD, 12));
 		getContentPane().add(chckbxActiveShell, "cell 5 2 2 1,alignx center");
+		
+		lblPreferredJvm = new JLabel("Preferred JVM");
+		lblPreferredJvm.setForeground(new Color(220, 220, 220));
+		getContentPane().add(lblPreferredJvm, "cell 0 3 2 1,alignx center");
+		
+		String[] JVMS = {};
+		JVMS = SysUtils.findJvmVersionsInstalled(currentOS).toArray(JVMS);
+//		comboPrefJvm = new JComboBox<String>();
+		comboPrefJvm = new JComboBox<String>(JVMS);
+		getContentPane().add(comboPrefJvm, "cell 2 3 5 1,growx");
+		
+		separator = new JSeparator();
+		getContentPane().add(separator, "cell 0 4 7 1,growx");
 		
 		btnExitConfiguration = new JButton("Discard");
 		btnExitConfiguration.setBackground(new Color(250, 128, 114));
 		btnExitConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
 		btnExitConfiguration.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getContentPane().add(btnExitConfiguration, "cell 0 3,growx");
+		getContentPane().add(btnExitConfiguration, "cell 0 5,growx");
 		
 		btnReloadInitialConfig = new JButton("Reset to Initial Config");
 		btnReloadInitialConfig.setEnabled(true);
 		btnReloadInitialConfig.setBackground(new Color(250, 250, 210));
 		btnReloadInitialConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		btnReloadInitialConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getContentPane().add(btnReloadInitialConfig, "cell 1 3 3 1,alignx left");
+		getContentPane().add(btnReloadInitialConfig, "cell 1 5 3 1,alignx left");
 		
 		btnSaveConfig = new JButton("Save Launch Options");
 		btnSaveConfig.setBackground(new Color(143, 188, 143));
 		btnSaveConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSaveConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getContentPane().add(btnSaveConfig, "cell 4 3 3 1,alignx right");
+		getContentPane().add(btnSaveConfig, "cell 4 5 3 1,alignx right");
 		
 		// add custom behaviour to frame
 		
@@ -220,6 +257,7 @@ public class CustomizeParametersPanel extends JFrame{
 		            
 	        	logger.debug("Closing Frame: CustomizeParametersPanel");	        	
 				active = false;
+				ScrYpTLauncher.iniFileManager.initFromINIFile();
 	        	dispose();
 		    }
 		});
@@ -269,6 +307,7 @@ public class CustomizeParametersPanel extends JFrame{
 				chckbxActiveShell.setSelected(backupViewShell);
 				chckBoxLaunchAsJar.setSelected(backupLaunchAsJar);
 				sliderGuiScale.setValue(getPercFromScale(backupScaleGuiPerc));
+				selectComboJVM(backupPreferredJvm);
 			}
 		});
 		
@@ -287,6 +326,7 @@ public class CustomizeParametersPanel extends JFrame{
 				boolean viewShell = chckbxActiveShell.isSelected();
 				String stringGuiPerc = getScaleFromPerc((Integer)sliderGuiScale.getValue());
 				String stringLaunchAsJar = (chckBoxLaunchAsJar.isSelected())? "true" : "false";
+				String preferredJvm = (String)comboPrefJvm.getSelectedItem();
 				
 				IniFileManager iniFileManager = ScrYpTLauncher.iniFileManager;
 				// update launcher vars and write to config INI file
@@ -298,6 +338,7 @@ public class CustomizeParametersPanel extends JFrame{
 				// WRITE VALUES ON INI FILE
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "memoryArgs", args);
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "stackSizeArgs", stackSize);
+				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_JVM_OPT, "preferredJvm", checkJvmString(preferredJvm));
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "logLevelSetting", logLevel);
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "viewCmdConsole", String.valueOf(viewShell));
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "scaleGuiPerc", stringGuiPerc);
@@ -305,6 +346,8 @@ public class CustomizeParametersPanel extends JFrame{
 				// UPDATE PROPERTIES FILE TOO
 				GeneralConfig.resourcesFilePathsMappings.savePropertiesLayoutApache("FLAG_LAUNCH_JAR_COMMAND", stringLaunchAsJar);
 				GeneralConfig.reloadProperties();
+				
+				iniFileManager.initFromINIFile();
 				
 				// regenerate command list with new args
 				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();
@@ -393,6 +436,8 @@ public class CustomizeParametersPanel extends JFrame{
 			backupScaleGuiPerc = defaultScaleGuiPerc;
 		}
 		backupLaunchAsJar = Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"))? true : false;
+		backupPreferredJvm  = StringUtils.trimToEmpty(iniFileManager.iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
+		backupPreferredJvm = checkJvmString(backupPreferredJvm);
 		
 		// apply to gui elements
 		chckbxActiveShell.setSelected(backupViewShell);
@@ -402,6 +447,16 @@ public class CustomizeParametersPanel extends JFrame{
 		spinnerMinMemoryMB.setValue(backupMinMemoryXms);
 		comboLogLevel.setSelectedItem(backupLogLevel);
 		sliderGuiScale.setValue(getPercFromScale(backupScaleGuiPerc));
+		selectComboJVM(backupPreferredJvm);
+	}
+	
+	private String checkJvmString(String jvmStr) {
+		String result = (jvmStr.equals("") 
+				|| !SysUtils.findJvmVersionsInstalled(new OSinfo()).contains(jvmStr) 
+				|| !ScrYpTLauncher.jvmHelper.checkSingleJavaVersionOK(new File(jvmStr).getName()))?
+						
+				ScrYpTLauncher.jvmHelper.retrieveCorrectJVMS(false) : jvmStr;
+		return result;
 	}
 	
 	private String getScaleFromPerc(int perc) {
@@ -415,6 +470,17 @@ public class CustomizeParametersPanel extends JFrame{
 		int base = 1;
 		int result = (int)((scale - base)*100);
 		return result;
+	}
+	
+	private void selectComboJVM(String target) {
+		for (int i = 0; i < comboPrefJvm.getItemCount(); i++) {
+			String currentComboValue = (String)comboPrefJvm.getItemAt(i);
+			if (currentComboValue.contains(target) || target.contains(currentComboValue)) {
+				comboPrefJvm.setSelectedIndex(i);
+				comboPrefJvm.revalidate();
+				return;
+			} 
+		}
 	}
 	
 	private void setGraphics() {

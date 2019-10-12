@@ -47,7 +47,9 @@ public class TextEditorTooltips {
 	public static final String tooltipInlineTabs = "[Ctrl+Shift+I] If selected tabs will be o one line, else they will be always visible organized in rows";
 	public static final String tooltipShowTabGrid = "[Ctrl+G] If selected tabs will be highlighted.";
 	public static final String tooltipTabSize = "This number will be used as number of spaces for each tab pressed.";
-	public static final String tooltipFileViewBtn = "[Alt+Q] Show file explorer panel";
+	public static final String tooltipFileViewBtn = "[Alt+Q] Show/hide file explorer panel";
+	public static final String tooltipMapViewBtn = "[Alt+A] Show/hide document map panel";
+	public static final String tooltipClipboardViewBtn = "[Alt+W] Show file document clipboard panel";
 	public static final String tooltipFileViewLock = "[Ctrl+Shift+U] This will lock/unlock sync of file tree and current file opened in editor.";
 	public static final String tooltipWorkspaceToggle = "[Ctrl+Shift+W] Clicking this you will toggle ON/OFF current workspace view.";
 	public static final String tooltipWorkspaceNew = "[Ctrl+Alt+Shift+W] Click this to change your preferred workspace";

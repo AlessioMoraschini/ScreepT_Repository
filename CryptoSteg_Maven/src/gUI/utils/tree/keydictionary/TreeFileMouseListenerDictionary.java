@@ -26,8 +26,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import dialogutils.TestUpdateProgress;
 import gUI.frames.KeyGenFrame;
-import gUI.utils.progressDialog.TestUpdateProgress;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;

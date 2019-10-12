@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import mainlauncher.ScrYpTLauncher;
 import om.OSinfo;
 import utils.SysUtils;
 
@@ -17,6 +19,9 @@ public class JvmHelper {
 	
 	// FINAL STRINGS STATICS PARAMS
 	public static final String NOT_FOUND_JVM = "";
+	/**
+	 * Means that current JVM which has loaded launcher is ok, and will use that
+	 */
 	public static final String JVM_OK = "JVMOK";
 	public static final String JVM_URL_INSTALL =
 			"https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html";
@@ -40,8 +45,7 @@ public class JvmHelper {
 	// SOME UTILS
 	
 	/**
-	 * Find all versions of JVM installed on this machine (According to OS), and find if there is one in the 
-	 * admitted range, and set its path to javaPath field in this class.
+	 * Find right versions of JVM installed on this machine (According to OS), and set its path to javaPath field in this class.
 	 * 
 	 * @return If found return true, else return false
 	 */
@@ -49,13 +53,6 @@ public class JvmHelper {
 		
 		logger.info("Started java installed versions check!");
 		String currJvmVersion = SysUtils.getCurrentJVMversion();
-		
-		// if current is correct return it and exit method
-		if(checkSingleJavaVersionOK(currJvmVersion)) {
-			logger.info("Current JVM("+currJvmVersion+") is OK -> selected and skipping search");
-			return JVM_OK;
-			// adding ; to path does not modify current retrieved and escapes NOT_FOUND_JVM controls as path won't be ""
-		}
 		
 		if(ignoreWarnings) {
 			// if user selected to ignore given warnings
@@ -67,6 +64,13 @@ public class JvmHelper {
 		String foundCorrect = compareWithAdmittedJVMS(foundJvmHomeList);
 		foundCorrect = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
 		
+		// if not found and current is correct return it and exit method
+		if("".equals(StringUtils.trimToEmpty(foundCorrect)) && checkSingleJavaVersionOK(currJvmVersion)) {
+			logger.info("Current JVM("+currJvmVersion+") is OK -> selected and skipping search");
+			foundCorrect = JVM_OK;
+			// adding ; to path does not modify current retrieved and escapes NOT_FOUND_JVM controls as path won't be ""
+		}
+
 		logger.info("\n\n => Versions found: " + foundJvmHomeList + "\n\n => Found correct one: " + foundCorrect + "\n");
 		
 		return foundCorrect;
@@ -79,10 +83,19 @@ public class JvmHelper {
 	 */
 	private String compareWithAdmittedJVMS(List<String> foundJVMS) {
 		
-		// first check used located JVM if it exist
+		// first check user located JVM if it exist
 		if(!manualPath_Jvm.equals(NOT_FOUND_JVM) && isOKManualJVM()) {
 			File binPath = new File(manualPath_Jvm);
 			return binPath.getParentFile().getAbsolutePath();
+		}
+		
+		// PREFERRED BY USER IS DEFINED -> Use that
+		if(foundJVMS.contains(ScrYpTLauncher.iniFileManager.preferredJvm)) {
+			String currentPath = ScrYpTLauncher.iniFileManager.preferredJvm;
+			String currentPathName = new File(currentPath).getName();
+			if(checkSingleJavaVersionOK(currentPathName)) {
+				return currentPath;
+			}
 		}
 		
 		// if unspecified manual search automatically

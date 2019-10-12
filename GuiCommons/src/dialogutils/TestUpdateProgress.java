@@ -1,4 +1,4 @@
-package gUI.utils.progressDialog;
+package dialogutils;
 
 import java.awt.Color;
 import java.awt.Dimension;

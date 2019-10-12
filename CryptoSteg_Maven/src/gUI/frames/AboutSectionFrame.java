@@ -86,7 +86,7 @@ public class AboutSectionFrame extends JFrame{
 		lblTitle.setForeground(Color.WHITE);
 		backPanel.add(lblTitle, "cell 1 1 4 1,alignx center,growy");
 		
-		JLabel lblReleaseDate = new JLabel("Builded on:");
+		JLabel lblReleaseDate = new JLabel("Built on:");
 		lblReleaseDate.setForeground(new Color(211, 211, 211));
 		lblReleaseDate.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		backPanel.add(lblReleaseDate, "cell 1 2 4 1,alignx center,aligny bottom");

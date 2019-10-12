@@ -43,10 +43,10 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
+import dialogutils.TestUpdateProgress;
 import enums.KeyGenImageType;
 import frameutils.utils.GuiUtils;
 import gUI.panels.subpanels.ImageGenContainerPanel;
-import gUI.utils.progressDialog.TestUpdateProgress;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import mainobj.INItializer;
 

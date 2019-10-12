@@ -144,13 +144,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		// CHANGE TAB VISUALIZATION MODE
 		checkBoxInlineTabs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (checkBoxInlineTabs.isSelected()) {
-					currentConfiguration.getTextEditorOpt().inlinedTabs = true;
-					parent.getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-				} else {
-					currentConfiguration.getTextEditorOpt().inlinedTabs = false;
-					parent.getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
-				}
+				doInlinedCheck();
 			}
 		});
 		
@@ -191,6 +185,17 @@ public class TextEditorHeaderPanel extends JPanel{
 				parent.getCurrentTabEditor().goToNextInHistory();
 			}
 		});
+	}
+	
+	public void doInlinedCheck() {
+		if (checkBoxInlineTabs.isSelected()) {
+			currentConfiguration.getTextEditorOpt().inlinedTabs = true;
+			parent.getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		} else {
+			currentConfiguration.getTextEditorOpt().inlinedTabs = false;
+			parent.getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
+		}
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "inlineTabs", currentConfiguration.getTextEditorOpt().inlinedTabs);
 	}
 
 }

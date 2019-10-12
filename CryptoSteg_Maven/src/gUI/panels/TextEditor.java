@@ -191,7 +191,10 @@ public class TextEditor extends JPanel {
 	public JButton toggleButtonFileTreeNewWorkspace;
 	public JButton toggleButtonFileTreeWorkspace;
 	public JButton toggleButtonFileTreeLocked;
+	
 	public JToggleButton btnToggleFileView;
+	public JToggleButton toggleBtnMap;
+	public JToggleButton toggleBtnClipboard;
 	
 	private JSpinner tabSizeSpinner;
 
@@ -208,8 +211,11 @@ public class TextEditor extends JPanel {
 	public JSlider slider_margin;
 
 	public JSplitPane splitPaneMain;
+	public JSplitPane splitPaneMainContainer;
 	public JScrollPane leftSplitPane;
+	public JScrollPane rightSplitPane;
 	public JPanel leftSplitContainer; 
+	public JPanel rightSplitContainer; 
 	public JTree leftSplitTreeFiles;
 	private JPasswordField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as
 
@@ -272,7 +278,7 @@ public class TextEditor extends JPanel {
 
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
-		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2","[300px:"+MainGUI.screenSize.getWidth()+"px:"+MainGUI.screenSize.getWidth()+"px,grow]",
+		setLayout(new MigLayout(/*GeneralConfig.DEBUG_GRAPHICS+*/"fill, insets 1, hidemode 2","[300px:"+MainGUI.screenSize.getWidth()+"px:"+MainGUI.screenSize.getWidth()+"px,grow]",
 				"[300px:"+MainGUI.screenSize.getHeight()+"px:"+MainGUI.screenSize.getHeight()+"px,grow]"));
 
 		// initialize OBJECTS used in GUI //
@@ -282,7 +288,6 @@ public class TextEditor extends JPanel {
 		currentTextEditor = this;
 		LBL_ADVICE_COLOR = new Color(124, 252, 0);
 		uppercase = false;
-
 		fileNavColorBckg = currentConfiguration.getTextEditorOpt().filePanelBackCol;
 
 		// MAIN PANEL
@@ -290,51 +295,7 @@ public class TextEditor extends JPanel {
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMinimumSize(new Dimension(800, 300));
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(98, parentFrame));
-		mainPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2",
-				  "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[20px:n:60px]"
-				+ "[30px:30px:30px]"
-				+ "[:3%:4%]"
-				+ "[:60px:70px]"
-				+ "[40px:2%:50px]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[50px:2%:3.5%]"
-				+ "[:50px:50px]"
-				+ "[20]"
-				+ "[30]"
-				+ "[]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[25px:2%:2.5%]"
-				+ "[5px:5px:5px]"
-				+ "[25px:50px:60px]"
-				+ "[25px:50px:60px]"
-				+ "[55px:55px:55px]"
-				+ "[40px:40px:40px]"
-				+ "[45px:45px:45px]"
-				+ "[30px:35px:35px]"
-				+ "[10px:30px,grow]", 
-				
-				"[:0px:35px]"
-				+ "[0px:5px]"
-				+ "[:0px:25px]"
-				+ "[:0px:25px]"
-				+ "[0px:4px]"
-				+ "[0px:4px]"
-				+ "[300px,grow 300,fill]"
-				+ "[:0px:30px]"));
+		mainPanel.setLayout(new MigLayout("fill, insets 1, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][20px:n:60px][30px:30px:30px][:3%:4%][:60px:70px][40px:2%:50px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][50px:2%:3.5%][:50px:50px][20][30][][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:35px][0px:5px][:0px:25px][:0px:25px][0px:4px][0px:4px][300px,grow 300,fill][:0px:30px]"));
 		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMinimumSize(new Dimension(1100, 300));
@@ -345,11 +306,25 @@ public class TextEditor extends JPanel {
 		
 		// HEADER
 		headerPanel = new TextEditorHeaderPanel(this);
-		mainPanel.add(headerPanel, "cell 0 0 35 1,grow");
+		mainPanel.add(headerPanel, "cell 0 0 36 1,grow");
+		
+		toggleBtnMap = new JToggleButton("");
+		toggleBtnMap.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
+		toggleBtnMap.setToolTipText(TextEditorTooltips.tooltipMapViewBtn);
+		toggleBtnMap.setCursor(GuiUtils.CURSOR_HAND);
+		toggleBtnMap.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MAP));
+		mainPanel.add(toggleBtnMap, "cell 27 2");
+		
+		toggleBtnClipboard = new JToggleButton("");
+		toggleBtnClipboard.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
+		toggleBtnClipboard.setToolTipText(TextEditorTooltips.tooltipClipboardViewBtn);
+		toggleBtnClipboard.setCursor(GuiUtils.CURSOR_HAND);
+		toggleBtnClipboard.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
+		mainPanel.add(toggleBtnClipboard, "cell 27 3");
 		
 		// FOOTER
 		footerPanel = new TextEditorFooterPanel(this);
-		mainPanel.add(footerPanel, "cell 0 7 35 1,grow");
+		mainPanel.add(footerPanel, "cell 0 7 36 1,grow");
 		
 		comboFileFormat = new JComboBox<SupportedFileTextEditor>();
 		comboFileFormat.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT);
@@ -472,28 +447,28 @@ public class TextEditor extends JPanel {
 		mainPanel.add(btnColorSampler, "cell 26 3");
 		
 		labelTabSize = new JLabel("Tab Size:");
-		mainPanel.add(labelTabSize, "cell 28 2");
+		mainPanel.add(labelTabSize, "cell 29 2");
 		labelTabSize.setHorizontalAlignment(SwingConstants.RIGHT);
 		labelTabSize.setForeground(SystemColor.menu);
 		
 		tabSizeSpinner = new JSpinner();
 		tabSizeSpinner.setToolTipText(TextEditorTooltips.tooltipTabSize);
 		tabSizeSpinner.setCursor(GuiUtils.CURSOR_HAND);
-		mainPanel.add(tabSizeSpinner, "cell 29 2,growx");
+		mainPanel.add(tabSizeSpinner, "cell 30 2,growx");
 		tabSizeSpinner.setModel(new SpinnerNumberModel(currentConf.getTextEditorOpt().getTabSize(), 1, 9, 1));
 
 		lblMargin = new JLabel("Margin:");
 		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMargin.setForeground(SystemColor.menu);
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		mainPanel.add(lblMargin, "cell 30 2,alignx center");
+		mainPanel.add(lblMargin, "cell 31 2,alignx center");
 
 		lBLMargin = new JLabel("12");
 		lBLMargin.setForeground(Color.WHITE);
-		mainPanel.add(lBLMargin, "cell 31 2,alignx center");
+		mainPanel.add(lBLMargin, "cell 32 2,alignx center");
 
 		btnToggleFileView = new JToggleButton("");
-		btnToggleFileView.setMinimumSize(new Dimension(16, 0));
+		btnToggleFileView.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
 		btnToggleFileView.setToolTipText(TextEditorTooltips.tooltipFileViewBtn);
 		btnToggleFileView.setCursor(GuiUtils.CURSOR_HAND);
 		btnToggleFileView.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
@@ -605,23 +580,30 @@ public class TextEditor extends JPanel {
 		chckbxShowTabGrid.setSelected(currentConfiguration.getTextEditorOpt().isTabLineVisible());
 		chckbxShowTabGrid.setForeground(SystemColor.menu);
 		chckbxShowTabGrid.setBackground(Color.DARK_GRAY);
-		mainPanel.add(chckbxShowTabGrid, "cell 28 3 2 1");
+		mainPanel.add(chckbxShowTabGrid, "cell 29 3 2 1");
 				
 		lblFontSize = new JLabel("Font size: ");
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFontSize.setForeground(SystemColor.menu);
-		mainPanel.add(lblFontSize, "cell 30 3,alignx center");
+		mainPanel.add(lblFontSize, "cell 31 3,alignx center");
 		
 		lblSIZE = new JLabel("");
 		lblSIZE.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		lblSIZE.setForeground(SystemColor.window);
-		mainPanel.add(lblSIZE, "cell 31 3,alignx center");
+		mainPanel.add(lblSIZE, "cell 32 3,alignx center");
 		lblSIZE.setText(String.valueOf(GeneralConfig.DEFAULT_FONT.getSize()) + " Px");
 
 		getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
+		// PARENT CONTAINER (main lv.2, right)
+		splitPaneMainContainer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+
+		// 2ND LEVEL CONTAINER SPLIT PANE (left, center)
 		splitPaneMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		splitPaneMain.setBackground(getCurrentTabEditor().mainTabList.getBackground());
+		splitPaneMain.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+
+		
 		leftSplitTreeFiles = new JTree(new FileTreeModel(null));
 		mouseListenerTreeFilePanel = new TreeFileMouseListenerTxtEditor(leftSplitTreeFiles, this);
 		leftSplitTreeFiles.setCellRenderer(new TreeCellRendererDark());
@@ -633,8 +615,15 @@ public class TextEditor extends JPanel {
 		leftSplitContainer = new JPanel();
 		leftSplitContainer.setBackground(fileNavColorBckg);
 		leftSplitContainer.setForeground(Color.GRAY);
-		leftSplitContainer.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS, "[30px:40px][40px][2px:4px,grow][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
+		leftSplitContainer.setLayout(new MigLayout(/*GeneralConfig.DEBUG_GRAPHICS*/"", "[30px:40px][40px][2px:4px,grow][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
 		 
+		rightSplitContainer = new JPanel(); // TODO USE AD_HOC FUNCTIONS TO CHANGE THIS WITH RIGHT TYPE SELECTED
+		rightSplitContainer.setBackground(fileNavColorBckg);
+		rightSplitContainer.setForeground(Color.GRAY);
+		rightSplitPane = new JScrollPane(rightSplitContainer);
+		rightSplitPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		rightSplitPane.setPreferredSize(new Dimension(200, 500));
+		
 		lblLockNavigator = new JLabel("File Navigator");
 		lblLockNavigator.setFont(new Font("SansSerif", Font.BOLD, 12));
 		lblLockNavigator.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -673,7 +662,14 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.add(separator_NO_HIDE, "cell 0 1 6 1,growx");
 		leftSplitContainer.add(leftSplitPane, "cell 0 2 6 1,grow");
 
-		mainPanel.add(splitPaneMain, "cell 0 5 35 2,grow");
+		mainPanel.add(splitPaneMainContainer, "cell 0 5 36 2,grow");
+		
+		// Parent container split components
+		splitPaneMainContainer.setRightComponent(rightSplitPane);
+		splitPaneMainContainer.setLeftComponent(splitPaneMain);
+		splitPaneMainContainer.setDividerLocation(parentFrame.getWidth()-100);
+		
+		// Main split init components
 		splitPaneMain.setRightComponent(getCurrentTabEditor().mainTabList);
 		splitPaneMain.setLeftComponent(leftSplitContainer);
 		
@@ -704,7 +700,7 @@ public class TextEditor extends JPanel {
 
 		separator_2 = new JSeparator();
 		separator_2.setBackground(Color.GRAY);
-		mainPanel.add(separator_2, "cell 0 4 35 1,growx");
+		mainPanel.add(separator_2, "cell 0 4 36 1,growx");
 
 		getCurrentTabEditor().addTab(null, true); // comment for editing in windowuilder
 		getCurrentTabEditor().isFirstTabAdded = true;
@@ -714,10 +710,10 @@ public class TextEditor extends JPanel {
 		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
 		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
 		sliderFontSize.setValue(currentConfiguration.getTextEditorOpt().getFont().getSize());
-		mainPanel.add(sliderFontSize, "cell 32 3 3 1,growx");
+		mainPanel.add(sliderFontSize, "cell 33 3 3 1,growx");
 
 		separator_1 = new JSeparator();
-		mainPanel.add(separator_1, "cell 0 1 35 1,growx");
+		mainPanel.add(separator_1, "cell 0 1 36 1,growx");
 
 		txtAesKey = new JPasswordField();
 		txtAesKey.setHorizontalAlignment(SwingConstants.CENTER);
@@ -732,7 +728,7 @@ public class TextEditor extends JPanel {
 		slider_margin = new JSlider(0, 100, 0);
 		slider_margin.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		mainPanel.add(slider_margin, "cell 32 2 3 1,growx");
+		mainPanel.add(slider_margin, "cell 33 2 3 1,growx");
 
 		btnLoadTextFile = new JButton("");
 		btnLoadTextFile.setToolTipText(TextEditorTooltips.tooltipLoadTextFile);
@@ -956,13 +952,26 @@ public class TextEditor extends JPanel {
 			}
 		});
 
-		// divisor resize
+		// left divisor resize
 		splitPaneMain.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (btnToggleFileView.isSelected() && getCurrentTabEditor().loadedTabObj.loadedFile != null && getCurrentTabEditor().loadedTabObj.loadedFile.exists()) {
 					splitPaneMain.getLeftComponent().setVisible(true);
 					currentConfiguration.getTextEditorOpt().setDividerFileTreePosX(splitPaneMain.getDividerLocation());
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
+				}
+			}
+		});
+
+		// right divisor resize
+		splitPaneMainContainer.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if ((toggleBtnMap.isSelected() || toggleBtnClipboard.isSelected()) && getCurrentTabEditor().loadedTabObj.textArea != null) {
+					splitPaneMainContainer.getRightComponent().setVisible(true);
+					currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(parentFrame.getWidth()-splitPaneMainContainer.getDividerLocation());
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", currentConfiguration.getTextEditorOpt().getDividerRightPanePosX());
 				}
 			}
 		});
@@ -971,7 +980,6 @@ public class TextEditor extends JPanel {
 		btnToggleFileView.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
 				if (btnToggleFileView.isSelected()) {
 					btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 					currentConfiguration.getTextEditorOpt().fileTreeActive = true;
@@ -980,6 +988,47 @@ public class TextEditor extends JPanel {
 					currentConfiguration.getTextEditorOpt().fileTreeActive = false;
 				}
 				fileTreeShowOrHide(currentConfiguration.getTextEditorOpt());
+				textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
+			}
+		});
+
+		// MAP VIEW
+		toggleBtnMap.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (toggleBtnMap.isSelected()) {
+							toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+							currentConfiguration.getTextEditorOpt().mapViewActive = true;
+						} else {
+							toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+							currentConfiguration.getTextEditorOpt().mapViewActive = false;
+						}
+						currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
+						rightPaneShowOrHide(currentConfiguration.getTextEditorOpt());
+					}
+				});
+			}
+		});
+
+		// CLIPBOARD VIEW
+		toggleBtnClipboard.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (toggleBtnClipboard.isSelected()) {
+							toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+							currentConfiguration.getTextEditorOpt().clipboardViewActive = true;
+						} else {
+							toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+							currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
+						}
+						currentConfiguration.getTextEditorOpt().mapViewActive = false;
+						rightPaneShowOrHide(currentConfiguration.getTextEditorOpt());
+					}
+				});
 			}
 		});
 
@@ -2036,6 +2085,7 @@ public class TextEditor extends JPanel {
 
 		// TEXT AREA
 		headerPanel.checkBoxInlineTabs.setSelected(txtOptions.isInlinedTabs());
+		headerPanel.doInlinedCheck();
 		headerPanel.chkCutWordsTo.setSelected(txtOptions.isBreaklineActive());
 		leftSplitContainer.setBackground(txtOptions.filePanelBackCol);
 		leftSplitTreeFiles.setBackground(txtOptions.filePanelBackCol);
@@ -2088,11 +2138,14 @@ public class TextEditor extends JPanel {
 				
 				// FILE TREE PANEL ON/OFF
 				fileTreeShowOrHide(txtOptions);
+				
+				// RIGHT TREE PANEL ON/OFF
+				rightPaneShowOrHide(txtOptions);
 			}
 		});
 	}
 	
-	private void fileTreeShowOrHide(TextEditorOption txtOptions) {
+	public void fileTreeShowOrHide(TextEditorOption txtOptions) {
 		btnToggleFileView.setSelected(txtOptions.fileTreeActive);
 		if (txtOptions.fileTreeActive) {
 			if (getCurrentTabEditor().loadedTabObj.loadedFile == null && !txtOptions.treeLocked) {
@@ -2109,6 +2162,35 @@ public class TextEditor extends JPanel {
 		}
 		
 		textEditorUtils.resetDividerColor();
+	}
+
+	public void rightPaneShowOrHide(TextEditorOption txtOptions) {
+		
+		if (txtOptions.clipboardViewActive || txtOptions.mapViewActive) {
+			
+			if (getCurrentTabEditor().loadedTabObj.loadedFile == null && !txtOptions.treeLocked) {
+				splitPaneMainContainer.getRightComponent().setVisible(false);
+				splitPaneMainContainer.setDividerLocation(currentTextEditor.getWidth());
+			}
+			splitPaneMainContainer.getRightComponent().setVisible(true);
+			splitPaneMainContainer.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
+			toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+			toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+		
+		} else {
+			splitPaneMainContainer.getRightComponent().setVisible(false);
+			splitPaneMainContainer.setDividerLocation(parentFrame.getWidth());
+			toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+			toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+		}
+		
+		textEditorUtils.resetDividerColor();
+		
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
+		
+		toggleBtnMap.setSelected(txtOptions.mapViewActive);
+		toggleBtnClipboard.setSelected(txtOptions.clipboardViewActive);
 	}
 
 	private void loadOpenedFilesAtStart() {

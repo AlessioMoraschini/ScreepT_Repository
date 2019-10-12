@@ -42,6 +42,7 @@
   	<module>../GenCommons</module>
   	<module>../GeneralResources</module>
   	<module>../OsCommons</module>
+  	<module>../ScrYpT-Crypter</module>
   	<module>../Initializer_Configs</module>
   	<module>../GuiCommons</module>
   	<module>../HardwareCommons</module>

