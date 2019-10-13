@@ -82,6 +82,7 @@ import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.event.ChangeEvent;
@@ -105,6 +106,7 @@ import gUI.utils.tree.TreeCellRendererDark;
 import gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor;
 import gui.ImageSelector2TextFrame;
 import gui.PdfSelector2TextFrame;
+import guistyle.GUIStyelSettings;
 
 import javax.swing.JPasswordField;
 import java.awt.Cursor;
@@ -2167,6 +2169,7 @@ public class TextEditor extends JPanel {
 		}
 		
 		textEditorUtils.resetDividerColor();
+		GUIStyelSettings.applyNimbusSize(0);
 	}
 
 	public void rightPaneShowOrHide(TextEditorOption txtOptions) {
@@ -2203,6 +2206,9 @@ public class TextEditor extends JPanel {
 				currentTextEditor.rightSplitPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 				currentTextEditor.splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 				currentTextEditor.splitPaneMainContainer.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+				GUIStyelSettings.applyNimbusSize(0);
+				currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+				currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			}
 		});
 	}

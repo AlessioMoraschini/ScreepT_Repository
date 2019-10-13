@@ -22,6 +22,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FilenameUtils;
@@ -57,7 +58,6 @@ import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.PanelType;
 import utils.panels.ParentPanel;
-import utils.panels.IParentPanel;
 import variousutils.HandleString;
 
 public class TextEditorUtils {
@@ -153,6 +153,8 @@ public class TextEditorUtils {
 			currentTextEditor.rightSplitContainer = MapTextAreaPanel.getSingletonLazy(textAreaDialogs.dialogManager);
 			currentTextEditor.rightSplitContainer.setVisible(true);
 			currentTextEditor.rightSplitPane = new JScrollPane(currentTextEditor.rightSplitContainer);
+			currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			currentTextEditor.splitPaneMainContainer.setRightComponent(currentTextEditor.rightSplitPane);
 			((MapTextAreaPanel)currentTextEditor.rightSplitContainer).sync();
 		}else if(wantedType.equals(PanelType.CLIPBOARD_PANEL)) {

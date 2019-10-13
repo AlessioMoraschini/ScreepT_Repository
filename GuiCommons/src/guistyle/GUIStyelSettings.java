@@ -188,10 +188,10 @@ public class GUIStyelSettings{
 //				}
 //			}
 //		});
-				applyNimbusSize(size);
-				if(updateUI) {
-					updateAllWindowsLaf();
-				}
+		applyNimbusSize(size);
+		if(updateUI) {
+			updateAllWindowsLaf();
+		}
 	}
 	
 	

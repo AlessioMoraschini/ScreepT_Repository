@@ -76,8 +76,8 @@ public class GeneralConfig {
 	public static final String testAddress = linkedMappings.getProperty("testAddress");
 	
 	// Tooltips
-	public static int TOOLTIP_DELAY;
-	public static int TOOLTIP_TIMEOUT;
+	public static int TOOLTIP_DELAY = getIntVarFromProps("TOOLTIP_DELAY", 400);
+	public static int TOOLTIP_TIMEOUT = getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
 	public static String TOOLTIP_FONT = linkedMappings.getProperty("TOOLTIP_FONT");
 	public static final Font TXT_EDITOR_MINIMAP_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 5);
 	public static Font TXT_EDITOR_MINIMAP_FONT =  TXT_EDITOR_MINIMAP_FONT_DEFAULT;
@@ -85,19 +85,10 @@ public class GeneralConfig {
 	
 	static {
 		try {
-			TOOLTIP_DELAY = Integer.parseInt(linkedMappings.getProperty("TOOLTIP_DELAY"));// 0,4 seconds
-			TOOLTIP_TIMEOUT = Integer.parseInt(linkedMappings.getProperty("TOOLTIP_TIMEOUT")); // 30 seconds
+			TXT_EDITOR_MINIMAP_FONT = (TXT_EDITOR_MINIMAP_FONT_STR.equals(""))?
+					TXT_EDITOR_MINIMAP_FONT_DEFAULT : getFontFromString(GeneralConfig.TXT_EDITOR_MINIMAP_FONT_STR);
 		}catch(Exception e) {
-			TOOLTIP_DELAY = 400;// 0,4 seconds
-			TOOLTIP_TIMEOUT = 30000; // 30 seconds
-			TOOLTIP_FONT = "";
-		}finally {
-			try {
-				TXT_EDITOR_MINIMAP_FONT = (TXT_EDITOR_MINIMAP_FONT_STR.equals(""))?
-						TXT_EDITOR_MINIMAP_FONT_DEFAULT : getFontFromString(GeneralConfig.TXT_EDITOR_MINIMAP_FONT_STR);
-			}catch(Exception e) {
-				TXT_EDITOR_MINIMAP_FONT = TXT_EDITOR_MINIMAP_FONT_DEFAULT;
-			}
+			TXT_EDITOR_MINIMAP_FONT = TXT_EDITOR_MINIMAP_FONT_DEFAULT;
 		}
 	}
 	
@@ -111,23 +102,12 @@ public class GeneralConfig {
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
 	public static final int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
+	public static final int NORMAL_WHEEL_SPEED = getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
+	public static final int FAST_WHEEL_SPEED = getIntVarFromProps("FAST_WHEEL_SPEED", 150);
+	public static final int ULTRA_FAST_WHEEL_SPEED = getIntVarFromProps("ULTRA_FAST_WHEEL_SPEED", 300);
 	
-	public static int FOOTER_MAX_DIR_LABEL_LENGTH;
-	static {
-		try {
-			FOOTER_MAX_DIR_LABEL_LENGTH = Integer.parseInt(linkedMappings.getProperty("FOOTER_MAX_DIR_LABEL_LENGTH"));
-		}catch(Exception e) {
-			FOOTER_MAX_DIR_LABEL_LENGTH = 30;
-		}
-	}
-	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL;
-	static {
-		try {
-			DEFAULT_FILE_TREE_ANCESTOR_LEVEL = Integer.parseInt(linkedMappings.getProperty("DEFAULT_FILE_TREE_ANCESTOR_LEVEL"));
-		}catch(Exception e) {
-			DEFAULT_FILE_TREE_ANCESTOR_LEVEL = 2;
-		}
-	}
+	public static int FOOTER_MAX_DIR_LABEL_LENGTH = getIntVarFromProps("FOOTER_MAX_DIR_LABEL_LENGTH", 30);
+	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL = getIntVarFromProps("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", 2);
 	
 	///////////////////////////////////////////////// METHODS ///////////////////////////////////////////////
 	

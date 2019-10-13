@@ -8,6 +8,8 @@ import javax.swing.JScrollPane;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
+import guistyle.GUIStyelSettings;
+
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -25,29 +27,44 @@ public class MapTextAreaPanel extends ParentPanel{
 	private JScrollPane currentScrollPane;
 	private ITextAreaDialogs dialogManager;
 	
+	private RSyntaxTextArea targetTemp;
+	
 	public MapTextAreaPanel(ITextAreaDialogs dialogManager) {
 		this.dialogManager = dialogManager;
 		this.currentScrollPane = new JScrollPane();
 		this.txtAreaMiniMap = new RSyntaxTextArea();
 		
-		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2", "[200px,grow]", "[270px,grow]"));
+		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[200px,grow]", "[270px,grow]"));
 		
 		add(currentScrollPane, "cell 0 0,grow");
 		currentScrollPane.setViewportView(txtAreaMiniMap);
 		currentScrollPane.setBorder(new EmptyBorder(0,0,0,0));
+		currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.ULTRA_FAST_WHEEL_SPEED);
 		txtAreaMiniMap.setBorder(new EmptyBorder(0,0,0,0));
 		setBorder(new EmptyBorder(0,0,0,0));
 		currentScrollPane.setBackground(Color.black);
 		
 		txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
 		txtAreaMiniMap.setEditable(false);
+		GUIStyelSettings.applyNimbusSize(0);
 		
 		txtAreaMiniMap.addMouseListener(new MouseListener() {
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				// Refresh map content
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						targetTemp = dialogManager.getTargetTextArea();
+						synchronized (targetTemp) {
+							currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+							txtAreaMiniMap.setText(targetTemp.getText());
+							GUIStyelSettings.applyNimbusSize(0);
+						}
+					}
+				});
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -109,6 +126,11 @@ public class MapTextAreaPanel extends ParentPanel{
 			reference.requestFocus();
 			reference.setCaretPosition(0);
 			reference.setCaretPosition(caretPos);
+			try {
+				reference.setSelectionStart(txtAreaMiniMap.getSelectionStart());
+				reference.setSelectionEnd(txtAreaMiniMap.getSelectionEnd());
+			} catch (Exception e) {
+			}
 		}
 	}
 	

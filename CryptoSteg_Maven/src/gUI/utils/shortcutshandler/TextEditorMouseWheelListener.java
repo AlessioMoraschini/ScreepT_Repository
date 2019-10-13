@@ -3,19 +3,23 @@ package gUI.utils.shortcutshandler;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.SwingUtilities;
+
 import gUI.panels.TextEditor;
+import resources.GeneralConfig;
+
 import tabbededitor.CustomTabbedEditor;
 
 public class TextEditorMouseWheelListener implements MouseWheelListener{
 	
-	public static final int normalSpeed = 14;
-	public static final int fastSpeed = 150;
-	public static final int ultraFastSpeed = 300;
 	private TextEditor currentEditor;
 	private CustomTabbedEditor currentTabEditor;
 	
+	GeneralConfig config;
+
 	public TextEditorMouseWheelListener(TextEditor currentEditor) {
 		super();
+		config = new GeneralConfig();
 		this.currentEditor = currentEditor;
 		this.currentTabEditor = currentEditor.getCurrentTabEditor();
 	}
@@ -27,39 +31,50 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 		if (TextEditorShortcutListener.flagCtrlPressed.get() && TextEditorShortcutListener.flagShiftPressed.get() && !TextEditorShortcutListener.flagAltPressed.get()) {
 			// CASE CTRL+SHIFT
 			adjustFontSize(rotation);
-		}else if((TextEditorShortcutListener.flagAltPressed.get() || TextEditorShortcutListener.flagShiftPressed.get()) && ! TextEditorShortcutListener.flagCtrlPressed.get()){
+		}else if(((TextEditorShortcutListener.flagAltPressed.get() && TextEditorShortcutListener.flagShiftPressed.get()) || TextEditorShortcutListener.flagShiftPressed.get()) && ! TextEditorShortcutListener.flagCtrlPressed.get()){
 			// CASE ALT OR SHIFT
-			adjustHorizontalScroll();
-			// trigger scroll event on target
-			currentTabEditor.loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
+			adjustHorizontalScroll(e);
 		}else {
 			// CASE CTRL (in method)
-			adjustScroll();
-			// trigger scroll event on target
-			currentTabEditor.loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
+			adjustScroll(e);
 			
 		}
 		
 	}
 	
-	private void adjustScroll() {
-		if (TextEditorShortcutListener.flagCtrlPressed.get() && TextEditorShortcutListener.flagAltPressed.get() && !TextEditorShortcutListener.flagShiftPressed.get()) {
-			currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(ultraFastSpeed);
-		}else if (TextEditorShortcutListener.flagCtrlPressed.get()) {
-			currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(fastSpeed);
-		}else {
-			currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(normalSpeed);
-		}
+	private void adjustScroll(MouseWheelEvent e) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (TextEditorShortcutListener.flagCtrlPressed.get() && TextEditorShortcutListener.flagAltPressed.get()
+						&& !TextEditorShortcutListener.flagShiftPressed.get()) {
+					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.ULTRA_FAST_WHEEL_SPEED);
+				} else if (TextEditorShortcutListener.flagCtrlPressed.get()) {
+					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
+				} else {
+					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED);
+				}
+				// trigger scroll event on target
+				currentTabEditor.loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
+			}
+		});
 	}
 	
-	private void adjustHorizontalScroll() {
-		if (TextEditorShortcutListener.flagAltPressed.get() && TextEditorShortcutListener.flagShiftPressed.get() && !TextEditorShortcutListener.flagCtrlPressed.get()) {
-			// alt+shift-> more speed
-			currentTabEditor.loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(fastSpeed);
-		}else if (!TextEditorShortcutListener.flagAltPressed.get() && TextEditorShortcutListener.flagShiftPressed.get() && !TextEditorShortcutListener.flagCtrlPressed.get()){
-			// only shift normal
-			currentTabEditor.loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(normalSpeed);
-		}
+	private void adjustHorizontalScroll(MouseWheelEvent e) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (TextEditorShortcutListener.flagAltPressed.get() && TextEditorShortcutListener.flagShiftPressed.get()
+						&& !TextEditorShortcutListener.flagCtrlPressed.get()) {
+					// alt+shift-> more speed
+					currentTabEditor.loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
+				} else if (!TextEditorShortcutListener.flagAltPressed.get() && TextEditorShortcutListener.flagShiftPressed.get()
+						&& !TextEditorShortcutListener.flagCtrlPressed.get()) {
+					// only shift normal
+					currentTabEditor.loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED);
+				}
+				// trigger scroll event on target
+				currentTabEditor.loadedTabObj.currentScrollPane.getListeners(MouseWheelListener.class)[0].mouseWheelMoved(e);
+			}
+		});
 	}
 	
 	private void adjustFontSize(int delta) {
