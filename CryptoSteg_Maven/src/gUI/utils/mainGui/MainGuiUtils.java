@@ -76,6 +76,7 @@ public class MainGuiUtils {
 		
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
 
+		// reset all listeners
 		if (forceStart) {
 			removeAllListeners(mainAppReference.configManagerPanel);
 		}
@@ -98,6 +99,7 @@ public class MainGuiUtils {
 	public void startCrypterPanel(boolean forceStart) {
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
 
+		// reset all listeners
 		if (forceStart) {
 			removeAllListeners(MainGUI.panelCrypter);
 		}
@@ -123,6 +125,7 @@ public class MainGuiUtils {
 		
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
 		
+		// reset shortcut listener
 		if(forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
 			KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.initTxtWriter.shortcutsListener);
 			removeAllListeners(MainGUI.panelCrypter);

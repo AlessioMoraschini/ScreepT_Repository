@@ -5,12 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Hashtable;
 import java.util.Properties;
-
-import javax.swing.ImageIcon;
-
-import org.apache.commons.lang.StringUtils;
 
 public class GeneralConfig {
 	
@@ -84,6 +79,9 @@ public class GeneralConfig {
 	public static int TOOLTIP_DELAY;
 	public static int TOOLTIP_TIMEOUT;
 	public static String TOOLTIP_FONT = linkedMappings.getProperty("TOOLTIP_FONT");
+	public static final Font TXT_EDITOR_MINIMAP_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 5);
+	public static Font TXT_EDITOR_MINIMAP_FONT =  TXT_EDITOR_MINIMAP_FONT_DEFAULT;
+	private static String TXT_EDITOR_MINIMAP_FONT_STR = linkedMappings.getProperty("TXT_EDITOR_MINIMAP_FONT");
 	
 	static {
 		try {
@@ -93,6 +91,13 @@ public class GeneralConfig {
 			TOOLTIP_DELAY = 400;// 0,4 seconds
 			TOOLTIP_TIMEOUT = 30000; // 30 seconds
 			TOOLTIP_FONT = "";
+		}finally {
+			try {
+				TXT_EDITOR_MINIMAP_FONT = (TXT_EDITOR_MINIMAP_FONT_STR.equals(""))?
+						TXT_EDITOR_MINIMAP_FONT_DEFAULT : getFontFromString(GeneralConfig.TXT_EDITOR_MINIMAP_FONT_STR);
+			}catch(Exception e) {
+				TXT_EDITOR_MINIMAP_FONT = TXT_EDITOR_MINIMAP_FONT_DEFAULT;
+			}
 		}
 	}
 	
@@ -149,5 +154,20 @@ public class GeneralConfig {
 			return defaultVal;
 		}
 	}
+	
+    /**
+     * parse font from a representing string
+     */
+    private static Font getFontFromString(String stringFont) {
+    	String[] font = stringFont.split("-");
+    	if(font.length != 3) {
+    		return new Font("Segoe UI", Font.PLAIN, 18);
+    	}
+    	String type = font[0];
+    	int style = Integer.parseInt(font[1]);
+    	int size = Integer.parseInt(font[2]);
+    	
+    	return new Font(type, style, size);
+    }
 	
 }

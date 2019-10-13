@@ -24,9 +24,12 @@ import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import textareautil.SelectionDto;
 import textareautil.TextLineNumber;
-import utils.ColorDialogUtils;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
+import utils.dialog.ColorDialogUtils;
+import utils.panels.MapTextAreaPanel;
+import utils.panels.PanelType;
+import utils.panels.ParentPanel;
 import variousutils.HandleString;
 
 import javax.swing.SwingConstants;
@@ -215,7 +218,7 @@ public class TextEditor extends JPanel {
 	public JScrollPane leftSplitPane;
 	public JScrollPane rightSplitPane;
 	public JPanel leftSplitContainer; 
-	public JPanel rightSplitContainer; 
+	public ParentPanel rightSplitContainer; 
 	public JTree leftSplitTreeFiles;
 	private JPasswordField txtAesKey; // field containing fast crypt text user key, sinchronized from ini file as
 
@@ -278,7 +281,7 @@ public class TextEditor extends JPanel {
 
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
-		setLayout(new MigLayout(/*GeneralConfig.DEBUG_GRAPHICS+*/"fill, insets 1, hidemode 2","[300px:"+MainGUI.screenSize.getWidth()+"px:"+MainGUI.screenSize.getWidth()+"px,grow]",
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2","[300px:"+MainGUI.screenSize.getWidth()+"px:"+MainGUI.screenSize.getWidth()+"px,grow]",
 				"[300px:"+MainGUI.screenSize.getHeight()+"px:"+MainGUI.screenSize.getHeight()+"px,grow]"));
 
 		// initialize OBJECTS used in GUI //
@@ -295,7 +298,7 @@ public class TextEditor extends JPanel {
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMinimumSize(new Dimension(800, 300));
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(98, parentFrame));
-		mainPanel.setLayout(new MigLayout("fill, insets 1, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][20px:n:60px][30px:30px:30px][:3%:4%][:60px:70px][40px:2%:50px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][50px:2%:3.5%][:50px:50px][20][30][][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:35px][0px:5px][:0px:25px][:0px:25px][0px:4px][0px:4px][300px,grow 300,fill][:0px:30px]"));
+		mainPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"fill, insets 1, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][20px:n:60px][30px:30px:30px][:3%:4%][:60px:70px][40px:2%:50px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][50px:2%:3.5%][:50px:50px][20][30][][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:35px][0px:5px][:0px:25px][:0px:25px][0px:4px][0px:4px][300px,grow 300,fill][:0px:30px]"));
 		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMinimumSize(new Dimension(1100, 300));
@@ -615,9 +618,9 @@ public class TextEditor extends JPanel {
 		leftSplitContainer = new JPanel();
 		leftSplitContainer.setBackground(fileNavColorBckg);
 		leftSplitContainer.setForeground(Color.GRAY);
-		leftSplitContainer.setLayout(new MigLayout(/*GeneralConfig.DEBUG_GRAPHICS*/"", "[30px:40px][40px][2px:4px,grow][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
+		leftSplitContainer.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[30px:40px][40px][2px:4px,grow][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
 		 
-		rightSplitContainer = new JPanel(); // TODO USE AD_HOC FUNCTIONS TO CHANGE THIS WITH RIGHT TYPE SELECTED
+		rightSplitContainer = new MapTextAreaPanel(textEditorUtils.getDialogManager());
 		rightSplitContainer.setBackground(fileNavColorBckg);
 		rightSplitContainer.setForeground(Color.GRAY);
 		rightSplitPane = new JScrollPane(rightSplitContainer);
@@ -1001,6 +1004,8 @@ public class TextEditor extends JPanel {
 						if (toggleBtnMap.isSelected()) {
 							toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 							currentConfiguration.getTextEditorOpt().mapViewActive = true;
+							textEditorUtils.setRightPanelContent(PanelType.MAP_TXTAREA);
+
 						} else {
 							toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 							currentConfiguration.getTextEditorOpt().mapViewActive = false;
@@ -2191,6 +2196,15 @@ public class TextEditor extends JPanel {
 		
 		toggleBtnMap.setSelected(txtOptions.mapViewActive);
 		toggleBtnClipboard.setSelected(txtOptions.clipboardViewActive);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				currentTextEditor.rightSplitPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+				currentTextEditor.splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+				currentTextEditor.splitPaneMainContainer.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+			}
+		});
 	}
 
 	private void loadOpenedFilesAtStart() {

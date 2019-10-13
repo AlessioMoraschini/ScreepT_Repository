@@ -17,6 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
@@ -26,6 +27,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rtextarea.Gutter;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
@@ -48,9 +50,14 @@ import splitpanel.SplitPaneUtils;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import treeutils.om.FileNamed;
-import utils.ITextAreaDialogs;
 import utils.RsyntaxUtils;
-import utils.TextAreaDialogs;
+import utils.dialog.ITextAreaDialogs;
+import utils.dialog.TextAreaDialogs;
+import utils.panels.ClipboardPanel;
+import utils.panels.MapTextAreaPanel;
+import utils.panels.PanelType;
+import utils.panels.ParentPanel;
+import utils.panels.IParentPanel;
 import variousutils.HandleString;
 
 public class TextEditorUtils {
@@ -97,6 +104,11 @@ public class TextEditorUtils {
 				}
 				return result;
 			}
+
+			@Override
+			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {
+				loadTheme(txtArea, (Gutter) null,currentTextEditor.currentConfiguration.getTextEditorOpt());
+			}
 		};
 	}
 	
@@ -134,6 +146,44 @@ public class TextEditorUtils {
 		}
 		// APPLY SELECTED
 		currentTextEditor.comboFileFormat.setSelectedItem(chosenType);
+	}
+	
+	public void setRightPanelContent(PanelType wantedType) {
+		if(wantedType.equals(PanelType.MAP_TXTAREA)) {
+			currentTextEditor.rightSplitContainer = MapTextAreaPanel.getSingletonLazy(textAreaDialogs.dialogManager);
+			currentTextEditor.rightSplitContainer.setVisible(true);
+			currentTextEditor.rightSplitPane = new JScrollPane(currentTextEditor.rightSplitContainer);
+			currentTextEditor.splitPaneMainContainer.setRightComponent(currentTextEditor.rightSplitPane);
+			((MapTextAreaPanel)currentTextEditor.rightSplitContainer).sync();
+		}else if(wantedType.equals(PanelType.CLIPBOARD_PANEL)) {
+			// TODO
+		}
+	}
+
+	public ParentPanel getTypedIRightPanel() {
+		JPanel rightContainer = currentTextEditor.rightSplitContainer;
+		if (rightContainer != null) {
+			if (rightContainer instanceof MapTextAreaPanel) {
+				return (MapTextAreaPanel) rightContainer;
+			} else if (rightContainer instanceof ClipboardPanel) {
+				return (ClipboardPanel) rightContainer;
+			} 
+		}			
+		// default is map
+		return MapTextAreaPanel.getSingletonLazy(getDialogManager());
+	}
+	
+	public PanelType getTypeOfRightPanel() {
+		JPanel rightContainer = currentTextEditor.rightSplitContainer;
+		if (rightContainer != null) {
+			if (rightContainer instanceof MapTextAreaPanel) {
+				return PanelType.MAP_TXTAREA;
+			} else if (rightContainer instanceof ClipboardPanel) {
+				return PanelType.CLIPBOARD_PANEL;
+			} 
+		}			
+		// default is map
+		return PanelType.MAP_TXTAREA;
 	}
 	
 	public boolean checkWorkspaceExistNsel() {
@@ -595,26 +645,39 @@ public class TextEditorUtils {
 		// backup unsaved to avoid changing saved info with theme change
 		boolean unsaved = loadedTabObj.unsaved;
 
+		loadTheme(loadedTabObj.textArea, loadedTabObj.currentScrollPane.getGutter(), txtOpt);
+
+		// retore unsaved info backup
+		loadedTabObj.unsaved = unsaved;
+		
+		getTypedIRightPanel().sync();
+	}
+	
+	/**
+	 * nullable gutter
+	 * @param gutter
+	 * @param txtOpt
+	 */
+	public void loadTheme(RSyntaxTextArea txtArea, Gutter gutter, TextEditorOption txtOpt) {
 		ThemesWrapper theme = (ThemesWrapper) currentTextEditor.comboStylesScheme.getSelectedItem();
 		File pathFile = new File(theme.path);
 		
 		// If none selected or style definition not found on file system -> use default
 		if (theme.path.equals(Themes.NONE.defaultPath) || !pathFile.exists()) {
-			loadedTabObj.textArea.setHighlightCurrentLine(false);
-			loadedTabObj.currentScrollPane.getGutter().setBackground(txtOpt.backCol.darker());
-			RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOpt.backCol);
-			RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOpt.foreCol);
+			txtArea.setHighlightCurrentLine(false);
+			if (gutter != null) {
+				gutter.setBackground(txtOpt.backCol.darker());
+			}
+			RsyntaxUtils.setBackground(txtArea, txtOpt.backCol);
+			RsyntaxUtils.setForeground(txtArea, txtOpt.foreCol);
 			txtOpt.setSelectedTheme(theme.path);
 		} else {
-			loadedTabObj.textArea.setHighlightCurrentLine(true);
+			txtArea.setHighlightCurrentLine(true);
 			txtOpt.setSelectedTheme(theme.path);
-			RsyntaxUtils.changeStyleViaThemeXml(loadedTabObj.textArea, theme.path);
+			RsyntaxUtils.changeStyleViaThemeXml(txtArea, theme.path);
 		}
 		// loadedTabObj.textArea.revalidate();
-		loadedTabObj.textArea.repaint();
-
-		// retore unsaved info backup
-		loadedTabObj.unsaved = unsaved;
+		txtArea.repaint();
 	}
 
 	public File adaptFileExt(File selectedFile) {

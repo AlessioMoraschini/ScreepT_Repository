@@ -1,4 +1,4 @@
-package utils;
+package utils.dialog;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowListener;

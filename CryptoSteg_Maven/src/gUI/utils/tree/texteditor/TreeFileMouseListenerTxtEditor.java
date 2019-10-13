@@ -30,7 +30,7 @@ import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import treeutils.om.FileNamed;
-import utils.ColorDialogUtils;
+import utils.dialog.ColorDialogUtils;
 import variousutils.HandleString;
 
 public class TreeFileMouseListenerTxtEditor {

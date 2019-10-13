@@ -10,7 +10,10 @@ import gUI.panels.TextEditor;
 import gUI.utils.shortcutshandler.TextEditorMouseWheelListener;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
+import om.TextEditorOption;
 import tabbededitor.ITabbedEditorOwner;
+import utils.panels.MapTextAreaPanel;
+import utils.panels.PanelType;
 
 public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 	
@@ -18,20 +21,22 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 	static Logger logger = Logger.getLogger(TabbedEditorOwnerScrYpT.class);
 
 	public TextEditor textEditor;
+	public TextEditorUtils txtUtils;
 	
 	public TabbedEditorOwnerScrYpT(TextEditor textEditorReference) {
 		textEditor = textEditorReference;
+		txtUtils = textEditor.textEditorUtils;
 	}
 	
 	@Override
 	public void doAfterFileLoad() {
-		textEditor.textEditorUtils.applySelectedTheme();
-		textEditor.textEditorUtils.refreshMessageAndTabTooltip("[File loaded]");
+		txtUtils.applySelectedTheme();
+		txtUtils.refreshMessageAndTabTooltip("[File loaded]");
 	}
 
 	@Override
 	public void doAfterApplyingStyleToTabs() {
-		textEditor.textEditorUtils.resetDividerColor();
+		txtUtils.resetDividerColor();
 	}
 
 	@Override
@@ -46,16 +51,16 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public void doAfterTabRefresh() {
-		
+		TextEditorOption txtOpt = textEditor.currentConfiguration.getTextEditorOpt();
 		TabTextEditorObj loadedTabObj = textEditor.getCurrentTabEditor().loadedTabObj;
 		
-		textEditor.textEditorUtils.applyCurrentGraphicsTextArea(loadedTabObj.textArea);
+		txtUtils.applyCurrentGraphicsTextArea(loadedTabObj.textArea);
 
 		// update load target textArea
-		textEditor.textEditorUtils.refreshTxtAreaReference();
-		textEditor.textEditorUtils.resizeFrameToDefault(textEditor.mainApplication);
+		txtUtils.refreshTxtAreaReference();
+		txtUtils.resizeFrameToDefault(textEditor.mainApplication);
 
-		textEditor.textEditorUtils.refreshTree(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, false);
+		txtUtils.refreshTree(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, false);
 
 		// update eventually opened info frames
 		if (textEditor.propertiesFrame != null) {
@@ -64,7 +69,13 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 			}
 		}
 		
-		textEditor.textEditorUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !textEditor.chckbxLockLanguage.isSelected());
+		if (txtOpt.mapViewActive && txtUtils != null && txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
+			// syncronyze map if active
+			txtUtils.getTypedIRightPanel();
+			((MapTextAreaPanel) textEditor.rightSplitContainer).sync();
+		}
+		
+		txtUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !textEditor.chckbxLockLanguage.isSelected());
 	}
 
 	@Override

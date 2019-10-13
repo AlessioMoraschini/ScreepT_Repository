@@ -48,6 +48,7 @@ import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.FileDragNDropManager;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
+import utils.panels.MapTextAreaPanel;
 import variousutils.HandleString;
 
 public class CustomTabbedEditor {

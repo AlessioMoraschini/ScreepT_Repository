@@ -1,4 +1,4 @@
-package utils;
+package utils.dialog;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -11,6 +11,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+
+import utils.RsyntaxUtils;
 
 public class ColorDialogUtils extends JColorChooser{
 	
