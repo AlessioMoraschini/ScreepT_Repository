@@ -718,17 +718,24 @@ public class FileStuff {
 	}
 	
 	/**
-	 * this method append the content of a txt file (as a string) in the given text area, updating also the given label with description
+	 * this method writes the content of a given extension file (as a string) in the given text area, updating also the given label with description
 	 * @param txtFile the source .txt file
 	 * @param textArea_1 the text area to be filled with file content
-	 * @param lblCurrentFile the label that will contain the info about operation
+	 * @param lblCurrentFile the label that will contain the info about operation, this can be null
+	 * @param extension filter can be null, or specified if you want to filter only a type of file admitted
 	 * @return
 	 */
-	public static boolean loadFileTxtArea(File txtFile, JTextArea textArea_1, JLabel lblCurrentFile) {
-
-    	if(!FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals("txt")) {
-			JOptionPane.showMessageDialog(null, "Please select a valid txt file!");
+	public static boolean loadFileTxtArea(File txtFile, JTextArea textArea_1, JLabel lblCurrentFile, String extensionFilter) {
+		
+		if(txtFile == null) {
+			JOptionPane.showMessageDialog(null, "NULL: Please select a valid file!");
+			return false;
+		}
+		
+    	if(extensionFilter != null && !FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals(extensionFilter)) {
+			JOptionPane.showMessageDialog(null, "Please select a valid "+ extensionFilter +" file!");
     	}
+    	
     	else {
     		BufferedReader reader;
     		StringBuilder builder = new StringBuilder();
@@ -750,7 +757,9 @@ public class FileStuff {
 				
 				textArea_1.append(builder.toString());
 				reader.close();
-				lblCurrentFile.setText(txtFile.getParentFile().getName()+"\\"+txtFile.getName());
+				if (lblCurrentFile != null) {
+					lblCurrentFile.setText(txtFile.getParentFile().getName() + "\\" + txtFile.getName());
+				}
 				
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(null, "[Error loading the selected file]");
@@ -777,8 +786,11 @@ public class FileStuff {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
 		try {
 			String line = reader.readLine();
+			builder.append(line);
+			line = reader.readLine();
+			
 			while (line != null) {
-				builder.append(line).append("\n");
+				builder.append("\n").append(line);
 				line = reader.readLine();
 			}
 		} catch (IOException e) {

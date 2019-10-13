@@ -6,4 +6,5 @@ public interface ITextAreaDialogs {
 
 	public RSyntaxTextArea getTargetTextArea();
 	public void loadThemeIntoTarget(RSyntaxTextArea txtArea);
+	public String getCurrentClipboard();
 }

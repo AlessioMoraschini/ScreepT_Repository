@@ -5,48 +5,55 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import guistyle.GUIStyelSettings;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
+import utils.panels.arch.IParentPanel;
+import utils.panels.arch.ParentPanel;
 
-public class MapTextAreaPanel extends ParentPanel{
+public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 
 	public static MapTextAreaPanel singletonInstance;
 	
 	private RSyntaxTextArea txtAreaMiniMap;
-	private JScrollPane currentScrollPane;
-	private ITextAreaDialogs dialogManager;
-	
 	private RSyntaxTextArea targetTemp;
 	
-	public MapTextAreaPanel(ITextAreaDialogs dialogManager) {
-		this.dialogManager = dialogManager;
-		this.currentScrollPane = new JScrollPane();
+	private int startTemp = 0;
+	private Integer endTemp = null;
+	
+	public MapTextAreaPanel(final ITextAreaDialogs dialogManager) {
 		this.txtAreaMiniMap = new RSyntaxTextArea();
 		
-		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		this.currentScrollPane = new JScrollPane();
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[200px,grow]", "[270px,grow]"));
+		
+		setBorder(new EmptyBorder(0,0,0,0));
+
+		add(currentScrollPane, "cell 0 0,grow");
+		this.dialogManager = dialogManager;
 		
 		add(currentScrollPane, "cell 0 0,grow");
 		currentScrollPane.setViewportView(txtAreaMiniMap);
 		currentScrollPane.setBorder(new EmptyBorder(0,0,0,0));
-		currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.ULTRA_FAST_WHEEL_SPEED);
-		txtAreaMiniMap.setBorder(new EmptyBorder(0,0,0,0));
-		setBorder(new EmptyBorder(0,0,0,0));
 		currentScrollPane.setBackground(Color.black);
-		
+		currentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
+
+		txtAreaMiniMap.setBorder(new EmptyBorder(0,0,0,0));
 		txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
+		txtAreaMiniMap.setAntiAliasingEnabled(true);
 		txtAreaMiniMap.setEditable(false);
 		GUIStyelSettings.applyNimbusSize(0);
 		
@@ -54,21 +61,38 @@ public class MapTextAreaPanel extends ParentPanel{
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				// Refresh map content
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						targetTemp = dialogManager.getTargetTextArea();
-						synchronized (targetTemp) {
-							currentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-							txtAreaMiniMap.setText(targetTemp.getText());
-							GUIStyelSettings.applyNimbusSize(0);
-						}
+						syncReferenceCaretPosition(startTemp, endTemp);
+						GUIStyelSettings.applyNimbusSize(0);
 					}
 				});
 			}
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				syncReferenceCaretPosition(dialogManager.getTargetTextArea());
+				
+				// Refresh map content
+				String sel = txtAreaMiniMap.getSelectedText();
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if(sel ==  null || sel.equals("")) {
+							startTemp = txtAreaMiniMap.getCaretPosition();
+						}else {
+							startTemp = txtAreaMiniMap.getSelectionStart();
+							endTemp = txtAreaMiniMap.getSelectionEnd();
+						}
+
+						targetTemp = dialogManager.getTargetTextArea();
+						synchronized (targetTemp) {
+							txtAreaMiniMap.setText(targetTemp.getText());
+						}
+						
+						syncCaretPosition(startTemp, endTemp);
+					}
+				});
+
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
@@ -94,43 +118,70 @@ public class MapTextAreaPanel extends ParentPanel{
 					RsyntaxUtils.setForeground(txtAreaMiniMap, reference.getCaretColor());
 					// sync Text and caret position
 					txtAreaMiniMap.setText(reference.getText());
-					syncCaretPosition(reference);
 					txtAreaMiniMap.setCurrentLineHighlightColor(txtAreaMiniMap.getBackground().brighter());
 					txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
 					dialogManager.loadThemeIntoTarget(txtAreaMiniMap);
 					currentScrollPane.setBackground(Color.black);
+
+					safeSyncCaretFromTxtReference(reference);
 				}
 			});
 		}
 		
 	}
 	
+	public void safeSyncCaretToTxtReference() {
+		String sel = txtAreaMiniMap.getSelectedText();
+		if(sel ==  null || sel.equals("")) {
+			syncReferenceCaretPosition(txtAreaMiniMap.getCaretPosition(), null);
+		}else {
+			syncReferenceCaretPosition(txtAreaMiniMap.getSelectionStart(), txtAreaMiniMap.getSelectionEnd());
+		}
+	}
+
+	public void safeSyncCaretFromTxtReference(JTextArea txtArea) {
+		String sel = txtArea.getSelectedText();
+		if(sel ==  null || sel.equals("")) {
+			syncCaretPosition(txtArea.getCaretPosition(), null);
+		}else {
+			syncCaretPosition(txtArea.getSelectionStart(), txtArea.getSelectionEnd());
+		}
+	}
+	
 	/**
-	 * Refresh caret position in minimap textArea
+	 * Refresh caret position in minimap textArea (if end is null then it will be setted as caret position)
 	 */
-	public void syncCaretPosition(RSyntaxTextArea reference) {
-		if (reference != null) {
-			int caretPos = reference.getCaretPosition();
-			reference.requestFocus();
-			txtAreaMiniMap.setCaretPosition(0);
-			txtAreaMiniMap.setCaretPosition(caretPos);
+	public void syncCaretPosition(int start, Integer end) {
+		try {
+			
+			if (end == null) {
+				txtAreaMiniMap.setCaretPosition(0);
+				txtAreaMiniMap.setCaretPosition(start);
+			}else {
+				txtAreaMiniMap.setSelectionStart(start);
+				txtAreaMiniMap.setSelectionEnd(end);
+			}
+		} catch (Exception e) {
+			logger.warn("ERROR setting caret position into textArea miniMap");
 		}
 	}
 	
 	/**
 	 * Refresh caret position in target main Text Area
 	 */
-	public void syncReferenceCaretPosition(RSyntaxTextArea reference) {
-		if (reference != null) {
-			int caretPos = txtAreaMiniMap.getCaretPosition();
-			reference.requestFocus();
-			reference.setCaretPosition(0);
-			reference.setCaretPosition(caretPos);
-			try {
-				reference.setSelectionStart(txtAreaMiniMap.getSelectionStart());
-				reference.setSelectionEnd(txtAreaMiniMap.getSelectionEnd());
-			} catch (Exception e) {
+	public void syncReferenceCaretPosition(int start, Integer end) {
+		JTextArea reference = dialogManager.getTargetTextArea();
+		try {
+			
+			if (end == null) {
+				reference.setCaretPosition(0);
+				reference.setCaretPosition(start);
+			}else {
+				reference.setSelectionStart(start);
+				reference.setSelectionEnd(end);
 			}
+		} catch (Exception e) {
+			logger.warn("ERROR setting caret position into textArea miniMap");
 		}
 	}
 	

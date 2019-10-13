@@ -27,9 +27,10 @@ import textareautil.TextLineNumber;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 import utils.dialog.ColorDialogUtils;
+import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
-import utils.panels.PanelType;
-import utils.panels.ParentPanel;
+import utils.panels.arch.PanelType;
+import utils.panels.arch.ParentPanel;
 import variousutils.HandleString;
 
 import javax.swing.SwingConstants;
@@ -275,6 +276,8 @@ public class TextEditor extends JPanel {
 	//////////////// CONSTRUCTOR /////////////////////
 
 	public TextEditor(MainGUI mainGui, INItializer currentConf) {
+		
+		isPreloading = !GeneralConfig.PRELOAD_TXT_EDITOR_FLAG;
 		
 		// Initialize text editor Utils reference
 		textEditorUtils = new TextEditorUtils(this);
@@ -622,7 +625,7 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.setForeground(Color.GRAY);
 		leftSplitContainer.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[30px:40px][40px][2px:4px,grow][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
 		 
-		rightSplitContainer = new MapTextAreaPanel(textEditorUtils.getDialogManager());
+		initRightPane();
 		rightSplitContainer.setBackground(fileNavColorBckg);
 		rightSplitContainer.setForeground(Color.GRAY);
 		rightSplitPane = new JScrollPane(rightSplitContainer);
@@ -789,6 +792,20 @@ public class TextEditor extends JPanel {
 		logger.debug("### TEXT WRITER module started");
 	}
 
+	private void initRightPane() {
+		if (currentConfiguration.getTextEditorOpt().mapViewActive) {
+			rightSplitContainer = MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager());
+		} else if (currentConfiguration.getTextEditorOpt().clipboardViewActive) {
+			rightSplitContainer = ClipboardPanel.getSingletonLazy(textEditorUtils.getDialogManager(), currentConfiguration.getTextEditorOpt());
+			((ClipboardPanel)rightSplitContainer).selectFromComboClipboards(currentConfiguration.getTextEditorOpt().lastFileOpenedClipboard);
+		} else {
+			// Default
+			rightSplitContainer = MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager());
+		}
+		rightSplitPane = new JScrollPane(rightSplitContainer);
+		
+	}
+	
 	private void startAesKeyCheckThread() {
 		// this thread will check every 0.2s the value contained in the textfield
 		new Thread(new Runnable() {
@@ -973,10 +990,20 @@ public class TextEditor extends JPanel {
 		splitPaneMainContainer.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				if ((toggleBtnMap.isSelected() || toggleBtnClipboard.isSelected()) && getCurrentTabEditor().loadedTabObj.textArea != null) {
+				TextEditorOption opt = currentConfiguration.getTextEditorOpt();
+				if ((opt.mapViewActive || opt.clipboardViewActive) && getCurrentTabEditor().loadedTabObj.textArea != null) {
 					splitPaneMainContainer.getRightComponent().setVisible(true);
-					currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(parentFrame.getWidth()-splitPaneMainContainer.getDividerLocation());
-					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", currentConfiguration.getTextEditorOpt().getDividerRightPanePosX());
+					
+					int newRightPaneValue = parentFrame.getWidth()-splitPaneMainContainer.getDividerLocation();
+					
+					if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
+						// In case of clipboard keep memory in ad-hoc option
+						currentConfiguration.getTextEditorOpt().setDividerRightPanePosXClipboard(newRightPaneValue);
+						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard", newRightPaneValue);
+					}else {
+						currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(newRightPaneValue);
+						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", newRightPaneValue);
+					}
 				}
 			}
 		});
@@ -1028,6 +1055,7 @@ public class TextEditor extends JPanel {
 						if (toggleBtnClipboard.isSelected()) {
 							toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 							currentConfiguration.getTextEditorOpt().clipboardViewActive = true;
+							textEditorUtils.setRightPanelContent(PanelType.CLIPBOARD_PANEL);
 						} else {
 							toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 							currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
@@ -1917,12 +1945,14 @@ public class TextEditor extends JPanel {
 					return;
 				} else {
 					try {
-						done = FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile,
-								true);
+						done = FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true);
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(currentTextEditor, "error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
+					}finally {
+						getCurrentTabEditor().changeMonManager.cleanFromHistory(loadedTabObj.loadedFile);
 					}
+					
 					if (done) {
 						loadedTabObj.unsaved = false;
 						getCurrentTabEditor().updateSavedLabelNTab(null);
@@ -1980,6 +2010,7 @@ public class TextEditor extends JPanel {
 								
 								getCurrentTabEditor().loadedTabObj.fileMonitorManager.removeFromListener(loadedTabObj.loadedFile);
 								loadedTabObj.loadedFile = selectedFile;
+								getCurrentTabEditor().loadedTabObj.fileMonitorManager.addFileToMonitorList(loadedTabObj.loadedFile);
 								
 								loadedTabObj.unsaved = false;
 								getCurrentTabEditor().updateSavedLabelNTab(null);
@@ -2174,14 +2205,21 @@ public class TextEditor extends JPanel {
 
 	public void rightPaneShowOrHide(TextEditorOption txtOptions) {
 		
+		// avoid useless operations at start
+		if(isPreloading) {return;}
+		
 		if (txtOptions.clipboardViewActive || txtOptions.mapViewActive) {
 			
-			if (getCurrentTabEditor().loadedTabObj.loadedFile == null && !txtOptions.treeLocked) {
-				splitPaneMainContainer.getRightComponent().setVisible(false);
-				splitPaneMainContainer.setDividerLocation(currentTextEditor.getWidth());
-			}
+			// Refresh divider location
 			splitPaneMainContainer.getRightComponent().setVisible(true);
-			splitPaneMainContainer.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
+			if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
+				// In case of clipboard use ad-hoc option
+				splitPaneMainContainer.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosXClipboard);
+			}else {
+				splitPaneMainContainer.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
+			}
+			
+			// Update background
 			toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 			toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 		
@@ -2243,7 +2281,7 @@ public class TextEditor extends JPanel {
 			}
 		}
 
-		// From now document listener will be active
+		// RE-Enable refreshing
 		isPreloading = false;
 		
 		if (loadedAlmostOne) {
@@ -2269,6 +2307,8 @@ public class TextEditor extends JPanel {
 			// trigger tab style refresh
 			currentTabbedEditor.mainTabList.setSelectedIndex(0);
 		}
+		
+		// From now document listener will be active
 		currentTabbedEditor.alreadyLoading = false;
 		currentTabbedEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 		SwingUtilities.invokeLater(new Runnable() {

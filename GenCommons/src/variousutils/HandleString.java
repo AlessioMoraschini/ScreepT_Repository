@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -590,12 +589,41 @@ public class HandleString {
      */
     public static Font getFontFromString(String stringFont) {
     	String[] font = stringFont.split("-");
-    	if(font.length != 3) {
-    		return new Font("Segoe UI", Font.PLAIN, 18);
-    	}
-    	String type = font[0];
-    	int style = Integer.parseInt(font[1]);
-    	int size = Integer.parseInt(font[2]);
+    	String type;
+    	int style;
+    	int size;
+    	try {
+			if (font.length != 3) {
+				return new Font("Segoe UI", Font.PLAIN, 18);
+			}
+			type = font[0];
+			style = Integer.parseInt(font[1]);
+			size = Integer.parseInt(font[2]);
+		} catch (Exception e) {
+			return new Font("Segoe UI", Font.PLAIN, 18);
+		}
+    	
+    	return new Font(type, style, size);
+    }
+    
+    /**
+     * parse font from a representing string
+     */
+    public static Font getFontFromString(String stringFont, Font defaultFont) {
+    	String[] font = stringFont.split("-");
+    	String type;
+    	int style;
+    	int size;
+		try {
+			if (font.length != 3) {
+				return defaultFont;
+			}
+			type = font[0];
+			style = Integer.parseInt(font[1]);
+			size = Integer.parseInt(font[2]);
+		} catch (Exception e) {
+			return defaultFont;
+		}
     	
     	return new Font(type, style, size);
     }

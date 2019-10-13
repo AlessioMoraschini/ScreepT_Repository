@@ -2,6 +2,7 @@ package tabbededitor;
 
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.JTextArea;
 import javax.swing.text.JTextComponent;
 
 import om.SupportedFileTextEditor;
@@ -47,6 +48,12 @@ public interface ITabbedEditorOwner {
 	public boolean getAdditionalConditionBeforeUpdateOnDocumentEvent();
 	
 	/**
+	 * Use this to do all you want to do after the document has changed (when user has done some action on the textarea, such as write delete, modify, ecc...)
+	 * If you don't need this, leave the method body empty [ <b>public void doAdditionalStuffOnDucChange(){} </b>]
+	 */
+	public void doAdditionalStuffOnDocMouseClick(JTextArea target);
+	
+	/**
 	 * If this is true tabs will be refreshed using current settings when swtiching (useful to enable after initialization)
 	 * @return
 	 */
@@ -67,5 +74,5 @@ public interface ITabbedEditorOwner {
 	 * 
 	 */
 	public MouseWheelListener getMouseWheelTabbedAreaListener();
-
+	
 }

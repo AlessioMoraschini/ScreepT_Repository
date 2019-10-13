@@ -291,7 +291,7 @@ public class INItializer {
 		String selectedAtStartStr = iniReadFile.get(TEXT_EDITOR_OPT, "selectedFileAtStart");
 		String defaultWorspaceLocationStr = iniReadFile.get(TEXT_EDITOR_OPT, "defaultWorspaceLocation");
 		String lastEscapeLanguageStr = iniReadFile.get(TEXT_EDITOR_OPT, "lastEscapeLanguage");
-		
+
 		// validation
 		Font font = (!"".equals(fontStr) && fontStr!= null)? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
 		Color backCol = (!"".equals(backColStr) && backColStr!= null)? HandleString.getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
@@ -318,6 +318,7 @@ public class INItializer {
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
 		textEditorOpt.setLastEscapeLanguage(lastEscapeLanguage);
+		textEditorOpt.setLastFileOpenedClipboard(getSafeStringConf(TEXT_EDITOR_OPT, "lastFileOpenedClipboard", TextEditorOption.DEF_lastFileOpenedClipboard));
 		
 		// CONVERTED/PARSED TYPES
 		// margin
@@ -332,19 +333,10 @@ public class INItializer {
 		} catch (NumberFormatException e) {
 			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_VOICE_RATE);
 		}
-		// left divider size
-		try {
-			textEditorOpt.setDividerFileTreePosX(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerFileTreePosX")));
-		} catch (NumberFormatException e) {
-			textEditorOpt.setDividerFileTreePosX(TextEditorOption.DEFAULT_DIVIDER_POS_X);
-		}
-
-		// right divider size
-		try {
-			textEditorOpt.setDividerRightPanePosX(Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosX")));
-		} catch (NumberFormatException e) {
-			textEditorOpt.setDividerRightPanePosX(TextEditorOption.DEF_dividerRightPanePosX);
-		}
+		
+		textEditorOpt.setDividerFileTreePosX(getIntVarFromConf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerFileTreePosX"), TextEditorOption.DEFAULT_DIVIDER_POS_X));
+		textEditorOpt.setDividerRightPanePosX(getIntVarFromConf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosX"), TextEditorOption.DEF_dividerRightPanePosX));
+		textEditorOpt.setDividerRightPanePosXClipboard(getIntVarFromConf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard"), TextEditorOption.DEF_dividerRightPanePosXClipboard));
 		
 		// automatic syntax selection file-extension-based
 		textEditorOpt.setDefaultAutoSyntaxSync(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync")));
@@ -509,6 +501,8 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "mapViewActive", textEditorOpt.mapViewActive);
 		iniFile.put(TEXT_EDITOR_OPT, "dividerFileTreePosX", textEditorOpt.dividerFileTreePosX);
 		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosX", textEditorOpt.dividerRightPanePosX);
+		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard", textEditorOpt.dividerRightPanePosXClipboard);
+		iniFile.put(TEXT_EDITOR_OPT, "lastFileOpenedClipboard", textEditorOpt.lastFileOpenedClipboard);
 		iniFile.put(TEXT_EDITOR_OPT, "antialiasedTxtArea", textEditorOpt.antialiasedTxtArea);
 		iniFile.put(TEXT_EDITOR_OPT, "breakLineActive", textEditorOpt.breaklineActive);
 		iniFile.put(TEXT_EDITOR_OPT, "isTreeLocked", textEditorOpt.treeLocked);
@@ -682,6 +676,8 @@ public class INItializer {
 			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate)
 			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION: ").append(textEditorOpt.dividerRightPanePosX)
+			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): ").append(textEditorOpt.dividerRightPanePosXClipboard)
+			   .append("\nLAST FILE OPENED IN CLIPBOARD: ").append(textEditorOpt.lastFileOpenedClipboard)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
 			   .append("\nLAST CODE ESCAPE LANGUAGE: ").append(textEditorOpt.lastEscapeLanguage)
@@ -730,6 +726,13 @@ public class INItializer {
 		return result;
 	}
 	
+	private String getSafeStringConf(String section, String variable, String defIfBlank) {
+		String result = iniReadFile.get(section, variable);
+		result = (result == null || "".equals(result))? defIfBlank : result;
+		
+		return result;
+	}
+	
 	private boolean getBooleanFromString(String value, boolean defIfBlank) {
 		boolean result = false;
 		if(value == null || "".equals(value)) {
@@ -739,6 +742,14 @@ public class INItializer {
 		}
 		
 		return result;
+	}
+	
+	private static int getIntVarFromConf(String val, int defaultVal) {
+		try {
+			return Integer.valueOf(val);
+		}catch(Exception e){
+			return defaultVal;
+		}
 	}
 	
 	public String listToString(ArrayList<String> loadedFiles) {

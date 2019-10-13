@@ -5,13 +5,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,7 +31,6 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.FileStuff;
 import amfileutils.filechangewatcher.ChangeDTO;
-import amfileutils.filechangewatcher.FileChangeMonitor;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import general.MyFileView;
@@ -48,7 +44,6 @@ import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.FileDragNDropManager;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
-import utils.panels.MapTextAreaPanel;
 import variousutils.HandleString;
 
 public class CustomTabbedEditor {
@@ -258,6 +253,7 @@ public class CustomTabbedEditor {
 		} catch (Exception e) {
 			logger.error("Error during label update!", e);
 		}
+		
 	}
 	
 	public void addTab(File file, boolean first) {
@@ -269,7 +265,34 @@ public class CustomTabbedEditor {
 			int newIndex = mainTabList.getTabCount();
 
 			TabTextEditorObj newTabNode = new TabTextEditorObj(file, "", getChangeListener(), currentConfiguration.getTextEditorOpt(), changeMonManager);
-
+			newTabNode.textArea.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							tabEditorManager.doAdditionalStuffOnDocMouseClick(newTabNode.textArea);
+						}
+					});
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				}
+			});
+			
 			mainTabList.addTab(name, newTabNode.currentScrollPane);
 			loadedList.add(newTabNode);
 			loadedTabObj = newTabNode;

@@ -192,10 +192,15 @@
 						<filtering>false</filtering>
 				        <directory>./Resources_Scrypt</directory>
     					<includes>
+    						<include>/PanelTempFiles</include>
+    						<include>/PanelTempFiles/*</include>
+    						<include>/Backup/*</include>
     						<include>/Images/*</include>
 					        <include>/Icons/*</include>
+					        <include>/ProgrammingLanguagesWords/*</include>
     						<include>/Images/**</include>
 					        <include>/Icons/**</include>
+					        <include>/ProgrammingLanguagesWords/**</include>
 					    </includes>
 					    <excludes>
 					    	/**/*Thumbs.db
@@ -268,10 +273,15 @@
 						<filtering>false</filtering>
 				        <directory>./Resources_Scrypt</directory>
     					<includes>
-    						<include>/Images/**/*</include>
+    						<include>/Backup/*</include>
+    						<include>/PanelTempFiles</include>
+    						<include>/PanelTempFiles/*</include>
+    						<include>/Images/*</include>
+					        <include>/Icons/*</include>
+					        <include>/ProgrammingLanguagesWords/*</include>
     						<include>/Images/**</include>
-					        <include>/Icons/**/*</include>
 					        <include>/Icons/**</include>
+					        <include>/ProgrammingLanguagesWords/**</include>
 					    </includes>
 					    <excludes>
 					    	/**/*Thumbs.db

@@ -56,8 +56,8 @@ import utils.dialog.ITextAreaDialogs;
 import utils.dialog.TextAreaDialogs;
 import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
-import utils.panels.PanelType;
-import utils.panels.ParentPanel;
+import utils.panels.arch.PanelType;
+import utils.panels.arch.ParentPanel;
 import variousutils.HandleString;
 
 public class TextEditorUtils {
@@ -109,6 +109,11 @@ public class TextEditorUtils {
 			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {
 				loadTheme(txtArea, (Gutter) null,currentTextEditor.currentConfiguration.getTextEditorOpt());
 			}
+
+			@Override
+			public String getCurrentClipboard() {
+				return GeneralConfig.CLIPBOARD_PANEL_PREFIX+0;
+			}
 		};
 	}
 	
@@ -150,15 +155,24 @@ public class TextEditorUtils {
 	
 	public void setRightPanelContent(PanelType wantedType) {
 		if(wantedType.equals(PanelType.MAP_TXTAREA)) {
-			currentTextEditor.rightSplitContainer = MapTextAreaPanel.getSingletonLazy(textAreaDialogs.dialogManager);
+			currentTextEditor.rightSplitContainer = MapTextAreaPanel.getSingletonLazy(getDialogManager());
 			currentTextEditor.rightSplitContainer.setVisible(true);
 			currentTextEditor.rightSplitPane = new JScrollPane(currentTextEditor.rightSplitContainer);
 			currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			currentTextEditor.splitPaneMainContainer.setRightComponent(currentTextEditor.rightSplitPane);
 			((MapTextAreaPanel)currentTextEditor.rightSplitContainer).sync();
+			
 		}else if(wantedType.equals(PanelType.CLIPBOARD_PANEL)) {
-			// TODO
+			currentTextEditor.rightSplitContainer = ClipboardPanel.getSingletonLazy(getDialogManager(), currentTextEditor.currentConfiguration.getTextEditorOpt());
+			currentTextEditor.rightSplitContainer.setVisible(true);
+			currentTextEditor.rightSplitPane = new JScrollPane(currentTextEditor.rightSplitContainer);
+			currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			currentTextEditor.splitPaneMainContainer.setRightComponent(currentTextEditor.rightSplitPane);
+			((ClipboardPanel)currentTextEditor.rightSplitContainer).sync();
+			((ClipboardPanel)currentTextEditor.rightSplitContainer)
+				.selectFromComboClipboards(currentTextEditor.currentConfiguration.getTextEditorOpt().lastFileOpenedClipboard);
 		}
 	}
 
@@ -194,42 +208,40 @@ public class TextEditorUtils {
 	}
 	
 	public void refreshTree(File currentFile, boolean forceRefresh) {
-		TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
-		workspaceRoot = new File(options.defaultWorkspacePath);
-		
-		// refresh only if tree is not locked
-		if (!options.treeLocked) {
-			// TREE UNPINNED
-			if(options.workspaceViewSelected) {
-				// SELECTED WORKSPACE
-				if (workspaceRoot != null && workspaceRoot.exists()) {
-					// EXISTING WORKSPACE
-					refreshFromWorkspace(workspaceRoot);
-				}else {
-					// NOT EXISTING WORKSPACE
+		// Avoid useless refreshing during preload
+		if (!currentTextEditor.isPreloading) {
+			TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
+			workspaceRoot = new File(options.defaultWorkspacePath);
+			// refresh only if tree is not locked
+			if (!options.treeLocked) {
+				// TREE UNPINNED
+				if (options.workspaceViewSelected) {
+					// SELECTED WORKSPACE
+					if (workspaceRoot != null && workspaceRoot.exists()) {
+						// EXISTING WORKSPACE
+						refreshFromWorkspace(workspaceRoot);
+					} else {
+						// NOT EXISTING WORKSPACE
+						refresh(currentFile);
+					}
+				} else {
+					// UNSELECTED WORKSPACE
 					refresh(currentFile);
 				}
-			}else {
-				// UNSELECTED WORKSPACE
-				refresh(currentFile);
+			} else if (forceRefresh) {
+				if (options.workspaceViewSelected) {
+					refreshFromWorkspace(workspaceRoot);
+				} else {
+					refresh(currentFile);
+				}
 			}
-		}else if(forceRefresh) {
-			if (options.workspaceViewSelected) {
-				refreshFromWorkspace(workspaceRoot);
-			}else {
-				refresh(currentFile);
-			}
+			// Validate dir string length
+			currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
+			currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
+			resetAllDIviderColors();
+			currentTextEditor.fileTreeShowOrHide(options);
+			currentTextEditor.rightPaneShowOrHide(options);
 		}
-		
-		// Validate dir string length
-		currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
-		
-		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
-		
-		resetAllDIviderColors();
-		
-		currentTextEditor.fileTreeShowOrHide(options);
-		currentTextEditor.rightPaneShowOrHide(options);
 	}
 	
 	public void refreshTreeFromFolder(File folder, File currentFile, boolean forceRefresh) {

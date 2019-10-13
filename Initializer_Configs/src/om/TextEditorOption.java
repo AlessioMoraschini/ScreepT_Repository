@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import enums.Themes;
 import resources.GeneralConfig;
 
-
 public class TextEditorOption {
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
@@ -27,7 +26,9 @@ public class TextEditorOption {
 	public static final boolean DEF_mapViewActive = false;
 	public static final boolean DEF_clipboardViewActive = false;
 	public static final int DEFAULT_DIVIDER_POS_X = 230;
-	public static final int DEF_dividerRightPanePosX = 100;
+	public static final int DEF_dividerRightPanePosX = 60;
+	public static final int DEF_dividerRightPanePosXClipboard = 150;
+	public static final String DEF_lastFileOpenedClipboard = GeneralConfig.CLIPBOARD_PANEL_PREFIX+"0";
 	public static final int DEFAULT_TAB_SIZE = 2;
 	public static final boolean DEFAULT_TAB_LINE_VISIBLE = false;
 	public static final boolean DEFAULT_BREAK_LINE = false;
@@ -74,6 +75,8 @@ public class TextEditorOption {
 	public String selectedTheme;
 	public int dividerFileTreePosX;
 	public int dividerRightPanePosX;
+	public int dividerRightPanePosXClipboard;
+	public String lastFileOpenedClipboard;
 	public int tabSize = 2;
 	public boolean tabLineVisible;
 	public boolean fileTreeActive;
@@ -120,12 +123,14 @@ public class TextEditorOption {
 		defaultWorkspacePath = DEFAULT_WORKSPACE_LOCATION;
 		selectedTheme = DEFAULT_SELECTED_THEME;
 		dividerFileTreePosX = DEFAULT_DIVIDER_POS_X;
+		dividerRightPanePosX = DEF_dividerRightPanePosX;
+		dividerRightPanePosXClipboard = DEF_dividerRightPanePosXClipboard;
+		lastFileOpenedClipboard = DEF_lastFileOpenedClipboard;
 		tabSize = DEFAULT_TAB_SIZE;
 		
 		fileTreeActive = DEFAULT_FTREE_ACTIVE;
 		clipboardViewActive = DEF_clipboardViewActive;
 		mapViewActive = DEF_mapViewActive;
-		dividerRightPanePosX = DEF_dividerRightPanePosX;
 		treeLocked = DEFAULT_TREE_LOCKED;
 		workspaceViewSelected = DEFAULT_WORKSPACE_VIEW_SELECTED;
 		defaultAutoSyntaxSync = DFAULT_AUTO_SYNTAX_SYN_FLAG;
@@ -155,11 +160,28 @@ public class TextEditorOption {
 
 	
 	// GETTERS AND SETTERS
-	
 	public boolean isTabLineVisible() {
 		return tabLineVisible;
 	}
 	
+	public String getLastFileOpenedClipboard() {
+		return lastFileOpenedClipboard;
+	}
+
+	public void setLastFileOpenedClipboard(String lastFileOpenedClipboard) {
+		this.lastFileOpenedClipboard = lastFileOpenedClipboard;
+	}
+
+	public int getDividerRightPanePosXClipboard() {
+		return dividerRightPanePosXClipboard;
+	}
+
+
+	public void setDividerRightPanePosXClipboard(int dividerRightPanePosXClipboard) {
+		this.dividerRightPanePosXClipboard = dividerRightPanePosXClipboard;
+	}
+
+
 	public boolean isDefaultAutoSyntaxSync() {
 		return defaultAutoSyntaxSync;
 	}

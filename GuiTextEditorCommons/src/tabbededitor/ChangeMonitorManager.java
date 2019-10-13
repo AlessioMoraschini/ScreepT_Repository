@@ -118,7 +118,7 @@ public class ChangeMonitorManager implements IChangeMonManager{
 					mainEditorRef.updateSavedLabelNTab(null);
 				}
 				
-				cleanCurrentFromHistory(removed);
+				cleanFromHistory(removed);
 				
 			}else if (isChanged || isCreated) {
 				logger.debug("\n\n ########################  NEW/MOD EVENT REGISTERED! ###############################\n\n");
@@ -148,7 +148,7 @@ public class ChangeMonitorManager implements IChangeMonManager{
 					mainEditorRef.updateSavedLabelNTab(null);
 				}
 				
-				cleanCurrentFromHistory(changed);
+				cleanFromHistory(changed);
 			}			
 		}
 		isAlreadyChecking.set(false);
@@ -157,7 +157,7 @@ public class ChangeMonitorManager implements IChangeMonManager{
 	/**
 	 * CLEAN history from current changed file occurrences
 	 */
-	public void cleanCurrentFromHistory(File target) {
+	public void cleanFromHistory(File target) {
 		mainEditorRef.changesHistory.removedFiles.removeAll(Collections.singletonList(target));
 		mainEditorRef.changesHistory.changedFiles.removeAll(Collections.singletonList(target));
 		mainEditorRef.changesHistory.addedFiles.removeAll(Collections.singletonList(target));

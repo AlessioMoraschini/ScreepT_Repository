@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
+import java.util.TreeMap;
+
+import org.apache.commons.lang.StringUtils;
 
 public class GeneralConfig {
 	
@@ -35,6 +38,7 @@ public class GeneralConfig {
 	public static final String DEFAULT_INI_FOLDER = linkedMappings.getProperty("DEFAULT_INI_FOLDER");
 	public static final String THEMES_FOLDER_DEFAULT = linkedMappings.getProperty("THEMES_FOLDER_DEFAULT");
 	public static final String THEMES_FOLDER_CUSTOM = linkedMappings.getProperty("THEMES_FOLDER_CUSTOM");
+	public static final String PANEL_TEMP_FOLDER = linkedMappings.getProperty("PANEL_TEMP_FOLDER");
 	
 	// DEBUG GUI FLAG
 	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
@@ -79,21 +83,20 @@ public class GeneralConfig {
 	public static int TOOLTIP_DELAY = getIntVarFromProps("TOOLTIP_DELAY", 400);
 	public static int TOOLTIP_TIMEOUT = getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
 	public static String TOOLTIP_FONT = linkedMappings.getProperty("TOOLTIP_FONT");
-	public static final Font TXT_EDITOR_MINIMAP_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 5);
-	public static Font TXT_EDITOR_MINIMAP_FONT =  TXT_EDITOR_MINIMAP_FONT_DEFAULT;
-	private static String TXT_EDITOR_MINIMAP_FONT_STR = linkedMappings.getProperty("TXT_EDITOR_MINIMAP_FONT");
-	
-	static {
-		try {
-			TXT_EDITOR_MINIMAP_FONT = (TXT_EDITOR_MINIMAP_FONT_STR.equals(""))?
-					TXT_EDITOR_MINIMAP_FONT_DEFAULT : getFontFromString(GeneralConfig.TXT_EDITOR_MINIMAP_FONT_STR);
-		}catch(Exception e) {
-			TXT_EDITOR_MINIMAP_FONT = TXT_EDITOR_MINIMAP_FONT_DEFAULT;
-		}
-	}
 	
 	// TEXT EDITOR DEFAULTS
+	public static final boolean PRELOAD_TXT_EDITOR_FLAG = Boolean.valueOf(linkedMappings.getProperty("PRELOAD_TXT_EDITOR_FLAG"));
+	public static final Font TXT_EDITOR_MINIMAP_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 5);
+	private static String TXT_EDITOR_MINIMAP_FONT_STR = linkedMappings.getProperty("TXT_EDITOR_MINIMAP_FONT");
+	public static Font TXT_EDITOR_MINIMAP_FONT = getFontFromString(GeneralConfig.TXT_EDITOR_MINIMAP_FONT_STR, TXT_EDITOR_MINIMAP_FONT_DEFAULT);
+	
+	public static final Font TXT_EDITOR_CLIPBOARD_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 12);
+	private static String TXT_EDITOR_CLIPBOARD_FONT_STR = linkedMappings.getProperty("TXT_EDITOR_CLIPBOARD_FONT");
+	public static Font TXT_EDITOR_CLIPBOARD_FONT =  getFontFromString(GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT_STR, TXT_EDITOR_CLIPBOARD_FONT_DEFAULT);
+	
 	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(linkedMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
+	public static final String CLIPBOARD_PANEL_PREFIX = "CLIPBOARD_";
+	public static final TreeMap<String, File> CLIPBOARD_PANEL_MAP = getMapFromCommaSeparated(linkedMappings.getProperty("CLIPBOARD_PANEL_FILE_NAME_LIST"));
 	
 	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(18, 18);
 	public static final Font BUTTON_DEFAULT_FONT =  new Font("Segoe UI", Font.BOLD, 12);
@@ -138,16 +141,49 @@ public class GeneralConfig {
     /**
      * parse font from a representing string
      */
-    private static Font getFontFromString(String stringFont) {
+    private static Font getFontFromString(String stringFont, Font defaultFont) {
+    	if("".equals(StringUtils.trimToEmpty(stringFont))) return defaultFont;
+    	
     	String[] font = stringFont.split("-");
-    	if(font.length != 3) {
-    		return new Font("Segoe UI", Font.PLAIN, 18);
-    	}
-    	String type = font[0];
-    	int style = Integer.parseInt(font[1]);
-    	int size = Integer.parseInt(font[2]);
+    	String type;
+    	int style;
+    	int size;
+		try {
+			if (font.length != 3) {
+				return defaultFont;
+			}
+			type = font[0];
+			style = Integer.parseInt(font[1]);
+			size = Integer.parseInt(font[2]);
+		} catch (Exception e) {
+			return defaultFont;
+		}
     	
     	return new Font(type, style, size);
     }
-	
+    
+    public static TreeMap<String, File>  getMapFromCommaSeparated(String src) {
+    	TreeMap<String, File> map = new TreeMap<String, File>();
+    	src = StringUtils.trimToEmpty(src);
+    	String[] commaSep = src.split(",");
+    	int i = 0;
+    	for(String curr : commaSep) {
+    		curr = PANEL_TEMP_FOLDER + curr;
+    		map.put(CLIPBOARD_PANEL_PREFIX+i, new File(curr));
+    		++i;
+    	}
+    	return map;
+    }
+    
+    public static TreeMap<String, File> getRefreshedClipBoardsMap(){
+    	return getMapFromCommaSeparated(linkedMappings.getProperty("CLIPBOARD_PANEL_FILE_NAME_LIST"));
+    }
+    
+    public static boolean presentInClipboardMap(String key) {
+    	if(CLIPBOARD_PANEL_MAP.containsKey(key)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
 }

@@ -40,6 +40,7 @@ public class TabTextEditorObj {
 		textArea = new RSyntaxTextArea();
 		textArea.setMinimumSize(new Dimension(300,100));
 		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
+		textArea.setEditable(true);
 		
 		currentScrollPane = new RTextScrollPane(textArea);
 		

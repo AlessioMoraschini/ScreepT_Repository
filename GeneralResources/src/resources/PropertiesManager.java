@@ -62,6 +62,10 @@ public class PropertiesManager {
 		dynamicFileBindingsDefSource = new File("");
 	}
 	
+	/**
+	 * Use this to refresh properties
+	 * @return
+	 */
 	public boolean prepareDefObj() {
 
         if (dynamicFileBindingsDefSource != null) {

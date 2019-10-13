@@ -18,10 +18,13 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -36,6 +39,7 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class GuiUtils {
@@ -61,6 +65,15 @@ public class GuiUtils {
 		}
 		
 		return result;
+	}
+	
+	public static <E, T> void refreshCombo(JComboBox target, Collection<E> values) {
+		target.removeAllItems();
+		Object[] array = values.toArray();
+		DefaultComboBoxModel model = new DefaultComboBoxModel<>( array );
+		target.setModel( model );
+		target.revalidate();
+		target.repaint();
 	}
 	
 	public static void setupTooltips(int delay, int timeout, Font font) {
