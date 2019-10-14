@@ -88,6 +88,8 @@ import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import utils.SysUtils;
+import utils.panels.ClipboardPanel;
+import utils.panels.arch.PanelType;
 
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
@@ -179,255 +181,257 @@ public class MainGUI extends MainGuiParent{
 	
 	public static void mainApplicationGeneral() {
 		
-		// OPEN LOADING PANEL
+		// OPEN LOADING PANEL THREAD
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
-		for (int i = 0; i < 10; i++) {
-			String dots = new String(new char[i+1]).replace("\0", ".");
-			String msg = "Initializing "+ GeneralConfig.APPLICATION_NAME + dots;
-			loaderGraphics.update(msg, i/2);
-			try {
-				Thread.sleep(60);
-			} catch (InterruptedException e) {
-				logger.error("Error waiting before starting launcher", e);
-			} 
-		}
-		
 		new Thread(new Runnable() {
 			public void run() {
-				try {
-					
-					now = new Date();
-					mainAppRunning = true;
-					
-					// INITIALIZE CONFIGURATION FROM CONFIG DEFAULT FILE
+				for (int i = 0; i < 10; i++) {
+					String dots = new String(new char[i + 1]).replace("\0", ".");
+					String msg = "Initializing " + GeneralConfig.APPLICATION_NAME + dots;
+					loaderGraphics.update(msg, i / 2);
 					try {
-						launcherConfig = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
-						LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(IniFileManager.INI_APP_OPT, "logLevelSetting"));
-						logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
-						if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
-							logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
-						}
-						LogManager.getRootLogger().setLevel(LOG_LEVEL_AT_START);
-
-						currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
-						currentConfiguration.readConfigIniFile();
-						
-						SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
-
-					} catch (IOException e) {
-						logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);
+						Thread.sleep(60);
+					} catch (InterruptedException e) {
+						logger.error("Error waiting before starting launcher", e);
 					}
-					
-					
-		loaderGraphics.update("Initializing graphics... ", 15);
-					
-					// START MAIN WINDOW CONSTRUCTOR
-					logger.info("Initializing main GUI-start");
-					MainGUI window = new MainGUI();
-					mainGuiUtils = new MainGuiUtils(window);
-					logger.info("Main GUI initialized correctly.");
-					
-		loaderGraphics.update("Starting autosave modules... ", 25);
-					
-					// ACTIVE MODULES FLAG UPDATER THREAD
-					new Thread(new Runnable() {
-						
-						@Override
-						public void run() {
-							logger.info("## MODULES FLAG UPDATER started");
-							while(mainAppRunning) {
-								try {
-									// sleep small time to adapt
-									Thread.sleep(600);
-									if(!GraphicPreferencesFrame.active) {
-										flagFrameGuiOptions=false;
-									}
-									if(!KeyGenFrame.active){
-										flagFrameKeyGen=false;
-									}
-									if(!KeyDictionaryPanel.active) {
-										flagFrameKeyDict=false;
-									}
-									if(!GeneralOptionsFrame.active) {
-										flagFrameGenOptions=false;
-									}
-									if(!ImageConverterFrame.active) {
-										flagImgConv=false;
-									}
-									if(!NetInfoFrame.active) {
-										flagNetInfoPanel=false;
-									}
-									if(!HwInfoFrame.active) {
-										flagHwInfoPanel=false;
-									}
-									if(!AboutSectionFrame.active) {
-										flagAboutPanel=false;
-									}
-									if(!TutorialFrame.active) {
-										flagTutorialPanel=false;
-									}
-								} catch (InterruptedException e) {
-									logger.error("Exception happened!", e);
-								}
-							}
-						}
-					}).start();
-					
-					
-					// AUTOSAVE MODULE - only if specified in fileOptions
-					autosaveModule = new Thread(new Runnable() {
-						@Override
-						public void run() {
-							logger.info("## AUTOSAVE module started, interval: "+currentConfiguration.getFileOpt().getAutosaveInterval() + " milliseconds");
-							while (mainAppRunning) {
-												
-								try {
-									// sleep time is the interval configured by user
-									Thread.sleep(currentConfiguration.getFileOpt().getAutosaveInterval());
-								} catch (InterruptedException e) {
-							        logger.warn("## AUTOSAVE MODULE interrupted.");
-								}
-								if(currentConfiguration.getFileOpt().isFlagAutosave()) {
-									try {
-										currentConfiguration.writeCurrentConfigIniFile();
-										logger.info("AUTOSAVE ON: file saved ["
-												+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
-									} catch (Exception e) {
-										logger.error("Exception happened!", e);
-									}
-								}
-							}
-							logger.info("## AUTOSAVE module Stopped (Closing ScrYpt)");
-						}
-					});
-					
-					// AUTOSAVE MANAGER (refreshes every 4 second)
-					Thread autosaveManager = new Thread(new Runnable() {
-						
-						@Override
-						public void run() {
-							logger.info("## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: "+currentConfiguration.getFileOpt().isFlagAutosave());
-							while(mainAppRunning) {
-								try {
-									// every period specified within the fields
-									Thread.sleep(AUTOSAVE_MANAGER_PERIOD);
-									
-									if(currentConfiguration.getFileOpt().isFlagAutosave() && !autosaveModule.isAlive()) {
-										// if thread autosave is not started and autosave is releved as ON -> start autosave thread
-										logger.warn("## AUTOSAVE-MANAGER: detected flagAutosave=true & Autosave is not running yet -> Starting autosave module...");
-										autosaveModule.start();
-									}else if(!currentConfiguration.getFileOpt().isFlagAutosave() && autosaveModule.isAlive()) {
-										// if thread autosave is started and autosave is releved as OFF -> kill autosave thread
-										logger.warn("## AUTOSAVE-MANAGER: detected flagAutosave=false & Autosave is alive ");
-										autosaveModule.interrupt();
-										logger.warn("## AUTOSAVE-MANAGER: [AUTOSAVE OFF] autosave module interrupted.");
-									}else {
-										logger.debug("## AUTOSAVE-MANAGER: running -> [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
-									}
-									
-								} catch (InterruptedException e) {
-						        	logger.warn("## AUTOSAVE-MANAGER interrupted.");
-								}
-							}
-							logger.warn("## AUTOSAVE-MANAGER Stopped (Closing ScrYpt)");
-						}
-					});
-					
-					// start autosave manager module
-					autosaveManager.start();
-					
-					// WINDOW CLOSE LISTENER
-					frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
-						
-						@Override
-					    public void windowDeiconified(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
-					    @Override
-					    public void windowActivated(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
-					    @Override
-					    public void windowGainedFocus(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
-						
-					    @Override
-					    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-					    	
-							Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
-					    	
-					    	if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
-									JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
-					    		
-					    		if(!askUnsavedTextFiles()) {
-					    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-									return;
-								}
-					    		
-					    		if(doIfTempDecryptedChanged(frmScryptV)) {
-					    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-									return;
-					    		}
-					    		
-					    		frmScryptV.setAlwaysOnTop(true);
-					    		closeApplication();
-					    		
-					    	}else {
-					    		
-					    		frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-					    		frmScryptV.setAlwaysOnTop(false);
-					    		activeWindow.toFront();
-					    		activeWindow.requestFocus();
-					    	}
-					  	}
-					});
-					
-					initGUI();
-					
-					// ASK FOR USERNAME IF NULL OR FIRST TIME
-					if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-						currentConfiguration.getGenOpt().setUserName(MainGUI.askUsername());
-					}
-					window.startTitleUpdater();
-					
-					frmScryptV.setVisible(true);
-					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-
-					frmScryptV.requestFocus();
-					frmScryptV.toFront();
-					
-//					updateGuiFromCurrConfig();
-					
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							// RUN ARGUMENTS IF THERE ARE
-							if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
-								mntmTextEditor.doClick();
-							} else {
-								Class lastOpened = currentConfiguration.getGenOpt().getLastPanelOpened();
-								if (lastOpened.equals(TextEditor.class)) {
-									mainGuiUtils.startTextEditor(true);
-								} else if (lastOpened.equals(CrypterPanel.class)) {
-									mainGuiUtils.startCrypterPanel(true);
-								} else if (lastOpened.equals(ChargeIniLog.class)) {
-									mainGuiUtils.startConfigManagerPanel(true);
-								}
-							}
-						}
-					});
-					
-					//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
-				} catch (Exception e) {
-					logger.error("Exception happened!", e);
 				}
 			}
 		}).start();
 		
-	}
-	/************  END MAIN APPLICATION GENERAL METHOD  ****************************/
+		try {
+			
+			now = new Date();
+			mainAppRunning = true;
+			
+			// INITIALIZE CONFIGURATION FROM CONFIG DEFAULT FILE
+			try {
+				launcherConfig = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
+				LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(IniFileManager.INI_APP_OPT, "logLevelSetting"));
+				logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
+				if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
+					logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
+				}
+				LogManager.getRootLogger().setLevel(LOG_LEVEL_AT_START);
 
-	/**
-	 * => CONSTRUCTOR
+				currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
+				currentConfiguration.readConfigIniFile();
+				
+				SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
+
+			} catch (IOException e) {
+				logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);
+			}
+			
+			
+loaderGraphics.update("Initializing graphics... ", 15);
+			
+			// START MAIN WINDOW CONSTRUCTOR
+			logger.info("Initializing main GUI-start");
+			MainGUI window = new MainGUI();
+			mainGuiUtils = new MainGuiUtils(window);
+			logger.info("Main GUI initialized correctly.");
+			
+loaderGraphics.update("Starting autosave modules... ", 25);
+			
+			// ACTIVE MODULES FLAG UPDATER THREAD
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					logger.info("## MODULES FLAG UPDATER started");
+					while(mainAppRunning) {
+						try {
+							// sleep small time to adapt
+							Thread.sleep(600);
+							if(!GraphicPreferencesFrame.active) {
+								flagFrameGuiOptions=false;
+							}
+							if(!KeyGenFrame.active){
+								flagFrameKeyGen=false;
+							}
+							if(!KeyDictionaryPanel.active) {
+								flagFrameKeyDict=false;
+							}
+							if(!GeneralOptionsFrame.active) {
+								flagFrameGenOptions=false;
+							}
+							if(!ImageConverterFrame.active) {
+								flagImgConv=false;
+							}
+							if(!NetInfoFrame.active) {
+								flagNetInfoPanel=false;
+							}
+							if(!HwInfoFrame.active) {
+								flagHwInfoPanel=false;
+							}
+							if(!AboutSectionFrame.active) {
+								flagAboutPanel=false;
+							}
+							if(!TutorialFrame.active) {
+								flagTutorialPanel=false;
+							}
+						} catch (InterruptedException e) {
+							logger.error("Exception happened!", e);
+						}
+					}
+				}
+			}).start();
+			
+			
+			// AUTOSAVE MODULE - only if specified in fileOptions
+			autosaveModule = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					logger.info("## AUTOSAVE module started, interval: "+currentConfiguration.getFileOpt().getAutosaveInterval() + " milliseconds");
+					while (mainAppRunning) {
+										
+						try {
+							// sleep time is the interval configured by user
+							Thread.sleep(currentConfiguration.getFileOpt().getAutosaveInterval());
+						} catch (InterruptedException e) {
+					        logger.warn("## AUTOSAVE MODULE interrupted.");
+						}
+						if(currentConfiguration.getFileOpt().isFlagAutosave()) {
+							try {
+								currentConfiguration.writeCurrentConfigIniFile();
+								logger.info("AUTOSAVE ON: file saved ["
+										+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
+							} catch (Exception e) {
+								logger.error("Exception happened!", e);
+							}
+						}
+					}
+					logger.info("## AUTOSAVE module Stopped (Closing ScrYpt)");
+				}
+			});
+			
+			// AUTOSAVE MANAGER (refreshes every 4 second)
+			Thread autosaveManager = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					logger.info("## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: "+currentConfiguration.getFileOpt().isFlagAutosave());
+					while(mainAppRunning) {
+						try {
+							// every period specified within the fields
+							Thread.sleep(AUTOSAVE_MANAGER_PERIOD);
+							
+							if(currentConfiguration.getFileOpt().isFlagAutosave() && !autosaveModule.isAlive()) {
+								// if thread autosave is not started and autosave is releved as ON -> start autosave thread
+								logger.warn("## AUTOSAVE-MANAGER: detected flagAutosave=true & Autosave is not running yet -> Starting autosave module...");
+								autosaveModule.start();
+							}else if(!currentConfiguration.getFileOpt().isFlagAutosave() && autosaveModule.isAlive()) {
+								// if thread autosave is started and autosave is releved as OFF -> kill autosave thread
+								logger.warn("## AUTOSAVE-MANAGER: detected flagAutosave=false & Autosave is alive ");
+								autosaveModule.interrupt();
+								logger.warn("## AUTOSAVE-MANAGER: [AUTOSAVE OFF] autosave module interrupted.");
+							}else {
+								logger.debug("## AUTOSAVE-MANAGER: running -> [AUTOSAVE "+currentConfiguration.getFileOpt().isFlagAutosave()+"] -> autosave Module running["+autosaveModule.isAlive()+"] - Interval: "+currentConfiguration.getFileOpt().getAutosaveInterval()/1000+"s");
+							}
+							
+						} catch (InterruptedException e) {
+				        	logger.warn("## AUTOSAVE-MANAGER interrupted.");
+						}
+					}
+					logger.warn("## AUTOSAVE-MANAGER Stopped (Closing ScrYpt)");
+				}
+			});
+			
+			// start autosave manager module
+			autosaveManager.start();
+			
+			// WINDOW CLOSE LISTENER
+			frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
+				
+				@Override
+			    public void windowDeiconified(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+			    @Override
+			    public void windowActivated(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+			    @Override
+			    public void windowGainedFocus(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+				
+			    @Override
+			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+			    	
+					Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+			    	
+			    	if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
+							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+			    		
+			    		if(!askUnsavedTextFiles()) {
+			    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+							return;
+						}
+			    		
+			    		if(doIfTempDecryptedChanged(frmScryptV)) {
+			    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+							return;
+			    		}
+			    		
+			    		// if controls are passed then start real application closing routine
+			    		frmScryptV.setAlwaysOnTop(true);
+			    		closeApplication();
+			    		
+			    	}else {
+			    		
+			    		frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			    		frmScryptV.setAlwaysOnTop(false);
+			    		activeWindow.toFront();
+			    		activeWindow.requestFocus();
+			    	}
+			  	}
+			});
+			
+			// ASK FOR USERNAME IF NULL OR FIRST TIME
+			if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
+				currentConfiguration.getGenOpt().setUserName(MainGUI.askUsername());
+			}
+			window.startTitleUpdater();
+			
+			frmScryptV.setVisible(true);
+			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+
+			frmScryptV.requestFocus();
+			frmScryptV.toFront();
+			
+			initGUI();
+//					updateGuiFromCurrConfig();
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					loaderGraphics.update("Starting previous opened panels...", 70, 350);
+					loaderGraphics.update("Applying Gui Style", 100, 450);
+					
+					// RUN ARGUMENTS IF THERE ARE
+					if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
+						mainGuiUtils.startTextEditor(true);
+					} else {
+						Class lastOpened = currentConfiguration.getGenOpt().getLastPanelOpened();
+						if (lastOpened.equals(TextEditor.class)) {
+							mainGuiUtils.startTextEditor(true);
+						} else if (lastOpened.equals(CrypterPanel.class)) {
+							mainGuiUtils.startCrypterPanel(true);
+						} else if (lastOpened.equals(ChargeIniLog.class)) {
+							mainGuiUtils.startConfigManagerPanel(true);
+						}
+					}
+				}
+			});
+			
+			//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
+		} catch (Exception e) {
+			logger.error("Exception happened!", e);
+		}
+		
+	} /************  END MAIN APPLICATION GENERAL STATIC METHOD  ****************************/
+
+	
+	/****************************************************************************************************
+	 * 										=> CONSTRUCTOR
 	 * 
 	 * it creates the application, initializing components of main window using the function initialize().
-	 * 
 	 * Called from MainGUI.mainApplicationGeneral()
-	 */
+	 *****************************************************************************************************/
 	public MainGUI() {
 		
 		mainAPP = this;
@@ -577,14 +581,48 @@ public class MainGUI extends MainGuiParent{
 		    }
 		});
 		
+		String msg1 = "Are you sure to reset ";
+		String msg2 = "? All unsaved work will be lost.";
+		
 		// NOT OPENING VIEW - RESET ALL PANELS
 		mntmResetAllPanels = new JMenuItem(new AbstractAction("Reset all Panels") {
 		    public void actionPerformed(ActionEvent ae) {
-				   
-	    			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-	    			mainGuiUtils.resetPanel(null, mainAPP.frmScryptV.getClass(), mainAPP.frmScryptV);
-				}
+		    	if(dialogHelper.yesOrNo(msg1 + "all panels" + msg2, "Reset all panels?")) {
+		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		    		mainGuiUtils.resetPanel(null, mainAPP.frmScryptV);
+		    	}
+			}
 	    });
+		
+		// NOT OPENING VIEW - RESET TEXT EDITOR
+		mntmResetTextEditor = new JMenuItem(new AbstractAction("Reset Txet Editor") {
+			public void actionPerformed(ActionEvent ae) {
+				if(dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					mainGuiUtils.resetPanel(TextEditor.class, mainAPP.frmScryptV);
+		    	}
+			}
+		});
+		
+		// NOT OPENING VIEW - RESET CRYPTER
+		mntmResetCrypterPanel = new JMenuItem(new AbstractAction("Reset ScreepT") {
+			public void actionPerformed(ActionEvent ae) {
+				if(dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					mainGuiUtils.resetPanel(CrypterPanel.class, mainAPP.frmScryptV);
+		    	}
+			}
+		});
+		
+		// NOT OPENING VIEW - RESET CONFIG MANAGER
+		mntmResetConfigManager = new JMenuItem(new AbstractAction("Reset Configuration manager") {
+			public void actionPerformed(ActionEvent ae) {
+				if(dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					mainGuiUtils.resetPanel(ChargeIniLog.class, mainAPP.frmScryptV);
+		    	}
+			}
+		});
 		
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
 		mntmSaveCurrent = new JMenuItem(new AbstractAction("Save Current Configuration") {
@@ -1196,8 +1234,6 @@ public class MainGUI extends MainGuiParent{
 		// check non compatible options with current JVM
 		checkVersionAndDisableUnsupportedOpt();
 		
- loaderGraphics.update("ScrYpT is Ready! :)", 100, 350);
-		
 		frmScryptV.requestFocus();
 	}
 	
@@ -1213,35 +1249,38 @@ public class MainGUI extends MainGuiParent{
 	}
 	
 	private static void initGUI() {
-		// initialize style
-		preferredStyle = currentConfiguration.getGuiOpt().getPreferredStyle();
-		GUIStyelSettings.setFocusDefaultBtn();
-		// initialize GUI default Style from ini
-		for(Window window: Window.getWindows()) {
-			try {
-				UIManager.setLookAndFeel(preferredStyle);
-	   		    SwingUtilities.updateComponentTreeUI(window);
-	   		    logger.info(preferredStyle+" initialized correctly.");
-			} catch (Exception e3) {
-				logger.error("Exception happened!", e3);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				// initialize style
+				preferredStyle = currentConfiguration.getGuiOpt().getPreferredStyle();
+				GUIStyelSettings.setFocusDefaultBtn();
+				// initialize GUI default Style from ini
+				for (Window window : Window.getWindows()) {
+					try {
+						UIManager.setLookAndFeel(preferredStyle);
+						SwingUtilities.updateComponentTreeUI(window);
+						logger.info(preferredStyle + " initialized correctly.");
+					} catch (Exception e3) {
+						logger.error("Exception happened!", e3);
+					}
+				}
+				// try to set preferred charset
+				try {
+					System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
+					logger.info("Charset setted: " + System.getProperty("file.encoding"));
+				} catch (Exception e) {
+					logger.error("Exception happened: Erroring setting charset :(", e);
+				}
+				DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
+				// adjust general look and feel opt
+				if (DARK_THEME) {
+					DARK_THEME = GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+				} else {
+					DARK_THEME = !GUIStyelSettings.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+				}
+				
 			}
-		}
-		
-		// try to set preferred charset
-		try {
-			System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
-			logger.info("Charset setted: "+ System.getProperty("file.encoding"));
-		} catch (Exception e) {
-			logger.error("Exception happened: Erroring setting charset :(", e);		
-		}
-		
-		DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
-		// adjust general look and feel opt
-		if(DARK_THEME) {
-			DARK_THEME = GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
-		}else {
-			DARK_THEME = !GUIStyelSettings.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
-		}
+		});
 	}
 	
 	public void addHandlers() {
@@ -1557,6 +1596,12 @@ public class MainGUI extends MainGuiParent{
 					&& currentConfiguration.getTextEditorOpt().openedFileList.contains(currentTabEditor.loadedTabObj.loadedFile.getAbsolutePath()))
 			{
 				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "selectedFileAtStart", currentTabEditor.loadedTabObj.loadedFile.getAbsolutePath());
+			}
+			
+			// update clipboard if exists
+			if(initTxtWriter != null && initTxtWriter.textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
+				// save only current cause others are already saved once user selected items
+				((ClipboardPanel)initTxtWriter.rightSplitContainer).saveCurrClipboardSilent();
 			}
 		}
 		logger.info("\n => Opened files in textEditor added to configuration");

@@ -121,6 +121,9 @@ public class MainGuiParent {
 	JMenuItem mntmMakeDirsFromPath;
 	JMenuItem mntmCopyDirStructure;
 	JMenuItem mntmResetAllPanels;
+	JMenuItem mntmResetTextEditor;
+	JMenuItem mntmResetConfigManager;
+	JMenuItem mntmResetCrypterPanel;
 	
 	/******************  BEGIN UTILITY METHODS  *****************************/
 	
@@ -226,6 +229,9 @@ public class MainGuiParent {
 			mnHelp.add(mnrestartPanel);
 				// SUB-MENU
 				mnrestartPanel.add(mntmResetAllPanels);
+				mnrestartPanel.add(mntmResetTextEditor);
+				mnrestartPanel.add(mntmResetCrypterPanel);
+				mnrestartPanel.add(mntmResetConfigManager);
 			
 		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
 		
@@ -304,6 +310,9 @@ public class MainGuiParent {
 		mntmUserDocumentation.setFont(menuItemFont);
 		mnrestartPanel.setFont(subMenuFont);
 		mntmResetAllPanels.setFont(menuItemFont);
+		mntmResetTextEditor.setFont(menuItemFont);
+		mntmResetCrypterPanel.setFont(menuItemFont);
+		mntmResetConfigManager.setFont(menuItemFont);
 	}
 	
 	void addMenuIcons() {
@@ -359,6 +368,9 @@ public class MainGuiParent {
 		MenuSetter.setIconTextGap(mnrestartPanel, 20);
 		mnrestartPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		mntmResetAllPanels.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+		mntmResetTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));
+		mntmResetCrypterPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
+		mntmResetConfigManager.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
 	}
 	
 	void updateMenuAndLogFontSize(int fontSize){
@@ -495,6 +507,21 @@ public class MainGuiParent {
 
 	public void setMntmReturnToWelcome(JMenuItem mntmReturnToWelcome) {
 		this.mntmReturnToWelcome = mntmReturnToWelcome;
+	}
+
+
+	public JMenuItem getMntmResetTextEditor() {
+		return mntmResetTextEditor;
+	}
+
+
+	public JMenuItem getMntmResetConfigManager() {
+		return mntmResetConfigManager;
+	}
+
+
+	public JMenuItem getMntmResetCrypterPanel() {
+		return mntmResetCrypterPanel;
 	}
 	
 }

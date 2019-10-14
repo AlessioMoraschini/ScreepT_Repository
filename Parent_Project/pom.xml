@@ -6,7 +6,7 @@
   <packaging>pom</packaging>
   
   <properties>
-  	<parent.build.version.scrypt>0.7.5</parent.build.version.scrypt>
+  	<parent.build.version.scrypt>0.7.6</parent.build.version.scrypt>
   	
   	<!-- FATJAR EXPORT -->
 	  	<export.fatjar.skip>false</export.fatjar.skip>
@@ -23,8 +23,8 @@
 		</export.directory.fatjar.libs>
   	
   	<!-- MULTIJAR EXPORT -->
-	  	<export.multijar.skip>false</export.multijar.skip>
-	  	<export.multijar.launcher.skip>false</export.multijar.launcher.skip>
+	  	<export.multijar.skip>true</export.multijar.skip>
+	  	<export.multijar.launcher.skip>true</export.multijar.launcher.skip>
 	  	<export.directory.multijar.main>
 	  		<!-- DYNAMIC PATH WITH VERSION - SHOULD NOT EXIST BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
 			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}_BuildMaven\Application

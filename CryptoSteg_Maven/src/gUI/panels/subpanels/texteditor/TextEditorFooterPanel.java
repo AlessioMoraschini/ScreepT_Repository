@@ -71,18 +71,19 @@ public class TextEditorFooterPanel extends JPanel{
 		add(lblCurrentFile, "cell 1 0,growx");
 
 		rdbtnShowCompletePath = new JRadioButton("Complete Path");
+		rdbtnShowCompletePath.setOpaque(false);
 		rdbtnShowCompletePath.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		add(rdbtnShowCompletePath, "cell 2 0");
 		rdbtnShowCompletePath.setSelected(true);
 
 		labelCharset = new JLabel("Charset:");
 		labelCharset.setForeground(SystemColor.controlHighlight);
-		labelCharset.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		labelCharset.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		add(labelCharset, "cell 3 0");
 
 		dynLabelCharset = new JLabel("");
 		dynLabelCharset.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLabelCharset.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		dynLabelCharset.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLabelCharset, "cell 4 0");
 
 		labelTotLines = new JLabel("Tot Lines:");
@@ -92,7 +93,7 @@ public class TextEditorFooterPanel extends JPanel{
 
 		dynLblTotLines = new JLabel("");
 		dynLblTotLines.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblTotLines.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		dynLblTotLines.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblTotLines, "cell 6 0");
 
 		labelTotalChars = new JLabel("Tot. Chars:");
@@ -102,37 +103,37 @@ public class TextEditorFooterPanel extends JPanel{
 
 		dynLblTotChars = new JLabel("");
 		dynLblTotChars.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblTotChars.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		dynLblTotChars.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblTotChars, "cell 8 0");
 
 		lblLine = new JLabel("Sel. Line:");
 		lblLine.setForeground(SystemColor.controlHighlight);
-		lblLine.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		lblLine.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		add(lblLine, "cell 9 0");
 
 		dynLblCurrLine = new JLabel("");
 		dynLblCurrLine.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblCurrLine.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		dynLblCurrLine.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblCurrLine, "cell 10 0");
 
 		lblColumn = new JLabel("Sel. Column:");
 		lblColumn.setForeground(SystemColor.controlHighlight);
-		lblColumn.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		lblColumn.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		add(lblColumn, "cell 11 0");
 
 		dynLblColumn = new JLabel("");
 		dynLblColumn.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblColumn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		dynLblColumn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblColumn, "cell 12 0");
 
 		labelSelectionLength = new JLabel("Sel. length:");
 		labelSelectionLength.setForeground(SystemColor.controlHighlight);
-		labelSelectionLength.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		labelSelectionLength.setFont(new Font("Segoe UI", Font.BOLD, 11));
 		add(labelSelectionLength, "cell 13 0,alignx right");
 
 		dynLblSelLength = new JLabel("");
 		dynLblSelLength.setForeground(SystemColor.inactiveCaptionBorder);
-		dynLblSelLength.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		dynLblSelLength.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblSelLength, "cell 14 0");
 
 		dynLblSearchEsit = new JLabel("");
@@ -146,7 +147,7 @@ public class TextEditorFooterPanel extends JPanel{
 		add(lblAdvice, "cell 16 0,alignx right,aligny center");
 		lblAdvice.setBackground(SystemColor.info);
 		lblAdvice.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblAdvice.setForeground(new Color(176, 224, 230));
+		lblAdvice.setForeground(new Color(255, 255, 255));
 		lblAdvice.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAdvice.setText(" [Current output: .txt]");
 		

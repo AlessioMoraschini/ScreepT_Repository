@@ -164,7 +164,7 @@ public class TextEditorUtils {
 			((MapTextAreaPanel)currentTextEditor.rightSplitContainer).sync();
 			
 		}else if(wantedType.equals(PanelType.CLIPBOARD_PANEL)) {
-			currentTextEditor.rightSplitContainer = ClipboardPanel.getSingletonLazy(getDialogManager(), currentTextEditor.currentConfiguration.getTextEditorOpt());
+			currentTextEditor.rightSplitContainer = ClipboardPanel.getSingletonLazy(getDialogManager(), currentTextEditor.currentConfiguration);
 			currentTextEditor.rightSplitContainer.setVisible(true);
 			currentTextEditor.rightSplitPane = new JScrollPane(currentTextEditor.rightSplitContainer);
 			currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);

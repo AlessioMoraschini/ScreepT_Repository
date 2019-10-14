@@ -12,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.apache.log4j.Logger;
+
 import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
@@ -22,6 +24,9 @@ import media.Sounds;
 import resources.SoundsConfigurator;
 
 public class MainGuiUtils {
+	
+	// MainGuiUtils logger
+	static Logger logger = Logger.getLogger(MainGuiUtils.class);
 
 	public MainGUI mainAppReference;
 	
@@ -34,8 +39,11 @@ public class MainGuiUtils {
 	 * @param <T>
 	 * @param target if null all will be resetted, else use this to specify class to reset
 	 */
-	public <T> void resetPanel(Class<T>target, Class<?> selectednow, JFrame instance) {
+	public <T> void resetPanel(Class<T>target, JFrame instance) {
 		final boolean txtEditor, crypter, configuration, home;
+		
+		String targetStr = (target != null)? target.getName() : "All Panels";
+		logger.info(" Starting reset -> " +targetStr);
 		
 		txtEditor = (instance.getContentPane().getComponent(0).equals(MainGUI.initTxtWriter))? true : false;
 		crypter = (instance.getContentPane().getComponent(0).equals(MainGUI.panelCrypter))? true : false;
@@ -70,6 +78,8 @@ public class MainGuiUtils {
 				}
 			}
 		});
+		
+		logger.info("Reset finished [" +targetStr + "]");
 	}
 	
 	public void startConfigManagerPanel(boolean forceStart) {
@@ -97,7 +107,7 @@ public class MainGuiUtils {
 	}
 	
 	public void startCrypterPanel(boolean forceStart) {
-		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+		final JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
 
 		// reset all listeners
 		if (forceStart) {
@@ -109,21 +119,24 @@ public class MainGuiUtils {
     		MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
     	}
 
-    	contentPane.removeAll();
-    	contentPane.add(MainGUI.panelCrypter);
-    	contentPane.revalidate(); 
-    	contentPane.repaint();
-    	
-    	mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
-    	mainAppReference.currentConfiguration.writeSingleValue(
-    			INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
+    	SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				contentPane.removeAll();
+				contentPane.add(MainGUI.panelCrypter);
+				contentPane.revalidate();
+				contentPane.repaint();
+				mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
+				mainAppReference.currentConfiguration.writeSingleValue(
+						INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
+			}
+		});
 	}
 	
 	public void startTextEditor(boolean forceRestart) {
 		
 		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
 		
-		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+		final JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
 		
 		// reset shortcut listener
 		if(forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
@@ -136,14 +149,16 @@ public class MainGuiUtils {
 			MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
 		}		    	
 		
-    	contentPane.removeAll();
-    	contentPane.add(MainGUI.initTxtWriter);
-    	contentPane.revalidate(); 
-    	contentPane.repaint();
-    	
+    	SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				contentPane.removeAll();
+				contentPane.add(MainGUI.initTxtWriter);
+				contentPane.revalidate(); 
+		    	contentPane.repaint();
+			}
+		});
     	mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
-    	mainAppReference.currentConfiguration.writeSingleValue(
-    			INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
+    	mainAppReference.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
     	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 	}
 	

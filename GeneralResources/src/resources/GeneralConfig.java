@@ -95,7 +95,7 @@ public class GeneralConfig {
 	public static Font TXT_EDITOR_CLIPBOARD_FONT =  getFontFromString(GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT_STR, TXT_EDITOR_CLIPBOARD_FONT_DEFAULT);
 	
 	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(linkedMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
-	public static final String CLIPBOARD_PANEL_PREFIX = "CLIPBOARD_";
+	public static final String CLIPBOARD_PANEL_PREFIX = "Clipboard ";
 	public static final TreeMap<String, File> CLIPBOARD_PANEL_MAP = getMapFromCommaSeparated(linkedMappings.getProperty("CLIPBOARD_PANEL_FILE_NAME_LIST"));
 	
 	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(18, 18);

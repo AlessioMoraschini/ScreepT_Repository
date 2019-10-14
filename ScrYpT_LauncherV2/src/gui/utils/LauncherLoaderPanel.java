@@ -19,7 +19,6 @@ import javax.swing.JLabel;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 public class LauncherLoaderPanel extends JPanel{
@@ -114,6 +113,10 @@ public class LauncherLoaderPanel extends JPanel{
 	public void update(String txt, int progress, int msDelayIfEnd){
 		setText(txt);
 		setProgress(progress, msDelayIfEnd);
+	}
+	
+	public void setIndeterminatedProgress(boolean indeterminated) {
+	progressBar.setIndeterminate(indeterminated);	
 	}
 	
 }
