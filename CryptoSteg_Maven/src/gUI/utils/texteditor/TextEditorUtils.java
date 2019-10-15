@@ -243,7 +243,7 @@ public class TextEditorUtils {
 			currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 			resetAllDIviderColors();
 			currentTextEditor.fileTreeShowOrHide(options);
-			currentTextEditor.rightPaneShowOrHide(options);
+			currentTextEditor.rightPaneShowOrHide();
 		}
 	}
 	
@@ -319,7 +319,7 @@ public class TextEditorUtils {
 			currentTextEditor.toggleBtnMap.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().mapViewActive);
 			currentTextEditor.toggleBtnClipboard.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().clipboardViewActive);
 
-			currentTextEditor.rightPaneShowOrHide(currentTextEditor.currentConfiguration.getTextEditorOpt());
+			currentTextEditor.rightPaneShowOrHide();
 			
 			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
 			
@@ -415,35 +415,38 @@ public class TextEditorUtils {
 	}
 	
 	public void resizeFrameToDefault(MainGUI mainApplication) {
-		CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
+		final CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
 
-		Rectangle currSize = mainApplication.getMainFrame().getBounds();
+		final Rectangle currSize = mainApplication.getMainFrame().getBounds();
 		
-		Dimension med = new Dimension(currSize.width-20,currSize.height - 100);
-		Dimension high = new Dimension(currSize.width -20, currSize.height - 90);
-		Dimension max = new Dimension(currSize.width - 20, currSize.height - 85);
-		
-		currentTabEditor.mainTabList.setPreferredSize(high);
-		currentTabEditor.mainTabList.setMaximumSize(max);
-		currentTabEditor.loadedTabObj.currentScrollPane.setPreferredSize(high);
-		currentTabEditor.loadedTabObj.textArea.setMaximumSize(med);
-		
-		if(high.getWidth() > currentTextEditor.mainScrollPane.getMinimumSize().width) {
-			if(high.getHeight() > currentTextEditor.mainScrollPane.getMinimumSize().height) {
-				currentTextEditor.mainScrollPane.setPreferredSize(high);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				Dimension med = new Dimension(currSize.width - 20, currSize.height - 100);
+				Dimension high = new Dimension(currSize.width - 20, currSize.height - 90);
+				Dimension max = new Dimension(currSize.width - 20, currSize.height - 85);
+				currentTabEditor.mainTabList.setPreferredSize(high);
+				currentTabEditor.mainTabList.setMaximumSize(max);
+				currentTabEditor.loadedTabObj.currentScrollPane.setPreferredSize(high);
+				currentTabEditor.loadedTabObj.textArea.setMaximumSize(med);
+				if (high.getWidth() > currentTextEditor.mainScrollPane.getMinimumSize().width) {
+					if (high.getHeight() > currentTextEditor.mainScrollPane.getMinimumSize().height) {
+						currentTextEditor.mainScrollPane.setPreferredSize(high);
+					}
+				}
+				if (high.getWidth() > currentTextEditor.mainPanel.getMinimumSize().width) {
+					if (high.getHeight() > currentTextEditor.mainPanel.getMinimumSize().height) {
+						currentTextEditor.mainPanel.setPreferredSize(high);
+					}
+				}
+				if (!currentTextEditor.btnToggleFileView.isSelected() && !currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
+					currentTextEditor.splitPaneMain.setDividerLocation(0);
+				}
+				if (currentTextEditor.isRightPaneOn()) {
+					currentTextEditor.rightPaneResizeOnly();
+				}
+				currentTextEditor.repaint();
 			}
-		}
-		
-		if(high.getWidth() > currentTextEditor.mainPanel.getMinimumSize().width) {
-			if(high.getHeight() > currentTextEditor.mainPanel.getMinimumSize().height) {
-				currentTextEditor.mainPanel.setPreferredSize(high);
-			}
-		}
-		
-		if (!currentTextEditor.btnToggleFileView.isSelected() && !currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
-			currentTextEditor.splitPaneMain.setDividerLocation(0);
-		}
-		currentTextEditor.repaint();
+		});
 	}
 	
 	public void updateMargin() {
@@ -667,6 +670,7 @@ public class TextEditorUtils {
 		// retore unsaved info backup
 		loadedTabObj.unsaved = unsaved;
 		
+		// Retrieve current pane type and call standard method to sync position and content
 		getTypedIRightPanel().sync();
 	}
 	

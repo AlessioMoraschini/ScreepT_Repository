@@ -38,7 +38,7 @@ public class GeneralConfig {
 	public static final String DEFAULT_INI_FOLDER = linkedMappings.getProperty("DEFAULT_INI_FOLDER");
 	public static final String THEMES_FOLDER_DEFAULT = linkedMappings.getProperty("THEMES_FOLDER_DEFAULT");
 	public static final String THEMES_FOLDER_CUSTOM = linkedMappings.getProperty("THEMES_FOLDER_CUSTOM");
-	public static final String PANEL_TEMP_FOLDER = linkedMappings.getProperty("PANEL_TEMP_FOLDER");
+	public static final String PANEL_FILES_FOLDER = linkedMappings.getProperty("PANEL_TEMP_FOLDER");
 	
 	// DEBUG GUI FLAG
 	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
@@ -168,7 +168,7 @@ public class GeneralConfig {
     	String[] commaSep = src.split(",");
     	int i = 0;
     	for(String curr : commaSep) {
-    		curr = PANEL_TEMP_FOLDER + curr;
+    		curr = PANEL_FILES_FOLDER + curr;
     		map.put(CLIPBOARD_PANEL_PREFIX+i, new File(curr));
     		++i;
     	}

@@ -84,6 +84,8 @@ public class MainGuiUtils {
 	
 	public void startConfigManagerPanel(boolean forceStart) {
 		
+		mainAppReference.isOnHomePage.set(false);
+		
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
 
 		// reset all listeners
@@ -107,6 +109,9 @@ public class MainGuiUtils {
 	}
 	
 	public void startCrypterPanel(final boolean forceStart) {
+		
+		mainAppReference.isOnHomePage.set(false);
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
@@ -136,6 +141,8 @@ public class MainGuiUtils {
 	
 	public void startTextEditor(final boolean forceRestart) {
 		
+		mainAppReference.isOnHomePage.set(false);
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
@@ -161,6 +168,7 @@ public class MainGuiUtils {
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
 				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
 				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
+				
 			}
 		});
 	}

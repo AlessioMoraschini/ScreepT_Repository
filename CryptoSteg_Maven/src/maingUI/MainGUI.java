@@ -159,6 +159,7 @@ public class MainGUI extends MainGuiParent{
 	
 	public static JOptionHelper dialogHelper;
 	
+	public AtomicBoolean isOnHomePage = new AtomicBoolean(true);
 	
 	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
 	 * 
@@ -1185,6 +1186,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in main frame - RETURN TO WELCOME PAGE
 		mntmReturnToWelcome = new JMenuItem(new AbstractAction("Return to Welcome Page") {
 			public void actionPerformed(ActionEvent e) {
+				isOnHomePage.set(true);
 				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 				setBackgroundImage();
 			}
@@ -1224,10 +1226,19 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	
 	public void resizeMainFrameDefaults() {
 
-		labelBACKground.setSize(frmScryptV.getContentPane().getSize());
-		if(initTxtWriter != null && initTxtWriter.getCurrentTabEditor().mainTabList != null) {
-			initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
-		}
+		// resize background - Only on home page to improve performance
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (isOnHomePage.get()) {
+					labelBACKground.setSize(frmScryptV.getContentPane().getSize());
+				}
+		
+				// resize textEditor if present
+				if (initTxtWriter != null && initTxtWriter.getCurrentTabEditor().mainTabList != null) {
+					initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
+				}
+			}
+		});
 	}
 	
 	private static void initGUI() {

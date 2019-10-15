@@ -27,6 +27,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.FileStuff;
@@ -336,6 +337,12 @@ public class CustomTabbedEditor {
 	public void reloadCurrentTab(boolean askDialogOn) {
 
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+		
+		// backup caret position and selection
+		RSyntaxTextArea reference = loadedTabObj.textArea;
+		int start = reference.getSelectionStart();
+		int end = reference.getSelectionEnd();
+		
 		if (!alreadyLoading && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
 			// if unsaved ask to reload
 			if (askDialogOn && !(dialogHelper.yesOrNo("Wanna reload? If document is different or changed by another application, you will lose all unsaved changes... Continue?", "Reload file"))) {
@@ -355,6 +362,13 @@ public class CustomTabbedEditor {
 			String msg = "File does not exist";
 			dialogHelper.error(msg, msg);
 		}
+		
+		// reset caret position and selection
+		reference.setCaretPosition(0);
+		reference.setCaretPosition(end);
+		reference.setSelectionStart(start);
+		reference.setSelectionEnd(end);
+		
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 	}
 	

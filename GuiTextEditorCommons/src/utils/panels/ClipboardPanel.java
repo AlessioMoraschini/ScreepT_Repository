@@ -59,6 +59,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	JButton btnSave;
 	JButton btnReload;
 	JButton btnReloadClipboards;
+	JButton btnOpenInFilesystem;
 	JComboBox<String> comboClipboards;
 	private JLabel lblClipboardPanel;
 	private JSeparator separator;
@@ -105,7 +106,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		this.dialogManager = dialogManager;
 		
 		// main panel layout
-		MigLayout panelLayout = new MigLayout("insets 10, hidemode 2", "[::20px,grow][::20px,grow][5px,grow][90px][5px,grow][][]", "[:12px:15px][25px][5px][30px,grow][30px,grow][][]");
+		MigLayout panelLayout = new MigLayout("insets 8, hidemode 2", "[::20px,grow][::20px,grow][5px,grow][90px][5px,grow][::20px,grow][]", "[:12px:15px][25px][5px][30px,grow][30px,grow][][]");
 
 		// main layout
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[50px,grow]", "[50px,grow]"));
@@ -128,7 +129,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		
 		separator_1 = new JSeparator();
 		separator_1.setBackground(Color.GRAY);
-		mainPane.add(separator_1, "cell 4 0 3 1,growx");
+		mainPane.add(separator_1, "cell 4 0 2 1,growx");
 		
 		// Add subcomponents to main pane
 		btnSave = new JButton("");
@@ -157,7 +158,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		comboClipboards.setCursor(GuiUtils.CURSOR_HAND);
 		comboClipboards.setToolTipText("Choose between loaded Clipboards");
 		comboClipboards.setForeground(Color.BLACK);
-		mainPane.add(comboClipboards, "cell 2 1 4 1,growx");
+		mainPane.add(comboClipboards, "cell 2 1 3 1,growx");
 		
 		btnReloadClipboards = new JButton("");
 		btnReloadClipboards.setToolTipText("Reload Clipboard List");
@@ -166,13 +167,24 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		btnReloadClipboards.setMaximumSize(new Dimension(20, 20));
 		btnReloadClipboards.setCursor(GuiUtils.CURSOR_HAND);
 		GuiUtils.makeTransparentJButton(btnReloadClipboards);
-		btnReloadClipboards.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2));
+		btnReloadClipboards.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD4));
 		btnReloadClipboards.setForeground(Color.BLACK);
-		mainPane.add(btnReloadClipboards, "cell 6 1");
+		mainPane.add(btnReloadClipboards, "cell 5 1");
+		
+		btnOpenInFilesystem = new JButton("");
+		btnOpenInFilesystem.setToolTipText("Open current clipboard in File System");
+		btnOpenInFilesystem.setPreferredSize(new Dimension(20, 20));
+		btnOpenInFilesystem.setMinimumSize(new Dimension(20, 9));
+		btnOpenInFilesystem.setMaximumSize(new Dimension(20, 20));
+		btnOpenInFilesystem.setCursor(GuiUtils.CURSOR_HAND);
+		GuiUtils.makeTransparentJButton(btnOpenInFilesystem);
+		btnOpenInFilesystem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
+		btnOpenInFilesystem.setForeground(Color.BLACK);
+		mainPane.add(btnOpenInFilesystem, "cell 6 1");
 		
 		separator_2 = new JSeparator();
 		separator_2.setBackground(Color.GRAY);
-		mainPane.add(separator_2, "cell 0 2 7 1,growx");
+		mainPane.add(separator_2, "cell 0 2 6 1,growx");
 		
 		mainPane.add(txtAreaContainer, "cell 0 3 7 4,grow");
 		txtAreaClipboard.setBorder(new LineBorder(new Color(0, 0, 0), 3));
@@ -282,6 +294,17 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 				});
 			}
 		});
+		
+		// OPEN CURRENT IN SYSTEM EXPLORER
+		btnOpenInFilesystem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new Thread(new Runnable() {
+					public void run() {
+						GuiUtils.openInFileSystem(new File(GeneralConfig.PANEL_FILES_FOLDER));
+					}
+				}).start();
+			}
+		});
 	}
 
 	/**
@@ -293,7 +316,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	public void doAction(String target) throws IOException {
 		File selected = dataMap.get(target);
 		if(selected != null) {
-			selected = new File(GeneralConfig.PANEL_TEMP_FOLDER+selected.getName());
+			selected = new File(GeneralConfig.PANEL_FILES_FOLDER+selected.getName());
 			selected.mkdirs();
 			if(!selected.exists()) {
 				selected.createNewFile();

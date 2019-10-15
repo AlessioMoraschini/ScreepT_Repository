@@ -24,6 +24,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
@@ -35,12 +36,12 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
 import resources.IconsPathConfigurator;
-import textareautil.SelectionDTO;
 
 public class GuiUtils {
 	
@@ -77,9 +78,35 @@ public class GuiUtils {
 	}
 	
 	/**
+	 * Calculates current GUI width / screen width ratio (1 => full screen).
+	 * 
+	 * Returns 0 in case of error, else the ratio guiWidth/screenWidth
+	 */
+	public static float getGuiToScreenWidthRatio(Window mainGui) {
+		if (mainGui == null) { return 0;};
+		
+		int width = (mainGui.getWidth() != 0)? mainGui.getWidth() : 1;
+		
+		return (float)(width/getScreenSize().width);
+	}
+
+	/**
+	 * Calculates current GUI heigth / screen height ratio (1 => full screen).
+	 * 
+	 * Returns 0 in case of error, else the ratio guiHeigth/screenHeigth
+	 */
+	public static float getGuiToScreenHeitghtRatio(JComponent mainGui) {
+		if (mainGui == null) { return 0;};
+		
+		int height = (mainGui.getHeight() != 0)? mainGui.getHeight() : 1;
+		
+		return (float)(height/getScreenSize().height);
+	}
+	
+	/**
 	 * Refresh caret selection in textArea 
 	 */
-	public void syncCaretPosition(JTextArea target, int start, Integer end) {
+	public static void syncCaretPosition(JTextArea target, int start, Integer end) {
 		try {
 			
 			if (end != start) {
@@ -425,5 +452,73 @@ public class GuiUtils {
     	field.setSelectionStart(0);
     	field.setSelectionEnd(field.getText().length());
     }
+    
+	public static String getTxtAreaCurrentLine(JTextArea txtArea) throws BadLocationException {
+		
+		int offsetFromStart = txtArea.getCaretPosition();
+		int currLine = txtArea.getLineOfOffset(offsetFromStart);
+		int startOffset = txtArea.getLineStartOffset(currLine);
+		int endOffset = txtArea.getLineEndOffset(currLine);
+		
+		int length = endOffset - startOffset;
+		
+		return txtArea.getText(startOffset, length);
+	}
+	
+	/**
+	 * Create a copy of the current line denoted by current caret position, and insert it before or after the current line
+	 * 
+	 * If more lines are selected, then all of them will be duplicated
+	 * 
+	 * @param textArea
+	 * @param upDirection
+	 * @return
+	 * @throws BadLocationException
+	 */
+	public static boolean duplicateTextAreaCurrentLine(JTextArea textArea, boolean upDirection) throws BadLocationException {
+		
+		int offsetFromStart = textArea.getSelectionStart();
+		int selectionEnd = textArea.getSelectionEnd();
+		int currLine = textArea.getLineOfOffset(offsetFromStart);
+		int startOffset = textArea.getLineStartOffset(currLine);
+		int endOffset = textArea.getLineEndOffset(currLine);
+		
+		int lineLength = endOffset - startOffset;
+		String insertText = textArea.getText(startOffset, lineLength);
+		
+		if((selectionEnd - offsetFromStart) > lineLength) {
+			// TODO non corretto al 100% in caso di testo selezionato -> memorizza anche la linea della fine selezione
+			// IF MORE LINES SELECTED COPY ALL SELECTED TEXT
+			insertText = textArea.getSelectedText();
+		}
+		
+		if(!upDirection) {
+			// in this case insert at the end
+			return insertLineIntoTextArea(endOffset, insertText, textArea);
+		}else {
+			// in this case insert at start
+			return insertLineIntoTextArea(startOffset, insertText, textArea);
+		}
+
+	}
+	
+	/**
+	 * Insert a the given string at the given caret position offset.
+	 * 
+	 * @param caretPosStart the caret start position
+	 * @param newLine the string to insert
+	 * @param textArea the target textarea to insert into
+	 * 
+	 * @return true if line has been inserted, false if not
+	 */
+	public static boolean insertLineIntoTextArea(int caretPosStart, String newLine, JTextArea textArea) {
+		try {
+			textArea.getDocument().insertString(caretPosStart, newLine, null);
+			return true;
+		} catch (Exception e) {
+			logger.error("Cannot insert line at caret n°: " + caretPosStart + "TextArea length is: " + textArea.getText().length());
+			return false;
+		}
+	}
 	
 }

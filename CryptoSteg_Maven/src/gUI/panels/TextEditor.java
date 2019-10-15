@@ -785,29 +785,30 @@ public class TextEditor extends JPanel {
 
 		startRefreshFooterThread();
 		
-		// REFRESH ICONS
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				CustomTabbedEditor tabEditor = getCurrentTabEditor();
-				Vector<TabTextEditorObj> tabListObjects = tabEditor.loadedList.getList();
-				
-				tabEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
-				tabEditor.loadedTabObj.textArea.revalidate();
-				tabEditor.loadedTabObj.textArea.repaint();
-				int nTab = getCurrentTabEditor().mainTabList.getTabCount();
-				ImageIcon currIcon;
-				for(int i = 0; i < nTab; i++) {
-					try {
-						currIcon = IconsPathConfigurator.getIconByFile(tabListObjects.get(i).loadedFile);
-						tabEditor.forceIconToTab(currIcon, i);
-					} catch (Exception e) {
-						logger.warn("Error trying to set icon to tab number " + i);
+		// REFRESH ICONS - Only if not preloaded (performance improvement in case of preload)
+		if (!GeneralConfig.PRELOAD_TXT_EDITOR_FLAG) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					CustomTabbedEditor tabEditor = getCurrentTabEditor();
+					Vector<TabTextEditorObj> tabListObjects = tabEditor.loadedList.getList();
+
+					tabEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
+					tabEditor.loadedTabObj.textArea.revalidate();
+					tabEditor.loadedTabObj.textArea.repaint();
+					int nTab = getCurrentTabEditor().mainTabList.getTabCount();
+					ImageIcon currIcon;
+					for (int i = 0; i < nTab; i++) {
+						try {
+							currIcon = IconsPathConfigurator.getIconByFile(tabListObjects.get(i).loadedFile);
+							tabEditor.forceIconToTab(currIcon, i);
+						} catch (Exception e) {
+							logger.warn("Error trying to set icon to tab number " + i);
+						}
 					}
 				}
-			}
-		});
-		
+			});
+		}
 		logger.debug("### TEXT WRITER module started");
 	}
 
@@ -1009,24 +1010,29 @@ public class TextEditor extends JPanel {
 		splitPaneMainContainer.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				TextEditorOption opt = currentConfiguration.getTextEditorOpt();
-				if ((opt.mapViewActive || opt.clipboardViewActive) && getCurrentTabEditor().loadedTabObj.textArea != null) {
-					splitPaneMainContainer.getRightComponent().setVisible(true);
-					
-					int newRightPaneValue = parentFrame.getWidth()-splitPaneMainContainer.getDividerLocation();
-					
-					if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
-						// In case of clipboard keep memory in ad-hoc option
-						currentConfiguration.getTextEditorOpt().setDividerRightPanePosXClipboard(newRightPaneValue);
-						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard", newRightPaneValue);
-					}else {
-						currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(newRightPaneValue);
-						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", newRightPaneValue);
+				final TextEditorOption opt = currentConfiguration.getTextEditorOpt();
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if ((opt.mapViewActive || opt.clipboardViewActive) && getCurrentTabEditor().loadedTabObj.textArea != null) {
+							splitPaneMainContainer.getRightComponent().setVisible(true);
+
+							int newRightPaneValue = parentFrame.getWidth() - splitPaneMainContainer.getDividerLocation();
+
+							if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
+								// In case of clipboard keep memory in ad-hoc option
+								currentConfiguration.getTextEditorOpt().setDividerRightPanePosXClipboard(newRightPaneValue);
+								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard", newRightPaneValue);
+							} else {
+								currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(newRightPaneValue);
+								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", newRightPaneValue);
+							}
+						}
 					}
-				}
+				});
 			}
 		});
-
+		
 		// FILE VIEW
 		btnToggleFileView.addActionListener(new ActionListener() {
 			@Override
@@ -1059,7 +1065,7 @@ public class TextEditor extends JPanel {
 							currentConfiguration.getTextEditorOpt().mapViewActive = false;
 						}
 						currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
-						rightPaneShowOrHide(currentConfiguration.getTextEditorOpt());
+						rightPaneShowOrHide();
 					}
 				});
 			}
@@ -1080,7 +1086,7 @@ public class TextEditor extends JPanel {
 							currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
 						}
 						currentConfiguration.getTextEditorOpt().mapViewActive = false;
-						rightPaneShowOrHide(currentConfiguration.getTextEditorOpt());
+						rightPaneShowOrHide();
 					}
 				});
 			}
@@ -2074,17 +2080,7 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						
-						RSyntaxTextArea reference = getCurrentTabEditor().loadedTabObj.textArea;
-						int start = reference.getSelectionStart();
-						int end = reference.getSelectionEnd();
-						
 						getCurrentTabEditor().reloadCurrentTab(true);
-						
-						reference.setCaretPosition(0);
-						reference.setCaretPosition(end);
-						reference.setSelectionStart(start);
-						reference.setSelectionEnd(end);
 						
 						textEditorUtils.refreshMessageAndTabTooltip("[File Reloaded]");
 					}
@@ -2198,6 +2194,12 @@ public class TextEditor extends JPanel {
 		currentTextEditor.revalidate();
 		currentTextEditor.repaint();
 		
+		// FILE TREE PANEL ON/OFF
+		fileTreeShowOrHide(txtOptions);
+		
+		// RIGHT TREE PANEL ON/OFF
+		rightPaneShowOrHide();
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				sliderFontSize.setValue(txtOptions.getFont().getSize());
@@ -2212,11 +2214,6 @@ public class TextEditor extends JPanel {
 				// AUTO LANGUAGE SYNC
 				chckbxLockLanguage.setSelected(!txtOptions.defaultAutoSyntaxSync);
 				
-				// FILE TREE PANEL ON/OFF
-				fileTreeShowOrHide(txtOptions);
-				
-				// RIGHT TREE PANEL ON/OFF
-				rightPaneShowOrHide(txtOptions);
 			}
 		});
 	}
@@ -2241,12 +2238,47 @@ public class TextEditor extends JPanel {
 		GUIStyelSettings.applyNimbusSize(0);
 	}
 
-	public void rightPaneShowOrHide(TextEditorOption txtOptions) {
+	public void rightPaneShowOrHide() {
+		
+		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 		
 		// avoid useless operations at start
 		if(isPreloading) {return;}
 		
+		rightPaneResizeOnly();
+		
+		// Gui stuff to invoke later: avoids conflict with dispatch thread
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+
+				// SAVE CONFIGURATION - CURRENT VIEW ACTIVE (if opened)
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
+				
+				textEditorUtils.resetDividerColor();
+				
+				toggleBtnMap.setSelected(txtOptions.mapViewActive);
+				toggleBtnClipboard.setSelected(txtOptions.clipboardViewActive);
+				toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+				toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+
+				currentTextEditor.rightSplitPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+				currentTextEditor.splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+				currentTextEditor.splitPaneMainContainer.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+				GUIStyelSettings.applyNimbusSize(0);
+				currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+				currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			}
+		});
+	}
+	
+	public void rightPaneResizeOnly() {
+		
+		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
+		
 		if (txtOptions.clipboardViewActive || txtOptions.mapViewActive) {
+			
 			
 			// Refresh divider location
 			splitPaneMainContainer.getRightComponent().setVisible(true);
@@ -2257,37 +2289,18 @@ public class TextEditor extends JPanel {
 				splitPaneMainContainer.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
 			}
 			
-			// Update background
-			toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
-			toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
-			
 		} else {
+			// HIDE PANEL
 			splitPaneMainContainer.getRightComponent().setVisible(false);
 			splitPaneMainContainer.setDividerLocation(parentFrame.getWidth());
 			toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		}
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				
-				textEditorUtils.resetDividerColor();
-				
-				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
-				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
-				
-				toggleBtnMap.setSelected(txtOptions.mapViewActive);
-				toggleBtnClipboard.setSelected(txtOptions.clipboardViewActive);
-
-				currentTextEditor.rightSplitPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
-				currentTextEditor.splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
-				currentTextEditor.splitPaneMainContainer.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
-				GUIStyelSettings.applyNimbusSize(0);
-				currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-				currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			}
-		});
+	}
+	
+	public boolean isRightPaneOn() {
+		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
+		return (txtOptions.isMapViewActive() || txtOptions.isClipboardViewActive());
 	}
 
 	private void loadOpenedFilesAtStart() {

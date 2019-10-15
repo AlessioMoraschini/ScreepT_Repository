@@ -6,10 +6,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
 import resources.IconsPathConfigurator;
@@ -232,16 +234,16 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				}
 				
 				/*
-				 * 	OPEN/CLOSE CLIPBOARD PANEL -> ALT+W
+				 * 	OPEN/CLOSE CLIPBOARD PANEL -> ALT+A
 				 */
-				if (e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+				if (e.getKeyCode() == 65 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.toggleBtnClipboard.doClick();
 				}
 
 				/*
-				 * 	OPEN/CLOSE MAP PANEL -> ALT+A
+				 * 	OPEN/CLOSE MAP PANEL -> ALT+W
 				 */
-				if (e.getKeyCode() == 65 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+				if (e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.toggleBtnMap.doClick();
 				}
 				
@@ -412,6 +414,52 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 						}
 					});
 				}
+				
+				
+				/*********************************************
+				 * Text Editor  -  TEXT SPECIFIC SHORTCUTS
+				 *********************************************/
+				
+				/*
+				 *  CLONE CURRENT LINE UP -> Ctrl+Alt+UP arrow
+				 */
+				if(e.getKeyCode() == 38 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							try {
+								boolean result = GuiUtils.duplicateTextAreaCurrentLine(
+										currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, true);
+								if(!result) {
+									logger.warn("Error duplicating current text Line !");
+								}
+							} catch (BadLocationException e) {
+								logger.error("Error duplicating current text Line", e);
+							}
+						}
+					});
+				}
+
+				
+				/*
+				 *  CLONE CURRENT LINE DOWN -> Ctrl+Alt+DOWN arrow
+				 */
+				if(e.getKeyCode() == 40 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							try {
+								boolean result = GuiUtils.duplicateTextAreaCurrentLine(
+										currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, false);
+								if(!result) {
+									logger.warn("Error duplicating current text Line !");
+								}
+							} catch (BadLocationException e) {
+								logger.error("Error duplicating current text Line", e);
+							}
+						}
+					});
+				}
+				
+				
 				
 //				/*
 //				 *  TEST MOVE TABS : Ctrl + shift + Alt + [->|<-]
