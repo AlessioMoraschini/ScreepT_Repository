@@ -2,7 +2,7 @@ package textareautil;
 
 import javax.swing.JTextArea;
 
-public class SelectionDto {
+public class SelectionDtoFull {
 
 	public String prefix = "";
 	public String selection = "";
@@ -12,7 +12,7 @@ public class SelectionDto {
 	public int length = 0;
 	public boolean selected;
 	
-	public SelectionDto(JTextArea textArea) {
+	public SelectionDtoFull(JTextArea textArea) {
 		first = textArea.getSelectionStart();
 		last = textArea.getSelectionEnd();
 		prefix = textArea.getText();

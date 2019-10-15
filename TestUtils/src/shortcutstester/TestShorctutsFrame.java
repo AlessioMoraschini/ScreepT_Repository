@@ -14,6 +14,10 @@ import javax.swing.JTextArea;
 import testUtils.TestUtils;
 
 public class TestShorctutsFrame {
+	
+	static int i = 0;
+	static final int maxAdvices = 50;
+	static final int REFRESH_ADVICE_PERIOD = 2000;
 
 	public static void main(String[] args) {
 		analyzeTextInput();
@@ -61,5 +65,27 @@ public class TestShorctutsFrame {
 				TestUtils.printl("\n=> Focus gained\n");
 			}
 		});
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while (i < maxAdvices) {
+					try {
+						++i;
+						textAreaS.requestFocus();
+						int start = textAreaS.getSelectionStart();
+						int end = textAreaS.getSelectionEnd();
+						int caret = textAreaS.getCaretPosition();
+						TestUtils.printl("Start: " + start);
+						TestUtils.printl("End: " + end);
+						TestUtils.printl("Caret" + caret);
+						Thread.sleep(REFRESH_ADVICE_PERIOD);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+				}
+			}
+		}).start();
 	}
 }

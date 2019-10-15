@@ -11,4 +11,5 @@ public interface IChangeMonManager {
 	public boolean setAlreadyChecking(boolean alreadyChecking);
 	public Runnable getRunnableChanges();
 	public void cleanFromHistory(File target);
+	public void removePendingFiredChanges(File target);
 }

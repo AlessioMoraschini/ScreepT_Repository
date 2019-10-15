@@ -10,7 +10,7 @@ import java.awt.Cursor;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
-import textareautil.SelectionDto;
+import textareautil.SelectionDtoFull;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -311,7 +311,7 @@ public class SearchFrame extends JFrame{
 	}
 	
 	private void replaceTextSelected() {
-		SelectionDto selectionTxtArea = new SelectionDto(textSearchArea);
+		SelectionDtoFull selectionTxtArea = new SelectionDtoFull(textSearchArea);
 		int selStart = selectionTxtArea.first;
 		String output = "";
 		String center = "";

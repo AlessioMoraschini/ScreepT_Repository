@@ -11,7 +11,6 @@ import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.KeyListener;
@@ -30,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
@@ -39,8 +39,8 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
-import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import textareautil.SelectionDTO;
 
 public class GuiUtils {
 	
@@ -74,6 +74,25 @@ public class GuiUtils {
 		target.setModel( model );
 		target.revalidate();
 		target.repaint();
+	}
+	
+	/**
+	 * Refresh caret selection in textArea 
+	 */
+	public void syncCaretPosition(JTextArea target, int start, Integer end) {
+		try {
+			
+			if (end != start) {
+				target.setSelectionStart(start);
+				target.setSelectionEnd(end);
+			}else {
+				target.setCaretPosition(0);
+				target.setCaretPosition(start);
+			}
+			
+		} catch (Exception e) {
+			logger.warn("ERROR setting caret position into textArea miniMap");
+		}
 	}
 	
 	public static void setupTooltips(int delay, int timeout, Font font) {

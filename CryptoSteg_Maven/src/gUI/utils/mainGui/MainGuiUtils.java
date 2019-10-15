@@ -101,65 +101,68 @@ public class MainGuiUtils {
     	contentPane.revalidate(); 
     	contentPane.repaint();
     	
-    	mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(ChargeIniLog.class);
-    	mainAppReference.currentConfiguration.writeSingleValue(
+    	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ChargeIniLog.class);
+    	MainGUI.currentConfiguration.writeSingleValue(
     			INItializer.GEN_OPT, "lastPanelOpened", ChargeIniLog.class.getCanonicalName());
 	}
 	
-	public void startCrypterPanel(boolean forceStart) {
-		final JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-
-		// reset all listeners
-		if (forceStart) {
-			removeAllListeners(MainGUI.panelCrypter);
-		}
-		
-		if(MainGUI.panelCrypter == null || forceStart) {
-    		Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-    		MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
-    	}
-
-    	SwingUtilities.invokeLater(new Runnable() {
+	public void startCrypterPanel(final boolean forceStart) {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				contentPane.removeAll();
-				contentPane.add(MainGUI.panelCrypter);
-				contentPane.revalidate();
-				contentPane.repaint();
-				mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
-				mainAppReference.currentConfiguration.writeSingleValue(
-						INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
+				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
+				final JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+				// reset all listeners
+				if (forceStart) {
+					removeAllListeners(MainGUI.panelCrypter);
+				}
+				if (MainGUI.panelCrypter == null || forceStart) {
+					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+					MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
+				}
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						contentPane.removeAll();
+						contentPane.add(MainGUI.panelCrypter);
+						contentPane.revalidate();
+						contentPane.repaint();
+						MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
+						MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
+					}
+				});
+				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 			}
 		});
 	}
 	
-	public void startTextEditor(boolean forceRestart) {
+	public void startTextEditor(final boolean forceRestart) {
 		
-		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
-		
-		final JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-		
-		// reset shortcut listener
-		if(forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
-			KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.initTxtWriter.shortcutsListener);
-			removeAllListeners(MainGUI.panelCrypter);
-		}
-
-		if(MainGUI.initTxtWriter == null || forceRestart) {
-			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-			MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
-		}		    	
-		
-    	SwingUtilities.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				contentPane.removeAll();
-				contentPane.add(MainGUI.initTxtWriter);
-				contentPane.revalidate(); 
-		    	contentPane.repaint();
+				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
+				final JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+				// reset shortcut listener
+				if (forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
+					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.initTxtWriter.shortcutsListener);
+					removeAllListeners(MainGUI.panelCrypter);
+				}
+				if (MainGUI.initTxtWriter == null || forceRestart) {
+					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+					MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
+				}
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						contentPane.removeAll();
+						contentPane.add(MainGUI.initTxtWriter);
+						contentPane.revalidate();
+						contentPane.repaint();
+						MainGUI.updateGuiFromCurrConfig();
+					}
+				});
+				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
+				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
+				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 			}
 		});
-    	mainAppReference.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
-    	mainAppReference.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
-    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 	}
 	
 	/**

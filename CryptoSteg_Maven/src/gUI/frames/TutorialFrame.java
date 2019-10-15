@@ -12,12 +12,13 @@ import org.apache.log4j.Logger;
 
 import frameutils.html.HtmlPanel;
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import maingUI.MainGUI;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
-public class TutorialFrame extends JFrame{
+public class TutorialFrame extends ParentFrame{
 
 	// initialize Logger
 	static Logger logger = Logger.getLogger(TutorialFrame.class); 
@@ -25,17 +26,15 @@ public class TutorialFrame extends JFrame{
 	public HtmlPanel mainHtmlReadmePanel;
 	public TutorialFrame thisPanel;
 	
-	// flag to signal active
-	public static boolean active=false;
-	
 	public TutorialFrame() {
+
+		isActive.set(true);
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[1000px,grow]", "[800px,grow]"));
 		setBackground(Color.BLACK);
 		
 		thisPanel = this;
-		active = true;
 		
 		// GUI SETTINGS
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
@@ -64,7 +63,7 @@ public class TutorialFrame extends JFrame{
 		// DEFAULT CLOSE OPERATION
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				active = false;
+		    	isActive.set(false);
 				logger.info(this.getClass().getName() + " Closed");
 				try {
 					setVisible(false);

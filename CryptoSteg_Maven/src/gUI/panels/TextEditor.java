@@ -22,7 +22,7 @@ import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
-import textareautil.SelectionDto;
+import textareautil.SelectionDtoFull;
 import textareautil.TextLineNumber;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
@@ -42,11 +42,13 @@ import org.drjekyll.fontchooser.FontDialog;
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RUndoManager;
 
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
 import amfileutils.FileStuff;
+import amfileutils.filechangewatcher.ChangeDTO;
 import conversion.Text2Speech;
 import crypt.aes.AesCipher;
 import dialogutils.GenericFileChooser;
@@ -167,15 +169,15 @@ public class TextEditor extends JPanel {
 	public JButton btnSpeak;
 	public JButton btnDecrypt;
 	public JButton btnCrypt;
-	private JButton btnOpenInScreepT;
+	public JButton btnOpenInScreepT;
 	public JButton btnDark;
 	public JButton btnUpperPostDots;
-	private JButton btnLowerAfterDots;
+	public JButton btnLowerAfterDots;
 	public JButton btnTt;
 	public JButton btnTtTt;
 	public JButton btnBackgroundCol;
 	public JButton btnParseImageText;
-	private JButton btnParsePdfText;
+	public JButton btnParsePdfText;
 	public JButton btnLoremIpsum;
 	public JButton btnFontChooser;
 	public JButton btnTemplates;
@@ -304,7 +306,7 @@ public class TextEditor extends JPanel {
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMinimumSize(new Dimension(800, 300));
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(98, parentFrame));
-		mainPanel.setLayout(new MigLayout("fill, insets 1, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][20px:n:60px][30px:30px:30px][:3%:4%][:60px:70px][40px:2%:50px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][50px:2%:3.5%][:50px:50px][20][30][][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:35px][0px:5px][:0px:25px][:0px:25px][0px:4px][0px:4px][300px,grow 300,fill][:0px:30px]"));
+		mainPanel.setLayout(new MigLayout("fill, insets 1, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][20px:n:60px][30px:30px:55px][:3%:4%][:60px:75px][40px:2%:50px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][50px:2%:3.5%][:50px:50px][20][30][][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:35px][0px:5px][:0px:25px][:0px:25px][0px:4px][0px:4px][300px,grow 300,fill][:0px:30px]"));
 		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMinimumSize(new Dimension(1100, 300));
@@ -551,6 +553,10 @@ public class TextEditor extends JPanel {
 
 		chckbxAesShowKey = new JCheckBox("Show key");
 		chckbxAesShowKey.setForeground(Color.WHITE);
+		chckbxAesShowKey.setIconTextGap(1);
+		chckbxAesShowKey.setHorizontalAlignment(SwingConstants.LEFT);
+		chckbxAesShowKey.setCursor(GuiUtils.CURSOR_HAND);
+		chckbxAesShowKey.setFont(new Font("SansSerif", Font.BOLD, 12));
 		mainPanel.add(chckbxAesShowKey, "cell 19 3 2 1,alignx center");
 
 		btnTemplates = new JButton("Templates");
@@ -779,13 +785,26 @@ public class TextEditor extends JPanel {
 
 		startRefreshFooterThread();
 		
+		// REFRESH ICONS
 		SwingUtilities.invokeLater(new Runnable() {
-			
 			@Override
 			public void run() {
-				getCurrentTabEditor().loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
-				getCurrentTabEditor().loadedTabObj.textArea.revalidate();
-				getCurrentTabEditor().loadedTabObj.textArea.repaint();
+				CustomTabbedEditor tabEditor = getCurrentTabEditor();
+				Vector<TabTextEditorObj> tabListObjects = tabEditor.loadedList.getList();
+				
+				tabEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
+				tabEditor.loadedTabObj.textArea.revalidate();
+				tabEditor.loadedTabObj.textArea.repaint();
+				int nTab = getCurrentTabEditor().mainTabList.getTabCount();
+				ImageIcon currIcon;
+				for(int i = 0; i < nTab; i++) {
+					try {
+						currIcon = IconsPathConfigurator.getIconByFile(tabListObjects.get(i).loadedFile);
+						tabEditor.forceIconToTab(currIcon, i);
+					} catch (Exception e) {
+						logger.warn("Error trying to set icon to tab number " + i);
+					}
+				}
 			}
 		});
 		
@@ -1681,7 +1700,7 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
 
-				SelectionDto txtAreaDto = new SelectionDto(loadedTabObj.textArea);
+				SelectionDtoFull txtAreaDto = new SelectionDtoFull(loadedTabObj.textArea);
 				String result = "";
 
 				if (txtAreaDto.selected) {
@@ -1703,7 +1722,7 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
 
-				SelectionDto txtAreaDto = new SelectionDto(loadedTabObj.textArea);
+				SelectionDtoFull txtAreaDto = new SelectionDtoFull(loadedTabObj.textArea);
 				String result = "";
 
 				if (txtAreaDto.selected) {
@@ -1937,7 +1956,8 @@ public class TextEditor extends JPanel {
 		// SAVE TEXT FILE
 		btnSaveTextFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
+				
+				final TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
 
 				boolean done = false;
 				if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
@@ -1949,14 +1969,21 @@ public class TextEditor extends JPanel {
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(currentTextEditor, "error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
-					}finally {
-						getCurrentTabEditor().changeMonManager.cleanFromHistory(loadedTabObj.loadedFile);
 					}
 					
 					if (done) {
 						loadedTabObj.unsaved = false;
 						getCurrentTabEditor().updateSavedLabelNTab(null);
 						textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
+						
+						// Clean memorized changes triggered by save
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								logger.debug("Cleaning changes from tabbedPane history");
+								getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
+								logger.debug("Cleaned changes from tabbedPane history");
+							}
+						});
 					} else {
 						textEditorUtils.errorAdvice("[Error - not saved]");
 						footerPanel.lblCurrentFile.setText("(*)" + loadedTabObj.loadedFile.getName());
@@ -2047,7 +2074,18 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
+						
+						RSyntaxTextArea reference = getCurrentTabEditor().loadedTabObj.textArea;
+						int start = reference.getSelectionStart();
+						int end = reference.getSelectionEnd();
+						
 						getCurrentTabEditor().reloadCurrentTab(true);
+						
+						reference.setCaretPosition(0);
+						reference.setCaretPosition(end);
+						reference.setSelectionStart(start);
+						reference.setSelectionEnd(end);
+						
 						textEditorUtils.refreshMessageAndTabTooltip("[File Reloaded]");
 					}
 				});
@@ -2222,7 +2260,7 @@ public class TextEditor extends JPanel {
 			// Update background
 			toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 			toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
-		
+			
 		} else {
 			splitPaneMainContainer.getRightComponent().setVisible(false);
 			splitPaneMainContainer.setDividerLocation(parentFrame.getWidth());
@@ -2230,17 +2268,18 @@ public class TextEditor extends JPanel {
 			toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		}
 		
-		textEditorUtils.resetDividerColor();
-		
-		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
-		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
-		
-		toggleBtnMap.setSelected(txtOptions.mapViewActive);
-		toggleBtnClipboard.setSelected(txtOptions.clipboardViewActive);
-		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				
+				textEditorUtils.resetDividerColor();
+				
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
+				
+				toggleBtnMap.setSelected(txtOptions.mapViewActive);
+				toggleBtnClipboard.setSelected(txtOptions.clipboardViewActive);
+
 				currentTextEditor.rightSplitPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 				currentTextEditor.splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 				currentTextEditor.splitPaneMainContainer.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());

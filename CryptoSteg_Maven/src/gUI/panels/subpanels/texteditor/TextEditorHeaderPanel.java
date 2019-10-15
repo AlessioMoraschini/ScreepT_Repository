@@ -88,6 +88,8 @@ public class TextEditorHeaderPanel extends JPanel{
 		checkBoxInlineTabs.setCursor(GuiUtils.CURSOR_HAND);
 		checkBoxInlineTabs.setForeground(SystemColor.control);
 		checkBoxInlineTabs.setBackground(Color.DARK_GRAY);
+		checkBoxInlineTabs.setIconTextGap(1);
+		checkBoxInlineTabs.setFont(new Font("SansSerif", Font.BOLD, 12));
 		add(checkBoxInlineTabs, "cell 9 0,alignx center,aligny center");
 		
 		chkCutWordsTo = new JCheckBox("Adapt Text Width  ");
@@ -96,6 +98,8 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkCutWordsTo.setSelected(false);
 		chkCutWordsTo.setForeground(SystemColor.control);
 		chkCutWordsTo.setBackground(Color.DARK_GRAY);
+		chkCutWordsTo.setIconTextGap(1);
+		chkCutWordsTo.setFont(new Font("SansSerif", Font.BOLD, 12));
 		add(chkCutWordsTo, "cell 10 0,alignx center,aligny center");
 
 		chkFitmantainwords = new JCheckBox("Don't cut words");
@@ -103,6 +107,8 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkFitmantainwords.setToolTipText(TextEditorTooltips.tooltipFitMaintainWords);
 		chkFitmantainwords.setForeground(SystemColor.control);
 		chkFitmantainwords.setBackground(Color.DARK_GRAY);
+		chkFitmantainwords.setIconTextGap(1);
+		chkFitmantainwords.setFont(new Font("SansSerif", Font.BOLD, 12));
 		chkFitmantainwords.setEnabled(false);
 		add(chkFitmantainwords, "cell 11 0,alignx right,aligny center");
 		

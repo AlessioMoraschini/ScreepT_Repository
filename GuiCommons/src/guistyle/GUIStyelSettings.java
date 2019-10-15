@@ -38,6 +38,7 @@ public class GUIStyelSettings{
 
     public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
+    		UIManager.put("nimbusOrange", Color.GREEN);
 			UIManager.put( "MenuBar.foreground", Color.black );
 			UIManager.put("ScrollBar.background", new Color(170,170,170));
 			UIManager.put("ToolTip.font", new Font("Segoe UI", Font.PLAIN, 18));
@@ -78,6 +79,7 @@ public class GUIStyelSettings{
     
     public static synchronized boolean setDarkNimbus(int nimbusSize) {
     	
+      UIManager.put("nimbusOrange", Color.GREEN);
   	  UIManager.put( "nimbusBase", new Color( 18, 30, 49) );
   	  UIManager.put("ScrollBar.background", new Color(70,70,70));
   	  UIManager.put( "MenuBar.foreground", Color.white );

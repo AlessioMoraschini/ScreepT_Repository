@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.BackgroundFrame;
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import guistyle.TextGuiUtils;
 import maingUI.MainGUI;
 
@@ -31,7 +32,7 @@ import javax.swing.JButton;
 import java.awt.Cursor;
 import java.awt.Insets;
 
-public class AboutSectionFrame extends JFrame{
+public class AboutSectionFrame extends ParentFrame{
 
 	// initialize Logger
 	static Logger logger = Logger.getLogger(AboutSectionFrame.class); 
@@ -48,10 +49,10 @@ public class AboutSectionFrame extends JFrame{
 	private JFrame mainAppFrame;
 	private MainGUI mainApp;
 	
-	// flag to signal active
-	public static boolean active=false;
-	
 	public AboutSectionFrame(MainGUI main) {
+		
+		isActive.set(true);
+		
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		// INIT REFERENCES
@@ -59,7 +60,6 @@ public class AboutSectionFrame extends JFrame{
 		mainAppFrame = mainApp.getMainFrame();
 		mainAppFrame.setEnabled(false);
 		thisFrame = this;
-		active = true;
 		
 		// SET FRAME ICON
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
@@ -144,7 +144,7 @@ public class AboutSectionFrame extends JFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
-				active = false;
+		    	isActive.set(false);
 				
 				logger.info(this.getClass().getName() + " Closed");
 				mainAppFrame.setEnabled(true);

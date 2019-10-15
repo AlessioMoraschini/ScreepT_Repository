@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
@@ -47,7 +48,7 @@ import javax.swing.JCheckBox;
 import java.awt.Dimension;
 import java.awt.ComponentOrientation;
 
-public class GraphicPreferencesFrame extends JFrame {
+public class GraphicPreferencesFrame extends ParentFrame {
 
 	// initialize Logger
 	// GraphicPreferencesFrame logger
@@ -98,9 +99,6 @@ public class GraphicPreferencesFrame extends JFrame {
 	private static boolean BACKUP_TXTAREA_SHOW_EOL_DELIM;
 	private static boolean BACKUP_TXTAREA_AUTOCHECK_CHANGES;
 
-	// flag to signal active
-	public static boolean active = false;
-
 	private INItializer currentConfiguration;
 	
 	private TextEditor currentEditor;
@@ -138,13 +136,14 @@ public class GraphicPreferencesFrame extends JFrame {
 	
 	public GraphicPreferencesFrame(INItializer currentConf) {
 		
+		isActive.set(true);
+		
 		currentEditor = MainGUI.initTxtWriter;
 		currentTabEditor = MainGUI.initTxtWriter.getCurrentTabEditor();
 		
 		logger.info(this.getClass().getName() + " Starting...");
 
 		currentConfiguration = currentConf;
-		active = true;
 		
 		dialogHelper = new JOptionHelper(this);
 		
@@ -441,7 +440,7 @@ public class GraphicPreferencesFrame extends JFrame {
 				logger.debug(
 						"Closing " + getClass().getName() + " - Configuration resetted: \n" + currentConf.toStringa());
 
-				active = false;
+				isActive.set(false);
 
 				dispose();
 			}

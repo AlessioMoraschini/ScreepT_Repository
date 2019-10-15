@@ -9,6 +9,7 @@ import org.hyperic.sigar.NetInterfaceConfig;
 import org.hyperic.sigar.SigarException;
 
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkUtils;
 import network.om.FtpSpeedTestOptions;
@@ -40,7 +41,7 @@ import javax.swing.JButton;
 import javax.swing.JProgressBar;
 import java.awt.Cursor;
 
-public class NetInfoFrame extends JFrame{
+public class NetInfoFrame extends ParentFrame{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(NetInfoFrame.class); 
@@ -48,9 +49,6 @@ public class NetInfoFrame extends JFrame{
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
 	private static final String CALCULATING = "Calculating...";
-	
-	// flag to signal active
-	public static boolean active=false;
 	
 	// gui fields
 	private JComboBox<NetworkAdapter> comboAdapters;
@@ -111,7 +109,7 @@ public class NetInfoFrame extends JFrame{
 		setMaximumSize(new Dimension(800, 450));
 		setMinimumSize(new Dimension(750, 400));
 		
-		active=true;
+		isActive.set(true);
 		thisPanel = this;
 		
 		// SW window icon
@@ -366,7 +364,7 @@ public class NetInfoFrame extends JFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
 	        	logger.debug("Closing Frame: "+NetInfoFrame.class.getName());	        	
-				active = false;
+	        	isActive.set(false);
 	        	dispose();
 		    }
 		});

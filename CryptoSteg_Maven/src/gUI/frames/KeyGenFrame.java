@@ -46,13 +46,14 @@ import dialogutils.JOptionHelper;
 import dialogutils.TestUpdateProgress;
 import enums.KeyGenImageType;
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import gUI.panels.subpanels.ImageGenContainerPanel;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import mainobj.INItializer;
 
 import java.awt.Cursor;
 
-public class KeyGenFrame extends JFrame {
+public class KeyGenFrame extends ParentFrame {
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(KeyGenFrame.class); 
@@ -88,9 +89,6 @@ public class KeyGenFrame extends JFrame {
 	private ImageGenContainerPanel imageContainer;
 	private KeyGenFrame thisFrame;
 	
-	// flag to signal active
-	public static boolean active=false;
-
 	private KeyGenImageType CURRENT_IMG_TYPE;
 	
 	private INItializer currentConfig;
@@ -102,9 +100,10 @@ public class KeyGenFrame extends JFrame {
 	 */
 	public KeyGenFrame(INItializer currentConf) {
 
+		isActive.set(true);
+
 		logger.info(this.getClass().getName() + " Starting...");
 		
-		active = true;
 		thisFrame = this;
 		currentConfig = currentConf;
 		
@@ -298,7 +297,7 @@ public class KeyGenFrame extends JFrame {
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
 	        	logger.debug("Closing "+getClass().getName());
-	        	active = false;
+	        	isActive.set(false);
 	        	dispose();
 		    }
 		});

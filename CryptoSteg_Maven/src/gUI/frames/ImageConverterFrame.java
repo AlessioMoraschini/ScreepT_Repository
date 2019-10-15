@@ -10,6 +10,7 @@ import amfileutils.FileStuff;
 import dialogutils.TestUpdateProgress;
 import enums.ScalingAlgorithm;
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import gUI.panels.CrypterPanel;
 import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
@@ -56,7 +57,7 @@ import javax.swing.event.ChangeEvent;
 import java.awt.Dimension;
 import javax.swing.UIManager;
 
-public class ImageConverterFrame extends JFrame{
+public class ImageConverterFrame extends ParentFrame{
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ImageConverterFrame.class); 
@@ -158,7 +159,7 @@ public class ImageConverterFrame extends JFrame{
 		
 		thisFrame = this;
 		
-		active = true;
+		isActive.set(true);
 		
 		// initialize field representing locally configuration referred
 		currentConfiguration = currentConf;
@@ -426,7 +427,7 @@ public class ImageConverterFrame extends JFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
 	        	logger.debug("Closing "+getClass().getName());
-	        	active = false;
+	        	isActive.set(false);
 	        	dispose();
 		    }
 		});

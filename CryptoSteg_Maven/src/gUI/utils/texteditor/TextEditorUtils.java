@@ -125,6 +125,9 @@ public class TextEditorUtils {
 			button.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 			button.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
 		}
+		
+		currentTextEditor.btnTt.setMinimumSize(new Dimension(65, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
+		currentTextEditor.btnLowerAfterDots.setMinimumSize(new Dimension(45, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
 	}
 	
 	/**

@@ -127,7 +127,7 @@ public class CustomTabbedEditor {
 		mainTabList.setBorder(new LineBorder(Color.BLACK, 2));
 		mainTabList.setBackground(new Color(30, 30, 30));
 		
-		// TAB CHANGE LISTENER
+		// TAB CHANGE LISTENER - FIRED WHEN CHANGING TAB //
 		mainTabList.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -137,10 +137,8 @@ public class CustomTabbedEditor {
 					
 					alreadyrefreshing = true;
 					logger.debug("\n\n ## Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
-	
 					tabRefreshAfterUpdate();
 					lastIndexTabbedPane = mainTabList.getSelectedIndex();
-					
 					alreadyrefreshing = false;
 					addToHystory(loadedTabObj.currentScrollPane);
 					
@@ -164,6 +162,27 @@ public class CustomTabbedEditor {
 				MyFileView fileView = new MyFileView();
 				tabHeadIcon.setIcon(fileView.getIcon(loadedTabObj.loadedFile));
 			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Use this to change from external icon to an index
+	 * @param icon
+	 * @param index
+	 * @return
+	 */
+	public boolean forceIconToTab(ImageIcon icon, int index) {
+		
+		if(index >= mainTabList.getTabCount() || index <= 0) {
+			return false;
+		}
+		
+		try {
+			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
+			tabHeadIcon.setIcon(icon);
 			return true;
 		} catch (Exception e) {
 			return false;

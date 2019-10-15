@@ -355,21 +355,17 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	public void sync() {
 		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
 		if (reference != null && txtAreaClipboard != null) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					// Get diyamic reference from interface taken from main editor utils class
-					txtAreaClipboard.setBackground(reference.getBackground());
-					RsyntaxUtils.setBackground(txtAreaClipboard, reference.getBackground());
-					txtAreaClipboard.setForeground(reference.getForeground());
-					RsyntaxUtils.setForeground(txtAreaClipboard, reference.getCaretColor());
-					txtAreaClipboard.setCurrentLineHighlightColor(txtAreaClipboard.getBackground().brighter());
-					txtAreaClipboard.setFont(GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT);
-					dialogManager.loadThemeIntoTarget(txtAreaClipboard);
-					currentScrollPane.setBackground(Color.black);
-					txtAreaClipboard.setWrapStyleWord(true);
-					txtAreaClipboard.setLineWrap(true);
-				}
-			});
+			// Get dynamic reference from interface taken from main editor utils class
+			txtAreaClipboard.setBackground(reference.getBackground());
+			RsyntaxUtils.setBackground(txtAreaClipboard, reference.getBackground());
+			txtAreaClipboard.setForeground(reference.getForeground());
+			RsyntaxUtils.setForeground(txtAreaClipboard, reference.getCaretColor());
+			txtAreaClipboard.setCurrentLineHighlightColor(txtAreaClipboard.getBackground().brighter());
+			txtAreaClipboard.setFont(GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT);
+			dialogManager.loadThemeIntoTarget(txtAreaClipboard);
+			currentScrollPane.setBackground(Color.black);
+			txtAreaClipboard.setWrapStyleWord(true);
+			txtAreaClipboard.setLineWrap(true);
 		}
 	}
 	

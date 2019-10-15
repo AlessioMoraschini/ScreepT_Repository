@@ -8,6 +8,7 @@ import org.ini4j.Wini;
 
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import mainlauncher.ScrYpTLauncher;
@@ -47,7 +48,7 @@ import javax.swing.JComboBox;
 import java.awt.Cursor;
 import javax.swing.JSlider;
 
-public class GeneralOptionsFrame extends JFrame{
+public class GeneralOptionsFrame extends ParentFrame{
 
 	// initialize Logger
 	// GraphicPreferencesFrame logger
@@ -84,8 +85,6 @@ public class GeneralOptionsFrame extends JFrame{
 	private INItializer currentConfiguration;
 	private Wini launcherConfiguration;
 	
-	// flag to signal active
-	public static boolean active=false;
 	private JLabel lblVolume;
 	private JLabel lblDynVolume;
 	private JSlider sliderVolume;
@@ -95,8 +94,9 @@ public class GeneralOptionsFrame extends JFrame{
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		
+		isActive.set(true);
+		
 		logger.info(this.getClass().getName() + " Starting...");
-		active = true;
 		
 		dialogHelper = new JOptionHelper(this);
 		
@@ -274,8 +274,8 @@ public class GeneralOptionsFrame extends JFrame{
 	        	// update gui
 	        	updateGUIComponents();		        	
 
-	        	active = false;
-				
+	        	isActive.set(false);
+	        	
 				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
 	        	dispose();
 		    }

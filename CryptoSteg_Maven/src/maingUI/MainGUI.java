@@ -76,6 +76,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.awt.SystemColor;
 import java.awt.Window;
 import java.awt.Dialog.ModalExclusionType;
@@ -134,18 +135,6 @@ public class MainGUI extends MainGuiParent{
 	// some used lookAndFeel
 	public static String preferredStyle = GUIStyelSettings.NimbusLookAndFeel; // preferredStyle (initialized to fully avoid null values)
 	public static boolean DARK_THEME; // true if dark theme is selected
-	
-	// FLAGS TO SIGNAL THAT A MODULE IS OPENED (JDIALOG) 
-	// for jpanels they refresh only the first time opened or if manually refreshed 
-	private static boolean flagFrameKeyGen = false;
-	private static boolean flagFrameGenOptions = false;
-	private static boolean flagFrameGuiOptions = false;
-	private static boolean flagFrameKeyDict = false;	
-	private static boolean flagImgConv = false;
-	private static boolean flagNetInfoPanel = false;
-	private static boolean flagHwInfoPanel = false;
-	private static boolean flagAboutPanel = false;
-	private static boolean flagTutorialPanel = false;
 	
 	// flags for no-window operations
 	private static boolean FLAG_mntmExit = false;
@@ -232,52 +221,7 @@ loaderGraphics.update("Initializing graphics... ", 15);
 			logger.info("Main GUI initialized correctly.");
 			
 loaderGraphics.update("Starting autosave modules... ", 25);
-			
-			// ACTIVE MODULES FLAG UPDATER THREAD
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					logger.info("## MODULES FLAG UPDATER started");
-					while(mainAppRunning) {
-						try {
-							// sleep small time to adapt
-							Thread.sleep(600);
-							if(!GraphicPreferencesFrame.active) {
-								flagFrameGuiOptions=false;
-							}
-							if(!KeyGenFrame.active){
-								flagFrameKeyGen=false;
-							}
-							if(!KeyDictionaryPanel.active) {
-								flagFrameKeyDict=false;
-							}
-							if(!GeneralOptionsFrame.active) {
-								flagFrameGenOptions=false;
-							}
-							if(!ImageConverterFrame.active) {
-								flagImgConv=false;
-							}
-							if(!NetInfoFrame.active) {
-								flagNetInfoPanel=false;
-							}
-							if(!HwInfoFrame.active) {
-								flagHwInfoPanel=false;
-							}
-							if(!AboutSectionFrame.active) {
-								flagAboutPanel=false;
-							}
-							if(!TutorialFrame.active) {
-								flagTutorialPanel=false;
-							}
-						} catch (InterruptedException e) {
-							logger.error("Exception happened!", e);
-						}
-					}
-				}
-			}).start();
-			
-			
+						
 			// AUTOSAVE MODULE - only if specified in fileOptions
 			autosaveModule = new Thread(new Runnable() {
 				@Override
@@ -394,13 +338,26 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			frmScryptV.requestFocus();
 			frmScryptV.toFront();
 			
-			initGUI();
-//					updateGuiFromCurrConfig();
+			loaderGraphics.update("Updating GUI style...", 70, 350);
+//			initGUI();
 			
 			SwingUtilities.invokeLater(new Runnable() {
+				
+				@Override
 				public void run() {
-					loaderGraphics.update("Starting previous opened panels...", 70, 350);
-					loaderGraphics.update("Applying Gui Style", 100, 450);
+					// REFRESH GUI GENERAL
+					if (currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
+						GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+					}else {
+						GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
+					}
+				}
+			});
+
+			loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 350);
+
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
 					
 					// RUN ARGUMENTS IF THERE ARE
 					if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
@@ -415,6 +372,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 							mainGuiUtils.startConfigManagerPanel(true);
 						}
 					}
+					loaderGraphics.update("Applying Gui Style", 100, 450);
+					updateGuiFromCurrConfig();
 				}
 			});
 			
@@ -895,18 +854,21 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - CUSTOMIZE GRAPHICS
 		mntmCustomizeUIView = new JMenuItem(new AbstractAction("Customize Graphics") {
 			public void actionPerformed(ActionEvent e) {
-				if (!flagFrameGuiOptions) {
+				if (panelGuiOptions == null || !panelGuiOptions.isActive()) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					flagFrameGuiOptions = true;
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
 					GuiUtils.centerComponent(panelGuiOptions, 800, 440);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGuiOptions.setTitle("Apply/Save Preferences [Customize - Apply - Save]");
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					panelGuiOptions.setState(java.awt.Frame.NORMAL);
-					panelGuiOptions.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelGuiOptions.setState(java.awt.Frame.NORMAL);
+						panelGuiOptions.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + GraphicPreferencesFrame.class, e2);
+					}
 				}
 				panelGuiOptions.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGuiOptions, JFrame.MAXIMIZED_BOTH);
@@ -962,18 +924,21 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - GENERAL OPTIONS
 		mntmGenOpt = new JMenuItem(new AbstractAction("General Options") {
 			public void actionPerformed(ActionEvent e) {
-				if (!flagFrameGenOptions || panelGeneralOptions == null) {
+				if (panelGeneralOptions == null || !panelGeneralOptions.isActive()) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					flagFrameGenOptions=true;
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
 					panelGeneralOptions.setBounds(400, 300, 700, 265);
 					panelGeneralOptions.setVisible(true);
 					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGeneralOptions.setTitle("Apply/Save General Options [Customize - Apply - Save]");
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					panelGeneralOptions.setState(java.awt.Frame.NORMAL);
-					panelGeneralOptions.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelGeneralOptions.setState(java.awt.Frame.NORMAL);
+						panelGeneralOptions.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + GeneralOptionsFrame.class, e2);
+					}
 				}
 				panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
@@ -983,18 +948,21 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - KEYGEN
 		mntmgenerateKeyImageSub = new JMenuItem(new AbstractAction("Generate Key Image") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (!flagFrameKeyGen) {
+		    	if (panelKeyGen == null || !panelKeyGen.isActive()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		flagFrameKeyGen = true;
 		    		panelKeyGen = new KeyGenFrame(currentConfiguration);
 					panelKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelKeyGen.setBounds(150, 150, 1100, 800);
 					panelKeyGen.setVisible(true);
 					panelKeyGen.setTitle("IMG Generator (V1.1) - A.M.2018");
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					panelKeyGen.setState(java.awt.Frame.NORMAL);
-					panelKeyGen.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelKeyGen.setState(java.awt.Frame.NORMAL);
+						panelKeyGen.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + KeyGenFrame.class, e2);
+					}
 				}
 		    	panelKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyGen,JFrame.MAXIMIZED_BOTH);
@@ -1004,9 +972,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - NET INFO
 		mntmnetInfo = new JMenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (!flagNetInfoPanel) {
+		    	if (panelNetInfo == null || !panelNetInfo.isActive()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		flagNetInfoPanel = true;
 		    		SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							new Thread(new Runnable() {
@@ -1031,10 +998,14 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					});
 		    		
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					panelNetInfo.setState(java.awt.Frame.NORMAL);
-					panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
-					panelNetInfo.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelNetInfo.setState(java.awt.Frame.NORMAL);
+						panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
+						panelNetInfo.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + NetInfoFrame.class, e2);
+					}
 				}
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelNetInfo, JFrame.MAXIMIZED_BOTH);
 		    }
@@ -1043,9 +1014,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - NET INFO
 		mntmhwInfo = new JMenuItem(new AbstractAction("System Info") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (!flagHwInfoPanel) {
+		    	if (panelHwInfo == null || !panelHwInfo.isActive()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		flagHwInfoPanel = true;
 		    		SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							new Thread(new Runnable() {
@@ -1071,9 +1041,13 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					});
 		    		
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					panelHwInfo.setState(java.awt.Frame.NORMAL);
-					panelHwInfo.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelHwInfo.setState(java.awt.Frame.NORMAL);
+						panelHwInfo.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + HwInfoFrame.class, e2);
+					}
 				}
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelHwInfo, JFrame.MAXIMIZED_BOTH);
 		    }
@@ -1082,18 +1056,21 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - DICTIONARY (KEY IMG)
 		mntmViewKeyDictionary = new JMenuItem(new AbstractAction("View Key Dictionary") {
 		    public void actionPerformed(ActionEvent e) {
-		    	if (!flagFrameKeyDict) {
+		    	if (panelKeyDict == null || !panelKeyDict.isActive()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		flagFrameKeyDict = true;
 		    		panelKeyDict = new KeyDictionaryPanel(currentConfiguration);
 		    		panelKeyDict.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    		panelKeyDict.setBounds(300, 100, 800, 560);
 		    		panelKeyDict.setVisible(true);
 		    		panelKeyDict.setTitle("Key Dictionary Manager");
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					panelKeyDict.setState(java.awt.Frame.NORMAL);
-					panelKeyDict.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelKeyDict.setState(java.awt.Frame.NORMAL);
+						panelKeyDict.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + KeyDictionaryPanel.class, e2);
+					}
 				}
 		    	panelKeyDict.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyDict,JFrame.MAXIMIZED_BOTH);
@@ -1103,9 +1080,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - IMAGE CONVERTER
 		mntmImageConverter = new JMenuItem(new AbstractAction("Image Converter") {
 			public void actionPerformed(ActionEvent e) {
-		    	if (!flagImgConv) {
+		    	if (panelImgConv == null || !panelImgConv.isActive()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		flagImgConv = true;
 		    		panelImgConv = new ImageConverterFrame(currentConfiguration);
 		    		panelImgConv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    		panelImgConv.setBounds(700, 200, 650, 500);
@@ -1113,9 +1089,13 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		    		panelImgConv.setVisible(true);
 		    		panelImgConv.setTitle("IMG Generator (V1.1) - A.M.2018");
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					panelImgConv.setState(java.awt.Frame.NORMAL);
-					panelImgConv.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelImgConv.setState(java.awt.Frame.NORMAL);
+						panelImgConv.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + ImageConverterFrame.class, e2);
+					}
 				}
 		    	panelImgConv.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelImgConv,JFrame.MAXIMIZED_BOTH);
@@ -1125,9 +1105,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - ABOUT SCRYPT
 		mntmAboutScreept = new JMenuItem(new AbstractAction("About - ScrYpt") {
 			public void actionPerformed(ActionEvent e) {
-				if (!flagAboutPanel) {
+				if (panelAbout == null || !panelAbout.isActive()) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					flagAboutPanel = true;
 		    		panelAbout = new AboutSectionFrame(mainAPP);
 		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    		panelAbout.setBounds(700, 200, 400, 345);
@@ -1135,9 +1114,13 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		    		panelAbout.setVisible(true);
 		    		panelAbout.setTitle(GeneralConfig.APPLICATION_NAME);
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					panelAbout.setState(java.awt.Frame.NORMAL);
-					panelAbout.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelAbout.setState(java.awt.Frame.NORMAL);
+						panelAbout.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + AboutSectionFrame.class, e2);
+					}
 				}
 				panelAbout.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelAbout, JFrame.MAXIMIZED_BOTH);
@@ -1148,28 +1131,27 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
-				new Thread(new Runnable() {
-					public void run() {
-						tutorialPanel = new TutorialFrame();
-					}
-				}).start();
+				tutorialPanel = new TutorialFrame();
 			}
 		});
 		
 		mntmUserDocumentation = new JMenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
-				if (!flagTutorialPanel) {
+				if (tutorialPanel == null || !tutorialPanel.isActive()) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					flagTutorialPanel = true;
 					tutorialPanel.setResizable(true);
 		    		tutorialPanel.setVisible(true);
 		    		tutorialPanel.setTitle(GeneralConfig.APPLICATION_NAME + " - Tutorial");
 				}else {
-					Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-					tutorialPanel.setVisible(true);
-					tutorialPanel.toFront();
-					tutorialPanel.setState(java.awt.Frame.NORMAL);
-					tutorialPanel.requestFocus();
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						tutorialPanel.setVisible(true);
+						tutorialPanel.toFront();
+						tutorialPanel.setState(java.awt.Frame.NORMAL);
+						tutorialPanel.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + TutorialFrame.class, e2);
+					}
 				}
 				tutorialPanel.setLocationRelativeTo(mainAPP.getMainFrame());
 			}

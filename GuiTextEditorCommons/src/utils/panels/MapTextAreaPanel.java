@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
@@ -63,36 +62,15 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 			public void mouseReleased(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						syncReferenceCaretPosition(startTemp, endTemp);
+						safeSyncCaretToTxtReference();
 						GUIStyelSettings.applyNimbusSize(0);
+//						txtAreaMiniMap.setText(targetTemp.getText());
 					}
 				});
 			}
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				
-				// Refresh map content
-				String sel = txtAreaMiniMap.getSelectedText();
-				
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						if(sel ==  null || sel.equals("")) {
-							startTemp = txtAreaMiniMap.getCaretPosition();
-						}else {
-							startTemp = txtAreaMiniMap.getSelectionStart();
-							endTemp = txtAreaMiniMap.getSelectionEnd();
-						}
-
-						targetTemp = dialogManager.getTargetTextArea();
-						synchronized (targetTemp) {
-							txtAreaMiniMap.setText(targetTemp.getText());
-						}
-						
-						syncCaretPosition(startTemp, endTemp);
-					}
-				});
-
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
@@ -107,81 +85,86 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 	}
 	
 	public void sync() {
-		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
-		if (reference != null && txtAreaMiniMap != null) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					// Get diyamic reference from interface taken from main editor utils class
-					txtAreaMiniMap.setBackground(reference.getBackground());
-					RsyntaxUtils.setBackground(txtAreaMiniMap, reference.getBackground());
-					txtAreaMiniMap.setForeground(reference.getForeground());
-					RsyntaxUtils.setForeground(txtAreaMiniMap, reference.getCaretColor());
-					// sync Text and caret position
-					txtAreaMiniMap.setText(reference.getText());
-					txtAreaMiniMap.setCurrentLineHighlightColor(txtAreaMiniMap.getBackground().brighter());
-					txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
-					dialogManager.loadThemeIntoTarget(txtAreaMiniMap);
-					currentScrollPane.setBackground(Color.black);
+		targetTemp = dialogManager.getTargetTextArea();
+		synchronized(targetTemp) {
+			if (targetTemp != null && txtAreaMiniMap != null) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						// Get diyamic reference from interface taken from main editor utils class
+						txtAreaMiniMap.setBackground(targetTemp.getBackground());
+						RsyntaxUtils.setBackground(txtAreaMiniMap, targetTemp.getBackground());
+						txtAreaMiniMap.setForeground(targetTemp.getForeground());
+						RsyntaxUtils.setForeground(txtAreaMiniMap, targetTemp.getCaretColor());
+						// sync Text and caret position
+						txtAreaMiniMap.setText(targetTemp.getText());
+						txtAreaMiniMap.setCurrentLineHighlightColor(txtAreaMiniMap.getBackground().brighter());
+						txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
+						dialogManager.loadThemeIntoTarget(txtAreaMiniMap);
+						currentScrollPane.setBackground(Color.black);
 
-					safeSyncCaretFromTxtReference(reference);
-				}
-			});
+						safeSyncCaretFromTxtReference();
+					}
+				});
+			}
 		}
 		
 	}
 	
+	/**
+	 * Synchronize target text area reference
+	 */
 	public void safeSyncCaretToTxtReference() {
-		String sel = txtAreaMiniMap.getSelectedText();
-		if(sel ==  null || sel.equals("")) {
-			syncReferenceCaretPosition(txtAreaMiniMap.getCaretPosition(), null);
-		}else {
-			syncReferenceCaretPosition(txtAreaMiniMap.getSelectionStart(), txtAreaMiniMap.getSelectionEnd());
-		}
+		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
+		startTemp = txtAreaMiniMap.getSelectionStart();
+		endTemp = txtAreaMiniMap.getSelectionEnd();
+		syncReferenceCaretPosition(reference,startTemp, endTemp);
 	}
 
-	public void safeSyncCaretFromTxtReference(JTextArea txtArea) {
-		String sel = txtArea.getSelectedText();
-		if(sel ==  null || sel.equals("")) {
-			syncCaretPosition(txtArea.getCaretPosition(), null);
-		}else {
-			syncCaretPosition(txtArea.getSelectionStart(), txtArea.getSelectionEnd());
-		}
+	/**
+	 * Synchronize mini-map
+	 */
+	public void safeSyncCaretFromTxtReference() {
+		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
+		startTemp = reference.getSelectionStart();
+		endTemp = reference.getSelectionEnd();
+		syncCaretPosition( startTemp, endTemp);
 	}
 	
 	/**
-	 * Refresh caret position in minimap textArea (if end is null then it will be setted as caret position)
+	 * Refresh caret selection in minimap textArea 
 	 */
 	public void syncCaretPosition(int start, Integer end) {
 		try {
 			
-			if (end == null) {
-				txtAreaMiniMap.setCaretPosition(0);
-				txtAreaMiniMap.setCaretPosition(start);
-			}else {
+			if (end != start) {
 				txtAreaMiniMap.setSelectionStart(start);
 				txtAreaMiniMap.setSelectionEnd(end);
+			}else {
+				txtAreaMiniMap.setCaretPosition(0);
+				txtAreaMiniMap.setCaretPosition(end);
 			}
+			
 		} catch (Exception e) {
 			logger.warn("ERROR setting caret position into textArea miniMap");
 		}
 	}
 	
 	/**
-	 * Refresh caret position in target main Text Area
+	 * Refresh caret selection in target main Text Area
 	 */
-	public void syncReferenceCaretPosition(int start, Integer end) {
-		JTextArea reference = dialogManager.getTargetTextArea();
+	public void syncReferenceCaretPosition(RSyntaxTextArea reference, int start, Integer end) {
 		try {
 			
-			if (end == null) {
-				reference.setCaretPosition(0);
-				reference.setCaretPosition(start);
-			}else {
+			if (end != start) {
 				reference.setSelectionStart(start);
 				reference.setSelectionEnd(end);
+			}else{
+				reference.setCaretPosition(0);
+				reference.setCaretPosition(end);
 			}
+			
 		} catch (Exception e) {
-			logger.warn("ERROR setting caret position into textArea miniMap");
+			logger.warn("ERROR setting caret position into textArea reference map");
 		}
 	}
 	

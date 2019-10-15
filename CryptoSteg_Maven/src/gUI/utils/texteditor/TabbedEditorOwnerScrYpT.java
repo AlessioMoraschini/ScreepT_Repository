@@ -110,7 +110,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 	@Override
 	public void doAdditionalStuffOnDocMouseClick(JTextArea target) {
 		if(txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
-			((MapTextAreaPanel)textEditor.rightSplitContainer).safeSyncCaretFromTxtReference(txtUtils.getDialogManager().getTargetTextArea());
+			((MapTextAreaPanel)textEditor.rightSplitContainer).safeSyncCaretFromTxtReference();
 		}
 	}
 

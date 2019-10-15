@@ -15,7 +15,7 @@ import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import textareautil.SelectionDto;
+import textareautil.SelectionDtoFull;
 import variousutils.EscapeType;
 import variousutils.HandleString;
 
@@ -264,7 +264,7 @@ public class EscapeReplacerFrame extends JFrame{
 	}
 	
 	private void replaceSpecWithEscapedTextSelected(EscapeType type) {
-		SelectionDto selectionTxtArea = new SelectionDto(outputTextArea);
+		SelectionDtoFull selectionTxtArea = new SelectionDtoFull(outputTextArea);
 		int selStart = selectionTxtArea.first;
 		String output = "";
 		String center = "";
@@ -292,7 +292,7 @@ public class EscapeReplacerFrame extends JFrame{
 	}
 	
 	private void replaceEscapedWithSpecTextSelected(EscapeType type) {
-		SelectionDto selectionTxtArea = new SelectionDto(outputTextArea);
+		SelectionDtoFull selectionTxtArea = new SelectionDtoFull(outputTextArea);
 		int selStart = selectionTxtArea.first;
 		String output = "";
 		String center = "";

@@ -33,8 +33,10 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					// FILE MONITOR CHECK IF ENABLED IN CONFIG
-					checkAndAdviceIfCurrentChanged(false, true);
+					if (!isAlreadyChecking.get()) {
+						// FILE MONITOR CHECK IF ENABLED IN CONFIG
+						checkAndAdviceIfCurrentChanged(false, true);
+					}
 				} catch (Exception e1) {
 					logger.error("An error occurred when trying to check current file for changes: ", e1);
 				}
@@ -60,6 +62,23 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		};
 	}
 	
+	
+	/** useful when user watns to reset monitor just after he has made a change to a file
+	 */
+	public void removePendingFiredChanges(File target) {
+		ChangeDTO changes;
+		try {
+			changes = mainEditorRef.loadedTabObj.fileMonitorManager.checkForFile(mainEditorRef.loadedTabObj.loadedFile);
+			changes = cleanDtoFromFile(changes, mainEditorRef.loadedTabObj.loadedFile);
+			mainEditorRef.changesHistory.update(changes);
+
+		} catch (Exception e) {
+			logger.warn("There were some problems when trying to remove pending fired changes from file change monitor");
+		}
+		
+
+	}
+	
 	/**
 	 * checks if current file is changed, in case of force check or autoMonitorCheck enabled (from configuration).
 	 * Then, if ask-option is enabled it asks user what to do. (in case of removal it will be asked every time) 
@@ -70,7 +89,7 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		
 		
 		// only if forced check or if auto check is enabled
-		if(!isAlreadyChecking.get() && (forceCheck || mainEditorRef.tabEditorManager.isEnabledAutoFileMonitor())) {
+		if((forceCheck || mainEditorRef.tabEditorManager.isEnabledAutoFileMonitor())) {
 			
 			isAlreadyChecking.set(true);
 			
@@ -161,6 +180,17 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		mainEditorRef.changesHistory.removedFiles.removeAll(Collections.singletonList(target));
 		mainEditorRef.changesHistory.changedFiles.removeAll(Collections.singletonList(target));
 		mainEditorRef.changesHistory.addedFiles.removeAll(Collections.singletonList(target));
+	}
+	
+	/**
+	 * CLEAN ChangeDTO parameter from given file occurrences
+	 */
+	public ChangeDTO cleanDtoFromFile(ChangeDTO changes, File target) {
+		changes.removedFiles.removeAll(Collections.singletonList(target));
+		changes.changedFiles.removeAll(Collections.singletonList(target));
+		changes.addedFiles.removeAll(Collections.singletonList(target));
+		
+		return changes;
 	}
 	
 	/**

@@ -13,6 +13,7 @@ import org.hyperic.sigar.SigarException;
 
 import amfileutils.FileStuff;
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import generic.LimitedConcurrentList;
 import local.om.HDinfo;
 import net.miginfocom.swing.MigLayout;
@@ -46,7 +47,7 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 
-public class HwInfoFrame extends JFrame{
+public class HwInfoFrame extends ParentFrame{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(HwInfoFrame.class); 
@@ -58,9 +59,6 @@ public class HwInfoFrame extends JFrame{
 	private static final int CPU_REFRESH_RATE = 2000;
 	private static final int HD_REFRESH_RATE = 1500;
 	private static final int SCRYPT_REFRESH_RATE = 1500;
-
-	// flag to signal active
-	public static boolean active=false;
 
 	// GUI elements
 	private JScrollPane scrollPane;
@@ -168,12 +166,12 @@ public class HwInfoFrame extends JFrame{
 	
 	public HwInfoFrame() {
 		
+		isActive.set(true);
+
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		setMaximumSize(new Dimension(800, 450));
 		setMinimumSize(new Dimension(750, 400));
-		
-		active = true;
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_HW_INFO, this);
@@ -631,7 +629,7 @@ public class HwInfoFrame extends JFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
 	        	logger.debug("Closing Frame: "+HwInfoFrame.class.getName());	        	
-				active = false;
+	        	isActive.set(false);
 	        	dispose();
 		    }
 		});
@@ -672,7 +670,7 @@ public class HwInfoFrame extends JFrame{
 				updateCpuInfo();
 				updateDisplayInfo();
 				
-				while(thisPanel.active) {
+				while(thisPanel.isActive.get()) {
 					updateRamInfo();
 					try {
 						Thread.sleep(RAM_REFRESH_RATE);
@@ -688,7 +686,7 @@ public class HwInfoFrame extends JFrame{
 			@Override
 			public void run() {
 				
-				while(thisPanel.active) {
+				while(thisPanel.isActive.get()) {
 					updateCpuUsageInfo();
 					try {
 						Thread.sleep(CPU_REFRESH_RATE);
@@ -704,7 +702,7 @@ public class HwInfoFrame extends JFrame{
 			@Override
 			public void run() {
 				
-				while(thisPanel.active) {
+				while(thisPanel.isActive.get()) {
 					updateHdInfo();
 					try {
 						Thread.sleep(HD_REFRESH_RATE);
@@ -719,7 +717,7 @@ public class HwInfoFrame extends JFrame{
 			
 			@Override
 			public void run() {
-				while(thisPanel.active) {
+				while(thisPanel.isActive.get()) {
 					updateScryptResourcesUsage();
 					try {
 						Thread.sleep(SCRYPT_REFRESH_RATE);

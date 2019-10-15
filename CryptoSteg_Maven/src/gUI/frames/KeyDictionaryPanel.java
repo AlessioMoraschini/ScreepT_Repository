@@ -10,6 +10,7 @@ import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
 import enums.BufferedImageType;
 import frameutils.utils.GuiUtils;
+import gUI.frames.arch.ParentFrame;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
 import maingUI.MainGUI;
@@ -34,7 +35,6 @@ import javax.swing.tree.TreePath;
 import java.awt.Color;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -50,7 +50,7 @@ import javax.swing.JCheckBox;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Cursor;
 
-public class KeyDictionaryPanel extends JFrame{
+public class KeyDictionaryPanel extends ParentFrame{
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(KeyDictionaryPanel.class); 
@@ -73,8 +73,6 @@ public class KeyDictionaryPanel extends JFrame{
 	public JScrollPane scrollPane;
 	
 	JFrame thisPanel;
-	// flag to signal active
-	public static boolean active = false;
 	
 	private JOptionHelper dialogHelper;
 	
@@ -84,7 +82,7 @@ public class KeyDictionaryPanel extends JFrame{
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
-		active = true;
+		isActive.set(true);
 		
 		dialogHelper = new JOptionHelper(this);
 		
@@ -323,7 +321,7 @@ public class KeyDictionaryPanel extends JFrame{
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            active = false;
+		    		isActive.set(false);
 		        	logger.debug("Closing "+getClass().getName());
 		        	dispose();
 		    }

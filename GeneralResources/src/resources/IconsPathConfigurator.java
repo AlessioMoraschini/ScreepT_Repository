@@ -1,6 +1,8 @@
 package resources;
 
+import java.io.File;
 import java.util.Hashtable;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 
@@ -166,6 +168,26 @@ public class IconsPathConfigurator {
 	 * Same as defaultFileIcons(), but this one is already lazy initialized
 	 */
 	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
+	public static final Set<String> FILE_TYPE_ICONS_KEYS = FILE_TYPE_ICONS_MAP.keySet();
+	
+	public static ImageIcon getIconByFile(File file) {
+		
+		String ext = ".txt";
+		
+		if(file == null) {
+			return new ImageIcon(ICON_DOC_SAVED);
+		}
+		
+		for(String k : FILE_TYPE_ICONS_KEYS) {
+			if(file.getName().toLowerCase().endsWith(k)) {
+				ext = k;
+				break;
+			}
+		}
+		
+		ImageIcon result = (FILE_TYPE_ICONS_MAP.containsKey(ext))? FILE_TYPE_ICONS_MAP.get(ext) : new ImageIcon(ICON_DOC_SAVED);
+		return result != null ? result : new ImageIcon();
+	}
 	
 	/** Icons <-> File Image Mappings - (Used in Text Editor tabs)
 	 * 
