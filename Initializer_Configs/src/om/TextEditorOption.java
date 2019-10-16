@@ -28,7 +28,7 @@ public class TextEditorOption {
 	public static final int DEFAULT_DIVIDER_POS_X = 230;
 	public static final int DEF_dividerRightPanePosX = 60;
 	public static final int DEF_dividerRightPanePosXClipboard = 150;
-	public static final String DEF_lastFileOpenedClipboard = GeneralConfig.CLIPBOARD_PANEL_PREFIX+"0";
+	public static final String DEF_lastFileOpenedClipboard = GeneralConfig.CLIPBOARD_PANEL_DEFAULT;
 	public static final int DEFAULT_TAB_SIZE = 2;
 	public static final boolean DEFAULT_TAB_LINE_VISIBLE = false;
 	public static final boolean DEFAULT_BREAK_LINE = false;

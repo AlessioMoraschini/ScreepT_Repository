@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import amfileutils.FileStuff;
+import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import guistyle.GUIStyelSettings;
@@ -41,7 +42,8 @@ import javax.swing.border.LineBorder;
 import java.awt.Font;
 
 public class ClipboardPanel  extends ParentPanel implements IParentPanel{
-
+	private static final long serialVersionUID = 4527321717233899589L;
+	
 	// ClipboardPanel logger creation
 	static Logger logger = Logger.getLogger(ClipboardPanel.class);
 	JOptionHelper dialogHelper;
@@ -49,7 +51,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	public static ClipboardPanel singletonInstance;
 
 	// FIRST is main clipboard
-	public String KEY_clipBoardMain = GeneralConfig.CLIPBOARD_PANEL_PREFIX+0;
+	public String KEY_clipBoardMain = GeneralConfig.CLIPBOARD_PANEL_DEFAULT;
 	public String currentClipboard = KEY_clipBoardMain;
 	
 	public RSyntaxTextArea txtAreaClipboard;
@@ -60,7 +62,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	JButton btnReload;
 	JButton btnReloadClipboards;
 	JButton btnOpenInFilesystem;
-	JComboBox<String> comboClipboards;
+	public JComboBox<String> comboClipboards;
 	private JLabel lblClipboardPanel;
 	private JSeparator separator;
 	private JSeparator separator_1;
@@ -78,12 +80,15 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	 * @param dialogManager
 	 * @param clipboardPers
 	 */
-	public ClipboardPanel(ITextAreaDialogs dialogManager, INItializer options) {
+	public ClipboardPanel(ITextAreaDialogs dialogManager, INItializer configuration) {
 		
+		
+		this.config = (configuration != null)? configuration : new INItializer();
 		this.options = (config != null)? config.getTextEditorOpt() : new TextEditorOption();
-		this.config = (config != null)? config : new INItializer();
 		
+		// Disable advices until instantiation is ended
 		this.dialogHelper = new JOptionHelper(this);
+		dialogHelper.enabledAdvices = false;
 		
 		this.dataMap = GeneralConfig.CLIPBOARD_PANEL_MAP;
 		this.txtAreaClipboard = new RSyntaxTextArea();
@@ -106,7 +111,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		this.dialogManager = dialogManager;
 		
 		// main panel layout
-		MigLayout panelLayout = new MigLayout("insets 8, hidemode 2", "[::20px,grow][::20px,grow][5px,grow][90px][5px,grow][::20px,grow][]", "[:12px:15px][25px][5px][30px,grow][30px,grow][][]");
+		MigLayout panelLayout = new MigLayout("insets 8, hidemode 2", "[::20px,grow][::20px,grow][5px,grow][110px:110px][5px,grow][::20px,grow][]", "[:15px:20px][25px][5px][30px,grow][30px,grow][][]");
 
 		// main layout
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[50px,grow]", "[50px,grow]"));
@@ -125,11 +130,11 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		lblClipboardPanel = new JLabel("ClipBoard Panel");
 		lblClipboardPanel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblClipboardPanel.setForeground(Color.LIGHT_GRAY);
-		mainPane.add(lblClipboardPanel, "cell 3 0,alignx center");
+		mainPane.add(lblClipboardPanel, "cell 3 0,alignx center,aligny top");
 		
 		separator_1 = new JSeparator();
 		separator_1.setBackground(Color.GRAY);
-		mainPane.add(separator_1, "cell 4 0 2 1,growx");
+		mainPane.add(separator_1, "cell 4 0 3 1,growx");
 		
 		// Add subcomponents to main pane
 		btnSave = new JButton("");
@@ -156,8 +161,10 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		String[] clipBoards = dataMap.keySet().toArray(new String[2]);
 		comboClipboards = new JComboBox<>(clipBoards);
 		comboClipboards.setCursor(GuiUtils.CURSOR_HAND);
+		comboClipboards.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN));
 		comboClipboards.setToolTipText("Choose between loaded Clipboards");
 		comboClipboards.setForeground(Color.BLACK);
+		comboClipboards.setEditor( new TextPaneComboBoxEditor() );
 		mainPane.add(comboClipboards, "cell 2 1 3 1,growx");
 		
 		btnReloadClipboards = new JButton("");
@@ -184,7 +191,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		
 		separator_2 = new JSeparator();
 		separator_2.setBackground(Color.GRAY);
-		mainPane.add(separator_2, "cell 0 2 6 1,growx");
+		mainPane.add(separator_2, "cell 0 2 7 1,growx");
 		
 		mainPane.add(txtAreaContainer, "cell 0 3 7 4,grow");
 		txtAreaClipboard.setBorder(new LineBorder(new Color(0, 0, 0), 3));
@@ -199,7 +206,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		GUIStyelSettings.applyNimbusSize(0);
 		
 		File mainClip = dataMap.get(KEY_clipBoardMain);
-		if(!mainClip.exists()) {
+		if(mainClip != null && !mainClip.exists()) {
 			try {
 				mainClip.createNewFile();
 			} catch (IOException e) {
@@ -214,6 +221,8 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		}
 		
 		FileStuff.loadFileTxtArea(dataMap.get(KEY_clipBoardMain), txtAreaClipboard, null, null);
+		
+		dialogHelper.enabledAdvices = true;
 	}
 	
 	private void addHandlers() {
@@ -399,6 +408,9 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>( GeneralConfig.getRefreshedClipBoardsMap().keySet().toArray(new String[2]) );
 		comboClipboards.setModel( model );
 		comboClipboards.setSelectedItem(options.lastFileOpenedClipboard);
+		
+		((JLabel)comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+		
 		comboClipboards.revalidate();
 		comboClipboards.repaint();
 	}
@@ -409,7 +421,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			if(currentName.equals(fileName)) {
 				comboClipboards.setSelectedItem(key);
 			}
-			
+			((JLabel)comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 			comboClipboards.revalidate();
 			comboClipboards.repaint();
 		}
@@ -417,6 +429,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 
 	public void selectFromComboClipboards(String key) {
 		comboClipboards.setSelectedItem(key);
+		((JLabel)comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 		comboClipboards.revalidate();
 		comboClipboards.repaint();
 	}

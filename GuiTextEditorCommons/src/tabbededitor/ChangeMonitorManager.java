@@ -68,9 +68,15 @@ public class ChangeMonitorManager implements IChangeMonManager{
 	public void removePendingFiredChanges(File target) {
 		ChangeDTO changes;
 		try {
+			logger.debug("Cleaning changes from tabbedPane history");
 			changes = mainEditorRef.loadedTabObj.fileMonitorManager.checkForFile(mainEditorRef.loadedTabObj.loadedFile);
+			// removes references of current file from change history
 			changes = cleanDtoFromFile(changes, mainEditorRef.loadedTabObj.loadedFile);
+			// now add all except them with all eventuals other changes different from given file
+			logger.debug("Resetting changes from others files monitored (except cleaned)...");
 			mainEditorRef.changesHistory.update(changes);
+			
+			logger.debug("Cleaned changes from tabbedPane history");
 
 		} catch (Exception e) {
 			logger.warn("There were some problems when trying to remove pending fired changes from file change monitor");
@@ -200,9 +206,12 @@ public class ChangeMonitorManager implements IChangeMonManager{
 	 */
 	public void updateCurrMonitor(File file){
 		if (file != null) {
-			boolean mustUpdateRoot = mainEditorRef.loadedTabObj.fileMonitorManager == null || !FileStuff.isFileSonOfDir(file, mainEditorRef.loadedTabObj.fileMonitorManager.rootMonitorDir);
+			boolean nullManager = mainEditorRef.loadedTabObj.fileMonitorManager == null;
+			boolean differentRoot = !nullManager && !FileStuff.isFileSonOfDir(file, mainEditorRef.loadedTabObj.fileMonitorManager.rootMonitorDir);
+			boolean mustUpdateRoot = nullManager || differentRoot;
+			
 			if (mustUpdateRoot) {
-				logger.debug(file + " [CREATING MONITOR]: added to change monitor list.");
+				logger.debug(file + " [CREATING MONITOR]: added to change monitor list. [Reloading for different root: "+differentRoot+"]");
 				ArrayList<File> init = new ArrayList<File>();
 				init.add(file);
 				mainEditorRef.loadedTabObj.fileMonitorManager = new FileChangeMonitor(file.getParentFile(), init);

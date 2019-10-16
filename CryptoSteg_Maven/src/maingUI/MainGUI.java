@@ -66,11 +66,9 @@ import logger.LoggerUtils;
 import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import media.Sounds;
-import mouseutils.MovePanelMouseListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -126,7 +124,7 @@ public class MainGUI extends MainGuiParent{
 	// Filed for uppercaseFirstLetter "various' function"
 	private String last_dir_used; 
 	
-	private MovePanelMouseListener movePanelMouseListener;
+//	private MovePanelMouseListener movePanelMouseListener;
 	
 	// global values representing the screen size
 	public static int screenWidth;
@@ -549,7 +547,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		    public void actionPerformed(ActionEvent ae) {
 		    	if(dialogHelper.yesOrNo(msg1 + "all panels" + msg2, "Reset all panels?")) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		mainGuiUtils.resetPanel(null, mainAPP.frmScryptV);
+		    		mainGuiUtils.resetPanel(null, MainGUI.frmScryptV);
 		    	}
 			}
 	    });
@@ -559,7 +557,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					mainGuiUtils.resetPanel(TextEditor.class, mainAPP.frmScryptV);
+					mainGuiUtils.resetPanel(TextEditor.class, MainGUI.frmScryptV);
 		    	}
 			}
 		});
@@ -569,7 +567,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					mainGuiUtils.resetPanel(CrypterPanel.class, mainAPP.frmScryptV);
+					mainGuiUtils.resetPanel(CrypterPanel.class, MainGUI.frmScryptV);
 		    	}
 			}
 		});
@@ -579,7 +577,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					mainGuiUtils.resetPanel(ChargeIniLog.class, mainAPP.frmScryptV);
+					mainGuiUtils.resetPanel(ChargeIniLog.class, MainGUI.frmScryptV);
 		    	}
 			}
 		});
@@ -1237,41 +1235,6 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 				if (initTxtWriter != null && initTxtWriter.getCurrentTabEditor().mainTabList != null) {
 					initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
 				}
-			}
-		});
-	}
-	
-	private static void initGUI() {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				// initialize style
-				preferredStyle = currentConfiguration.getGuiOpt().getPreferredStyle();
-				GUIStyelSettings.setFocusDefaultBtn();
-				// initialize GUI default Style from ini
-				for (Window window : Window.getWindows()) {
-					try {
-						UIManager.setLookAndFeel(preferredStyle);
-						SwingUtilities.updateComponentTreeUI(window);
-						logger.info(preferredStyle + " initialized correctly.");
-					} catch (Exception e3) {
-						logger.error("Exception happened!", e3);
-					}
-				}
-				// try to set preferred charset
-				try {
-					System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
-					logger.info("Charset setted: " + System.getProperty("file.encoding"));
-				} catch (Exception e) {
-					logger.error("Exception happened: Erroring setting charset :(", e);
-				}
-				DARK_THEME = currentConfiguration.getGuiOpt().isDarkGuiNimbus();
-				// adjust general look and feel opt
-				if (DARK_THEME) {
-					DARK_THEME = GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
-				} else {
-					DARK_THEME = !GUIStyelSettings.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
-				}
-				
 			}
 		});
 	}

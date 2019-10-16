@@ -477,29 +477,42 @@ public class GuiUtils {
 	 */
 	public static boolean duplicateTextAreaCurrentLine(JTextArea textArea, boolean upDirection) throws BadLocationException {
 		
-		int offsetFromStart = textArea.getSelectionStart();
-		int selectionEnd = textArea.getSelectionEnd();
+		int offsetFromStart = (textArea.getSelectionStart() <= textArea.getSelectionEnd())? textArea.getSelectionStart() : textArea.getSelectionEnd();
+		int selectionEnd = (textArea.getSelectionStart() <= textArea.getSelectionEnd())? textArea.getSelectionEnd() : textArea.getSelectionStart();
+		
 		int currLine = textArea.getLineOfOffset(offsetFromStart);
 		int startOffset = textArea.getLineStartOffset(currLine);
 		int endOffset = textArea.getLineEndOffset(currLine);
+
+		int selectionEndLine = textArea.getLineOfOffset(selectionEnd);
+		int selectionEndLStartOffs = textArea.getLineStartOffset(selectionEndLine);
+		int selectionEndLEndOffs = textArea.getLineEndOffset(selectionEndLine);
 		
 		int lineLength = endOffset - startOffset;
-		String insertText = textArea.getText(startOffset, lineLength);
 		
+		// IF MORE LINES SELECTED COPY ALL SELECTED TEXT
 		if((selectionEnd - offsetFromStart) > lineLength) {
-			// TODO non corretto al 100% in caso di testo selezionato -> memorizza anche la linea della fine selezione
-			// IF MORE LINES SELECTED COPY ALL SELECTED TEXT
-			insertText = textArea.getSelectedText();
-		}
-		
-		if(!upDirection) {
-			// in this case insert at the end
-			return insertLineIntoTextArea(endOffset, insertText, textArea);
+			String insertText = textArea.getSelectedText();
+			
+			if(!upDirection) {
+				// in this case insert at the end
+				return insertLineIntoTextArea(selectionEndLEndOffs, insertText, textArea);
+			}else {
+				// in this case insert at start
+				return insertLineIntoTextArea(selectionEndLStartOffs, insertText, textArea);
+			}
+			
 		}else {
-			// in this case insert at start
-			return insertLineIntoTextArea(startOffset, insertText, textArea);
+			// ELSE
+			String insertText = textArea.getText(startOffset, lineLength);
+			if(!upDirection) {
+				// in this case insert at the end
+				return insertLineIntoTextArea(endOffset, insertText, textArea);
+			}else {
+				// in this case insert at start
+				return insertLineIntoTextArea(startOffset, insertText, textArea);
+			}
 		}
-
 	}
 	
 	/**

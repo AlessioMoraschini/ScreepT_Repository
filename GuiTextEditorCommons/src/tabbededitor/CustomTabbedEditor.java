@@ -37,7 +37,6 @@ import frameutils.utils.GuiUtils;
 import general.MyFileView;
 import generic.LimitedConcurrentList;
 import mainobj.INItializer;
-import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -146,24 +145,27 @@ public class CustomTabbedEditor {
 				}
 			}
 		});
-		
 	}
 	
 	// TABBED PAIN - RELATED FUNCTIONS
 	
 	public boolean setIconToTab(String iconPath, int index) {
 		try {
-			SupportedFileTextEditor fileType = tabEditorManager.getCurrentSelectedFileType();
 			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
-			if (loadedTabObj.loadedFile == null || loadedTabObj.unsaved) {
+			
+			if (loadedTabObj.loadedFile == null 
+					|| loadedTabObj.unsaved 
+					|| iconPath.equals(IconsPathConfigurator.ICON_DOC_UNSAVED)) {
+				
 				tabHeadIcon.setIcon(new ImageIcon(iconPath));
-			} else if (fileType.equals(SupportedFileTextEditor.TXT)) {
-				tabHeadIcon.setIcon(new ImageIcon(iconPath));
+			
 			} else {
 				MyFileView fileView = new MyFileView();
 				tabHeadIcon.setIcon(fileView.getIcon(loadedTabObj.loadedFile));
 			}
+			
 			return true;
+			
 		} catch (Exception e) {
 			return false;
 		}
@@ -453,7 +455,6 @@ public class CustomTabbedEditor {
 
 	public void closeCurrentTab() {
 		int index = mainTabList.getSelectedIndex();
-		final JScrollPane i_component = loadedList.getList().get(lastIndexTabbedPane).currentScrollPane;
 		
 		try {
 			logger.debug("closeCurrentTab() - closing tab: "+mainTabList.getTitleAt(index));
@@ -461,13 +462,15 @@ public class CustomTabbedEditor {
 					.getComponent(TabUtils.TAB_BUTTON_CLOSE_ORDER);
 			closeTabButton.doClick();
 			
-			if (i_component != null) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						mainTabList.setSelectedComponent(i_component);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					if (navigationHistory.getLast() != null) {
+						mainTabList.setSelectedComponent(navigationHistory.getLast());
+					}else {
+						mainTabList.setSelectedComponent(loadedTabObj.currentScrollPane);
 					}
-				});
-			}
+				}
+			});
 
 		} catch (Exception e) {
 			logger.error("Error closing current tab: " + index, e);

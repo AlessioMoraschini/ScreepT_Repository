@@ -10,12 +10,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
 
 import general.MyFileView;
+import resources.GeneralConfig;
 import variousutils.HandleString;
 
 public class GenericFileChooser {
@@ -34,6 +34,7 @@ public class GenericFileChooser {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
 		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;		
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -75,7 +76,8 @@ public class GenericFileChooser {
 				}else return false;
 			}
 		});
-		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));		
+		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;		
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -104,6 +106,7 @@ public class GenericFileChooser {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
 		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -132,6 +135,7 @@ public class GenericFileChooser {
 		fileChooser.setDialogTitle("Select input File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -160,6 +164,7 @@ public class GenericFileChooser {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));		
 		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		
 		File correctFile = null;
 		
@@ -189,6 +194,8 @@ public class GenericFileChooser {
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));	
 		fileChooser.setSelectedFile(new File(defaultName));
 		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showSaveDialog(parent);
@@ -219,6 +226,8 @@ public class GenericFileChooser {
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
 		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -245,6 +254,8 @@ public class GenericFileChooser {
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
 		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -273,6 +284,8 @@ public class GenericFileChooser {
 		fileChooser.setDialogTitle("Choose output Directory");
 		fileChooser.setCurrentDirectory(new File(DEFAULT_HOME_PATH));
 		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		
 		File correctFile = null;
 		//JOptionPane optPane = new JOptionPane();
 		

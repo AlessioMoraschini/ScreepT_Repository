@@ -25,7 +25,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.text.BadLocationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -729,7 +728,6 @@ public class FileStuff {
 	public static boolean loadFileTxtArea(File txtFile, JTextArea textArea_1, JLabel lblCurrentFile, String extensionFilter) {
 		
 		if(txtFile == null) {
-			JOptionPane.showMessageDialog(null, "NULL: Please select a valid file!");
 			return false;
 		}
 		

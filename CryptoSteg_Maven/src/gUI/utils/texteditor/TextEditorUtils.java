@@ -112,12 +112,12 @@ public class TextEditorUtils {
 
 			@Override
 			public String getCurrentClipboard() {
-				return GeneralConfig.CLIPBOARD_PANEL_PREFIX+0;
+				return GeneralConfig.CLIPBOARD_PANEL_DEFAULT;
 			}
 		};
 	}
 	
-	public static void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
+	public void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
 		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByType(currentTextEditor, JButton.class);
 		for(JButton button : textEditorButtons) {
 			button.setCursor(GuiUtils.CURSOR_HAND);

@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+
+import resources.om.FilePojo;
 
 public class GeneralConfig {
 	
@@ -39,11 +42,7 @@ public class GeneralConfig {
 	public static final String THEMES_FOLDER_DEFAULT = linkedMappings.getProperty("THEMES_FOLDER_DEFAULT");
 	public static final String THEMES_FOLDER_CUSTOM = linkedMappings.getProperty("THEMES_FOLDER_CUSTOM");
 	public static final String PANEL_FILES_FOLDER = linkedMappings.getProperty("PANEL_TEMP_FOLDER");
-	
-	// DEBUG GUI FLAG
-	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
-	private static final boolean FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
-	public static String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
+	public static final String CLIBPOARDS_PANEL_SRC_FOLDER = linkedMappings.getProperty("CLIBPOARDS_PANEL_SRC_FOLDER");
 	
 	// Temp Folders and Files
 	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
@@ -79,10 +78,22 @@ public class GeneralConfig {
 	public static final int NETWORK_UTILS_TIMEOUT  = getIntVarFromProps("NETWORK_UTILS_TIMEOUT", 5000);
 	public static final String testAddress = linkedMappings.getProperty("testAddress");
 	
+	/**	GUI PROPERTIES **/
+	
+	// DEBUG GUI FLAG
+	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
+	private static final boolean FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
+	public static String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
+	
 	// Tooltips
 	public static int TOOLTIP_DELAY = getIntVarFromProps("TOOLTIP_DELAY", 400);
 	public static int TOOLTIP_TIMEOUT = getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
 	public static String TOOLTIP_FONT = linkedMappings.getProperty("TOOLTIP_FONT");
+	
+	// FILE CHOOSER DIALOG
+	private static final String FILE_CHOOSER_SIZE_STR = linkedMappings.getProperty("FILE_CHOOSER_SIZE_STR");
+	public static final Dimension DEFAULT_FILE_CHOOSER_SIZE = new Dimension(800, 600);
+	public static final Dimension FILE_CHOOSER_SIZE = getDimensionFromString("-", FILE_CHOOSER_SIZE_STR, DEFAULT_FILE_CHOOSER_SIZE);
 	
 	// TEXT EDITOR DEFAULTS
 	public static final boolean PRELOAD_TXT_EDITOR_FLAG = Boolean.valueOf(linkedMappings.getProperty("PRELOAD_TXT_EDITOR_FLAG"));
@@ -95,8 +106,10 @@ public class GeneralConfig {
 	public static Font TXT_EDITOR_CLIPBOARD_FONT =  getFontFromString(GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT_STR, TXT_EDITOR_CLIPBOARD_FONT_DEFAULT);
 	
 	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(linkedMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
+	@Deprecated
 	public static final String CLIPBOARD_PANEL_PREFIX = "Clipboard ";
-	public static final TreeMap<String, File> CLIPBOARD_PANEL_MAP = getMapFromCommaSeparated(linkedMappings.getProperty("CLIPBOARD_PANEL_FILE_NAME_LIST"));
+	public static final String CLIPBOARD_PANEL_DEFAULT = "Clipboard.txt";
+	public static final TreeMap<String, File> CLIPBOARD_PANEL_MAP = getRefreshedClipBoardsMap();
 	
 	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(18, 18);
 	public static final Font BUTTON_DEFAULT_FONT =  new Font("Segoe UI", Font.BOLD, 12);
@@ -138,6 +151,23 @@ public class GeneralConfig {
 		}
 	}
 	
+	/**
+	 * Parse dimension from string in the form of "int-int"
+	 */
+	private static Dimension getDimensionFromString(String separator, String source, Dimension defaultDim) {
+		int width;
+		int height;
+		try {
+			String[] splitted = source.split(separator);
+			width = Integer.parseInt(splitted[0]);
+			height = Integer.parseInt(splitted[1]);
+			return new Dimension(width, height);
+		} catch (Exception e) {
+			return defaultDim;
+		}
+		
+	}
+	
     /**
      * parse font from a representing string
      */
@@ -162,7 +192,8 @@ public class GeneralConfig {
     	return new Font(type, style, size);
     }
     
-    public static TreeMap<String, File>  getMapFromCommaSeparated(String src) {
+    @Deprecated
+    public static TreeMap<String, File>  getMapFromCommaSeparatedFiles(String src) {
     	TreeMap<String, File> map = new TreeMap<String, File>();
     	src = StringUtils.trimToEmpty(src);
     	String[] commaSep = src.split(",");
@@ -175,8 +206,27 @@ public class GeneralConfig {
     	return map;
     }
     
+    public static File[] getClipboardsFiles(){
+    	File[] clipboards = new File(CLIBPOARDS_PANEL_SRC_FOLDER).listFiles(new FilenameFilter() {
+			
+			@Override
+			public boolean accept(File dir, String name) {
+				
+				// Accept only files
+				if(dir.isDirectory()) {
+					return false;
+				}else {
+					return true;
+				}
+			}
+		});
+    	
+    	return clipboards;
+    }
+    
+    
     public static TreeMap<String, File> getRefreshedClipBoardsMap(){
-    	return getMapFromCommaSeparated(linkedMappings.getProperty("CLIPBOARD_PANEL_FILE_NAME_LIST"));
+    	return FilePojo.mapFilesFromDir(new File(CLIBPOARDS_PANEL_SRC_FOLDER));
     }
     
     public static boolean presentInClipboardMap(String key) {

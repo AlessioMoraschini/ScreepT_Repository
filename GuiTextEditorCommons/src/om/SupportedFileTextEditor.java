@@ -7,32 +7,33 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import resources.GeneralResourcesPaths;
 import resources.IconsPathConfigurator;
 
-public enum SupportedFileTextEditor {TXT(".txt","txt", SyntaxConstants.SYNTAX_STYLE_NONE, null, IconsPathConfigurator.F_ICON_TXT),
-									 XML(".xml","xml", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
-									 XSD(".xsd","xsd", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
-									 WSDL(".wsdl","wsdl", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
-									 YAML(".yml","yml", SyntaxConstants.SYNTAX_STYLE_YAML, null, null),
+public enum SupportedFileTextEditor {
+									 ASSEMBLY(".asm","asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86, null, IconsPathConfigurator.ICON_CONSOLE),
+									 BATCH(".bat","bat", SyntaxConstants.SYNTAX_STYLE_WINDOWS_BATCH, GeneralResourcesPaths.WORDLIST_BASH, IconsPathConfigurator.ICON_CONSOLE),
+									 BASH(".sh","sh", SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL, GeneralResourcesPaths.WORDLIST_BASH, IconsPathConfigurator.ICON_CONSOLE),
+									 C(".c","c", SyntaxConstants.SYNTAX_STYLE_C, GeneralResourcesPaths.WORDLIST_C, null),
+									 CPLUSPLUS(".cpp","cpp", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS, GeneralResourcesPaths.WORDLIST_Cpp, null),
+									 CSHARP(".cs","cs", SyntaxConstants.SYNTAX_STYLE_CSHARP, GeneralResourcesPaths.WORDLIST_Csharp, null),
+									 CSS(".css","css", SyntaxConstants.SYNTAX_STYLE_CSS, GeneralResourcesPaths.WORDLIST_CSS, IconsPathConfigurator.F_ICON_CSS),
+									 GROOVY(".groovy","groovy", SyntaxConstants.SYNTAX_STYLE_GROOVY, null, null),
+									 HOSTS(".hosts", "hosts", SyntaxConstants.SYNTAX_STYLE_HOSTS, null, null),
+									 HTACCESS(".htaccess", "htaccess", SyntaxConstants.SYNTAX_STYLE_HTACCESS, null, null),
 									 HTML(".html","html", SyntaxConstants.SYNTAX_STYLE_HTML, GeneralResourcesPaths.WORDLIST_HTML, IconsPathConfigurator.F_ICON_HTML),
-									 TYPESCRIPT(".ts","ts", SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT, GeneralResourcesPaths.WORDLIST_JS, IconsPathConfigurator.F_ICON_HTML),
+									 INI(".ini", "ini", SyntaxConstants.SYNTAX_STYLE_INI, null, null),
+									 JAVA(".java","java", SyntaxConstants.SYNTAX_STYLE_JAVA, GeneralResourcesPaths.WORDLIST_JAVA, null),
 									 JS(".js","js", SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT, GeneralResourcesPaths.WORDLIST_JS, IconsPathConfigurator.F_ICON_JS),
 									 JSON(".json","json", SyntaxConstants.SYNTAX_STYLE_JSON_WITH_COMMENTS, GeneralResourcesPaths.WORDLIST_JS,IconsPathConfigurator.F_ICON_JSON),
-									 CSS(".css","css", SyntaxConstants.SYNTAX_STYLE_CSS, GeneralResourcesPaths.WORDLIST_CSS, IconsPathConfigurator.F_ICON_CSS),
-									 JAVA(".java","java", SyntaxConstants.SYNTAX_STYLE_JAVA, GeneralResourcesPaths.WORDLIST_JAVA, null),
-									 GROOVY(".groovy","groovy", SyntaxConstants.SYNTAX_STYLE_GROOVY, null, null),
-									 SCALA(".scala","scala", SyntaxConstants.SYNTAX_STYLE_SCALA, null, null),
 									 JSP(".jsp","jsp", SyntaxConstants.SYNTAX_STYLE_JSP, GeneralResourcesPaths.WORDLIST_JAVA, null),
 									 PHP(".php", "php", SyntaxConstants.SYNTAX_STYLE_PHP, GeneralResourcesPaths.WORDLIST_PHP, IconsPathConfigurator.F_ICON_PHP),
 									 PYTHON(".py", "py", SyntaxConstants.SYNTAX_STYLE_PYTHON, GeneralResourcesPaths.WORDLIST_PYTHON, null),
-									 C(".c","c", SyntaxConstants.SYNTAX_STYLE_C, GeneralResourcesPaths.WORDLIST_C, null),
-									 CSHARP(".cs","cs", SyntaxConstants.SYNTAX_STYLE_CSHARP, GeneralResourcesPaths.WORDLIST_Csharp, null),
-									 CPLUSPLUS(".cpp","cpp", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS, GeneralResourcesPaths.WORDLIST_Cpp, null),
-									 ASSEMBLY(".asm","asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86, null, IconsPathConfigurator.ICON_CONSOLE),
+									 SCALA(".scala","scala", SyntaxConstants.SYNTAX_STYLE_SCALA, null, null),
 									 SQL(".sql", "sql", SyntaxConstants.SYNTAX_STYLE_SQL, GeneralResourcesPaths.WORDLIST_SQL, IconsPathConfigurator.F_ICON_DATABASE),
-									 BATCH(".bat","bat", SyntaxConstants.SYNTAX_STYLE_WINDOWS_BATCH, GeneralResourcesPaths.WORDLIST_BASH, IconsPathConfigurator.ICON_CONSOLE),
-									 BASH(".sh","sh", SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL, GeneralResourcesPaths.WORDLIST_BASH, IconsPathConfigurator.ICON_CONSOLE),
-									 INI(".ini", "ini", SyntaxConstants.SYNTAX_STYLE_INI, null, null),
-									 HOSTS(".hosts", "hosts", SyntaxConstants.SYNTAX_STYLE_HOSTS, null, null),
-									 HTACCESS(".htaccess", "htaccess", SyntaxConstants.SYNTAX_STYLE_HTACCESS, null, null);
+									 TYPESCRIPT(".ts","ts", SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT, GeneralResourcesPaths.WORDLIST_JS, IconsPathConfigurator.F_ICON_HTML),
+									 TXT(".txt","txt", SyntaxConstants.SYNTAX_STYLE_NONE, null, IconsPathConfigurator.F_ICON_TXT),
+									 XML(".xml","xml", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
+									 XSD(".xsd","xsd", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
+									 WSDL(".wsdl","wsdl", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
+									 YAML(".yml","yml", SyntaxConstants.SYNTAX_STYLE_YAML, null, null);
 					
 	public final String DEFAULT_ICON = IconsPathConfigurator.F_ICON_TXT;
 	public String nomeStringa;

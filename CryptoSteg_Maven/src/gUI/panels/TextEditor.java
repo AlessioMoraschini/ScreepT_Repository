@@ -42,16 +42,15 @@ import org.drjekyll.fontchooser.FontDialog;
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RUndoManager;
 
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
 import amfileutils.FileStuff;
-import amfileutils.filechangewatcher.ChangeDTO;
 import conversion.Text2Speech;
 import crypt.aes.AesCipher;
 import dialogutils.GenericFileChooser;
+import dialogutils.JOptionHelper;
 import enums.Themes;
 import enums.ThemesWrapper;
 import frameutils.frame.ColorPickerFrame;
@@ -120,7 +119,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
 public class TextEditor extends JPanel {
-	
+	private static final long serialVersionUID = 4754281928324097410L;
+
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditor.class);
 	
@@ -275,12 +275,15 @@ public class TextEditor extends JPanel {
 	
 	public boolean isPreloading = false;
 	
+	JOptionHelper dialogHelper;
+	
 	//////////////// CONSTRUCTOR /////////////////////
 
 	public TextEditor(MainGUI mainGui, INItializer currentConf) {
 		
 		// skip refresh during preload in case of settings to false
 		isPreloading = !GeneralConfig.PRELOAD_TXT_EDITOR_FLAG;
+		dialogHelper = new JOptionHelper(this);
 		
 		// Initialize text editor Utils reference
 		textEditorUtils = new TextEditorUtils(this);
@@ -850,8 +853,6 @@ public class TextEditor extends JPanel {
 	 */
 	private void addHandlers() {
 		
-		CustomTabbedEditor currentTabEditor = getCurrentTabEditor();
-
 		// COLORS DEFAULT DEFINITIONS
 		final Font DEFAULT = GeneralConfig.DEFAULT_FONT;
 		final Color DEFAULT_BCKG_COL = currentConfiguration.getTextEditorOpt().backCol;
@@ -1150,8 +1151,7 @@ public class TextEditor extends JPanel {
 				if (loadedTabObj.unsaved) {
 					String currFileName = (loadedTabObj.loadedFile != null) ? loadedTabObj.loadedFile.getName()
 							: footerPanel.lblCurrentFile.getText();
-					int choice = JOptionPane.showConfirmDialog(currentTextEditor,
-							currFileName + " is not saved, do you want to save it before to crypt?");
+					int choice = dialogHelper.yesNoOrCanc( currFileName + " is not saved, do you want to save it before to crypt?", null);
 					if (choice == JOptionPane.OK_OPTION) {
 						btnSaveTextFile.doClick();
 					} else if (choice == JOptionPane.CANCEL_OPTION) {
@@ -1983,13 +1983,10 @@ public class TextEditor extends JPanel {
 						textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
 						
 						// Clean memorized changes triggered by save
-						SwingUtilities.invokeLater(new Runnable() {
-							public void run() {
-								logger.debug("Cleaning changes from tabbedPane history");
-								getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
-								logger.debug("Cleaned changes from tabbedPane history");
-							}
-						});
+						logger.debug("Cleaning changes from tabbedPane history");
+						getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
+						logger.debug("Cleaned changes from tabbedPane history");
+						
 					} else {
 						textEditorUtils.errorAdvice("[Error - not saved]");
 						footerPanel.lblCurrentFile.setText("(*)" + loadedTabObj.loadedFile.getName());
@@ -2040,10 +2037,15 @@ public class TextEditor extends JPanel {
 							if (done) {
 								JOptionPane.showMessageDialog(parentFrame,
 										"File " + selectedFile.getName() + " succesfully saved!");
-								
-								getCurrentTabEditor().loadedTabObj.fileMonitorManager.removeFromListener(loadedTabObj.loadedFile);
+
+								// Add as current file
 								loadedTabObj.loadedFile = selectedFile;
-								getCurrentTabEditor().loadedTabObj.fileMonitorManager.addFileToMonitorList(loadedTabObj.loadedFile);
+								
+								if (getCurrentTabEditor().loadedTabObj.fileMonitorManager == null) {
+									getCurrentTabEditor().changeMonManager.updateCurrMonitor(loadedTabObj.loadedFile);
+								}else {
+									getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
+								}
 								
 								loadedTabObj.unsaved = false;
 								getCurrentTabEditor().updateSavedLabelNTab(null);
@@ -2066,9 +2068,9 @@ public class TextEditor extends JPanel {
 						JOptionPane.showMessageDialog(currentTextEditor, "error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
 					}
+					// update signal value
+					getCurrentTabEditor().alreadySaving = false;
 				}
-				// update signal value
-				getCurrentTabEditor().alreadySaving = false;
 				if (!skipRefresh) {
 					textEditorUtils.refreshTree(loadedTabObj.loadedFile, true);
 				}
@@ -2127,12 +2129,16 @@ public class TextEditor extends JPanel {
 		return wrappers;
 	}
 
+	/**
+	 * If no or OK continue, if cancel turn back
+	 * @param index
+	 * @return
+	 */
 	public boolean askSave(int index) {
 		int askSave = JOptionPane.CANCEL_OPTION;
 		TabTextEditorObj selected = getCurrentTabEditor().loadedList.getList().get(index);
 		if (selected.unsaved) {
-			askSave = JOptionPane.showConfirmDialog(currentTextEditor, "Do you want to save current file?",
-					"Save current file?", JOptionPane.YES_NO_CANCEL_OPTION);
+			askSave = dialogHelper.yesNoOrCanc("Do you want to save current file?",	"Save current file?");
 		} else {
 			return true;
 		}

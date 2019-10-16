@@ -9,7 +9,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
-import org.fife.ui.rtextarea.RTextScrollPane;
 
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
@@ -428,7 +427,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 						public void run() {
 							try {
 								boolean result = GuiUtils.duplicateTextAreaCurrentLine(
-										currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, true);
+									currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, true);
 								if(!result) {
 									logger.warn("Error duplicating current text Line !");
 								}
@@ -448,7 +447,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 						public void run() {
 							try {
 								boolean result = GuiUtils.duplicateTextAreaCurrentLine(
-										currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, false);
+									currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, false);
 								if(!result) {
 									logger.warn("Error duplicating current text Line !");
 								}

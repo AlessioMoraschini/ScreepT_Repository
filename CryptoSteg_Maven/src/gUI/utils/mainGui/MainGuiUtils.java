@@ -188,7 +188,7 @@ public class MainGuiUtils {
 		return resettablePanels;
 	}
 	
-	private void removeAllListeners(Component target) {
+	public void removeAllListeners(Component target) {
 		if(target == null) {
 			return;
 		}
@@ -199,7 +199,7 @@ public class MainGuiUtils {
 		
 	}
 	
-	private void removeKeyListeners(Component target) {
+	public void removeKeyListeners(Component target) {
 		if(target == null) {
 			return;
 		}
@@ -209,7 +209,7 @@ public class MainGuiUtils {
 		}
 	}
 
-	private void removeMouseListeners(Component target) {
+	public void removeMouseListeners(Component target) {
 		if(target == null) {
 			return;
 		}
@@ -219,7 +219,7 @@ public class MainGuiUtils {
 		}
 	}
 
-	private void removeMouseWheelListeners(Component target) {
+	public void removeMouseWheelListeners(Component target) {
 		if(target == null) {
 			return;
 		}

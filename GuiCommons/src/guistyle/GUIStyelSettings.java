@@ -71,10 +71,16 @@ public class GUIStyelSettings{
 				logger.error(e);
 			}
 		}
+		
+		setFocusDefaultBtn();
     }
     
     public static void setFocusDefaultBtn() {
-    	UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE); 
+    	SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+			}
+		});
     }
     
     public static synchronized boolean setDarkNimbus(int nimbusSize) {
