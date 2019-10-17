@@ -809,6 +809,7 @@ public class TextEditor extends JPanel {
 							logger.warn("Error trying to set icon to tab number " + i);
 						}
 					}
+					
 				}
 			});
 		}

@@ -3,9 +3,12 @@ package utils.panels;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -17,6 +20,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
@@ -70,6 +74,9 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	
 	private TextEditorOption options;
 	private INItializer config;
+	private JButton btnAddNewClipboard;
+	
+	private AtomicBoolean isReloadingCombo = new AtomicBoolean();
 	
 	/**
 	 * Initialize panel with target directory to write in memory files, which has custom behaviour 
@@ -85,6 +92,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		
 		this.config = (configuration != null)? configuration : new INItializer();
 		this.options = (config != null)? config.getTextEditorOpt() : new TextEditorOption();
+		currentClipboard = options.getLastFileOpenedClipboard();
 		
 		// Disable advices until instantiation is ended
 		this.dialogHelper = new JOptionHelper(this);
@@ -111,7 +119,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		this.dialogManager = dialogManager;
 		
 		// main panel layout
-		MigLayout panelLayout = new MigLayout("insets 8, hidemode 2", "[::20px,grow][::20px,grow][5px,grow][110px:110px][5px,grow][::20px,grow][]", "[:15px:20px][25px][5px][30px,grow][30px,grow][][]");
+		MigLayout panelLayout = new MigLayout("insets 8, hidemode 2", "[::20px,grow][::20px,grow][::20px,grow][5px,grow][110px:110px][5px,grow][::20px,grow][]", "[:15px:20px][25px][5px][30px,grow][30px,grow][][]");
 
 		// main layout
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[50px,grow]", "[50px,grow]"));
@@ -125,16 +133,16 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		
 		separator = new JSeparator();
 		separator.setBackground(Color.GRAY);
-		mainPane.add(separator, "cell 0 0 3 1,growx");
+		mainPane.add(separator, "cell 0 0 4 1,growx");
 		
 		lblClipboardPanel = new JLabel("ClipBoard Panel");
 		lblClipboardPanel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblClipboardPanel.setForeground(Color.LIGHT_GRAY);
-		mainPane.add(lblClipboardPanel, "cell 3 0,alignx center,aligny top");
+		mainPane.add(lblClipboardPanel, "cell 4 0,alignx center,aligny top");
 		
 		separator_1 = new JSeparator();
 		separator_1.setBackground(Color.GRAY);
-		mainPane.add(separator_1, "cell 4 0 3 1,growx");
+		mainPane.add(separator_1, "cell 5 0 3 1,growx");
 		
 		// Add subcomponents to main pane
 		btnSave = new JButton("");
@@ -151,12 +159,23 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		btnReload.setPreferredSize(new Dimension(20, 20));
 		btnReload.setMinimumSize(new Dimension(20, 9));
 		btnReload.setMaximumSize(new Dimension(20, 20));
-		mainPane.add(btnReload, "cell 1 1,alignx center");
+		btnReload.setForeground(Color.BLACK);
+		btnReload.setToolTipText("Reload current Clipboard (be careful, unsaved changes will be lost)");
 		btnReload.setCursor(GuiUtils.CURSOR_HAND);
 		GuiUtils.makeTransparentJButton(btnReload);
-		btnReload.setToolTipText("Reload current Clipboard (be careful, unsaved changes will be lost)");
-		btnReload.setForeground(Color.BLACK);
 		btnReload.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+		mainPane.add(btnReload, "cell 1 1,alignx center");
+		
+		btnAddNewClipboard = new JButton("");
+		btnAddNewClipboard.setToolTipText("Add new clipboard to this list");
+		btnAddNewClipboard.setPreferredSize(new Dimension(20, 20));
+		btnAddNewClipboard.setMinimumSize(new Dimension(20, 9));
+		btnAddNewClipboard.setMaximumSize(new Dimension(20, 20));
+		btnAddNewClipboard.setForeground(Color.BLACK);
+		btnAddNewClipboard.setCursor(GuiUtils.CURSOR_HAND);
+		GuiUtils.makeTransparentJButton(btnAddNewClipboard);
+		btnAddNewClipboard.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
+		mainPane.add(btnAddNewClipboard, "cell 2 1");
 		
 		String[] clipBoards = dataMap.keySet().toArray(new String[2]);
 		comboClipboards = new JComboBox<>(clipBoards);
@@ -165,7 +184,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		comboClipboards.setToolTipText("Choose between loaded Clipboards");
 		comboClipboards.setForeground(Color.BLACK);
 		comboClipboards.setEditor( new TextPaneComboBoxEditor() );
-		mainPane.add(comboClipboards, "cell 2 1 3 1,growx");
+		mainPane.add(comboClipboards, "cell 3 1 3 1,growx");
 		
 		btnReloadClipboards = new JButton("");
 		btnReloadClipboards.setToolTipText("Reload Clipboard List");
@@ -176,7 +195,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		GuiUtils.makeTransparentJButton(btnReloadClipboards);
 		btnReloadClipboards.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD4));
 		btnReloadClipboards.setForeground(Color.BLACK);
-		mainPane.add(btnReloadClipboards, "cell 5 1");
+		mainPane.add(btnReloadClipboards, "cell 6 1");
 		
 		btnOpenInFilesystem = new JButton("");
 		btnOpenInFilesystem.setToolTipText("Open current clipboard in File System");
@@ -187,23 +206,18 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		GuiUtils.makeTransparentJButton(btnOpenInFilesystem);
 		btnOpenInFilesystem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 		btnOpenInFilesystem.setForeground(Color.BLACK);
-		mainPane.add(btnOpenInFilesystem, "cell 6 1");
+		mainPane.add(btnOpenInFilesystem, "cell 7 1");
 		
 		separator_2 = new JSeparator();
 		separator_2.setBackground(Color.GRAY);
-		mainPane.add(separator_2, "cell 0 2 7 1,growx");
+		mainPane.add(separator_2, "cell 0 2 8 1,growx");
 		
-		mainPane.add(txtAreaContainer, "cell 0 3 7 4,grow");
+		mainPane.add(txtAreaContainer, "cell 0 3 8 4,grow");
 		txtAreaClipboard.setBorder(new LineBorder(new Color(0, 0, 0), 3));
-		txtAreaClipboard.setFont(GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT);
-		txtAreaClipboard.setAntiAliasingEnabled(true);
-		txtAreaClipboard.setWrapStyleWord(true);
-		txtAreaClipboard.setLineWrap(true);
-		txtAreaClipboard.setEditable(true);
 
 		addHandlers();
 		
-		GUIStyelSettings.applyNimbusSize(0);
+//		GUIStyelSettings.applyNimbusSize(0);
 		
 		File mainClip = dataMap.get(KEY_clipBoardMain);
 		if(mainClip != null && !mainClip.exists()) {
@@ -221,11 +235,41 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		}
 		
 		FileStuff.loadFileTxtArea(dataMap.get(KEY_clipBoardMain), txtAreaClipboard, null, null);
-		
 		dialogHelper.enabledAdvices = true;
 	}
 	
+	public void applyClipboardTextAreaGraphics() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				RsyntaxUtils.setFont(txtAreaClipboard, GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT);
+				txtAreaClipboard.setAntiAliasingEnabled(true);
+				txtAreaClipboard.setWrapStyleWord(true);
+				txtAreaClipboard.setLineWrap(true);
+				txtAreaClipboard.setEditable(true);
+				txtAreaClipboard.revalidate();
+				txtAreaClipboard.repaint();
+			}
+		});
+	}
+	
 	private void addHandlers() {
+		
+		txtAreaClipboard.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						applyClipboardTextAreaGraphics();
+					}
+				});
+			}
+		});
 		
 		// Load action
 		btnReload.addActionListener(new ActionListener() {
@@ -238,6 +282,27 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 								reload(currentClipboard);
 							} catch (IOException e1) {
 								logger.error("Error reloading current Clipboard panel from file.");
+							}
+						}
+					}
+				});
+			}
+		});
+
+		// Add new Clipboard action
+		btnAddNewClipboard.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (currentClipboard != null) {
+							try {
+								if (!addNewClipboardGui()) {
+									dialogHelper.error("File not saved, maybe folder it's not acessible or locked by an other program?!", null);
+								}
+							} catch (IOException e1) {
+								dialogHelper.error("IOException while trying to create new File!", null);
+								logger.error("Error adding new Clipboard panel from scratch.");
 							}
 						}
 					}
@@ -269,7 +334,8 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		comboClipboards.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (currentClipboard != null) {
+				
+				if (currentClipboard != null && !isReloadingCombo.get()) {
 					saveCurrClipboardSilent();
 				}
 				currentClipboard = (String)comboClipboards.getSelectedItem();
@@ -297,8 +363,10 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						saveCurrClipboardSilent();
-						reloadComboClipboards();
+						if (dialogHelper.yesOrNo("Wanna save current before reload?", "save current before reload?")) {
+							saveCurrClipboardSilent();
+						}
+						reloadComboClipboards(new File("aiushdiauiagdsaygduyaguagduagudguyagu"));
 					}
 				});
 			}
@@ -382,6 +450,32 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		currentClipboard = target;
 		
 	}
+	
+	public boolean addNewClipboardGui() throws IOException {
+		String newName = dialogHelper.askForString("Choose a name for the new Clipboard (If existing a new unique name like \"xxxx(1).ext\" will be created)", "Specify new clipboard name");
+		if(newName == null) {return true;}
+		String extension = FilenameUtils.getExtension(newName);
+		newName += (extension.equals(""))? ".txt" : "";
+		
+		File newFile = new File(GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + newName);
+				
+		if(newFile.exists()) {
+			newFile = FileStuff.renameJavaObjFile(newFile);
+		}
+		
+		boolean result = newFile.createNewFile();
+		
+		if (result) {
+			dataMap.put(newFile.getName(), newFile);
+			currentClipboard = newFile.getName();
+			options.lastFileOpenedClipboard = currentClipboard;
+			reloadComboClipboards(newFile);
+		}else {
+			logger.error("File was not added!" + result);
+		}
+		
+		return result;
+	}
 
 	@Override
 	public void sync() {
@@ -393,7 +487,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			txtAreaClipboard.setForeground(reference.getForeground());
 			RsyntaxUtils.setForeground(txtAreaClipboard, reference.getCaretColor());
 			txtAreaClipboard.setCurrentLineHighlightColor(txtAreaClipboard.getBackground().brighter());
-			txtAreaClipboard.setFont(GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT);
+			RsyntaxUtils.setFont(txtAreaClipboard, GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT);
 			dialogManager.loadThemeIntoTarget(txtAreaClipboard);
 			currentScrollPane.setBackground(Color.black);
 			txtAreaClipboard.setWrapStyleWord(true);
@@ -403,16 +497,27 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	
 	// COMBO METHODS
 	
-	public void reloadComboClipboards() {
+	public void reloadComboClipboards(File selected) {
+		isReloadingCombo.set(true);
+		
 		comboClipboards.removeAllItems();
 		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>( GeneralConfig.getRefreshedClipBoardsMap().keySet().toArray(new String[2]) );
 		comboClipboards.setModel( model );
-		comboClipboards.setSelectedItem(options.lastFileOpenedClipboard);
+		
+		if(selected == null || !selected.exists()) {
+			comboClipboards.setSelectedItem(options.lastFileOpenedClipboard);
+		}else {
+			comboClipboards.setSelectedItem(selected.getName());
+		}
 		
 		((JLabel)comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 		
 		comboClipboards.revalidate();
 		comboClipboards.repaint();
+		
+		applyClipboardTextAreaGraphics();
+		
+		isReloadingCombo.set(false);
 	}
 	
 	public void selectFromComboClipboardsByFile(String fileName) {

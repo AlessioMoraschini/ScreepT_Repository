@@ -332,6 +332,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			window.startTitleUpdater();
 			
 			frmScryptV.setVisible(true);
+			frmScryptV.setEnabled(true);
+
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 
 			frmScryptV.requestFocus();
@@ -434,6 +436,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		
 		// INITIALIZE MAIN FRAME
 		frmScryptV = new JFrame();
+		frmScryptV.setEnabled(false);
 		frmScryptV.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		frmScryptV.getContentPane().setBackground(SystemColor.windowText);
 		frmScryptV.setBounds(0, 0, 1500, 850 );
