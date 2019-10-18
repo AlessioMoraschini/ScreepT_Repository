@@ -64,7 +64,7 @@ public class ScreepT_Test_New_StandAlone {
 	public void testOnlyAEScrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
-			screepTManager = new ScreeptManagerFileOrFolder();
+			screepTManager = new ScreeptManagerFileOrFolder(false);
 			File resultDir =new File(TEMP_DIR);
 			screepTManager.setShuffle(SHUFFLE_MODE);
 			
@@ -93,7 +93,7 @@ public class ScreepT_Test_New_StandAlone {
 	public void testOnlyAESdecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
-			screepTManager = new ScreeptManagerFileOrFolder();
+			screepTManager = new ScreeptManagerFileOrFolder(false);
 			
 			File resultDir =new File(TEMP_DIR);
 			screepTManager.setShuffle(SHUFFLE_MODE);
@@ -119,7 +119,7 @@ public class ScreepT_Test_New_StandAlone {
 	public void testOnlySTEGcrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
-			screepTManager = new ScreeptManagerFileOrFolder();
+			screepTManager = new ScreeptManagerFileOrFolder(false);
 			
 			File resultDir =new File(TEMP_DIR);
 			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
@@ -150,7 +150,7 @@ public class ScreepT_Test_New_StandAlone {
 	public void testOnlySTEGDecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
-			screepTManager = new ScreeptManagerFileOrFolder();
+			screepTManager = new ScreeptManagerFileOrFolder(false);
 			
 			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
 			
@@ -181,7 +181,7 @@ public class ScreepT_Test_New_StandAlone {
 	public void testCompleteCrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
-			screepTManager = new ScreeptManagerFileOrFolder();
+			screepTManager = new ScreeptManagerFileOrFolder(false);
 			
 			File resultDir =new File(TEMP_DIR);
 			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
@@ -211,7 +211,7 @@ public class ScreepT_Test_New_StandAlone {
 	public void testCompleteDeCrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
-			screepTManager = new ScreeptManagerFileOrFolder();		
+			screepTManager = new ScreeptManagerFileOrFolder(false);		
 			
 			File resultDir =new File(TEMP_DIR);
 			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
@@ -279,17 +279,17 @@ public class ScreepT_Test_New_StandAlone {
 	
 	private void initAES() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		AEScoder = new AesCipher(AES_KEY);
-		screepTManager = new ScreeptManagerFileOrFolder();
+		screepTManager = new ScreeptManagerFileOrFolder(false);
 	}
 	
 	private void initSTEG() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, media.STEGException {
 		STEGcoder = new StegCipher(keyIMG);
-		screepTManager = new ScreeptManagerFileOrFolder();
+		screepTManager = new ScreeptManagerFileOrFolder(false);
 	}
 	
 	private void initCOMPLETE() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, media.STEGException {
 		AEScoder = new AesCipher(AES_KEY);
 		STEGcoder = new StegCipher(keyIMG);
-		screepTManager = new ScreeptManagerFileOrFolder();
+		screepTManager = new ScreeptManagerFileOrFolder(false);
 	}
 }

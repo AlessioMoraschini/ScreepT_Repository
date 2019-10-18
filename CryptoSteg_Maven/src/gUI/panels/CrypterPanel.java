@@ -253,7 +253,7 @@ public class CrypterPanel extends JPanel {
 		addIcons();
 		
 		// new thread that updates jtree periodically
-		new Thread(new Runnable() {
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -276,15 +276,15 @@ public class CrypterPanel extends JPanel {
 					textAreaLog.setHighlighter(backH);
 				}
 			}
-		}).start();
+		});
 		
 		// new thread keeps updated aeskey check and ReadyToCode label.
 		// this thread will check (every second) the value contained in the textfield
-		new Thread(new Runnable() {
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			
 			@Override
 			public void run() {
-				while(true) {
+				while(MainGUI.mainAppRunning) {
 					
 					// check the aes key and set jtextField color
 					AesCipher.check(AESKEYtext);
@@ -309,7 +309,7 @@ public class CrypterPanel extends JPanel {
 
 				}
 			}
-		}).start();
+		});
 		
 		logger.info(this.getClass().getName() + " Started");
 	}
@@ -318,12 +318,12 @@ public class CrypterPanel extends JPanel {
 	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
 	 */
 	private void initializeHeader() {
-		setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[1024px,grow]", "[711px,grow]"));
 		
 		panelMainContainer = new JPanel();
 		panelMainContainer.setBorder(new LineBorder(Color.DARK_GRAY, 4, true));
 		panelMainContainer.setBackground(Color.BLACK);
-		panelMainContainer.setLayout(new MigLayout("", "[200:200:200][150:205:205][30,grow][250px:250px:250px][120px:120px:120px]", "[:30:40px,top][4px:4px:4px][35][4px][:100:100px,grow][:150px:200px,grow][28px:30px:30px][140px:280,grow][:1px:1px]"));
+		panelMainContainer.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[200:200:200][150:205:205][30,grow][250px:250px:250px][120px:120px:120px]", "[:30:40px,top][4px:4px:4px][35][4px][:100:100px,grow][:150px:200px,grow][28px:30px:30px][140px:280,grow][:1px:1px]"));
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		mainScrollPane.setViewportView(panelMainContainer);
@@ -334,7 +334,7 @@ public class CrypterPanel extends JPanel {
 		panelHeader.setBorder(new LineBorder(Color.GRAY, 3));
 		panelHeader.setBackground(Color.DARK_GRAY);
 		panelMainContainer.add(panelHeader, "cell 0 0 5 1,grow");
-		panelHeader.setLayout(new MigLayout("", "[][][100px][][100px:150px,grow][110px][130px]", "[24px:27px]"));
+		panelHeader.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][][100px][][100px:150px,grow][110px][130px]", "[24px:27px]"));
 		
 		lblSourceFileStatic = new JLabel("Source File:");
 		lblSourceFileStatic.setBackground(Color.DARK_GRAY);
@@ -678,6 +678,8 @@ public class CrypterPanel extends JPanel {
 				int nProgrFile = 0;
 				
 				for (File currentFile : srcFiles) {
+					
+					// TODO replace with ad hoc object ScreeptManagerFileOrFolder
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
 					
 						builder.append("Starting conversion of file ").append(nProgrFile+1).append("/").append(nFilesSource)
@@ -844,6 +846,9 @@ public class CrypterPanel extends JPanel {
 				int nProgrFile = 0;
 				
 				for (File currentFile : srcFiles) {
+					
+					// TODO replace with ad hoc object ScreeptManagerFileOrFolder
+					
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
 					
 						builder.append("Starting conversion of file ").append(nProgrFile+1).append("/").append(nFilesSource)
@@ -1003,7 +1008,7 @@ public class CrypterPanel extends JPanel {
 		panelContainerKey.setBorder(new LineBorder(new Color(0, 0, 0), 0));
 		scrollPanelTabImagePreview.setViewportView(panelContainerKey);
 		tabbedPane.addTab("Img Preview", null, scrollPanelTabImagePreview, null);
-		panelContainerKey.setLayout(new MigLayout("", "[385:385:385,center]", "[:20:20][:200px:250px,grow,top]"));
+		panelContainerKey.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[385:385:385,center]", "[:20:20][:200px:250px,grow,top]"));
 		
 		lblDisplayedKey = new JLabel("to see image: Right click on img -> Load Image and Details");
 		lblDisplayedKey.setForeground(new Color(240, 230, 140));
@@ -1076,7 +1081,7 @@ public class CrypterPanel extends JPanel {
 						textAreaLog.append("\n" + msg);
 					}
 				}
-				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter( currentConf, thisPanel);			
+				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter(currentConf, thisPanel);			
 			}
 		};
 		
@@ -1111,7 +1116,7 @@ public class CrypterPanel extends JPanel {
 		panelBackgroundDragSources = new JPanel();
 		panelBackgroundDragSources.setBackground(new Color(220, 220, 220));
 		scrollPaneDragNDropSource.setViewportView(panelBackgroundDragSources);
-		panelBackgroundDragSources.setLayout(new MigLayout("", "[][:335px:350px,grow]", "[50px][][30px][300px,grow][150px,grow]"));
+		panelBackgroundDragSources.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][:335px:350px,grow]", "[50px][][30px][300px,grow][150px,grow]"));
 		
 		lblSelectedFilesDragTitle = new JLabel("Selected Files Pool");
 		lblSelectedFilesDragTitle.setHorizontalTextPosition(SwingConstants.CENTER);

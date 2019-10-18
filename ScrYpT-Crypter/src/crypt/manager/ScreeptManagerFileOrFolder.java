@@ -38,8 +38,8 @@ public class ScreeptManagerFileOrFolder {
 	
 	public JOptionHelper dialogHelper;
 	
-	public ScreeptManagerFileOrFolder() {
-		
+	public ScreeptManagerFileOrFolder(boolean shuffle) {
+		this.shuffle = shuffle;
 	}
 	
 ////////////////////////// MAIN METHODS ////////////////////////////////

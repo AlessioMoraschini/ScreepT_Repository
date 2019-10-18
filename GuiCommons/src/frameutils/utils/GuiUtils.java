@@ -68,6 +68,40 @@ public class GuiUtils {
 		return result;
 	}
 	
+	public static void launchThreadSafeSwing(Runnable threadAction) {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					new Thread(threadAction).start();
+				} catch (Exception e) {
+					logger.error("GuiUtils.launchThreadSafeSwing(threadAction) => Error executing threadAction! ", e);
+				}
+			}
+		});
+	}
+	
+	public static void labelUpdateWithTimeout(String message, JTextComponent target, int timeout) {
+		
+		if(message == null || target == null) {
+			return;
+		}
+		
+		launchThreadSafeSwing(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					target.setText(message);
+					Thread.sleep(timeout);
+					target.setText("");
+				} catch (InterruptedException e) {
+					logger.error("Exception happened!", e);
+				}
+			}
+		});
+	}
+	
 	public static <E, T> void refreshCombo(JComboBox target, Collection<E> values) {
 		target.removeAllItems();
 		Object[] array = values.toArray();
