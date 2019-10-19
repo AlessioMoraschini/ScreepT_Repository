@@ -69,7 +69,8 @@ public class ImageGenContainerPanel extends JPanel{
 			@Override
 			public void run() {
 				
-				progUpdater = new TestUpdateProgress(currentConf);
+				progUpdater = new TestUpdateProgress(currentConf, false);
+				progUpdater.setProgBarEnabled(true);
 				progUpdater.getPb().setValue(0);
 				bar = thisFrame.getProgressBar();
 				
@@ -105,6 +106,7 @@ public class ImageGenContainerPanel extends JPanel{
 	            bar.setString("Ready :)");
 	            bar.setIndeterminate(false);
 				progUpdater.getPb().setValue(100);
+				progUpdater.forceClose();
 				jtext.append("\n -> Finished!");
 				logger.debug("Generated Image of " + width + "Px X " + height + "Px");
 

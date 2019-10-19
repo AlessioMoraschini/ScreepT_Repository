@@ -452,8 +452,14 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	}
 	
 	public boolean addNewClipboardGui() throws IOException {
-		String newName = dialogHelper.askForString("Choose a name for the new Clipboard (If existing a new unique name like \"xxxx(1).ext\" will be created)", "Specify new clipboard name");
-		if(newName == null) {return true;}
+		String newName = dialogHelper.askForStringUnsafe("Choose a name for the new Clipboard (If existing a new unique name like \"xxxx(1).ext\" will be created)", "Specify new clipboard name");
+		if(newName != null && newName.equals("")) {
+			dialogHelper.warn("Cannot create File without name", "Must specify a name!");
+			return true;
+		}else if(newName == null) {
+			return true;
+		}
+		
 		String extension = FilenameUtils.getExtension(newName);
 		newName += (extension.equals(""))? ".txt" : "";
 		

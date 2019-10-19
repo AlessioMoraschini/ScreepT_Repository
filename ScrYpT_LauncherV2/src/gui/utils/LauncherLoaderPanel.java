@@ -9,6 +9,8 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
+
 import javax.swing.JProgressBar;
 
 import org.apache.log4j.Logger;
@@ -111,8 +113,27 @@ public class LauncherLoaderPanel extends JPanel{
 	}
 	
 	public void update(String txt, int progress, int msDelayIfEnd){
-		setText(txt);
-		setProgress(progress, msDelayIfEnd);
+		if (progress >= 100) {
+			new Thread(new Runnable() {
+				public void run() {
+					for (int i = 0; i < 20; i++) {
+						String dots = new String(new char[i + 1]).replace("\0", ".");
+						String msg = txt + dots;
+						setText(msg);
+						try {
+							Thread.sleep(40);
+						} catch (InterruptedException e) {
+							logger.error("Error waiting before starting launcher", e);
+						}
+					}
+					setProgress(100, 10);
+				}
+			}).start();
+		}else {
+			setText(txt);
+			setProgress(progress, msDelayIfEnd);
+		}
+		
 	}
 	
 	public void setIndeterminatedProgress(boolean indeterminated) {

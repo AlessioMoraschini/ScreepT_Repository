@@ -1,7 +1,6 @@
 package gUI.frames;
 
 import resources.GeneralConfig;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -462,26 +461,27 @@ public class KeyGenFrame extends ParentFrame {
 		// BUTTON KEY GENERATION LISTENER
 		btnGenerateKey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Date now = new Date();
-				
-				panelIMG.setSize(DEF_W, panelIMG.getSize().height);
-				
-				updateBTNenabled(false);
-				
-				textInfo.setText("\n\nConversion started with:\n\n# width of generated key: "+CURRENT_SEL_W+"Px\n# height of generated key: "+CURRENT_SEL_H+"Px");
-				textInfo.append("\nAfter Key is generated pressing the 'generate' button,you can see a quick preview on the right :)");
-				textInfo.append("\nNB -> It's recommended to use 4byte types to cript files!");
-				textLog.setText("\n[Started] "+now.toString()+"\n-> I'm reading input values...");
-				//use config copy to avoid overwrite when changin values
-				imageContainer = new ImageGenContainerPanel(CURRENT_IMG_TYPE, CURRENT_SEL_W, CURRENT_SEL_H, thisFrame, currentConfig);
-				logger.debug("Exit keygen function");
-				panelIMG.removeAll();
-				panelIMG.add(imageContainer);
-				imageContainer.setBackground(Color.DARK_GRAY);
-			   	panelIMG.revalidate(); 
-			   	panelIMG.repaint();	
-			   	
-			   	updateBTNenabled(true);
+				GuiUtils.launchThreadSafeSwing(new Runnable() {
+					public void run() {
+						Date now = new Date();
+						panelIMG.setSize(DEF_W, panelIMG.getSize().height);
+						updateBTNenabled(false);
+						textInfo.setText("\n\nConversion started with:\n\n# width of generated key: " + CURRENT_SEL_W + "Px\n# height of generated key: "
+								+ CURRENT_SEL_H + "Px");
+						textInfo.append("\nAfter Key is generated pressing the 'generate' button,you can see a quick preview on the right :)");
+						textInfo.append("\nNB -> It's recommended to use 4byte types to cript files!");
+						textLog.setText("\n[Started] " + now.toString() + "\n-> I'm reading input values...");
+						//use config copy to avoid overwrite when changin values
+						imageContainer = new ImageGenContainerPanel(CURRENT_IMG_TYPE, CURRENT_SEL_W, CURRENT_SEL_H, thisFrame, currentConfig);
+						logger.debug("Exit keygen function");
+						panelIMG.removeAll();
+						panelIMG.add(imageContainer);
+						imageContainer.setBackground(Color.DARK_GRAY);
+						panelIMG.revalidate();
+						panelIMG.repaint();
+						updateBTNenabled(true);
+					}
+				});
 				
 			}
 		});

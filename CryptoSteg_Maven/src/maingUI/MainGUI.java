@@ -287,11 +287,11 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
 				
 				@Override
-			    public void windowDeiconified(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
-			    @Override
-			    public void windowActivated(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
-			    @Override
-			    public void windowGainedFocus(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+				public void windowStateChanged(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+//			    @Override
+//			    public void windowActivated(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
+//			    @Override
+//			    public void windowGainedFocus(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
 				
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -373,8 +373,15 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 							mainGuiUtils.startConfigManagerPanel(true);
 						}
 					}
-					loaderGraphics.update("Applying Gui Style", 100, 450);
+					loaderGraphics.update("Applying Gui Style", 99, 200);
 					updateGuiFromCurrConfig();
+					
+					// Close loader
+					GuiUtils.launchThreadSafeSwing(new Runnable() {
+						public void run() {
+							loaderGraphics.update("Welcome to ScrYpT", 100, 200);
+						}
+					});
 				}
 			});
 			
@@ -556,7 +563,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	    });
 		
 		// NOT OPENING VIEW - RESET TEXT EDITOR
-		mntmResetTextEditor = new JMenuItem(new AbstractAction("Reset Txet Editor") {
+		mntmResetTextEditor = new JMenuItem(new AbstractAction("Reset Text Editor") {
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -856,23 +863,24 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - CUSTOMIZE GRAPHICS
 		mntmCustomizeUIView = new JMenuItem(new AbstractAction("Customize Graphics") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelGuiOptions == null || !panelGuiOptions.isActive()) {
+				if (panelGuiOptions == null) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
+					panelGuiOptions.setLocationRelativeTo(mainAPP.getMainFrame());
 					GuiUtils.centerComponent(panelGuiOptions, 800, 440);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelGuiOptions.setTitle("Apply/Save Preferences [Customize - Apply - Save]");
+					panelGuiOptions.setTitle("Graphics preferences - "+GeneralConfig.APPLICATION_NAME);
 				}else {
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelGuiOptions.setState(java.awt.Frame.NORMAL);
+						panelGuiOptions.setVisible(true);
 						panelGuiOptions.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + GraphicPreferencesFrame.class, e2);
 					}
 				}
-				panelGuiOptions.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGuiOptions, JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -926,23 +934,24 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - GENERAL OPTIONS
 		mntmGenOpt = new JMenuItem(new AbstractAction("General Options") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelGeneralOptions == null || !panelGeneralOptions.isActive()) {
+				if (panelGeneralOptions == null) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
+					panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
 					panelGeneralOptions.setBounds(400, 300, 700, 265);
 					panelGeneralOptions.setVisible(true);
 					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelGeneralOptions.setTitle("Apply/Save General Options [Customize - Apply - Save]");
+					panelGeneralOptions.setTitle("Generic Options - "+GeneralConfig.APPLICATION_NAME);
 				}else {
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelGeneralOptions.setState(java.awt.Frame.NORMAL);
+						panelGeneralOptions.setVisible(true);
 						panelGeneralOptions.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + GeneralOptionsFrame.class, e2);
 					}
 				}
-				panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -950,23 +959,24 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - KEYGEN
 		mntmgenerateKeyImageSub = new JMenuItem(new AbstractAction("Generate Key Image") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (panelKeyGen == null || !panelKeyGen.isActive()) {
+		    	if (panelKeyGen == null) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		panelKeyGen = new KeyGenFrame(currentConfiguration);
 					panelKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					panelKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
 					panelKeyGen.setBounds(150, 150, 1100, 800);
 					panelKeyGen.setVisible(true);
-					panelKeyGen.setTitle("IMG Generator (V1.1) - A.M.2018");
+					panelKeyGen.setTitle("IMG Generator - "+GeneralConfig.APPLICATION_NAME);
 				}else {
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelKeyGen.setState(java.awt.Frame.NORMAL);
+						panelKeyGen.setVisible(true);
 						panelKeyGen.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + KeyGenFrame.class, e2);
 					}
 				}
-		    	panelKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyGen,JFrame.MAXIMIZED_BOTH);
 		    }
 		});
@@ -974,7 +984,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - NET INFO
 		mntmnetInfo = new JMenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (panelNetInfo == null || !panelNetInfo.isActive()) {
+		    	if (panelNetInfo == null || !panelNetInfo.isVisible()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
@@ -990,9 +1000,10 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 									panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 									panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 									panelNetInfo.setAlwaysOnTop(true);
-									panelNetInfo.setBounds(150, 150, 950, 700);
+									panelNetInfo.setBounds(150, 150, 900, 650);
+									panelNetInfo.setResizable(false);
 									panelNetInfo.setVisible(true);
-									panelNetInfo.setTitle("Network info - ScrYpT");
+									panelNetInfo.setTitle("Network info - "+GeneralConfig.APPLICATION_NAME);
 									prog.getPb().setValue(100);
 								}
 							}).start();
@@ -1003,7 +1014,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelNetInfo.setState(java.awt.Frame.NORMAL);
-						panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
+						panelNetInfo.setVisible(true);
 						panelNetInfo.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + NetInfoFrame.class, e2);
@@ -1016,29 +1027,25 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - NET INFO
 		mntmhwInfo = new JMenuItem(new AbstractAction("System Info") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (panelHwInfo == null || !panelHwInfo.isActive()) {
+		    	if (panelHwInfo == null|| !panelHwInfo.isVisible()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							new Thread(new Runnable() {
+		    		GuiUtils.launchThreadSafeSwing(new Runnable() {
 
-								@Override
-								public void run() {
-									TestUpdateProgress prog = new TestUpdateProgress();
-									prog.getPb().setIndeterminate(true);
-									prog.getLabel().setText("Loading System informations...");
-									prog.getPb().setString("Loading...");
-									panelHwInfo = new HwInfoFrame();
-									panelHwInfo.setLocationRelativeTo(mainAPP.getMainFrame());
-									panelHwInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-									panelHwInfo.setBounds(250, 200, 1000, 750);
-									panelHwInfo.setAlwaysOnTop(true);
-									panelHwInfo.setResizable(false);
-									panelHwInfo.setVisible(true);
-									panelHwInfo.setTitle("Hardware info - ScrYpT");
-									prog.getPb().setValue(100);
-								}
-							}).start();
+						@Override
+						public void run() {
+							TestUpdateProgress prog = new TestUpdateProgress();
+							prog.getPb().setIndeterminate(true);
+							prog.getLabel().setText("Loading System informations...");
+							prog.getPb().setString("Loading...");
+							panelHwInfo = new HwInfoFrame();
+							panelHwInfo.setLocationRelativeTo(mainAPP.getMainFrame());
+							panelHwInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							panelHwInfo.setBounds(250, 200, 1000, 750);
+							panelHwInfo.setAlwaysOnTop(true);
+							panelHwInfo.setResizable(false);
+							panelHwInfo.setVisible(true);
+							panelHwInfo.setTitle("Hardware info - "+GeneralConfig.APPLICATION_NAME);
+							prog.getPb().setValue(100);
 						}
 					});
 		    		
@@ -1046,6 +1053,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelHwInfo.setState(java.awt.Frame.NORMAL);
+						panelHwInfo.setVisible(true);
 						panelHwInfo.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + HwInfoFrame.class, e2);
@@ -1058,23 +1066,24 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - DICTIONARY (KEY IMG)
 		mntmViewKeyDictionary = new JMenuItem(new AbstractAction("View Key Dictionary") {
 		    public void actionPerformed(ActionEvent e) {
-		    	if (panelKeyDict == null || !panelKeyDict.isActive()) {
+		    	if (panelKeyDict == null) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		panelKeyDict = new KeyDictionaryPanel(currentConfiguration);
 		    		panelKeyDict.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    		panelKeyDict.setBounds(300, 100, 800, 560);
 		    		panelKeyDict.setVisible(true);
-		    		panelKeyDict.setTitle("Key Dictionary Manager");
+		    		panelKeyDict.setTitle("Key Dictionary - "+GeneralConfig.APPLICATION_NAME);
+		    		panelKeyDict.setLocationRelativeTo(mainAPP.getMainFrame());
 				}else {
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelKeyDict.setState(java.awt.Frame.NORMAL);
+						panelKeyDict.setVisible(true);
 						panelKeyDict.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + KeyDictionaryPanel.class, e2);
 					}
 				}
-		    	panelKeyDict.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyDict,JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -1082,24 +1091,25 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - IMAGE CONVERTER
 		mntmImageConverter = new JMenuItem(new AbstractAction("Image Converter") {
 			public void actionPerformed(ActionEvent e) {
-		    	if (panelImgConv == null || !panelImgConv.isActive()) {
+		    	if (panelImgConv == null) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		panelImgConv = new ImageConverterFrame(currentConfiguration);
 		    		panelImgConv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    		panelImgConv.setBounds(700, 200, 650, 500);
 		    		panelImgConv.setResizable(false);
 		    		panelImgConv.setVisible(true);
-		    		panelImgConv.setTitle("IMG Generator (V1.1) - A.M.2018");
+		    		panelImgConv.setTitle("IMG Generator - "+GeneralConfig.APPLICATION_NAME);
+		    		panelImgConv.setLocationRelativeTo(mainAPP.getMainFrame());
 				}else {
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelImgConv.setState(java.awt.Frame.NORMAL);
+						panelImgConv.setVisible(true);
 						panelImgConv.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + ImageConverterFrame.class, e2);
 					}
 				}
-		    	panelImgConv.setLocationRelativeTo(mainAPP.getMainFrame());
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelImgConv,JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -1107,24 +1117,25 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in a new window - ABOUT SCRYPT
 		mntmAboutScreept = new JMenuItem(new AbstractAction("About - ScrYpt") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelAbout == null || !panelAbout.isActive()) {
+				if (panelAbout == null) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		panelAbout = new AboutSectionFrame(mainAPP);
 		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    		panelAbout.setBounds(700, 200, 400, 345);
 		    		panelAbout.setResizable(false);
 		    		panelAbout.setVisible(true);
-		    		panelAbout.setTitle(GeneralConfig.APPLICATION_NAME);
+		    		panelAbout.setTitle("About - "+GeneralConfig.APPLICATION_NAME);
+		    		panelAbout.setLocationRelativeTo(mainAPP.getMainFrame());
 				}else {
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelAbout.setState(java.awt.Frame.NORMAL);
+						panelAbout.setVisible(true);
 						panelAbout.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + AboutSectionFrame.class, e2);
 					}
 				}
-				panelAbout.setLocationRelativeTo(mainAPP.getMainFrame());
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelAbout, JFrame.MAXIMIZED_BOTH);
 			}
 		});
@@ -1139,11 +1150,12 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		
 		mntmUserDocumentation = new JMenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
-				if (tutorialPanel == null || !tutorialPanel.isActive()) {
+				if (tutorialPanel == null) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					tutorialPanel.setResizable(true);
 		    		tutorialPanel.setVisible(true);
-		    		tutorialPanel.setTitle(GeneralConfig.APPLICATION_NAME + " - Tutorial");
+		    		tutorialPanel.setTitle("Tutorial - "+GeneralConfig.APPLICATION_NAME);
+		    		tutorialPanel.setLocationRelativeTo(mainAPP.getMainFrame());
 				}else {
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
@@ -1155,7 +1167,6 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 						logger.warn("There was an error opening " + TutorialFrame.class, e2);
 					}
 				}
-				tutorialPanel.setLocationRelativeTo(mainAPP.getMainFrame());
 			}
 		});
 		
@@ -1171,7 +1182,6 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in main frame - CONFIGURATION MANAGER
 		mntmInspectCurrentConfiguration = new JMenuItem(new AbstractAction("Configuration Manager") {
 		    public void actionPerformed(ActionEvent ae) {
-				   
 	    		mainGuiUtils.startConfigManagerPanel(false);
 		    }
 		});
@@ -1179,7 +1189,6 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// open in main frame - TEXT EDITOR
 		mntmTextEditor = new JMenuItem(new AbstractAction("Text Editor") {
 			public void actionPerformed(ActionEvent e) {
-				
 				mainGuiUtils.startTextEditor(false);
 			}
 		});
@@ -1205,7 +1214,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			public void componentHidden(ComponentEvent e) {
 			}
 		});
-	////////// END OF HANDLERS DECLARATION  ////////////////
+		
+	////////// END OF MENU MOUSE CLICK - HANDLERS DECLARATION  ////////////////
 	
  loaderGraphics.update("Adding ActionHandlers...", 60);
  		addHandlers();
@@ -1228,18 +1238,19 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	public void resizeMainFrameDefaults() {
 
 		// resize background - Only on home page to improve performance
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				if (isOnHomePage.get()) {
-					labelBACKground.setSize(frmScryptV.getContentPane().getSize());
-				}
-		
-				// resize textEditor if present
-				if (initTxtWriter != null && initTxtWriter.getCurrentTabEditor().mainTabList != null) {
-					initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
-				}
-			}
-		});
+		if (isOnHomePage.get()) {
+			labelBACKground.setSize(frmScryptV.getContentPane().getSize());
+		}
+
+		// resize textEditor if present
+		if (initTxtWriter != null && initTxtWriter.getCurrentTabEditor().mainTabList != null) {
+			initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
+		}
+
+		// resize textEditor if present
+		if (panelCrypter != null) {
+			panelCrypter.resizeFrameToDefault(mainAPP);
+		}
 	}
 	
 	public void addHandlers() {

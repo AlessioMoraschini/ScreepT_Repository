@@ -5,6 +5,7 @@ import javax.swing.JScrollPane;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.fife.rsta.ui.search.FindDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -14,6 +15,7 @@ import org.ini4j.Wini;
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
 import enums.Themes;
+import frameutils.utils.GuiUtils;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
@@ -25,6 +27,8 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
+import utils.dialog.ITextAreaDialogs;
+import utils.dialog.TextAreaDialogs;
 
 import java.awt.Font;
 import java.awt.Insets;
@@ -34,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -54,6 +59,8 @@ import java.awt.Cursor;
 import javax.swing.border.BevelBorder;
 import javax.swing.JTree;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import java.awt.Dimension;
 
 public class ChargeIniLog extends JPanel{
 	
@@ -90,6 +97,11 @@ public class ChargeIniLog extends JPanel{
 	private JButton btnViewCurrentFile;
 	
 	private JOptionHelper dialogHelper;
+	public JSplitPane splitPane;
+	private JButton btnFind;
+	
+	private TextAreaDialogs textAreaDialogs;
+	private FindDialog searchBox;
 
 	public ChargeIniLog(INItializer configuration, MainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
@@ -98,13 +110,30 @@ public class ChargeIniLog extends JPanel{
 		parent = parentFrame;
 		config = configuration;
 		
+		textAreaDialogs = new TextAreaDialogs(new ITextAreaDialogs() {
+			
+			@Override
+			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {
+			}
+			
+			@Override
+			public RSyntaxTextArea getTargetTextArea() {
+				return textArea;
+			}
+			
+			@Override
+			public String getCurrentClipboard() {
+				return null;
+			}
+		});
+		
 		dialogHelper = new JOptionHelper(parent.getMainFrame());
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		setBackground(Color.DARK_GRAY);
 		
-		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[117.00][70px][50px][120px][30px][][][140px:140px][grow][50][100px,grow,leading][100px,left]", "[:40px:45px][35px][][20px][400px,grow]"));
+		setLayout(new MigLayout("", "[120px:130px][80px:90px][70px:80px][135px:150px][30px][150px:160px][140px:140px][][140px:140px,grow][grow][50][100px,grow,leading][120px:130px,left]", "[:40px:45px][25px][][20px][400px,grow]"));
 		
 		textArea = new RSyntaxTextArea();
 		textArea.setUseSelectedTextColor(true);
@@ -113,61 +142,81 @@ public class ChargeIniLog extends JPanel{
 
 		scrollPaneTextArea = new RTextScrollPane(textArea);
 		scrollPaneTextArea.setAutoscrolls(false);
-		scrollPaneTextArea.setBorder(new LineBorder(new Color(64, 64, 64), 3, true));
+		scrollPaneTextArea.setBorder(new LineBorder(Color.BLACK, 2));
 		
 		btnExportConfig = new JButton("Export");
+		btnExportConfig.setMinimumSize(new Dimension(62, 20));
+		btnExportConfig.setPreferredSize(new Dimension(62, 20));
 		btnExportConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 		btnExportConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnExportConfig.setForeground(Color.BLACK);
 		btnExportConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnExportConfig.setBackground(new Color(176, 196, 222));
+		btnExportConfig.setBackground(Color.LIGHT_GRAY);
 		add(btnExportConfig, "cell 1 1,grow");
 		
 		btnSave = new JButton("Save");
+		btnSave.setPreferredSize(new Dimension(55, 20));
+		btnSave.setMinimumSize(new Dimension(55, 20));
 		btnSave.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSave.setForeground(Color.BLACK);
 		btnSave.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnSave.setBackground(new Color(176, 196, 222));
+		btnSave.setBackground(Color.LIGHT_GRAY);
 		add(btnSave, "cell 2 1,grow");
 		
 		btnSaveCurrentAsDefault = new JButton("Save as Default");
+		btnSaveCurrentAsDefault.setMinimumSize(new Dimension(114, 20));
+		btnSaveCurrentAsDefault.setPreferredSize(new Dimension(114, 20));
 		btnSaveCurrentAsDefault.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_AS_DEFAULT_CONF));
 		btnSaveCurrentAsDefault.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSaveCurrentAsDefault.setForeground(Color.BLACK);
 		btnSaveCurrentAsDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnSaveCurrentAsDefault.setBackground(new Color(176, 196, 222));
+		btnSaveCurrentAsDefault.setBackground(Color.LIGHT_GRAY);
 		add(btnSaveCurrentAsDefault, "cell 3 1 2 1,grow");
 		
 		btnViewCurrentFile = new JButton("Current Config. File");
+		btnViewCurrentFile.setPreferredSize(new Dimension(134, 20));
+		btnViewCurrentFile.setMinimumSize(new Dimension(134, 20));
 		btnViewCurrentFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnViewCurrentFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD));
+		btnViewCurrentFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2));
 		btnViewCurrentFile.setForeground(Color.BLACK);
 		btnViewCurrentFile.setBackground(new Color(176, 196, 222));
 		add(btnViewCurrentFile, "cell 5 1,grow");
 		
 		btnCurrentRefresh = new JButton("Current Volatile");
-		btnCurrentRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnCurrentRefresh.setMinimumSize(new Dimension(112, 20));
+		btnCurrentRefresh.setPreferredSize(new Dimension(112, 20));
 		btnCurrentRefresh.setForeground(Color.BLACK);
 		btnCurrentRefresh.setBackground(new Color(176, 196, 222));
-		btnCurrentRefresh.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD));
+		btnCurrentRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnCurrentRefresh.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2));
 		add(btnCurrentRefresh, "cell 6 1,grow");
+		
+		btnFind = new JButton("");
+		btnFind.setForeground(Color.BLACK);
+		btnFind.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
+		btnFind.setBackground(Color.GRAY);
+		btnFind.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnFind.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
+		add(btnFind, "cell 7 1,grow");
 		
 		panelDynPath = new JPanel();
 		panelDynPath.setOpaque(false);
-		add(panelDynPath, "cell 8 1 3 1,alignx center,growy");
-		panelDynPath.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[grow][150px,grow]", "[]"));
+		add(panelDynPath, "cell 9 1 3 1,alignx center,growy");
+		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
 		
 		btnResetOriginalConfig = new JButton("Reset Original");
+		btnResetOriginalConfig.setMinimumSize(new Dimension(107, 20));
+		btnResetOriginalConfig.setPreferredSize(new Dimension(107, 20));
 		btnResetOriginalConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
 		btnResetOriginalConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnResetOriginalConfig.setForeground(Color.BLACK);
 		btnResetOriginalConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnResetOriginalConfig.setBackground(new Color(250, 128, 114));
-		add(btnResetOriginalConfig, "cell 11 1,grow");
+		add(btnResetOriginalConfig, "cell 12 1,grow");
 		
 		separator = new JSeparator();
-		add(separator, "cell 0 2 12 1,growx");
+		add(separator, "cell 0 2 13 1,growx");
 		
 		lblPreferredConfigurations = new JLabel("Preferred Configurations");
 		lblPreferredConfigurations.setForeground(Color.WHITE);
@@ -176,48 +225,48 @@ public class ChargeIniLog extends JPanel{
 		
 		JLabel lblInitializationFrom = new JLabel("Current .ini file: ");
 		lblInitializationFrom.setForeground(Color.WHITE);
-		add(lblInitializationFrom, "cell 5 3 2 1");
+		add(lblInitializationFrom, "cell 5 3 3 1");
 		lblInitializationFrom.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		
 		config_PATH = new JLabel("");
 		config_PATH.setForeground(Color.WHITE);
-		add(config_PATH, "cell 7 3 5 1");
+		add(config_PATH, "cell 8 3 5 1");
 		config_PATH.setHorizontalAlignment(SwingConstants.LEFT);
 		config_PATH.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		config_PATH.setText(config.getIniFile().getFile().getPath());
-		add(scrollPaneTextArea, "cell 4 4 8 1,grow");
 		
 		lblAvviso = new JLabel("[Configuration loaded]");
 		lblAvviso.setForeground(Color.DARK_GRAY);
-		add(lblAvviso, "cell 7 1,growx");
+		add(lblAvviso, "cell 8 1,growx");
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(SystemColor.menu);
 		panel_1.setBorder(new LineBorder(Color.BLACK, 2));
 		panel_1.setBackground(Color.LIGHT_GRAY);
-		add(panel_1, "cell 0 0 12 1,grow");
-		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100%]", "[grow]"));
+		add(panel_1, "cell 0 0 13 1,grow");
+		panel_1.setLayout(new MigLayout("", "[100%]", "[grow]"));
 		
 		JLabel lblConfigurationManager = new JLabel("Configuration Manager");
 		lblConfigurationManager.setHorizontalAlignment(SwingConstants.CENTER);
 		lblConfigurationManager.setForeground(Color.BLACK);
-		lblConfigurationManager.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
+		lblConfigurationManager.setFont(new Font("Lithos Pro Regular", Font.BOLD, 18));
 		lblConfigurationManager.setBackground(SystemColor.activeCaptionBorder);
 		panel_1.add(lblConfigurationManager, "cell 0 0,alignx center");
 		
 		btnLoadCustomConfig = new JButton("Load Custom");
+		btnLoadCustomConfig.setPreferredSize(new Dimension(103, 20));
+		btnLoadCustomConfig.setMinimumSize(new Dimension(103, 20));
 		btnLoadCustomConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
 		btnLoadCustomConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLoadCustomConfig.setForeground(Color.BLACK);
 		btnLoadCustomConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
-		btnLoadCustomConfig.setBackground(new Color(176, 196, 222));
+		btnLoadCustomConfig.setBackground(Color.LIGHT_GRAY);
 		add(btnLoadCustomConfig, "cell 0 1,grow");
 		
 		scrollPaneTreeConfigs = new JScrollPane();
-		scrollPaneTreeConfigs.setBorder(new LineBorder(Color.DARK_GRAY, 3, true));
+		scrollPaneTreeConfigs.setBorder(new LineBorder(Color.BLACK, 2));
 		scrollPaneTreeConfigs.setOpaque(true);
 		scrollPaneTreeConfigs.setBackground(new Color(255, 255, 240));
-		add(scrollPaneTreeConfigs, "cell 0 4 4 1,grow");
 		
 		TreeModel treeModel = new FileTreeModel(new File(GeneralConfig.DEFAULT_INI_FOLDER));
 		tree = new JTree(treeModel);
@@ -226,6 +275,14 @@ public class ChargeIniLog extends JPanel{
 		tree.setBorder(null);
 		tree.setBackground(new Color(255, 255, 240));
 		scrollPaneTreeConfigs.setViewportView(tree);
+		
+		splitPane = new JSplitPane();
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setBackground(Color.DARK_GRAY);
+		splitPane.setLeftComponent(scrollPaneTreeConfigs);
+		splitPane.setRightComponent(scrollPaneTextArea);
+		splitPane.setDividerLocation(300);
+		add(splitPane, "cell 0 4 13 1,grow");
 
 		addHandlers();
 		
@@ -238,7 +295,7 @@ public class ChargeIniLog extends JPanel{
 		RsyntaxUtils.changeStyleViaThemeXml(textArea, Themes.DARK.defaultPath);
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_INI);
 		textArea.setLineWrap(true);
-		textArea.setEnabled(false);
+		textArea.setEditable(false);
 		textArea.setSelectedTextColor(Color.LIGHT_GRAY);
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
 		textArea.setMargin(new Insets(20, 20, 20, 20));
@@ -256,7 +313,7 @@ public class ChargeIniLog extends JPanel{
 		btnViewCurrentFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				lblAvviso.setText("[Current Configuration file]");
-				lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
+				lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(0.2f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES (on Disk) ###\n\n");
 				FileStuff.appendFileTxtArea(config.getIniFile().getFile(), textArea, true);
@@ -385,6 +442,28 @@ public class ChargeIniLog extends JPanel{
 					logger.error("Exception happened!", e1);
 					dialogHelper.error("An error occurred :(", "Error");
 				}
+			}
+		});
+		
+		// search text into configuration
+		btnFind.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (searchBox == null) {
+							searchBox = textAreaDialogs.getSearchDialog(thisPanel.parent.getMainFrame(),  null, null,"successAdvice", "errorAdvice");
+							GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
+						} else {
+							searchBox.setVisible(true);
+							searchBox.toFront();
+							searchBox.requestFocus();
+						}
+						searchBox.setLocationRelativeTo(thisPanel.parent.getMainFrame());
+						GuiUtils.changeFrameStateLaterUnchecked(thisPanel.parent.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
+					}
+				});
 			}
 		});
 	}

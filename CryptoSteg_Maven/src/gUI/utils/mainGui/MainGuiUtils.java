@@ -84,6 +84,8 @@ public class MainGuiUtils {
 	
 	public void startConfigManagerPanel(boolean forceStart) {
 		
+		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
+		
 		mainAppReference.isOnHomePage.set(false);
 		
 		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
@@ -98,6 +100,10 @@ public class MainGuiUtils {
 			mainAppReference.configManagerPanel = new ChargeIniLog(MainGUI.currentConfiguration, mainAppReference);
 		}
 		
+		mainAppReference.configManagerPanel.splitPane.setDividerLocation(300);
+		mainAppReference.configManagerPanel.textArea.revalidate();
+		mainAppReference.configManagerPanel.textArea.repaint();
+		
 		contentPane.removeAll();
     	contentPane.add(mainAppReference.configManagerPanel);
     	contentPane.revalidate(); 
@@ -106,6 +112,8 @@ public class MainGuiUtils {
     	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ChargeIniLog.class);
     	MainGUI.currentConfiguration.writeSingleValue(
     			INItializer.GEN_OPT, "lastPanelOpened", ChargeIniLog.class.getCanonicalName());
+    	
+    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 	}
 	
 	public void startCrypterPanel(final boolean forceStart) {
@@ -132,9 +140,9 @@ public class MainGuiUtils {
 						contentPane.repaint();
 						MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
 						MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
+						mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 					}
 				});
-				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 			}
 		});
 	}
@@ -163,11 +171,11 @@ public class MainGuiUtils {
 						contentPane.revalidate();
 						contentPane.repaint();
 						MainGUI.updateGuiFromCurrConfig();
+						mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 					}
 				});
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
 				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
-				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 				
 			}
 		});

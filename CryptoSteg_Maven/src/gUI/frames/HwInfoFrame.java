@@ -1,8 +1,5 @@
 package gUI.frames;
 
-import resources.GeneralConfig;
-import javax.swing.JFrame;
-
 import org.apache.log4j.Logger;
 import org.hyperic.sigar.CpuInfo;
 import org.hyperic.sigar.Mem;
@@ -39,6 +36,8 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import java.awt.Dimension;
 import java.awt.Component;
 import javax.swing.JScrollPane;
@@ -48,17 +47,15 @@ import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 
 public class HwInfoFrame extends ParentFrame{
-	
+	private static final long serialVersionUID = -2119678215026217031L;
+
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(HwInfoFrame.class); 
 	
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
 	
-	private static final int RAM_REFRESH_RATE = 1000;
-	private static final int CPU_REFRESH_RATE = 2000;
-	private static final int HD_REFRESH_RATE = 1500;
-	private static final int SCRYPT_REFRESH_RATE = 1500;
+	private static final int THREAD_REFRESH_RATE = 2500;
 
 	// GUI elements
 	private JScrollPane scrollPane;
@@ -177,69 +174,78 @@ public class HwInfoFrame extends ParentFrame{
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_HW_INFO, this);
 		
 		thisPanel = this;
-		
+
 		initSystemVars();
 		
-		initialize();
-		
-		addValuesInitThreads();
-		
-		addEventHandlers();
-		
-		logger.info(this.getClass().getName() + " Started");
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				initialize();
+				addEventHandlers();
+				addValuesInitThreads();
+				logger.info(HwInfoFrame.this.getClass().getName() + " Started");
+			}
+		});
 	}
 	
 ////////////////////////// INITIALIZER METHOD //////////////////////////
 	
 	private void initialize() {
 		
-		getContentPane().setBackground(new Color(255, 255, 255));
-		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[65px][60px][75%,grow]"));
+		getContentPane().setBackground(Color.DARK_GRAY);
+		getContentPane().setLayout(new MigLayout("", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[50px][60px][75%,grow]"));
 		
 		panelHeaderTitle = new JPanel();
 		panelHeaderTitle.setMinimumSize(new Dimension(100, 10));
 		panelHeaderTitle.setForeground(SystemColor.menu);
-		panelHeaderTitle.setBorder(new LineBorder(new Color(119, 136, 153), 4));
+		panelHeaderTitle.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		panelHeaderTitle.setBackground(Color.BLACK);
 		getContentPane().add(panelHeaderTitle, "cell 0 0 4 1,grow");
-		panelHeaderTitle.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[50%,grow,center][45%,grow,center]", "[20px,fill]"));
+		panelHeaderTitle.setLayout(new MigLayout("fill, inset 0", "[50%,grow,center][45%,grow,center]", "[:20px:45px,fill]"));
 		
-		lblHardwareInfoTool = new JLabel("System Info Tool");
+		lblHardwareInfoTool = new JLabel("  Hardware Info Tool");
 		lblHardwareInfoTool.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblHardwareInfoTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblHardwareInfoTool.setHorizontalAlignment(SwingConstants.CENTER);
 		lblHardwareInfoTool.setForeground(new Color(240, 248, 255));
-		lblHardwareInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 30));
+		lblHardwareInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		lblHardwareInfoTool.setBackground(SystemColor.activeCaptionBorder);
-		panelHeaderTitle.add(lblHardwareInfoTool, "cell 0 0,alignx left,growy");
+		panelHeaderTitle.add(lblHardwareInfoTool, "cell 0 0,alignx left,aligny center");
 		
 		ScryptInfoPanel = new JPanel();
+		ScryptInfoPanel.setMaximumSize(new Dimension(32767, 30));
+		ScryptInfoPanel.setPreferredSize(new Dimension(10, 25));
 		ScryptInfoPanel.setBorder(new LineBorder(new Color(192, 192, 192), 0));
-		ScryptInfoPanel.setBackground(Color.DARK_GRAY);
+		ScryptInfoPanel.setBackground(Color.BLACK);
 		panelHeaderTitle.add(ScryptInfoPanel, "cell 1 0,growx,aligny center");
-		ScryptInfoPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[grow][80][grow][100px]", "[fill]"));
+		ScryptInfoPanel.setLayout(new MigLayout("fill, inset 1", "[90px:n][80,grow][90px:n][100px,grow]", "[::30px,grow,fill]"));
 		
 		lblScrYptCpuUsage = new JLabel("ScrYpT Cpu");
 		lblScrYptCpuUsage.setForeground(Color.LIGHT_GRAY);
-		lblScrYptCpuUsage.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		ScryptInfoPanel.add(lblScrYptCpuUsage, "cell 0 0,alignx center,aligny center");
+		lblScrYptCpuUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		ScryptInfoPanel.add(lblScrYptCpuUsage, "cell 0 0,alignx center,growy");
 		
 		dynLblScryptCpuPerc = new JTextField(UNSELECTED);
+		dynLblScryptCpuPerc.setPreferredSize(new Dimension(132, 18));
+		dynLblScryptCpuPerc.setMinimumSize(new Dimension(6, 18));
+		dynLblScryptCpuPerc.setMaximumSize(new Dimension(2147483647, 40));
 		dynLblScryptCpuPerc.setForeground(new Color(72, 61, 139));
 		dynLblScryptCpuPerc.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblScryptCpuPerc.setEditable(false);
-		ScryptInfoPanel.add(dynLblScryptCpuPerc, "cell 1 0,growx");
+		ScryptInfoPanel.add(dynLblScryptCpuPerc, "cell 1 0,growx,aligny center");
 		
 		lblScryptRamUsage = new JLabel("ScrYpT Ram");
 		lblScryptRamUsage.setForeground(Color.LIGHT_GRAY);
-		lblScryptRamUsage.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		ScryptInfoPanel.add(lblScryptRamUsage, "cell 2 0,alignx center");
+		lblScryptRamUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		ScryptInfoPanel.add(lblScryptRamUsage, "cell 2 0,alignx center,growy");
 		
 		dynLblScryptRamUsage = new JTextField(UNSELECTED);
+		dynLblScryptRamUsage.setPreferredSize(new Dimension(132, 18));
+		dynLblScryptRamUsage.setMinimumSize(new Dimension(6, 18));
+		dynLblScryptRamUsage.setMaximumSize(new Dimension(2147483647, 40));
 		dynLblScryptRamUsage.setForeground(new Color(72, 61, 139));
 		dynLblScryptRamUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblScryptRamUsage.setEditable(false);
-		ScryptInfoPanel.add(dynLblScryptRamUsage, "cell 3 0,growx");
+		ScryptInfoPanel.add(dynLblScryptRamUsage, "cell 3 0,growx,aligny center");
 		
 		ConncetionInfoScrollPanel = new JScrollPane();
 		ConncetionInfoScrollPanel.setBackground(Color.WHITE);
@@ -249,12 +255,12 @@ public class HwInfoFrame extends ParentFrame{
 		mainContainerPanel = new JPanel();
 		mainContainerPanel.setBackground(new Color(211, 211, 211));
 		ConncetionInfoScrollPanel.setViewportView(mainContainerPanel);
-		mainContainerPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[12.5%,grow][12.5%,grow][12.5%,grow][12.5%,grow]", "[50,grow][5][50,grow][50,grow][50,grow][40,grow][40,grow][40,grow][40,grow][40][80,grow]"));
+		mainContainerPanel.setLayout(new MigLayout("", "[12.5%,grow][12.5%,grow][12.5%,grow][12.5%,grow]", "[50,grow][5][50,grow][50,grow][50,grow][40,grow][40,grow][40,grow][40,grow][40][80,grow]"));
 		
 		panelGeneral = new JPanel();
 		panelGeneral.setBackground(new Color(0, 0, 0));
 		mainContainerPanel.add(panelGeneral, "cell 0 0 4 1,grow");
-		panelGeneral.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][grow][grow][grow][grow][grow][grow][grow]", "[grow]"));
+		panelGeneral.setLayout(new MigLayout("", "[100][grow][grow][grow][grow][grow][grow][grow]", "[grow]"));
 		
 		lblArchitecture = new JLabel("Architecture:");
 		lblArchitecture.setForeground(Color.LIGHT_GRAY);
@@ -309,7 +315,7 @@ public class HwInfoFrame extends ParentFrame{
 		panelRAM.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
 		panelRAM.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelRAM, "cell 0 2 4 1,grow");
-		panelRAM.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][160,grow][80][40,grow][100][40,grow]", "[15px][grow]"));
+		panelRAM.setLayout(new MigLayout("", "[100][160,grow][80][40,grow][100][40,grow]", "[15px][grow]"));
 		
 		lblRam = new JLabel("RAM:");
 		panelRAM.add(lblRam, "cell 0 0 1 2,alignx center");
@@ -345,7 +351,7 @@ public class HwInfoFrame extends ParentFrame{
 		panelCPU.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelCPU.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelCPU, "cell 0 3 4 3,grow");
-		panelCPU.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][160px,grow][150][60][150][150]", "[grow][grow][grow]"));
+		panelCPU.setLayout(new MigLayout("", "[100][160px,grow][150][60][150][150]", "[grow][grow][grow]"));
 		
 		lblCPU = new JLabel("CPU:");
 		lblCPU.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -411,7 +417,7 @@ public class HwInfoFrame extends ParentFrame{
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.DARK_GRAY);
 		panelCPU.add(panel, "cell 0 2 6 1,grow");
-		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[60][grow][60][grow][50][grow][60][grow]", "[grow]"));
+		panel.setLayout(new MigLayout("", "[60][grow][60][grow][50][grow][60][grow]", "[grow]"));
 		
 		lblUsage = new JLabel("Usage:");
 		lblUsage.setForeground(Color.WHITE);
@@ -461,7 +467,7 @@ public class HwInfoFrame extends ParentFrame{
 		panelMOBO.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelMOBO.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelMOBO, "cell 0 6 4 1,grow");
-		panelMOBO.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][160][70][grow][70][70][110][grow]", "[grow]"));
+		panelMOBO.setLayout(new MigLayout("", "[100][160][70][grow][70][70][110][grow]", "[grow]"));
 		
 		lblMotherboard = new JLabel("MOBO:");
 		lblMotherboard.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -507,7 +513,7 @@ public class HwInfoFrame extends ParentFrame{
 		panelHD.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelHD.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelHD, "cell 0 7 4 2,grow");
-		panelHD.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][220][60][100px][100px][90px][110px][100px,grow]", "[grow][grow]"));
+		panelHD.setLayout(new MigLayout("", "[100][220][60][100px][100px][90px][110px][100px,grow]", "[grow][grow]"));
 		
 		lblHd = new JLabel("HD:");
 		lblHd.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -596,7 +602,7 @@ public class HwInfoFrame extends ParentFrame{
 		panelMonitors.setBorder(new LineBorder(new Color(64, 64, 64), 2, true));
 		panelMonitors.setBackground(new Color(169, 169, 169));
 		mainContainerPanel.add(panelMonitors, "cell 0 9 4 2,grow");
-		panelMonitors.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100][160][110][grow]", "[][grow]"));
+		panelMonitors.setLayout(new MigLayout("", "[100][160][110][grow]", "[][grow]"));
 		
 		lblDisplay = new JLabel("DISPLAY:");
 		lblDisplay.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -666,67 +672,23 @@ public class HwInfoFrame extends ParentFrame{
 			public void run() {
 				updateGenInfo();
 				updateMoboInfo();
-				updateHdInfo();
 				updateCpuInfo();
 				updateDisplayInfo();
 				
 				while(thisPanel.isActive.get()) {
 					updateRamInfo();
-					try {
-						Thread.sleep(RAM_REFRESH_RATE);
-					} catch (InterruptedException e) {
-						logger.error(Arrays.toString(e.getStackTrace()));
-					}
-				}
-			}
-		}).start();
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				while(thisPanel.isActive.get()) {
 					updateCpuUsageInfo();
-					try {
-						Thread.sleep(CPU_REFRESH_RATE);
-					} catch (InterruptedException e) {
-						logger.error(Arrays.toString(e.getStackTrace()));
-					}
-				}
-			}
-		}).start();
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				while(thisPanel.isActive.get()) {
 					updateHdInfo();
-					try {
-						Thread.sleep(HD_REFRESH_RATE);
-					} catch (InterruptedException e) {
-						logger.error(Arrays.toString(e.getStackTrace()));
-					}
-				}
-			}
-		}).start();
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while(thisPanel.isActive.get()) {
 					updateScryptResourcesUsage();
 					try {
-						Thread.sleep(SCRYPT_REFRESH_RATE);
+						Thread.sleep(THREAD_REFRESH_RATE);
 					} catch (InterruptedException e) {
 						logger.error(Arrays.toString(e.getStackTrace()));
 					}
 				}
 			}
 		}).start();
+		
 	}
 	
 ////////////////////////// SYSTEM VARIABLES INITIALIZER //////////////////////////	
@@ -735,7 +697,7 @@ public class HwInfoFrame extends ParentFrame{
 		cpuUsageHystory = new LimitedConcurrentList<Double>(1000);
 		sysINFO = new SystemInfo();
 		sigar = new Sigar();
-		currentPid = sigar.getPid();
+		
 		MOBO = sysINFO.getHardware().getComputerSystem().getBaseboard();
 		displays = sysINFO.getHardware().getDisplays();
 		displayIndexer = initDisplayIndexer();
@@ -753,8 +715,8 @@ public class HwInfoFrame extends ParentFrame{
 //////////////////////////AND NOW SOME USEFUL METHOD //////////////////////////
 	
 	private synchronized void updateScryptResourcesUsage(){
-//		Sigar tempSigar = new Sigar();
-//		long currentPid = tempSigar.getPid();
+		Sigar tempSigar = new Sigar();
+		long currentPid = tempSigar.getPid();
 		try {
 			scryptCpuUsage = sigar.getProcCpu(currentPid);
 			scryptMemUsage = sigar.getProcMem(currentPid);

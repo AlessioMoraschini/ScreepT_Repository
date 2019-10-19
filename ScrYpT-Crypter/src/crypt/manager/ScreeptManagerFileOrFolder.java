@@ -5,8 +5,10 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.crypto.NoSuchPaddingException;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FileUtils;
@@ -17,6 +19,7 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import dialogutils.JOptionHelper;
+import dialogutils.TestUpdateProgress;
 import crypt.steg.STEGException;
 
 public class ScreeptManagerFileOrFolder {
@@ -32,21 +35,45 @@ public class ScreeptManagerFileOrFolder {
 	public ScreeptManager screepTManager;
 	private boolean shuffle = true;
 	
-	private static String opInfo = "Nothing to display";
+	private String opInfo = "Nothing to display";
 	
-	public static boolean coderUsed = false;
+	public boolean coderUsed = false;
+	public boolean defaultProgressBarVisible = true;
+	TestUpdateProgress generalProgress;
 	
 	public JOptionHelper dialogHelper;
 	
-	public ScreeptManagerFileOrFolder(boolean shuffle) {
-		this.shuffle = shuffle;
+	/**
+	 * Initialize a general encription/decription manager for files or folders and their content.
+	 * 
+	 * @param generalProgress if null normal progress updater will be used, else custom will be 
+	 * used for secondary progressBar updates (be careful to provide a TestUpdateProgress 
+	 * with two bars in this case, and remember that secondary will be automatically setted during crypt/decrypt process)
+	 * @param parent this will be used as reference for dialogs location
+	 * @Param advicesEnabled if true message dialogs will be printed out during operations
+	 * 
+	 * NB default shuffle is false, you have to specify it each time crypting/decrypting
+	 */
+	public ScreeptManagerFileOrFolder(TestUpdateProgress generalProgress, JComponent parent, boolean advicesEnabled) {
+		this.shuffle = false;
+		// default dialogHelper initially disabled 
+		this.dialogHelper = new JOptionHelper(parent, advicesEnabled);
+		this.generalProgress = generalProgress;
+		if (this.generalProgress != null) {
+			this.generalProgress.getDialog().setVisible(false);
+		}
+		this.defaultProgressBarVisible = generalProgress == null;
 	}
 	
 ////////////////////////// MAIN METHODS ////////////////////////////////
-	public boolean crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile) {
+	public boolean crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean shuffle) throws Exception{
 		
+		if (this.generalProgress != null) {
+			this.generalProgress.getDialog().setVisible(true);
+		}
+		
+		this.shuffle = shuffle;
 		boolean resultOK = false;
-		dialogHelper = new JOptionHelper(null, false);
 
 		// notify that method is running
 		coderUsed=true;
@@ -146,8 +173,10 @@ public class ScreeptManagerFileOrFolder {
 		}
 		coderUsed=false;
 		
+		//  CLEAR DATA AND CLOSE PROGRESS BAR
 		if(screepTManager!=null) {
 			screepTManager.disableProgressUpdater();
+			screepTManager.getAesCoder().clearSensitiveData();
 		}
 
 		// INFORM USER ABOUT ESIT OF CRYPT OPERATION
@@ -171,18 +200,18 @@ public class ScreeptManagerFileOrFolder {
 		coderUsed=false;
 		opInfo = screepTManager.getOutputStats();
 		screepTManager.killOpenStreams();
-		screepTManager.getAesCoder().clearSensitiveData();
 		
 		return resultOK;
 	}
 	
-	public boolean decrYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean deleteAfterClose) {
-		boolean resultOK = false;
-
-		if(deleteAfterClose) {
-			// if temporary mode create temp folder ScrYpT on desktop
-			destinationDir = new File(TEMP_DECRIPTED_ROOT_PATH);
+	public boolean decrYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean shuffle) throws Exception{
+		
+		if (this.generalProgress != null) {
+			this.generalProgress.getDialog().setVisible(true);
 		}
+		
+		this.shuffle = shuffle;
+		boolean resultOK = false;
 		
 		// notify that method is running
 		coderUsed=true;
@@ -276,7 +305,7 @@ public class ScreeptManagerFileOrFolder {
 		}else {					
 			if (destinationDir != null) {
 				String msg = "Something went wrong :(";
-				dialogHelper.error(msg, "SUCCESS!");
+				dialogHelper.error(msg, null);
 				logger.error(msg);
 			}else{
 				dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
@@ -305,6 +334,7 @@ public class ScreeptManagerFileOrFolder {
 			throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
+		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
 		return screepTManager;
 	}
 
@@ -315,6 +345,7 @@ public class ScreeptManagerFileOrFolder {
 		STEGcoder = new StegCipher(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder);
 		screepTManager.setShuffleResult(shuffle);
+		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
 		return screepTManager;
 	}
 
@@ -330,6 +361,7 @@ public class ScreeptManagerFileOrFolder {
 		STEGcoder = new StegCipher(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
 		screepTManager.setShuffleResult(shuffle);
+		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
 		return screepTManager;
 	}
 
@@ -344,7 +376,7 @@ public class ScreeptManagerFileOrFolder {
 			}
 
 			screepTManager.setOutPath(destinationDir.getCanonicalPath());
-			resultOK = screepTManager.crypt(src, null);
+			resultOK = screepTManager.crypt(src, generalProgress);
 
 		}
 
@@ -396,7 +428,7 @@ public class ScreeptManagerFileOrFolder {
 			}
 
 			screepTManager.setOutPath(destinationDir.getCanonicalPath());
-			resultOK = screepTManager.deCrypt(src, null);
+			resultOK = screepTManager.deCrypt(src, generalProgress);
 
 		}
 		return resultOK;
@@ -492,6 +524,19 @@ public class ScreeptManagerFileOrFolder {
 
 		return resultOK;
 	}
+	
+
+	public boolean isDefaultProgressBarVisible() {
+		return defaultProgressBarVisible;
+	}
+
+	public void setDefaultProgressBarVisible(boolean defaultProgressBarVisible) {
+		this.defaultProgressBarVisible = defaultProgressBarVisible;
+	}
+
+	public String getOutputStats() {
+		return (screepTManager != null)?screepTManager.getOutputStats() : "";
+	}
 
 	public void setAdvicesEnabled(boolean enabled) {
 		this.dialogHelper.setAdvicesEnabled(enabled);
@@ -508,4 +553,13 @@ public class ScreeptManagerFileOrFolder {
 	public String getOpInfo() {
 		return opInfo;
 	}
+
+	public TestUpdateProgress getGeneralProgress() {
+		return generalProgress;
+	}
+
+	public void setGeneralProgress(TestUpdateProgress generalProgress) {
+		this.generalProgress = generalProgress;
+	}
+	
 }

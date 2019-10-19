@@ -3,7 +3,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowListener;
 import java.lang.reflect.Method;
-import java.rmi.server.UID;
 import java.util.UUID;
 
 import javax.swing.JComponent;
@@ -142,6 +141,8 @@ public class TextAreaDialogs {
 	}
 	
 	private boolean checkReflection(Object methodClass, String method) {
+		
+		if(methodClass == null || method == null) {return false;}
 		
 		Class<?> clazz = (methodClass instanceof Class<?>)? (Class<?>)methodClass : methodClass.getClass();
 		

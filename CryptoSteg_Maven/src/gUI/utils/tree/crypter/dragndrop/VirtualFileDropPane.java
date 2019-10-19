@@ -34,6 +34,8 @@ import frameutils.frame.BackgroundFrame;
 import gUI.frames.KeyDictionaryPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import maingUI.MainGUI;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class VirtualFileDropPane extends BackgroundFrame {
 
@@ -73,13 +75,20 @@ public class VirtualFileDropPane extends BackgroundFrame {
         filesTree.setCellRenderer(new DragNDropVirtualCellRenderer());
 		new TreeDragNDropListenerCrypter(filesTree); // pop-up menu listener
         
-        setLayout(new GridBagLayout());
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        gridBagLayout.rowWeights = new double[]{0.0, 1.0};
+        gridBagLayout.rowHeights = new int[]{80, 0};
+        setLayout(gridBagLayout);
         this.setBackground(Color.BLACK);
         
         message = new JLabel("Drag here your files to code/decode them");
         message.setFont(message.getFont().deriveFont(java.awt.Font.BOLD, 18));
         message.setForeground(Color.WHITE);
-        add(message);
+        GridBagConstraints gbc_message = new GridBagConstraints();
+        gbc_message.insets = new Insets(0, 0, 5, 0);
+        gbc_message.gridx = 0;
+        gbc_message.gridy = 0;
+        add(message, gbc_message);
 
     }
 

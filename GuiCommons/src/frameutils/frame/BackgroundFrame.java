@@ -29,12 +29,12 @@ public class BackgroundFrame extends JPanel{
 	
 	@Override
 	  protected void paintComponent(Graphics g) {
+		Image background = backgroundImage.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT);
 		
 	    super.paintComponent(g);
 	    if (backgroundImage != null) {
 			if (scaleIMG) {
-				backgroundImage = backgroundImage.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH);
-				g.drawImage(backgroundImage, 0, 0, null);
+				g.drawImage(background, 0, 0, null);
 			}else {
 				int Y=0;
 				int X=0;
@@ -43,11 +43,11 @@ public class BackgroundFrame extends JPanel{
 				int H = this.getHeight();
 				
 				if(W >= 0 && H >= 0) {
-					backgroundImage = scaleImage(backgroundImage, W, H);
-					X = (W - backgroundImage.getWidth(null)) / 2;
-					Y = (H - backgroundImage.getHeight(null)) / 2;
+					background = scaleImage(backgroundImage, W, H);
+					X = (W - background.getWidth(null)) / 2;
+					Y = (H - background.getHeight(null)) / 2;
 				}
-				g.drawImage(backgroundImage, X, Y, null);
+				g.drawImage(background, X, Y, null);
 			}
 		}
 	}

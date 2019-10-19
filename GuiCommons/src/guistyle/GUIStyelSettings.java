@@ -38,6 +38,10 @@ public class GUIStyelSettings{
 
     public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
+    		
+    		UIManager.put("CheckBox.background", new Color(0,0,0,0));
+    		UIManager.put("CheckBox.disabledText", Color.GRAY);
+    		UIManager.put("RadioButton.disabledText", Color.GRAY);
     		UIManager.put("nimbusOrange", Color.GREEN);
 			UIManager.put( "MenuBar.foreground", Color.black );
 			UIManager.put("ScrollBar.background", new Color(170,170,170));
@@ -85,40 +89,46 @@ public class GUIStyelSettings{
     
     public static synchronized boolean setDarkNimbus(int nimbusSize) {
     	
-      UIManager.put("nimbusOrange", Color.GREEN);
-  	  UIManager.put( "nimbusBase", new Color( 18, 30, 49) );
-  	  UIManager.put("ScrollBar.background", new Color(70,70,70));
-  	  UIManager.put( "MenuBar.foreground", Color.white );
-  	  UIManager.put( "nimbusLightBackground", new Color( 250, 250, 250) );
-  	  UIManager.put( "nimbusSelectionBackground", new Color( 150, 150, 150) );
-  	  UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
-  	  try {
-  	    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-  	      if ("Nimbus".equals(info.getName())) {
-  	          javax.swing.UIManager.setLookAndFeel(info.getClassName());
-  	          return true;
-  	      }
-  	    }
-  	    GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, false);
-  	  } catch (ClassNotFoundException e) {
-  		  logger.error("Exception happened!", e);
-  	  } catch (InstantiationException e) {
-  		  logger.error("Exception happened!", e);
-  	  } catch (IllegalAccessException e) {
-  		  logger.error("Exception happened!", e);
-  	  } catch (javax.swing.UnsupportedLookAndFeelException e) {
-  		  logger.error("Exception happened!", e);
-  	  } catch (Exception e) {
-  		  logger.error("Exception happened!", e);
-  	  }
-  	  
-  	  updateAllWindowsLaf();
-  	  
-  	  return false;
+    	UIManager.put("CheckBox.background", new Color(0,0,0,0));
+		UIManager.put("CheckBox.disabledText", Color.GRAY);
+		UIManager.put("RadioButton.disabledText", Color.GRAY);
+		UIManager.put("nimbusOrange", Color.GREEN);
+		UIManager.put("nimbusBase", new Color(18, 30, 49));
+		UIManager.put("ScrollBar.background", new Color(70, 70, 70));
+		UIManager.put("MenuBar.foreground", Color.white);
+		UIManager.put("nimbusLightBackground", new Color(250, 250, 250));
+		UIManager.put("nimbusSelectionBackground", new Color(150, 150, 150));
+		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
+		try {
+			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+					return true;
+				}
+			}
+			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, false);
+		} catch (ClassNotFoundException e) {
+			logger.error("Exception happened!", e);
+		} catch (InstantiationException e) {
+			logger.error("Exception happened!", e);
+		} catch (IllegalAccessException e) {
+			logger.error("Exception happened!", e);
+		} catch (javax.swing.UnsupportedLookAndFeelException e) {
+			logger.error("Exception happened!", e);
+		} catch (Exception e) {
+			logger.error("Exception happened!", e);
+		}
+
+		updateAllWindowsLaf();
+
+		return false;
     }
     
 	public static synchronized boolean setLightNimbus(int nimbusSize) {
 		
+		UIManager.put("CheckBox.background", new Color(0,0,0,0));
+		UIManager.put("CheckBox.disabledText", Color.GRAY);
+		UIManager.put("RadioButton.disabledText", Color.GRAY);
 		UIManager.put("nimbusOrange", Color.GREEN);
 		UIManager.put("ScrollBar.background", new Color(170,170,170));
 		UIManager.put("nimbusBase", new Color(51, 98, 140));

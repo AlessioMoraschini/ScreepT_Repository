@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -34,6 +35,7 @@ public class TestUpdateProgress {
 	// progressBars
     private volatile JProgressBar pb;
     private volatile JProgressBar GeneralBar;
+    public AtomicBoolean progBarEnabled = new AtomicBoolean(true);
     
     private int defaultCloseOp = JDialog.DO_NOTHING_ON_CLOSE;
     private JDialog dialog;
@@ -44,8 +46,9 @@ public class TestUpdateProgress {
     private GridBagConstraints gbc_pb;
     private GridBagConstraints gbc_genb;
     
-    // CONSTRUCTORS
+    // ####################### START CONSTRUCTORS - USE THE ONE WITH TWO PARAMS #################### //
     
+    @Deprecated
     public TestUpdateProgress() {
 		
     	initGraphics(1);
@@ -67,6 +70,7 @@ public class TestUpdateProgress {
         }).start();
     }
 
+    @Deprecated
 	public TestUpdateProgress(INItializer currentConf) {
     	
 		config = currentConf;
@@ -94,21 +98,27 @@ public class TestUpdateProgress {
 	public TestUpdateProgress(INItializer currentConf, boolean secondBar) {
     	
 		config = currentConf;
-
-		initGraphics(2);
+		
+		if (secondBar) {
+			initGraphics(2);
+			initGeneralBar();
+		}else {
+			initGraphics(1);
+		}
 		
 		initSpecBar();
-		
-        if(secondBar) {
-        	initGeneralBar();
-        }
         
         new Thread(new Runnable() {
 
             public void run() {
 
                 try {
-					doInBackground(GeneralBar);
+                	if (secondBar) {
+                		doInBackground(GeneralBar);
+                	}else {
+                		doInBackground(pb);
+                	}
+                	
 				} catch (Exception e) {
 					logger.error("Catched exception while monitoring progress!",e);
 		            dialog.dispose();
@@ -117,6 +127,8 @@ public class TestUpdateProgress {
         	}
         }).start();
     }
+	
+	// ####################### END CONSTRUCTORS #################### //
 	
 	private synchronized void initGeneralBar() {
 		
@@ -129,7 +141,6 @@ public class TestUpdateProgress {
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
-		
 	}
 	
 	private synchronized void initSpecBar() {
@@ -170,7 +181,7 @@ public class TestUpdateProgress {
         gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0};
         gridBagLayout.columnWidths = new int[]{0, 10, 100, 0, 10};
         gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0};
-        gridBagLayout.rowHeights = new int[]{60, 40, 5};
+        gridBagLayout.rowHeights = new int[]{60, 50, 10};
         dialog.getContentPane().setLayout(gridBagLayout);
         dialog.setDefaultCloseOperation(defaultCloseOp);
         dialog.setAlwaysOnTop(true);
@@ -194,6 +205,10 @@ public class TestUpdateProgress {
 			gbc_genb.gridx = 2;
 			gbc_genb.gridy = nYrows - 1;
 		}
+        
+        if(!progBarEnabled.get()) {
+        	dialog.setVisible(false);
+        }
 	}
 	
 	public void setUndefinedDurationAndClosable() {
@@ -209,7 +224,14 @@ public class TestUpdateProgress {
     }
 
     protected void doInBackground(JProgressBar bar) throws Exception {
-        while(bar.getValue()<100 || !forceStop) {
+        while(bar.getValue()<100 && !forceStop) {
+        	
+        	if(!progBarEnabled.get()) {
+            	dialog.setVisible(false);
+            }else {
+            	dialog.setVisible(true);
+            }
+        	
             Thread.sleep(150);
             doneCheck(bar);
         }
@@ -225,37 +247,6 @@ public class TestUpdateProgress {
     	dialog.dispose();
     }
 
-	public JProgressBar getPb() {
-		return pb;
-	}
-
-	public void setPb(JProgressBar pb) {
-		this.pb = pb;
-	}
-		
-    public JProgressBar getGeneralBar() {
-		return GeneralBar;
-	}
-
-	public void setGeneralBar(JProgressBar generalBar) {
-		GeneralBar = generalBar;
-	}
-
-	public JDialog getDialog() {
-		return dialog;
-	}
-
-	public void setDialog(JDialog dialog) {
-		this.dialog = dialog;
-	}
-
-	public JLabel getLabel() {
-		return label;
-	}
-
-	public void setLabel(JLabel label) {
-		this.label = label;
-	}
 	
 	/**
 	 * 
@@ -288,4 +279,56 @@ public class TestUpdateProgress {
 	public void move(int xDiff, int yDiff) {
 		GuiUtils.moveFrame(dialog, xDiff, yDiff);
 	}
+	
+	public void hide() {
+		dialog.setVisible(false);
+	}
+
+	public void show() {
+		dialog.setVisible(true);
+	}
+	
+	// ############### GETTERS AND SETTERS ################### //
+	
+	public JProgressBar getPb() {
+		return pb;
+	}
+	
+	public void setPb(JProgressBar pb) {
+		this.pb = pb;
+	}
+	
+	public JProgressBar getGeneralBar() {
+		return GeneralBar;
+	}
+	
+	public void setGeneralBar(JProgressBar generalBar) {
+		GeneralBar = generalBar;
+	}
+	
+	public JDialog getDialog() {
+		return dialog;
+	}
+	
+	public void setDialog(JDialog dialog) {
+		this.dialog = dialog;
+	}
+	
+	public JLabel getLabel() {
+		return label;
+	}
+	
+	public void setLabel(JLabel label) {
+		this.label = label;
+	}
+
+	public AtomicBoolean getProgBarEnabled() {
+		return progBarEnabled;
+	}
+
+	public void setProgBarEnabled(boolean progBarEnabled) {
+		this.progBarEnabled = new AtomicBoolean(progBarEnabled);
+		dialog.setVisible(progBarEnabled);
+	}
+	
 }

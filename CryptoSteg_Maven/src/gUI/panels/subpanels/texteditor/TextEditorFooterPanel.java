@@ -147,7 +147,7 @@ public class TextEditorFooterPanel extends JPanel{
 		add(lblAdvice, "cell 16 0,alignx right,aligny center");
 		lblAdvice.setBackground(SystemColor.info);
 		lblAdvice.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblAdvice.setForeground(new Color(255, 255, 255));
+		lblAdvice.setForeground(new Color(176, 196, 222));
 		lblAdvice.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAdvice.setText(" [Current output: .txt]");
 		

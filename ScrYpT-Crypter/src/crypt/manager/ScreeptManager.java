@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -1070,6 +1071,12 @@ public class ScreeptManager {
 				}
             }
         }
+	}
+	
+	public void setProgressBarVisible(AtomicBoolean enabled) {
+		if (this.progUpdater != null && this.progUpdater.progBarEnabled != null) {
+			this.progUpdater.progBarEnabled.set(enabled.get());
+		}
 	}
 	
 	//////////////////////

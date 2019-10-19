@@ -165,7 +165,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
 
-	            if (!cryptoPanel.coderUsed) {
+	            if (!cryptoPanel.isCoderUsed()) {
 					TreePath[] treeSelArr = tree.getSelectionPaths();
 					int i = 0;
 					if (treeSelArr.length != 0 && JOptionPane.showConfirmDialog(mainFrame,
@@ -222,7 +222,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
 	        	
-				if (!cryptoPanel.coderUsed) {
+				if (!cryptoPanel.isCoderUsed()) {
 					// show input dialog to select the file(gives null in case of no file selected)
 					File selected = directoWrite(TEXT_LOG);
 					new Thread(new Runnable() {
@@ -330,7 +330,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	private void useAsKeyImage() {
 		File thisFile = (File)tree.getLastSelectedPathComponent();
     	// if a file is selected
-		if (tree.getLastSelectedPathComponent()!=null && !cryptoPanel.coderUsed) {
+		if (tree.getLastSelectedPathComponent()!=null && !cryptoPanel.isCoderUsed()) {
 			try {
 				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png")&&ImageIO.read(thisFile)!=null) {
 					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();

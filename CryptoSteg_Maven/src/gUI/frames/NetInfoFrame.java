@@ -1,7 +1,6 @@
 package gUI.frames;
 
 import resources.GeneralConfig;
-import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.hyperic.sigar.NetInfo;
@@ -42,7 +41,8 @@ import javax.swing.JProgressBar;
 import java.awt.Cursor;
 
 public class NetInfoFrame extends ParentFrame{
-	
+	private static final long serialVersionUID = -2907513458441322410L;
+
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(NetInfoFrame.class); 
 	
@@ -106,7 +106,7 @@ public class NetInfoFrame extends ParentFrame{
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
-		setMaximumSize(new Dimension(800, 450));
+		setMaximumSize(new Dimension(750, 400));
 		setMinimumSize(new Dimension(750, 400));
 		
 		isActive.set(true);
@@ -131,22 +131,22 @@ public class NetInfoFrame extends ParentFrame{
 	private void initialize() {
 	
 		getContentPane().setBackground(Color.BLACK);
-		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[60px][60px][75%,grow]"));
+		getContentPane().setLayout(new MigLayout("fill, inset 2", "[50px,grow][25%,grow][60%,grow][50px,grow]", "[35px][40px][75%,grow]"));
 		
 		headerPanelTitle = new JPanel();
 		headerPanelTitle.setMinimumSize(new Dimension(100, 10));
 		headerPanelTitle.setForeground(SystemColor.menu);
-		headerPanelTitle.setBorder(new LineBorder(Color.DARK_GRAY, 4));
-		headerPanelTitle.setBackground(new Color(119, 136, 153));
+		headerPanelTitle.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		headerPanelTitle.setBackground(new Color(112, 128, 144));
 		getContentPane().add(headerPanelTitle, "cell 0 0 4 1,grow");
-		headerPanelTitle.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[grow,trailing][100%,grow,center][grow,trailing]", "[20px,grow]"));
+		headerPanelTitle.setLayout(new MigLayout("fill, inset 2", "[grow,trailing][100%,grow,center][grow,trailing]", "[20px,grow]"));
 		
 		lblNetworkInfoTool = new JLabel("Network Info Tool");
 		lblNetworkInfoTool.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblNetworkInfoTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblNetworkInfoTool.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNetworkInfoTool.setForeground(new Color(0, 0, 0));
-		lblNetworkInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 24));
+		lblNetworkInfoTool.setForeground(Color.WHITE);
+		lblNetworkInfoTool.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		lblNetworkInfoTool.setBackground(SystemColor.activeCaptionBorder);
 		headerPanelTitle.add(lblNetworkInfoTool, "cell 1 0,alignx center,growy");
 		
@@ -171,9 +171,9 @@ public class NetInfoFrame extends ParentFrame{
 		getContentPane().add(ConncetionInfoScrollPanel, "cell 0 2 4 1,grow");
 		
 		panel = new JPanel();
-		panel.setBackground(new Color(255, 250, 240));
+		panel.setBackground(Color.LIGHT_GRAY);
 		ConncetionInfoScrollPanel.setViewportView(panel);
-		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[12.5%,grow][12.5%,grow][12.5%,grow][10px][12.5%,grow][12.5%,grow][12.5%,grow]", "[40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow]"));
+		panel.setLayout(new MigLayout("fill, inset 2", "[12.5%,grow][12.5%,grow][12.5%,grow][10px][12.5%,grow][12.5%,grow][12.5%,grow][5px]", "[40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow][40,grow]"));
 		
 		lblAdapterName = new JLabel("Adapter Name:");
 		lblAdapterName.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -187,15 +187,16 @@ public class NetInfoFrame extends ParentFrame{
 		
 		btnCalculateConnSpeed = new JButton("Calculate connection speed");
 		btnCalculateConnSpeed.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnCalculateConnSpeed.setMinimumSize(new Dimension(0, 40));
+		btnCalculateConnSpeed.setMinimumSize(new Dimension(0, 35));
 		btnCalculateConnSpeed.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		btnCalculateConnSpeed.setBackground(new Color(192, 192, 192));
 		panel.add(btnCalculateConnSpeed, "cell 4 0 2 1,growx");
 		
 //		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(); // active this only while updating graphics with windowbuilder
 		comboSpeedTestOpt = new JComboBox<FtpSpeedTestOptions>(FtpSpeedTestOptions.values());
+		comboSpeedTestOpt.setMinimumSize(new Dimension(31, 35));
 		comboSpeedTestOpt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panel.add(comboSpeedTestOpt, "cell 6 0,alignx center,aligny center");
+		panel.add(comboSpeedTestOpt, "cell 6 0,growx,aligny center");
 		
 		lblHostName = new JLabel("Host Name:");
 		lblHostName.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -223,10 +224,10 @@ public class NetInfoFrame extends ParentFrame{
 		panel.add(separatorVertMiddle, "cell 3 0 1 8,alignx center,growy");
 		
 		panel_1 = new JPanel();
-		panel_1.setBackground(Color.LIGHT_GRAY);
+		panel_1.setBackground(Color.DARK_GRAY);
 		panel_1.setBorder(new LineBorder(new Color(0, 51, 51), 2));
-		panel.add(panel_1, "cell 4 1 3 4,grow");
-		panel_1.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[10%,grow][50%,grow]", "[15px][30px,grow][10px][10px][30px,grow][10px][10px][30px,grow]"));
+		panel.add(panel_1, "cell 4 1 4 4,grow");
+		panel_1.setLayout(new MigLayout("", "[10%,grow][50%,grow]", "[15px][30px,grow][10px][10px][30px,grow][10px][10px][30px,grow]"));
 		
 		progressBarUp = new JProgressBar();
 		progressBarUp.setBackground(Color.DARK_GRAY);
@@ -235,10 +236,12 @@ public class NetInfoFrame extends ParentFrame{
 		panel_1.add(progressBarUp, "cell 0 0 2 1,growx");
 		
 		lblUpload = new JLabel("Upload:");
+		lblUpload.setForeground(Color.WHITE);
 		lblUpload.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel_1.add(lblUpload, "cell 0 1,alignx center");
 		
 		dynLblUPspeed = new JLabel(UNSELECTED);
+		dynLblUPspeed.setForeground(Color.WHITE);
 		dynLblUPspeed.setHorizontalAlignment(SwingConstants.CENTER);
 		dynLblUPspeed.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel_1.add(dynLblUPspeed, "cell 1 1,alignx center");
@@ -255,10 +258,12 @@ public class NetInfoFrame extends ParentFrame{
 		panel_1.add(progressBarDown, "cell 0 3 2 1,growx");
 		
 		lblDownload = new JLabel("Download:");
+		lblDownload.setForeground(Color.WHITE);
 		lblDownload.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel_1.add(lblDownload, "cell 0 4,alignx center");
 		
 		dynLblDOWNspeed = new JLabel(UNSELECTED);
+		dynLblDOWNspeed.setForeground(Color.WHITE);
 		dynLblDOWNspeed.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel_1.add(dynLblDOWNspeed, "cell 1 4,alignx center");
 		
@@ -271,10 +276,12 @@ public class NetInfoFrame extends ParentFrame{
 		panel_1.add(progressBarLatency, "cell 0 6 2 1,growx");
 		
 		labelLatency = new JLabel("Latency:");
+		labelLatency.setForeground(Color.WHITE);
 		labelLatency.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel_1.add(labelLatency, "cell 0 7,alignx center");
 		
 		dynLblLatency = new JLabel(UNSELECTED);
+		dynLblLatency.setForeground(Color.WHITE);
 		dynLblLatency.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		panel_1.add(dynLblLatency, "cell 1 7,alignx center");
 		
