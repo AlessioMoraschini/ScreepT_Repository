@@ -1,4 +1,4 @@
-package networkscanner.dmad;
+package network.scanner.dmad;
 
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapDumper;

@@ -1,4 +1,4 @@
-package networkscanner.csd;
+package network.scanner.csd;
 
 import org.ini4j.Ini;
 

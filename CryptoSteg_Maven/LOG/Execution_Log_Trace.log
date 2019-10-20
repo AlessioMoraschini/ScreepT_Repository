@@ -11123,3 +11123,669 @@ ALGORITHM: REPLICATE
 2019-10-20 22:25:36,764 [Thread-4] DEBUG maingUI.MainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
 2019-10-20 22:25:46,765 [Thread-4] DEBUG maingUI.MainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
 2019-10-20 22:25:56,765 [Thread-4] DEBUG maingUI.MainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-10-21 01:43:02,624 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Mon Oct 21 01:43:02 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-21 01:43:02,628 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-21 01:43:02,971 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-21 01:43:03,134 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-21 01:43:03,282 [main] INFO  maingUI.MainGUI - Chosen log level: DEBUG
+2019-10-21 01:43:03,332 [main] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: User
+GENERAL VOLUME: 34,00%
+LAST PANEL OPENED: gUI.panels.TextEditor
+Txt Editor: Listen for changes in current file -> true
+CHARSET: UTF8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: true
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: E:\Eclipse NDCE
+FLAG_AUTOSAVE: true
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [IMG]
+
+ ---- TEXT EDITOR -----
+
+INLINE TABS MODE: false
+MARGIN: 12
+PREFERRED_THEME: Resources_Scrypt/themes/default/dark.xml
+FILE_PANEL_BACKGROUND_COLOR: java.awt.Color[r=28,g=32,b=32]
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=20]
+VOICE_RATE: 105
+PREFERRED DIVIDER FILETREE POSITION: 306
+PREFERRED DIVIDER RIGHT PANE POSITION: 126
+PREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): 340
+LAST FILE OPENED IN CLIPBOARD: clipboard2.txt
+OPENED FILES AT START: [E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html, E:\Siti web\File soffio di grano\Codice\HTML\Widget_Right_HomePage.html]
+DEFAULT OPENED FILE AT START: E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html
+LAST CODE ESCAPE LANGUAGE: HTML_4
+
+ TEXT AREA DETAIL VALUES: 
+
+
+FILE TREE VIEW ACTIVE: true
+MAP VIEW ACTIVE: false
+CLIPBOARD VIEW ACTIVE: false
+FILE TREE LOCKED: true
+WORKSPACE VIEW SELECTED: true
+DEFAULT WORKSPACE LOCATION: E:\Siti web\File soffio di grano\Codice
+DEFAULT AUTOMATIC SYNTAX SYNC: true
+ANTIALIASED TEXT AREA: true
+TAB SIZE: 3
+TAB LINE VISIBLE: true
+BRACKET MATCHING: true
+ANIMATED BRACKETS MATCH: true
+AUTO INDENT: true
+AUTO-BREAKLINE ACTIVE: false
+CLEAR WHITESPACES LINES: true
+CLOSE CURLY BRACES: true
+CLOSE MARKUP TAGS: true
+CODE FOLDING ENABLED: true
+FADE CURRENT LINE HIGHLIGHT: true
+FRACTIONAL FONT METRICS: true
+HIGHLIGHT SECONDARY LANGUAGES: true
+HYPERLINKS ENABLED: true
+MARK OCCURRENCES: true
+PAINT OCCURRENCES MARKES BORDER: true
+ROUND SELECTION EDGES: true
+TAB SPACES EMULATED: true
+SHOW END OF LINE: false
+SHOW BRACKETS MATCH POPUP: false
+FOCUSABLE TIPS FLAG: true
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-10-21 01:43:03,334 [main] INFO  maingUI.MainGUI - Initializing main GUI-start
+2019-10-21 01:43:03,815 [main] INFO  maingUI.MainGUI - Background of mainGUI setted: Resources_Scrypt/Resources_Scrypt/Images/Logo-AM_v2.jpg
+2019-10-21 01:43:03,846 [AWT-EventQueue-0] INFO  gUI.frames.TutorialFrame - gUI.frames.TutorialFrame Starting...
+2019-10-21 01:43:03,848 [main] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-10-21 01:43:03,851 [AWT-EventQueue-0] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-10-21 01:43:03,909 [main] INFO  maingUI.MainGUI - ## GUI components started
+2019-10-21 01:43:03,912 [main] INFO  maingUI.MainGUI - icon image setted to main window
+2019-10-21 01:43:03,912 [main] INFO  maingUI.MainGUI - ## TITLE UPDATER started.
+2019-10-21 01:43:03,914 [main] INFO  maingUI.MainGUI - Main GUI initialized correctly.
+2019-10-21 01:43:03,919 [Thread-4] INFO  maingUI.MainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: true
+2019-10-21 01:43:04,252 [AWT-EventQueue-0] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-10-21 01:43:04,253 [AWT-EventQueue-0] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/Readme/ReadMe.html
+2019-10-21 01:43:04,858 [AWT-EventQueue-0] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/Readme/ReadMe.html : Loaded!
+2019-10-21 01:43:04,860 [AWT-EventQueue-0] INFO  gUI.frames.TutorialFrame - gUI.frames.TutorialFrame Started
+2019-10-21 01:43:04,928 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-10-21 01:43:05,132 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - 
+
+ !! Custom themes initialized from folder: Resources_Scrypt/themes/custom/
+
+2019-10-21 01:43:05,474 [AWT-EventQueue-0] WARN  tabbededitor.ChangeMonitorManager - [skipped]: file is NULL, it's not possible to add it to change monitor list.
+2019-10-21 01:43:05,651 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:43:05,755 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html [CREATING MONITOR]: added to change monitor list. [Reloading for different root: false]
+2019-10-21 01:43:05,758 [AWT-EventQueue-0] INFO  amfileutils.filechangewatcher.FileChangeMonitor - FileChangeMonitor() -> Start - Creating a new monitor instance with MOD/CREATE/DELETE 
+
+[rootMonitorFolder:E:\Siti web\File soffio di grano\Codice\HTML]
+2019-10-21 01:43:05,764 [AWT-EventQueue-0] INFO  amfileutils.filechangewatcher.FileChangeMonitor - FileChangeMonitor() -> Ready - Monitor instance created
+2019-10-21 01:43:05,789 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - E:\Siti web\File soffio di grano\Codice\HTML\Widget_Right_HomePage.html [CREATING MONITOR]: added to change monitor list. [Reloading for different root: false]
+2019-10-21 01:43:05,790 [AWT-EventQueue-0] INFO  amfileutils.filechangewatcher.FileChangeMonitor - FileChangeMonitor() -> Start - Creating a new monitor instance with MOD/CREATE/DELETE 
+
+[rootMonitorFolder:E:\Siti web\File soffio di grano\Codice\HTML]
+2019-10-21 01:43:05,791 [AWT-EventQueue-0] INFO  amfileutils.filechangewatcher.FileChangeMonitor - FileChangeMonitor() -> Ready - Monitor instance created
+2019-10-21 01:43:05,807 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-10-21 01:43:05,814 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> GENERIC_OPTIONS - lastPanelOpened : gUI.panels.TextEditor
+2019-10-21 01:43:05,921 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:43:05,963 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-21 01:43:06,035 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-21 01:43:06,055 [AWT-EventQueue-0] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\Siti web\File soffio di grano\Codice, levelsUp:1]: Codice
+
+2019-10-21 01:43:06,055 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from workspace: E:\Siti web\File soffio di grano\Codice
+2019-10-21 01:43:06,113 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:43:06,704 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:43:06,707 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:43:06,714 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:43:06,717 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:43:06,724 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:43:06,727 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:43:06,874 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:43:06,876 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:43:13,919 [Thread-4] WARN  maingUI.MainGUI - ## AUTOSAVE-MANAGER: detected flagAutosave=true & Autosave is not running yet -> Starting autosave module...
+2019-10-21 01:43:13,920 [Thread-3] INFO  maingUI.MainGUI - ## AUTOSAVE module started, interval: 600000 milliseconds
+2019-10-21 01:43:23,920 [Thread-4] DEBUG maingUI.MainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-10-21 01:43:33,920 [Thread-4] DEBUG maingUI.MainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-10-21 01:43:43,920 [Thread-4] DEBUG maingUI.MainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-10-21 01:44:21,788 [main] INFO  maingUI.MainGuiGeneralAppStarter - 
+
+##################################################
+
+Mon Oct 21 01:44:21 CEST 2019
+
+ScrYpT - V${project.version} Started now!
+
+##################################################
+
+
+2019-10-21 01:44:21,793 [main] DEBUG amfileutils.FileStuff - ARGUMENT FILES:[]
+2019-10-21 01:44:22,160 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-21 01:44:22,315 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-21 01:44:22,451 [main] INFO  maingUI.MainGUI - Chosen log level: DEBUG
+2019-10-21 01:44:22,495 [main] INFO  mainobj.INItializer - Loaded ini file: 
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: User
+GENERAL VOLUME: 34,00%
+LAST PANEL OPENED: gUI.panels.TextEditor
+Txt Editor: Listen for changes in current file -> true
+CHARSET: UTF8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: true
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: E:\Eclipse NDCE
+FLAG_AUTOSAVE: true
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [IMG]
+
+ ---- TEXT EDITOR -----
+
+INLINE TABS MODE: false
+MARGIN: 12
+PREFERRED_THEME: Resources_Scrypt/themes/default/dark.xml
+FILE_PANEL_BACKGROUND_COLOR: java.awt.Color[r=28,g=32,b=32]
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=20]
+VOICE_RATE: 105
+PREFERRED DIVIDER FILETREE POSITION: 306
+PREFERRED DIVIDER RIGHT PANE POSITION: 126
+PREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): 340
+LAST FILE OPENED IN CLIPBOARD: clipboard2.txt
+OPENED FILES AT START: [E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html, E:\Siti web\File soffio di grano\Codice\HTML\Widget_Right_HomePage.html]
+DEFAULT OPENED FILE AT START: E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html
+LAST CODE ESCAPE LANGUAGE: HTML_4
+
+ TEXT AREA DETAIL VALUES: 
+
+
+FILE TREE VIEW ACTIVE: true
+MAP VIEW ACTIVE: false
+CLIPBOARD VIEW ACTIVE: false
+FILE TREE LOCKED: true
+WORKSPACE VIEW SELECTED: true
+DEFAULT WORKSPACE LOCATION: E:\Siti web\File soffio di grano\Codice
+DEFAULT AUTOMATIC SYNTAX SYNC: true
+ANTIALIASED TEXT AREA: true
+TAB SIZE: 3
+TAB LINE VISIBLE: true
+BRACKET MATCHING: true
+ANIMATED BRACKETS MATCH: true
+AUTO INDENT: true
+AUTO-BREAKLINE ACTIVE: false
+CLEAR WHITESPACES LINES: true
+CLOSE CURLY BRACES: true
+CLOSE MARKUP TAGS: true
+CODE FOLDING ENABLED: true
+FADE CURRENT LINE HIGHLIGHT: true
+FRACTIONAL FONT METRICS: true
+HIGHLIGHT SECONDARY LANGUAGES: true
+HYPERLINKS ENABLED: true
+MARK OCCURRENCES: true
+PAINT OCCURRENCES MARKES BORDER: true
+ROUND SELECTION EDGES: true
+TAB SPACES EMULATED: true
+SHOW END OF LINE: false
+SHOW BRACKETS MATCH POPUP: false
+FOCUSABLE TIPS FLAG: true
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-10-21 01:44:22,497 [main] INFO  maingUI.MainGUI - Initializing main GUI-start
+2019-10-21 01:44:23,006 [main] INFO  maingUI.MainGUI - Background of mainGUI setted: Resources_Scrypt/Resources_Scrypt/Images/Logo-AM_v2.jpg
+2019-10-21 01:44:23,041 [AWT-EventQueue-0] INFO  gUI.frames.TutorialFrame - gUI.frames.TutorialFrame Starting...
+2019-10-21 01:44:23,043 [main] DEBUG gUI.utils.shortcutshandler.MainGuiShortcutsListener - gUI.utils.shortcutshandler.MainGuiShortcutsListener Started!
+2019-10-21 01:44:23,047 [AWT-EventQueue-0] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Starting...
+2019-10-21 01:44:23,088 [main] INFO  maingUI.MainGUI - ## GUI components started
+2019-10-21 01:44:23,091 [main] INFO  maingUI.MainGUI - icon image setted to main window
+2019-10-21 01:44:23,091 [main] INFO  maingUI.MainGUI - ## TITLE UPDATER started.
+2019-10-21 01:44:23,094 [main] INFO  maingUI.MainGUI - Main GUI initialized correctly.
+2019-10-21 01:44:23,097 [Thread-4] INFO  maingUI.MainGUI - ## AUTOSAVE-MANAGER module started - FlagAutosave from config.ini: true
+2019-10-21 01:44:23,448 [AWT-EventQueue-0] INFO  frameutils.html.HtmlPanel - frameutils.html.HtmlPanel Initialized!
+2019-10-21 01:44:23,448 [AWT-EventQueue-0] INFO  frameutils.html.HtmlPanel - Loading html from: file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/Readme/ReadMe.html
+2019-10-21 01:44:24,050 [AWT-EventQueue-0] INFO  frameutils.html.HtmlPanel - file:/C:/Users/xx/Desktop/Documenti&Utili/Informatica%20varie/SVN_Repository/CryptoSteg_Maven/Resources_Scrypt/Readme/ReadMe.html : Loaded!
+2019-10-21 01:44:24,051 [AWT-EventQueue-0] INFO  gUI.frames.TutorialFrame - gUI.frames.TutorialFrame Started
+2019-10-21 01:44:24,122 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - gUI.panels.TextEditor Starting...
+2019-10-21 01:44:24,330 [AWT-EventQueue-0] INFO  gUI.panels.TextEditor - 
+
+ !! Custom themes initialized from folder: Resources_Scrypt/themes/custom/
+
+2019-10-21 01:44:24,664 [AWT-EventQueue-0] WARN  tabbededitor.ChangeMonitorManager - [skipped]: file is NULL, it's not possible to add it to change monitor list.
+2019-10-21 01:44:24,854 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:44:24,946 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html [CREATING MONITOR]: added to change monitor list. [Reloading for different root: false]
+2019-10-21 01:44:24,948 [AWT-EventQueue-0] INFO  amfileutils.filechangewatcher.FileChangeMonitor - FileChangeMonitor() -> Start - Creating a new monitor instance with MOD/CREATE/DELETE 
+
+[rootMonitorFolder:E:\Siti web\File soffio di grano\Codice\HTML]
+2019-10-21 01:44:24,953 [AWT-EventQueue-0] INFO  amfileutils.filechangewatcher.FileChangeMonitor - FileChangeMonitor() -> Ready - Monitor instance created
+2019-10-21 01:44:24,979 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - E:\Siti web\File soffio di grano\Codice\HTML\Widget_Right_HomePage.html [CREATING MONITOR]: added to change monitor list. [Reloading for different root: false]
+2019-10-21 01:44:24,981 [AWT-EventQueue-0] INFO  amfileutils.filechangewatcher.FileChangeMonitor - FileChangeMonitor() -> Start - Creating a new monitor instance with MOD/CREATE/DELETE 
+
+[rootMonitorFolder:E:\Siti web\File soffio di grano\Codice\HTML]
+2019-10-21 01:44:24,982 [AWT-EventQueue-0] INFO  amfileutils.filechangewatcher.FileChangeMonitor - FileChangeMonitor() -> Ready - Monitor instance created
+2019-10-21 01:44:24,993 [AWT-EventQueue-0] DEBUG gUI.panels.TextEditor - ### TEXT WRITER module started
+2019-10-21 01:44:24,998 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> GENERIC_OPTIONS - lastPanelOpened : gUI.panels.TextEditor
+2019-10-21 01:44:25,130 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:44:25,172 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-21 01:44:25,230 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-21 01:44:25,256 [AWT-EventQueue-0] DEBUG amfileutils.FileStuff - 
+
+=> Parent file toStringPath search result [son:E:\Siti web\File soffio di grano\Codice, levelsUp:1]: Codice
+
+2019-10-21 01:44:25,256 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - Tree refreshed from workspace: E:\Siti web\File soffio di grano\Codice
+2019-10-21 01:44:25,317 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:44:25,954 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:25,957 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:25,965 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:25,969 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:25,975 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:25,978 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:26,123 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:26,129 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:33,098 [Thread-4] WARN  maingUI.MainGUI - ## AUTOSAVE-MANAGER: detected flagAutosave=true & Autosave is not running yet -> Starting autosave module...
+2019-10-21 01:44:33,099 [Thread-3] INFO  maingUI.MainGUI - ## AUTOSAVE module started, interval: 600000 milliseconds
+2019-10-21 01:44:36,398 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:36,399 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:36,399 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:37,520 [AWT-EventQueue-0] DEBUG tabbededitor.CustomTabbedEditor - 
+
+ ## Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [loadedFile=E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,4,34,1578x794,invalid,hidden,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@5fbd7310,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=java.awt.Dimension[width=1918,height=974],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,hidden,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@507d35bc,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,2,2,26x790,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=true,lastPaintPosition=java.awt.Point[x=0,y=0],scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,hidden,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@194bfeff,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,28,2,1548x790,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=true,lastPaintPosition=java.awt.Point[x=0,y=0],scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@2cc6c682], textArea=om.ColumnTextArea[,0,0,1548x790,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@45d55cb3,flags=16777512,maximumSize=java.awt.Dimension[width=1918,height=964],minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=java.awt.Color[r=193,g=203,b=194],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=java.awt.Insets[top=6,left=12,bottom=6,right=12],selectedTextColor=javax.swing.plaf.ColorUIResource[r=255,g=255,b=255],selectionColor=java.awt.Color[r=64,g=78,b=81],colums=0,columWidth=0,rows=0,rowHeight=0,word=true,wrap=false], unsaved=false]
+2019-10-21 01:44:37,534 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:44:37,583 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-21 01:44:37,593 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-21 01:44:37,750 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:37,753 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:37,760 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:37,763 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:37,765 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:37,765 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:37,765 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:37,853 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:37,853 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:37,853 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:38,616 [AWT-EventQueue-0] DEBUG tabbededitor.CustomTabbedEditor - 
+
+ ## Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [loadedFile=E:\Siti web\File soffio di grano\Codice\HTML\Widget_Right_HomePage.html, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,4,34,1578x794,invalid,hidden,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@531f3d72,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=java.awt.Dimension[width=1918,height=974],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,hidden,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@2fca1434,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,2,2,30x790,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=true,lastPaintPosition=java.awt.Point[x=0,y=0],scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,1566,2,10x790,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@34c366d,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,32,2,1534x790,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=true,lastPaintPosition=java.awt.Point[x=0,y=0],scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@4160cf85], textArea=om.ColumnTextArea[,0,0,1534x2226,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@14c4cc73,flags=16777512,maximumSize=java.awt.Dimension[width=1918,height=964],minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=java.awt.Color[r=193,g=203,b=194],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=java.awt.Insets[top=6,left=12,bottom=6,right=12],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=java.awt.Color[r=64,g=78,b=81],colums=0,columWidth=0,rows=0,rowHeight=0,word=true,wrap=false], unsaved=false]
+2019-10-21 01:44:38,625 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:44:38,672 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-21 01:44:38,679 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-21 01:44:38,787 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:38,795 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:38,799 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:38,801 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:38,803 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:38,803 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:38,804 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:38,871 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:38,871 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:38,871 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:39,782 [AWT-EventQueue-0] DEBUG tabbededitor.CustomTabbedEditor - 
+
+ ## Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [loadedFile=E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,4,34,1578x794,invalid,hidden,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@5fbd7310,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=java.awt.Dimension[width=1918,height=974],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,hidden,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@507d35bc,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,2,2,26x790,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=true,lastPaintPosition=java.awt.Point[x=0,y=0],scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,hidden,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@194bfeff,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,28,2,1548x790,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=true,lastPaintPosition=java.awt.Point[x=0,y=0],scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@2cc6c682], textArea=om.ColumnTextArea[,0,0,1548x790,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@45d55cb3,flags=16777512,maximumSize=java.awt.Dimension[width=1918,height=964],minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=java.awt.Color[r=193,g=203,b=194],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=java.awt.Insets[top=6,left=12,bottom=6,right=12],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=java.awt.Color[r=64,g=78,b=81],colums=0,columWidth=0,rows=0,rowHeight=0,word=true,wrap=false], unsaved=false]
+2019-10-21 01:44:39,786 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:44:39,839 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-21 01:44:39,846 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-21 01:44:40,007 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:40,009 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:40,016 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:40,019 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:40,022 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:40,022 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:40,022 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:40,098 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:40,098 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:40,098 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:40,729 [AWT-EventQueue-0] DEBUG tabbededitor.CustomTabbedEditor - 
+
+ ## Triggered mainTabList action listener! Current obj:
+TabTextEditorObj [loadedFile=E:\Siti web\File soffio di grano\Codice\HTML\Widget_Right_HomePage.html, currentScrollPane=org.fife.ui.rtextarea.RTextScrollPane[,4,34,1578x794,invalid,hidden,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.border.LineBorder@531f3d72,flags=320,maximumSize=,minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=java.awt.Dimension[width=1918,height=974],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,hidden,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@2fca1434,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=javax.swing.JViewport[,2,2,30x790,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=true,lastPaintPosition=java.awt.Point[x=0,y=0],scrollUnderway=false],upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,1566,2,10x790,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@34c366d,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,32,2,1534x790,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=true,lastPaintPosition=java.awt.Point[x=0,y=0],scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@4160cf85], textArea=om.ColumnTextArea[,0,0,1534x2226,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.basic.BasicBorders$MarginBorder@14c4cc73,flags=16777512,maximumSize=java.awt.Dimension[width=1918,height=964],minimumSize=java.awt.Dimension[width=300,height=100],preferredSize=,caretColor=java.awt.Color[r=193,g=203,b=194],disabledTextColor=javax.swing.plaf.ColorUIResource[r=142,g=143,b=145],editable=true,margin=java.awt.Insets[top=6,left=12,bottom=6,right=12],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=java.awt.Color[r=64,g=78,b=81],colums=0,columWidth=0,rows=0,rowHeight=0,word=true,wrap=false], unsaved=false]
+2019-10-21 01:44:40,734 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - inlineTabs : false
+2019-10-21 01:44:40,776 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - START
+2019-10-21 01:44:40,780 [AWT-EventQueue-0] DEBUG gUI.utils.texteditor.TextEditorUtils - applyFileFormatFromCombo - FINISH
+2019-10-21 01:44:40,876 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:40,879 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:40,884 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - mapViewActive : false
+2019-10-21 01:44:40,886 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - clipboardViewActive : false
+2019-10-21 01:44:40,891 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:40,891 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:40,891 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:40,953 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:40,953 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:40,953 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:42,888 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForFile() -> starting check...
+2019-10-21 01:44:42,888 [AWT-EventQueue-0] DEBUG amfileutils.filechangewatcher.FileChangeMonitor - checkForEverithing() -> finished with result: ChangeDTO [changedFiles=, addedFiles=, removedFiles=]
+2019-10-21 01:44:42,888 [AWT-EventQueue-0] DEBUG tabbededitor.ChangeMonitorManager - 
+
+ ########################  EVENT SEARCH... ###############################
+
+
+2019-10-21 01:44:43,099 [Thread-4] DEBUG maingUI.MainGUI - ## AUTOSAVE-MANAGER: running -> [AUTOSAVE true] -> autosave Module running[true] - Interval: 600s
+2019-10-21 01:44:45,052 [AWT-EventQueue-0] DEBUG maingUI.MainGUI - Starting check on fileMonitor...
+2019-10-21 01:44:45,057 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+
+ => Starting exit procedure...
+
+
+2019-10-21 01:44:45,057 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Closing blocking frames
+2019-10-21 01:44:45,057 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Blocking frames closed
+2019-10-21 01:44:45,058 [AWT-EventQueue-0] INFO  mainobj.INItializer - Configuration written to: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+### Config file: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini
+
+ ---- AES OPTIONS -----
+
+
+FLAGAES: false
+
+ ---- GENERAL OPTIONS -----
+
+USERNAME: User
+GENERAL VOLUME: 34,00%
+LAST PANEL OPENED: gUI.panels.TextEditor
+Txt Editor: Listen for changes in current file -> true
+CHARSET: UTF8
+
+ ---- GUI OPTIONS -----
+
+PREFERRED_STYLE: javax.swing.plaf.nimbus.NimbusLookAndFeel
+MENU_FONT_SIZE: 18
+LOG_FONT_SIZE: 14
+NIMBUS_SIZE_VAR: 0
+DARK_GUI_NUMBUS: true
+
+ ---- FILE OPTIONS -----
+
+LAST_DST_FOLDERPATH: C:UsersxxDesktopLogProvaExport(2).log
+LAST_SRC_FOLDERPATH: E:\Eclipse NDCE
+FLAG_AUTOSAVE: true
+AUTOSAVE_INTERVAL: 600000
+FLAGOVERWRITE: false
+
+ ---- STEGANO OPTIONS -----
+
+DEFAULT_HEIGHT: 1831
+ULTRA-SECURE: false
+FLAGSTEG: false
+DEFAULT_WIDTH: 1293
+IMG_RECENT_PATH: [IMG]
+
+ ---- TEXT EDITOR -----
+
+INLINE TABS MODE: false
+MARGIN: 12
+PREFERRED_THEME: Resources_Scrypt/themes/default/dark.xml
+FILE_PANEL_BACKGROUND_COLOR: java.awt.Color[r=28,g=32,b=32]
+BACKGROUND_COLOR: java.awt.Color[r=0,g=0,b=0]
+FOREGROUND_COLOR: java.awt.Color[r=235,g=235,b=235]
+FONT: java.awt.Font[family=Segoe UI,name=Segoe UI,style=plain,size=20]
+VOICE_RATE: 105
+PREFERRED DIVIDER FILETREE POSITION: 306
+PREFERRED DIVIDER RIGHT PANE POSITION: 126
+PREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): 340
+LAST FILE OPENED IN CLIPBOARD: clipboard2.txt
+OPENED FILES AT START: [E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html, E:\Siti web\File soffio di grano\Codice\HTML\Widget_Right_HomePage.html]
+DEFAULT OPENED FILE AT START: E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html
+LAST CODE ESCAPE LANGUAGE: HTML_4
+
+ TEXT AREA DETAIL VALUES: 
+
+
+FILE TREE VIEW ACTIVE: true
+MAP VIEW ACTIVE: false
+CLIPBOARD VIEW ACTIVE: false
+FILE TREE LOCKED: true
+WORKSPACE VIEW SELECTED: true
+DEFAULT WORKSPACE LOCATION: E:\Siti web\File soffio di grano\Codice
+DEFAULT AUTOMATIC SYNTAX SYNC: true
+ANTIALIASED TEXT AREA: true
+TAB SIZE: 3
+TAB LINE VISIBLE: true
+BRACKET MATCHING: true
+ANIMATED BRACKETS MATCH: true
+AUTO INDENT: true
+AUTO-BREAKLINE ACTIVE: false
+CLEAR WHITESPACES LINES: true
+CLOSE CURLY BRACES: true
+CLOSE MARKUP TAGS: true
+CODE FOLDING ENABLED: true
+FADE CURRENT LINE HIGHLIGHT: true
+FRACTIONAL FONT METRICS: true
+HIGHLIGHT SECONDARY LANGUAGES: true
+HYPERLINKS ENABLED: true
+MARK OCCURRENCES: true
+PAINT OCCURRENCES MARKES BORDER: true
+ROUND SELECTION EDGES: true
+TAB SPACES EMULATED: true
+SHOW END OF LINE: false
+SHOW BRACKETS MATCH POPUP: false
+FOCUSABLE TIPS FLAG: true
+
+ ---- IMAGE CONVERTER -----
+
+SAME_SIZE: true
+SAME EXTENSION: true
+QUALITY: 100
+ALGORITHM: REPLICATE
+2019-10-21 01:44:45,059 [AWT-EventQueue-0] INFO  maingUI.MainGUI -  => AUTOSAVE ON: file saved before exiting [C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini]
+2019-10-21 01:44:45,061 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - loadedFilesAtStart : E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html,E:\Siti web\File soffio di grano\Codice\HTML\Widget_Right_HomePage.html
+2019-10-21 01:44:45,064 [AWT-EventQueue-0] INFO  mainobj.INItializer - C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\SVN_Repository\CryptoSteg_Maven\Resources_Scrypt\CONFIG.ini 
+
+ Single option saved -> TEXT_EDITOR - selectedFileAtStart : E:\Siti web\File soffio di grano\Codice\HTML\Widget_Bottom_HomePage.html
+2019-10-21 01:44:45,064 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+ => Opened files in textEditor added to configuration
+2019-10-21 01:44:45,065 [AWT-EventQueue-0] INFO  maingUI.MainGUI - Deleting temp files and folders...please wait!
+2019-10-21 01:44:45,066 [AWT-EventQueue-0] INFO  maingUI.MainGUI - Deleting temp files and folders...COMPLETED :)
+2019-10-21 01:44:45,067 [AWT-EventQueue-0] INFO  maingUI.MainGUI - 
+
+##################################################
+
+Mon Oct 21 01:44:45 CEST 2019
+
+ScrYpT - V${project.version} Closing Application!
+
+##################################################
+
+

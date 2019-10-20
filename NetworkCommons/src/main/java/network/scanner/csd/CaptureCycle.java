@@ -1,4 +1,4 @@
-package networkscanner.csd;
+package network.scanner.csd;
 
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapDumper;

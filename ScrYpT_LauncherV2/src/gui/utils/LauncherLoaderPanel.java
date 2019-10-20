@@ -113,31 +113,35 @@ public class LauncherLoaderPanel extends JPanel{
 	}
 	
 	public void update(String txt, int progress, int msDelayIfEnd){
-		if (progress >= 100) {
-			new Thread(new Runnable() {
-				public void run() {
-					for (int i = 0; i < 20; i++) {
-						String dots = new String(new char[i + 1]).replace("\0", ".");
-						String msg = txt + dots;
-						setText(msg);
-						try {
-							Thread.sleep(40);
-						} catch (InterruptedException e) {
-							logger.error("Error waiting before starting launcher", e);
+		try {
+			if (progress >= 100) {
+				new Thread(new Runnable() {
+					public void run() {
+						for (int i = 0; i < 20; i++) {
+							String dots = new String(new char[i + 1]).replace("\0", ".");
+							String msg = txt + dots;
+							setText(msg);
+							try {
+								Thread.sleep(40);
+							} catch (InterruptedException e) {
+								logger.error("Error waiting before starting launcher", e);
+							}
 						}
+						setProgress(100, 10);
 					}
-					setProgress(100, 10);
-				}
-			}).start();
-		}else {
-			setText(txt);
-			setProgress(progress, msDelayIfEnd);
+				}).start();
+			} else {
+				setText(txt);
+				setProgress(progress, msDelayIfEnd);
+			} 
+		} catch (Exception e) {
+			logger.warn("Error trying to update progressbar", e);
 		}
 		
 	}
 	
 	public void setIndeterminatedProgress(boolean indeterminated) {
-	progressBar.setIndeterminate(indeterminated);	
+		progressBar.setIndeterminate(indeterminated);	
 	}
 	
 }

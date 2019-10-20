@@ -1,4 +1,4 @@
-package networkscanner.dmad;
+package network.scanner.dmad;
 
 import java.awt.EventQueue;
 
