@@ -34,20 +34,22 @@ public class CommandsAssembler {
 
 		OSinfo currentOS = SysUtils.getOsInfoLazy();
 		
+		
 		if (!pathEntry.equals(JvmHelper.JVM_OK)) {
 			if (currentOS.isWindows()) {
-				execCommand.add("set JDK_PATH=" + pathEntry + ";");
+				// bugfix - avoid ; char when path is null, for example when JVM is not found
+				pathEntry = (pathEntry != null && !pathEntry.equals(""))? pathEntry + ";": "";
+				execCommand.add("set JDK_PATH=" + pathEntry);
 				execCommand.add("set PATH=%JDK_PATH%%PATH%");
 				execCommand.add("echo %PATH%");
 
 			} else if (currentOS.isLinux()) {
-
-				execCommand.add("PATH=" + pathEntry + ":$PATH");
-
+				pathEntry = (pathEntry != null && !pathEntry.equals(""))? pathEntry + ":" : "";
+				execCommand.add("PATH=" + pathEntry + "$PATH");
+			
 			} else if (currentOS.isMac()) {
-
-				execCommand.add("PATH=" + pathEntry + ":$PATH");
-
+				pathEntry = (pathEntry != null && !pathEntry.equals(""))? pathEntry + ":" : "";
+				execCommand.add("PATH=" + pathEntry + "$PATH");
 			} 
 		}		
 	}

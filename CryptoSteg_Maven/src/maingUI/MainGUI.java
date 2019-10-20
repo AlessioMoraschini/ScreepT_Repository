@@ -11,7 +11,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import javax.imageio.ImageIO;
@@ -44,11 +43,9 @@ import frameutils.utils.GuiUtils;
 import gUI.frames.AboutSectionFrame;
 import gUI.frames.GeneralOptionsFrame;
 import gUI.frames.GraphicPreferencesFrame;
-import gUI.frames.HwInfoFrame;
 import gUI.frames.ImageConverterFrame;
 import gUI.frames.KeyDictionaryPanel;
 import gUI.frames.KeyGenFrame;
-import gUI.frames.NetInfoFrame;
 import gUI.frames.TutorialFrame;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
@@ -58,6 +55,8 @@ import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.mainGui.MainGuiUtils;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
 import gui.utils.LauncherLoaderFrame;
+import guiVersion.HwInfoFrame;
+import guiVersion.NetInfoFrame;
 import guistyle.GUIStyelSettings;
 import jmenu.CustomJmenuItem;
 import launcherutils.IniFileManager;

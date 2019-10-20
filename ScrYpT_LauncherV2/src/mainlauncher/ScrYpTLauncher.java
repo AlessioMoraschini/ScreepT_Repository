@@ -196,25 +196,27 @@ public class ScrYpTLauncher {
 	loaderGraphics.update("Preparing launch...", 85);
 	}
 	
+	/**
+	 * Analyze JVM and dependencies, preparing arguments and options to create the executable file (bat/sh)
+	 * to launch the main java application.
+	 */
 	public void analyzeBeforeLauncher() {
+		logger.info("Started to analyze before launch");
 		
 		// ENSURE OLD COMMANDS ARE DELETED
 		commandsAssembler.emptyCommandsList();
-		
-		logger.info("Started to analyze before launch");
-		
 		dependeciesMissing = new ArrayList<DependencyModel>();
 		
+		// RETRIEVE BEST MACTHING JVM ON CURRENT OS
 		String javaPath = jvmHelper.retrieveCorrectJVMS(ignoreWarnings);
-		
 		if(javaPath.equals(JvmHelper.NOT_FOUND_JVM)) {
 			addToMissingDependenciesJVM();
 		}
-		// static for test => comment to use found one
-		//javaPath="C:/Program Files/Java/jdk1.8.0_162/bin;";
 				
+		// ADD PATH UPDATE COMMAND FOR RIGHT TIPE SH/BAT
 		commandsAssembler.addPathCommand(javaPath);
 		
+		// ADD COMMANDS TO AUTO INSTALL BUNDLED DEPENDENCIES
 		addInstallDependenciesCommand();
 		
 		JvmArgumentsDTO dto = new JvmArgumentsDTO(
@@ -225,11 +227,15 @@ public class ScrYpTLauncher {
 				JVM_ARGS,
 				ARGS);
 		
+		// ADD LAUNCH COMMAND WITH GIVEN ARGUMENTS FROM CONFIGURATION (parsed .ini)
 		commandsAssembler.addLaunchCommand(dto, argumentsFiles);
 		
 		logger.info("Launch command generated:\n\n" + commandsAssembler.getCombinedCommandList() +"\n\n");
 	}
 	
+	/**
+	 * This method adds to missing dependencies JVM with references to download/install it
+	 */
 	public void addToMissingDependenciesJVM() {
 		String localPathWinInstaller = DependencyModel.INSTALLERS_PATH + arch32OR64 + "/JRE-1.8-installer/jre-1.8u201.exe";
 		String localPathLinInstaller = "";
@@ -253,12 +259,16 @@ public class ScrYpTLauncher {
 		
 		try {
 			String initPath = writeInitBatShAndGetPath(combinedCommands);
+			
+			// CASE WINDOWS
 			if (currentOS.isWindows()) {
 				if (iniFileManager.viewShellAfterStart) {
 					runtime.exec("cmd /c start \"\" " + initPath);
 				}else {
 					runtime.exec(initPath);
 				}
+			
+			// TODO LINUX/MAC SHELL show on/off
 			}else {
 				runtime.exec(initPath);
 			}

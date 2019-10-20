@@ -356,9 +356,15 @@
 	</dependency>
 	
 	<dependency>
-	<groupId>UltimateCalculator</groupId>
-	<artifactId>UltimateCalculator</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+		<groupId>UltimateCalculator</groupId>
+		<artifactId>UltimateCalculator</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>NetworkCommons</groupId>
+		<artifactId>NetworkCommons</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
 
   </dependencies>

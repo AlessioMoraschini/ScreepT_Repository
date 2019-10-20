@@ -10,9 +10,9 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import frameutils.frame.arch.ParentFrame;
 import frameutils.html.HtmlPanel;
 import frameutils.utils.GuiUtils;
-import gUI.frames.arch.ParentFrame;
 import maingUI.MainGUI;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;

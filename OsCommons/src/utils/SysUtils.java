@@ -322,6 +322,47 @@ public class SysUtils {
 		
 	}
 	
+	/**
+	 * Launch a system runnable file as .sh or .bat, reading it's output and waiting for a specific string in output
+	 * @Param wait timeout is in milliseconds, after it's elapsed String will be returned even if signal was not retrieved from process output
+	 * @return String output of process
+	 * @throws IOException 
+	 */
+	public static String launchBatchOrBashAndWaitForOutput(String execPath, String signal, int waitTimeout) throws IOException {
+		
+		if(execPath == null || execPath.equals("") || signal == null || signal.equals("")) {return "";}
+		
+		long startTimeMillisec = System.currentTimeMillis();
+		long updatedTime = startTimeMillisec;
+		Runtime runtime = Runtime.getRuntime();
+		StringBuilder builder = new StringBuilder();
+		
+		Process proc = runtime.exec(execPath);
+		InputStream os = proc.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(os));
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				builder.append(line+System.getProperty("line.separator"));
+				updatedTime = System.currentTimeMillis();
+				if(line.contains("HWINFOPANEL_STARTED_OK")) {
+					logger.info("Signal found in output, returning string - Signal=" + signal);
+					break;
+				}
+				
+				if( (updatedTime-startTimeMillisec) > waitTimeout) {
+					logger.info("Timeout occurred - " + waitTimeout + " elapsed without finding output: " + signal);
+					break;
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			logger.error("There was an error reading process output from: " + execPath);
+		}
+		
+		return builder.toString();
+	}
+	
 	public static String readProcessOutput(InputStream inputStream) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		StringBuilder builder = new StringBuilder();

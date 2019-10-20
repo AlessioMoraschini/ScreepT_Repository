@@ -77,7 +77,7 @@ public class JvmHelper {
 	}
 	
 	/**
-	 * Compare a list of JVM versions with the admitted one
+	 * Compare a list of JVM versions to find the best match
 	 * @param foundJVMS
 	 * @return the path of the current JVM
 	 */

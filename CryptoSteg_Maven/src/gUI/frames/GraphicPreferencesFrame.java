@@ -30,8 +30,8 @@ import javax.swing.event.ChangeListener;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelper;
+import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
-import gUI.frames.arch.ParentFrame;
 import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;

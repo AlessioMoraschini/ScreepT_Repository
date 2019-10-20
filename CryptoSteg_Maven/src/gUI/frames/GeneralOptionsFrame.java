@@ -7,8 +7,8 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
 import dialogutils.JOptionHelper;
+import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
-import gUI.frames.arch.ParentFrame;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import mainlauncher.ScrYpTLauncher;
