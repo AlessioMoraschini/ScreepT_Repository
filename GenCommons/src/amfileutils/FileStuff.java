@@ -28,9 +28,11 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.om.DeleteFilesByExtensionDTO;
+import resources.GeneralConfig;
 
 public class FileStuff {
 	
@@ -97,6 +99,13 @@ public class FileStuff {
 			logger.error("Error finding parent file, returning given son", e);
 			return son;
 		}
+	}
+	
+	public static boolean doesAncestorNlevelsExist(File currentFile, int ancestorLevel) {
+		if(currentFile == null || !currentFile.exists()) {return false;}
+		
+		File ancestor = getNlevelsAncestor(currentFile, ancestorLevel);
+		return !ancestor.equals(currentFile);
 	}
 	
 	public static String getNlevelsPathString(File son, int levelsUp) {
@@ -347,6 +356,7 @@ public class FileStuff {
 		}
 		
 		boolean esit = true;
+		extListCommaSeparated = StringUtils.trimToEmpty(extListCommaSeparated);
 		String[] extensionsList = extListCommaSeparated.split(",");
 		for(String currExtension : extensionsList) {
 			currExtension = currExtension.trim(); // remove whitespaces at start and at end

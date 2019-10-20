@@ -20,9 +20,12 @@ public class IniFileManager {
 	// INI FIELDS
 	public boolean viewShellAfterStart = false;
 	public String DEFAULT_INI_PATH = "Launcher_Configuration.ini"; 
-	public String GUI_SCALE_ARG_VALUE = "1"; //
+	
+	public String preferredJvmVersionIfNotSpecified = "1.8"; // default selected if no user preferred is specified
+	public String preferredJvm = "";
 	public String MIN_JRE_VERSION = "1.8"; // default included MIN
 	public String MAX_JRE_VERSION = "9.0"; // default excluded MAX
+	public String GUI_SCALE_ARG_VALUE = "1";
 	public String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512m"; // default memory options
 	public String JVM_STACK_SIZE = "-Xss128m"; // default stack size
 	// main application path default
@@ -30,8 +33,6 @@ public class IniFileManager {
 	
 	public boolean showInstallOptions = true;
 	public boolean hideNStartDirect = false;
-	
-	public String preferredJvm = "";
 	
 	public Wini iniConfigFile;
 	
@@ -70,6 +71,7 @@ public class IniFileManager {
 			String hideNStart = iniConfigFile.get(INI_APP_OPT, "flagHideNStartDirect");
 			hideNStartDirect = (hideNStart!=null && hideNStart.equalsIgnoreCase("true"))? true : false;
 			preferredJvm = StringUtils.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
+			preferredJvmVersionIfNotSpecified = StringUtils.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvmVersionIfNotSpecified"));
 			
 			logger.info("Launcher_configuration file loaded!");
 		} catch (InvalidFileFormatException e) {

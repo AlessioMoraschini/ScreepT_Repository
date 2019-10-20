@@ -41,62 +41,59 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 					currentGui.mntmFullScreenMode.doClick();
 				}
 				
-				/**
-				 *  SAVE CURRENT CONFIGURATION : Ctrl+Alt+Shift+S
-				 */
-				if (e.getKeyCode() == 83 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmSaveCurrent().doClick();
-				}
+			// FIRST MENU SECTION - FILE //
 				
-				/**
-				 *  EXPORT CURRENT CONFIGURATION : Ctrl+Alt+Shift+E
-				 */
-				if (e.getKeyCode() == 69 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmSaveCurrentAs().doClick();
-				}
-				
-				/**
-				 *  OPEN CRYPTER : ALT+SHIFT+S
-				 */
-				if (e.getKeyCode() == 83 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmCrypter().doClick();
-				}
-				/**
-				 *  OPEN TEXT-EDITOR : ALT+SHIFT+T
-				 */
-				if (e.getKeyCode() == 84 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmTextEditor().doClick();
-				}
-				/**
-				 *  OPEN IMAGE-CONVERTER : ALT+SHIFT+I
-				 */
-				if (e.getKeyCode() == 73 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmImageConverter().doClick();
-				}
-				/**
-				 *  OPEN SYS-INFO : ALT+SHIFT+0
-				 */
-				if (e.getKeyCode() == 48 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmhwInfo().doClick();
-				}
-				/**
-				 *  OPEN NET-INFO : ALT+SHIFT+9
-				 */
-				if (e.getKeyCode() == 57 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmnetInfo().doClick();
-				}
-				/**
-				 *  OPEN ABOUT INFO : ALT+SHIFT+.
-				 */
-				if (e.getKeyCode() == 46 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmAboutScreept().doClick();
-				}
 				/**
 				 *  OPEN CONFIG-MANAGER : ALT+SHIFT+1
 				 */
 				if (e.getKeyCode() == 49 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmInspectCurrentConfiguration().doClick();
 				}
+				
+				/**
+				 *  EXPORT CURRENT CONFIGURATION : Ctrl+Alt+Shift+E
+				 */
+				if (e.getKeyCode() == 69 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmExportPrjSub().doClick();
+				}
+				
+				/**
+				 *  RELOAD CURRENT CONFIGURATION : Ctrl+Alt+Shift+R
+				 */
+				if (e.getKeyCode() == 82 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmReloadPrjSub().doClick();
+				}
+
+				/**
+				 *  LOAD CUSTOM CONFIGURATION : Ctrl+Alt+Shift+ (+)
+				 */
+				if ((e.getKeyCode() == 107 || e.getKeyCode() == 521) && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmloadPrjSub().doClick();
+				}
+				
+				/**
+				 *  SAVE CURRENT CONFIGURATION : Ctrl+Alt+Shift+S
+				 */
+				if (e.getKeyCode() == 83 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmSaveCurrent().doClick();
+				}
+
+				/**
+				 *  SAVE CURRENT CONFIGURATION AS: Ctrl+Alt+Shift+W
+				 */
+				if (e.getKeyCode() == 87 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmSaveCurrentAs().doClick();
+				}
+				
+				/**
+				 *  LOAD BUILT-IN DEFAULT CONFIGURATION: Ctrl+Alt+Shift+D
+				 */
+				if (e.getKeyCode() == 68 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmloadSrcrYptDefaultConf().doClick();
+				}
+				
+			// SECOND MENU SECTION - OPTIONS //
+				
 				/**
 				 *  OPEN GENERAL OPTIONS : ALT+SHIFT+2
 				 */
@@ -109,24 +106,170 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				if (e.getKeyCode() == 51 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmCustomizeUIView().doClick();
 				}
+				
+			// THIRD MENU SECTION - SCREEPT //	
+				
+				/**
+				 *  OPEN CRYPTER : ALT+SHIFT+S
+				 */
+				if (e.getKeyCode() == 83 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmCrypter().doClick();
+				}
+				
 				/**
 				 *  OPEN KEY-GEN : ALT+SHIFT+K
 				 */
 				if (e.getKeyCode() == 75 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmgenerateKeyImageSub().doClick();
 				}
+
 				/**
-				 *  OPEN MANUAL : ALT+SHIFT+?
+				 *  OPEN KEY-DICIONARY : ALT+SHIFT+D
 				 */
-				if (e.getKeyCode() == 222 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
-					currentGui.getMntmUserDocumentation().doClick();
+				if (e.getKeyCode() == 68 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmViewKeyDictionary().doClick();
 				}
+				
+			// FOURTH MENU SECTION - VARIOUS //
+				
+				/**
+				 *  OPEN TEXT-EDITOR : ALT+SHIFT+T
+				 */
+				if (e.getKeyCode() == 84 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmTextEditor().doClick();
+				}
+
+				/**
+				 *  OPEN SYS-INFO : ALT+SHIFT+Y
+				 */
+				if (e.getKeyCode() == 89 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmhwInfo().doClick();
+				}
+				/**
+				 *  OPEN NET-INFO : ALT+SHIFT+N
+				 */
+				if (e.getKeyCode() == 78 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmnetInfo().doClick();
+				}
+				
+				// MEDIA - CONVERTERS //
+				/**
+				 *  OPEN IMAGE-CONVERTER : ALT+SHIFT+I
+				 */
+				if (e.getKeyCode() == 73 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmImageConverter().doClick();
+				}
+				
+				// FILE & FOLDER ACTIONS
+				/**
+				 *  UPPERCASE DIRECTORY : ALT+SHIFT+0
+				 */
+				if (e.getKeyCode() == 48 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmTouppercaseDirectory().doClick();
+				}
+
+				/**
+				 *  MAKE DIRS FROM PATH : CTRL+ALT+SHIFT+9
+				 */
+				if (e.getKeyCode() == 57 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmMakeDirsFromPath().doClick();
+				}
+				
+				/**
+				 *  COPY DIR STRUCTURE : CTRL+ALT+SHIFT+8
+				 */
+				if (e.getKeyCode() == 56 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmCopyDirStructure().doClick();
+				}
+				
+				/**
+				 *  DELETE DIR CONTENT BY EXTENSION : CTRL+ALT+SHIFT+7
+				 */
+				if (e.getKeyCode() == 55 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmDeleteDirectoryContentByExtension().doClick();
+				}
+				
+				/**
+				 *  DELETE ALL DIR CONTENT : CTRL+ALT+SHIFT+6
+				 */
+				if (e.getKeyCode() == 54 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmDeleteDirectoryAllContentRecursive().doClick();
+				}
+				
+				/**
+				 *  EMPTY FOLDERS CONTENT : CTRL+ALT+SHIFT+5
+				 */
+				if (e.getKeyCode() == 53 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmEmptyDirectoryRecursive().doClick();
+				}
+				
+			// FIFTH MENU SECTION - HELP //
+				
+				/**
+				 *  OPEN ABOUT INFO : ALT+SHIFT+.
+				 */
+				if (e.getKeyCode() == 46 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmAboutScreept().doClick();
+				}
+				
+				/**
+				 *  EXPORT LOGS : ALT+SHIFT+E
+				 */
+				if (e.getKeyCode() == 69 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmExportLog().doClick();
+				}
+				
+				/**
+				 *  ERASE LOGS : ALT+SHIFT+CANC
+				 */
+				if (e.getKeyCode() == 127 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmEraseLogs().doClick();
+				}
+				
 				/**
 				 *  RETURN TO HOME PAGE : ALT+SHIFT+H
 				 */
 				if (e.getKeyCode() == 72 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmReturnToWelcome().doClick();
 				} 
+				
+				/**
+				 *  OPEN MANUAL : ALT+SHIFT+Q
+				 */
+				if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmUserDocumentation().doClick();
+				}
+				
+				// RESET PANELS SHORTCUTS // 
+				
+				
+				/**
+				 *  RESET ALL : ALT+SHIFT+0
+				 */
+				if (e.getKeyCode() == 48 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmResetAllPanels().doClick();
+				}
+				
+				/**
+				 *  RESET TXT EDITOR : ALT+SHIFT+9
+				 */
+				if (e.getKeyCode() == 57 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmResetTextEditor().doClick();
+				}
+				
+				/**
+				 *  RESET CRYPTER : ALT+SHIFT+8
+				 */
+				if (e.getKeyCode() == 56 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmResetCrypterPanel().doClick();
+				}
+				
+				/**
+				 *  RESET CONFIG MANAGER : ALT+SHIFT+7
+				 */
+				if (e.getKeyCode() == 55 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmResetConfigManager().doClick();
+				}
 			}
 		}
 	    

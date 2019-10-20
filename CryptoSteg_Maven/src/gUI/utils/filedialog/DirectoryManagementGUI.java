@@ -66,8 +66,10 @@ public class DirectoryManagementGUI {
 	public static void makeDirsFromPath(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		String dirToMake = JOptionPane.showInputDialog("Insert the complete Path of the directories to create (accepted separators=['\\','/'])");
-		if (!dirToMake.equals("")) {
+		String dirToMake = dialog.askForStringUnsafe("Insert the complete Path of the directories to create (accepted separators=['\\','/'])", "specify path for folder to create");
+		if(dirToMake == null) {
+			return;
+		}else if (!dirToMake.equals("")) {
 			File givenDir = new File(dirToMake);
 			// TODO check for root existing
 			boolean res = givenDir.mkdirs();
@@ -84,7 +86,7 @@ public class DirectoryManagementGUI {
 	public static void deleteContentOfDir(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		File selected = GenericFileChooserDialog.directoRead(parent, currentConf, "Delete All content of directory");
 		if (selected!=null) {
 			boolean res = FileStuff.deleteDirContentRecursive(selected);
 			if (res) {
@@ -100,7 +102,7 @@ public class DirectoryManagementGUI {
 	public static void deleteDirContentFiles(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		File selected = GenericFileChooserDialog.directoRead(parent, currentConf, "Delete All directory's content (Files only)");
 		if (selected != null) {
 			boolean res = FileStuff.emptyDirContentFolderOnly(selected);
 			if (res) {
@@ -116,7 +118,7 @@ public class DirectoryManagementGUI {
 	public static void deleteContentOfDirByExt(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		File selected = GenericFileChooserDialog.directoRead(parent, currentConf, "Delete directory content by Extension");
 		DeleteFilesByExtensionDTO response;
 		String notFoundExtensions = "";
 
@@ -142,7 +144,7 @@ public class DirectoryManagementGUI {
 	public static void copyDirStructure(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		File selected = GenericFileChooserDialog.directoRead(parent, currentConf);
+		File selected = GenericFileChooserDialog.directoRead(parent, currentConf, "Copy Directory structure");
 		if (selected != null) {
 			File destination = GenericFileChooserDialog.directoWrite(parent, currentConf);
 			if (destination != null) {

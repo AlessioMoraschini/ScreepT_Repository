@@ -129,7 +129,7 @@ public class ScrYpTLauncher {
 		loaderGraphics.update("Starting Launcher...", 25);
 		start();
 		
-		loaderGraphics.update("Launcher Ready!", 100, 200);
+		loaderGraphics.update("Launcher Ready!", 100, 1000);
 
 	}// end main
 	
@@ -158,15 +158,18 @@ public class ScrYpTLauncher {
 		
 		currentOS = SysUtils.getOsInfoLazy();
 		
+	loaderGraphics.update("Defining listeners...", 35);
+	
 		defineActionListeners();
-		
+	
+	loaderGraphics.update("Analyzing System...", 45);
 		analyzeBeforeLauncher();
 		
 		// if direct launch configured launch directly commands
 		if(iniFileManager.hideNStartDirect || ARGS.length != 0) {
 			appLogEnd();
-			loaderGraphics.update("Ready", 100);
 			launchCommands();
+			loaderGraphics.update("Ready", 1000);
 			System.exit(0);
 		}
 		
@@ -189,6 +192,8 @@ public class ScrYpTLauncher {
 			logger.info("Missing dependencies detected, opening installer panel");
 		}
 		logger.info(this.getClass().getName() + " Loaded");
+		
+	loaderGraphics.update("Preparing launch...", 85);
 	}
 	
 	public void analyzeBeforeLauncher() {

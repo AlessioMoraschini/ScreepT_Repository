@@ -98,7 +98,27 @@ public class JvmHelper {
 			}
 		}
 		
-		// if unspecified manual search automatically
+		// PREFERRED BY USER IS NOT DEFINED -> Try default
+		// Search first if there is one that match APPLICATION_DEFAULT preferred Jvm
+		for(String currentPath : foundJVMS) {
+			
+			// find name from path
+			String versionDirName = new File(currentPath).getName();
+			
+			try {
+				// MATCH PREFERRED DEFAULT JVM CONDITION
+				if (SysUtils.keepOnlyDotsAndDigits(versionDirName).startsWith(ScrYpTLauncher.iniFileManager.preferredJvmVersionIfNotSpecified)) {
+					if (checkSingleJavaVersionOK(versionDirName)) {
+						return currentPath;
+					} 
+				}
+			} catch (IllegalArgumentException e) {
+				logger.error("Error comparing java version for " + currentPath, e);
+			}
+			
+		}
+		
+		// USER PREFERRED AND APP DEFAULT ARE NOT FOUND: search automatically for one that is between max and min
 		for(String currentPath : foundJVMS) {
 			
 			// find name from path
@@ -140,6 +160,30 @@ public class JvmHelper {
 			return false;
 		}
 	
+		return (lessThanMax && moreThanMin);
+	}
+
+	/**
+	 * check if a given java version (which can contain letters or underscores) respect
+	 * min and max values : if less than max and more(or equal) to min then is OK.
+	 * @param version
+	 * @return
+	 */
+	public boolean checkSingleJavaVersionOK(String version, String max, String min) {
+		
+		// remove non dots chars and transform undescores to dots
+		String noLettersDotsOnly = SysUtils.keepOnlyDotsAndDigits(version);
+		
+		boolean lessThanMax;
+		boolean moreThanMin;
+		try {
+			lessThanMax = SysUtils.compareVersions(noLettersDotsOnly, max) < 0;
+			moreThanMin = SysUtils.compareVersions(noLettersDotsOnly, min) >= 0;
+		} catch (IllegalArgumentException e) {
+			logger.error("Error comparing version: illegal format of ["+version+"]", e);
+			return false;
+		}
+		
 		return (lessThanMax && moreThanMin);
 	}
 	

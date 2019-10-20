@@ -1,6 +1,5 @@
 package treeutils;
 
-import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
@@ -8,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
+
 import javax.swing.JTree;
 import javax.swing.text.Position.Bias;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -105,6 +106,60 @@ public class TreeUtils {
 			nodes.removeLast();
 		}		
 	}
+	
+    public static boolean isDescendant(TreePath path1, TreePath path2){
+        int count1 = path1.getPathCount();
+        int count2 = path2.getPathCount();
+        if(count1<=count2)
+            return false;
+        while(count1!=count2){
+            path1 = path1.getParentPath();
+            count1--;
+        }
+        return path1.equals(path2);
+    }
+    
+    public static String[] getExpansionStates(JTree tree) {
+    	if(tree == null) {return new String[0];}
+    	
+    	String[] rowsSelectionBack = new String[tree.getRowCount()];
+    	for(int i = 0; i< tree.getRowCount(); i++) {
+    		rowsSelectionBack[i] = getExpansionState(tree, i);
+    	}
+    	return rowsSelectionBack;
+    }
+    
+    public static void restoreExpansionStates(JTree tree, String[] selectionBackup) {
+    	if(selectionBackup == null || tree == null) {return;}
+    	
+    	int sourcesNum = selectionBackup.length;
+    	for(int i = 0; i< sourcesNum; i++) {
+    		restoreExpanstionState(tree, i, selectionBackup[i]);
+    	}
+    }
+ 
+    public static String getExpansionState(JTree tree, int row){
+        TreePath rowPath = tree.getPathForRow(row);
+        StringBuffer buf = new StringBuffer();
+        int rowCount = tree.getRowCount();
+        for(int i=row; i<rowCount; i++){
+            TreePath path = tree.getPathForRow(i);
+            if(i==row || isDescendant(path, rowPath)){
+                if(tree.isExpanded(path))
+                    buf.append(","+String.valueOf(i-row));
+            }else
+                break;
+        }
+        return buf.toString();
+    }
+ 
+    public static void restoreExpanstionState(JTree tree, int row, String expansionState){
+        StringTokenizer stok = new StringTokenizer(expansionState, ",");
+        while(stok.hasMoreTokens()){
+            int token = row + Integer.parseInt(stok.nextToken());
+            tree.expandRow(token);
+        }
+    }
 
 	public static void setTreeExpandedState(JTree tree, boolean expanded) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getModel().getRoot();

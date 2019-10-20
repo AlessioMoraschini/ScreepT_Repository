@@ -252,6 +252,22 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 85 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.toggleButtonFileTreeLocked.doClick();
 				}
+
+				/*
+				 *  FILE TREE DEPTH  +1 -> Ctrl+Alt+shift+Arrow up
+				 */
+				if(e.getKeyCode() == 38 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentTextEditor.btnDepthUp_nostyle.doClick();
+				}
+				
+				/*
+				 *  FILE TREE DEPTH  -1 -> Ctrl+Alt+shift+Arrow down
+				 */
+				if(e.getKeyCode() == 40 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentTextEditor.btnDepthDown_nostyle.doClick();
+				}
+				
+				
 				
 				/*
 				 *  HIDE/SHOW current workspace -> Ctrl+Shift+W

@@ -27,6 +27,7 @@ public class GUIStyelSettings{
 	
 	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+	public static final String WindowsClassicLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
 	public static final String PlafLookAndFeels = "javax.swing.plaf.metal.MetalLookAndFeel";
 	public static final String jtatooLookAndFeel = "com.jtattoo.plaf.smart.SmartLookAndFeel";
 	public static final String jtatooNoireLNF = "com.jtattoo.plaf.noire.NoireLookAndFeel";
@@ -38,8 +39,11 @@ public class GUIStyelSettings{
 
     public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
+//    		if(WindowsLookAndFeel.equals(style) || PlafLookAndFeels.equals(style) || WindowsClassicLookAndFeel.equals(style)) {
+//    			// Custom only for theese look and feels
+//    			UIManager.put("CheckBox.background", Color.GRAY);
+//    		}
     		
-    		UIManager.put("CheckBox.background", new Color(0,0,0,0));
     		UIManager.put("CheckBox.disabledText", Color.GRAY);
     		UIManager.put("RadioButton.disabledText", Color.GRAY);
     		UIManager.put("nimbusOrange", Color.GREEN);
@@ -48,7 +52,6 @@ public class GUIStyelSettings{
 			UIManager.put("ToolTip.font", new Font("Segoe UI", Font.PLAIN, 18));
 			UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
 			UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
-//			UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
 			UIManager.setLookAndFeel(style);
 			Color buttonBackG = (Color)UIManager.get("Button.background");
 			if (ImageGeneralWorker.getColorComponentsTotRGBA(buttonBackG) < 350) {
@@ -89,7 +92,6 @@ public class GUIStyelSettings{
     
     public static synchronized boolean setDarkNimbus(int nimbusSize) {
     	
-    	UIManager.put("CheckBox.background", new Color(0,0,0,0));
 		UIManager.put("CheckBox.disabledText", Color.GRAY);
 		UIManager.put("RadioButton.disabledText", Color.GRAY);
 		UIManager.put("nimbusOrange", Color.GREEN);
@@ -126,7 +128,6 @@ public class GUIStyelSettings{
     
 	public static synchronized boolean setLightNimbus(int nimbusSize) {
 		
-		UIManager.put("CheckBox.background", new Color(0,0,0,0));
 		UIManager.put("CheckBox.disabledText", Color.GRAY);
 		UIManager.put("RadioButton.disabledText", Color.GRAY);
 		UIManager.put("nimbusOrange", Color.GREEN);

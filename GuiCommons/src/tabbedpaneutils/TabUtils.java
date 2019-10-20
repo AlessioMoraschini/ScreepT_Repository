@@ -16,10 +16,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import resources.GeneralConfig;
-import variousutils.HandleString;
 
 public class TabUtils {
 	
@@ -37,58 +33,8 @@ public class TabUtils {
 	 * @return
 	 */
 	public static JPanel getCustomClosableTab(String title, String tooltip, String iconPath, ActionListener tabCloseListener) {
-		JPanel pnlTab = new JPanel();
-		pnlTab.setOpaque(false);
-		pnlTab.setToolTipText(tooltip);
 
-		// tab title
-		JLabel lblTitle = new JLabel();
-		lblTitle.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT);
-		lblTitle.setText(HandleString.fitToMaxLentgh(title, MAX_TAB_LABELENGHT));
-		
-		// image label
-		JLabel imageLbl = new JLabel();
-		imageLbl.setIcon(new ImageIcon(iconPath));
-		imageLbl.setPreferredSize(new Dimension(15, 20));
-		imageLbl.setMaximumSize(new Dimension(25, 20));
-		
-		pnlTab.setLayout(new GridBagLayout());
-//		pnlTab.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[16.00px][25.00px:35.00px,grow][15.00px]", "[16.00px,grow]"));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.ipadx = 5;
-		gbc.ipady = 0;
-		gbc.weightx = 2;
-
-		// add elements to pnlTab : order must be same as "int TAB_XXX_ORDER" defined at start of this class
-		pnlTab.add(imageLbl, gbc); // 1 - ICON
-		gbc.gridx++;
-		gbc.ipadx = 4;
-		gbc.weightx = 4;
-		pnlTab.add(lblTitle, gbc); // 2 - TEXT TITLE
-		gbc.gridx++;
-		gbc.ipadx = 9;
-		gbc.weightx = 2;
-		
-		// button close
-		JButton btnClose = new JButton();
-		btnClose = applyStyleToTabCloseBtn(btnClose);
-		Dimension btnMinDimension = new Dimension(17, 20) ;
-		Dimension btnDimension = new Dimension(17, 20) ;
-		btnClose.setFont(new Font("SansSerif", Font.PLAIN, 9));
-		btnClose.setMinimumSize(btnMinDimension);
-		btnClose.setPreferredSize(btnDimension);
-		btnClose.setMaximumSize(btnDimension);
-		btnClose.setVerticalTextPosition(SwingConstants.TOP);
-		btnClose.setHorizontalTextPosition(SwingConstants.CENTER);
-		btnClose.setText("x");
-		btnClose.addActionListener(tabCloseListener);
-
-		pnlTab.add(btnClose, gbc); // 3 - CLOSE BUTTON
-		
-
-		return pnlTab;
+		return new TabHeadPanel_Full(title, tooltip, iconPath, tabCloseListener);
 	}
 	
 	/**
@@ -157,4 +103,5 @@ public class TabUtils {
 		});
 		return btnClose;
 	}
+	
 }

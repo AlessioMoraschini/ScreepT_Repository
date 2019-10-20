@@ -1,5 +1,8 @@
 package maingUI;
 
+import static java.awt.Event.CTRL_MASK;
+import static java.awt.Event.ALT_MASK;
+import static java.awt.Event.SHIFT_MASK;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -23,6 +27,7 @@ import org.ini4j.Wini;
 import frameutils.utils.GuiUtils;
 import gUI.utils.mainGui.MainGuiUtils;
 import gui.utils.LauncherLoaderFrame;
+import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
@@ -91,39 +96,56 @@ public class MainGuiParent {
 	JMenuItem mntmpadding = new JMenuItem();
 	JMenuItem mntmPinApplicationOnTop;
 	
-	static JMenuItem mntmInspectCurrentConfiguration;
-	JMenuItem mntmloadPrjSub;
-	JMenuItem mntmExportPrjSub;
-	JMenuItem mntmReloadPrjSub;
-	JMenuItem mntmSaveCurrent;
-	JMenuItem mntmSaveCurrentAs;
-	JMenuItem mntmloadSrcrYptDefaultConf;
-	JMenuItem mntmExit;
-	JMenuItem mntmUserDocumentation;
-	JMenuItem mntmGenOpt;
-	JMenuItem mntmCustomizeUIView;
-	public JMenuItem mntmFullScreenMode;
-	static JMenuItem mntmCrypter;
-	JMenuItem mntmgenerateKeyImageSub;
-	JMenuItem mntmViewKeyDictionary;
-	static JMenuItem mntmTextEditor;
-	JMenuItem mntmnetInfo;
-	JMenuItem mntmhwInfo;
-	JMenuItem mntmImageConverter;
-	JMenuItem mntmReturnToWelcome;
-	JMenuItem mntmAboutScreept;
-	JMenuItem mntmExportLog; 
-	JMenuItem mntmEraseLogs;
-	JMenuItem mntmTouppercaseDirectory;
-	JMenuItem mntmDeleteDirectoryContentByExtension;
-	JMenuItem mntmDeleteDirectoryContentRecursive;
-	JMenuItem mntmDeleteDirectoryContentDirsOnlyRecursive;
-	JMenuItem mntmMakeDirsFromPath;
-	JMenuItem mntmCopyDirStructure;
-	JMenuItem mntmResetAllPanels;
-	JMenuItem mntmResetTextEditor;
-	JMenuItem mntmResetConfigManager;
-	JMenuItem mntmResetCrypterPanel;
+	static CustomJmenuItem mntmInspectCurrentConfiguration;
+	CustomJmenuItem mntmloadPrjSub;
+	CustomJmenuItem mntmExportPrjSub;
+	CustomJmenuItem mntmReloadPrjSub;
+	CustomJmenuItem mntmSaveCurrent;
+	CustomJmenuItem mntmSaveCurrentAs;
+	CustomJmenuItem mntmloadSrcrYptDefaultConf;
+	CustomJmenuItem mntmExit;
+	CustomJmenuItem mntmUserDocumentation;
+	CustomJmenuItem mntmGenOpt;
+	CustomJmenuItem mntmCustomizeUIView;
+	public CustomJmenuItem mntmFullScreenMode;
+	static CustomJmenuItem mntmCrypter;
+	CustomJmenuItem mntmgenerateKeyImageSub;
+	CustomJmenuItem mntmViewKeyDictionary;
+	static CustomJmenuItem mntmTextEditor;
+	CustomJmenuItem mntmnetInfo;
+	CustomJmenuItem mntmhwInfo;
+	CustomJmenuItem mntmImageConverter;
+	CustomJmenuItem mntmReturnToWelcome;
+	CustomJmenuItem mntmAboutScreept;
+	CustomJmenuItem mntmExportLog; 
+	CustomJmenuItem mntmEraseLogs;
+	CustomJmenuItem mntmTouppercaseDirectory;
+	CustomJmenuItem mntmDeleteDirectoryContentByExtension;
+	CustomJmenuItem mntmDeleteDirectoryAllContentRecursive;
+	CustomJmenuItem mntmEmptyDirectoryRecursive;
+	CustomJmenuItem mntmMakeDirsFromPath;
+	CustomJmenuItem mntmCopyDirStructure;
+	CustomJmenuItem mntmResetAllPanels;
+	CustomJmenuItem mntmResetTextEditor;
+	CustomJmenuItem mntmResetConfigManager;
+	CustomJmenuItem mntmResetCrypterPanel;
+	
+	public MainGuiParent() {
+		// INIT MENU and MAIN-BAR SUMBMENUS
+        menuBar = new JMenuBar();
+		menuBar.setOpaque(true);
+		
+		mnFile = new JMenu("File");
+		mnPreferences = new JMenu("Preferences");
+		mnCryptoSteg = new JMenu("ScreepT");
+		mnVarious = new JMenu("Various");
+			mnConversionsAndOther = new JMenu("Conversions and Media");
+			mnFilesAndDirectories = new JMenu("Files And Directories");
+		mnHelp = new JMenu("Help");
+			mnrestartPanel = new JMenu("Reset panels...");
+		
+		// JMenuItems are initialized inside MainGUI Constructor, where they are linked to actions
+	}
 	
 	/******************  BEGIN UTILITY METHODS  *****************************/
 	
@@ -147,9 +169,8 @@ public class MainGuiParent {
 		}).start();
 	}
 
-	
 	/******************  BEGIN MAIN MENU-BAR SETUP  *****************************/
-	
+
 	void structureMenuBar() {
 		
 		// INITIALIZE FONTS BY TYPE
@@ -161,7 +182,10 @@ public class MainGuiParent {
 		Insets mainMargin = new Insets(0, 1, 1, 1);
 		menuBar.setMargin(mainMargin);
 		// prepare padding to right for pinApplication
-		mntmpadding.setPreferredSize(new Dimension(800, 20));
+		mntmpadding.setMaximumSize(new Dimension(5000, 20));
+		mntmpadding.setMinimumSize(new Dimension(400, 20));
+		mntmPinApplicationOnTop.setMaximumSize(new Dimension(30, 20));
+		mntmPinApplicationOnTop.setPreferredSize(new Dimension(30, 20));
  		mntmpadding.setEnabled(false);
  		
 		Insets menuEntryMargin = new Insets(0, 0, 0, 6);
@@ -216,8 +240,8 @@ public class MainGuiParent {
 				mnFilesAndDirectories.add(mntmMakeDirsFromPath);
 				mnFilesAndDirectories.add(mntmCopyDirStructure);
 				mnFilesAndDirectories.add(mntmDeleteDirectoryContentByExtension);
-				mnFilesAndDirectories.add(mntmDeleteDirectoryContentRecursive);
-				mnFilesAndDirectories.add(mntmDeleteDirectoryContentDirsOnlyRecursive);
+				mnFilesAndDirectories.add(mntmDeleteDirectoryAllContentRecursive);
+				mnFilesAndDirectories.add(mntmEmptyDirectoryRecursive);
 			
 			mnHelp.add(mntmAboutScreept);		
 			mnHelp.add(new JSeparator());
@@ -236,6 +260,8 @@ public class MainGuiParent {
 		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
 		
 		addMenuIcons();
+		
+		addMenuShorctutsTips();
 	}
 	
 	/**
@@ -297,10 +323,10 @@ public class MainGuiParent {
 		// SUB-> FILES AND DIRECTORIES SECTION
 		mntmTouppercaseDirectory.setFont(menuItemFont);
 		mntmMakeDirsFromPath.setFont(menuItemFont);
-		mntmDeleteDirectoryContentByExtension.setFont(menuItemFont);
-		mntmDeleteDirectoryContentRecursive.setFont(menuItemFont);
-		mntmDeleteDirectoryContentDirsOnlyRecursive.setFont(menuItemFont);
 		mntmCopyDirStructure.setFont(menuItemFont);
+		mntmDeleteDirectoryContentByExtension.setFont(menuItemFont);
+		mntmDeleteDirectoryAllContentRecursive.setFont(menuItemFont);
+		mntmEmptyDirectoryRecursive.setFont(menuItemFont);
 		
 		// HELP SECTION
 		mntmReturnToWelcome.setFont(menuItemFont);
@@ -354,8 +380,8 @@ public class MainGuiParent {
 		mntmTouppercaseDirectory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPPERCASE_FIRST));
 		mntmMakeDirsFromPath.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
 		mntmDeleteDirectoryContentByExtension.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_TARGETED));
-		mntmDeleteDirectoryContentRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_FOLDER));
-		mntmDeleteDirectoryContentDirsOnlyRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_DIRS_ONLY));
+		mntmDeleteDirectoryAllContentRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_FOLDER));
+		mntmEmptyDirectoryRecursive.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE_DIRS_ONLY));
 		mntmCopyDirStructure.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
 
 		// Help submenu
@@ -371,6 +397,62 @@ public class MainGuiParent {
 		mntmResetTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));
 		mntmResetCrypterPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
 		mntmResetConfigManager.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
+	}
+	
+	/**
+	 * This method adds fake keyListeners (see customJmenuItem class in the overridden method setAccelerator)
+	 * 
+	 * The real ones resides in the class "MainGuiShortcutsListener": those are the shortcuts used in scrypt
+	 */
+	void addMenuShorctutsTips() {
+		
+		// file submenu
+		mntmInspectCurrentConfiguration.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_1, ALT_MASK | SHIFT_MASK));
+		mntmExportPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ADD, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmReloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmSaveCurrent.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmSaveCurrentAs.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_W, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmloadSrcrYptDefaultConf.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmExit.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F4, ALT_MASK ));
+		
+		// preferences submenu
+		mntmGenOpt.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_2, ALT_MASK | SHIFT_MASK));
+		mntmCustomizeUIView.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_3, ALT_MASK | SHIFT_MASK));
+		mntmFullScreenMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK | SHIFT_MASK));
+		
+		// ScreepT submenu
+		mntmCrypter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | SHIFT_MASK));
+		mntmgenerateKeyImageSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, ALT_MASK | SHIFT_MASK));
+		mntmViewKeyDictionary.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, ALT_MASK | SHIFT_MASK));
+		
+		// Various submenu
+		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
+		mntmnetInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | SHIFT_MASK));
+		mntmhwInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, ALT_MASK | SHIFT_MASK));
+		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
+		
+			// Folder and files functions
+			mntmTouppercaseDirectory.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_0, ALT_MASK | SHIFT_MASK));
+			mntmMakeDirsFromPath.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_9, ALT_MASK | SHIFT_MASK));
+			mntmCopyDirStructure.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_8, ALT_MASK | SHIFT_MASK));
+			mntmDeleteDirectoryContentByExtension.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_7, ALT_MASK | SHIFT_MASK));
+			mntmDeleteDirectoryAllContentRecursive.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_6, ALT_MASK | SHIFT_MASK));
+			mntmEmptyDirectoryRecursive.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_5, ALT_MASK | SHIFT_MASK));
+		
+		// Help submenu
+		mntmAboutScreept.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_PERIOD, ALT_MASK | SHIFT_MASK));
+		mntmExportLog.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, ALT_MASK | SHIFT_MASK));
+		mntmEraseLogs.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_CANCEL, ALT_MASK | SHIFT_MASK));
+		mntmReturnToWelcome.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_H, ALT_MASK | SHIFT_MASK));
+		mntmUserDocumentation.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Q, ALT_MASK | SHIFT_MASK));
+		
+			// Reset functions 
+			mntmResetAllPanels.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_0, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+			mntmResetTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_9, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+			mntmResetCrypterPanel.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_8, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+			mntmResetConfigManager.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_7, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		
 	}
 	
 	void updateMenuAndLogFontSize(int fontSize){
@@ -414,7 +496,7 @@ public class MainGuiParent {
 		return mntmSaveCurrent;
 	}
 
-	public void setMntmSaveCurrent(JMenuItem mntmSaveCurrent) {
+	public void setMntmSaveCurrent(CustomJmenuItem mntmSaveCurrent) {
 		this.mntmSaveCurrent = mntmSaveCurrent;
 	}
 	
@@ -482,8 +564,8 @@ public class MainGuiParent {
 		return mntmTouppercaseDirectory;
 	}
 
-	public JMenuItem getMntmDeleteDirectoryContentRecursive() {
-		return mntmDeleteDirectoryContentRecursive;
+	public JMenuItem getMntmDeleteDirectoryAllContentRecursive() {
+		return mntmDeleteDirectoryAllContentRecursive;
 	}
 
 	public JMenuItem getMntmMakeDirsFromPath() {
@@ -500,12 +582,12 @@ public class MainGuiParent {
 	}
 
 
-	public void setMntmResetAllPanels(JMenuItem mntmResetAllPanels) {
+	public void setMntmResetAllPanels(CustomJmenuItem mntmResetAllPanels) {
 		this.mntmResetAllPanels = mntmResetAllPanels;
 	}
 
 
-	public void setMntmReturnToWelcome(JMenuItem mntmReturnToWelcome) {
+	public void setMntmReturnToWelcome(CustomJmenuItem mntmReturnToWelcome) {
 		this.mntmReturnToWelcome = mntmReturnToWelcome;
 	}
 
@@ -522,6 +604,22 @@ public class MainGuiParent {
 
 	public JMenuItem getMntmResetCrypterPanel() {
 		return mntmResetCrypterPanel;
+	}
+
+	public CustomJmenuItem getMntmFullScreenMode() {
+		return mntmFullScreenMode;
+	}
+
+	public CustomJmenuItem getMntmEraseLogs() {
+		return mntmEraseLogs;
+	}
+
+	public CustomJmenuItem getMntmEmptyDirectoryRecursive() {
+		return mntmEmptyDirectoryRecursive;
+	}
+
+	public CustomJmenuItem getMntmCopyDirStructure() {
+		return mntmCopyDirStructure;
 	}
 	
 }

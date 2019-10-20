@@ -24,6 +24,7 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -118,7 +119,8 @@ public class TextEditorUtils {
 	}
 	
 	public void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
-		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByType(currentTextEditor, JButton.class);
+		// retrieve all buttons except Containing depth in name
+		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor, JButton.class, "nostyle", true, false);
 		for(JButton button : textEditorButtons) {
 			button.setCursor(GuiUtils.CURSOR_HAND);
 			button.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
@@ -301,7 +303,7 @@ public class TextEditorUtils {
 		CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
 		
 		File ancestor = new File("");
-		ancestor = FileStuff.getNlevelsAncestor(currentFile, currentTextEditor.fileTreeAncestorLevel);
+		ancestor = FileStuff.getNlevelsAncestor(currentFile, GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL);
 
 		// ANCESTOR CHECK
 		if(ancestor == null || !ancestor.exists()) {
@@ -321,8 +323,9 @@ public class TextEditorUtils {
 
 			currentTextEditor.rightPaneShowOrHide();
 			
+			String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftSplitTreeFiles);
 			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
-			
+			TreeUtils.restoreExpansionStates(currentTextEditor.leftSplitTreeFiles, expansionStBack);
 			try {
 				TreeUtils.selectFileInNamedFileTree(currentFile, currentTextEditor.leftSplitTreeFiles, true);
 			} catch (IOException e1) {
@@ -381,7 +384,9 @@ public class TextEditorUtils {
 //			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
 //			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
+			String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftSplitTreeFiles);
 			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(workspaceRoot)));
+			TreeUtils.restoreExpansionStates(currentTextEditor.leftSplitTreeFiles, expansionStBack);
 			try {
 				// loadedTabObj VALIDATION
 				if(currentTabEditor.loadedTabObj == null || currentTabEditor.loadedTabObj.loadedFile == null) {
@@ -469,7 +474,7 @@ public class TextEditorUtils {
 				resetDividerColor();
 				currentTabEditor.applyStyleToTabs();
 				try {
-					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
+//					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
 				} catch (Exception e) {
 					logger.debug("Error during current file highlighting in file tree - textEditor");
 				}

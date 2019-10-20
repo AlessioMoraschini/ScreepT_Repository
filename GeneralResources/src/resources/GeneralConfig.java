@@ -96,6 +96,7 @@ public class GeneralConfig {
 	public static final Dimension FILE_CHOOSER_SIZE = getDimensionFromString("-", FILE_CHOOSER_SIZE_STR, DEFAULT_FILE_CHOOSER_SIZE);
 	
 	// TEXT EDITOR DEFAULTS
+	public static final boolean RECTANGULAR_TXT_SELECTION_ALLOWED = Boolean.valueOf(linkedMappings.getProperty("RECTANGULAR_TXT_SELECTION_ALLOWED"));
 	public static final boolean PRELOAD_TXT_EDITOR_FLAG = Boolean.valueOf(linkedMappings.getProperty("PRELOAD_TXT_EDITOR_FLAG"));
 	public static final Font TXT_EDITOR_MINIMAP_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 5);
 	private static String TXT_EDITOR_MINIMAP_FONT_STR = linkedMappings.getProperty("TXT_EDITOR_MINIMAP_FONT");

@@ -9,7 +9,6 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import resources.GeneralConfig;
 
 import javax.swing.JProgressBar;
 
@@ -24,7 +23,8 @@ import java.awt.Font;
 import javax.swing.border.LineBorder;
 
 public class LauncherLoaderPanel extends JPanel{
-	
+	private static final long serialVersionUID = 2754216601762407439L;
+
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(LauncherLoaderPanel.class);
 		

@@ -53,6 +53,8 @@ public class TextEditorTooltips {
 	public static final String tooltipFileViewLock = "[Ctrl+Shift+U] This will lock/unlock sync of file tree and current file opened in editor.";
 	public static final String tooltipWorkspaceToggle = "[Ctrl+Shift+W] Clicking this you will toggle ON/OFF current workspace view.";
 	public static final String tooltipWorkspaceNew = "[Ctrl+Alt+Shift+W] Click this to change your preferred workspace";
+	public static final String tooltipDepthTreeUp = "[Ctrl+Alt+Shift+Arrow up] Increase by one level tree depth";
+	public static final String tooltipDepthTreeDown = "[Ctrl+Alt+Shift+Arrow down] Reduce by one level tree depth";
 	public static final String tooltipChckbxLockLanguage = "[Ctrl+shift+L] When checked, language selector will not be auto updated according to current file type";
 			
 	public static final String tooltipComboFileFormat = "Choose file extension";

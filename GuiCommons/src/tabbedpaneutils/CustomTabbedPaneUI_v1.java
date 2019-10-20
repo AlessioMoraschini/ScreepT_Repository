@@ -10,20 +10,22 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import resources.IconsPathConfigurator;
+
 public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPaneUI {
 
 	public static final Color DEFAULT_FILLING = Color.lightGray;
 	public static final Color DEFAULT_DARK_FILLING = DEFAULT_FILLING.darker().darker();
-	public static final Color DEFAULT_BORDER = Color.LIGHT_GRAY;
+	public static final Color DEFAULT_BORDER = Color.BLACK;
 	public static final Color ACTIVE_BTN_CLOSE_COL = new Color(180, 10, 0);
 	public static final Color INACTIVE_BTN_CLOSE_COL = new Color(50, 0, 0);
 	
 	public static final int THICKNESS_BORDER = 1;
 	
-	private static final int xGap = -1;
-	private static final int yGap = -1;
-	private static final int wPad = 2;
-	private static final int hPad = 2;
+	private static final int xGap = 0;
+	private static final int yGap = 0;
+	private static final int wPad = 0;
+	private static final int hPad = 0;
 	private static final int arch = 6;
 	
 	public Color fillingColor;
@@ -31,6 +33,7 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 	public Color borderColor;
 	public JTabbedPane mainTabPane;
 	public int buttonOrdinalPos;
+	public JButton currentButton;
 	
 	/**
 	 * Use this if there is close button
@@ -65,14 +68,16 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
         int x = rects[tabIndex].x+xGap;
         int y = rects[tabIndex].y+yGap;
         
-        JButton currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
+        currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
         if (buttonOrdinalPos != Integer.MAX_VALUE && currentButton != null) {
 			if (selectedIndex == tabIndex) {
 				g.setColor(fillingColor);
 				currentButton.setBackground(ACTIVE_BTN_CLOSE_COL);
+				currentButton.setIcon(IconsPathConfigurator.X_WHITE);
 			} else {
 				g.setColor(deSelfillingColor);
 				currentButton.setBackground(INACTIVE_BTN_CLOSE_COL);
+				currentButton.setIcon(IconsPathConfigurator.X_GRAY_IMG);
 			} 
 		}
 		g.fillRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);

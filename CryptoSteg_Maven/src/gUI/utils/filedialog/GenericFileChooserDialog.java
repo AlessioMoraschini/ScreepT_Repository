@@ -261,6 +261,33 @@ public class GenericFileChooserDialog {
         }
         return correctFile;
 	}
+
+	/**JFRAME - only directories src
+	 * this method select a directory from the user (only directories),if nothing is selected returns null
+	 */
+	public static File directoRead(JFrame parent, INItializer currentConf, String title) {
+		
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle(title);
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
+		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		File correctFile = null;
+		
+		int returnVal = fileChooser.showOpenDialog(parent);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			
+			File selectedFile = fileChooser.getSelectedFile();
+			if(selectedFile==null||!selectedFile.isDirectory()) {
+				JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+			}else {
+				correctFile = selectedFile;
+				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
+			}
+		}
+		return correctFile;
+	}
 	
 	/**JFRAME - only directories dest
 	 * this method select a directory from the user (only directories)to write a copy of current

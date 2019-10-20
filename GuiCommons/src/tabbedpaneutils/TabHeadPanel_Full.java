@@ -1,0 +1,97 @@
+package tabbedpaneutils;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import resources.GeneralConfig;
+import resources.IconsPathConfigurator;
+import variousutils.HandleString;
+import net.miginfocom.swing.MigLayout;
+import java.awt.Component;
+
+public class TabHeadPanel_Full extends JPanel{
+	
+	public TabHeadPanel_Full(String title, String tooltip, String iconPath, ActionListener tabCloseListener) {
+		super();
+		setOpaque(false);
+		setToolTipText(tooltip);
+		setMaximumSize(new Dimension(1500, 22));
+		setMinimumSize(new Dimension(150, 18));
+		
+		// image label
+		JLabel imageLbl = new JLabel();
+		imageLbl.setIcon(new ImageIcon(iconPath));
+		imageLbl.setPreferredSize(new Dimension(15, 20));
+		imageLbl.setMaximumSize(new Dimension(25, 20));
+		
+		
+		// tab title
+		JLabel lblTitle = new JLabel();
+		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitle.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT.deriveFont(14f));
+		lblTitle.setText(HandleString.fitToMaxLentgh(title, TabUtils.MAX_TAB_LABELENGHT));
+		setLayout(new MigLayout("fill, insets 0", "[20px][69px,grow][35px]", "[22px:24px:34px]"));
+		// button close
+		final JButton btnClose = new JButton("");
+		btnClose.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnClose.setPreferredSize(new Dimension(20, 20));
+		btnClose.setSize(new Dimension(20, 20));
+		btnClose.setIgnoreRepaint(true);
+		btnClose.setMargin(new Insets(0, 0, 0, 0));
+		btnClose.setMaximumSize(new Dimension(100, 100));
+		btnClose.setMinimumSize(new Dimension(18, 18));
+		btnClose.setVerticalTextPosition(SwingConstants.CENTER);
+		btnClose.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		final Color background = btnClose.getBackground();
+		Color foreground = new Color(210,210,210);
+		btnClose.setBackground(background);
+		btnClose.setForeground(foreground);
+		btnClose.setIcon(IconsPathConfigurator.X_WHITE);
+
+		btnClose.addActionListener(tabCloseListener);
+		btnClose.addMouseListener(new MouseListener() {
+			public void mouseReleased(MouseEvent e) {
+			}
+			public void mousePressed(MouseEvent e) {
+			}
+			public void mouseExited(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						btnClose.setBackground(background);
+						btnClose.setIcon(IconsPathConfigurator.X_WHITE);
+					}
+				});
+			}
+			public void mouseEntered(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						btnClose.setBackground(background.brighter());
+						btnClose.setIcon(IconsPathConfigurator.X_BLACK_IMG);
+					}
+				});
+			}
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+
+
+		// add elements to pnlTab : order must be same as "int TAB_XXX_ORDER" defined at start of this class
+		add(imageLbl, "cell 0 0,alignx left,aligny center");
+		add(lblTitle, "cell 1 0,growx,aligny center"); // 2 - TEXT TITLE
+		add(btnClose, "cell 2 0,alignx right,aligny center"); // 3 - CLOSE BUTTON
+		
+	}
+}

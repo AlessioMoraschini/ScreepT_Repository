@@ -18,6 +18,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.filechangewatcher.FileChangeMonitor;
+import resources.GeneralConfig;
 import tabbededitor.IChangeMonManager;
 import utils.SysUtils;
 
@@ -29,7 +30,7 @@ public class TabTextEditorObj {
 	
 	public File loadedFile;
 	public RTextScrollPane currentScrollPane;
-	public RSyntaxTextArea textArea;
+	public ColumnTextArea textArea;
 	public FileChangeMonitor fileMonitorManager;
 	public FocusListener focusTxtAreaMonitor; 
 	public boolean unsaved = false;
@@ -37,7 +38,7 @@ public class TabTextEditorObj {
 	public TabTextEditorObj(File file, String text, DocumentListener docListener, TextEditorOption txtOptions, final IChangeMonManager checkChangesMonitor) {
 		
 		loadedFile = file;
-		textArea = new RSyntaxTextArea();
+		textArea = new ColumnTextArea(GeneralConfig.RECTANGULAR_TXT_SELECTION_ALLOWED);
 		textArea.setMinimumSize(new Dimension(300,100));
 		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
 		textArea.setEditable(true);

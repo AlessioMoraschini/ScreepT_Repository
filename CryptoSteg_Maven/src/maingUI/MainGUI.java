@@ -11,10 +11,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JMenu;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -61,6 +59,7 @@ import gUI.utils.mainGui.MainGuiUtils;
 import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
 import gui.utils.LauncherLoaderFrame;
 import guistyle.GUIStyelSettings;
+import jmenu.CustomJmenuItem;
 import launcherutils.IniFileManager;
 import logger.LoggerUtils;
 import mainlauncher.ScrYpTLauncher;
@@ -325,12 +324,6 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			  	}
 			});
 			
-			// ASK FOR USERNAME IF NULL OR FIRST TIME
-			if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-				currentConfiguration.getGenOpt().setUserName(MainGUI.askUsername());
-			}
-			window.startTitleUpdater();
-			
 			frmScryptV.setVisible(true);
 			frmScryptV.setEnabled(true);
 
@@ -380,6 +373,14 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					GuiUtils.launchThreadSafeSwing(new Runnable() {
 						public void run() {
 							loaderGraphics.update("Welcome to ScrYpT", 100, 200);
+							
+							// ASK FOR USERNAME IF NULL OR FIRST TIME
+							if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
+								logger.info("Current user input initialization: void user or lenght>20 detected!");
+								currentConfiguration.getGenOpt().setUserName(MainGUI.askUsername());
+								logger.info("Current userName: " + currentConfiguration.getGenOpt().getUserName());
+							}
+							window.startTitleUpdater();
 						}
 					});
 				}
@@ -400,6 +401,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	 * Called from MainGUI.mainApplicationGeneral()
 	 *****************************************************************************************************/
 	public MainGUI() {
+		super();
 		
 		mainAPP = this;
 		
@@ -433,6 +435,9 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 
  loaderGraphics.update("Initializing screen properties...", 30);
  
+ 		// This will be used to print out various types of dialogs in this class
+ 		dialogHelper = new JOptionHelper(frmScryptV);
+ 
 		// INITIALIZE SCREEN PROPOERTIES
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		screenWidth = gd.getDisplayMode().getWidth();
@@ -449,8 +454,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		frmScryptV.setBounds(0, 0, 1500, 850 );
 		frmScryptV.setMinimumSize(MainGuiParent.minimumSize);
 		frmScryptV.addMouseListener(new ComponentResizer());
-		
-		dialogHelper = new JOptionHelper(frmScryptV);
+		frmScryptV.setJMenuBar(menuBar);
 		
 		// FULL SCREEN SETTING
 	    frmScryptV.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -458,25 +462,11 @@ loaderGraphics.update("Starting autosave modules... ", 25);
         
         setBackgroundImage();
         
-        // INIT MENU and SUMBMENUS
-        menuBar = new JMenuBar();
-		menuBar.setOpaque(true);
-		frmScryptV.setJMenuBar(menuBar);
-		
-		mnFile = new JMenu("File");
-		mnPreferences = new JMenu("Preferences");
-		mnCryptoSteg = new JMenu("ScreepT");
-		mnVarious = new JMenu("Various");
-		mnConversionsAndOther = new JMenu("Conversions and Media");
-		mnFilesAndDirectories = new JMenu("Files And Directories");
-		mnHelp = new JMenu("Help");
-		mnrestartPanel = new JMenu("Reset panels...");
-	
  loaderGraphics.update("Defining handlers...", 40);
 		
 		//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
 		
- 		mntmPinApplicationOnTop = new JMenuItem(new AbstractAction("") {
+ 		mntmPinApplicationOnTop = new CustomJmenuItem(new AbstractAction("") {
 			public void actionPerformed(ActionEvent e) {
 				if (!mainAPP.getMainFrame().isAlwaysOnTop()) {
 					
@@ -487,7 +477,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 
 					getMainFrame().setAlwaysOnTop(true);
 					mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_GREEN));
-					mntmPinApplicationOnTop.setToolTipText("Disable \"always on top\" over other windows (if supported)");
+					mntmPinApplicationOnTop.setToolTipText("Disable \"always on top\" over other windows");
 					
 				}else{
 					getMainFrame().setAlwaysOnTop(false);
@@ -498,7 +488,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
  		});
  
 		// NOT OPENING VIEW - EXIT AND CLOSE SCRYPT
-		mntmExit = new JMenuItem(new AbstractAction("Exit") {
+		mntmExit = new CustomJmenuItem(new AbstractAction("Exit") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExit) {
 					FLAG_mntmExit = true;
@@ -535,7 +525,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 
 		// NOT OPENING VIEW - LOAD CUSTOM CONFIGURATION
-		mntmloadPrjSub = new JMenuItem(new AbstractAction("Load Custom Configuration") {
+		mntmloadPrjSub = new CustomJmenuItem(new AbstractAction("Load Custom Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		   
 		    		if (!FLAG_loadPrjSub) {
@@ -553,7 +543,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		String msg2 = "? All unsaved work will be lost.";
 		
 		// NOT OPENING VIEW - RESET ALL PANELS
-		mntmResetAllPanels = new JMenuItem(new AbstractAction("Reset all Panels") {
+		mntmResetAllPanels = new CustomJmenuItem(new AbstractAction("Reset all Panels") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if(dialogHelper.yesOrNo(msg1 + "all panels" + msg2, "Reset all panels?")) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -563,7 +553,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	    });
 		
 		// NOT OPENING VIEW - RESET TEXT EDITOR
-		mntmResetTextEditor = new JMenuItem(new AbstractAction("Reset Text Editor") {
+		mntmResetTextEditor = new CustomJmenuItem(new AbstractAction("Reset Text Editor") {
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -573,7 +563,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// NOT OPENING VIEW - RESET CRYPTER
-		mntmResetCrypterPanel = new JMenuItem(new AbstractAction("Reset ScreepT") {
+		mntmResetCrypterPanel = new CustomJmenuItem(new AbstractAction("Reset ScreepT") {
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -583,7 +573,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// NOT OPENING VIEW - RESET CONFIG MANAGER
-		mntmResetConfigManager = new JMenuItem(new AbstractAction("Reset Configuration manager") {
+		mntmResetConfigManager = new CustomJmenuItem(new AbstractAction("Reset Configuration manager") {
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -593,7 +583,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
-		mntmSaveCurrent = new JMenuItem(new AbstractAction("Save Current Configuration") {
+		mntmSaveCurrent = new CustomJmenuItem(new AbstractAction("Save Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!FLAG_savePrjSub) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -605,7 +595,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 
 		// NOT OPENING VIEW - SAVE CUSTOM CONFIGURATION
-		mntmExportPrjSub = new JMenuItem(new AbstractAction("Export Current Configuration") {
+		mntmExportPrjSub = new CustomJmenuItem(new AbstractAction("Export Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!FLAG_savePrjSubAs) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -618,7 +608,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 
 		// NOT OPENING VIEW - RELOAD CONFIGURATION
-		mntmReloadPrjSub = new JMenuItem(new AbstractAction("Reload Configuration") {
+		mntmReloadPrjSub = new CustomJmenuItem(new AbstractAction("Reload Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadDefaultPrjSub) {
@@ -651,7 +641,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 
 		// NOT OPENING VIEW - SAVE DEFAULT CONFIGURATION
-		mntmSaveCurrentAs = new JMenuItem(new AbstractAction("Save Current as Default") {
+		mntmSaveCurrentAs = new CustomJmenuItem(new AbstractAction("Save Current as Default") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmSaveCurrentAs) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -678,7 +668,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 
 		// NOT OPENING VIEW - RELOAD STANDARD SCRYPT CONFIGURATION
-		mntmloadSrcrYptDefaultConf = new JMenuItem(new AbstractAction("Reset Original") {
+		mntmloadSrcrYptDefaultConf = new CustomJmenuItem(new AbstractAction("Reset Original") {
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadSrcrYptDefaultConf) {
@@ -713,7 +703,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 
 		// NOT OPENING VIEW - LOG EXPORT
-		mntmExportLog = new JMenuItem(new AbstractAction("Export Event Log") {
+		mntmExportLog = new CustomJmenuItem(new AbstractAction("Export Event Log") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExportLog) {
 					logger.debug(" => User started logs exporting procedure.");
@@ -754,7 +744,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// NOT OPENING VIEW - LOG ERASE
-		mntmEraseLogs = new JMenuItem(new AbstractAction("Erase Logs") {
+		mntmEraseLogs = new CustomJmenuItem(new AbstractAction("Erase Logs") {
 			public void actionPerformed(ActionEvent e) {
 				logger.debug(" => User started logs erasing procedure.");
 
@@ -787,7 +777,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 
 		// NOT OPENING VIEW - UPPERCASE DIRECTORY'S NAMES FIRST LETTER
-		mntmTouppercaseDirectory = new JMenuItem(new AbstractAction("Uppercase First letter - Files&Directories") {
+		mntmTouppercaseDirectory = new CustomJmenuItem(new AbstractAction("Uppercase First letter - Files&Directories") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmTouppercaseDirectory) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -799,7 +789,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT BY EXTENSION
-		mntmDeleteDirectoryContentByExtension = new JMenuItem(new AbstractAction("Delete Directory's content by extension") {
+		mntmDeleteDirectoryContentByExtension = new CustomJmenuItem(new AbstractAction("Delete Directory's content by extension") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmDeleteDirectoryContentByExtension) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -811,7 +801,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// NOT OPENING VIEW - DELETE RECURSIVELY DIRECTORY'S CONTENT
-		mntmDeleteDirectoryContentRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (All except selected)") {
+		mntmDeleteDirectoryAllContentRecursive = new CustomJmenuItem(new AbstractAction("Delete Directory's content (All except selected)") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -823,7 +813,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// NOT OPENING VIEW - DELETE DIRECTORY'S CONTENT
-		mntmDeleteDirectoryContentDirsOnlyRecursive = new JMenuItem(new AbstractAction("Delete Directory's content (files only)") {
+		mntmEmptyDirectoryRecursive = new CustomJmenuItem(new AbstractAction("Empty all content (doesn't delete folders)") {
 			public void actionPerformed(ActionEvent e) {
 				if(!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -835,7 +825,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 
 		// NOT OPENING VIEW - MAKE DIRS FROM STRING PATH
-		mntmMakeDirsFromPath = new JMenuItem(new AbstractAction("Create directory from String path") {
+		mntmMakeDirsFromPath = new CustomJmenuItem(new AbstractAction("Create directory from String path") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmMakeDirsFromPath) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -847,7 +837,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// NOT OPENING VIEW - COPY DIRECTORY STRUCTURE
-		mntmCopyDirStructure = new JMenuItem(new AbstractAction("Copy directory structure (folders only)") {
+		mntmCopyDirStructure = new CustomJmenuItem(new AbstractAction("Copy directory structure (Copy folders, not files)") {
 			public void actionPerformed(ActionEvent e) {
 				if(!FLAG_mntmCopyDirStructure) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -861,9 +851,9 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	///////////////// HANDLERS THAT OPEN A NEW WINDOW  ////////////////////////
 		
 		// open in a new window - CUSTOMIZE GRAPHICS
-		mntmCustomizeUIView = new JMenuItem(new AbstractAction("Customize Graphics") {
+		mntmCustomizeUIView = new CustomJmenuItem(new AbstractAction("Customize Graphics") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelGuiOptions == null) {
+				if (panelGuiOptions == null || !panelGuiOptions.isVisible()) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
 					panelGuiOptions.setLocationRelativeTo(mainAPP.getMainFrame());
@@ -886,7 +876,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// fullScreen mode toggle
-		mntmFullScreenMode = new JMenuItem(new AbstractAction("Full Screen Mode") {
+		mntmFullScreenMode = new CustomJmenuItem(new AbstractAction("Full Screen Mode") {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
@@ -932,9 +922,9 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 		
 		// open in a new window - GENERAL OPTIONS
-		mntmGenOpt = new JMenuItem(new AbstractAction("General Options") {
+		mntmGenOpt = new CustomJmenuItem(new AbstractAction("General Options") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelGeneralOptions == null) {
+				if (panelGeneralOptions == null || !panelGeneralOptions.isVisible()) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
 					panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
@@ -957,7 +947,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// open in a new window - KEYGEN
-		mntmgenerateKeyImageSub = new JMenuItem(new AbstractAction("Generate Key Image") {
+		mntmgenerateKeyImageSub = new CustomJmenuItem(new AbstractAction("Generate Key Image") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (panelKeyGen == null) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -982,7 +972,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// open in a new window - NET INFO
-		mntmnetInfo = new JMenuItem(new AbstractAction("Network Info") {
+		mntmnetInfo = new CustomJmenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (panelNetInfo == null || !panelNetInfo.isVisible()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -1025,7 +1015,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// open in a new window - NET INFO
-		mntmhwInfo = new JMenuItem(new AbstractAction("System Info") {
+		mntmhwInfo = new CustomJmenuItem(new AbstractAction("System Info") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (panelHwInfo == null|| !panelHwInfo.isVisible()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -1064,7 +1054,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// open in a new window - DICTIONARY (KEY IMG)
-		mntmViewKeyDictionary = new JMenuItem(new AbstractAction("View Key Dictionary") {
+		mntmViewKeyDictionary = new CustomJmenuItem(new AbstractAction("View Key Dictionary") {
 		    public void actionPerformed(ActionEvent e) {
 		    	if (panelKeyDict == null) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -1089,7 +1079,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// open in a new window - IMAGE CONVERTER
-		mntmImageConverter = new JMenuItem(new AbstractAction("Image Converter") {
+		mntmImageConverter = new CustomJmenuItem(new AbstractAction("Image Converter") {
 			public void actionPerformed(ActionEvent e) {
 		    	if (panelImgConv == null) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -1115,7 +1105,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 		
 		// open in a new window - ABOUT SCRYPT
-		mntmAboutScreept = new JMenuItem(new AbstractAction("About - ScrYpt") {
+		mntmAboutScreept = new CustomJmenuItem(new AbstractAction("About - ScrYpt") {
 			public void actionPerformed(ActionEvent e) {
 				if (panelAbout == null) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -1148,7 +1138,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			}
 		});
 		
-		mntmUserDocumentation = new JMenuItem(new AbstractAction("User Guide") {
+		mntmUserDocumentation = new CustomJmenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
 				if (tutorialPanel == null) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
@@ -1173,28 +1163,28 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		
 		// open in main frame - FILE CRYPTER
-		mntmCrypter = new JMenuItem(new AbstractAction("ScreepT - Crypt and Decrypt files") {
+		mntmCrypter = new CustomJmenuItem(new AbstractAction("ScreepT - Crypt and Decrypt files") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	mainGuiUtils.startCrypterPanel(false);
 		    }
 		});
 		
 		// open in main frame - CONFIGURATION MANAGER
-		mntmInspectCurrentConfiguration = new JMenuItem(new AbstractAction("Configuration Manager") {
+		mntmInspectCurrentConfiguration = new CustomJmenuItem(new AbstractAction("Configuration Manager") {
 		    public void actionPerformed(ActionEvent ae) {
 	    		mainGuiUtils.startConfigManagerPanel(false);
 		    }
 		});
 		
 		// open in main frame - TEXT EDITOR
-		mntmTextEditor = new JMenuItem(new AbstractAction("Text Editor") {
+		mntmTextEditor = new CustomJmenuItem(new AbstractAction("Text Editor") {
 			public void actionPerformed(ActionEvent e) {
 				mainGuiUtils.startTextEditor(false);
 			}
 		});
 		
 		// open in main frame - RETURN TO WELCOME PAGE
-		mntmReturnToWelcome = new JMenuItem(new AbstractAction("Return to Welcome Page") {
+		mntmReturnToWelcome = new CustomJmenuItem(new AbstractAction("Return to Welcome Page") {
 			public void actionPerformed(ActionEvent e) {
 				isOnHomePage.set(true);
 				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
@@ -1275,9 +1265,9 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	public static String askUsername() {
 		boolean end=false;
 		String input="";
-		logger.info("Current user input initialization: void user or lenght>20 detected!");
 		do {
-			input = JOptionPane.showInputDialog("Please insert your name:", "U-sir");
+			input = dialogHelper.askForStringUnsafe("Please insert your name:", "Hi, what's your name? :)", "U-sir");
+			
 			if (input==null || input.equals("") || input.length() > 20) {
 				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",
 						"UserName lenght Error", JOptionPane.WARNING_MESSAGE);
@@ -1584,6 +1574,9 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		return new MainGuiShortcutsListener(mainAPP); 
 	}
 	
+	/**
+	 * General update from .ini configuration
+	 */
 	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
 		if(initTxtWriter != null) {
