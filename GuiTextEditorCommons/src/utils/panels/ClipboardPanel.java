@@ -426,25 +426,23 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	 */
 	@Override
 	public void reload(String target) throws IOException {
-		File selected = dataMap.get(target);
-		// Create fake safe unexisting file to avoid null pointer
-		if(selected == null) {
-			dialogHelper.warn("Given file is NULL, cannot load content.", null);
-			logger.error("Given file is NULL, cannot load content.");
-			return;
+		if (this.isVisible()) {
+			File selected = dataMap.get(target);
+			// Create fake safe unexisting file to avoid null pointer
+			if (selected == null) {
+				dialogHelper.warn("Given file is NULL, cannot load content.", null);
+				logger.error("Given file is NULL, cannot load content.");
+				return;
+			}
+			if (!selected.exists()) {
+				selected.createNewFile();
+			}
+			// Update text from file
+			txtAreaClipboard.setText("");
+			FileStuff.appendFileTxtArea(selected, txtAreaClipboard, true);
+			logger.debug("Current clipboard reloaded from file: " + selected);
+			options.setLastFileOpenedClipboard(target);
 		}
-		
-		if(!selected.exists()) {
-			selected.createNewFile();
-		}
-		
-		// Update text from file
-		txtAreaClipboard.setText("");
-		FileStuff.appendFileTxtArea(selected, txtAreaClipboard, true);
-		
-		logger.debug("Current clipboard reloaded from file: " + selected);
-		options.setLastFileOpenedClipboard(target);
-		
 	}
 	
 	public boolean addNewClipboardGui() throws IOException {
@@ -481,7 +479,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	@Override
 	public void sync() {
 		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
-		if (reference != null && txtAreaClipboard != null) {
+		if (this.isVisible() && reference != null && txtAreaClipboard != null) {
 			// Get dynamic reference from interface taken from main editor utils class
 			txtAreaClipboard.setBackground(reference.getBackground());
 			RsyntaxUtils.setBackground(txtAreaClipboard, reference.getBackground());

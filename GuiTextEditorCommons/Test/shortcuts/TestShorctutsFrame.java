@@ -1,3 +1,4 @@
+package shortcuts;
 
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;

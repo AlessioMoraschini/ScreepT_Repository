@@ -43,7 +43,7 @@ public class GUIStyelSettings{
 //    			// Custom only for theese look and feels
 //    			UIManager.put("CheckBox.background", Color.GRAY);
 //    		}
-    		
+    		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
     		UIManager.put("CheckBox.disabledText", Color.GRAY);
     		UIManager.put("RadioButton.disabledText", Color.GRAY);
     		UIManager.put("nimbusOrange", Color.GREEN);
@@ -66,6 +66,7 @@ public class GUIStyelSettings{
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e3) {
 			return false;
+		}finally {
 		}
     }
     
@@ -79,19 +80,15 @@ public class GUIStyelSettings{
 			}
 		}
 		
-		setFocusDefaultBtn();
     }
     
     public static void setFocusDefaultBtn() {
-    	SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-			}
-		});
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
     }
     
     public static synchronized boolean setDarkNimbus(int nimbusSize) {
     	
+    	UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		UIManager.put("CheckBox.disabledText", Color.GRAY);
 		UIManager.put("RadioButton.disabledText", Color.GRAY);
 		UIManager.put("nimbusOrange", Color.GREEN);
@@ -128,6 +125,7 @@ public class GUIStyelSettings{
     
 	public static synchronized boolean setLightNimbus(int nimbusSize) {
 		
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		UIManager.put("CheckBox.disabledText", Color.GRAY);
 		UIManager.put("RadioButton.disabledText", Color.GRAY);
 		UIManager.put("nimbusOrange", Color.GREEN);

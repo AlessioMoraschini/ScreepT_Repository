@@ -817,7 +817,7 @@ public class TextEditorUtils {
 		String old = new String(source);
 
 		// XML format handler (if xml formatter works then is a xml recognized file)
-		if (currentTextEditor.CURRENT_EXT_OUT.equals(".xml")) {
+		if (currentTextEditor.CURRENT_EXT_OUT.equalsIgnoreCase(".xml")) {
 			String formatted = HandleString.xmlPrettyFormat(source, 4);
 			if (!formatted.equals(HandleString.ERROR)) {
 				source = HandleString.xmlPrettyFormat(source, 4);
@@ -832,6 +832,9 @@ public class TextEditorUtils {
 						"Error reading xml format, maybe it's not a valid xml String?", "XML format Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
+		}else if (currentTextEditor.CURRENT_EXT_OUT.equalsIgnoreCase(".js") 
+				|| currentTextEditor.CURRENT_EXT_OUT.equalsIgnoreCase(".json")) {
+			
 		}
 
 		// apply formatted to textArea

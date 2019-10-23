@@ -12,6 +12,7 @@ import gUI.utils.shortcutshandler.TextEditorMouseWheelListener;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
+import shortcuts.ICommonShortcuts;
 import tabbededitor.ITabbedEditorOwner;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
@@ -118,10 +119,20 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 	}
 
 	@Override
-	public void doAdditionalStuffOnDocMouseClick(JTextArea target) {
+	public void doAdditionalStuffOnDocMouseReleased(JTextArea target) {
 		if(txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
 			((MapTextAreaPanel)textEditor.rightSplitContainer).safeSyncCaretFromTxtReference();
 		}
+	}
+
+	@Override
+	public void doAdditionalStuffOnDocMousePressed(JTextArea target) {
+		// FOR NOW DO NOTHING
+	}
+
+	@Override
+	public ICommonShortcuts getShortcutManager() {
+		return textEditor.shortcutsListener;
 	}
 
 }

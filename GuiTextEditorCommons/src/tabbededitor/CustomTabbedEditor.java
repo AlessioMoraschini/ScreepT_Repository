@@ -36,6 +36,7 @@ import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import general.MyFileView;
 import generic.LimitedConcurrentList;
+import guistyle.GUIStyelSettings;
 import mainobj.INItializer;
 import om.HistoryNode;
 import om.TabTextEditorObj;
@@ -67,6 +68,9 @@ public class CustomTabbedEditor {
 	public volatile boolean isRemovingTab = false;
 	public volatile boolean tabJustSwitched = false;
 	public volatile boolean breakRemoveLoop = false;
+	// In case of removal when there is only one tab, this avoid problems or null pointers by adding a tab, setting firstToRemove=true,
+			// and at the end removing first tab, ending with only an empty tab :)
+	public volatile boolean firstToRemove = false;
 	public volatile int breakRemoveLoopIndex = 0;
 	private AtomicBoolean historyActionChanging = new AtomicBoolean(false);
 	
@@ -132,7 +136,6 @@ public class CustomTabbedEditor {
 					logger.debug("\n\n ## Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
 					tabRefreshAfterUpdate();
 					lastIndexTabbedPane = mainTabList.getSelectedIndex();
-					alreadyrefreshing = false;
 					
 					if (!historyActionChanging.get()) {
 						SwingUtilities.invokeLater(new Runnable() {
@@ -143,8 +146,9 @@ public class CustomTabbedEditor {
 							}
 						});
 					}
-				}
 
+					alreadyrefreshing = false;
+				}
 			}
 		});
 	}
@@ -312,20 +316,33 @@ public class CustomTabbedEditor {
 			String name = (file != null) ? file.getName() : DEFAULT_NEW_FILE_NAME;
 			int newIndex = mainTabList.getTabCount();
 
-			TabTextEditorObj newTabNode = new TabTextEditorObj(file, "", getChangeListener(), currentConfiguration.getTextEditorOpt(), changeMonManager);
+			TabTextEditorObj newTabNode = new TabTextEditorObj(
+					file, // File reference
+					"", // Initial text
+					getChangeListener(), // Document listener
+					currentConfiguration, // configuration reference
+					changeMonManager, // file monitor reference
+					tabEditorManager.getShortcutManager() // shortcut listener implementation
+			);
+			
 			newTabNode.textArea.addMouseListener(new MouseListener() {
 				
 				@Override
 				public void mouseReleased(MouseEvent e) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							tabEditorManager.doAdditionalStuffOnDocMouseClick(newTabNode.textArea);
+							tabEditorManager.doAdditionalStuffOnDocMouseReleased(newTabNode.textArea);
 						}
 					});
 				}
 				
 				@Override
 				public void mousePressed(MouseEvent e) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							tabEditorManager.doAdditionalStuffOnDocMousePressed(newTabNode.textArea);
+						}
+					});				
 				}
 				
 				@Override
@@ -430,10 +447,8 @@ public class CustomTabbedEditor {
 	 * @param index
 	 */
 	public boolean removeTab(final int index) {
-		// In case of removal when there is only one tab, this avoid problems or null pointers by adding a tab, setting firstToRemove=true,
-		// and at the end removing first tab, ending with only an empty tab :)
-		boolean firstToRemove = false;
 		boolean askedRemoveResponse = true;
+		firstToRemove = false;
 		
 		if(index >= mainTabList.getTabCount()) {
 			logger.warn("Cannot remove tab: index is OUT OF BOUNDS ( > tabs number)");
@@ -476,15 +491,15 @@ public class CustomTabbedEditor {
 			askedRemoveResponse = false;
 		}
 		
-		if(firstToRemove) {
-			removeTab(0);
-		}
-		
-		loadedTabObj.textArea.requestFocus();
-		
 		// GO TO LAST IN HISTORY WHEN CLOSING
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				if(firstToRemove) {
+					removeTab(0);
+				}
+				
+				loadedTabObj.textArea.requestFocus();
+				
 				try{
 					Component previousComp = navigationHistory.getLast().getScrollPane();
 					mainTabList.setSelectedComponent(previousComp);
@@ -537,9 +552,13 @@ public class CustomTabbedEditor {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					if (navigationHistory.getLast() != null) {
-						mainTabList.setSelectedComponent(navigationHistory.getLast().getScrollPane());
-					}else {
-						mainTabList.setSelectedComponent(loadedTabObj.currentScrollPane);
+						if (navigationHistory.getLast().getScrollPane() != null) {
+							try {
+								mainTabList.setSelectedComponent(navigationHistory.getLast().getScrollPane());
+							} catch (Exception e) {
+								logger.warn("Error trying to select last from history");
+							}
+						}
 					}
 				}
 			});
@@ -636,6 +655,7 @@ public class CustomTabbedEditor {
 		loadedTabObj.textArea.requestFocus();
 		
 		tabEditorManager.doAfterTabRefresh();
+		
 	}
 	
 	/**

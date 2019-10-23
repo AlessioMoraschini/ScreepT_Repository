@@ -14,16 +14,18 @@ import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
 import resources.IconsPathConfigurator;
+import shortcuts.ICommonShortcuts;
 import tabbededitor.CustomTabbedEditor;
+import utils.SysUtils;
 
-public class TextEditorShortcutListener implements KeyEventDispatcher{
+public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonShortcuts{
 	
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditorShortcutListener.class);
 	
-	public static AtomicBoolean flagCtrlPressed = new AtomicBoolean(false);
-	public static AtomicBoolean flagShiftPressed = new AtomicBoolean(false);
-	public static AtomicBoolean flagAltPressed = new AtomicBoolean(false);
+	public static AtomicBoolean flagCtrlDown = new AtomicBoolean(false);
+	public static AtomicBoolean flagShiftDown = new AtomicBoolean(false);
+	public static AtomicBoolean flagAltDown = new AtomicBoolean(false);
 	
 	public AtomicBoolean flagHoverBtnViewExpCmd = new AtomicBoolean(false);
 	public AtomicBoolean flagHoverBtnRemoveSpaces = new AtomicBoolean(false);
@@ -43,7 +45,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 
-			updateCtrlAltShift(e);
+			updateCtrlAltShiftPressed(e);
 			
 			if (isShortcutKey(e)) {
 				
@@ -102,7 +104,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED  && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
 	      
-			updateCtrlAltShift(e);
+			updateCtrlAltShiftReleased(e);
 			
 			if (isShortcutKey(e)) {
 				
@@ -137,9 +139,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 					currentTextEditor.btnLoadTextFile.doClick();
 				}
 				/*
-				 * 	READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker -> CTRL+Alt+Space
+				 * 	READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker -> Shift+Space
 				 */
-				if (e.getKeyCode() == 32 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+				if (e.getKeyCode() == 32 && !e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.btnSpeak.doClick();
 				}
 				/*
@@ -310,6 +312,18 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				 */
 				if (e.getKeyCode() == 10 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.btnPropertiesPanel.doClick();
+				}
+				/*
+				 * OPEN CURRENT FILE into FyleSystem-> Ctrl+ENTER
+				 */
+				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					GuiUtils.openInFileSystem(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+				}
+				/*
+				 * OPEN CURRENT FILE into CommandLine -> Ctrl+Shift+ENTER
+				 */
+				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SysUtils.cdIntoCommandLine(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
 				}
 				
 				/*
@@ -516,7 +530,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if (flagCtrlPressed.get()) {
+				if (flagCtrlDown.get()) {
 					if (flagHoverBtnRemoveSpaces.get()) {
 						currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveContent);
 						currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
@@ -526,11 +540,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 						currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 					}
 				}
-				if (!flagCtrlPressed.get() || !flagHoverBtnRemoveSpaces.get()) {
+				if (!flagCtrlDown.get() || !flagHoverBtnRemoveSpaces.get()) {
 					currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
 					currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
 				}
-				if (!flagCtrlPressed.get() || !flagHoverBtnViewExpCmd.get()) {
+				if (!flagCtrlDown.get() || !flagHoverBtnViewExpCmd.get()) {
 					currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInSysExplorer);
 					currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
 				}
@@ -539,34 +553,86 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 		
 	}
 	
-	private void updateCtrlAltShift(final KeyEvent e) {
+	private void updateCtrlAltShiftPressed(final KeyEvent e) {
 		
 		/*
 		 * CTRL PRESSED FLAG
 		 */
 		if (e.isControlDown()) {
-			flagCtrlPressed.set(true);
+			flagCtrlDown.set(true);
 			doControlActions();
 		}else {
-			flagCtrlPressed.set(false);
+			flagCtrlDown.set(false);
 		}
 		
 		/*
 		 * ALT PRESSED FLAG
 		 */
 		if (e.isAltDown()) {
-			flagAltPressed.set(true);
+			flagAltDown.set(true);
+			if (!e.isControlDown() && !e.isShiftDown()) {
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_CROSS);
+			}else {
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+			}
 		}else {
-			flagAltPressed.set(false);
+			flagAltDown.set(false);
 		}
 		
 		/*
 		 * SHIFT PRESSED FLAG
 		 */
 		if (e.isShiftDown()) {
-			flagShiftPressed.set(true);
+			flagShiftDown.set(true);
 		}else {
-			flagShiftPressed.set(false);
+			flagShiftDown.set(false);
 		}
+	}
+	
+	private void updateCtrlAltShiftReleased(final KeyEvent e) {
+		
+		/*
+		 * CTRL PRESSED FLAG
+		 */
+		if (e.isControlDown()) {
+			flagCtrlDown.set(true);
+			doControlActions();
+		}else {
+			flagCtrlDown.set(false);
+		}
+		
+		/*
+		 * ALT PRESSED FLAG
+		 */
+		if (e.isAltDown()) {
+			flagAltDown.set(true);
+		}else {
+			flagAltDown.set(false);
+			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+		}
+		
+		/*
+		 * SHIFT PRESSED FLAG
+		 */
+		if (e.isShiftDown()) {
+			flagShiftDown.set(true);
+		}else {
+			flagShiftDown.set(false);
+		}
+	}
+
+	@Override
+	public boolean isCtrlDown() {
+		return flagCtrlDown.get();
+	}
+
+	@Override
+	public boolean isShiftDown() {
+		return flagShiftDown.get();
+	}
+
+	@Override
+	public boolean isAltDown() {
+		return flagAltDown.get();
 	}
 }

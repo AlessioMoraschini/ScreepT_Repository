@@ -1,5 +1,7 @@
 package testUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
@@ -7,7 +9,9 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -237,8 +241,22 @@ public class TestUtils {
 	public static String getPrettyStringJsonObj(Object source) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(source);
-		
+	
 		return prettyJson;
+	}
+	
+	public static Object readGenericJsonString(String input) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		Object json = mapper.readValue(input, Object.class);
+		
+		return json;
+	}
+	
+	public static String prettyFormatJsString(String input) throws JsonParseException, JsonMappingException, IOException {
+		
+		Object json = readGenericJsonString(input);
+		
+		return getPrettyStringJsonObj(json);
 	}
 	
 	public static void printExceptionStackString(Throwable error) {

@@ -62,8 +62,8 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 			public void mouseReleased(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						safeSyncCaretToTxtReference();
 						GUIStyelSettings.applyNimbusSize(0);
+						safeSyncCaretToTxtReference();
 //						txtAreaMiniMap.setText(targetTemp.getText());
 					}
 				});
@@ -154,6 +154,7 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 	 */
 	public void syncReferenceCaretPosition(RSyntaxTextArea reference, int start, Integer end) {
 		try {
+			reference.requestFocus();
 			
 			if (end != start) {
 				reference.setSelectionStart(start);

@@ -19,6 +19,7 @@ import frameutils.utils.GuiUtils;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
 import gui.utils.LauncherLoaderFrame;
+import guistyle.GUIStyelSettings;
 import launcherutils.CommandsAssembler;
 import launcherutils.FileUtils;
 import launcherutils.IniFileManager;

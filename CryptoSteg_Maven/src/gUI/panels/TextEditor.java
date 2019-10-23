@@ -525,7 +525,7 @@ public class TextEditor extends JPanel {
 
 		comboStylesScheme = new JComboBox<ThemesWrapper>();
 		comboStylesScheme.setMinimumSize(new Dimension(33, 12));
-		comboStylesScheme.setMaximumSize(new Dimension(125, 32767));
+		comboStylesScheme.setMaximumSize(new Dimension(150, 32767));
 		comboStylesScheme.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT);
 		themeList = initComboStyleScheme();
 		comboStylesScheme.setToolTipText(TextEditorTooltips.tooltipComboStyleScheme);
@@ -1278,7 +1278,7 @@ public class TextEditor extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
 					public void run() {
-						if (TextEditorShortcutListener.flagCtrlPressed.get()) {
+						if (TextEditorShortcutListener.flagCtrlDown.get()) {
 							SysUtils.cdIntoCommandLine(getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
 						} else {
 							GuiUtils.openInFileSystem(getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
@@ -1890,13 +1890,13 @@ public class TextEditor extends JPanel {
 				int start = loadedTabObj.textArea.getSelectionStart();
 				int end = loadedTabObj.textArea.getSelectionEnd();
 				int newEnd = 0;
-				if (TextEditorShortcutListener.flagCtrlPressed.get()) {
+				if (TextEditorShortcutListener.flagCtrlDown.get()) {
 					// remove character - open panel ad hoc
 					String selection = JOptionPane.showInputDialog("Specify the charachter/string you want to remove");
 					if (selection != null && !selection.equals("")) {
 						newEnd = HandleString.removeCharachterFromTxtArea(selection, loadedTabObj.textArea, start, end);
 					}
-					TextEditorShortcutListener.flagCtrlPressed.set(false);
+					TextEditorShortcutListener.flagCtrlDown.set(false);
 				} else {
 					// remove whitespaces
 					newEnd = HandleString.removeCharachterFromTxtArea(" ", loadedTabObj.textArea, start, end);
@@ -2329,6 +2329,7 @@ public class TextEditor extends JPanel {
 					logger.warn("!!! Error trying to sync current file at start into JTree");
 				}
 				
+				GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
 			}
 		});
 	}
@@ -2384,6 +2385,10 @@ public class TextEditor extends JPanel {
 				GUIStyelSettings.applyNimbusSize(0);
 				currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 				currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			
+				if(txtOptions.mapViewActive && textEditorUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
+					MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager()).getTxtAreaMiniMap().requestFocus();
+				}
 			}
 		});
 	}

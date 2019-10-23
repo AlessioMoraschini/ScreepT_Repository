@@ -28,10 +28,10 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		int rotation = e.getWheelRotation();
 		
-		if (TextEditorShortcutListener.flagCtrlPressed.get() && TextEditorShortcutListener.flagShiftPressed.get() && !TextEditorShortcutListener.flagAltPressed.get()) {
+		if (TextEditorShortcutListener.flagCtrlDown.get() && TextEditorShortcutListener.flagShiftDown.get() && !TextEditorShortcutListener.flagAltDown.get()) {
 			// CASE CTRL+SHIFT
 			adjustFontSize(rotation);
-		}else if(((TextEditorShortcutListener.flagAltPressed.get() && TextEditorShortcutListener.flagShiftPressed.get()) || TextEditorShortcutListener.flagShiftPressed.get()) && ! TextEditorShortcutListener.flagCtrlPressed.get()){
+		}else if(((TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()) || TextEditorShortcutListener.flagShiftDown.get()) && ! TextEditorShortcutListener.flagCtrlDown.get()){
 			// CASE ALT OR SHIFT
 			adjustHorizontalScroll(e);
 		}else {
@@ -45,10 +45,10 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 	private void adjustScroll(MouseWheelEvent e) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if (TextEditorShortcutListener.flagCtrlPressed.get() && TextEditorShortcutListener.flagAltPressed.get()
-						&& !TextEditorShortcutListener.flagShiftPressed.get()) {
+				if (TextEditorShortcutListener.flagCtrlDown.get() && TextEditorShortcutListener.flagAltDown.get()
+						&& !TextEditorShortcutListener.flagShiftDown.get()) {
 					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.ULTRA_FAST_WHEEL_SPEED);
-				} else if (TextEditorShortcutListener.flagCtrlPressed.get()) {
+				} else if (TextEditorShortcutListener.flagCtrlDown.get()) {
 					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
 				} else {
 					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED);
@@ -62,12 +62,12 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 	private void adjustHorizontalScroll(MouseWheelEvent e) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if (TextEditorShortcutListener.flagAltPressed.get() && TextEditorShortcutListener.flagShiftPressed.get()
-						&& !TextEditorShortcutListener.flagCtrlPressed.get()) {
+				if (TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()
+						&& !TextEditorShortcutListener.flagCtrlDown.get()) {
 					// alt+shift-> more speed
 					currentTabEditor.loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
-				} else if (!TextEditorShortcutListener.flagAltPressed.get() && TextEditorShortcutListener.flagShiftPressed.get()
-						&& !TextEditorShortcutListener.flagCtrlPressed.get()) {
+				} else if (!TextEditorShortcutListener.flagAltDown.get() && TextEditorShortcutListener.flagShiftDown.get()
+						&& !TextEditorShortcutListener.flagCtrlDown.get()) {
 					// only shift normal
 					currentTabEditor.loadedTabObj.currentScrollPane.getHorizontalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED);
 				}

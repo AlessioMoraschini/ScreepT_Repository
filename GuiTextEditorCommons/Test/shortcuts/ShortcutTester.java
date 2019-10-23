@@ -1,3 +1,4 @@
+package shortcuts;
 
 
 import java.awt.KeyEventDispatcher;

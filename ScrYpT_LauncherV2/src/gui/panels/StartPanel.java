@@ -10,6 +10,7 @@ import mainlauncher.ScrYpTLauncher;
 import media.Sounds;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import java.awt.BorderLayout;
@@ -196,7 +197,11 @@ public class StartPanel extends JFrame{
 		}
 		// initialize default UI
 		GUIStyelSettings.setStyle(GUIStyelSettings.NimbusLookAndFeel, 1);
-		GUIStyelSettings.setFocusDefaultBtn();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				GUIStyelSettings.setFocusDefaultBtn();
+			}
+		});
 	}
 	
 }

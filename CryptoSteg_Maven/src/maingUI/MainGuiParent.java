@@ -536,16 +536,30 @@ public class MainGuiParent {
 		}
 	};
 	
-	public void addListenerToJMenuItemLastOpenedTxtEditor(JMenuItem target) {
+	public void addListenerToJMenuItemLastOpenedTxtEditor(final JMenuItem target) {
 		target.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(target != null && !target.getToolTipText().equals("")) {
-					if(initTxtWriter != null) {
-						File toLoad = new File(target.getToolTipText());
-						initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
+					
+					// IF text editor not opened open it
+					if(initTxtWriter == null || !initTxtWriter.isVisible()) {
+						mntmTextEditor.doClick();
 					}
+					
+					// now load file from history
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							File toLoad = new File(target.getToolTipText());
+							if (toLoad.exists()) {
+								initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
+							} else {
+								initTxtWriter.dialogHelper.error("File does not exist anymore!", "File does not exist");
+								removeFromLastOpened(toLoad);
+							}
+						}
+					});
 				}
 			}
 		});

@@ -1602,11 +1602,11 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 		}
 		
-		GUIStyelSettings.updateAllWindowsLaf();
-		
 		if(initTxtWriter != null) {
 			initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
 		}
+
+		GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
 	}
 	
 	// GETTERS //

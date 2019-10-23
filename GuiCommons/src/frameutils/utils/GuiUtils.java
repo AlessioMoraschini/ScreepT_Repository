@@ -52,6 +52,7 @@ public class GuiUtils {
 	public static final Cursor CURSOR_DEFAULT = Cursor.getDefaultCursor();
 	public static final Cursor CURSOR_TEXT = new Cursor(Cursor.TEXT_CURSOR);
 	public static final Cursor CURSOR_HAND = new Cursor(Cursor.HAND_CURSOR);
+	public static final Cursor CURSOR_CROSS = new Cursor(Cursor.CROSSHAIR_CURSOR);
 	
 	public static final Cursor CURSOR_COLOR_PICK = getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER);
 	

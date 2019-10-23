@@ -14,11 +14,18 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import org.fife.ui.rsyntaxtextarea.CodeTemplateManager;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.templates.CodeTemplate;
+import org.fife.ui.rsyntaxtextarea.templates.StaticCodeTemplate;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.filechangewatcher.FileChangeMonitor;
+import frameutils.utils.GuiUtils;
+import guistyle.GUIStyelSettings;
+import mainobj.INItializer;
 import resources.GeneralConfig;
+import shortcuts.ICommonShortcuts;
 import tabbededitor.IChangeMonManager;
 import utils.SysUtils;
 
@@ -28,16 +35,24 @@ public class TabTextEditorObj {
 
 	public static final int TXT_AREA_PARSER_DELAY = 500;
 	
+	// Interfaces for file monitor actions and shortcuts commons
+	public ICommonShortcuts shortcutsManager;
+	public IChangeMonManager checkChangesMonitor;
+
+	// Normal Pojo fields
+	public FileChangeMonitor fileMonitorManager;
 	public File loadedFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
-	public FileChangeMonitor fileMonitorManager;
 	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
 	
-	public TabTextEditorObj(File file, String text, DocumentListener docListener, TextEditorOption txtOptions, final IChangeMonManager checkChangesMonitor) {
+	public TabTextEditorObj(File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
 		
 		loadedFile = file;
+		this.checkChangesMonitor = checkChangesMonitor;
+		this.shortcutsManager = shortcutsManager;
+		
 		textArea = new ColumnTextArea(GeneralConfig.RECTANGULAR_TXT_SELECTION_ALLOWED);
 		textArea.setMinimumSize(new Dimension(300,100));
 		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
@@ -62,6 +77,7 @@ public class TabTextEditorObj {
 			
 			@Override
 			public void focusLost(FocusEvent e) {
+				textArea.setCursor(GuiUtils.CURSOR_TEXT);
 			}
 			
 			@Override
@@ -69,6 +85,7 @@ public class TabTextEditorObj {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						checkChangesMonitor.checkChanges();
+						textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					}
 				});
 			}
@@ -77,8 +94,10 @@ public class TabTextEditorObj {
 		// TAB FOCUS CHANGES LISTENER
 		textArea.addFocusListener(focusTxtAreaMonitor);
 		
-		updateTextAreaPreferences(txtOptions);
+		updateTextAreaPreferences(configuration.getTextEditorOpt());
+		
 	}
+	
 	
 	public void updateTextAreaPreferences(TextEditorOption txtOptions) {
 		
@@ -104,10 +123,9 @@ public class TabTextEditorObj {
 		hyperLinksEnabled(txtOptions.hyperLinksEnabled);
 		textArea.setShowMatchedBracketPopup(txtOptions.showBracketsPopup);
 		textArea.setEOLMarkersVisible(txtOptions.markEndOfLine);
-		textArea.setDragEnabled(true);// try
-		textArea.setMarkOccurrencesDelay(100);
+		textArea.setDragEnabled(true);
+		textArea.setMarkOccurrencesDelay(200);
 		
-		RSyntaxTextArea.setTemplatesEnabled(false);
 	}
 
 	public void hyperLinksEnabled(boolean enabled) {

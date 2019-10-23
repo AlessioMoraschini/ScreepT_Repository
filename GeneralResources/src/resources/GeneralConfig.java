@@ -10,7 +10,6 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
-
 import resources.om.FilePojo;
 
 public class GeneralConfig {
@@ -41,6 +40,7 @@ public class GeneralConfig {
 	public static final String THEMES_FOLDER_DEFAULT = linkedMappings.getProperty("THEMES_FOLDER_DEFAULT");
 	public static final String THEMES_FOLDER_CUSTOM = linkedMappings.getProperty("THEMES_FOLDER_CUSTOM");
 	public static final String PANEL_FILES_FOLDER = linkedMappings.getProperty("PANEL_TEMP_FOLDER");
+	public static final String TEMPLATES_FOLDER = linkedMappings.getProperty("TEMPLATES_FOLDER");
 	public static final String CLIBPOARDS_PANEL_SRC_FOLDER = linkedMappings.getProperty("CLIBPOARDS_PANEL_SRC_FOLDER");
 	// Temp Folders and Files
 	public static final String TEMP_DIRECTORY = RESOURCES_DIR + "temp/";
