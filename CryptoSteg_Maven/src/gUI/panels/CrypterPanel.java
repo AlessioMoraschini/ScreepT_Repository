@@ -21,7 +21,6 @@ import amfileutils.filechangewatcher.FileChangeMonitor;
 import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
-import crypt.steg.StegCipher;
 import dialogutils.JOptionHelper;
 import dialogutils.TestUpdateProgress;
 import enums.BufferedImageType;

@@ -112,6 +112,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_TEXT_BG_COLOR = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/BackgroundColor.png";
 	public static final String ICON_TEXT_FONT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Font_2.png";
 	public static final String ICON_FILE_SAVE_AS = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFileAs.png";
+	public static final String ICON_REMOVE_ALL_DOCS = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/removeAllDocs.png";
 	public static final String ICON_FILE_SAVE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFile.png";
 	public static final String ICON_FILE_LOAD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/LoadFile.png";
 	public static final String ICON_MAP = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/map.png";
@@ -170,6 +171,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_X_LIGHT_GRAY = GeneralConfig.RESOURCES_DIR + "Icons/General/X_lgray.png";
 	public static final String ICON_X_GRAY = GeneralConfig.RESOURCES_DIR + "Icons/General/X_gray.png";
 	public static final String ICON_X_BLACK = GeneralConfig.RESOURCES_DIR + "Icons/General/X_black.png";
+	public static final String ICON_CLOCK = GeneralConfig.RESOURCES_DIR + "Icons/General/clock.png";
 
 	public static final String ICON_UP = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUp.png";
 	public static final String ICON_DOWN = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDown.png";

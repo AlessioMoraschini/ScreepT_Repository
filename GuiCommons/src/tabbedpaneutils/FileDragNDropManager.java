@@ -76,7 +76,7 @@ public class FileDragNDropManager extends JTabbedPane{
         super.paintComponent(g);
         if (dragOver) {
             Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setColor(new Color(92, 133, 214));
+            g2d.setColor(new Color(61, 111, 191,80));
             g2d.fill(new Rectangle(getWidth(), getHeight()));
             g2d.dispose();
             

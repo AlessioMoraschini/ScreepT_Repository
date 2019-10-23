@@ -1,4 +1,4 @@
-package treeutils.om;
+package amfileutils.om;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,10 @@ import java.io.IOException;
 public class FileNamed{
 	
 	public final File mFile;
+
+	public FileNamed(final String filePath) {
+		mFile = new File(filePath);
+	}
 
 	public FileNamed(final File file) {
 		mFile = file;

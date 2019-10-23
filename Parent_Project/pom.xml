@@ -6,13 +6,21 @@
   <packaging>pom</packaging>
   
   <properties>
-  	<parent.build.version.scrypt>0.7.6</parent.build.version.scrypt>
+  
+  	<!-- GENERAL BUILD OPTIONS -->
+	  	<!-- Main application version used everyWhere -->
+	  	<parent.build.version.scrypt>0.7.6</parent.build.version.scrypt>
+	  	
+	  	<!-- Change this to false if you wanna export  -->
+	  	<export.launcher.jarmode>true</export.launcher.jarmode>
   	
   	<!-- FATJAR EXPORT -->
+  		<!-- Set skip to true to avoid export of this jar and resources -->
 	  	<export.fatjar.skip>false</export.fatjar.skip>
 	  	<export.fatjar.launcher.skip>false</export.fatjar.launcher.skip>
+		
 	  	<export.directory.fatjar.main>
-	  		<!-- DYNAMIC PATH WITH VERSION - SHOULD NOT EXIST BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
+	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
 			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}_BuildMaven_fatjar\Application
 		</export.directory.fatjar.main>
 	  	<export.directory.fatjar.resources>
@@ -23,10 +31,12 @@
 		</export.directory.fatjar.libs>
   	
   	<!-- MULTIJAR EXPORT -->
+  		<!-- Set skip to true to avoid export of this jar and resources -->
 	  	<export.multijar.skip>true</export.multijar.skip>
 	  	<export.multijar.launcher.skip>true</export.multijar.launcher.skip>
+	  	
 	  	<export.directory.multijar.main>
-	  		<!-- DYNAMIC PATH WITH VERSION - SHOULD NOT EXIST BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
+	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
 			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}_BuildMaven\Application
 		</export.directory.multijar.main>
 		<export.directory.multijar.resources>
@@ -35,6 +45,7 @@
 	  	<export.directory.multijar.libs>
 			${export.directory.multijar.resources}\lib
 		</export.directory.multijar.libs>
+  
   </properties>
   
   <!-- MODULES BUILD -->

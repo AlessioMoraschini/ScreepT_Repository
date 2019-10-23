@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,6 +37,7 @@ import frameutils.utils.GuiUtils;
 import general.MyFileView;
 import generic.LimitedConcurrentList;
 import mainobj.INItializer;
+import om.HistoryNode;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -52,7 +54,6 @@ public class CustomTabbedEditor {
 	
 /////////////////////////////////// FIELDS ///////////////////////////////////
 	
-	public static final int maxNavigationHistorySize = 40;
 	public static final String DEFAULT_NEW_FILE_NAME = "New.txt";
 
 	// Custom class used to display dialog messages
@@ -65,6 +66,8 @@ public class CustomTabbedEditor {
 	public volatile boolean isAddingTab = false;
 	public volatile boolean isRemovingTab = false;
 	public volatile boolean tabJustSwitched = false;
+	public volatile boolean breakRemoveLoop = false;
+	public volatile int breakRemoveLoopIndex = 0;
 	private AtomicBoolean historyActionChanging = new AtomicBoolean(false);
 	
 	/* THIS WILL REPRESENT THE PREVIOUS INDEX */
@@ -74,7 +77,7 @@ public class CustomTabbedEditor {
 	public FileDragNDropManager mainTabList;
 	
 	/* THEESE ARE THE LOADED TABS, AND A REFERENCE TO THE CURRENT SELECTED */
-	public LimitedConcurrentList<RTextScrollPane> navigationHistory;
+	public LimitedConcurrentList<HistoryNode> navigationHistory;
 	public LimitedConcurrentList<TabTextEditorObj> loadedList;
 	public volatile TabTextEditorObj loadedTabObj;
 	
@@ -82,7 +85,7 @@ public class CustomTabbedEditor {
 	public ITabbedEditorOwner tabEditorManager;
 	public JTextComponent newFileStringTarget;
 	
-	ChangeDTO changesHistory;
+	public ChangeDTO changesHistory;
 	public IChangeMonManager changeMonManager;
 	
 /////////////////////////////////// CONSTRUCTOR ///////////////////////////////////
@@ -92,7 +95,7 @@ public class CustomTabbedEditor {
 		this.newFileStringTarget = tabEditorManager.getNewFileStringTarget();
 		this.currentConfiguration = (configuration != null)? configuration : new INItializer();
 		this.loadedList = new LimitedConcurrentList<TabTextEditorObj>(Integer.MAX_VALUE);
-		this.navigationHistory = new LimitedConcurrentList<RTextScrollPane>(maxNavigationHistorySize);
+		this.navigationHistory = new LimitedConcurrentList<HistoryNode>(GeneralConfig.MAX_HISTORY_SIZE);
 		this.dialogHelper = new JOptionHelper(mainTabList);
 		this.changesHistory = new ChangeDTO();
 		this.changeMonManager = new ChangeMonitorManager(this);
@@ -104,28 +107,19 @@ public class CustomTabbedEditor {
 	
 	private void initMainTabList() {
 		// DRAG 'N DROP IMPLEMENTATION FOR TABS		
-		Runnable fileDropLoader = new Runnable() {
-			@Override
-			public void run() {
 
-				// for each dragged file on tabPane load it in a new tab
-				if (!alreadyLoading) {
-
-					for (File draggedCurrent : mainTabList.loadedFilesList) {
-						loadFile(draggedCurrent);
-					}
-				} // end if !already loading
-
-				// at the end remove all temp files dragged reference
-				mainTabList.emptyLoadedList();
-			}
-		};
-
-		mainTabList = new FileDragNDropManager(fileDropLoader, null);
+		mainTabList = new FileDragNDropManager(new Runnable() {
+				@Override
+				public void run() {
+				}
+			}, GuiUtils.getCurrentActiveWindow());
+		
 		mainTabList.addMouseWheelListener(new TabbedPaneMouseWheelListener());
 		mainTabList.setBorder(new LineBorder(Color.BLACK, 2));
 		mainTabList.setBackground(new Color(30, 30, 30));
 		
+		mainTabList.dropRunner = getFileDropRunnable(mainTabList.loadedFilesList);
+
 		// TAB CHANGE LISTENER - FIRED WHEN CHANGING TAB //
 		mainTabList.addChangeListener(new ChangeListener() {
 
@@ -139,11 +133,39 @@ public class CustomTabbedEditor {
 					tabRefreshAfterUpdate();
 					lastIndexTabbedPane = mainTabList.getSelectedIndex();
 					alreadyrefreshing = false;
-					addToHystory(loadedTabObj.currentScrollPane);
 					
+					if (!historyActionChanging.get()) {
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								if (loadedTabObj != null && loadedTabObj.currentScrollPane != null && loadedTabObj.textArea != null) {
+									addToHystory(loadedTabObj);
+								}
+							}
+						});
+					}
 				}
+
 			}
 		});
+	}
+	
+	public Runnable getFileDropRunnable(Collection<File> draggedList) {
+		return new Runnable() {
+			@Override
+			public void run() {
+
+				// for each dragged file on tabPane load it in a new tab
+				if (!alreadyLoading) {
+
+					for (File draggedCurrent : draggedList) {
+						loadFile(draggedCurrent);
+					}
+				} // end if !already loading
+
+				// at the end remove all temp files dragged reference
+				draggedList.clear();
+			}
+		};
 	}
 	
 	// TABBED PAIN - RELATED FUNCTIONS
@@ -190,7 +212,7 @@ public class CustomTabbedEditor {
 			return false;
 		}
 	}
-
+	
 	public void loadFile(final File fileToLoad) {
 		
 		logger.debug("Started file loading into new tab: "+fileToLoad+"\n\n");
@@ -200,20 +222,24 @@ public class CustomTabbedEditor {
 				newFileStringTarget = tabEditorManager.getNewFileStringTarget();
 				
 				alreadyLoading = true;
+				
+				// FIRST CHECK IF ALREADY LOADED
 				boolean fileAlreadyPresent = checkFilePresence(fileToLoad) >= 0;
 				if (fileToLoad == null || !fileToLoad.exists() || fileAlreadyPresent) {
 					alreadyLoading = false;
 					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 
+				// ELSE ADD NEW TAB AND LOAD FILE TEXT INTO
 				} else {
 
 					// add new tab with selected file
 					try {
 						addTab(fileToLoad, false);
+						currentConfiguration.getTextEditorOpt().addFileIntoLastOpenedFiles(fileToLoad);
 						logger.debug(fileToLoad.getAbsolutePath()+" -> Loaded!");
 					} catch (Throwable e1) {
 						String msg = "Error occurred loading file into new tab: "+fileToLoad.getAbsolutePath()+"\n\n";
-						logger.error(msg);
+						logger.error(msg, e1);
 						JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.ERROR_MESSAGE);
 					}
 
@@ -233,6 +259,7 @@ public class CustomTabbedEditor {
 					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					logger.debug("TextEditor.loadFile() completed - Exiting");
 				}
+				
 			}
 		});
 	}
@@ -325,9 +352,8 @@ public class CustomTabbedEditor {
 			loadedTabObj.textArea.addMouseWheelListener(tabEditorManager.getMouseWheelTabbedAreaListener());
 			loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
 			loadedTabObj.unsaved = false;
-			addToHystory(loadedTabObj.currentScrollPane);
-			
 			changeMonManager.updateCurrMonitor(file);
+			addToHystory(loadedTabObj);
 			
 		} catch (Exception e) {
 			logger.error(e);
@@ -373,13 +399,51 @@ public class CustomTabbedEditor {
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 	}
 	
-	public void removeTab(final int index) {
-
+	public void removeAllTabs(final boolean askIfUnsaved) {
+		
+		for (breakRemoveLoopIndex = mainTabList.getTabCount(); breakRemoveLoopIndex > 0 ; breakRemoveLoopIndex--) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					try {
+						if (!askIfUnsaved) {
+							loadedList.getList().get(breakRemoveLoopIndex).unsaved = false;
+							loadedTabObj.unsaved = false;
+						}
+						if (!removeTab(breakRemoveLoopIndex)) {
+							// If user has chosen to take a look to files or break loop
+							breakRemoveLoop = true;
+						} 
+					} catch (Exception e) {
+						logger.warn("Attention: an error occurred when tryng to close current tab (N°" + breakRemoveLoopIndex+")");
+					}
+				}
+			});
+			
+			if(breakRemoveLoop) {
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Remove tab doing unsaved check
+	 * @param index
+	 */
+	public boolean removeTab(final int index) {
+		// In case of removal when there is only one tab, this avoid problems or null pointers by adding a tab, setting firstToRemove=true,
+		// and at the end removing first tab, ending with only an empty tab :)
+		boolean firstToRemove = false;
+		boolean askedRemoveResponse = true;
+		
+		if(index >= mainTabList.getTabCount()) {
+			logger.warn("Cannot remove tab: index is OUT OF BOUNDS ( > tabs number)");
+			return false;
+		}
+		
 		if (tabEditorManager.askBeforeRemove(index)) {
 			isRemovingTab = true;
 
 			if (index > 0 && mainTabList.getTabCount() > 1) {
-				navigationHistory.removeAllOccurrences(loadedTabObj.currentScrollPane);
 				
 				loadedList.getList().remove(index);
 				mainTabList.remove(index);
@@ -392,7 +456,6 @@ public class CustomTabbedEditor {
 				tabRefreshAfterUpdate();
 
 			} else if (index == 0 && mainTabList.getTabCount() > 1) {
-				navigationHistory.removeAllOccurrences(loadedTabObj.currentScrollPane);
 				
 				loadedList.getList().remove(0);
 				mainTabList.remove(0);
@@ -402,26 +465,36 @@ public class CustomTabbedEditor {
 			} else if (index == 0) {
 				try {
 					addTab(null, true);
+					firstToRemove = true;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				isRemovingTab = false;
 			}
 			isRemovingTab = false;
+		}else {
+			askedRemoveResponse = false;
 		}
+		
+		if(firstToRemove) {
+			removeTab(0);
+		}
+		
 		loadedTabObj.textArea.requestFocus();
 		
 		// GO TO LAST IN HISTORY WHEN CLOSING
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try{
-					Component previousComp = navigationHistory.getLast();
+					Component previousComp = navigationHistory.getLast().getScrollPane();
 					mainTabList.setSelectedComponent(previousComp);
 				}catch(Exception e) {
 					logger.warn("Error trying to select last element in history!", e);
 				}
 			}
 		});
+		
+		return askedRemoveResponse;
 	}
 	
 	public void goToPreviousTab() {
@@ -464,7 +537,7 @@ public class CustomTabbedEditor {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					if (navigationHistory.getLast() != null) {
-						mainTabList.setSelectedComponent(navigationHistory.getLast());
+						mainTabList.setSelectedComponent(navigationHistory.getLast().getScrollPane());
 					}else {
 						mainTabList.setSelectedComponent(loadedTabObj.currentScrollPane);
 					}
@@ -648,87 +721,88 @@ public class CustomTabbedEditor {
 	}
 	
 	public int checkFilePresence(File match) {
-		int i = 0;
 		for (TabTextEditorObj iterator : loadedList.getList()) {
 			if (iterator.loadedFile != null && iterator.loadedFile.equals(match)) {
 				mainTabList.setSelectedComponent(iterator.currentScrollPane);
-				i++;
-				return i;
+				return 1;
 			}
 		}
 		return -1;
 	}
 	
-	private void addToHystory(RTextScrollPane scrollPane){
+	private void addToHystory(TabTextEditorObj loadedTabObj){
 		
 		// if already last skip
-		if (!historyActionChanging.get() && (navigationHistory.getList().isEmpty() || !navigationHistory.getLast().equals(scrollPane))) {
-			// TODO Manage caret position history (selectable as user preference aside arrows in header)!
-			navigationHistory.addLast(scrollPane);
+		if (!historyActionChanging.get()) {
+			HistoryNode newNode = new HistoryNode(loadedTabObj.currentScrollPane, loadedTabObj.loadedFile, loadedTabObj.textArea.getCaretPosition());
+			navigationHistory.removeAllOccurrencesByEquals(newNode);
+			navigationHistory.addLast(newNode);
 		}
 	}
 	
 	public void goToNextInHistory() {
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					historyActionChanging.set(true);
-					RTextScrollPane currentLoadedObject = loadedTabObj.currentScrollPane;
-					Vector<RTextScrollPane> history = navigationHistory.getList();
-					int currentHystoryIndex = history.lastIndexOf(currentLoadedObject);
-					if (currentHystoryIndex < 0 || history.size() <= currentHystoryIndex + 1) {
-						return;
-					}
-					RTextScrollPane nextComponent = history.get(currentHystoryIndex + 1);
-					int i = findComponentIndex(nextComponent);
-					if(i < 0) {
-						logger.warn(".goToPreviousInHistory() -> Component not found in tabList");
-						historyActionChanging.set(false);
-						return;
-					}else {
-						mainTabList.setSelectedIndex(i);
-					}
-				} catch (Exception e) {
-					logger.debug(e);
-					return;
-				} finally {
-					historyActionChanging.set(false);
-				}
+		try {
+			historyActionChanging.set(true);
+			Vector<HistoryNode> history = navigationHistory.getList();
+			int currentHystoryIndex = navigationHistory.lastIndexOfByEquals(new HistoryNode(loadedTabObj.currentScrollPane, loadedTabObj.loadedFile, loadedTabObj.textArea.getCaretPosition()));
+			if (currentHystoryIndex < 0 || history.size() <= currentHystoryIndex + 1) {
+				return;
 			}
-		});
+			
+			goToNodeInHistory(currentHystoryIndex + 1);
+			
+		} catch (Exception e) {
+			logger.debug(e);
+			return;
+		} finally {
+			historyActionChanging.set(false);
+		}
+	}
+	
+	public void goToNodeInHistory(int index) {
+		if(index >= navigationHistory.getList().size() || index < 0) return;
+		
+		Vector<HistoryNode> history = navigationHistory.getList();
+		final HistoryNode nextNode = history.get(index);
+		RTextScrollPane nextComponent = nextNode.getScrollPane();
+		
+		// search into tabbed panel
+		int i = findComponentIndex(nextComponent);
+		if(i < 0) {
+			logger.warn(".goToPreviousInHistory() -> Component not found in tabList");
+			loadFile(nextNode.getLoadedFile());
+			loadedTabObj.textArea.setCaretPosition(nextNode.getCaretPosition());
+			historyActionChanging.set(false);
+			return;
+		}else {
+			mainTabList.setSelectedIndex(i);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					loadedTabObj.textArea.requestFocus();
+					loadedTabObj.textArea.setCaretPosition(nextNode.getCaretPosition());
+				}
+			});
+		}
 	}
 
 	public void goToPreviousInHistory() {
 		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					historyActionChanging.set(true);
-					RTextScrollPane currentLoadedObject = loadedTabObj.currentScrollPane;
-					Vector<RTextScrollPane> history = navigationHistory.getList();
-					int currentHystoryIndex = history.lastIndexOf(currentLoadedObject);
-					if (history.size() == 0 || currentHystoryIndex - 1 < 0) {
-						historyActionChanging.set(false);
-						return;
-					}
-					RTextScrollPane nextComponent = history.get(currentHystoryIndex - 1);
-					int i = findComponentIndex(nextComponent);
-					if(i < 0) {
-						logger.warn(".goToPreviousInHistory() -> Component not found in tabList");
-						historyActionChanging.set(false);
-						return;
-					}else {
-						mainTabList.setSelectedIndex(i);
-					}
-				} catch (Exception e) {
-					logger.debug(e);
-					return;
-				} finally {
-					historyActionChanging.set(false);
-				}
+		try {
+			historyActionChanging.set(true);
+			Vector<HistoryNode> history = navigationHistory.getList();
+			int currentHystoryIndex = navigationHistory.lastIndexOfByEquals(new HistoryNode(loadedTabObj.currentScrollPane, loadedTabObj.loadedFile, loadedTabObj.textArea.getCaretPosition()));
+			if (history.size() == 0 || currentHystoryIndex - 1 < 0) {
+				historyActionChanging.set(false);
+				return;
 			}
-		});
+			goToNodeInHistory(currentHystoryIndex - 1);
+			
+		} catch (Exception e) {
+			logger.debug(e);
+			return;
+		} finally {
+			historyActionChanging.set(false);
+		}
 	}
 	
 	private int findComponentIndex(Component component) {

@@ -32,7 +32,7 @@ public class TabTextEditorObj {
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
 	public FileChangeMonitor fileMonitorManager;
-	public FocusListener focusTxtAreaMonitor; 
+	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
 	
 	public TabTextEditorObj(File file, String text, DocumentListener docListener, TextEditorOption txtOptions, final IChangeMonManager checkChangesMonitor) {

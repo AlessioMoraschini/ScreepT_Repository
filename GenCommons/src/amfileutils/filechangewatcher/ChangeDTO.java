@@ -82,4 +82,33 @@ public class ChangeDTO {
 		return null;
 	}
 	
+	public boolean isChanged(File target) throws IOException {
+		for(File iterator : changedFiles) {
+			if(iterator.getCanonicalFile().equals(target)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean isAdded(File target) throws IOException {
+		for(File iterator : addedFiles) {
+			if(iterator.getCanonicalFile().equals(target)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean isRemoved(File target) throws IOException {
+		for(File iterator : removedFiles) {
+			if(iterator.getCanonicalFile().equals(target)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean isAnyChangeType(File target) throws IOException {
+		
+		return (isAdded(target) || isRemoved(target) || isChanged(target));
+	}
+	
 }

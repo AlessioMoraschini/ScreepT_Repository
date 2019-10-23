@@ -19,6 +19,7 @@ import oshi.hardware.Baseboard;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.Display;
 import oshi.hardware.HWDiskStore;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import variousutils.DoubleListWorker;
 
@@ -841,5 +842,31 @@ public class HwInfoFrame extends ParentFrame{
 	private void handleException(String msg, Throwable e) {
 		logger.error(msg, e);
 		JOptionPane.showMessageDialog(thisPanel, msg, msg, JOptionPane.ERROR_MESSAGE);
+	}
+	
+	/**
+	 * Periodically checks if external application is closed or not, exit while cycle when isActive==false (closed) or external is closed
+	 */
+	public void startExternalSignalCloseFlagCheck() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(isActive.get()){
+					
+					if(!GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.exists()) {
+						System.exit(0);
+					}
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+				}
+				
+				if(!GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.exists()) {
+					System.exit(0);
+				}
+			}
+		}).start();
 	}
 }

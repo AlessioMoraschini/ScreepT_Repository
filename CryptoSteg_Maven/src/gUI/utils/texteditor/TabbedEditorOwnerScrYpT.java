@@ -73,8 +73,18 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 			}
 			txtUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !textEditor.chckbxLockLanguage.isSelected());
 		}
+		try {
+			textEditor.currentConfiguration.getTextEditorOpt().addFileIntoLastOpenedFiles(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile);
+		} catch (Exception e) {
+			logger.warn("Cannot select current file between last opened ones");
+		}
 	}
 
+	/**
+	 * If no or OK continue, if cancel turn back
+	 * @param index
+	 * @return
+	 */
 	@Override
 	public boolean askBeforeRemove(int i) {
 		return textEditor.askSave(i);

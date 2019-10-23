@@ -2,11 +2,13 @@ package maingUI;
 
 import java.awt.Font;
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -43,6 +45,8 @@ public class MainGuiGeneralAppStarter {
 			// Initialize logger properties
 			PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
 			
+			writeSignalFileForExternalJars();
+			
 			logger.info(LoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
 
 			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
@@ -75,6 +79,30 @@ public class MainGuiGeneralAppStarter {
 		
 		logger.info(LoggerUtils.getGeneralErrorExitMsg(GeneralConfig.APPLICATION_NAME, true));
 		
-		System.exit(0);
+		deleteSignalFileForExternalJars();
+		
+		System.exit(1);
+	}
+	
+	/**
+	 * This file will be used as flag to signal other threads to close when it exists no more 
+	 * (each external Jar must provide thread must check for this in order to close correctly).
+	 * @throws IOException 
+	 */
+	private static void writeSignalFileForExternalJars(){
+		try {
+			GeneralConfig.mkDirUserDirScrYpT();
+			GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.createNewFile();
+			FileStuff.writeStringToFile("MAIN_APP_IS_ACTIVE", GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE, true);
+		} catch (Exception e) {
+			logger.error("Error writing signal file ["+GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.getAbsolutePath()+"]");
+		}
+	}
+	
+	/**
+	 * This method will delete general signal file to signal that main Application is closed
+	 */
+	public static void deleteSignalFileForExternalJars() {
+		FileUtils.deleteQuietly(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
 	}
 }

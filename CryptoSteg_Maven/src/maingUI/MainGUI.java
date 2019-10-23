@@ -111,11 +111,6 @@ public class MainGUI extends MainGuiParent{
 	private static AboutSectionFrame panelAbout;
 	private static TutorialFrame tutorialPanel;
 	
-	// PANELS THAT OPEN IN THE MAIN FRAME
-	public static TextEditor initTxtWriter;
-	public static CrypterPanel panelCrypter;
-	public ChargeIniLog configManagerPanel;
-	
 ////////////////////////// MAIN GUI ELEMENTS ///////////////////////////
 ////////////////////////////////////////////////////////////////////////
 	
@@ -1427,6 +1422,10 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 	
 		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+		
+		MainGuiGeneralAppStarter.deleteSignalFileForExternalJars();
+		
+		logger.info("Exit procedure completed succesfully, now software will shut down");
 		
 		System.exit(0);
 	}

@@ -1,5 +1,7 @@
 package resources;
 
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,6 +15,7 @@ import java.util.Properties;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.PropertiesConfigurationLayout;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 public class PropertiesManager {
@@ -125,6 +128,69 @@ public class PropertiesManager {
 			}
 		}
 	}
+	
+	public int getIntVarFromProps(String key, int defaultVal) {
+		String val = dynamicFileBindingsDef.getProperty(key);
+		try {
+			return Integer.valueOf(val);
+		}catch(Exception e){
+			return defaultVal;
+		}
+	}
+
+	public float getFloatVarFromProps(String key, float defaultVal) {
+		String val = dynamicFileBindingsDef.getProperty(key);
+		try {
+			return Float.valueOf(val);
+		}catch(Exception e){
+			return defaultVal;
+		}
+	}
+	
+	/**
+	 * Parse dimension from property string in the form of "int-int", identified by his String key in properties
+	 */
+	public Dimension getDimensionFromString(String separator, String key, Dimension defaultDim) {
+		int width;
+		int height;
+		String source = StringUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+		try {
+			String[] splitted = source.split(separator);
+			width = Integer.parseInt(splitted[0]);
+			height = Integer.parseInt(splitted[1]);
+			return new Dimension(width, height);
+		} catch (Exception e) {
+			return defaultDim;
+		}
+		
+	}
+	
+    /**
+     * parse font from a representing string
+     */
+    public Font getFontFromString(String key, Font defaultFont) {
+    	String stringFont = StringUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+    	if("".equals(StringUtils.trimToEmpty(stringFont))) return defaultFont;
+    	
+    	String[] font = stringFont.split("-");
+    	String type;
+    	int style;
+    	int size;
+		try {
+			if (font.length != 3) {
+				return defaultFont;
+			}
+			type = font[0];
+			style = Integer.parseInt(font[1]);
+			size = Integer.parseInt(font[2]);
+		} catch (Exception e) {
+			return defaultFont;
+		}
+    	
+    	return new Font(type, style, size);
+    }
+    
+	// GETTERS AND SETTERS //	
 	
 	public File getDynamicFileBindingsDefSource() {
 		return dynamicFileBindingsDefSource;

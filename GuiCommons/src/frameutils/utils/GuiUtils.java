@@ -102,13 +102,22 @@ public class GuiUtils {
 		});
 	}
 	
-	public static <E, T> void refreshCombo(JComboBox target, Collection<E> values) {
-		target.removeAllItems();
-		Object[] array = values.toArray();
-		DefaultComboBoxModel model = new DefaultComboBoxModel<>( array );
-		target.setModel( model );
-		target.revalidate();
-		target.repaint();
+	public static <E, T> void refreshCombo(final JComboBox target, final Collection<E> values) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				target.removeAllItems();
+				Object[] array = values.toArray();
+				DefaultComboBoxModel model = new DefaultComboBoxModel<>(array);
+				target.setModel(model);
+				target.revalidate();
+				target.repaint();
+			}
+		});
+	}
+	
+	public static Window getCurrentActiveWindow() {
+		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+		return activeWindow;
 	}
 	
 	/**
@@ -232,6 +241,10 @@ public class GuiUtils {
 	 * <b>if toFront is not null it will be take to front last</b>
 	 */
 	public static void changeFrameStateLaterUnchecked(JFrame frame, JFrame toFront, int finalState) {
+		
+		if(frame == null || toFront == null) {return;}
+		
+		toFront.setLocationRelativeTo(frame);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame.setExtendedState(finalState);

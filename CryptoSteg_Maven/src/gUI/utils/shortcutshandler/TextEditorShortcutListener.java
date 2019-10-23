@@ -337,6 +337,12 @@ public class TextEditorShortcutListener implements KeyEventDispatcher{
 				if (e.getKeyCode() == 87 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTabEditor.closeCurrentTab();
 				} 
+				/*
+				 * 	CLOSE ALL TABS -> CTRL+ALT+SHIFT+ [-]
+				 */
+				if (e.getKeyCode() == 45 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentTextEditor.btnCloseAllTabs.doClick();
+				} 
 				
 				/*
 				 *  NEXT TAB IN HYSTORY -> Ctrl+Alt+ ->

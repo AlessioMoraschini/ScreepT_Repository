@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import amfileutils.om.FileNamed;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
@@ -28,6 +29,8 @@ import resources.IconsPathConfigurator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import java.awt.Dimension;
 
 public class TextEditorHeaderPanel extends JPanel{
 	
@@ -52,15 +55,16 @@ public class TextEditorHeaderPanel extends JPanel{
 		this.currentConfiguration = parent.currentConfiguration;
 		
 		
-		setLayout(new MigLayout("hidemode 2", "[160px,left][][][][grow][20px:24px:24px][20px:24px:24px][20px:24px:24px][10px:10px:10px][][][]", "[grow]"));
+		setLayout(new MigLayout("hidemode 2", "[160px,left][][][][grow][grow][][:180px:300px,grow,trailing][20px:24px:24px][20px:24px:24px][20px:24px:24px][10px:10px:10px][][][]", "[grow]"));
 		setForeground(SystemColor.menu);
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(new Color(30,30,30));
 		
 		lblVoiceSpeed = new JLabel("Voice rate");
 		lblVoiceSpeed.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblVoiceSpeed.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		lblVoiceSpeed.setForeground(SystemColor.control);
-		add(lblVoiceSpeed, "cell 2 0,alignx right");
+		add(lblVoiceSpeed, "cell 2 0,alignx right,aligny center");
 		
 		sliderSpokenSpeed = new JSlider();
 		sliderSpokenSpeed.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
@@ -73,14 +77,14 @@ public class TextEditorHeaderPanel extends JPanel{
 		btnPrevHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PREV));
 		btnPrevHistory.setToolTipText(TextEditorTooltips.tooltipHystoryPrev);
 		GuiUtils.makeTransparentJButton(btnPrevHistory);
-		add(btnPrevHistory, "cell 6 0,alignx center,growy");
+		add(btnPrevHistory, "cell 9 0,alignx center,growy");
 		
 		btnNextHistory = new JButton("");
 		btnNextHistory.setCursor(GuiUtils.CURSOR_HAND);
 		btnNextHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NEXT));
 		btnNextHistory.setToolTipText(TextEditorTooltips.tooltipHystoryNext);
 		GuiUtils.makeTransparentJButton(btnNextHistory);
-		add(btnNextHistory, "cell 7 0,alignx center,growy");
+		add(btnNextHistory, "cell 10 0,alignx center,growy");
 		
 		checkBoxInlineTabs = new JCheckBox("Inline Tabs  ");
 		checkBoxInlineTabs.setSelected(true);
@@ -90,7 +94,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		checkBoxInlineTabs.setBackground(Color.DARK_GRAY);
 		checkBoxInlineTabs.setIconTextGap(1);
 		checkBoxInlineTabs.setFont(new Font("SansSerif", Font.BOLD, 12));
-		add(checkBoxInlineTabs, "cell 9 0,alignx center,aligny center");
+		add(checkBoxInlineTabs, "cell 12 0,alignx center,aligny center");
 		
 		chkCutWordsTo = new JCheckBox("Adapt Text Width  ");
 		chkCutWordsTo.setCursor(GuiUtils.CURSOR_HAND);
@@ -100,7 +104,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkCutWordsTo.setBackground(Color.DARK_GRAY);
 		chkCutWordsTo.setIconTextGap(1);
 		chkCutWordsTo.setFont(new Font("SansSerif", Font.BOLD, 12));
-		add(chkCutWordsTo, "cell 10 0,alignx center,aligny center");
+		add(chkCutWordsTo, "cell 13 0,alignx center,aligny center");
 
 		chkFitmantainwords = new JCheckBox("Don't cut words");
 		chkFitmantainwords.setCursor(GuiUtils.CURSOR_HAND);
@@ -110,7 +114,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkFitmantainwords.setIconTextGap(1);
 		chkFitmantainwords.setFont(new Font("SansSerif", Font.BOLD, 12));
 		chkFitmantainwords.setEnabled(false);
-		add(chkFitmantainwords, "cell 11 0,alignx right,aligny center");
+		add(chkFitmantainwords, "cell 14 0,alignx right,aligny center");
 		
 		lblTextEditor = new JLabel("Text Editor");
 		lblTextEditor.setHorizontalAlignment(SwingConstants.CENTER);
@@ -191,6 +195,7 @@ public class TextEditorHeaderPanel extends JPanel{
 				parent.getCurrentTabEditor().goToNextInHistory();
 			}
 		});
+		
 	}
 	
 	public void doInlinedCheck() {

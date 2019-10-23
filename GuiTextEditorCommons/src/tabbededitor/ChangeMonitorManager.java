@@ -237,4 +237,5 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		this.isAlreadyChecking.set(alreadyCheking);
 		return isAlreadyChecking.get();
 	}
+
 }

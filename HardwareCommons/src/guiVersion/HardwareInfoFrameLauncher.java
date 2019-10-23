@@ -23,7 +23,8 @@ public class HardwareInfoFrameLauncher {
 		frame.setVisible(true);
 		frame.setAlwaysOnTop(true);
 		frame.setTitle("Hardware info - "+GeneralConfig.APPLICATION_NAME);
-
+		
+		// START CHECKING FOR EXTERNAL SIGNAL to close
+		frame.startExternalSignalCloseFlagCheck();
 	}
-
 }

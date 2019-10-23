@@ -27,7 +27,7 @@ public interface ITabbedEditorOwner {
 	/**
 	 * Method to call when having to ask user if he wants to save file before closing tab.
 	 * 
-	 * <b>Note that file save has to be done by you!</b>
+	 * <b>Note that file save has to be done by implementation, this is only the interface and does not implies that</b>
 	 * 
 	 * @return true if user wants to remove, false in other case
 	 */

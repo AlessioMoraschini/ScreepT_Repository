@@ -22,7 +22,6 @@ public class GeneralConfig {
 	
 	public static final SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
-
 	// MAIN PROPERTIES
 	public static final String APP_VERSION = linkedMappings.getProperty("APP_VERSION");
 	public static final String WEBSITE = "www.am_design_development.com";
@@ -43,12 +42,21 @@ public class GeneralConfig {
 	public static final String THEMES_FOLDER_CUSTOM = linkedMappings.getProperty("THEMES_FOLDER_CUSTOM");
 	public static final String PANEL_FILES_FOLDER = linkedMappings.getProperty("PANEL_TEMP_FOLDER");
 	public static final String CLIBPOARDS_PANEL_SRC_FOLDER = linkedMappings.getProperty("CLIBPOARDS_PANEL_SRC_FOLDER");
-	
 	// Temp Folders and Files
-	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
-	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	public static final String TEMP_DIRECTORY = RESOURCES_DIR + "temp/";
 	public static final File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
+	
+	// IMPORTANT FOLDERS
+	public static final String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
+	public static final String USER_PERSONAL_DIR_SCRYPT_FOLDER = USER_PERSONAL_DIR + APPLICATION_NAME + File.separatorChar + APP_VERSION;
+	public static final File F_USER_PERSONAL_DIR_SCRYPT_FOLDER = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER);
+	public static final String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";
+	public static final String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScrYpT_decrypted_tempFiles";
+	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
+	/**
+	 * This file is created at SW start, and deleted on close to signal other external programs
+	 */
+	public static final File SCRYPT_ACTIVE_SIGNAL_FILE = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.scrypt");
 	
 	// Ini files configuration
 	public static final String DEFAULT_INI= linkedMappings.getProperty("DEFAULT_INI");
@@ -63,7 +71,7 @@ public class GeneralConfig {
 	public static final String LOG_PROPERTIES_PATH = linkedMappings.getProperty("LOG_PROPERTIES_PATH");
 	public static final String LOG_LAUNCHER_PATH = linkedMappings.getProperty("LOG_LAUNCHER_PATH");
 	
-	// JVM and Launcher
+	// JVM and LAUNCHER
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = linkedMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 	public static final String JVM_CUSTOM_CUSTOM_SETTINGS = linkedMappings.getProperty("JVM_CUSTOM_CUSTOM_SETTINGS");
 	
@@ -73,12 +81,28 @@ public class GeneralConfig {
 	public static final boolean FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
 	public static final String MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
 	public static final String MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
-
+	
+	// LAUNCHER DEFAULTS
+	public static final int DEFAULT_JVM_XMX  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XMX", 768);
+	public static final int DEFAULT_JVM_XMS  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XMS", 348);
+	public static final int DEFAULT_JVM_XSS  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XSS", 100);
+	public static final float DEFAULT_JVM_GUI  = resourcesFilePathsMappings.getFloatVarFromProps("DEFAULT_JVM_GUI", 1.0f);
+	public static final String DEFAULT_JVM_VERS_MAX = linkedMappings.getProperty("DEFAULT_JVM_VERS_MAX");
+	public static final String DEFAULT_JVM_VERS_MIN = linkedMappings.getProperty("DEFAULT_JVM_VERS_MIN");
+	public static final String DEFAULT_LOG_LEVEL = linkedMappings.getProperty("DEFAULT_LOG_LEVEL");
+	public static final boolean DEFAULT_JVM_JAR_MODE = Boolean.valueOf(linkedMappings.getProperty("DEFAULT_JVM_JAR_MODE"));
+	public static final boolean DEFAULT_JVM_SHELL_ON = Boolean.valueOf(linkedMappings.getProperty("DEFAULT_JVM_SHELL_ON"));
+	
 	// NETWORK OPTIONS
-	public static final int NETWORK_UTILS_TIMEOUT  = getIntVarFromProps("NETWORK_UTILS_TIMEOUT", 5000);
+	public static final int NETWORK_UTILS_TIMEOUT  = resourcesFilePathsMappings.getIntVarFromProps("NETWORK_UTILS_TIMEOUT", 5000);
 	public static final String testAddress = linkedMappings.getProperty("testAddress");
 	
 	/**	GUI PROPERTIES **/
+	
+	// MENU CUSTOM FONTS
+	public static final Font MENU_LASTFILES_DEFAULT_FONT =  new Font("Segoe UI", Font.PLAIN, 15);
+	public static final Font MENU_LASTFILES_FONT =  resourcesFilePathsMappings.getFontFromString("MENU_LASTFILES_FONT", MENU_LASTFILES_DEFAULT_FONT);
+	
 	
 	// DEBUG GUI FLAG
 	public static String debugPreRead = linkedMappings.getProperty("FLAG_DEBUG_GRAPHICS");
@@ -86,25 +110,24 @@ public class GeneralConfig {
 	public static String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
 	
 	// Tooltips
-	public static int TOOLTIP_DELAY = getIntVarFromProps("TOOLTIP_DELAY", 400);
-	public static int TOOLTIP_TIMEOUT = getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
+	public static int TOOLTIP_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_DELAY", 400);
+	public static int TOOLTIP_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
 	public static String TOOLTIP_FONT = linkedMappings.getProperty("TOOLTIP_FONT");
 	
 	// FILE CHOOSER DIALOG
-	private static final String FILE_CHOOSER_SIZE_STR = linkedMappings.getProperty("FILE_CHOOSER_SIZE_STR");
 	public static final Dimension DEFAULT_FILE_CHOOSER_SIZE = new Dimension(800, 600);
-	public static final Dimension FILE_CHOOSER_SIZE = getDimensionFromString("-", FILE_CHOOSER_SIZE_STR, DEFAULT_FILE_CHOOSER_SIZE);
+	public static final Dimension FILE_CHOOSER_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "FILE_CHOOSER_SIZE_STR", DEFAULT_FILE_CHOOSER_SIZE);
 	
 	// TEXT EDITOR DEFAULTS
+	public static final int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);
+	public static final int MAX_HISTORY_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_HISTORY_SIZE", 40);
 	public static final boolean RECTANGULAR_TXT_SELECTION_ALLOWED = Boolean.valueOf(linkedMappings.getProperty("RECTANGULAR_TXT_SELECTION_ALLOWED"));
 	public static final boolean PRELOAD_TXT_EDITOR_FLAG = Boolean.valueOf(linkedMappings.getProperty("PRELOAD_TXT_EDITOR_FLAG"));
 	public static final Font TXT_EDITOR_MINIMAP_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 5);
-	private static String TXT_EDITOR_MINIMAP_FONT_STR = linkedMappings.getProperty("TXT_EDITOR_MINIMAP_FONT");
-	public static Font TXT_EDITOR_MINIMAP_FONT = getFontFromString(GeneralConfig.TXT_EDITOR_MINIMAP_FONT_STR, TXT_EDITOR_MINIMAP_FONT_DEFAULT);
+	public static Font TXT_EDITOR_MINIMAP_FONT = resourcesFilePathsMappings.getFontFromString("TXT_EDITOR_MINIMAP_FONT", TXT_EDITOR_MINIMAP_FONT_DEFAULT);
 	
 	public static final Font TXT_EDITOR_CLIPBOARD_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 12);
-	private static String TXT_EDITOR_CLIPBOARD_FONT_STR = linkedMappings.getProperty("TXT_EDITOR_CLIPBOARD_FONT");
-	public static Font TXT_EDITOR_CLIPBOARD_FONT =  getFontFromString(GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT_STR, TXT_EDITOR_CLIPBOARD_FONT_DEFAULT);
+	public static Font TXT_EDITOR_CLIPBOARD_FONT =  resourcesFilePathsMappings.getFontFromString("TXT_EDITOR_CLIPBOARD_FONT", TXT_EDITOR_CLIPBOARD_FONT_DEFAULT);
 	
 	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(linkedMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
 	@Deprecated
@@ -118,13 +141,13 @@ public class GeneralConfig {
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
-	public static final int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
-	public static final int NORMAL_WHEEL_SPEED = getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
-	public static final int FAST_WHEEL_SPEED = getIntVarFromProps("FAST_WHEEL_SPEED", 150);
-	public static final int ULTRA_FAST_WHEEL_SPEED = getIntVarFromProps("ULTRA_FAST_WHEEL_SPEED", 300);
+	public static final int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
+	public static final int NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
+	public static final int FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);
+	public static final int ULTRA_FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("ULTRA_FAST_WHEEL_SPEED", 300);
 	
-	public static int FOOTER_MAX_DIR_LABEL_LENGTH = getIntVarFromProps("FOOTER_MAX_DIR_LABEL_LENGTH", 30);
-	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL = getIntVarFromProps("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", 2);
+	public static int FOOTER_MAX_DIR_LABEL_LENGTH = resourcesFilePathsMappings.getIntVarFromProps("FOOTER_MAX_DIR_LABEL_LENGTH", 30);
+	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", 2);
 	
 	///////////////////////////////////////////////// METHODS ///////////////////////////////////////////////
 	
@@ -143,70 +166,6 @@ public class GeneralConfig {
 		return providers;
 	}
 	
-	private static int getIntVarFromProps(String key, int defaultVal) {
-		String val = linkedMappings.getProperty(key);
-		try {
-			return Integer.valueOf(val);
-		}catch(Exception e){
-			return defaultVal;
-		}
-	}
-	
-	/**
-	 * Parse dimension from string in the form of "int-int"
-	 */
-	private static Dimension getDimensionFromString(String separator, String source, Dimension defaultDim) {
-		int width;
-		int height;
-		try {
-			String[] splitted = source.split(separator);
-			width = Integer.parseInt(splitted[0]);
-			height = Integer.parseInt(splitted[1]);
-			return new Dimension(width, height);
-		} catch (Exception e) {
-			return defaultDim;
-		}
-		
-	}
-	
-    /**
-     * parse font from a representing string
-     */
-    private static Font getFontFromString(String stringFont, Font defaultFont) {
-    	if("".equals(StringUtils.trimToEmpty(stringFont))) return defaultFont;
-    	
-    	String[] font = stringFont.split("-");
-    	String type;
-    	int style;
-    	int size;
-		try {
-			if (font.length != 3) {
-				return defaultFont;
-			}
-			type = font[0];
-			style = Integer.parseInt(font[1]);
-			size = Integer.parseInt(font[2]);
-		} catch (Exception e) {
-			return defaultFont;
-		}
-    	
-    	return new Font(type, style, size);
-    }
-    
-    @Deprecated
-    public static TreeMap<String, File>  getMapFromCommaSeparatedFiles(String src) {
-    	TreeMap<String, File> map = new TreeMap<String, File>();
-    	src = StringUtils.trimToEmpty(src);
-    	String[] commaSep = src.split(",");
-    	int i = 0;
-    	for(String curr : commaSep) {
-    		curr = PANEL_FILES_FOLDER + curr;
-    		map.put(CLIPBOARD_PANEL_PREFIX+i, new File(curr));
-    		++i;
-    	}
-    	return map;
-    }
-    
     public static File[] getClipboardsFiles(){
     	File[] clipboards = new File(CLIBPOARDS_PANEL_SRC_FOLDER).listFiles(new FilenameFilter() {
 			
@@ -225,6 +184,20 @@ public class GeneralConfig {
     	return clipboards;
     }
     
+    @Deprecated
+    public static TreeMap<String, File>  getMapFromCommaSeparatedFiles(String src) {
+    	TreeMap<String, File> map = new TreeMap<String, File>();
+    	src = StringUtils.trimToEmpty(src);
+    	String[] commaSep = src.split(",");
+    	int i = 0;
+    	for(String curr : commaSep) {
+    		curr = PANEL_FILES_FOLDER + curr;
+    		map.put(CLIPBOARD_PANEL_PREFIX+i, new File(curr));
+    		++i;
+    	}
+    	return map;
+    }
+    
     
     public static TreeMap<String, File> getRefreshedClipBoardsMap(){
     	return FilePojo.mapFilesFromDir(new File(CLIBPOARDS_PANEL_SRC_FOLDER));
@@ -237,4 +210,19 @@ public class GeneralConfig {
     	return false;
     }
     
+    /**
+     * This method creates directory in user system folder to put shared scrypt's files
+     * @return
+     */
+    public static boolean mkDirUserDirScrYpT() {
+    	try {
+    		File userDirScryptFolder = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER); 
+			if (!userDirScryptFolder.exists()) {
+				userDirScryptFolder.mkdirs();
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+    }
 }

@@ -6,6 +6,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -22,6 +23,7 @@ import maingUI.MainGUI;
 import mainobj.INItializer;
 import media.Sounds;
 import resources.SoundsConfigurator;
+import treeutils.TreeUtils;
 
 public class MainGuiUtils {
 	

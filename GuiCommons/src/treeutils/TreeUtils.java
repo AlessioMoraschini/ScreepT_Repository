@@ -15,9 +15,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import amfileutils.om.FileNamed;
 import frameutils.utils.GuiUtils;
 import generic.LimitedConcurrentList;
-import treeutils.om.FileNamed;
 
 public class TreeUtils {
 	
@@ -80,12 +80,21 @@ public class TreeUtils {
 	 */
 	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree, boolean checkExistance) throws IOException{
 		
-		boolean error = fileToSelect == null || tree == null || (checkExistance && !fileToSelect.exists());
+		boolean error = fileToSelect == null 
+				|| tree == null 
+				|| tree.getModel() == null 
+				|| tree.getModel().getRoot() == null 
+				|| (checkExistance && !fileToSelect.exists());
+		
 		if(error) {
 			return;
 		}
 		
-		File root = ((FileNamed)tree.getModel().getRoot()).mFile.getAbsoluteFile();
+		File root = ((FileNamed)tree.getModel().getRoot()).mFile;
+		if(root != null) {
+			root = root.getAbsoluteFile();
+		}
+		
 		LimitedConcurrentList<File> nodes = new LimitedConcurrentList<File>(Integer.MAX_VALUE);
 		File current = new File(fileToSelect.getCanonicalPath());
 		

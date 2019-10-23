@@ -1,6 +1,11 @@
 package generic;
 
+import java.io.File;
+import java.util.Iterator;
 import java.util.Vector;
+
+import amfileutils.om.FileNamed;
+
 
 public class LimitedConcurrentList <T>{
 	
@@ -20,12 +25,12 @@ public class LimitedConcurrentList <T>{
 		boolean condition = list.size() > maxSize;
 		boolean maxReached = (condition) ? true : false;
 		
-		if(condition && !list.isEmpty()) {
-			list.remove(0);
+		synchronized (list) {
+			if (condition && !list.isEmpty()) {
+				list.remove(0);
+			}
+			list.add(element);
 		}
-		
-		list.add(element);
-		
 		return maxReached;
 	}
 	
@@ -33,12 +38,12 @@ public class LimitedConcurrentList <T>{
 		boolean condition = list.size() > maxSize;
 		boolean maxReached = (condition) ? true : false;
 		
-		if(condition && !list.isEmpty()) {
-			list.remove(0);
+		synchronized (list) {
+			if (condition && !list.isEmpty()) {
+				list.remove(0);
+			}
+			list.add(element);
 		}
-		
-		list.add(element);
-		
 		return maxReached;
 	}
 	
@@ -57,13 +62,55 @@ public class LimitedConcurrentList <T>{
 	 */
 	public int removeAllOccurrences(T target) {
 		
-		while (list.contains(target)) {
-			if (list != null && !list.isEmpty()) {
-				list.remove(target);
-			} 
+		synchronized (list) {
+			while (list.contains(target)) {
+				if (list != null && !list.isEmpty()) {
+					list.remove(target);
+				}
+			}
+		}
+		return list.size();
+	}
+
+	/** removes all occurrences returning new size after deleting
+	 * 
+	 * @param target the element to remove
+	 * @return the size after removal
+	 */
+	public int removeAllOccurrencesByEquals(T target) {
+		Vector<T> toRemove = new Vector<T>();
+		synchronized (list) {
+			for (T current : list) {
+				if (current.equals(target)) {
+					toRemove.add(current);
+				}
+			}
+			
+			for(T rmi : toRemove) {
+				list.remove(rmi);
+			}
+		}
+		return list.size();
+	}
+
+	/** Last index of with search based on equals method to find last match
+	 * 
+	 * @param target the element to remove
+	 * @return -1 if not found, last index in the other case
+	 */
+	public int lastIndexOfByEquals(T target) {
+		int lastIndex = -1;
+		Iterator<T> iterator = list.iterator();
+		int i = 0;
+		while(iterator.hasNext()) {
+			T currentEl = iterator.next();
+			if (currentEl.equals(target)) {
+				lastIndex = i;
+			}
+			i++;
 		}
 		
-		return list.size();
+		return lastIndex;
 	}
 	
 	public T getLast() {
@@ -71,6 +118,34 @@ public class LimitedConcurrentList <T>{
 			int size = list.size();
 			return list.get(size-1);
 		}else return null;
+	}
+	
+	/**
+	 * Returns list of strings separated by separator. Incase of file list it uses absolutePath
+	 * @param separator
+	 * @return
+	 */
+	public String toCharSeparatedString(String separator) {
+		if(list == null) {return "";}
+		StringBuilder builder = new StringBuilder();
+		for(T curr : list) {
+			try {
+				if (getLast().equals(curr)) {
+					separator = "";
+					// Avoid last separator after file
+				}
+				if (curr instanceof File) {
+					builder.append(((File) curr).getAbsolutePath()).append(separator);
+				} else if (curr instanceof FileNamed) {
+					builder.append(((FileNamed) curr).mFile.getAbsolutePath()).append(separator);
+				} else {
+					builder.append(curr).append(separator);
+				} 
+			} catch (Exception e) {
+			}
+		}
+
+		return builder.toString();
 	}
 
 	// getters & setters

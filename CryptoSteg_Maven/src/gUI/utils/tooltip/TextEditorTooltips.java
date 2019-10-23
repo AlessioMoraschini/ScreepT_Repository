@@ -11,6 +11,7 @@ public class TextEditorTooltips {
 	public static final String tooltipReplaceText = "[Ctrl+R] Replace text";
 	public static final String tooltipSaveTextFile = "[Ctrl+S] Save current file";
 	public static final String tooltipSaveTextFileAs = "[Ctrl+Shift+S] Choose name and folder, save current file";
+	public static final String tooltipRemoveAllDocs = "Ctrl+Alt+Shift + [-] ... Remove All loaded Tabs!!!";
 	public static final String tooltipReloadFromDisk = "[Ctrl+Shift+R] Reload current file from Disk";
 	public static final String tooltipLoadTextFile = "[Ctrl+O] Load source File";
 	public static final String tooltipNewEmptyTab = "[Ctrl+N] Create a new empty tab";

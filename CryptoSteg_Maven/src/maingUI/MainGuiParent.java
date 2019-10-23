@@ -3,12 +3,23 @@ package maingUI;
 import static java.awt.Event.CTRL_MASK;
 import static java.awt.Event.ALT_MASK;
 import static java.awt.Event.SHIFT_MASK;
+
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -24,7 +35,11 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
+import amfileutils.om.FileNamed;
 import frameutils.utils.GuiUtils;
+import gUI.panels.ChargeIniLog;
+import gUI.panels.CrypterPanel;
+import gUI.panels.TextEditor;
 import gUI.utils.mainGui.MainGuiUtils;
 import gui.utils.LauncherLoaderFrame;
 import jmenu.CustomJmenuItem;
@@ -58,6 +73,11 @@ public class MainGuiParent {
 	static final long AUTOSAVE_MANAGER_PERIOD = 10000; // autosave manager constant check refresh period in millisecond
 	static Thread autosaveModule; // AUTOSAVE MODULE - only if specified in fileOptions
 	
+	// INITIALIZE FONTS BY TYPE
+	Font menuBarFont;
+	Font subMenuFont;
+	Font menuItemFont;
+	
 	// AUTHOR AND GENERAL INFORMATIONS
 
 	// STATIC MAIN IMAGES REFERENCES
@@ -70,8 +90,6 @@ public class MainGuiParent {
 	
 	// RUNNING FLAG
 	volatile public static boolean mainAppRunning = false;
-	
-	public static MainGuiUtils mainGuiUtils;
 	
 	// LOADER
 	public static LauncherLoaderFrame loaderGraphics;
@@ -86,13 +104,14 @@ public class MainGuiParent {
 	JMenuBar menuBar;
 	
 	JMenu mnFile;
+		JMenu mnLastOpenedFile;
 	JMenu mnPreferences;
 	JMenu mnCryptoSteg; 
 	JMenu mnVarious;
-	JMenu mnConversionsAndOther;
+		JMenu mnConversionsAndOther;
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
-	JMenu mnrestartPanel;
+		JMenu mnrestartPanel;
 	JMenuItem mntmpadding = new JMenuItem();
 	JMenuItem mntmPinApplicationOnTop;
 	
@@ -130,6 +149,13 @@ public class MainGuiParent {
 	CustomJmenuItem mntmResetConfigManager;
 	CustomJmenuItem mntmResetCrypterPanel;
 	
+	// PANELS THAT OPEN IN THE MAIN FRAME
+	public static TextEditor initTxtWriter;
+	public static CrypterPanel panelCrypter;
+	public ChargeIniLog configManagerPanel;
+	
+	public static MainGuiUtils mainGuiUtils;
+	
 	public MainGuiParent() {
 		// INIT MENU and MAIN-BAR SUMBMENUS
         menuBar = new JMenuBar();
@@ -139,6 +165,7 @@ public class MainGuiParent {
 		mnPreferences = new JMenu("Preferences");
 		mnCryptoSteg = new JMenu("ScreepT");
 		mnVarious = new JMenu("Various");
+			mnLastOpenedFile = new JMenu("TextEditor: Last opened files");
 			mnConversionsAndOther = new JMenu("Conversions and Media");
 			mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnHelp = new JMenu("Help");
@@ -172,11 +199,6 @@ public class MainGuiParent {
 	/******************  BEGIN MAIN MENU-BAR SETUP  *****************************/
 
 	void structureMenuBar() {
-		
-		// INITIALIZE FONTS BY TYPE
-		Font menuBarFont = new Font("Segoe UI", Font.BOLD, menuSize);
-		Font subMenuFont = new Font("Gadugi", Font.BOLD, subMenuSize);
-		Font menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
 		
 		// CREATE MENU-BAR STRUCTURE
 		Insets mainMargin = new Insets(0, 1, 1, 1);
@@ -228,13 +250,14 @@ public class MainGuiParent {
 			mnCryptoSteg.add(mntmViewKeyDictionary);
 	
 			mnVarious.add(mntmTextEditor);
+				mnVarious.add(mnLastOpenedFile);
 			mnVarious.add(new JSeparator());
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
 			mnVarious.add(mnConversionsAndOther);
 				// SUB-MENU
 				mnConversionsAndOther.add(mntmImageConverter);
-			mnVarious.add(mnFilesAndDirectories);
+				mnVarious.add(mnFilesAndDirectories);
 				// SUB-MENU
 				mnFilesAndDirectories.add(mntmTouppercaseDirectory);
 				mnFilesAndDirectories.add(mntmMakeDirsFromPath);
@@ -262,6 +285,10 @@ public class MainGuiParent {
 		addMenuIcons();
 		
 		addMenuShorctutsTips();
+		
+		addExtraHandlers();
+		
+		updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().getLastOpenedFiles().getList());
 	}
 	
 	/**
@@ -273,6 +300,10 @@ public class MainGuiParent {
 	 */
 	void updateMenuFonts(Font menuBarFont, Font subMenuFont, Font menuItemFont) {
 
+		menuBarFont = new Font("Segoe UI", Font.BOLD, menuSize);
+		subMenuFont = new Font("Gadugi", Font.BOLD, subMenuSize);
+		menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
+		
 		menuBar.setFont(menuBarFont);
 		
 		// MAIN MENU ENTRIES
@@ -295,6 +326,7 @@ public class MainGuiParent {
 		// FILE SECTION
 		mntmExit.setFont(menuItemFont);
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
+		mnLastOpenedFile.setFont(menuItemFont);
 		mntmloadPrjSub.setFont(menuItemFont);
 		mntmExportPrjSub.setFont(menuItemFont);
 		mntmReloadPrjSub.setFont(menuItemFont);
@@ -344,6 +376,7 @@ public class MainGuiParent {
 	void addMenuIcons() {
 		
 		MenuSetter.setIconTextGap(menuBar, 15);
+		mnLastOpenedFile.setIconTextGap(15);
 		
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);
@@ -351,6 +384,7 @@ public class MainGuiParent {
 		
 		// file submenu
 		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
+		mnLastOpenedFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
 		mntmloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
 		mntmExportPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 		mntmReloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
@@ -453,6 +487,118 @@ public class MainGuiParent {
 			mntmResetCrypterPanel.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_8, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 			mntmResetConfigManager.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_7, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		
+	}
+	
+	public void addExtraHandlers() {
+		mnLastOpenedFile.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().lastOpenedFiles.getList());
+					}
+				});
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+	}
+	
+	public void updateLastOpenedFiles(Vector<FileNamed> lastOpenedLlist) {
+
+		try {
+			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastOpenedLlist.clone();
+			Collections.reverse(valueCopy);
+			mnLastOpenedFile.removeAll();
+			for (FileNamed file : valueCopy) {
+				JMenuItem newOccurrence = new JMenuItem(file.toString());
+				newOccurrence.setFont(GeneralConfig.MENU_LASTFILES_FONT);
+				try {
+					newOccurrence.setToolTipText(file.getCanonicalAbsPath());
+				} catch (Exception e) {
+				}
+				mnLastOpenedFile.add(newOccurrence);
+				addListenerToJMenuItemLastOpenedTxtEditor(newOccurrence);
+			} 
+		} catch (Exception e) {
+			logger.error("Error refreshing last opened files", e);
+		}
+	};
+	
+	public void addListenerToJMenuItemLastOpenedTxtEditor(JMenuItem target) {
+		target.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(target != null && !target.getToolTipText().equals("")) {
+					if(initTxtWriter != null) {
+						File toLoad = new File(target.getToolTipText());
+						initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
+					}
+				}
+			}
+		});
+	}
+	
+	public void emptyLastOpenedSubMenuItems() {
+		mnLastOpenedFile.removeAll();
+	}
+	
+	public JMenuItem isFileContained(File searchElem) {
+		for(Component currentComponent : mnLastOpenedFile.getComponents()) {
+			if(currentComponent instanceof JMenuItem) {
+				try {
+					if(searchElem.getCanonicalPath().equals(((JMenuItem) currentComponent).getToolTipText())){
+						return (JMenuItem) currentComponent;
+					}
+				} catch (IOException e) {
+				}
+			}
+		}
+		
+		return new JMenuItem();
+	}
+
+	public JMenuItem removeFromLastOpened(File searchElem) {
+		for(Component currentComponent : mnLastOpenedFile.getComponents()) {
+			if(currentComponent instanceof JMenuItem) {
+				try {
+					if(searchElem.getCanonicalPath().equals(((JMenuItem) currentComponent).getToolTipText())){
+						mnLastOpenedFile.remove((JMenuItem)currentComponent);
+						return (JMenuItem) currentComponent;
+					}
+				} catch (IOException e) {
+				}
+			}
+		}
+		
+		return new JMenuItem();
+	}
+
+	public boolean isFileContainedBool(File searchElem) {
+		for(Component currentComponent : mnLastOpenedFile.getComponents()) {
+			if(currentComponent instanceof JMenuItem) {
+				try {
+					if(searchElem.getCanonicalPath().equals(((JMenuItem) currentComponent).getToolTipText())){
+						return true;
+					}
+				} catch (IOException e) {
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	void updateMenuAndLogFontSize(int fontSize){

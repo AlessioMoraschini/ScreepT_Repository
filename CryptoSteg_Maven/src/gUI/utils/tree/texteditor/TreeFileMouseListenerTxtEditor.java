@@ -21,6 +21,7 @@ import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import amfileutils.om.FileNamed;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
@@ -29,7 +30,6 @@ import menusettings.MenuSetter;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
-import treeutils.om.FileNamed;
 import utils.dialog.ColorDialogUtils;
 import variousutils.HandleString;
 

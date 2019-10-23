@@ -25,17 +25,15 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListDataListener;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import java.awt.Font;
@@ -43,7 +41,8 @@ import javax.swing.JSlider;
 import javax.swing.JSeparator;
 
 public class CustomizeParametersPanel extends JFrame{
-	
+	private static final long serialVersionUID = 1712282193344302745L;
+
 	// CustomizeParametersPanel logger
 	static Logger logger = Logger.getLogger(CustomizeParametersPanel.class); 
 	
@@ -62,7 +61,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TITLE_LAUNCH_AS_CLASS = "Launch as .Class:";
 	
 	private static final int DEF_FIXED_HEIGHT = 240;
-	private static final int DEF_FIXED_WIDTH = 550;
+	private static final int DEF_FIXED_WIDTH = 545;
 	public static final Dimension DEF_DIMENSION = new Dimension(DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 	
 	public static boolean active = false;
@@ -74,6 +73,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private JSpinner spinnerMaxMemoryMB;
 	private JButton btnExitConfiguration;
 	private JButton btnReloadInitialConfig;
+	private JButton btnLoadScryptDefault;
 	private JButton btnSaveConfig;
 	
 	private int backupMinMemoryXms;
@@ -85,8 +85,8 @@ public class CustomizeParametersPanel extends JFrame{
 	private float backupScaleGuiPerc;
 	private String backupPreferredJvm;
 	
-	private static final int defaultMinMemXms = 512;
-	private static final int defaultMaxMemXmx = 1024;
+	private static final int defaultMinMemXms = 256;
+	private static final int defaultMaxMemXmx = 512;
 	private static final int defaultStackSize = 128;
 	private static final float defaultScaleGuiPerc = 1.0f;
 	
@@ -122,7 +122,7 @@ public class CustomizeParametersPanel extends JFrame{
 		active = true;
 		thisPanel = this;
 		
-		thisPanel.setTitle(title);		
+		thisPanel.setTitle(title);	
 		parentStarterPanel = parentPanel;
 		
 		GuiUtils.centerFrame(this, DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
@@ -131,7 +131,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:100px:100px][130px][:20px:20px][:100px:100px,grow]", "[grow][grow][grow][grow][][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][110px,grow][:20px:20px][80px,grow]", "[grow][grow][grow][grow][][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
@@ -198,13 +198,13 @@ public class CustomizeParametersPanel extends JFrame{
 		chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
 		chckBoxLaunchAsJar.setSelected(true);
 		chckBoxLaunchAsJar.setFont(new Font("SansSerif", Font.BOLD, 12));
-		getContentPane().add(chckBoxLaunchAsJar, "cell 4 2,alignx center");
+		getContentPane().add(chckBoxLaunchAsJar, "cell 4 2 2 1,alignx right");
 		
 		chckbxActiveShell = new JCheckBox("Display Shell");
 		chckbxActiveShell.setForeground(new Color(220, 220, 220));
 		chckbxActiveShell.setToolTipText(TOOLTIP_DISPLAY_SHELL);
 		chckbxActiveShell.setFont(new Font("SansSerif", Font.BOLD, 12));
-		getContentPane().add(chckbxActiveShell, "cell 5 2 2 1,alignx center");
+		getContentPane().add(chckbxActiveShell, "cell 6 2,alignx center");
 		
 		lblPreferredJvm = new JLabel("Preferred JVM");
 		lblPreferredJvm.setForeground(new Color(220, 220, 220));
@@ -212,7 +212,6 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		String[] JVMS = {};
 		JVMS = SysUtils.findJvmVersionsInstalled(currentOS).toArray(JVMS);
-//		comboPrefJvm = new JComboBox<String>();
 		comboPrefJvm = new JComboBox<String>(JVMS);
 		getContentPane().add(comboPrefJvm, "cell 2 3 5 1,growx");
 		
@@ -220,23 +219,37 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(separator, "cell 0 4 7 1,growx");
 		
 		btnExitConfiguration = new JButton("Discard");
-		btnExitConfiguration.setBackground(new Color(250, 128, 114));
+		btnExitConfiguration.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
+		btnExitConfiguration.setBackground(new Color(207, 77, 70));
 		btnExitConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
 		btnExitConfiguration.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		getContentPane().add(btnExitConfiguration, "cell 0 5,growx");
 		
-		btnReloadInitialConfig = new JButton("Reset to Initial Config");
+		btnReloadInitialConfig = new JButton("Reset to Initial Values");
+		btnReloadInitialConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
+		btnReloadInitialConfig.setForeground(Color.WHITE);
 		btnReloadInitialConfig.setEnabled(true);
-		btnReloadInitialConfig.setBackground(new Color(250, 250, 210));
+		btnReloadInitialConfig.setBackground(Color.DARK_GRAY);
 		btnReloadInitialConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		btnReloadInitialConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getContentPane().add(btnReloadInitialConfig, "cell 1 5 3 1,alignx left");
+		getContentPane().add(btnReloadInitialConfig, "cell 1 5 3 1,growx,aligny center");
 		
+		btnLoadScryptDefault = new JButton();
+		btnLoadScryptDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
+		btnLoadScryptDefault.setForeground(Color.WHITE);
+		btnLoadScryptDefault.setText("Use Defaults");
+		btnLoadScryptDefault.setEnabled(true);
+		btnLoadScryptDefault.setBackground(Color.DARK_GRAY);
+		btnLoadScryptDefault.setIcon(new ImageIcon(IconsPathConfigurator.iconRootPath));
+		btnLoadScryptDefault.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		getContentPane().add(btnLoadScryptDefault, "cell 4 5 2 1,growx,aligny center");
+
 		btnSaveConfig = new JButton("Save Launch Options");
-		btnSaveConfig.setBackground(new Color(143, 188, 143));
+		btnSaveConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
+		btnSaveConfig.setBackground(new Color(85, 166, 66));
 		btnSaveConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSaveConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		getContentPane().add(btnSaveConfig, "cell 4 5 3 1,alignx right");
+		getContentPane().add(btnSaveConfig, "cell 6 5,growx,aligny center");
 		
 		// add custom behaviour to frame
 		
@@ -245,6 +258,9 @@ public class CustomizeParametersPanel extends JFrame{
 		addHandlers();
 		
 		backupInitialValues();
+		
+		this.setMinimumSize(DEF_DIMENSION);
+		this.pack();
 		
 		logger.info(this.getClass().getName() + " Started");
 	}
@@ -261,6 +277,31 @@ public class CustomizeParametersPanel extends JFrame{
 				ScrYpTLauncher.iniFileManager.initFromINIFile();
 	        	dispose();
 		    }
+		});
+		
+		// LOAD SCRYPT'S DEFAULTS INTO GUI LAUNCHER BOXES
+		btnLoadScryptDefault.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						spinnerMaxMemoryMB.setValue(GeneralConfig.DEFAULT_JVM_XMX);
+						spinnerMinMemoryMB.setValue(GeneralConfig.DEFAULT_JVM_XMS);
+						spinnerXssMemory.setValue(GeneralConfig.DEFAULT_JVM_XSS);
+						sliderGuiScale.setValue(getPercFromScale(GeneralConfig.DEFAULT_JVM_GUI));
+						comboLogLevel.setSelectedItem(GeneralConfig.DEFAULT_LOG_LEVEL);
+						chckBoxLaunchAsJar.setSelected(GeneralConfig.DEFAULT_JVM_JAR_MODE);
+						chckbxActiveShell.setSelected(GeneralConfig.DEFAULT_JVM_SHELL_ON);
+						
+						String javaPath = new JvmHelper("1.9", "1.8").retrieveCorrectJVMS(false);
+						selectComboJVM(javaPath);
+						thisPanel.revalidate();
+						thisPanel.repaint();
+					}
+				});
+			}
 		});
 		
 		sliderGuiScale.addChangeListener(new ChangeListener() {
@@ -474,6 +515,8 @@ public class CustomizeParametersPanel extends JFrame{
 	}
 	
 	private void selectComboJVM(String target) {
+		if(target == null) {return;}
+		
 		for (int i = 0; i < comboPrefJvm.getItemCount(); i++) {
 			String currentComboValue = (String)comboPrefJvm.getItemAt(i);
 			if (currentComboValue.contains(target) || target.contains(currentComboValue)) {

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import treeutils.om.FileNamed;
+import amfileutils.om.FileNamed;
 
 public class FileTreeNamedModel implements TreeModel {
 

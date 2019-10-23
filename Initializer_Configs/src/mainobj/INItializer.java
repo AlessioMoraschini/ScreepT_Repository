@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
+import amfileutils.om.FileNamed;
 import enums.ScalingAlgorithm;
 import om.AesOption;
 import om.FileOptions;
@@ -59,7 +60,7 @@ public class INItializer {
 		steganOpt = new SteganOption();
 		aesOpt = new AesOption();
 		guiOpt = new GuiOption();
-		textEditorOpt = new TextEditorOption();
+		textEditorOpt = new TextEditorOption(this);
 		imageConvertOption = new ImgConverterOption();
 		
 		try {
@@ -383,6 +384,19 @@ public class INItializer {
 		} catch (Exception e1) {
 			pathsOpenFilesString = "";
 		}
+		
+		String lastOpenedFiles;
+		try {
+			lastOpenedFiles = iniReadFile.get(TEXT_EDITOR_OPT, "lastOpenedFiles");
+			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(lastOpenedFiles, ",");
+			textEditorOpt.getLastOpenedFiles().getList().clear();		
+			while(tokenizerOpenedFiles.hasMoreTokens()) {
+				textEditorOpt.getLastOpenedFiles().addLast(new FileNamed(tokenizerOpenedFiles.nextToken()));
+			}
+		} catch (Exception e1) {
+			lastOpenedFiles = "";
+		}
+		
 		// selected theme
 		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
 		String theme = (themeRead != null && !themeRead.equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
@@ -529,6 +543,7 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "tabSpacesEmulated", textEditorOpt.tabSpacesEmulated);
 		iniFile.put(TEXT_EDITOR_OPT, "markEndOfLine", textEditorOpt.markEndOfLine);
 		iniFile.put(TEXT_EDITOR_OPT, "showBracketsPopup", textEditorOpt.showBracketsPopup);
+		iniFile.put(TEXT_EDITOR_OPT, "lastOpenedFiles", textEditorOpt.lastOpenedFiles.toCharSeparatedString(","));
 		
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
@@ -679,6 +694,7 @@ public class INItializer {
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): ").append(textEditorOpt.dividerRightPanePosXClipboard)
 			   .append("\nLAST FILE OPENED IN CLIPBOARD: ").append(textEditorOpt.lastFileOpenedClipboard)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
+			   .append("\nLAST OPENED FILES: ").append(textEditorOpt.lastOpenedFiles.toCharSeparatedString(","))
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
 			   .append("\nLAST CODE ESCAPE LANGUAGE: ").append(textEditorOpt.lastEscapeLanguage)
 

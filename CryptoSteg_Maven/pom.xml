@@ -124,6 +124,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<export.launcher.jarmode>false</export.launcher.jarmode>
             	<tasks>
 					<echo>SINGLE_MAIN_JAR SOURCE: /target/ScrYpT_${parent.build.version.scrypt}.jar</echo>
 				</tasks>
@@ -218,6 +219,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<export.launcher.jarmode>true</export.launcher.jarmode>
             	<skip>${export.fatjar.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>

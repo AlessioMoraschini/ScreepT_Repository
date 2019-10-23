@@ -2,12 +2,20 @@ package om;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import amfileutils.om.FileNamed;
 import enums.Themes;
+import generic.LimitedConcurrentList;
+import mainobj.INItializer;
 import resources.GeneralConfig;
 
 public class TextEditorOption {
+	
+	INItializer parentConfig;
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
 	public static final int DEFAULT_MARGIN = 18;
@@ -35,7 +43,8 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_TREE_LOCKED = false;
 	public static final boolean DEFAULT_WORKSPACE_VIEW_SELECTED = false;
 	public static final boolean DFAULT_AUTO_SYNTAX_SYN_FLAG = true;
-	public static final String DEFAULT_WORKSPACE_LOCATION = System.getProperty("user.home");
+	public static final String DEFAULT_WORKSPACE_LOCATION = GeneralConfig.USER_PERSONAL_DIR;
+	public static final LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);
 	
 	// TEXT AREA DETAIL
 	public static final boolean DEF_codeFoldingEnabled = true;
@@ -69,6 +78,7 @@ public class TextEditorOption {
 	public ArrayList<String> openedFileList;
 	public String selectedAtStart;
 	public String lastEscapeLanguage;
+	public LimitedConcurrentList<FileNamed> lastOpenedFiles;
 	
 	// TEXT AREA
 	public String defaultWorkspacePath;
@@ -111,6 +121,7 @@ public class TextEditorOption {
 	// CONSTRUCTOR
 	public TextEditorOption() {
 		openedFileList = new ArrayList<String>();
+		lastOpenedFiles = DEF_lastOpenedFiles;
 		margin = DEFAULT_MARGIN;
 		voiceRate = DEFAULT_VOICE_RATE;
 		inlinedTabs = DEFAULT_TAB_INLINE;
@@ -156,8 +167,41 @@ public class TextEditorOption {
 		tabSpacesEmulated = DEF_tabsSpacesEmulated;
 		markEndOfLine = DEF_markEndOfLine;
 		showBracketsPopup = DEF_showBracketsPopup;
+		
+		this.parentConfig = new INItializer();
+	}
+	
+	public TextEditorOption(INItializer parentConfig) {
+		super();
+		this.parentConfig = parentConfig;
 	}
 
+	
+	/**
+	 * If already present move to top, else if not present add it as last
+	 */
+	public synchronized void addFileIntoLastOpenedFiles(File toAdd) {
+		
+		if(toAdd == null) {return;}
+		
+		// FIRST REMOVE ALL REFERENCES
+		synchronized (lastOpenedFiles) {
+			Iterator iter = lastOpenedFiles.getList().iterator();
+			List<FileNamed> toRemove = new ArrayList<FileNamed>();
+			while (iter.hasNext()) {
+				FileNamed elem = (FileNamed)iter.next();
+				File file = elem.mFile;
+				if (file.equals(toAdd)) {
+					toRemove.add(elem);
+				}
+			}
+			
+			lastOpenedFiles.getList().removeAll(toRemove);
+		}
+		// NOT ADD AS LAST
+		lastOpenedFiles.addLast(new FileNamed(toAdd));
+		parentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastOpenedFiles", lastOpenedFiles.toCharSeparatedString(","));
+	}
 	
 	// GETTERS AND SETTERS
 	public boolean isTabLineVisible() {
@@ -560,6 +604,16 @@ public class TextEditorOption {
 
 	public void setDividerRightPanePosX(int dividerRightPanePosX) {
 		this.dividerRightPanePosX = dividerRightPanePosX;
+	}
+
+
+	public LimitedConcurrentList<FileNamed> getLastOpenedFiles() {
+		return lastOpenedFiles;
+	}
+
+
+	public void setLastOpenedFiles(LimitedConcurrentList<FileNamed> lastOpenedFiles) {
+		this.lastOpenedFiles = lastOpenedFiles;
 	}
 	
 }

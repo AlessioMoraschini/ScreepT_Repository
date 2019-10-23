@@ -24,7 +24,6 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -32,6 +31,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.Gutter;
 
 import amfileutils.FileStuff;
+import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import enums.Themes;
 import enums.ThemesWrapper;
@@ -51,7 +51,6 @@ import resources.GeneralConfig;
 import splitpanel.SplitPaneUtils;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
-import treeutils.om.FileNamed;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
 import utils.dialog.TextAreaDialogs;
@@ -415,7 +414,7 @@ public class TextEditorUtils {
 			logger.warn("\"btnToggleFileView\" is not selected, refresh skipped!");
 		}
 		
-		currentTextEditor.lblCurrentDir.setText(currentTextEditor.ROOT_WORKSPACE_LBL);
+		currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_WORKSPACE_LBL);
 		
 	}
 	
@@ -482,6 +481,21 @@ public class TextEditorUtils {
 		});
 	}
 	
+	// TOGGLE GUI-BLOCKS VISIBILITY METHODS //
+	
+	/**
+	 * Toggle visibility of text editor panel just under header,  inverting visible flag at each invocation
+	 */
+	public void hideOrShowEveryClickable() {
+		ArrayList<Component> clickableList = getTxtEditorClickablesList();
+		for(Component element : clickableList) {
+			// invert visible flag 
+			element.setVisible(!element.isVisible());
+		}
+		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		resizeFrameToDefault(currentTextEditor.mainApplication);
+	}
+	
 	/**
 	 * Toggle visibility of text editor header panel,  inverting visible flag at each invocation
 	 */
@@ -491,13 +505,25 @@ public class TextEditorUtils {
 			// invert visible flag 
 			element.setVisible(!element.isVisible());
 		}
-		currentTextEditor.headerPanel.setVisible(!currentTextEditor.headerPanel.isVisible());
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
 	}
 	
 	/**
-	 * Toggle visibility of text editor header panel,  inverting visible flag at each invocation
+	 * Toggle visibility of text editor panel just under header,  inverting visible flag at each invocation
+	 */
+	public void hideOrShowHeaderPanelLevel2() {
+		ArrayList<Component> headerList = getTxtEditorHeaderLevel2();
+		for(Component element : headerList) {
+			// invert visible flag 
+			element.setVisible(!element.isVisible());
+		}
+		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		resizeFrameToDefault(currentTextEditor.mainApplication);
+	}
+	
+	/**
+	 * Toggle visibility of text editor footer panel,  inverting visible flag at each invocation
 	 */
 	public void hideOrShowFooterPanel() {
 		currentTextEditor.footerPanel.setVisible(!currentTextEditor.footerPanel.isVisible());
@@ -568,11 +594,34 @@ public class TextEditorUtils {
 	// END ADVICE TEMPORIZATION AND VISUALIZTION METHODS
 	
 	/**
+	 * Retrieve header elements to hide contained in TextEditor
+	 * 
+	 * @return
+	 */
+	public ArrayList<Component> getTxtEditorHeaderLevel1() {
+		
+		ArrayList<Component> headerList = new ArrayList<Component>();
+		
+		try {
+						
+			// JSEPARATORS
+			List<JSeparator> jseparators = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor , JSeparator.class, NO_HIDE_ELEMENT, true, false);
+			headerList.addAll(jseparators);
+			headerList.add(currentTextEditor.headerPanel);
+			
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			logger.error("Exception during retrieve of elements", e);
+		}
+		
+		return headerList;
+	}
+	
+	/**
 	 * Retrieve all elements of type JButton or JComboBox contained in TextEditor
 	 * 
 	 * @return
 	 */
-	public ArrayList<Component> getTxtEditorHeaderComponentList() {
+	public ArrayList<Component> getTxtEditorHeaderLevel2() {
 		
 		ArrayList<Component> headerList = new ArrayList<Component>();
 		
@@ -633,27 +682,21 @@ public class TextEditorUtils {
 		
 		return hideableList;
 	}
-	
+
 	/**
-	 * Retrieve all elements of type JButton or JComboBox contained in TextEditor
+	 * Retrieve all clickable elements in TextEditor
 	 * 
 	 * @return
 	 */
-	public ArrayList<Component> getTxtEditorHeaderLevel1() {
+	public ArrayList<Component> getTxtEditorClickablesList() {
 		
-		ArrayList<Component> headerList = new ArrayList<Component>();
+		ArrayList<Component> clickableList = new ArrayList<Component>();
 		
-		try {
-						
-			// JSEPARATORS
-			List<JSeparator> jseparators = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor , JSeparator.class, NO_HIDE_ELEMENT, true, false);
-			headerList.addAll(jseparators);
-			
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			logger.error("Exception during retrieve of elements", e);
-		}
+		clickableList.addAll(getTxtEditorHeaderLevel1());
+		clickableList.addAll(getTxtEditorHeaderLevel2());
+		clickableList.add(currentTextEditor.footerPanel);
 		
-		return headerList;
+		return clickableList;
 	}
 	
 	public void resetDividerColor() {

@@ -28,7 +28,6 @@ import amfileutils.FileStuff;
 import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
-import guistyle.GUIStyelSettings;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.TextEditorOption;
@@ -54,10 +53,6 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	
 	public static ClipboardPanel singletonInstance;
 
-	// FIRST is main clipboard
-	public String KEY_clipBoardMain = GeneralConfig.CLIPBOARD_PANEL_DEFAULT;
-	public String currentClipboard = KEY_clipBoardMain;
-	
 	public RSyntaxTextArea txtAreaClipboard;
 	private JScrollPane txtAreaContainer;
 	private JScrollPane currentScrollPane;
@@ -92,7 +87,6 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		
 		this.config = (configuration != null)? configuration : new INItializer();
 		this.options = (config != null)? config.getTextEditorOpt() : new TextEditorOption();
-		currentClipboard = options.getLastFileOpenedClipboard();
 		
 		// Disable advices until instantiation is ended
 		this.dialogHelper = new JOptionHelper(this);
@@ -219,7 +213,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		
 //		GUIStyelSettings.applyNimbusSize(0);
 		
-		File mainClip = dataMap.get(KEY_clipBoardMain);
+		File mainClip = dataMap.get(options.lastFileOpenedClipboard);
 		if(mainClip != null && !mainClip.exists()) {
 			try {
 				mainClip.createNewFile();
@@ -228,13 +222,13 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			}
 		}else {
 			try {
-				reload(KEY_clipBoardMain);
+				reload(options.getLastFileOpenedClipboard());
 			} catch (IOException e) {
 				logger.error("Error initializing clipboard Main at start");
 			}
 		}
 		
-		FileStuff.loadFileTxtArea(dataMap.get(KEY_clipBoardMain), txtAreaClipboard, null, null);
+		FileStuff.loadFileTxtArea(dataMap.get(options.getLastFileOpenedClipboard()), txtAreaClipboard, null, null);
 		dialogHelper.enabledAdvices = true;
 	}
 	
@@ -277,9 +271,9 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (currentClipboard != null) {
+						if (options.getLastFileOpenedClipboard() != null) {
 							try {
-								reload(currentClipboard);
+								reload(options.getLastFileOpenedClipboard());
 							} catch (IOException e1) {
 								logger.error("Error reloading current Clipboard panel from file.");
 							}
@@ -295,7 +289,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (currentClipboard != null) {
+						if (options.getLastFileOpenedClipboard() != null) {
 							try {
 								if (!addNewClipboardGui()) {
 									dialogHelper.error("File not saved, maybe folder it's not acessible or locked by an other program?!", null);
@@ -316,11 +310,11 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (currentClipboard != null) {
+						if (options.getLastFileOpenedClipboard() != null) {
 							try {
-								doAction(currentClipboard);
+								doAction(options.getLastFileOpenedClipboard());
 							} catch (IOException e1) {
-								String msg = "Error Saving current changes to file: " + GeneralConfig.CLIPBOARD_PANEL_MAP.get(currentClipboard);
+								String msg = "Error Saving current changes to file: " + GeneralConfig.CLIPBOARD_PANEL_MAP.get(options.getLastFileOpenedClipboard());
 								logger.error(msg);
 								dialogHelper.warn(msg, null);
 							}
@@ -335,16 +329,18 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				if (currentClipboard != null && !isReloadingCombo.get()) {
+				if(comboClipboards.getSelectedItem() == null) {return;}
+				
+				if (options.getLastFileOpenedClipboard() != null && !isReloadingCombo.get()) {
 					saveCurrClipboardSilent();
 				}
-				currentClipboard = (String)comboClipboards.getSelectedItem();
-				if (currentClipboard != null) {
+				options.setLastFileOpenedClipboard((String)comboClipboards.getSelectedItem());
+				if (options.getLastFileOpenedClipboard() != null) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							try {
-								reload(currentClipboard);
-								options.lastFileOpenedClipboard = currentClipboard;
+								reload(options.getLastFileOpenedClipboard());
+								options.lastFileOpenedClipboard = options.getLastFileOpenedClipboard();
 								config.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastFileOpenedClipboard", options.lastFileOpenedClipboard);
 							} catch (IOException e1) {
 								logger.error("Error reloading current Clipboard panel from file.");
@@ -414,7 +410,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	
 	public void saveCurrClipboardSilent() {
 		try {
-			File selected = dataMap.get(currentClipboard);
+			File selected = dataMap.get(options.getLastFileOpenedClipboard());
 			FileStuff.writeStringToFile(txtAreaClipboard.getText(), selected, true);
 			logger.info(selected + "Written to file.");
 		} catch (Exception e) {
@@ -447,7 +443,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		FileStuff.appendFileTxtArea(selected, txtAreaClipboard, true);
 		
 		logger.debug("Current clipboard reloaded from file: " + selected);
-		currentClipboard = target;
+		options.setLastFileOpenedClipboard(target);
 		
 	}
 	
@@ -473,8 +469,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		
 		if (result) {
 			dataMap.put(newFile.getName(), newFile);
-			currentClipboard = newFile.getName();
-			options.lastFileOpenedClipboard = currentClipboard;
+			options.lastFileOpenedClipboard = newFile.getName();
 			reloadComboClipboards(newFile);
 		}else {
 			logger.error("File was not added!" + result);

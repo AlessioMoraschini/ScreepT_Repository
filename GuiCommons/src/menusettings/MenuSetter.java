@@ -16,8 +16,8 @@ public class MenuSetter {
 	public static void setIconTextGap(JMenuBar menuBar, int distanceInPx) {
 		for(Component currentComponent : menuBar.getComponents()) {
 			if(currentComponent instanceof JMenu) {
-				setIconTextGap((JMenu) currentComponent, distanceInPx);
 				((JMenu) currentComponent).setIconTextGap(distanceInPx);
+				setIconTextGap((JMenu) currentComponent, distanceInPx);
 			}else if(currentComponent instanceof JMenuItem) {
 				((JMenuItem) currentComponent).setIconTextGap(distanceInPx);
 			}
