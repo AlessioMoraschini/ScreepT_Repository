@@ -11,6 +11,7 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
+import maingUI.MainGuiGeneralAppStarter;
 import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
@@ -49,6 +50,7 @@ import java.awt.Cursor;
 import javax.swing.JSlider;
 
 public class GeneralOptionsFrame extends ParentFrame{
+	private static final long serialVersionUID = 7396680036861927288L;
 
 	// initialize Logger
 	// GraphicPreferencesFrame logger
@@ -223,7 +225,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		textFieldUname.setBackground(new Color(224, 255, 255));
 		getContentPane().add(textFieldUname, "cell 2 5 4 1,growx");
 		
-		lblLogLevelChosen = new JLabel("LogLevel: " + MainGUI.LOG_LEVEL_AT_START);
+		lblLogLevelChosen = new JLabel("LogLevel: " + MainGuiGeneralAppStarter.LOG_LEVEL_AT_START);
 		lblLogLevelChosen.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblLogLevelChosen, "cell 7 5 3 1,alignx center");
 		getContentPane().add(separator, "cell 1 7 9 1,growx");
@@ -500,11 +502,11 @@ public class GeneralOptionsFrame extends ParentFrame{
 	
 	private void writeValues() {
 		// write single values to file ini associated to currentConf
-		currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "userName", CURRENT_USERNAME);
-		currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "charset", CHARSET);
-		currentConfiguration.writeSingleValue(currentConfiguration.GEN_OPT, "generalVolume", GENVOLUME);
-		currentConfiguration.writeSingleValue(currentConfiguration.FILE_OPT, "flagAutosave", AUTOSAVE_FLAG);
-		currentConfiguration.writeSingleValue(currentConfiguration.FILE_OPT, "autosaveInterval", AUTOSAVE_INTERVAL*1000);
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", CURRENT_USERNAME);
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "charset", CHARSET);
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "generalVolume", GENVOLUME);
+		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "flagAutosave", AUTOSAVE_FLAG);
+		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "autosaveInterval", AUTOSAVE_INTERVAL*1000);
 		
 		// write launcher configuration
 		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());

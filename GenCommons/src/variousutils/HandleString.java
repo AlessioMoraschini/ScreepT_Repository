@@ -2,8 +2,6 @@ package variousutils;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,12 +9,6 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import javax.swing.JTextArea;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -25,8 +17,6 @@ import media.color.HslColor;
 
 public class HandleString {
 
-	public static final String ERROR = "ERROR :(";
-	
 	public static final String UNPRINTABLE_ESCAPES = "[^\\x20-\\x7e]";
 
 	// this array contains all char that trigger uppercase next char
@@ -35,6 +25,18 @@ public class HandleString {
 	
 	public HandleString(String input) {
 		currentString = new String(input);
+	}
+	
+	public static String fitToMaxLentgh(String source, int lim) {
+		String res = source;
+		int length = source.length();
+		
+		if (length > lim) {
+			int half = (int)(float)lim/2;
+			res = source.substring(0, half-3)+".."+source.substring(length-half-2, length);
+		}
+		
+		return res;
 	}
 	
 	/**
@@ -73,36 +75,6 @@ public class HandleString {
 		}
 		
 		return extractedBytes;
-	}
-	
-	public static String fitToMaxLentgh(String source, int lim) {
-		String res = source;
-		int length = source.length();
-		
-		if (length > lim) {
-			int half = (int)(float)lim/2;
-			res = source.substring(0, half-3)+".."+source.substring(length-half-2, length);
-		}
-		
-		return res;
-	}
-	
-	public static String xmlPrettyFormat(String input, int indent) {
-	    try {
-	    	
-	        Source xmlInput = new StreamSource(new StringReader(input));
-	        StringWriter stringWriter = new StringWriter();
-	        StreamResult xmlOutput = new StreamResult(stringWriter);
-	        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	        transformerFactory.setAttribute("indent-number", indent);
-	        Transformer transformer = transformerFactory.newTransformer(); 
-	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	        transformer.transform(xmlInput, xmlOutput);
-	        String outXML = xmlOutput.getWriter().toString();
-	        return outXML.substring(38,outXML.length());
-	    } catch (Exception e) {
-	        return ERROR; // simple exception handling, please review it
-	    }
 	}
 	
 	/**
@@ -189,10 +161,6 @@ public class HandleString {
 		} catch(NullPointerException e) {
 			return source;
 		}
-	}
-
-	public static String xmlPrettyFormat(String input) {
-	    return xmlPrettyFormat(input, 2);
 	}
 	
 	

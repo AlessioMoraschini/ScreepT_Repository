@@ -144,6 +144,8 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 				txtAreaMiniMap.setCaretPosition(end);
 			}
 			
+			dialogManager.getTargetTextArea().requestFocus();
+			
 		} catch (Exception e) {
 			logger.warn("ERROR setting caret position into textArea miniMap");
 		}

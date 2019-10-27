@@ -29,7 +29,6 @@ import javax.swing.JFileChooser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
@@ -59,9 +58,7 @@ import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import guistyle.GUIStyelSettings;
 import jmenu.CustomJmenuItem;
-import launcherutils.IniFileManager;
 import logger.LoggerUtils;
-import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import media.Sounds;
 
@@ -152,6 +149,10 @@ public class MainGUI extends MainGuiParent{
 	
 	public AtomicBoolean isOnHomePage = new AtomicBoolean(true);
 	
+	// Full screen+custom modes varying on loaded panel
+	public AtomicBoolean isImmersiveModeOn = new AtomicBoolean();
+	public AtomicBoolean isFullScreen = new AtomicBoolean(false);
+	
 	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
 	 * 
 	 * 			Calls contructor, initialize & Launch the application.
@@ -160,7 +161,21 @@ public class MainGUI extends MainGuiParent{
 	 * 
 	 ************* BEGIN MAIN APPLICATION GENERAL METHOD  ****************************/
 	
-	public static void mainApplicationGeneral() {
+	public static boolean mainApplicationGeneral(INItializer currentConf) {
+		
+		if(mainAppRunning) {
+			return true;
+		}
+		
+		currentConfiguration = currentConf;
+		dialogHelper = new JOptionHelper(null);
+		
+		// ASK FOR USERNAME IF NULL OR FIRST TIME
+		if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
+			logger.info("Current user input initialization: void user or lenght>20 detected!");
+			currentConfiguration.getGenOpt().setUserName(MainGUI.askUsername());
+			logger.info("Current userName: " + currentConfiguration.getGenOpt().getUserName());
+		}
 		
 		// OPEN LOADING PANEL THREAD
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
@@ -180,35 +195,16 @@ public class MainGUI extends MainGuiParent{
 		}).start();
 		
 		try {
-			
 			now = new Date();
 			mainAppRunning = true;
-			
-			// INITIALIZE CONFIGURATION FROM CONFIG DEFAULT FILE
-			try {
-				launcherConfig = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
-				LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(IniFileManager.INI_APP_OPT, "logLevelSetting"));
-				logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
-				if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
-					logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
-				}
-				LogManager.getRootLogger().setLevel(LOG_LEVEL_AT_START);
-
-				currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
-				currentConfiguration.readConfigIniFile();
-				
-				SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
-
-			} catch (IOException e) {
-				logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);
-			}
-			
 			
 loaderGraphics.update("Initializing graphics... ", 15);
 			
 			// START MAIN WINDOW CONSTRUCTOR
 			logger.info("Initializing main GUI-start");
 			MainGUI window = new MainGUI();
+			frmScryptV.setVisible(true);
+			frmScryptV.setEnabled(true);
 			mainGuiUtils = new MainGuiUtils(window);
 			logger.info("Main GUI initialized correctly.");
 			
@@ -318,27 +314,23 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			  	}
 			});
 			
-			frmScryptV.setVisible(true);
-			frmScryptV.setEnabled(true);
-
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 
 			frmScryptV.requestFocus();
 			frmScryptV.toFront();
-			
-			loaderGraphics.update("Updating GUI style...", 70, 350);
-//			initGUI();
 			
 			SwingUtilities.invokeLater(new Runnable() {
 				
 				@Override
 				public void run() {
 					// REFRESH GUI GENERAL
+					loaderGraphics.update("Updating GUI style...", 70, 350);
 					if (currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
 						GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 					}else {
 						GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 					}
+					
 				}
 			});
 
@@ -351,7 +343,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
 						mainGuiUtils.startTextEditor(true);
 					} else {
-						Class lastOpened = currentConfiguration.getGenOpt().getLastPanelOpened();
+						Class<?> lastOpened = currentConfiguration.getGenOpt().getLastPanelOpened();
 						if (lastOpened.equals(TextEditor.class)) {
 							mainGuiUtils.startTextEditor(true);
 						} else if (lastOpened.equals(CrypterPanel.class)) {
@@ -360,20 +352,15 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 							mainGuiUtils.startConfigManagerPanel(true);
 						}
 					}
-					loaderGraphics.update("Applying Gui Style", 99, 200);
+					loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 200);
 					updateGuiFromCurrConfig();
 					
 					// Close loader
 					GuiUtils.launchThreadSafeSwing(new Runnable() {
 						public void run() {
-							loaderGraphics.update("Welcome to ScrYpT", 100, 200);
 							
-							// ASK FOR USERNAME IF NULL OR FIRST TIME
-							if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-								logger.info("Current user input initialization: void user or lenght>20 detected!");
-								currentConfiguration.getGenOpt().setUserName(MainGUI.askUsername());
-								logger.info("Current userName: " + currentConfiguration.getGenOpt().getUserName());
-							}
+							loaderGraphics.update("Welcome to ScrYpT", 100, 800);
+							
 							window.startTitleUpdater();
 						}
 					});
@@ -384,6 +371,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		} catch (Exception e) {
 			logger.error("Exception happened!", e);
 		}
+		
+		return mainAppRunning;
 		
 	} /************  END MAIN APPLICATION GENERAL STATIC METHOD  ****************************/
 
@@ -706,7 +695,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					
 					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScrYpT_launcher's customize options at start)";
 					int choice = JOptionPane.YES_OPTION;
-					if(LOG_LEVEL_AT_START.equals(Level.OFF)) {
+					if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
 						choice = JOptionPane.showConfirmDialog(frmScryptV, msg, "Logger turned OFF", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 					}
 					
@@ -885,6 +874,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 							frmScryptV.setMinimumSize(MainGuiParent.minimumSize);
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
+							isFullScreen.set(false);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 						} else {
 							frmScryptV.dispose();
@@ -893,6 +883,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 							frmScryptV.setMinimumSize(GuiUtils.getScreenSize(frmScryptV));
 							frmScryptV.setLocationRelativeTo(frmScryptV);
 							frmScryptV.setVisible(true);
+							isFullScreen.set(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
 //							movePanelMouseListener = MovePanelMouseListener.applyMoveListenerR(frmScryptV); // USE TO ADD LISTENER DRAG PANEL
 						}
@@ -912,8 +903,15 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 				});
 			}
 		});
-		// initialize
-		mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
+		
+		
+		// IMMERSIVE MODE ON/OFF
+		mntmImmersiveMode = new CustomJmenuItem(new AbstractAction("Switch Immersive Mode ON/OFF (Press ESC to exit)") {
+			public void actionPerformed(ActionEvent e) {
+				mainGuiUtils.immersiveModeToggle();
+			}
+		});
+		
 		
 		// open in a new window - GENERAL OPTIONS
 		mntmGenOpt = new CustomJmenuItem(new AbstractAction("General Options") {
@@ -1127,29 +1125,36 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		// ASYNC HTML TUTORIAL PANE
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
-				tutorialPanel = new TutorialFrame();
+				try {
+					// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
+					tutorialPanel = new TutorialFrame();
+				} catch (Throwable e) {
+					logger.error("Error loading HTML panel", e);
+				}
 			}
 		});
 		
 		mntmUserDocumentation = new CustomJmenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
-				if (tutorialPanel == null) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					tutorialPanel.setResizable(true);
-		    		tutorialPanel.setVisible(true);
-		    		tutorialPanel.setTitle("Tutorial - "+GeneralConfig.APPLICATION_NAME);
-		    		tutorialPanel.setLocationRelativeTo(mainAPP.getMainFrame());
-				}else {
-					try {
+				try {
+					if (tutorialPanel == null) {
+						// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
+						tutorialPanel = new TutorialFrame();
+						
+						Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+						tutorialPanel.setResizable(true);
+			    		tutorialPanel.setVisible(true);
+			    		tutorialPanel.setTitle("Tutorial - "+GeneralConfig.APPLICATION_NAME);
+			    		tutorialPanel.setLocationRelativeTo(mainAPP.getMainFrame());
+					}else {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						tutorialPanel.setVisible(true);
 						tutorialPanel.toFront();
 						tutorialPanel.setState(java.awt.Frame.NORMAL);
 						tutorialPanel.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + TutorialFrame.class, e2);
 					}
+				} catch (Throwable ex) {
+					logger.error("Error loading HTML panel"  + TutorialFrame.class, ex);
 				}
 			}
 		});
@@ -1368,13 +1373,18 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(currentJvmVersion);
 		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
 		if(compareRes == 1) {
-			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion + "). Install version under "+GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY;
+			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion 
+					+ "). Run with version under Max JVM version supported to use this functionality (Max allowed: "
+					+GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY + ")";
+			
 			// Disable non compatible options
 			mntmhwInfo.setEnabled(false);
 			mntmnetInfo.setEnabled(false);
+			mntmCrypter.setEnabled(false);
 			// set tooltip text to menu item
 			mntmhwInfo.setToolTipText(tooltipMSG);
 			mntmnetInfo.setToolTipText(tooltipMSG);
+			mntmCrypter.setToolTipText(tooltipMSG);
 		}
 	}
 	
@@ -1442,8 +1452,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		}
 		
 		if(initTxtWriter != null) {
-			if(initTxtWriter.propertiesFrame != null) {
-				initTxtWriter.propertiesFrame.dispose();
+			if(initTxtWriter.subHeaderPanel.propertiesFrame != null) {
+				initTxtWriter.subHeaderPanel.propertiesFrame.dispose();
 			}
 		}
 		
@@ -1503,6 +1513,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 				atLeastOneTemp = true;
 			}
 		} 
+		
 		Boolean choiceY = GenericFileChooser.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", null, askCondition);
 		if(choiceY == null) {
 			// cancel -> don't exit

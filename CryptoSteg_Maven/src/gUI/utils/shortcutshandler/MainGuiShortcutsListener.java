@@ -3,6 +3,8 @@ package gUI.utils.shortcutshandler;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
 
 import maingUI.MainGUI;
@@ -33,6 +35,18 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
 	      
+			/*
+			 *  EXIT TOGGLE MODE -> ESC and TOGGLE MODE ACTIVE
+			 */
+			if(e.getKeyCode() == 27 && currentGui.isImmersiveModeOn.get()) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						MainGUI.mainGuiUtils.immersiveModeToggle();
+					}
+				});
+			}
+			
+			// HERE SHORTCUTS KEY WITH CTR|ALT|SHIFT
 			if (isShortcutKey(e)) {
 				/**
 				 *  TOGGLE FULL SCREEN : Alt+Shift+Enter
@@ -40,6 +54,18 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				if (e.getKeyCode() == 10 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.mntmFullScreenMode.doClick();
 				}
+				
+				/*
+				 *  IMMERSIVE MODE ON/OFF -> Ctrl+shift+Alt+M
+				 */
+				if(e.getKeyCode() == 77 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentGui.mainGuiUtils.immersiveModeToggle();
+						}
+					});
+				}
+
 				
 			// FIRST MENU SECTION - FILE //
 				

@@ -10,7 +10,7 @@ import testUtils.TestUtils;
 
 public class ImageToTextReaderTest {
 	
-	public static final String SOURCE_IMAGE_PATH = "mediaFileTest/img.png";
+	public static final String SOURCE_IMAGE_PATH = "TestFiles/mediaFileTest/img.png";
 	
 	 @Test
 	 public void testExtractor() throws TesseractException {

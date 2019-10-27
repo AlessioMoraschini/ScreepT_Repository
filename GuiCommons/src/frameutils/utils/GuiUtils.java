@@ -17,6 +17,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.imageio.ImageIO;
@@ -41,7 +42,14 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
+import codeformatter.CustomCodeFormatter;
+import dialogutils.JOptionHelper;
+import media.ImageGeneralWorker;
+import media.Sounds;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import resources.SoundsConfigurator;
+import variousutils.HandleString;
 
 public class GuiUtils {
 	
@@ -54,19 +62,130 @@ public class GuiUtils {
 	public static final Cursor CURSOR_HAND = new Cursor(Cursor.HAND_CURSOR);
 	public static final Cursor CURSOR_CROSS = new Cursor(Cursor.CROSSHAIR_CURSOR);
 	
-	public static final Cursor CURSOR_COLOR_PICK = getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER);
+	public static final Dimension DEF_CUSTOM_CURSOR_SIZE = new Dimension(8,8);
+	public static final Cursor CURSOR_COLOR_PICK = getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER, DEF_CUSTOM_CURSOR_SIZE);
 	
-	public static Cursor getCustomCursor(String imgPath) {
+	public static JOptionHelper dialogHelper = new JOptionHelper(null);
+	public static CustomCodeFormatter codeFormatter = new CustomCodeFormatter(GeneralConfig.JS_LIB_FOLDER);;
+
+	public static Cursor getCustomCursor(String imgPath, Dimension size) {
+		Dimension correctSize = size;
+		if(correctSize == null) {
+			correctSize = DEF_CUSTOM_CURSOR_SIZE;
+		}
+		
 		Cursor result = CURSOR_DEFAULT;
 		try {
 			Point hotSpot = new Point(0, 0);
 	        BufferedImage cursorImg = ImageIO.read(new File(IconsPathConfigurator.ICON_COLOR_SAMPLER));
+	        cursorImg = ImageGeneralWorker.scaleImage(cursorImg, BufferedImage.TYPE_4BYTE_ABGR_PRE, correctSize.width, correctSize.height);
 			result = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, hotSpot, imgPath);
 		} catch (Exception e) {
 			logger.error(e);
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Retrieve selected text from JTextaea if something is selected, else retrieve all text
+	 * @param source
+	 * @return
+	 */
+	public static String getSelectedOrAllText(JTextArea source) {
+		String selection = source.getSelectedText();
+		String allText = source.getText();
+		String result = (selection == null)? allText : selection;
+		
+		return result;
+	}
+	
+	public static void formatTextLater(JTextArea sourceArea, String extension, int tabSize) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				sourceArea.setCursor(GuiUtils.CURSOR_WAIT);
+				formatText(sourceArea, extension, tabSize);
+				sourceArea.setCursor(GuiUtils.CURSOR_TEXT);
+			}
+		});
+	}
+	
+	public static void formatText(JTextArea sourceArea, String extension, int tabSize) {
+		Dimension originalDialogDim = dialogHelper.IF_SCROLLABLE_DEF_DIMENSION;
+		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(new Dimension(500,230));
+		boolean error = false;
+		int selStart = sourceArea.getSelectionStart(); 
+		int selEnd = sourceArea.getSelectionEnd();
+		String source = GuiUtils.getSelectedOrAllText(sourceArea);
+		String old = new String(source);
+		String formatted = "";
+		boolean suppported = false;
+
+		try {
+			// XML format handler (if xml formatter works then is a xml recognized file)
+			if (extension.toLowerCase().endsWith("xml")) {
+				suppported = true;
+				formatted = CustomCodeFormatter.xmlPrettyFormat(source, tabSize);
+				source = CustomCodeFormatter.xmlPrettyFormat(source, tabSize);
+				if (source.equals(old)) {
+					// already formatted
+					source = HandleString.removeLines(source);
+				}
+			// JS/JSON -> use javascript function call with custom library to prettify JS string
+			}else if (extension.toLowerCase().endsWith("js") || extension.toLowerCase().endsWith("json")) {
+				suppported = true;
+				formatted = codeFormatter.jsFormatJSLIB(source);
+				source = formatted;
+				
+			// HTML -> use javascript function call with custom library to prettify html string
+			}else if (extension.toLowerCase().endsWith("html")) {
+				suppported = true;
+				formatted = codeFormatter.htmlFormatJSLIB(source);
+				source = formatted;
+			
+			// CSS -> use javascript function call with custom library to prettify css string
+			}else if (extension.toLowerCase().endsWith("css")) {
+				suppported = true;
+				formatted = codeFormatter.cssFormatJSLIB(source);
+				source = formatted;
+				
+			// JAVA -> use google library to prettify java string
+			} else if (extension.toLowerCase().endsWith("java")) {
+			suppported = true;
+			formatted = CustomCodeFormatter.googleJavaCodeFormat(source);
+			source = formatted;
+		}
+		} catch (Exception e) {
+			manageFormatterException(e, extension);
+			error = true;
+		}
+
+		// apply formatted to textArea
+		if (!error && !source.equals(old)) {
+			if (selStart == selEnd) {
+				sourceArea.setText(source);
+			}else {
+				sourceArea.replaceSelection(source);
+			}
+		}else {
+			String unsupportedAdvice = "";
+			if(!suppported) {
+				unsupportedAdvice = extension + " is not yet supported... maybe coming soon? ;)";
+			}
+			Sounds.playSound(SoundsConfigurator.ERROR, 0.8f);
+			logger.debug("Something has gone wrong during formatting of source code :-> skipping text replace in text area");
+			dialogHelper.warn("Cannot format with current settings\n\n"+unsupportedAdvice, "Cannot Format text");
+		}
+		
+		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(originalDialogDim);
+	}
+	
+	private static void manageFormatterException(Exception e, String extension) {
+		Sounds.playSound(SoundsConfigurator.ERROR, 0.8f);
+		String exception = Arrays.deepToString(e.getStackTrace());
+		logger.error("error formatting "+ extension +" string !", e);
+		dialogHelper.errorScroll("Error reading " + extension + " format: " + exception, "format Error");
 	}
 	
 	public static void launchThreadSafeSwing(Runnable threadAction) {

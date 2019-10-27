@@ -16,7 +16,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;
@@ -31,9 +30,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.ini4j.Wini;
 
 import amfileutils.om.FileNamed;
 import frameutils.utils.GuiUtils;
@@ -41,6 +38,7 @@ import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.mainGui.MainGuiUtils;
+import generic.LimitedConcurrentList;
 import gui.utils.LauncherLoaderFrame;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
@@ -55,7 +53,6 @@ public class MainGuiParent {
 	
 	// date used for log operations
 	public static Date now;
-    public static Level LOG_LEVEL_AT_START;
 	
 	// the main frame for placing the content
 	static public JFrame frmScryptV;
@@ -64,9 +61,6 @@ public class MainGuiParent {
 	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.	
 	public static INItializer currentConfiguration;
 	
-	// and another one for launcher modding from main app
-	public static Wini launcherConfig;
-
 	//////////////////////GENERAL STATIC ELEMENTS /////////////////////////
 	////////////////////////////////////////////////////////////////////////
 	
@@ -101,7 +95,7 @@ public class MainGuiParent {
 	int menuSize;
 	int subMenuSize;
 	
-	JMenuBar menuBar;
+	public JMenuBar menuBar;
 	
 	JMenu mnFile;
 		JMenu mnLastOpenedFile;
@@ -127,6 +121,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmGenOpt;
 	CustomJmenuItem mntmCustomizeUIView;
 	public CustomJmenuItem mntmFullScreenMode;
+	public CustomJmenuItem mntmImmersiveMode;
 	static CustomJmenuItem mntmCrypter;
 	CustomJmenuItem mntmgenerateKeyImageSub;
 	CustomJmenuItem mntmViewKeyDictionary;
@@ -243,6 +238,7 @@ public class MainGuiParent {
 			mnPreferences.add(mntmCustomizeUIView);
 			mnPreferences.add(mntmGenOpt);
 			mnPreferences.add(mntmFullScreenMode);
+			mnPreferences.add(mntmImmersiveMode);
 			
 			mnCryptoSteg.add(mntmCrypter);
 			mnCryptoSteg.add(new JSeparator());
@@ -280,6 +276,28 @@ public class MainGuiParent {
 				mnrestartPanel.add(mntmResetCrypterPanel);
 				mnrestartPanel.add(mntmResetConfigManager);
 			
+			if (GeneralConfig.FLAG_THROW_ERROR_TEST_ON) {
+				JMenuItem throwError = new JMenuItem("throw Error");
+				throwError.setFont(new Font("Gadugi", Font.BOLD, subMenuSize));
+				throwError.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						throw new Error("FLAG_THROW_ERROR_TEST_ON = true, Error thrown.");
+					}
+				});
+				JMenuItem throwException = new JMenuItem("throw Exception");
+				throwException.setFont(new Font("Gadugi", Font.BOLD, subMenuSize));
+				throwException.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						"".substring(2);
+					}
+				});
+				
+				mnHelp.add(throwError);
+				mnHelp.add(throwException);
+			}
+			
 		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
 		
 		addMenuIcons();
@@ -288,7 +306,7 @@ public class MainGuiParent {
 		
 		addExtraHandlers();
 		
-		updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().getLastOpenedFiles().getList());
+		updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().getLastOpenedFiles());
 	}
 	
 	/**
@@ -338,6 +356,7 @@ public class MainGuiParent {
 		mntmCustomizeUIView.setFont(menuItemFont);
 		mntmGenOpt.setFont(menuItemFont);
 		mntmFullScreenMode.setFont(menuItemFont);
+		mntmImmersiveMode.setFont(menuItemFont);
 		
 		// SCREEPT SECTION
 		mntmCrypter.setFont(menuItemFont);
@@ -396,7 +415,9 @@ public class MainGuiParent {
 		// preferences submenu
 		mntmCustomizeUIView.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GUI_OPT));
 		mntmGenOpt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_OPT));
-		
+		mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
+		mntmImmersiveMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMMERSIVE));
+
 		// ScreepT submenu
 		mntmCrypter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT));
 		mntmgenerateKeyImageSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN));
@@ -454,6 +475,7 @@ public class MainGuiParent {
 		mntmGenOpt.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_2, ALT_MASK | SHIFT_MASK));
 		mntmCustomizeUIView.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_3, ALT_MASK | SHIFT_MASK));
 		mntmFullScreenMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK | SHIFT_MASK));
+		mntmImmersiveMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_M, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		
 		// ScreepT submenu
 		mntmCrypter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | SHIFT_MASK));
@@ -505,7 +527,7 @@ public class MainGuiParent {
 			public void mouseEntered(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().lastOpenedFiles.getList());
+						updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().lastOpenedFiles);
 					}
 				});
 			}
@@ -515,22 +537,29 @@ public class MainGuiParent {
 		});
 	}
 	
-	public void updateLastOpenedFiles(Vector<FileNamed> lastOpenedLlist) {
+	public void updateLastOpenedFiles(LimitedConcurrentList<FileNamed> lastOpenedLlist) {
 
 		try {
-			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastOpenedLlist.clone();
+			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastOpenedLlist.getList().clone();
 			Collections.reverse(valueCopy);
 			mnLastOpenedFile.removeAll();
 			for (FileNamed file : valueCopy) {
-				JMenuItem newOccurrence = new JMenuItem(file.toString());
-				newOccurrence.setFont(GeneralConfig.MENU_LASTFILES_FONT);
-				try {
-					newOccurrence.setToolTipText(file.getCanonicalAbsPath());
-				} catch (Exception e) {
+				if (file.mFile != null && file.mFile.exists()) {
+					JMenuItem newOccurrence = new JMenuItem(file.toString());
+					newOccurrence.setFont(GeneralConfig.MENU_LASTFILES_FONT);
+					try {
+						newOccurrence.setToolTipText(file.getCanonicalAbsPath());
+					} catch (Exception e) {
+					}
+					mnLastOpenedFile.add(newOccurrence);
+					addListenerToJMenuItemLastOpenedTxtEditor(newOccurrence);
+				}else {
+					currentConfiguration.getTextEditorOpt().lastOpenedFiles.removeAllOccurrencesByEquals(file);
 				}
-				mnLastOpenedFile.add(newOccurrence);
-				addListenerToJMenuItemLastOpenedTxtEditor(newOccurrence);
 			} 
+			
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastOpenedFiles", lastOpenedLlist.toCharSeparatedString(","));
+
 		} catch (Exception e) {
 			logger.error("Error refreshing last opened files", e);
 		}

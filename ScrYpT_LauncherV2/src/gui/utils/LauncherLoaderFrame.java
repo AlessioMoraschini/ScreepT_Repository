@@ -9,8 +9,6 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import frameutils.utils.GuiUtils;
-
 public class LauncherLoaderFrame extends JFrame{
 
 	static Logger logger = Logger.getLogger(LauncherLoaderFrame.class); 

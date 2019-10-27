@@ -186,15 +186,15 @@ public class AesCipher {
         	aesKey.setToolTipText("You could reach 16 chars to have best secured password ;)");
 		}
 		if(aesKey.getPassword().length>16) {
-			aesKey.setBackground(Color.yellow); 	
+			aesKey.setBackground(new Color(227, 223, 113)); 	
 			aesKey.setToolTipText("More that 16 chars are overkill, only first 16 are actually used :)");
 		}
 	    if(aesKey.getPassword().length==0) {
-        	aesKey.setBackground(Color.red);
+        	aesKey.setBackground(new Color(209, 73, 73));
 			aesKey.setToolTipText("Password is empty...Fill password text-field!");
 		}
 		if(aesKey.getPassword().length==16) {
-        	aesKey.setBackground(Color.green);
+        	aesKey.setBackground(new Color(107, 219, 105));
 			aesKey.setToolTipText("WOW! 16 char is perfect! :D");
 		}	
 	}

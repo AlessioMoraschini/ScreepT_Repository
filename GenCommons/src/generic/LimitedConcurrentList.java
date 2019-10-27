@@ -18,6 +18,11 @@ public class LimitedConcurrentList <T>{
 		this.maxSize = maxSize;
 		list = new Vector();
 	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 
 	// methods 
 	

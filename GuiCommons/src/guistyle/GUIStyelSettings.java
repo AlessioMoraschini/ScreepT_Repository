@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.Painter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -51,10 +53,11 @@ public class GUIStyelSettings{
 			UIManager.put("ScrollBar.background", new Color(170,170,170));
 			UIManager.put("ToolTip.font", new Font("Segoe UI", Font.PLAIN, 18));
 			UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
-			UIManager.put( "nimbusSelectionBackground", new Color(57,105,138));
+			UIManager.put( "nimbusSelectionBackground", new Color(57,105,138, 50));
+			UIManager.put( "nimbusSelectionForeground", new Color(10, 10, 10));
 			UIManager.setLookAndFeel(style);
 			Color buttonBackG = (Color)UIManager.get("Button.background");
-			if (ImageGeneralWorker.getColorComponentsTotRGBA(buttonBackG) < 350) {
+			if (ImageGeneralWorker.getColorComponentsTotRGBA(buttonBackG) < 400) {
 				UIManager.put("Button.foreground", Color.WHITE);
 			}else {
 				UIManager.put("Button.foreground", Color.BLACK);
@@ -96,8 +99,9 @@ public class GUIStyelSettings{
 		UIManager.put("ScrollBar.background", new Color(70, 70, 70));
 		UIManager.put("MenuBar.foreground", Color.white);
 		UIManager.put("nimbusLightBackground", new Color(250, 250, 250));
-		UIManager.put("nimbusSelectionBackground", new Color(150, 150, 150));
-		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
+		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 20,20,20)));
+		UIManager.put("nimbusSelectionBackground", new Color(57,105,138, 50));
+		UIManager.put("nimbusSelectionForeground", new Color(10, 10, 10));
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -134,8 +138,9 @@ public class GUIStyelSettings{
 		UIManager.put("MenuBar.foreground", Color.black);
 		UIManager.put("nimbusLightBackground", new Color(240, 240, 240));
 		UIManager.put("MenuItem.textIconGap", 18);
-		UIManager.put("nimbusSelectionBackground", new Color(57, 105, 138));
-		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 200, 200, 200)));
+		UIManager.put("nimbusSelectionBackground", new Color(57,105,138, 50));
+		UIManager.put("nimbusSelectionForeground", new Color(10, 10, 10));
+		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 20, 20, 20)));
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -310,5 +315,20 @@ public class GUIStyelSettings{
 		}
 		return compList;
 	}
+	
+	public static class ComboPainter implements Painter<Component>{
+
+		Color foreground;
+		
+		public ComboPainter(Color foreground) {
+			this.foreground = foreground;
+		}
+		
+        @Override
+        public void paint(Graphics2D g, Component object, int width, int height){
+            g.setColor(foreground);
+            g.fillRect(0, 0, width, height);
+        }
+    }
 
 }

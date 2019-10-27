@@ -22,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.awt.Font;
 
 public class HeaderPanelSearch extends JPanel{
 	
@@ -42,54 +43,62 @@ public class HeaderPanelSearch extends JPanel{
 		headerPaneThis = this;
 		
 		setBorder(new LineBorder(Color.white, 2));
-		setBackground(Color.gray);
+		setBackground(Color.BLACK);
 		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[50px][50px][50px][50px][50px][grow][50px]", "[30px,grow]"));
 		
 		btnGoBack = new JButton("Back");
-		btnGoBack.setOpaque(true);
-		btnGoBack.setInheritsPopupMenu(true);
-		btnGoBack.setBackground(Color.WHITE);
+		btnGoBack.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnGoBack.setIgnoreRepaint(true);
+		btnGoBack.setBackground(new Color(169, 169, 169));
 		btnGoBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGoBack.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
-		add(btnGoBack, "cell 0 0,growx,aligny center");
+		add(btnGoBack, "cell 0 0,grow");
 		
 		btnGoNext = new JButton("Forward");
-		btnGoNext.setOpaque(true);
-		btnGoNext.setBackground(Color.WHITE);
+		btnGoNext.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnGoNext.setIgnoreRepaint(true);
+		btnGoNext.setBackground(new Color(169, 169, 169));
 		btnGoNext.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGoNext.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
-		add(btnGoNext, "cell 1 0,growx,aligny center");
+		add(btnGoNext, "cell 1 0,grow");
 		
 		btnReload = new JButton("Reload");
-		btnReload.setOpaque(true);
-		btnReload.setBackground(Color.WHITE);
+		btnReload.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnReload.setIgnoreRepaint(true);
+		btnReload.setBackground(new Color(119, 136, 153));
 		btnReload.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnReload.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
-		add(btnReload, "cell 2 0,growx,aligny center");
+		add(btnReload, "cell 2 0,grow");
 		
 		btnOpenInBrowser = new JButton("View in Web Browser");
-		btnOpenInBrowser.setOpaque(true);
-		btnOpenInBrowser.setBackground(Color.WHITE);
+		btnOpenInBrowser.setForeground(Color.WHITE);
+		btnOpenInBrowser.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnOpenInBrowser.setIgnoreRepaint(true);
+		btnOpenInBrowser.setBackground(Color.DARK_GRAY);
 		btnOpenInBrowser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		add(btnOpenInBrowser, "cell 4 0,growx,aligny center");
+		add(btnOpenInBrowser, "cell 4 0,grow");
 		
 		btnIndex = new JButton("Index");
-		btnIndex.setOpaque(true);
-		btnIndex.setBackground(Color.WHITE);
+		btnIndex.setForeground(Color.WHITE);
+		btnIndex.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnIndex.setIgnoreRepaint(true);
+		btnIndex.setBackground(Color.DARK_GRAY);
 		btnIndex.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		add(btnIndex, "cell 3 0,growx,aligny center");
+		add(btnIndex, "cell 3 0,grow");
 		
 		textFieldSearch = new JTextField();
+		textFieldSearch.setForeground(Color.DARK_GRAY);
+		textFieldSearch.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 17));
 		textFieldSearch.setHorizontalAlignment(SwingConstants.CENTER);
-		add(textFieldSearch, "cell 5 0,growx,aligny center");
+		add(textFieldSearch, "cell 5 0,grow");
 		textFieldSearch.setColumns(10);
 		
 		btnFind = new JButton("Find");
-		btnFind.setOpaque(true);
-		btnFind.setBackground(Color.WHITE);
+		btnFind.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnFind.setBackground(new Color(169, 169, 169));
 		btnFind.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnFind.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
-		add(btnFind, "cell 6 0,growx,aligny center");
+		add(btnFind, "cell 6 0,grow");
 		
 		addHandlersFx();
 	}

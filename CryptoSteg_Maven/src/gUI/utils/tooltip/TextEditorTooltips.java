@@ -15,7 +15,7 @@ public class TextEditorTooltips {
 	public static final String tooltipReloadFromDisk = "[Ctrl+Shift+R] Reload current file from Disk";
 	public static final String tooltipLoadTextFile = "[Ctrl+O] Load source File";
 	public static final String tooltipNewEmptyTab = "[Ctrl+N] Create a new empty tab";
-	public static final String tooltipSpeak = "[Ctrl+spacebar] Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable";
+	public static final String tooltipSpeak = "[Ctrl+Alt+spacebar] Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable";
 	public static final String tooltipDecrypt = "[Ctrl+shift+D] Decrypt text with given key";
 	public static final String tooltipCrypt = "[Ctrl+shift+C] Crypt text with given key";
 	public static final String tooltipOpenInScreept = "Open current file in ScreepT";
@@ -39,8 +39,9 @@ public class TextEditorTooltips {
 	public static final String tooltipRedo = "[Alt+Z] Redo Last";
 	public static final String tooltipBoldText = "Set bold style to all text";
 	public static final String tooltipItalic = "Set italics style to all text";
-	public static final String tooltipViewInSysExplorer = "View in System Explorer (press Ctrl to open in Command Line)";
-	public static final String tooltipViewInCommandLine = "View in Command line";
+	public static final String tooltipStyledCopy = "[Alt+C] Copy all selected text to OS clipboards (keeping style)";
+	public static final String tooltipViewInSysExplorer = "[Ctrl+Enter]View in System Explorer (press Ctrl to open in Command Line)";
+	public static final String tooltipViewInCommandLine = "[Ctrl+Shift+Enter]View in Command line";
 	public static final String tooltipViewPropertiesCurrFile = "[Alt+Enter] View the properties of current file.";
 
 	public static final String tooltipCutWordsTo = "When selected, the text will be cropped to adapt the size of the text area";
@@ -50,13 +51,14 @@ public class TextEditorTooltips {
 	public static final String tooltipTabSize = "This number will be used as number of spaces for each tab pressed.";
 	public static final String tooltipFileViewBtn = "[Alt+Q] Show/hide file explorer panel";
 	public static final String tooltipMapViewBtn = "[Alt+W] Show/hide document map panel";
-	public static final String tooltipClipboardViewBtn = "[Alt+A] Show file document clipboard panel";
+	public static final String tooltipClipboardViewBtn = "[Alt+A] Show/hide file document clipboard panel";
 	public static final String tooltipFileViewLock = "[Ctrl+Shift+U] This will lock/unlock sync of file tree and current file opened in editor.";
 	public static final String tooltipWorkspaceToggle = "[Ctrl+Shift+W] Clicking this you will toggle ON/OFF current workspace view.";
 	public static final String tooltipWorkspaceNew = "[Ctrl+Alt+Shift+W] Click this to change your preferred workspace";
 	public static final String tooltipDepthTreeUp = "[Ctrl+Alt+Shift+Arrow up] Increase by one level tree depth";
 	public static final String tooltipDepthTreeDown = "[Ctrl+Alt+Shift+Arrow down] Reduce by one level tree depth";
 	public static final String tooltipChckbxLockLanguage = "[Ctrl+shift+L] When checked, language selector will not be auto updated according to current file type";
+	public static final String tooltipFormatCode = "[Ctrl+Shift+F] Format Code according to current selected language (if supported)";
 			
 	public static final String tooltipComboFileFormat = "Choose file extension";
 	public static final String tooltipComboStyleScheme = "Choose preferred style scheme";

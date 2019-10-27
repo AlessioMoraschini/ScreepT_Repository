@@ -22,7 +22,8 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Component;
 
 public class TabHeadPanel_Full extends JPanel{
-	
+	private static final long serialVersionUID = -6387090181225164666L;
+
 	public TabHeadPanel_Full(String title, String tooltip, String iconPath, ActionListener tabCloseListener) {
 		super();
 		setOpaque(false);

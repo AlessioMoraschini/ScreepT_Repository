@@ -134,6 +134,7 @@ public class CustomTabbedEditor {
 					
 					alreadyrefreshing = true;
 					logger.debug("\n\n ## Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
+
 					tabRefreshAfterUpdate();
 					lastIndexTabbedPane = mainTabList.getSelectedIndex();
 					
@@ -146,6 +147,8 @@ public class CustomTabbedEditor {
 							}
 						});
 					}
+					
+					
 
 					alreadyrefreshing = false;
 				}
@@ -371,6 +374,13 @@ public class CustomTabbedEditor {
 			loadedTabObj.unsaved = false;
 			changeMonManager.updateCurrMonitor(file);
 			addToHystory(loadedTabObj);
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
+					applyStyleToTabs();
+				}
+			});
 			
 		} catch (Exception e) {
 			logger.error(e);

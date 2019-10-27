@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import generic.LimitedConcurrentList;
+import gui.utils.LimitedConcurrentList;
 import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;

@@ -4,10 +4,10 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import frameutils.utils.GuiUtils;
-import guistyle.GUIStyelSettings;
+import gui.utils.GUIStyelSettings;
+import gui.utils.GuiUtils;
+import gui.utils.Sounds;
 import mainlauncher.ScrYpTLauncher;
-import media.Sounds;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;

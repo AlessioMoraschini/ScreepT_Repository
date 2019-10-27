@@ -8,18 +8,18 @@ import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import amfileutils.FileStuff;
-import frameutils.utils.GuiUtils;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
+import gui.utils.GuiUtils;
 import gui.utils.LauncherLoaderFrame;
-import guistyle.GUIStyelSettings;
+import gui.utils.LoggerUtils;
 import launcherutils.CommandsAssembler;
 import launcherutils.FileUtils;
 import launcherutils.IniFileManager;
@@ -27,7 +27,6 @@ import launcherutils.JvmHelper;
 import launcherutils.om.DependencyLocalPath;
 import launcherutils.om.DependencyModel;
 import launcherutils.om.JvmArgumentsDTO;
-import logger.LoggerUtils;
 import om.OSinfo;
 import resources.GeneralConfig;
 import utils.SysUtils;
@@ -110,7 +109,7 @@ public class ScrYpTLauncher {
 		iniFileManager = new IniFileManager(DEFAULT_INI_PATH);
 
 		ARGS = args;
-		argumentsFiles = FileStuff.getFileArrayFromStrings(args);
+		argumentsFiles = getFileArrayFromStrings(args);
 		
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", (int)(screenSize.height*launcherRatio));
 		for (int i = 0; i < 20; i++) {
@@ -130,9 +129,25 @@ public class ScrYpTLauncher {
 		loaderGraphics.update("Starting Launcher...", 25);
 		start();
 		
-		loaderGraphics.update("Launcher Ready!", 100, 1000);
+		loaderGraphics.update("Launcher Ready!", 100, 500);
 
 	}// end main
+	
+	public static File[] getFileArrayFromStrings(String[] filePaths){
+		logger.debug("ARGUMENT FILES:" + Arrays.toString(filePaths));
+		
+		File[] argumentsFiles = new File[filePaths.length];
+		int j = 0;
+		for(String s : filePaths) {
+			if (!END_ARGS_SECTION.equals(s)) {
+				argumentsFiles[j] = new File(s);
+			}else {
+				break;
+			}
+			j++;
+		}
+		return argumentsFiles;
+	}
 	
 	public static void start() {
 		try {

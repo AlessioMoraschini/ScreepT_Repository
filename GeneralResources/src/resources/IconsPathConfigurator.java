@@ -132,6 +132,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_PIN_RED = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/pinRed.png";
 	public static final String ICON_UNPIN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/unpin.png";
 	public static final String ICON_COLOR_SAMPLER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropper.png";
+	public static final String ICON_COLOR_SAMPLER_BIG = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropperBig.png";
 	
 	///////////////// TREE RENDERER ICONS /////////////////
 	public static final String iconFolderPath = GeneralConfig.RESOURCES_DIR + "Icons/General/Folder.png";
@@ -155,12 +156,15 @@ public class IconsPathConfigurator {
 	public static final String ICON_BIG_GEN_WARNING = GeneralConfig.RESOURCES_DIR + "Icons/General/Warning_Big.png";
 	public static final String ICON_GEN_ERROR = GeneralConfig.RESOURCES_DIR + "Icons/General/Error.png";
 	public static final String ICON_BIG_GEN_ERROR = GeneralConfig.RESOURCES_DIR + "Icons/General/Error_Big.png";
+	public static final String ICON_CLIPBOARD_SELECTION = GeneralConfig.RESOURCES_DIR + "Icons/General/clipboardSelection.png";
+	public static final String ICON_PAINT_PALETTE = GeneralConfig.RESOURCES_DIR + "Icons/General/paintPalette.png";
 	public static final String ICON_LIGHT_ON = GeneralConfig.RESOURCES_DIR + "Icons/General/lightON.png";
 	public static final String ICON_LIGHT_OFF = GeneralConfig.RESOURCES_DIR + "Icons/General/lightOFF.png";
 	public static final String ICON_CONSOLE = GeneralConfig.RESOURCES_DIR + "Icons/General/console.png";
 	public static final String ICON_SCREEPT = GeneralConfig.RESOURCES_DIR + "Icons/General/ScreepT.png";
 	public static final String ICON_LESS = GeneralConfig.RESOURCES_DIR + "Icons/General/less.png";
 	public static final String ICON_MORE = GeneralConfig.RESOURCES_DIR + "Icons/General/more.png";
+	public static final String ICON_IMMERSIVE = GeneralConfig.RESOURCES_DIR + "Icons/General/immersive.png";
 	public static final String ICON_JOB_ON = GeneralConfig.RESOURCES_DIR + "Icons/General/job_ON.png";
 	public static final String ICON_JOB_OFF = GeneralConfig.RESOURCES_DIR + "Icons/General/job_OFF.png";
 	public static final String ICON_JOB_SEARCH = GeneralConfig.RESOURCES_DIR + "Icons/General/job_search.png";

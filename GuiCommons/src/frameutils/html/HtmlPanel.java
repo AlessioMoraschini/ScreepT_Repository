@@ -5,6 +5,8 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 
 import java.awt.Color;
+
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
@@ -73,10 +75,10 @@ public class HtmlPanel extends JPanel{
 		
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
-		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
+		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+", fill, insets 0 ", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
 		
 		headerPanel = new HeaderPanelSearch(jfxPanel);
-		headerPanel.setBorder(new LineBorder(Color.GRAY, 2));
+		headerPanel.setBorder(new EmptyBorder(0,0,0,0));
 		headerPanel.setBackground(Color.BLACK);
 		jfxPanel.setBorder(BorderFactory.createEmptyBorder());
 		if (headerHeight > 0) {

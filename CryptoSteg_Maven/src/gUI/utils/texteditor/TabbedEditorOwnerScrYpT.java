@@ -62,9 +62,9 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 			txtUtils.resizeFrameToDefault(textEditor.mainApplication);
 			txtUtils.refreshTree(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, false);
 			// update eventually opened info frames
-			if (textEditor.propertiesFrame != null) {
+			if (textEditor.subHeaderPanel.propertiesFrame != null) {
 				if (loadedTabObj != null && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
-					textEditor.propertiesFrame.refreshValues(loadedTabObj.loadedFile);
+					textEditor.subHeaderPanel.propertiesFrame.refreshValues(loadedTabObj.loadedFile);
 				}
 			}
 			if (txtOpt.mapViewActive && txtUtils != null && txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
@@ -72,7 +72,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 				txtUtils.getTypedIRightPanel();
 				((MapTextAreaPanel) textEditor.rightSplitContainer).sync();
 			}
-			txtUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !textEditor.chckbxLockLanguage.isSelected());
+			txtUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !textEditor.subHeaderPanel.chckbxLockLanguage.isSelected());
 		}
 		try {
 			textEditor.currentConfiguration.getTextEditorOpt().addFileIntoLastOpenedFiles(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile);
@@ -93,12 +93,12 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public boolean getAdditionalConditionBeforeUpdateOnDocumentEvent() {
-		return !textEditor.isCrypterOn;
+		return !textEditor.subHeaderPanel.isCrypterOn;
 	}
 
 	@Override
 	public SupportedFileTextEditor getCurrentSelectedFileType() {
-		SupportedFileTextEditor currentRef = (SupportedFileTextEditor) textEditor.comboFileFormat.getSelectedItem();
+		SupportedFileTextEditor currentRef = (SupportedFileTextEditor) textEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
 		currentRef = (currentRef != null)? currentRef : SupportedFileTextEditor.TXT;
 		return currentRef;
 	}

@@ -8,12 +8,18 @@ import frameutils.utils.GuiUtils;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;
+import reflection.ReflectionUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import variousutils.HandleString;
 
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -24,12 +30,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JButton;
 
 public class ColorPickerFrame extends JFrame implements MousePointerCaller{
-	
+	private static final long serialVersionUID = -8518015676595593365L;
+
 	static Logger logger = Logger.getLogger(ColorPickerFrame.class);
 	
 	// GUI ELEMENTS
@@ -50,7 +58,12 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 	private JTextField txtHsl;
 	private JLabel lblHsl;
 	
-	public ColorPickerFrame() {
+	public JFrame caller;
+	
+	public ColorPickerFrame(JFrame caller) {
+		
+		this.caller = caller;
+		ApplyCursorSUbElements(GuiUtils.getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, new Dimension(30,30)), caller);
 		
 		active = true;
 		
@@ -59,7 +72,7 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 		
 		GuiUtils.centerComponent(this, 650, 160);
 		
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER, this);
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, this);
 		
 		initializeGui();
 		
@@ -120,6 +133,7 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 	        	active = false;
 				logger.debug("Closing "+getClass().getName());
 				pointerUtils.removeMouseListener();
+				ApplyCursorSUbElements(GuiUtils.CURSOR_DEFAULT, caller);
 	        	dispose();
 		    }
 		});
@@ -130,13 +144,28 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 			public void actionPerformed(ActionEvent e) {
 				if(!pointerUtils.isEnabled()) {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
+					ApplyCursorSUbElements(GuiUtils.getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, new Dimension(30,30)), caller);
 					pointerUtils.setEnabled(new AtomicBoolean(true));
 				}else {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
+					ApplyCursorSUbElements(GuiUtils.CURSOR_DEFAULT, caller);
 					pointerUtils.setEnabled(new AtomicBoolean(false));
 				}
 			}
 		});
+	}
+	
+	public void ApplyCursorSUbElements(Cursor cursor, Component instance) {
+		instance.setCursor(cursor);
+		try {
+			List<JTextArea> resultSet = ReflectionUtils.retrieveFieldsByType(instance, JTextArea.class);
+			for (JTextArea curr : resultSet) {
+				curr.setCursor(cursor);
+			}
+			
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			logger.warn("Error trying to update cursors with reflection");
+		}
 	}
 	
 	public void initializeGui() {

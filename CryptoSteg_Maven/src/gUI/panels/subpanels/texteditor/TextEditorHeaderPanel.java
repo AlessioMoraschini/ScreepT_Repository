@@ -17,7 +17,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import amfileutils.om.FileNamed;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
@@ -25,14 +24,14 @@ import gUI.utils.tooltip.TextEditorTooltips;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import java.awt.Dimension;
 
 public class TextEditorHeaderPanel extends JPanel{
+	private static final long serialVersionUID = -457587326299200369L;
 	
 	public TextEditor parent;
 	public TextEditorUtils parentUtils;
@@ -133,8 +132,8 @@ public class TextEditorHeaderPanel extends JPanel{
 			public void stateChanged(ChangeEvent e) {
 				int rate = sliderSpokenSpeed.getValue();
 				currentConfiguration.getTextEditorOpt().setVoiceRate(rate);
-				if (parent.objSpeaker != null) {
-					parent.objSpeaker.voice.setDurationStretch((rate));
+				if (parent.subHeaderPanel.objSpeaker != null) {
+					parent.subHeaderPanel.objSpeaker.voice.setDurationStretch((rate));
 				}
 			}
 		});

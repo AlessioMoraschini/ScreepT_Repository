@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
+import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gUI.utils.tooltip.TextEditorTooltips;
 import resources.IconsPathConfigurator;
 import shortcuts.ICommonShortcuts;
@@ -32,9 +33,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	
 	private TextEditor currentTextEditor;
 	private CustomTabbedEditor currentTabEditor;
+	private TextEditorSubHeadButtonsPanel subHeaderPanel;
 	
 	public TextEditorShortcutListener(TextEditor currentTextEdit) {
 		this.currentTextEditor = currentTextEdit;
+		this.subHeaderPanel = currentTextEditor.subHeaderPanel;
 		this.currentTabEditor = currentTextEditor.getCurrentTabEditor();
 	}
 	
@@ -87,15 +90,15 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				//case Ctrl+[numpad +] -> increase
 				if (e.getKeyCode()==107 && e.isControlDown() && !e.isAltDown() && !e.isShiftDown())
 				{
-					int val = currentTextEditor.sliderFontSize.getValue();
-					currentTextEditor.sliderFontSize.setValue(val+1);
+					int val = subHeaderPanel.sliderFontSize.getValue();
+					subHeaderPanel.sliderFontSize.setValue(val+1);
 				}
 				
 				//case Ctrl+[numpad -] -> decrease
 				if (e.getKeyCode()==109 && e.isControlDown() && !e.isAltDown() && !e.isShiftDown())
 				{
-					int val = currentTextEditor.sliderFontSize.getValue();
-					currentTextEditor.sliderFontSize.setValue(val-1);
+					int val = subHeaderPanel.sliderFontSize.getValue();
+					subHeaderPanel.sliderFontSize.setValue(val-1);
 				}
 			}
 		}
@@ -115,137 +118,129 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				//case Ctrl+shift+R -> reload current file from Disk
 				if (!currentTabEditor.alreadySaving && e.getKeyCode() == 82 && !e.isAltDown() && e.isControlDown()
 						&& e.isShiftDown()) {
-					currentTextEditor.btnReloadFromDisk.doClick();
+					subHeaderPanel.btnReloadFromDisk.doClick();
 				}
 				/*
 				 *  SAVE FILE AS NEW -> CTRL+Shift+S
 				 */
 				if (!currentTabEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()
 						&& e.isShiftDown()) {
-					currentTextEditor.btnSaveTextFileAs.doClick();
+					subHeaderPanel.btnSaveTextFileAs.doClick();
 				}
 				/*
 				 *  SAVE FILE -> CTRL+S
 				 */
 				if (!currentTabEditor.alreadySaving && e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()
 						&& !e.isShiftDown()) {
-					currentTextEditor.btnSaveTextFile.doClick();
+					subHeaderPanel.btnSaveTextFile.doClick();
 				}
 				/*
 				 *  LOAD FILE -> CTRL+O
 				 */
 				if (!currentTabEditor.alreadyLoading && e.getKeyCode() == 79 && !e.isAltDown() && e.isControlDown()
 						&& !e.isShiftDown()) {
-					currentTextEditor.btnLoadTextFile.doClick();
+					subHeaderPanel.btnLoadTextFile.doClick();
 				}
 				/*
-				 * 	READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker -> Shift+Space
+				 * 	READ TEXT WITH SPEAKER / STOP PLAYNG  objSpeaker -> Ctrl+Alt+Space
 				 */
-				if (e.getKeyCode() == 32 && !e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.btnSpeak.doClick();
+				if (e.getKeyCode() == 32 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					subHeaderPanel.btnSpeak.doClick();
 				}
 				/*
 				 * 	CLEAN TEXT -> CTRL+Canc
 				 */
 				if (e.getKeyCode() == 127 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnClear.doClick();
+					subHeaderPanel.btnClear.doClick();
 				}
 				/*
 				 * 	CRYPT-DECRYPT -> CTRL+Shift+C  ## CTRL+Shift+D
 				 */
 				if (e.getKeyCode() == 67 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.btnCrypt.doClick();
+					subHeaderPanel.btnCrypt.doClick();
 				}
 				if (e.getKeyCode() == 68 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.btnDecrypt.doClick();
+					subHeaderPanel.btnDecrypt.doClick();
 				}
 				/*
 				 * 	DARK/LIGHT VIEW -> CTRL+B
 				 */
 				if (e.getKeyCode() == 66 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnDark.doClick();
+					subHeaderPanel.btnDark.doClick();
 				}
 				/*
 				 * 	UPPERCASE AFTER DOTS-SEPARATOR -> CTRL+Shift+[.]
 				 */
 				if (e.getKeyCode() == 46 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.btnUpperPostDots.doClick();
+					subHeaderPanel.btnUpperPostDots.doClick();
 				}
 				/*
 				 * 	UPPERCASE SELECTED TEXT -> CTRL+Shift+UP_Arrow
 				 */
 				if (e.getKeyCode() == 38 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.btnTt.doClick();
+					subHeaderPanel.btnTt.doClick();
 				}
 				/*
 				 * 	OPEN TEMPLATES PANEL -> CTRL+Shift+T
 				 */
 				if (e.getKeyCode() == 84 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnTemplates.doClick();
+					subHeaderPanel.btnTemplates.doClick();
 				}
 				
 				/*
 				 * 	FIND  TEXT -> CTRL+F
 				 */
 				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnFindText.doClick();
-//					if(currentTextEditor.searchBox != null && currentTextEditor.searchBox.active){
-//						String selected = TextEditor.loadedTabObj.textArea.getSelectedText();
-//						if(selected != null && !selected.equals("")) {
-//							currentTextEditor.searchBox.searchTextField.setText(selected);
-//							currentTextEditor.searchBox.searchTextField.setSelectionStart(0);
-//							currentTextEditor.searchBox.searchTextField.setSelectionEnd(selected.length());
-//						}
-//					}
+					subHeaderPanel.btnFindText.doClick();
 				}
 				
 				/*
 				 * 	REPLACE SPECIALS/ESCAPES -> CTRL+E
 				 */
 				if (e.getKeyCode() == 69 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnReplaceEscapesSeq.doClick();
+					subHeaderPanel.btnReplaceEscapesSeq.doClick();
 				}
 				
 				/*
 				 * 	REPLACE TEXT -> CTRL+R
 				 */
 				if (e.getKeyCode() == 82 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnReplaceText.doClick();
+					subHeaderPanel.btnReplaceText.doClick();
 				}
 				
 				/*
 				 * 	GOTO LINE NUMBER -> CTRL+L
 				 */
 				if (e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnGoToLine.doClick();
+					subHeaderPanel.btnGoToLine.doClick();
 				}
 				
 				/*
 				 * 	SHOW TABS GRID -> CTRL+Shift+G
 				 */
 				if (e.getKeyCode() == 71 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.chckbxShowTabGrid.doClick();
+					subHeaderPanel.chckbxShowTabGrid.doClick();
 				}
 				
 				/*
 				 * 	OPEN/CLOSE FILE TREE PANEL -> ALT+Q
 				 */
 				if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnToggleFileView.doClick();
+					subHeaderPanel.btnToggleFileView.doClick();
 				}
 				
 				/*
 				 * 	OPEN/CLOSE CLIPBOARD PANEL -> ALT+A
 				 */
 				if (e.getKeyCode() == 65 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.toggleBtnClipboard.doClick();
+					subHeaderPanel.toggleBtnClipboard.doClick();
 				}
 
 				/*
 				 * 	OPEN/CLOSE MAP PANEL -> ALT+W
 				 */
 				if (e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.toggleBtnMap.doClick();
+					subHeaderPanel.toggleBtnMap.doClick();
 				}
 				
 				/*
@@ -304,26 +299,32 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	REMOVE SPACES/WORD -> CTRL+[-]
 				 */
 				if (e.getKeyCode() == 45 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnRemoveSpaces.doClick();
+					subHeaderPanel.btnRemoveSpaces.doClick();
 				}
 				
 				/*
 				 * OPEN CURRENT FILE'S PROPERTIES -> ALT+ENTER
 				 */
 				if (e.getKeyCode() == 10 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
-					currentTextEditor.btnPropertiesPanel.doClick();
+					subHeaderPanel.btnPropertiesPanel.doClick();
 				}
 				/*
 				 * OPEN CURRENT FILE into FyleSystem-> Ctrl+ENTER
 				 */
 				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					GuiUtils.openInFileSystem(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+					try {
+						GuiUtils.openInFileSystem(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+					} catch (Exception e2) {
+					}
 				}
 				/*
 				 * OPEN CURRENT FILE into CommandLine -> Ctrl+Shift+ENTER
 				 */
 				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					SysUtils.cdIntoCommandLine(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+					try {
+						SysUtils.cdIntoCommandLine(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+					} catch (Exception e2) {
+					}
 				}
 				
 				/*
@@ -355,7 +356,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	CLOSE ALL TABS -> CTRL+ALT+SHIFT+ [-]
 				 */
 				if (e.getKeyCode() == 45 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					currentTextEditor.btnCloseAllTabs.doClick();
+					subHeaderPanel.btnCloseAllTabs.doClick();
 				} 
 				
 				/*
@@ -394,6 +395,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					currentTextEditor.headerPanel.chkCutWordsTo.doClick();
 				}
 				
+			/** VISUALIZATION SWITCHER **/
+				
 				/*
 				 *  HIDE/SHOW header panel -> Ctrl+shift+Alt+H
 				 */
@@ -401,6 +404,17 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							currentTextEditor.textEditorUtils.hideOrShowHeaderPanelLevel1();
+						}
+					});
+				}
+
+				/*
+				 *  HIDE/SHOW subHeader panel -> Ctrl+shift+Alt+U
+				 */
+				if(e.getKeyCode() == 85 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentTextEditor.textEditorUtils.hideOrShowHeaderPanelLevel2();
 						}
 					});
 				}
@@ -415,6 +429,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						}
 					});
 				}
+
+			/** END VISUALIZATION SWITCHER **/
 				
 				/*
 				 *  ON/OFF autoSync language from file type -> Ctrl+shift+L
@@ -422,7 +438,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				if(e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							currentTextEditor.chckbxLockLanguage.doClick();
+							subHeaderPanel.chckbxLockLanguage.doClick();
 						}
 					});
 				}
@@ -434,7 +450,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				if(e.getKeyCode() == 67 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							currentTextEditor.btnCalculator.doClick();
+							subHeaderPanel.btnCalculator.doClick();
 						}
 					});
 				}
@@ -445,7 +461,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				if(e.getKeyCode() == 80 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							currentTextEditor.btnColorSampler.doClick();
+							subHeaderPanel.btnColorSampler.doClick();
 						}
 					});
 				}
@@ -493,7 +509,27 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						}
 					});
 				}
+
+				/*
+				 * 	FORMAT SUPPORTED CODE -> CTRL+SHIFT+F
+				 */
+				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					GuiUtils.formatTextLater(currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, 
+							currentTextEditor.CURRENT_EXT_OUT, 
+							currentTextEditor.currentConfiguration.getTextEditorOpt().tabSize
+					);
+				}
 				
+				/*
+				 *  Copy current with syntax style -> Alt+C
+				 */
+				if(e.getKeyCode() == 67 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea.copyAsStyledText();
+						}
+					});
+				}
 				
 				
 //				/*
@@ -532,21 +568,21 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 			public void run() {
 				if (flagCtrlDown.get()) {
 					if (flagHoverBtnRemoveSpaces.get()) {
-						currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveContent);
-						currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
+						subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveContent);
+						subHeaderPanel.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
 					}
 					if (flagHoverBtnViewExpCmd.get()) {
-						currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInCommandLine);
-						currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
+						subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInCommandLine);
+						subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 					}
 				}
 				if (!flagCtrlDown.get() || !flagHoverBtnRemoveSpaces.get()) {
-					currentTextEditor.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
-					currentTextEditor.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
+					subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
+					subHeaderPanel.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
 				}
 				if (!flagCtrlDown.get() || !flagHoverBtnViewExpCmd.get()) {
-					currentTextEditor.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInSysExplorer);
-					currentTextEditor.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
+					subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInSysExplorer);
+					subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
 				}
 			}
 		});

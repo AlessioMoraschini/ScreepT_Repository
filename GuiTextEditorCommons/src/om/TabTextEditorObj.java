@@ -14,15 +14,10 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import org.fife.ui.rsyntaxtextarea.CodeTemplateManager;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.templates.CodeTemplate;
-import org.fife.ui.rsyntaxtextarea.templates.StaticCodeTemplate;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.filechangewatcher.FileChangeMonitor;
 import frameutils.utils.GuiUtils;
-import guistyle.GUIStyelSettings;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 import shortcuts.ICommonShortcuts;

@@ -38,7 +38,7 @@ public class TutorialFrame extends ParentFrame{
 		
 		// GUI SETTINGS
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
-		GuiUtils.centerComponent(this, 60);
+		GuiUtils.centerComponent(this, 70);
 		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
 
 		mainHtmlReadmePanel = new HtmlPanel(new Integer(40), "indexList");
@@ -77,7 +77,7 @@ public class TutorialFrame extends ParentFrame{
 			public void componentShown(ComponentEvent e) {
 			}
 			public void componentResized(ComponentEvent e) {
-				mainHtmlReadmePanel.jfxPanel.resizeComp(mainHtmlReadmePanel.getWidth()-30, mainHtmlReadmePanel.getHeight()-45);
+				mainHtmlReadmePanel.jfxPanel.resizeComp(mainHtmlReadmePanel.getWidth(), mainHtmlReadmePanel.getHeight()-40);
 			}
 			public void componentMoved(ComponentEvent e) {
 			}

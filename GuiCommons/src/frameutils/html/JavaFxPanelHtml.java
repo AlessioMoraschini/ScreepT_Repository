@@ -23,6 +23,8 @@ import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import utils.SysUtils;
 
+import java.awt.Color;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
@@ -52,8 +54,10 @@ public class JavaFxPanelHtml extends JPanel {
   
     public JavaFxPanelHtml(){  
     	jfxPanel = new JFXPanel();  
+    	jfxPanel.setBackground(Color.DARK_GRAY);
     	setBorder(BorderFactory.createEmptyBorder());
-        setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[1000px,grow]", "[1000px,grow]"));
+    	setBackground(Color.BLACK);
+        setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+", fill, insets 0", "[1000px,grow]", "[1000px,grow]"));
         add(jfxPanel, "cell 0 0,grow");
         
     }
@@ -130,10 +134,10 @@ public class JavaFxPanelHtml extends JPanel {
 									}
 								}
 								
-							// CTRL + SHIFT PRESSED
+							// CTRL + SHIFT + 0 PRESSED
 							}else if (event.isControlDown() && event.isShiftDown()) {
 								switch (event.getCode()) {
-								case R:	{
+								case DIGIT0:	{
 									webEngine.reload();
 									break;
 								}

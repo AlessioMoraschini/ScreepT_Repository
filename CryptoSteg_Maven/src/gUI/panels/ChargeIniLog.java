@@ -295,7 +295,7 @@ public class ChargeIniLog extends JPanel{
 		RsyntaxUtils.changeStyleViaThemeXml(textArea, Themes.DARK.defaultPath);
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_INI);
 		textArea.setLineWrap(true);
-		textArea.setEditable(false);
+		textArea.setEnabled(false);
 		textArea.setSelectedTextColor(Color.LIGHT_GRAY);
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
 		textArea.setMargin(new Insets(20, 20, 20, 20));

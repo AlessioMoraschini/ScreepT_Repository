@@ -202,6 +202,9 @@
     						<include>/Images/**</include>
 					        <include>/Icons/**</include>
 					        <include>/ProgrammingLanguagesWords/**</include>
+					        <include>/lib/js</include>
+					        <include>/lib/js/*</include>
+					        <include>/lib/js/**</include>
 					    </includes>
 					    <excludes>
 					    	/**/*Thumbs.db
@@ -284,6 +287,9 @@
     						<include>/Images/**</include>
 					        <include>/Icons/**</include>
 					        <include>/ProgrammingLanguagesWords/**</include>
+					        <include>/lib/js</include>
+					        <include>/lib/js/*</include>
+					        <include>/lib/js/**</include>
 					    </includes>
 					    <excludes>
 					    	/**/*Thumbs.db
@@ -298,76 +304,70 @@
  	</plugins>
   </build>
   
-  <dependencies>
-  	
-	 	<dependency>
-	   	<groupId>org.drjekyll</groupId>
-	   	<artifactId>fontchooser</artifactId>
-	   	<version>2.4</version>
-	</dependency>
+  	<dependencies>
 	
-	<!-- IMPORTS FROM OTHER PROJECTS -->
-	
-	<dependency>
-		<groupId>Initializer_Configs</groupId>
-	    <artifactId>Initializer_Configs</artifactId>
-	    <version>0.0.1-SNAPSHOT</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>ScrYpT-Crypter</groupId>
-	 	<artifactId>ScrYpT-Crypter</artifactId>
-	 	<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>GuiTextEditorCommons</groupId>
-	   	<artifactId>GuiTextEditorCommons</artifactId>
-	  	<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>ScrYpT_LauncherV2</groupId>
-		<artifactId>ScrYpT_LauncherV2</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<!-- <scope>compile</scope> -->
-	</dependency>
-	
-	<dependency>
-		<groupId>GuiCommons</groupId>
-		<artifactId>GuiCommons</artifactId>
-	 	<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-	
-	<dependency>
-	  <groupId>GenCommons</groupId>
-	  <artifactId>GenCommons</artifactId>
-	  <version>0.0.1-SNAPSHOT</version>	
-	</dependency>
-	
-	<dependency>
-		<groupId>MultimediaConversion</groupId>
-	  	<artifactId>MultimediaConversion</artifactId>
-	 	<version>0.0.1-SNAPSHOT</version>
-	</dependency>
+		<!-- IMPORTS FROM OTHER PROJECTS -->
 		
-	<dependency>
-		<groupId>HardwareCommons</groupId>
- 		<artifactId>HardwareCommons</artifactId>
- 		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>UltimateCalculator</groupId>
-		<artifactId>UltimateCalculator</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>NetworkCommons</groupId>
-		<artifactId>NetworkCommons</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
+		<dependency>
+			<groupId>Initializer_Configs</groupId>
+		    <artifactId>Initializer_Configs</artifactId>
+		    <version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>ScrYpT-Crypter</groupId>
+		 	<artifactId>ScrYpT-Crypter</artifactId>
+		 	<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>GuiTextEditorCommons</groupId>
+		   	<artifactId>GuiTextEditorCommons</artifactId>
+		  	<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>ScrYpT_LauncherV2</groupId>
+			<artifactId>ScrYpT_LauncherV2</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<!-- <scope>compile</scope> -->
+		</dependency>
+		
+		<dependency>
+			<groupId>GuiCommons</groupId>
+			<artifactId>GuiCommons</artifactId>
+		 	<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>GenCommons</groupId>
+		  <artifactId>GenCommons</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>	
+		</dependency>
+		
+		<dependency>
+			<groupId>MultimediaConversion</groupId>
+		  	<artifactId>MultimediaConversion</artifactId>
+		 	<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+			
+		<dependency>
+			<groupId>HardwareCommons</groupId>
+	 		<artifactId>HardwareCommons</artifactId>
+	 		<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>UltimateCalculator</groupId>
+			<artifactId>UltimateCalculator</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>NetworkCommons</groupId>
+			<artifactId>NetworkCommons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
   </dependencies>
   

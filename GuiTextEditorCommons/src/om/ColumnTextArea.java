@@ -1,24 +1,29 @@
 package om;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultCaret;
 
+import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import frameutils.utils.GuiUtils;
 
 public class ColumnTextArea extends RSyntaxTextArea{
 	private static final long serialVersionUID = -2828990655552935752L;
+	
+	// ColumnTextArea logger creation
+	static Logger logger = Logger.getLogger(ColumnTextArea.class);
 
+	public final static int DEF_CARET_BLINK_RATE = 400;
+	
 	public AtomicBoolean isRectangularModeOn = new AtomicBoolean(true);
 	RSyntaxTextArea currentRef;
 	
 	public ColumnTextArea(boolean rectangularSelectionActive) {
 		super();
+		currentRef = this;
 		setRectangularSelectionMode(rectangularSelectionActive);
 		
         //Disable ALT key presses when the textarea is focused
@@ -31,11 +36,12 @@ public class ColumnTextArea extends RSyntaxTextArea{
             }
         });
         
-        this.getCaret().setBlinkRate(400);
+        this.getCaret().setBlinkRate(DEF_CARET_BLINK_RATE);
 	}
 	
 	public ColumnTextArea(int rows, int columns){
         super(rows, columns);
+        currentRef = this;
         this.setCaret(new ColumnTextArea.ColumnSelectionCaret());
 
         //Disable ALT key presses when the textarea is focused
@@ -47,13 +53,15 @@ public class ColumnTextArea extends RSyntaxTextArea{
 //                System.out.println("Performed");
             }
         });
+        
+        this.getCaret().setBlinkRate(DEF_CARET_BLINK_RATE);
     }
 	
 	public void setRectangularSelectionMode(boolean rectangularSelection) {
 		if (rectangularSelection) {
 			this.setCaret(new ColumnTextArea.ColumnSelectionCaret());
 		}else {
-			this.setCaret(new DefaultCaret());
+			this.setCaret(new RSyntaxTextArea().getCaret());
 		}
 
 		isRectangularModeOn.set(rectangularSelection);
@@ -100,12 +108,18 @@ public class ColumnTextArea extends RSyntaxTextArea{
 			super.copy();
 		}
     }
+    
+    @Override
+    public void copyAsStyledText() {
+    	super.copyAsStyledText();
+    }
 
     class ColumnSelectionCaret extends javax.swing.text.DefaultCaret {
         private static final long serialVersionUID = 1L;
         java.awt.Point lastPoint = new java.awt.Point(0,0);
         boolean altDown = false;
         boolean ctrlDown = false;
+        boolean shiftDown = false;
         boolean moving = false;
 
         @Override
@@ -116,8 +130,8 @@ public class ColumnTextArea extends RSyntaxTextArea{
         @Override
         public void mouseClicked(java.awt.event.MouseEvent e) {
             super.mouseClicked(e);
-            if(e.getClickCount()==1){
-            	this.customRemoveHighlights();
+            if(isRectangularModeOn.get() && e.getClickCount()==1 && !shiftDown){
+                this.getComponent().getHighlighter().removeAllHighlights();
             }
             
         }
@@ -125,32 +139,58 @@ public class ColumnTextArea extends RSyntaxTextArea{
         @Override
         public void mousePressed(java.awt.event.MouseEvent e){
             super.mousePressed(e);
-            this.lastPoint = new java.awt.Point(e.getX(), e.getY());
+            this.altDown = e.isAltDown();
             this.ctrlDown = e.isControlDown();
-            this.altDown = e.isAltDown() && !e.isControlDown() && !e.isShiftDown();
+            this.shiftDown = e.isShiftDown();
             
-            currentRef = ((RSyntaxTextArea)this.getComponent());
-            Point pt = new Point(e.getX(), e.getY());
-            int pos = currentRef.viewToModel(pt);
-            currentRef.setCaretPosition(pos-1);
-            currentRef.setCaretPosition(pos);
-            currentRef.revalidate();
-            currentRef.repaint();
+            if (isRectangularModeOn.get()) {
+				this.lastPoint = new java.awt.Point(e.getX(), e.getY());
+			}
+            
+            if (e.getClickCount()==1) {
+				try {
+					int viewToModel = currentRef.viewToModel(e.getPoint());
+	                if(viewToModel != -1){
+	                    try {
+	                    	
+	                    	if (!shiftDown) {
+								currentRef.removeAllLineHighlights();
+								currentRef.getHighlighter().removeAllHighlights();
+							}
+							currentRef.addLineHighlight(currentRef.getLineOfOffset(viewToModel), currentRef.getCurrentLineHighlightColor());
+	                    } catch (BadLocationException e1) {
+	                        e1.printStackTrace();
+	                    }
+
+	                    // SELECT with shift (only if position is different) -> select from currentCaret to viewToModel
+	                    if(shiftDown && viewToModel != currentRef.getCaretPosition()) {
+	                    	currentRef.setSelectionStart(currentRef.getCaretPosition());
+	                    	currentRef.setSelectionEnd(viewToModel);
+	                    }
+	                }
+				} catch (Exception e1) {
+					logger.error("Error tryin' to refreshing highlight on mouse pressed", e1);
+				}
+				
+			}
+
+            
         }
 
         @Override
         protected void moveCaret(java.awt.event.MouseEvent e) {
-        	if(!this.moving){
-        		this.customRemoveHighlights();
-        		this.moving = true;
-        	}
             if(isRectangularModeOn.get()) {
+            	
+	        	if(!this.moving){
+		                this.getComponent().getHighlighter().removeAllHighlights();
+	        		this.moving = true;
+	        	}
+	            if(this.altDown){
                 java.awt.Point pt = new java.awt.Point(e.getX(), e.getY());
                 javax.swing.text.Position.Bias[] biasRet = new javax.swing.text.Position.Bias[1];
                 int pos = getComponent().getUI().viewToModel(getComponent(), pt, biasRet);
                 if(biasRet[0] == null)
                     biasRet[0] = javax.swing.text.Position.Bias.Forward;
-                if(this.altDown){
 	                if (pos >= 0) {
 	                    this.setDot(pos);
 	                    java.awt.Point start = new java.awt.Point(Math.min(this.lastPoint.x,pt.x), Math.min(this.lastPoint.y,pt.y));
@@ -170,17 +210,23 @@ public class ColumnTextArea extends RSyntaxTextArea{
         
         @Override
         public void mouseReleased(java.awt.event.MouseEvent e){
-        	super.mouseReleased(e);
         	if(isRectangularModeOn.get()) {
         		this.moving = false;
         	}
+        	
+        	this.altDown = e.isAltDown();
+            this.ctrlDown = e.isControlDown();
+            this.shiftDown = e.isShiftDown();
+        	
+            super.mouseReleased(e);
+            
         }
 
         protected void rectangularHighlight(java.awt.Point start, java.awt.Point end) {
             
         	if (isRectangularModeOn.get()) {
         		javax.swing.text.JTextComponent comp = this.getComponent();
-	        	this.customRemoveHighlights();
+				comp.getHighlighter().removeAllHighlights();
 				int y = start.y;
 				int firstX = start.x;
 				int lastX = end.x;

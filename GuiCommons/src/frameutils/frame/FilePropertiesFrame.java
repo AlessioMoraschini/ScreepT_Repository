@@ -26,6 +26,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
 public class FilePropertiesFrame extends JFrame{
+	private static final long serialVersionUID = -1506126616913194676L;
 
 	public static final Color defaultRed = Color.ORANGE;
 	public static final Color defaultBlue = Color.CYAN;
