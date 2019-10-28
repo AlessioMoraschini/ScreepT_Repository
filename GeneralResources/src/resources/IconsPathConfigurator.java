@@ -145,6 +145,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_RELOAD = GeneralConfig.RESOURCES_DIR + "Icons/General/Reload.png";
 	/** This is the blue bi-color version **/
 	public static final String ICON_RELOAD2 = GeneralConfig.RESOURCES_DIR + "Icons/General/Reload_2.png";
+	public static final String ICON_RELOAD2SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/Reload_2Small.png";
 	/** This is the orange version "syncronize" **/
 	public static final String ICON_RELOAD3 = GeneralConfig.RESOURCES_DIR + "Icons/General/Reload_3.png";
 	/** This is the green version with 4 arrows **/
@@ -162,7 +163,9 @@ public class IconsPathConfigurator {
 	public static final String ICON_LIGHT_OFF = GeneralConfig.RESOURCES_DIR + "Icons/General/lightOFF.png";
 	public static final String ICON_CONSOLE = GeneralConfig.RESOURCES_DIR + "Icons/General/console.png";
 	public static final String ICON_SCREEPT = GeneralConfig.RESOURCES_DIR + "Icons/General/ScreepT.png";
+	public static final String ICON_LESS_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/lessSmall.png";
 	public static final String ICON_LESS = GeneralConfig.RESOURCES_DIR + "Icons/General/less.png";
+	public static final String ICON_MORE_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/moreSmall.png";
 	public static final String ICON_MORE = GeneralConfig.RESOURCES_DIR + "Icons/General/more.png";
 	public static final String ICON_IMMERSIVE = GeneralConfig.RESOURCES_DIR + "Icons/General/immersive.png";
 	public static final String ICON_JOB_ON = GeneralConfig.RESOURCES_DIR + "Icons/General/job_ON.png";
@@ -177,7 +180,9 @@ public class IconsPathConfigurator {
 	public static final String ICON_X_BLACK = GeneralConfig.RESOURCES_DIR + "Icons/General/X_black.png";
 	public static final String ICON_CLOCK = GeneralConfig.RESOURCES_DIR + "Icons/General/clock.png";
 
+	public static final String ICON_UP_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUpSmall.png";
 	public static final String ICON_UP = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUp.png";
+	public static final String ICON_DOWN_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDownSmall.png";
 	public static final String ICON_DOWN = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDown.png";
 	
 	////////////////  MOST_USED INSTANTIATED DEFAULT STATIC ICONS   ///////////////////

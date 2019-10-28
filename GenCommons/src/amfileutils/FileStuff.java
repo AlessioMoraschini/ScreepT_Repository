@@ -65,6 +65,9 @@ public class FileStuff {
 	}
 	
 	public static File getNlevelsAncestor(File son, int levelsUp) {
+		
+		if(son ==  null || son.getParentFile() == null) {return son;}
+		
 		int originalLevels = levelsUp;
 		try {
 			File result = null;
@@ -104,7 +107,7 @@ public class FileStuff {
 		if(currentFile == null || !currentFile.exists()) {return false;}
 		
 		File ancestor = getNlevelsAncestor(currentFile, ancestorLevel);
-		return !ancestor.equals(currentFile);
+		return (ancestor != null && ancestor.exists() && !ancestor.equals(currentFile));
 	}
 	
 	public static String getNlevelsPathString(File son, int levelsUp) {

@@ -41,7 +41,7 @@ public class TreeTest extends JFrame{
 //		add(new JLabel("PROVA"));
 		scrollPane.setPreferredSize(new Dimension(500,500));
 	
-		model = new FileTreeModel(new FileNamed(root));
+		model = new FileTreeModel(new FileNamedTest(root));
 		tree = new JTree(model);
 		tree.setVisibleRowCount(10);
 		scrollPane.setViewportView(tree);
@@ -69,7 +69,7 @@ public class TreeTest extends JFrame{
 	 */
 	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree){
 		
-		File root = ((FileNamed)tree.getModel().getRoot()).fileObj;
+		File root = ((FileNamedTest)tree.getModel().getRoot()).fileObj;
 		LinkedList<File> nodes = new LinkedList<File>();
 		File current = new File(fileToSelect.getAbsolutePath());
 		

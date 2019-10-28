@@ -7,9 +7,9 @@ import javax.swing.tree.TreeModel;
 
 public class FileTreeModel implements TreeModel {
 
-	    private FileNamed root;
+	    private FileNamedTest root;
 
-	    public FileTreeModel(FileNamed root) {
+	    public FileTreeModel(FileNamedTest root) {
 	        this.root = root;
 	    }
 
@@ -20,15 +20,15 @@ public class FileTreeModel implements TreeModel {
 
 	    @Override
 	    public Object getChild(Object parent, int index) {
-	    	FileNamed f = (FileNamed) parent;
+	    	FileNamedTest f = (FileNamedTest) parent;
 	    	File[] sons = f.fileObj.listFiles();
-			return new FileNamed(sons[index]);
+			return new FileNamedTest(sons[index]);
 			
 	    }
 
 	    @Override
 	    public int getChildCount(Object parent) {
-	    	File f = (parent instanceof FileNamed)?((FileNamed) parent).fileObj : (File)parent;
+	    	File f = (parent instanceof FileNamedTest)?((FileNamedTest) parent).fileObj : (File)parent;
 	    	File[] sons = f.listFiles();
 	        if (!f.isDirectory()) {
 	            return 0;
@@ -41,8 +41,8 @@ public class FileTreeModel implements TreeModel {
 
 	    @Override
 	    public int getIndexOfChild(Object parent, Object child) {
-	    	FileNamed par = (FileNamed) parent;
-	    	FileNamed ch = (FileNamed) child;
+	    	FileNamedTest par = (FileNamedTest) parent;
+	    	FileNamedTest ch = (FileNamedTest) child;
 	        if(par!=null) {
 		        return Arrays.asList(par.fileObj.listFiles()).indexOf(ch);
 	        }else return 0;
@@ -55,7 +55,7 @@ public class FileTreeModel implements TreeModel {
 
 	    @Override
 	    public boolean isLeaf(Object node) {
-	    	File f = (node instanceof FileNamed)?((FileNamed) node).fileObj : (File)node;
+	    	File f = (node instanceof FileNamedTest)?((FileNamedTest) node).fileObj : (File)node;
 	        return !f.isDirectory();
 	    }
 

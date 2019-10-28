@@ -2,11 +2,11 @@ package testsvarious.tree;
 
 import java.io.File;
 
-public class FileNamed {
+public class FileNamedTest {
 
 	public File fileObj;
 	
-	public FileNamed(File file){
+	public FileNamedTest(File file){
 		fileObj = file;
 	}
 	

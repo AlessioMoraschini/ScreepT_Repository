@@ -3,15 +3,15 @@ package gui.utils.om;
 import java.io.File;
 import java.io.IOException;
 
-public class FileNamed{
+public class FileNamedLauncherFork{
 	
 	public final File mFile;
 
-	public FileNamed(final String filePath) {
+	public FileNamedLauncherFork(final String filePath) {
 		mFile = new File(filePath);
 	}
 
-	public FileNamed(final File file) {
+	public FileNamedLauncherFork(final File file) {
 		mFile = file;
 	}
 	
@@ -19,15 +19,15 @@ public class FileNamed{
         return mFile.isDirectory();
     }
 	
-	public FileNamed[] listFiles() {
+	public FileNamedLauncherFork[] listFiles() {
         final File[] files = mFile.listFiles();
         if (files == null) return null;
-        if (files.length < 1) return new FileNamed[0];
+        if (files.length < 1) return new FileNamedLauncherFork[0];
 
-        final FileNamed[] ret = new FileNamed[files.length];
+        final FileNamedLauncherFork[] ret = new FileNamedLauncherFork[files.length];
         for (int i = 0; i < ret.length; i++) {
             final File f = files[i];
-            ret[i] = new FileNamed(f);
+            ret[i] = new FileNamedLauncherFork(f);
         }
         return ret;
     }

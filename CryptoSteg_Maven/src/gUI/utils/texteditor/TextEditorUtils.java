@@ -32,8 +32,6 @@ import enums.ThemesWrapper;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
-import gUI.utils.tree.texteditor.FileNameCellRenderer;
-import gUI.utils.tree.texteditor.FileTreeNamedModel;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
 import mainobj.INItializer;
@@ -48,6 +46,8 @@ import resources.SoundsConfigurator;
 import splitpanel.SplitPaneUtils;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
+import treeutils.om.FileNameCellRenderer;
+import treeutils.om.FileTreeNamedModel;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
 import utils.dialog.TextAreaDialogs;
@@ -294,6 +294,17 @@ public class TextEditorUtils {
 	
 	private int getMinimumLeftPaneSize() {
 		return (currentTextEditor.dynLblCurrentDir.getWidth() + currentTextEditor.lblCurrentDir.getWidth()); 
+	}
+	
+	public void collapseTree() {
+		try {
+			File ancestor = new File("");
+			ancestor = FileStuff.getNlevelsAncestor(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile,
+					GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL);
+			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
+		} catch (Exception e) {
+			logger.error("Error collapsing tree into textEditor", e);
+		}
 	}
 	
 	private void refresh(File currentFile) {

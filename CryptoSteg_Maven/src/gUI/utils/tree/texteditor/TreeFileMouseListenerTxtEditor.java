@@ -41,6 +41,7 @@ public class TreeFileMouseListenerTxtEditor {
 	// gui elements
 	private JTree tree;
 	private FileNamed selectedNode;
+	private int selectedRow;
 	private TextEditor textEditor;
 	private CustomTabbedEditor currentTabEditor;
 	private JFrame propertiesFrame = null; 
@@ -49,6 +50,8 @@ public class TreeFileMouseListenerTxtEditor {
 	public JMenuItem itemNewFile;
 	public JMenuItem sysExplorerItem;
 	public JMenuItem refreshItem;
+	public JMenuItem collapseItem;
+	public JMenuItem expandItem;
 	public JMenuItem propertiesItem;
 	public JMenuItem changeBckgItem;
 	
@@ -68,6 +71,7 @@ public class TreeFileMouseListenerTxtEditor {
 
 	        @Override
 	        public void mousePressed(MouseEvent arg0) {
+	        	selectedRow = tree.getRowForLocation(arg0.getX(), arg0.getY());
 	            if(arg0.getButton() == MouseEvent.BUTTON3){
 	                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
 	                if(pathForLocation != null){
@@ -121,6 +125,14 @@ public class TreeFileMouseListenerTxtEditor {
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 	    
+	    collapseItem = new JMenuItem("Collapse children nodes");
+	    collapseItem.addActionListener(collapseChildren());
+	    menu.add(collapseItem);
+
+	    expandItem = new JMenuItem("Expand children nodes");
+	    expandItem.addActionListener(expandChildren());
+	    menu.add(expandItem);
+	    
 	    propertiesItem = new JMenuItem("File Properties");
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);
@@ -136,6 +148,8 @@ public class TreeFileMouseListenerTxtEditor {
 	    sysExplorerItem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 	    itemLoadFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD));
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+	    collapseItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
+	    expandItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 	    itemNewFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
 	    changeBckgItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BG_COLOR));
@@ -158,6 +172,39 @@ public class TreeFileMouseListenerTxtEditor {
 		};
 	}
 	
+	private ActionListener expandChildren() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					// TODO FIX AND IMPROVE THIS
+					TreePath parent = tree.getSelectionPath();
+					TreeUtils.expandAllRecursively(tree, parent);
+				} catch (Exception e1) {
+					logger.error("Error expanding tree row N°"+selectedRow, e1);
+				}
+			}
+		};
+	}
+	
+	
+	private ActionListener collapseChildren() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					// TODO FIX AND IMPROVE THIS
+					tree.collapseRow(selectedRow);
+//					TreeUtils.selectFileInNamedFileTree(selectedNode.mFile, tree, false);
+				} catch (Exception e1) {
+					logger.error("Error collapsing tree row N°"+selectedRow, e1);
+				}
+			}
+		};
+	}
+	
 	private ActionListener propertiesListener() {
 		return new ActionListener() {
 			@Override
@@ -171,7 +218,6 @@ public class TreeFileMouseListenerTxtEditor {
 								propertiesFrame = new FilePropertiesFrame(selectedNode.mFile, true);
 								propertiesFrame.setTitle(selectedNode.mFile.getAbsolutePath());
 								propertiesFrame.setVisible(true);
-								GuiUtils.centerComponent(propertiesFrame, 650, 240);
 								}
 							} catch (Exception e) {
 								logger.error(e);

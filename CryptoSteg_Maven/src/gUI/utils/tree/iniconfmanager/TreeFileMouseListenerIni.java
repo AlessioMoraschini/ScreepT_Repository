@@ -25,12 +25,12 @@ import amfileutils.FileStuff;
 import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.utils.filedialog.GenericFileChooserDialog;
-import gUI.utils.tree.FileTreeModel;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import treeutils.om.FileTreeModel;
 
 public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBasic{
 	

@@ -21,6 +21,10 @@ import resources.SoundsConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeHighlighterAdapter;
 import treeutils.TreeUtils;
+import treeutils.om.FileNameCellRenderer;
+import treeutils.om.FileTreeModel;
+import treeutils.om.MyBasicTreeUI;
+import treeutils.om.TreeCellRendererDark;
 import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
@@ -29,12 +33,14 @@ import utils.panels.arch.ParentPanel;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
 
 import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.RUndoManager;
 
 
 import amfileutils.FileStuff;
+import amfileutils.om.FileNamed;
 import dialogutils.GenericFileChooser;
 import dialogutils.JOptionHelper;
 import enums.Themes;
@@ -74,8 +80,6 @@ import gUI.utils.shortcutshandler.TextEditorShortcutListener;
 import gUI.utils.texteditor.TabbedEditorOwnerScrYpT;
 import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tooltip.TextEditorTooltips;
-import gUI.utils.tree.FileTreeModel;
-import gUI.utils.tree.TreeCellRendererDark;
 import gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor;
 import guistyle.GUIStyelSettings;
 
@@ -93,6 +97,8 @@ public class TextEditor extends JPanel {
 	
 	// this is the color of the left panel file navigator
 	public Color fileNavColorBckg = TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
+	
+	public static final Dimension TREE_BTN_SIZE = new Dimension(24,24);
 
 	// STATIC phrases
 	public static final String ROOT_WORKSPACE_LBL = "Workspace: ";
@@ -110,6 +116,8 @@ public class TextEditor extends JPanel {
 	public JButton toggleButtonFileTreeLocked;
 	public JButton btnDepthUp_nostyle;
 	public JButton btnDepthDown_nostyle;
+	private JButton btnPackTree_nostyle;
+	private JButton btnResyncTree_nostyle;
 
 	private JSeparator separator_NO_HIDE;
 	private JSeparator separator_NO_HIDE_2;
@@ -223,18 +231,26 @@ public class TextEditor extends JPanel {
 		splitPaneMain.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 		
 		leftSplitTreeFiles = new JTree(new FileTreeModel(null));
+		UIDefaults paneDefaults = new UIDefaults();
+	    paneDefaults.put("Tree.selectionBackground",null);
+	    leftSplitTreeFiles.putClientProperty("Nimbus.Overrides",paneDefaults);
+	    leftSplitTreeFiles.putClientProperty("Nimbus.Overrides.InheritDefaults",false);
 		mouseListenerTreeFilePanel = new TreeFileMouseListenerTxtEditor(leftSplitTreeFiles, this);
-		leftSplitTreeFiles.setCellRenderer(new TreeCellRendererDark());
+		leftSplitTreeFiles.setUI(new MyBasicTreeUI());
+		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
+		leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 		leftSplitTreeFiles.addMouseMotionListener(new TreeHighlighterAdapter());
 		leftSplitTreeFiles.setBackground(fileNavColorBckg);
 		leftSplitTreeFiles.setForeground(Color.white);
+		leftSplitTreeFiles.revalidate();
+		leftSplitTreeFiles.repaint();
 		leftSplitPane = new JScrollPane(leftSplitTreeFiles);
 		leftSplitPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		leftSplitPane.setPreferredSize(new Dimension(200, 500));
 		leftSplitContainer = new JPanel();
 		leftSplitContainer.setBackground(fileNavColorBckg);
 		leftSplitContainer.setForeground(Color.GRAY);
-		leftSplitContainer.setLayout(new MigLayout("", "[20px:25px:25px][2px:4px,grow][20px:25px:25px][25px:25px:25px][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[25px:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
+		leftSplitContainer.setLayout(new MigLayout("", "[20px:25px:25px][2px:4px,grow][20px:25px:25px][20px:25px:25px][20px:25px:25px][25px:25px:25px][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[25px:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
 		 
 		initRightPane();
 		rightSplitContainer.setBackground(fileNavColorBckg);
@@ -250,27 +266,45 @@ public class TextEditor extends JPanel {
 		lblFiles.setForeground(Color.LIGHT_GRAY);
 		leftSplitContainer.add(lblFiles, "cell 0 0 2 1,alignx left,aligny center");
 		
+		btnResyncTree_nostyle = new JButton("");
+		btnResyncTree_nostyle.setPreferredSize(TREE_BTN_SIZE);
+		btnResyncTree_nostyle.setMinimumSize(TREE_BTN_SIZE);
+		btnResyncTree_nostyle.setMaximumSize(TREE_BTN_SIZE);
+		btnResyncTree_nostyle.setBackground(Color.BLACK);
+		btnResyncTree_nostyle.setToolTipText(TextEditorTooltips.tooltipResyncTree);
+		btnResyncTree_nostyle.setCursor(GuiUtils.CURSOR_HAND);
+		btnResyncTree_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD2SMALL));
+		leftSplitContainer.add(btnResyncTree_nostyle, "cell 2 0,alignx center");
+		
+		btnPackTree_nostyle = new JButton("");
+		btnPackTree_nostyle.setPreferredSize(TREE_BTN_SIZE);
+		btnPackTree_nostyle.setMinimumSize(TREE_BTN_SIZE);
+		btnPackTree_nostyle.setMaximumSize(TREE_BTN_SIZE);
+		btnPackTree_nostyle.setBackground(Color.BLACK);
+		btnPackTree_nostyle.setToolTipText(TextEditorTooltips.tooltipPackTree);
+		btnPackTree_nostyle.setCursor(GuiUtils.CURSOR_HAND);
+		btnPackTree_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS_SMALL));
+		leftSplitContainer.add(btnPackTree_nostyle, "cell 3 0,alignx center");
+		
 		btnDepthUp_nostyle = new JButton("");
-		btnDepthUp_nostyle.setPreferredSize(new Dimension(22, 22));
-		btnDepthUp_nostyle.setMinimumSize(new Dimension(22, 22));
-		btnDepthUp_nostyle.setToolTipText("[Ctrl+Alt+Shift+Arrow up] Increase by one level tree depth");
-		btnDepthUp_nostyle.setMaximumSize(new Dimension(30, 30));
+		btnDepthUp_nostyle.setPreferredSize(TREE_BTN_SIZE);
+		btnDepthUp_nostyle.setMinimumSize(TREE_BTN_SIZE);
+		btnDepthUp_nostyle.setMaximumSize(TREE_BTN_SIZE);
 		btnDepthUp_nostyle.setBackground(Color.BLACK);
 		btnDepthUp_nostyle.setToolTipText(TextEditorTooltips.tooltipDepthTreeUp);
 		btnDepthUp_nostyle.setCursor(GuiUtils.CURSOR_HAND);
-		btnDepthUp_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UP));
-		leftSplitContainer.add(btnDepthUp_nostyle, "cell 2 0,grow");
+		btnDepthUp_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UP_SMALL));
+		leftSplitContainer.add(btnDepthUp_nostyle, "cell 4 0,alignx center,aligny center");
 		
 		btnDepthDown_nostyle = new JButton("");
-		btnDepthDown_nostyle.setToolTipText("[Ctrl+Alt+Shift+Arrow down] Reduce by one level tree depth");
-		btnDepthDown_nostyle.setPreferredSize(new Dimension(22, 22));
-		btnDepthDown_nostyle.setMinimumSize(new Dimension(22, 22));
-		btnDepthDown_nostyle.setMaximumSize(new Dimension(30, 30));
+		btnDepthDown_nostyle.setPreferredSize(TREE_BTN_SIZE);
+		btnDepthDown_nostyle.setMinimumSize(TREE_BTN_SIZE);
+		btnDepthDown_nostyle.setMaximumSize(TREE_BTN_SIZE);
 		btnDepthDown_nostyle.setBackground(Color.BLACK);
 		btnDepthDown_nostyle.setToolTipText(TextEditorTooltips.tooltipDepthTreeDown);
 		btnDepthDown_nostyle.setCursor(GuiUtils.CURSOR_HAND);
-		btnDepthDown_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DOWN));
-		leftSplitContainer.add(btnDepthDown_nostyle, "cell 3 0,grow");
+		btnDepthDown_nostyle.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DOWN_SMALL));
+		leftSplitContainer.add(btnDepthDown_nostyle, "cell 5 0,alignx center,aligny center");
 		
 		toggleButtonFileTreeNewWorkspace = new JButton("");
 		toggleButtonFileTreeNewWorkspace.setMaximumSize(new Dimension(20, 12));
@@ -278,7 +312,7 @@ public class TextEditor extends JPanel {
 		toggleButtonFileTreeNewWorkspace.setToolTipText(TextEditorTooltips.tooltipWorkspaceNew);
 		toggleButtonFileTreeNewWorkspace.setCursor(GuiUtils.CURSOR_HAND);
 		toggleButtonFileTreeNewWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_SEARCH));
-		leftSplitContainer.add(toggleButtonFileTreeNewWorkspace, "cell 4 0");
+		leftSplitContainer.add(toggleButtonFileTreeNewWorkspace, "cell 6 0");
 		
 		toggleButtonFileTreeWorkspace = new JButton("");
 		GuiUtils.makeTransparentJButton(toggleButtonFileTreeWorkspace);
@@ -288,7 +322,7 @@ public class TextEditor extends JPanel {
 		toggleButtonFileTreeWorkspace.setCursor(GuiUtils.CURSOR_HAND);
 		toggleButtonFileTreeWorkspace.setToolTipText(TextEditorTooltips.tooltipWorkspaceToggle);
 		toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_ON));
-		leftSplitContainer.add(toggleButtonFileTreeWorkspace, "cell 5 0");
+		leftSplitContainer.add(toggleButtonFileTreeWorkspace, "cell 7 0");
 		
 		toggleButtonFileTreeLocked = new JButton("");
 		GuiUtils.makeTransparentJButton(toggleButtonFileTreeLocked);
@@ -296,7 +330,7 @@ public class TextEditor extends JPanel {
 		toggleButtonFileTreeLocked.setToolTipText(TextEditorTooltips.tooltipFileViewLock);
 		toggleButtonFileTreeLocked.setCursor(GuiUtils.CURSOR_HAND);
 		toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
-		leftSplitContainer.add(toggleButtonFileTreeLocked, "cell 6 0,alignx center,growy");
+		leftSplitContainer.add(toggleButtonFileTreeLocked, "cell 8 0,alignx center,growy");
 		
 		separator_NO_HIDE = new JSeparator();
 		separator_NO_HIDE.setSize(new Dimension(50, 2));
@@ -304,8 +338,8 @@ public class TextEditor extends JPanel {
 		separator_NO_HIDE.setBackground(Color.GRAY);
 		separator_NO_HIDE.setOpaque(true);
 		separator_NO_HIDE.setForeground(Color.LIGHT_GRAY);
-		leftSplitContainer.add(separator_NO_HIDE, "cell 0 1 7 1,growx");
-		leftSplitContainer.add(leftSplitPane, "cell 0 2 7 1,grow");
+		leftSplitContainer.add(separator_NO_HIDE, "cell 0 1 9 1,growx");
+		leftSplitContainer.add(leftSplitPane, "cell 0 2 9 1,grow");
 
 		mainPanel.add(splitPaneMainContainer, "cell 0 3 37 1,grow");
 		
@@ -324,7 +358,7 @@ public class TextEditor extends JPanel {
 		separator_NO_HIDE_2.setOpaque(true);
 		separator_NO_HIDE_2.setForeground(Color.GRAY);
 		separator_NO_HIDE_2.setBackground(Color.GRAY);
-		leftSplitContainer.add(separator_NO_HIDE_2, "cell 0 3 7 1,growx");
+		leftSplitContainer.add(separator_NO_HIDE_2, "cell 0 3 9 1,growx");
 		
 		lblCurrentDir = new JLabel(ROOT_STANDARD_LBL);
 		lblCurrentDir.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -340,7 +374,7 @@ public class TextEditor extends JPanel {
 		dynLblCurrentDir.setHorizontalAlignment(SwingConstants.RIGHT);
 		dynLblCurrentDir.setForeground(SystemColor.menu);
 		dynLblCurrentDir.setFont(new Font("SansSerif", Font.BOLD, 12));
-		leftSplitContainer.add(dynLblCurrentDir, "cell 2 4 5 1,alignx right");
+		leftSplitContainer.add(dynLblCurrentDir, "cell 2 4 7 1,alignx right");
 		splitPaneMain.setContinuousLayout(true);
 
 		getCurrentTabEditor().addTab(null, true); // comment for editing in windowuilder
@@ -446,6 +480,32 @@ public class TextEditor extends JPanel {
 			}
 		});
 		
+		// RESYNC TREE WITH CURRENT FILE
+		btnResyncTree_nostyle.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (getCurrentTabEditor().loadedTabObj.loadedFile != null) {
+							textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
+						}
+					}
+				});
+			}
+		});
+
+		// COLLAPSE TREE
+		btnPackTree_nostyle.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						textEditorUtils.collapseTree();
+					}
+				});
+			}
+		});
+		
 		// FILE TREE DEPTH -- (only if !workspace selected)
 		btnDepthDown_nostyle.addActionListener(new ActionListener() {
 			@Override
@@ -471,7 +531,8 @@ public class TextEditor extends JPanel {
 					@Override
 					public void run() {
 						int tempUpdated = GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL + 1;
-						if (FileStuff.doesAncestorNlevelsExist(getCurrentTabEditor().loadedTabObj.loadedFile, tempUpdated)) {
+						FileNamed currentRoot = (FileNamed)leftSplitTreeFiles.getModel().getRoot();
+						if (FileStuff.doesAncestorNlevelsExist(currentRoot.mFile, tempUpdated)) {
 							try {
 								GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL = tempUpdated;
 								textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
@@ -764,6 +825,10 @@ public class TextEditor extends JPanel {
 			
 				if(txtOptions.mapViewActive && textEditorUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
 					MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager()).getTxtAreaMiniMap().requestFocus();
+				}
+				
+				if(!txtOptions.mapViewActive && !txtOptions.clipboardViewActive) {
+					getCurrentTabEditor().loadedTabObj.textArea.requestFocus();
 				}
 			}
 		});

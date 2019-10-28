@@ -1,4 +1,4 @@
-package gUI.utils.mainGui;
+package maingUI;
 
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
@@ -18,7 +18,6 @@ import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import maingUI.MainGUI;
 import mainobj.INItializer;
 import media.Sounds;
 import resources.SoundsConfigurator;

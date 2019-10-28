@@ -1,19 +1,16 @@
-package gUI.utils.tree.texteditor;
+package treeutils.om;
 
+import java.io.File;
 import java.util.Arrays;
 
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 
-import amfileutils.om.FileNamed;
+public class FileTreeModel implements TreeModel {
 
-public class FileTreeNamedModel implements TreeModel {
+	    private File root;
 
-	    private final FileNamed mFile;
-
-
-	    public FileTreeNamedModel(final FileNamed root) {
-	        mFile = root;
+	    public FileTreeModel(File root) {
+	        this.root = root;
 	    }
 
 	    @Override
@@ -23,20 +20,20 @@ public class FileTreeNamedModel implements TreeModel {
 
 	    @Override
 	    public Object getChild(Object parent, int index) {
-	    	FileNamed f = (FileNamed) parent;
-		    FileNamed[] sons = f.listFiles();
+	        File f = (File) parent;
+		    File[] sons = f.listFiles();
 			return sons[index];
 			
 	    }
 
 	    @Override
 	    public int getChildCount(Object parent) {
-	    	FileNamed f = (FileNamed) parent;
-	    	FileNamed[] sons = f.listFiles();
+	        File f = (File) parent;
+	        File[] sons = f.listFiles();
 	        if (!f.isDirectory()) {
 	            return 0;
 	        } else {
-		        if (sons != null && sons.length!=0) {
+		        if (sons.length!=0) {
 		        	return sons.length;
 		        }else return 0;  
 	        }
@@ -44,8 +41,8 @@ public class FileTreeNamedModel implements TreeModel {
 
 	    @Override
 	    public int getIndexOfChild(Object parent, Object child) {
-	    	FileNamed par = (FileNamed) parent;
-	    	FileNamed ch = (FileNamed) child;
+	        File par = (File) parent;
+	        File ch = (File) child;
 	        if(par!=null) {
 		        return Arrays.asList(par.listFiles()).indexOf(ch);
 	        }else return 0;
@@ -53,12 +50,12 @@ public class FileTreeNamedModel implements TreeModel {
 
 	    @Override
 	    public Object getRoot() {
-	        return this.mFile;
+	        return root;
 	    }
 
 	    @Override
 	    public boolean isLeaf(Object node) {
-	        FileNamed f = (FileNamed) node;
+	        File f = (File) node;
 	        return !f.isDirectory();
 	    }
 
@@ -70,10 +67,6 @@ public class FileTreeNamedModel implements TreeModel {
 	    @Override
 	    public void valueForPathChanged(javax.swing.tree.TreePath path, Object newValue) {
 	        //do nothing
-	    }
-
-	    public static TreePath getPath(FileNamed file) {
-	    	return new TreePath(file.getFile().getName());
 	    }
 
 	}

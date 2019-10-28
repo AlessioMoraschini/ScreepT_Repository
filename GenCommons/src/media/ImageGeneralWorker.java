@@ -655,9 +655,11 @@ public class ImageGeneralWorker {
 	   * @return int RGB of compliment color
 	   */
 	  public static Color getComplimentColor(Color color) {
-	    
-	    int colorSrc = color.getRGB();
-	    return new Color(colorSrc ^ 0x00ffffff);
+		  
+		  if(color == null) {return Color.WHITE;}
+		  int colorSrc = color.getRGB();
+		  
+		  return new Color(colorSrc ^ 0x00ffffff);
 	  }
 
 	/**

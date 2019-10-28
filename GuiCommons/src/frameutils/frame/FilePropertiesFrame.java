@@ -1,7 +1,9 @@
 package frameutils.frame;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -10,6 +12,8 @@ import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
+import resources.IconsPathConfigurator;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -31,7 +35,6 @@ public class FilePropertiesFrame extends JFrame{
 	public static final Color defaultRed = Color.ORANGE;
 	public static final Color defaultBlue = Color.CYAN;
 	public static final Color defaultGreen = Color.GREEN;
-	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 	private JTextField dynLblFileName;
 	private JTextField dynLblPath;
@@ -48,18 +51,26 @@ public class FilePropertiesFrame extends JFrame{
 	private JLabel dynLblIsHidden;
 
 	public File fileUnderAnalysis;
+	private JLabel lblCreatedOn;
+	private JLabel lblLastAccess;
+	private JLabel dynLblLastAccess;
+	private JLabel dynLblCreationDate;
 	
 	public FilePropertiesFrame(File targetFile, boolean alwaysOnTop) {
 		
 		super();
 		
+		fileUnderAnalysis = targetFile;
+		
 		GuiUtils.setFrameIcon(MyFileView.getExtIcon(targetFile), this);
 		this.setAlwaysOnTop(alwaysOnTop);
+		
+		GuiUtils.centerComponent(this, 550, 245);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.DARK_GRAY);
-		panel.setLayout(new MigLayout("", "[][25%][][grow]", "[grow][][grow][][grow][30px:n:40px]"));
+		panel.setLayout(new MigLayout("", "[][grow][grow][grow][100px:90px][][]", "[][10px:n][][10px:n][grow][grow][30px:n:40px]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportView(panel);
@@ -68,50 +79,70 @@ public class FilePropertiesFrame extends JFrame{
 		lblFileName = new JLabel("File Name:");
 		lblFileName.setForeground(Color.LIGHT_GRAY);
 		lblFileName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblFileName, "cell 0 0,alignx center");
+		panel.add(lblFileName, "cell 0 0,alignx right");
 		
 		dynLblFileName = new JTextField("");
 		dynLblFileName.setForeground(Color.DARK_GRAY);
-		panel.add(dynLblFileName, "cell 1 0 3 1,growx");
+		panel.add(dynLblFileName, "cell 1 0 6 1,growx");
 		
 		JSeparator separator = new JSeparator();
-		panel.add(separator, "cell 0 1 4 1,growx");
+		separator.setBackground(Color.GRAY);
+		panel.add(separator, "cell 0 1 7 1,growx");
 		
 		lblPath = new JLabel("File Path:");
 		lblPath.setForeground(Color.LIGHT_GRAY);
 		lblPath.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblPath, "cell 0 2,alignx center");
+		panel.add(lblPath, "cell 0 2,alignx right");
 		
 		dynLblPath = new JTextField("");
 		dynLblPath.setForeground(Color.DARK_GRAY);
-		panel.add(dynLblPath, "cell 1 2 3 1,growx");
+		panel.add(dynLblPath, "cell 1 2 6 1,growx");
 		
 		JSeparator separator_1 = new JSeparator();
-		panel.add(separator_1, "cell 0 3 4 1,growx");
+		separator_1.setBackground(Color.GRAY);
+		panel.add(separator_1, "cell 0 3 7 1,growx");
 		
 		lblSize = new JLabel("File Size:");
 		lblSize.setForeground(Color.LIGHT_GRAY);
 		lblSize.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblSize, "cell 0 4,alignx center");
+		panel.add(lblSize, "cell 0 4,alignx right");
 		
 		dynLblSize = new JLabel("");
 		dynLblSize.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblSize, "cell 1 4,growx");
+		panel.add(dynLblSize, "cell 1 4 2 1,alignx left");
+		
+		lblCreatedOn = new JLabel("Created on:");
+		lblCreatedOn.setForeground(Color.LIGHT_GRAY);
+		lblCreatedOn.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel.add(lblCreatedOn, "cell 3 4 2 1,alignx right");
+		
+		dynLblCreationDate = new JLabel(" 1970/01/01 - 01:00:00");
+		dynLblCreationDate.setForeground(new Color(176, 196, 222));
+		panel.add(dynLblCreationDate, "cell 5 4 2 1,alignx right");
+		
+		lblLastAccess = new JLabel("Last Access:");
+		lblLastAccess.setForeground(Color.LIGHT_GRAY);
+		lblLastAccess.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel.add(lblLastAccess, "cell 0 5,alignx right");
+		
+		dynLblLastAccess = new JLabel(" 1970/01/01 - 01:00:00");
+		dynLblLastAccess.setForeground(new Color(176, 196, 222));
+		panel.add(dynLblLastAccess, "cell 1 5 2 1,alignx left");
 		
 		lblLastModified = new JLabel("Last Change:");
 		lblLastModified.setForeground(Color.LIGHT_GRAY);
 		lblLastModified.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblLastModified, "cell 2 4,alignx center");
+		panel.add(lblLastModified, "cell 3 5 2 1,alignx right");
 		
 		dynLblLastChange = new JLabel((String) null);
 		dynLblLastChange.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblLastChange, "cell 3 4,alignx left");
+		panel.add(dynLblLastChange, "cell 5 5 2 1,alignx right");
 		
 		footerPanel = new JPanel();
 		footerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		footerPanel.setForeground(Color.WHITE);
 		footerPanel.setBackground(Color.GRAY);
-		panel.add(footerPanel, "cell 0 5 4 1,grow");
+		panel.add(footerPanel, "cell 0 6 7 1,grow");
 		footerPanel.setLayout(new MigLayout("", "[1px,grow][1px,grow][1px,grow][1px,grow]", "[1px,grow]"));
 		
 		dynLblCanRead = new JLabel((String) null);
@@ -129,7 +160,6 @@ public class FilePropertiesFrame extends JFrame{
 		dynLblIsHidden = new JLabel((String) null);
 		dynLblIsHidden.setForeground(Color.WHITE);
 		footerPanel.add(dynLblIsHidden, "cell 3 0");
-		fileUnderAnalysis = targetFile;
 		
 		initializeValues();
 		
@@ -142,9 +172,21 @@ public class FilePropertiesFrame extends JFrame{
 	}
 	
 	public void initializeValues() {
+		
+		BasicFileAttributes attr;
+		try {
+			attr = Files.readAttributes(fileUnderAnalysis.toPath(), BasicFileAttributes.class);
+			dynLblCreationDate.setText(GeneralConfig.GENERIC_FORMATTER.format(attr.creationTime().toMillis()));
+			dynLblLastAccess.setText(GeneralConfig.GENERIC_FORMATTER.format(attr.lastAccessTime().toMillis()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		dynLblFileName.setText(fileUnderAnalysis.getName());
 		dynLblPath.setText(fileUnderAnalysis.getAbsolutePath());
 		dynLblSize.setText(FileStuff.coolFileSize(fileUnderAnalysis));
+		dynLblLastChange.setText(" " + GeneralConfig.GENERIC_FORMATTER.format(new Date(fileUnderAnalysis.lastModified())));
+		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
 		updateFooter();
 	}
 	
@@ -158,13 +200,13 @@ public class FilePropertiesFrame extends JFrame{
 		}
 		GuiUtils.setFrameIcon(MyFileView.getExtIcon(fileToAnalyze), this);
 		this.fileUnderAnalysis = fileToAnalyze;
+		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
 		adjustLabelsLength();
 		this.initializeValues();
 		this.repaint();
 	}
 	
 	public void updateFooter() {
-		dynLblLastChange.setText(" " + dateFormatter.format(new Date(fileUnderAnalysis.lastModified())));
 		
 		// CANREAD
 		if (fileUnderAnalysis.canRead()) {

@@ -621,7 +621,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 									propertiesFrame.setAlwaysOnTop(true);
 									propertiesFrame.setTitle(loadedTabObj.loadedFile.getAbsolutePath());
 									propertiesFrame.setVisible(true);
-									GuiUtils.centerComponent(propertiesFrame, 700, 220);
 								}
 							} catch (Exception e) {
 								logger.error(e);

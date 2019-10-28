@@ -5,10 +5,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
 public class TreeHighlighterAdapter extends MouseMotionAdapter implements MouseListener{
-	int lastSelected;
-	int originalSelected;
+	TreePath lastSelected;
+	TreePath originalSelection;
 	
 	public TreeHighlighterAdapter() {
 	}
@@ -16,28 +17,12 @@ public class TreeHighlighterAdapter extends MouseMotionAdapter implements MouseL
     public void mouseMoved(MouseEvent e)
     {
         JTree tree = (JTree)e.getSource();
-        int selRow = tree.getRowForLocation(e.getX(), e.getY());
+        TreePath selRow = tree.getPathForLocation(e.getX(), e.getY());
         
-        if(selRow == -1){
-            lastSelected = originalSelected;
-        }
-        
-        else if(selRow != lastSelected){
-            tree.setSelectionRow(selRow);
-            lastSelected = selRow;
-        }
     }
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		JTree tree = (JTree)e.getSource();
-		int clicked = tree.getRowForLocation(e.getX(), e.getY());
-		if(clicked == -1){
-            lastSelected = originalSelected;
-        }else if(e.getClickCount() > 1){
-        	originalSelected = clicked;
-        }
-		lastSelected = originalSelected;
 	}
 
 	@Override
@@ -54,13 +39,14 @@ public class TreeHighlighterAdapter extends MouseMotionAdapter implements MouseL
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		JTree tree = (JTree)e.getSource();
-		originalSelected = tree.getRowForLocation(e.getX(), e.getY());
+		 JTree tree = (JTree)e.getSource();
+		 TreePath treeSel = tree.getSelectionPath();
+		 if(treeSel != null) {
+			 originalSelection = treeSel;
+		 }
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }

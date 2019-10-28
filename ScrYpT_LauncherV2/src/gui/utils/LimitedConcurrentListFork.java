@@ -4,16 +4,16 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.Vector;
 
-import gui.utils.om.FileNamed;
+import gui.utils.om.FileNamedLauncherFork;
 
-public class LimitedConcurrentList <T>{
+public class LimitedConcurrentListFork <T>{
 	
 	private Vector<T> list;
 	private int maxSize;
 	
 	// constructor
 	
-	public LimitedConcurrentList(int maxSize){
+	public LimitedConcurrentListFork(int maxSize){
 		this.maxSize = maxSize;
 		list = new Vector();
 	}
@@ -140,8 +140,8 @@ public class LimitedConcurrentList <T>{
 				}
 				if (curr instanceof File) {
 					builder.append(((File) curr).getAbsolutePath()).append(separator);
-				} else if (curr instanceof FileNamed) {
-					builder.append(((FileNamed) curr).mFile.getAbsolutePath()).append(separator);
+				} else if (curr instanceof FileNamedLauncherFork) {
+					builder.append(((FileNamedLauncherFork) curr).mFile.getAbsolutePath()).append(separator);
 				} else {
 					builder.append(curr).append(separator);
 				} 

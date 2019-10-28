@@ -28,7 +28,6 @@ import enums.Themes;
 import frameutils.utils.GuiUtils;
 import gUI.frames.KeyGenFrame;
 import gUI.utils.filedialog.GenericFileChooserDialog;
-import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
 import guistyle.GUIStyelSettings;
@@ -39,6 +38,7 @@ import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import treeutils.om.FileTreeModel;
 import utils.RsyntaxUtils;
 import variousutils.HandleString;
 

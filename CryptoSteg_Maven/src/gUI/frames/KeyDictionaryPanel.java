@@ -11,12 +11,12 @@ import dialogutils.JOptionHelper;
 import enums.BufferedImageType;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
-import gUI.utils.tree.FileTreeModel;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
 import maingUI.MainGUI;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import treeutils.om.FileTreeModel;
 
 import javax.swing.JPanel;
 import java.awt.SystemColor;

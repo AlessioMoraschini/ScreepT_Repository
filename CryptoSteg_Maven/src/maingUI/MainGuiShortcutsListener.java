@@ -1,4 +1,4 @@
-package gUI.utils.shortcutshandler;
+package maingUI;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
@@ -6,8 +6,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
-
-import maingUI.MainGUI;
 
 public class MainGuiShortcutsListener implements KeyEventDispatcher{
 	

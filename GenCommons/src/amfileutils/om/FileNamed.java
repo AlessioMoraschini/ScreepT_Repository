@@ -16,20 +16,25 @@ public class FileNamed{
 	}
 	
 	public boolean isDirectory() {
-        return mFile.isDirectory();
+        return mFile != null && mFile.isDirectory();
     }
 	
 	public FileNamed[] listFiles() {
-        final File[] files = mFile.listFiles();
-        if (files == null) return null;
-        if (files.length < 1) return new FileNamed[0];
-
-        final FileNamed[] ret = new FileNamed[files.length];
-        for (int i = 0; i < ret.length; i++) {
-            final File f = files[i];
-            ret[i] = new FileNamed(f);
-        }
-        return ret;
+        if (mFile != null) {
+			final File[] files = mFile.listFiles();
+			if (files == null)
+				return null;
+			if (files.length < 1)
+				return new FileNamed[0];
+			final FileNamed[] ret = new FileNamed[files.length];
+			for (int i = 0; i < ret.length; i++) {
+				final File f = files[i];
+				ret[i] = new FileNamed(f);
+			}
+			return ret;
+		}else {
+			return new FileNamed[0];
+		}
     }
 
     public File getFile() {
@@ -37,19 +42,19 @@ public class FileNamed{
     }
     
     public String getFileName() {
-        return mFile.getName();
+        return (mFile != null)? mFile.getName() : "null_file";
     }
     
     public String getFileAbsPath() {
-        return mFile.getAbsolutePath();
+        return (mFile != null)? mFile.getAbsolutePath() : "null_file";
     }
     
     public String getCanonicalAbsPath() throws IOException {
-        return mFile.getCanonicalPath();
+        return (mFile != null)? mFile.getCanonicalPath() : "null_file";
     }
 
     @Override 
     public String toString() {
-        return mFile.getName();
+        return (mFile != null)? mFile.getName() : "null_file";
     }
 }

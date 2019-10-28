@@ -1,25 +1,32 @@
 package treeutils;
 
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.swing.JTree;
 import javax.swing.text.Position.Bias;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import amfileutils.om.FileNamed;
 import frameutils.utils.GuiUtils;
 import generic.LimitedConcurrentList;
+import treeutils.om.FileNameCellRenderer;
 
 public class TreeUtils {
+	
+	public static final Color DEF_BACK_SELECTION = new Color(10, 102, 153, 40);
+	public static final Color DEF_BACK_HOVER = new Color(0, 102, 153, 20);
 	
 	public static TreePath getPath(TreeNode treeNode) {
 		List<Object> nodes = new ArrayList<Object>();
@@ -59,14 +66,89 @@ public class TreeUtils {
 			public void mouseMoved(MouseEvent e) {
 				JTree source = (JTree) e.getSource();
 				TreePath tp = source.getPathForLocation(e.getX(), e.getY());
-
+				
 				if (tp != null) {
 					source.setCursor(GuiUtils.CURSOR_HAND);
+					((FileNameCellRenderer)source.getCellRenderer()).setHoverBackgroundEffect(true);
 				} else {
 					source.setCursor(GuiUtils.CURSOR_DEFAULT);
+					((FileNameCellRenderer)source.getCellRenderer()).setHoverBackgroundEffect(false);
 				}
 			}
 		};
+	}
+	
+	public static void expandNodeChildren(JTree tree, TreePath parent) {
+	    try {
+			if (tree != null && parent != null) {
+				TreeNode node = (TreeNode) parent.getLastPathComponent();
+				if (node.getChildCount() >= 0) {
+					for (Enumeration e = node.children(); e.hasMoreElements();) {
+						TreeNode n = (TreeNode) e.nextElement();
+						TreePath path = parent.pathByAddingChild(n);
+						expandNodeChildren(tree, path);
+					}
+				}
+				tree.expandPath(parent);
+			} 
+		} catch (Exception e) {
+		}
+	}
+	
+	/**
+	 *  Recursively expand the given path and its child paths in the given tree
+	 * @param tree
+	 * @param treePath
+	 */
+    public static void expandAllRecursively(JTree tree, TreePath treePath)
+    {
+        TreeModel model = tree.getModel();
+        Object lastPathComponent = treePath.getLastPathComponent();
+        int childCount = model.getChildCount(lastPathComponent);
+        if (childCount == 0)
+        {
+            return;
+        }
+        tree.setExpandsSelectedPaths(true);
+        tree.setSelectionPath(treePath);
+        tree.expandPath(treePath);
+        for (int i=0; i<childCount; i++)
+        {
+            Object child = model.getChild(lastPathComponent, i);
+            int grandChildCount = model.getChildCount(child);
+            if (grandChildCount > 0)
+            {
+                class LocalTreePath extends TreePath
+                {
+                    private static final long serialVersionUID = 0;
+                    public LocalTreePath(
+                        TreePath parent, Object lastPathComponent)
+                    {
+                        super(parent, lastPathComponent);
+                    }
+                }
+                TreePath nextTreePath = new LocalTreePath(treePath, child);
+                expandAllRecursively(tree, nextTreePath);
+            }
+        }
+    }
+
+	public static void collapseNodeChildren(JTree tree, TreePath parent) {
+		try {
+			if (tree != null && parent != null) {
+				TreeNode node = (TreeNode) parent.getLastPathComponent();
+				if (node.getChildCount() >= 0) {
+					for (Enumeration e = node.children(); e.hasMoreElements();) {
+						TreeNode n = (TreeNode) e.nextElement();
+						TreePath path = parent.pathByAddingChild(n);
+						collapseNodeChildren(tree, path);
+					}
+				}
+				tree.collapsePath(parent);
+			} 
+		} catch (Exception e) {
+		}
+		
 	}
 	
 	/**
@@ -78,8 +160,9 @@ public class TreeUtils {
 	 * @param tree
 	 * @throws IOException 
 	 */
-	public static void selectFileInNamedFileTree(File fileToSelect, JTree tree, boolean checkExistance) throws IOException{
+	public static TreePath selectFileInNamedFileTree(File fileToSelect, JTree tree, boolean checkExistance) throws IOException{
 		
+		TreePath nodePath = null;
 		boolean error = fileToSelect == null 
 				|| tree == null 
 				|| tree.getModel() == null 
@@ -87,7 +170,7 @@ public class TreeUtils {
 				|| (checkExistance && !fileToSelect.exists());
 		
 		if(error) {
-			return;
+			return nodePath;
 		}
 		
 		File root = ((FileNamed)tree.getModel().getRoot()).mFile;
@@ -104,18 +187,19 @@ public class TreeUtils {
 			current = current.getParentFile();
 		}
 		nodes.add(new File(root.getCanonicalPath()));
-		
 		// start selection from root node
 		while(nodes.getList().size() > 0){
 			File currentSelection = nodes.getLast();
-			TreePath nodePath = tree.getNextMatch(currentSelection.getName(), 0, Bias.Forward);
+			nodePath = tree.getNextMatch(currentSelection.getName(), 0, Bias.Forward);
 			tree.setExpandsSelectedPaths(true);
 			tree.setSelectionPath(nodePath);
 			tree.expandPath(nodePath);
 			nodes.removeLast();
-		}		
+		}
+		
+		return nodePath;
 	}
-	
+
     public static boolean isDescendant(TreePath path1, TreePath path2){
         int count1 = path1.getPathCount();
         int count2 = path2.getPathCount();

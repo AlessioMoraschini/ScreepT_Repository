@@ -7,6 +7,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.filechooser.FileView;
 
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class MyFileView extends FileView{
@@ -20,8 +21,15 @@ public class MyFileView extends FileView{
     {
     }
 
+    /**
+     * Retrieve icon using file extension. If file is null txt icon will be returned
+     */
     public Icon getIcon(File f){
 
+    	if(f == null) {
+    		return new ImageIcon(IconsPathConfigurator.F_ICON_TXT);
+    	}
+    	
         // If dir
         if(f.isDirectory()) {
             if(dirIcon!=null) 

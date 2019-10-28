@@ -24,6 +24,8 @@ public class GeneralConfig {
 	
 	// TEST ERROR CATCH
 	public static final boolean FLAG_THROW_ERROR_TEST_ON = Boolean.valueOf(resourcesFilePathsMappings.getProperty("FLAG_THROW_ERROR_TEST_ON"));
+	public static final int MAX_N_OF_ERR_DIALOG_OPENED = resourcesFilePathsMappings.getIntVarFromProps("MAX_N_OF_ERR_DIALOG_OPENED", 2);
+	public static final int AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD = resourcesFilePathsMappings.getIntVarFromProps("AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD", 5000);
 	
 	// MAIN PROPERTIES
 	public static final String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION");
@@ -34,7 +36,6 @@ public class GeneralConfig {
 										.replaceAll("T", " at ")
 										.replaceAll("Z", "")
 										.replaceAll("-", "/");
-	
 	// General Folders
 	public static final String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");
 	public static final String DEFAULT_IMAGE_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_IMAGE_FOLDER");
@@ -124,6 +125,7 @@ public class GeneralConfig {
 	public static final Dimension FILE_CHOOSER_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "FILE_CHOOSER_SIZE_STR", DEFAULT_FILE_CHOOSER_SIZE);
 	
 	// TEXT EDITOR DEFAULTS
+	public static final int DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
 	public static final int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);
 	public static final int MAX_HISTORY_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_HISTORY_SIZE", 40);
 	public static final boolean RECTANGULAR_TXT_SELECTION_ALLOWED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("RECTANGULAR_TXT_SELECTION_ALLOWED"));

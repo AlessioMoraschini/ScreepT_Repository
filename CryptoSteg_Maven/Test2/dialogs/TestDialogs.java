@@ -17,9 +17,11 @@ public class TestDialogs {
 	
 	@Test
 	public void testErrorDial() {
-		Error e = new Error();
-		helper.errorScroll("ERROR DETECTED!", "Error DETECTED", e);
-		
-		TestUtils.print("Dialog closed: Test is exiting");
+		while (true) {
+			Error e = new Error();
+			//		helper.errorScroll("ERROR DETECTED!", "Error DETECTED", e);
+			Object res = helper.errorScroll("ERROR DETECTED!", "Error DETECTED", e, new Object[] { "Go", "stay" }, JOptionHelper.YES_OR_NO);
+			TestUtils.printl("Dialog closed: Test is exiting. CHOICE: " + res);
+		}
 	}
 }

@@ -51,8 +51,6 @@ import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
-import gUI.utils.mainGui.MainGuiUtils;
-import gUI.utils.shortcutshandler.MainGuiShortcutsListener;
 import gui.utils.LauncherLoaderFrame;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
@@ -142,7 +140,7 @@ public class MainGUI extends MainGuiParent{
 	private static boolean FLAG_mntmCopyDirStructure = false; 
 	
 	// main app object reference
-	private static MainGUI mainAPP;
+	public static MainGUI mainAPP;
 	public static Dimension preFullScreenSize = null;
 	
 	public static JOptionHelper dialogHelper;
@@ -289,20 +287,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			    	
 			    	if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
-			    		
-			    		if(!askUnsavedTextFiles()) {
-			    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-							return;
-						}
-			    		
-			    		if(doIfTempDecryptedChanged(frmScryptV)) {
-			    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-							return;
-			    		}
-			    		
-			    		// if controls are passed then start real application closing routine
-			    		frmScryptV.setAlwaysOnTop(true);
-			    		closeApplication();
+
+			    		closeApplication(0);
 			    		
 			    	}else {
 			    		
@@ -483,20 +469,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
 							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
 						
-						if(!askUnsavedTextFiles()) {
-							frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-							return;
-						}
-			    		
-						if(doIfTempDecryptedChanged(frmScryptV)) {
-			    			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-							return;
-			    		}
-			    		
-			    		frmScryptV.setAlwaysOnTop(true);
-			    		
 						// perform closing actions and exit application
-						closeApplication();
+						closeApplication(0);
 					}
 					
 					frmScryptV.setAlwaysOnTop(false);
@@ -1388,9 +1362,23 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		}
 	}
 	
-	public static void closeApplication() {
+	public static void closeApplication(int exitCode) {
 		
 		logger.info("\n\n => Starting exit procedure...\n\n");
+		
+		// CHECK UNSAVED TEXT EDITOR FILES
+		if(!askUnsavedTextFiles()) {
+			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			return;
+		}
+		
+		if(doIfTempDecryptedChanged(frmScryptV)) {
+			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			return;
+		}
+		
+		// if controls are passed then start real application closing routine
+		frmScryptV.setAlwaysOnTop(true);
 		
 		closeOpenBlockingFrames();
 		
@@ -1437,7 +1425,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		
 		logger.info("Exit procedure completed succesfully, now software will shut down");
 		
-		System.exit(0);
+		System.exit(exitCode);
 	}
 	
 	public static void closeOpenBlockingFrames(){

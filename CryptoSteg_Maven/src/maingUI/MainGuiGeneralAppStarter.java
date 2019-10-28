@@ -3,7 +3,6 @@ package maingUI;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
@@ -15,7 +14,7 @@ import org.ini4j.Wini;
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
-import generic.ParametricExceptionRunnable;
+import generic.ParametricExceptionThread;
 import handlers.AWTExceptionHandler;
 import launcherutils.IniFileManager;
 import logger.LoggerUtils;
@@ -29,13 +28,14 @@ import variousutils.HandleString;
 public class MainGuiGeneralAppStarter {
 
 	public static final String ERROR_FILE_REASONS = " reasons could be that file does not exist or contains errors ";
-	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: Closing application. \n ";
-	public static final String DIALOG_USER_ERR_INFO = "Send the folder LOGS to analyze the problem if you want to signal this problem. You can find more infos on: " + GeneralConfig.WEBSITE + "\n\n";
+	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: application could not work properly until next restart, but you can try to go on with this session, I'll do my best to keep workin' ;). \n ";
+	public static final String DIALOG_USER_ERR_INFO = "Send me the LOGS to analyze the problem if you want to signal this problem. You can find more infos on: " + GeneralConfig.WEBSITE + "\n\n";
     public static Level LOG_LEVEL_AT_START;
 	
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(MainGuiGeneralAppStarter.class);
 		
+	// used with the only aim to force GeneralConfig properties read
 	private static GeneralConfig configStarter;
 	
 	// Main configuration reference for all sub-modules
@@ -51,11 +51,14 @@ public class MainGuiGeneralAppStarter {
 	
 	public static void main(String[] args) {
 		try {
-			mainTrheadAwtErrorHandler = new AWTExceptionHandler(new ParametricExceptionRunnable(new Runnable() {
+			
+			// CATCH ALL EXCEPTION UNCATCHED DURING SW EXECUTION AND ANALYZE IF THEY ARE Errors or Exceptions
+			mainTrheadAwtErrorHandler = new AWTExceptionHandler(new ParametricExceptionThread(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						doStuffBeforeErrorClose(new Throwable("\n\n  ----  MAIN APPLICATION ERROR DETECTED!   ----\n\n"));
+						// FOrce exit, because AWT already does a check and ask to user, this will be launched when user will choose to kill application
+						doStuffBeforeErrorClose(true, new Throwable("\n\n  ----  MAIN APPLICATION ERROR DETECTED!   ----\n\n"));
 					} catch (Exception e) {
 					}
 				}
@@ -67,7 +70,7 @@ public class MainGuiGeneralAppStarter {
 				configStarter = new GeneralConfig();
 				
 				// SETUP TOOLTIPS PROPERTIES
-				Font tooltipFontFromProps = (GeneralConfig.TOOLTIP_FONT.equals(""))? new Font("Segoe UI", Font.PLAIN, 14) : HandleString.getFontFromString(GeneralConfig.TOOLTIP_FONT);
+				Font tooltipFontFromProps = ("".equals(GeneralConfig.TOOLTIP_FONT))? new Font("Segoe UI", Font.PLAIN, 14) : HandleString.getFontFromString(GeneralConfig.TOOLTIP_FONT);
 				GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, tooltipFontFromProps);
 			
 			} catch (Exception e) {
@@ -109,6 +112,7 @@ public class MainGuiGeneralAppStarter {
 			} catch (IOException e) {
 				logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);
 			}
+			
 			/*************************
 			 * LAUNCH MAIN APPLICATION
 			 *************************/
@@ -116,32 +120,67 @@ public class MainGuiGeneralAppStarter {
 			/** MainApp: LAUNCHED :)**/
 			MainGUI.mainAppRunning = true;
 			
-		// CATCH ALL ERRORS, ADVICE USER AND EXIT
+		// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
 		} catch (Throwable e) {
-			doStuffBeforeErrorClose(e);
+			doStuffBeforeErrorClose(false, e);
 		}
 	}
 	
-	private static void doStuffBeforeErrorClose(Throwable t) {
+	/**
+	 * Main error handler method
+	 * 
+	 * @param forceCloseWithoutAsk
+	 * @param t
+	 */
+	private static void doStuffBeforeErrorClose(boolean forceCloseWithoutAsk, Throwable t) {
 		
-		if (ParametricExceptionRunnable.isCriticalError(t)) {
-			logger.error(CRITICAL_ERROR_MSG, t);
-			dialogHelper.errorScroll(CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO + t.getClass().getName(), "Fatal Error", t);
-			try {
-				logger.info(LoggerUtils.getGeneralErrorExitMsg(GeneralConfig.APPLICATION_NAME, true));
-			} catch (Exception e) {
-				System.out.println("Cannot write to LOGS, maybe there is an error in LOG_properties file (or it does not exist).");
-			}
+		try {
+			Object res;
 			
-			deleteSignalFileForExternalJars();
-			
+			if (forceCloseWithoutAsk || ParametricExceptionThread.isCriticalError(t)) {
+				logger.error(CRITICAL_ERROR_MSG, t);
+				
+				if (!forceCloseWithoutAsk) {
+					res = dialogHelper.errorScroll(CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO, "Critical Error", t, AWTExceptionHandler.options, JOptionHelper.YES_OR_NO);
+					// IF not kill then return back
+					if (!AWTExceptionHandler.options[0].equals(res)) {
+						// CASE CONTINUE
+						return;
+					} 
+				}
+				
+				try {
+					logger.info(LoggerUtils.getGeneralErrorExitMsg(GeneralConfig.APPLICATION_NAME, true));
+				} catch (Exception e) {
+					System.out.println("Cannot write to LOGS, maybe there is an error in LOG_properties file (or it does not exist).");
+				}
+
+				try {
+					MainGUI.closeApplication(1);
+				} catch (Exception e) {
+					System.exit(1);
+				}
+				
+			} else {
+				logger.error("An Exception occurred: ", t);
+				res = new JOptionHelper(null).warnScroll(
+						"An Exception occurred, but I'still here ;) \n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>" + DIALOG_USER_ERR_INFO,
+						"An Exception Occurred",
+						t, 
+						AWTExceptionHandler.options, 
+						JOptionHelper.YES_OR_NO);
+				
+				if (AWTExceptionHandler.options[0].equals(res)) {
+					// CASE KILL APPLICATION
+					try {
+						MainGUI.closeApplication(1);
+					} catch (Exception e) {
+						System.exit(1);
+					}
+				} 
+			} 
+		} catch (Throwable e) {
 			System.exit(1);
-		}else {
-			logger.error("An Exception occurred: ", t);
-			boolean choice = dialogHelper.errorScroll("An Exception occurred, but I'still here ;) \n\n => PRESS NO IF YOU WANT TO KILL APPLICATION\n\n =>" + DIALOG_USER_ERR_INFO + t.getClass().getName() +Arrays.deepToString(t.getStackTrace()), "An Exception Occurred");
-			if(!choice) {
-				System.exit(1);
-			}
 		}
 		
 	}

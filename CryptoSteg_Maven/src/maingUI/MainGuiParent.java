@@ -37,7 +37,6 @@ import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import gUI.utils.mainGui.MainGuiUtils;
 import generic.LimitedConcurrentList;
 import gui.utils.LauncherLoaderFrame;
 import jmenu.CustomJmenuItem;

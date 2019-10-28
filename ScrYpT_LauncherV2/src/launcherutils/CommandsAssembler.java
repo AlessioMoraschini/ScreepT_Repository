@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import gui.utils.LimitedConcurrentList;
+import gui.utils.LimitedConcurrentListFork;
 import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;
@@ -16,11 +16,11 @@ public class CommandsAssembler {
 	static Logger logger = Logger.getLogger(CommandsAssembler.class);
 		
 	// OBJECT FIELDS
-	private LimitedConcurrentList<String> execCommand;
+	private LimitedConcurrentListFork<String> execCommand;
 	public JvmHelper jvmHelper;
 	
 	public CommandsAssembler(JvmHelper jvmHelper) {
-		this.execCommand = new LimitedConcurrentList<String>(Integer.MAX_VALUE);	
+		this.execCommand = new LimitedConcurrentListFork<String>(Integer.MAX_VALUE);	
 		this.jvmHelper = jvmHelper;
 	}
 	
@@ -107,6 +107,6 @@ public class CommandsAssembler {
 	 * this will empty the current list of eventually loaded commands, refreshing to new LimitedList()
 	 */
 	public void emptyCommandsList() {
-		this.execCommand = new LimitedConcurrentList<String>(Integer.MAX_VALUE);	
+		this.execCommand = new LimitedConcurrentListFork<String>(Integer.MAX_VALUE);	
 	}
 }
