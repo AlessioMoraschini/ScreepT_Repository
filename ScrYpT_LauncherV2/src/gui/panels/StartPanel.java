@@ -16,7 +16,6 @@ import javax.swing.ToolTipManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
-import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 
@@ -33,7 +32,8 @@ import java.awt.Cursor;
 import java.awt.Insets;
 
 public class StartPanel extends JFrame{
-	
+	private static final long serialVersionUID = 5822120722073962394L;
+
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(StartPanel.class); 
 	
@@ -72,6 +72,7 @@ public class StartPanel extends JFrame{
 
 		GuiUtils.centerFrame(this, W, H);
 		this.setResizable(false);
+		this.setAlwaysOnTop(true);
 		
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);

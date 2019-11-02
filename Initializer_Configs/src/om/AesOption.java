@@ -15,6 +15,7 @@ public class AesOption {
 	}
 	
 	public AesOption(boolean AES) {
+		this();
 		flagAes = AES;
 	}
 	

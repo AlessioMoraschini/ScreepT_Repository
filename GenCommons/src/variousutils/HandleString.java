@@ -10,8 +10,8 @@ import java.util.StringTokenizer;
 
 import javax.swing.JTextArea;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 import media.color.HslColor;
 
@@ -614,6 +614,8 @@ public class HandleString {
 			return StringEscapeUtils.escapeJson(source);
 		}else if (EscapeType.JAVA.equals(type)) {
 			return StringEscapeUtils.escapeJava(source);
+		}else if (EscapeType.XML.equals(type)) {
+			return StringEscapeUtils.escapeXml(source);
 		}else if (EscapeType.XML_10.equals(type)) {
 			return StringEscapeUtils.escapeXml10(source);
 		}else if (EscapeType.XML_11.equals(type)) {
@@ -642,7 +644,7 @@ public class HandleString {
 			return StringEscapeUtils.unescapeJson(source);
 		}else if (EscapeType.JAVA.equals(type)) {
 			return StringEscapeUtils.unescapeJava(source);
-		}else if (EscapeType.XML_10.equals(type) || EscapeType.XML_11.equals(type)) {
+		}else if (EscapeType.XML.equals(type) || EscapeType.XML_10.equals(type) || EscapeType.XML_11.equals(type)) {
 			return StringEscapeUtils.unescapeXml(source);
 		}else {
 			// if no match found

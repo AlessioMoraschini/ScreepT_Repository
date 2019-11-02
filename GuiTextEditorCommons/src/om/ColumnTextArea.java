@@ -3,12 +3,14 @@ package om;
 import java.awt.Dimension;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import frameutils.utils.GuiUtils;
+import resources.GeneralConfig;
 
 public class ColumnTextArea extends RSyntaxTextArea{
 	private static final long serialVersionUID = -2828990655552935752L;
@@ -16,7 +18,7 @@ public class ColumnTextArea extends RSyntaxTextArea{
 	// ColumnTextArea logger creation
 	static Logger logger = Logger.getLogger(ColumnTextArea.class);
 
-	public final static int DEF_CARET_BLINK_RATE = 400;
+	public final static int DEF_CARET_BLINK_RATE = GeneralConfig.DEF_CARET_BLINK_RATE;
 	
 	public AtomicBoolean isRectangularModeOn = new AtomicBoolean(true);
 	RSyntaxTextArea currentRef;
@@ -111,7 +113,18 @@ public class ColumnTextArea extends RSyntaxTextArea{
     
     @Override
     public void copyAsStyledText() {
+    	int selStart = getSelectionStart();
+    	int selEnd = getSelectionEnd();
+    	if(selEnd == selStart) {
+    		setSelectionStart(0);
+        	setSelectionEnd(getText().length()-1);
+    	}
+    	
     	super.copyAsStyledText();
+    	
+    	requestFocus();
+    	setSelectionStart(selStart);
+    	setSelectionEnd(selEnd);
     }
 
     class ColumnSelectionCaret extends javax.swing.text.DefaultCaret {
@@ -130,7 +143,8 @@ public class ColumnTextArea extends RSyntaxTextArea{
         @Override
         public void mouseClicked(java.awt.event.MouseEvent e) {
             super.mouseClicked(e);
-            if(isRectangularModeOn.get() && e.getClickCount()==1 && !shiftDown){
+            boolean rightClick = SwingUtilities.isRightMouseButton(e);
+            if(!rightClick && isRectangularModeOn.get() && e.getClickCount()==1 && !shiftDown){
                 this.getComponent().getHighlighter().removeAllHighlights();
             }
             
@@ -153,7 +167,8 @@ public class ColumnTextArea extends RSyntaxTextArea{
 	                if(viewToModel != -1){
 	                    try {
 	                    	
-	                    	if (!shiftDown) {
+	                    	boolean rightClick = SwingUtilities.isRightMouseButton(e);
+	                    	if (!shiftDown && !rightClick) {
 								currentRef.removeAllLineHighlights();
 								currentRef.getHighlighter().removeAllHighlights();
 							}
@@ -164,7 +179,7 @@ public class ColumnTextArea extends RSyntaxTextArea{
 
 	                    // SELECT with shift (only if position is different) -> select from currentCaret to viewToModel
 	                    if(shiftDown && viewToModel != currentRef.getCaretPosition()) {
-	                    	currentRef.setSelectionStart(currentRef.getCaretPosition());
+	                    	currentRef.setSelectionStart(currentRef.getSelectionStart());
 	                    	currentRef.setSelectionEnd(viewToModel);
 	                    }
 	                }

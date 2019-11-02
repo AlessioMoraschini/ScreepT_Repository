@@ -1,31 +1,42 @@
 package handlers;
 
+import java.util.Arrays;
+
+import org.apache.log4j.Logger;
+
 import dialogutils.JOptionHelper;
 import generic.IParametricRunnable;
 import generic.ParametricExceptionThread;
+import mainobj.InitOwner;
 import media.Sounds;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 
 public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	
+	static Logger logger = Logger.getLogger(AWTExceptionHandler.class);
+		
 	public volatile static int N_OF_DIALOG_OPENED = 0;
 
 	public static final Object[] options = new Object[] { "Kill Application", "Continue" };
 	
 	public static final String ERROR_FILE_REASONS = " reasons could be that file does not exist or contains errors ";
 	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: Closing application. \n ";
-	public static final String DIALOG_USER_ERR_INFO = "Send the folder LOGS to analyze the problem if you want to signal this problem. You can find more infos on: " + GeneralConfig.WEBSITE + "\n\n";
-
+	public static final String DIALOG_USER_ERR_INFO = "You can export Logs going under help menu -> export logs: export them on your pc and send them to the mail ("+GeneralConfig.MAIL_BUGS
+			+") if you want to signal this problem. You can find more infos on: " + GeneralConfig.WEBSITE + "\n\n";
+	
 	IParametricRunnable doAfterError;
 	Thread doAfterErrorThread;
+	InitOwner initOwner;
 	
 	/**
 	 * When an exception will be catched, if exception is critical then parametric runnable will be launched (parametricRun method invoked)
 	 * @param doAfterError
 	 */
-	public AWTExceptionHandler(IParametricRunnable doAfterError) {
+	public AWTExceptionHandler(IParametricRunnable doAfterError, InitOwner initOwner) {
 		this.doAfterError = doAfterError;
+		this.initOwner = initOwner;
+		
 		registerExceptionHandler();
 		
 		new Thread(new Runnable() {
@@ -62,7 +73,16 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	}
 	
 	public void handle(Throwable t) {
+
+		try {
+			logger.error("AWT UNHANDLED EXCEPTION DETECTED: ", t);
+		} catch (Throwable e) {
+			System.out.println(Arrays.deepToString(t.getStackTrace()));
+		}
+		
 		if(checkAllowedAndUpdCount()) {
+			
+			
 			try {
 			
 				Object res = options[1];
@@ -70,20 +90,24 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 				if (ParametricExceptionThread.isCriticalError(t)) {
 					Sounds.playSound(SoundsConfigurator.ERROR, 0.6f);
 					res = new JOptionHelper(null).errorScroll(
-							CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO, 
-							"Critical Error", 
+							CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), 
+							"Critical Error",
 							t, 
 							options, 
 							JOptionHelper.YES_OR_NO);
 					
-				}else {
-					Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.6f);
-					res = new JOptionHelper(null).warnScroll(
-							"An Exception occurred, but I'still here ;) \n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>" + DIALOG_USER_ERR_INFO,
-							"An Exception Occurred",
-							t, 
-							options, 
-							JOptionHelper.YES_OR_NO);
+				}else{
+					if (initOwner.getInitializer().getGenOpt().isExceptionAdvicesEnabled()) {
+						Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.5f);
+						res = new JOptionHelper(null).warnScroll(
+								"An Exception occurred, but I'm still here ;) "
+										+ "\n\n(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"
+										+ DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(),
+								"An Exception Occurred", t, options, JOptionHelper.YES_OR_NO);
+					}else {
+						// default continue on exception
+						res = options[1];
+					}
 					
 				}
 				

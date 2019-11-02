@@ -29,6 +29,7 @@ import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
+import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
 import om.TextEditorOption;
 import resources.GeneralConfig;
@@ -228,6 +229,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			}
 		}
 		
+		sync();
 		FileStuff.loadFileTxtArea(dataMap.get(options.getLastFileOpenedClipboard()), txtAreaClipboard, null, null);
 		dialogHelper.enabledAdvices = true;
 	}
@@ -324,29 +326,31 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			}
 		});
 		
-		// Combo list refresh when clicking on reload
+		// Combo list refresh when clicking on combo item
 		comboClipboards.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				if(comboClipboards.getSelectedItem() == null) {return;}
-				
-				if (options.getLastFileOpenedClipboard() != null && !isReloadingCombo.get()) {
-					saveCurrClipboardSilent();
-				}
-				options.setLastFileOpenedClipboard((String)comboClipboards.getSelectedItem());
-				if (options.getLastFileOpenedClipboard() != null) {
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							try {
-								reload(options.getLastFileOpenedClipboard());
-								options.lastFileOpenedClipboard = options.getLastFileOpenedClipboard();
-								config.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastFileOpenedClipboard", options.lastFileOpenedClipboard);
-							} catch (IOException e1) {
-								logger.error("Error reloading current Clipboard panel from file.");
+				if(!isReloadingCombo.get()) {
+					
+					if(comboClipboards.getSelectedItem() == null) {return;}
+					
+					if (options.getLastFileOpenedClipboard() != null && !isReloadingCombo.get()) {
+						saveCurrClipboardSilent();
+					}
+					options.setLastFileOpenedClipboard((String)comboClipboards.getSelectedItem());
+					if (options.getLastFileOpenedClipboard() != null) {
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								try {
+									reload(options.getLastFileOpenedClipboard());
+									options.lastFileOpenedClipboard = options.getLastFileOpenedClipboard();
+								} catch (IOException e1) {
+									logger.error("Error reloading current Clipboard panel from file.");
+								}
 							}
-						}
-					});
+						});
+					}
 				}
 			}
 		});
@@ -356,13 +360,15 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				isReloadingCombo.set(true);
+				if (dialogHelper.yesOrNo("Wanna save current before reload?", "save current before reload?")) {
+					saveCurrClipboardSilent();
+				}
+				isReloadingCombo.set(false);
+				reloadComboClipboards(dataMap.get(config.getTextEditorOpt().lastFileOpenedClipboard));
 				SwingUtilities.invokeLater(new Runnable() {
-					@Override
 					public void run() {
-						if (dialogHelper.yesOrNo("Wanna save current before reload?", "save current before reload?")) {
-							saveCurrClipboardSilent();
-						}
-						reloadComboClipboards(new File("aiushdiauiagdsaygduyaguagduagudguyagu"));
+						btnReload.doClick();
 					}
 				});
 			}
@@ -430,18 +436,17 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			File selected = dataMap.get(target);
 			// Create fake safe unexisting file to avoid null pointer
 			if (selected == null) {
-				dialogHelper.warn("Given file is NULL, cannot load content.", null);
-				logger.error("Given file is NULL, cannot load content.");
+				dialogHelper.warn("Given file has not been found, cannot load content.", null);
+				logger.error("Given file has not been found, cannot load content.");
 				return;
 			}
-			if (!selected.exists()) {
-				selected.createNewFile();
+			if (selected.exists()) {
+				// Update text from file
+				txtAreaClipboard.setText("");
+				FileStuff.appendFileTxtArea(selected, txtAreaClipboard, true);
+				logger.debug("Current clipboard reloaded from file: " + selected);
+				options.setLastFileOpenedClipboard(target);
 			}
-			// Update text from file
-			txtAreaClipboard.setText("");
-			FileStuff.appendFileTxtArea(selected, txtAreaClipboard, true);
-			logger.debug("Current clipboard reloaded from file: " + selected);
-			options.setLastFileOpenedClipboard(target);
 		}
 	}
 	
@@ -481,10 +486,10 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
 		if (this.isVisible() && reference != null && txtAreaClipboard != null) {
 			// Get dynamic reference from interface taken from main editor utils class
-			txtAreaClipboard.setBackground(reference.getBackground());
-			RsyntaxUtils.setBackground(txtAreaClipboard, reference.getBackground());
-			txtAreaClipboard.setForeground(reference.getForeground());
-			RsyntaxUtils.setForeground(txtAreaClipboard, reference.getCaretColor());
+			txtAreaClipboard.setBackground(config.getTextEditorOpt().getFilePanelBackCol().darker());
+			RsyntaxUtils.setBackground(txtAreaClipboard, config.getTextEditorOpt().getFilePanelBackCol().darker());
+			txtAreaClipboard.setForeground(ImageGeneralWorker.getComplimentColor(txtAreaClipboard.getBackground()));
+			RsyntaxUtils.setForeground(txtAreaClipboard, txtAreaClipboard.getForeground());
 			txtAreaClipboard.setCurrentLineHighlightColor(txtAreaClipboard.getBackground().brighter());
 			RsyntaxUtils.setFont(txtAreaClipboard, GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT);
 			dialogManager.loadThemeIntoTarget(txtAreaClipboard);
@@ -504,7 +509,15 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		comboClipboards.setModel( model );
 		
 		if(selected == null || !selected.exists()) {
-			comboClipboards.setSelectedItem(options.lastFileOpenedClipboard);
+			if (new File(options.lastFileOpenedClipboard).exists()) {
+				comboClipboards.setSelectedItem(options.lastFileOpenedClipboard);
+			}else {
+				try {
+					comboClipboards.setSelectedItem(0);
+				} catch (Exception e) {
+					logger.error("Exception reloading clipboard element: "+selected, e);
+				}
+			}
 		}else {
 			comboClipboards.setSelectedItem(selected.getName());
 		}

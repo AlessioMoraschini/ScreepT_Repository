@@ -133,6 +133,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_UNPIN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/unpin.png";
 	public static final String ICON_COLOR_SAMPLER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropper.png";
 	public static final String ICON_COLOR_SAMPLER_BIG = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropperBig.png";
+	public static final String ICON_SPELLCHECKER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/spellChecker.png";
 	
 	///////////////// TREE RENDERER ICONS /////////////////
 	public static final String iconFolderPath = GeneralConfig.RESOURCES_DIR + "Icons/General/Folder.png";

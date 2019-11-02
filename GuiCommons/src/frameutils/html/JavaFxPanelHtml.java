@@ -237,6 +237,26 @@ public class JavaFxPanelHtml extends JPanel {
             }
     	});
     }
+
+    @Deprecated
+    public void selectAll(String match, String backgroundJsColor) {
+    	
+    	String selectAllScript = "if (window.find && window.getSelection) { "
+    			+ "document.designMode = \"on\";"
+    			+ "var sel = window.getSelection();"
+    			+"sel.collapse(document.body, 0);"
+    			+"while (window.find("+match+")) {"
+                	+"document.execCommand(\"HiliteColor\", false, "+backgroundJsColor+");"
+                	+"sel.collapseToEnd();"
+            	+"} document.designMode = \"off\";}";
+    	
+    	Platform.runLater(new Runnable() {
+    		@Override
+    		public void run() {
+    			webEngine.executeScript(selectAllScript);
+    		}
+    	});
+    }
     
     public void goToIndex() {
     	Platform.runLater(new Runnable() {

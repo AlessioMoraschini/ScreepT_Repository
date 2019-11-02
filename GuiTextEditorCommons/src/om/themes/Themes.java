@@ -1,4 +1,4 @@
-package enums;
+package om.themes;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -27,7 +27,6 @@ public enum Themes {DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml"),
 		for(Themes i : Themes.values()) {
 			vector.add(i.defaultPath);
 		}
-		
 		return vector;
 	}
 	

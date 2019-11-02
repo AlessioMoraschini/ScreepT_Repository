@@ -1,5 +1,6 @@
 package mouseutils;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -37,10 +38,14 @@ public class TreeFileMouseListenerBasic {
 	public JTree tree;
 	public File selectedNode;
 	public JFrame propertiesFrame = null; 
+	public Component parent;
 
-	// constructor
 	public TreeFileMouseListenerBasic() {
 		
+	}
+	// constructor
+	public TreeFileMouseListenerBasic(Component parent) {
+		this.parent = parent;
 	}
 	
 	public TreeFileMouseListenerBasic(JTree treeIn) {
@@ -159,6 +164,7 @@ public class TreeFileMouseListenerBasic {
 							try {
 								if (selectedNode != null && selectedNode.exists()) {
 								propertiesFrame = new FilePropertiesFrame(selectedNode, true);
+								propertiesFrame.setLocationRelativeTo(null);
 								propertiesFrame.setTitle(selectedNode.getAbsolutePath());
 								propertiesFrame.setVisible(true);
 								GuiUtils.centerComponent(propertiesFrame, 650, 240);

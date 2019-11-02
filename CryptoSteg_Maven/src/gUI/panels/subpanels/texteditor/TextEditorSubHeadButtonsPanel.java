@@ -53,7 +53,6 @@ import conversion.Text2Speech;
 import crypt.aes.AesCipher;
 import dialogutils.GenericFileChooser;
 import dialogutils.JOptionHelper;
-import enums.ThemesWrapper;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.EscapeReplacerFrame;
 import frameutils.frame.FilePropertiesFrame;
@@ -73,6 +72,7 @@ import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
+import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.SelectionDtoFull;
@@ -171,6 +171,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JToggleButton btnToggleFileView;
 	public JToggleButton toggleBtnMap;
 	public JToggleButton toggleBtnClipboard;
+	public JToggleButton toggleButtonSpellCheck;
 
 	private JSpinner tabSizeSpinner;
 
@@ -202,7 +203,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	TextEditorSubHeadButtonsPanel thisHeaderRef;
 	
 	/************************
-	*	Main CONSTRUCTOR
+	*	Main subHeader CONSTRUCTOR
 	************************/
 	public TextEditorSubHeadButtonsPanel(TextEditor parent) {
 		setBackground(Color.DARK_GRAY);
@@ -219,7 +220,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		DEFAULT_FORE_COL = currentConfiguration.getTextEditorOpt().foreCol;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("fill, insets 0, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:25px,grow][:0px:25px,grow]"));
+		setLayout(new MigLayout("fill, insets 0, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:25px,grow][:0px:25px,grow]"));
 		
 		btnCloseAllTabs = new JButton("");
 		btnCloseAllTabs.setForeground(Color.BLACK);
@@ -250,6 +251,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		toggleBtnMap.setCursor(GuiUtils.CURSOR_HAND);
 		toggleBtnMap.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MAP));
 		add(toggleBtnMap, "cell 28 0,growy");
+		
+		toggleButtonSpellCheck = new JToggleButton("");
+		toggleButtonSpellCheck.setToolTipText(TextEditorTooltips.tooltipSpellChecker);
+		toggleButtonSpellCheck.setCursor(GuiUtils.CURSOR_HAND);
+		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
+		add(toggleButtonSpellCheck, "cell 29 0,grow");
 		
 		btnLowerAfterDots = new JButton(".tT");
 		btnLowerAfterDots.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -378,7 +385,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		
 		labelTabSize = new JLabel("Tab Size:");
 		labelTabSize.setMinimumSize(new Dimension(50, 12));
-		add(labelTabSize, "cell 30 0");
+		add(labelTabSize, "cell 31 0");
 		labelTabSize.setHorizontalAlignment(SwingConstants.RIGHT);
 		labelTabSize.setForeground(SystemColor.menu);
 		
@@ -386,7 +393,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		tabSizeSpinner.setMinimumSize(new Dimension(35, 12));
 		tabSizeSpinner.setToolTipText(TextEditorTooltips.tooltipTabSize);
 		tabSizeSpinner.setCursor(GuiUtils.CURSOR_HAND);
-		add(tabSizeSpinner, "cell 31 0,growx");
+		add(tabSizeSpinner, "cell 32 0,growx");
 		tabSizeSpinner.setModel(new SpinnerNumberModel(currentConfiguration.getTextEditorOpt().getTabSize(), 1, 9, 1));
 
 		lblMargin = new JLabel("Margin:");
@@ -394,12 +401,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMargin.setForeground(SystemColor.menu);
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		add(lblMargin, "cell 32 0,alignx center");
+		add(lblMargin, "cell 33 0,alignx center");
 
 		lBLMargin = new JLabel("12");
 		lBLMargin.setMinimumSize(new Dimension(14, 12));
 		lBLMargin.setForeground(Color.WHITE);
-		add(lBLMargin, "cell 33 0,alignx center");
+		add(lBLMargin, "cell 34 0,alignx center");
 
 		btnToggleFileView = new JToggleButton("");
 		btnToggleFileView.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
@@ -521,17 +528,17 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		chckbxShowTabGrid.setSelected(currentConfiguration.getTextEditorOpt().isTabLineVisible());
 		chckbxShowTabGrid.setForeground(SystemColor.menu);
 		chckbxShowTabGrid.setBackground(Color.DARK_GRAY);
-		add(chckbxShowTabGrid, "cell 30 1 2 1");
+		add(chckbxShowTabGrid, "cell 31 1 2 1");
 				
 		lblFontSize = new JLabel("Font size: ");
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFontSize.setForeground(SystemColor.menu);
-		add(lblFontSize, "cell 32 1,alignx center");
+		add(lblFontSize, "cell 33 1,alignx center");
 		
 		lblSIZE = new JLabel("");
 		lblSIZE.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		lblSIZE.setForeground(SystemColor.window);
-		add(lblSIZE, "cell 33 1,alignx center");
+		add(lblSIZE, "cell 34 1,alignx center");
 		lblSIZE.setText(String.valueOf(GeneralConfig.DEFAULT_FONT.getSize()) + " Px");
 		
 		sliderFontSize = new JSlider(4, 100);
@@ -539,12 +546,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
 		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
 		sliderFontSize.setValue(currentConfiguration.getTextEditorOpt().getFont().getSize());
-		add(sliderFontSize, "cell 34 1 3 1,growx");
+		add(sliderFontSize, "cell 35 1 3 1,growx");
 		
 		slider_margin = new JSlider(0, 100, 0);
 		slider_margin.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		add(slider_margin, "cell 34 0 3 1,growx");
+		add(slider_margin, "cell 35 0 3 1,growx");
 		
 		txtAesKey = new JPasswordField();
 		txtAesKey.setMinimumSize(new Dimension(12, 12));
@@ -568,6 +575,13 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		txtAesKey.setEchoChar((char) 0);
 		
 		addHandlers();
+		
+		if(currentConfiguration.getTextEditorOpt().spellChecker) {
+			// Initially not selected
+			boolean last = toggleButtonSpellCheck.isSelected();
+			toggleButtonSpellCheck.doClick();
+			toggleButtonSpellCheck.setSelected(!last);
+		}
 
 		startAesKeyCheckThread();
 	}
@@ -618,6 +632,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 								if (loadedTabObj != null && loadedTabObj.loadedFile != null
 										&& loadedTabObj.loadedFile.exists()) {
 									propertiesFrame = new FilePropertiesFrame(loadedTabObj.loadedFile, true);
+									propertiesFrame.setLocationRelativeTo(parent);
 									propertiesFrame.setAlwaysOnTop(true);
 									propertiesFrame.setTitle(loadedTabObj.loadedFile.getAbsolutePath());
 									propertiesFrame.setVisible(true);
@@ -683,7 +698,32 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							currentConfiguration.getTextEditorOpt().mapViewActive = false;
 						}
 						currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
-						parent.rightPaneShowOrHide();
+						parent.rightPaneShowOrHide(true);
+					}
+				});
+			}
+		});
+
+		// SPELLCHECKER ON/OFF
+		toggleButtonSpellCheck.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+						
+						if (toggleButtonSpellCheck.isSelected()) {
+							loadedTabObj.updateSpellCheckerParser(currentConfiguration.getTextEditorOpt().prefDictspellChecker, true);
+							currentConfiguration.getTextEditorOpt().spellChecker = true;
+							currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "spellChecker", true);
+							toggleButtonSpellCheck.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+						
+						} else {
+							RsyntaxUtils.removeAllParsers(loadedTabObj.textArea);
+							currentConfiguration.getTextEditorOpt().spellChecker = false;
+							currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "spellChecker", false);
+							toggleButtonSpellCheck.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+						}
 					}
 				});
 			}
@@ -704,7 +744,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
 						}
 						currentConfiguration.getTextEditorOpt().mapViewActive = false;
-						parent.rightPaneShowOrHide();
+						parent.rightPaneShowOrHide(true);
 					}
 				});
 			}
@@ -1039,17 +1079,19 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							loadedTabObj.textArea.append(encoded);
 
 						} catch (Throwable e) {
-							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error",
-									JOptionPane.ERROR_MESSAGE);
+							parent.dialogHelper.error("Something has gone wrong, it's possible that UTF charset can be causing problems :(", "Error");
 							logger.error("Exception happened!", e);
+							
+							txtAesKey.requestFocusInWindow();
 						} finally {
 							// textArea_1.getDocument().addDocumentListener(textAreaChangedListener);
 							loadedTabObj.unsaved = true;
 							parent.getCurrentTabEditor().updateSavedLabelNTab(null);
 						}
 					} else {
-						JOptionPane.showMessageDialog(parent, "Please enter a password, empty key text!",
-								"Empty password", JOptionPane.WARNING_MESSAGE);
+						parent.dialogHelper.warn("Please enter a password, empty key text!","Empty password");
+						
+						txtAesKey.requestFocusInWindow();
 					}
 					isCrypterOn = false;
 					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
@@ -1078,17 +1120,19 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							decoded = decrypter.decryptLines(displayedSource);
 							loadedTabObj.textArea.setText("");
 						} catch (Exception e) {
-							JOptionPane.showMessageDialog(null, "Wrong key, retry! :(", "Error",
-									JOptionPane.ERROR_MESSAGE);
+							parent.dialogHelper.error("Something has gone wrong, it's possible that UTF charset can be causing problems :(", "Error");
+
 							logger.error("Exception happened!", e);
+							txtAesKey.requestFocusInWindow();
 						} finally {
 							// textArea_1.getDocument().removeDocumentListener(textAreaChangedListener);
 							loadedTabObj.textArea.append(decoded);
 							// textArea_1.getDocument().addDocumentListener(textAreaChangedListener);
 						}
 					} else {
-						JOptionPane.showMessageDialog(parent, "Please enter a password, empty key text!",
-								"Empty password", JOptionPane.WARNING_MESSAGE);
+						parent.dialogHelper.warn("Please enter a password, empty key text!","Empty password");
+						
+						txtAesKey.requestFocusInWindow();
 					}
 					isCrypterOn = false;
 					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
@@ -1352,9 +1396,18 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// FILE FORMAT SELECTOR
 		comboFileFormat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				
 				// backup unsaved to avoid changing saved info with theme change
 				textEditorUtils.applyFileFormatFromCombo();
+				
+				if (currentConfiguration.getTextEditorOpt().spellChecker) {
+					RsyntaxUtils.removeAllParsers(loadedTabObj.textArea);
+					loadedTabObj.updateSpellCheckerParser(currentConfiguration.getTextEditorOpt().prefDictspellChecker, true);
+				}else {
+					RsyntaxUtils.removeAllParsers(loadedTabObj.textArea);
+				}
+				
 				parent.getCurrentTabEditor().updateSavedLabelNTab(null);
 			}
 		});
@@ -1749,7 +1802,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		return wrappers;
 	}
 	
-	public void initGuiFromConfig(boolean refreshGuiStyle) {
+	public void initGuiFromConfig(boolean refreshTheme) {
 		final TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 		
 		SwingUtilities.invokeLater(new Runnable() {
@@ -1759,6 +1812,15 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				sliderFontSize.setValue(txtOptions.getFont().getSize());
 				// AUTO LANGUAGE SYNC
 				chckbxLockLanguage.setSelected(!txtOptions.defaultAutoSyntaxSync);
+				
+				if (refreshTheme) {
+					textEditorUtils.applySelectedTheme(); // SetSelected does not trigger action itself
+				}
+				
+				textEditorUtils.updateMargin(); // SetValue does not trigger action itself
+				
+				parent.revalidate();
+				parent.repaint();
 			}
 		});
 	}

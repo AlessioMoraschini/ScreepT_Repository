@@ -26,6 +26,21 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED) {
 			
+			/*
+			 *  EXIT TOGGLE MODE -> ESC and TOGGLE MODE ACTIVE
+			 */
+			if(e.getKeyCode() == 27 && currentGui.isImmersiveModeOn.get()) {
+				try {
+					if (MainGUI.frmScryptV.isFocused()) {
+						MainGUI.mainGuiUtils.immersiveModeToggle();
+						logger.debug("Immersive mode exit triggered with \"esc\": current mainFrame is active!");
+					} else {
+						logger.warn("Immersive mode esc skipped: current mainFrame is not active!");
+					}
+				} catch (Exception e2) {
+					logger.error("Immersive mode esc skipped: an error occurred!", e2);
+				}
+			}
 
 		}
 		
@@ -33,17 +48,6 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
 	      
-			/*
-			 *  EXIT TOGGLE MODE -> ESC and TOGGLE MODE ACTIVE
-			 */
-			if(e.getKeyCode() == 27 && currentGui.isImmersiveModeOn.get()) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						MainGUI.mainGuiUtils.immersiveModeToggle();
-					}
-				});
-			}
-			
 			// HERE SHORTCUTS KEY WITH CTR|ALT|SHIFT
 			if (isShortcutKey(e)) {
 				/**

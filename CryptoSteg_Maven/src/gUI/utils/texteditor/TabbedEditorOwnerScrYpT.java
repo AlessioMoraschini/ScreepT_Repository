@@ -53,28 +53,50 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public void doAfterTabRefresh() {
+		// create lazy refs for common used objects during current check
+		TextEditorOption txtOpt = textEditor.currentConfiguration.getTextEditorOpt();
+		TabTextEditorObj loadedTabObj = textEditor.getCurrentTabEditor().loadedTabObj;
+		
 		if (!textEditor.isPreloading) {
-			TextEditorOption txtOpt = textEditor.currentConfiguration.getTextEditorOpt();
-			TabTextEditorObj loadedTabObj = textEditor.getCurrentTabEditor().loadedTabObj;
-			txtUtils.applyCurrentGraphicsTextArea(loadedTabObj.textArea);
-			// update load target textArea
+			
+			txtUtils.applySelectedTheme();
+			
+			// Most heavy operation, reloads current textarea based on current settings
+			txtUtils.applyCurrentGraphicsTextArea(loadedTabObj.textArea, false);
+			
+			// Update load target textArea into search/replace/gotoline dialogs eventually opened
 			txtUtils.refreshTxtAreaReference();
+			
+			// Resize container to fit well into actual size
 			txtUtils.resizeFrameToDefault(textEditor.mainApplication);
+			
+			// Refresh tree if needed based on current options selected
 			txtUtils.refreshTree(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, false);
-			// update eventually opened info frames
+			
+			// Update eventually opened file properties frames
 			if (textEditor.subHeaderPanel.propertiesFrame != null) {
 				if (loadedTabObj != null && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
 					textEditor.subHeaderPanel.propertiesFrame.refreshValues(loadedTabObj.loadedFile);
 				}
 			}
+			
+			// Sync map if it's active
 			if (txtOpt.mapViewActive && txtUtils != null && txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
-				// syncronyze map if active
 				txtUtils.getTypedIRightPanel();
 				((MapTextAreaPanel) textEditor.rightSplitContainer).sync();
 			}
+			
 			txtUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !textEditor.subHeaderPanel.chckbxLockLanguage.isSelected());
+			// APPLY SELECTED
+			if(!textEditor.subHeaderPanel.chckbxLockLanguage.isSelected()) {
+				txtUtils.applyFileFormatFromCombo();
+			}
+			// Refresh current style from combo only if different from current actually applied to loaded text area tab
 		}
+		
+		
 		try {
+			// Update last opened files to have current on top of last opened
 			textEditor.currentConfiguration.getTextEditorOpt().addFileIntoLastOpenedFiles(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile);
 		} catch (Exception e) {
 			logger.warn("Cannot select current file between last opened ones");

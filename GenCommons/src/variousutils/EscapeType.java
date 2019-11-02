@@ -5,6 +5,7 @@ public enum EscapeType {HTML_3,
 						ECMASCRIPT,
 						JSON,
 						JAVA,
+						XML,
 						XML_10,
 						XML_11;
 

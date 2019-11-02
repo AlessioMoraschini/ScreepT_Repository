@@ -16,7 +16,6 @@ import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.FileOptions;
-import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import variousutils.ListCharsets;
@@ -63,22 +62,17 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JCheckBox chckbxAutosave;
 	private JComboBox<String> comboCharsets;
 	private JCheckBox chckbxHideLauncherAt;	
+	private JCheckBox chckbxExceptionAdvicesEnabled;
 	private JLabel lblIntMinutes;
 	private JButton btnResetValues;
 	private JButton btnDiscard;
 	private JButton btnUseSettings;
 	private JButton btnSaveConf;
 	
-	// actual values
-	private static int AUTOSAVE_INTERVAL;
-	private static boolean AUTOSAVE_FLAG;
-	private static String CURRENT_USERNAME;
-	private static String CHARSET;
-	private static float GENVOLUME;
-	
 	// default values
 	private static int BACKUP_AUTOSAVE_INTERVAL;
 	private static boolean BACKUP_AUTOSAVE_FLAG;
+	private static boolean BACKUP_EXCEPTION_ADVICES;
 	private static String BACKUP_CURRENT_USERNAME;
 	private static String BACKUP_CHARSET;
 	private static float BACKUP_GENVOLUME;
@@ -123,83 +117,86 @@ public class GeneralOptionsFrame extends ParentFrame{
 		
 		initializeValues();		
 		
-		getContentPane().setBackground(new Color(119, 136, 153));
-		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[:10px:100px,grow][:110px:110px][:80:180,grow][130,grow][110,grow][:100px:100px,grow][:100px:170px][:100px:100px][:75px:75px][:75px:75px][:10px:100px,grow]", "[:50:70px][5][][:5:5px][30][30][10][][:5:5px][10%,grow,baseline]"));
+		getContentPane().setBackground(Color.DARK_GRAY);
+		getContentPane().setLayout(new MigLayout("", "[:10px:100px,grow][:110px:110px][:80:180,grow][130,grow][100][:100px:100px,grow][:100px:170px][:100px:100px][:75px:75px][:75px:75px][:10px:100px,grow]", "[:50:70px][5][][:5:5px][30][30][10][][:5:5px][10%,grow,baseline]"));
 		
 		JPanel panel = new JPanel();
-		panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel.setForeground(Color.BLACK);
-		panel.setBorder(new LineBorder(Color.BLACK, 4));
-		panel.setBackground(Color.DARK_GRAY);
+		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		panel.setBackground(Color.GRAY);
 		getContentPane().add(panel, "cell 1 0 9 1,grow");
-		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[10,grow][10,grow][200px,grow]", "[]"));
-		
-		chckbxAutosave = new JCheckBox("Autosave");
-		chckbxAutosave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		chckbxAutosave.setFont(new Font("SansSerif", Font.BOLD, 14));
-		chckbxAutosave.setForeground(Color.WHITE);
-		panel.add(chckbxAutosave, "cell 0 0");
-		chckbxAutosave.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxAutosave.setBackground(new Color(119, 136, 153));
-		chckbxAutosave.setSelected(AUTOSAVE_FLAG);
+		panel.setLayout(new MigLayout("", "[10][][][200px,grow][10]", "[grow]"));
 		
 //		 calculate minutes: interval in seconds / 60
-		lblIntMinutes = new JLabel(AUTOSAVE_INTERVAL/60 +" Minutes + "+ AUTOSAVE_INTERVAL%60+" Seconds");
+		lblIntMinutes = new JLabel(currentConfiguration.getFileOpt().autosaveInterval/60 +" Minutes + "+ currentConfiguration.getFileOpt().autosaveInterval%60+" Seconds");
 		lblIntMinutes.setBackground(new Color(240, 248, 255));
 		lblIntMinutes.setForeground(new Color(255, 255, 255));
 		lblIntMinutes.setFont(new Font("SansSerif", Font.BOLD, 13));
-		getContentPane().add(lblIntMinutes, "cell 5 2 5 1,alignx left,aligny center");
+		getContentPane().add(lblIntMinutes, "cell 5 2 2 1,alignx left,aligny center");
 		
-		chckbxHideLauncherAt = new JCheckBox("Hide Launcher at start");
-		chckbxHideLauncherAt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panel.add(chckbxHideLauncherAt, "cell 1 0");
-		chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
-		chckbxHideLauncherAt.setHorizontalAlignment(SwingConstants.CENTER);
-		chckbxHideLauncherAt.setForeground(Color.WHITE);
-		chckbxHideLauncherAt.setFont(new Font("SansSerif", Font.BOLD, 14));
-		chckbxHideLauncherAt.setBackground(new Color(119, 136, 153));
+		chckbxAutosave = new JCheckBox("Autosave");
+		panel.add(chckbxAutosave, "cell 0 0 3 1");
+		chckbxAutosave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxAutosave.setToolTipText("Enable/Disable periodic autosave (also when exiting application) current configuration will be automatically saved");
+		chckbxAutosave.setFont(new Font("SansSerif", Font.BOLD, 14));
+		chckbxAutosave.setForeground(Color.LIGHT_GRAY);
+		chckbxAutosave.setHorizontalAlignment(SwingConstants.CENTER);
+		chckbxAutosave.setBackground(new Color(119, 136, 153));
 		
 		JLabel lblGeneralOptions = new JLabel("General Options");
 		lblGeneralOptions.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblGeneralOptions.setForeground(new Color(230, 230, 250));
-		lblGeneralOptions.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
+		lblGeneralOptions.setForeground(Color.WHITE);
+		lblGeneralOptions.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
 		lblGeneralOptions.setBackground(Color.LIGHT_GRAY);
-		panel.add(lblGeneralOptions, "cell 2 0,alignx right");
+		panel.add(lblGeneralOptions, "cell 3 0,alignx center");
+		
+		lblLogLevelChosen = new JLabel("LogLevel: " + MainGuiGeneralAppStarter.LOG_LEVEL_AT_START);
+		lblLogLevelChosen.setForeground(Color.LIGHT_GRAY);
+		panel.add(lblLogLevelChosen, "cell 4 0");
+		lblLogLevelChosen.setFont(new Font("Tahoma", Font.BOLD, 13));
 		
 		JLabel lblIntervalInSeconds = new JLabel("Autosave Interval");
+		lblIntervalInSeconds.setForeground(Color.WHITE);
 		lblIntervalInSeconds.setFont(new Font("SansSerif", Font.BOLD, 12));
 		getContentPane().add(lblIntervalInSeconds, "cell 1 2,alignx center,aligny center");
 		
 		// update only local variable fields, INItializer will be updated on exit/save/use/discard
 		spinnerInterval = new JSpinner();
 		spinnerInterval.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		spinnerInterval.setModel(new SpinnerNumberModel(AUTOSAVE_INTERVAL, FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600000, 1));
+		spinnerInterval.setModel(new SpinnerNumberModel(100, FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600000, 1));
 		getContentPane().add(spinnerInterval, "cell 2 2 2 1,growx,aligny center");
-		spinnerInterval.setValue(AUTOSAVE_INTERVAL);
-		if(AUTOSAVE_FLAG) {
-			spinnerInterval.setEnabled(true);
-		}else {
-			spinnerInterval.setEnabled(false);
-		}
 		
 		JLabel label_1 = new JLabel("=");
+		label_1.setForeground(Color.WHITE);
 		label_1.setFont(new Font("SansSerif", Font.BOLD, 21));
 		getContentPane().add(label_1, "cell 4 2,alignx center");
 		
+		chckbxHideLauncherAt = new JCheckBox("Hide Launcher at start");
+		chckbxHideLauncherAt.setToolTipText("When checked, launcher will not be shown on startup");
+		getContentPane().add(chckbxHideLauncherAt, "cell 7 2 3 1,alignx center");
+		chckbxHideLauncherAt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
+		chckbxHideLauncherAt.setHorizontalAlignment(SwingConstants.CENTER);
+		chckbxHideLauncherAt.setForeground(Color.LIGHT_GRAY);
+		chckbxHideLauncherAt.setFont(new Font("SansSerif", Font.BOLD, 14));
+		chckbxHideLauncherAt.setBackground(new Color(119, 136, 153));
+		
 		JLabel lblDefaultCharset = new JLabel("Default Charset");
+		lblDefaultCharset.setForeground(Color.WHITE);
 		lblDefaultCharset.setFont(new Font("SansSerif", Font.BOLD, 13));
 		getContentPane().add(lblDefaultCharset, "cell 1 4,alignx center");
 		
 		comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
 		comboCharsets.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboCharsets.setToolTipText("Choose general application Charset to use");
 		getContentPane().add(comboCharsets, "cell 2 4 2 1,growx");
-		comboCharsets.setSelectedItem(CHARSET);
 		
 		JSeparator separator = new JSeparator();
 		btnResetValues = new JButton("Reset initial values");
 		btnResetValues.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
-		lblVolume = new JLabel("Volume");
+		lblVolume = new JLabel("Volume:");
+		lblVolume.setForeground(Color.WHITE);
 		lblVolume.setFont(new Font("SansSerif", Font.BOLD, 13));
 		getContentPane().add(lblVolume, "cell 4 4,alignx center");
 		
@@ -212,28 +209,33 @@ public class GeneralOptionsFrame extends ParentFrame{
 		getContentPane().add(sliderVolume, "cell 6 4 4 1,growx");
 		
 		JLabel lblUsername = new JLabel("Username");
+		lblUsername.setForeground(Color.WHITE);
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblUsername, "cell 1 5,alignx center");
 		
 		textFieldUname = new JTextField();
 		textFieldUname.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		textFieldUname.setText(CURRENT_USERNAME);
+		textFieldUname.setToolTipText("Choose name used to customize messages and various dialogs and advices");
 		textFieldUname.setHorizontalAlignment(SwingConstants.CENTER);
-		textFieldUname.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		textFieldUname.setFont(new Font("SansSerif", Font.PLAIN, 16));
 		textFieldUname.setColumns(10);
 		textFieldUname.setBorder(new LineBorder(Color.DARK_GRAY, 3));
-		textFieldUname.setBackground(new Color(224, 255, 255));
-		getContentPane().add(textFieldUname, "cell 2 5 4 1,growx");
+		textFieldUname.setBackground(Color.LIGHT_GRAY);
+		getContentPane().add(textFieldUname, "cell 2 5 5 1,growx");
 		
-		lblLogLevelChosen = new JLabel("LogLevel: " + MainGuiGeneralAppStarter.LOG_LEVEL_AT_START);
-		lblLogLevelChosen.setFont(new Font("Tahoma", Font.BOLD, 13));
-		getContentPane().add(lblLogLevelChosen, "cell 7 5 3 1,alignx center");
+		chckbxExceptionAdvicesEnabled = new JCheckBox("Exception Advices enabled");
+		chckbxExceptionAdvicesEnabled.setForeground(Color.LIGHT_GRAY);
+		chckbxExceptionAdvicesEnabled.setToolTipText("Enable/Disable error dialog in case of general warnings detected by the application");
+		chckbxExceptionAdvicesEnabled.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxExceptionAdvicesEnabled.setFont(new Font("SansSerif", Font.BOLD, 14));
+		getContentPane().add(chckbxExceptionAdvicesEnabled, "cell 7 5 3 1,alignx right");
 		getContentPane().add(separator, "cell 1 7 9 1,growx");
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));
 		getContentPane().add(btnResetValues, "cell 1 9 2 1");
 		
 		btnSaveConf = new JButton("Save Values");
+		btnSaveConf.setToolTipText("Close this dialog and use current settings with explicit save on phisical file");
 		btnSaveConf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSaveConf.setForeground(Color.BLACK);
 		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -241,6 +243,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		getContentPane().add(btnSaveConf, "cell 7 9");
 
 		btnUseSettings = new JButton("Use");
+		btnUseSettings.setToolTipText("Close this dialog and use current settings without explicit save on phisical file");
 		btnUseSettings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnUseSettings.setForeground(Color.WHITE);
 		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -248,6 +251,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		getContentPane().add(btnUseSettings, "cell 8 9,growx");
 
 		btnDiscard = new JButton("Discard");
+		btnDiscard.setToolTipText("Close this dialog and discard every change");
 		btnDiscard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDiscard.setForeground(new Color(0, 0, 0));
 		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -288,7 +292,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				lblDynVolume.setText(sliderVolume.getValue() + "%");
-				GENVOLUME = (sliderVolume.getValue()/100.0f);
+				float GENVOLUME = (sliderVolume.getValue()/100.0f);
+				currentConfiguration.getGenOpt().setGeneralVolume(GENVOLUME);
 			}
 		});
 		
@@ -297,20 +302,40 @@ public class GeneralOptionsFrame extends ParentFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AUTOSAVE_FLAG = chckbxAutosave.isSelected();
+				boolean AUTOSAVE_FLAG = chckbxAutosave.isSelected();
 				currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
-				if(chckbxAutosave.isSelected()) {
+				if(AUTOSAVE_FLAG) {
+					chckbxAutosave.setForeground(Color.WHITE);
 					spinnerInterval.setEnabled(true);
 				}else {
+					chckbxAutosave.setForeground(Color.LIGHT_GRAY);
 					spinnerInterval.setEnabled(false);
 				}
+			}
+		});
+		
+		// EXCFEPTION ADVICE ON/OFF HANDLER
+		chckbxExceptionAdvicesEnabled.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean exceptionAdvices = chckbxExceptionAdvicesEnabled.isSelected();
+				currentConfiguration.getGenOpt().setExceptionAdvicesEnabled(exceptionAdvices);
+				refreshExceptionCheckFore();
+			}
+		});
+
+		// HIDE LAUNCHER ON/OFF HANDLER - ONLY COLOR FONT, the rest is handled in ad-hoc method when saving-resetting
+		chckbxHideLauncherAt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				refreshHideCheckFore();
 			}
 		});
 		
 		// AUTOSAVE SPINNER HANDLER
 		spinnerInterval.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				AUTOSAVE_INTERVAL = (int)spinnerInterval.getValue();
+				int AUTOSAVE_INTERVAL = (int)spinnerInterval.getValue();
 				currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
 				lblIntMinutes.setText(AUTOSAVE_INTERVAL/60 +" Minutes + "+ AUTOSAVE_INTERVAL%60+" Seconds");
 			}
@@ -320,7 +345,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 		comboCharsets.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CHARSET = (String)comboCharsets.getSelectedItem();
+				String CHARSET = (String)comboCharsets.getSelectedItem();
+				currentConfiguration.getGenOpt().setCharset(CHARSET);
 				logger.info("Default charset: " + CHARSET);
 			}
 		});
@@ -338,7 +364,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 			  }
 
 			  public void resetCurrentIni() {
-				  CURRENT_USERNAME = textFieldUname.getText();
+				  String CURRENT_USERNAME = textFieldUname.getText();
 				  currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
 			  }
 		});
@@ -426,36 +452,65 @@ public class GeneralOptionsFrame extends ParentFrame{
 		});
 	}
 	
+	public void refreshCheckBoxForeground() {
+		refreshAutosaveCheckFore();
+		refreshExceptionCheckFore();
+		refreshHideCheckFore();
+	}
+	
+	public void refreshHideCheckFore() {
+		boolean hideLauncher = chckbxHideLauncherAt.isSelected();
+		if(hideLauncher) {
+			chckbxHideLauncherAt.setForeground(Color.WHITE);
+		}else {
+			chckbxHideLauncherAt.setForeground(Color.LIGHT_GRAY);
+		}
+	}
+	public void refreshAutosaveCheckFore() {
+		boolean AUTOSAVE_FLAG = chckbxAutosave.isSelected();
+		if(AUTOSAVE_FLAG) {
+			chckbxAutosave.setForeground(Color.WHITE);
+		}else {
+			chckbxAutosave.setForeground(Color.LIGHT_GRAY);
+		}
+	}
+	public void refreshExceptionCheckFore() {
+		boolean exceptionAdvices = chckbxExceptionAdvicesEnabled.isSelected();
+		if(exceptionAdvices) {
+			chckbxExceptionAdvicesEnabled.setForeground(Color.WHITE);
+		}else {
+			chckbxExceptionAdvicesEnabled.setForeground(Color.LIGHT_GRAY);
+		}
+	}
+	
 	private void initializeValues() {
-		// initialize values from currentConfig
-		AUTOSAVE_INTERVAL = currentConfiguration.getFileOpt().getAutosaveInterval()/1000;
-		AUTOSAVE_FLAG = currentConfiguration.getFileOpt().isFlagAutosave();
-		CURRENT_USERNAME = currentConfiguration.getGenOpt().getUserName();
-		CHARSET = System.getProperty("file.encoding");
-		GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		
 		// initialize default values (by value)
-		BACKUP_AUTOSAVE_INTERVAL = AUTOSAVE_INTERVAL;
-		BACKUP_AUTOSAVE_FLAG = AUTOSAVE_FLAG;
-		BACKUP_CURRENT_USERNAME = new String(CURRENT_USERNAME);
-		BACKUP_CHARSET = new String(CHARSET); 
-		BACKUP_GENVOLUME = GENVOLUME;
+		BACKUP_AUTOSAVE_INTERVAL = currentConfiguration.getFileOpt().getAutosaveInterval()/1000;
+		BACKUP_AUTOSAVE_FLAG = currentConfiguration.getFileOpt().isFlagAutosave();
+		BACKUP_CURRENT_USERNAME = new String(currentConfiguration.getGenOpt().getUserName());
+		BACKUP_CHARSET = System.getProperty("file.encoding");
+		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
+		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 	}
 	
 	/**
 	 * updates gui with current used values
 	 */
 	private void updateGUIComponents() {
-    	textFieldUname.setText(CURRENT_USERNAME);
-    	spinnerInterval.setValue(AUTOSAVE_INTERVAL);
-    	sliderVolume.setValue((int)(GENVOLUME*100));
+    	textFieldUname.setText(currentConfiguration.getGenOpt().getUserName());
+    	spinnerInterval.setValue(currentConfiguration.getFileOpt().getAutosaveInterval()/1000);
+    	sliderVolume.setValue((int)((currentConfiguration.getGenOpt().getGeneralVolume())*100));
     	lblDynVolume.setText(currentConfiguration.getGenOpt().getVolumeString());
-    	SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = GENVOLUME;
-    	chckbxAutosave.setSelected(AUTOSAVE_FLAG);
-    	comboCharsets.setSelectedItem(CHARSET);
+    	SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
+    	chckbxAutosave.setSelected(currentConfiguration.getFileOpt().isFlagAutosave());
+    	chckbxExceptionAdvicesEnabled.setSelected(currentConfiguration.getGenOpt().isExceptionAdvicesEnabled());
+    	comboCharsets.setSelectedItem(currentConfiguration.getGenOpt().getCharset());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
 //    	GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
 //		GUIStyelSettings.updateAllWindowsLaf();
+    	
+    	refreshCheckBoxForeground();
 	}
 		
 	/**
@@ -463,19 +518,15 @@ public class GeneralOptionsFrame extends ParentFrame{
 	 */
 	private void resetValuesAndAdd() {
 		// reset current values
-		AUTOSAVE_INTERVAL = BACKUP_AUTOSAVE_INTERVAL;
-		AUTOSAVE_FLAG = BACKUP_AUTOSAVE_FLAG;
-		CURRENT_USERNAME = BACKUP_CURRENT_USERNAME;
-		CHARSET = BACKUP_CHARSET;
-		GENVOLUME = BACKUP_GENVOLUME;
+		currentConfiguration.getFileOpt().autosaveInterval = BACKUP_AUTOSAVE_INTERVAL*1000;
+		currentConfiguration.getFileOpt().setFlagAutosave(BACKUP_AUTOSAVE_FLAG);
+		currentConfiguration.getGenOpt().setUserName(BACKUP_CURRENT_USERNAME);
+		currentConfiguration.getGenOpt().setCharset(BACKUP_CHARSET);
+		currentConfiguration.getGenOpt().setGeneralVolume(BACKUP_GENVOLUME);
+		currentConfiguration.getGenOpt().setExceptionAdvicesEnabled(BACKUP_EXCEPTION_ADVICES);
 		
 		// reset INItializer reference currentConfiguration too
-		currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
-		currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
-		currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
-		currentConfiguration.getGenOpt().setCharset(CHARSET);
-		currentConfiguration.getGenOpt().setGeneralVolume(GENVOLUME);
-		System.setProperty("file.encoding", CHARSET);
+		System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
 
 	}
 	
@@ -484,29 +535,25 @@ public class GeneralOptionsFrame extends ParentFrame{
 	 */
 	private void setValuesAndAdd() {
 		// set current values
-		BACKUP_AUTOSAVE_INTERVAL = AUTOSAVE_INTERVAL;
-		BACKUP_AUTOSAVE_FLAG = AUTOSAVE_FLAG;
-		BACKUP_CURRENT_USERNAME = CURRENT_USERNAME;
-		BACKUP_CHARSET = CHARSET;
-		BACKUP_GENVOLUME = GENVOLUME;
+		BACKUP_AUTOSAVE_INTERVAL = currentConfiguration.getFileOpt().getAutosaveInterval()/1000;
+		BACKUP_AUTOSAVE_FLAG = currentConfiguration.getFileOpt().isFlagAutosave();
+		BACKUP_CURRENT_USERNAME = currentConfiguration.getGenOpt().getUserName();
+		BACKUP_CHARSET = currentConfiguration.getGenOpt().getCharset();
+		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
+		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		
-		// set INItializer reference currentConfiguration too
-		currentConfiguration.getFileOpt().setAutosaveInterval(AUTOSAVE_INTERVAL*1000);
-		currentConfiguration.getFileOpt().setFlagAutosave(AUTOSAVE_FLAG);
-		currentConfiguration.getGenOpt().setUserName(CURRENT_USERNAME);
-		currentConfiguration.getGenOpt().setCharset(CHARSET);
-		currentConfiguration.getGenOpt().setGeneralVolume(GENVOLUME);
-		System.setProperty("file.encoding", CHARSET);
+		System.setProperty("file.encoding", BACKUP_CHARSET);
 
 	}
 	
 	private void writeValues() {
 		// write single values to file ini associated to currentConf
-		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", CURRENT_USERNAME);
-		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "charset", CHARSET);
-		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "generalVolume", GENVOLUME);
-		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "flagAutosave", AUTOSAVE_FLAG);
-		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "autosaveInterval", AUTOSAVE_INTERVAL*1000);
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", currentConfiguration.getGenOpt().getUserName());
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "charset", currentConfiguration.getGenOpt().getCharset());
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "generalVolume", currentConfiguration.getGenOpt().getGeneralVolume());
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "exceptionAdvicesEnabled", currentConfiguration.getGenOpt().isExceptionAdvicesEnabled());
+		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "flagAutosave", currentConfiguration.getFileOpt().isFlagAutosave());
+		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "autosaveInterval", currentConfiguration.getFileOpt().autosaveInterval);
 		
 		// write launcher configuration
 		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());

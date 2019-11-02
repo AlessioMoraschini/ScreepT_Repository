@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import om.GuiOption;
 import om.TextEditorOption;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import tabbededitor.CustomTabbedEditor;
 import utils.RsyntaxUtils;
 
 import javax.swing.JLabel;
@@ -17,6 +17,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -29,6 +30,7 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
+import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
@@ -49,6 +51,7 @@ import java.awt.Dimension;
 import java.awt.ComponentOrientation;
 
 public class GraphicPreferencesFrame extends ParentFrame {
+	private static final long serialVersionUID = 6658781789560743187L;
 
 	// initialize Logger
 	// GraphicPreferencesFrame logger
@@ -58,9 +61,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private final JFrame thisFrame = this;
 	private JSlider sliderMenuSize;
 	private JSlider sliderLogSize;
-	private JComboBox comboStyleLaF;
-	private JCheckBox chckbxDarklight;
-	private JCheckBox chckBoxAntiAliasingON;
+	private JComboBox<LookAndFeelInfo> comboStyleLaF;
+	private JComboBox<FileNamed> comboSpellcheckerDictionary;
 
 	private JButton btnDiscard;
 	private JButton btnUseSettings;
@@ -98,15 +100,18 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private static boolean BACKUP_TXTAREA_SHOW_BRACKETS_POPUP;
 	private static boolean BACKUP_TXTAREA_SHOW_EOL_DELIM;
 	private static boolean BACKUP_TXTAREA_AUTOCHECK_CHANGES;
+	private static String BACKUP_TXTAREA_SPECCLCHECKER_DICT;
 
 	private INItializer currentConfiguration;
 	
 	private TextEditor currentEditor;
-	private CustomTabbedEditor currentTabEditor;
 	
 	private JPanel mainPanel;
 	private JScrollPane mainPanelContainer;
 	
+	private JCheckBox chckbxDarklight;
+	
+	private JCheckBox chckBoxAntiAliasingON;
 	private JCheckBox chckbxAutoindentation;
 	private JCheckBox chckbxAnimateBrackets;
 	private JCheckBox chckbxBracketsMatching;
@@ -123,23 +128,23 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JCheckBox checkBoxMarkOccurrences;
 	private JCheckBox chckbxRoundSelectionEdges;
 	private JCheckBox chckbxEmulatedTabsWith;
-	
-	JOptionHelper dialogHelper;
 	private JCheckBox chckbxMarkEOL;
 	private JCheckBox chckbxShowBracket;
 	private JCheckBox chckbxAutoCheckFiles;
 	private JLabel lblTextAreaOptions;
 	private JLabel lblGenericGraphicalOptions;
+	private JLabel lblSpellcheckerDictionarySelected;
 	private JSeparator separator_2;
 	private JSeparator separator_3;
 	private JSeparator separator_4;
+	
+	JOptionHelper dialogHelper;
 	
 	public GraphicPreferencesFrame(INItializer currentConf) {
 		
 		isActive.set(true);
 		
 		currentEditor = MainGUI.initTxtWriter;
-		currentTabEditor = MainGUI.initTxtWriter.getCurrentTabEditor();
 		
 		logger.info(this.getClass().getName() + " Starting...");
 
@@ -162,7 +167,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		mainPanel = new JPanel();
 		mainPanel.setBackground(new Color(0, 0, 0));
 		mainPanel.setBackground(Color.LIGHT_GRAY);
-		mainPanel.setLayout(new MigLayout("", "[:30px:140px][:80px:140px][:60px:90px][:25px:45px][40,grow][10][:100px:10px,grow][10px][35px][:40px:60px][:30px:40px][:50px:50px]", "[:50:70px][25][10][30][20][30][30][30][30][30][:5px:10px,grow][15px,grow,baseline]"));
+		mainPanel.setLayout(new MigLayout("", "[:30px:140px][:80px:140px][:60px:90px,grow][:25px:45px][40,grow][10][:100px:10px,grow][10px][35px][:40px:60px][:30px:40px][:50px:50px]", "[:50:70px][25][10][30][20][30][30][30][30][30][][:5px:10px,grow][15px,grow,baseline]"));
 		mainPanelContainer = new JScrollPane(mainPanel);
 		getContentPane().add(mainPanelContainer);
 
@@ -223,7 +228,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		lblGuiType.setFont(new Font("Tahoma", Font.BOLD, 13));
 		mainPanel.add(lblGuiType, "cell 0 2 2 1,alignx right");
 
-		comboStyleLaF = new JComboBox(GUIStyelSettings.getLookAndFeelList());
+		comboStyleLaF = new JComboBox<LookAndFeelInfo>(GUIStyelSettings.getLookAndFeelList());
 		comboStyleLaF.setPreferredSize(new Dimension(620, 26));
 		comboStyleLaF.setMinimumSize(new Dimension(600, 26));
 		comboStyleLaF.setCursor(GuiUtils.CURSOR_HAND);
@@ -399,44 +404,55 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		chckbxAutoCheckFiles.setSelected(false);
 		chckbxAutoCheckFiles.setFont(new Font("SansSerif", Font.BOLD, 13));
 		mainPanel.add(chckbxAutoCheckFiles, "cell 8 9 4 1");
+		
+		lblSpellcheckerDictionarySelected = new JLabel("Spellchecker dictionary:");
+		lblSpellcheckerDictionarySelected.setFont(new Font("Tahoma", Font.BOLD, 13));
+		mainPanel.add(lblSpellcheckerDictionarySelected, "cell 0 10 3 1,alignx center");
+		
+		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
+		comboSpellcheckerDictionary.setCursor(GuiUtils.CURSOR_HAND);
+		comboSpellcheckerDictionary.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+		mainPanel.add(comboSpellcheckerDictionary, "cell 3 10 9 1,growx");
 						
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBackground(Color.GRAY);
 		separator_1.setOpaque(true);
-		mainPanel.add(separator_1, "cell 0 10 12 1,growx,aligny center");
+		mainPanel.add(separator_1, "cell 0 11 12 1,growx,aligny center");
 
 		btnResetValues = new JButton("Reset initial values");
 		btnResetValues.setCursor(GuiUtils.CURSOR_HAND);
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));
-		mainPanel.add(btnResetValues, "cell 0 11 4 1,growx,aligny center");
+		mainPanel.add(btnResetValues, "cell 0 12 4 1,growx,aligny center");
 								
 		btnSaveConf = new JButton("Save Values");
 		btnSaveConf.setCursor(GuiUtils.CURSOR_HAND);
 		btnSaveConf.setForeground(new Color(0, 0, 0));
 		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSaveConf.setBackground(new Color(169, 169, 169));
-		mainPanel.add(btnSaveConf, "cell 6 11 3 1,growx,aligny center");
+		mainPanel.add(btnSaveConf, "cell 6 12 3 1,growx,aligny center");
 
 		btnUseSettings = new JButton("Use");
 		btnUseSettings.setCursor(GuiUtils.CURSOR_HAND);
 		btnUseSettings.setForeground(Color.WHITE);
 		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnUseSettings.setBackground(Color.DARK_GRAY);
-		mainPanel.add(btnUseSettings, "cell 9 11,growx,aligny center");
+		mainPanel.add(btnUseSettings, "cell 9 12,growx,aligny center");
 
 		btnDiscard = new JButton("Discard");
 		btnDiscard.setCursor(GuiUtils.CURSOR_HAND);
 		btnDiscard.setForeground(new Color(0, 0, 0));
 		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDiscard.setBackground(new Color(205, 92, 92));
-		mainPanel.add(btnDiscard, "cell 10 11 2 1,growx,aligny center");
+		mainPanel.add(btnDiscard, "cell 10 12 2 1,growx,aligny center");
 
 		initGuiFromConfig();
 		
 		addHandlers();
 		
-		MainGUI.initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
+		if (currentEditor != null) {
+			MainGUI.initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
+		}
 		
 //		if (TextEditor.loadedTabObj != null) {
 //			TextEditor.loadedTabObj.textArea.setFont(initialTxtEditorFont);
@@ -457,8 +473,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				resetConfigValues(currentConfiguration);
 				
 				antialiasingApply(currentConfiguration.getTextEditorOpt().antialiasedTxtArea);
-				currentEditor.initGuiFromConfig(true);
-
+				if (currentEditor != null) {
+					currentEditor.initGuiFromConfig(true, true);
+				}
 				logger.debug(
 						"Closing " + getClass().getName() + " - Configuration resetted: \n" + currentConfiguration.toStringa());
 
@@ -476,7 +493,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 							logger.error("Exception happened!", e1);
 						} finally {
 							GUIStyelSettings.updateAllWindowsLaf();
-							currentEditor.initGuiFromConfig(true);
+							if (currentEditor != null) {
+								currentEditor.initGuiFromConfig(true, true);
+							}
 						}
 					}
 				});
@@ -676,12 +695,26 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			}
 		});
 
+		// Preferred spellcheckker dictionary
+		comboSpellcheckerDictionary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					FileNamed selected = (FileNamed) comboSpellcheckerDictionary.getSelectedItem();
+					currentConfiguration.getTextEditorOpt().setPrefDictspellChecker(GeneralConfig.SPELLCHECKER_DICT_FOLDER+selected.mFile.getName());
+				} catch (Exception e2) {
+					logger.error("Combo preferred spellcheck dictionary clicked: Error saving current preferred in: "+currentConfiguration.getIniFile().getFile().getAbsolutePath());
+				}
+			}
+		});
+
 		// RESET BUTTON HANDLER
 		btnResetValues.addActionListener(new ActionListener() {
 
 			// action fired when user reset initial values saved in backup values
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				currentEditor = MainGUI.initTxtWriter;
 
 				logger.debug("Starting reset of GUI_Preferences");
 
@@ -692,8 +725,11 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				updateGUI(true);
 				
 //				GUIStyelSettings.updateAllWindowsLaf();
-				currentTabEditor.applyStyleToTabs();
-
+				
+				if (currentEditor != null) {
+					currentEditor.getCurrentTabEditor().applyStyleToTabs();
+				}
+				
 				logger.debug("Configuration resetted: \n" + currentConfiguration.toStringa());
 			}
 		});
@@ -701,6 +737,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		// SAVE CONFIG BUTTON HANDLER
 		btnSaveConf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				int chosenOption = JOptionPane.showConfirmDialog(thisFrame,
 						"Are you sure you want to overwrite " + currentConfiguration.getIniFile().getFile().getPath()
 								+ "(ONLY GUI_OPTIONS)?",
@@ -717,7 +754,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 					
 					dialogHelper.info( "Graphic Interface settings Saved :)\n -> Changes will be visible after next restart.", "Saved!");
 					currentEditor.textEditorUtils.resetDividerColor();
-					currentTabEditor.applyStyleToTabs();
+					if (currentEditor != null) {
+						currentEditor.getCurrentTabEditor().applyStyleToTabs();
+					}
 					logger.debug("Configuration saved: \n" + currentConfiguration.toStringa());
 
 					// dispose();
@@ -727,7 +766,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				} else {
 					dialogHelper.warn( "Ok, I wont save theese settings ;)", "Not saved!");
 					currentEditor.textEditorUtils.resetDividerColor();
-					currentTabEditor.applyStyleToTabs();
+					if (currentEditor != null) {
+						currentEditor.getCurrentTabEditor().applyStyleToTabs();
+					}
 				}
 				
 			}
@@ -737,6 +778,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		btnDiscard.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				logger.debug("DISCARD => Closing GUI_Preferences");
 				
 				// reset current values
@@ -793,7 +835,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			public void stateChanged(ChangeEvent e) {
 				currentConfiguration.getGuiOpt().setNimbusSize((int) spinnerNimbusSize.getValue());
 				GUIStyelSettings.applyNimbusSize((int) spinnerNimbusSize.getValue());
-				currentEditor.initGuiFromConfig(true);
+				currentEditor.initGuiFromConfig(true, true);
 			}
 		});
 
@@ -858,8 +900,16 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		chckbxMarkEOL.setSelected(txtOpt.markEndOfLine);
 		chckbxShowBracket.setSelected(txtOpt.showBracketsPopup);
 		chckbxAutoCheckFiles.setSelected(currentConfiguration.getGenOpt().isTxtEditorFileMonitorActive());
+
+		for (int i = 0; i < comboSpellcheckerDictionary.getItemCount(); i++) {
+			FileNamed currentEl = comboSpellcheckerDictionary.getItemAt(i);
+			
+			if (currentEl.mFile.getAbsoluteFile().equals(new File(txtOpt.prefDictspellChecker).getAbsoluteFile())) {
+				comboSpellcheckerDictionary.setSelectedItem(currentEl);
+				break;
+			}
+		}
 		
-		// REFRESH GUI GENERAL
 		if (guiOpt.isDarkGuiNimbus()) {
 			GUIStyelSettings.setDarkNimbus(guiOpt.nimbusSize);
 		}else {
@@ -868,15 +918,20 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		GUIStyelSettings.setStyle(guiOpt.getPreferredStyle(), guiOpt.nimbusSize);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if (currentTabEditor.loadedTabObj != null) {
-					currentTabEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
-					RsyntaxUtils.setFont(currentTabEditor.loadedTabObj.textArea, currentConfiguration.getTextEditorOpt().getFont());
+				if (currentEditor != null) {
+					currentEditor.getCurrentTabEditor().applyStyleToTabs();
+					if (currentEditor.getCurrentTabEditor().loadedTabObj != null) {
+						currentEditor.getCurrentTabEditor().loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
+						RsyntaxUtils.setFont(currentEditor.getCurrentTabEditor().loadedTabObj.textArea, currentConfiguration.getTextEditorOpt().getFont());
+					}
 				}
 			}
 		});
 		
 		antialiasingApply(currentConfiguration.getTextEditorOpt().antialiasedTxtArea);
-		currentEditor.initGuiFromConfig(forceGuiRefresh);
+		if (currentEditor != null) {
+			currentEditor.initGuiFromConfig(forceGuiRefresh, true);
+		}
 	}
 
 	/**
@@ -914,6 +969,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		BACKUP_TXTAREA_TABSPACES_EMULATED = txtOpt.tabSpacesEmulated;
 		BACKUP_TXTAREA_SHOW_BRACKETS_POPUP = txtOpt.showBracketsPopup;
 		BACKUP_TXTAREA_SHOW_EOL_DELIM = txtOpt.markEndOfLine;
+		BACKUP_TXTAREA_SPECCLCHECKER_DICT = txtOpt.getPrefDictspellChecker();
 		BACKUP_TXTAREA_AUTOCHECK_CHANGES = currentConf.getGenOpt().isTxtEditorFileMonitorActive();
 	}
 	
@@ -950,11 +1006,12 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		txtOpt.setTabSpacesEmulated(BACKUP_TXTAREA_TABSPACES_EMULATED);
 		txtOpt.setMarkEndOfLine(BACKUP_TXTAREA_SHOW_EOL_DELIM);
 		txtOpt.setShowBracketsPopup(BACKUP_TXTAREA_SHOW_BRACKETS_POPUP);
+		txtOpt.setPrefDictspellChecker(BACKUP_TXTAREA_SPECCLCHECKER_DICT);
 		currentConf.getGenOpt().setTxtEditorFileMonitorActive(BACKUP_TXTAREA_AUTOCHECK_CHANGES);
 	}
 
 	
-	private void updateMenuAndLogFontSize(JFrame jframe) {
+	public void updateMenuAndLogFontSize(JFrame jframe) {
 		GuiOption guiOpt = currentConfiguration.getGuiOpt();
 
 		// use the same font as main gui but change font size
@@ -982,7 +1039,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	
 	private void antialiasingApply(boolean antialiasing) {
 		try {
-			currentTabEditor.loadedTabObj.textArea.setAntiAliasingEnabled(antialiasing);
+			if (currentEditor != null) {
+				currentEditor.getCurrentTabEditor().loadedTabObj.textArea.setAntiAliasingEnabled(antialiasing);
+			}
 		} catch (Exception e1) {
 			logger.warn("Error while preiewing antialising effect on textarea", e1);
 		}
@@ -1004,9 +1063,12 @@ public class GraphicPreferencesFrame extends ParentFrame {
 					logger.error("Exception happened!", e1);
 				} finally {
 					GUIStyelSettings.updateAllWindowsLaf();
-					currentEditor.initGuiFromConfig(true);
+					if (currentEditor != null) {
+						currentEditor.initGuiFromConfig(true, true);
+					}
 				}
 			}
 		};
 	}
+
 }

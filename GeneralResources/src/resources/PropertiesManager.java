@@ -1,5 +1,6 @@
 package resources;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
@@ -156,6 +157,26 @@ public class PropertiesManager {
 		String val = dynamicFileBindingsDef.getProperty(key);
 		try {
 			return Float.valueOf(val);
+		}catch(Exception e){
+			return defaultVal;
+		}
+	}
+
+	/**
+	 * Read color from property string in form "R-G-B" with integer values
+	 **/
+	public Color getColorVarFromProps(String key, Color defaultVal) {
+		String val = dynamicFileBindingsDef.getProperty(key);
+		try {
+			String[] rgb = val.split("-");
+	    	if(rgb.length != 3) {
+	    		return new Color(0,0,0);
+	    	}
+	    	int red = Integer.parseInt(rgb[0]);
+	    	int green = Integer.parseInt(rgb[1]);
+	    	int blue = Integer.parseInt(rgb[2]);
+	    	
+	    	return new Color(red, green, blue);
 		}catch(Exception e){
 			return defaultVal;
 		}

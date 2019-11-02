@@ -136,6 +136,7 @@ public class CustomTabbedEditor {
 					logger.debug("\n\n ## Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
 
 					tabRefreshAfterUpdate();
+					
 					lastIndexTabbedPane = mainTabList.getSelectedIndex();
 					
 					if (!historyActionChanging.get()) {
@@ -654,7 +655,6 @@ public class CustomTabbedEditor {
 	public void tabRefreshAfterUpdate() {
 		tabJustSwitched = true;
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
-
 		if (!isAddingTab && !isRemovingTab) {
 			backupCurrentBeforeSwitch();
 		}
@@ -663,12 +663,12 @@ public class CustomTabbedEditor {
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 		tabJustSwitched = false;
 		loadedTabObj.textArea.requestFocus();
-		
 		tabEditorManager.doAfterTabRefresh();
 		
 	}
 	
 	/**
+	 * This method updates icons and text on current tab header, given an index. This is based on label unsaved, and stored icons in general config
 	 * specify NULL sourceIndex to use current selected tab, or a custom value > 0
 	 * to specify the index of tab to take unsaved value
 	 */

@@ -36,6 +36,7 @@ public class JEnhancedOptionPane extends JOptionPane {
         
         pane.setWantsInput(wantsInput);
         final JDialog dialog = pane.createDialog(parent, title);
+        dialog.setAlwaysOnTop(true);
 		try {
 			dialog.setVisible(true);
 			dialog.dispose();
@@ -57,6 +58,7 @@ public class JEnhancedOptionPane extends JOptionPane {
         pane.selectInitialValue();
         final String title = UIManager.getString("OptionPane.inputDialogTitle", null);
         final JDialog dialog = pane.createDialog(null, title);
+        dialog.setAlwaysOnTop(true);
         dialog.setVisible(true);
         dialog.dispose();
         final Object value = pane.getInputValue();

@@ -1,5 +1,6 @@
 package gUI.utils.tree.iniconfmanager;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -41,9 +42,10 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	private INItializer currentConfig;
 	private ChargeIniLog confManagerPanel;
 
-	public TreeFileMouseListenerIni() {
-		super();
+	public TreeFileMouseListenerIni(Component parent) {
+		super(parent);
 	};
+	
 	// constructor
 	public TreeFileMouseListenerIni(INItializer currentConf, ChargeIniLog parent, JTree treeIn) {
 		currentConfig = currentConf;

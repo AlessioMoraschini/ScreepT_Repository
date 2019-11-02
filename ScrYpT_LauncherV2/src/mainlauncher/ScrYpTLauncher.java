@@ -333,6 +333,10 @@ public class ScrYpTLauncher {
 						+iniFileManager.MAX_JRE_VERSION+")";
 				
 				jvmHelper.manualPath_Jvm = FileUtils.directoRead(launcherMainFrame, msg).getAbsolutePath();
+				ScrYpTLauncher.iniFileManager.manualPathJvm = jvmHelper.manualPath_Jvm;
+				if (jvmHelper.checkSingleJavaVersionOK(jvmHelper.manualPath_Jvm.replace("\bin", ""))) {
+					ScrYpTLauncher.iniFileManager.preferredJvm = jvmHelper.manualPath_Jvm;
+				}
 			}
 		};
 	}

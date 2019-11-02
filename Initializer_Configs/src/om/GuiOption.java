@@ -26,6 +26,7 @@ public class GuiOption {
 	}
 	
 	public GuiOption(int menuSize, int logSize, String style, boolean darkGuiNim, int nimbusSize) {
+		this();
 		menuFontSize = menuSize;
 		logFontSize = logSize;
 		preferredStyle = style;

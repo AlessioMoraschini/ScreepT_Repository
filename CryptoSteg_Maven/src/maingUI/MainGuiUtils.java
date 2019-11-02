@@ -6,20 +6,25 @@ import java.awt.event.ComponentListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelListener;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import mainobj.INItializer;
 import media.Sounds;
+import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 
 public class MainGuiUtils {
@@ -99,8 +104,12 @@ public class MainGuiUtils {
 				} else if (home) {
 					mainAppReference.getMntmReturnToWelcome().doClick();
 				}
+
+				mainAppReference.menuBar.revalidate();
+				mainAppReference.menuBar.repaint();
 			}
 		});
+		
 		
 		logger.info("Reset finished [" +targetStr + "]");
 	}
@@ -207,6 +216,42 @@ public class MainGuiUtils {
 		});
 	}
 	
+	public Runnable tempDecryptedEraser() {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				File[] decryptedList = GeneralConfig.TEMP_DECRIPTED_ROOT.listFiles();
+				if (decryptedList!= null && decryptedList.length!=0) {
+					// while there are temp decripted delete them
+					for (File temp : decryptedList) {
+						FileUtils.deleteQuietly(temp);
+					} 
+				}	
+				// now delete temp folder, and retry if something has not been deleted
+				FileStuff.deleteDirContentInclRoot(GeneralConfig.TEMP_DECRIPTED_ROOT);
+			}
+		};
+	}
+
+	public Runnable tempFilesEraser() {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				File[] decryptedList = GeneralConfig.TEMP_DIRECTORY_FILE.listFiles();
+				if (decryptedList!= null && decryptedList.length!=0) {
+					// while there are temp decripted delete them
+					for (File temp : decryptedList) {
+						FileUtils.deleteQuietly(temp);
+					} 
+				}	
+				// now delete temp folder, and retry if something has not been deleted
+				FileStuff.deleteDirContentRecursive(GeneralConfig.TEMP_DIRECTORY_FILE);
+			}
+		};
+	}
+	
 	/**
 	 * Use this to retrieve all panels thare are restartable using the method
 	 * ResetPanel(String className) -> just use a class name from the given arrayList or ALL
@@ -269,6 +314,38 @@ public class MainGuiUtils {
 		for(MouseWheelListener listener : listeners) {
 			target.removeMouseWheelListener(listener);
 		}
+	}
+
+	public static void welcomeMethodIfFirstTime() {
+		// ASK FOR USERNAME IF NULL OR FIRST TIME
+		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
+		if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
+			logger.info("Current user input initialization: void user or lenght>20 detected!");
+			currentConfiguration.getGenOpt().setUserName(askUsername());
+			currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", currentConfiguration.getGenOpt().getUserName());
+			logger.info("Current userName: " + currentConfiguration.getGenOpt().getUserName());
+		}
+	}
+	
+	public static String askUsername() {
+		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
+		boolean end=false;
+		String input="";
+		do {
+			input = MainGUI.dialogHelper.askForStringUnsafe("Please insert your name:", "Hi, what's your name? :)", "U-sir");
+			
+			if (input==null || input.equals("") || input.length() > 20) {
+				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",
+						"UserName lenght Error", JOptionPane.WARNING_MESSAGE);
+				logger.error("Error in user input, redo.");
+			} else {
+				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", input);
+				currentConfiguration.getGenOpt().setUserName(input);
+				end = true;
+			} 
+		} while (!end);
+		logger.info("Name selected and saved username: "+input);
+		return input;
 	}
 	
 }

@@ -26,6 +26,8 @@ import java.awt.Font;
 
 public class HeaderPanelSearch extends JPanel{
 	
+	public static String defaultJsBackColorSelection = "yellow";
+	
 	private JButton btnGoBack;
 	private JButton btnGoNext;
 	private JButton btnReload;

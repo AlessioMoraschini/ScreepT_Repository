@@ -39,13 +39,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
 public class MissingDependenciesPanel extends JDialog{
-	
+	private static final long serialVersionUID = 8830965172863577977L;
+
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(MissingDependenciesPanel.class); 
 	
@@ -72,6 +72,7 @@ public class MissingDependenciesPanel extends JDialog{
 		
 		dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
 		
+		this.setAlwaysOnTop(true);
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow][50%,grow]", "[50px:80px][grow][40px:n][40px:n]"));
 		

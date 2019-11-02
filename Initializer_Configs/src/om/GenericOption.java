@@ -9,6 +9,7 @@ public class GenericOption {
 	public final static String DEFAULT_CHARSET = "UTF-8";
 	public final static float DEFAULT_VOLUME = 0.6F;
 	public final static boolean DEF_TxtEditorFileMonitorActive = true;
+	public final static boolean DEF_exceptionAdvicesEnabled = false;
 	public final static Class DEFAULT_PANEL_CLASS_AT_START = JPanel.class;
 
 	// FILEDS
@@ -16,6 +17,7 @@ public class GenericOption {
 	private String charset;
 	private float generalVolume;
 	private boolean TxtEditorFileMonitorActive;
+	private boolean exceptionAdvicesEnabled;
 	private Class lastPanelOpened;
 	
 	public GenericOption() {
@@ -24,15 +26,25 @@ public class GenericOption {
 		generalVolume = DEFAULT_VOLUME;
 		TxtEditorFileMonitorActive = DEF_TxtEditorFileMonitorActive;
 		lastPanelOpened = DEFAULT_PANEL_CLASS_AT_START;
+		exceptionAdvicesEnabled = DEF_exceptionAdvicesEnabled;
 	}
 	
 	public GenericOption(String user, String chars, boolean ultraSec, float genVolume) {
+		this();
 		userName = user;
 		charset = chars;
 		generalVolume = genVolume;
 		
 	}
 	
+	public boolean isExceptionAdvicesEnabled() {
+		return exceptionAdvicesEnabled;
+	}
+
+	public void setExceptionAdvicesEnabled(boolean exceptionAdvicesEnabled) {
+		this.exceptionAdvicesEnabled = exceptionAdvicesEnabled;
+	}
+
 	public boolean isTxtEditorFileMonitorActive() {
 		return TxtEditorFileMonitorActive;
 	}

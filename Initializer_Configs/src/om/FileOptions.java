@@ -26,6 +26,7 @@ public class FileOptions {
 	}
 	
 	public FileOptions(boolean autosave, boolean overwrite, String lastSrcPath, String lastDstPath, int autosaveInt) {
+		this();
 		flagAutosave = autosave;
 		flagOverwrite = overwrite;
 		lastSrcFolderPath = lastDstPath;

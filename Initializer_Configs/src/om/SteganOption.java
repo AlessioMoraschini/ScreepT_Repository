@@ -28,6 +28,7 @@ public class SteganOption {
 	}
 	
 	public SteganOption(int defWidth, int defHeight, String imgRecPath, boolean STEG, boolean ultraSec) {
+		super();
 		StringTokenizer tokenizer = new StringTokenizer(imgRecPath, ",");
 		while(tokenizer.hasMoreTokens()) {
 			this.imgRecentPath.add(tokenizer.nextToken());

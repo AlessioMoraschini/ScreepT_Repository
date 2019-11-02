@@ -4,19 +4,34 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+
+import javax.swing.SwingUtilities;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Style;
 import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.Token;
+import org.fife.ui.rsyntaxtextarea.parser.Parser;
+import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 
+import amfileutils.CustomFileFilters;
+import amfileutils.FileStuff;
+import amfileutils.om.FileNamed;
 import media.ImageGeneralWorker;
+import resources.GeneralConfig;
 
 public class RsyntaxUtils {
 	
 	// RsyntaxUtils logger creation
 	static Logger logger = Logger.getLogger(RsyntaxUtils.class);
+	
+	public static Color spellCheckerUnderlineCol = GeneralConfig.SPELL_CHECKER_UNDERLINE_COL;
+	
+	public static final String TEMP_SPELL_CHECK_FOLDER = GeneralConfig.TEMP_DIRECTORY + "SpellChecker/";
 	
 	public static final String THEME_DARK = "/org/fife/ui/rsyntaxtextarea/themes/dark.xml";
 	public static final String THEME_DEFAULT = "/org/fife/ui/rsyntaxtextarea/themes/default.xml";
@@ -64,19 +79,83 @@ public class RsyntaxUtils {
 
 	   }
 	   
-	   public static boolean addAutoCompletion(RSyntaxTextArea textArea, String wordlistFilePath) {
-		   if(wordlistFilePath == null) {
-			return false;   
-		   }
+		public static boolean addAutoCompletionV2(RSyntaxTextArea textArea, String wordlistFilePath) {
+			if (wordlistFilePath == null || !new File(wordlistFilePath).exists()) {
+				logger.error("File: "+wordlistFilePath+" is null or not existing, cannot add to autocomplete");
+				return false;
+			}
+		
+			if (!wordlistFilePath.toLowerCase().endsWith(".md")) {
+				File rightExt = FileStuff.changeExtension(new File(wordlistFilePath), ".md");
+				File destRightEx = FileStuff.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
+				try {
+					FileUtils.copyFile(new File(wordlistFilePath), destRightEx);
+					wordlistFilePath = destRightEx.getAbsolutePath();
+				} catch (IOException e) {
+					logger.error("Error creating a temporary copy of user defined launguage");
+				}
+			}
+		
+			File wordlist = new File(wordlistFilePath);
+			try {
+				if (textArea != null && wordlist.exists()) {
+					AutoComplete autoComplete = new AutoComplete(textArea);
+					autoComplete.installGrammar(wordlistFilePath);
+					return true;
+				} else {
+					return false;
+				} 
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		
+		public static boolean addAutoCompletion(RSyntaxTextArea textArea, String wordlistFilePath) {
+			if (wordlistFilePath == null || !new File(wordlistFilePath).exists()) {
+				logger.error("File: " + wordlistFilePath + " is null or not existing, cannot add to autocomplete");
+				return false;
+			}
+			
+			File wordlist = new File(wordlistFilePath);
+			if (textArea != null && wordlist.exists()) {
+				AutoComplete autoComplete = new AutoComplete(textArea);
+				autoComplete.installGrammar(wordlistFilePath);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	   
+	   public static boolean addAutoCompletionV2(RSyntaxTextArea textArea, String wordlistFilePath, String secondDictPath) {
+			if (wordlistFilePath == null || !new File(wordlistFilePath).exists()) {
+				logger.error("File: "+wordlistFilePath+" is null or not existing, cannot add to autocomplete");
+				return false;
+			}
 		   
-		   File wordlist = new File(wordlistFilePath);
-		   if (textArea != null && wordlist.exists()) {
-			AutoComplete autoComplete = new AutoComplete(textArea);
-			autoComplete.installGrammar(wordlistFilePath);
-			return true;
-		   }else {
-			   return false;
-		   }
+		   if (!wordlistFilePath.toLowerCase().endsWith(".md")) {
+				File rightExt = FileStuff.changeExtension(new File(wordlistFilePath), ".md");
+				File destRightEx = FileStuff.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
+				try {
+					FileUtils.copyFile(new File(wordlistFilePath), destRightEx);
+					wordlistFilePath = destRightEx.getAbsolutePath();
+				} catch (IOException e) {
+					logger.error("Error creating a temporary copy of user defined launguage");
+				}
+			}
+		   
+		   	File wordlist = new File(wordlistFilePath);
+			try {
+				if (textArea != null && wordlist.exists()) {
+					AutoComplete autoComplete = new AutoComplete(textArea);
+					autoComplete.installGrammar(wordlistFilePath);
+					autoComplete.installGrammar(secondDictPath);
+					return true;
+				} else {
+					return false;
+				} 
+			} catch (Exception e) {
+				return false;
+			}
 	   }
 	   
 	   /**
@@ -184,4 +263,140 @@ public class RsyntaxUtils {
 	         textArea.setFont(font);
 	      }
 	   }
+	   
+	   // SPELL CHECKER FUNCTIONS
+		public static SpellingParser createSpellingParser(String dictionaryPath) throws IOException {
+			
+			String originalDict = new String(dictionaryPath);
+			
+			if(! new File(dictionaryPath).exists()) {
+				dictionaryPath = GeneralConfig.SPELLCHECKER_DICT_FOLDER+GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
+			}
+			
+			if(!dictionaryPath.equals(GeneralConfig.SPELLCHECKER_DICT_FOLDER+GeneralConfig.SPELLCHECKER_DEFAULT_DICT)) {
+				dictionaryPath = GeneralConfig.SPELLCHECKER_DICT_FOLDER+GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
+			}
+
+			File zip = new File(dictionaryPath);
+			SpellingParser parser = SpellingParser.createEnglishSpellingParser(zip, true);
+			
+			if(!originalDict.equals(GeneralConfig.SPELLCHECKER_DICT_FOLDER+GeneralConfig.SPELLCHECKER_DEFAULT_DICT)) {
+				parser.setUserDictionary(new File(originalDict));
+			}else {
+				File userDict= checkUserDirExistance();
+				
+				parser.setUserDictionary(userDict);
+				logger.info("User dictionary: " + userDict.getAbsolutePath());
+			}
+			
+			parser.setSquiggleUnderlineColor(spellCheckerUnderlineCol);
+			
+			return parser;
+		}
+
+		public static SpellingParser createNapplySpellingParser(String dictionaryPath, RSyntaxTextArea textArea) throws IOException {
+			
+			SpellingParser parser = createSpellingParser(dictionaryPath);
+			
+			if (parser!=null) {
+				SwingUtilities.invokeLater(() -> {
+					textArea.addParser(parser);
+					logger.info(dictionaryPath+" -> Parser Applied! ");
+				});
+			}
+			
+			return parser;
+		}
+
+		public static void applySpellingParser(String dictionaryPath, RSyntaxTextArea textArea) throws IOException {
+			
+			SpellingParser parser = createSpellingParser(dictionaryPath);
+			if (parser!=null) {
+				SwingUtilities.invokeLater(() -> {
+					textArea.addParser(parser);
+					logger.info(dictionaryPath+" -> Parser Applied! ");
+				});
+			}
+		}
+
+		public static void applySpellingParser(SpellingParser parser, RSyntaxTextArea textArea) throws IOException {
+			
+			if (parser!=null) {
+				SwingUtilities.invokeLater(() -> {
+					textArea.addParser(parser);
+					logger.info(parser.getUserDictionary().getAbsolutePath()+" -> Parser applied!");
+				});
+			}
+		}
+
+		public static void removeSpellingParser(SpellingParser parser, RSyntaxTextArea textArea) throws IOException {
+			
+			if (parser!=null) {
+				SwingUtilities.invokeLater(() -> {
+					textArea.removeParser(parser);
+					logger.info(parser.getUserDictionary().getAbsolutePath()+" -> Parser removed!");
+				});
+			}
+		}
+		
+		public static boolean removeOtherParsers(Parser parser, RSyntaxTextArea textArea) {
+			boolean removed = false;
+			try {
+				for (int i = 0; i < textArea.getParserCount(); i++) {
+					Parser parserCurr = textArea.getParser(i);
+					if(!parserCurr.equals(parser)) {
+						textArea.removeParser(parserCurr);
+						removed = true;
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Error removing parser: ", e);
+			}
+			
+			return removed;
+		}
+		
+		public static boolean removeAllParsers(RSyntaxTextArea textArea) {
+			boolean removed = false;
+			try {
+				for (int i = 0; i < textArea.getParserCount(); i++) {
+					Parser parserCurr = textArea.getParser(i);
+					textArea.removeParser(parserCurr);
+				}
+				removed = true;
+			} catch (Exception e) {
+				removed = false;
+				logger.error("Error removing all parsers: ", e);
+			}
+			
+			return removed;
+		}
+		
+		public static File checkUserDirExistance() throws IOException {
+			File userDict;
+			try {
+				userDict = new File(TEMP_SPELL_CHECK_FOLDER+"spellDict_USER.txt");
+				if(!userDict.exists()) {
+					userDict.createNewFile();
+				}
+			} catch (Exception e) {
+				logger.error("Cannot use user defined dictionary for user defined words, I'll use a new temporary file");
+				return File.createTempFile(GeneralConfig.APPLICATION_NAME+GeneralConfig.APP_VERSION+"spellDict_USER", ".txt");
+			}
+			return userDict;
+		}
+
+		public static FileNamed[] getSpellCheckerDIctionaries() {
+			File[] dictionaries = GeneralConfig.SPELLCHECKER_DICT_FOLER_FILE.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY));
+			FileNamed[] converted = new FileNamed[dictionaries.length];
+			int i = 0;
+			
+			for(File currDict : dictionaries) {
+				
+				converted[i] = new FileNamed(currDict);
+				i++;
+			}
+			
+			return converted;
+		}
 }

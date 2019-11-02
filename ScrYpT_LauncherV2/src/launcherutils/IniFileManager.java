@@ -3,7 +3,7 @@ package launcherutils;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
@@ -23,6 +23,7 @@ public class IniFileManager {
 	
 	public String preferredJvmVersionIfNotSpecified = "1.8"; // default selected if no user preferred is specified
 	public String preferredJvm = "";
+	public String manualPathJvm = "";
 	public String MIN_JRE_VERSION = "1.8"; // default included MIN
 	public String MAX_JRE_VERSION = "9.0"; // default excluded MAX
 	public String GUI_SCALE_ARG_VALUE = "1";
@@ -72,6 +73,7 @@ public class IniFileManager {
 			hideNStartDirect = (hideNStart!=null && hideNStart.equalsIgnoreCase("true"))? true : false;
 			preferredJvm = StringUtils.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
 			preferredJvmVersionIfNotSpecified = StringUtils.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvmVersionIfNotSpecified"));
+			manualPathJvm = StringUtils.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "manualPathJvm"));
 			
 			logger.info("Launcher_configuration file loaded!");
 		} catch (InvalidFileFormatException e) {

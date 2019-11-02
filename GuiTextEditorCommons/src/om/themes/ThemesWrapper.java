@@ -1,4 +1,4 @@
-package enums;
+package om.themes;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,10 +12,12 @@ public class ThemesWrapper {
 			
 	public String name;
 	public String path;
+	public Themes theme = Themes.DEFAULT;
 	
 	public ThemesWrapper(Themes theme) {
 		this.path = theme.defaultPath;
 		this.name = getNameFromPath(path);
+		this.theme = theme;
 	}
 
 	public ThemesWrapper(String path) {

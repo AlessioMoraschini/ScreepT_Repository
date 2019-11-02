@@ -1,5 +1,6 @@
 package dialogutils;
 
+import java.awt.Component;
 import java.io.File;
 import java.util.Arrays;
 
@@ -311,7 +312,7 @@ public class GenericFileChooser {
 	 * 
 	 * @return if OK return true, NO return false, else return null if cancel is pressed or window closed
 	 */
-	public static Boolean askYorN(String title, String msg, JComponent parent, boolean precondition) {
+	public static Boolean askYorN(String title, String msg, Component parent, boolean precondition) {
 			int askSave = JOptionPane.CANCEL_OPTION;
 			
 			if (precondition) {

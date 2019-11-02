@@ -195,6 +195,8 @@
     					<includes>
     						<include>/PanelTempFiles</include>
     						<include>/PanelTempFiles/*</include>
+    						<include>/SpellChecker/*</include>
+    						<include>/SpellChecker/**</include>
     						<include>/Backup/*</include>
     						<include>/Images/*</include>
 					        <include>/Icons/*</include>
@@ -281,15 +283,19 @@
     						<include>/Backup/*</include>
     						<include>/PanelTempFiles</include>
     						<include>/PanelTempFiles/*</include>
+    						<include>/PanelTempFiles/**</include>
+    						<include>/SpellChecker/*</include>
+    						<include>/SpellChecker/**</include>
     						<include>/Images/*</include>
-					        <include>/Icons/*</include>
-					        <include>/ProgrammingLanguagesWords/*</include>
     						<include>/Images/**</include>
+					        <include>/Icons/*</include>
 					        <include>/Icons/**</include>
+					        <include>/ProgrammingLanguagesWords/*</include>
 					        <include>/ProgrammingLanguagesWords/**</include>
 					        <include>/lib/js</include>
 					        <include>/lib/js/*</include>
 					        <include>/lib/js/**</include>
+					        <include>/lib/js/**/*)</include>
 					    </includes>
 					    <excludes>
 					    	/**/*Thumbs.db

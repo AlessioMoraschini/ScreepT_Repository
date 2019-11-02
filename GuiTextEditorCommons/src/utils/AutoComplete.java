@@ -6,11 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.CompletionProvider;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+
 
 /**
  * The Class AutoComplete. This class provides autocomplete functionality for writing  plantuml codes easily 
@@ -18,6 +21,8 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
  */
 public class AutoComplete {
 
+	static Logger logger = Logger.getLogger(AutoComplete.class);
+	
 	public RSyntaxTextArea code_text_area;   /**<text area for writing code */
 	public CompletionProvider provider;   /**<provides autocompletiton */
 	public AutoCompletion ac;   /**< autocompletiion engine */
@@ -41,38 +46,46 @@ public class AutoComplete {
 	 public void installGrammar(String filename){
 
 		DefaultCompletionProvider provider_temp = new DefaultCompletionProvider();
-		FileReader file=null;
+		FileReader fileReader = null;
 		try {
-			file = new FileReader(new File(filename));
+			fileReader = new FileReader(new File(filename));
 		} catch (FileNotFoundException e) {
-			System.out.println("could not read: "+filename);
+			logger.error("could not read: "+filename, e);
+			try {
+				fileReader.close();
+			}catch(Exception e1) {
+			}
+			return;
 		}
 		
-		BufferedReader br = new BufferedReader(file);
+		BufferedReader br = new BufferedReader(fileReader);
 		try {
 			String line=br.readLine();
 			while(line!=null){
-				line = line.trim();
-				if(line.startsWith("-")){
-				line = line.substring(1, line.length());
-				line = line.trim();
+				line = StringUtils.trim(line);
+				if(line.length()>0 && line.substring(0,1).equals("-")){
+					line = line.substring(1, line.length());
+				}
+				line = StringUtils.trim(line);
+				provider_temp.addCompletion(new BasicCompletion(provider_temp,line));
+				line =br.readLine();
 			}
-			provider_temp.addCompletion(new BasicCompletion(provider_temp,line));
-			line =br.readLine();
-		}
 		
-		br.close();
-		provider= provider_temp;
-		ac = new AutoCompletion(provider);
-		ac.setAutoActivationEnabled(true);
-		ac.setAutoActivationDelay(0);
-		ac.setParameterAssistanceEnabled(true);
-		ac.setAutoCompleteEnabled(true);
-		ac.setAutoCompleteSingleChoices(true);
-		
-		ac.install(code_text_area);
+			br.close();
+			provider= provider_temp;
+			ac = new AutoCompletion(provider);
+			ac.setAutoActivationEnabled(true);
+			ac.setAutoActivationDelay(0);
+			ac.setParameterAssistanceEnabled(true);
+			ac.setAutoCompleteEnabled(true);
+			ac.setAutoCompleteSingleChoices(true);
+			
+			ac.install(code_text_area);
+			
+			logger.info("Grammar installed: "+filename);
 		
 		} catch (IOException e) {
+			logger.error("Error reading: "+filename, e);
 		}								
 	}//end of installer 
 }

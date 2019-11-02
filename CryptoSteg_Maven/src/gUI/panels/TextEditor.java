@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
+import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
@@ -43,7 +44,6 @@ import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
 import dialogutils.GenericFileChooser;
 import dialogutils.JOptionHelper;
-import enums.Themes;
 import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGUI;
@@ -394,7 +394,7 @@ public class TextEditor extends JPanel {
 			logger.warn("Buttons styling gone wrong: ", e);
 		}
 		
-		initGuiFromConfig(true);
+		initGuiFromConfig(true, true);
 		
 		loadOpenedFilesAtStart();
 
@@ -433,6 +433,9 @@ public class TextEditor extends JPanel {
 				}
 			});
 		}
+		
+		parentFrame.addFocusListener(getCurrentTabEditor().loadedTabObj.focusTxtAreaMonitor);
+		
 		logger.debug("### TEXT WRITER module started");
 	}
 
@@ -620,7 +623,6 @@ public class TextEditor extends JPanel {
 				if (subHeaderPanel.btnToggleFileView.isSelected() && getCurrentTabEditor().loadedTabObj.loadedFile != null && getCurrentTabEditor().loadedTabObj.loadedFile.exists()) {
 					splitPaneMain.getLeftComponent().setVisible(true);
 					currentConfiguration.getTextEditorOpt().setDividerFileTreePosX(splitPaneMain.getDividerLocation());
-					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
 				}
 			}
 		});
@@ -641,10 +643,8 @@ public class TextEditor extends JPanel {
 							if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
 								// In case of clipboard keep memory in ad-hoc option
 								currentConfiguration.getTextEditorOpt().setDividerRightPanePosXClipboard(newRightPaneValue);
-								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard", newRightPaneValue);
 							} else {
 								currentConfiguration.getTextEditorOpt().setDividerRightPanePosX(newRightPaneValue);
-								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", newRightPaneValue);
 							}
 						}
 					}
@@ -700,10 +700,10 @@ public class TextEditor extends JPanel {
 		return false;
 	}
 
-	public void initGuiFromConfig(boolean refreshGuiStyle) {
+	public void initGuiFromConfig(boolean refreshGuiStyle, boolean refreshTheme) {
 		final TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
 		final TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
-
+		
 		// TEXT AREA
 		headerPanel.checkBoxInlineTabs.setSelected(txtOptions.isInlinedTabs());
 		headerPanel.doInlinedCheck();
@@ -736,29 +736,35 @@ public class TextEditor extends JPanel {
 			textEditorUtils.updateGuiLafWindows(currentTextEditor);// was causing temporization bug cause of invokelater;
 		}
 		
-		textEditorUtils.applySelectedTheme(); // SetSelected does not trigger action itself
-		textEditorUtils.updateMargin(); // SetValue does not trigger action itself
-		currentTextEditor.revalidate();
-		currentTextEditor.repaint();
+		if (txtOptions.fileTreeActive) {
+			// FILE TREE PANEL ON/OFF
+			fileTreeShowOrHide(txtOptions);
+		}
 		
-		// FILE TREE PANEL ON/OFF
-		fileTreeShowOrHide(txtOptions);
+		if (txtOptions.mapViewActive || txtOptions.clipboardViewActive) {
+			// RIGHT TREE PANEL ON/OFF
+			rightPaneShowOrHide(false);
+		}
 		
-		// RIGHT TREE PANEL ON/OFF
-		rightPaneShowOrHide();
+		subHeaderPanel.initGuiFromConfig(refreshTheme);
 		
-		subHeaderPanel.initGuiFromConfig(refreshGuiStyle);
+		// SPELL CHECKER ON/OFF
+		if (txtOptions.spellChecker && !txtOptions.prefDictspellChecker.equals(getCurrentTabEditor().loadedTabObj.lastLazyInitParserDict)) {
+			loadedTabObj.updateSpellCheckerParser(txtOptions.prefDictspellChecker, true);
+		}else {
+			RsyntaxUtils.removeAllParsers(loadedTabObj.textArea);
+		}
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				loadedTabObj.textArea.setFont(txtOptions.getFont());
-				if (txtOptions.selectedTheme.equals(Themes.NONE)) {
-					loadedTabObj.textArea.setBackground(txtOptions.getBackCol());
-					RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOptions.backCol);
-					loadedTabObj.textArea.setForeground(txtOptions.getForeCol());
-					RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOptions.foreCol);
-				}
 				if (isPreloading || !currentConfiguration.getTextEditorOpt().isTreeLocked()) {
+					loadedTabObj.textArea.setFont(txtOptions.getFont());
+					if (txtOptions.selectedTheme.equals(Themes.NONE.defaultPath)) {
+						loadedTabObj.textArea.setBackground(txtOptions.getBackCol());
+						RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOptions.backCol);
+						loadedTabObj.textArea.setForeground(txtOptions.getForeCol());
+						RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOptions.foreCol);
+					}
 					try {
 						TreeUtils.selectFileInNamedFileTree(MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile,
 								MainGUI.initTxtWriter.leftSplitTreeFiles, true);
@@ -791,7 +797,7 @@ public class TextEditor extends JPanel {
 		GUIStyelSettings.applyNimbusSize(0);
 	}
 
-	public void rightPaneShowOrHide() {
+	public void rightPaneShowOrHide(boolean writeConfig) {
 		
 		TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 		
@@ -805,9 +811,11 @@ public class TextEditor extends JPanel {
 			@Override
 			public void run() {
 
-				// SAVE CONFIGURATION - CURRENT VIEW ACTIVE (if opened)
-				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
-				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
+				if (writeConfig) {
+					// SAVE CONFIGURATION - CURRENT VIEW ACTIVE (if opened)
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
+				}
 				
 				textEditorUtils.resetDividerColor();
 				

@@ -58,6 +58,7 @@ import guistyle.GUIStyelSettings;
 import jmenu.CustomJmenuItem;
 import logger.LoggerUtils;
 import mainobj.INItializer;
+import mainobj.InitOwner;
 import media.Sounds;
 
 import javax.swing.JPanel;
@@ -97,9 +98,9 @@ public class MainGUI extends MainGuiParent{
 	
 	// FRAMES THAT OPEN IN A NEW DIALOG
 	private static GraphicPreferencesFrame panelGuiOptions;
+	private static GeneralOptionsFrame panelGeneralOptions;
 	private static KeyGenFrame panelKeyGen;
 	private static KeyDictionaryPanel panelKeyDict;
-	private static GeneralOptionsFrame panelGeneralOptions;
 	private static ImageConverterFrame panelImgConv;
 	private static NetInfoFrame panelNetInfo;
 	private static HwInfoFrame panelHwInfo;
@@ -168,12 +169,7 @@ public class MainGUI extends MainGuiParent{
 		currentConfiguration = currentConf;
 		dialogHelper = new JOptionHelper(null);
 		
-		// ASK FOR USERNAME IF NULL OR FIRST TIME
-		if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-			logger.info("Current user input initialization: void user or lenght>20 detected!");
-			currentConfiguration.getGenOpt().setUserName(MainGUI.askUsername());
-			logger.info("Current userName: " + currentConfiguration.getGenOpt().getUserName());
-		}
+		MainGuiUtils.welcomeMethodIfFirstTime();
 		
 		// OPEN LOADING PANEL THREAD
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
@@ -644,11 +640,10 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
 							logger.error("Exception happened!", e);
 						}
-						String name = askUsername();
+						mainGuiUtils.welcomeMethodIfFirstTime();
 						JOptionPane.showMessageDialog(frmScryptV,
 								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
 						currentConfiguration.readConfigIniFile();
-						currentConfiguration.getGenOpt().setUserName(name);
 						updateGuiFromCurrConfig();
 					} else {
 						JOptionPane.showMessageDialog(frmScryptV,
@@ -814,8 +809,9 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
 					panelGuiOptions.setLocationRelativeTo(mainAPP.getMainFrame());
-					GuiUtils.centerComponent(panelGuiOptions, 800, 440);
+					GuiUtils.centerComponent(panelGuiOptions, 800, 470);
 					panelGuiOptions.setVisible(true);
+					panelGuiOptions.setAlwaysOnTop(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGuiOptions.setTitle("Graphics preferences - "+GeneralConfig.APPLICATION_NAME);
 				}else {
@@ -823,6 +819,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelGuiOptions.setState(java.awt.Frame.NORMAL);
 						panelGuiOptions.setVisible(true);
+						panelGuiOptions.setAlwaysOnTop(true);
 						panelGuiOptions.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + GraphicPreferencesFrame.class, e2);
@@ -864,7 +861,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 						
 						// Update txtArea to adapt new size
 						if(initTxtWriter != null && initTxtWriter.textEditorUtils != null) {
-							initTxtWriter.initGuiFromConfig(false);
+							initTxtWriter.initGuiFromConfig(false, true);
 						}
 						
 						// RESYNC JSCROLL BUG WORKAROUND
@@ -894,7 +891,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
 					panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
-					panelGeneralOptions.setBounds(400, 300, 700, 265);
+					panelGeneralOptions.setBounds(400, 300, 800, 275);
+					panelGeneralOptions.setAlwaysOnTop(true);
 					panelGeneralOptions.setVisible(true);
 					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					panelGeneralOptions.setTitle("Generic Options - "+GeneralConfig.APPLICATION_NAME);
@@ -902,13 +900,20 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
 						panelGeneralOptions.setState(java.awt.Frame.NORMAL);
+						panelGeneralOptions.setAlwaysOnTop(true);
 						panelGeneralOptions.setVisible(true);
 						panelGeneralOptions.requestFocus();
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + GeneralOptionsFrame.class, e2);
 					}
 				}
-				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+//	 					GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
+						panelGeneralOptions.toFront();
+					}
+				});
 			}
 		});
 		
@@ -948,7 +953,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 
 								@Override
 								public void run() {
-									TestUpdateProgress prog = new TestUpdateProgress();
+									TestUpdateProgress prog = new TestUpdateProgress(currentConfiguration, false);
 									prog.getPb().setIndeterminate(true);
 									prog.getLabel().setText("Loading Network informations...");
 									prog.getPb().setString("Loading...");
@@ -989,7 +994,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 
 						@Override
 						public void run() {
-							TestUpdateProgress prog = new TestUpdateProgress();
+							TestUpdateProgress prog = new TestUpdateProgress(currentConfiguration, false);
 							prog.getPb().setIndeterminate(true);
 							prog.getLabel().setText("Loading System informations...");
 							prog.getPb().setString("Loading...");
@@ -1235,26 +1240,6 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		});
 	}
 	
-	public static String askUsername() {
-		boolean end=false;
-		String input="";
-		do {
-			input = dialogHelper.askForStringUnsafe("Please insert your name:", "Hi, what's your name? :)", "U-sir");
-			
-			if (input==null || input.equals("") || input.length() > 20) {
-				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",
-						"UserName lenght Error", JOptionPane.WARNING_MESSAGE);
-				logger.error("Error in user input, redo.");
-			} else {
-				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", input);
-				currentConfiguration.getGenOpt().setUserName(input);
-				end = true;
-			} 
-		} while (!end);
-		logger.info("Name selected and saved username: "+input);
-		return input;
-	}
-	
 	public void readBackgroundImage() throws IOException {
 		BufferedImage image = ImageIO.read(new File(ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN));
         APPLICATION_MAIN_BCKG_IMAGE = image.getScaledInstance(screenWidth-100, screenHeight-100,Image.SCALE_SMOOTH);
@@ -1324,24 +1309,6 @@ loaderGraphics.update("Starting autosave modules... ", 25);
         return correctFile;
 	}
 	
-	public static Runnable tempDecryptedEraser() {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				File[] decryptedList = GeneralConfig.TEMP_DECRIPTED_ROOT.listFiles();
-				if (decryptedList!= null && decryptedList.length!=0) {
-					// while there are temp decripted delete them
-					for (File temp : decryptedList) {
-						FileUtils.deleteQuietly(temp);
-					} 
-				}	
-				// now delete temp folder, and retry if something has not been deleted
-				FileStuff.deleteDirContentInclRoot(GeneralConfig.TEMP_DECRIPTED_ROOT);
-			}
-		};
-	}
-	
 	private void checkVersionAndDisableUnsupportedOpt() {
 		currentJvmVersion = System.getProperty("java.version");
 		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(currentJvmVersion);
@@ -1365,6 +1332,10 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	public static void closeApplication(int exitCode) {
 		
 		logger.info("\n\n => Starting exit procedure...\n\n");
+		
+		// Remember splitPanel dividers position - TEXT Editor
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", currentConfiguration.getTextEditorOpt().getDividerRightPanePosX());
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
 		
 		// CHECK UNSAVED TEXT EDITOR FILES
 		if(!askUnsavedTextFiles()) {
@@ -1401,14 +1372,19 @@ loaderGraphics.update("Starting autosave modules... ", 25);
       	backupOpenedFilesInConfig();
       	
       	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
-      	Thread tempEraser = new Thread(tempDecryptedEraser());
+      	Thread tempEraser = new Thread(mainGuiUtils.tempFilesEraser());
       	tempEraser.start();	
+      	
+      	// START ERASING CREEPT TEMP DECRYPTED IF THERE ARE SOME
+      	Thread tempCreeptEraser = new Thread(mainGuiUtils.tempDecryptedEraser());
+      	tempCreeptEraser.start();	
       	
 		String msg = "Deleting temp files and folders...";
 		
 		try {
 			logger.info(msg+ "please wait!");
 			tempEraser.join();
+			tempCreeptEraser.join();
 			logger.info(msg+ "COMPLETED :)");
 			
 		} catch (InterruptedException e) {
@@ -1502,7 +1478,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			}
 		} 
 		
-		Boolean choiceY = GenericFileChooser.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", null, askCondition);
+		Boolean choiceY = GenericFileChooser.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", frmScryptV, askCondition);
 		if(choiceY == null) {
 			// cancel -> don't exit
 			return false;
@@ -1577,7 +1553,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
 		if(initTxtWriter != null) {
-			initTxtWriter.initGuiFromConfig(true);
+			initTxtWriter.initGuiFromConfig(true, true);
 		}
 		
 		// CRYPTER REFRESH
@@ -1618,4 +1594,17 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		panelCrypter = panelCrypteR;
 	}
 	
+	public static InitOwner getCurrentConfInterface() {
+		return new InitOwner() {
+			
+			@Override
+			public INItializer getInitializer() {
+				try {
+					return (currentConfiguration != null)? currentConfiguration : new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
+				} catch (IOException e) {
+					return new INItializer();
+				}
+			}
+		};
+	}
 }

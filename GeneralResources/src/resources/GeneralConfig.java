@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+
 import resources.om.FilePojo;
 
 public class GeneralConfig {
@@ -29,7 +30,10 @@ public class GeneralConfig {
 	
 	// MAIN PROPERTIES
 	public static final String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION");
-	public static final String WEBSITE = "www.am_design_development.com";
+	public static final String WEB_UPDATES_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_UPDATES_MANIFEST_URL");
+	public static final String WEBSITE = resourcesFilePathsMappings.getProperty("WEBSITE");
+	public static final String MAIL_BUGS = resourcesFilePathsMappings.getProperty("MAIL_BUGS");
+	public static final String MAIL_INFO = resourcesFilePathsMappings.getProperty("MAIL_INFO");
 	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
 	public static final String AUTHOR = "A.M. Design and Development";
 	public static final String BUILD_TS_DATE = resourcesFilePathsMappings.getProperty("BUILD_TIMESTAMP")
@@ -48,6 +52,10 @@ public class GeneralConfig {
 	public static final String TEMPLATES_FOLDER = resourcesFilePathsMappings.getProperty("TEMPLATES_FOLDER");
 	public static final String CLIBPOARDS_PANEL_SRC_FOLDER = resourcesFilePathsMappings.getProperty("CLIBPOARDS_PANEL_SRC_FOLDER");
 	public static final String JS_LIB_FOLDER = resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") != null? resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") : "/Resources_Scrypt/lib/js/";
+	public static final String SPELLCHECKER_DEFAULT_DICT = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DEFAULT_DICT") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DEFAULT_DICT") : "english_dic.zip";
+	public static final String SPELLCHECKER_DICT_FOLDER = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") : "Resources_Scrypt/SpellChecker/";
+	public static final File SPELLCHECKER_DICT_FOLER_FILE = new File(SPELLCHECKER_DICT_FOLDER);
+	public static final Color SPELL_CHECKER_UNDERLINE_COL = resourcesFilePathsMappings.getColorVarFromProps(resourcesFilePathsMappings.getProperty("SPELL_CHECKER_UNDERLINE_COL"), Color.orange);
 	// Temp Folders and Files
 	public static final String TEMP_DIRECTORY = RESOURCES_DIR + "temp/";
 	public static final File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
@@ -152,6 +160,7 @@ public class GeneralConfig {
 	public static final int NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
 	public static final int FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);
 	public static final int ULTRA_FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("ULTRA_FAST_WHEEL_SPEED", 300);
+	public static final int DEF_CARET_BLINK_RATE = resourcesFilePathsMappings.getIntVarFromProps("DEF_CARET_BLINK_RATE", 400);
 	
 	public static int FOOTER_MAX_DIR_LABEL_LENGTH = resourcesFilePathsMappings.getIntVarFromProps("FOOTER_MAX_DIR_LABEL_LENGTH", 30);
 	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", 2);

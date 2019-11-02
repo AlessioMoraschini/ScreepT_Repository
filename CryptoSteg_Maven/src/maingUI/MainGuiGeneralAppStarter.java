@@ -27,9 +27,6 @@ import variousutils.HandleString;
 
 public class MainGuiGeneralAppStarter {
 
-	public static final String ERROR_FILE_REASONS = " reasons could be that file does not exist or contains errors ";
-	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: application could not work properly until next restart, but you can try to go on with this session, I'll do my best to keep workin' ;). \n ";
-	public static final String DIALOG_USER_ERR_INFO = "Send me the LOGS to analyze the problem if you want to signal this problem. You can find more infos on: " + GeneralConfig.WEBSITE + "\n\n";
     public static Level LOG_LEVEL_AT_START;
 	
 	// mainGUI logger
@@ -62,7 +59,7 @@ public class MainGuiGeneralAppStarter {
 					} catch (Exception e) {
 					}
 				}
-			}));
+			}), MainGUI.getCurrentConfInterface());
 			
 			try {
 				// start Properties
@@ -75,7 +72,7 @@ public class MainGuiGeneralAppStarter {
 			
 			} catch (Exception e) {
 				Sounds.playSound(SoundsConfigurator.ERROR, 0.8f);
-				dialogHelper.errorScroll("Cannot load internal configuration File: " + ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
+				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
 				throw e;
 			}
 			
@@ -86,7 +83,7 @@ public class MainGuiGeneralAppStarter {
 				
 			} catch (Exception e) {
 				Sounds.playSound(SoundsConfigurator.ERROR, 0.8f);
-				dialogHelper.errorScroll("Cannot load internal logging properties File: " + ERROR_FILE_REASONS 
+				dialogHelper.errorScroll("Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
 						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
 				throw e;
 			}
@@ -127,7 +124,9 @@ public class MainGuiGeneralAppStarter {
 	}
 	
 	/**
-	 * Main error handler method
+	 * Main error handler method - this will be launched when user has chosen to continue closing with forceClose = true
+	 * 
+	 * This method is still present cause it can be used everytime you need to check an error in the application and choose what to do
 	 * 
 	 * @param forceCloseWithoutAsk
 	 * @param t
@@ -138,10 +137,11 @@ public class MainGuiGeneralAppStarter {
 			Object res;
 			
 			if (forceCloseWithoutAsk || ParametricExceptionThread.isCriticalError(t)) {
-				logger.error(CRITICAL_ERROR_MSG, t);
+				logger.error(AWTExceptionHandler.CRITICAL_ERROR_MSG, t);
+				Sounds.playSound(SoundsConfigurator.ERROR, 0.6f);
 				
 				if (!forceCloseWithoutAsk) {
-					res = dialogHelper.errorScroll(CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO, "Critical Error", t, AWTExceptionHandler.options, JOptionHelper.YES_OR_NO);
+					res = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelper.YES_OR_NO);
 					// IF not kill then return back
 					if (!AWTExceptionHandler.options[0].equals(res)) {
 						// CASE CONTINUE
@@ -163,13 +163,18 @@ public class MainGuiGeneralAppStarter {
 				
 			} else {
 				logger.error("An Exception occurred: ", t);
-				res = new JOptionHelper(null).warnScroll(
-						"An Exception occurred, but I'still here ;) \n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>" + DIALOG_USER_ERR_INFO,
-						"An Exception Occurred",
-						t, 
-						AWTExceptionHandler.options, 
-						JOptionHelper.YES_OR_NO);
 				
+				if (currentConfiguration.getGenOpt().isExceptionAdvicesEnabled()) {
+					Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.5f);
+					res = new JOptionHelper(null).warnScroll(
+							"An Exception occurred, but I'still here ;) \n\n"
+									+ "(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"
+									+ AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(),
+							"An Exception Occurred", t, AWTExceptionHandler.options, JOptionHelper.YES_OR_NO);
+				}else {
+					// Default Continue
+					res = AWTExceptionHandler.options[1];
+				}
 				if (AWTExceptionHandler.options[0].equals(res)) {
 					// CASE KILL APPLICATION
 					try {

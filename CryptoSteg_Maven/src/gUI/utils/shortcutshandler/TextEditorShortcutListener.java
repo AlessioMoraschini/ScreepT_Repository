@@ -576,6 +576,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 					}
 				}
+				
 				if (!flagCtrlDown.get() || !flagHoverBtnRemoveSpaces.get()) {
 					subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
 					subHeaderPanel.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
@@ -596,7 +597,6 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		 */
 		if (e.isControlDown()) {
 			flagCtrlDown.set(true);
-			doControlActions();
 		}else {
 			flagCtrlDown.set(false);
 		}
@@ -623,6 +623,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		}else {
 			flagShiftDown.set(false);
 		}
+
+		doControlActions();
 	}
 	
 	private void updateCtrlAltShiftReleased(final KeyEvent e) {
@@ -632,7 +634,6 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		 */
 		if (e.isControlDown()) {
 			flagCtrlDown.set(true);
-			doControlActions();
 		}else {
 			flagCtrlDown.set(false);
 		}
@@ -655,6 +656,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		}else {
 			flagShiftDown.set(false);
 		}
+
+		doControlActions();
 	}
 
 	@Override

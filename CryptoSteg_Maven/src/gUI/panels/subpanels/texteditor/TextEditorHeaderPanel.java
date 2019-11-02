@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import amfileutils.om.FileNamed;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
@@ -24,7 +25,6 @@ import gUI.utils.tooltip.TextEditorTooltips;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
-import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 import javax.swing.ImageIcon;
@@ -207,5 +207,5 @@ public class TextEditorHeaderPanel extends JPanel{
 		}
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "inlineTabs", currentConfiguration.getTextEditorOpt().inlinedTabs);
 	}
-
+	
 }

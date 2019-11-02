@@ -135,19 +135,19 @@ public class GuiUtils {
 			// JS/JSON -> use javascript function call with custom library to prettify JS string
 			}else if (extension.toLowerCase().endsWith("js") || extension.toLowerCase().endsWith("json")) {
 				suppported = true;
-				formatted = codeFormatter.jsFormatJSLIB(source);
+				formatted = codeFormatter.jsFormatJSLIB(source, tabSize);
 				source = formatted;
 				
 			// HTML -> use javascript function call with custom library to prettify html string
 			}else if (extension.toLowerCase().endsWith("html")) {
 				suppported = true;
-				formatted = codeFormatter.htmlFormatJSLIB(source);
+				formatted = codeFormatter.htmlFormatJSLIB(source, tabSize);
 				source = formatted;
 			
 			// CSS -> use javascript function call with custom library to prettify css string
 			}else if (extension.toLowerCase().endsWith("css")) {
 				suppported = true;
-				formatted = codeFormatter.cssFormatJSLIB(source);
+				formatted = codeFormatter.cssFormatJSLIB(source, tabSize);
 				source = formatted;
 				
 			// JAVA -> use google library to prettify java string

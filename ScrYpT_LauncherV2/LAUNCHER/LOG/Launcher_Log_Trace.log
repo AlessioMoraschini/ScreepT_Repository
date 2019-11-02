@@ -4204,3 +4204,237 @@ exit 0
 2019-10-24 01:27:34,390 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
 2019-10-24 01:27:34,395 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
 2019-10-24 01:27:37,839 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-10-28 08:56:38,648 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 28 08:56:38 CET 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-28 08:56:38,666 [main] DEBUG mainlauncher.ScrYpTLauncher - ARGUMENT FILES:[]
+2019-10-28 08:56:38,866 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-28 08:56:39,060 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-28 08:56:39,583 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 08:56:39,647 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 08:56:39,675 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-28 08:56:39,675 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-28 08:56:39,685 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - 
+
+ => Versions found: [C:\Program Files\java/jdk-11.0.2, C:\Program Files\java/jdk1.8.0_162, C:\Program Files\java/jre-9.0.4]
+
+ => Found correct one: C:\Program Files\java/jdk-11.0.2/bin
+
+2019-10-28 08:56:39,687 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+set JDK_PATH=C:\Program Files\java/jdk-11.0.2/bin; 
+
+set PATH=%JDK_PATH%%PATH% 
+
+echo %PATH% 
+
+java -Xmx512m -Xms256m -Xss125m -XX:MaxPermSize=128m -XshowSettings:vm -Dfile.encoding=UTF8 -Dawt.useSystemAAFontSettings=on -Dsun.java2d.d3d=false -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -jar ScrYpT_0.7.6.jar 
+
+exit 0
+
+
+2019-10-28 08:56:39,694 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-10-28 08:56:39,721 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-10-28 08:56:40,004 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-10-28 08:56:40,266 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-10-28 08:56:44,792 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-10-28 08:56:45,098 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-10-28 08:56:55,757 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-10-28 08:56:55,757 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 08:56:55,760 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 08:56:56,951 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-10-28 08:57:17,830 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 28 08:57:17 CET 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-28 08:57:17,854 [main] DEBUG mainlauncher.ScrYpTLauncher - ARGUMENT FILES:[]
+2019-10-28 08:57:18,000 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-28 08:57:18,187 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-28 08:57:18,687 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 08:57:18,742 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 08:57:18,760 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-28 08:57:18,761 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-28 08:57:18,768 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - 
+
+ => Versions found: [C:\Program Files\java/jdk-11.0.2, C:\Program Files\java/jdk1.8.0_162, C:\Program Files\java/jre-9.0.4]
+
+ => Found correct one: C:\Program Files\java/jdk-11.0.2/bin
+
+2019-10-28 08:57:18,770 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+set JDK_PATH=C:\Program Files\java/jdk-11.0.2/bin; 
+
+set PATH=%JDK_PATH%%PATH% 
+
+echo %PATH% 
+
+java -Xmx512m -Xms256m -Xss125m -XX:MaxPermSize=128m -XshowSettings:vm -Dfile.encoding=UTF8 -Dawt.useSystemAAFontSettings=on -Dsun.java2d.d3d=false -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -jar ScrYpT_0.7.6.jar 
+
+exit 0
+
+
+2019-10-28 08:57:18,775 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-10-28 08:57:18,786 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-10-28 08:57:18,977 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-10-28 08:57:19,219 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-10-28 08:57:20,703 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-10-28 08:57:20,934 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-10-28 08:57:26,319 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-10-28 08:57:26,320 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 08:57:26,322 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 08:57:27,614 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-10-28 08:57:49,484 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 28 08:57:49 CET 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-28 08:57:49,513 [main] DEBUG mainlauncher.ScrYpTLauncher - ARGUMENT FILES:[]
+2019-10-28 08:57:49,711 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-28 08:57:49,883 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-28 08:57:50,384 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 08:57:50,459 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 08:57:50,478 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-28 08:57:50,478 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-28 08:57:50,485 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - 
+
+ => Versions found: [C:\Program Files\java/jdk-11.0.2, C:\Program Files\java/jdk1.8.0_162, C:\Program Files\java/jre-9.0.4]
+
+ => Found correct one: C:\Program Files\java/jdk-11.0.2/bin
+
+2019-10-28 08:57:50,487 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+set JDK_PATH=C:\Program Files\java/jdk-11.0.2/bin; 
+
+set PATH=%JDK_PATH%%PATH% 
+
+echo %PATH% 
+
+java -Xmx512m -Xms256m -Xss125m -XX:MaxPermSize=128m -XshowSettings:vm -Dfile.encoding=UTF8 -Dawt.useSystemAAFontSettings=on -Dsun.java2d.d3d=false -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -jar ScrYpT_0.7.6.jar 
+
+exit 0
+
+
+2019-10-28 08:57:50,491 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-10-28 08:57:50,502 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-10-28 08:57:50,691 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-10-28 08:57:50,919 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-10-28 08:57:53,735 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-10-28 08:58:05,717 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-10-28 08:58:11,103 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-10-28 08:58:11,104 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 08:58:11,106 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 08:58:56,169 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 28 08:58:56 CET 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-28 08:58:56,200 [main] DEBUG mainlauncher.ScrYpTLauncher - ARGUMENT FILES:[]
+2019-10-28 08:58:56,360 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-28 08:58:56,605 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-28 08:58:57,113 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 08:58:57,191 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 08:58:57,210 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-28 08:58:57,210 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-28 08:58:57,217 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - 
+
+ => Versions found: [C:\Program Files\java/jdk-11.0.2, C:\Program Files\java/jdk1.8.0_162, C:\Program Files\java/jre-9.0.4]
+
+ => Found correct one: C:\Program Files\java/jdk-11.0.2/bin
+
+2019-10-28 08:58:57,220 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+set JDK_PATH=C:\Program Files\java/jdk-11.0.2/bin; 
+
+set PATH=%JDK_PATH%%PATH% 
+
+echo %PATH% 
+
+java -Xmx512m -Xms256m -Xss125m -XX:MaxPermSize=128m -XshowSettings:vm -Dfile.encoding=UTF8 -Dawt.useSystemAAFontSettings=on -Dsun.java2d.d3d=false -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -jar ScrYpT_0.7.6.jar 
+
+exit 0
+
+
+2019-10-28 08:58:57,224 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-10-28 08:58:57,235 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-10-28 08:58:57,476 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-10-28 08:58:57,751 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-10-28 08:58:59,417 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-10-28 08:59:10,231 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-10-28 08:59:17,680 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-10-28 08:59:17,680 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 08:59:17,683 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 08:59:35,874 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel
+2019-10-28 09:01:29,627 [main] DEBUG mainlauncher.ScrYpTLauncher - 
+
+##################################################
+
+Mon Oct 28 09:01:29 CET 2019
+
+ScrYpT - Launcher Started now!
+
+##################################################
+
+
+2019-10-28 09:01:29,649 [main] DEBUG mainlauncher.ScrYpTLauncher - ARGUMENT FILES:[]
+2019-10-28 09:01:29,798 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Starting...
+2019-10-28 09:01:29,976 [main] INFO  gui.utils.LauncherLoaderPanel - gui.utils.LauncherLoaderPanel Started
+2019-10-28 09:01:30,482 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 09:01:30,556 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 09:01:30,570 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Started to analyze before launch
+2019-10-28 09:01:30,571 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2019-10-28 09:01:30,576 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - 
+
+ => Versions found: [C:\Program Files\java/jdk-11.0.2, C:\Program Files\java/jdk1.8.0_162, C:\Program Files\java/jre-9.0.4]
+
+ => Found correct one: C:\Program Files\java/jdk-11.0.2/bin
+
+2019-10-28 09:01:30,577 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - Launch command generated:
+
+set JDK_PATH=C:\Program Files\java/jdk-11.0.2/bin; 
+
+set PATH=%JDK_PATH%%PATH% 
+
+echo %PATH% 
+
+java -Xmx512m -Xms256m -Xss125m -XX:MaxPermSize=128m -XshowSettings:vm -Dfile.encoding=UTF8 -Dawt.useSystemAAFontSettings=on -Dsun.java2d.d3d=false -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -jar ScrYpT_0.7.6.jar 
+
+exit 0
+
+
+2019-10-28 09:01:30,581 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Starting...
+2019-10-28 09:01:30,591 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - icon image setted to main window
+2019-10-28 09:01:30,780 [AWT-EventQueue-0] INFO  gui.panels.StartPanel - gui.panels.StartPanel Started
+2019-10-28 09:01:31,012 [AWT-EventQueue-0] INFO  mainlauncher.ScrYpTLauncher - mainlauncher.ScrYpTLauncher Loaded
+2019-10-28 09:01:35,836 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Starting...
+2019-10-28 09:01:36,079 [AWT-EventQueue-0] INFO  gui.panels.CustomizeParametersPanel - gui.panels.CustomizeParametersPanel Started
+2019-10-28 09:01:46,381 [AWT-EventQueue-0] DEBUG gui.panels.CustomizeParametersPanel - Closing Frame: CustomizeParametersPanel
+2019-10-28 09:01:46,382 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2019-10-28 09:01:46,384 [AWT-EventQueue-0] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2019-10-28 09:01:47,885 [AWT-EventQueue-0] DEBUG gui.panels.StartPanel - Closing Frame: gui.panels.StartPanel

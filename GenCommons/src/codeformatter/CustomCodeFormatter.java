@@ -29,6 +29,7 @@ public class CustomCodeFormatter {
 	public static final String ERROR = "ERROR :(";
 	
 	public JsRunner jsRunner;
+	public int indentSize = 3; // default
 	
 	
 	public CustomCodeFormatter(String jsLibFolder) {
@@ -102,16 +103,30 @@ public class CustomCodeFormatter {
 	 /**
 	 * @throws ScriptException 
 	 * @throws NoSuchMethodException **/
-	public String jsFormatJSLIB(String source) throws NoSuchMethodException, ScriptException {
+	public String jsFormatJSLIB(String source, int indentSize) throws NoSuchMethodException, ScriptException {
+		this.indentSize = indentSize;
 		return (String)jsRunner.invokeFunction("js_beautify", source);
 	}
 	
-	public String htmlFormatJSLIB(String source) throws NoSuchMethodException, ScriptException {
+	public String htmlFormatJSLIB(String source, int indentSize) throws NoSuchMethodException, ScriptException {
+		this.indentSize = indentSize;
 		return (String)jsRunner.invokeFunction("style_html", source);
 	}
 	
-	public String cssFormatJSLIB(String source) throws NoSuchMethodException, ScriptException {
+	public String cssFormatJSLIB(String source, int indentSize) throws NoSuchMethodException, ScriptException {
+		this.indentSize = indentSize;
 		return (String)jsRunner.invokeFunction("css_beautify", source);
 	}
 	
+	public String getJsParams() {
+		return "{"+
+			      "'indent_size': " +indentSize+ ","+
+			      "'indent_char': '\t',"+
+			      "'selector_separator': '\t',"+
+			      "'end_with_newline': true,"+
+			      "'newline_between_rules': true,"+
+			      "'space_around_selector_separator': true"+
+			      "'indent_with_tabs': true"+
+			    "}";
+	}
 }

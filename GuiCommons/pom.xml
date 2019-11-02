@@ -30,7 +30,7 @@
   <repositories>
     <repository>
       <id>spring.io</id>
-      <name>your custom repo</name>
+      <name>spring.io_REPO</name>
       <url>http://repo.spring.io/plugins-release/</url>
     </repository>
   </repositories>

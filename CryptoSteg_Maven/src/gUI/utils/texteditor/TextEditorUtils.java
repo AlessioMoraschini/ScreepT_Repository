@@ -27,8 +27,6 @@ import org.fife.ui.rtextarea.Gutter;
 import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
-import enums.Themes;
-import enums.ThemesWrapper;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
@@ -40,6 +38,8 @@ import media.Sounds;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
+import om.themes.Themes;
+import om.themes.ThemesWrapper;
 import reflection.ReflectionUtils;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
@@ -67,6 +67,8 @@ public class TextEditorUtils {
 	// reference to main text editor
 	public TextEditor currentTextEditor;
 	private INItializer configuration;
+	
+	private SupportedFileTextEditor chosenType; // temp variable used in findRightStyleFromComboNSelect()
 	
 	public TextAreaDialogs textAreaDialogs;
 	
@@ -97,7 +99,9 @@ public class TextEditorUtils {
 			public RSyntaxTextArea getTargetTextArea() {
 				RSyntaxTextArea result = new RSyntaxTextArea();
 				try {
-					result = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
+					if (currentTextEditor != null && currentTextEditor.getCurrentTabEditor() != null && currentTextEditor.getCurrentTabEditor().loadedTabObj != null) {
+						result = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
+					}
 				}catch(Exception e) {
 					logger.error("ITextAreaDialogs() embedded in TextEditorutils: Error while retrieving textArea.", e);
 				}
@@ -136,24 +140,33 @@ public class TextEditorUtils {
 	 */
 	public void findRightStyleFromComboNSelect(File source, boolean autosync) {
 
+		chosenType = (SupportedFileTextEditor)currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
+		final TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+
 		if (source == null) {
-			return;
-		}
+			chosenType = SupportedFileTextEditor.TXT;
 		
-		// default target current selected as default
-		SupportedFileTextEditor chosenType = (SupportedFileTextEditor)currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
-		
-		if (autosync) {
-			// IF AUTOSYNC FIND RIGHT TYPE BY FILE EXTENSION AND SELECT
-			for (SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
-				if (FilenameUtils.getExtension(source.getName()).toLowerCase().endsWith(current.senzapunto.toLowerCase())) {
-					// match found
-					chosenType = current;
+		}else {
+			if (autosync) {
+				// IF AUTOSYNC FIND RIGHT TYPE BY FILE EXTENSION AND SELECT
+				for (SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
+					if (FilenameUtils.getExtension(source.getName()).toLowerCase().endsWith(current.senzapunto.toLowerCase())) {
+						// match found
+						chosenType = current;
+					}
 				}
 			}
 		}
+		
 		// APPLY SELECTED
 		currentTextEditor.subHeaderPanel.comboFileFormat.setSelectedItem(chosenType);
+		if(!currentTextEditor.subHeaderPanel.chckbxLockLanguage.isSelected() && !loadedTabObj.textArea.getSyntaxEditingStyle().equals(chosenType.syntax)) {
+			logger.info(chosenType+" -> Style applied, it was different from current applied");
+			applyFileFormatFromCombo();
+		}else {
+			logger.info(chosenType+" -> Style not applied, it was the same of current applied");
+		}
+		
 	}
 	
 	public void setRightPanelContent(PanelType wantedType) {
@@ -243,7 +256,7 @@ public class TextEditorUtils {
 			currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 			resetAllDIviderColors();
 			currentTextEditor.fileTreeShowOrHide(options);
-			currentTextEditor.rightPaneShowOrHide();
+			currentTextEditor.rightPaneShowOrHide(false);
 		}
 	}
 	
@@ -330,7 +343,7 @@ public class TextEditorUtils {
 			currentTextEditor.subHeaderPanel.toggleBtnMap.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().mapViewActive);
 			currentTextEditor.subHeaderPanel.toggleBtnClipboard.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().clipboardViewActive);
 
-			currentTextEditor.rightPaneShowOrHide();
+			currentTextEditor.rightPaneShowOrHide(false);
 			
 			String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftSplitTreeFiles);
 			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
@@ -668,7 +681,7 @@ public class TextEditorUtils {
 	 * Ad-hoc elements to hide
 	 * @return List of components to hide/show with header main function
 	 */
-	private List<Component> getSpecificHeaderHideableObjs(){
+	public List<Component> getSpecificHeaderHideableObjs(){
 		List<Component> hideableList = new ArrayList<Component>();
 		TextEditor txtEditor = currentTextEditor;
 		
@@ -767,19 +780,35 @@ public class TextEditorUtils {
 	public void applyFileFormatFromCombo() {
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 		boolean unsaved = loadedTabObj.unsaved;
-		logger.debug("applyFileFormatFromCombo - START");
-
+		
 		SupportedFileTextEditor selected = (SupportedFileTextEditor) currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
+		String originalStyle = loadedTabObj.textArea.getSyntaxEditingStyle();
+		
+		logger.info("applyFileFormatFromCombo - START - " + selected.syntax);
+		
 		loadedTabObj.textArea.setSyntaxEditingStyle(selected.syntax);
-		SupportedFileTextEditor selExtension = (SupportedFileTextEditor) currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
-		RsyntaxUtils.addAutoCompletion(loadedTabObj.textArea, selExtension.languageWordsFile);
+
+		// Update text area autocomplete only if selected is different from current one
+		if (!originalStyle.equals(selected.syntax)) {
+			RsyntaxUtils.addAutoCompletion(loadedTabObj.textArea, selected.languageWordsFile);
+			logger.info("\n [APPLIED] => applyFileFormatFromCombo - addAutoCompletion and Style reapplied cause wanted is different from current textarea editing style"
+					+ "\nCurrent textarea Style: " + loadedTabObj.textArea.getSyntaxEditingStyle() 
+					+ "\nWanted Style: " + selected.syntax + "\n\n");
+		}else {
+			logger.info("\n [SKIPPED] => applyFileFormatFromCombo - addAutoCompletion skipped cause wanted is equal to current textarea editing style"
+					+ "\nCurrent textarea Style: " + loadedTabObj.textArea.getSyntaxEditingStyle() 
+					+ "\nWanted Style: " + selected.syntax + "\n\n");
+		}
+		
+		// Update gui
 		loadedTabObj.textArea.revalidate();
 		currentTextEditor.CURRENT_EXT_OUT = selected.nomeStringa;
 		currentTextEditor.footerPanel.lblAdvice.setText("[Current output: " + currentTextEditor.CURRENT_EXT_OUT + "]");
 		currentTextEditor.subHeaderPanel.btnSaveTextFileAs.setToolTipText("Choose name and folder, save " + currentTextEditor.CURRENT_EXT_OUT + " file!");
 
 		loadedTabObj.unsaved = unsaved;
-		logger.debug("applyFileFormatFromCombo - FINISH");
+		
+		logger.info("applyFileFormatFromCombo - FINISH - " + selected.syntax);
 	}
 
 	/** updates textArea reference in search/replace panels **/
@@ -796,9 +825,9 @@ public class TextEditorUtils {
 		}
 	}
 
-	public void applyCurrentGraphicsTextArea(RSyntaxTextArea textArea) {
+	public void applyCurrentGraphicsTextArea(RSyntaxTextArea textArea, boolean refreshStyle) {
 		
-		currentTextEditor.initGuiFromConfig(false);
+		currentTextEditor.initGuiFromConfig(false, refreshStyle);
 		textArea.revalidate();
 		textArea.repaint();
 	}

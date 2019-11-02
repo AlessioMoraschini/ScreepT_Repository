@@ -19,6 +19,9 @@ import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -62,6 +65,113 @@ public class FileStuff {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * Unzip an archive into destination folder. If overwrite is true, then no new unique file will be created, 
+	 * but the existing one with same name will be overridden!
+	 * @param sourcePath
+	 * @param destFolderPath
+	 * @param ovewrwrite
+	 * @return
+	 * @throws Exception
+	 */
+	public static File unzipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
+		
+		logger.info("FileStuff.unzipFile() -> Starting unzip:"
+				+ "\n source: " + sourcePath
+				+ "\n destPath: " + destFolderPath
+				+ "\n overwrite: " + ovewrwrite);
+		
+		if(sourcePath == null || destFolderPath == null) {
+			throw new NullPointerException();
+		}
+		File destFolderOut = new File(destFolderPath);
+		if(!destFolderOut.exists()) {
+			destFolderOut.mkdirs();
+		}
+		
+		// Adapt name in case of overwrite
+		File fileToZip = new File(sourcePath);
+		destFolderPath += File.separator + fileToZip.getName();
+		File out = (ovewrwrite)? new File(destFolderPath) : FileStuff.renameJavaObjFile(new File(destFolderPath));
+				
+		// Prepare for write
+        byte[] buffer = new byte[1024];
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(sourcePath));
+        ZipEntry zipEntry = zis.getNextEntry();
+        while (zipEntry != null) {
+        	// For every entry in archive
+            FileOutputStream fos = new FileOutputStream(out);
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+            	// For each byte of current zipped file in archive
+                fos.write(buffer, 0, len);
+            }
+            fos.close();
+            zipEntry = zis.getNextEntry();
+        }
+        zis.closeEntry();
+        zis.close();
+        
+        logger.info("FileStuff.unzipFile() -> COMPLETED!"
+				+ "\n source: " + sourcePath
+				+ "\n unzipped File: " + out
+				+ "\n overwrite: " + ovewrwrite);
+        
+        return out;
+	}
+
+	/**
+	 * Zip a file or folder in a new .zip archive, into destination folder. If overwrite is true, then no new unique file will be created, 
+	 * but the existing one with same name will be overridden!
+	 * 
+	 * @param sourcePath
+	 * @param destFolderPath
+	 * @param ovewrwrite
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public static File zipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
+		
+		logger.info("FileStuff.zipFile() -> Starting zip:"
+				+ "\n source: " + sourcePath
+				+ "\n destPath: " + destFolderPath
+				+ "\n overwrite: " + ovewrwrite);
+		
+		if(sourcePath == null || destFolderPath == null) {
+			throw new NullPointerException();
+		}
+		File destFolderOut = new File(destFolderPath);
+		if(!destFolderOut.exists()) {
+			destFolderOut.mkdirs();
+		}
+		
+		File fileToZip = new File(sourcePath);
+		destFolderPath += File.separator + fileToZip.getName();
+		File out = (ovewrwrite)? new File(destFolderPath) : FileStuff.renameJavaObjFile(new File(destFolderPath));
+		
+		FileOutputStream fos = new FileOutputStream(out);
+		ZipOutputStream zipOut = new ZipOutputStream(fos);
+		FileInputStream fis = new FileInputStream(fileToZip);
+		ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+		zipOut.putNextEntry(zipEntry);
+		byte[] bytes = new byte[1024];
+		int length;
+		while((length = fis.read(bytes)) >= 0) {
+			zipOut.write(bytes, 0, length);
+		}
+		zipOut.close();
+		fis.close();
+		fos.close();
+		
+		logger.info("FileStuff.zipFile() -> COMPLETED!"
+				+ "\n source: " + sourcePath
+				+ "\n zipped File: " + out
+				+ "\n overwrite: " + ovewrwrite);
+		
+		return out;
 	}
 	
 	public static File getNlevelsAncestor(File son, int levelsUp) {

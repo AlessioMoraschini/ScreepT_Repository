@@ -14,15 +14,16 @@ import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
-import enums.Themes;
 import frameutils.utils.GuiUtils;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import maingUI.MainGUI;
+import maingUI.MainGuiUtils;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
+import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
@@ -389,10 +390,9 @@ public class ChargeIniLog extends JPanel{
 						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						lblAvviso.setText("[Configuration Resetted!]");
-						String name = MainGUI.askUsername();
+						MainGUI.mainAPP.mainGuiUtils.welcomeMethodIfFirstTime();
 						dialogHelper.info("File '" + config.getIniFile().getFile().getName() + "' loaded!", "");
 						config.readConfigIniFile();
-						config.getGenOpt().setUserName(name);
 						parent.updateGuiFromCurrConfig();
 					} catch (IOException exc) {
 						dialogHelper.error("Error resetting standard configuration: it does not exist or IO error occurred, retry later!", "");

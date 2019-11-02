@@ -61,7 +61,8 @@ public class TextEditorTooltips {
 	public static final String tooltipDepthTreeDown = "[Ctrl+Alt+Shift+Arrow down] Reduce by one level tree depth";
 	public static final String tooltipChckbxLockLanguage = "[Ctrl+shift+L] When checked, language selector will not be auto updated according to current file type";
 	public static final String tooltipFormatCode = "[Ctrl+Shift+F] Format Code according to current selected language (if supported)";
-			
+	public static final String tooltipSpellChecker = "Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.";		
+	
 	public static final String tooltipComboFileFormat = "Choose file extension";
 	public static final String tooltipComboStyleScheme = "Choose preferred style scheme";
 

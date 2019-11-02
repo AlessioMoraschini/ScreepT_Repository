@@ -100,11 +100,11 @@
 		<artifactId>ini4j</artifactId>
 		<version>0.5.4</version>
 	</dependency>
-	<dependency>
+	<!-- <dependency>
 	    <groupId>org.apache.commons</groupId>
 	    <artifactId>commons-lang3</artifactId>
 	    <version>3.9</version>
-	</dependency>
+	</dependency> -->
 	
 	<dependency>
 	    <groupId>com.miglayout</groupId>

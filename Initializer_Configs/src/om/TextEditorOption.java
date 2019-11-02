@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import amfileutils.om.FileNamed;
-import enums.Themes;
 import generic.LimitedConcurrentList;
 import mainobj.INItializer;
 import resources.GeneralConfig;
@@ -29,7 +28,7 @@ public class TextEditorOption {
 	public static final String DEF_LastEscapeLanguage = "HTML_4";
 	
 	//TEXT AREA
-	public static final String DEFAULT_SELECTED_THEME = Themes.DARK.defaultPath;
+	public static final String DEFAULT_SELECTED_THEME = GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml";
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
 	public static final boolean DEF_mapViewActive = false;
 	public static final boolean DEF_clipboardViewActive = false;
@@ -66,6 +65,8 @@ public class TextEditorOption {
 	public static final boolean DEF_tabsSpacesEmulated = false;
 	public static final boolean DEF_markEndOfLine = false;
 	public static final boolean DEF_showBracketsPopup = false;
+	public static final boolean DEF_spellChecker = false;
+	public static final String DEF_prefDictspellChecker = GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
 	
 	// FIELDS	
 	public int margin;
@@ -116,6 +117,8 @@ public class TextEditorOption {
 	public boolean tabSpacesEmulated;
 	public boolean markEndOfLine;
 	public boolean showBracketsPopup;
+	public boolean spellChecker;
+	public String prefDictspellChecker;
 	
 	
 	// CONSTRUCTOR
@@ -167,6 +170,8 @@ public class TextEditorOption {
 		tabSpacesEmulated = DEF_tabsSpacesEmulated;
 		markEndOfLine = DEF_markEndOfLine;
 		showBracketsPopup = DEF_showBracketsPopup;
+		spellChecker = DEF_spellChecker;
+		prefDictspellChecker = DEF_prefDictspellChecker;
 		
 		this.parentConfig = new INItializer();
 	}
@@ -204,10 +209,27 @@ public class TextEditorOption {
 	}
 	
 	// GETTERS AND SETTERS
+	
 	public boolean isTabLineVisible() {
 		return tabLineVisible;
 	}
 	
+	public String getPrefDictspellChecker() {
+		return prefDictspellChecker;
+	}
+
+	public void setPrefDictspellChecker(String prefDictspellChecker) {
+		this.prefDictspellChecker = prefDictspellChecker;
+	}
+
+	public boolean isSpellChecker() {
+		return spellChecker;
+	}
+
+	public void setSpellChecker(boolean spellChecker) {
+		this.spellChecker = spellChecker;
+	}
+
 	public String getLastFileOpenedClipboard() {
 		return lastFileOpenedClipboard;
 	}

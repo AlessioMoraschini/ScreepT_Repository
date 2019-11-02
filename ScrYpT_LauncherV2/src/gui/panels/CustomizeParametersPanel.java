@@ -2,7 +2,7 @@ package gui.panels;
 
 import javax.swing.JFrame;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import gui.utils.GuiUtils;
@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -126,7 +127,8 @@ public class CustomizeParametersPanel extends JFrame{
 		parentStarterPanel = parentPanel;
 		
 		GuiUtils.centerFrame(this, DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
-		GuiUtils.showOnSameScreen(this, parentStarterPanel);
+		thisPanel.setLocationRelativeTo(parentStarterPanel);
+		this.setAlwaysOnTop(true);
 
 		// END CUSTOM SETTINGS
 		
@@ -210,9 +212,13 @@ public class CustomizeParametersPanel extends JFrame{
 		lblPreferredJvm.setForeground(new Color(220, 220, 220));
 		getContentPane().add(lblPreferredJvm, "cell 0 3 2 1,alignx center");
 		
-		String[] JVMS = {};
-		JVMS = SysUtils.findJvmVersionsInstalled(currentOS).toArray(JVMS);
-		comboPrefJvm = new JComboBox<String>(JVMS);
+		String[] jvmArr = new String[1];
+		ArrayList<String> JVMS = SysUtils.findJvmVersionsInstalled(currentOS);
+		if(ScrYpTLauncher.iniFileManager.manualPathJvm != null && !ScrYpTLauncher.iniFileManager.manualPathJvm.equals("")) {
+			JVMS.add(ScrYpTLauncher.iniFileManager.manualPathJvm);
+		}
+		
+		comboPrefJvm = new JComboBox<String>(JVMS.toArray(jvmArr));
 		getContentPane().add(comboPrefJvm, "cell 2 3 5 1,growx");
 		
 		separator = new JSeparator();

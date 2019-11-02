@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.om.FileNamed;
@@ -24,18 +23,13 @@ import om.TextEditorOption;
 import resources.GeneralConfig;
 import variousutils.HandleString;
 
-public class INItializer {
+public class INItializer extends INItializerParent implements INItializerInterface{
 
 	// INItializer logger creation		
 	static Logger logger = Logger.getLogger(INItializer.class); 
-		
 	
 	// DEFAULT INI
 	public final static String DEFAULT_INI_PATH = GeneralConfig.RESOURCES_DIR  + "CONFIG.ini"; 
-	
-	// FILEDS
-	private Ini iniReadFile;
-	private Wini iniFile;
 	
 	// options om
 	private GenericOption genOpt;
@@ -97,6 +91,7 @@ public class INItializer {
 	 * Method that fills the pojo object mapped from the file given as ini file with iniReadFile setter method, 
 	 * or also with constructor "INItializer(Wini configFile)". if some value is null it sets default values.
 	 */
+	@Override
 	public void readConfigIniFile() {
 		
 		// LOAD AES OPTIONS => disabled key for security
@@ -119,6 +114,7 @@ public class INItializer {
 	 * Method that write on the iniFile (notice that it's different from iniReadFile which is user to read values from file)
 	 * the values setted on pojo's of this class. if some value is null it writes default values of pojo's
 	 */
+	@Override
 	public synchronized void writeCurrentConfigIniFile() {
 		
 		synchronized(iniFile) {
@@ -140,18 +136,6 @@ public class INItializer {
 			} catch (IOException e) {
 				logger.error("Exception happened!", e);
 			}
-		}
-	}
-	
-	/**
-	 * Use this to store all pending changes to file (options must have been pre-written with <b>writeXxxOptions()</b>)
-	 */
-	public void store() {
-		// WRITE ALL VALUES TO FILE
-		try {
-			iniFile.store();
-		} catch (IOException e) {
-			logger.error("Exception happened!", e);
 		}
 	}
 	
@@ -275,6 +259,8 @@ public class INItializer {
 			genOpt.setGeneralVolume(GenericOption.DEFAULT_VOLUME);
 		}
 		
+		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
+		
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
 	}
 	
@@ -371,6 +357,8 @@ public class INItializer {
 		textEditorOpt.setTabSpacesEmulated(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabSpacesEmulated"), TextEditorOption.DEF_tabsSpacesEmulated));
 		textEditorOpt.setMarkEndOfLine(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "markEndOfLine"), TextEditorOption.DEF_markEndOfLine));
 		textEditorOpt.setShowBracketsPopup(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "showBracketsPopup"), TextEditorOption.DEF_showBracketsPopup));
+		textEditorOpt.setSpellChecker(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "spellChecker"), TextEditorOption.DEF_spellChecker));
+		textEditorOpt.setPrefDictspellChecker(getSafeStringConf(TEXT_EDITOR_OPT, "prefDictspellChecker", TextEditorOption.DEF_prefDictspellChecker));
 		
 		// file list
 		String pathsOpenFilesString;
@@ -487,6 +475,7 @@ public class INItializer {
 		iniFile.put(GEN_OPT, "generalVolume", genOpt.getGeneralVolume());
 		iniFile.put(GEN_OPT, "lastPanelOpened", genOpt.getLastPanelOpened().getName());
 		iniFile.put(GEN_OPT, "txtEditorFileMonitorActive", genOpt.isTxtEditorFileMonitorActive());
+		iniFile.put(GEN_OPT, "exceptionAdvicesEnabled", genOpt.isExceptionAdvicesEnabled());
 	}
 	
 	public void writeImgConverterOptions() {
@@ -543,96 +532,14 @@ public class INItializer {
 		iniFile.put(TEXT_EDITOR_OPT, "tabSpacesEmulated", textEditorOpt.tabSpacesEmulated);
 		iniFile.put(TEXT_EDITOR_OPT, "markEndOfLine", textEditorOpt.markEndOfLine);
 		iniFile.put(TEXT_EDITOR_OPT, "showBracketsPopup", textEditorOpt.showBracketsPopup);
+		iniFile.put(TEXT_EDITOR_OPT, "spellChecker", textEditorOpt.spellChecker);
+		iniFile.put(TEXT_EDITOR_OPT, "prefDictspellChecker", textEditorOpt.prefDictspellChecker);
 		iniFile.put(TEXT_EDITOR_OPT, "lastOpenedFiles", textEditorOpt.lastOpenedFiles.toCharSeparatedString(","));
 		
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
 	}
 	
-	/**
-	 * This method is used to write on file single opt values in a precise section
-	 * @return true if no exception is throwed
-	 */
-	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, String OPT_VALUE ) {
-		boolean OK = false;
-		
-		synchronized (iniFile) {
-			try {
-				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
-				iniFile.store();
-				OK = true;
-				logger.info(iniFile.getFile().getCanonicalPath()+" \n\n Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
-			} catch (IOException e) {
-				OK = false;
-				logger.error("Exception happened!", e);
-			}
-		}
-		return OK;
-	}
-	
-	/**
-	 * This method is used to write on file single opt values in a precise section
-	 * @return true if no exception is throwed
-	 */
-	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, float OPT_VALUE ) {
-		boolean OK = false;
-		
-		synchronized (iniFile) {
-			try {
-				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
-				iniFile.store();
-				OK = true;
-				logger.info(iniFile.getFile().getCanonicalPath()+" \n\n Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
-			} catch (IOException e) {
-				OK = false;
-				logger.error("Exception happened!", e);
-			}
-		}
-		return OK;
-	}
-	
-	/**
-	 * This method is used to write on file single opt values in a precise section (INT value)
-	 * @return true if no exception is throwed
-	 */
-	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, int OPT_VALUE ) {
-		boolean OK = false;
-		
-		synchronized (iniFile) {
-			try {
-				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
-				iniFile.store();
-				OK = true;
-				logger.info(iniFile.getFile().getCanonicalPath()+" \n\n Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
-			} catch (IOException e) {
-				OK = false;
-				logger.error("Exception happened!", e);
-			}
-		}
-		return OK;
-	}
-	
-	/**
-	 * This method is used to write on file single opt values in a precise section (INT value)
-	 * @return true if no exception is throwed
-	 */
-	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, boolean OPT_VALUE ) {
-		boolean OK = false;
-		
-		synchronized (iniFile) {
-			try {
-				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
-				iniFile.store();
-				OK = true;
-				logger.info(iniFile.getFile().getCanonicalPath()+" \n\n Single option saved -> "+OPT_SECTION+" - "+OPT_VAR+" : "+OPT_VALUE);
-			} catch (IOException e) {
-				OK = false;
-				logger.error("Exception happened!", e);
-			}
-		}
-		return OK;
-	}
-
 	// TO_STRING AND RELATED METHODS
 	
 	public String toStringa() {
@@ -653,6 +560,7 @@ public class INItializer {
 			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
 			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
 			   .append("\nTxt Editor: Listen for changes in current file -> ").append(genOpt.isTxtEditorFileMonitorActive())
+			   .append("\nTxt Editor: Listen for uncatched exceptions and show them -> ").append(genOpt.isExceptionAdvicesEnabled())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION
@@ -728,6 +636,8 @@ public class INItializer {
 			   .append("\nTAB SPACES EMULATED: ").append(textEditorOpt.roundedSelectionEdges)
 			   .append("\nSHOW END OF LINE: ").append(textEditorOpt.markEndOfLine)
 			   .append("\nSHOW BRACKETS MATCH POPUP: ").append(textEditorOpt.showBracketsPopup)
+			   .append("\nSELL CHECKER ACTIVE: ").append(textEditorOpt.spellChecker)
+			   .append("\nPREFERRED SPELLCHECK DICTIONARY: ").append(textEditorOpt.prefDictspellChecker)
 			   .append("\nFOCUSABLE TIPS FLAG: ").append(textEditorOpt.useFocusableTips);
 		
 		// concat TEXT EDITOR OPTIONS
@@ -742,66 +652,12 @@ public class INItializer {
 		return result;
 	}
 	
-	private String getSafeStringConf(String section, String variable, String defIfBlank) {
-		String result = iniReadFile.get(section, variable);
-		result = (result == null || "".equals(result))? defIfBlank : result;
-		
-		return result;
-	}
-	
-	private boolean getBooleanFromString(String value, boolean defIfBlank) {
-		boolean result = false;
-		if(value == null || "".equals(value)) {
-			result = defIfBlank;
-		}else {
-			result = Boolean.valueOf(value);
-		}
-		
-		return result;
-	}
-	
-	private static int getIntVarFromConf(String val, int defaultVal) {
-		try {
-			return Integer.valueOf(val);
-		}catch(Exception e){
-			return defaultVal;
-		}
-	}
-	
-	public String listToString(ArrayList<String> loadedFiles) {
-		String openedFiles = "";
-		// concateno gli elementi della lista e, tranne l'ultimo, aggiungo una virgola
-		for(String currentPath : loadedFiles) {
-			openedFiles += currentPath+",";
-		}
-		if(openedFiles.length() > 0) {
-			openedFiles = openedFiles.substring(0, openedFiles.length()-1);
-		}
-		return openedFiles;
-	}
-	
 	public GuiOption getGuiOpt() {
 		return guiOpt;
 	}
 
 	public void setGuiOpt(GuiOption guiOpt) {
 		this.guiOpt = guiOpt;
-	}
-
-	public Wini getIniFile() {
-		return iniFile;
-	}
-
-	public Ini getIniReadFile() {
-		return iniReadFile;
-	}
-
-	public void setIniReadFile(Ini iniReadFile) {
-		this.iniReadFile = iniReadFile;
-	}
-
-	public void setIniFile(Wini iniFile) {
-		this.iniFile = iniFile;
 	}
 
 	public GenericOption getGenOpt() {

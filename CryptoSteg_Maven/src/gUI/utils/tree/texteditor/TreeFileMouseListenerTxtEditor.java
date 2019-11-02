@@ -216,6 +216,7 @@ public class TreeFileMouseListenerTxtEditor {
 							try {
 								if (selectedNode != null && selectedNode.mFile != null) {
 								propertiesFrame = new FilePropertiesFrame(selectedNode.mFile, true);
+								propertiesFrame.setLocationRelativeTo(textEditor);
 								propertiesFrame.setTitle(selectedNode.mFile.getAbsolutePath());
 								propertiesFrame.setVisible(true);
 								}
