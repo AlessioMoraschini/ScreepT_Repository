@@ -217,6 +217,10 @@ public class TestUpdateProgress {
 		dialog.setDefaultCloseOperation(defaultCloseOp);
 	}
 
+	public void setUndefinedDuration() {
+		pb.setIndeterminate(true);
+	}
+
     protected void doneCheck(JProgressBar bar) {
         if (bar.getValue()>=100) {
             dialog.dispose();

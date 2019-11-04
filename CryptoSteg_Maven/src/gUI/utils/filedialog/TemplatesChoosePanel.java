@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
@@ -12,21 +14,24 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
 import resources.GeneralConfig;
-import variousutils.HandleString;
+import resources.IconsPathConfigurator;
+import resources.ImagesPathConfigurator;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -36,7 +41,8 @@ import java.util.Arrays;
 import java.awt.event.ActionEvent;
 
 public class TemplatesChoosePanel extends JFrame{
-	
+	private static final long serialVersionUID = 6657650710605549352L;
+
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TemplatesChoosePanel.class);
 		
@@ -47,56 +53,88 @@ public class TemplatesChoosePanel extends JFrame{
 	
 	private JLabel lblTemplates;
 	private JPanel panel;
-	private JComboBox comboTemplateSelector;
+	private JComboBox<String> comboTemplateSelector;
 	private JButton btnInject;
 	private JButton btnAddSelectionToTemplates;
 	private JButton AddCustomFromFile;
 	private JButton buttonInvoker;
+	private JButton btnOpenInFilesystem;
+	private JButton btnReloadTemplates;
 	private JTextArea outputTextArea;
-	private JComboBox templatesCombo;
+	private JOptionHelper dialogHelper;
+	
 	
 	// MAIN CONSTRUCTOR //
-	public TemplatesChoosePanel(JFrame parent, JTextArea outputText, JComboBox templatesComb, JButton buttonInvoke) {
+	public TemplatesChoosePanel(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
 		
 		active = true;
 		
+		dialogHelper = new JOptionHelper(this);
+		
 		outputTextArea = outputText;
-		templatesCombo = templatesComb;
 		buttonInvoker = buttonInvoke;
 		GuiUtils.showOnSameScreen(this, parent);
+		GuiUtils.setFrameIcon(ImagesPathConfigurator.MAIN_APP_ICON, this);
+		this.setResizable(false);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px,grow][70px]", "[42px][30px,grow][30px,grow]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"insets 2, fill", "[100px,grow][70px]", "[42px][30px,grow][30px,grow]"));
 		
 		panel = new JPanel();
 		panel.setForeground(Color.WHITE);
 		panel.setBorder(new LineBorder(Color.GRAY, 4));
 		panel.setBackground(Color.BLACK);
 		getContentPane().add(panel, "cell 0 0 2 1,growx,aligny top");
-		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][][][][][]", "[]"));
+		panel.setLayout(new MigLayout("", "[][][][grow][][]", "[]"));
 		
-		lblTemplates = new JLabel("Templates");
+		lblTemplates = new JLabel("Templates Manager");
 		lblTemplates.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTemplates.setForeground(Color.LIGHT_GRAY);
-		lblTemplates.setFont(new Font("Lithos Pro Regular", Font.BOLD, 19));
+		lblTemplates.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		lblTemplates.setBackground(SystemColor.activeCaptionBorder);
-		panel.add(lblTemplates, "cell 5 0,alignx center");
+		panel.add(lblTemplates, "cell 0 0,alignx center");
+		
+		btnOpenInFilesystem = new JButton("");
+		panel.add(btnOpenInFilesystem, "cell 5 0,grow");
+		btnOpenInFilesystem.setToolTipText("Open Templates folder with OS File Explorer");
+		btnOpenInFilesystem.setPreferredSize(new Dimension(20, 20));
+		btnOpenInFilesystem.setMinimumSize(new Dimension(20, 9));
+		btnOpenInFilesystem.setMaximumSize(new Dimension(20, 20));
+		btnOpenInFilesystem.setCursor(GuiUtils.CURSOR_HAND);
+		GuiUtils.makeTransparentJButton(btnOpenInFilesystem);
+		btnOpenInFilesystem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
+		btnOpenInFilesystem.setForeground(Color.BLACK);
+		
+		btnReloadTemplates = new JButton("");
+		panel.add(btnReloadTemplates, "cell 4 0,grow");
+		btnReloadTemplates.setToolTipText("Reload Templates List");
+		btnReloadTemplates.setPreferredSize(new Dimension(20, 20));
+		btnReloadTemplates.setMinimumSize(new Dimension(20, 9));
+		btnReloadTemplates.setMaximumSize(new Dimension(20, 20));
+		btnReloadTemplates.setCursor(GuiUtils.CURSOR_HAND);
+		GuiUtils.makeTransparentJButton(btnReloadTemplates);
+		btnReloadTemplates.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD4));
+		btnReloadTemplates.setForeground(Color.BLACK);
 		
 		comboTemplateSelector = new JComboBox<String>(retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER));
+		comboTemplateSelector.setMinimumSize(new Dimension(33, 30));
 		comboTemplateSelector.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(comboTemplateSelector, "cell 0 1,growx");
 		
 		AddCustomFromFile = new JButton("Add Custom Template");
+		AddCustomFromFile.setMinimumSize(new Dimension(185, 30));
 		AddCustomFromFile.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(AddCustomFromFile, "cell 1 1,growx");
 		
 		btnInject = new JButton("Inject template");
+		btnInject.setMinimumSize(new Dimension(108, 30));
 		btnInject.setCursor(GuiUtils.CURSOR_HAND);
 		btnInject.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnInject.setBackground(Color.GRAY);
 		getContentPane().add(btnInject, "cell 0 2,growx");
 		
 		btnAddSelectionToTemplates = new JButton("Add Selection to Templates");
+		btnAddSelectionToTemplates.setMinimumSize(new Dimension(185, 30));
 		btnAddSelectionToTemplates.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnAddSelectionToTemplates, "cell 1 2,growx");
 		
@@ -127,10 +165,10 @@ public class TemplatesChoosePanel extends JFrame{
 				try {
 					selectedTemplate = "\n"+(FileStuff.readFileAsString(selectedFile)) + "\n";
 				} catch (IOException e1) {
+					dialogHelper.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), "ERROR reading Template");
 					logger.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), e1);
 				}
-				String modified = HandleString.injectStringInSelection(outputTextArea.getText(), selectedTemplate, outputTextArea.getSelectionStart(), outputTextArea.getSelectionEnd());
-				outputTextArea.setText(modified);
+				outputTextArea.insert(selectedTemplate, outputTextArea.getCaretPosition());
 			}
 		});
 
@@ -145,24 +183,24 @@ public class TemplatesChoosePanel extends JFrame{
 					String ext = FilenameUtils.getExtension(selName);
 					if (selected.exists() && SupportedFileTextEditor.getSupportedExtensions().contains(ext)) {
 						File outputFile = retrieveTemplateByName(selName);
-						int choose = JOptionPane.YES_OPTION;
+						boolean choose = true;
 						
 						if(outputFile.exists()) {
-							choose = JOptionPane.showConfirmDialog(outputTextArea, "This name already exists, wanna overwrite?", "Name already existing", JOptionPane.YES_NO_OPTION);
+							choose = dialogHelper.yesOrNo("This name already exists, wanna overwrite?", "Name already existing");
 						}
 						
-						if(choose==JOptionPane.YES_OPTION) {
+						if(choose) {
 							try {
 								FileUtils.copyFile(selected, outputFile);
 								reloadTemplates();
 							} catch (IOException e1) {
 								logger.error("An error occurred copying template from file "+selected.getAbsolutePath(), e1);
-								JOptionPane.showMessageDialog(outputTextArea, "An error occurred copying "+selected.getAbsolutePath(), "An error occurred", JOptionPane.ERROR_MESSAGE);
+								dialogHelper.error("An error occurred copying "+selected.getAbsolutePath(), "An error occurred");
 							}
-							JOptionPane.showMessageDialog(outputTextArea, "File added to templates :)");
+							dialogHelper.info("File added to templates :)", "File added to templates!");
 						}
 					}else {
-						JOptionPane.showMessageDialog(outputTextArea, "File not existing or not in supported types ["+Arrays.toString(SupportedFileTextEditor.values())+"]");
+						dialogHelper.warn("File not existing or not one of supported types ["+Arrays.toString(SupportedFileTextEditor.values())+"]", "File not existing or unsupported");
 					}
 				}
 			}
@@ -175,34 +213,60 @@ public class TemplatesChoosePanel extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				String selected = outputTextArea.getSelectedText();
 				if(!selected.equals("")) {
-					String inputTemplateName = JOptionPane.showInputDialog("Please specify a name for the template:", "New Template.txt");
+					String inputTemplateName = dialogHelper.askForString("Please specify a name for the template:", "New Template.txt");
 					inputTemplateName = (!inputTemplateName.equals(""))? inputTemplateName : "New Template.txt";
 					File templateFile = retrieveTemplateByName(inputTemplateName);
 					String ext = FilenameUtils.getExtension(inputTemplateName);
 					if(!SupportedFileTextEditor.getSupportedExtensions().contains(ext)) {
 						templateFile = FileStuff.changeExtension(templateFile, ".txt");
 					}
-					int choose = JOptionPane.YES_OPTION;
+					boolean choose = true;
 					
 					if(templateFile.exists()) {
-						choose = JOptionPane.showConfirmDialog(outputTextArea, "This name already exists, wanna overwrite?", "Name already existing", JOptionPane.YES_NO_OPTION);
+						choose = dialogHelper.yesOrNo("This name already exists, wanna overwrite?", "Name already existing");
 					}
 					
-					if(choose==JOptionPane.YES_OPTION) {
+					if(choose) {
 						try {
 							boolean result = FileStuff.writeStringToFile(selected, templateFile, true);
+							logger.info("Template written with esit: "+result);
+							dialogHelper.info("Template Added to collection.", "Template Added");
 							reloadTemplates();
 						} catch (IOException e1) {
-							logger.error("An error occurred reading template from file "+templateFile.getAbsolutePath(), e1);
+							dialogHelper.info("An error occurred writing template to file: "+templateFile.getAbsolutePath(), "An error occurred");
+							logger.error("An error occurred writing template to file: "+templateFile.getAbsolutePath(), e1);
 						}
 					}
 					
 				}else {
-					JOptionPane.showMessageDialog(outputTextArea, "No text is selected");
+					dialogHelper.warn("No text is selected", "NO TEXT SELECTED");
 				}
 				
 			}
 		});
+		
+		// OPEN CURRENT IN SYSTEM EXPLORER
+		btnOpenInFilesystem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new Thread(new Runnable() {
+					public void run() {
+						GuiUtils.openInFileSystem(new File(GeneralConfig.TEMPLATES_FOLDER));
+					}
+				}).start();
+			}
+		});
+
+		// RELOAD TEMPLATES
+		btnReloadTemplates.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						reloadTemplates();
+					}
+				});
+			}
+		});
+		
 	}
 	
 	// USEFUL METHODS //
@@ -231,7 +295,7 @@ public class TemplatesChoosePanel extends JFrame{
 	
 	private void reloadTemplates() {
 		comboTemplateSelector.removeAllItems();
-		DefaultComboBoxModel model = new DefaultComboBoxModel( retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER) );
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>( retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER) );
 		comboTemplateSelector.setModel( model );
 		//comboTemplateSelector = new JComboBox<String>(retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER));
 		comboTemplateSelector.revalidate();

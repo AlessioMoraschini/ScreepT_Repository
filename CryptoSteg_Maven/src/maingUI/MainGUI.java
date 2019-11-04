@@ -279,20 +279,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 			    	
-					Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+			    	askForExit();
 			    	
-			    	if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
-							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
-
-			    		closeApplication(0);
-			    		
-			    	}else {
-			    		
-			    		frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			    		frmScryptV.setAlwaysOnTop(false);
-			    		activeWindow.toFront();
-			    		activeWindow.requestFocus();
-			    	}
 			  	}
 			});
 			
@@ -458,20 +446,8 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 				if (!FLAG_mntmExit) {
 					FLAG_mntmExit = true;
 					
-					// backup current active window
-					Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
-					frmScryptV.setAlwaysOnTop(true);
+					askForExit();
 					
-					if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to exit? :(", "Exit Program",
-							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
-						
-						// perform closing actions and exit application
-						closeApplication(0);
-					}
-					
-					frmScryptV.setAlwaysOnTop(false);
-		    		activeWindow.requestFocus();
-		    		activeWindow.toFront();
 					FLAG_mntmExit = false;
 				}
 			}
@@ -640,7 +616,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
 							logger.error("Exception happened!", e);
 						}
-						mainGuiUtils.welcomeMethodIfFirstTime();
+						MainGuiUtils.welcomeMethodIfFirstTime();
 						JOptionPane.showMessageDialog(frmScryptV,
 								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
 						currentConfiguration.readConfigIniFile();
@@ -809,7 +785,6 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
 					panelGuiOptions.setLocationRelativeTo(mainAPP.getMainFrame());
-					GuiUtils.centerComponent(panelGuiOptions, 800, 470);
 					panelGuiOptions.setVisible(true);
 					panelGuiOptions.setAlwaysOnTop(true);
 					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1327,6 +1302,24 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			mntmnetInfo.setToolTipText(tooltipMSG);
 			mntmCrypter.setToolTipText(tooltipMSG);
 		}
+	}
+	
+	public static void askForExit() {
+		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
+    	
+		
+    	if (dialogHelper.yesOrNo("Really want to exit?", "Exit Program")) {
+
+    		frmScryptV.setAlwaysOnTop(true);
+    		closeApplication(0);
+    		
+    	}else {
+    		
+    		frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    		activeWindow.toFront();
+    		activeWindow.requestFocus();
+    	}
+    	
 	}
 	
 	public static void closeApplication(int exitCode) {

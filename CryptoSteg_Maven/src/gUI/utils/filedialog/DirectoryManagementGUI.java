@@ -69,9 +69,14 @@ public class DirectoryManagementGUI {
 		String dirToMake = dialog.askForStringUnsafe("Insert the complete Path of the directories to create (accepted separators=['\\','/'])", "specify path for folder to create");
 		if(dirToMake == null) {
 			return;
+			
 		}else if (!dirToMake.equals("")) {
 			File givenDir = new File(dirToMake);
-			// TODO check for root existing
+			
+			if(!FileStuff.isPathRootValid(dirToMake)) {
+				return;
+			}
+			
 			boolean res = givenDir.mkdirs();
 			if (res) {
 				dialog.info("Completed, Directories created!", "Directories created!");

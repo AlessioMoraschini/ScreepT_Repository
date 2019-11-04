@@ -171,20 +171,6 @@ public class ImageWorker {
 		return destFile;
 	}
 	
-	/**
-	 * 
-	 * @param source source image file (could be every kind of source)
-	 * @param compFactor the higher and more compressed is the result : must be a %
-	 * @param removeGamma flag=true : gamma will be removed
-	 * 
-	 * @return byte array containing compressed byte result as array
-	 * @throws IOException
-	 */
-	public static byte[] compressIMGpngLossy(BufferedImage source, float compressFactor, boolean removeGamma) throws IOException {
-		// TODO
-		return null;
-	}
-
 	/////////////////////
 	// GETTERS & SETTERS /
 	//////////////////////

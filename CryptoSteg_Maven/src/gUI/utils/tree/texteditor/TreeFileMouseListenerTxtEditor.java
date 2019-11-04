@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
@@ -22,25 +23,26 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
-import frameutils.frame.FilePropertiesFrame;
+import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
+import mouseutils.TreeFileMouseListenerBasicFileNamed;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import utils.dialog.ColorDialogUtils;
 import variousutils.HandleString;
 
-public class TreeFileMouseListenerTxtEditor {
+public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed{
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TreeFileMouseListenerTxtEditor.class); 
 	
 	// gui elements
 	private JTree tree;
-	private FileNamed selectedNode;
 	private int selectedRow;
 	private TextEditor textEditor;
 	private CustomTabbedEditor currentTabEditor;
@@ -48,6 +50,9 @@ public class TreeFileMouseListenerTxtEditor {
 	
 	public JMenuItem itemLoadFile;
 	public JMenuItem itemNewFile;
+	public JMenuItem deleteItem;
+	public JMenuItem copyHereCurrentItem; // TODO implement this
+	public JMenuItem moveHereCurrentItem; // TODO implements this
 	public JMenuItem sysExplorerItem;
 	public JMenuItem refreshItem;
 	public JMenuItem collapseItem;
@@ -55,8 +60,11 @@ public class TreeFileMouseListenerTxtEditor {
 	public JMenuItem propertiesItem;
 	public JMenuItem changeBckgItem;
 	
+	public JOptionHelper dialogHelper;
+	
 	// constructor
 	public TreeFileMouseListenerTxtEditor(JTree tree, TextEditor textEdit){
+		super(tree);
 		this.tree = tree;
 		this.tree.setComponentPopupMenu(getPopUpMenu());
 		this.tree.addMouseListener(getMouseListener());
@@ -64,6 +72,7 @@ public class TreeFileMouseListenerTxtEditor {
 		this.tree.addMouseMotionListener(TreeUtils.getHoverOnNodesListener());
 		textEditor = textEdit;
 		currentTabEditor = textEditor.getCurrentTabEditor();
+		dialogHelper = new JOptionHelper(textEditor);
 	}
 	
 	public MouseListener getMouseListener() {
@@ -72,7 +81,8 @@ public class TreeFileMouseListenerTxtEditor {
 	        @Override
 	        public void mousePressed(MouseEvent arg0) {
 	        	selectedRow = tree.getRowForLocation(arg0.getX(), arg0.getY());
-	            if(arg0.getButton() == MouseEvent.BUTTON3){
+	        	// Right click
+	            if(arg0.getButton() == MouseEvent.BUTTON3){ 
 	                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
 	                if(pathForLocation != null){
 	                    selectedNode = (FileNamed) pathForLocation.getLastPathComponent();
@@ -106,47 +116,64 @@ public class TreeFileMouseListenerTxtEditor {
 		};
 	}
 
-	private JPopupMenu getPopUpMenu() {
+	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
 	    itemLoadFile = new JMenuItem("Open File");
 	    itemLoadFile.addActionListener(getLoadActionListener());
+	    itemLoadFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    menu.add(itemLoadFile);
 
+	    menu.add(new JSeparator());
+
 	    itemNewFile = new JMenuItem("New File");
+	    itemNewFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemNewFile.addActionListener(getNewFileActionListener());
 	    menu.add(itemNewFile);
+
+	    deleteItem = new JMenuItem("Delete selected files");
+	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    deleteItem.addActionListener(getDeleteActionListener());
+	    menu.add(deleteItem);
+	    
+	    menu.add(new JSeparator());
 	    
 	    sysExplorerItem = new JMenuItem("View in system explorer");
+	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 	    
 	    refreshItem = new JMenuItem("Refresh tree");
+	    refreshItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 	    
 	    collapseItem = new JMenuItem("Collapse children nodes");
+	    collapseItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    collapseItem.addActionListener(collapseChildren());
 	    menu.add(collapseItem);
 
 	    expandItem = new JMenuItem("Expand children nodes");
+	    expandItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    expandItem.addActionListener(expandChildren());
 	    menu.add(expandItem);
 	    
 	    propertiesItem = new JMenuItem("File Properties");
+	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);
 	    
 	    changeBckgItem = new JMenuItem("Change file Panel background");
+	    changeBckgItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    changeBckgItem.addActionListener(ChangeBckgNewFileActionListener());
-//	    menu.add(changeBckgItem); 
-//	    DEACTIVATED BECAUSE BUGGY AND UGLY :(
-	       
+//	    menu.add(changeBckgItem); DEACTIVATED, see javadoc
+	    
 	    // set menu icons
 	    MenuSetter.setIconTextGap(menu, 12);
 	    
 	    sysExplorerItem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 	    itemLoadFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD));
+	    deleteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 	    collapseItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
 	    expandItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
@@ -157,17 +184,14 @@ public class TreeFileMouseListenerTxtEditor {
 	    return menu;
 	}
 	
-	
-	private ActionListener refreshListener() {
+	@Override
+	public ActionListener refreshListener() {
 		return new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (selectedNode!= null ) {
-					textEditor.textEditorUtils.refreshTree(selectedNode.mFile, true);
-				}else if(currentTabEditor.loadedTabObj != null){
-					textEditor.textEditorUtils.refreshTree(currentTabEditor.loadedTabObj.loadedFile, true);
-				}
+				
+				refreshTree();
 			}
 		};
 	}
@@ -178,9 +202,8 @@ public class TreeFileMouseListenerTxtEditor {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					// TODO FIX AND IMPROVE THIS
 					TreePath parent = tree.getSelectionPath();
-					TreeUtils.expandAllRecursively(tree, parent);
+					TreeUtils.expandAllChildNodes(tree, parent);
 				} catch (Exception e1) {
 					logger.error("Error expanding tree row N°"+selectedRow, e1);
 				}
@@ -195,9 +218,7 @@ public class TreeFileMouseListenerTxtEditor {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					// TODO FIX AND IMPROVE THIS
 					tree.collapseRow(selectedRow);
-//					TreeUtils.selectFileInNamedFileTree(selectedNode.mFile, tree, false);
 				} catch (Exception e1) {
 					logger.error("Error collapsing tree row N°"+selectedRow, e1);
 				}
@@ -205,35 +226,6 @@ public class TreeFileMouseListenerTxtEditor {
 		};
 	}
 	
-	private ActionListener propertiesListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (propertiesFrame == null || !propertiesFrame.isVisible()) {
-					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							try {
-								if (selectedNode != null && selectedNode.mFile != null) {
-								propertiesFrame = new FilePropertiesFrame(selectedNode.mFile, true);
-								propertiesFrame.setLocationRelativeTo(textEditor);
-								propertiesFrame.setTitle(selectedNode.mFile.getAbsolutePath());
-								propertiesFrame.setVisible(true);
-								}
-							} catch (Exception e) {
-								logger.error(e);
-							}
-							currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
-						}
-					});
-				}else {
-					propertiesFrame.toFront();
-					propertiesFrame.setVisible(true);
-				}
-			}
-		};
-	}
-
 	private ActionListener getLoadActionListener() {
 		return new ActionListener() {
 			
@@ -255,9 +247,14 @@ public class TreeFileMouseListenerTxtEditor {
 			}
 		};
 	}
+	
+	/**
+	 *  Deprecated BECAUSE BUGGY AND UGLY :(
+	 * @return
+	 */
+	@Deprecated
 	public ActionListener ChangeBckgNewFileActionListener() {
 		return new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Color esit = new ColorDialogUtils().askForColor(textEditor.leftSplitTreeFiles, false);
@@ -323,16 +320,16 @@ public class TreeFileMouseListenerTxtEditor {
 		};
 	}
 	
-	private ActionListener openInSystemExplorer() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GuiUtils.openInFileSystem(selectedNode.mFile);
-			}
-		};
+	@Override
+	public void refreshTree() {
+		if (currentTabEditor.loadedTabObj != null) {
+			textEditor.textEditorUtils.refreshTree(currentTabEditor.loadedTabObj.loadedFile, true);
+		}else{
+			FileNamed root = (FileNamed)tree.getModel().getRoot();
+			textEditor.textEditorUtils.refreshTree(root.mFile, true);
+		}
 	}
-
+	
 	public JMenuItem getItemLoadFile() {
 		return itemLoadFile;
 	}

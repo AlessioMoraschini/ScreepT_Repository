@@ -285,10 +285,11 @@ public class GuiUtils {
 		}
 	}
 	
-	public static void setupTooltips(int delay, int timeout, Font font) {
+	public static void setupTooltips(int delay, int timeout, int reshowDelay, Font font) {
 		// Tooltip General settings
 		ToolTipManager.sharedInstance().setInitialDelay(delay);
 		ToolTipManager.sharedInstance().setDismissDelay(timeout);
+		ToolTipManager.sharedInstance().setReshowDelay(reshowDelay);
 		UIManager.put("ToolTip.font", font);
 	}
 	

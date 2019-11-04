@@ -1433,10 +1433,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				JFrame panel = new JFrame();
 				if (!TemplatesChoosePanel.active) {
-					panel = new TemplatesChoosePanel(mainApplication.getMainFrame(), parent.getCurrentTabEditor().loadedTabObj.textArea,
-							comboFileFormat, btnTemplates);
+					panel = new TemplatesChoosePanel(mainApplication.getMainFrame(), parent.getCurrentTabEditor().loadedTabObj.textArea, btnTemplates);
 					panel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panel.setBounds(750, 140, 500, 170);
+					panel.setBounds(750, 140, 500, 150);
 					panel.setAlwaysOnTop(true);
 					panel.setVisible(true);
 					panel.setTitle("TEMPLATES manager - " + GeneralConfig.APPLICATION_NAME);

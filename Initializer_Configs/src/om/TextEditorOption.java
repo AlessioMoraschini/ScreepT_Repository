@@ -32,6 +32,7 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
 	public static final boolean DEF_mapViewActive = false;
 	public static final boolean DEF_clipboardViewActive = false;
+	public static final boolean DEF_clipboardSyncStyle = false;
 	public static final int DEFAULT_DIVIDER_POS_X = 230;
 	public static final int DEF_dividerRightPanePosX = 60;
 	public static final int DEF_dividerRightPanePosXClipboard = 150;
@@ -44,6 +45,7 @@ public class TextEditorOption {
 	public static final boolean DFAULT_AUTO_SYNTAX_SYN_FLAG = true;
 	public static final String DEFAULT_WORKSPACE_LOCATION = GeneralConfig.USER_PERSONAL_DIR;
 	public static final LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);
+	public static final LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE);
 	
 	// TEXT AREA DETAIL
 	public static final boolean DEF_codeFoldingEnabled = true;
@@ -80,6 +82,7 @@ public class TextEditorOption {
 	public String selectedAtStart;
 	public String lastEscapeLanguage;
 	public LimitedConcurrentList<FileNamed> lastOpenedFiles;
+	public LimitedConcurrentList<FileNamed> lastSelectedWorkspaces;
 	
 	// TEXT AREA
 	public String defaultWorkspacePath;
@@ -93,6 +96,7 @@ public class TextEditorOption {
 	public boolean fileTreeActive;
 	public boolean mapViewActive;
 	public boolean clipboardViewActive;
+	public boolean clipboardSyncStyle;
 	public boolean treeLocked;
 	public boolean workspaceViewSelected;
 	public boolean defaultAutoSyntaxSync;
@@ -125,6 +129,7 @@ public class TextEditorOption {
 	public TextEditorOption() {
 		openedFileList = new ArrayList<String>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
+		lastSelectedWorkspaces = DEF_lastSelectedWorkspaces;
 		margin = DEFAULT_MARGIN;
 		voiceRate = DEFAULT_VOICE_RATE;
 		inlinedTabs = DEFAULT_TAB_INLINE;
@@ -144,6 +149,7 @@ public class TextEditorOption {
 		
 		fileTreeActive = DEFAULT_FTREE_ACTIVE;
 		clipboardViewActive = DEF_clipboardViewActive;
+		clipboardSyncStyle = DEF_clipboardSyncStyle;
 		mapViewActive = DEF_mapViewActive;
 		treeLocked = DEFAULT_TREE_LOCKED;
 		workspaceViewSelected = DEFAULT_WORKSPACE_VIEW_SELECTED;
@@ -185,13 +191,13 @@ public class TextEditorOption {
 	/**
 	 * If already present move to top, else if not present add it as last
 	 */
-	public synchronized void addFileIntoLastOpenedFiles(File toAdd) {
+	public synchronized void addFileToLimitedList(File toAdd, LimitedConcurrentList<FileNamed> targetList, String varToSave) {
 		
-		if(toAdd == null) {return;}
+		if(toAdd == null || targetList == null || !toAdd.exists()) {return;}
 		
 		// FIRST REMOVE ALL REFERENCES
-		synchronized (lastOpenedFiles) {
-			Iterator iter = lastOpenedFiles.getList().iterator();
+		synchronized (targetList) {
+			Iterator iter = targetList.getList().iterator();
 			List<FileNamed> toRemove = new ArrayList<FileNamed>();
 			while (iter.hasNext()) {
 				FileNamed elem = (FileNamed)iter.next();
@@ -201,19 +207,27 @@ public class TextEditorOption {
 				}
 			}
 			
-			lastOpenedFiles.getList().removeAll(toRemove);
+			targetList.getList().removeAll(toRemove);
 		}
 		// NOT ADD AS LAST
-		lastOpenedFiles.addLast(new FileNamed(toAdd));
-		parentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastOpenedFiles", lastOpenedFiles.toCharSeparatedString(","));
+		targetList.addLast(new FileNamed(toAdd));
+		parentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, varToSave, targetList.toCharSeparatedString(","));
 	}
-	
+
 	// GETTERS AND SETTERS
 	
 	public boolean isTabLineVisible() {
 		return tabLineVisible;
 	}
 	
+	public boolean isClipboardSyncStyle() {
+		return clipboardSyncStyle;
+	}
+
+	public void setClipboardSyncStyle(boolean clipboardSyncStyle) {
+		this.clipboardSyncStyle = clipboardSyncStyle;
+	}
+
 	public String getPrefDictspellChecker() {
 		return prefDictspellChecker;
 	}

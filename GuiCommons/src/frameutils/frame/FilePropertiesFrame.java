@@ -26,6 +26,9 @@ import frameutils.utils.GuiUtils;
 import general.MyFileView;
 
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
@@ -35,6 +38,9 @@ public class FilePropertiesFrame extends JFrame{
 	public static final Color defaultRed = Color.ORANGE;
 	public static final Color defaultBlue = Color.CYAN;
 	public static final Color defaultGreen = Color.GREEN;
+	
+	public static final int DEF_width = 730;
+	public static final int DEF_height = 220;
 	
 	private JTextField dynLblFileName;
 	private JTextField dynLblPath;
@@ -65,12 +71,12 @@ public class FilePropertiesFrame extends JFrame{
 		GuiUtils.setFrameIcon(MyFileView.getExtIcon(targetFile), this);
 		this.setAlwaysOnTop(alwaysOnTop);
 		
-		GuiUtils.centerComponent(this, 550, 245);
+		GuiUtils.centerComponent(this, DEF_width, DEF_height);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.DARK_GRAY);
-		panel.setLayout(new MigLayout("", "[][grow][grow][grow][100px:90px][][]", "[][10px:n][][10px:n][grow][grow][30px:n:40px]"));
+		panel.setLayout(new MigLayout("", "[][grow][80px:n][grow][100px:90px][][]", "[][10px:n][][10px:n][grow][30px:n:40px]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportView(panel);
@@ -79,11 +85,40 @@ public class FilePropertiesFrame extends JFrame{
 		lblFileName = new JLabel("File Name:");
 		lblFileName.setForeground(Color.LIGHT_GRAY);
 		lblFileName.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblFileName, "cell 0 0,alignx right");
+		panel.add(lblFileName, "cell 0 0,alignx center");
 		
 		dynLblFileName = new JTextField("");
 		dynLblFileName.setForeground(Color.DARK_GRAY);
-		panel.add(dynLblFileName, "cell 1 0 6 1,growx");
+		panel.add(dynLblFileName, "cell 1 0 3 1,growx");
+		dynLblFileName.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if(dynLblFileName.getSelectedText() == null || "".equals(dynLblFileName.getSelectedText())) {
+					dynLblFileName.selectAll();
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		
+		lblCreatedOn = new JLabel("Created on:");
+		lblCreatedOn.setForeground(Color.LIGHT_GRAY);
+		lblCreatedOn.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel.add(lblCreatedOn, "cell 4 0,alignx right");
+		
+		dynLblCreationDate = new JLabel(" 1970/01/01 - 01:00:00");
+		dynLblCreationDate.setForeground(new Color(176, 196, 222));
+		panel.add(dynLblCreationDate, "cell 5 0 2 1,alignx right");
 		
 		JSeparator separator = new JSeparator();
 		separator.setBackground(Color.GRAY);
@@ -92,57 +127,68 @@ public class FilePropertiesFrame extends JFrame{
 		lblPath = new JLabel("File Path:");
 		lblPath.setForeground(Color.LIGHT_GRAY);
 		lblPath.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblPath, "cell 0 2,alignx right");
+		panel.add(lblPath, "cell 0 2,alignx center");
 		
 		dynLblPath = new JTextField("");
 		dynLblPath.setForeground(Color.DARK_GRAY);
 		panel.add(dynLblPath, "cell 1 2 6 1,growx");
+		dynLblPath.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if(dynLblPath.getSelectedText() == null || "".equals(dynLblPath.getSelectedText())) {
+					dynLblPath.selectAll();
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBackground(Color.GRAY);
 		panel.add(separator_1, "cell 0 3 7 1,growx");
 		
-		lblSize = new JLabel("File Size:");
-		lblSize.setForeground(Color.LIGHT_GRAY);
-		lblSize.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblSize, "cell 0 4,alignx right");
-		
-		dynLblSize = new JLabel("");
-		dynLblSize.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblSize, "cell 1 4 2 1,alignx left");
-		
-		lblCreatedOn = new JLabel("Created on:");
-		lblCreatedOn.setForeground(Color.LIGHT_GRAY);
-		lblCreatedOn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblCreatedOn, "cell 3 4 2 1,alignx right");
-		
-		dynLblCreationDate = new JLabel(" 1970/01/01 - 01:00:00");
-		dynLblCreationDate.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblCreationDate, "cell 5 4 2 1,alignx right");
-		
 		lblLastAccess = new JLabel("Last Access:");
 		lblLastAccess.setForeground(Color.LIGHT_GRAY);
 		lblLastAccess.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblLastAccess, "cell 0 5,alignx right");
+		panel.add(lblLastAccess, "cell 0 4,alignx right");
 		
 		dynLblLastAccess = new JLabel(" 1970/01/01 - 01:00:00");
 		dynLblLastAccess.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblLastAccess, "cell 1 5 2 1,alignx left");
+		panel.add(dynLblLastAccess, "cell 1 4,alignx left");
+		
+		lblSize = new JLabel("File Size:");
+		lblSize.setForeground(Color.LIGHT_GRAY);
+		lblSize.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel.add(lblSize, "cell 2 4,alignx right");
+		
+		dynLblSize = new JLabel("");
+		dynLblSize.setForeground(new Color(176, 196, 222));
+		panel.add(dynLblSize, "cell 3 4,alignx left");
 		
 		lblLastModified = new JLabel("Last Change:");
 		lblLastModified.setForeground(Color.LIGHT_GRAY);
 		lblLastModified.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblLastModified, "cell 3 5 2 1,alignx right");
+		panel.add(lblLastModified, "cell 4 4,alignx right");
 		
 		dynLblLastChange = new JLabel((String) null);
 		dynLblLastChange.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblLastChange, "cell 5 5 2 1,alignx right");
+		panel.add(dynLblLastChange, "cell 5 4 2 1,alignx left");
 		
 		footerPanel = new JPanel();
 		footerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		footerPanel.setForeground(Color.WHITE);
 		footerPanel.setBackground(Color.GRAY);
-		panel.add(footerPanel, "cell 0 6 7 1,grow");
+		panel.add(footerPanel, "cell 0 5 7 1,grow");
 		footerPanel.setLayout(new MigLayout("", "[1px,grow][1px,grow][1px,grow][1px,grow]", "[1px,grow]"));
 		
 		dynLblCanRead = new JLabel((String) null);

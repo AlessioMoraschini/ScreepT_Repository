@@ -18,13 +18,17 @@ public class JvmHelper {
 	static Logger logger = Logger.getLogger(JvmHelper.class);
 	
 	// FINAL STRINGS STATICS PARAMS
-	public static final String NOT_FOUND_JVM = "";
 	/**
 	 * Means that current JVM which has loaded launcher is ok, and will use that
 	 */
 	public static final String JVM_OK = "JVMOK";
+	public static final String NOT_FOUND_JVM = "";
+	public static final String JVM_IGNORE_WARN = "JVM_IGNORE_WARNINGS";
 	public static final String JVM_URL_INSTALL =
 			"https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html";
+	
+	// FLag used to open customize options dialog at start, when warning icon will signal to user about the problem
+	public static boolean warningJVM = false;
 	
 	// USER MANUALLY LOCATED DEPENDENCY PATHS
 	public String manualPath_Jvm = NOT_FOUND_JVM;
@@ -54,26 +58,34 @@ public class JvmHelper {
 		logger.info("Started java installed versions check!");
 		String currJvmVersion = SysUtils.getCurrentJVMversion();
 		
-		if(ignoreWarnings) {
-			// if user selected to ignore given warnings
-			logger.info("User have chosen to ignore warnings: Current JVM("+currJvmVersion+") will be used.");
-			return JVM_OK;
-		}
-		
+		// Search and compare JVM versions
 		ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 		String foundCorrect = compareWithAdmittedJVMS(foundJvmHomeList);
-		foundCorrect = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
+		String foundCorrectBin = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
 		
 		// if not found and current is correct return it and exit method
-		if("".equals(StringUtils.trimToEmpty(foundCorrect)) && checkSingleJavaVersionOK(currJvmVersion)) {
+		if("".equals(StringUtils.trimToEmpty(foundCorrectBin)) && checkSingleJavaVersionOK(currJvmVersion)) {
 			logger.info("Current JVM("+currJvmVersion+") is OK -> selected and skipping search");
-			foundCorrect = JVM_OK;
+			foundCorrectBin = JVM_OK;
 			// adding ; to path does not modify current retrieved and escapes NOT_FOUND_JVM controls as path won't be ""
 		}
 
-		logger.info("\n\n => Versions found: " + foundJvmHomeList + "\n\n => Found correct one: " + foundCorrect + "\n");
+		// Update JVM Warning wignal
+		String foundCorrectName = new File(foundCorrect).getName();
+		warningJVM = foundCorrect.equals(NOT_FOUND_JVM) 
+				|| StringUtils.trimToEmpty(foundCorrect).equals("") 
+				|| !checkSingleJavaVersionOK(foundCorrectName, ScrYpTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, ScrYpTLauncher.iniFileManager.MIN_JRE_VERSION);
 		
-		return foundCorrect;
+		// case of ignore warnings specified : use current JVM
+		if(ignoreWarnings) {
+			// if user selected to ignore given warnings
+			logger.info("User have chosen to ignore warnings: Current JVM("+currJvmVersion+") will be used.");
+			return JVM_IGNORE_WARN;
+		}
+
+		logger.info("\n\n => Versions found: " + foundJvmHomeList + "\n\n => Found correct one: " + foundCorrectBin + "\nWARNING: "+warningJVM);
+		
+		return foundCorrectBin;
 	}
 	
 	/**

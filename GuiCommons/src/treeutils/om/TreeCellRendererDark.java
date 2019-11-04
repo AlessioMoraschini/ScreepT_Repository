@@ -14,17 +14,17 @@ public class TreeCellRendererDark extends DefaultTreeCellRenderer{
 
     @Override
     public Color getBackgroundSelectionColor() {
-        return Color.BLACK;
+        return super.getBackgroundSelectionColor();
     }
 
     @Override
     public Color getBackground() {
-        return Color.BLACK;
+        return super.getBackground();
     }
     
     @Override
     public Color getForeground() {
-        return new Color(20,20,20,30);
+        return Color.WHITE;
     }
 
 //    @Override

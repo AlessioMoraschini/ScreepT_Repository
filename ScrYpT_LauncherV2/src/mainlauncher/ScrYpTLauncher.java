@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import gui.panels.CustomizeParametersPanel;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
 import gui.utils.GuiUtils;
@@ -29,6 +31,7 @@ import launcherutils.om.DependencyModel;
 import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;
+import resources.ImagesPathConfigurator;
 import utils.SysUtils;
 
 /**
@@ -58,13 +61,9 @@ public class ScrYpTLauncher {
 	
 	public static GeneralConfig mainConfigInitializer;
 		
-	public static final String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
-	public static final String LAUNCHER_CONTAINER_PATH = "LAUNCHER/";
-	public static final String DEFAULT_INI_PATH = LAUNCHER_CONTAINER_PATH + "Launcher_Configuration.ini"; 
-	public static final String APPLICATION_DIR = "Application/";
+	public static final String DEFAULT_INI_PATH = GeneralConfig.DEFAULT_LAUNCHER_INI_PATH; 
+	public static final String APPLICATION_DIR = GeneralConfig.MAIN_APP_ROOT_DIR;
 	
-	private static final String LOG_PROPERTIES_PATH = LAUNCHER_CONTAINER_PATH+"Config/log4j.properties";
-
 	// jvm search fields default
 	public static final String JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
 	
@@ -97,13 +96,12 @@ public class ScrYpTLauncher {
 	// use this as flag to signal that something is not ok with dependencies
 	public static  boolean criticalDependenciesOK = false;
 	public static ArrayList<DependencyModel> dependeciesMissing;
-
 	
 	/** MAIN START POINT **/
 	public static void main(String[] args) {
 		
 		// Initialize logger properties -> FIRST THING TO DO
-		PropertyConfigurator.configure(LOG_PROPERTIES_PATH);
+		PropertyConfigurator.configure(GeneralConfig.LAUNCHER_LOG_PROPS_PATH);
 		appLogStart();
 
 		iniFileManager = new IniFileManager(DEFAULT_INI_PATH);
@@ -111,7 +109,7 @@ public class ScrYpTLauncher {
 		ARGS = args;
 		argumentsFiles = getFileArrayFromStrings(args);
 		
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", "LAUNCHER/launcher_icon.jpg", (int)(screenSize.height*launcherRatio));
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
 		for (int i = 0; i < 20; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing launcher" + dots;
@@ -191,6 +189,19 @@ public class ScrYpTLauncher {
 		
 		// GUI launcher initialization
 		launcherMainFrame = new StartPanel("ScrYpt Launcher", this);
+
+		if(JvmHelper.warningJVM) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					launcherMainFrame.customizerPanel = new CustomizeParametersPanel("Customize start options", launcherMainFrame.LAUNCHER_GUI);
+					launcherMainFrame.customizerPanel.setVisible(true);
+					launcherMainFrame.customizerPanel.setAlwaysOnTop(true);
+					launcherMainFrame.customizerPanel.requestFocus();
+					launcherMainFrame.customizerPanel.toFront();
+				}
+			});
+		}
+		
 		launcherMainFrame.setVisible(true);
 		launcherMainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		launcherMainFrame.addWindowListener(new WindowAdapter() {

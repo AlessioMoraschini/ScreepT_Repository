@@ -32,7 +32,6 @@ import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
-import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import media.Sounds;
 import om.SupportedFileTextEditor;
@@ -66,7 +65,6 @@ public class TextEditorUtils {
 	
 	// reference to main text editor
 	public TextEditor currentTextEditor;
-	private INItializer configuration;
 	
 	private SupportedFileTextEditor chosenType; // temp variable used in findRightStyleFromComboNSelect()
 	
@@ -80,7 +78,6 @@ public class TextEditorUtils {
 	
 	public TextEditorUtils(TextEditor currentTextEditor) {
 		this.currentTextEditor = currentTextEditor;
-		this.configuration = currentTextEditor.currentConfiguration;
 		this.textAreaDialogs = new TextAreaDialogs(getDialogManager());
 		this.dialogHelper = new JOptionHelper(currentTextEditor);
 	}
@@ -311,10 +308,12 @@ public class TextEditorUtils {
 	
 	public void collapseTree() {
 		try {
-			File ancestor = new File("");
-			ancestor = FileStuff.getNlevelsAncestor(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile,
-					GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL);
-			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
+			for (int i = 0; i < currentTextEditor.leftSplitTreeFiles.getRowCount(); i++) {
+				try {
+					currentTextEditor.leftSplitTreeFiles.collapseRow(i);
+				} catch (Exception e) {
+				}
+			}
 		} catch (Exception e) {
 			logger.error("Error collapsing tree into textEditor", e);
 		}

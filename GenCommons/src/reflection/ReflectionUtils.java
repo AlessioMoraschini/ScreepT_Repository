@@ -28,9 +28,7 @@ public class ReflectionUtils {
 		
 		for(Field i_field : fields) {
 			i_field.setAccessible(true);
-//			boolean testVar = i_field.getType().toString().contains("ComboBox");
-			boolean testVar = false; // USE TRUE THIS IN DEBUG ONLY, LIKE EXAMPLE HERE OVER
-			if(testVar || filterType.isAssignableFrom(i_field.getType())) {
+			if(filterType.isAssignableFrom(i_field.getType())) {
 				T positiveMatch = filterType.cast(i_field.get(parentObjInstance));
 				result.add(positiveMatch);
 			}

@@ -243,7 +243,7 @@ public class CustomTabbedEditor {
 					// add new tab with selected file
 					try {
 						addTab(fileToLoad, false);
-						currentConfiguration.getTextEditorOpt().addFileIntoLastOpenedFiles(fileToLoad);
+						currentConfiguration.getTextEditorOpt().addFileToLimitedList(fileToLoad, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 						logger.debug(fileToLoad.getAbsolutePath()+" -> Loaded!");
 					} catch (Throwable e1) {
 						String msg = "Error occurred loading file into new tab: "+fileToLoad.getAbsolutePath()+"\n\n";
@@ -371,7 +371,6 @@ public class CustomTabbedEditor {
 			loadedTabObj.textArea.discardAllEdits();
 
 			loadedTabObj.textArea.addMouseWheelListener(tabEditorManager.getMouseWheelTabbedAreaListener());
-			loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
 			loadedTabObj.unsaved = false;
 			changeMonManager.updateCurrMonitor(file);
 			addToHystory(loadedTabObj);
@@ -380,6 +379,7 @@ public class CustomTabbedEditor {
 				public void run() {
 					GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 					applyStyleToTabs();
+					loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
 				}
 			});
 			
@@ -394,9 +394,9 @@ public class CustomTabbedEditor {
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 		
 		// backup caret position and selection
-		RSyntaxTextArea reference = loadedTabObj.textArea;
-		int start = reference.getSelectionStart();
-		int end = reference.getSelectionEnd();
+		final RSyntaxTextArea reference = loadedTabObj.textArea;
+		final int start = reference.getSelectionStart();
+		final int end = reference.getSelectionEnd();
 		
 		if (!alreadyLoading && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
 			// if unsaved ask to reload
@@ -418,11 +418,19 @@ public class CustomTabbedEditor {
 			dialogHelper.error(msg, msg);
 		}
 		
-		// reset caret position and selection
-		reference.setCaretPosition(0);
-		reference.setCaretPosition(end);
-		reference.setSelectionStart(start);
-		reference.setSelectionEnd(end);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					// reset caret position and selection
+					reference.setCaretPosition(0);
+					reference.setCaretPosition(end);
+					reference.setSelectionStart(start);
+					reference.setSelectionEnd(end);
+				} catch (Exception e) {
+					logger.warn("Error trying to resume caret position and selection range", e);
+				}
+			}
+		});
 		
 		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 	}

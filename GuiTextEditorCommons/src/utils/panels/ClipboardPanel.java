@@ -29,7 +29,6 @@ import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
-import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
 import om.TextEditorOption;
 import resources.GeneralConfig;
@@ -44,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.border.LineBorder;
 import java.awt.Font;
+import java.awt.Insets;
 
 public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	private static final long serialVersionUID = 4527321717233899589L;
@@ -99,6 +99,9 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		this.txtAreaContainer = new JScrollPane();
 		txtAreaContainer.setMinimumSize(new Dimension(18, 18));
 		txtAreaContainer.setPreferredSize(new Dimension(20, 20));
+		txtAreaContainer.setBackground(config.getTextEditorOpt().filePanelBackCol);
+		txtAreaContainer.setForeground(Color.WHITE);
+		
 		txtAreaContainer.setViewportView(txtAreaClipboard);
 		this.currentScrollPane = new JScrollPane();
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[200px,grow]", "[270px,grow]"));
@@ -483,19 +486,24 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 
 	@Override
 	public void sync() {
-		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
-		if (this.isVisible() && reference != null && txtAreaClipboard != null) {
-			// Get dynamic reference from interface taken from main editor utils class
-			txtAreaClipboard.setBackground(config.getTextEditorOpt().getFilePanelBackCol().darker());
-			RsyntaxUtils.setBackground(txtAreaClipboard, config.getTextEditorOpt().getFilePanelBackCol().darker());
-			txtAreaClipboard.setForeground(ImageGeneralWorker.getComplimentColor(txtAreaClipboard.getBackground()));
-			RsyntaxUtils.setForeground(txtAreaClipboard, txtAreaClipboard.getForeground());
+		if (this.isVisible() && txtAreaClipboard != null) {
+			
+			if (config.getTextEditorOpt().clipboardSyncStyle) {
+				dialogManager.loadThemeIntoTarget(txtAreaClipboard);
+			}else {
+				txtAreaClipboard.setBackground(config.getTextEditorOpt().getFilePanelBackCol().darker());
+				RsyntaxUtils.setBackground(txtAreaClipboard, config.getTextEditorOpt().getFilePanelBackCol().darker());
+				txtAreaClipboard.setForeground(Color.WHITE);
+				RsyntaxUtils.setForeground(txtAreaClipboard, txtAreaClipboard.getForeground());
+			}
+			
 			txtAreaClipboard.setCurrentLineHighlightColor(txtAreaClipboard.getBackground().brighter());
 			RsyntaxUtils.setFont(txtAreaClipboard, GeneralConfig.TXT_EDITOR_CLIPBOARD_FONT);
-			dialogManager.loadThemeIntoTarget(txtAreaClipboard);
 			currentScrollPane.setBackground(Color.black);
 			txtAreaClipboard.setWrapStyleWord(true);
 			txtAreaClipboard.setLineWrap(true);
+			txtAreaClipboard.setMargin(new Insets(8, 8, 8, 8));
+			txtAreaClipboard.repaint();
 		}
 	}
 	

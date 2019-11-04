@@ -36,12 +36,11 @@ public class MyBasicTreeUI extends BasicTreeUI
   @Override
   protected void paintRow(Graphics g, Rectangle clipBounds, Insets insets, Rectangle bounds, TreePath path, int row, boolean isExpanded, boolean hasBeenExpanded, boolean isLeaf)
   {
-    if(tree.isRowSelected(row))
-    {
-      g.setColor(TreeUtils.DEF_BACK_SELECTION);
-      g.fillRect(0, row * tree.getRowHeight(), tree.getWidth(), tree.getRowHeight());
-    }
+	if (tree.isRowSelected(row)) {
+		g.setColor(TreeUtils.DEF_BACK_SELECTION);
+		g.fillRect(0, row * tree.getRowHeight(), tree.getWidth(), tree.getRowHeight());
+	}
 
-    super.paintRow(g, clipBounds, insets, bounds, path, row, isExpanded, hasBeenExpanded, isLeaf);
+	super.paintRow(g, clipBounds, insets, bounds, path, row, isExpanded, hasBeenExpanded, isLeaf);
   }
 }

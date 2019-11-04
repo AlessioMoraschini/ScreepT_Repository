@@ -1,11 +1,15 @@
 package mainobj;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
+
+import reflection.ReflectionUtils;
 
 public abstract class INItializerParent implements INItializerInterface{
 
@@ -154,6 +158,16 @@ public abstract class INItializerParent implements INItializerInterface{
 		return openedFiles;
 	}
 	
+	@Override
+	public String toStringa() {
+		List<Field> list = ReflectionUtils.retrieveAllFields(getClass());
+		StringBuilder builder = new StringBuilder();
+		for (Field i : list) {
+			builder.append(i.toGenericString());
+		}
+		
+		return builder.toString();
+	};
 	
 	public Wini getIniFile() {
 		return iniFile;

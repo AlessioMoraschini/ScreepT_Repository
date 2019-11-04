@@ -47,7 +47,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 			return textEditor.footerPanel.lblCurrentFile;
 		}else {
 			logger.warn("\n\n => Cannot getStringTarget JText component cause something in (textEditor.footerPanel.lblCurrentFile) is null: \n\n");
-			return new JTextComponent() {};
+			return new JTextComponent() {private static final long serialVersionUID = 4758186686168361742L;};
 		}
 	}
 
@@ -97,7 +97,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 		
 		try {
 			// Update last opened files to have current on top of last opened
-			textEditor.currentConfiguration.getTextEditorOpt().addFileIntoLastOpenedFiles(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile);
+			textEditor.currentConfiguration.getTextEditorOpt().addFileToLimitedList(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 		} catch (Exception e) {
 			logger.warn("Cannot select current file between last opened ones");
 		}

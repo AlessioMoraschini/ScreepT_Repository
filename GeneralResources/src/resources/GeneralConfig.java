@@ -41,6 +41,7 @@ public class GeneralConfig {
 										.replaceAll("Z", "")
 										.replaceAll("-", "/");
 	// General Folders
+	public static final String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR");
 	public static final String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");
 	public static final String DEFAULT_IMAGE_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_IMAGE_FOLDER");
 	public static final String SOUNDS_FOLDER = resourcesFilePathsMappings.getProperty("SOUNDS_FOLDER");
@@ -84,10 +85,13 @@ public class GeneralConfig {
 	public static final String LOG_PATH = resourcesFilePathsMappings.getProperty("LOG_PATH");
 	public static final String LOG_PROPERTIES_PATH = resourcesFilePathsMappings.getProperty("LOG_PROPERTIES_PATH");
 	public static final String LOG_LAUNCHER_PATH = resourcesFilePathsMappings.getProperty("LOG_LAUNCHER_PATH");
+	public static final String LAUNCHER_CONTAINER_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_CONTAINER_PATH");
+	public static final String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH"); 
+	public static final String LAUNCHER_LOG_PROPS_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_LOG_PROPS_PATH"); 
 	
 	// JVM and LAUNCHER
 	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = resourcesFilePathsMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
-	public static final String JVM_CUSTOM_CUSTOM_SETTINGS = resourcesFilePathsMappings.getProperty("JVM_CUSTOM_CUSTOM_SETTINGS");
+	public static final String JVM_CUSTOM_ADDED_SETTINGS = resourcesFilePathsMappings.getProperty("JVM_CUSTOM_ADDED_SETTINGS");
 	
 	/**
 	 * Used in launcher to choose right type of launch command for system
@@ -126,7 +130,9 @@ public class GeneralConfig {
 	// Tooltips
 	public static int TOOLTIP_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_DELAY", 400);
 	public static int TOOLTIP_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
+	public static int TOOLTIP_RESHOW_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_RESHOW_DELAY", 2000);
 	public static String TOOLTIP_FONT = resourcesFilePathsMappings.getProperty("TOOLTIP_FONT");
+	public static Font DEFAULT_POP_UP_MENUS_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_POP_UP_MENUS_FONT", new Font("Segoe UI", Font.PLAIN, 16));
 	
 	// FILE CHOOSER DIALOG
 	public static final Dimension DEFAULT_FILE_CHOOSER_SIZE = new Dimension(800, 600);
@@ -135,6 +141,7 @@ public class GeneralConfig {
 	// TEXT EDITOR DEFAULTS
 	public static final int DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
 	public static final int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);
+	public static final int MAX_WORKSPACE_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_WORKSPACE_LIST_SIZE", 15);
 	public static final int MAX_HISTORY_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_HISTORY_SIZE", 40);
 	public static final boolean RECTANGULAR_TXT_SELECTION_ALLOWED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("RECTANGULAR_TXT_SELECTION_ALLOWED"));
 	public static final boolean PRELOAD_TXT_EDITOR_FLAG = Boolean.valueOf(resourcesFilePathsMappings.getProperty("PRELOAD_TXT_EDITOR_FLAG"));

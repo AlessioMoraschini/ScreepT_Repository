@@ -56,7 +56,7 @@ public class TextEditorTooltips {
 	public static final String tooltipPackTree = "This function will collapse tree expanded elements";
 	public static final String tooltipResyncTree = "This function will reselect current file into file tree(if found)";
 	public static final String tooltipWorkspaceToggle = "[Ctrl+Shift+W] Clicking this you will toggle ON/OFF current workspace view.";
-	public static final String tooltipWorkspaceNew = "[Ctrl+Alt+Shift+W] Click this to change your preferred workspace";
+	public static final String tooltipWorkspaceNew = "[Alt+Shift+W] Click this to change your preferred workspace";
 	public static final String tooltipDepthTreeUp = "[Ctrl+Alt+Shift+Arrow up] Increase by one level tree depth";
 	public static final String tooltipDepthTreeDown = "[Ctrl+Alt+Shift+Arrow down] Reduce by one level tree depth";
 	public static final String tooltipChckbxLockLanguage = "[Ctrl+shift+L] When checked, language selector will not be auto updated according to current file type";

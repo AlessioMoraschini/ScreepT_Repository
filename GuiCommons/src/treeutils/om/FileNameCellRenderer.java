@@ -41,11 +41,11 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 		treeRef = new JTree();
 		
 		iconContainer = new JLabel();
-		iconContainer.setOpaque(true);
+		iconContainer.setOpaque(false);
 		iconContainer.setForeground(Color.LIGHT_GRAY);
 		container.add(iconContainer);
 		
-		container.addMouseListener(new MouseListener() {
+		iconContainer.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 			}
@@ -58,7 +58,12 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				iconContainer.setBackground(TreeUtils.DEF_BACK_HOVER);
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						iconContainer.setBackground(TreeUtils.DEF_BACK_HOVER);
+						iconContainer.setForeground(Color.WHITE);
+					}
+				});
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -72,6 +77,7 @@ public class FileNameCellRenderer implements TreeCellRenderer {
     	treeRef = tree;
     	
         if (value instanceof FileNamed) {
+        	
 			// custom icon setter
 			FileNamed nodeFileObj = (FileNamed) value;
 			File selectedFile = nodeFileObj.mFile;
@@ -98,16 +104,20 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 				iconContainer.setFont(new Font("Segoe UI", Font.BOLD, 14));
 				iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FOLDER_TEXT_HEIGHT));
 			}
+			
+			container.setToolTipText(selectedFile!=null? selectedFile.getAbsolutePath() : "file is null!");
 		}
         
 		iconContainer.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
-		iconContainer.setForeground(selected? Color.WHITE : Color.GRAY);
+		iconContainer.setForeground(selected ? Color.WHITE : Color.GRAY);
 		container.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
 		container.setForeground(selected ? Color.WHITE : Color.GRAY);
-        
 		container.setBounds(tree.getBounds().x, container.getBounds().y, tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
 		container.setPreferredSize(new Dimension(tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT));
-		
+		container.revalidate();
+		iconContainer.revalidate();
+		container.repaint();
+		iconContainer.repaint();
 		return container;
     }
     

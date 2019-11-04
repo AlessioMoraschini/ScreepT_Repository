@@ -97,10 +97,11 @@ public class MainGuiParent {
 	public JMenuBar menuBar;
 	
 	JMenu mnFile;
-		JMenu mnLastOpenedFile;
 	JMenu mnPreferences;
 	JMenu mnCryptoSteg; 
 	JMenu mnVarious;
+		JMenu mnLastOpenedFile;
+		JMenu mnLastWorkspaces;
 		JMenu mnConversionsAndOther;
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
@@ -159,6 +160,7 @@ public class MainGuiParent {
 		mnPreferences = new JMenu("Preferences");
 		mnCryptoSteg = new JMenu("ScreepT");
 		mnVarious = new JMenu("Various");
+			mnLastWorkspaces = new JMenu("Last selected workspaces");
 			mnLastOpenedFile = new JMenu("TextEditor: Last opened files");
 			mnConversionsAndOther = new JMenu("Conversions and Media");
 			mnFilesAndDirectories = new JMenu("Files And Directories");
@@ -245,6 +247,7 @@ public class MainGuiParent {
 			mnCryptoSteg.add(mntmViewKeyDictionary);
 	
 			mnVarious.add(mntmTextEditor);
+				mnVarious.add(mnLastWorkspaces);
 				mnVarious.add(mnLastOpenedFile);
 			mnVarious.add(new JSeparator());
 			mnVarious.add(mntmnetInfo);
@@ -306,6 +309,7 @@ public class MainGuiParent {
 		addExtraHandlers();
 		
 		updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().getLastOpenedFiles());
+		updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 	}
 	
 	/**
@@ -343,6 +347,7 @@ public class MainGuiParent {
 		// FILE SECTION
 		mntmExit.setFont(menuItemFont);
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
+		mnLastWorkspaces.setFont(menuItemFont);
 		mnLastOpenedFile.setFont(menuItemFont);
 		mntmloadPrjSub.setFont(menuItemFont);
 		mntmExportPrjSub.setFont(menuItemFont);
@@ -395,6 +400,7 @@ public class MainGuiParent {
 		
 		MenuSetter.setIconTextGap(menuBar, 15);
 		mnLastOpenedFile.setIconTextGap(15);
+		mnLastWorkspaces.setIconTextGap(15);
 		
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);
@@ -402,6 +408,7 @@ public class MainGuiParent {
 		
 		// file submenu
 		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
+		mnLastWorkspaces.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 		mnLastOpenedFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
 		mntmloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
 		mntmExportPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
@@ -534,6 +541,30 @@ public class MainGuiParent {
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
+
+		mnLastWorkspaces.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
+					}
+				});
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
 	}
 	
 	public void updateLastOpenedFiles(LimitedConcurrentList<FileNamed> lastOpenedLlist) {
@@ -559,6 +590,34 @@ public class MainGuiParent {
 			
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastOpenedFiles", lastOpenedLlist.toCharSeparatedString(","));
 
+		} catch (Exception e) {
+			logger.error("Error refreshing last opened files", e);
+		}
+	};
+
+	public void updateLastOpenedWorkspaces(LimitedConcurrentList<FileNamed> lastWorskspacesLlist) {
+		
+		try {
+			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastWorskspacesLlist.getList().clone();
+			Collections.reverse(valueCopy);
+			mnLastWorkspaces.removeAll();
+			for (FileNamed file : valueCopy) {
+				if (file.mFile != null && file.mFile.exists()) {
+					JMenuItem newOccurrence = new JMenuItem(file.toString());
+					newOccurrence.setFont(GeneralConfig.MENU_LASTFILES_FONT);
+					try {
+						newOccurrence.setToolTipText(file.getCanonicalAbsPath());
+					} catch (Exception e) {
+					}
+					mnLastWorkspaces.add(newOccurrence);
+					addListenerToJMenuItemLastWorkspaces(newOccurrence);
+				}else {
+					currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.removeAllOccurrencesByEquals(file);
+				}
+			} 
+			
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastSelectedWorkspaces", lastWorskspacesLlist.toCharSeparatedString(","));
+			
 		} catch (Exception e) {
 			logger.error("Error refreshing last opened files", e);
 		}
@@ -592,9 +651,42 @@ public class MainGuiParent {
 			}
 		});
 	}
+
+	public void addListenerToJMenuItemLastWorkspaces(final JMenuItem target) {
+		target.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(target != null && !target.getToolTipText().equals("")) {
+					
+					// IF text editor not opened open it
+					if(initTxtWriter == null || !initTxtWriter.isVisible()) {
+						mntmTextEditor.doClick();
+					}
+					
+					// now load file from history
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							File toLoad = new File(target.getToolTipText());
+							if (toLoad.exists() && toLoad.isDirectory()) {
+								initTxtWriter.setWorkspace(toLoad);
+							} else {
+								initTxtWriter.dialogHelper.error("File does not exist anymore!", "File does not exist");
+								removeFromLastWorkspaces(toLoad);
+							}
+						}
+					});
+				}
+			}
+		});
+	}
 	
 	public void emptyLastOpenedSubMenuItems() {
 		mnLastOpenedFile.removeAll();
+	}
+
+	public void emptyLastWorkspacesSubMenuItems() {
+		mnLastWorkspaces.removeAll();
 	}
 	
 	public JMenuItem isFileContained(File searchElem) {
@@ -618,6 +710,22 @@ public class MainGuiParent {
 				try {
 					if(searchElem.getCanonicalPath().equals(((JMenuItem) currentComponent).getToolTipText())){
 						mnLastOpenedFile.remove((JMenuItem)currentComponent);
+						return (JMenuItem) currentComponent;
+					}
+				} catch (IOException e) {
+				}
+			}
+		}
+		
+		return new JMenuItem();
+	}
+
+	public JMenuItem removeFromLastWorkspaces(File searchElem) {
+		for(Component currentComponent : mnLastWorkspaces.getComponents()) {
+			if(currentComponent instanceof JMenuItem) {
+				try {
+					if(searchElem.getCanonicalPath().equals(((JMenuItem) currentComponent).getToolTipText())){
+						mnLastWorkspaces.remove((JMenuItem)currentComponent);
 						return (JMenuItem) currentComponent;
 					}
 				} catch (IOException e) {
@@ -764,31 +872,25 @@ public class MainGuiParent {
 		return mntmDeleteDirectoryContentByExtension;
 	}
 
-
 	public JMenuItem getMntmResetAllPanels() {
 		return mntmResetAllPanels;
 	}
-
 
 	public void setMntmResetAllPanels(CustomJmenuItem mntmResetAllPanels) {
 		this.mntmResetAllPanels = mntmResetAllPanels;
 	}
 
-
 	public void setMntmReturnToWelcome(CustomJmenuItem mntmReturnToWelcome) {
 		this.mntmReturnToWelcome = mntmReturnToWelcome;
 	}
-
 
 	public JMenuItem getMntmResetTextEditor() {
 		return mntmResetTextEditor;
 	}
 
-
 	public JMenuItem getMntmResetConfigManager() {
 		return mntmResetConfigManager;
 	}
-
 
 	public JMenuItem getMntmResetCrypterPanel() {
 		return mntmResetCrypterPanel;

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -262,6 +261,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
 		
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
+	
 	}
 	
 	/**
@@ -306,6 +306,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
 		textEditorOpt.setLastEscapeLanguage(lastEscapeLanguage);
 		textEditorOpt.setLastFileOpenedClipboard(getSafeStringConf(TEXT_EDITOR_OPT, "lastFileOpenedClipboard", TextEditorOption.DEF_lastFileOpenedClipboard));
+		textEditorOpt.setClipboardSyncStyle(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "clipboardSyncStyle")));
 		
 		// CONVERTED/PARSED TYPES
 		// margin
@@ -383,6 +384,18 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			}
 		} catch (Exception e1) {
 			lastOpenedFiles = "";
+		}
+		
+		String lastSelectedWorkspaces;
+		try {
+			lastSelectedWorkspaces = iniReadFile.get(TEXT_EDITOR_OPT, "lastSelectedWorkspaces");
+			StringTokenizer tokenizerSelectedWorkspaces = new StringTokenizer(lastSelectedWorkspaces, ",");
+			textEditorOpt.lastSelectedWorkspaces.getList().clear();		
+			while(tokenizerSelectedWorkspaces.hasMoreTokens()) {
+				textEditorOpt.lastSelectedWorkspaces.addLast(new FileNamed(tokenizerSelectedWorkspaces.nextToken()));
+			}
+		} catch (Exception e1) {
+			lastSelectedWorkspaces = "";
 		}
 		
 		// selected theme
@@ -506,6 +519,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosX", textEditorOpt.dividerRightPanePosX);
 		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard", textEditorOpt.dividerRightPanePosXClipboard);
 		iniFile.put(TEXT_EDITOR_OPT, "lastFileOpenedClipboard", textEditorOpt.lastFileOpenedClipboard);
+		iniFile.put(TEXT_EDITOR_OPT, "clipboardSyncStyle", textEditorOpt.clipboardSyncStyle);
 		iniFile.put(TEXT_EDITOR_OPT, "antialiasedTxtArea", textEditorOpt.antialiasedTxtArea);
 		iniFile.put(TEXT_EDITOR_OPT, "breakLineActive", textEditorOpt.breaklineActive);
 		iniFile.put(TEXT_EDITOR_OPT, "isTreeLocked", textEditorOpt.treeLocked);
@@ -535,13 +549,15 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "spellChecker", textEditorOpt.spellChecker);
 		iniFile.put(TEXT_EDITOR_OPT, "prefDictspellChecker", textEditorOpt.prefDictspellChecker);
 		iniFile.put(TEXT_EDITOR_OPT, "lastOpenedFiles", textEditorOpt.lastOpenedFiles.toCharSeparatedString(","));
-		
+		iniFile.put(TEXT_EDITOR_OPT, "lastSelectedWorkspaces", textEditorOpt.lastSelectedWorkspaces.toCharSeparatedString(","));
+
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
 	}
 	
 	// TO_STRING AND RELATED METHODS
 	
+	@Override
 	public String toStringa() {
 		String result = "";
 		// DEBUG ReadWrite Structure
@@ -601,8 +617,10 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION: ").append(textEditorOpt.dividerRightPanePosX)
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): ").append(textEditorOpt.dividerRightPanePosXClipboard)
 			   .append("\nLAST FILE OPENED IN CLIPBOARD: ").append(textEditorOpt.lastFileOpenedClipboard)
+			   .append("\nSYNC CLIPBOARD STYLE WITH CURRENT TEXT AREA: ").append(textEditorOpt.clipboardSyncStyle)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nLAST OPENED FILES: ").append(textEditorOpt.lastOpenedFiles.toCharSeparatedString(","))
+			   .append("\nLAST SELECTED WORKSPACES: ").append(textEditorOpt.lastSelectedWorkspaces.toCharSeparatedString(","))
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
 			   .append("\nLAST CODE ESCAPE LANGUAGE: ").append(textEditorOpt.lastEscapeLanguage)
 

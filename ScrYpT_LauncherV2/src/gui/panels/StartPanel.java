@@ -43,8 +43,8 @@ public class StartPanel extends JFrame{
 	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 
 	public ScrYpTLauncher LAUNCHER;
-	private StartPanel LAUNCHER_GUI;
-	private CustomizeParametersPanel customizerPanel;
+	public StartPanel LAUNCHER_GUI;
+	public CustomizeParametersPanel customizerPanel;
 	public MissingDependenciesPanel missingDependenciesPanel;
 	
 	// GUI VARIABLES

@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.utils.GuiUtils;
 import menusettings.MenuSetter;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 /**
@@ -74,22 +75,26 @@ public class TreeFileMouseListenerBasic {
 	    };
 	}
 
-	private JPopupMenu getPopUpMenu() {
+	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
 	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 	    
 	    JMenuItem deleteItem = new JMenuItem("Delete selected Configuration files");
+	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    deleteItem.addActionListener(getDeleteActionListener());
 	    menu.add(deleteItem);
 	    
 	    JMenuItem refreshItem = new JMenuItem("Refresh tree");
+	    refreshItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 	    
 	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);
 
@@ -104,7 +109,7 @@ public class TreeFileMouseListenerBasic {
 	    return menu;
 	}
 	
-	private ActionListener openInSystemExplorer() {
+	public ActionListener openInSystemExplorer() {
 		return new ActionListener() {
 			
 			@Override
@@ -115,7 +120,7 @@ public class TreeFileMouseListenerBasic {
 	}
 	
 
-	private ActionListener getDeleteActionListener() {
+	public ActionListener getDeleteActionListener() {
 	    return new ActionListener() {
 
 	        @Override
@@ -144,7 +149,7 @@ public class TreeFileMouseListenerBasic {
 	    };
 	}
 	
-	private ActionListener refreshListener() {
+	public ActionListener refreshListener() {
 		return new ActionListener() {
 			
 			@Override
@@ -164,10 +169,9 @@ public class TreeFileMouseListenerBasic {
 							try {
 								if (selectedNode != null && selectedNode.exists()) {
 								propertiesFrame = new FilePropertiesFrame(selectedNode, true);
-								propertiesFrame.setLocationRelativeTo(null);
+								propertiesFrame.setLocationRelativeTo(parent);
 								propertiesFrame.setTitle(selectedNode.getAbsolutePath());
 								propertiesFrame.setVisible(true);
-								GuiUtils.centerComponent(propertiesFrame, 650, 240);
 								}
 							} catch (Exception e) {
 								logger.error(e);
@@ -185,7 +189,7 @@ public class TreeFileMouseListenerBasic {
 	
 	// utility methods //
 	
-	private void refreshTree() {
+	public void refreshTree() {
 		tree.setModel(tree.getModel());
 		tree.revalidate();
 		tree.repaint();

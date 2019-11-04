@@ -14,6 +14,7 @@ import resources.IconsPathConfigurator;
 import variousutils.HandleString;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import java.awt.Color;
@@ -57,13 +58,14 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 	private JTextField txtHsb;
 	private JTextField txtHsl;
 	private JLabel lblHsl;
+	private JPanel paneMiniColorSample; // COLOR sample updated every time
 	
 	public JFrame caller;
 	
 	public ColorPickerFrame(JFrame caller) {
 		
 		this.caller = caller;
-		ApplyCursorSUbElements(GuiUtils.getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, new Dimension(30,30)), caller);
+		ApplyCursorSUbElements(GuiUtils.CURSOR_CROSS, caller);
 		
 		active = true;
 		
@@ -77,6 +79,10 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 		initializeGui();
 		
 		pointerUtils = new MousePointerUtils(getOnClickAction(), this, btnPickerOn);
+		
+		paneMiniColorSample = new JPanel();
+		paneMiniColorSample.setOpaque(true);
+		panelHeader.add(paneMiniColorSample, "cell 2 0,grow");
 		
 		addHandlers();
 		
@@ -107,9 +113,10 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 		txtHsb.setText(HandleString.getHsbString(currentSelected, " : "));
 		txtHsl.setText(HandleString.getHslString(currentSelected, " : "));
 		txtHex.setText(HandleString.getHexString(currentSelected));
+		paneMiniColorSample.setBackground(currentSelected);
 	}
 
-	private FocusListener focusColorPicker() {
+	public FocusListener focusColorPicker() {
 		return new FocusListener() {
 			
 			@Override
@@ -144,7 +151,7 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 			public void actionPerformed(ActionEvent e) {
 				if(!pointerUtils.isEnabled()) {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
-					ApplyCursorSUbElements(GuiUtils.getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, new Dimension(30,30)), caller);
+					ApplyCursorSUbElements(GuiUtils.CURSOR_CROSS, caller);
 					pointerUtils.setEnabled(new AtomicBoolean(true));
 				}else {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
@@ -158,6 +165,12 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 	public void ApplyCursorSUbElements(Cursor cursor, Component instance) {
 		instance.setCursor(cursor);
 		try {
+			
+			List<JScrollPane> resultSet2 = ReflectionUtils.retrieveFieldsByType(instance, JScrollPane.class);
+			for (JScrollPane curr : resultSet2) {
+				curr.setCursor(cursor);
+			}
+
 			List<JTextArea> resultSet = ReflectionUtils.retrieveFieldsByType(instance, JTextArea.class);
 			for (JTextArea curr : resultSet) {
 				curr.setCursor(cursor);
@@ -174,7 +187,7 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 		panelHeader.setBorder(null);
 		panelHeader.setBackground(Color.BLACK);
 		getContentPane().add(panelHeader, "cell 0 0 2 1,grow");
-		panelHeader.setLayout(new MigLayout("", "[15px:n][grow,fill]", "[]"));
+		panelHeader.setLayout(new MigLayout("insets 1, fill", "[25px:n][grow,fill][25px:n]", "[]"));
 		
 		btnPickerOn = new JButton("");
 		btnPickerOn.setCursor(GuiUtils.CURSOR_HAND);
@@ -195,49 +208,53 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 		panelHeader.add(lblColorPicker, "cell 1 0,growx");
 		
 		JPanel panelMain = new JPanel();
-		panelMain.setLayout(new MigLayout("", "[120px:120px,grow][100px:100px,grow][145px:145px,grow][145px:145px,grow]", "[15px:15px][20px:100px,grow]"));
+		panelMain.setLayout(new MigLayout("insets 1, fill", "[120px:120px,grow][100px:100px,grow][145px:145px,grow][145px:145px,grow]", "[15px:15px][20px:100px,grow]"));
 		panelMain.setBackground(Color.LIGHT_GRAY);
 		getContentPane().add(panelMain, "cell 0 1 2 1,grow");
 		
 		lblRgb = new JLabel("RGB");
 		lblRgb.setForeground(Color.BLACK);
 		lblRgb.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panelMain.add(lblRgb, "cell 0 0,alignx center");
+		panelMain.add(lblRgb, "cell 0 0,alignx center,aligny center");
 		
 		lblHex = new JLabel("HEX");
 		lblHex.setForeground(Color.BLACK);
 		lblHex.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panelMain.add(lblHex, "cell 1 0,alignx center");
+		panelMain.add(lblHex, "cell 1 0,alignx center,aligny center");
 		
 		lblHsbhsv = new JLabel("HSB/HSV");
 		lblHsbhsv.setForeground(Color.BLACK);
 		lblHsbhsv.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panelMain.add(lblHsbhsv, "cell 2 0,alignx center");
+		panelMain.add(lblHsbhsv, "cell 2 0,alignx center,aligny center");
 		
 		lblHsl = new JLabel("HSL");
 		lblHsl.setForeground(Color.BLACK);
 		lblHsl.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		panelMain.add(lblHsl, "cell 3 0,alignx center");
+		panelMain.add(lblHsl, "cell 3 0,alignx center,aligny center");
 		
 		txtRgb = new JTextField();
+		txtRgb.setMaximumSize(new Dimension(2147483647, 40));
 		txtRgb.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		txtRgb.setHorizontalAlignment(SwingConstants.CENTER);
 		panelMain.add(txtRgb, "cell 0 1,grow");
 		txtRgb.setColumns(10);
 		
 		txtHex = new JTextField();
+		txtHex.setMaximumSize(new Dimension(2147483647, 40));
 		txtHex.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		txtHex.setHorizontalAlignment(SwingConstants.CENTER);
 		txtHex.setColumns(10);
 		panelMain.add(txtHex, "cell 1 1,grow");
 		
 		txtHsb = new JTextField();
+		txtHsb.setMaximumSize(new Dimension(2147483647, 40));
 		txtHsb.setHorizontalAlignment(SwingConstants.CENTER);
 		txtHsb.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		txtHsb.setColumns(10);
 		panelMain.add(txtHsb, "cell 2 1,grow");
 		
 		txtHsl = new JTextField();
+		txtHsl.setMaximumSize(new Dimension(2147483647, 40));
 		txtHsl.setHorizontalAlignment(SwingConstants.CENTER);
 		txtHsl.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		txtHsl.setColumns(10);

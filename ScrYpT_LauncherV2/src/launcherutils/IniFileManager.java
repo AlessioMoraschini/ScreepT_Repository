@@ -25,7 +25,8 @@ public class IniFileManager {
 	public String preferredJvm = "";
 	public String manualPathJvm = "";
 	public String MIN_JRE_VERSION = "1.8"; // default included MIN
-	public String MAX_JRE_VERSION = "9.0"; // default excluded MAX
+	public String MAX_JRE_VERSION = "1.9"; // default excluded MAX
+	public String MAX_JRE_VERSION_FULL_COMPATIBILITY = "1.9"; // default excluded MAX
 	public String GUI_SCALE_ARG_VALUE = "1";
 	public String JVM_MEMORY_OPTIONS = "-Xmx2048m -Xms512m"; // default memory options
 	public String JVM_STACK_SIZE = "-Xss128m"; // default stack size
@@ -53,6 +54,8 @@ public class IniFileManager {
 			// JVM OPTIONS WITH NULL CHECK
 			String MAX_JVERSION_INI = iniConfigFile.get(INI_JVM_OPT, "maxJvmVersion");
 			MAX_JRE_VERSION = (MAX_JVERSION_INI != null)? MAX_JVERSION_INI : MAX_JRE_VERSION;
+			String MAX_JVERSION_FULL_COMP_INI = iniConfigFile.get(INI_JVM_OPT, "maxJvmVersionFullCompatibility");
+			MAX_JRE_VERSION_FULL_COMPATIBILITY = (MAX_JVERSION_FULL_COMP_INI != null)? MAX_JVERSION_FULL_COMP_INI : MAX_JRE_VERSION_FULL_COMPATIBILITY;
 			String MIN_JVERSION_INI = iniConfigFile.get(INI_JVM_OPT, "minJvmVersion");
 			MIN_JRE_VERSION = (MIN_JVERSION_INI != null)? MIN_JVERSION_INI : MIN_JRE_VERSION;
 			String MEM_JOPTIONS_INI = iniConfigFile.get(INI_JVM_OPT, "memoryArgs");

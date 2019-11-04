@@ -30,6 +30,7 @@ import dialogutils.TestUpdateProgress;
 import gUI.frames.KeyGenFrame;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class TreeFileMouseListenerDictionary {
@@ -80,18 +81,22 @@ public class TreeFileMouseListenerDictionary {
 	    JPopupMenu menu = new JPopupMenu();
 	    
 	    JMenuItem itemReadKey = new JMenuItem("Read Image & Details");
+	    itemReadKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemReadKey.addActionListener(getInfoActionListener());
 	    menu.add(itemReadKey);
 	    
 	    JMenuItem itemAddKey = new JMenuItem("Add key Image to Dictionary");
+	    itemAddKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemAddKey.addActionListener(addKeyActionListener());
 	    menu.add(itemAddKey);
 	    
 	    JMenuItem itemExport = new JMenuItem("Export selected key Images");
+	    itemExport.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemExport.addActionListener(exportKeyActionListener());
 	    menu.add(itemExport);
 	    
 	    JMenuItem itemDelete = new JMenuItem("Delete selected Key Images");
+	    itemDelete.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemDelete.addActionListener(getDeleteActionListener());
 	    menu.add(itemDelete);
 

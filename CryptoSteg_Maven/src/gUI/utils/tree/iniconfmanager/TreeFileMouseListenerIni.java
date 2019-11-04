@@ -75,42 +75,56 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	    };
 	}
 
-	private JPopupMenu getPopUpMenu() {
+	@Override
+	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
 	    JMenuItem previewFileItem = new JMenuItem("Preview selected configuration");
+	    previewFileItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    previewFileItem.addActionListener(previewSelected());
 	    menu.add(previewFileItem);
 	    
 	    JMenuItem loadItem = new JMenuItem("Load Selected configuration");
+	    loadItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    loadItem.addActionListener(loadSelectedConfiguration());
 	    menu.add(loadItem);
 	    
 	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 	    
+	    // Implementation inherited From parent
 	    JMenuItem addCurrentItem = new JMenuItem("Add current configuration to this list");
+	    addCurrentItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    addCurrentItem.addActionListener(addCurrentConfig());
 	    menu.add(addCurrentItem);
 	    
 	    JMenuItem importItem = new JMenuItem("Import configuration file or directory content");
+	    importItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    importItem.addActionListener(importFilesConfig());
 	    menu.add(importItem);
 	    
 	    JMenuItem exportItem = new JMenuItem("Export selected configurations");
+	    exportItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    exportItem.addActionListener(exportSelected());
 	    menu.add(exportItem);
 	    
+	    // Implementation inherited From parent
 	    JMenuItem deleteItem = new JMenuItem("Delete selected Configuration files");
+	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    deleteItem.addActionListener(getDeleteActionListener());
 	    menu.add(deleteItem);
 	    
+	    // Implementation inherited From parent
 	    JMenuItem refreshItem = new JMenuItem("Refresh tree");
+	    refreshItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 	    
+	    // Implementation inherited From parent
 	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);
 
@@ -142,16 +156,6 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 		};
 	}
 	
-	private ActionListener openInSystemExplorer() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GuiUtils.openInFileSystem(new File(GeneralConfig.DEFAULT_INI_FOLDER));
-			}
-		};
-	}
-	
 	private ActionListener addCurrentConfig() {
 		return new ActionListener() {
 			
@@ -176,35 +180,6 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 		};
 	}
 
-	private ActionListener getDeleteActionListener() {
-	    return new ActionListener() {
-
-	        @Override
-	        public void actionPerformed(ActionEvent arg0) {
-
-	            TreePath[] treeSelArr = tree.getSelectionPaths();
-            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(confManagerPanel, "Are you sure to delete?")==JOptionPane.OK_OPTION){	        		
-		            for(TreePath tp : treeSelArr) {
-		            	
-	            		String path = tp.getLastPathComponent().toString();
-		            	File selectedFile = new File(path);
-		            	if(!selectedFile.getAbsolutePath().equals(currentConfig.getIniFile().getFile().getAbsolutePath()) && selectedFile.isFile()) {	
-		            		logger.debug(path+" Deleted: "+selectedFile.delete());	
-		            	}else {
-		            		logger.info(path + " Not deleted beacuse it's in usage");
-		            	}
-			        }
-
-	            }else {
-	            	String msg = "Skipped after user request!";
-			    	logger.debug(msg);
-	            }
-            	
-            	refreshTree();
-	        }
-	    };
-	}
-	
 	private ActionListener loadSelectedConfiguration() {
 		return new ActionListener() {
 			
@@ -218,16 +193,6 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 					loadIni(new File(path));
 					confManagerPanel.parent.updateGuiFromCurrConfig();
 				}
-			}
-		};
-	}
-	
-	private ActionListener refreshListener() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				refreshTree();
 			}
 		};
 	}
@@ -277,7 +242,8 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	
 	// utility methods //
 	
-	private void refreshTree() {
+	@Override
+	public void refreshTree() {
 		tree.setModel(new FileTreeModel(new File(GeneralConfig.DEFAULT_INI_FOLDER)));
 	}
 	

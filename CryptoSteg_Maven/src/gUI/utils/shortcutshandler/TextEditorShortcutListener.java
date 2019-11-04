@@ -278,9 +278,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				}
 				
 				/*
-				 *  SELECT NEW workspace -> Ctrl+Alt+Shift+W
+				 *  SELECT NEW workspace -> Alt+Shift+W
 				 */
-				if(e.getKeyCode() == 87 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				if(e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							currentTextEditor.toggleButtonFileTreeNewWorkspace.doClick();

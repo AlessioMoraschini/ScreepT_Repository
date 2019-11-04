@@ -24,8 +24,6 @@ import treeutils.TreeHighlighterAdapter;
 import treeutils.TreeUtils;
 import treeutils.om.FileNameCellRenderer;
 import treeutils.om.FileTreeModel;
-import treeutils.om.MyBasicTreeUI;
-import treeutils.om.TreeCellRendererDark;
 import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
@@ -34,6 +32,7 @@ import utils.panels.arch.ParentPanel;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.UIDefaults;
 
 import org.apache.log4j.Logger;
@@ -231,14 +230,10 @@ public class TextEditor extends JPanel {
 		splitPaneMain.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 		
 		leftSplitTreeFiles = new JTree(new FileTreeModel(null));
-		UIDefaults paneDefaults = new UIDefaults();
-	    paneDefaults.put("Tree.selectionBackground",null);
-	    leftSplitTreeFiles.putClientProperty("Nimbus.Overrides",paneDefaults);
-	    leftSplitTreeFiles.putClientProperty("Nimbus.Overrides.InheritDefaults",false);
 		mouseListenerTreeFilePanel = new TreeFileMouseListenerTxtEditor(leftSplitTreeFiles, this);
-		leftSplitTreeFiles.setUI(new MyBasicTreeUI());
 		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
 		leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
+		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
 		leftSplitTreeFiles.addMouseMotionListener(new TreeHighlighterAdapter());
 		leftSplitTreeFiles.setBackground(fileNavColorBckg);
 		leftSplitTreeFiles.setForeground(Color.white);
@@ -592,27 +587,11 @@ public class TextEditor extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				
 				File directory = GenericFileChooser.directoRead(mainApplication.getMainFrame(), "Choose a workspace folder to load");
-				if(directory != null && directory.exists()) {
-					
-					try {
-						currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getCanonicalPath();
-						currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "defaultWorspaceLocation", directory.getCanonicalPath());
-						logger.info("Loaded new workspace: "+directory.getAbsolutePath());
-						
-						// to enable first time if it was disabled by default protection dir null
-						toggleButtonFileTreeWorkspace.setEnabled(true);
-						
-					} catch (IOException e1) {
-						currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getAbsolutePath();
-						Sounds.playSound(SoundsConfigurator.ERROR, null);
-						logger.warn("Loaded new workspace [Error parsing canonical path, using asolute]: "+directory.getAbsolutePath(), e1);
-					}
-					
-					// REFRESH
-					textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
-				}
+				setWorkspace(directory);
+				currentConfiguration.getTextEditorOpt().addFileToLimitedList(directory, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
+				mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 			}
 		});
 		
@@ -670,6 +649,28 @@ public class TextEditor extends JPanel {
 			}
 		});
 		
+	}
+	
+	public void setWorkspace(File directory) {
+		if(directory != null && directory.exists()) {
+			
+			try {
+				currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getCanonicalPath();
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "defaultWorspaceLocation", directory.getCanonicalPath());
+				logger.info("Loaded new workspace: "+directory.getAbsolutePath());
+				
+				// to enable first time if it was disabled by default protection dir null
+				toggleButtonFileTreeWorkspace.setEnabled(true);
+				
+			} catch (IOException e1) {
+				currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getAbsolutePath();
+				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				logger.warn("Loaded new workspace [Error parsing canonical path, using asolute]: "+directory.getAbsolutePath(), e1);
+			}
+			
+			// REFRESH
+			textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
+		}
 	}
 	
 	/**
@@ -900,7 +901,7 @@ public class TextEditor extends JPanel {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
 					currentTabbedEditor.addTab(toLoadFile, !loadedAlmostOne);
-					currentConfiguration.getTextEditorOpt().addFileIntoLastOpenedFiles(toLoadFile);
+					currentConfiguration.getTextEditorOpt().addFileToLimitedList(toLoadFile, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 					if (!loadedAlmostOne)
 						loadedAlmostOne = true;
 				}
@@ -913,7 +914,7 @@ public class TextEditor extends JPanel {
 			for (File file : MainGuiGeneralAppStarter.argumentsFiles) {
 				currentTabbedEditor.loadFile(file);
 				logger.debug(file.getAbsolutePath() + " -> Loaded");
-				currentConfiguration.getTextEditorOpt().addFileIntoLastOpenedFiles(file);
+				currentConfiguration.getTextEditorOpt().addFileToLimitedList(file, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 			}
 		}
 

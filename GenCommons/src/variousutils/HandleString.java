@@ -395,7 +395,6 @@ public class HandleString {
      */
     public static void printArray(int[] array) {
     	int i=0;
-    	String out="";
         for (int curr : array) {
         	System.out.println("Val["+i+"] : " + curr);
             i++;

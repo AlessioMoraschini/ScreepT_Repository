@@ -22,6 +22,7 @@ import utils.panels.arch.IParentPanel;
 import utils.panels.arch.ParentPanel;
 
 public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
+	private static final long serialVersionUID = 8967000441862912408L;
 
 	public static MapTextAreaPanel singletonInstance;
 	

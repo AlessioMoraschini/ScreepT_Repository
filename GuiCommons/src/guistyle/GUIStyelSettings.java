@@ -54,7 +54,7 @@ public class GUIStyelSettings{
 			UIManager.put("ScrollBar.background", new Color(170,170,170));
 			UIManager.put("ToolTip.font", new Font("Segoe UI", Font.PLAIN, 18));
 			UIManager.put( "nimbusLightBackground", new Color( 240, 240, 240) );
-			UIManager.put( "nimbusSelectionBackground", TreeUtils.DEF_BACK_SELECTION);
+			UIManager.put( "Tree.selectionBackground", TreeUtils.DEF_BACK_SELECTION);
 			UIManager.put( "nimbusSelectionForeground", new Color(10, 10, 10));
 			UIManager.setLookAndFeel(style);
 			Color buttonBackG = (Color)UIManager.get("Button.background");
@@ -101,7 +101,7 @@ public class GUIStyelSettings{
 		UIManager.put("MenuBar.foreground", Color.white);
 		UIManager.put("nimbusLightBackground", new Color(250, 250, 250));
 		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 20,20,20)));
-		UIManager.put("nimbusSelectionBackground", TreeUtils.DEF_BACK_SELECTION);
+		UIManager.put("Tree.selectionBackground", TreeUtils.DEF_BACK_SELECTION);
 		UIManager.put("nimbusSelectionForeground", new Color(10, 10, 10));
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -139,7 +139,7 @@ public class GUIStyelSettings{
 		UIManager.put("MenuBar.foreground", Color.black);
 		UIManager.put("nimbusLightBackground", new Color(240, 240, 240));
 		UIManager.put("MenuItem.textIconGap", 18);
-		UIManager.put("nimbusSelectionBackground", TreeUtils.DEF_BACK_SELECTION);
+		UIManager.put("Tree.selectionBackground", TreeUtils.DEF_BACK_SELECTION);
 		UIManager.put("nimbusSelectionForeground", new Color(10, 10, 10));
 		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 20, 20, 20)));
 		try {

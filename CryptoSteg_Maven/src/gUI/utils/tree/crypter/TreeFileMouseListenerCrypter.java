@@ -30,12 +30,14 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelper;
 import dialogutils.TestUpdateProgress;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import variousutils.HandleString;
 
@@ -58,8 +60,11 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	// object that display wait dialog
 	private volatile TestUpdateProgress progUpdater;
 	
+	private JOptionHelper dialogHelper;
+	
 	// constructor
 	public TreeFileMouseListenerCrypter(INItializer currentConf, CrypterPanel cryptPanel){
+		
 		cryptoPanel = cryptPanel;
 		this.imgKeyPanel = cryptPanel.getPanelKeyImgDisp();
 		lblKeyDisp = cryptPanel.getLblDisplayedKey();
@@ -71,6 +76,8 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 		tree = cryptPanel.getTree();
 		tree.setComponentPopupMenu(getPopUpMenu());
 		tree.addMouseListener(getMouseListener());
+		
+		dialogHelper = new JOptionHelper(cryptPanel);
 	}
 	
 	public MouseListener getMouseListener() {
@@ -92,31 +99,42 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	    };
 	}
 
-	private JPopupMenu getPopUpMenu() {
+	@Override
+	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
 	    JMenuItem itemReadKey = new JMenuItem("Load Image & Details");
+	    itemReadKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemReadKey.addActionListener(getInfoActionListener());
 	    menu.add(itemReadKey);
 	    
 	    JMenuItem itemUseKey = new JMenuItem("Use as Key");
+	    itemUseKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemUseKey.addActionListener(getSelectKeyImgListener());
 	    menu.add(itemUseKey);
 	    
-	    //TODO -> add autoconverter to png key when importing
 	    JMenuItem itemAddKey = new JMenuItem("Add key Image to Dictionary");
+	    itemAddKey.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemAddKey.addActionListener(addKeyActionListener());
 	    menu.add(itemAddKey);
 	    
 	    JMenuItem itemExportKeys = new JMenuItem("Export selected key Images");
+	    itemExportKeys.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemExportKeys.addActionListener(exportKeyActionListener());
 	    menu.add(itemExportKeys);
 	    
 	    JMenuItem itemDelete = new JMenuItem("Delete selected Key Images");
+	    itemDelete.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemDelete.addActionListener(getDeleteActionListener());
 	    menu.add(itemDelete);
 	    
+	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    sysExplorerItem.addActionListener(openInSystemExplorer());
+	    menu.add(sysExplorerItem);
+	    
 	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);
 	    
@@ -125,6 +143,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	    
 	    itemUseKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
 	    itemReadKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOOK_INFO));
+	    sysExplorerItem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 	    itemAddKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT));
 	    itemExportKeys.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 	    itemDelete.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
@@ -159,7 +178,8 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	    };
 	}
 
-	private ActionListener getDeleteActionListener() {
+	@Override
+	public ActionListener getDeleteActionListener() {
 	    return new ActionListener() {
 
 	        @Override
@@ -201,13 +221,32 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 				// show input dialog to select the file(gives null in case of no file selected)
 				File selected = fileRead(TEXT_LOG);
 				if (selected!=null) {
+					
+					if(!selected.getName().toLowerCase().endsWith("png")) {
+						// If not a png image convert a temporary png file, and use it as source for import
+						selected = FileStuff.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + selected.getName()));
+						ImageGeneralWorker worker;
+						try {
+							worker = new ImageGeneralWorker(selected);
+							BufferedImage image = worker.getImage();
+							progUpdater = new TestUpdateProgress(currentConfig, false);
+							progUpdater.setUndefinedDuration();
+							progUpdater.update("Format not supported as key, Converting image to png...", 10);
+							ImageGeneralWorker.convertAndWrite(image, "png", selected);
+							progUpdater.update("Completed!", 100);
+							progUpdater.forceClose();
+						} catch (IOException e) {
+							logger.error("An error occurred when trying to convert "+selected+" to png", e);
+							dialogHelper.error("An error occurred when trying to convert "+selected+" to png", "An error occurred :(");
+							return;
+						}
+					}
+					
 					if (FileStuff.copyFile(selected, new File(KeyGenFrame.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite())) {
-						JOptionPane.showMessageDialog(TEXT_LOG, "File correctly saved in " + KeyGenFrame.KEY_DICTIONARY,
-								"File added to dictionary :)", JOptionPane.INFORMATION_MESSAGE);
+						dialogHelper.info("File correctly saved in " + KeyGenFrame.KEY_DICTIONARY, "File added to dictionary :)");
 						logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KeyGenFrame.KEY_DICTIONARY);
 					} else {
-						JOptionPane.showMessageDialog(TEXT_LOG, "File not saved in " + KeyGenFrame.KEY_DICTIONARY,
-								". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+						dialogHelper.error("File not saved in " + KeyGenFrame.KEY_DICTIONARY, "An error occurred :(");
 						logger.error("File not saved, some error occurred :( ");
 					}
 				}

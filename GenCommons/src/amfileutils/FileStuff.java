@@ -43,6 +43,25 @@ public class FileStuff {
 	// FileStuff logger creation		
 	static Logger logger = Logger.getLogger(FileStuff.class); 
 	
+	/**
+	 * Checks if the root of the given path is defined in current file system
+	 * @param path
+	 * @return
+	 */
+	public static boolean isPathRootValid(String path) {
+		// Root path validation
+		boolean rootOK = false;
+		for (File curr : File.listRoots()) {
+			// check for every existing root until one matches
+			if (path.startsWith(curr.getAbsolutePath())) {
+				rootOK = true;
+				break;
+			} 
+		}
+		
+		return rootOK;
+	}
+	
 	public static boolean isFileSonOfDir(File file, File dir) {
 		
 		if(file == null || dir == null) return false;
@@ -176,7 +195,10 @@ public class FileStuff {
 	
 	public static File getNlevelsAncestor(File son, int levelsUp) {
 		
-		if(son ==  null || son.getParentFile() == null) {return son;}
+		if(son ==  null || son.getParentFile() == null) {
+			logger.warn("\n\n=> Parent file search result FAILED! [son:"+son); 
+			return son;
+		}
 		
 		int originalLevels = levelsUp;
 		try {
@@ -200,10 +222,6 @@ public class FileStuff {
 				logger.debug("\n\n=> Parent file search result [son:"+son.getCanonicalPath()
 				+", levelsUp:"+originalLevels+"]: "+result.getCanonicalPath()+"\n");
 				
-			}else {
-				logger.warn("\n\n=> Parent file search result FAILED! [son:"+son
-				+", levelsUp:"+originalLevels+"]: "+result+"\n");
-				return son;
 			}
 			
 			return result;
@@ -1154,6 +1172,7 @@ public class FileStuff {
 	 * function used to update safely the progressbar in asynchronous way
 	 * @param i
 	 */
+	@SuppressWarnings("unused")
 	@Deprecated
 	private static void updateProgressBar(int i, JProgressBar progBar) {
 		try {

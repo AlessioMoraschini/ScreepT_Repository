@@ -35,7 +35,7 @@ public class CommandsAssembler {
 		OSinfo currentOS = SysUtils.getOsInfoLazy();
 		
 		
-		if (!pathEntry.equals(JvmHelper.JVM_OK)) {
+		if (!pathEntry.equals(JvmHelper.JVM_OK) && !pathEntry.equals(JvmHelper.JVM_IGNORE_WARN)) {
 			if (currentOS.isWindows()) {
 				// bugfix - avoid ; char when path is null, for example when JVM is not found
 				pathEntry = (pathEntry != null && !pathEntry.equals(""))? pathEntry + ";": "";
@@ -66,7 +66,7 @@ public class CommandsAssembler {
 		StringBuilder builder = new StringBuilder();
 		builder.append(dto.JVM_MEMORY_OPTIONS)
 			   .append(dto.JVM_STACK_SIZE)
-			   .append(" ").append(GeneralConfig.JVM_CUSTOM_CUSTOM_SETTINGS)
+			   .append(" ").append(GeneralConfig.JVM_CUSTOM_ADDED_SETTINGS)
 			   .append(" -Dsun.java2d.uiScale=")
 			   .append(dto.GUI_SCALE_ARG_VALUE)
 			   .append(dto.JVM_ARGS);

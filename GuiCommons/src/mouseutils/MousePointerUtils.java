@@ -82,7 +82,7 @@ public class MousePointerUtils {
 				
 				if (event instanceof MouseEvent) {
 					MouseEvent me = (MouseEvent)event;
-					if(me.getButton() == MouseEvent.BUTTON1) {
+					if(me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON1) {
 						logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
 						logger.debug(event);
 						

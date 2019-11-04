@@ -96,7 +96,65 @@ public class TreeUtils {
 	}
 	
 	/**
-	 *  Recursively expand the given path and its child paths in the given tree
+	 *  Recursively expand all  given path (This expands all child paths in the given tree). Implicit use of only one row, the selected one
+	 * @param tree
+	 * @param treePath
+	 */
+	public static void expandAllChildNodes(JTree tree, TreePath treePath){
+		
+		int startingIndex = tree.getRowForPath(treePath);
+		expandAllChildNodes(tree, startingIndex);
+	}
+	
+	/**
+	 *  Recursively expand all  given path (This expands all child paths in the given tree). Implicit use of only one row, the selected one
+	 * @param tree
+	 * @param treePath
+	 */
+	public static void expandAllChildNodes(JTree tree, int startingIndex){
+		int rowCount = tree.getRowCount();
+		
+		tree.expandRow(startingIndex);
+		
+		if(tree.getRowCount()!=rowCount){
+			// IF a folder is expandend rowcount increase, and this will be executed
+			expandAllChildNodes(tree, startingIndex+1, new Integer(rowCount-startingIndex));
+		}
+	}
+
+	/**
+	 * End distance is the number of rows after current at time of start (used to stop when current line is expanded)
+	 * @param tree
+	 * @param startingIndex
+	 * @param endDistance
+	 */
+	private static void expandAllChildNodes(JTree tree, int startingIndex, Integer endDistance){
+		boolean stop = tree.getRowCount() - startingIndex -1 < endDistance;
+		
+		tree.expandRow(startingIndex);
+		
+		if(!stop){
+			expandAllChildNodes(tree, startingIndex+1, endDistance);
+		}
+	}
+	
+	/**
+	 *  Recursively expand all  given path (This expands all child paths in the given tree)
+	 * @param tree
+	 * @param treePath
+	 */
+	public static void expandAllChildNodes(JTree tree, int startingIndex, int rowCount){
+	    for(int i=startingIndex;i<rowCount;++i){
+	        tree.expandRow(i);
+	    }
+
+	    if(tree.getRowCount()!=rowCount){
+	    	expandAllChildNodes(tree, rowCount, tree.getRowCount());
+	    }
+	}
+	
+	/**
+	 *  Recursively expand the given path (This does not expand child paths in the given tree)
 	 * @param tree
 	 * @param treePath
 	 */
@@ -155,6 +213,8 @@ public class TreeUtils {
 	 * Use this method to retrieve and select a node contained in the root of given tree.
 	 * 
 	 * This method is meant for jtree models that use only name of file as label for the node.
+	 * 
+	 * If check existance is true, then seletion will be performed only if file exists
 	 * @param fileToSelect
 	 * @param root
 	 * @param tree
