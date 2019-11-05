@@ -112,8 +112,8 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 		iconContainer.setForeground(selected ? Color.WHITE : Color.GRAY);
 		container.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
 		container.setForeground(selected ? Color.WHITE : Color.GRAY);
-		container.setBounds(tree.getBounds().x, container.getBounds().y, tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
-		container.setPreferredSize(new Dimension(tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT));
+//		container.setBounds(tree.getBounds().x, container.getBounds().y, tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
+//		container.setPreferredSize(new Dimension(tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT));
 		container.revalidate();
 		iconContainer.revalidate();
 		container.repaint();

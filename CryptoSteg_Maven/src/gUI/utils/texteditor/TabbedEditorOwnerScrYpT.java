@@ -32,7 +32,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 	
 	@Override
 	public void doAfterFileLoad() {
-		txtUtils.applySelectedTheme();
+//		txtUtils.applySelectedTheme();
 		txtUtils.refreshMessageAndTabTooltip("[File loaded]");
 	}
 
@@ -142,8 +142,12 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public void doAdditionalStuffOnDocMouseReleased(JTextArea target) {
-		if(txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
-			((MapTextAreaPanel)textEditor.rightSplitContainer).safeSyncCaretFromTxtReference();
+		try {
+			if (txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
+				((MapTextAreaPanel) textEditor.rightSplitContainer).safeSyncCaretFromTxtReference();
+			} 
+		} catch (Exception e) {
+			logger.error("Error trying to sync text area minimap caret", e);
 		}
 	}
 

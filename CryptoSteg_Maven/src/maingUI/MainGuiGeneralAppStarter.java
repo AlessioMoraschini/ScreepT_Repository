@@ -12,6 +12,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import generic.ParametricExceptionThread;
@@ -33,6 +34,7 @@ public class MainGuiGeneralAppStarter {
 	static Logger logger = Logger.getLogger(MainGuiGeneralAppStarter.class);
 		
 	// used with the only aim to force GeneralConfig properties read
+	@SuppressWarnings("unused")
 	private static GeneralConfig configStarter;
 	
 	// Main configuration reference for all sub-modules
@@ -46,7 +48,12 @@ public class MainGuiGeneralAppStarter {
 	public static JOptionHelper dialogHelper;
 	public static AWTExceptionHandler mainTrheadAwtErrorHandler;
 	
+	public static GenericFileChooserDialog fileDialogHelper;
+	
 	public static void main(String[] args) {
+		
+		fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
+		
 		try {
 			
 			// CATCH ALL EXCEPTION UNCATCHED DURING SW EXECUTION AND ANALYZE IF THEY ARE Errors or Exceptions
@@ -105,7 +112,9 @@ public class MainGuiGeneralAppStarter {
 				currentConfiguration.readConfigIniFile();
 				
 				SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
-
+				
+				fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
+				
 			} catch (IOException e) {
 				logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);
 			}

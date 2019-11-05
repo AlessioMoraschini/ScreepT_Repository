@@ -97,6 +97,7 @@ public class FileStuff {
 	 */
 	public static File unzipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
 		
+		long startTime = System.currentTimeMillis();
 		logger.info("FileStuff.unzipFile() -> Starting unzip:"
 				+ "\n source: " + sourcePath
 				+ "\n destPath: " + destFolderPath
@@ -138,6 +139,8 @@ public class FileStuff {
 				+ "\n unzipped File: " + out
 				+ "\n overwrite: " + ovewrwrite);
         
+		logger.info("unzip file: elapsed" + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+        
         return out;
 	}
 
@@ -154,6 +157,7 @@ public class FileStuff {
 	
 	public static File zipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
 		
+		long startTime = System.currentTimeMillis();
 		logger.info("FileStuff.zipFile() -> Starting zip:"
 				+ "\n source: " + sourcePath
 				+ "\n destPath: " + destFolderPath
@@ -190,6 +194,7 @@ public class FileStuff {
 				+ "\n zipped File: " + out
 				+ "\n overwrite: " + ovewrwrite);
 		
+		logger.info("zipFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return out;
 	}
 	
@@ -377,6 +382,9 @@ public class FileStuff {
 			throw new IOException();
 		}
 		
+		long startTime = System.currentTimeMillis();
+		logger.info("copyDirStructure -> Start...");
+		
 		boolean esit = true;
 		String destRootPath = destinationRootDir.getAbsolutePath();
 		
@@ -403,6 +411,7 @@ public class FileStuff {
 			
 		}
 		
+		logger.info("copyDirStructure -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return esit;
 	}
 	
@@ -558,6 +567,8 @@ public class FileStuff {
 	 */
 	public static boolean deleteDirContentInclRoot(File folder) {
 		boolean deleted = true;
+		long startTime = System.currentTimeMillis();
+		logger.info("deleteDirContentInclRoot -> Start...");
 		
 		File[] files = folder.listFiles();
 	    if(files!=null) { //some JVMs return null for empty dirs
@@ -577,6 +588,8 @@ public class FileStuff {
 	        // at the end delete given container folder too
 	        folder.delete();
 	    }
+
+	    logger.info("deleteDirContentInclRoot -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	    return deleted;	
 	}
 	
@@ -589,6 +602,8 @@ public class FileStuff {
 	 */
 	public static boolean deleteDirContentRecursive(File folder) {
 		boolean deleted = true;
+		long startTime = System.currentTimeMillis();
+		logger.info("deleteDirContentRecursive -> Start...");
 		
 		File[] files = folder.listFiles();
 	    if(files!=null) { //some JVMs return null for empty dirs
@@ -606,6 +621,8 @@ public class FileStuff {
 	            }
 	        }
 	    }
+
+	    logger.info("deleteDirContentRecursive -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	    return deleted;	
 	}
 	
@@ -619,6 +636,8 @@ public class FileStuff {
 	 */
 	public static boolean deleteDirContent(File folder) {
 		boolean deleted = false;
+		long startTime = System.currentTimeMillis();
+		logger.info("deleteDirContent -> Start...");
 		
 		File[] files = folder.listFiles();
 	    if(files!=null) { //some JVMs return null for empty dirs
@@ -628,6 +647,8 @@ public class FileStuff {
 	            } 
 	        }
 	    }
+
+	    logger.info("deleteDirContent -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	    return deleted;	
 	}
 	
@@ -751,6 +772,34 @@ public class FileStuff {
 	}
 	
 	/**
+	 * Inserts a number like file(1).txt from the original file.txt
+	 * @param fileName
+	 * @return
+	 */
+	public static String insertNumberBeforeExtension(String fileName, int n) {
+
+		String extension = "";
+		String name = "";
+
+		int idxOfDot = fileName.lastIndexOf('.');   //Get the last index of . to separate extension
+		if(idxOfDot>=0) {
+			extension = fileName.substring(idxOfDot + 1);
+			name = fileName.substring(0, idxOfDot);
+		}else {
+			name = fileName;
+		}		
+		
+		// if already with parentesis number
+		if(name.substring(name.length()-1, name.length()).equals(")")) {
+			idxOfDot = fileName.lastIndexOf('(');
+			name = fileName.substring(0, idxOfDot);
+		}
+	    fileName = name+"("+n+")."+extension;
+		
+		return fileName;
+	}
+	
+	/**
 	 * this method change name from the given file absolute path, until the result is a non existent file
 	 * It do that adding (i) numbers at the end of the file name, just before the start of the
 	 * extension . 
@@ -834,6 +883,8 @@ public class FileStuff {
 	 */
 	public static void copyDirectoryContents(File source, File destination, boolean overwrite, String extFilter) throws IOException{
 
+		long startTime = System.currentTimeMillis();
+		logger.info("copyDirectoryContents -> Start...");
 
 		if(source.isDirectory()) {
 			File[] srcFiles = source.listFiles();
@@ -855,6 +906,7 @@ public class FileStuff {
 			}
 		}
 
+		logger.info("copyDirectoryContents -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	}
 	
 	/**
@@ -870,6 +922,9 @@ public class FileStuff {
 		if(txtFile == null) {
 			return false;
 		}
+		
+		long startTime = System.currentTimeMillis();
+		logger.info("loadFileTxtArea -> Start...");
 		
     	if(extensionFilter != null && !FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals(extensionFilter)) {
 			JOptionPane.showMessageDialog(null, "Please select a valid "+ extensionFilter +" file!");
@@ -907,6 +962,8 @@ public class FileStuff {
 			}
     
     	}
+    	
+        logger.info("loadFileTxtArea -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
     	return true;
 	}
 	
@@ -920,6 +977,10 @@ public class FileStuff {
 		if(toRead == null || !toRead.exists()) {
 			throw new IOException();
 		}
+		
+		long startTime = System.currentTimeMillis();
+		logger.info("readFileAsString -> Start...");
+
 		StringBuilder builder = new StringBuilder(100000);
 		FileInputStream readerStream = new FileInputStream(toRead);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
@@ -938,6 +999,7 @@ public class FileStuff {
 			reader.close();			
 		}
 		
+		logger.info("readFileAsString -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return builder.toString();
 	}
 	
@@ -950,6 +1012,10 @@ public class FileStuff {
 	 * @throws IOException
 	 */
 	public static boolean writeStringToFile(String source, File outFile, boolean overwrite) throws IOException {
+		
+		long startTime = System.currentTimeMillis();
+		logger.info("writeStringToFile -> Start...");
+
 		if(outFile.exists()) {
 			boolean deleted = true;
 			boolean recreated = false;
@@ -979,6 +1045,7 @@ public class FileStuff {
 		out.close();
 		outputStreamWriter.close();
 		
+		logger.info("writeStringToFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return true;
 	}
 	
@@ -990,50 +1057,54 @@ public class FileStuff {
 	 */
 	public static boolean appendFileTxtArea(File txtFile, JTextArea textArea_1, boolean goToStart) {
 		
+		long startTime = System.currentTimeMillis();
+
 		int originalPosition = textArea_1.getCaretPosition();
 		
 		if(txtFile == null) {
 			return false;
 		}else {
-				StringBuilder builder = new StringBuilder(100000);
+			logger.info("appendFileTxtArea -> Start...");
+			StringBuilder builder = new StringBuilder(100000);
+			try {
+				FileInputStream readerStream = new FileInputStream(txtFile);
+				BufferedReader reader;
+				reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
 				try {
-					FileInputStream readerStream = new FileInputStream(txtFile);
-					BufferedReader reader;
-					reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
-					try {
-						String line = reader.readLine();
-						line = (line != null)? line : "";
-						builder.append(line);
+					String line = reader.readLine();
+					line = (line != null)? line : "";
+					builder.append(line);
+					line = reader.readLine();
+					
+					while (line != null) {
+						builder.append("\n").append(line);
 						line = reader.readLine();
-						
-						while (line != null) {
-							builder.append("\n").append(line);
-							line = reader.readLine();
-						}
-						reader.close(); 
-						readerStream.close();
-					} catch (IOException e) {
-						logger.error(e);
-						try {reader.close(); readerStream.close();} 
-						catch (IOException e1) {}			
 					}
-				} catch (UnsupportedEncodingException | FileNotFoundException e2) {
-					logger.error(e2);
-				}finally {
-					textArea_1.append(builder.toString());
+					reader.close(); 
+					readerStream.close();
+				} catch (IOException e) {
+					logger.error(e);
+					try {reader.close(); readerStream.close();} 
+					catch (IOException e1) {}			
 				}
-				textArea_1.requestFocus();
-				if (goToStart) {
-					textArea_1.setCaretPosition(0);
-				}else try{
-					if(originalPosition > textArea_1.getText().length()) {
-						textArea_1.setCaretPosition(textArea_1.getDocument().getLength()-1);						
-					}else {
-						textArea_1.setCaretPosition(originalPosition);
-					}
-				}catch (Exception e) {
-					// avoided outOfBounds
+			} catch (UnsupportedEncodingException | FileNotFoundException e2) {
+				logger.error(e2);
+			}finally {
+				textArea_1.append(builder.toString());
+				logger.info("appendFileTxtArea -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+			}
+			textArea_1.requestFocus();
+			if (goToStart) {
+				textArea_1.setCaretPosition(0);
+			}else try{
+				if(originalPosition > textArea_1.getText().length()) {
+					textArea_1.setCaretPosition(textArea_1.getDocument().getLength()-1);						
+				}else {
+					textArea_1.setCaretPosition(originalPosition);
 				}
+			}catch (Exception e) {
+				// avoided outOfBounds
+			}
     	}
     	return true;
 	}
@@ -1090,6 +1161,9 @@ public class FileStuff {
 	
 	public static boolean copyFile(File source, File dest, boolean overwrite) {
 		
+		long startTime = System.currentTimeMillis();
+		logger.info("copyFile -> Start...");
+		
 		boolean esit = false;
 		
 		// if dir not existing or dest file not existing
@@ -1125,10 +1199,14 @@ public class FileStuff {
 		   esit = false;
 		}
 		
+		logger.info("copyFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return esit;
 	}
 	
 	public static boolean copyFileIntoDir(File source, File destdir, boolean overwrite) {
+		
+		long startTime = System.currentTimeMillis();
+		logger.info("copyFileIntoDir -> Start...");
 		
 		boolean esit = false;
 		
@@ -1165,6 +1243,7 @@ public class FileStuff {
 		   esit = false;
 		}
 		
+		logger.info("copyFileIntoDir -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return esit;
 	}
 	

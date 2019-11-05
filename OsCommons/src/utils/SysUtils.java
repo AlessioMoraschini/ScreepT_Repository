@@ -202,6 +202,10 @@ public class SysUtils {
 		}
 		return 0;
 	}
+	
+	public static String getCurrentSystemEncoding() {
+		return System.getProperty("file.encoding");
+	}
 
 	/**
 	 * @return the max memory usable by Java software in MB

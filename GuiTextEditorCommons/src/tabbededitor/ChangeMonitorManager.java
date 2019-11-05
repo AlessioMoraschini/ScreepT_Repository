@@ -24,24 +24,21 @@ public class ChangeMonitorManager implements IChangeMonManager{
 	
 	public ChangeMonitorManager(CustomTabbedEditor mainEditorRef) {
 		this.mainEditorRef = mainEditorRef;
+		logger.debug("CustomTabbedEditor initialized");
 	}
 
 	/**
 	 * Check changes asking to user for what to do in each case, according to configuration value
 	 */
 	public void checkChanges() {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					if (!isAlreadyChecking.get()) {
-						// FILE MONITOR CHECK IF ENABLED IN CONFIG
-						checkAndAdviceIfCurrentChanged(false, true);
-					}
-				} catch (Exception e1) {
-					logger.error("An error occurred when trying to check current file for changes: ", e1);
-				}
+		try {
+			if (!isAlreadyChecking.get()) {
+				// FILE MONITOR CHECK IF ENABLED IN CONFIG
+				checkAndAdviceIfCurrentChanged(false, true);
 			}
-		});
+		} catch (Exception e1) {
+			logger.error("An error occurred when trying to check current file for changes: ", e1);
+		}
 	}
 
 	/**
@@ -97,86 +94,89 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		// only if forced check or if auto check is enabled
 		if((forceCheck || mainEditorRef.tabEditorManager.isEnabledAutoFileMonitor())) {
 			
-			isAlreadyChecking.set(true);
-			
-			ChangeDTO changes = new ChangeDTO();
-			
-			if(mainEditorRef.loadedTabObj.loadedFile != null && mainEditorRef.loadedTabObj.fileMonitorManager != null) {
-				// CHECK change for curent file
-				changes = mainEditorRef.loadedTabObj.fileMonitorManager.checkForFile(mainEditorRef.loadedTabObj.loadedFile);
-				mainEditorRef.changesHistory.update(changes);
-			}else {
-				if (mainEditorRef.loadedTabObj.fileMonitorManager == null) {
-					logger.info("fileMonitorManager is NULL, nothing to check.");
-				}else {
-					logger.info("file is NULL, nothing to check.");
+			try {
+				isAlreadyChecking.set(true);
+				ChangeDTO changes = new ChangeDTO();
+				if (mainEditorRef.loadedTabObj.loadedFile != null && mainEditorRef.loadedTabObj.fileMonitorManager != null) {
+					// CHECK change for curent file
+					changes = mainEditorRef.loadedTabObj.fileMonitorManager.checkForFile(mainEditorRef.loadedTabObj.loadedFile);
+					mainEditorRef.changesHistory.update(changes);
+				} else {
+					if (mainEditorRef.loadedTabObj.fileMonitorManager == null) {
+						logger.info("fileMonitorManager is NULL, nothing to check.");
+					} else {
+						logger.info("file is NULL, nothing to check.");
+					}
+					return;
 				}
-				return;
-			}
-			
-			logger.debug("\n\n ########################  EVENT SEARCH... ###############################\n\n");
-			boolean isChanged = mainEditorRef.changesHistory.changedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
-			boolean isDeleted = mainEditorRef.changesHistory.removedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
-			boolean isCreated = mainEditorRef.changesHistory.addedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
+				logger.debug("\n\n ########################  EVENT SEARCH... ###############################\n\n");
+				boolean isChanged = mainEditorRef.changesHistory.changedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
+				boolean isDeleted = mainEditorRef.changesHistory.removedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
+				boolean isCreated = mainEditorRef.changesHistory.addedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
+				if (isDeleted) {
+					logger.info("\n\n ########################  DELETE EVENT REGISTERED! ###############################\n\n");
 
-			if (isDeleted) {
-				logger.debug("\n\n ########################  DELETE EVENT REGISTERED! ###############################\n\n");
-
-				File removed = mainEditorRef.changesHistory.findRemovedFile(mainEditorRef.loadedTabObj.loadedFile);
-				if(removed == null) {return;}
-				
-				boolean resp = false;
-				ask = true;
-				logger.debug("\n => FILE EXTERNALLY REMOVED: " + removed.getAbsolutePath());
-				
-				if (ask) {
-					// continue or close tab?
-					String msg = "It seems that you or a software in your machine has deleted current file, wanna keep this file in editor?";
-					resp = mainEditorRef.dialogHelper.yesOrNo(msg, "File deleted by external");
-				}
-				
-				if(!resp) {
-					logger.debug("\n => User has chosen to close tab with file: " + removed.getAbsolutePath());
-					mainEditorRef.closeCurrentTab();
-				}else {
-					mainEditorRef.loadedTabObj.unsaved = true;
-					mainEditorRef.updateSavedLabelNTab(null);
-				}
-				
-				cleanFromHistory(removed);
-				
-			}else if (isChanged || isCreated) {
-				logger.debug("\n\n ########################  NEW/MOD EVENT REGISTERED! ###############################\n\n");
-
-				File changed = mainEditorRef.changesHistory.findChangedFile(mainEditorRef.loadedTabObj.loadedFile);
-				if (changed == null) {
-					changed = mainEditorRef.changesHistory.findAddeddFile(mainEditorRef.loadedTabObj.loadedFile);
-					if (changed == null) {
+					File removed = mainEditorRef.changesHistory.findRemovedFile(mainEditorRef.loadedTabObj.loadedFile);
+					if (removed == null) {
 						return;
-					} 
-				}
-				boolean resp = true;
-				logger.debug("\n => FILE EXTERNALLY CHANGED: " + changed.getAbsolutePath());
+					}
 
-				if (ask) {
-					// continue or reload file?
-					String msg = "It seems that you or a software in your machine has modified current file, wanna reload this file? (every change could be lost)";
-					resp = mainEditorRef.dialogHelper.yesOrNo(msg, "File changed by external");
-				}
+					boolean resp = false;
+					ask = true;
+					logger.debug("\n => FILE EXTERNALLY REMOVED: " + removed.getAbsolutePath());
+
+					if (ask) {
+						// continue or close tab?
+						String msg = "It seems that you or a software in your machine has deleted current file, wanna keep this file in editor?";
+						resp = mainEditorRef.dialogHelper.yesOrNo(msg, "File deleted by external");
+					}
+
+					if (!resp) {
+						logger.debug("\n => User has chosen to close tab with file: " + removed.getAbsolutePath());
+						mainEditorRef.closeCurrentTab();
+					} else {
+						mainEditorRef.loadedTabObj.unsaved = true;
+						mainEditorRef.updateSavedLabelNTab(null);
+					}
+
+					cleanFromHistory(removed);
+
+				} else if (isChanged || isCreated) {
+					logger.info("\n\n ########################  NEW/MOD EVENT REGISTERED! ###############################\n\n");
+
+					File changed = mainEditorRef.changesHistory.findChangedFile(mainEditorRef.loadedTabObj.loadedFile);
+					if (changed == null) {
+						changed = mainEditorRef.changesHistory.findAddeddFile(mainEditorRef.loadedTabObj.loadedFile);
+						if (changed == null) {
+							return;
+						}
+					}
+					boolean resp = true;
+					logger.debug("\n => FILE EXTERNALLY CHANGED: " + changed.getAbsolutePath());
+
+					if (ask) {
+						// continue or reload file?
+						String msg = "It seems that you or a software in your machine has modified current file, wanna reload this file? (every change could be lost)";
+						resp = mainEditorRef.dialogHelper.yesOrNo(msg, "File changed by external");
+					}
+
+					if (resp) {
+						logger.debug("\n => User has chosen to reload: " + changed.getAbsolutePath());
+						mainEditorRef.reloadCurrentTab(false);
+
+					} else {
+						mainEditorRef.loadedTabObj.unsaved = true;
+						mainEditorRef.updateSavedLabelNTab(null);
+					}
+
+					cleanFromHistory(changed);
+				} 
+			} catch (Exception e) {
 				
-				if(resp) {
-					logger.debug("\n => User has chosen to reload: " + changed.getAbsolutePath());
-					mainEditorRef.reloadCurrentTab(false);
-					
-				}else {
-					mainEditorRef.loadedTabObj.unsaved = true;
-					mainEditorRef.updateSavedLabelNTab(null);
-				}
-				
-				cleanFromHistory(changed);
+			} finally {
+				isAlreadyChecking.set(false);
 			}			
 		}
-		isAlreadyChecking.set(false);
 	}
 	
 	/**

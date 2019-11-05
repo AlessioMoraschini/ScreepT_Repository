@@ -33,7 +33,6 @@ import utils.panels.arch.ParentPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.UIDefaults;
 
 import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.RUndoManager;
@@ -41,7 +40,6 @@ import org.fife.ui.rtextarea.RUndoManager;
 
 import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
-import dialogutils.GenericFileChooser;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
@@ -216,7 +214,7 @@ public class TextEditor extends JPanel {
 		
 		// ADD ONLY AFTER COMBO INITIALIZATION
 		tabbedEditorsList = new ArrayList<CustomTabbedEditor>();
-		CustomTabbedEditor initialTabbedEditor = new CustomTabbedEditor(currentConfiguration, new TabbedEditorOwnerScrYpT(this));
+		CustomTabbedEditor initialTabbedEditor = new CustomTabbedEditor(this, currentConfiguration, new TabbedEditorOwnerScrYpT(this));
 		tabbedEditorsList.add(initialTabbedEditor);
 		
 		getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -588,7 +586,7 @@ public class TextEditor extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				File directory = GenericFileChooser.directoRead(mainApplication.getMainFrame(), "Choose a workspace folder to load");
+				File directory = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(mainApplication.getMainFrame(), "Choose a workspace folder to load");
 				setWorkspace(directory);
 				currentConfiguration.getTextEditorOpt().addFileToLimitedList(directory, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
 				mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);

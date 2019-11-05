@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
+import maingUI.MainGuiGeneralAppStarter;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
@@ -60,7 +61,7 @@ public class TemplatesChoosePanel extends JFrame{
 	private JButton buttonInvoker;
 	private JButton btnOpenInFilesystem;
 	private JButton btnReloadTemplates;
-	private JTextArea outputTextArea;
+	public JTextArea outputTextArea;
 	private JOptionHelper dialogHelper;
 	
 	
@@ -177,7 +178,7 @@ public class TemplatesChoosePanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File selected = GenericFileChooserDialog.fileRead(null);
+				File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(null);
 				if(selected != null) {
 					String selName = selected.getName();
 					String ext = FilenameUtils.getExtension(selName);

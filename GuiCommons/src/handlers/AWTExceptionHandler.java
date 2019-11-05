@@ -2,6 +2,8 @@ package handlers;
 
 import java.util.Arrays;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelper;
@@ -135,7 +137,11 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	  }
 
 	@Override
-	public void uncaughtException(Thread t, Throwable e) {
-		handle(e);
+	public void uncaughtException(Thread t, final Throwable e) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				handle(e);
+			}
+		});
 	}
 }

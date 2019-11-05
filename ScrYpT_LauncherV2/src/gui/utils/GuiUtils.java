@@ -10,17 +10,13 @@ import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -42,10 +38,6 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
-import resources.GeneralConfig;
-import resources.IconsPathConfigurator;
-import resources.SoundsConfigurator;
-
 public class GuiUtils {
 	
 	// INItializer logger creation		
@@ -59,8 +51,6 @@ public class GuiUtils {
 	
 	public static final Dimension DEF_CUSTOM_CURSOR_SIZE = new Dimension(8,8);
 	
-	public static JOptionHelper dialogHelper = new JOptionHelper(null);
-
 	/**
 	 * Retrieve selected text from JTextaea if something is selected, else retrieve all text
 	 * @param source

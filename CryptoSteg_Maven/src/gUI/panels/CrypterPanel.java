@@ -26,11 +26,11 @@ import dialogutils.TestUpdateProgress;
 import enums.BufferedImageType;
 import frameutils.utils.GuiUtils;
 import gUI.frames.KeyGenFrame;
-import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
+import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
@@ -163,7 +163,7 @@ public class CrypterPanel extends JPanel {
 	public static final char DEFAULT_PSW_CHAR = '\u25CF';
 	
 	// combobox to select conversion mode
-	private JComboBox comboModeCrypto;
+	private JComboBox<CryptoMode> comboModeCrypto;
 
 	
 ///////////////////////////////////////////////
@@ -442,7 +442,7 @@ public class CrypterPanel extends JPanel {
 		panelStatus.add(lblSelectedModeStatic, gbc_lblSelectedModeStatic);
 		lblSelectedModeStatic.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		
-		comboModeCrypto = new JComboBox();
+		comboModeCrypto = new JComboBox<CryptoMode>();
 		comboModeCrypto.setPreferredSize(new Dimension(33, 24));
 		comboModeCrypto.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		GridBagConstraints gbc_comboModeCrypto = new GridBagConstraints();
@@ -451,7 +451,7 @@ public class CrypterPanel extends JPanel {
 		gbc_comboModeCrypto.gridx = 4;
 		gbc_comboModeCrypto.gridy = 0;
 		panelStatus.add(comboModeCrypto, gbc_comboModeCrypto);
-		comboModeCrypto.setModel(new DefaultComboBoxModel(CryptoMode.values()));
+		comboModeCrypto.setModel(new DefaultComboBoxModel<CryptoMode>(CryptoMode.values()));
 			
 		chckbxShuffle = new JCheckBox("Ultra Secure");
 		chckbxShuffle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -584,7 +584,7 @@ public class CrypterPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				
 				// select input file or directory with fileChooser
-				File selected = GenericFileChooserDialog.fileAndDirRead(thisPanel, currentConf);
+				File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileAndDirRead(thisPanel);
 				
 				addNewSourceFile(selected);
 
@@ -600,7 +600,7 @@ public class CrypterPanel extends JPanel {
 				
 				File dispoImgFile;
 				try {
-					dispoImgFile = GenericFileChooserDialog.fileImgRead(thisPanel, currentConf, "png");
+					dispoImgFile = MainGuiGeneralAppStarter.fileDialogHelper.fileImgRead(thisPanel, "png");
 					if (dispoImgFile != null) {
 						useAsKeyImage(dispoImgFile);
 						loadInfo(dispoImgFile);
@@ -642,7 +642,7 @@ public class CrypterPanel extends JPanel {
 					}
 				}else {
 					// get output asking to user
-					destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+					destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
 				}
 				
 				// boolean value representing if everything went good
@@ -737,7 +737,7 @@ public class CrypterPanel extends JPanel {
 				textAreaMain.setText("");
 				
 				// get output asking to user
-				File destinationDir = GenericFileChooserDialog.directoWrite(parentFrame, currentConf);
+				File destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
 				
 				// retrieve source file array from dragNDrop panel
 				srcFiles = panelVDragNDropPane.getTreeNodes();
@@ -876,7 +876,14 @@ public class CrypterPanel extends JPanel {
 		textAreaMain.setRequestFocusEnabled(false);
 		textAreaMain.setSyntaxEditingStyle(SupportedFileTextEditor.YAML.syntax);
 		textAreaMain.setHighlightCurrentLine(false);
-		RsyntaxUtils.changeStyleViaThemeXml(textAreaMain, Themes.DARK.defaultPath);
+		boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null && GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(Themes.DARK.fileName);
+		if (usePreloadedStringXml) {
+			// If available use lazy initialized in memory
+			RsyntaxUtils.changeStyleViaThemeXmlString(textAreaMain, GeneralConfig.XML_THEMES_CONTENT_MAP.get(Themes.DARK.fileName));
+		}else {
+			// if not available read from file
+			RsyntaxUtils.changeStyleViaThemeXml(textAreaMain, Themes.DARK.defaultPath);
+		}
 		textAreaMain.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		textAreaMain.setEditable(false);
 		textAreaMain.setMargin(new Insets(10, 15, 10, 10));

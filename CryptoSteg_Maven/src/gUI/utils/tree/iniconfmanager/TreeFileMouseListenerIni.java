@@ -25,7 +25,8 @@ import org.ini4j.Wini;
 import amfileutils.FileStuff;
 import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
-import gUI.utils.filedialog.GenericFileChooserDialog;
+import maingUI.MainGUI;
+import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
@@ -191,7 +192,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 				
 				if (lastSelected != null && path.toLowerCase().endsWith(".ini")) {
 					loadIni(new File(path));
-					confManagerPanel.parent.updateGuiFromCurrConfig();
+					MainGUI.updateGuiFromCurrConfig();
 				}
 			}
 		};
@@ -216,7 +217,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	        	
 	        	Date now = new Date();
 	    		SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_@_HH-mm-ss");
-	        	File exportDir = GenericFileChooserDialog.directoWrite(confManagerPanel.parent.getMainFrame(), currentConfig);
+	        	File exportDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(confManagerPanel.parent.getMainFrame());
 	        	if(exportDir == null)
 	        		return; // to avoid null pointer
 	        	exportDir = new File(exportDir.getAbsolutePath()+"/"+df.format(now));
@@ -248,7 +249,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	}
 	
 	private void importIniFileOrDir() {
-		File selectedImportDir = GenericFileChooserDialog.fileAndDirRead(confManagerPanel, currentConfig);
+		File selectedImportDir = MainGuiGeneralAppStarter.fileDialogHelper.fileAndDirRead(confManagerPanel);
 		if (selectedImportDir!=null && selectedImportDir.isDirectory()) {
 			try {
 				FileStuff.copyDirectoryContents(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false, "ini");

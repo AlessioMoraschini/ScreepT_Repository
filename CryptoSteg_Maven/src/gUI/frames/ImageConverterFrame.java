@@ -12,9 +12,9 @@ import enums.ScalingAlgorithm;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
-import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import maingUI.MainGUI;
+import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 
@@ -58,6 +58,7 @@ import java.awt.Dimension;
 import javax.swing.UIManager;
 
 public class ImageConverterFrame extends ParentFrame{
+	private static final long serialVersionUID = 8723319520694955701L;
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ImageConverterFrame.class); 
@@ -77,7 +78,7 @@ public class ImageConverterFrame extends ParentFrame{
 	
 	// comboboxes
 	private static JComboBox comboBoxFormats;
-	private JComboBox comboScaleQuality;
+	private JComboBox<ScalingAlgorithm> comboScaleQuality;
 	
 	// checkboxes
 	private JCheckBox chckbxSameFormat;
@@ -262,7 +263,7 @@ public class ImageConverterFrame extends ParentFrame{
 		lblQuality.setFont(new Font("Tahoma", Font.BOLD, 13));
 		getContentPane().add(lblQuality, "cell 4 5 2 1,alignx center");
 		
-		comboScaleQuality = new JComboBox(ScalingAlgorithm.values());
+		comboScaleQuality = new JComboBox<ScalingAlgorithm>(ScalingAlgorithm.values());
 		getContentPane().add(comboScaleQuality, "cell 0 6 2 1,growx,aligny center");
 		comboScaleQuality.setRenderer(new ToolTipScalingAlgorithm());
 		
@@ -541,7 +542,7 @@ public class ImageConverterFrame extends ParentFrame{
 						// if source file exists and is loaded
 						if(inputImgFile!=null) {
 							
-							progUpdater = new TestUpdateProgress(currentConfiguration);
+							progUpdater = new TestUpdateProgress(currentConfiguration, false);
 							progUpdater.getPb().setValue(20);
 							
 							if (inputImg != null) {
@@ -632,14 +633,14 @@ public class ImageConverterFrame extends ParentFrame{
 							int Y = (int)spinnerHeight.getValue();
 							ScalingAlgorithm alg = (ScalingAlgorithm) comboScaleQuality.getSelectedItem();
 							
-							File selected = GenericFileChooserDialog.fileImgWrite(thisFrame, currentConfiguration, inputImgFile.getName());									
+							File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileImgWrite(thisFrame, inputImgFile.getName());									
 							
 							if (selected!=null) {
 								
 								selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
 								selected = FileStuff.renameJavaObjFile(selected);
 								
-								progUpdater = new TestUpdateProgress(currentConfiguration);
+								progUpdater = new TestUpdateProgress(currentConfiguration, false);
 								progUpdater.getPb().setValue(20);
 					    		progUpdater.getPb().setIndeterminate(true);
 
@@ -737,10 +738,10 @@ public class ImageConverterFrame extends ParentFrame{
 						btnOriginalSize.setEnabled(false);
 						btnStartConversion.setEnabled(false);
 						
-						File selected = GenericFileChooserDialog.fileImgRead(thisFrame, currentConfiguration);
+						File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileImgRead(thisFrame);
 						if (selected!=null) {
 							
-							progUpdater = new TestUpdateProgress(currentConfiguration);
+							progUpdater = new TestUpdateProgress(currentConfiguration, false);
 							progUpdater.getPb().setValue(20);
 							progUpdater.getLabel().setText("I'm loading the image...");
 				    		progUpdater.getPb().setIndeterminate(true);

@@ -51,7 +51,6 @@ import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import amfileutils.FileStuff;
 import conversion.Text2Speech;
 import crypt.aes.AesCipher;
-import dialogutils.GenericFileChooser;
 import dialogutils.JOptionHelper;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.EscapeReplacerFrame;
@@ -59,7 +58,6 @@ import frameutils.frame.FilePropertiesFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import gUI.utils.filedialog.GenericFileChooserDialog;
 import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorShortcutListener;
 import gUI.utils.texteditor.TextEditorUtils;
@@ -67,6 +65,7 @@ import gUI.utils.tooltip.TextEditorTooltips;
 import gui.ImageSelector2TextFrame;
 import gui.PdfSelector2TextFrame;
 import maingUI.MainGUI;
+import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
@@ -186,6 +185,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public FindDialog searchBox;
 	public ReplaceDialog replaceDialog;
 	public GoToDialog goToLineDialog;
+	public TemplatesChoosePanel templatesPanel;
 	public EscapeReplacerFrame escapeReplacerPanel;
 	public ImageSelector2TextFrame imageParserBox;
 	public PdfSelector2TextFrame pdfParserBox;
@@ -1431,18 +1431,17 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// OPEN TEMPLATES PANEL
 		btnTemplates.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFrame panel = new JFrame();
 				if (!TemplatesChoosePanel.active) {
-					panel = new TemplatesChoosePanel(mainApplication.getMainFrame(), parent.getCurrentTabEditor().loadedTabObj.textArea, btnTemplates);
-					panel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panel.setBounds(750, 140, 500, 150);
-					panel.setAlwaysOnTop(true);
-					panel.setVisible(true);
-					panel.setTitle("TEMPLATES manager - " + GeneralConfig.APPLICATION_NAME);
+					templatesPanel = new TemplatesChoosePanel(mainApplication.getMainFrame(), parent.getCurrentTabEditor().loadedTabObj.textArea, btnTemplates);
+					templatesPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					templatesPanel.setBounds(750, 140, 500, 150);
+					templatesPanel.setAlwaysOnTop(true);
+					templatesPanel.setVisible(true);
+					templatesPanel.setTitle("TEMPLATES manager - " + GeneralConfig.APPLICATION_NAME);
 					btnTemplates.setEnabled(false);
 				}
-				panel.setLocationRelativeTo(parent.mainPanel);
-				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panel, JFrame.MAXIMIZED_BOTH);
+				templatesPanel.setLocationRelativeTo(parent.mainPanel);
+				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), templatesPanel, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 
@@ -1670,7 +1669,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))? loadedTabObj.loadedFile.getName() : "New."+comboFileFormat.getSelectedItem().toString().toLowerCase();
 					exportNamePreset = ("".equals(FilenameUtils.getExtension(exportNamePreset)))? exportNamePreset.concat(comboFileFormat.getSelectedItem().toString().toLowerCase()): exportNamePreset;
 					try {
-						File selectedFile = GenericFileChooserDialog.fileWrite(parent.parentFrame, currentConfiguration, exportNamePreset);
+						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, exportNamePreset);
 
 						if (selectedFile != null) {
 							skipRefresh = false;
@@ -1697,7 +1696,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 								loadedTabObj.loadedFile = selectedFile;
 								
 								if (parent.getCurrentTabEditor().loadedTabObj.fileMonitorManager == null) {
-									parent.getCurrentTabEditor().changeMonManager.updateCurrMonitor(loadedTabObj.loadedFile);
+									if (loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
+										parent.getCurrentTabEditor().changeMonManager.updateCurrMonitor(loadedTabObj.loadedFile);
+									}
 								}else {
 									parent.getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
 								}
@@ -1708,9 +1709,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 								parent.footerPanel.lblCurrentFile.setText(loadedTabObj.loadedFile.getName());
 								parent.footerPanel.lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
 								textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
-								currentConfiguration.getFileOpt().setLastDstFolderPath(
-										loadedTabObj.loadedFile.getParentFile().getAbsolutePath());
-								parent.getCurrentTabEditor().changeMonManager.updateCurrMonitor(loadedTabObj.loadedFile);
+								currentConfiguration.getFileOpt().setLastDstFolderPath(loadedTabObj.loadedFile.getParentFile().getAbsolutePath());
 							} else {
 								skipRefresh = true;
 								textEditorUtils.errorAdvice("[Error Saving selected file]");
@@ -1736,17 +1735,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnCloseAllTabs.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int askIfUnsaved = dialogHelper.yesNoOrCanc("Do you want to be asked if any file is changed or unsaved?", "Close All Tabs");
-				
-				if(askIfUnsaved == JOptionPane.CANCEL_OPTION)
-					return;
-				
-				if(askIfUnsaved == JOptionPane.OK_OPTION) {
-					parent.getCurrentTabEditor().removeAllTabs(true);
-				
-				}else if(askIfUnsaved == JOptionPane.NO_OPTION){
-					parent.getCurrentTabEditor().removeAllTabs(false);
-				}
+				startCloseAllTabsProcedure();
 			}
 		});
 
@@ -1769,7 +1758,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 				if (!parent.getCurrentTabEditor().alreadyLoading) {
 
-					File source = GenericFileChooser.fileRead(parent);
+					File source = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(parent);
 
 					parent.getCurrentTabEditor().loadFile(source);
 				}
@@ -1784,6 +1773,26 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				parent.getCurrentTabEditor().addTab(null, false);
 			}
 		});
+	}
+	
+	/**
+	 * Close all tabs asking to user dinamically, if cancel is pressed false will be returned
+	 * @return
+	 */
+	public boolean startCloseAllTabsProcedure() {
+		int askIfUnsaved = dialogHelper.yesNoOrCanc("Do you want to be asked if any file is changed or unsaved?", "Close All Tabs");
+		
+		if(askIfUnsaved == JOptionPane.CANCEL_OPTION)
+			return false;
+		
+		if(askIfUnsaved == JOptionPane.OK_OPTION) {
+			parent.getCurrentTabEditor().removeAllTabs(true);
+		
+		}else if(askIfUnsaved == JOptionPane.NO_OPTION){
+			parent.getCurrentTabEditor().removeAllTabs(false);
+		}
+		
+		return true;
 	}
 	
 	private Vector<ThemesWrapper> initComboStyleScheme() {

@@ -21,6 +21,8 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.fife.rsta.ui.search.FindDialog;
+import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.Gutter;
 
@@ -755,7 +757,15 @@ public class TextEditorUtils {
 		} else {
 			txtArea.setHighlightCurrentLine(true);
 			txtOpt.setSelectedTheme(theme.path);
-			RsyntaxUtils.changeStyleViaThemeXml(txtArea, theme.path);
+			
+			boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null && GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(theme.name);
+			if (usePreloadedStringXml) {
+				// If available use lazy initialized in memory
+				RsyntaxUtils.changeStyleViaThemeXmlString(txtArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(theme.name));
+			}else {
+				// if not available read from file
+				RsyntaxUtils.changeStyleViaThemeXml(txtArea, theme.path);
+			}
 		}
 		// loadedTabObj.textArea.revalidate();
 		txtArea.repaint();
@@ -810,17 +820,30 @@ public class TextEditorUtils {
 		logger.info("applyFileFormatFromCombo - FINISH - " + selected.syntax);
 	}
 
-	/** updates textArea reference in search/replace panels **/
+	/** updates textArea reference in search/replace panels and other that must be in sync with current text area **/
 	public void refreshTxtAreaReference() {
 
 		if (currentTextEditor.subHeaderPanel.escapeReplacerPanel != null) {
-			currentTextEditor.subHeaderPanel.escapeReplacerPanel.outputTextArea = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
+			currentTextEditor.subHeaderPanel.escapeReplacerPanel.outputTextArea = getDialogManager().getTargetTextArea();
 		}
+
+		if (currentTextEditor.subHeaderPanel.templatesPanel != null) {
+			currentTextEditor.subHeaderPanel.templatesPanel.outputTextArea = getDialogManager().getTargetTextArea();
+		}
+		
+		FindDialog searchBox = currentTextEditor.subHeaderPanel.searchBox;
+		ReplaceDialog replaceBox = currentTextEditor.subHeaderPanel.replaceDialog;
+		if (searchBox != null && replaceBox != null) {
+			currentTextEditor.textEditorUtils.textAreaDialogs.allineateFindToReplaceDialog(searchBox, replaceBox);
+			currentTextEditor.textEditorUtils.textAreaDialogs.allineateReplaceToFindDialog(searchBox, replaceBox);
+		}
+		
 		if (currentTextEditor.subHeaderPanel.pdfParserBox != null) {
-			currentTextEditor.subHeaderPanel.pdfParserBox.outputTEXTarea = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
+			currentTextEditor.subHeaderPanel.pdfParserBox.outputTEXTarea = getDialogManager().getTargetTextArea();
 		}
+		
 		if (currentTextEditor.subHeaderPanel.imageParserBox != null) {
-			currentTextEditor.subHeaderPanel.imageParserBox.outputTEXTarea = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea;
+			currentTextEditor.subHeaderPanel.imageParserBox.outputTEXTarea = getDialogManager().getTargetTextArea();
 		}
 	}
 

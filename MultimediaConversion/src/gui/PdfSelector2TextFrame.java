@@ -14,7 +14,7 @@ import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
 
 import conversion.ImageToTextExtractor;
-import dialogutils.GenericFileChooser;
+import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import resources.GeneralConfig;
@@ -42,7 +42,8 @@ import javax.swing.JButton;
 import java.awt.Font;
 
 public class PdfSelector2TextFrame extends JFrame{
-	
+	private static final long serialVersionUID = 1165410307763162121L;
+
 	// GraphicPreferencesFrame logger
 	static Logger logger = Logger.getLogger(PdfSelector2TextFrame.class); 
 	
@@ -72,6 +73,7 @@ public class PdfSelector2TextFrame extends JFrame{
 	private SwingController controllerPdf;
 	
 	JOptionHelper dialogHelper;
+	GenericFileChooserDialog fileDialogHelper;
 	
 	public PdfSelector2TextFrame(JFrame parentRootFrame, JTextArea outputTxtArea, String title) {
 		getContentPane().setBackground(Color.LIGHT_GRAY);
@@ -158,7 +160,7 @@ public class PdfSelector2TextFrame extends JFrame{
 		// LOAD AND DISPLAY IMAGE
 		btnLoadImage.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
-				final File selected = GenericFileChooser.fileRead(thisFrame);
+				final File selected = fileDialogHelper.fileRead(thisFrame);
 				if(selected != null && selected.exists()) {
 					final Cursor backup = imageContainerPanel.getCursor();
 					imageContainerPanel.setCursor(GuiUtils.CURSOR_WAIT);
@@ -190,7 +192,7 @@ public class PdfSelector2TextFrame extends JFrame{
 				txtAreaParsedText.setCursor(GuiUtils.CURSOR_WAIT);
 				btnParseImage.setEnabled(false);
 				
-				SwingWorker worker = new SwingWorker<Boolean, Void>() {
+				SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
 					@Override
 				    public Boolean doInBackground() {
 						boolean result = true;

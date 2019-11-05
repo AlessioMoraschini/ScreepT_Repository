@@ -293,7 +293,14 @@ public class ChargeIniLog extends JPanel{
 	}
 	
 	public void applyTextAreaStyle(){
-		RsyntaxUtils.changeStyleViaThemeXml(textArea, Themes.DARK.defaultPath);
+		boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null && GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(Themes.DARK.fileName);
+		if (usePreloadedStringXml) {
+			// If available use lazy initialized in memory
+			RsyntaxUtils.changeStyleViaThemeXmlString(textArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(Themes.DARK.fileName));
+		}else {
+			// if not available read from file
+			RsyntaxUtils.changeStyleViaThemeXml(textArea, Themes.DARK.defaultPath);
+		}
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_INI);
 		textArea.setLineWrap(true);
 		textArea.setEnabled(false);

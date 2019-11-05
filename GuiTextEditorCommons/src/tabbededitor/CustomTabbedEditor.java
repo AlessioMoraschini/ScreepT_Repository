@@ -92,15 +92,18 @@ public class CustomTabbedEditor {
 	public ChangeDTO changesHistory;
 	public IChangeMonManager changeMonManager;
 	
+	public Component parent;
+	
 /////////////////////////////////// CONSTRUCTOR ///////////////////////////////////
 	
-	public CustomTabbedEditor(INItializer configuration, ITabbedEditorOwner tabEditorManager) {
+	public CustomTabbedEditor(Component parent, INItializer configuration, ITabbedEditorOwner tabEditorManager) {
+		this.parent = parent;
 		this.tabEditorManager = tabEditorManager;
 		this.newFileStringTarget = tabEditorManager.getNewFileStringTarget();
 		this.currentConfiguration = (configuration != null)? configuration : new INItializer();
 		this.loadedList = new LimitedConcurrentList<TabTextEditorObj>(Integer.MAX_VALUE);
 		this.navigationHistory = new LimitedConcurrentList<HistoryNode>(GeneralConfig.MAX_HISTORY_SIZE);
-		this.dialogHelper = new JOptionHelper(mainTabList);
+		this.dialogHelper = new JOptionHelper(parent);
 		this.changesHistory = new ChangeDTO();
 		this.changeMonManager = new ChangeMonitorManager(this);
 		
@@ -149,8 +152,8 @@ public class CustomTabbedEditor {
 						});
 					}
 					
+					changeMonManager.checkChanges();
 					
-
 					alreadyrefreshing = false;
 				}
 			}
@@ -372,16 +375,14 @@ public class CustomTabbedEditor {
 
 			loadedTabObj.textArea.addMouseWheelListener(tabEditorManager.getMouseWheelTabbedAreaListener());
 			loadedTabObj.unsaved = false;
-			changeMonManager.updateCurrMonitor(file);
+			if (file != null && file.exists()) {
+				changeMonManager.updateCurrMonitor(file);
+			}
 			addToHystory(loadedTabObj);
 			
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
-					applyStyleToTabs();
-					loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
-				}
-			});
+			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
+			applyStyleToTabs();
+			loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
 			
 		} catch (Exception e) {
 			logger.error(e);
@@ -541,8 +542,6 @@ public class CustomTabbedEditor {
 		} catch (Exception e) {
 			logger.error("Cannot go to previous tab!", e);
 		}
-		
-		changeMonManager.checkChanges();
 	}
 
 	public void goToNextTab() {
@@ -555,8 +554,6 @@ public class CustomTabbedEditor {
 		} catch (Exception e) {
 			logger.error("Cannot go to next tab!", e);
 		}
-		
-		changeMonManager.checkChanges();
 	}
 
 	public void closeCurrentTab() {
@@ -599,7 +596,7 @@ public class CustomTabbedEditor {
 	
 	public JPanel getCustomClosableTab(String title, int index) {
 		String tooltip = "";
-		JScrollPane i_component = loadedList.getList().get(index).currentScrollPane;
+		final JScrollPane i_component = loadedList.getList().get(index).currentScrollPane;
 
 		if (loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
 			tooltip = loadedTabObj.loadedFile.getAbsolutePath();
@@ -617,10 +614,14 @@ public class CustomTabbedEditor {
 		
 		customTab.addMouseListener(new MouseListener() {
 			public void mouseReleased(MouseEvent e) {
-				mainTabList.setSelectedComponent(i_component);
-				changeMonManager.checkChanges();
 			}
 			public void mousePressed(MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						mainTabList.setSelectedComponent(i_component);
+//						changeMonManager.checkChanges(); -> fix : already checked in main tab list listener
+					}
+				});
 			}
 
 			public void mouseExited(MouseEvent e) {

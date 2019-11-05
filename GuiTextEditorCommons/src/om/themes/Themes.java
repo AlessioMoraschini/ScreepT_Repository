@@ -7,19 +7,23 @@ import java.util.Vector;
 
 import resources.GeneralConfig;
 
-public enum Themes {DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml"),
-					DEFAULT(GeneralConfig.THEMES_FOLDER_DEFAULT + "default.xml"),
-					DEFAULT_V2(GeneralConfig.THEMES_FOLDER_DEFAULT + "default-alt.xml"),
-					ECLIPSE(GeneralConfig.THEMES_FOLDER_DEFAULT + "eclipse.xml"),
-					IDEA(GeneralConfig.THEMES_FOLDER_DEFAULT + "idea.xml"),
-					MONOKAI(GeneralConfig.THEMES_FOLDER_DEFAULT + "monokai.xml"),
-					THEMEVS(GeneralConfig.THEMES_FOLDER_DEFAULT + "vs.xml"),
-					NONE("NO_STYLE");
+public enum Themes {DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml", "dark.xml", "/org/fife/ui/rsyntaxtextarea/themes/dark.xml"),
+					DEFAULT(GeneralConfig.THEMES_FOLDER_DEFAULT + "default.xml", "default.xml", "/org/fife/ui/rsyntaxtextarea/themes/default.xml"),
+					DEFAULT_V2(GeneralConfig.THEMES_FOLDER_DEFAULT + "default-alt.xml", "default-alt.xml", "/org/fife/ui/rsyntaxtextarea/themes/default-alt.xml"),
+					ECLIPSE(GeneralConfig.THEMES_FOLDER_DEFAULT + "eclipse.xml", "eclipse.xml", "/org/fife/ui/rsyntaxtextarea/themes/eclipse.xml"),
+					IDEA(GeneralConfig.THEMES_FOLDER_DEFAULT + "idea.xml", "idea.xml", "/org/fife/ui/rsyntaxtextarea/themes/idea.xml"),
+					MONOKAI(GeneralConfig.THEMES_FOLDER_DEFAULT + "monokai.xml", "monokai.xml", "/org/fife/ui/rsyntaxtextarea/themes/monokai.xml"),
+					THEMEVS(GeneralConfig.THEMES_FOLDER_DEFAULT + "vs.xml", "vs.xml", "/org/fife/ui/rsyntaxtextarea/themes/vs.xml"),
+					NONE("NO_STYLE", "", "");
 	
 	public String defaultPath;
+	public String defaultClassPath;
+	public String fileName;
 	
-	private Themes(String path) {
+	private Themes(String path, String fileName, String classPath) {
 		this.defaultPath = path;
+		this.fileName = fileName;
+		this.defaultClassPath = classPath;
 	}
 	
 	public static Vector<String> getStringValuesPath() {

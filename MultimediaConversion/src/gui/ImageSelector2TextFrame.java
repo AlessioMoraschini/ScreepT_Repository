@@ -11,7 +11,7 @@ import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 
 import conversion.ImageToTextExtractor;
-import dialogutils.GenericFileChooser;
+import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import media.ImageGeneralWorker;
@@ -42,7 +42,8 @@ import java.awt.Font;
 import java.awt.Image;
 
 public class ImageSelector2TextFrame extends JFrame{
-	
+	private static final long serialVersionUID = -3553414020339319808L;
+
 	// GraphicPreferencesFrame logger
 	static Logger logger = Logger.getLogger(ImageSelector2TextFrame.class); 
 	
@@ -72,6 +73,7 @@ public class ImageSelector2TextFrame extends JFrame{
 	public ImageToTextExtractor imageExtractor;
 	
 	JOptionHelper dialogHelper;
+	GenericFileChooserDialog fileDialogHelper;
 
 	
 	public ImageSelector2TextFrame(JFrame parentRootFrame, JTextArea outputTxtArea, String title) {
@@ -80,6 +82,7 @@ public class ImageSelector2TextFrame extends JFrame{
 		active = true;
 		
 		dialogHelper = new JOptionHelper(this);
+		fileDialogHelper = new GenericFileChooserDialog(null);
 		
 		imageExtractor = new ImageToTextExtractor();
 		mainFrameParent = parentRootFrame;
@@ -162,7 +165,7 @@ public class ImageSelector2TextFrame extends JFrame{
 		// LOAD AND DISPLAY IMAGE
 		btnLoadImage.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
-				final File selected = GenericFileChooser.fileImgRead(thisFrame);
+				final File selected = fileDialogHelper.fileImgRead(thisFrame);
 				if(selected != null && selected.exists()) {
 					final Cursor backup = imageContainerPanel.getCursor();
 					imageContainerPanel.setCursor(GuiUtils.CURSOR_WAIT);
@@ -194,7 +197,7 @@ public class ImageSelector2TextFrame extends JFrame{
 				txtAreaParsedText.setCursor(GuiUtils.CURSOR_WAIT);
 				btnParseImage.setEnabled(false);
 				
-				SwingWorker worker = new SwingWorker<Boolean, Void>() {
+				SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
 					@Override
 				    public Boolean doInBackground() {
 						boolean result = true;

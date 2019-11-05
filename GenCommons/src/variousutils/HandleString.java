@@ -2,7 +2,11 @@ package variousutils;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -14,17 +18,26 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import media.color.HslColor;
+import resources.GeneralConfig;
 
+@SuppressWarnings("deprecation")
 public class HandleString {
 
 	public static final String UNPRINTABLE_ESCAPES = "[^\\x20-\\x7e]";
 
 	// this array contains all char that trigger uppercase next char
-	private static char [] upperCaseSignalList = {'.', '<', '>'};
 	String currentString;	
 	
 	public HandleString(String input) {
 		currentString = new String(input);
+	}
+	
+	public static InputStream stringToInputStream(String src) throws IOException {
+        
+		byte[] sourceBytes = src.getBytes(Charset.forName(System.getProperty("file.encoding")));
+        InputStream inputStream = new ByteArrayInputStream(sourceBytes);
+        
+        return inputStream;
 	}
 	
 	public static String fitToMaxLentgh(String source, int lim) {
@@ -258,27 +271,31 @@ public class HandleString {
 		String result="";
 		// first letter lowercase
 		boolean flagNewUp = false; 
+		boolean firstChanged = false;
 		
 		// for every char in string if flag is true makeLower case, else add the same original char
 		for(int i=0; i<source.length(); i++) {
 			char character_i = source.charAt(i);
-			if (flagNewUp==true) {
+			if(!firstChanged && Character.isAlphabetic(character_i)) {
+				// First alphabetic letter is always changed
 				result+=String.valueOf(character_i).toLowerCase();
-				// space and still to uppercase handler
-				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='�'||character_i=='�')) {
+				firstChanged = true;
+				
+			}else if (flagNewUp==true) {
+				result+=String.valueOf(character_i).toLowerCase();
+				// space and still to lowercase handler
+				if(!(character_i == ' ') && !(GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i)))) {
 					flagNewUp=false;
 				}		
-			}
-			else {
+			} else {
 				result+=String.valueOf(character_i);
 			}
-			
+				
 			// finally update flag according to char value il blacklist
-			if (character_i==trigger || character_i=='?' || character_i=='!'){
+			if (character_i==trigger || GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i))){
 				flagNewUp=true;
 			}
 		}
-		
 		return result;
 	}
 	
@@ -286,23 +303,30 @@ public class HandleString {
 		String result="";
 		// first letter uppercase
 		boolean flagNewUp = false; 
+		boolean firstChanged = false;
 		
 		// for every char in string if flag is true makeUpper case, else add the same original char
 		for(int i=0; i<source.length(); i++) {
 			char character_i = source.charAt(i);
-			if (flagNewUp==true) {
+			
+			if(!firstChanged && Character.isAlphabetic(character_i)) {
+				// First alphabetic letter is always changed
+				result+=String.valueOf(character_i).toUpperCase();
+				firstChanged = true;
+				
+			} else if (flagNewUp==true) {
 				result+=String.valueOf(character_i).toUpperCase();
 				// space and still to uppercase handler
-				if(!(character_i==' '||character_i=='<'||character_i=='>'||character_i=='!'||character_i=='?')) {
+				if(!(character_i == ' ') && !(GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i)))) {
 					flagNewUp=false;
 				}		
-			}
-			else {
+				
+			} else {
 				result+=String.valueOf(character_i);
 			}
 			
 			// finally update flag according to char value il blacklist
-			if (character_i==trigger || character_i=='?' || character_i=='!'){
+			if (character_i==trigger || GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i))){
 				flagNewUp=true;
 			}
 		}

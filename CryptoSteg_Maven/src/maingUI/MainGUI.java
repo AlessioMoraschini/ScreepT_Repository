@@ -34,7 +34,7 @@ import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
 import amfileutils.filechangewatcher.ChangeDTO;
-import dialogutils.GenericFileChooser;
+import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
 import dialogutils.TestUpdateProgress;
 import frameutils.utils.ComponentResizer;
@@ -1471,7 +1471,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			}
 		} 
 		
-		Boolean choiceY = GenericFileChooser.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", frmScryptV, askCondition);
+		Boolean choiceY = GenericFileChooserDialog.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", frmScryptV, askCondition);
 		if(choiceY == null) {
 			// cancel -> don't exit
 			return false;
@@ -1482,6 +1482,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 				logger.error(e);
 				int choiceError = JOptionPane.showConfirmDialog(null, "Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?");
 				if(!(choiceError == JOptionPane.OK_OPTION)) {
+					dialogHelper.error("Exit procedure arrested", "Close procedure stopped");
 					mntmTextEditor.doClick();
 					return false; // no -> don't exit after error
 				}

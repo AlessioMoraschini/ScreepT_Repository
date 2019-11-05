@@ -3,14 +3,17 @@ package resources;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.TreeMap;
-
-import org.apache.commons.lang.StringUtils;
 
 import resources.om.FilePojo;
 
@@ -139,6 +142,7 @@ public class GeneralConfig {
 	public static final Dimension FILE_CHOOSER_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "FILE_CHOOSER_SIZE_STR", DEFAULT_FILE_CHOOSER_SIZE);
 	
 	// TEXT EDITOR DEFAULTS
+	public static final ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS = getUppercaseSeparators(resourcesFilePathsMappings.getProperty("TXT_EDITOR_UPPERCASE_SEPARATORS"), ",");
 	public static final int DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
 	public static final int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);
 	public static final int MAX_WORKSPACE_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_WORKSPACE_LIST_SIZE", 15);
@@ -152,15 +156,25 @@ public class GeneralConfig {
 	public static Font TXT_EDITOR_CLIPBOARD_FONT =  resourcesFilePathsMappings.getFontFromString("TXT_EDITOR_CLIPBOARD_FONT", TXT_EDITOR_CLIPBOARD_FONT_DEFAULT);
 	
 	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
-	@Deprecated
-	public static final String CLIPBOARD_PANEL_PREFIX = "Clipboard ";
+
 	public static final String CLIPBOARD_PANEL_DEFAULT = "Clipboard.txt";
+	/**
+	 * Lazy initialized map with clipboards names related to clipboard files
+	 */
 	public static final TreeMap<String, File> CLIPBOARD_PANEL_MAP = getRefreshedClipBoardsMap();
+	/**
+	 * Contains String themes name, and source theme file, lazy initialized
+	 */
+	public static final TreeMap<String, File> XML_THEMES_MAP = getRefreshedThemesMap();
+	/**
+	 * Contains String themes name, and theme content lazy read
+	 */
+	public static final TreeMap<String, String> XML_THEMES_CONTENT_MAP = getRefreshedThemesContentMap();
 	
 	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(18, 18);
-	public static final Font BUTTON_DEFAULT_FONT =  new Font("Segoe UI", Font.BOLD, 12);
-	public static final Font BUTTON_TAB_HEAD_FONT =  new Font("Segoe UI", Font.PLAIN, 14);
-	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
+	public static final Font BUTTON_DEFAULT_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_DEFAULT_FONT", new Font("Segoe UI", Font.BOLD, 12));
+	public static final Font BUTTON_TAB_HEAD_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_TAB_HEAD_FONT", new Font("Segoe UI", Font.PLAIN, 14));
+	public static final Font DEFAULT_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_FONT", new Font("Segoe UI", Font.PLAIN, 16));
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
 	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
 	public static final int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
@@ -200,6 +214,10 @@ public class GeneralConfig {
 		return providers;
 	}
 	
+	/**
+	 * It's preferable to use lazy initialized CLIPBOARD_PANEL_MAP when possible
+	 * @return
+	 */
     public static File[] getClipboardsFiles(){
     	File[] clipboards = new File(CLIBPOARDS_PANEL_SRC_FOLDER).listFiles(new FilenameFilter() {
 			
@@ -218,30 +236,59 @@ public class GeneralConfig {
     	return clipboards;
     }
     
-    @Deprecated
-    public static TreeMap<String, File>  getMapFromCommaSeparatedFiles(String src) {
-    	TreeMap<String, File> map = new TreeMap<String, File>();
-    	src = StringUtils.trimToEmpty(src);
-    	String[] commaSep = src.split(",");
-    	int i = 0;
-    	for(String curr : commaSep) {
-    		curr = PANEL_FILES_FOLDER + curr;
-    		map.put(CLIPBOARD_PANEL_PREFIX+i, new File(curr));
-    		++i;
-    	}
-    	return map;
-    }
-    
-    
     public static TreeMap<String, File> getRefreshedClipBoardsMap(){
     	return FilePojo.mapFilesFromDir(new File(CLIBPOARDS_PANEL_SRC_FOLDER));
     }
-    
-    public static boolean presentInClipboardMap(String key) {
-    	if(CLIPBOARD_PANEL_MAP.containsKey(key)) {
-    		return true;
+
+    /**
+     * It's preferable to use lazy initialized XML_THEME_MAP when possible
+     * @return
+     */
+    public static TreeMap<String, File> getRefreshedThemesMap(){
+    	TreeMap<String, File> customThemes = FilePojo.mapFilesFromDir(new File(THEMES_FOLDER_CUSTOM));
+    	TreeMap<String, File> defaultThemes = FilePojo.mapFilesFromDir(new File(THEMES_FOLDER_DEFAULT));
+    	for(String currKey : customThemes.keySet()) {
+    		String currKeyCopy = new String(currKey);
+    		int i = 1;
+    		while(defaultThemes.containsKey(currKeyCopy)) {
+    			currKeyCopy = insertNumberBeforeExtension(currKey, i);
+    			i++;
+    		}
+    		defaultThemes.put(currKey, customThemes.get(currKey));
     	}
-    	return false;
+    	
+    	return defaultThemes;
+    }
+    
+    /**
+     * Return a string with String keys(style scheme name) associated to String scheme file content (String file read)
+     * 
+     * It's preferable to use lazy initialized XML_THEME_CONTENT_MAP when possible
+     */
+    public static TreeMap<String, String> getRefreshedThemesContentMap(){
+    	TreeMap<String, String> customThemeContents = new TreeMap<String, String>();
+    	TreeMap<String, File> fileMap = new TreeMap<String, File>();
+    	File current;
+    	String currentRead = ""
+    			;
+    	if(XML_THEMES_MAP != null && XML_THEMES_MAP.size() > 0) {
+    		fileMap = XML_THEMES_MAP;
+    	}else {
+    		fileMap = getRefreshedThemesMap();
+    	}
+    	
+    	for(String themeId : fileMap.keySet()) {
+    		current = fileMap.get(themeId);
+    		if(current != null) {
+    			try {
+					currentRead = readFileAsString(current);
+					customThemeContents.put(themeId, currentRead);
+				} catch (Exception e) {
+				}
+    		}
+    	}
+    	
+    	return customThemeContents;
     }
     
     /**
@@ -259,4 +306,79 @@ public class GeneralConfig {
 			return false;
 		}
     }
+    
+    /**
+     * Converts given raw string with separator String, to a list of elements that were separated by such separator
+     * @param rawList
+     * @param separator
+     * @return
+     */
+	private static ArrayList<String> getUppercaseSeparators(String rawList, String separator) {
+		ArrayList<String> result = new ArrayList<String>();
+		String[] elements = rawList.split(separator);
+		result.addAll(Arrays.asList(elements));
+		
+		return result;
+	}
+    
+	/**
+	 * This is a fork from FileStuff - Copied to avoid dependency cycles
+	 * This method read from a file and give a String representation of content
+	 * @param toRead the source file to read
+	 * @return
+	 * @throws IOException
+	 */
+    private static String readFileAsString(File toRead) throws IOException {
+		if(toRead == null || !toRead.exists()) {
+			throw new IOException();
+		}
+		StringBuilder builder = new StringBuilder(100000);
+		FileInputStream readerStream = new FileInputStream(toRead);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
+		try {
+			String line = reader.readLine();
+			builder.append(line);
+			line = reader.readLine();
+			
+			while (line != null) {
+				builder.append("\n").append(line);
+				line = reader.readLine();
+			}
+		} catch (IOException e) {
+			throw e;
+		}finally {
+			reader.close();			
+		}
+		
+		return builder.toString();
+	}
+	
+	/**
+	 *  * This is a fork from FileStuff - Copied to avoid dependency cycles
+	 * @param fileName
+	 * @param n
+	 * @return
+	 */
+	private static String insertNumberBeforeExtension(String fileName, int n) {
+
+		String extension = "";
+		String name = "";
+
+		int idxOfDot = fileName.lastIndexOf('.');   //Get the last index of . to separate extension
+		if(idxOfDot>=0) {
+			extension = fileName.substring(idxOfDot + 1);
+			name = fileName.substring(0, idxOfDot);
+		}else {
+			name = fileName;
+		}		
+		
+		// if already with parentesis number
+		if(name.substring(name.length()-1, name.length()).equals(")")) {
+			idxOfDot = fileName.lastIndexOf('(');
+			name = fileName.substring(0, idxOfDot);
+		}
+	    fileName = name+"("+n+")."+extension;
+		
+		return fileName;
+	}
 }

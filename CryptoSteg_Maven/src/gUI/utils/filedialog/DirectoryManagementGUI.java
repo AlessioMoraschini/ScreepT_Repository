@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import amfileutils.om.DeleteFilesByExtensionDTO;
 import dialogutils.JOptionHelper;
+import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 
 public class DirectoryManagementGUI {
@@ -91,7 +92,7 @@ public class DirectoryManagementGUI {
 	public static void deleteContentOfDir(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		File selected = GenericFileChooserDialog.directoRead(parent, currentConf, "Delete All content of directory");
+		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete All content of directory");
 		if (selected!=null) {
 			boolean res = FileStuff.deleteDirContentRecursive(selected);
 			if (res) {
@@ -107,7 +108,7 @@ public class DirectoryManagementGUI {
 	public static void deleteDirContentFiles(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		File selected = GenericFileChooserDialog.directoRead(parent, currentConf, "Delete All directory's content (Files only)");
+		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete All directory's content (Files only)");
 		if (selected != null) {
 			boolean res = FileStuff.emptyDirContentFolderOnly(selected);
 			if (res) {
@@ -123,7 +124,7 @@ public class DirectoryManagementGUI {
 	public static void deleteContentOfDirByExt(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		File selected = GenericFileChooserDialog.directoRead(parent, currentConf, "Delete directory content by Extension");
+		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete directory content by Extension");
 		DeleteFilesByExtensionDTO response;
 		String notFoundExtensions = "";
 
@@ -149,9 +150,9 @@ public class DirectoryManagementGUI {
 	public static void copyDirStructure(JFrame parent,INItializer currentConf) {
 		JOptionHelper dialog = new JOptionHelper(parent);
 
-		File selected = GenericFileChooserDialog.directoRead(parent, currentConf, "Copy Directory structure");
+		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Copy Directory structure");
 		if (selected != null) {
-			File destination = GenericFileChooserDialog.directoWrite(parent, currentConf);
+			File destination = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parent);
 			if (destination != null) {
 				boolean res = false;
 				try {

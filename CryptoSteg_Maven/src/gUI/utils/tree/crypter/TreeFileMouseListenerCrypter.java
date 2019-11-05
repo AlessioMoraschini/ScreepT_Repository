@@ -48,7 +48,6 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	
 	// gui elements
 	private JTextArea TEXT_LOG = new JTextArea();
-	private JTextArea TEXT_MAIN = new JTextArea();
 	private JFrame mainFrame;
 	private INItializer currentConfig;
 	private JPanel imgKeyPanel;
@@ -72,7 +71,6 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 		currentConfig = currentConf;
 		mainFrame = cryptPanel.getParentFrame();
 		TEXT_LOG = cryptPanel.getTextAreaLog();
-		TEXT_MAIN = cryptPanel.getTextAreaMain();
 		tree = cryptPanel.getTree();
 		tree.setComponentPopupMenu(getPopUpMenu());
 		tree.addMouseListener(getMouseListener());

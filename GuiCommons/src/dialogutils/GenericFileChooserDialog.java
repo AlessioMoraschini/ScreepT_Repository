@@ -1,5 +1,6 @@
-package gUI.utils.filedialog;
+package dialogutils;
 
+import java.awt.Component;
 import java.io.File;
 import java.util.Arrays;
 
@@ -13,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
-import gUI.panels.CrypterPanel;
 import general.MyFileView;
 import mainobj.INItializer;
 import resources.GeneralConfig;
@@ -23,10 +23,20 @@ public class GenericFileChooserDialog {
 	public static String writerNames[] = ImageIO.getWriterFileSuffixes();
 	public static MyFileView fileView = new MyFileView();
 	
+	public INItializer currentConf;
+	
+	/**
+	 * Use null currentconfig if you don't need to automatically update last dst/src paths
+	 * @param currentConf
+	 */
+	public GenericFileChooserDialog(INItializer currentConf) {
+		this.currentConf = (currentConf == null)? new INItializer() : currentConf;
+	}
+	
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported images files),if nothing is selected returns null
 	 */
-	public static File fileImgRead(JFrame parent, INItializer currentConf) {
+	public File fileImgRead(JFrame parent) {
 
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input Image File");
@@ -55,12 +65,13 @@ public class GenericFileChooserDialog {
 	 * this method select a file from the user (only supported images files),if nothing is selected returns null
 	 * @throws UnsupportedDataTypeException if image type is not supported 
 	 */
-	public static File fileImgRead(CrypterPanel parent, INItializer currentConf, String ext) throws UnsupportedDataTypeException {
+	public File fileImgRead(JPanel parent, String ext) throws UnsupportedDataTypeException {
 
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input Image File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setFileView(fileView);
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		fileChooser.setFileFilter(new FileFilter() {
 			
@@ -76,7 +87,6 @@ public class GenericFileChooserDialog {
 				}else return false;
 			}
 		});
-		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
 		File correctFile = null;		
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -98,7 +108,7 @@ public class GenericFileChooserDialog {
 	 * JPANEL - every extension
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
-	public static File fileRead(JPanel parent, INItializer currentConf) {
+	public File fileRead(Component parent) {
 		
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input File");
@@ -124,37 +134,10 @@ public class GenericFileChooserDialog {
 	}
 	
 	/**
-	 * JPANEL - every extension
-	 * this method select a source file from the user,if nothing is selected returns null
-	 */
-	public static File fileRead(JPanel parent) {
-		
-		JFileChooser fileChooser = new JFileChooser();		
-		fileChooser.setDialogTitle("Select input File");
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fileChooser.setFileView(fileView);
-		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
-		File correctFile = null;
-		
-		int returnVal = fileChooser.showOpenDialog(parent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            
-        	File selectedFile = fileChooser.getSelectedFile();
-//        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
-        	if(selectedFile==null) {
-        		JOptionPane.showMessageDialog(parent, "Please select a file!", "File not selected", JOptionPane.ERROR_MESSAGE);
-        	}else {
-        		correctFile = selectedFile;
-        	}
-        }
-        return correctFile;
-	}
-	
-	/**
 	 * JCOMPONENT - every extension and every typer of source
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
-	public static File fileAndDirRead(JComponent parent, INItializer currentConf) {
+	public File fileAndDirRead(JComponent parent) {
 		
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input File or Directory");
@@ -183,12 +166,12 @@ public class GenericFileChooserDialog {
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
 	 */
-	public static File fileImgWrite(JFrame parent, INItializer currentConf, String defaultName) {
+	public File fileImgWrite(JFrame parent, String defaultName) {
 
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Save Image File");
 		fileChooser.setFileView(fileView);
-		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
 		fileChooser.setSelectedFile(new File(defaultName));
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -202,7 +185,7 @@ public class GenericFileChooserDialog {
         		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
-        		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
+        		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
         	}
         }else {
         	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
@@ -213,12 +196,12 @@ public class GenericFileChooserDialog {
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
 	 */
-	public static File fileWrite(JFrame parent, INItializer currentConf, String defaultName) {
+	public File fileWrite(JFrame parent, String defaultName) {
 
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setFileView(fileView);
-		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
 		fileChooser.setSelectedFile(new File(defaultName));
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -228,7 +211,7 @@ public class GenericFileChooserDialog {
             
         	File selectedFile = fileChooser.getSelectedFile();
     		correctFile = selectedFile;
-    		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
+    		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
         }else {
         	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
         }
@@ -238,7 +221,7 @@ public class GenericFileChooserDialog {
 	/**JFRAME - only directories src
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */
-	public static File directoRead(JFrame parent, INItializer currentConf) {
+	public File directoRead(JFrame parent) {
 		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Choose Input Directory");
@@ -265,7 +248,7 @@ public class GenericFileChooserDialog {
 	/**JFRAME - only directories src
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */
-	public static File directoRead(JFrame parent, INItializer currentConf, String title) {
+	public File directoRead(JFrame parent, String title) {
 		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle(title);
@@ -293,7 +276,7 @@ public class GenericFileChooserDialog {
 	 * this method select a directory from the user (only directories)to write a copy of current
 	 * folder, if nothing is selected returns null
 	 */
-	public static File directoWrite(JFrame parent, INItializer currentConf) {
+	public File directoWrite(JFrame parent) {
 		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -317,6 +300,32 @@ public class GenericFileChooserDialog {
         	}
         }
         return correctFile;
+	}
+	
+	/**
+	 * open dialog in parent JComponent, displaying msg
+	 * Check first precondition, if true ask to user else return false.
+	 * After, if OK executes actionOK.
+	 * 
+	 * @return if OK return true, NO return false, else return null if cancel is pressed or window closed
+	 */
+	public static Boolean askYorN(String title, String msg, Component parent, boolean precondition) {
+			int askSave = JOptionPane.CANCEL_OPTION;
+			
+			if (precondition) {
+				askSave = JOptionPane.showConfirmDialog(parent, msg, title, JOptionPane.YES_NO_CANCEL_OPTION);
+			}else {
+				return false;
+			}
+			
+			if(askSave == JOptionPane.OK_OPTION){
+				return true;
+				
+			}else if(askSave == JOptionPane.NO_OPTION) {
+				return false;
+			}
+			
+			return null;
 	}
 	
 }

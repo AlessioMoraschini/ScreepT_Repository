@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.SwingUtilities;
 
@@ -23,6 +24,7 @@ import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
 import media.ImageGeneralWorker;
 import resources.GeneralConfig;
+import variousutils.HandleString;
 
 public class RsyntaxUtils {
 	
@@ -46,6 +48,8 @@ public class RsyntaxUtils {
 	    * method is preferred because of its ease and modularity.
 	    */
 	   public static void changeStyleViaThemeXml(RSyntaxTextArea textArea, String themeFilePath) {
+		   long startTime = System.currentTimeMillis();
+		   logger.info("changeStyleViaThemeXml -> Starting import from xml file style definition...");
 		  FileInputStream inputStream = null;
 		  if(textArea == null) {
 			  return;
@@ -75,6 +79,37 @@ public class RsyntaxUtils {
 			}
 	         textArea.setFont(backup);
 	         textArea.revalidate();
+	         logger.info("changeStyleViaThemeXml (File) -> Style applied in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+	      }
+
+	   }
+	   
+	   /**
+	    * Changes the styles used by the editor via an XML String content specification. This
+	    * method is preferred when string is already read from file and cached in memory, it grants a faster process.
+	    */
+	   public static void changeStyleViaThemeXmlString(RSyntaxTextArea textArea, String sourceRawXml) {
+		   long startTime = System.currentTimeMillis();
+		   logger.info("changeStyleViaThemeXmlString -> Starting import from memory cached xml style...");
+		  InputStream inputStream = null;
+		  if(textArea == null || sourceRawXml == null || sourceRawXml.equals("")) {
+			  return;
+		  }
+		  Font backup = textArea.getFont();
+	      try {
+	    	  inputStream = HandleString.stringToInputStream(sourceRawXml);
+	    	  Theme theme = Theme.load(inputStream);
+	    	  theme.apply(textArea);
+	      } catch (Exception ioe) {
+	    	  logger.error("An error occurred during read, closing streams", ioe);
+	      } finally {
+	    	  try {
+	    		  inputStream.close();
+	    	  } catch (Exception e) {
+	    	  }
+	    	  textArea.setFont(backup);
+	    	  textArea.revalidate();
+	    	  logger.info("changeStyleViaThemeXmlString (Cached) -> Style applied in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	      }
 
 	   }
