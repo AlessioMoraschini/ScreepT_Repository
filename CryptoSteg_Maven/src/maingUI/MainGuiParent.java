@@ -160,7 +160,7 @@ public class MainGuiParent {
 		mnPreferences = new JMenu("Preferences");
 		mnCryptoSteg = new JMenu("ScreepT");
 		mnVarious = new JMenu("Various");
-			mnLastWorkspaces = new JMenu("Last selected workspaces");
+			mnLastWorkspaces = new JMenu("TextEditor: Last selected workspaces");
 			mnLastOpenedFile = new JMenu("TextEditor: Last opened files");
 			mnConversionsAndOther = new JMenu("Conversions and Media");
 			mnFilesAndDirectories = new JMenu("Files And Directories");

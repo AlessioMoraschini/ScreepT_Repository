@@ -220,7 +220,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		DEFAULT_FORE_COL = currentConfiguration.getTextEditorOpt().foreCol;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("fill, insets 0, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:25px,grow][:0px:25px,grow]"));
+		setLayout(new MigLayout("fill, insets 0, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][35px:50px:60px][75px:75px:75px][35px:35px:35px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:25px,grow][:0px:25px,grow]"));
 		
 		btnCloseAllTabs = new JButton("");
 		btnCloseAllTabs.setForeground(Color.BLACK);
@@ -399,13 +399,15 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		lblMargin = new JLabel("Margin:");
 		lblMargin.setMinimumSize(new Dimension(40, 12));
 		lblMargin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMargin.setForeground(SystemColor.menu);
+		lblMargin.setForeground(Color.LIGHT_GRAY);
+		lblMargin.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		add(lblMargin, "cell 33 0,alignx center");
+		add(lblMargin, "cell 33 0,alignx right,aligny center");
 
 		lBLMargin = new JLabel("12");
 		lBLMargin.setMinimumSize(new Dimension(14, 12));
 		lBLMargin.setForeground(Color.WHITE);
+		lBLMargin.setFont(new Font("SansSerif", Font.BOLD, 13));
 		add(lBLMargin, "cell 34 0,alignx center");
 
 		btnToggleFileView = new JToggleButton("");
@@ -434,7 +436,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		chckbxLockLanguage.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxLockLanguage.setIconTextGap(1);
 		chckbxLockLanguage.setForeground(Color.WHITE);
-		chckbxLockLanguage.setFont(new Font("SansSerif", Font.BOLD, 12));
+		chckbxLockLanguage.setFont(new Font("SansSerif", Font.BOLD, 13));
 		add(chckbxLockLanguage, "cell 7 1 2 1,alignx center,aligny center");
 
 		comboStylesScheme = new JComboBox<ThemesWrapper>();
@@ -522,6 +524,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		add(btnGoToLine, "cell 26 0,growy");
 						
 		chckbxShowTabGrid = new JCheckBox("Show tab grid");
+		chckbxShowTabGrid.setFont(new Font("SansSerif", Font.BOLD, 13));
 		chckbxShowTabGrid.setHorizontalAlignment(SwingConstants.LEFT);
 		chckbxShowTabGrid.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxShowTabGrid.setToolTipText(TextEditorTooltips.tooltipShowTabGrid);
@@ -531,12 +534,13 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		add(chckbxShowTabGrid, "cell 31 1 2 1");
 				
 		lblFontSize = new JLabel("Font size: ");
+		lblFontSize.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFontSize.setForeground(SystemColor.menu);
-		add(lblFontSize, "cell 33 1,alignx center");
+		lblFontSize.setForeground(Color.LIGHT_GRAY);
+		add(lblFontSize, "cell 33 1,alignx right,aligny center");
 		
 		lblSIZE = new JLabel("");
-		lblSIZE.setFont(new Font("SansSerif", Font.PLAIN, 10));
+		lblSIZE.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblSIZE.setForeground(SystemColor.window);
 		add(lblSIZE, "cell 34 1,alignx center");
 		lblSIZE.setText(String.valueOf(GeneralConfig.DEFAULT_FONT.getSize()) + " Px");
@@ -1815,14 +1819,13 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				comboStylesScheme.setSelectedItem(ThemesWrapper.getFromListByPath(txtOptions.selectedTheme, themeList));
 				slider_margin.setValue(txtOptions.getMargin());
 				sliderFontSize.setValue(txtOptions.getFont().getSize());
 				// AUTO LANGUAGE SYNC
 				chckbxLockLanguage.setSelected(!txtOptions.defaultAutoSyntaxSync);
 				
 				if (refreshTheme) {
-					textEditorUtils.applySelectedTheme(); // SetSelected does not trigger action itself
+					comboStylesScheme.setSelectedItem(ThemesWrapper.getFromListByPath(txtOptions.selectedTheme, themeList));
 				}
 				
 				textEditorUtils.updateMargin(); // SetValue does not trigger action itself

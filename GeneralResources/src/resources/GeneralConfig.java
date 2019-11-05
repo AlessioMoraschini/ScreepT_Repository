@@ -142,6 +142,7 @@ public class GeneralConfig {
 	public static final Dimension FILE_CHOOSER_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "FILE_CHOOSER_SIZE_STR", DEFAULT_FILE_CHOOSER_SIZE);
 	
 	// TEXT EDITOR DEFAULTS
+	public static final int ADVICE_FOOTER_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("ADVICE_FOOTER_TIMEOUT", 7000);
 	public static final ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS = getUppercaseSeparators(resourcesFilePathsMappings.getProperty("TXT_EDITOR_UPPERCASE_SEPARATORS"), ",");
 	public static final int DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
 	public static final int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);

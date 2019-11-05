@@ -126,7 +126,7 @@ public class StartPanel extends JFrame{
 	
 		addHandlers();
 		
-		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+		Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 		logger.info(this.getClass().getName() + " Started");
 	}
 	
@@ -148,7 +148,7 @@ public class StartPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+				Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 				try {
 					Thread.sleep(400);
 				} catch (InterruptedException e1) {

@@ -180,6 +180,11 @@ public class IconsPathConfigurator {
 	public static final String ICON_X_GRAY = GeneralConfig.RESOURCES_DIR + "Icons/General/X_gray.png";
 	public static final String ICON_X_BLACK = GeneralConfig.RESOURCES_DIR + "Icons/General/X_black.png";
 	public static final String ICON_CLOCK = GeneralConfig.RESOURCES_DIR + "Icons/General/clock.png";
+	public static final String ICON_EXPAND = GeneralConfig.RESOURCES_DIR + "Icons/General/expand.png";
+	public static final String ICON_COPY = GeneralConfig.RESOURCES_DIR + "Icons/General/copy.png";
+	public static final String ICON_ARROW_CURVED_RIGHT = GeneralConfig.RESOURCES_DIR + "Icons/General/curvedArrowRight.png";
+	public static final String ICON_ARROW_CURVED_LEFT = GeneralConfig.RESOURCES_DIR + "Icons/General/curvedArrowLeft.png";
+	public static final String ICON_UP_BOXED_PURPLE = GeneralConfig.RESOURCES_DIR + "Icons/General/upSquare.png";
 
 	public static final String ICON_UP_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUpSmall.png";
 	public static final String ICON_UP = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUp.png";

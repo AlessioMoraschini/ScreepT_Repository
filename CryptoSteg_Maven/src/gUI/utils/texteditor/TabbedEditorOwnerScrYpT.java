@@ -71,7 +71,9 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 			txtUtils.resizeFrameToDefault(textEditor.mainApplication);
 			
 			// Refresh tree if needed based on current options selected
-			txtUtils.refreshTree(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, false);
+			if (txtOpt.fileTreeActive) {
+				txtUtils.refreshTree(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, false);
+			}
 			
 			// Update eventually opened file properties frames
 			if (textEditor.subHeaderPanel.propertiesFrame != null) {
@@ -86,12 +88,8 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 				((MapTextAreaPanel) textEditor.rightSplitContainer).sync();
 			}
 			
-			txtUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !textEditor.subHeaderPanel.chckbxLockLanguage.isSelected());
-			// APPLY SELECTED
-			if(!textEditor.subHeaderPanel.chckbxLockLanguage.isSelected()) {
-				txtUtils.applyFileFormatFromCombo();
-			}
 			// Refresh current style from combo only if different from current actually applied to loaded text area tab
+			txtUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, !textEditor.subHeaderPanel.chckbxLockLanguage.isSelected());
 		}
 		
 		

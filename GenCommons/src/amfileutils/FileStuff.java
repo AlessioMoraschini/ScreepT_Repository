@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.om.DeleteFilesByExtensionDTO;
+import resources.GeneralConfig;
 
 public class FileStuff {
 	
@@ -1203,9 +1204,14 @@ public class FileStuff {
 		return esit;
 	}
 	
-	public static boolean copyFileIntoDir(File source, File destdir, boolean overwrite) {
+	public static File copyFileIntoDir(File source, File destdir, boolean overwrite) {
+		
+		if(destdir == null || source == null || !source.exists()) {
+			return null;
+		}
 		
 		long startTime = System.currentTimeMillis();
+		File targetNewFile = new File(destdir.getAbsolutePath() + File.separator + source.getName());
 		logger.info("copyFileIntoDir -> Start...");
 		
 		boolean esit = false;
@@ -1213,27 +1219,18 @@ public class FileStuff {
 		// if dir not existing or dest file not existing
 		if(!destdir.exists()) {
 			destdir.getParentFile().mkdirs();
-			try {
-				destdir.createNewFile();
-			} catch (IOException e) {
-				logger.error("Exception happened!", e);
-				esit = false;
-			}
-		}else {
-			if(overwrite) {
-				logger.debug("File existing: user allowed to overwrite.");
-				destdir.delete();
-				try {
-					destdir.createNewFile();
-				} catch (IOException e) {
-					logger.error("Exception happened!", e);
-					esit = false;
-				}
-			}else {
-				// else give it unique name
-				destdir = renameJavaObjFile(destdir);
-			}
+			destdir.mkdir();
 		}
+		
+		if(!overwrite) {
+			logger.debug("File exists: "+targetNewFile.getAbsolutePath()+" -> starting rename");
+			// Create unique file name and write a copy into temp folder, using it as source
+			targetNewFile = FileStuff.renameJavaObjFile(targetNewFile);
+			source = new File(GeneralConfig.TEMP_DIRECTORY + targetNewFile.getName());
+			FileStuff.copyFile(source, GeneralConfig.TEMP_DIRECTORY_FILE, true);
+			logger.debug("File renamed and renamed -> " + targetNewFile.getAbsolutePath()+" -> copied into temp directory: " + GeneralConfig.TEMP_DIRECTORY_FILE);
+		}
+		
 		try {
 		    FileUtils.copyFileToDirectory(source, destdir, true);
 		    logger.debug("File written: "+destdir.getAbsolutePath()+"\nSize: " + coolFileSize(destdir));
@@ -1244,7 +1241,8 @@ public class FileStuff {
 		}
 		
 		logger.info("copyFileIntoDir -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
-		return esit;
+		
+		return (esit)? new File(destdir.getAbsolutePath()+File.separator + source.getName()) : null;
 	}
 	
 	/**

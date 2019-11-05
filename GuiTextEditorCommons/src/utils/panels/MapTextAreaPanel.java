@@ -100,6 +100,8 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 						txtAreaMiniMap.setText(targetTemp.getText());
 						txtAreaMiniMap.setCurrentLineHighlightColor(txtAreaMiniMap.getBackground().brighter());
 						txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
+						
+						logger.debug("loading theme: " + targetTemp.getSyntaxScheme() + " into text Area minimap");
 						dialogManager.loadThemeIntoTarget(txtAreaMiniMap);
 						currentScrollPane.setBackground(Color.black);
 

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -315,6 +317,41 @@ public class CustomTabbedEditor {
 		
 	}
 	
+	public FocusListener getFocusListenerTxtCursor() {
+		return new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						} catch (Exception e2) {
+						}
+					}
+				});
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				
+				if (!alreadyrefreshing) {
+					changeMonManager.checkChanges();
+				}
+
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						} catch (Exception e) {
+						}
+					}
+				});
+			}
+		};
+	}
+	
+	
 	public void addTab(File file, boolean first) {
 		try {
 			isAddingTab = true;
@@ -332,6 +369,7 @@ public class CustomTabbedEditor {
 					tabEditorManager.getShortcutManager() // shortcut listener implementation
 			);
 			
+			newTabNode.textArea.addFocusListener(getFocusListenerTxtCursor());
 			newTabNode.textArea.addMouseListener(new MouseListener() {
 				
 				@Override
@@ -347,6 +385,7 @@ public class CustomTabbedEditor {
 				public void mousePressed(MouseEvent e) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
+							changeMonManager.checkChanges();
 							tabEditorManager.doAdditionalStuffOnDocMousePressed(newTabNode.textArea);
 						}
 					});				
@@ -488,14 +527,14 @@ public class CustomTabbedEditor {
 					mainTabList.setSelectedIndex(index - 1);
 					updateSavedLabelNTab(index - 1);
 				}
-				tabRefreshAfterUpdate();
+//				tabRefreshAfterUpdate();
 
 			} else if (index == 0 && mainTabList.getTabCount() > 1) {
 				
 				loadedList.getList().remove(0);
 				mainTabList.remove(0);
 				mainTabList.setSelectedComponent(loadedList.getList().get(0).currentScrollPane);
-				tabRefreshAfterUpdate();
+//				tabRefreshAfterUpdate();
 
 			} else if (index == 0) {
 				try {
@@ -618,8 +657,12 @@ public class CustomTabbedEditor {
 			public void mousePressed(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						mainTabList.setSelectedComponent(i_component);
-//						changeMonManager.checkChanges(); -> fix : already checked in main tab list listener
+						try {
+							mainTabList.setSelectedComponent(i_component);
+	//						changeMonManager.checkChanges(); -> fix : already checked in main tab list listener
+						} catch (Exception e2) {
+							logger.error("Tab with title "+ title + "was clicked but an error happened", e2);
+						}
 					}
 				});
 			}

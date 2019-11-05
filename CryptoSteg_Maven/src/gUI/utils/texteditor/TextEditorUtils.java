@@ -581,19 +581,19 @@ public class TextEditorUtils {
 		Sounds.playSound(SoundsConfigurator.ERROR, null);
 		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(new Color(232, 102, 46));
 		currentTextEditor.footerPanel.dynLblSearchEsit.setText(msg);
-		timeoutLblAdvice(TextEditor.timeoutAdvice);
+		timeoutLblAdvice(GeneralConfig.ADVICE_FOOTER_TIMEOUT);
 	}
 
 	public void successAdvice(String msg) {
 		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(Color.GREEN);
 		currentTextEditor.footerPanel.dynLblSearchEsit.setText(msg);
-		timeoutLblAdvice(TextEditor.timeoutAdvice);
+		timeoutLblAdvice(GeneralConfig.ADVICE_FOOTER_TIMEOUT);
 	}
 
 	public void infoAdvice(String msg) {
 		currentTextEditor.footerPanel.lblAdvice.setForeground(Color.BLUE);
 		currentTextEditor.footerPanel.lblAdvice.setText(msg);
-		timeoutLblAdvice(TextEditor.timeoutAdvice);
+		timeoutLblAdvice(GeneralConfig.ADVICE_FOOTER_TIMEOUT);
 	}
 
 	public void updateTabTooltip(int index) {
@@ -795,10 +795,10 @@ public class TextEditorUtils {
 		
 		logger.info("applyFileFormatFromCombo - START - " + selected.syntax);
 		
-		loadedTabObj.textArea.setSyntaxEditingStyle(selected.syntax);
 
 		// Update text area autocomplete only if selected is different from current one
 		if (!originalStyle.equals(selected.syntax)) {
+			loadedTabObj.textArea.setSyntaxEditingStyle(selected.syntax);
 			RsyntaxUtils.addAutoCompletion(loadedTabObj.textArea, selected.languageWordsFile);
 			logger.info("\n [APPLIED] => applyFileFormatFromCombo - addAutoCompletion and Style reapplied cause wanted is different from current textarea editing style"
 					+ "\nCurrent textarea Style: " + loadedTabObj.textArea.getSyntaxEditingStyle() 

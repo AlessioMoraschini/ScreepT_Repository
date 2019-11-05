@@ -87,6 +87,7 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 			
 			try {
 			
+				// Default: continue
 				Object res = options[1];
 				
 				if (ParametricExceptionThread.isCriticalError(t)) {

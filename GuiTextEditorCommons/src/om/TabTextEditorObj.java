@@ -3,13 +3,11 @@ package om;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
@@ -21,7 +19,6 @@ import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.filechangewatcher.FileChangeMonitor;
-import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 import shortcuts.ICommonShortcuts;
@@ -81,10 +78,6 @@ public class TabTextEditorObj {
 
 		// TEXT AREA LISTENER
 		textArea.getDocument().addDocumentListener(docListener);
-		focusTxtAreaMonitor = getFocusListenerTxtCursor();
-		
-		// TAB FOCUS CHANGES LISTENER
-		textArea.addFocusListener(focusTxtAreaMonitor);
 		
 		updateTextAreaPreferences(configuration.getTextEditorOpt());
 		
@@ -110,31 +103,6 @@ public class TabTextEditorObj {
 		}
 		
 	}
-	
-	public FocusListener getFocusListenerTxtCursor() {
-		return new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						textArea.setCursor(GuiUtils.CURSOR_TEXT);
-					}
-				});
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						checkChangesMonitor.checkChanges();
-						textArea.setCursor(GuiUtils.CURSOR_TEXT);
-					}
-				});
-			}
-		};
-	}
-	
 	
 	public void updateTextAreaPreferences(TextEditorOption txtOptions) {
 		

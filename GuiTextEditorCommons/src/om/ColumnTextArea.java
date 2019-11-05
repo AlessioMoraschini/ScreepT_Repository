@@ -23,6 +23,8 @@ public class ColumnTextArea extends RSyntaxTextArea{
 	public AtomicBoolean isRectangularModeOn = new AtomicBoolean(true);
 	RSyntaxTextArea currentRef;
 	
+	public int lastStartPosition = 0;
+	
 	public ColumnTextArea(boolean rectangularSelectionActive) {
 		super();
 		currentRef = this;
@@ -149,6 +151,27 @@ public class ColumnTextArea extends RSyntaxTextArea{
             }
             
         }
+        
+        @Override
+        public void mouseReleased(java.awt.event.MouseEvent e){
+        	if(isRectangularModeOn.get()) {
+        		this.moving = false;
+        	}
+        	
+        	this.altDown = e.isAltDown();
+            this.ctrlDown = e.isControlDown();
+            this.shiftDown = e.isShiftDown();
+        	
+            super.mouseReleased(e);
+            
+            SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updateSelectionIfShiftPressed();
+				}
+			});
+            
+        }
 
         @Override
         public void mousePressed(java.awt.event.MouseEvent e){
@@ -163,33 +186,42 @@ public class ColumnTextArea extends RSyntaxTextArea{
             
             if (e.getClickCount()==1) {
 				try {
-					int viewToModel = currentRef.viewToModel(e.getPoint());
-	                if(viewToModel != -1){
-	                    try {
+	                if(currentRef != null){
 	                    	
-	                    	boolean rightClick = SwingUtilities.isRightMouseButton(e);
-	                    	if (!shiftDown && !rightClick) {
-								currentRef.removeAllLineHighlights();
-								currentRef.getHighlighter().removeAllHighlights();
-							}
-							currentRef.addLineHighlight(currentRef.getLineOfOffset(viewToModel), currentRef.getCurrentLineHighlightColor());
-	                    } catch (BadLocationException e1) {
-	                        e1.printStackTrace();
-	                    }
-
-	                    // SELECT with shift (only if position is different) -> select from currentCaret to viewToModel
-	                    if(shiftDown && viewToModel != currentRef.getCaretPosition()) {
-	                    	currentRef.setSelectionStart(currentRef.getSelectionStart());
-	                    	currentRef.setSelectionEnd(viewToModel);
-	                    }
-	                }
-				} catch (Exception e1) {
-					logger.error("Error tryin' to refreshing highlight on mouse pressed", e1);
-				}
+                    	boolean rightClick = SwingUtilities.isRightMouseButton(e);
+                    	if (!shiftDown && !rightClick) {
+							currentRef.removeAllLineHighlights();
+							currentRef.getHighlighter().removeAllHighlights();
+						}
+			
+						int start = currentRef.getSelectionStart();
+						int end = currentRef.getSelectionEnd();
+						boolean turningBack = end < start;
+						
+						// Update last start position, used on key released if shift is pressed
+						if (shiftDown) {
+							lastStartPosition = currentRef.getSelectedText() != null ? start : currentRef.getCaretPosition();
+						}
+						
+						updateSelectionIfShiftPressed();
+					}
 				
+				} catch (Exception e1) {
+					logger.error("Error tryin' to refresh highlight on mouse pressed", e1);
+				}
 			}
-
-            
+        }
+        
+        private void updateSelectionIfShiftPressed() {
+        	// SELECT with shift (only if position is different) -> select from currentCaret to viewToModel
+            if(shiftDown) {
+            	try {
+					currentRef.requestFocus();
+					currentRef.setSelectionStart(lastStartPosition);
+					currentRef.setSelectionEnd(currentRef.getCaretPosition());
+				} catch (Exception e) {
+				}
+            }
         }
 
         @Override
@@ -223,20 +255,6 @@ public class ColumnTextArea extends RSyntaxTextArea{
 //        	}
         }
         
-        @Override
-        public void mouseReleased(java.awt.event.MouseEvent e){
-        	if(isRectangularModeOn.get()) {
-        		this.moving = false;
-        	}
-        	
-        	this.altDown = e.isAltDown();
-            this.ctrlDown = e.isControlDown();
-            this.shiftDown = e.isShiftDown();
-        	
-            super.mouseReleased(e);
-            
-        }
-
         protected void rectangularHighlight(java.awt.Point start, java.awt.Point end) {
             
         	if (isRectangularModeOn.get()) {

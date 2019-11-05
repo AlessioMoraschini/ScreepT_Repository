@@ -89,7 +89,6 @@ public class TextEditor extends JPanel {
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditor.class);
 	
-	public static final int timeoutAdvice = 9000;
 	public volatile boolean renewedAdviceTimeout = false;
 	
 	// this is the color of the left panel file navigator
@@ -754,6 +753,7 @@ public class TextEditor extends JPanel {
 			RsyntaxUtils.removeAllParsers(loadedTabObj.textArea);
 		}
 		
+		// Text area colors and sync tree to current file
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (isPreloading || !currentConfiguration.getTextEditorOpt().isTreeLocked()) {
@@ -947,7 +947,7 @@ public class TextEditor extends JPanel {
 			public void run() {
 				// RE-Enable refreshing
 				isPreloading = false;
-				getCurrentTabEditor().tabRefreshAfterUpdate();
+//				getCurrentTabEditor().tabRefreshAfterUpdate();
 				textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);
 			}
 		});

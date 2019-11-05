@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -266,22 +267,12 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 			// start autosave manager module
 			autosaveManager.start();
 			
-			// WINDOW CLOSE LISTENER
-			frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
-				
+			// MAIN WINDOW RESIZE LISTENER
+			frmScryptV.addComponentListener(new ComponentAdapter() {
 				@Override
-				public void windowStateChanged(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
-//			    @Override
-//			    public void windowActivated(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
-//			    @Override
-//			    public void windowGainedFocus(WindowEvent e) {MainGUI.mainAPP.resizeMainFrameDefaults();}
-				
-			    @Override
-			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-			    	
-			    	askForExit();
-			    	
-			  	}
+				public void componentResized(ComponentEvent componentEvent) {
+					MainGUI.mainAPP.resizeMainFrameDefaults();
+			    }
 			});
 			
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
@@ -821,7 +812,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
 							isFullScreen.set(false);
-							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
+							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPAND));
 						} else {
 							frmScryptV.dispose();
 							preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
