@@ -9,7 +9,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JOptionPane;
@@ -273,6 +272,13 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 				public void componentResized(ComponentEvent componentEvent) {
 					MainGUI.mainAPP.resizeMainFrameDefaults();
 			    }
+			});
+			// MAIN WINDOW CLOSE LISTENER
+			frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
+			    @Override
+			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+			    	askForExit();
+			  	}
 			});
 			
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);

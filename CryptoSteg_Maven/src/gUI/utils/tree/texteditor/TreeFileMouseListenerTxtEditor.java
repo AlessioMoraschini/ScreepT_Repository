@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -48,7 +49,9 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	private CustomTabbedEditor currentTabEditor;
 	
 	public JMenuItem itemLoadFile;
-	public JMenuItem itemNewFile;
+	public JMenu subMenuNew;
+		public JMenuItem itemNewFile;
+		public JMenuItem itemNewFolder;
 	public JMenuItem deleteItem;
 	public JMenuItem copyHereCurrentItem;
 	public JMenuItem moveHereCurrentItem;
@@ -82,13 +85,15 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	        	selectedRow = tree.getRowForLocation(arg0.getX(), arg0.getY());
 	        	// Right click
 	            if(arg0.getButton() == MouseEvent.BUTTON3){ 
+	            	
+	            	updateEnabledOrDisabled();
+	            	
 	                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
 	                if(pathForLocation != null){
 	                    selectedNode = (FileNamed) pathForLocation.getLastPathComponent();
 	                } else{
 	                    selectedNode = null;
 	                }
-
 	            }
 	            super.mousePressed(arg0);
 	        }
@@ -114,14 +119,31 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		    }
 		};
 	}
+	
+	private void updateEnabledOrDisabled() {
+		if(selectedNode == null || selectedNode.mFile == null || !selectedNode.mFile.isFile()) {
+	    	itemLoadFile.setEnabled(false);
+	    }else {
+	    	itemLoadFile.setEnabled(true);
+	    }
+	}
 
 	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
-	    itemNewFile = new JMenuItem("Add new file here");
+	    subMenuNew = new JMenu("New...");
+	    subMenuNew.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    menu.add(subMenuNew);
+	    
+	    itemNewFolder = new JMenuItem("Add new folder");
+	    itemNewFolder.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    itemNewFolder.addActionListener(getNewFolderActionListener());
+	    subMenuNew.add(itemNewFolder);
+
+	    itemNewFile = new JMenuItem("Add new file");
 	    itemNewFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    itemNewFile.addActionListener(getNewFileActionListener());
-	    menu.add(itemNewFile);
+	    subMenuNew.add(itemNewFile);
 	    
 	    itemLoadFile = new JMenuItem("Open File");
 	    itemLoadFile.addActionListener(getLoadActionListener());
@@ -189,9 +211,11 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    deleteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 	    collapseItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
-	    expandItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
+	    expandItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE_SMALL));
 	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+	    subMenuNew.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 	    itemNewFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
+	    itemNewFolder.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
 	    changeBckgItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BG_COLOR));
 
 	    return menu;
@@ -291,9 +315,13 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					return;
 				}
 				
+				File targetParentDir = (selectedNode.mFile.isDirectory())? selectedNode.mFile : selectedNode.mFile.getParentFile();
+				if(!dialogHelper.yesOrNo("Are you sure to move current file into [" + targetParentDir.getAbsolutePath()+"] ?", "Move current file?")) {
+					return;
+				}
+				
 				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 
-				File targetParentDir = (selectedNode.mFile.isDirectory())? selectedNode.mFile : selectedNode.mFile.getParentFile();
 				File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
 				boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo("File exists, wanna overwrite?", "File exists") : true;
 				File result = FileStuff.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite);

@@ -17,8 +17,10 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import frameutils.frame.FilePropertiesFrame;
@@ -124,6 +126,31 @@ public class TreeFileMouseListenerBasicFileNamed {
 		};
 	}
 	
+	public ActionListener getNewFolderActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				FileNamed node = (FileNamed)tree.getSelectionPath().getLastPathComponent();
+				if(node == null || node.mFile == null || !node.mFile.exists()) {
+					return;
+				}
+				logger.info("getNewFolderActionListener() -> asking for creating new folder...");
+				File targetDir = node.mFile.isDirectory()? node.mFile : node.mFile.getParentFile();
+				File unexistant = new File(targetDir.getAbsolutePath() + File.separator + "new_folder");
+				unexistant = FileStuff.renameJavaObjFile(unexistant);
+				String newName = dialogHelper.askForStringUnsafe("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
+				
+				if(newName == null) {
+					return;
+				}else if(!StringUtils.trimToEmpty(newName).equals("")){
+					unexistant = FileStuff.renameJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
+				}
+				
+				boolean result = unexistant.mkdirs();
+				logger.info("getNewFolderActionListener() -> " + unexistant + " creation process had result: "+result);
+			}
+		};
+	}
 
 	public ActionListener getDeleteActionListener() {
 	    return new ActionListener() {
@@ -132,15 +159,18 @@ public class TreeFileMouseListenerBasicFileNamed {
 	        public void actionPerformed(ActionEvent arg0) {
 
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
-            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(null, "Are you sure to delete?")==JOptionPane.OK_OPTION){	        		
+            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(null, "Are you sure to delete selected files from disk(cannot be undone)? "
+            			+ "All eventual selected folders will be deleted with all the file contained in them!")==JOptionPane.OK_OPTION){	        		
 		            for(TreePath tp : treeSelArr) {
 		            	
 		            	FileNamed node = (FileNamed)tp.getLastPathComponent();
 		            	File selectedFile = node.mFile;
 		            	if(selectedFile.isFile()) {	
-		            		logger.debug(node.mFile+" Deleted: "+selectedFile.delete());	
+		            		logger.info("getDeleteActionListener()"+node.mFile+"File -> Deleted: "+selectedFile.delete());	
 		            	}else {
-		            		logger.info(node.mFile + ": not deleted beacuse it's a folder");
+		            		logger.info("getDeleteActionListener()"+node.mFile + "File -> Deleting folder content recursively...");
+		            		FileStuff.deleteDirContentInclRoot(node.mFile);
+		            		logger.info(node.mFile + "Emptied and Deleted!");
 		            	}
 			        }
 
@@ -151,6 +181,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 	            }
             	
             	refreshTree();
+            	logger.info("getDeleteActionListener() -> Completed!");
 	        }
 	    };
 	}
