@@ -63,10 +63,15 @@ public class GuiUtils {
 	public static final Cursor CURSOR_CROSS = new Cursor(Cursor.CROSSHAIR_CURSOR);
 	
 	public static final Dimension DEF_CUSTOM_CURSOR_SIZE = new Dimension(8,8);
-	public static final Cursor CURSOR_COLOR_PICK = getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER, DEF_CUSTOM_CURSOR_SIZE);
+	public static Cursor CURSOR_COLOR_PICK;
 	
 	public static JOptionHelper dialogHelper = new JOptionHelper(null);
-	public static CustomCodeFormatter codeFormatter = new CustomCodeFormatter(GeneralConfig.JS_LIB_FOLDER);;
+	public static CustomCodeFormatter codeFormatter;
+	
+	public static void init() {
+		codeFormatter = new CustomCodeFormatter(GeneralConfig.JS_LIB_FOLDER);
+		CURSOR_COLOR_PICK = getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER, DEF_CUSTOM_CURSOR_SIZE);
+	}
 
 	public static Cursor getCustomCursor(String imgPath, Dimension size) {
 		Dimension correctSize = size;

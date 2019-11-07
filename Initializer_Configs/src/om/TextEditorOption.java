@@ -207,11 +207,13 @@ public class TextEditorOption {
 				}
 			}
 			
-			targetList.getList().removeAll(toRemove);
+			if (toRemove.size() != 0) {
+				// remove and re-add on top
+				targetList.getList().removeAll(toRemove);
+			}
+			targetList.addLast(new FileNamed(toAdd));
+			parentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, varToSave, targetList.toCharSeparatedString(","));
 		}
-		// NOT ADD AS LAST
-		targetList.addLast(new FileNamed(toAdd));
-		parentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, varToSave, targetList.toCharSeparatedString(","));
 	}
 
 	// GETTERS AND SETTERS

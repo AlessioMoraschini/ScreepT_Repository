@@ -15,11 +15,9 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 	private TextEditor currentEditor;
 	private CustomTabbedEditor currentTabEditor;
 	
-	GeneralConfig config;
-
 	public TextEditorMouseWheelListener(TextEditor currentEditor) {
 		super();
-		config = new GeneralConfig();
+		GeneralConfig.initLazyGeneralConfig();
 		this.currentEditor = currentEditor;
 		this.currentTabEditor = currentEditor.getCurrentTabEditor();
 	}

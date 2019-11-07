@@ -1,6 +1,7 @@
 package gUI.panels;
 
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Font;
 
 import javax.swing.JFrame;
@@ -170,8 +171,11 @@ public class TextEditor extends JPanel {
 
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Color.BLACK);
-		setLayout(new MigLayout("fill, insets 1, hidemode 2","[300px:"+MainGUI.screenSize.getWidth()+"px:"+MainGUI.screenSize.getWidth()+"px,grow]",
-				"[300px:"+MainGUI.screenSize.getHeight()+"px:"+MainGUI.screenSize.getHeight()+"px,grow]"));
+		setLayout(new MigLayout(
+				"fill, insets 1, hidemode 2",
+				"[300px:"+MainGuiGeneralAppStarter.screenSize.getWidth()+"px:"+MainGuiGeneralAppStarter.screenSize.getWidth()+"px,grow]",
+				"[300px:"+MainGuiGeneralAppStarter.screenSize.getHeight()+"px:"+MainGuiGeneralAppStarter.screenSize.getHeight()+"px,grow]")
+			);
 
 		// initialize OBJECTS used in GUI //
 		currentConfiguration = currentConf;
@@ -243,6 +247,7 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.setBackground(fileNavColorBckg);
 		leftSplitContainer.setForeground(Color.GRAY);
 		leftSplitContainer.setLayout(new MigLayout("", "[20px:25px:25px][2px:4px,grow][20px:25px:25px][20px:25px:25px][20px:25px:25px][25px:25px:25px][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[25px:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
+		currentTextEditor.leftSplitPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		 
 		initRightPane();
 		rightSplitContainer.setBackground(fileNavColorBckg);

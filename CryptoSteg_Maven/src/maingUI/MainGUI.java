@@ -51,7 +51,6 @@ import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
-import gui.utils.LauncherLoaderFrame;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import guistyle.GUIStyelSettings;
@@ -172,13 +171,13 @@ public class MainGUI extends MainGuiParent{
 		MainGuiUtils.welcomeMethodIfFirstTime();
 		
 		// OPEN LOADING PANEL THREAD
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
+//		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
 		new Thread(new Runnable() {
 			public void run() {
 				for (int i = 0; i < 10; i++) {
 					String dots = new String(new char[i + 1]).replace("\0", ".");
 					String msg = "Initializing " + GeneralConfig.APPLICATION_NAME + dots;
-					loaderGraphics.update(msg, i / 2);
+					MainGuiGeneralAppStarter.loaderGraphics.update(msg, i / 2);
 					try {
 						Thread.sleep(60);
 					} catch (InterruptedException e) {
@@ -192,7 +191,7 @@ public class MainGUI extends MainGuiParent{
 			now = new Date();
 			mainAppRunning = true;
 			
-loaderGraphics.update("Initializing graphics... ", 15);
+MainGuiGeneralAppStarter.loaderGraphics.update("Initializing graphics... ", 15);
 			
 			// START MAIN WINDOW CONSTRUCTOR
 			logger.info("Initializing main GUI-start");
@@ -202,7 +201,7 @@ loaderGraphics.update("Initializing graphics... ", 15);
 			mainGuiUtils = new MainGuiUtils(window);
 			logger.info("Main GUI initialized correctly.");
 			
-loaderGraphics.update("Starting autosave modules... ", 25);
+MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 25);
 						
 			// AUTOSAVE MODULE - only if specified in fileOptions
 			autosaveModule = new Thread(new Runnable() {
@@ -291,7 +290,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 				@Override
 				public void run() {
 					// REFRESH GUI GENERAL
-					loaderGraphics.update("Updating GUI style...", 70, 350);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 70, 350);
 					if (currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
 						GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 					}else {
@@ -301,7 +300,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 				}
 			});
 
-			loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 350);
+			MainGuiGeneralAppStarter.loaderGraphics.update("Resetting last viewed panel: " + currentConfiguration.getGenOpt().getLastPanelOpened() + " ...", 80, 350);
 
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -319,14 +318,14 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 							mainGuiUtils.startConfigManagerPanel(true);
 						}
 					}
-					loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 200);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 200);
 					updateGuiFromCurrConfig();
 					
 					// Close loader
 					GuiUtils.launchThreadSafeSwing(new Runnable() {
 						public void run() {
 							
-							loaderGraphics.update("Welcome to ScrYpT", 100, 800);
+							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScrYpT", 100, 800);
 							
 							window.startTitleUpdater();
 						}
@@ -383,7 +382,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 	@SuppressWarnings("serial")
 	private void initialize() {
 
- loaderGraphics.update("Initializing screen properties...", 30);
+ MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 30);
  
  		// This will be used to print out various types of dialogs in this class
  		dialogHelper = new JOptionHelper(frmScryptV);
@@ -402,7 +401,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		frmScryptV.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		frmScryptV.getContentPane().setBackground(SystemColor.windowText);
 		frmScryptV.setBounds(0, 0, 1500, 850 );
-		frmScryptV.setMinimumSize(MainGuiParent.minimumSize);
+		frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
 		frmScryptV.addMouseListener(new ComponentResizer());
 		frmScryptV.setJMenuBar(menuBar);
 		
@@ -412,7 +411,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
         
         setBackgroundImage();
         
- loaderGraphics.update("Defining handlers...", 40);
+ MainGuiGeneralAppStarter.loaderGraphics.update("Defining handlers...", 40);
 		
 		//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
 		
@@ -814,7 +813,7 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 							frmScryptV.dispose();
 							frmScryptV.setUndecorated(false);
 							frmScryptV.setLocationRelativeTo(frmScryptV);
-							frmScryptV.setMinimumSize(MainGuiParent.minimumSize);
+							frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
 							isFullScreen.set(false);
@@ -1157,13 +1156,13 @@ loaderGraphics.update("Starting autosave modules... ", 25);
 		
 	////////// END OF MENU MOUSE CLICK - HANDLERS DECLARATION  ////////////////
 	
- loaderGraphics.update("Adding ActionHandlers...", 60);
+ MainGuiGeneralAppStarter.loaderGraphics.update("Adding ActionHandlers...", 60);
  		addHandlers();
  		
  		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
  
 		// once each component is declared add it to the menu bar
- loaderGraphics.update("Structuring menu...", 80);
+ MainGuiGeneralAppStarter.loaderGraphics.update("Structuring menu...", 80);
 		structureMenuBar();
 		
 		// check non compatible options with current JVM

@@ -6,7 +6,6 @@ import java.awt.event.ComponentListener;
 import java.io.File;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
@@ -19,6 +18,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class TutorialFrame extends ParentFrame{
+	private static final long serialVersionUID = 143523594391688247L;
 
 	// initialize Logger
 	static Logger logger = Logger.getLogger(TutorialFrame.class); 

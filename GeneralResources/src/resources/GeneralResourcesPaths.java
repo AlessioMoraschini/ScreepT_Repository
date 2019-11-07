@@ -2,17 +2,33 @@ package resources;
 
 public class GeneralResourcesPaths {
 
-	public static final String WORDLIST_C = GeneralConfig.WORDLIST_FOLDER + "Wordlist_C.md";
-	public static final String WORDLIST_Csharp = GeneralConfig.WORDLIST_FOLDER + "Wordlist_C#.md";
-	public static final String WORDLIST_Cpp = GeneralConfig.WORDLIST_FOLDER + "Wordlist_C++.md";
-	public static final String WORDLIST_JAVA = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Java.md";
-	public static final String WORDLIST_HTML = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Html.md";
-	public static final String WORDLIST_CSS = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Css.md";
-	public static final String WORDLIST_JS = GeneralConfig.WORDLIST_FOLDER + "Wordlist_JavaScript.md";
-	public static final String WORDLIST_HASKELL = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Haskell.md";
-	public static final String WORDLIST_PHP = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Php.md";
-	public static final String WORDLIST_PYTHON = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Python.md";
-	public static final String WORDLIST_RUBY = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Ruby.md";
-	public static final String WORDLIST_SQL = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Sql.md";
-	public static final String WORDLIST_BASH = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Bash.md";
+	public static String WORDLIST_C;
+	public static String WORDLIST_Csharp;
+	public static String WORDLIST_Cpp;
+	public static String WORDLIST_JAVA;
+	public static String WORDLIST_HTML;
+	public static String WORDLIST_CSS;
+	public static String WORDLIST_JS;
+	public static String WORDLIST_HASKELL;
+	public static String WORDLIST_PHP;
+	public static String WORDLIST_PYTHON;
+	public static String WORDLIST_RUBY;
+	public static String WORDLIST_SQL;
+	public static String WORDLIST_BASH;
+	
+	public static void init() {
+		WORDLIST_C = GeneralConfig.WORDLIST_FOLDER + "Wordlist_C.md";            
+		WORDLIST_Csharp = GeneralConfig.WORDLIST_FOLDER + "Wordlist_C#.md";      
+		WORDLIST_Cpp = GeneralConfig.WORDLIST_FOLDER + "Wordlist_C++.md";        
+		WORDLIST_JAVA = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Java.md";      
+		WORDLIST_HTML = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Html.md";      
+		WORDLIST_CSS = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Css.md";        
+		WORDLIST_JS = GeneralConfig.WORDLIST_FOLDER + "Wordlist_JavaScript.md";  
+		WORDLIST_HASKELL = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Haskell.md";
+		WORDLIST_PHP = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Php.md";        
+		WORDLIST_PYTHON = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Python.md";  
+		WORDLIST_RUBY = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Ruby.md";      
+		WORDLIST_SQL = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Sql.md";        
+		WORDLIST_BASH = GeneralConfig.WORDLIST_FOLDER + "Wordlist_Bash.md";      
+	}
 }

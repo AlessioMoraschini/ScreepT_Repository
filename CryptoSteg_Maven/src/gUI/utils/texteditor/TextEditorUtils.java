@@ -2,6 +2,7 @@ package gUI.utils.texteditor;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -223,6 +224,11 @@ public class TextEditorUtils {
 	}
 	
 	public void refreshTree(File currentFile, boolean forceRefresh) {
+		
+		if(currentFile == null) {
+			return;
+		}
+		
 		// Avoid useless refreshing during preload
 		if (!currentTextEditor.isPreloading) {
 			TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
@@ -256,6 +262,7 @@ public class TextEditorUtils {
 			resetAllDIviderColors();
 			currentTextEditor.fileTreeShowOrHide(options);
 			currentTextEditor.rightPaneShowOrHide(false);
+			currentTextEditor.leftSplitTreeFiles.scrollRowToVisible(currentTextEditor.leftSplitTreeFiles.getLeadSelectionRow());
 		}
 	}
 	

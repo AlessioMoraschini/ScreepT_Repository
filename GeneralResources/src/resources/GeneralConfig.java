@@ -24,168 +24,170 @@ public class GeneralConfig {
 	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
 	public static Properties linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
 	
-	public static final SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
+	public static SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 	// TEST ERROR CATCH
-	public static final boolean FLAG_THROW_ERROR_TEST_ON = Boolean.valueOf(resourcesFilePathsMappings.getProperty("FLAG_THROW_ERROR_TEST_ON"));
-	public static final int MAX_N_OF_ERR_DIALOG_OPENED = resourcesFilePathsMappings.getIntVarFromProps("MAX_N_OF_ERR_DIALOG_OPENED", 2);
-	public static final int AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD = resourcesFilePathsMappings.getIntVarFromProps("AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD", 5000);
+	public static boolean FLAG_THROW_ERROR_TEST_ON;
+	public static int MAX_N_OF_ERR_DIALOG_OPENED;
+	public static int AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD;
 	
-	// MAIN PROPERTIES
-	public static final String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION");
-	public static final String WEB_UPDATES_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_UPDATES_MANIFEST_URL");
-	public static final String WEBSITE = resourcesFilePathsMappings.getProperty("WEBSITE");
-	public static final String MAIL_BUGS = resourcesFilePathsMappings.getProperty("MAIL_BUGS");
-	public static final String MAIL_INFO = resourcesFilePathsMappings.getProperty("MAIL_INFO");
-	public static final String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;
-	public static final String AUTHOR = "A.M. Design and Development";
-	public static final String BUILD_TS_DATE = resourcesFilePathsMappings.getProperty("BUILD_TIMESTAMP")
-										.replaceAll("T", " at ")
-										.replaceAll("Z", "")
-										.replaceAll("-", "/");
-	// General Folders
-	public static final String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR");
-	public static final String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");
-	public static final String DEFAULT_IMAGE_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_IMAGE_FOLDER");
-	public static final String SOUNDS_FOLDER = resourcesFilePathsMappings.getProperty("SOUNDS_FOLDER");
-	public static final String WORDLIST_FOLDER = resourcesFilePathsMappings.getProperty("WORDLIST_FOLDER");
-	public static final String DEFAULT_INI_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_INI_FOLDER");
-	public static final String THEMES_FOLDER_DEFAULT = resourcesFilePathsMappings.getProperty("THEMES_FOLDER_DEFAULT");
-	public static final String THEMES_FOLDER_CUSTOM = resourcesFilePathsMappings.getProperty("THEMES_FOLDER_CUSTOM");
-	public static final String PANEL_FILES_FOLDER = resourcesFilePathsMappings.getProperty("PANEL_TEMP_FOLDER");
-	public static final String TEMPLATES_FOLDER = resourcesFilePathsMappings.getProperty("TEMPLATES_FOLDER");
-	public static final String CLIBPOARDS_PANEL_SRC_FOLDER = resourcesFilePathsMappings.getProperty("CLIBPOARDS_PANEL_SRC_FOLDER");
-	public static final String JS_LIB_FOLDER = resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") != null? resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") : "/Resources_Scrypt/lib/js/";
-	public static final String SPELLCHECKER_DEFAULT_DICT = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DEFAULT_DICT") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DEFAULT_DICT") : "english_dic.zip";
-	public static final String SPELLCHECKER_DICT_FOLDER = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") : "Resources_Scrypt/SpellChecker/";
-	public static final File SPELLCHECKER_DICT_FOLER_FILE = new File(SPELLCHECKER_DICT_FOLDER);
-	public static final Color SPELL_CHECKER_UNDERLINE_COL = resourcesFilePathsMappings.getColorVarFromProps(resourcesFilePathsMappings.getProperty("SPELL_CHECKER_UNDERLINE_COL"), Color.orange);
+	// MAIN PROPERTIES                                                                                                                                                                                           
+	public static String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION");                                                                                                                                         
+	public static String WEB_UPDATES_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_UPDATES_MANIFEST_URL");                                                                                                               
+	public static String WEBSITE = resourcesFilePathsMappings.getProperty("WEBSITE");                                                                                                                                                 
+	public static String MAIL_BUGS = resourcesFilePathsMappings.getProperty("MAIL_BUGS");                                                                                                                                             
+	public static String MAIL_INFO = resourcesFilePathsMappings.getProperty("MAIL_INFO");                                                                                                                                             
+	public static String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;                                                                                                                                                               
+	public static String AUTHOR = "A.M. Design and Development";                                                                                                                                                                      
+	public static String BUILD_TS_DATE = resourcesFilePathsMappings.getProperty("BUILD_TIMESTAMP")                                                                                                                                    
+	                     									.replaceAll("T", " at ")                                                                                                                                                 
+	                     									.replaceAll("Z", "")                                                                                                                                                     
+	                     									.replaceAll("-", "/");                                                                                                                                                   
+	// General Folders   // General Folders                                                                                                                                                                                           
+	public static String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR");                                                                                                                             
+	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");                                                                                                                                     
+	public static String DEFAULT_IMAGE_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_IMAGE_FOLDER");                                                                                                                       
+	public static String SOUNDS_FOLDER = resourcesFilePathsMappings.getProperty("SOUNDS_FOLDER");                                                                                                                                     
+	public static String WORDLIST_FOLDER = resourcesFilePathsMappings.getProperty("WORDLIST_FOLDER");                                                                                                                                 
+	public static String DEFAULT_INI_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_INI_FOLDER");                                                                                                                           
+	public static String THEMES_FOLDER_DEFAULT = resourcesFilePathsMappings.getProperty("THEMES_FOLDER_DEFAULT");                                                                                                                     
+	public static String THEMES_FOLDER_CUSTOM = resourcesFilePathsMappings.getProperty("THEMES_FOLDER_CUSTOM");                                                                                                                       
+	public static String PANEL_FILES_FOLDER = resourcesFilePathsMappings.getProperty("PANEL_TEMP_FOLDER");                                                                                                                            
+	public static String TEMPLATES_FOLDER = resourcesFilePathsMappings.getProperty("TEMPLATES_FOLDER");                                                                                                                               
+	public static String CLIBPOARDS_PANEL_SRC_FOLDER = resourcesFilePathsMappings.getProperty("CLIBPOARDS_PANEL_SRC_FOLDER");                                                                                                         
+	public static String JS_LIB_FOLDER = resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") != null? resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") : "/Resources_Scrypt/lib/js/";                                      
+	public static String SPELLCHECKER_DEFAULT_DICT = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DEFAULT_DICT") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DEFAULT_DICT") : "english_dic.zip";            
+	public static String SPELLCHECKER_DICT_FOLDER = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") : "Resources_Scrypt/SpellChecker/";
+	public static File SPELLCHECKER_DICT_FOLER_FILE = new File(SPELLCHECKER_DICT_FOLDER);
+	public static Color SPELL_CHECKER_UNDERLINE_COL = resourcesFilePathsMappings.getColorVarFromProps(resourcesFilePathsMappings.getProperty("SPELL_CHECKER_UNDERLINE_COL"), Color.orange);
 	// Temp Folders and Files
-	public static final String TEMP_DIRECTORY = RESOURCES_DIR + "temp/";
-	public static final File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
+	public static String TEMP_DIRECTORY = RESOURCES_DIR + "temp/";
+	public static File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
 	
 	// IMPORTANT FOLDERS
-	public static final String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
-	public static final String USER_PERSONAL_DIR_SCRYPT_FOLDER = USER_PERSONAL_DIR + APPLICATION_NAME + File.separatorChar + APP_VERSION;
-	public static final File F_USER_PERSONAL_DIR_SCRYPT_FOLDER = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER);
-	public static final String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";
-	public static final String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScrYpT_decrypted_tempFiles";
-	public static final File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
+	public static String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
+	public static String USER_PERSONAL_DIR_SCRYPT_FOLDER = USER_PERSONAL_DIR + APPLICATION_NAME + File.separatorChar + APP_VERSION;
+	public static File F_USER_PERSONAL_DIR_SCRYPT_FOLDER = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER);
+	public static String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";
+	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScrYpT_decrypted_tempFiles";
+	public static File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	/**
 	 * This file is created at SW start, and deleted on close to signal other external programs
 	 */
-	public static final File SCRYPT_ACTIVE_SIGNAL_FILE = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.scrypt");
+	public static File SCRYPT_ACTIVE_SIGNAL_FILE = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.scrypt");
 	
 	// Ini files configuration
-	public static final String DEFAULT_INI= resourcesFilePathsMappings.getProperty("DEFAULT_INI");
-	public static final String BACKUP_INI= resourcesFilePathsMappings.getProperty("BACKUP_INI");
+	public static String DEFAULT_INI;
+	public static String BACKUP_INI;
 	
 	// Readme File
-	public static final String SCRYPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
-	public static final String SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
+	public static String SCRYPT_TUTORIAL_HTML_PATH;
+	public static String SCRYPT_TUTORIAL_HTML_URL;
 
 	// Logs configuration
-	public static final String LOG_PATH = resourcesFilePathsMappings.getProperty("LOG_PATH");
-	public static final String LOG_PROPERTIES_PATH = resourcesFilePathsMappings.getProperty("LOG_PROPERTIES_PATH");
-	public static final String LOG_LAUNCHER_PATH = resourcesFilePathsMappings.getProperty("LOG_LAUNCHER_PATH");
-	public static final String LAUNCHER_CONTAINER_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_CONTAINER_PATH");
-	public static final String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH"); 
-	public static final String LAUNCHER_LOG_PROPS_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_LOG_PROPS_PATH"); 
+	public static String LOG_PATH;
+	public static String LOG_PROPERTIES_PATH;
+	public static String LOG_LAUNCHER_PATH;
+	public static String LAUNCHER_CONTAINER_PATH;
+	public static String DEFAULT_LAUNCHER_INI_PATH; 
+	public static String LAUNCHER_LOG_PROPS_PATH; 
 	
 	// JVM and LAUNCHER
-	public static final String MAX_JVM_COMPLETE_COMPATIBILITY = resourcesFilePathsMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
-	public static final String JVM_CUSTOM_ADDED_SETTINGS = resourcesFilePathsMappings.getProperty("JVM_CUSTOM_ADDED_SETTINGS");
+	public static String MAX_JVM_COMPLETE_COMPATIBILITY;
+	public static String JVM_CUSTOM_ADDED_SETTINGS;
 	
 	/**
 	 * Used in launcher to choose right type of launch command for system
 	 */
-	public static final boolean FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(resourcesFilePathsMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
-	public static final String MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
-	public static final String MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
+	public static boolean FLAG_LAUNCH_JAR_COMMAND;
+	public static String MAIN_GENERAL_CLASSPATH;
+	public static String MAIN_GENERAL_STARTER_PACKAGE;
 	
 	// LAUNCHER DEFAULTS
-	public static final int DEFAULT_JVM_XMX  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XMX", 768);
-	public static final int DEFAULT_JVM_XMS  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XMS", 348);
-	public static final int DEFAULT_JVM_XSS  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XSS", 100);
-	public static final float DEFAULT_JVM_GUI  = resourcesFilePathsMappings.getFloatVarFromProps("DEFAULT_JVM_GUI", 1.0f);
-	public static final String DEFAULT_JVM_VERS_MAX = resourcesFilePathsMappings.getProperty("DEFAULT_JVM_VERS_MAX");
-	public static final String DEFAULT_JVM_VERS_MIN = resourcesFilePathsMappings.getProperty("DEFAULT_JVM_VERS_MIN");
-	public static final String DEFAULT_LOG_LEVEL = resourcesFilePathsMappings.getProperty("DEFAULT_LOG_LEVEL");
-	public static final boolean DEFAULT_JVM_JAR_MODE = Boolean.valueOf(resourcesFilePathsMappings.getProperty("DEFAULT_JVM_JAR_MODE"));
-	public static final boolean DEFAULT_JVM_SHELL_ON = Boolean.valueOf(resourcesFilePathsMappings.getProperty("DEFAULT_JVM_SHELL_ON"));
+	public static int DEFAULT_JVM_XMX;
+	public static int DEFAULT_JVM_XMS;
+	public static int DEFAULT_JVM_XSS;
+	public static float DEFAULT_JVM_GUI;
+	public static String DEFAULT_JVM_VERS_MAX;
+	public static String DEFAULT_JVM_VERS_MIN;
+	public static String DEFAULT_LOG_LEVEL;
+	public static boolean DEFAULT_JVM_JAR_MODE;
+	public static boolean DEFAULT_JVM_SHELL_ON;
 	
 	// NETWORK OPTIONS
-	public static final int NETWORK_UTILS_TIMEOUT  = resourcesFilePathsMappings.getIntVarFromProps("NETWORK_UTILS_TIMEOUT", 5000);
-	public static final String testAddress = resourcesFilePathsMappings.getProperty("testAddress");
+	public static int NETWORK_UTILS_TIMEOUT;
+	public static String testAddress;
 	
 	/**	GUI PROPERTIES **/
 	
 	// MENU CUSTOM FONTS
-	public static final Font MENU_LASTFILES_DEFAULT_FONT =  new Font("Segoe UI", Font.PLAIN, 15);
-	public static final Font MENU_LASTFILES_FONT =  resourcesFilePathsMappings.getFontFromString("MENU_LASTFILES_FONT", MENU_LASTFILES_DEFAULT_FONT);
+	public static Font MENU_LASTFILES_DEFAULT_FONT;
+	public static Font MENU_LASTFILES_FONT;
 	
 	
 	// DEBUG GUI FLAG
-	public static String debugPreRead = resourcesFilePathsMappings.getProperty("FLAG_DEBUG_GRAPHICS");
-	private static final boolean FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
-	public static String DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
+	public static String debugPreRead;
+	private static boolean FLAG_DEBUG_GRAPHICS;
+	public static String DEBUG_GRAPHICS;
 	
 	// Tooltips
-	public static int TOOLTIP_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_DELAY", 400);
-	public static int TOOLTIP_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
-	public static int TOOLTIP_RESHOW_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_RESHOW_DELAY", 2000);
-	public static String TOOLTIP_FONT = resourcesFilePathsMappings.getProperty("TOOLTIP_FONT");
-	public static Font DEFAULT_POP_UP_MENUS_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_POP_UP_MENUS_FONT", new Font("Segoe UI", Font.PLAIN, 16));
+	public static int TOOLTIP_DELAY;
+	public static int TOOLTIP_TIMEOUT;
+	public static int TOOLTIP_RESHOW_DELAY;
+	public static String TOOLTIP_FONT;
+	public static Font DEFAULT_POP_UP_MENUS_FONT;
 	
 	// FILE CHOOSER DIALOG
-	public static final Dimension DEFAULT_FILE_CHOOSER_SIZE = new Dimension(800, 600);
-	public static final Dimension FILE_CHOOSER_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "FILE_CHOOSER_SIZE_STR", DEFAULT_FILE_CHOOSER_SIZE);
+	public static Dimension DEFAULT_FILE_CHOOSER_SIZE;
+	public static Dimension FILE_CHOOSER_SIZE;
 	
 	// TEXT EDITOR DEFAULTS
-	public static final int ADVICE_FOOTER_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("ADVICE_FOOTER_TIMEOUT", 7000);
-	public static final ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS = getUppercaseSeparators(resourcesFilePathsMappings.getProperty("TXT_EDITOR_UPPERCASE_SEPARATORS"), ",");
-	public static final int DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
-	public static final int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);
-	public static final int MAX_WORKSPACE_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_WORKSPACE_LIST_SIZE", 15);
-	public static final int MAX_HISTORY_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_HISTORY_SIZE", 40);
-	public static final boolean RECTANGULAR_TXT_SELECTION_ALLOWED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("RECTANGULAR_TXT_SELECTION_ALLOWED"));
-	public static final boolean PRELOAD_TXT_EDITOR_FLAG = Boolean.valueOf(resourcesFilePathsMappings.getProperty("PRELOAD_TXT_EDITOR_FLAG"));
-	public static final Font TXT_EDITOR_MINIMAP_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 5);
-	public static Font TXT_EDITOR_MINIMAP_FONT = resourcesFilePathsMappings.getFontFromString("TXT_EDITOR_MINIMAP_FONT", TXT_EDITOR_MINIMAP_FONT_DEFAULT);
+	public static int ADVICE_FOOTER_TIMEOUT;
+	public static ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS;
+	public static int DEFAULT_TREE_ROW_HEIGHT;
+	public static int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);
+	public static int MAX_WORKSPACE_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_WORKSPACE_LIST_SIZE", 15);
+	public static int MAX_HISTORY_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_HISTORY_SIZE", 40);
+	public static boolean RECTANGULAR_TXT_SELECTION_ALLOWED;
+	public static boolean PRELOAD_TXT_EDITOR_FLAG;
+	public static Font TXT_EDITOR_MINIMAP_FONT_DEFAULT;
+	public static Font TXT_EDITOR_MINIMAP_FONT;
 	
-	public static final Font TXT_EDITOR_CLIPBOARD_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 12);
-	public static Font TXT_EDITOR_CLIPBOARD_FONT =  resourcesFilePathsMappings.getFontFromString("TXT_EDITOR_CLIPBOARD_FONT", TXT_EDITOR_CLIPBOARD_FONT_DEFAULT);
+	public static Font TXT_EDITOR_CLIPBOARD_FONT_DEFAULT;
+	public static Font TXT_EDITOR_CLIPBOARD_FONT;
 	
-	public static final boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
+	public static boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED;
 
-	public static final String CLIPBOARD_PANEL_DEFAULT = "Clipboard.txt";
+	public static String CLIPBOARD_PANEL_DEFAULT;
 	/**
 	 * Lazy initialized map with clipboards names related to clipboard files
 	 */
-	public static final TreeMap<String, File> CLIPBOARD_PANEL_MAP = getRefreshedClipBoardsMap();
+	public static TreeMap<String, File> CLIPBOARD_PANEL_MAP;
 	/**
 	 * Contains String themes name, and source theme file, lazy initialized
 	 */
-	public static final TreeMap<String, File> XML_THEMES_MAP = getRefreshedThemesMap();
+	public static TreeMap<String, File> XML_THEMES_MAP;
 	/**
 	 * Contains String themes name, and theme content lazy read
 	 */
-	public static final TreeMap<String, String> XML_THEMES_CONTENT_MAP = getRefreshedThemesContentMap();
+	public static TreeMap<String, String> XML_THEMES_CONTENT_MAP;
 	
-	public static final Dimension MINIMUM_BUTTON_SIZE = new Dimension(18, 18);
-	public static final Font BUTTON_DEFAULT_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_DEFAULT_FONT", new Font("Segoe UI", Font.BOLD, 12));
-	public static final Font BUTTON_TAB_HEAD_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_TAB_HEAD_FONT", new Font("Segoe UI", Font.PLAIN, 14));
-	public static final Font DEFAULT_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_FONT", new Font("Segoe UI", Font.PLAIN, 16));
-	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
-	public static final Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
-	public static final int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
-	public static final int NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
-	public static final int FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);
-	public static final int ULTRA_FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("ULTRA_FAST_WHEEL_SPEED", 300);
-	public static final int DEF_CARET_BLINK_RATE = resourcesFilePathsMappings.getIntVarFromProps("DEF_CARET_BLINK_RATE", 400);
+	public static Dimension MINIMUM_BUTTON_SIZE;
+	public static Font BUTTON_DEFAULT_FONT;
+	public static Font BUTTON_TAB_HEAD_FONT;
+	public static Font DEFAULT_FONT;
+	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR;
+	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER;
+	public static int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS;
+	public static int NORMAL_WHEEL_SPEED;
+	public static int FAST_WHEEL_SPEED;
+	public static int ULTRA_FAST_WHEEL_SPEED;
+	public static int DEF_CARET_BLINK_RATE;
 	
-	public static int FOOTER_MAX_DIR_LABEL_LENGTH = resourcesFilePathsMappings.getIntVarFromProps("FOOTER_MAX_DIR_LABEL_LENGTH", 30);
-	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", 2);
+	public static int FOOTER_MAX_DIR_LABEL_LENGTH;
+	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL;
+	
+	public static GeneralConfig lazyInitializedGlobalReference;
 	
 	//// CONSTRUCTOR ////
 	public GeneralConfig() {
@@ -195,6 +197,16 @@ public class GeneralConfig {
 				propertiesSrc.createNewFile();
 			} catch (IOException e) {
 			}
+		}
+		Thread configurator = new Thread(new Runnable() {
+			public void run() {
+				initStaticConfig();
+			}
+		});
+		configurator.start();
+		try {
+			configurator.join();
+		}catch(InterruptedException e) {
 		}
 	}
 	
@@ -381,5 +393,140 @@ public class GeneralConfig {
 	    fileName = name+"("+n+")."+extension;
 		
 		return fileName;
+	}
+	
+	public Boolean initStaticConfig() {
+		
+		try {
+			// TEST ERROR CATCH
+			FLAG_THROW_ERROR_TEST_ON = Boolean.valueOf(resourcesFilePathsMappings.getProperty("FLAG_THROW_ERROR_TEST_ON"));
+			MAX_N_OF_ERR_DIALOG_OPENED = resourcesFilePathsMappings.getIntVarFromProps("MAX_N_OF_ERR_DIALOG_OPENED", 2);
+			AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD = resourcesFilePathsMappings.getIntVarFromProps("AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD", 5000);
+			
+			// Ini files configuration
+			DEFAULT_INI= resourcesFilePathsMappings.getProperty("DEFAULT_INI");
+			BACKUP_INI= resourcesFilePathsMappings.getProperty("BACKUP_INI");
+			
+			// Readme File
+			SCRYPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
+			SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
+
+			// Logs configuration
+			LOG_PATH = resourcesFilePathsMappings.getProperty("LOG_PATH");
+			LOG_PROPERTIES_PATH = resourcesFilePathsMappings.getProperty("LOG_PROPERTIES_PATH");
+			LOG_LAUNCHER_PATH = resourcesFilePathsMappings.getProperty("LOG_LAUNCHER_PATH");
+			LAUNCHER_CONTAINER_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_CONTAINER_PATH");
+			DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH"); 
+			LAUNCHER_LOG_PROPS_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_LOG_PROPS_PATH"); 
+			
+			// JVM and LAUNCHER
+			MAX_JVM_COMPLETE_COMPATIBILITY = resourcesFilePathsMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
+			JVM_CUSTOM_ADDED_SETTINGS = resourcesFilePathsMappings.getProperty("JVM_CUSTOM_ADDED_SETTINGS");
+			
+			/**
+			 * Used in launcher to choose right type of launch command for system
+			 */
+			FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(resourcesFilePathsMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
+			MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
+			MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
+			
+			// LAUNCHER DEFAULTS
+			DEFAULT_JVM_XMX  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XMX", 768);
+			DEFAULT_JVM_XMS  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XMS", 348);
+			DEFAULT_JVM_XSS  = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_JVM_XSS", 100);
+			DEFAULT_JVM_GUI  = resourcesFilePathsMappings.getFloatVarFromProps("DEFAULT_JVM_GUI", 1.0f);
+			DEFAULT_JVM_VERS_MAX = resourcesFilePathsMappings.getProperty("DEFAULT_JVM_VERS_MAX");
+			DEFAULT_JVM_VERS_MIN = resourcesFilePathsMappings.getProperty("DEFAULT_JVM_VERS_MIN");
+			DEFAULT_LOG_LEVEL = resourcesFilePathsMappings.getProperty("DEFAULT_LOG_LEVEL");
+			DEFAULT_JVM_JAR_MODE = Boolean.valueOf(resourcesFilePathsMappings.getProperty("DEFAULT_JVM_JAR_MODE"));
+			DEFAULT_JVM_SHELL_ON = Boolean.valueOf(resourcesFilePathsMappings.getProperty("DEFAULT_JVM_SHELL_ON"));
+			
+			// NETWORK OPTIONS
+			NETWORK_UTILS_TIMEOUT  = resourcesFilePathsMappings.getIntVarFromProps("NETWORK_UTILS_TIMEOUT", 5000);
+			testAddress = resourcesFilePathsMappings.getProperty("testAddress");
+			
+			/**	GUI PROPERTIES **/
+			
+			// MENU CUSTOM FONTS
+			MENU_LASTFILES_DEFAULT_FONT =  new Font("Segoe UI", Font.PLAIN, 15);
+			MENU_LASTFILES_FONT =  resourcesFilePathsMappings.getFontFromString("MENU_LASTFILES_FONT", MENU_LASTFILES_DEFAULT_FONT);
+			
+			
+			// DEBUG GUI FLAG
+			debugPreRead = resourcesFilePathsMappings.getProperty("FLAG_DEBUG_GRAPHICS");
+			FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
+			DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
+			
+			// Tooltips
+			TOOLTIP_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_DELAY", 400);
+			TOOLTIP_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
+			TOOLTIP_RESHOW_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_RESHOW_DELAY", 2000);
+			TOOLTIP_FONT = resourcesFilePathsMappings.getProperty("TOOLTIP_FONT");
+			DEFAULT_POP_UP_MENUS_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_POP_UP_MENUS_FONT", new Font("Segoe UI", Font.PLAIN, 16));
+			
+			// FILE CHOOSER DIALOG
+			DEFAULT_FILE_CHOOSER_SIZE = new Dimension(800, 600);
+			FILE_CHOOSER_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "FILE_CHOOSER_SIZE_STR", DEFAULT_FILE_CHOOSER_SIZE);
+			
+			// TEXT EDITOR DEFAULTS
+			ADVICE_FOOTER_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("ADVICE_FOOTER_TIMEOUT", 7000);
+			TXT_EDITOR_UPPERCASE_SEPARATORS = getUppercaseSeparators(resourcesFilePathsMappings.getProperty("TXT_EDITOR_UPPERCASE_SEPARATORS"), ",");
+			DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
+			RECTANGULAR_TXT_SELECTION_ALLOWED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("RECTANGULAR_TXT_SELECTION_ALLOWED"));
+			PRELOAD_TXT_EDITOR_FLAG = Boolean.valueOf(resourcesFilePathsMappings.getProperty("PRELOAD_TXT_EDITOR_FLAG"));
+			TXT_EDITOR_MINIMAP_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 5);
+			TXT_EDITOR_MINIMAP_FONT = resourcesFilePathsMappings.getFontFromString("TXT_EDITOR_MINIMAP_FONT", TXT_EDITOR_MINIMAP_FONT_DEFAULT);
+			
+			TXT_EDITOR_CLIPBOARD_FONT_DEFAULT =  new Font("Segoe UI", Font.PLAIN, 12);
+			TXT_EDITOR_CLIPBOARD_FONT =  resourcesFilePathsMappings.getFontFromString("TXT_EDITOR_CLIPBOARD_FONT", TXT_EDITOR_CLIPBOARD_FONT_DEFAULT);
+			
+			TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
+
+			CLIPBOARD_PANEL_DEFAULT = "Clipboard.txt";
+			/**
+			 * Lazy initialized map with clipboards names related to clipboard files
+			 */
+			CLIPBOARD_PANEL_MAP = getRefreshedClipBoardsMap();
+			/**
+			 * Contains String themes name, and source theme file, lazy initialized
+			 */
+			XML_THEMES_MAP = getRefreshedThemesMap();
+			/**
+			 * Contains String themes name, and theme content lazy read
+			 */
+			XML_THEMES_CONTENT_MAP = getRefreshedThemesContentMap();
+			
+			MINIMUM_BUTTON_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "MINIMUM_BUTTON_SIZE", new Dimension(18,24));
+			BUTTON_DEFAULT_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_DEFAULT_FONT", new Font("Segoe UI", Font.BOLD, 12));
+			BUTTON_TAB_HEAD_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_TAB_HEAD_FONT", new Font("Segoe UI", Font.PLAIN, 14));
+			DEFAULT_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_FONT", new Font("Segoe UI", Font.PLAIN, 16));
+			BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
+			BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
+			TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
+			NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
+			FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);
+			ULTRA_FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("ULTRA_FAST_WHEEL_SPEED", 300);
+			DEF_CARET_BLINK_RATE = resourcesFilePathsMappings.getIntVarFromProps("DEF_CARET_BLINK_RATE", 400);
+			
+			FOOTER_MAX_DIR_LABEL_LENGTH = resourcesFilePathsMappings.getIntVarFromProps("FOOTER_MAX_DIR_LABEL_LENGTH", 30);
+			DEFAULT_FILE_TREE_ANCESTOR_LEVEL = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", 2);
+			
+			ImagesPathConfigurator.init();
+			GeneralResourcesPaths.init();
+			SoundsConfigurator.init();
+			
+			return new Boolean(true);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public static boolean initLazyGeneralConfig() {
+		if(lazyInitializedGlobalReference == null){
+			lazyInitializedGlobalReference = new GeneralConfig();
+			return true;
+		}else {
+			return false;
+		}
 	}
 }

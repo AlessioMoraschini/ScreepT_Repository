@@ -14,6 +14,16 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import resources.SoundsConfigurator;
 
 public class Sounds {
+	
+	// Preset static volumes
+	public static final float MAX = 1.0f;
+	public static final float HIGH = 0.8f;
+	public static final float MED_HIGH = 0.6f;
+	public static final float MED = 0.5f;
+	public static final float MED_LOW = 0.4f;
+	public static final float LOW = 0.3f;
+	public static final float MIN = 0.2f;
+	public static final float MUTE = 0f;
 
 	private static float volume = SoundsConfigurator.DEFAULT_EFFECTS_VOLUME;
 	private static AudioInputStream openStream = null;

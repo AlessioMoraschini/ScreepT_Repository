@@ -28,7 +28,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	static Logger logger = Logger.getLogger(INItializer.class); 
 	
 	// DEFAULT INI
-	public final static String DEFAULT_INI_PATH = GeneralConfig.RESOURCES_DIR  + "CONFIG.ini"; 
+	public final static String DEFAULT_INI_PATH = "Resources_Scrypt/CONFIG.ini"; 
 	
 	// options om
 	private GenericOption genOpt;

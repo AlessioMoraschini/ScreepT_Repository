@@ -53,19 +53,14 @@ import utils.SysUtils;
  */
 public class ScrYpTLauncher {
 	
-	// trigger configPreload before using its values
-	private static GeneralConfig configPreloader = new GeneralConfig();
-
 	// ScrYpTLauncher logger
 	static Logger logger = Logger.getLogger(ScrYpTLauncher.class); 
 	
-	public static GeneralConfig mainConfigInitializer;
-		
-	public static final String DEFAULT_INI_PATH = GeneralConfig.DEFAULT_LAUNCHER_INI_PATH; 
-	public static final String APPLICATION_DIR = GeneralConfig.MAIN_APP_ROOT_DIR;
+	public static String DEFAULT_INI_PATH; 
+	public static String APPLICATION_DIR;
 	
 	// jvm search fields default
-	public static final String JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
+	public static String JVM_ARGS;
 	
 	public static boolean ignoreWarnings = false;
 	
@@ -100,6 +95,14 @@ public class ScrYpTLauncher {
 	/** MAIN START POINT **/
 	public static void main(String[] args) {
 		
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
+
+		GeneralConfig.initLazyGeneralConfig();
+		
+		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
+		DEFAULT_INI_PATH = GeneralConfig.DEFAULT_LAUNCHER_INI_PATH; 
+		APPLICATION_DIR = GeneralConfig.MAIN_APP_ROOT_DIR;  
+		
 		// Initialize logger properties -> FIRST THING TO DO
 		PropertyConfigurator.configure(GeneralConfig.LAUNCHER_LOG_PROPS_PATH);
 		appLogStart();
@@ -109,7 +112,6 @@ public class ScrYpTLauncher {
 		ARGS = args;
 		argumentsFiles = getFileArrayFromStrings(args);
 		
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
 		for (int i = 0; i < 20; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
 			String msg = "Initializing launcher" + dots;

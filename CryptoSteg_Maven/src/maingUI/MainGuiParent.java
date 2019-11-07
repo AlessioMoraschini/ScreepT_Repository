@@ -38,7 +38,6 @@ import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import generic.LimitedConcurrentList;
-import gui.utils.LauncherLoaderFrame;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
@@ -83,12 +82,6 @@ public class MainGuiParent {
 	
 	// RUNNING FLAG
 	volatile public static boolean mainAppRunning = false;
-	
-	// LOADER
-	public static LauncherLoaderFrame loaderGraphics;
-	public static final float launcherRatio = 0.3f;
-	public static final Dimension screenSize = GuiUtils.getScreenSize();
-	public static final Dimension minimumSize = new Dimension(1200,650);
 	
 	// MENU ITEMS
 	int menuSize;
@@ -421,7 +414,7 @@ public class MainGuiParent {
 		// preferences submenu
 		mntmCustomizeUIView.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GUI_OPT));
 		mntmGenOpt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_OPT));
-		mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
+		mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPAND));
 		mntmImmersiveMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMMERSIVE));
 
 		// ScreepT submenu
@@ -570,6 +563,7 @@ public class MainGuiParent {
 	public void updateLastOpenedFiles(LimitedConcurrentList<FileNamed> lastOpenedLlist) {
 
 		try {
+			@SuppressWarnings("unchecked")
 			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastOpenedLlist.getList().clone();
 			Collections.reverse(valueCopy);
 			mnLastOpenedFile.removeAll();
@@ -611,7 +605,7 @@ public class MainGuiParent {
 					}
 					mnLastWorkspaces.add(newOccurrence);
 					addListenerToJMenuItemLastWorkspaces(newOccurrence);
-				}else {
+				}else if(file.mFile != null){
 					currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.removeAllOccurrencesByEquals(file);
 				}
 			} 

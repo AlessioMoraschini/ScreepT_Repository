@@ -22,6 +22,7 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 
 public class TextEditorFooterPanel extends JPanel{
+	private static final long serialVersionUID = 6053593284206473287L;
 	
 	public TextEditor parent;
 	public TextEditorUtils parentUtils;
@@ -55,7 +56,7 @@ public class TextEditorFooterPanel extends JPanel{
 		
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(Color.GRAY);
-		setLayout(new MigLayout("fill,insets 3", "[][200px,grow][grow][][:60px:120px][][:60px:120px][][:60px:120px][][:20px:120px][][:20px:120px][][:60px:120px][grow][]", "[fill]"));
+		setLayout(new MigLayout("fill,insets 3", "[][200px,grow][grow][][:60px:120px][][:60px:120px][][:60px:120px][][:20px:120px][][:20px:120px][][:60px:120px][grow][140px:n][]", "[fill]"));
 
 		lblCurrentFileLBL = new JLabel("   Current file:");
 		add(lblCurrentFileLBL, "cell 0 0,growy");
@@ -144,10 +145,11 @@ public class TextEditorFooterPanel extends JPanel{
 		add(dynLblSearchEsit, "cell 15 0,alignx center");
 
 		lblAdvice = new JLabel("");
+		lblAdvice.setAlignmentX(0.9f);
 		add(lblAdvice, "cell 16 0,alignx right,aligny center");
 		lblAdvice.setBackground(SystemColor.info);
-		lblAdvice.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblAdvice.setForeground(new Color(176, 196, 222));
+		lblAdvice.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
+		lblAdvice.setForeground(Color.LIGHT_GRAY);
 		lblAdvice.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAdvice.setText(" [Current output: .txt]");
 		

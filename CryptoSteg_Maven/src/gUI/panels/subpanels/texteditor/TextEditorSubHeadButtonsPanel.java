@@ -15,6 +15,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -30,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -38,7 +40,9 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.BadLocationException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.drjekyll.fontchooser.FontDialog;
@@ -166,6 +170,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JButton btnCalculator;
 	public JButton btnColorSampler;
 	private JButton btnStyledCopy;
+	public JButton btnBase64Conversion;
 	
 	public JToggleButton btnToggleFileView;
 	public JToggleButton toggleBtnMap;
@@ -220,7 +225,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		DEFAULT_FORE_COL = currentConfiguration.getTextEditorOpt().foreCol;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("fill, insets 0, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][35px:50px:60px][75px:75px:75px][35px:35px:35px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:25px,grow][:0px:25px,grow]"));
+		setLayout(new MigLayout("fill, insets 0, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][35px:50px:60px][75px:75px:75px][35px:35px:35px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:35px,grow][:0px:35px,grow]"));
 		
 		btnCloseAllTabs = new JButton("");
 		btnCloseAllTabs.setForeground(Color.BLACK);
@@ -247,16 +252,18 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		add(btnUpperPostDots, "cell 12 0,grow");
 		
 		toggleBtnMap = new JToggleButton("");
+		toggleBtnMap.setMinimumSize(new Dimension(25, 0));
 		toggleBtnMap.setToolTipText(TextEditorTooltips.tooltipMapViewBtn);
 		toggleBtnMap.setCursor(GuiUtils.CURSOR_HAND);
 		toggleBtnMap.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MAP));
-		add(toggleBtnMap, "cell 28 0,growy");
+		add(toggleBtnMap, "cell 28 0,alignx center,growy");
 		
-		toggleButtonSpellCheck = new JToggleButton("");
-		toggleButtonSpellCheck.setToolTipText(TextEditorTooltips.tooltipSpellChecker);
-		toggleButtonSpellCheck.setCursor(GuiUtils.CURSOR_HAND);
-		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
-		add(toggleButtonSpellCheck, "cell 29 0,grow");
+		toggleBtnClipboard = new JToggleButton("");
+		toggleBtnClipboard.setMinimumSize(new Dimension(25, 0));
+		toggleBtnClipboard.setToolTipText(TextEditorTooltips.tooltipClipboardViewBtn);
+		toggleBtnClipboard.setCursor(GuiUtils.CURSOR_HAND);
+		toggleBtnClipboard.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
+		add(toggleBtnClipboard, "cell 29 0,alignx center,growy");
 		
 		btnLowerAfterDots = new JButton(".tT");
 		btnLowerAfterDots.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -270,12 +277,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnStyledCopy.setCursor(GuiUtils.CURSOR_HAND);
 		btnStyledCopy.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
 		add(btnStyledCopy, "cell 13 1,grow");
-		
-		toggleBtnClipboard = new JToggleButton("");
-		toggleBtnClipboard.setToolTipText(TextEditorTooltips.tooltipClipboardViewBtn);
-		toggleBtnClipboard.setCursor(GuiUtils.CURSOR_HAND);
-		toggleBtnClipboard.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
-		add(toggleBtnClipboard, "cell 28 1,growy");
 		
 		comboFileFormat = new JComboBox<SupportedFileTextEditor>();
 		comboFileFormat.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT);
@@ -408,7 +409,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		lBLMargin.setMinimumSize(new Dimension(14, 12));
 		lBLMargin.setForeground(Color.WHITE);
 		lBLMargin.setFont(new Font("SansSerif", Font.BOLD, 13));
-		add(lBLMargin, "cell 34 0,alignx center");
+		add(lBLMargin, "cell 34 0,alignx center,aligny center");
 
 		btnToggleFileView = new JToggleButton("");
 		btnToggleFileView.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
@@ -522,6 +523,19 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnGoToLine.setToolTipText(TextEditorTooltips.tooltipGoToLine);
 		btnGoToLine.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GOTO_LINE));
 		add(btnGoToLine, "cell 26 0,growy");
+		
+		btnBase64Conversion = new JButton("");
+		btnBase64Conversion.setMinimumSize(new Dimension(25, 0));
+		btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
+		btnBase64Conversion.setToolTipText("Encode selected/all text to base 64 (press ctrl to decode base 64)");
+		add(btnBase64Conversion, "cell 28 1,alignx center,growy");
+		
+		toggleButtonSpellCheck = new JToggleButton("");
+		toggleButtonSpellCheck.setMinimumSize(new Dimension(25, 0));
+		toggleButtonSpellCheck.setToolTipText(TextEditorTooltips.tooltipSpellChecker);
+		toggleButtonSpellCheck.setCursor(GuiUtils.CURSOR_HAND);
+		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
+		add(toggleButtonSpellCheck, "cell 29 1,alignx center,growy");
 						
 		chckbxShowTabGrid = new JCheckBox("Show tab grid");
 		chckbxShowTabGrid.setFont(new Font("SansSerif", Font.BOLD, 13));
@@ -531,7 +545,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		chckbxShowTabGrid.setSelected(currentConfiguration.getTextEditorOpt().isTabLineVisible());
 		chckbxShowTabGrid.setForeground(SystemColor.menu);
 		chckbxShowTabGrid.setBackground(Color.DARK_GRAY);
-		add(chckbxShowTabGrid, "cell 31 1 2 1");
+		add(chckbxShowTabGrid, "cell 31 1 2 1,aligny center");
 				
 		lblFontSize = new JLabel("Font size: ");
 		lblFontSize.setFont(new Font("SansSerif", Font.BOLD, 13));
@@ -542,7 +556,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		lblSIZE = new JLabel("");
 		lblSIZE.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblSIZE.setForeground(SystemColor.window);
-		add(lblSIZE, "cell 34 1,alignx center");
+		add(lblSIZE, "cell 34 1,alignx center,aligny center");
 		lblSIZE.setText(String.valueOf(GeneralConfig.DEFAULT_FONT.getSize()) + " Px");
 		
 		sliderFontSize = new JSlider(4, 100);
@@ -1012,6 +1026,82 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), goToLineDialog, JFrame.MAXIMIZED_BOTH);
 					}
 				});
+			}
+		});
+		
+		// CONVERT TO/FROM base 64
+		btnBase64Conversion.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final JTextArea textArea = parent.getCurrentTabEditor().loadedTabObj.textArea;
+				textArea.setCursor(GuiUtils.CURSOR_WAIT);
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						final int startSel = textArea.getSelectionStart();
+						int endSel = textArea.getSelectionEnd();
+						String currEncoding = SysUtils.getCurrentSystemEncoding();
+						String sourceText = GuiUtils.getSelectedOrAllText(textArea);
+						boolean isSomethingSelected = textArea.getSelectedText() != null;
+						try {
+							boolean controlDown = parent.shortcutsListener.isCtrlDown();
+							String converted = "";
+
+							if (!controlDown) {
+								// Convert only selection an inject in the place of current selection
+								converted = Base64.encodeBase64String(sourceText.getBytes(currEncoding));
+							} else {
+								byte[] decoded = Base64.decodeBase64(sourceText);
+								converted = new String(decoded, currEncoding);
+							}
+
+							if (isSomethingSelected) {
+								String prefix = textArea.getText(0, startSel);
+								String postFix = textArea.getText(endSel, textArea.getText().length() - endSel);
+								textArea.setText(prefix + converted + postFix);
+								endSel = startSel + converted.length() - 1;
+
+							} else {
+								textArea.setText(converted);
+							}
+
+						} catch (UnsupportedEncodingException | BadLocationException e1) {
+							dialogHelper.error("Something has gone wrong :(", "An Error Occurred");
+							logger.error("An error occurred tryin' to convert using base64 (SelectedText = " + isSomethingSelected);
+						} finally {
+							if (startSel != endSel) {
+								textArea.requestFocus();
+								textArea.setSelectionStart(startSel);
+								textArea.setSelectionEnd(endSel);
+							} else {
+								textArea.setCaretPosition(endSel);
+							}
+							
+							textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
+						}
+					}
+				});
+			}
+		});
+		
+		btnBase64Conversion.addMouseListener(new MouseListener() {
+			public void mouseReleased(MouseEvent e) {
+			}
+
+			public void mousePressed(MouseEvent e) {
+			}
+
+			public void mouseExited(MouseEvent e) {
+				parent.shortcutsListener.flagHoverBtnBase64.set(false);
+				parent.shortcutsListener.doControlActions();
+			}
+
+			public void mouseEntered(MouseEvent e) {
+				parent.shortcutsListener.flagHoverBtnBase64.set(true);
+				parent.shortcutsListener.doControlActions();
+			}
+
+			public void mouseClicked(MouseEvent e) {
 			}
 		});
 

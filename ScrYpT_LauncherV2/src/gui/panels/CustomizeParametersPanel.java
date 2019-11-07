@@ -102,7 +102,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private JLabel lblLogLevel;
 	private JLabel lblSTackSizeInfo;
 	private JLabel lblLogLevelInfo;
-	private JComboBox comboLogLevel;
+	private JComboBox<String> comboLogLevel;
 	private JCheckBox chckbxActiveShell;
 	private JCheckBox chckBoxLaunchAsJar;
 	private JSlider sliderGuiScale;

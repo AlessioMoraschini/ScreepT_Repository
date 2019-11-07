@@ -24,12 +24,16 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	
 	public static final String ERROR_FILE_REASONS = " reasons could be that file does not exist or contains errors ";
 	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: Closing application. \n ";
-	public static final String DIALOG_USER_ERR_INFO = "You can export Logs going under help menu -> export logs: export them on your pc and send them to the mail ("+GeneralConfig.MAIL_BUGS
-			+") if you want to signal this problem. You can find more infos on: " + GeneralConfig.WEBSITE + "\n\n";
+	public static String DIALOG_USER_ERR_INFO;
 	
 	IParametricRunnable doAfterError;
 	Thread doAfterErrorThread;
 	InitOwner initOwner;
+	
+	public static void init() {
+		DIALOG_USER_ERR_INFO = "You can export Logs going under help menu -> export logs: export them on your pc and send them to the mail ("+GeneralConfig.MAIL_BUGS
+				+") if you want to signal this problem. You can find more infos on: " + GeneralConfig.WEBSITE + "\n\n";
+	}
 	
 	/**
 	 * When an exception will be catched, if exception is critical then parametric runnable will be launched (parametricRun method invoked)

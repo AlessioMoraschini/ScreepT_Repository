@@ -186,6 +186,9 @@ public class IconsPathConfigurator {
 	public static final String ICON_ARROW_CURVED_LEFT = GeneralConfig.RESOURCES_DIR + "Icons/General/curvedArrowLeft.png";
 	public static final String ICON_UP_BOXED_PURPLE = GeneralConfig.RESOURCES_DIR + "Icons/General/upSquare.png";
 
+	public static final String ICON_64_PURPLE = GeneralConfig.RESOURCES_DIR + "Icons/General/64_Purple.png";
+	public static final String ICON_64_RED = GeneralConfig.RESOURCES_DIR + "Icons/General/64_Red.png";
+
 	public static final String ICON_UP_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUpSmall.png";
 	public static final String ICON_UP = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUp.png";
 	public static final String ICON_DOWN_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDownSmall.png";

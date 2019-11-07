@@ -1,5 +1,7 @@
 package maingUI;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import generic.ParametricExceptionThread;
+import gui.utils.LauncherLoaderFrame;
 import handlers.AWTExceptionHandler;
 import launcherutils.IniFileManager;
 import logger.LoggerUtils;
@@ -23,20 +26,24 @@ import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import media.Sounds;
 import resources.GeneralConfig;
+import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import variousutils.HandleString;
 
 public class MainGuiGeneralAppStarter {
 
     public static Level LOG_LEVEL_AT_START;
+    private static boolean isLoggerReady = false;
 	
 	// mainGUI logger
 	static Logger logger = Logger.getLogger(MainGuiGeneralAppStarter.class);
-		
-	// used with the only aim to force GeneralConfig properties read
-	@SuppressWarnings("unused")
-	private static GeneralConfig configStarter;
 	
+	// LOADER
+	public static LauncherLoaderFrame loaderGraphics;
+	public static final float launcherRatio = 0.3f;
+	public static final Dimension screenSize = GuiUtils.getScreenSize();
+	public static final Dimension minimumSize = new Dimension(1200,650);
+		
 	// Main configuration reference for all sub-modules
 	private static INItializer currentConfiguration;
 	// and another one for launcher modding from main app
@@ -52,9 +59,30 @@ public class MainGuiGeneralAppStarter {
 	
 	public static void main(String[] args) {
 		
+		long startTime = System.currentTimeMillis();
+		
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
+		loaderGraphics.update("Preloading application properties and general configuration files...", 5);
 		fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
 		
 		try {
+
+			try {
+				// start Properties
+				GeneralConfig.initLazyGeneralConfig();
+				dialogHelper = new JOptionHelper(null);
+				
+				GuiUtils.init();
+				JOptionHelper.init();
+				AWTExceptionHandler.init();
+				
+			} catch (Exception e) {
+				Sounds.playSound(SoundsConfigurator.ERROR, Sounds.HIGH);
+				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
+				throw e;
+			}
+			
+			printElapsed("dialogHelper and GeneralConfig initialization finished", startTime);
 			
 			// CATCH ALL EXCEPTION UNCATCHED DURING SW EXECUTION AND ANALYZE IF THEY ARE Errors or Exceptions
 			mainTrheadAwtErrorHandler = new AWTExceptionHandler(new ParametricExceptionThread(new Runnable() {
@@ -67,57 +95,64 @@ public class MainGuiGeneralAppStarter {
 					}
 				}
 			}), MainGUI.getCurrentConfInterface());
+
+			printElapsed("AWT error handler loaded", startTime);
 			
 			try {
-				// start Properties
-				dialogHelper = new JOptionHelper(null);
-				configStarter = new GeneralConfig();
 				
 				// SETUP TOOLTIPS PROPERTIES
 				Font tooltipFontFromProps = ("".equals(GeneralConfig.TOOLTIP_FONT))? new Font("Segoe UI", Font.PLAIN, 14) : HandleString.getFontFromString(GeneralConfig.TOOLTIP_FONT);
 				GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, GeneralConfig.TOOLTIP_RESHOW_DELAY, tooltipFontFromProps);
 			
 			} catch (Exception e) {
-				Sounds.playSound(SoundsConfigurator.ERROR, 0.8f);
-				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
-				throw e;
+				Sounds.playSound(SoundsConfigurator.ERROR, Sounds.HIGH);
+				dialogHelper.errorScroll("Cannot setup Tooltips general graphics, an error occurred", "Cannot load Tooltips props", e);
 			}
+			
+			printElapsed("DialogHelper, General config and tooltips setup finished", startTime);
 			
 			try {
 				// Initialize logger properties
 				PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
 				logger.info(LoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
 				
+				isLoggerReady = true;
+				
 			} catch (Exception e) {
-				Sounds.playSound(SoundsConfigurator.ERROR, 0.8f);
+				Sounds.playSound(SoundsConfigurator.ERROR, Sounds.HIGH);
 				dialogHelper.errorScroll("Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
 						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
 				throw e;
 			}
+			
+			printElapsed("Log properties loaded", startTime);
 			
 			writeSignalFileForExternalJars();
 			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 			
 			// INITIALIZE .INI CONFIGURATION (ScrYpT + Launcher) FROM CONFIG DEFAULT FILES
 			try {
-				launcherConfig = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
+				launcherConfig = new Wini(new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH));
 				LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(IniFileManager.INI_APP_OPT, "logLevelSetting"));
 				logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
 				if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
 					logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
 				}
+				
 				LogManager.getRootLogger().setLevel(LOG_LEVEL_AT_START);
 
 				currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 				currentConfiguration.readConfigIniFile();
 				
-				SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
-				
-				fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
-				
 			} catch (IOException e) {
 				logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);
+				throw e;
 			}
+
+			SoundsConfigurator.DEFAULT_EFFECTS_VOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
+			fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
+			
+			printElapsed("Initial configuration completed", startTime);
 			
 			/*************************
 			 * LAUNCH MAIN APPLICATION
@@ -126,8 +161,14 @@ public class MainGuiGeneralAppStarter {
 			/** MainApp: LAUNCHED :)**/
 			MainGUI.mainAppRunning = true;
 			
+			printElapsed("Launch completed", startTime);
+			
 		// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
 		} catch (Throwable e) {
+			printElapsed("Launch finished with errors", startTime);
+			loaderGraphics.setProgBarColor(Color.RED);
+			try { Thread.sleep(200); } catch (InterruptedException e1) {}
+			loaderGraphics.update("An error occurred during load :(", 100);
 			doStuffBeforeErrorClose(false, e);
 		}
 	}
@@ -147,7 +188,7 @@ public class MainGuiGeneralAppStarter {
 			
 			if (forceCloseWithoutAsk || ParametricExceptionThread.isCriticalError(t)) {
 				logger.error(AWTExceptionHandler.CRITICAL_ERROR_MSG, t);
-				Sounds.playSound(SoundsConfigurator.ERROR, 0.6f);
+				Sounds.playSound(SoundsConfigurator.ERROR, Sounds.MED_HIGH);
 				
 				if (!forceCloseWithoutAsk) {
 					res = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelper.YES_OR_NO);
@@ -174,7 +215,7 @@ public class MainGuiGeneralAppStarter {
 				logger.error("An Exception occurred: ", t);
 				
 				if (currentConfiguration.getGenOpt().isExceptionAdvicesEnabled()) {
-					Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.5f);
+					Sounds.playSound(SoundsConfigurator.SOUND_PLING, Sounds.MED);
 					res = new JOptionHelper(null).warnScroll(
 							"An Exception occurred, but I'still here ;) \n\n"
 									+ "(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"
@@ -212,6 +253,18 @@ public class MainGuiGeneralAppStarter {
 		} catch (Exception e) {
 			logger.error("Error writing signal file ["+GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.getAbsolutePath()+"]");
 		}
+	}
+	
+	private static long printElapsed(String msg, long startTime) {
+		long endTime = System.currentTimeMillis();
+		String totMsg = "\n\n [MAIN LOAD PROGRESS] => " + msg + " after " + (endTime - startTime) + " ms (Total time from first executed line)\n";
+		if (isLoggerReady && !Level.OFF.equals(LOG_LEVEL_AT_START) && !Level.ERROR.equals(LOG_LEVEL_AT_START) && !Level.FATAL.equals(LOG_LEVEL_AT_START)) {
+			logger.info(totMsg);
+		}else {
+			System.out.println(totMsg);
+		}
+			
+		return endTime;
 	}
 	
 	/**

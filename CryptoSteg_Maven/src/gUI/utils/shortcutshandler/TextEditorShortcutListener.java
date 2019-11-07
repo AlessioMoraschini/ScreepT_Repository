@@ -28,6 +28,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	public static AtomicBoolean flagShiftDown = new AtomicBoolean(false);
 	public static AtomicBoolean flagAltDown = new AtomicBoolean(false);
 	
+	public AtomicBoolean flagHoverBtnBase64 = new AtomicBoolean(false);
 	public AtomicBoolean flagHoverBtnViewExpCmd = new AtomicBoolean(false);
 	public AtomicBoolean flagHoverBtnRemoveSpaces = new AtomicBoolean(false);
 	
@@ -162,6 +163,18 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				if (e.getKeyCode() == 68 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					subHeaderPanel.btnDecrypt.doClick();
 				}
+				/*
+				 * Code/Decode using base 64, selected or all text: 
+				 * - Alt + 4 -> encode
+				 * - Ctrl + 4 -> decode
+				 */
+				if (e.getKeyCode() == 52 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+					subHeaderPanel.btnBase64Conversion.doClick();
+				}
+				if (e.getKeyCode() == 52 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					subHeaderPanel.btnBase64Conversion.doClick();
+				}
+				
 				/*
 				 * 	DARK/LIGHT VIEW -> CTRL+B
 				 */
@@ -575,8 +588,18 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInCommandLine);
 						subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 					}
+					
+					if(flagHoverBtnBase64.get()) {
+						subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditorTooltips.tooltipDecryptBase64);
+						subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_RED));
+					}
 				}
 				
+				if (!flagCtrlDown.get() || !flagHoverBtnBase64.get()) {
+					subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditorTooltips.tooltipCryptBase64);
+					subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
+				}
+
 				if (!flagCtrlDown.get() || !flagHoverBtnRemoveSpaces.get()) {
 					subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
 					subHeaderPanel.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));

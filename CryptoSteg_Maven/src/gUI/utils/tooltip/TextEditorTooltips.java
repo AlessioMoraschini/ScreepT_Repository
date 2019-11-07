@@ -18,6 +18,8 @@ public class TextEditorTooltips {
 	public static final String tooltipSpeak = "[Ctrl+Alt+spacebar] Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable";
 	public static final String tooltipDecrypt = "[Ctrl+shift+D] Decrypt text with given key";
 	public static final String tooltipCrypt = "[Ctrl+shift+C] Crypt text with given key";
+	public static final String tooltipCryptBase64 = "[Alt + 4] Encode current selected/all text using base 64 (click this with control key pressed to decode)";
+	public static final String tooltipDecryptBase64 = "[Ctrl + 4] Decode current selected/all text using base 64 (release control key and click to encode)";
 	public static final String tooltipOpenInScreept = "Open current file in ScreepT";
 	public static final String tooltipBackgroundColor = "Change background color (won't be saved in .txt)";
 	public static final String tooltipForegroundTxt = "Change text color (won't be saved in .txt)";

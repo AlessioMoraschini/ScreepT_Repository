@@ -79,6 +79,10 @@ public class LauncherLoaderPanel extends JPanel{
 	
 	/** METHODS **/ 
 	
+	public void setProgBarColor(Color target) {
+		progressBar.setBackground(target);
+	}
+	
 	public void setText(String txt) {
 		if (lblText != null) {
 			lblText.setText(txt);

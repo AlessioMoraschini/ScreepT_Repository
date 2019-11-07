@@ -1,5 +1,6 @@
 package gui.utils;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 public class LauncherLoaderFrame extends JFrame{
+	private static final long serialVersionUID = 483795297212663954L;
 
 	static Logger logger = Logger.getLogger(LauncherLoaderFrame.class); 
 	
@@ -39,6 +41,10 @@ public class LauncherLoaderFrame extends JFrame{
 		this.setVisible(true);
 		this.setTitle(title);
 		
+	}
+	
+	public void setProgBarColor(Color target) {
+		loader.setProgBarColor(target);
 	}
 	
 	public void update(String text, int progressPercent) {

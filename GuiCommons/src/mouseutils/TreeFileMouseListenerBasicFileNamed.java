@@ -159,7 +159,8 @@ public class TreeFileMouseListenerBasicFileNamed {
 	        public void actionPerformed(ActionEvent arg0) {
 
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
-            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(null, "Are you sure to delete selected files from disk(cannot be undone)? "
+	            String currFilesString = (treeSelArr.length == 1)? ((FileNamed)treeSelArr[0].getLastPathComponent()).toString() : "selected files" ;
+            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(null, "Are you sure to delete "+currFilesString+" from disk(cannot be undone)? "
             			+ "All eventual selected folders will be deleted with all the file contained in them!")==JOptionPane.OK_OPTION){	        		
 		            for(TreePath tp : treeSelArr) {
 		            	
