@@ -262,6 +262,20 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				} 
 				
 				/**
+				 *  VIEW WEBSITE : CTRL+ALT+SHIFT+4
+				 */
+				if (e.getKeyCode() == 52 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmViewWebsite().doClick();
+				} 
+				
+				/**
+				 *  LOOK FOR UPDATES : CTRL+ALT+SHIFT+5
+				 */
+				if (e.getKeyCode() == 53 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmLookForUpdates().doClick();
+				} 
+				
+				/**
 				 *  OPEN MANUAL : ALT+SHIFT+Q
 				 */
 				if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {

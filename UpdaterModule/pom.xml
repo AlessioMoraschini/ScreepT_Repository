@@ -3,6 +3,17 @@
   <groupId>UpdaterModule</groupId>
   <artifactId>UpdaterModule</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <name>UpdaterModule</name>
+   
+  <parent>
+  	<groupId>Parent_Project</groupId>
+  	<artifactId>Parent_Project</artifactId>
+  	<version>${parent.build.version.scrypt}</version>
+  	<relativePath>../Parent_Project</relativePath>
+  </parent>
+  
+  <packaging>jar</packaging>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -14,6 +25,40 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-assembly-plugin</artifactId>
+	    <version>2.4.1</version>
+	    <executions>
+
+            <!-- FATJAR -->
+	        <execution>
+	            <id>make-assembly</id>
+	            <phase>package</phase>
+	            <goals>
+	                <goal>single</goal>
+	            </goals>
+	            <configuration>
+	            <finalName>updater</finalName>
+	            	<skipAssembly>false</skipAssembly>
+	            	<overwrite>true</overwrite>
+                	<archive>
+		                <manifest>
+		                    <mainClass>
+		                        main.MainStandAloneUpdater
+		                    </mainClass>
+		                </manifest>
+	                </archive>
+	                <descriptorRefs>
+	                    <descriptorRef>jar-with-dependencies</descriptorRef>
+	                </descriptorRefs>
+	                <appendAssemblyId>false</appendAssemblyId>
+	                
+	                <exclude>/**/*humbs.db</exclude>
+	            </configuration>
+	        </execution>
+	    </executions>
+	  </plugin>
     </plugins>
   </build>
   
@@ -35,6 +80,18 @@
 	    <groupId>commons-net</groupId>
 	    <artifactId>commons-net</artifactId>
 	    <version>3.6</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.ini4j</groupId>
+		<artifactId>ini4j</artifactId>
+		<version>0.5.4</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>2.6</version>
 	</dependency>
 	
   </dependencies>

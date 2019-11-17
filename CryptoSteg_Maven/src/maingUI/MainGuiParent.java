@@ -124,16 +124,18 @@ public class MainGuiParent {
 	CustomJmenuItem mntmnetInfo;
 	CustomJmenuItem mntmhwInfo;
 	CustomJmenuItem mntmImageConverter;
-	CustomJmenuItem mntmReturnToWelcome;
-	CustomJmenuItem mntmAboutScreept;
-	CustomJmenuItem mntmExportLog; 
-	CustomJmenuItem mntmEraseLogs;
 	CustomJmenuItem mntmTouppercaseDirectory;
 	CustomJmenuItem mntmDeleteDirectoryContentByExtension;
 	CustomJmenuItem mntmDeleteDirectoryAllContentRecursive;
 	CustomJmenuItem mntmEmptyDirectoryRecursive;
 	CustomJmenuItem mntmMakeDirsFromPath;
 	CustomJmenuItem mntmCopyDirStructure;
+	CustomJmenuItem mntmReturnToWelcome;
+	CustomJmenuItem mntmAboutScreept;
+	CustomJmenuItem mntmExportLog; 
+	CustomJmenuItem mntmEraseLogs;
+	CustomJmenuItem mntmViewWebsite;
+	CustomJmenuItem mntmLookForUpdates;
 	CustomJmenuItem mntmResetAllPanels;
 	CustomJmenuItem mntmResetTextEditor;
 	CustomJmenuItem mntmResetConfigManager;
@@ -274,6 +276,8 @@ public class MainGuiParent {
 				mnFilesAndDirectories.add(mntmEmptyDirectoryRecursive);
 			
 			mnHelp.add(mntmAboutScreept);		
+			mnHelp.add(mntmViewWebsite);
+			mnHelp.add(mntmLookForUpdates);
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmExportLog);
 			mnHelp.add(mntmEraseLogs);
@@ -394,6 +398,8 @@ public class MainGuiParent {
 		
 		// HELP SECTION
 		mntmReturnToWelcome.setFont(menuItemFont);
+		mntmViewWebsite.setFont(menuItemFont);
+		mntmLookForUpdates.setFont(menuItemFont);
 		mntmAboutScreept.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
@@ -460,6 +466,8 @@ public class MainGuiParent {
 		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
 		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));
+		mntmViewWebsite.setIcon(new ImageIcon(IconsPathConfigurator.ICON_WEBSITE));
+		mntmLookForUpdates.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_WEB));
 		
 		MenuSetter.setIconTextGap(mnrestartPanel, 20);
 		mnrestartPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
@@ -516,6 +524,8 @@ public class MainGuiParent {
 		mntmExportLog.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, ALT_MASK | SHIFT_MASK));
 		mntmEraseLogs.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_CANCEL, ALT_MASK | SHIFT_MASK));
 		mntmReturnToWelcome.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_H, ALT_MASK | SHIFT_MASK));
+		mntmViewWebsite.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_4, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmLookForUpdates.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_5, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmUserDocumentation.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Q, ALT_MASK | SHIFT_MASK));
 		
 			// Reset functions 
@@ -608,6 +618,7 @@ public class MainGuiParent {
 	public void updateLastOpenedWorkspaces(LimitedConcurrentList<FileNamed> lastWorskspacesLlist) {
 		
 		try {
+			@SuppressWarnings("unchecked")
 			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastWorskspacesLlist.getList().clone();
 			Collections.reverse(valueCopy);
 			mnLastWorkspaces.removeAll();
@@ -852,6 +863,14 @@ public class MainGuiParent {
 
 	public JMenuItem getMntmImageConverter() {
 		return mntmImageConverter;
+	}
+	
+	public CustomJmenuItem getMntmViewWebsite() {
+		return mntmViewWebsite;
+	}
+
+	public CustomJmenuItem getMntmLookForUpdates() {
+		return mntmLookForUpdates;
 	}
 
 	public JMenuItem getMntmReturnToWelcome() {

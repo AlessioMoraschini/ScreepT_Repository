@@ -2,14 +2,13 @@ package utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import gui.UpdateProgressPanelMin;
-import gui.Various;
 import resources.GeneralConfig;
 import resources.PropertiesManager;
 
@@ -17,7 +16,7 @@ import static testUtils.TestUtils.*;
 
 public class TestDownload {
 
-	public static final String downloadTestFolder = "./DownloadTest/";
+	public static final String downloadTestFolder = "DownloadTest/";
 	public static final File downloadTestFolderFile = new File(downloadTestFolder);
 	public static URL urlManifestRemote;
 	public static String tempManifestFilePath = downloadTestFolder + "tempManifest.properties";
@@ -26,6 +25,9 @@ public class TestDownload {
 	public static File tempUpdaterFile = new File(tempUpdaterFilePath);
 	public static String tempUpdatesZipFilePath = downloadTestFolder + GeneralConfig.WEB_UPDATES_PACK_NAME;
 	public static File tempUpdatesZipFile = new File(tempUpdatesZipFilePath);
+	
+	public static UpdatesManager updatesManager;
+	public static String testCurrVersion = "0.8.0";
 	
 	@Before
 	public void initialize() throws IOException {
@@ -36,9 +38,25 @@ public class TestDownload {
 		tempUpdaterFile.createNewFile();
 		tempUpdatesZipFile.delete();
 		tempUpdatesZipFile.createNewFile();
+		
+		updatesManager = new UpdatesManager(urlManifestRemote, testCurrVersion);
+	}
+	
+	@Test 
+	public void updateManager() throws Exception{
+		printl(getHeaderString("#", 40, "TEST UPDATES MANAGER"));
+		String newVersion = updatesManager.lookForUpdates();
+		printl("Test version: "+testCurrVersion+" -> new version: " + newVersion);
+		
+		if (newVersion != null) {
+			File[] output = updatesManager.downloadAndExtractUpdates();
+			printl("Executable jar updater: " + output[0].toString());
+			printl("Extracted updates dir: " + output[1].toString());
+		}
 	}
 	
 	@Test
+	@Ignore
 	public void testUrlFileSize() {
 		int size = DownloadUtils.getFileSize(urlManifestRemote);
 		printl(getHeaderString("#", 40, "TEST SIZE"));
@@ -47,7 +65,8 @@ public class TestDownload {
 	}
 
 	@Test
-	public void testUrlFileDownload() throws MalformedURLException {
+	@Ignore
+	public void testUrlFileDownload() throws Exception {
 		printl(getHeaderString("#", 40, "TEST DOWNLOAD AND PARSE MANIFEST .properties"));
 		File downloadedManifest = DownloadUtils.downloadFile(urlManifestRemote, tempManifestFilePath, new UpdateProgressPanelMin());
 		printl("Manifest Downloaded!! Size of " + urlManifestRemote + " is: " + Various.coolFileSize(downloadedManifest.length()));
@@ -67,6 +86,9 @@ public class TestDownload {
 
 		File downloadedUpdatesZip = DownloadUtils.downloadFile(updatesZippedUrl, tempUpdatesZipFilePath, new UpdateProgressPanelMin());
 		printl("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + Various.coolFileSize(downloadedUpdatesZip.length()));
+		
+		File unzippedUpdates = DownloadUtils.unzipFile(downloadedUpdatesZip.getAbsolutePath(), downloadTestFolderFile.getAbsolutePath(), true);
+		printl("Unzipped updates: " + unzippedUpdates);
 		
 	}
 }

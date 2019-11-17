@@ -146,10 +146,13 @@ public class MainGUI extends MainGuiParent{
 	public static JOptionHelper dialogHelper;
 	
 	public AtomicBoolean isOnHomePage = new AtomicBoolean(true);
+	public AtomicBoolean isUpdating = new AtomicBoolean(false);
 	
 	// Full screen+custom modes varying on loaded panel
 	public AtomicBoolean isImmersiveModeOn = new AtomicBoolean();
 	public AtomicBoolean isFullScreen = new AtomicBoolean(false);
+	
+	public static String newUpdatedJar = "";
 	
 	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
 	 * 
@@ -1108,6 +1111,86 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 			}
 		});
 		
+		// View Website
+		mntmViewWebsite = new CustomJmenuItem(new AbstractAction("Visit Website") {
+			public void actionPerformed(ActionEvent e) {
+				
+				SysUtils.openUrlInBrowser("https://"+GeneralConfig.WEBSITE);
+				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+			}
+		});
+
+		// Check and download/install updates
+		mntmLookForUpdates = new CustomJmenuItem(new AbstractAction("Look for updates...") {
+			public void actionPerformed(ActionEvent e) {
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (!isUpdating.get()) {
+							dialogHelper = new JOptionHelper(frmScryptV);
+							isUpdating.set(true);
+							frmScryptV.setAlwaysOnTop(true);
+							frmScryptV.setEnabled(false);
+							menuBar.setEnabled(false);
+
+							try {
+								String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates();
+								if (newVersion != null) {
+									Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+									boolean downloadUpdates = dialogHelper.yesOrNo(
+											"New version [" + newVersion
+													+ "] found, do you want to download and install it? (selecting 'no' will cancel all pending updates)",
+											"Update found: " + newVersion);
+									if (downloadUpdates) {
+										try {
+											MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
+											MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
+											boolean restartNow = dialogHelper.yesOrNo(
+													"ScrYpT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
+											if (restartNow) {
+												MainGUI.closeApplication(0);
+											} else {
+												dialogHelper.info("Updates will be installed when you'll close current session", "Update will start at close");
+											}
+
+										} catch (Exception e1) {
+											String msg = "Cannot download updates, an error occurred";
+											logger.error(msg, e1);
+											dialogHelper.errorScroll(msg, "Error during download", e1);
+										}
+									} else {
+										dialogHelper.info("As you want, update will be skipped, return here when you'll want to update software ;)",
+												"Update skipped");
+										logger.info("Update skipped, as requested from user.");
+										MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(false);
+										frmScryptV.setAlwaysOnTop(false);
+									}
+								} else {
+									if (MainGuiGeneralAppStarter.updatesManager.udpdatesReachable()) {
+										dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
+										logger.info("Nothing to download, current version is up to date :)");
+									}else {
+										dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");
+										logger.error("Cannot retrieve remote update data, server is unreachable.");
+									}
+								}
+							} catch (Exception e2) {
+								dialogHelper.error("Cannot read updates, an error occurred :(", "An error occurred!");
+								logger.error("Cannot read updates, an error occurred :(", e2);
+							}
+
+							frmScryptV.setAlwaysOnTop(false);
+							frmScryptV.setEnabled(true);
+							frmScryptV.toFront();
+							menuBar.setEnabled(true);
+							isUpdating.set(false);
+						}
+					}
+				}).start();
+			}
+		});
+		
 	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		
 		// open in main frame - FILE CRYPTER
@@ -1386,6 +1469,24 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
 		MainGuiGeneralAppStarter.deleteSignalFileForExternalJars();
+		
+		// Check and launch eventual pending updates
+		try {
+			if (MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()) {
+				logger.error("Updates detected, starting updater jar application...");
+				File[] lastUpdates = MainGuiGeneralAppStarter.updatesManager.getLastUpdates();
+				if(lastUpdates != null) {
+					Runtime runtime = Runtime.getRuntime();
+					runtime.exec("java -jar " + lastUpdates[0].getName() 
+							+ " " + lastUpdates[0].getAbsolutePath() 
+							+ " " + lastUpdates[1].getAbsolutePath()
+							+ " " + lastUpdates[2].getName());
+					logger.error("Updater jar application launched!");
+				}
+			}
+		} catch (IOException e) {
+			logger.error("Cannot start update procedure, an error occurred!", e);
+		}
 		
 		logger.info("Exit procedure completed succesfully, now software will shut down");
 		

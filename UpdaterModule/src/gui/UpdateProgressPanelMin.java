@@ -14,6 +14,8 @@ import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import utils.Various;
+
 public class UpdateProgressPanelMin {
 	
 	private final static int LeftStart = 400;
@@ -35,6 +37,8 @@ public class UpdateProgressPanelMin {
     private GridBagConstraints gbc_pb;
     private GridBagConstraints gbc_genb;
     
+    public boolean secondBarEnabled = false;
+    
     // ####################### START CONSTRUCTORS - USE THE ONE WITH TWO PARAMS #################### //
     
     public UpdateProgressPanelMin() {
@@ -42,6 +46,9 @@ public class UpdateProgressPanelMin {
     	initGraphics(1);
     	
     	initSpecBar();
+    	
+    	dialog.setVisible(true);
+    	dialog.repaint();
 		
 		new Thread(new Runnable() {
 
@@ -49,6 +56,41 @@ public class UpdateProgressPanelMin {
 
                 try {
 					doInBackground(pb);
+				} catch (Exception e) {
+		            dialog.dispose();
+				}
+                
+        	}
+        }).start();
+    }
+    
+    public UpdateProgressPanelMin(boolean secondBar) {
+    	
+		if (secondBar) {
+			initGraphics(2);
+			initGeneralBar();
+			secondBarEnabled = true;
+		}else {
+			initGraphics(1);
+			secondBarEnabled = false;
+		}
+		
+		initSpecBar();
+		
+		dialog.setVisible(true);
+		dialog.repaint();
+		
+        new Thread(new Runnable() {
+
+            public void run() {
+
+                try {
+                	if (secondBar) {
+                		doInBackground(GeneralBar);
+                	}else {
+                		doInBackground(pb);
+                	}
+                	
 				} catch (Exception e) {
 		            dialog.dispose();
 				}
@@ -145,6 +187,9 @@ public class UpdateProgressPanelMin {
 
 	public void setUndefinedDuration() {
 		pb.setIndeterminate(true);
+		if(GeneralBar != null) {
+			GeneralBar.setIndeterminate(true);
+		}
 	}
 
     protected void doneCheck(JProgressBar bar) {
@@ -163,13 +208,22 @@ public class UpdateProgressPanelMin {
             }
         	
             Thread.sleep(150);
+            dialog.revalidate();
+            dialog.repaint();
+            pb.repaint();
+            GeneralBar.repaint();
             doneCheck(bar);
         }
     }        
     
     public void update(String label, int perc) {
-    	this.getPb().setValue(perc);
-    	this.getLabel().setText(label);
+    	if (getPb() != null) {
+			this.getPb().setValue(perc);
+		}
+		this.getLabel().setText(label);
+    	if (GeneralBar != null) {
+			this.GeneralBar.setValue(perc);
+		}
     }
     
     public void forceClose() {

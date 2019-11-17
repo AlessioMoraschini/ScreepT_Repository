@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
@@ -27,6 +28,7 @@ import media.Sounds;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
+import utils.UpdatesManager;
 import variousutils.HandleString;
 
 public class MainGuiGeneralAppStarter {
@@ -55,6 +57,8 @@ public class MainGuiGeneralAppStarter {
 	
 	public static GenericFileChooserDialog fileDialogHelper;
 	
+	public static UpdatesManager updatesManager;
+	
 	public static void main(String[] args) {
 		
 		long startTime = System.currentTimeMillis();
@@ -67,7 +71,7 @@ public class MainGuiGeneralAppStarter {
 		try {
 
 			try {
-				// start Properties
+				// Load Internal configurations
 				GeneralConfig.initLazyGeneralConfig();
 				dialogHelper = new JOptionHelper(null);
 				
@@ -80,8 +84,20 @@ public class MainGuiGeneralAppStarter {
 				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
 				throw e;
 			}
-			
+
 			printElapsed("dialogHelper and GeneralConfig initialization finished", startTime);
+			
+			try {
+				// Load updates manager module
+				loaderGraphics.update("Starting updates manager...", 5);
+				updatesManager = new UpdatesManager(new URL("https://" + GeneralConfig.WEB_UPDATES_MANIFEST_URL), GeneralConfig.APP_VERSION);
+				updatesManager.emtpyUpdatesDir();
+				logger.info("Updates manager started!");
+			} catch (Exception e) {
+				logger.error("Cannot initialize updatesManager :(", e);
+			}
+			
+			loaderGraphics.update("Starting Exception handler...", 8);
 			
 			// CATCH ALL EXCEPTION UNCATCHED DURING SW EXECUTION AND ANALYZE IF THEY ARE Errors or Exceptions
 			mainTrheadAwtErrorHandler = new AWTExceptionHandler(new ParametricExceptionThread(new Runnable() {
@@ -131,6 +147,8 @@ public class MainGuiGeneralAppStarter {
 			
 			// INITIALIZE .INI CONFIGURATION (ScrYpT + Launcher) FROM CONFIG DEFAULT FILES
 			try {
+				loaderGraphics.update("Initializing user configuration", 12);
+				
 				launcherConfig = new Wini(new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH));
 				LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(IniFileManager.INI_APP_OPT, "logLevelSetting"));
 				logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
@@ -152,6 +170,7 @@ public class MainGuiGeneralAppStarter {
 			fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
 			
 			printElapsed("Initial configuration completed", startTime);
+			loaderGraphics.update("Initializing main application...", 15);
 			
 			/*************************
 			 * LAUNCH MAIN APPLICATION

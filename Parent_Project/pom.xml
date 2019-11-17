@@ -9,7 +9,7 @@
   
   	<!-- GENERAL BUILD OPTIONS -->
 	  	<!-- Main application version used everyWhere -->
-	  	<parent.build.version.scrypt>0.8.0</parent.build.version.scrypt>
+	  	<parent.build.version.scrypt>0.9.0</parent.build.version.scrypt>
 	  	
 	  	<!-- Change this to false if you wanna export  -->
 	  	<export.launcher.jarmode>true</export.launcher.jarmode>
@@ -21,7 +21,7 @@
 		
 	  	<export.directory.fatjar.main>
 	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
-			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}_BuildMaven_fatjar\Application
+			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0.9.0_BuildMaven_fatjar\Application
 		</export.directory.fatjar.main>
 	  	<export.directory.fatjar.resources>
 	  		${export.directory.fatjar.main}\Resources_Scrypt
@@ -37,7 +37,7 @@
 	  	
 	  	<export.directory.multijar.main>
 	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
-			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}_BuildMaven\Application
+			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V0.9.0_BuildMaven\Application
 		</export.directory.multijar.main>
 		<export.directory.multijar.resources>
 	  		${export.directory.multijar.main}\Resources_Scrypt
