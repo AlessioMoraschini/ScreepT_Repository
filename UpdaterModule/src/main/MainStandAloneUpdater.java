@@ -39,26 +39,32 @@ public class MainStandAloneUpdater {
 			if(updaterJar.exists() && updaterJar.isFile() && updatesFolder.exists() && updatesFolder.isDirectory()){
 				if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "ScrYpT will be updated, do you want to backup current installation before to update? (update process will not touch your personal files, but if you prefer you can backup all scrypt folder before to update)"))
 				{
-					File destBackupDir = Various.directoRead(null, "Select backup destination", new File(GeneralConfig.USER_DESKTOP));
-					destBackupDir = Various.renameJavaObjFile(destBackupDir);
-					Various.copyDirectoryContents(mainDirectory, destBackupDir);
+					File destBackupDir = Various.directoRead(null, "Select backup destination, or press cancel to continue update procedure without backup", new File(GeneralConfig.USER_DESKTOP));
+					if (destBackupDir != null) {
+						destBackupDir = Various.renameJavaObjFile(destBackupDir);
+						Various.copyDirectoryContents(mainDirectory, destBackupDir);
+					} 
 				}
 				
 				// replace existing files matching with updates (don't touch user personal files)
 				Various.copyDirectoryContents(updatesFolder, new File(GeneralConfig.RESOURCES_DIR).getParentFile());
 				
 				// update main application reference in .ini settings for launcher
-				iniLauncherConfig.put("APPLICATION_OPTIONS", "jarToLaunch", newJar);
+				iniLauncherConfig.put("APPLICATION_OPTIONS", "jarToLaunch", newJar.getName());
 				iniLauncherConfig.store();
 				
 				if (oldJar != null && oldJar.exists()) {
 					oldJar.deleteOnExit();
 				}
+			} else {
+				JOptionPane.showMessageDialog(null, "Updates data or updater jar not found, exiting updated procedure.", "Updates not found", JOptionPane.ERROR_MESSAGE);
 			}
 			
 			// LAUNCH ScrYpT_Launcher.jar
 			Runtime runtime = Runtime.getRuntime();
 			runtime.exec("java -jar " + mainApplicationLauncher);
+			
+			System.exit(0);
 			
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Cannot update, an error occurred :(");
