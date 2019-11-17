@@ -18,7 +18,7 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import enums.KeyGenImageType;
 import gUI.frames.KeyGenFrame;
 import mainobj.INItializer;
@@ -33,7 +33,7 @@ public class ImageGenContainerPanel extends JPanel{
     public BufferedImage image;
     
 	// object that display wait dialog
-	private volatile TestUpdateProgress progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
     
 	Image scaledImage;
 	
@@ -69,7 +69,7 @@ public class ImageGenContainerPanel extends JPanel{
 			@Override
 			public void run() {
 				
-				progUpdater = new TestUpdateProgress(currentConf, false);
+				progUpdater = new UpdateProgressPanel(currentConf, false);
 				progUpdater.setProgBarEnabled(true);
 				progUpdater.getPb().setValue(0);
 				bar = thisFrame.getProgressBar();
@@ -160,12 +160,12 @@ public class ImageGenContainerPanel extends JPanel{
 	}
 
 
-	public TestUpdateProgress getProgUpdater() {
+	public UpdateProgressPanel getProgUpdater() {
 		return progUpdater;
 	}
 
 
-	public void setProgUpdater(TestUpdateProgress progUpdater) {
+	public void setProgUpdater(UpdateProgressPanel progUpdater) {
 		this.progUpdater = progUpdater;
 	}
 

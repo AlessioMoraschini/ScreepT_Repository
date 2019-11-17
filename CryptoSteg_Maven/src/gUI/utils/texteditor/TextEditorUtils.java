@@ -2,7 +2,6 @@ package gUI.utils.texteditor;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -225,13 +224,19 @@ public class TextEditorUtils {
 	
 	public void refreshTree(File currentFile, boolean forceRefresh) {
 		
+		TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
+		
 		if(currentFile == null) {
+			if (!options.treeLocked) {
+				FileNamed oldDir = (FileNamed)currentTextEditor.leftSplitTreeFiles.getModel().getRoot();
+				refreshFromWorkspace(oldDir.getFile());
+			}
+			
 			return;
 		}
 		
 		// Avoid useless refreshing during preload
 		if (!currentTextEditor.isPreloading) {
-			TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
 			workspaceRoot = new File(options.defaultWorkspacePath);
 			// refresh only if tree is not locked
 			if (!options.treeLocked) {
@@ -820,7 +825,7 @@ public class TextEditorUtils {
 		loadedTabObj.textArea.revalidate();
 		currentTextEditor.CURRENT_EXT_OUT = selected.nomeStringa;
 		currentTextEditor.footerPanel.lblAdvice.setText("[Current output: " + currentTextEditor.CURRENT_EXT_OUT + "]");
-		currentTextEditor.subHeaderPanel.btnSaveTextFileAs.setToolTipText("Choose name and folder, save " + currentTextEditor.CURRENT_EXT_OUT + " file!");
+		currentTextEditor.subHeaderPanel.btnSaveTextFileAs.setToolTipText(TextEditorTooltips.tooltipSaveTextFileAs + " as " + currentTextEditor.CURRENT_EXT_OUT);
 
 		loadedTabObj.unsaved = unsaved;
 		

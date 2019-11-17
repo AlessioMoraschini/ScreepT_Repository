@@ -20,10 +20,10 @@ import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
 import resources.ImagesPathConfigurator;
 
-public class TestUpdateProgress {
+public class UpdateProgressPanel {
 	
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(TestUpdateProgress.class); 
+	static Logger logger = Logger.getLogger(UpdateProgressPanel.class); 
 
 	private final static int LeftStart = 400;
 	private final static int TopStart = 300;
@@ -49,7 +49,7 @@ public class TestUpdateProgress {
     // ####################### START CONSTRUCTORS - USE THE ONE WITH TWO PARAMS #################### //
     
     @Deprecated
-    public TestUpdateProgress() {
+    public UpdateProgressPanel() {
 		
     	initGraphics(1);
     	
@@ -71,7 +71,7 @@ public class TestUpdateProgress {
     }
 
     @Deprecated
-	public TestUpdateProgress(INItializer currentConf) {
+	public UpdateProgressPanel(INItializer currentConf) {
     	
 		config = currentConf;
 		
@@ -95,7 +95,7 @@ public class TestUpdateProgress {
         
     }
 	
-	public TestUpdateProgress(INItializer currentConf, boolean secondBar) {
+	public UpdateProgressPanel(INItializer currentConf, boolean secondBar) {
     	
 		config = currentConf;
 		

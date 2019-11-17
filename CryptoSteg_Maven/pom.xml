@@ -374,6 +374,12 @@
 			<artifactId>NetworkCommons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>UpdaterModule</groupId>
+		  	<artifactId>UpdaterModule</artifactId>
+		  	<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
   </dependencies>
   

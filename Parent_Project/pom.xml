@@ -57,6 +57,7 @@
   	<module>../Initializer_Configs</module>
   	<module>../GuiCommons</module>
   	<module>../NetworkCommons</module>
+  	<module>../UpdaterModule</module>
   	<module>../HardwareCommons</module>
   	<module>../GuiTextEditorCommons</module>
   	<module>../MultimediaConversion</module>

@@ -1,17 +1,19 @@
 package gui.utils;
 
-import javax.swing.JFrame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
 
 import javax.swing.JProgressBar;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.swing.JLabel;
@@ -29,10 +31,12 @@ public class LauncherLoaderPanel extends JPanel{
 	private JLayeredPane layeredPane;
 	private Image backgroundImage;
 	private JLabel lblText;
-	private JProgressBar progressBar;
-	private JFrame parentFrame;
+	public JProgressBar progressBar;
+	private LauncherLoaderFrame parentFrame;
 	
-	public LauncherLoaderPanel(Image background, JFrame parent) {
+	public AtomicBoolean indeterminated = new AtomicBoolean();
+	
+	public LauncherLoaderPanel(Image background, LauncherLoaderFrame parent) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -50,8 +54,9 @@ public class LauncherLoaderPanel extends JPanel{
 		layeredPane.add(lblBackgroundImage, "cell 0 0 4 1,aligny baseline");
 		
 		lblText = new JLabel("Loading...");
-		lblText.setForeground(new Color(255, 255, 255));
+		lblText.setForeground(new Color(220, 220, 220));
 		lblText.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		lblText.setMaximumSize(new Dimension(LauncherLoaderFrame.W - 50, 20));
 		layeredPane.add(lblText, "cell 2 1,alignx left,aligny center");
 		
 		progressBar = new JProgressBar();
@@ -86,6 +91,8 @@ public class LauncherLoaderPanel extends JPanel{
 	public void setText(String txt) {
 		if (lblText != null) {
 			lblText.setText(txt);
+			lblText.revalidate();
+			lblText.repaint();
 		}
 	}
 
@@ -101,6 +108,8 @@ public class LauncherLoaderPanel extends JPanel{
 				}
 				parentFrame.dispose();
 			}
+			progressBar.revalidate();
+			progressBar.repaint();
 		}
 	}
 	
@@ -109,21 +118,23 @@ public class LauncherLoaderPanel extends JPanel{
 	}
 	
 	public void update(String txt, int progress){
+		indeterminated.set(false);
 		setText(txt);
 		setProgress(progress, 0);
 	}
 	
 	public void update(String txt, int progress, int msDelayIfEnd){
 		try {
+			indeterminated.set(false);
 			if (progress >= 100) {
 				new Thread(new Runnable() {
 					public void run() {
-						for (int i = 0; i < 20; i++) {
+						for (int i = 0; i < 10; i++) {
 							String dots = new String(new char[i + 1]).replace("\0", ".");
 							String msg = txt + dots;
 							setText(msg);
 							try {
-								Thread.sleep(40);
+								Thread.sleep(100);
 							} catch (InterruptedException e) {
 								logger.error("Error waiting before starting launcher", e);
 							}
@@ -141,8 +152,45 @@ public class LauncherLoaderPanel extends JPanel{
 		
 	}
 	
-	public void setIndeterminatedProgress(boolean indeterminated) {
-		progressBar.setIndeterminate(indeterminated);	
+	public void setIndeterminatedProgress(boolean indeterminated, String text) {
+		
+		if(indeterminated && !this.indeterminated.get()) {
+			this.indeterminated.set(true);
+			indeterminatedDotsAnimation(text).start();
+			progressBar.setIndeterminate(indeterminated);
+		} else {
+			this.indeterminated.set(false);
+			setText(text);
+		}
+	}
+	
+	public Thread indeterminatedDotsAnimation(final String text) {
+		return new Thread(new Runnable() {
+			@Override
+			public void run() {
+				
+				final String safeText = StringUtils.trimToEmpty(text);
+				
+				while(indeterminated.get()) {
+					try {
+						for (int i = 0; i < 20; i++) {
+							String dots = safeText + new String(new char[i + 1]).replace("\0", ".");
+							String msg = "Initializing " + GeneralConfig.APPLICATION_NAME + dots;
+							setText(msg);
+							try {
+								Thread.sleep(60);
+							} catch (InterruptedException e) {
+								logger.error("Error waiting before starting launcher", e);
+							}
+						}
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+					}
+				}
+				
+				indeterminated.set(false);
+			}
+		});
 	}
 	
 }

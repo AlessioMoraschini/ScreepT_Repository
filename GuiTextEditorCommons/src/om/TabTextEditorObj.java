@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.fife.ui.rtextarea.RUndoManager;
 
 import amfileutils.filechangewatcher.FileChangeMonitor;
 import mainobj.INItializer;
@@ -46,6 +48,7 @@ public class TabTextEditorObj {
 	public File loadedFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
+	public RUndoManager undoManager;
 	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
 	public Parser currentParser;
@@ -61,6 +64,8 @@ public class TabTextEditorObj {
 		textArea = new ColumnTextArea(GeneralConfig.RECTANGULAR_TXT_SELECTION_ALLOWED);
 		textArea.setMinimumSize(new Dimension(300,100));
 		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
+		undoManager = new RUndoManager(textArea);
+		undoManager.setLimit(GeneralConfig.UNDO_MAX_LIM);
 		textArea.setEditable(true);
 		
 		currentScrollPane = new RTextScrollPane(textArea);
@@ -104,32 +109,36 @@ public class TabTextEditorObj {
 		
 	}
 	
-	public void updateTextAreaPreferences(TextEditorOption txtOptions) {
+	public void updateTextAreaPreferences(final TextEditorOption txtOptions) {
 		
-		textArea.setTabSize(txtOptions.tabSize);
-		textArea.setPaintTabLines(txtOptions.isTabLineVisible());
-		textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
-		textArea.setCodeFoldingEnabled(txtOptions.codeFoldingEnabled);
-		textArea.setAutoIndentEnabled(txtOptions.autoIndentEnabled);
-		textArea.setMarkOccurrences(txtOptions.markOccurrences);
-		textArea.setCloseMarkupTags(txtOptions.closeMarkupTags);
-		textArea.setCloseCurlyBraces(txtOptions.closeCurlyBraces);
-		textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
-		textArea.setAnimateBracketMatching(txtOptions.animateBracketMatching);
-		textArea.setBracketMatchingEnabled(txtOptions.bracketMatchingEnabled);
-		textArea.setFadeCurrentLineHighlight(txtOptions.fadeCurrentLineHighlight);
-		textArea.setUseFocusableTips(txtOptions.useFocusableTips);
-		textArea.setRoundedSelectionEdges(txtOptions.roundedSelectionEdges);
-		textArea.setPaintMarkOccurrencesBorder(txtOptions.paintMarkOccurrencesBorder);
-		textArea.setClearWhitespaceLinesEnabled(txtOptions.clearWhitespaceLinesEnabled);
-		textArea.setHighlightSecondaryLanguages(txtOptions.highlightSecondaryLanguages);
-		textArea.setFractionalFontMetricsEnabled(txtOptions.fractionalFontMetricsEnabled);
-		textArea.setTabsEmulated(txtOptions.tabSpacesEmulated);
-		hyperLinksEnabled(txtOptions.hyperLinksEnabled);
-		textArea.setShowMatchedBracketPopup(txtOptions.showBracketsPopup);
-		textArea.setEOLMarkersVisible(txtOptions.markEndOfLine);
-		textArea.setDragEnabled(true);
-		textArea.setMarkOccurrencesDelay(200);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				textArea.setTabSize(txtOptions.tabSize);
+				textArea.setPaintTabLines(txtOptions.isTabLineVisible());
+				textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
+				textArea.setCodeFoldingEnabled(txtOptions.codeFoldingEnabled);
+				textArea.setAutoIndentEnabled(txtOptions.autoIndentEnabled);
+				textArea.setMarkOccurrences(txtOptions.markOccurrences);
+				textArea.setCloseMarkupTags(txtOptions.closeMarkupTags);
+				textArea.setCloseCurlyBraces(txtOptions.closeCurlyBraces);
+				textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
+				textArea.setAnimateBracketMatching(txtOptions.animateBracketMatching);
+				textArea.setBracketMatchingEnabled(txtOptions.bracketMatchingEnabled);
+				textArea.setFadeCurrentLineHighlight(txtOptions.fadeCurrentLineHighlight);
+				textArea.setUseFocusableTips(txtOptions.useFocusableTips);
+				textArea.setHighlightSecondaryLanguages(txtOptions.highlightSecondaryLanguages);
+				textArea.setFractionalFontMetricsEnabled(txtOptions.fractionalFontMetricsEnabled);
+				textArea.setTabsEmulated(txtOptions.tabSpacesEmulated);
+				hyperLinksEnabled(txtOptions.hyperLinksEnabled);
+				textArea.setShowMatchedBracketPopup(txtOptions.showBracketsPopup);
+				textArea.setEOLMarkersVisible(txtOptions.markEndOfLine);
+				textArea.setDragEnabled(true);
+				textArea.setMarkOccurrencesDelay(200);
+				textArea.setPaintMarkOccurrencesBorder(txtOptions.paintMarkOccurrencesBorder);
+				textArea.setRoundedSelectionEdges(txtOptions.roundedSelectionEdges);
+				textArea.setClearWhitespaceLinesEnabled(txtOptions.clearWhitespaceLinesEnabled);
+			}
+		});
 		
 	}
 

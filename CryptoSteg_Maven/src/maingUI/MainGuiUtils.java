@@ -22,6 +22,7 @@ import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import guistyle.GUIStyelSettings;
 import mainobj.INItializer;
 import media.Sounds;
 import resources.GeneralConfig;
@@ -120,8 +121,6 @@ public class MainGuiUtils {
 		
 		mainAppReference.isOnHomePage.set(false);
 		
-		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
-
 		// reset all listeners
 		if (forceStart) {
 			removeAllListeners(mainAppReference.configManagerPanel);
@@ -136,14 +135,13 @@ public class MainGuiUtils {
 		mainAppReference.configManagerPanel.textArea.revalidate();
 		mainAppReference.configManagerPanel.textArea.repaint();
 		
-		contentPane.removeAll();
-    	contentPane.add(mainAppReference.configManagerPanel);
-    	contentPane.revalidate(); 
-    	contentPane.repaint();
+		replaceMainPanel(mainAppReference.configManagerPanel);
     	
     	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ChargeIniLog.class);
     	MainGUI.currentConfiguration.writeSingleValue(
 		INItializer.GEN_OPT, "lastPanelOpened", ChargeIniLog.class.getCanonicalName());
+    	
+    	refreshGUIlaf();
     	
     	resetMainAppCursor();
 	}
@@ -155,7 +153,7 @@ public class MainGuiUtils {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
-				final JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+
 				// reset all listeners
 				if (forceStart) {
 					removeAllListeners(MainGUI.panelCrypter);
@@ -167,18 +165,38 @@ public class MainGuiUtils {
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						contentPane.removeAll();
-						contentPane.add(MainGUI.panelCrypter);
-						contentPane.revalidate();
-						contentPane.repaint();
+						replaceMainPanel(MainGUI.panelCrypter);
 						MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
 						MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
 					}
 				});
 				
+				refreshGUIlaf();
+				
 				resetMainAppCursor();
 			}
 		});
+	}
+	
+	public boolean isTextEditorActive() {
+		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof TextEditor;
+	}
+	public boolean isCrypterActive() {
+		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof CrypterPanel;
+	}
+	public boolean isConfManagerActive() {
+		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof ChargeIniLog;
+	}
+	
+	public void updateTitleRightPart(String newSuffix) {
+		String[] titleComponents = mainAppReference.getMainFrame().getTitle().split("-");
+		String newTitle = "";
+		int i = 0;
+		for (i = 0; i<2; i++) {
+			newTitle += titleComponents[i] + " - ";
+		}
+		newTitle += newSuffix;
+		mainAppReference.getMainFrame().setTitle(newTitle);
 	}
 	
 	public void startTextEditor(final boolean forceRestart) {
@@ -188,7 +206,7 @@ public class MainGuiUtils {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
-				final JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+
 				// reset shortcut listener
 				if (forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
 					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.initTxtWriter.shortcutsListener);
@@ -200,20 +218,25 @@ public class MainGuiUtils {
 				}
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						contentPane.removeAll();
-						contentPane.add(MainGUI.initTxtWriter);
-						contentPane.revalidate();
-						contentPane.repaint();
+						replaceMainPanel(MainGUI.initTxtWriter);
 						MainGUI.updateGuiFromCurrConfig();
 					}
 				});
 				
-				resetMainAppCursor();
+				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
 				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
 				
 			}
 		});
+	}
+	
+	public void replaceMainPanel(JPanel newMainPanel) {
+		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+		contentPane.removeAll();
+    	contentPane.add(newMainPanel);
+    	contentPane.revalidate(); 
+    	contentPane.repaint();
 	}
 	
 	public Runnable tempDecryptedEraser() {
@@ -282,6 +305,20 @@ public class MainGuiUtils {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
+			}
+		});
+	}
+
+	public void refreshGUIlaf() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if(MainGUI.currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
+					GUIStyelSettings.setDarkNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
+				}else {
+					GUIStyelSettings.setStyle(MainGUI.currentConfiguration.getGuiOpt().getPreferredStyle(), MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
+				}
+				
+				GUIStyelSettings.updateAllWindowsLaf();
 			}
 		});
 	}

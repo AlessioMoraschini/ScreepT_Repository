@@ -29,6 +29,7 @@ import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
+import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
 import om.TextEditorOption;
 import resources.GeneralConfig;
@@ -97,6 +98,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		this.txtAreaClipboard = new RSyntaxTextArea();
 		txtAreaClipboard.setMaximumSize(new Dimension(1500, GuiUtils.getScreenSize().height));
 		this.txtAreaContainer = new JScrollPane();
+		txtAreaClipboard.setSelectionColor(config.getTextEditorOpt().filePanelBackCol.brighter().brighter());
 		txtAreaContainer.setMinimumSize(new Dimension(18, 18));
 		txtAreaContainer.setPreferredSize(new Dimension(20, 20));
 		txtAreaContainer.setBackground(config.getTextEditorOpt().filePanelBackCol);

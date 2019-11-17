@@ -77,6 +77,8 @@ public class MainGuiParent {
 	public static Image SCREEPT_BACKGROUND_DRAGNDROP_IMAGE;
 	public static Image SW_ICON;
 	
+	public static String BASE_TITLE;
+	
 	// JVM VERSION INIT 
 	public static String currentJvmVersion = "";
 	
@@ -159,6 +161,8 @@ public class MainGuiParent {
 			mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnHelp = new JMenu("Help");
 			mnrestartPanel = new JMenu("Reset panels...");
+			
+		BASE_TITLE = currentConfiguration.getGenOpt().getUserName() + " is using " + GeneralConfig.APPLICATION_NAME;
 		
 		// JMenuItems are initialized inside MainGUI Constructor, where they are linked to actions
 	}
@@ -174,9 +178,21 @@ public class MainGuiParent {
 			@Override
 			public void run() {
 				while (mainAppRunning) {
-					frmScryptV.setTitle(currentConfiguration.getGenOpt().getUserName()+" is using " + GeneralConfig.APPLICATION_NAME);				
+					
+					if(mainGuiUtils.isTextEditorActive()) {
+						frmScryptV.setTitle(BASE_TITLE + " - Text Editor");
+					
+					} else if(mainGuiUtils.isCrypterActive()) {
+						frmScryptV.setTitle(BASE_TITLE + " - Crypter");
+					
+					} else if(mainGuiUtils.isConfManagerActive()) {
+						frmScryptV.setTitle(BASE_TITLE + " - Configuration Manager");
+						
+					} else {
+						frmScryptV.setTitle(BASE_TITLE);
+					}
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(GeneralConfig.TITLE_REFRESH_TIME);
 					} catch (InterruptedException e) {
 						frmScryptV.setTitle(GeneralConfig.APPLICATION_NAME+" - A.M. development");	
 					}
@@ -463,7 +479,7 @@ public class MainGuiParent {
 		// file submenu
 		mntmInspectCurrentConfiguration.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_1, ALT_MASK | SHIFT_MASK));
 		mntmExportPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_E, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		mntmloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ADD, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmReloadPrjSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmSaveCurrent.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmSaveCurrentAs.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_W, CTRL_MASK | ALT_MASK | SHIFT_MASK));

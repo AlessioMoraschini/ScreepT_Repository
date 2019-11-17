@@ -63,7 +63,7 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				if(e.getKeyCode() == 77 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							currentGui.mainGuiUtils.immersiveModeToggle();
+							MainGUI.mainGuiUtils.immersiveModeToggle();
 						}
 					});
 				}
@@ -93,9 +93,9 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				}
 
 				/**
-				 *  LOAD CUSTOM CONFIGURATION : Ctrl+Alt+Shift+ (+)
+				 *  LOAD CUSTOM CONFIGURATION : Ctrl+Alt+Shift+O
 				 */
-				if ((e.getKeyCode() == 107 || e.getKeyCode() == 521) && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				if (e.getKeyCode() == 79 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmloadPrjSub().doClick();
 				}
 				
@@ -301,8 +301,8 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 			}
 		}
 	    
-	// Pass the KeyEvent to the next KeyEventDispatcher in the chain
-    return false;
+		// Pass the KeyEvent to the next KeyEventDispatcher in the chain
+	    return false;
 	}
 	
 	private boolean isShortcutKey(KeyEvent e) {

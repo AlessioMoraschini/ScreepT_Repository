@@ -19,7 +19,7 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import dialogutils.JOptionHelper;
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import crypt.steg.STEGException;
 
 public class ScreeptManagerFileOrFolder {
@@ -39,7 +39,7 @@ public class ScreeptManagerFileOrFolder {
 	
 	public boolean coderUsed = false;
 	public boolean defaultProgressBarVisible = true;
-	TestUpdateProgress generalProgress;
+	UpdateProgressPanel generalProgress;
 	
 	public JOptionHelper dialogHelper;
 	
@@ -54,7 +54,7 @@ public class ScreeptManagerFileOrFolder {
 	 * 
 	 * NB default shuffle is false, you have to specify it each time crypting/decrypting
 	 */
-	public ScreeptManagerFileOrFolder(TestUpdateProgress generalProgress, JComponent parent, boolean advicesEnabled) {
+	public ScreeptManagerFileOrFolder(UpdateProgressPanel generalProgress, JComponent parent, boolean advicesEnabled) {
 		this.shuffle = false;
 		// default dialogHelper initially disabled 
 		this.dialogHelper = new JOptionHelper(parent, advicesEnabled);
@@ -554,11 +554,11 @@ public class ScreeptManagerFileOrFolder {
 		return opInfo;
 	}
 
-	public TestUpdateProgress getGeneralProgress() {
+	public UpdateProgressPanel getGeneralProgress() {
 		return generalProgress;
 	}
 
-	public void setGeneralProgress(TestUpdateProgress generalProgress) {
+	public void setGeneralProgress(UpdateProgressPanel generalProgress) {
 		this.generalProgress = generalProgress;
 	}
 	

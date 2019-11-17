@@ -7,7 +7,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import enums.ScalingAlgorithm;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
@@ -151,7 +151,7 @@ public class ImageConverterFrame extends ParentFrame{
 	private JSeparator separator_7;
 
 	// object that display wait dialog
-	TestUpdateProgress progUpdater;
+	UpdateProgressPanel progUpdater;
 
 	
 	public ImageConverterFrame(INItializer currentConf) {
@@ -542,7 +542,7 @@ public class ImageConverterFrame extends ParentFrame{
 						// if source file exists and is loaded
 						if(inputImgFile!=null) {
 							
-							progUpdater = new TestUpdateProgress(currentConfiguration, false);
+							progUpdater = new UpdateProgressPanel(currentConfiguration, false);
 							progUpdater.getPb().setValue(20);
 							
 							if (inputImg != null) {
@@ -640,7 +640,7 @@ public class ImageConverterFrame extends ParentFrame{
 								selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
 								selected = FileStuff.renameJavaObjFile(selected);
 								
-								progUpdater = new TestUpdateProgress(currentConfiguration, false);
+								progUpdater = new UpdateProgressPanel(currentConfiguration, false);
 								progUpdater.getPb().setValue(20);
 					    		progUpdater.getPb().setIndeterminate(true);
 
@@ -741,7 +741,7 @@ public class ImageConverterFrame extends ParentFrame{
 						File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileImgRead(thisFrame);
 						if (selected!=null) {
 							
-							progUpdater = new TestUpdateProgress(currentConfiguration, false);
+							progUpdater = new UpdateProgressPanel(currentConfiguration, false);
 							progUpdater.getPb().setValue(20);
 							progUpdater.getLabel().setText("I'm loading the image...");
 				    		progUpdater.getPb().setIndeterminate(true);

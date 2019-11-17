@@ -26,7 +26,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import gUI.frames.KeyGenFrame;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
@@ -46,7 +46,7 @@ public class TreeFileMouseListenerDictionary {
 	private INItializer currentConfig;
 	
 	// object that display wait dialog
-	private volatile TestUpdateProgress progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
 
 	// constructor
 	public TreeFileMouseListenerDictionary(INItializer currentConf, JFrame parent, JTree treeIn, JTextArea log, JTextArea mainTxtArea) {
@@ -206,7 +206,7 @@ public class TreeFileMouseListenerDictionary {
 					public void run() {
 						
 			    		if (selected!= null) {
-			    			progUpdater = new TestUpdateProgress(currentConfig);
+			    			progUpdater = new UpdateProgressPanel(currentConfig);
 				    		progUpdater.getPb().setValue(5);
 				    		
 							if (!selected.exists()) {

@@ -44,8 +44,8 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_WORKSPACE_VIEW_SELECTED = false;
 	public static final boolean DFAULT_AUTO_SYNTAX_SYN_FLAG = true;
 	public static final String DEFAULT_WORKSPACE_LOCATION = GeneralConfig.USER_PERSONAL_DIR;
-	public static final LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);
-	public static final LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE);
+	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles;
+	public static LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces;
 	
 	// TEXT AREA DETAIL
 	public static final boolean DEF_codeFoldingEnabled = true;
@@ -127,6 +127,9 @@ public class TextEditorOption {
 	
 	// CONSTRUCTOR
 	public TextEditorOption() {
+		DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);      
+		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
+		
 		openedFileList = new ArrayList<String>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
 		lastSelectedWorkspaces = DEF_lastSelectedWorkspaces;
@@ -184,6 +187,8 @@ public class TextEditorOption {
 	
 	public TextEditorOption(INItializer parentConfig) {
 		super();
+		DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);      
+		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
 		this.parentConfig = parentConfig;
 	}
 
@@ -197,7 +202,7 @@ public class TextEditorOption {
 		
 		// FIRST REMOVE ALL REFERENCES
 		synchronized (targetList) {
-			Iterator iter = targetList.getList().iterator();
+			Iterator<FileNamed> iter = targetList.getList().iterator();
 			List<FileNamed> toRemove = new ArrayList<FileNamed>();
 			while (iter.hasNext()) {
 				FileNamed elem = (FileNamed)iter.next();

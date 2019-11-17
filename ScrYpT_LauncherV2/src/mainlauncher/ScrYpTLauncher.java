@@ -65,7 +65,6 @@ public class ScrYpTLauncher {
 	public static boolean ignoreWarnings = false;
 	
 	public static final String END_ARGS_SECTION = "###_END_SECTION";
-	public static final float launcherRatio = 0.2f;
 	private final static String arch32OR64 = String.valueOf(SysUtils.findIf32or64());
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
 	
@@ -95,7 +94,7 @@ public class ScrYpTLauncher {
 	/** MAIN START POINT **/
 	public static void main(String[] args) {
 		
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
 
 		GeneralConfig.initLazyGeneralConfig();
 		
@@ -181,8 +180,9 @@ public class ScrYpTLauncher {
 	loaderGraphics.update("Analyzing System...", 45);
 		analyzeBeforeLauncher();
 		
-		// if direct launch configured launch directly commands
-		if(iniFileManager.hideNStartDirect || ARGS.length != 0) {
+		// if there aren't blocking problems and direct launch configured -> launch directly
+		// NB incompatible jvm is potential blocking cause for medium user, so by default when jvm is "warning" launcher panel will be prompted
+		if(!JvmHelper.warningJVM && criticalDependenciesOK && (iniFileManager.hideNStartDirect || ARGS.length != 0)) {
 			appLogEnd();
 			launchCommands();
 			loaderGraphics.update("Ready", 1000);

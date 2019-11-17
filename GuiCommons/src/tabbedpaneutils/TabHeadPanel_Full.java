@@ -28,8 +28,6 @@ public class TabHeadPanel_Full extends JPanel{
 		super();
 		setOpaque(false);
 		setToolTipText(tooltip);
-		setMaximumSize(new Dimension(1500, 22));
-		setMinimumSize(new Dimension(150, 18));
 		
 		// image label
 		JLabel imageLbl = new JLabel();
@@ -52,7 +50,7 @@ public class TabHeadPanel_Full extends JPanel{
 		btnClose.setIgnoreRepaint(true);
 		btnClose.setMargin(new Insets(0, 0, 0, 0));
 		btnClose.setMaximumSize(new Dimension(100, 100));
-		btnClose.setMinimumSize(new Dimension(18, 18));
+		btnClose.setMinimumSize(new Dimension(18, 16));
 		btnClose.setVerticalTextPosition(SwingConstants.CENTER);
 		btnClose.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));

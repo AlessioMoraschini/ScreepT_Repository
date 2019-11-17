@@ -34,6 +34,8 @@ public class GUIStyelSettings{
 	public static final String jtatooGraphiteLNF = "com.jtattoo.plaf.graphite.GraphiteLookAndFeel";
 	public static final String jtatooMintLNF = "com.jtattoo.plaf.noire.MintLookAndFeel";
 	public static final String jtatooLunaLNF = "com.jtattoo.plaf.luna.LunaLookAndFeel";
+	
+	public static final Color nimbusProgBarColor = new Color(84,165,50);
 
 	public static int focusOpacity = 20;
 
@@ -46,7 +48,7 @@ public class GUIStyelSettings{
     		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
     		UIManager.put("CheckBox.disabledText", Color.GRAY);
     		UIManager.put("RadioButton.disabledText", Color.GRAY);
-    		UIManager.put("nimbusOrange", Color.GREEN);
+    		UIManager.put("nimbusOrange", nimbusProgBarColor);
 			UIManager.put( "MenuBar.foreground", Color.black );
 			UIManager.put("ScrollBar.background", new Color(170,170,170));
 			UIManager.put("ToolTip.font", new Font("Segoe UI", Font.PLAIN, 18));
@@ -54,7 +56,6 @@ public class GUIStyelSettings{
 			UIManager.put( "nimbusSelectionBackground", new Color(57,105,138, 50));
 			UIManager.put( "nimbusSelectionForeground", new Color(10, 10, 10));
 			UIManager.setLookAndFeel(style);
-			Color buttonBackG = (Color)UIManager.get("Button.background");
 			
 			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, true);
 			
@@ -87,7 +88,7 @@ public class GUIStyelSettings{
     	UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		UIManager.put("CheckBox.disabledText", Color.GRAY);
 		UIManager.put("RadioButton.disabledText", Color.GRAY);
-		UIManager.put("nimbusOrange", Color.GREEN);
+		UIManager.put("nimbusOrange", nimbusProgBarColor);
 		UIManager.put("nimbusBase", new Color(18, 30, 49));
 		UIManager.put("ScrollBar.background", new Color(70, 70, 70));
 		UIManager.put("MenuBar.foreground", Color.white);
@@ -125,7 +126,7 @@ public class GUIStyelSettings{
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		UIManager.put("CheckBox.disabledText", Color.GRAY);
 		UIManager.put("RadioButton.disabledText", Color.GRAY);
-		UIManager.put("nimbusOrange", Color.GREEN);
+		UIManager.put("nimbusOrange", nimbusProgBarColor);
 		UIManager.put("ScrollBar.background", new Color(170,170,170));
 		UIManager.put("nimbusBase", new Color(51, 98, 140));
 		UIManager.put("MenuBar.foreground", Color.black);

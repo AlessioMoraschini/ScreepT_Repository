@@ -22,7 +22,6 @@ import gui.utils.LauncherLoaderFrame;
 import handlers.AWTExceptionHandler;
 import launcherutils.IniFileManager;
 import logger.LoggerUtils;
-import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import media.Sounds;
 import resources.GeneralConfig;
@@ -40,7 +39,6 @@ public class MainGuiGeneralAppStarter {
 	
 	// LOADER
 	public static LauncherLoaderFrame loaderGraphics;
-	public static final float launcherRatio = 0.3f;
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
 	public static final Dimension minimumSize = new Dimension(1200,650);
 		
@@ -61,8 +59,9 @@ public class MainGuiGeneralAppStarter {
 		
 		long startTime = System.currentTimeMillis();
 		
-		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
-		loaderGraphics.update("Preloading application properties and general configuration files...", 5);
+		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
+		loaderGraphics.update("Preloading application properties and general configuration files...", 40);
+		loaderGraphics.indeterminate(true, "Loading configuration");
 		fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
 		
 		try {

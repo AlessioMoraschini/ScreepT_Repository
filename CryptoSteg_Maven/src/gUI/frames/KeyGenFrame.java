@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import enums.KeyGenImageType;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
@@ -84,7 +84,7 @@ public class KeyGenFrame extends ParentFrame {
 	private JLabel lblThisSettingsAllow;
 	
 	// container of the image from which generated original image will be taken
-	private volatile TestUpdateProgress progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
 	private ImageGenContainerPanel imageContainer;
 	private KeyGenFrame thisFrame;
 	
@@ -332,7 +332,7 @@ public class KeyGenFrame extends ParentFrame {
 							int returnVal = fileChooser.showSaveDialog(thisFrame);
 					        if (returnVal == JFileChooser.APPROVE_OPTION) {
 					        	
-					        	progUpdater = new TestUpdateProgress(currentConfig);
+					        	progUpdater = new UpdateProgressPanel(currentConfig);
 					    		progUpdater.getPb().setValue(10);
 					    		progUpdater.getPb().setIndeterminate(true);
 					        	
@@ -424,7 +424,7 @@ public class KeyGenFrame extends ParentFrame {
 							}
 							// now if user pressed cancel input is null, let's check
 							if (inputName != null) {
-								progUpdater = new TestUpdateProgress(currentConfig);
+								progUpdater = new UpdateProgressPanel(currentConfig);
 								progUpdater.getPb().setValue(0);
 								progUpdater.getPb().setIndeterminate(true);
 

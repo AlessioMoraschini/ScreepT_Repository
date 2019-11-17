@@ -10,9 +10,12 @@ import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -72,6 +75,31 @@ public class GuiUtils {
 		codeFormatter = new CustomCodeFormatter(GeneralConfig.JS_LIB_FOLDER);
 		CURSOR_COLOR_PICK = getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER, DEF_CUSTOM_CURSOR_SIZE);
 	}
+	
+	/**
+	 * Use this to disable or enable default system shortcuts for a given key, identified by its keyCode
+	 * @param keyCode
+	 */
+	public static void setKeySystemActionEnabled(int keyCode, boolean enable) {
+		
+		KeyEventDispatcher customKeyDispatcher = getKeyDispatcherFromCode(keyCode);
+		
+		if(enable) {
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(customKeyDispatcher);
+		}else {
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(customKeyDispatcher);
+		}
+		
+	}
+	
+	public static KeyEventDispatcher getKeyDispatcherFromCode(int keyCode) {
+		return new KeyEventDispatcher() {
+		    @Override
+		    public boolean dispatchKeyEvent(KeyEvent e) {
+		        return e.getKeyCode() == keyCode;
+		    }
+		};
+    }
 
 	public static Cursor getCustomCursor(String imgPath, Dimension size) {
 		Dimension correctSize = size;
@@ -140,19 +168,22 @@ public class GuiUtils {
 			// JS/JSON -> use javascript function call with custom library to prettify JS string
 			}else if (extension.toLowerCase().endsWith("js") || extension.toLowerCase().endsWith("json")) {
 				suppported = true;
-				formatted = codeFormatter.jsFormatJSLIB(source, tabSize);
+				formatted = codeFormatter.jsFormatJSLIB(source, 5);
+				formatted = replaceEachLineMatchesFromLeft(true, formatted, "    ", "\t");
 				source = formatted;
 				
 			// HTML -> use javascript function call with custom library to prettify html string
 			}else if (extension.toLowerCase().endsWith("html")) {
 				suppported = true;
-				formatted = codeFormatter.htmlFormatJSLIB(source, tabSize);
+				formatted = codeFormatter.htmlFormatJSLIB(source, 5);
+				formatted = replaceEachLineMatchesFromLeft(true, formatted, "    ", "\t");
 				source = formatted;
 			
 			// CSS -> use javascript function call with custom library to prettify css string
 			}else if (extension.toLowerCase().endsWith("css")) {
 				suppported = true;
-				formatted = codeFormatter.cssFormatJSLIB(source, tabSize);
+				formatted = codeFormatter.cssFormatJSLIB(source, 5);
+				formatted = replaceEachLineMatchesFromLeft(true, formatted, "    ", "\t");
 				source = formatted;
 				
 			// JAVA -> use google library to prettify java string
@@ -184,6 +215,24 @@ public class GuiUtils {
 		}
 		
 		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(originalDialogDim);
+	}
+	
+	public static String replaceEachLineMatchesFromLeft(boolean startsWith, String source, String match, String replacement) {
+		String[] lines = source.split("\n");
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for (String line : lines) {
+			if(i > 0 && i< lines.length) {
+				builder.append("\n");
+			}
+			if (!startsWith || line.startsWith(match)) {
+				builder.append(line.replaceAll(match, replacement));			}else {
+				builder.append(line);
+			}
+			i++;
+		}
+		
+		return builder.toString();
 	}
 	
 	private static void manageFormatterException(Exception e, String extension) {

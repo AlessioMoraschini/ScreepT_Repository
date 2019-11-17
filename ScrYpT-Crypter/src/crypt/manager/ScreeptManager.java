@@ -34,7 +34,7 @@ import resources.GeneralConfig;
 import variousutils.CustomFileComparator;
 import variousutils.EntophyzerUtils;
 import crypt.steg.StegOmResult;
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import media.ImageGeneralWorker;
 
 /**
@@ -83,7 +83,7 @@ public class ScreeptManager {
 	
 	private byte[] buffer;
 	
-	private volatile TestUpdateProgress progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
 	
 	boolean wellDone = false;
 	
@@ -174,16 +174,14 @@ public class ScreeptManager {
 	 * @throws InvalidKeyException 
 	 * @throws STEGException 
 	 */
-	public Boolean crypt(File srcFile, TestUpdateProgress progressBarGeneral) {
+	public Boolean crypt(File srcFile, UpdateProgressPanel progressBarGeneral) {
 
 		buffer = new byte[AES_BUFFER_SIZE];
 		
-		progUpdater = progressBarGeneral;
-		
-//    	progUpdater = new TestUpdateProgress(currentConf);
-//		progUpdater.getPb().setValue(0);
-//		progUpdater.getLabel().setText("Starting ecnryption...");
-//		
+		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanel();
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Starting ecnryption...");
+
 		wellDone = true;
 		
 		tempMSG += "Start encripting "+srcFile.getAbsolutePath()+" ...\n[Selected mode: "+mode+" ]\n";
@@ -200,14 +198,14 @@ public class ScreeptManager {
 			// CASE 1 - ONLY AES
 			if(mode.AES && !mode.STEG) {
 				
-//				progUpdater.getPb().setValue(5);
-//				progUpdater.getLabel().setText("AES mode detected!");
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("AES mode detected!");
 
 				logger.debug("AES mode detected!");
 
 				onlyAESCrypt(srcFile);
 				
-//				progUpdater.getPb().setValue(100);
+				progUpdater.getPb().setValue(100);
 				logger.debug("AES Crypt phase - EXITING");
 				
 			// CASE 2 - ONLY STEG
@@ -225,15 +223,15 @@ public class ScreeptManager {
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-//				progUpdater.getPb().setValue(5);
-//				progUpdater.getLabel().setText("STEG mode detected!");
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("STEG mode detected!");
 				
 				tempMSG += "\n => Using folder [ "+outFolder.getAbsolutePath()+" ] to contain crypted Images!\n";
 				logger.debug("STEG mode detected!");
 
 				onlySTEGCrypt(srcFile);
 				
-//				progUpdater.getPb().setValue(100);
+				progUpdater.getPb().setValue(100);
 				logger.debug("STEG Crypt phase - EXITING");
 				
 			// CASE 3 - COMPLETE MODE
@@ -251,15 +249,15 @@ public class ScreeptManager {
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-//				progUpdater.getPb().setValue(5);
-//				progUpdater.getLabel().setText("COMPLETE mode detected!");
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("COMPLETE mode detected!");
 
 				tempMSG += "\n => Using folder [ "+outFolder.getAbsolutePath()+" ] to contain crypted Images!\n";
 				logger.debug("COMPLETE mode detected!");
 				
 				completeCrypt(srcFile);
 				
-//				progUpdater.getPb().setValue(100);
+				progUpdater.getPb().setValue(100);
 				logger.debug("COMPLETE Crypt phase - EXITING");
 				
 			}	
@@ -300,7 +298,7 @@ public class ScreeptManager {
 	 * incremental names found in the same folder
 	 * 
 	 */
-	public Boolean deCrypt(File srcFile, TestUpdateProgress progressBarGeneral) {
+	public Boolean deCrypt(File srcFile, UpdateProgressPanel progressBarGeneral) {
 		
 		progUpdater = progressBarGeneral;
 		
@@ -308,9 +306,9 @@ public class ScreeptManager {
 		// to avoid errors i've to include that bytes during the read plus the IV size
 		buffer = new byte[AES_BUFFER_SIZE+32];
 		
-//		progUpdater = new TestUpdateProgress(currentConf);
-//		progUpdater.getPb().setValue(0);
-//		progUpdater.getLabel().setText("Starting Decryption...");
+		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanel();
+		progUpdater.getPb().setValue(0);
+		progUpdater.getLabel().setText("Starting Decryption...");
 		
 		wellDone = true;
 		
@@ -328,14 +326,14 @@ public class ScreeptManager {
 			// CASE 1 - ONLY AES
 			if(mode.AES && !mode.STEG) {
 				
-//				progUpdater.getPb().setValue(5);
-//				progUpdater.getLabel().setText("AES mode detected!");
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("AES mode detected!");
 
 				logger.debug("AES mode detected!");
 				
 				onlyAESDeCrypt(srcFile);
 				
-//				progUpdater.getPb().setValue(100);
+				progUpdater.getPb().setValue(100);
 				logger.debug("AES Decrypt phase - EXITING");
 				
 			// CASE 2 - ONLY STEG
@@ -345,14 +343,14 @@ public class ScreeptManager {
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-//				progUpdater.getPb().setValue(5);
-//				progUpdater.getLabel().setText("STEG mode detected!");
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("STEG mode detected!");
 				
 				logger.debug("STEG mode detected!");
 
 				onlySTEGDeCrypt(srcFile);
 				
-//				progUpdater.getPb().setValue(100);
+				progUpdater.getPb().setValue(100);
 				logger.debug("STEG Decrypt phase - EXITING");
 				
 			// CASE 3 - COMPLETE MODE
@@ -361,14 +359,14 @@ public class ScreeptManager {
 				w = this.imgCoder.getKeyImage().getWidth();
 				h = this.imgCoder.getKeyImage().getHeight();
 				
-//				progUpdater.getPb().setValue(5);
-//				progUpdater.getLabel().setText("COMPLETE mode detected!");
+				progUpdater.getPb().setValue(5);
+				progUpdater.getLabel().setText("COMPLETE mode detected!");
 
 				logger.debug("COMPLETE mode detected!");
 				
 				completeDeCrypt(srcFile);
 				
-//				progUpdater.getPb().setValue(100);
+				progUpdater.getPb().setValue(100);
 				logger.debug("COMPLETE Decrypt phase - EXITING");
 				
 			}	
@@ -425,7 +423,7 @@ public class ScreeptManager {
 	// Function that implements encryption of source file into another crypted file with same extension.
 	private void onlyAESCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 		
-		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -507,7 +505,7 @@ public class ScreeptManager {
 	// Function that implements aes decryption of source file into another decrypted file with same extension.
 	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
 		
-		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -588,7 +586,7 @@ public class ScreeptManager {
 
 		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 		
-		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -687,7 +685,7 @@ public class ScreeptManager {
 
 		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -773,7 +771,7 @@ public class ScreeptManager {
 				
 		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -895,7 +893,7 @@ public class ScreeptManager {
 		
 		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new TestUpdateProgress();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		

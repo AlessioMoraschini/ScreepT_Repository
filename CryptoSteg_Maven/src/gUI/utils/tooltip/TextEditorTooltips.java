@@ -24,8 +24,8 @@ public class TextEditorTooltips {
 	public static final String tooltipBackgroundColor = "Change background color (won't be saved in .txt)";
 	public static final String tooltipForegroundTxt = "Change text color (won't be saved in .txt)";
 	public static final String tooltipDarkSwitch = "[Ctrl+B] Switch upon dark and light text combination";
-	public static final String tooltipUpperPostDots = "Makes text uppercase after dots, or a significat line brokers";
-	public static final String tooltipLowerPostDots = "Makes text lowerCase after dots, or a significat line brokers";
+	public static final String tooltipUpperPostDots = "Makes text uppercase after dots, or a significat line broker";
+	public static final String tooltipLowerPostDots = "Makes text lowerCase after dots, or a significat line broker";
 	public static final String tooltipTt = "[Ctrl+Shift+UP] Makes selected/all text uppercase";
 	public static final String tooltipTtTt = "[Ctrl+shift+dot] Makes selected/all initial characters uppercase";
 	public static final String tooltipLoremIpsum = "Insert classic test text \"Lorem Ipsum\"";

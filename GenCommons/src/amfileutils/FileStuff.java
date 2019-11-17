@@ -1120,7 +1120,7 @@ public class FileStuff {
 		if(size <= 0) return "0";
 	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "ExaB" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-	    return new DecimalFormat("#,##0.###").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+	    return new DecimalFormat("#,##0.##").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 	
 	/**
@@ -1132,7 +1132,7 @@ public class FileStuff {
 		if(size <= 0) return "0";
 	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "ExaB" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-	    return new DecimalFormat("#,##0.###").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+	    return new DecimalFormat("#,##0.##").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 	
 	/**
@@ -1145,7 +1145,7 @@ public class FileStuff {
 		if(size <= 0) return "0";
 	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Exab" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-	    return new DecimalFormat("#,##0.###").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 	
 	/**
@@ -1157,7 +1157,7 @@ public class FileStuff {
 		if(size <= 0) return "0";
 	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Exab" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-	    return new DecimalFormat("#,##0.###").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 	
 	public static boolean copyFile(File source, File dest, boolean overwrite) {

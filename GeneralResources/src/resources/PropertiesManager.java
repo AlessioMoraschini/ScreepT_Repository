@@ -79,6 +79,20 @@ public class PropertiesManager {
 		
 		return res;
 	}
+
+	/**
+	 * Avoid null values reading from properties
+	 * @return
+	 */
+	public String getProperty(String key, String defaultVal) {
+		String res = "";
+		if(dynamicFileBindingsDef != null) {
+			res = dynamicFileBindingsDef.getProperty(key);
+			res = (res != null)? res : defaultVal;
+		}
+		
+		return res;
+	}
 	
 	/**
 	 * Use this to refresh properties

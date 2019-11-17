@@ -101,12 +101,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public static final char DEFAULT_PSW_CHAR = '\u25CF';
 	
 	// COLORS DEFAULT DEFINITIONS
-	final Font DEFAULT = GeneralConfig.DEFAULT_FONT;
 	final Color DEFAULT_BCKG_COL;
 	final Color DEFAULT_FORE_COL;
 	
 	// RESOURCE FILES //
-	private final static String LOREM_IPSUM = GeneralConfig.RESOURCES_DIR  + "Templates/LoremIpsum.txt";
+	private static String LOREM_IPSUM;
 
 	// GENERAL FIELDS //
 	private boolean uppercase;
@@ -212,6 +211,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	************************/
 	public TextEditorSubHeadButtonsPanel(TextEditor parent) {
 		setBackground(Color.DARK_GRAY);
+		LOREM_IPSUM = GeneralConfig.RESOURCES_DIR  + "Templates/LoremIpsum.txt";
 		
 		thisHeaderRef = this;
 		this.uppercase = false;
@@ -1059,7 +1059,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 								String prefix = textArea.getText(0, startSel);
 								String postFix = textArea.getText(endSel, textArea.getText().length() - endSel);
 								textArea.setText(prefix + converted + postFix);
-								endSel = startSel + converted.length() - 1;
+								endSel = startSel + converted.length();
 
 							} else {
 								textArea.setText(converted);
@@ -1069,12 +1069,16 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							dialogHelper.error("Something has gone wrong :(", "An Error Occurred");
 							logger.error("An error occurred tryin' to convert using base64 (SelectedText = " + isSomethingSelected);
 						} finally {
-							if (startSel != endSel) {
-								textArea.requestFocus();
-								textArea.setSelectionStart(startSel);
-								textArea.setSelectionEnd(endSel);
-							} else {
-								textArea.setCaretPosition(endSel);
+							try {
+								if (startSel != endSel) {
+									textArea.requestFocus();
+									textArea.setSelectionStart(startSel);
+									textArea.setSelectionEnd(endSel);
+								} else {
+									textArea.setCaretPosition(endSel);
+								}
+							} catch (Exception e) {
+								logger.error("Error with textarea selection reapply after base 64 conversion", e);
 							}
 							
 							textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
@@ -1241,7 +1245,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				
 				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
-				loadedTabObj.textArea.setFont(DEFAULT);
+				loadedTabObj.textArea.setFont(GeneralConfig.DEFAULT_FONT);
 
 				RsyntaxUtils.setBackground(loadedTabObj.textArea, DEFAULT_BCKG_COL);
 				loadedTabObj.textArea.setBackground(DEFAULT_BCKG_COL);
@@ -1252,7 +1256,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				sliderFontSize.setValue(loadedTabObj.textArea.getFont().getSize());
 				lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
 
-				textEditorUtils.defaultTxtConfig(DEFAULT, DEFAULT_BCKG_COL, DEFAULT_FORE_COL, 10);
+				textEditorUtils.defaultTxtConfig(GeneralConfig.DEFAULT_FONT, DEFAULT_BCKG_COL, DEFAULT_FORE_COL, 10);
 			}
 		});
 
@@ -1358,7 +1362,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						Font font = loadedTabObj.textArea.getFont();
 						font = new Font(font.getName(), font.getStyle(), sliderFontSize.getValue());
 						lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
-						currentConfiguration.getTextEditorOpt().setFont(loadedTabObj.textArea.getFont());
+						currentConfiguration.getTextEditorOpt().setFont(font);
 						loadedTabObj.textArea.setFont(font);
 						
 						try {

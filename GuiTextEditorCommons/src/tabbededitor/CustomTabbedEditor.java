@@ -2,6 +2,8 @@ package tabbededitor;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -308,8 +310,10 @@ public class CustomTabbedEditor {
 		int indexChange = mainTabList.getSelectedIndex();
 		try {
 			if (!tabJustSwitched && indexChange >= 0 && tabEditorManager.getAdditionalConditionBeforeUpdateOnDocumentEvent() && !alreadyLoading) {
-				loadedTabObj.unsaved = true;
-				updateSavedLabelNTab(null);
+				if (loadedTabObj.unsaved == false) {
+					loadedTabObj.unsaved = true;
+					updateSavedLabelNTab(null);
+				}
 			}
 		} catch (Exception e) {
 			logger.error("Error during label update!", e);
@@ -425,6 +429,8 @@ public class CustomTabbedEditor {
 			
 		} catch (Exception e) {
 			logger.error(e);
+		} finally {
+			loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
 		}
 		isAddingTab = false;
 	}
@@ -650,6 +656,9 @@ public class CustomTabbedEditor {
 			icon = IconsPathConfigurator.ICON_DOC_SAVED;
 		}
 		JPanel customTab = TabUtils.getCustomClosableTab(title, tooltip, icon, getTabCloseListener(index));
+		customTab.setMaximumSize(new Dimension(1500, GeneralConfig.TAB_HEAD_HEIGHT));
+//		customTab.setPreferredSize(new Dimension(200,GeneralConfig.TAB_HEAD_HEIGHT));
+		customTab.setMinimumSize(new Dimension(150, GeneralConfig.TAB_HEAD_HEIGHT-2));
 		
 		customTab.addMouseListener(new MouseListener() {
 			public void mouseReleased(MouseEvent e) {
@@ -727,6 +736,8 @@ public class CustomTabbedEditor {
 	public void updateSavedLabelNTab(Integer sourceIndex) {
 		int indexChange = (sourceIndex == null) ? mainTabList.getSelectedIndex() : sourceIndex;
 		newFileStringTarget = tabEditorManager.getNewFileStringTarget();
+		TabTextEditorObj loadedTabObj = (sourceIndex == null) ? this.loadedTabObj : loadedList.getList().get(sourceIndex);
+		
 		try {
 			// reference to tabHeader title
 			JLabel tabHeadLbl = (JLabel) (getPanelFromTabHeader(indexChange)).getComponent(TabUtils.TAB_TITLE_ORDER);

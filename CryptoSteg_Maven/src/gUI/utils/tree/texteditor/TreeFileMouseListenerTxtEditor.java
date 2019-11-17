@@ -84,12 +84,13 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	        public void mousePressed(MouseEvent arg0) {
 	        	selectedRow = tree.getRowForLocation(arg0.getX(), arg0.getY());
 	        	// Right click
-	            if(arg0.getButton() == MouseEvent.BUTTON3){ 
+	            if(true){ 
 	            	
 	            	updateEnabledOrDisabled();
 	            	
 	                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
 	                if(pathForLocation != null){
+	                	tree.setSelectionPath(pathForLocation);
 	                    selectedNode = (FileNamed) pathForLocation.getLastPathComponent();
 	                } else{
 	                    selectedNode = null;

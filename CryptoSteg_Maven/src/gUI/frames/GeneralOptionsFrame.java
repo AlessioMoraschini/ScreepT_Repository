@@ -16,6 +16,7 @@ import mainlauncher.ScrYpTLauncher;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.FileOptions;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import variousutils.ListCharsets;
@@ -108,7 +109,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
 		
 		try {
-			launcherConfiguration = new Wini(new File(ScrYpTLauncher.DEFAULT_INI_PATH));
+			launcherConfiguration = new Wini(new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH));
 		} catch (InvalidFileFormatException e1) {
 			logger.error("Invlid launcher configuration format!\n", e1);
 		} catch (IOException e1) {

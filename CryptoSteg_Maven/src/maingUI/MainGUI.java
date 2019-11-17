@@ -36,7 +36,7 @@ import amfileutils.FileStuff;
 import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
 import gUI.frames.AboutSectionFrame;
@@ -170,8 +170,7 @@ public class MainGUI extends MainGuiParent{
 		
 		MainGuiUtils.welcomeMethodIfFirstTime();
 		
-		// OPEN LOADING PANEL THREAD
-//		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, (int)(screenSize.height*launcherRatio));
+		// START LOADING PANEL THREAD
 		new Thread(new Runnable() {
 			public void run() {
 				for (int i = 0; i < 10; i++) {
@@ -201,7 +200,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Initializing graphics... ", 15);
 			mainGuiUtils = new MainGuiUtils(window);
 			logger.info("Main GUI initialized correctly.");
 			
-MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 25);
+MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 65);
 						
 			// AUTOSAVE MODULE - only if specified in fileOptions
 			autosaveModule = new Thread(new Runnable() {
@@ -290,7 +289,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				@Override
 				public void run() {
 					// REFRESH GUI GENERAL
-					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 70, 350);
+					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 75, 350);
 					if (currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
 						GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
 					}else {
@@ -325,7 +324,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					GuiUtils.launchThreadSafeSwing(new Runnable() {
 						public void run() {
 							
-							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScrYpT", 100, 800);
+							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScrYpT", 100, 200);
 							
 							window.startTitleUpdater();
 						}
@@ -924,7 +923,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 
 								@Override
 								public void run() {
-									TestUpdateProgress prog = new TestUpdateProgress(currentConfiguration, false);
+									UpdateProgressPanel prog = new UpdateProgressPanel(currentConfiguration, false);
 									prog.getPb().setIndeterminate(true);
 									prog.getLabel().setText("Loading Network informations...");
 									prog.getPb().setString("Loading...");
@@ -965,7 +964,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 
 						@Override
 						public void run() {
-							TestUpdateProgress prog = new TestUpdateProgress(currentConfiguration, false);
+							UpdateProgressPanel prog = new UpdateProgressPanel(currentConfiguration, false);
 							prog.getPb().setIndeterminate(true);
 							prog.getLabel().setText("Loading System informations...");
 							prog.getPb().setString("Loading...");
@@ -1156,13 +1155,13 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		
 	////////// END OF MENU MOUSE CLICK - HANDLERS DECLARATION  ////////////////
 	
- MainGuiGeneralAppStarter.loaderGraphics.update("Adding ActionHandlers...", 60);
+ MainGuiGeneralAppStarter.loaderGraphics.update("Adding ActionHandlers...", 50);
  		addHandlers();
  		
  		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
  
 		// once each component is declared add it to the menu bar
- MainGuiGeneralAppStarter.loaderGraphics.update("Structuring menu...", 80);
+ MainGuiGeneralAppStarter.loaderGraphics.update("Structuring menu...", 60);
 		structureMenuBar();
 		
 		// check non compatible options with current JVM
@@ -1304,7 +1303,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
     	
 		
-    	if (dialogHelper.yesOrNo("Really want to exit?", "Exit Program")) {
+    	if (new JOptionHelper(frmScryptV).yesOrNo("Really want to exit?", "Exit Program")) {
 
     		frmScryptV.setAlwaysOnTop(true);
     		closeApplication(0);

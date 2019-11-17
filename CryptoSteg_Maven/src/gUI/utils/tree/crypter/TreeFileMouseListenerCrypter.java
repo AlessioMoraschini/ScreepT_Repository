@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
 import mainobj.INItializer;
@@ -57,7 +57,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	private CrypterPanel cryptoPanel;
 	
 	// object that display wait dialog
-	private volatile TestUpdateProgress progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
 	
 	private JOptionHelper dialogHelper;
 	
@@ -227,7 +227,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 						try {
 							worker = new ImageGeneralWorker(selected);
 							BufferedImage image = worker.getImage();
-							progUpdater = new TestUpdateProgress(currentConfig, false);
+							progUpdater = new UpdateProgressPanel(currentConfig, false);
 							progUpdater.setUndefinedDuration();
 							progUpdater.update("Format not supported as key, Converting image to png...", 10);
 							ImageGeneralWorker.convertAndWrite(image, "png", selected);
@@ -268,7 +268,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 						public void run() {
 
 							if (selected != null) {
-								progUpdater = new TestUpdateProgress(currentConfig);
+								progUpdater = new UpdateProgressPanel(currentConfig);
 								progUpdater.getPb().setValue(5);
 								progUpdater.getLabel().setText("Exporting files...");
 

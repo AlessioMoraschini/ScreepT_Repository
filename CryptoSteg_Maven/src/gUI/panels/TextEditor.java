@@ -1,7 +1,6 @@
 package gUI.panels;
 
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Font;
 
 import javax.swing.JFrame;
@@ -21,6 +20,8 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import tabbededitor.CustomTabbedEditor;
+import tabbedpaneutils.CustomTabbedPaneUI_v1;
+import tabbedpaneutils.TabUtils;
 import treeutils.TreeHighlighterAdapter;
 import treeutils.TreeUtils;
 import treeutils.om.FileNameCellRenderer;
@@ -247,7 +248,6 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.setBackground(fileNavColorBckg);
 		leftSplitContainer.setForeground(Color.GRAY);
 		leftSplitContainer.setLayout(new MigLayout("", "[20px:25px:25px][2px:4px,grow][20px:25px:25px][20px:25px:25px][20px:25px:25px][25px:25px:25px][18px:20px:20px][18px:20px:20px][18px:20px:20px]", "[25px:25px:25px][2px:2px:2px][90%,grow][2px:2px:2px][:20px:20px]"));
-		currentTextEditor.leftSplitPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		 
 		initRightPane();
 		rightSplitContainer.setBackground(fileNavColorBckg);
@@ -732,8 +732,8 @@ public class TextEditor extends JPanel {
 			toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_OFF));
 		}
 		
-//		getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(
-//				null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
+		getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(
+				null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
 		
 		if (refreshGuiStyle) {
 			textEditorUtils.updateGuiLafWindows(currentTextEditor);// was causing temporization bug cause of invokelater;

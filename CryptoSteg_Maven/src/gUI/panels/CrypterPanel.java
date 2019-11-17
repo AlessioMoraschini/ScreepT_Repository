@@ -22,7 +22,7 @@ import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import dialogutils.JOptionHelper;
-import dialogutils.TestUpdateProgress;
+import dialogutils.UpdateProgressPanel;
 import enums.BufferedImageType;
 import frameutils.utils.GuiUtils;
 import gUI.frames.KeyGenFrame;
@@ -79,6 +79,8 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+
 import java.awt.Cursor;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
@@ -86,7 +88,6 @@ import javax.swing.border.EmptyBorder;
 public class CrypterPanel extends JPanel {
 	private static final long serialVersionUID = 2683201298719353959L;
 
-	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(CrypterPanel.class);
 	
 	// Global reference to current configuration
@@ -149,11 +150,14 @@ public class CrypterPanel extends JPanel {
 	// info tabbed pane
 	private JTabbedPane tabbedPane;
 	
+	private JSplitPane leftSplitPaneVertical;
+	
 	// Buttons
 	private JButton btnDeCreept;
 	private JButton btnCreept;
 	private JButton btnSelectSourceFile;
 	private JButton btnDispoKeyImg;
+	private JButton btnGenerateKeyImg;
 
 	// public field representing current Panel
 	public static CrypterPanel thisPanel; 
@@ -198,7 +202,7 @@ public class CrypterPanel extends JPanel {
 	private JSeparator separatorDragNDropTitle;
 	public static VirtualFileDropPane panelVDragNDropPane;
 	
-	public TestUpdateProgress generalProgress;
+	public UpdateProgressPanel generalProgress;
 	public JOptionHelper dialogHelper;
 
 	/**
@@ -313,8 +317,12 @@ public class CrypterPanel extends JPanel {
 		
 		panelMainContainer = new JPanel();
 		panelMainContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
+		panelMainContainer.setMaximumSize(GuiUtils.getScreenSize());
 		panelMainContainer.setBackground(Color.BLACK);
-		panelMainContainer.setLayout(new MigLayout("fill,insets 0", "[200:200:200][150:205:205][30,grow][250px:250px:250px][120px:120px:120px]", "[40px:40px:40px,top][:30px:30px][100px:100px:150px,grow][100px:200px:200px,grow][30px:30px:30px][140px:280,grow][:1px:1px]"));
+		panelMainContainer.setLayout(new MigLayout(
+				"fill,insets 0", 
+				"[200:200:200][150:205:205][30,grow][250px:250px:250px][120px:120px:120px]",
+				"[40px:40px:40px,top][:30px:30px][30px:30px:34px][100px:150px][100px:200px:200px][100px:200px][:1px:1px]"));
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMaximumSize(GuiUtils.getScreenSize());
 		mainScrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -478,10 +486,14 @@ public class CrypterPanel extends JPanel {
 		scrollPanelTabImagePreview.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPanelTabImagePreview.getViewport().setBackground(Color.DARK_GRAY);
 		
+		leftSplitPaneVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		leftSplitPaneVertical.setDividerLocation(mainApplication.getMainFrame().getHeight() / 2);
+		panelMainContainer.add(leftSplitPaneVertical, "cell 0 3 2 3,grow");
+		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBackground(Color.DARK_GRAY);
 		tabbedPane.setOpaque(true);
-		panelMainContainer.add(tabbedPane, "cell 0 2 2 2,grow");
+		leftSplitPaneVertical.setBottomComponent(tabbedPane);
 		tabbedPane.setBorder(new LineBorder(new Color(128, 128, 128)));
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
@@ -585,10 +597,7 @@ public class CrypterPanel extends JPanel {
 				
 				// select input file or directory with fileChooser
 				File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileAndDirRead(thisPanel);
-				
 				addNewSourceFile(selected);
-
-				JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		
@@ -610,6 +619,15 @@ public class CrypterPanel extends JPanel {
 				}
 			}
 		});
+
+		// CREATE NEW KEY IMAGE LISTENER
+		btnGenerateKeyImg.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainApplication.getMntmgenerateKeyImageSub().doClick();
+			}
+		});
 	}
 	
 /////////////////////////////////////
@@ -621,7 +639,6 @@ public class CrypterPanel extends JPanel {
 			
 			@Override
 			public void run() {
-				textAreaMain.setText("");
 				
 				File destinationDir = null;
 				// retrieve source file array from dragNDrop panel
@@ -632,6 +649,7 @@ public class CrypterPanel extends JPanel {
 						"Delete decripted when SW will be closed", JOptionPane.YES_NO_OPTION);
 				
 				if(deleteAfterClose == JOptionPane.YES_OPTION) {
+					textAreaMain.append("Decripted files will be exported to temporary folder on user desktop folder\n");
 					// if temporary mode create temp folder ScrYpT on desktop
 					destinationDir = new File(GeneralConfig.TEMP_DECRIPTED_ROOT_PATH);
 					
@@ -641,8 +659,10 @@ public class CrypterPanel extends JPanel {
 						flagCreateNewMonitor = false;
 					}
 				}else {
+					textAreaMain.append("Waiting input from user...\n");
 					// get output asking to user
 					destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
+					textAreaMain.append("Chosen input: " + destinationDir + "\n\n");
 				}
 				
 				// boolean value representing if everything went good
@@ -654,7 +674,7 @@ public class CrypterPanel extends JPanel {
 				
 				if (destinationDir!= null) {
 					
-					generalProgress = new TestUpdateProgress(currentConf, true);
+					generalProgress = new UpdateProgressPanel(currentConf, true);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
 					generalProgress.move(0, -generalProgress.getDialog().getHeight()-50);
@@ -725,6 +745,8 @@ public class CrypterPanel extends JPanel {
 				if (flagCreateNewMonitor && fileMonitor == null) {
 					fileMonitor = new FileChangeMonitor(destinationDir, null);
 				}
+				
+				textAreaMain.append("\n\n => Completed !\n\n #####################################################");
 			}
 		};
 	}
@@ -734,10 +756,12 @@ public class CrypterPanel extends JPanel {
 			
 			@Override
 			public void run() {
-				textAreaMain.setText("");
+				textAreaMain.setText("Waiting input from user...\n");
 				
 				// get output asking to user
 				File destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
+				
+				textAreaMain.append("Chosen input: " + destinationDir + "\n\n");
 				
 				// retrieve source file array from dragNDrop panel
 				srcFiles = panelVDragNDropPane.getTreeNodes();
@@ -752,7 +776,7 @@ public class CrypterPanel extends JPanel {
 				
 				if (destinationDir!= null) {
 					
-					generalProgress = new TestUpdateProgress(currentConf, true);
+					generalProgress = new UpdateProgressPanel(currentConf, true);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
 					generalProgress.move(0, -generalProgress.getDialog().getHeight()-50);
@@ -822,6 +846,8 @@ public class CrypterPanel extends JPanel {
 						dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
 					}
 				}
+				
+				textAreaMain.append("\n\n => Completed !\n\n #####################################################");
 			}
 		};
 	}
@@ -940,23 +966,33 @@ public class CrypterPanel extends JPanel {
 			}
 		};
 		
-		btnDispoKeyImg = new JButton("Choose disposable Key Image");
+		btnDispoKeyImg = new JButton("Disposable Key Image");
 		btnDispoKeyImg.setOpaque(true);
 		btnDispoKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDispoKeyImg.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
-		panelMainContainer.add(btnDispoKeyImg, "cell 0 4 2 1,grow");
 		btnDispoKeyImg.setRequestFocusEnabled(false);
 		btnDispoKeyImg.setBorder(null);
 		btnDispoKeyImg.setForeground(new Color(0, 0, 0));
 		btnDispoKeyImg.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnDispoKeyImg.setBackground(new Color(112, 128, 144));
+		btnDispoKeyImg.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+		panelMainContainer.add(btnDispoKeyImg, "cell 0 2 1 1,grow");
+
+		btnGenerateKeyImg = new JButton("New Key Image");
+		btnGenerateKeyImg.setOpaque(true);
+		btnGenerateKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnGenerateKeyImg.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
+		btnGenerateKeyImg.setRequestFocusEnabled(false);
+		btnGenerateKeyImg.setBorder(null);
+		btnGenerateKeyImg.setForeground(new Color(0, 0, 0));
+		btnGenerateKeyImg.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		btnGenerateKeyImg.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+		panelMainContainer.add(btnGenerateKeyImg, "cell 1 2 1 1,grow");
 		
 		// initialize tree 
-		
 		scrollPaneTree = new JScrollPane();
 		scrollPaneTree.setBackground(Color.DARK_GRAY);
 		scrollPaneTree.setBorder(new LineBorder(new Color(153, 153, 153)));
-		panelMainContainer.add(scrollPaneTree, "cell 0 5 2 1,grow");
+		leftSplitPaneVertical.setTopComponent(scrollPaneTree);
 		tree= new JTree(treeModel);
 		tree.setBorder(null);
 		tree.setRequestFocusEnabled(false);
@@ -1220,6 +1256,7 @@ public class CrypterPanel extends JPanel {
 			panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
 			
 			appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
+			JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
 			
 			logger.debug("File :" + selected.getName() + " correctly loaded");
 		}
@@ -1251,14 +1288,14 @@ public class CrypterPanel extends JPanel {
 	
 	private void disableSelectionButtons() {
 		btnDispoKeyImg.setEnabled(false);
+		btnGenerateKeyImg.setEnabled(false);
 		btnSelectSourceFile.setEnabled(false);
-		btnDispoKeyImg.setEnabled(false);
 	}
 	
 	private void enableSelectionButtons() {
 		btnDispoKeyImg.setEnabled(true);
+		btnGenerateKeyImg.setEnabled(true);
 		btnSelectSourceFile.setEnabled(true);
-		btnDispoKeyImg.setEnabled(true);
 	}
 	
 	private void appendMessageTxtAreas(String msg) {
@@ -1276,7 +1313,9 @@ public class CrypterPanel extends JPanel {
 		Font mainAreaFont = textAreaMain.getFont();
 		textAreaLog.setFont(new Font(logFont.getName(), logFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()-1));
 		textAreaMain.setFont(new Font(mainAreaFont.getName(), mainAreaFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()));
+		textAreaMain.setAntiAliasingEnabled(true);
 		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
+		
 		GUIStyelSettings.applyNimbusSize(currentConf.getGuiOpt().nimbusSize);
 		GUIStyelSettings.updateAllWindowsLaf();
 	}

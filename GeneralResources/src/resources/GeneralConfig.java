@@ -32,20 +32,33 @@ public class GeneralConfig {
 	public static int AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD;
 	
 	// MAIN PROPERTIES                                                                                                                                                                                           
-	public static String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION");                                                                                                                                         
-	public static String WEB_UPDATES_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_UPDATES_MANIFEST_URL");                                                                                                               
-	public static String WEBSITE = resourcesFilePathsMappings.getProperty("WEBSITE");                                                                                                                                                 
-	public static String MAIL_BUGS = resourcesFilePathsMappings.getProperty("MAIL_BUGS");                                                                                                                                             
-	public static String MAIL_INFO = resourcesFilePathsMappings.getProperty("MAIL_INFO");                                                                                                                                             
-	public static String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;                                                                                                                                                               
 	public static String AUTHOR = "A.M. Design and Development";                                                                                                                                                                      
+	public static String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION", "Unknown Version");                                                                                                                                         
+	public static String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;                                                                                                                                                               
+	public static String WEBSITE = resourcesFilePathsMappings.getProperty("WEBSITE", "www.am-design-development.com");                                                                                                                                                 
+	public static String MAIL_INFO = resourcesFilePathsMappings.getProperty("MAIL_INFO", "info@am-design-development.com");                                                                                                                                             
+	public static String MAIL_BUGS = resourcesFilePathsMappings.getProperty("MAIL_BUGS", "bugs@am-design-development.com");                                                                                                                                             
+	public static String WEB_UPDATER_VERSION_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATER_VERSION_PROP", "version");                                                                                                               
+	public static String WEB_UPDATER_JAR_NAME = resourcesFilePathsMappings.getProperty("WEB_UPDATER_JAR_NAME", "updater.jar");                                                                                                               
+	public static String WEB_UPDATER_JAR_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATER_JAR_PROP", "updaterJarUrl");                                                                                                               
+	public static String WEB_UPDATES_PACK_NAME = resourcesFilePathsMappings.getProperty("WEB_UPDATES_PACK_NAME", "updates.zip");                                                                                                               
+	public static String WEB_UPDATES_PACK_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATES_PACK_PROP", "updatesZippedUrl");                                                                                                               
+	public static String WEB_UPDATES_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_UPDATES_MANIFEST_URL", "www.am-design-development.com/ScrYpT/Updates/manifest.properties");                                                                                                               
+	public static String WEB_PLUGINS_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_MANIFEST_URL", "www.am-design-development.com/ScrYpT/Plugins/manifest.properties");                                                                                                               
 	public static String BUILD_TS_DATE = resourcesFilePathsMappings.getProperty("BUILD_TIMESTAMP")                                                                                                                                    
 	                     									.replaceAll("T", " at ")                                                                                                                                                 
 	                     									.replaceAll("Z", "")                                                                                                                                                     
 	                     									.replaceAll("-", "/");                                                                                                                                                   
 	// General Folders   // General Folders                                                                                                                                                                                           
-	public static String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR");                                                                                                                             
+	public static String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR", "Application/");                                                                                                                             
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");                                                                                                                                     
+	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR");
+	static{
+		try {
+			new File(UPDATES_DIR).mkdirs();
+		} catch (Exception e) {
+		}
+	}
 	public static String DEFAULT_IMAGE_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_IMAGE_FOLDER");                                                                                                                       
 	public static String SOUNDS_FOLDER = resourcesFilePathsMappings.getProperty("SOUNDS_FOLDER");                                                                                                                                     
 	public static String WORDLIST_FOLDER = resourcesFilePathsMappings.getProperty("WORDLIST_FOLDER");                                                                                                                                 
@@ -85,13 +98,13 @@ public class GeneralConfig {
 	public static String SCRYPT_TUTORIAL_HTML_URL;
 
 	// Logs configuration
-	public static String LOG_PATH;
-	public static String LOG_PROPERTIES_PATH;
-	public static String LOG_LAUNCHER_PATH;
-	public static String LAUNCHER_CONTAINER_PATH;
-	public static String DEFAULT_LAUNCHER_INI_PATH; 
-	public static String LAUNCHER_LOG_PROPS_PATH; 
-	
+	public static String LOG_PATH = resourcesFilePathsMappings.getProperty("LOG_PATH");                                  
+	public static String LOG_PROPERTIES_PATH = resourcesFilePathsMappings.getProperty("LOG_PROPERTIES_PATH");            		
+	public static String LOG_LAUNCHER_PATH = resourcesFilePathsMappings.getProperty("LOG_LAUNCHER_PATH");                		
+	public static String LAUNCHER_CONTAINER_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_CONTAINER_PATH");    		
+	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH");		
+	public static String LAUNCHER_LOG_PROPS_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_LOG_PROPS_PATH");    		 
+	                     			
 	// JVM and LAUNCHER
 	public static String MAX_JVM_COMPLETE_COMPATIBILITY;
 	public static String JVM_CUSTOM_ADDED_SETTINGS;
@@ -130,6 +143,9 @@ public class GeneralConfig {
 	private static boolean FLAG_DEBUG_GRAPHICS;
 	public static String DEBUG_GRAPHICS;
 	
+	// TITLE REFRESHER
+	public static int TITLE_REFRESH_TIME = resourcesFilePathsMappings.getIntVarFromProps("TITLE_REFRESH_TIME", 2000);
+	
 	// Tooltips
 	public static int TOOLTIP_DELAY;
 	public static int TOOLTIP_TIMEOUT;
@@ -137,11 +153,14 @@ public class GeneralConfig {
 	public static String TOOLTIP_FONT;
 	public static Font DEFAULT_POP_UP_MENUS_FONT;
 	
+	public static int LOADER_PANEL_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("LOADER_PANEL_HEIGHT", 280);
+	
 	// FILE CHOOSER DIALOG
 	public static Dimension DEFAULT_FILE_CHOOSER_SIZE;
 	public static Dimension FILE_CHOOSER_SIZE;
 	
 	// TEXT EDITOR DEFAULTS
+	public static int UNDO_MAX_LIM;
 	public static int ADVICE_FOOTER_TIMEOUT;
 	public static ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS;
 	public static int DEFAULT_TREE_ROW_HEIGHT;
@@ -175,6 +194,7 @@ public class GeneralConfig {
 	public static Dimension MINIMUM_BUTTON_SIZE;
 	public static Font BUTTON_DEFAULT_FONT;
 	public static Font BUTTON_TAB_HEAD_FONT;
+	public static int TAB_HEAD_HEIGHT;
 	public static Font DEFAULT_FONT;
 	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR;
 	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER;
@@ -411,14 +431,6 @@ public class GeneralConfig {
 			SCRYPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
 			SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
 
-			// Logs configuration
-			LOG_PATH = resourcesFilePathsMappings.getProperty("LOG_PATH");
-			LOG_PROPERTIES_PATH = resourcesFilePathsMappings.getProperty("LOG_PROPERTIES_PATH");
-			LOG_LAUNCHER_PATH = resourcesFilePathsMappings.getProperty("LOG_LAUNCHER_PATH");
-			LAUNCHER_CONTAINER_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_CONTAINER_PATH");
-			DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH"); 
-			LAUNCHER_LOG_PROPS_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_LOG_PROPS_PATH"); 
-			
 			// JVM and LAUNCHER
 			MAX_JVM_COMPLETE_COMPATIBILITY = resourcesFilePathsMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 			JVM_CUSTOM_ADDED_SETTINGS = resourcesFilePathsMappings.getProperty("JVM_CUSTOM_ADDED_SETTINGS");
@@ -469,6 +481,7 @@ public class GeneralConfig {
 			FILE_CHOOSER_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "FILE_CHOOSER_SIZE_STR", DEFAULT_FILE_CHOOSER_SIZE);
 			
 			// TEXT EDITOR DEFAULTS
+			UNDO_MAX_LIM = resourcesFilePathsMappings.getIntVarFromProps("UNDO_MAX_LIM", 1000);
 			ADVICE_FOOTER_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("ADVICE_FOOTER_TIMEOUT", 7000);
 			TXT_EDITOR_UPPERCASE_SEPARATORS = getUppercaseSeparators(resourcesFilePathsMappings.getProperty("TXT_EDITOR_UPPERCASE_SEPARATORS"), ",");
 			DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
@@ -499,9 +512,10 @@ public class GeneralConfig {
 			MINIMUM_BUTTON_SIZE = resourcesFilePathsMappings.getDimensionFromString("-", "MINIMUM_BUTTON_SIZE", new Dimension(18,24));
 			BUTTON_DEFAULT_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_DEFAULT_FONT", new Font("Segoe UI", Font.BOLD, 12));
 			BUTTON_TAB_HEAD_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_TAB_HEAD_FONT", new Font("Segoe UI", Font.PLAIN, 14));
+			TAB_HEAD_HEIGHT =  resourcesFilePathsMappings.getIntVarFromProps("TAB_HEAD_HEIGHT", 24);
 			DEFAULT_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_FONT", new Font("Segoe UI", Font.PLAIN, 16));
-			BUTTON_BCKG_COLOR_TXT_EDITOR = new Color(120, 125, 140);
-			BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = new Color(71, 76, 84);
+			BUTTON_BCKG_COLOR_TXT_EDITOR = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR", new Color(120, 125, 140));
+			BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER", new Color(71, 76, 84));
 			TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
 			NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
 			FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);

@@ -9,13 +9,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import com.google.googlejavaformat.java.Formatter;
@@ -42,21 +40,26 @@ public class CustomCodeFormatter {
 		}
 	}
 
-	public static String xmlPrettyFormat(String input) throws TransformerException {
+	public static String xmlPrettyFormat(String input) throws Exception {
 		return xmlPrettyFormat(input, 2);
 	}
 	
-	public static String xmlPrettyFormat(String input, int indent) throws TransformerException {
-    	Transformer transformer = TransformerFactory.newInstance().newTransformer();
-    	transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-    	transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indent));
-    	//initialize StreamResult with File object to save to file
-    	StreamResult result = new StreamResult(new StringWriter());
-    	Document inputParsedDoc = loadXMLfromString(input);
-		Node root = inputParsedDoc.getFirstChild();
-    	DOMSource source = new DOMSource(root);
-    	transformer.transform(source, result);
-    	return result.getWriter().toString();
+	public static String xmlPrettyFormat(String input, int indent) throws Exception {
+        Document original = null;
+        original = loadXMLfromString(input);
+        
+        StringWriter stringWriter = new StringWriter();
+        StreamResult xmlOutput = new StreamResult(stringWriter);
+        TransformerFactory tf = TransformerFactory.newInstance();
+        tf.setAttribute("indent-number", indent);
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indent));
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.transform(new DOMSource(original), xmlOutput);
+        return xmlOutput.getWriter().toString();
 	}
 	
 	public static Document loadXMLfromFile(String filePath) throws Exception {
@@ -105,17 +108,17 @@ public class CustomCodeFormatter {
 	 * @throws NoSuchMethodException **/
 	public String jsFormatJSLIB(String source, int indentSize) throws NoSuchMethodException, ScriptException {
 		this.indentSize = indentSize;
-		return (String)jsRunner.invokeFunction("js_beautify", source);
+		return (String)jsRunner.invokeFunction("js_beautify", source, new JsFormatParams(indentSize));
 	}
 	
 	public String htmlFormatJSLIB(String source, int indentSize) throws NoSuchMethodException, ScriptException {
 		this.indentSize = indentSize;
-		return (String)jsRunner.invokeFunction("style_html", source);
+		return (String)jsRunner.invokeFunction("style_html", source, new JsFormatParams(indentSize));
 	}
 	
 	public String cssFormatJSLIB(String source, int indentSize) throws NoSuchMethodException, ScriptException {
 		this.indentSize = indentSize;
-		return (String)jsRunner.invokeFunction("css_beautify", source);
+		return (String)jsRunner.invokeFunction("css_beautify", source, new JsFormatParams(indentSize));
 	}
 	
 	public String getJsParams() {
@@ -128,5 +131,16 @@ public class CustomCodeFormatter {
 			      "'space_around_selector_separator': true"+
 			      "'indent_with_tabs': true"+
 			    "}";
+	}
+	
+	public class JsFormatParams{
+		int indent_size = 5;
+		String indent_char = "\t";
+		boolean newline_between_rules = true;
+		boolean end_with_newline = true;
+		
+		public JsFormatParams(int indent_size) {
+			this.indent_size = indent_size;
+		}
 	}
 }
