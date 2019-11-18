@@ -153,6 +153,7 @@ public class MainGUI extends MainGuiParent{
 	public AtomicBoolean isFullScreen = new AtomicBoolean(false);
 	
 	public static String newUpdatedJar = "";
+	static File[] updatesDownloaded = new File[3];
 	
 	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
 	 * 
@@ -1121,7 +1122,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		});
 
 		// Check and download/install updates
-		mntmLookForUpdates = new CustomJmenuItem(new AbstractAction("Look for updates...") {
+		mntmLookForUpdates = new CustomJmenuItem(new AbstractAction("Check for software updates...") {
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
 					
@@ -1130,9 +1131,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 						if (!isUpdating.get()) {
 							dialogHelper = new JOptionHelper(frmScryptV);
 							isUpdating.set(true);
-							frmScryptV.setAlwaysOnTop(true);
-							frmScryptV.setEnabled(false);
-							menuBar.setEnabled(false);
+							getMntmLookForUpdates().setEnabled(false);
 
 							try {
 								String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates();
@@ -1144,7 +1143,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 											"Update found: " + newVersion);
 									if (downloadUpdates) {
 										try {
-											MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
+											updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
 											MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
 											boolean restartNow = dialogHelper.yesOrNo(
 													"ScrYpT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
@@ -1164,7 +1163,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 												"Update skipped");
 										logger.info("Update skipped, as requested from user.");
 										MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(false);
-										frmScryptV.setAlwaysOnTop(false);
+										frmScryptV.toFront();
 									}
 								} else {
 									if (MainGuiGeneralAppStarter.updatesManager.udpdatesReachable()) {
@@ -1180,10 +1179,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 								logger.error("Cannot read updates, an error occurred :(", e2);
 							}
 
-							frmScryptV.setAlwaysOnTop(false);
 							frmScryptV.setEnabled(true);
-							frmScryptV.toFront();
-							menuBar.setEnabled(true);
+							getMntmLookForUpdates().setEnabled(true);
 							isUpdating.set(false);
 						}
 					}
@@ -1474,14 +1471,17 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		try {
 			if (MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()) {
 				logger.error("Updates detected, starting updater jar application...");
-				File[] lastUpdates = MainGuiGeneralAppStarter.updatesManager.getLastUpdates();
-				if(lastUpdates != null) {
+				if(updatesDownloaded != null) {
+					String command = "java -jar " + updatesDownloaded[0].getName() 
+						+ " " + updatesDownloaded[0].getName() 
+						+ " " + updatesDownloaded[1].getParentFile().getName() + "\\" + updatesDownloaded[1].getName()
+						+ " " + updatesDownloaded[2].getName();
 					Runtime runtime = Runtime.getRuntime();
-					runtime.exec("java -jar " + lastUpdates[0].getName() 
-							+ " " + lastUpdates[0].getAbsolutePath() 
-							+ " " + lastUpdates[1].getAbsolutePath()
-							+ " " + lastUpdates[2].getName());
-					logger.error("Updater jar application launched!");
+					logger.info("Launching java command to update with downloaded files: \n\n" + command + "\n\n");
+					runtime.exec(command);
+					logger.info("Updater jar application launched!");
+				}else {
+					logger.error("updatesDownloaded is null!");
 				}
 			}
 		} catch (IOException e) {

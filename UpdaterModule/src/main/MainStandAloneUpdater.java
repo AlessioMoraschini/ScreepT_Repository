@@ -2,6 +2,7 @@ package main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
@@ -19,22 +20,19 @@ public class MainStandAloneUpdater {
 	 */
 	public static void main(String[] args) {
 		
-		final File updaterJar = new File(args[0]);
-		final File updatesFolder = new File(args[1]);
-		final File newJar = new File(args[2]);
+		final File updaterJar = new File(args[0]).getAbsoluteFile();
+		final File updatesFolder = new File(args[1]).getAbsoluteFile();
+		final File newJar = new File(args[2]).getAbsoluteFile();
 		
 		final String mainApplicationLauncher = "ScrYpT_Launcher.jar";
 		
 		// main external folder -> application -> Resources_Scrypt
-		File mainDirectory = new File(GeneralConfig.RESOURCES_DIR).getParentFile().getParentFile();
-		
+		File mainDirectory = new File(GeneralConfig.RESOURCES_DIR).getAbsoluteFile().getParentFile().getParentFile();
+		UpdateProgressPanelMin updateProgressMonitor = null;
 		try {
 			Wini iniLauncherConfig = new Wini(new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH));
 			String oldJarName = iniLauncherConfig.get("APPLICATION_OPTIONS", "jarToLaunch");
 			File oldJar = (oldJarName != null) ? new File(oldJarName) : null;
-			
-			UpdateProgressPanelMin updateProgressMonitor = new UpdateProgressPanelMin(true); 
-			updateProgressMonitor.setUndefinedDuration();
 			
 			if(updaterJar.exists() && updaterJar.isFile() && updatesFolder.exists() && updatesFolder.isDirectory()){
 				if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "ScrYpT will be updated, do you want to backup current installation before to update? (update process will not touch your personal files, but if you prefer you can backup all scrypt folder before to update)"))
@@ -45,9 +43,19 @@ public class MainStandAloneUpdater {
 						Various.copyDirectoryContents(mainDirectory, destBackupDir);
 					} 
 				}
+				updateProgressMonitor = new UpdateProgressPanelMin(true); 
+				updateProgressMonitor.setUndefinedDuration();
+				updateProgressMonitor.update(30, "Copying new files...", true);
+				updateProgressMonitor.update(30, "Copying new files...", false);
 				
 				// replace existing files matching with updates (don't touch user personal files)
-				Various.copyDirectoryContents(updatesFolder, new File(GeneralConfig.RESOURCES_DIR).getParentFile());
+				System.out.print("Copying content of " + updatesFolder + " into ");
+				File generalApplicationFolder = new File("").getAbsoluteFile();
+				System.out.println(generalApplicationFolder.getAbsolutePath());
+				Various.copyDirectoryContents(updatesFolder, generalApplicationFolder);
+				
+				updateProgressMonitor.update(70, "Updating configuration...", true);
+				updateProgressMonitor.update(100, "Updating configuration...", false);
 				
 				// update main application reference in .ini settings for launcher
 				iniLauncherConfig.put("APPLICATION_OPTIONS", "jarToLaunch", newJar.getName());
@@ -56,8 +64,13 @@ public class MainStandAloneUpdater {
 				if (oldJar != null && oldJar.exists()) {
 					oldJar.deleteOnExit();
 				}
+				
+				updateProgressMonitor.update(100, "Completed! Restarting ScrYpT...", true);
+				updateProgressMonitor.forceClose();
+				
 			} else {
-				JOptionPane.showMessageDialog(null, "Updates data or updater jar not found, exiting updated procedure.", "Updates not found", JOptionPane.ERROR_MESSAGE);
+				String fileData = "UpdaterJar => "+updaterJar+"; updates folder => "+updatesFolder;
+				JOptionPane.showMessageDialog(null, "Updates data or updater jar not found, exiting updated procedure."+fileData, "Updates not found", JOptionPane.ERROR_MESSAGE);
 			}
 			
 			// LAUNCH ScrYpT_Launcher.jar
@@ -67,7 +80,12 @@ public class MainStandAloneUpdater {
 			System.exit(0);
 			
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Cannot update, an error occurred :(");
+			if (updateProgressMonitor != null) {
+				updateProgressMonitor.update(100, "Completed! Restarting ScrYpT...", true);
+				updateProgressMonitor.forceClose();
+			}
+			JOptionPane.showMessageDialog(null, "Cannot update, an error occurred: " + e.getClass());
+			System.out.println(e.getClass() + Arrays.deepToString(e.getStackTrace()));
 		}
 	}
 	

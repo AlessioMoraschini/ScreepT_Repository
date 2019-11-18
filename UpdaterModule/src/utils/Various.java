@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -260,7 +261,14 @@ public class Various {
 		TestUtils.printl("copyDirectoryContents -> Start...");
 
 		if(source.isDirectory()) {
-			FileUtils.copyDirectory(source, destination, true);
+			for (File curr : source.listFiles()) {
+				TestUtils.printl("Copying "+curr+" \n  => into "+destination);
+				try {
+					FileUtils.copyToDirectory(curr, destination);
+				} catch (Exception e) {
+					TestUtils.printl(e.getClass() + Arrays.deepToString(e.getStackTrace()));
+				}
+			}
 		}
 
 		TestUtils.printl("copyDirectoryContents -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");

@@ -80,11 +80,12 @@ public class UpdatesManager {
 		
 		emtpyUpdatesDir();
 		
+		lastUpdatesDownloaded = new File[3];
+		
 		if(GeneralConfig.UPDATES_DIR == null || !new File(GeneralConfig.UPDATES_DIR).isDirectory()) {
 			return null;
 		}
 		
-		File[] output = new File[3];
 		UpdateProgressPanelMin updateProgressBar = new UpdateProgressPanelMin(true);
 		
 		updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
@@ -92,12 +93,11 @@ public class UpdatesManager {
 		File downloadedManifest = DownloadUtils.downloadFile(manifestRemoteUrl, localTempManifestPath, updateProgressBar);
 		printl("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
 		
-		
 		PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
 		
 		String version = propsManager.getProperty(GeneralConfig.WEB_UPDATER_VERSION_PROP);
 		printl("Version: " + version);
-		output[2] = new File("ScrYpT_"+version+".jar");
+		lastUpdatesDownloaded[2] = new File("ScrYpT_"+version+".jar");
 		
 		URL updaterJarUrl = new URL(propsManager.getProperty(GeneralConfig.WEB_UPDATER_JAR_PROP));
 		printl("updaterJarUrl: " + updaterJarUrl);
@@ -109,7 +109,7 @@ public class UpdatesManager {
 		updateProgressBar.update(40, "Downloading "+updaterJarUrl, true);
 		printl(getHeaderString("#", 40, "PARSE AND DOWNLOAD PACKETS"));
 		File downloadedUpdater = DownloadUtils.downloadFile(updaterJarUrl, GeneralConfig.WEB_UPDATER_JAR_NAME, updateProgressBar);
-		output[0] = downloadedUpdater;
+		lastUpdatesDownloaded[0] = downloadedUpdater;
 		printl("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + Various.coolFileSize(downloadedUpdater.length()));
 
 		// Download zipped updates into UPDATES folder
@@ -122,12 +122,10 @@ public class UpdatesManager {
 		// Extract zipped updates into UPDATES_DIR destination folder "updates"
 		File unzippedUpdates = DownloadUtils.unzipFile(downloadedUpdatesZip.getAbsolutePath(), GeneralConfig.UPDATES_DIR, true);
 		printl("Unzipped updates: " + unzippedUpdates);
-		output[1] = unzippedUpdates;
-		
-		lastUpdatesDownloaded = output;
+		lastUpdatesDownloaded[1] = unzippedUpdates;
 		
 		// Return the reference of updater application jar file
-		return output;
+		return lastUpdatesDownloaded;
 	}
 	
 	public File[] getLastUpdates() {

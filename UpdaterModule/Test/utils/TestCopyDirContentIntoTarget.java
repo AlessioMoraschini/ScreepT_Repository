@@ -7,12 +7,12 @@ import org.junit.Test;
 
 public class TestCopyDirContentIntoTarget {
 	
-	public static final File sourceDir = new File("DownloadTest/SourceFolder");
-	public static final File destDir = new File("DownloadTest/DestFolder");
+	public static final File sourceDir = new File("DownloadTest/Application/UPDATES/updates");
+	public static final File destDir = new File("DownloadTest/Application");
 	
 	@Test
 	public void testCopyUpdates() throws IOException {
-		Various.copyDirectoryContents(sourceDir, destDir);
+		Various.copyDirectoryContents(sourceDir.getAbsoluteFile(), destDir.getAbsoluteFile());
 	}
 
 }

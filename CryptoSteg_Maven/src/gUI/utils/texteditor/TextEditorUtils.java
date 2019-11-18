@@ -228,8 +228,13 @@ public class TextEditorUtils {
 		
 		if(currentFile == null) {
 			if (!options.treeLocked) {
-				FileNamed oldDir = (FileNamed)currentTextEditor.leftSplitTreeFiles.getModel().getRoot();
-				refreshFromWorkspace(oldDir.getFile());
+				try {
+					FileNamed oldDir = (FileNamed)currentTextEditor.leftSplitTreeFiles.getModel().getRoot();
+					if (oldDir != null) {
+						refreshFromWorkspace(oldDir.getFile());
+					}
+				} catch (Exception e) {
+				}
 			}
 			
 			return;
