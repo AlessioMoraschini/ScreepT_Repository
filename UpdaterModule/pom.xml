@@ -31,7 +31,7 @@
 	    <version>2.4.1</version>
 	    <executions>
 
-            <!-- FATJAR -->
+            <!-- UPDATER.JAR EXPORT TO UPDATES DIR -->
 	        <execution>
 	            <id>make-assembly</id>
 	            <phase>package</phase>
@@ -39,7 +39,8 @@
 	                <goal>single</goal>
 	            </goals>
 	            <configuration>
-	            <finalName>updater</finalName>
+	            	<outputDirectory>${export.updates.root}</outputDirectory>
+	           	 	<finalName>updater</finalName>
 	            	<skipAssembly>false</skipAssembly>
 	            	<overwrite>true</overwrite>
                 	<archive>

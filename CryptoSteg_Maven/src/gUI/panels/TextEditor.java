@@ -231,16 +231,15 @@ public class TextEditor extends JPanel {
 		splitPaneMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPaneMain.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 		
-		leftSplitTreeFiles = new JTree(new FileTreeModel(null));
+		leftSplitTreeFiles = new JTree(new FileTreeModel(new File(currentConf.getTextEditorOpt().defaultWorkspacePath)));
 		mouseListenerTreeFilePanel = new TreeFileMouseListenerTxtEditor(leftSplitTreeFiles, this);
-		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
-		leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
-		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
-		leftSplitTreeFiles.addMouseMotionListener(new TreeHighlighterAdapter());
-		leftSplitTreeFiles.setBackground(fileNavColorBckg);
-		leftSplitTreeFiles.setForeground(Color.white);
-		leftSplitTreeFiles.revalidate();
-		leftSplitTreeFiles.repaint();
+//		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
+//		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
+////		leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
+////		leftSplitTreeFiles.setBackground(fileNavColorBckg);
+////		leftSplitTreeFiles.setForeground(Color.white);
+////		leftSplitTreeFiles.revalidate();
+////		leftSplitTreeFiles.repaint();
 		leftSplitPane = new JScrollPane(leftSplitTreeFiles);
 		leftSplitPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		leftSplitPane.setPreferredSize(new Dimension(200, 500));
@@ -397,7 +396,7 @@ public class TextEditor extends JPanel {
 
 		textEditorUtils.resizeFrameToDefault(mainApplication);
 
-		textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
+		textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
 		
 		getCurrentTabEditor().loadedTabObj.textArea.requestFocusInWindow();
 		
@@ -920,7 +919,7 @@ public class TextEditor extends JPanel {
 				currentConfiguration.getTextEditorOpt().addFileToLimitedList(file, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 			}
 		}
-
+		
 		if (loadedAlmostOne) {
 			// first remove first tab if at least one file is loaded
 			currentTabbedEditor.removeTab(0);
@@ -941,7 +940,14 @@ public class TextEditor extends JPanel {
 				logger.warn("Cannot select default file " + toOpenAtStart, e);
 			}
 		}else {
-			// trigger tab style refresh
+			
+			File clipboard = new File(GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + File.separator + "MainClipboard.txt");
+			if (clipboard.exists()) {
+				// trigger tab style refresh
+				currentTabbedEditor.addTab(clipboard, !loadedAlmostOne);
+				currentTabbedEditor.removeTab(0);
+				loadedAlmostOne = true;
+			}
 			currentTabbedEditor.mainTabList.setSelectedIndex(0);
 		}
 		
@@ -956,6 +962,18 @@ public class TextEditor extends JPanel {
 				textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);
 			}
 		});
+		
+		if(!loadedAlmostOne && currentTabbedEditor.loadedTabObj.loadedFile == null || !currentTabbedEditor.loadedTabObj.loadedFile.exists()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					File workspace = new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+					textEditorUtils.refreshTreeFromFolder(workspace, true);
+					leftSplitTreeFiles.revalidate();
+					leftSplitTreeFiles.repaint();
+					leftSplitTreeFiles.setVisible(true);
+				}
+			});
+		}
 	}
 
 	public void startRefreshFooterThread() {

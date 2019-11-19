@@ -8,6 +8,9 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.hamcrest.core.IsInstanceOf;
+
+import exception.ProgressBarInterruptedException;
 import gui.UpdateProgressPanelMin;
 import resources.GeneralConfig;
 import resources.PropertiesManager;
@@ -43,23 +46,40 @@ public class UpdatesManager {
 	 * @return null if current is updated, else it return the newest version downloadable
 	 * @throws Exception 
 	 */
-	public String lookForUpdates() throws Exception {
+	public String lookForUpdates(boolean silent) throws Exception {
 		String newVersionAvailable = null;
 		
-		if(DownloadUtils.isUrlReachable(manifestRemoteUrl)) {
-			printl(getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
-			UpdateProgressPanelMin updateManagerProgbar = new UpdateProgressPanelMin(true);
-			updateManagerProgbar.getPb().setIndeterminate(true); 
-			File downloadedManifest = DownloadUtils.downloadFile(manifestRemoteUrl, localTempManifestPath, updateManagerProgbar);
-			printl("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
-			
-			PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
-			
-			String version = propsManager.getProperty(GeneralConfig.WEB_UPDATER_VERSION_PROP);
-			printl("Version: " + version);
-			
-			newVersionAvailable = (DownloadUtils.checkNewVersion(version, currentVersion)) ? version : null;
-		} 
+		UpdateProgressPanelMin updateManagerProgbar = null;
+		try {
+			if(DownloadUtils.isUrlReachable(manifestRemoteUrl)) {
+				if (!silent) {
+					updateManagerProgbar = new UpdateProgressPanelMin(true);
+					updateManagerProgbar.getPb().setIndeterminate(true);
+				}
+				
+				printl(getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+				File downloadedManifest = DownloadUtils.downloadFile(silent, manifestRemoteUrl, localTempManifestPath, updateManagerProgbar);
+				printl("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
+				
+				PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
+				
+				String version = propsManager.getProperty(GeneralConfig.WEB_UPDATER_VERSION_PROP);
+				printl("Version: " + version);
+				
+				newVersionAvailable = (DownloadUtils.checkNewVersion(version, currentVersion)) ? version : null;
+			}
+		} catch (Exception e) {
+			printl("An error occurred:" + Arrays.deepToString(e.getStackTrace()));
+			updatesReadyToInstall.set(false);
+			if(e instanceof ProgressBarInterruptedException ) {
+				printl("User stopper process:" + Arrays.deepToString(e.getStackTrace()));
+				throw e;
+			}
+		} finally {
+			if(updateManagerProgbar != null) {
+				updateManagerProgbar.forceClose();
+			}
+		}
 		
 		return newVersionAvailable;
 	}
@@ -82,47 +102,60 @@ public class UpdatesManager {
 		
 		lastUpdatesDownloaded = new File[3];
 		
-		if(GeneralConfig.UPDATES_DIR == null || !new File(GeneralConfig.UPDATES_DIR).isDirectory()) {
-			return null;
-		}
-		
-		UpdateProgressPanelMin updateProgressBar = new UpdateProgressPanelMin(true);
-		
-		updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
-		printl(getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
-		File downloadedManifest = DownloadUtils.downloadFile(manifestRemoteUrl, localTempManifestPath, updateProgressBar);
-		printl("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
-		
-		PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
-		
-		String version = propsManager.getProperty(GeneralConfig.WEB_UPDATER_VERSION_PROP);
-		printl("Version: " + version);
-		lastUpdatesDownloaded[2] = new File("ScrYpT_"+version+".jar");
-		
-		URL updaterJarUrl = new URL(propsManager.getProperty(GeneralConfig.WEB_UPDATER_JAR_PROP));
-		printl("updaterJarUrl: " + updaterJarUrl);
-		
-		URL updatesZippedUrl = new URL(propsManager.getProperty(GeneralConfig.WEB_UPDATES_PACK_PROP));
-		printl("updatesZippedUrl: " + updatesZippedUrl);
-		
-		// Download jar updater into same root as main application that is downloading updates
-		updateProgressBar.update(40, "Downloading "+updaterJarUrl, true);
-		printl(getHeaderString("#", 40, "PARSE AND DOWNLOAD PACKETS"));
-		File downloadedUpdater = DownloadUtils.downloadFile(updaterJarUrl, GeneralConfig.WEB_UPDATER_JAR_NAME, updateProgressBar);
-		lastUpdatesDownloaded[0] = downloadedUpdater;
-		printl("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + Various.coolFileSize(downloadedUpdater.length()));
+		UpdateProgressPanelMin updateProgressBar = null;
+		try {
+			if(GeneralConfig.UPDATES_DIR == null || !new File(GeneralConfig.UPDATES_DIR).isDirectory()) {
+				return null;
+			}
+			
+			updateProgressBar = new UpdateProgressPanelMin(true);
+			updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
+			printl(getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+			File downloadedManifest = DownloadUtils.downloadFile(false, manifestRemoteUrl, localTempManifestPath, updateProgressBar);
+			printl("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
+			
+			PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
+			
+			String version = propsManager.getProperty(GeneralConfig.WEB_UPDATER_VERSION_PROP);
+			printl("Version: " + version);
+			lastUpdatesDownloaded[2] = new File("ScrYpT_"+version+".jar");
+			
+			URL updaterJarUrl = new URL(propsManager.getProperty(GeneralConfig.WEB_UPDATER_JAR_PROP));
+			printl("updaterJarUrl: " + updaterJarUrl);
+			
+			URL updatesZippedUrl = new URL(propsManager.getProperty(GeneralConfig.WEB_UPDATES_PACK_PROP));
+			printl("updatesZippedUrl: " + updatesZippedUrl);
+			
+			// Download jar updater into same root as main application that is downloading updates
+			updateProgressBar.update(40, "Downloading "+updaterJarUrl, true);
+			printl(getHeaderString("#", 40, "PARSE AND DOWNLOAD PACKETS"));
+			File downloadedUpdater = DownloadUtils.downloadFile(false, updaterJarUrl, GeneralConfig.WEB_UPDATER_JAR_NAME, updateProgressBar);
+			lastUpdatesDownloaded[0] = downloadedUpdater;
+			printl("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + Various.coolFileSize(downloadedUpdater.length()));
 
-		// Download zipped updates into UPDATES folder
-		updateProgressBar.update(70, "Downloading "+updaterJarUrl, true);
-		File downloadedUpdatesZip = DownloadUtils.downloadFile(updatesZippedUrl, localTempZippedUpdates, updateProgressBar);
-		printl("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + Various.coolFileSize(downloadedUpdatesZip.length()));
+			// Download zipped updates into UPDATES folder
+			updateProgressBar.update(70, "Downloading "+updaterJarUrl, true);
+			File downloadedUpdatesZip = DownloadUtils.downloadFile(false, updatesZippedUrl, localTempZippedUpdates, updateProgressBar);
+			printl("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + Various.coolFileSize(downloadedUpdatesZip.length()));
+			
+			updateProgressBar.forceClose();
+			
+			// Extract zipped updates into UPDATES_DIR destination folder "updates"
+			File unzippedUpdates = DownloadUtils.unzipFile(downloadedUpdatesZip.getAbsolutePath(), GeneralConfig.UPDATES_DIR, true);
+			printl("Unzipped updates: " + unzippedUpdates);
+			lastUpdatesDownloaded[1] = unzippedUpdates;
 		
-		updateProgressBar.forceClose();
-		
-		// Extract zipped updates into UPDATES_DIR destination folder "updates"
-		File unzippedUpdates = DownloadUtils.unzipFile(downloadedUpdatesZip.getAbsolutePath(), GeneralConfig.UPDATES_DIR, true);
-		printl("Unzipped updates: " + unzippedUpdates);
-		lastUpdatesDownloaded[1] = unzippedUpdates;
+		} catch (Exception e) {
+			printl("An error occurred!" + Arrays.deepToString(e.getStackTrace()));
+			updatesReadyToInstall.set(false);
+			if (e instanceof ProgressBarInterruptedException) {
+				throw e;
+			}
+		} finally {
+			if(updateProgressBar != null) {
+				updateProgressBar.forceClose();
+			}
+		}
 		
 		// Return the reference of updater application jar file
 		return lastUpdatesDownloaded;
@@ -136,6 +169,7 @@ public class UpdatesManager {
 				return lastUpdatesDownloaded;
 			} 
 		} catch (Exception e) {
+			updatesReadyToInstall.set(false);
 			return null;
 		}
 	}

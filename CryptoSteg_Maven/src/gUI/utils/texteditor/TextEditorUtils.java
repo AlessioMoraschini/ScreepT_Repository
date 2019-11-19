@@ -276,7 +276,7 @@ public class TextEditorUtils {
 		}
 	}
 	
-	public void refreshTreeFromFolder(File folder, File currentFile, boolean forceRefresh) {
+	public void refreshTreeFromFolder(File folder, boolean forceRefresh) {
 		TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		folder = (folder.isDirectory())? folder : folder.getParentFile();
 		File workspaceRoot = folder;
@@ -325,9 +325,12 @@ public class TextEditorUtils {
 		return (currentTextEditor.dynLblCurrentDir.getWidth() + currentTextEditor.lblCurrentDir.getWidth()); 
 	}
 	
+	/**
+	 * Close each single node from bottom to top
+	 */
 	public void collapseTree() {
 		try {
-			for (int i = 0; i < currentTextEditor.leftSplitTreeFiles.getRowCount(); i++) {
+			for (int i = currentTextEditor.leftSplitTreeFiles.getRowCount(); i >= 0; i--) {
 				try {
 					currentTextEditor.leftSplitTreeFiles.collapseRow(i);
 				} catch (Exception e) {

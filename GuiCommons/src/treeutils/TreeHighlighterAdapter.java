@@ -16,33 +16,44 @@ public class TreeHighlighterAdapter extends MouseMotionAdapter implements MouseL
 	
     public void mouseMoved(MouseEvent e)
     {
-        JTree tree = (JTree)e.getSource();
-        TreePath selRow = tree.getPathForLocation(e.getX(), e.getY());
-        
+    	super.mouseMoved(e);
+    }
+    
+    @Override
+    public void mouseDragged(MouseEvent e) {
+    	// TODO implement move file
     }
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
 	public void mouseEntered(MouseEvent e) {
-		 JTree tree = (JTree)e.getSource();
-		 TreePath treeSel = tree.getSelectionPath();
-		 if(treeSel != null) {
-			 originalSelection = treeSel;
-		 }
+		try {
+			JTree tree = (JTree) e.getSource();
+			TreePath treeSel = tree.getSelectionPath();
+			if (treeSel != null) {
+				originalSelection = treeSel;
+			}
+		} catch (Exception e1) {
+		}
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

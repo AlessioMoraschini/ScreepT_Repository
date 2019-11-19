@@ -106,6 +106,7 @@
 
         if (options.indent_with_tabs) {
             indentCharacter = '\t';
+            indentSize = 1;
         }
 
         if (eol === 'auto') {

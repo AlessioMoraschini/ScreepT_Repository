@@ -41,34 +41,8 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 		treeRef = new JTree();
 		
 		iconContainer = new JLabel();
-		iconContainer.setOpaque(false);
 		iconContainer.setForeground(Color.LIGHT_GRAY);
 		container.add(iconContainer);
-		
-		iconContainer.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				iconContainer.setBackground(null);
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						iconContainer.setBackground(TreeUtils.DEF_BACK_HOVER);
-						iconContainer.setForeground(Color.WHITE);
-					}
-				});
-			}
-			@Override
-			public void mouseClicked(MouseEvent e) {
-			}
-		});
     }
 
     public Component getTreeCellRendererComponent(final JTree tree, Object value, final boolean selected, boolean expanded,
@@ -76,48 +50,50 @@ public class FileNameCellRenderer implements TreeCellRenderer {
     	
     	treeRef = tree;
     	
-        if (value instanceof FileNamed) {
+        if (iconContainer != null && container != null && value != null) {
         	
-			// custom icon setter
-			FileNamed nodeFileObj = (FileNamed) value;
-			File selectedFile = nodeFileObj.mFile;
-			FileNamed nodeFileObjRoot = (FileNamed) tree.getModel().getRoot();
-			File root = nodeFileObjRoot.getFile();
-			
-			MyFileView fileView = new MyFileView();
-			iconContainer.setIcon(fileView.getIcon(nodeFileObj.mFile));
-			try {
-				File absoluteFile = selectedFile.getAbsoluteFile();
-				if (root.getAbsolutePath().equals(selectedFile.getAbsolutePath())) {
-					iconContainer.setText(selectedFile.getCanonicalPath());
-				}else {
-					iconContainer.setText(absoluteFile.getName());
+			if (value instanceof FileNamed) {
+
+				// custom icon setter
+				FileNamed nodeFileObj = (FileNamed) value;
+				File selectedFile = nodeFileObj.mFile;
+				FileNamed nodeFileObjRoot = (FileNamed) tree.getModel().getRoot();
+				File root = nodeFileObjRoot.getFile();
+
+				MyFileView fileView = new MyFileView();
+				iconContainer.setIcon(fileView.getIcon(nodeFileObj.mFile));
+				try {
+					File absoluteFile = selectedFile.getAbsoluteFile();
+					if (root.getAbsolutePath().equals(selectedFile.getAbsolutePath())) {
+						iconContainer.setText(selectedFile.getCanonicalPath());
+					} else {
+						iconContainer.setText(absoluteFile.getName());
+					}
+				} catch (IOException e) {
+					logger.error(e);
 				}
-			} catch (IOException e) {
-				logger.error(e);
+
+				if (selectedFile.isFile()) {
+					iconContainer.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FILE_TEXT_HEIGHT));
+				} else {
+					iconContainer.setFont(new Font("Segoe UI", Font.BOLD, 14));
+					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FOLDER_TEXT_HEIGHT));
+				}
+
+				container.setToolTipText(selectedFile != null ? selectedFile.getAbsolutePath() : "file is null!");
 			}
-			
-			if(selectedFile.isFile()) {
-				iconContainer.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-				iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FILE_TEXT_HEIGHT));
-			}else {
-				iconContainer.setFont(new Font("Segoe UI", Font.BOLD, 14));
-				iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FOLDER_TEXT_HEIGHT));
-			}
-			
-			container.setToolTipText(selectedFile!=null? selectedFile.getAbsolutePath() : "file is null!");
+			iconContainer.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
+			iconContainer.setForeground(selected ? Color.WHITE : Color.GRAY);
+			container.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
+			container.setForeground(selected ? Color.WHITE : Color.GRAY);
+			//		container.setBounds(tree.getBounds().x, container.getBounds().y, tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
+			//		container.setPreferredSize(new Dimension(tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT));
+//			container.revalidate();
+//			iconContainer.revalidate();
+//			container.repaint();
+//			iconContainer.repaint();
 		}
-        
-		iconContainer.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
-		iconContainer.setForeground(selected ? Color.WHITE : Color.GRAY);
-		container.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
-		container.setForeground(selected ? Color.WHITE : Color.GRAY);
-//		container.setBounds(tree.getBounds().x, container.getBounds().y, tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
-//		container.setPreferredSize(new Dimension(tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT));
-		container.revalidate();
-		iconContainer.revalidate();
-		container.repaint();
-		iconContainer.repaint();
 		return container;
     }
     

@@ -167,6 +167,15 @@ public class PropertiesManager {
 		}
 	}
 
+	public boolean getBooleanVarFromProps(String key, boolean defaultVal) {
+		String val = dynamicFileBindingsDef.getProperty(key);
+		try {
+			return Boolean.valueOf(val);
+		}catch(Exception e){
+			return defaultVal;
+		}
+	}
+
 	public float getFloatVarFromProps(String key, float defaultVal) {
 		String val = dynamicFileBindingsDef.getProperty(key);
 		try {

@@ -79,7 +79,7 @@ public class GeneralConfig {
 	
 	// IMPORTANT FOLDERS
 	public static String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
-	public static String USER_PERSONAL_DIR_SCRYPT_FOLDER = USER_PERSONAL_DIR + APPLICATION_NAME + File.separatorChar + APP_VERSION;
+	public static String USER_PERSONAL_DIR_SCRYPT_FOLDER = USER_PERSONAL_DIR + "ScrYpT_temp_files" + File.separatorChar + APP_VERSION;
 	public static File F_USER_PERSONAL_DIR_SCRYPT_FOLDER = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER);
 	public static String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";
 	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScrYpT_decrypted_tempFiles";
@@ -126,6 +126,10 @@ public class GeneralConfig {
 	public static String DEFAULT_LOG_LEVEL;
 	public static boolean DEFAULT_JVM_JAR_MODE;
 	public static boolean DEFAULT_JVM_SHELL_ON;
+	
+	// UPDATES
+	public static boolean UPDATES_AUTOCHECK;
+	public static int UPDATES_AUTOCHECK_DELAY;
 	
 	// NETWORK OPTIONS
 	public static int NETWORK_UTILS_TIMEOUT;
@@ -453,6 +457,10 @@ public class GeneralConfig {
 			DEFAULT_JVM_JAR_MODE = Boolean.valueOf(resourcesFilePathsMappings.getProperty("DEFAULT_JVM_JAR_MODE"));
 			DEFAULT_JVM_SHELL_ON = Boolean.valueOf(resourcesFilePathsMappings.getProperty("DEFAULT_JVM_SHELL_ON"));
 			
+			// UPDATES
+			UPDATES_AUTOCHECK_DELAY  = resourcesFilePathsMappings.getIntVarFromProps("UPDATES_AUTOCHECK_DELAY", 10000);
+			UPDATES_AUTOCHECK  =resourcesFilePathsMappings.getBooleanVarFromProps("UPDATES_AUTOCHECK", true);
+
 			// NETWORK OPTIONS
 			NETWORK_UTILS_TIMEOUT  = resourcesFilePathsMappings.getIntVarFromProps("NETWORK_UTILS_TIMEOUT", 5000);
 			testAddress = resourcesFilePathsMappings.getProperty("testAddress");

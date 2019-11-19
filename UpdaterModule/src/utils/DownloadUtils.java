@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import exception.ProgressBarInterruptedException;
 import gui.UpdateProgressPanelMin;
 import testUtils.TestUtils;
 
@@ -55,43 +56,58 @@ public class DownloadUtils {
 	    
 	}
 	
-	public static File downloadFile(URL url, String localPath, UpdateProgressPanelMin progressUpdater) throws Exception{
+	public static File downloadFile(boolean silent, URL url, String localPath, UpdateProgressPanelMin progressUpdater) throws Exception{
 		int fileSize = getFileSize(url);
 		out.println("Opening url stream...");
 		BufferedInputStream in = null;
 		FileOutputStream fileOutputStream = null;
 		
-		if(progressUpdater != null) {
-			progressUpdater.getDialog().setTitle("Downloading update file: " + new File(url.getFile()).getName());
-			progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
-			progressUpdater.getDialog().setVisible(true);
-			progressUpdater.getPb().setIndeterminate(false);
-			progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));
-			Various.centerComponent(progressUpdater.getDialog());
-		}
-		
-		in = new BufferedInputStream(url.openStream());
-		fileOutputStream = new FileOutputStream(localPath);
-	    byte dataBuffer[] = new byte[1024];
-	    int bytesRead;
-	    int cycles = 1;
-	    while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-	        fileOutputStream.write(dataBuffer, 0, bytesRead);
-	        int percDownloaded = getPerc(1024*cycles, fileSize);
-	        percDownloaded = (percDownloaded>99) ? 99 : percDownloaded;
-	        progressUpdater.getDialog().setVisible(true);
-	        updateProgress("Downloading " + new File(url.getFile()).getName() + " ("+percDownloaded+"%)...", percDownloaded, progressUpdater, false);
-	        cycles ++;
-	    }
 		try {
-			out.println("Closing url stream...");
-			in.close();
-			fileOutputStream.close();
-			updateProgress("Download Completed!", 100, progressUpdater, false);
-			progressUpdater.forceClose();
-			out.println("Streams closed!");
-		} catch (IOException e) {
-			out.println("An error occurred while closing streams after download" + Arrays.deepToString(e.getStackTrace()));
+			if(progressUpdater != null && !silent) {
+				progressUpdater.getDialog().setTitle("Downloading update file: " + new File(url.getFile()).getName());
+				progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
+				progressUpdater.getDialog().setVisible(true);
+				progressUpdater.getPb().setIndeterminate(false);
+				progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));
+				Various.centerComponent(progressUpdater.getDialog());
+				progressUpdater.setClosable(true);
+			}
+			
+			in = new BufferedInputStream(url.openStream());
+			fileOutputStream = new FileOutputStream(localPath);
+			byte dataBuffer[] = new byte[1024];
+			int bytesRead;
+			int cycles = 1;
+			while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+			    fileOutputStream.write(dataBuffer, 0, bytesRead);
+			    int percDownloaded = getPerc(1024*cycles, fileSize);
+			    percDownloaded = (percDownloaded>99) ? 99 : percDownloaded;
+			    if (progressUpdater != null && !silent) {
+					progressUpdater.getDialog().setVisible(true);
+				}
+				updateProgress("Downloading " + new File(url.getFile()).getName() + " ("+percDownloaded+"%)...", percDownloaded, progressUpdater, false);
+			    cycles ++;
+			}
+			try {
+				out.println("Closing url stream...");
+				in.close();
+				fileOutputStream.close();
+				updateProgress("Download Completed!", 100, progressUpdater, false);
+				if (progressUpdater != null) {
+					progressUpdater.forceClose();
+				}
+				out.println("Streams closed!");
+			} catch (IOException e) {
+				out.println("An error occurred while closing streams after download" + Arrays.deepToString(e.getStackTrace()));
+			}
+		} catch (Exception e) {
+			if (e instanceof ProgressBarInterruptedException) {
+				throw e;
+			}
+		} finally {
+			if(progressUpdater != null) {
+				progressUpdater.forceClose();
+			}
 		}
 		
 		return new File(localPath);
@@ -187,6 +203,7 @@ public class DownloadUtils {
 					progressUpdater.getDialog().setVisible(true);
 				}
 				if(progressUpdater != null) {
+					progressUpdater.setClosable(true);
 					progressUpdater.getDialog().setTitle("Unzipping file: " + new File(sourcePath).getName());
 					progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
 					progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));

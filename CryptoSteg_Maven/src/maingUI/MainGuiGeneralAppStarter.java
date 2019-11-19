@@ -175,9 +175,12 @@ public class MainGuiGeneralAppStarter {
 			/*************************
 			 * LAUNCH MAIN APPLICATION
 			 *************************/
-			MainGUI.mainApplicationGeneral(currentConfiguration);
+			boolean mainAppRunning = MainGUI.mainApplicationGeneral(currentConfiguration);
 			/** MainApp: LAUNCHED :)**/
-			MainGUI.mainAppRunning = true;
+			
+			if(!mainAppRunning) {
+				throw new Exception("Something has gone wrong during application start-up, please check the logs");
+			}
 			
 			printElapsed("Launch completed", startTime);
 			

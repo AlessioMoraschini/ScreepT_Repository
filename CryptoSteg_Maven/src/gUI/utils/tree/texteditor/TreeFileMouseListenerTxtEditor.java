@@ -256,7 +256,8 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					tree.collapseRow(selectedRow);
+//					tree.collapseRow(selectedRow);
+					TreeUtils.collapseTree(tree, selectedRow);
 				} catch (Exception e1) {
 					logger.error("Error collapsing tree row N°"+selectedRow, e1);
 				}

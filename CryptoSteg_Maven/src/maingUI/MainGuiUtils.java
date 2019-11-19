@@ -1,5 +1,6 @@
 package maingUI;
 
+import static maingUI.MainGuiGeneralAppStarter.*;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ComponentListener;
@@ -18,6 +19,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelper;
+import exception.ProgressBarInterruptedException;
 import frameutils.utils.GuiUtils;
 import gUI.panels.ChargeIniLog;
 import gUI.panels.CrypterPanel;
@@ -37,6 +40,92 @@ public class MainGuiUtils {
 	
 	public MainGuiUtils(MainGUI mainApp) {
 		mainAppReference = mainApp;
+	}
+	
+	public static Thread lookForUpdates(final boolean silent) {
+		return new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (!MainGUI.mainAPP.isUpdating.get()) {
+					dialogHelper = new JOptionHelper(MainGUI.frmScryptV);
+					MainGUI.mainAPP.isUpdating.set(true);
+					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(false);
+
+					try {
+						// Loof for new versions...
+						String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates(silent);
+						if (newVersion != null) {
+							// If found ask to user what to do
+							Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+							boolean downloadUpdates = dialogHelper.yesOrNo(
+									"New version [" + newVersion
+											+ "] found, do you want to download and install it? (selecting 'no' will cancel all pending updates)",
+									"Update found: " + newVersion);
+							if (downloadUpdates) {
+								try {
+									MainGUI.updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
+									MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
+									boolean restartNow = dialogHelper.yesOrNo(
+											"ScrYpT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
+									if (restartNow) {
+										MainGUI.closeApplication(0);
+									} else {
+										dialogHelper.info("Updates will be installed when you'll close current session", "Update will start at close");
+									}
+
+								} catch (Exception e1) { 
+									// Error during download/extraction or user killed process
+									if (!(e1 instanceof ProgressBarInterruptedException)) {
+										String msg = "Cannot download updates, an error occurred";
+										logger.error(msg, e1);
+										dialogHelper.errorScroll(msg, "Error during download", e1);
+									} else {
+										dialogHelper.info("Process killed by user", "Process killed by user");
+										logger.info("User has killed process" + e1.toString());
+									}
+								}
+							} else {
+								// User skipped updates pressing no or cancel
+								dialogHelper.info("As you want, update will be skipped, return here when you'll want to update software ;)",
+										"Update skipped");
+								logger.info("Update skipped, as requested from user.");
+								MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(false);
+								MainGUI.frmScryptV.toFront();
+							}
+						} else {
+							// If version == null means that sw is already updated
+							if (MainGuiGeneralAppStarter.updatesManager.udpdatesReachable()) {
+								logger.info("Nothing to download, current version is up to date :)");
+								if (!silent) {
+									dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
+								}
+							}else {
+								logger.error("Cannot retrieve remote update data, server is unreachable.");
+								if (!silent) {
+									dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");
+								}
+							}
+						}
+					} catch (Exception e2) {
+						// " main types of error: user killed process or general error during process
+						if (!(e2 instanceof ProgressBarInterruptedException)) {
+							dialogHelper.error("Cannot read updates, an error occurred :(", "An error occurred!");
+							logger.error("Cannot read updates, an error occurred :(", e2);
+						} else {
+							dialogHelper.info("Process killed by user", "Process killed by user");
+							logger.info("User has killed process" + e2.toString());
+						}
+					}
+
+					// Reset application graphics
+					MainGUI.frmScryptV.setEnabled(true);
+					MainGUI.frmScryptV.toFront();
+					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(true);
+					MainGUI.mainAPP.isUpdating.set(false);
+				}
+			}
+		});
 	}
 	
 	public <T> void immersiveModeToggle() {

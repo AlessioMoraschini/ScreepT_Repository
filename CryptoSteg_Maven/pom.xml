@@ -124,6 +124,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<includeEmptyDirs>true</includeEmptyDirs>
             	<export.launcher.jarmode>false</export.launcher.jarmode>
             	<tasks>
 					<echo>SINGLE_MAIN_JAR SOURCE: /target/ScrYpT_${parent.build.version.scrypt}.jar</echo>
@@ -168,6 +169,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<includeEmptyDirs>true</includeEmptyDirs>
             	<skip>${export.multijar.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>
@@ -179,6 +181,22 @@
                	<timeZone>Europe/Zurich</timeZone>
 			    <resources>
 				     <resource>
+						<filtering>false</filtering>
+				        <directory>./Resources_Scrypt</directory>
+    					<includes>
+    						<include>/**</include>
+    						<include>/*</include>
+    						<include>/**/*</include>
+					    </includes>
+					    <excludes>
+					    	<exclude>/Readme/**</exclude>
+					    	<exclude>/Readme/*</exclude>
+					    	<exclude>/**/*Thumbs.db</exclude>
+					    	<exclude>/**/*.ini</exclude>
+					    	<exclude>*.ini</exclude>
+					    </excludes>
+					</resource>
+					<resource>
 					    <filtering>true</filtering>
 					    <directory>./Resources_Scrypt</directory>
 					    <includes>
@@ -189,34 +207,13 @@
 					    	/**/*Thumbs.db
 					    </excludes>
 					</resource>
-					<resource>
-						<filtering>false</filtering>
-				        <directory>./Resources_Scrypt</directory>
-    					<includes>
-    						<include>/PanelTempFiles</include>
-    						<include>/PanelTempFiles/*</include>
-    						<include>/SpellChecker/*</include>
-    						<include>/SpellChecker/**</include>
-    						<include>/Backup/*</include>
-    						<include>/Images/*</include>
-					        <include>/Icons/*</include>
-					        <include>/ProgrammingLanguagesWords/*</include>
-    						<include>/Images/**</include>
-					        <include>/Icons/**</include>
-					        <include>/ProgrammingLanguagesWords/**</include>
-					        <include>/lib/js</include>
-					        <include>/lib/js/*</include>
-					        <include>/lib/js/**</include>
-					    </includes>
-					    <excludes>
-					    	/**/*Thumbs.db
-					    </excludes>
-					</resource>
 			    </resources>     
             </configuration>            
           </execution>
           
-          <!-- FATJAR -->
+    	<!-- FATJAR -->
+    	
+    	<!-- (1) Copy Root Folders -->
           <execution>
             <id>copy-resources -> ${export.directory.fatjar.main}</id>
             <phase>validate</phase>
@@ -224,6 +221,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<includeEmptyDirs>true</includeEmptyDirs>
             	<export.launcher.jarmode>true</export.launcher.jarmode>
             	<skip>${export.fatjar.skip}</skip>
             	<overwrite>true</overwrite>
@@ -241,13 +239,51 @@
 					    <includes>
 					        <include>resourcesFilePathsMappings.properties</include>
 					        <include>LAUNCHER/**/*</include>
-					        <include>LAUNCHER/*</include>
+					        <include>INI_FILES/**/*</include>
+    						<include>LAUNCHER/**/*</include>
+    						<include>LOG/**/*</include>
+    						<include>NET_SCANNER/**/*</include>
+    						<include>UPDATES</include>
+    						<include>Dependencies_Installers/**/*</include>
+    						<include>IMG/**/*</include>
+					    </includes>
+					    <excludes>
+					    	<exclude>IMG/**/*.png</exclude>
+					    	<exclude>/**/*humbs.db</exclude>
+					    </excludes>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+          
+          <!-- (2) Copy root files into application dir's parent -->
+          <execution>
+            <id>copy- ROOT files -> ${export.directory.fatjar.main}/../</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+            	<includeEmptyDirs>true</includeEmptyDirs>
+            	<skip>${export.fatjar.root.skip}</skip>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		${export.directory.fatjar.main}\..\
+              	</outputDirectory>
+			    <resources>
+				     <resource>
+					    <filtering>false</filtering>
+					    <directory>ROOT_DIR_APP_FILES</directory>
+					    <includes>
+					        <include>/**</include>
+					        <include>/**/*</include>
 					    </includes>
 					</resource>
 			    </resources>     
             </configuration>            
           </execution>
-          <!-- FATJAR : Resources_ScrYpt -->
+         
+         <!-- (3) FATJAR : Resources_ScrYpt -->
           <execution>
             <id>copy-resources -> ${export.directory.fatjar.resources}</id>
             <phase>validate</phase>
@@ -258,48 +294,110 @@
             	<skip>${export.fatjar.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>
-              		<!-- ${basedir}/target/extra-resources -->
               		${export.directory.fatjar.resources}
               	</outputDirectory>
+            	<includeEmptyDirs>true</includeEmptyDirs> 
                	<name>timestamp</name>
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
                	<timeZone>Europe/Zurich</timeZone>
 			    <resources>
-				     <resource>
+			     	<resource>
+						<filtering>false</filtering>
+				        <directory>./Resources_Scrypt</directory>
+					    <excludes>
+					    	<exclude>/Readme/**</exclude>
+					    	<exclude>/Readme/*</exclude>
+					    	<exclude>/**/*Thumbs.db</exclude>
+					    </excludes>
+					</resource>
+					<resource>
 					    <filtering>true</filtering>
 					    <directory>./Resources_Scrypt</directory>
 					    <includes>
 					    	<include>/Readme/**</include>
 					    	<include>/Readme/**/*</include>
 					    </includes>
+					    <excludes>/**/*Thumbs.db</excludes>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+          
+      <!-- (4) SCRYPT'S UPDATES packaging - To zip and upload on server each time -->
+          <execution>
+            <id>copy-resources -> ${export.updates.folder}</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+            	<includeEmptyDirs>true</includeEmptyDirs>
+            	<skip>${export.updates.skip}</skip>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		${export.updates.folder}
+              	</outputDirectory>
+			    <resources>
+				     <resource>
+						<filtering>false</filtering>
+				        <directory>./</directory>
+    					<includes>
+    						<include>Resources_Scrypt/**</include>
+    						<include>Resources_Scrypt/*</include>
+    						<include>Resources_Scrypt/**/*</include>
+					    </includes>
 					    <excludes>
-					    	/**/*Thumbs.db
+					    	<exclude>Resources_Scrypt/Readme/**</exclude>
+					    	<exclude>Resources_Scrypt/Readme/*</exclude>
+					    	<exclude>/**/*Thumbs.db</exclude>
+					    	<exclude>/**/*.ini</exclude>
+					    	<exclude>*.ini</exclude>
 					    </excludes>
 					</resource>
 					<resource>
-						<filtering>false</filtering>
-				        <directory>./Resources_Scrypt</directory>
-    					<includes>
-    						<include>/Backup/*</include>
-    						<include>/PanelTempFiles</include>
-    						<include>/PanelTempFiles/*</include>
-    						<include>/PanelTempFiles/**</include>
-    						<include>/SpellChecker/*</include>
-    						<include>/SpellChecker/**</include>
-    						<include>/Images/*</include>
-    						<include>/Images/**</include>
-					        <include>/Icons/*</include>
-					        <include>/Icons/**</include>
-					        <include>/ProgrammingLanguagesWords/*</include>
-					        <include>/ProgrammingLanguagesWords/**</include>
-					        <include>/lib/js</include>
-					        <include>/lib/js/*</include>
-					        <include>/lib/js/**</include>
-					        <include>/lib/js/**/*)</include>
+					    <filtering>true</filtering>
+					    <directory>./</directory>
+					    <includes>
+					    	<include>Resources_Scrypt/Readme/**</include>
+					    	<include>Resources_Scrypt/Readme/**/*</include>
+					        <include>resourcesFilePathsMappings.properties</include>
+					        <include>LAUNCHER/**/*</include>
+					        <include>LAUNCHER/*</include>
+					        <include>INI_FILES</include>
 					    </includes>
 					    <excludes>
-					    	/**/*Thumbs.db
+					    	<exclude>*.ini</exclude>
+					    	<exclude>/**.ini</exclude>
+					    	<exclude>*/*.ini</exclude>
+					    	<exclude>/**/*Thumbs.db</exclude>
 					    </excludes>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+          
+       <!-- (5) UPDATES - ROOT -->
+          <execution>
+            <id>copy-resources -> ${export.updates.root}</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+            	<includeEmptyDirs>true</includeEmptyDirs>
+            	<skip>${export.updates.skip}</skip>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		<!-- ${basedir}/target/extra-resources -->
+              		${export.updates.root}
+              	</outputDirectory>
+			    <resources>
+				     <resource>
+						<filtering>true</filtering>
+				        <directory>./</directory>
+    					<includes>
+    						<include>manifest.properties</include>
+					    </includes>
 					</resource>
 			    </resources>     
             </configuration>            

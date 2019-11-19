@@ -284,6 +284,7 @@ function js_beautify(js_source_text, options) {
 
         if (options.indent_with_tabs) {
             opt.indent_char = '\t';
+            opt.indent_size = 1;
         }
 
         if (opt.eol === 'auto') {

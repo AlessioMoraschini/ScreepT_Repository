@@ -191,22 +191,23 @@ public class TreeUtils {
         }
     }
 
-	public static void collapseNodeChildren(JTree tree, TreePath parent) {
+    /**
+	 * Close each single node from bottom to top
+	 */
+	public static void collapseTree(JTree tree, int row) {
 		try {
-			if (tree != null && parent != null) {
-				TreeNode node = (TreeNode) parent.getLastPathComponent();
-				if (node.getChildCount() >= 0) {
-					for (Enumeration e = node.children(); e.hasMoreElements();) {
-						TreeNode n = (TreeNode) e.nextElement();
-						TreePath path = parent.pathByAddingChild(n);
-						collapseNodeChildren(tree, path);
+			TreePath startingPath = tree.getPathForRow(row);
+			for (int i = tree.getRowCount(); i >= 0; i--) {
+				TreePath son = tree.getPathForRow(row);
+				if(startingPath.isDescendant(son)) {
+					try {
+						tree.collapseRow(i);
+					} catch (Exception e) {
 					}
 				}
-				tree.collapsePath(parent);
-			} 
+			}
 		} catch (Exception e) {
 		}
-		
 	}
 	
 	/**

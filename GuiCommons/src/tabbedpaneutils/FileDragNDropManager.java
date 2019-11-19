@@ -73,14 +73,17 @@ public class FileDragNDropManager extends JTabbedPane{
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (dragOver) {
-            Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setColor(new Color(61, 111, 191,80));
-            g2d.fill(new Rectangle(getWidth(), getHeight()));
-            g2d.dispose();
-            
-        }
+        try {
+			super.paintComponent(g);
+			if (dragOver) {
+			    Graphics2D g2d = (Graphics2D) g.create();
+			    g2d.setColor(new Color(61, 111, 191,80));
+			    g2d.fill(new Rectangle(getWidth(), getHeight()));
+			    g2d.dispose();
+			    
+			}
+		} catch (Exception e) {
+		}
     }
 
     protected DropTarget getMyDropTarget() {

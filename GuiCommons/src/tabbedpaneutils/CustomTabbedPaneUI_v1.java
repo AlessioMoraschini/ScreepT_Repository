@@ -90,7 +90,7 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
     }
     
     public JButton getCloseButton(int index, int buttonOrdinalPosition) {
-    	JButton buttonCloseTab = null; 
+    	JButton buttonCloseTab = new JButton(); 
     	try {
 			buttonCloseTab = (JButton)(getPanelFromTabHeader(index)).getComponent(buttonOrdinalPosition);
 		} catch (Exception e) {

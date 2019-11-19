@@ -331,6 +331,15 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScrYpT", 100, 200);
 							
 							window.startTitleUpdater();
+							
+							if (GeneralConfig.UPDATES_AUTOCHECK) {
+								try {
+									Thread.sleep(GeneralConfig.UPDATES_AUTOCHECK_DELAY);
+								} catch (Exception e) {
+									logger.warn("Cannot wait " + GeneralConfig.UPDATES_AUTOCHECK_DELAY + " ms to check for updates", e);
+								}
+								MainGuiUtils.lookForUpdates(true).start();
+							}
 						}
 					});
 				}
@@ -1124,67 +1133,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		// Check and download/install updates
 		mntmLookForUpdates = new CustomJmenuItem(new AbstractAction("Check for software updates...") {
 			public void actionPerformed(ActionEvent e) {
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						if (!isUpdating.get()) {
-							dialogHelper = new JOptionHelper(frmScryptV);
-							isUpdating.set(true);
-							getMntmLookForUpdates().setEnabled(false);
-
-							try {
-								String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates();
-								if (newVersion != null) {
-									Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
-									boolean downloadUpdates = dialogHelper.yesOrNo(
-											"New version [" + newVersion
-													+ "] found, do you want to download and install it? (selecting 'no' will cancel all pending updates)",
-											"Update found: " + newVersion);
-									if (downloadUpdates) {
-										try {
-											updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
-											MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
-											boolean restartNow = dialogHelper.yesOrNo(
-													"ScrYpT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
-											if (restartNow) {
-												MainGUI.closeApplication(0);
-											} else {
-												dialogHelper.info("Updates will be installed when you'll close current session", "Update will start at close");
-											}
-
-										} catch (Exception e1) {
-											String msg = "Cannot download updates, an error occurred";
-											logger.error(msg, e1);
-											dialogHelper.errorScroll(msg, "Error during download", e1);
-										}
-									} else {
-										dialogHelper.info("As you want, update will be skipped, return here when you'll want to update software ;)",
-												"Update skipped");
-										logger.info("Update skipped, as requested from user.");
-										MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(false);
-										frmScryptV.toFront();
-									}
-								} else {
-									if (MainGuiGeneralAppStarter.updatesManager.udpdatesReachable()) {
-										dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
-										logger.info("Nothing to download, current version is up to date :)");
-									}else {
-										dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");
-										logger.error("Cannot retrieve remote update data, server is unreachable.");
-									}
-								}
-							} catch (Exception e2) {
-								dialogHelper.error("Cannot read updates, an error occurred :(", "An error occurred!");
-								logger.error("Cannot read updates, an error occurred :(", e2);
-							}
-
-							frmScryptV.setEnabled(true);
-							getMntmLookForUpdates().setEnabled(true);
-							isUpdating.set(false);
-						}
-					}
-				}).start();
+				Thread updatesTHread = MainGuiUtils.lookForUpdates(false);
+				updatesTHread.start();
 			}
 		});
 		

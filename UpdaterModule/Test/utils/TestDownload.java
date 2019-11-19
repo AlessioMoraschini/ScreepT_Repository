@@ -45,7 +45,7 @@ public class TestDownload {
 	@Test 
 	public void updateManager() throws Exception{
 		printl(getHeaderString("#", 40, "TEST UPDATES MANAGER"));
-		String newVersion = updatesManager.lookForUpdates();
+		String newVersion = updatesManager.lookForUpdates(false);
 		printl("Test version: "+testCurrVersion+" -> new version: " + newVersion);
 		
 		if (newVersion != null) {
@@ -68,7 +68,7 @@ public class TestDownload {
 	@Ignore
 	public void testUrlFileDownload() throws Exception {
 		printl(getHeaderString("#", 40, "TEST DOWNLOAD AND PARSE MANIFEST .properties"));
-		File downloadedManifest = DownloadUtils.downloadFile(urlManifestRemote, tempManifestFilePath, new UpdateProgressPanelMin());
+		File downloadedManifest = DownloadUtils.downloadFile(false, urlManifestRemote, tempManifestFilePath, new UpdateProgressPanelMin());
 		printl("Manifest Downloaded!! Size of " + urlManifestRemote + " is: " + Various.coolFileSize(downloadedManifest.length()));
 		
 		PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
@@ -81,10 +81,10 @@ public class TestDownload {
 		printl("updatesZippedUrl: " + updatesZippedUrl);
 		
 		printl(getHeaderString("#", 40, "TEST PARSE AND DOWNLOAD PACKETS"));
-		File downloadedUpdater = DownloadUtils.downloadFile(updaterJarUrl, tempUpdaterFilePath, new UpdateProgressPanelMin());
+		File downloadedUpdater = DownloadUtils.downloadFile(false, updaterJarUrl, tempUpdaterFilePath, new UpdateProgressPanelMin());
 		printl("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + Various.coolFileSize(downloadedUpdater.length()));
 
-		File downloadedUpdatesZip = DownloadUtils.downloadFile(updatesZippedUrl, tempUpdatesZipFilePath, new UpdateProgressPanelMin());
+		File downloadedUpdatesZip = DownloadUtils.downloadFile(false, updatesZippedUrl, tempUpdatesZipFilePath, new UpdateProgressPanelMin());
 		printl("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + Various.coolFileSize(downloadedUpdatesZip.length()));
 		
 		File unzippedUpdates = DownloadUtils.unzipFile(downloadedUpdatesZip.getAbsolutePath(), downloadTestFolderFile.getAbsolutePath(), true);

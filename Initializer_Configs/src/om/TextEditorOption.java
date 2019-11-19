@@ -43,7 +43,6 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_TREE_LOCKED = false;
 	public static final boolean DEFAULT_WORKSPACE_VIEW_SELECTED = false;
 	public static final boolean DFAULT_AUTO_SYNTAX_SYN_FLAG = true;
-	public static final String DEFAULT_WORKSPACE_LOCATION = GeneralConfig.USER_PERSONAL_DIR;
 	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles;
 	public static LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces;
 	
@@ -142,7 +141,7 @@ public class TextEditorOption {
 		foreCol = DEFAULT_FOREGROUND_COL;
 		selectedAtStart = DEFAULT_SELECTED_FILE_AT_START;
 		lastEscapeLanguage = DEF_LastEscapeLanguage;
-		defaultWorkspacePath = DEFAULT_WORKSPACE_LOCATION;
+		defaultWorkspacePath = GeneralConfig.USER_PERSONAL_DIR;
 		selectedTheme = DEFAULT_SELECTED_THEME;
 		dividerFileTreePosX = DEFAULT_DIVIDER_POS_X;
 		dividerRightPanePosX = DEF_dividerRightPanePosX;

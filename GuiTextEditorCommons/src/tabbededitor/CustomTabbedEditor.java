@@ -559,13 +559,13 @@ public class CustomTabbedEditor {
 		// GO TO LAST IN HISTORY WHEN CLOSING
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if(firstToRemove) {
-					removeTab(0);
-				}
-				
-				loadedTabObj.textArea.requestFocus();
-				
 				try{
+					if(firstToRemove) {
+						removeTab(0);
+					}
+					
+					loadedTabObj.textArea.requestFocus();
+				
 					Component previousComp = navigationHistory.getLast().getScrollPane();
 					mainTabList.setSelectedComponent(previousComp);
 				}catch(Exception e) {
