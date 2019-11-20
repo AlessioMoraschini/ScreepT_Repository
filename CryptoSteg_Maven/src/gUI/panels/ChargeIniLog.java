@@ -303,7 +303,8 @@ public class ChargeIniLog extends JPanel{
 		}
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_INI);
 		textArea.setLineWrap(true);
-		textArea.setEnabled(false);
+		textArea.setEditable(true);
+		textArea.setEnabled(true);
 		textArea.setSelectedTextColor(Color.LIGHT_GRAY);
 		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
 		textArea.setMargin(new Insets(20, 20, 20, 20));

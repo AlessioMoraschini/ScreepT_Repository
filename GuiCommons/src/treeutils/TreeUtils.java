@@ -1,6 +1,7 @@
 package treeutils;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
@@ -40,6 +41,46 @@ public class TreeUtils {
 		}
 
 		return nodes.isEmpty() ? null : new TreePath(nodes.toArray());
+	}
+	
+	public static void scrollCenteredToCurrentSelection(JTree tree, boolean scrollLeft) {
+
+		TreePath selectionPath = tree.getLeadSelectionPath();
+		
+		if (selectionPath != null) {
+			
+			tree.makeVisible(selectionPath);
+			Rectangle bounds = tree.getPathBounds(selectionPath);
+			if (bounds != null) {
+				
+				int firstVisibleRow = tree.getRowForLocation(0, bounds.y);
+				int currentRow = tree.getLeadSelectionRow(); // This is the new half -> newfirst + half = current
+				int rowHeight = tree.getRowHeight();
+				int nRowsVisible = bounds.height / rowHeight;
+
+				int half = nRowsVisible / 2;
+				int newFirstRow = currentRow - half;
+				
+				// calculate the delta to apply to bounds
+				int deltaRows = newFirstRow - firstVisibleRow;
+
+				bounds.x = (scrollLeft) ? 0 : bounds.x;
+				bounds.y += deltaRows;
+				tree.scrollRectToVisible(bounds);
+			} 
+			
+		}
+	}
+	
+	public static void scrollToTreeCurrentRow(JTree tree, int row) {
+		int nRows = tree.getRowCount();
+		int currentRow = tree.getLeadSelectionRow();
+		
+		if (currentRow + 2 < nRows) {
+			tree.scrollRowToVisible(tree.getLeadSelectionRow() + 2);
+		} else {
+			tree.scrollRowToVisible(tree.getLeadSelectionRow());
+		}
 	}
 	
 	public static TreePath getTreePathFromFile(FileNamed file, int levels) {
@@ -83,7 +124,7 @@ public class TreeUtils {
 			if (tree != null && parent != null) {
 				TreeNode node = (TreeNode) parent.getLastPathComponent();
 				if (node.getChildCount() >= 0) {
-					for (Enumeration e = node.children(); e.hasMoreElements();) {
+					for (Enumeration<?> e = node.children(); e.hasMoreElements();) {
 						TreeNode n = (TreeNode) e.nextElement();
 						TreePath path = parent.pathByAddingChild(n);
 						expandNodeChildren(tree, path);
@@ -223,42 +264,47 @@ public class TreeUtils {
 	 */
 	public static TreePath selectFileInNamedFileTree(File fileToSelect, JTree tree, boolean checkExistance) throws IOException{
 		
-		TreePath nodePath = null;
-		boolean error = fileToSelect == null 
-				|| tree == null 
-				|| tree.getModel() == null 
-				|| tree.getModel().getRoot() == null 
-				|| (checkExistance && !fileToSelect.exists());
-		
-		if(error) {
+		TreePath nodePath;
+		try {
+			nodePath = null;
+			boolean error = fileToSelect == null 
+					|| tree == null 
+					|| tree.getModel() == null 
+					|| tree.getModel().getRoot() == null 
+					|| (checkExistance && !fileToSelect.exists());
+			
+			if(error) {
+				return nodePath;
+			}
+			
+			File root = ((FileNamed)tree.getModel().getRoot()).mFile;
+			if(root != null) {
+				root = root.getAbsoluteFile();
+			}
+			
+			LimitedConcurrentList<File> nodes = new LimitedConcurrentList<File>(Integer.MAX_VALUE);
+			File current = new File(fileToSelect.getCanonicalPath());
+			
+			// find all nodes till root
+			while((current != null && current.exists()) && !current.getName().equals(root.getName())){
+				nodes.add(current);
+				current = current.getParentFile();
+			}
+			nodes.add(new File(root.getCanonicalPath()));
+			// start selection from root node
+			while(nodes.getList().size() > 0){
+				File currentSelection = nodes.getLast();
+				nodePath = tree.getNextMatch(currentSelection.getName(), 0, Bias.Forward);
+				tree.setExpandsSelectedPaths(true);
+				tree.setSelectionPath(nodePath);
+				tree.expandPath(nodePath);
+				nodes.removeLast();
+			}
 			return nodePath;
+		} catch (Exception e) {
+			return tree.getPathForRow(0);
 		}
 		
-		File root = ((FileNamed)tree.getModel().getRoot()).mFile;
-		if(root != null) {
-			root = root.getAbsoluteFile();
-		}
-		
-		LimitedConcurrentList<File> nodes = new LimitedConcurrentList<File>(Integer.MAX_VALUE);
-		File current = new File(fileToSelect.getCanonicalPath());
-		
-		// find all nodes till root
-		while((current != null && current.exists()) && !current.getName().equals(root.getName())){
-			nodes.add(current);
-			current = current.getParentFile();
-		}
-		nodes.add(new File(root.getCanonicalPath()));
-		// start selection from root node
-		while(nodes.getList().size() > 0){
-			File currentSelection = nodes.getLast();
-			nodePath = tree.getNextMatch(currentSelection.getName(), 0, Bias.Forward);
-			tree.setExpandsSelectedPaths(true);
-			tree.setSelectionPath(nodePath);
-			tree.expandPath(nodePath);
-			nodes.removeLast();
-		}
-		
-		return nodePath;
 	}
 
     public static boolean isDescendant(TreePath path1, TreePath path2){

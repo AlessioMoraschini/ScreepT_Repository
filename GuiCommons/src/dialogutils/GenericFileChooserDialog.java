@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.io.File;
 import java.util.Arrays;
 
-import javax.activation.UnsupportedDataTypeException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -44,14 +43,18 @@ public class GenericFileChooserDialog {
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
 		fileChooser.setFileView(fileView);
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
-		File correctFile = null;		
+		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		File selectedFile = fileChooser.getSelectedFile();
+        if (returnVal == JFileChooser.APPROVE_OPTION && selectedFile!=null) {
             
-        	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
-        	if(selectedFile==null||!Arrays.asList(writerNames).contains(givenExtension)) {
+        	boolean jpeg = givenExtension.toLowerCase().contains("jpeg");
+        	boolean jpg = givenExtension.toLowerCase().contains("jpg");
+        	boolean png = givenExtension.toLowerCase().contains("png");
+        	boolean others = Arrays.asList(writerNames).contains(givenExtension);
+        	if(!jpeg && !jpg && !png && !others){
         		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
@@ -65,7 +68,7 @@ public class GenericFileChooserDialog {
 	 * this method select a file from the user (only supported images files),if nothing is selected returns null
 	 * @throws UnsupportedDataTypeException if image type is not supported 
 	 */
-	public File fileImgRead(JPanel parent, String ext) throws UnsupportedDataTypeException {
+	public File fileImgRead(JPanel parent, String ext) throws Exception {
 
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Select input Image File");
@@ -95,7 +98,7 @@ public class GenericFileChooserDialog {
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null || !ext.equalsIgnoreCase(givenExtension)) {
-        		throw new UnsupportedDataTypeException("File extension not supported! Please select a valid file between "+Arrays.toString(writerNames));
+        		throw new Exception("File extension not supported! Please select a valid file between "+Arrays.toString(writerNames));
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
@@ -285,8 +288,6 @@ public class GenericFileChooserDialog {
 		fileChooser.setFileView(fileView);
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
-		//JOptionPane optPane = new JOptionPane();
-		
 		
 		int returnVal = fileChooser.showSaveDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {

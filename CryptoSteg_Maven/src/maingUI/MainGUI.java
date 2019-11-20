@@ -332,7 +332,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 							
 							window.startTitleUpdater();
 							
-							if (GeneralConfig.UPDATES_AUTOCHECK) {
+							if (currentConfiguration.getGenOpt().isAutomaticUpdateOn()) {
 								try {
 									Thread.sleep(GeneralConfig.UPDATES_AUTOCHECK_DELAY);
 								} catch (Exception e) {
@@ -874,7 +874,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
 					panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
-					panelGeneralOptions.setBounds(400, 300, 800, 275);
+					panelGeneralOptions.setMinimumSize(new Dimension(800, 245));
+					GuiUtils.centerComponent(panelGeneralOptions);
 					panelGeneralOptions.setAlwaysOnTop(true);
 					panelGeneralOptions.setVisible(true);
 					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1321,11 +1322,11 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 			// Disable non compatible options
 			mntmhwInfo.setEnabled(false);
 			mntmnetInfo.setEnabled(false);
-			mntmCrypter.setEnabled(false);
+//			mntmCrypter.setEnabled(false);
+//			mntmCrypter.setToolTipText(tooltipMSG);
 			// set tooltip text to menu item
 			mntmhwInfo.setToolTipText(tooltipMSG);
 			mntmnetInfo.setToolTipText(tooltipMSG);
-			mntmCrypter.setToolTipText(tooltipMSG);
 		}
 	}
 	

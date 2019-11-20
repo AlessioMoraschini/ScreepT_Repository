@@ -106,7 +106,7 @@ public class NetInfoFrame extends ParentFrame{
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
-		setMaximumSize(new Dimension(750, 400));
+		setMaximumSize(GuiUtils.getScreenSize());
 		setMinimumSize(new Dimension(750, 400));
 		
 		isActive.set(true);
@@ -157,13 +157,14 @@ public class NetInfoFrame extends ParentFrame{
 		getContentPane().add(lblSelectedNetworkAdapter, "cell 1 1,alignx center");
 		
 		comboAdapters = new JComboBox<NetworkAdapter>();
+		comboAdapters.setMaximumSize(new Dimension(700, 25));
 		comboAdapters.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		if(netUtils!=null) {
 			reloadAdaptersCombo();
 		}else {
 			updateNetDisplayedERROR();
 		}
-		getContentPane().add(comboAdapters, "cell 2 1,growx");
+		getContentPane().add(comboAdapters, "cell 2 1,center growx");
 		
 		ConncetionInfoScrollPanel = new JScrollPane();
 		ConncetionInfoScrollPanel.setBackground(Color.WHITE);

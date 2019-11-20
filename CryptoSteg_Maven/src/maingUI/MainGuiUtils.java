@@ -233,6 +233,8 @@ public class MainGuiUtils {
     	refreshGUIlaf();
     	
     	resetMainAppCursor();
+    	
+    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 	}
 	
 	public void startCrypterPanel(final boolean forceStart) {

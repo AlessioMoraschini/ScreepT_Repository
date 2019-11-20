@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -16,11 +17,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import exception.ProgressBarInterruptedException;
-import resources.GeneralConfig;
-import utils.Various;
+import forks.merged.Various;
 
 /**
- * This is a class that implements a customizable closable progress bar panel, with up to two progressBars.
+ * This is a class that implements a customizable closable (default is not closable, must set closable to true, and then set stopProcess to to true when you want to signal for close)
+ * - notice that others undo actions have to be done manually, this class only manage progress update and signals close action with
+ * an apposite exception class. This is a progress bar panel, with up to two progressBars.
  * Progress Panel can be closable or not (by default is closable), just call method 
  * @author xx
  *
@@ -37,8 +39,9 @@ public class UpdateProgressPanelMin {
     private volatile JProgressBar GeneralBar;
     public AtomicBoolean progBarEnabled = new AtomicBoolean(true);
     
-    public AtomicBoolean closable = new AtomicBoolean();
-    public AtomicBoolean stopProcess = new AtomicBoolean();
+    public AtomicBoolean closable = new AtomicBoolean(false);
+    public AtomicBoolean stopProcess = new AtomicBoolean(false);
+    public AtomicBoolean forceDispose = new AtomicBoolean(false);
     
     private JDialog dialog;
     private JLabel label = new JLabel("  I'm workin' !");
@@ -51,7 +54,7 @@ public class UpdateProgressPanelMin {
     // ####################### START CONSTRUCTORS - USE THE ONE WITH TWO PARAMS #################### //
     
     public UpdateProgressPanelMin() {
-		
+    	
     	initGraphics(1);
     	
     	initSpecBar();
@@ -117,7 +120,7 @@ public class UpdateProgressPanelMin {
 
         GeneralBar.setStringPainted(true);
         
-        dialog.getContentPane().add(GeneralBar, gbc_genb);
+        dialog.add(GeneralBar, gbc_genb);
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
@@ -131,14 +134,14 @@ public class UpdateProgressPanelMin {
 
 		pb.setStringPainted(true);
        
-        dialog.getContentPane().add(pb, gbc_pb);
+        dialog.add(pb, gbc_pb);
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
 		
 	}
 	
-	private synchronized void initGraphics(int nYrows) {
+	private void initGraphics(int nYrows) {
 		
 		try {
 			// set preferred style from current configuration
@@ -160,7 +163,7 @@ public class UpdateProgressPanelMin {
 		dialog.setMinimumSize(new Dimension(PanelWidth, PanelHeight));
         dialog.setBounds(new Rectangle(LeftStart, TopStart, PanelWidth, PanelHeight));
         dialog.setTitle("Processing");
-        dialog.getContentPane().setLayout(gridBagLayout);
+        dialog.setLayout(gridBagLayout);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setAlwaysOnTop(true);
         
@@ -169,8 +172,10 @@ public class UpdateProgressPanelMin {
         gbc_label.insets = new Insets(0, 0, 5, 0);
         gbc_label.gridx = 1;
         gbc_label.gridy = 0;
-        dialog.getContentPane().add(label, gbc_label);
-        label.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(16));
+        label = new JLabel("  I'm workin' !");
+        label.setFont(new Font("Segoe UI Semibold", Font.BOLD, 15));
+        label.setOpaque(false);
+        dialog.add(label, gbc_label);
        
         gbc_pb = new GridBagConstraints();
         gbc_pb.insets = new Insets(0, 0, 5, 5);
@@ -193,17 +198,21 @@ public class UpdateProgressPanelMin {
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 	        @Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-	        	if(closable.get()) {
-	        		stopProcess.set(true);
-        			int choice = JOptionPane.showConfirmDialog(null, "Stop process?", "Stop process?", JOptionPane.QUESTION_MESSAGE);
-        			if (choice == JOptionPane.YES_OPTION) {
-        				stopProcess.set(true);
-        			} else {
-        				stopProcess.set(false);
-        			}
-	        	}else {
-	        		stopProcess.set(false);
-	        	}
+	        	
+	        	new Thread(new Runnable() {
+					public void run() {
+						int choice = JOptionPane.showConfirmDialog(dialog, "Stop process?", "Stop process?", JOptionPane.YES_NO_OPTION);
+						if (choice == JOptionPane.YES_OPTION) {
+							stopProcess.set(true);
+						} else {
+							stopProcess.set(false);
+						}
+						
+						if (forceDispose.get()) {
+							dialog.dispose();
+						}
+					}
+				}).start();
 	        }
         });
 	}
@@ -217,7 +226,7 @@ public class UpdateProgressPanelMin {
 
     protected void doneCheck(JProgressBar bar) {
         if (bar.getValue()>=100) {
-            dialog.dispose();
+            forceClose();
         }
     }
     
@@ -245,6 +254,7 @@ public class UpdateProgressPanelMin {
     }        
     
     public void update(String label, int perc) {
+    	
     	if (getPb() != null) {
 			this.getPb().setValue(perc);
 		}
@@ -254,8 +264,13 @@ public class UpdateProgressPanelMin {
 		}
     }
     
-    public void forceClose() {
-    	stopProcess.set(true);
+    public void forceClose(){
+    	forceDispose.set(true);
+    	if(getGeneralBar() != null) {
+    		update(100, "Completed! Closing progress bar monitor...", true);
+    	} else {
+    		update(100, "Completed! Closing progress bar monitor...", false);
+    	}
     	dialog.dispose();
     }
 

@@ -2,10 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Parent_Project</groupId>
   <artifactId>Parent_Project</artifactId>
+  <!-- Version is Defined in this file as custom property -->
   <version>${parent.build.version.scrypt}</version>
   <packaging>pom</packaging>
   
-   <!-- MODULES BUILD -->
+  <!-- MODULES BUILD -->
   <modules>
   	<module>../GenCommons</module>
   	<module>../GeneralResources</module>
@@ -25,21 +26,29 @@
   
   <properties>
   
+  	<!-- Builds are coded into pom.xml of "ScrYpT_Launcher" and "CryptoSteg_Maven" projects, this build is designed to the compile entire application.
+		 Launch this with wanted configurations to customize the build process(see after in this file). Launch normally with "clean install -X -U"	   -->
+  
   	<!-- ######################  GENERAL BUILD OPTIONS  ##################### -->
   	
 	  	<!-- Main application version used everyWhere -->
-	  	<parent.build.version.scrypt>0.9.1</parent.build.version.scrypt>
+	  	<parent.build.version.scrypt>0.9.4</parent.build.version.scrypt>
 	  	
 	  	<!-- Change this to false if you wanna export  -->
 	  	<export.launcher.jarmode>true</export.launcher.jarmode>
+	  	
+	  	
 	  	
   	<!-- ##################### UPDATES FOLDER PACKAGING #################### -->
   	
 	  	<export.updates.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LAST_UPDATES_DATA\updates</export.updates.folder>
 	  	<export.updates.root>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LAST_UPDATES_DATA</export.updates.root>
 	  	<export.updates.skip>false</export.updates.skip>
+	  	<export.updates.regenjars.skip>false</export.updates.regenjars.skip>
   	
-  	<!-- ##########################  FATJAR EXPORT ######################## -->
+  	
+  	
+  	<!-- ##########################  FATJAR EXPORT - USE THIS  ######################## -->
   	
   		<!-- Set skip to true to avoid export of this jar and resources -->
 	  	<export.fatjar.skip>false</export.fatjar.skip>
@@ -47,25 +56,24 @@
 	  	<export.fatjar.root.skip>false</export.fatjar.root.skip>
 		
 	  	<export.directory.fatjar.main>
-	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
+	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
 			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}_Fatjar\Application
 		</export.directory.fatjar.main>
 	  	<export.directory.fatjar.resources>
 	  		${export.directory.fatjar.main}\Resources_Scrypt
 		</export.directory.fatjar.resources>
-	  	<export.directory.fatjar.libs>
-	  		${export.directory.fatjar.resources}\lib
-		</export.directory.fatjar.libs>
   	
   	
-  	<!-- ############################ MULTIJAR EXPORT ############################### -->
+  	
+  	
+  	<!-- ############################ MULTIJAR EXPORT - NOT UPDATED! ############################### -->
   	
   		<!-- Set skip to true to avoid export of this jar and resources -->
 	  	<export.multijar.skip>true</export.multijar.skip>
 	  	<export.multijar.launcher.skip>true</export.multijar.launcher.skip>
 	  	
 	  	<export.directory.multijar.main>
-	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING BUT NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
+	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
 			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}\Application
 		</export.directory.multijar.main>
 		<export.directory.multijar.resources>

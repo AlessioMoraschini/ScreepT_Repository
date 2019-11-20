@@ -29,7 +29,6 @@ import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
-import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
 import om.TextEditorOption;
 import resources.GeneralConfig;
@@ -519,17 +518,19 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		comboClipboards.setModel( model );
 		
 		if(selected == null || !selected.exists()) {
-			if (new File(options.lastFileOpenedClipboard).exists()) {
+			if (new File(GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + File.separator + options.lastFileOpenedClipboard).exists()) {
 				comboClipboards.setSelectedItem(options.lastFileOpenedClipboard);
 			}else {
 				try {
 					comboClipboards.setSelectedItem(0);
+					options.lastFileOpenedClipboard = comboClipboards.getItemAt(0);
 				} catch (Exception e) {
 					logger.error("Exception reloading clipboard element: "+selected, e);
 				}
 			}
 		}else {
 			comboClipboards.setSelectedItem(selected.getName());
+			options.lastFileOpenedClipboard = selected.getName();
 		}
 		
 		((JLabel)comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);

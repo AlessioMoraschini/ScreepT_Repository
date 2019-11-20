@@ -3,7 +3,6 @@ package tabbededitor;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -12,7 +11,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -242,14 +243,13 @@ public class CustomTabbedEditor {
 				boolean fileAlreadyPresent = checkFilePresence(fileToLoad) >= 0;
 				if (fileToLoad == null || !fileToLoad.exists() || fileAlreadyPresent) {
 					alreadyLoading = false;
-					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 
 				// ELSE ADD NEW TAB AND LOAD FILE TEXT INTO
 				} else {
 
 					// add new tab with selected file
 					try {
-						addTab(fileToLoad, false);
+						addTab(fileToLoad);
 						currentConfiguration.getTextEditorOpt().addFileToLimitedList(fileToLoad, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 						logger.debug(fileToLoad.getAbsolutePath()+" -> Loaded!");
 					} catch (Throwable e1) {
@@ -271,10 +271,10 @@ public class CustomTabbedEditor {
 					currentConfiguration.getFileOpt().setLastSrcFolderPath(fileToLoad.getParentFile().getAbsolutePath());
 
 					alreadyLoading = false;
-					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					logger.debug("TextEditor.loadFile() completed - Exiting");
 				}
 				
+				loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 			}
 		});
 	}
@@ -356,7 +356,7 @@ public class CustomTabbedEditor {
 	}
 	
 	
-	public void addTab(File file, boolean first) {
+	public void addTab(File file) {
 		try {
 			isAddingTab = true;
 			
@@ -474,11 +474,11 @@ public class CustomTabbedEditor {
 					reference.setSelectionEnd(end);
 				} catch (Exception e) {
 					logger.warn("Error trying to resume caret position and selection range", e);
+				} finally {
+					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 				}
 			}
 		});
-		
-		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 	}
 	
 	public void removeAllTabs(final boolean askIfUnsaved) {
@@ -533,41 +533,49 @@ public class CustomTabbedEditor {
 					mainTabList.setSelectedIndex(index - 1);
 					updateSavedLabelNTab(index - 1);
 				}
-//				tabRefreshAfterUpdate();
 
 			} else if (index == 0 && mainTabList.getTabCount() > 1) {
 				
-				loadedList.getList().remove(0);
+				if (!loadedList.getList().isEmpty()) {
+					loadedList.getList().remove(0);
+				}
 				mainTabList.remove(0);
-				mainTabList.setSelectedComponent(loadedList.getList().get(0).currentScrollPane);
-//				tabRefreshAfterUpdate();
 
 			} else if (index == 0) {
 				try {
-					addTab(null, true);
-					firstToRemove = true;
+					
+					// IF LAST DO NOT REMOVE: EMPTY FIRST REFERENCES
+					if (!loadedList.getList().isEmpty()) {
+						TabTextEditorObj currentTab = loadedList.getList().get(0);
+						currentTab.resetData();
+						
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								updateSavedLabelNTab(0);
+							}
+						});
+					}
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				isRemovingTab = false;
 			}
 			isRemovingTab = false;
 		}else {
 			askedRemoveResponse = false;
 		}
-		
+
 		// GO TO LAST IN HISTORY WHEN CLOSING
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try{
-					if(firstToRemove) {
-						removeTab(0);
-					}
-					
 					loadedTabObj.textArea.requestFocus();
 				
 					Component previousComp = navigationHistory.getLast().getScrollPane();
-					mainTabList.setSelectedComponent(previousComp);
+					List<Component> comps = Arrays.asList(mainTabList.getComponents());
+					if(comps.contains(previousComp)) {
+						mainTabList.setSelectedComponent(previousComp);
+					}
 				}catch(Exception e) {
 					logger.warn("Error trying to select last element in history!", e);
 				}
@@ -714,17 +722,26 @@ public class CustomTabbedEditor {
 	}
 	
 	public void tabRefreshAfterUpdate() {
-		tabJustSwitched = true;
-		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
-		if (!isAddingTab && !isRemovingTab) {
-			backupCurrentBeforeSwitch();
+		try {
+			tabJustSwitched = true;
+			loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+			if (!isAddingTab && !isRemovingTab) {
+				backupCurrentBeforeSwitch();
+			}
+			try {
+				loadedTabObj = loadedList.getList().get(mainTabList.getSelectedIndex());
+			} catch (Exception e) {
+				logger.error("Cannot update current lloadedTabObj", e);
+			}
+			updateSavedLabelNTab(null);
+			tabJustSwitched = false;
+			loadedTabObj.textArea.requestFocus();
+			tabEditorManager.doAfterTabRefresh();
+		} catch(Exception e){
+			logger.error("An error occurred while refreshing current tab", e);
+		} finally {
+			loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 		}
-		loadedTabObj = loadedList.getList().get(mainTabList.getSelectedIndex());
-		updateSavedLabelNTab(null);
-		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
-		tabJustSwitched = false;
-		loadedTabObj.textArea.requestFocus();
-		tabEditorManager.doAfterTabRefresh();
 		
 	}
 	

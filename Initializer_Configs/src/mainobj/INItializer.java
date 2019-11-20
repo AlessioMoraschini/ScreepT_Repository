@@ -258,8 +258,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			genOpt.setGeneralVolume(GenericOption.DEFAULT_VOLUME);
 		}
 		
+		genOpt.setAutomaticUpdateOn(getBooleanFromString(iniReadFile.get(GEN_OPT, "automaticUpdateOn"), GenericOption.DEF_automaticUpdateOn));
 		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
-		
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
 	
 	}
@@ -305,7 +305,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
 		textEditorOpt.setLastEscapeLanguage(lastEscapeLanguage);
-		textEditorOpt.setLastFileOpenedClipboard(getSafeStringConf(TEXT_EDITOR_OPT, "lastFileOpenedClipboard", TextEditorOption.DEF_lastFileOpenedClipboard));
+		textEditorOpt.setLastFileOpenedClipboard(getSafeFileConf(
+				TEXT_EDITOR_OPT, "lastFileOpenedClipboard", TextEditorOption.DEF_lastFileOpenedClipboard).getName());
 		textEditorOpt.setClipboardSyncStyle(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "clipboardSyncStyle")));
 		
 		// CONVERTED/PARSED TYPES
@@ -489,6 +490,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(GEN_OPT, "lastPanelOpened", genOpt.getLastPanelOpened().getName());
 		iniFile.put(GEN_OPT, "txtEditorFileMonitorActive", genOpt.isTxtEditorFileMonitorActive());
 		iniFile.put(GEN_OPT, "exceptionAdvicesEnabled", genOpt.isExceptionAdvicesEnabled());
+		iniFile.put(GEN_OPT, "automaticUpdateOn", genOpt.isAutomaticUpdateOn());
 	}
 	
 	public void writeImgConverterOptions() {
@@ -577,6 +579,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
 			   .append("\nTxt Editor: Listen for changes in current file -> ").append(genOpt.isTxtEditorFileMonitorActive())
 			   .append("\nTxt Editor: Listen for uncatched exceptions and show them -> ").append(genOpt.isExceptionAdvicesEnabled())
+			   .append("\nTxt Editor: Automatic check for updates at start -> ").append(genOpt.isAutomaticUpdateOn())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION

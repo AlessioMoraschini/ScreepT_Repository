@@ -6,8 +6,10 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.CharSet;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -28,7 +30,7 @@ import media.Sounds;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
-import utils.UpdatesManager;
+import updater.UpdatesManager;
 import variousutils.HandleString;
 
 public class MainGuiGeneralAppStarter {
@@ -69,7 +71,6 @@ public class MainGuiGeneralAppStarter {
 		fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
 		
 		try {
-
 			try {
 				// Load Internal configurations
 				GeneralConfig.initLazyGeneralConfig();
@@ -160,6 +161,7 @@ public class MainGuiGeneralAppStarter {
 
 				currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 				currentConfiguration.readConfigIniFile();
+				System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
 				
 			} catch (IOException e) {
 				logger.error("Exception happened during loading of file [ "+ GeneralConfig.RESOURCES_DIR  + "CONFIG.ini]!", e);

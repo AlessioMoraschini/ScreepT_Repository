@@ -1,5 +1,6 @@
 package mainobj;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -123,6 +124,13 @@ public abstract class INItializerParent implements INItializerInterface{
 	public String getSafeStringConf(String section, String variable, String defIfBlank) {
 		String result = iniReadFile.get(section, variable);
 		result = (result == null || "".equals(result))? defIfBlank : result;
+		
+		return result;
+	}
+
+	public File getSafeFileConf(String section, String variable, String defPathIfBlank) {
+		File result = new File(getSafeStringConf(section, variable, defPathIfBlank));
+		result = (result == null || !result.exists() || !result.isFile()) ? new File(defPathIfBlank) : result;
 		
 		return result;
 	}

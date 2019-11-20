@@ -64,7 +64,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTabbedPane;
 import javax.swing.JComboBox;
-import javax.activation.UnsupportedDataTypeException;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -614,7 +613,7 @@ public class CrypterPanel extends JPanel {
 						useAsKeyImage(dispoImgFile);
 						loadInfo(dispoImgFile);
 					}
-				} catch (UnsupportedDataTypeException e1) {
+				} catch (Exception e1) {
 					showMessageImageNotSupported();
 				}
 			}

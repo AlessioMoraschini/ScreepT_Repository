@@ -1,4 +1,4 @@
-package utils;
+package forks.merged;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
@@ -19,8 +18,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FileUtils;
 
-import resources.GeneralConfig;
-import testUtils.TestUtils;
+import static java.lang.System.out;
 
 public class Various {
 	
@@ -188,7 +186,7 @@ public class Various {
 	public static boolean deleteDirContentInclRoot(File folder) {
 		boolean deleted = true;
 		long startTime = System.currentTimeMillis();
-		TestUtils.printl("deleteDirContentInclRoot -> Start...");
+		out.println("deleteDirContentInclRoot -> Start...");
 		
 		File[] files = folder.listFiles();
 	    if(files!=null) { //some JVMs return null for empty dirs
@@ -209,7 +207,7 @@ public class Various {
 	        folder.delete();
 	    }
 
-	    TestUtils.printl("deleteDirContentInclRoot -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+	    out.println("deleteDirContentInclRoot -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	    return deleted;	
 	}
 	
@@ -223,7 +221,7 @@ public class Various {
 	public static boolean deleteDirContentRecursive(File folder) {
 		boolean deleted = true;
 		long startTime = System.currentTimeMillis();
-		TestUtils.printl("deleteDirContentRecursive -> Start...");
+		out.println("deleteDirContentRecursive -> Start...");
 		
 		File[] files = folder.listFiles();
 	    if(files!=null) { //some JVMs return null for empty dirs
@@ -242,7 +240,7 @@ public class Various {
 	        }
 	    }
 
-	    TestUtils.printl("deleteDirContentRecursive -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+	    out.println("deleteDirContentRecursive -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	    return deleted;	
 	}
 	
@@ -258,20 +256,20 @@ public class Various {
 	public static void copyDirectoryContents(File source, File destination) throws IOException{
 
 		long startTime = System.currentTimeMillis();
-		TestUtils.printl("copyDirectoryContents -> Start...");
+		out.println("copyDirectoryContents -> Start...");
 
 		if(source.isDirectory()) {
 			for (File curr : source.listFiles()) {
-				TestUtils.printl("Copying "+curr+" \n  => into "+destination);
+				out.println("Copying "+curr+" \n  => into "+destination);
 				try {
 					FileUtils.copyToDirectory(curr, destination);
 				} catch (Exception e) {
-					TestUtils.printl(e.getClass() + Arrays.deepToString(e.getStackTrace()));
+					out.println(e.getClass() + Arrays.deepToString(e.getStackTrace()));
 				}
 			}
 		}
 
-		TestUtils.printl("copyDirectoryContents -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+		out.println("copyDirectoryContents -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	}
 	
 	/**JFRAME - only directories src
@@ -283,7 +281,7 @@ public class Various {
 		fileChooser.setDialogTitle(title);
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(initialDir);		
-		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		fileChooser.setPreferredSize(new Dimension(800, 450));
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
@@ -298,4 +296,53 @@ public class Various {
 		}
 		return correctFile;
 	}
+	
+	// PRINT UTILS METHODS
+		/**
+		 * Retrieve a String separator n-times charachter
+		 */
+		public static String getSeparator(String character, int n){
+			int curr = 0;
+			String output = "\n  ";
+			while (curr < n) {
+				output = output.concat(String.valueOf(character));
+				curr++;
+			}
+			
+			return output;
+		}
+		
+		/**
+		 * Create a string of n spaces
+		 * @param n
+		 */
+		public static String getNspacesString(int n) {
+			String result = "";
+			for(int i = 0; i<n; i++) {
+				result = result.concat(" ");
+			}
+			
+			return result;
+		}
+		
+		/**
+		 * Retrieve a header String specifying charachter separator (may be null), header width in charachters, and title
+		 */
+		public static String getHeaderString(String character, int n, String title){
+			String result = "";
+			
+			int newN = (n >= title.length()+4)? n : title.length()+4;
+			newN = newN*character.length();
+			String leftSpaces = getNspacesString((newN - title.length() -2)/2);
+			boolean hasToPad = (leftSpaces.length()*2 + 2 + title.length()) < newN;
+			String rightPadding = (hasToPad)? " " : "";
+			String rightSpaces = leftSpaces + rightPadding;
+			
+			result += getSeparator(character, newN);
+			result += "\n  " + character + leftSpaces + title + rightSpaces + character ;
+			result += getSeparator(character, newN);
+			result += "\n";
+			
+			return result;
+		}
 }

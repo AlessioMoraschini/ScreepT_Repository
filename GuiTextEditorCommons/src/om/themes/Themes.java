@@ -77,5 +77,18 @@ public enum Themes {DARK(GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml", "dark
 		return allThemes;
 	}
 	
+	public static ThemesWrapper getThemesWrapperFromName(String themeName, Vector<ThemesWrapper> wrappers) {
+		for(ThemesWrapper wrapper : wrappers) {
+			if(wrapper.name.equals(themeName) || wrapper.name.contains(themeName) || themeName.contains(wrapper.name)) {
+				return wrapper;
+			}
+		}
+		
+		if (wrappers != null && wrappers.size() > 0) {
+			return wrappers.get(0);
+		} else {
+			return new ThemesWrapper(DARK.defaultPath);
+		}
+	}
 
 }

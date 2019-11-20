@@ -75,6 +75,7 @@ import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
+import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -285,7 +286,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboFileFormat.setCursor(GuiUtils.CURSOR_HAND);
 		comboFileFormat.setBackground(new Color(100, 149, 237));
 		comboFileFormat.setModel(new DefaultComboBoxModel<SupportedFileTextEditor>(SupportedFileTextEditor.values()));
-		add(comboFileFormat, "cell 4 1 3 1,growx");
+		add(comboFileFormat, "cell 4 1 3 1,growx,aligny center");
 		
 		btnNewTab = new JButton("");
 		btnNewTab.setToolTipText(TextEditorTooltips.tooltipNewEmptyTab);
@@ -447,9 +448,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		themeList = initComboStyleScheme();
 		comboStylesScheme.setToolTipText(TextEditorTooltips.tooltipComboStyleScheme);
 		comboStylesScheme.setCursor(GuiUtils.CURSOR_HAND);
-		comboStylesScheme.setSelectedIndex(0);
 		comboStylesScheme.setBackground(new Color(100, 149, 237));
-		add(comboStylesScheme, "cell 9 1 3 1,growx");
+		add(comboStylesScheme, "cell 9 1 3 1,growx,aligny center");
 
 		btnRemoveSpaces = new JButton("");
 		btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
@@ -1868,7 +1868,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				parent.getCurrentTabEditor().addTab(null, false);
+				parent.getCurrentTabEditor().addTab(null);
 			}
 		});
 	}
@@ -1904,6 +1904,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					+"... custom folder with errors was: " + GeneralConfig.THEMES_FOLDER_CUSTOM);
 		}
 		comboStylesScheme.setModel(new DefaultComboBoxModel<ThemesWrapper>(wrappers));
+		
+		comboStylesScheme.setSelectedItem(Themes.getThemesWrapperFromName(currentConfiguration.getTextEditorOpt().selectedTheme, wrappers));
+		comboStylesScheme.revalidate();
+		comboStylesScheme.repaint();
 		
 		return wrappers;
 	}

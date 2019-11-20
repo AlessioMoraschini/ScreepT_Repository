@@ -1,4 +1,4 @@
-package utils;
+package updater;
 
 import java.awt.Dimension;
 import java.io.BufferedInputStream;
@@ -11,6 +11,10 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,11 +23,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import exception.ProgressBarInterruptedException;
-import gui.UpdateProgressPanelMin;
-import testUtils.TestUtils;
+import javax.xml.bind.DatatypeConverter;
 
-import static java.lang.System.*;
+import exception.ProgressBarInterruptedException;
+import forks.merged.Various;
+import gui.UpdateProgressPanelMin;
+
+import static java.lang.System.out;
 
 public class DownloadUtils {
 	
@@ -43,7 +49,7 @@ public class DownloadUtils {
 	        conn.getInputStream();
 	        out.println("=> retrieving file size");
 	        int size = conn.getContentLength();
-	        out.println("=> Found size: " + size);
+	        out.println("=> Found size: " + Various.coolFileSize((long)size));
 	        return size;
 	    } catch (IOException e) {
 	    	out.println("An error occurred: " + Arrays.deepToString(e.getStackTrace()));
@@ -82,9 +88,10 @@ public class DownloadUtils {
 			    fileOutputStream.write(dataBuffer, 0, bytesRead);
 			    int percDownloaded = getPerc(1024*cycles, fileSize);
 			    percDownloaded = (percDownloaded>99) ? 99 : percDownloaded;
-			    if (progressUpdater != null && !silent) {
-					progressUpdater.getDialog().setVisible(true);
-				}
+//			    if (progressUpdater != null && !silent) {
+//					progressUpdater.getDialog().setVisible(true);
+//				}
+			    ifStoppedByUserThrowException(progressUpdater);
 				updateProgress("Downloading " + new File(url.getFile()).getName() + " ("+percDownloaded+"%)...", percDownloaded, progressUpdater, false);
 			    cycles ++;
 			}
@@ -93,9 +100,6 @@ public class DownloadUtils {
 				in.close();
 				fileOutputStream.close();
 				updateProgress("Download Completed!", 100, progressUpdater, false);
-				if (progressUpdater != null) {
-					progressUpdater.forceClose();
-				}
 				out.println("Streams closed!");
 			} catch (IOException e) {
 				out.println("An error occurred while closing streams after download" + Arrays.deepToString(e.getStackTrace()));
@@ -156,7 +160,7 @@ public class DownloadUtils {
 		UpdateProgressPanelMin progressUpdater = new UpdateProgressPanelMin(true);
 		
 		long startTime = System.currentTimeMillis();
-		TestUtils.printl("FileStuff.unzipFile() -> Starting unzip:"
+		out.println("FileStuff.unzipFile() -> Starting unzip:"
 				+ "\n source: " + sourcePath
 				+ "\n destPath: " + destFolderPath
 				+ "\n overwrite: " + ovewrwrite);
@@ -219,6 +223,8 @@ public class DownloadUtils {
 			    while ((len = zis.read(buffer)) > 0) {
 			    	int percDownloaded = getPerc(1024*cycles, zipEntry.getSize());
 			    	percDownloaded = (percDownloaded>99) ? 99 : percDownloaded;
+			    	
+			    	ifStoppedByUserThrowException(progressUpdater);
 			    	updateProgress(zipEntry.getName(), percDownloaded, progressUpdater, false);
 			    	
 			    	// For each byte of current zipped file in archive
@@ -242,15 +248,15 @@ public class DownloadUtils {
 			zis.closeEntry();
 			zis.close();
 			
-			TestUtils.printl("FileStuff.unzipFile() -> COMPLETED!"
+			out.println("FileStuff.unzipFile() -> COMPLETED!"
 					+ "\n source: " + sourcePath
 					+ "\n unzipped File: " + out
 					+ "\n overwrite: " + ovewrwrite);
 			
-			TestUtils.printl("unzip file: elapsed" + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+			out.println("unzip file: elapsed" + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		} catch (Exception e) {
 			
-			TestUtils.printl(Arrays.deepToString(e.getStackTrace()));
+			out.println(Arrays.deepToString(e.getStackTrace()));
 		} finally {
 			if (progressUpdater != null) {
 				progressUpdater.update("Completed", 100);
@@ -277,7 +283,7 @@ public class DownloadUtils {
 	public static File zipFile(String sourcePath, String destFolderPath, boolean ovewrwrite, UpdateProgressPanelMin progressUpdater) throws Exception {
 		
 		long startTime = System.currentTimeMillis();
-		TestUtils.printl("FileStuff.zipFile() -> Starting zip:"
+		out.println("FileStuff.zipFile() -> Starting zip:"
 				+ "\n source: " + sourcePath
 				+ "\n destPath: " + destFolderPath
 				+ "\n overwrite: " + ovewrwrite);
@@ -320,12 +326,12 @@ public class DownloadUtils {
 		fis.close();
 		fos.close();
 		
-		TestUtils.printl("FileStuff.zipFile() -> COMPLETED!"
+		System.out.println("FileStuff.zipFile() -> COMPLETED!"
 				+ "\n source: " + sourcePath
 				+ "\n zipped File: " + out
 				+ "\n overwrite: " + ovewrwrite);
 		
-		TestUtils.printl("zipFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+		System.out.println("zipFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		
 		return out;
 	}
@@ -336,6 +342,31 @@ public class DownloadUtils {
 		} catch (IOException e) {
 			return false;
 		}
+	}
+	
+	// HASHING //
+	public static String getFileHashMd5(String filename) throws IOException, NoSuchAlgorithmException {
+		
+		if(filename == null) return "";
+	         
+	    MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+	    messageDigest.update(Files.readAllBytes(Paths.get(filename)));
+	    byte[] digest = messageDigest.digest();
+	    
+	    return DatatypeConverter.printHexBinary(digest).toUpperCase();
+	}
+
+	// HASHING //
+	public static boolean checkFileHashMd5(String filename, String checksum) throws NoSuchAlgorithmException, IOException {
+		
+		if(filename == null || checksum == null) return false;
+		
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+		messageDigest.update(Files.readAllBytes(Paths.get(filename)));
+		byte[] digest = messageDigest.digest();
+		String myChecksum = DatatypeConverter.printHexBinary(digest).toUpperCase();
+		
+		return myChecksum.equals(checksum);
 	}
 	
 	public static String keepOnlyDotsAndDigits(String source) {
@@ -395,7 +426,7 @@ public class DownloadUtils {
 			lessThanMax = compareVersions(noLettersDotsOnly, max) < 0;
 			moreThanMin = compareVersions(noLettersDotsOnly, min) >= 0;
 		} catch (IllegalArgumentException e) {
-			TestUtils.printl("Error comparing version: illegal format of ["+version+"]" + Arrays.deepToString(e.getStackTrace()));
+			out.println("Error comparing version: illegal format of ["+version+"]" + Arrays.deepToString(e.getStackTrace()));
 			return false;
 		}
 		
@@ -412,7 +443,7 @@ public class DownloadUtils {
 		try {
 			newAvailable = compareVersions(noLettersDotsOnlyCurr, noLettersDotsOnlyNew) < 0;
 		} catch (IllegalArgumentException e) {
-			TestUtils.printl("Error comparing version: illegal format of A["+noLettersDotsOnlyCurr+"]" 
+			out.println("Error comparing version: illegal format of A["+noLettersDotsOnlyCurr+"]" 
 					+ " or B["+noLettersDotsOnlyNew+"]" + Arrays.deepToString(e.getStackTrace()));
 			return false;
 		}
@@ -425,13 +456,19 @@ public class DownloadUtils {
 		return (int)perc;
 	}
 	
-	public static void updateProgress(String text, int progress, UpdateProgressPanelMin progressUpdater, boolean useGeneralBar) {
+	public static void updateProgress(String text, int progress, UpdateProgressPanelMin progressUpdater, boolean useGeneralBar) throws ProgressBarInterruptedException {
 		if(progressUpdater != null) {
 			if(progressUpdater.secondBarEnabled) {
 				progressUpdater.update(progress, text, useGeneralBar);
 			}else {
 				progressUpdater.update(text, progress);
 			}
+		}
+	}
+	
+	public static void ifStoppedByUserThrowException(UpdateProgressPanelMin progressMonitor) throws ProgressBarInterruptedException {
+		if(progressMonitor != null && progressMonitor.closable.get() && progressMonitor.stopProcess.get()) {
+			progressMonitor.forceCloseNExceptionSignal();
 		}
 	}
 

@@ -1,6 +1,6 @@
 package exception;
 
-public class ProgressBarInterruptedException extends RuntimeException{
+public class ProgressBarInterruptedException extends Exception{
 	private static final long serialVersionUID = -6742493294534645837L;
 
 	public ProgressBarInterruptedException(String msg){

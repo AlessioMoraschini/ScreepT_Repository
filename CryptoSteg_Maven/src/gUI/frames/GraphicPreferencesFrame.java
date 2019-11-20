@@ -99,7 +99,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	// GUI elements
 	private JPanel mainPanel;
 	private JScrollPane mainPanelContainer;
-	private final JFrame thisFrame = this;
+	private final JFrame thisFrame;
 	
 	private JSlider sliderMenuSize;
 	private JSlider sliderLogSize;
@@ -150,6 +150,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	public GraphicPreferencesFrame(INItializer currentConf) {
 		
 		isActive.set(true);
+		
+		thisFrame = this;
 		
 		currentEditor = MainGUI.initTxtWriter;
 		
@@ -471,10 +473,17 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			MainGUI.initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
 		}
 		
-//		if (TextEditor.loadedTabObj != null) {
-//			TextEditor.loadedTabObj.textArea.setFont(initialTxtEditorFont);
-//			RsyntaxUtils.setFont(TextEditor.loadedTabObj.textArea, initialTxtEditorFont);
-//		}
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+				}
+				thisFrame.toFront();
+				thisFrame.requestFocus();
+			}
+		});
 	}
 
 	private void addHandlers() {

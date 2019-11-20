@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
@@ -66,12 +67,8 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	
 	// constructor
 	public TreeFileMouseListenerTxtEditor(JTree tree, TextEditor textEdit){
-		super(tree);
+//		super(tree);
 		this.tree = tree;
-		this.tree.setComponentPopupMenu(getPopUpMenu());
-		this.tree.addMouseListener(getMouseListener());
-		this.tree.addMouseListener(getDoubleCLickListener());
-		this.tree.addMouseMotionListener(TreeUtils.getHoverOnNodesListener());
 		textEditor = textEdit;
 		currentTabEditor = textEditor.getCurrentTabEditor();
 		dialogHelper = new JOptionHelper(textEditor);
@@ -82,6 +79,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 	        @Override
 	        public void mousePressed(MouseEvent arg0) {
+	        	
 	        	selectedRow = tree.getRowForLocation(arg0.getX(), arg0.getY());
 	        	// Right click
 	            if(true){ 
@@ -89,8 +87,10 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	            	updateEnabledOrDisabled();
 	            	
 	                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
+	                TreePath[] pathsSelection = tree.getSelectionPaths();
+	                updateSelectedNodes(pathsSelection);
 	                if(pathForLocation != null){
-	                	tree.setSelectionPath(pathForLocation);
+	                	tree.setSelectionPaths(pathsSelection);
 	                    selectedNode = (FileNamed) pathForLocation.getLastPathComponent();
 	                } else{
 	                    selectedNode = null;
@@ -101,7 +101,12 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    };
 	}
 	
-	private MouseAdapter getDoubleCLickListener() {
+	@Override
+	public Vector<FileNamed> updateSelectedNodes(TreePath[] selectionPaths) {
+		return super.updateSelectedNodes(selectionPaths);
+	}
+	
+	public  MouseAdapter getDoubleCLickListener() {
 		return new MouseAdapter() {
 		    public void mousePressed(MouseEvent e) {
 		        int selRow = tree.getRowForLocation(e.getX(), e.getY());

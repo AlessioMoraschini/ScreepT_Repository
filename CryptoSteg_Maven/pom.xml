@@ -78,9 +78,9 @@
 	    <version>2.4.1</version>
 	    <executions>
 
-            <!-- FATJAR -->
+            <!-- (1) FATJAR BUILD AND EXPORT -->
 	        <execution>
-	            <id>make-assembly</id>
+	            <id>make-assembly - main fatjar folder</id>
 	            <phase>package</phase>
 	            <goals>
 	                <goal>single</goal>
@@ -103,20 +103,48 @@
 	                    <descriptorRef>jar-with-dependencies</descriptorRef>
 	                </descriptorRefs>
 	                <appendAssemblyId>false</appendAssemblyId>
-	                
+	                <exclude>/**/*humbs.db</exclude>
+	            </configuration>
+	        </execution>
+            
+            <!-- (2) UPDATES FOLDER JAR: BUILD AND EXPORT -->
+	        <execution>
+	            <id>make-assembly - UPDATES folder</id>
+	            <phase>package</phase>
+	            <goals>
+	                <goal>single</goal>
+	            </goals>
+	            <configuration>
+	            	<skipAssembly>${export.updates.regenjars.skip}</skipAssembly>
+	            	<overwrite>true</overwrite>
+	                <outputDirectory>
+	                       <!-- ${project.build.directory}/CENTRALIZED -->
+	                       ${export.updates.folder}
+                   	</outputDirectory>
+                	<archive>
+		                <manifest>
+		                    <mainClass>
+		                        maingUI.MainGuiGeneralAppStarter
+		                    </mainClass>
+		                </manifest>
+	                </archive>
+	                <descriptorRefs>
+	                    <descriptorRef>jar-with-dependencies</descriptorRef>
+	                </descriptorRefs>
+	                <appendAssemblyId>false</appendAssemblyId>
 	                <exclude>/**/*humbs.db</exclude>
 	            </configuration>
 	        </execution>
 	    </executions>
 	  </plugin>
 	  
-	  <!-- EXPORT RESOURCES TO BOTH MULTIJAR AND FATJAR EXPORT DIRS -->
+	  <!-- (C) EXPORT RESOURCES TO BOTH MULTIJAR AND FATJAR EXPORT DIRS -->
   	  <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
 
-          <!-- MULTIJAR : .root -->
+     <!-- (C-1) MULTIJAR : .root -->
           <execution>
             <id>copy-resources -> ${export.directory.multijar.main}</id>
             <phase>install</phase>
@@ -161,7 +189,8 @@
 			    </resources>     
             </configuration>            
           </execution>
-          <!-- MULTIJAR : Resources_ScrYpt -->
+          
+     <!-- (C-2) MULTIJAR : Resources_ScrYpt -->
           <execution>
             <id>copy-resources -> ${export.directory.multijar.resources}</id>
             <phase>validate</phase>
@@ -211,9 +240,8 @@
             </configuration>            
           </execution>
           
-    	<!-- FATJAR -->
-    	
-    	<!-- (1) Copy Root Folders -->
+   	<!-- FATJAR -->
+  	<!-- (C-3) Copy Root Folders -->
           <execution>
             <id>copy-resources -> ${export.directory.fatjar.main}</id>
             <phase>validate</phase>
@@ -256,7 +284,7 @@
             </configuration>            
           </execution>
           
-          <!-- (2) Copy root files into application dir's parent -->
+      <!-- (C-4) Copy root files into application dir's parent -->
           <execution>
             <id>copy- ROOT files -> ${export.directory.fatjar.main}/../</id>
             <phase>validate</phase>
@@ -283,7 +311,7 @@
             </configuration>            
           </execution>
          
-         <!-- (3) FATJAR : Resources_ScrYpt -->
+      <!-- (C-5) FATJAR : Resources_ScrYpt -->
           <execution>
             <id>copy-resources -> ${export.directory.fatjar.resources}</id>
             <phase>validate</phase>
@@ -323,7 +351,7 @@
             </configuration>            
           </execution>
           
-      <!-- (4) SCRYPT'S UPDATES packaging - To zip and upload on server each time -->
+      <!-- (C-6) SCRYPT'S UPDATES packaging - To zip and upload on server each time -->
           <execution>
             <id>copy-resources -> ${export.updates.folder}</id>
             <phase>validate</phase>
@@ -363,7 +391,8 @@
 					        <include>resourcesFilePathsMappings.properties</include>
 					        <include>LAUNCHER/**/*</include>
 					        <include>LAUNCHER/*</include>
-					        <include>INI_FILES</include>
+					        <include>INI_FILES/*</include>
+					        <include>LOG/*</include>
 					    </includes>
 					    <excludes>
 					    	<exclude>*.ini</exclude>
@@ -376,7 +405,7 @@
             </configuration>            
           </execution>
           
-       <!-- (5) UPDATES - ROOT -->
+      <!-- (C-7) UPDATES - ROOT files outside .zip -->
           <execution>
             <id>copy-resources -> ${export.updates.root}</id>
             <phase>validate</phase>

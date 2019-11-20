@@ -128,7 +128,6 @@ public class GeneralConfig {
 	public static boolean DEFAULT_JVM_SHELL_ON;
 	
 	// UPDATES
-	public static boolean UPDATES_AUTOCHECK;
 	public static int UPDATES_AUTOCHECK_DELAY;
 	
 	// NETWORK OPTIONS
@@ -181,7 +180,7 @@ public class GeneralConfig {
 	
 	public static boolean TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED;
 
-	public static String CLIPBOARD_PANEL_DEFAULT;
+	public static String CLIPBOARD_PANEL_DEFAULT = "Clipboard.txt";
 	/**
 	 * Lazy initialized map with clipboards names related to clipboard files
 	 */
@@ -459,7 +458,6 @@ public class GeneralConfig {
 			
 			// UPDATES
 			UPDATES_AUTOCHECK_DELAY  = resourcesFilePathsMappings.getIntVarFromProps("UPDATES_AUTOCHECK_DELAY", 10000);
-			UPDATES_AUTOCHECK  =resourcesFilePathsMappings.getBooleanVarFromProps("UPDATES_AUTOCHECK", true);
 
 			// NETWORK OPTIONS
 			NETWORK_UTILS_TIMEOUT  = resourcesFilePathsMappings.getIntVarFromProps("NETWORK_UTILS_TIMEOUT", 5000);
@@ -503,7 +501,6 @@ public class GeneralConfig {
 			
 			TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("TEXT_EDITOR_BACKUP_BEFORE_SWITCH_ENABLED"));
 
-			CLIPBOARD_PANEL_DEFAULT = "Clipboard.txt";
 			/**
 			 * Lazy initialized map with clipboards names related to clipboard files
 			 */

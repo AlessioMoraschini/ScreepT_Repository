@@ -1,8 +1,8 @@
 
-		=> Hi, welcome to ScrYpT!
+=> Hi, welcome to ScrYpT!
 	
-	This is the text editor, mainly for coding use.
+This is the text editor, mainly for coding use.
 	
- 		# here you can find many useful functions, just take a look to the user-manual... #
+# here you can find many useful functions, just take a look to the user-manual... #
 	 
- 	And don't miss shortcuts keys or button's tooltips ;)
+And don't miss shortcuts keys or button's tooltips ;)

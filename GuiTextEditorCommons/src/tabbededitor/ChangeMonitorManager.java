@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.SwingUtilities;
-
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
@@ -78,8 +76,6 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		} catch (Exception e) {
 			logger.warn("There were some problems when trying to remove pending fired changes from file change monitor");
 		}
-		
-
 	}
 	
 	/**

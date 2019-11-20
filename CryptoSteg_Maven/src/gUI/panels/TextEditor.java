@@ -22,9 +22,7 @@ import resources.SoundsConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
-import treeutils.TreeHighlighterAdapter;
 import treeutils.TreeUtils;
-import treeutils.om.FileNameCellRenderer;
 import treeutils.om.FileTreeModel;
 import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
@@ -233,8 +231,14 @@ public class TextEditor extends JPanel {
 		
 		leftSplitTreeFiles = new JTree(new FileTreeModel(new File(currentConf.getTextEditorOpt().defaultWorkspacePath)));
 		mouseListenerTreeFilePanel = new TreeFileMouseListenerTxtEditor(leftSplitTreeFiles, this);
-//		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
-//		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
+		
+		leftSplitTreeFiles.setComponentPopupMenu(mouseListenerTreeFilePanel.getPopUpMenu());
+		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getMouseListener());
+		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getDoubleCLickListener());
+		leftSplitTreeFiles.addMouseMotionListener(TreeUtils.getHoverOnNodesListener());
+		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
+		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
+		
 ////		leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 ////		leftSplitTreeFiles.setBackground(fileNavColorBckg);
 ////		leftSplitTreeFiles.setForeground(Color.white);
@@ -373,7 +377,7 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.add(dynLblCurrentDir, "cell 2 4 7 1,alignx right");
 		splitPaneMain.setContinuousLayout(true);
 
-		getCurrentTabEditor().addTab(null, true); // comment for editing in windowuilder
+		getCurrentTabEditor().addTab(null); // comment for editing in windowuilder
 		getCurrentTabEditor().isFirstTabAdded = true;
 
 		addHandlers();
@@ -429,8 +433,14 @@ public class TextEditor extends JPanel {
 				}
 			});
 		}
-		
+
 		parentFrame.addFocusListener(getCurrentTabEditor().loadedTabObj.focusTxtAreaMonitor);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				textEditorUtils.applySelectedTheme();
+			}
+		});
 		
 		logger.debug("### TEXT WRITER module started");
 	}
@@ -771,7 +781,7 @@ public class TextEditor extends JPanel {
 					try {
 						TreeUtils.selectFileInNamedFileTree(MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile,
 								MainGUI.initTxtWriter.leftSplitTreeFiles, true);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						logger.warn("!!! Error trying to sync current file at start into JTree");
 					} 
 				}
@@ -902,7 +912,7 @@ public class TextEditor extends JPanel {
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
-					currentTabbedEditor.addTab(toLoadFile, !loadedAlmostOne);
+					currentTabbedEditor.addTab(toLoadFile);
 					currentConfiguration.getTextEditorOpt().addFileToLimitedList(toLoadFile, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 					if (!loadedAlmostOne)
 						loadedAlmostOne = true;
@@ -944,7 +954,7 @@ public class TextEditor extends JPanel {
 			File clipboard = new File(GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + File.separator + "MainClipboard.txt");
 			if (clipboard.exists()) {
 				// trigger tab style refresh
-				currentTabbedEditor.addTab(clipboard, !loadedAlmostOne);
+				currentTabbedEditor.addTab(clipboard);
 				currentTabbedEditor.removeTab(0);
 				loadedAlmostOne = true;
 			}

@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -42,20 +43,25 @@ public class TreeFileMouseListenerBasicFileNamed {
 	// gui elements
 	public JTree tree;
 	public FileNamed selectedNode;
+	public Vector<FileNamed> selectedNodes;
+	
 	public JFrame propertiesFrame = null; 
 	public Component parent;
 	public JOptionHelper dialogHelper;
 
 	public TreeFileMouseListenerBasicFileNamed() {
+		selectedNodes = new Vector<>();
 		dialogHelper = new JOptionHelper(null);
 	}
 	// constructor
 	public TreeFileMouseListenerBasicFileNamed(Component parent) {
+		selectedNodes = new Vector<>();
 		this.parent = parent;
 		dialogHelper = new JOptionHelper(parent);
 	}
 	
 	public TreeFileMouseListenerBasicFileNamed(JTree treeIn) {
+		selectedNodes = new Vector<>();
 		tree = treeIn;
 		tree.setComponentPopupMenu(getPopUpMenu());
 		tree.addMouseListener(getMouseListener());
@@ -70,6 +76,10 @@ public class TreeFileMouseListenerBasicFileNamed {
 	            if(arg0.getButton() == MouseEvent.BUTTON3){
 	            
 		            TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
+	                TreePath[] pathsSelection = tree.getSelectionPaths();
+	                updateSelectedNodes(pathsSelection);
+	                tree.setSelectionPaths(pathsSelection);
+	                
 		            if(pathForLocation != null){
 		            	selectedNode = (FileNamed) pathForLocation.getLastPathComponent();
 		            } else{
@@ -80,6 +90,18 @@ public class TreeFileMouseListenerBasicFileNamed {
 	            }
 	        }
 	    };
+	}
+	
+	public Vector<FileNamed> updateSelectedNodes(TreePath[] selectionPaths) {
+		selectedNodes = new Vector<>();
+		try {
+			for(TreePath curr : selectionPaths) {
+				selectedNodes.add((FileNamed)curr.getLastPathComponent());
+			}
+		} catch (Exception e) {
+		}
+		
+		return selectedNodes;
 	}
 
 	public JPopupMenu getPopUpMenu() {

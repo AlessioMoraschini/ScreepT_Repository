@@ -60,19 +60,18 @@ public class FilePojo{
 
 	// nullable result
 	public static TreeMap<String, File> mapFilesFromDir(File dir) {
-		if(!dir.isDirectory()) return new TreeMap<String, File>();
+		TreeMap<String, File> emptyMap = new TreeMap<>();
+		
+		if(!dir.isDirectory()) return emptyMap;
 		
 		final File[] files = dir.listFiles();
+		if (files == null || files.length < 1) return emptyMap;
 		
-		if (files == null) return new TreeMap<String, File>();
-		if (files.length < 1) return new TreeMap<String, File>();
-		
-		TreeMap<String, File> map = new TreeMap<String, File>();
 		for (File curr : files) {
-			map.put(curr.getName(), curr);
+			emptyMap.put(curr.getName(), curr);
 		}
 		
-		return map;
+		return emptyMap;
 	}
 	
 

@@ -272,7 +272,7 @@ public class TextEditorUtils {
 			resetAllDIviderColors();
 			currentTextEditor.fileTreeShowOrHide(options);
 			currentTextEditor.rightPaneShowOrHide(false);
-			currentTextEditor.leftSplitTreeFiles.scrollRowToVisible(currentTextEditor.leftSplitTreeFiles.getLeadSelectionRow());
+			TreeUtils.scrollCenteredToCurrentSelection(currentTextEditor.leftSplitTreeFiles, true);
 		}
 	}
 	

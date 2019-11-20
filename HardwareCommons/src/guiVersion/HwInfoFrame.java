@@ -37,7 +37,6 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import java.awt.Dimension;
 import java.awt.Component;
@@ -56,7 +55,7 @@ public class HwInfoFrame extends ParentFrame{
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
 	
-	private static final int THREAD_REFRESH_RATE = 2500;
+	private static final int THREAD_REFRESH_RATE = 1500;
 
 	// GUI elements
 	private JScrollPane scrollPane;
@@ -176,13 +175,34 @@ public class HwInfoFrame extends ParentFrame{
 		
 		thisPanel = this;
 
+		// Initialize hardware utils objects
 		initSystemVars();
 		
-		SwingUtilities.invokeLater(new Runnable() {
+		// GUI initializer
+		initialize();
+		addEventHandlers();
+		
+		// Initialize static labels
+		updateGenInfo();
+		updateMoboInfo();
+		updateCpuInfo();
+		updateDisplayInfo();
+		
+		// START THREAD VALUES UPDATER 
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			public void run() {
-				initialize();
-				addEventHandlers();
-				addValuesInitThreads();
+				
+				while(thisPanel.isActive.get()) {
+					updateRamInfo();
+					updateHdInfo();
+					updateCpuUsageInfo();
+					updateScryptResourcesUsage();
+					try {
+						Thread.sleep(THREAD_REFRESH_RATE);
+					} catch (InterruptedException e) {
+						logger.error(Arrays.toString(e.getStackTrace()));
+					}
+				}
 				logger.info(HwInfoFrame.this.getClass().getName() + " Started - OUTPUT_CODE: HWINFOPANEL_STARTED_OK");
 			}
 		});
@@ -522,11 +542,6 @@ public class HwInfoFrame extends ParentFrame{
 		
 //		comboSelectedHd = new JComboBox(); // only for editing in windowbuilder
 		comboSelectedHd = new JComboBox(HDList);
-		try {
-			comboSelectedHd.setSelectedItem(0);
-		} catch (IndexOutOfBoundsException e) {
-			logger.error(e);
-		}
 		panelHD.add(comboSelectedHd, "cell 1 0,growx");
 		
 		lblWrites = new JLabel("Writes:");
@@ -630,6 +645,12 @@ public class HwInfoFrame extends ParentFrame{
 		textAreaDisplay.setBackground(new Color(255, 250, 205));
 		scrollPane.setViewportView(textAreaDisplay);
 		
+	}
+	
+////////////////////////// EVENT HANDLERS ACTION LISTENERS //////////////////////////
+	
+	private void addEventHandlers() {
+		
 		// default close operation(same as reset) 
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
@@ -640,11 +661,6 @@ public class HwInfoFrame extends ParentFrame{
 	        	dispose();
 		    }
 		});
-	}
-	
-////////////////////////// EVENT HANDLERS ACTION LISTENERS //////////////////////////
-	
-	private void addEventHandlers() {
 		
 		comboSelectedDisplay.addActionListener(new ActionListener() {
 			
@@ -661,35 +677,6 @@ public class HwInfoFrame extends ParentFrame{
 				updateHdInfo();				
 			}
 		});
-	}
-	
-////////////////////////// VALUES INITIALIZATION THREADS //////////////////////////
-	
-	private void addValuesInitThreads() {
-
-		new Thread(new Runnable() {
-					
-			@Override
-			public void run() {
-				updateGenInfo();
-				updateMoboInfo();
-				updateCpuInfo();
-				updateDisplayInfo();
-				
-				while(thisPanel.isActive.get()) {
-					updateRamInfo();
-					updateCpuUsageInfo();
-					updateHdInfo();
-					updateScryptResourcesUsage();
-					try {
-						Thread.sleep(THREAD_REFRESH_RATE);
-					} catch (InterruptedException e) {
-						logger.error(Arrays.toString(e.getStackTrace()));
-					}
-				}
-			}
-		}).start();
-		
 	}
 	
 ////////////////////////// SYSTEM VARIABLES INITIALIZER //////////////////////////	
@@ -715,29 +702,32 @@ public class HwInfoFrame extends ParentFrame{
 	
 //////////////////////////AND NOW SOME USEFUL METHOD //////////////////////////
 	
-	private synchronized void updateScryptResourcesUsage(){
+	private void updateScryptResourcesUsage(){
 		Sigar tempSigar = new Sigar();
 		long currentPid = tempSigar.getPid();
 		try {
 			scryptCpuUsage = sigar.getProcCpu(currentPid);
 			scryptMemUsage = sigar.getProcMem(currentPid);
-//			scryptCpuUsage.gather(tempSigar, currentPid);
-//			scryptMemUsage.gather(tempSigar, currentPid);
-			dynLblScryptCpuPerc.setText(new DecimalFormat("#,##0.##").format(scryptCpuUsage.getPercent())+"%");
-			dynLblScryptRamUsage.setText(FileStuff.coolFileSize(scryptMemUsage.getResident()));
-		} catch (SigarException e) {
+		} catch (Exception e) {
 			logger.error("Error retrieving resources usage from ScrYpT", e);
 		}
+//			scryptCpuUsage.gather(tempSigar, currentPid);
+//			scryptMemUsage.gather(tempSigar, currentPid);
+			double percentD = scryptCpuUsage.getPercent();
+			int percent = (int) percentD * 100;
+			percent = (percent > 100) ? 100 : (percent < 0) ? 0 : percent;
+			dynLblScryptCpuPerc.setText(new DecimalFormat("#,##0.##").format(percent)+"%");
+			dynLblScryptRamUsage.setText(FileStuff.coolFileSize(scryptMemUsage.getResident()));
 	}
 	
-	private synchronized void updateGenInfo() {
+	private void updateGenInfo() {
 		dynLblArch.setText(System.getProperty("os.arch"));
 		dynLblOsName.setText(System.getProperty("os.name"));
 		dynLblOsVersion.setText(System.getProperty("os.version"));
 		dynLblJavaVersion.setText(System.getProperty("java.version"));
 	}
 	
-	private synchronized void updateCpuInfo() {
+	private void updateCpuInfo() {
 		try {
 			cpuInfos = sigar.getCpuInfoList();
 		} catch (SigarException e) {
@@ -753,7 +743,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblCPUCacheSize.setText(cacheSize);
 	}
 	
-	private synchronized void updateMoboInfo() {
+	private void updateMoboInfo() {
 		String vendor = (!MOBO.getManufacturer().equals(""))? MOBO.getManufacturer(): UNSELECTED;
 		String model = (!MOBO.getModel().equals(""))? MOBO.getModel(): UNSELECTED;
 		String version = (!MOBO.getVersion().equals(""))? MOBO.getVersion(): UNSELECTED;
@@ -763,7 +753,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblMoboSerialNumber.setText(MOBO.getSerialNumber());
 	}
 	
-	private synchronized void updateRamInfo() {
+	private void updateRamInfo() {
 		try {
 			memoryRam = sigar.getMem();
 			String usedPerc = String.valueOf(Math.round(memoryRam.getUsedPercent()))+"%";
@@ -779,7 +769,7 @@ public class HwInfoFrame extends ParentFrame{
 		}
 	}
 	
-	private synchronized void updateCpuUsageInfo() {
+	private void updateCpuUsageInfo() {
 		double currentUsage = genCPU.getSystemCpuLoadBetweenTicks();
 		cpuUsageHystory.add(currentUsage);
 		double avgUsageCurrent = DoubleListWorker.getAvgValue(cpuUsageHystory.getList());
@@ -795,7 +785,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblCpuTemp.setText(cputemperature);
 	}
 	
-	private synchronized void updateHdInfo() {
+	private void updateHdInfo() {
 		try {
 			HDinfo selected = (HDinfo) comboSelectedHd.getSelectedItem();
 			HWDiskStore disk = selected.getDisk();
@@ -812,7 +802,7 @@ public class HwInfoFrame extends ParentFrame{
 		}
 	}
 
-	private synchronized void updateDisplayInfo() {
+	private void updateDisplayInfo() {
 		int iDisp = comboSelectedDisplay.getSelectedIndex();
 		Display selDisplay = displays[iDisp];
 		String displayInfoString = selDisplay.toString();
@@ -831,7 +821,7 @@ public class HwInfoFrame extends ParentFrame{
 		}
 	}
 	
-	private synchronized Integer[] initDisplayIndexer() {
+	private Integer[] initDisplayIndexer() {
 		Integer[] indexer = new Integer[displays.length];
 		for(int i=0; i<displays.length; i++) {
 			indexer[i] = i;
