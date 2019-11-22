@@ -44,7 +44,6 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	static Logger logger = Logger.getLogger(TreeFileMouseListenerTxtEditor.class); 
 	
 	// gui elements
-	private JTree tree;
 	private int selectedRow;
 	private TextEditor textEditor;
 	private CustomTabbedEditor currentTabEditor;
@@ -58,6 +57,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	public JMenuItem moveHereCurrentItem;
 	public JMenuItem sysExplorerItem;
 	public JMenuItem refreshItem;
+	public JMenuItem selectAllItem;
 	public JMenuItem collapseItem;
 	public JMenuItem expandItem;
 	public JMenuItem propertiesItem;
@@ -67,12 +67,14 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	
 	// constructor
 	public TreeFileMouseListenerTxtEditor(JTree tree, TextEditor textEdit){
-//		super(tree);
+		super(tree);
 		this.tree = tree;
 		textEditor = textEdit;
 		currentTabEditor = textEditor.getCurrentTabEditor();
 		dialogHelper = new JOptionHelper(textEditor);
 	}
+	
+	// TODO fix collapse node - collassa il padre
 	
 	public MouseListener getMouseListener() {
 	    return new MouseAdapter() {
@@ -158,6 +160,11 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    
 	    menu.add(new JSeparator());
 	    
+	    selectAllItem = new JMenuItem("Select all nodes");
+	    selectAllItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    selectAllItem.addActionListener(selectAllListener());
+	    menu.add(selectAllItem);
+	   
 	    collapseItem = new JMenuItem("Collapse children nodes");
 	    collapseItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    collapseItem.addActionListener(collapseChildren());
@@ -216,6 +223,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    moveHereCurrentItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ARROW_CURVED_RIGHT));
 	    deleteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
+	    selectAllItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD_SELECTION));
 	    collapseItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
 	    expandItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE_SMALL));
 	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
@@ -262,7 +270,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			public void actionPerformed(ActionEvent e) {
 				try {
 //					tree.collapseRow(selectedRow);
-					TreeUtils.collapseTree(tree, selectedRow);
+					TreeUtils.collapseTreeSelectionChildren(tree, selectedRow);
 				} catch (Exception e1) {
 					logger.error("Error collapsing tree row N°"+selectedRow, e1);
 				}

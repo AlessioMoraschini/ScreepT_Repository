@@ -213,30 +213,34 @@ public class TemplatesChoosePanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String selected = outputTextArea.getSelectedText();
-				if(!selected.equals("")) {
-					String inputTemplateName = dialogHelper.askForString("Please specify a name for the template:", "New Template.txt");
-					inputTemplateName = (!inputTemplateName.equals(""))? inputTemplateName : "New Template.txt";
-					File templateFile = retrieveTemplateByName(inputTemplateName);
-					String ext = FilenameUtils.getExtension(inputTemplateName);
-					if(!SupportedFileTextEditor.getSupportedExtensions().contains(ext)) {
-						templateFile = FileStuff.changeExtension(templateFile, ".txt");
-					}
-					boolean choose = true;
-					
-					if(templateFile.exists()) {
-						choose = dialogHelper.yesOrNo("This name already exists, wanna overwrite?", "Name already existing");
-					}
-					
-					if(choose) {
-						try {
-							boolean result = FileStuff.writeStringToFile(selected, templateFile, true);
-							logger.info("Template written with esit: "+result);
-							dialogHelper.info("Template Added to collection.", "Template Added");
-							reloadTemplates();
-						} catch (IOException e1) {
-							dialogHelper.info("An error occurred writing template to file: "+templateFile.getAbsolutePath(), "An error occurred");
-							logger.error("An error occurred writing template to file: "+templateFile.getAbsolutePath(), e1);
+				if(selected != null && !selected.equals("")) {
+					String inputTemplateName = dialogHelper.askForStringUnsafe("Please specify a name for the template:", "New Template.txt",  "New Template.txt");
+					boolean cancel = (inputTemplateName == null)? true : false;
+					inputTemplateName = (!cancel && inputTemplateName.equals("")) ? "New Template.txt" : inputTemplateName;
+
+					if (!cancel) {
+						File templateFile = retrieveTemplateByName(inputTemplateName);
+						String ext = FilenameUtils.getExtension(inputTemplateName);
+						if (!SupportedFileTextEditor.getSupportedExtensions().contains(ext)) {
+							templateFile = FileStuff.changeExtension(templateFile, ".txt");
 						}
+						boolean choose = true;
+						if (templateFile.exists()) {
+							choose = dialogHelper.yesOrNo("This name already exists, wanna overwrite?", "Name already existing");
+						}
+						if (choose) {
+							try {
+								boolean result = FileStuff.writeStringToFile(selected, templateFile, true);
+								logger.info("Template written with esit: " + result);
+								dialogHelper.info("Template Added to collection.", "Template Added");
+								reloadTemplates();
+							} catch (IOException e1) {
+								dialogHelper.info("An error occurred writing template to file: " + templateFile.getAbsolutePath(), "An error occurred");
+								logger.error("An error occurred writing template to file: " + templateFile.getAbsolutePath(), e1);
+							}
+						} 
+					} else {
+						logger.debug("Template addition canceled by user");
 					}
 					
 				}else {

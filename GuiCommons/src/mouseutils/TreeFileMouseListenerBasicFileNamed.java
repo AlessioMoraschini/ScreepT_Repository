@@ -218,6 +218,20 @@ public class TreeFileMouseListenerBasicFileNamed {
 			}
 		};
 	}
+
+	public ActionListener selectAllListener() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					tree.addSelectionInterval(0, tree.getRowCount());
+				} catch (Exception e2) {
+					logger.error("An error occurred while selecting all nodes!");
+				}
+			}
+		};
+	}
 	
 	public ActionListener propertiesListener() {
 		return new ActionListener() {

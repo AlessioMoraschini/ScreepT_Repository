@@ -2,7 +2,6 @@ package frameutils.frame;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -43,6 +42,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.JLabel;
 
 public class SearchFrame extends JFrame{
+	private static final long serialVersionUID = -7775810414279893815L;
 
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(SearchFrame.class);
@@ -58,7 +58,6 @@ public class SearchFrame extends JFrame{
 	private JButton btnPrev;
 	private JFrame thisFrame;
 	private JCheckBox chckbxCaseSensitive;
-	private JTabbedPane tabbedPane;
 	private JPanel tabSearch;
 	
 	private String textTemp;
@@ -94,6 +93,8 @@ public class SearchFrame extends JFrame{
 		textSearchArea = targetSearchArea;
 		textSearchArea.requestFocus();
 		textSearchArea.setCaret(new DefaultCaret() {
+			private static final long serialVersionUID = 717425793296609783L;
+
 			@Override
 			public void setSelectionVisible(boolean visible) {
 				super.setSelectionVisible(true);

@@ -233,19 +233,31 @@ public class TreeUtils {
     }
 
     /**
-	 * Close each single node from bottom to top
+	 * Close each single expanded node that is descendant of selected one
 	 */
-	public static void collapseTree(JTree tree, int row) {
+	public static void collapseTreeSelectionChildren(JTree tree, int row) {
 		try {
 			TreePath startingPath = tree.getPathForRow(row);
-			for (int i = tree.getRowCount(); i >= 0; i--) {
+			for (int i = tree.getRowCount(); i >= row; i--) {
 				TreePath son = tree.getPathForRow(row);
-				if(startingPath.isDescendant(son)) {
+				if(startingPath.isDescendant(son) || startingPath.equals(son)) {
 					try {
 						tree.collapseRow(i);
 					} catch (Exception e) {
 					}
 				}
+			}
+		} catch (Exception e) {
+		}
+	}
+
+	/**
+	 * Close each single node from bottom to top
+	 */
+	public static void collapseTree(JTree tree) {
+		try {
+			for (int i = tree.getRowCount(); i >= 0; i--) {
+				tree.collapseRow(i);
 			}
 		} catch (Exception e) {
 		}

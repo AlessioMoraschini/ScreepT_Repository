@@ -34,6 +34,7 @@ import frameutils.utils.GuiUtils;
 import resources.GeneralConfig;
 import sun.swing.SwingUtilities2;
 
+@SuppressWarnings("restriction")
 public class ColumnTextArea extends RSyntaxTextArea{
 	private static final long serialVersionUID = -2828990655552935752L;
 	
@@ -49,6 +50,7 @@ public class ColumnTextArea extends RSyntaxTextArea{
 	public AtomicBoolean isRectangularModeOn = new AtomicBoolean(true);
 	RSyntaxTextArea currentRef;
 	RUndoManager undoManager;
+	DefaultCaret customCaret;
 	
 	public int lastStartPosition = 0;
 	
@@ -81,7 +83,8 @@ public class ColumnTextArea extends RSyntaxTextArea{
 	public ColumnTextArea(int rows, int columns){
         super(rows, columns);
         currentRef = this;
-        this.setCaret(new ColumnTextArea.ColumnSelectionCaret());
+        customCaret = new ColumnTextArea.ColumnSelectionCaret(this);
+        this.setCaret(customCaret);
 
         //Disable ALT key presses when the textarea is focused
         this.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ALT, 0, true), "ALTKEY");
@@ -98,11 +101,12 @@ public class ColumnTextArea extends RSyntaxTextArea{
 	
 	public void setRectangularSelectionMode(boolean rectangularSelection) {
 		if (rectangularSelection) {
-			this.setCaret(new ColumnTextArea.ColumnSelectionCaret());
+			customCaret = new ColumnTextArea.ColumnSelectionCaret(this);
 		}else {
-			this.setCaret(new RSyntaxTextArea().getCaret());
+			customCaret = new DefaultCaret();
 		}
 
+		this.setCaret(customCaret);
 		isRectangularModeOn.set(rectangularSelection);
 	}
 
@@ -131,6 +135,7 @@ public class ColumnTextArea extends RSyntaxTextArea{
 					}
 				}
 			}
+			
 			return (text);
 		}else {
 			return super.getSelectedText();
@@ -141,7 +146,6 @@ public class ColumnTextArea extends RSyntaxTextArea{
     public void paste() {
     	
     	int start = getSelectionStart();
-    	int end;
     	
     	if (isRectangularModeOn.get() && isCurrentSelectionRectangular()) {
     		Clipboard clipboard = getClipboard(null);
@@ -151,12 +155,6 @@ public class ColumnTextArea extends RSyntaxTextArea{
 				logger.error(e);
 			}
 		}else {
-			try {
-				String pasteItem = (String)getClipboard(null).getContents(null).getTransferData(DataFlavor.stringFlavor);
-				end = start + pasteItem.length()-1;
-			} catch (UnsupportedFlavorException | IOException e) {
-				logger.error(e);
-			}
 			super.paste();
 			requestFocus();
 			setSelectionStart(start);
@@ -207,22 +205,19 @@ public class ColumnTextArea extends RSyntaxTextArea{
     		} 
     		
     		if (cnt > 1) {
-				for (int i = 0; i < cnt; i++) {
-
-					// Search into next line for a selection with different Width or Heigth -> if found the this is not rectangular
-					try {
-						rowStart = Utilities.getRowStart(this, selections[i].getStartOffset());
-						int start = selections[i].getStartOffset() - rowStart;
-						int end = selections[i].getEndOffset() - rowStart;
-						int rowEnd = Utilities.getRowEnd(this, end);
-						if (rowEnd != end && (startFirstL != start || endFirstL != end)) {
-							isRectangular = false;
-							break;
-						}
-					} catch (BadLocationException e) {
-						logger.error(e);
+    			int i = cnt -1;
+				// Search into next line for a selection with different Width or Heigth -> if found the this is not rectangular
+				try {
+					rowStart = Utilities.getRowStart(this, selections[i].getStartOffset());
+					int start = selections[i].getStartOffset() - rowStart;
+					int end = selections[i].getEndOffset() - rowStart;
+					int rowEnd = Utilities.getRowEnd(this, end);
+					if (rowEnd != end && (startFirstL != start || endFirstL != end)) {
+						isRectangular = false;
 					}
-				} 
+				} catch (BadLocationException e) {
+					logger.error(e);
+				}
 			}else {
 				isRectangular = false;
 			}
@@ -242,11 +237,8 @@ public class ColumnTextArea extends RSyntaxTextArea{
 				int endTemp = selections[i].getEndOffset()+xDiff;
 				int end = endTemp < 0 ? selections[i].getEndOffset() : endTemp;
 
-				String selectedText = "";
 				try {
 					this.getHighlighter().removeHighlight(selections[i]);
-					
-					selectedText = this.getDocument().getText(start, end - start);
 					this.getHighlighter().addHighlight(start, end, ((ColumnSelectionCaret)this.getCaret()).getCustomSelectionPainter());
 					
 				} catch (javax.swing.text.BadLocationException e) {
@@ -254,6 +246,22 @@ public class ColumnTextArea extends RSyntaxTextArea{
 				}
 			}
 		}
+    }
+
+    public int rectangularNumberOfSelectionRows() {
+    	try {
+			return this.getHighlighter().getHighlights().length;
+		} catch (Exception e) {
+			return 0;
+		}
+    }
+
+    public int NumberOfSelectionRows() {
+    	try {
+    		return getSelectedText().split("\n").length;
+    	} catch (Exception e) {
+    		return 0;
+    	}
     }
 
     public String rectangularReplaceSelection(String replaceText) {
@@ -338,213 +346,222 @@ public class ColumnTextArea extends RSyntaxTextArea{
     	setSelectionEnd(selEnd);
     }
 
-    class ColumnSelectionCaret extends DefaultCaret {
-        private static final long serialVersionUID = 1L;
-        Point lastPoint = new Point(0,0);
-        boolean altDown = false;
-        boolean ctrlDown = false;
-        boolean shiftDown = false;
-        boolean moving = false;
+class ColumnSelectionCaret extends DefaultCaret {
+    private static final long serialVersionUID = 1L;
+    Point lastPoint = new Point(0,0);
+    boolean altDown = false;
+    boolean ctrlDown = false;
+    boolean shiftDown = false;
+    boolean moving = false;
+    public int caretWidth = 1;
+    ColumnTextArea textArea;
+    
+    public ColumnSelectionCaret(ColumnTextArea textArea) {
+    	this.textArea = textArea;
+	}
+    
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        super.mouseMoved(e);
+    }
 
-        @Override
-        public void mouseMoved(MouseEvent e) {
-            super.mouseMoved(e);
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            super.mouseClicked(e);
-            boolean rightClick = SwingUtilities.isRightMouseButton(e);
-            if(!rightClick && isRectangularModeOn.get() && e.getClickCount()==1 && !shiftDown){
-                this.getComponent().getHighlighter().removeAllHighlights();
-            }
-            
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        boolean rightClick = SwingUtilities.isRightMouseButton(e);
+        if(!rightClick && isRectangularModeOn.get() && e.getClickCount()==1 && !shiftDown){
+            this.getComponent().getHighlighter().removeAllHighlights();
         }
         
-        @Override
-        public void mouseReleased(MouseEvent e){
-        	if(isRectangularModeOn.get()) {
-        		this.moving = false;
-        	}
-        	
-        	this.altDown = e.isAltDown();
-            this.ctrlDown = e.isControlDown();
-            this.shiftDown = e.isShiftDown();
-        	
-            super.mouseReleased(e);
-            
-            SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
+    }
+    
+    @Override
+    public void mouseReleased(MouseEvent e){
+    	if(isRectangularModeOn.get()) {
+    		this.moving = false;
+    	}
+    	
+    	this.altDown = e.isAltDown();
+        this.ctrlDown = e.isControlDown();
+        this.shiftDown = e.isShiftDown();
+    	
+        super.mouseReleased(e);
+        
+        SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				updateSelectionIfShiftPressed();
+				if(customCaret != null && customCaret instanceof ColumnSelectionCaret) {
+					((ColumnSelectionCaret)customCaret).paint(getGraphics());
+				}
+			}
+		});
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e){
+        super.mousePressed(e);
+        this.altDown = e.isAltDown();
+        this.ctrlDown = e.isControlDown();
+        this.shiftDown = e.isShiftDown();
+        
+        if (isRectangularModeOn.get()) {
+			this.lastPoint = new Point(e.getX(), e.getY());
+		}
+        
+        if (e.getClickCount()==1) {
+			try {
+                if(currentRef != null){
+                    	
+                	boolean rightClick = SwingUtilities.isRightMouseButton(e);
+                	if (!shiftDown && !rightClick) {
+						currentRef.removeAllLineHighlights();
+						currentRef.getHighlighter().removeAllHighlights();
+					}
+		
+					int start = currentRef.getSelectionStart();
+
+					// Update last start position, used on key released if shift is pressed
+					if (shiftDown) {
+						lastStartPosition = currentRef.getSelectedText() != null ? start : currentRef.getCaretPosition();
+					}
+					
 					updateSelectionIfShiftPressed();
 				}
-			});
-            
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e){
-            super.mousePressed(e);
-            this.altDown = e.isAltDown();
-            this.ctrlDown = e.isControlDown();
-            this.shiftDown = e.isShiftDown();
-            
-            if (isRectangularModeOn.get()) {
-				this.lastPoint = new Point(e.getX(), e.getY());
-			}
-            
-            if (e.getClickCount()==1) {
-				try {
-	                if(currentRef != null){
-	                    	
-                    	boolean rightClick = SwingUtilities.isRightMouseButton(e);
-                    	if (!shiftDown && !rightClick) {
-							currentRef.removeAllLineHighlights();
-							currentRef.getHighlighter().removeAllHighlights();
-						}
 			
-						int start = currentRef.getSelectionStart();
-						int end = currentRef.getSelectionEnd();
-						boolean turningBack = end < start;
-						
-						// Update last start position, used on key released if shift is pressed
-						if (shiftDown) {
-							lastStartPosition = currentRef.getSelectedText() != null ? start : currentRef.getCaretPosition();
-						}
-						
-						updateSelectionIfShiftPressed();
-					}
-				
-				} catch (Exception e1) {
-					logger.error("Error tryin' to refresh highlight on mouse pressed", e1);
-				}
+			} catch (Exception e1) {
+				logger.error("Error tryin' to refresh highlight on mouse pressed", e1);
+			}
+		}
+    }
+    
+    private void updateSelectionIfShiftPressed() {
+    	// SELECT with shift (only if position is different) -> select from currentCaret to viewToModel
+        if(shiftDown) {
+        	try {
+				currentRef.requestFocus();
+				currentRef.setSelectionStart(lastStartPosition);
+				currentRef.setSelectionEnd(currentRef.getCaretPosition());
+			} catch (Exception e) {
 			}
         }
-        
-        private void updateSelectionIfShiftPressed() {
-        	// SELECT with shift (only if position is different) -> select from currentCaret to viewToModel
-            if(shiftDown) {
-            	try {
-					currentRef.requestFocus();
-					currentRef.setSelectionStart(lastStartPosition);
-					currentRef.setSelectionEnd(currentRef.getCaretPosition());
-				} catch (Exception e) {
-				}
-            }
-        }
+    }
 
-        @Override
-        protected void moveCaret(MouseEvent e) {
-            if(isRectangularModeOn.get()) {
-            	
-	        	if(!this.moving){
-		                this.getComponent().getHighlighter().removeAllHighlights();
-	        		this.moving = true;
-	        	}
-	            if(this.altDown){
-                Point pt = new Point(e.getX(), e.getY());
-                javax.swing.text.Position.Bias[] biasRet = new javax.swing.text.Position.Bias[1];
-                int pos = getComponent().getUI().viewToModel(getComponent(), pt, biasRet);
-                if(biasRet[0] == null)
-                    biasRet[0] = javax.swing.text.Position.Bias.Forward;
-	                if (pos >= 0) {
-	                    this.setDot(pos);
-	                    Point start = new Point(Math.min(this.lastPoint.x,pt.x), Math.min(this.lastPoint.y,pt.y));
-	                    Point end = new Point(Math.max(this.lastPoint.x,pt.x), Math.max(this.lastPoint.y,pt.y));
-	                    this.rectangularHighlight(start,end);
-	                }
+    @Override
+    protected void moveCaret(MouseEvent e) {
+        if(isRectangularModeOn.get()) {
+        	
+        	if(!this.moving){
+	                this.getComponent().getHighlighter().removeAllHighlights();
+        		this.moving = true;
+        	}
+            if(this.altDown){
+            Point pt = new Point(e.getX(), e.getY());
+            javax.swing.text.Position.Bias[] biasRet = new javax.swing.text.Position.Bias[1];
+            int pos = getComponent().getUI().viewToModel(getComponent(), pt, biasRet);
+            if(biasRet[0] == null)
+                biasRet[0] = javax.swing.text.Position.Bias.Forward;
+                if (pos >= 0) {
+                    this.setDot(pos);
+                    Point start = new Point(Math.min(this.lastPoint.x,pt.x), Math.min(this.lastPoint.y,pt.y));
+                    Point end = new Point(Math.max(this.lastPoint.x,pt.x), Math.max(this.lastPoint.y,pt.y));
+                    this.rectangularHighlight(start,end);
                 }
-        	}
-            super.moveCaret(e);
+            }
     	}
+        super.moveCaret(e);
+	}
+    
+    protected void rectangularHighlight(Point start, Point end) {
         
-        protected void rectangularHighlight(Point start, Point end) {
-            
-        	if (isRectangularModeOn.get()) {
-        		javax.swing.text.JTextComponent comp = this.getComponent();
-				comp.getHighlighter().removeAllHighlights();
-				int y = start.y;
-				int firstX = start.x;
-				int lastX = end.x;
-				int pos1 = comp.getUI().viewToModel(comp, new Point(firstX, y));
-				int pos2 = comp.getUI().viewToModel(comp, new Point(lastX, y));
-				try {
-					comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-				y++;
-				while (y < end.y) {
-					int pos1new = comp.getUI().viewToModel(comp, new Point(firstX, y));
-					int pos2new = comp.getUI().viewToModel(comp, new Point(lastX, y));
-					if (pos1 != pos1new) {
-						pos1 = pos1new;
-						pos2 = pos2new;
-						try {
-							comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
-						} catch (Exception ex) {
-							ex.printStackTrace();
-						}
-					}
-					y++;
-				}
-        	}
-        }
-        
-        public HighlightPainter getCustomSelectionPainter(){
-        	return this.getSelectionPainter();
-        }
-
-    	protected void defaultHighlight(Point start, Point end) {
-    		Dimension screenSize = GuiUtils.getScreenSize();
-    		
-    		if (isRectangularModeOn.get()) {
-    			JTextComponent comp = this.getComponent();
-    			comp.getHighlighter().removeAllHighlights();
-				int y = start.y;
-    			int firstX = start.x;
-    			int lastX = end.x;
-    			// skip last when only one line
-    			boolean lastMissing = false;
-    			
-    			// FIRST LINE from start x to max X, for first Y only
-    			int pos1 = comp.getUI().viewToModel(comp, new Point(firstX, y));
-    			int pos2 = comp.getUI().viewToModel(comp, new Point((int)screenSize.getWidth(), y));
-    			try {
-    				comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
-    			} catch (Exception ex) {
-    				ex.printStackTrace();
-    			}
-    			y++;
-    			
-    			// START MIDDLE LINES UNTIL LAST EXCLUDED
-    			while (y < end.y-1) {
-    				lastMissing = true;
-    				int pos1new = comp.getUI().viewToModel(comp, new Point(0, y));
-    				int pos2new = comp.getUI().viewToModel(comp, new Point((int)screenSize.getWidth(), y));
-    				if (pos1 != pos1new) {
-    					pos1 = pos1new;
-    					pos2 = pos2new;
-    					try {
-							comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
-    					} catch (Exception ex) {
-    						ex.printStackTrace();
-    					}
-    				}
-    				y++;
-    			} 
-    			
-    			// LAST LINE
-    			if (lastMissing) {
-					pos1 = comp.getUI().viewToModel(comp, new Point(0, y));
-					pos2 = comp.getUI().viewToModel(comp, new Point(lastX, y));
+    	if (isRectangularModeOn.get()) {
+    		javax.swing.text.JTextComponent comp = this.getComponent();
+			comp.getHighlighter().removeAllHighlights();
+			int y = start.y;
+			int firstX = start.x;
+			int lastX = end.x;
+			int pos1 = comp.getUI().viewToModel(comp, new Point(firstX, y));
+			int pos2 = comp.getUI().viewToModel(comp, new Point(lastX, y));
+			try {
+				comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			y++;
+			int pos2new = getCaretPosition();
+			while (y < end.y) {
+				int pos1new = comp.getUI().viewToModel(comp, new Point(firstX, y));
+				pos2new = comp.getUI().viewToModel(comp, new Point(lastX, y));
+				if (pos1 != pos1new) {
+					pos1 = pos1new;
+					pos2 = pos2new;
 					try {
 						comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
-					} catch (BadLocationException e) {
-						e.printStackTrace();
+					} catch (Exception ex) {
+						ex.printStackTrace();
 					}
 				}
-    		}
+				y++;
+			}
+			setCaretPosition(pos2new);
     	}
     }
+    
+    public HighlightPainter getCustomSelectionPainter(){
+    	return this.getSelectionPainter();
+    }
+
+	protected void defaultHighlight(Point start, Point end) {
+		Dimension screenSize = GuiUtils.getScreenSize();
+		
+		if (isRectangularModeOn.get()) {
+			JTextComponent comp = this.getComponent();
+			comp.getHighlighter().removeAllHighlights();
+			int y = start.y;
+			int firstX = start.x;
+			int lastX = end.x;
+			// skip last when only one line
+			boolean lastMissing = false;
+			
+			// FIRST LINE from start x to max X, for first Y only
+			int pos1 = comp.getUI().viewToModel(comp, new Point(firstX, y));
+			int pos2 = comp.getUI().viewToModel(comp, new Point((int)screenSize.getWidth(), y));
+			try {
+				comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			y++;
+			
+			// START MIDDLE LINES UNTIL LAST EXCLUDED
+			while (y < end.y-1) {
+				lastMissing = true;
+				int pos1new = comp.getUI().viewToModel(comp, new Point(0, y));
+				int pos2new = comp.getUI().viewToModel(comp, new Point((int)screenSize.getWidth(), y));
+				if (pos1 != pos1new) {
+					pos1 = pos1new;
+					pos2 = pos2new;
+					try {
+						comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+				y++;
+			} 
+			
+			// LAST LINE
+			if (lastMissing) {
+				pos1 = comp.getUI().viewToModel(comp, new Point(0, y));
+				pos2 = comp.getUI().viewToModel(comp, new Point(lastX, y));
+				try {
+					comp.getHighlighter().addHighlight(pos1, pos2, this.getSelectionPainter());
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+}
 }

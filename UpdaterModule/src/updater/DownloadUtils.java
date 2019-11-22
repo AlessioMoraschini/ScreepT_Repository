@@ -81,20 +81,21 @@ public class DownloadUtils {
 			
 			in = new BufferedInputStream(url.openStream());
 			fileOutputStream = new FileOutputStream(localPath);
-			byte dataBuffer[] = new byte[1024];
+			int bufferSIze = 1024;
+			byte dataBuffer[] = new byte[bufferSIze];
 			int bytesRead;
 			int cycles = 1;
-			while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+			
+			while ((bytesRead = in.read(dataBuffer, 0, bufferSIze)) != -1) {
 			    fileOutputStream.write(dataBuffer, 0, bytesRead);
-			    int percDownloaded = getPerc(1024*cycles, fileSize);
+			    int percDownloaded = getPerc(bufferSIze*cycles, fileSize);
 			    percDownloaded = (percDownloaded>99) ? 99 : percDownloaded;
-//			    if (progressUpdater != null && !silent) {
-//					progressUpdater.getDialog().setVisible(true);
-//				}
 			    ifStoppedByUserThrowException(progressUpdater);
-				updateProgress("Downloading " + new File(url.getFile()).getName() + " ("+percDownloaded+"%)...", percDownloaded, progressUpdater, false);
+			    String msg = "Downloading " + new File(url.getFile()).getName() + " ("+getPercSizesString(bufferSIze*cycles, fileSize)+")";
+				updateProgress(msg, percDownloaded, progressUpdater, false);
 			    cycles ++;
 			}
+			
 			try {
 				out.println("Closing url stream...");
 				in.close();
@@ -345,12 +346,12 @@ public class DownloadUtils {
 	}
 	
 	// HASHING //
-	public static String getFileHashMd5(String filename) throws IOException, NoSuchAlgorithmException {
+	public static String getFileHashMd5(String filePath) throws IOException, NoSuchAlgorithmException {
 		
-		if(filename == null) return "";
+		if(filePath == null) return "";
 	         
 	    MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-	    messageDigest.update(Files.readAllBytes(Paths.get(filename)));
+	    messageDigest.update(Files.readAllBytes(Paths.get(filePath)));
 	    byte[] digest = messageDigest.digest();
 	    
 	    return DatatypeConverter.printHexBinary(digest).toUpperCase();
@@ -454,6 +455,20 @@ public class DownloadUtils {
 	public static int getPerc(int val, long tot) {
 		float perc = ((float)val / (float)tot) * 100;
 		return (int)perc;
+	}
+
+	public static int getPerc(long val, long tot) {
+		float perc = ((float)val / (float)tot) * 100;
+		return (int)perc;
+	}
+
+	public static String getPercSizesString(int val, long tot) {
+		float perc = ((float)val / (float)tot) * 100;
+		
+		String totalStr = Various.coolFileSize(tot);
+		String downloadedStr = Various.coolFileSize((long)(tot * perc) / 100);
+		
+		return downloadedStr + "/" + totalStr;
 	}
 	
 	public static void updateProgress(String text, int progress, UpdateProgressPanelMin progressUpdater, boolean useGeneralBar) throws ProgressBarInterruptedException {

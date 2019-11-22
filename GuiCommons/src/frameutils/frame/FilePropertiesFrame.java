@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -14,6 +15,7 @@ import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import updater.DownloadUtils;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -61,6 +63,8 @@ public class FilePropertiesFrame extends JFrame{
 	private JLabel lblLastAccess;
 	private JLabel dynLblLastAccess;
 	private JLabel dynLblCreationDate;
+	private JLabel hashMd5Lbl;
+	private JTextField hashMd5DynLbl;
 	
 	public FilePropertiesFrame(File targetFile, boolean alwaysOnTop) {
 		
@@ -76,7 +80,7 @@ public class FilePropertiesFrame extends JFrame{
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.DARK_GRAY);
-		panel.setLayout(new MigLayout("", "[][grow][80px:n][grow][100px:90px][][]", "[][10px:n][][10px:n][grow][30px:n:40px]"));
+		panel.setLayout(new MigLayout("", "[][grow][80px:n][grow][85px:90px][][grow]", "[][10px:n][][10px:n][grow][30px:n:40px]"));
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportView(panel);
@@ -131,7 +135,7 @@ public class FilePropertiesFrame extends JFrame{
 		
 		dynLblPath = new JTextField("");
 		dynLblPath.setForeground(Color.DARK_GRAY);
-		panel.add(dynLblPath, "cell 1 2 6 1,growx");
+		panel.add(dynLblPath, "cell 1 2 3 1,growx");
 		dynLblPath.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -152,6 +156,16 @@ public class FilePropertiesFrame extends JFrame{
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
+		
+		hashMd5Lbl = new JLabel("Hash MD5:");
+		hashMd5Lbl.setForeground(Color.LIGHT_GRAY);
+		hashMd5Lbl.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel.add(hashMd5Lbl, "cell 4 2,alignx right");
+		
+		hashMd5DynLbl = new JTextField((String) null);
+		hashMd5DynLbl.setPreferredSize(new Dimension(18, 25));
+		hashMd5DynLbl.setForeground(Color.DARK_GRAY);
+		panel.add(hashMd5DynLbl, "cell 6 2,growx");
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBackground(Color.GRAY);
@@ -193,18 +207,22 @@ public class FilePropertiesFrame extends JFrame{
 		
 		dynLblCanRead = new JLabel((String) null);
 		dynLblCanRead.setForeground(Color.WHITE);
+		dynLblCanRead.setFont(new Font("Segoe-UI", Font.BOLD, 14));
 		footerPanel.add(dynLblCanRead, "cell 0 0,alignx center,growy");
 		
 		dynLblCanWrite = new JLabel((String) null);
 		dynLblCanWrite.setForeground(Color.WHITE);
+		dynLblCanWrite.setFont(new Font("Segoe-UI", Font.BOLD, 14));
 		footerPanel.add(dynLblCanWrite, "cell 1 0");
 		
 		dynLblCanExecute = new JLabel((String) null);
 		dynLblCanExecute.setForeground(Color.WHITE);
+		dynLblCanExecute.setFont(new Font("Segoe-UI", Font.BOLD, 14));
 		footerPanel.add(dynLblCanExecute, "cell 2 0");
 		
 		dynLblIsHidden = new JLabel((String) null);
 		dynLblIsHidden.setForeground(Color.WHITE);
+		dynLblIsHidden.setFont(new Font("Segoe-UI", Font.BOLD, 14));
 		footerPanel.add(dynLblIsHidden, "cell 3 0");
 		
 		initializeValues();
@@ -234,6 +252,11 @@ public class FilePropertiesFrame extends JFrame{
 		dynLblLastChange.setText(" " + GeneralConfig.GENERIC_FORMATTER.format(new Date(fileUnderAnalysis.lastModified())));
 		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
 		updateFooter();
+		try {
+			hashMd5DynLbl.setText(DownloadUtils.getFileHashMd5(fileUnderAnalysis.getAbsolutePath()));
+		} catch (NoSuchAlgorithmException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

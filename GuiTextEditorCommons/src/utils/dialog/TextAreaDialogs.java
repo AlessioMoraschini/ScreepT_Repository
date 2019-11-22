@@ -3,6 +3,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowListener;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.swing.JComponent;
@@ -18,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.rsta.ui.search.SearchComboBox;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
@@ -25,7 +29,9 @@ import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
 import frameutils.utils.GuiUtils;
+import generic.LimitedConcurrentList;
 import reflection.ReflectionLibChecker;
+import reflection.ReflectionUtils;
 import resources.IconsPathConfigurator;
 
 public class TextAreaDialogs {
@@ -35,8 +41,15 @@ public class TextAreaDialogs {
 	
 	public static final Dimension DEFAULT_SIZE = new Dimension(500, 600);
 	
+	public static final int LIST_MAX_SIZE = 100;
+	
+	public LimitedConcurrentList<String> searchList;
+	public LimitedConcurrentList<String> replaceList;
+	
 	public TextAreaDialogs(ITextAreaDialogs dialogManager) {
 		this.dialogManager = dialogManager;
+		searchList = new LimitedConcurrentList<>(LIST_MAX_SIZE);
+		replaceList = new LimitedConcurrentList<>(LIST_MAX_SIZE);
 	}
 
 	/**
@@ -110,6 +123,52 @@ public class TextAreaDialogs {
 		return dialog;
 	}
 	
+	public void setComboItems(Object parentDialog, List<String> values, boolean searchType) throws IllegalArgumentException, IllegalAccessException {
+		if(searchType) {
+			List<SearchComboBox> results = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(parentDialog, SearchComboBox.class, "findTextCombo", false, false);
+			if(!results.isEmpty()) 
+				for(SearchComboBox combo : results) {
+					combo.removeAllItems();
+					for (String value : values) {
+						combo.addItem(value);
+					}
+				}
+		} else {
+			List<SearchComboBox> results = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(parentDialog, SearchComboBox.class, "replaceWithCombo", false, false);
+			if(!results.isEmpty()) 
+				for(SearchComboBox combo : results) {
+					combo.removeAllItems();
+					for (String value : values) {
+						combo.addItem(value);
+					}
+				}
+		}
+	}
+
+	public Set<String> getComboItems(Object parentDialog, boolean searchType) throws IllegalArgumentException, IllegalAccessException {
+		Set<String> results = new HashSet<String>();
+		if(searchType) {
+			List<SearchComboBox> combos = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(parentDialog, SearchComboBox.class, "findTextCombo", false, false);
+			if(!results.isEmpty()) 
+				for(SearchComboBox combo : combos) {
+					for (int i = 0; i < combo.getItemCount(); i++) {
+						results.add(combo.getItemAt(i));
+					}
+				}
+		} else {
+			List<SearchComboBox> combos = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(parentDialog, SearchComboBox.class, "replaceWithCombo", false, false);
+			if(!results.isEmpty()) 
+				for(SearchComboBox combo : combos) {
+					combo.removeAllItems();
+					for (int i = 0; i < combo.getItemCount(); i++) {
+						results.add(combo.getItemAt(i));
+					}
+				}
+		}
+		
+		return results;
+	}
+	
 	public WindowListener getWindowListener() {
 		return new java.awt.event.WindowAdapter() {
 		    @Override
@@ -125,7 +184,7 @@ public class TextAreaDialogs {
 	/**
 	 *  This ties the properties of the two dialogs together (match case, regex, etc.)
 	 */
-	public void allineateReplaceToFindDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
+	public static void allineateReplaceToFindDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
 		// This ties the properties of the two dialogs together (match case, regex, etc.)
 		SearchContext context = findDialog.getSearchContext();
 		replaceDialog.setSearchContext(context);
@@ -134,7 +193,7 @@ public class TextAreaDialogs {
 	/**
 	 *  This ties the properties of the two dialogs together (match case, regex, etc.)
 	 */
-	public void allineateFindToReplaceDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
+	public static void allineateFindToReplaceDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
 		
 		SearchContext context = replaceDialog.getSearchContext();
 		findDialog.setSearchContext(context);
@@ -168,26 +227,30 @@ public class TextAreaDialogs {
 				SearchEvent.Type type = e.getType();
 				SearchContext context = e.getSearchContext();
 				SearchResult result = null;
-
+				
 				switch (type) {
 					default: // Prevent FindBugs warning later
 					case MARK_ALL:
 						result = SearchEngine.markAll(dialogManager.getTargetTextArea(), context);
+						searchList.addNreplaceToTopIfPresent(context.getSearchFor());
 						break;
 					case FIND:
 						result = SearchEngine.find(dialogManager.getTargetTextArea(), context);
 						if (!result.wasFound()) {
 							UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 						}
+						searchList.addNreplaceToTopIfPresent(context.getSearchFor());
 						break;
 					case REPLACE:
 						result = SearchEngine.replace(dialogManager.getTargetTextArea(), context);
 						if (!result.wasFound()) {
 							UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 						}
+						replaceList.addNreplaceToTopIfPresent(context.getReplaceWith());
 						break;
 					case REPLACE_ALL:
 						result = SearchEngine.replaceAll(dialogManager.getTargetTextArea(), context);
+						replaceList.addNreplaceToTopIfPresent(context.getReplaceWith());
 						JOptionPane.showMessageDialog(null, result.getCount() +
 								" occurrences replaced.");
 						break;
@@ -252,6 +315,22 @@ public class TextAreaDialogs {
 		};
 	}
 	
+	public LimitedConcurrentList<String> getSearchList() {
+		return searchList;
+	}
+
+	public void setSearchList(LimitedConcurrentList<String> searchList) {
+		this.searchList = searchList;
+	}
+
+	public LimitedConcurrentList<String> getReplaceList() {
+		return replaceList;
+	}
+
+	public void setReplaceList(LimitedConcurrentList<String> replaceList) {
+		this.replaceList = replaceList;
+	}
+
 	public static void applyGUIEffects(JDialog dialog){
 		 dialog.getContentPane().setBackground( Color.BLACK );
 	}

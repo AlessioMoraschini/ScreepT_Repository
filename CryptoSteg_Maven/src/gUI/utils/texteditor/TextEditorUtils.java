@@ -599,19 +599,19 @@ public class TextEditorUtils {
 
 	public void errorAdvice(String msg) {
 		Sounds.playSound(SoundsConfigurator.ERROR, null);
-		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(new Color(232, 102, 46));
+		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
 		currentTextEditor.footerPanel.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(GeneralConfig.ADVICE_FOOTER_TIMEOUT);
 	}
 
 	public void successAdvice(String msg) {
-		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(Color.GREEN);
+		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
 		currentTextEditor.footerPanel.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(GeneralConfig.ADVICE_FOOTER_TIMEOUT);
 	}
 
 	public void infoAdvice(String msg) {
-		currentTextEditor.footerPanel.lblAdvice.setForeground(Color.BLUE);
+		currentTextEditor.footerPanel.lblAdvice.setForeground(GeneralConfig.ADVICE_FOOTER_INFO_COLOR);
 		currentTextEditor.footerPanel.lblAdvice.setText(msg);
 		timeoutLblAdvice(GeneralConfig.ADVICE_FOOTER_TIMEOUT);
 	}
@@ -854,8 +854,8 @@ public class TextEditorUtils {
 		FindDialog searchBox = currentTextEditor.subHeaderPanel.searchBox;
 		ReplaceDialog replaceBox = currentTextEditor.subHeaderPanel.replaceDialog;
 		if (searchBox != null && replaceBox != null) {
-			currentTextEditor.textEditorUtils.textAreaDialogs.allineateFindToReplaceDialog(searchBox, replaceBox);
-			currentTextEditor.textEditorUtils.textAreaDialogs.allineateReplaceToFindDialog(searchBox, replaceBox);
+			TextAreaDialogs.allineateFindToReplaceDialog(searchBox, replaceBox);
+			TextAreaDialogs.allineateReplaceToFindDialog(searchBox, replaceBox);
 		}
 		
 		if (currentTextEditor.subHeaderPanel.pdfParserBox != null) {

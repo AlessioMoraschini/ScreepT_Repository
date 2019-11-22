@@ -999,13 +999,75 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						if (searchBox == null) {
 							searchBox = textEditorUtils.textAreaDialogs.getSearchDialog(parent.parentFrame,  null, textEditorUtils,"successAdvice", "errorAdvice");
 							GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
+							try {
+								textEditorUtils.textAreaDialogs.setComboItems(
+										searchBox, currentConfiguration.getTextEditorOpt().lastSearchTerms.getList(), true);
+							} catch (IllegalArgumentException | IllegalAccessException e) {
+								logger.error("Cannot update search dialog combobox");
+							}
 						} else {
 							searchBox.setVisible(true);
 							searchBox.toFront();
 							searchBox.requestFocus();
 						}
+						
+						searchBox.addWindowListener(new java.awt.event.WindowAdapter() {
+							@Override
+							public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+								currentConfiguration.getTextEditorOpt().lastSearchTerms.addNreplaceToTopIfPresent(textEditorUtils.textAreaDialogs.searchList.getList());
+								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastSearchTerms", currentConfiguration.getTextEditorOpt().lastSearchTerms.toCharSeparatedString(","));
+								
+								searchBox.dispose();
+							}
+						});
+						
 						searchBox.setLocationRelativeTo(mainApplication.getMainFrame());
 						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
+					}
+				});
+			}
+		});
+		
+		// REPLACE TEXT
+		btnReplaceText.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (replaceDialog == null) {
+							replaceDialog = textEditorUtils.textAreaDialogs.getReplaceDialog(
+									parent.parentFrame, null, textEditorUtils,"successAdvice", "errorAdvice");
+							GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_REPLACE_TXT, replaceDialog);
+							try {
+								textEditorUtils.textAreaDialogs.setComboItems(
+										replaceDialog, currentConfiguration.getTextEditorOpt().lastReplaceTerms.getList(), false);
+								textEditorUtils.textAreaDialogs.setComboItems(
+										replaceDialog, currentConfiguration.getTextEditorOpt().lastSearchTerms.getList(), true);
+							} catch (IllegalArgumentException | IllegalAccessException e) {
+								logger.error("Cannot update replace dialog combobox");
+							}
+						} else {
+							replaceDialog.setVisible(true);
+							replaceDialog.toFront();
+							replaceDialog.requestFocus();
+						}
+						
+						replaceDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+							@Override
+							public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+								// Backup replaced
+								currentConfiguration.getTextEditorOpt().lastReplaceTerms.addNreplaceToTopIfPresent(textEditorUtils.textAreaDialogs.replaceList.getList());
+								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastReplaceTerms", currentConfiguration.getTextEditorOpt().lastReplaceTerms.toCharSeparatedString(","));
+								
+								// Backup searched
+								currentConfiguration.getTextEditorOpt().lastSearchTerms.addNreplaceToTopIfPresent(textEditorUtils.textAreaDialogs.searchList.getList());
+								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastSearchTerms", currentConfiguration.getTextEditorOpt().lastSearchTerms.toCharSeparatedString(","));
+								
+								replaceDialog.dispose();
+							}
+						});
+
+						replaceDialog.setLocationRelativeTo(mainApplication.getMainFrame());
+						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), replaceDialog, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -1106,27 +1168,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			}
 
 			public void mouseClicked(MouseEvent e) {
-			}
-		});
-
-		// REPLACE TEXT
-		btnReplaceText.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						if (replaceDialog == null) {
-							replaceDialog = textEditorUtils.textAreaDialogs.getReplaceDialog(
-									parent.parentFrame, null, textEditorUtils,"successAdvice", "errorAdvice");
-							GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_REPLACE_TXT, replaceDialog);
-						} else {
-							replaceDialog.setVisible(true);
-							replaceDialog.toFront();
-							replaceDialog.requestFocus();
-						}
-						replaceDialog.setLocationRelativeTo(mainApplication.getMainFrame());
-						GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), replaceDialog, JFrame.MAXIMIZED_BOTH);
-					}
-				});
 			}
 		});
 

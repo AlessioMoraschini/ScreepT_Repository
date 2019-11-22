@@ -165,10 +165,15 @@ public class GeneralConfig {
 	// TEXT EDITOR DEFAULTS
 	public static int UNDO_MAX_LIM;
 	public static int ADVICE_FOOTER_TIMEOUT;
+	public static Color ADVICE_FOOTER_OK_COLOR;
+	public static Color ADVICE_FOOTER_KO_COLOR;
+	public static Color ADVICE_FOOTER_INFO_COLOR;
 	public static ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS;
 	public static int DEFAULT_TREE_ROW_HEIGHT;
 	public static int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);
 	public static int MAX_WORKSPACE_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_WORKSPACE_LIST_SIZE", 15);
+	public static int MAX_REPLACE_DIAL_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_REPLACE_DIAL_LIST_SIZE", 50);
+	public static int MAX_SEARCH_DIAL_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_SEARCH_DIAL_LIST_SIZE", 50);
 	public static int MAX_HISTORY_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_HISTORY_SIZE", 40);
 	public static boolean RECTANGULAR_TXT_SELECTION_ALLOWED;
 	public static boolean PRELOAD_TXT_EDITOR_FLAG;
@@ -489,6 +494,9 @@ public class GeneralConfig {
 			// TEXT EDITOR DEFAULTS
 			UNDO_MAX_LIM = resourcesFilePathsMappings.getIntVarFromProps("UNDO_MAX_LIM", 1000);
 			ADVICE_FOOTER_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("ADVICE_FOOTER_TIMEOUT", 7000);
+			ADVICE_FOOTER_OK_COLOR = resourcesFilePathsMappings.getColorVarFromProps("ADVICE_FOOTER_OK_COLOR", Color.GREEN);
+			ADVICE_FOOTER_KO_COLOR = resourcesFilePathsMappings.getColorVarFromProps("ADVICE_FOOTER_KO_COLOR", Color.RED);
+			ADVICE_FOOTER_INFO_COLOR = resourcesFilePathsMappings.getColorVarFromProps("ADVICE_FOOTER_INFO_COLOR", Color.BLUE);
 			TXT_EDITOR_UPPERCASE_SEPARATORS = getUppercaseSeparators(resourcesFilePathsMappings.getProperty("TXT_EDITOR_UPPERCASE_SEPARATORS"), ",");
 			DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
 			RECTANGULAR_TXT_SELECTION_ALLOWED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("RECTANGULAR_TXT_SELECTION_ALLOWED"));

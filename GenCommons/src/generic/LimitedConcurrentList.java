@@ -1,6 +1,7 @@
 package generic;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -16,7 +17,7 @@ public class LimitedConcurrentList <T>{
 	
 	public LimitedConcurrentList(int maxSize){
 		this.maxSize = maxSize;
-		list = new Vector();
+		list = new Vector<T>();
 	}
 	
 	@Override
@@ -27,16 +28,69 @@ public class LimitedConcurrentList <T>{
 	// methods 
 	
 	public boolean add(T element) {
-		boolean condition = list.size() > maxSize;
-		boolean maxReached = (condition) ? true : false;
+		boolean maxReached = list.size() > maxSize;
 		
 		synchronized (list) {
-			if (condition && !list.isEmpty()) {
+			if (maxReached && !list.isEmpty()) {
 				list.remove(0);
 			}
 			list.add(element);
 		}
 		return maxReached;
+	}
+
+	public boolean addAll(Collection<T> elements) {
+		boolean maxReached = list.size() > maxSize;
+		
+		synchronized (list) {
+			for (T element : elements) {
+				if (maxReached && !list.isEmpty()) {
+					list.remove(0);
+				}
+				list.add(element);
+			}
+		}
+		return maxReached;
+	}
+
+	public boolean addIfNotPresent(Collection<T> elements) {
+		boolean added = false;
+		
+		synchronized (list) {
+			for (T element : elements) {
+				if (!list.contains(element)) {
+					list.add(element);
+				}
+			}
+		}
+		return added;
+	}
+
+	public void addNreplaceToTopIfPresent(Collection<T> elements) {
+		
+		synchronized (list) {
+			for (T element : elements) {
+				if (list.contains(element)) {
+					list.remove(element);
+					list.add(element);
+				} else {
+					list.add(element);
+				}
+					
+			}
+		}
+	}
+
+	public void addNreplaceToTopIfPresent(T element) {
+		
+		synchronized (list) {
+			if (list.contains(element)) {
+				list.remove(element);
+				list.add(element);
+			} else {
+				list.add(element);
+			}
+		}
 	}
 	
 	public boolean addLast(T element) {

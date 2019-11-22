@@ -45,6 +45,8 @@ public class TextEditorOption {
 	public static final boolean DFAULT_AUTO_SYNTAX_SYN_FLAG = true;
 	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles;
 	public static LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces;
+	public static LimitedConcurrentList<String> DEF_lastReplaceTerms;
+	public static LimitedConcurrentList<String> DEF_lastSearchTerms;
 	
 	// TEXT AREA DETAIL
 	public static final boolean DEF_codeFoldingEnabled = true;
@@ -82,6 +84,8 @@ public class TextEditorOption {
 	public String lastEscapeLanguage;
 	public LimitedConcurrentList<FileNamed> lastOpenedFiles;
 	public LimitedConcurrentList<FileNamed> lastSelectedWorkspaces;
+	public LimitedConcurrentList<String> lastReplaceTerms;
+	public LimitedConcurrentList<String> lastSearchTerms;
 	
 	// TEXT AREA
 	public String defaultWorkspacePath;
@@ -128,10 +132,14 @@ public class TextEditorOption {
 	public TextEditorOption() {
 		DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);      
 		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
+		DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
+		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
 		
 		openedFileList = new ArrayList<String>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
 		lastSelectedWorkspaces = DEF_lastSelectedWorkspaces;
+		lastReplaceTerms = DEF_lastReplaceTerms;
+		lastSearchTerms = DEF_lastSearchTerms;
 		margin = DEFAULT_MARGIN;
 		voiceRate = DEFAULT_VOICE_RATE;
 		inlinedTabs = DEFAULT_TAB_INLINE;
@@ -226,6 +234,30 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public LimitedConcurrentList<String> getLastSearchTerms() {
+		return lastSearchTerms;
+	}
+
+	public void setLastSearchTerms(LimitedConcurrentList<String> lastSearchTerms) {
+		this.lastSearchTerms = lastSearchTerms;
+	}
+
+	public LimitedConcurrentList<FileNamed> getLastSelectedWorkspaces() {
+		return lastSelectedWorkspaces;
+	}
+
+	public void setLastSelectedWorkspaces(LimitedConcurrentList<FileNamed> lastSelectedWorkspaces) {
+		this.lastSelectedWorkspaces = lastSelectedWorkspaces;
+	}
+
+	public LimitedConcurrentList<String> getLastReplaceTerms() {
+		return lastReplaceTerms;
+	}
+
+	public void setLastReplaceTerms(LimitedConcurrentList<String> lastReplaceTerms) {
+		this.lastReplaceTerms = lastReplaceTerms;
+	}
+
 	public boolean isClipboardSyncStyle() {
 		return clipboardSyncStyle;
 	}

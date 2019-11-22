@@ -1578,6 +1578,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				((ClipboardPanel)initTxtWriter.rightSplitContainer).saveCurrClipboardSilent();
 			}
 		}
+		
 		logger.info("\n => Opened files in textEditor added to configuration");
 	}
 	

@@ -483,9 +483,9 @@ public class CustomTabbedEditor {
 	
 	public void removeAllTabs(final boolean askIfUnsaved) {
 		
-		for (breakRemoveLoopIndex = mainTabList.getTabCount(); breakRemoveLoopIndex > 0 ; breakRemoveLoopIndex--) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				for (breakRemoveLoopIndex = mainTabList.getTabCount(); breakRemoveLoopIndex >= 0 ; breakRemoveLoopIndex--) {
 					try {
 						if (!askIfUnsaved) {
 							loadedList.getList().get(breakRemoveLoopIndex).unsaved = false;
@@ -498,13 +498,14 @@ public class CustomTabbedEditor {
 					} catch (Exception e) {
 						logger.warn("Attention: an error occurred when tryng to close current tab (N°" + breakRemoveLoopIndex+")");
 					}
+					if(breakRemoveLoop) {
+						break;
+					}
 				}
-			});
-			
-			if(breakRemoveLoop) {
-				break;
+				
+				updateSavedLabelNTab(0);
 			}
-		}
+		});
 	}
 	
 	/**

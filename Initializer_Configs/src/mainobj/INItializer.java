@@ -372,7 +372,6 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 				textEditorOpt.getOpenedFileList().add(tokenizerOpenedFiles.nextToken());
 			}
 		} catch (Exception e1) {
-			pathsOpenFilesString = "";
 		}
 		
 		String lastOpenedFiles;
@@ -384,7 +383,28 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 				textEditorOpt.getLastOpenedFiles().addLast(new FileNamed(tokenizerOpenedFiles.nextToken()));
 			}
 		} catch (Exception e1) {
-			lastOpenedFiles = "";
+		}
+
+		String lastSearchTerms;
+		try {
+			lastSearchTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastSearchTerms");
+			StringTokenizer tokenizerSearchedTerms = new StringTokenizer(lastSearchTerms, ",");
+			textEditorOpt.getLastSearchTerms().getList().clear();		
+			while(tokenizerSearchedTerms.hasMoreTokens()) {
+				textEditorOpt.getLastSearchTerms().addLast(tokenizerSearchedTerms.nextToken());
+			}
+		} catch (Exception e1) {
+		}
+		
+		String lastReplaceTerms;
+		try {
+			lastReplaceTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastReplaceTerms");
+			StringTokenizer tokenizerReplaceTerms = new StringTokenizer(lastReplaceTerms, ",");
+			textEditorOpt.getLastReplaceTerms().getList().clear();		
+			while(tokenizerReplaceTerms.hasMoreTokens()) {
+				textEditorOpt.getLastReplaceTerms().addLast(tokenizerReplaceTerms.nextToken());
+			}
+		} catch (Exception e1) {
 		}
 		
 		String lastSelectedWorkspaces;
@@ -552,6 +572,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "prefDictspellChecker", textEditorOpt.prefDictspellChecker);
 		iniFile.put(TEXT_EDITOR_OPT, "lastOpenedFiles", textEditorOpt.lastOpenedFiles.toCharSeparatedString(","));
 		iniFile.put(TEXT_EDITOR_OPT, "lastSelectedWorkspaces", textEditorOpt.lastSelectedWorkspaces.toCharSeparatedString(","));
+		iniFile.put(TEXT_EDITOR_OPT, "lastReplaceTerms", textEditorOpt.lastReplaceTerms.toCharSeparatedString(","));
+		iniFile.put(TEXT_EDITOR_OPT, "lastSearchTerms", textEditorOpt.lastSearchTerms.toCharSeparatedString(","));
 
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
@@ -624,6 +646,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nLAST OPENED FILES: ").append(textEditorOpt.lastOpenedFiles.toCharSeparatedString(","))
 			   .append("\nLAST SELECTED WORKSPACES: ").append(textEditorOpt.lastSelectedWorkspaces.toCharSeparatedString(","))
+			   .append("\nLAST USED REPLACE TERMS: ").append(textEditorOpt.lastReplaceTerms.toCharSeparatedString(","))
+			   .append("\nLAST USED SEARCH TERMS: ").append(textEditorOpt.lastSearchTerms.toCharSeparatedString(","))
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
 			   .append("\nLAST CODE ESCAPE LANGUAGE: ").append(textEditorOpt.lastEscapeLanguage)
 

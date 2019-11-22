@@ -76,6 +76,9 @@ public class UpdateProgressPanelMin {
         }).start();
     }
     
+    /**
+	 * @wbp.parser.constructor
+	 */
     public UpdateProgressPanelMin(boolean secondBar) {
     	
 		if (secondBar) {
@@ -157,7 +160,7 @@ public class UpdateProgressPanelMin {
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0};
 		gridBagLayout.columnWidths = new int[]{0, 10, 100, 0, 10};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0};
-		gridBagLayout.rowHeights = new int[]{40, 40, 25};
+		gridBagLayout.rowHeights = new int[]{30, 40, 35};
 		
 		dialog = new JDialog();
 		dialog.setMinimumSize(new Dimension(PanelWidth, PanelHeight));
@@ -173,7 +176,7 @@ public class UpdateProgressPanelMin {
         gbc_label.gridx = 1;
         gbc_label.gridy = 0;
         label = new JLabel("  I'm workin' !");
-        label.setFont(new Font("Segoe UI Semibold", Font.BOLD, 15));
+        label.setFont(new Font("Segoe UI Semibold", Font.BOLD, 16));
         label.setOpaque(false);
         dialog.add(label, gbc_label);
        
