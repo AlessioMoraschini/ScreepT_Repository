@@ -323,6 +323,8 @@ public class MainGuiParent {
 		
 		updateLastOpenedFiles(currentConfiguration.getTextEditorOpt().getLastOpenedFiles());
 		updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
+		
+		menuBar.repaint();
 	}
 	
 	/**

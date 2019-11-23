@@ -138,18 +138,31 @@ public class MainGuiUtils {
 				// start correct panel
 				if(ChargeIniLog.class.equals(target.getContentPane().getComponent(0).getClass())) {
 					mainAppReference.mntmFullScreenMode.doClick();
-				
+					fullScreenToggleMenuBar();
 				}else if(TextEditor.class.equals(target.getContentPane().getComponent(0).getClass()) && MainGUI.initTxtWriter != null) {
 					MainGUI.initTxtWriter.textEditorUtils.toggleImersiveMode();
 				
 				}else if(CrypterPanel.class.equals(target.getContentPane().getComponent(0).getClass())) {
 					mainAppReference.mntmFullScreenMode.doClick();
-				
+					fullScreenToggleMenuBar();
 				}else {
 					mainAppReference.mntmFullScreenMode.doClick();
+					fullScreenToggleMenuBar();
 				}
+				
 			}
 		});
+	}
+	
+	public void fullScreenToggleMenuBar() {
+		// Ensure menu bar visible when not full screen
+		if (mainAppReference.isFullScreen.get() && !mainAppReference.menuBar.isVisible()) {
+			mainAppReference.menuBar.setVisible(true);
+			mainAppReference.isImmersiveModeOn.set(false);
+		} else {
+			mainAppReference.menuBar.setVisible(false);
+			mainAppReference.isImmersiveModeOn.set(true);
+		}
 	}
 	
 	/**

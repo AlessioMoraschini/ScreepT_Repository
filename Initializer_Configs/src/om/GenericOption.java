@@ -1,5 +1,7 @@
 package om;
 
+import java.util.Locale;
+
 import javax.swing.JPanel;
 
 public class GenericOption {
@@ -12,6 +14,7 @@ public class GenericOption {
 	public final static boolean DEF_exceptionAdvicesEnabled = false;
 	public final static boolean DEF_automaticUpdateOn = true;
 	public final static Class<?> DEFAULT_PANEL_CLASS_AT_START = JPanel.class;
+	public final static Locale DEF_locale = Locale.getDefault();
 
 	// FILEDS
 	private String userName;
@@ -21,6 +24,7 @@ public class GenericOption {
 	private boolean exceptionAdvicesEnabled;
 	private Class<?> lastPanelOpened;
 	private boolean automaticUpdateOn;
+	private Locale locale;
 	
 	public GenericOption() {
 		userName = DEFAULT_USERNAME;
@@ -30,6 +34,7 @@ public class GenericOption {
 		lastPanelOpened = DEFAULT_PANEL_CLASS_AT_START;
 		exceptionAdvicesEnabled = DEF_exceptionAdvicesEnabled;
 		automaticUpdateOn = DEF_automaticUpdateOn;
+		locale = DEF_locale;
 	}
 	
 	public GenericOption(String user, String chars, boolean ultraSec, float genVolume) {
@@ -40,6 +45,14 @@ public class GenericOption {
 		
 	}
 	
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
 	public boolean isAutomaticUpdateOn() {
 		return automaticUpdateOn;
 	}

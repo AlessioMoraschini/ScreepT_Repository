@@ -753,6 +753,14 @@ public class TextEditorUtils {
 		
 		// Retrieve current pane type and call standard method to sync position and content
 		getTypedIRightPanel().sync();
+		
+		Color textAreaBackgground = loadedTabObj.textArea.getBackground();
+		Color darkerLight = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 2);
+		Color darkerMed = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 3);
+		Color darkerMore = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 4);
+		currentTextEditor.setBackground(darkerLight);
+		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(darkerLight);
+		currentTextEditor.mainPanel.setBackground(darkerLight);
 	}
 	
 	/**

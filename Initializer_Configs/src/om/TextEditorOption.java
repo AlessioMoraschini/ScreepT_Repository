@@ -58,6 +58,8 @@ public class TextEditorOption {
 	public static final boolean DEF_bracketMatchingEnabled = true;
 	public static final boolean DEF_animateBracketMatching = true;
 	public static final boolean DEF_fadeCurrentLineHighlight = true;
+	public static final boolean DEF_paintMatchedBracketPair = true;
+	public static final boolean DEF_whiteSpaceVisible = false;
 	public static final boolean DEF_useFocusableTips = true;
 	public static final boolean DEF_roundedSelectionEdges = true;
 	public static final boolean DEF_paintMarkOccurrencesBorder = true;
@@ -105,11 +107,13 @@ public class TextEditorOption {
 	public boolean defaultAutoSyntaxSync;
 	public boolean breaklineActive;
 	
-	public boolean animateBracketMatching;
 	public boolean antialiasedTxtArea;
-	public boolean autoIndentEnabled;
 	public boolean bracketMatchingEnabled;
 	public boolean clearWhitespaceLinesEnabled;
+	public boolean animateBracketMatching;
+	public boolean paintMatchedBracketPair;
+	public boolean whiteSpaceVisible;
+	public boolean autoIndentEnabled;
 	public boolean closeCurlyBraces;
 	public boolean closeMarkupTags;
 	public boolean codeFoldingEnabled;
@@ -175,6 +179,8 @@ public class TextEditorOption {
 		closeCurlyBraces = DEF_closeCurlyBraces;
 		bracketMatchingEnabled = DEF_bracketMatchingEnabled;
 		animateBracketMatching = DEF_animateBracketMatching;
+		paintMatchedBracketPair = DEF_paintMatchedBracketPair;
+		whiteSpaceVisible = DEF_whiteSpaceVisible;
 		fadeCurrentLineHighlight = DEF_fadeCurrentLineHighlight;
 		useFocusableTips = DEF_useFocusableTips;
 		roundedSelectionEdges = DEF_roundedSelectionEdges;
@@ -234,6 +240,22 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public boolean isPaintMatchedBracketPair() {
+		return paintMatchedBracketPair;
+	}
+
+	public void setPaintMatchedBracketPair(boolean paintMatchedBracketPair) {
+		this.paintMatchedBracketPair = paintMatchedBracketPair;
+	}
+
+	public boolean isWhiteSpaceVisible() {
+		return whiteSpaceVisible;
+	}
+
+	public void setWhiteSpaceVisible(boolean whiteSpaceVisible) {
+		this.whiteSpaceVisible = whiteSpaceVisible;
+	}
+
 	public LimitedConcurrentList<String> getLastSearchTerms() {
 		return lastSearchTerms;
 	}

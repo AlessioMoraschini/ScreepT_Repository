@@ -209,7 +209,7 @@ public class GuiUtils {
 			if(!suppported) {
 				unsupportedAdvice = extension + " is not yet supported... maybe coming soon? ;)";
 			}
-			Sounds.playSound(SoundsConfigurator.ERROR, 0.8f);
+			Sounds.playSound(SoundsConfigurator.ERROR, null);
 			logger.debug("Something has gone wrong during formatting of source code :-> skipping text replace in text area");
 			dialogHelper.warn("Cannot format with current settings\n\n"+unsupportedAdvice, "Cannot Format text");
 		}
@@ -236,7 +236,7 @@ public class GuiUtils {
 	}
 	
 	private static void manageFormatterException(Exception e, String extension) {
-		Sounds.playSound(SoundsConfigurator.ERROR, 0.8f);
+		Sounds.playSound(SoundsConfigurator.ERROR, null);
 		String exception = Arrays.deepToString(e.getStackTrace());
 		logger.error("error formatting "+ extension +" string !", e);
 		dialogHelper.errorScroll("Error reading " + extension + " format: " + exception, "format Error");

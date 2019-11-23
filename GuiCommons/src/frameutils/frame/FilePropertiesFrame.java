@@ -115,14 +115,14 @@ public class FilePropertiesFrame extends JFrame{
 			}
 		});
 		
-		lblCreatedOn = new JLabel("Created on:");
-		lblCreatedOn.setForeground(Color.LIGHT_GRAY);
-		lblCreatedOn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblCreatedOn, "cell 4 0,alignx right");
+		lblSize = new JLabel("File Size:");
+		lblSize.setForeground(Color.LIGHT_GRAY);
+		lblSize.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel.add(lblSize, "cell 4 0,alignx right");
 		
-		dynLblCreationDate = new JLabel(" 1970/01/01 - 01:00:00");
-		dynLblCreationDate.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblCreationDate, "cell 5 0 2 1,alignx right");
+		dynLblSize = new JLabel("");
+		dynLblSize.setForeground(new Color(176, 196, 222));
+		panel.add(dynLblSize, "cell 5 0 2 1,alignx left");
 		
 		JSeparator separator = new JSeparator();
 		separator.setBackground(Color.GRAY);
@@ -174,29 +174,29 @@ public class FilePropertiesFrame extends JFrame{
 		lblLastAccess = new JLabel("Last Access:");
 		lblLastAccess.setForeground(Color.LIGHT_GRAY);
 		lblLastAccess.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblLastAccess, "cell 0 4,alignx right");
+		panel.add(lblLastAccess, "cell 0 4,alignx right,aligny center");
 		
 		dynLblLastAccess = new JLabel(" 1970/01/01 - 01:00:00");
 		dynLblLastAccess.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblLastAccess, "cell 1 4,alignx left");
+		panel.add(dynLblLastAccess, "cell 1 4,alignx left,aligny center");
 		
-		lblSize = new JLabel("File Size:");
-		lblSize.setForeground(Color.LIGHT_GRAY);
-		lblSize.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblSize, "cell 2 4,alignx right");
+		lblCreatedOn = new JLabel("Created on:");
+		lblCreatedOn.setForeground(Color.LIGHT_GRAY);
+		lblCreatedOn.setFont(new Font("Tahoma", Font.BOLD, 14));
+		panel.add(lblCreatedOn, "cell 2 4,alignx right,aligny center");
 		
-		dynLblSize = new JLabel("");
-		dynLblSize.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblSize, "cell 3 4,alignx left");
+		dynLblCreationDate = new JLabel(" 1970/01/01 - 01:00:00");
+		dynLblCreationDate.setForeground(new Color(176, 196, 222));
+		panel.add(dynLblCreationDate, "cell 3 4,alignx left,aligny center");
 		
 		lblLastModified = new JLabel("Last Change:");
 		lblLastModified.setForeground(Color.LIGHT_GRAY);
 		lblLastModified.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panel.add(lblLastModified, "cell 4 4,alignx right");
+		panel.add(lblLastModified, "cell 4 4,alignx right,aligny center");
 		
 		dynLblLastChange = new JLabel((String) null);
 		dynLblLastChange.setForeground(new Color(176, 196, 222));
-		panel.add(dynLblLastChange, "cell 5 4 2 1,alignx left");
+		panel.add(dynLblLastChange, "cell 5 4 2 1,alignx left,aligny center");
 		
 		footerPanel = new JPanel();
 		footerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -213,17 +213,17 @@ public class FilePropertiesFrame extends JFrame{
 		dynLblCanWrite = new JLabel((String) null);
 		dynLblCanWrite.setForeground(Color.WHITE);
 		dynLblCanWrite.setFont(new Font("Segoe-UI", Font.BOLD, 14));
-		footerPanel.add(dynLblCanWrite, "cell 1 0");
+		footerPanel.add(dynLblCanWrite, "cell 1 0,alignx center");
 		
 		dynLblCanExecute = new JLabel((String) null);
 		dynLblCanExecute.setForeground(Color.WHITE);
 		dynLblCanExecute.setFont(new Font("Segoe-UI", Font.BOLD, 14));
-		footerPanel.add(dynLblCanExecute, "cell 2 0");
+		footerPanel.add(dynLblCanExecute, "cell 2 0,alignx center");
 		
 		dynLblIsHidden = new JLabel((String) null);
 		dynLblIsHidden.setForeground(Color.WHITE);
 		dynLblIsHidden.setFont(new Font("Segoe-UI", Font.BOLD, 14));
-		footerPanel.add(dynLblIsHidden, "cell 3 0");
+		footerPanel.add(dynLblIsHidden, "cell 3 0,alignx center");
 		
 		initializeValues();
 		

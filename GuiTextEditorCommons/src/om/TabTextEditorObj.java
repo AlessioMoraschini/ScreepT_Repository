@@ -7,6 +7,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
@@ -162,6 +163,7 @@ public class TabTextEditorObj {
 				textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
 				textArea.setAnimateBracketMatching(txtOptions.animateBracketMatching);
 				textArea.setBracketMatchingEnabled(txtOptions.bracketMatchingEnabled);
+				textArea.setPaintMatchedBracketPair(txtOptions.paintMatchedBracketPair);
 				textArea.setFadeCurrentLineHighlight(txtOptions.fadeCurrentLineHighlight);
 				textArea.setUseFocusableTips(txtOptions.useFocusableTips);
 				textArea.setHighlightSecondaryLanguages(txtOptions.highlightSecondaryLanguages);
@@ -175,6 +177,8 @@ public class TabTextEditorObj {
 				textArea.setPaintMarkOccurrencesBorder(txtOptions.paintMarkOccurrencesBorder);
 				textArea.setRoundedSelectionEdges(txtOptions.roundedSelectionEdges);
 				textArea.setClearWhitespaceLinesEnabled(txtOptions.clearWhitespaceLinesEnabled);
+				textArea.setWhitespaceVisible(txtOptions.whiteSpaceVisible);
+				textArea.setLocale(Locale.getDefault());
 			}
 		});
 		

@@ -44,7 +44,7 @@ public class MainGuiGeneralAppStarter {
 	// LOADER
 	public static LauncherLoaderFrame loaderGraphics;
 	public static final Dimension screenSize = GuiUtils.getScreenSize();
-	public static final Dimension minimumSize = new Dimension(1200,650);
+	public static final Dimension minimumSize = new Dimension(1400,650);
 		
 	// Main configuration reference for all sub-modules
 	private static INItializer currentConfiguration;
@@ -81,7 +81,7 @@ public class MainGuiGeneralAppStarter {
 				AWTExceptionHandler.init();
 				
 			} catch (Exception e) {
-				Sounds.playSound(SoundsConfigurator.ERROR, Sounds.HIGH);
+				Sounds.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
 				throw e;
 			}
@@ -121,7 +121,7 @@ public class MainGuiGeneralAppStarter {
 				GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, GeneralConfig.TOOLTIP_RESHOW_DELAY, tooltipFontFromProps);
 			
 			} catch (Exception e) {
-				Sounds.playSound(SoundsConfigurator.ERROR, Sounds.HIGH);
+				Sounds.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot setup Tooltips general graphics, an error occurred", "Cannot load Tooltips props", e);
 			}
 			
@@ -135,7 +135,7 @@ public class MainGuiGeneralAppStarter {
 				isLoggerReady = true;
 				
 			} catch (Exception e) {
-				Sounds.playSound(SoundsConfigurator.ERROR, Sounds.HIGH);
+				Sounds.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
 						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
 				throw e;
@@ -211,7 +211,7 @@ public class MainGuiGeneralAppStarter {
 			
 			if (forceCloseWithoutAsk || ParametricExceptionThread.isCriticalError(t)) {
 				logger.error(AWTExceptionHandler.CRITICAL_ERROR_MSG, t);
-				Sounds.playSound(SoundsConfigurator.ERROR, Sounds.MED_HIGH);
+				Sounds.playSound(SoundsConfigurator.ERROR, null);
 				
 				if (!forceCloseWithoutAsk) {
 					res = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelper.YES_OR_NO);
@@ -238,7 +238,7 @@ public class MainGuiGeneralAppStarter {
 				logger.error("An Exception occurred: ", t);
 				
 				if (currentConfiguration.getGenOpt().isExceptionAdvicesEnabled()) {
-					Sounds.playSound(SoundsConfigurator.SOUND_PLING, Sounds.MED);
+					Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 					res = new JOptionHelper(null).warnScroll(
 							"An Exception occurred, but I'still here ;) \n\n"
 									+ "(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"

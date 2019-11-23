@@ -51,7 +51,6 @@ public class ImageGeneralWorker {
 	public final static String[] SUPPORTED_EXTENSIONS = ImageIO.getWriterFileSuffixes();
 	
 	private final static int MAX_INT = Integer.MAX_VALUE;
-	private final static int MIN_INT = Integer.MIN_VALUE;
 	SecureRandom rand;
 
 	public final static int MAX_WIDTH_GEN = 4000;
@@ -95,6 +94,20 @@ public class ImageGeneralWorker {
 
 	public int Width() {
 		return image.getWidth();
+	}
+	
+	public static Color getDarkerNtimes(Color color, int n) {
+		for (int i = 0; i < n; i++) {
+			color = color.darker();
+		}
+		return color;
+	}
+
+	public static Color getBrighterNtimes(Color color, int n) {
+		for (int i = 0; i < n; i++) {
+			color = color.brighter();
+		}
+		return color;
 	}
 
 	/**

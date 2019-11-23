@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -261,7 +262,10 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		genOpt.setAutomaticUpdateOn(getBooleanFromString(iniReadFile.get(GEN_OPT, "automaticUpdateOn"), GenericOption.DEF_automaticUpdateOn));
 		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
-	
+		String readLocale = iniReadFile.get(GEN_OPT, "locale");
+		readLocale = (readLocale != null) ? readLocale : GenericOption.DEF_locale.toString();
+		Locale locale = new Locale(readLocale);
+		genOpt.setLocale(readLocale != null ? locale : GenericOption.DEF_locale);
 	}
 	
 	/**
@@ -341,6 +345,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setClipboardViewActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "clipboardViewActive"), TextEditorOption.DEF_clipboardViewActive));
 		textEditorOpt.setBreaklineActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "breakLineActive"), TextEditorOption.DEFAULT_BREAK_LINE));
 		textEditorOpt.setAntialiasedTxtArea(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "antialiasedTxtArea"), TextEditorOption.DEF_antialiasedTxtArea));
+		
 		textEditorOpt.setCodeFoldingEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "codeFoldingEnabled"), TextEditorOption.DEF_codeFoldingEnabled));
 		textEditorOpt.setAutoIndentEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "autoIndentEnabled"), TextEditorOption.DEF_autoIndentEnabled));
 		textEditorOpt.setMarkOccurrences(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "markOccurrences"), TextEditorOption.DEF_markOccurrences));
@@ -348,16 +353,20 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setCloseCurlyBraces(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "closeCurlyBraces"), TextEditorOption.DEF_closeCurlyBraces));
 		textEditorOpt.setBracketMatchingEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "bracketMatchingEnabled"), TextEditorOption.DEF_bracketMatchingEnabled));
 		textEditorOpt.setAnimateBracketMatching(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "animateBracketMatching"), TextEditorOption.DEF_animateBracketMatching));
+		textEditorOpt.setPaintMatchedBracketPair(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "paintMatchedBracketPair"), TextEditorOption.DEF_paintMatchedBracketPair));
+
+		textEditorOpt.setWhiteSpaceVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "whiteSpaceVisible"), TextEditorOption.DEF_whiteSpaceVisible));
+		textEditorOpt.setClearWhitespaceLinesEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "clearWhitespaceLinesEnabled"), TextEditorOption.DEF_clearWhitespaceLinesEnabled));
+		textEditorOpt.setMarkEndOfLine(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "markEndOfLine"), TextEditorOption.DEF_markEndOfLine));
+		
 		textEditorOpt.setFadeCurrentLineHighlight(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fadeCurrentLineHighlight"), TextEditorOption.DEF_fadeCurrentLineHighlight));
 		textEditorOpt.setUseFocusableTips(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "useFocusableTips"), TextEditorOption.DEF_useFocusableTips));
 		textEditorOpt.setRoundedSelectionEdges(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "roundedSelectionEdges"), TextEditorOption.DEF_roundedSelectionEdges));
 		textEditorOpt.setPaintMarkOccurrencesBorder(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "paintMarkOccurrencesBorder"), TextEditorOption.DEF_paintMarkOccurrencesBorder));
-		textEditorOpt.setClearWhitespaceLinesEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "clearWhitespaceLinesEnabled"), TextEditorOption.DEF_clearWhitespaceLinesEnabled));
 		textEditorOpt.setHighlightSecondaryLanguages(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "highlightSecondaryLanguages"), TextEditorOption.DEF_highlightSecondaryLanguages));
 		textEditorOpt.setFractionalFontMetricsEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fractionalFontMetricsEnabled"), TextEditorOption.DEF_fractionalFontMetricsEnabled));
 		textEditorOpt.setHyperLinksEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "hyperLinksEnabled"), TextEditorOption.DEF_hyperLinksEnabled));
 		textEditorOpt.setTabSpacesEmulated(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabSpacesEmulated"), TextEditorOption.DEF_tabsSpacesEmulated));
-		textEditorOpt.setMarkEndOfLine(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "markEndOfLine"), TextEditorOption.DEF_markEndOfLine));
 		textEditorOpt.setShowBracketsPopup(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "showBracketsPopup"), TextEditorOption.DEF_showBracketsPopup));
 		textEditorOpt.setSpellChecker(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "spellChecker"), TextEditorOption.DEF_spellChecker));
 		textEditorOpt.setPrefDictspellChecker(getSafeStringConf(TEXT_EDITOR_OPT, "prefDictspellChecker", TextEditorOption.DEF_prefDictspellChecker));
@@ -511,6 +520,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(GEN_OPT, "txtEditorFileMonitorActive", genOpt.isTxtEditorFileMonitorActive());
 		iniFile.put(GEN_OPT, "exceptionAdvicesEnabled", genOpt.isExceptionAdvicesEnabled());
 		iniFile.put(GEN_OPT, "automaticUpdateOn", genOpt.isAutomaticUpdateOn());
+		iniFile.put(GEN_OPT, "locale", genOpt.getLocale());
 	}
 	
 	public void writeImgConverterOptions() {
@@ -557,6 +567,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "closeCurlyBraces", textEditorOpt.defaultAutoSyntaxSync);
 		iniFile.put(TEXT_EDITOR_OPT, "bracketMatchingEnabled", textEditorOpt.defaultAutoSyntaxSync);
 		iniFile.put(TEXT_EDITOR_OPT, "animateBracketMatching", textEditorOpt.animateBracketMatching);
+		iniFile.put(TEXT_EDITOR_OPT, "whiteSpaceVisible", textEditorOpt.whiteSpaceVisible);
+		iniFile.put(TEXT_EDITOR_OPT, "paintMatchedBracketPair", textEditorOpt.paintMatchedBracketPair);
 		iniFile.put(TEXT_EDITOR_OPT, "fadeCurrentLineHighlight", textEditorOpt.fadeCurrentLineHighlight);
 		iniFile.put(TEXT_EDITOR_OPT, "useFocusableTips", textEditorOpt.useFocusableTips);
 		iniFile.put(TEXT_EDITOR_OPT, "roundedSelectionEdges", textEditorOpt.roundedSelectionEdges);
@@ -599,9 +611,10 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("USERNAME: ").append(genOpt.getUserName())
 			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
 			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
+			   .append("\nListen for uncatched exceptions and show them -> ").append(genOpt.isExceptionAdvicesEnabled())
 			   .append("\nTxt Editor: Listen for changes in current file -> ").append(genOpt.isTxtEditorFileMonitorActive())
-			   .append("\nTxt Editor: Listen for uncatched exceptions and show them -> ").append(genOpt.isExceptionAdvicesEnabled())
-			   .append("\nTxt Editor: Automatic check for updates at start -> ").append(genOpt.isAutomaticUpdateOn())
+			   .append("\nAutomatic check for updates at start -> ").append(genOpt.isAutomaticUpdateOn())
+			   .append("\nPreferred Locale: ").append(genOpt.getLocale())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
 		
 		// concat GUI_OPTION
@@ -665,6 +678,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nTAB LINE VISIBLE: ").append(textEditorOpt.tabLineVisible)
 			   .append("\nBRACKET MATCHING: ").append(textEditorOpt.bracketMatchingEnabled)
 			   .append("\nANIMATED BRACKETS MATCH: ").append(textEditorOpt.animateBracketMatching)
+			   .append("\nPAINT MATCHED BRACKETS PAIRS: ").append(textEditorOpt.paintMatchedBracketPair)
+			   .append("\nWHITESPACE VISIBLE: ").append(textEditorOpt.whiteSpaceVisible)
 			   .append("\nAUTO INDENT: ").append(textEditorOpt.autoIndentEnabled)
 			   .append("\nAUTO-BREAKLINE ACTIVE: ").append(textEditorOpt.breaklineActive)
 			   .append("\nCLEAR WHITESPACES LINES: ").append(textEditorOpt.clearWhitespaceLinesEnabled)

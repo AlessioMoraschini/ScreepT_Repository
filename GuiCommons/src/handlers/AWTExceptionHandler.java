@@ -95,7 +95,7 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 				Object res = options[1];
 				
 				if (ParametricExceptionThread.isCriticalError(t)) {
-					Sounds.playSound(SoundsConfigurator.ERROR, 0.6f);
+					Sounds.playSound(SoundsConfigurator.ERROR, null);
 					res = new JOptionHelper(null).errorScroll(
 							CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), 
 							"Critical Error",
@@ -105,7 +105,7 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 					
 				}else{
 					if (initOwner.getInitializer().getGenOpt().isExceptionAdvicesEnabled()) {
-						Sounds.playSound(SoundsConfigurator.SOUND_PLING, 0.5f);
+						Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 						res = new JOptionHelper(null).warnScroll(
 								"An Exception occurred, but I'm still here ;) "
 										+ "\n\n(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"

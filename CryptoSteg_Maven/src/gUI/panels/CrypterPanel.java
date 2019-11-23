@@ -38,6 +38,7 @@ import om.SupportedFileTextEditor;
 import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import splitpanel.SplitPaneUtils;
 import treeutils.om.FileTreeModel;
 import utils.RsyntaxUtils;
 import variousutils.HandleString;
@@ -45,6 +46,8 @@ import variousutils.HandleString;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Highlighter;
@@ -75,6 +78,8 @@ import java.awt.Rectangle;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
@@ -131,6 +136,7 @@ public class CrypterPanel extends JPanel {
 	private MainGUI mainApplication;
 	
 	// panels
+	private JPanel leftSplitTopPanel;
 	private JPanel panelMainContainer;
 	private JPanel panelContainerKey;
 	private JPanel panelStatus;	
@@ -149,7 +155,9 @@ public class CrypterPanel extends JPanel {
 	// info tabbed pane
 	private JTabbedPane tabbedPane;
 	
-	private JSplitPane leftSplitPaneVertical;
+	private JSplitPane leftSplitPaneVertical; // Left panel divided in two vertically (tree keys + infoTabbedPanel)
+	private JSplitPane mainSplitTextAreaMain; // leftSplitPaneVertical<->textArea
+	private JSplitPane mainSplitTextAreaRight; // textArea<->fileDragDropperTree
 	
 	// Buttons
 	private JButton btnDeCreept;
@@ -203,6 +211,10 @@ public class CrypterPanel extends JPanel {
 	
 	public UpdateProgressPanel generalProgress;
 	public JOptionHelper dialogHelper;
+	
+	int leftVerticalDivHeight;
+	int leftWidth = 400;
+	int rightWidth = 450;
 
 	/**
 	 * Create the application.
@@ -221,98 +233,13 @@ public class CrypterPanel extends JPanel {
 		screeptManagerFoF = new ScreeptManagerFileOrFolder(generalProgress, thisPanel, false);
 		parentFrame=parent.getMainFrame();
 		mainApplication = parent;
+		leftVerticalDivHeight = mainApplication.getMainFrame().getHeight() / 2;
 		
 		// set the background of the entire panel
 		setBackground(SystemColor.desktop);
 		
 		// start with layout & header
-		initializeHeader();		
-		
-		// initialize text areas		
-		initializeTextAreas();
-		
-		// initialize tree and panned events
-		configureNstartTree();		
-		initializeTree();
-		
-		// function to initialize values
-		initialize(currentConfiguration);
-				
-		// ADD ACTION LISTENERS TO LINK ACTIONS // 
-		addHandlers();
-		
-		// add Icons
-		addIcons();
-		
-		// new thread that updates jtree periodically
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
-			
-			@Override
-			public void run() {
-				while (true) {
-					String backupText = textAreaLog.getText();
-					Highlighter backH = textAreaLog.getHighlighter();
-					textAreaLog.setHighlighter(null);
-					TreePath[] backup = tree.getSelectionPaths();
-					tree = new JTree(treeModel);
-					// refresh tree gui
-					initializeTree();
-					refreshJTree();
-					tree.setSelectionPaths(backup);
-					textAreaLog.setText(backupText);
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e) {
-						logger.error(e.toString());
-					}
-					textAreaLog.setHighlighter(backH);
-				}
-			}
-		});
-		
-		// new thread keeps updated aeskey check and ReadyToCode label.
-		// this thread will check (every second) the value contained in the textfield
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
-			
-			@Override
-			public void run() {
-				while(MainGUI.mainAppRunning) {
-					
-					// check the aes key and set jtextField color
-					AesCipher.check(AESKEYtext);
-					// set the label text according to selected mode
-					if(checkIfReadyToCode() && !isCoderUsed()) {
-						enableCoderButtons();
-					}else {
-						disableCoderButtons();
-					}
-					
-					if(!isCoderUsed()) {
-						enableSelectionButtons();
-					}else {
-						disableSelectionButtons();
-					}
-					
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						logger.error(e.getMessage());
-					}
-
-				}
-			}
-		});
-		
-		logger.info(this.getClass().getName() + " Started");
-		
-		GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
-	}
-	
-	/**
-	 * THIS METHOD INITIALIZE GUI ELEMENTS AND LISTENERS
-	 */
-	private void initializeHeader() {
-		setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
+setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		
 		panelMainContainer = new JPanel();
 		panelMainContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -330,6 +257,7 @@ public class CrypterPanel extends JPanel {
 		
 		panelHeader = new JPanel();
 		panelHeader.setMinimumSize(new Dimension(10, 40));
+		panelHeader.setMaximumSize(new Dimension(GuiUtils.getScreenSize().width-22, 30));
 		panelHeader.setForeground(SystemColor.menu);
 		panelHeader.setBorder(new LineBorder(new Color(128, 128, 128)));
 		panelHeader.setBackground(new Color(51, 51, 51));
@@ -373,6 +301,8 @@ public class CrypterPanel extends JPanel {
 		btnCreept = new JButton("Creept");
 		btnCreept.setHorizontalTextPosition(SwingConstants.RIGHT);
 		btnCreept.setMinimumSize(new Dimension(120, 28));
+		btnCreept.setIconTextGap(10);
+		btnCreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
 		panelHeader.add(btnCreept, "cell 5 0,alignx right,aligny center");
 		btnCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnCreept.setRequestFocusEnabled(false);
@@ -384,6 +314,8 @@ public class CrypterPanel extends JPanel {
 		btnDeCreept = new JButton("DeCreept");
 		btnDeCreept.setHorizontalTextPosition(SwingConstants.RIGHT);
 		btnDeCreept.setMinimumSize(new Dimension(120, 28));
+		btnDeCreept.setIconTextGap(10);
+		btnDeCreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
 		panelHeader.add(btnDeCreept, "cell 6 0,alignx right,aligny center");
 		btnDeCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDeCreept.setMargin(new Insets(0, 0, 0, 20));
@@ -394,7 +326,7 @@ public class CrypterPanel extends JPanel {
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 14));
 		
 		panelStatus = new JPanel();
-		panelStatus.setMaximumSize(new Dimension(32767, 30));
+		panelStatus.setMaximumSize(new Dimension(GuiUtils.getScreenSize().width-22, 30));
 		panelStatus.setPreferredSize(new Dimension(10, 20));
 		panelStatus.setBorder(new LineBorder(new Color(105, 105, 105), 2));
 		panelStatus.setBackground(new Color(112, 128, 144));
@@ -485,27 +417,166 @@ public class CrypterPanel extends JPanel {
 		scrollPanelTabImagePreview.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPanelTabImagePreview.getViewport().setBackground(Color.DARK_GRAY);
 		
-		leftSplitPaneVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		leftSplitPaneVertical.setDividerLocation(mainApplication.getMainFrame().getHeight() / 2);
-		panelMainContainer.add(leftSplitPaneVertical, "cell 0 3 2 3,grow");
-		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBackground(Color.DARK_GRAY);
+		tabbedPane.setForeground(Color.LIGHT_GRAY);
 		tabbedPane.setOpaque(true);
-		leftSplitPaneVertical.setBottomComponent(tabbedPane);
 		tabbedPane.setBorder(new LineBorder(new Color(128, 128, 128)));
-		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);	
 		
+		leftSplitTopPanel = new JPanel();
+		leftSplitTopPanel.setLayout(new MigLayout("fill,insets 0", "[50%, grow][50%, grow]", "[30px:30px:30px] [100px,grow]"));
+		
+		// Left panel divided in two vertically (tree keys + infoTabbedPanel) - top component added later
+		leftSplitPaneVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		leftSplitPaneVertical.setDividerLocation(leftVerticalDivHeight);
+		leftSplitPaneVertical.setBottomComponent(tabbedPane);
+		leftSplitPaneVertical.setTopComponent(leftSplitTopPanel);
+
+		// textArea<->fileDragDropperTree
+		mainSplitTextAreaRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		mainSplitTextAreaRight.setDividerLocation(parent.getMainFrame().getWidth()-rightWidth-leftWidth);
+
+		// leftSplitPaneVertical<->mainSplitTextAreaNDragger splitPanel
+		mainSplitTextAreaMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		mainSplitTextAreaMain.setDividerLocation(leftWidth);
+		mainSplitTextAreaMain.setLeftComponent(leftSplitPaneVertical);
+		mainSplitTextAreaMain.setRightComponent(mainSplitTextAreaRight);
+		panelMainContainer.add(mainSplitTextAreaMain, "cell 0 2 5 4,grow");
+		
+		// initialize text areas		
+		initializeTextAreas();
+		
+		// initialize tree and panned events
+		configureNstartTree();		
+
+		/** TREE FOR KEY IMAGES **/
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				UIDefaults paneDefaults = new UIDefaults();
+				paneDefaults.put("Tree.selectionBackground", Color.BLACK);
+				/** TREE TO DRAG AND DROP SOURCE FILES **/
+				//		treeSourcesDragAndDrop.setCellRenderer(new TreeCellRendererDark());
+				treeSourcesDragAndDrop.putClientProperty("Nimbus.Overrides", paneDefaults);
+				treeSourcesDragAndDrop.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+				tree.setVisibleRowCount(10);
+				// set custom graphic renderer to jtree
+				// tree.setCellRenderer(new TreeCellRendererDark());
+				tree.setBackground(Color.GRAY);
+				tree.putClientProperty("Nimbus.Overrides", paneDefaults);
+				tree.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+				scrollPaneTree.setViewportView(tree);
+				tree.addTreeSelectionListener(treeListener);
+				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter(currentConf, thisPanel);
+			}
+		});
+		
+		// function to initialize values
+		initialize(currentConfiguration);
+				
+		// ADD ACTION LISTENERS TO LINK ACTIONS // 
+		addHandlers();
+		
+		// new thread that updates jtree periodically
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
+			
+			@Override
+			public void run() {
+				while (true) {
+					String backupText = textAreaLog.getText();
+					Highlighter backH = textAreaLog.getHighlighter();
+					textAreaLog.setHighlighter(null);
+					TreePath[] backup = tree.getSelectionPaths();
+					tree = new JTree(treeModel);
+					// refresh tree gui
+					refreshJTree();
+					tree.setSelectionPaths(backup);
+					textAreaLog.setText(backupText);
+					try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+						logger.error(e.toString());
+					}
+					textAreaLog.setHighlighter(backH);
+				}
+			}
+		});
+		
+		// new thread keeps updated aeskey check and ReadyToCode label.
+		// this thread will check (every second) the value contained in the textfield
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(MainGUI.mainAppRunning) {
+					
+					// check the aes key and set jtextField color
+					AesCipher.check(AESKEYtext);
+					// set the label text according to selected mode
+					if(checkIfReadyToCode() && !isCoderUsed()) {
+						enableCoderButtons();
+					}else {
+						disableCoderButtons();
+					}
+					
+					if(!isCoderUsed()) {
+						enableSelectionButtons();
+					}else {
+						disableSelectionButtons();
+					}
+					
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						logger.error(e.getMessage());
+					}
+
+				}
+			}
+		});
+		
+		logger.info(this.getClass().getName() + " Started");
+		
+		GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
+		SplitPaneUtils.resetAllDIviderColors(this, new Color(25, 25, 25));
 	}
 	
-	private void addIcons() {
-		btnCreept.setIconTextGap(10);
-		btnDeCreept.setIconTextGap(10);
-		btnCreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
-		btnDeCreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
+	public void resizeRightSplitter() {
+		leftWidth = mainSplitTextAreaMain.getDividerLocation();
+		final int max = mainApplication.getMainFrame().getWidth();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				mainSplitTextAreaRight.setDividerLocation(max - rightWidth - leftWidth);
+			}
+		});
 	}
 	
 	private void addHandlers(){
+		
+		tabbedPane.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				tabbedPane.setForeground(Color.LIGHT_GRAY);
+				tabbedPane.setForegroundAt(tabbedPane.getSelectedIndex(), (Color.WHITE));
+			}
+		});
+		
+		mainSplitTextAreaMain.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				resizeRightSplitter();
+			}
+		});
+
+		mainSplitTextAreaRight.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				int max = mainApplication.getMainFrame().getWidth();
+				rightWidth = max - mainSplitTextAreaRight.getDividerLocation()-leftWidth;
+			}
+		});
 		
 
 		// CREEPT ACTION LISTENER
@@ -873,23 +944,22 @@ public class CrypterPanel extends JPanel {
 		textAreaLog.setText("### WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files?\r\n\r\n Nobody knows how to crypt them better than me ;)"); 
 		
 		panelContainerKey = new JPanel();
-		panelContainerKey.setBackground(Color.GRAY);
+		panelContainerKey.setBackground(Color.DARK_GRAY);
 		panelContainerKey.setBorder(new LineBorder(new Color(0, 0, 0), 0));
 		scrollPanelTabImagePreview.setViewportView(panelContainerKey);
 		tabbedPane.addTab("Img Preview", null, scrollPanelTabImagePreview, null);
-		panelContainerKey.setLayout(new MigLayout("", "[385:385:385,center]", "[:20:20][:200px:300px,grow,top]"));
+		panelContainerKey.setLayout(new MigLayout("", "[100,center,grow]", "[:20:20][200px,grow,top]"));
 		
 		lblDisplayedKey = new JLabel("to see image: Right click on img -> Load Image and Details");
-		lblDisplayedKey.setForeground(new Color(245, 245, 245));
+		lblDisplayedKey.setForeground(Color.YELLOW);
 		lblDisplayedKey.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblDisplayedKey.setFont(new Font("SansSerif", Font.BOLD, 12));
 		panelContainerKey.add(lblDisplayedKey, "cell 0 0,alignx center,aligny top");
-		
+
 		panelKeyImgDisp = new JPanel();
 		panelKeyImgDisp.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		panelKeyImgDisp.setMinimumSize(new Dimension(385, 200));
+		panelKeyImgDisp.setMinimumSize(new Dimension(100, 200));
 		panelKeyImgDisp.setBounds(new Rectangle(0, 0, 400, 0));
-		panelKeyImgDisp.setPreferredSize(new Dimension(0, 10));
 		panelKeyImgDisp.setBackground(Color.BLACK);
 		panelContainerKey.add(panelKeyImgDisp, "cell 0 1,grow");
 		panelKeyImgDisp.setLayout(new GridLayout(1, 0, 0, 0));
@@ -919,7 +989,8 @@ public class CrypterPanel extends JPanel {
 		scrollPaneText.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneText.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneText.setBorder(new LineBorder(new Color(128, 128, 128), 2));
-		panelMainContainer.add(scrollPaneText, "cell 2 2 1 4,grow");
+		mainSplitTextAreaRight.setLeftComponent(scrollPaneText);
+//		panelMainContainer.add(scrollPaneText, "cell 2 2 1 4,grow");
 		
 		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");
 		StringBuilder builder = new StringBuilder();
@@ -943,23 +1014,34 @@ public class CrypterPanel extends JPanel {
 		/** TREE FOR KEY IMAGES **/
 		
 		treeModel = new FileTreeModel(KEY_DICTIONARY_FILE);
+		tree= new JTree(treeModel);
+		tree.setBorder(null);
+		tree.setRequestFocusEnabled(false);
+		tree.setFont(new Font("SansSerif", Font.BOLD, 14));
 		treeListener = new TreeSelectionListener() {
 			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				String msg;
-				File thisFile = (File)tree.getLastSelectedPathComponent();
-				if (thisFile.isDirectory()) {
-					msg = "\n### Directory selected ### \n\n => " + thisFile.getName();
-					textAreaLog.append("\n" + msg);	
-				}else {
-					if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")) {
-						msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
-						textAreaLog.append("\n" + msg);						
-					}else {
-						msg = "File not recognized as Key: \n\n => "+thisFile.getName();
-						textAreaLog.append("\n" + msg);
+				try {
+					String msg;
+					File thisFile = (File)tree.getLastSelectedPathComponent();
+					if (thisFile != null) {
+						if (thisFile.isDirectory()) {
+							msg = "\n### Directory selected ### \n\n => " + thisFile.getName();
+							textAreaLog.append("\n" + msg);
+						} else {
+							if (FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")) {
+								msg = " .png Key recognized ->" + thisFile.getName() + "\n\n ## SIZE: " + FileStuff.coolFileSize(thisFile) + "\n\n ## Path: "
+										+ thisFile.getAbsolutePath();
+								textAreaLog.append("\n" + msg);
+							} else {
+								msg = "File not recognized as Key: \n\n => " + thisFile.getName();
+								textAreaLog.append("\n" + msg);
+							}
+						} 
 					}
+				} catch (Exception e1) {
+					logger.warn("Error in value changed listener: ", e1);
 				}
 				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter(currentConf, thisPanel);			
 			}
@@ -974,7 +1056,7 @@ public class CrypterPanel extends JPanel {
 		btnDispoKeyImg.setForeground(new Color(0, 0, 0));
 		btnDispoKeyImg.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		btnDispoKeyImg.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
-		panelMainContainer.add(btnDispoKeyImg, "cell 0 2 1 1,grow");
+		leftSplitTopPanel.add(btnDispoKeyImg, "cell 0 0 1 1,grow");
 
 		btnGenerateKeyImg = new JButton("New Key Image");
 		btnGenerateKeyImg.setOpaque(true);
@@ -985,29 +1067,26 @@ public class CrypterPanel extends JPanel {
 		btnGenerateKeyImg.setForeground(new Color(0, 0, 0));
 		btnGenerateKeyImg.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		btnGenerateKeyImg.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
-		panelMainContainer.add(btnGenerateKeyImg, "cell 1 2 1 1,grow");
+		leftSplitTopPanel.add(btnGenerateKeyImg, "cell 1 0 1 1,grow");
 		
 		// initialize tree 
 		scrollPaneTree = new JScrollPane();
 		scrollPaneTree.setBackground(Color.DARK_GRAY);
 		scrollPaneTree.setBorder(new LineBorder(new Color(153, 153, 153)));
-		leftSplitPaneVertical.setTopComponent(scrollPaneTree);
-		tree= new JTree(treeModel);
-		tree.setBorder(null);
-		tree.setRequestFocusEnabled(false);
-		tree.setFont(new Font("SansSerif", Font.BOLD, 14));
+		leftSplitTopPanel.add(scrollPaneTree, "cell 0 1 2 1,grow");
 		
 		/** TREE TO DRAG AND DROP SOURCE FILES **/
 		
 		scrollPaneDragNDropSource = new JScrollPane();
 		scrollPaneDragNDropSource.setBackground(Color.LIGHT_GRAY);
 		scrollPaneDragNDropSource.setBorder(new LineBorder(new Color(119, 136, 153), 3, true));
-		panelMainContainer.add(scrollPaneDragNDropSource, "cell 3 2 2 4,grow");
+		mainSplitTextAreaRight.setRightComponent(scrollPaneDragNDropSource);
+//		panelMainContainer.add(scrollPaneDragNDropSource, "cell 3 2 2 4,grow");
 		
 		panelBackgroundDragSources = new JPanel();
 		panelBackgroundDragSources.setBackground(new Color(220, 220, 220));
 		scrollPaneDragNDropSource.setViewportView(panelBackgroundDragSources);
-		panelBackgroundDragSources.setLayout(new MigLayout("", "[][:335px:350px,grow]", "[50px][][30px][300px,grow][150px,grow]"));
+		panelBackgroundDragSources.setLayout(new MigLayout("", "[grow][:335px:350px,grow]", "[50px][][30px][300px,grow][150px,grow]"));
 		
 		lblSelectedFilesDragTitle = new JLabel("Selected Files Pool");
 		lblSelectedFilesDragTitle.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -1019,7 +1098,7 @@ public class CrypterPanel extends JPanel {
 		panelBackgroundDragSources.add(lblSelectedFilesDragTitle, "cell 0 0 2 1,growx");
 		
 		separatorDragNDropTitle = new JSeparator();
-		panelBackgroundDragSources.add(separatorDragNDropTitle, "cell 1 1,growx");
+		panelBackgroundDragSources.add(separatorDragNDropTitle, "cell 0 1 2 1,growx");
 		
 		btnSelectSourceFile = new JButton("Add Source File or Folder");
 		btnSelectSourceFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -1041,31 +1120,6 @@ public class CrypterPanel extends JPanel {
 		panelVDragNDropPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		panelVDragNDropPane.setBackground(Color.BLACK);
 		panelBackgroundDragSources.add(panelVDragNDropPane, "cell 0 4 2 1,grow");
-	}
-	
-	public void initializeTree() {
-		
-		/** TREE FOR KEY IMAGES **/
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				UIDefaults paneDefaults = new UIDefaults();
-				paneDefaults.put("Tree.selectionBackground", Color.BLACK);
-				/** TREE TO DRAG AND DROP SOURCE FILES **/
-				//		treeSourcesDragAndDrop.setCellRenderer(new TreeCellRendererDark());
-				treeSourcesDragAndDrop.putClientProperty("Nimbus.Overrides", paneDefaults);
-				treeSourcesDragAndDrop.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
-				tree.setVisibleRowCount(10);
-				// set custom graphic renderer to jtree
-				// tree.setCellRenderer(new TreeCellRendererDark());
-				tree.setBackground(Color.GRAY);
-				tree.putClientProperty("Nimbus.Overrides", paneDefaults);
-				tree.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
-				scrollPaneTree.setViewportView(tree);
-				tree.addTreeSelectionListener(treeListener);
-				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter(currentConf, thisPanel);
-			}
-		});
 	}
 	
 	private void initialize(INItializer config) {
@@ -1317,6 +1371,8 @@ public class CrypterPanel extends JPanel {
 		
 		GUIStyelSettings.applyNimbusSize(currentConf.getGuiOpt().nimbusSize);
 		GUIStyelSettings.updateAllWindowsLaf();
+		
+		SplitPaneUtils.resetAllDIviderColors(this, new Color(25, 25, 25));
 	}
 	
 	public void showMessageImageNotSupported() {
@@ -1352,6 +1408,8 @@ public class CrypterPanel extends JPanel {
 				
 				panelVDragNDropPane.revalidate();
 				panelVDragNDropPane.repaint();
+				
+				resizeRightSplitter();
 				
 				revalidate();
 				repaint();

@@ -239,11 +239,6 @@ public class TextEditor extends JPanel {
 		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
 		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
 		
-////		leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
-////		leftSplitTreeFiles.setBackground(fileNavColorBckg);
-////		leftSplitTreeFiles.setForeground(Color.white);
-////		leftSplitTreeFiles.revalidate();
-////		leftSplitTreeFiles.repaint();
 		leftSplitPane = new JScrollPane(leftSplitTreeFiles);
 		leftSplitPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		leftSplitPane.setPreferredSize(new Dimension(200, 500));

@@ -168,20 +168,20 @@ public class TreeFileMouseListenerBasic {
 						public void run() {
 							try {
 								if (selectedNode != null && selectedNode.exists()) {
-								propertiesFrame = new FilePropertiesFrame(selectedNode, true);
-								propertiesFrame.setLocationRelativeTo(parent);
-								propertiesFrame.setTitle(selectedNode.getAbsolutePath());
-								propertiesFrame.setVisible(true);
+									propertiesFrame = new FilePropertiesFrame(selectedNode, true);
+									propertiesFrame.setLocationRelativeTo(parent);
+									propertiesFrame.setTitle(selectedNode.getAbsolutePath());
+									propertiesFrame.setVisible(true);
 								}
 							} catch (Exception e) {
-								logger.error(e);
+								logger.error("Error in file properties panel: ", e);
 							}
 						}
 					});
-				}else {
+				} else {
 					propertiesFrame.toFront();
 					propertiesFrame.setVisible(true);
-				}
+				} 
 			}
 		};
 	}

@@ -83,15 +83,14 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 
 	        @Override
 	        public void mousePressed(MouseEvent arg0) {
-	            if(arg0.getButton() == MouseEvent.BUTTON3){
-	                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
-	                if(pathForLocation != null){
-	                    selectedNode = (File) pathForLocation.getLastPathComponent();
-	                } else{
-	                    selectedNode = null;
-	                }
+                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
+                boolean exists = ((File)pathForLocation.getLastPathComponent()).exists();
+                if(pathForLocation != null && exists){
+                    selectedNode = (File) pathForLocation.getLastPathComponent();
+                } else{
+                    selectedNode = null;
+                }
 
-	            }
 	            super.mousePressed(arg0);
 	        }
 	    };

@@ -4,15 +4,32 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
+import reflection.ReflectionUtils;
+
 
 public class SplitPaneUtils {
 
 	public static final Color defaultBackgroundDivider = new Color(41,49,52).darker();
+	
+	public static void resetAllDIviderColors(final Object targetClassInstance, Color target) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				// Reset all divider colors
+				try {
+					for (JSplitPane i : ReflectionUtils.retrieveFieldsByType(targetClassInstance, JSplitPane.class)) {
+						SplitPaneUtils.setDividerColors(target, Color.BLACK, i);
+					}
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+				}
+			}
+		});
+	}
 	
 	public static void setDividerColors(Color back, Color border, JSplitPane panel) {
 		panel.setUI(new BasicSplitPaneUI() {
