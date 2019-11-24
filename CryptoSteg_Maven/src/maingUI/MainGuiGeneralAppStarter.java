@@ -84,16 +84,29 @@ public class MainGuiGeneralAppStarter {
 				JOptionHelper.init();
 				AWTExceptionHandler.init();
 				
-				tesseractAvailable = LibChecker.checkTesseract();
-				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
-				
 			} catch (Exception e) {
 				Sounds.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
 				throw e;
 			}
-
 			printElapsed("dialogHelper and GeneralConfig initialization finished", startTime);
+			
+			try {
+				// Initialize logger properties
+				PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
+				logger.info(LoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
+				
+				isLoggerReady = true;
+				
+				tesseractAvailable = LibChecker.checkTesseract();
+				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
+				
+			} catch (Exception e) {
+				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				dialogHelper.errorScroll("Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
+						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
+				throw e;
+			}
 			
 			try {
 				// Load updates manager module
@@ -133,20 +146,6 @@ public class MainGuiGeneralAppStarter {
 			}
 			
 			printElapsed("DialogHelper, General config and tooltips setup finished", startTime);
-			
-			try {
-				// Initialize logger properties
-				PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
-				logger.info(LoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
-				
-				isLoggerReady = true;
-				
-			} catch (Exception e) {
-				Sounds.playSound(SoundsConfigurator.ERROR, null);
-				dialogHelper.errorScroll("Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
-						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
-				throw e;
-			}
 			
 			printElapsed("Log properties loaded", startTime);
 			

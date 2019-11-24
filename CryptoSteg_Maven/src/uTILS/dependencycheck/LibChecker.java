@@ -15,6 +15,7 @@ public class LibChecker {
 	public static boolean checkJnetPcap() {
 		try {
 			org.jnetpcap.Pcap.libVersion();
+			logger.info(" \n => JnetPcap library found! :)");
 			return true;
 		} catch (UnsatisfiedLinkError e) {
 			logger.error("! JnetPcap dll link error ! \n\n", e);
@@ -31,6 +32,7 @@ public class LibChecker {
 			Text2Speech objSpeaker = new Text2Speech();
 			objSpeaker.dospeak(" " , "kevin16", (0.5f));
 			libFound = true;
+			logger.info(" \n => voice speaker library found! :)");
 		} catch (Throwable e) {
 			libFound = false;
 			logger.error("!Cannot run voice speaker: undefined library dependencies: Text2Speech! \n\n", e);
@@ -47,8 +49,10 @@ public class LibChecker {
 			
 			if(new File(tessdataLib).exists()) {
 				tessDataFound = true;
+				logger.info(" \n => Tesseract found! :)");
 			} else {
 				tessDataFound = false;
+				logger.warn(" \n => Tesseract NOT found!");
 			}
 		} catch (Throwable e) {
 			tessDataFound = false;

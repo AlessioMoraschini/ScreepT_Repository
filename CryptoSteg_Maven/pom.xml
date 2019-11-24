@@ -306,10 +306,6 @@
 					        <include>/**</include>
 					        <include>/**/*</include>
 					    </includes>
-					    <excludes>
-					    	<!-- Executables copied in another plugin renaming it -->
-					    	ScrYpT_*
-					    </excludes>
 					</resource>
 			    </resources>     
             </configuration>            
@@ -439,30 +435,6 @@
           </execution>
         </executions>
       </plugin>
-      
-      <plugin>
-        <groupId>com.coderplus.maven.plugins</groupId>
-        <artifactId>copy-rename-maven-plugin</artifactId>
-        <version>1.0</version>
-        <executions>
-          <execution>
-            <id>copy-file</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-	            <fileSets>
-	                <fileSet>
-	                  	<sourceFile>ROOT_DIR_APP_FILES/ScrYpT_exe</sourceFile>
-              			<destinationFile>${export.directory.fatjar.main}\..\ScrYpT_${project.version}.exe</destinationFile>
-	                </fileSet>
-	            </fileSets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-	  
  	</plugins>
   </build>
   

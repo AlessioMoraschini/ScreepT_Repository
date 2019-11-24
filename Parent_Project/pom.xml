@@ -40,11 +40,10 @@
 	  	<!-- Change this if you want to include or not transitive plugins dependencies into main build (provided=not included : compile=included)-->
 	  	<plugins.export.scope>provided</plugins.export.scope>
 	  	
-	  	
   	<!-- ##################### UPDATES FOLDER PACKAGING #################### -->
   	
-	  	<export.updates.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LAST_UPDATES_DATA\updates</export.updates.folder>
-	  	<export.updates.root>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LAST_UPDATES_DATA</export.updates.root>
+	  	<export.updates.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_UPDATES_DATA\updates</export.updates.folder>
+	  	<export.updates.root>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_UPDATES_DATA</export.updates.root>
 	  	<export.updates.skip>false</export.updates.skip>
 	  	<export.updates.regenjars.skip>false</export.updates.regenjars.skip>
   	
