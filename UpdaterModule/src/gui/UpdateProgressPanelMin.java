@@ -268,13 +268,17 @@ public class UpdateProgressPanelMin {
     }
     
     public void forceClose(){
-    	forceDispose.set(true);
-    	if(getGeneralBar() != null) {
-    		update(100, "Completed! Closing progress bar monitor...", true);
-    	} else {
-    		update(100, "Completed! Closing progress bar monitor...", false);
-    	}
-    	dialog.dispose();
+    	try {
+			forceDispose.set(true);
+			if(getGeneralBar() != null) {
+				update(100, "Completed! Closing progress bar monitor...", true);
+			} else {
+				update(100, "Completed! Closing progress bar monitor...", false);
+			}
+			dialog.dispose();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     /**

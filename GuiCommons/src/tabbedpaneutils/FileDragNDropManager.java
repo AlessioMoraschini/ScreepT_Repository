@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 
 public class FileDragNDropManager extends JTabbedPane{
+	private static final long serialVersionUID = -4714067360032380811L;
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(FileDragNDropManager.class); 

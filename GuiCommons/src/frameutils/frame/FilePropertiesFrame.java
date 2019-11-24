@@ -16,6 +16,7 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import updater.DownloadUtils;
+import updater.HashingFunction;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -253,8 +254,8 @@ public class FilePropertiesFrame extends JFrame{
 		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
 		updateFooter();
 		try {
-			hashMd5DynLbl.setText(DownloadUtils.getFileHashMd5(fileUnderAnalysis.getAbsolutePath()));
-		} catch (NoSuchAlgorithmException | IOException e) {
+			hashMd5DynLbl.setText(DownloadUtils.getFileHash(fileUnderAnalysis.getAbsolutePath(), HashingFunction.MD5));
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

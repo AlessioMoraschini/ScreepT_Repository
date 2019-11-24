@@ -297,8 +297,8 @@ public class ScrYpTLauncher {
 					runtime.exec(initPath);
 				}
 			
-			// TODO LINUX/MAC SHELL show on/off
 			}else {
+				// TODO LINUX/MAC SHELL show on/off
 				runtime.exec(initPath);
 			}
 			logger.info("Commands launched without exceptions :)"); 

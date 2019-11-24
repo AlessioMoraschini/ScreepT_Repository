@@ -6,10 +6,8 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.CharSet;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -30,6 +28,7 @@ import media.Sounds;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
+import uTILS.dependencycheck.LibChecker;
 import updater.UpdatesManager;
 import variousutils.HandleString;
 
@@ -61,6 +60,10 @@ public class MainGuiGeneralAppStarter {
 	
 	public static UpdatesManager updatesManager;
 	
+	// LIbs availability
+	public static boolean tesseractAvailable;
+	public static boolean voiceSpeakerAvailable;
+	
 	public static void main(String[] args) {
 		
 		long startTime = System.currentTimeMillis();
@@ -79,6 +82,9 @@ public class MainGuiGeneralAppStarter {
 				GuiUtils.init();
 				JOptionHelper.init();
 				AWTExceptionHandler.init();
+				
+				tesseractAvailable = LibChecker.checkTesseract();
+				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
 				
 			} catch (Exception e) {
 				Sounds.playSound(SoundsConfigurator.ERROR, null);

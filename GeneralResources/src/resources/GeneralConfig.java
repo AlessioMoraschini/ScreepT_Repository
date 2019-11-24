@@ -79,6 +79,7 @@ public class GeneralConfig {
 	
 	// IMPORTANT FOLDERS
 	public static String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
+	public static String CURRENT_EXECUTION_DIR = System.getProperty("user.dir")+"/";
 	public static String USER_PERSONAL_DIR_SCRYPT_FOLDER = USER_PERSONAL_DIR + "ScrYpT_temp_files" + File.separatorChar + APP_VERSION;
 	public static File F_USER_PERSONAL_DIR_SCRYPT_FOLDER = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER);
 	public static String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";

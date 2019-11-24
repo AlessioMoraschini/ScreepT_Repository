@@ -1912,6 +1912,20 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				parent.getCurrentTabEditor().addTab(null);
 			}
 		});
+		
+		enableDependenciesFunctions();
+	}
+	
+	public void enableDependenciesFunctions() {
+		String koMsg = "Not found on this installation: update your libraries plugin to use this function!"; 
+		enableDependency(btnSpeak, MainGuiGeneralAppStarter.voiceSpeakerAvailable, TextEditorTooltips.tooltipSpeak, koMsg);
+		enableDependency(btnParseImageText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditorTooltips.tooltipSpeak, koMsg);
+		enableDependency(btnParsePdfText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditorTooltips.tooltipSpeak, koMsg);
+	}
+	
+	private static void enableDependency(JButton target, boolean enable, String tooltipY, String tooltipN) {
+			target.setEnabled(enable);
+			target.setToolTipText(enable ? tooltipY : tooltipN);
 	}
 	
 	/**

@@ -25,6 +25,7 @@ import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import frameutils.frame.FilePropertiesFrame;
+import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
@@ -44,6 +45,8 @@ public class TreeFileMouseListenerBasicFileNamed {
 	public JTree tree;
 	public FileNamed selectedNode;
 	public Vector<FileNamed> selectedNodes;
+	
+	public HashCheckerFrame hashCheckerFrame;
 	
 	public JFrame propertiesFrame = null; 
 	public Component parent;
@@ -228,6 +231,28 @@ public class TreeFileMouseListenerBasicFileNamed {
 					tree.addSelectionInterval(0, tree.getRowCount());
 				} catch (Exception e2) {
 					logger.error("An error occurred while selecting all nodes!");
+				}
+			}
+		};
+	}
+	
+	private ActionListener hashingListener(File initialFile) {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
+						hashCheckerFrame = new HashCheckerFrame(initialFile, null);
+						hashCheckerFrame.setVisible(true);
+						hashCheckerFrame.setAlwaysOnTop(true);
+					} else {
+						hashCheckerFrame.toFront();
+						hashCheckerFrame.setVisible(true);
+						hashCheckerFrame.setAlwaysOnTop(true);
+					}
+				} catch (Exception e1) {
+					logger.error("An error occurred while opening hashing functions manager frame", e1);
 				}
 			}
 		};

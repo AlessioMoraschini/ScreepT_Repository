@@ -927,7 +927,7 @@ public class ScreeptManager {
 			throw new STEGException();
 		}
 
-		// TODO get file array and scan all files till the end and sort them by first element in name name
+		// get file array and scan all files till the end and sort them by first element in name name
 		File[] cryptedImgList = srcFile.listFiles(new FilenameFilter() {
 			// accept only png files
 			@Override

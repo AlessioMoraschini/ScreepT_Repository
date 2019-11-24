@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -337,6 +338,98 @@ public class DownloadUtils {
 		return out;
 	}
 	
+	public static File zipFolder(String dir2zip, File outputDir, boolean overwrite) {
+		
+		if(dir2zip != null){
+			File dirSrc = new File(dir2zip);
+			if(dirSrc.exists() && dirSrc.isDirectory()) try {
+				
+				//create a ZipOutputStream to zip the data to 
+				File output = new File(outputDir.getAbsolutePath() + File.separator + dirSrc.getName() + ".zip");
+				if(!overwrite && output.exists()) {
+					output = Various.renameJavaObjFile(output);
+					output.createNewFile();
+				}
+				
+			    ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(output)); 
+			    zipFolder(dir2zip, zos, new UpdateProgressPanelMin(true), true); 
+			    
+			    //close the stream 
+			    zos.close();
+			    return output;
+			}catch(Exception e){
+				return null;
+			}
+		} 
+		
+		return null;
+	}
+	
+	public static boolean zipFolder(String dir2zip, ZipOutputStream zos, UpdateProgressPanelMin progressUpdater, boolean autocloseProgbar) throws Exception{
+		// create a new File object based on the directory we
+		boolean result = true;
+		
+		progressUpdater = (progressUpdater == null)? new UpdateProgressPanelMin(true) : progressUpdater;
+		
+		try {
+			progressUpdater.getDialog().setTitle("Zipping directory: " + new File(dir2zip).getName());
+			progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
+			progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));
+			progressUpdater.getGeneralBar().setIndeterminate(false);
+			Various.centerComponent(progressUpdater.getDialog());
+			
+			File zipDir = new File(dir2zip);
+			// get a listing of the directory content
+			String[] dirList = zipDir.list();
+			byte[] readBuffer = new byte[2156];
+			int bytesIn = 0;
+			// loop through dirList, and zip the files
+			for (int i = 0; i < dirList.length; i++) {
+				int percGenZipped = (int)((float)i*100/(float)dirList.length);
+		    	updateProgress("Zipping " + dirList[i], percGenZipped, progressUpdater, true);
+		    	progressUpdater.getPb().setIndeterminate(true);
+		    	
+				File f = new File(zipDir, dirList[i]);
+				if (f.isDirectory()) {
+					// if the File object is a directory, call this
+					// function again to add its content recursively
+					String filePath = f.getPath();
+					boolean tempResult = zipFolder(filePath, zos, progressUpdater, false);
+					result = (tempResult == false)? false : result;
+					
+					// loop again
+					continue;
+				}
+				// if we reached here, the File object f was not
+				// create a FileInputStream on top of f
+				FileInputStream fis = new FileInputStream(f);
+				ZipEntry anEntry = new ZipEntry(f.getPath());
+				// place the zip entry in the ZipOutputStream object
+				zos.putNextEntry(anEntry);
+				int cycles = 1;
+				// now write the content of the file to the ZipOutputStream
+				while ((bytesIn = fis.read(readBuffer)) != -1) {
+					
+					zos.write(readBuffer, 0, bytesIn);
+					
+					cycles++;
+				}
+				// close the Stream
+				fis.close();
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (autocloseProgbar) {
+				progressUpdater.forceClose();
+			} else {
+				progressUpdater.getDialog().setVisible(true);
+			}
+		}
+		
+		return result;
+	}
+	
 	public static boolean isUrlReachable(URL urlToTest) {
 		try {
 			return InetAddress.getByName(urlToTest.getHost()).isReachable(5000);
@@ -346,28 +439,76 @@ public class DownloadUtils {
 	}
 	
 	// HASHING //
-	public static String getFileHashMd5(String filePath) throws IOException, NoSuchAlgorithmException {
+	public static String getFileHash(String filePath, HashingFunction algorithm) throws Throwable {
 		
 		if(filePath == null) return "";
+		
+		System.out.println("Generating hash for file: " + filePath + " with algorithm:"+algorithm);
 	         
-	    MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+	    MessageDigest messageDigest = MessageDigest.getInstance(algorithm.algorithmCode);
 	    messageDigest.update(Files.readAllBytes(Paths.get(filePath)));
 	    byte[] digest = messageDigest.digest();
 	    
-	    return DatatypeConverter.printHexBinary(digest).toUpperCase();
+	    String result = DatatypeConverter.printHexBinary(digest).toUpperCase();
+	    System.out.println("Generated hash for file: " + filePath + ", HASHED:"+result);
+	    
+	    return result;
 	}
 
+	public static String getFileHash(File file, HashingFunction algorithm) throws Throwable {
+		
+		if(file == null) return "";
+
+		System.out.println("Generating hash for file: " + file.getAbsolutePath() + " with algorithm:"+algorithm);
+		
+		MessageDigest messageDigest = MessageDigest.getInstance(algorithm.algorithmCode);
+		messageDigest.update(Files.readAllBytes(file.toPath()));
+		byte[] digest = messageDigest.digest();
+		
+		String result;
+		try {
+			result = DatatypeConverter.printHexBinary(digest).toUpperCase();
+		} catch (Error e) {
+			result = "";
+		}
+		
+		System.out.println("Generated hash for file: " + file.getAbsolutePath() + ", HASHED:"+result);
+		
+		return result;
+	}
+	
+	//Add salt
+    public static byte[] getSalt() throws NoSuchAlgorithmException
+    {
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+        return salt;
+    }
+
 	// HASHING //
-	public static boolean checkFileHashMd5(String filename, String checksum) throws NoSuchAlgorithmException, IOException {
+	public static boolean checkFileHash(String filePath, String checksum, HashingFunction algorithm) throws Throwable {
 		
-		if(filename == null || checksum == null) return false;
+		if(filePath == null || checksum == null) return false;
 		
-		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-		messageDigest.update(Files.readAllBytes(Paths.get(filename)));
+		MessageDigest messageDigest = MessageDigest.getInstance(algorithm.algorithmCode);
+		messageDigest.update(Files.readAllBytes(Paths.get(filePath)));
 		byte[] digest = messageDigest.digest();
 		String myChecksum = DatatypeConverter.printHexBinary(digest).toUpperCase();
 		
-		return myChecksum.equals(checksum);
+		return myChecksum.equalsIgnoreCase(checksum) || checksum.contains(myChecksum);
+	}
+
+	public static boolean checkFileHash(File file, String checksum, HashingFunction algorithm) throws Throwable {
+		
+		if(file == null || checksum == null) return false;
+		
+		MessageDigest messageDigest = MessageDigest.getInstance(algorithm.algorithmCode);
+		messageDigest.update(Files.readAllBytes(file.toPath()));
+		byte[] digest = messageDigest.digest();
+		String myChecksum = DatatypeConverter.printHexBinary(digest).toUpperCase();
+		
+		return myChecksum.equalsIgnoreCase(checksum) || checksum.contains(myChecksum);
 	}
 	
 	public static String keepOnlyDotsAndDigits(String source) {
@@ -453,7 +594,7 @@ public class DownloadUtils {
 	}
 	
 	public static int getPerc(int val, long tot) {
-		float perc = ((float)val / (float)tot) * 100;
+		double perc = ((double)val / (double)tot) * 100;
 		return (int)perc;
 	}
 

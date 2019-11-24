@@ -35,8 +35,8 @@ import javax.swing.JTextField;
 import java.awt.Dimension;
 
 public class EscapeReplacerFrame extends JFrame{
-	
-	// KeyGenPanel logger
+	private static final long serialVersionUID = 2122717575417614868L;
+
 	static Logger logger = Logger.getLogger(EscapeReplacerFrame.class);
 	
 	public static final String tooltipTryEscapeToSpec = "Try conversion from escape sequence to special characters in text field";

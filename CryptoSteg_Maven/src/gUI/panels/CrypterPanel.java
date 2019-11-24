@@ -309,7 +309,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		btnCreept.setForeground(Color.BLACK);
 		btnCreept.setBorder(new LineBorder(Color.DARK_GRAY, 3, true));
 		btnCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 14));
-		btnCreept.setBackground(new Color(127, 255, 0));
+		btnCreept.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
 		
 		btnDeCreept = new JButton("DeCreept");
 		btnDeCreept.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -322,7 +322,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		btnDeCreept.setRequestFocusEnabled(false);
 		btnDeCreept.setForeground(Color.BLACK);
 		btnDeCreept.setBorder(new LineBorder(Color.DARK_GRAY, 3, true));
-		btnDeCreept.setBackground(new Color(255, 0, 0));
+		btnDeCreept.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 14));
 		
 		panelStatus = new JPanel();
@@ -864,8 +864,6 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 				int nProgrFile = 0;
 				
 				for (File currentFile : srcFiles) {
-					
-					// TODO replace with ad hoc object ScreeptManagerFileOrFolder
 					
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
 					

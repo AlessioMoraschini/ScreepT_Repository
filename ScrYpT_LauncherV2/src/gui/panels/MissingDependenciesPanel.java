@@ -287,7 +287,6 @@ public class MissingDependenciesPanel extends JDialog{
 	}
 	
 	private DefaultTableModel getTableModel() {
-		// TODO define custom table class
 		DefaultTableModel model = new DefaultTableModel(null, columnNames) {
 			@Override
 		    public boolean isCellEditable(int row, int column) {

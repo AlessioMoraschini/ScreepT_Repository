@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
+import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import mainobj.INItializer;
@@ -60,6 +61,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	public JMenuItem selectAllItem;
 	public JMenuItem collapseItem;
 	public JMenuItem expandItem;
+	public JMenuItem hashingItem;
 	public JMenuItem propertiesItem;
 	public JMenuItem changeBckgItem;
 	
@@ -73,8 +75,6 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		currentTabEditor = textEditor.getCurrentTabEditor();
 		dialogHelper = new JOptionHelper(textEditor);
 	}
-	
-	// TODO fix collapse node - collassa il padre
 	
 	public MouseListener getMouseListener() {
 	    return new MouseAdapter() {
@@ -204,6 +204,11 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 	    
+	    hashingItem = new JMenuItem("Check File hash...");
+	    hashingItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    hashingItem.addActionListener(hashingListener());
+	    menu.add(hashingItem);
+
 	    propertiesItem = new JMenuItem("File Properties");
 	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
@@ -226,6 +231,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    selectAllItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD_SELECTION));
 	    collapseItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
 	    expandItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE_SMALL));
+	    hashingItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HASHING));
 	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 	    subMenuNew.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 	    itemNewFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
@@ -273,6 +279,28 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					TreeUtils.collapseTreeSelectionChildren(tree, selectedRow);
 				} catch (Exception e1) {
 					logger.error("Error collapsing tree row N°"+selectedRow, e1);
+				}
+			}
+		};
+	}
+
+	private ActionListener hashingListener() {
+		return new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
+						hashCheckerFrame = new HashCheckerFrame(currentTabEditor.loadedTabObj.loadedFile, textEditor.parentFrame);
+						hashCheckerFrame.setVisible(true);
+						hashCheckerFrame.setAlwaysOnTop(true);
+					} else {
+						hashCheckerFrame.toFront();
+						hashCheckerFrame.setVisible(true);
+						hashCheckerFrame.setAlwaysOnTop(true);
+					}
+				} catch (Exception e1) {
+					logger.error("An error occurred while opening hashing functions manager frame", e1);
 				}
 			}
 		};

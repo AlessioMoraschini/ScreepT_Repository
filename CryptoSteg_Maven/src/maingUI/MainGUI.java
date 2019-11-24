@@ -37,6 +37,7 @@ import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
 import dialogutils.UpdateProgressPanel;
+import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
 import gUI.frames.AboutSectionFrame;
@@ -103,6 +104,7 @@ public class MainGUI extends MainGuiParent{
 	private static ImageConverterFrame panelImgConv;
 	private static NetInfoFrame panelNetInfo;
 	private static HwInfoFrame panelHwInfo;
+	private static HashCheckerFrame hashCheckerFrame;
 	private static AboutSectionFrame panelAbout;
 	private static TutorialFrame tutorialPanel;
 	
@@ -1006,6 +1008,26 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				}
 		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelHwInfo, JFrame.MAXIMIZED_BOTH);
 		    }
+		});
+		
+		// open in a new window - File Hash checker
+		mntmHashChecker = new CustomJmenuItem(new AbstractAction("File Hash checker panel") {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
+						File targetFile = (initTxtWriter != null) ? initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile : null;
+						hashCheckerFrame = new HashCheckerFrame(targetFile, frmScryptV);
+						hashCheckerFrame.setVisible(true);
+						hashCheckerFrame.setAlwaysOnTop(true);
+					} else {
+						hashCheckerFrame.toFront();
+						hashCheckerFrame.setVisible(true);
+						hashCheckerFrame.setAlwaysOnTop(true);
+					}
+				} catch (Exception e1) {
+					logger.error("An error occurred while opening hashing functions manager frame", e1);
+				}
+			}
 		});
 		
 		// open in a new window - DICTIONARY (KEY IMG)

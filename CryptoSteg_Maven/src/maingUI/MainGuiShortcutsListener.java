@@ -179,6 +179,13 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				if (e.getKeyCode() == 78 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmnetInfo().doClick();
 				}
+
+				/**
+				 *  OPEN HASH CHECKER PANEL : ALT+SHIFT+U
+				 */
+				if (e.getKeyCode() == 85 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmHashChecker().doClick();
+				}
 				
 				// MEDIA - CONVERTERS //
 				/**

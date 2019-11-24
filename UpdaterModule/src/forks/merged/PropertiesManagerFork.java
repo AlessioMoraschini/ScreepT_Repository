@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -100,6 +101,24 @@ public class PropertiesManagerFork {
 			return false;
 		}
     }
+	
+	public boolean saveProperty(String key, String value){
+		FileOutputStream out = null;
+		
+		try {
+			out = new FileOutputStream(dynamicFileBindingsDefSource);
+			dynamicFileBindingsDef.setProperty(key, value);
+			dynamicFileBindingsDef.store(out, null);
+		} catch (IOException e) {
+			return false;
+		} finally {
+			try {
+				out.close();
+			} catch (Exception e2) {
+			}
+		}
+		return true;
+	}
 	
 	public int getIntVarFromProps(String key, int defaultVal) {
 		String val = dynamicFileBindingsDef.getProperty(key);

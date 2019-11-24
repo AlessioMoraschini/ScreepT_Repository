@@ -123,6 +123,7 @@ public class MainGuiParent {
 	static CustomJmenuItem mntmTextEditor;
 	CustomJmenuItem mntmnetInfo;
 	CustomJmenuItem mntmhwInfo;
+	CustomJmenuItem mntmHashChecker;
 	CustomJmenuItem mntmImageConverter;
 	CustomJmenuItem mntmTouppercaseDirectory;
 	CustomJmenuItem mntmDeleteDirectoryContentByExtension;
@@ -263,6 +264,7 @@ public class MainGuiParent {
 			mnVarious.add(new JSeparator());
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
+			mnVarious.add(mntmHashChecker);
 			mnVarious.add(mnConversionsAndOther);
 				// SUB-MENU
 				mnConversionsAndOther.add(mntmImageConverter);
@@ -385,6 +387,7 @@ public class MainGuiParent {
 		// VARIOUS SECTION
 		mntmnetInfo.setFont(menuItemFont);
 		mntmhwInfo.setFont(menuItemFont);
+		mntmHashChecker.setFont(menuItemFont);
 		mntmTextEditor.setFont(menuItemFont);
 		
 		// SUB -> CONVERSION UTILS SECTION
@@ -450,6 +453,7 @@ public class MainGuiParent {
 		mntmTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));
 		mntmnetInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NET_INFO));
 		mntmhwInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HW_INFO));
+		mntmHashChecker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HASHING));
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 		
@@ -511,6 +515,7 @@ public class MainGuiParent {
 		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
 		mntmnetInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | SHIFT_MASK));
 		mntmhwInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, ALT_MASK | SHIFT_MASK));
+		mntmHashChecker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, ALT_MASK | SHIFT_MASK));
 		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
 		
 			// Folder and files functions
@@ -861,6 +866,14 @@ public class MainGuiParent {
 
 	public JMenuItem getMntmhwInfo() {
 		return mntmhwInfo;
+	}
+
+	public CustomJmenuItem getMntmHashChecker() {
+		return mntmHashChecker;
+	}
+
+	public void setMntmHashChecker(CustomJmenuItem mntmHashChecker) {
+		this.mntmHashChecker = mntmHashChecker;
 	}
 
 	public JMenuItem getMntmImageConverter() {

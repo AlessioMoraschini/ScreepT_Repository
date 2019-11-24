@@ -20,15 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TooManyListenersException;
 
-import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-public class GenericFileDragNDropManager extends JComponent{
+public class TxtFieldFileDragNDropManager extends JTextField{
+	private static final long serialVersionUID = 6345611258321094551L;
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(GenericFileDragNDropManager.class); 
+	static Logger logger = Logger.getLogger(TxtFieldFileDragNDropManager.class); 
     
 	public ArrayList<File> loadedFilesList;
 	
@@ -41,7 +42,7 @@ public class GenericFileDragNDropManager extends JComponent{
     private Point dragPoint;
 
     // constructor
-    public GenericFileDragNDropManager(Runnable dropAction, Component targetDrop) {
+    public TxtFieldFileDragNDropManager(Runnable dropAction, Component targetDrop) {
     	
     	loadedFilesList = new ArrayList<File>();
     	dropRunner = dropAction;
@@ -193,9 +194,9 @@ public class GenericFileDragNDropManager extends JComponent{
 
         @Override
         public void run() {
-            GenericFileDragNDropManager.this.dragOver = dragOver;
-            GenericFileDragNDropManager.this.dragPoint = dragPoint;
-            GenericFileDragNDropManager.this.repaint();
+            TxtFieldFileDragNDropManager.this.dragOver = dragOver;
+            TxtFieldFileDragNDropManager.this.dragPoint = dragPoint;
+            TxtFieldFileDragNDropManager.this.repaint();
         }
     }
     

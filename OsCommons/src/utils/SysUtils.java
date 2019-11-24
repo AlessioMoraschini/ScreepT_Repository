@@ -470,10 +470,19 @@ public class SysUtils {
 	public static ArrayList<String> getLinuxJavaVersions() {
 		ArrayList<String> stringRetrievedPaths = new ArrayList<String>();
 		
-		// TODO implement this
+		// TODO implement Linux Java Version
 		
 		return stringRetrievedPaths;
+	}
+
+////////////////////////////////  MAC-OS ONLY  /////////////////////////////////////////////////
+	
+	public static ArrayList<String> getMacOsJavaVersions() {
+		ArrayList<String> stringRetrievedPaths = new ArrayList<String>();
 		
+		// TODO implement MAcOs java version
+		
+		return stringRetrievedPaths;
 	}
 
 	public static OSinfo getOsInfoLazy() {
