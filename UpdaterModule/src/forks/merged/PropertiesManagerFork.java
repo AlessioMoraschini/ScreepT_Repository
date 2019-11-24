@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 
 public class PropertiesManagerFork {
@@ -62,6 +64,18 @@ public class PropertiesManagerFork {
 		}
 		
 		return res;
+	}
+	
+	public ArrayList<String> getStringList(String key, String separator){
+		ArrayList<String> list = new ArrayList<>();
+		
+		String rawList = dynamicFileBindingsDef.getProperty(key);
+		rawList = rawList == null ? "" : rawList;
+		String[] splitted = rawList.split(separator);
+		
+		list.addAll(Arrays.asList(splitted));
+		
+		return list;
 	}
 
 	/**

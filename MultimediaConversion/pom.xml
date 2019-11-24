@@ -32,12 +32,14 @@
 	    <groupId>net.sourceforge.tess4j</groupId>
 	    <artifactId>tess4j</artifactId>
 	    <version>4.3.1</version>
+	    <scope>compile</scope>
 	</dependency>
 	
  	<dependency>
     	<groupId>net.sf.sociaal</groupId>
     	<artifactId>freetts</artifactId>
     	<version>1.2.2</version>
+    	<scope>compile</scope>
  	</dependency>
  	 
 	<dependency>

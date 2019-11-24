@@ -45,6 +45,7 @@ public class GeneralConfig {
 	public static String WEB_UPDATES_PACK_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATES_PACK_PROP", "updatesZippedUrl");                                                                                                               
 	public static String WEB_UPDATES_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_UPDATES_MANIFEST_URL", "www.am-design-development.com/ScrYpT/Updates/manifest.properties");                                                                                                               
 	public static String WEB_PLUGINS_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_MANIFEST_URL", "www.am-design-development.com/ScrYpT/Plugins/manifest.properties");                                                                                                               
+	public static String WEB_PLUGINS_BASE_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_BASE_URL", "www.am-design-development.com/ScrYpT/Plugins/");                                                                                                               
 	public static String BUILD_TS_DATE = resourcesFilePathsMappings.getProperty("BUILD_TIMESTAMP")                                                                                                                                    
 	                     									.replaceAll("T", " at ")                                                                                                                                                 
 	                     									.replaceAll("Z", "")                                                                                                                                                     
@@ -52,6 +53,7 @@ public class GeneralConfig {
 	// General Folders   // General Folders                                                                                                                                                                                           
 	public static String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR", "Application/");                                                                                                                             
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");                                                                                                                                     
+	public static String PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR");
 	static{
 		try {

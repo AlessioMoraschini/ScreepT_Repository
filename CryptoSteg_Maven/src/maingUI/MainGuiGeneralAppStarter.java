@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
@@ -97,7 +98,7 @@ public class MainGuiGeneralAppStarter {
 			try {
 				// Load updates manager module
 				loaderGraphics.update("Starting updates manager...", 5);
-				updatesManager = new UpdatesManager(new URL("https://" + GeneralConfig.WEB_UPDATES_MANIFEST_URL), GeneralConfig.APP_VERSION);
+				updatesManager = new UpdatesManager(new URL(GeneralConfig.WEB_UPDATES_MANIFEST_URL), GeneralConfig.APP_VERSION);
 				updatesManager.emtpyUpdatesDir();
 				logger.info("Updates manager started!");
 			} catch (Exception e) {
@@ -194,7 +195,7 @@ public class MainGuiGeneralAppStarter {
 			
 		// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
 		} catch (Throwable e) {
-			printElapsed("Launch finished with errors", startTime);
+			printElapsed("Launch finished with errors" + Arrays.deepToString(e.getStackTrace()), startTime);
 			loaderGraphics.setProgBarColor(Color.RED);
 			try { Thread.sleep(200); } catch (InterruptedException e1) {}
 			loaderGraphics.update("An error occurred during load :(", 100);

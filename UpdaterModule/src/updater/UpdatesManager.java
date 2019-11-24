@@ -17,6 +17,7 @@ public class UpdatesManager {
 
 	public URL manifestRemoteUrl;
 	
+	
 	public static PropertiesManagerFork resourcesFilePathsMappings = new PropertiesManagerFork(MainStandAloneUpdater.resourcesMappingDefPath);
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_Scrypt/");  
 	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
@@ -27,13 +28,12 @@ public class UpdatesManager {
 	public static String WEB_UPDATER_JAR_NAME = resourcesFilePathsMappings.getProperty("WEB_UPDATER_JAR_NAME", "updater.jar");                                                                                                               
 	public static String WEB_UPDATER_JAR_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATER_JAR_PROP", "updaterJarUrl");                                                                                                               
 	
-
-	public final String localTempManifestName = "tempManifest.properties";
+	public static  final String localTempManifestName = "tempManifest.properties";
 	public final String localTempManifestPath = UPDATES_DIR + localTempManifestName;
 	public final String localTempZippedUpdates = UPDATES_DIR + WEB_UPDATES_PACK_NAME;
+
 	public String currentVersion = "";
 	public AtomicBoolean updatesReadyToInstall = new AtomicBoolean();
-	
 	
 	public File[] lastUpdatesDownloaded;
 	

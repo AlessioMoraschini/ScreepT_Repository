@@ -109,7 +109,7 @@ public class NetInfoFrame extends ParentFrame{
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		setMaximumSize(GuiUtils.getScreenSize());
-		setMinimumSize(new Dimension(750, 400));
+		setMinimumSize(new Dimension(950, 400));
 		
 		isActive.set(true);
 		thisPanel = this;

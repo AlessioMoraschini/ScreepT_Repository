@@ -247,7 +247,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		panelMainContainer.setBackground(Color.BLACK);
 		panelMainContainer.setLayout(new MigLayout(
 				"fill,insets 0", 
-				"[200:200:200][150:205:205][30,grow][250px:250px:250px][120px:120px:120px]",
+				"[100:200:200][100:205:205][30,grow][100px:250px:250px][100px:120px:120px]",
 				"[40px:40px:40px,top][:30px:30px][30px:30px:34px][100px:150px][100px:200px:200px][100px:200px][:1px:1px]"));
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMaximumSize(GuiUtils.getScreenSize());
@@ -433,16 +433,16 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		leftSplitPaneVertical.setBottomComponent(tabbedPane);
 		leftSplitPaneVertical.setTopComponent(leftSplitTopPanel);
 
-		// textArea<->fileDragDropperTree
-		mainSplitTextAreaRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		mainSplitTextAreaRight.setDividerLocation(parent.getMainFrame().getWidth()-rightWidth-leftWidth);
-
 		// leftSplitPaneVertical<->mainSplitTextAreaNDragger splitPanel
 		mainSplitTextAreaMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		mainSplitTextAreaMain.setDividerLocation(leftWidth);
 		mainSplitTextAreaMain.setLeftComponent(leftSplitPaneVertical);
-		mainSplitTextAreaMain.setRightComponent(mainSplitTextAreaRight);
-		panelMainContainer.add(mainSplitTextAreaMain, "cell 0 2 5 4,grow");
+		
+		// textArea<->fileDragDropperTree
+		mainSplitTextAreaRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		mainSplitTextAreaRight.setDividerLocation(parent.getMainFrame().getWidth()-rightWidth);
+		mainSplitTextAreaRight.setLeftComponent(mainSplitTextAreaMain);
+		panelMainContainer.add(mainSplitTextAreaRight, "cell 0 2 5 4,grow");
 		
 		// initialize text areas		
 		initializeTextAreas();
@@ -547,7 +547,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		final int max = mainApplication.getMainFrame().getWidth();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				mainSplitTextAreaRight.setDividerLocation(max - rightWidth - leftWidth);
+				mainSplitTextAreaRight.setDividerLocation(max - rightWidth);
 			}
 		});
 	}
@@ -574,7 +574,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				int max = mainApplication.getMainFrame().getWidth();
-				rightWidth = max - mainSplitTextAreaRight.getDividerLocation()-leftWidth;
+				rightWidth = max - mainSplitTextAreaRight.getDividerLocation();
 			}
 		});
 		
@@ -964,7 +964,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		tabbedPane.setBackgroundAt(1, new Color(169, 169, 169));
 		
 		textAreaMain = new RSyntaxTextArea();
-		textAreaMain.setMinimumSize(new Dimension(250, 28));
+		textAreaMain.setMinimumSize(new Dimension(100, 28));
 		textAreaMain.setWrapStyleWord(true);
 		textAreaMain.setRequestFocusEnabled(false);
 		textAreaMain.setSyntaxEditingStyle(SupportedFileTextEditor.YAML.syntax);
@@ -987,7 +987,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		scrollPaneText.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneText.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPaneText.setBorder(new LineBorder(new Color(128, 128, 128), 2));
-		mainSplitTextAreaRight.setLeftComponent(scrollPaneText);
+		mainSplitTextAreaMain.setRightComponent(scrollPaneText);
 //		panelMainContainer.add(scrollPaneText, "cell 2 2 1 4,grow");
 		
 		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");

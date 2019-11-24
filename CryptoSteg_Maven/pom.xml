@@ -250,7 +250,7 @@
             </goals>
             <configuration>
             	<includeEmptyDirs>true</includeEmptyDirs>
-            	<export.launcher.jarmode>true</export.launcher.jarmode>
+            	<export.launcher.jarmode>false</export.launcher.jarmode>
             	<skip>${export.fatjar.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>
@@ -377,13 +377,15 @@
     						<include>Resources_Scrypt/**</include>
     						<include>Resources_Scrypt/*</include>
     						<include>Resources_Scrypt/**/*</include>
+    						<include>Resources_Scrypt/Backup/**/*.ini</include>
 					    </includes>
 					    <excludes>
 					    	<exclude>Resources_Scrypt/Readme/**</exclude>
 					    	<exclude>Resources_Scrypt/Readme/*</exclude>
+					    	<exclude>Resources_Scrypt/lib/**</exclude>
+					    	<exclude>Resources_Scrypt/lib/*</exclude>
 					    	<exclude>/**/*Thumbs.db</exclude>
-					    	<exclude>/**/*.ini</exclude>
-					    	<exclude>*.ini</exclude>
+					    	<exclude>Resources_Scrypt/CONFIG.ini</exclude>
 					    </excludes>
 					</resource>
 					<resource>
@@ -465,9 +467,22 @@
   </build>
   
   	<dependencies>
+  	
+	  	<dependency>
+		    <groupId>net.sourceforge.tess4j</groupId>
+		    <artifactId>tess4j</artifactId>
+		    <version>4.3.1</version>
+		    <scope>${plugins.export.scope}</scope>
+		</dependency>
+		
+	 	<dependency>
+	    	<groupId>net.sf.sociaal</groupId>
+	    	<artifactId>freetts</artifactId>
+	    	<version>1.2.2</version>
+	    	<scope>${plugins.export.scope}</scope>
+	 	</dependency>
 	
 		<!-- IMPORTS FROM OTHER PROJECTS -->
-		
 		<dependency>
 			<groupId>Initializer_Configs</groupId>
 		    <artifactId>Initializer_Configs</artifactId>

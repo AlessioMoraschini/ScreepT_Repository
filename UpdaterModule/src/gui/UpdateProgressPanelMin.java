@@ -209,6 +209,7 @@ public class UpdateProgressPanelMin {
 							stopProcess.set(true);
 						} else {
 							stopProcess.set(false);
+							return;
 						}
 						
 						if (forceDispose.get()) {

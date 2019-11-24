@@ -199,7 +199,14 @@ public class AesCipher {
 		}	
 	}
 	
-	private byte[] hashPsw(char[] psw) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	/**
+	 * Still to test
+	 * @param psw
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 */
+	byte[] hashPsw(char[] psw) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		SecureRandom random = new SecureRandom();
 		byte[] salt = new byte[16];
 		random.nextBytes(salt);

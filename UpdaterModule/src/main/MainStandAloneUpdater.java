@@ -50,7 +50,7 @@ public class MainStandAloneUpdater {
 
 			for(File curr : currentDir.listFiles()) {
 				
-				if (curr.isFile() && !curr.getName().endsWith(".bat")) {
+				if (curr.isFile() && !curr.getName().endsWith(".bat") && !curr.getName().equals("manifest.properties")) {
 					try {
 						manifestProps.saveProperty(curr.getName(), DownloadUtils.getFileHash(curr, downloadsHashFunc));
 					} catch (Throwable e) {
@@ -80,7 +80,7 @@ public class MainStandAloneUpdater {
 			try {
 				
 				// Validate downloaded files
-				if(!validateUpdatesFolder(updatesFolder, manifestProps)) {
+				if(!validateUpdatesFolder(updaterJar, updatesFolder, manifestProps)) {
 					launchJar(mainApplicationLauncher);
 				}
 				
@@ -159,12 +159,10 @@ public class MainStandAloneUpdater {
 		System.exit(0);
 	}
 	
-	private static boolean validateUpdatesFolder(File updatesFolder, PropertiesManagerFork manifestProps) {
-		File zipUpdates = new File(updatesFolder.getAbsolutePath() + File.separator + "updates.zip");
-		File updaterJar = new File(updatesFolder.getAbsolutePath() + File.separator + "updater.jar");
+	private static boolean validateUpdatesFolder(File updaterJar, File updatesFolder, PropertiesManagerFork manifestProps) {
+		File zipUpdates = new File(updatesFolder.getParentFile() + File.separator + "updates.zip");
 		boolean esit = true;
 		try {
-			esit = (!checkHash(manifestProps.getDynamicFileBindingsDefSource(), manifestProps)) ? false : esit;
 			esit = (!checkHash(updaterJar, manifestProps)) ? false : esit;
 			esit = (!checkHash(zipUpdates, manifestProps)) ? false : esit;
 		} catch (Throwable e) {

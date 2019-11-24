@@ -27,9 +27,8 @@ public class LibChecker {
 
 	public static boolean checkVoiceSpeaker() {
 		boolean libFound = false;
-		Text2Speech objSpeaker;
 		try {
-			objSpeaker = new Text2Speech();
+			Text2Speech objSpeaker = new Text2Speech();
 			objSpeaker.dospeak(" " , "kevin16", (0.5f));
 			libFound = true;
 		} catch (Throwable e) {
@@ -43,12 +42,15 @@ public class LibChecker {
 		String tessdataLib = GeneralConfig.RESOURCES_DIR + "lib/tessdata/eng.traineddata";
 		boolean tessDataFound = false;
 		try {
+			
+			conversion.ImageToTextExtractor test = new conversion.ImageToTextExtractor();
+			
 			if(new File(tessdataLib).exists()) {
 				tessDataFound = true;
 			} else {
 				tessDataFound = false;
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			tessDataFound = false;
 			logger.error("!Cannot run tesseract: undefined library: "+tessdataLib+"! \n\n", e);
 		} 

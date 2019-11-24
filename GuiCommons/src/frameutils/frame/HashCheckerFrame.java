@@ -64,6 +64,7 @@ public class HashCheckerFrame extends ParentFrame{
 		setBounds(new Rectangle(850,215));
 		GuiUtils.centerComponent(this);
 		setVisible(true);
+		setAlwaysOnTop(true);
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -149,6 +150,11 @@ public class HashCheckerFrame extends ParentFrame{
 			txtFieldLoadedFile.setText(currentFile.getAbsolutePath());
 			txtFieldLoadedFile.setBackground(lightGrayDefault);
 			txtFieldChecksumResult.setText("Click on 'calculate checksum' to get hash Cheksum for current file");
+			if (txtFieldChecksumMatcher.getText().equals("")) {
+				btnCalculateHash.doClick();
+			} else {
+				btnVerifyChecksum.doClick();
+			}
 		}
 	}
 

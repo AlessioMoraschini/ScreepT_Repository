@@ -947,7 +947,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 									panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 									panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
 									panelNetInfo.setAlwaysOnTop(true);
-									panelNetInfo.setBounds(150, 150, 900, 650);
+									panelNetInfo.setBounds(150, 150, 1000, 650);
 									panelNetInfo.setResizable(false);
 									panelNetInfo.setVisible(true);
 									panelNetInfo.setTitle("Network info - "+GeneralConfig.APPLICATION_NAME);
