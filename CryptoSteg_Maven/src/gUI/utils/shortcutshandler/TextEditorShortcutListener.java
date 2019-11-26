@@ -468,18 +468,6 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					});
 				}
 
-				/*
-				 *  OPEN COLOR SAMPLER -> Ctrl+Alt+Shift+P
-				 */
-				if(e.getKeyCode() == 80 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							subHeaderPanel.btnColorSampler.doClick();
-						}
-					});
-				}
-				
-				
 				/*********************************************
 				 * Text Editor  -  TEXT SPECIFIC SHORTCUTS
 				 *********************************************/

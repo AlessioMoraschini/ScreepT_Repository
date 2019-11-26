@@ -187,6 +187,28 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 					currentGui.getMntmHashChecker().doClick();
 				}
 				
+				/*
+				 *  OPEN COLOR SAMPLER -> Ctrl+Alt+Shift+P
+				 */
+				if(e.getKeyCode() == 80 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentGui.getMntmColorPicker().doClick();
+						}
+					});
+				}
+
+				/*
+				 *  CLIPBOARDS StANDALONE PANEL -> Alt+Shift+P
+				 */
+				if(e.getKeyCode() == 80 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentGui.getMntmClipboardStandalone().doClick();
+						}
+					});
+				}
+				
 				// MEDIA - CONVERTERS //
 				/**
 				 *  OPEN IMAGE-CONVERTER : ALT+SHIFT+I

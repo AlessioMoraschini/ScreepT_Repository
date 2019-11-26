@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JFileChooser;
@@ -297,52 +298,96 @@ public class Various {
 		return correctFile;
 	}
 	
+	/**
+	 * Get relative path from a reference file path:
+	 * 
+	 * first = a/bcd/e/fg
+	 * other = a/bcd
+	 * 
+	 * return: ./e/fg
+	 * 
+	 * @param first
+	 * @param other
+	 * @return
+	 * @throws IOException
+	 */
+	public static String getPathRelativeToOtherFile(File first, File other) throws IOException {
+		
+		if(first == null || other == null) {
+			return "";
+		}
+		
+		return other.toURI().relativize(first.toURI()).getPath();
+	}
+	
+	/**
+	 * Get all files contained in a directory, and also in his sublfolders. NB only files will be returned!
+	 * @param directoryName
+	 * @param files
+	 */
+	public static ArrayList<File> listFiles(File directory, ArrayList<File> foundFiles) {
+
+	    // Get all files from a directory.
+	    File[] thisLevelFiles = directory.listFiles();
+	    if(thisLevelFiles != null) {
+	        for (File current : thisLevelFiles) {      
+	            if (current.isFile()) {
+	            	foundFiles.add(current);
+	            } else if (current.isDirectory()) {
+	            	listFiles(current, foundFiles);
+	            }
+	        }
+	    }
+	
+		return foundFiles;
+	}
+	
 	// PRINT UTILS METHODS
-		/**
-		 * Retrieve a String separator n-times charachter
-		 */
-		public static String getSeparator(String character, int n){
-			int curr = 0;
-			String output = "\n  ";
-			while (curr < n) {
-				output = output.concat(String.valueOf(character));
-				curr++;
-			}
-			
-			return output;
+	/**
+	 * Retrieve a String separator n-times charachter
+	 */
+	public static String getSeparator(String character, int n){
+		int curr = 0;
+		String output = "\n  ";
+		while (curr < n) {
+			output = output.concat(String.valueOf(character));
+			curr++;
 		}
 		
-		/**
-		 * Create a string of n spaces
-		 * @param n
-		 */
-		public static String getNspacesString(int n) {
-			String result = "";
-			for(int i = 0; i<n; i++) {
-				result = result.concat(" ");
-			}
-			
-			return result;
+		return output;
+	}
+	
+	/**
+	 * Create a string of n spaces
+	 * @param n
+	 */
+	public static String getNspacesString(int n) {
+		String result = "";
+		for(int i = 0; i<n; i++) {
+			result = result.concat(" ");
 		}
 		
-		/**
-		 * Retrieve a header String specifying charachter separator (may be null), header width in charachters, and title
-		 */
-		public static String getHeaderString(String character, int n, String title){
-			String result = "";
-			
-			int newN = (n >= title.length()+4)? n : title.length()+4;
-			newN = newN*character.length();
-			String leftSpaces = getNspacesString((newN - title.length() -2)/2);
-			boolean hasToPad = (leftSpaces.length()*2 + 2 + title.length()) < newN;
-			String rightPadding = (hasToPad)? " " : "";
-			String rightSpaces = leftSpaces + rightPadding;
-			
-			result += getSeparator(character, newN);
-			result += "\n  " + character + leftSpaces + title + rightSpaces + character ;
-			result += getSeparator(character, newN);
-			result += "\n";
-			
-			return result;
-		}
+		return result;
+	}
+	
+	/**
+	 * Retrieve a header String specifying charachter separator (may be null), header width in charachters, and title
+	 */
+	public static String getHeaderString(String character, int n, String title){
+		String result = "";
+		
+		int newN = (n >= title.length()+4)? n : title.length()+4;
+		newN = newN*character.length();
+		String leftSpaces = getNspacesString((newN - title.length() -2)/2);
+		boolean hasToPad = (leftSpaces.length()*2 + 2 + title.length()) < newN;
+		String rightPadding = (hasToPad)? " " : "";
+		String rightSpaces = leftSpaces + rightPadding;
+		
+		result += getSeparator(character, newN);
+		result += "\n  " + character + leftSpaces + title + rightSpaces + character ;
+		result += getSeparator(character, newN);
+		result += "\n";
+		
+		return result;
+	}
 }

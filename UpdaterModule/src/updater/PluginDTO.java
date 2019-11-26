@@ -4,18 +4,22 @@ import java.io.File;
 
 public class PluginDTO {
 
+	public File localExtractedDir;
 	public File localFile;
 	public String completeURL;
 	public String name;
 	public String checkSum;
+	public boolean installationCompleted;
 	
 	public PluginDTO(String completeURL, String name, String checkSum) {
 		this.completeURL = completeURL;
 		this.name = name;
 		this.checkSum = checkSum;
 		this.localFile = null;
+		this.localExtractedDir = null;
+		this.installationCompleted = false;
 	}
-
+	
 	public String getCompleteURL() {
 		return completeURL;
 	}
@@ -48,9 +52,26 @@ public class PluginDTO {
 		this.localFile = localFile;
 	}
 
+	public File getLocalExtractedDir() {
+		return localExtractedDir;
+	}
+
+	public void setLocalExtractedDir(File localExtractedDir) {
+		this.localExtractedDir = localExtractedDir;
+	}
+
+	public boolean isInstallationCompleted() {
+		return installationCompleted;
+	}
+
+	public void setInstallationCompleted(boolean installationCompleted) {
+		this.installationCompleted = installationCompleted;
+	}
+
 	@Override
 	public String toString() {
-		return "PluginDTO [localPath=" + localFile + ", completeURL=" + completeURL + ", name=" + name + ", checkSum=" + checkSum + "]";
+		return "PluginDTO [localExtractedDir=" + localExtractedDir + ", localFile=" + localFile + ", completeURL=" + completeURL + ", name=" + name
+				+ ", checkSum=" + checkSum + ", installationCompleted=" + installationCompleted + "]";
 	}
 
 }

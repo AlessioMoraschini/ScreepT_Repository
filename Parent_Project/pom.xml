@@ -32,7 +32,7 @@
   	<!-- ######################  GENERAL BUILD OPTIONS  ##################### -->
   	
 	  	<!-- Main application version used everyWhere -->
-	  	<parent.build.version.scrypt>0.9.7</parent.build.version.scrypt>
+	  	<parent.build.version.scrypt>0.9.8</parent.build.version.scrypt>
 	  	
 	  	<!-- Change this to false if you wanna export  -->
 	  	<export.launcher.jarmode>false</export.launcher.jarmode>

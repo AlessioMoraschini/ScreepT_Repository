@@ -27,7 +27,7 @@ public class PropertiesManagerFork {
 		dynamicFileBindingsDefSource = new File(bindingsFileDefinitionSource);
 		dynamicFileBindingsDef = new Properties();
 
-		if (!prepareDefObj()) {
+		if (!readFromFile()) {
 			dynamicFileBindingsDefSource = null;
 		}
 	}
@@ -42,7 +42,7 @@ public class PropertiesManagerFork {
 		dynamicFileBindingsDefSource = bindingsFileDefinitionSource;
 		dynamicFileBindingsDef = new Properties();
 		
-		if (!prepareDefObj()) {
+		if (!readFromFile()) {
 			dynamicFileBindingsDefSource = null;
 		}
 	}
@@ -77,6 +77,18 @@ public class PropertiesManagerFork {
 		
 		return list;
 	}
+	
+	public static String listToString(ArrayList<String> stringList, String separator) {
+		String concatenation = "";
+		// concatenate each element with given separator
+		for(String currentString : stringList) {
+			concatenation += currentString + separator;
+		}
+		if(concatenation.length() > 0) {
+			concatenation = concatenation.substring(0, concatenation.length() - separator.length());
+		}
+		return concatenation;
+	}
 
 	/**
 	 * Avoid null values reading from properties
@@ -96,7 +108,7 @@ public class PropertiesManagerFork {
 	 * Use this to refresh properties
 	 * @return
 	 */
-	public boolean prepareDefObj() {
+	public boolean readFromFile() {
 
         if (dynamicFileBindingsDefSource != null) {
 			

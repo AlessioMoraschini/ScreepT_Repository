@@ -37,6 +37,8 @@ import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
 import dialogutils.UpdateProgressPanel;
+import frameutils.frame.ClipboardFrame;
+import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
@@ -105,6 +107,8 @@ public class MainGUI extends MainGuiParent{
 	private static NetInfoFrame panelNetInfo;
 	private static HwInfoFrame panelHwInfo;
 	private static HashCheckerFrame hashCheckerFrame;
+	private static ClipboardFrame clipboardFrame;
+	private static ColorPickerFrame colorPickerFrame;
 	private static AboutSectionFrame panelAbout;
 	private static TutorialFrame tutorialPanel;
 	
@@ -1011,7 +1015,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		});
 		
 		// open in a new window - File Hash checker
-		mntmHashChecker = new CustomJmenuItem(new AbstractAction("File Hash checker panel") {
+		mntmHashChecker = new CustomJmenuItem(new AbstractAction("File Hash checker") {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
@@ -1026,6 +1030,48 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					}
 				} catch (Exception e1) {
 					logger.error("An error occurred while opening hashing functions manager frame", e1);
+				}
+			}
+		});
+		
+		// open in a new window - File Hash checker
+		mntmClipboardStandalone = new CustomJmenuItem(new AbstractAction("Clipboard tool") {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (clipboardFrame == null || !clipboardFrame.isActive()) {
+						clipboardFrame = new ClipboardFrame(frmScryptV);
+						clipboardFrame.setVisible(true);
+						clipboardFrame.setAlwaysOnTop(true);
+					} else {
+						clipboardFrame.toFront();
+						clipboardFrame.setVisible(true);
+						clipboardFrame.setAlwaysOnTop(true);
+					}
+					
+					clipboardFrame.setLocationRelativeTo(frmScryptV);
+				} catch (Exception e1) {
+					logger.error("An error occurred while opening cilpboard standalone frame", e1);
+				}
+			}
+		});
+		
+		// open in a new window - File Hash checker
+		mntmColorPicker = new CustomJmenuItem(new AbstractAction("Color picker") {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (colorPickerFrame == null || !colorPickerFrame.isActive()) {
+						colorPickerFrame = new ColorPickerFrame(frmScryptV);
+						colorPickerFrame.setVisible(true);
+						colorPickerFrame.setAlwaysOnTop(true);
+					} else {
+						colorPickerFrame.toFront();
+						colorPickerFrame.setVisible(true);
+						colorPickerFrame.setAlwaysOnTop(true);
+					}
+					
+					colorPickerFrame.setLocationRelativeTo(frmScryptV);
+				} catch (Exception e1) {
+					logger.error("An error occurred while opening color picker frame", e1);
 				}
 			}
 		});

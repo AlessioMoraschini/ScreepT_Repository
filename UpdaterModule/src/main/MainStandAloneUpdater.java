@@ -31,10 +31,13 @@ public class MainStandAloneUpdater {
 		
 		File currentDir = new File(System.getProperty("user.dir"));
 		File updatesDir = new File("updates");
-		
-		// Usage -> generateHashes function: java -jar updater.jar -generateHashes true manifest.properties
+
 		if(args[0].trim().equals("-generateHashes")) {
-			// this is updater "update hashes" function //
+			
+			/******************************************************************************************************** 
+			 * Function A: "generateHashes"
+			 * 	Usage -> generateHashes function: java -jar updater.jar -generateHashes true manifest.properties
+			 ********************************************************************************************************/
 			
 			Boolean createUpdatesZip = Boolean.valueOf(args[1]);
 			PropertiesManagerFork manifestProps = new PropertiesManagerFork(args[2]);
@@ -60,9 +63,13 @@ public class MainStandAloneUpdater {
 				
 			}
 			signalOKAndExit0();
-			
-		// Usage -> update scrypt function: java -jar updater.jar updater.jar UPDATES/updates ScrYpT_0.9.5.jar
+		
 		}else {
+
+			/**********************************************************************************************************		
+			 * Function B: update ScrYpT 
+			 * Usage -> update scrypt function: java -jar updater.jar updater.jar UPDATES/updates ScrYpT_0.9.5.jar
+			 **********************************************************************************************************/
 			// This is normal updater function //
 			
 			final File updaterJar = new File(args[0]).getAbsoluteFile();
@@ -160,11 +167,12 @@ public class MainStandAloneUpdater {
 	}
 	
 	private static boolean validateUpdatesFolder(File updaterJar, File updatesFolder, PropertiesManagerFork manifestProps) {
+		// .... /UPDATES/updates.zip  ::  (updatesFolder = .... /UPDATES/updates/)
 		File zipUpdates = new File(updatesFolder.getParentFile() + File.separator + "updates.zip");
 		boolean esit = true;
 		try {
-			esit = (!checkHash(updaterJar, manifestProps)) ? false : esit;
-			esit = (!checkHash(zipUpdates, manifestProps)) ? false : esit;
+			esit = (!DownloadUtils.checkHashFromProperties(updaterJar, manifestProps, downloadsHashFunc)) ? false : esit;
+			esit = (!DownloadUtils.checkHashFromProperties(zipUpdates, manifestProps, downloadsHashFunc)) ? false : esit;
 		} catch (Throwable e) {
 			esit = false;
 		}
@@ -179,21 +187,6 @@ public class MainStandAloneUpdater {
 		}
 		
 		return esit;
-	}
-	
-	private static boolean checkHash(File toCheck, PropertiesManagerFork propsManifest) throws Throwable {
-		if(propsManifest == null || toCheck == null || !toCheck.exists()) {
-			return false;
-		} else {
-			String checksum = propsManifest.getProperty(toCheck.getName());
-			if (checksum != null && !"".equals(checksum.trim())) {
-				// If checksum defined then check current file for it
-				return DownloadUtils.checkFileHash(toCheck, checksum, downloadsHashFunc);
-			} else {
-				// If reference checksum not defined continue
-				return true;
-			}
-		}
 	}
 	
 	private static void signalErrorAndExit1(Throwable e) {

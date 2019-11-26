@@ -109,7 +109,7 @@ public class ChangeMonitorManager implements IChangeMonManager{
 				boolean isChanged = mainEditorRef.changesHistory.changedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
 				boolean isDeleted = mainEditorRef.changesHistory.removedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
 				boolean isCreated = mainEditorRef.changesHistory.addedFiles.contains(mainEditorRef.loadedTabObj.loadedFile);
-				if (isDeleted) {
+				if (isDeleted && !isCreated) {
 					logger.info("\n\n ########################  DELETE EVENT REGISTERED! ###############################\n\n");
 
 					File removed = mainEditorRef.changesHistory.findRemovedFile(mainEditorRef.loadedTabObj.loadedFile);

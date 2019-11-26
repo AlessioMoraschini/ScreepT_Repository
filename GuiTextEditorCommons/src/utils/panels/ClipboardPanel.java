@@ -505,6 +505,12 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			txtAreaClipboard.setLineWrap(true);
 			txtAreaClipboard.setMargin(new Insets(8, 8, 8, 8));
 			txtAreaClipboard.repaint();
+			
+			try {
+				reload(((File)dataMap.values().toArray()[0]).getName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

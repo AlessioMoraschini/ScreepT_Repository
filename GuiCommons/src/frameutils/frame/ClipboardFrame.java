@@ -1,0 +1,68 @@
+package frameutils.frame;
+
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+import dialogutils.GenericFileChooserDialog;
+import dialogutils.JOptionHelper;
+import frameutils.frame.arch.ParentFrame;
+import frameutils.frame.panels.ClipboardPanelLight;
+import frameutils.utils.GuiUtils;
+import net.miginfocom.swing.MigLayout;
+import resources.GeneralConfig;
+import resources.IconsPathConfigurator;
+
+public class ClipboardFrame extends ParentFrame{
+	private static final long serialVersionUID = 7066597918430250412L;
+
+	JFrame thisFrame;
+	
+	ClipboardPanelLight	payloadPanel;
+	
+	public ClipboardFrame(JFrame parentFrame) {
+		logger.info(this.getClass().getName() + " - Starting...");
+		
+		setTitle(GeneralConfig.APPLICATION_NAME + " - Clipboard Frame");
+		
+		this.setMinimumSize(new Dimension(800, 500));
+
+		GuiUtils.centerComponent(this);
+		setVisible(true);
+		setAlwaysOnTop(true);
+		
+		isActive.set(true);
+		thisFrame = this;
+		
+		this.dialogHelper = new JOptionHelper(this);
+		this.fileChooser = new GenericFileChooserDialog(null);
+
+		// SW window icon
+		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_CLIPBOARD, this);
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		getContentPane().setBackground(Color.DARK_GRAY);
+		getContentPane().setLayout(new MigLayout("fill, insets 2", "[100%, grow]", "[100%, grow]"));
+		
+		payloadPanel = new ClipboardPanelLight();
+		getContentPane().add(payloadPanel, "cell 0 0 1 1, grow");
+		
+		addHandlers();
+		logger.info(this.getClass().getName() + " - Started and ready!");
+	}
+	
+	private void addHandlers() {
+		// DEFAULT CLOSE ACTIONS 
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	isActive.set(false);
+	        	
+				logger.debug("Closing "+getClass().getName());
+		    }
+		});
+	}
+}

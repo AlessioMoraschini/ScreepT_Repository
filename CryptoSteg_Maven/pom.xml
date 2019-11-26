@@ -167,7 +167,7 @@
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
                	<timeZone>Europe/Zurich</timeZone>
 			    <resources>
-			    	 <!-- Resources -->
+			    	 <!-- Resources to filter from root -->
 				     <resource>
 					    <filtering>true</filtering>
 					    <directory>./</directory>
@@ -178,6 +178,16 @@
 					    </includes>
 					    <excludes>/**/*humbs.db</excludes>
 					 </resource>
+					 
+				 	<!-- Root files to export without filtering -->
+			     	<resource>
+					    <filtering>false</filtering>
+					    <directory>./</directory>
+					    <includes>
+					        <include>Installed_plugins.properties</include>
+					    </includes>
+					</resource>
+					
 					 <!-- Main scrypt's jar (not fatjar) just compiled in /target -->
 				     <resource>
 					    <filtering>false</filtering>
@@ -261,12 +271,25 @@
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
                	<timeZone>Europe/Zurich</timeZone>
 			    <resources>
+			    
+			    	<!-- Root files to export with filtering -->
 				     <resource>
 					    <filtering>true</filtering>
 					    <directory>./</directory>
 					    <includes>
 					        <include>resourcesFilePathsMappings.properties</include>
 					        <include>LAUNCHER/**/*</include>
+					    </includes>
+					    <excludes>
+					    	<exclude>/**/*humbs.db</exclude>
+					    </excludes>
+					</resource>
+					
+					<!-- Root prj files/folders to export without filtering -->
+			     	<resource>
+					    <filtering>false</filtering>
+					    <directory>./</directory>
+					    <includes>
 					        <include>INI_FILES/**/*</include>
     						<include>LAUNCHER/**/*</include>
     						<include>LOG/**/*</include>
@@ -274,6 +297,7 @@
     						<include>UPDATES</include>
     						<include>Dependencies_Installers/**/*</include>
     						<include>IMG/**/*</include>
+					        <include>Installed_plugins.properties</include>
 					    </includes>
 					    <excludes>
 					    	<exclude>IMG/**/*.png</exclude>

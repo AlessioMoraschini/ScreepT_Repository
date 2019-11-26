@@ -30,6 +30,7 @@ import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import uTILS.dependencycheck.LibChecker;
+import updater.PluginManager;
 import updater.UpdatesManager;
 import variousutils.HandleString;
 
@@ -60,6 +61,7 @@ public class MainGuiGeneralAppStarter {
 	public static GenericFileChooserDialog fileDialogHelper;
 	
 	public static UpdatesManager updatesManager;
+	public static PluginManager pluginManager;
 	
 	// LIbs availability
 	public static boolean tesseractAvailable;
@@ -70,15 +72,16 @@ public class MainGuiGeneralAppStarter {
 		long startTime = System.currentTimeMillis();
 		
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
-		loaderGraphics.update("Preloading application properties and general configuration files...", 40);
 		loaderGraphics.indeterminate(true, "Loading configuration");
-		fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
 		
 		try {
 			try {
-				// Load Internal configurations
+				loaderGraphics.update("Preloading application properties and general configuration files...", 40);
+				// Load Internal configuration and dialog helper
 				GeneralConfig.initLazyGeneralConfig();
+
 				dialogHelper = new JOptionHelper(null);
+				fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
 				
 				GuiUtils.init();
 				JOptionHelper.init();
@@ -97,13 +100,12 @@ public class MainGuiGeneralAppStarter {
 				logger.info(LoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
 				
 				isLoggerReady = true;
-				
-				tesseractAvailable = LibChecker.checkTesseract();
-				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
+				logger.info("Logger is READY to log everything ;)");
 				
 			} catch (Exception e) {
+				System.out.println("There was a critical error when trying to load Logger! Application cannot start.");
 				Sounds.playSound(SoundsConfigurator.ERROR, null);
-				dialogHelper.errorScroll("Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
+				dialogHelper.errorScroll("Critical error: Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
 						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
 				throw e;
 			}
@@ -115,7 +117,24 @@ public class MainGuiGeneralAppStarter {
 				updatesManager.emtpyUpdatesDir();
 				logger.info("Updates manager started!");
 			} catch (Exception e) {
-				logger.error("Cannot initialize updatesManager :(", e);
+				logger.error("Cannot initialize Updates Manager :(", e);
+			}
+			
+			try {
+				// Load plugin manager module
+				loaderGraphics.update("Starting plugin manager...", 6);
+				pluginManager = new PluginManager();
+				logger.info("Plugin manager started!");
+			} catch (Exception e) {
+				logger.error("Cannot initialize Plugin Manager :(", e);
+			}
+			
+			try {
+				// Check hard coded plugins presence
+				tesseractAvailable = LibChecker.checkTesseract();
+				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
+			} catch (Exception e) {
+				logger.warn("Cannot check avalaibility of plugins :(");
 			}
 			
 			loaderGraphics.update("Starting Exception handler...", 8);
@@ -284,6 +303,13 @@ public class MainGuiGeneralAppStarter {
 		}
 	}
 	
+	/**
+	 * This method will delete general signal file to signal that main Application is closed
+	 */
+	public static void deleteSignalFileForExternalJars() {
+		FileUtils.deleteQuietly(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
+	}
+	
 	private static long printElapsed(String msg, long startTime) {
 		long endTime = System.currentTimeMillis();
 		String totMsg = "\n\n [MAIN LOAD PROGRESS] => " + msg + " after " + (endTime - startTime) + " ms (Total time from first executed line)\n";
@@ -294,12 +320,5 @@ public class MainGuiGeneralAppStarter {
 		}
 			
 		return endTime;
-	}
-	
-	/**
-	 * This method will delete general signal file to signal that main Application is closed
-	 */
-	public static void deleteSignalFileForExternalJars() {
-		FileUtils.deleteQuietly(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
 	}
 }

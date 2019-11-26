@@ -27,6 +27,7 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.bind.DatatypeConverter;
 
 import exception.ProgressBarInterruptedException;
+import forks.merged.PropertiesManagerFork;
 import forks.merged.Various;
 import gui.UpdateProgressPanelMin;
 
@@ -406,13 +407,13 @@ public class DownloadUtils {
 				ZipEntry anEntry = new ZipEntry(f.getPath());
 				// place the zip entry in the ZipOutputStream object
 				zos.putNextEntry(anEntry);
-				int cycles = 1;
+				
 				// now write the content of the file to the ZipOutputStream
 				while ((bytesIn = fis.read(readBuffer)) != -1) {
 					
-					zos.write(readBuffer, 0, bytesIn);
+					updateProgress("Zipping " + dirList[i], percGenZipped, progressUpdater, true);
 					
-					cycles++;
+					zos.write(readBuffer, 0, bytesIn);
 				}
 				// close the Stream
 				fis.close();
@@ -487,6 +488,41 @@ public class DownloadUtils {
     }
 
 	// HASHING //
+    public static boolean checkHashesFromProperties(List<File> filesToCheck, PropertiesManagerFork propsManifest, HashingFunction hashingFunction) throws Throwable {
+    	if(filesToCheck == null || filesToCheck.isEmpty()) {
+    		return true;
+    	}
+    	
+    	boolean checked = true;
+    	String checksum = "";
+    	boolean tempResult = false;
+    	
+    	for(File current : filesToCheck) {
+    		checksum = propsManifest.getProperty(current.getName());
+    		if (checksum != null && !"".equals(checksum.trim())) {
+				tempResult = checkFileHash(current, checksum, hashingFunction);
+				checked = tempResult == false ? false : checked;
+			}
+    	}
+    	
+    	return checked;
+    }
+    
+    public static boolean checkHashFromProperties(File toCheck, PropertiesManagerFork propsManifest, HashingFunction hashingFunction) throws Throwable {
+		if(propsManifest == null || toCheck == null || !toCheck.exists()) {
+			return false;
+		} else {
+			String checksum = propsManifest.getProperty(toCheck.getName());
+			if (checksum != null && !"".equals(checksum.trim())) {
+				// If checksum defined then check current file for it
+				return DownloadUtils.checkFileHash(toCheck, checksum, hashingFunction);
+			} else {
+				// If reference checksum not defined continue
+				return true;
+			}
+		}
+	}
+    
 	public static boolean checkFileHash(String filePath, String checksum, HashingFunction algorithm) throws Throwable {
 		
 		if(filePath == null || checksum == null) return false;

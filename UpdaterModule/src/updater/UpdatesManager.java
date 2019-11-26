@@ -17,7 +17,6 @@ public class UpdatesManager {
 
 	public URL manifestRemoteUrl;
 	
-	
 	public static PropertiesManagerFork resourcesFilePathsMappings = new PropertiesManagerFork(MainStandAloneUpdater.resourcesMappingDefPath);
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_Scrypt/");  
 	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
@@ -43,7 +42,7 @@ public class UpdatesManager {
 		
 		try {
 			File updatesDir = new File(UPDATES_DIR);
-			if(!updatesDir.exists() && updatesDir.isDirectory()) {
+			if(!updatesDir.exists()) {
 				updatesDir.mkdirs();
 				updatesDir.mkdir();
 			}
@@ -122,6 +121,8 @@ public class UpdatesManager {
 			updateProgressBar = new UpdateProgressPanelMin(true);
 			updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
 			out.println(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+			
+			// Download manifest.properties into UPDATES -> /UPDATES/manifest.properties
 			File downloadedManifest = DownloadUtils.downloadFile(false, manifestRemoteUrl, localTempManifestPath, updateProgressBar);
 			out.println("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
 			
@@ -129,29 +130,32 @@ public class UpdatesManager {
 			
 			String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
 			out.println("Version: " + version);
+			
+			// Calculate jar main application reference after extract -> /UPDATES/ScrYpT_X.Y.Z.jar
 			lastUpdatesDownloaded[2] = new File("ScrYpT_"+version+".jar");
 			
+			// READ FROM DOWNLOADED PROPS
 			URL updaterJarUrl = new URL(propsManager.getProperty(WEB_UPDATER_JAR_PROP));
 			out.println("updaterJarUrl: " + updaterJarUrl);
 			
 			URL updatesZippedUrl = new URL(propsManager.getProperty(WEB_UPDATES_PACK_PROP));
 			out.println("updatesZippedUrl: " + updatesZippedUrl);
 			
-			// Download jar updater into same root as main application that is downloading updates
+			// Download jar updater into root -> /application/updater.jar
 			updateProgressBar.update(40, "Downloading "+updaterJarUrl, true);
 			out.println(Various.getHeaderString("#", 40, "PARSE AND DOWNLOAD PACKETS"));
 			File downloadedUpdater = DownloadUtils.downloadFile(false, updaterJarUrl, WEB_UPDATER_JAR_NAME, updateProgressBar);
 			lastUpdatesDownloaded[0] = downloadedUpdater;
 			out.println("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + Various.coolFileSize(downloadedUpdater.length()));
 
-			// Download zipped updates into UPDATES folder
+			// Download zipped updates -> /UPDATES/updates.zip
 			updateProgressBar.update(70, "Downloading "+updaterJarUrl, true);
 			File downloadedUpdatesZip = DownloadUtils.downloadFile(false, updatesZippedUrl, localTempZippedUpdates, updateProgressBar);
 			out.println("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + Various.coolFileSize(downloadedUpdatesZip.length()));
 			
 			updateProgressBar.forceClose();
 			
-			// Extract zipped updates into UPDATES_DIR destination folder "updates"
+			// Extract zipped updates -> /UPDATES/updates/
 			File unzippedUpdates = DownloadUtils.unzipFile(downloadedUpdatesZip.getAbsolutePath(), UPDATES_DIR, true);
 			out.println("Unzipped updates: " + unzippedUpdates);
 			lastUpdatesDownloaded[1] = unzippedUpdates;

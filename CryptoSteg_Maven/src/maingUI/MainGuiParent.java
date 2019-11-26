@@ -124,6 +124,8 @@ public class MainGuiParent {
 	CustomJmenuItem mntmnetInfo;
 	CustomJmenuItem mntmhwInfo;
 	CustomJmenuItem mntmHashChecker;
+	CustomJmenuItem mntmColorPicker;
+	CustomJmenuItem mntmClipboardStandalone;
 	CustomJmenuItem mntmImageConverter;
 	CustomJmenuItem mntmTouppercaseDirectory;
 	CustomJmenuItem mntmDeleteDirectoryContentByExtension;
@@ -265,6 +267,8 @@ public class MainGuiParent {
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
 			mnVarious.add(mntmHashChecker);
+			mnVarious.add(mntmColorPicker);
+			mnVarious.add(mntmClipboardStandalone);
 			mnVarious.add(mnConversionsAndOther);
 				// SUB-MENU
 				mnConversionsAndOther.add(mntmImageConverter);
@@ -388,6 +392,8 @@ public class MainGuiParent {
 		mntmnetInfo.setFont(menuItemFont);
 		mntmhwInfo.setFont(menuItemFont);
 		mntmHashChecker.setFont(menuItemFont);
+		mntmColorPicker.setFont(menuItemFont);
+		mntmClipboardStandalone.setFont(menuItemFont);
 		mntmTextEditor.setFont(menuItemFont);
 		
 		// SUB -> CONVERSION UTILS SECTION
@@ -454,6 +460,8 @@ public class MainGuiParent {
 		mntmnetInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NET_INFO));
 		mntmhwInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HW_INFO));
 		mntmHashChecker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HASHING));
+		mntmColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
+		mntmClipboardStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 		
@@ -516,6 +524,8 @@ public class MainGuiParent {
 		mntmnetInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | SHIFT_MASK));
 		mntmhwInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, ALT_MASK | SHIFT_MASK));
 		mntmHashChecker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, ALT_MASK | SHIFT_MASK));
+		mntmColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P,CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmClipboardStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, ALT_MASK | SHIFT_MASK));
 		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
 		
 			// Folder and files functions
@@ -866,6 +876,22 @@ public class MainGuiParent {
 
 	public JMenuItem getMntmhwInfo() {
 		return mntmhwInfo;
+	}
+	
+	public CustomJmenuItem getMntmColorPicker() {
+		return mntmColorPicker;
+	}
+
+	public void setMntmColorPicker(CustomJmenuItem mntmColorPicker) {
+		this.mntmColorPicker = mntmColorPicker;
+	}
+
+	public CustomJmenuItem getMntmClipboardStandalone() {
+		return mntmClipboardStandalone;
+	}
+
+	public void setMntmClipboardStandalone(CustomJmenuItem mntmClipboardStandalone) {
+		this.mntmClipboardStandalone = mntmClipboardStandalone;
 	}
 
 	public CustomJmenuItem getMntmHashChecker() {

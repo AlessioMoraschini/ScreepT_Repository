@@ -43,30 +43,25 @@ public class HashCheckerFrame extends ParentFrame{
 	private JButton btnCalculateHash;
 	private JButton btnSelectFile;
 	
-	private JOptionHelper dialogHelper;
-	private GenericFileChooserDialog fileChooser;
-	
 	private JFrame thisFrame;
 	
 	private static Color lightGrayDefault = new Color(211, 211, 211);
 	private static Color yellowDefault = new Color(250, 250, 210);
 	
 	public HashCheckerFrame(File initialFile, JFrame parentFrame) {
+		super();
+		
 		logger.info(this.getClass().getName() + " - Starting...");
 		
 		setTitle(GeneralConfig.APPLICATION_NAME + " - File Hash Checker");
 
 		this.parentFrame = parentFrame;
-		this.dialogHelper = new JOptionHelper(this);
-		this.fileChooser = new GenericFileChooserDialog(null);
 		thisFrame = this;
 		
 		setBounds(new Rectangle(850,215));
 		GuiUtils.centerComponent(this);
 		setVisible(true);
 		setAlwaysOnTop(true);
-		
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[5px][100px][220px,grow][5px]", "[5px,center][30px,center][][35px][][20px,grow][20px,grow][5px,center]"));
