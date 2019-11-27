@@ -54,6 +54,7 @@ import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.filedialog.DirectoryManagementGUI;
 import gUI.utils.filedialog.INIfileChoosER;
+import gui.PluginManagerGUI;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import guistyle.GUIStyelSettings;
@@ -111,6 +112,7 @@ public class MainGUI extends MainGuiParent{
 	private static ColorPickerFrame colorPickerFrame;
 	private static AboutSectionFrame panelAbout;
 	private static TutorialFrame tutorialPanel;
+	private static PluginManagerGUI pluginManagerGUI;
 	
 ////////////////////////// MAIN GUI ELEMENTS ///////////////////////////
 ////////////////////////////////////////////////////////////////////////
@@ -300,8 +302,14 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				public void run() {
 					// REFRESH GUI GENERAL
 					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 75, 350);
-					if (currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
-						GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+					if (GUIStyelSettings.isNimbus(currentConfiguration.getGuiOpt())) {
+						if (GUIStyelSettings.isDarkNimbus(currentConfiguration.getGuiOpt())) {
+							
+							GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+						} else {
+							
+							GUIStyelSettings.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+						}
 					}else {
 						GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 					}
@@ -1207,6 +1215,31 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				updatesTHread.start();
 			}
 		});
+
+		// Check and download/install updates
+		mntmLookForPlugins = new CustomJmenuItem(new AbstractAction("Install plugins...") {
+			public void actionPerformed(ActionEvent e) {
+				new Thread(new Runnable() {
+					public void run() {
+						try {
+							MainGuiGeneralAppStarter.pluginManager.discoverLatestPlugins();
+							
+							if (pluginManagerGUI != null || !PluginManagerGUI.active) {
+								pluginManagerGUI = new PluginManagerGUI(null, MainGuiGeneralAppStarter.pluginManager);
+								GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_PLUGINS, pluginManagerGUI);
+							} else {
+								pluginManagerGUI.toFront();
+							}
+							pluginManagerGUI.setVisible(true);
+						} catch (Throwable e1) {
+							String errorMsg = "Cannot load Plugin Manager, an error occurred :(";
+							dialogHelper.error(errorMsg, "An error occurred");
+							logger.error(errorMsg, e1);
+						}
+					}
+				}).start();
+			}
+		});
 		
 	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		
@@ -1682,8 +1715,13 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 			panelGeneralOptions.initGuiFromConfig();
 		}
 		
-		if(currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
-			GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+		if(GUIStyelSettings.isNimbus(currentConfiguration.getGuiOpt())) {
+			if (GUIStyelSettings.isDarkNimbus(currentConfiguration.getGuiOpt())) {
+				
+				GUIStyelSettings.setDarkNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+			} else {
+				GUIStyelSettings.setLightNimbus(currentConfiguration.getGuiOpt().nimbusSize);
+			}
 		}else {
 			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 		}

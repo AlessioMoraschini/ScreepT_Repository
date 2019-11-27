@@ -139,6 +139,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmEraseLogs;
 	CustomJmenuItem mntmViewWebsite;
 	CustomJmenuItem mntmLookForUpdates;
+	CustomJmenuItem mntmLookForPlugins;
 	CustomJmenuItem mntmResetAllPanels;
 	CustomJmenuItem mntmResetTextEditor;
 	CustomJmenuItem mntmResetConfigManager;
@@ -284,6 +285,7 @@ public class MainGuiParent {
 			mnHelp.add(mntmAboutScreept);		
 			mnHelp.add(mntmViewWebsite);
 			mnHelp.add(mntmLookForUpdates);
+			mnHelp.add(mntmLookForPlugins);
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmExportLog);
 			mnHelp.add(mntmEraseLogs);
@@ -411,6 +413,7 @@ public class MainGuiParent {
 		mntmReturnToWelcome.setFont(menuItemFont);
 		mntmViewWebsite.setFont(menuItemFont);
 		mntmLookForUpdates.setFont(menuItemFont);
+		mntmLookForPlugins.setFont(menuItemFont);
 		mntmAboutScreept.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
@@ -481,7 +484,8 @@ public class MainGuiParent {
 		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
 		mntmReturnToWelcome.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HOME_PAGE));
 		mntmViewWebsite.setIcon(new ImageIcon(IconsPathConfigurator.ICON_WEBSITE));
-		mntmLookForUpdates.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_WEB));
+		mntmLookForUpdates.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPDATES));
+		mntmLookForPlugins.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PLUGINS));
 		
 		MenuSetter.setIconTextGap(mnrestartPanel, 20);
 		mnrestartPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
@@ -543,6 +547,7 @@ public class MainGuiParent {
 		mntmReturnToWelcome.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_H, ALT_MASK | SHIFT_MASK));
 		mntmViewWebsite.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_4, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmLookForUpdates.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_5, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmLookForPlugins.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_6, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmUserDocumentation.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Q, ALT_MASK | SHIFT_MASK));
 		
 			// Reset functions 
@@ -912,6 +917,14 @@ public class MainGuiParent {
 
 	public CustomJmenuItem getMntmLookForUpdates() {
 		return mntmLookForUpdates;
+	}
+
+	public CustomJmenuItem getMntmLookForPlugins() {
+		return mntmLookForPlugins;
+	}
+
+	public void setMntmLookForPlugins(CustomJmenuItem mntmLookForPlugins) {
+		this.mntmLookForPlugins = mntmLookForPlugins;
 	}
 
 	public JMenuItem getMntmReturnToWelcome() {

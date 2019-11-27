@@ -70,7 +70,11 @@ public class PropertiesManagerFork {
 		ArrayList<String> list = new ArrayList<>();
 		
 		String rawList = dynamicFileBindingsDef.getProperty(key);
-		rawList = rawList == null ? "" : rawList;
+		
+		if(rawList == null || "".equals(rawList)) {
+			return list;
+		}
+		
 		String[] splitted = rawList.split(separator);
 		
 		list.addAll(Arrays.asList(splitted));
@@ -134,6 +138,24 @@ public class PropertiesManagerFork {
 		try {
 			out = new FileOutputStream(dynamicFileBindingsDefSource);
 			dynamicFileBindingsDef.setProperty(key, value);
+			dynamicFileBindingsDef.store(out, null);
+		} catch (IOException e) {
+			return false;
+		} finally {
+			try {
+				out.close();
+			} catch (Exception e2) {
+			}
+		}
+		return true;
+	}
+
+	public boolean removeProperty(String key){
+		FileOutputStream out = null;
+		
+		try {
+			out = new FileOutputStream(dynamicFileBindingsDefSource);
+			dynamicFileBindingsDef.remove(key);
 			dynamicFileBindingsDef.store(out, null);
 		} catch (IOException e) {
 			return false;

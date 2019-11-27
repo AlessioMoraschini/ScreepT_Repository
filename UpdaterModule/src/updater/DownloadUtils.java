@@ -567,12 +567,16 @@ public class DownloadUtils {
 		if (version_A == null || version_B == null) {
 			throw new IllegalArgumentException("Version can not be null");
 		}
-		if (!version_A.matches("[0-9]+(\\.[0-9]+)*") || !version_B.matches("[0-9]+(\\.[0-9]+)*")) {
+		
+		String cleanVersA = keepOnlyDotsAndDigits(version_A);
+		String cleanVersB = keepOnlyDotsAndDigits(version_B);
+		
+		if (!cleanVersA.matches("[0-9]+(\\.[0-9]+)*") || !cleanVersB.matches("[0-9]+(\\.[0-9]+)*")) {
 			throw new IllegalArgumentException("Invalid version format");
 		}
 
-		String[] AParts = version_A.split("\\.");
-		String[] BParts = version_B.split("\\.");
+		String[] AParts = cleanVersA.split("\\.");
+		String[] BParts = cleanVersB.split("\\.");
 		int length = Math.max(AParts.length, BParts.length);
 		for (int i = 0; i < length; i++) {
 			int ACurrPart = i < AParts.length ? Integer.parseInt(AParts[i]) : 0;

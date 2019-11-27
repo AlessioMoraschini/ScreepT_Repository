@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import javax.swing.JOptionPane;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import exception.ProgressBarInterruptedException;
@@ -115,19 +116,22 @@ public class PluginManager {
 		File unzippedPlugin = DownloadUtils.unzipFile(plugin.getLocalFile().getAbsolutePath(), destinationNamedDir.getAbsolutePath(), true);
 		plugin.setLocalExtractedDir(unzippedPlugin);
 		
-		// Copy content into relative directories into /application
+		// Copy content into current application root, and update mainAppRoot-relative file installed into properties file
 		System.out.print("Copying content of " + plugin.getName() + " into " + APPLICATION_ROOT_DIR);
 		Various.copyDirectoryContents(plugin.getLocalExtractedDir(), APPLICATION_ROOT_DIR);
+		ArrayList<String> relativeNewCopied = Various.getPathsRelativeToOtherFile(Various.listFiles(unzippedPlugin, new ArrayList<>()), unzippedPlugin);
 		plugin.setInstallationCompleted(true);
 		addToInstalledList(plugin);
-		installedPluginProperties.saveProperty(plugin.getName(),getFileAsStringListFromFolder(unzippedPlugin));
+		installedPluginProperties.saveProperty(plugin.getName(), PropertiesManagerFork.listToString(relativeNewCopied, ","));
+		
+		updateCache(plugin);
 		
 		return plugin;
 	}
 	
 	public boolean removePlugin(PluginDTO pluginToRemove) {
 		
-		boolean out = false;
+		boolean uninstallOK = true;
 		
 		if(pluginToRemove == null || pluginToRemove.getName() == null) {
 			return false;
@@ -136,17 +140,26 @@ public class PluginManager {
 		ArrayList<String> strPluginFilesList = installedPluginProperties.getStringList(pluginToRemove.getName(), ",");
 		for(String toDelete : strPluginFilesList) {
 			File filePending = new File(toDelete);
-			if (filePending.exists() && filePending.isFile()) {
-				try {
-					boolean tempRes = filePending.delete();
-					out = (tempRes) ? out : false;
-				} catch (Exception e) {
-					e.printStackTrace();
+			try {
+				// Delete only if contained in current application DIR (Avoid accidental deletes of other files unrelated to ScrYpT)
+				if (FileUtils.directoryContains(APPLICATION_ROOT_DIR, filePending)) {
+					if (toDelete != null && !"".equals(toDelete.trim()) && filePending.exists() && filePending.isFile()) {
+						boolean tempRes = filePending.delete();
+						uninstallOK = (tempRes) ? uninstallOK : false;
+					} 
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		
-		return out;
+		if (uninstallOK) {
+			removeFromInstalledList(pluginToRemove);
+		}
+		pluginToRemove.setInstallationCompleted(!uninstallOK);
+		updateCache(pluginToRemove);
+		
+		return uninstallOK;
 	}
 	
 	
@@ -225,8 +238,6 @@ public class PluginManager {
 			pluginManagerProgbar.forceClose();
 		}
 		
-		updateAlreadyInstalledIntoList(downloadedList);
-		
 		return downloadedList;
 	}
 	
@@ -260,6 +271,7 @@ public class PluginManager {
 					toAdd.setDescription(description);
 					
 					plugins.add(toAdd);
+					updateCache(toAdd);
 				}
 			}
 		} catch (Throwable e){
@@ -320,6 +332,20 @@ public class PluginManager {
 		
 		String stringList = PropertiesManagerFork.listToString(installedPluginNames, ",");
 		installedPluginProperties.saveProperty(installedPluginPropsListKey, stringList);
+		
+		plugin.installationCompleted = true;
+	}
+
+	private void removeFromInstalledList(PluginDTO plugin) {
+		if(installedPluginNames.contains(plugin.getName())) {
+			installedPluginNames.remove(plugin.getName());
+		}
+		
+		String stringList = PropertiesManagerFork.listToString(installedPluginNames, ",");
+		installedPluginProperties.saveProperty(installedPluginPropsListKey, stringList);
+		installedPluginProperties.removeProperty(plugin.getName());
+		
+		plugin.installationCompleted = false;
 	}
 	
 	public boolean isInstalled(PluginDTO plugin) {
@@ -472,11 +498,13 @@ public class PluginManager {
 		return removedList;
 	}
 	
-	public String getFileAsStringListFromFolder(File containerFolder) throws IOException {
+	public String getFileAsStringListFromFolderRelative(File containerFolder, File relativeToThis) throws IOException {
+		File relativeReference = (relativeToThis != null && relativeToThis.exists()) ? relativeToThis : APPLICATION_ROOT_DIR;
+		
 		ArrayList<File> allFiles = Various.listFiles(containerFolder, new ArrayList<File>());
 		ArrayList<String> relativePahs = new ArrayList<>();
 		for(File current : allFiles) {
-			relativePahs.add(Various.getPathRelativeToOtherFile(current, APPLICATION_ROOT_DIR));
+			relativePahs.add(Various.getPathRelativeToOtherFile(current, relativeReference));
 		}
 		
 		return PropertiesManagerFork.listToString(relativePahs, ",");

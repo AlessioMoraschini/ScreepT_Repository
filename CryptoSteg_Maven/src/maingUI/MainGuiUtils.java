@@ -416,8 +416,15 @@ public class MainGuiUtils {
 	public void refreshGUIlaf() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				if(MainGUI.currentConfiguration.getGuiOpt().isDarkGuiNimbus()) {
-					GUIStyelSettings.setDarkNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
+				boolean isNimbus = GUIStyelSettings.isNimbus(MainGUI.currentConfiguration.getGuiOpt());
+				boolean isDarkNimbus = MainGUI.currentConfiguration.getGuiOpt().isDarkGuiNimbus();
+				
+				if(isNimbus) {
+					if (isDarkNimbus) {
+						GUIStyelSettings.setDarkNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
+					}else {
+						GUIStyelSettings.setLightNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
+					}
 				}else {
 					GUIStyelSettings.setStyle(MainGUI.currentConfiguration.getGuiOpt().getPreferredStyle(), MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
 				}

@@ -45,7 +45,7 @@ public class LibChecker {
 		boolean tessDataFound = false;
 		try {
 			
-			conversion.ImageToTextExtractor test = new conversion.ImageToTextExtractor();
+			new conversion.ImageToTextExtractor();
 			
 			if(new File(tessdataLib).exists()) {
 				tessDataFound = true;

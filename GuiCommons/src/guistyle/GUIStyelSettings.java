@@ -20,6 +20,7 @@ import javax.swing.plaf.ColorUIResource;
 import org.apache.log4j.Logger;
 
 import media.ImageGeneralWorker;
+import om.GuiOption;
 import treeutils.TreeUtils;
 
 public class GUIStyelSettings{
@@ -41,6 +42,26 @@ public class GUIStyelSettings{
 	public static final Color nimbusProgBarColor = new Color(84,165,50);
 
 	public static int focusOpacity = 20;
+	
+	public static boolean isNimbus(GuiOption guiOpt) {
+		String style = guiOpt.getPreferredStyle();
+		
+		if(style != null && !"".equals(style)) {
+			return style.toLowerCase().contains("nimbus");
+		}
+		
+		return false;
+	}
+
+	public static boolean isDarkNimbus(GuiOption guiOpt) {
+		String style = guiOpt.getPreferredStyle();
+		
+		if(guiOpt.isDarkGuiNimbus() && isNimbus(guiOpt)) {
+			return style.toLowerCase().contains("nimbus");
+		}
+		
+		return false;
+	}
 
     public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {

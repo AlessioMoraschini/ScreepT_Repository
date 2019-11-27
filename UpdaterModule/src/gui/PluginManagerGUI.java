@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JFrame;
 
 import java.awt.Color;
-import java.awt.Component;
 
 import updater.PluginDTO;
 import updater.PluginManager;
@@ -48,7 +47,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	
 	// String name <-> string description <-> boolean already installed <-> checkBox select <-> jbutton uninstall (if installed)
 	private static final String[] columnNames = {"Plugin name", "DescrYption", "Status", "Plugin Action"};
-
+	
 	public static boolean active = false;
 	
 	public JFrame parentFrame;
@@ -89,7 +88,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 2 1,grow");
 		
 		table = new JTable();
-		table.setDefaultRenderer(JButton.class, new JTableButtonRenderer());
+		table.setDefaultRenderer(JButton.class, new JTableButtonRenderer(thisPanel));
 		
 		JScrollPane tableContainer = new JScrollPane(table);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -173,8 +172,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 		table.setSelectionBackground(new Color(3, 127, 252, 30));
 		table.setSelectionForeground(Color.BLACK);
 		
-		table.getColumn(columnNames[3]).setCellRenderer(new JTableButtonRenderer());
-		table.getColumn(columnNames[3]).setCellEditor(new ButtonEditor(this));
+		table.getColumn(columnNames[3]).setCellRenderer(new JTableButtonRenderer(thisPanel));
+		table.getColumn(columnNames[3]).setCellEditor(new ButtonEditor(thisPanel));
 		
 		table.getColumnModel().getColumn(0).setPreferredWidth(110);
 		table.getColumnModel().getColumn(0).setMaxWidth(110);
@@ -182,8 +181,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 		table.getColumnModel().getColumn(1).setPreferredWidth(600);
 		table.getColumnModel().getColumn(2).setPreferredWidth(110);
 		table.getColumnModel().getColumn(3).setPreferredWidth(150);
-		table.getColumnModel().getColumn(3).setMaxWidth(150);
-		table.getColumnModel().getColumn(3).setMinWidth(150);
+		table.getColumnModel().getColumn(3).setMaxWidth(200);
+		table.getColumnModel().getColumn(3).setMinWidth(180);
         
 	}
 	
@@ -217,7 +216,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	
 	private boolean askIfSureToClose() {
 		String msg = "Are you sure to close Plugin Manager? There is an installation in progress. It will be interrupted";
-		int response = JOptionPane.showConfirmDialog(parentFrame, msg, "Exit plugin manager?", JOptionPane.WARNING_MESSAGE);
+		int response = JOptionPane.showConfirmDialog(thisPanel, msg, "Exit plugin manager?", JOptionPane.WARNING_MESSAGE);
 		if (response == JOptionPane.OK_OPTION) {
 			return true;
 		}else {

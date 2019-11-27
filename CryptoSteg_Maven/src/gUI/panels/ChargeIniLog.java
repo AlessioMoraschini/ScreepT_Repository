@@ -19,7 +19,6 @@ import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import maingUI.MainGUI;
-import maingUI.MainGuiUtils;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
@@ -64,7 +63,8 @@ import javax.swing.JSplitPane;
 import java.awt.Dimension;
 
 public class ChargeIniLog extends JPanel{
-	
+	private static final long serialVersionUID = 5166978306767024195L;
+
 	// INItializer logger creation		
 	static Logger logger = Logger.getLogger(ChargeIniLog.class); 
 	

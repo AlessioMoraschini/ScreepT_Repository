@@ -276,12 +276,12 @@ public class GuiUtils {
 		});
 	}
 	
-	public static <E, T> void refreshCombo(final JComboBox target, final Collection<E> values) {
+	public static <E> void refreshCombo(final JComboBox<E> target, final Collection<E> values) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				target.removeAllItems();
 				Object[] array = values.toArray();
-				DefaultComboBoxModel model = new DefaultComboBoxModel<>(array);
+				DefaultComboBoxModel model = new DefaultComboBoxModel(array);
 				target.setModel(model);
 				target.revalidate();
 				target.repaint();

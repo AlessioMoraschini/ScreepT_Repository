@@ -1919,8 +1919,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public void enableDependenciesFunctions() {
 		String koMsg = "Not found on this installation: update your libraries plugin to use this function!"; 
 		enableDependency(btnSpeak, MainGuiGeneralAppStarter.voiceSpeakerAvailable, TextEditorTooltips.tooltipSpeak, koMsg);
-		enableDependency(btnParseImageText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditorTooltips.tooltipSpeak, koMsg);
-		enableDependency(btnParsePdfText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditorTooltips.tooltipSpeak, koMsg);
+		enableDependency(btnParseImageText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditorTooltips.tooltipParseImage, koMsg);
+		enableDependency(btnParsePdfText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditorTooltips.tooltipParsePdfTxt, koMsg);
 	}
 	
 	private static void enableDependency(JButton target, boolean enable, String tooltipY, String tooltipN) {

@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,11 +17,18 @@ import java.util.Arrays;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
 import static java.lang.System.out;
 
+/**
+ * This class contains a mix of useful methods forked from various classes made by me, to avoid including big dependencies only
+ * to use a little of given functions, that would have made the updater module very heavy, so I decided to create this utils class. 
+ * 
+ * @author Alessio Moraschini
+ */
 public class Various {
 	
 	public static Dimension getScreenSize() {
@@ -42,6 +50,22 @@ public class Various {
 	public static Dimension getScreenSize(int marginLeftRight) {
 		Dimension screen = getScreenSize();
 		return new Dimension(screen.width-(marginLeftRight+marginLeftRight), screen.height);
+	}
+	
+	public static Window findActiveWindow(Window[] windows) {
+	    Window result = null;
+	    for (int i = 0; i < windows.length; i++) {
+	        Window window = windows[i];
+	        if (window.isActive()) {
+	            result = window;
+	        } else {
+	            Window[] ownedWindows = window.getOwnedWindows();
+	            if (ownedWindows != null) {
+	                result = findActiveWindow(ownedWindows);
+	            }
+	        }
+	    }
+	    return result;
 	}
 	
 	public static void centerComponent(Component targetComponent, int percentSize) {
@@ -85,6 +109,19 @@ public class Various {
 		newY = (maxDeltaY < 0)? screenSize.height - element.getHeight() : newY;
 		
 		element.setBounds(newX, newY, element.getWidth(), element.getHeight());
+	}
+	
+	public static void launchThreadSafeSwing(Runnable threadAction) {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					new Thread(threadAction).start();
+				} catch (Exception e) {
+				}
+			}
+		});
 	}
 	
 	/**
@@ -314,18 +351,40 @@ public class Various {
 	public static String getPathRelativeToOtherFile(File first, File other) throws IOException {
 		
 		if(first == null || other == null) {
-			return "";
+			return null;
 		}
 		
 		return other.toURI().relativize(first.toURI()).getPath();
 	}
 	
+	public static ArrayList<String> getPathsRelativeToOtherFile(ArrayList<File> toRelativize, File reference) throws Exception{
+		ArrayList<String> relativePaths = new ArrayList<>();
+		
+		if(toRelativize == null || toRelativize.isEmpty() || reference == null || !reference.exists()) {
+			return relativePaths;
+		}
+		
+		for(File currToRelativize : toRelativize) {
+			if (currToRelativize != null && currToRelativize.exists()) {
+				String relative = getPathRelativeToOtherFile(currToRelativize, reference);
+				relativePaths.add(relative);
+			}
+		}
+		
+		return relativePaths;
+	}
+	
 	/**
 	 * Get all files contained in a directory, and also in his sublfolders. NB only files will be returned!
+	 * 
+	 * @param ArrayList<File> foundFiles use an initialized or empty or null array list, to which found files will be added
 	 * @param directoryName
-	 * @param files
 	 */
 	public static ArrayList<File> listFiles(File directory, ArrayList<File> foundFiles) {
+		
+		if(foundFiles == null) {
+			foundFiles = new ArrayList<>();
+		}
 
 	    // Get all files from a directory.
 	    File[] thisLevelFiles = directory.listFiles();
