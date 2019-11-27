@@ -1006,6 +1006,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 						panelHwInfo.setState(java.awt.Frame.NORMAL);
 						panelHwInfo.setVisible(true);
 						panelHwInfo.requestFocus();
+						panelHwInfo.setLocationRelativeTo(frmScryptV);
 					} catch (Exception e2) {
 						logger.warn("There was an error opening " + HwInfoFrame.class, e2);
 					}

@@ -8,6 +8,7 @@ public class PluginDTO {
 	public File localFile;
 	public String completeURL;
 	public String name;
+	public String description;
 	public String checkSum;
 	public boolean installationCompleted;
 	
@@ -18,8 +19,17 @@ public class PluginDTO {
 		this.localFile = null;
 		this.localExtractedDir = null;
 		this.installationCompleted = false;
+		this.description = "";
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getCompleteURL() {
 		return completeURL;
 	}

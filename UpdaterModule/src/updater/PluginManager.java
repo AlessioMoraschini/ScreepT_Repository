@@ -26,6 +26,8 @@ import main.MainStandAloneUpdater;
  */
 public class PluginManager {
 	
+	public static final String DESCRIPTION_PROP_PREFIX = "DESCRYPTION_";
+	
 	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
 	public static final String installedPluginPropsListKey = "INSTALLED_LIST";
 
@@ -38,7 +40,7 @@ public class PluginManager {
 	public static final String WEB_PLUGINS_BASE_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_BASE_URL", "https://www.am-design-development.com/ScrYpT/Plugins/");                                                                                                               
 	public static final String WEB_PLUGINS_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_MANIFEST_URL", "https://www.am-design-development.com/ScrYpT/Plugins/manifest.properties");                                                                                                               
 	public static final String LOCAL_PLUGINS_MANIFEST = LOCAL_PLUGINS_DIR + "manifest.properties";                                                                                                               
-	public static final String PLUGIN_LIST_MANIFET_KEY = "AvailablePluginsList";
+	public static final String PLUGIN_LIST_MANIFEST_KEY = "AvailablePluginsList";
 	
 	public static final File APPLICATION_ROOT_DIR = new File(System.getProperty("user.dir"));
 
@@ -248,12 +250,16 @@ public class PluginManager {
 				
 				PropertiesManagerFork propsManager = new PropertiesManagerFork(downloadedManifest);
 				
-				ArrayList<String> remotePlugins = propsManager.getStringList(PLUGIN_LIST_MANIFET_KEY, ",");
-				for(String plugin : remotePlugins) {
-					String checkSum = propsManager.getProperty(plugin);
-					String completeUrl = WEB_PLUGINS_BASE_URL + plugin;
+				ArrayList<String> pluginNames = propsManager.getStringList(PLUGIN_LIST_MANIFEST_KEY, ",");
+				for(String pluginName : pluginNames) {
+					String checkSum = propsManager.getProperty(pluginName);
+					String completeUrl = WEB_PLUGINS_BASE_URL + pluginName;
+					String descrKey = DESCRIPTION_PROP_PREFIX + pluginName;
+					String description = propsManager.getProperty(descrKey, "Description not available.");
+					PluginDTO toAdd = new PluginDTO(completeUrl, pluginName, checkSum);
+					toAdd.setDescription(description);
 					
-					plugins.add(new PluginDTO(completeUrl, plugin, checkSum));
+					plugins.add(toAdd);
 				}
 			}
 		} catch (Throwable e){
@@ -345,6 +351,30 @@ public class PluginManager {
 		pluginLocalMap.clear();
 	}
 	
+	public ArrayList<PluginDTO> getAllFromCache(boolean getValidOnly) throws Throwable{
+		ArrayList<PluginDTO> returnList = new ArrayList<>();
+		PluginDTO currentCached;
+		PluginDTO cachedValid;
+		
+		for(String currentKey : pluginLocalMap.keySet()) {
+			currentCached = pluginLocalMap.get(currentKey);
+			if(currentCached != null) {
+				if(!getValidOnly) {
+					returnList.add(currentCached);
+					
+				} else {
+					
+					cachedValid = getValidFromCache(currentKey);
+					if(cachedValid != null) {
+						returnList.add(cachedValid);
+					}
+				}
+			}
+		}
+		
+		return returnList;
+	}
+	
 	/**
 	 * Check if there is a valid plugin into local cache, checking if Url, local file, and correct hash are present into localCache
 	 * 
@@ -374,8 +404,26 @@ public class PluginManager {
 		}
 	}
 	
+	public ArrayList<PluginDTO> retrieveAllFromCache(){
+		ArrayList<PluginDTO> cachedPluginsList = new ArrayList<>();
+		
+		cachedPluginsList.addAll(pluginLocalMap.values());
+		
+		return cachedPluginsList;
+	}
+	
 	public PluginDTO retrieveFromCache(String pluginFileName) {
 		return pluginLocalMap.get(pluginFileName);
+	}
+	
+	public PluginDTO retrieveFromCacheByNameNoExtension(String nameWithoutExtension) {
+		for(String key : pluginLocalMap.keySet()) {
+			if(key.contains(nameWithoutExtension)) {
+				return pluginLocalMap.get(key);
+			}
+		}
+		
+		return null;
 	}
 
 	public PluginDTO updateCache(PluginDTO pluginToUpdate) {
