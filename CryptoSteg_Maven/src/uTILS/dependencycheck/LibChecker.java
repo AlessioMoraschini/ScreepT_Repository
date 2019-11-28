@@ -36,7 +36,7 @@ public class LibChecker {
 		} catch (Throwable e) {
 			libFound = false;
 			logger.error("!Cannot run voice speaker: undefined library dependencies: Text2Speech! \n\n", e);
-		} 
+		}
 		return libFound;
 	}
 	

@@ -94,8 +94,8 @@ class ButtonEditor extends DefaultCellEditor {
 								String message = "Plugin uninstalled correctly ;)";
 								JOptionPane.showMessageDialog(thisPanel, message, "Plugin uninstalled", JOptionPane.INFORMATION_MESSAGE);
 							} else {
-								String message = "An error occurred during plugin removal!";
-								JOptionPane.showMessageDialog(thisPanel, message, "An error occurred", JOptionPane.ERROR_MESSAGE);
+								String message = "An error occurred during plugin removal! Delete will be re-tried on exit.";
+								JOptionPane.showMessageDialog(thisPanel, message, "An error occurred", JOptionPane.WARNING_MESSAGE);
 							}
 
 						} else {
@@ -109,6 +109,7 @@ class ButtonEditor extends DefaultCellEditor {
 
 							} catch (Throwable e) {
 								if (e instanceof ProgressBarInterruptedException) {
+									pluginManagerInterface.setInstalling(false);
 									String message = "Installation process killed by user.";
 									JOptionPane.showMessageDialog(thisPanel, message, "Interrupted by user", JOptionPane.INFORMATION_MESSAGE);
 								} else {
@@ -125,6 +126,7 @@ class ButtonEditor extends DefaultCellEditor {
 						} catch (Throwable e) {
 							e.printStackTrace();
 						}
+						pluginManagerInterface.refreshGuiLibsAfterChange();
 					}
 					
 					pluginManagerInterface.setInstalling(false);

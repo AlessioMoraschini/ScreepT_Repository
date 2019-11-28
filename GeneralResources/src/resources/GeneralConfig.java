@@ -109,8 +109,10 @@ public class GeneralConfig {
 	public static String LAUNCHER_LOG_PROPS_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_LOG_PROPS_PATH");    		 
 	                     			
 	// JVM and LAUNCHER
+	public static int JVM_MAX_MIN_PERC_WARN;
 	public static String MAX_JVM_COMPLETE_COMPATIBILITY;
 	public static String JVM_CUSTOM_ADDED_SETTINGS;
+	public static ArrayList<String> BATCH_LAUNCHER_ADDED_INSTRUCTIONS;
 	
 	/**
 	 * Used in launcher to choose right type of launch command for system
@@ -443,8 +445,14 @@ public class GeneralConfig {
 			SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
 
 			// JVM and LAUNCHER
+			JVM_MAX_MIN_PERC_WARN = resourcesFilePathsMappings.getIntVarFromProps("JVM_MAX_MIN_PERC_WARN", 20);
 			MAX_JVM_COMPLETE_COMPATIBILITY = resourcesFilePathsMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 			JVM_CUSTOM_ADDED_SETTINGS = resourcesFilePathsMappings.getProperty("JVM_CUSTOM_ADDED_SETTINGS");
+			
+			/**
+			 * Batch windows launcher added instructions
+			 */
+			BATCH_LAUNCHER_ADDED_INSTRUCTIONS = resourcesFilePathsMappings.getStringList("BATCH_LAUNCHER_ADDED_INSTRUCTIONS", ";");
 			
 			/**
 			 * Used in launcher to choose right type of launch command for system
@@ -551,6 +559,9 @@ public class GeneralConfig {
 		}
 	}
 	
+	/**
+	 * @return true if GeneralConfig reference was not created this time, false if it was already initialized
+	 */
 	public static boolean initLazyGeneralConfig() {
 		if(lazyInitializedGlobalReference == null){
 			lazyInitializedGlobalReference = new GeneralConfig();

@@ -16,4 +16,5 @@ public interface IPluginManagerGui {
 	public JFrame getFrame();
 	public JFrame getParentFrame();
 	public void refreshTable(boolean useCache) throws Throwable;
+	public void refreshGuiLibsAfterChange();
 }

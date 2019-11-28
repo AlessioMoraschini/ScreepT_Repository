@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
@@ -158,6 +160,24 @@ public class PropertiesManager {
 		}
 	}
 	
+	public boolean removeProperty(String key){
+		FileOutputStream out = null;
+		
+		try {
+			out = new FileOutputStream(dynamicFileBindingsDefSource);
+			dynamicFileBindingsDef.remove(key);
+			dynamicFileBindingsDef.store(out, null);
+		} catch (IOException e) {
+			return false;
+		} finally {
+			try {
+				out.close();
+			} catch (Exception e2) {
+			}
+		}
+		return true;
+	}
+	
 	public int getIntVarFromProps(String key, int defaultVal) {
 		String val = dynamicFileBindingsDef.getProperty(key);
 		try {
@@ -165,6 +185,52 @@ public class PropertiesManager {
 		}catch(Exception e){
 			return defaultVal;
 		}
+	}
+	
+	public ArrayList<String> getStringList(String key, String separator){
+		ArrayList<String> list = new ArrayList<>();
+		
+		String rawList = dynamicFileBindingsDef.getProperty(key);
+		
+		if(rawList == null || "".equals(rawList)) {
+			return list;
+		}
+		
+		String[] splitted = rawList.split(separator);
+		
+		list.addAll(Arrays.asList(splitted));
+		
+		return list;
+	}
+	
+	public static String listToString(ArrayList<String> stringList, String separator) {
+		String concatenation = "";
+		// concatenate each element with given separator
+		for(String currentString : stringList) {
+			concatenation += currentString + separator;
+		}
+		if(concatenation.length() > 0) {
+			concatenation = concatenation.substring(0, concatenation.length() - separator.length());
+		}
+		return concatenation;
+	}
+	
+	public ArrayList<File> getFileList(String key, String separator, boolean excludeNonExisting){
+		ArrayList<String> rawList = getStringList(key, separator);
+		ArrayList<File> fileList = new ArrayList<File>();
+		
+		if(rawList == null || rawList.isEmpty()) {
+			return fileList;
+		}
+		
+		for(String current : rawList) {
+			File currentFile = new File(current);
+			if(!excludeNonExisting || currentFile.exists()) {
+				fileList.add(currentFile);
+			}
+		}
+		
+		return fileList;
 	}
 
 	public boolean getBooleanVarFromProps(String key, boolean defaultVal) {

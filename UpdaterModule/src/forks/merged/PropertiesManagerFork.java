@@ -81,6 +81,24 @@ public class PropertiesManagerFork {
 		
 		return list;
 	}
+
+	public ArrayList<File> getFileList(String key, String separator, boolean excludeNonExisting){
+		ArrayList<String> rawList = getStringList(key, separator);
+		ArrayList<File> fileList = new ArrayList<File>();
+		
+		if(rawList == null || rawList.isEmpty()) {
+			return fileList;
+		}
+		
+		for(String current : rawList) {
+			File currentFile = new File(current);
+			if(!excludeNonExisting || currentFile.exists()) {
+				fileList.add(currentFile);
+			}
+		}
+		
+		return fileList;
+	}
 	
 	public static String listToString(ArrayList<String> stringList, String separator) {
 		String concatenation = "";

@@ -83,6 +83,7 @@ import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import tabbededitor.CustomTabbedEditor;
+import uTILS.dependencycheck.LibChecker;
 import utils.SysUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.arch.PanelType;
@@ -1221,11 +1222,28 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
 					public void run() {
+						
 						try {
 							MainGuiGeneralAppStarter.pluginManager.discoverLatestPlugins();
 							
 							if (pluginManagerGUI != null || !PluginManagerGUI.active) {
-								pluginManagerGUI = new PluginManagerGUI(null, MainGuiGeneralAppStarter.pluginManager);
+								Runnable libCheckNRefreshGUI = new Runnable() {
+									@Override
+									public void run() {
+										try {
+											// Check hard coded plugins presence
+											MainGuiGeneralAppStarter.tesseractAvailable = LibChecker.checkTesseract();
+											MainGuiGeneralAppStarter.voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
+											if(initTxtWriter != null) {
+												initTxtWriter.subHeaderPanel.enableDependenciesFunctions();
+											}
+										} catch (Throwable e) {
+											logger.warn("Cannot check avalaibility of plugins :(");
+										}
+									}
+								};
+
+								pluginManagerGUI = new PluginManagerGUI(null, MainGuiGeneralAppStarter.pluginManager, libCheckNRefreshGUI);
 								GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_PLUGINS, pluginManagerGUI);
 							} else {
 								pluginManagerGUI.toFront();

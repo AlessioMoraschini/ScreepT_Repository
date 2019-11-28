@@ -54,7 +54,8 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TOOLTIP_MIN_RAM_SIZE = "This is the minimum heap ram value used bj JVM to start ScrYpT dynamic data allocation";
 	private static final String TOOLTIP_MAX_RAM_SIZE = "This is the maximum heap ram value used bj JVM allocated to ScrYpT for dynamic data allocation";
 	private static final String TOOLTIP_DISPLAY_SHELL = "When checked, the launcher will keep an open active command line shell with the logger's output";
-	private static final String TOOLTIP_LAUNCH_AS_JAR = "ScrYpT will be launched as Jar (works only with centralized build)";
+	private static final String TOOLTIP_LAUNCH_AS_JAR_WARN = "Works only with centralized build, pugins might not work with this configuration, use this only if you know what you're doing!)";
+	private static final String TOOLTIP_LAUNCH_AS_JAR = "ScrYpT will be launched as Jar (works only with centralized build, pugins might not work with this configuration!)";
 	private static final String TOOLTIP_LAUNCH_AS_CLASS = "ScrYpT will be launched as .Class (works with centralized build and even with multimodule)";
 	private final String TOOLTIP_INFO_JVM = "Select your preferred, but remember that this software is fully supported only for JVMs between version "
 			+ScrYpTLauncher.iniFileManager.MIN_JRE_VERSION + " <- And -> " + ScrYpTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY;
@@ -116,6 +117,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private JSeparator separator;
 	
 	public boolean JVM_WARN = false;
+	private JLabel lblLaunchJarIconWarn;
 	
 	//ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 	
@@ -139,7 +141,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][110px,grow][:20px:20px][80px,grow]", "[grow][grow][grow][grow][][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][][90px,grow][:20px:20px][80px,grow]", "[grow][grow][grow][grow][][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
@@ -163,11 +165,12 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		lblLogLevel = new JLabel("Log level:");
 		lblLogLevel.setForeground(new Color(220, 220, 220));
-		getContentPane().add(lblLogLevel, "cell 4 0,alignx right");
+		getContentPane().add(lblLogLevel, "cell 5 0,alignx right");
 		
+//		comboLogLevel = new JComboBox<String>(); // Windowbuilder workaround for tests
 		comboLogLevel = new JComboBox<String>(IniFileManager.getLogLevelsList());
 		comboLogLevel.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(comboLogLevel, "cell 6 0,growx");
+		getContentPane().add(comboLogLevel, "cell 7 0,growx");
 		
 		spinnerMinMemoryMB = new JSpinner();
 		spinnerMinMemoryMB.setOpaque(true);
@@ -176,21 +179,21 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(spinnerMinMemoryMB, "cell 3 1,growx");
 		
 		lblLogLevelInfo = new JLabel("");
-		getContentPane().add(lblLogLevelInfo, "cell 5 0,alignx right");
+		getContentPane().add(lblLogLevelInfo, "cell 6 0,alignx right");
 		
 		labelGuiScale = new JLabel("Graphics Scale:");
 		labelGuiScale.setForeground(new Color(220, 220, 220));
-		getContentPane().add(labelGuiScale, "cell 4 1,alignx right");
+		getContentPane().add(labelGuiScale, "cell 5 1,alignx right");
 		
 		dynLblScaleGui = new JLabel("1");
 		dynLblScaleGui.setForeground(new Color(220, 220, 220));
-		getContentPane().add(dynLblScaleGui, "cell 5 1,alignx center");
+		getContentPane().add(dynLblScaleGui, "cell 6 1,alignx center");
 		
 		sliderGuiScale = new JSlider();
 		sliderGuiScale.setMinimum(0);
 		sliderGuiScale.setMaximum(100);
 		sliderGuiScale.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(sliderGuiScale, "cell 6 1");
+		getContentPane().add(sliderGuiScale, "cell 7 1");
 		
 		lblStackSize = new JLabel("Stack Size(MB)");
 		lblStackSize.setForeground(new Color(220, 220, 220));
@@ -205,20 +208,23 @@ public class CustomizeParametersPanel extends JFrame{
 		spinnerXssMemory.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(spinnerXssMemory, "cell 3 2,growx");
 		
+		lblLaunchJarIconWarn = new JLabel("");
+		getContentPane().add(lblLaunchJarIconWarn, "cell 4 2");
+		
 		chckBoxLaunchAsJar = new JCheckBox(TITLE_LAUNCH_AS_JAR);
 		chckBoxLaunchAsJar.setForeground(new Color(220, 220, 220));
 		chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
 		chckBoxLaunchAsJar.setCursor(GuiUtils.CURSOR_HAND);
 		chckBoxLaunchAsJar.setSelected(true);
 		chckBoxLaunchAsJar.setFont(new Font("SansSerif", Font.BOLD, 12));
-		getContentPane().add(chckBoxLaunchAsJar, "cell 4 2 2 1,alignx right");
+		getContentPane().add(chckBoxLaunchAsJar, "cell 5 2 2 1,alignx right");
 		
 		chckbxActiveShell = new JCheckBox("Display Shell");
 		chckbxActiveShell.setForeground(new Color(220, 220, 220));
 		chckbxActiveShell.setToolTipText(TOOLTIP_DISPLAY_SHELL);
 		chckbxActiveShell.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxActiveShell.setFont(new Font("SansSerif", Font.BOLD, 12));
-		getContentPane().add(chckbxActiveShell, "cell 6 2,alignx center");
+		getContentPane().add(chckbxActiveShell, "cell 7 2,alignx center");
 		
 		lblPreferredJvm = new JLabel("Preferred JVM");
 		lblPreferredJvm.setForeground(new Color(220, 220, 220));
@@ -235,11 +241,12 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(lblJvmInfo, "cell 2 3,alignx trailing");
 		
 		comboPrefJvm = new JComboBox<String>(JVMS.toArray(jvmArr));
+//		comboPrefJvm = new JComboBox<String>(); // Window builder bug workaround for test
 		comboPrefJvm.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(comboPrefJvm, "cell 3 3 4 1,growx");
+		getContentPane().add(comboPrefJvm, "cell 3 3 5 1,growx");
 		
 		separator = new JSeparator();
-		getContentPane().add(separator, "cell 0 4 7 1,growx");
+		getContentPane().add(separator, "cell 0 4 8 1,growx");
 		
 		btnExitConfiguration = new JButton("Discard");
 		btnExitConfiguration.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
@@ -265,14 +272,14 @@ public class CustomizeParametersPanel extends JFrame{
 		btnLoadScryptDefault.setBackground(Color.DARK_GRAY);
 		btnLoadScryptDefault.setIcon(new ImageIcon(IconsPathConfigurator.iconRootPath));
 		btnLoadScryptDefault.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnLoadScryptDefault, "cell 4 5 2 1,growx,aligny center");
+		getContentPane().add(btnLoadScryptDefault, "cell 4 5 3 1,growx,aligny center");
 
 		btnSaveConfig = new JButton("Save Launch Options");
 		btnSaveConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		btnSaveConfig.setBackground(new Color(85, 166, 66));
 		btnSaveConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSaveConfig.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnSaveConfig, "cell 6 5,growx,aligny center");
+		getContentPane().add(btnSaveConfig, "cell 7 5,growx,aligny center");
 		
 		// add custom behaviour to frame
 		
@@ -327,6 +334,19 @@ public class CustomizeParametersPanel extends JFrame{
 						thisPanel.repaint();
 					}
 				});
+			}
+		});
+		
+		chckBoxLaunchAsJar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (chckBoxLaunchAsJar.isSelected()) {
+					lblLaunchJarIconWarn.setToolTipText(TOOLTIP_LAUNCH_AS_JAR_WARN);
+					lblLaunchJarIconWarn.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
+				} else {
+					lblLaunchJarIconWarn.setToolTipText("");
+					lblLaunchJarIconWarn.setIcon(new ImageIcon());
+				}
 			}
 		});
 		
@@ -469,7 +489,7 @@ public class CustomizeParametersPanel extends JFrame{
 	}
 	
 	private void checkWarningsAndTooltips(int max, int min) {
-		if((max - min) < 100) {
+		if(((max - min)/max) * 100 < GeneralConfig.JVM_MAX_MIN_PERC_WARN) {
 			lblMaxWarninig.setToolTipText(TOOLTIP_WARN_MAX_RAM_SIZE);
 			lblMinWarninig.setToolTipText(TOOLTIP_WARN_MIN_RAM_SIZE);
 			lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));

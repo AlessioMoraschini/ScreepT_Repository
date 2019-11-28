@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import java.awt.Font;
 
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -54,6 +55,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	
 	public AtomicBoolean isInstalling = new AtomicBoolean();
 	
+	public Runnable refreshDependencyAction;
+	
 	// constructor
 	/**
 	 * If pluaginManager is null, a new one will be created
@@ -61,12 +64,14 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	 * @param parent
 	 * @param pluginManager
 	 */
-	public PluginManagerGUI(JFrame parent, PluginManager pluginManager) {
+	public PluginManagerGUI(JFrame parent, PluginManager pluginManager, Runnable refreshDependencyCheck) {
 		
 		active = true;
 		parentFrame = parent != null ? parent : new JFrame();
 		thisPanel = this;
 		thisPanel.setTitle("Plugin Manager Module");
+		
+		this.refreshDependencyAction = refreshDependencyCheck;
 		
 		this.pluginManager = (pluginManager != null) ? pluginManager : new PluginManager();
 
@@ -108,6 +113,11 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 		}
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+	
+	@Override
+	public void refreshGuiLibsAfterChange() {
+		SwingUtilities.invokeLater(refreshDependencyAction);
 	}
 	
 	private void addHandlers() {

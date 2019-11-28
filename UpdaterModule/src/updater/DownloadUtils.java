@@ -64,7 +64,7 @@ public class DownloadUtils {
 	    
 	}
 	
-	public static File downloadFile(boolean silent, URL url, String localPath, UpdateProgressPanelMin progressUpdater) throws Exception{
+	public static File downloadFile(boolean silent, URL url, String localPath, UpdateProgressPanelMin progressUpdater) throws Exception, ProgressBarInterruptedException{
 		int fileSize = getFileSize(url);
 		out.println("Opening url stream...");
 		BufferedInputStream in = null;

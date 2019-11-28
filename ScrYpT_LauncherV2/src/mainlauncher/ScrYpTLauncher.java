@@ -32,6 +32,7 @@ import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
+import resources.PropertiesManager;
 import utils.SysUtils;
 
 /**
@@ -58,6 +59,11 @@ public class ScrYpTLauncher {
 	
 	public static String DEFAULT_INI_PATH; 
 	public static String APPLICATION_DIR;
+	
+	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
+	public static final String installedPluginPendingDeleteListKey = "PLUGINS_PENDING_DELETE_AT_START";
+	public static PropertiesManager installedPluginProperties = new PropertiesManager(installedPluginPropsFileName);
+	
 	
 	// jvm search fields default
 	public static String JVM_ARGS;
@@ -97,6 +103,8 @@ public class ScrYpTLauncher {
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
 
 		GeneralConfig.initLazyGeneralConfig();
+		
+		startPendingDeletesCleanerThread();
 		
 		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
 		DEFAULT_INI_PATH = GeneralConfig.DEFAULT_LAUNCHER_INI_PATH; 
@@ -360,5 +368,29 @@ public class ScrYpTLauncher {
 	
 	private static void appLogEnd() {
 		logger.debug(LoggerUtils.getExitString("ScrYpT - Launcher", true));
+	}
+	
+	public static void startPendingDeletesCleanerThread(){
+		new Thread(new Runnable() {
+			public void run() {
+				logger.info("Starting removal of pending files to delete from last execution...");
+				ArrayList<File> pendingDeletes = installedPluginProperties.getFileList(installedPluginPendingDeleteListKey, ";", true);
+				if (pendingDeletes.isEmpty()) {
+					logger.info("startPendingDeletesCleanerThread: nothing to delete :)");
+				} else {
+					for (File pending : pendingDeletes) {
+						try {
+							logger.info("Deleting pending file to be deleted: " + pending);
+							pending.delete();
+							logger.info(pending + " deleted succesfully!");
+						} catch (Exception e) {
+							logger.error("An error occurred, cannot delete current pending file to delete: " + pending);
+						}
+					}
+				}
+				
+				installedPluginProperties.removeProperty(installedPluginPendingDeleteListKey);
+			}
+		}).start();
 	}
 }

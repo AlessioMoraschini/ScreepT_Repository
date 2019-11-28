@@ -26,7 +26,7 @@ public class TestPlugins {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 	        public void run() {
-	        	managerGUI = new PluginManagerGUI(null, manager);
+	        	managerGUI = new PluginManagerGUI(null, manager, new Runnable() {@Override	public void run() {}});
 	        	managerGUI.setVisible(true);
 	        }
 	    });
@@ -43,7 +43,7 @@ public class TestPlugins {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 	        public void run() {
-	        	managerGUI = new PluginManagerGUI(null, manager);
+	        	managerGUI = new PluginManagerGUI(null, manager, new Runnable() {@Override	public void run() {}});
 	        	managerGUI.setVisible(true);
 	        }
 	    });

@@ -5,6 +5,8 @@ import static java.lang.System.out;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ public class PluginManager {
 	
 	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
 	public static final String installedPluginPropsListKey = "INSTALLED_LIST";
+	public static final String installedPluginPendingDeleteListKey = "PLUGINS_PENDING_DELETE_AT_START";
 
 	public static final HashingFunction DEFAULT_HASHING_F_PLUGINS = HashingFunction.MD5;
 
@@ -132,6 +135,7 @@ public class PluginManager {
 	public boolean removePlugin(PluginDTO pluginToRemove) {
 		
 		boolean uninstallOK = true;
+		ArrayList<String> pendingUndeleted = new ArrayList<>();
 		
 		if(pluginToRemove == null || pluginToRemove.getName() == null) {
 			return false;
@@ -144,20 +148,36 @@ public class PluginManager {
 				// Delete only if contained in current application DIR (Avoid accidental deletes of other files unrelated to ScrYpT)
 				if (FileUtils.directoryContains(APPLICATION_ROOT_DIR, filePending)) {
 					if (toDelete != null && !"".equals(toDelete.trim()) && filePending.exists() && filePending.isFile()) {
-						boolean tempRes = filePending.delete();
-						uninstallOK = (tempRes) ? uninstallOK : false;
-					} 
+						FileUtils.forceDelete(filePending);
+						System.out.println(filePending + " uninstall result (deleted = true): " + uninstallOK);
+					}
+				} else {
+					System.out.println("Directory " + APPLICATION_ROOT_DIR + " does not contain the given file path: " + filePending + " => it's not possible to delete files that reside outside ScrYpT's folder!");
 				}
 			} catch (IOException e) {
+				System.out.println("An error occurred while tryin' to uninstall " + pluginToRemove + " => file will be deleted on exit.");
 				e.printStackTrace();
+				pendingUndeleted.add(toDelete);
+				uninstallOK = false;
+				System.out.println("Delete will be tried when JVM will exit.");
+			
+				try {
+					Files.newOutputStream(filePending.toPath(), StandardOpenOption.DELETE_ON_CLOSE);
+				} catch (IOException e1) {
+					System.out.println("forceDeleteOnExit not possible, an error occurred :( -> files will be deleted at next restart by Launcher");
+					e1.printStackTrace();
+				}
 			}
 		}
 		
-		if (uninstallOK) {
-			removeFromInstalledList(pluginToRemove);
-		}
+		removeFromInstalledList(pluginToRemove);
 		pluginToRemove.setInstallationCompleted(!uninstallOK);
 		updateCache(pluginToRemove);
+		
+		if(!uninstallOK) {
+			// if something went wrong with delete, mark files that weren't deleted to be deleted by launcher at start
+			updatePendingDelete(pendingUndeleted);
+		}
 		
 		return uninstallOK;
 	}
@@ -346,6 +366,30 @@ public class PluginManager {
 		installedPluginProperties.removeProperty(plugin.getName());
 		
 		plugin.installationCompleted = false;
+	}
+	
+	/**
+	 * Updates and save string list of relative paths of files to delete at next start by launcher.
+	 * Existing pending deletes will be kept, if already present pending delete won't be written to list in installed_plugins.properties
+	 * 
+	 * @param pendingRelativePaths
+	 */
+	public void updatePendingDelete(ArrayList<String> pendingRelativePaths) {
+		ArrayList<String> currentlyPending = installedPluginProperties.getStringList(installedPluginPendingDeleteListKey, ";");
+		
+		if (pendingRelativePaths != null && !pendingRelativePaths.isEmpty()) {
+			for (String currentPending : pendingRelativePaths) {
+				if (!currentlyPending.contains(currentPending)) {
+					currentlyPending.add(currentPending);
+				}
+			} 
+		} else {
+			return;
+		}
+		
+		installedPluginProperties.saveProperty(
+				installedPluginPendingDeleteListKey,
+				PropertiesManagerFork.listToString(currentlyPending, ";"));
 	}
 	
 	public boolean isInstalled(PluginDTO plugin) {

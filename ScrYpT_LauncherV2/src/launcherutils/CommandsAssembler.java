@@ -39,6 +39,9 @@ public class CommandsAssembler {
 			if (currentOS.isWindows()) {
 				// bugfix - avoid ; char when path is null, for example when JVM is not found
 				pathEntry = (pathEntry != null && !pathEntry.equals(""))? pathEntry + ";": "";
+				for(String currentAddedCommand : GeneralConfig.BATCH_LAUNCHER_ADDED_INSTRUCTIONS) {
+					execCommand.add(currentAddedCommand);
+				}
 				execCommand.add("set JDK_PATH=" + pathEntry);
 				execCommand.add("set PATH=%JDK_PATH%%PATH%");
 				execCommand.add("echo %PATH%");
