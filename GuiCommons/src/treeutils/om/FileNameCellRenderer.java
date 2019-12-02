@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -20,7 +18,6 @@ import org.apache.log4j.Logger;
 
 import amfileutils.om.FileNamed;
 import general.MyFileView;
-import resources.GeneralConfig;
 import treeutils.TreeUtils;
 
 public class FileNameCellRenderer implements TreeCellRenderer {

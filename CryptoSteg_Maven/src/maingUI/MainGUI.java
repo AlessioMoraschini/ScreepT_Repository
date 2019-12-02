@@ -181,7 +181,7 @@ public class MainGUI extends MainGuiParent{
 		currentConfiguration = currentConf;
 		dialogHelper = new JOptionHelper(null);
 		
-		MainGuiUtils.welcomeMethodIfFirstTime();
+		MainGuiUtils.askNameAtStartIfNotDefined();
 		
 		// START LOADING PANEL THREAD
 		new Thread(new Runnable() {
@@ -347,16 +347,26 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 							
 							window.startTitleUpdater();
 							
+							if(currentConfiguration.getGenOpt().isFirstAccess()) {
+								MainGuiUtils.welcomeMethodFirstTime();
+							} 
+							
 							if (currentConfiguration.getGenOpt().isAutomaticUpdateOn()) {
 								try {
 									Thread.sleep(GeneralConfig.UPDATES_AUTOCHECK_DELAY);
+									Thread updater = MainGuiUtils.lookForUpdates(true);
+									updater.start();
+									updater.join();
 								} catch (Exception e) {
 									logger.warn("Cannot wait " + GeneralConfig.UPDATES_AUTOCHECK_DELAY + " ms to check for updates", e);
 								}
-								MainGuiUtils.lookForUpdates(true).start();
+								currentConfiguration.getGenOpt().setFirstAccess(false);
+								currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
 							}
+							
 						}
 					});
+					
 				}
 			});
 			
@@ -489,6 +499,33 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 						updateGuiFromCurrConfig();
 					}
 		    }
+		});
+
+		// NOT OPENING VIEW - SHOW/HIDE Txt Editor Header
+		mntmTxtEdHideShowTitleBlock = new CustomJmenuItem(new AbstractAction("Show/Hide text editor's header block") {
+			public void actionPerformed(ActionEvent ae) {
+				if(initTxtWriter != null) {
+					initTxtWriter.textEditorUtils.hideOrShowHeaderPanelLevel1();
+				}
+			}
+		});
+
+		// NOT OPENING VIEW - SHOW/HIDE Txt Editor sub-Header
+		mntmTxtEdHideShowHeader = new CustomJmenuItem(new AbstractAction("Show/Hide text editor's sub-header block") {
+			public void actionPerformed(ActionEvent ae) {
+				if(initTxtWriter != null) {
+					initTxtWriter.textEditorUtils.hideOrShowHeaderPanelLevel2();
+				}
+			}
+		});
+
+		// NOT OPENING VIEW - SHOW/HIDE Txt Editor footer
+		mntmTxtEdHideShowFooter = new CustomJmenuItem(new AbstractAction("Show/Hide text editor's footer block") {
+			public void actionPerformed(ActionEvent ae) {
+				if(initTxtWriter != null) {
+					initTxtWriter.textEditorUtils.hideOrShowFooterPanel();
+				}
+			}
 		});
 		
 		String msg1 = "Are you sure to reset ";
@@ -639,7 +676,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
 							logger.error("Exception happened!", e);
 						}
-						MainGuiUtils.welcomeMethodIfFirstTime();
+						MainGuiUtils.welcomeMethodFirstTime();
 						JOptionPane.showMessageDialog(frmScryptV,
 								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
 						currentConfiguration.readConfigIniFile();
@@ -946,27 +983,21 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (panelNetInfo == null || !panelNetInfo.isVisible()) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		SwingUtilities.invokeLater(new Runnable() {
+		    		GuiUtils.launchThreadSafeSwing(new Runnable() {
 						public void run() {
-							new Thread(new Runnable() {
-
-								@Override
-								public void run() {
-									UpdateProgressPanel prog = new UpdateProgressPanel(currentConfiguration, false);
-									prog.getPb().setIndeterminate(true);
-									prog.getLabel().setText("Loading Network informations...");
-									prog.getPb().setString("Loading...");
-									panelNetInfo = new NetInfoFrame();
-									panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-									panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
-									panelNetInfo.setAlwaysOnTop(true);
-									panelNetInfo.setBounds(150, 150, 1000, 650);
-									panelNetInfo.setResizable(false);
-									panelNetInfo.setVisible(true);
-									panelNetInfo.setTitle("Network info - "+GeneralConfig.APPLICATION_NAME);
-									prog.getPb().setValue(100);
-								}
-							}).start();
+							UpdateProgressPanel prog = new UpdateProgressPanel(currentConfiguration, false);
+							prog.getPb().setIndeterminate(true);
+							prog.getLabel().setText("Loading Network informations...");
+							prog.getPb().setString("Loading...");
+							panelNetInfo = new NetInfoFrame();
+							panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
+							panelNetInfo.setAlwaysOnTop(true);
+							panelNetInfo.setBounds(150, 150, 1000, 650);
+							panelNetInfo.setResizable(false);
+							panelNetInfo.setVisible(true);
+							panelNetInfo.setTitle("Network info - "+GeneralConfig.APPLICATION_NAME);
+							prog.getPb().setValue(100);
 						}
 					});
 		    		

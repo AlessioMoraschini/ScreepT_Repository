@@ -45,8 +45,6 @@ public class NetworkUtils {
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(NetworkUtils.class); 
 	
-	private static final String tempFile = GeneralConfig.RESOURCES_DIR + "temp/temp.txt";
-	
 	//private static final Random RANDOM_GENERATOR = new Random();
 
 	private static Vector<URI> pubIPServices;
@@ -78,7 +76,7 @@ public class NetworkUtils {
 		timeout = GeneralConfig.NETWORK_UTILS_TIMEOUT;
 	}
 	
-	private static synchronized Vector<URI> getURLSservicesPUBIP(){
+	private static Vector<URI> getURLSservicesPUBIP(){
 		Vector<URI> listWS = new Vector<URI>();
 		String[] propertiesVal = GeneralConfig.getPubIpProvList();
 		try {
@@ -94,14 +92,14 @@ public class NetworkUtils {
 	
 ////////////////////////  PUBLIC METHODS  ////////////////////////
 
-	public static synchronized RequestConfig configureCustomRequest(RequestConfig.Builder builder) {
+	public static RequestConfig configureCustomRequest(RequestConfig.Builder builder) {
 		
 		RequestConfig requestConfig = builder.build();
 		return requestConfig;
 		
 	}
 	
-	private synchronized void retrieveAvailableAdapters() throws IOException {
+	private void retrieveAvailableAdapters() throws IOException {
 		
 		init();
 		
@@ -130,17 +128,15 @@ public class NetworkUtils {
 	private void associateNetAdaptersWithConfig() {
 		String[] interfaces = new String[1];
 		try {
-			synchronized (sysINFO) {
-				NetInterfaceConfig currentConf;
-				interfaces = sysINFO.getNetInterfaceList();
-				for (String interfName : interfaces) {
-					currentConf = sysINFO.getNetInterfaceConfig(interfName);
-					for (NetworkAdapter adapterIter : networkAdapters) {
-						boolean condition = currentConf.getHwaddr().equals(adapterIter.locMAC) && currentConf.getAddress().equals(adapterIter.locIP);
-						//							&& currentConf.getDescription().equals(adapterIter.getName());
-						if (condition) {
-							adapterIter.setInterfaceConfig(currentConf);
-						}
+			NetInterfaceConfig currentConf;
+			interfaces = sysINFO.getNetInterfaceList();
+			for (String interfName : interfaces) {
+				currentConf = sysINFO.getNetInterfaceConfig(interfName);
+				for (NetworkAdapter adapterIter : networkAdapters) {
+					boolean condition = currentConf.getHwaddr().equals(adapterIter.locMAC) && currentConf.getAddress().equals(adapterIter.locIP);
+					//							&& currentConf.getDescription().equals(adapterIter.getName());
+					if (condition) {
+						adapterIter.setInterfaceConfig(currentConf);
 					}
 				}
 			}
@@ -192,7 +188,7 @@ public class NetworkUtils {
 		
 		// start upload
 		long start = System.currentTimeMillis();		
-		boolean result = ftpClient.storeUniqueFile(randomStream);
+		ftpClient.storeUniqueFile(randomStream);
 		long end = System.currentTimeMillis();
 		
 		ftpClient.logout();
@@ -249,6 +245,11 @@ public class NetworkUtils {
 	}
 	
 	private static byte[] retrievePublicIP(InetAddress localAddress) throws IOException {
+		
+		if(!localAddress.isReachable(2000)) {
+			logger.warn("Adapter unreachable");
+			return new byte[0];
+		}
 		
 		boolean retrieved = false;
 		String responseString = null;

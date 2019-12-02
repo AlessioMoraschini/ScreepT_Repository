@@ -226,7 +226,7 @@ public class TextEditorUtils {
 		
 		TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		
-		if(currentFile == null) {
+		if((currentFile == null || !currentFile.exists()) && !currentTextEditor.currentConfiguration.getTextEditorOpt().workspaceViewSelected) {
 			if (!options.treeLocked) {
 				try {
 					FileNamed oldDir = (FileNamed)currentTextEditor.leftSplitTreeFiles.getModel().getRoot();
@@ -412,7 +412,7 @@ public class TextEditorUtils {
 		currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
 	}
 	
-	private void refreshFromWorkspace(File workspaceRoot) {
+	public void refreshFromWorkspace(File workspaceRoot) {
 		
 		CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
 		
@@ -424,8 +424,6 @@ public class TextEditorUtils {
 		}
 		
 		if (currentTextEditor.currentConfiguration.getTextEditorOpt().fileTreeActive) {
-//			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
-//			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
 			String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftSplitTreeFiles);
 			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(workspaceRoot)));
@@ -755,12 +753,15 @@ public class TextEditorUtils {
 		getTypedIRightPanel().sync();
 		
 		Color textAreaBackgground = loadedTabObj.textArea.getBackground();
-		Color darkerLight = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 2);
-		Color darkerMed = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 3);
-		Color darkerMore = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 4);
+		Color darkerLight = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 1);
+		Color darkerMed = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 2);
+		Color darkerMore = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 3);
 		currentTextEditor.setBackground(darkerLight);
 		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(darkerLight);
+		currentTextEditor.headerPanel.setBackground(darkerMed);
 		currentTextEditor.mainPanel.setBackground(darkerLight);
+		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(darkerLight);
+		currentTextEditor.rightSplitPane.setBackground(darkerMed);
 	}
 	
 	/**

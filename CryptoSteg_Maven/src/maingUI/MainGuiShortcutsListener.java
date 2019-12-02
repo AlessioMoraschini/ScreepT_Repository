@@ -41,6 +41,22 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 					logger.error("Immersive mode esc skipped: an error occurred!", e2);
 				}
 			}
+			
+			/*
+			 *  EXIT - FULL SCREEN WITHOUT IMMERSIVE MODE
+			 */
+			if(e.getKeyCode() == 27 && currentGui.isFullScreen.get() && !currentGui.isImmersiveModeOn.get()) {
+				try {
+					if (MainGUI.frmScryptV.isFocused()) {
+						MainGUI.mainAPP.mntmFullScreenMode.doClick();
+						logger.debug("FullScreenMode exit triggered with \"esc\": current mainFrame is active!");
+					} else {
+						logger.warn("FullScreenMode esc skipped: current mainFrame is not active!");
+					}
+				} catch (Exception e2) {
+					logger.error("Immersive mode esc skipped: an error occurred!", e2);
+				}
+			}
 
 		}
 		

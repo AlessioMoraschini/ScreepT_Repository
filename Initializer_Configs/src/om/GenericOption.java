@@ -15,6 +15,7 @@ public class GenericOption {
 	public final static boolean DEF_automaticUpdateOn = true;
 	public final static Class<?> DEFAULT_PANEL_CLASS_AT_START = JPanel.class;
 	public final static Locale DEF_locale = Locale.getDefault();
+	public final static boolean DEF_firstAccess = true;
 
 	// FILEDS
 	private String userName;
@@ -24,6 +25,7 @@ public class GenericOption {
 	private boolean exceptionAdvicesEnabled;
 	private Class<?> lastPanelOpened;
 	private boolean automaticUpdateOn;
+	private boolean firstAccess; 
 	private Locale locale;
 	
 	public GenericOption() {
@@ -35,6 +37,7 @@ public class GenericOption {
 		exceptionAdvicesEnabled = DEF_exceptionAdvicesEnabled;
 		automaticUpdateOn = DEF_automaticUpdateOn;
 		locale = DEF_locale;
+		firstAccess = DEF_firstAccess;
 	}
 	
 	public GenericOption(String user, String chars, boolean ultraSec, float genVolume) {
@@ -42,9 +45,16 @@ public class GenericOption {
 		userName = user;
 		charset = chars;
 		generalVolume = genVolume;
-		
 	}
 	
+	public boolean isFirstAccess() {
+		return firstAccess;
+	}
+
+	public void setFirstAccess(boolean firstAccess) {
+		this.firstAccess = firstAccess;
+	}
+
 	public Locale getLocale() {
 		return locale;
 	}

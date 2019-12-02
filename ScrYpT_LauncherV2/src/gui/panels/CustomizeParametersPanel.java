@@ -65,8 +65,8 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TITLE_LAUNCH_AS_JAR = "Launch as .Jar:";
 	private static final String TITLE_LAUNCH_AS_CLASS = "Launch as .Class:";
 	
-	private static final int DEF_FIXED_HEIGHT = 240;
-	private static final int DEF_FIXED_WIDTH = 545;
+	private static final int DEF_FIXED_HEIGHT = 245;
+	private static final int DEF_FIXED_WIDTH = 575;
 	public static final Dimension DEF_DIMENSION = new Dimension(DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 	
 	public static boolean active = false;
@@ -141,7 +141,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][][90px,grow][:20px:20px][80px,grow]", "[grow][grow][grow][grow][][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][80px,grow]", "[grow][grow][grow][grow][][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
@@ -209,15 +209,15 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(spinnerXssMemory, "cell 3 2,growx");
 		
 		lblLaunchJarIconWarn = new JLabel("");
-		getContentPane().add(lblLaunchJarIconWarn, "cell 4 2");
+		getContentPane().add(lblLaunchJarIconWarn, "cell 4 2,alignx right");
 		
-		chckBoxLaunchAsJar = new JCheckBox(TITLE_LAUNCH_AS_JAR);
+		chckBoxLaunchAsJar = new JCheckBox("Launch as .Jar");
 		chckBoxLaunchAsJar.setForeground(new Color(220, 220, 220));
 		chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
 		chckBoxLaunchAsJar.setCursor(GuiUtils.CURSOR_HAND);
 		chckBoxLaunchAsJar.setSelected(true);
 		chckBoxLaunchAsJar.setFont(new Font("SansSerif", Font.BOLD, 12));
-		getContentPane().add(chckBoxLaunchAsJar, "cell 5 2 2 1,alignx right");
+		getContentPane().add(chckBoxLaunchAsJar, "cell 5 2 2 1,alignx center,aligny center");
 		
 		chckbxActiveShell = new JCheckBox("Display Shell");
 		chckbxActiveShell.setForeground(new Color(220, 220, 220));
@@ -296,6 +296,8 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		JVM_WARN = JvmHelper.warningJVM;
 		updateJvmIcon(JVM_WARN);
+		
+		refreshCheckBoxLaunchAsJar();
 	}
 	
 	private void addHandlers() {
@@ -340,13 +342,7 @@ public class CustomizeParametersPanel extends JFrame{
 		chckBoxLaunchAsJar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (chckBoxLaunchAsJar.isSelected()) {
-					lblLaunchJarIconWarn.setToolTipText(TOOLTIP_LAUNCH_AS_JAR_WARN);
-					lblLaunchJarIconWarn.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
-				} else {
-					lblLaunchJarIconWarn.setToolTipText("");
-					lblLaunchJarIconWarn.setIcon(new ImageIcon());
-				}
+				refreshCheckBoxLaunchAsJar();
 			}
 		});
 		
@@ -374,13 +370,7 @@ public class CustomizeParametersPanel extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				GeneralConfig.linkedMappings.setProperty("FLAG_LAUNCH_JAR_COMMAND", ((chckBoxLaunchAsJar.isSelected())? "true" : "false"));
 				GeneralConfig.reloadProperties();
-				if(chckBoxLaunchAsJar.isSelected()) {
-					chckBoxLaunchAsJar.setText(TITLE_LAUNCH_AS_JAR);
-					chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
-				}else {
-					chckBoxLaunchAsJar.setText((TITLE_LAUNCH_AS_CLASS));
-					chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_CLASS);
-				}
+				refreshCheckBoxLaunchAsJar();
 			}
 		});
 		
@@ -489,7 +479,7 @@ public class CustomizeParametersPanel extends JFrame{
 	}
 	
 	private void checkWarningsAndTooltips(int max, int min) {
-		if(((max - min)/max) * 100 < GeneralConfig.JVM_MAX_MIN_PERC_WARN) {
+		if((max - min) < GeneralConfig.JVM_MAX_MIN_DIFF_WARN) {
 			lblMaxWarninig.setToolTipText(TOOLTIP_WARN_MAX_RAM_SIZE);
 			lblMinWarninig.setToolTipText(TOOLTIP_WARN_MIN_RAM_SIZE);
 			lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
@@ -519,6 +509,20 @@ public class CustomizeParametersPanel extends JFrame{
 				}
 			}
 		});
+	}
+	
+	private void refreshCheckBoxLaunchAsJar() {
+		if (chckBoxLaunchAsJar.isSelected()) {
+			lblLaunchJarIconWarn.setToolTipText(TOOLTIP_LAUNCH_AS_JAR_WARN);
+			lblLaunchJarIconWarn.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
+			chckBoxLaunchAsJar.setText(TITLE_LAUNCH_AS_JAR);
+			chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
+		} else {
+			lblLaunchJarIconWarn.setToolTipText("");
+			lblLaunchJarIconWarn.setIcon(new ImageIcon());
+			chckBoxLaunchAsJar.setText((TITLE_LAUNCH_AS_CLASS));
+			chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_CLASS);
+		}
 	}
 	
 	private void updateJvmIcon(Boolean JVM_WARN) {

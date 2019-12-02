@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
@@ -516,8 +517,8 @@ public class CustomTabbedEditor {
 		boolean askedRemoveResponse = true;
 		firstToRemove = false;
 		
-		if(index >= mainTabList.getTabCount()) {
-			logger.warn("Cannot remove tab: index is OUT OF BOUNDS ( > tabs number)");
+		if(index >= mainTabList.getTabCount() || index < 0) {
+			logger.warn("Cannot remove tab: index is OUT OF BOUNDS ( > tabs number, or < 0) => index=" + index + " ; TabCount=" + mainTabList.getTabCount());
 			return false;
 		}
 		
@@ -541,6 +542,7 @@ public class CustomTabbedEditor {
 					loadedList.getList().remove(0);
 				}
 				mainTabList.remove(0);
+				mainTabList.setSelectedIndex(0);
 
 			} else if (index == 0) {
 				try {
@@ -552,7 +554,7 @@ public class CustomTabbedEditor {
 						
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
-								updateSavedLabelNTab(0);
+								resetTabHeaderString(0);
 							}
 						});
 					}
@@ -723,9 +725,10 @@ public class CustomTabbedEditor {
 	}
 	
 	public void tabRefreshAfterUpdate() {
+		JTextArea originalTxtArea = loadedTabObj.textArea;
 		try {
 			tabJustSwitched = true;
-			loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+			originalTxtArea.setCursor(GuiUtils.CURSOR_WAIT);
 			if (!isAddingTab && !isRemovingTab) {
 				backupCurrentBeforeSwitch();
 			}
@@ -741,9 +744,21 @@ public class CustomTabbedEditor {
 		} catch(Exception e){
 			logger.error("An error occurred while refreshing current tab", e);
 		} finally {
-			loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+			originalTxtArea.setCursor(GuiUtils.CURSOR_TEXT);
 		}
 		
+	}
+	
+	public void resetTabHeaderString(Integer sourceIndex) {
+		int indexChange = (sourceIndex == null) ? mainTabList.getSelectedIndex() : sourceIndex;
+		TabTextEditorObj loadedTabObj = (sourceIndex == null) ? this.loadedTabObj : loadedList.getList().get(sourceIndex);
+		try {
+			JLabel tabHeadLbl = (JLabel) (getPanelFromTabHeader(indexChange)).getComponent(TabUtils.TAB_TITLE_ORDER);
+			tabHeadLbl.setText(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME);
+			setIconToTab(IconsPathConfigurator.ICON_DOC_EMPTY, indexChange);
+		} catch(Exception e) {
+			logger.warn("Cannot reset tabHeader, an error occurred!", e);
+		}
 	}
 	
 	/**
@@ -765,8 +780,7 @@ public class CustomTabbedEditor {
 				if (loadedTabObj.loadedFile != null) {
 					newFileStringTarget.setText(loadedTabObj.loadedFile.getName());
 					newFileStringTarget.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
-					tabHeadLbl.setText(HandleString.fitToMaxLentgh(loadedTabObj.loadedFile.getName(),
-							TabUtils.MAX_TAB_LABELENGHT));
+					tabHeadLbl.setText(HandleString.fitToMaxLentgh(loadedTabObj.loadedFile.getName(), TabUtils.MAX_TAB_LABELENGHT));
 				} else {
 					// IF FILE IS NOT DEFINED
 					if (tabHeadLbl.getText().startsWith("(*)")) {

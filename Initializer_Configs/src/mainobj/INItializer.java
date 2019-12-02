@@ -262,6 +262,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		genOpt.setAutomaticUpdateOn(getBooleanFromString(iniReadFile.get(GEN_OPT, "automaticUpdateOn"), GenericOption.DEF_automaticUpdateOn));
 		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
+		genOpt.setFirstAccess(getBooleanFromString(iniReadFile.get(GEN_OPT, "firstAccess"), GenericOption.DEF_firstAccess));
 		String readLocale = iniReadFile.get(GEN_OPT, "locale");
 		readLocale = (readLocale != null) ? readLocale : GenericOption.DEF_locale.toString();
 		Locale locale = new Locale(readLocale);
@@ -518,6 +519,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(GEN_OPT, "generalVolume", genOpt.getGeneralVolume());
 		iniFile.put(GEN_OPT, "lastPanelOpened", genOpt.getLastPanelOpened().getName());
 		iniFile.put(GEN_OPT, "txtEditorFileMonitorActive", genOpt.isTxtEditorFileMonitorActive());
+		iniFile.put(GEN_OPT, "firstAccess", genOpt.isFirstAccess());
 		iniFile.put(GEN_OPT, "exceptionAdvicesEnabled", genOpt.isExceptionAdvicesEnabled());
 		iniFile.put(GEN_OPT, "automaticUpdateOn", genOpt.isAutomaticUpdateOn());
 		iniFile.put(GEN_OPT, "locale", genOpt.getLocale());
@@ -613,6 +615,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
 			   .append("\nListen for uncatched exceptions and show them -> ").append(genOpt.isExceptionAdvicesEnabled())
 			   .append("\nTxt Editor: Listen for changes in current file -> ").append(genOpt.isTxtEditorFileMonitorActive())
+			   .append("\nIs current first access? ").append(genOpt.isFirstAccess())
 			   .append("\nAutomatic check for updates at start -> ").append(genOpt.isAutomaticUpdateOn())
 			   .append("\nPreferred Locale: ").append(genOpt.getLocale())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());

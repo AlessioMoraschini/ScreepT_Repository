@@ -192,7 +192,9 @@ public class TextEditor extends JPanel {
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMinimumSize(new Dimension(800, 300));
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(98, parentFrame));
-		mainPanel.setLayout(new MigLayout("fill, insets 1, hidemode 2", "[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", "[:0px:45px][:0px:50px][:0px:4px][300px,grow 600,fill][:0px:30px]"));
+		mainPanel.setLayout(new MigLayout("fill, insets 1, hidemode 2", 
+				"[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]",
+				"[:0px:45px][:0px:50px][:4px:4px][300px,grow 600,fill][:0px:30px]"));
 		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMinimumSize(new Dimension(1100, 300));
@@ -569,16 +571,15 @@ public class TextEditor extends JPanel {
 					currentConfiguration.getTextEditorOpt().setWorkspaceViewSelected(true);
 					// SYNC config file
 					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "workspaceViewSelected", true);
+					textEditorUtils.refreshFromWorkspace(new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath));
 
 				}else {
 					toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_OFF));
 					currentConfiguration.getTextEditorOpt().setWorkspaceViewSelected(false);
 					// SYNC config file
 					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "workspaceViewSelected", false);
+					textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
 				}
-				
-				// FILE TREE LOCK SYNC
-				textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
 				
 				if(toggleTreeLockToReset) {
 					toggleButtonFileTreeLocked.doClick();
@@ -675,7 +676,7 @@ public class TextEditor extends JPanel {
 			}
 			
 			// REFRESH
-			textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
+			textEditorUtils.refreshFromWorkspace(directory);
 		}
 	}
 	
@@ -978,6 +979,12 @@ public class TextEditor extends JPanel {
 					leftSplitTreeFiles.setVisible(true);
 				}
 			});
+		}
+		
+		if (currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.getList().size() == 0) {
+			currentConfiguration.getTextEditorOpt().addFileToLimitedList(GeneralConfig.USER_DESKTOP_FILE, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces,
+					"lastSelectedWorkspaces");
+			mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 		}
 	}
 

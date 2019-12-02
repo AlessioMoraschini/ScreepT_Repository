@@ -8,6 +8,7 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
@@ -100,6 +101,19 @@ public class GuiUtils {
 		    }
 		};
     }
+	
+	public static Frame getTopFrame() {
+		Frame[] frames = Frame.getFrames();
+		for (int i = 0; i < frames.length; i++) {
+			if (frames[i].getFocusOwner() != null) {
+				return frames[i];
+			}
+		}
+		if (frames.length > 0) {
+			return frames[0];
+		}
+		return null;
+	}
 
 	public static Cursor getCustomCursor(String imgPath, Dimension size) {
 		Dimension correctSize = size;

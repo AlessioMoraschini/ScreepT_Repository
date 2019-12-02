@@ -381,7 +381,7 @@ public class NetInfoFrame extends ParentFrame{
 		});
 		
 		// call now cause before some gui elements can not be initialized yet
-		new Thread(new Runnable() {
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -389,7 +389,7 @@ public class NetInfoFrame extends ParentFrame{
 				updateAdapterGUIinfos();
 				validateConnectivity();
 			}
-		}).start();
+		});
 		
 		logger.info(this.getClass().getName() + " Started");
 		logger.info("OUTPUT_CODE: OK_NETWORKPANEL_STARTED");

@@ -2,6 +2,7 @@ package maingUI;
 
 import static maingUI.MainGuiGeneralAppStarter.*;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyListener;
@@ -28,6 +29,7 @@ import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettings;
 import mainobj.INItializer;
 import media.Sounds;
+import om.GenericOption;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 
@@ -37,7 +39,7 @@ public class MainGuiUtils {
 	static Logger logger = Logger.getLogger(MainGuiUtils.class);
 
 	public MainGUI mainAppReference;
-	
+
 	public MainGuiUtils(MainGUI mainApp) {
 		mainAppReference = mainApp;
 	}
@@ -47,6 +49,8 @@ public class MainGuiUtils {
 			
 			@Override
 			public void run() {
+				Frame activeWindowBeforeUpdates = GuiUtils.getTopFrame();
+				
 				if (!MainGUI.mainAPP.isUpdating.get()) {
 					dialogHelper = new JOptionHelper(MainGUI.frmScryptV);
 					MainGUI.mainAPP.isUpdating.set(true);
@@ -120,9 +124,16 @@ public class MainGuiUtils {
 
 					// Reset application graphics
 					MainGUI.frmScryptV.setEnabled(true);
-					MainGUI.frmScryptV.toFront();
 					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(true);
 					MainGUI.mainAPP.isUpdating.set(false);
+					
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							activeWindowBeforeUpdates.setAutoRequestFocus(true);
+							activeWindowBeforeUpdates.toFront();
+						}
+					});
 				}
 			}
 		});
@@ -463,16 +474,31 @@ public class MainGuiUtils {
 			target.removeMouseWheelListener(listener);
 		}
 	}
+	
+	public static void askNameAtStartIfNotDefined() {
+		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
+		GenericOption genOpt = currentConfiguration.getGenOpt();
+		if(genOpt.getUserName().equals("") || genOpt.getUserName().length()>20) {
+			logger.info("Current user input initialization: void user or lenght>20 detected!");
+			genOpt.setUserName(askUsername());
+			currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", genOpt.getUserName());
+			logger.info("Current userName: " + genOpt.getUserName());
+		}
+	}
 
-	public static void welcomeMethodIfFirstTime() {
+	public static void welcomeMethodFirstTime() {
 		// ASK FOR USERNAME IF NULL OR FIRST TIME
 		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
-		if(currentConfiguration.getGenOpt().getUserName().equals("") || currentConfiguration.getGenOpt().getUserName().length()>20) {
-			logger.info("Current user input initialization: void user or lenght>20 detected!");
-			currentConfiguration.getGenOpt().setUserName(askUsername());
-			currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", currentConfiguration.getGenOpt().getUserName());
-			logger.info("Current userName: " + currentConfiguration.getGenOpt().getUserName());
+		GenericOption genOpt = currentConfiguration.getGenOpt();
+		
+		if(genOpt.isFirstAccess()) {
+			String msg = "Hi "+genOpt.getUserName() + ", and welcome to "+GeneralConfig.APPLICATION_NAME + ", I suggest you to take a look to documentation before to start, do you want to open it now?";
+			if (dialogHelper.yesOrNo(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME)) {
+				MainGUI.mainAPP.getMntmUserDocumentation().doClick();
+			}
 		}
+		
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
 	}
 	
 	public static String askUsername() {

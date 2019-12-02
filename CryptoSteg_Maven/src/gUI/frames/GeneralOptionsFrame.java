@@ -516,11 +516,22 @@ public class GeneralOptionsFrame extends ParentFrame{
     	chckbxAutosave.setSelected(currentConfiguration.getFileOpt().isFlagAutosave());
     	chckbxExceptionAdvicesEnabled.setSelected(currentConfiguration.getGenOpt().isExceptionAdvicesEnabled());
     	chckbxAutomaticallyCheckFor.setSelected(currentConfiguration.getGenOpt().isAutomaticUpdateOn());
-    	comboCharsets.setSelectedItem(currentConfiguration.getGenOpt().getCharset());
+    	updateComboCharsetSelection(currentConfiguration.getGenOpt().getCharset());
     	System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
     	
     	refreshCheckBoxForeground();
+	}
+	
+	public void updateComboCharsetSelection(String charset) {
+		int tot = comboCharsets.getItemCount();
+		for(int i = 0; i < tot; i++) {
+			String value = comboCharsets.getItemAt(i);
+			if(value.equalsIgnoreCase(charset)) {
+				comboCharsets.setSelectedItem(i);
+				break;
+			}
+		}
 	}
 		
 	/**

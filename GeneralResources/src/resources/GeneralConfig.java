@@ -85,6 +85,7 @@ public class GeneralConfig {
 	public static String USER_PERSONAL_DIR_SCRYPT_FOLDER = USER_PERSONAL_DIR + "ScrYpT_temp_files" + File.separatorChar + APP_VERSION;
 	public static File F_USER_PERSONAL_DIR_SCRYPT_FOLDER = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER);
 	public static String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";
+	public static File USER_DESKTOP_FILE = new File(USER_DESKTOP);
 	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScrYpT_decrypted_tempFiles";
 	public static File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	/**
@@ -109,7 +110,7 @@ public class GeneralConfig {
 	public static String LAUNCHER_LOG_PROPS_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_LOG_PROPS_PATH");    		 
 	                     			
 	// JVM and LAUNCHER
-	public static int JVM_MAX_MIN_PERC_WARN;
+	public static int JVM_MAX_MIN_DIFF_WARN;
 	public static String MAX_JVM_COMPLETE_COMPATIBILITY;
 	public static String JVM_CUSTOM_ADDED_SETTINGS;
 	public static ArrayList<String> BATCH_LAUNCHER_ADDED_INSTRUCTIONS;
@@ -138,6 +139,24 @@ public class GeneralConfig {
 	// NETWORK OPTIONS
 	public static int NETWORK_UTILS_TIMEOUT;
 	public static String testAddress;
+	public static String FTP_HOST = resourcesFilePathsMappings.getProperty("FTP_HOST", "speedtest.tele2.net");
+	public static String FTP_PSW = resourcesFilePathsMappings.getProperty("FTP_PSW", "anonymous");
+	public static String FTP_USER = resourcesFilePathsMappings.getProperty("FTP_USER", "anonymous");
+	public static String FTP_UPLOAD_FOLDER = resourcesFilePathsMappings.getProperty("FTP_UPLOAD_FOLDER", "upload");
+	
+	public static String DOWN_SHORT_FILE = resourcesFilePathsMappings.getProperty("DOWN_SHORT_FILE", "1MB.zip");
+	public static int DOWN_SHORT_FILE_SIZE_MB = resourcesFilePathsMappings.getIntVarFromProps("DOWN_SHORT_FILE_SIZE_MB", 1);
+	public static String DOWN_MED_FILE = resourcesFilePathsMappings.getProperty("DOWN_MED_FILE", "5MB.zip");
+	public static int DOWN_MED_FILE_SIZE_MB = resourcesFilePathsMappings.getIntVarFromProps("DOWN_MED_FILE_SIZE_MB", 5);
+	public static String DOWN_BIG_FILE = resourcesFilePathsMappings.getProperty("DOWN_BIG_FILE", "20MB.zip");
+	public static int DOWN_BIG_FILE_SIZE_MB =  resourcesFilePathsMappings.getIntVarFromProps("DOWN_BIG_FILE_SIZE_MB", 20);
+	
+	public static String UP_SHORT_FILE = resourcesFilePathsMappings.getProperty("UP_SHORT_FILE", "250KB upload");
+	public static int UP_SHORT_FILE_SIZE_KB =  resourcesFilePathsMappings.getIntVarFromProps("UP_SHORT_FILE_SIZE_KB", 250);
+	public static String UP_MED_FILE = resourcesFilePathsMappings.getProperty("UP_MED_FILE", "1000KB upload");
+	public static int UP_MED_FILE_SIZE_KB =  resourcesFilePathsMappings.getIntVarFromProps("UP_MED_FILE_SIZE_KB", 1000);
+	public static String UP_BIG_FILE = resourcesFilePathsMappings.getProperty("UP_BIG_FILE", "4000KB upload");
+	public static int UP_BIG_FILE_SIZE_KB =  resourcesFilePathsMappings.getIntVarFromProps("UP_BIG_FILE_SIZE_KB", 4000);
 	
 	/**	GUI PROPERTIES **/
 	
@@ -209,6 +228,7 @@ public class GeneralConfig {
 	public static Font BUTTON_TAB_HEAD_FONT;
 	public static int TAB_HEAD_HEIGHT;
 	public static Font DEFAULT_FONT;
+	public static Font DEFAULT_DIALOGS_FONT;
 	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR;
 	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER;
 	public static int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS;
@@ -445,7 +465,7 @@ public class GeneralConfig {
 			SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
 
 			// JVM and LAUNCHER
-			JVM_MAX_MIN_PERC_WARN = resourcesFilePathsMappings.getIntVarFromProps("JVM_MAX_MIN_PERC_WARN", 20);
+			JVM_MAX_MIN_DIFF_WARN = resourcesFilePathsMappings.getIntVarFromProps("JVM_MAX_MIN_DIFF_WARN", 100);
 			MAX_JVM_COMPLETE_COMPATIBILITY = resourcesFilePathsMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 			JVM_CUSTOM_ADDED_SETTINGS = resourcesFilePathsMappings.getProperty("JVM_CUSTOM_ADDED_SETTINGS");
 			
@@ -538,6 +558,7 @@ public class GeneralConfig {
 			BUTTON_TAB_HEAD_FONT =  resourcesFilePathsMappings.getFontFromString("BUTTON_TAB_HEAD_FONT", new Font("Segoe UI", Font.PLAIN, 14));
 			TAB_HEAD_HEIGHT =  resourcesFilePathsMappings.getIntVarFromProps("TAB_HEAD_HEIGHT", 24);
 			DEFAULT_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_FONT", new Font("Segoe UI", Font.PLAIN, 16));
+			DEFAULT_DIALOGS_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_DIALOGS_FONT", new Font("Segoe UI", Font.PLAIN, 16));
 			BUTTON_BCKG_COLOR_TXT_EDITOR = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR", new Color(120, 125, 140));
 			BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER", new Color(71, 76, 84));
 			TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);

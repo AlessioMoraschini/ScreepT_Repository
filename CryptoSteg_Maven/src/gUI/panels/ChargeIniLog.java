@@ -19,6 +19,7 @@ import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
 import maingUI.MainGUI;
+import maingUI.MainGuiUtils;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
@@ -362,7 +363,7 @@ public class ChargeIniLog extends JPanel{
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
 				FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
 				textAreaToTop();
-				parent.updateGuiFromCurrConfig();
+				MainGUI.updateGuiFromCurrConfig();
 			}
 		});
 		
@@ -398,10 +399,10 @@ public class ChargeIniLog extends JPanel{
 						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						lblAvviso.setText("[Configuration Resetted!]");
-						MainGUI.mainAPP.mainGuiUtils.welcomeMethodIfFirstTime();
+						MainGuiUtils.askNameAtStartIfNotDefined();
 						dialogHelper.info("File '" + config.getIniFile().getFile().getName() + "' loaded!", "");
 						config.readConfigIniFile();
-						parent.updateGuiFromCurrConfig();
+						MainGUI.updateGuiFromCurrConfig();
 					} catch (IOException exc) {
 						dialogHelper.error("Error resetting standard configuration: it does not exist or IO error occurred, retry later!", "");
 						logger.error("Exception happened!", exc);
@@ -444,7 +445,7 @@ public class ChargeIniLog extends JPanel{
 					}
 					config.setIniFile(new Wini(backupIni));
 					config.setIniReadFile(new Ini(backupIni));
-					parent.updateGuiFromCurrConfig();
+					MainGUI.updateGuiFromCurrConfig();
 					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 				} catch (IOException e1) {
 					logger.error("Exception happened!", e1);

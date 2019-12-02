@@ -1,15 +1,17 @@
 package network.om;
 
-public enum FtpSpeedTestOptions {	SHORT_TEST("1MB.zip", "1MB upload", 1, 250),
-									MED_TEST("5MB.zip", "5MB upload", 5, 1000),
-								  	LONG_TEST("20MB.zip", "20MB upload", 20, 4000);
+import resources.GeneralConfig;
+
+public enum FtpSpeedTestOptions {	SHORT_TEST(GeneralConfig.DOWN_SHORT_FILE, GeneralConfig.UP_SHORT_FILE, GeneralConfig.DOWN_SHORT_FILE_SIZE_MB, GeneralConfig.UP_SHORT_FILE_SIZE_KB),
+									MED_TEST(GeneralConfig.DOWN_MED_FILE, GeneralConfig.UP_MED_FILE, GeneralConfig.DOWN_MED_FILE_SIZE_MB, GeneralConfig.UP_MED_FILE_SIZE_KB),
+								  	LONG_TEST(GeneralConfig.DOWN_BIG_FILE, GeneralConfig.UP_BIG_FILE, GeneralConfig.DOWN_BIG_FILE_SIZE_MB, GeneralConfig.UP_BIG_FILE_SIZE_KB);
 
 	public static final int MB_multiplier = 1024*1024; // 1 MB
 	public static final int KB_multiplier = 1024; // 1 KB
-	public static final String HOST_FTP = "speedtest.tele2.net" ;
-	public static final String USER_FTP = "anonymous";
-	public static final String PSW_FTP = "anonymous"; 
-	public static final String UP_FOLDER = "upload";
+	public static final String HOST_FTP = GeneralConfig.FTP_HOST;
+	public static final String USER_FTP = GeneralConfig.FTP_USER;
+	public static final String PSW_FTP = GeneralConfig.FTP_PSW; 
+	public static final String UP_FOLDER = GeneralConfig.FTP_UPLOAD_FOLDER;
 	
 	public String downFileName;
 	public String upFileName;
