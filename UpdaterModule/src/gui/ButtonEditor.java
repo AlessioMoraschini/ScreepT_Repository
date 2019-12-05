@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -112,6 +113,11 @@ class ButtonEditor extends DefaultCellEditor {
 									pluginManagerInterface.setInstalling(false);
 									String message = "Installation process killed by user.";
 									JOptionPane.showMessageDialog(thisPanel, message, "Interrupted by user", JOptionPane.INFORMATION_MESSAGE);
+								
+								} else if(e instanceof TimeoutException) {
+									String message = "Server is unreachable!";
+									JOptionPane.showMessageDialog(thisPanel, message, "An error occurred", JOptionPane.ERROR_MESSAGE);
+								
 								} else {
 									String message = "An error occurred during installation";
 									JOptionPane.showMessageDialog(thisPanel, message, "An error occurred", JOptionPane.ERROR_MESSAGE);

@@ -99,14 +99,13 @@ public class FileNameCellRenderer implements TreeCellRenderer {
     }
     
     public void setHoverBackgroundEffect(final boolean hover) {
-    	SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				iconContainer.setBackground(hover ? TreeUtils.DEF_BACK_SELECTION : treeRef.getBackground());
-				iconContainer.setForeground(hover ? Color.WHITE : Color.GRAY);
-				container.setBackground(hover ? TreeUtils.DEF_BACK_SELECTION : treeRef.getBackground());
-				container.setForeground(hover ? Color.WHITE : Color.GRAY);
-			}
-		});
+		iconContainer.setBackground(hover ? TreeUtils.DEF_BACK_SELECTION : treeRef.getBackground());
+		iconContainer.setForeground(hover ? Color.WHITE : Color.GRAY);
+		container.setBackground(hover ? TreeUtils.DEF_BACK_SELECTION : treeRef.getBackground());
+		container.setForeground(hover ? Color.WHITE : Color.GRAY);
+		
+		container.repaint();
+		iconContainer.repaint();
     }
 
 }

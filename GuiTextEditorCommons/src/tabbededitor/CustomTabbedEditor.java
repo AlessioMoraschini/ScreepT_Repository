@@ -42,7 +42,6 @@ import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
 import general.MyFileView;
 import generic.LimitedConcurrentList;
-import guistyle.GUIStyelSettings;
 import mainobj.INItializer;
 import om.HistoryNode;
 import om.TabTextEditorObj;
@@ -264,7 +263,7 @@ public class CustomTabbedEditor {
 					try {
 						newFileStringTarget.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
 					} catch (IOException e) {
-						logger.error(e);
+						logger.error("An error occurred!", e);
 					}
 					tabEditorManager.doAfterFileLoad();
 					loadedTabObj.unsaved = false;
@@ -282,8 +281,12 @@ public class CustomTabbedEditor {
 
 	public void applyStyleToTabs() {
 		if (mainTabList != null) {
-			mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, mainTabList,
-					TabUtils.TAB_BUTTON_CLOSE_ORDER));
+			try {
+				mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, mainTabList,
+						TabUtils.TAB_BUTTON_CLOSE_ORDER));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		tabEditorManager.doAfterApplyingStyleToTabs();
 	}
@@ -424,12 +427,12 @@ public class CustomTabbedEditor {
 			}
 			addToHystory(loadedTabObj);
 			
-			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
+//			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 			applyStyleToTabs();
 			loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
 			
 		} catch (Exception e) {
-			logger.error(e);
+			logger.error("An error occurred!", e);
 		} finally {
 			loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
 		}
@@ -551,6 +554,7 @@ public class CustomTabbedEditor {
 					if (!loadedList.getList().isEmpty()) {
 						TabTextEditorObj currentTab = loadedList.getList().get(0);
 						currentTab.resetData();
+						getPanelFromTabHeader(0).setToolTipText("Unexisting file");
 						
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {

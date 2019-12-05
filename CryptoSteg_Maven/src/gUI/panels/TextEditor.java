@@ -82,6 +82,7 @@ import guistyle.GUIStyelSettings;
 
 import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 public class TextEditor extends JPanel {
 	private static final long serialVersionUID = 4754281928324097410L;
@@ -194,7 +195,7 @@ public class TextEditor extends JPanel {
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(98, parentFrame));
 		mainPanel.setLayout(new MigLayout("fill, insets 1, hidemode 2", 
 				"[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]",
-				"[:0px:45px][:0px:50px][:4px:4px][300px,grow 600,fill][:0px:30px]"));
+				"[:0px:45px][:0px:50px][:4px:4px][300px,grow 600,fill][:0px:50px]"));
 		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMinimumSize(new Dimension(1100, 300));
@@ -222,6 +223,7 @@ public class TextEditor extends JPanel {
 		tabbedEditorsList.add(initialTabbedEditor);
 		
 		getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		getCurrentTabEditor().mainTabList.setUI(new BasicTabbedPaneUI());
 
 		// PARENT CONTAINER (main lv.1, right)
 		splitPaneMainContainer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -373,6 +375,7 @@ public class TextEditor extends JPanel {
 		dynLblCurrentDir.setFont(new Font("SansSerif", Font.BOLD, 12));
 		leftSplitContainer.add(dynLblCurrentDir, "cell 2 4 7 1,alignx right");
 		splitPaneMain.setContinuousLayout(true);
+		splitPaneMainContainer.setContinuousLayout(true);
 
 		getCurrentTabEditor().addTab(null); // comment for editing in windowuilder
 		getCurrentTabEditor().isFirstTabAdded = true;
@@ -737,8 +740,12 @@ public class TextEditor extends JPanel {
 			toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_OFF));
 		}
 		
-		getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(
-				null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
+		try {
+			getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(
+					null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
+		} catch (Exception e1) {
+			logger.warn(e1);
+		}
 		
 		if (refreshGuiStyle) {
 			textEditorUtils.updateGuiLafWindows(currentTextEditor);// was causing temporization bug cause of invokelater;
@@ -768,6 +775,10 @@ public class TextEditor extends JPanel {
 			public void run() {
 				if (isPreloading || !currentConfiguration.getTextEditorOpt().isTreeLocked()) {
 					loadedTabObj.textArea.setFont(txtOptions.getFont());
+					Font gutterFont = txtOptions.getFont().getSize() < 20 ? 
+							txtOptions.getFont().deriveFont(txtOptions.getFont().getSize()-2) : txtOptions.getFont().deriveFont(20F);
+					loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
+					
 					if (txtOptions.selectedTheme.equals(Themes.NONE.defaultPath)) {
 						loadedTabObj.textArea.setBackground(txtOptions.getBackCol());
 						RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOptions.backCol);

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -41,8 +42,8 @@ public class FilePropertiesFrame extends JFrame{
 	public static final Color defaultBlue = Color.CYAN;
 	public static final Color defaultGreen = Color.GREEN;
 	
-	public static final int DEF_width = 730;
-	public static final int DEF_height = 220;
+	public static final int DEF_width = 850;
+	public static final int DEF_height = 240;
 	
 	private JTextField dynLblFileName;
 	private JTextField dynLblPath;
@@ -72,7 +73,7 @@ public class FilePropertiesFrame extends JFrame{
 		
 		fileUnderAnalysis = targetFile;
 		
-		GuiUtils.setFrameIcon(MyFileView.getExtIcon(targetFile), this);
+		GuiUtils.setFrameIcon((targetFile != null && targetFile.isDirectory()) ? new ImageIcon(IconsPathConfigurator.iconFolderPath): MyFileView.getExtIcon(targetFile), this);
 		this.setAlwaysOnTop(alwaysOnTop);
 		
 		GuiUtils.centerComponent(this, DEF_width, DEF_height);
@@ -253,7 +254,14 @@ public class FilePropertiesFrame extends JFrame{
 		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
 		updateFooter();
 		try {
-			hashMd5DynLbl.setText(DownloadUtils.getFileHash(fileUnderAnalysis.getAbsolutePath(), HashingFunction.MD5));
+			if (fileUnderAnalysis != null) {
+				if (fileUnderAnalysis.isFile()) {
+					hashMd5DynLbl.setText(DownloadUtils.getFileHash(fileUnderAnalysis.getAbsolutePath(), HashingFunction.MD5));
+				} else {
+					hashMd5DynLbl.setText("Not a File... cannot hash!");
+				}
+			}
+			
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -270,6 +278,7 @@ public class FilePropertiesFrame extends JFrame{
 		GuiUtils.setFrameIcon(MyFileView.getExtIcon(fileToAnalyze), this);
 		this.fileUnderAnalysis = fileToAnalyze;
 		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
+		setTitle(fileToAnalyze.getName());
 		adjustLabelsLength();
 		this.initializeValues();
 		this.repaint();

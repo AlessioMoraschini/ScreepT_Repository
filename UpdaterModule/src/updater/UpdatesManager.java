@@ -5,6 +5,7 @@ import static java.lang.System.out;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import exception.ProgressBarInterruptedException;
@@ -55,7 +56,7 @@ public class UpdatesManager {
 	 * @return null if current is updated, else it return the newest version downloadable
 	 * @throws Exception 
 	 */
-	public String lookForUpdates(boolean silent) throws Exception {
+	public String lookForUpdates(boolean silent) throws Exception, TimeoutException {
 		String newVersionAvailable = null;
 		
 		UpdateProgressPanelMin updateManagerProgbar = null;
@@ -76,6 +77,8 @@ public class UpdatesManager {
 				out.println("Version: " + version);
 				
 				newVersionAvailable = (DownloadUtils.checkNewVersion(version, currentVersion)) ? version : null;
+			} else {
+				throw new TimeoutException("Server unreachable");
 			}
 		} catch (Exception e) {
 			out.println("An error occurred:" + Arrays.deepToString(e.getStackTrace()));
@@ -106,7 +109,7 @@ public class UpdatesManager {
 	/**
 	 * Returns an array of two elements: first is jar updater, second is updates extracted folder reference
 	 */
-	public File[] downloadAndExtractUpdates() throws Exception {
+	public File[] downloadAndExtractUpdates() throws Exception, TimeoutException {
 		
 		emtpyUpdatesDir();
 		

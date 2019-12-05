@@ -46,7 +46,8 @@ public class TextEditorMouseWheelListener implements MouseWheelListener{
 				if (TextEditorShortcutListener.flagCtrlDown.get() && TextEditorShortcutListener.flagAltDown.get()
 						&& !TextEditorShortcutListener.flagShiftDown.get()) {
 					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.ULTRA_FAST_WHEEL_SPEED);
-				} else if (TextEditorShortcutListener.flagCtrlDown.get()) {
+				} else if (TextEditorShortcutListener.flagCtrlDown.get() && !TextEditorShortcutListener.flagAltDown.get()
+						&& !TextEditorShortcutListener.flagShiftDown.get()) {
 					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.FAST_WHEEL_SPEED);
 				} else {
 					currentTabEditor.loadedTabObj.currentScrollPane.getVerticalScrollBar().setUnitIncrement(GeneralConfig.NORMAL_WHEEL_SPEED);

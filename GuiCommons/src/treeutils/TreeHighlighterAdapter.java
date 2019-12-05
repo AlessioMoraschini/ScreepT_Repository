@@ -21,7 +21,6 @@ public class TreeHighlighterAdapter extends MouseMotionAdapter implements MouseL
     
     @Override
     public void mouseDragged(MouseEvent e) {
-    	// TODO implement move file
     }
 
 	@Override

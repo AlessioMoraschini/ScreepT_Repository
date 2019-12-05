@@ -82,6 +82,12 @@ public class LauncherLoaderFrame extends JFrame{
 			loader.setIndeterminatedProgress(indeterminated, text);
 		}
 	}
+
+	public void indeterminate(boolean indeterminated) {
+		if(loader != null) {
+			loader.setIndeterminatedProgress(indeterminated);
+		}
+	}
 	
 	public void update(String text, int progressPercent, int msDelayIfEnd) {
 		if(loader != null) {

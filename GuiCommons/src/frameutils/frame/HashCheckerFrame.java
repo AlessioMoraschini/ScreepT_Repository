@@ -21,14 +21,12 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 
-import dialogutils.GenericFileChooserDialog;
-import dialogutils.JOptionHelper;
-
 import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JSeparator;
+import javax.swing.JRadioButton;
 
 public class HashCheckerFrame extends ParentFrame{
 	private static final long serialVersionUID = -5018329398511796700L;
@@ -47,6 +45,7 @@ public class HashCheckerFrame extends ParentFrame{
 	
 	private static Color lightGrayDefault = new Color(211, 211, 211);
 	private static Color yellowDefault = new Color(250, 250, 210);
+	private JRadioButton rdbtnUseAlgorithmAs;
 	
 	public HashCheckerFrame(File initialFile, JFrame parentFrame) {
 		super();
@@ -64,7 +63,7 @@ public class HashCheckerFrame extends ParentFrame{
 		setAlwaysOnTop(true);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("fill, insets 2", "[5px][100px][220px,grow][5px]", "[5px,center][30px,center][][35px][][20px,grow][20px,grow][5px,center]"));
+		getContentPane().setLayout(new MigLayout("fill, insets 2", "[5px][100px][220px,grow][50px:180px:200px][5px]", "[5px,center][30px,center][][35px][][20px,grow][20px,grow][5px,center]"));
 		
 		btnSelectFile = new JButton("Select File");
 		btnSelectFile.setCursor(GuiUtils.CURSOR_HAND);
@@ -88,10 +87,10 @@ public class HashCheckerFrame extends ParentFrame{
 		txtFieldLoadedFile.setBackground(lightGrayDefault);
 		txtFieldLoadedFile.setPreferredSize(new Dimension(18, 25));
 		txtFieldLoadedFile.setForeground(Color.DARK_GRAY);
-		getContentPane().add(txtFieldLoadedFile, "cell 2 1,grow");
+		getContentPane().add(txtFieldLoadedFile, "cell 2 1 2 1,grow");
 		
 		JSeparator separator_1 = new JSeparator();
-		getContentPane().add(separator_1, "cell 1 2 2 1,growx");
+		getContentPane().add(separator_1, "cell 1 2 3 1,growx");
 		
 		JLabel lblHashingAlgorithm = new JLabel("Hashing algorithm:");
 		lblHashingAlgorithm.setForeground(Color.LIGHT_GRAY);
@@ -103,8 +102,15 @@ public class HashCheckerFrame extends ParentFrame{
 		comboBoxHashingAlgos.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(comboBoxHashingAlgos, "cell 2 3,growx");
 		
+		rdbtnUseAlgorithmAs = new JRadioButton("Use Algorithm as Prefix");
+		rdbtnUseAlgorithmAs.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		rdbtnUseAlgorithmAs.setCursor(GuiUtils.CURSOR_HAND);
+		rdbtnUseAlgorithmAs.setForeground(Color.WHITE);
+		rdbtnUseAlgorithmAs.setOpaque(false);
+		getContentPane().add(rdbtnUseAlgorithmAs, "cell 3 3,alignx center");
+		
 		JSeparator separator = new JSeparator();
-		getContentPane().add(separator, "cell 1 4 2 1,growx");
+		getContentPane().add(separator, "cell 1 4 3 1,growx");
 		
 		btnVerifyChecksum = new JButton("Verify Checksum");
 		btnVerifyChecksum.setCursor(GuiUtils.CURSOR_HAND);
@@ -112,12 +118,12 @@ public class HashCheckerFrame extends ParentFrame{
 		btnVerifyChecksum.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnVerifyChecksum, "cell 1 5,grow");
 		
-		txtFieldChecksumMatcher = new JTextField((String) null);
+		txtFieldChecksumMatcher = new JTextField("Write here the checksum to verify, and press \"Verify Checksum\" to compare with current file's hash!");
 		txtFieldChecksumMatcher.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		txtFieldChecksumMatcher.setBackground(yellowDefault);
 		txtFieldChecksumMatcher.setPreferredSize(new Dimension(18, 25));
 		txtFieldChecksumMatcher.setForeground(Color.DARK_GRAY);
-		getContentPane().add(txtFieldChecksumMatcher, "cell 2 5,grow");
+		getContentPane().add(txtFieldChecksumMatcher, "cell 2 5 2 1,grow");
 		
 		btnCalculateHash = new JButton("Calculate Hash");
 		btnCalculateHash.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -125,12 +131,12 @@ public class HashCheckerFrame extends ParentFrame{
 		btnCalculateHash.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnCalculateHash, "cell 1 6,grow");
 		
-		txtFieldChecksumResult = new JTextField((String) null);
+		txtFieldChecksumResult = new JTextField("Click \"Calculate Hash\" to calculate Hash using selected algoritm");
 		txtFieldChecksumResult.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		txtFieldChecksumResult.setBackground(yellowDefault);
 		txtFieldChecksumResult.setPreferredSize(new Dimension(18, 25));
 		txtFieldChecksumResult.setForeground(Color.DARK_GRAY);
-		getContentPane().add(txtFieldChecksumResult, "cell 2 6,grow");
+		getContentPane().add(txtFieldChecksumResult, "cell 2 6 2 1,grow");
 		
 		loadFile(initialFile);
 		
@@ -160,9 +166,7 @@ public class HashCheckerFrame extends ParentFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
 	        	isActive.set(false);
-	        	
 				logger.debug("Closing "+getClass().getName());
-//	        	dispose();
 		    }
 		});
 		
@@ -190,7 +194,7 @@ public class HashCheckerFrame extends ParentFrame{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(currentFile != null && currentFile.exists() && currentFile.isFile()) {
-						txtFieldChecksumResult.setText(DownloadUtils.getFileHash(currentFile, getSelectedFunction()));
+						txtFieldChecksumResult.setText(getPrefix() + DownloadUtils.getFileHash(currentFile, getSelectedFunction()));
 						txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
 					} else {
 						txtFieldLoadedFile.setBackground(yellowDefault);
@@ -211,7 +215,7 @@ public class HashCheckerFrame extends ParentFrame{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(currentFile != null && currentFile.exists() && currentFile.isFile()) {
-						String hash = DownloadUtils.getFileHash(currentFile, getSelectedFunction());
+						String hash = getPrefix() + DownloadUtils.getFileHash(currentFile, getSelectedFunction());
 						txtFieldChecksumResult.setText(hash);
 						txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
 						if(txtFieldChecksumMatcher.getText().equals(hash) || txtFieldChecksumMatcher.getText().contains(hash)) {
@@ -239,5 +243,9 @@ public class HashCheckerFrame extends ParentFrame{
 	private HashingFunction getSelectedFunction() {
 		HashingFunction selected = (HashingFunction) comboBoxHashingAlgos.getSelectedItem();
 		return selected;
+	}
+	
+	private String getPrefix() {
+		return (rdbtnUseAlgorithmAs.isSelected() ? comboBoxHashingAlgos.getSelectedItem().toString() + "=" : "");
 	}
 }

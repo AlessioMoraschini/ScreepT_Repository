@@ -332,6 +332,7 @@ public class MissingDependenciesPanel extends JDialog{
 	private void askIfSureToCloseIgnoring() {
 		String msg = "Are you sure to continue anyway? Some ScrYpT functions will be disabled by default.";
 		JCheckBox checkbox = new JCheckBox("Do not show this section next Time");
+		checkbox.setOpaque(false);
 		Object[] params = {msg, checkbox};
 		if (dependeciesMissing.size() != 0) {
 			int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, "Confirm before continue",

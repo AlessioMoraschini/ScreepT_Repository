@@ -10,6 +10,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.JOptionPane;
 
@@ -211,7 +212,7 @@ public class PluginManager {
 	 * @param pluginsToDownload
 	 * @throws ProgressBarInterruptedException if user clicked on close during download process
 	 */
-	public ArrayList<PluginDTO> downloadPlugins(ArrayList<PluginDTO> pluginsToDownload) throws Throwable, ProgressBarInterruptedException{
+	public ArrayList<PluginDTO> downloadPlugins(ArrayList<PluginDTO> pluginsToDownload) throws Throwable, TimeoutException, ProgressBarInterruptedException{
 		
 		ArrayList<PluginDTO> downloadedList = new ArrayList<>();
 		
@@ -247,6 +248,7 @@ public class PluginManager {
 				} catch (Exception e) {
 					removeFromCache(currentRemote);
 					e.printStackTrace();
+					throw e;
 				}
 				
 				i++;
@@ -265,7 +267,7 @@ public class PluginManager {
 	 * Retrieve from web Last available plugins and return them as list of objects of type PluginDTO
 	 * @throws Throwable 
 	 */
-	public ArrayList<PluginDTO> discoverLatestPlugins() throws Throwable{
+	public ArrayList<PluginDTO> discoverLatestPlugins() throws Throwable, TimeoutException{
 		
 		ArrayList<PluginDTO> plugins = new ArrayList<>();
 		UpdateProgressPanelMin pluginManagerProgbar = null;

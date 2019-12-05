@@ -33,6 +33,7 @@ import java.awt.Cursor;
 import java.awt.Insets;
 
 public class AboutSectionFrame extends ParentFrame{
+	private static final long serialVersionUID = -1578977495369367445L;
 
 	// initialize Logger
 	static Logger logger = Logger.getLogger(AboutSectionFrame.class); 
@@ -40,6 +41,7 @@ public class AboutSectionFrame extends ParentFrame{
 	// GUI ELEMENTS //
 	private JLabel lblTitle;
 	private JLabel dynLblReleaseDate;
+	private JLabel dynLblBuildNumber;
 	private JLabel dynLblAuthor;
 	private JButton dynLblWebsite;
 	private BackgroundFrame backPanel; 
@@ -75,7 +77,10 @@ public class AboutSectionFrame extends ParentFrame{
 		
 		backPanel = new BackgroundFrame(background);
 		backPanel.setBackground(Color.BLACK);
-		backPanel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[20px][25%][25%][25%][25%][20px]", "[5px][40px][30px][grow][30px][grow][30px][grow][30px]"));
+		backPanel.setLayout(new MigLayout(/**GeneralConfig.DEBUG_GRAPHICS +**/"insets 2, fill",
+				"[20px][25%][25%][25%][25%][20px]",
+				"[10px][40px][20px][grow][20px][grow][20px][grow][20px][30px, grow]"));
+		
 		getContentPane().add(backPanel);
 		
 		lblTitle = new JLabel(GeneralConfig.APPLICATION_NAME);
@@ -84,7 +89,7 @@ public class AboutSectionFrame extends ParentFrame{
 		lblTitle.setBackground(Color.DARK_GRAY);
 		lblTitle.setFont(new Font("Lithos Pro Regular", Font.BOLD, 25));
 		lblTitle.setForeground(Color.WHITE);
-		backPanel.add(lblTitle, "cell 1 1 4 1,alignx center,growy");
+		backPanel.add(lblTitle, "cell 1 1 4 1,alignx center, aligny center");
 		
 		JLabel lblReleaseDate = new JLabel("Built on:");
 		lblReleaseDate.setForeground(new Color(211, 211, 211));
@@ -93,25 +98,39 @@ public class AboutSectionFrame extends ParentFrame{
 		
 		dynLblReleaseDate = new JLabel(GeneralConfig.BUILD_TS_DATE);
 		dynLblReleaseDate.setHorizontalAlignment(SwingConstants.CENTER);
+		dynLblReleaseDate.setVerticalAlignment(SwingConstants.TOP);
 		dynLblReleaseDate.setForeground(new Color(255, 248, 220));
 		dynLblReleaseDate.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-		backPanel.add(dynLblReleaseDate, "cell 1 3 4 1,alignx center");
+		backPanel.add(dynLblReleaseDate, "cell 1 3 4 1,alignx center, aligny top");
+
+		JLabel lblBuildNumberDate = new JLabel("Build incremental number:");
+		lblBuildNumberDate.setForeground(new Color(211, 211, 211));
+		lblBuildNumberDate.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		backPanel.add(lblBuildNumberDate, "cell 1 4 4 1,alignx center,aligny bottom");
+		
+		dynLblBuildNumber = new JLabel(GeneralConfig.BUILD_INCREMENTAL_NUMBER);
+		dynLblBuildNumber.setHorizontalAlignment(SwingConstants.CENTER);
+		dynLblBuildNumber.setVerticalAlignment(SwingConstants.TOP);
+		dynLblBuildNumber.setForeground(new Color(255, 248, 220));
+		dynLblBuildNumber.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+		backPanel.add(dynLblBuildNumber, "cell 1 5 4 1,alignx center, aligny top");
 		
 		JLabel lblMadeBy = new JLabel("Made by");
 		lblMadeBy.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblMadeBy.setForeground(new Color(211, 211, 211));
-		backPanel.add(lblMadeBy, "cell 1 4 4 1,alignx center,aligny bottom");
+		backPanel.add(lblMadeBy, "cell 1 6 4 1,alignx center,aligny bottom");
 		
 		dynLblAuthor = new JLabel(GeneralConfig.AUTHOR);
 		dynLblAuthor.setHorizontalAlignment(SwingConstants.CENTER);
+		dynLblAuthor.setVerticalAlignment(SwingConstants.TOP);
 		dynLblAuthor.setForeground(new Color(255, 248, 220));
 		dynLblAuthor.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-		backPanel.add(dynLblAuthor, "cell 1 5 4 1,alignx center");
+		backPanel.add(dynLblAuthor, "cell 1 7 4 1,alignx center, aligny top");
 		
 		JLabel lblOfficialWebsite = new JLabel("Official Website");
 		lblOfficialWebsite.setForeground(new Color(211, 211, 211));
 		lblOfficialWebsite.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		backPanel.add(lblOfficialWebsite, "cell 1 6 4 1,alignx center,aligny bottom");
+		backPanel.add(lblOfficialWebsite, "cell 1 8 4 1,alignx center,aligny bottom");
 		
 		dynLblWebsite = new JButton(GeneralConfig.WEBSITE);
 		dynLblWebsite.setBorder(null);
@@ -130,7 +149,7 @@ public class AboutSectionFrame extends ParentFrame{
 		dynLblWebsite.setFont(new Font("Segoe UI", Font.PLAIN, 17));
 		TextGuiUtils.underlineText(dynLblWebsite);
 		TextGuiUtils.hoverForeground(dynLblWebsite, new Color(100, 149, 237));
-		backPanel.add(dynLblWebsite, "cell 1 7 4 1,alignx center");
+		backPanel.add(dynLblWebsite, "cell 1 9 4 1,alignx center, aligny top");
 		
 		// ADD HANDLERS AND NOTIFY LOG
 		addHandlers();

@@ -56,7 +56,9 @@ public class TextEditorFooterPanel extends JPanel{
 		
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(Color.GRAY);
-		setLayout(new MigLayout("fill,insets 3", "[][200px,grow][grow][][:60px:120px][][:60px:120px][][:60px:120px][][:20px:120px][][:20px:120px][][:60px:120px][grow][140px:n][]", "[fill]"));
+		setLayout(new MigLayout("fill,insets 3", 
+				"[][200px,grow][grow][][:60px:120px][][:60px:120px][][:60px:120px][][:20px:120px][][:20px:120px][][:60px:120px][grow][140px:n][]",
+				"[fill]"));
 
 		lblCurrentFileLBL = new JLabel("   Current file:");
 		add(lblCurrentFileLBL, "cell 0 0,growy");

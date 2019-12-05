@@ -7,11 +7,13 @@ public class GuiOption {
 	public final static int DEFAULT_MENU_FONT_SIZE = 12; 
 	public final static int DEFAULT_LOG_FONT_SIZE = 12; 
 	public final static String DEFAULT_GUI_STYLE ="com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+	public final static String DEFAULT_GUI_PREF_THEME ="DarkStar";
 	public final static boolean DEFAULT_GUI_DARK_NIMBUS = false;
 	public final static int DEFAULT_NIMBUS_SIZE = 1;
 
 	// FIELDS	
 	private String preferredStyle;
+	private String preferredThemeName;
 	private int menuFontSize;
 	private int logFontSize;
 	private boolean darkGuiNimbus;
@@ -19,6 +21,7 @@ public class GuiOption {
 	
 	public GuiOption() {
 		preferredStyle = DEFAULT_GUI_STYLE;
+		preferredThemeName = DEFAULT_GUI_PREF_THEME;
 		menuFontSize = DEFAULT_MENU_FONT_SIZE;
 		logFontSize = DEFAULT_LOG_FONT_SIZE;
 		darkGuiNimbus = DEFAULT_GUI_DARK_NIMBUS;
@@ -34,6 +37,15 @@ public class GuiOption {
 		this.nimbusSize = nimbusSize;
 	}
 	
+	
+	public String getPreferredThemeName() {
+		return preferredThemeName;
+	}
+
+	public void setPreferredThemeName(String preferredThemeName) {
+		this.preferredThemeName = preferredThemeName;
+	}
+
 	public int getNimbusSize() {
 		return nimbusSize;
 	}

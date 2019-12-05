@@ -70,6 +70,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	// constructor
 	public TreeFileMouseListenerTxtEditor(JTree tree, TextEditor textEdit){
 		super(tree);
+		parent = textEdit;
 		this.tree = tree;
 		textEditor = textEdit;
 		currentTabEditor = textEditor.getCurrentTabEditor();

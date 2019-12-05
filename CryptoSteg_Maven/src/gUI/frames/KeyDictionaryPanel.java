@@ -143,6 +143,7 @@ public class KeyDictionaryPanel extends ParentFrame{
 		scrollPane_1.setViewportView(textArea);
 		
 		JCheckBox chkOverwrite = new JCheckBox("Overwrite Dictionary files");
+		chkOverwrite.setOpaque(false);
 		chkOverwrite.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chkOverwrite.setFont(new Font("SansSerif", Font.BOLD, 12));
 		chkOverwrite.setForeground(Color.LIGHT_GRAY);

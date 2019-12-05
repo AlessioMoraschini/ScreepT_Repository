@@ -267,12 +267,12 @@ public class MainGuiParent {
 			mnCryptoSteg.add(mntmViewKeyDictionary);
 	
 			mnVarious.add(mntmTextEditor);
+				mnVarious.add(mnLastWorkspaces);
+				mnVarious.add(mnLastOpenedFile);
 				mnVarious.add(mnTxtEditHideShowBlocks);
 					mnTxtEditHideShowBlocks.add(mntmTxtEdHideShowTitleBlock);
 					mnTxtEditHideShowBlocks.add(mntmTxtEdHideShowHeader);
 					mnTxtEditHideShowBlocks.add(mntmTxtEdHideShowFooter);
-				mnVarious.add(mnLastWorkspaces);
-				mnVarious.add(mnLastOpenedFile);
 			mnVarious.add(new JSeparator());
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);

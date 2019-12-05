@@ -212,6 +212,7 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(lblLaunchJarIconWarn, "cell 4 2,alignx right");
 		
 		chckBoxLaunchAsJar = new JCheckBox("Launch as .Jar");
+		chckBoxLaunchAsJar.setOpaque(false);
 		chckBoxLaunchAsJar.setForeground(new Color(220, 220, 220));
 		chckBoxLaunchAsJar.setToolTipText(TOOLTIP_LAUNCH_AS_JAR);
 		chckBoxLaunchAsJar.setCursor(GuiUtils.CURSOR_HAND);
@@ -220,6 +221,7 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(chckBoxLaunchAsJar, "cell 5 2 2 1,alignx center,aligny center");
 		
 		chckbxActiveShell = new JCheckBox("Display Shell");
+		chckbxActiveShell.setOpaque(false);
 		chckbxActiveShell.setForeground(new Color(220, 220, 220));
 		chckbxActiveShell.setToolTipText(TOOLTIP_DISPLAY_SHELL);
 		chckbxActiveShell.setCursor(GuiUtils.CURSOR_HAND);

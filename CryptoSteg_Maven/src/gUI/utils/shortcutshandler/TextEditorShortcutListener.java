@@ -373,9 +373,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				} 
 				
 				/*
-				 *  NEXT TAB IN HYSTORY -> Ctrl+Alt+ ->
+				 *  NEXT TAB IN HYSTORY -> Alt+ ->
 				 */
-				if(e.getKeyCode() == 39 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+				if(e.getKeyCode() == 39 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							currentTextEditor.getCurrentTabEditor().goToNextInHistory();
@@ -384,9 +384,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				}
 
 				/*
-				 *  NEXT TAB IN HYSTORY -> Ctrl+Alt+ <-
+				 *  NEXT TAB IN HYSTORY -> Alt+ <-
 				 */
-				if(e.getKeyCode() == 37 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+				if(e.getKeyCode() == 37 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							currentTextEditor.getCurrentTabEditor().goToPreviousInHistory();

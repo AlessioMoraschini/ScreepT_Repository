@@ -129,6 +129,10 @@ public class TextEditorUtils {
 			button.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
 		}
 		
+		currentTextEditor.subHeaderPanel.toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+		currentTextEditor.subHeaderPanel.toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+		currentTextEditor.subHeaderPanel.toggleButtonSpellCheck.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+		currentTextEditor.subHeaderPanel.btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		currentTextEditor.subHeaderPanel.btnTt.setMinimumSize(new Dimension(65, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
 		currentTextEditor.subHeaderPanel.btnLowerAfterDots.setMinimumSize(new Dimension(45, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
 	}
@@ -755,10 +759,8 @@ public class TextEditorUtils {
 		Color textAreaBackgground = loadedTabObj.textArea.getBackground();
 		Color darkerLight = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 1);
 		Color darkerMed = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 2);
-		Color darkerMore = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 3);
 		currentTextEditor.setBackground(darkerLight);
 		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(darkerLight);
-		currentTextEditor.headerPanel.setBackground(darkerMed);
 		currentTextEditor.mainPanel.setBackground(darkerLight);
 		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(darkerLight);
 		currentTextEditor.rightSplitPane.setBackground(darkerMed);

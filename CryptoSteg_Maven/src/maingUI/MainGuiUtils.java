@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -84,6 +85,12 @@ public class MainGuiUtils {
 										String msg = "Cannot download updates, an error occurred";
 										logger.error(msg, e1);
 										dialogHelper.errorScroll(msg, "Error during download", e1);
+									
+									} else if(e1 instanceof TimeoutException) {
+										String message = "Server is unreachable!";
+										dialogHelper.error(message, "An error occurred");
+										logger.error(message, e1);
+										
 									} else {
 										dialogHelper.info("Process killed by user", "Process killed by user");
 										logger.info("User has killed process" + e1.toString());
@@ -116,6 +123,12 @@ public class MainGuiUtils {
 						if (!(e2 instanceof ProgressBarInterruptedException)) {
 							dialogHelper.error("Cannot read updates, an error occurred :(", "An error occurred!");
 							logger.error("Cannot read updates, an error occurred :(", e2);
+						
+						} else if(e2 instanceof TimeoutException) {
+							String message = "Server is unreachable!";
+							dialogHelper.error(message, "An error occurred");
+							logger.error(message, e2);
+						
 						} else {
 							dialogHelper.info("Process killed by user", "Process killed by user");
 							logger.info("User has killed process" + e2.toString());
@@ -478,7 +491,7 @@ public class MainGuiUtils {
 	public static void askNameAtStartIfNotDefined() {
 		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
 		GenericOption genOpt = currentConfiguration.getGenOpt();
-		if(genOpt.getUserName().equals("") || genOpt.getUserName().length()>20) {
+		if (genOpt.getUserName().equals("") || genOpt.getUserName().length() > 20) {
 			logger.info("Current user input initialization: void user or lenght>20 detected!");
 			genOpt.setUserName(askUsername());
 			currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", genOpt.getUserName());
@@ -487,18 +500,22 @@ public class MainGuiUtils {
 	}
 
 	public static void welcomeMethodFirstTime() {
-		// ASK FOR USERNAME IF NULL OR FIRST TIME
-		INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
-		GenericOption genOpt = currentConfiguration.getGenOpt();
 		
-		if(genOpt.isFirstAccess()) {
-			String msg = "Hi "+genOpt.getUserName() + ", and welcome to "+GeneralConfig.APPLICATION_NAME + ", I suggest you to take a look to documentation before to start, do you want to open it now?";
-			if (dialogHelper.yesOrNo(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME)) {
-				MainGUI.mainAPP.getMntmUserDocumentation().doClick();
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
+			public void run() {
+				// ASK FOR USERNAME IF NULL OR FIRST TIME
+				INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();
+				GenericOption genOpt = currentConfiguration.getGenOpt();
+				if (genOpt.isFirstAccess()) {
+					String msg = "<html>Hi " + genOpt.getUserName() + ", and welcome to " + GeneralConfig.APPLICATION_NAME
+							+ "!<br/>I suggest you to take a look to documentation before to start, do you want to open it now?</html>";
+					if (dialogHelper.showInfoYNDialogOnTop(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME, JOptionHelper.QUESTION)) {
+						MainGUI.mainAPP.getMntmUserDocumentation().doClick();
+					}
+				}
+				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
 			}
-		}
-		
-		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
+		});
 	}
 	
 	public static String askUsername() {
@@ -506,7 +523,7 @@ public class MainGuiUtils {
 		boolean end=false;
 		String input="";
 		do {
-			input = MainGUI.dialogHelper.askForStringUnsafe("Please insert your name:", "Hi, what's your name? :)", "U-sir");
+			input = MainGUI.dialogHelper.askForStringUnsafeOnTop("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
 			
 			if (input==null || input.equals("") || input.length() > 20) {
 				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",

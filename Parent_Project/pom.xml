@@ -32,7 +32,9 @@
   	<!-- ######################  GENERAL BUILD OPTIONS  ##################### -->
   	
 	  	<!-- Main application version used everyWhere -->
-	  	<parent.build.version.scrypt>0.9.10</parent.build.version.scrypt>
+	  	<parent.build.version.scrypt>0.9.11</parent.build.version.scrypt>
+
+	  	<user.name>AM-Design-Development - (Alessio Moraschini)</user.name>
 	  	
 	  	<!-- Change this to false if you wanna export  -->
 	  	<export.launcher.jarmode>false</export.launcher.jarmode>
@@ -54,6 +56,7 @@
 	  	<export.fatjar.skip>false</export.fatjar.skip>
 	  	<export.fatjar.launcher.skip>false</export.fatjar.launcher.skip>
 	  	<export.fatjar.root.skip>false</export.fatjar.root.skip>
+	  	<export.fatjar.vanilla.skip>false</export.fatjar.vanilla.skip>
 		
 	  	<export.directory.fatjar.main>
 	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
@@ -84,5 +87,4 @@
 		</export.directory.multijar.libs>
   
   </properties>
-  
 </project>

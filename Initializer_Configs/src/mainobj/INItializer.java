@@ -200,6 +200,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		if(guiOpt.getPreferredStyle().equals("")||guiOpt.getPreferredStyle()==null) {
 			guiOpt.setPreferredStyle(GuiOption.DEFAULT_GUI_STYLE);
 		}
+		
+		guiOpt.setPreferredThemeName(getSafeStringConf(GUI_OPT, "preferredThemeName", GuiOption.DEFAULT_GUI_PREF_THEME));
+		
 		// boolean
 		guiOpt.setDarkGuiNimbus(Boolean.parseBoolean(iniReadFile.get(GUI_OPT, "darkGuiNimbus")));
 				
@@ -480,6 +483,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			guiOpt.setPreferredStyle(GuiOption.DEFAULT_GUI_STYLE);
 		}
 		iniFile.put(GUI_OPT, "preferredStyle", guiOpt.getPreferredStyle());
+		iniFile.put(GUI_OPT, "preferredThemeName", guiOpt.getPreferredThemeName());
 		iniFile.put(GUI_OPT, "menuFontSize", guiOpt.getMenuFontSize());
 		iniFile.put(GUI_OPT, "logFontSize", guiOpt.getLogFontSize());
 		iniFile.put(GUI_OPT, "darkGuiNimbus", guiOpt.isDarkGuiNimbus());
@@ -623,6 +627,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// concat GUI_OPTION
 		builder.append("\n\n ---- GUI OPTIONS -----\n\n")
 			   .append("PREFERRED_STYLE: ").append(guiOpt.getPreferredStyle())
+			   .append("PREFERRED_THEME_NAME: ").append(guiOpt.getPreferredThemeName())
 			   .append("\nMENU_FONT_SIZE: ").append(guiOpt.getMenuFontSize())
 			   .append("\nLOG_FONT_SIZE: ").append(guiOpt.getLogFontSize())
 			   .append("\nNIMBUS_SIZE_VAR: ").append(guiOpt.getNimbusSize())

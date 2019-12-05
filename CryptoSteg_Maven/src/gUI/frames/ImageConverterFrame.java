@@ -233,12 +233,14 @@ public class ImageConverterFrame extends ParentFrame{
 		btnOriginalSize.setBackground(Color.GRAY);
 		
 		chckbxSameFormat = new JCheckBox("Original format");
+		chckbxSameFormat.setOpaque(false);
 		chckbxSameFormat.setSelected(true);
 		getContentPane().add(chckbxSameFormat, "cell 2 3 2 1,alignx center");
 		chckbxSameFormat.setOpaque(false);
 		chckbxSameFormat.setForeground(new Color(216, 191, 216));
 		
 		chckbxKeepRatio = new JCheckBox("Original Ratio");
+		chckbxKeepRatio.setOpaque(false);
 		chckbxKeepRatio.setSelected(true);
 		getContentPane().add(chckbxKeepRatio, "cell 4 3 2 1,alignx center");
 		chckbxKeepRatio.setForeground(new Color(216, 191, 216));

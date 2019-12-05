@@ -163,6 +163,17 @@ public class LauncherLoaderPanel extends JPanel{
 			setText(text);
 		}
 	}
+
+	public void setIndeterminatedProgress(boolean indeterminated) {
+		
+		if(indeterminated && !this.indeterminated.get()) {
+			this.indeterminated.set(true);
+			indeterminatedDotsAnimation(lblText.getText()).start();
+			progressBar.setIndeterminate(indeterminated);
+		} else {
+			this.indeterminated.set(false);
+		}
+	}
 	
 	public Thread indeterminatedDotsAnimation(final String text) {
 		return new Thread(new Runnable() {

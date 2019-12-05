@@ -33,8 +33,9 @@ public class GeneralConfig {
 	
 	// MAIN PROPERTIES                                                                                                                                                                                           
 	public static String AUTHOR = "A.M. Design and Development";                                                                                                                                                                      
-	public static String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION", "Unknown Version");                                                                                                                                         
+	public static String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION", "Unknown Version");                                                                                                                                   
 	public static String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;                                                                                                                                                               
+	public static String BUILD_INCREMENTAL_NUMBER = resourcesFilePathsMappings.getProperty("BUILD_INCREMENTAL_NUMBER", "Unknown build number");                                                                                                                                   
 	public static String WEBSITE = resourcesFilePathsMappings.getProperty("WEBSITE", "www.am-design-development.com");                                                                                                                                                 
 	public static String MAIL_INFO = resourcesFilePathsMappings.getProperty("MAIL_INFO", "info@am-design-development.com");                                                                                                                                             
 	public static String MAIL_BUGS = resourcesFilePathsMappings.getProperty("MAIL_BUGS", "bugs@am-design-development.com");                                                                                                                                             
@@ -179,6 +180,7 @@ public class GeneralConfig {
 	public static int TOOLTIP_RESHOW_DELAY;
 	public static String TOOLTIP_FONT;
 	public static Font DEFAULT_POP_UP_MENUS_FONT;
+	public static Font DIALOG_BTN_FONT;
 	
 	public static int LOADER_PANEL_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("LOADER_PANEL_HEIGHT", 280);
 	
@@ -517,6 +519,7 @@ public class GeneralConfig {
 			TOOLTIP_RESHOW_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_RESHOW_DELAY", 2000);
 			TOOLTIP_FONT = resourcesFilePathsMappings.getProperty("TOOLTIP_FONT");
 			DEFAULT_POP_UP_MENUS_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_POP_UP_MENUS_FONT", new Font("Segoe UI", Font.PLAIN, 16));
+			DIALOG_BTN_FONT = resourcesFilePathsMappings.getFontFromString("DIALOG_BTN_FONT", new Font("Segoe UI", Font.BOLD, 16));
 			
 			// FILE CHOOSER DIALOG
 			DEFAULT_FILE_CHOOSER_SIZE = new Dimension(800, 600);

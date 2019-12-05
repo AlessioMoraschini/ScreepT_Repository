@@ -156,6 +156,7 @@ public class SearchFrame extends JFrame{
 		tabSearch.add(txtReplaceSelection, "cell 0 2 3 1,growx");
 
 		chckbxCaseSensitive = new JCheckBox("Case Sensitive");
+		chckbxCaseSensitive.setOpaque(false);;
 		chckbxCaseSensitive.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		chckbxCaseSensitive.setForeground(Color.WHITE);
 		tabSearch.add(chckbxCaseSensitive, "cell 3 2 2 1,alignx center,aligny center");

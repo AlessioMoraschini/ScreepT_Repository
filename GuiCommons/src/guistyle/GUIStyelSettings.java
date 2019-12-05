@@ -4,23 +4,27 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
-import javax.swing.Painter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.FontUIResource;
 
 import org.apache.log4j.Logger;
 
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+import com.jgoodies.looks.plastic.PlasticLookAndFeel;
+import com.jgoodies.looks.plastic.PlasticTheme;
+import com.jgoodies.looks.plastic.theme.LightGray;
+
 import media.ImageGeneralWorker;
 import om.GuiOption;
+import resources.GeneralConfig;
 import treeutils.TreeUtils;
 
 public class GUIStyelSettings{
@@ -33,13 +37,21 @@ public class GUIStyelSettings{
 	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	public static final String WindowsClassicLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
 	public static final String PlafLookAndFeels = "javax.swing.plaf.metal.MetalLookAndFeel";
+	
 	public static final String jtatooLookAndFeel = "com.jtattoo.plaf.smart.SmartLookAndFeel";
 	public static final String jtatooNoireLNF = "com.jtattoo.plaf.noire.NoireLookAndFeel";
 	public static final String jtatooGraphiteLNF = "com.jtattoo.plaf.graphite.GraphiteLookAndFeel";
 	public static final String jtatooMintLNF = "com.jtattoo.plaf.noire.MintLookAndFeel";
 	public static final String jtatooLunaLNF = "com.jtattoo.plaf.luna.LunaLookAndFeel";
 	
+	public static final String jgoodiesPlastic = "com.jgoodies.looks.plastic.PlasticLookAndFeel";
+	public static final String jgoodiesPlasticXP = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
+	public static final String jgoodiesPlastic3d = "com.jgoodies.looks.plastic.Plastic3DLookAndFeel";
+	public static final String jgoodiesWindows = "com.jgoodies.looks.windows.WindowsLookAndFeel";
+	
 	public static final Color nimbusProgBarColor = new Color(84,165,50);
+	
+	public static PlasticTheme currentTheme = new LightGray();
 
 	public static int focusOpacity = 20;
 	
@@ -65,14 +77,18 @@ public class GUIStyelSettings{
 
     public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
-//    		if(WindowsLookAndFeel.equals(style) || PlafLookAndFeels.equals(style) || WindowsClassicLookAndFeel.equals(style)) {
-//    			// Custom only for theese look and feels
-//    			UIManager.put("CheckBox.background", Color.GRAY);
-//    		}
+    		
+    		try {
+				PlasticLookAndFeel.setCurrentTheme(currentTheme);
+			} catch (Exception e) {
+				logger.warn("Canot update current selected theme", e);
+			}
+
     		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-    		UIManager.put("CheckBox.disabledText", Color.GRAY);
-    		UIManager.put("RadioButton.disabledText", Color.GRAY);
+    		UIManager.put("CheckBox.disabledText", Color.LIGHT_GRAY);
+    		UIManager.put("RadioButton.disabledText", Color.LIGHT_GRAY);
     		UIManager.put("nimbusOrange", nimbusProgBarColor);
+    		UIManager.put("OptionPane.buttonFont", new FontUIResource(GeneralConfig.DIALOG_BTN_FONT));
 			UIManager.put("MenuBar.foreground", Color.black );
 			UIManager.put("ScrollBar.background", new Color(170,170,170));
 			UIManager.put("ToolTip.font", new Font("Segoe UI", Font.PLAIN, 18));
@@ -90,8 +106,8 @@ public class GUIStyelSettings{
 			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, true);
 			
     		return true;
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e3) {
+		} catch (Throwable e3) {
+			logger.error("An error occurred!", e3);
 			return false;
 		}finally {
 		}
@@ -102,8 +118,8 @@ public class GUIStyelSettings{
 		for(Window window: Window.getWindows()) {
 		    try {
 				SwingUtilities.updateComponentTreeUI(window);
-			} catch (Exception e) {
-				logger.error(e);
+			} catch (Throwable e) {
+				logger.error("An error occurred!", e);
 			}
 		}
 		
@@ -116,10 +132,11 @@ public class GUIStyelSettings{
     public static synchronized boolean setDarkNimbus(int nimbusSize) {
     	
     	UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-		UIManager.put("CheckBox.disabledText", Color.GRAY);
-		UIManager.put("RadioButton.disabledText", Color.GRAY);
+		UIManager.put("CheckBox.disabledText", Color.LIGHT_GRAY);
+		UIManager.put("RadioButton.disabledText", Color.LIGHT_GRAY);
 		UIManager.put("nimbusOrange", nimbusProgBarColor);
 		UIManager.put("nimbusBase", new Color(18, 30, 49));
+		UIManager.put("OptionPane.buttonFont", new FontUIResource(GeneralConfig.DIALOG_BTN_FONT));
 		UIManager.put("ScrollBar.background", new Color(70, 70, 70));
 		UIManager.put("MenuBar.foreground", Color.white);
 		UIManager.put("nimbusLightBackground", new Color(250, 250, 250));
@@ -134,15 +151,7 @@ public class GUIStyelSettings{
 				}
 			}
 			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, false);
-		} catch (ClassNotFoundException e) {
-			logger.error("Exception happened!", e);
-		} catch (InstantiationException e) {
-			logger.error("Exception happened!", e);
-		} catch (IllegalAccessException e) {
-			logger.error("Exception happened!", e);
-		} catch (javax.swing.UnsupportedLookAndFeelException e) {
-			logger.error("Exception happened!", e);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.error("Exception happened!", e);
 		}
 
@@ -154,9 +163,10 @@ public class GUIStyelSettings{
 	public static synchronized boolean setLightNimbus(int nimbusSize) {
 		
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-		UIManager.put("CheckBox.disabledText", Color.GRAY);
-		UIManager.put("RadioButton.disabledText", Color.GRAY);
+		UIManager.put("CheckBox.disabledText", Color.LIGHT_GRAY);
+		UIManager.put("RadioButton.disabledText", Color.LIGHT_GRAY);
 		UIManager.put("nimbusOrange", nimbusProgBarColor);
+		UIManager.put("OptionPane.buttonFont", new FontUIResource(GeneralConfig.DIALOG_BTN_FONT));
 		UIManager.put("ScrollBar.background", new Color(170,170,170));
 		UIManager.put("nimbusBase", new Color(51, 98, 140));
 		UIManager.put("MenuBar.foreground", Color.black);
@@ -173,49 +183,66 @@ public class GUIStyelSettings{
 				}
 			}
 			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, true);
-		} catch (ClassNotFoundException e) {
+		} catch (Throwable e) {
 			logger.error("Exception happened!", e);
-		} catch (InstantiationException e) {
-			logger.error("Exception happened!", e);
-		} catch (IllegalAccessException e) {
-			logger.error("Exception happened!", e);
-		} catch (javax.swing.UnsupportedLookAndFeelException e) {
-			logger.error("Exception happened!", e);
-		} catch (Exception e) {
-			logger.error("Exception happened!", e);
-		}
+		} 
 
 		updateAllWindowsLaf();
 		
 		return false;
 	}
 	
-	public static LookAndFeelInfo[] getLookAndFeelList() {
+	public static LookAndFeelInfoCustom[] getLookAndFeelList() {
 		LookAndFeelInfo[] lookNFeelArray = UIManager.getInstalledLookAndFeels();
-		LookAndFeelInfo[] jtatooInfo = getJTatooLAF();
-		LookAndFeelInfo[] outList = new LookAndFeelInfo[lookNFeelArray.length + jtatooInfo.length]; // modify equals to custom's total
+		LookAndFeelInfoCustom[] jtatooInfo = getJTatooLAF();
+		LookAndFeelInfoCustom[] jgoodiesInfo = getJGoodiesLAF();
+		
+		LookAndFeelInfoCustom[] outList = new LookAndFeelInfoCustom
+				[lookNFeelArray.length + jtatooInfo.length + jgoodiesInfo.length]; // modify equals to custom's total
+		
 		int i = 0;
+		
 		for(LookAndFeelInfo current : lookNFeelArray) {
-			outList[i] = current;
+			outList[i] = new LookAndFeelInfoCustom(current.getName(), current.getClassName());
 			i++;
 		}
 		
-		for(LookAndFeelInfo currentJtatoo : jtatooInfo) {
+		for(LookAndFeelInfoCustom currentJtatoo : jtatooInfo) {
 			outList[i] = currentJtatoo;
 			i++;
 		}
-		
+
+		for(LookAndFeelInfoCustom currentJgoodies : jgoodiesInfo) {
+			outList[i] = currentJgoodies;
+			i++;
+		}
+
 		return outList;
 	}
 	
-	public static LookAndFeelInfo[] getJTatooLAF() {
-		LookAndFeelInfo[] lookNFeelJtatoos = {/**new LookAndFeelInfo("jtatooNoireLNF", jtatooNoireLNF),
-											new LookAndFeelInfo("jtatooLookAndFeel", jtatooLookAndFeel),
-											new LookAndFeelInfo("jtatooGraphiteLNF", jtatooGraphiteLNF),
-											new LookAndFeelInfo("jtatooLunaLNF", jtatooLunaLNF),
-											new LookAndFeelInfo("jtatooMintLNF", jtatooMintLNF)**/};
+	public static LookAndFeelInfoCustom[] getJTatooLAF() {
+		LookAndFeelInfoCustom[] lookNFeelJtatoos = 
+			{
+				/**new LookAndFeelInfo("jtatooNoireLNF", jtatooNoireLNF),
+				new LookAndFeelInfo("jtatooLookAndFeel", jtatooLookAndFeel),
+				new LookAndFeelInfo("jtatooGraphiteLNF", jtatooGraphiteLNF),
+				new LookAndFeelInfo("jtatooLunaLNF", jtatooLunaLNF),
+				new LookAndFeelInfo("jtatooMintLNF", jtatooMintLNF)**/
+			};
 		
 		return lookNFeelJtatoos;
+	}
+
+	public static LookAndFeelInfoCustom[] getJGoodiesLAF() {
+		LookAndFeelInfoCustom[] jGoodiesLafs = 
+			{
+				new LookAndFeelInfoCustom("jgoodiesWindows", jgoodiesWindows),
+				new LookAndFeelInfoCustom("jgoodiesPlasticXP", jgoodiesPlasticXP),
+				new LookAndFeelInfoCustom("jgoodiesPlastic3d", jgoodiesPlastic3d),
+				new LookAndFeelInfoCustom("jgoodiesPlastic", jgoodiesPlastic)
+			};
+		
+		return jGoodiesLafs;
 	}
 	
 	/**
@@ -252,6 +279,7 @@ public class GUIStyelSettings{
 				return;
 			}
 		} catch (Exception e) {
+			logger.error("An error occurred!", e);
 			return;
 		}
 		level = "mini";
@@ -281,8 +309,8 @@ public class GUIStyelSettings{
 					if (curr instanceof JComponent && curr != null) {
 						((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
 					}
-				} catch (Exception e) {
-					logger.error(e);
+				} catch (Throwable e) {
+					logger.error("An error occurred!", e);
 				}
 			}
 		}
@@ -298,7 +326,8 @@ public class GUIStyelSettings{
 			if (!"Nimbus".equals(nameLaf)) {
 				return;
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			logger.error("An error occurred!", e);
 			return;
 		}
 		String level = "mini";
@@ -340,19 +369,39 @@ public class GUIStyelSettings{
 		return compList;
 	}
 	
-	public static class ComboPainter implements Painter<Component>{
-
-		Color foreground;
+	public static ArrayList<PlasticTheme> getPlasticThemes() {
+		ArrayList<PlasticTheme> themes = new ArrayList<>();
 		
-		public ComboPainter(Color foreground) {
-			this.foreground = foreground;
+		for(Object theme : Plastic3DLookAndFeel.getInstalledThemes()) {
+			if(theme instanceof PlasticTheme) {
+				themes.add((PlasticTheme) theme);
+			}
 		}
 		
-        @Override
-        public void paint(Graphics2D g, Component object, int width, int height){
-            g.setColor(foreground);
-            g.fillRect(0, 0, width, height);
-        }
-    }
+		return themes;
+	}
+	
+	public static PlasticTheme getPlasticThemeByName(String name, ArrayList<PlasticTheme> themes) {
+		if(themes == null) {
+			themes = getPlasticThemes();
+		}
+		
+		for(PlasticTheme curr : themes) {
+			if(curr.getName().equalsIgnoreCase(name)) {
+				return curr;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static void updateThemeByName(String name) {
+		ArrayList<PlasticTheme> themes = getPlasticThemes();
+		PlasticTheme theme = getPlasticThemeByName(name, themes);
+		if(theme != null) {
+			currentTheme = theme;
+		}
+	}
 
+	
 }

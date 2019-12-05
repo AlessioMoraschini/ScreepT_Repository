@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 
+import javax.swing.UIManager;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
@@ -76,7 +78,10 @@ public class MainGuiGeneralAppStarter {
 		
 		try {
 			try {
-				loaderGraphics.update("Preloading application properties and general configuration files...", 40);
+				String initPropsMsg = "Preloading application properties and general configuration files...";
+				loaderGraphics.update(initPropsMsg, 1);
+				loaderGraphics.indeterminate(true, initPropsMsg);
+				
 				// Load Internal configuration and dialog helper
 				GeneralConfig.initLazyGeneralConfig();
 
@@ -87,11 +92,19 @@ public class MainGuiGeneralAppStarter {
 				JOptionHelper.init();
 				AWTExceptionHandler.init();
 				
+				try {
+					UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			} catch (Exception e) {
 				Sounds.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
 				throw e;
 			}
+			
+			loaderGraphics.indeterminate(false);
 			printElapsed("dialogHelper and GeneralConfig initialization finished", startTime);
 			
 			try {
@@ -173,7 +186,7 @@ public class MainGuiGeneralAppStarter {
 			
 			// INITIALIZE .INI CONFIGURATION (ScrYpT + Launcher) FROM CONFIG DEFAULT FILES
 			try {
-				loaderGraphics.update("Initializing user configuration", 12);
+				loaderGraphics.update("Initializing user configuration", 10);
 				
 				launcherConfig = new Wini(new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH));
 				LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(IniFileManager.INI_APP_OPT, "logLevelSetting"));

@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -40,11 +41,12 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 	 */
 	public CustomTabbedPaneUI_v1(Color filling, Color deselectedFilling, Color border, JTabbedPane mainPaneTabbed, int closeBtnPos) {
 		super();
+		tabPane = mainPaneTabbed;
+		mainTabPane = mainPaneTabbed;
 		buttonOrdinalPos = closeBtnPos;
 		fillingColor = (filling != null)? filling : DEFAULT_FILLING;
 		deSelfillingColor = (deselectedFilling != null)? deselectedFilling : DEFAULT_DARK_FILLING;
 		borderColor = (border != null)? border : DEFAULT_BORDER;
-		mainTabPane = mainPaneTabbed;
 	}
 	
 	/**
@@ -52,11 +54,12 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 	 */
 	public CustomTabbedPaneUI_v1(Color filling, Color deselectedFilling, Color border, JTabbedPane mainPaneTabbed) {
 		super();
+		tabPane = mainPaneTabbed;
+		mainTabPane = mainPaneTabbed;
 		buttonOrdinalPos = Integer.MAX_VALUE;
 		fillingColor = (filling != null)? filling : DEFAULT_FILLING;
 		deSelfillingColor = (deselectedFilling != null)? deselectedFilling : DEFAULT_DARK_FILLING;
 		borderColor = (border != null)? border : DEFAULT_BORDER;
-		mainTabPane = mainPaneTabbed;
 	}
 	
     @Override
@@ -87,6 +90,11 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
         g2d.drawRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);
         g2d.setColor(savedColor);
         
+        try {
+        	Color foregroundCompl = new Color(10,10,10);
+        	getLabelText(tabIndex, buttonOrdinalPos-1).setForeground(foregroundCompl);
+		} catch (Exception e) {
+		}
     }
     
     public JButton getCloseButton(int index, int buttonOrdinalPosition) {
@@ -96,6 +104,15 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 		} catch (Exception e) {
 		}
     	return buttonCloseTab;
+    }
+
+    public JLabel getLabelText(int index, int labelOrdinalPosition) {
+    	JLabel textLabel = new JLabel(); 
+    	try {
+    		textLabel = (JLabel)(getPanelFromTabHeader(index)).getComponent(labelOrdinalPosition);
+    	} catch (Exception e) {
+    	}
+    	return textLabel;
     }
     
     public JPanel getPanelFromTabHeader(int index) {

@@ -14,6 +14,13 @@
   
   <packaging>jar</packaging>
   
+  <scm>
+      <connection>scm:git:http://127.0.0.1/dummy</connection>
+      <developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
+      <tag>HEAD</tag>
+      <url>http://127.0.0.1/dummy</url>
+  </scm>
+  
   <properties>
     <export.jar.name>ScrYpT_${project.version}</export.jar.name>
   </properties>
@@ -98,6 +105,10 @@
 		                        maingUI.MainGuiGeneralAppStarter
 		                    </mainClass>
 		                </manifest>
+		                <manifestEntries>
+			              	<Built-By>${user.name}</Built-By>
+			              	<build-number>${buildNumber}</build-number>
+		                </manifestEntries>
 	                </archive>
 	                <descriptorRefs>
 	                    <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -127,6 +138,11 @@
 		                        maingUI.MainGuiGeneralAppStarter
 		                    </mainClass>
 		                </manifest>
+		                <manifestEntries>
+			              	<Created-by>${user.name}</Created-by>
+			              	<Built-By>${user.name}</Built-By>
+			              	<Build-number>${buildNumber}</Build-number>
+		                </manifestEntries>
 	                </archive>
 	                <descriptorRefs>
 	                    <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -147,11 +163,12 @@
      <!-- (C-1) MULTIJAR : .root -->
           <execution>
             <id>copy-resources -> ${export.directory.multijar.main}</id>
-            <phase>install</phase>
+            <phase>validate</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<encoding>UTF-8</encoding>
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<export.launcher.jarmode>false</export.launcher.jarmode>
             	<tasks>
@@ -165,7 +182,7 @@
               	</outputDirectory>
                	<name>timestamp</name>
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
-               	<timeZone>Europe/Zurich</timeZone>
+               	<timeZone>CTE</timeZone>
 			    <resources>
 			    	 <!-- Resources to filter from root -->
 				     <resource>
@@ -208,6 +225,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<encoding>UTF-8</encoding>
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<skip>${export.multijar.skip}</skip>
             	<overwrite>true</overwrite>
@@ -217,7 +235,7 @@
               	</outputDirectory>
                	<name>timestamp</name>
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
-               	<timeZone>Europe/Zurich</timeZone>
+               	<timeZone>CTE</timeZone>
 			    <resources>
 				     <resource>
 						<filtering>false</filtering>
@@ -254,11 +272,12 @@
   	<!-- (C-3) Copy Root Folders -->
           <execution>
             <id>copy-resources -> ${export.directory.fatjar.main}</id>
-            <phase>validate</phase>
+            <phase>package</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<encoding>UTF-8</encoding>
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<export.launcher.jarmode>false</export.launcher.jarmode>
             	<skip>${export.fatjar.skip}</skip>
@@ -269,7 +288,7 @@
               	</outputDirectory>
                	<name>timestamp</name>
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
-               	<timeZone>Europe/Zurich</timeZone>
+               	<timeZone>UTC+1</timeZone>
 			    <resources>
 			    
 			    	<!-- Root files to export with filtering -->
@@ -311,11 +330,12 @@
       <!-- (C-4) Copy root files into application dir's parent -->
           <execution>
             <id>copy- ROOT files -> ${export.directory.fatjar.main}/../</id>
-            <phase>validate</phase>
+            <phase>package</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<encoding>UTF-8</encoding>
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<skip>${export.fatjar.root.skip}</skip>
             	<overwrite>true</overwrite>
@@ -334,15 +354,44 @@
 			    </resources>     
             </configuration>            
           </execution>
-         
-      <!-- (C-5) FATJAR : Resources_ScrYpt -->
+
+      <!-- (C-4B) Copy Vanilla files (initial configuration, exc... ) into relative found folders into root (Application dir)-->
           <execution>
-            <id>copy-resources -> ${export.directory.fatjar.resources}</id>
-            <phase>validate</phase>
+            <id>copy- ROOT files -> ${export.directory.fatjar.main}</id>
+            <phase>package</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<encoding>UTF-8</encoding>
+            	<includeEmptyDirs>true</includeEmptyDirs>
+            	<skip>${export.fatjar.vanilla.skip}</skip>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		${export.directory.fatjar.main}
+              	</outputDirectory>
+			    <resources>
+				     <resource>
+					    <filtering>false</filtering>
+					    <directory>ROOT_VANILLA_FILES_EXPORT</directory>
+					    <includes>
+					        <include>/**</include>
+					        <include>/**/*</include>
+					    </includes>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+         
+      <!-- (C-5) FATJAR : Resources_ScrYpt -->
+          <execution>
+            <id>copy-resources -> ${export.directory.fatjar.resources}</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+            	<encoding>UTF-8</encoding>
             	<skip>${export.fatjar.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>
@@ -351,7 +400,7 @@
             	<includeEmptyDirs>true</includeEmptyDirs> 
                	<name>timestamp</name>
                	<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
-               	<timeZone>Europe/Zurich</timeZone>
+               	<timeZone>UTC+1</timeZone>
 			    <resources>
 			     	<resource>
 						<filtering>false</filtering>
@@ -359,6 +408,8 @@
 					    <excludes>
 					    	<exclude>/Readme/**</exclude>
 					    	<exclude>/Readme/*</exclude>
+					    	<!-- Export vanilla version only -->
+					    	<exclude>CONFIG.ini</exclude>				    	
 					    	<exclude>/**/*Thumbs.db</exclude>
 					    </excludes>
 					</resource>
@@ -375,7 +426,7 @@
             </configuration>            
           </execution>
           
-      <!-- (C-6) SCRYPT'S UPDATES packaging - To zip and upload on server each time -->
+      <!-- (C-6) SCRYPT'S UPDATES packaging - To hash, zip and upload on server each time -->
           <execution>
             <id>copy-resources -> ${export.updates.folder}</id>
             <phase>validate</phase>
@@ -383,6 +434,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<encoding>UTF-8</encoding>
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<skip>${export.updates.skip}</skip>
             	<overwrite>true</overwrite>
@@ -404,6 +456,7 @@
 					    	<exclude>Resources_Scrypt/Readme/*</exclude>
 					    	<exclude>Resources_Scrypt/lib/**</exclude>
 					    	<exclude>Resources_Scrypt/lib/*</exclude>
+					    	<exclude>Resources_Scrypt/PanelTempFiles/*</exclude>
 					    	<exclude>/**/*Thumbs.db</exclude>
 					    	<exclude>Resources_Scrypt/CONFIG.ini</exclude>
 					    </excludes>
@@ -439,6 +492,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+            	<encoding>UTF-8</encoding>
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<skip>${export.updates.skip}</skip>
             	<overwrite>true</overwrite>
@@ -458,6 +512,29 @@
             </configuration>            
           </execution>
         </executions>
+      </plugin>
+      
+      <!-- Add Build number into manifest -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+	       	<format>{0,number,integer}</format>
+		    <items>
+		        <item>buildNumber</item>
+		    </items>
+			<doCheck>false</doCheck>
+			<doUpdate>false</doUpdate>
+        </configuration>
       </plugin>
  	</plugins>
   </build>
@@ -579,4 +656,5 @@
 	      	<url>file:C:\Users\xx\.m2\repository</url>
 	    </repository>
 	</repositories>
+	
 </project>

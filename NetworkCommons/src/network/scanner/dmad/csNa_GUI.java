@@ -182,6 +182,7 @@ public class csNa_GUI {
 		
 		JCheckBox FTP_DELETE_FLAG = new JCheckBox("/Files_FTP");
 		FTP_DELETE_FLAG.setHorizontalAlignment(SwingConstants.CENTER);
+		FTP_DELETE_FLAG.setOpaque(false);
 		FTP_DELETE_FLAG.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		FTP_DELETE_FLAG.setBackground(SystemColor.activeCaption);
 		FTP_DELETE_FLAG.setBounds(665, 10, 159, 29);
@@ -206,6 +207,7 @@ public class csNa_GUI {
 		
 		JCheckBox USER_DELETE_FLAG = new JCheckBox("/Files_Utente");
 		USER_DELETE_FLAG.setHorizontalAlignment(SwingConstants.CENTER);
+		USER_DELETE_FLAG.setOpaque(false);
 		USER_DELETE_FLAG.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		USER_DELETE_FLAG.setBackground(SystemColor.activeCaption);
 		USER_DELETE_FLAG.setBounds(665, 40, 181, 29);
@@ -214,6 +216,7 @@ public class csNa_GUI {
 		JCheckBox EXPORT_DELETE_FLAG = new JCheckBox("/Export");
 		EXPORT_DELETE_FLAG.setHorizontalAlignment(SwingConstants.CENTER);
 		EXPORT_DELETE_FLAG.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		EXPORT_DELETE_FLAG.setOpaque(false);
 		EXPORT_DELETE_FLAG.setBackground(SystemColor.activeCaption);
 		EXPORT_DELETE_FLAG.setBounds(831, 5, 144, 64);
 		frmCsnaBy.getContentPane().add(EXPORT_DELETE_FLAG);
@@ -723,6 +726,7 @@ public class csNa_GUI {
 		
 		JCheckBox ftpON_OFF = new JCheckBox("(ON)");
 		ftpON_OFF.setForeground(SystemColor.activeCaptionText);
+		ftpON_OFF.setOpaque(false);
 		ftpON_OFF.setBounds(558, 184, 77, 38);
 		ftpON_OFF.setFont(new Font("Tahoma", Font.BOLD, 16));
 		ftpON_OFF.addActionListener(new ActionListener() {

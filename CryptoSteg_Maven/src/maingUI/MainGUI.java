@@ -71,6 +71,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.awt.SystemColor;
 import java.awt.Window;
@@ -181,7 +182,10 @@ public class MainGUI extends MainGuiParent{
 		currentConfiguration = currentConf;
 		dialogHelper = new JOptionHelper(null);
 		
+		MainGuiGeneralAppStarter.loaderGraphics.setVisible(false);
 		MainGuiUtils.askNameAtStartIfNotDefined();
+		MainGuiGeneralAppStarter.loaderGraphics.setVisible(true);
+		MainGuiGeneralAppStarter.loaderGraphics.toFront();
 		
 		// START LOADING PANEL THREAD
 		new Thread(new Runnable() {
@@ -189,7 +193,7 @@ public class MainGUI extends MainGuiParent{
 				for (int i = 0; i < 10; i++) {
 					String dots = new String(new char[i + 1]).replace("\0", ".");
 					String msg = "Initializing " + GeneralConfig.APPLICATION_NAME + dots;
-					MainGuiGeneralAppStarter.loaderGraphics.update(msg, i / 2);
+					MainGuiGeneralAppStarter.loaderGraphics.update(msg, 20 + i / 2);
 					try {
 						Thread.sleep(60);
 					} catch (InterruptedException e) {
@@ -203,7 +207,7 @@ public class MainGUI extends MainGuiParent{
 			now = new Date();
 			mainAppRunning = true;
 			
-MainGuiGeneralAppStarter.loaderGraphics.update("Initializing graphics... ", 15);
+MainGuiGeneralAppStarter.loaderGraphics.update("Initializing graphics... ", 18);
 			
 			// START MAIN WINDOW CONSTRUCTOR
 			logger.info("Initializing main GUI-start");
@@ -303,6 +307,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				public void run() {
 					// REFRESH GUI GENERAL
 					MainGuiGeneralAppStarter.loaderGraphics.update("Updating GUI style...", 75, 350);
+					GUIStyelSettings.updateThemeByName(currentConfiguration.getGuiOpt().getPreferredThemeName());
 					if (GUIStyelSettings.isNimbus(currentConfiguration.getGuiOpt())) {
 						if (GUIStyelSettings.isDarkNimbus(currentConfiguration.getGuiOpt())) {
 							
@@ -1175,7 +1180,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		panelAbout = new AboutSectionFrame(mainAPP);
 		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		panelAbout.setBounds(700, 200, 400, 345);
+		    		panelAbout.setBounds(700, 200, 450, 400);
+		    		GuiUtils.centerComponent(panelAbout);
 		    		panelAbout.setResizable(false);
 		    		panelAbout.setVisible(true);
 		    		panelAbout.setTitle("About - "+GeneralConfig.APPLICATION_NAME);
@@ -1281,7 +1287,12 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 							}
 							pluginManagerGUI.setVisible(true);
 						} catch (Throwable e1) {
-							String errorMsg = "Cannot load Plugin Manager, an error occurred :(";
+							String errorMsg = "Cannot load Plugin Manager: ";
+							if(e1 instanceof TimeoutException) {
+								errorMsg += "server is unreachable!";
+							} else {
+								errorMsg += "an error occurred :(";
+							}
 							dialogHelper.error(errorMsg, "An error occurred");
 							logger.error(errorMsg, e1);
 						}

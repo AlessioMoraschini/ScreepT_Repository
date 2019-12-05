@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.TimeoutException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -35,27 +36,35 @@ import static java.lang.System.out;
 
 public class DownloadUtils {
 	
+	public static int CONNECTION_TIMEOUT_MS = 5000;
+	
 	/**
 	 * Retrieve the size in bits of a file located at given remote URL
 	 * @param url
 	 * @return
+	 * @throws Exception 
 	 */
-	public static int getFileSize(URL url) {
+	public static int getFileSize(URL url) throws Exception {
 	    URLConnection conn = null;
 	    try {
 	    	out.println("Opening connection to url "+url+" to retrieve file size...");
-	        conn = url.openConnection();
-	        if(conn instanceof HttpURLConnection) {
-	            ((HttpURLConnection)conn).setRequestMethod("HEAD");
-	        }
-	        conn.getInputStream();
+	        try {
+				conn = url.openConnection();
+				conn.setConnectTimeout(CONNECTION_TIMEOUT_MS);
+				if(conn instanceof HttpURLConnection) {
+				    ((HttpURLConnection)conn).setRequestMethod("HEAD");
+				}
+				conn.getInputStream();
+			} catch (Exception e) {
+				throw new TimeoutException("Server unreachable!");
+			}
 	        out.println("=> retrieving file size");
 	        int size = conn.getContentLength();
 	        out.println("=> Found size: " + Various.coolFileSize((long)size));
 	        return size;
-	    } catch (IOException e) {
+	    } catch (Exception e) {
 	    	out.println("An error occurred: " + Arrays.deepToString(e.getStackTrace()));
-	        throw new RuntimeException(e);
+	        throw e;
 	    } finally {
 	        if(conn instanceof HttpURLConnection) {
 	            ((HttpURLConnection)conn).disconnect();
@@ -98,6 +107,13 @@ public class DownloadUtils {
 			    cycles ++;
 			}
 			
+			
+		} catch (Exception e) {
+			if (e instanceof ProgressBarInterruptedException) {
+				throw e;
+			}
+		} finally {
+			
 			try {
 				out.println("Closing url stream...");
 				in.close();
@@ -107,12 +123,8 @@ public class DownloadUtils {
 			} catch (IOException e) {
 				out.println("An error occurred while closing streams after download" + Arrays.deepToString(e.getStackTrace()));
 			}
-		} catch (Exception e) {
-			if (e instanceof ProgressBarInterruptedException) {
-				throw e;
-			}
-		} finally {
-			if(progressUpdater != null) {
+			
+			if (progressUpdater != null) {
 				progressUpdater.forceClose();
 			}
 		}

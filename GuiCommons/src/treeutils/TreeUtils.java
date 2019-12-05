@@ -98,6 +98,9 @@ public class TreeUtils {
 	
 	public static MouseMotionListener getHoverOnNodesListener() {
 		return new MouseMotionListener() {
+			
+			int lastSelected = 0;
+			int initialSelected = 0;
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
@@ -107,7 +110,15 @@ public class TreeUtils {
 			public void mouseMoved(MouseEvent e) {
 				JTree source = (JTree) e.getSource();
 				TreePath tp = source.getPathForLocation(e.getX(), e.getY());
-				
+//				int selRow = source.getRowForLocation(e.getX(), e.getY());
+//				if (selRow == -1) {
+//					source.clearSelection();
+//					lastSelected = -1;
+//				} else if (selRow != lastSelected) {
+//					source.setSelectionRow(selRow);
+//					lastSelected = selRow;
+//				}
+//				
 				if (tp != null) {
 					source.setCursor(GuiUtils.CURSOR_HAND);
 					((FileNameCellRenderer)source.getCellRenderer()).setHoverBackgroundEffect(true);
@@ -116,6 +127,7 @@ public class TreeUtils {
 					((FileNameCellRenderer)source.getCellRenderer()).setHoverBackgroundEffect(false);
 				}
 			}
+			
 		};
 	}
 	

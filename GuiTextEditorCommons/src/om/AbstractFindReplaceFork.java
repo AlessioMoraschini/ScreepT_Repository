@@ -298,8 +298,10 @@ public abstract class AbstractFindReplaceFork extends AbstractSearchDialog {
 		setSearchButtonsBorderText(getString("Direction"));
 		ButtonGroup bg = new ButtonGroup();
 		upButton = new JRadioButton(getString("Up"), false);
+		upButton.setOpaque(false);
 		upButton.setMnemonic((int)getString("UpMnemonic").charAt(0));
 		downButton = new JRadioButton(getString("Down"), true);
+		downButton.setOpaque(false);
 		downButton.setMnemonic((int)getString("DownMnemonic").charAt(0));
 		upButton.setActionCommand("UpRadioButtonClicked");
 		upButton.addActionListener(this);
@@ -313,6 +315,7 @@ public abstract class AbstractFindReplaceFork extends AbstractSearchDialog {
 		// Initialize the "mark all" button.
 		markAllCheckBox = new JCheckBox(getString("MarkAll"));
 		markAllCheckBox.setMnemonic((int)getString("MarkAllMnemonic").charAt(0));
+		markAllCheckBox.setOpaque(false);
 		markAllCheckBox.setActionCommand("MarkAll");
 		markAllCheckBox.addActionListener(this);
 

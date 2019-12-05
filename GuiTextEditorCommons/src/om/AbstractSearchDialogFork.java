@@ -141,6 +141,7 @@ public class AbstractSearchDialogFork extends EscapableDialog
 	private JCheckBox createCheckBox(ResourceBundle msg, String keyRoot) {
 		JCheckBox cb = new JCheckBox(msg.getString(keyRoot));
 		cb.setMnemonic((int)msg.getString(keyRoot + "Mnemonic").charAt(0));
+		cb.setOpaque(false);
 		cb.setActionCommand("Flip" + keyRoot);
 		cb.addActionListener(this);
 		return cb;

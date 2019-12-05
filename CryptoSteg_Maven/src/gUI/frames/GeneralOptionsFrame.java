@@ -175,6 +175,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		chckbxAutosave.setForeground(Color.LIGHT_GRAY);
 		chckbxAutosave.setHorizontalAlignment(SwingConstants.CENTER);
 		chckbxAutosave.setBackground(new Color(119, 136, 153));
+		chckbxAutosave.setOpaque(false);
 		
 		JLabel lblIntervalInSeconds = new JLabel("Timeout :");
 		lblIntervalInSeconds.setForeground(Color.WHITE);
@@ -199,6 +200,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		JSeparator separator = new JSeparator();
 		
 		chckbxExceptionAdvicesEnabled = new JCheckBox("Exception Advices enabled");
+		chckbxExceptionAdvicesEnabled.setOpaque(false);
 		chckbxExceptionAdvicesEnabled.setForeground(Color.LIGHT_GRAY);
 		chckbxExceptionAdvicesEnabled.setToolTipText("Enable/Disable error dialog in case of general warnings detected by the application");
 		chckbxExceptionAdvicesEnabled.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -206,6 +208,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		getContentPane().add(chckbxExceptionAdvicesEnabled, "cell 1 4 3 1,alignx center,aligny center");
 		
 		chckbxAutomaticallyCheckFor = new JCheckBox("Automatically check for updates");
+		chckbxAutomaticallyCheckFor.setOpaque(false);
 		chckbxAutomaticallyCheckFor.setForeground(Color.LIGHT_GRAY);
 		chckbxAutomaticallyCheckFor.setToolTipText("Enable/Disable automatic check for updates at start");
 		chckbxAutomaticallyCheckFor.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -215,6 +218,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		chckbxHideLauncherAt = new JCheckBox("Hide Launcher at start");
 		chckbxHideLauncherAt.setToolTipText("When checked, launcher will not be shown on startup");
 		getContentPane().add(chckbxHideLauncherAt, "cell 10 4 3 1,alignx center,aligny center");
+		chckbxHideLauncherAt.setOpaque(false);
 		chckbxHideLauncherAt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
 		chckbxHideLauncherAt.setHorizontalAlignment(SwingConstants.CENTER);
@@ -528,10 +532,13 @@ public class GeneralOptionsFrame extends ParentFrame{
 		for(int i = 0; i < tot; i++) {
 			String value = comboCharsets.getItemAt(i);
 			if(value.equalsIgnoreCase(charset)) {
-				comboCharsets.setSelectedItem(i);
+				comboCharsets.setSelectedIndex(i);
 				break;
 			}
 		}
+		
+		comboCharsets.revalidate();
+		comboCharsets.repaint();
 	}
 		
 	/**

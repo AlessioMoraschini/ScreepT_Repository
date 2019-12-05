@@ -86,6 +86,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		add(btnNextHistory, "cell 10 0,alignx center,growy");
 		
 		checkBoxInlineTabs = new JCheckBox("Inline Tabs  ");
+		checkBoxInlineTabs.setOpaque(false);
 		checkBoxInlineTabs.setSelected(true);
 		checkBoxInlineTabs.setToolTipText(TextEditorTooltips.tooltipInlineTabs);
 		checkBoxInlineTabs.setCursor(GuiUtils.CURSOR_HAND);
@@ -96,6 +97,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		add(checkBoxInlineTabs, "cell 12 0,alignx center,aligny center");
 		
 		chkCutWordsTo = new JCheckBox("Adapt Text Width  ");
+		chkCutWordsTo.setOpaque(false);
 		chkCutWordsTo.setCursor(GuiUtils.CURSOR_HAND);
 		chkCutWordsTo.setToolTipText(TextEditorTooltips.tooltipCutWordsTo);
 		chkCutWordsTo.setSelected(false);
@@ -106,6 +108,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		add(chkCutWordsTo, "cell 13 0,alignx center,aligny center");
 
 		chkFitmantainwords = new JCheckBox("Don't cut words");
+		chkFitmantainwords.setOpaque(false);
 		chkFitmantainwords.setCursor(GuiUtils.CURSOR_HAND);
 		chkFitmantainwords.setToolTipText(TextEditorTooltips.tooltipFitMaintainWords);
 		chkFitmantainwords.setForeground(SystemColor.control);

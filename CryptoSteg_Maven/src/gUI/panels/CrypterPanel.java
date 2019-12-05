@@ -362,6 +362,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		AESKEYtext.setColumns(10);
 		
 		chckbxShowAesKey = new JCheckBox("Show");
+		chckbxShowAesKey.setOpaque(false);
 		chckbxShowAesKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShowAesKey.setForeground(Color.WHITE);
 		chckbxShowAesKey.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -393,6 +394,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		comboModeCrypto.setModel(new DefaultComboBoxModel<CryptoMode>(CryptoMode.values()));
 			
 		chckbxShuffle = new JCheckBox("Ultra Secure");
+		chckbxShuffle.setOpaque(false);
 		chckbxShuffle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShuffle.setForeground(Color.WHITE);
 		
@@ -432,16 +434,19 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		leftSplitPaneVertical.setDividerLocation(leftVerticalDivHeight);
 		leftSplitPaneVertical.setBottomComponent(tabbedPane);
 		leftSplitPaneVertical.setTopComponent(leftSplitTopPanel);
-
+		leftSplitPaneVertical.setContinuousLayout(true);
+		
 		// leftSplitPaneVertical<->mainSplitTextAreaNDragger splitPanel
 		mainSplitTextAreaMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		mainSplitTextAreaMain.setDividerLocation(leftWidth);
 		mainSplitTextAreaMain.setLeftComponent(leftSplitPaneVertical);
+		mainSplitTextAreaMain.setContinuousLayout(true);
 		
 		// textArea<->fileDragDropperTree
 		mainSplitTextAreaRight = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		mainSplitTextAreaRight.setDividerLocation(parent.getMainFrame().getWidth()-rightWidth);
 		mainSplitTextAreaRight.setLeftComponent(mainSplitTextAreaMain);
+		mainSplitTextAreaRight.setContinuousLayout(true);
 		panelMainContainer.add(mainSplitTextAreaRight, "cell 0 2 5 4,grow");
 		
 		// initialize text areas		
