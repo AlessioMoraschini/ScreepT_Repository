@@ -29,6 +29,7 @@
     <finalName>${export.jar.name}</finalName>
     <sourceDirectory>src</sourceDirectory>
     
+    <pluginManagement>
     <plugins>
     
       <!-- download source code in Eclipse, best practice -->
@@ -317,6 +318,7 @@
     						<include>Dependencies_Installers/**/*</include>
     						<include>IMG/**/*</include>
 					        <include>Installed_plugins.properties</include>
+					        <include>changelog.log</include>
 					    </includes>
 					    <excludes>
 					    	<exclude>IMG/**/*.png</exclude>
@@ -450,6 +452,7 @@
     						<include>Resources_Scrypt/*</include>
     						<include>Resources_Scrypt/**/*</include>
     						<include>Resources_Scrypt/Backup/**/*.ini</include>
+    						<include>changelog.log</include>
 					    </includes>
 					    <excludes>
 					    	<exclude>Resources_Scrypt/Readme/**</exclude>
@@ -537,6 +540,7 @@
         </configuration>
       </plugin>
  	</plugins>
+ 	</pluginManagement>
   </build>
   
   	<dependencies>
