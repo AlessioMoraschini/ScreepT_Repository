@@ -1,7 +1,12 @@
 # Diversi esempi utili: lancia da root di tutti i progetti
 
-# Preferito
-git log v0.9.11.. --decorate --oneline --graph --pretty=tformat:"%ai %s%n" > CryptoSteg_Maven\changelog.log
+
+
+
+# Preferito:			git log v0.9.11.. --decorate --oneline --graph --pretty=tformat:"%ai %s%n" > CryptoSteg_Maven/changelog.log
+
+
+
 
 git log v0.9.11...v0.9.11b --oneline > CryptoSteg_Maven\Resources_Scrypt\changelog.log
 

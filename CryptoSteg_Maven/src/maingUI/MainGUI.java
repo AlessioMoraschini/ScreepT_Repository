@@ -43,6 +43,7 @@ import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
 import gUI.frames.AboutSectionFrame;
+import gUI.frames.ChangeLogFrame;
 import gUI.frames.GeneralOptionsFrame;
 import gUI.frames.GraphicPreferencesFrame;
 import gUI.frames.ImageConverterFrame;
@@ -113,6 +114,7 @@ public class MainGUI extends MainGuiParent{
 	private static ClipboardFrame clipboardFrame;
 	private static ColorPickerFrame colorPickerFrame;
 	private static AboutSectionFrame panelAbout;
+	private static ChangeLogFrame panelChangeLog;
 	private static TutorialFrame tutorialPanel;
 	private static PluginManagerGUI pluginManagerGUI;
 	
@@ -1187,6 +1189,32 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					}
 				}
 				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelAbout, JFrame.MAXIMIZED_BOTH);
+			}
+		});
+		
+		// open in a new window - ChangeLog view
+		mntmChangeLog = new CustomJmenuItem(new AbstractAction("View changeLog") {
+			public void actionPerformed(ActionEvent e) {
+				if (panelChangeLog == null) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					panelChangeLog = new ChangeLogFrame(GeneralConfig.CHANGE_LOG_FILE);
+					panelChangeLog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					GuiUtils.centerComponent(panelAbout, 700, 500);
+					panelChangeLog.setResizable(false);
+					panelChangeLog.setVisible(true);
+					panelChangeLog.setTitle("About - "+GeneralConfig.APPLICATION_NAME);
+					panelChangeLog.setLocationRelativeTo(mainAPP.getMainFrame());
+				}else {
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelChangeLog.setState(java.awt.Frame.NORMAL);
+						panelChangeLog.setVisible(true);
+						panelChangeLog.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + ChangeLogFrame.class, e2);
+					}
+				}
+				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelChangeLog, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 		

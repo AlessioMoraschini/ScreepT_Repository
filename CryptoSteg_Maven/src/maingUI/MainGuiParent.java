@@ -139,6 +139,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmCopyDirStructure;
 	CustomJmenuItem mntmReturnToWelcome;
 	CustomJmenuItem mntmAboutScreept;
+	CustomJmenuItem mntmChangeLog;
 	CustomJmenuItem mntmExportLog; 
 	CustomJmenuItem mntmEraseLogs;
 	CustomJmenuItem mntmViewWebsite;
@@ -291,7 +292,8 @@ public class MainGuiParent {
 				mnFilesAndDirectories.add(mntmDeleteDirectoryAllContentRecursive);
 				mnFilesAndDirectories.add(mntmEmptyDirectoryRecursive);
 			
-			mnHelp.add(mntmAboutScreept);		
+			mnHelp.add(mntmAboutScreept);	
+			mnHelp.add(mntmChangeLog);	
 			mnHelp.add(mntmViewWebsite);
 			mnHelp.add(mntmLookForUpdates);
 			mnHelp.add(mntmLookForPlugins);
@@ -428,6 +430,7 @@ public class MainGuiParent {
 		mntmLookForUpdates.setFont(menuItemFont);
 		mntmLookForPlugins.setFont(menuItemFont);
 		mntmAboutScreept.setFont(menuItemFont);
+		mntmChangeLog.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
 		mntmUserDocumentation.setFont(menuItemFont);
@@ -494,6 +497,7 @@ public class MainGuiParent {
 
 		// Help submenu
 		mntmAboutScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		mntmChangeLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DIFFERENCES));
 		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
 		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		mntmUserDocumentation.setIcon(new ImageIcon(IconsPathConfigurator.ICON_USER_GUIDE));
@@ -994,6 +998,10 @@ public class MainGuiParent {
 
 	public JMenuItem getMntmExportLog() {
 		return mntmExportLog;
+	}
+	
+	public CustomJmenuItem getMntmChangeLog() {
+		return mntmChangeLog;
 	}
 
 	public JMenuItem getMntmTouppercaseDirectory() {

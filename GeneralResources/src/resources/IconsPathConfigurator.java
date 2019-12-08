@@ -189,6 +189,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_UPDATES = GeneralConfig.RESOURCES_DIR + "Icons/General/updates.png";
 	public static final String ICON_PLUGINS = GeneralConfig.RESOURCES_DIR + "Icons/General/plugins.png";
 	public static final String ICON_VISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/visible.png";
+	public static final String ICON_DIFFERENCES = GeneralConfig.RESOURCES_DIR + "Icons/General/differences.png";
 	public static final ImageIcon IMG_ICON_VISIBLE = new ImageIcon(ICON_VISIBLE);
 	public static final String ICON_INVISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/invisible.png";
 	public static final ImageIcon IMG_ICON_INVISIBLE = new ImageIcon(ICON_INVISIBLE);
