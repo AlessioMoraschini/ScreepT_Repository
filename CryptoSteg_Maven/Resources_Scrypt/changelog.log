@@ -1,0 +1,216 @@
+c898a2f Improved hash checker with folders and progbar
+60bf0bb + Improved LAFs and overall visual rendering quality + various bugFix + added buildNomber to build, properties, and about panel + icon improvement for eye icon "invisible" + tab header style improved + added timeout to connection + messageDialog advice to updates/plugin management + improved loader panel progress temporization
+51a8af0 Various fixes on text editor
+d7d440b + improved plugin management and improved launcher
+15c7990 + fixed plugin manager, now it works :)
+e5aa7ea almost completed plugin management, GUI linking ok, still to test better.
+def88dd + almost completed plugin manager class with custom DTO and built-in cache management for download informations. Provided installed files memorization with .properties file
+d25f375 + fixed tesseract missing slfj dependency jar, added to plugins in tesseract folder
+9731bd7 + forked plugins libs, enabled/disabled at runtime: to use them .class launch is required so now it's forced into build even for fatjar
+cfb5cf0 + added hashing panel into text editor + main menu stand alone frame multiple algorithm selectable with combo + added zip folder working function + test + added hash consistency check at start, syncrhronized with ad-hoc function into updater.jar launchable from updates folder to upload with zip option
+5785913 + improved little details & BUGfix + added split panels draggable into crypter panel + improved file mouse listeners + added properties customizable into graphic properties panel + added locale into CONFIG.ini
+5dd92b9 + various fixes + improved rectangular operation on textarea
+ea493dd bug fix updater and various improvements to build process
+80c25e2 + improved UPDATES automated build + now general fatjar build works from scratch, just select directories in parent-project's pom.xml + improved update process, autoupdate introduced at start, configured into main .properties file + cleaned up thumbs.db files
+6682944 + Updater Module Working !!! :)
+67f8159 + updater module and files almost ready! :)
+e5d1ac8 + added updates module with stand alone updater.jar exported at each build, it will be downloaded and exported into root when user updates, and at restart it will be launched updating scrypt folders contained in updates.zip.
+8ba043a + new files validation FWK
+49d9ae1 + removed validation from test utils, and moved to external project (for now it's not used in other projects) + started updater oproject, added to main project dependencies, added to general build parent + improved code formatting + various improvements + crypter panel updated with split vertical pane on left
+0edbf8a General config moved from static initialization to initialization method, and so on for init methods in other configurations and some other classes
+b947b56 improved text editor right click menu on jtree
+4953bd8 new functions copy here/move here added to right click menu in text editor, improved column text area selection, improved performance in customTabbedEditor navigation, removed useless and repeated operations
+238d4cf Useless files removed
+bbb9380 Graphic fixes, load time improvements, JOptionHelper improved, various refactors, new objects in cofiguration, launcher improved
+4868b51 + Templates improved + tree functions improved + added more stuff to config and properties + Launcher improved with auto dialog with icon ad hoc info/warning for jvm + mouse listeners structure improved with arch classes extended + GuiStyle improved text and tree selection backg color
+cbafa9f + various improvements
+365c091 + improved error control on AWT main thread
+7e06a26 + Added ERROR control with AWTEXceptionHandler, now all errors are catched and displayed through a scroll pane error message.
+200320f BugFix and improved rectangular selection
+1865011 + added remove all tabs function in text editor
+2eeea31 + moved netscanner classes and tests from scrypt main project to networkCOmmons project
+37fedb7 + moved HW infoPanel and NetInfo panel into ad Hoc projects
+8734cc8 + fixed bug in launcher with JVM selection, updated resources from main app project
+e3522c4 + Removed hardcoded logic into panelCrypter, improved GUI
+e8014a2 + backup commit before crypter restyle
+ac46987 Clipboard new button added
+56950fe + fixed bugs in new right panels
+afca363 + General performance and behaviour corrections
+3c37a68 + Improved launch sequence robustness
+f3329c6 Performance and threading check, still to improve (little bug when loading txteditor with size of elements due to invoke later usage)
+4906082 + map improved + clipboard improved and now with configuration last opened memory
+6a1eeea + moved mouse wheel speed options to properties file
+abc00e0 + Completed map on right panel
+84e1835 + finished linking GUI and new Right panel listeners: now there are still to do methods to retrieve/create and exchange panels into it
+e98205b + added monitor check to texteditor related to configuration
+82b2084 + improved file monitor class
+4d194de GUI opening glitch fixed - it was move frame in gui utils
+410c0c7 + various concurrency fixes
+327b7dd + Added pin to top to main menu bar
+ea453e9 - added first version of history navigator (to improve, buggy yet)
+0ae3645 - added textarea details to gui configuration panel
+dbac023 - Improved build process and resources export, now there are two parallel builds defined in Scrypt main pom and scrypt launcher pom. The main properties are defined in parent project's pom.xml
+43ebc31 Pom properties removed for some prjs
+a811ab7 removed .class from tracking
+1906b23 - Maven parent build can now be configured to export in destination variable path
+451b074 - Maven centralized build OK!!!
+9ca066c - added parent pom to centralize build with maven pom.xml
+5793a11 - added project calculator
+81c0085 Fixed bug autosave lastPanelOpened
+74ab1ba Added to configuration last opened panel on mainGui
+b055d27 overall cleaning... -10mb in total and less weight in main jar.
+99ce44d - Created ad hoc modular class for tabbed text area (next step should be making it separated to text area logic, using general component)
+2f9f8a6 - Fixed save file precompiled name bug in text Editor
+2e76fd6 Full screen on same size.
+75632fa - New test methods and validation
+05c9c8c Delete Printer.java
+b5ac1b3 Update Printer.java
+b391d33 Minor bugfix after new functionalities
+da4e8d5 - fixed various nullpointers on tabrefresh without file
+7607d3e - calculator useless files claned
+a98caa9 Added checkbox to lock auto syntax sync with current file
+997768a - Updated workspace functions and ini related
+373a235 1- Added basic workspace handler to file tree in text editor
+812ae5d 1- BugFix Text editor + commons gui
+4085fe5 Moved ReadMe From Wrong Position
+ac17ca0 Merge branch 'master' of git@github.com:AlessioMoraschini/SVN_Repository.git
+016ec9c - Folder structure refactor - Added GeneralConfig and ImagePathConfigurator
+c57badb Update README.md
+660d034 Sync target conf optional
+42dd5e5 Fixed bugs on text editor
+119de3d Merge branch 'master' of git@github.com:AlessioMoraschini/SVN_Repository.git
+07a8cd6 Initial commit
+eeb771c Allineamento e ultimi update rimasti in staging
+9931e92 - Structure refactor, added ad hoc INItializer prj.
+87eeba5 - Added funcionality to open files in txtEditor at start via args
+3750dd5 Added autocompletion v0.1
+ab497af -> Missing files from previous commit
+d86cd22 - Project refactor, added specific projects for hardware and textEditor utils
+b9b2da4 Text editor syntax V1 mode
+d299903 Pre syntax area commit
+da8c3db Added general GUI functions
+3418c3a Added line numbers to text editor
+844e9e6 Implemented file icon renderer in file chooser dialog
+245844b Added open in screept current file - txt editor
+e8108ce New project for multimedia conversions
+2b1e888 ss
+c413d33 New project to reduce jar size for launcher
+f9e8b31 Added tesseract to extract text from image
+af19d89 Emptied LOGS
+8b55e3a Customized tabbed pane, and created genGui UI tab setter
+4093d5e - Improved file custom filters and added options
+cdf2c75 Added cursor loading to textEditor start and file load
+22e6b80 Fixed file load and crypt/decrypt in text editor
+2892a85 Added log level to launcher config chosen by user
+8d32b04 General purpose icons added + Improved starter with throwable control + log + msg dialog
+13e5699 remove useless thumbs
+7a928eb - Added starter class to catch any throwable and notify it
+847df87 Fixed bug with large files to load in text editor
+5ca941a - Added tab management with separated undo managers (v1)
+c1a3250 Started tabbed pane in text editor - to improve yet
+115f609 Added main volume to initializer
+2497f74 Updated readme tutorial
+16f76e1 - Added html loader
+78833c7 Improved search panel
+63b76a6 empty LOG
+13e4c0f - Text editor : added saveFile and improved gui
+aa2443b Added save config option and improved copyDirectory in FileStuff
+2e5774a updated log4j properties - more max size
+22a826b - Scrypt solved bug loop write while crypting in subFolder dest
+04f67b6 Fixed bug blockin getProcess output when launching scrypt
+030540e cleaned workspace to improve space usage
+81b1951 - Improved management of char array password conversion in aes cipher - added test for char key setting - start panel added default button for launch button
+5e1bf46 -Removed outdated ini file samples
+6a27a75 - Added to mainGUI method to update gui when loading new configuration - to improve with other configs missing than text-editor
+e9f5559 - Linked configuration to text-editor and imageConverter
+a197bbf - New icons for pop-up menu
+bcd2953 - emptied log file
+3b4f072 - scrypt improved gui package tree structure
+06140dc - Added icons to scrYpT menu and opening windows
+c007803 Fixed read initializing Config bug (width_heigth of gen key settings)
+83bae34 General minor fixes
+d9fd86d Added 2 projects to separe content and reuse it:
+be40db5 - added GuiCommons prj
+fe6ccc5 ScrYpT: refactored structure and prj name
+c944f25 Added about to mainGUI, completed about panel with website link and background
+5579611 readded log
+732bb8e Added TestUtils project
+82c8e3a - Added iconHandler that uses static image directly from mainGui
+0085170 Refactor keyGen panel code
+94279ce removed useless file thumb.db
+a88abfb Updated files and libs
+b58d219 Refactor Config.ini
+c5616a6 More refactor - panels GUI
+10517d5 - Code refactor
+ee308b9 Fixed bugs and added option start without launcher in general options
+add871b Added drop mode to crypter (better testing to do)
+17cf963 Fixed bugs for hwInfoPanel -> hd initializing indexoutofbounds
+9320be7 Icons missing warning
+2410b83 ScrYpT: added icons to frames
+b961b29 Launcher added loader image and progress bar.
+6657bd6 Launcher: added dependency remote/local install (windows only)
+4b1af24 Launcher: added manual link to jvm bin folder and finished table with actionListeners passed trhough missing dependencies obj.
+aa1c082 - improved launcher options
+5c9510e Added customize panel and missing dependencies panel in launcher GUI.
+c4bbe86 LAUNCHER - aggiunta lettura da file ini configurazione
+90042fa Aggiunto controllo versione java
+03e43be added classpath
+0b01b19 Added Launcher project
+34ba671 various improvements before remote repo usage
+56dbc5d - HW panel updated: remember bug with jdk 1.9
+f3d6820 Added hardware info panel Fixed crypter Panel gui width
+ffd2a8d Added speed network tester.
+697e4d6 Net Info panel started and working - to improve Added class to implement standalone multiFile crypt/decrypt in place of implementerKO, works same way as in crypter panel (to test yet)
+97d1714 New reorder methods introduced with tests! New utils for maps and imageworker!
+029defc Introduced byteArrayShuffler with test class, implemented in crypter panel and screeptManager with selection checkbox.
+c96e6e6 - Added control to ensure resultKO is correct, and improvements made to kill streams once opened in case of exception. - File/dir are deleted after encryption/decryption in case of error. - Now it's possible to decrypt in read only mode, opening a temp dir on desktop that will be deleted at the end.
+3905ada Fixed with XOR mode crypter. Added shortcuts. Fixed keyGen error case progressBar Bugs.
+e291aa1 Added and, or, and charset listConverter. Missing test
+6fbcf65 Network methods refactored! XOR method for byte[] added + test. Junit ntimes test configuration added.
+3843f59 started netInfo and utils + ip/mac converter + publicIP retriever
+f4fbe77 Fixed and reordered main gui.
+45307c4 Various fixes keygen - img converter and cripter
+72b4385 GUI n' various fixes
+ced0309 CRYpter new version with variable byte/type recognize working!!!!  Now out size and entrophy increased :)
+9723a9f Added directory management to cripter :)
+78ed514 Added string output of cripter to text area and log
+0d3d72c Crypter updated: now it supports write from external disk, files with more than 2GB and write without intermediate temp passage.
+735d445 CRYPTER LINKED TO GRAPHIC INTERFACE....WORKIN' :D
+b6f386e Image compression v1 gui and methods
+140098d added backup config file
+b5a68f3 Updated Charset ini management and initialization
+b3f6cd5 shortcut listener dimenticato nel precedente commit
+5747b26 Fix varie, compreso migliorate loggate eccezioni, allineato ScreepTManager, shortcutListener classe custom, aggiunto file filter nel manager per evitare lettura file diversi da png(steg/complete mode decript)
+0aad5a9 Added cipher256 bit (class only, not implemented in gui), added charset selector for string<->File works and solved bug with optionFrame disappearing after close
+8304892 and again packages
+bbef54b hacks packages updated
+9f48278 Added secureRandom initialization vector management, now firsts 16 byte will be used for it by AES coder custom class method.
+def399f COMPLETE mode woooooooooooorkin' :D to test more for static IV weakness
+29bd378 Completed ScreepTManagerStub and test method... ready to test intensively and link to GUI (remember to synchronize non stub version for GUI) :D
+089ae64 complete crypt ok, ready to test! decript to check - screeptManager to take from stub - not synchronized yet
+9972b91 Test decryptSTEGonly working, buffer tested for crypt/decrypt :D
+3144eb9 Tested buffer for STEGonly crypt... seems to work :)
+0a1963e tested STEGonlyCrypt (not tested buffer yet)
+235577a decripter STEG complete to test
+e252b46 STEGrypt added to stub and test too. now out in case of steg is folder with incremental [png nubers + _ + stegCryptedNbytes].png
+a5392c1 aggiunti metodi personalizzati per gestione casi particolari con test Stub da versare in SCreepTManager
+239aa1a fixed lenght of output problem with integer, crypt STEG
+b09b05d Added test + fix + ScreepTManagerStub
+8e35f23 Updated Crypter
+b18f38d perfezionato logger
+01ea702 added testKeylogger
+da7849d Added progress bar to ScreepTManager encryption method
+4a022ac test re-organized
+bf987bb ScreeptManager refactored with private methods and Crypt finished -> missing text and decrypter yet
+6a7c0c1 update varie
+a196615 Aggiunte fix varie più screeptManager_steg_crypt
+2a1f4bd AES piccole fix
+0edadae piccole fix converter e crypter
+7dba030 Aggiunti prova stream da file e crypt AES
+3ad6187 added utils byte conversion methods
+9fc8ca3 Updated GUI crypter
+03d8add debugged Image-converter
+ee8a575 further debugged nullpointers and Arrays.toString()
+cb28148 Debugged
+cd91507 moved ini4j to svn repo_local
+45daa36 first commit
