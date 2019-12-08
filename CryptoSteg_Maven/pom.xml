@@ -295,7 +295,7 @@
   	<!-- (C-3) Copy Root Folders -->
           <execution>
             <id>copy-resources -> ${export.directory.fatjar.main}</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -354,7 +354,7 @@
       <!-- (C-4) Copy root files into application dir's parent -->
           <execution>
             <id>copy- ROOT files -> ${export.directory.fatjar.main}/../</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -382,7 +382,7 @@
       <!-- (C-4B) Copy Vanilla files (initial configuration, exc... ) into relative found folders into root (Application dir)-->
           <execution>
             <id>copy- ROOT files -> ${export.directory.fatjar.main}</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -410,7 +410,7 @@
       <!-- (C-5) FATJAR : Resources_ScrYpt -->
           <execution>
             <id>copy-resources -> ${export.directory.fatjar.resources}</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -453,7 +453,7 @@
       <!-- (C-6) SCRYPT'S UPDATES packaging - To hash, zip and upload on server each time -->
           <execution>
             <id>copy-resources -> ${export.updates.folder}</id>
-            <phase>validate</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -512,7 +512,7 @@
       <!-- (C-7) UPDATES - ROOT files outside .zip -->
           <execution>
             <id>copy-resources -> ${export.updates.root}</id>
-            <phase>validate</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>

@@ -1,3 +1,7 @@
 cd ..
 
-git log v0.9.11.. --decorate --oneline --graph --pretty=tformat:"%%ai %%s%%n" > CryptoSteg_Maven\changelog.log
+git log v0.9.11.. --tags --decorate=full --oneline --graph --pretty=tformat:"%%ad %%d %%s%%n" --date=format:"%%Y-%%m-%%d" > CryptoSteg_Maven\changelog.log
+
+set currentFile="%CD%\CryptoSteg_Maven\changelog.log"
+
+@echo changeLog updated and exported to %currentFile%

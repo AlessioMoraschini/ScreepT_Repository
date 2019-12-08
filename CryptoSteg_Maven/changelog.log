@@ -1,6 +1,8 @@
-* 2019-12-08 07:25:24 +0100 Improved build and Export
+* 2019-12-08  (HEAD -> refs/heads/master, refs/remotes/origin/master) + added changeLog Panel to mainMenu
 | 
-* 2019-12-08 05:46:27 +0100 New changelog, improved changelog export
+* 2019-12-08  Improved build and Export
 | 
-* 2019-12-08 05:24:29 +0100 Improved hash checker with folders and progbar
+* 2019-12-08  New changelog, improved changelog export
+| 
+* 2019-12-08  (tag: refs/tags/v0.9.11b) Improved hash checker with folders and progbar
   
