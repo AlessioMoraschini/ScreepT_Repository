@@ -48,7 +48,7 @@ import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
-import tabbedpaneutils.FileDragNDropManager;
+import tabbedpaneutils.TabbedDragNDropManager;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
 import variousutils.HandleString;
@@ -83,7 +83,7 @@ public class CustomTabbedEditor {
 	public int lastIndexTabbedPane = 0;
 
 	/* THIS IS THE MAIN COMPONENT CONTAINING TABS */
-	public FileDragNDropManager mainTabList;
+	public TabbedDragNDropManager mainTabList;
 	
 	/* THEESE ARE THE LOADED TABS, AND A REFERENCE TO THE CURRENT SELECTED */
 	public LimitedConcurrentList<HistoryNode> navigationHistory;
@@ -120,7 +120,7 @@ public class CustomTabbedEditor {
 	private void initMainTabList() {
 		// DRAG 'N DROP IMPLEMENTATION FOR TABS		
 
-		mainTabList = new FileDragNDropManager(new Runnable() {
+		mainTabList = new TabbedDragNDropManager(new Runnable() {
 				@Override
 				public void run() {
 				}

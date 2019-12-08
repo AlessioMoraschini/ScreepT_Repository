@@ -55,7 +55,7 @@ public class MainStandAloneUpdater {
 				
 				if (curr.isFile() && !curr.getName().endsWith(".bat") && !curr.getName().equals("manifest.properties")) {
 					try {
-						manifestProps.saveProperty(curr.getName(), DownloadUtils.getFileHash(curr, downloadsHashFunc));
+						manifestProps.saveProperty(curr.getName(), DownloadUtils.getFileHash(curr, downloadsHashFunc, true));
 					} catch (Throwable e) {
 						signalErrorAndExit1(e);
 					}

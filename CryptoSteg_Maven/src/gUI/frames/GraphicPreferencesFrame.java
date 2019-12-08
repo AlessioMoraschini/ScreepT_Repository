@@ -1308,6 +1308,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 					if (currentEditor != null) {
 						currentEditor.initGuiFromConfig(true, true);
 					}
+					comboTheme.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 				}
 			}
 		};

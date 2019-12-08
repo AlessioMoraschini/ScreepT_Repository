@@ -310,6 +310,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setBackCol(backCol);
 		textEditorOpt.setForeCol(foreCol);
 		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
+		textEditorOpt.setPrefix_hash(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "prefix_hash")));
+		textEditorOpt.setUppercase_hash(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "uppercase_hash")));
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
 		textEditorOpt.setLastEscapeLanguage(lastEscapeLanguage);
@@ -539,6 +541,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	
 	public void writeTxtEditOptions() {
 		// TEXT EDITOR OPTIONS
+		iniFile.put(TEXT_EDITOR_OPT, "prefix_hash", textEditorOpt.isPrefix_hash());
+		iniFile.put(TEXT_EDITOR_OPT, "uppercase_hash", textEditorOpt.isUppercase_hash());
 		iniFile.put(TEXT_EDITOR_OPT, "inlineTabs", textEditorOpt.isInlinedTabs());
 		iniFile.put(TEXT_EDITOR_OPT, "font", HandleString.getFontString(textEditorOpt.font));
 		iniFile.put(TEXT_EDITOR_OPT, "filePanelBackgroundCol", HandleString.getRgbString(textEditorOpt.filePanelBackCol));
@@ -657,6 +661,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nFILE_PANEL_BACKGROUND_COLOR: ").append(textEditorOpt.filePanelBackCol)
 			   .append("\nBACKGROUND_COLOR: ").append(textEditorOpt.backCol)
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
+			   .append("\nUPPERCASE HASH: ").append(textEditorOpt.uppercase_hash)
+			   .append("\nPREFIX TO HASH: ").append(textEditorOpt.prefix_hash)
 			   .append("\nFONT: ").append(textEditorOpt.font)
 			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate)
 			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)

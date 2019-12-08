@@ -63,6 +63,17 @@ public class FileStuff {
 		return rootOK;
 	}
 	
+	public static byte[] xorBytes(byte[] first, byte[] second) {
+		byte[] xorResult = new byte[first.length];
+
+		int i = 0;
+		for (byte firstiByte : first) {
+			xorResult[i] = (i < second.length) ? (byte) (firstiByte ^ second[i++]) : firstiByte;
+		}
+		
+		return xorResult;
+	}
+	
 	public static boolean isFileSonOfDir(File file, File dir) {
 		
 		if(file == null || dir == null) return false;

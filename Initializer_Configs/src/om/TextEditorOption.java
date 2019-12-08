@@ -43,6 +43,8 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_TREE_LOCKED = false;
 	public static final boolean DEFAULT_WORKSPACE_VIEW_SELECTED = false;
 	public static final boolean DFAULT_AUTO_SYNTAX_SYN_FLAG = true;
+	public static final boolean DEF_uppercase_hash = true;
+	public static final boolean DEF_prefix_hash = false;
 	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles;
 	public static LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces;
 	public static LimitedConcurrentList<String> DEF_lastReplaceTerms;
@@ -106,6 +108,8 @@ public class TextEditorOption {
 	public boolean workspaceViewSelected;
 	public boolean defaultAutoSyntaxSync;
 	public boolean breaklineActive;
+	public boolean prefix_hash;
+	public boolean uppercase_hash;
 	
 	public boolean antialiasedTxtArea;
 	public boolean bracketMatchingEnabled;
@@ -138,6 +142,9 @@ public class TextEditorOption {
 		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
 		DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
 		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
+		
+		uppercase_hash = DEF_uppercase_hash;
+		prefix_hash = DEF_prefix_hash;
 		
 		openedFileList = new ArrayList<String>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
@@ -240,6 +247,22 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public boolean isPrefix_hash() {
+		return prefix_hash;
+	}
+
+	public void setPrefix_hash(boolean prefix_hash) {
+		this.prefix_hash = prefix_hash;
+	}
+
+	public boolean isUppercase_hash() {
+		return uppercase_hash;
+	}
+
+	public void setUppercase_hash(boolean uppercase_hash) {
+		this.uppercase_hash = uppercase_hash;
+	}
+
 	public boolean isPaintMatchedBracketPair() {
 		return paintMatchedBracketPair;
 	}

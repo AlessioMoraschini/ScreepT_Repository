@@ -468,7 +468,7 @@ public class DownloadUtils {
 	    return result;
 	}
 
-	public static String getFileHash(File file, HashingFunction algorithm) throws Throwable {
+	public static String getFileHash(File file, HashingFunction algorithm, boolean uppercase) throws Throwable {
 		
 		if(file == null) return "";
 
@@ -480,7 +480,9 @@ public class DownloadUtils {
 		
 		String result;
 		try {
-			result = DatatypeConverter.printHexBinary(digest).toUpperCase();
+			// NB: hex is not case sensitive!
+			result = DatatypeConverter.printHexBinary(digest);
+			result = (uppercase) ? result.toUpperCase() : result.toLowerCase();
 		} catch (Error e) {
 			result = "";
 		}
@@ -488,6 +490,40 @@ public class DownloadUtils {
 		System.out.println("Generated hash for file: " + file.getAbsolutePath() + ", HASHED:"+result);
 		
 		return result;
+	}
+	
+	public static String getFolderHash(File directory, HashingFunction algorithm, boolean uppercase) throws Throwable {
+		if(directory == null) {
+			return "";
+		} else if (directory.isFile()) {
+			return getFileHash(directory, algorithm, uppercase);
+		} else {
+			String hashAccumulator = "";
+			for (File curr : directory.listFiles()) {
+				if (curr.isDirectory()) {
+					hashAccumulator = new String(xorBytes(hashAccumulator.getBytes("UTF-8"), getFolderHash(curr, algorithm, uppercase).getBytes("UTF-8")));
+				} else {
+					hashAccumulator = new String(xorBytes(hashAccumulator.getBytes("UTF-8"), getFileHash(curr, algorithm, uppercase).getBytes("UTF-8")));
+				}
+			}
+			return hashAccumulator;
+		}
+	}
+	
+	public static byte[] xorBytes(byte[] first, byte[] second) {
+		
+		// Select longest as first
+		byte[] A = first.length >= second.length ? first : second;
+		byte[] B = A.length == first.length ? second : first;
+		byte[] xorResult = new byte[A.length];
+
+		int i = 0;
+		for (byte firstiByte : A) {
+			xorResult[i] = (i < B.length) ? (byte) (firstiByte ^ B[i]) : firstiByte;
+			i++;
+		}
+		
+		return xorResult;
 	}
 	
 	//Add salt

@@ -13,6 +13,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -55,6 +56,8 @@ public class UpdateProgressPanelMin {
     
     public UpdateProgressPanelMin() {
     	
+    	progBarEnabled = new AtomicBoolean(true);
+    	
     	initGraphics(1);
     	
     	initSpecBar();
@@ -81,6 +84,8 @@ public class UpdateProgressPanelMin {
 	 */
     public UpdateProgressPanelMin(boolean secondBar) {
     	
+    	progBarEnabled = new AtomicBoolean(true);
+    	
 		if (secondBar) {
 			initGraphics(2);
 			initGeneralBar();
@@ -92,26 +97,31 @@ public class UpdateProgressPanelMin {
 		
 		initSpecBar();
 		
-		dialog.setVisible(true);
 		dialog.repaint();
 		
-        new Thread(new Runnable() {
-
-            public void run() {
-
-                try {
-                	if (secondBar) {
-                		doInBackground(GeneralBar);
-                	}else {
-                		doInBackground(pb);
-                	}
-                	
-				} catch (Exception e) {
-		            dialog.dispose();
-				}
-                
-        	}
-        }).start();
+        SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				new Thread(new Runnable() {
+		
+		            public void run() {
+		
+		                try {
+		                	if (secondBar) {
+		                		doInBackground(GeneralBar);
+		                	}else {
+		                		doInBackground(pb);
+		                	}
+		                	
+						} catch (Exception e) {
+				            dialog.dispose();
+						}
+		                
+		        	}
+		        }).start();
+			}
+		});
     }
 
 	// ####################### END CONSTRUCTORS #################### //
@@ -202,7 +212,7 @@ public class UpdateProgressPanelMin {
 	        @Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 	        	
-	        	new Thread(new Runnable() {
+				new Thread(new Runnable() {
 					public void run() {
 						int choice = JOptionPane.showConfirmDialog(dialog, "Stop process?", "Stop process?", JOptionPane.YES_NO_OPTION);
 						if (choice == JOptionPane.YES_OPTION) {
@@ -211,7 +221,7 @@ public class UpdateProgressPanelMin {
 							stopProcess.set(false);
 							return;
 						}
-						
+
 						if (forceDispose.get()) {
 							dialog.dispose();
 						}
@@ -228,9 +238,13 @@ public class UpdateProgressPanelMin {
 		}
 	}
 
-    protected void doneCheck(JProgressBar bar) {
+    protected void doCheck(JProgressBar bar) {
         if (bar.getValue()>=100) {
-            forceClose();
+            SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					forceClose();
+				}
+			});
         }
     }
     
@@ -248,13 +262,15 @@ public class UpdateProgressPanelMin {
             }
         	
         	pb.repaint();
-        	GeneralBar.repaint();
-        	doneCheck(bar);
-        	
+        	if (GeneralBar != null) {
+				GeneralBar.repaint();
+			}
             Thread.sleep(150);
+            
+            doCheck(bar);
         } // End while
         
-        forceClose();
+        doCheck(bar);
     }        
     
     public void update(String label, int perc) {
@@ -276,9 +292,10 @@ public class UpdateProgressPanelMin {
 			} else {
 				update(100, "Completed! Closing progress bar monitor...", false);
 			}
-			dialog.dispose();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			dialog.dispose();
 		}
     }
 
@@ -314,6 +331,13 @@ public class UpdateProgressPanelMin {
 			if (msg != null) {
 				this.label.setText(msg);
 			} 
+		}
+		
+		try {
+			if (value >= 100) {
+				dialog.dispose();
+			} 
+		} catch (Exception e) {
 		}
 	}
 	

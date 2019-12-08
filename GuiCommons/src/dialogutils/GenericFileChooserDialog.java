@@ -165,6 +165,36 @@ public class GenericFileChooserDialog {
         }
         return correctFile;
 	}
+
+	/**
+	 * JCOMPONENT - every extension and every typer of source
+	 * this method select a source file from the user,if nothing is selected returns null
+	 */
+	public File fileAndDirRead(JFrame parent) {
+		
+		JFileChooser fileChooser = new JFileChooser();		
+		fileChooser.setDialogTitle("Select input File or Directory");
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		fileChooser.setFileView(fileView);
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		
+		File correctFile = null;
+		
+		int returnVal = fileChooser.showOpenDialog(parent);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			
+			File selectedFile = fileChooser.getSelectedFile();
+//        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
+			if(selectedFile==null) {
+				JOptionPane.showMessageDialog(parent, "Please select a file!", "File not selected", JOptionPane.ERROR_MESSAGE);
+			}else {
+				correctFile = selectedFile;
+				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
+			}
+		}
+		return correctFile;
+	}
 	
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null

@@ -269,7 +269,6 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		};
 	}
 	
-	
 	private ActionListener collapseChildren() {
 		return new ActionListener() {
 			
@@ -292,7 +291,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
-						hashCheckerFrame = new HashCheckerFrame(selectedNode.getFile(), textEditor.parentFrame);
+						hashCheckerFrame = new HashCheckerFrame(selectedNode.getFile(), textEditor.parentFrame, textEditor.currentConfiguration.getTextEditorOpt());
 						hashCheckerFrame.setVisible(true);
 						hashCheckerFrame.setAlwaysOnTop(true);
 					} else {

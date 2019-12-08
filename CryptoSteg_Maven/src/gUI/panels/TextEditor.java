@@ -266,6 +266,7 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.add(lblFiles, "cell 0 0 2 1,alignx left,aligny center");
 		
 		btnResyncTree_nostyle = new JButton("");
+		btnResyncTree_nostyle.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnResyncTree_nostyle.setPreferredSize(TREE_BTN_SIZE);
 		btnResyncTree_nostyle.setMinimumSize(TREE_BTN_SIZE);
 		btnResyncTree_nostyle.setMaximumSize(TREE_BTN_SIZE);
@@ -276,6 +277,7 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.add(btnResyncTree_nostyle, "cell 2 0,alignx center");
 		
 		btnPackTree_nostyle = new JButton("");
+		btnPackTree_nostyle.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnPackTree_nostyle.setPreferredSize(TREE_BTN_SIZE);
 		btnPackTree_nostyle.setMinimumSize(TREE_BTN_SIZE);
 		btnPackTree_nostyle.setMaximumSize(TREE_BTN_SIZE);
@@ -286,6 +288,7 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.add(btnPackTree_nostyle, "cell 3 0,alignx center");
 		
 		btnDepthUp_nostyle = new JButton("");
+		btnDepthUp_nostyle.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnDepthUp_nostyle.setPreferredSize(TREE_BTN_SIZE);
 		btnDepthUp_nostyle.setMinimumSize(TREE_BTN_SIZE);
 		btnDepthUp_nostyle.setMaximumSize(TREE_BTN_SIZE);
@@ -296,6 +299,7 @@ public class TextEditor extends JPanel {
 		leftSplitContainer.add(btnDepthUp_nostyle, "cell 4 0,alignx center,aligny center");
 		
 		btnDepthDown_nostyle = new JButton("");
+		btnDepthDown_nostyle.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnDepthDown_nostyle.setPreferredSize(TREE_BTN_SIZE);
 		btnDepthDown_nostyle.setMinimumSize(TREE_BTN_SIZE);
 		btnDepthDown_nostyle.setMaximumSize(TREE_BTN_SIZE);

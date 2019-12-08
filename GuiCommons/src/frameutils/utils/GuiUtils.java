@@ -102,6 +102,11 @@ public class GuiUtils {
 		};
     }
 	
+	public static boolean isKeyCodeValidCode(int keyCodeToCheck) {
+		String unknown = Toolkit.getProperty("AWT.unknown", "Unknown");
+        return !KeyEvent.getKeyText(keyCodeToCheck).equals(unknown + " keyCode: 0x" + Integer.toString(keyCodeToCheck, 16));
+	}
+	
 	public static Frame getTopFrame() {
 		Frame[] frames = Frame.getFrames();
 		for (int i = 0; i < frames.length; i++) {

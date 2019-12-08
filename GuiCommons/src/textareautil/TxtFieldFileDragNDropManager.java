@@ -37,6 +37,7 @@ public class TxtFieldFileDragNDropManager extends JTextField{
     private DropTargetHandler dropTargetHandler;
     public Runnable dropRunner;
     public Component targetDropComponent;
+    public boolean allowDirectoriesDrop = false;
 
     private boolean dragOver = false;
     private Point dragPoint;
@@ -108,8 +109,9 @@ public class TxtFieldFileDragNDropManager extends JTextField{
 							if (file.isFile()) {
 								// Insert new nodes as children of root node
 								loadedFilesList.add(file);
-							} else {
+							} else if (allowDirectoriesDrop) {
 								// directory actions
+								loadedFilesList.add(file);
 							} 
 						}
 					}
@@ -219,4 +221,13 @@ public class TxtFieldFileDragNDropManager extends JTextField{
 	public void setDropRunner(Runnable dropRunner) {
 		this.dropRunner = dropRunner;
 	}
+
+	public boolean isAllowDirectoriesDrop() {
+		return allowDirectoriesDrop;
+	}
+
+	public void setAllowDirectoriesDrop(boolean allowDirectoriesDrop) {
+		this.allowDirectoriesDrop = allowDirectoriesDrop;
+	}
+	
 }

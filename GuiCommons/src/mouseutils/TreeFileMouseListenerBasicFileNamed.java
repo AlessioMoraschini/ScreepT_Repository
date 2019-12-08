@@ -243,7 +243,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
-						hashCheckerFrame = new HashCheckerFrame(initialFile, null);
+						hashCheckerFrame = new HashCheckerFrame(initialFile, null, null);
 						hashCheckerFrame.setVisible(true);
 						hashCheckerFrame.setAlwaysOnTop(true);
 					} else {

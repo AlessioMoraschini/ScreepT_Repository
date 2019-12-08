@@ -5,13 +5,13 @@ import java.util.Collections;
 
 import gUI.panels.TextEditor;
 import tabbededitor.CustomTabbedEditor;
-import tabbedpaneutils.FileDragNDropManager;
+import tabbedpaneutils.TabbedDragNDropManager;
 
 @Deprecated
 public class TabMover {
 	
 	private static volatile boolean movingTab = false;
-	FileDragNDropManager tabReferenceDraggable;
+	TabbedDragNDropManager tabReferenceDraggable;
 	CustomTabbedEditor currrentTabbedEditor;
 	
 	public TabMover(CustomTabbedEditor tabRef) {

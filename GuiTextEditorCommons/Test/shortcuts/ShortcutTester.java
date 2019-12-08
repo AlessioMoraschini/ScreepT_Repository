@@ -2,6 +2,7 @@ package shortcuts;
 
 
 import java.awt.KeyEventDispatcher;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
 public class ShortcutTester implements KeyEventDispatcher{
@@ -30,7 +31,6 @@ public class ShortcutTester implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
 	      
-	  
 	    }
 	    
 	// Pass the KeyEvent to the next KeyEventDispatcher in the chain

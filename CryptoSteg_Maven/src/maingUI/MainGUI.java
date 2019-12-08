@@ -608,26 +608,22 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		    	if (!FLAG_loadDefaultPrjSub) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadDefaultPrjSub = true;
-					if (JOptionPane.showConfirmDialog(frmScryptV,
+					if (dialogHelper.yesOrNo(
 							"Really want to load default config(unsaved changes will be lost)? ",
-							"Warning - Reload INI default config?",
-							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+							"Warning - Reload INI default config?")) {
 						try {
 							currentConfiguration.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
 							currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
-							JOptionPane.showMessageDialog(frmScryptV, "Configuration reloaded!");
+							dialogHelper.info("Configuration reloaded!", "Configuration reloaded!");
 						} catch (IOException e) {
-							JOptionPane.showMessageDialog(frmScryptV,
-									"Error opening: " + GeneralConfig.DEFAULT_INI + " -> maybe it does not exist?");
+							dialogHelper.error("Error opening: " + GeneralConfig.DEFAULT_INI + " -> maybe it does not exist?", "An error occurred");
 							logger.error("Exception happened!", e);
 						}
 						currentConfiguration.readConfigIniFile();
 						updateGuiFromCurrConfig();
-						JOptionPane.showMessageDialog(frmScryptV,
-								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
+						dialogHelper.info("File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!", "File loaded");
 					} else {
-						JOptionPane.showMessageDialog(frmScryptV,
-								"Configuration not loaded, current CONFIG mantained!");
+						dialogHelper.warn("Configuration not loaded, current CONFIG mantained!", "Loading skipped");
 					} 
 					FLAG_loadDefaultPrjSub = false;
 				}
@@ -647,14 +643,12 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					} catch (IOException e1) {
 						logger.error("Exception happened!", e1);
 					}
-					if (JOptionPane.showConfirmDialog(frmScryptV, "Really want to overwrite default configuration?",
-							"Warning - Overwrite default configuration?",
-							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+					if (dialogHelper.showInfoYNDialogOnTop(
+							"Really want to overwrite default configuration?", "Warning - Overwrite default configuration?", JOptionPane.YES_NO_OPTION)) {
 						currentConfiguration.writeCurrentConfigIniFile();
-						JOptionPane.showMessageDialog(frmScryptV,
-								"File " + currentConfiguration.getIniFile().getFile().getAbsolutePath() + " saved!");
+						dialogHelper.info("File " + currentConfiguration.getIniFile().getFile().getAbsolutePath() + " saved!", "File saved");
 					} else {
-						JOptionPane.showMessageDialog(frmScryptV, "Configuration not saved!");
+						dialogHelper.warn("Configuration not saved!", "Skipped!");
 					}
 					FLAG_mntmSaveCurrentAs = false;
 				}
@@ -668,27 +662,25 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		    	if (!FLAG_loadSrcrYptDefaultConf) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadSrcrYptDefaultConf = true;
-					if (JOptionPane.showConfirmDialog(frmScryptV,
+					if (dialogHelper.showInfoYNDialogOnTop(
 							"Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ",
 							"Warning - Reset INI standard config?",
-							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+							JOptionPane.YES_NO_OPTION)) {
 						try {
 							FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
 							currentConfiguration.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 							currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						} catch (IOException e) {
-							JOptionPane.showMessageDialog(frmScryptV,
-									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!");
+							dialogHelper.error(
+									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!", null);
 							logger.error("Exception happened!", e);
 						}
 						MainGuiUtils.welcomeMethodFirstTime();
-						JOptionPane.showMessageDialog(frmScryptV,
-								"File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!");
+						dialogHelper.info("File '" + currentConfiguration.getIniFile().getFile().getName() + "' loaded!", "File loaded");
 						currentConfiguration.readConfigIniFile();
 						updateGuiFromCurrConfig();
 					} else {
-						JOptionPane.showMessageDialog(frmScryptV,
-								"Configuration not loaded, current CONFIG mantained!");
+						dialogHelper.info("Configuration not loaded, current CONFIG mantained!", "Loading skipped");
 					} 
 					FLAG_loadSrcrYptDefaultConf = false;
 				}
@@ -704,12 +696,12 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					FLAG_mntmExportLog = true;
 					
 					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScrYpT_launcher's customize options at start)";
-					int choice = JOptionPane.YES_OPTION;
+					boolean choice = true;
 					if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
-						choice = JOptionPane.showConfirmDialog(frmScryptV, msg, "Logger turned OFF", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+						choice = dialogHelper.showInfoYNDialogOnTop(msg, "Export logs even if disabled?", JOptionPane.YES_NO_OPTION);
 					}
 					
-					if (choice == JOptionPane.YES_OPTION) {
+					if (choice) {
 
 						// show input dialog to select the file(gives null in case of no file selected)
 						File selected = fileLogWriteDialog(frmScryptV);
@@ -720,12 +712,10 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 
 							// give true to overwrite because fileWriteDialog already set the value to be unique
 							if (FileStuff.copyFile(new File(GeneralConfig.LOG_PATH), selected, true) && FileStuff.copyFile(new File(GeneralConfig.LOG_LAUNCHER_PATH), selected, false)) {
-								JOptionPane.showMessageDialog(frmScryptV, "File correctly saved in " + selected,
-										"Log File Exported :)", JOptionPane.INFORMATION_MESSAGE);
+								dialogHelper.info("File correctly saved in " + selected, "Log File Exported :)");
 								logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + selected);
 							} else {
-								JOptionPane.showMessageDialog(frmScryptV, "File not saved [" + selected,
-										"]  Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+								dialogHelper.error("File not saved [" + selected +"], Some error occurred :(", null);
 								logger.error("File not saved, some error occurred :( ");
 							}
 						} 
@@ -746,20 +736,20 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					FLAG_mntmEraseLogs = true;
 					File LOG_MAIN_FILE = new File(GeneralConfig.LOG_PATH);
 					String coolFileSize = FileStuff.coolFileSize(LOG_MAIN_FILE.length());
-					int choice = JOptionPane.NO_OPTION;
-					String msg =  " Are you sure you to want to erase your logs? \n\n => If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]";
-					choice = JOptionPane.showConfirmDialog(frmScryptV, msg, "Erase Logs content?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-					if(choice == JOptionPane.YES_OPTION) {
+					boolean choice = false;
+					String msg =  "<html>Are you sure you to want to erase your logs? <br/> If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]</html>";
+					choice = dialogHelper.showInfoYNDialogOnTop(msg, "Erase Logs content?", JOptionPane.YES_NO_OPTION);
+					if(choice) {
 						if (FileStuff.clearFileContent(GeneralConfig.LOG_PATH) && FileStuff.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
 							logger.debug("Files deleted");
-							JOptionPane.showMessageDialog(frmScryptV, "Logs deleted - as you asked ;)", "Logs deleted", JOptionPane.INFORMATION_MESSAGE);
+							dialogHelper.info("Logs deleted - as you asked ;)", "Logs deleted");
 						}else {
 							logger.error("Files not deleted :: An error occurred :(");
-							JOptionPane.showMessageDialog(frmScryptV, "Something went wrong :( Some files may still contain stuff.", "An error occurred :(", JOptionPane.ERROR_MESSAGE);
+							dialogHelper.error("Something went wrong :( Some files may still contain stuff.", null);
 						}
 					} else {
 						logger.debug("Logs not deleted :: skipped by user.");
-						JOptionPane.showMessageDialog(frmScryptV, "Logs not deleted - as you asked ;)", "Logs not deleted", JOptionPane.INFORMATION_MESSAGE);
+						dialogHelper.info("Logs not deleted - as you asked ;)", "Logs not deleted");
 					}
 				}
 				
@@ -1066,7 +1056,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				try {
 					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
 						File targetFile = (initTxtWriter != null) ? initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile : null;
-						hashCheckerFrame = new HashCheckerFrame(targetFile, frmScryptV);
+						hashCheckerFrame = new HashCheckerFrame(targetFile, frmScryptV, currentConfiguration.getTextEditorOpt());
 						hashCheckerFrame.setVisible(true);
 						hashCheckerFrame.setAlwaysOnTop(true);
 					} else {
@@ -1496,7 +1486,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
     	
 		
-    	if (new JOptionHelper(frmScryptV).yesOrNo("Really want to exit?", "Exit Program")) {
+    	if (new JOptionHelper(frmScryptV).showInfoYNDialogOnTop("Really want to exit?", "Exit Program", JOptionHelper.YES_OR_NO)) {
 
     		frmScryptV.setAlwaysOnTop(true);
     		closeApplication(0);

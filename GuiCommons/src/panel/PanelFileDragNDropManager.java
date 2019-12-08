@@ -1,4 +1,4 @@
-	package tabbedpaneutils;
+	package panel;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -20,16 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TooManyListenersException;
 
-import javax.swing.JTabbedPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-public class FileDragNDropManager extends JTabbedPane{
-	private static final long serialVersionUID = -4714067360032380811L;
+public class PanelFileDragNDropManager extends JPanel{
+	private static final long serialVersionUID = 6345611258321094551L;
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(FileDragNDropManager.class); 
+	static Logger logger = Logger.getLogger(PanelFileDragNDropManager.class); 
     
 	public ArrayList<File> loadedFilesList;
 	
@@ -42,9 +42,8 @@ public class FileDragNDropManager extends JTabbedPane{
     private Point dragPoint;
 
     // constructor
-    public FileDragNDropManager(Runnable dropAction, Component targetDrop) {
+    public PanelFileDragNDropManager(Runnable dropAction, Component targetDrop) {
     	
-    	super(JTabbedPane.TOP);
     	loadedFilesList = new ArrayList<File>();
     	dropRunner = dropAction;
     	targetDropComponent = (targetDrop == null)? this : targetDrop;
@@ -74,17 +73,14 @@ public class FileDragNDropManager extends JTabbedPane{
 
     @Override
     protected void paintComponent(Graphics g) {
-        try {
-			super.paintComponent(g);
-			if (dragOver) {
-			    Graphics2D g2d = (Graphics2D) g.create();
-			    g2d.setColor(new Color(61, 111, 191,80));
-			    g2d.fill(new Rectangle(getWidth(), getHeight()));
-			    g2d.dispose();
-			    
-			}
-		} catch (Exception e) {
-		}
+        super.paintComponent(g);
+        if (dragOver) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setColor(new Color(61, 111, 191,80));
+            g2d.fill(new Rectangle(getWidth(), getHeight()));
+            g2d.dispose();
+            
+        }
     }
 
     protected DropTarget getMyDropTarget() {
@@ -198,9 +194,9 @@ public class FileDragNDropManager extends JTabbedPane{
 
         @Override
         public void run() {
-            FileDragNDropManager.this.dragOver = dragOver;
-            FileDragNDropManager.this.dragPoint = dragPoint;
-            FileDragNDropManager.this.repaint();
+            PanelFileDragNDropManager.this.dragOver = dragOver;
+            PanelFileDragNDropManager.this.dragPoint = dragPoint;
+            PanelFileDragNDropManager.this.repaint();
         }
     }
     

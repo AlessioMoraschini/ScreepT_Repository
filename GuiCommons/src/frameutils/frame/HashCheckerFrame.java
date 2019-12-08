@@ -4,13 +4,17 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 
 import javax.swing.JFrame;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
+import gui.UpdateProgressPanelMin;
 import net.miginfocom.swing.MigLayout;
+import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.TxtFieldFileDragNDropManager;
@@ -20,9 +24,13 @@ import updater.HashingFunction;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import dialogutils.JOptionHelper;
 
 import java.awt.Dimension;
 
+import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JSeparator;
@@ -30,6 +38,8 @@ import javax.swing.JRadioButton;
 
 public class HashCheckerFrame extends ParentFrame{
 	private static final long serialVersionUID = -5018329398511796700L;
+	
+	public static String HINT_VERIFY = "Write here the checksum to verify, and press \"Verify Checksum\" to compare with current file's hash!";
 	
 	private File currentFile;
 	public JFrame parentFrame;
@@ -40,15 +50,19 @@ public class HashCheckerFrame extends ParentFrame{
 	private JButton btnVerifyChecksum;
 	private JButton btnCalculateHash;
 	private JButton btnSelectFile;
+	private TextEditorOption txtOptions;
 	
 	private JFrame thisFrame;
 	
 	private static Color lightGrayDefault = new Color(211, 211, 211);
 	private static Color yellowDefault = new Color(250, 250, 210);
-	private JRadioButton rdbtnUseAlgorithmAs;
+	private JRadioButton rdbtnUseAlgorithmAsPrefix;
+	private JRadioButton rdbtnUppercase;
 	
-	public HashCheckerFrame(File initialFile, JFrame parentFrame) {
+	public HashCheckerFrame(File initialFile, JFrame parentFrame, @Nullable TextEditorOption txtOptions) {
 		super();
+		
+		this.txtOptions = txtOptions == null ? new TextEditorOption() : txtOptions;
 		
 		logger.info(this.getClass().getName() + " - Starting...");
 		
@@ -57,13 +71,13 @@ public class HashCheckerFrame extends ParentFrame{
 		this.parentFrame = parentFrame;
 		thisFrame = this;
 		
-		setBounds(new Rectangle(850,215));
+		setBounds(new Rectangle(920,215));
 		GuiUtils.centerComponent(this);
 		setVisible(true);
 		setAlwaysOnTop(true);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("fill, insets 2", "[5px][100px][220px,grow][50px:180px:200px][5px]", "[5px,center][30px,center][][35px][][20px,grow][20px,grow][5px,center]"));
+		getContentPane().setLayout(new MigLayout("fill, insets 2", "[5px][150px:150px][220px,grow][50px:150px:150px][190px:190px:200px][5px]", "[5px,center][30px,center][][35px][][20px,grow][20px,grow][5px,center]"));
 		
 		btnSelectFile = new JButton("Select File");
 		btnSelectFile.setCursor(GuiUtils.CURSOR_HAND);
@@ -83,14 +97,15 @@ public class HashCheckerFrame extends ParentFrame{
 				}
 			}
 		}, txtFieldLoadedFile);
+		txtFieldLoadedFile.setAllowDirectoriesDrop(true);
 		
 		txtFieldLoadedFile.setBackground(lightGrayDefault);
 		txtFieldLoadedFile.setPreferredSize(new Dimension(18, 25));
 		txtFieldLoadedFile.setForeground(Color.DARK_GRAY);
-		getContentPane().add(txtFieldLoadedFile, "cell 2 1 2 1,grow");
+		getContentPane().add(txtFieldLoadedFile, "cell 2 1 3 1,grow");
 		
 		JSeparator separator_1 = new JSeparator();
-		getContentPane().add(separator_1, "cell 1 2 3 1,growx");
+		getContentPane().add(separator_1, "cell 1 2 4 1,growx");
 		
 		JLabel lblHashingAlgorithm = new JLabel("Hashing algorithm:");
 		lblHashingAlgorithm.setForeground(Color.LIGHT_GRAY);
@@ -102,15 +117,24 @@ public class HashCheckerFrame extends ParentFrame{
 		comboBoxHashingAlgos.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(comboBoxHashingAlgos, "cell 2 3,growx");
 		
-		rdbtnUseAlgorithmAs = new JRadioButton("Use Algorithm as Prefix");
-		rdbtnUseAlgorithmAs.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		rdbtnUseAlgorithmAs.setCursor(GuiUtils.CURSOR_HAND);
-		rdbtnUseAlgorithmAs.setForeground(Color.WHITE);
-		rdbtnUseAlgorithmAs.setOpaque(false);
-		getContentPane().add(rdbtnUseAlgorithmAs, "cell 3 3,alignx center");
+		rdbtnUppercase = new JRadioButton("Uppercase");
+		rdbtnUppercase.setCursor(GuiUtils.CURSOR_HAND);
+		rdbtnUppercase.setOpaque(false);
+		rdbtnUppercase.setForeground(Color.WHITE);
+		rdbtnUppercase.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		rdbtnUppercase.setSelected(txtOptions.uppercase_hash);
+		getContentPane().add(rdbtnUppercase, "cell 3 3,alignx center");
+		
+		rdbtnUseAlgorithmAsPrefix = new JRadioButton("Use Algorithm as Prefix");
+		rdbtnUseAlgorithmAsPrefix.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		rdbtnUseAlgorithmAsPrefix.setCursor(GuiUtils.CURSOR_HAND);
+		rdbtnUseAlgorithmAsPrefix.setForeground(Color.WHITE);
+		rdbtnUseAlgorithmAsPrefix.setOpaque(false);
+		rdbtnUseAlgorithmAsPrefix.setSelected(txtOptions.prefix_hash);
+		getContentPane().add(rdbtnUseAlgorithmAsPrefix, "cell 4 3,alignx center");
 		
 		JSeparator separator = new JSeparator();
-		getContentPane().add(separator, "cell 1 4 3 1,growx");
+		getContentPane().add(separator, "cell 1 4 4 1,growx");
 		
 		btnVerifyChecksum = new JButton("Verify Checksum");
 		btnVerifyChecksum.setCursor(GuiUtils.CURSOR_HAND);
@@ -118,12 +142,12 @@ public class HashCheckerFrame extends ParentFrame{
 		btnVerifyChecksum.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnVerifyChecksum, "cell 1 5,grow");
 		
-		txtFieldChecksumMatcher = new JTextField("Write here the checksum to verify, and press \"Verify Checksum\" to compare with current file's hash!");
+		txtFieldChecksumMatcher = new JTextField(HINT_VERIFY);
 		txtFieldChecksumMatcher.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		txtFieldChecksumMatcher.setBackground(yellowDefault);
 		txtFieldChecksumMatcher.setPreferredSize(new Dimension(18, 25));
 		txtFieldChecksumMatcher.setForeground(Color.DARK_GRAY);
-		getContentPane().add(txtFieldChecksumMatcher, "cell 2 5 2 1,grow");
+		getContentPane().add(txtFieldChecksumMatcher, "cell 2 5 3 1,grow");
 		
 		btnCalculateHash = new JButton("Calculate Hash");
 		btnCalculateHash.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -136,7 +160,7 @@ public class HashCheckerFrame extends ParentFrame{
 		txtFieldChecksumResult.setBackground(yellowDefault);
 		txtFieldChecksumResult.setPreferredSize(new Dimension(18, 25));
 		txtFieldChecksumResult.setForeground(Color.DARK_GRAY);
-		getContentPane().add(txtFieldChecksumResult, "cell 2 6 2 1,grow");
+		getContentPane().add(txtFieldChecksumResult, "cell 2 6 3 1,grow");
 		
 		loadFile(initialFile);
 		
@@ -146,12 +170,12 @@ public class HashCheckerFrame extends ParentFrame{
 	}
 	
 	public void loadFile(File toLoadFile) {
-		if (toLoadFile != null && toLoadFile.exists() && toLoadFile.isFile()) {
+		if (toLoadFile != null && toLoadFile.exists()) {
 			currentFile = toLoadFile;
 			txtFieldLoadedFile.setText(currentFile.getAbsolutePath());
 			txtFieldLoadedFile.setBackground(lightGrayDefault);
 			txtFieldChecksumResult.setText("Click on 'calculate checksum' to get hash Cheksum for current file");
-			if (txtFieldChecksumMatcher.getText().equals("")) {
+			if ("".equals(txtFieldChecksumMatcher.getText()) || txtFieldChecksumMatcher.getText().equals(HINT_VERIFY)) {
 				btnCalculateHash.doClick();
 			} else {
 				btnVerifyChecksum.doClick();
@@ -181,7 +205,7 @@ public class HashCheckerFrame extends ParentFrame{
 		btnSelectFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File readFile = fileChooser.fileRead(thisFrame);
+				File readFile = fileChooser.fileAndDirRead(thisFrame);
 				if(readFile != null && readFile.exists()) {
 					loadFile(readFile);
 				}
@@ -192,20 +216,40 @@ public class HashCheckerFrame extends ParentFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					if(currentFile != null && currentFile.exists() && currentFile.isFile()) {
-						txtFieldChecksumResult.setText(getPrefix() + DownloadUtils.getFileHash(currentFile, getSelectedFunction()));
-						txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
-					} else {
-						txtFieldLoadedFile.setBackground(yellowDefault);
-						dialogHelper.warn("File not existing or not selected!", "File not found");
+				final String prefix = getPrefix();
+				GuiUtils.launchThreadSafeSwing(new Runnable() {
+					public void run() {
+						UpdateProgressPanelMin updateProgress = null;
+						try {
+
+							if (currentFile != null && currentFile.exists()) {
+								if (currentFile.isFile()) {
+									txtFieldChecksumResult
+											.setText(prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
+								} else if (dialogHelper.showInfoYNDialogOnTop("Hashing a folder can be a long task, really want to start hashing?",
+										"Hash folder?", JOptionHelper.YES_OR_NO)) {
+									updateProgress = new UpdateProgressPanelMin(false);
+									updateProgress.setClosable(true);
+									updateProgress.setUndefinedDuration();
+									txtFieldChecksumResult.setText(prefix + DownloadUtils.getFolderHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
+								}
+								txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
+							} else {
+								txtFieldLoadedFile.setBackground(yellowDefault);
+								dialogHelper.warn("File not existing or not selected!", "File not found");
+							}
+
+						} catch (Throwable e1) {
+							logger.error("An error occurred while calculating hash for current file: " + currentFile, e1);
+							dialogHelper.error("An error occurred while calculating hash!", "An error occurred");
+							txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
+						} finally {
+							if (updateProgress != null) {
+								updateProgress.forceClose();
+							}
+						}
 					}
-					
-				} catch (Throwable e1) {
-					logger.error("An error occurred while calculating hash for current file: "+currentFile, e1);
-					dialogHelper.error("An error occurred while calculating hash!", "An error occurred");
-					txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
-				}
+				});
 			}
 		});
 		
@@ -213,28 +257,112 @@ public class HashCheckerFrame extends ParentFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					if(currentFile != null && currentFile.exists() && currentFile.isFile()) {
-						String hash = getPrefix() + DownloadUtils.getFileHash(currentFile, getSelectedFunction());
-						txtFieldChecksumResult.setText(hash);
-						txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
-						if(txtFieldChecksumMatcher.getText().equals(hash) || txtFieldChecksumMatcher.getText().contains(hash)) {
-							txtFieldChecksumMatcher.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
-							dialogHelper.info("File matches the given checksum!", "File matched!");
-						} else {
+				final String prefix = getPrefix();
+				GuiUtils.launchThreadSafeSwing(new Runnable() {
+					public void run() {
+						UpdateProgressPanelMin updateProgress = null;
+						try {
+							if (currentFile != null && currentFile.exists()) {
+								String hash = "";
+								if (rootPaneCheckingEnabled) {
+									if (currentFile.isFile()) {
+										hash = prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
+									} else {
+										if (dialogHelper.showInfoYNDialogOnTop("Hashing a folder can be a long task, are you sure to start hashing?",
+												"Hash folder?", JOptionHelper.YES_OR_NO)) {
+											updateProgress = new UpdateProgressPanelMin(false);
+											updateProgress.setClosable(true);
+											updateProgress.setUndefinedDuration();
+											hash = prefix + DownloadUtils.getFolderHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
+										} else {
+											return;
+										}
+									}
+								}
+
+								txtFieldChecksumResult.setText(hash);
+								txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
+								if (txtFieldChecksumMatcher.getText().equals(hash) || txtFieldChecksumMatcher.getText().contains(hash)) {
+									txtFieldChecksumMatcher.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
+									dialogHelper.info("File matches the given checksum!", "File matched!");
+								} else {
+									txtFieldChecksumMatcher.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
+									dialogHelper.error("File does not match the given checksum!", "File does not match!");
+								}
+							} else {
+								txtFieldLoadedFile.setBackground(yellowDefault);
+								dialogHelper.warn("File not existing or not selected!", "File not found");
+							}
+
+						} catch (Throwable e1) {
+							logger.error("An error occurred while calculating hash for current file: " + currentFile, e1);
+							dialogHelper.error("An error occurred while calculating hash!", "An error occurred");
 							txtFieldChecksumMatcher.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
-							dialogHelper.error("File does not match the given checksum!", "File does not match!");
+							txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
+						} finally {
+							if (updateProgress != null) {
+								updateProgress.forceClose();
+							}
 						}
-					} else {
-						txtFieldLoadedFile.setBackground(yellowDefault);
-						dialogHelper.warn("File not existing or not selected!", "File not found");
 					}
-					
-				} catch (Throwable e1) {
-					logger.error("An error occurred while calculating hash for current file: "+currentFile, e1);
-					dialogHelper.error("An error occurred while calculating hash!", "An error occurred");
-					txtFieldChecksumMatcher.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
-					txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
+				});
+			}
+		});
+		
+		rdbtnUppercase.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						txtOptions.setUppercase_hash(rdbtnUppercase.isSelected());
+					}
+				});
+			}
+		});
+		
+		rdbtnUseAlgorithmAsPrefix.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						txtOptions.setPrefix_hash(rdbtnUseAlgorithmAsPrefix.isSelected());
+					}
+				});
+			}
+		});
+		
+		txtFieldChecksumMatcher.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(HINT_VERIFY.equals(txtFieldChecksumMatcher.getText())) {
+					txtFieldChecksumMatcher.setText("");
+				} else {
+					txtFieldChecksumMatcher.selectAll();
+				}
+			}
+		});
+		
+		txtFieldChecksumResult.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (txtFieldChecksumResult.getText() != null) {
+					txtFieldChecksumResult.selectAll();
 				}
 			}
 		});
@@ -246,6 +374,6 @@ public class HashCheckerFrame extends ParentFrame{
 	}
 	
 	private String getPrefix() {
-		return (rdbtnUseAlgorithmAs.isSelected() ? comboBoxHashingAlgos.getSelectedItem().toString() + "=" : "");
+		return (rdbtnUseAlgorithmAsPrefix.isSelected() ? comboBoxHashingAlgos.getSelectedItem().toString() + "=" : "");
 	}
 }

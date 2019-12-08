@@ -34,6 +34,7 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import om.ImgConverterOption;
+import panel.PanelFileDragNDropManager;
 import resources.IconsPathConfigurator;
 import variousutils.HandleString;
 
@@ -72,12 +73,12 @@ public class ImageConverterFrame extends ParentFrame{
 	// GUI ELEMENTS
 	
 	// panels
-	private JPanel panelImgDisp;
+	private PanelFileDragNDropManager panelImgDisp;
 	private static JPanel panelHeader;
 	private JPanel panel;
 	
 	// comboboxes
-	private static JComboBox comboBoxFormats;
+	private static JComboBox<String> comboBoxFormats;
 	private JComboBox<ScalingAlgorithm> comboScaleQuality;
 	
 	// checkboxes
@@ -187,7 +188,6 @@ public class ImageConverterFrame extends ParentFrame{
 		lblImageConverterHeader.setBackground(SystemColor.activeCaptionBorder);
 		panelHeader.add(lblImageConverterHeader, "cell 0 0,alignx center");
 		
-
 		separator = new JSeparator();
 		getContentPane().add(separator, "cell 0 1 10 1,growx,aligny center");
 		
@@ -213,7 +213,16 @@ public class ImageConverterFrame extends ParentFrame{
 		separator_6.setOrientation(SwingConstants.VERTICAL);
 		getContentPane().add(separator_6, "cell 7 2 1 5,alignx center,growy");
 		
-		panelImgDisp = new JPanel();
+		Runnable loadImageRunnable = new Runnable() {
+			@Override
+			public void run() {
+				if (panelImgDisp != null && panelImgDisp.loadedFilesList != null && !panelImgDisp.loadedFilesList.isEmpty()) {
+					loadImage(panelImgDisp.loadedFilesList.get(0));
+					panelImgDisp.loadedFilesList.clear();
+				}
+			}
+		};
+		panelImgDisp = new PanelFileDragNDropManager(loadImageRunnable, null);
 		panelImgDisp.setMaximumSize(new Dimension(220, 220));
 		panelImgDisp.setBackground(Color.BLACK);
 		JLabel iniLabel = new JLabel("Load an Image to start :)");
@@ -249,7 +258,6 @@ public class ImageConverterFrame extends ParentFrame{
 		separator_7 = new JSeparator();
 		getContentPane().add(separator_7, "cell 0 4 7 1,growx");
 		
-		
 		lblResizeAlgorithm = new JLabel("Resize Algorithm");
 		lblResizeAlgorithm.setForeground(new Color(244, 164, 96));
 		lblResizeAlgorithm.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -269,7 +277,7 @@ public class ImageConverterFrame extends ParentFrame{
 		getContentPane().add(comboScaleQuality, "cell 0 6 2 1,growx,aligny center");
 		comboScaleQuality.setRenderer(new ToolTipScalingAlgorithm());
 		
-		comboBoxFormats = new JComboBox(writerNames);
+		comboBoxFormats = new JComboBox<String>(writerNames);
 		getContentPane().add(comboBoxFormats, "cell 2 6 2 1,growx,aligny center");
 		
 		spinnerCompFactor = new JSpinner();
@@ -796,6 +804,65 @@ public class ImageConverterFrame extends ParentFrame{
 				
 			}
 		});
+	}
+	
+	public void loadImage(File sourceImage) {
+
+		btnConvertAddDictionary.setEnabled(false);
+		btnLoadSourceImg.setEnabled(false);
+		btnOriginalSize.setEnabled(false);
+		btnStartConversion.setEnabled(false);
+		
+		if (sourceImage!=null) {
+			
+			progUpdater = new UpdateProgressPanel(currentConfiguration, false);
+			progUpdater.getPb().setValue(20);
+			progUpdater.getLabel().setText("I'm loading the image...");
+    		progUpdater.getPb().setIndeterminate(true);
+
+			try {
+				inputImg = ImageIO.read(sourceImage);
+				inputImgFile = sourceImage;
+			} catch (IOException e2) {
+				String msg = "Image not loaded :("+e2.toString();
+				JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+				logger.error(msg);
+			}
+			
+			if (inputImg!=null && inputImgFile!=null) {
+				
+				progUpdater.getPb().setValue(50);
+				progUpdater.getLabel().setText("I'm creating the preview...");
+
+				int w = inputImg.getWidth();
+				int h = inputImg.getHeight();
+				String size = w + " X " + h;
+				
+				// refresh gui
+				comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
+				refreshOutGui();						
+				refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
+						FileStuff.coolFileSize(inputImgFile), w, h);				
+				
+				// refresh image preview in gui
+				// way with custom repainter (keep type)
+				scaledImage = ImageGeneralWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
+				refreshImage(scaledImage);
+				
+				logger.debug("Image Loaded!");
+			}else {
+				refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
+			}
+			
+		progUpdater.getPb().setValue(100);
+			
+		}
+
+		btnConvertAddDictionary.setEnabled(true);
+		btnLoadSourceImg.setEnabled(true);
+		btnOriginalSize.setEnabled(true);
+		btnStartConversion.setEnabled(true);
+				
 	}
 	
 	/**
