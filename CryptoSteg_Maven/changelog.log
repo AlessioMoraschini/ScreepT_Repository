@@ -1,4 +1,6 @@
-* 2019-12-08  (HEAD -> refs/heads/master, refs/remotes/origin/master) Updated changelog format and export
+* 2019-12-10  (HEAD -> refs/heads/master, refs/remotes/origin/master) Full Screen, immersiveMode, and Dialogs location bugs fixed
+| 
+* 2019-12-08  Updated changelog format and export
 | 
 * 2019-12-08  + added changeLog Panel to mainMenu
 | 
