@@ -100,6 +100,11 @@ public class ScrYpTLauncher {
 	/** MAIN START POINT **/
 	public static void main(String[] args) {
 		
+		// TEST error launch if first argument is err_test
+		if(args.length > 0 && args[0].equals("err_test")) {
+			System.exit(1);
+		}
+		
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
 
 		GeneralConfig.initLazyGeneralConfig();

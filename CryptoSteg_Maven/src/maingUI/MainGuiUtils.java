@@ -180,7 +180,7 @@ public class MainGuiUtils {
 	
 	public void fullScreenToggleMenuBar() {
 		// Ensure menu bar visible when not full screen
-		if (mainAppReference.isFullScreen.get() && !mainAppReference.menuBar.isVisible()) {
+		if (mainAppReference.isFullScreen.get() || !mainAppReference.menuBar.isVisible()) {
 			mainAppReference.menuBar.setVisible(true);
 			mainAppReference.isImmersiveModeOn.set(false);
 		} else {

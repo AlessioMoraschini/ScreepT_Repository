@@ -709,6 +709,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 						File selected = fileLogWriteDialog(frmScryptV);
 						if (selected != null) {
 							logger.info("\n\n##################################################\n\n" + now.toString()
+							 		+ "\n\nBuild N°: " + GeneralConfig.BUILD_INCREMENTAL_NUMBER + "\n\n"
+									+ "Build HASH: " + GeneralConfig.BUILD_COMMIT_HASH + "\n\n"
 									+ "\n\n" + GeneralConfig.APPLICATION_NAME + " EXPORT!\n\n"
 									+ "##################################################\n\n");
 
@@ -878,6 +880,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 							frmScryptV.setSize(preFullScreenSize);
 							frmScryptV.setVisible(true);
 							isFullScreen.set(false);
+							menuBar.setVisible(true);
 							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPAND));
 						} else {
 							frmScryptV.dispose();

@@ -66,6 +66,7 @@
 			              	<Created-by>${user.name}</Created-by>
 			              	<Built-By>${user.name}</Built-By>
 			              	<Build-number>${buildNumber}</Build-number>
+			              	<Build-git-hash>${git.commit.id}</Build-git-hash>
 		                </manifestEntries>
 	                </archive>
 	                <descriptorRefs>

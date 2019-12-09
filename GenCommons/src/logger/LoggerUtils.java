@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.apache.log4j.Level;
 
+import resources.GeneralConfig;
+
 public class LoggerUtils {
 	
 	public final static Level DEFAULT_LOG_LEVEL = Level.ERROR;
@@ -14,6 +16,8 @@ public class LoggerUtils {
 		String dateString = (printDate)? now.toString() : "" ;
 		
 		String startString = "\n\n##################################################\n\n"
+							   + "Build N°: " + GeneralConfig.BUILD_INCREMENTAL_NUMBER + "\n\n"
+							   + "Build HASH: " + GeneralConfig.BUILD_COMMIT_HASH + "\n\n"
 							   + dateString +"\n\n" + appName + " Started now!\n\n"
 							   + "##################################################\n\n";
 				
@@ -26,7 +30,9 @@ public class LoggerUtils {
 		String dateString = (printDate)? now.toString() : "" ;
 		
 		String startString = "\n\n##################################################\n\n"
-				   + dateString +"\n\n" + appName + " Closing Application!\n\n"
+				   + "Build N°: " + GeneralConfig.BUILD_INCREMENTAL_NUMBER + "\n\n"
+				   + "Build HASH: " + GeneralConfig.BUILD_COMMIT_HASH + "\n\n"
+				   + dateString +"\n\n" + appName + " Closing Application!"
 				   + "##################################################\n\n";
 				
 		return startString;

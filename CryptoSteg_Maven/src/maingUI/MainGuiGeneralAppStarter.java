@@ -78,7 +78,7 @@ public class MainGuiGeneralAppStarter {
 		
 		try {
 			try {
-				String initPropsMsg = "Preloading application properties and general configuration files...";
+				String initPropsMsg = "Preloading configuration";
 				loaderGraphics.update(initPropsMsg, 1);
 				loaderGraphics.indeterminate(true, initPropsMsg);
 				
