@@ -1,4 +1,6 @@
-* 2019-12-15  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved direct open file + added combo syntax backup if autoSyntax locked
+* 2019-12-15  (HEAD -> refs/heads/master, refs/remotes/origin/master) + Solved graphics scroll bug - Little problems still persisting with added LAFs
+| 
+* 2019-12-15  Improved direct open file + added combo syntax backup if autoSyntax locked
 | 
 * 2019-12-15  Added instance check at start and open file into current instance
 | 

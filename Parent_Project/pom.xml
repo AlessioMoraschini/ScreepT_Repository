@@ -67,8 +67,6 @@
 		</export.directory.fatjar.resources>
   	
   	
-  	
-  	
   	<!-- ############################ MULTIJAR EXPORT - NOT UPDATED! ############################### -->
   	
   		<!-- Set skip to true to avoid export of this jar and resources -->
