@@ -1,10 +1,11 @@
-cd Application
+cd %0\..\Application
 
-call java -Xms128m -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -Dfile.encoding=UTF8 -jar ScrYpT_Launcher.jar %1
+call java -Dsun.java2d.ddscale=false -Dsun.java2d.noddraw=true -Dsun.java2d.uiScale=1 -Dfile.encoding=utf8 -Xmx256m -Xms128m -jar ScrYpT_Launcher.jar %1
 
-if %ERRORLEVEL% GEQ 1 goto errormsg
+if %ERRORLEVEL% GEQ 1 goto error
 
 exit 0
 
-:errormsg 
-start cmd /k "echo Java is needed to run scrypt, please install java virtual machine before to start (preferred verson is 1.8) & pause & exit 1"
+:error
+
+start cmd /k "cd && echo. && echo Cannot launch ScrYpT, an error occurred. Remember that java JVM interpreter is needed to run ScrYpT (Preredded version is 1.8) && echo. && pause && exit 0"

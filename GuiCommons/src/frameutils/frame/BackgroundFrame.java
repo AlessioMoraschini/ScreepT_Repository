@@ -7,8 +7,8 @@ import java.awt.Image;
 import javax.swing.JPanel;
 
 public class BackgroundFrame extends JPanel{
+	private static final long serialVersionUID = -2332359202457198415L;
 	
-		
 	private Image backgroundImage;
 	private boolean scaleIMG;
 	
@@ -33,7 +33,7 @@ public class BackgroundFrame extends JPanel{
 		
 	    super.paintComponent(g);
 	    if (backgroundImage != null) {
-			if (scaleIMG) {
+			if (!scaleIMG) {
 				g.drawImage(background, 0, 0, null);
 			}else {
 				int Y=0;

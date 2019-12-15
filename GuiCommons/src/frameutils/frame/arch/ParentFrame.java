@@ -25,5 +25,20 @@ public class ParentFrame extends JFrame{
 		this.fileChooser = new GenericFileChooserDialog(null);
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		setCloseAction();
+	}
+	
+	protected void setCloseAction() {
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	logger.debug("Closing Frame: " + getClass().getName());	        	
+	        	isActive.set(false);
+	        	
+	        	dispose();
+		    }
+		});
 	}
 }
