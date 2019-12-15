@@ -339,6 +339,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		
 		// automatic syntax selection file-extension-based
 		textEditorOpt.setDefaultAutoSyntaxSync(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync")));
+		textEditorOpt.setPreferredSyntaxIfNotSync(getSafeStringConf(TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", TextEditorOption.DEF_preferredSyntaxIfNotSync));
 		
 		// workspace view selected
 		textEditorOpt.setWorkspaceViewSelected(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "workspaceViewSelected")));
@@ -568,14 +569,15 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "defaultWorspaceLocation", textEditorOpt.defaultWorkspacePath);
 		iniFile.put(TEXT_EDITOR_OPT, "workspaceViewSelected", textEditorOpt.workspaceViewSelected);
 		iniFile.put(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync", textEditorOpt.defaultAutoSyntaxSync);
+		iniFile.put(TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", textEditorOpt.preferredSyntaxIfNotSync);
 		
 		// DETAIL
-		iniFile.put(TEXT_EDITOR_OPT, "codeFoldingEnabled", textEditorOpt.defaultAutoSyntaxSync);
-		iniFile.put(TEXT_EDITOR_OPT, "autoIndentEnabled", textEditorOpt.defaultAutoSyntaxSync);
-		iniFile.put(TEXT_EDITOR_OPT, "markOccurrences", textEditorOpt.defaultAutoSyntaxSync);
-		iniFile.put(TEXT_EDITOR_OPT, "closeMarkupTags", textEditorOpt.defaultAutoSyntaxSync);
-		iniFile.put(TEXT_EDITOR_OPT, "closeCurlyBraces", textEditorOpt.defaultAutoSyntaxSync);
-		iniFile.put(TEXT_EDITOR_OPT, "bracketMatchingEnabled", textEditorOpt.defaultAutoSyntaxSync);
+		iniFile.put(TEXT_EDITOR_OPT, "codeFoldingEnabled", textEditorOpt.codeFoldingEnabled);
+		iniFile.put(TEXT_EDITOR_OPT, "autoIndentEnabled", textEditorOpt.autoIndentEnabled);
+		iniFile.put(TEXT_EDITOR_OPT, "markOccurrences", textEditorOpt.markOccurrences);
+		iniFile.put(TEXT_EDITOR_OPT, "closeMarkupTags", textEditorOpt.closeMarkupTags);
+		iniFile.put(TEXT_EDITOR_OPT, "closeCurlyBraces", textEditorOpt.closeCurlyBraces);
+		iniFile.put(TEXT_EDITOR_OPT, "bracketMatchingEnabled", textEditorOpt.bracketMatchingEnabled);
 		iniFile.put(TEXT_EDITOR_OPT, "animateBracketMatching", textEditorOpt.animateBracketMatching);
 		iniFile.put(TEXT_EDITOR_OPT, "whiteSpaceVisible", textEditorOpt.whiteSpaceVisible);
 		iniFile.put(TEXT_EDITOR_OPT, "paintMatchedBracketPair", textEditorOpt.paintMatchedBracketPair);
@@ -687,6 +689,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nWORKSPACE VIEW SELECTED: ").append(textEditorOpt.workspaceViewSelected)
 			   .append("\nDEFAULT WORKSPACE LOCATION: ").append(textEditorOpt.defaultWorkspacePath)
 			   .append("\nDEFAULT AUTOMATIC SYNTAX SYNC: ").append(textEditorOpt.defaultAutoSyntaxSync)
+			   .append("\nPREFERRED SYNTAX IF NOT AUTOSYNC: ").append(textEditorOpt.preferredSyntaxIfNotSync)
 			   .append("\nANTIALIASED TEXT AREA: ").append(textEditorOpt.isAntialiasedTxtArea())
 			   .append("\nTAB SIZE: ").append(textEditorOpt.tabSize)
 			   .append("\nTAB LINE VISIBLE: ").append(textEditorOpt.tabLineVisible)

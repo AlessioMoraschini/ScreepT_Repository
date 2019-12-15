@@ -43,6 +43,7 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_TREE_LOCKED = false;
 	public static final boolean DEFAULT_WORKSPACE_VIEW_SELECTED = false;
 	public static final boolean DFAULT_AUTO_SYNTAX_SYN_FLAG = true;
+	public static final String DEF_preferredSyntaxIfNotSync = "TXT";
 	public static final boolean DEF_uppercase_hash = true;
 	public static final boolean DEF_prefix_hash = false;
 	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles;
@@ -107,6 +108,7 @@ public class TextEditorOption {
 	public boolean treeLocked;
 	public boolean workspaceViewSelected;
 	public boolean defaultAutoSyntaxSync;
+	public String preferredSyntaxIfNotSync;
 	public boolean breaklineActive;
 	public boolean prefix_hash;
 	public boolean uppercase_hash;
@@ -175,6 +177,7 @@ public class TextEditorOption {
 		treeLocked = DEFAULT_TREE_LOCKED;
 		workspaceViewSelected = DEFAULT_WORKSPACE_VIEW_SELECTED;
 		defaultAutoSyntaxSync = DFAULT_AUTO_SYNTAX_SYN_FLAG;
+		preferredSyntaxIfNotSync = DEF_preferredSyntaxIfNotSync;
 		
 		tabLineVisible = DEFAULT_TAB_LINE_VISIBLE;
 		breaklineActive = DEFAULT_BREAK_LINE;
@@ -247,6 +250,14 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public String getPreferredSyntaxIfNotSync() {
+		return preferredSyntaxIfNotSync;
+	}
+
+	public void setPreferredSyntaxIfNotSync(String preferredSyntaxIfNotSync) {
+		this.preferredSyntaxIfNotSync = preferredSyntaxIfNotSync;
+	}
+
 	public boolean isPrefix_hash() {
 		return prefix_hash;
 	}

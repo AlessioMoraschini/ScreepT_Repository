@@ -285,7 +285,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboFileFormat.setToolTipText(TextEditorTooltips.tooltipComboFileFormat);
 		comboFileFormat.setCursor(GuiUtils.CURSOR_HAND);
 		comboFileFormat.setAlignmentX(CENTER_ALIGNMENT);
-//		comboFileFormat.setBackground(new Color(100, 149, 237));
 		comboFileFormat.setModel(new DefaultComboBoxModel<SupportedFileTextEditor>(SupportedFileTextEditor.values()));
 		add(comboFileFormat, "cell 4 1 3 1,growx,aligny center");
 		
@@ -1556,6 +1555,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				}
 				
 				parent.getCurrentTabEditor().updateSavedLabelNTab(null);
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
 			}
 		});
 		
@@ -1565,6 +1565,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				textEditorUtils.findRightStyleFromComboNSelect(parent.getCurrentTabEditor().loadedTabObj.loadedFile, !chckbxLockLanguage.isSelected());
 				currentConfiguration.getTextEditorOpt().setDefaultAutoSyntaxSync(!chckbxLockLanguage.isSelected());
+				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(((SupportedFileTextEditor)comboFileFormat.getSelectedItem()).toString());
 			}
 		});
 
@@ -1987,6 +1988,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				
 				if (refreshTheme) {
 					comboStylesScheme.setSelectedItem(ThemesWrapper.getFromListByPath(txtOptions.selectedTheme, themeList));
+				}
+				
+				if(chckbxLockLanguage.isSelected()) {
+					comboFileFormat.setSelectedItem(SupportedFileTextEditor.valueOf(currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync));
 				}
 				
 				textEditorUtils.updateMargin(); // SetValue does not trigger action itself

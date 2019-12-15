@@ -247,6 +247,8 @@ public class MainGuiUtils {
 			i++;
 		}
 		
+		GuiUtils.changeFrameStateLaterUnchecked(MainGUI.frmScryptV, MainGUI.frmScryptV, JFrame.MAXIMIZED_BOTH);
+		MainGUI.frmScryptV.requestFocus();
 		MainGUI.frmScryptV.toFront();
 	}
 	
