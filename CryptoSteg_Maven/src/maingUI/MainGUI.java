@@ -343,8 +343,16 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 							mainGuiUtils.startConfigManagerPanel(true);
 						}
 					}
+					
 					MainGuiGeneralAppStarter.loaderGraphics.update("Restoring Gui Elements From configuration...", 99, 200);
 					updateGuiFromCurrConfig();
+					
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							MainGuiUtils.startSignalListener();
+						}
+					});
 					
 					// Close loader
 					GuiUtils.launchThreadSafeSwing(new Runnable() {

@@ -21,6 +21,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import amfileutils.filechangewatcher.ChangeDTO;
+import amfileutils.filechangewatcher.FileChangeMonitor;
 import dialogutils.JOptionHelper;
 import exception.ProgressBarInterruptedException;
 import frameutils.utils.GuiUtils;
@@ -31,7 +33,9 @@ import guistyle.GUIStyelSettings;
 import mainobj.INItializer;
 import media.Sounds;
 import om.GenericOption;
+import om.SupportedFileTextEditor;
 import resources.GeneralConfig;
+import resources.PropertiesManager;
 import resources.SoundsConfigurator;
 
 public class MainGuiUtils {
@@ -186,6 +190,87 @@ public class MainGuiUtils {
 		} else {
 			mainAppReference.menuBar.setVisible(false);
 			mainAppReference.isImmersiveModeOn.set(true);
+		}
+	}
+	
+	/**
+	 * Start thread with iterative check for externally signaled files to be opened in current instance
+	 * (For now only textEditor is supported)
+	 */
+	public static void startSignalListener() {
+		try {
+			GuiUtils.launchThreadSafeSwing(new Runnable() {
+				
+				@Override
+				public void run() {
+					ArrayList<File> initialMonitoredList = new ArrayList<File>();
+					initialMonitoredList.add(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
+					FileChangeMonitor signalFileChangeMonitor = new FileChangeMonitor(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.getParentFile(), initialMonitoredList);
+
+					logger.info("startSignalListener Thread created and started!");
+					
+					// Only text editor managed for now - missing logic to distinguish file opener type
+					while(MainGUI.mainAppRunning) {
+						try {
+							ChangeDTO changeDTO = signalFileChangeMonitor.checkForFile(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
+							if(changeDTO.isChanged(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE)) {
+								logger.info("Detected new files to load: loading into TextEditor...");
+								loadFilesFromSignal(TextEditor.class);
+								logger.info("Detected new files LOADED into TextEditor!");
+							}
+							Thread.sleep(400);
+						} catch (Exception e) {
+							logger.error("Cannot wait timeout to check for signal changes", e);
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			logger.error("Cannot load files from signal, an error occurred :(", e);
+		}
+	}
+	
+	public static void loadFilesFromSignal(Class<?> targetFrameClass) {
+		PropertiesManager signalManager = new PropertiesManager(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_PATH);
+		boolean breakLoop = false;
+		int i = 0;
+		while(!breakLoop) {
+			String target = signalManager.getProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + i);
+			logger.info("Loading " + target + " into TextEditor...");
+
+			breakLoop = target == null || "".equals(target.trim());
+			
+			File targetFile = new File(target);
+			loadFile(targetFrameClass, targetFile);
+			
+			logger.info(target + " loaded into TextEditor...");
+			i++;
+		}
+		
+		MainGUI.frmScryptV.toFront();
+	}
+	
+	public static void loadFile(Class<?> targetFrameClass, File toLoad) {
+		
+		// TEXT EDITOR LOADING
+		if(targetFrameClass.equals(TextEditor.class)) {
+			logger.info("Loading " + toLoad + " into Text Editor...");
+			
+			MainGUI.mainGuiUtils.startTextEditor(false);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					if (toLoad != null && toLoad.exists() && SupportedFileTextEditor.isSupported(toLoad)) {
+						try {
+							MainGUI.initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
+						} catch (Exception e) {
+							logger.error("Cannot load file into text Editor: " + toLoad, e);
+						}
+					} else {
+						logger.error("FILE not existing or null: Cannot load into text Editor: " + toLoad);
+					}
+				}
+			});
 		}
 	}
 	

@@ -17,18 +17,17 @@ public class FileUtils {
 		if(outFile.exists()) {
 			if (overwrite) {
 				boolean deleted = outFile.delete();
-				boolean recreated = outFile.createNewFile();
-				if(!recreated || !deleted) {
+				if(!deleted) {
 					return false;
 				}
 			}else {
 				return false;
 			}
-		}else {
-			boolean recreated = outFile.createNewFile();
-			if(!recreated) {
-				return false;
-			}
+		}
+
+		boolean recreated = outFile.createNewFile();
+		if(!recreated) {
+			return false;
 		}
 		
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(outFile), System.getProperty("file.encoding"));

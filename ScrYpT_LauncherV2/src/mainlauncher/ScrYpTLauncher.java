@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
@@ -56,6 +57,9 @@ public class ScrYpTLauncher {
 	
 	// ScrYpTLauncher logger
 	static Logger logger = Logger.getLogger(ScrYpTLauncher.class); 
+	
+	public static final String BATCH_LAUNCHER_NAME = "LauncherBatch.bat";
+	public static final String BASH_LAUNCHER_NAME = "LauncherBash.sh";
 	
 	public static String DEFAULT_INI_PATH; 
 	public static String APPLICATION_DIR;
@@ -105,6 +109,11 @@ public class ScrYpTLauncher {
 			System.exit(1);
 		}
 		
+		ARGS = args;
+		argumentsFiles = getFileArrayFromStrings(args);
+
+		checkAlreadyRunning();
+		
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
 
 		GeneralConfig.initLazyGeneralConfig();
@@ -120,9 +129,6 @@ public class ScrYpTLauncher {
 		appLogStart();
 
 		iniFileManager = new IniFileManager(DEFAULT_INI_PATH);
-
-		ARGS = args;
-		argumentsFiles = getFileArrayFromStrings(args);
 		
 		for (int i = 0; i < 20; i++) {
 			String dots = new String(new char[i+1]).replace("\0", ".");
@@ -333,7 +339,7 @@ public class ScrYpTLauncher {
 	 */
 	private static String writeInitBatShAndGetPath(String commandList) throws IOException {
 
-		String initFilePath = (!currentOS.isWindows())? "LauncherBash.sh" : "LauncherBatch.bat";
+		String initFilePath = (!currentOS.isWindows())? BASH_LAUNCHER_NAME : BATCH_LAUNCHER_NAME;
 		logger.info("Creating launcher file : " + initFilePath);
 		
 		// write commands to build bash/batch starter file
@@ -401,5 +407,37 @@ public class ScrYpTLauncher {
 				installedPluginProperties.removeProperty(installedPluginPendingDeleteListKey);
 			}
 		}).start();
+	}
+	
+	/**
+	 * Check if there is already an instance running, and in that case show a message to inform user or open the file into runnig instance
+	 */
+	public static void checkAlreadyRunning() {
+		boolean alreadyRunning = GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE != null && GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.exists();
+		if(alreadyRunning) {
+			
+			boolean runNewInstance = false;
+			
+			if(argumentsFiles != null && argumentsFiles.length > 0) {
+				try {
+					int i = 0;
+					PropertiesManager propertyManager = new PropertiesManager(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
+					for (File currentToOpen : argumentsFiles) {
+						propertyManager.dynamicFileBindingsDef.setProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + i, currentToOpen.getCanonicalPath());
+						i++;
+					}
+					propertyManager.saveAllProperties();
+				} catch (IOException e) {
+					logger.error("{}", e);
+				}
+			} else {
+				int choice = JOptionPane.showConfirmDialog(null, "It seems there is already a running instance of " +GeneralConfig.APPLICATION_NAME + " - Wanna start another instance?");
+				runNewInstance = choice == JOptionPane.YES_OPTION;
+			}
+			
+			if (!runNewInstance) {
+				System.exit(0);
+			}
+		}
 	}
 }

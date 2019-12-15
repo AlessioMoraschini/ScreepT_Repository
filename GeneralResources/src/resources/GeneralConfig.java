@@ -96,7 +96,9 @@ public class GeneralConfig {
 	/**
 	 * This file is created at SW start, and deleted on close to signal other external programs
 	 */
-	public static File SCRYPT_ACTIVE_SIGNAL_FILE = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.scrypt");
+	public static String SCRYPT_ACTIVE_SIGNAL_PATH = USER_PERSONAL_DIR_SCRYPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.scrypt";
+	public static File SCRYPT_ACTIVE_SIGNAL_FILE = new File(SCRYPT_ACTIVE_SIGNAL_PATH);
+	public static String SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX = "FILE_TO_LAUNCH_";
 	
 	// Ini files configuration
 	public static String DEFAULT_INI;

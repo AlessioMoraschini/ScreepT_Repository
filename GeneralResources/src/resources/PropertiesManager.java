@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,6 +30,8 @@ public class PropertiesManager {
 	public File dynamicFileBindingsDefSource;
 	public Properties dynamicFileBindingsDef;
 	public PropertiesConfigurationLayout layoutApacheCommons;
+	
+	public SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 	/**
 	 * To check if definition had success, check if field <b>dynamicFileBindingsDefSource</b> is null after object's creation:
@@ -57,6 +60,9 @@ public class PropertiesManager {
 	public PropertiesManager(File bindingsFileDefinitionSource) {
 		dynamicFileBindingsDefSource = bindingsFileDefinitionSource;
 		dynamicFileBindingsDef = new Properties();
+
+		PropertiesConfiguration config = new PropertiesConfiguration();
+		layoutApacheCommons = new PropertiesConfigurationLayout(config);
 		
 		if (!prepareDefObj()) {
 			dynamicFileBindingsDefSource = null;
@@ -66,6 +72,9 @@ public class PropertiesManager {
 	public PropertiesManager(Properties bindingsFileDefinitionDef) {
 		dynamicFileBindingsDef = bindingsFileDefinitionDef;
 		dynamicFileBindingsDefSource = new File("");
+
+		PropertiesConfiguration config = new PropertiesConfiguration();
+		layoutApacheCommons = new PropertiesConfigurationLayout(config);
 	}
 	
 	/**
@@ -73,12 +82,14 @@ public class PropertiesManager {
 	 * @return
 	 */
 	public String getProperty(String key) {
+		logger.debug("Loading property: " + key + " From properties file: " + dynamicFileBindingsDefSource);
 		String res = "";
 		if(dynamicFileBindingsDef != null) {
 			res = dynamicFileBindingsDef.getProperty(key);
 			res = (res != null)? res : "";
 		}
 		
+		logger.debug("Loaded property: " + res);
 		return res;
 	}
 
@@ -111,6 +122,7 @@ public class PropertiesManager {
 					return true;
 
 				} catch (IOException ex) {
+					logger.error("Cannot prepare properties file mapping !!");
 					return false;
 				}
 			} 
@@ -128,7 +140,7 @@ public class PropertiesManager {
 	 */
 	public void savePropertiesLayoutApache(String propertyName, String value) {
 		try {
-			GeneralConfig.linkedMappings.setProperty(propertyName, value);
+			dynamicFileBindingsDef.setProperty(propertyName, value);
         	layoutApacheCommons.load(new InputStreamReader(new FileInputStream(dynamicFileBindingsDefSource)));
         	layoutApacheCommons.getConfiguration().setProperty(propertyName, value);
         	logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);
@@ -140,16 +152,37 @@ public class PropertiesManager {
 	}
 	
 	public void saveProperty(String propertyName, String value) {
-		GeneralConfig.linkedMappings.setProperty(propertyName, value);
-		GeneralConfig.linkedMappings.put(propertyName, value);
+		dynamicFileBindingsDef.setProperty(propertyName, value);
+		dynamicFileBindingsDef.put(propertyName, value);
 		java.io.OutputStream out = null;
 		try {
 			logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);
-			out = new FileOutputStream(GeneralConfig.resourcesMappingDefPath);
-			GeneralConfig.linkedMappings.store(out, "# Updated on "+GeneralConfig.GENERIC_FORMATTER.format(new Date()));
+			out = new FileOutputStream(dynamicFileBindingsDefSource);
+			dynamicFileBindingsDef.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));
         	logger.info("Saved!");
 		} catch (IOException e1) {
 			logger.error(e1);
+		} finally {
+			try {
+				out.flush();
+				out.close();
+			} catch (IOException e1) {
+				logger.error(e1);
+			}
+		}
+	}
+	
+	public boolean saveAllProperties() {
+		java.io.OutputStream out = null;
+		try {
+			logger.info("Saving properties in " + dynamicFileBindingsDefSource + "\n\n");
+			out = new FileOutputStream(dynamicFileBindingsDefSource);
+			dynamicFileBindingsDef.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));
+        	logger.info("Saved!");
+        	return true;
+		} catch (IOException e1) {
+			logger.error(e1);
+			return false;
 		} finally {
 			try {
 				out.flush();

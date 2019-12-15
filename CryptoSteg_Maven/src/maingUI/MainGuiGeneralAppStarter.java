@@ -6,8 +6,10 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.commons.io.FileUtils;
@@ -18,6 +20,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import amfileutils.filechangewatcher.FileChangeMonitor;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
@@ -37,6 +40,8 @@ import updater.UpdatesManager;
 import variousutils.HandleString;
 
 public class MainGuiGeneralAppStarter {
+	
+	public static final String MAIN_SIGNAL_PROPERTY = "MAIN_APP_IS_ACTIVE";
 
     public static Level LOG_LEVEL_AT_START;
     private static boolean isLoggerReady = false;
@@ -310,7 +315,7 @@ public class MainGuiGeneralAppStarter {
 		try {
 			GeneralConfig.mkDirUserDirScrYpT();
 			GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.createNewFile();
-			FileStuff.writeStringToFile("MAIN_APP_IS_ACTIVE", GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE, true);
+			FileStuff.writeStringToFile(MAIN_SIGNAL_PROPERTY, GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE, true);
 		} catch (Exception e) {
 			logger.error("Error writing signal file ["+GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.getAbsolutePath()+"]");
 		}

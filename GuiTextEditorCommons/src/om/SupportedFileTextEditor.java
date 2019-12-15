@@ -1,7 +1,9 @@
 package om;
 
+import java.io.File;
 import java.util.ArrayList;
 
+import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 import resources.GeneralResourcesPaths;
@@ -80,6 +82,21 @@ public enum SupportedFileTextEditor {
 		}
 		
 		return syntaxList;
+	}
+	
+	public static boolean isSupported(File target) {
+		boolean supported = false;
+		if(target != null && target.exists()) {
+			String extension = FilenameUtils.getExtension(target.getName());
+			for (String supportedExt : getSupportedExtensions()) {
+				if (extension.toLowerCase().contains(supportedExt.toLowerCase())) {
+					supported = true;
+					break;
+				} 
+			}
+		}
+		
+		return supported;
 	}
 	
 }

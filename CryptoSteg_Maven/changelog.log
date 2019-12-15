@@ -1,4 +1,6 @@
-* 2019-12-10  (HEAD -> refs/heads/master, refs/remotes/origin/master) Launcher - solved rare bug (launch fail)
+* 2019-12-15  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved launcher executable batch file to use batch root as source
+| 
+* 2019-12-10  Launcher - solved rare bug (launch fail)
 | 
 * 2019-12-10  (tag: refs/tags/0.9.12) Full Screen, immersiveMode, and Dialogs location bugs fixed
 | 
