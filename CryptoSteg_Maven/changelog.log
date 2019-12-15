@@ -1,4 +1,6 @@
-* 2019-12-15  (HEAD -> refs/heads/master, refs/remotes/origin/master) Added instance check at start and open file into current instance
+* 2019-12-15  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved direct open file + added combo syntax backup if autoSyntax locked
+| 
+* 2019-12-15  Added instance check at start and open file into current instance
 | 
 * 2019-12-15  (tag: refs/tags/0.9.13) Improved launcher executable batch file to use batch root as source
 | 

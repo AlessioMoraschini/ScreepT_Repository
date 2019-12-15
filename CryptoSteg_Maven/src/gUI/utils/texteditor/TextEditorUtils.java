@@ -146,11 +146,11 @@ public class TextEditorUtils {
 		chosenType = (SupportedFileTextEditor)currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
 		final TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 
-		if (source == null) {
-			chosenType = SupportedFileTextEditor.TXT;
-		
-		}else {
-			if (autosync) {
+		if (autosync) {
+			if (source == null) {
+				chosenType = SupportedFileTextEditor.TXT;
+
+			} else {
 				// IF AUTOSYNC FIND RIGHT TYPE BY FILE EXTENSION AND SELECT
 				for (SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
 					if (FilenameUtils.getExtension(source.getName()).toLowerCase().endsWith(current.senzapunto.toLowerCase())) {
@@ -158,18 +158,20 @@ public class TextEditorUtils {
 						chosenType = current;
 					}
 				}
+			} 
+			
+			// APPLY SELECTED
+			currentTextEditor.subHeaderPanel.comboFileFormat.setSelectedItem(chosenType);
+			if(!loadedTabObj.textArea.getSyntaxEditingStyle().equals(chosenType.syntax)) {
+				logger.info(chosenType+" -> File format color scheme applied, it was different from current applied");
+				applyFileFormatFromCombo();
+			}else {
+				logger.info(chosenType+" -> File format color scheme not applied, it was the same of current applied");
 			}
-		}
 		
-		// APPLY SELECTED
-		currentTextEditor.subHeaderPanel.comboFileFormat.setSelectedItem(chosenType);
-		if(!currentTextEditor.subHeaderPanel.chckbxLockLanguage.isSelected() && !loadedTabObj.textArea.getSyntaxEditingStyle().equals(chosenType.syntax)) {
-			logger.info(chosenType+" -> Style applied, it was different from current applied");
-			applyFileFormatFromCombo();
-		}else {
-			logger.info(chosenType+" -> Style not applied, it was the same of current applied");
+		} else {
+			logger.info("Autosync was false, File format color scheme not applied.");
 		}
-		
 	}
 	
 	public void setRightPanelContent(PanelType wantedType) {
@@ -623,11 +625,9 @@ public class TextEditorUtils {
 		
 		JPanel tabPanel = currentTabEditor.getPanelFromTabHeader(index);
 		if (currentTabEditor.loadedTabObj.loadedFile != null && currentTabEditor.loadedTabObj.loadedFile.exists()) {
-			tabPanel.setToolTipText(currentTabEditor.loadedTabObj.loadedFile.getAbsolutePath()
-					+ TextEditorTooltips.tooltipScrollTabsWithMouseWheel);
+			tabPanel.setToolTipText(currentTabEditor.loadedTabObj.loadedFile.getAbsolutePath());
 		} else {
-			tabPanel.setToolTipText(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME
-					+ TextEditorTooltips.tooltipScrollTabsWithMouseWheel);
+			tabPanel.setToolTipText(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME);
 		}
 	}
 	

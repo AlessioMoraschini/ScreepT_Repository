@@ -265,7 +265,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 								autosaveModule.start();
 							}else if(!currentConfiguration.getFileOpt().isFlagAutosave() && autosaveModule.isAlive()) {
 								// if thread autosave is started and autosave is releved as OFF -> kill autosave thread
-								logger.warn("## AUTOSAVE-MANAGER: detected flagAutosave=false & Autosave is alive ");
+								logger.warn("## AUTOSAVE-MANAGER: detected flagAutosave=false & Autosave is alive -> interrupting");
 								autosaveModule.interrupt();
 								logger.warn("## AUTOSAVE-MANAGER: [AUTOSAVE OFF] autosave module interrupted.");
 							}else {

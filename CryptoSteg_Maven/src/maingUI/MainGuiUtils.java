@@ -218,7 +218,7 @@ public class MainGuiUtils {
 								loadFilesFromSignal(TextEditor.class);
 								logger.info("Detected new files LOADED into TextEditor!");
 							}
-							Thread.sleep(400);
+							Thread.sleep(GeneralConfig.SIGNAL_LISTENER_PERIOD);
 						} catch (Exception e) {
 							logger.error("Cannot wait timeout to check for signal changes", e);
 						}

@@ -227,7 +227,7 @@ public class FileChangeMonitor {
 	 */
 	public ChangeDTO checkForFile(File target) throws Exception{
 		
-		logger.debug("checkForFile() -> starting check...");
+//		logger.debug("checkForFile() -> starting check...");
 		
 		ChangeDTO changedsResponse = new ChangeDTO();
 		if(target == null) {
@@ -265,7 +265,7 @@ public class FileChangeMonitor {
 			}// End synchronized
 		}
 		
-		logger.debug("checkForEverithing() -> finished with result: " + changedsResponse);
+//		logger.debug("checkForEverithing() -> finished with result: " + changedsResponse);
 		
 		return changedsResponse;
 	}

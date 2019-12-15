@@ -160,6 +160,11 @@ public class CustomTabbedEditor {
 					changeMonManager.checkChanges();
 					
 					alreadyrefreshing = false;
+					
+					try {
+						TabUtils.scrollToNextTab(mainTabList);
+					} catch (Exception e1) {
+					}
 				}
 			}
 		});
@@ -282,8 +287,7 @@ public class CustomTabbedEditor {
 	public void applyStyleToTabs() {
 		if (mainTabList != null) {
 			try {
-				mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, mainTabList,
-						TabUtils.TAB_BUTTON_CLOSE_ORDER));
+				mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -750,7 +754,6 @@ public class CustomTabbedEditor {
 		} finally {
 			originalTxtArea.setCursor(GuiUtils.CURSOR_TEXT);
 		}
-		
 	}
 	
 	public void resetTabHeaderString(Integer sourceIndex) {

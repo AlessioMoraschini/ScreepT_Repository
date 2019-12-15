@@ -1,8 +1,11 @@
 package tabbedpaneutils;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.JTabbedPane;
 
 public class TabbedPaneMouseWheelListener implements MouseWheelListener{
@@ -16,16 +19,39 @@ public class TabbedPaneMouseWheelListener implements MouseWheelListener{
 
         if (newIndex < 0) {
         	pane.setSelectedIndex(0);
-        }
-        
-        else if (newIndex >= pane.getTabCount()) {
+        } else if (newIndex >= pane.getTabCount()) {
         	pane.setSelectedIndex(pane.getTabCount() - 1);
-        }
-        
-        else {
+        } else {
         	pane.setSelectedIndex(newIndex);
         }
         
+        try {
+			if(newIndex > 0) {
+				scrollToNextTab(pane);
+			} else {
+				scrollToPreviousTab(pane);
+			}
+		} catch (Exception e1) {
+		}
+        
+	}
+	
+	private void clickArrowButton(String actionKey, final JTabbedPane tabs) {
+	    ActionMap map = tabs.getActionMap();
+	    if (map != null) {
+	        Action action = map.get(actionKey);
+	        if (action != null && action.isEnabled()) {
+	            action.actionPerformed(new ActionEvent(tabs, ActionEvent.ACTION_PERFORMED, "", 0, 0));
+	        }
+	    }
+	}
+	
+	public void scrollToNextTab(final JTabbedPane tabs) {
+		clickArrowButton("scrollTabsForwardAction", tabs);
+	}
+
+	public void scrollToPreviousTab(final JTabbedPane tabs) {
+		clickArrowButton("scrollTabsBackwardAction", tabs);
 	}
 
 }

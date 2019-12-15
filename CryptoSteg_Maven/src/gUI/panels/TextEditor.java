@@ -82,7 +82,6 @@ import guistyle.GUIStyelSettings;
 
 import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 public class TextEditor extends JPanel {
 	private static final long serialVersionUID = 4754281928324097410L;
@@ -222,8 +221,8 @@ public class TextEditor extends JPanel {
 		CustomTabbedEditor initialTabbedEditor = new CustomTabbedEditor(this, currentConfiguration, new TabbedEditorOwnerScrYpT(this));
 		tabbedEditorsList.add(initialTabbedEditor);
 		
+		getCurrentTabEditor().applyStyleToTabs();
 		getCurrentTabEditor().mainTabList.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		getCurrentTabEditor().mainTabList.setUI(new BasicTabbedPaneUI());
 
 		// PARENT CONTAINER (main lv.1, right)
 		splitPaneMainContainer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -745,10 +744,9 @@ public class TextEditor extends JPanel {
 		}
 		
 		try {
-			getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(
-					null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
+			getCurrentTabEditor().mainTabList.setUI(new CustomTabbedPaneUI_v1(null, null, null, getCurrentTabEditor().mainTabList, TabUtils.TAB_BUTTON_CLOSE_ORDER));
 		} catch (Exception e1) {
-			logger.warn(e1);
+			logger.warn("{}", e1);
 		}
 		
 		if (refreshGuiStyle) {

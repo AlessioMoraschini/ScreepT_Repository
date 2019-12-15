@@ -99,6 +99,7 @@ public class GeneralConfig {
 	public static String SCRYPT_ACTIVE_SIGNAL_PATH = USER_PERSONAL_DIR_SCRYPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.scrypt";
 	public static File SCRYPT_ACTIVE_SIGNAL_FILE = new File(SCRYPT_ACTIVE_SIGNAL_PATH);
 	public static String SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX = "FILE_TO_LAUNCH_";
+	public static int SIGNAL_LISTENER_PERIOD = resourcesFilePathsMappings.getIntVarFromProps("SIGNAL_LISTENER_PERIOD", 300);
 	
 	// Ini files configuration
 	public static String DEFAULT_INI;

@@ -44,7 +44,7 @@ public class TabbedDragNDropManager extends JTabbedPane{
     // constructor
     public TabbedDragNDropManager(Runnable dropAction, Component targetDrop) {
     	
-    	super(JTabbedPane.TOP);
+    	super(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
     	loadedFilesList = new ArrayList<File>();
     	dropRunner = dropAction;
     	targetDropComponent = (targetDrop == null)? this : targetDrop;
