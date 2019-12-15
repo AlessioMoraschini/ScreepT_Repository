@@ -34,6 +34,7 @@ public class PluginManager {
 	
 	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
 	public static final String installedPluginPropsListKey = "INSTALLED_LIST";
+	public static final String installedPluginPropsListSeparator = ",";
 	public static final String installedPluginPendingDeleteListKey = "PLUGINS_PENDING_DELETE_AT_START";
 
 	public static final HashingFunction DEFAULT_HASHING_F_PLUGINS = HashingFunction.MD5;
@@ -126,7 +127,7 @@ public class PluginManager {
 		ArrayList<String> relativeNewCopied = Various.getPathsRelativeToOtherFile(Various.listFiles(unzippedPlugin, new ArrayList<>()), unzippedPlugin);
 		plugin.setInstallationCompleted(true);
 		addToInstalledList(plugin);
-		installedPluginProperties.saveProperty(plugin.getName(), PropertiesManagerFork.listToString(relativeNewCopied, ","));
+		installedPluginProperties.saveProperty(plugin.getName(), PropertiesManagerFork.listToString(relativeNewCopied, installedPluginPropsListSeparator));
 		
 		updateCache(plugin);
 		
@@ -142,7 +143,7 @@ public class PluginManager {
 			return false;
 		}
 		
-		ArrayList<String> strPluginFilesList = installedPluginProperties.getStringList(pluginToRemove.getName(), ",");
+		ArrayList<String> strPluginFilesList = installedPluginProperties.getStringList(pluginToRemove.getName(), installedPluginPropsListSeparator);
 		for(String toDelete : strPluginFilesList) {
 			File filePending = new File(toDelete);
 			try {
@@ -283,7 +284,7 @@ public class PluginManager {
 				
 				PropertiesManagerFork propsManager = new PropertiesManagerFork(downloadedManifest);
 				
-				ArrayList<String> pluginNames = propsManager.getStringList(PLUGIN_LIST_MANIFEST_KEY, ",");
+				ArrayList<String> pluginNames = propsManager.getStringList(PLUGIN_LIST_MANIFEST_KEY, installedPluginPropsListSeparator);
 				for(String pluginName : pluginNames) {
 					String checkSum = propsManager.getProperty(pluginName);
 					String completeUrl = WEB_PLUGINS_BASE_URL + pluginName;
@@ -344,7 +345,7 @@ public class PluginManager {
 	
 	public ArrayList<String> getInstalledPluginsList() {
 		installedPluginProperties.readFromFile();
-		return installedPluginProperties.getStringList(installedPluginPropsListKey, ",");
+		return installedPluginProperties.getStringList(installedPluginPropsListKey, installedPluginPropsListSeparator);
 	}
 	
 	private void addToInstalledList(PluginDTO plugin) {
@@ -352,7 +353,7 @@ public class PluginManager {
 			installedPluginNames.add(plugin.getName());
 		}
 		
-		String stringList = PropertiesManagerFork.listToString(installedPluginNames, ",");
+		String stringList = PropertiesManagerFork.listToString(installedPluginNames, installedPluginPropsListSeparator);
 		installedPluginProperties.saveProperty(installedPluginPropsListKey, stringList);
 		
 		plugin.installationCompleted = true;
@@ -363,7 +364,7 @@ public class PluginManager {
 			installedPluginNames.remove(plugin.getName());
 		}
 		
-		String stringList = PropertiesManagerFork.listToString(installedPluginNames, ",");
+		String stringList = PropertiesManagerFork.listToString(installedPluginNames, installedPluginPropsListSeparator);
 		installedPluginProperties.saveProperty(installedPluginPropsListKey, stringList);
 		installedPluginProperties.removeProperty(plugin.getName());
 		
@@ -553,6 +554,6 @@ public class PluginManager {
 			relativePahs.add(Various.getPathRelativeToOtherFile(current, relativeReference));
 		}
 		
-		return PropertiesManagerFork.listToString(relativePahs, ",");
+		return PropertiesManagerFork.listToString(relativePahs, installedPluginPropsListSeparator);
 	}
 }

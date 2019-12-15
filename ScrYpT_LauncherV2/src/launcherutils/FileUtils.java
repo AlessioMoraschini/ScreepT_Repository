@@ -10,8 +10,77 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.apache.log4j.Logger;
+
 public class FileUtils {
 	
+	static Logger logger = Logger.getLogger(FileUtils.class); 
+	
+	/**
+	 * This method is meant to delete all folder content, deleting recursively also the folders inside it.
+	 * the given folder won't be deleted, only it's content will be.
+	 * 
+	 * @param folder the source folder to be emptied
+	 * @return deleted: false if at least one deletion have incurred in some errors
+	 */
+	public static boolean deleteDirContentRecursive(File folder) {
+		boolean deleted = true;
+		long startTime = System.currentTimeMillis();
+		logger.info("deleteDirContentRecursive -> Start...");
+		
+		File[] files = folder.listFiles();
+	    if(files!=null) { //some JVMs return null for empty dirs
+	        for(File f: files) {
+	            if(f.isDirectory()) {
+	                boolean del = deleteDirContentInclRoot(f);
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            } else {
+	                boolean del = f.delete();
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            }
+	        }
+	    }
+
+	    logger.info("deleteDirContentRecursive -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+	    return deleted;	
+	}
+	
+	/**
+	 * same as deleteDirContentRecursive but this one deletes also the root folder
+	 * @param folder
+	 * @return
+	 */
+	public static boolean deleteDirContentInclRoot(File folder) {
+		boolean deleted = true;
+		long startTime = System.currentTimeMillis();
+		logger.info("deleteDirContentInclRoot -> Start...");
+		
+		File[] files = folder.listFiles();
+	    if(files!=null) { //some JVMs return null for empty dirs
+	        for(File f: files) {
+	            if(f.isDirectory()) {
+	                boolean del = deleteDirContentInclRoot(f);
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            } else {
+	                boolean del = f.delete();
+	                if(del==false) {
+	                	deleted = false;
+	                }
+	            }
+	        }
+	        // at the end delete given container folder too
+	        folder.delete();
+	    }
+
+	   logger.info("deleteDirContentInclRoot -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+	    return deleted;	
+	}
 	
 	public static boolean writeStringToFile(String source, File outFile, boolean overwrite) throws IOException {
 		if(outFile.exists()) {

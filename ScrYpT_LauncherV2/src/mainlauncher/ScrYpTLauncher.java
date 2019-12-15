@@ -405,6 +405,13 @@ public class ScrYpTLauncher {
 				}
 				
 				installedPluginProperties.removeProperty(installedPluginPendingDeleteListKey);
+
+				try {
+					FileUtils.deleteDirContentRecursive(new File(GeneralConfig.PLUGINS_DIR));
+					logger.info("PLUGINS folder cleaned");
+				} catch (Exception e) {
+					logger.error("Cannot clean PLUGINS folder");
+				}
 			}
 		}).start();
 	}

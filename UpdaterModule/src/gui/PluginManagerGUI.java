@@ -238,7 +238,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	public PluginDTO getPluginDTO(String nameWithoutExtension) {
 		return pluginManager.retrieveFromCacheByNameNoExtension(nameWithoutExtension);
 	}
-
+	
 	@Override
 	public void setInstalling(boolean installing) {
 		isInstalling.set(installing);

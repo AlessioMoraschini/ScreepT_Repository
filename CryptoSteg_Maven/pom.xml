@@ -453,7 +453,7 @@
             </configuration>            
           </execution>
           
-      <!-- (C-6) SCRYPT'S UPDATES packaging - To hash, zip and upload on server each time -->
+      <!-- (C-6) SCRYPT'S UPDATES packaging - To manually hash, zip and upload on server each time -->
           <execution>
             <id>copy-resources -> ${export.updates.folder}</id>
             <phase>install</phase>
@@ -539,8 +539,35 @@
 			    </resources>     
             </configuration>            
           </execution>
+     
+      <!-- (C-8) PLUGINS - Unzipped folders and manifest export - to manually hash, zip, and upload on server each time wanna update them -->
+          <execution>
+            <id>copy-resources -> ${export.plugins.folder}</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+            	<encoding>UTF-8</encoding>
+            	<includeEmptyDirs>true</includeEmptyDirs>
+            	<skip>${export.plugins.skip}</skip>
+            	<overwrite>true</overwrite>
+              	<outputDirectory>
+              		${export.plugins.folder}
+              	</outputDirectory>
+			    <resources>
+				     <resource>
+						<filtering>false</filtering>
+				        <directory>./PLUGINS_VANILLA</directory>
+					</resource>
+			    </resources>     
+            </configuration>            
+          </execution>
+          
+          <!-- END COPY RESOURCES -->
         </executions>
       </plugin>
+
       
       <!-- Generate Build number -->
       <plugin>

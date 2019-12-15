@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.commons.io.FileUtils;
@@ -20,9 +19,9 @@ import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
-import amfileutils.filechangewatcher.FileChangeMonitor;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
+import forks.merged.PropertiesManagerFork;
 import frameutils.utils.GuiUtils;
 import generic.ParametricExceptionThread;
 import gui.utils.LauncherLoaderFrame;
@@ -73,6 +72,7 @@ public class MainGuiGeneralAppStarter {
 	// LIbs availability
 	public static boolean tesseractAvailable;
 	public static boolean voiceSpeakerAvailable;
+	public static boolean jnetPcapAvailable;
 	
 	public static void main(String[] args) {
 		
@@ -151,6 +151,9 @@ public class MainGuiGeneralAppStarter {
 				// Check hard coded plugins presence
 				tesseractAvailable = LibChecker.checkTesseract();
 				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
+				jnetPcapAvailable = LibChecker.checkJnetPcap();
+				
+				updateInstalledPlugins();
 			} catch (Exception e) {
 				logger.warn("Cannot check avalaibility of plugins :(");
 			}
@@ -338,5 +341,28 @@ public class MainGuiGeneralAppStarter {
 		}
 			
 		return endTime;
+	}
+
+	/**
+	 * Check if plugins are available and update installed list
+	 */
+	public static void updateInstalledPlugins() {
+		ArrayList<String> installedPlugins = new ArrayList<>();
+		
+		if(MainGuiGeneralAppStarter.tesseractAvailable) {
+			installedPlugins.add("Tesseract.zip");
+		}
+		
+		if(MainGuiGeneralAppStarter.jnetPcapAvailable) {
+			installedPlugins.add("JnetPcap.zip");
+		}
+
+		if(MainGuiGeneralAppStarter.voiceSpeakerAvailable) {
+			installedPlugins.add("TextToSpeech.zip");
+		}
+		
+		PluginManager.installedPluginProperties.saveProperty(
+				PluginManager.installedPluginPropsListKey, PropertiesManagerFork.listToString(
+						installedPlugins, PluginManager.installedPluginPropsListSeparator));
 	}
 }
