@@ -243,7 +243,6 @@ public class MainGuiUtils {
 			File targetFile = new File(target);
 			loadFile(targetFrameClass, targetFile);
 			
-			logger.info(target + " loaded into TextEditor...");
 			i++;
 		}
 		

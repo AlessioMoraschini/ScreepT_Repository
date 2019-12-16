@@ -279,12 +279,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		add(btnStyledCopy, "cell 13 1,grow");
 		
 		comboFileFormat = new JComboBox<SupportedFileTextEditor>();
-		comboFileFormat.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT);
 		comboFileFormat.setMinimumSize(new Dimension(75, 12));
 		comboFileFormat.setToolTipText(TextEditorTooltips.tooltipComboFileFormat);
 		comboFileFormat.setCursor(GuiUtils.CURSOR_HAND);
 		comboFileFormat.setAlignmentX(CENTER_ALIGNMENT);
 		comboFileFormat.setModel(new DefaultComboBoxModel<SupportedFileTextEditor>(SupportedFileTextEditor.values()));
+		comboFileFormat.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(10).deriveFont(Font.PLAIN));
 		add(comboFileFormat, "cell 4 1 3 1,growx,aligny center");
 		
 		btnNewTab = new JButton("");
@@ -447,12 +447,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboStylesScheme = new JComboBox<ThemesWrapper>();
 		comboStylesScheme.setMinimumSize(new Dimension(33, 12));
 		comboStylesScheme.setMaximumSize(new Dimension(160, 32767));
-		comboStylesScheme.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT);
 		themeList = initComboStyleScheme();
 		comboStylesScheme.setToolTipText(TextEditorTooltips.tooltipComboStyleScheme);
 		comboStylesScheme.setCursor(GuiUtils.CURSOR_HAND);
 		comboStylesScheme.setAlignmentX(CENTER_ALIGNMENT);
-//		comboStylesScheme.setBackground(new Color(100, 149, 237));
+		comboStylesScheme.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(10).deriveFont(Font.PLAIN));
 		add(comboStylesScheme, "cell 9 1 3 1,growx,aligny center");
 
 		btnRemoveSpaces = new JButton("");
