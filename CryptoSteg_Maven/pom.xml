@@ -323,7 +323,7 @@
 					    <directory>./</directory>
 					    <includes>
 					        <include>resourcesFilePathsMappings.properties</include>
-					        <include>LAUNCHER/**/*</include>
+					        <include>LAUNCHER/Launcher_Configuration.ini</include>
 					    </includes>
 					    <excludes>
 					    	<exclude>/**/*humbs.db</exclude>
@@ -348,6 +348,7 @@
 					    <excludes>
 					    	<exclude>IMG/**/*.png</exclude>
 					    	<exclude>/**/*humbs.db</exclude>
+					    	<exclude>LAUNCHER/Launcher_Configuration.ini</exclude>
 					    </excludes>
 					</resource>
 			    </resources>     

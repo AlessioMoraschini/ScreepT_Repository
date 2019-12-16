@@ -1,6 +1,8 @@
-* 2019-12-15  (HEAD -> refs/heads/master) BUGFIX plugins
+* 2019-12-16  (HEAD -> refs/heads/master, refs/remotes/origin/master) Fixed plugin bug: added installed check at start
 | 
-* 2019-12-15  (refs/remotes/origin/master) + Solved graphics scroll bug - Little problems still persisting with added LAFs
+* 2019-12-15  BUGFIX plugins
+| 
+* 2019-12-15  + Solved graphics scroll bug - Little problems still persisting with added LAFs
 | 
 * 2019-12-15  Improved direct open file + added combo syntax backup if autoSyntax locked
 | 
