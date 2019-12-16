@@ -43,7 +43,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.drjekyll.fontchooser.FontDialog;
 import org.fife.rsta.ui.GoToDialog;
@@ -1816,8 +1815,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					// update signal value
 					parent.getCurrentTabEditor().alreadySaving = true;
 					boolean done = false;
-					String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))? loadedTabObj.loadedFile.getName() : "New."+comboFileFormat.getSelectedItem().toString().toLowerCase();
-					exportNamePreset = ("".equals(FilenameUtils.getExtension(exportNamePreset)))? exportNamePreset.concat(comboFileFormat.getSelectedItem().toString().toLowerCase()): exportNamePreset;
+					String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))?
+							loadedTabObj.loadedFile.getName() : "NewFile."+comboFileFormat.getSelectedItem().toString().toLowerCase();
+					exportNamePreset = FileStuff.ensureValidExtension(exportNamePreset, comboFileFormat.getSelectedItem().toString());
+
 					try {
 						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, exportNamePreset);
 

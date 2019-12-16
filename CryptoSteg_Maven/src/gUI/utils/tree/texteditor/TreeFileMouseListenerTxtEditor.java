@@ -444,25 +444,25 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				File selected = new File(""); 
 				if(selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
 					selected = selectedNode.mFile;
-				}else if(currentTabEditor.loadedTabObj.loadedFile != null) {
-					selected = currentTabEditor.loadedTabObj.loadedFile;
 				}else {
 					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					return;
 				}
 				
-				selected = FileStuff.renameJavaObjFile(selected);
 				String newName = JOptionPane.showInputDialog("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
 				if(newName == null) {
 					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					return;
 				}
-				newName = (!newName.equals(""))? newName : "NewFile.txt";
-				selected = new File(selected.getParentFile().getAbsolutePath() + "/" + newName);
+				newName = FileStuff.ensureValidExtension(newName, textEditor.subHeaderPanel.comboFileFormat.getSelectedItem().toString());
+				String separator = File.separator;
+				// If file use parent, if directory use selected as root to insert into
+				selected = (selected.isDirectory()) ? 
+						new File(selected.getAbsolutePath() + separator + newName) : new File(selected.getParentFile().getAbsolutePath() + separator + newName);
 				selected = FileStuff.renameJavaObjFile(selected);
 				
 				try {
-					// create, load, and refresh tree
+					// create and load new item
 					if (!selected.createNewFile()) {
 						String msg = "File not created";
 						logger.warn(msg);
@@ -471,9 +471,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 						return;
 					}
 					currentTabEditor.loadFile(selected);
-					if (currentTabEditor.loadedTabObj != null) {
-						textEditor.textEditorUtils.refreshTree(currentTabEditor.loadedTabObj.loadedFile, false);
-					}
+					
 				} catch (IOException e1) {
 					String msg = "Error creating new file";
 					logger.error(msg, e1);
@@ -481,6 +479,16 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				}
 				
 				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				
+				// REFRESH
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						if (currentTabEditor.loadedTabObj != null) {
+							textEditor.textEditorUtils.refreshTree(currentTabEditor.loadedTabObj.loadedFile, false);
+						}
+					}
+				});
 						
 			}
 		};

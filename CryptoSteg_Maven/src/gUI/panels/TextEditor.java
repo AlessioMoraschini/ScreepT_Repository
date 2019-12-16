@@ -958,7 +958,7 @@ public class TextEditor extends JPanel {
 			} catch (Exception e) {
 				logger.warn("Cannot select default file " + toOpenAtStart, e);
 			}
-		}else {
+		} else {
 			
 			File clipboard = new File(GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + File.separator + "MainClipboard.txt");
 			if (clipboard.exists()) {
@@ -968,6 +968,7 @@ public class TextEditor extends JPanel {
 				loadedAlmostOne = true;
 			}
 			currentTabbedEditor.mainTabList.setSelectedIndex(0);
+			
 		}
 		
 		// From now document listener will be active
@@ -977,7 +978,6 @@ public class TextEditor extends JPanel {
 			public void run() {
 				// RE-Enable refreshing
 				isPreloading = false;
-//				getCurrentTabEditor().tabRefreshAfterUpdate();
 				textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);
 			}
 		});
@@ -995,8 +995,8 @@ public class TextEditor extends JPanel {
 		}
 		
 		if (currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.getList().size() == 0) {
-			currentConfiguration.getTextEditorOpt().addFileToLimitedList(GeneralConfig.USER_DESKTOP_FILE, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces,
-					"lastSelectedWorkspaces");
+			currentConfiguration.getTextEditorOpt().addFileToLimitedList(
+					GeneralConfig.USER_DESKTOP_FILE, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
 			mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 		}
 	}

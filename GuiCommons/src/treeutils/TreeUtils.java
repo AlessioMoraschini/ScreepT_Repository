@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.swing.JTree;
+import javax.swing.ToolTipManager;
 import javax.swing.text.Position.Bias;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
@@ -43,6 +44,12 @@ public class TreeUtils {
 		return nodes.isEmpty() ? null : new TreePath(nodes.toArray());
 	}
 	
+	public static void enableTooltipsOnTree(JTree tree) {
+		if(tree != null) {
+			ToolTipManager.sharedInstance().registerComponent(tree);
+		}
+	}
+	
 	public static void scrollCenteredToCurrentSelection(JTree tree, boolean scrollLeft) {
 
 		TreePath selectionPath = tree.getLeadSelectionPath();
@@ -51,6 +58,7 @@ public class TreeUtils {
 			
 			tree.makeVisible(selectionPath);
 			Rectangle bounds = tree.getPathBounds(selectionPath);
+			
 			if (bounds != null) {
 				
 				int firstVisibleRow = tree.getRowForLocation(0, bounds.y);
@@ -327,6 +335,8 @@ public class TreeUtils {
 			return nodePath;
 		} catch (Exception e) {
 			return tree.getPathForRow(0);
+		} finally {
+			tree.scrollRowToVisible(tree.getLeadSelectionRow());
 		}
 		
 	}

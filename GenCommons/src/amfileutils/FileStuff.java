@@ -325,6 +325,38 @@ public class FileStuff {
 	}
 	
 	/**
+	 * This method ensures that the given String name is not null or made by only dots, and then checks if it has an extension.
+	 * 
+	 * If no extension is found, then the fallback one will be used creating a valid fileName.
+	 * 
+	 * If an invalid extension is provided, "txt" will be used as default one.
+	 * 
+	 */
+	public static String ensureValidExtension(String name, String extensionFallback) {
+		if(name == null) {
+			return "";
+		} else {
+			
+			if (extensionFallback != null) {
+				extensionFallback.replaceAll("[.]", "");
+				if("".equals(extensionFallback.trim())) {
+					extensionFallback = "txt";
+				}
+			} else {
+				extensionFallback = "txt";
+			}
+		}
+		
+		String newNameClearedDots = name.replaceAll("[.]", "").trim();
+		String correctFallbackExtension = extensionFallback.toLowerCase();
+		name = (!newNameClearedDots.equals(""))? name : "NewFile." + correctFallbackExtension;
+		String ext = FilenameUtils.getExtension(name);
+		name = (ext != null && !"".equals(ext.trim())) ? name : name.endsWith(".") ? name + correctFallbackExtension : name + "." + correctFallbackExtension;
+	
+		return name;		
+	}
+	
+	/**
 	 * Change extension to the given one and return the new file reference. Be careful, the returned file is not physically created!
 	 * NB the extension must be preceeded by a dot
 	 */
