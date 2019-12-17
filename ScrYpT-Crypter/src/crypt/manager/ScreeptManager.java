@@ -261,25 +261,7 @@ public class ScreeptManager {
 				logger.debug("COMPLETE Crypt phase - EXITING");
 				
 			}	
-		}catch(STEGException e) {
-			resetAfterException(e);
-		} catch (InvalidKeyException e) {
-			resetAfterException(e);
-		} catch (NoSuchPaddingException e) {
-			resetAfterException(e);
-		} catch (NoSuchAlgorithmException e) {
-			resetAfterException(e);
-		} catch (InvalidAlgorithmParameterException e) {
-			resetAfterException(e);
-		} catch (BadPaddingException e) {
-			resetAfterException(e);
-		} catch (IllegalBlockSizeException e) {
-			resetAfterException(e);
-		} catch (IOException e) {
-			resetAfterException(e);
-		} catch (AESException e) {
-			resetAfterException(e);
-		} catch (Exception e) {
+		}catch(Exception e) {
 			resetAfterException(e);
 		}
 			

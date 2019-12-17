@@ -3,7 +3,7 @@ package shortcutstester;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
-import testUtils.TestUtils;
+import utils.TestUtils;
 
 public class ShortcutTester implements KeyEventDispatcher{
 	

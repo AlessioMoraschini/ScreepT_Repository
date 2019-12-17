@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import dialogutils.JOptionHelper;
-import testUtils.TestUtils;
+import utils.TestUtils;
 
 public class TestDialogs {
 

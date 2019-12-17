@@ -1,4 +1,4 @@
-package testUtils;
+package utils;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -62,6 +62,30 @@ public class TestUtils {
     	int i = 0;
     	for(K element : array){
     		printl(element.getClass().getTypeName() + "["+i+"]" + element.toString());
+    		i++;
+    	}
+    }
+
+    /** pretty print a byte array
+     * 
+     * @param array
+     */
+    public static void printByteArray(byte[] array){
+    	int i = 0;
+    	for(byte element : array){
+    		printl("["+i+"]" + element);
+    		i++;
+    	}
+    }
+
+    /** pretty print a char array
+     * 
+     * @param array
+     */
+    public static void printCharArray(char[] array){
+    	int i = 0;
+    	for(char element : array){
+    		printl("["+i+"]" + element);
     		i++;
     	}
     }

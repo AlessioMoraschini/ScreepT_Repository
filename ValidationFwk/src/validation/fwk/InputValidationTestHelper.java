@@ -2,7 +2,7 @@ package validation.fwk;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static testUtils.TestUtils.*;
+import static utils.TestUtils.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import testUtils.TestUtils;
+import utils.TestUtils;
 
 public class InputValidationTestHelper {
 	
