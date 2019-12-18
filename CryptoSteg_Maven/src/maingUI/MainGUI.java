@@ -1211,7 +1211,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					panelChangeLog = new ChangeLogFrame(GeneralConfig.CHANGE_LOG_FILE);
 					panelChangeLog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					GuiUtils.centerComponent(panelChangeLog, 700, 500);
-					panelChangeLog.setResizable(false);
+					panelChangeLog.setResizable(true);
 					panelChangeLog.setVisible(true);
 					panelChangeLog.setTitle("ChangeLog - "+GeneralConfig.APPLICATION_NAME);
 					panelChangeLog.setLocationRelativeTo(mainAPP.getMainFrame());

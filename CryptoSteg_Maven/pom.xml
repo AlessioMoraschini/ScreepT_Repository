@@ -54,6 +54,7 @@
 	             </execution>                            
 	         </executions>
 	      </plugin>
+	      
       <!-- download source code in Eclipse, best practice -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -633,6 +634,7 @@
 			<scope>provided</scope>
 		</dependency>
   	
+  		<!-- Plugin export depending on property setted in parent project -->
 	  	<dependency>
 		    <groupId>net.sourceforge.tess4j</groupId>
 		    <artifactId>tess4j</artifactId>

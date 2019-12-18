@@ -164,6 +164,9 @@ public class DownloadUtils {
 	/**
 	 * Unzip an archive into destination folder. If overwrite is true, then no new unique file will be created, 
 	 * but the existing one with same name will be overridden!
+	 * 
+	 * Use version From downloadUtils
+	 * 
 	 * @param sourcePath
 	 * @param destFolderPath
 	 * @param ovewrwrite

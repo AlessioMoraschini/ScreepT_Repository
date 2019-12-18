@@ -1,6 +1,12 @@
-* 2019-12-16  (HEAD -> refs/heads/master) Fixed file extension naming bug when saving new, tree scroll fixed
+* 2019-12-18  (HEAD -> refs/heads/master, refs/remotes/origin/master) Aes crypter security improvement: added hashing to password
 | 
-* 2019-12-16  (refs/remotes/origin/master) fixed launcher Version reference BUG
+* 2019-12-18  Added hashing function + Tests improvements
+| 
+* 2019-12-17  Minor bugs fixed (TextEditor + Launcher)
+| 
+* 2019-12-16  Fixed file extension naming bug when saving new, tree scroll fixed
+| 
+* 2019-12-16  fixed launcher Version reference BUG
 | 
 * 2019-12-16  Fixed plugin bug: added installed check at start
 | 

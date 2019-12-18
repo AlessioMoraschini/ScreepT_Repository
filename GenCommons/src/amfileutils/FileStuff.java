@@ -107,6 +107,7 @@ public class FileStuff {
 	 * @return
 	 * @throws Exception
 	 */
+	@Deprecated
 	public static File unzipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
 		
 		long startTime = System.currentTimeMillis();
@@ -160,13 +161,15 @@ public class FileStuff {
 	 * Zip a file or folder in a new .zip archive, into destination folder. If overwrite is true, then no new unique file will be created, 
 	 * but the existing one with same name will be overridden!
 	 * 
+	 * Use version From downloadUtils
+	 * 
 	 * @param sourcePath
 	 * @param destFolderPath
 	 * @param ovewrwrite
 	 * @return
 	 * @throws Exception
 	 */
-	
+	@Deprecated
 	public static File zipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
 		
 		long startTime = System.currentTimeMillis();

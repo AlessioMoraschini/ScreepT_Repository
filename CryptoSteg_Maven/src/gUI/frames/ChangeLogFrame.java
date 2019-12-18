@@ -2,7 +2,6 @@ package gUI.frames;
 
 import java.awt.Insets;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -34,8 +33,9 @@ public class ChangeLogFrame extends ParentFrame{
 			add(scrollPane);
 			
 			try {
-				textArea.setText(FileStuff.readFileAsString(ChangeLog));
-			} catch (IOException e) {
+				textArea.setText("");
+				FileStuff.appendFileTxtArea(ChangeLog, textArea, true);
+			} catch (Exception e) {
 				String msg = "Cannot read changeLog file: " + ChangeLog;
 				textArea.setText(msg);
 				logger.error(msg, e);
