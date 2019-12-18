@@ -10,51 +10,55 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
 
 import org.apache.commons.codec.binary.Base64;
 
+import crypt.hash.Hasher;
+import crypt.hash.Hasher.HashAlgorithm;
+import crypt.hash.Hasher.IterationsLevel;
+
 public class AesCipher {
+	
+	private static final IterationsLevel iter = IterationsLevel.MED;
+	private static final HashAlgorithm algo = HashAlgorithm.PBKDF2SHA512;
+	
+	public static final int limit = 16;
 
 	//////////////////////
 	//      CAMPI       //
 	//////////////////////
+
+	//valore aggiornato con i pad
+	private char[] password;
 	
-	//private static final String SECRET_KEY_1 = "ssdkF$HUy2A#D%kd";
-	//private static final String SECRET_KEY_2 = "weJiSEvR5yAC5ftB";
-	public static final int limit = 16;
-	private char[] password;//valore aggiornato con i pad
-	private char[] displayedKey;//valore originale chiave inserita
+	//valore originale chiave inserita
+	private char[] displayedKey;
+
 	private IvParameterSpec ivParameterSpec;
 	private SecretKeySpec secretKeySpec;
-	private Cipher cipher;
 	
-	private SecureRandom sRand;
+	private Cipher cipher;
 	
 	//////////////////////
 	//    COSTRUTTORI   //  
 	//////////////////////
-	
-	public AesCipher() {
-		
-	}
 	
 	public AesCipher(char[] password) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		
 		displayedKey=password;
 		this.password= new char[limit];
 		int i = 0;
+		
+		// Pad with zeros
 		while(i < limit) {
 		    	if(i<password.length) {
 		    		this.password[i] = password[i];
@@ -63,12 +67,24 @@ public class AesCipher {
 		    	}
 		    	i++;
 		}
-		byte[] bytePsw = charKeyToByteArrayV2();
-//			byte[] bytePsw = HandleString.extractSameLengthByteArray(password);
-		ivParameterSpec = new IvParameterSpec(bytePsw);
-	    secretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, 16), "AES");
+		
+		// initialize salt, initializationVector and keySpec, both hashed and normal versions
+		// (String source encryption isn't hashed, while byte source version it's hashed and salted)
+		initIvAndParameterSpec(this.password);
 	    cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-	    Arrays.fill(bytePsw, (byte)0); // clear sensitive temp data
+	}
+	
+	private void initIvAndParameterSpec(char[] psw) {
+		
+		// Prepare bytes from various sources with omogeneus diffusion from source characters
+		byte[] bytePsw = charKeyToByteArrayV2(psw);
+//		byte[] bytePsw = HandleString.extractSameLengthByteArray(password); // Old version - less secure
+		
+		// Normal specs
+		ivParameterSpec = new IvParameterSpec(bytePsw);
+		secretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, limit), "AES");
+		
+		Arrays.fill(bytePsw, (byte)0);
 	}
 	
 	//////////////////////
@@ -76,7 +92,7 @@ public class AesCipher {
 	//////////////////////
 	
 	/**
-	 * Questo metodo si occupa di codificare tramite AES una stringa passata come parametro,
+	 * Questo metodo si occupa di codificare tramite AES-128 una stringa passata come parametro,
 	 * (la converte in byte[], converte con "Cipher", dopodich� riconverte in string).
 	 * 
 	 * @param sourceString
@@ -113,10 +129,12 @@ public class AesCipher {
 	public byte[] encrypt(byte[] toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
 	InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 		
-		// set random initialization vector
-		byte[] iv = generateIV();
+		// generate random initialization vector
+		byte[] iv = generateIV(16);
+
+		// Use iv as salt to hash password
 		ivParameterSpec = new IvParameterSpec(iv);
-		cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+		cipher.init(Cipher.ENCRYPT_MODE, getSaltedKeySpec(iv), ivParameterSpec);
 		byte[] encrypted = cipher.doFinal(toBeEncrypt);
 		
 		// insert iv at the start of encrypted msg
@@ -173,13 +191,17 @@ public class AesCipher {
 	    byte[] ciphertext = Arrays.copyOfRange(encrypted, iv.length, encrypted.length);			
 	    ivParameterSpec = new IvParameterSpec(iv);
 	    
-		cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+		cipher.init(Cipher.DECRYPT_MODE, getSaltedKeySpec(iv), ivParameterSpec);
 		byte[] decryptedBytes = cipher.doFinal(ciphertext);
 		return decryptedBytes;
 	}
 	
 	// used with JTextField to check password strenght
 	public static void check(JPasswordField aesKey) {
+		
+		if(aesKey == null) {
+			return;
+		}
 			
         if(aesKey.getPassword().length<16) {     	
         	aesKey.setBackground(Color.orange);					    
@@ -199,29 +221,30 @@ public class AesCipher {
 		}	
 	}
 	
-	/**
-	 * Still to test
-	 * @param psw
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeySpecException
-	 */
-	byte[] hashPsw(char[] psw) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		SecureRandom random = new SecureRandom();
-		byte[] salt = new byte[16];
-		random.nextBytes(salt);
-		KeySpec spec = new PBEKeySpec(psw, salt, 65536, 128);
-		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-		return factory.generateSecret(spec).getEncoded();
-	}
-	
-	private byte[] generateIV() {
-		sRand = new SecureRandom();
-		byte[] iv = new byte[16];
+	private static byte[] generateIV(int length) {
+		SecureRandom sRand = new SecureRandom();
+		byte[] iv = new byte[length];
 		sRand.nextBytes(iv);
 		return iv;
 	}
 	
+	private SecretKeySpec getSaltedKeySpec(byte[] salt) {
+
+		SecretKeySpec hashedSecretKeySpec = null;
+		byte[] bytePsw = new byte[0];
+		try {
+			bytePsw = charKeyToByteArrayV2(this.password);
+			bytePsw = Hasher.hashPswWithGivenSalt(Hasher.byteArrayToChar(bytePsw), salt, iter, algo);
+			hashedSecretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, limit), "AES");
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+			hashedSecretKeySpec = secretKeySpec;
+			e.printStackTrace();
+		} finally {
+			Arrays.fill(bytePsw, Byte.MIN_VALUE);
+		}
+		
+		return hashedSecretKeySpec;
+	}
 	
 	public byte[] charKeyToByteArray() {
 		CharBuffer chBuff = CharBuffer.wrap(this.password);
@@ -235,8 +258,8 @@ public class AesCipher {
 	/**
 	 * to improve - used for multi-bytes charset that generates much more than 16 bytes to have best diffusion through source chars
 	 */
-	public byte[] charKeyToByteArrayV2() {
-		CharBuffer chBuff = CharBuffer.wrap(this.password);
+	public byte[] charKeyToByteArrayV2(char[] key) {
+		CharBuffer chBuff = CharBuffer.wrap(key);
 		ByteBuffer byBuff = Charset.forName("UTF-8").encode(chBuff);
 		byte[] fullBytes = byBuff.array();
 		byte[] bytes = new byte[limit];
@@ -253,6 +276,17 @@ public class AesCipher {
 		Arrays.fill(fullBytes, (byte)0); // clear array data
 		
 		return bytes;
+	}
+	
+	public static byte[] xorBytes(byte[] first, byte[] second) {
+		byte[] xorResult = new byte[first.length];
+
+		int i = 0;
+		for (byte firstiByte : first) {
+			xorResult[i] = (i < second.length) ? (byte) (firstiByte ^ second[i++]) : firstiByte;
+		}
+		
+		return xorResult;
 	}
 	
 	public int nOfZeros(byte[] src) {
@@ -275,7 +309,7 @@ public class AesCipher {
 		Arrays.fill(this.displayedKey, '0');
 		Arrays.fill(this.password, '0');
 		byte[] tempEraser = new byte[limit]; 
-		Arrays.fill(tempEraser, (byte)0);
+		Arrays.fill(tempEraser, Byte.MIN_VALUE);
 		
 		ivParameterSpec = new IvParameterSpec(tempEraser);
 	    secretKeySpec = new SecretKeySpec(Arrays.copyOf(tempEraser, 16), "AES");

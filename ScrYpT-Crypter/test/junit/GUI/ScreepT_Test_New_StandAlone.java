@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 import javax.crypto.NoSuchPaddingException;
 
@@ -19,7 +18,6 @@ import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import crypt.steg.StegCipher;
-import resources.GeneralConfig;
 import crypt.steg.STEGException;
 
 public class ScreepT_Test_New_StandAlone {
@@ -29,7 +27,7 @@ public class ScreepT_Test_New_StandAlone {
 ///////////////////////////////////////////////////////////////////
 	
 	// DIRECTORIES 
-	private final String TEMP_DIR = GeneralConfig.RESOURCES_DIR  + "temp/";
+	private final String TEMP_DIR = "temp/";
 	
 	private final static boolean enableAdvices = true;
 	private final static boolean SHUFFLE_MODE = true;
@@ -60,7 +58,7 @@ public class ScreepT_Test_New_StandAlone {
 ////////////////////////////////////////////////////////////////
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void testOnlyAEScrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
@@ -74,7 +72,7 @@ public class ScreepT_Test_New_StandAlone {
 			
 			
 			for(File result : resultDir.listFiles()) {
-				File out = new File("TEST_FILES/" + result.getName());
+				File out = codedFileAES;
 // 			remove comment to overwrite result
 				if (out.exists()) {
 					out.delete();
