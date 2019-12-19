@@ -6,10 +6,10 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Rectangle;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -30,8 +30,6 @@ import forks.merged.Various;
  */
 public class UpdateProgressPanelMin {
 	
-	private final static int LeftStart = 400;
-	private final static int TopStart = 300;
 	public final static int PanelWidth = 400;
 	public final static int PanelHeight = 100;
 	
@@ -52,6 +50,8 @@ public class UpdateProgressPanelMin {
     
     public boolean secondBarEnabled = false;
     
+    public JFrame relativeTo = null;
+    
     // ####################### START CONSTRUCTORS - USE THE ONE WITH TWO PARAMS #################### //
     
     public UpdateProgressPanelMin() {
@@ -63,6 +63,7 @@ public class UpdateProgressPanelMin {
     	initSpecBar();
     	
     	dialog.setVisible(true);
+    	dialog.setLocationRelativeTo(relativeTo);
     	dialog.repaint();
 		
 		new Thread(new Runnable() {
@@ -98,6 +99,7 @@ public class UpdateProgressPanelMin {
 		initSpecBar();
 		
 		dialog.repaint();
+		dialog.setLocationRelativeTo(relativeTo);
 		
         SwingUtilities.invokeLater(new Runnable() {
 			
@@ -135,7 +137,7 @@ public class UpdateProgressPanelMin {
         
         dialog.add(GeneralBar, gbc_genb);
         dialog.pack();
-        dialog.setLocationRelativeTo(null);
+        dialog.setLocationRelativeTo(relativeTo);
         dialog.setVisible(true);
 	}
 	
@@ -149,7 +151,7 @@ public class UpdateProgressPanelMin {
        
         dialog.add(pb, gbc_pb);
         dialog.pack();
-        dialog.setLocationRelativeTo(null);
+        dialog.setLocationRelativeTo(relativeTo);
         dialog.setVisible(true);
 		
 	}
@@ -174,7 +176,7 @@ public class UpdateProgressPanelMin {
 		
 		dialog = new JDialog();
 		dialog.setMinimumSize(new Dimension(PanelWidth, PanelHeight));
-        dialog.setBounds(new Rectangle(LeftStart, TopStart, PanelWidth, PanelHeight));
+//        dialog.setBounds(new Rectangle(LeftStart, TopStart, PanelWidth, PanelHeight));
         dialog.setTitle("Processing");
         dialog.setLayout(gridBagLayout);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -400,4 +402,10 @@ public class UpdateProgressPanelMin {
 		dialog.setVisible(progBarEnabled);
 	}
 	
+	public void setLocationRelativeTo(JFrame parent) {
+		relativeTo = parent;
+		if(dialog != null) {
+			dialog.setLocationRelativeTo(relativeTo);
+		}
+	}
 }

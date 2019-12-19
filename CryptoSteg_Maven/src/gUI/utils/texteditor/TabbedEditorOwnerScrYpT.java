@@ -89,7 +89,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 			}
 			
 			// Refresh current style from combo only if different from current actually applied to loaded text area tab
-			txtUtils.findRightStyleFromComboNSelect(loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().defaultAutoSyntaxSync);
+			txtUtils.findRightSyntaxFromComboNSelect(loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().defaultAutoSyntaxSync);
 		}
 		
 		

@@ -19,16 +19,18 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
+import javax.swing.text.BadLocationException;
 
 import org.apache.commons.codec.binary.Base64;
 
 import crypt.hash.Hasher;
 import crypt.hash.Hasher.HashAlgorithm;
 import crypt.hash.Hasher.IterationsLevel;
+import util.BitWorker;
 
 public class AesCipher {
 	
-	private static final IterationsLevel iter = IterationsLevel.MED;
+	private static final IterationsLevel iter = IterationsLevel.MED_LOW;
 	private static final HashAlgorithm algo = HashAlgorithm.PBKDF2SHA512;
 	
 	public static final int limit = 16;
@@ -125,16 +127,25 @@ public class AesCipher {
 	 * 
 	 * @param sourceByte[]
 	 * @return encryptedByte[]
+	 * @throws BadLocationException 
 	 * */
-	public byte[] encrypt(byte[] toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
-	InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+	public byte[] encrypt(byte[] toBeEncrypt, boolean hashed) throws NoSuchPaddingException, NoSuchAlgorithmException,
+	InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
 		
 		// generate random initialization vector
 		byte[] iv = generateIV(16);
 
-		// Use iv as salt to hash password
+		iv[0] = BitWorker.setBitAtPosition(iv[0], 0, hashed);
 		ivParameterSpec = new IvParameterSpec(iv);
-		cipher.init(Cipher.ENCRYPT_MODE, getSaltedKeySpec(iv), ivParameterSpec);
+		
+		if (hashed) {
+			// Use iv as salt to hash password
+			cipher.init(Cipher.ENCRYPT_MODE, getSaltedKeySpec(iv), ivParameterSpec);
+		} else {
+			ivParameterSpec = new IvParameterSpec(iv);
+			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+		}
+		
 		byte[] encrypted = cipher.doFinal(toBeEncrypt);
 		
 		// insert iv at the start of encrypted msg
@@ -182,16 +193,25 @@ public class AesCipher {
 	 * 
 	 * @param sourceByte[]
 	 * @return encryptedByte[]
+	 * @throws BadLocationException 
 	 * */
 	public byte[] decrypt(byte[] encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
-    BadPaddingException, IllegalBlockSizeException {
+    BadPaddingException, IllegalBlockSizeException, BadLocationException {
 		
 		// retrieve IV and cripted message
 		byte[] iv = Arrays.copyOfRange(encrypted, 0, 16);
 	    byte[] ciphertext = Arrays.copyOfRange(encrypted, iv.length, encrypted.length);			
 	    ivParameterSpec = new IvParameterSpec(iv);
 	    
-		cipher.init(Cipher.DECRYPT_MODE, getSaltedKeySpec(iv), ivParameterSpec);
+	    boolean hashed = BitWorker.getBitAtPosition(iv[0], 0);
+	    
+		if (hashed) {
+			// use iv as salt
+			cipher.init(Cipher.DECRYPT_MODE, getSaltedKeySpec(iv), ivParameterSpec);
+		} else {
+			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+		}
+		
 		byte[] decryptedBytes = cipher.doFinal(ciphertext);
 		return decryptedBytes;
 	}

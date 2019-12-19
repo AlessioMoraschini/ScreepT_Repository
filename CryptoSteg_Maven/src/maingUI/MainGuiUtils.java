@@ -157,22 +157,23 @@ public class MainGuiUtils {
 	}
 	
 	public <T> void immersiveModeToggle() {
-		JFrame target = MainGUI.frmScryptV;
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
 				// start correct panel
-				if(ChargeIniLog.class.equals(target.getContentPane().getComponent(0).getClass())) {
+				if(isConfManagerActive()) {
 					mainAppReference.mntmFullScreenMode.doClick();
 					fullScreenToggleMenuBar();
-				}else if(TextEditor.class.equals(target.getContentPane().getComponent(0).getClass()) && MainGUI.initTxtWriter != null) {
-					MainGUI.initTxtWriter.textEditorUtils.toggleImersiveMode();
 				
-				}else if(CrypterPanel.class.equals(target.getContentPane().getComponent(0).getClass())) {
+				}else if(isTextEditorActive()) {
+					MainGUI.initTxtWriter.textEditorUtils.toggleImmersiveMode();
+				
+				}else if(isCrypterActive()) {
 					mainAppReference.mntmFullScreenMode.doClick();
 					fullScreenToggleMenuBar();
+				
 				}else {
 					mainAppReference.mntmFullScreenMode.doClick();
 					fullScreenToggleMenuBar();

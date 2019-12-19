@@ -33,10 +33,10 @@ public class SteganOption {
 		while(tokenizer.hasMoreTokens()) {
 			this.imgRecentPath.add(tokenizer.nextToken());
 		}
-		flagSteg = STEG;
-		ultraSecure = ultraSec;
+		this.flagSteg = STEG;
+		this.ultraSecure = ultraSec;
 	}
-
+	
 	public int getDefaultWidth() {
 		return defaultWidth;
 	}

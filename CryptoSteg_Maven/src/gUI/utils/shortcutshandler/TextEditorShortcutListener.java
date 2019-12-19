@@ -277,6 +277,12 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					currentTextEditor.btnDepthDown_nostyle.doClick();
 				}
 				
+				/**
+				 * TOGGLE MAXIMIZE TEXT AREA
+				 */
+				if(e.getKeyCode() == 77 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.toggleMaximizedTextArea();
+				}
 				
 				
 				/*

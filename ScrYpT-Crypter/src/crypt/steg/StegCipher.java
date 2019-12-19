@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
-import media.STEGException;
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
 import enums.BufferedImageType;
+import media.STEGException;
 
 /**
  * this class represent the coding/decoding of source byte list or array, implementing simil-steganography

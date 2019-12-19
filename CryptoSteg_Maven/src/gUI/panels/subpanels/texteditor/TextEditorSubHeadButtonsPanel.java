@@ -225,9 +225,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		DEFAULT_FORE_COL = currentConfiguration.getTextEditorOpt().foreCol;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 4, fill, hidemode 2",
+		setLayout(new MigLayout("insets 0, fill, hidemode 2",
 				"[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][40px:55px:55px][50px:50px:50px][45px:55px:60px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][35px:50px:60px][75px:75px:75px][35px:35px:35px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", 
-				"[:35px:35px,grow][:50px:50px,grow]"));
+				"[:35px:35px,center][:50px:50px,center]"));
 		
 		btnCloseAllTabs = new JButton("");
 		btnCloseAllTabs.setForeground(Color.BLACK);
@@ -261,12 +261,14 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		toggleBtnMap = new JToggleButton("");
 		toggleBtnMap.setMinimumSize(new Dimension(25, 0));
 		toggleBtnMap.setToolTipText(TextEditorTooltips.tooltipMapViewBtn);
+		toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR.darker());
 		toggleBtnMap.setCursor(GuiUtils.CURSOR_HAND);
 		toggleBtnMap.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MAP));
 		add(toggleBtnMap, "cell 28 0,alignx center,grow");
 		
 		toggleBtnClipboard = new JToggleButton("");
 		toggleBtnClipboard.setMinimumSize(new Dimension(25, 0));
+		toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR.darker());
 		toggleBtnClipboard.setToolTipText(TextEditorTooltips.tooltipClipboardViewBtn);
 		toggleBtnClipboard.setCursor(GuiUtils.CURSOR_HAND);
 		toggleBtnClipboard.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
@@ -708,13 +710,13 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (toggleBtnMap.isSelected()) {
+						if (!currentConfiguration.getTextEditorOpt().mapViewActive) {
 							toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 							currentConfiguration.getTextEditorOpt().mapViewActive = true;
 							textEditorUtils.setRightPanelContent(PanelType.MAP_TXTAREA);
 
 						} else {
-							toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+							toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR.darker());
 							currentConfiguration.getTextEditorOpt().mapViewActive = false;
 						}
 						currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
@@ -755,12 +757,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (toggleBtnClipboard.isSelected()) {
+						if (!currentConfiguration.getTextEditorOpt().clipboardViewActive) {
 							toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 							currentConfiguration.getTextEditorOpt().clipboardViewActive = true;
 							textEditorUtils.setRightPanelContent(PanelType.CLIPBOARD_PANEL);
 						} else {
-							toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+							toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR.darker());
 							currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
 						}
 						currentConfiguration.getTextEditorOpt().mapViewActive = false;
@@ -1375,9 +1377,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				btnDark.setBackground(loadedTabObj.textArea.getBackground());
 				currentConfiguration.getTextEditorOpt().setBackCol(loadedTabObj.textArea.getBackground());
 				currentConfiguration.getTextEditorOpt().setForeCol(loadedTabObj.textArea.getForeground());
+				
+				comboStylesScheme.setSelectedIndex(comboStylesScheme.getItemCount()-1);
 			}
 		});
-//		btnDark.doClick();
 
 		// INSERT LOREM IPSUM
 		btnLoremIpsum.addActionListener(new ActionListener() {
@@ -1562,7 +1565,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		chckbxLockLanguage.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textEditorUtils.findRightStyleFromComboNSelect(parent.getCurrentTabEditor().loadedTabObj.loadedFile, !chckbxLockLanguage.isSelected());
+				textEditorUtils.findRightSyntaxFromComboNSelect(parent.getCurrentTabEditor().loadedTabObj.loadedFile, !chckbxLockLanguage.isSelected());
 				currentConfiguration.getTextEditorOpt().setDefaultAutoSyntaxSync(!chckbxLockLanguage.isSelected());
 				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(((SupportedFileTextEditor)comboFileFormat.getSelectedItem()).toString());
 				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
@@ -2000,6 +2003,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				
 				parent.revalidate();
 				parent.repaint();
+				
+				textEditorUtils.setFooterVisibile(currentConfiguration.getTextEditorOpt().footerVisible);
+				textEditorUtils.setHeaderVisibileLevel1(currentConfiguration.getTextEditorOpt().headerVisible);
+				textEditorUtils.setHeaderVisibileLevel2(currentConfiguration.getTextEditorOpt().subHeaderVisible);
 			}
 		});
 	}

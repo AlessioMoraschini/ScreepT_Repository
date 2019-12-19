@@ -43,6 +43,7 @@ import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import reflection.ReflectionUtils;
 import resources.GeneralConfig;
+import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import splitpanel.SplitPaneUtils;
 import tabbededitor.CustomTabbedEditor;
@@ -141,7 +142,7 @@ public class TextEditorUtils {
 	 * @param source the source file
 	 * @param autosync if this is true, syntax will be auto synched with current file type
 	 */
-	public void findRightStyleFromComboNSelect(File source, boolean autosync) {
+	public void findRightSyntaxFromComboNSelect(File source, boolean autosync) {
 
 		chosenType = (SupportedFileTextEditor)currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
 		final TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
@@ -153,7 +154,7 @@ public class TextEditorUtils {
 			} else {
 				// IF AUTOSYNC FIND RIGHT TYPE BY FILE EXTENSION AND SELECT
 				for (SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
-					if (FilenameUtils.getExtension(source.getName()).toLowerCase().endsWith(current.senzapunto.toLowerCase())) {
+					if (FilenameUtils.getExtension(source.getName()).toLowerCase().trim().equals(current.senzapunto.toLowerCase())) {
 						// match found
 						chosenType = current;
 					}
@@ -276,9 +277,6 @@ public class TextEditorUtils {
 			currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
 			currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 			resetAllDIviderColors();
-			currentTextEditor.fileTreeShowOrHide(options);
-			currentTextEditor.rightPaneShowOrHide(false);
-//			TreeUtils.scrollCenteredToCurrentSelection(currentTextEditor.leftSplitTreeFiles, true);
 		}
 	}
 	
@@ -367,8 +365,8 @@ public class TextEditorUtils {
 			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
 			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
-			currentTextEditor.subHeaderPanel.toggleBtnMap.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().mapViewActive);
-			currentTextEditor.subHeaderPanel.toggleBtnClipboard.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().clipboardViewActive);
+//			currentTextEditor.subHeaderPanel.toggleBtnMap.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().mapViewActive);
+//			currentTextEditor.subHeaderPanel.toggleBtnClipboard.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().clipboardViewActive);
 
 			currentTextEditor.rightPaneShowOrHide(false);
 			
@@ -534,23 +532,27 @@ public class TextEditorUtils {
 	/**
 	 * Toggle visibility of text editor panel just under header,  inverting visible flag at each invocation
 	 */
-	public void toggleImersiveMode() {
+	public void toggleImmersiveMode() {
 		
 		MainGUI mainApp = currentTextEditor.mainApplication;
 		
-		ArrayList<Component> clickableList = getTxtEditorClickablesList();
-		boolean showAll = clickableList.size()>0 && !clickableList.get(0).isVisible();
-
-		if((!mainApp.isFullScreen.get() && !showAll) || (mainApp.isFullScreen.get() && showAll)) {
-			mainApp.mntmFullScreenMode.doClick();
-		}
+		boolean hideAll = currentTextEditor.headerPanel.isVisible() || currentTextEditor.subHeaderPanel.isVisible() || currentTextEditor.footerPanel.isVisible();
+		boolean enableImmersive = hideAll || !mainApp.isFullScreen.get();
 		
-		for(Component element : clickableList) {
-			// invert visible flag 
-			element.setVisible(showAll);
-		}
-		mainApp.menuBar.setVisible(showAll);
-		mainApp.isImmersiveModeOn.set(!showAll);
+		setImmersiveMode(enableImmersive);
+	}
+	
+	public void setImmersiveMode (boolean enableImmersive) {
+		MainGUI mainApp = currentTextEditor.mainApplication;
+		
+		mainApp.setFullScreenEnabled(enableImmersive);
+		
+		setFooterVisibile(!enableImmersive);
+		setHeaderVisibileLevel1(!enableImmersive);
+		setHeaderVisibileLevel2(!enableImmersive);
+		
+		mainApp.menuBar.setVisible(!enableImmersive);
+		mainApp.isImmersiveModeOn.set(enableImmersive);
 
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(mainApp);
@@ -561,12 +563,35 @@ public class TextEditorUtils {
 	 */
 	public void hideOrShowHeaderPanelLevel1() {
 		ArrayList<Component> headerList = getTxtEditorHeaderLevel1();
+		boolean newVisible = false;
 		for(Component element : headerList) {
 			// invert visible flag 
-			element.setVisible(!element.isVisible());
+			newVisible = !element.isVisible();
+			element.setVisible(newVisible);
 		}
+		
+		currentTextEditor.currentConfiguration.getTextEditorOpt().setHeaderVisible(newVisible);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
+		MainGUI.mainAPP.mntmTxtEdHideShowTitleBlock.setIcon(currentTextEditor.headerPanel.isVisible() ?
+				IconsPathConfigurator.IMG_ICON_VISIBLE : IconsPathConfigurator.IMG_ICON_INVISIBLE);
+	}
+
+	/**
+	 * Toggle visibility of text editor header panel,  inverting visible flag at each invocation
+	 */
+	public void setHeaderVisibileLevel1(boolean visibility) {
+		ArrayList<Component> headerList = getTxtEditorHeaderLevel1();
+		for(Component element : headerList) {
+			// invert visible flag 
+			element.setVisible(visibility);
+		}
+		
+		currentTextEditor.currentConfiguration.getTextEditorOpt().setHeaderVisible(visibility);
+		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		resizeFrameToDefault(currentTextEditor.mainApplication);
+		MainGUI.mainAPP.mntmTxtEdHideShowTitleBlock.setIcon(currentTextEditor.headerPanel.isVisible() ? 
+				IconsPathConfigurator.IMG_ICON_VISIBLE : IconsPathConfigurator.IMG_ICON_INVISIBLE);
 	}
 	
 	/**
@@ -574,21 +599,56 @@ public class TextEditorUtils {
 	 */
 	public void hideOrShowHeaderPanelLevel2() {
 		ArrayList<Component> headerList = getTxtEditorHeaderLevel2();
+		boolean newVisible = false;
 		for(Component element : headerList) {
 			// invert visible flag 
-			element.setVisible(!element.isVisible());
+			newVisible = !element.isVisible();
+			element.setVisible(newVisible);
 		}
+		
+		currentTextEditor.currentConfiguration.getTextEditorOpt().setSubHeaderVisible(newVisible);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
+		currentTextEditor.headerPanel.updateSubpanelVisibilityIconFromConfig();
+	}
+
+	/**
+	 * Toggle visibility of text editor panel just under header,  inverting visible flag at each invocation
+	 */
+	public void setHeaderVisibileLevel2(boolean visibility) {
+		ArrayList<Component> headerList = getTxtEditorHeaderLevel2();
+		for(Component element : headerList) {
+			// invert visible flag 
+			element.setVisible(visibility);
+		}
+		
+		currentTextEditor.currentConfiguration.getTextEditorOpt().setSubHeaderVisible(visibility);
+		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		resizeFrameToDefault(currentTextEditor.mainApplication);
+		currentTextEditor.headerPanel.updateSubpanelVisibilityIconFromConfig();
 	}
 	
 	/**
 	 * Toggle visibility of text editor footer panel,  inverting visible flag at each invocation
 	 */
 	public void hideOrShowFooterPanel() {
-		currentTextEditor.footerPanel.setVisible(!currentTextEditor.footerPanel.isVisible());
+		boolean newVisible = !currentTextEditor.footerPanel.isVisible();
+		currentTextEditor.footerPanel.setVisible(newVisible);
+		currentTextEditor.currentConfiguration.getTextEditorOpt().setFooterVisible(newVisible);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
+		currentTextEditor.headerPanel.updateFooterVisibilityIconFromConfig();
+	}
+
+	/**
+	 * Toggle visibility of text editor footer panel,  inverting visible flag at each invocation
+	 */
+	public void setFooterVisibile(boolean visibility) {
+		currentTextEditor.footerPanel.setVisible(visibility);
+		currentTextEditor.currentConfiguration.getTextEditorOpt().setFooterVisible(visibility);
+		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		resizeFrameToDefault(currentTextEditor.mainApplication);
+		currentTextEditor.headerPanel.updateFooterVisibilityIconFromConfig();
 	}
 	
 	// START ADVICE TEMPORIZATION AND VISUALIZTION METHODS
@@ -756,14 +816,15 @@ public class TextEditorUtils {
 		// Retrieve current pane type and call standard method to sync position and content
 		getTypedIRightPanel().sync();
 		
-		Color textAreaBackgground = loadedTabObj.textArea.getBackground();
-		Color darkerLight = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 1);
-		Color darkerMed = ImageGeneralWorker.getDarkerNtimes(textAreaBackgground, 2);
-		currentTextEditor.setBackground(darkerLight);
-		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(darkerLight);
-		currentTextEditor.mainPanel.setBackground(darkerLight);
-		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(darkerLight);
-		currentTextEditor.rightSplitPane.setBackground(darkerMed);
+//		Color textAreaBackgground = loadedTabObj.textArea.getBackground();
+		Color textAreaBackground = currentTextEditor.leftSplitTreeFiles.getBackground().darker();
+//		Color darkerLight = ImageGeneralWorker.getDarkerNtimes(textAreaBackground, 1);
+//		Color darkerMed = ImageGeneralWorker.getDarkerNtimes(textAreaBackground, 2);
+		currentTextEditor.setBackground(textAreaBackground);
+		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(textAreaBackground);
+		currentTextEditor.mainPanel.setBackground(textAreaBackground);
+		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(textAreaBackground);
+		currentTextEditor.rightSplitPane.setBackground(textAreaBackground);
 	}
 	
 	/**

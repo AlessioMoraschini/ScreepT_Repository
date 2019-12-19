@@ -336,11 +336,19 @@ public class TreeUtils {
 		} catch (Exception e) {
 			return tree.getPathForRow(0);
 		} finally {
-			tree.scrollRowToVisible(tree.getLeadSelectionRow());
+			scrollToVisible(tree, true);
 		}
 		
 	}
 
+	public static void scrollToVisible(JTree tree, boolean scrollLeft) {
+		tree.scrollRowToVisible(tree.getLeadSelectionRow());
+		if (scrollLeft) {
+			Rectangle rect = tree.getVisibleRect();
+			tree.scrollRectToVisible(new Rectangle(0, rect.y, rect.width, rect.height));
+		}
+	}
+	
     public static boolean isDescendant(TreePath path1, TreePath path2){
         int count1 = path1.getPathCount();
         int count2 = path2.getPathCount();

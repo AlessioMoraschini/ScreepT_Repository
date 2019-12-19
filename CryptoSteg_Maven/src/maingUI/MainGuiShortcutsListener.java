@@ -32,7 +32,11 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 			if(e.getKeyCode() == 27 && currentGui.isImmersiveModeOn.get()) {
 				try {
 					if (MainGUI.frmScryptV.isFocused()) {
-						MainGUI.mainGuiUtils.immersiveModeToggle();
+						if (MainGUI.mainGuiUtils.isTextEditorActive()) {
+							MainGUI.initTxtWriter.textEditorUtils.setImmersiveMode(false);
+						} else {
+							MainGUI.mainGuiUtils.immersiveModeToggle();
+						}
 						logger.debug("Immersive mode exit triggered with \"esc\": current mainFrame is active!");
 					} else {
 						logger.warn("Immersive mode esc skipped: current mainFrame is not active!");

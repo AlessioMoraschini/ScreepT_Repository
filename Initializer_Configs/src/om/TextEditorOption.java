@@ -29,6 +29,9 @@ public class TextEditorOption {
 	
 	//TEXT AREA
 	public static final String DEFAULT_SELECTED_THEME = GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml";
+	public static final boolean DEF_headerVisible = true;
+	public static final boolean DEF_subHeaderVisible = true;
+	public static final boolean DEF_footerVisible = true;
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
 	public static final boolean DEF_mapViewActive = false;
 	public static final boolean DEF_clipboardViewActive = false;
@@ -77,6 +80,9 @@ public class TextEditorOption {
 	public static final String DEF_prefDictspellChecker = GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
 	
 	// FIELDS	
+	public boolean headerVisible;
+	public boolean subHeaderVisible;
+	public boolean footerVisible;
 	public int margin;
 	public int voiceRate;
 	public boolean inlinedTabs;
@@ -147,6 +153,10 @@ public class TextEditorOption {
 		
 		uppercase_hash = DEF_uppercase_hash;
 		prefix_hash = DEF_prefix_hash;
+		
+		headerVisible = DEF_headerVisible;
+		subHeaderVisible = DEF_subHeaderVisible;
+		footerVisible = DEF_footerVisible;
 		
 		openedFileList = new ArrayList<String>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
@@ -250,6 +260,30 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public boolean isHeaderVisible() {
+		return headerVisible;
+	}
+
+	public void setHeaderVisible(boolean headerVisible) {
+		this.headerVisible = headerVisible;
+	}
+
+	public boolean isSubHeaderVisible() {
+		return subHeaderVisible;
+	}
+
+	public void setSubHeaderVisible(boolean subHeaderVisible) {
+		this.subHeaderVisible = subHeaderVisible;
+	}
+
+	public boolean isFooterVisible() {
+		return footerVisible;
+	}
+
+	public void setFooterVisible(boolean footerVisible) {
+		this.footerVisible = footerVisible;
+	}
+
 	public String getPreferredSyntaxIfNotSync() {
 		return preferredSyntaxIfNotSync;
 	}

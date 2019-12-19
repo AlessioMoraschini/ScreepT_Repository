@@ -12,7 +12,7 @@ import javax.crypto.spec.PBEKeySpec;
  * 
  * @author Alessio Moraschini
  * 
- * This class is useful when hashing a secured data to hide the original password, usefult to avoid plaintext password backward discovery vulnerability.
+ * This class is useful when hashing a secured data to hide the original password, useful to avoid plain-text password backward discovery vulnerability.
  * 
  * This is also useful when you have to store securely sensitive data such as passwords
  * 
@@ -23,6 +23,9 @@ public class Hasher {
 	
 	private static String algorithmSha512 = "PBKDF2WithHmacSHA512";
 	private static String algorithmSha1 = "PBKDF2WithHmacSHA1";
+	
+	private static SecretKeyFactory secretKeyfactorySHA512;
+	private static SecretKeyFactory secretKeyfactorySHA1;
 
 	/**
 	 * Hash the psw bytes and return the concatenation of salt (16 bytes) + hashed passwords
@@ -40,8 +43,7 @@ public class Hasher {
 	public static HashDTO hashPsw(char[] psw, IterationsLevel security, HashAlgorithm algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] salt = generateSecureRandom(16);
 		KeySpec spec = new PBEKeySpec(psw, salt, security.iterations, psw.length * 8);
-		SecretKeyFactory factory = SecretKeyFactory.getInstance(algorithm.value);
-		byte[] hashed = factory.generateSecret(spec).getEncoded();
+		byte[] hashed = getKeyFactory(algorithm).generateSecret(spec).getEncoded();
 		byte[] result = fillArrayFromOtherArray(hashed, psw.length);
 		return new HashDTO(salt, result);
 	}
@@ -60,11 +62,20 @@ public class Hasher {
 	 */
 	public static byte[] hashPswWithGivenSalt(char[] psw, byte[] salt, IterationsLevel security, HashAlgorithm algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		KeySpec spec = new PBEKeySpec(psw, salt, security.iterations, psw.length * 8);
-		SecretKeyFactory factory = SecretKeyFactory.getInstance(algorithm.value);
-		byte[] hashed = factory.generateSecret(spec).getEncoded();
+		byte[] hashed = getKeyFactory(algorithm).generateSecret(spec).getEncoded();
 		byte[] result = fillArrayFromOtherArray(hashed, psw.length);
 		
 		return result;
+	}
+	
+	private static SecretKeyFactory getKeyFactory(HashAlgorithm algoritm) throws NoSuchAlgorithmException {
+		if(HashAlgorithm.PBKDF2SHA512.equals(algoritm)) {
+			secretKeyfactorySHA512 = secretKeyfactorySHA512 != null ? secretKeyfactorySHA512 : SecretKeyFactory.getInstance(algorithmSha512);
+			return secretKeyfactorySHA512;
+		} else {
+			secretKeyfactorySHA1 = secretKeyfactorySHA1 != null ? secretKeyfactorySHA1 : SecretKeyFactory.getInstance(algorithmSha1);
+			return secretKeyfactorySHA1;
+		}
 	}
 	
 	/**

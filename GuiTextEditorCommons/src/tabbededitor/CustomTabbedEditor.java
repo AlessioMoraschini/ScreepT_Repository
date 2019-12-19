@@ -25,7 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -127,7 +127,7 @@ public class CustomTabbedEditor {
 			}, GuiUtils.getCurrentActiveWindow());
 		
 		mainTabList.addMouseWheelListener(new TabbedPaneMouseWheelListener());
-		mainTabList.setBorder(new LineBorder(Color.BLACK, 2));
+		mainTabList.setBorder(new EmptyBorder(0,0,0,0));
 		mainTabList.setBackground(new Color(30, 30, 30));
 		
 		mainTabList.dropRunner = getFileDropRunnable(mainTabList.loadedFilesList);
@@ -758,7 +758,7 @@ public class CustomTabbedEditor {
 	
 	public void resetTabHeaderString(Integer sourceIndex) {
 		int indexChange = (sourceIndex == null) ? mainTabList.getSelectedIndex() : sourceIndex;
-		TabTextEditorObj loadedTabObj = (sourceIndex == null) ? this.loadedTabObj : loadedList.getList().get(sourceIndex);
+//		TabTextEditorObj loadedTabObj = (sourceIndex == null) ? this.loadedTabObj : loadedList.getList().get(sourceIndex);
 		try {
 			JLabel tabHeadLbl = (JLabel) (getPanelFromTabHeader(indexChange)).getComponent(TabUtils.TAB_TITLE_ORDER);
 			tabHeadLbl.setText(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME);

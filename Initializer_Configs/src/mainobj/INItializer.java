@@ -96,6 +96,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		
 		// LOAD AES OPTIONS => disabled key for security
 		aesOpt.setFlagAes(Boolean.parseBoolean(iniReadFile.get(AES_OPT, "flagCodificaAes")));
+		aesOpt.setHashKey(Boolean.parseBoolean(iniReadFile.get(AES_OPT, "hashKey")));
 		
 		loadFileOptions();
 		loadGeneralOptions();
@@ -120,6 +121,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		synchronized(iniFile) {
 			// set INIFILE-AES OPTIONS
 			iniFile.put(AES_OPT, "flagCodificaAes", aesOpt.isFlagAes());
+			iniFile.put(AES_OPT, "hashKey", aesOpt.isHashKey());
 			
 			writeFileOptions();
 			writeGeneralOptions();
@@ -344,6 +346,11 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// workspace view selected
 		textEditorOpt.setWorkspaceViewSelected(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "workspaceViewSelected")));
 		
+		// Components visibility
+		textEditorOpt.setFooterVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "footerVisible"), TextEditorOption.DEF_footerVisible));
+		textEditorOpt.setHeaderVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "headerVisible"), TextEditorOption.DEF_headerVisible));
+		textEditorOpt.setSubHeaderVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "subHeaderVisible"), TextEditorOption.DEF_subHeaderVisible));
+
 		// txtArea detail
 		textEditorOpt.setTreeLocked(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "isTreeLocked"), TextEditorOption.DEFAULT_TREE_LOCKED));
 		textEditorOpt.setTabLineVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabLineVisibleFlag"), TextEditorOption.DEFAULT_TAB_LINE_VISIBLE));
@@ -571,6 +578,11 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync", textEditorOpt.defaultAutoSyntaxSync);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", textEditorOpt.preferredSyntaxIfNotSync);
 		
+		// BLOCKS VISIBILITY
+		iniFile.put(TEXT_EDITOR_OPT, "footerVisible", textEditorOpt.footerVisible);
+		iniFile.put(TEXT_EDITOR_OPT, "headerVisible", textEditorOpt.headerVisible);
+		iniFile.put(TEXT_EDITOR_OPT, "subHeaderVisible", textEditorOpt.subHeaderVisible);
+		
 		// DETAIL
 		iniFile.put(TEXT_EDITOR_OPT, "codeFoldingEnabled", textEditorOpt.codeFoldingEnabled);
 		iniFile.put(TEXT_EDITOR_OPT, "autoIndentEnabled", textEditorOpt.autoIndentEnabled);
@@ -616,7 +628,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		builder.append("\n\n### Config file: "+this.getIniFile().getFile().getAbsolutePath());
 		// concat AES OPTIONS
 		builder.append("\n\n ---- AES OPTIONS -----\n\n")
-			   .append("\nFLAGAES: ").append(aesOpt.isFlagAes());
+			   .append("\nFLAGAES: ").append(aesOpt.isFlagAes())
+			   .append("\nHASH KEY: ").append(aesOpt.isHashKey());
 		
 		// concat GENERAL OPTIONS
 		builder.append("\n\n ---- GENERAL OPTIONS -----\n\n")
@@ -690,6 +703,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nDEFAULT WORKSPACE LOCATION: ").append(textEditorOpt.defaultWorkspacePath)
 			   .append("\nDEFAULT AUTOMATIC SYNTAX SYNC: ").append(textEditorOpt.defaultAutoSyntaxSync)
 			   .append("\nPREFERRED SYNTAX IF NOT AUTOSYNC: ").append(textEditorOpt.preferredSyntaxIfNotSync)
+			   .append("\nFOOTER VISIBLE: ").append(textEditorOpt.footerVisible)
+			   .append("\nHEADER VISIBLE: ").append(textEditorOpt.headerVisible)
+			   .append("\nSUB-HEADER VISIBLE: ").append(textEditorOpt.subHeaderVisible)
 			   .append("\nANTIALIASED TEXT AREA: ").append(textEditorOpt.isAntialiasedTxtArea())
 			   .append("\nTAB SIZE: ").append(textEditorOpt.tabSize)
 			   .append("\nTAB LINE VISIBLE: ").append(textEditorOpt.tabLineVisible)

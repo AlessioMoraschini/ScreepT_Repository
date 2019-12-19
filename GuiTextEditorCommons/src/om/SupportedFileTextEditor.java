@@ -20,7 +20,7 @@ public enum SupportedFileTextEditor {
 									 CSS(".css","css", SyntaxConstants.SYNTAX_STYLE_CSS, GeneralResourcesPaths.WORDLIST_CSS, IconsPathConfigurator.F_ICON_CSS),
 									 D(".d","d", SyntaxConstants.SYNTAX_STYLE_D, null, null),
 									 DELPHI(".dpr","dpr", SyntaxConstants.SYNTAX_STYLE_DELPHI, null, null),
-									 DOCKER(".yml",".yml", SyntaxConstants.SYNTAX_STYLE_DOCKERFILE, null, null),
+									 DOCKER(".yml","yml", SyntaxConstants.SYNTAX_STYLE_DOCKERFILE, null, null),
 									 GROOVY(".groovy","groovy", SyntaxConstants.SYNTAX_STYLE_GROOVY, null, null),
 									 HOSTS(".hosts", "hosts", SyntaxConstants.SYNTAX_STYLE_HOSTS, null, null),
 									 HTACCESS(".htaccess", "htaccess", SyntaxConstants.SYNTAX_STYLE_HTACCESS, null, null),

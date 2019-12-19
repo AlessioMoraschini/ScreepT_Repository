@@ -167,7 +167,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		comboCharsets.setToolTipText("Choose general application Charset to use");
 		getContentPane().add(comboCharsets, "cell 2 2 2 1,grow");
 		
-		chckbxAutosave = new JCheckBox("Autosave");
+		chckbxAutosave = new JCheckBox("Autosave configuration");
 		getContentPane().add(chckbxAutosave, "cell 4 2 2 1,alignx right,aligny center");
 		chckbxAutosave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxAutosave.setToolTipText("Enable/Disable periodic autosave (also when exiting application) current configuration will be automatically saved");

@@ -21,6 +21,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
+import javax.swing.text.BadLocationException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -29,13 +30,13 @@ import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
-import media.STEGException;
-import resources.GeneralConfig;
 import variousutils.CustomFileComparator;
 import variousutils.EntophyzerUtils;
 import crypt.steg.StegOmResult;
-import dialogutils.UpdateProgressPanel;
+import gui.UpdateProgressPanelMin;
 import media.ImageGeneralWorker;
+import media.STEGException;
+import resources.GeneralConfig;
 
 /**
  * 
@@ -83,7 +84,7 @@ public class ScreeptManager {
 	
 	private byte[] buffer;
 	
-	private volatile UpdateProgressPanel progUpdater;
+	private volatile UpdateProgressPanelMin progUpdater;
 	
 	boolean wellDone = false;
 	
@@ -97,6 +98,8 @@ public class ScreeptManager {
 	
 	// reference to keep memory of outFile/dir (in case of steg delete all out dir representing crypted single file) in case of error
 	public File currentOutFile;
+	
+	public boolean hashed = true;
 	
 	//////////////////////
 	//    CONSTRUCTOR   //
@@ -174,11 +177,11 @@ public class ScreeptManager {
 	 * @throws InvalidKeyException 
 	 * @throws STEGException 
 	 */
-	public Boolean crypt(File srcFile, UpdateProgressPanel progressBarGeneral) {
+	public Boolean crypt(File srcFile, UpdateProgressPanelMin progressBarGeneral) {
 
 		buffer = new byte[AES_BUFFER_SIZE];
 		
-		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanel();
+		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMin(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Starting ecnryption...");
 
@@ -280,7 +283,7 @@ public class ScreeptManager {
 	 * incremental names found in the same folder
 	 * 
 	 */
-	public Boolean deCrypt(File srcFile, UpdateProgressPanel progressBarGeneral) {
+	public Boolean deCrypt(File srcFile, UpdateProgressPanelMin progressBarGeneral) {
 		
 		progUpdater = progressBarGeneral;
 		
@@ -288,7 +291,7 @@ public class ScreeptManager {
 		// to avoid errors i've to include that bytes during the read plus the IV size
 		buffer = new byte[AES_BUFFER_SIZE+32];
 		
-		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanel();
+		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMin(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Starting Decryption...");
 		
@@ -403,9 +406,9 @@ public class ScreeptManager {
 	}
 	
 	// Function that implements encryption of source file into another crypted file with same extension.
-	private void onlyAESCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
+	private void onlyAESCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -452,7 +455,7 @@ public class ScreeptManager {
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
-			byte[] partialResult = aesCoder.encrypt(buffer);				
+			byte[] partialResult = aesCoder.encrypt(buffer, hashed);	
 			outWriter.write(partialResult);
 			outWriter.flush();
 			// load next bufferSize bytes from srcFile
@@ -485,9 +488,9 @@ public class ScreeptManager {
 	}
 	
 	// Function that implements aes decryption of source file into another decrypted file with same extension.
-	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException {
+	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -568,7 +571,7 @@ public class ScreeptManager {
 
 		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -667,7 +670,7 @@ public class ScreeptManager {
 
 		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -749,11 +752,11 @@ public class ScreeptManager {
 	// Function that implements encryption of source file into several .png images using pre-AES coding.
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	// this is method for top security
-	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
+	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException {
 				
 		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -811,7 +814,7 @@ public class ScreeptManager {
 
 			// encrypt (AES) current buffer content with aes key string
 			// remember that in case of available%16!=0 -> partial result's size approximate in excess to reach multiple of 16 (that's how AES works)
-			byte[] partialResult = aesCoder.encrypt(buffer);				
+			byte[] partialResult = aesCoder.encrypt(buffer, hashed);				
 			
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
@@ -871,11 +874,11 @@ public class ScreeptManager {
 	
 	// this function implement the decription of several (0-n) images containing crypted values, using the encryption key image.
 	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
-	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException {
+	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException {
 		
 		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new UpdateProgressPanel();
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -1079,6 +1082,14 @@ public class ScreeptManager {
 		return aesCoder;
 	}
 	
+	public boolean isHashed() {
+		return hashed;
+	}
+
+	public void setHashed(boolean hashed) {
+		this.hashed = hashed;
+	}
+
 	/**
 	 * set the Coder used for AES ecryption/decryption
 	 * @return

@@ -22,12 +22,12 @@ import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import dialogutils.JOptionHelper;
-import dialogutils.UpdateProgressPanel;
 import enums.BufferedImageType;
 import frameutils.utils.GuiUtils;
 import gUI.frames.KeyGenFrame;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
+import gui.UpdateProgressPanelMin;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -202,6 +202,7 @@ public class CrypterPanel extends JPanel {
 	
 	public static final int labelLengthLimit = 40;
 	private JCheckBox chckbxShuffle;
+	private JCheckBox chckbxHashKey;
 	private JScrollPane scrollPaneDragNDropSource;
 	private JPanel panelBackgroundDragSources;
 	private JTree treeSourcesDragAndDrop;
@@ -209,7 +210,7 @@ public class CrypterPanel extends JPanel {
 	private JSeparator separatorDragNDropTitle;
 	public static VirtualFileDropPane panelVDragNDropPane;
 	
-	public UpdateProgressPanel generalProgress;
+	public UpdateProgressPanelMin generalProgress;
 	public JOptionHelper dialogHelper;
 	
 	int leftVerticalDivHeight;
@@ -332,9 +333,9 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		panelStatus.setBackground(new Color(112, 128, 144));
 		panelMainContainer.add(panelStatus, "cell 0 1 5 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{90, 180, 70, 70, 100, 110, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{90, 180, 70, 70, 100, 110, 10, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
-		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelStatus.setLayout(gbl_panelStatus);
 		
@@ -393,7 +394,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		panelStatus.add(comboModeCrypto, gbc_comboModeCrypto);
 		comboModeCrypto.setModel(new DefaultComboBoxModel<CryptoMode>(CryptoMode.values()));
 			
-		chckbxShuffle = new JCheckBox("Ultra Secure");
+		chckbxShuffle = new JCheckBox("Shuffle Mode");
 		chckbxShuffle.setOpaque(false);
 		chckbxShuffle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShuffle.setForeground(Color.WHITE);
@@ -403,12 +404,23 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		gbc_chckbxShuffle.gridx = 5;
 		gbc_chckbxShuffle.gridy = 0;
 		panelStatus.add(chckbxShuffle, gbc_chckbxShuffle);
+
+		chckbxHashKey = new JCheckBox("Hash key");
+		chckbxHashKey.setOpaque(false);
+		chckbxHashKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxHashKey.setForeground(Color.WHITE);
+		
+		GridBagConstraints gbc_chckbxHashKey = new GridBagConstraints();
+		gbc_chckbxHashKey.insets = new Insets(0, 0, 0, 5);
+		gbc_chckbxHashKey.gridx = 6;
+		gbc_chckbxHashKey.gridy = 0;
+		panelStatus.add(chckbxHashKey, gbc_chckbxHashKey);
 		
 		labelFlagCodeReady = new JLabel("");
 		labelFlagCodeReady.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_labelFlagCodeReady = new GridBagConstraints();
 		gbc_labelFlagCodeReady.fill = GridBagConstraints.VERTICAL;
-		gbc_labelFlagCodeReady.gridx = 6;
+		gbc_labelFlagCodeReady.gridx = 7;
 		gbc_labelFlagCodeReady.gridy = 0;
 		panelStatus.add(labelFlagCodeReady, gbc_labelFlagCodeReady);
 		labelFlagCodeReady.setBorder(null);
@@ -591,6 +603,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			public void actionPerformed(ActionEvent e) {
 				
 				try {
+					screeptManagerFoF.setHashed(chckbxHashKey.isSelected());
 					new Thread(cripterRunner()).start();
 				}
 				catch(Throwable ex) {
@@ -612,6 +625,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			public void actionPerformed(ActionEvent e) {
 				
 				try {
+					screeptManagerFoF.setHashed(chckbxHashKey.isSelected());
 					new Thread(decripterRunner()).start();
 				}catch(Throwable ex) {
 					if(screeptManagerFoF.screepTManager!=null) {
@@ -633,9 +647,17 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 				if(modality.equals(CryptoMode.ONLY_AES)) {
 					chckbxShuffle.setEnabled(false);
 					chckbxShuffle.setForeground(Color.gray);
-				}else {
+				} else {
 					chckbxShuffle.setEnabled(true);
 					chckbxShuffle.setForeground(Color.white);
+				}
+				
+				if (modality.isAES()){
+					chckbxHashKey.setEnabled(true);
+					chckbxHashKey.setForeground(Color.white);
+				} else {
+					chckbxHashKey.setEnabled(false);
+					chckbxHashKey.setForeground(Color.gray);
 				}
 				
 				// update configuration reference
@@ -643,13 +665,23 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 				currentConf.getSteganOpt().setFlagSteg(modality.STEG);
 			}
 		});
+		comboModeCrypto.setSelectedItem(CryptoMode.ONLY_AES);
 		
-		// ULTRA-SECURE CHECKBOX LISTENER
+		// ULTRA-SECURE - CHECKBOX LISTENER
 		chckbxShuffle.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				currentConf.getSteganOpt().setUltraSecure(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
+			}
+		});
+
+		// HASH KEY - CHECKBOX LISTENER
+		chckbxHashKey.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentConf.getAesOpt().setHashKey(chckbxHashKey.isSelected() && chckbxHashKey.isEnabled());
 			}
 		});
 		
@@ -749,7 +781,8 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 				
 				if (destinationDir!= null) {
 					
-					generalProgress = new UpdateProgressPanel(currentConf, true);
+					generalProgress = new UpdateProgressPanelMin(true);
+					generalProgress.setLocationRelativeTo(parentFrame);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
 					generalProgress.move(0, -generalProgress.getDialog().getHeight()-50);
@@ -774,7 +807,17 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 						builder.append("Starting conversion of file ").append(nProgrFile+1).append("/").append(nFilesSource)
 						.append("[").append(currentFile.getName()).append("]");
 						int progressPerc = nProgrFile*100/nFilesSource;
-						generalProgress.update(progressPerc-1, builder.toString(), true);
+						
+						if(nProgrFile == 0)
+							progressPerc = 1;
+
+						if (srcFiles.length > 1) {
+							generalProgress.update(progressPerc - 1, builder.toString(), true);
+						} else {
+							generalProgress.update(50, builder.toString(), true);
+							generalProgress.getGeneralBar().setIndeterminate(true);
+						}
+						
 						textAreaLog.append(builder.toString());
 						nProgrFile ++;
 
@@ -851,7 +894,8 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 				
 				if (destinationDir!= null) {
 					
-					generalProgress = new UpdateProgressPanel(currentConf, true);
+					generalProgress = new UpdateProgressPanelMin(true);
+					generalProgress.setLocationRelativeTo(parentFrame);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
 					generalProgress.move(0, -generalProgress.getDialog().getHeight()-50);
@@ -875,7 +919,16 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 						builder.append("Starting conversion of file ").append(nProgrFile+1).append("/").append(nFilesSource)
 						.append("[").append(currentFile.getName()).append("]");
 						int progressPerc = nProgrFile*100/nFilesSource;
-						generalProgress.update(progressPerc, builder.toString(), true);
+						if(nProgrFile == 0)
+							progressPerc = 1;
+
+						if (srcFiles.length > 1) {
+							generalProgress.update(progressPerc - 1, builder.toString(), true);
+						} else {
+							generalProgress.update(50, builder.toString(), true);
+							generalProgress.getGeneralBar().setIndeterminate(true);
+						}
+						
 						textAreaLog.append(builder.toString());
 						nProgrFile ++;
 						
@@ -971,9 +1024,9 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		textAreaMain = new RSyntaxTextArea();
 		textAreaMain.setMinimumSize(new Dimension(100, 28));
 		textAreaMain.setWrapStyleWord(true);
-		textAreaMain.setRequestFocusEnabled(false);
+		textAreaMain.setRequestFocusEnabled(true);
 		textAreaMain.setSyntaxEditingStyle(SupportedFileTextEditor.YAML.syntax);
-		textAreaMain.setHighlightCurrentLine(false);
+		textAreaMain.setHighlightCurrentLine(true);
 		boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null && GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(Themes.DARK.fileName);
 		if (usePreloadedStringXml) {
 			// If available use lazy initialized in memory
@@ -983,7 +1036,8 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			RsyntaxUtils.changeStyleViaThemeXml(textAreaMain, Themes.DARK.defaultPath);
 		}
 		textAreaMain.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		textAreaMain.setEditable(false);
+		textAreaMain.setEditable(true);
+		textAreaMain.setEnabled(true);
 		textAreaMain.setMargin(new Insets(10, 15, 10, 10));
 
 		scrollPaneText = new JScrollPane();
@@ -1131,6 +1185,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		CryptoMode mode = CryptoMode.getModeFromBoolean(currentConf.getAesOpt().isFlagAes(), currentConf.getSteganOpt().isFlagSteg());
 		comboModeCrypto.setSelectedItem(mode);
 		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
+		chckbxHashKey.setSelected(currentConf.getAesOpt().isHashKey());
 	}
 	
 	private synchronized boolean checkIfReadyToCode() {

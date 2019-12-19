@@ -42,17 +42,19 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
-import dialogutils.UpdateProgressPanel;
 import enums.KeyGenImageType;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.subpanels.ImageGenContainerPanel;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
+import gui.UpdateProgressPanelMin;
+import maingUI.MainGUI;
 import mainobj.INItializer;
 
 import java.awt.Cursor;
 
 public class KeyGenFrame extends ParentFrame {
+	private static final long serialVersionUID = 6912477672774875873L;
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(KeyGenFrame.class); 
@@ -84,7 +86,7 @@ public class KeyGenFrame extends ParentFrame {
 	private JLabel lblThisSettingsAllow;
 	
 	// container of the image from which generated original image will be taken
-	private volatile UpdateProgressPanel progUpdater;
+	private volatile UpdateProgressPanelMin progUpdater;
 	private ImageGenContainerPanel imageContainer;
 	private KeyGenFrame thisFrame;
 	
@@ -332,7 +334,8 @@ public class KeyGenFrame extends ParentFrame {
 							int returnVal = fileChooser.showSaveDialog(thisFrame);
 					        if (returnVal == JFileChooser.APPROVE_OPTION) {
 					        	
-					        	progUpdater = new UpdateProgressPanel(currentConfig);
+					        	progUpdater = new UpdateProgressPanelMin(false);
+					        	progUpdater.setLocationRelativeTo(MainGUI.mainAPP.getMainFrame());
 					    		progUpdater.getPb().setValue(10);
 					    		progUpdater.getPb().setIndeterminate(true);
 					        	
@@ -424,7 +427,8 @@ public class KeyGenFrame extends ParentFrame {
 							}
 							// now if user pressed cancel input is null, let's check
 							if (inputName != null) {
-								progUpdater = new UpdateProgressPanel(currentConfig);
+								progUpdater = new UpdateProgressPanelMin(false);
+								progUpdater.setLocationRelativeTo(MainGUI.mainAPP.getMainFrame());
 								progUpdater.getPb().setValue(0);
 								progUpdater.getPb().setIndeterminate(true);
 

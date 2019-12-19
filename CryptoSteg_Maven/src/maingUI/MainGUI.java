@@ -64,6 +64,7 @@ import logger.LoggerUtils;
 import mainobj.INItializer;
 import mainobj.InitOwner;
 import media.Sounds;
+import mouseutils.MovePanelMouseListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -525,24 +526,6 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 			}
 		});
 
-		// NOT OPENING VIEW - SHOW/HIDE Txt Editor sub-Header
-		mntmTxtEdHideShowHeader = new CustomJmenuItem(new AbstractAction("Show/Hide text editor's sub-header block") {
-			public void actionPerformed(ActionEvent ae) {
-				if(initTxtWriter != null) {
-					initTxtWriter.textEditorUtils.hideOrShowHeaderPanelLevel2();
-				}
-			}
-		});
-
-		// NOT OPENING VIEW - SHOW/HIDE Txt Editor footer
-		mntmTxtEdHideShowFooter = new CustomJmenuItem(new AbstractAction("Show/Hide text editor's footer block") {
-			public void actionPerformed(ActionEvent ae) {
-				if(initTxtWriter != null) {
-					initTxtWriter.textEditorUtils.hideOrShowFooterPanel();
-				}
-			}
-		});
-		
 		String msg1 = "Are you sure to reset ";
 		String msg2 = "? All unsaved work will be lost.";
 		
@@ -877,30 +860,10 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						if (frmScryptV.isUndecorated()) {
-//							MovePanelMouseListener.removeMoveListener(frmScryptV, movePanelMouseListener); // USE TO REMOVE LISTENER DRAG PANEL
-							if(preFullScreenSize == null) {
-								preFullScreenSize = GuiUtils.getScreenSize(frmScryptV);
-							}
-							frmScryptV.dispose();
-							frmScryptV.setUndecorated(false);
-							frmScryptV.setLocationRelativeTo(frmScryptV);
-							frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
-							frmScryptV.setSize(preFullScreenSize);
-							frmScryptV.setVisible(true);
-							isFullScreen.set(false);
-							menuBar.setVisible(true);
-							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPAND));
 						} else {
-							frmScryptV.dispose();
-							preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
-							frmScryptV.setSize(preFullScreenSize);
-							frmScryptV.setMinimumSize(GuiUtils.getScreenSize(frmScryptV));
-							frmScryptV.setLocationRelativeTo(frmScryptV);
-							frmScryptV.setVisible(true);
-							isFullScreen.set(true);
-							mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
-//							movePanelMouseListener = MovePanelMouseListener.applyMoveListenerR(frmScryptV); // USE TO ADD LISTENER DRAG PANEL
 						}
+						
+						setFullScreenEnabled(!frmScryptV.isUndecorated());
 						
 						// Update txtArea to adapt new size
 						if(initTxtWriter != null && initTxtWriter.textEditorUtils != null) {
@@ -917,6 +880,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				});
 			}
 		});
+		
+		
 		
 		
 		// IMMERSIVE MODE ON/OFF
@@ -1394,6 +1359,36 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 	
 	
 //////////	NOW SOME USEFUL METHOD  ////////////////
+	
+	public void setFullScreenEnabled(boolean enable) {
+		
+		if(enable) {
+			frmScryptV.dispose();
+			preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
+			frmScryptV.setSize(preFullScreenSize);
+			frmScryptV.setMinimumSize(GuiUtils.getScreenSize(frmScryptV));
+			frmScryptV.setLocationRelativeTo(frmScryptV);
+			frmScryptV.setVisible(true);
+			isFullScreen.set(true);
+			mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
+//			movePanelMouseListener = MovePanelMouseListener.applyMoveListenerR(frmScryptV); // USE TO ADD LISTENER DRAG PANEL
+		
+		} else {
+//			MovePanelMouseListener.removeMoveListener(frmScryptV, movePanelMouseListener); // USE TO REMOVE LISTENER DRAG PANEL
+			if(preFullScreenSize == null) {
+				preFullScreenSize = GuiUtils.getScreenSize(frmScryptV);
+			}
+			frmScryptV.dispose();
+			frmScryptV.setUndecorated(false);
+			frmScryptV.setLocationRelativeTo(frmScryptV);
+			frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
+			frmScryptV.setSize(preFullScreenSize);
+			frmScryptV.setVisible(true);
+			isFullScreen.set(false);
+			menuBar.setVisible(true);
+			mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPAND));
+		}
+	}
 	
 	public void resizeMainFrameDefaults() {
 

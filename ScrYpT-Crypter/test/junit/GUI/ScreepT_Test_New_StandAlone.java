@@ -18,7 +18,7 @@ import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import crypt.steg.StegCipher;
-import crypt.steg.STEGException;
+import media.STEGException;
 
 public class ScreepT_Test_New_StandAlone {
 	
@@ -53,17 +53,20 @@ public class ScreepT_Test_New_StandAlone {
 	private StegCipher STEGcoder;	
 	private ScreeptManagerFileOrFolder screepTManagerFof;
 	
+	private boolean hashed = false;
+	
 ////////////////////////////////////////////////////////////////private ScreeptManagerFileOrFolder screepTManagerNew;
 ////////////////////// START TEST METHODS //////////////////////
 ////////////////////////////////////////////////////////////////
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testOnlyAEScrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
 		
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			screepTManagerFof.setHashed(hashed);
 			
 			File resultDir =new File(TEMP_DIR);
 			
@@ -93,6 +96,7 @@ public class ScreepT_Test_New_StandAlone {
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			screepTManagerFof.setHashed(hashed);
 			
 			File resultDir =new File(TEMP_DIR);
 			
@@ -183,6 +187,7 @@ public class ScreepT_Test_New_StandAlone {
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			screepTManagerFof.setHashed(hashed);
 			
 			File resultDir =new File(TEMP_DIR);
 			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
@@ -214,6 +219,7 @@ public class ScreepT_Test_New_StandAlone {
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
+			screepTManagerFof.setHashed(hashed);
 			
 			File resultDir =new File(TEMP_DIR);
 			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");

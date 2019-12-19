@@ -19,8 +19,8 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import dialogutils.JOptionHelper;
-import dialogutils.UpdateProgressPanel;
-import crypt.steg.STEGException;
+import gui.UpdateProgressPanelMin;
+import media.STEGException;
 
 public class ScreeptManagerFileOrFolder {
 
@@ -34,12 +34,13 @@ public class ScreeptManagerFileOrFolder {
 	private StegCipher STEGcoder;	
 	public ScreeptManager screepTManager;
 	private boolean shuffle = true;
+	private boolean hashed = true;
 	
 	private String opInfo = "Nothing to display";
 	
 	public boolean coderUsed = false;
 	public boolean defaultProgressBarVisible = true;
-	UpdateProgressPanel generalProgress;
+	UpdateProgressPanelMin generalProgress;
 	
 	public JOptionHelper dialogHelper;
 	
@@ -54,7 +55,7 @@ public class ScreeptManagerFileOrFolder {
 	 * 
 	 * NB default shuffle is false, you have to specify it each time crypting/decrypting
 	 */
-	public ScreeptManagerFileOrFolder(UpdateProgressPanel generalProgress, JComponent parent, boolean advicesEnabled) {
+	public ScreeptManagerFileOrFolder(UpdateProgressPanelMin generalProgress, JComponent parent, boolean advicesEnabled) {
 		this.shuffle = false;
 		// default dialogHelper initially disabled 
 		this.dialogHelper = new JOptionHelper(parent, advicesEnabled);
@@ -335,6 +336,7 @@ public class ScreeptManagerFileOrFolder {
 		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
+		screepTManager.setHashed(hashed);
 		return screepTManager;
 	}
 
@@ -346,6 +348,7 @@ public class ScreeptManagerFileOrFolder {
 		screepTManager = new ScreeptManager(STEGcoder);
 		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
+		screepTManager.setHashed(hashed);
 		return screepTManager;
 	}
 
@@ -362,6 +365,7 @@ public class ScreeptManagerFileOrFolder {
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
 		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
+		screepTManager.setHashed(hashed);
 		return screepTManager;
 	}
 
@@ -553,12 +557,20 @@ public class ScreeptManagerFileOrFolder {
 	public String getOpInfo() {
 		return opInfo;
 	}
-
-	public UpdateProgressPanel getGeneralProgress() {
-		return generalProgress;
+	
+	public boolean isHashed() {
+		return hashed;
 	}
 
-	public void setGeneralProgress(UpdateProgressPanel generalProgress) {
+	public void setHashed(boolean hashed) {
+		this.hashed = hashed;
+	}
+
+	public UpdateProgressPanelMin getGeneralProgress() {
+		return generalProgress;
+	}
+	
+	public void setGeneralProgress(UpdateProgressPanelMin generalProgress) {
 		this.generalProgress = generalProgress;
 	}
 	

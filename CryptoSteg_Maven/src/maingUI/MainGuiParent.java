@@ -98,7 +98,6 @@ public class MainGuiParent {
 		JMenu mnLastOpenedFile;
 		JMenu mnLastWorkspaces;
 		JMenu mnConversionsAndOther;
-		JMenu mnTxtEditHideShowBlocks;
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
 		JMenu mnrestartPanel;
@@ -122,9 +121,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmgenerateKeyImageSub;
 	CustomJmenuItem mntmViewKeyDictionary;
 	static CustomJmenuItem mntmTextEditor;
-		CustomJmenuItem mntmTxtEdHideShowHeader;
-		CustomJmenuItem mntmTxtEdHideShowTitleBlock;
-		CustomJmenuItem mntmTxtEdHideShowFooter;
+	public CustomJmenuItem mntmTxtEdHideShowTitleBlock;
 	CustomJmenuItem mntmnetInfo;
 	CustomJmenuItem mntmhwInfo;
 	CustomJmenuItem mntmHashChecker;
@@ -169,7 +166,6 @@ public class MainGuiParent {
 			mnLastWorkspaces = new JMenu("TextEditor: Last selected workspaces");
 			mnLastOpenedFile = new JMenu("TextEditor: Last opened files");
 			mnConversionsAndOther = new JMenu("Conversions and Media");
-			mnTxtEditHideShowBlocks = new JMenu("Text editor - Hide/Show elements");
 			mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnHelp = new JMenu("Help");
 			mnrestartPanel = new JMenu("Reset panels...");
@@ -270,10 +266,7 @@ public class MainGuiParent {
 			mnVarious.add(mntmTextEditor);
 				mnVarious.add(mnLastWorkspaces);
 				mnVarious.add(mnLastOpenedFile);
-				mnVarious.add(mnTxtEditHideShowBlocks);
-					mnTxtEditHideShowBlocks.add(mntmTxtEdHideShowTitleBlock);
-					mnTxtEditHideShowBlocks.add(mntmTxtEdHideShowHeader);
-					mnTxtEditHideShowBlocks.add(mntmTxtEdHideShowFooter);
+				mnVarious.add(mntmTxtEdHideShowTitleBlock);
 			mnVarious.add(new JSeparator());
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
@@ -381,7 +374,6 @@ public class MainGuiParent {
 		// FILE SECTION
 		mntmExit.setFont(menuItemFont);
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
-		mnTxtEditHideShowBlocks.setFont(menuItemFont);
 		mnLastWorkspaces.setFont(menuItemFont);
 		mnLastOpenedFile.setFont(menuItemFont);
 		mntmloadPrjSub.setFont(menuItemFont);
@@ -410,8 +402,6 @@ public class MainGuiParent {
 		mntmClipboardStandalone.setFont(menuItemFont);
 		mntmTextEditor.setFont(menuItemFont);
 		mntmTxtEdHideShowTitleBlock.setFont(menuItemFont);
-		mntmTxtEdHideShowHeader.setFont(menuItemFont);
-		mntmTxtEdHideShowFooter.setFont(menuItemFont);
 		
 		// SUB -> CONVERSION UTILS SECTION
 		mntmImageConverter.setFont(menuItemFont);
@@ -444,7 +434,6 @@ public class MainGuiParent {
 	void addMenuIcons() {
 		
 		MenuSetter.setIconTextGap(menuBar, 15);
-		mnTxtEditHideShowBlocks.setIconTextGap(15);
 		mnLastOpenedFile.setIconTextGap(15);
 		mnLastWorkspaces.setIconTextGap(15);
 		
@@ -484,7 +473,6 @@ public class MainGuiParent {
 		mntmClipboardStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
-		mnTxtEditHideShowBlocks.setIcon(new ImageIcon(IconsPathConfigurator.ICON_VISIBLE));
 		
 		mntmImageConverter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
 		
@@ -544,9 +532,7 @@ public class MainGuiParent {
 		
 		// Various submenu
 		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
-			mntmTxtEdHideShowTitleBlock.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_H, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-			mntmTxtEdHideShowHeader.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-			mntmTxtEdHideShowFooter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_L, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmTxtEdHideShowTitleBlock.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_H, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmnetInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | SHIFT_MASK));
 		mntmhwInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, ALT_MASK | SHIFT_MASK));
 		mntmHashChecker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, ALT_MASK | SHIFT_MASK));
@@ -629,32 +615,6 @@ public class MainGuiParent {
 			}
 		});
 		
-		mnTxtEditHideShowBlocks.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				if (initTxtWriter != null) {
-					mntmTxtEdHideShowFooter.setIcon(initTxtWriter.footerPanel.isVisible() ? IconsPathConfigurator.IMG_ICON_VISIBLE : IconsPathConfigurator.IMG_ICON_INVISIBLE);
-					mntmTxtEdHideShowHeader.setIcon(initTxtWriter.subHeaderPanel.isVisible() ? IconsPathConfigurator.IMG_ICON_VISIBLE : IconsPathConfigurator.IMG_ICON_INVISIBLE);
-					mntmTxtEdHideShowTitleBlock.setIcon(initTxtWriter.headerPanel.isVisible() ? IconsPathConfigurator.IMG_ICON_VISIBLE : IconsPathConfigurator.IMG_ICON_INVISIBLE);
-				}
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
 	}
 	
 	public void updateLastOpenedFiles(LimitedConcurrentList<FileNamed> lastOpenedLlist) {
@@ -924,16 +884,8 @@ public class MainGuiParent {
 		return mntmTextEditor;
 	}
 	
-	public CustomJmenuItem getMntmTxtEdHideShowHeader() {
-		return mntmTxtEdHideShowHeader;
-	}
-
 	public CustomJmenuItem getMntmTxtEdHideShowTitleBlock() {
 		return mntmTxtEdHideShowTitleBlock;
-	}
-
-	public CustomJmenuItem getMntmTxtEdHideShowFooter() {
-		return mntmTxtEdHideShowFooter;
 	}
 
 	public JMenuItem getMntmnetInfo() {
