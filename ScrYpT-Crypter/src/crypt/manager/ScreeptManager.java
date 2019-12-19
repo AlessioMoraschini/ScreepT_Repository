@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -23,20 +24,17 @@ import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 import javax.swing.text.BadLocationException;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-
-import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
-import variousutils.CustomFileComparator;
-import variousutils.EntophyzerUtils;
+import util.CustomFileComparator;
+import util.EntrophyzerUtils;
 import crypt.steg.StegOmResult;
-import gui.UpdateProgressPanelMin;
-import media.ImageGeneralWorker;
-import media.STEGException;
-import resources.GeneralConfig;
+import crypt.steg.STEGException;
+import util.ImageEncodingUtils;
+import util.SafeLogger;
+import util.ScreeptUtils;
+import util.UpdateProgressPanelMinFork;
 
 /**
  * 
@@ -51,10 +49,25 @@ import resources.GeneralConfig;
  */
 public class ScreeptManager {
 
-	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(ScreeptManager.class);
+	private static SafeLogger logger;
+	static {
+		logger = new SafeLogger(ScreeptManager.class);
+	}
 	
-	private final String TEMP_PATH = GeneralConfig.RESOURCES_DIR  + "temp/";
+	private static String prefixFromConfig = "";
+	static {
+		try {
+			Field field = Class.forName("resources.GeneralConfig").getField("RESOURCES_DIR");
+			field.setAccessible(true);
+			String tempPrefix = (String) field.get(null);
+			prefixFromConfig = tempPrefix;
+		} catch (Throwable throwable) {
+			prefixFromConfig = "";
+		}
+	}
+	
+	public String TEMP_PATH = prefixFromConfig + "temp/";
+	
 	// temp file path - default value after initializing with constructor
 	private String OUT_PATH = TEMP_PATH;
 	private String RESULT_PATH = TEMP_PATH;
@@ -66,7 +79,7 @@ public class ScreeptManager {
 	// NB AES_BUFFER SIZE MUST BE THE SAME FOR ENCRIPTION AND DECRIPTION!
 	// this is the size of the buffer used for file IO to avoid memory leak
 	private static int AES_BUFFER_SIZE = grantMultipleOfN(1024*1024, 16); // default - 1 MB of buffer - have to multiple of 16
-
+	
 	//////////////////////
 	//      FIELDS      //
 	//////////////////////
@@ -84,7 +97,7 @@ public class ScreeptManager {
 	
 	private byte[] buffer;
 	
-	private volatile UpdateProgressPanelMin progUpdater;
+	private volatile UpdateProgressPanelMinFork progUpdater;
 	
 	boolean wellDone = false;
 	
@@ -117,6 +130,7 @@ public class ScreeptManager {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = new AesCipher(("").toCharArray());
 		imgCoder = null;
+		TEMP_PATH = prefixFromConfig + "temp/";
 	}
 	
 	/**
@@ -129,6 +143,7 @@ public class ScreeptManager {
 		mode = CryptoMode.COMPLETE;
 		aesCoder = aesCod;
 		imgCoder = imgCod;
+		TEMP_PATH = prefixFromConfig + "temp/";
 	}	
 	
 	/**
@@ -140,6 +155,7 @@ public class ScreeptManager {
 		mode = CryptoMode.ONLY_AES;
 		aesCoder = aesCod;
 		imgCoder = null;
+		TEMP_PATH = prefixFromConfig + "temp/";
 	}
 		
 	/**
@@ -151,6 +167,7 @@ public class ScreeptManager {
 		mode = CryptoMode.ONLY_STEG;
 		aesCoder = null;
 		imgCoder = imgCod;
+		TEMP_PATH = prefixFromConfig + "temp/";
 	}
 	
 	//////////////////////
@@ -177,11 +194,11 @@ public class ScreeptManager {
 	 * @throws InvalidKeyException 
 	 * @throws STEGException 
 	 */
-	public Boolean crypt(File srcFile, UpdateProgressPanelMin progressBarGeneral) {
+	public Boolean crypt(File srcFile, UpdateProgressPanelMinFork progressBarGeneral) {
 
 		buffer = new byte[AES_BUFFER_SIZE];
 		
-		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMin(false);
+		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Starting ecnryption...");
 
@@ -216,7 +233,7 @@ public class ScreeptManager {
 
 				// create container folder for result coded images with same name of source file
 				RESULT_PATH = OUT_PATH+srcFile.getName()+"/";
-				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
+				File outFolder = ScreeptUtils.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
 				RESULT_PATH = outFolder.getCanonicalPath()+"/";
 				
@@ -242,7 +259,7 @@ public class ScreeptManager {
 
 				// create container folder for result coded images with same name of source file
 				RESULT_PATH = OUT_PATH+srcFile.getName()+"/";
-				File outFolder = FileStuff.renameJavaObjFile(new File(RESULT_PATH));
+				File outFolder = ScreeptUtils.renameJavaObjFile(new File(RESULT_PATH));
 				outFolder.mkdir();
 				RESULT_PATH = outFolder.getCanonicalPath()+"/";
 				
@@ -283,7 +300,7 @@ public class ScreeptManager {
 	 * incremental names found in the same folder
 	 * 
 	 */
-	public Boolean deCrypt(File srcFile, UpdateProgressPanelMin progressBarGeneral) {
+	public Boolean deCrypt(File srcFile, UpdateProgressPanelMinFork progressBarGeneral) {
 		
 		progUpdater = progressBarGeneral;
 		
@@ -291,7 +308,7 @@ public class ScreeptManager {
 		// to avoid errors i've to include that bytes during the read plus the IV size
 		buffer = new byte[AES_BUFFER_SIZE+32];
 		
-		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMin(false);
+		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Starting Decryption...");
 		
@@ -375,8 +392,11 @@ public class ScreeptManager {
 		tempMSG += msg;
 		wellDone = false;
 		killOpenStreams();
-		FileUtils.deleteQuietly(currentOutFile);
-		
+		try {
+			
+		} catch(Throwable throwable) {
+			currentOutFile.delete();
+		}
 	}
 	
 	// Function that delete the content of the temporaneous folder.
@@ -387,7 +407,7 @@ public class ScreeptManager {
 		if(temp_folder.exists() && temp_folder.listFiles().length!=0) {
 			
 			// empty temp folder content files before to start encription
-			boolean deleted = FileStuff.deleteDirContentRecursive(temp_folder);
+			boolean deleted = ScreeptUtils.deleteDirContentRecursive(temp_folder, logger);
 			if(deleted) {
 				msg ="\n => Temp dir ("+OUT_PATH+") succesfully emptied :)";
 				logger.debug(msg);
@@ -408,7 +428,7 @@ public class ScreeptManager {
 	// Function that implements encryption of source file into another crypted file with same extension.
 	private void onlyAESCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -426,7 +446,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		CRYPT_NAME = srcFile.getName();
-		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+CRYPT_NAME));
+		File result = ScreeptUtils.renameJavaObjFile(new File(OUT_PATH+CRYPT_NAME));
 		
 		// update reference to currentOutFile/folder
 		currentOutFile = result;
@@ -490,7 +510,7 @@ public class ScreeptManager {
 	// Function that implements aes decryption of source file into another decrypted file with same extension.
 	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -507,7 +527,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		DECRYPT_NAME = srcFile.getName();
-		File result = FileStuff.renameJavaObjFile(new File(OUT_PATH+DECRYPT_NAME));
+		File result = ScreeptUtils.renameJavaObjFile(new File(OUT_PATH+DECRYPT_NAME));
 		
 		// update reference to currentOutFile/folder
 		currentOutFile = result;
@@ -569,9 +589,9 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException {
 
-		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -615,7 +635,7 @@ public class ScreeptManager {
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
 //				buffer = ByteArrayShuffler.entroPieForward(buffer);
-				buffer = EntophyzerUtils.orderArrayByKey(buffer, keyIndexes);
+				buffer = EntrophyzerUtils.orderArrayByKey(buffer, keyIndexes);
 			}
 			
 			// this value will be used during decription to recognize where px value have to be ignored
@@ -668,9 +688,9 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
 
-		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -679,7 +699,7 @@ public class ScreeptManager {
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
 		File outFile = new File(OUT_PATH+DECRYPT_NAME);
-		outFile = FileStuff.renameJavaObjFile(outFile);
+		outFile = ScreeptUtils.renameJavaObjFile(outFile);
 		
 		// update reference to currentOutFile/folder
 		currentOutFile = outFile;
@@ -723,7 +743,7 @@ public class ScreeptManager {
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
 //				buffer = ByteArrayShuffler.entroPieBack(buffer);
-				buffer = EntophyzerUtils.reorderBackArrayByKey(buffer, keyIndexes);
+				buffer = EntrophyzerUtils.reorderBackArrayByKey(buffer, keyIndexes);
 			}
 			
 			fout.write(buffer);
@@ -754,9 +774,9 @@ public class ScreeptManager {
 	// this is method for top security
 	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException {
 				
-		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -819,7 +839,7 @@ public class ScreeptManager {
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
 //				partialResult = ByteArrayShuffler.entroPieForward(partialResult);
-				partialResult = EntophyzerUtils.orderArrayByKey(partialResult, keyIndexes);
+				partialResult = EntrophyzerUtils.orderArrayByKey(partialResult, keyIndexes);
 			}
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
@@ -876,9 +896,9 @@ public class ScreeptManager {
 	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
 	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException {
 		
-		int[] keyIndexes = ImageGeneralWorker.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMin(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -893,7 +913,7 @@ public class ScreeptManager {
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
 		File outFile = new File(OUT_PATH+DECRYPT_NAME);		
-		outFile = FileStuff.renameJavaObjFile(outFile);
+		outFile = ScreeptUtils.renameJavaObjFile(outFile);
 		
 		// update reference to currentOutFile/folder
 		currentOutFile = outFile;
@@ -940,7 +960,7 @@ public class ScreeptManager {
 			// check if have to shuffle source bytes by 256byte blocks
 			if(shuffleResult) {
 //				partial_res = ByteArrayShuffler.entroPieBack(partial_res);
-				partial_res = EntophyzerUtils.reorderBackArrayByKey(partial_res, keyIndexes);
+				partial_res = EntrophyzerUtils.reorderBackArrayByKey(partial_res, keyIndexes);
 			}
 			
 			// now decript with aes and write to out file
@@ -1032,7 +1052,7 @@ public class ScreeptManager {
 	 */
 	static public BufferedImage subImgMultOfNpx(BufferedImage key, int N) {
 		int newWidth = grantAreaMultipleOfN(key.getWidth(), key.getHeight(), N);
-		BufferedImage multNIMG = ImageGeneralWorker.getPortion(key, newWidth, key.getHeight());
+		BufferedImage multNIMG = ImageEncodingUtils.getPortion(key, newWidth, key.getHeight());
 		return multNIMG;
 	}
 	
@@ -1164,5 +1184,11 @@ public class ScreeptManager {
 				+ " \n => ShuffleMode is "+this.shuffleResult);
 	}
 
-	
+	public boolean isLoggerEnabled() {
+		return logger.isLoggerEnabled();
+	}
+
+	public void setLoggerEnabled(boolean loggerEnabled) {
+		logger.setLoggerEnabled(loggerEnabled);
+	}
 }

@@ -11,23 +11,21 @@ import javax.crypto.NoSuchPaddingException;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-
-import amfileutils.FileStuff;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
+import crypt.steg.STEGException;
 import crypt.steg.StegCipher;
-import dialogutils.JOptionHelper;
-import gui.UpdateProgressPanelMin;
-import media.STEGException;
+import util.JOptionHelperLight;
+import util.SafeLogger;
+import util.ScreeptUtils;
+import util.UpdateProgressPanelMinFork;
 
 public class ScreeptManagerFileOrFolder {
 
-	// TextFileWriter logger creation
-	static Logger logger = Logger.getLogger(ScreeptManagerFileOrFolder.class);
+	static SafeLogger logger = new SafeLogger(ScreeptManagerFileOrFolder.class);
 	
-	public static final String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
+	private String tempFolderInternalPath = null;
+	private String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
 	
 	// CODERS objects - shared by methods
 	private AesCipher AEScoder;
@@ -40,9 +38,10 @@ public class ScreeptManagerFileOrFolder {
 	
 	public boolean coderUsed = false;
 	public boolean defaultProgressBarVisible = true;
-	UpdateProgressPanelMin generalProgress;
 	
-	public JOptionHelper dialogHelper;
+	UpdateProgressPanelMinFork generalProgress;
+	
+	public JOptionHelperLight dialogHelper;
 	
 	/**
 	 * Initialize a general encription/decription manager for files or folders and their content.
@@ -55,10 +54,10 @@ public class ScreeptManagerFileOrFolder {
 	 * 
 	 * NB default shuffle is false, you have to specify it each time crypting/decrypting
 	 */
-	public ScreeptManagerFileOrFolder(UpdateProgressPanelMin generalProgress, JComponent parent, boolean advicesEnabled) {
+	public ScreeptManagerFileOrFolder(UpdateProgressPanelMinFork generalProgress, JComponent parent, boolean advicesEnabled) {
 		this.shuffle = false;
 		// default dialogHelper initially disabled 
-		this.dialogHelper = new JOptionHelper(parent, advicesEnabled);
+		this.dialogHelper = new JOptionHelperLight(parent, advicesEnabled);
 		this.generalProgress = generalProgress;
 		if (this.generalProgress != null) {
 			this.generalProgress.getDialog().setVisible(false);
@@ -337,10 +336,12 @@ public class ScreeptManagerFileOrFolder {
 		screepTManager = new ScreeptManager(AEScoder);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
 		screepTManager.setHashed(hashed);
+		screepTManager.TEMP_PATH = tempFolderInternalPath != null ? tempFolderInternalPath : screepTManager.TEMP_PATH;
+		
 		return screepTManager;
 	}
 
-	private ScreeptManager initSTEG(File imageFile) throws IOException, STEGException, media.STEGException {
+	private ScreeptManager initSTEG(File imageFile) throws IOException, STEGException, STEGException {
 		if (imageFile == null) {
 			throw new STEGException();
 		}
@@ -349,11 +350,13 @@ public class ScreeptManagerFileOrFolder {
 		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
 		screepTManager.setHashed(hashed);
+		screepTManager.TEMP_PATH = tempFolderInternalPath != null ? tempFolderInternalPath : screepTManager.TEMP_PATH;
+		
 		return screepTManager;
 	}
 
 	private ScreeptManager initCOMPLETE(char[] AES_KEY, File imageFile)
-			throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException, media.STEGException {
+			throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, AESException, STEGException {
 		if (imageFile == null) {
 			throw new STEGException();
 		}
@@ -366,6 +369,8 @@ public class ScreeptManagerFileOrFolder {
 		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
 		screepTManager.setHashed(hashed);
+		screepTManager.TEMP_PATH = tempFolderInternalPath != null ? tempFolderInternalPath : screepTManager.TEMP_PATH;
+		
 		return screepTManager;
 	}
 
@@ -381,7 +386,6 @@ public class ScreeptManagerFileOrFolder {
 
 			screepTManager.setOutPath(destinationDir.getCanonicalPath());
 			resultOK = screepTManager.crypt(src, generalProgress);
-
 		}
 
 		return resultOK;
@@ -396,7 +400,7 @@ public class ScreeptManagerFileOrFolder {
 
 		} else if (src.isDirectory()) {
 			// check that destination is not contained in source to avoid loop
-			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+			if(ScreeptUtils.checkIfContainedInDir(destinationDir, src, logger)) {
 				throw new IOException();
 			}
 			
@@ -404,7 +408,7 @@ public class ScreeptManagerFileOrFolder {
 			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + src.getName());
 			// if dir to create inside destination exists create unique name
 			if (destSonDir.exists()) {
-				destSonDir = FileStuff.renameJavaObjFile(destSonDir);
+				destSonDir = ScreeptUtils.renameJavaObjFile(destSonDir);
 			}
 			destSonDir.mkdir();
 
@@ -447,14 +451,14 @@ public class ScreeptManagerFileOrFolder {
 
 		} else if (src.isDirectory()) {
 			// check that destination is not contained in source to avoid loop
-			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+			if(ScreeptUtils.checkIfContainedInDir(destinationDir, src, logger)) {
 				throw new IOException();
 			}
 			
 			// create new folder in destination
 			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + src.getName());
 			// if dir to create inside destination exists create unique name
-			destSonDir = FileStuff.renameJavaObjFile(destSonDir);
+			destSonDir = ScreeptUtils.renameJavaObjFile(destSonDir);
 			destSonDir.mkdir();
 
 			// scan source folder content
@@ -462,7 +466,11 @@ public class ScreeptManagerFileOrFolder {
 				if (iFile.isDirectory()) {
 					resultOK = deCryptDirAES(iFile, destSonDir);
 					if (!resultOK) {
-						FileUtils.deleteQuietly(iFile);
+						try {
+							iFile.delete();
+						}catch(Throwable e) {
+							logger.warn("Cannot delete " + iFile, e);
+						}
 					}
 				} else if (iFile.isFile()) {
 					resultOK = deCryptCurrentFile(iFile, destSonDir);
@@ -481,13 +489,13 @@ public class ScreeptManagerFileOrFolder {
 
 		if (src.isDirectory()) {
 			// check that destination is not contained in source to avoid loop
-			if(FileStuff.checkIfContainedInDir(destinationDir, src)) {
+			if(ScreeptUtils.checkIfContainedInDir(destinationDir, src, logger)) {
 				throw new IOException();
 			}
 			
 			// create new folder in destination
 			File destSonDir = new File(destinationDir.getCanonicalPath() + "/" + src.getName());
-			destSonDir = FileStuff.renameJavaObjFile(destSonDir);
+			destSonDir = ScreeptUtils.renameJavaObjFile(destSonDir);
 			// if dir to create inside destination exists create unique name
 
 			// scan source folder content
@@ -566,12 +574,35 @@ public class ScreeptManagerFileOrFolder {
 		this.hashed = hashed;
 	}
 
-	public UpdateProgressPanelMin getGeneralProgress() {
+	public UpdateProgressPanelMinFork getGeneralProgress() {
 		return generalProgress;
 	}
 	
-	public void setGeneralProgress(UpdateProgressPanelMin generalProgress) {
+	public void setGeneralProgress(UpdateProgressPanelMinFork generalProgress) {
 		this.generalProgress = generalProgress;
 	}
-	
+
+	public boolean isLoggerEnabled() {
+		return logger.isLoggerEnabled();
+	}
+
+	public void setLoggerEnabled(boolean loggerEnabled) {
+		logger.setLoggerEnabled(loggerEnabled);
+	}
+
+	public String getTempFolderInternalPath() {
+		return screepTManager != null ? screepTManager.TEMP_PATH : tempFolderInternalPath;
+	}
+
+	public void setTempFolderInternalPath(String tempFolderInternalPath) {
+		this.tempFolderInternalPath = tempFolderInternalPath;
+	}
+
+	public String getTEMP_DECRIPTED_ROOT_PATH() {
+		return TEMP_DECRIPTED_ROOT_PATH;
+	}
+
+	public void setTEMP_DECRIPTED_ROOT_PATH(String tEMP_DECRIPTED_ROOT_PATH) {
+		TEMP_DECRIPTED_ROOT_PATH = tEMP_DECRIPTED_ROOT_PATH;
+	}
 }

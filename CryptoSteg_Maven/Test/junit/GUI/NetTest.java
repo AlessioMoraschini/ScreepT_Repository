@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.hyperic.sigar.SigarException;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import network.om.NetworkUtils;
+import network.NetworkUtils;
 
 
 public class NetTest {

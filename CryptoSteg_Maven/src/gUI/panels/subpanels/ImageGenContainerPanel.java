@@ -26,7 +26,8 @@ import media.ImageGeneralWorker;
 import uTILS.local.ImageWorker;
 
 public class ImageGenContainerPanel extends JPanel{
- 
+	private static final long serialVersionUID = 3880705375830247529L;
+
 	// ImageGenContainerPanel logger
 	static Logger logger = Logger.getLogger(ImageGenContainerPanel.class); 
 	
@@ -70,6 +71,7 @@ public class ImageGenContainerPanel extends JPanel{
 			public void run() {
 				
 				progUpdater = new UpdateProgressPanel(currentConf, false);
+				progUpdater.getDialog().setLocationRelativeTo(thisFrame);
 				progUpdater.setProgBarEnabled(true);
 				progUpdater.getPb().setValue(0);
 				bar = thisFrame.getProgressBar();
@@ -122,7 +124,7 @@ public class ImageGenContainerPanel extends JPanel{
     // constructor to print image on this.JPanel object extender, and save it on the given file
     public ImageGenContainerPanel(int width, int height,int type, File dest, String imgExtension, Panel thisPanel) throws IOException {
         
-        image = ImageGeneralWorker.generaKeyImageAndWrite(width, height, type, dest, imgExtension);
+        image = ImageGeneralWorker.generateKeyImageAndWrite(width, height, type, dest, imgExtension);
         scaledImage = image.getScaledInstance(thisPanel.getWidth(),thisPanel.getHeight(),Image.SCALE_FAST);
         JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
         add(picLabel);        

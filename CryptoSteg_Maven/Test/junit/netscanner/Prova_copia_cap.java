@@ -4,7 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import networkscanner.dmad.CapMerger;
+import network.scanner.dmad.CapMerger;
 
 public class Prova_copia_cap {
 

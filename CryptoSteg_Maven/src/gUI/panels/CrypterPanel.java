@@ -27,7 +27,6 @@ import frameutils.utils.GuiUtils;
 import gUI.frames.KeyGenFrame;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
-import gui.UpdateProgressPanelMin;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -40,6 +39,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import splitpanel.SplitPaneUtils;
 import treeutils.om.FileTreeModel;
+import util.UpdateProgressPanelMinFork;
 import utils.RsyntaxUtils;
 import variousutils.HandleString;
 
@@ -210,7 +210,7 @@ public class CrypterPanel extends JPanel {
 	private JSeparator separatorDragNDropTitle;
 	public static VirtualFileDropPane panelVDragNDropPane;
 	
-	public UpdateProgressPanelMin generalProgress;
+	public UpdateProgressPanelMinFork generalProgress;
 	public JOptionHelper dialogHelper;
 	
 	int leftVerticalDivHeight;
@@ -263,7 +263,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		panelHeader.setBorder(new LineBorder(new Color(128, 128, 128)));
 		panelHeader.setBackground(new Color(51, 51, 51));
 		panelMainContainer.add(panelHeader, "cell 0 0 5 1,grow");
-		panelHeader.setLayout(new MigLayout("fill,insets 0", "[85px:n][][100px][][100px:150px,grow][110px][130px]", "[24px:27px]"));
+		panelHeader.setLayout(new MigLayout("fill,insets 0", "[85px:n][][100px][][100px:150px,grow][110px][130px]", "[40px:40px]"));
 		
 		lblSourceFileStatic = new JLabel("Source File:");
 		lblSourceFileStatic.setBackground(Color.DARK_GRAY);
@@ -333,7 +333,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		panelStatus.setBackground(new Color(112, 128, 144));
 		panelMainContainer.add(panelStatus, "cell 0 1 5 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{90, 180, 70, 70, 100, 110, 10, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{90, 180, 70, 70, 140, 140, 10, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
 		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
@@ -363,6 +363,8 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		AESKEYtext.setColumns(10);
 		
 		chckbxShowAesKey = new JCheckBox("Show");
+		chckbxShowAesKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_INVISIBLE));
+		chckbxShowAesKey.setSelectedIcon(new ImageIcon(IconsPathConfigurator.ICON_VISIBLE));
 		chckbxShowAesKey.setOpaque(false);
 		chckbxShowAesKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShowAesKey.setForeground(Color.WHITE);
@@ -395,6 +397,11 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		comboModeCrypto.setModel(new DefaultComboBoxModel<CryptoMode>(CryptoMode.values()));
 			
 		chckbxShuffle = new JCheckBox("Shuffle Mode");
+		chckbxShuffle.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
+		chckbxShuffle.setDisabledIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+		chckbxShuffle.setSelectedIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
+		chckbxShuffle.setToolTipText("<html>When this mode is active, an additional phase will reorder bytes based on given key values, in order to increase algorithm security and maximize entrophy diffusion. "
+				+ "<br/> (When decrypting you have to choose the same option in order to succesfully decrypt data... so it's better to remember what you've choosen!)</html>");
 		chckbxShuffle.setOpaque(false);
 		chckbxShuffle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShuffle.setForeground(Color.WHITE);
@@ -406,6 +413,11 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		panelStatus.add(chckbxShuffle, gbc_chckbxShuffle);
 
 		chckbxHashKey = new JCheckBox("Hash key");
+		chckbxHashKey.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
+		chckbxHashKey.setDisabledIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+		chckbxHashKey.setSelectedIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
+		chckbxHashKey.setToolTipText("<html>When this mode is active, the given password will be hashed to avoid original password decription even if the data is compromised. "
+				+ "<br/> (When decrypting there's no need to choose the right option, this will be recognized automatically from encoded file.) </html>");
 		chckbxHashKey.setOpaque(false);
 		chckbxHashKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxHashKey.setForeground(Color.WHITE);
@@ -646,7 +658,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 				CryptoMode modality = (CryptoMode)comboModeCrypto.getSelectedItem();
 				if(modality.equals(CryptoMode.ONLY_AES)) {
 					chckbxShuffle.setEnabled(false);
-					chckbxShuffle.setForeground(Color.gray);
+					chckbxShuffle.setForeground(Color.lightGray);
 				} else {
 					chckbxShuffle.setEnabled(true);
 					chckbxShuffle.setForeground(Color.white);
@@ -657,7 +669,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 					chckbxHashKey.setForeground(Color.white);
 				} else {
 					chckbxHashKey.setEnabled(false);
-					chckbxHashKey.setForeground(Color.gray);
+					chckbxHashKey.setForeground(Color.lightGray);
 				}
 				
 				// update configuration reference
@@ -781,11 +793,10 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 				
 				if (destinationDir!= null) {
 					
-					generalProgress = new UpdateProgressPanelMin(true);
+					generalProgress = new UpdateProgressPanelMinFork(true);
 					generalProgress.setLocationRelativeTo(parentFrame);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
-					generalProgress.move(0, -generalProgress.getDialog().getHeight()-50);
 					
 					Date now = new Date();
 					String date = dateFormatter.format(now);
@@ -894,11 +905,11 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 				
 				if (destinationDir!= null) {
 					
-					generalProgress = new UpdateProgressPanelMin(true);
+					generalProgress = new UpdateProgressPanelMinFork(true);
 					generalProgress.setLocationRelativeTo(parentFrame);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
-					generalProgress.move(0, -generalProgress.getDialog().getHeight()-50);
+
 					Date now = new Date();
 					String date = dateFormatter.format(now);
 					destinationDir = new File(destinationDir.getAbsolutePath() + "/" + date);
@@ -1035,9 +1046,10 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			// if not available read from file
 			RsyntaxUtils.changeStyleViaThemeXml(textAreaMain, Themes.DARK.defaultPath);
 		}
-		textAreaMain.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		textAreaMain.setFont(new Font("Segoe-UI", Font.PLAIN, 16));
 		textAreaMain.setEditable(true);
 		textAreaMain.setEnabled(true);
+		textAreaMain.setAntiAliasingEnabled(true);
 		textAreaMain.setMargin(new Insets(10, 15, 10, 10));
 
 		scrollPaneText = new JScrollPane();

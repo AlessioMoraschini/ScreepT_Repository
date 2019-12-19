@@ -439,8 +439,8 @@ public class ScrYpTLauncher {
 				}
 			} else {
 				String advice = "<html>It seems there is already a running instance of " +GeneralConfig.APPLICATION_NAME 
-						+ "<br> -> If this message is not due to a previous application crash, it's strongly recommended to avoid multiple instances." 
-						+ "<br> Are you sure to start another instance?</html>";
+						+ "<br/> -> If this message is not due to a previous application crash, it's strongly recommended to avoid multiple instances." 
+						+ "<br/> Are you sure to start another instance?</html>";
 				int choice = JOptionPane.showConfirmDialog(null, advice);
 				runNewInstance = choice == JOptionPane.YES_OPTION;
 			}

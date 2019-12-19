@@ -15,11 +15,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 
 import crypt.aes.AesCipher;
+import crypt.steg.STEGException;
 import crypt.steg.StegCipher;
 
 public class AesStegTest {
 
-	public static void main(String[] args) throws IOException, media.STEGException {
+	public static void main(String[] args) throws IOException, STEGException {
 		char[] key= "ST3G4N0cr1p74009".toCharArray();
 		String srcText = "Ciao, sono un testo di prova";
 		String coded = srcText;

@@ -6,17 +6,18 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import crypt.steg.STEGException;
 import crypt.steg.StegCipher;
-import media.ImageGeneralWorker;
+import util.ImageEncodingUtils;
 
 public class StegTest {
 
 	@Test
-	public void testCryptByte_1() throws media.STEGException {
+	public void testCryptByte_1() throws STEGException {
 		int testTypeImg = BufferedImage.TYPE_3BYTE_BGR;
 		
 		ArrayList<Byte> sourceBytes = generateRandomByteList(400);
-		BufferedImage generatedImage = ImageGeneralWorker.generaKeyImage(20, 20, testTypeImg);
+		BufferedImage generatedImage = ImageEncodingUtils.generaKeyImage(20, 20, testTypeImg);
 		StegCipher STEG = new StegCipher(generatedImage, testTypeImg); 
 		STEG.stegaCrypt(sourceBytes);
 		

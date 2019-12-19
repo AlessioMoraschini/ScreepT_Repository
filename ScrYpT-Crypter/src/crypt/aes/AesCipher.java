@@ -21,12 +21,12 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
 import javax.swing.text.BadLocationException;
 
-import org.apache.commons.codec.binary.Base64;
 
 import crypt.hash.Hasher;
 import crypt.hash.Hasher.HashAlgorithm;
 import crypt.hash.Hasher.IterationsLevel;
 import util.BitWorker;
+import util.EncodingUtils;
 
 public class AesCipher {
 	
@@ -38,6 +38,8 @@ public class AesCipher {
 	//////////////////////
 	//      CAMPI       //
 	//////////////////////
+	
+	private EncodingUtils encodingUtils;
 
 	//valore aggiornato con i pad
 	private char[] password;
@@ -56,6 +58,7 @@ public class AesCipher {
 	
 	public AesCipher(char[] password) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
 		
+		encodingUtils = new EncodingUtils();
 		displayedKey=password;
 		this.password= new char[limit];
 		int i = 0;
@@ -104,8 +107,8 @@ public class AesCipher {
 	public String encrypt(String toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
 	        InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
 	    cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
-	    byte[] encrypted = cipher.doFinal(toBeEncrypt.getBytes(System.getProperty("file.encoding")));
-	    return Base64.encodeBase64String(encrypted);
+	    byte[] encrypted = cipher.doFinal(toBeEncrypt.getBytes(EncodingUtils.stringEncoding));
+	    return encodingUtils.encodeBase64(encrypted);
 	}
 	
 	public String encryptLines(String toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
@@ -115,8 +118,8 @@ public class AesCipher {
 		byte[] encrypted;
 		StringBuilder builder = new StringBuilder(10000);
 		for(int i=0; i<sourceLines.length; i++) {
-			encrypted = cipher.doFinal(sourceLines[i].getBytes(System.getProperty("file.encoding")));
-			builder.append(Base64.encodeBase64String(encrypted)).append("\n");
+			encrypted = cipher.doFinal(sourceLines[i].getBytes(EncodingUtils.stringEncoding));
+			builder.append(encodingUtils.encodeBase64(encrypted)).append("\n");
 		}
 		return builder.toString();
 	}
@@ -168,8 +171,8 @@ public class AesCipher {
 	        BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
 		
 	    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-	    byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encrypted.getBytes()));
-	    return new String(decryptedBytes,System.getProperty("file.encoding"));
+	    byte[] decryptedBytes = cipher.doFinal(encodingUtils.decodeBase64bytes(encrypted));
+	    return new String(decryptedBytes, EncodingUtils.stringEncoding);
 	}
 	
 	public String decryptLines(String encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
@@ -180,8 +183,8 @@ public class AesCipher {
 		byte[] decrypted;
 		StringBuilder builder = new StringBuilder(10000);
 		for(int i=0; i<sourceLines.length; i++) {
-			decrypted = cipher.doFinal(Base64.decodeBase64(sourceLines[i].getBytes()));
-			builder.append(new String(decrypted,System.getProperty("file.encoding"))).append("\n");
+			decrypted = cipher.doFinal(encodingUtils.decodeBase64bytes(sourceLines[i]));
+			builder.append(new String(decrypted, EncodingUtils.stringEncoding)).append("\n");
 		}
 		return builder.toString();
 	}

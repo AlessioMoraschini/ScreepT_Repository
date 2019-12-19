@@ -14,7 +14,7 @@ import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
-import networkscanner.csd.CaptureCycle;
+import network.scanner.csd.CaptureCycle;
 
 public class ProvaSplit {
 

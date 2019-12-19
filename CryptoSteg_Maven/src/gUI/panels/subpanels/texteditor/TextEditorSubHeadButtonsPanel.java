@@ -225,7 +225,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		DEFAULT_FORE_COL = currentConfiguration.getTextEditorOpt().foreCol;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 0, fill, hidemode 2",
+		setLayout(new MigLayout("insets 0, fill, hidemode 3",
 				"[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][40px:55px:55px][50px:50px:50px][45px:55px:60px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][35px:50px:60px][75px:75px:75px][35px:35px:35px][45px:45px:45px][30px:35px:35px][10px:30px,grow]", 
 				"[:35px:35px,center][:50px:50px,center]"));
 		

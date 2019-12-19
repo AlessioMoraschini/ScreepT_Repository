@@ -14,6 +14,7 @@ import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.swing.text.BadLocationException;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,12 +39,12 @@ public class CharBytesAesKeyTest {
 	
 	@Test
 	@RepeatTest (times = 1)
-	public void testCharToBytes() {
+	public void testCharToBytes() throws BadLocationException {
 		AesCipher cipher = null;
 		byte[] byteKey;
 		try {
 			cipher = new AesCipher(password);
-			byteKey = cipher.charKeyToByteArrayV2();
+			byteKey = cipher.charKeyToByteArrayV2(password);
 			
 			// only to test length of encoded full bytes
 			CharBuffer chBuff = CharBuffer.wrap(password);
@@ -56,7 +57,7 @@ public class CharBytesAesKeyTest {
 			
 			assertTrue(byteKey.length == AesCipher.limit);
 			assertTrue(cipher.decrypt(cipher.encrypt(source)).equals(source));
-			assertTrue(Arrays.equals(cipher.decrypt(cipher.encrypt(sourceBytes)) , sourceBytes));
+			assertTrue(Arrays.equals(cipher.decrypt(cipher.encrypt(sourceBytes, true)) , sourceBytes));
 			
 		} catch (UnsupportedEncodingException e) {
 			error = true;

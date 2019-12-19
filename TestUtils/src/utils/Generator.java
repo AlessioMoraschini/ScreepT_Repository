@@ -2,6 +2,7 @@ package utils;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
@@ -25,6 +26,18 @@ public class Generator {
 		return res; 
 	}
 	
+	public static String getRandomString(int length) {
+		byte[] bytes = getRandomBytes(length);
+		bytes = Base64.getEncoder().encode(bytes);
+		String randomString = new String(bytes);
+		
+		if(randomString.length() > length) {
+			return randomString.substring(0,length);
+		} else {
+			return String.format("%" + length + "s", randomString);
+		}
+	}
+	
 	// HASHMAP GENERATOR
 	public static Map<Integer, Integer> getRandIntMap(int dim){
 		Map<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
@@ -39,7 +52,7 @@ public class Generator {
 	}
 	
     // byte array source seq generator
-    public static byte[] initSrcBytes(int dim) {
+    public static byte[] getRandomBytes(int dim) {
 		byte[] srcBytes = new byte[dim];
     	for(int i = 0; i<srcBytes.length; i++) {
     		srcBytes[i] = (byte)i;

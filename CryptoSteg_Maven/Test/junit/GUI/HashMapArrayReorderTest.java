@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import static testUtils.TestUtils.*;
 import static testUtils.Generator.*;
-import static variousutils.EntophyzerUtils.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +18,7 @@ import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import testUtils.TestTimer;
-import variousutils.EntophyzerUtils;
+import util.EntrophyzerUtils;
 
 public class HashMapArrayReorderTest {
 
@@ -73,16 +72,16 @@ public class HashMapArrayReorderTest {
 		byte[] bytesToCode = initSrcBytes(SRC_BYTES);
 		
 		timerManager.updateStart();
-		byte[] codedBytes = EntophyzerUtils.orderArrayByKey(bytesToCode, keyArray);
+		byte[] codedBytes = EntrophyzerUtils.orderArrayByKey(bytesToCode, keyArray);
 		timerManager.updateEnd();
 		long codeTime = timerManager.getElapsed(true);
 		
 		timerManager.updateStart();
-		byte[] originalBytesFromCoded = EntophyzerUtils.reorderBackArrayByKey(codedBytes, keyArray);
+		byte[] originalBytesFromCoded = EntrophyzerUtils.reorderBackArrayByKey(codedBytes, keyArray);
 		timerManager.updateEnd();
 		long decodeTime = timerManager.getElapsed(true);
 		
-		byte[] wrongKeyDecodedBytes = EntophyzerUtils.reorderBackArrayByKey(codedBytes, wrongKey);
+		byte[] wrongKeyDecodedBytes = EntrophyzerUtils.reorderBackArrayByKey(codedBytes, wrongKey);
 		
 		if (printOutput) {
 			print("\n => Source bytes:\n");
@@ -117,7 +116,7 @@ public class HashMapArrayReorderTest {
 		// init array that represents source bytes to sort
 		byte[] bytesToCode = initSrcBytes(SRC_BYTES);
 		
-		Map<Integer, Integer> keysMap = EntophyzerUtils.arrayToIndexedMap(keyArray);
+		Map<Integer, Integer> keysMap = EntrophyzerUtils.arrayToIndexedMap(keyArray);
 //		Map<Integer, Integer> map = getRandMap(256);
 		Map<Integer, Integer> keySortedMap = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> valSortedMap = new HashMap<Integer, Integer>();
@@ -126,7 +125,7 @@ public class HashMapArrayReorderTest {
 		
 		//keySortedMap = sortMapByKey(keysMap);
 		
-		valSortedMap = sortMapByValue(keysMap);
+		valSortedMap = EntrophyzerUtils.sortMapByValue(keysMap);
 		
 		Integer[] indexSortedArray = new Integer[KEY_LENGTH];
 		indexSortedArray = valSortedMap.keySet().toArray(indexSortedArray);

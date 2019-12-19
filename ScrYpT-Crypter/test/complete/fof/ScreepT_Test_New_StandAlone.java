@@ -1,24 +1,16 @@
-package junit.GUI;
+package complete.fof;
 
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.NoSuchPaddingException;
-
-import org.ini4j.InvalidFileFormatException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import amfileutils.FileStuff;
-import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
-import crypt.steg.StegCipher;
-import media.STEGException;
+import util.ScreeptUtils;
+import utils.TestUtils;
 
 public class ScreepT_Test_New_StandAlone {
 	
@@ -49,8 +41,6 @@ public class ScreepT_Test_New_StandAlone {
 	private File codedFolderCOMPLETE = new File("TEST_FILES/COMPLETEcod_Source_medium.txt");
 	
 	// CODERS USED IN initMethod private functions (only for test purpose)
-	private AesCipher AEScoder;
-	private StegCipher STEGcoder;	
 	private ScreeptManagerFileOrFolder screepTManagerFof;
 	
 	private boolean hashed = false;
@@ -61,7 +51,7 @@ public class ScreepT_Test_New_StandAlone {
 	
 	@Test
 //	@Ignore
-	public void testOnlyAEScrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+	public void testOnlyAEScrypt() throws Exception{
 		
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
@@ -73,6 +63,7 @@ public class ScreepT_Test_New_StandAlone {
 //			assertTrue(screepTManagerFof.screepTManager.getMode().equals(CryptoMode.ONLY_AES));
 			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_AES, srcFile, resultDir, AES_KEY, null, SHUFFLE_MODE));
 			
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
 			for(File result : resultDir.listFiles()) {
 				File out = codedFileAES;
@@ -80,7 +71,7 @@ public class ScreepT_Test_New_StandAlone {
 				if (out.exists()) {
 					out.delete();
 				}
-				out = FileStuff.renameJavaObjFile(out);
+				out = ScreeptUtils.renameJavaObjFile(out);
 
 				assertTrue(result.renameTo(out));
 			}
@@ -91,7 +82,7 @@ public class ScreepT_Test_New_StandAlone {
 	
 	@Test
 	@Ignore
-	public void testOnlyAESdecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+	public void testOnlyAESdecrypt() throws Exception{
 		
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
@@ -100,13 +91,14 @@ public class ScreepT_Test_New_StandAlone {
 			
 			File resultDir =new File(TEMP_DIR);
 			
-//			assertTrue(screepTManagerFof.screepTManager.getMode().equals(CryptoMode.ONLY_AES));
 			assertTrue(screepTManagerFof.decrYpt(CryptoMode.ONLY_AES, codedFileAES, resultDir, AES_KEY, null, false));
+			
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
 			for(File result : resultDir.listFiles()) {
 				
 				File out = new File("TEST_FILES/aesDecrypted.txt");
-				out = FileStuff.renameJavaObjFile(out);
+				out = ScreeptUtils.renameJavaObjFile(out);
 				
 				assertTrue(result.renameTo(out));
 
@@ -118,18 +110,19 @@ public class ScreepT_Test_New_StandAlone {
 	
 	@Test
 	@Ignore
-	public void testOnlySTEGcrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+	public void testOnlySTEGcrypt() throws Exception{
 		
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
 			
 			File resultDir =new File(TEMP_DIR);
-			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
 			
-//			assertTrue(screepTManagerFof.screepTManager.getMode().equals(CryptoMode.ONLY_STEG));
+			TestUtils.printl(srcFile.getName()+" has "+srcFile.length()+"bytes");
+			
 			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_STEG, srcFile, resultDir, AES_KEY, keyIMG, SHUFFLE_MODE));
 			
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
 			for(File result : resultDir.listFiles()) {
 				// destination path - avoid duplicates
@@ -138,7 +131,7 @@ public class ScreepT_Test_New_StandAlone {
 					out.delete();
 				}
 
-				out = FileStuff.renameJavaObjFile(out);
+				out = ScreeptUtils.renameJavaObjFile(out);
 				assertTrue(result.renameTo(out));
 				//assertTrue(result.isDirectory());
 				
@@ -150,16 +143,17 @@ public class ScreepT_Test_New_StandAlone {
 	
 	@Test
 	@Ignore
-	public void testOnlySTEGDecrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+	public void testOnlySTEGDecrypt() throws Exception{
 		
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
 			
-			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
+			TestUtils.printl(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
 			
-//			assertTrue(screepTManagerFof.screepTManager.getMode().equals(CryptoMode.ONLY_STEG));
 			assertTrue(screepTManagerFof.decrYpt(CryptoMode.ONLY_STEG, srcFile, codedFolderSTEG, AES_KEY, keyIMG, false));
+
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
 			File resultDir =new File(TEMP_DIR);
 			
@@ -170,7 +164,7 @@ public class ScreepT_Test_New_StandAlone {
 					out.delete();
 				}
 
-				out = FileStuff.renameJavaObjFile(out);
+				out = ScreeptUtils.renameJavaObjFile(out);
 				assertTrue(result.renameTo(out));
 				//assertTrue(result.isDirectory());
 				
@@ -182,7 +176,7 @@ public class ScreepT_Test_New_StandAlone {
 	
 	@Test
 	@Ignore
-	public void testCompleteCrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+	public void testCompleteCrypt() throws Exception{
 		
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
@@ -190,10 +184,12 @@ public class ScreepT_Test_New_StandAlone {
 			screepTManagerFof.setHashed(hashed);
 			
 			File resultDir =new File(TEMP_DIR);
+			
 			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
 			
-//			assertTrue(screepTManagerFof.screepTManager.getMode().equals(CryptoMode.COMPLETE));
 			assertTrue(screepTManagerFof.crYpt(CryptoMode.COMPLETE, srcFile, resultDir, AES_KEY, keyIMG, SHUFFLE_MODE));
+
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
 			for(File result : resultDir.listFiles()) {
 				// destination path - avoid duplicates
@@ -202,7 +198,7 @@ public class ScreepT_Test_New_StandAlone {
 					out.delete();
 				}
 
-				out = FileStuff.renameJavaObjFile(out);
+				out = ScreeptUtils.renameJavaObjFile(out);
 				assertTrue(result.renameTo(out));
 				//assertTrue(result.isDirectory());
 				
@@ -214,7 +210,7 @@ public class ScreepT_Test_New_StandAlone {
 	
 	@Test
 	@Ignore
-	public void testCompleteDeCrypt() throws InvalidFileFormatException, IOException, NoSuchPaddingException, NoSuchAlgorithmException{
+	public void testCompleteDeCrypt() throws Exception {
 		
 		try {
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
@@ -222,10 +218,12 @@ public class ScreepT_Test_New_StandAlone {
 			screepTManagerFof.setHashed(hashed);
 			
 			File resultDir =new File(TEMP_DIR);
+			
 			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
 			
-//			assertTrue(screepTManagerFof.screepTManager.getMode().equals(CryptoMode.COMPLETE));
 			assertTrue(screepTManagerFof.decrYpt(CryptoMode.COMPLETE, srcFile, resultDir, AES_KEY, keyIMG, false));
+
+			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
 			for(File result : resultDir.listFiles()) {
 				// destination path - avoid duplicates
@@ -234,7 +232,7 @@ public class ScreepT_Test_New_StandAlone {
 					out.delete();
 				}
 
-				out = FileStuff.renameJavaObjFile(out);
+				out = ScreeptUtils.renameJavaObjFile(out);
 				assertTrue(result.renameTo(out));
 				//assertTrue(result.isDirectory());
 				
@@ -242,25 +240,5 @@ public class ScreepT_Test_New_StandAlone {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	
-	private void initAES() throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException {
-		AEScoder = new AesCipher(AES_KEY);
-		screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
-		screepTManagerFof.setAdvicesEnabled(enableAdvices);
-	}
-	
-	private void initSTEG() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, media.STEGException {
-		STEGcoder = new StegCipher(keyIMG);
-		screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
-		screepTManagerFof.setAdvicesEnabled(enableAdvices);
-	}
-	
-	private void initCOMPLETE() throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, STEGException, media.STEGException {
-		AEScoder = new AesCipher(AES_KEY);
-		STEGcoder = new StegCipher(keyIMG);
-		screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
-		screepTManagerFof.setAdvicesEnabled(enableAdvices);
 	}
 }

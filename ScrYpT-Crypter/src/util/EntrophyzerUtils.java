@@ -1,4 +1,4 @@
-package variousutils;
+package util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-public class EntophyzerUtils {
+public class EntrophyzerUtils {
 
 	/**
 	 * This method sort a map according to keys contained

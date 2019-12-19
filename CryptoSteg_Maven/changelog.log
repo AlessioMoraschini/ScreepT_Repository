@@ -1,4 +1,6 @@
-* 2019-12-18  (HEAD -> refs/heads/master, refs/remotes/origin/master) Minor bugFixing and build/project refactor
+* 2019-12-19  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved AES crypt, added hashed key mode with automatic recognition in decrypt-phase
+| 
+* 2019-12-18  Minor bugFixing and build/project refactor
 | 
 * 2019-12-18  Aes crypter security improvement: added hashing to password
 | 

@@ -64,7 +64,6 @@ import logger.LoggerUtils;
 import mainobj.INItializer;
 import mainobj.InitOwner;
 import media.Sounds;
-import mouseutils.MovePanelMouseListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -1398,12 +1397,12 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		}
 
 		// resize textEditor if present
-		if (initTxtWriter != null && initTxtWriter.getCurrentTabEditor().mainTabList != null) {
+		if (mainGuiUtils.isTextEditorActive()) {
 			initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
 		}
 
 		// resize textEditor if present
-		if (panelCrypter != null) {
+		if (mainGuiUtils.isCrypterActive()) {
 			panelCrypter.resizeFrameToDefault(mainAPP);
 		}
 	}

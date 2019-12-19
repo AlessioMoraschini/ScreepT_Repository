@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Logger;
-
-import enums.BufferedImageType;
-import media.STEGException;
+import util.BufferedImageType;
+import util.SafeLogger;
 
 /**
  * this class represent the coding/decoding of source byte list or array, implementing simil-steganography
@@ -22,14 +20,13 @@ import media.STEGException;
  */
 public class StegCipher {
 	
-	private final int MAX_INT = Integer.MAX_VALUE;
-	private final int MIN_INT = Integer.MIN_VALUE;
+	private static final int MAX_INT = Integer.MAX_VALUE;
+	private static final int MIN_INT = Integer.MIN_VALUE;
 	
-	Integer upLim = MAX_INT - 16777216; // max - 2^24
-	Integer downLim = MIN_INT + 16777216; // min+2^24
+	static SafeLogger logger = new SafeLogger(StegCipher.class); 
 
-	// ImageCodeDecode logger creation		
-	static Logger logger = Logger.getLogger(StegCipher.class); 
+	private static final Integer upLim = MAX_INT - 16777216; // max - 2^24
+	private static final Integer downLim = MIN_INT + 16777216; // min+2^24
 	
 	// DEFAULT VALUES
 	public final int DEFAULT_IMG_TYPE = BufferedImage.TYPE_4BYTE_ABGR;
@@ -872,6 +869,14 @@ public class StegCipher {
 
 	public int getBytePerPix() {
 		return bytePerPix;
+	}
+
+	public boolean isLoggerEnabled() {
+		return logger.isLoggerEnabled();
+	}
+
+	public void setLoggerEnabled(boolean loggerEnabled) {
+		logger.setLoggerEnabled(loggerEnabled);
 	}	
 	
 }

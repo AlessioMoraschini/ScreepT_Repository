@@ -474,7 +474,7 @@ public class TextEditorUtils {
 				Dimension med = new Dimension(currSize.width - 20, currSize.height - 100);
 				Dimension high = new Dimension(currSize.width - 20, currSize.height - 90);
 				Dimension max = new Dimension(currSize.width - 20, currSize.height - 85);
-				currentTabEditor.mainTabList.setPreferredSize(high);
+				currentTabEditor.mainTabList.setPreferredSize(max);
 				currentTabEditor.mainTabList.setMaximumSize(max);
 				currentTabEditor.loadedTabObj.currentScrollPane.setPreferredSize(high);
 				currentTabEditor.loadedTabObj.textArea.setMaximumSize(med);

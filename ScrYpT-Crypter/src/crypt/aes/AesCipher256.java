@@ -21,7 +21,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JTextField;
 
-import org.apache.commons.codec.binary.Base64;
+import util.EncodingUtils;
 
 
 public class AesCipher256 {
@@ -38,6 +38,8 @@ public class AesCipher256 {
 	private SecretKeySpec secretKey;
 	private Cipher cipher;
 	
+	private EncodingUtils encodingUtils;
+	
 	private SecureRandom sRand;
 	
 	//////////////////////
@@ -45,10 +47,11 @@ public class AesCipher256 {
 	//////////////////////
 	
 	public AesCipher256() {
-		
+		encodingUtils = new EncodingUtils();
 	}
 	
 	public AesCipher256(String password) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException {
+		encodingUtils = new EncodingUtils();
 		displayedKey=password;
 		while(password.length() !=16) {
 		    if(password.length()<16) {
@@ -87,12 +90,13 @@ public class AesCipher256 {
 	 * 
 	 * @param sourceString
 	 * @return encryptedString
+	 * @throws UnsupportedEncodingException 
 	 * */
 	public String encrypt(String toBeEncrypt) throws NoSuchPaddingException, NoSuchAlgorithmException,
-	        InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+	        InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
 		cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
-	    byte[] encrypted = cipher.doFinal(toBeEncrypt.getBytes());
-	    return Base64.encodeBase64String(encrypted);
+	    byte[] encrypted = cipher.doFinal(toBeEncrypt.getBytes("UTF-8"));
+	    return encodingUtils.encodeBase64(encrypted);
 	}
 	
 	/**
@@ -125,12 +129,13 @@ public class AesCipher256 {
 	 * 
 	 * @param sourceString
 	 * @return encryptedString
+	 * @throws UnsupportedEncodingException 
 	 * */
 	public String decrypt(String encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
-	        BadPaddingException, IllegalBlockSizeException {
+	        BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
 		
 	    cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
-	    byte[] decryptedBytes = cipher.doFinal(Base64.decodeBase64(encrypted));
+	    byte[] decryptedBytes = cipher.doFinal(encodingUtils.decodeBase64bytes(encrypted));
 	    return new String(decryptedBytes);
 	}
 	

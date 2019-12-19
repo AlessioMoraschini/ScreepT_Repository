@@ -198,8 +198,8 @@ public class TextEditor extends JPanel {
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
 		mainPanel.setMinimumSize(new Dimension(800, 300));
-		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(98, parentFrame));
-		mainPanel.setLayout(new MigLayout("fill, insets 0, hidemode 2", 
+		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(100, parentFrame));
+		mainPanel.setLayout(new MigLayout("fill, insets 0, hidemode 3", 
 				"[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]",
 				"[:0px:45px][:0px:50px][:0px:2px][300px,grow][:0px:50px]"));
 		
@@ -358,7 +358,7 @@ public class TextEditor extends JPanel {
 		splitPaneMainContainer.setRightComponent(rightSplitPane);
 		splitPaneMainContainer.setLeftComponent(splitPaneMain);
 		splitPaneMainContainer.setDividerLocation(parentFrame.getWidth()-100);
-		splitPaneMainContainer.setBorder(new LineBorder(Color.BLACK, 3));
+		splitPaneMainContainer.setBorder(BorderFactory.createEmptyBorder());
 		
 		// Main split init components
 		splitPaneMain.setRightComponent(getCurrentTabEditor().mainTabList);

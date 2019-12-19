@@ -57,11 +57,11 @@ public class TextEditorHeaderPanel extends JPanel{
 		this.currentConfiguration = parent.currentConfiguration;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 5, fill, hidemode 2",
+		setLayout(new MigLayout("insets 6, fill, hidemode 3",
 				"[160px,left][][][grow][:180px:300px,grow,trailing][20px:24px:24px][20px:24px:24px][20px:24px:24px][10px:10px:10px][][][][][][]",
-				"[:0px:50px, grow]"));
+				"[:0px:55px, grow]"));
 		setForeground(SystemColor.menu);
-		setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		setBorder(new LineBorder(Color.BLACK, 1));
 		setBackground(new Color(30,30,30));
 		
 		lblVoiceSpeed = new JLabel("Voice rate");
@@ -130,18 +130,18 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkFitmantainwords.setEnabled(false);
 		add(chkFitmantainwords, "cell 11 0,alignx right,aligny center");
 		
-		btnShowhideToolkit = new JButton("Toggle functions panel visibility");
+		btnShowhideToolkit = new JButton("Toggle functions panel");
 		btnShowhideToolkit.setCursor(GuiUtils.CURSOR_HAND);
 		btnShowhideToolkit.setIcon(IconsPathConfigurator.IMG_ICON_VISIBLE);
-		btnShowhideToolkit.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+		btnShowhideToolkit.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN));
 		btnShowhideToolkit.setForeground(Color.WHITE);
 		btnShowhideToolkit.setBackground(Color.DARK_GRAY);
 		add(btnShowhideToolkit, "cell 13 0,growy");
 		
-		btnShowhideFooter = new JButton("Toggle Footer visibility");
+		btnShowhideFooter = new JButton("Toggle Footer");
 		btnShowhideFooter.setCursor(GuiUtils.CURSOR_HAND);
 		btnShowhideFooter.setIcon(IconsPathConfigurator.IMG_ICON_INVISIBLE);
-		btnShowhideFooter.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+		btnShowhideFooter.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN));
 		btnShowhideFooter.setForeground(Color.WHITE);
 		btnShowhideFooter.setBackground(Color.DARK_GRAY);
 		add(btnShowhideFooter, "cell 14 0,growy");

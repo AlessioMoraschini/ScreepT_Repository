@@ -1,4 +1,4 @@
-package media;
+package crypt.steg;
 
 public class STEGException extends Exception{
 	
