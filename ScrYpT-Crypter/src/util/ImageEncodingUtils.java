@@ -41,29 +41,29 @@ public class ImageEncodingUtils {
 	 * iN QUESTO CASO L'INTERVALLO è CALCOLATO AUTOMATICAMENTE A SECONDA DEL VALORE DEL PRIMO PX
 	 * @param image
 	 * @param N E' il numero di pixel da estrarre. Può essere anche maggiore del numero di pixel contenuti nell'immagine
-	 * @return array di interi rappresentanti il valore dei pixel scansionati
+	 * @return array di interi (dimensione N) rappresentanti il valore dei pixel scansionati. Se N > numeroPixels allora viene Sollevata eccezione
 	 * @throws STEGException 
 	 */
 	public static int[] readNSpacedValuesFromImage(BufferedImage image, int N) throws STEGException {
-		int H=0;
-		int W=0;
-		int interval=1;
-		if (image!=null && N>0) {
+		int H = 0;
+		int W = 0;
+		int interval = 1;
+		if (image != null && N > 0 ) {
 			H = image.getHeight();
 			W = image.getWidth();
-			interval = Math.abs((image.getRGB(0, 0))+1)%W;
+			interval = Math.abs((image.getRGB(0, 0)) + 1) % W;
 			if(interval == 0) {
-				interval = (W/N)%W;
+				interval = (W / N) % W;
 			}
-		}else throw new STEGException();
+		} else throw new STEGException();
 		
-		if(N<=(W*H)) {
+		if (N <= (W * H)) {
 			int[] read = new int[N];
-			int row=0;
-			int col=0;
-			for(int i = 0; i<N; i++) {
-				if(row>H-1) {
-					row=0;
+			int row = 0;
+			int col = 0;
+			for(int i = 0; i < N; i++) {
+				if(row > H-1) {
+					row = 0;
 					col++;
 				}
 				if(col>W-1) {
@@ -72,11 +72,11 @@ public class ImageEncodingUtils {
 				}
 				
 				read[i] = image.getRGB(col, row);
-				col += interval%W;
+				col += interval % W;
 			}
 			return read;
 		}else {
-			return null;
+			throw new STEGException();
 		}
 	}
 	

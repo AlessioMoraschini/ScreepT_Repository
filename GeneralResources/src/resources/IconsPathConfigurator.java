@@ -56,6 +56,7 @@ public class IconsPathConfigurator {
 		// Screept submenu
 	public static final String ICON_FILE_CRYPTER = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/crypter.png";
 	public static final String ICON_KEYGEN = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/imageWriter.png";
+	public static final String ICON_KEYGEN_PSW = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/keyGenPsw.png";
 	public static final String ICON_KEY_DICT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/keyDictionary.png";
 	
 		// Various submenu

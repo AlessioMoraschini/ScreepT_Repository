@@ -27,6 +27,7 @@ import crypt.hash.Hasher.HashAlgorithm;
 import crypt.hash.Hasher.IterationsLevel;
 import util.BitWorker;
 import util.EncodingUtils;
+import util.EntrophyzerUtils;
 
 public class AesCipher {
 	
@@ -132,26 +133,37 @@ public class AesCipher {
 	 * @return encryptedByte[]
 	 * @throws BadLocationException 
 	 * */
-	public byte[] encrypt(byte[] toBeEncrypt, boolean hashed) throws NoSuchPaddingException, NoSuchAlgorithmException,
-	InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
+	public byte[] encrypt(byte[] toBeEncrypt, boolean hashed, boolean shuffleResult) throws NoSuchPaddingException, NoSuchAlgorithmException,
+			InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
 		
 		// generate random initialization vector
 		byte[] iv = generateIV(16);
-
+		
+		// STORE MODE INFO into first 2 bits of IV : {IV_BIT(0)= [hashed] ; IV_BIT(1)= [shuffle]}
+		// Save in the first bit information about hashed (0) or not hashed(1)
 		iv[0] = BitWorker.setBitAtPosition(iv[0], 0, hashed);
+		
+		// Use the second bit to store information about shuffle mode on(1)/off(0)
+		iv[0] = BitWorker.setBitAtPosition(iv[0], 1, shuffleResult);
+		
 		ivParameterSpec = new IvParameterSpec(iv);
 		
+		// Configure cipher
 		if (hashed) {
 			// Use iv as salt to hash password
 			cipher.init(Cipher.ENCRYPT_MODE, getSaltedKeySpec(iv), ivParameterSpec);
 		} else {
-			ivParameterSpec = new IvParameterSpec(iv);
+			// Use normal iv without hashing password
 			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
 		}
 		
 		byte[] encrypted = cipher.doFinal(toBeEncrypt);
 		
-		// insert iv at the start of encrypted msg
+		if(shuffleResult) {
+			encrypted = shuffle(iv, encrypted);
+		}
+		
+		// insert iv at the start of encrypted msg: RESULT = IV + ENCRYPTED
 	    byte[] result = new byte[iv.length + encrypted.length];
 	    System.arraycopy(iv, 0, result, 0, iv.length);
 	    System.arraycopy(encrypted, 0, result, iv.length, encrypted.length);
@@ -199,24 +211,41 @@ public class AesCipher {
 	 * @throws BadLocationException 
 	 * */
 	public byte[] decrypt(byte[] encrypted) throws InvalidAlgorithmParameterException, InvalidKeyException,
-    BadPaddingException, IllegalBlockSizeException, BadLocationException {
+			BadPaddingException, IllegalBlockSizeException, BadLocationException {
 		
-		// retrieve IV and cripted message
+		// retrieve IV and cripted message: 
 		byte[] iv = Arrays.copyOfRange(encrypted, 0, 16);
 	    byte[] ciphertext = Arrays.copyOfRange(encrypted, iv.length, encrypted.length);			
 	    ivParameterSpec = new IvParameterSpec(iv);
 	    
+	    // { HASHED = [IV_BIT(0)] ; SHUFFLE = [IV_BIT(1)] }
 	    boolean hashed = BitWorker.getBitAtPosition(iv[0], 0);
+	    boolean shuffledResult = BitWorker.getBitAtPosition(iv[0], 1);
 	    
+	    if(shuffledResult) {
+			encrypted = shuffle(iv, encrypted);
+		}
+	    
+	    // Configure cipher
 		if (hashed) {
-			// use iv as salt
+			// use iv as salt to hash password
 			cipher.init(Cipher.DECRYPT_MODE, getSaltedKeySpec(iv), ivParameterSpec);
 		} else {
+			// use normal password without hashing it
 			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
 		}
 		
 		byte[] decryptedBytes = cipher.doFinal(ciphertext);
 		return decryptedBytes;
+	}
+	
+	public byte[] shuffle(byte[] iv, byte[] source) {
+		int keyReorderLength = password.length + iv.length;
+		byte[] arrayReorderingKey = new byte[keyReorderLength];
+		System.arraycopy(EntrophyzerUtils.convertCharsToBytes(password, password.length), 0, arrayReorderingKey, 0, password.length);
+		System.arraycopy(iv, 0, arrayReorderingKey, password.length, iv.length);
+		
+		return EntrophyzerUtils.orderArrayByKey(iv, EntrophyzerUtils.convertCharsToInt(password));
 	}
 	
 	// used with JTextField to check password strenght

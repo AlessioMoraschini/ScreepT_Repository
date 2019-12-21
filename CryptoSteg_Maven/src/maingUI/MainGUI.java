@@ -39,6 +39,7 @@ import dialogutils.JOptionHelper;
 import dialogutils.UpdateProgressPanel;
 import frameutils.frame.ClipboardFrame;
 import frameutils.frame.ColorPickerFrame;
+import frameutils.frame.GeneratePasswordFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
@@ -105,6 +106,7 @@ public class MainGUI extends MainGuiParent{
 	// FRAMES THAT OPEN IN A NEW DIALOG
 	private static GraphicPreferencesFrame panelGuiOptions;
 	private static GeneralOptionsFrame panelGeneralOptions;
+	private static GeneratePasswordFrame panelPswKeyGen;
 	private static KeyGenFrame panelKeyGen;
 	private static KeyDictionaryPanel panelKeyDict;
 	private static ImageConverterFrame panelImgConv;
@@ -946,8 +948,31 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 						logger.warn("There was an error opening " + KeyGenFrame.class, e2);
 					}
 				}
-		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyGen,JFrame.MAXIMIZED_BOTH);
+		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyGen, JFrame.MAXIMIZED_BOTH);
 		    }
+		});
+		
+		// open in a new window - PSW_KEYGEN
+		mntmgenerateKeyPswSub = new CustomJmenuItem(new AbstractAction("Generate Password") {
+			public void actionPerformed(ActionEvent ae) {
+				if (panelPswKeyGen == null) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					panelPswKeyGen = new GeneratePasswordFrame(getMainFrame());
+					panelPswKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					panelPswKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
+				}else {
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelPswKeyGen.setState(java.awt.Frame.NORMAL);
+						panelPswKeyGen.setVisible(true);
+						panelPswKeyGen.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + GeneratePasswordFrame.class, e2);
+					}
+				}
+				GuiUtils.centerComponent(panelPswKeyGen, 650, 110);
+				panelPswKeyGen.toFront();
+			}
 		});
 		
 		// open in a new window - NET INFO

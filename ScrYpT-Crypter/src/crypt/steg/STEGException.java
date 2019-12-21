@@ -1,9 +1,14 @@
 package crypt.steg;
 
 public class STEGException extends Exception{
-	
+	private static final long serialVersionUID = 3426033056967540223L;
+
 	public STEGException() {
 		super();
+	}
+
+	public STEGException(String msg) {
+		super(msg);
 	}
 	
 	@Override

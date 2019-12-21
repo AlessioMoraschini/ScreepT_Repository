@@ -83,7 +83,6 @@ import guistyle.GUIStyelSettings;
 
 import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 public class TextEditor extends JPanel {
 	private static final long serialVersionUID = 4754281928324097410L;

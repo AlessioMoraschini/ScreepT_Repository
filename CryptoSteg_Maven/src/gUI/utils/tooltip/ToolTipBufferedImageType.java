@@ -10,8 +10,9 @@ import enums.KeyGenImageType;
 import enums.ScalingAlgorithm;
 
 public class ToolTipBufferedImageType extends DefaultListCellRenderer {
+	private static final long serialVersionUID = 4402489559317164416L;
 
-    @Override
+	@Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         // I'd extract the basic "text" representation of the value
         // and pass that to the super call, which will apply it to the 

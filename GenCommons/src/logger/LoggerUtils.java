@@ -32,7 +32,7 @@ public class LoggerUtils {
 		String startString = "\n\n##################################################\n\n"
 				   + "Build N°: " + GeneralConfig.BUILD_INCREMENTAL_NUMBER + "\n\n"
 				   + "Build HASH: " + GeneralConfig.BUILD_COMMIT_HASH + "\n\n"
-				   + dateString +"\n\n" + appName + " Closing Application!"
+				   + dateString +"\n\n" + appName + " Closing Application!\n"
 				   + "##################################################\n\n";
 				
 		return startString;

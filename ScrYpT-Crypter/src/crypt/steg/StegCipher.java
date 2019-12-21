@@ -9,6 +9,8 @@ import java.util.Iterator;
 import javax.imageio.ImageIO;
 
 import util.BufferedImageType;
+import util.EntrophyzerUtils;
+import util.ImageEncodingUtils;
 import util.SafeLogger;
 
 /**
@@ -321,7 +323,6 @@ public class StegCipher {
 	    }
 	    String strBytesCoded = String.valueOf(nBytesCoded);
 	    // end of image
-//	    return imgPixels;		
 		
 		logger.info("Finished -> Bytes decripted: "+nBytesCoded+" ; Residual bytes: "+availableSrcBytes+" (must be 0)");
 	    
@@ -332,12 +333,19 @@ public class StegCipher {
 	 * 
 	 * @param AES_CODED_OUT
 	 * @return
+	 * @throws STEGException 
 	 */
-	public StegOmResult stegaCrypt4ByteXor(byte[] AES_CODED_OUT) {
+	public StegOmResult stegaCrypt4ByteXor(byte[] AES_CODED_OUT, boolean shuffleSourceBytes) throws STEGException {
 		
 		SecureRandom rand = new SecureRandom();
-				
-		logger.info("Started decripting byte array of " + AES_CODED_OUT.length);
+
+		// check if have to shuffle source bytes by 256byte blocks
+		if(shuffleSourceBytes) {
+			int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(keyImage, 256);
+			AES_CODED_OUT = EntrophyzerUtils.orderArrayByKey(AES_CODED_OUT, keyIndexes);
+		}
+		
+		logger.info("Started decripting byte array of length: " + AES_CODED_OUT.length);
 
 		BufferedImage codedImg = new BufferedImage(keyImage.getWidth(), keyImage.getHeight(), keyImage.getType());
 		
@@ -367,16 +375,15 @@ public class StegCipher {
 	    			cycleN = bytePerPix;
 	    			
 	    			if(bytePerPix == 4) {
-	    				
 	    				currentByteToInt = fourBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2], AES_CODED_OUT[nBytesCoded+3]);
+	    			
 	    			}else if(bytePerPix == 3) {
-	    				
 	    				currentByteToInt = threeBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
+	    			
 	    			}else if(bytePerPix == 2) {
-	    				
 	    				currentByteToInt = threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
+	    			
 	    			}else if(bytePerPix == 1) {
-	    				
 	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
 	    			}
 	    			
@@ -386,24 +393,23 @@ public class StegCipher {
 	    			cycleN = availableSrcBytes;
 	    			
 	    			if(availableSrcBytes == 3) {
-	    				
 	    				currentByteToInt = fourBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
+	    			
 	    			}else if(availableSrcBytes == 2) {
-	    				
 	    				currentByteToInt = threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
+	    			
 	    			}else if(availableSrcBytes == 1) {
-	    				
 	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
+	    			
 	    			}else if(availableSrcBytes == 0){
-	    				
 	    				// if finished available bytes current value will be a random value (to not have clear keyImage pixel in result)
-		    			currentByteToInt = rand.nextInt(MAX_INT)-rand.nextInt(MAX_INT);
+		    			// Difference is made to have a random between MIN and MAX, avoiding to have only positive numbers
+	    				currentByteToInt = rand.nextInt(MAX_INT) - rand.nextInt(MAX_INT);
 		    		}
 	    		}   		 
 	    		
 	    		// retrieve current pixel value from key Image
 	    		Integer pxKey = keyImage.getRGB(j, i);
-//	    		Integer securePxKey = secForConversion(pxKey); 
 	    		
 	    		Integer codedPX;
 	    		// set new value - core of algorithm
@@ -421,7 +427,6 @@ public class StegCipher {
 	    }
 	    String strBytesCoded = String.valueOf(nBytesCoded);
 	    // end of image
-//	    return imgPixels;		
 		
 		logger.info("Finished -> Bytes decripted: "+nBytesCoded+" ; Residual bytes: "+availableSrcBytes+" (must be 0)");
 	    
@@ -668,9 +673,10 @@ public class StegCipher {
 	 * @return La lista di byte prodotta in uscita
 	 * @throws STEGException 
 	 * */
-	public byte[] stegaDeCrypt4ByteXor(BufferedImage codedImg, Integer cryptedByteNumber) throws STEGException {
+	public byte[] stegaDeCrypt4ByteXor(BufferedImage codedImg, Integer cryptedByteNumber, boolean shuffleAtTheEnd) throws STEGException {
 		
 		logger.debug("Started decripting "+cryptedByteNumber+"from image with "+bytePerPix+" bytes for each pixel..." );
+		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(keyImage, 256);
 		
 		int origLength = cryptedByteNumber;
 		// calcolo larghezza e altezza dell'immagine codificata passata
@@ -683,7 +689,7 @@ public class StegCipher {
 		int nBytesDeCoded = 0;
 		
 		// mi assicuro che chiave e result abbiano la stessa dimensione
-	    if (keyImage.getHeight()==codedImg.getHeight() && keyImage.getWidth()==codedImg.getWidth()) {
+	    if (keyImage.getHeight() == codedImg.getHeight() && keyImage.getWidth() == codedImg.getWidth()) {
 			
 	    	// per ogni riga
 			for (int i = 0; i < height; i++) {
@@ -694,7 +700,6 @@ public class StegCipher {
 					// retrieve current pixel value from key Image
 					Integer pxKey = keyImage.getRGB(j, i);
 //					// make it secure against overflow dividing unsigned by two <=> right shift one position
-//		    		Integer securePxKey = secForConversion(pxKey);
 
 					Integer codedPx = codedImg.getRGB(j, i);
 					
@@ -766,6 +771,11 @@ public class StegCipher {
 			logger.debug("Bytes decripted: "+nBytesDeCoded);
 		}else throw new STEGException(); // se dimensioni non corrispondono alla chiave
 		
+	    // check if have to shuffle back result by 256byte blocks
+		if(shuffleAtTheEnd) {
+			decodedBytes = EntrophyzerUtils.reorderBackArrayByKey(decodedBytes, keyIndexes);
+		}
+	    
 		return decodedBytes;
 	}
 	

@@ -24,6 +24,7 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchComboBox;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
@@ -48,6 +49,26 @@ public class TextAreaDialogs {
 	
 	public TextAreaDialogs(ITextAreaDialogs dialogManager) {
 		this.dialogManager = dialogManager;
+		searchList = new LimitedConcurrentList<>(LIST_MAX_SIZE);
+		replaceList = new LimitedConcurrentList<>(LIST_MAX_SIZE);
+	}
+
+	public TextAreaDialogs() {
+		this.dialogManager = new ITextAreaDialogs() {
+			@Override
+			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {
+			}
+			
+			@Override
+			public RSyntaxTextArea getTargetTextArea() {
+				return null;
+			}
+			
+			@Override
+			public String getCurrentClipboard() {
+				return null;
+			}
+		};
 		searchList = new LimitedConcurrentList<>(LIST_MAX_SIZE);
 		replaceList = new LimitedConcurrentList<>(LIST_MAX_SIZE);
 	}

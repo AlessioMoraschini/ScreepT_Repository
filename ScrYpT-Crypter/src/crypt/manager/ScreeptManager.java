@@ -461,7 +461,7 @@ public class ScreeptManager {
 		closeables.add(outWriter);
 		
 		// AES error types
-		if(this.aesCoder == null || this.aesCoder.getPassword().equals("")) {
+		if(this.aesCoder == null || this.aesCoder.getPassword().length == 0) {
 
 			// close streams to avoid memory leaks
 			streamIN.close();
@@ -475,7 +475,7 @@ public class ScreeptManager {
 		while(readFlag > 0) {
 			
 			// encrypt current buffer content and write it to temp out file
-			byte[] partialResult = aesCoder.encrypt(buffer, hashed);	
+			byte[] partialResult = aesCoder.encrypt(buffer, hashed, shuffleResult);	
 			outWriter.write(partialResult);
 			outWriter.flush();
 			// load next bufferSize bytes from srcFile
@@ -492,7 +492,6 @@ public class ScreeptManager {
 			progUpdater.getPb().setValue((int)(((float)buffer.length/(float)srcFile.length())*i*100));
 			
 			i++;
-			
 		}		
 		
 		// close streams to avoid memory leaks
@@ -542,7 +541,7 @@ public class ScreeptManager {
 		closeables.add(outWriter);
 		
 		// AES error types
-		if(this.aesCoder == null || this.aesCoder.getPassword().equals("")) {
+		if(this.aesCoder == null || this.aesCoder.getPassword().length == 0) {
 
 			// close streams to avoid memory leaks
 			streamIN.close();
@@ -589,9 +588,9 @@ public class ScreeptManager {
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException {
 
-		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
+		if(progUpdater == null) 
+			progUpdater = new UpdateProgressPanelMinFork(false);
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -620,7 +619,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 
 		// STEG error types
-		if(this.imgCoder == null || this.imgCoder.getKeyImage()==null) {
+		if(this.imgCoder == null || this.imgCoder.getKeyImage() == null) {
 			
 			// close streams to avoid memory leaks
 			streamIN.close();
@@ -632,22 +631,17 @@ public class ScreeptManager {
 		File outFile;
 		while(readFlag > 0) {
 			
-			// check if have to shuffle source bytes by 256byte blocks
-			if(shuffleResult) {
-//				buffer = ByteArrayShuffler.entroPieForward(buffer);
-				buffer = EntrophyzerUtils.orderArrayByKey(buffer, keyIndexes);
-			}
-			
-			// this value will be used during decription to recognize where px value have to be ignored
-			// (cause img is of fixed dimension)
-			
 			// crypt current buffer into image
-			StegOmResult result = imgCoder.stegaCrypt4ByteXor(buffer);
+			StegOmResult result = imgCoder.stegaCrypt4ByteXor(buffer, shuffleResult);
 			BufferedImage imgResult = result.getImgRes();
 			
 			// sequence of info stored in name is the following:
-			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
-			outFile = new File(RESULT_PATH+n+"_"+result.getnBytesCoded()+"_.png");
+			// [path of src dir] / [progressive file number] + [bytes of src stegged] + [shuffledBytes: 0|1] + .png 
+			//
+			// this value will be used during decription to recognize where px value have to be ignored
+			// (cause img is of fixed dimension)
+			String shuffleSign = shuffleResult ? "1" : "0";
+			outFile = new File(RESULT_PATH + n + "_" + result.getnBytesCoded() + "_" + shuffleSign + "_.png");
 
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
 							
@@ -670,7 +664,7 @@ public class ScreeptManager {
 				tempMSG += msg;
 				logger.error(msg);
 				
-				throw new IOException();
+				throw new STEGException(msg);
 			}
 			n++;
 			
@@ -687,8 +681,6 @@ public class ScreeptManager {
 	// Function that implements decryption of source file into several .png images without using pre-AES coding.
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
-
-		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
 
 		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
@@ -713,9 +705,10 @@ public class ScreeptManager {
 		if(this.imgCoder == null || this.imgCoder.getKeyImage()==null) {
 			
 			// close streams to avoid memory leaks
+			String msg = "Error retrieving the STEG decoder -> null coder or keyImage!";
 			fout.close();
-			logger.error("Error retrieving the STEG decoder -> null coder or keyImage!");
-			throw new STEGException();
+			logger.error(msg);
+			throw new STEGException(msg);
 		}
 
 		// get file array and scan all files till the end and sort them by first element in name name
@@ -735,21 +728,19 @@ public class ScreeptManager {
 			
 			// retrieve number of coded bytes into image from file name - the second element in name
 			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
+			// retrieve shuffled mode from file name - the third element in name
+			boolean shuffleAtTheEnd = iFile.getName().split("_")[2].equals("1");
 			
 			// retrieve current image from file
 			BufferedImage codedImg = ImageIO.read(iFile);
 			
-			byte[] buffer = imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet);
-			// check if have to shuffle source bytes by 256byte blocks
-			if(shuffleResult) {
-//				buffer = ByteArrayShuffler.entroPieBack(buffer);
-				buffer = EntrophyzerUtils.reorderBackArrayByKey(buffer, keyIndexes);
-			}
+			byte[] buffer = imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet, shuffleAtTheEnd);
 			
 			fout.write(buffer);
 
 			progUpdater.getPb().setValue((int)((float)i/cryptedImgList.length*100));
-			String msg = "\nSTEG decripting current coded image: "+iFile.getName();
+			
+			String msg = "\nSTEG decripting current coded image: " + iFile.getName();
 			tempMSG += msg;
 			logger.info(msg);
 			
@@ -774,8 +765,6 @@ public class ScreeptManager {
 	// this is method for top security
 	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException {
 				
-		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
-
 		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
@@ -806,7 +795,7 @@ public class ScreeptManager {
 		int readFlag = streamIN.read(buffer);
 		
 		// AES error types
-		if(this.aesCoder == null || this.aesCoder.getPassword().equals("")) {
+		if(this.aesCoder == null || this.aesCoder.getPassword().length == 0) {
 
 			// close streams to avoid memory leaks
 			streamIN.close();
@@ -834,21 +823,16 @@ public class ScreeptManager {
 
 			// encrypt (AES) current buffer content with aes key string
 			// remember that in case of available%16!=0 -> partial result's size approximate in excess to reach multiple of 16 (that's how AES works)
-			byte[] partialResult = aesCoder.encrypt(buffer, hashed);				
-			
-			// check if have to shuffle source bytes by 256byte blocks
-			if(shuffleResult) {
-//				partialResult = ByteArrayShuffler.entroPieForward(partialResult);
-				partialResult = EntrophyzerUtils.orderArrayByKey(partialResult, keyIndexes);
-			}
+			byte[] partialResult = aesCoder.encrypt(buffer, hashed, shuffleResult);				
 			
 			// encrypt (STEG) current partial aes-coded result into image using key image
-			StegOmResult result = imgCoder.stegaCrypt4ByteXor(partialResult);
+			StegOmResult result = imgCoder.stegaCrypt4ByteXor(partialResult, shuffleResult);
 			BufferedImage imgResult = result.getImgRes();
 			
 			// sequence of info stored in name is the following:
-			// [path of src dir] + [progressive file number] + [bytes of src stegged] + [src ext] + [type] + [outName] .png 
-			outFile = new File(RESULT_PATH+n+"_"+result.getnBytesCoded()+"_.png");
+			// [path of src dir] / [progressive file number] + [bytes of src stegged] + [shuffledBytes: 0|1] + .png 
+			String shuffleSign = shuffleResult ? "1" : "0";
+			outFile = new File(RESULT_PATH + n + "_" + result.getnBytesCoded() + "_" + shuffleSign + "_.png");
 			
 			// write i-image on the file and then calculate new incremental name for next one
 			boolean OK = ImageIO.write(imgResult, "png", outFile);
@@ -875,7 +859,7 @@ public class ScreeptManager {
 				tempMSG += msg;
 				logger.error(msg);
 				
-				throw new IOException();	
+				throw new STEGException(msg);	
 			}
 			
 			progUpdater.getPb().setValue((int)(((float)buffer.length/(float)srcFile.length())*n*100));
@@ -896,8 +880,6 @@ public class ScreeptManager {
 	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
 	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException {
 		
-		int[] keyIndexes = ImageEncodingUtils.readNSpacedValuesFromImage(imgCoder.keyImage, 256);
-
 		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
@@ -912,7 +894,7 @@ public class ScreeptManager {
 		DECRYPT_NAME = srcFile.getName();
 		
 		// this time outfile is one and source can be multiple files incremental from 1st srcFile
-		File outFile = new File(OUT_PATH+DECRYPT_NAME);		
+		File outFile = new File(OUT_PATH + DECRYPT_NAME);		
 		outFile = ScreeptUtils.renameJavaObjFile(outFile);
 		
 		// update reference to currentOutFile/folder
@@ -927,9 +909,10 @@ public class ScreeptManager {
 		if(imgCoder == null || imgCoder.getKeyImage()==null) {
 			
 			// close streams to avoid memory leaks
+			String msg = "Error retrieving the STEG decoder -> null coder or keyImage!";
 			fout.close();
-			logger.error("Error retrieving the STEG decoder -> null coder or keyImage!");
-			throw new STEGException();
+			logger.error(msg);
+			throw new STEGException(msg);
 		}
 
 		// get file array and scan all files till the end and sort them by first element in name name
@@ -950,18 +933,14 @@ public class ScreeptManager {
 			
 			// retrieve number of coded bytes into image from file name - the second element in name
 			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
-			
+			// retrieve shuffled mode from file name - the third element in name
+			boolean shuffleAtTheEnd = iFile.getName().split("_")[2].equals("1");
+						
 			// retrieve current image from file
 			BufferedImage codedImg = ImageIO.read(iFile);
 			
 			// decript with steg current coded image
-			byte[] partial_res = imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet);
-			
-			// check if have to shuffle source bytes by 256byte blocks
-			if(shuffleResult) {
-//				partial_res = ByteArrayShuffler.entroPieBack(partial_res);
-				partial_res = EntrophyzerUtils.reorderBackArrayByKey(partial_res, keyIndexes);
-			}
+			byte[] partial_res = imgCoder.stegaDeCrypt4ByteXor(codedImg, bytesToGet, shuffleAtTheEnd);
 			
 			// now decript with aes and write to out file
 			fout.write(aesCoder.decrypt(partial_res));

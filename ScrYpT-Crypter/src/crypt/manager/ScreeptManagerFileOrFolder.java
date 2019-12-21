@@ -335,6 +335,7 @@ public class ScreeptManagerFileOrFolder {
 		AEScoder = new AesCipher(AES_KEY);
 		screepTManager = new ScreeptManager(AEScoder);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
+		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setHashed(hashed);
 		screepTManager.TEMP_PATH = tempFolderInternalPath != null ? tempFolderInternalPath : screepTManager.TEMP_PATH;
 		
@@ -347,8 +348,8 @@ public class ScreeptManagerFileOrFolder {
 		}
 		STEGcoder = new StegCipher(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder);
-		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
+		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setHashed(hashed);
 		screepTManager.TEMP_PATH = tempFolderInternalPath != null ? tempFolderInternalPath : screepTManager.TEMP_PATH;
 		
@@ -366,8 +367,8 @@ public class ScreeptManagerFileOrFolder {
 		AEScoder = new AesCipher(AES_KEY);
 		STEGcoder = new StegCipher(imageFile);
 		screepTManager = new ScreeptManager(STEGcoder, AEScoder);
-		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setProgressBarVisible(new AtomicBoolean(defaultProgressBarVisible));
+		screepTManager.setShuffleResult(shuffle);
 		screepTManager.setHashed(hashed);
 		screepTManager.TEMP_PATH = tempFolderInternalPath != null ? tempFolderInternalPath : screepTManager.TEMP_PATH;
 		

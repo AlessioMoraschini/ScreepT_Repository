@@ -23,6 +23,7 @@ public class ScreepT_Test_New_StandAlone {
 	
 	private final static boolean enableAdvices = true;
 	private final static boolean SHUFFLE_MODE = true;
+	private final static boolean hashed = true;
 	
 	// KEY INITIALIZATION
 	private final char[] AES_KEY = "ciaosonoalessio".toCharArray();
@@ -43,14 +44,13 @@ public class ScreepT_Test_New_StandAlone {
 	// CODERS USED IN initMethod private functions (only for test purpose)
 	private ScreeptManagerFileOrFolder screepTManagerFof;
 	
-	private boolean hashed = false;
 	
 ////////////////////////////////////////////////////////////////private ScreeptManagerFileOrFolder screepTManagerNew;
 ////////////////////// START TEST METHODS //////////////////////
 ////////////////////////////////////////////////////////////////
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void testOnlyAEScrypt() throws Exception{
 		
 		try {
@@ -81,7 +81,7 @@ public class ScreepT_Test_New_StandAlone {
 	}
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testOnlyAESdecrypt() throws Exception{
 		
 		try {

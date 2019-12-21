@@ -14,6 +14,7 @@ import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gUI.utils.tooltip.TextEditorTooltips;
+import maingUI.MainGUI;
 import resources.IconsPathConfigurator;
 import shortcuts.ICommonShortcuts;
 import tabbededitor.CustomTabbedEditor;
@@ -47,7 +48,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
-		if (e.getID() == KeyEvent.KEY_PRESSED && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
+		if (e.getID() == KeyEvent.KEY_PRESSED && MainGUI.mainGuiUtils.isTextEditorActive()) {
 
 			updateCtrlAltShiftPressed(e);
 			
@@ -106,7 +107,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		
 ////////////////LISTENER FOR KEY RELEASED EVENT - WHEN NEED TO TRIGGER ONLY ONE TIME EVEN WHILE KEEPING PRESSED  //////////////////////////
 		
-		if (e.getID() == KeyEvent.KEY_RELEASED  && currentTextEditor.parentFrame.getContentPane().getComponent(0) instanceof TextEditor) {
+		if (e.getID() == KeyEvent.KEY_RELEASED  && MainGUI.mainGuiUtils.isTextEditorActive()) {
 	      
 			updateCtrlAltShiftReleased(e);
 			

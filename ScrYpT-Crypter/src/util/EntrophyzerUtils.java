@@ -1,7 +1,11 @@
 package util;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,5 +265,40 @@ public class EntrophyzerUtils {
     	
     	return result;
     }
+    
+    public static Integer[] convertCharsToInteger(char[] source) throws InputMismatchException {
+    	if(source == null) {
+    		throw new InputMismatchException("Source characters array is null!");
+    	}
+    	
+    	Integer[] output = new Integer[source.length];
+    	for(int i = 0; i < source.length; i++) {
+    		output[i] = (int)source[i]; 
+    	}
+    	
+    	return output;
+    }
+
+    public static int[] convertCharsToInt(char[] source) throws InputMismatchException {
+    	if(source == null) {
+    		throw new InputMismatchException("Source characters array is null!");
+    	}
+    	
+    	int[] output = new int[source.length];
+    	for(int i = 0; i < source.length; i++) {
+    		output[i] = (int)source[i]; 
+    	}
+    	
+    	return output;
+    }
+    
+	public static byte[] convertCharsToBytes(char[] sourceChar, int lengthLimit) {
+		CharBuffer chBuff = CharBuffer.wrap(sourceChar);
+		ByteBuffer byBuff = Charset.forName("UTF-8").encode(chBuff);
+		byte[] bytes = Arrays.copyOfRange(byBuff.array(), 0, lengthLimit);
+		Arrays.fill(byBuff.array(), (byte)0); // clear array data
+		
+		return bytes;
+	}
     
 }

@@ -307,7 +307,7 @@ public class ChargeIniLog extends JPanel{
 		textArea.setEditable(true);
 		textArea.setEnabled(true);
 		textArea.setSelectedTextColor(Color.LIGHT_GRAY);
-		textArea.setFont(new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
+		RsyntaxUtils.setFont(textArea, new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
 		textArea.setMargin(new Insets(20, 20, 20, 20));
 		FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
 		textArea.revalidate();

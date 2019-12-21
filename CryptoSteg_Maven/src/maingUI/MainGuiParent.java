@@ -118,6 +118,7 @@ public class MainGuiParent {
 	public CustomJmenuItem mntmFullScreenMode;
 	public CustomJmenuItem mntmImmersiveMode;
 	static CustomJmenuItem mntmCrypter;
+	CustomJmenuItem mntmgenerateKeyPswSub;
 	CustomJmenuItem mntmgenerateKeyImageSub;
 	CustomJmenuItem mntmViewKeyDictionary;
 	static CustomJmenuItem mntmTextEditor;
@@ -260,6 +261,7 @@ public class MainGuiParent {
 			
 			mnCryptoSteg.add(mntmCrypter);
 			mnCryptoSteg.add(new JSeparator());
+			mnCryptoSteg.add(mntmgenerateKeyPswSub);
 			mnCryptoSteg.add(mntmgenerateKeyImageSub);
 			mnCryptoSteg.add(mntmViewKeyDictionary);
 	
@@ -391,6 +393,7 @@ public class MainGuiParent {
 		
 		// SCREEPT SECTION
 		mntmCrypter.setFont(menuItemFont);
+		mntmgenerateKeyPswSub.setFont(menuItemFont);
 		mntmgenerateKeyImageSub.setFont(menuItemFont);
 		mntmViewKeyDictionary.setFont(menuItemFont);
 
@@ -461,6 +464,7 @@ public class MainGuiParent {
 
 		// ScreepT submenu
 		mntmCrypter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT));
+		mntmgenerateKeyPswSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN_PSW));
 		mntmgenerateKeyImageSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN));
 		mntmViewKeyDictionary.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
 		
@@ -527,6 +531,7 @@ public class MainGuiParent {
 		
 		// ScreepT submenu
 		mntmCrypter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | SHIFT_MASK));
+		mntmgenerateKeyPswSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_W, ALT_MASK | SHIFT_MASK));
 		mntmgenerateKeyImageSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, ALT_MASK | SHIFT_MASK));
 		mntmViewKeyDictionary.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, ALT_MASK | SHIFT_MASK));
 		
@@ -870,6 +875,10 @@ public class MainGuiParent {
 
 	public JMenuItem getMntmCrypter() {
 		return mntmCrypter;
+	}
+	
+	public CustomJmenuItem getMntmgenerateKeyPswSub() {
+		return mntmgenerateKeyPswSub;
 	}
 
 	public JMenuItem getMntmgenerateKeyImageSub() {

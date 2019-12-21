@@ -57,7 +57,7 @@ public class CharBytesAesKeyTest {
 			
 			assertTrue(byteKey.length == AesCipher.limit);
 			assertTrue(cipher.decrypt(cipher.encrypt(source)).equals(source));
-			assertTrue(Arrays.equals(cipher.decrypt(cipher.encrypt(sourceBytes, true)) , sourceBytes));
+			assertTrue(Arrays.equals(cipher.decrypt(cipher.encrypt(sourceBytes, true, false)) , sourceBytes));
 			
 		} catch (UnsupportedEncodingException e) {
 			error = true;

@@ -9,11 +9,13 @@ import javax.swing.JPanel;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 
 import javax.swing.JTree;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.fife.rsta.ui.search.FindDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import amfileutils.FileStuff;
@@ -25,6 +27,7 @@ import dialogutils.JOptionHelper;
 import enums.BufferedImageType;
 import frameutils.utils.GuiUtils;
 import gUI.frames.KeyGenFrame;
+import gUI.utils.shortcutshandler.CrypterPanelShortcutsListener;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
 import guistyle.GUIStyelSettings;
@@ -41,6 +44,8 @@ import splitpanel.SplitPaneUtils;
 import treeutils.om.FileTreeModel;
 import util.UpdateProgressPanelMinFork;
 import utils.RsyntaxUtils;
+import utils.dialog.ITextAreaDialogs;
+import utils.dialog.TextAreaDialogs;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
@@ -103,6 +108,17 @@ public class CrypterPanel extends JPanel {
 ///////////////////////////////////////////////
 		//  GUI-RELATED-OBJECTS   //
 		////////////////////////////
+	
+	private static final String unSelectedTooltip = "<b>Currently not selected</b> - Click to select for best security (only if supported for current algorithm)<br/><br/>"; 
+
+	private static final String shuffleTooltip = 
+			"When this mode is active, an additional phase will reorder bytes based on given key values, in order to increase algorithm security and maximize entrophy diffusion. "
+			+ "<br/> <b>NB: </b> <u>When decrypting there's no need to choose the right option</u>, this will be recognized automatically from encoded image file name.";
+	
+	private static final String hashedTooltip = 
+			"When this mode is active, the given password will be hashed to avoid original password decription even if the data is compromised. "
+			+ "<br/> <b>NB:</b> <u>When decrypting there's no need to choose the right option</u>, this will be recognized automatically from encoded file.";
+	
 
 	// text Areas
 	private RSyntaxTextArea textAreaMain;
@@ -160,11 +176,11 @@ public class CrypterPanel extends JPanel {
 	private JSplitPane mainSplitTextAreaRight; // textArea<->fileDragDropperTree
 	
 	// Buttons
-	private JButton btnDeCreept;
-	private JButton btnCreept;
-	private JButton btnSelectSourceFile;
-	private JButton btnDispoKeyImg;
-	private JButton btnGenerateKeyImg;
+	public JButton btnDeCreept;
+	public JButton btnCreept;
+	public JButton btnSelectSourceFile;
+	public JButton btnDispoKeyImg;
+	public JButton btnGenerateKeyImg;
 
 	// public field representing current Panel
 	public static CrypterPanel thisPanel; 
@@ -189,7 +205,7 @@ public class CrypterPanel extends JPanel {
 		
 	// field representing the source file loaded by user, this is the file to crypt/decrypt
 	private File srcFile;
-	private  File[] srcFiles; 
+	private File[] srcFiles; 
 	
 	// fied representing the img key file selected by user
 	private File srcKeyImageFile;
@@ -216,6 +232,10 @@ public class CrypterPanel extends JPanel {
 	int leftVerticalDivHeight;
 	int leftWidth = 400;
 	int rightWidth = 450;
+	
+	public CrypterPanelShortcutsListener shortcutsListener;
+	private FindDialog searchBox;
+	private TextAreaDialogs textAreaDialogs;
 
 	/**
 	 * Create the application.
@@ -240,7 +260,20 @@ public class CrypterPanel extends JPanel {
 		setBackground(SystemColor.desktop);
 		
 		// start with layout & header
-setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
+		setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
+
+		textAreaDialogs = new TextAreaDialogs(new ITextAreaDialogs() {
+			
+			@Override
+			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {}
+			
+			@Override
+			public RSyntaxTextArea getTargetTextArea() {
+				return textAreaMain;
+			}
+			@Override
+			public String getCurrentClipboard() {return null;}
+		});
 		
 		panelMainContainer = new JPanel();
 		panelMainContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -258,7 +291,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		
 		panelHeader = new JPanel();
 		panelHeader.setMinimumSize(new Dimension(10, 40));
-		panelHeader.setMaximumSize(new Dimension(GuiUtils.getScreenSize().width-22, 30));
+		panelHeader.setMaximumSize(new Dimension(GuiUtils.getScreenSize().width-20, 45));
 		panelHeader.setForeground(SystemColor.menu);
 		panelHeader.setBorder(new LineBorder(new Color(128, 128, 128)));
 		panelHeader.setBackground(new Color(51, 51, 51));
@@ -333,13 +366,13 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		panelStatus.setBackground(new Color(112, 128, 144));
 		panelMainContainer.add(panelStatus, "cell 0 1 5 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{90, 180, 70, 70, 140, 140, 10, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{90, 180, 40, 70, 140, 140, 10, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
 		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelStatus.setLayout(gbl_panelStatus);
 		
-		lblAesKeyStatic = new JLabel("AES key:");
+		lblAesKeyStatic = new JLabel("Password:");
 		lblAesKeyStatic.setForeground(new Color(255, 239, 213));
 		GridBagConstraints gbc_lblAesKeyStatic = new GridBagConstraints();
 		gbc_lblAesKeyStatic.insets = new Insets(0, 0, 0, 5);
@@ -362,9 +395,10 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		panelStatus.add(AESKEYtext, gbc_AESKEYtext);
 		AESKEYtext.setColumns(10);
 		
-		chckbxShowAesKey = new JCheckBox("Show");
+		chckbxShowAesKey = new JCheckBox("");
 		chckbxShowAesKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_INVISIBLE));
 		chckbxShowAesKey.setSelectedIcon(new ImageIcon(IconsPathConfigurator.ICON_VISIBLE));
+		chckbxShowAesKey.setRolloverIcon(chckbxShowAesKey.getIcon());
 		chckbxShowAesKey.setOpaque(false);
 		chckbxShowAesKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShowAesKey.setForeground(Color.WHITE);
@@ -400,8 +434,8 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		chckbxShuffle.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
 		chckbxShuffle.setDisabledIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		chckbxShuffle.setSelectedIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
-		chckbxShuffle.setToolTipText("<html>When this mode is active, an additional phase will reorder bytes based on given key values, in order to increase algorithm security and maximize entrophy diffusion. "
-				+ "<br/> (When decrypting you have to choose the same option in order to succesfully decrypt data... so it's better to remember what you've choosen!)</html>");
+		chckbxShuffle.setRolloverIcon(chckbxShuffle.getIcon());
+		chckbxShuffle.setToolTipText(encapsulateInHtml(shuffleTooltip));
 		chckbxShuffle.setOpaque(false);
 		chckbxShuffle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxShuffle.setForeground(Color.WHITE);
@@ -416,8 +450,9 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		chckbxHashKey.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
 		chckbxHashKey.setDisabledIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		chckbxHashKey.setSelectedIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
-		chckbxHashKey.setToolTipText("<html>When this mode is active, the given password will be hashed to avoid original password decription even if the data is compromised. "
-				+ "<br/> (When decrypting there's no need to choose the right option, this will be recognized automatically from encoded file.) </html>");
+		chckbxHashKey.setDisabledSelectedIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+		chckbxHashKey.setRolloverIcon(chckbxHashKey.getIcon());
+		chckbxHashKey.setToolTipText(encapsulateInHtml(hashedTooltip));
 		chckbxHashKey.setOpaque(false);
 		chckbxHashKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxHashKey.setForeground(Color.WHITE);
@@ -569,6 +604,14 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		
 		GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 		SplitPaneUtils.resetAllDIviderColors(this, new Color(25, 25, 25));
+		
+		/*
+		 * KEYBOARD SHORTCUTS - use custom listener
+		 */
+		shortcutsListener = new CrypterPanelShortcutsListener(thisPanel);
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(shortcutsListener);
+		
+		refreshRightSplitSize();
 	}
 	
 	public void resizeRightSplitter() {
@@ -577,6 +620,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				mainSplitTextAreaRight.setDividerLocation(max - rightWidth);
+				refreshRightSplitSize();
 			}
 		});
 	}
@@ -602,8 +646,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		mainSplitTextAreaRight.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				int max = mainApplication.getMainFrame().getWidth();
-				rightWidth = max - mainSplitTextAreaRight.getDividerLocation();
+				refreshRightSplitSize();
 			}
 		});
 		
@@ -656,13 +699,6 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CryptoMode modality = (CryptoMode)comboModeCrypto.getSelectedItem();
-				if(modality.equals(CryptoMode.ONLY_AES)) {
-					chckbxShuffle.setEnabled(false);
-					chckbxShuffle.setForeground(Color.lightGray);
-				} else {
-					chckbxShuffle.setEnabled(true);
-					chckbxShuffle.setForeground(Color.white);
-				}
 				
 				if (modality.isAES()){
 					chckbxHashKey.setEnabled(true);
@@ -685,6 +721,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				currentConf.getSteganOpt().setUltraSecure(chckbxShuffle.isSelected() && chckbxShuffle.isEnabled());
+				updateShuffleTooltip();				
 			}
 		});
 
@@ -694,6 +731,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				currentConf.getAesOpt().setHashKey(chckbxHashKey.isSelected() && chckbxHashKey.isEnabled());
+				updateHashedTooltip();				
 			}
 		});
 		
@@ -749,11 +787,17 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		});
 	}
 	
-/////////////////////////////////////
+	private void refreshRightSplitSize() {
+		int max = mainApplication.getMainFrame().getWidth();
+		rightWidth = max - mainSplitTextAreaRight.getDividerLocation();
+	}
+	
+	
+////	/////////////////////////////////
 		// USEFUL METHODS //
 		////////////////////
 	
-	private Runnable decripterRunner() {
+		private Runnable decripterRunner() {
 		return new Runnable() {
 			
 			@Override
@@ -1046,7 +1090,7 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			// if not available read from file
 			RsyntaxUtils.changeStyleViaThemeXml(textAreaMain, Themes.DARK.defaultPath);
 		}
-		textAreaMain.setFont(new Font("Segoe-UI", Font.PLAIN, 16));
+		
 		textAreaMain.setEditable(true);
 		textAreaMain.setEnabled(true);
 		textAreaMain.setAntiAliasingEnabled(true);
@@ -1198,6 +1242,11 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		comboModeCrypto.setSelectedItem(mode);
 		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
 		chckbxHashKey.setSelected(currentConf.getAesOpt().isHashKey());
+		
+		updateHashedTooltip();
+		updateShuffleTooltip();
+		
+		initGuiFromConfig();
 	}
 	
 	private synchronized boolean checkIfReadyToCode() {
@@ -1250,6 +1299,10 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 		labelFlagCodeReady.revalidate();
 		labelFlagCodeReady.repaint();
 		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				btnCreept.setToolTipText(btnCreept.isEnabled()? "Ready to encrypt files!" : labelFlagCodeReady.getText());				btnDeCreept.setToolTipText(btnDeCreept.isEnabled()? "Ready to decrypt files!" : labelFlagCodeReady.getText());			}
+		});
 		return ready;
 	}
 	
@@ -1432,17 +1485,23 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 	}
 	
 	public void initGuiFromConfig() {
-		Font logFont = textAreaLog.getFont();
-		Font mainAreaFont = textAreaMain.getFont();
-		textAreaLog.setFont(new Font(logFont.getName(), logFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()-1));
-		textAreaMain.setFont(new Font(mainAreaFont.getName(), mainAreaFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()));
-		textAreaMain.setAntiAliasingEnabled(true);
-		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
-		
 		GUIStyelSettings.applyNimbusSize(currentConf.getGuiOpt().nimbusSize);
 		GUIStyelSettings.updateAllWindowsLaf();
 		
 		SplitPaneUtils.resetAllDIviderColors(this, new Color(25, 25, 25));
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				Font logFont = textAreaLog.getFont();
+				textAreaLog.setFont(new Font(logFont.getName(), logFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()-1));
+				textAreaMain.setAntiAliasingEnabled(true);
+				chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
+				RsyntaxUtils.setFont(textAreaMain, new Font("DejaVu Sans", Font.PLAIN, currentConf.getGuiOpt().getLogFontSize()));
+				textAreaMain.setFont(new Font("DejaVu Sans", Font.PLAIN, currentConf.getGuiOpt().getLogFontSize()));
+			}
+		});
 	}
 	
 	public void showMessageImageNotSupported() {
@@ -1464,12 +1523,15 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 			public void run() {
 				Dimension med = new Dimension(currSize.width - 50, currSize.height - 125);
 				Dimension high = new Dimension(currSize.width - 45, currSize.height - 120);
+				Dimension max = new Dimension(currSize.width - 10, currSize.height);
 				
 				getPanelMainContainer().setPreferredSize(med);
 				getPanelMainContainer().setMaximumSize(high);
 				if (high.getWidth() > getPanelMainContainer().getMinimumSize().width) {
 					if (high.getHeight() > getPanelMainContainer().getMinimumSize().height) {
-						getPanelMainContainer().setPreferredSize(high);
+						panelMainContainer.setPreferredSize(high);
+						panelMainContainer.setMaximumSize(max);
+						mainSplitTextAreaRight.setMaximumSize(max);
 					}
 				}
 				
@@ -1567,6 +1629,47 @@ setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
 
 	public JPanel getPanelMainContainer() {
 		return panelMainContainer;
+	}
+	
+	public void openSearchPanel () {
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (searchBox == null) {
+					searchBox = textAreaDialogs.getSearchDialog(thisPanel.parentFrame, null, null, "", "");
+					GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
+
+				} else {
+					
+					searchBox.setVisible(true);
+					searchBox.toFront();
+					searchBox.requestFocus();
+				}
+				searchBox.setLocationRelativeTo(mainApplication.getMainFrame());
+				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
+			}
+		});
+		
+	}
+	
+	private String encapsulateInHtml(String original) {
+		return "<html>" + original + "</html>";
+	}
+	
+	private void updateShuffleTooltip() {
+		if (chckbxShuffle.isSelected()) {
+			chckbxShuffle.setToolTipText(encapsulateInHtml(shuffleTooltip));
+		} else {
+			chckbxShuffle.setToolTipText(encapsulateInHtml(unSelectedTooltip + shuffleTooltip));
+		}
+	}
+
+	private void updateHashedTooltip() {
+		if (chckbxHashKey.isSelected()) {
+			chckbxHashKey.setToolTipText(encapsulateInHtml(hashedTooltip));
+		} else {
+			chckbxHashKey.setToolTipText(encapsulateInHtml(unSelectedTooltip + hashedTooltip));
+		}
 	}
 	
 }

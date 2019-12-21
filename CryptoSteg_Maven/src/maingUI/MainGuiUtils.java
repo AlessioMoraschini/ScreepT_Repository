@@ -361,38 +361,6 @@ public class MainGuiUtils {
     	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 	}
 	
-	public void startCrypterPanel(final boolean forceStart) {
-		
-		mainAppReference.isOnHomePage.set(false);
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
-
-				// reset all listeners
-				if (forceStart) {
-					removeAllListeners(MainGUI.panelCrypter);
-				}
-				if (MainGUI.panelCrypter == null || forceStart) {
-					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
-				}
-				
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						replaceMainPanel(MainGUI.panelCrypter);
-						MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
-						MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
-					}
-				});
-				
-				refreshGUIlaf();
-				
-				resetMainAppCursor();
-			}
-		});
-	}
-	
 	public boolean isTextEditorActive() {
 		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof TextEditor;
 	}
@@ -414,6 +382,45 @@ public class MainGuiUtils {
 		mainAppReference.getMainFrame().setTitle(newTitle);
 	}
 	
+	public void startCrypterPanel(final boolean forceStart) {
+		
+		mainAppReference.isOnHomePage.set(false);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
+				
+				// reset all listeners
+				if (forceStart) {
+					removeAllListeners(MainGUI.panelCrypter);
+				}
+				
+				// reset shortcut listener
+				if (forceStart && MainGUI.panelCrypter != null && MainGUI.panelCrypter.shortcutsListener != null) {
+					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.panelCrypter.shortcutsListener);
+					removeAllListeners(MainGUI.panelCrypter);
+				}
+				
+				if (MainGUI.panelCrypter == null || forceStart) {
+					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+					MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
+				}
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						replaceMainPanel(MainGUI.panelCrypter);
+						MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
+						MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
+					}
+				});
+				
+				refreshGUIlaf();
+				
+				resetMainAppCursor();
+			}
+		});
+	}
+	
 	public void startTextEditor(final boolean forceRestart) {
 		
 		mainAppReference.isOnHomePage.set(false);
@@ -425,7 +432,7 @@ public class MainGuiUtils {
 				// reset shortcut listener
 				if (forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
 					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.initTxtWriter.shortcutsListener);
-					removeAllListeners(MainGUI.panelCrypter);
+					removeAllListeners(MainGUI.initTxtWriter);
 				}
 				if (MainGUI.initTxtWriter == null || forceRestart) {
 					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);

@@ -170,6 +170,13 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				if (e.getKeyCode() == 75 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmgenerateKeyImageSub().doClick();
 				}
+				
+				/**
+				 *  OPEN PSW-KEY-GEN : ALT+SHIFT+W
+				 */
+				if (e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmgenerateKeyPswSub().doClick();
+				}
 
 				/**
 				 *  OPEN KEY-DICIONARY : ALT+SHIFT+D
