@@ -53,7 +53,6 @@ public class GeneratePasswordFrame extends ParentFrame{
 		
 		this.setMinimumSize(new Dimension(650, 60));
 
-		GuiUtils.centerComponent(this);
 		setVisible(true);
 		setAlwaysOnTop(true);
 		
@@ -77,8 +76,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 		spinnerLength = new JSpinner();
 		spinnerLength.setToolTipText("Best match to use in ScreepT is 16 characters");
 		spinnerLength.setModel(new SpinnerNumberModel(16, 1, 64, 1));
-		spinnerLength.setBackground(new Color(10,10,10));
-		spinnerLength.setForeground(Color.WHITE);
+		GuiUtils.setJspinnerColors(spinnerLength, Color.GRAY, new Color(10,10,10));
 		spinnerLength.setAlignmentY(Component.TOP_ALIGNMENT);
 		spinnerLength.setAlignmentX(Component.LEFT_ALIGNMENT);
 		spinnerLength.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 18));
@@ -91,6 +89,9 @@ public class GeneratePasswordFrame extends ParentFrame{
 		getContentPane().add(btnGenerate, "cell 4 1,grow");
 		
 		addHandlers();
+		
+		btnGenerate.doClick();
+		
 		logger.info(this.getClass().getName() + " - Started and ready!");
 	}
 	
@@ -131,5 +132,15 @@ public class GeneratePasswordFrame extends ParentFrame{
 				}
 			}
 		});
+	}
+	
+	public void forceLentgh(int length) {
+		spinnerLength.setValue(length);
+		spinnerLength.setEnabled(false);
+	}
+
+	public void unforceLentgh(int length) {
+		spinnerLength.setValue(length);
+		spinnerLength.setEnabled(true);
 	}
 }

@@ -110,7 +110,15 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 				});
 			}
 		}
-		
+	}
+	
+	/**
+	 * Resync text from target and re-apply selection
+	 */
+	public void syncLight() {
+		// sync Text and caret position
+		txtAreaMiniMap.setText(targetTemp.getText());
+		safeSyncCaretFromTxtReference();
 	}
 	
 	/**

@@ -159,4 +159,11 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 		return textEditor.shortcutsListener;
 	}
 
+	@Override
+	public void resyncAddedPanelLight() {
+		if (txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
+			((MapTextAreaPanel) textEditor.rightSplitContainer).syncLight();
+		} 
+	}
+
 }

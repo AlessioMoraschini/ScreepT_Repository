@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.Painter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -143,6 +145,7 @@ public class GUIStyelSettings{
 		UIManager.put("Button.focus", new ColorUIResource(new Color(focusOpacity, 20,20,20)));
 		UIManager.put("Tree.selectionBackground", TreeUtils.DEF_BACK_SELECTION);
 		UIManager.put("nimbusSelectionForeground", new Color(10, 10, 10));
+		
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -401,6 +404,18 @@ public class GUIStyelSettings{
 		if(theme != null) {
 			currentTheme = theme;
 		}
+	}
+	
+	public static Painter<JComponent> getPainter(Color color){
+        return new Painter<JComponent>() 
+        {
+            @Override
+            public void paint(Graphics2D g, JComponent c, int w, int h) 
+            {
+                g.setColor(color);
+                g.fillRect(0, 0, w, h);
+            }
+        };
 	}
 
 	

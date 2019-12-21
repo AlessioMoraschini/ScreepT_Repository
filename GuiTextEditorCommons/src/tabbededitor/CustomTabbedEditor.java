@@ -322,6 +322,8 @@ public class CustomTabbedEditor {
 					loadedTabObj.unsaved = true;
 					updateSavedLabelNTab(null);
 				}
+				
+				tabEditorManager.resyncAddedPanelLight();
 			}
 		} catch (Exception e) {
 			logger.error("Error during label update!", e);

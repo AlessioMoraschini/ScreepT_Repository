@@ -106,7 +106,7 @@ public class MainGUI extends MainGuiParent{
 	// FRAMES THAT OPEN IN A NEW DIALOG
 	private static GraphicPreferencesFrame panelGuiOptions;
 	private static GeneralOptionsFrame panelGeneralOptions;
-	private static GeneratePasswordFrame panelPswKeyGen;
+	public static GeneratePasswordFrame panelPswKeyGen;
 	private static KeyGenFrame panelKeyGen;
 	private static KeyDictionaryPanel panelKeyDict;
 	private static ImageConverterFrame panelImgConv;
@@ -972,6 +972,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				GuiUtils.centerComponent(panelPswKeyGen, 650, 110);
 				panelPswKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
 				panelPswKeyGen.toFront();
+				panelPswKeyGen.unforceLentgh(16);
 			}
 		});
 		
@@ -1364,6 +1365,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				resizeMainFrameDefaults();
 			}
 			public void componentMoved(ComponentEvent e) {
+				resizeMainFrameDefaults();
 			}
 			public void componentHidden(ComponentEvent e) {
 			}

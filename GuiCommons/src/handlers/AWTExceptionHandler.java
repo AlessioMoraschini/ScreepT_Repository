@@ -120,6 +120,7 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 				
 				// IF not kill then return back, Else call the parametricRun with current exception
 				if (options[0].equals(res)) {
+					logger.error("AWT UNHANDLED EXCEPTION DETECTED: ", t);
 					doAfterError.parametricRun(t);
 				}
 	

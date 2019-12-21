@@ -10,6 +10,8 @@ import shortcuts.ICommonShortcuts;
 
 public interface ITabbedEditorOwner {
 	
+	public void resyncAddedPanelLight();
+	
 	/**
 	* Method to call after file load
 	*/

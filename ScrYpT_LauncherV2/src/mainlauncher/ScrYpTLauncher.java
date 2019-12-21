@@ -61,6 +61,8 @@ public class ScrYpTLauncher {
 	public static final String BATCH_LAUNCHER_NAME = "LauncherBatch.bat";
 	public static final String BASH_LAUNCHER_NAME = "LauncherBash.sh";
 	
+	public static String initPath = new OSinfo().isWindows() ? BATCH_LAUNCHER_NAME : BASH_LAUNCHER_NAME;
+	
 	public static String DEFAULT_INI_PATH; 
 	public static String APPLICATION_DIR;
 	
@@ -204,11 +206,9 @@ public class ScrYpTLauncher {
 		if(!JvmHelper.warningJVM && criticalDependenciesOK && (iniFileManager.hideNStartDirect || ARGS.length != 0)) {
 			loaderGraphics.update("Ready", 600);
 			appLogEnd();
+			
 			launchCommands();
-			try {
-				Thread.sleep(400);
-			} catch (InterruptedException e1) {
-			}
+			
 			System.exit(0);
 		}
 		
@@ -282,6 +282,14 @@ public class ScrYpTLauncher {
 		// ADD LAUNCH COMMAND WITH GIVEN ARGUMENTS FROM CONFIGURATION (parsed .ini)
 		commandsAssembler.addLaunchCommand(dto, argumentsFiles);
 		
+		try {
+			String combinedCommands = commandsAssembler.getCombinedCommandList();
+			initPath = writeInitBatShAndGetPath(combinedCommands);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		logger.info("Launch command generated:\n\n" + commandsAssembler.getCombinedCommandList() +"\n\n");
 	}
 	
@@ -305,17 +313,17 @@ public class ScrYpTLauncher {
 		
 		logger.info("Launching commands on currentOS: " + currentOS.getOsName() + currentOS.getOsArch());
 		
-		String combinedCommands = commandsAssembler.getCombinedCommandList();
-		
 		Runtime runtime = Runtime.getRuntime();
 		
 		try {
-			String initPath = writeInitBatShAndGetPath(combinedCommands);
+			try {
+				Thread.sleep(100);
+			} catch (Exception e1) {}
 			
 			// CASE WINDOWS
 			if (currentOS.isWindows()) {
 				if (iniFileManager.viewShellAfterStart) {
-					runtime.exec("cmd /c start \"\" " + initPath);
+					runtime.exec("cmd /MIN start \"\" " + initPath);
 				}else {
 					runtime.exec(initPath);
 				}

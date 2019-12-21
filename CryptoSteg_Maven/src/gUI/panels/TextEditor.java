@@ -1021,15 +1021,14 @@ public class TextEditor extends JPanel {
 			}
 		} else {
 			
-			File clipboard = new File(GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + File.separator + "MainClipboard.txt");
-			if (clipboard.exists()) {
-				// trigger tab style refresh
-				currentTabbedEditor.addTab(clipboard);
-				currentTabbedEditor.removeTab(0);
-				loadedAlmostOne = true;
-			}
-			currentTabbedEditor.mainTabList.setSelectedIndex(0);
-			
+			currentTabbedEditor.loadedTabObj.textArea.setText(" Welcome to ScrYpT's Text Editor!\n\n\n"
+					+ "This functionality is made mainly for coding use, here you can find many useful functions, and remember:"
+					+ "\n\n 1) Take a look into documentation under \"help\" submenu to know everything about ScrYpT"
+					+ "\n\n 2) Remember to hover with mouse on buttons and other interactive elements to have useful hints about functionalities"
+					+ "\n\n 3) Key shortcuts are awesome to speed-up your workflow, so ... better to learn them!"
+					+ "\n\n 4) Last but not last... Have a good time ;)");
+			currentTabbedEditor.loadedTabObj.unsaved = false;
+			currentTabbedEditor.updateSavedLabelNTab(0);
 		}
 		
 		// From now document listener will be active

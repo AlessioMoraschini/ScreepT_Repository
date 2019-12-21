@@ -621,7 +621,7 @@ public class MainGuiUtils {
 			
 			if (input==null || input.equals("") || input.length() > 20) {
 				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",
-						"UserName lenght Error", JOptionPane.WARNING_MESSAGE);
+						"UserName length Error", JOptionPane.WARNING_MESSAGE);
 				logger.error("Error in user input, redo.");
 			} else {
 				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", input);

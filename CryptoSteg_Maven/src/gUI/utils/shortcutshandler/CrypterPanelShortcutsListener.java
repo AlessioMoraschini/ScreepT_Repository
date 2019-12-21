@@ -38,13 +38,6 @@ public class CrypterPanelShortcutsListener implements KeyEventDispatcher{
 			if (isShortcutKey(e)) {
 				
 				/*
-				 * 	FIND  TEXT -> CTRL+F
-				 */
-				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentGui.openSearchPanel();
-				}
-				
-				/*
 				 *  Creept FILE -> CTRL+S
 				 */
 				if (e.getKeyCode() == 83 && !e.isAltDown() && e.isControlDown()	&& !e.isShiftDown()) {

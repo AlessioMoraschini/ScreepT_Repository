@@ -38,6 +38,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 public class VirtualFileDropPane extends BackgroundFrame {
+	private static final long serialVersionUID = -7957525665898850710L;
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(KeyDictionaryPanel.class); 
@@ -57,7 +58,7 @@ public class VirtualFileDropPane extends BackgroundFrame {
 
     // constructor
     public VirtualFileDropPane(JTree targetTree, Component targetDrop) {
-    	super(MainGUI.SCREEPT_BACKGROUND_DRAGNDROP_IMAGE, false);
+    	super(MainGUI.SCREEPT_BACKGROUND_DRAGNDROP_IMAGE, true);
     	
     	targetDropComponent = (targetDrop == null)? this : targetDrop;
     	filesTree = targetTree;

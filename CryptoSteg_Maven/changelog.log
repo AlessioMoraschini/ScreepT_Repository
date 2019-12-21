@@ -1,4 +1,6 @@
-* 2019-12-21  (HEAD -> refs/heads/master, refs/remotes/origin/master) Documentation - Added fallback opening with default browser
+* 2019-12-21  (HEAD -> refs/heads/master, refs/remotes/origin/master) BugFix - Crypter: removed fictitious error when crypting/decrypting folder with no files in a subFolder
+| 
+* 2019-12-21  Documentation - Added fallback opening with default browser
 | 
 * 2019-12-21  Added password generator, improved shuffle/hashed crypter
 | 

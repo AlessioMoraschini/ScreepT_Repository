@@ -1,6 +1,7 @@
 package frameutils.utils;
 
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
@@ -35,7 +36,9 @@ import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
@@ -704,6 +707,18 @@ public class GuiUtils {
 		int length = endOffset - startOffset;
 		
 		return txtArea.getText(startOffset, length);
+	}
+	
+	public static void setJspinnerColors(JSpinner spinner, Color foreground, Color background) {
+		JComponent editor = spinner.getEditor();
+		int n = editor.getComponentCount();
+		for (int i = 0; i < n; i++) {
+			Component c = editor.getComponent(i);
+			if (c instanceof JTextField) {
+				c.setForeground(foreground);
+				c.setBackground(background);
+			}
+		}
 	}
 	
 	/**

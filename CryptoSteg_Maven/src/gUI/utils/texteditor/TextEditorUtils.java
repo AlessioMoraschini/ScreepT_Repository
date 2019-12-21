@@ -220,8 +220,9 @@ public class TextEditorUtils {
 				return PanelType.CLIPBOARD_PANEL;
 			} 
 		}			
-		// default is map
-		return PanelType.MAP_TXTAREA;
+		
+		// default is NONE
+		return PanelType.NONE;
 	}
 	
 	public boolean checkWorkspaceExistNsel() {
