@@ -172,9 +172,9 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				}
 				
 				/**
-				 *  OPEN PSW-KEY-GEN : ALT+SHIFT+W
+				 *  OPEN PSW-KEY-GEN : ALT+SHIFT+K
 				 */
-				if (e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				if (e.getKeyCode() == 75 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmgenerateKeyPswSub().doClick();
 				}
 

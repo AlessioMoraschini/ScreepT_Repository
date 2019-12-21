@@ -1,4 +1,6 @@
-* 2019-12-20  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved Crypter and GUI + light ScreepT libs
+* 2019-12-21  (HEAD -> refs/heads/master, refs/remotes/origin/master) Added password generator, improved shuffle/hashed crypter
+| 
+* 2019-12-20  Improved Crypter and GUI + light ScreepT libs
 | 
 * 2019-12-19  Improved AES crypt, added hashed key mode with automatic recognition in decrypt-phase
 | 

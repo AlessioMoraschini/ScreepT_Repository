@@ -16,10 +16,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 
 public class HtmlPanel extends JPanel{
-	
+	private static final long serialVersionUID = -8889757473722770879L;
+
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(HtmlPanel.class);
-		
+	
 	private JPanel headerPanel;
 	public JavaFxPanelHtml jfxPanel;
 	public JScrollPane mainScrollPane;

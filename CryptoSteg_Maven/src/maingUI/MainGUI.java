@@ -1233,6 +1233,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		mntmUserDocumentation = new CustomJmenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					
 					if (tutorialPanel == null) {
 						// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
 						tutorialPanel = new TutorialFrame();
@@ -1249,8 +1250,12 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 						tutorialPanel.setState(java.awt.Frame.NORMAL);
 						tutorialPanel.requestFocus();
 					}
+					
 				} catch (Throwable ex) {
 					logger.error("Error loading HTML panel"  + TutorialFrame.class, ex);
+					File htmlTutorialFile = new File(GeneralConfig.SCRYPT_TUTORIAL_HTML_PATH);
+					dialogHelper.warn("Current Java version does not support html reader, documentation will be opened with default browser!", null);
+					SysUtils.openUrlInBrowser(htmlTutorialFile.toURI().toString());
 				}
 			}
 		});
