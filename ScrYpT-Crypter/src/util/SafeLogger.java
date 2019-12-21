@@ -88,7 +88,7 @@ public class SafeLogger {
 		if (loggerAvailable) {
 			invokeLoggerMethod("warn", message, throwable);
 		} else {
-			out.println(WARN + message + Arrays.deepToString(throwable.getStackTrace()));
+			out.println(WARN + message + throwable.getClass().getName() + Arrays.deepToString(throwable.getStackTrace()));
 		}
 	}
 
@@ -104,7 +104,7 @@ public class SafeLogger {
 		if (loggerAvailable) {
 			invokeLoggerMethod("error", message, throwable);
 		} else {
-			out.println(ERROR + message + Arrays.deepToString(throwable.getStackTrace()));
+			out.println(ERROR + message + throwable.getClass().getName() + Arrays.deepToString(throwable.getStackTrace()));
 		}
 	}
 

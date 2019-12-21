@@ -200,7 +200,7 @@ public class ScreeptManager {
 		
 		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMinFork(false);
 		progUpdater.getPb().setValue(0);
-		progUpdater.getLabel().setText("Starting ecnryption...");
+		progUpdater.getLabel().setText("Starting encryption...");
 
 		wellDone = true;
 		
@@ -1159,8 +1159,7 @@ public class ScreeptManager {
 
 	public void setShuffleResult(boolean shuffleResult) {
 		this.shuffleResult = shuffleResult;
-		logger.info("Setting ShuffleMode Option (AKA ultra secure mode: if true values will be sorted before crypt and after decrypt. !ONLY WITH STEG/COMPLETE MODES!)"
-				+ " \n => ShuffleMode is "+this.shuffleResult);
+		logger.info("Manually Setting ShuffleMode (Coding only - Decoding it will be read from second bit) to: " + this.shuffleResult);
 	}
 
 	public boolean isLoggerEnabled() {

@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
+import util.SafeLogger;
 import util.ScreeptUtils;
 import utils.TestUtils;
 
@@ -22,14 +23,15 @@ public class ScreepT_Test_New_StandAlone {
 	private final String TEMP_DIR = "temp/";
 	
 	private final static boolean enableAdvices = true;
-	private final static boolean SHUFFLE_MODE = true;
-	private final static boolean hashed = true;
+	private final static boolean SHUFFLE_MODE = false;
+	private final static boolean hashed = false;
 	
 	// KEY INITIALIZATION
 	private final char[] AES_KEY = "ciaosonoalessio".toCharArray();
 	private File keyIMG = new File("TEST_FILES/PROVA_1.png");
 	
 	// SOURCE FILE - COMMON FOR ALL ENCRIPTION TESTS
+//	private File srcFile = new File("TEST_FILES/TestFolder");
 	private File srcFile = new File("TEST_FILES/Source_medium.txt");
 	
 	// ONLY AES CODED SOURCE (decript test)
@@ -54,17 +56,21 @@ public class ScreepT_Test_New_StandAlone {
 	public void testOnlyAEScrypt() throws Exception{
 		
 		try {
+			File resultDir = new File(TEMP_DIR);
+
+			ScreeptUtils.deleteDirContentRecursive(resultDir, new SafeLogger(this.getClass()));
+			
 			screepTManagerFof = new ScreeptManagerFileOrFolder(null, null, SHUFFLE_MODE);
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
 			screepTManagerFof.setHashed(hashed);
 			
-			File resultDir =new File(TEMP_DIR);
 			
 //			assertTrue(screepTManagerFof.screepTManager.getMode().equals(CryptoMode.ONLY_AES));
 			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_AES, srcFile, resultDir, AES_KEY, null, SHUFFLE_MODE));
 			
 			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
+			ScreeptUtils.deleteDirContentInclRoot(codedFileAES, new SafeLogger(this.getClass()));
 			for(File result : resultDir.listFiles()) {
 				File out = codedFileAES;
 // 			remove comment to overwrite result

@@ -142,9 +142,11 @@ public class AesCipher {
 		// STORE MODE INFO into first 2 bits of IV : {IV_BIT(0)= [hashed] ; IV_BIT(1)= [shuffle]}
 		// Save in the first bit information about hashed (0) or not hashed(1)
 		iv[0] = BitWorker.setBitAtPosition(iv[0], 0, hashed);
+//		System.out.println("hashed: " + hashed);
 		
 		// Use the second bit to store information about shuffle mode on(1)/off(0)
 		iv[0] = BitWorker.setBitAtPosition(iv[0], 1, shuffleResult);
+//		System.out.println("shuffleResult: " + shuffleResult);
 		
 		ivParameterSpec = new IvParameterSpec(iv);
 		
@@ -220,7 +222,10 @@ public class AesCipher {
 	    
 	    // { HASHED = [IV_BIT(0)] ; SHUFFLE = [IV_BIT(1)] }
 	    boolean hashed = BitWorker.getBitAtPosition(iv[0], 0);
+//	    System.out.println("hashed: " + hashed);
+	    
 	    boolean shuffledResult = BitWorker.getBitAtPosition(iv[0], 1);
+//	    System.out.println("shuffledResult: " + shuffledResult);
 	    
 	    if(shuffledResult) {
 			encrypted = shuffle(iv, encrypted);

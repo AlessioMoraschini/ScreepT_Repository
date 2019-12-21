@@ -70,6 +70,8 @@ public class ScreeptManagerFileOrFolder {
 		
 		if (this.generalProgress != null) {
 			this.generalProgress.getDialog().setVisible(true);
+		} else {
+			this.generalProgress = new UpdateProgressPanelMinFork(true);
 		}
 		
 		this.shuffle = shuffle;
@@ -393,7 +395,9 @@ public class ScreeptManagerFileOrFolder {
 	}
 
 	private boolean cryptDir(File src, File destinationDir) throws IOException {
-		boolean resultOK = false;
+		
+		// set initially to true to avoid having KO when no file is contained in directory - BUGfix
+		boolean resultOK = true;
 
 		if (src.isFile()) {
 
@@ -402,7 +406,7 @@ public class ScreeptManagerFileOrFolder {
 		} else if (src.isDirectory()) {
 			// check that destination is not contained in source to avoid loop
 			if(ScreeptUtils.checkIfContainedInDir(destinationDir, src, logger)) {
-				throw new IOException();
+				throw new IOException("Destination directory cannot be inside source directory, to avoid infinite loop");
 			}
 			
 			// create new folder in destination
@@ -430,6 +434,7 @@ public class ScreeptManagerFileOrFolder {
 ///////////////////////////////////////////////////////// DECRYPT METHODS /////////////////////////////////////////////////////////
 	private boolean deCryptCurrentFile(File src, File destinationDir) throws IOException {
 		boolean resultOK = false;
+		
 		if (destinationDir != null) {
 
 			if (!destinationDir.exists()) {
@@ -444,7 +449,9 @@ public class ScreeptManagerFileOrFolder {
 	}
 
 	private boolean deCryptDirAES(File src, File destinationDir) throws IOException {
-		boolean resultOK = false;
+		
+		// set initially to true to avoid having KO when no file is contained in directory - BUGfix
+		boolean resultOK = true;
 
 		if (src.isFile()) {
 
@@ -453,7 +460,7 @@ public class ScreeptManagerFileOrFolder {
 		} else if (src.isDirectory()) {
 			// check that destination is not contained in source to avoid loop
 			if(ScreeptUtils.checkIfContainedInDir(destinationDir, src, logger)) {
-				throw new IOException();
+				throw new IOException("Destination directory cannot be inside source directory, to avoid infinite loop");
 			}
 			
 			// create new folder in destination
@@ -486,12 +493,14 @@ public class ScreeptManagerFileOrFolder {
 	// use this to recognize folder containing STEG/COMPLETE folders that contains
 	// result instead of generic folder
 	private boolean deCryptDirSTEG(File src, File destinationDir) throws IOException {
-		boolean resultOK = false;
+		
+		// set initially to true to avoid having KO when no file is contained in directory - BUGfix
+		boolean resultOK = true;
 
 		if (src.isDirectory()) {
 			// check that destination is not contained in source to avoid loop
 			if(ScreeptUtils.checkIfContainedInDir(destinationDir, src, logger)) {
-				throw new IOException();
+				throw new IOException("Destination directory cannot be inside source directory, to avoid infinite loop");
 			}
 			
 			// create new folder in destination

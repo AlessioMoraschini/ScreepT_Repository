@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class ScreeptUtils {
 
@@ -130,5 +131,59 @@ public class ScreeptUtils {
 			logger.error("Cannot check if file is contained in directory", e);
 		}
 	    return areRelated;
+	}
+	
+	/**
+	 * get number of files in a given folder and inside its sub-directories recursively, counting folders if countDirectories is true
+	 * @param directory the root directory to search in
+	 * @return
+	 */
+	public static int countFilesInDirectory(File directory, boolean countDirectories) {
+		int count = 0;
+		
+		try {
+			for (File file : directory.listFiles()) {
+				if (file.isFile()) {
+					count++;
+				}
+				if (file.isDirectory()) {
+					if (countDirectories) {
+						count++;
+					}
+					count += countFilesInDirectory(file, countDirectories);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	  
+	  return count;
+	}
+
+	/**
+	 * get number of files in a given folder and inside its sub-directories recursively, counting folders if countDirectories is true
+	 * @param directory the root directory to search in
+	 * @param extensionsToCount these extension will be counted when a match is found
+	 * @return
+	 */
+	public static int countFilesInDirectory(File directory, boolean countDirectories, ArrayList<String> extensionsToCount) {
+		int count = 0;
+		for (File file : directory.listFiles()) {
+			if (file.isFile()){
+				String name = file.getName().toLowerCase().trim();
+				for(String acceptedExtension : extensionsToCount) {
+					if(name.endsWith(acceptedExtension.toLowerCase())) {
+						count++;
+					}
+				}
+			}
+			if (file.isDirectory()) {
+				if(countDirectories) {
+					count++;
+				}
+				count += countFilesInDirectory(file, countDirectories);
+			}
+		}
+		return count;
 	}
 }

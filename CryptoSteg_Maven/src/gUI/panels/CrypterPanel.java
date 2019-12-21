@@ -1523,15 +1523,13 @@ public class CrypterPanel extends JPanel {
 			public void run() {
 				Dimension med = new Dimension(currSize.width - 50, currSize.height - 125);
 				Dimension high = new Dimension(currSize.width - 45, currSize.height - 120);
-				Dimension max = new Dimension(currSize.width - 10, currSize.height);
 				
 				getPanelMainContainer().setPreferredSize(med);
 				getPanelMainContainer().setMaximumSize(high);
 				if (high.getWidth() > getPanelMainContainer().getMinimumSize().width) {
 					if (high.getHeight() > getPanelMainContainer().getMinimumSize().height) {
 						panelMainContainer.setPreferredSize(high);
-						panelMainContainer.setMaximumSize(max);
-						mainSplitTextAreaRight.setMaximumSize(max);
+						panelMainContainer.setMaximumSize(high);
 					}
 				}
 				

@@ -700,24 +700,51 @@ public class FileStuff {
 	}
 	
 	/**
-	 * get number of files and directories in a given folder, including subdirectories if countDirAsOne is true
+	 * get number of files in a given folder and inside its sub-directories recursively, counting folders if countDirectories is true
 	 * @param directory the root directory to search in
 	 * @return
 	 */
-	public static int countFilesInDirectory(File directory, boolean countDirAsOne) {
+	public static int countFilesInDirectory(File directory, boolean countDirectories) {
 	  int count = 0;
 	  for (File file : directory.listFiles()) {
 	      if (file.isFile()) {
 	          count++;
 	      }
 	      if (file.isDirectory()) {
-	    	  if(countDirAsOne) {
+	    	  if(countDirectories) {
 	    		  count++;
 	    	  }
-	          count += countFilesInDirectory(file, countDirAsOne);
+	          count += countFilesInDirectory(file, countDirectories);
 	      }
 	  }
 	  return count;
+	}
+
+	/**
+	 * get number of files in a given folder and inside its sub-directories recursively, counting folders if countDirectories is true
+	 * @param directory the root directory to search in
+	 * @param extensionsToCount these extension will be counted when a match is found
+	 * @return
+	 */
+	public static int countFilesInDirectory(File directory, boolean countDirectories, ArrayList<String> extensionsToCount) {
+		int count = 0;
+		for (File file : directory.listFiles()) {
+			if (file.isFile()){
+				String name = file.getName().toLowerCase().trim();
+				for(String acceptedExtension : extensionsToCount) {
+					if(name.endsWith(acceptedExtension.toLowerCase())) {
+						count++;
+					}
+				}
+			}
+			if (file.isDirectory()) {
+				if(countDirectories) {
+					count++;
+				}
+				count += countFilesInDirectory(file, countDirectories);
+			}
+		}
+		return count;
 	}
 	
 	/**

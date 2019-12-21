@@ -292,6 +292,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					MainGUI.mainAPP.resizeMainFrameDefaults();
 			    }
 			});
+			
 			// MAIN WINDOW CLOSE LISTENER
 			frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
@@ -323,7 +324,6 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					}else {
 						GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 					}
-					
 				}
 			});
 
@@ -959,7 +959,6 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelPswKeyGen = new GeneratePasswordFrame(getMainFrame());
 					panelPswKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelPswKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
 				}else {
 					try {
 						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
@@ -971,6 +970,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					}
 				}
 				GuiUtils.centerComponent(panelPswKeyGen, 650, 110);
+				panelPswKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
 				panelPswKeyGen.toFront();
 			}
 		});
