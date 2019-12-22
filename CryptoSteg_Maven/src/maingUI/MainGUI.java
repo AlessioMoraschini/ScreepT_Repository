@@ -1200,7 +1200,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelChangeLog = new ChangeLogFrame(GeneralConfig.CHANGE_LOG_FILE);
 					panelChangeLog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					GuiUtils.centerComponent(panelChangeLog, 700, 500);
+					GuiUtils.centerComponent(panelChangeLog, 950, 600);
 					panelChangeLog.setResizable(true);
 					panelChangeLog.setVisible(true);
 					panelChangeLog.setTitle("ChangeLog - "+GeneralConfig.APPLICATION_NAME);

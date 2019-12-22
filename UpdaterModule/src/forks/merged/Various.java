@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -310,6 +311,10 @@ public class Various {
 		out.println("copyDirectoryContents -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	}
 	
+	public static void moveDirectory(File directoryToMove, File destination, StandardCopyOption copyOption) throws IOException {
+		Files.move(directoryToMove.toPath(), destination.toPath(), copyOption);
+	}
+
 	/**JFRAME - only directories src
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */

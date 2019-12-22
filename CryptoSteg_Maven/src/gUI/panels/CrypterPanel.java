@@ -101,9 +101,9 @@ public class CrypterPanel extends JPanel {
 	private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd @ HH-mm-ss");
 	
 	private static final Dimension screenSize = GuiUtils.getScreenSize();
-	private static final Dimension screenSizeLess = new Dimension(screenSize.width - 10, screenSize.height - 10);
-	private static final Dimension maxBodySize = new Dimension(screenSize.width - 25, screenSize.height - 60);
-	private static final Dimension maxSplitPaneSize = new Dimension(screenSize.width - 25, screenSize.height - 210);
+	private static final Dimension screenSizeLess = new Dimension(screenSize.width - 5, screenSize.height - 10);
+	private static final Dimension maxBodySize = new Dimension(screenSize.width - 5, screenSize.height - 40);
+	private static final Dimension maxSplitPaneSize = new Dimension(screenSize.width - 5, screenSize.height - 170);
 	
 ///////////////////////////////////////////////
 		//  GUI-RELATED-OBJECTS   //
@@ -233,6 +233,7 @@ public class CrypterPanel extends JPanel {
 	int leftVerticalDivHeight;
 	int leftWidth = 400;
 	int rightWidth = 480;
+	int rightWidthMin = 465;
 	
 	public CrypterPanelShortcutsListener shortcutsListener;
 
@@ -258,8 +259,10 @@ public class CrypterPanel extends JPanel {
 		// set the background of the entire panel
 		setBackground(SystemColor.desktop);
 		
+		setBorder(BorderFactory.createEmptyBorder());
+		
 		// start with layout & header
-		setLayout(new MigLayout("", "[1024px,grow]", "[711px,grow]"));
+		setLayout(new MigLayout("fill, insets 0", "[1024px,grow]", "[711px,grow]"));
 		
 		panelMainContainer = new JPanel();
 		panelMainContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -277,10 +280,10 @@ public class CrypterPanel extends JPanel {
 		
 		panelHeader = new JPanel();
 		panelHeader.setMinimumSize(new Dimension(10, 40));
-		panelHeader.setMaximumSize(new Dimension(screenSizeLess.width, 45));
+		panelHeader.setMaximumSize(new Dimension(screenSize.width, 45));
 		panelHeader.setForeground(SystemColor.menu);
-		panelHeader.setBorder(new LineBorder(new Color(128, 128, 128)));
-		panelHeader.setBackground(new Color(51, 51, 51));
+		panelHeader.setBorder(BorderFactory.createEmptyBorder());
+		panelHeader.setBackground(new Color(10,10,10));
 		panelMainContainer.add(panelHeader, "cell 0 0 5 1,grow");
 		panelHeader.setLayout(new MigLayout("fill,insets 0",
 				"[85px:n][][100px][][100px:150px,grow][110px][130px][10px]",
@@ -348,7 +351,7 @@ public class CrypterPanel extends JPanel {
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 14));
 		
 		panelStatus = new JPanel();
-		panelStatus.setMaximumSize(new Dimension(screenSize.width-22, 30));
+		panelStatus.setMaximumSize(new Dimension(screenSize.width, 30));
 		panelStatus.setPreferredSize(new Dimension(10, 20));
 		panelStatus.setBorder(new LineBorder(new Color(105, 105, 105), 2));
 		panelStatus.setBackground(new Color(112, 128, 144));
@@ -474,7 +477,7 @@ public class CrypterPanel extends JPanel {
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);	
 		
 		leftSplitTopPanel = new JPanel();
-		leftSplitTopPanel.setBackground(Color.black);
+		leftSplitTopPanel.setBackground(new Color(40, 40, 40));
 		leftSplitTopPanel.setLayout(new MigLayout(
 				"fill,insets 0",
 				"[grow][100px][100px][100px][grow]",
@@ -521,7 +524,7 @@ public class CrypterPanel extends JPanel {
 				tree.setVisibleRowCount(10);
 				// set custom graphic renderer to jtree
 				// tree.setCellRenderer(new TreeCellRendererDark());
-				tree.setBackground(Color.GRAY);
+				tree.setBackground(new Color(80,80,80));
 				tree.putClientProperty("Nimbus.Overrides", paneDefaults);
 				tree.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
 				scrollPaneTree.setViewportView(tree);
@@ -613,6 +616,7 @@ public class CrypterPanel extends JPanel {
 		final int max = mainApplication.getMainFrame().getWidth();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				rightWidth = (rightWidth < rightWidthMin) ? rightWidthMin : rightWidth;
 				mainSplitTextAreaRight.setDividerLocation(max - rightWidth);
 				refreshRightSplitSize();
 			}
@@ -1051,7 +1055,7 @@ public class CrypterPanel extends JPanel {
 		textAreaLog.setRequestFocusEnabled(false);
 		textAreaLog.setLineWrap(true);
 		textAreaLog.setEditable(false);
-		textAreaLog.setBackground(new Color(30,30,30));
+		textAreaLog.setBackground(new Color(20,20,20));
 		textAreaLog.setForeground(new Color(210,210,210));
 		scrollPaneLog.setViewportView(textAreaLog);
 		textAreaLog.setMargin(new Insets(10, 10, 10, 10));
@@ -1086,7 +1090,7 @@ public class CrypterPanel extends JPanel {
 		
 		textAreaMain = new JTextArea();
 		textAreaMain.setWrapStyleWord(true);
-		textAreaMain.setBackground(new Color(10,10,10));
+		textAreaMain.setBackground(new Color(30,30,30));
 		textAreaMain.setForeground(new Color(230,230,230));
 		textAreaMain.setRequestFocusEnabled(true);
 		textAreaMain.setEditable(true);
@@ -1195,7 +1199,7 @@ public class CrypterPanel extends JPanel {
 		
 		// initialize tree 
 		scrollPaneTree = new JScrollPane();
-		scrollPaneTree.setBackground(Color.DARK_GRAY);
+		scrollPaneTree.setBackground(new Color(80,80,80));
 		scrollPaneTree.setBorder(new LineBorder(new Color(153, 153, 153)));
 		leftSplitTopPanel.add(scrollPaneTree, "cell 0 1 5 1,grow");
 		
@@ -1540,8 +1544,8 @@ public class CrypterPanel extends JPanel {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				Dimension med = new Dimension(currSize.width - 50, currSize.height - 125);
-				Dimension high = new Dimension(currSize.width - 45, currSize.height - 120);
+				Dimension med = new Dimension(currSize.width - 50, currSize.height - 115);
+				Dimension high = new Dimension(currSize.width - 45, currSize.height - 110);
 				
 				getPanelMainContainer().setPreferredSize(med);
 				getPanelMainContainer().setMaximumSize(high);

@@ -17,6 +17,7 @@ import updater.HashingFunction;
 public class MainStandAloneUpdater {
 
 	public static final String resourcesMappingDefPath = "resourcesFilePathsMappings.properties";
+	private static final String ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
 	
 	public static final HashingFunction downloadsHashFunc = HashingFunction.MD5;
 	/**
@@ -26,7 +27,6 @@ public class MainStandAloneUpdater {
 	public static void main(String[] args) {
 		
 		PropertiesManagerFork resourcesFilePathsMappings = new PropertiesManagerFork(resourcesMappingDefPath);
-		String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_Scrypt/");  
 		String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
 		
 		File currentDir = new File(System.getProperty("user.dir"));
@@ -81,8 +81,11 @@ public class MainStandAloneUpdater {
 			
 			final String mainApplicationLauncher = "ScrYpT_Launcher.jar";
 			
-			// main external folder -> application -> Resources_Scrypt
-			File mainDirectory = new File(RESOURCES_DIR).getAbsoluteFile().getParentFile().getParentFile();
+			// ScrYpTVx.x/application/
+			File generalApplicationFolder = new File("").getAbsoluteFile();
+			// ScrYpTVx.x/
+			File mainRootDirectory = generalApplicationFolder.getParentFile();
+			
 			UpdateProgressPanelMin updateProgressMonitor = null;
 			try {
 				
@@ -102,7 +105,7 @@ public class MainStandAloneUpdater {
 						File destBackupDir = Various.directoRead(null, "Select backup destination, or press cancel to continue update procedure without backup", new File(System.getProperty("user.home")));
 						if (destBackupDir != null) {
 							destBackupDir = Various.renameJavaObjFile(destBackupDir);
-							Various.copyDirectoryContents(mainDirectory, destBackupDir);
+							Various.copyDirectoryContents(mainRootDirectory, destBackupDir);
 						} 
 					}
 					updateProgressMonitor = new UpdateProgressPanelMin(true); 
@@ -112,11 +115,23 @@ public class MainStandAloneUpdater {
 					
 					// replace existing files matching with updates (don't touch user personal files)
 					System.out.print("Copying content of " + updatesFolder + " into ");
-					File generalApplicationFolder = new File("").getAbsoluteFile();
+					
 					System.out.println(generalApplicationFolder.getAbsolutePath());
 					Various.copyDirectoryContents(updatesFolder, generalApplicationFolder);
 					
-					updateProgressMonitor.update(70, "Updating configuration...", true);
+					// Check if there is Root files update to copy one level up
+					File rootDirUpdates = new File(ROOT_FILES_UPDATES_DIR);
+					if(rootDirUpdates.exists()) {
+						try {
+							updateProgressMonitor.update(70, "Updating licenses and launcher...", true);
+							Various.copyDirectoryContents(rootDirUpdates, mainRootDirectory);
+							Various.deleteDirContentInclRoot(rootDirUpdates);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					
+					updateProgressMonitor.update(85, "Updating configuration...", true);
 					updateProgressMonitor.update(100, "Updating configuration...", false);
 					
 					// update main application reference in .ini settings for launcher

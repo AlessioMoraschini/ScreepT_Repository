@@ -68,8 +68,7 @@ public class MainGuiUtils {
 							// If found ask to user what to do
 							Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 							boolean downloadUpdates = dialogHelper.yesOrNo(
-									"New version [" + newVersion
-											+ "] found, do you want to download and install it? (selecting 'no' will cancel all pending updates)",
+									"New version [" + newVersion + "] found, do you want to download and install it?",
 									"Update found: " + newVersion);
 							if (downloadUpdates) {
 								try {

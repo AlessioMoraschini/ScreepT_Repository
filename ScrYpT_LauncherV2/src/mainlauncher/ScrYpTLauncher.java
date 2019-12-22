@@ -323,9 +323,10 @@ public class ScrYpTLauncher {
 			// CASE WINDOWS
 			if (currentOS.isWindows()) {
 				if (iniFileManager.viewShellAfterStart) {
-					runtime.exec("cmd /MIN start \"\" " + initPath);
+					runtime.exec("cmd /c start /min \"ScrYpT-Shell\" \"" + initPath + "\"");
 				}else {
-					runtime.exec(initPath);
+					runtime.exec("cmd /c start /b \"ScrYpT-Shell\" \"" + initPath + "\"");
+//					runtime.exec("cmd /c call \"" + initPath + "\"");
 				}
 			
 			}else {
@@ -414,6 +415,19 @@ public class ScrYpTLauncher {
 				
 				installedPluginProperties.removeProperty(installedPluginPendingDeleteListKey);
 
+				// delete updater.jar if present in application directory
+				File oldUpdater = new File("updater.jar");
+				if(oldUpdater.exists()) {
+					try {
+						logger.info("Found old updater.jar: it will be deleted now...");
+						oldUpdater.delete();
+						logger.info("updater.jar -> deleted succesfully.");
+						
+					} catch (Exception e) {
+						logger.error("Cannot delete old updater.jar file");
+					}
+				}
+				
 				try {
 					FileUtils.deleteDirContentRecursive(new File(GeneralConfig.PLUGINS_DIR));
 					logger.info("PLUGINS folder cleaned");

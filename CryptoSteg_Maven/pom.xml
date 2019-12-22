@@ -475,9 +475,8 @@
 						<filtering>false</filtering>
 				        <directory>./</directory>
     					<includes>
+    						<include>ROOT_DIR_APP_FILES/**</include>
     						<include>Resources_Scrypt/**</include>
-    						<include>Resources_Scrypt/*</include>
-    						<include>Resources_Scrypt/**/*</include>
     						<include>Resources_Scrypt/Backup/**/*.ini</include>
     						<include>changelog.log</include>
 					    </includes>
@@ -513,6 +512,7 @@
 			    </resources>     
             </configuration>            
           </execution>
+          
           
       <!-- (C-7) UPDATES - ROOT files outside .zip -->
           <execution>
