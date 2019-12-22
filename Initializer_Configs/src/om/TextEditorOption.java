@@ -17,6 +17,7 @@ public class TextEditorOption {
 	INItializer parentConfig;
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
+	public static final boolean DEF_firstTimeOpened = true;
 	public static final int DEFAULT_MARGIN = 18;
 	public static final int DEFAULT_VOICE_RATE = 3;
 	public static final boolean DEFAULT_TAB_INLINE = true;
@@ -80,6 +81,7 @@ public class TextEditorOption {
 	public static final String DEF_prefDictspellChecker = GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
 	
 	// FIELDS	
+	public boolean firstTimeOpened;
 	public boolean headerVisible;
 	public boolean subHeaderVisible;
 	public boolean footerVisible;
@@ -151,6 +153,7 @@ public class TextEditorOption {
 		DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
 		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
 		
+		firstTimeOpened = DEF_firstTimeOpened;
 		uppercase_hash = DEF_uppercase_hash;
 		prefix_hash = DEF_prefix_hash;
 		
@@ -778,6 +781,14 @@ public class TextEditorOption {
 
 	public void setLastOpenedFiles(LimitedConcurrentList<FileNamed> lastOpenedFiles) {
 		this.lastOpenedFiles = lastOpenedFiles;
+	}
+
+	public boolean isFirstTimeOpened() {
+		return firstTimeOpened;
+	}
+
+	public void setFirstTimeOpened(boolean firstTimeOpened) {
+		this.firstTimeOpened = firstTimeOpened;
 	}
 	
 }

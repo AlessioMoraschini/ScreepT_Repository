@@ -14,6 +14,7 @@ import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
+import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
@@ -63,7 +64,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import java.awt.Dimension;
 
-public class ChargeIniLog extends JPanel{
+public class ChargeIniLog extends ModulePanel {
 	private static final long serialVersionUID = 5166978306767024195L;
 
 	// INItializer logger creation		

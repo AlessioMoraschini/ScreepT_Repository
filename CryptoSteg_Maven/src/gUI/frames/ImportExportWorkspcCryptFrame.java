@@ -15,85 +15,95 @@ import java.io.File;
 
 import javax.swing.border.LineBorder;
 
-import crypt.manager.CryptoMode;
-import crypt.manager.ScreeptManagerFileOrFolder;
+import amfileutils.om.FileNamed;
 
-import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 
 public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	private static final long serialVersionUID = -8119237171970529701L;
 	
-	private TextEditorOption txtOptions;
-	private TextEditor txtEditor;
+	protected TextEditorOption txtOptions;
+	protected TextEditor txtEditor;
 	
-	private static int WIDTH = 700;
-	private static int HEIGHT = 120;
-	private JComboBox<CryptoMode> comboBox;
-	private JRadioButton rdbtnUseTempFolderOnDesktop;
-	private JButton btnImport;
-	private JButton btnExport;
-	private JButton btnCancel;
+	protected static int WIDTH = 700;
+	protected static int HEIGHT = 120;
+	protected JButton btnImport;
+	protected JButton btnExport;
 	
-	private ScreeptManagerFileOrFolder screeptManager;
+	protected JLabel lblSelectedForExport;
+	protected JComboBox<FileNamed> comboBoxExport;
+	private JButton btnSelect;
+	private JLabel lblNewLabel;
 
+	/**
+	 * Text editor option and texteditor are nullable
+	 * @param txtOptions
+	 * @param textEditor
+	 */
 	public ImportExportWorkspcCryptFrame(TextEditorOption txtOptions, TextEditor textEditor) {
 		super();
 		getContentPane().setBackground(Color.DARK_GRAY);
 		
 		GuiUtils.centerComponent(this, WIDTH, HEIGHT);
-		setUndecorated(true);
 		
 		logger.info("Opening frame: " + getClass().getName());
 		
 		this.txtEditor = textEditor;
 		this.txtOptions = (txtOptions != null) ? txtOptions : new TextEditorOption();
 		
-		getContentPane().setLayout(new MigLayout("", "[::60px,grow][100px:n:25%,grow][grow][::25%][::100px][]", "[:40px:40px,grow][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[168.00][grow][][100px][:100px:140px][]", "[:40px:40px,grow][grow][grow]"));
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.setBackground(Color.GRAY);
+		panel.setBorder(new LineBorder(Color.GRAY));
+		panel.setBackground(Color.BLACK);
 		getContentPane().add(panel, "cell 0 0 6 1,grow");
 		panel.setLayout(new MigLayout("", "[579px,grow]", "[40px]"));
 		
 		JLabel lblImportexportCryptedWorkspace = new JLabel("Import/Export crypted workspace");
 		lblImportexportCryptedWorkspace.setForeground(Color.WHITE);
-		lblImportexportCryptedWorkspace.setFont(new Font("Segoe UI Semibold", Font.BOLD, 16));
+		lblImportexportCryptedWorkspace.setFont(new Font("Segoe UI Semibold", Font.BOLD, 18));
 		panel.add(lblImportexportCryptedWorkspace, "cell 0 0,alignx center,growy");
 		
-		JLabel lblMode = new JLabel("Mode:");
+		JLabel lblMode = new JLabel("Selected for import:");
 		lblMode.setForeground(Color.WHITE);
-		lblMode.setFont(new Font("Segoe UI Semibold", Font.BOLD, 16));
-		getContentPane().add(lblMode, "cell 0 1,alignx trailing,aligny center");
+		lblMode.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		getContentPane().add(lblMode, "cell 0 1,alignx center,aligny center");
 		
-		JComboBox<CryptoMode> comboBox = new JComboBox<CryptoMode>(CryptoMode.values());
-//		comboBox = new JComboBox<CryptoMode>();
-		getContentPane().add(comboBox, "cell 1 1,growx,aligny center");
+		lblNewLabel = new JLabel("- No workspace selected to import -");
+		lblNewLabel.setForeground(Color.LIGHT_GRAY);
+		getContentPane().add(lblNewLabel, "cell 1 1 2 1,alignx center");
 		
-		rdbtnUseTempFolderOnDesktop = new JRadioButton("Use temp folder on Desktop");
-		rdbtnUseTempFolderOnDesktop.setForeground(Color.LIGHT_GRAY);
-		rdbtnUseTempFolderOnDesktop.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 15));
-		rdbtnUseTempFolderOnDesktop.setOpaque(false);
-		getContentPane().add(rdbtnUseTempFolderOnDesktop, "cell 2 1,alignx center,aligny center");
+		btnSelect = new JButton("Select new to import");
+		btnSelect.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		btnSelect.setBackground(Color.GRAY);
+		getContentPane().add(btnSelect, "cell 3 1,growx,aligny center");
 		
-		btnImport = new JButton("Import");
+		btnImport = new JButton("Import Selected");
+		btnImport.setForeground(Color.BLACK);
 		btnImport.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnImport.setBackground(new Color(119, 136, 153));
-		getContentPane().add(btnImport, "cell 3 1,growx,aligny center");
+		btnImport.setBackground(Color.LIGHT_GRAY);
+		getContentPane().add(btnImport, "cell 4 1 2 1,growx,aligny center");
 		
-		btnExport = new JButton("Export");
+		lblSelectedForExport = new JLabel("Selected for export:");
+		lblSelectedForExport.setForeground(Color.WHITE);
+		lblSelectedForExport.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		getContentPane().add(lblSelectedForExport, "cell 0 2,alignx center");
+		
+		comboBoxExport = new JComboBox<FileNamed>(txtOptions.lastSelectedWorkspaces.getList());
+		comboBoxExport.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+//		comboBoxExport = new JComboBox<FileNamed>();
+		getContentPane().add(comboBoxExport, "cell 1 2 3 1,growx,aligny center");
+		
+		btnExport = new JButton("Export Selected");
+		btnExport.setForeground(Color.BLACK);
 		btnExport.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnExport.setBackground(new Color(119, 136, 153));
-		getContentPane().add(btnExport, "cell 4 1,growx,aligny center");
-		
-		btnCancel = new JButton("Cancel");
-		btnCancel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnCancel.setBackground(new Color(250, 128, 114));
-		getContentPane().add(btnCancel, "cell 5 1,growx,aligny center");
+		btnExport.setBackground(Color.LIGHT_GRAY);
+		getContentPane().add(btnExport, "cell 4 2 2 1,growx,aligny center");
 		
 		addListeners();
+		
+		setVisible(true);
 		
 		logger.info("Frame loaded: " + getClass().getName());
 	}
@@ -103,18 +113,29 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		super.setCloseAction();
 	}
 	
-	private void addListeners() {
+	protected void addListeners() {
+		
+		btnSelect.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+
 		btnExport.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File userChoice = null;
-				
-				if(rdbtnUseTempFolderOnDesktop.isSelected()) {
-					
-				} else {
-					
-				}
+				// TODO
+			}
+		});
+
+		btnImport.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO
 			}
 		});
 	}

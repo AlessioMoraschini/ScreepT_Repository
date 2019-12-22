@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -30,6 +31,7 @@ import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import frameutils.utils.GuiUtils;
+import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
 import guistyle.GUIStyelSettings;
@@ -223,6 +225,51 @@ public class TextEditorUtils {
 		
 		// default is NONE
 		return PanelType.NONE;
+	}
+	
+	public void openCurrentFileInScreept() {
+		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+
+		CrypterPanel cipherPanel = MainGUI.mainAPP.getPanelCrypter();
+
+		// current file not saved
+		if (loadedTabObj.unsaved) {
+			String currFileName = (loadedTabObj.loadedFile != null) ? loadedTabObj.loadedFile.getName()
+					: currentTextEditor.footerPanel.lblCurrentFile.getText();
+			int choice = dialogHelper.yesNoOrCanc( currFileName + " is not saved, do you want to save it before to crypt?", null);
+			if (choice == JOptionPane.OK_OPTION) {
+				currentTextEditor.subHeaderPanel.btnSaveTextFile.doClick();
+			} else if (choice == JOptionPane.CANCEL_OPTION) {
+				return;
+			}
+		}
+
+		// current file not exists or null
+		if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
+			return;
+		}
+
+		if (cipherPanel != null) {
+			int openedFilesCrypter = cipherPanel.getPanelVDragNDropPane().getTreeNodes().length;
+			if (openedFilesCrypter != 0) {
+				String msg = "There are " + openedFilesCrypter
+						+ " loaded files in ScreepT: do you want to remove from loaded list?";
+				int choice = JOptionPane.showConfirmDialog(currentTextEditor, msg);
+				if (choice == JOptionPane.OK_OPTION) {
+					cipherPanel.getPanelVDragNDropPane().removeAll();
+				} else if (choice == JOptionPane.CANCEL_OPTION) {
+					return;
+				}
+			}
+		}
+
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				MainGUI.mainAPP.getMntmCrypter().doClick();
+				CrypterPanel cipherPanel = MainGUI.mainAPP.getPanelCrypter();
+				cipherPanel.addNewSourceFile(loadedTabObj.loadedFile);
+			}
+		});
 	}
 	
 	public boolean checkWorkspaceExistNsel() {

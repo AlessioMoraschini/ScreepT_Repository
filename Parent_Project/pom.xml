@@ -32,7 +32,7 @@
   	<!-- ######################  GENERAL BUILD OPTIONS  ##################### -->
   	
 	  	<!-- Main application version used everyWhere -->
-	  	<parent.build.version.scrypt>0.9.13</parent.build.version.scrypt>
+	  	<parent.build.version.scrypt>0.9.14</parent.build.version.scrypt>
 
 	  	<user.name>AM-Design-Development - (Alessio Moraschini)</user.name>
 	  	

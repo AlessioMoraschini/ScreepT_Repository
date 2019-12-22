@@ -24,6 +24,7 @@ import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import dialogutils.JOptionHelper;
 import enums.BufferedImageType;
+import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
 import gUI.frames.KeyGenFrame;
 import gUI.utils.shortcutshandler.CrypterPanelShortcutsListener;
@@ -89,7 +90,7 @@ import java.awt.Cursor;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
-public class CrypterPanel extends JPanel {
+public class CrypterPanel extends ModulePanel {
 	private static final long serialVersionUID = 2683201298719353959L;
 
 	static Logger logger = Logger.getLogger(CrypterPanel.class);

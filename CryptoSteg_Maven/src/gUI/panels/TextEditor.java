@@ -41,6 +41,7 @@ import org.fife.ui.rtextarea.RUndoManager;
 import amfileutils.FileStuff;
 import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
+import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGUI;
@@ -84,7 +85,7 @@ import guistyle.GUIStyelSettings;
 import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
 
-public class TextEditor extends JPanel {
+public class TextEditor extends ModulePanel {
 	private static final long serialVersionUID = 4754281928324097410L;
 
 	// TextFileWriter logger creation
@@ -262,6 +263,7 @@ public class TextEditor extends JPanel {
 		rightSplitContainer.setBackground(fileNavColorBckg);
 		rightSplitContainer.setForeground(Color.GRAY);
 		rightSplitPane = new JScrollPane(rightSplitContainer);
+		rightSplitPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		rightSplitPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		rightSplitPane.setPreferredSize(new Dimension(200, 500));
 		
@@ -1019,7 +1021,7 @@ public class TextEditor extends JPanel {
 			} catch (Exception e) {
 				logger.warn("Cannot select default file " + toOpenAtStart, e);
 			}
-		} else {
+		} else if(currentConfiguration.getTextEditorOpt().firstTimeOpened){
 			
 			currentTabbedEditor.loadedTabObj.textArea.setText(" Welcome to ScrYpT's Text Editor!\n\n\n"
 					+ "This functionality is made mainly for coding use, here you can find many useful functions, and remember:"
@@ -1029,6 +1031,9 @@ public class TextEditor extends JPanel {
 					+ "\n\n 4) Last but not last... Have a good time ;)");
 			currentTabbedEditor.loadedTabObj.unsaved = false;
 			currentTabbedEditor.updateSavedLabelNTab(0);
+			
+			currentConfiguration.getTextEditorOpt().setFirstTimeOpened(false);
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "firstTimeOpened", false);
 		}
 		
 		// From now document listener will be active

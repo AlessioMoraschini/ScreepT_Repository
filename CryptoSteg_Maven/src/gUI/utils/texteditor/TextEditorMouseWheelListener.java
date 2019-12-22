@@ -1,4 +1,4 @@
-package gUI.utils.shortcutshandler;
+package gUI.utils.texteditor;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -6,6 +6,7 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
 
 import gUI.panels.TextEditor;
+import gUI.utils.shortcutshandler.TextEditorShortcutListener;
 import resources.GeneralConfig;
 
 import tabbededitor.CustomTabbedEditor;

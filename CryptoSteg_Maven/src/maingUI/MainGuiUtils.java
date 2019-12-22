@@ -272,6 +272,8 @@ public class MainGuiUtils {
 					}
 				}
 			});
+		} else {
+			dialogHelper.info("The file file-type-opener target is not yet supported.", "File type opener not supported");
 		}
 	}
 	

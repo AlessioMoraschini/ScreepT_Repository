@@ -8,7 +8,6 @@ import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
-import gUI.utils.shortcutshandler.TextEditorMouseWheelListener;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;

@@ -18,7 +18,7 @@ public enum ScalingAlgorithm {DEFAULT(Image.SCALE_DEFAULT, "Choose an image-scal
 	
 	public static boolean isValidString(String algoName) {
 		for(ScalingAlgorithm algo : ScalingAlgorithm.values()) {
-			if(algoName.equals(algo)) {
+			if(algoName.equals(algo.toString())) {
 				return true;
 			}
 		}

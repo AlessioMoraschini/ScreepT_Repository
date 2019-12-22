@@ -59,8 +59,11 @@ public class IconsPathConfigurator {
 	public static final String ICON_KEYGEN_PSW = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/keyGenPsw.png";
 	public static final String ICON_KEY_DICT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/keyDictionary.png";
 	
-		// Various submenu
+		// TEXT editor submenu
 	public static final String ICON_TEXT_EDITOR = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/textEditor.png";
+	public static final String ICON_FOLDER_IMP_EXP = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/FolderImpExp.png";
+
+		// Various submenu
 	public static final String ICON_NET_INFO = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/network.png";
 	public static final String ICON_HW_INFO = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/hardware.png";
 	public static final String ICON_CONVERSION = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/conversion.png";
@@ -161,6 +164,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_BIG_GEN_ERROR = GeneralConfig.RESOURCES_DIR + "Icons/General/Error_Big.png";
 	public static final String ICON_CLIPBOARD_SELECTION = GeneralConfig.RESOURCES_DIR + "Icons/General/clipboardSelection.png";
 	public static final String ICON_PAINT_PALETTE = GeneralConfig.RESOURCES_DIR + "Icons/General/paintPalette.png";
+	public static final String ICON_EXCHANGE = GeneralConfig.RESOURCES_DIR + "Icons/General/Exchange.png";
 	public static final String ICON_LIGHT_ON = GeneralConfig.RESOURCES_DIR + "Icons/General/lightON.png";
 	public static final String ICON_LIGHT_OFF = GeneralConfig.RESOURCES_DIR + "Icons/General/lightOFF.png";
 	public static final String ICON_CONSOLE = GeneralConfig.RESOURCES_DIR + "Icons/General/console.png";

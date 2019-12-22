@@ -279,6 +279,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	 */
 	public void loadTxtEditorOptions() {
 		// TEXT EDITOR OPTIONS
+		textEditorOpt.setFirstTimeOpened(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "firstTimeOpened"), TextEditorOption.DEF_firstTimeOpened));
 		
 		// INI read
 		String fontStr = iniReadFile.get(TEXT_EDITOR_OPT, "font");
@@ -549,6 +550,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	
 	public void writeTxtEditOptions() {
 		// TEXT EDITOR OPTIONS
+		iniFile.put(TEXT_EDITOR_OPT, "firstTimeOpened", textEditorOpt.isFirstTimeOpened());
+		
 		iniFile.put(TEXT_EDITOR_OPT, "prefix_hash", textEditorOpt.isPrefix_hash());
 		iniFile.put(TEXT_EDITOR_OPT, "uppercase_hash", textEditorOpt.isUppercase_hash());
 		iniFile.put(TEXT_EDITOR_OPT, "inlineTabs", textEditorOpt.isInlinedTabs());
@@ -559,6 +562,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
 		iniFile.put(TEXT_EDITOR_OPT, "tabSize", textEditorOpt.tabSize);
 		iniFile.put(TEXT_EDITOR_OPT, "tabLineVisibleFlag", textEditorOpt.tabLineVisible);
+		iniFile.put(TEXT_EDITOR_OPT, "selectedFileAtStart", textEditorOpt.selectedAtStart);
 		iniFile.put(TEXT_EDITOR_OPT, "lastEscapeLanguage", textEditorOpt.lastEscapeLanguage);
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredTheme", textEditorOpt.selectedTheme);
@@ -670,6 +674,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 
 		// concat TEXT EDITOR OPTIONS
 		builder.append("\n\n ---- TEXT EDITOR -----\n\n")
+			   .append("FIRST TIME OPENING? ").append(textEditorOpt.firstTimeOpened)
 			   .append("INLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)
 			   .append("\nPREFERRED_THEME: ").append(textEditorOpt.selectedTheme)

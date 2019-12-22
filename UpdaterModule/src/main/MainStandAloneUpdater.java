@@ -99,10 +99,16 @@ public class MainStandAloneUpdater {
 				File oldJar = (oldJarName != null) ? new File(oldJarName) : null;
 				
 				if(updaterJar.exists() && updaterJar.isFile() && updatesFolder.exists() && updatesFolder.isDirectory()){
-					Integer choice = JOptionPane.showConfirmDialog(null, "ScrYpT will be updated, do you want to backup current installation before to update? (update process will not touch your personal files, but if you prefer you can backup all scrypt folder before to update)");
+					Integer choice = JOptionPane.showConfirmDialog(
+							null,
+							"ScrYpT will be updated, do you want to backup current installation before to update?"
+							+ " (update process will not touch your personal files, but if you prefer you can backup all scrypt folder before to update)");
 					if(JOptionPane.YES_OPTION == choice)
 					{
-						File destBackupDir = Various.directoRead(null, "Select backup destination, or press cancel to continue update procedure without backup", new File(System.getProperty("user.home")));
+						File destBackupDir = Various.directoRead(
+								null,
+								"Select backup destination, or press cancel to continue update procedure without backup",
+								new File(System.getProperty("user.home")));
 						if (destBackupDir != null) {
 							destBackupDir = Various.renameJavaObjFile(destBackupDir);
 							Various.copyDirectoryContents(mainRootDirectory, destBackupDir);
@@ -147,7 +153,11 @@ public class MainStandAloneUpdater {
 					
 				} else {
 					String fileData = "UpdaterJar => "+updaterJar+"; updates folder => "+updatesFolder;
-					JOptionPane.showMessageDialog(null, "Updates data or updater jar not found, exiting updated procedure."+fileData, "Updates not found", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(
+						null, 
+						"Updates data or updater jar not found, exiting updated procedure."
+						+fileData,
+						"Updates not found", JOptionPane.ERROR_MESSAGE);
 				}
 				
 				// LAUNCH ScrYpT_Launcher.jar

@@ -232,8 +232,8 @@ public class GuiUtils {
 				unsupportedAdvice = extension + " is not yet supported... maybe coming soon? ;)";
 			}
 			Sounds.playSound(SoundsConfigurator.ERROR, null);
-			logger.debug("Something has gone wrong during formatting of source code :-> skipping text replace in text area");
-			dialogHelper.warn("Cannot format with current settings\n\n"+unsupportedAdvice, "Cannot Format text");
+			logger.warn("Format not supported or an error occurred :-> skipping text replace in text area. " + unsupportedAdvice);
+			dialogHelper.warn("<html><b>Cannot format with current settings</b></br>"+unsupportedAdvice, "</html>");
 		}
 		
 		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(originalDialogDim);

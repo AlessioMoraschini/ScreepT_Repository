@@ -48,6 +48,7 @@ import gUI.frames.ChangeLogFrame;
 import gUI.frames.GeneralOptionsFrame;
 import gUI.frames.GraphicPreferencesFrame;
 import gUI.frames.ImageConverterFrame;
+import gUI.frames.ImportExportWorkspcCryptFrame;
 import gUI.frames.KeyDictionaryPanel;
 import gUI.frames.KeyGenFrame;
 import gUI.frames.TutorialFrame;
@@ -107,6 +108,7 @@ public class MainGUI extends MainGuiParent{
 	private static GraphicPreferencesFrame panelGuiOptions;
 	private static GeneralOptionsFrame panelGeneralOptions;
 	public static GeneratePasswordFrame panelPswKeyGen;
+	public static ImportExportWorkspcCryptFrame panelImportExportTxtEditor;
 	private static KeyGenFrame panelKeyGen;
 	private static KeyDictionaryPanel panelKeyDict;
 	private static ImageConverterFrame panelImgConv;
@@ -882,9 +884,6 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 			}
 		});
 		
-		
-		
-		
 		// IMMERSIVE MODE ON/OFF
 		mntmImmersiveMode = new CustomJmenuItem(new AbstractAction("Switch Immersive Mode ON/OFF (Press ESC to exit)") {
 			public void actionPerformed(ActionEvent e) {
@@ -973,6 +972,30 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				panelPswKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
 				panelPswKeyGen.toFront();
 				panelPswKeyGen.unforceLentgh(16);
+			}
+		});
+
+		// open in a new window - IMPORT/EXPORT WORKSPACE - Text Editor
+		mntmTxtEditorImpExpCryptedWkspc = new CustomJmenuItem(new AbstractAction("Import/Export crypted workspace") {
+			public void actionPerformed(ActionEvent ae) {
+				if (panelImportExportTxtEditor == null) {
+					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					panelImportExportTxtEditor = new ImportExportWorkspcCryptFrame(currentConfiguration.getTextEditorOpt(), initTxtWriter);
+					panelImportExportTxtEditor.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				}else {
+					try {
+						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+						panelImportExportTxtEditor.setState(java.awt.Frame.NORMAL);
+						panelImportExportTxtEditor.setVisible(true);
+						panelImportExportTxtEditor.requestFocus();
+					} catch (Exception e2) {
+						logger.warn("There was an error opening " + GeneratePasswordFrame.class, e2);
+					}
+				}
+				
+				GuiUtils.centerComponent(panelImportExportTxtEditor, 800, 180);
+				panelImportExportTxtEditor.setLocationRelativeTo(mainAPP.getMainFrame());
+				panelImportExportTxtEditor.toFront();
 			}
 		});
 		
@@ -1328,21 +1351,21 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		
 		// open in main frame - FILE CRYPTER
-		mntmCrypter = new CustomJmenuItem(new AbstractAction("ScreepT - Crypt and Decrypt files") {
+		mntmCrypter = new CustomJmenuItem(new AbstractAction("Open ScreepT Module - Crypt and Decrypt files") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	mainGuiUtils.startCrypterPanel(false);
 		    }
 		});
 		
 		// open in main frame - CONFIGURATION MANAGER
-		mntmInspectCurrentConfiguration = new CustomJmenuItem(new AbstractAction("Configuration Manager") {
+		mntmInspectCurrentConfiguration = new CustomJmenuItem(new AbstractAction("Open Configuration Manager Module") {
 		    public void actionPerformed(ActionEvent ae) {
 	    		mainGuiUtils.startConfigManagerPanel(false);
 		    }
 		});
 		
 		// open in main frame - TEXT EDITOR
-		mntmTextEditor = new CustomJmenuItem(new AbstractAction("Text Editor") {
+		mntmTextEditor = new CustomJmenuItem(new AbstractAction("Open Text Editor Module") {
 			public void actionPerformed(ActionEvent e) {
 				mainGuiUtils.startTextEditor(false);
 			}

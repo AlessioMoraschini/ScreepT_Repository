@@ -94,6 +94,7 @@ public class MainGuiParent {
 	JMenu mnFile;
 	JMenu mnPreferences;
 	JMenu mnCryptoSteg; 
+	JMenu mnTextEditor;
 	JMenu mnVarious;
 		JMenu mnLastOpenedFile;
 		JMenu mnLastWorkspaces;
@@ -123,6 +124,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmViewKeyDictionary;
 	static CustomJmenuItem mntmTextEditor;
 	public CustomJmenuItem mntmTxtEdHideShowTitleBlock;
+	public CustomJmenuItem mntmTxtEditorImpExpCryptedWkspc;
 	CustomJmenuItem mntmnetInfo;
 	CustomJmenuItem mntmhwInfo;
 	CustomJmenuItem mntmHashChecker;
@@ -163,9 +165,10 @@ public class MainGuiParent {
 		mnFile = new JMenu("File");
 		mnPreferences = new JMenu("Preferences");
 		mnCryptoSteg = new JMenu("ScreepT");
-		mnVarious = new JMenu("Various");
+		mnTextEditor = new JMenu("Text editor");
 			mnLastWorkspaces = new JMenu("TextEditor: Last selected workspaces");
 			mnLastOpenedFile = new JMenu("TextEditor: Last opened files");
+		mnVarious = new JMenu("Various");
 			mnConversionsAndOther = new JMenu("Conversions and Media");
 			mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnHelp = new JMenu("Help");
@@ -231,6 +234,8 @@ public class MainGuiParent {
 		mnPreferences.setMargin(menuEntryMargin);
 		menuBar.add(mnCryptoSteg);
 		mnCryptoSteg.setMargin(menuEntryMargin);
+		menuBar.add(mnTextEditor);
+		mnTextEditor.setMargin(menuEntryMargin);
 		menuBar.add(mnVarious);
 		mnVarious.setMargin(menuEntryMargin);
 		menuBar.add(mnHelp);
@@ -264,11 +269,13 @@ public class MainGuiParent {
 			mnCryptoSteg.add(mntmgenerateKeyPswSub);
 			mnCryptoSteg.add(mntmgenerateKeyImageSub);
 			mnCryptoSteg.add(mntmViewKeyDictionary);
-	
-			mnVarious.add(mntmTextEditor);
-				mnVarious.add(mnLastWorkspaces);
-				mnVarious.add(mnLastOpenedFile);
-				mnVarious.add(mntmTxtEdHideShowTitleBlock);
+			
+			mnTextEditor.add(mntmTextEditor);
+			mnTextEditor.add(mnLastWorkspaces);
+			mnTextEditor.add(mnLastOpenedFile);
+			mnTextEditor.add(mntmTxtEditorImpExpCryptedWkspc);
+			mnTextEditor.add(mntmTxtEdHideShowTitleBlock);
+				
 			mnVarious.add(new JSeparator());
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
@@ -360,6 +367,7 @@ public class MainGuiParent {
 		mnFile.setFont(menuBarFont);
 		mnPreferences.setFont(menuBarFont);
 		mnCryptoSteg.setFont(menuBarFont);
+		mnTextEditor.setFont(menuBarFont);
 		mnVarious.setFont(menuBarFont);
 		mnHelp.setFont(menuBarFont);
 		
@@ -376,8 +384,6 @@ public class MainGuiParent {
 		// FILE SECTION
 		mntmExit.setFont(menuItemFont);
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
-		mnLastWorkspaces.setFont(menuItemFont);
-		mnLastOpenedFile.setFont(menuItemFont);
 		mntmloadPrjSub.setFont(menuItemFont);
 		mntmExportPrjSub.setFont(menuItemFont);
 		mntmReloadPrjSub.setFont(menuItemFont);
@@ -396,6 +402,13 @@ public class MainGuiParent {
 		mntmgenerateKeyPswSub.setFont(menuItemFont);
 		mntmgenerateKeyImageSub.setFont(menuItemFont);
 		mntmViewKeyDictionary.setFont(menuItemFont);
+		
+		// TEXT EDITOR SECTION
+		mntmTextEditor.setFont(menuItemFont);
+		mnLastWorkspaces.setFont(menuItemFont);
+		mnLastOpenedFile.setFont(menuItemFont);
+		mntmTxtEditorImpExpCryptedWkspc.setFont(menuItemFont);
+		mntmTxtEdHideShowTitleBlock.setFont(menuItemFont);
 
 		// VARIOUS SECTION
 		mntmnetInfo.setFont(menuItemFont);
@@ -403,8 +416,6 @@ public class MainGuiParent {
 		mntmHashChecker.setFont(menuItemFont);
 		mntmColorPicker.setFont(menuItemFont);
 		mntmClipboardStandalone.setFont(menuItemFont);
-		mntmTextEditor.setFont(menuItemFont);
-		mntmTxtEdHideShowTitleBlock.setFont(menuItemFont);
 		
 		// SUB -> CONVERSION UTILS SECTION
 		mntmImageConverter.setFont(menuItemFont);
@@ -437,8 +448,6 @@ public class MainGuiParent {
 	void addMenuIcons() {
 		
 		MenuSetter.setIconTextGap(menuBar, 15);
-		mnLastOpenedFile.setIconTextGap(15);
-		mnLastWorkspaces.setIconTextGap(15);
 		
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);
@@ -446,8 +455,6 @@ public class MainGuiParent {
 		
 		// file submenu
 		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
-		mnLastWorkspaces.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
-		mnLastOpenedFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
 		mntmloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
 		mntmExportPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 		mntmReloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
@@ -468,8 +475,15 @@ public class MainGuiParent {
 		mntmgenerateKeyImageSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN));
 		mntmViewKeyDictionary.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
 		
-		// Various submenu
+		// TextEditor subMenu
 		mntmTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));
+		mnLastWorkspaces.setIconTextGap(15);
+		mnLastWorkspaces.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
+		mnLastOpenedFile.setIconTextGap(15);
+		mnLastOpenedFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
+		mntmTxtEditorImpExpCryptedWkspc.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
+		
+		// Various submenu
 		mntmnetInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NET_INFO));
 		mntmhwInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HW_INFO));
 		mntmHashChecker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HASHING));
@@ -535,9 +549,12 @@ public class MainGuiParent {
 		mntmgenerateKeyImageSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, ALT_MASK | SHIFT_MASK));
 		mntmViewKeyDictionary.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, ALT_MASK | SHIFT_MASK));
 		
-		// Various submenu
+		// Text editor sub-menu
 		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
 		mntmTxtEdHideShowTitleBlock.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_H, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		
+		
+		// Various submenu
 		mntmnetInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | SHIFT_MASK));
 		mntmhwInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, ALT_MASK | SHIFT_MASK));
 		mntmHashChecker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, ALT_MASK | SHIFT_MASK));
@@ -893,6 +910,10 @@ public class MainGuiParent {
 		return mntmTextEditor;
 	}
 	
+	public CustomJmenuItem getMntmTxtEditorImpExpCryptedWkspc() {
+		return mntmTxtEditorImpExpCryptedWkspc;
+	}
+
 	public CustomJmenuItem getMntmTxtEdHideShowTitleBlock() {
 		return mntmTxtEdHideShowTitleBlock;
 	}

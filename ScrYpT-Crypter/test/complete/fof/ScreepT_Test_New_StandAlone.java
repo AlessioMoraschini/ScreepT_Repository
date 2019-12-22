@@ -64,8 +64,6 @@ public class ScreepT_Test_New_StandAlone {
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
 			screepTManagerFof.setHashed(hashed);
 			
-			
-//			assertTrue(screepTManagerFof.screepTManager.getMode().equals(CryptoMode.ONLY_AES));
 			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_AES, srcFile, resultDir, AES_KEY, null, SHUFFLE_MODE));
 			
 			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
@@ -73,7 +71,7 @@ public class ScreepT_Test_New_StandAlone {
 			ScreeptUtils.deleteDirContentInclRoot(codedFileAES, new SafeLogger(this.getClass()));
 			for(File result : resultDir.listFiles()) {
 				File out = codedFileAES;
-// 			remove comment to overwrite result
+
 				if (out.exists()) {
 					out.delete();
 				}
@@ -87,7 +85,7 @@ public class ScreepT_Test_New_StandAlone {
 	}
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void testOnlyAESdecrypt() throws Exception{
 		
 		try {

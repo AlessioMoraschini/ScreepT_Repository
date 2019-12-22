@@ -14,9 +14,10 @@ import javax.crypto.spec.PBEKeySpec;
  * 
  * This class is useful when hashing a secured data to hide the original password, useful to avoid plain-text password backward discovery vulnerability.
  * 
- * This is also useful when you have to store securely sensitive data such as passwords
+ * This is also useful when you have to store securely sensitive data such as passwords. 
+ * Remeber that salt used, iterationsLevel and algorithm must be the same to retrieve the same value when hashing
  * 
- * Compatible only for java 1.8 and more if algorithm used is "PBKDF2WithHmacSHA512"
+ * <b>NB:</>Compatible only for java 1.8 and more if algorithm used is "PBKDF2WithHmacSHA512"
  *
  */
 public class Hasher {
@@ -34,17 +35,22 @@ public class Hasher {
 	 * 
 	 * @return the hashed result with same length as the psw length, composed by either the used random hash and the hashed result
 	 * 
-	 * NB to work you have to use same security level used when rehashing-back
-	 * NB PBKDF2SHA512 supported only for java 1.8+
+	 * <b>NB:</> In order to work correctly, you have to use same salt (you'll find it in returned hashDTO), security level and algorithm 
+	 *  that were originally used, also when rehashing-back
+	 *  
+	 * <b>NB:</> PBKDF2SHA512 supported only for java 1.8+
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
-	public static HashDTO hashPsw(char[] psw, IterationsLevel security, HashAlgorithm algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static HashDTO hashPsw(char[] psw, IterationsLevel security, HashAlgorithm algorithm)
+				throws NoSuchAlgorithmException, InvalidKeySpecException {
+		
 		byte[] salt = generateSecureRandom(16);
 		KeySpec spec = new PBEKeySpec(psw, salt, security.iterations, psw.length * 8);
 		byte[] hashed = getKeyFactory(algorithm).generateSecret(spec).getEncoded();
 		byte[] result = fillArrayFromOtherArray(hashed, psw.length);
+		
 		return new HashDTO(salt, result);
 	}
 
@@ -54,13 +60,15 @@ public class Hasher {
 	 * 
 	 * @return the hashed result with same length as the psw length, composed by either the used random hash and the hashed result
 	 * 
-	 * NB to work you have to use same security level used originally when hashing
-	 * NB PBKDF2SHA512 supported only for java 1.8+
+	 * <b>NB:</> In order to work correctly, you have to use same salt, security level and algorithm originally used also when rehashing-back
+	 * <b>NB:</> PBKDF2SHA512 supported only for java 1.8+
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
-	public static byte[] hashPswWithGivenSalt(char[] psw, byte[] salt, IterationsLevel security, HashAlgorithm algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static byte[] hashPswWithGivenSalt(char[] psw, byte[] salt, IterationsLevel security, HashAlgorithm algorithm)
+				throws NoSuchAlgorithmException, InvalidKeySpecException {
+		
 		KeySpec spec = new PBEKeySpec(psw, salt, security.iterations, psw.length * 8);
 		byte[] hashed = getKeyFactory(algorithm).generateSecret(spec).getEncoded();
 		byte[] result = fillArrayFromOtherArray(hashed, psw.length);
@@ -69,6 +77,7 @@ public class Hasher {
 	}
 	
 	private static SecretKeyFactory getKeyFactory(HashAlgorithm algoritm) throws NoSuchAlgorithmException {
+		
 		if(HashAlgorithm.PBKDF2SHA512.equals(algoritm)) {
 			secretKeyfactorySHA512 = secretKeyfactorySHA512 != null ? secretKeyfactorySHA512 : SecretKeyFactory.getInstance(algorithmSha512);
 			return secretKeyfactorySHA512;
@@ -82,6 +91,7 @@ public class Hasher {
 	 * Utility method to convert byte array to equivalent char array format. this is useful if you want to apply hashing for a byte array source
 	 */
 	public static char[] byteArrayToChar(byte[] source) {
+		
 		char[] result = new char[source.length];
 		for(int i = 0; i < source.length; i++) {
 			result[i] = (char) source[i]; 
@@ -91,9 +101,11 @@ public class Hasher {
 	}
 	
 	public static byte[] generateSecureRandom(int length) {
+		
 		SecureRandom sRand = new SecureRandom();
 		byte[] iv = new byte[length];
 		sRand.nextBytes(iv);
+		
 		return iv;
 	}
 	
@@ -105,6 +117,7 @@ public class Hasher {
 	 * @return
 	 */
 	public static byte[] fillArrayFromOtherArray(byte[] source, int outLength) {
+		
 		byte[] destination = new byte[outLength]; 
 		for(int i = 0; i < outLength; i++) {
 			int j = i % (source.length);

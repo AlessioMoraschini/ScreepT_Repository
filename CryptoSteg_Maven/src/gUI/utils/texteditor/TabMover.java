@@ -3,7 +3,6 @@ package gUI.utils.texteditor;
 import java.awt.Component;
 import java.util.Collections;
 
-import gUI.panels.TextEditor;
 import tabbededitor.CustomTabbedEditor;
 import tabbedpaneutils.TabbedDragNDropManager;
 
