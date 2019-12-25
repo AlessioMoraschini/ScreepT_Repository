@@ -113,7 +113,7 @@ public class CrypterPanel extends ModulePanel {
 		//  GUI-RELATED-OBJECTS   //
 		////////////////////////////
 	
-	private static final String unSelectedTooltip = "<b>Currently not selected</b> - Click to select for best security (only if supported for current algorithm)<br/><br/>"; 
+	private static final String unSelectedTooltip = "<b>Currently deactivated</b> - Activate to improve security (only if supported for current algorithm)<br/><br/>"; 
 
 	private static final String shuffleTooltip = 
 			"When this mode is active, an additional phase will reorder bytes based on given key values, in order to increase algorithm security and maximize entrophy diffusion. "
@@ -122,6 +122,25 @@ public class CrypterPanel extends ModulePanel {
 	private static final String hashedTooltip = 
 			"When this mode is active, the given password will be hashed to avoid original password decription even if the data is compromised. "
 			+ "<br/> <b>NB:</b> <u>When decrypting there's no need to choose the right option</u>, this will be recognized automatically from encoded file.";
+	
+	private static final String onlyAesTooltip = 
+			"<u>ONLY_AES mode</u> uses AES algorithm (128 bits) to encrypt/decrypt a copy of your data."
+			+ "<br/> To use this <u>you only have to specify a string password</u> (or generate a random new one.. just be sure to remember it). The best length is 16 charachters."
+			+ "<br/><br/> <b>NB:</b> With this mode you can choose to hash password and/or shuffle original bytes to maximize security, but with a slower process.";
+	
+	private static final String onlyStegTooltip = 
+			"<u>ONLY_STEG mode</u> uses brand new STEG algorithm to encrypt/decrypt a copy of your data. "
+			+ "<br/>To use this you only have to specify a key image with PNG extension that will be your password."
+			+ "<br/> You can load a one-use only image, generate a new random image, or either choose one from your dictionary."
+			+ "<br/> <u>Without key image you won't be able to decrypt</u> the crypted copy of your data once it's crypted: keep it in a safe place! (I suggest you to use a usb Stick)"
+			+ "<br/><br/> <b>NB:</b> With this mode you can choose to shuffle original bytes to maximize security, with a slower process, while key hashing is not supported.";
+	
+	private static final String completeModeTooltip = 
+			"<u>COMPLETE mode</u> is the maximum security mode, that combines AES 128 bits and STEG algorithm, in order to encrypt/decrypt a copy of your data. "
+			+ "<br/> To use this you have to specify both AES password and key image with PNG extension that will be the added-password."
+			+ "<br/> You can load a one-use only image, generate a new random image, or either choose one from your dictionary: be careful and keep it in a safe place."
+			+ "<br/> <u>Without key password and image you won't be able to decrypt</u> the crypted copy of your data once it's crypted! (I suggest you to use a usb Stick)"
+			+ "<br/><br/> <b>NB:</b> With this mode you can choose to hash password and/or shuffle original bytes to maximize security, but with a slower process.";
 	
 
 	// text Areas
@@ -150,6 +169,7 @@ public class CrypterPanel extends ModulePanel {
 	private JLabel lblSourceFileStatic;
 	private JLabel lblSrcFileSel;
 	private JLabel lblScreeptHeader;
+	private JLabel iconInfoMode;
 
 	// frame of parent GUI-object (main-GUI)
 	private JFrame parentFrame;
@@ -361,9 +381,9 @@ public class CrypterPanel extends ModulePanel {
 		panelStatus.setBackground(new Color(112, 128, 144));
 		panelMainContainer.add(panelStatus, "cell 0 1 5 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{90, 180, 40, 70, 140, 140, 10, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{90, 180, 40, 30, 70, 140, 140, 10, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
-		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panelStatus.setLayout(gbl_panelStatus);
 		
@@ -405,11 +425,19 @@ public class CrypterPanel extends ModulePanel {
 		gbc_chckbxShowAesKey.gridy = 0;
 		panelStatus.add(chckbxShowAesKey, gbc_chckbxShowAesKey);
 		
+		iconInfoMode = new JLabel("Mode:");
+		iconInfoMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_INFO));
+		GridBagConstraints gbc_lblInfoMode= new GridBagConstraints();
+		gbc_lblInfoMode.insets = new Insets(0, 0, 0, 5);
+		gbc_lblInfoMode.gridx = 3;
+		gbc_lblInfoMode.gridy = 0;
+		panelStatus.add(iconInfoMode, gbc_lblInfoMode);
+
 		lblSelectedModeStatic = new JLabel("Mode:");
 		lblSelectedModeStatic.setForeground(new Color(255, 239, 213));
 		GridBagConstraints gbc_lblSelectedModeStatic = new GridBagConstraints();
 		gbc_lblSelectedModeStatic.insets = new Insets(0, 0, 0, 5);
-		gbc_lblSelectedModeStatic.gridx = 3;
+		gbc_lblSelectedModeStatic.gridx = 4;
 		gbc_lblSelectedModeStatic.gridy = 0;
 		panelStatus.add(lblSelectedModeStatic, gbc_lblSelectedModeStatic);
 		lblSelectedModeStatic.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -420,7 +448,7 @@ public class CrypterPanel extends ModulePanel {
 		GridBagConstraints gbc_comboModeCrypto = new GridBagConstraints();
 		gbc_comboModeCrypto.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboModeCrypto.insets = new Insets(0, 0, 0, 5);
-		gbc_comboModeCrypto.gridx = 4;
+		gbc_comboModeCrypto.gridx = 5;
 		gbc_comboModeCrypto.gridy = 0;
 		panelStatus.add(comboModeCrypto, gbc_comboModeCrypto);
 		comboModeCrypto.setModel(new DefaultComboBoxModel<CryptoMode>(CryptoMode.values()));
@@ -437,7 +465,7 @@ public class CrypterPanel extends ModulePanel {
 		
 		GridBagConstraints gbc_chckbxShuffle = new GridBagConstraints();
 		gbc_chckbxShuffle.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxShuffle.gridx = 5;
+		gbc_chckbxShuffle.gridx = 6;
 		gbc_chckbxShuffle.gridy = 0;
 		panelStatus.add(chckbxShuffle, gbc_chckbxShuffle);
 
@@ -454,7 +482,7 @@ public class CrypterPanel extends ModulePanel {
 		
 		GridBagConstraints gbc_chckbxHashKey = new GridBagConstraints();
 		gbc_chckbxHashKey.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxHashKey.gridx = 6;
+		gbc_chckbxHashKey.gridx = 7;
 		gbc_chckbxHashKey.gridy = 0;
 		panelStatus.add(chckbxHashKey, gbc_chckbxHashKey);
 		
@@ -462,7 +490,7 @@ public class CrypterPanel extends ModulePanel {
 		labelFlagCodeReady.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_labelFlagCodeReady = new GridBagConstraints();
 		gbc_labelFlagCodeReady.fill = GridBagConstraints.VERTICAL;
-		gbc_labelFlagCodeReady.gridx = 7;
+		gbc_labelFlagCodeReady.gridx = 8;
 		gbc_labelFlagCodeReady.gridy = 0;
 		panelStatus.add(labelFlagCodeReady, gbc_labelFlagCodeReady);
 		labelFlagCodeReady.setBorder(null);
@@ -713,6 +741,8 @@ public class CrypterPanel extends ModulePanel {
 				// update configuration reference
 				currentConf.getAesOpt().setFlagAes(modality.AES);
 				currentConf.getSteganOpt().setFlagSteg(modality.STEG);
+				mode = modality;
+				updateModeInfoTooltip();
 			}
 		});
 		comboModeCrypto.setSelectedItem(CryptoMode.ONLY_AES);
@@ -1209,7 +1239,7 @@ public class CrypterPanel extends ModulePanel {
 		leftSplitTopPanel.add(btnGenerateKeyImg, "cell 2 0 1 1");
 
 		btnGenerateKeyPsw = new JButton("Psw Keygen");
-		btnGenerateKeyPsw.setToolTipText("Generate a new random password specifying length");
+		btnGenerateKeyPsw.setToolTipText("Generate a new random password with fixed length");
 		btnGenerateKeyPsw.setOpaque(false);
 		btnGenerateKeyPsw.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKeyPsw.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
@@ -1713,6 +1743,22 @@ public class CrypterPanel extends ModulePanel {
 		} else {
 			chckbxHashKey.setToolTipText(encapsulateInHtml(unSelectedTooltip + hashedTooltip));
 		}
+	}
+	
+	private void updateModeInfoTooltip() {
+		String tooltip = "No Info available";
+		
+		if (mode.equals(CryptoMode.ONLY_AES)) {
+			tooltip = encapsulateInHtml(onlyAesTooltip);
+			
+		} else if (mode.equals(CryptoMode.ONLY_STEG)) {
+			tooltip = encapsulateInHtml(onlyStegTooltip);
+			
+		} else if (mode.equals(CryptoMode.COMPLETE)){
+			tooltip = encapsulateInHtml(completeModeTooltip);
+		}
+		
+		iconInfoMode.setToolTipText(tooltip);
 	}
 	
 }

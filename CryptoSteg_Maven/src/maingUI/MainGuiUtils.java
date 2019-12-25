@@ -413,10 +413,10 @@ public class MainGuiUtils {
 						replaceMainPanel(MainGUI.panelCrypter);
 						MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
 						MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
+						refreshGUIlaf();
 					}
 				});
 				
-				refreshGUIlaf();
 				
 				resetMainAppCursor();
 			}

@@ -160,7 +160,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public void resyncAddedPanelLight() {
-		if (txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
+		if (txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA) && textEditor.currentConfiguration.getTextEditorOpt().mapViewActive) {
 			((MapTextAreaPanel) textEditor.rightSplitContainer).syncLight();
 		} 
 	}

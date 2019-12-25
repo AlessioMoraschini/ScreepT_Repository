@@ -280,7 +280,7 @@ public class ScrYpTLauncher {
 				ARGS);
 		
 		// ADD LAUNCH COMMAND WITH GIVEN ARGUMENTS FROM CONFIGURATION (parsed .ini)
-		commandsAssembler.addLaunchCommand(dto, argumentsFiles);
+		commandsAssembler.addLaunchCommand(dto, argumentsFiles, iniFileManager.viewShellAfterStart);
 		
 		try {
 			String combinedCommands = commandsAssembler.getCombinedCommandList();
@@ -325,7 +325,8 @@ public class ScrYpTLauncher {
 				if (iniFileManager.viewShellAfterStart) {
 					runtime.exec("cmd /c start /min \"ScrYpT-Shell\" \"" + initPath + "\"");
 				}else {
-					runtime.exec("cmd /c start /b \"ScrYpT-Shell\" \"" + initPath + "\"");
+					runtime.exec("cmd /c \"start /b " + initPath + "\"");
+//					runtime.exec("cmd /K start /b \"ScrYpT-Shell\" \"" + initPath + "\"");
 //					runtime.exec("cmd /c call \"" + initPath + "\"");
 				}
 			

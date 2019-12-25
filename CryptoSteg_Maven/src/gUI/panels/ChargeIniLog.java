@@ -136,11 +136,12 @@ public class ChargeIniLog extends ModulePanel {
 		
 		setBackground(Color.DARK_GRAY);
 		
-		setLayout(new MigLayout("", "[120px:130px][80px:90px][70px:80px][135px:150px][30px][150px:160px][140px:140px][][140px:140px,grow][grow][50][100px,grow,leading][120px:130px,left]", "[:40px:45px][25px][][20px][400px,grow]"));
+		setLayout(new MigLayout("", 
+				"[120px:130px][80px:90px][70px:80px][135px:150px][30px][150px:160px][140px:140px][][140px:140px,grow][grow][50][100px,grow,leading][120px:130px,grow]", 
+				"[:40px:45px][28px][][20px][400px,grow]"));
 		
 		textArea = new RSyntaxTextArea();
 		textArea.setUseSelectedTextColor(true);
-		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		textArea.setBorder(null);
 
 		scrollPaneTextArea = new RTextScrollPane(textArea);
@@ -209,14 +210,14 @@ public class ChargeIniLog extends ModulePanel {
 		panelDynPath.setLayout(new MigLayout("", "[grow][150px,grow]", "[]"));
 		
 		btnResetOriginalConfig = new JButton("Reset Original");
-		btnResetOriginalConfig.setMinimumSize(new Dimension(107, 20));
-		btnResetOriginalConfig.setPreferredSize(new Dimension(107, 20));
+		btnResetOriginalConfig.setMinimumSize(new Dimension(170, 20));
+		btnResetOriginalConfig.setPreferredSize(new Dimension(170, 20));
 		btnResetOriginalConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESET_CONF));
 		btnResetOriginalConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnResetOriginalConfig.setForeground(Color.BLACK);
 		btnResetOriginalConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 13));
 		btnResetOriginalConfig.setBackground(new Color(250, 128, 114));
-		add(btnResetOriginalConfig, "cell 12 1,grow");
+		add(btnResetOriginalConfig, "cell 11 1 2 1,grow");
 		
 		separator = new JSeparator();
 		add(separator, "cell 0 2 13 1,growx");
@@ -295,27 +296,36 @@ public class ChargeIniLog extends ModulePanel {
 	}
 	
 	public void applyTextAreaStyle(){
-		boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null && GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(Themes.DARK.fileName);
-		if (usePreloadedStringXml) {
-			// If available use lazy initialized in memory
-			RsyntaxUtils.changeStyleViaThemeXmlString(textArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(Themes.DARK.fileName));
-		}else {
-			// if not available read from file
-			RsyntaxUtils.changeStyleViaThemeXml(textArea, Themes.DARK.defaultPath);
-		}
-		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_INI);
-		textArea.setLineWrap(true);
-		textArea.setEditable(true);
-		textArea.setEnabled(true);
-		textArea.setSelectedTextColor(Color.LIGHT_GRAY);
-		RsyntaxUtils.setFont(textArea, new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
-		textArea.setMargin(new Insets(20, 20, 20, 20));
-		FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
-		textArea.revalidate();
-		
-		for (MouseListener listener : textArea.getMouseListeners()) {
-			textArea.removeMouseListener(listener);
-		}
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null
+						&& GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(Themes.DARK.fileName);
+				if (usePreloadedStringXml) {
+					// If available use lazy initialized in memory
+					RsyntaxUtils.changeStyleViaThemeXmlString(textArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(Themes.DARK.fileName));
+				} else {
+					// if not available read from file
+					RsyntaxUtils.changeStyleViaThemeXml(textArea, Themes.DARK.defaultPath);
+				}
+				textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_INI);
+				textArea.setFocusable(true);
+				textArea.setRequestFocusEnabled(true);
+				textArea.setLineWrap(true);
+				textArea.setEditable(true);
+				textArea.setEnabled(true);
+				textArea.setSelectedTextColor(Color.LIGHT_GRAY);
+				RsyntaxUtils.setFont(textArea, new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
+				textArea.setMargin(new Insets(20, 20, 20, 20));
+				FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
+				textArea.revalidate();
+				textArea.repaint();
+				textArea.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+				RsyntaxUtils.setFont(textArea, new Font("Segoe UI", Font.PLAIN, 17));
+//				for (MouseListener listener : textArea.getMouseListeners()) {
+//					textArea.removeMouseListener(listener);
+//				}
+			}
+		});
 	}
 	
 	public void addHandlers() {

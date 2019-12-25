@@ -186,9 +186,10 @@ public class MainGUI extends MainGuiParent{
 		}
 		
 		currentConfiguration = currentConf;
-		dialogHelper = new JOptionHelper(null);
+		dialogHelper = new JOptionHelper(MainGuiGeneralAppStarter.loaderGraphics);
 		
 		MainGuiGeneralAppStarter.loaderGraphics.setVisible(false);
+		MainGuiGeneralAppStarter.loaderGraphics.toBack();
 		MainGuiUtils.askNameAtStartIfNotDefined();
 		MainGuiGeneralAppStarter.loaderGraphics.setVisible(true);
 		MainGuiGeneralAppStarter.loaderGraphics.toFront();

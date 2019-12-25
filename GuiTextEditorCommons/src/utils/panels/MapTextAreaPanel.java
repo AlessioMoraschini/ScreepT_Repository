@@ -116,29 +116,41 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 	 * Resync text from target and re-apply selection
 	 */
 	public void syncLight() {
-		// sync Text and caret position
-		txtAreaMiniMap.setText(targetTemp.getText());
-		safeSyncCaretFromTxtReference();
+		try {
+			// sync Text and caret position
+			txtAreaMiniMap.setText(targetTemp.getText());
+			safeSyncCaretFromTxtReference();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
 	 * Synchronize target text area reference
 	 */
 	public void safeSyncCaretToTxtReference() {
-		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
-		startTemp = txtAreaMiniMap.getSelectionStart();
-		endTemp = txtAreaMiniMap.getSelectionEnd();
-		syncReferenceCaretPosition(reference,startTemp, endTemp);
+		try {
+			RSyntaxTextArea reference = dialogManager.getTargetTextArea();
+			startTemp = txtAreaMiniMap.getSelectionStart();
+			endTemp = txtAreaMiniMap.getSelectionEnd();
+			syncReferenceCaretPosition(reference,startTemp, endTemp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Synchronize mini-map
 	 */
 	public void safeSyncCaretFromTxtReference() {
-		RSyntaxTextArea reference = dialogManager.getTargetTextArea();
-		startTemp = reference.getSelectionStart();
-		endTemp = reference.getSelectionEnd();
-		syncCaretPosition( startTemp, endTemp);
+		try {
+			RSyntaxTextArea reference = dialogManager.getTargetTextArea();
+			startTemp = reference.getSelectionStart();
+			endTemp = reference.getSelectionEnd();
+			syncCaretPosition( startTemp, endTemp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

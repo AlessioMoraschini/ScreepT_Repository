@@ -764,15 +764,9 @@ public class TextEditor extends ModulePanel {
 			textEditorUtils.updateGuiLafWindows(currentTextEditor);// was causing temporization bug cause of invokelater;
 		}
 		
-		if (txtOptions.fileTreeActive) {
-			// FILE TREE PANEL ON/OFF
-			fileTreeShowOrHide(txtOptions);
-		}
+		fileTreeShowOrHide(txtOptions);
 		
-		if (txtOptions.mapViewActive || txtOptions.clipboardViewActive) {
-			// RIGHT TREE PANEL ON/OFF
-			rightPaneShowOrHide(false);
-		}
+		rightPaneShowOrHide(false);
 		
 		subHeaderPanel.initGuiFromConfig(refreshTheme);
 		

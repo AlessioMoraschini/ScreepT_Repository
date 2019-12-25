@@ -1,4 +1,6 @@
-* 2019-12-22  (HEAD -> refs/heads/master, refs/remotes/origin/master) Refactored main menubar, introduced import/export crypted workspace + BUGFIX
+* 2019-12-25  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved import/export crypted workspace + various bugs fixed
+| 
+* 2019-12-22  Refactored main menubar, introduced import/export crypted workspace + BUGFIX
 | 
 * 2019-12-22  (tag: refs/tags/0.9.14) Improved update process, fixed bug in launcher without shell
 | 

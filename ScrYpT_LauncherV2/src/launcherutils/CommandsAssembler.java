@@ -60,7 +60,7 @@ public class CommandsAssembler {
 	/**
 	 * add command to start main application jar with given JVM args
 	 */
-	public void addLaunchCommand(JvmArgumentsDTO dto, File[] argumentsFiles) {
+	public void addLaunchCommand(JvmArgumentsDTO dto, File[] argumentsFiles, boolean viewShell) {
 		
 		// Make objects null-safe
 		dto = (dto != null)? dto : new JvmArgumentsDTO();
@@ -78,13 +78,13 @@ public class CommandsAssembler {
 
 		if (Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"))) {
 			// THIS USES JAR WITH NO CLASSPATH - USEFUL FOR CENTRALIZED BUILD
-			execCommand.add(SysUtils.startJarCommand(complete_ARGS, dto.MAIN_JAR_FILE, argumentsFiles));
+			execCommand.add(SysUtils.startJarCommand(complete_ARGS, dto.MAIN_JAR_FILE, argumentsFiles, viewShell));
 		}else {
 			// THIS USES MAIN CLASS WITH CLASSPATH - USEFUL FOR FRAGMENTED BUILD JARS OR CLASSES
 			execCommand.add(SysUtils.startClassCommand(complete_ARGS, 
 					GeneralConfig.MAIN_GENERAL_CLASSPATH, 
 					GeneralConfig.MAIN_GENERAL_STARTER_PACKAGE, 
-					argumentsFiles));
+					argumentsFiles, viewShell));
 		}
 	}
 	

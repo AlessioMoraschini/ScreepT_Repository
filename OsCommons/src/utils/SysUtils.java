@@ -42,8 +42,9 @@ public class SysUtils {
 	 * 
 	 * other params must not be null
 	 */
-	private static String startJarCommand(String jvmArgs, String jarPath) {
-		return "java " + jvmArgs + " -jar " + jarPath;
+	private static String startJarCommand(String jvmArgs, String jarPath, boolean viewShell) {
+		String javaLaunchKeyWord = viewShell ? "java " : "javaw ";
+		return javaLaunchKeyWord + jvmArgs + " -jar " + jarPath;
 	}
 	
 	/**
@@ -54,10 +55,11 @@ public class SysUtils {
 	 * 
 	 * params must not be null
 	 */
-	public static String startJarCommand(String jvmArgs, String jarPath, File[] filteredArgsFiles) {
+	public static String startJarCommand(String jvmArgs, String jarPath, File[] filteredArgsFiles, boolean viewShell) {
 		
+		String javaLaunchKeyWord = viewShell ? "java " : "javaw ";
 		if(filteredArgsFiles == null || filteredArgsFiles.length == 0) {
-			return startJarCommand(jvmArgs, jarPath);
+			return startJarCommand(jvmArgs, jarPath, viewShell);
 		}
 		
 		String filesParams = "";
@@ -69,7 +71,7 @@ public class SysUtils {
 		filesParams = builder.toString();
 		
 		builder = new StringBuilder();
-		builder.append("java ").append(jvmArgs).append(" -jar ").append(jarPath).append(filesParams);
+		builder.append(javaLaunchKeyWord).append(jvmArgs).append(" -jar ").append(jarPath).append(filesParams);
 		String command = builder.toString();
 		return command;
 	}
@@ -80,8 +82,9 @@ public class SysUtils {
 	 * 
 	 * params must not be null
 	 */
-	private static String startClassCommand(String jvmArgs, String classPath, String mainClass) {
-		return "java " + jvmArgs + " -cp " + classPath + " " + mainClass;
+	private static String startClassCommand(String jvmArgs, String classPath, String mainClass, boolean viewShell) {
+		String javaLaunchKeyWord = viewShell ? "java " : "javaw ";
+		return javaLaunchKeyWord + jvmArgs + " -cp " + classPath + " " + mainClass;
 	}
 
 	/**
@@ -92,10 +95,11 @@ public class SysUtils {
 	 * 
 	 * other params must not be null
 	 */
-	public static String startClassCommand(String jvmArgs, String classPath, String mainClass, File[] filteredArgsFiles) {
+	public static String startClassCommand(String jvmArgs, String classPath, String mainClass, File[] filteredArgsFiles, boolean viewShell) {
 		
+		String javaLaunchKeyWord = viewShell ? "java " : "javaw ";
 		if(filteredArgsFiles == null || filteredArgsFiles.length == 0) {
-			return startClassCommand(jvmArgs, classPath, mainClass);
+			return startClassCommand(jvmArgs, classPath, mainClass, viewShell);
 		}
 		
 		String filesParams = "";
@@ -107,7 +111,7 @@ public class SysUtils {
 		filesParams = builder.toString();
 		
 		builder = new StringBuilder();
-		builder.append("java ").append(jvmArgs)
+		builder.append(javaLaunchKeyWord).append(jvmArgs)
 			   .append(" -cp ").append(classPath)
 			   .append(" ").append(mainClass)
 			   .append(filesParams);
