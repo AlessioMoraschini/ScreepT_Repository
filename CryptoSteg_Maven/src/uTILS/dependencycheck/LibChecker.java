@@ -35,7 +35,7 @@ public class LibChecker {
 			logger.info(" \n => voice speaker library found! :)");
 		} catch (Throwable e) {
 			libFound = false;
-			logger.error("!Cannot run voice speaker: undefined library dependencies: Text2Speech! \n\n", e);
+			logger.error("! Cannot run voice speaker: undefined library dependencies: Text2Speech ! \n\n", e);
 		}
 		return libFound;
 	}
@@ -56,7 +56,7 @@ public class LibChecker {
 			}
 		} catch (Throwable e) {
 			tessDataFound = false;
-			logger.error("!Cannot run tesseract: undefined library: "+tessdataLib+"! \n\n", e);
+			logger.error("! Cannot run tesseract: undefined library: "+tessdataLib+" ! \n\n", e);
 		} 
 		return tessDataFound;
 	}

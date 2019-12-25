@@ -62,14 +62,15 @@ public class MainGuiUtils {
 					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(false);
 
 					try {
-						// Loof for new versions...
+						// Look for new versions...
 						String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates(silent);
 						if (newVersion != null) {
 							// If found ask to user what to do
 							Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 							boolean downloadUpdates = dialogHelper.yesOrNo(
-									"New version [" + newVersion + "] found, do you want to download and install it?",
-									"Update found: " + newVersion);
+									"<html>New version [" + newVersion + "] found, do you want to download and install it?",
+									"Update found: " + newVersion +
+									"</br>(you can disable automatic check at start going to preferences -> generalOptions)</html>");
 							if (downloadUpdates) {
 								try {
 									MainGUI.updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
@@ -376,7 +377,7 @@ public class MainGuiUtils {
 		String[] titleComponents = mainAppReference.getMainFrame().getTitle().split("-");
 		String newTitle = "";
 		int i = 0;
-		for (i = 0; i<2; i++) {
+		for (i = 0; i < 2; i++) {
 			newTitle += titleComponents[i] + " - ";
 		}
 		newTitle += newSuffix;

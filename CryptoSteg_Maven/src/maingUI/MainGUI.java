@@ -899,7 +899,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
 					panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
-					panelGeneralOptions.setMinimumSize(new Dimension(800, 245));
+					panelGeneralOptions.setMinimumSize(panelGeneralOptions.getDefaultDimension());
 					GuiUtils.centerComponent(panelGeneralOptions);
 					panelGeneralOptions.setAlwaysOnTop(true);
 					panelGeneralOptions.setVisible(true);
@@ -996,6 +996,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				GuiUtils.centerComponent(panelImportExportTxtEditor, 800, 180);
 				panelImportExportTxtEditor.setLocationRelativeTo(mainAPP.getMainFrame());
 				panelImportExportTxtEditor.toFront();
+				panelImportExportTxtEditor.syncWithCurrentWOrkspace();
 			}
 		});
 		
@@ -1223,7 +1224,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					panelChangeLog = new ChangeLogFrame(GeneralConfig.CHANGE_LOG_FILE);
 					panelChangeLog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					GuiUtils.centerComponent(panelChangeLog, 950, 600);
+					GuiUtils.centerComponent(panelChangeLog, panelChangeLog.getDefaultDimension());
 					panelChangeLog.setResizable(true);
 					panelChangeLog.setVisible(true);
 					panelChangeLog.setTitle("ChangeLog - "+GeneralConfig.APPLICATION_NAME);
@@ -1452,12 +1453,12 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		}
 
 		// resize textEditor if present
-		if (mainGuiUtils.isTextEditorActive()) {
+		if (frmScryptV.getContentPane().getComponent(0) instanceof TextEditor) {
 			initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
 		}
 
 		// resize textEditor if present
-		if (mainGuiUtils.isCrypterActive()) {
+		if (frmScryptV.getContentPane().getComponent(0) instanceof CrypterPanel) {
 			panelCrypter.resizeFrameToDefault(mainAPP);
 		}
 	}

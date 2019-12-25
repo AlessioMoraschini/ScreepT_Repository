@@ -608,4 +608,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 		initializeValues();
 		updateGUIComponents();
 	}
+	
+	public Dimension getDefaultDimension() {
+		return new Dimension(850, 245);
+	}
 }

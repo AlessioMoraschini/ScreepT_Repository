@@ -165,7 +165,7 @@ public class MainGuiParent {
 		mnFile = new JMenu("File");
 		mnPreferences = new JMenu("Preferences");
 		mnCryptoSteg = new JMenu("ScreepT");
-		mnTextEditor = new JMenu("Text editor");
+		mnTextEditor = new JMenu("Text-Editor");
 			mnLastWorkspaces = new JMenu("TextEditor: Last selected workspaces");
 			mnLastOpenedFile = new JMenu("TextEditor: Last opened files");
 		mnVarious = new JMenu("Various");
@@ -227,7 +227,7 @@ public class MainGuiParent {
 		mntmPinApplicationOnTop.setPreferredSize(new Dimension(30, 20));
  		mntmpadding.setEnabled(false);
  		
-		Insets menuEntryMargin = new Insets(0, 0, 0, 6);
+		Insets menuEntryMargin = new Insets(0, 0, 0, 8);
 		menuBar.add(mnFile);
 		mnFile.setMargin(menuEntryMargin);
 		menuBar.add(mnPreferences);

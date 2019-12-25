@@ -49,6 +49,7 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
+import amfileutils.om.FileNamed;
 import codeformatter.CustomCodeFormatter;
 import dialogutils.JOptionHelper;
 import media.ImageGeneralWorker;
@@ -108,6 +109,32 @@ public class GuiUtils {
 	public static boolean isKeyCodeValidCode(int keyCodeToCheck) {
 		String unknown = Toolkit.getProperty("AWT.unknown", "Unknown");
         return !KeyEvent.getKeyText(keyCodeToCheck).equals(unknown + " keyCode: 0x" + Integer.toString(keyCodeToCheck, 16));
+	}
+	
+	public static int getFirstIndexMatchFromStringCombo(JComboBox<String> comboBox, String match) {
+		if(comboBox == null || match == null) {
+			return -1;
+		}
+		for(int i = 0; i < comboBox.getItemCount(); i++) {
+			if(comboBox.getItemAt(i).equals(match)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+
+	public static int getFirstIndexMatchFromFileNamedCombo(JComboBox<FileNamed> comboBox, String match) {
+		if(comboBox == null || match == null) {
+			return -1;
+		}
+		for(int i = 0; i < comboBox.getItemCount(); i++) {
+			if(comboBox.getItemAt(i).getFileName().equals(match)) {
+				return i;
+			}
+		}
+		
+		return -1;
 	}
 	
 	public static Frame getTopFrame() {
@@ -584,6 +611,10 @@ public class GuiUtils {
 		Dimension screenSize = (targetFrame instanceof JFrame)? getScreenSize((JFrame)targetFrame): getScreenSize();
 		targetFrame.setSize(W, H);
 		targetFrame.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
+	}
+
+	public static void centerComponent(Component targetFrame, Dimension dimension) {
+		centerComponent(targetFrame, dimension.width, dimension.height);
 	}
 	
 	public static void centerComponent(Component targetFrame) {

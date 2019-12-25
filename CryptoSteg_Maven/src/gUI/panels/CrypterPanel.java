@@ -98,6 +98,9 @@ public class CrypterPanel extends ModulePanel {
 	// Global reference to current configuration
 	private INItializer currentConf;
 	
+	private Runnable afterCompleteRunnable = null;
+	private File completedDirectoryImportExport = null;
+	
 	// dateFormatter
 	private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd @ HH-mm-ss");
 	
@@ -232,7 +235,7 @@ public class CrypterPanel extends ModulePanel {
 	public JOptionHelper dialogHelper;
 	
 	int leftVerticalDivHeight;
-	int leftWidth = 400;
+	int leftWidth = 370;
 	int rightWidth = 480;
 	int rightWidthMin = 465;
 	
@@ -481,7 +484,7 @@ public class CrypterPanel extends ModulePanel {
 		leftSplitTopPanel.setBackground(new Color(40, 40, 40));
 		leftSplitTopPanel.setLayout(new MigLayout(
 				"fill,insets 0",
-				"[grow][100px][100px][100px][grow]",
+				"[5px][100px][100px][100px][grow]",
 				"[30px:30px:30px] [100px,grow]"));
 		
 		// Left panel divided in two vertically (tree keys + infoTabbedPanel) - top component added later
@@ -664,7 +667,7 @@ public class CrypterPanel extends ModulePanel {
 					if(screeptManagerFoF.screepTManager!=null) {
 						screeptManagerFoF.screepTManager.disableProgressUpdater();
 					}
-					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.showInfoOKDialogOnTop("OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
 					logger.error("Exception happened during creept", ex);
 				}
 				
@@ -685,7 +688,7 @@ public class CrypterPanel extends ModulePanel {
 					if(screeptManagerFoF.screepTManager!=null) {
 						screeptManagerFoF.screepTManager.disableProgressUpdater();
 					}
-					JOptionPane.showMessageDialog(thisPanel,"OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.showInfoOKDialogOnTop("OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
 					logger.error("Exception happened during decreept!", ex);
 				}
 								
@@ -806,73 +809,78 @@ public class CrypterPanel extends ModulePanel {
 		// USEFUL METHODS //
 		////////////////////
 	
-		private Runnable decripterRunner() {
+	public boolean isFileAlreadyLoadedInRoot(File toCheck) {
+		return panelVDragNDropPane.isFileAlreadyPresent(toCheck);
+	}
+	
+	private Runnable decripterRunner() {
 		return new Runnable() {
-			
+
 			@Override
 			public void run() {
-				
+
 				File destinationDir = null;
 				// retrieve source file array from dragNDrop panel
 				srcFiles = panelVDragNDropPane.getTreeNodes();
-				
+
 				// ask user if he wants to delete decripted after closing ScrYpT
-				int deleteAfterClose = JOptionPane.showConfirmDialog(parentFrame, "Delete decripted file(s) after exiting ScrypT? (TEMP folder will be created on Desktop)",
-						"Delete decripted when SW will be closed", JOptionPane.YES_NO_OPTION);
-				
-				if(deleteAfterClose == JOptionPane.YES_OPTION) {
+				int deleteAfterClose = JOptionPane.showConfirmDialog(parentFrame,
+						"Delete decripted file(s) after exiting ScrypT? (TEMP folder will be created on Desktop)", "Delete decripted when SW will be closed",
+						JOptionPane.YES_NO_OPTION);
+
+				if (deleteAfterClose == JOptionPane.YES_OPTION) {
 					textAreaMain.append("Decripted files will be exported to temporary folder on user desktop folder\n");
 					// if temporary mode create temp folder ScrYpT on desktop
 					destinationDir = new File(GeneralConfig.TEMP_DECRIPTED_ROOT_PATH);
-					
+
 					if (fileMonitor == null) {
 						flagCreateNewMonitor = true;
-					}else {
+					} else {
 						flagCreateNewMonitor = false;
 					}
-				}else {
+				} else {
 					textAreaMain.append("Waiting input from user...\n");
 					// get output asking to user
 					destinationDir = MainGuiGeneralAppStarter.fileDialogHelper.directoWrite(parentFrame);
 					textAreaMain.append("Chosen input: " + destinationDir + "\n\n");
 				}
-				
+
 				// boolean value representing if everything went good
 				boolean resultOK = false;
-				
+
 				// first recognize selected combo Mode selected
-				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
+				mode = (CryptoMode) comboModeCrypto.getSelectedItem();
 				generalProgress = null;
-				
-				if (destinationDir!= null) {
-					
+
+				if (destinationDir != null) {
+
 					generalProgress = new UpdateProgressPanelMinFork(true);
 					generalProgress.setLocationRelativeTo(parentFrame);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
-					
+
 					Date now = new Date();
 					String date = dateFormatter.format(now);
 					destinationDir = new File(destinationDir.getAbsolutePath() + "/" + date);
-					
+
 					if (!destinationDir.exists()) {
 						destinationDir.mkdir();
 					}
 				}
-				
+
 				StringBuilder builder = new StringBuilder();
 				int nFilesSource = srcFiles.length;
 				int nProgrFile = 0;
-				
+
 				for (File currentFile : srcFiles) {
-					
+
 					if (currentFile != null && currentFile.exists() && destinationDir != null) {
-					
-						builder.append("Starting conversion of file ").append(nProgrFile+1).append("/").append(nFilesSource)
-						.append("[").append(currentFile.getName()).append("]");
-						int progressPerc = nProgrFile*100/nFilesSource;
-						
-						if(nProgrFile == 0)
+
+						builder.append("Starting conversion of file ").append(nProgrFile + 1).append("/").append(nFilesSource).append("[")
+								.append(currentFile.getName()).append("]");
+						int progressPerc = nProgrFile * 100 / nFilesSource;
+
+						if (nProgrFile == 0)
 							progressPerc = 1;
 
 						if (srcFiles.length > 1) {
@@ -881,9 +889,9 @@ public class CrypterPanel extends ModulePanel {
 							generalProgress.update(50, builder.toString(), true);
 							generalProgress.getGeneralBar().setIndeterminate(true);
 						}
-						
+
 						textAreaLog.append(builder.toString());
-						nProgrFile ++;
+						nProgrFile++;
 
 						boolean shuffle = chckbxShuffle.isSelected() && chckbxShuffle.isEnabled();
 						try {
@@ -892,43 +900,45 @@ public class CrypterPanel extends ModulePanel {
 							resultOK = false;
 						}
 					}
-					
+
 					textAreaMain.append(screeptManagerFoF.getOutputStats());
 				}
-				
+
 				if (generalProgress != null) {
 					generalProgress.update(100, null, true);
 				}
 				// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
-				if(resultOK) {
+				if (resultOK) {
 					String msg = "Operation completed succesfully!\nDo you want to empty source file pool?";
-					if(dialogHelper.yesOrNo(msg,"SUCCESS!")) {
+					if (dialogHelper.yesOrNo(msg, "SUCCESS!")) {
 						removeTreeFiles();
 					}
 					GuiUtils.openInFileSystem(destinationDir);
-					
+
 					textAreaLog.append("\n" + msg);
 					textAreaMain.append(screeptManagerFoF.getOutputStats());
 					tabbedPane.setSelectedIndex(0);
 					srcFile = null;
 
-				}else {					
+				} else {
 					if (destinationDir != null) {
 						String msg = "Something went wrong :(";
 						dialogHelper.error(msg, null);
 						textAreaLog.append("\n" + msg);
 						textAreaMain.append(screeptManagerFoF.getOutputStats());
 						tabbedPane.setSelectedIndex(0);
-					}else{
+					} else {
 						dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
 					}
 				}
-				
+
 				if (flagCreateNewMonitor && fileMonitor == null) {
 					fileMonitor = new FileChangeMonitor(destinationDir, null);
 				}
-				
+
 				textAreaMain.append("\n\n => Completed !\n\n #####################################################");
+
+				runRunnableImpExp(resultOK, destinationDir);
 			}
 		};
 	}
@@ -1022,7 +1032,8 @@ public class CrypterPanel extends ModulePanel {
 					textAreaMain.append(screeptManagerFoF.getOutputStats());
 					tabbedPane.setSelectedIndex(0);
 					srcFile = null;
-
+					
+					
 				}else {
 					if(destinationDir != null) {
 						String msg = "Something went wrong :(";
@@ -1038,8 +1049,19 @@ public class CrypterPanel extends ModulePanel {
 				}
 				
 				textAreaMain.append("\n\n => Completed !\n\n #####################################################");
+				
+				runRunnableImpExp(resultOK, destinationDir);
 			}
 		};
+	}
+	
+	private void runRunnableImpExp(boolean resultOK, File destinationDir) {
+		if(resultOK) {
+			setCompletedDirectoryImportExport(destinationDir);
+			if(getCompletedDirectoryImportExport() != null && getAfterCompleteRunnable() != null) {
+				SwingUtilities.invokeLater(getAfterCompleteRunnable());
+			}
+		}
 	}
 
 	private void initializeTextAreas() {
@@ -1450,7 +1472,8 @@ public class CrypterPanel extends ModulePanel {
     }
 
 	public void addNewSourceFile(File selected) {
-		if (selected!=null && selected.exists()) {
+		logger.debug("Adding file to selection...");
+		if (selected!=null && selected.exists() && !isFileAlreadyLoadedInRoot(selected)) {
 			srcFile = selected;
 			panelVDragNDropPane.addFileToTree(selected);
 			String newdisplayed = HandleString.fitToMaxLentgh(selected.getName(), labelLengthLimit);
@@ -1458,9 +1481,13 @@ public class CrypterPanel extends ModulePanel {
 			panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
 			
 			appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
-			JOptionPane.showMessageDialog(thisPanel, "Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
+			dialogHelper.showInfoOKDialogOnTop("Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
 			
 			logger.debug("File :" + selected.getName() + " correctly loaded");
+		} else {
+			
+			dialogHelper.showInfoOKDialogOnTop("File was already loaded in source pool", "File already Loaded :)", JOptionPane.INFORMATION_MESSAGE);
+			logger.debug("File load skipped: already loaded!");
 		}
 	}
 	
@@ -1656,6 +1683,22 @@ public class CrypterPanel extends ModulePanel {
 		return "<html>" + original + "</html>";
 	}
 	
+	public Runnable getAfterCompleteRunnable() {
+		return afterCompleteRunnable;
+	}
+
+	public void setAfterCompleteRunnable(Runnable afterCompleteRunnable) {
+		this.afterCompleteRunnable = afterCompleteRunnable;
+	}
+
+	public File getCompletedDirectoryImportExport() {
+		return completedDirectoryImportExport;
+	}
+
+	public void setCompletedDirectoryImportExport(File completedDirectoryImportExport) {
+		this.completedDirectoryImportExport = completedDirectoryImportExport;
+	}
+
 	private void updateShuffleTooltip() {
 		if (chckbxShuffle.isSelected()) {
 			chckbxShuffle.setToolTipText(encapsulateInHtml(shuffleTooltip));

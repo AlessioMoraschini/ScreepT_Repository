@@ -2,16 +2,20 @@ package gUI.frames;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
+import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import maingUI.MainGUI;
 import om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.border.LineBorder;
 
@@ -19,12 +23,13 @@ import amfileutils.om.FileNamed;
 
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+import javax.swing.JSeparator;
 
 public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	private static final long serialVersionUID = -8119237171970529701L;
 	
-	protected TextEditorOption txtOptions;
-	protected TextEditor txtEditor;
+	protected TextEditorOption textOptions;
+	protected TextEditor textEditor;
 	
 	protected static int WIDTH = 700;
 	protected static int HEIGHT = 120;
@@ -33,8 +38,12 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	
 	protected JLabel lblSelectedForExport;
 	protected JComboBox<FileNamed> comboBoxExport;
-	private JButton btnSelect;
-	private JLabel lblNewLabel;
+	private JButton btnSelectImport;
+	private JLabel labelToImportDyn;
+	
+	private File selectedForImport;
+	private File selectedForExport;
+	private JSeparator separator;
 
 	/**
 	 * Text editor option and texteditor are nullable
@@ -43,16 +52,25 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	 */
 	public ImportExportWorkspcCryptFrame(TextEditorOption txtOptions, TextEditor textEditor) {
 		super();
+		
 		getContentPane().setBackground(Color.DARK_GRAY);
+		
+		setTitle("Import/Export crypted Workspace");
 		
 		GuiUtils.centerComponent(this, WIDTH, HEIGHT);
 		
 		logger.info("Opening frame: " + getClass().getName());
 		
-		this.txtEditor = textEditor;
-		this.txtOptions = (txtOptions != null) ? txtOptions : new TextEditorOption();
+		if(textEditor == null) {
+			MainGUI.mainGuiUtils.startTextEditor(true);
+			this.textEditor = MainGUI.initTxtWriter;
+		} else {
+			this.textEditor = textEditor;
+		}
 		
-		getContentPane().setLayout(new MigLayout("", "[168.00][grow][][100px][:100px:140px][]", "[:40px:40px,grow][grow][grow]"));
+		this.textOptions = (txtOptions != null) ? txtOptions : MainGUI.currentConfiguration.getTextEditorOpt();
+		
+		getContentPane().setLayout(new MigLayout("", "[168.00][grow][][100px][:100px:140px][]", "[:40px:40px,grow][grow][][grow]"));
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(Color.GRAY));
@@ -66,46 +84,69 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		panel.add(lblImportexportCryptedWorkspace, "cell 0 0,alignx center,growy");
 		
 		JLabel lblMode = new JLabel("Selected for import:");
-		lblMode.setForeground(Color.WHITE);
+		lblMode.setForeground(new Color(210, 180, 140));
 		lblMode.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		getContentPane().add(lblMode, "cell 0 1,alignx center,aligny center");
 		
-		lblNewLabel = new JLabel("- No workspace selected to import -");
-		lblNewLabel.setForeground(Color.LIGHT_GRAY);
-		getContentPane().add(lblNewLabel, "cell 1 1 2 1,alignx center");
+		labelToImportDyn = new JLabel("- No workspace selected to import -");
+		labelToImportDyn.setForeground(Color.LIGHT_GRAY);
+		getContentPane().add(labelToImportDyn, "cell 1 1 2 1,alignx center");
 		
-		btnSelect = new JButton("Select new to import");
-		btnSelect.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		btnSelect.setBackground(Color.GRAY);
-		getContentPane().add(btnSelect, "cell 3 1,growx,aligny center");
+		btnSelectImport = new JButton("Select new to import");
+		btnSelectImport.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		btnSelectImport.setBackground(new Color(210, 180, 140));
+		btnSelectImport.setCursor(GuiUtils.CURSOR_HAND);
+		getContentPane().add(btnSelectImport, "cell 3 1,growx,aligny center");
 		
 		btnImport = new JButton("Import Selected");
 		btnImport.setForeground(Color.BLACK);
 		btnImport.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnImport.setBackground(Color.LIGHT_GRAY);
+		btnImport.setBackground(new Color(205, 133, 63));
+		btnImport.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnImport, "cell 4 1 2 1,growx,aligny center");
 		
+		separator = new JSeparator();
+		separator.setForeground(Color.GRAY);
+		separator.setBackground(Color.GRAY);
+		getContentPane().add(separator, "cell 0 2 6 1,growx");
+		
 		lblSelectedForExport = new JLabel("Selected for export:");
-		lblSelectedForExport.setForeground(Color.WHITE);
+		lblSelectedForExport.setForeground(new Color(176, 196, 222));
 		lblSelectedForExport.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		getContentPane().add(lblSelectedForExport, "cell 0 2,alignx center");
+		getContentPane().add(lblSelectedForExport, "cell 0 3,alignx center");
 		
 		comboBoxExport = new JComboBox<FileNamed>(txtOptions.lastSelectedWorkspaces.getList());
 		comboBoxExport.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		comboBoxExport.setCursor(GuiUtils.CURSOR_HAND);
 //		comboBoxExport = new JComboBox<FileNamed>();
-		getContentPane().add(comboBoxExport, "cell 1 2 3 1,growx,aligny center");
+		getContentPane().add(comboBoxExport, "cell 1 3 3 1,growx,aligny center");
 		
 		btnExport = new JButton("Export Selected");
 		btnExport.setForeground(Color.BLACK);
 		btnExport.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnExport.setBackground(Color.LIGHT_GRAY);
-		getContentPane().add(btnExport, "cell 4 2 2 1,growx,aligny center");
+		btnExport.setBackground(new Color(119, 136, 153));
+		btnExport.setCursor(GuiUtils.CURSOR_HAND);
+		getContentPane().add(btnExport, "cell 4 3 2 1,growx,aligny center");
 		
 		addListeners();
 		
 		setVisible(true);
 		
+		updateToExport();
+		
 		logger.info("Frame loaded: " + getClass().getName());
+	}
+	
+	public void syncWithCurrentWOrkspace() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				String lastWorkspaceName = new File(textOptions.defaultWorkspacePath).getName();
+				
+				int match = GuiUtils.getFirstIndexMatchFromFileNamedCombo(comboBoxExport, lastWorkspaceName);
+				comboBoxExport.setSelectedIndex(match);
+				comboBoxExport.repaint();
+			}
+		});
 	}
 	
 	@Override
@@ -115,11 +156,21 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	
 	protected void addListeners() {
 		
-		btnSelect.addActionListener(new ActionListener() {
+		btnSelectImport.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				File selectedToImport = fileChooser.directoRead(textEditor.parentFrame, "Select crypted workspace to import");
+				
+				updateToImport(selectedToImport);
+			}
+		});
+
+		comboBoxExport.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateToExport();
 			}
 		});
 
@@ -127,7 +178,17 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				try {
+					if (selectedForExport != null && selectedForExport.exists() && selectedForExport.isDirectory()) {
+						textEditor.textEditorUtils.openFileInScreeptWithReturnAction(selectedForExport, getAfterExportRunnable());
+					} else {
+						dialogHelper.error("Please select a workspace before to export", "Invalid selection");
+					}
+				} catch (Exception e1) {
+					String errorMessage = "Cannot proceed with export, an error occurred!";
+					logger.error(errorMessage, e1);
+					dialogHelper.error(errorMessage, "An error occurred");
+				}
 			}
 		});
 
@@ -135,8 +196,114 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				try {
+					if (selectedForImport != null && selectedForImport.exists() && selectedForImport.isDirectory()) {
+						textEditor.textEditorUtils.openFileInScreeptWithReturnAction(selectedForImport, getAfterImportRunnable(selectedForImport));
+					} else {
+						dialogHelper.error("Please select a workspace before to import", "Invalid selection");
+					}
+				} catch (Exception e1) {
+					String errorMessage = "Cannot proceed with import, an error occurred!";
+					logger.error(errorMessage, e1);
+					dialogHelper.error(errorMessage, "An error occurred");
+				}
 			}
 		});
+	}
+	
+	public Runnable getAfterExportRunnable() {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					CrypterPanel cipherPanel = MainGUI.mainAPP.getPanelCrypter();
+					File completed = new File(cipherPanel.getCompletedDirectoryImportExport().getCanonicalPath() + File.separator + selectedForExport.getName());
+					if(completed != null && completed.exists() && completed.isDirectory()) {
+						MainGUI.mainGuiUtils.startTextEditor(false);
+						
+						resetCrypterActions();
+					}
+				} catch(Exception e) {
+					logger.error("Cannot do after export action!", e);
+				}
+			}
+		};
+	}
+	
+	public Runnable getAfterImportRunnable(final File selectedForImport) {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					final CrypterPanel cipherPanel = MainGUI.mainAPP.getPanelCrypter();
+					if(cipherPanel != null) {
+						File completed = new File(cipherPanel.getCompletedDirectoryImportExport().getCanonicalPath() + File.separator + selectedForImport.getName());
+						if(completed != null && completed.exists() && completed.isDirectory()) {
+							try {
+								textEditor.setWorkspace(completed);
+								textOptions.addFileToLimitedList(completed, textOptions.lastSelectedWorkspaces, "lastSelectedWorkspaces");
+								MainGUI.mainAPP.updateLastOpenedWorkspaces(textOptions.lastSelectedWorkspaces);
+								textEditor.textEditorUtils.refreshFromWorkspace(completed);
+								
+								MainGUI.mainGuiUtils.startTextEditor(true);
+								
+								resetCrypterActions();
+							} catch (Exception e) {
+								logger.error("Cannot set imported workspace: ", e);
+							}
+						}
+					}
+				} catch (IOException e1) {
+					logger.error("Cannot do action after import!", e1);
+				}
+			}
+		};
+	}
+	
+	private void resetCrypterActions() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				final CrypterPanel cipherPanel = MainGUI.mainAPP.getPanelCrypter();
+				cipherPanel.setAfterCompleteRunnable(null);
+				cipherPanel.setCompletedDirectoryImportExport(null);
+			}
+		});
+	}
+	
+	public void updateToImport(File toImport) {
+		
+		if (toImport != null) {
+			try {
+				if (toImport.exists() && toImport.isDirectory()) {
+					selectedForImport = toImport;
+					labelToImportDyn.setText(toImport.getCanonicalPath());
+				} else {
+					dialogHelper.error("Invalid selection.", "Invalid selction");
+				}
+			} catch (Exception e) {
+				String errorMessage = "Cannot update file to import, an error occurred.";
+				logger.error(errorMessage, e);
+				dialogHelper.error(errorMessage, "An error occurred");
+			} 
+		}
+	}
+	
+	public void updateToExport() {
+		
+		try {
+			File toExport = ((FileNamed) comboBoxExport.getSelectedItem()).mFile;
+			
+			if (toExport.exists() && toExport.isDirectory()) {
+				selectedForExport = toExport;
+			} else {
+				dialogHelper.error("Invalid selection.", "Invalid selction");
+			}
+		} catch (Exception e) {
+			String errorMessage = "Cannot update file to export, an error occurred.";
+			logger.error(errorMessage, e);
+			dialogHelper.error(errorMessage, "An error occurred");
+		} 
 	}
 }

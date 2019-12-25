@@ -175,7 +175,7 @@ public class TextEditorOption {
 		foreCol = DEFAULT_FOREGROUND_COL;
 		selectedAtStart = DEFAULT_SELECTED_FILE_AT_START;
 		lastEscapeLanguage = DEF_LastEscapeLanguage;
-		defaultWorkspacePath = GeneralConfig.USER_PERSONAL_DIR;
+		defaultWorkspacePath = GeneralConfig.USER_DESKTOP;
 		selectedTheme = DEFAULT_SELECTED_THEME;
 		dividerFileTreePosX = DEFAULT_DIVIDER_POS_X;
 		dividerRightPanePosX = DEF_dividerRightPanePosX;

@@ -230,8 +230,6 @@ public class TextEditorUtils {
 	public void openCurrentFileInScreept() {
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 
-		CrypterPanel cipherPanel = MainGUI.mainAPP.getPanelCrypter();
-
 		// current file not saved
 		if (loadedTabObj.unsaved) {
 			String currFileName = (loadedTabObj.loadedFile != null) ? loadedTabObj.loadedFile.getName()
@@ -244,30 +242,63 @@ public class TextEditorUtils {
 			}
 		}
 
+		openFileInScreept(loadedTabObj.loadedFile);
+	}
+	
+	public void openFileInScreept(File toOpenInScreept) {
+		
+		CrypterPanel cipherPanel = MainGUI.mainAPP.getPanelCrypter();
+		
 		// current file not exists or null
-		if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
+		if (toOpenInScreept == null || !toOpenInScreept.exists()) {
 			return;
 		}
-
+		
 		if (cipherPanel != null) {
+			
 			int openedFilesCrypter = cipherPanel.getPanelVDragNDropPane().getTreeNodes().length;
 			if (openedFilesCrypter != 0) {
 				String msg = "There are " + openedFilesCrypter
 						+ " loaded files in ScreepT: do you want to remove from loaded list?";
-				int choice = JOptionPane.showConfirmDialog(currentTextEditor, msg);
-				if (choice == JOptionPane.OK_OPTION) {
-					cipherPanel.getPanelVDragNDropPane().removeAll();
-				} else if (choice == JOptionPane.CANCEL_OPTION) {
+				Boolean choice = dialogHelper.showInfoYNOrNullDialogOnTop(msg, "Empty current loaded files?", JOptionPane.YES_NO_OPTION);
+				if (choice != null) {
+					if (choice) {
+						cipherPanel.getPanelVDragNDropPane().removeAll();
+					}
+				} else {
 					return;
-				}
+				} 
 			}
 		}
-
+		
+		MainGUI.mainGuiUtils.startCrypterPanel(false);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				MainGUI.mainAPP.getMntmCrypter().doClick();
+				try {
+					CrypterPanel cipherPanel = null;
+					while (cipherPanel == null) {
+						Thread.sleep(250);
+						cipherPanel = MainGUI.mainAPP.getPanelCrypter();
+					}
+					cipherPanel.addNewSourceFile(toOpenInScreept);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	public void openFileInScreeptWithReturnAction(File toOpen, Runnable returnAction) {
+		openFileInScreept(toOpen);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
 				CrypterPanel cipherPanel = MainGUI.mainAPP.getPanelCrypter();
-				cipherPanel.addNewSourceFile(loadedTabObj.loadedFile);
+				if(cipherPanel != null) {
+					cipherPanel.setAfterCompleteRunnable(returnAction);
+				}
 			}
 		});
 	}

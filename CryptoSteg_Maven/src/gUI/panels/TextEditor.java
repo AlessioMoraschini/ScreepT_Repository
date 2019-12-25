@@ -329,7 +329,7 @@ public class TextEditor extends ModulePanel {
 		toggleButtonFileTreeWorkspace = new JButton("");
 		GuiUtils.makeTransparentJButton(toggleButtonFileTreeWorkspace);
 		File workspace = new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
-		toggleButtonFileTreeWorkspace.setEnabled(workspace != null && !workspace.getName().equals("") && workspace.exists());
+//		toggleButtonFileTreeWorkspace.setEnabled(workspace != null && !workspace.getName().equals("") && workspace.exists());
 		toggleButtonFileTreeWorkspace.setMaximumSize(new Dimension(20, 12));
 		toggleButtonFileTreeWorkspace.setCursor(GuiUtils.CURSOR_HAND);
 		toggleButtonFileTreeWorkspace.setToolTipText(TextEditorTooltips.tooltipWorkspaceToggle);
@@ -1061,7 +1061,7 @@ public class TextEditor extends ModulePanel {
 		
 		if (currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.getList().size() == 0) {
 			currentConfiguration.getTextEditorOpt().addFileToLimitedList(
-					GeneralConfig.USER_DESKTOP_FILE, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
+					new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath), currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
 			mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 		}
 	}

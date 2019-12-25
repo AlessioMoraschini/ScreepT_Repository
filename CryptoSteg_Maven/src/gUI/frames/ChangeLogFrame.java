@@ -1,5 +1,7 @@
 package gUI.frames;
 
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.io.File;
 
@@ -26,6 +28,7 @@ public class ChangeLogFrame extends ParentFrame{
 			dispose();
 		}else {
 			textArea = new JTextArea();
+			textArea.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 			textArea.setMargin(new Insets(10, 15, 10, 15));
 			scrollPane = new JScrollPane();
 			scrollPane.setViewportView(textArea);
@@ -41,5 +44,9 @@ public class ChangeLogFrame extends ParentFrame{
 				logger.error(msg, e);
 			}
 		}
+	}
+	
+	public Dimension getDefaultDimension() {
+		return new Dimension(1200, 650);
 	}
 }

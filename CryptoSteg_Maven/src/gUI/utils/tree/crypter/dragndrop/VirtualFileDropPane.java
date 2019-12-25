@@ -17,6 +17,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.TooManyListenersException;
 
@@ -148,9 +149,11 @@ public class VirtualFileDropPane extends BackgroundFrame {
             	DefaultMutableTreeNode root = (DefaultMutableTreeNode)filesTree.getModel().getRoot();
             	for(File iFile : files) {
             		CrypterDragFileModel currentNodeModel = new CrypterDragFileModel(iFile);
-					DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(currentNodeModel);
-	            	root.add(newNode);
-	            	filesTree.updateUI();
+					if (!isFileAlreadyPresent(iFile)) {
+						DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(currentNodeModel);
+						root.add(newNode);
+						filesTree.updateUI();
+					}
             	}
             	filesTree.setModel(new DefaultTreeModel(root));
             	((DefaultTreeModel)filesTree.getModel()).reload();
@@ -261,6 +264,21 @@ public class VirtualFileDropPane extends BackgroundFrame {
 		}
 		return nodeArray;
 	}
+    
+    public boolean isFileAlreadyPresent(File toCheck) {
+    	try {
+			String canonicalToCheck = toCheck.getCanonicalPath().trim();
+			for(File current : getTreeNodes()) {
+				if(canonicalToCheck.equals(current.getCanonicalPath().trim())) {
+					return true;
+				}
+			}
+		} catch (IOException e) {
+			logger.error("",e);
+		}
+    	
+    	return false;
+    }
 
     public int getNumFirstLevelNodes() {
     	TreeNode root = (TreeNode)filesTree.getModel().getRoot();

@@ -804,7 +804,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnOpenInScreepT.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				parent.textEditorUtils.openCurrentFileInScreept();
+				if (parent.getCurrentTabEditor().loadedTabObj.loadedFile != null && parent.getCurrentTabEditor().loadedTabObj.loadedFile.exists()) {
+					parent.textEditorUtils.openCurrentFileInScreept();
+				} else {
+					dialogHelper.error("Cannot open current file in screept because it does not exist.", "Cannot open in screept");
+				}
 				
 			}
 		});
