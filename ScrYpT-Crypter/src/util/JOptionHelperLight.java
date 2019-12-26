@@ -41,13 +41,14 @@ public class JOptionHelperLight {
 	
 	public static Font DEFAULT_FONT_DIMENSION = new Font("SansSerif", Font.PLAIN, 17);
 	
-	public boolean enabledAdvices = true;
+	public boolean enabledAdvices;
 	
 	// Parent component to center and refer to
 	Component parentComponent;
 	
 	public JOptionHelperLight (Component parentComponent) {
 		this.parentComponent = (parentComponent != null) ? parentComponent : new JFrame();
+		enabledAdvices = true;
 	}
 	
 	public JOptionHelperLight (Component parentComponent, boolean enableAdvices) {

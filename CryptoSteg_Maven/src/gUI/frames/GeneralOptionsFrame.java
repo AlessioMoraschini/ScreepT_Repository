@@ -572,6 +572,9 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
 		
+		// write launcher configuration
+		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
+		
 		System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
 	}
 	

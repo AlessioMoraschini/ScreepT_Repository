@@ -15,10 +15,11 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegCipher;
+import om.CrypterResultDTO;
 import util.JOptionHelperLight;
 import util.SafeLogger;
 import util.ScreeptUtils;
-import util.UpdateProgressPanelMinFork;
+import util.UpdateProgressPanelCrypter;
 
 public class ScreeptManagerFileOrFolder {
 
@@ -39,7 +40,7 @@ public class ScreeptManagerFileOrFolder {
 	public boolean coderUsed = false;
 	public boolean defaultProgressBarVisible = true;
 	
-	UpdateProgressPanelMinFork generalProgress;
+	UpdateProgressPanelCrypter generalProgress;
 	
 	public JOptionHelperLight dialogHelper;
 	
@@ -54,7 +55,7 @@ public class ScreeptManagerFileOrFolder {
 	 * 
 	 * NB default shuffle is false, you have to specify it each time crypting/decrypting
 	 */
-	public ScreeptManagerFileOrFolder(UpdateProgressPanelMinFork generalProgress, JComponent parent, boolean advicesEnabled) {
+	public ScreeptManagerFileOrFolder(UpdateProgressPanelCrypter generalProgress, JComponent parent, boolean advicesEnabled) {
 		this.shuffle = false;
 		// default dialogHelper initially disabled 
 		this.dialogHelper = new JOptionHelperLight(parent, advicesEnabled);
@@ -66,123 +67,102 @@ public class ScreeptManagerFileOrFolder {
 	}
 	
 ////////////////////////// MAIN METHODS ////////////////////////////////
-	public boolean crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean shuffle) throws Exception{
+	public CrypterResultDTO crYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean shuffle) throws Exception{
+		
+		CrypterResultDTO result = new CrypterResultDTO();
 		
 		if (this.generalProgress != null) {
 			this.generalProgress.getDialog().setVisible(true);
 		} else {
-			this.generalProgress = new UpdateProgressPanelMinFork(true);
+			this.generalProgress = new UpdateProgressPanelCrypter(true);
 		}
 		
 		this.shuffle = shuffle;
-		boolean resultOK = false;
 
 		// notify that method is running
 		coderUsed=true;
 		
-		// get output asking to user
-		
-		// boolean value representing if everything went good
-		resultOK = false;
-		
-		if (srcFile!=null && srcFile.exists() && destinationDir!=null) {
-			
-			if(!destinationDir.exists()) {
-				destinationDir.mkdir();
-			}
-			
-			// ONLY AES CRYPT
-			if (mode.AES && !mode.STEG) {
-				try {
+		try {
+			if (srcFile!=null && srcFile.exists() && destinationDir!=null) {
+				
+				if(!destinationDir.exists()) {
+					destinationDir.mkdir();
+				}
+				
+				// ONLY AES CRYPT
+				if (mode.AES && !mode.STEG) {
+					
 					// initialize coder
 					screepTManager = initAES(aesKey);
 					
 					// if only one file
 					if (srcFile.isFile()) {
-						resultOK = cryptCurrentFile(srcFile, destinationDir);
+						result.resultOK = cryptCurrentFile(srcFile, destinationDir);
 					
 					// if directory selected
 					}else if (srcFile.isDirectory()) {
-						resultOK = cryptDir(srcFile, destinationDir);
+						result.resultOK = cryptDir(srcFile, destinationDir);
 					}
-
-				} catch (UnsupportedEncodingException e1) {
-					resultOK = resetAfterException("Encoding Exception happened!", e1);
-				} catch (NoSuchPaddingException e1) {
-					resultOK = resetAfterException("Padding Exception happened!", e1);
-				} catch (NoSuchAlgorithmException e1) {
-					resultOK = resetAfterException("Algorithm Exception happened!", e1);
-				} catch (IOException e1) {
-					resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
-				} catch (Exception e1) {
-					resultOK = resetAfterException("Generic Exception occurred :(", e1);
-				}
-			
-			// ONLY STEG CRYPT
-			} else if (!mode.AES && mode.STEG) {
-				try {
-					
-					screepTManager = initSTEG(srcKeyImageFile);
-					
-					// if only one file
-					if (srcFile.isFile()) {
-						resultOK = cryptCurrentFile(srcFile, destinationDir);
-					
-					// if directory selected
-					}else if (srcFile.isDirectory()) {
-						resultOK = cryptDir(srcFile, destinationDir);
-					}
-
-				} catch (IOException e1) {
-					resultOK = resetAfterException("IO Exception happened!", e1);
-				} catch (STEGException e1) {
-					resultOK = resetAfterException("STEG Exception happened!", e1);
-				} catch (Exception e1) {
-					resultOK = resetAfterException("Generic Exception occurred :(", e1);
-				}
-				
-			// COMPLETE CRYPT
-			} else if (mode.AES && mode.STEG) {
-				try {
-					
+	
+				// ONLY STEG CRYPT
+				} else if (!mode.AES && mode.STEG) {
+						
+						screepTManager = initSTEG(srcKeyImageFile);
+						
+						// if only one file
+						if (srcFile.isFile()) {
+							result.resultOK = cryptCurrentFile(srcFile, destinationDir);
+						
+						// if directory selected
+						}else if (srcFile.isDirectory()) {
+							result.resultOK = cryptDir(srcFile, destinationDir);
+						}
+	
+				// COMPLETE CRYPT
+				} else if (mode.AES && mode.STEG) {
+						
 					screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
 					
 					// if only one file
 					if (srcFile.isFile()) {
-						resultOK = cryptCurrentFile(srcFile, destinationDir);
+						result.resultOK = cryptCurrentFile(srcFile, destinationDir);
 					
 					// if directory selected
 					}else if (srcFile.isDirectory()) {
-						resultOK = cryptDir(srcFile, destinationDir);
+						result.resultOK = cryptDir(srcFile, destinationDir);
 					}
-
-				} catch (UnsupportedEncodingException e1) {
-					resultOK = resetAfterException("Encoding Exception happened!", e1);
-				} catch (NoSuchPaddingException e1) {
-					resultOK = resetAfterException("Padding Exception happened!", e1);
-				} catch (NoSuchAlgorithmException e1) {
-					resultOK = resetAfterException("Algorithm Exception happened!", e1);
-				} catch (IOException e1) {
-					resultOK = resetAfterException("IO Exception happened!", e1);
-				} catch (STEGException e1) {
-					resultOK = resetAfterException("STEG Exception happened!", e1);
-				} catch (AESException e1) {
-					resultOK = resetAfterException("AES Exception happened!", e1);
-				} catch (Exception e1) {
-					resultOK = resetAfterException("Generic Exception occurred :(", e1);
-				}
-			} 
-		}
-		coderUsed=false;
+				} 
+			}
+		} catch (STEGException e1) {
+			result.resultOK = resetAfterException("STEG Exception happened!", e1);
+		} catch (AESException e1) {
+			result.resultOK = resetAfterException("AES Exception happened!", e1);
+		} catch (UnsupportedEncodingException e1) {
+			result.resultOK = resetAfterException("Encoding Exception happened!", e1);
+		} catch (NoSuchPaddingException e1) {
+			result.resultOK = resetAfterException("Padding Exception happened!", e1);
+		} catch (NoSuchAlgorithmException e1) {
+			result.resultOK = resetAfterException("Algorithm Exception happened!", e1);
+		} catch (IOException e1) {
+			result.resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
+		} catch (InterruptedException e1) {
+			result.resultOK = resetAfterException("Generic Exception occurred :(", e1);
+			result.interrupted = true;
+		} catch (Exception e1) {
+			result.resultOK = resetAfterException("Generic Exception occurred :(", e1);
 		
-		//  CLEAR DATA AND CLOSE PROGRESS BAR
-		if(screepTManager!=null) {
-			screepTManager.disableProgressUpdater();
-			screepTManager.getAesCoder().clearSensitiveData();
+		} finally {
+			coderUsed=false;
+			
+			//  CLEAR DATA AND CLOSE PROGRESS BAR
+			if(screepTManager!=null) {
+				screepTManager.disableProgressUpdater();
+				screepTManager.getAesCoder().clearSensitiveData();
+			}
 		}
 
 		// INFORM USER ABOUT ESIT OF CRYPT OPERATION
-		if(resultOK) {
+		if(result.resultOK) {
 			String msg = "Operation completed succesfully :)";
 			dialogHelper.info(msg, "SUCCESS!");
 			logger.info(msg);
@@ -191,11 +171,13 @@ public class ScreeptManagerFileOrFolder {
 		}else {
 			if(destinationDir != null) {
 				String msg = "Something went wrong :(";
-				dialogHelper.error(msg,"SUCCESS!");
+				dialogHelper.error(msg,"ERROR encrypting source!");
 				logger.error(msg);
 			}
 			else{
-				dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
+				String msg = "No directory selected, export aborted!";
+				dialogHelper.warn(msg, "No directory selected");
+				logger.warn(msg);
 			}
 		}
 		
@@ -203,102 +185,91 @@ public class ScreeptManagerFileOrFolder {
 		opInfo = screepTManager.getOutputStats();
 		screepTManager.killOpenStreams();
 		
-		return resultOK;
+		return result;
 	}
 	
-	public boolean decrYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean shuffle) throws Exception{
+	public CrypterResultDTO decrYpt(CryptoMode mode, File srcFile, File destinationDir, char[] aesKey, File srcKeyImageFile, boolean shuffle) throws Exception{
+		
+		CrypterResultDTO result = new CrypterResultDTO();
 		
 		if (this.generalProgress != null) {
 			this.generalProgress.getDialog().setVisible(true);
 		}
 		
 		this.shuffle = shuffle;
-		boolean resultOK = false;
 		
 		// notify that method is running
 		coderUsed=true;
 
-		if (srcFile!=null && srcFile.exists() && destinationDir!=null) {
-			
-			if(!destinationDir.exists()) {
-				destinationDir.mkdir();
-			}
-			
-			// ONLY AES DECRYPT
-			if (mode.AES && !mode.STEG) {
-				try {
+		try {
+			if (srcFile!=null && srcFile.exists() && destinationDir!=null) {
+				
+				if(!destinationDir.exists()) {
+					destinationDir.mkdir();
+				}
+				
+				// ONLY AES DECRYPT
+				if (mode.AES && !mode.STEG) {
+					
 					screepTManager = initAES(aesKey);
 					
 					// if only one file
 					if (srcFile.isFile()) {
-						resultOK = deCryptCurrentFile(srcFile, destinationDir);
+						result.resultOK = deCryptCurrentFile(srcFile, destinationDir);
 					
 					// if directory selected
 					}else if (srcFile.isDirectory()) {
-						resultOK = deCryptDirAES(srcFile, destinationDir);
+						result.resultOK = deCryptDirAES(srcFile, destinationDir);
 					}
-
-				} catch (UnsupportedEncodingException e1) {
-					resultOK = resetAfterException("Encoding Exception happened!", e1);
-				} catch (NoSuchPaddingException e1) {
-					resultOK = resetAfterException("Padding Exception happened!", e1);
-				} catch (NoSuchAlgorithmException e1) {
-					resultOK = resetAfterException("Algorithm Exception happened!", e1);
-				} catch (IOException e1) {
-					resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
-				} catch (Exception e1) {
-					resultOK = resetAfterException("Generic Exception occurred :(", e1);
-				}
-			
-			// ONLY STEG DECRYPT
-			} else if (!mode.AES && mode.STEG) {
-				try {
-					screepTManager = initSTEG(srcKeyImageFile);
-					
-					if (srcFile.isDirectory()) {
-						resultOK = deCryptDirSTEG(srcFile, destinationDir);
-					}
-
-				} catch (IOException e1) {
-					resultOK = resetAfterException("IO Exception happened!", e1);
-				} catch (STEGException e1) {
-					resultOK = resetAfterException("STEG Exception happened!", e1);
-				} catch (Exception e1) {
-					resultOK = resetAfterException("Generic Exception occurred :(", e1);
-				}
+	
 				
-			// COMPLETE DECRYPT
-			} else if (mode.AES && mode.STEG) {
-				try {
+				// ONLY STEG DECRYPT
+				} else if (!mode.AES && mode.STEG) {
+						
+					screepTManager = initSTEG(srcKeyImageFile);
+						
+					if (srcFile.isDirectory()) {
+						result.resultOK = deCryptDirSTEG(srcFile, destinationDir);
+					}
+	
+				// COMPLETE DECRYPT
+				} else if (mode.AES && mode.STEG) {
+					
 					screepTManager = initCOMPLETE(aesKey, srcKeyImageFile);
 
 					if (srcFile.isDirectory()) {
-						resultOK = deCryptDirSTEG(srcFile, destinationDir);
+						result.resultOK = deCryptDirSTEG(srcFile, destinationDir);
 					}
-
-				} catch (UnsupportedEncodingException e1) {
-					resultOK = resetAfterException("Encoding Exception happened!", e1);
-				} catch (NoSuchPaddingException e1) {
-					resultOK = resetAfterException("Padding Exception happened!", e1);
-				} catch (NoSuchAlgorithmException e1) {
-					resultOK = resetAfterException("Algorithm Exception happened!", e1);
-				} catch (IOException e1) {
-					resultOK = resetAfterException("IO Exception happened!", e1);
-				} catch (STEGException e1) {
-					resultOK = resetAfterException("STEG Exception happened!", e1);
-				} catch (Exception e1) {
-					resultOK = resetAfterException("Generic Exception occurred :(", e1);
-				}
-			} 
-		}
-		coderUsed=false;
+				} 
+			}
+			
+		} catch (UnsupportedEncodingException e1) {
+			result.resultOK = resetAfterException("Encoding Exception happened!", e1);
+		} catch (NoSuchPaddingException e1) {
+			result.resultOK = resetAfterException("Padding Exception happened!", e1);
+		} catch (NoSuchAlgorithmException e1) {
+			result.resultOK = resetAfterException("Algorithm Exception happened!", e1);
+		} catch (IOException e1) {
+			result.resultOK = resetAfterException("Exception occurred moving the result file :(", e1);
+		} catch (STEGException e1) {
+			result.resultOK = resetAfterException("STEG Exception happened!", e1);
+		} catch (InterruptedException e1) {
+			result.resultOK = resetAfterException("Generic Exception occurred :(", e1);
+			result.interrupted = true;
+		} catch (Exception e1) {
+			result.resultOK = resetAfterException("Generic Exception occurred :(", e1);
 		
-		if(screepTManager!=null) {
-			screepTManager.disableProgressUpdater();
+		} finally {
+			
+			coderUsed=false;
+			
+			if(screepTManager!=null) {
+				screepTManager.disableProgressUpdater();
+			}
 		}
 		
 		// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
-		if(resultOK) {
+		if(result.resultOK) {
 			String msg = "Operation completed succesfully :)";
 			dialogHelper.info(msg,"SUCCESS!");
 			logger.info(msg);
@@ -307,10 +278,12 @@ public class ScreeptManagerFileOrFolder {
 		}else {					
 			if (destinationDir != null) {
 				String msg = "Something went wrong :(";
-				dialogHelper.error(msg, null);
+				dialogHelper.error(msg, "Error decrypting source");
 				logger.error(msg);
 			}else{
-				dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
+				String msg = "No directory selected, export aborted!";
+				dialogHelper.warn(msg, "No directory selected");
+				logger.warn(msg);
 			}
 		}
 		
@@ -319,7 +292,7 @@ public class ScreeptManagerFileOrFolder {
 		screepTManager.killOpenStreams();
 		screepTManager.getAesCoder().clearSensitiveData();
 
-		return resultOK;
+		return result;
 	}
 	
 	// exception handler
@@ -379,7 +352,7 @@ public class ScreeptManagerFileOrFolder {
 
 	///////////////////////////////////////////////////////// CRYPT METHODS
 	///////////////////////////////////////////////////////// /////////////////////////////////////////////////////////
-	private boolean cryptCurrentFile(File src, File destinationDir) throws IOException {
+	private boolean cryptCurrentFile(File src, File destinationDir) throws IOException, InterruptedException, Exception {
 		boolean resultOK = false;
 		if (destinationDir != null) {
 
@@ -394,7 +367,7 @@ public class ScreeptManagerFileOrFolder {
 		return resultOK;
 	}
 
-	private boolean cryptDir(File src, File destinationDir) throws IOException {
+	private boolean cryptDir(File src, File destinationDir) throws IOException, InterruptedException, Exception {
 		
 		// set initially to true to avoid having KO when no file is contained in directory - BUGfix
 		boolean resultOK = true;
@@ -432,7 +405,7 @@ public class ScreeptManagerFileOrFolder {
 	}
 
 ///////////////////////////////////////////////////////// DECRYPT METHODS /////////////////////////////////////////////////////////
-	private boolean deCryptCurrentFile(File src, File destinationDir) throws IOException {
+	private boolean deCryptCurrentFile(File src, File destinationDir) throws IOException, InterruptedException, Exception {
 		boolean resultOK = false;
 		
 		if (destinationDir != null) {
@@ -448,7 +421,7 @@ public class ScreeptManagerFileOrFolder {
 		return resultOK;
 	}
 
-	private boolean deCryptDirAES(File src, File destinationDir) throws IOException {
+	private boolean deCryptDirAES(File src, File destinationDir) throws IOException, InterruptedException, Exception {
 		
 		// set initially to true to avoid having KO when no file is contained in directory - BUGfix
 		boolean resultOK = true;
@@ -492,7 +465,7 @@ public class ScreeptManagerFileOrFolder {
 
 	// use this to recognize folder containing STEG/COMPLETE folders that contains
 	// result instead of generic folder
-	private boolean deCryptDirSTEG(File src, File destinationDir) throws IOException {
+	private boolean deCryptDirSTEG(File src, File destinationDir) throws IOException, InterruptedException, Exception {
 		
 		// set initially to true to avoid having KO when no file is contained in directory - BUGfix
 		boolean resultOK = true;
@@ -557,7 +530,15 @@ public class ScreeptManagerFileOrFolder {
 	}
 
 	public String getOutputStats() {
-		return (screepTManager != null)?screepTManager.getOutputStats() : "";
+		return (screepTManager != null) ? screepTManager.getOutputStats() : "";
+	}
+	
+	/**
+	 * Retrieve output stats resetting them
+	 * @return
+	 */
+	public String pollOutputStats() {
+		return (screepTManager != null) ? screepTManager.pollOutputStats() : "";
 	}
 
 	public void setAdvicesEnabled(boolean enabled) {
@@ -584,11 +565,11 @@ public class ScreeptManagerFileOrFolder {
 		this.hashed = hashed;
 	}
 
-	public UpdateProgressPanelMinFork getGeneralProgress() {
+	public UpdateProgressPanelCrypter getGeneralProgress() {
 		return generalProgress;
 	}
 	
-	public void setGeneralProgress(UpdateProgressPanelMinFork generalProgress) {
+	public void setGeneralProgress(UpdateProgressPanelCrypter generalProgress) {
 		this.generalProgress = generalProgress;
 	}
 

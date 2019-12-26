@@ -25,7 +25,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author xx
  *
  */
-public class UpdateProgressPanelMinFork {
+public class UpdateProgressPanelCrypter {
 	
 	public final static int PanelWidth = 400;
 	public final static int PanelHeight = 100;
@@ -51,7 +51,7 @@ public class UpdateProgressPanelMinFork {
     
     // ####################### START CONSTRUCTORS - USE THE ONE WITH TWO PARAMS #################### //
     
-    public UpdateProgressPanelMinFork() {
+    public UpdateProgressPanelCrypter() {
     	
     	progBarEnabled = new AtomicBoolean(true);
     	
@@ -80,7 +80,7 @@ public class UpdateProgressPanelMinFork {
     /**
 	 * @wbp.parser.constructor
 	 */
-    public UpdateProgressPanelMinFork(boolean secondBar) {
+    public UpdateProgressPanelCrypter(boolean secondBar) {
     	
     	progBarEnabled = new AtomicBoolean(true);
     	
@@ -222,6 +222,7 @@ public class UpdateProgressPanelMinFork {
 						}
 
 						if (forceDispose.get()) {
+							stopProcess.set(true);
 							dialog.dispose();
 						}
 					}

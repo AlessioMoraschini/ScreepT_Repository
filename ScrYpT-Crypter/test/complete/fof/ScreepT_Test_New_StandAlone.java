@@ -52,7 +52,7 @@ public class ScreepT_Test_New_StandAlone {
 ////////////////////////////////////////////////////////////////
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testOnlyAEScrypt() throws Exception{
 		
 		try {
@@ -64,7 +64,7 @@ public class ScreepT_Test_New_StandAlone {
 			screepTManagerFof.setAdvicesEnabled(enableAdvices);
 			screepTManagerFof.setHashed(hashed);
 			
-			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_AES, srcFile, resultDir, AES_KEY, null, SHUFFLE_MODE));
+			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_AES, srcFile, resultDir, AES_KEY, null, SHUFFLE_MODE).resultOK);
 			
 			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
@@ -95,7 +95,7 @@ public class ScreepT_Test_New_StandAlone {
 			
 			File resultDir =new File(TEMP_DIR);
 			
-			assertTrue(screepTManagerFof.decrYpt(CryptoMode.ONLY_AES, codedFileAES, resultDir, AES_KEY, null, false));
+			assertTrue(screepTManagerFof.decrYpt(CryptoMode.ONLY_AES, codedFileAES, resultDir, AES_KEY, null, false).resultOK);
 			
 			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
@@ -124,7 +124,7 @@ public class ScreepT_Test_New_StandAlone {
 			
 			TestUtils.printl(srcFile.getName()+" has "+srcFile.length()+"bytes");
 			
-			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_STEG, srcFile, resultDir, AES_KEY, keyIMG, SHUFFLE_MODE));
+			assertTrue(screepTManagerFof.crYpt(CryptoMode.ONLY_STEG, srcFile, resultDir, AES_KEY, keyIMG, SHUFFLE_MODE).resultOK);
 			
 			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
@@ -155,7 +155,7 @@ public class ScreepT_Test_New_StandAlone {
 			
 			TestUtils.printl(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
 			
-			assertTrue(screepTManagerFof.decrYpt(CryptoMode.ONLY_STEG, srcFile, codedFolderSTEG, AES_KEY, keyIMG, false));
+			assertTrue(screepTManagerFof.decrYpt(CryptoMode.ONLY_STEG, srcFile, codedFolderSTEG, AES_KEY, keyIMG, false).resultOK);
 
 			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
@@ -191,7 +191,7 @@ public class ScreepT_Test_New_StandAlone {
 			
 			System.out.println(srcFile.getName()+" has "+srcFile.length()+"bytes");
 			
-			assertTrue(screepTManagerFof.crYpt(CryptoMode.COMPLETE, srcFile, resultDir, AES_KEY, keyIMG, SHUFFLE_MODE));
+			assertTrue(screepTManagerFof.crYpt(CryptoMode.COMPLETE, srcFile, resultDir, AES_KEY, keyIMG, SHUFFLE_MODE).resultOK);
 
 			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			
@@ -225,7 +225,7 @@ public class ScreepT_Test_New_StandAlone {
 			
 			System.out.println(codedFolderSTEG.getName()+" has "+codedFolderSTEG.listFiles().length+"bytes");
 			
-			assertTrue(screepTManagerFof.decrYpt(CryptoMode.COMPLETE, srcFile, resultDir, AES_KEY, keyIMG, false));
+			assertTrue(screepTManagerFof.decrYpt(CryptoMode.COMPLETE, srcFile, resultDir, AES_KEY, keyIMG, false).resultOK);
 
 			TestUtils.printl("TEMP_RESULTS_PATH -> " + screepTManagerFof.screepTManager.TEMP_PATH);
 			

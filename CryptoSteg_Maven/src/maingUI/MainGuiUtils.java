@@ -26,7 +26,7 @@ import amfileutils.filechangewatcher.FileChangeMonitor;
 import dialogutils.JOptionHelper;
 import exception.ProgressBarInterruptedException;
 import frameutils.utils.GuiUtils;
-import gUI.panels.ChargeIniLog;
+import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettings;
@@ -298,7 +298,7 @@ public class MainGuiUtils {
 			public void run() {
 				
 				// start correct panel
-				if(ChargeIniLog.class.equals(target)) {
+				if(ConfigurationManagerPanel.class.equals(target)) {
 					startConfigManagerPanel(true);
 				}else if(TextEditor.class.equals(target)) {
 					startTextEditor(true);
@@ -343,7 +343,7 @@ public class MainGuiUtils {
 		
 		if (mainAppReference.configManagerPanel == null || forceStart) {
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-			mainAppReference.configManagerPanel = new ChargeIniLog(MainGUI.currentConfiguration, mainAppReference);
+			mainAppReference.configManagerPanel = new ConfigurationManagerPanel(MainGUI.currentConfiguration, mainAppReference);
 		}
 		
 		mainAppReference.configManagerPanel.splitPane.setDividerLocation(300);
@@ -352,9 +352,9 @@ public class MainGuiUtils {
 		
 		replaceMainPanel(mainAppReference.configManagerPanel);
     	
-    	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ChargeIniLog.class);
+    	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ConfigurationManagerPanel.class);
     	MainGUI.currentConfiguration.writeSingleValue(
-		INItializer.GEN_OPT, "lastPanelOpened", ChargeIniLog.class.getCanonicalName());
+		INItializer.GEN_OPT, "lastPanelOpened", ConfigurationManagerPanel.class.getCanonicalName());
     	
     	refreshGUIlaf();
     	
@@ -370,7 +370,7 @@ public class MainGuiUtils {
 		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof CrypterPanel;
 	}
 	public boolean isConfManagerActive() {
-		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof ChargeIniLog;
+		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof ConfigurationManagerPanel;
 	}
 	
 	public void updateTitleRightPart(String newSuffix) {
@@ -510,7 +510,7 @@ public class MainGuiUtils {
 		ArrayList<String> resettablePanels = new ArrayList<String>();
 		resettablePanels.add(TextEditor.class.getSimpleName());
 		resettablePanels.add(CrypterPanel.class.getSimpleName());
-		resettablePanels.add(ChargeIniLog.class.getSimpleName());
+		resettablePanels.add(ConfigurationManagerPanel.class.getSimpleName());
 		return resettablePanels;
 	}
 	

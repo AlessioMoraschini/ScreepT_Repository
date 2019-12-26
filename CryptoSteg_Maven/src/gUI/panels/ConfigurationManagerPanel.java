@@ -45,7 +45,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -64,11 +63,11 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import java.awt.Dimension;
 
-public class ChargeIniLog extends ModulePanel {
+public class ConfigurationManagerPanel extends ModulePanel {
 	private static final long serialVersionUID = 5166978306767024195L;
 
 	// INItializer logger creation		
-	static Logger logger = Logger.getLogger(ChargeIniLog.class); 
+	static Logger logger = Logger.getLogger(ConfigurationManagerPanel.class); 
 	
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hh:mm:ss");
 	
@@ -76,7 +75,7 @@ public class ChargeIniLog extends ModulePanel {
 	
 	private INItializer config;
 	public MainGUI parent;
-	private ChargeIniLog thisPanel;
+	private ConfigurationManagerPanel thisPanel;
 	
 	// GUI ELEMENTS //
 	public RSyntaxTextArea textArea;
@@ -106,7 +105,7 @@ public class ChargeIniLog extends ModulePanel {
 	private TextAreaDialogs textAreaDialogs;
 	private FindDialog searchBox;
 
-	public ChargeIniLog(INItializer configuration, MainGUI parentFrame) {
+	public ConfigurationManagerPanel(INItializer configuration, MainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
 		
 		thisPanel = this;
@@ -298,6 +297,7 @@ public class ChargeIniLog extends ModulePanel {
 	public void applyTextAreaStyle(){
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				
 				boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null
 						&& GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(Themes.DARK.fileName);
 				if (usePreloadedStringXml) {
@@ -314,16 +314,11 @@ public class ChargeIniLog extends ModulePanel {
 				textArea.setEditable(true);
 				textArea.setEnabled(true);
 				textArea.setSelectedTextColor(Color.LIGHT_GRAY);
-				RsyntaxUtils.setFont(textArea, new Font("DejaVu Sans", Font.PLAIN, config.getGuiOpt().getLogFontSize()));
 				textArea.setMargin(new Insets(20, 20, 20, 20));
+				textArea.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 				FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
 				textArea.revalidate();
 				textArea.repaint();
-				textArea.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-				RsyntaxUtils.setFont(textArea, new Font("Segoe UI", Font.PLAIN, 17));
-//				for (MouseListener listener : textArea.getMouseListeners()) {
-//					textArea.removeMouseListener(listener);
-//				}
 			}
 		});
 	}

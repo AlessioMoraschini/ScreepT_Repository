@@ -36,11 +36,12 @@ import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
+import om.CrypterResultDTO;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import splitpanel.SplitPaneUtils;
 import treeutils.om.FileTreeModel;
-import util.UpdateProgressPanelMinFork;
+import util.UpdateProgressPanelCrypter;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
@@ -251,7 +252,7 @@ public class CrypterPanel extends ModulePanel {
 	private JSeparator separatorDragNDropTitle;
 	public static VirtualFileDropPane panelVDragNDropPane;
 	
-	public UpdateProgressPanelMinFork generalProgress;
+	public UpdateProgressPanelCrypter generalProgress;
 	public JOptionHelper dialogHelper;
 	
 	int leftVerticalDivHeight;
@@ -274,7 +275,7 @@ public class CrypterPanel extends ModulePanel {
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		thisPanel = this;
-		dialogHelper = new JOptionHelper(null, true);
+		dialogHelper = new JOptionHelper(this, true);
 		screeptManagerFoF = new ScreeptManagerFileOrFolder(generalProgress, thisPanel, false);
 		parentFrame=parent.getMainFrame();
 		mainApplication = parent;
@@ -875,8 +876,7 @@ public class CrypterPanel extends ModulePanel {
 					textAreaMain.append("Chosen input: " + destinationDir + "\n\n");
 				}
 
-				// boolean value representing if everything went good
-				boolean resultOK = false;
+				CrypterResultDTO result = new CrypterResultDTO();
 
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode) comboModeCrypto.getSelectedItem();
@@ -884,7 +884,7 @@ public class CrypterPanel extends ModulePanel {
 
 				if (destinationDir != null) {
 
-					generalProgress = new UpdateProgressPanelMinFork(true);
+					generalProgress = new UpdateProgressPanelCrypter(true);
 					generalProgress.setLocationRelativeTo(parentFrame);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
@@ -925,9 +925,9 @@ public class CrypterPanel extends ModulePanel {
 
 						boolean shuffle = chckbxShuffle.isSelected() && chckbxShuffle.isEnabled();
 						try {
-							resultOK = screeptManagerFoF.decrYpt(mode, currentFile, destinationDir, AESKEYtext.getPassword(), srcKeyImageFile, shuffle);
+							result = screeptManagerFoF.decrYpt(mode, currentFile, destinationDir, AESKEYtext.getPassword(), srcKeyImageFile, shuffle);
 						} catch (Exception e) {
-							resultOK = false;
+							result.resultOK = false;
 						}
 					}
 
@@ -938,29 +938,39 @@ public class CrypterPanel extends ModulePanel {
 					generalProgress.update(100, null, true);
 				}
 				// INFORM USER ABOUT ESIT OF DECRYPT OPERATION
-				if (resultOK) {
+				if (result.resultOK) {
 					String msg = "Operation completed succesfully!\nDo you want to empty source file pool?";
 					if (dialogHelper.yesOrNo(msg, "SUCCESS!")) {
 						removeTreeFiles();
 					}
+					
 					GuiUtils.openInFileSystem(destinationDir);
 
 					textAreaLog.append("\n" + msg);
-					textAreaMain.append(screeptManagerFoF.getOutputStats());
-					tabbedPane.setSelectedIndex(0);
 					srcFile = null;
 
 				} else {
-					if (destinationDir != null) {
+					if(result.interrupted) {
+						String msg = "Process interrupted.";
+						dialogHelper.info(msg, null);
+						textAreaLog.append("\n" + msg);
+						
+						askUserIfWantsToDelete(destinationDir);
+						
+					} else if (destinationDir != null) {
 						String msg = "Something went wrong :(";
 						dialogHelper.error(msg, null);
 						textAreaLog.append("\n" + msg);
-						textAreaMain.append(screeptManagerFoF.getOutputStats());
-						tabbedPane.setSelectedIndex(0);
+						
+						askUserIfWantsToDelete(destinationDir);
 					} else {
 						dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
 					}
+
 				}
+
+				textAreaMain.append(screeptManagerFoF.getOutputStats());
+				tabbedPane.setSelectedIndex(0);
 
 				if (flagCreateNewMonitor && fileMonitor == null) {
 					fileMonitor = new FileChangeMonitor(destinationDir, null);
@@ -968,7 +978,7 @@ public class CrypterPanel extends ModulePanel {
 
 				textAreaMain.append("\n\n => Completed !\n\n #####################################################");
 
-				runRunnableImpExp(resultOK, destinationDir);
+				runRunnableImpExp(result.resultOK, destinationDir);
 			}
 		};
 	}
@@ -988,8 +998,7 @@ public class CrypterPanel extends ModulePanel {
 				// retrieve source file array from dragNDrop panel
 				srcFiles = panelVDragNDropPane.getTreeNodes();
 				
-				// boolean value representing if everything went good
-				boolean resultOK = false;
+				CrypterResultDTO result = new CrypterResultDTO();
 				
 				// first recognize selected combo Mode selected
 				mode = (CryptoMode)comboModeCrypto.getSelectedItem();
@@ -998,7 +1007,7 @@ public class CrypterPanel extends ModulePanel {
 				
 				if (destinationDir!= null) {
 					
-					generalProgress = new UpdateProgressPanelMinFork(true);
+					generalProgress = new UpdateProgressPanelCrypter(true);
 					generalProgress.setLocationRelativeTo(parentFrame);
 					screeptManagerFoF.setGeneralProgress(generalProgress);
 					generalProgress.toFront();
@@ -1038,9 +1047,9 @@ public class CrypterPanel extends ModulePanel {
 						
 						boolean shuffle = chckbxShuffle.isSelected() && chckbxShuffle.isEnabled();
 						try {
-							resultOK = screeptManagerFoF.crYpt(mode, currentFile, destinationDir, AESKEYtext.getPassword(), srcKeyImageFile, shuffle);
+							result = screeptManagerFoF.crYpt(mode, currentFile, destinationDir, AESKEYtext.getPassword(), srcKeyImageFile, shuffle);
 						} catch (Exception e) {
-							resultOK = false;
+							result.resultOK = false;
 						}
 					} 
 					textAreaMain.append(screeptManagerFoF.getOutputStats());
@@ -1050,39 +1059,64 @@ public class CrypterPanel extends ModulePanel {
 					generalProgress.update(100, null, true);
 				}
 				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
-				if(resultOK) {
+				if(result.resultOK) {
 					String msg = "Operation completed succesfully!\nDo you want to empty source file pool?";
 					if(JOptionPane.showConfirmDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE)==JOptionPane.OK_OPTION) {
 						removeTreeFiles();
 					}
+					
 					GuiUtils.openInFileSystem(destinationDir);
 					
 					logger.info(msg);
 					textAreaLog.append("\n" + msg);
-					textAreaMain.append(screeptManagerFoF.getOutputStats());
-					tabbedPane.setSelectedIndex(0);
+					
 					srcFile = null;
 					
-					
 				}else {
-					if(destinationDir != null) {
+					if(result.interrupted) {
+						String msg = "Process interrupted.";
+						dialogHelper.info(msg, "Process Interrupted");
+						textAreaLog.append("\n" + msg);
+						
+						askUserIfWantsToDelete(destinationDir);
+						
+					} else if(destinationDir != null) {
 						String msg = "Something went wrong :(";
-						dialogHelper.error(msg,"SUCCESS!");
+						dialogHelper.error(msg,"An error occurred");
 						logger.error(msg);
 						textAreaLog.append("\n" + msg);
-						textAreaMain.append(screeptManagerFoF.getOutputStats());
-						tabbedPane.setSelectedIndex(0);
+						
+						askUserIfWantsToDelete(destinationDir);
 					}
 					else{
 						dialogHelper.warn("No directory selected, export aborted!", "No directory selected");
 					}
 				}
 				
+				textAreaMain.append(screeptManagerFoF.getOutputStats());
+				tabbedPane.setSelectedIndex(0);
+				
 				textAreaMain.append("\n\n => Completed !\n\n #####################################################");
 				
-				runRunnableImpExp(resultOK, destinationDir);
+				runRunnableImpExp(result.resultOK, destinationDir);
 			}
 		};
+	}
+	
+	private void askUserIfWantsToDelete(File resultDirectory) {
+		if(resultDirectory != null && resultDirectory.isDirectory() && resultDirectory.exists()) {
+			logger.debug("Asking to user if he wants to delete directory: " + resultDirectory);
+			if(dialogHelper.showInfoYNDialogOnTop("Do you want to delete " + resultDirectory + "'s content?", "Delete content?", JOptionPane.INFORMATION_MESSAGE)) {
+				boolean result = FileStuff.deleteDirContentRecursive(resultDirectory);
+				
+				if(result) {
+					dialogHelper.showInfoOKDialogOnTop(resultDirectory + "'s content deleted.", "Directory cleaned", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					dialogHelper.showInfoOKDialogOnTop("Cannot delete all content in " + resultDirectory, "Cannot clean directory.", JOptionPane.WARNING_MESSAGE);
+					GuiUtils.openInFileSystem(resultDirectory);
+				}
+			}
+		}
 	}
 	
 	private void runRunnableImpExp(boolean resultOK, File destinationDir) {
@@ -1352,7 +1386,7 @@ public class CrypterPanel extends ModulePanel {
 			ready = false;
 		}
 		
-		if(AESKEYtext.getText().equals("") && selectedMode.isAES()) {
+		if(AESKEYtext.getPassword().length == 0 && selectedMode.isAES()) {
 			// MISSING AES KEY
 			checkEsit += " - missing AES key - ";
 			ready = false;

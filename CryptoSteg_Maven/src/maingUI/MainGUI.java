@@ -52,7 +52,7 @@ import gUI.frames.ImportExportWorkspcCryptFrame;
 import gUI.frames.KeyDictionaryPanel;
 import gUI.frames.KeyGenFrame;
 import gUI.frames.TutorialFrame;
-import gUI.panels.ChargeIniLog;
+import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.filedialog.DirectoryManagementGUI;
@@ -344,7 +344,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 							mainGuiUtils.startTextEditor(true);
 						} else if (lastOpened.equals(CrypterPanel.class)) {
 							mainGuiUtils.startCrypterPanel(true);
-						} else if (lastOpened.equals(ChargeIniLog.class)) {
+						} else if (lastOpened.equals(ConfigurationManagerPanel.class)) {
 							mainGuiUtils.startConfigManagerPanel(true);
 						}
 					}
@@ -568,7 +568,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					mainGuiUtils.resetPanel(ChargeIniLog.class, MainGUI.frmScryptV);
+					mainGuiUtils.resetPanel(ConfigurationManagerPanel.class, MainGUI.frmScryptV);
 		    	}
 			}
 		});
@@ -579,7 +579,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		    	if (!FLAG_savePrjSub) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSub = true;
-		    		ChargeIniLog.saveCurrentConf(currentConfiguration, frmScryptV);
+		    		ConfigurationManagerPanel.saveCurrentConf(currentConfiguration, frmScryptV);
 		    		FLAG_savePrjSub = false;
 				}  	
 		    }

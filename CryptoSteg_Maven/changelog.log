@@ -1,4 +1,6 @@
-* 2019-12-25  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved import/export crypted workspace + various bugs fixed
+* 2019-12-26  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved graphics, launcher, and default properties
+| 
+* 2019-12-25  Improved import/export crypted workspace + various bugs fixed
 | 
 * 2019-12-22  Refactored main menubar, introduced import/export crypted workspace + BUGFIX
 | 

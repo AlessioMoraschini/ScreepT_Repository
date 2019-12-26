@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
 
 import amfileutils.om.FileNamed;
 import frameutils.utils.GuiUtils;
-import gUI.panels.ChargeIniLog;
+import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import generic.LimitedConcurrentList;
@@ -153,7 +153,7 @@ public class MainGuiParent {
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	public static TextEditor initTxtWriter;
 	public static CrypterPanel panelCrypter;
-	public ChargeIniLog configManagerPanel;
+	public ConfigurationManagerPanel configManagerPanel;
 	
 	public static MainGuiUtils mainGuiUtils;
 	

@@ -201,13 +201,21 @@ public class ScrYpTLauncher {
 	loaderGraphics.update("Analyzing System...", 45);
 		analyzeBeforeLauncher();
 		
-		// if there aren't blocking problems and direct launch configured -> launch directly
+		// if there aren't blocking problems and direct launch configured or args are present -> launch directly
 		// NB incompatible jvm is potential blocking cause for medium user, so by default when jvm is "warning" launcher panel will be prompted
 		if(!JvmHelper.warningJVM && criticalDependenciesOK && (iniFileManager.hideNStartDirect || ARGS.length != 0)) {
-			loaderGraphics.update("Ready", 600);
+			
 			appLogEnd();
 			
 			launchCommands();
+			
+			loaderGraphics.update("Ready", 101);
+			
+			try {
+				Thread.sleep(800);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			
 			System.exit(0);
 		}

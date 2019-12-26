@@ -47,6 +47,9 @@ public class FileCellRendererIni implements TreeCellRenderer {
         	iconContainer.setForeground(Color.DARK_GRAY);
         }
         
+        iconContainer.revalidate();
+        iconContainer.repaint();
+        
         return iconContainer;
     }
 

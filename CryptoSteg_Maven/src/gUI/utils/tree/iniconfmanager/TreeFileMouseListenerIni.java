@@ -24,7 +24,7 @@ import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
 import frameutils.utils.GuiUtils;
-import gUI.panels.ChargeIniLog;
+import gUI.panels.ConfigurationManagerPanel;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
@@ -41,14 +41,14 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	
 	// gui elements
 	private INItializer currentConfig;
-	private ChargeIniLog confManagerPanel;
+	private ConfigurationManagerPanel confManagerPanel;
 
 	public TreeFileMouseListenerIni(Component parent) {
 		super(parent);
 	};
 	
 	// constructor
-	public TreeFileMouseListenerIni(INItializer currentConf, ChargeIniLog parent, JTree treeIn) {
+	public TreeFileMouseListenerIni(INItializer currentConf, ConfigurationManagerPanel parent, JTree treeIn) {
 		currentConfig = currentConf;
 		confManagerPanel = parent;
 		tree = treeIn;
@@ -171,6 +171,8 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 				if (newName.equals("")) {
 					return;
 				}
+				
+				newName = FileStuff.ensureValidExtension(newName, "ini");
 				
 				File newFile = FileStuff.renameJavaObjFile(new File(defaultFolder.getAbsolutePath() + "/" + newName));
 				

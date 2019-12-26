@@ -28,13 +28,12 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
 import util.CustomFileComparator;
-import util.EntrophyzerUtils;
 import crypt.steg.StegOmResult;
 import crypt.steg.STEGException;
 import util.ImageEncodingUtils;
 import util.SafeLogger;
 import util.ScreeptUtils;
-import util.UpdateProgressPanelMinFork;
+import util.UpdateProgressPanelCrypter;
 
 /**
  * 
@@ -97,7 +96,7 @@ public class ScreeptManager {
 	
 	private byte[] buffer;
 	
-	private volatile UpdateProgressPanelMinFork progUpdater;
+	private volatile UpdateProgressPanelCrypter progUpdater;
 	
 	boolean wellDone = false;
 	
@@ -194,11 +193,11 @@ public class ScreeptManager {
 	 * @throws InvalidKeyException 
 	 * @throws STEGException 
 	 */
-	public Boolean crypt(File srcFile, UpdateProgressPanelMinFork progressBarGeneral) {
+	public Boolean crypt(File srcFile, UpdateProgressPanelCrypter progressBarGeneral) throws Exception, InterruptedException{
 
 		buffer = new byte[AES_BUFFER_SIZE];
 		
-		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMinFork(false);
+		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelCrypter(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Starting encryption...");
 
@@ -283,6 +282,7 @@ public class ScreeptManager {
 			}	
 		}catch(Exception e) {
 			resetAfterException(e);
+			throw e;
 		}
 			
 		logger.debug("Streams closed, exiting encription.");
@@ -300,7 +300,7 @@ public class ScreeptManager {
 	 * incremental names found in the same folder
 	 * 
 	 */
-	public Boolean deCrypt(File srcFile, UpdateProgressPanelMinFork progressBarGeneral) {
+	public Boolean deCrypt(File srcFile, UpdateProgressPanelCrypter progressBarGeneral) throws Exception, InterruptedException {
 		
 		progUpdater = progressBarGeneral;
 		
@@ -308,7 +308,7 @@ public class ScreeptManager {
 		// to avoid errors i've to include that bytes during the read plus the IV size
 		buffer = new byte[AES_BUFFER_SIZE+32];
 		
-		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelMinFork(false);
+		progUpdater = (progressBarGeneral != null) ? progressBarGeneral : new UpdateProgressPanelCrypter(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Starting Decryption...");
 		
@@ -374,6 +374,7 @@ public class ScreeptManager {
 			}	
 		}catch(Exception e) {
 			resetAfterException(e);
+			throw e;
 		}
 		
 		logger.debug("Streams closed, exiting decription.");
@@ -389,14 +390,11 @@ public class ScreeptManager {
 		progUpdater.getPb().setValue(100);
 		progUpdater.forceClose();
 		logger.error(msg, e);
+		logger.debug("Streams closed, exiting encription.");
 		tempMSG += msg;
+		tempMSG += "\n => Streams closed after error or interruption, exiting coding process.";
 		wellDone = false;
 		killOpenStreams();
-		try {
-			
-		} catch(Throwable throwable) {
-			currentOutFile.delete();
-		}
 	}
 	
 	// Function that delete the content of the temporaneous folder.
@@ -426,9 +424,11 @@ public class ScreeptManager {
 	}
 	
 	// Function that implements encryption of source file into another crypted file with same extension.
-	private void onlyAESCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
+	private void onlyAESCrypt(File srcFile) throws 
+			IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, 
+			InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, BadLocationException, InterruptedException {
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelCrypter(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -474,6 +474,8 @@ public class ScreeptManager {
 		
 		while(readFlag > 0) {
 			
+			checkInterruptedProgress();
+			
 			// encrypt current buffer content and write it to temp out file
 			byte[] partialResult = aesCoder.encrypt(buffer, hashed, shuffleResult);	
 			outWriter.write(partialResult);
@@ -507,9 +509,11 @@ public class ScreeptManager {
 	}
 	
 	// Function that implements aes decryption of source file into another decrypted file with same extension.
-	private void onlyAESDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, BadLocationException {
+	private void onlyAESDeCrypt(File srcFile) throws 
+			IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, 
+			InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, BadLocationException, InterruptedException {
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelCrypter(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -554,6 +558,8 @@ public class ScreeptManager {
 		
 		while(readFlag > 0) {
 			
+			checkInterruptedProgress();
+			
 			// encrypt current buffer content and write it to temp out file
 			byte[] partialResult = aesCoder.decrypt(buffer);				
 			outWriter.write(partialResult);
@@ -586,10 +592,10 @@ public class ScreeptManager {
 	
 	// Function that implements encryption of source file into several .png images without using pre-AES coding.
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
-	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException {
+	private void onlySTEGCrypt(File srcFile) throws IOException, STEGException, InterruptedException {
 
 		if(progUpdater == null) 
-			progUpdater = new UpdateProgressPanelMinFork(false);
+			progUpdater = new UpdateProgressPanelCrypter(false);
 		
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
@@ -630,6 +636,8 @@ public class ScreeptManager {
 		int n = 1;
 		File outFile;
 		while(readFlag > 0) {
+			
+			checkInterruptedProgress();
 			
 			// crypt current buffer into image
 			StegOmResult result = imgCoder.stegaCrypt4ByteXor(buffer, shuffleResult);
@@ -680,9 +688,9 @@ public class ScreeptManager {
 	
 	// Function that implements decryption of source file into several .png images without using pre-AES coding.
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
-	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException {
+	private void onlySTEGDeCrypt(File srcFile) throws IOException, STEGException, InterruptedException {
 
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelCrypter(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -726,6 +734,8 @@ public class ScreeptManager {
 		
 		for(File iFile : cryptedImgList) {
 			
+			checkInterruptedProgress();
+			
 			// retrieve number of coded bytes into image from file name - the second element in name
 			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
 			// retrieve shuffled mode from file name - the third element in name
@@ -763,9 +773,11 @@ public class ScreeptManager {
 	// Function that implements encryption of source file into several .png images using pre-AES coding.
 	// the images are written in the temp folder with incremental name, each one of the same size of the key image.
 	// this is method for top security
-	private void completeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException {
+	private void completeCrypt(File srcFile) throws 
+			IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, 
+			InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException, InterruptedException {
 				
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelCrypter(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Encripting "+srcFile.getName());
 		
@@ -818,6 +830,8 @@ public class ScreeptManager {
 		int progN = 0;
 		
 		while(readFlag > 0) {
+			
+			checkInterruptedProgress();
 			
 			progUpdater.getLabel().setText("Crypting "+srcFile.getName());
 
@@ -878,9 +892,10 @@ public class ScreeptManager {
 	
 	// this function implement the decription of several (0-n) images containing crypted values, using the encryption key image.
 	// the resulting bytes are decripted also with AES key once STEG-decripted, before to be written on the output file.
-	private void completeDeCrypt(File srcFile) throws IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException {
+	private void completeDeCrypt(File srcFile) throws 
+			IOException, AESException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, BadPaddingException, IllegalBlockSizeException, STEGException, BadLocationException, InterruptedException {
 		
-		if(progUpdater == null) progUpdater = new UpdateProgressPanelMinFork(false);
+		if(progUpdater == null) progUpdater = new UpdateProgressPanelCrypter(false);
 		progUpdater.getPb().setValue(0);
 		progUpdater.getLabel().setText("Decripting "+srcFile.getName());
 		
@@ -930,6 +945,8 @@ public class ScreeptManager {
 		int i = 1;
 		
 		for(File iFile : cryptedImgList) {
+			
+			checkInterruptedProgress();
 			
 			// retrieve number of coded bytes into image from file name - the second element in name
 			int bytesToGet = Integer.valueOf(iFile.getName().split("_")[1]);
@@ -1061,6 +1078,14 @@ public class ScreeptManager {
 		}
 	}
 	
+	public void checkInterruptedProgress() throws InterruptedException {
+		if (this.progUpdater != null && this.progUpdater.progBarEnabled != null) {
+			if(this.progUpdater.stopProcess.get()) {
+				this.progUpdater.forceCloseNExceptionSignal();
+			}
+		}
+	}
+	
 	//////////////////////
 	// GETTERS & SETTERS /
 	//////////////////////
@@ -1151,6 +1176,16 @@ public class ScreeptManager {
 	 */
 	public String getOutputStats() {
 		return tempMSG;
+	}
+
+	/**
+	 * used to retrieve message by screept manager and reset them
+	 * @return
+	 */
+	public String pollOutputStats() {
+		String outputStatsCloned = new String(tempMSG);
+		tempMSG = "";
+		return outputStatsCloned;
 	}
 
 	public boolean isShuffleResult() {
