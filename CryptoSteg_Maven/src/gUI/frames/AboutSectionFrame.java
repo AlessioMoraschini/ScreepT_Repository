@@ -30,6 +30,7 @@ import java.io.IOException;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Insets;
 
 public class AboutSectionFrame extends ParentFrame{
@@ -37,6 +38,8 @@ public class AboutSectionFrame extends ParentFrame{
 
 	// initialize Logger
 	static Logger logger = Logger.getLogger(AboutSectionFrame.class); 
+	
+	public static AboutSectionFrame singletonInstance = null;
 	
 	// GUI ELEMENTS //
 	private JLabel lblTitle;
@@ -56,6 +59,8 @@ public class AboutSectionFrame extends ParentFrame{
 		isActive.set(true);
 		
 		logger.info(this.getClass().getName() + " Starting...");
+		
+		setTitle("About");
 		
 		// INIT REFERENCES
 		mainApp = main;
@@ -168,6 +173,7 @@ public class AboutSectionFrame extends ParentFrame{
 				logger.info(this.getClass().getName() + " Closed");
 				mainAppFrame.setEnabled(true);
 				mainAppFrame.requestFocus();
+				singletonInstance = null;
 	        	dispose();
 		    }
 		});
@@ -181,4 +187,12 @@ public class AboutSectionFrame extends ParentFrame{
 		});
 	}
 	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(450, 400);
+	}
+	
+	public static AboutSectionFrame getInstance(MainGUI mainApplication) {
+		return singletonInstance == null ? new AboutSectionFrame(mainApplication) : singletonInstance;
+	}
 }

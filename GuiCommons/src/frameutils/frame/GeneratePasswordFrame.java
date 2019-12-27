@@ -29,6 +29,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 public class GeneratePasswordFrame extends ParentFrame{
 	private static final long serialVersionUID = 7066597918430250412L;
+	
+	public static GeneratePasswordFrame singletonInstance = null;
 
 	private char[] possibleCharacters = 
 			new String(
@@ -49,7 +51,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 		
 		logger.info(this.getClass().getName() + " - Starting...");
 		
-		setTitle(GeneralConfig.APPLICATION_NAME + " - Generate Password");
+		setTitle("Generate Password - " + GeneralConfig.APPLICATION_NAME);
 		
 		this.setMinimumSize(new Dimension(650, 60));
 
@@ -97,6 +99,17 @@ public class GeneratePasswordFrame extends ParentFrame{
 	
 	private void addHandlers() {
 		
+		// DEFAULT CLOSE ACTIONS 
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	
+		    	singletonInstance = null;
+		    	
+		    	dispose();
+		    }
+	    });
+		
 		btnGenerate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -142,5 +155,14 @@ public class GeneratePasswordFrame extends ParentFrame{
 	public void unforceLentgh(int length) {
 		spinnerLength.setValue(length);
 		spinnerLength.setEnabled(true);
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(650, 110);
+	}
+	
+	public static GeneratePasswordFrame getInstance(JFrame parentFrame) {
+		return singletonInstance == null ? new GeneratePasswordFrame(parentFrame) : singletonInstance;
 	}
 }

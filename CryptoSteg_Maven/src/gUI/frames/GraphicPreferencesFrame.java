@@ -64,47 +64,46 @@ import java.awt.ComponentOrientation;
 public class GraphicPreferencesFrame extends ParentFrame {
 	private static final long serialVersionUID = 6658781789560743187L;
 	
-	public static final int DEF_W = 900;
-	public static final int DEF_H = 510;
+	public static GraphicPreferencesFrame singletonInstance = null;
 
 	// initialize Logger
 	// GraphicPreferencesFrame logger
 	static Logger logger = Logger.getLogger(GraphicPreferencesFrame.class);
 	
 	// default values
-	private static String BACKUP_PREFERRED_STYLE;
-	private static String BACKUP_PREFERRED_THEME_NAME;
-	private static int BACKUP_MENU_FONT_SIZE;
-	private static int BACKUP_LOG_PANEL_FONT_SIZE;
-	private static boolean BACKUP_DARK_THEME;
-	private static int BACKUP_NIMBUS_SIZE;
+	private String BACKUP_PREFERRED_STYLE;
+	private String BACKUP_PREFERRED_THEME_NAME;
+	private int BACKUP_MENU_FONT_SIZE;
+	private int BACKUP_LOG_PANEL_FONT_SIZE;
+	private boolean BACKUP_DARK_THEME;
+	private int BACKUP_NIMBUS_SIZE;
 
-	private static Locale BACKUP_LOCALE;
+	private Locale BACKUP_LOCALE;
 	// DETAIL
-	private static boolean BACKUP_TXTAREA_ANTIALIASED;
-	private static boolean BACKUP_TXTAREA_AUTO_INDENT;
-	private static boolean BACKUP_TXTAREA_ANIMATE_BRACKETS;
-	private static boolean BACKUP_TXTAREA_HIGHLIGHT_BRACKET_PAIRS;
-	private static boolean BACKUP_TXTAREA_BRACKET_MATCHING;
-	private static boolean BACKUP_TXTAREA_SHOW_WHITESPACES;
-	private static boolean BACKUP_TXTAREA_CLEAR_WHITESP_LINES;
-	private static boolean BACKUP_TXTAREA_CLOSE_CURLY_BRACE;
-	private static boolean BACKUP_TXTAREA_CLOSE_MARKUP_TAG;
-	private static boolean BACKUP_TXTAREA_CODE_FOLDING;
-	private static boolean BACKUP_TXTAREA_CURR_LINE_HIGHLIGHT;
-	private static boolean BACKUP_TXTAREA_FRACT_FONT_METRICS;
-	private static boolean BACKUP_TXTAREA_HIGLIGHT_2ND_LANG;
-	private static boolean BACKUP_TXTAREA_HYPERLINKS;
-	private static boolean BACKUP_TXTAREA_MARK_OCCURRENCES;
-	private static boolean BACKUP_TXTAREA_PAINT_MARK_OCCURRENCES;
-	private static boolean BACKUP_TXTAREA_ROUND_SEL_EDGES;
-	private static boolean BACKUP_TXTAREA_FOCUSABLE_TIPS;
-	private static boolean BACKUP_TXTAREA_TABSPACES_EMULATED;
-	private static boolean BACKUP_TXTAREA_SHOW_BRACKETS_POPUP;
-	private static boolean BACKUP_TXTAREA_SHOW_EOL_DELIM;
-	private static boolean BACKUP_TXTAREA_AUTOCHECK_CHANGES;
-	private static boolean BACKUP_SYNC_CLIPBOARD_STYLE;
-	private static String BACKUP_TXTAREA_SPECCLCHECKER_DICT;
+	private boolean BACKUP_TXTAREA_ANTIALIASED;
+	private boolean BACKUP_TXTAREA_AUTO_INDENT;
+	private boolean BACKUP_TXTAREA_ANIMATE_BRACKETS;
+	private boolean BACKUP_TXTAREA_HIGHLIGHT_BRACKET_PAIRS;
+	private boolean BACKUP_TXTAREA_BRACKET_MATCHING;
+	private boolean BACKUP_TXTAREA_SHOW_WHITESPACES;
+	private boolean BACKUP_TXTAREA_CLEAR_WHITESP_LINES;
+	private boolean BACKUP_TXTAREA_CLOSE_CURLY_BRACE;
+	private boolean BACKUP_TXTAREA_CLOSE_MARKUP_TAG;
+	private boolean BACKUP_TXTAREA_CODE_FOLDING;
+	private boolean BACKUP_TXTAREA_CURR_LINE_HIGHLIGHT;
+	private boolean BACKUP_TXTAREA_FRACT_FONT_METRICS;
+	private boolean BACKUP_TXTAREA_HIGLIGHT_2ND_LANG;
+	private boolean BACKUP_TXTAREA_HYPERLINKS;
+	private boolean BACKUP_TXTAREA_MARK_OCCURRENCES;
+	private boolean BACKUP_TXTAREA_PAINT_MARK_OCCURRENCES;
+	private boolean BACKUP_TXTAREA_ROUND_SEL_EDGES;
+	private boolean BACKUP_TXTAREA_FOCUSABLE_TIPS;
+	private boolean BACKUP_TXTAREA_TABSPACES_EMULATED;
+	private boolean BACKUP_TXTAREA_SHOW_BRACKETS_POPUP;
+	private boolean BACKUP_TXTAREA_SHOW_EOL_DELIM;
+	private boolean BACKUP_TXTAREA_AUTOCHECK_CHANGES;
+	private boolean BACKUP_SYNC_CLIPBOARD_STYLE;
+	private String BACKUP_TXTAREA_SPECCLCHECKER_DICT;
 
 	private INItializer currentConfiguration;
 	
@@ -189,7 +188,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
 		setLocationRelativeTo(MainGUI.frmScryptV);
 		
-		GuiUtils.centerComponent(this, DEF_W, DEF_H);
+		GuiUtils.centerComponent(this, getDefaultDimension());
 		
 		updateBackup(currentConfiguration);
 
@@ -627,6 +626,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 							if (currentEditor != null) {
 								currentEditor.initGuiFromConfig(true, true);
 							}
+							
+							singletonInstance = null;
 						}
 					}
 				});
@@ -1312,6 +1313,15 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				}
 			}
 		};
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(900, 510);
+	}
+	
+	public static GraphicPreferencesFrame getInstance(INItializer currentConf) {
+		return singletonInstance != null ? new GraphicPreferencesFrame(currentConf) : singletonInstance;
 	}
 	
 }

@@ -55,6 +55,8 @@ import java.awt.Cursor;
 
 public class KeyGenFrame extends ParentFrame {
 	private static final long serialVersionUID = 6912477672774875873L;
+	
+	public static KeyGenFrame singletonInstance = null;
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(KeyGenFrame.class); 
@@ -292,6 +294,13 @@ public class KeyGenFrame extends ParentFrame {
 		btnAddInDictionary.setFont(new Font("SansSerif", Font.BOLD, 12));
 		getContentPane().add(btnAddInDictionary, "cell 8 4,grow");
 		
+		addHandlers();
+		
+		logger.debug("## KEY GENERATOR started");
+	}
+	
+	private void addHandlers() {
+		
 		// window on close operations
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
@@ -299,16 +308,12 @@ public class KeyGenFrame extends ParentFrame {
 		            
 	        	logger.debug("Closing "+getClass().getName());
 	        	isActive.set(false);
+	        	singletonInstance = null;
+	        	
 	        	dispose();
 		    }
 		});
-
-		addHandlers();
 		
-		logger.debug("## KEY GENERATOR started");
-	}
-	
-	private void addHandlers() {
 		// EXPORT BUTTON HANDLER
 		btnExport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -632,5 +637,14 @@ public class KeyGenFrame extends ParentFrame {
 
 	public void setTextLog(JTextArea textLog) {
 		this.textLog = textLog;
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(1100, 800);
+	}
+	
+	public static KeyGenFrame getInstance(INItializer currentConf) {
+		return singletonInstance == null ? new KeyGenFrame(currentConf) : singletonInstance;
 	}
 }

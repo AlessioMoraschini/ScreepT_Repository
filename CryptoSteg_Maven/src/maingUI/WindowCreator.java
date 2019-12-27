@@ -1,0 +1,266 @@
+package maingUI;
+
+import java.io.File;
+
+import javax.annotation.Nullable;
+import javax.swing.JFrame;
+
+import org.apache.log4j.Logger;
+
+import dialogutils.UpdateProgressPanel;
+import frameutils.frame.ClipboardFrame;
+import frameutils.frame.ColorPickerFrame;
+import frameutils.frame.GeneratePasswordFrame;
+import frameutils.frame.HashCheckerFrame;
+import frameutils.frame.arch.ParentFrame;
+import frameutils.utils.GuiUtils;
+import gUI.frames.AboutSectionFrame;
+import gUI.frames.ChangeLogFrame;
+import gUI.frames.GeneralOptionsFrame;
+import gUI.frames.GraphicPreferencesFrame;
+import gUI.frames.ImageConverterFrame;
+import gUI.frames.ImportExportWorkspcCryptFrame;
+import gUI.frames.KeyDictionaryFrame;
+import gUI.frames.KeyGenFrame;
+import gUI.frames.TutorialFrame;
+import guiVersion.HwInfoFrame;
+import guiVersion.NetInfoFrame;
+import media.Sounds;
+import resources.GeneralConfig;
+import resources.SoundsConfigurator;
+import utils.SysUtils;
+
+public class WindowCreator {
+	static Logger logger = Logger.getLogger(WindowCreator.class);
+
+	MainGUI mainApplication;
+	
+	public WindowCreator(MainGUI mainApplication) {
+		this.mainApplication = mainApplication;
+	}
+	
+	public HashCheckerFrame newHashChecker() {
+		
+		File targetFile = (MainGUI.initTxtWriter != null) ? MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile : null;
+		HashCheckerFrame hashCheckerFrame = HashCheckerFrame.getInstance(
+				targetFile, mainApplication.getMainFrame(), MainGUI.currentConfiguration.getTextEditorOpt());
+	
+		commonGraphicInitAlwaysOnTop(hashCheckerFrame, "File Hash Checker - ");
+		
+		return hashCheckerFrame;
+	}
+	
+	public ClipboardFrame newClipboardFrame() {
+			
+		ClipboardFrame clipboardFrame = ClipboardFrame.getInstance(mainApplication.getMainFrame());
+		commonGraphicInitAlwaysOnTop(clipboardFrame, "Clipboard Frame - ");
+		
+		return clipboardFrame;
+	}
+	
+	public ColorPickerFrame newColorPickerFrame() {
+		
+		ColorPickerFrame colorPickerFrame = ColorPickerFrame.getInstance(mainApplication.getMainFrame());
+		commonGraphicInitAlwaysOnTop(colorPickerFrame, "Color Picker Frame");
+		
+		return colorPickerFrame;
+	}
+	
+	public GeneratePasswordFrame newGeneratePassordFrame(Integer passordSizeNullable) {
+		
+		GeneratePasswordFrame panelPswKeyGen = GeneratePasswordFrame.getInstance(mainApplication.getMainFrame());
+		
+		commonGraphicInit(panelPswKeyGen, "Generate Password - ");
+		
+		if (passordSizeNullable == null) {
+			panelPswKeyGen.unforceLentgh(16);
+		} else {
+			panelPswKeyGen.forceLentgh(passordSizeNullable);
+		}
+		
+		return panelPswKeyGen;
+	}
+	
+	public ImportExportWorkspcCryptFrame newImportExportCryptWorkspace() {
+		
+		ImportExportWorkspcCryptFrame panelImportExportTxtEditor = ImportExportWorkspcCryptFrame.getInstance(
+				MainGUI.currentConfiguration.getTextEditorOpt(), MainGUI.initTxtWriter);
+		
+		commonGraphicInit(panelImportExportTxtEditor, "Import/Export crypted Workspace - ");
+
+		panelImportExportTxtEditor.setState(java.awt.Frame.NORMAL);
+		panelImportExportTxtEditor.syncWithCurrentWOrkspace();
+		
+		return panelImportExportTxtEditor;
+	}
+	
+	public KeyGenFrame newKeyGenFrame() {
+		
+		KeyGenFrame panelKeyGen = KeyGenFrame.getInstance(MainGUI.currentConfiguration);
+		
+		commonGraphicInit(panelKeyGen, "IMG Generator - ");
+		
+    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelKeyGen, JFrame.MAXIMIZED_BOTH);
+    	
+    	return panelKeyGen;
+	}
+	
+	public KeyDictionaryFrame newKeyDIctionaryFrame() {
+		
+		KeyDictionaryFrame panelKeyDict = KeyDictionaryFrame.getInstance(MainGUI.currentConfiguration);
+				
+		commonGraphicInit(panelKeyDict, "Key Dictionary - ");
+		
+    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelKeyDict,JFrame.MAXIMIZED_BOTH);
+    	
+    	return panelKeyDict;
+	}
+	
+	public GraphicPreferencesFrame newGraphicPreferencesFrame() {
+		
+		GraphicPreferencesFrame panelGuiOptions = GraphicPreferencesFrame.getInstance(MainGUI.currentConfiguration);
+		
+		commonGraphicInitAlwaysOnTop(panelGuiOptions, "Graphics preferences - ");
+		
+		GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelGuiOptions, JFrame.MAXIMIZED_BOTH);
+		
+		return panelGuiOptions;
+	}
+	
+	public GeneralOptionsFrame newGeneralOptionsFrame() {
+		
+		GeneralOptionsFrame panelGeneralOptions = GeneralOptionsFrame.getInstance(MainGUI.currentConfiguration);
+		
+		commonGraphicInitAlwaysOnTop(panelGeneralOptions, "Generic Options - ");
+
+		panelGeneralOptions.setMinimumSize(panelGeneralOptions.getDefaultDimension());
+		GuiUtils.centerComponent(panelGeneralOptions);
+		
+		return panelGeneralOptions;
+	}
+	
+	public ImageConverterFrame newImageConverterFrame() {
+		
+		ImageConverterFrame panelImgConv = ImageConverterFrame.getInstance(MainGUI.currentConfiguration);
+		
+		commonGraphicInit(panelImgConv, "IMG Generator - ");
+		
+		panelImgConv.setResizable(false);
+		
+    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelImgConv,JFrame.MAXIMIZED_BOTH);
+    	
+    	return panelImgConv;
+	}
+	
+	public NetInfoFrame newNetInfoFrame() {
+		
+		NetInfoFrame panelNetInfo = NetInfoFrame.getInstance();
+		
+		commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ");
+		
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
+			public void run() {
+				UpdateProgressPanel prog = new UpdateProgressPanel(MainGUI.currentConfiguration, false);
+				prog.getPb().setIndeterminate(true);
+				prog.getLabel().setText("Loading Network informations...");
+				prog.getPb().setString("Loading...");
+				panelNetInfo.setResizable(false);
+				prog.forceClose();
+			}
+		});
+    		
+    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelNetInfo, JFrame.MAXIMIZED_BOTH);
+    	
+    	return panelNetInfo;
+	}
+	
+	public HwInfoFrame newHwInfoFrame() {
+		
+		HwInfoFrame panelHwInfo = HwInfoFrame.getInstance();
+		
+		commonGraphicInitAlwaysOnTop(panelHwInfo, "Hardware info - ");
+		
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
+			@Override
+			public void run() {
+				UpdateProgressPanel prog = new UpdateProgressPanel(MainGUI.currentConfiguration, false);
+				prog.getPb().setIndeterminate(true);
+				prog.getLabel().setText("Loading System informations...");
+				prog.getPb().setString("Loading...");
+				panelHwInfo.setResizable(false);
+				prog.forceClose();
+			}
+		});
+    		
+    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelHwInfo, JFrame.MAXIMIZED_BOTH);
+    	
+    	return panelHwInfo;
+	}
+	
+	public AboutSectionFrame newAboutSectionFrame() {
+		
+		AboutSectionFrame panelAbout = AboutSectionFrame.getInstance(mainApplication);
+		
+		commonGraphicInit(panelAbout, "About - ");
+		
+		panelAbout.setResizable(false);
+		GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelAbout, JFrame.MAXIMIZED_BOTH);
+		
+		return panelAbout;
+	}
+	
+	public TutorialFrame newTutorialFrame(@Nullable boolean visible) {
+		
+		try {
+			TutorialFrame tutorialFrame = TutorialFrame.getInstance();
+			
+			if(visible) {
+				Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+				commonGraphicInit(tutorialFrame, "Documentation - ");
+				tutorialFrame.setResizable(true);
+			}
+			
+			return tutorialFrame;
+		} catch (Exception e) {
+			
+			if (visible) {
+				logger.error("Error loading HTML panel" + TutorialFrame.class, e);
+				File htmlTutorialFile = new File(GeneralConfig.SCRYPT_TUTORIAL_HTML_PATH);
+				MainGUI.dialogHelper.warn("Current Java version does not support html reader, documentation will be opened with default browser!", null);
+				SysUtils.openUrlInBrowser(htmlTutorialFile.toURI().toString());
+			}
+			
+			return null;
+		}
+	}
+	
+	public ChangeLogFrame newChangeLogFrame() {
+		
+		ChangeLogFrame panelChangeLog = ChangeLogFrame.getInstance(GeneralConfig.CHANGE_LOG_FILE);
+		
+		commonGraphicInit(panelChangeLog, "ChangeLog - ");
+		
+		panelChangeLog.setResizable(true);
+		GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelChangeLog, JFrame.MAXIMIZED_BOTH);
+		
+		return panelChangeLog;
+	}
+	
+	// COMMONS INITIALIZATION METHODS //
+	public void commonGraphicInit(ParentFrame newFrame, String title) {
+		
+		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		
+		newFrame.setLocationRelativeTo(mainApplication.getMainFrame());
+		newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		newFrame.setTitle(title + GeneralConfig.APPLICATION_NAME);
+		newFrame.setVisible(true);
+		GuiUtils.centerComponent(newFrame, newFrame.getDefaultDimension());
+		newFrame.toFront();
+	}
+	
+	public void commonGraphicInitAlwaysOnTop(ParentFrame newFrame, String title) {
+		commonGraphicInit(newFrame, title);
+		newFrame.setAlwaysOnTop(true);
+	}
+}

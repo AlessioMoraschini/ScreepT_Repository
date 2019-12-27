@@ -32,7 +32,7 @@ import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 
 import frameutils.frame.BackgroundFrame;
-import gUI.frames.KeyDictionaryPanel;
+import gUI.frames.KeyDictionaryFrame;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import maingUI.MainGUI;
 import java.awt.GridBagConstraints;
@@ -42,7 +42,7 @@ public class VirtualFileDropPane extends BackgroundFrame {
 	private static final long serialVersionUID = -7957525665898850710L;
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(KeyDictionaryPanel.class); 
+	static Logger logger = Logger.getLogger(KeyDictionaryFrame.class); 
     
 	public static final String DEFAULT_ROOT = "Source Files and Folders";
 	

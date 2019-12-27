@@ -1,5 +1,6 @@
 package frameutils.frame.arch;
 
+import java.awt.Dimension;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
+import frameutils.utils.GuiUtils;
 
 public class ParentFrame extends JFrame{
 	private static final long serialVersionUID = 7079644907872152737L;
@@ -27,6 +29,8 @@ public class ParentFrame extends JFrame{
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		setCloseAction();
+		
+		GuiUtils.centerComponent(this, getDefaultDimension());
 	}
 	
 	protected void setCloseAction() {
@@ -40,5 +44,9 @@ public class ParentFrame extends JFrame{
 	        	dispose();
 		    }
 		});
+	}
+	
+	public Dimension getDefaultDimension() {
+		return GuiUtils.getScreenSizePerc(80, this);
 	}
 }

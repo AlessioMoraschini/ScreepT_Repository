@@ -103,6 +103,7 @@ public class MainGuiParent {
 	JMenu mnHelp;
 		JMenu mnrestartPanel;
 	JMenuItem mntmpadding = new JMenuItem();
+	JMenuItem mntmOptimizeResourcesUsage;
 	JMenuItem mntmPinApplicationOnTop;
 	
 	static CustomJmenuItem mntmInspectCurrentConfiguration;
@@ -222,7 +223,11 @@ public class MainGuiParent {
 		menuBar.setMargin(mainMargin);
 		// prepare padding to right for pinApplication
 		mntmpadding.setMaximumSize(new Dimension(5000, 20));
-		mntmpadding.setMinimumSize(new Dimension(400, 20));
+		mntmpadding.setMinimumSize(new Dimension(200, 20));
+		
+		mntmOptimizeResourcesUsage.setMaximumSize(new Dimension(30, 20));
+		mntmOptimizeResourcesUsage.setPreferredSize(new Dimension(30, 20));
+
 		mntmPinApplicationOnTop.setMaximumSize(new Dimension(30, 20));
 		mntmPinApplicationOnTop.setPreferredSize(new Dimension(30, 20));
  		mntmpadding.setEnabled(false);
@@ -242,6 +247,8 @@ public class MainGuiParent {
 		mnHelp.setMargin(menuEntryMargin);
 		
 		menuBar.add(mntmpadding);
+		menuBar.add(mntmOptimizeResourcesUsage);
+		mntmOptimizeResourcesUsage.setMargin(menuEntryMargin);
 		menuBar.add(mntmPinApplicationOnTop);
 		mntmPinApplicationOnTop.setMargin(menuEntryMargin);
 		
@@ -373,9 +380,12 @@ public class MainGuiParent {
 		mnHelp.setFont(menuBarFont);
 		
 		// ICON ON RIGHT OF BAR
+		mntmpadding.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); // ONLY TO PAD RIGHT Pin On Top
+		mntmOptimizeResourcesUsage.setFont(menuBarFont);
+		mntmOptimizeResourcesUsage.setAlignmentX(1);
+		mntmOptimizeResourcesUsage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mntmPinApplicationOnTop.setFont(menuBarFont);
 		mntmPinApplicationOnTop.setAlignmentX(1);
-		mntmpadding.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); // ONLY TO PAD RIGHT Pin On Top
 		mntmPinApplicationOnTop.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 		// SUBDIRECTORIES
@@ -450,6 +460,10 @@ public class MainGuiParent {
 		
 		MenuSetter.setIconTextGap(menuBar, 15);
 		
+		mntmOptimizeResourcesUsage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLEANUP));
+		mntmOptimizeResourcesUsage.setCursor(GuiUtils.CURSOR_HAND);
+		mntmOptimizeResourcesUsage.setToolTipText("Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequetly, because it can slow down the whole software)");
+
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);
 		mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");

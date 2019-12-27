@@ -398,6 +398,11 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				|| selectedNode.mFile == null
 				|| !selectedNode.mFile.exists()) 
 		{
+			if (currentTabEditor.loadedTabObj.loadedFile == null
+				|| !currentTabEditor.loadedTabObj.loadedFile.exists()) {
+				String msg = "File does not exist";
+				dialogHelper.error(msg, msg);
+			}
 			return false;
 		} else {
 			return true;

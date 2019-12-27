@@ -16,6 +16,8 @@ import resources.IconsPathConfigurator;
 
 public class ClipboardFrame extends ParentFrame{
 	private static final long serialVersionUID = 7066597918430250412L;
+	
+	public static ClipboardFrame singletonInstance = null;
 
 	JFrame thisFrame;
 	
@@ -24,9 +26,9 @@ public class ClipboardFrame extends ParentFrame{
 	public ClipboardFrame(JFrame parentFrame) {
 		logger.info(this.getClass().getName() + " - Starting...");
 		
-		setTitle(GeneralConfig.APPLICATION_NAME + " - Clipboard Frame");
+		setTitle("Clipboard Frame - " + GeneralConfig.APPLICATION_NAME);
 		
-		this.setMinimumSize(new Dimension(800, 500));
+		this.setMinimumSize(getDefaultDimension());
 
 		GuiUtils.centerComponent(this);
 		setVisible(true);
@@ -60,9 +62,18 @@ public class ClipboardFrame extends ParentFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
 	        	isActive.set(false);
-	        	
+	        	singletonInstance = null;
 				logger.debug("Closing "+getClass().getName());
 		    }
 		});
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(900, 600);
+	}
+	
+	public static ClipboardFrame getInstance(JFrame parentFrame) {
+		return singletonInstance == null ? new ClipboardFrame(parentFrame) : singletonInstance;
 	}
 }

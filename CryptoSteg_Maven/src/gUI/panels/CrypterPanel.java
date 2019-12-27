@@ -824,8 +824,7 @@ public class CrypterPanel extends ModulePanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mainApplication.getMntmgenerateKeyPswSub().doClick();
-				MainGUI.panelPswKeyGen.forceLentgh(AesCipher.limit);
+				mainApplication.windowCreator.newGeneratePassordFrame(AesCipher.limit);
 			}
 		});
 	}

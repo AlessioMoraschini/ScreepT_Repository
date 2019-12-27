@@ -58,6 +58,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 	// GraphicPreferencesFrame logger
 	static Logger logger = Logger.getLogger(GeneralOptionsFrame.class); 
 	
+	public static GeneralOptionsFrame singletonInstance = null;
+	
 	// gui elements as fields
 	private final JFrame thisFrame;
 	private JTextField textFieldUname;
@@ -73,13 +75,13 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JButton btnSaveConf;
 	
 	// default values
-	private static int BACKUP_AUTOSAVE_INTERVAL;
-	private static boolean BACKUP_AUTOSAVE_FLAG;
-	private static boolean BACKUP_EXCEPTION_ADVICES;
-	private static boolean BACKUP_AUTOCHECK_UPDATES;
-	private static String BACKUP_CURRENT_USERNAME;
-	private static String BACKUP_CHARSET;
-	private static float BACKUP_GENVOLUME;
+	private int BACKUP_AUTOSAVE_INTERVAL;
+	private boolean BACKUP_AUTOSAVE_FLAG;
+	private boolean BACKUP_EXCEPTION_ADVICES;
+	private boolean BACKUP_AUTOCHECK_UPDATES;
+	private String BACKUP_CURRENT_USERNAME;
+	private String BACKUP_CHARSET;
+	private float BACKUP_GENVOLUME;
 	
 	// reference to configuration
 	private INItializer currentConfiguration;
@@ -300,6 +302,9 @@ public class GeneralOptionsFrame extends ParentFrame{
 	        	isActive.set(false);
 	        	
 				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
+				
+				singletonInstance = null;
+				
 	        	dispose();
 		    }
 		});
@@ -612,7 +617,12 @@ public class GeneralOptionsFrame extends ParentFrame{
 		updateGUIComponents();
 	}
 	
+	@Override
 	public Dimension getDefaultDimension() {
 		return new Dimension(850, 245);
+	}
+	
+	public static GeneralOptionsFrame getInstance(INItializer currentConf) {
+		return singletonInstance == null ? new GeneralOptionsFrame(currentConf) : singletonInstance;
 	}
 }

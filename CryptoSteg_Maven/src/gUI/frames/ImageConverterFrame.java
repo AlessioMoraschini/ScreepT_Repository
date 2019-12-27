@@ -60,25 +60,24 @@ import javax.swing.UIManager;
 
 public class ImageConverterFrame extends ParentFrame{
 	private static final long serialVersionUID = 8723319520694955701L;
+	
+	public static ImageConverterFrame singletonInstance = null;
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(ImageConverterFrame.class); 
 	
 	// local reference to configuration object
-	private static INItializer currentConfiguration;
-	
-	// flag to signal active
-	public static boolean active=false;
+	private INItializer currentConfiguration;
 	
 	// GUI ELEMENTS
 	
 	// panels
 	private PanelFileDragNDropManager panelImgDisp;
-	private static JPanel panelHeader;
+	private JPanel panelHeader;
 	private JPanel panel;
 	
 	// comboboxes
-	private static JComboBox<String> comboBoxFormats;
+	private JComboBox<String> comboBoxFormats;
 	private JComboBox<ScalingAlgorithm> comboScaleQuality;
 	
 	// checkboxes
@@ -92,7 +91,7 @@ public class ImageConverterFrame extends ParentFrame{
 
 	// labels
 	private JLabel lblQuality;
-	private static JLabel lblImageConverterHeader;
+	private JLabel lblImageConverterHeader;
 	private JLabel lblExportImageFormat;
 	private JLabel lblResizeAlgorithm;
 	private JLabel lblHeight;
@@ -126,7 +125,7 @@ public class ImageConverterFrame extends ParentFrame{
 	private JLabel lblOutFileSizeVal;
 	
 	// private parent frame
-	private static JFrame thisFrame;
+	private JFrame thisFrame;
 	
 	// Files selected
 	private File inputImgFile;
@@ -432,17 +431,6 @@ public class ImageConverterFrame extends ParentFrame{
 		btnConvertAddDictionary.setBackground(new Color(112, 128, 144));
 		panel.add(btnConvertAddDictionary, "cell 8 5 2 1,grow");
 		
-		// window on close operations
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-	        	logger.debug("Closing "+getClass().getName());
-	        	isActive.set(false);
-	        	dispose();
-		    }
-		});
-		
 		addHandlers();
 		
 		initGuiFromConfig();
@@ -451,6 +439,18 @@ public class ImageConverterFrame extends ParentFrame{
 	}
 	
 	private void addHandlers() {
+		
+		// window on close operations
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	logger.debug("Closing "+getClass().getName());
+	        	isActive.set(false);
+	        	singletonInstance = null;
+	        	dispose();
+		    }
+		});
 		
 		// WIDTH SPINNER LISTENER
 		spinnerWidth.addChangeListener(new ChangeListener() {
@@ -985,4 +985,12 @@ public class ImageConverterFrame extends ParentFrame{
 		comboBoxFormats.setSelectedItem(imgOptions.getAlgorithm());
 	}
 	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(650, 500);
+	}
+	
+	public static ImageConverterFrame getInstance(INItializer currentConf) {
+		return singletonInstance == null ? new ImageConverterFrame(currentConf) : singletonInstance;
+	}
 }

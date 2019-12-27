@@ -1,7 +1,6 @@
 package frameutils.frame;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -39,7 +38,12 @@ import javax.swing.JRadioButton;
 public class HashCheckerFrame extends ParentFrame{
 	private static final long serialVersionUID = -5018329398511796700L;
 	
+	public static HashCheckerFrame singletonInstance = null;
+	
 	public static String HINT_VERIFY = "Write here the checksum to verify, and press \"Verify Checksum\" to compare with current file's hash!";
+	
+	private static Color lightGrayDefault = new Color(211, 211, 211);
+	private static Color yellowDefault = new Color(250, 250, 210);
 	
 	private File currentFile;
 	public JFrame parentFrame;
@@ -54,8 +58,6 @@ public class HashCheckerFrame extends ParentFrame{
 	
 	private JFrame thisFrame;
 	
-	private static Color lightGrayDefault = new Color(211, 211, 211);
-	private static Color yellowDefault = new Color(250, 250, 210);
 	private JRadioButton rdbtnUseAlgorithmAsPrefix;
 	private JRadioButton rdbtnUppercase;
 	
@@ -66,13 +68,11 @@ public class HashCheckerFrame extends ParentFrame{
 		
 		logger.info(this.getClass().getName() + " - Starting...");
 		
-		setTitle(GeneralConfig.APPLICATION_NAME + " - File Hash Checker");
+		setTitle("File Hash Checker");
 
 		this.parentFrame = parentFrame;
 		thisFrame = this;
 		
-		setBounds(new Rectangle(920,215));
-		GuiUtils.centerComponent(this);
 		setVisible(true);
 		setAlwaysOnTop(true);
 		
@@ -189,6 +189,7 @@ public class HashCheckerFrame extends ParentFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
+		    	singletonInstance = null;
 	        	isActive.set(false);
 				logger.debug("Closing "+getClass().getName());
 		    }
@@ -375,5 +376,14 @@ public class HashCheckerFrame extends ParentFrame{
 	
 	private String getPrefix() {
 		return (rdbtnUseAlgorithmAsPrefix.isSelected() ? comboBoxHashingAlgos.getSelectedItem().toString() + "=" : "");
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(920, 215);
+	}
+	
+	public static HashCheckerFrame getInstance(File initialFile, JFrame parentFrame, @Nullable TextEditorOption txtOptions) {
+		return singletonInstance == null ? new HashCheckerFrame(initialFile, parentFrame, txtOptions) : singletonInstance;
 	}
 }

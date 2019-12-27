@@ -48,6 +48,8 @@ import javax.swing.JTextArea;
 
 public class HwInfoFrame extends ParentFrame{
 	private static final long serialVersionUID = -2119678215026217031L;
+	
+	public static HwInfoFrame singletonInstance = null;
 
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(HwInfoFrame.class); 
@@ -166,6 +168,8 @@ public class HwInfoFrame extends ParentFrame{
 		isActive.set(true);
 
 		logger.info(this.getClass().getName() + " Starting...");
+		
+		setTitle("Hardware Info Frame");
 		
 		setMaximumSize(new Dimension(800, 450));
 		setMinimumSize(new Dimension(750, 400));
@@ -657,6 +661,7 @@ public class HwInfoFrame extends ParentFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
 	        	logger.debug("Closing Frame: "+HwInfoFrame.class.getName());	        	
+	        	singletonInstance = null;
 	        	isActive.set(false);
 	        	dispose();
 		    }
@@ -858,5 +863,14 @@ public class HwInfoFrame extends ParentFrame{
 				}
 			}
 		}).start();
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(1000, 750);
+	}
+	
+	public static HwInfoFrame getInstance() {
+		return singletonInstance == null ? new HwInfoFrame() : singletonInstance;
 	}
 }

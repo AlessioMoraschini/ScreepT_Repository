@@ -59,7 +59,6 @@ import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.EscapeReplacerFrame;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.utils.GuiUtils;
-import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.filedialog.TemplatesChoosePanel;
 import gUI.utils.shortcutshandler.TextEditorShortcutListener;
@@ -909,8 +908,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (colorPickerFrame == null || !ColorPickerFrame.active) {
-							colorPickerFrame = new ColorPickerFrame(parent.parentFrame);
+						if (colorPickerFrame == null || !colorPickerFrame.active) {
+							colorPickerFrame = ColorPickerFrame.getInstance(parent.parentFrame);
 						}else {
 							colorPickerFrame.dispatchEvent(new WindowEvent(colorPickerFrame, WindowEvent.WINDOW_CLOSING));
 						}

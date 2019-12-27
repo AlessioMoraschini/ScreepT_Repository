@@ -49,11 +49,15 @@ import javax.swing.JTree;
 import javax.swing.JCheckBox;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Cursor;
+import java.awt.Dimension;
 
-public class KeyDictionaryPanel extends ParentFrame{
+public class KeyDictionaryFrame extends ParentFrame{
+	private static final long serialVersionUID = -2183390950352993867L;
+	
+	public static KeyDictionaryFrame singletonInstance = null;
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(KeyDictionaryPanel.class); 
+	static Logger logger = Logger.getLogger(KeyDictionaryFrame.class); 
 	
 	// static path of keyDictionary
 	public static final String KEY_DICTIONARY = KeyGenFrame.KEY_DICTIONARY;
@@ -65,7 +69,7 @@ public class KeyDictionaryPanel extends ParentFrame{
 	public INItializer currentConf;
 	
 	// listener used to refresh file options displayed
-	public static TreeSelectionListener treeListener;
+	public TreeSelectionListener treeListener;
 	//Jtree used to represent dictionary
 	private JTree tree;
 	
@@ -77,7 +81,7 @@ public class KeyDictionaryPanel extends ParentFrame{
 	private JOptionHelper dialogHelper;
 	
 	// constructor
-	public KeyDictionaryPanel(INItializer currentConfiguration) {
+	public KeyDictionaryFrame(INItializer currentConfiguration) {
 		setBackground(new Color(255, 228, 225));
 		
 		logger.info(this.getClass().getName() + " Starting...");
@@ -317,17 +321,6 @@ public class KeyDictionaryPanel extends ParentFrame{
 			}
 		});
 		
-		
-		// window on close operations
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		    		isActive.set(false);
-		        	logger.debug("Closing "+getClass().getName());
-		        	dispose();
-		    }
-		});
-		
 		// new thread that updates jtree periodically
 		new Thread(new Runnable() {
 			
@@ -350,9 +343,25 @@ public class KeyDictionaryPanel extends ParentFrame{
 			}
 		}).start();
 		
+		addHandlers();
+		
 		TreeFileMouseListenerDictionary menuListener = new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
 		logger.debug("## KEY DICTIONARY started");
 
+	}
+	
+	private void addHandlers() {
+		// DEFAULT CLOSE ACTIONS 
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	
+		    	isActive.set(false);
+		    	singletonInstance = null;
+		    	logger.debug("Closing "+getClass().getName());
+		    	dispose();
+		    }
+	    });
 	}
 	
 	/**
@@ -360,7 +369,6 @@ public class KeyDictionaryPanel extends ParentFrame{
 	 */
 	private File fileRead(JFrame parent) {
 
-		
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Load .png File");
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
@@ -389,7 +397,6 @@ public class KeyDictionaryPanel extends ParentFrame{
 	 */
 	private File directoRead(JFrame parent) {
 
-		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Choose Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -459,6 +466,13 @@ public class KeyDictionaryPanel extends ParentFrame{
 		tree.revalidate();
 		tree.repaint();
 	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(800, 560);
+	}
+	
+	public static KeyDictionaryFrame getInstance(INItializer currentConfiguration) {
+		return singletonInstance == null ? new KeyDictionaryFrame(currentConfiguration): singletonInstance;
+	}
 }
-
-

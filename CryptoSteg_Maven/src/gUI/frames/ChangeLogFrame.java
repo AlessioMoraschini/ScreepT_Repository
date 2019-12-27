@@ -19,6 +19,8 @@ public class ChangeLogFrame extends ParentFrame{
 	// initialize Logger
 	static Logger logger = Logger.getLogger(ChangeLogFrame.class); 
 	
+	public static ChangeLogFrame singletonInstance = null;
+	
 	private JTextArea textArea;
 	private JScrollPane scrollPane;
 	
@@ -44,9 +46,31 @@ public class ChangeLogFrame extends ParentFrame{
 				logger.error(msg, e);
 			}
 		}
+		
+		addHandlers();
+		
+		logger.debug("ChangeLog Frame loaded: " + getClass().getName());	      
 	}
 	
+	private void addHandlers() {
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	logger.debug("Closing Frame: " + getClass().getName());	        	
+	        	isActive.set(false);
+	        	singletonInstance = null;
+	        	dispose();
+		    }
+		});
+	}
+	
+	@Override
 	public Dimension getDefaultDimension() {
 		return new Dimension(1200, 650);
+	}
+	
+	public static ChangeLogFrame getInstance(File changeLog) {
+		return singletonInstance == null ? new ChangeLogFrame(changeLog) : singletonInstance;
 	}
 }

@@ -23,6 +23,8 @@ public class TutorialFrame extends ParentFrame{
 	// initialize Logger
 	static Logger logger = Logger.getLogger(TutorialFrame.class); 
 	
+	public static TutorialFrame singletonInstance = null;
+	
 	public HtmlPanel mainHtmlReadmePanel;
 	public TutorialFrame thisPanel;
 	
@@ -65,10 +67,8 @@ public class TutorialFrame extends ParentFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		    	isActive.set(false);
 				logger.info(this.getClass().getName() + " Closed");
-				try {
-					setVisible(false);
-				} catch (NullPointerException e) {
-				}
+				singletonInstance = null;
+				dispose();
 		    }
 		});
 		
@@ -84,5 +84,9 @@ public class TutorialFrame extends ParentFrame{
 			public void componentHidden(ComponentEvent e) {
 			}
 		});
+	}
+	
+	public static TutorialFrame getInstance() {
+		return singletonInstance == null ? new TutorialFrame() : singletonInstance;
 	}
 }

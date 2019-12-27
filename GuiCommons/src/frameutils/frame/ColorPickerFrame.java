@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
@@ -36,10 +37,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JButton;
 
-public class ColorPickerFrame extends JFrame implements MousePointerCaller{
+public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 	private static final long serialVersionUID = -8518015676595593365L;
 
 	static Logger logger = Logger.getLogger(ColorPickerFrame.class);
+	
+	public static ColorPickerFrame singletonInstance = null;
 	
 	// GUI ELEMENTS
 	private JTextField txtRgb;
@@ -51,7 +54,7 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 	private JPanel panelHeader;
 	
 	// INSTANCE LOGIC FIELDS
-	public static boolean active = false;
+	public boolean active = false;
 	public volatile AtomicBoolean hasFocus = new AtomicBoolean(false);
 	private MousePointerUtils pointerUtils = null;
 	private JLabel lblHsbhsv;
@@ -69,10 +72,12 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 		
 		active = true;
 		
+		setTitle("Color Picker Frame");
+		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[grow][grow]", "[25px:30px,grow][grow]"));
 		
-		GuiUtils.centerComponent(this, 650, 160);
+		GuiUtils.centerComponent(this, getDefaultDimension());
 		
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, this);
 		
@@ -141,6 +146,7 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 				logger.debug("Closing "+getClass().getName());
 				pointerUtils.removeMouseListener();
 				ApplyCursorSUbElements(GuiUtils.CURSOR_DEFAULT, caller);
+				singletonInstance = null;
 	        	dispose();
 		    }
 		});
@@ -259,5 +265,14 @@ public class ColorPickerFrame extends JFrame implements MousePointerCaller{
 		txtHsl.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		txtHsl.setColumns(10);
 		panelMain.add(txtHsl, "cell 3 1,grow");
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(650, 160);
+	}
+	
+	public static ColorPickerFrame getInstance(JFrame parentFrame) {
+		return singletonInstance == null ? new ColorPickerFrame(parentFrame) : singletonInstance;
 	}
 }

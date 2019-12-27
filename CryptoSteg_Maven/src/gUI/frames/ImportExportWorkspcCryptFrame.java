@@ -8,6 +8,8 @@ import maingUI.MainGUI;
 import om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
@@ -28,11 +30,14 @@ import javax.swing.JSeparator;
 public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	private static final long serialVersionUID = -8119237171970529701L;
 	
-	protected TextEditorOption textOptions;
-	protected TextEditor textEditor;
+	public static ImportExportWorkspcCryptFrame singletonInstance = null;
 	
 	protected static int WIDTH = 700;
 	protected static int HEIGHT = 120;
+
+	protected TextEditorOption textOptions;
+	protected TextEditor textEditor;
+	
 	protected JButton btnImport;
 	protected JButton btnExport;
 	
@@ -151,6 +156,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	
 	@Override
 	protected void setCloseAction() {
+		singletonInstance = null;
 		super.setCloseAction();
 	}
 	
@@ -305,5 +311,14 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 			logger.error(errorMessage, e);
 			dialogHelper.error(errorMessage, "An error occurred");
 		} 
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(800, 180);
+	}
+	
+	public static ImportExportWorkspcCryptFrame getInstance(TextEditorOption txtOptions, TextEditor textEditor) {
+		return singletonInstance == null ? new ImportExportWorkspcCryptFrame(txtOptions, textEditor) : singletonInstance;
 	}
 }

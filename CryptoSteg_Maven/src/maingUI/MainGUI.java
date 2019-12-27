@@ -36,22 +36,10 @@ import amfileutils.FileStuff;
 import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
-import dialogutils.UpdateProgressPanel;
-import frameutils.frame.ClipboardFrame;
-import frameutils.frame.ColorPickerFrame;
-import frameutils.frame.GeneratePasswordFrame;
-import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
-import gUI.frames.AboutSectionFrame;
-import gUI.frames.ChangeLogFrame;
 import gUI.frames.GeneralOptionsFrame;
 import gUI.frames.GraphicPreferencesFrame;
-import gUI.frames.ImageConverterFrame;
-import gUI.frames.ImportExportWorkspcCryptFrame;
-import gUI.frames.KeyDictionaryPanel;
-import gUI.frames.KeyGenFrame;
-import gUI.frames.TutorialFrame;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -105,21 +93,6 @@ public class MainGUI extends MainGuiParent{
 	private JLabel labelBACKground;
 	
 	// FRAMES THAT OPEN IN A NEW DIALOG
-	private static GraphicPreferencesFrame panelGuiOptions;
-	private static GeneralOptionsFrame panelGeneralOptions;
-	public static GeneratePasswordFrame panelPswKeyGen;
-	public static ImportExportWorkspcCryptFrame panelImportExportTxtEditor;
-	private static KeyGenFrame panelKeyGen;
-	private static KeyDictionaryPanel panelKeyDict;
-	private static ImageConverterFrame panelImgConv;
-	private static NetInfoFrame panelNetInfo;
-	private static HwInfoFrame panelHwInfo;
-	private static HashCheckerFrame hashCheckerFrame;
-	private static ClipboardFrame clipboardFrame;
-	private static ColorPickerFrame colorPickerFrame;
-	private static AboutSectionFrame panelAbout;
-	private static ChangeLogFrame panelChangeLog;
-	private static TutorialFrame tutorialPanel;
 	private static PluginManagerGUI pluginManagerGUI;
 	
 ////////////////////////// MAIN GUI ELEMENTS ///////////////////////////
@@ -170,6 +143,8 @@ public class MainGUI extends MainGuiParent{
 	
 	public static String newUpdatedJar = "";
 	static File[] updatesDownloaded = new File[3];
+	
+	public WindowCreator windowCreator;
 	
 	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
 	 * 
@@ -409,6 +384,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 	public MainGUI() {
 		super();
 		
+		windowCreator = new WindowCreator(this);
+		
 		mainAPP = this;
 		
 		// initialize value for function uppercaseDirectories ()
@@ -491,6 +468,21 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
 				}
 			}
+ 		});
+ 		
+ 		// NOT OPENING VIEW - UNUSED RESOURCES OPTIMIZATION
+ 		mntmOptimizeResourcesUsage = new CustomJmenuItem(new AbstractAction("") {
+ 			public void actionPerformed(ActionEvent e) {
+ 				try {
+ 					System.gc();
+ 					System.runFinalization();
+ 					dialogHelper.info("ScrYpT's Resources usage optimized.", "Resources usage optimized.");
+ 				} catch(Exception e1) {
+ 					String errorMessage = "Cannot optimize ScrYpT's resources usage, something has gone wrong!";
+ 					logger.error(errorMessage, e1);
+ 					dialogHelper.warn(errorMessage, "Cannot clean resources");
+ 				}
+ 			}
  		});
  
 		// NOT OPENING VIEW - EXIT AND CLOSE SCRYPT
@@ -835,26 +827,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		// open in a new window - CUSTOMIZE GRAPHICS
 		mntmCustomizeUIView = new CustomJmenuItem(new AbstractAction("Customize Graphics") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelGuiOptions == null || !panelGuiOptions.isVisible()) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					panelGuiOptions = new GraphicPreferencesFrame(currentConfiguration);
-					panelGuiOptions.setLocationRelativeTo(mainAPP.getMainFrame());
-					panelGuiOptions.setVisible(true);
-					panelGuiOptions.setAlwaysOnTop(true);
-					panelGuiOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelGuiOptions.setTitle("Graphics preferences - "+GeneralConfig.APPLICATION_NAME);
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelGuiOptions.setState(java.awt.Frame.NORMAL);
-						panelGuiOptions.setVisible(true);
-						panelGuiOptions.setAlwaysOnTop(true);
-						panelGuiOptions.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + GraphicPreferencesFrame.class, e2);
-					}
-				}
-				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGuiOptions, JFrame.MAXIMIZED_BOTH);
+				
+				windowCreator.newGraphicPreferencesFrame();
 			}
 		});
 		
@@ -896,393 +870,116 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		// open in a new window - GENERAL OPTIONS
 		mntmGenOpt = new CustomJmenuItem(new AbstractAction("General Options") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelGeneralOptions == null || !panelGeneralOptions.isVisible()) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					panelGeneralOptions = new GeneralOptionsFrame(currentConfiguration);
-					panelGeneralOptions.setLocationRelativeTo(mainAPP.getMainFrame());
-					panelGeneralOptions.setMinimumSize(panelGeneralOptions.getDefaultDimension());
-					GuiUtils.centerComponent(panelGeneralOptions);
-					panelGeneralOptions.setAlwaysOnTop(true);
-					panelGeneralOptions.setVisible(true);
-					panelGeneralOptions.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelGeneralOptions.setTitle("Generic Options - "+GeneralConfig.APPLICATION_NAME);
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelGeneralOptions.setState(java.awt.Frame.NORMAL);
-						panelGeneralOptions.setAlwaysOnTop(true);
-						panelGeneralOptions.setVisible(true);
-						panelGeneralOptions.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + GeneralOptionsFrame.class, e2);
-					}
-				}
 				
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-//	 					GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelGeneralOptions, JFrame.MAXIMIZED_BOTH);
-						panelGeneralOptions.toFront();
-					}
-				});
+				windowCreator.newGeneralOptionsFrame();
 			}
 		});
 		
 		// open in a new window - KEYGEN
 		mntmgenerateKeyImageSub = new CustomJmenuItem(new AbstractAction("Generate Key Image") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (panelKeyGen == null) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		panelKeyGen = new KeyGenFrame(currentConfiguration);
-					panelKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					panelKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
-					panelKeyGen.setBounds(150, 150, 1100, 800);
-					panelKeyGen.setVisible(true);
-					panelKeyGen.setTitle("IMG Generator - "+GeneralConfig.APPLICATION_NAME);
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelKeyGen.setState(java.awt.Frame.NORMAL);
-						panelKeyGen.setVisible(true);
-						panelKeyGen.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + KeyGenFrame.class, e2);
-					}
-				}
-		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyGen, JFrame.MAXIMIZED_BOTH);
+	    		
+		    	windowCreator.newKeyGenFrame();
 		    }
 		});
 		
 		// open in a new window - PSW_KEYGEN
 		mntmgenerateKeyPswSub = new CustomJmenuItem(new AbstractAction("Generate Password") {
 			public void actionPerformed(ActionEvent ae) {
-				if (panelPswKeyGen == null) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					panelPswKeyGen = new GeneratePasswordFrame(getMainFrame());
-					panelPswKeyGen.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelPswKeyGen.setState(java.awt.Frame.NORMAL);
-						panelPswKeyGen.setVisible(true);
-						panelPswKeyGen.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + GeneratePasswordFrame.class, e2);
-					}
-				}
-				GuiUtils.centerComponent(panelPswKeyGen, 650, 110);
-				panelPswKeyGen.setLocationRelativeTo(mainAPP.getMainFrame());
-				panelPswKeyGen.toFront();
-				panelPswKeyGen.unforceLentgh(16);
+				
+				windowCreator.newGeneratePassordFrame(null);
 			}
 		});
 
 		// open in a new window - IMPORT/EXPORT WORKSPACE - Text Editor
 		mntmTxtEditorImpExpCryptedWkspc = new CustomJmenuItem(new AbstractAction("Import/Export crypted workspace") {
 			public void actionPerformed(ActionEvent ae) {
-				if (panelImportExportTxtEditor == null) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					panelImportExportTxtEditor = new ImportExportWorkspcCryptFrame(currentConfiguration.getTextEditorOpt(), initTxtWriter);
-					panelImportExportTxtEditor.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelImportExportTxtEditor.setState(java.awt.Frame.NORMAL);
-						panelImportExportTxtEditor.setVisible(true);
-						panelImportExportTxtEditor.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + GeneratePasswordFrame.class, e2);
-					}
-				}
 				
-				GuiUtils.centerComponent(panelImportExportTxtEditor, 800, 180);
-				panelImportExportTxtEditor.setLocationRelativeTo(mainAPP.getMainFrame());
-				panelImportExportTxtEditor.toFront();
-				panelImportExportTxtEditor.syncWithCurrentWOrkspace();
+				windowCreator.newImportExportCryptWorkspace();
 			}
 		});
 		
 		// open in a new window - NET INFO
 		mntmnetInfo = new CustomJmenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (panelNetInfo == null || !panelNetInfo.isVisible()) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		GuiUtils.launchThreadSafeSwing(new Runnable() {
-						public void run() {
-							UpdateProgressPanel prog = new UpdateProgressPanel(currentConfiguration, false);
-							prog.getPb().setIndeterminate(true);
-							prog.getLabel().setText("Loading Network informations...");
-							prog.getPb().setString("Loading...");
-							panelNetInfo = new NetInfoFrame();
-							panelNetInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-							panelNetInfo.setLocationRelativeTo(mainAPP.getMainFrame());
-							panelNetInfo.setAlwaysOnTop(true);
-							panelNetInfo.setBounds(150, 150, 1000, 650);
-							panelNetInfo.setResizable(false);
-							panelNetInfo.setVisible(true);
-							panelNetInfo.setTitle("Network info - "+GeneralConfig.APPLICATION_NAME);
-							prog.getPb().setValue(100);
-						}
-					});
-		    		
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelNetInfo.setState(java.awt.Frame.NORMAL);
-						panelNetInfo.setVisible(true);
-						panelNetInfo.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + NetInfoFrame.class, e2);
-					}
-				}
-		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelNetInfo, JFrame.MAXIMIZED_BOTH);
+		    	
+	    		windowCreator.newNetInfoFrame();
 		    }
 		});
 		
 		// open in a new window - NET INFO
 		mntmhwInfo = new CustomJmenuItem(new AbstractAction("System Info") {
 		    public void actionPerformed(ActionEvent ae) {
-		    	if (panelHwInfo == null|| !panelHwInfo.isVisible()) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		GuiUtils.launchThreadSafeSwing(new Runnable() {
-
-						@Override
-						public void run() {
-							UpdateProgressPanel prog = new UpdateProgressPanel(currentConfiguration, false);
-							prog.getPb().setIndeterminate(true);
-							prog.getLabel().setText("Loading System informations...");
-							prog.getPb().setString("Loading...");
-							panelHwInfo = new HwInfoFrame();
-							panelHwInfo.setLocationRelativeTo(mainAPP.getMainFrame());
-							panelHwInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-							panelHwInfo.setBounds(250, 200, 1000, 750);
-							panelHwInfo.setAlwaysOnTop(true);
-							panelHwInfo.setResizable(false);
-							panelHwInfo.setVisible(true);
-							panelHwInfo.setTitle("Hardware info - "+GeneralConfig.APPLICATION_NAME);
-							prog.getPb().setValue(100);
-						}
-					});
-		    		
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelHwInfo.setState(java.awt.Frame.NORMAL);
-						panelHwInfo.setVisible(true);
-						panelHwInfo.requestFocus();
-						panelHwInfo.setLocationRelativeTo(frmScryptV);
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + HwInfoFrame.class, e2);
-					}
-				}
-		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelHwInfo, JFrame.MAXIMIZED_BOTH);
+	    		
+		    	windowCreator.newHwInfoFrame();
 		    }
 		});
 		
 		// open in a new window - File Hash checker
 		mntmHashChecker = new CustomJmenuItem(new AbstractAction("File Hash checker") {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
-						File targetFile = (initTxtWriter != null) ? initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile : null;
-						hashCheckerFrame = new HashCheckerFrame(targetFile, frmScryptV, currentConfiguration.getTextEditorOpt());
-						hashCheckerFrame.setVisible(true);
-						hashCheckerFrame.setAlwaysOnTop(true);
-					} else {
-						hashCheckerFrame.toFront();
-						hashCheckerFrame.setVisible(true);
-						hashCheckerFrame.setAlwaysOnTop(true);
-					}
-				} catch (Exception e1) {
-					logger.error("An error occurred while opening hashing functions manager frame", e1);
-				}
+				
+				windowCreator.newHashChecker();
 			}
 		});
 		
 		// open in a new window - File Hash checker
 		mntmClipboardStandalone = new CustomJmenuItem(new AbstractAction("Clipboard tool") {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					if (clipboardFrame == null || !clipboardFrame.isActive()) {
-						clipboardFrame = new ClipboardFrame(frmScryptV);
-						clipboardFrame.setVisible(true);
-						clipboardFrame.setAlwaysOnTop(true);
-					} else {
-						clipboardFrame.toFront();
-						clipboardFrame.setVisible(true);
-						clipboardFrame.setAlwaysOnTop(true);
-					}
-					
-					clipboardFrame.setLocationRelativeTo(frmScryptV);
-				} catch (Exception e1) {
-					logger.error("An error occurred while opening cilpboard standalone frame", e1);
-				}
+				
+				windowCreator.newClipboardFrame();
 			}
 		});
 		
 		// open in a new window - File Hash checker
 		mntmColorPicker = new CustomJmenuItem(new AbstractAction("Color picker") {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					if (colorPickerFrame == null || !colorPickerFrame.isActive()) {
-						colorPickerFrame = new ColorPickerFrame(frmScryptV);
-						colorPickerFrame.setVisible(true);
-						colorPickerFrame.setAlwaysOnTop(true);
-					} else {
-						colorPickerFrame.toFront();
-						colorPickerFrame.setVisible(true);
-						colorPickerFrame.setAlwaysOnTop(true);
-					}
-					
-					colorPickerFrame.setLocationRelativeTo(frmScryptV);
-				} catch (Exception e1) {
-					logger.error("An error occurred while opening color picker frame", e1);
-				}
+				windowCreator.newColorPickerFrame();
 			}
 		});
 		
 		// open in a new window - DICTIONARY (KEY IMG)
 		mntmViewKeyDictionary = new CustomJmenuItem(new AbstractAction("View Key Dictionary") {
 		    public void actionPerformed(ActionEvent e) {
-		    	if (panelKeyDict == null) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		panelKeyDict = new KeyDictionaryPanel(currentConfiguration);
-		    		panelKeyDict.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		panelKeyDict.setBounds(300, 100, 800, 560);
-		    		panelKeyDict.setVisible(true);
-		    		panelKeyDict.setTitle("Key Dictionary - "+GeneralConfig.APPLICATION_NAME);
-		    		panelKeyDict.setLocationRelativeTo(mainAPP.getMainFrame());
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelKeyDict.setState(java.awt.Frame.NORMAL);
-						panelKeyDict.setVisible(true);
-						panelKeyDict.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + KeyDictionaryPanel.class, e2);
-					}
-				}
-		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelKeyDict,JFrame.MAXIMIZED_BOTH);
+	    		
+		    	windowCreator.newKeyDIctionaryFrame();
 			}
 		});
 		
 		// open in a new window - IMAGE CONVERTER
 		mntmImageConverter = new CustomJmenuItem(new AbstractAction("Image Converter") {
 			public void actionPerformed(ActionEvent e) {
-		    	if (panelImgConv == null) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		panelImgConv = new ImageConverterFrame(currentConfiguration);
-		    		panelImgConv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		panelImgConv.setBounds(700, 200, 650, 500);
-		    		panelImgConv.setResizable(false);
-		    		panelImgConv.setVisible(true);
-		    		panelImgConv.setTitle("IMG Generator - "+GeneralConfig.APPLICATION_NAME);
-		    		panelImgConv.setLocationRelativeTo(mainAPP.getMainFrame());
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelImgConv.setState(java.awt.Frame.NORMAL);
-						panelImgConv.setVisible(true);
-						panelImgConv.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + ImageConverterFrame.class, e2);
-					}
-				}
-		    	GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelImgConv,JFrame.MAXIMIZED_BOTH);
+				
+	    		windowCreator.newImageConverterFrame();
 			}
 		});
 		
 		// open in a new window - ABOUT SCRYPT
 		mntmAboutScreept = new CustomJmenuItem(new AbstractAction("About - ScrYpt") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelAbout == null) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		panelAbout = new AboutSectionFrame(mainAPP);
-		    		panelAbout.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		    		panelAbout.setBounds(700, 200, 450, 400);
-		    		GuiUtils.centerComponent(panelAbout);
-		    		panelAbout.setResizable(false);
-		    		panelAbout.setVisible(true);
-		    		panelAbout.setTitle("About - "+GeneralConfig.APPLICATION_NAME);
-		    		panelAbout.setLocationRelativeTo(mainAPP.getMainFrame());
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelAbout.setState(java.awt.Frame.NORMAL);
-						panelAbout.setVisible(true);
-						panelAbout.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + AboutSectionFrame.class, e2);
-					}
-				}
-				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelAbout, JFrame.MAXIMIZED_BOTH);
+				
+				windowCreator.newAboutSectionFrame();
 			}
 		});
 		
 		// open in a new window - ChangeLog view
 		mntmChangeLog = new CustomJmenuItem(new AbstractAction("View changeLog") {
 			public void actionPerformed(ActionEvent e) {
-				if (panelChangeLog == null) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					panelChangeLog = new ChangeLogFrame(GeneralConfig.CHANGE_LOG_FILE);
-					panelChangeLog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					GuiUtils.centerComponent(panelChangeLog, panelChangeLog.getDefaultDimension());
-					panelChangeLog.setResizable(true);
-					panelChangeLog.setVisible(true);
-					panelChangeLog.setTitle("ChangeLog - "+GeneralConfig.APPLICATION_NAME);
-					panelChangeLog.setLocationRelativeTo(mainAPP.getMainFrame());
-				}else {
-					try {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						panelChangeLog.setState(java.awt.Frame.NORMAL);
-						panelChangeLog.setVisible(true);
-						panelChangeLog.requestFocus();
-					} catch (Exception e2) {
-						logger.warn("There was an error opening " + ChangeLogFrame.class, e2);
-					}
-				}
-				GuiUtils.changeFrameStateLaterUnchecked(frmScryptV, panelChangeLog, JFrame.MAXIMIZED_BOTH);
+				
+				windowCreator.newChangeLogFrame();
 			}
 		});
 		
 		// ASYNC HTML TUTORIAL PANE
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				try {
-					// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
-					tutorialPanel = new TutorialFrame();
-				} catch (Throwable e) {
-					logger.error("Error loading HTML panel", e);
-				}
+				windowCreator.newTutorialFrame(false);
 			}
 		});
 		
 		mntmUserDocumentation = new CustomJmenuItem(new AbstractAction("User Guide") {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					
-					if (tutorialPanel == null) {
-						// open in a new window - MANUAL - preloading after manGui is loaded to improve performance
-						tutorialPanel = new TutorialFrame();
-						
-						Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-						tutorialPanel.setResizable(true);
-			    		tutorialPanel.setVisible(true);
-			    		tutorialPanel.setTitle("Tutorial - "+GeneralConfig.APPLICATION_NAME);
-			    		tutorialPanel.setLocationRelativeTo(mainAPP.getMainFrame());
-					}else {
-						Sounds.playSound(SoundsConfigurator.CLICK_1, null);
-						tutorialPanel.setVisible(true);
-						tutorialPanel.toFront();
-						tutorialPanel.setState(java.awt.Frame.NORMAL);
-						tutorialPanel.requestFocus();
-					}
-					
-				} catch (Throwable ex) {
-					logger.error("Error loading HTML panel"  + TutorialFrame.class, ex);
-					File htmlTutorialFile = new File(GeneralConfig.SCRYPT_TUTORIAL_HTML_PATH);
-					dialogHelper.warn("Current Java version does not support html reader, documentation will be opened with default browser!", null);
-					SysUtils.openUrlInBrowser(htmlTutorialFile.toURI().toString());
-				}
+				windowCreator.newTutorialFrame(true);
 			}
 		});
 		
@@ -1689,12 +1386,12 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 	public static void closeOpenBlockingFrames(){
 		logger.info("\n => Closing blocking frames");
 		
-		if(panelHwInfo != null) {
-			panelHwInfo.dispose();
+		if(HwInfoFrame.singletonInstance != null) {
+			HwInfoFrame.singletonInstance.dispose();
 		}
 		
-		if(panelNetInfo != null) {
-			panelNetInfo.dispose();
+		if(NetInfoFrame.singletonInstance != null) {
+			NetInfoFrame.singletonInstance.dispose();
 		}
 		
 		if(initTxtWriter != null) {
@@ -1846,13 +1543,13 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		}
 		
 		// PANEL GRAPHICS PREFERENCES
-		if(panelGuiOptions!= null && panelGuiOptions.isVisible()) {
-			panelGuiOptions.initGuiFromConfig();
+		if(GraphicPreferencesFrame.singletonInstance!= null && GraphicPreferencesFrame.singletonInstance.isVisible()) {
+			GraphicPreferencesFrame.singletonInstance.initGuiFromConfig();
 		}
 		
 		// PANEL GENERAL PREFERENCES
-		if(panelGeneralOptions != null && panelGeneralOptions.isVisible()) {
-			panelGeneralOptions.initGuiFromConfig();
+		if(GeneralOptionsFrame.singletonInstance != null && GeneralOptionsFrame.singletonInstance.isVisible()) {
+			GeneralOptionsFrame.singletonInstance.initGuiFromConfig();
 		}
 		
 		if(GUIStyelSettings.isNimbus(currentConfiguration.getGuiOpt())) {

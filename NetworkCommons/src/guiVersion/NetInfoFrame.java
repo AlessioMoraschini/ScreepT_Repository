@@ -46,6 +46,8 @@ public class NetInfoFrame extends ParentFrame{
 	// NetInfoFrame logger
 	static Logger logger = Logger.getLogger(NetInfoFrame.class); 
 	
+	public static NetInfoFrame singletonInstance = null;
+	
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
 	private static final String CALCULATING = "Calculating...";
@@ -107,6 +109,8 @@ public class NetInfoFrame extends ParentFrame{
 	public NetInfoFrame() {
 		
 		logger.info(this.getClass().getName() + " Starting...");
+		
+		setTitle("Network Info Frame");
 		
 		setMaximumSize(GuiUtils.getScreenSize());
 		setMinimumSize(new Dimension(950, 400));
@@ -369,17 +373,6 @@ public class NetInfoFrame extends ParentFrame{
 		dynLblMTU.setEditable(false);
 		panel.add(dynLblMTU, "cell 1 7 2 1,growx");
 		
-		// default close operation(same as reset) 
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-	        	logger.debug("Closing Frame: "+NetInfoFrame.class.getName());	        	
-	        	isActive.set(false);
-	        	dispose();
-		    }
-		});
-		
 		// call now cause before some gui elements can not be initialized yet
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			
@@ -398,6 +391,18 @@ public class NetInfoFrame extends ParentFrame{
 ////////////////////////// EVENT HANDLERS ACTION LISTENERS //////////////////////////
 	
 	private void addEventHandlers() {
+		
+		// default close operation(same as reset) 
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+	        	logger.debug("Closing Frame: "+NetInfoFrame.class.getName());
+	        	singletonInstance = null;
+	        	isActive.set(false);
+	        	dispose();
+		    }
+		});
 		
 		// COMBO ADAPTER SELECTOR SELECTION CHANGE
 		comboAdapters.addActionListener(new ActionListener() {
@@ -600,5 +605,14 @@ public class NetInfoFrame extends ParentFrame{
 		progressBarDown.setIndeterminate(false);
 		progressBarLatency.setIndeterminate(false);
 		progressBarUp.setIndeterminate(false);
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(1000, 650);
+	}
+	
+	public static NetInfoFrame getInstance() {
+		return singletonInstance == null ? new NetInfoFrame() : singletonInstance;
 	}
 }

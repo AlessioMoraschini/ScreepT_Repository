@@ -263,5 +263,4 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	public AtomicBoolean isInstalling() {
 		return isInstalling;
 	}
-	
 }
