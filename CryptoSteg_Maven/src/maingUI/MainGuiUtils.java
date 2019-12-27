@@ -34,9 +34,11 @@ import mainobj.INItializer;
 import media.Sounds;
 import om.GenericOption;
 import om.SupportedFileTextEditor;
+import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.PropertiesManager;
 import resources.SoundsConfigurator;
+import tabbededitor.CustomTabbedEditor;
 
 public class MainGuiUtils {
 	
@@ -291,7 +293,7 @@ public class MainGuiUtils {
 		
 		txtEditor = (instance.getContentPane().getComponent(0).equals(MainGUI.initTxtWriter))? true : false;
 		crypter = (instance.getContentPane().getComponent(0).equals(MainGUI.panelCrypter))? true : false;
-		configuration = (instance.getContentPane().getComponent(0).equals(mainAppReference.configManagerPanel))? true : false;
+		configuration = (instance.getContentPane().getComponent(0).equals(MainGUI.configManagerPanel))? true : false;
 		home = (!txtEditor && !crypter && !configuration)? true : false;
 		
 		SwingUtilities.invokeLater(new Runnable() {
@@ -338,19 +340,19 @@ public class MainGuiUtils {
 		
 		// reset all listeners
 		if (forceStart) {
-			removeAllListeners(mainAppReference.configManagerPanel);
+			removeAllListeners(MainGUI.configManagerPanel);
 		}
 		
-		if (mainAppReference.configManagerPanel == null || forceStart) {
+		if (MainGUI.configManagerPanel == null || forceStart) {
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-			mainAppReference.configManagerPanel = new ConfigurationManagerPanel(MainGUI.currentConfiguration, mainAppReference);
+			MainGUI.configManagerPanel = new ConfigurationManagerPanel(MainGUI.currentConfiguration, mainAppReference);
 		}
 		
-		mainAppReference.configManagerPanel.splitPane.setDividerLocation(300);
-		mainAppReference.configManagerPanel.textArea.revalidate();
-		mainAppReference.configManagerPanel.textArea.repaint();
+		MainGUI.configManagerPanel.splitPane.setDividerLocation(300);
+		MainGUI.configManagerPanel.textArea.revalidate();
+		MainGUI.configManagerPanel.textArea.repaint();
 		
-		replaceMainPanel(mainAppReference.configManagerPanel);
+		replaceMainPanel(MainGUI.configManagerPanel);
     	
     	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ConfigurationManagerPanel.class);
     	MainGUI.currentConfiguration.writeSingleValue(
@@ -635,4 +637,45 @@ public class MainGuiUtils {
 		return input;
 	}
 	
+	public boolean isAllSavedInTextEditor() {
+		if (MainGUI.initTxtWriter == null || MainGUI.initTxtWriter.getCurrentTabEditor() == null) {
+			return true;
+		}
+		
+		CustomTabbedEditor currentTabEditor = MainGUI.initTxtWriter.getCurrentTabEditor();
+
+		boolean thereAreUnsaved;
+		boolean atLeastOneTemp;
+		
+		thereAreUnsaved = false;
+		atLeastOneTemp = false;
+		for (TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+			if (tabElement.unsaved) {
+				thereAreUnsaved = true;
+			}
+			if (tabElement.loadedFile == null) {
+				atLeastOneTemp = true;
+			}
+		} 
+		
+		return (thereAreUnsaved || atLeastOneTemp);
+	}
+	
+	/**
+	 * Check if panels that are currently loaded (!= null) can be de-referenced (if nothing to save is found, or no file to crypt currently loaded)
+	 */
+	public void deReferenceUnusedPanels() {
+		
+		if(MainGUI.configManagerPanel != null && !isConfManagerActive()) {
+			MainGUI.configManagerPanel = null;
+		}
+		
+		if(MainGUI.panelCrypter != null && !isCrypterActive() && MainGUI.panelCrypter.panelVDragNDropPane.getAllNodes().length == 0) {
+			MainGUI.panelCrypter = null;
+		}
+
+		if(MainGUI.initTxtWriter != null && !isTextEditorActive() && isAllSavedInTextEditor()) {
+			MainGUI.initTxtWriter = null;
+		}
+	}
 }

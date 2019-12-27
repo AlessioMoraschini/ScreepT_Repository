@@ -165,6 +165,7 @@ public class GuiUtils {
 		// Tooltip General settings
 		ToolTipManager.sharedInstance().setInitialDelay(delay);
 		ToolTipManager.sharedInstance().setDismissDelay(timeout);
+		ToolTipManager.sharedInstance().setReshowDelay(1800);
 		UIManager.put("ToolTip.font", font);
 	}
 	

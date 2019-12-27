@@ -23,7 +23,7 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	public static final Object[] options = new Object[] { "Kill Application", "Continue" };
 	
 	public static final String ERROR_FILE_REASONS = " reasons could be that file does not exist or contains errors ";
-	public static final String CRITICAL_ERROR_MSG = "An unexpected problem caused a critical error: Closing application. \n ";
+	public static final String CRITICAL_ERROR_MSG = "Critical error spotted: it's possible that Application won't behave normally, until next restart.\n ";
 	public static String DIALOG_USER_ERR_INFO;
 	
 	IParametricRunnable doAfterError;
@@ -96,8 +96,11 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 				
 				if (ParametricExceptionThread.isCriticalError(t)) {
 					Sounds.playSound(SoundsConfigurator.ERROR, null);
+
+					String outOfMemoryPreamble = t instanceof OutOfMemoryError ? 
+							"Not Enough RAM memory allocated to this process, to solve this you can increase the max memory option in launcher panel.\n\n" : "";
 					res = new JOptionHelper(null).errorScroll(
-							CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), 
+							outOfMemoryPreamble + CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), 
 							"Critical Error",
 							t, 
 							options, 

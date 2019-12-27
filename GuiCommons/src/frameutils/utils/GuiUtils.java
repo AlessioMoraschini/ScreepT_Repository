@@ -260,10 +260,14 @@ public class GuiUtils {
 			}
 			Sounds.playSound(SoundsConfigurator.ERROR, null);
 			logger.warn("Format not supported or an error occurred :-> skipping text replace in text area. " + unsupportedAdvice);
-			dialogHelper.warn("<html><b>Cannot format with current settings</b></br>"+unsupportedAdvice, "</html>");
+			dialogHelper.warn(encapsulateInHtml("<b>Cannot format with current settings</b></br>"+unsupportedAdvice), "Cannot Format text");
 		}
 		
 		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(originalDialogDim);
+	}
+	
+	public static String encapsulateInHtml(String original) {
+		return "<html>" + original + "</html>";
 	}
 	
 	public static String replaceEachLineMatchesFromLeft(boolean startsWith, String source, String match, String replacement) {

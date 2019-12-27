@@ -118,7 +118,6 @@ public class GeneralConfig {
 	public static String LAUNCHER_LOG_PROPS_PATH = resourcesFilePathsMappings.getProperty("LAUNCHER_LOG_PROPS_PATH");    		 
 	                     			
 	// JVM and LAUNCHER
-	public static int JVM_MAX_MIN_DIFF_WARN;
 	public static String MAX_JVM_COMPLETE_COMPATIBILITY;
 	public static String JVM_CUSTOM_ADDED_SETTINGS;
 	public static ArrayList<String> BATCH_LAUNCHER_ADDED_INSTRUCTIONS;
@@ -474,7 +473,6 @@ public class GeneralConfig {
 			SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
 
 			// JVM and LAUNCHER
-			JVM_MAX_MIN_DIFF_WARN = resourcesFilePathsMappings.getIntVarFromProps("JVM_MAX_MIN_DIFF_WARN", 100);
 			MAX_JVM_COMPLETE_COMPATIBILITY = resourcesFilePathsMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
 			JVM_CUSTOM_ADDED_SETTINGS = resourcesFilePathsMappings.getProperty("JVM_CUSTOM_ADDED_SETTINGS");
 			

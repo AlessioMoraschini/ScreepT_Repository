@@ -49,8 +49,7 @@ public class CustomizeParametersPanel extends JFrame{
 	public static final DecimalFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
 	private static final String TOOLTIP_LEVEL_LOG = "Choose a value between 'OFF'(logging feature disabled) and 'ALL'. This can have an impact for overall speed and memory usage (OFF = max speed)";
 	private static final String TOOLTIP_STACK_SIZE = "This is the memory used by java JVM to store variables in ram memory called stack. \nHigh value = more reliability but less free memory for other dynamic values!";
-	private static final String TOOLTIP_WARN_MIN_RAM_SIZE = "It's recommended to use lower value for minimum memory than max, equal values cause performance decrease! ";
-	private static final String TOOLTIP_WARN_MAX_RAM_SIZE = "It's recommended to use bigger value for max memory than minimum, equal values cause performance decrease! ";
+	private static final String TOOLTIP_WARN_DIFFERENT_XSS_XMX_ARGS = "It's recommended to use same value for max and minimum memory, different values can cause a performance decrease (use different values if you need dynamic memory allocation)";
 	private static final String TOOLTIP_MIN_RAM_SIZE = "This is the minimum heap ram value used bj JVM to start ScrYpT dynamic data allocation";
 	private static final String TOOLTIP_MAX_RAM_SIZE = "This is the maximum heap ram value used bj JVM allocated to ScrYpT for dynamic data allocation";
 	private static final String TOOLTIP_DISPLAY_SHELL = "When checked, the launcher will keep an open active command line shell with the logger's output";
@@ -481,9 +480,9 @@ public class CustomizeParametersPanel extends JFrame{
 	}
 	
 	private void checkWarningsAndTooltips(int max, int min) {
-		if((max - min) < GeneralConfig.JVM_MAX_MIN_DIFF_WARN) {
-			lblMaxWarninig.setToolTipText(TOOLTIP_WARN_MAX_RAM_SIZE);
-			lblMinWarninig.setToolTipText(TOOLTIP_WARN_MIN_RAM_SIZE);
+		if(max != min) {
+			lblMaxWarninig.setToolTipText(TOOLTIP_WARN_DIFFERENT_XSS_XMX_ARGS);
+			lblMinWarninig.setToolTipText(TOOLTIP_WARN_DIFFERENT_XSS_XMX_ARGS);
 			lblMaxWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
 			lblMinWarninig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
 		}else {

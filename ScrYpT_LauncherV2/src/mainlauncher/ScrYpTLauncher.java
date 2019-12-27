@@ -2,6 +2,7 @@ package mainlauncher;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -110,6 +111,8 @@ public class ScrYpTLauncher {
 		if(args.length > 0 && args[0].equals("err_test")) {
 			System.exit(1);
 		}
+		
+		GuiUtils.setupTooltips(500, 30000, new Font("Segoe UI", Font.PLAIN, 17));
 		
 		ARGS = args;
 		argumentsFiles = getFileArrayFromStrings(args);

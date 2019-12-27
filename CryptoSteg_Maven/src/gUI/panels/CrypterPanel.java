@@ -95,20 +95,23 @@ public class CrypterPanel extends ModulePanel {
 	private static final long serialVersionUID = 2683201298719353959L;
 
 	static Logger logger = Logger.getLogger(CrypterPanel.class);
-	
-	// Global reference to current configuration
-	private INItializer currentConf;
-	
-	private Runnable afterCompleteRunnable = null;
-	private File completedDirectoryImportExport = null;
-	
+
 	// dateFormatter
-	private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd @ HH-mm-ss");
+	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd @ HH-mm-ss");
 	
 	private static final Dimension screenSize = GuiUtils.getScreenSize();
 	private static final Dimension screenSizeLess = new Dimension(screenSize.width - 5, screenSize.height - 10);
 	private static final Dimension maxBodySize = new Dimension(screenSize.width - 5, screenSize.height - 40);
 	private static final Dimension maxSplitPaneSize = new Dimension(screenSize.width - 5, screenSize.height - 170);
+	
+	public static final int labelLengthLimit = 40;
+	public static final char DEFAULT_PSW_CHAR = '\u25CF';
+	
+	// static path of keyDictionary
+	public static final String KEY_DICTIONARY = KeyGenFrame.KEY_DICTIONARY;
+		
+	// file representing dictionary
+	public static final File KEY_DICTIONARY_FILE = new File(KEY_DICTIONARY);
 	
 ///////////////////////////////////////////////
 		//  GUI-RELATED-OBJECTS   //
@@ -209,11 +212,10 @@ public class CrypterPanel extends ModulePanel {
 	public JButton btnGenerateKeyPsw;
 
 	// public field representing current Panel
-	public static CrypterPanel thisPanel; 
+	public CrypterPanel thisPanel; 
 	
 	// AES password gui-container
 	private JPasswordField AESKEYtext;
-	public static final char DEFAULT_PSW_CHAR = '\u25CF';
 	
 	// combobox to select conversion mode
 	private JComboBox<CryptoMode> comboModeCrypto;
@@ -223,11 +225,11 @@ public class CrypterPanel extends ModulePanel {
 		// CODING-RELATED-OBJECTS //
 		////////////////////////////
 	
-	// static path of keyDictionary
-	public static final String KEY_DICTIONARY = KeyGenFrame.KEY_DICTIONARY;
-		
-	// file representing dictionary
-	public static final File KEY_DICTIONARY_FILE = new File(KEY_DICTIONARY);
+	// Global reference to current configuration
+	private INItializer currentConf;
+	
+	private Runnable afterCompleteRunnable = null;
+	private File completedDirectoryImportExport = null;
 		
 	// field representing the source file loaded by user, this is the file to crypt/decrypt
 	private File srcFile;
@@ -238,11 +240,10 @@ public class CrypterPanel extends ModulePanel {
 	
 	// CODERS objects - shared by methods
 	private boolean flagCreateNewMonitor = false;
-	public static FileChangeMonitor fileMonitor;
+	public FileChangeMonitor fileMonitor;
 	private ScreeptManagerFileOrFolder screeptManagerFoF;
 	private CryptoMode mode;
 	
-	public static final int labelLengthLimit = 40;
 	private JCheckBox chckbxShuffle;
 	private JCheckBox chckbxHashKey;
 	private JScrollPane scrollPaneDragNDropSource;
@@ -250,7 +251,7 @@ public class CrypterPanel extends ModulePanel {
 	private JTree treeSourcesDragAndDrop;
 	private JLabel lblSelectedFilesDragTitle;
 	private JSeparator separatorDragNDropTitle;
-	public static VirtualFileDropPane panelVDragNDropPane;
+	public VirtualFileDropPane panelVDragNDropPane;
 	
 	public UpdateProgressPanelCrypter generalProgress;
 	public JOptionHelper dialogHelper;
@@ -562,7 +563,7 @@ public class CrypterPanel extends ModulePanel {
 				tree.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
 				scrollPaneTree.setViewportView(tree);
 				tree.addTreeSelectionListener(treeListener);
-				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter(currentConf, thisPanel);
+				new TreeFileMouseListenerCrypter(currentConf, thisPanel);
 			}
 		});
 		
@@ -1243,7 +1244,7 @@ public class CrypterPanel extends ModulePanel {
 				} catch (Exception e1) {
 					logger.warn("Error in value changed listener: ", e1);
 				}
-				TreeFileMouseListenerCrypter menuListener = new TreeFileMouseListenerCrypter(currentConf, thisPanel);			
+				new TreeFileMouseListenerCrypter(currentConf, thisPanel);			
 			}
 		};
 		
@@ -1735,7 +1736,7 @@ public class CrypterPanel extends ModulePanel {
 	}
 
 	public void setPanelVDragNDropPane(VirtualFileDropPane panelVDragNDropPane) {
-		CrypterPanel.panelVDragNDropPane = panelVDragNDropPane;
+		this.panelVDragNDropPane = panelVDragNDropPane;
 	}
 
 	public JPanel getPanelMainContainer() {

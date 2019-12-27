@@ -474,6 +474,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
  		mntmOptimizeResourcesUsage = new CustomJmenuItem(new AbstractAction("") {
  			public void actionPerformed(ActionEvent e) {
  				try {
+ 					mainGuiUtils.deReferenceUnusedPanels();
  					System.gc();
  					System.runFinalization();
  					dialogHelper.info("ScrYpT's Resources usage optimized.", "Resources usage optimized.");
@@ -1407,17 +1408,20 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		logger.debug("Starting check on fileMonitor...");
 		boolean result = false;
 		try {
-			if (CrypterPanel.fileMonitor != null && CrypterPanel.fileMonitor.rootMonitorDir.exists()) {
-				ChangeDTO changesTempDecrypted = CrypterPanel.fileMonitor.checkForEverithing();
+			if (panelCrypter != null && 
+				panelCrypter.fileMonitor != null && 
+				panelCrypter.fileMonitor.rootMonitorDir.exists()) {
+				
+				ChangeDTO changesTempDecrypted = panelCrypter.fileMonitor.checkForEverithing();
 				if (changesTempDecrypted.changedFiles.size() != 0) {
 					int choice = JOptionPane.showConfirmDialog(parent, "There are Files changed after decrypt.. do you want to return to ScreepT view? "+changesTempDecrypted.changedFiles);
 					if(choice == JOptionPane.YES_OPTION) {
 						result = false;
 						mntmCrypter.doClick();
 						// add unsaved as source for crypterPanel
-						CrypterPanel.panelVDragNDropPane.removeAll();
-						for(File unsaved : CrypterPanel.fileMonitor.rootMonitorDir.listFiles()) {
-							CrypterPanel.panelVDragNDropPane.addFileToTree(unsaved);
+						panelCrypter.panelVDragNDropPane.removeAll();
+						for(File unsaved : panelCrypter.fileMonitor.rootMonitorDir.listFiles()) {
+							panelCrypter.panelVDragNDropPane.addFileToTree(unsaved);
 						}
 					}else {
 						result = false;

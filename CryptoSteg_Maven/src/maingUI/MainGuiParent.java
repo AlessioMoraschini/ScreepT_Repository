@@ -154,10 +154,11 @@ public class MainGuiParent {
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	public static TextEditor initTxtWriter;
 	public static CrypterPanel panelCrypter;
-	public ConfigurationManagerPanel configManagerPanel;
+	public static ConfigurationManagerPanel configManagerPanel;
 	
 	public static MainGuiUtils mainGuiUtils;
 	
+	// PARENT CONSTRUCTOR
 	public MainGuiParent() {
 		// INIT MENU and MAIN-BAR SUMBMENUS
         menuBar = new JMenuBar();
@@ -326,7 +327,7 @@ public class MainGuiParent {
 				throwError.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						throw new Error("FLAG_THROW_ERROR_TEST_ON = true, Error thrown.");
+						throw new OutOfMemoryError("FLAG_THROW_ERROR_TEST_ON = true, Error thrown.");
 					}
 				});
 				JMenuItem throwException = new JMenuItem("throw Exception");
@@ -462,7 +463,11 @@ public class MainGuiParent {
 		
 		mntmOptimizeResourcesUsage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLEANUP));
 		mntmOptimizeResourcesUsage.setCursor(GuiUtils.CURSOR_HAND);
-		mntmOptimizeResourcesUsage.setToolTipText("Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequetly, because it can slow down the whole software)");
+		mntmOptimizeResourcesUsage.setToolTipText(
+				GuiUtils.encapsulateInHtml(
+						"Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)"
+						+ "<b>NB:</b> remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors."
+						+ "<u>If you want to have less memory used by ScrYpT</u> you can setup them in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));
 
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);
