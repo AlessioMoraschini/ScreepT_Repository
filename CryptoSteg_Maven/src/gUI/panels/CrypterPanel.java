@@ -697,7 +697,7 @@ public class CrypterPanel extends ModulePanel {
 					if(screeptManagerFoF.screepTManager!=null) {
 						screeptManagerFoF.screepTManager.disableProgressUpdater();
 					}
-					dialogHelper.showInfoOKDialogOnTop("OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.showTypedOKDialog("OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
 					logger.error("Exception happened during creept", ex);
 				}
 				
@@ -718,7 +718,7 @@ public class CrypterPanel extends ModulePanel {
 					if(screeptManagerFoF.screepTManager!=null) {
 						screeptManagerFoF.screepTManager.disableProgressUpdater();
 					}
-					dialogHelper.showInfoOKDialogOnTop("OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.showTypedOKDialog("OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
 					logger.error("Exception happened during decreept!", ex);
 				}
 								
@@ -1106,13 +1106,13 @@ public class CrypterPanel extends ModulePanel {
 	private void askUserIfWantsToDelete(File resultDirectory) {
 		if(resultDirectory != null && resultDirectory.isDirectory() && resultDirectory.exists()) {
 			logger.debug("Asking to user if he wants to delete directory: " + resultDirectory);
-			if(dialogHelper.showInfoYNDialogOnTop("Do you want to delete " + resultDirectory + "'s content?", "Delete content?", JOptionPane.INFORMATION_MESSAGE)) {
+			if(dialogHelper.showYNDialog("Do you want to delete " + resultDirectory + "'s content?", "Delete content?", JOptionPane.INFORMATION_MESSAGE)) {
 				boolean result = FileStuff.deleteDirContentRecursive(resultDirectory);
 				
 				if(result) {
-					dialogHelper.showInfoOKDialogOnTop(resultDirectory + "'s content deleted.", "Directory cleaned", JOptionPane.INFORMATION_MESSAGE);
+					dialogHelper.showTypedOKDialog(resultDirectory + "'s content deleted.", "Directory cleaned", JOptionPane.INFORMATION_MESSAGE);
 				} else {
-					dialogHelper.showInfoOKDialogOnTop("Cannot delete all content in " + resultDirectory, "Cannot clean directory.", JOptionPane.WARNING_MESSAGE);
+					dialogHelper.showTypedOKDialog("Cannot delete all content in " + resultDirectory, "Cannot clean directory.", JOptionPane.WARNING_MESSAGE);
 					GuiUtils.openInFileSystem(resultDirectory);
 				}
 			}
@@ -1545,12 +1545,12 @@ public class CrypterPanel extends ModulePanel {
 			panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
 			
 			appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
-			dialogHelper.showInfoOKDialogOnTop("Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
+			dialogHelper.showTypedOKDialog("Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
 			
 			logger.debug("File :" + selected.getName() + " correctly loaded");
 		} else {
 			
-			dialogHelper.showInfoOKDialogOnTop("File was already loaded in source pool", "File already Loaded :)", JOptionPane.INFORMATION_MESSAGE);
+			dialogHelper.showTypedOKDialog("File was already loaded in source pool", "File already Loaded :)", JOptionPane.INFORMATION_MESSAGE);
 			logger.debug("File load skipped: already loaded!");
 		}
 	}

@@ -607,7 +607,7 @@ public class MainGuiUtils {
 				if (genOpt.isFirstAccess()) {
 					String msg = "<html>Hi " + genOpt.getUserName() + ", and welcome to " + GeneralConfig.APPLICATION_NAME
 							+ "!<br/>I suggest you to take a look to documentation before to start, do you want to open it now?</html>";
-					if (dialogHelper.showInfoYNDialogOnTop(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME, JOptionHelper.QUESTION)) {
+					if (dialogHelper.showYNDialog(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME, JOptionHelper.QUESTION)) {
 						MainGUI.mainAPP.getMntmUserDocumentation().doClick();
 					}
 				}
@@ -621,7 +621,7 @@ public class MainGuiUtils {
 		boolean end=false;
 		String input="";
 		do {
-			input = MainGUI.dialogHelper.askForStringUnsafeOnTop("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
+			input = MainGUI.dialogHelper.askForStringUnsafe("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
 			
 			if (input==null || input.equals("") || input.length() > 20) {
 				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",

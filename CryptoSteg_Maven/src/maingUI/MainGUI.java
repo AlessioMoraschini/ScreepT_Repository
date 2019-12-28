@@ -633,7 +633,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					} catch (IOException e1) {
 						logger.error("Exception happened!", e1);
 					}
-					if (dialogHelper.showInfoYNDialogOnTop(
+					if (dialogHelper.showYNDialog(
 							"Really want to overwrite default configuration?", "Warning - Overwrite default configuration?", JOptionPane.YES_NO_OPTION)) {
 						currentConfiguration.writeCurrentConfigIniFile();
 						dialogHelper.info("File " + currentConfiguration.getIniFile().getFile().getAbsolutePath() + " saved!", "File saved");
@@ -652,7 +652,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		    	if (!FLAG_loadSrcrYptDefaultConf) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadSrcrYptDefaultConf = true;
-					if (dialogHelper.showInfoYNDialogOnTop(
+					if (dialogHelper.showYNDialog(
 							"Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ",
 							"Warning - Reset INI standard config?",
 							JOptionPane.YES_NO_OPTION)) {
@@ -688,7 +688,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScrYpT_launcher's customize options at start)";
 					boolean choice = true;
 					if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
-						choice = dialogHelper.showInfoYNDialogOnTop(msg, "Export logs even if disabled?", JOptionPane.YES_NO_OPTION);
+						choice = dialogHelper.showYNDialog(msg, "Export logs even if disabled?", JOptionPane.YES_NO_OPTION);
 					}
 					
 					if (choice) {
@@ -730,7 +730,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					String coolFileSize = FileStuff.coolFileSize(LOG_MAIN_FILE.length());
 					boolean choice = false;
 					String msg =  "<html>Are you sure you to want to erase your logs? <br/> If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]</html>";
-					choice = dialogHelper.showInfoYNDialogOnTop(msg, "Erase Logs content?", JOptionPane.YES_NO_OPTION);
+					choice = dialogHelper.showYNDialog(msg, "Erase Logs content?", JOptionPane.YES_NO_OPTION);
 					if(choice) {
 						if (FileStuff.clearFileContent(GeneralConfig.LOG_PATH) && FileStuff.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
 							logger.debug("Files deleted");
@@ -1274,7 +1274,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
     	
 		
-    	if (new JOptionHelper(frmScryptV).showInfoYNDialogOnTop("Really want to exit?", "Exit Program", JOptionHelper.YES_OR_NO)) {
+    	if (new JOptionHelper(frmScryptV).showYNDialog("Really want to exit?", "Exit Program", JOptionHelper.YES_OR_NO)) {
 
     		frmScryptV.setAlwaysOnTop(true);
     		closeApplication(0);

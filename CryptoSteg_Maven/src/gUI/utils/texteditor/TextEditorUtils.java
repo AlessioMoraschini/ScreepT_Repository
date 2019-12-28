@@ -260,7 +260,7 @@ public class TextEditorUtils {
 			if (openedFilesCrypter != 0) {
 				String msg = "There are " + openedFilesCrypter
 						+ " loaded files in ScreepT: do you want to remove from loaded list?";
-				Boolean choice = dialogHelper.showInfoYNOrNullDialogOnTop(msg, "Empty current loaded files?", JOptionPane.YES_NO_OPTION);
+				Boolean choice = dialogHelper.showYNOrNullDialog(msg, "Empty current loaded files?", JOptionPane.YES_NO_OPTION);
 				if (choice != null) {
 					if (choice) {
 						cipherPanel.getPanelVDragNDropPane().removeAll();

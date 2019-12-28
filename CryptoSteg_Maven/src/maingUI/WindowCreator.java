@@ -152,11 +152,7 @@ public class WindowCreator {
     	return panelImgConv;
 	}
 	
-	public NetInfoFrame newNetInfoFrame() {
-		
-		NetInfoFrame panelNetInfo = NetInfoFrame.getInstance();
-		
-		commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ");
+	public void newNetInfoFrame() {
 		
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			public void run() {
@@ -164,21 +160,19 @@ public class WindowCreator {
 				prog.getPb().setIndeterminate(true);
 				prog.getLabel().setText("Loading Network informations...");
 				prog.getPb().setString("Loading...");
+
+				NetInfoFrame panelNetInfo = NetInfoFrame.getInstance();
 				panelNetInfo.setResizable(false);
+				commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ");
+
 				prog.forceClose();
+
+				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelNetInfo, JFrame.MAXIMIZED_BOTH);
 			}
 		});
-    		
-    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelNetInfo, JFrame.MAXIMIZED_BOTH);
-    	
-    	return panelNetInfo;
 	}
 	
-	public HwInfoFrame newHwInfoFrame() {
-		
-		HwInfoFrame panelHwInfo = HwInfoFrame.getInstance();
-		
-		commonGraphicInitAlwaysOnTop(panelHwInfo, "Hardware info - ");
+	public void newHwInfoFrame() {
 		
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			@Override
@@ -187,14 +181,16 @@ public class WindowCreator {
 				prog.getPb().setIndeterminate(true);
 				prog.getLabel().setText("Loading System informations...");
 				prog.getPb().setString("Loading...");
+				
+				HwInfoFrame panelHwInfo = HwInfoFrame.getInstance();
+				commonGraphicInitAlwaysOnTop(panelHwInfo, "Hardware info - ");
 				panelHwInfo.setResizable(false);
+				
 				prog.forceClose();
+
+				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelHwInfo, JFrame.MAXIMIZED_BOTH);
 			}
 		});
-    		
-    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelHwInfo, JFrame.MAXIMIZED_BOTH);
-    	
-    	return panelHwInfo;
 	}
 	
 	public AboutSectionFrame newAboutSectionFrame() {

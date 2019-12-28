@@ -227,7 +227,7 @@ public class HashCheckerFrame extends ParentFrame{
 								if (currentFile.isFile()) {
 									txtFieldChecksumResult
 											.setText(prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
-								} else if (dialogHelper.showInfoYNDialogOnTop("Hashing a folder can be a long task, really want to start hashing?",
+								} else if (dialogHelper.showYNDialog("Hashing a folder can be a long task, really want to start hashing?",
 										"Hash folder?", JOptionHelper.YES_OR_NO)) {
 									updateProgress = new UpdateProgressPanelMin(false);
 									updateProgress.setClosable(true);
@@ -269,7 +269,7 @@ public class HashCheckerFrame extends ParentFrame{
 									if (currentFile.isFile()) {
 										hash = prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
 									} else {
-										if (dialogHelper.showInfoYNDialogOnTop("Hashing a folder can be a long task, are you sure to start hashing?",
+										if (dialogHelper.showYNDialog("Hashing a folder can be a long task, are you sure to start hashing?",
 												"Hash folder?", JOptionHelper.YES_OR_NO)) {
 											updateProgress = new UpdateProgressPanelMin(false);
 											updateProgress.setClosable(true);
