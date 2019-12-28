@@ -266,7 +266,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		lblTheme.setFont(new Font("Tahoma", Font.BOLD, 13));
 		mainPanel.add(lblTheme, "cell 5 2,alignx center");
 		
-		comboLocales = new JComboBox<Locale>(Locale.getAvailableLocales());
+		comboLocales = new JComboBox<Locale>(getSupportedLocales());
 //		comboLocales = new JComboBox<Locale>();
 		comboLocales.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 		comboLocales.setCursor(GuiUtils.CURSOR_HAND);
@@ -578,6 +578,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				thisFrame.requestFocus();
 			}
 		});
+		
+		styleBasedThemesSelectorToggle((LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem());
+		styleBasedDarkNimbusToggle((LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem());
 	}
 
 	private void addHandlers() {
@@ -1287,7 +1290,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			@Override
 			public void run() {
 				try {
-					LookAndFeelInfo laf = (LookAndFeelInfo) comboStyleLaF.getSelectedItem();
+					LookAndFeelInfoCustom laf = (LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem();
+					styleBasedThemesSelectorToggle(laf);
+					styleBasedDarkNimbusToggle(laf);
 					currentConfiguration.getGuiOpt().setPreferredStyle(laf.getClassName());
 					try {
 						currentConfiguration.getGuiOpt().setPreferredThemeName(((PlasticTheme)comboTheme.getSelectedItem()).getName());
@@ -1315,13 +1320,37 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		};
 	}
 	
+	private void styleBasedThemesSelectorToggle(LookAndFeelInfoCustom laf) {
+		if(laf.isJGoodies() || laf.isMetal()) {
+			comboTheme.setEnabled(true);
+		} else {
+			comboTheme.setEnabled(false);
+		}
+	}
+
+	private void styleBasedDarkNimbusToggle(LookAndFeelInfoCustom laf) {
+		if(laf.isNimbus()) {
+			chckbxDarklight.setEnabled(true);
+		} else {
+			chckbxDarklight.setEnabled(false);
+		}
+	}
+	
 	@Override
 	public Dimension getDefaultDimension() {
 		return new Dimension(900, 510);
 	}
 	
 	public static GraphicPreferencesFrame getInstance(INItializer currentConf) {
-		return singletonInstance != null ? new GraphicPreferencesFrame(currentConf) : singletonInstance;
+		return singletonInstance == null ? new GraphicPreferencesFrame(currentConf) : singletonInstance;
+	}
+	
+	public static Locale[] getSupportedLocales(){
+		Locale[] supportedLocales = new Locale[2];
+		supportedLocales[0] = Locale.ENGLISH;
+		supportedLocales[1] = Locale.ITALIAN;
+		
+		return supportedLocales;
 	}
 	
 }

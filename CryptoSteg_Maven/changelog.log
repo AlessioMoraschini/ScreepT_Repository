@@ -1,4 +1,6 @@
-* 2019-12-27  (HEAD -> refs/heads/master, refs/remotes/origin/master) Introduced ScrYpT's optimizer to top-right on menu. (+ Minor bugs fixed)
+* 2019-12-27  (refs/remotes/origin/master) Error management improvements + Launcher settings tuned
+| 
+* 2019-12-27  Introduced ScrYpT's optimizer to top-right on menu. (+ Minor bugs fixed)
 | 
 * 2019-12-26  Crypter process made cancelable + Configuration manager improved
 | 

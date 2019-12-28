@@ -12,4 +12,16 @@ public class LookAndFeelInfoCustom extends LookAndFeelInfo{
 	public String toString() {
 		return super.getName();
 	}
+	
+	public boolean isJGoodies() {
+		return this.getName().toLowerCase().contains("plastic");
+	}
+	
+	public boolean isMetal() {
+		return this.getName().toLowerCase().contains("metal");
+	}
+	
+	public boolean isNimbus() {
+		return this.getName().toLowerCase().contains("nimbus");
+	}
 }
