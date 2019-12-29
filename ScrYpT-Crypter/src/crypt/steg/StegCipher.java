@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 
-import util.BufferedImageType;
-import util.EntrophyzerUtils;
+import om.BufferedImageType;
 import util.ImageEncodingUtils;
-import util.SafeLogger;
+import utility.EntrophyzerUtils;
+import utility.SafeLogger;
 
 /**
  * this class represent the coding/decoding of source byte list or array, implementing simil-steganography

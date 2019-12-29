@@ -22,7 +22,7 @@ import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.RUndoManager;
 
-import amfileutils.filechangewatcher.FileChangeMonitor;
+import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
 import resources.GeneralConfig;

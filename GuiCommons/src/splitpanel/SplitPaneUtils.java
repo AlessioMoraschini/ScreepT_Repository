@@ -11,7 +11,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import reflection.ReflectionUtils;
+import utility.reflection.ReflectionUtils;
 
 
 public class SplitPaneUtils {

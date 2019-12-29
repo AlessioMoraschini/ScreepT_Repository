@@ -8,6 +8,7 @@
   
   <!-- MODULES BUILD -->
   <modules>
+  	<module>../VariousCommonsLight</module>
   	<module>../GenCommons</module>
   	<module>../GeneralResources</module>
   	<module>../OsCommons</module>

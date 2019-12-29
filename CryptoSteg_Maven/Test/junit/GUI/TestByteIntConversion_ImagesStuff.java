@@ -13,9 +13,9 @@ import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import crypt.steg.StegCipher;
-import enums.BufferedImageType;
+import om.BufferedImageType;
 import util.ImageEncodingUtils;
-import variousutils.ByteWorker;
+import utility.ByteWorker;
 
 import org.junit.Rule;
 

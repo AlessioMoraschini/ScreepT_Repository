@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import om.GuiOption;
 import om.TextEditorOption;
+import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
@@ -38,7 +39,6 @@ import org.apache.log4j.Logger;
 
 import com.jgoodies.looks.plastic.PlasticTheme;
 
-import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
@@ -581,6 +581,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		
 		styleBasedThemesSelectorToggle((LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem());
 		styleBasedDarkNimbusToggle((LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem());
+		styleBasedSizeNimbusToggle((LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem());
 	}
 
 	private void addHandlers() {
@@ -1293,6 +1294,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 					LookAndFeelInfoCustom laf = (LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem();
 					styleBasedThemesSelectorToggle(laf);
 					styleBasedDarkNimbusToggle(laf);
+					styleBasedSizeNimbusToggle(laf);
 					currentConfiguration.getGuiOpt().setPreferredStyle(laf.getClassName());
 					try {
 						currentConfiguration.getGuiOpt().setPreferredThemeName(((PlasticTheme)comboTheme.getSelectedItem()).getName());
@@ -1321,7 +1323,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	}
 	
 	private void styleBasedThemesSelectorToggle(LookAndFeelInfoCustom laf) {
-		if(laf.isJGoodies() || laf.isMetal()) {
+		if(laf.isJGoodiesThemed() || laf.isMetal()) {
 			comboTheme.setEnabled(true);
 		} else {
 			comboTheme.setEnabled(false);
@@ -1333,6 +1335,14 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			chckbxDarklight.setEnabled(true);
 		} else {
 			chckbxDarklight.setEnabled(false);
+		}
+	}
+
+	private void styleBasedSizeNimbusToggle(LookAndFeelInfoCustom laf) {
+		if(laf.isNimbus()) {
+			spinnerNimbusSize.setEnabled(true);
+		} else {
+			spinnerNimbusSize.setEnabled(false);
 		}
 	}
 	

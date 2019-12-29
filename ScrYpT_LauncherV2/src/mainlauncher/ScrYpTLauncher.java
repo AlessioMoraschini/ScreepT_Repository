@@ -18,10 +18,10 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import gui.GuiUtils;
 import gui.panels.CustomizeParametersPanel;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
-import gui.utils.GuiUtils;
 import gui.utils.LauncherLoaderFrame;
 import gui.utils.LoggerUtils;
 import launcherutils.CommandsAssembler;

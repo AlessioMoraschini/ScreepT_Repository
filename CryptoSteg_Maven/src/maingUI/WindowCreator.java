@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import dialogutils.UpdateProgressPanel;
 import frameutils.frame.ClipboardFrame;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.GeneratePasswordFrame;
@@ -23,6 +22,7 @@ import gUI.frames.ImportExportWorkspcCryptFrame;
 import gUI.frames.KeyDictionaryFrame;
 import gUI.frames.KeyGenFrame;
 import gUI.frames.TutorialFrame;
+import gui.UpdateProgressPanelMin;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import media.Sounds;
@@ -156,7 +156,7 @@ public class WindowCreator {
 		
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			public void run() {
-				UpdateProgressPanel prog = new UpdateProgressPanel(MainGUI.currentConfiguration, false);
+				UpdateProgressPanelMin prog = new UpdateProgressPanelMin(false);
 				prog.getPb().setIndeterminate(true);
 				prog.getLabel().setText("Loading Network informations...");
 				prog.getPb().setString("Loading...");
@@ -177,7 +177,7 @@ public class WindowCreator {
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			@Override
 			public void run() {
-				UpdateProgressPanel prog = new UpdateProgressPanel(MainGUI.currentConfiguration, false);
+				UpdateProgressPanelMin prog = new UpdateProgressPanelMin(false);
 				prog.getPb().setIndeterminate(true);
 				prog.getLabel().setText("Loading System informations...");
 				prog.getPb().setString("Loading...");

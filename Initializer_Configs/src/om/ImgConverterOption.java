@@ -1,7 +1,5 @@
 package om;
 
-import enums.ScalingAlgorithm;
-
 public class ImgConverterOption {
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)

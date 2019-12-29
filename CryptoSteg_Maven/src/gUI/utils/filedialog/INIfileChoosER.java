@@ -15,22 +15,23 @@ import amfileutils.FileStuff;
 import mainobj.INItializer;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
 
 public class INIfileChoosER extends JDialog{
-	
+	private static final long serialVersionUID = 606461817724105154L;
+
 	// INItializer logger creation		
 	static Logger logger = Logger.getLogger(INIfileChoosER.class); 
-	
-	private JFileChooser fileChooser;
 	
 	/**
 	 * Read file INI updating textArea and label
 	 * */
 	public INIfileChoosER(INItializer fileINI, JTextArea textA, JLabel lblAvviso) {
 		
-		fileChooser = new JFileChooser();			
+		JFileChooser fileChooser = new CustomFileChooserOnTop();			
 		fileChooser.setDialogTitle("Load Configuration .INI File");
 		fileChooser.setCurrentDirectory(new File("INI_FILES"));		
 		final INItializer backupINI = fileINI;
@@ -79,7 +80,7 @@ public class INIfileChoosER extends JDialog{
 	 * */
 	public INIfileChoosER(INItializer fileINI, String defDir) {
 		
-		fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		fileChooser.setDialogTitle("Load .INI File");
 		fileChooser.setCurrentDirectory(new File(defDir));		
 		final INItializer backupINI = fileINI;
@@ -121,7 +122,7 @@ public class INIfileChoosER extends JDialog{
 	 */
     public INIfileChoosER(INItializer fileINI, JLabel lblAvviso) {
 		
-		fileChooser = new JFileChooser();	
+    	JFileChooser fileChooser = new CustomFileChooserOnTop();	
 		fileChooser.setDialogTitle("Save Configuration .INI File");;
 		fileChooser.setCurrentDirectory(new File("INI_FILES"));		
 		File selectedFile;
@@ -163,10 +164,17 @@ public class INIfileChoosER extends JDialog{
 		
 		getContentPane().add(fileChooser, BorderLayout.NORTH);
 	}
+	
+	private class CustomFileChooserOnTop extends JFileChooser{
+		private static final long serialVersionUID = 7362401687903210645L;
 
-	public JFileChooser getFileChooser(){
-		return fileChooser;
+		@Override
+		protected JDialog createDialog(Component parent) throws HeadlessException {
+			// intercept the dialog created by JFileChooser
+			JDialog dialog = super.createDialog(parent);
+			dialog.setAlwaysOnTop(true);
+			dialog.setModal(true); // set modality (or setModalityType)
+			return dialog;
+		}
 	}
-	
-	
 }

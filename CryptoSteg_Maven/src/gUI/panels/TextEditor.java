@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
+import om.files.FileNamed;
 import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -39,7 +40,6 @@ import org.fife.ui.rtextarea.RUndoManager;
 
 
 import amfileutils.FileStuff;
-import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;

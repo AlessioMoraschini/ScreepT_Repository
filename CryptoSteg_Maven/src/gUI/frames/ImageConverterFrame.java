@@ -7,12 +7,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.UpdateProgressPanel;
-import enums.ScalingAlgorithm;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
+import gui.UpdateProgressPanelMin;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
@@ -34,6 +33,7 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import om.ImgConverterOption;
+import om.ScalingAlgorithm;
 import panel.PanelFileDragNDropManager;
 import resources.IconsPathConfigurator;
 import variousutils.HandleString;
@@ -151,7 +151,7 @@ public class ImageConverterFrame extends ParentFrame{
 	private JSeparator separator_7;
 
 	// object that display wait dialog
-	UpdateProgressPanel progUpdater;
+	UpdateProgressPanelMin progUpdater;
 
 	
 	public ImageConverterFrame(INItializer currentConf) {
@@ -549,52 +549,59 @@ public class ImageConverterFrame extends ParentFrame{
 					
 					@Override
 					public void run() {
+						
 						// if source file exists and is loaded
 						if(inputImgFile!=null) {
 							
-							progUpdater = new UpdateProgressPanel(currentConfiguration, false);
-							progUpdater.getPb().setValue(20);
-							
-							if (inputImg != null) {
+							try {
+								progUpdater = new UpdateProgressPanelMin(false);
+								progUpdater.getPb().setValue(20);
 								
-								// create copy by reference
-								BufferedImage imageToConvert = ImageGeneralWorker.copyImage(inputImg);
-							
-								progUpdater.getPb().setValue(30);
+								if (inputImg != null) {
+									
+									// create copy by reference
+									BufferedImage imageToConvert = ImageGeneralWorker.copyImage(inputImg);
 								
-								int X = (int)spinnerWidth.getValue();
-								int Y = (int)spinnerHeight.getValue();
-								ScalingAlgorithm alg = (ScalingAlgorithm) comboScaleQuality.getSelectedItem();
-								
-								// if not to save same as the original
-								if(X!=imageToConvert.getWidth() || Y!=imageToConvert.getHeight() || !((String)comboBoxFormats.getSelectedItem()).equalsIgnoreCase("png")) {
-									Image img =imageToConvert.getScaledInstance(X, Y, alg.getAlgorithm());
-									// convert Image to BufferedImage
-									progUpdater.getPb().setValue(35);
-									imageToConvert = new BufferedImage(X, Y, imageToConvert.getType());
-									Graphics2D g2d = imageToConvert.createGraphics();
-									g2d.drawImage(img, 0, 0, null);
-									g2d.dispose();				
-									progUpdater.getPb().setValue(50);
+									progUpdater.getPb().setValue(30);
+									
+									int X = (int)spinnerWidth.getValue();
+									int Y = (int)spinnerHeight.getValue();
+									ScalingAlgorithm alg = (ScalingAlgorithm) comboScaleQuality.getSelectedItem();
+									
+									// if not to save same as the original
+									if(X!=imageToConvert.getWidth() || Y!=imageToConvert.getHeight() || !((String)comboBoxFormats.getSelectedItem()).equalsIgnoreCase("png")) {
+										Image img =imageToConvert.getScaledInstance(X, Y, alg.getAlgorithm());
+										// convert Image to BufferedImage
+										progUpdater.getPb().setValue(35);
+										imageToConvert = new BufferedImage(X, Y, imageToConvert.getType());
+										Graphics2D g2d = imageToConvert.createGraphics();
+										g2d.drawImage(img, 0, 0, null);
+										g2d.dispose();				
+										progUpdater.getPb().setValue(50);
+									}
+									
+									progUpdater.getLabel().setText("I'm writing the image...");
+									
+									File selected = new File(KeyGenFrame.KEY_DICTIONARY + inputImgFile.getName());
+									selected = FileStuff.renameJavaObjFile(selected);
+									selected = FileStuff.changeExtension(selected, ".png");
+									
+									if (selected!=null) {
+										progUpdater.getPb().setValue(70);
+										progUpdater.getPb().setValue(90);
+										//if is selected an export file
+										ImageGeneralWorker.convertAndWrite(imageToConvert, ".png", selected);
+										String msg ="Image converted and added to dictionary: "+selected.getAbsolutePath();
+										JOptionPane.showMessageDialog(thisFrame, msg, "Image converted :)", JOptionPane.INFORMATION_MESSAGE);
+										logger.debug(msg);
+									}
 								}
-								
-								progUpdater.getLabel().setText("I'm writing the image...");
-								
-								File selected = new File(KeyGenFrame.KEY_DICTIONARY + inputImgFile.getName());
-								selected = FileStuff.renameJavaObjFile(selected);
-								selected = FileStuff.changeExtension(selected, ".png");
-								
-								if (selected!=null) {
-									progUpdater.getPb().setValue(70);
-									progUpdater.getPb().setValue(90);
-									//if is selected an export file
-									ImageGeneralWorker.convertAndWrite(imageToConvert, ".png", selected);
-									String msg ="Image converted and added to dictionary: "+selected.getAbsolutePath();
-									JOptionPane.showMessageDialog(thisFrame, msg, "Image converted :)", JOptionPane.INFORMATION_MESSAGE);
-									logger.debug(msg);
-								}
+							} catch (Exception e) {
+								logger.error("There wan an exception!", e);
+							} finally {
+								UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 							}
-							progUpdater.getPb().setValue(100);
+							
 						}else {
 							refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
 							String msg = "You have to Load a Source image file before to convert it !";
@@ -647,64 +654,74 @@ public class ImageConverterFrame extends ParentFrame{
 							
 							if (selected!=null) {
 								
-								selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
-								selected = FileStuff.renameJavaObjFile(selected);
-								
-								progUpdater = new UpdateProgressPanel(currentConfiguration, false);
-								progUpdater.getPb().setValue(20);
-					    		progUpdater.getPb().setIndeterminate(true);
+								try {
+									selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
+									selected = FileStuff.renameJavaObjFile(selected);
+									
+									progUpdater = new UpdateProgressPanelMin(false);
+									progUpdater.getPb().setValue(20);
+									progUpdater.getPb().setIndeterminate(true);
 
-								// if not same as the original
-								if(X!=imageToConvert.getWidth() || Y!=imageToConvert.getHeight() || !((String)comboBoxFormats.getSelectedItem()).equals(FilenameUtils.getExtension(inputImgFile.getName()))) {
-									Image img =imageToConvert.getScaledInstance(X, Y, alg.getAlgorithm());
-									// convert Image to BufferedImage
-									imageToConvert = new BufferedImage(X, Y, imageToConvert.getType());
-									Graphics2D g2d = imageToConvert.createGraphics();
-									g2d.drawImage(img, 0, 0, null);
-									g2d.dispose();						 
-								}
-								
-								// update advisor
-								progUpdater.getPb().setValue(50);
-								progUpdater.getLabel().setText("I'm Encoding the image...");
-														
-								//if is selected an export file
-								if(getCompressionFactor()==1f) {
-									
-									// IF DON'T COMPRESS
-									ImageGeneralWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
-									
-								}else {
-									
-									// IF COMPRESS
-									try {
-										fout = new FileOutputStream(selected);
-										
-										if (JPGorJPEG) {
-											// jpeg converter
-											fout.write(ImageGeneralWorker.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
-										}else if(PNG) {
-											// png converter
-											
-											fout.write(ImageGeneralWorker.compressIMGpng(imageToConvert, getCompressionFactorPng(), false));
-										}else {
-											// if no supported conversion type use default
-											ImageGeneralWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
-										}
-										
-										fout.flush();
-										fout.close();
-									} catch (IOException e) {
-						        		JOptionPane.showMessageDialog(thisFrame, "IO error :(", "IO Error", JOptionPane.ERROR_MESSAGE);
-										logger.error("Exception happened during conversion", e);
-									} catch (UnsupportedOperationException e) {
-						        		JOptionPane.showMessageDialog(thisFrame, "Unsupported operation :(", "IO Error", JOptionPane.ERROR_MESSAGE);
-										logger.error("Exception happened during conversion", e);
+									// if not same as the original
+									if(X!=imageToConvert.getWidth() || Y!=imageToConvert.getHeight() || !((String)comboBoxFormats.getSelectedItem()).equals(FilenameUtils.getExtension(inputImgFile.getName()))) {
+										Image img =imageToConvert.getScaledInstance(X, Y, alg.getAlgorithm());
+										// convert Image to BufferedImage
+										imageToConvert = new BufferedImage(X, Y, imageToConvert.getType());
+										Graphics2D g2d = imageToConvert.createGraphics();
+										g2d.drawImage(img, 0, 0, null);
+										g2d.dispose();						 
 									}
+									
+									// update advisor
+									progUpdater.getPb().setValue(50);
+									progUpdater.getLabel().setText("I'm Encoding the image...");
+															
+									//if is selected an export file
+									if(getCompressionFactor()==1f) {
+										
+										// IF DON'T COMPRESS
+										ImageGeneralWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
+										
+									}else {
+										
+										// IF COMPRESS
+										fout = new FileOutputStream(selected);
+
+										try {
+											
+											if (JPGorJPEG) {
+												// jpeg converter
+												fout.write(ImageGeneralWorker.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
+											}else if(PNG) {
+												// png converter
+												
+												fout.write(ImageGeneralWorker.compressIMGpng(imageToConvert, getCompressionFactorPng(), false));
+											}else {
+												// if no supported conversion type use default
+												ImageGeneralWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
+											}
+											
+										} catch (IOException e) {
+											JOptionPane.showMessageDialog(thisFrame, "IO error :(", "IO Error", JOptionPane.ERROR_MESSAGE);
+											logger.error("Exception happened during conversion", e);
+										} catch (UnsupportedOperationException e) {
+											JOptionPane.showMessageDialog(thisFrame, "Unsupported operation :(", "IO Error", JOptionPane.ERROR_MESSAGE);
+											logger.error("Exception happened during conversion", e);
+										} finally {
+											try {
+												fout.flush();
+												fout.close();
+											} catch (Exception e) {
+												logger.error("Cannot close outputStream", e);
+											}
+										}
+									}
+
+								} catch (Exception e) {
+									logger.error("There was an Exception", e);
+								} finally {
+									UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 								}
-						
-								// update advisor
-								progUpdater.getPb().setValue(100);
 								
 								String msg = "Image converted: "+selected.getAbsolutePath();
 								logger.debug(msg);
@@ -751,47 +768,50 @@ public class ImageConverterFrame extends ParentFrame{
 						File selected = MainGuiGeneralAppStarter.fileDialogHelper.fileImgRead(thisFrame);
 						if (selected!=null) {
 							
-							progUpdater = new UpdateProgressPanel(currentConfiguration, false);
-							progUpdater.getPb().setValue(20);
-							progUpdater.getLabel().setText("I'm loading the image...");
-				    		progUpdater.getPb().setIndeterminate(true);
-
 							try {
-								inputImg = ImageIO.read(selected);
-								inputImgFile = selected;
-							} catch (IOException e2) {
-								String msg = "Image not loaded :("+e2.toString();
-								JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
-								logger.error(msg);
-							}
-							
-							if (inputImg!=null && inputImgFile!=null) {
-								
-								progUpdater.getPb().setValue(50);
-								progUpdater.getLabel().setText("I'm creating the preview...");
+								progUpdater = new UpdateProgressPanelMin(false);
+								progUpdater.getPb().setValue(20);
+								progUpdater.getLabel().setText("I'm loading the image...");
+								progUpdater.getPb().setIndeterminate(true);
 
-								int w = inputImg.getWidth();
-								int h = inputImg.getHeight();
-								String size = w + " X " + h;
+								try {
+									inputImg = ImageIO.read(selected);
+									inputImgFile = selected;
+								} catch (IOException e2) {
+									String msg = "Image not loaded :("+e2.toString();
+									JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+									logger.error(msg);
+								}
 								
-								// refresh gui
-								comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
-								refreshOutGui();						
-								refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
-										FileStuff.coolFileSize(inputImgFile), w, h);				
-								
-								// refresh image preview in gui
-								// way with custom repainter (keep type)
-								scaledImage = ImageGeneralWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
-								refreshImage(scaledImage);
-								
-								logger.debug("Image Loaded!");
-							}else {
-								refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
+								if (inputImg!=null && inputImgFile!=null) {
+									
+									progUpdater.getPb().setValue(50);
+									progUpdater.getLabel().setText("I'm creating the preview...");
+
+									int w = inputImg.getWidth();
+									int h = inputImg.getHeight();
+									String size = w + " X " + h;
+									
+									// refresh gui
+									comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
+									refreshOutGui();						
+									refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
+											FileStuff.coolFileSize(inputImgFile), w, h);				
+									
+									// refresh image preview in gui
+									// way with custom repainter (keep type)
+									scaledImage = ImageGeneralWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
+									refreshImage(scaledImage);
+									
+									logger.debug("Image Loaded!");
+								}else {
+									refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
+								}
+							} catch (Exception e) {
+								logger.error("There was an Exception", e);
+							} finally {
+								UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 							}
-							
-						progUpdater.getPb().setValue(100);
-							
 						}
 
 						btnConvertAddDictionary.setEnabled(true);
@@ -815,47 +835,50 @@ public class ImageConverterFrame extends ParentFrame{
 		
 		if (sourceImage!=null) {
 			
-			progUpdater = new UpdateProgressPanel(currentConfiguration, false);
-			progUpdater.getPb().setValue(20);
-			progUpdater.getLabel().setText("I'm loading the image...");
-    		progUpdater.getPb().setIndeterminate(true);
-
 			try {
-				inputImg = ImageIO.read(sourceImage);
-				inputImgFile = sourceImage;
-			} catch (IOException e2) {
-				String msg = "Image not loaded :("+e2.toString();
-				JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
-				logger.error(msg);
-			}
-			
-			if (inputImg!=null && inputImgFile!=null) {
-				
-				progUpdater.getPb().setValue(50);
-				progUpdater.getLabel().setText("I'm creating the preview...");
+				progUpdater = new UpdateProgressPanelMin(false);
+				progUpdater.getPb().setValue(20);
+				progUpdater.getLabel().setText("I'm loading the image...");
+				progUpdater.getPb().setIndeterminate(true);
 
-				int w = inputImg.getWidth();
-				int h = inputImg.getHeight();
-				String size = w + " X " + h;
+				try {
+					inputImg = ImageIO.read(sourceImage);
+					inputImgFile = sourceImage;
+				} catch (IOException e2) {
+					String msg = "Image not loaded :("+e2.toString();
+					JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+					logger.error(msg);
+				}
 				
-				// refresh gui
-				comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
-				refreshOutGui();						
-				refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
-						FileStuff.coolFileSize(inputImgFile), w, h);				
-				
-				// refresh image preview in gui
-				// way with custom repainter (keep type)
-				scaledImage = ImageGeneralWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
-				refreshImage(scaledImage);
-				
-				logger.debug("Image Loaded!");
-			}else {
-				refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
+				if (inputImg!=null && inputImgFile!=null) {
+					
+					progUpdater.getPb().setValue(50);
+					progUpdater.getLabel().setText("I'm creating the preview...");
+
+					int w = inputImg.getWidth();
+					int h = inputImg.getHeight();
+					String size = w + " X " + h;
+					
+					// refresh gui
+					comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
+					refreshOutGui();						
+					refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
+							FileStuff.coolFileSize(inputImgFile), w, h);				
+					
+					// refresh image preview in gui
+					// way with custom repainter (keep type)
+					scaledImage = ImageGeneralWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
+					refreshImage(scaledImage);
+					
+					logger.debug("Image Loaded!");
+				}else {
+					refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("There was an Exception", e);
+			} finally {
+				UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 			}
-			
-		progUpdater.getPb().setValue(100);
-			
 		}
 
 		btnConvertAddDictionary.setEnabled(true);

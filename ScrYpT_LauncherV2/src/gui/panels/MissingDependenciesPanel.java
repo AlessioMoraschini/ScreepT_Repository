@@ -8,7 +8,7 @@ import javax.swing.JDialog;
 
 import org.apache.log4j.Logger;
 
-import gui.utils.GuiUtils;
+import gui.GuiUtils;
 import launcherutils.IniFileManager;
 import launcherutils.om.DependencyModel;
 import mainlauncher.ScrYpTLauncher;

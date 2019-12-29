@@ -18,7 +18,7 @@ import om.FileOptions;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
-import variousutils.ListCharsets;
+import utility.ListCharsets;
 
 import javax.swing.JPanel;
 import java.awt.Color;

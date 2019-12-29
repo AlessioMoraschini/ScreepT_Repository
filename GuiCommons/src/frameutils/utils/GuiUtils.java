@@ -49,11 +49,11 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 
-import amfileutils.om.FileNamed;
 import codeformatter.CustomCodeFormatter;
 import dialogutils.JOptionHelper;
 import media.ImageGeneralWorker;
 import media.Sounds;
+import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;

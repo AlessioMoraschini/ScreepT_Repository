@@ -23,6 +23,9 @@ import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
+import network.FtpDumper;
+import network.ThreadFtpDumper;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -162,14 +165,14 @@ public class Main {
 			   
 			   
 			 
-	   		   if(Dumper.CheckFTP(host, usr, ftpKey,PortFTP)==false) {
+	   		   if(FtpDumper.checkFTP(host, usr, ftpKey,PortFTP)==false) {
 				   ask=true;
 				   System.out.println("Password inserita: "+ftpKey+"\n\nErrore nella conessione al server FTP: "
 				   		+host+ "\n\n(Se la password � corretta e la connessione di rete funzionante, Controlla CONFIG.ini)\n"
 				   				+ "Assicurati di non avere un firewall attivo che impedisca la comunicazione con il server\n"
 				   				+ "attraverso la porta "+PortFTP+" (valore specificato in CONFIG.ini)");
 			   }
-		       }while(Dumper.CheckFTP(host, usr, ftpKey,PortFTP)==false);
+		       }while(FtpDumper.checkFTP(host, usr, ftpKey,PortFTP)==false);
 			   System.out.println("\n-> Dati corretti, connesso via ftps(SSL) a "+host+" :D \n \n");
 		}//end IF(DumpFTP==1)
 		//stampa a video durata cattura riconosciuta
@@ -190,7 +193,7 @@ public class Main {
 		//siccome dumper inizializza solo i valori dei campi dell'istanza creata.
 		//il codice dell'accesso ftp � attivato solo all'invocazione dei metodi 
 		//check() e saveRemoteFile() )
-		Dumper ftpDumper=new Dumper(host, usr, ftpKey,PortFTP);
+		FtpDumper ftpDumper=new FtpDumper(host, usr, ftpKey,PortFTP);
 		//inizializzo la blacklist che manterr� i pacchetti di riferimento
 		//che rappresentano ogni flusso tcp bloccato (richiesta in uscita o
 		//risposta in entrata)
@@ -261,19 +264,21 @@ public class Main {
 		//se salvataggio FTP attivato e salvataggio solo split disattivato
 		//allora salva su FTP il dump non filtrato prima dello split
 		if (splitDumpOnly==0&&DumpYN==1) {
+			
+			String FTPdir=inifile.get("FTP_LOGIN", "PathFTP");
 		    //salvo il dump su ftp (nome gi� calcolato quindi nomein==nomeout)
 			if(FLAG_th==1) {//se flag thread save attivo
 			
 				synchronized (backupfile) { //esegui questo blocco per un solo file con lo stesso nome alla volta
 					
-					ThreadDumper dumper=new ThreadDumper(host, usr, ftpKey,PortFTP, backupfile, ftpfilename, folderftpath);
+					ThreadFtpDumper dumper = new ThreadFtpDumper(host, usr, ftpKey,PortFTP, backupfile, ftpfilename, FTPdir);
 					//prova salvataggio con thread
 					new Thread(dumper).start();//avvia il thread
 				    //file dump non filtrato salvato su server ftp
 				}
 			}else { // Se thread save flag TCP disattivato
 				
-				ftpDumper.SaveRemoteFile(backupfile,ftpfilename,folderftpath,inifile);
+				ftpDumper.uploadFile(backupfile,ftpfilename,FTPdir);
 			}
 			
 	    }
@@ -310,16 +315,19 @@ public class Main {
 	    	System.out.println("\n Il file "+ftPortoutname+" ha "+backup.length()+" Bytes di dati.\n -> Salvato in \"Dump/Local_capture\"");              
 	    	if(DumpYN==1) {//se salvataggio ftp attivato salvo su server ftp
 	    		
+	    		String FTPdir=inifile.get("FTP_LOGIN", "PathFTP");
+	    		
 	    		if(FLAG_th==1) { // thread save attivo
 	    			synchronized (FTPsplitPath) { //esegui questo blocco per un solo thread alla volta
 						
-						ThreadDumper dumperS=new ThreadDumper(host, usr, ftpKey,PortFTP, FTPsplitPath, ftPortoutname, folderftpath);
+						ThreadFtpDumper dumperS=new ThreadFtpDumper(host, usr, ftpKey,PortFTP, FTPsplitPath, ftPortoutname, folderftpath);
 						//prova salvataggio con thread
 						new Thread(dumperS).start();//avvia il thread
 					    //file dump non filtrato salvato su server ftp
 					}
 				}else { // thread save disattivato
-					ftpDumper.SaveRemoteFile(FTPsplitPath,ftPortoutname,folderftpath,inifile);
+					
+					ftpDumper.uploadFile(FTPsplitPath,ftPortoutname,FTPdir);
 				}
 	    		
 	    	}

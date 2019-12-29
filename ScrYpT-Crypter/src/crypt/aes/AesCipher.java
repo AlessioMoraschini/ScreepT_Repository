@@ -21,13 +21,12 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
 import javax.swing.text.BadLocationException;
 
-
-import crypt.hash.Hasher;
-import crypt.hash.Hasher.HashAlgorithm;
-import crypt.hash.Hasher.IterationsLevel;
-import util.BitWorker;
-import util.EncodingUtils;
-import util.EntrophyzerUtils;
+import utility.BitWorker;
+import utility.EncodingUtils;
+import utility.EntrophyzerUtils;
+import utility.hash.Hasher;
+import utility.hash.Hasher.HashAlgorithm;
+import utility.hash.Hasher.IterationsLevel;
 
 public class AesCipher {
 	

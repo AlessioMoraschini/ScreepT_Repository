@@ -133,9 +133,9 @@
 	</dependency>
 	
 	<dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	    <version>2.6</version>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
 	</dependency>
 	
   </dependencies>

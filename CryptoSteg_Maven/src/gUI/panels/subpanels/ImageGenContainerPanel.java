@@ -18,12 +18,12 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import dialogutils.UpdateProgressPanel;
-import enums.KeyGenImageType;
 import gUI.frames.KeyGenFrame;
+import gui.UpdateProgressPanelMin;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
-import uTILS.local.ImageWorker;
+import om.KeyGenImageType;
+import uTILS.local.ImageWorkerScrYpT;
 
 public class ImageGenContainerPanel extends JPanel{
 	private static final long serialVersionUID = 3880705375830247529L;
@@ -34,7 +34,7 @@ public class ImageGenContainerPanel extends JPanel{
     public BufferedImage image;
     
 	// object that display wait dialog
-	private volatile UpdateProgressPanel progUpdater;
+	private volatile UpdateProgressPanelMin progUpdater;
     
 	Image scaledImage;
 	
@@ -70,47 +70,53 @@ public class ImageGenContainerPanel extends JPanel{
 			@Override
 			public void run() {
 				
-				progUpdater = new UpdateProgressPanel(currentConf, false);
-				progUpdater.getDialog().setLocationRelativeTo(thisFrame);
-				progUpdater.setProgBarEnabled(true);
-				progUpdater.getPb().setValue(0);
-				bar = thisFrame.getProgressBar();
-				
-				bar.setValue(20);
-				bar.setString("Workin...");
-				bar.setIndeterminate(true);
-				jtext.append(" Values loaded :)");
-		    	FlowLayout layout = new FlowLayout();
-				layout.setVgap(0);
-				actualPanel.setLayout(layout);
-				bar.setValue(35);
-			    Dimension backup = new Dimension(thisFrame.getSize());
-			    actualPanel.setSize(thisFrame.getSize());
-				jtext.append("\n -> Creation of random "+w+" x "+h+" image");
-				bar.setValue(40);
-				progUpdater.getPb().setValue(40);
-			    image = ImageWorker.generaKeyImage(width, height, imgEnumType.getType(), genContPane);
-			    scaledImage = image.getScaledInstance((int)backup.getWidth(), (int)backup.getHeight(),Image.SCALE_FAST);
-			    JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-			    removeAll();
+				try {
+					progUpdater = new UpdateProgressPanelMin(false);
+					progUpdater.getDialog().setLocationRelativeTo(thisFrame);
+					progUpdater.setProgBarEnabled(true);
+					progUpdater.getPb().setValue(0);
+					bar = thisFrame.getProgressBar();
+					
+					bar.setValue(20);
+					bar.setString("Workin...");
+					bar.setIndeterminate(true);
+					jtext.append(" Values loaded :)");
+					FlowLayout layout = new FlowLayout();
+					layout.setVgap(0);
+					actualPanel.setLayout(layout);
+					bar.setValue(35);
+					Dimension backup = new Dimension(thisFrame.getSize());
+					actualPanel.setSize(thisFrame.getSize());
+					jtext.append("\n -> Creation of random "+w+" x "+h+" image");
+					bar.setValue(40);
+					progUpdater.getPb().setValue(40);
+					image = ImageWorkerScrYpT.generaKeyImage(width, height, imgEnumType.getType(), genContPane);
+					scaledImage = image.getScaledInstance((int)backup.getWidth(), (int)backup.getHeight(),Image.SCALE_FAST);
+					JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+					removeAll();
 
-			    bar.setValue(85);
-				progUpdater.getPb().setValue(85);
-			    setOpaque(false);
-			    add(picLabel, BorderLayout.NORTH);
-			    btnAddDict.setEnabled(true);
-			    btnExp.setEnabled(true);
-			    btnGen.setEnabled(true);
-			    revalidate(); 
-				repaint();	
-			    picLabel.setBounds(0, 0,(int)backup.getWidth(), (int)backup.getHeight());
-				bar.setValue(100);
-	            bar.setString("Ready :)");
-	            bar.setIndeterminate(false);
-				progUpdater.getPb().setValue(100);
-				progUpdater.forceClose();
-				jtext.append("\n -> Finished!");
-				logger.debug("Generated Image of " + width + "Px X " + height + "Px");
+					bar.setValue(85);
+					progUpdater.getPb().setValue(85);
+					setOpaque(false);
+					add(picLabel, BorderLayout.NORTH);
+					btnAddDict.setEnabled(true);
+					btnExp.setEnabled(true);
+					btnGen.setEnabled(true);
+					revalidate(); 
+					repaint();	
+					picLabel.setBounds(0, 0,(int)backup.getWidth(), (int)backup.getHeight());
+					bar.setValue(100);
+					bar.setString("Ready :)");
+					bar.setIndeterminate(false);
+					progUpdater.getPb().setValue(100);
+					progUpdater.forceClose();
+					jtext.append("\n -> Finished!");
+					logger.debug("Generated Image of " + width + "Px X " + height + "Px");
+				} catch (Throwable e) {
+					logger.error("There was an exception/error!", e);
+				} finally {
+					UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+				}
 
 
 			}
@@ -162,12 +168,12 @@ public class ImageGenContainerPanel extends JPanel{
 	}
 
 
-	public UpdateProgressPanel getProgUpdater() {
+	public UpdateProgressPanelMin getProgUpdater() {
 		return progUpdater;
 	}
 
 
-	public void setProgUpdater(UpdateProgressPanel progUpdater) {
+	public void setProgUpdater(UpdateProgressPanelMin progUpdater) {
 		this.progUpdater = progUpdater;
 	}
 

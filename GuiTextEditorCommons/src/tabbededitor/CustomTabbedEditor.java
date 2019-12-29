@@ -37,13 +37,13 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.FileStuff;
-import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.JOptionHelper;
+import files.watcher.ChangeDTO;
 import frameutils.utils.GuiUtils;
 import general.MyFileView;
-import generic.LimitedConcurrentList;
 import mainobj.INItializer;
 import om.HistoryNode;
+import om.LimitedConcurrentList;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;

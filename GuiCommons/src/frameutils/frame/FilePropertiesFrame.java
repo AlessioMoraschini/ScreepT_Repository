@@ -13,10 +13,10 @@ import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
+import network.DownloadUtils;
+import om.HashingFunction;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import updater.DownloadUtils;
-import updater.HashingFunction;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -27,13 +27,13 @@ import javax.swing.text.BadLocationException;
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.StegCipher;
-import util.CustomFileComparator;
 import crypt.steg.StegOmResult;
+import files.CustomFileComparator;
 import crypt.steg.STEGException;
 import util.ImageEncodingUtils;
-import util.SafeLogger;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
+import utility.SafeLogger;
 
 /**
  * 

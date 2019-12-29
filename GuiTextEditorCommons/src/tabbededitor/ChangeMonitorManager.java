@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import amfileutils.filechangewatcher.ChangeDTO;
-import amfileutils.filechangewatcher.FileChangeMonitor;
+import files.watcher.ChangeDTO;
+import files.watcher.FileChangeMonitor;
 
 public class ChangeMonitorManager implements IChangeMonManager{
 	

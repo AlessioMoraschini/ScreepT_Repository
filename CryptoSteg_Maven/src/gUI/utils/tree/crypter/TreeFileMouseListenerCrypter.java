@@ -31,9 +31,9 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
-import dialogutils.UpdateProgressPanel;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
+import gui.UpdateProgressPanelMin;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
@@ -57,7 +57,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	private CrypterPanel cryptoPanel;
 	
 	// object that display wait dialog
-	private volatile UpdateProgressPanel progUpdater;
+	private volatile UpdateProgressPanelMin progUpdater;
 	
 	private JOptionHelper dialogHelper;
 	
@@ -226,16 +226,16 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 						try {
 							worker = new ImageGeneralWorker(selected);
 							BufferedImage image = worker.getImage();
-							progUpdater = new UpdateProgressPanel(currentConfig, false);
+							progUpdater = new UpdateProgressPanelMin(false);
 							progUpdater.setUndefinedDuration();
 							progUpdater.update("Format not supported as key, Converting image to png...", 10);
 							ImageGeneralWorker.convertAndWrite(image, "png", selected);
-							progUpdater.update("Completed!", 100);
-							progUpdater.forceClose();
-						} catch (IOException e) {
+						} catch (Exception e) {
 							logger.error("An error occurred when trying to convert "+selected+" to png", e);
 							dialogHelper.error("An error occurred when trying to convert "+selected+" to png", "An error occurred :(");
 							return;
+						} finally {
+							UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 						}
 					}
 					
@@ -266,42 +266,48 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 						@Override
 						public void run() {
 
-							if (selected != null) {
-								progUpdater = new UpdateProgressPanel(currentConfig);
-								progUpdater.getPb().setValue(5);
-								progUpdater.getLabel().setText("Exporting files...");
+							try {
+								if (selected != null) {
+									progUpdater = new UpdateProgressPanelMin(false);
+									progUpdater.getPb().setValue(5);
+									progUpdater.getLabel().setText("Exporting files...");
 
-								if (!selected.exists()) {
-									selected.mkdirs();
-								}
-								TreePath[] treeSelArr = tree.getSelectionPaths();
-								int i = 0;
-								if (treeSelArr.length != 0) {
-									for (TreePath tp : treeSelArr) {
-										i++;
-										progUpdater.getPb().setValue((int) ((float) i / (float) treeSelArr.length));
-										String path = tp.getLastPathComponent().toString();
-										File selectedFile = new File(path);
-										//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
-										FileStuff.copyFile(selectedFile,
-												new File(selected.getAbsolutePath() + "\\" + selectedFile.getName()),
-												false);
-										logger.debug(
-												selectedFile.getName() + " exported to " + selected.getAbsolutePath());
+									if (!selected.exists()) {
+										selected.mkdirs();
 									}
-									String msg = "Files exported!";
-									logger.debug(msg + Arrays.toString(treeSelArr));
-									TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
-									progUpdater.getPb().setValue(100);
-									JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!",
-											JOptionPane.INFORMATION_MESSAGE);
+									TreePath[] treeSelArr = tree.getSelectionPaths();
+									int i = 0;
+									if (treeSelArr.length != 0) {
+										for (TreePath tp : treeSelArr) {
+											i++;
+											progUpdater.getPb().setValue((int) ((float) i / (float) treeSelArr.length));
+											String path = tp.getLastPathComponent().toString();
+											File selectedFile = new File(path);
+											//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
+											FileStuff.copyFile(selectedFile,
+													new File(selected.getAbsolutePath() + "\\" + selectedFile.getName()),
+													false);
+											logger.debug(
+													selectedFile.getName() + " exported to " + selected.getAbsolutePath());
+										}
+										String msg = "Files exported!";
+										logger.debug(msg + Arrays.toString(treeSelArr));
+										TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
+										progUpdater.getPb().setValue(100);
+										JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!",
+												JOptionPane.INFORMATION_MESSAGE);
 
-								} else {
-									progUpdater.getPb().setValue(100);
-									String msg = "Skipped after user request!";
-									JOptionPane.showMessageDialog(tree, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
-									logger.debug(msg);
+									} else {
+										progUpdater.getPb().setValue(100);
+										String msg = "Skipped after user request!";
+										JOptionPane.showMessageDialog(tree, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
+										logger.debug(msg);
+									}
 								}
+							} catch (Exception e) {
+								logger.error("There was an exception while exporting.", e);
+							} finally {
+								UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 							}
 						}
 					}).start();

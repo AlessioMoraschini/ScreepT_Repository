@@ -15,11 +15,11 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegCipher;
+import gui.JOptionHelperLight;
 import om.CrypterResultDTO;
-import util.JOptionHelperLight;
-import util.SafeLogger;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
+import utility.SafeLogger;
 
 public class ScreeptManagerFileOrFolder {
 

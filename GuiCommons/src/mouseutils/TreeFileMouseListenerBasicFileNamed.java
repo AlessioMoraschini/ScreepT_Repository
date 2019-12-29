@@ -22,12 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
 import menusettings.MenuSetter;
+import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 

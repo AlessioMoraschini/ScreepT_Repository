@@ -6,8 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gui.PluginManagerGUI;
-import updater.PluginDTO;
-import updater.PluginManager;
+import plugins.PluginDTO;
+import plugins.PluginManager;
 
 public class TestPlugins {
 

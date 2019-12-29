@@ -21,7 +21,6 @@ import org.ini4j.Wini;
 import amfileutils.FileStuff;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
-import forks.merged.PropertiesManagerFork;
 import frameutils.utils.GuiUtils;
 import generic.ParametricExceptionThread;
 import gui.utils.LauncherLoaderFrame;
@@ -30,12 +29,13 @@ import launcherutils.IniFileManager;
 import logger.LoggerUtils;
 import mainobj.INItializer;
 import media.Sounds;
+import plugins.PluginManager;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import uTILS.dependencycheck.LibChecker;
-import updater.PluginManager;
 import updater.UpdatesManager;
+import utility.PropertiesManagerLight;
 import variousutils.HandleString;
 
 public class MainGuiGeneralAppStarter {
@@ -362,7 +362,7 @@ public class MainGuiGeneralAppStarter {
 		}
 		
 		PluginManager.installedPluginProperties.saveProperty(
-				PluginManager.installedPluginPropsListKey, PropertiesManagerFork.listToString(
+				PluginManager.installedPluginPropsListKey, PropertiesManagerLight.listToString(
 						installedPlugins, PluginManager.installedPluginPropsListSeparator));
 	}
 }

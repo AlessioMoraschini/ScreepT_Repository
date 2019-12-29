@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gui.utils.GuiUtils;
+import gui.GuiUtils;
 import launcherutils.IniFileManager;
 import launcherutils.JvmHelper;
 import mainlauncher.ScrYpTLauncher;

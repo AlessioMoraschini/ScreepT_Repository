@@ -12,8 +12,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import amfileutils.CustomFileFilters;
 import amfileutils.FileStuff;
+import files.CustomFileFilters;
 
 public class JsRunner {
 	

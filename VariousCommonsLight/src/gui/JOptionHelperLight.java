@@ -1,0 +1,502 @@
+package gui;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.ComponentOrientation;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Arrays;
+
+import javax.swing.Icon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+
+import files.Various;
+
+public class JOptionHelperLight {
+	
+	// MESSAGE TYPES
+	public static final int ERR = JOptionPane.ERROR_MESSAGE;
+	public static final int WARN = JOptionPane.WARNING_MESSAGE;
+	public static final int INFO = JOptionPane.INFORMATION_MESSAGE;
+	public static final int QUESTION = JOptionPane.QUESTION_MESSAGE;
+	public static final int PLAIN = JOptionPane.PLAIN_MESSAGE;
+	
+	public static final int OK = JOptionPane.OK_OPTION;
+	public static final int YES = JOptionPane.YES_OPTION;
+	public static final int NO = JOptionPane.NO_OPTION;
+	public static final int CANC = JOptionPane.CANCEL_OPTION;
+	
+	// QUESTION UTILS
+	public static final int YES_OR_NO = JOptionPane.YES_NO_OPTION;
+	public static final int YES_OR_NO_CANC = JOptionPane.YES_NO_CANCEL_OPTION;
+	
+	private static final String DEF_ERR_MSG = "An error occurred!";
+	private static final String DEF_WARN_MSG = "Warning!";
+	private static final String DEF_INFO_MSG = "Info";
+	
+	public static final Object[] defaultOptionsExtended = new Object[]{"Yes", "No", "Cancel"};
+	public static final Object[] defaultOptions = new Object[]{"Yes", "No"};
+	public static final Object[] okOnlyOptions = new Object[]{"OK"};
+	
+	// LAZY ICON INITIALIZERS
+	public static Icon ICON_ERR_REF;
+	public static Icon ICON_WARN_REF;
+	public static Icon ICON_INFO_REF;
+	public static Icon ICON_QUESTION_REF;
+	
+	public Dimension IF_SCROLLABLE_DEF_DIMENSION = new Dimension( 500, 500 );
+	
+	public static Font DEFAULT_FONT_DIMENSION;
+	
+	public boolean enabledAdvices = true;
+	
+	// Parent component to center and refer to
+	Component parentComponent;
+	
+	public static void init() {
+		ICON_ERR_REF = UIManager.getIcon("OptionPane.informationIcon");    
+		ICON_WARN_REF = UIManager.getIcon("OptionPane.informationIcon"); 
+		ICON_INFO_REF = UIManager.getIcon("OptionPane.informationIcon");        
+		ICON_QUESTION_REF = UIManager.getIcon("OptionPane.informationIcon");
+		DEFAULT_FONT_DIMENSION = new Font("Segoe UI", Font.PLAIN, 17);
+	}
+	
+	public JOptionHelperLight (Component parentComponent) {
+		this.parentComponent = (parentComponent != null) ? parentComponent : new JFrame();
+	}
+	
+	public JOptionHelperLight (Component parentComponent, boolean enableAdvices) {
+		this(parentComponent);
+		this.enabledAdvices = enableAdvices;
+	}
+
+	/**
+	 * Shows a customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
+	 * msgType can be error, info, warn, exc...
+	 */
+	public boolean showYNDialog(String msg, String title, int msgType) {
+		
+		return showYNMessageCommon(msg, title, msgType, false);
+	}
+
+	/**
+	 * Shows a customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
+	 * msgType can be error, info, warn, exc...
+	 */
+	public Boolean showYNOrNullDialog(String msg, String title, int msgType) {
+		
+		return showYNMessageCommon(msg, title, msgType, true);
+	}
+	
+	/**
+	 * Shows a customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
+	 * msgType can be error, info, warn, exc...
+	 */
+	public void showTypedOKDialog(String msg, String title, int msgType) {
+		
+		showMessageCommon(msg, title, msgType, okOnlyOptions, okOnlyOptions[0]);
+	}
+	
+	/**
+	 * Shows an error message
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void error(String msg, String title) {
+		if (enabledAdvices) {
+			title = (!Various.isEmpty(title)) ? title : DEF_ERR_MSG;
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+			showMessageCommon(msg, title, ERR, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+	
+	/**
+	 * Shows an error message within a scrollable panel, useful to show long messages
+	 * 
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public boolean errorScroll(String msg, String title) {
+		msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+		JScrollPane scroller = getScrollableDialogPanel(msg);
+		GuiUtils.scrollJScrollPane(scroller, false);
+		return showYNMessageCommon(scroller, title, ERR, false);
+	}
+
+	/**
+	 * Shows an error message within a scrollable panel, useful to show long messages
+	 * This version pretty prints an exception/error (throwable)
+	 * 
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void errorScroll( String msg, String title, Throwable e) {
+		if (enabledAdvices) {
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+			String exception = Arrays.deepToString(e.getStackTrace());
+			String newMsg = msg+"\n\n"+exception;
+			JScrollPane scroller = getScrollableDialogPanel(newMsg);
+			GuiUtils.scrollJScrollPane(scroller, false);
+			showMessageCommon(scroller, title, ERR, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+
+	/**
+	 * Shows an error message within a scrollable panel, useful to show long messages. The default options are YES/NO
+	 * This version pretty prints an exception/error (throwable)
+	 * 
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 * 
+	 * @return the selected object between options, or null if nothing is selected
+	 */
+	public Object errorScroll(String msg, String title, Throwable e, Object[] options, int msgOption) {
+		Object res = null ;
+		try {
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+			String exception = Arrays.deepToString(e.getStackTrace());
+			String newMsg = msg + "\n\n" + exception;
+			JScrollPane scroller = getScrollableDialogPanel(newMsg);
+			GuiUtils.scrollJScrollPane(scroller, false);
+			res = JEnhancedOptionPane.showInputDialog(title, false, parentComponent, scroller, msgOption, options, ERR, ICON_ERR_REF, null);
+		} catch (Exception e2) {
+		}
+		
+		return res;
+	}
+
+	/**
+	 * Shows a warning message
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void warn(String msg, String title) {
+		if (enabledAdvices) {
+			title = (!Various.isEmpty(title)) ? title : DEF_WARN_MSG;
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_WARN_MSG;
+			showMessageCommon(msg, title, WARN, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+	
+	/**
+	 * Shows a warning message within a scrollable panel, useful to show long messages
+	 * 
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void warnScroll(String msg, String title) {
+		if (enabledAdvices) {
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_WARN_MSG;
+			JScrollPane scroller = getScrollableDialogPanel(msg);
+			GuiUtils.scrollJScrollPane(scroller, false);
+			showMessageCommon(scroller, title, WARN, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+	
+	/**
+	 * Shows an error message within a scrollable panel, useful to show long messages. The default options are YES/NO
+	 * This version pretty prints an exception/error (throwable)
+	 * 
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 * 
+	 * @return the selected object between options, or null if nothing is selected
+	 */
+	public Object warnScroll(String msg, String title, Throwable e, Object[] options, int msgOption) {
+		Object res = null ;
+		try {
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_WARN_MSG;
+			String exception = Arrays.deepToString(e.getStackTrace());
+			String newMsg = msg + "\n\n" + exception;
+			JScrollPane scroller = getScrollableDialogPanel(newMsg);
+			GuiUtils.scrollJScrollPane(scroller, false);
+			res = JEnhancedOptionPane.showInputDialog(title, false, parentComponent, scroller, msgOption, options, ERR, ICON_WARN_REF, null);
+		} catch (Exception e2) {
+		}
+		
+		return res;
+	}
+
+	/**
+	 * Shows a INFO message
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void info(String msg, String title) {
+		if (enabledAdvices) {
+			title = (!Various.isEmpty(title)) ? title : DEF_INFO_MSG;
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			showMessageCommon(msg, title, INFO, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+	
+	/**
+	 * Shows a information message within a scrollable panel, useful to show long messages
+	 * 
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void infoScroll(String msg, String title) {
+		if (enabledAdvices) {
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			JScrollPane scroller = getScrollableDialogPanel(msg);
+			showMessageCommon(scroller, title, INFO, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+	
+	/**
+	 * Shows a Question message
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void question(String msg, String title) {
+		if (enabledAdvices) {
+			title = (!Various.isEmpty(title)) ? title : DEF_INFO_MSG;
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			showMessageCommon(msg, title, QUESTION, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+	
+	/**
+	 * Shows a plain message
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void plainMsg(String msg, String title) {
+		if (enabledAdvices) {
+			title = (!Various.isEmpty(title)) ? title : "Message";
+			msg = (!Various.isEmpty(msg)) ? msg : "Information message not specified";
+			showMessageCommon(msg, title, PLAIN, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+
+	/**
+	 * Shows a question and return boolean choice
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public boolean yesOrNo(String msg, String title) {
+		
+		title = (!Various.isEmpty(title)) ? title : "Choose an option";
+		msg = (!Various.isEmpty(msg)) ? msg : "Choose an Option";
+		
+		return showYNMessageCommon(msg, title, QUESTION, false);
+	}
+
+	/**
+	 * Shows a question and return int choice (OK|NO|CANC)
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public int yesNoOrCanc(String msg, String title) {
+		int result = NO;
+		
+		title = (!Various.isEmpty(title)) ? title : "Plain";
+		msg = (!Various.isEmpty(msg)) ? msg : "Information message not specified";
+		Boolean boolRes = showYNMessageCommon(msg, title, QUESTION, true);
+		result = boolRes == null ? CANC : boolRes ? OK : NO;
+		
+		return result;
+	}
+	
+	public String askForString(String msg, String title) {
+		
+		title = (!Various.isEmpty(title)) ? title : "Specify a String";
+		msg = (!Various.isEmpty(msg)) ? msg : "Insert a String";
+		
+		return askForString(msg, title, "New");
+	}
+	
+	public String askForString(String msg, String title, String initialValue) {
+		String unsafe = askForStringUnsafe(msg, title, initialValue, new Object[]{"Confirm"});
+		unsafe = unsafe == null ? "" : unsafe;
+		
+		return unsafe;
+	}
+
+	/**
+	 * Returns null if cancel is pressed
+	 * @param msg
+	 * @param title
+	 * @return selected string, or null if dialog is closed
+	 */
+	public String askForStringUnsafe(String msg, String title) {
+		
+		return askForStringUnsafe(msg, title, "", new Object[]{"Confirm"});
+	}
+	
+	/**
+	 * Returns null if cancel is pressed
+	 * @param msg
+	 * @param title
+	 * @param initialVal
+	 * @return selected string, or null if dialog is closed
+	 */
+	public String askForStringUnsafe(String msg, String title, String initialVal) {
+		
+		return askForStringUnsafe(msg, title, initialVal, new Object[]{"Confirm"});
+	}
+	
+	/**
+	 * Shows a customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
+	 * msgType can be error, info, warn, exc...
+	 */
+	public String askForStringUnsafe(String msg, String title, String initialValue, Object options[]) {
+		
+		final JOptionPane pane = new JOptionPane(
+				getLabelStyledText(msg), JOptionPane.QUESTION_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION, null,
+				options, initialValue);
+		pane.setWantsInput(true);
+		pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		pane.selectInitialValue();
+		pane.setInitialSelectionValue(initialValue);
+		final JDialog dialog = pane.createDialog(parentComponent, title);
+		dialog.setAlwaysOnTop(true);
+		dialog.setAutoRequestFocus(true);
+		dialog.setLocationRelativeTo(parentComponent);
+		dialog.requestFocus();
+		dialog.setModal(true);
+//		dialog.dispose();
+		dialog.toFront();
+		dialog.getRootPane().addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				dialog.setAutoRequestFocus(true);
+				dialog.requestFocus();
+				dialog.toFront();
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+			}
+		});
+		
+		dialog.setVisible(true);
+		final Object value = pane.getInputValue();
+		return (value == JOptionPane.UNINITIALIZED_VALUE) ? null : (String) value;
+	}
+
+	public void setAdvicesEnabled(boolean enabled) {
+		enabledAdvices = enabled;
+	}
+	public Dimension getIF_SCROLLABLE_DEF_DIMENSION() {
+		return IF_SCROLLABLE_DEF_DIMENSION;
+	}
+
+	public void setIF_SCROLLABLE_DEF_DIMENSION(Dimension iF_SCROLLABLE_DEF_DIMENSION) {
+		IF_SCROLLABLE_DEF_DIMENSION = iF_SCROLLABLE_DEF_DIMENSION;
+	}
+	
+	// PRIVATE METHODS
+	
+	private JScrollPane getScrollableDialogPanel(String preloadedMsg) {
+		preloadedMsg = (preloadedMsg == null)? "" : preloadedMsg;
+		
+		JTextArea textArea = new JTextArea("Insert your Text here");
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setViewportView(textArea);
+		scrollPane.setVisible(true);
+		scrollPane.setBackground(Color.DARK_GRAY);
+		scrollPane.setForeground(Color.white);
+		textArea.setBackground(Color.DARK_GRAY);
+		textArea.setForeground(Color.white);
+		textArea.setLineWrap(true);  
+		textArea.setWrapStyleWord(true); 
+		textArea.setMargin(new Insets(6,6,6,6));
+		textArea.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+		scrollPane.setPreferredSize(IF_SCROLLABLE_DEF_DIMENSION);
+		
+		textArea.setText(preloadedMsg);
+		GuiUtils.scrollJScrollPane(scrollPane, false);
+		textArea.requestFocus();
+		textArea.setCaretPosition(0);
+		
+		return scrollPane;
+	}
+	
+	private Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull) {
+		final JOptionPane optionPane = new JOptionPane(
+				msg instanceof String ? getLabelStyledText((String)msg) : msg, 
+        		msgType,
+        		YES_OR_NO, 
+        		ICON_QUESTION_REF,
+                defaultOptions,
+                defaultOptions[0]);
+        
+		JDialog dialog = optionPane.createDialog(title);
+		dialog.setAlwaysOnTop(true);
+		dialog.setLocationRelativeTo(parentComponent);
+		dialog.enableInputMethods(true);
+		dialog.toFront();
+		
+		try {
+			dialog.setVisible(true);
+			dialog.dispose();
+		} catch (Exception e) {
+		}
+		
+		final Object value = optionPane.getValue();
+		if (value != null) {
+			return (value.equals(defaultOptions[0]));
+		} else {
+			return (allowNull) ? null : false;
+		}
+	}
+	
+	// Used internally to create other various dialogs without user input
+	private void showMessageCommon(Object msg, String title, int msgType, Object[] choiceOptions, Object defaultOption) {
+		if (enabledAdvices) {
+			
+			Icon icon = ICON_INFO_REF;
+			if (WARN == msgType) {
+				icon = ICON_WARN_REF;
+			} else if (ERR == msgType) {
+				icon = ICON_ERR_REF;
+			} else if (QUESTION == msgType) {
+				icon = ICON_QUESTION_REF;
+			}
+			
+			final JOptionPane optionPane = new JOptionPane(
+					msg instanceof String ? getLabelStyledText((String) msg) : msg, 
+					msgType,
+					JOptionPane.OK_OPTION,
+					icon,
+					choiceOptions,
+					defaultOption);
+			
+			JDialog dialog = optionPane.createDialog(title);
+			dialog.setAlwaysOnTop(true);
+			dialog.setLocationRelativeTo(parentComponent);
+			dialog.toFront();
+			try {
+				dialog.setVisible(true);
+				dialog.dispose();
+			} catch (Exception e) {
+			} 
+		}
+	}
+	
+	private JLabel getLabelStyledText(String msg) {
+		JLabel label = new JLabel(msg, SwingConstants.CENTER);
+		label.setOpaque(false);
+		label.setFont(DEFAULT_FONT_DIMENSION);
+		label.setVisible(true);
+		label.revalidate();
+		label.repaint();
+		
+		return label;
+	}
+
+}

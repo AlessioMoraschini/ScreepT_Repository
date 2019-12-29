@@ -29,20 +29,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.miginfocom.swing.MigLayout;
+import om.KeyGenImageType;
 import resources.IconsPathConfigurator;
-import uTILS.local.ImageWorker;
+import uTILS.local.ImageWorkerScrYpT;
 
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
-import enums.KeyGenImageType;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.subpanels.ImageGenContainerPanel;
@@ -166,10 +167,10 @@ public class KeyGenFrame extends ParentFrame {
 		// initialize spinner and sliders with max, min, and selected values
 		widthValGUI = new JSpinner();
 		widthValGUI.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		widthValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_W, 100, ImageWorker.MAX_WIDTH_GEN, 5));
+		widthValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_W, 100, ImageWorkerScrYpT.MAX_WIDTH_GEN, 5));
 		panel_1.add(widthValGUI, "cell 2 1,growx");
 		
-		sliderWidth = new JSlider(JSlider.HORIZONTAL, 100,ImageWorker.MAX_WIDTH_GEN, CURRENT_SEL_W );
+		sliderWidth = new JSlider(JSlider.HORIZONTAL, 100,ImageWorkerScrYpT.MAX_WIDTH_GEN, CURRENT_SEL_W );
 		sliderWidth.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(sliderWidth, "cell 3 1,growx");
 		
@@ -178,13 +179,13 @@ public class KeyGenFrame extends ParentFrame {
 		lblImageHeight.setFont(new Font("SansSerif", Font.BOLD, 12));
 		panel_1.add(lblImageHeight, "cell 0 2 2 1,alignx center,aligny center");
 		
-		sliderHeight = new JSlider(JSlider.HORIZONTAL, 100,ImageWorker.MAX_HEIGHT_GEN, CURRENT_SEL_H);
+		sliderHeight = new JSlider(JSlider.HORIZONTAL, 100,ImageWorkerScrYpT.MAX_HEIGHT_GEN, CURRENT_SEL_H);
 		sliderHeight.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(sliderHeight, "cell 3 2,growx");
 		
 		heightValGUI = new JSpinner();
 		heightValGUI.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		heightValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_H, 100, ImageWorker.MAX_HEIGHT_GEN, 5));
+		heightValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_H, 100, ImageWorkerScrYpT.MAX_HEIGHT_GEN, 5));
 		panel_1.add(heightValGUI, "cell 2 2,growx");
 		
 		JLabel lblImageType = new JLabel("Image Type:");
@@ -323,84 +324,87 @@ public class KeyGenFrame extends ParentFrame {
 					@Override
 					public void run() {
 						
-						updateBTNenabled(false);						
-						Date now = new Date();
-						
-						JFileChooser fileChooser = new JFileChooser();		
-						// default home dir is the last file saved's parent dir
-						fileChooser.setCurrentDirectory(new File(currentConfig.getSteganOpt().getImgRecentPath().get(0)).getParentFile());
-						fileChooser.setDialogTitle("Export Key-Image (only .png format)");
-						
-						// only if the container contains an image!
-						if(imageContainer!=null && imageContainer.getImage()!=null) {
+						try {
+							updateBTNenabled(false);						
+							Date now = new Date();
 							
-							logger.debug("EXPORTING IMAGE...");
+							JFileChooser fileChooser = new JFileChooser();		
+							// default home dir is the last file saved's parent dir
+							fileChooser.setCurrentDirectory(new File(currentConfig.getSteganOpt().getImgRecentPath().get(0)).getParentFile());
+							fileChooser.setDialogTitle("Export Key-Image (only .png format)");
 							
-							int returnVal = fileChooser.showSaveDialog(thisFrame);
-					        if (returnVal == JFileChooser.APPROVE_OPTION) {
-					        	
-					        	progUpdater = new UpdateProgressPanelMin(false);
-					        	progUpdater.setLocationRelativeTo(MainGUI.mainAPP.getMainFrame());
-					    		progUpdater.getPb().setValue(10);
-					    		progUpdater.getPb().setIndeterminate(true);
-					        	
-					            boolean done= false;
-					        	try {
-					            	File selectedFile = fileChooser.getSelectedFile();
+							// only if the container contains an image!
+							if(imageContainer!=null && imageContainer.getImage()!=null) {
+								
+								logger.debug("EXPORTING IMAGE...");
+								
+								int returnVal = fileChooser.showSaveDialog(thisFrame);
+							    if (returnVal == JFileChooser.APPROVE_OPTION) {
+							    	
+							    	progUpdater = new UpdateProgressPanelMin(false);
+							    	progUpdater.setLocationRelativeTo(MainGUI.mainAPP.getMainFrame());
+									progUpdater.getPb().setValue(10);
+									progUpdater.getPb().setIndeterminate(true);
+							    	
+							        boolean done= false;
+							    	try {
+							        	File selectedFile = fileChooser.getSelectedFile();
 
-					            	//  change extension to png (crittografy in ScreepT need loseless algorithm)
-				            		selectedFile = FileStuff.changeExtension(selectedFile, ".png");
-					            	
-						    		progUpdater.getPb().setValue(20);
-				            		
-						        	textLog.append("\n"+now.toString()+" -> Saving file "+selectedFile+" ...");
-				            		textLog.setCaretPosition(textLog.getText().length());
-					            	if(selectedFile.exists()) {
-					            		if(JOptionPane.showConfirmDialog(thisFrame, "File "+selectedFile.getName()+" exists, overwrite it?")==JOptionPane.OK_OPTION) {
-					            			selectedFile.delete();	
-					                       	done = selectedFile.createNewFile();
-								    		progUpdater.getPb().setValue(30);
-					                	   	done = ImageIO.write(imageContainer.getImage(), "png" ,selectedFile);
+							        	//  change extension to png (crittografy in ScreepT need loseless algorithm)
+							    		selectedFile = FileStuff.changeExtension(selectedFile, ".png");
+							        	
+							    		progUpdater.getPb().setValue(20);
+							    		
+							        	textLog.append("\n"+now.toString()+" -> Saving file "+selectedFile+" ...");
+							    		textLog.setCaretPosition(textLog.getText().length());
+							        	if(selectedFile.exists()) {
+							        		if(JOptionPane.showConfirmDialog(thisFrame, "File "+selectedFile.getName()+" exists, overwrite it?")==JOptionPane.OK_OPTION) {
+							        			selectedFile.delete();	
+							                   	done = selectedFile.createNewFile();
+									    		progUpdater.getPb().setValue(30);
+							            	   	done = ImageIO.write(imageContainer.getImage(), "png" ,selectedFile);
+									    		progUpdater.getPb().setValue(90);
+							    				logger.debug(selectedFile.getCanonicalPath()+" deleted & re-saved.");
+
+							        		}else {
+							        			dialogHelper.info("Operation cancelled", null);
+							    				logger.debug("Canceled by user.");
+							        		}
+							        	}else {
+								    		progUpdater.getPb().setValue(40);
+							               	done = selectedFile.createNewFile();
+							            	done = ImageIO.write(imageContainer.getImage(), "png" ,selectedFile);
+											logger.debug(selectedFile.getCanonicalPath()+" Created.");
 								    		progUpdater.getPb().setValue(90);
-					        				logger.debug(selectedFile.getCanonicalPath()+" deleted & re-saved.");
-
-					            		}else {
-					            			dialogHelper.info("Operation cancelled", null);
-					        				logger.debug("Canceled by user.");
-					            		}
-					            	}else {
-							    		progUpdater.getPb().setValue(40);
-					                   	done = selectedFile.createNewFile();
-					                	done = ImageIO.write(imageContainer.getImage(), "png" ,selectedFile);
-				        				logger.debug(selectedFile.getCanonicalPath()+" Created.");
-							    		progUpdater.getPb().setValue(90);
-					            	}
-						    		progUpdater.getPb().setValue(100);
-					               	if(done) {
-					               		dialogHelper.info("File "+selectedFile.getName()+" succesfully saved!", "");
-					    				currentConfig.getSteganOpt().getImgRecentPath().add(0, selectedFile.getAbsolutePath());
-					    				if(currentConfig.getSteganOpt().getImgRecentPath().size()>10) {
-					    					currentConfig.getSteganOpt().getImgRecentPath().remove(currentConfig.getSteganOpt().getImgRecentPath().size());
-					    				}
-							        	textLog.append("\n #### "+selectedFile+" saved!");
-					               	}
-								} catch (Exception e1) {
-						    		progUpdater.getPb().setValue(100);
-						    		dialogHelper.error("error Saving the selected file :(", "");
-				        			logger.error(" Error saving the file!"+e1.toString());
-				    		        textLog.append("\n -> ERROR Saving file :(");
-								}		        	
-					        }else {
-					        	updateBTNenabled(true);
-					        	logger.warn("EXPORT ABORTED by user");
-					        	dialogHelper.warn("Process killed by user, not exported.", "Cancelled by user");
-					        }
-							
-						}else {
+							        	}
+							           	
+							        	if(done) {
+							           		dialogHelper.info("File "+selectedFile.getName()+" succesfully saved!", "");
+											currentConfig.getSteganOpt().getImgRecentPath().add(0, selectedFile.getAbsolutePath());
+											if(currentConfig.getSteganOpt().getImgRecentPath().size()>10) {
+												currentConfig.getSteganOpt().getImgRecentPath().remove(currentConfig.getSteganOpt().getImgRecentPath().size());
+											}
+								        	textLog.append("\n #### "+selectedFile+" saved!");
+							           	}
+									} catch (Exception e1) {
+							    		dialogHelper.error("error Saving the selected file :(", "");
+										logger.error(" Error saving the file!"+e1.toString());
+								        textLog.append("\n -> ERROR Saving file :(");
+									}		        	
+							    }else {
+							    	logger.warn("EXPORT ABORTED by user");
+							    	dialogHelper.warn("Process killed by user, not exported.", "Cancelled by user");
+							    }
+								
+							}else {
+								dialogHelper.error("Image is null, first you have to generate an image!", "NULL image Error");
+							}
+						} catch (Throwable e) {
+							logger.error("An error occurred while exporting image.", e);
+						} finally {
+							UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 							updateBTNenabled(true);
-							dialogHelper.error("Image is null, first you have to generate an image!", "NULL image Error");
 						}
-						updateBTNenabled(true);
 					}
 				}).start();
 				
@@ -419,47 +423,51 @@ public class KeyGenFrame extends ParentFrame {
 	
 				Thread runnerThread =  new Thread(new Runnable() {
 					public void run() {
-						// only if the container contains an image!
-						if (imageContainer != null && imageContainer.getImage() != null) {
-							BufferedImage IMG = imageContainer.getImage();
-							textLog.append("\n [Started] adding key to dictionary...");
-							String inputName = JOptionPane.showInputDialog(thisFrame,
-									"Please insert a name for the image to be added (Otherwise current date will be used as filename)",
-									"Choose a name for the File.", JOptionPane.QUESTION_MESSAGE);
-							if (inputName != null && inputName.equals("")) {
-								inputName = "ScreepT-Key" + df.format(now) + ".png";
-								logger.debug("No input by user... current date used as name: " + inputName);
-							}
-							// now if user pressed cancel input is null, let's check
-							if (inputName != null) {
-								progUpdater = new UpdateProgressPanelMin(false);
-								progUpdater.setLocationRelativeTo(MainGUI.mainAPP.getMainFrame());
-								progUpdater.getPb().setValue(0);
-								progUpdater.getPb().setIndeterminate(true);
-
-								String out = "An error occurred :(";
-								try {
-									textLog.append("\nI'm workin'... just a second (or maybe two!) :)");
-									textLog.setSelectionStart(textLog.getText().length());
-									File result = ImageWorker.addKeyImgToDictionary(inputName, IMG, thisFrame);
-									out = result.getName() + " => Added to dictionary :)";
-									textLog.append(out);
-									logger.debug(out);
-								} catch (Exception e2) {
-									logger.error("An error occurred importing to dictionary :(" + e2);
+						
+						try {
+							// only if the container contains an image!
+							if (imageContainer != null && imageContainer.getImage() != null) {
+								BufferedImage IMG = imageContainer.getImage();
+								textLog.append("\n [Started] adding key to dictionary...");
+								String inputName = JOptionPane.showInputDialog(thisFrame,
+										"Please insert a name for the image to be added (Otherwise current date will be used as filename)",
+										"Choose a name for the File.", JOptionPane.QUESTION_MESSAGE);
+								if (inputName != null && inputName.equals("")) {
+									inputName = "ScreepT-Key" + df.format(now) + ".png";
+									logger.debug("No input by user... current date used as name: " + inputName);
 								}
-								progUpdater.getPb().setValue(100);
+								// now if user pressed cancel input is null, let's check
+								if (inputName != null) {
+									progUpdater = new UpdateProgressPanelMin(false);
+									progUpdater.setLocationRelativeTo(MainGUI.mainAPP.getMainFrame());
+									progUpdater.getPb().setValue(0);
+									progUpdater.getPb().setIndeterminate(true);
 
-								updateBTNenabled(true);
-								dialogHelper.info(out, "");
+									String out = "An error occurred :(";
+									try {
+										textLog.append("\nI'm workin'... just a second (or maybe two!) :)");
+										textLog.setSelectionStart(textLog.getText().length());
+										File result = ImageWorkerScrYpT.addKeyImgToDictionary(inputName, IMG, thisFrame);
+										out = result.getName() + " => Added to dictionary :)";
+										textLog.append(out);
+										logger.debug(out);
+									} catch (Exception e2) {
+										logger.error("An error occurred importing to dictionary :(" + e2);
+									}
+
+									dialogHelper.info(out, "");
+								} else {
+									// case of null input (cancel pressed by user)
+									dialogHelper.warn("Process killed by user, not added to dictionary.", "Cancelled");
+								}
 							} else {
-								// case of null input (cancel pressed by user)
-								updateBTNenabled(true);
-								dialogHelper.warn("Process killed by user, not added to dictionary.", "Cancelled");
+								dialogHelper.info("Image is null, first you have to generate an image!", "NULL image Error");
 							}
-						} else {
+						} catch (HeadlessException e) {
+							e.printStackTrace();
+						} finally {
+							UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 							updateBTNenabled(true);
-							dialogHelper.info("Image is null, first you have to generate an image!", "NULL image Error");
 						}
 					}
 				});

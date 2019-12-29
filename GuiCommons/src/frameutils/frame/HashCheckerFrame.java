@@ -13,12 +13,12 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gui.UpdateProgressPanelMin;
 import net.miginfocom.swing.MigLayout;
+import network.DownloadUtils;
+import om.HashingFunction;
 import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.TxtFieldFileDragNDropManager;
-import updater.DownloadUtils;
-import updater.HashingFunction;
 
 import javax.swing.JLabel;
 import java.awt.Font;

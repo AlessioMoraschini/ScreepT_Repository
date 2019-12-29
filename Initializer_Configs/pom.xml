@@ -28,22 +28,23 @@
   </build>
   
   <dependencies>
-  	
-	<dependency>
-		<groupId>Resources</groupId>
-	  	<artifactId>Resources</artifactId>
-	  	<version>0.0.1-SNAPSHOT</version>
+  
+  	<dependency>
+		<groupId>org.ini4j</groupId>
+		<artifactId>ini4j</artifactId>
+		<version>0.5.4</version>
 	</dependency>
-	
-	<dependency>
-		<groupId>GenCommons</groupId>
-		<artifactId>GenCommons</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</dependency>	
+  	
 	<dependency>
 		<groupId>Resources</groupId>
 		<artifactId>Resources</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
+	<dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
   </dependencies>
 </project>

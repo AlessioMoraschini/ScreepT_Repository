@@ -19,10 +19,10 @@ import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 
-import amfileutils.CustomFileFilters;
 import amfileutils.FileStuff;
-import amfileutils.om.FileNamed;
+import files.CustomFileFilters;
 import media.ImageGeneralWorker;
+import om.files.FileNamed;
 import resources.GeneralConfig;
 import variousutils.HandleString;
 

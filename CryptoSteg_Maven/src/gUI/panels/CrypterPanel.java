@@ -18,12 +18,11 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import amfileutils.FileStuff;
-import amfileutils.filechangewatcher.FileChangeMonitor;
 import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import dialogutils.JOptionHelper;
-import enums.BufferedImageType;
+import files.watcher.FileChangeMonitor;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
 import gUI.frames.KeyGenFrame;
@@ -36,6 +35,7 @@ import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import net.miginfocom.swing.MigLayout;
+import om.BufferedImageType;
 import om.CrypterResultDTO;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -427,7 +427,7 @@ public class CrypterPanel extends ModulePanel {
 		gbc_chckbxShowAesKey.gridy = 0;
 		panelStatus.add(chckbxShowAesKey, gbc_chckbxShowAesKey);
 		
-		iconInfoMode = new JLabel("Mode:");
+		iconInfoMode = new JLabel("");
 		iconInfoMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_INFO));
 		GridBagConstraints gbc_lblInfoMode= new GridBagConstraints();
 		gbc_lblInfoMode.insets = new Insets(0, 0, 0, 5);

@@ -7,9 +7,6 @@ import javax.swing.JFrame;
 
 import java.awt.Color;
 
-import updater.PluginDTO;
-import updater.PluginManager;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -29,8 +26,10 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.io.FilenameUtils;
 
-import forks.merged.Various;
+import files.Various;
 import net.miginfocom.swing.MigLayout;
+import plugins.PluginDTO;
+import plugins.PluginManager;
 
 import javax.swing.JButton;
 

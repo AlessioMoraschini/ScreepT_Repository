@@ -8,13 +8,13 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelper;
-import enums.BufferedImageType;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
 import maingUI.MainGUI;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
+import om.BufferedImageType;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
 

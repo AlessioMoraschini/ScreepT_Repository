@@ -12,6 +12,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
 
+import gui.GuiUtils;
 import resources.GeneralConfig;
 
 public class LauncherLoaderFrame extends JFrame{

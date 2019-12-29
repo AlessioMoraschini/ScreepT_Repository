@@ -525,7 +525,7 @@
             	<encoding>UTF-8</encoding>
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<skip>${export.updates.skip}</skip>
-            	<overwrite>true</overwrite>
+            	<overwrite>false</overwrite>
               	<outputDirectory>
               		<!-- ${basedir}/target/extra-resources -->
               		${export.updates.root}
@@ -536,6 +536,13 @@
 				        <directory>./</directory>
     					<includes>
     						<include>manifest.properties</include>
+					    </includes>
+					</resource>
+				     <resource>
+						<filtering>false</filtering>
+				        <directory>./</directory>
+    					<includes>
+    						<include>FTP.properties</include>
 					    </includes>
 					</resource>
 			    </resources>     

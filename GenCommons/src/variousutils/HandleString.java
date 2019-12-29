@@ -15,8 +15,8 @@ import java.util.StringTokenizer;
 import javax.swing.JTextArea;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 
+import files.Various;
 import media.color.HslColor;
 import resources.GeneralConfig;
 
@@ -481,7 +481,7 @@ public class HandleString {
      * Convert color to string RGB with custom separator
      */
     public static String getRgbString(Color sourceColor, String separator) {
-    	separator = (StringUtils.isEmpty(separator))? "-" : separator;
+    	separator = (Various.isEmpty(separator))? "-" : separator;
     	StringBuilder builder = new StringBuilder();
     	builder.append(sourceColor.getRed()).append(separator)
     		   .append(sourceColor.getGreen()).append(separator)

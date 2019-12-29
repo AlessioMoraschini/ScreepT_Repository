@@ -24,7 +24,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import amfileutils.om.FileNamed;
 import dialogutils.JOptionHelper;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
@@ -32,6 +31,7 @@ import gUI.panels.TextEditor;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import mouseutils.TreeFileMouseListenerBasicFileNamed;
+import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;

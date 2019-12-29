@@ -5,7 +5,7 @@ import java.awt.Font;
 
 import org.junit.Test;
 
-import enums.ScalingAlgorithm;
+import om.ScalingAlgorithm;
 import testUtils.TestUtils;
 import variousutils.HandleString;
 

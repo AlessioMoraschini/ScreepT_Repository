@@ -11,17 +11,16 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
-import amfileutils.om.FileNamed;
-import enums.ScalingAlgorithm;
 import om.AesOption;
 import om.FileOptions;
 import om.GenericOption;
 import om.GuiOption;
 import om.ImgConverterOption;
+import om.ScalingAlgorithm;
 import om.SteganOption;
 import om.TextEditorOption;
+import om.files.FileNamed;
 import resources.GeneralConfig;
-import variousutils.HandleString;
 
 public class INItializer extends INItializerParent implements INItializerInterface{
 
@@ -291,10 +290,10 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		String lastEscapeLanguageStr = iniReadFile.get(TEXT_EDITOR_OPT, "lastEscapeLanguage");
 
 		// validation
-		Font font = (!"".equals(fontStr) && fontStr!= null)? HandleString.getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
-		Color backCol = (!"".equals(backColStr) && backColStr!= null)? HandleString.getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
-		Color filePanelBackCol = (!"".equals(FilePanelbackColStr) && FilePanelbackColStr!= null)? HandleString.getRgbColorFromString(FilePanelbackColStr) : TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
-		Color foreCol = (!"".equals(foreColStr) && foreColStr!= null)? HandleString.getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
+		Font font = (!"".equals(fontStr) && fontStr!= null)? getFontFromString(fontStr) : TextEditorOption.DEFAULT_FONT;
+		Color backCol = (!"".equals(backColStr) && backColStr!= null)? getRgbColorFromString(backColStr) : TextEditorOption.DEFAULT_BACKGROUND_COL;
+		Color filePanelBackCol = (!"".equals(FilePanelbackColStr) && FilePanelbackColStr!= null)? getRgbColorFromString(FilePanelbackColStr) : TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
+		Color foreCol = (!"".equals(foreColStr) && foreColStr!= null)? getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
 		String selectedFileAtStart = (!"".equals(selectedAtStartStr) && selectedAtStartStr!= null)? selectedAtStartStr : TextEditorOption.DEFAULT_SELECTED_FILE_AT_START;
 		String defaultWorspaceLocation = (!"".equals(defaultWorspaceLocationStr) && defaultWorspaceLocationStr!= null)? defaultWorspaceLocationStr : GeneralConfig.USER_PERSONAL_DIR;
 		String lastEscapeLanguage = (!"".equals(lastEscapeLanguageStr) && lastEscapeLanguageStr!= null)? lastEscapeLanguageStr : TextEditorOption.DEF_LastEscapeLanguage;
@@ -555,10 +554,10 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "prefix_hash", textEditorOpt.isPrefix_hash());
 		iniFile.put(TEXT_EDITOR_OPT, "uppercase_hash", textEditorOpt.isUppercase_hash());
 		iniFile.put(TEXT_EDITOR_OPT, "inlineTabs", textEditorOpt.isInlinedTabs());
-		iniFile.put(TEXT_EDITOR_OPT, "font", HandleString.getFontString(textEditorOpt.font));
-		iniFile.put(TEXT_EDITOR_OPT, "filePanelBackgroundCol", HandleString.getRgbString(textEditorOpt.filePanelBackCol));
-		iniFile.put(TEXT_EDITOR_OPT, "backgroundCol", HandleString.getRgbString(textEditorOpt.backCol));
-		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", HandleString.getRgbString(textEditorOpt.foreCol));
+		iniFile.put(TEXT_EDITOR_OPT, "font", getFontString(textEditorOpt.font));
+		iniFile.put(TEXT_EDITOR_OPT, "filePanelBackgroundCol", getRgbString(textEditorOpt.filePanelBackCol));
+		iniFile.put(TEXT_EDITOR_OPT, "backgroundCol", getRgbString(textEditorOpt.backCol));
+		iniFile.put(TEXT_EDITOR_OPT, "foregroundCol", getRgbString(textEditorOpt.foreCol));
 		iniFile.put(TEXT_EDITOR_OPT, "margin", textEditorOpt.margin);
 		iniFile.put(TEXT_EDITOR_OPT, "tabSize", textEditorOpt.tabSize);
 		iniFile.put(TEXT_EDITOR_OPT, "tabLineVisibleFlag", textEditorOpt.tabLineVisible);

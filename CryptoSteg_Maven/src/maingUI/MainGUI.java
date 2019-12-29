@@ -33,9 +33,9 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
-import amfileutils.filechangewatcher.ChangeDTO;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelper;
+import files.watcher.ChangeDTO;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
 import gUI.frames.GeneralOptionsFrame;

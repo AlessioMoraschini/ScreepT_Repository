@@ -13,7 +13,7 @@ public class LookAndFeelInfoCustom extends LookAndFeelInfo{
 		return super.getName();
 	}
 	
-	public boolean isJGoodies() {
+	public boolean isJGoodiesThemed() {
 		return this.getName().toLowerCase().contains("plastic");
 	}
 	

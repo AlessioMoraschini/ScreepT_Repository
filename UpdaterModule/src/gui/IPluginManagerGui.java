@@ -4,8 +4,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 
-import updater.PluginDTO;
-import updater.PluginManager;
+import plugins.PluginDTO;
+import plugins.PluginManager;
 
 public interface IPluginManagerGui {
 	

@@ -1,11 +1,13 @@
 package dialogutils;
 
 import java.awt.Component;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -37,7 +39,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileImgRead(JFrame parent) {
 
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();		
 		fileChooser.setDialogTitle("Select input Image File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
@@ -70,7 +72,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileImgRead(JPanel parent, String ext) throws Exception {
 
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();		
 		fileChooser.setDialogTitle("Select input Image File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setFileView(fileView);
@@ -113,7 +115,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileRead(Component parent) {
 		
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();		
 		fileChooser.setDialogTitle("Select input File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
@@ -142,7 +144,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileAndDirRead(JComponent parent) {
 		
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();		
 		fileChooser.setDialogTitle("Select input File or Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setFileView(fileView);
@@ -172,7 +174,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileAndDirRead(JFrame parent) {
 		
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();		
 		fileChooser.setDialogTitle("Select input File or Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setFileView(fileView);
@@ -201,7 +203,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileImgWrite(JFrame parent, String defaultName) {
 
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();		
 		fileChooser.setDialogTitle("Save Image File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
@@ -231,7 +233,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileWrite(JFrame parent, String defaultName) {
 
-		JFileChooser fileChooser = new JFileChooser();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();		
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
@@ -256,7 +258,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File directoRead(JFrame parent) {
 		
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		fileChooser.setDialogTitle("Choose Input Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
@@ -283,7 +285,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File directoRead(JFrame parent, String title) {
 		
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		fileChooser.setDialogTitle(title);
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
@@ -311,7 +313,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File directoWrite(JFrame parent) {
 		
-		JFileChooser fileChooser = new JFileChooser();
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setDialogTitle("Choose output Directory");
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
@@ -359,4 +361,18 @@ public class GenericFileChooserDialog {
 			return null;
 	}
 	
+
+	private class CustomFileChooserOnTop extends JFileChooser{
+		private static final long serialVersionUID = -1504918820583535391L;
+
+		@Override
+		protected JDialog createDialog(Component parent) throws HeadlessException {
+			// intercept the dialog created by JFileChooser
+			JDialog dialog = super.createDialog(parent);
+			dialog.setAlwaysOnTop(true);
+			dialog.setModal(true); // set modality (or setModalityType)
+			return dialog;
+		}
+	}
 }
+

@@ -26,8 +26,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.UpdateProgressPanel;
 import gUI.frames.KeyGenFrame;
+import gui.UpdateProgressPanelMin;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
@@ -46,7 +46,7 @@ public class TreeFileMouseListenerDictionary {
 	private INItializer currentConfig;
 	
 	// object that display wait dialog
-	private volatile UpdateProgressPanel progUpdater;
+	private volatile UpdateProgressPanelMin progUpdater;
 
 	// constructor
 	public TreeFileMouseListenerDictionary(INItializer currentConf, JFrame parent, JTree treeIn, JTextArea log, JTextArea mainTxtArea) {
@@ -206,39 +206,44 @@ public class TreeFileMouseListenerDictionary {
 					public void run() {
 						
 			    		if (selected!= null) {
-			    			progUpdater = new UpdateProgressPanel(currentConfig);
-				    		progUpdater.getPb().setValue(5);
-				    		
+								
 							if (!selected.exists()) {
 								selected.mkdirs();
 							}
 							TreePath[] treeSelArr = tree.getSelectionPaths();
 							int i = 0;
 							if (treeSelArr.length != 0) {
-								for (TreePath tp : treeSelArr) {
-									i++;
-									progUpdater.getPb().setValue((int)((float)i/(float)treeSelArr.length));
-									
-									String path = tp.getLastPathComponent().toString();
-									File selectedFile = new File(path);
-									FileStuff.copyFile(selectedFile,
-											new File(selected.getAbsolutePath() + "\\" + selectedFile.getName()), false);
-									logger.debug(selectedFile.getName() + " exported to " + selected.getAbsolutePath());
+								try {
+									progUpdater = new UpdateProgressPanelMin(false);
+									progUpdater.getPb().setValue(5);
+									for (TreePath tp : treeSelArr) {
+										i++;
+										progUpdater.getPb().setValue((int)((float)i/(float)treeSelArr.length));
+										
+										String path = tp.getLastPathComponent().toString();
+										File selectedFile = new File(path);
+										FileStuff.copyFile(selectedFile,
+												new File(selected.getAbsolutePath() + "\\" + selectedFile.getName()), false);
+										logger.debug(selectedFile.getName() + " exported to " + selected.getAbsolutePath());
+									}
+									String msg = "Files exported!";
+									logger.debug(msg + Arrays.toString(treeSelArr));
+									TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
+									progUpdater.getPb().setValue(100);
+									JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!", JOptionPane.INFORMATION_MESSAGE);
+								
+								} catch (Exception e) {
+									logger.error("There was an Exception", e);
+								} finally {
+									UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
 								}
-								String msg = "Files exported!";
-								logger.debug(msg + Arrays.toString(treeSelArr));
-								TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
-					    		progUpdater.getPb().setValue(100);
-						    	JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!", JOptionPane.INFORMATION_MESSAGE);
 
 							} else {
 								String msg = "Skipped after user request!";
-					    		progUpdater.getPb().setValue(100);
 								JOptionPane.showMessageDialog(tree, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
 								logger.debug(msg);
-							} 
+							}
 						}
-			    		
 					}
 				}).start();
 	        }

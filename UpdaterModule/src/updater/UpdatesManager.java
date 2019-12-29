@@ -8,17 +8,18 @@ import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import exception.ProgressBarInterruptedException;
-import forks.merged.PropertiesManagerFork;
-import forks.merged.Various;
+import files.Various;
 import gui.UpdateProgressPanelMin;
 import main.MainStandAloneUpdater;
+import network.DownloadUtils;
+import om.exception.ProgressBarInterruptedException;
+import utility.PropertiesManagerLight;
 
 public class UpdatesManager {
 
 	public URL manifestRemoteUrl;
 	
-	public static PropertiesManagerFork resourcesFilePathsMappings = new PropertiesManagerFork(MainStandAloneUpdater.resourcesMappingDefPath);
+	public static PropertiesManagerLight resourcesFilePathsMappings = new PropertiesManagerLight(MainStandAloneUpdater.resourcesMappingDefPath);
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_Scrypt/");  
 	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR", "UPDATES/");
@@ -71,7 +72,7 @@ public class UpdatesManager {
 				File downloadedManifest = DownloadUtils.downloadFile(silent, manifestRemoteUrl, localTempManifestPath, updateManagerProgbar);
 				out.println("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
 				
-				PropertiesManagerFork propsManager = new PropertiesManagerFork(downloadedManifest);
+				PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
 				
 				String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
 				out.println("Version: " + version);
@@ -129,7 +130,7 @@ public class UpdatesManager {
 			File downloadedManifest = DownloadUtils.downloadFile(false, manifestRemoteUrl, localTempManifestPath, updateProgressBar);
 			out.println("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
 			
-			PropertiesManagerFork propsManager = new PropertiesManagerFork(downloadedManifest);
+			PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
 			
 			String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
 			out.println("Version: " + version);

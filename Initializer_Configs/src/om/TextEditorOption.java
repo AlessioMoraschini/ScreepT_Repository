@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import amfileutils.om.FileNamed;
-import generic.LimitedConcurrentList;
 import mainobj.INItializer;
+import om.files.FileNamed;
 import resources.GeneralConfig;
 
 public class TextEditorOption {

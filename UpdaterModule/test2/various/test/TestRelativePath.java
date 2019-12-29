@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import forks.merged.Various;
+import files.Various;
 
 public class TestRelativePath {
 

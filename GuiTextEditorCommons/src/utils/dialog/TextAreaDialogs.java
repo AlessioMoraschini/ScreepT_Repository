@@ -30,10 +30,10 @@ import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
 import frameutils.utils.GuiUtils;
-import generic.LimitedConcurrentList;
-import reflection.ReflectionLibChecker;
-import reflection.ReflectionUtils;
+import om.LimitedConcurrentList;
 import resources.IconsPathConfigurator;
+import utility.reflection.ReflectionLibChecker;
+import utility.reflection.ReflectionUtils;
 
 public class TextAreaDialogs {
 

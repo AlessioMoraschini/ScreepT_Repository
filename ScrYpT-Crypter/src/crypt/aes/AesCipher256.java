@@ -21,7 +21,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JTextField;
 
-import util.EncodingUtils;
+import utility.EncodingUtils;
 
 
 public class AesCipher256 {

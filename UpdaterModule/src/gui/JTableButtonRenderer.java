@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-import updater.PluginDTO;
+import plugins.PluginDTO;
 
 class JTableButtonRenderer extends JButton implements TableCellRenderer {
 	private static final long serialVersionUID = 6493027142302342323L;

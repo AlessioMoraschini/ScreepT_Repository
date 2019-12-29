@@ -13,10 +13,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import exception.ProgressBarInterruptedException;
-import forks.merged.Various;
-import updater.PluginDTO;
-import updater.PluginManager;
+import files.Various;
+import om.exception.ProgressBarInterruptedException;
+import plugins.PluginDTO;
+import plugins.PluginManager;
 
 class ButtonEditor extends DefaultCellEditor {
 	private static final long serialVersionUID = 2322648608181904669L;

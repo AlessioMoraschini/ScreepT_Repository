@@ -9,9 +9,9 @@ import frameutils.utils.GuiUtils;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;
-import reflection.ReflectionUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import utility.reflection.ReflectionUtils;
 import variousutils.HandleString;
 
 import javax.swing.JPanel;

@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import utility.SafeLogger;
+
 public class ScreeptUtils {
 
 	/**

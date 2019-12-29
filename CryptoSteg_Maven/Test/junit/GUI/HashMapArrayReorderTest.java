@@ -18,7 +18,7 @@ import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import testUtils.TestTimer;
-import util.EntrophyzerUtils;
+import utility.EntrophyzerUtils;
 
 public class HashMapArrayReorderTest {
 
