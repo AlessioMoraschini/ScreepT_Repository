@@ -43,7 +43,7 @@ import gUI.frames.GraphicPreferencesFrame;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import gUI.utils.filedialog.DirectoryManagementGUI;
+import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gui.PluginManagerGUI;
 import guiVersion.HwInfoFrame;
@@ -69,6 +69,7 @@ import java.awt.Window;
 import java.awt.Dialog.ModalExclusionType;
 
 import net.miginfocom.swing.MigLayout;
+import network.DownloadUtils;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -703,14 +704,22 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 									+ "##################################################\n\n");
 
 							// give true to overwrite because fileWriteDialog already set the value to be unique
-							if (FileStuff.copyFile(new File(GeneralConfig.LOG_PATH), selected, true) && FileStuff.copyFile(new File(GeneralConfig.LOG_LAUNCHER_PATH), selected, false)) {
-								dialogHelper.info("File correctly saved in " + selected, "Log File Exported :)");
-								logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + selected);
+							File tempFolder = FileStuff.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + "LOG_EXPORT_TEMP"));
+							tempFolder.mkdir();
+							File copiedMainLog = FileStuff.copyFileIntoDir(new File(GeneralConfig.LOG_PATH), tempFolder, true);
+							File copiedLauncherLog = FileStuff.copyFileIntoDir(new File(GeneralConfig.LOG_LAUNCHER_PATH), tempFolder, false);
+							File zipped = DownloadUtils.zipFolderToFile(tempFolder.getAbsolutePath(), selected, true, true);
+							boolean copied = copiedMainLog != null && copiedLauncherLog != null;
+							if (copied && zipped != null && zipped.exists()) {
+								dialogHelper.info("File correctly saved in " + zipped, "Log File Exported :)");
+								logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + zipped);
 							} else {
-								dialogHelper.error("File not saved [" + selected +"], Some error occurred :(", null);
+								dialogHelper.error("File not saved [" + zipped +"], Some error occurred :(", null);
 								logger.error("File not saved, some error occurred :( ");
 							}
-						} 
+							
+							FileStuff.deleteDirContentInclRoot(tempFolder);
+						}
 					}
 					FLAG_mntmExportLog = false;
 					logger.debug(" => Logs exporting procedure ended.");
@@ -757,7 +766,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				if (!FLAG_mntmTouppercaseDirectory) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmTouppercaseDirectory = true;
-					last_dir_used = DirectoryManagementGUI.renameFirstLetterDirNames(frmScryptV, last_dir_used);
+					last_dir_used = FilesAndDirectoriesManagerGUI.renameFirstLetterDirNames(frmScryptV, last_dir_used);
 					FLAG_mntmTouppercaseDirectory = false;
 				}
 			}
@@ -769,7 +778,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				if (!FLAG_mntmDeleteDirectoryContentByExtension) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentByExtension = true;
-					DirectoryManagementGUI.deleteContentOfDirByExt(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.deleteContentByExtension(frmScryptV, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentByExtension = false;
 				}
 			}
@@ -781,7 +790,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentRecursive = true;
-					DirectoryManagementGUI.deleteContentOfDir(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.deleteAllContent(frmScryptV, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentRecursive = false;
 				}
 			}
@@ -793,7 +802,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				if(!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = true;
-					DirectoryManagementGUI.deleteDirContentFiles(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.deleteOnlyFilesInFolder(frmScryptV, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
 				}
 			}
@@ -805,7 +814,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				if (!FLAG_mntmMakeDirsFromPath) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmMakeDirsFromPath = true;
-					DirectoryManagementGUI.makeDirsFromPath(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.makeDirsFromPath(frmScryptV, currentConfiguration);
 					FLAG_mntmMakeDirsFromPath = false;
 				}
 			}
@@ -817,7 +826,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				if(!FLAG_mntmCopyDirStructure) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmCopyDirStructure = true;
-					DirectoryManagementGUI.copyDirStructure(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.copyDirStructure(frmScryptV, currentConfiguration);
 					FLAG_mntmCopyDirStructure = false;
 				}
 			}
@@ -1221,7 +1230,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		
 		now = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_@_HH-mm-ss");
-		String defName = "ScreepT_Execution_Log_" + df.format(now) + ".log";
+		String defName = "ScreepT_Execution_Log_" + df.format(now) + ".zip";
 		
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Export Log File");
@@ -1233,12 +1242,12 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             
         	File selectedFile = fileChooser.getSelectedFile();
-        	selectedFile = FileStuff.changeExtension(selectedFile, ".log");	
+        	selectedFile = FileStuff.changeExtension(selectedFile, ".zip");	
         	selectedFile = FileStuff.renameJavaObjFile(selectedFile);
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	
-        	if(selectedFile==null||!givenExtension.equalsIgnoreCase("log")) {
-        		JOptionPane.showMessageDialog(parent, "Please specify a valid 'log' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        	if(selectedFile==null||!givenExtension.equalsIgnoreCase("zip")) {
+        		JOptionPane.showMessageDialog(parent, "Please specify a valid 'zip' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
         	}else {
         		correctFile = selectedFile;
         		currentConfiguration.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
@@ -1288,6 +1297,29 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
     	
 	}
 	
+	public static void killApplication(int exitCode) {
+		logger.warn("\n\n => Starting kill procedure...\n\n");
+		
+		// if controls are passed then start real application closing routine
+		frmScryptV.setAlwaysOnTop(false);
+		
+		closeOpenBlockingFrames();
+		
+		runTempFilesErasers();
+      	
+		mainAppRunning = false;
+		
+		logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+	
+		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+		
+		MainGuiGeneralAppStarter.deleteSignalFileForExternalJars();
+		
+		logger.info("Kill procedure completed succesfully, now software will shut down");
+		
+		System.exit(exitCode);
+	}
+	
 	public static void closeApplication(int exitCode) {
 		
 		logger.info("\n\n => Starting exit procedure...\n\n");
@@ -1312,7 +1344,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		
 		closeOpenBlockingFrames();
 		
-		now=new Date();
+		now = new Date();
 		
         // if autosave is on save before quit
         if(currentConfiguration.getFileOpt().isFlagAutosave()) {
@@ -1330,25 +1362,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
       	// SAVE CURRENTLY OPENED FILES reference only (in text-editor)
       	backupOpenedFilesInConfig();
       	
-      	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
-      	Thread tempEraser = new Thread(mainGuiUtils.tempFilesEraser());
-      	tempEraser.start();	
-      	
-      	// START ERASING CREEPT TEMP DECRYPTED IF THERE ARE SOME
-      	Thread tempCreeptEraser = new Thread(mainGuiUtils.tempDecryptedEraser());
-      	tempCreeptEraser.start();	
-      	
-		String msg = "Deleting temp files and folders...";
-		
-		try {
-			logger.info(msg+ "please wait!");
-			tempEraser.join();
-			tempCreeptEraser.join();
-			logger.info(msg+ "COMPLETED :)");
-			
-		} catch (InterruptedException e) {
-			logger.error("Some error occurred deleting temporary Decrypted files");
-		}
+      	runTempFilesErasers();
       	
 		mainAppRunning = false;
 		
@@ -1382,6 +1396,28 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		logger.info("Exit procedure completed succesfully, now software will shut down");
 		
 		System.exit(exitCode);
+	}
+	
+	public static void runTempFilesErasers() {
+     	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
+      	Thread tempEraser = new Thread(mainGuiUtils.tempFilesEraser());
+      	tempEraser.start();	
+      	
+      	// START ERASING CREEPT TEMP DECRYPTED IF THERE ARE SOME
+      	Thread tempCreeptEraser = new Thread(mainGuiUtils.tempDecryptedEraser());
+      	tempCreeptEraser.start();	
+      	
+		String msg = "Deleting temp files and folders...";
+		
+		try {
+			logger.info(msg+ "please wait!");
+			tempEraser.join();
+			tempCreeptEraser.join();
+			logger.info(msg+ "COMPLETED :)");
+			
+		} catch (InterruptedException e) {
+			logger.error("Some error occurred deleting temporary Decrypted files");
+		}
 	}
 	
 	public static void closeOpenBlockingFrames(){

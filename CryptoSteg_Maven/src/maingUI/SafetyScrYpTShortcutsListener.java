@@ -1,0 +1,126 @@
+package maingUI;
+
+import java.awt.KeyEventDispatcher;
+import java.awt.event.KeyEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.log4j.Logger;
+
+import dialogutils.JOptionHelperExtended;
+import maingUI.MainGUI;
+import om.LimitedConcurrentList;
+
+public class SafetyScrYpTShortcutsListener implements KeyEventDispatcher{
+	
+	static Logger logger = Logger.getLogger(SafetyScrYpTShortcutsListener.class);
+	
+	private static final String killAdvice = "Really want to kill application and loose your unsaved changes (use this only if application is not responding)?";
+	private static long MAX_INTERVAL_MS = 600;
+	
+	LimitedConcurrentList<ClickUpdate> lastFiveClicks = new LimitedConcurrentList<>(5);
+	
+	public SafetyScrYpTShortcutsListener() {
+		logger.debug(this.getClass().getName() + " Started!");
+	}
+	
+	@Override
+	public boolean dispatchKeyEvent(final KeyEvent e) {
+	    
+//////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
+		
+		if (e.getID() == KeyEvent.KEY_PRESSED) {
+		}
+		
+////////////////LISTENER FOR KEY RELEASED EVENT - WHEN NEED TO TRIGGER ONLY ONE TIME EVEN WHILE KEEPING PRESSED  //////////////////////////
+		
+		if (e.getID() == KeyEvent.KEY_RELEASED) {
+			
+			lastFiveClicks.add(new ClickUpdate(e.getKeyCode(), e.isControlDown(), e.isAltDown(), e.isShiftDown()));
+	      
+			// HERE SHORTCUTS KEY WITH CTR|ALT|SHIFT
+			if (isShortcutKey(e) || e.getKeyCode() == 27) {
+				
+				/*
+				 *  Safe app shutdown -> alt + f4 X 3 times (must be in a row and with max interval between)
+				 */
+				if (e.getKeyCode() == KeyEvent.VK_F4 && repeatedClicksInLimitedTime(e, 4, false, true, false, MAX_INTERVAL_MS)) {
+					if (new JOptionHelperExtended(null).showYNDialogWarn(killAdvice, "Kill Application?", JOptionHelperExtended.YES_OR_NO)) {
+
+						logger.info(this.getClass().getName() + " emergency kill procedure started.");
+			    		MainGUI.killApplication(0);
+			    	}
+				}
+
+				/*
+				 *  Safe app shutdown -> esc X 3 times (must be in a row and with max interval between)
+				 */
+				if (e.getKeyCode() == 27 && repeatedClicksInLimitedTime(e, 4, false, false, false, MAX_INTERVAL_MS)) {
+					if (new JOptionHelperExtended(null).showYNDialogWarn(killAdvice, "Kill Application?", JOptionHelperExtended.YES_OR_NO)) {
+						
+						logger.info(this.getClass().getName() + " emergency kill procedure started.");
+						MainGUI.killApplication(0);
+					}
+				}
+			}
+		}
+	    
+		// Pass the KeyEvent to the next KeyEventDispatcher in the chain
+	    return false;
+	}
+	
+	private boolean isShortcutKey(KeyEvent e) {
+		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
+	}
+	
+	private boolean repeatedClicksInLimitedTime(KeyEvent e, int repeats, boolean ctrl, boolean alt, boolean shift, long maxInterval) {
+		if(!lastFiveClicks.isFull()) {
+			return false;
+		}
+		
+		boolean combinationFound = false;
+		
+		if(e.isControlDown() == ctrl && e.isAltDown() == alt && e.isShiftDown() == shift) {
+			int nLastClicks = lastFiveClicks.getSize();
+			int limit = nLastClicks-1-repeats >= 0 ? nLastClicks-1-repeats : 0;
+			
+			long lastTime = lastFiveClicks.getLast().timestamp;
+			boolean inARowMatched = false;
+			
+			for(int i = nLastClicks-1; i > limit; i--) {
+				ClickUpdate update = lastFiveClicks.getList().get(i);
+				inARowMatched = lastTime - update.timestamp < maxInterval;
+				lastTime = update.timestamp;
+				
+				if(!inARowMatched) {
+					inARowMatched = false;
+					break;
+				}
+			}
+			
+			combinationFound = inARowMatched;
+		}
+		
+		return combinationFound;
+	}
+	
+	private class ClickUpdate {
+		long timestamp = 0;
+		int keyCode = KeyEvent.VK_UNDEFINED;
+		
+		AtomicBoolean ctrlPressed;
+		AtomicBoolean altPressed;
+		AtomicBoolean shiftPressed;
+		
+		private ClickUpdate(int keyCode, boolean ctrl, boolean alt, boolean shift) {
+			ctrlPressed = new AtomicBoolean(); 
+			altPressed = new AtomicBoolean();  
+			shiftPressed = new AtomicBoolean();
+			
+			this.keyCode = keyCode;
+			ctrlPressed.set(ctrl);
+			altPressed.set(alt);
+			shiftPressed.set(shift);
+			timestamp = System.currentTimeMillis();
+		}
+	}
+}

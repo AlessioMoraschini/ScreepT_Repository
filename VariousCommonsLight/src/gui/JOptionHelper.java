@@ -88,7 +88,16 @@ public class JOptionHelper {
 	 */
 	public boolean showYNDialog(String msg, String title, int msgType) {
 		
-		return showYNMessageCommon(msg, title, msgType, false);
+		return showYNMessageCommon(msg, title, msgType, false, false);
+	}
+
+	/**
+	 * Shows a warning customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
+	 * msgType can be error, info, warn, exc...
+	 */
+	public boolean showYNDialogWarn(String msg, String title, int msgType) {
+		
+		return showYNMessageCommon(msg, title, msgType, false, true);
 	}
 
 	/**
@@ -97,7 +106,16 @@ public class JOptionHelper {
 	 */
 	public Boolean showYNOrNullDialog(String msg, String title, int msgType) {
 		
-		return showYNMessageCommon(msg, title, msgType, true);
+		return showYNMessageCommon(msg, title, msgType, true, false);
+	}
+
+	/**
+	 * Shows a customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
+	 * msgType can be error, info, warn, exc...
+	 */
+	public Boolean showYNOrNullDialogWarn(String msg, String title, int msgType) {
+		
+		return showYNMessageCommon(msg, title, msgType, true, true);
 	}
 	
 	/**
@@ -132,7 +150,7 @@ public class JOptionHelper {
 		msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
 		JScrollPane scroller = getScrollableDialogPanel(msg);
 		GuiUtils.scrollJScrollPane(scroller, false);
-		return showYNMessageCommon(scroller, title, ERR, false);
+		return showYNMessageCommon(scroller, title, ERR, false, false);
 	}
 
 	/**
@@ -292,7 +310,7 @@ public class JOptionHelper {
 		title = (!Various.isEmpty(title)) ? title : "Choose an option";
 		msg = (!Various.isEmpty(msg)) ? msg : "Choose an Option";
 		
-		return showYNMessageCommon(msg, title, QUESTION, false);
+		return showYNMessageCommon(msg, title, QUESTION, false, false);
 	}
 
 	/**
@@ -305,7 +323,7 @@ public class JOptionHelper {
 		
 		title = (!Various.isEmpty(title)) ? title : "Plain";
 		msg = (!Various.isEmpty(msg)) ? msg : "Information message not specified";
-		Boolean boolRes = showYNMessageCommon(msg, title, QUESTION, true);
+		Boolean boolRes = showYNMessageCommon(msg, title, QUESTION, true, false);
 		result = boolRes == null ? CANC : boolRes ? OK : NO;
 		
 		return result;
@@ -456,12 +474,15 @@ public class JOptionHelper {
 		return scrollPane;
 	}
 	
-	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull) {
+	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType) {
+		
+		Icon icon = warningType? ICON_WARN_REF : ICON_QUESTION_REF;
+		
 		final JOptionPane optionPane = new JOptionPane(
 				msg instanceof String ? getLabelStyledText((String)msg) : msg, 
         		msgType,
         		YES_OR_NO, 
-        		ICON_QUESTION_REF,
+        		icon,
                 defaultOptions,
                 defaultOptions[0]);
         

@@ -291,7 +291,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		
 //		comboTheme = new JComboBox();
 		themes = GUIStyelSettings.getPlasticThemes();
-		comboTheme = new JComboBox(themes.toArray());
+		comboTheme = new JComboBox<PlasticTheme>(themes.toArray(new PlasticTheme[themes.size()]));
 		comboTheme.setRenderer(new ThemeCellRenderer());
 		comboTheme.setCursor(GuiUtils.CURSOR_HAND);
 		comboTheme.setPreferredSize(new Dimension(200, 26));
@@ -1303,6 +1303,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 					}
 					GUIStyelSettings.updateThemeByName(currentConfiguration.getGuiOpt().getPreferredThemeName());
 					GUIStyelSettings.setStyle(laf.getClassName(), currentConfiguration.getGuiOpt().nimbusSize);
+					GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
+
 				} catch (Exception e1) {
 					
 					GUIStyelSettings.updateThemeByName(BACKUP_PREFERRED_THEME_NAME);
@@ -1365,12 +1367,12 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	
 }
 
-class ThemeCellRenderer implements ListCellRenderer {
+class ThemeCellRenderer implements ListCellRenderer<Object> {
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 	
 	static Logger logger = Logger.getLogger(ThemeCellRenderer.class);
 
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 		if (value instanceof PlasticTheme) {
 			try {

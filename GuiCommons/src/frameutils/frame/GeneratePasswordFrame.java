@@ -252,17 +252,20 @@ public class GeneratePasswordFrame extends ParentFrame{
 				if(source != null && source.value.length == 0){
 					dialogHelper.warn("You have to specify a password in order to get an hashed value!", "Invalid input");
 				
-				} else {
+				} else if(source.value != null) {
 					try {
 						final String raw = DatatypeConverter.printHexBinary(Hasher.hashPswWithGivenSalt(source.value, fixedSalt, IterationsLevel.HIGH, HashAlgorithm.PBKDF2SHA512));
 						final String converted = source.option == 0 ? 
 								HandleString.forceLength(raw, (int)spinnerLength.getValue(), getPossibleCharacters()) :
 									HandleString.forceLengthDeterministic(raw, (int)spinnerLength.getValue(), "o");
 						textField.setText(converted);
+					
 					} catch (NoSuchAlgorithmException | InvalidKeySpecException e1) {
 						dialogHelper.error("An error occurred!", "An error occurred");
 						logger.error("Cannot hash user source password", e1);
-					} 
+					} catch(Exception e2) {
+						logger.error("Generic exception: Cannot hash user source password", e2);
+					}
 				}
 
 				thisFrame.setCursor(GuiUtils.CURSOR_DEFAULT);

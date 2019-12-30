@@ -176,7 +176,7 @@ public class TreeFileMouseListenerDictionary {
 				// show input dialog to select the file(gives null in case of no file selected)
 				File selected = fileRead(TEXT_LOG);
 				if (selected!=null) {
-					if (FileStuff.copyFile(selected, new File(KeyGenFrame.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite())) {
+					if (FileStuff.copyFile(selected, new File(KeyGenFrame.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite()) != null) {
 						JOptionPane.showMessageDialog(TEXT_LOG, "File correctly saved in " + KeyGenFrame.KEY_DICTIONARY,
 								"File added to dictionary :)", JOptionPane.INFORMATION_MESSAGE);
 						logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KeyGenFrame.KEY_DICTIONARY);

@@ -34,11 +34,13 @@
   </repositories>
   <dependencies>
   		
+	<!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
 	<dependency>
 	    <groupId>com.fifesoft</groupId>
 	    <artifactId>rsyntaxtextarea</artifactId>
-	    <version>3.0.3</version>
+	    <version>3.0.6</version>
 	</dependency>
+
 	
 <!-- 	<dependency>
 	    <groupId>org.fife</groupId>

@@ -178,7 +178,6 @@ public class TabTextEditorObj {
 				textArea.setRoundedSelectionEdges(txtOptions.roundedSelectionEdges);
 				textArea.setClearWhitespaceLinesEnabled(txtOptions.clearWhitespaceLinesEnabled);
 				textArea.setWhitespaceVisible(txtOptions.whiteSpaceVisible);
-				textArea.setLocale(Locale.getDefault());
 			}
 		});
 		

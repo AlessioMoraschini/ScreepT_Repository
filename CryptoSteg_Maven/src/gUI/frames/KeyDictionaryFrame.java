@@ -241,7 +241,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 						BufferedImage tempImg = ImageIO.read(selected);
 						if(BufferedImageType.checkIfAdmittedType(tempImg.getType())) {
 							
-							if (FileStuff.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()),currentConf.getFileOpt().isFlagOverwrite())) {
+							if (FileStuff.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()),currentConf.getFileOpt().isFlagOverwrite()) != null) {
 								dialogHelper.info("File correctly saved in " + KEY_DICTIONARY, "File added to dictionary :)");
 								logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KEY_DICTIONARY);
 							}else{

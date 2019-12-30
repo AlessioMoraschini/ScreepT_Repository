@@ -357,24 +357,38 @@ public class DownloadUtils {
 	
 	public static File zipFolder(String dir2zip, File outputDir, boolean overwrite, boolean excludeParent) {
 		
+		
+		if(dir2zip != null) {
+			
+			File dirSrc = new File(dir2zip);
+			if (dirSrc.exists() && dirSrc.isDirectory()) {
+				File outputFile = new File(outputDir.getAbsolutePath() + File.separator + dirSrc.getName() + ".zip");
+				return zipFolderToFile(dir2zip, outputFile, overwrite, excludeParent);
+			} 
+		}
+		
+		return null;
+	}
+	
+	public static File zipFolderToFile(String dir2zip, File outputFile, boolean overwrite, boolean excludeParent) {
+		
 		if(dir2zip != null){
 			File dirSrc = new File(dir2zip);
 			if(dirSrc.exists() && dirSrc.isDirectory()) {
 				try {
 				
 					//create a ZipOutputStream to zip the data to 
-					File output = new File(outputDir.getAbsolutePath() + File.separator + dirSrc.getName() + ".zip");
-					if(!overwrite && output.exists()) {
-						output = Various.renameJavaObjFile(output);
-						output.createNewFile();
+					if(!overwrite && outputFile.exists()) {
+						outputFile = Various.renameJavaObjFile(outputFile);
+						outputFile.createNewFile();
 					}
 					
-				    ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(output)); 
+				    ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(outputFile)); 
 				    zipFolder(zos, dirSrc, null, new UpdateProgressPanelMin(true), true, excludeParent);
 				    
 				    //close the stream 
 				    zos.close();
-				    return output;
+				    return outputFile;
 				    
 				}catch(Exception e){
 					return null;
@@ -385,7 +399,7 @@ public class DownloadUtils {
 		return null;
 	}
 	
-	public static void zipFolder(
+	private static void zipFolder(
 			ZipOutputStream zos,
 			File fileToZip,
 			String parentDirectoryName,

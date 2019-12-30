@@ -3,6 +3,7 @@ package maingUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.KeyboardFocusManager;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -230,6 +231,8 @@ public class MainGuiGeneralAppStarter {
 				throw new Exception("Something has gone wrong during application start-up, please check the logs");
 			}
 			
+			startSafeKeyBoardThreadListener();
+			
 			printElapsed("Launch completed", startTime);
 			
 		// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
@@ -364,5 +367,18 @@ public class MainGuiGeneralAppStarter {
 		PluginManager.installedPluginProperties.saveProperty(
 				PluginManager.installedPluginPropsListKey, PropertiesManagerLight.listToString(
 						installedPlugins, PluginManager.installedPluginPropsListSeparator));
+	}
+	
+	/**
+	 * This is the separated thread with key listening for emergency operations like quitting application in case of stuck
+	 */
+	public static void startSafeKeyBoardThreadListener() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new SafetyScrYpTShortcutsListener());
+			}
+		}).start();
 	}
 }

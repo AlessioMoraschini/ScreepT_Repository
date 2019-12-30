@@ -1234,12 +1234,12 @@ public class FileStuff {
 	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 	
-	public static boolean copyFile(File source, File dest, boolean overwrite) {
+	public static File copyFile(File source, File dest, boolean overwrite) {
 		
 		long startTime = System.currentTimeMillis();
 		logger.info("copyFile -> Start...");
 		
-		boolean esit = false;
+		File esit = null;
 		
 		// if dir not existing or dest file not existing
 		if(!dest.exists()) {
@@ -1248,7 +1248,7 @@ public class FileStuff {
 				dest.createNewFile();
 			} catch (IOException e) {
 				logger.error("Exception happened!", e);
-				esit = false;
+				esit = null;
 			}
 		}else {
 			if(overwrite) {
@@ -1258,7 +1258,7 @@ public class FileStuff {
 					dest.createNewFile();
 				} catch (IOException e) {
 					logger.error("Exception happened!", e);
-					esit = false;
+					esit = dest;
 				}
 			}else {
 				// else give it unique name
@@ -1268,10 +1268,10 @@ public class FileStuff {
 		try {
 		    FileUtils.copyFile(source, dest);
 		    logger.debug("File written: "+dest.getAbsolutePath()+"\nSize: " + coolFileSize(dest));
-		    esit = true;
+		    esit = dest;
 		} catch (IOException e) {
 			logger.error("Exception happened!", e);
-		   esit = false;
+		   esit = null;
 		}
 		
 		logger.info("copyFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
@@ -1300,9 +1300,9 @@ public class FileStuff {
 			logger.debug("File exists: "+targetNewFile.getAbsolutePath()+" -> starting rename");
 			// Create unique file name and write a copy into temp folder, using it as source
 			targetNewFile = FileStuff.renameJavaObjFile(targetNewFile);
+			FileStuff.copyFile(source, new File(GeneralConfig.TEMP_DIRECTORY + targetNewFile.getName()), true);
 			source = new File(GeneralConfig.TEMP_DIRECTORY + targetNewFile.getName());
-			FileStuff.copyFile(source, GeneralConfig.TEMP_DIRECTORY_FILE, true);
-			logger.debug("File renamed and renamed -> " + targetNewFile.getAbsolutePath()+" -> copied into temp directory: " + GeneralConfig.TEMP_DIRECTORY_FILE);
+			logger.debug("File renamed and -> " + targetNewFile.getAbsolutePath()+" -> copied into temp directory: " + GeneralConfig.TEMP_DIRECTORY_FILE);
 		}
 		
 		try {

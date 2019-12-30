@@ -59,6 +59,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -739,6 +740,7 @@ public class TextEditor extends ModulePanel {
 		
 		// UPDATE DETAIL
 		loadedTabObj.updateTextAreaPreferences(txtOptions);
+		loadedTabObj.textArea.setLocale(currentConfiguration.getGenOpt().getLocale());
 
 		// TREE LOCKED
 		if (txtOptions.treeLocked) {

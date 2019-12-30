@@ -27,38 +27,62 @@ public class LimitedConcurrentList <T>{
 
 	// methods 
 	
+	public int getSize() {
+		return list.size();
+	}
+	
+	public boolean isFull() {
+		return list.size() == maxSize;
+	}
+	
+	/**
+	 * Add an element at the end of the list. If max is reached first element will be cleaned out before to insert
+	 * @param element
+	 * @return
+	 */
 	public boolean add(T element) {
-		boolean maxReached = list.size() > maxSize;
 		
 		synchronized (list) {
-			if (maxReached && !list.isEmpty()) {
+			if (isFull() && !list.isEmpty()) {
 				list.remove(0);
 			}
 			list.add(element);
 		}
-		return maxReached;
+		return isFull();
 	}
 
+	/**
+	 * Add a collection of elements at the end of the list. If max is reached first element will be cleaned out before to insert
+	 * @param element
+	 * @return
+	 */
 	public boolean addAll(Collection<T> elements) {
-		boolean maxReached = list.size() > maxSize;
 		
 		synchronized (list) {
 			for (T element : elements) {
-				if (maxReached && !list.isEmpty()) {
+				if (isFull() && !list.isEmpty()) {
 					list.remove(0);
 				}
 				list.add(element);
 			}
 		}
-		return maxReached;
+		return isFull();
 	}
 
+	/**
+	 * Add an element at the end of the list (only if not yet present in list). If max is reached first element will be cleaned out before to insert
+	 * @param element
+	 * @return
+	 */
 	public boolean addIfNotPresent(Collection<T> elements) {
 		boolean added = false;
 		
 		synchronized (list) {
 			for (T element : elements) {
 				if (!list.contains(element)) {
+					if (isFull() && !list.isEmpty()) {
+						list.remove(0);
+					}
 					list.add(element);
 				}
 			}
@@ -66,10 +90,21 @@ public class LimitedConcurrentList <T>{
 		return added;
 	}
 
+	/**
+	 * Add elements at the end of the list(if an element is already present it will be cleaned out and then re-added). 
+	 * If max is reached first element will be cleaned out before to insert
+	 * @param element
+	 * @return
+	 */
 	public void addNreplaceToTopIfPresent(Collection<T> elements) {
 		
 		synchronized (list) {
 			for (T element : elements) {
+				
+				if (isFull() && !list.isEmpty()) {
+					list.remove(0);
+				}
+				
 				if (list.contains(element)) {
 					list.remove(element);
 					list.add(element);
@@ -81,9 +116,19 @@ public class LimitedConcurrentList <T>{
 		}
 	}
 
+	/**
+	 * Add an element at the end of the list(if an element is already present it will be cleaned out and then re-added). 
+	 * If max is reached first element will be cleaned out before to insert
+	 * @param element
+	 * @return
+	 */
 	public void addNreplaceToTopIfPresent(T element) {
 		
 		synchronized (list) {
+			if (isFull() && !list.isEmpty()) {
+				list.remove(0);
+			}
+			
 			if (list.contains(element)) {
 				list.remove(element);
 				list.add(element);
@@ -93,17 +138,20 @@ public class LimitedConcurrentList <T>{
 		}
 	}
 	
+	/**
+	 * Basically same as add()
+	 * @param element
+	 * @return
+	 */
 	public boolean addLast(T element) {
-		boolean condition = list.size() > maxSize;
-		boolean maxReached = (condition) ? true : false;
 		
 		synchronized (list) {
-			if (condition && !list.isEmpty()) {
+			if (isFull() && !list.isEmpty()) {
 				list.remove(0);
 			}
 			list.add(element);
 		}
-		return maxReached;
+		return isFull();
 	}
 	
 	public boolean removeLast() {

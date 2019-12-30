@@ -13,13 +13,14 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import amfileutils.om.DeleteFilesByExtensionDTO;
 import dialogutils.JOptionHelperExtended;
+import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 
-public class DirectoryManagementGUI {
+public class FilesAndDirectoriesManagerGUI {
 	
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(DirectoryManagementGUI.class); 
+	static Logger logger = Logger.getLogger(FilesAndDirectoriesManagerGUI.class); 
 			
 	public static String renameFirstLetterDirNames(Component parent, String defaultVisualizedDir) {
 		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
@@ -35,8 +36,7 @@ public class DirectoryManagementGUI {
             try {
             	selectedFile = fileChooser.getSelectedFile();
             	if(selectedFile.isFile()) {
-            		if(JOptionPane.showConfirmDialog(fileChooser, "Are you sure to rename file: '"+selectedFile.getName()+
-	            			"'?")==JOptionPane.OK_OPTION) {
+            		if(JOptionPane.showConfirmDialog(fileChooser, "Are you sure to rename file: '"+selectedFile.getName()+ "'?")==JOptionPane.OK_OPTION) {
             			defaultVisualizedDir = selectedFile.getParentFile().getAbsolutePath();
 		            	errors=FileStuff.upperCaseSubFolder(selectedFile);
 		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
@@ -58,7 +58,7 @@ public class DirectoryManagementGUI {
 				logger.error("Exception happened!", exc);
             }
 		}else {
-			dialog.info("Renaming cancelled! ", "Skipped by user");
+			skippedAdvice();
 		}
 		
 		return defaultVisualizedDir;
@@ -72,6 +72,12 @@ public class DirectoryManagementGUI {
 			return;
 			
 		}else if (!dirToMake.equals("")) {
+			
+			if(!askConfirmation(dirToMake + " will be created, continue?", null)) {
+				skippedAdvice();
+				return;
+			}
+			
 			File givenDir = new File(dirToMake);
 			
 			if(!FileStuff.isPathRootValid(dirToMake)) {
@@ -85,15 +91,21 @@ public class DirectoryManagementGUI {
 				dialog.error("Some error occurred creating folders :(", "Some Error occurred!");
 			} 
 		}else {
-			dialog.error("Void path, exiting.", "Some error occurred!");
+			noSelectionAdvice("Invalid Path");
 		}
 	}
 	
-	public static void deleteContentOfDir(JFrame parent,INItializer currentConf) {
+	public static void deleteAllContent(JFrame parent,INItializer currentConf) {
 		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete All content of directory");
 		if (selected!=null) {
+			
+			if(!askConfirmation("Are you sure to delete all content of [" + selected.getName() + "] ?", null)) {
+				skippedAdvice();
+				return;
+			}
+			
 			boolean res = FileStuff.deleteDirContentRecursive(selected);
 			if (res) {
 				dialog.info("Completed, content deleted :)", "Completed, content deleted");
@@ -101,27 +113,33 @@ public class DirectoryManagementGUI {
 				dialog.error("Some error occurred, some files could be still present :(", "Some Error occurred!");
 			} 
 		}else {
-			dialog.info("No directory selected, exiting.", "No directory selected!");
+			noSelectionAdvice(null);
 		}
 	}
 	
-	public static void deleteDirContentFiles(JFrame parent,INItializer currentConf) {
+	public static void deleteOnlyFilesInFolder(JFrame parent,INItializer currentConf) {
 		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete All directory's content (Files only)");
 		if (selected != null) {
+			
+			if(!askConfirmation("Are you sure to empty all folders contained in [" + selected.getName() + "] ?", null)) {
+				skippedAdvice();
+				return;
+			}
+			
 			boolean res = FileStuff.emptyDirContentFolderOnly(selected);
 			if (res) {
 				dialog.info("Completed, folders content deleted :)", "Completed, folders content deleted");
 			} else {
-				dialog.error("Some error occurred, some files could be still present :(", "Some Error occurred!");
+				dialog.error("Some error occurred, some files should be still present :(", "Some Error occurred!");
 			} 
 		}else {
-			dialog.warn("No directory selected, exiting.", "No directory selected!");
+			noSelectionAdvice(null);
 		}
 	}
 	
-	public static void deleteContentOfDirByExt(JFrame parent,INItializer currentConf) {
+	public static void deleteContentByExtension(JFrame parent,INItializer currentConf) {
 		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete directory content by Extension");
@@ -131,6 +149,12 @@ public class DirectoryManagementGUI {
 		if (selected != null) {
 			String deleteExtensionMatch = JOptionPane.showInputDialog("Specify wich extensions you want to delete, separated by a comma (ex. 'jpg, txt, png')");
 			response = FileStuff.emptyDirContentByExt(selected, deleteExtensionMatch);
+			
+			if(!askConfirmation("Are you sure to delete all matches ["+ deleteExtensionMatch +"] in [" + selected.getName() + "] ?", null)) {
+				skippedAdvice();
+				return;
+			}
+			
 			if (response.getNotFoundExtensionResult().size() != 0) {
 				notFoundExtensions = " These extensions have 0 matches: " + response.getNotFoundExtensionResult();
 			}
@@ -143,12 +167,11 @@ public class DirectoryManagementGUI {
 			}
 			
 		}else {
-			dialog.warn("No directory selected, exiting.", "No directory selected!");
+			noSelectionAdvice(null);
 		}
 	}
 	
 	public static void copyDirStructure(JFrame parent,INItializer currentConf) {
-		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Copy Directory structure");
 		if (selected != null) {
@@ -159,22 +182,36 @@ public class DirectoryManagementGUI {
 					res = FileStuff.copyDirStructure(selected, destination, true);
 				} catch (IOException e) {
 					logger.error(e);
-					dialog.error("IO Error: you cannot put destination inside source, choose another destination",
+					MainGUI.dialogHelper.error("IO Error: you cannot put destination inside source, choose another destination",
 							"IO Error: cannot put destination inside source");
 					return;
 				}
 				if (res) {
-					dialog.info("Completed, folder directories content copied :)",
+					MainGUI.dialogHelper.info("Completed, folder directories content copied :)",
 							"Completed, folders directories content copied");
 				} else {
-					dialog.error("Some error occurred, some folders could be missing :(",
+					MainGUI.dialogHelper.warn("Some error occurred, some folders could be missing in result!",
 							"Some Error occurred!");
 				} 
 			}else {
-				dialog.warn("No destination directory selected, exiting.", "Destination directory missing!");
+				noSelectionAdvice("Destination directory missing");
 			}
 		}else {
-			dialog.warn("No source directory selected, exiting.", "Source directory missing!");
+			noSelectionAdvice("Source selection is empty");
 		}
+	}
+	
+	private static void skippedAdvice() {
+		MainGUI.dialogHelper.info("Operation canceled!", "Skipped by user");
+	}
+
+	private static void noSelectionAdvice(String title) {
+		title = title == null || title.isEmpty() ? "Empty selection" : title;
+		MainGUI.dialogHelper.warn("Nothing selected, exiting.", title);
+	}
+	
+	private static boolean askConfirmation(String msg, String title) {
+		title = title == null || title.isEmpty() ? "Continue?" : title;
+		return MainGUI.dialogHelper.yesOrNo(msg, title);
 	}
 }

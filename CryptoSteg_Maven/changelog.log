@@ -1,4 +1,6 @@
-* 2019-12-29  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved updates and dialogs management + BUGFIX + Internal refactor
+* 2019-12-30  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved password generator with more options
+| 
+* 2019-12-29  Improved updates and dialogs management + BUGFIX + Internal refactor
   
 * 2019-12-27  Error management improvements + Launcher settings tuned
 | 
