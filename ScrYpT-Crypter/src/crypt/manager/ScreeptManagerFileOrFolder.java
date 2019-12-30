@@ -15,7 +15,7 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegCipher;
-import gui.JOptionHelperLight;
+import gui.JOptionHelper;
 import om.CrypterResultDTO;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
@@ -42,7 +42,7 @@ public class ScreeptManagerFileOrFolder {
 	
 	UpdateProgressPanelCrypter generalProgress;
 	
-	public JOptionHelperLight dialogHelper;
+	public JOptionHelper dialogHelper;
 	
 	/**
 	 * Initialize a general encription/decription manager for files or folders and their content.
@@ -58,7 +58,7 @@ public class ScreeptManagerFileOrFolder {
 	public ScreeptManagerFileOrFolder(UpdateProgressPanelCrypter generalProgress, JComponent parent, boolean advicesEnabled) {
 		this.shuffle = false;
 		// default dialogHelper initially disabled 
-		this.dialogHelper = new JOptionHelperLight(parent, advicesEnabled);
+		this.dialogHelper = new JOptionHelper(parent, advicesEnabled);
 		this.generalProgress = generalProgress;
 		if (this.generalProgress != null) {
 			this.generalProgress.getDialog().setVisible(false);

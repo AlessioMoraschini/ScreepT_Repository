@@ -1,15 +1,15 @@
-package generic;
+package om;
 
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class ConcurrentLimitedList <T>{
+public class ConcurrentLimitedDeque <T>{
 	
 	private LinkedBlockingDeque<T> list;
 	private int maxSize;
 	
 	// constructor
 	
-	public ConcurrentLimitedList(int maxSize){
+	public ConcurrentLimitedDeque(int maxSize){
 		this.maxSize = maxSize;
 		list = new LinkedBlockingDeque();
 	}

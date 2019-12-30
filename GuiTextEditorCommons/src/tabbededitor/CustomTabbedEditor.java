@@ -37,7 +37,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import files.watcher.ChangeDTO;
 import frameutils.utils.GuiUtils;
 import general.MyFileView;
@@ -63,7 +63,7 @@ public class CustomTabbedEditor {
 	public static final String DEFAULT_NEW_FILE_NAME = "New.txt";
 
 	// Custom class used to display dialog messages
-	public JOptionHelper dialogHelper;
+	public JOptionHelperExtended dialogHelper;
 	
 	public volatile boolean alreadySaving = false;
 	public volatile boolean alreadyLoading = false;
@@ -108,7 +108,7 @@ public class CustomTabbedEditor {
 		this.currentConfiguration = (configuration != null)? configuration : new INItializer();
 		this.loadedList = new LimitedConcurrentList<TabTextEditorObj>(Integer.MAX_VALUE);
 		this.navigationHistory = new LimitedConcurrentList<HistoryNode>(GeneralConfig.MAX_HISTORY_SIZE);
-		this.dialogHelper = new JOptionHelper(parent);
+		this.dialogHelper = new JOptionHelperExtended(parent);
 		this.changesHistory = new ChangeDTO();
 		this.changeMonManager = new ChangeMonitorManager(this);
 		

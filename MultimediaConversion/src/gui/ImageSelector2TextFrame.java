@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooserDialog;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import media.ImageGeneralWorker;
 import resources.GeneralConfig;
@@ -72,7 +72,7 @@ public class ImageSelector2TextFrame extends JFrame{
 	private File selectedImageSource;
 	public ImageToTextExtractor imageExtractor;
 	
-	JOptionHelper dialogHelper;
+	JOptionHelperExtended dialogHelper;
 	GenericFileChooserDialog fileDialogHelper;
 
 	
@@ -81,7 +81,7 @@ public class ImageSelector2TextFrame extends JFrame{
 		logger.info(this.getClass().getName() + " Starting...");
 		active = true;
 		
-		dialogHelper = new JOptionHelper(this);
+		dialogHelper = new JOptionHelperExtended(this);
 		fileDialogHelper = new GenericFileChooserDialog(null);
 		
 		imageExtractor = new ImageToTextExtractor();

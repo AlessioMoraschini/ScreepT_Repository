@@ -3,16 +3,16 @@ package dialogs;
 import org.junit.Before;
 import org.junit.Test;
 
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import utils.TestUtils;
 
 public class TestDialogs {
 
-	JOptionHelper helper;
+	JOptionHelperExtended helper;
 	
 	@Before
 	public void init() {
-		helper = new JOptionHelper(null);
+		helper = new JOptionHelperExtended(null);
 	}
 	
 	@Test
@@ -20,7 +20,7 @@ public class TestDialogs {
 		while (true) {
 			Error e = new Error();
 			//		helper.errorScroll("ERROR DETECTED!", "Error DETECTED", e);
-			Object res = helper.errorScroll("ERROR DETECTED!", "Error DETECTED", e, new Object[] { "Go", "stay" }, JOptionHelper.YES_OR_NO);
+			Object res = helper.errorScroll("ERROR DETECTED!", "Error DETECTED", e, new Object[] { "Go", "stay" }, JOptionHelperExtended.YES_OR_NO);
 			TestUtils.printl("Dialog closed: Test is exiting. CHOICE: " + res);
 		}
 	}

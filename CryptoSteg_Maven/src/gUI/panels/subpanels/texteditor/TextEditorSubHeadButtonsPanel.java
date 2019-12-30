@@ -54,7 +54,7 @@ import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import amfileutils.FileStuff;
 import conversion.Text2Speech;
 import crypt.aes.AesCipher;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.EscapeReplacerFrame;
 import frameutils.frame.FilePropertiesFrame;
@@ -201,7 +201,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public Text2Speech objSpeaker; // field containing the current object used to speak text
 	
 	public boolean isCrypterOn = false;
-	public JOptionHelper dialogHelper;
+	public JOptionHelperExtended dialogHelper;
 	
 	TextEditorSubHeadButtonsPanel thisHeaderRef;
 	
@@ -218,7 +218,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		this.textEditorUtils = parent.textEditorUtils;
 		this.currentConfiguration = parent.currentConfiguration;
 		this.mainApplication = parent.mainApplication;
-		dialogHelper = new JOptionHelper(this.parent);
+		dialogHelper = new JOptionHelperExtended(this.parent);
 		
 		DEFAULT_BCKG_COL = currentConfiguration.getTextEditorOpt().backCol;
 		DEFAULT_FORE_COL = currentConfiguration.getTextEditorOpt().foreCol;

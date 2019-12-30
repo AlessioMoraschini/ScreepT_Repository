@@ -14,7 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
 
@@ -62,7 +62,7 @@ public class TemplatesChoosePanel extends JFrame{
 	private JButton btnOpenInFilesystem;
 	private JButton btnReloadTemplates;
 	public JTextArea outputTextArea;
-	private JOptionHelper dialogHelper;
+	private JOptionHelperExtended dialogHelper;
 	
 	
 	// MAIN CONSTRUCTOR //
@@ -70,7 +70,7 @@ public class TemplatesChoosePanel extends JFrame{
 		
 		active = true;
 		
-		dialogHelper = new JOptionHelper(this);
+		dialogHelper = new JOptionHelperExtended(this);
 		
 		outputTextArea = outputText;
 		buttonInvoker = buttonInvoke;
@@ -214,7 +214,7 @@ public class TemplatesChoosePanel extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				String selected = outputTextArea.getSelectedText();
 				if(selected != null && !selected.equals("")) {
-					String inputTemplateName = dialogHelper.askForStringUnsafe("Please specify a name for the template:", "New Template.txt",  "New Template.txt");
+					String inputTemplateName = dialogHelper.askForStringNullable("Please specify a name for the template:", "New Template.txt",  "New Template.txt");
 					boolean cancel = (inputTemplateName == null)? true : false;
 					inputTemplateName = (!cancel && inputTemplateName.equals("")) ? "New Template.txt" : inputTemplateName;
 

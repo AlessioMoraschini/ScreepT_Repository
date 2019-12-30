@@ -20,7 +20,7 @@ import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
 import dialogutils.GenericFileChooserDialog;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import generic.ParametricExceptionThread;
 import gui.utils.LauncherLoaderFrame;
@@ -61,7 +61,7 @@ public class MainGuiGeneralAppStarter {
 	public static String[] ARGS;
 	public static File[] argumentsFiles;
 	
-	public static JOptionHelper dialogHelper;
+	public static JOptionHelperExtended dialogHelper;
 	public static AWTExceptionHandler mainTrheadAwtErrorHandler;
 	
 	public static GenericFileChooserDialog fileDialogHelper;
@@ -90,11 +90,11 @@ public class MainGuiGeneralAppStarter {
 				// Load Internal configuration and dialog helper
 				GeneralConfig.initLazyGeneralConfig();
 
-				dialogHelper = new JOptionHelper(null);
+				dialogHelper = new JOptionHelperExtended(null);
 				fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
 				
 				GuiUtils.init();
-				JOptionHelper.init();
+				JOptionHelperExtended.init();
 				AWTExceptionHandler.init();
 				
 				try {
@@ -260,7 +260,7 @@ public class MainGuiGeneralAppStarter {
 				Sounds.playSound(SoundsConfigurator.ERROR, null);
 				
 				if (!forceCloseWithoutAsk) {
-					res = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelper.YES_OR_NO);
+					res = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelperExtended.YES_OR_NO);
 					// IF not kill then return back
 					if (!AWTExceptionHandler.options[0].equals(res)) {
 						// CASE CONTINUE
@@ -285,11 +285,11 @@ public class MainGuiGeneralAppStarter {
 				
 				if (currentConfiguration.getGenOpt().isExceptionAdvicesEnabled()) {
 					Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
-					res = new JOptionHelper(null).warnScroll(
+					res = new JOptionHelperExtended(null).warnScroll(
 							"An Exception occurred, but I'still here ;) \n\n"
 									+ "(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"
 									+ AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(),
-							"An Exception Occurred", t, AWTExceptionHandler.options, JOptionHelper.YES_OR_NO);
+							"An Exception Occurred", t, AWTExceptionHandler.options, JOptionHelperExtended.YES_OR_NO);
 				}else {
 					// Default Continue
 					res = AWTExceptionHandler.options[1];

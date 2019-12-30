@@ -30,7 +30,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
 import gui.UpdateProgressPanelMin;
@@ -59,7 +59,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	// object that display wait dialog
 	private volatile UpdateProgressPanelMin progUpdater;
 	
-	private JOptionHelper dialogHelper;
+	private JOptionHelperExtended dialogHelper;
 	
 	// constructor
 	public TreeFileMouseListenerCrypter(INItializer currentConf, CrypterPanel cryptPanel){
@@ -75,7 +75,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 		tree.setComponentPopupMenu(getPopUpMenu());
 		tree.addMouseListener(getMouseListener());
 		
-		dialogHelper = new JOptionHelper(cryptPanel);
+		dialogHelper = new JOptionHelperExtended(cryptPanel);
 	}
 	
 	public MouseListener getMouseListener() {

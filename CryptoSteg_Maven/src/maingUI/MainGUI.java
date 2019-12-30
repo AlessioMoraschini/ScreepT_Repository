@@ -34,7 +34,7 @@ import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
 import dialogutils.GenericFileChooserDialog;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import files.watcher.ChangeDTO;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
@@ -132,7 +132,7 @@ public class MainGUI extends MainGuiParent{
 	public static MainGUI mainAPP;
 	public static Dimension preFullScreenSize = null;
 	
-	public static JOptionHelper dialogHelper;
+	public static JOptionHelperExtended dialogHelper;
 	
 	public AtomicBoolean isOnHomePage = new AtomicBoolean(true);
 	public AtomicBoolean isUpdating = new AtomicBoolean(false);
@@ -161,7 +161,7 @@ public class MainGUI extends MainGuiParent{
 		}
 		
 		currentConfiguration = currentConf;
-		dialogHelper = new JOptionHelper(MainGuiGeneralAppStarter.loaderGraphics);
+		dialogHelper = new JOptionHelperExtended(MainGuiGeneralAppStarter.loaderGraphics);
 		
 		MainGuiGeneralAppStarter.loaderGraphics.setVisible(false);
 		MainGuiGeneralAppStarter.loaderGraphics.toBack();
@@ -419,7 +419,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
  MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 30);
  
  		// This will be used to print out various types of dialogs in this class
- 		dialogHelper = new JOptionHelper(frmScryptV);
+ 		dialogHelper = new JOptionHelperExtended(frmScryptV);
  
 		// INITIALIZE SCREEN PROPOERTIES
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -1274,7 +1274,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
     	
 		
-    	if (new JOptionHelper(frmScryptV).showYNDialog("Really want to exit?", "Exit Program", JOptionHelper.YES_OR_NO)) {
+    	if (new JOptionHelperExtended(frmScryptV).showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
 
     		frmScryptV.setAlwaysOnTop(true);
     		closeApplication(0);

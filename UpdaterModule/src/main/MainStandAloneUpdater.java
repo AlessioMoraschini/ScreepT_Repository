@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import org.ini4j.Wini;
 
 import files.Various;
-import gui.JOptionHelperLight;
+import gui.JOptionHelper;
 import gui.UpdateProgressPanelMin;
 import network.DownloadUtils;
 import network.FtpDumper;
@@ -71,7 +71,7 @@ public class MainStandAloneUpdater {
 						manifestProps.saveProperty(curr.getName(), DownloadUtils.getFileHash(curr, downloadsHashFunc, true));
 						manifestProps.readFromFile();
 						if(!manifestProps.getProperty(curr.getName(), "").equals(DownloadUtils.getFileHash(curr, downloadsHashFunc, true))) {
-							new JOptionHelperLight(null).warn("Hash control not passed: check properties for " + curr.getName(), "Hash not matching");
+							new JOptionHelper(null).warn("Hash control not passed: check properties for " + curr.getName(), "Hash not matching");
 						} else {
 							toUpload.add(curr);
 						}
@@ -288,7 +288,7 @@ public class MainStandAloneUpdater {
 		int PORT = ftpProperties.getIntVarFromProps("PORT", 22);
 		String FOLDER_ON_SERVER = ftpProperties.getProperty("FOLDER_ON_SERVER", "/www.am-design-development.com/ScrYpT/Updates");
 		
-		String psw = PSW.equals("")? new JOptionHelperLight(null).askForString("Insert FTPS password", "Insert FTPS password") : PSW;
+		String psw = PSW.equals("")? new JOptionHelper(null).askForString("Insert FTPS password", "Insert FTPS password") : PSW;
 		FtpDumper dumper = new FtpDumper(HOST, USER, psw, PORT);
 		
 		UpdateProgressPanelMin progPanel = new UpdateProgressPanelMin(true);
@@ -317,7 +317,7 @@ public class MainStandAloneUpdater {
 			progPanel.forceClose();
 			dumper.disconnect();
 			
-			new JOptionHelperLight(null).info("FTP upload completed!", "Upload completed");
+			new JOptionHelper(null).info("FTP upload completed!", "Upload completed");
 		}
 	}
 	

@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
@@ -50,17 +50,17 @@ public class TreeFileMouseListenerBasicFileNamed {
 	
 	public JFrame propertiesFrame = null; 
 	public Component parent;
-	public JOptionHelper dialogHelper;
+	public JOptionHelperExtended dialogHelper;
 
 	public TreeFileMouseListenerBasicFileNamed() {
 		selectedNodes = new Vector<>();
-		dialogHelper = new JOptionHelper(null);
+		dialogHelper = new JOptionHelperExtended(null);
 	}
 	// constructor
 	public TreeFileMouseListenerBasicFileNamed(Component parent) {
 		selectedNodes = new Vector<>();
 		this.parent = parent;
-		dialogHelper = new JOptionHelper(parent);
+		dialogHelper = new JOptionHelperExtended(parent);
 	}
 	
 	public TreeFileMouseListenerBasicFileNamed(JTree treeIn) {
@@ -68,7 +68,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 		tree = treeIn;
 		tree.setComponentPopupMenu(getPopUpMenu());
 		tree.addMouseListener(getMouseListener());
-		dialogHelper = new JOptionHelper(tree);
+		dialogHelper = new JOptionHelperExtended(tree);
 	}
 	
 	public MouseListener getMouseListener() {
@@ -163,7 +163,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 				File targetDir = node.mFile.isDirectory()? node.mFile : node.mFile.getParentFile();
 				File unexistant = new File(targetDir.getAbsolutePath() + File.separator + "new_folder");
 				unexistant = FileStuff.renameJavaObjFile(unexistant);
-				String newName = dialogHelper.askForStringUnsafe("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
+				String newName = dialogHelper.askForStringNullable("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
 				
 				if(newName == null) {
 					return;

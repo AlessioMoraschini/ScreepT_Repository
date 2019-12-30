@@ -15,6 +15,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
@@ -22,7 +24,7 @@ import javax.swing.UIManager;
 
 import files.Various;
 
-public class JOptionHelperLight {
+public class JOptionHelper {
 	
 	// MESSAGE TYPES
 	public static final int ERR = JOptionPane.ERROR_MESSAGE;
@@ -40,9 +42,9 @@ public class JOptionHelperLight {
 	public static final int YES_OR_NO = JOptionPane.YES_NO_OPTION;
 	public static final int YES_OR_NO_CANC = JOptionPane.YES_NO_CANCEL_OPTION;
 	
-	private static final String DEF_ERR_MSG = "An error occurred!";
-	private static final String DEF_WARN_MSG = "Warning!";
-	private static final String DEF_INFO_MSG = "Info";
+	protected static final String DEF_ERR_MSG = "An error occurred!";
+	protected static final String DEF_WARN_MSG = "Warning!";
+	protected static final String DEF_INFO_MSG = "Info";
 	
 	public static final Object[] defaultOptionsExtended = new Object[]{"Yes", "No", "Cancel"};
 	public static final Object[] defaultOptions = new Object[]{"Yes", "No"};
@@ -61,7 +63,7 @@ public class JOptionHelperLight {
 	public boolean enabledAdvices = true;
 	
 	// Parent component to center and refer to
-	Component parentComponent;
+	protected Component parentComponent;
 	
 	public static void init() {
 		ICON_ERR_REF = UIManager.getIcon("OptionPane.informationIcon");    
@@ -71,11 +73,11 @@ public class JOptionHelperLight {
 		DEFAULT_FONT_DIMENSION = new Font("Segoe UI", Font.PLAIN, 17);
 	}
 	
-	public JOptionHelperLight (Component parentComponent) {
+	public JOptionHelper (Component parentComponent) {
 		this.parentComponent = (parentComponent != null) ? parentComponent : new JFrame();
 	}
 	
-	public JOptionHelperLight (Component parentComponent, boolean enableAdvices) {
+	public JOptionHelper (Component parentComponent, boolean enableAdvices) {
 		this(parentComponent);
 		this.enabledAdvices = enableAdvices;
 	}
@@ -318,7 +320,7 @@ public class JOptionHelperLight {
 	}
 	
 	public String askForString(String msg, String title, String initialValue) {
-		String unsafe = askForStringUnsafe(msg, title, initialValue, new Object[]{"Confirm"});
+		String unsafe = askForStringNullable(msg, title, initialValue, new Object[]{"Confirm"});
 		unsafe = unsafe == null ? "" : unsafe;
 		
 		return unsafe;
@@ -330,9 +332,9 @@ public class JOptionHelperLight {
 	 * @param title
 	 * @return selected string, or null if dialog is closed
 	 */
-	public String askForStringUnsafe(String msg, String title) {
+	public String askForStringNullable(String msg, String title) {
 		
-		return askForStringUnsafe(msg, title, "", new Object[]{"Confirm"});
+		return askForStringNullable(msg, title, "", new Object[]{"Confirm"});
 	}
 	
 	/**
@@ -342,16 +344,16 @@ public class JOptionHelperLight {
 	 * @param initialVal
 	 * @return selected string, or null if dialog is closed
 	 */
-	public String askForStringUnsafe(String msg, String title, String initialVal) {
+	public String askForStringNullable(String msg, String title, String initialVal) {
 		
-		return askForStringUnsafe(msg, title, initialVal, new Object[]{"Confirm"});
+		return askForStringNullable(msg, title, initialVal, new Object[]{"Confirm"});
 	}
 	
 	/**
 	 * Shows a customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
 	 * msgType can be error, info, warn, exc...
 	 */
-	public String askForStringUnsafe(String msg, String title, String initialValue, Object options[]) {
+	public String askForStringNullable(String msg, String title, String initialValue, Object options[]) {
 		
 		final JOptionPane pane = new JOptionPane(
 				getLabelStyledText(msg), JOptionPane.QUESTION_MESSAGE,
@@ -387,6 +389,34 @@ public class JOptionHelperLight {
 		final Object value = pane.getInputValue();
 		return (value == JOptionPane.UNINITIALIZED_VALUE) ? null : (String) value;
 	}
+	
+	public char[] askForPasswordNullable(String msg, String title, int maxLength, String confirmBtnText) {
+		
+		Object[] options = new Object[] {confirmBtnText};
+		Choice<char[]> result = askForPasswordNullable(msg, title, maxLength, options);
+		
+		return result != null ? result.value : null;
+	}
+
+	public Choice<char[]> askForPasswordNullable(String msg, String title, int maxLength, Object[] options) {
+		
+		JPanel panel = new JPanel();
+		JLabel label = new JLabel(msg);
+		JPasswordField pass = new JPasswordField(10);
+		panel.add(label);
+		panel.add(pass);
+		
+		int option = JOptionPane.showOptionDialog(parentComponent, panel, title,
+				JOptionPane.NO_OPTION, QUESTION,
+				null, options, options[0]);
+		
+		if(option != JOptionPane.DEFAULT_OPTION) {
+			return new Choice<char[]>(option, pass.getPassword());
+			
+		} else {
+			return null;
+		}
+	}
 
 	public void setAdvicesEnabled(boolean enabled) {
 		enabledAdvices = enabled;
@@ -401,7 +431,7 @@ public class JOptionHelperLight {
 	
 	// PRIVATE METHODS
 	
-	private JScrollPane getScrollableDialogPanel(String preloadedMsg) {
+	protected JScrollPane getScrollableDialogPanel(String preloadedMsg) {
 		preloadedMsg = (preloadedMsg == null)? "" : preloadedMsg;
 		
 		JTextArea textArea = new JTextArea("Insert your Text here");
@@ -426,7 +456,7 @@ public class JOptionHelperLight {
 		return scrollPane;
 	}
 	
-	private Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull) {
+	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull) {
 		final JOptionPane optionPane = new JOptionPane(
 				msg instanceof String ? getLabelStyledText((String)msg) : msg, 
         		msgType,
@@ -456,7 +486,7 @@ public class JOptionHelperLight {
 	}
 	
 	// Used internally to create other various dialogs without user input
-	private void showMessageCommon(Object msg, String title, int msgType, Object[] choiceOptions, Object defaultOption) {
+	protected void showMessageCommon(Object msg, String title, int msgType, Object[] choiceOptions, Object defaultOption) {
 		if (enabledAdvices) {
 			
 			Icon icon = ICON_INFO_REF;
@@ -488,7 +518,7 @@ public class JOptionHelperLight {
 		}
 	}
 	
-	private JLabel getLabelStyledText(String msg) {
+	protected JLabel getLabelStyledText(String msg) {
 		JLabel label = new JLabel(msg, SwingConstants.CENTER);
 		label.setOpaque(false);
 		label.setFont(DEFAULT_FONT_DIMENSION);
@@ -499,4 +529,16 @@ public class JOptionHelperLight {
 		return label;
 	}
 
+	public class Choice<T>{
+		public int option = -1;
+		public T value;
+		
+		public Choice() {
+		}
+		
+		public Choice(int option, T value) {
+			this.option = option;
+			this.value = value;
+		}
+	}
 }

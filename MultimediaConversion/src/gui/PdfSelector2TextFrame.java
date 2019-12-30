@@ -15,7 +15,7 @@ import org.icepdf.ri.common.SwingViewBuilder;
 
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooserDialog;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -72,7 +72,7 @@ public class PdfSelector2TextFrame extends JFrame{
 	public ImageToTextExtractor imageExtractor;
 	private SwingController controllerPdf;
 	
-	JOptionHelper dialogHelper;
+	JOptionHelperExtended dialogHelper;
 	GenericFileChooserDialog fileDialogHelper;
 	
 	public PdfSelector2TextFrame(JFrame parentRootFrame, JTextArea outputTxtArea, String title) {
@@ -80,7 +80,7 @@ public class PdfSelector2TextFrame extends JFrame{
 		logger.info(this.getClass().getName() + " Starting...");
 		active = true;
 		
-		dialogHelper = new JOptionHelper(this);
+		dialogHelper = new JOptionHelperExtended(this);
 		
 		imageExtractor = new ImageToTextExtractor();
 		mainFrameParent = parentRootFrame;

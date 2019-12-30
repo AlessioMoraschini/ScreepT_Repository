@@ -50,7 +50,7 @@ import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 
 import codeformatter.CustomCodeFormatter;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import media.ImageGeneralWorker;
 import media.Sounds;
 import om.files.FileNamed;
@@ -73,7 +73,7 @@ public class GuiUtils {
 	public static final Dimension DEF_CUSTOM_CURSOR_SIZE = new Dimension(8,8);
 	public static Cursor CURSOR_COLOR_PICK;
 	
-	public static JOptionHelper dialogHelper = new JOptionHelper(null);
+	public static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 	public static CustomCodeFormatter codeFormatter;
 	
 	public static void init() {

@@ -21,7 +21,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import files.watcher.ChangeDTO;
 import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtils;
@@ -59,7 +59,7 @@ public class MainGuiUtils {
 				Frame activeWindowBeforeUpdates = GuiUtils.getTopFrame();
 				
 				if (!MainGUI.mainAPP.isUpdating.get()) {
-					dialogHelper = new JOptionHelper(MainGUI.frmScryptV);
+					dialogHelper = new JOptionHelperExtended(MainGUI.frmScryptV);
 					MainGUI.mainAPP.isUpdating.set(true);
 					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(false);
 
@@ -607,7 +607,7 @@ public class MainGuiUtils {
 				if (genOpt.isFirstAccess()) {
 					String msg = "<html>Hi " + genOpt.getUserName() + ", and welcome to " + GeneralConfig.APPLICATION_NAME
 							+ "!<br/>I suggest you to take a look to documentation before to start, do you want to open it now?</html>";
-					if (dialogHelper.showYNDialog(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME, JOptionHelper.QUESTION)) {
+					if (dialogHelper.showYNDialog(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME, JOptionHelperExtended.QUESTION)) {
 						MainGUI.mainAPP.getMntmUserDocumentation().doClick();
 					}
 				}
@@ -621,7 +621,7 @@ public class MainGuiUtils {
 		boolean end=false;
 		String input="";
 		do {
-			input = MainGUI.dialogHelper.askForStringUnsafe("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
+			input = MainGUI.dialogHelper.askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
 			
 			if (input==null || input.equals("") || input.length() > 20) {
 				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",

@@ -25,7 +25,7 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 
 import java.awt.Dimension;
 
@@ -228,7 +228,7 @@ public class HashCheckerFrame extends ParentFrame{
 									txtFieldChecksumResult
 											.setText(prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
 								} else if (dialogHelper.showYNDialog("Hashing a folder can be a long task, really want to start hashing?",
-										"Hash folder?", JOptionHelper.YES_OR_NO)) {
+										"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {
 									updateProgress = new UpdateProgressPanelMin(false);
 									updateProgress.setClosable(true);
 									updateProgress.setUndefinedDuration();
@@ -270,7 +270,7 @@ public class HashCheckerFrame extends ParentFrame{
 										hash = prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
 									} else {
 										if (dialogHelper.showYNDialog("Hashing a folder can be a long task, are you sure to start hashing?",
-												"Hash folder?", JOptionHelper.YES_OR_NO)) {
+												"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {
 											updateProgress = new UpdateProgressPanelMin(false);
 											updateProgress.setClosable(true);
 											updateProgress.setUndefinedDuration();

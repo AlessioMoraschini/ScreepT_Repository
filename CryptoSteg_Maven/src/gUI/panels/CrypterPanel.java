@@ -21,7 +21,7 @@ import amfileutils.FileStuff;
 import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import files.watcher.FileChangeMonitor;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
@@ -254,7 +254,7 @@ public class CrypterPanel extends ModulePanel {
 	public VirtualFileDropPane panelVDragNDropPane;
 	
 	public UpdateProgressPanelCrypter generalProgress;
-	public JOptionHelper dialogHelper;
+	public JOptionHelperExtended dialogHelper;
 	
 	int leftVerticalDivHeight;
 	int leftWidth = 370;
@@ -276,7 +276,7 @@ public class CrypterPanel extends ModulePanel {
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		thisPanel = this;
-		dialogHelper = new JOptionHelper(this, true);
+		dialogHelper = new JOptionHelperExtended(this, true);
 		screeptManagerFoF = new ScreeptManagerFileOrFolder(generalProgress, thisPanel, false);
 		parentFrame=parent.getMainFrame();
 		mainApplication = parent;

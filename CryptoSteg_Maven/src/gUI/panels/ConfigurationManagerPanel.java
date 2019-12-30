@@ -13,7 +13,7 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
 import gUI.utils.filedialog.INIfileChoosER;
@@ -98,7 +98,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	private JButton btnSave;
 	private JButton btnViewCurrentFile;
 	
-	private JOptionHelper dialogHelper;
+	private JOptionHelperExtended dialogHelper;
 	public JSplitPane splitPane;
 	private JButton btnFind;
 	
@@ -129,7 +129,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			}
 		});
 		
-		dialogHelper = new JOptionHelper(parent.getMainFrame());
+		dialogHelper = new JOptionHelperExtended(parent.getMainFrame());
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		

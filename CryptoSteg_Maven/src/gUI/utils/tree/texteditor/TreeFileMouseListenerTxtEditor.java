@@ -24,7 +24,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
@@ -65,7 +65,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	public JMenuItem propertiesItem;
 	public JMenuItem changeBckgItem;
 	
-	public JOptionHelper dialogHelper;
+	public JOptionHelperExtended dialogHelper;
 	
 	// constructor
 	public TreeFileMouseListenerTxtEditor(JTree tree, TextEditor textEdit){
@@ -74,7 +74,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		this.tree = tree;
 		textEditor = textEdit;
 		currentTabEditor = textEditor.getCurrentTabEditor();
-		dialogHelper = new JOptionHelper(textEditor);
+		dialogHelper = new JOptionHelperExtended(textEditor);
 	}
 	
 	public MouseListener getMouseListener() {

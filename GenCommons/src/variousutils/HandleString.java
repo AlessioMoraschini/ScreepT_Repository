@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JTextArea;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import files.Various;
@@ -50,6 +51,35 @@ public class HandleString {
 		}
 		
 		return res;
+	}
+	
+	public static String forceLengthDeterministic(String src, int length, String padString) {
+		return String.format("%1$"+length+ "s", src).substring(0, length).replaceAll(" ", padString);
+	}
+
+	public static String forceLength(String src, int length) {
+		return replaceOccurrencesWithRandom(String.format("%1$"+length+ "s", src), " ").substring(0, length);
+	}
+	
+	public static String forceLength(String src, int length, char[] possibleCharacters) {
+		return replaceOccurrencesWithRandom(String.format("%1$"+length+ "s", src), " ", possibleCharacters).substring(0, length);
+	}
+	
+	public static String replaceOccurrencesWithRandom(String source, String match, char[] possibleCharacters) {
+		do {
+			source = source.replaceFirst(match, RandomStringUtils.random(1, possibleCharacters));
+		} while(source.contains(match));
+		
+		return source;
+	}
+
+	public static String replaceOccurrencesWithRandom(String source, String match) {
+		
+		do {
+			source = source.replaceFirst(match, RandomStringUtils.randomAscii(1));
+		} while(source.contains(match));
+		
+		return source;
 	}
 	
 	/**

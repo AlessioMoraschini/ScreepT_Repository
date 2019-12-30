@@ -6,7 +6,7 @@ import java.net.ConnectException;
 import org.junit.Test;
 
 import gui.GuiUtils;
-import gui.JOptionHelperLight;
+import gui.JOptionHelper;
 import testconfig.TestConstants;
 import utils.TestUtils;
 
@@ -31,7 +31,7 @@ public class TestFtpConnection {
 		TestUtils.printl("USER: " + USER);
 		TestUtils.printl("PORT: " + PORT);
 		
-		String psw = new JOptionHelperLight(null).askForString("Insert password", "Insert password");
+		String psw = new JOptionHelper(null).askForString("Insert password", "Insert password");
 		TestUtils.printl(psw);
 		
 		FtpDumper dumper = new FtpDumper(HOST, USER, psw, PORT);
@@ -42,13 +42,13 @@ public class TestFtpConnection {
 //		progPanel.setUndefinedDuration();
 //		progPanel.updateText("Uploading " + TestConstants.sourceFolderPath + TEST_FILE_UPLOAD);
 		dumper.uploadFile(TestConstants.sourceFolderPath + TEST_FILE_UPLOAD, TEST_FILE_UPLOAD, FOLDER_ON_SERVER);
-		new JOptionHelperLight(null).info(TestConstants.sourceFolderPath + TEST_FILE_UPLOAD + ": Uploaded!", "Uploaded");
+		new JOptionHelper(null).info(TestConstants.sourceFolderPath + TEST_FILE_UPLOAD + ": Uploaded!", "Uploaded");
 		
 //		progPanel.updateText("Downloading " + FOLDER_ON_SERVER + "/" + TEST_FILE_DOWNLOAD);
 		File downloaded = dumper.downloadFile(FOLDER_ON_SERVER, TEST_FILE_DOWNLOAD, DOWNLOAD_DESTINATION_LOCAL, false);
 
 //		progPanel.forceClose();
-		new JOptionHelperLight(null).info("Finished! Result file: " + downloaded, "Downloaded");
+		new JOptionHelper(null).info("Finished! Result file: " + downloaded, "Downloaded");
 		GuiUtils.openInFileSystem(new File(DOWNLOAD_DESTINATION_LOCAL));
 		
 		dumper.disconnect();

@@ -7,7 +7,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
@@ -78,7 +78,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 	
 	JFrame thisPanel;
 	
-	private JOptionHelper dialogHelper;
+	private JOptionHelperExtended dialogHelper;
 	
 	// constructor
 	public KeyDictionaryFrame(INItializer currentConfiguration) {
@@ -88,7 +88,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 		
 		isActive.set(true);
 		
-		dialogHelper = new JOptionHelper(this);
+		dialogHelper = new JOptionHelperExtended(this);
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);

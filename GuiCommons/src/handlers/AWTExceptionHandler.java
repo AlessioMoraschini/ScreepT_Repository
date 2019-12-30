@@ -6,7 +6,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import generic.IParametricRunnable;
 import generic.ParametricExceptionThread;
 import mainobj.InitOwner;
@@ -99,21 +99,21 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 
 					String outOfMemoryPreamble = t instanceof OutOfMemoryError ? 
 							"Not Enough RAM memory allocated to this process, to solve this you can increase the max memory option in launcher panel.\n\n" : "";
-					res = new JOptionHelper(null).errorScroll(
+					res = new JOptionHelperExtended(null).errorScroll(
 							outOfMemoryPreamble + CRITICAL_ERROR_MSG + DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), 
 							"Critical Error",
 							t, 
 							options, 
-							JOptionHelper.YES_OR_NO);
+							JOptionHelperExtended.YES_OR_NO);
 					
 				}else{
 					if (initOwner.getInitializer().getGenOpt().isExceptionAdvicesEnabled()) {
 						Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
-						res = new JOptionHelper(null).warnScroll(
+						res = new JOptionHelperExtended(null).warnScroll(
 								"An Exception occurred, but I'm still here ;) "
 										+ "\n\n(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"
 										+ DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(),
-								"An Exception Occurred", t, options, JOptionHelper.YES_OR_NO);
+								"An Exception Occurred", t, options, JOptionHelperExtended.YES_OR_NO);
 					}else {
 						// default continue on exception
 						res = options[1];

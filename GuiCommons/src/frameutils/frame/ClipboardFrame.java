@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 import dialogutils.GenericFileChooserDialog;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ClipboardPanelLight;
 import frameutils.utils.GuiUtils;
@@ -37,7 +37,7 @@ public class ClipboardFrame extends ParentFrame{
 		isActive.set(true);
 		thisFrame = this;
 		
-		this.dialogHelper = new JOptionHelper(this);
+		this.dialogHelper = new JOptionHelperExtended(this);
 		this.fileChooser = new GenericFileChooserDialog(null);
 
 		// SW window icon

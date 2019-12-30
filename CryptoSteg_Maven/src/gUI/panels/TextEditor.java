@@ -40,7 +40,7 @@ import org.fife.ui.rtextarea.RUndoManager;
 
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
@@ -157,7 +157,7 @@ public class TextEditor extends ModulePanel {
 	
 	public boolean isPreloading = false;
 	
-	public JOptionHelper dialogHelper;
+	public JOptionHelperExtended dialogHelper;
 	
 	private JToggleButton preMaximizationBackupLeft;
 	private JToggleButton preMaximizationBackupRight;
@@ -169,7 +169,7 @@ public class TextEditor extends ModulePanel {
 		
 		// skip refresh during preload in case of settings to false
 		isPreloading = !GeneralConfig.PRELOAD_TXT_EDITOR_FLAG;
-		dialogHelper = new JOptionHelper(this);
+		dialogHelper = new JOptionHelperExtended(this);
 
 		logger.info(this.getClass().getName() + " Starting...");
 

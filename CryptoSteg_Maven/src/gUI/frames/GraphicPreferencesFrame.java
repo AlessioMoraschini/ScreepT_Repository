@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 
 import com.jgoodies.looks.plastic.PlasticTheme;
 
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
@@ -166,7 +166,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JSeparator separator_4;
 	private JSeparator separator_5;
 	
-	JOptionHelper dialogHelper;
+	JOptionHelperExtended dialogHelper;
 	
 	public GraphicPreferencesFrame(INItializer currentConf) {
 		
@@ -180,7 +180,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 		currentConfiguration = currentConf;
 		
-		dialogHelper = new JOptionHelper(this);
+		dialogHelper = new JOptionHelperExtended(this);
 		
 		this.setAlwaysOnTop(true);
 		this.setResizable(false);

@@ -3,7 +3,7 @@ package utility;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gui.JOptionHelperLight;
+import gui.JOptionHelper;
 import testconfig.TestConstants;
 
 public class TestPropertiesRead {
@@ -22,8 +22,8 @@ public class TestPropertiesRead {
 		while(!key.isEmpty()) {
 			
 			String value = propertiesManager.getProperty(key, "NULL");
-			new JOptionHelperLight(null).info("KEY read value is: [" + value + "]", "READ from " + key);
-			key = new JOptionHelperLight(null).askForString("Key for value read", "Insert property key");
+			new JOptionHelper(null).info("KEY read value is: [" + value + "]", "READ from " + key);
+			key = new JOptionHelper(null).askForString("Key for value read", "Insert property key");
 		}
 	}
 }

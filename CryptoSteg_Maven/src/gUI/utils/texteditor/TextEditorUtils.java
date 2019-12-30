@@ -28,7 +28,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.Gutter;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -79,12 +79,12 @@ public class TextEditorUtils {
 	
 	public static final String NO_HIDE_ELEMENT = "NO_HIDE";
 	
-	JOptionHelper dialogHelper;
+	JOptionHelperExtended dialogHelper;
 	
 	public TextEditorUtils(TextEditor currentTextEditor) {
 		this.currentTextEditor = currentTextEditor;
 		this.textAreaDialogs = new TextAreaDialogs(getDialogManager());
-		this.dialogHelper = new JOptionHelper(currentTextEditor);
+		this.dialogHelper = new JOptionHelperExtended(currentTextEditor);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////

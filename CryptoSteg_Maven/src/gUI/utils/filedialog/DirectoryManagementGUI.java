@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import amfileutils.om.DeleteFilesByExtensionDTO;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 
@@ -22,7 +22,7 @@ public class DirectoryManagementGUI {
 	static Logger logger = Logger.getLogger(DirectoryManagementGUI.class); 
 			
 	public static String renameFirstLetterDirNames(Component parent, String defaultVisualizedDir) {
-		JOptionHelper dialog = new JOptionHelper(parent);
+		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		int errors=0;
 		File selectedFile;
@@ -65,9 +65,9 @@ public class DirectoryManagementGUI {
 	}
 	
 	public static void makeDirsFromPath(JFrame parent,INItializer currentConf) {
-		JOptionHelper dialog = new JOptionHelper(parent);
+		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
-		String dirToMake = dialog.askForStringUnsafe("Insert the complete Path of the directories to create (accepted separators=['\\','/'])", "specify path for folder to create");
+		String dirToMake = dialog.askForStringNullable("Insert the complete Path of the directories to create (accepted separators=['\\','/'])", "specify path for folder to create");
 		if(dirToMake == null) {
 			return;
 			
@@ -90,7 +90,7 @@ public class DirectoryManagementGUI {
 	}
 	
 	public static void deleteContentOfDir(JFrame parent,INItializer currentConf) {
-		JOptionHelper dialog = new JOptionHelper(parent);
+		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete All content of directory");
 		if (selected!=null) {
@@ -106,7 +106,7 @@ public class DirectoryManagementGUI {
 	}
 	
 	public static void deleteDirContentFiles(JFrame parent,INItializer currentConf) {
-		JOptionHelper dialog = new JOptionHelper(parent);
+		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete All directory's content (Files only)");
 		if (selected != null) {
@@ -122,7 +122,7 @@ public class DirectoryManagementGUI {
 	}
 	
 	public static void deleteContentOfDirByExt(JFrame parent,INItializer currentConf) {
-		JOptionHelper dialog = new JOptionHelper(parent);
+		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Delete directory content by Extension");
 		DeleteFilesByExtensionDTO response;
@@ -148,7 +148,7 @@ public class DirectoryManagementGUI {
 	}
 	
 	public static void copyDirStructure(JFrame parent,INItializer currentConf) {
-		JOptionHelper dialog = new JOptionHelper(parent);
+		JOptionHelperExtended dialog = new JOptionHelperExtended(parent);
 
 		File selected = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(parent, "Copy Directory structure");
 		if (selected != null) {

@@ -26,7 +26,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import amfileutils.FileStuff;
 import combobox.TextPaneComboBoxEditor;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
@@ -50,7 +50,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	
 	// ClipboardPanel logger creation
 	static Logger logger = Logger.getLogger(ClipboardPanel.class);
-	JOptionHelper dialogHelper;
+	JOptionHelperExtended dialogHelper;
 	
 	public static ClipboardPanel singletonInstance;
 
@@ -90,7 +90,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		this.options = (config != null)? config.getTextEditorOpt() : new TextEditorOption();
 		
 		// Disable advices until instantiation is ended
-		this.dialogHelper = new JOptionHelper(this);
+		this.dialogHelper = new JOptionHelperExtended(this);
 		dialogHelper.enabledAdvices = false;
 		
 		this.dataMap = GeneralConfig.CLIPBOARD_PANEL_MAP;
@@ -455,7 +455,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	}
 	
 	public boolean addNewClipboardGui() throws IOException {
-		String newName = dialogHelper.askForStringUnsafe("Choose a name for the new Clipboard (If existing a new unique name like \"xxxx(1).ext\" will be created)", "Specify new clipboard name");
+		String newName = dialogHelper.askForStringNullable("Choose a name for the new Clipboard (If existing a new unique name like \"xxxx(1).ext\" will be created)", "Specify new clipboard name");
 		if(newName != null && newName.equals("")) {
 			dialogHelper.warn("Cannot create File without name", "Must specify a name!");
 			return true;

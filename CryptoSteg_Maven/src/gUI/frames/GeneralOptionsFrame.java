@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import launcherutils.IniFileManager;
@@ -92,7 +92,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JSlider sliderVolume;
 	private JLabel lblLogLevelChosen;
 	
-	JOptionHelper dialogHelper;
+	JOptionHelperExtended dialogHelper;
 	private JCheckBox chckbxAutomaticallyCheckFor;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
@@ -101,7 +101,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
-		dialogHelper = new JOptionHelper(this);
+		dialogHelper = new JOptionHelperExtended(this);
 		
 		// assign this frame to variable
 		thisFrame = this;

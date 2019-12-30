@@ -43,7 +43,7 @@ import uTILS.local.ImageWorkerScrYpT;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
-import dialogutils.JOptionHelper;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.subpanels.ImageGenContainerPanel;
@@ -97,7 +97,7 @@ public class KeyGenFrame extends ParentFrame {
 	
 	private INItializer currentConfig;
 	
-	private JOptionHelper dialogHelper;
+	private JOptionHelperExtended dialogHelper;
 	
 	/**
 	 * Create the application.
@@ -111,7 +111,7 @@ public class KeyGenFrame extends ParentFrame {
 		thisFrame = this;
 		currentConfig = currentConf;
 		
-		dialogHelper = new JOptionHelper(thisFrame);
+		dialogHelper = new JOptionHelperExtended(thisFrame);
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEYGEN, this);
