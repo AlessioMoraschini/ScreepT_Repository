@@ -2,6 +2,7 @@ package dialogutils;
 
 import java.awt.Component;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -31,12 +32,15 @@ public class JOptionHelperExtended extends JOptionHelper {
 	
 	// PRIVATE METHODS
 	@Override
-	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull) {
+	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType) {
+		
+		Icon icon = warningType? new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_WARNING) : new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_QUESTION);
+		
 		final JOptionPane optionPane = new JOptionPane(
 				msg instanceof String ? getLabelStyledText((String)msg) : msg, 
         		msgType,
         		YES_OR_NO, 
-        		new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_QUESTION),
+        		icon,
                 defaultOptions,
                 defaultOptions[0]);
         

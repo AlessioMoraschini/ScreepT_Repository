@@ -1410,10 +1410,10 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		String msg = "Deleting temp files and folders...";
 		
 		try {
-			logger.info(msg+ "please wait!");
+			logger.info(msg + "please wait!");
 			tempEraser.join();
 			tempCreeptEraser.join();
-			logger.info(msg+ "COMPLETED :)");
+			logger.info(msg + "COMPLETED :)");
 			
 		} catch (InterruptedException e) {
 			logger.error("Some error occurred deleting temporary Decrypted files");

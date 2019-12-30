@@ -474,9 +474,12 @@ public class MainGuiUtils {
 				if (decryptedList!= null && decryptedList.length!=0) {
 					// while there are temp decripted delete them
 					for (File temp : decryptedList) {
+						logger.info("Deleting current temp file: " + temp);
 						FileUtils.deleteQuietly(temp);
 					} 
-				}	
+				} else {
+					logger.info("Nothing to delete!");
+				}
 				// now delete temp folder, and retry if something has not been deleted
 				FileStuff.deleteDirContentInclRoot(GeneralConfig.TEMP_DECRIPTED_ROOT);
 			}
@@ -492,9 +495,12 @@ public class MainGuiUtils {
 				if (decryptedList!= null && decryptedList.length!=0) {
 					// while there are temp decripted delete them
 					for (File temp : decryptedList) {
+						logger.info("Deleting current temp file: " + temp);
 						FileUtils.deleteQuietly(temp);
 					} 
-				}	
+				} else {
+					logger.info("Nothing to delete!");
+				}
 				// now delete temp folder, and retry if something has not been deleted
 				FileStuff.deleteDirContentRecursive(GeneralConfig.TEMP_DIRECTORY_FILE);
 			}
