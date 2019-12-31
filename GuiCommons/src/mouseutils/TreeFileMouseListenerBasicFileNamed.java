@@ -12,7 +12,6 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -185,8 +184,8 @@ public class TreeFileMouseListenerBasicFileNamed {
 
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
 	            String currFilesString = (treeSelArr.length == 1)? ((FileNamed)treeSelArr[0].getLastPathComponent()).toString() : "selected files" ;
-            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(null, "Are you sure to delete "+currFilesString+" from disk(cannot be undone)? "
-            			+ "All eventual selected folders will be deleted with all the file contained in them!")==JOptionPane.OK_OPTION){	        		
+            	if(treeSelArr.length!= 0 && new JOptionHelperExtended(null).yesOrNo("Are you sure to delete "+currFilesString+" from disk(cannot be undone)? "
+            			+ "All eventual selected folders will be deleted with all the file contained in them!", null)){	        		
 		            for(TreePath tp : treeSelArr) {
 		            	
 		            	FileNamed node = (FileNamed)tp.getLastPathComponent();

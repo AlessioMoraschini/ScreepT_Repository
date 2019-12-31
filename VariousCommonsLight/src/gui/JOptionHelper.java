@@ -113,9 +113,9 @@ public class JOptionHelper {
 	 * Shows a customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
 	 * msgType can be error, info, warn, exc...
 	 */
-	public Boolean showYNOrNullDialogWarn(String msg, String title, int msgType) {
+	public Boolean showYNOrNullDialogWarn(String msg, String title) {
 		
-		return showYNMessageCommon(msg, title, msgType, true, true);
+		return showYNMessageCommon(msg, title, JOptionPane.WARNING_MESSAGE, true, true);
 	}
 	
 	/**
@@ -127,6 +127,18 @@ public class JOptionHelper {
 		showMessageCommon(msg, title, msgType, okOnlyOptions, okOnlyOptions[0]);
 	}
 	
+	/**
+	 * Shows an error message
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void error(String msg) {
+		if (enabledAdvices) {
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+			showMessageCommon(msg, msg, ERR, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
+
 	/**
 	 * Shows an error message
 	 * @param msg nullable, but should be not null and not empty to be clear to user
@@ -207,6 +219,18 @@ public class JOptionHelper {
 			showMessageCommon(msg, title, WARN, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
+
+	/**
+	 * Shows a warning message
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void warn(String msg) {
+		if (enabledAdvices) {
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_WARN_MSG;
+			showMessageCommon(msg, msg, WARN, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
 	
 	/**
 	 * Shows a warning message within a scrollable panel, useful to show long messages
@@ -245,6 +269,18 @@ public class JOptionHelper {
 		}
 		
 		return res;
+	}
+
+	/**
+	 * Shows a INFO message
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void info(String msg) {
+		if (enabledAdvices) {
+			msg = (!Various.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			showMessageCommon(msg, msg, INFO, okOnlyOptions, okOnlyOptions[0]);
+		}
 	}
 
 	/**
@@ -314,6 +350,18 @@ public class JOptionHelper {
 	}
 
 	/**
+	 * Shows a question and return boolean choice
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public boolean yesOrNo(String msg) {
+		
+		msg = (!Various.isEmpty(msg)) ? msg : "Choose an Option";
+		
+		return showYNMessageCommon(msg, msg, QUESTION, false, false);
+	}
+
+	/**
 	 * Shows a question and return int choice (OK|NO|CANC)
 	 * @param msg nullable, but should be not null and not empty to be clear to user
 	 * @param title nullable
@@ -335,6 +383,13 @@ public class JOptionHelper {
 		msg = (!Various.isEmpty(msg)) ? msg : "Insert a String";
 		
 		return askForString(msg, title, "New");
+	}
+
+	public String askForString(String msg) {
+		
+		msg = (!Various.isEmpty(msg)) ? msg : "Insert a String";
+		
+		return askForString(msg, msg, "New");
 	}
 	
 	public String askForString(String msg, String title, String initialValue) {

@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -260,7 +259,7 @@ public class CustomTabbedEditor {
 					} catch (Throwable e1) {
 						String msg = "Error occurred loading file into new tab: "+fileToLoad.getAbsolutePath()+"\n\n";
 						logger.error(msg, e1);
-						JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.ERROR_MESSAGE);
+						new JOptionHelperExtended(null).error(msg, null);
 					}
 
 					loadedTabObj.loadedFile = fileToLoad;

@@ -5,7 +5,6 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.Color;
@@ -32,6 +31,7 @@ import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 import org.jnetpcap.protocol.tcpip.Udp;
 
+import gui.JOptionHelper;
 import network.scanner.Dumper;
 
 import javax.swing.JRadioButton;
@@ -62,6 +62,8 @@ public class csNa_GUI {
 	private JTextField DIR;
 	private JTextField EXPR_FILTER;
 	private JTextField ExportUserPath;
+	
+	private JOptionHelper dialogHelper;
 
 	/**
 	 * Launch the application.
@@ -98,6 +100,8 @@ public class csNa_GUI {
 		frmCsnaBy.setBounds(100, 100, 1298, 707);
 		frmCsnaBy.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCsnaBy.getContentPane().setLayout(null);
+		
+		dialogHelper = new JOptionHelper(frmCsnaBy);
 		
 		JLabel lblPort = new JLabel("Port");
 		lblPort.setBounds(7, 15, 51, 20);
@@ -319,7 +323,7 @@ public class csNa_GUI {
 					ConsoleFTP.setSelectionStart(ConsoleFTP.getText().length());
 					csNaLOG.append("\n>> Connessione fallita.\n");
 					csNaLOG.setSelectionStart(csNaLOG.getText().length());
-					JOptionPane.showMessageDialog(frmCsnaBy, "Errore nella connessione a: "+HOST.getText());
+					dialogHelper.error("Errore nella connessione a: "+HOST.getText());
 				}
 				for (String s:file) {
 					tokenizer=new StringTokenizer(s, "-");
@@ -465,8 +469,7 @@ public class csNa_GUI {
 						ini.put("FTP_LOGIN", "HostFTP",HOST.getText());
 						ini.put("FTP_LOGIN", "UsrFTP",USER.getText());
 						if(!KEY.getText().equals("")) {
-							int YN=JOptionPane.showConfirmDialog(frmCsnaBy, "Vuoi salvare la Password del Server ftp specificata? (Opzione sconsigliata)","Conferma salvataggio password",JOptionPane.YES_NO_OPTION);
-							if(YN==JOptionPane.YES_OPTION) {
+							if(dialogHelper.yesOrNo("Vuoi salvare la Password del Server ftp specificata? (Opzione sconsigliata)","Conferma salvataggio password")) {
 								ini.put("FTP_LOGIN", "KeyFTP",KEY.getText());
 								ConsoleFTP.append("\n  Chiave ftp -> CONFIG.ini\n");
 							}else {
@@ -697,7 +700,7 @@ public class csNa_GUI {
 											
 					}
 				}
-				JOptionPane.showMessageDialog(frmCsnaBy, "Download terminato! File scaricati in /Files_FTP");
+				dialogHelper.info("Download terminato! File scaricati in /Files_FTP");
 				csNaLOG.append("\n\n>> FINE, DMAD pronto:");
 				ConsoleFTP.append("\n\n>> TERMINATO!");
 				csNaLOG.setSelectionStart(csNaLOG.getText().length());
@@ -945,7 +948,7 @@ public class csNa_GUI {
 					StringBuilder buff=new StringBuilder();
 					if(!PORT_YN.isSelected()) {
 						btnFiltracartellaFtp.setEnabled(true);
-					 	JOptionPane.showMessageDialog(frmCsnaBy, (new File(exportName2)).getName()+": Completato - "+ (new File(exportName2)).length()+" Byte di dati");
+						dialogHelper.info((new File(exportName2)).getName()+": Completato - "+ (new File(exportName2)).length()+" Byte di dati");
 						return;
 					}
 					final Pcap reader = Pcap.openOffline(exportName, buff);
@@ -1007,11 +1010,11 @@ public class csNa_GUI {
 							if(firstappend) {
 				              	File export=new File(exportName);
 				               	if (export.length()<1024) {//byte
-				               	  	JOptionPane.showMessageDialog(frmCsnaBy, "Completato, il file "+export.getName()+" ha "+export.length()+" Byte di dati");
+				               		dialogHelper.info("Completato, il file "+export.getName()+" ha "+export.length()+" Byte di dati");
 							   	}else if(export.length()>=1024 && export.length()<(1024*1024)) {//kbyte
-				               	  	JOptionPane.showMessageDialog(frmCsnaBy, "Completato, il file "+export.getName()+" ha "+export.length()/1024+" kByte di dati");             
+							   		dialogHelper.info("Completato, il file "+export.getName()+" ha "+export.length()/1024+" kByte di dati");             
 				               	}else {//MByte
-				               	  	JOptionPane.showMessageDialog(frmCsnaBy, "Completato, il file "+export.getName()+" ha "+export.length()/(1024*1024)+" MByte di dati");
+				               		dialogHelper.info("Completato, il file "+export.getName()+" ha "+export.length()/(1024*1024)+" MByte di dati");
 					        	}
 				            }
 							csNaLOG.append("\n\n>> ################### COMPLETATO. ###################\n\n");
@@ -1125,11 +1128,11 @@ public class csNa_GUI {
                 if(firstappend) {
 	              	File export=new File(exportName);
 	               	if (export.length()<1024) {//byte
-	               	  	JOptionPane.showMessageDialog(frmCsnaBy, "Completato, il file "+export.getName()+" ha "+export.length()+" Byte di dati");
+	               		dialogHelper.info("Completato, il file "+export.getName()+" ha "+export.length()+" Byte di dati");
 				   	}else if(export.length()>=1024 && export.length()<(1024*1024)) {//kbyte
-	               	  	JOptionPane.showMessageDialog(frmCsnaBy, "Completato, il file "+export.getName()+" ha "+export.length()/1024+" kByte di dati");             
+				   		dialogHelper.info("Completato, il file "+export.getName()+" ha "+export.length()/1024+" kByte di dati");             
 	               	}else {//MByte
-	               	  	JOptionPane.showMessageDialog(frmCsnaBy, "Completato, il file "+export.getName()+" ha "+export.length()/(1024*1024)+" MByte di dati");
+	               		dialogHelper.info("Completato, il file "+export.getName()+" ha "+export.length()/(1024*1024)+" MByte di dati");
 		        	}
 	            }
                 csNaLOG.append("\n\n>> ################### EXPORT TERMINATO. ###################\n\n");
@@ -1164,12 +1167,7 @@ public class csNa_GUI {
 				
 				if(FTP_DELETE_FLAG.isSelected()||EXPORT_DELETE_FLAG.isSelected()||USER_DELETE_FLAG.isSelected()) {
 		    		
-					int selectedOption = JOptionPane.showConfirmDialog(frmCsnaBy, 
-                              "Vuoi davvero eliminare i file nelle cartelle selezionate? L'operazione non � reversibile.", 
-                              "Elimina file nelle cartelle locali", 
-                              JOptionPane.YES_NO_OPTION); 
-					
-					if (selectedOption == JOptionPane.YES_OPTION) {
+					if (dialogHelper.yesOrNo("Vuoi davvero eliminare i file nelle cartelle selezionate? L'operazione non � reversibile.", "Elimina file nelle cartelle locali")) {
 					    csNaLOG.append("\n >> Avvio eliminazione files in corso...\n");
 					    ConsoleFTP.append("\n >> CONFERMATO - AVVIO SCANSIONE FILE");
 					    new Thread(new Runnable() {

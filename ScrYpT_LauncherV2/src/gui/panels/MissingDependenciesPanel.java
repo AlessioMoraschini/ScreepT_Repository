@@ -9,6 +9,7 @@ import javax.swing.JDialog;
 import org.apache.log4j.Logger;
 
 import gui.GuiUtils;
+import gui.JOptionHelper;
 import launcherutils.IniFileManager;
 import launcherutils.om.DependencyModel;
 import mainlauncher.ScrYpTLauncher;
@@ -49,17 +50,22 @@ public class MissingDependenciesPanel extends JDialog{
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(MissingDependenciesPanel.class); 
 	
+	private static final String[] columnNames = {"Dependency name", "Critical dependency (T/F)", "Dependency actions"};
+
+	private JOptionHelper dialogHelper;
+	
 	private StartPanel parentStarterFrame;
 	private MissingDependenciesPanel thisPanel;
 	private ArrayList<DependencyModel> dependeciesMissing;
 	private JTable table;
 	private JLabel lblTitleHeaderMessage;
-	private static final String[] columnNames = {"Dependency name", "Critical dependency (T/F)", "Dependency actions"};
 	private JButton btnIgnoreWarnings;
 	private JButton btnRefreshNCheck;
 	private JButton btnLocateManually;
 	private JButton btnInstallDependency;
 	private JButton btnDownloadDependency;
+	
+	
 	public static boolean active = false;
 	
 	// constructor
@@ -69,6 +75,8 @@ public class MissingDependenciesPanel extends JDialog{
 		parentStarterFrame = parentStarter;
 		thisPanel = this;
 		thisPanel.setTitle(title);
+		
+		dialogHelper = new JOptionHelper(this);
 		
 		dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
 		
@@ -171,7 +179,7 @@ public class MissingDependenciesPanel extends JDialog{
 				checkCriticalMissingDependencies();
 				dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
 				if(dependeciesMissing.size() == 0) {
-					JOptionPane.showMessageDialog(thisPanel, "All dependencies are OK, you're ready to use all ScrYpT functions :)", "No missing dependencies found!", JOptionPane.INFORMATION_MESSAGE);
+					dialogHelper.info("All dependencies are OK, you're ready to use all ScrYpT functions :)", "No missing dependencies found!");
 					parentStarterFrame.setEnabled(true);
 					active = false;
 					dispose();
@@ -335,11 +343,10 @@ public class MissingDependenciesPanel extends JDialog{
 		checkbox.setOpaque(false);
 		Object[] params = {msg, checkbox};
 		if (dependeciesMissing.size() != 0) {
-			int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, "Confirm before continue",
-					JOptionPane.WARNING_MESSAGE);
+			int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
 			if (response == JOptionPane.OK_OPTION) {
 				if (checkbox.isSelected()) {
-					IniFileManager iniFileManager = parentStarterFrame.LAUNCHER.iniFileManager;
+					IniFileManager iniFileManager = ScrYpTLauncher.iniFileManager;
 					iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "autoShowInstallOpt", "false");
 				}
 				ScrYpTLauncher.ignoreWarnings = true;
@@ -358,8 +365,8 @@ public class MissingDependenciesPanel extends JDialog{
 	
 	private void askIfSureToExit() {
 		String msg = "Are you sure to close? Scrypt cannot be launched without required dependencies, launcher will close if continue";
-		int response = JOptionPane.showConfirmDialog(parentStarterFrame, msg, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
-		if (response == JOptionPane.OK_OPTION) {
+		
+		if (dialogHelper.yesOrNo(msg, "Confirm before continue")) {
 			System.exit(1);
     		logger.warn("Critical dependencies missing: Launcher closed by user");
 		}else {
@@ -388,7 +395,7 @@ public class MissingDependenciesPanel extends JDialog{
 			if (localInstaller.exists()) {
 				launchInstaller(currentDependency.relativePathToInstaller.getCurrentOSPath());
 			}else {
-				JOptionPane.showMessageDialog(thisPanel, ("There is no installer for "+currentDependency.dependencyName), "Installer missing", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error("There is no installer for "+currentDependency.dependencyName, "Installer missing");
 			}
 		}
 		
@@ -400,7 +407,7 @@ public class MissingDependenciesPanel extends JDialog{
 			if(currentDependency.URL != null && !currentDependency.URL.equals("")){
 				SysUtils.openUrlInBrowser(currentDependency.URL);
 			}else {
-				JOptionPane.showMessageDialog(thisPanel, ("Error opening URL for "+currentDependency.dependencyName), "URL missing", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error("Error opening URL for "+currentDependency.dependencyName, "URL missing");
 			}
 		}
 	}

@@ -9,6 +9,7 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import net.miginfocom.swing.MigLayout;
@@ -33,7 +34,6 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -836,7 +836,7 @@ public class HwInfoFrame extends ParentFrame{
 	
 	private void handleException(String msg, Throwable e) {
 		logger.error(msg, e);
-		JOptionPane.showMessageDialog(thisPanel, msg, msg, JOptionPane.ERROR_MESSAGE);
+		new JOptionHelperExtended(thisPanel).error(msg, msg);
 	}
 	
 	/**

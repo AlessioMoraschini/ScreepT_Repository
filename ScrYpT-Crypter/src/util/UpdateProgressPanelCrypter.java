@@ -11,11 +11,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import gui.JOptionHelper;
 
 /**
  * This is a class that implements a customizable closable (default is not closable, must set closable to true, and then set stopProcess to to true when you want to signal for close)
@@ -213,8 +214,8 @@ public class UpdateProgressPanelCrypter {
 	        	
 				new Thread(new Runnable() {
 					public void run() {
-						int choice = JOptionPane.showConfirmDialog(dialog, "Stop process?", "Stop process?", JOptionPane.YES_NO_OPTION);
-						if (choice == JOptionPane.YES_OPTION) {
+						boolean choice = new JOptionHelper(null).yesOrNo("Stop process?", "Stop process?");
+						if (choice) {
 							stopProcess.set(true);
 						} else {
 							stopProcess.set(false);

@@ -10,7 +10,6 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import files.Various;
@@ -84,6 +83,7 @@ class ButtonEditor extends DefaultCellEditor {
 					boolean installed = clickedButtonPlugin.installationCompleted;
 					PluginManager pluginManager = pluginManagerInterface.getPluginManager();
 					JFrame thisPanel = pluginManagerInterface.getFrame();
+					JOptionHelper dialogHelper = new JOptionHelper(thisPanel);
 
 					try {
 						if (installed) {
@@ -93,10 +93,10 @@ class ButtonEditor extends DefaultCellEditor {
 							boolean uninstalled = pluginManager.removePlugin(refreshedPlugin);
 							if (uninstalled) {
 								String message = "Plugin uninstalled correctly ;)";
-								JOptionPane.showMessageDialog(thisPanel, message, "Plugin uninstalled", JOptionPane.INFORMATION_MESSAGE);
+								dialogHelper.info(message, "Plugin uninstalled");
 							} else {
 								String message = "An error occurred during plugin removal! Delete will be re-tried on exit.";
-								JOptionPane.showMessageDialog(thisPanel, message, "An error occurred", JOptionPane.WARNING_MESSAGE);
+								dialogHelper.warn(message, "An error occurred");
 							}
 
 						} else {
@@ -106,21 +106,21 @@ class ButtonEditor extends DefaultCellEditor {
 								PluginDTO downloaded = pluginManager.downloadPlugin(refreshedPlugin);
 								pluginManager.installPlugin(downloaded, true);
 								String message = "Installation completed! Plugin will be available after restart.";
-								JOptionPane.showMessageDialog(thisPanel, message, "Plugin installed", JOptionPane.INFORMATION_MESSAGE);
+								dialogHelper.info(message, "Plugin installed");
 
 							} catch (Throwable e) {
 								if (e instanceof ProgressBarInterruptedException) {
 									pluginManagerInterface.setInstalling(false);
 									String message = "Installation process killed by user.";
-									JOptionPane.showMessageDialog(thisPanel, message, "Interrupted by user", JOptionPane.INFORMATION_MESSAGE);
+									dialogHelper.info(message, "Interrupted by user");
 								
 								} else if(e instanceof TimeoutException) {
 									String message = "Server is unreachable!";
-									JOptionPane.showMessageDialog(thisPanel, message, "An error occurred", JOptionPane.ERROR_MESSAGE);
+									dialogHelper.error(message, "An error occurred");
 								
 								} else {
 									String message = "An error occurred during installation";
-									JOptionPane.showMessageDialog(thisPanel, message, "An error occurred", JOptionPane.ERROR_MESSAGE);
+									dialogHelper.error(message, "An error occurred");
 								}
 							}
 						}
@@ -137,7 +137,7 @@ class ButtonEditor extends DefaultCellEditor {
 					
 					pluginManagerInterface.setInstalling(false);
 				} else {
-					JOptionPane.showMessageDialog(pluginManagerInterface.getFrame(), "Must wait current installation to finish before to start another one!", "Already installing", JOptionPane.WARNING_MESSAGE);
+					new JOptionHelper(pluginManagerInterface.getFrame()).warn("Must wait current installation to finish before to start another one!", "Already installing");
 				}
 			}
 		};

@@ -37,7 +37,6 @@ import java.awt.Insets;
 import java.awt.Point;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -397,9 +396,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		// RELOAD ORIGINAL SCRYPT CONFIGURATION
 		btnResetOriginalConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (JOptionPane.showConfirmDialog(parent.getMainFrame(), "Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ",
-						"Warning - Reset INI standard config?",
-						JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+				if (dialogHelper.yesOrNo("Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ", "Warning - Reset INI standard config?")) {
 					try {
 						FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
 						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
@@ -433,9 +430,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					File backupIni = config.getIniFile().getFile();
-					if (JOptionPane.showConfirmDialog(parent.getMainFrame(), "Really want to overwrite default configuration?",
-							"Warning - Overwrite default configuration?",
-							JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION) {
+					if (dialogHelper.yesOrNo("Really want to overwrite default configuration?",	"Warning - Overwrite default configuration?")) {
 						
 						config.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						config.setIniReadFile(new Ini(new File(GeneralConfig.DEFAULT_INI)));
@@ -494,10 +489,10 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	}
 	
 	public static boolean saveCurrentConf(INItializer configuration, JFrame parent) {
-		int choose = JOptionPane.showConfirmDialog(parent, "Are you sure to overwrite current configuration?", "Overwrite current Config?", JOptionPane.YES_NO_CANCEL_OPTION);
-		if(choose == JOptionPane.OK_OPTION) {
+		JOptionHelperExtended dialogHelper = new JOptionHelperExtended(parent);
+		if(dialogHelper.yesOrNo("Are you sure to overwrite current configuration?", "Overwrite current Config?")) {
 			configuration.writeCurrentConfigIniFile();
-			JOptionPane.showMessageDialog(parent,  configuration.getIniFile().getFile().getAbsolutePath() + " -> Saved", "Configuration saved", JOptionPane.INFORMATION_MESSAGE);
+			dialogHelper.info(configuration.getIniFile().getFile().getAbsolutePath() + " -> Saved", "Configuration saved");
 			return true;
 		}
 		return false; 

@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 
 import crypt.aes.AESException;
 import crypt.aes.AesCipher;
@@ -299,7 +298,7 @@ public class ScreeptManagerFileOrFolder {
 	private static boolean resetAfterException(String msg, Exception e) {
 		logger.error(msg, e);
 		if(e instanceof IOException) {
-			JOptionPane.showMessageDialog(null, "IO Error, remember that destination cannot be inside source!", "IO error", JOptionPane.ERROR_MESSAGE);
+			new JOptionHelper(null).error("IO Error, remember that destination cannot be inside source!", "IO error");
 		}
 		return false;
 	}

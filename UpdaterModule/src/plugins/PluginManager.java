@@ -12,12 +12,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
-import javax.swing.JOptionPane;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import files.Various;
+import gui.JOptionHelper;
 import gui.UpdateProgressPanelMin;
 import main.MainStandAloneUpdater;
 import network.DownloadUtils;
@@ -97,8 +96,7 @@ public class PluginManager {
 			boolean throwHashException = false;
 			if(askUserIfUnverifiedChecksum) {
 				String askMessage = plugin.getName() + " -> File integrity cannot be verified, install anyway?";
-				int userChoice = JOptionPane.showConfirmDialog(null, askMessage, "File verification failed", JOptionPane.YES_NO_OPTION);
-				if(userChoice == JOptionPane.NO_OPTION) {
+				if(new JOptionHelper(null).yesOrNo(askMessage, "File verification failed")) {
 					throw new Exception("Hash [" + plugin.getCheckSum() + "] not verified for file: " + plugin.localFile);
 				}
 			} else {

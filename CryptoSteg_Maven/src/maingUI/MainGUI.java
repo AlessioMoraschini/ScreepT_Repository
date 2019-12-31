@@ -11,8 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JOptionPane;
-
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -190,7 +188,7 @@ public class MainGUI extends MainGuiParent{
 			now = new Date();
 			mainAppRunning = true;
 			
-MainGuiGeneralAppStarter.loaderGraphics.update("Initializing graphics... ", 18);
+			MainGuiGeneralAppStarter.loaderGraphics.update("Initializing graphics... ", 18);
 			
 			// START MAIN WINDOW CONSTRUCTOR
 			logger.info("Initializing main GUI-start");
@@ -200,7 +198,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Initializing graphics... ", 18);
 			mainGuiUtils = new MainGuiUtils(window);
 			logger.info("Main GUI initialized correctly.");
 			
-MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 65);
+			MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 65);
 						
 			// AUTOSAVE MODULE - only if specified in fileOptions
 			autosaveModule = new Thread(new Runnable() {
@@ -417,7 +415,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 	@SuppressWarnings("serial")
 	private void initialize() {
 
- MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 30);
+		MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 30);
  
  		// This will be used to print out various types of dialogs in this class
  		dialogHelper = new JOptionHelperExtended(frmScryptV);
@@ -446,7 +444,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
         
         setBackgroundImage();
         
- MainGuiGeneralAppStarter.loaderGraphics.update("Defining handlers...", 40);
+        MainGuiGeneralAppStarter.loaderGraphics.update("Defining handlers...", 40);
 		
 		//////////////////////////// DEFINE HANDLERS  //////////////////////////////////
 		
@@ -634,8 +632,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					} catch (IOException e1) {
 						logger.error("Exception happened!", e1);
 					}
-					if (dialogHelper.showYNDialog(
-							"Really want to overwrite default configuration?", "Warning - Overwrite default configuration?", JOptionPane.YES_NO_OPTION)) {
+					if (dialogHelper.yesOrNo("Really want to overwrite default configuration?", "Warning - Overwrite default configuration?")) {
 						currentConfiguration.writeCurrentConfigIniFile();
 						dialogHelper.info("File " + currentConfiguration.getIniFile().getFile().getAbsolutePath() + " saved!", "File saved");
 					} else {
@@ -653,10 +650,9 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		    	if (!FLAG_loadSrcrYptDefaultConf) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadSrcrYptDefaultConf = true;
-					if (dialogHelper.showYNDialog(
+					if (dialogHelper.yesOrNo(
 							"Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ",
-							"Warning - Reset INI standard config?",
-							JOptionPane.YES_NO_OPTION)) {
+							"Warning - Reset INI standard config?")) {
 						try {
 							FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
 							currentConfiguration.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
@@ -689,7 +685,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScrYpT_launcher's customize options at start)";
 					boolean choice = true;
 					if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
-						choice = dialogHelper.showYNDialog(msg, "Export logs even if disabled?", JOptionPane.YES_NO_OPTION);
+						choice = dialogHelper.yesOrNo(msg, "Export logs even if disabled?");
 					}
 					
 					if (choice) {
@@ -737,10 +733,8 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 					FLAG_mntmEraseLogs = true;
 					File LOG_MAIN_FILE = new File(GeneralConfig.LOG_PATH);
 					String coolFileSize = FileStuff.coolFileSize(LOG_MAIN_FILE.length());
-					boolean choice = false;
 					String msg =  "<html>Are you sure you to want to erase your logs? <br/> If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]</html>";
-					choice = dialogHelper.showYNDialog(msg, "Erase Logs content?", JOptionPane.YES_NO_OPTION);
-					if(choice) {
+					if(dialogHelper.yesOrNo(msg, "Erase Logs content?")) {
 						if (FileStuff.clearFileContent(GeneralConfig.LOG_PATH) && FileStuff.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
 							logger.debug("Files deleted");
 							dialogHelper.info("Logs deleted - as you asked ;)", "Logs deleted");
@@ -1105,13 +1099,13 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 		
 	////////// END OF MENU MOUSE CLICK - HANDLERS DECLARATION  ////////////////
 	
- MainGuiGeneralAppStarter.loaderGraphics.update("Adding ActionHandlers...", 50);
+		MainGuiGeneralAppStarter.loaderGraphics.update("Adding ActionHandlers...", 50);
  		addHandlers();
  		
  		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
  
 		// once each component is declared add it to the menu bar
- MainGuiGeneralAppStarter.loaderGraphics.update("Structuring menu...", 60);
+ 		MainGuiGeneralAppStarter.loaderGraphics.update("Structuring menu...", 60);
 		structureMenuBar();
 		
 		// check non compatible options with current JVM
@@ -1247,14 +1241,14 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("zip")) {
-        		JOptionPane.showMessageDialog(parent, "Please specify a valid 'zip' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please specify a valid 'zip' file!", "Wrong File format");
         	}else {
         		correctFile = selectedFile;
         		currentConfiguration.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
 
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.info("Skipped after user request.");
         }
         return correctFile;
 	}
@@ -1450,8 +1444,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				
 				ChangeDTO changesTempDecrypted = panelCrypter.fileMonitor.checkForEverithing();
 				if (changesTempDecrypted.changedFiles.size() != 0) {
-					int choice = JOptionPane.showConfirmDialog(parent, "There are Files changed after decrypt.. do you want to return to ScreepT view? "+changesTempDecrypted.changedFiles);
-					if(choice == JOptionPane.YES_OPTION) {
+					if(dialogHelper.yesOrNo("There are Files changed after decrypt.. do you want to return to ScreepT view? "+changesTempDecrypted.changedFiles)) {
 						result = false;
 						mntmCrypter.doClick();
 						// add unsaved as source for crypterPanel
@@ -1506,8 +1499,7 @@ MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 
 				currentTabEditor.saveAllUnsavedExisting();
 			} catch (IOException e) {
 				logger.error(e);
-				int choiceError = JOptionPane.showConfirmDialog(null, "Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?");
-				if(!(choiceError == JOptionPane.OK_OPTION)) {
+				if(!dialogHelper.yesOrNo("Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?")) {
 					dialogHelper.error("Exit procedure arrested", "Close procedure stopped");
 					mntmTextEditor.doClick();
 					return false; // no -> don't exit after error

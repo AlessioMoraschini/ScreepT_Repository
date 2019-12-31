@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -235,9 +234,9 @@ public class TextEditorUtils {
 			String currFileName = (loadedTabObj.loadedFile != null) ? loadedTabObj.loadedFile.getName()
 					: currentTextEditor.footerPanel.lblCurrentFile.getText();
 			int choice = dialogHelper.yesNoOrCanc( currFileName + " is not saved, do you want to save it before to crypt?", null);
-			if (choice == JOptionPane.OK_OPTION) {
+			if (choice == JOptionHelperExtended.OK) {
 				currentTextEditor.subHeaderPanel.btnSaveTextFile.doClick();
-			} else if (choice == JOptionPane.CANCEL_OPTION) {
+			} else if (choice == JOptionHelperExtended.CANC) {
 				return;
 			}
 		}
@@ -260,11 +259,9 @@ public class TextEditorUtils {
 			if (openedFilesCrypter != 0) {
 				String msg = "There are " + openedFilesCrypter
 						+ " loaded files in ScreepT: do you want to remove from loaded list?";
-				Boolean choice = dialogHelper.showYNOrNullDialog(msg, "Empty current loaded files?", JOptionPane.YES_NO_OPTION);
-				if (choice != null) {
-					if (choice) {
-						cipherPanel.getPanelVDragNDropPane().removeAll();
-					}
+				Integer choice = dialogHelper.yesNoOrCanc(msg, "Empty current loaded files?");
+				if (choice == JOptionHelperExtended.OK) {
+					cipherPanel.getPanelVDragNDropPane().removeAll();
 				} else {
 					return;
 				} 

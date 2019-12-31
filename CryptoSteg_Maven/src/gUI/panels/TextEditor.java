@@ -10,7 +10,6 @@ import java.awt.KeyboardFocusManager;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
@@ -704,7 +703,7 @@ public class TextEditor extends ModulePanel {
 	 * @return
 	 */
 	public boolean askSave(int index) {
-		int askSave = JOptionPane.CANCEL_OPTION;
+		int askSave = JOptionHelperExtended.CANC;
 		TabTextEditorObj selected = getCurrentTabEditor().loadedList.getList().get(index);
 		
 		if (selected.unsaved) {
@@ -712,7 +711,7 @@ public class TextEditor extends ModulePanel {
 		} else {
 			return true;
 		}
-		if (askSave == JOptionPane.OK_OPTION) {
+		if (askSave == JOptionHelperExtended.OK) {
 
 			if (getCurrentTabEditor().loadedTabObj.loadedFile != null) {
 				subHeaderPanel.btnSaveTextFile.doClick();
@@ -720,7 +719,7 @@ public class TextEditor extends ModulePanel {
 				subHeaderPanel.btnSaveTextFileAs.doClick();
 			}
 			return !getCurrentTabEditor().loadedTabObj.unsaved;
-		} else if (askSave == JOptionPane.NO_OPTION) {
+		} else if (askSave == JOptionHelperExtended.NO) {
 			return true;
 		}
 		return false;

@@ -8,9 +8,10 @@ import java.io.PrintWriter;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
+
+import gui.JOptionHelper;
 
 public class FileUtils {
 	
@@ -116,18 +117,21 @@ public class FileUtils {
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		File correctFile = null;
 		
+		JOptionHelper dialogHelper = new JOptionHelper(parent);
+		
 		int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a directory!", "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.info("Skipped after user request.");
         }
+        
         return correctFile;
 	}
 }

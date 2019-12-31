@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -630,8 +629,7 @@ public class MainGuiUtils {
 			input = MainGUI.dialogHelper.askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
 			
 			if (input==null || input.equals("") || input.length() > 20) {
-				JOptionPane.showMessageDialog(null, "Username must be between 1-20 characters!",
-						"UserName length Error", JOptionPane.WARNING_MESSAGE);
+				MainGUI.dialogHelper.warn("Username must be between 1-20 characters!", "UserName length Error");
 				logger.error("Error in user input, redo.");
 			} else {
 				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", input);

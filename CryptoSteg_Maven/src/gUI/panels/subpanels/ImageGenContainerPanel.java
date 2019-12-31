@@ -90,7 +90,7 @@ public class ImageGenContainerPanel extends JPanel{
 					jtext.append("\n -> Creation of random "+w+" x "+h+" image");
 					bar.setValue(40);
 					progUpdater.getPb().setValue(40);
-					image = ImageWorkerScrYpT.generaKeyImage(width, height, imgEnumType.getType(), genContPane);
+					image = ImageWorkerScrYpT.generateKeyImage(width, height, imgEnumType.getType(), genContPane);
 					scaledImage = image.getScaledInstance((int)backup.getWidth(), (int)backup.getHeight(),Image.SCALE_FAST);
 					JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
 					removeAll();

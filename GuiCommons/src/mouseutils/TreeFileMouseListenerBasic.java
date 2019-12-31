@@ -11,7 +11,6 @@ import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -19,6 +18,7 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
+import dialogutils.JOptionHelperExtended;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.utils.GuiUtils;
 import menusettings.MenuSetter;
@@ -127,7 +127,7 @@ public class TreeFileMouseListenerBasic {
 	        public void actionPerformed(ActionEvent arg0) {
 
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
-            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(null, "Are you sure to delete?")==JOptionPane.OK_OPTION){	        		
+            	if(treeSelArr.length!= 0 && new JOptionHelperExtended(null).yesOrNo("Are you sure to delete?", "Delete?")){	        		
 		            for(TreePath tp : treeSelArr) {
 		            	
 	            		String path = tp.getLastPathComponent().toString();

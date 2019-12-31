@@ -13,7 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class AdWaitDialog extends JDialog {
-
+	private static final long serialVersionUID = 8586470397692817574L;
+	
 	AtomicBoolean closedOp = new AtomicBoolean(false);
     private JOptionPane optionPane;
     private String msgErr = "An Error occurred :(";

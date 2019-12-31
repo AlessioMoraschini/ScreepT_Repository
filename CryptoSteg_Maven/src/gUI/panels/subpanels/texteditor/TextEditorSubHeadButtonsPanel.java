@@ -26,7 +26,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSlider;
@@ -1452,7 +1451,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				if (JOptionPane.showConfirmDialog(parent.parentFrame, "Clear Text?") == JOptionPane.OK_OPTION) {
+				if (dialogHelper.yesOrNo("Clear Text?")) {
 					parent.getCurrentTabEditor().loadedTabObj.textArea.setText("");
 				}
 			}
@@ -1576,7 +1575,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				int newEnd = 0;
 				if (TextEditorShortcutListener.flagCtrlDown.get()) {
 					// remove character - open panel ad hoc
-					String selection = JOptionPane.showInputDialog("Specify the charachter/string you want to remove");
+					String selection = dialogHelper.askForString("Specify the charachter/string you want to remove");
 					if (selection != null && !selection.equals("")) {
 						newEnd = HandleString.removeCharachterFromTxtArea(selection, loadedTabObj.textArea, start, end);
 					}
@@ -1742,7 +1741,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					try {
 						done = FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true);
 					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(parent, "error Saving the selected file :(");
+						dialogHelper.error("error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
 					}
 					
@@ -1791,8 +1790,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							skipRefresh = false;
 							selectedFile = textEditorUtils.adaptFileExt(selectedFile);
 							if (selectedFile.exists()) {
-								if (JOptionPane.showConfirmDialog(parent.parentFrame, "File " + selectedFile.getName()
-										+ " exists, overwrite it?") == JOptionPane.OK_OPTION) {
+								if (dialogHelper.yesOrNo("File " + selectedFile.getName()
+										+ " exists, overwrite it?", "Overwrite?")) {
 									done = FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile,
 											true);
 								} else {
@@ -1835,7 +1834,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					} catch (IOException e1) {
 						skipRefresh = true;
 						textEditorUtils.errorAdvice("[Error Saving selected file]");
-						JOptionPane.showMessageDialog(parent, "error Saving the selected file :(");
+						dialogHelper.error("error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
 					}
 					// update signal value
@@ -1912,13 +1911,13 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public boolean startCloseAllTabsProcedure() {
 		int askIfUnsaved = dialogHelper.yesNoOrCanc("Do you want to be asked if any file is changed or unsaved?", "Close All Tabs");
 		
-		if(askIfUnsaved == JOptionPane.CANCEL_OPTION)
+		if(askIfUnsaved == JOptionHelperExtended.CANC)
 			return false;
 		
-		if(askIfUnsaved == JOptionPane.OK_OPTION) {
+		if(askIfUnsaved == JOptionHelperExtended.OK) {
 			parent.getCurrentTabEditor().removeAllTabs(true);
 		
-		}else if(askIfUnsaved == JOptionPane.NO_OPTION){
+		}else if(askIfUnsaved == JOptionHelperExtended.NO){
 			parent.getCurrentTabEditor().removeAllTabs(false);
 		}
 		

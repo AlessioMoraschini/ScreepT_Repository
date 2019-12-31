@@ -45,7 +45,6 @@ import util.UpdateProgressPanelCrypter;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -697,7 +696,7 @@ public class CrypterPanel extends ModulePanel {
 					if(screeptManagerFoF.screepTManager!=null) {
 						screeptManagerFoF.screepTManager.disableProgressUpdater();
 					}
-					dialogHelper.showTypedOKDialog("OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.error("OOOps, an error occurred, see log for details :(", "Generic Error");
 					logger.error("Exception happened during creept", ex);
 				}
 				
@@ -718,7 +717,7 @@ public class CrypterPanel extends ModulePanel {
 					if(screeptManagerFoF.screepTManager!=null) {
 						screeptManagerFoF.screepTManager.disableProgressUpdater();
 					}
-					dialogHelper.showTypedOKDialog("OOOps, an error occurred, see log for details :(", "Generic Error", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.error("OOOps, an error occurred, see log for details :(", "Generic Error");
 					logger.error("Exception happened during decreept!", ex);
 				}
 								
@@ -855,11 +854,8 @@ public class CrypterPanel extends ModulePanel {
 				srcFiles = panelVDragNDropPane.getTreeNodes();
 
 				// ask user if he wants to delete decripted after closing ScrYpT
-				int deleteAfterClose = JOptionPane.showConfirmDialog(parentFrame,
-						"Delete decripted file(s) after exiting ScrypT? (TEMP folder will be created on Desktop)", "Delete decripted when SW will be closed",
-						JOptionPane.YES_NO_OPTION);
 
-				if (deleteAfterClose == JOptionPane.YES_OPTION) {
+				if (dialogHelper.yesOrNo("Delete decripted file(s) after exiting ScrypT? (TEMP folder will be created on Desktop)", "Delete decripted when SW will be closed")) {
 					textAreaMain.append("Decripted files will be exported to temporary folder on user desktop folder\n");
 					// if temporary mode create temp folder ScrYpT on desktop
 					destinationDir = new File(GeneralConfig.TEMP_DECRIPTED_ROOT_PATH);
@@ -1061,7 +1057,7 @@ public class CrypterPanel extends ModulePanel {
 				// INFORM USER ABOUT ESIT OF CRYPT OPERATION
 				if(result.resultOK) {
 					String msg = "Operation completed succesfully!\nDo you want to empty source file pool?";
-					if(JOptionPane.showConfirmDialog(thisPanel, msg,"SUCCESS!", JOptionPane.INFORMATION_MESSAGE)==JOptionPane.OK_OPTION) {
+					if(dialogHelper.yesOrNo(msg,"SUCCESS!")) {
 						removeTreeFiles();
 					}
 					
@@ -1106,13 +1102,13 @@ public class CrypterPanel extends ModulePanel {
 	private void askUserIfWantsToDelete(File resultDirectory) {
 		if(resultDirectory != null && resultDirectory.isDirectory() && resultDirectory.exists()) {
 			logger.debug("Asking to user if he wants to delete directory: " + resultDirectory);
-			if(dialogHelper.showYNDialog("Do you want to delete " + resultDirectory + "'s content?", "Delete content?", JOptionPane.INFORMATION_MESSAGE)) {
+			if(dialogHelper.yesOrNo("Do you want to delete " + resultDirectory + "'s content?", "Delete content?")) {
 				boolean result = FileStuff.deleteDirContentRecursive(resultDirectory);
 				
 				if(result) {
-					dialogHelper.showTypedOKDialog(resultDirectory + "'s content deleted.", "Directory cleaned", JOptionPane.INFORMATION_MESSAGE);
+					dialogHelper.info(resultDirectory + "'s content deleted.", "Directory cleaned");
 				} else {
-					dialogHelper.showTypedOKDialog("Cannot delete all content in " + resultDirectory, "Cannot clean directory.", JOptionPane.WARNING_MESSAGE);
+					dialogHelper.warn("Cannot delete all content in " + resultDirectory, "Cannot clean directory.");
 					GuiUtils.openInFileSystem(resultDirectory);
 				}
 			}
@@ -1207,7 +1203,6 @@ public class CrypterPanel extends ModulePanel {
 		textAreaMain.append("\n\n" + builder.toString());
 		textAreaMain.revalidate();
 		textAreaMain.repaint();
-
 	}
 	
 	public void configureNstartTree() {
@@ -1459,16 +1454,16 @@ public class CrypterPanel extends ModulePanel {
 					lblKeyImageSelected.setText(newdisplayed);
 					
 					srcKeyImageFile = thisFile;
-					JOptionPane.showMessageDialog(thisPanel, "Key Image file correctly loaded and selected :)","Key Image Selected :)", JOptionPane.INFORMATION_MESSAGE);
+					dialogHelper.info("Key Image file correctly loaded and selected :)","Key Image Selected :)");
 				}else {
 					String msg = " File not recognized as Key: \n\n => "+thisFile.getName();
 					textAreaLog.append("\n" + msg);
-					JOptionPane.showMessageDialog(thisPanel, "Key Image file not recognized :(","Key Image not recognized :(", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.error("Key Image file not recognized :(","Key Image not recognized :(");
 				}
 			} catch (IOException e) {
 				String msg = "Some Error Occurred :(";
 				textAreaLog.append("\n" + msg);
-				JOptionPane.showMessageDialog(thisPanel, msg, msg, JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error(msg, msg);
 			}
 		}
 	}
@@ -1511,7 +1506,7 @@ public class CrypterPanel extends ModulePanel {
 				srcKeyImageFile = null;
 				lblKeyImageSelected.setForeground(SystemColor.RED);
 				lblKeyImageSelected.setText("Not supported: choose another or convert");
-				JOptionPane.showMessageDialog(thisPanel, "Image not supported. Please convert it with converter png uncompressed, or generate one!", "UNSUPPORTED IMAGE", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error("Image not supported. Please convert it with converter png uncompressed, or generate one!", "UNSUPPORTED IMAGE");
 			}
 			
 			
@@ -1531,7 +1526,7 @@ public class CrypterPanel extends ModulePanel {
 				panelKeyImgDisp.revalidate();
 				panelKeyImgDisp.repaint();
 			}
-			JOptionPane.showMessageDialog(thisPanel, "OOOps, IO Error occurred :(", "IO error", JOptionPane.ERROR_MESSAGE);
+			dialogHelper.error("OOOps, IO Error occurred :(", "IO error");
 		}
     }
 
@@ -1545,12 +1540,12 @@ public class CrypterPanel extends ModulePanel {
 			panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
 			
 			appendMessageTxtAreas("Source File Loaded: "+srcFile.getAbsolutePath());
-			dialogHelper.showTypedOKDialog("Source file correctly loaded", "File Loaded :)", JOptionPane.INFORMATION_MESSAGE);
+			dialogHelper.info("Source file correctly loaded", "File Loaded :)");
 			
 			logger.debug("File :" + selected.getName() + " correctly loaded");
 		} else {
 			
-			dialogHelper.showTypedOKDialog("File was already loaded in source pool", "File already Loaded :)", JOptionPane.INFORMATION_MESSAGE);
+			dialogHelper.info("File was already loaded in source pool", "File already Loaded :)");
 			logger.debug("File load skipped: already loaded!");
 		}
 	}
@@ -1620,8 +1615,7 @@ public class CrypterPanel extends ModulePanel {
 	}
 	
 	public void showMessageImageNotSupported() {
-		int choice = JOptionPane.showConfirmDialog(mainApplication.getMainFrame(), "Image type not supported! Do you want to open image converter tool to convert it?", "Image not Supported!", JOptionPane.YES_NO_OPTION);
-		if(choice == JOptionPane.YES_OPTION) {
+		if(dialogHelper.yesOrNo("Image type not supported! Do you want to open image converter tool to convert it?", "Image not Supported!")) {
 			mainApplication.getMntmImageConverter().doClick();
 		}
 	}

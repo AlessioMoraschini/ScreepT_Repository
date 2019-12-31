@@ -12,7 +12,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
@@ -29,6 +28,7 @@ import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
+import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import om.LimitedConcurrentList;
 import resources.IconsPathConfigurator;
@@ -272,8 +272,7 @@ public class TextAreaDialogs {
 					case REPLACE_ALL:
 						result = SearchEngine.replaceAll(dialogManager.getTargetTextArea(), context);
 						replaceList.addNreplaceToTopIfPresent(context.getReplaceWith());
-						JOptionPane.showMessageDialog(null, result.getCount() +
-								" occurrences replaced.");
+						new JOptionHelperExtended(null).info(result.getCount() + " occurrences replaced.", "Occurrences replaced");
 						break;
 				}
 

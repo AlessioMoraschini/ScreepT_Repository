@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import gui.GuiUtils;
+import gui.JOptionHelper;
 import gui.panels.CustomizeParametersPanel;
 import gui.panels.MissingDependenciesPanel;
 import gui.panels.StartPanel;
@@ -475,8 +475,7 @@ public class ScrYpTLauncher {
 				String advice = "<html>It seems there is already a running instance of " +GeneralConfig.APPLICATION_NAME 
 						+ "<br/> -> If this message is not due to a previous application crash, it's strongly recommended to avoid multiple instances." 
 						+ "<br/> Are you sure to start another instance?</html>";
-				int choice = JOptionPane.showConfirmDialog(null, advice);
-				runNewInstance = choice == JOptionPane.YES_OPTION;
+				runNewInstance = new JOptionHelper(null).yesOrNo(advice);
 			}
 			
 			if (!runNewInstance) {

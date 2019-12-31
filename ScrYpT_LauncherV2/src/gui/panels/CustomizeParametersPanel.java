@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import gui.GuiUtils;
+import gui.JOptionHelper;
 import launcherutils.IniFileManager;
 import launcherutils.JvmHelper;
 import mainlauncher.ScrYpTLauncher;
@@ -17,7 +18,6 @@ import resources.ImagesPathConfigurator;
 import utils.SysUtils;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -430,7 +430,7 @@ public class CustomizeParametersPanel extends JFrame{
 				
 				// regenerate command list with new args
 				parentStarterPanel.LAUNCHER.analyzeBeforeLauncher();
-				JOptionPane.showMessageDialog(thisPanel, "Settings saved :)", "Settings saved", JOptionPane.INFORMATION_MESSAGE);
+				new JOptionHelper(thisPanel).info("Settings saved :)", "Settings saved");
 				active = false;
 				dispose();
 				

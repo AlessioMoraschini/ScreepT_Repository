@@ -5,7 +5,6 @@ import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
@@ -358,7 +357,7 @@ public class KeyGenFrame extends ParentFrame {
 							        	textLog.append("\n"+now.toString()+" -> Saving file "+selectedFile+" ...");
 							    		textLog.setCaretPosition(textLog.getText().length());
 							        	if(selectedFile.exists()) {
-							        		if(JOptionPane.showConfirmDialog(thisFrame, "File "+selectedFile.getName()+" exists, overwrite it?")==JOptionPane.OK_OPTION) {
+							        		if(dialogHelper.yesOrNo("File "+selectedFile.getName()+" exists, overwrite it?", "overwrite?")) {
 							        			selectedFile.delete();	
 							                   	done = selectedFile.createNewFile();
 									    		progUpdater.getPb().setValue(30);
@@ -429,9 +428,9 @@ public class KeyGenFrame extends ParentFrame {
 							if (imageContainer != null && imageContainer.getImage() != null) {
 								BufferedImage IMG = imageContainer.getImage();
 								textLog.append("\n [Started] adding key to dictionary...");
-								String inputName = JOptionPane.showInputDialog(thisFrame,
+								String inputName = dialogHelper.askForString(
 										"Please insert a name for the image to be added (Otherwise current date will be used as filename)",
-										"Choose a name for the File.", JOptionPane.QUESTION_MESSAGE);
+										"Choose a name for the File.");
 								if (inputName != null && inputName.equals("")) {
 									inputName = "ScreepT-Key" + df.format(now) + ".png";
 									logger.debug("No input by user... current date used as name: " + inputName);

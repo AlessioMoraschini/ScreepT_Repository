@@ -11,6 +11,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import ButtonUtils.ButtonDefaults;
+import gui.JOptionHelper;
 import media.Sounds;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
@@ -19,13 +20,13 @@ import resources.SoundsConfigurator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 
 public class HeaderPanelSearch extends JPanel{
-	
+	private static final long serialVersionUID = 7734630242175430411L;
+
 	public static String defaultJsBackColorSelection = "yellow";
 	
 	private JButton btnGoBack;
@@ -139,7 +140,7 @@ public class HeaderPanelSearch extends JPanel{
 		btnOpenInBrowser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!panelFxHtml.openInBrowser()) {
-					JOptionPane.showMessageDialog(panelFxHtml, "Cannot open in default browser, some error occurred :(", "Error opening in browser", JOptionPane.ERROR_MESSAGE);
+					new JOptionHelper(panelFxHtml).error("Cannot open in default browser, some error occurred :(", "Error opening in browser");
 				}
 			}
 		});

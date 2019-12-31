@@ -13,7 +13,6 @@ import utils.panels.arch.ParentPanel;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -918,11 +917,11 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		btnSaveConf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				int chosenOption = JOptionPane.showConfirmDialog(thisFrame,
+				boolean chosenOption = dialogHelper.yesOrNo(
 						"Are you sure you want to overwrite " + currentConfiguration.getIniFile().getFile().getPath()
 								+ "(ONLY GUI_OPTIONS)?",
-						"overwrite configuration", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if (chosenOption == JOptionPane.YES_OPTION) {
+						"overwrite configuration");
+				if (chosenOption) {
 
 					// write single values to file ini associated to currentConf
 					writeValuesToConfFile(currentConfiguration);

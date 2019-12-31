@@ -24,7 +24,6 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -36,6 +35,7 @@ import org.apache.log4j.Logger;
 
 import amfileutils.om.DeleteFilesByExtensionDTO;
 import files.CustomFileFilters;
+import gui.JOptionHelper;
 import resources.GeneralConfig;
 
 public class FileStuff {
@@ -44,6 +44,8 @@ public class FileStuff {
 
 	// FileStuff logger creation		
 	static Logger logger = Logger.getLogger(FileStuff.class); 
+	
+	static JOptionHelper dialogHelper = new JOptionHelper(null);
 	
 	/**
 	 * Checks if the root of the given path is defined in current file system
@@ -1002,10 +1004,9 @@ public class FileStuff {
 		logger.info("loadFileTxtArea -> Start...");
 		
     	if(extensionFilter != null && !FilenameUtils.getExtension(txtFile.getAbsolutePath()).equals(extensionFilter)) {
-			JOptionPane.showMessageDialog(null, "Please select a valid "+ extensionFilter +" file!");
-    	}
+    		dialogHelper.warn("Please select a valid "+ extensionFilter +" file!", null);
     	
-    	else {
+    	} else {
     		BufferedReader reader;
     		StringBuilder builder = new StringBuilder();
     		textArea_1.setText("");
@@ -1031,7 +1032,7 @@ public class FileStuff {
 				}
 				
 			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(null, "[Error loading the selected file]");
+				dialogHelper.error("[Error loading the selected file]", null);
 				logger.error("Exception happened!", e1);
 				return false;
 			}

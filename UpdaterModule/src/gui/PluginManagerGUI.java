@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import java.awt.Color;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import java.awt.Font;
@@ -225,8 +224,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	
 	private boolean askIfSureToClose() {
 		String msg = "Are you sure to close Plugin Manager? There is an installation in progress. It will be interrupted";
-		int response = JOptionPane.showConfirmDialog(thisPanel, msg, "Exit plugin manager?", JOptionPane.WARNING_MESSAGE);
-		if (response == JOptionPane.OK_OPTION) {
+		if (new JOptionHelper(thisPanel).showYNOrNullDialogWarn(msg, "Exit plugin manager?")) {
 			return true;
 		}else {
 			return false;

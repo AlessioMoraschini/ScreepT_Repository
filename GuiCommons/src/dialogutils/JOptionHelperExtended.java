@@ -89,7 +89,7 @@ public class JOptionHelperExtended extends JOptionHelper {
 			final JOptionPane optionPane = new JOptionPane(
 					msg instanceof String ? getLabelStyledText((String) msg) : msg, 
 					msgType,
-					JOptionPane.OK_OPTION,
+					OK,
 					iconBig,
 					choiceOptions,
 					defaultOption);

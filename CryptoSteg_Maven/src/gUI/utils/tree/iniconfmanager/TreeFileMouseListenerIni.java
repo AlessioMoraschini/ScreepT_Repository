@@ -13,7 +13,6 @@ import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
@@ -23,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import gUI.panels.ConfigurationManagerPanel;
 import maingUI.MainGUI;
@@ -42,6 +42,8 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	// gui elements
 	private INItializer currentConfig;
 	private ConfigurationManagerPanel confManagerPanel;
+	
+	private JOptionHelperExtended dialogHelper;
 
 	public TreeFileMouseListenerIni(Component parent) {
 		super(parent);
@@ -54,6 +56,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 		tree = treeIn;
 		tree.setComponentPopupMenu(getPopUpMenu());
 		tree.addMouseListener(getMouseListener());
+		dialogHelper = new JOptionHelperExtended(parent);
 	}
 	
 	public MouseListener getMouseListener() {
@@ -167,8 +170,8 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 				File defaultFolder = new File(GeneralConfig.DEFAULT_INI_FOLDER);
 				
 				String newName = "";
-				newName = JOptionPane.showInputDialog("Choose a name for the configuration to save");
-				if (newName.equals("")) {
+				newName = new JOptionHelperExtended(parent).askForString("Choose a name for the configuration to save");
+				if (newName.trim().equals("")) {
 					return;
 				}
 				
@@ -255,11 +258,10 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 		if (selectedImportDir!=null && selectedImportDir.isDirectory()) {
 			try {
 				FileStuff.copyDirectoryContents(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false, "ini");
-				JOptionPane.showMessageDialog(confManagerPanel,"Directory :" + selectedImportDir.getName() + " added in the configurations -> "
-								+ GeneralConfig.DEFAULT_INI_FOLDER, "Directory added to config pool :)", JOptionPane.INFORMATION_MESSAGE);
+				dialogHelper.info("Directory :" + selectedImportDir.getName() + " added in the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER, "Directory added to config pool :)");
 				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
 			} catch (IOException e1) {
-				JOptionPane.showMessageDialog(confManagerPanel, "Directory not imported in " + GeneralConfig.DEFAULT_INI_FOLDER,	". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error("Directory not imported in " + GeneralConfig.DEFAULT_INI_FOLDER,	". Some error occurred :(");
 				logger.error("Directory not imported, some error occurred :( ");
 			} 
 		}else if(selectedImportDir!=null && selectedImportDir.isFile() && selectedImportDir.getName().toLowerCase().endsWith(".ini")) {
@@ -268,7 +270,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
 			} catch (IOException e) {
 				logger.error("An error occurred during import :(");
-				JOptionPane.showMessageDialog(null, "Ooooops... An Error occurred during Import!", "An Error Occurred", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error("Ooooops... An Error occurred during Import!", "An Error Occurred");
 			}
 		}
 	}

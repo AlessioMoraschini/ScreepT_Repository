@@ -39,7 +39,6 @@ import resources.IconsPathConfigurator;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -592,7 +591,7 @@ public class ImageConverterFrame extends ParentFrame{
 										//if is selected an export file
 										ImageGeneralWorker.convertAndWrite(imageToConvert, ".png", selected);
 										String msg ="Image converted and added to dictionary: "+selected.getAbsolutePath();
-										JOptionPane.showMessageDialog(thisFrame, msg, "Image converted :)", JOptionPane.INFORMATION_MESSAGE);
+										dialogHelper.info(msg, "Image converted :)");
 										logger.debug(msg);
 									}
 								}
@@ -605,7 +604,7 @@ public class ImageConverterFrame extends ParentFrame{
 						}else {
 							refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
 							String msg = "You have to Load a Source image file before to convert it !";
-							JOptionPane.showMessageDialog(thisFrame, msg,"Missing source file", JOptionPane.ERROR_MESSAGE);
+							dialogHelper.error(msg,"Missing source file");
 							logger.error(msg);
 						}	
 						
@@ -702,10 +701,10 @@ public class ImageConverterFrame extends ParentFrame{
 											}
 											
 										} catch (IOException e) {
-											JOptionPane.showMessageDialog(thisFrame, "IO error :(", "IO Error", JOptionPane.ERROR_MESSAGE);
+											dialogHelper.error("IO error :(", "IO Error");
 											logger.error("Exception happened during conversion", e);
 										} catch (UnsupportedOperationException e) {
-											JOptionPane.showMessageDialog(thisFrame, "Unsupported operation :(", "IO Error", JOptionPane.ERROR_MESSAGE);
+											dialogHelper.error("Unsupported operation :(", "IO Error");
 											logger.error("Exception happened during conversion", e);
 										} finally {
 											try {
@@ -725,13 +724,13 @@ public class ImageConverterFrame extends ParentFrame{
 								
 								String msg = "Image converted: "+selected.getAbsolutePath();
 								logger.debug(msg);
-								JOptionPane.showMessageDialog(thisFrame, msg,"Image converted :)", JOptionPane.INFORMATION_MESSAGE);
+								dialogHelper.info(msg,"Image converted :)");
 
 							}
 						}else {
 							refreshInGui("###Error###","###Error###","###Error###","###Error###", (int)spinnerWidth.getValue(), (int)spinnerHeight.getValue());
 							String msg = "You have to Load a Source image file before to convert it !";
-							JOptionPane.showMessageDialog(thisFrame, msg,"Missing source file", JOptionPane.ERROR_MESSAGE);
+							dialogHelper.error(msg, "Missing source file");
 							logger.error(msg);
 						}
 						btnConvertAddDictionary.setEnabled(true);
@@ -779,7 +778,7 @@ public class ImageConverterFrame extends ParentFrame{
 									inputImgFile = selected;
 								} catch (IOException e2) {
 									String msg = "Image not loaded :("+e2.toString();
-									JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+									dialogHelper.error(msg,"Some error occurred :(");
 									logger.error(msg);
 								}
 								
@@ -846,7 +845,7 @@ public class ImageConverterFrame extends ParentFrame{
 					inputImgFile = sourceImage;
 				} catch (IOException e2) {
 					String msg = "Image not loaded :("+e2.toString();
-					JOptionPane.showMessageDialog(thisFrame, msg,"Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.error(msg,"Some error occurred :(");
 					logger.error(msg);
 				}
 				

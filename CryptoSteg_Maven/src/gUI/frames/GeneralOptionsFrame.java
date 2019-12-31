@@ -26,7 +26,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -56,7 +55,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 
 	// initialize Logger
 	// GraphicPreferencesFrame logger
-	static Logger logger = Logger.getLogger(GeneralOptionsFrame.class); 
+	static Logger logger = Logger.getLogger(GeneralOptionsFrame.class);
 	
 	public static GeneralOptionsFrame singletonInstance = null;
 	
@@ -446,9 +445,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 		// SAVE CONF BUTTON HANDLER
 		btnSaveConf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (JOptionPane.showConfirmDialog(thisFrame,"Are you sure you want to overwrite "+currentConfiguration.getIniFile().getFile().getPath()+"(ONLY GENERAL OPTIONS)?", 
-		        		"overwrite configuration", JOptionPane.YES_NO_OPTION,
-		        		JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+				if (dialogHelper.yesOrNo("Are you sure you want to overwrite "+currentConfiguration.getIniFile().getFile().getPath()+"(ONLY GENERAL OPTIONS)?", 
+		        		"overwrite configuration")) {
 					
 					writeValues();
 					

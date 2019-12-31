@@ -17,10 +17,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
@@ -48,7 +46,6 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	
 	// gui elements
 	private JTextArea TEXT_LOG = new JTextArea();
-	private JFrame mainFrame;
 	private INItializer currentConfig;
 	private JPanel imgKeyPanel;
 	private JLabel lblKeyDisp;
@@ -69,7 +66,6 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 		lblKeyDisp = cryptPanel.getLblDisplayedKey();
 		imgKeySelected = cryptPanel.getLblKeyImageSelected();
 		currentConfig = currentConf;
-		mainFrame = cryptPanel.getParentFrame();
 		TEXT_LOG = cryptPanel.getTextAreaLog();
 		tree = cryptPanel.getTree();
 		tree.setComponentPopupMenu(getPopUpMenu());
@@ -184,9 +180,8 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 
 	            if (!cryptoPanel.isCoderUsed()) {
 					TreePath[] treeSelArr = tree.getSelectionPaths();
-					int i = 0;
-					if (treeSelArr.length != 0 && JOptionPane.showConfirmDialog(mainFrame,
-							"Are you sure to delete?") == JOptionPane.OK_OPTION) {
+
+					if (treeSelArr.length != 0 && dialogHelper.yesOrNo("Are you sure to delete?")) {
 						for (TreePath tp : treeSelArr) {
 							//		            	String path = tp.toString().replaceAll("\\]| |\\[|", "").replaceAll(",", File.separator);
 							String path = tp.getLastPathComponent().toString();
@@ -200,7 +195,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 
 					} else {
 						String msg = "Skipped after user request!";
-						JOptionPane.showMessageDialog(mainFrame, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
+						dialogHelper.warn(msg, "Skipped");
 						logger.debug(msg);
 					} 
 				}
@@ -294,13 +289,12 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 										logger.debug(msg + Arrays.toString(treeSelArr));
 										TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
 										progUpdater.getPb().setValue(100);
-										JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!",
-												JOptionPane.INFORMATION_MESSAGE);
+										dialogHelper.info(msg, "Files exported!");
 
 									} else {
 										progUpdater.getPb().setValue(100);
 										String msg = "Skipped after user request!";
-										JOptionPane.showMessageDialog(tree, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
+										dialogHelper.warn(msg, "Skipped");
 										logger.debug(msg);
 									}
 								}
@@ -383,8 +377,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 
 					imgKeySelected.setText(newdisplayed);
 					cryptoPanel.setSrcKeyImageFile(thisFile);
-					JOptionPane.showMessageDialog(mainFrame, "Key Image file correctly loaded and selected :)",
-							"Key Image Selected :)", JOptionPane.INFORMATION_MESSAGE);
+					dialogHelper.info("Key Image file correctly loaded and selected :)", "Key Image Selected :)");
 				}else {
 					String msg = "File not recognized as Key: \n\n => "+thisFile.getName();
 					TEXT_LOG.append(msg);
@@ -396,7 +389,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 				imgKeySelected.setForeground(Color.RED);
 				imgKeySelected.setText(msg);
 				cryptoPanel.setSrcKeyImageFile(null);
-				JOptionPane.showMessageDialog(mainFrame, msg, msg, JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error(msg, msg);
 			}
 		}
 	}
@@ -424,20 +417,19 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 		JFileChooser fileChooser = new JFileChooser();		
 		fileChooser.setDialogTitle("Load .png File");
 		File correctFile = null;
-		JOptionPane optPane = new JOptionPane();
-		
+
 		int returnVal = fileChooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("png")) {
-        		optPane.showMessageDialog(parent, "Please select a valid '.png' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a valid '.png' file!", "Wrong File format");
         	}else {
         		correctFile = selectedFile;
         	}
         }else {
-        	optPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.info("Skipped after user request.");
         }
         return correctFile;
 	}
@@ -447,27 +439,24 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	 * dictionary, if nothing is selected returns null
 	 */
 	private File directoWrite(JComponent parent) {
-
 		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConfig.getFileOpt().getLastDstFolderPath()));		
 		File correctFile = null;
-		JOptionPane optPane = new JOptionPane();
-		
 		
 		int returnVal = fileChooser.showSaveDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		optPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a directory!", "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		currentConfig.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	optPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.info("Skipped after user request.");
         }
         return correctFile;
 	}

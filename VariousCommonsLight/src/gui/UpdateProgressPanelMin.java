@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -225,8 +224,7 @@ public class UpdateProgressPanelMin {
 	        	
 				new Thread(new Runnable() {
 					public void run() {
-						int choice = JOptionPane.showConfirmDialog(dialog, "Stop process?", "Stop process?", JOptionPane.YES_NO_OPTION);
-						if (choice == JOptionPane.YES_OPTION) {
+						if (new JOptionHelper(dialog).yesOrNo("Stop process?", "Stop process?")) {
 							stopProcess.set(true);
 						} else {
 							stopProcess.set(false);

@@ -17,10 +17,11 @@ import java.util.Arrays;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
+
+import gui.JOptionHelper;
 
 import static java.lang.System.out;
 
@@ -353,7 +354,7 @@ public class Various {
 			
 			File selectedFile = fileChooser.getSelectedFile();
 			if(selectedFile==null||!selectedFile.isDirectory()) {
-				JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+				new JOptionHelper(parent).error("Select a directory!", "Select a directory");
 			}else {
 				correctFile = selectedFile;
 			}

@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
@@ -36,15 +35,14 @@ public class FilesAndDirectoriesManagerGUI {
             try {
             	selectedFile = fileChooser.getSelectedFile();
             	if(selectedFile.isFile()) {
-            		if(JOptionPane.showConfirmDialog(fileChooser, "Are you sure to rename file: '"+selectedFile.getName()+ "'?")==JOptionPane.OK_OPTION) {
+            		if(dialog.yesOrNo("Are you sure to rename file: '"+selectedFile.getName()+ "'?")) {
             			defaultVisualizedDir = selectedFile.getParentFile().getAbsolutePath();
 		            	errors=FileStuff.upperCaseSubFolder(selectedFile);
 		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
             		}
             	}//END FILE
             	else if(selectedFile.isDirectory()) {
-            		if(JOptionPane.showConfirmDialog(fileChooser, "Are you sure to rename folder: '"+selectedFile.getName()+
-	            			"' and all files/directory in it?")==JOptionPane.OK_OPTION) {
+            		if(dialog.yesOrNo("Are you sure to rename folder: '" + selectedFile.getName() + "' and all files/directory in it?")) {
             			defaultVisualizedDir = selectedFile.getAbsolutePath();
 		            	errors=FileStuff.upperCaseSubFolder(selectedFile);
 		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
@@ -147,13 +145,18 @@ public class FilesAndDirectoriesManagerGUI {
 		String notFoundExtensions = "";
 
 		if (selected != null) {
-			String deleteExtensionMatch = JOptionPane.showInputDialog("Specify wich extensions you want to delete, separated by a comma (ex. 'jpg, txt, png')");
-			response = FileStuff.emptyDirContentByExt(selected, deleteExtensionMatch);
+			String deleteExtensionMatch = dialog.askForStringNullable("Specify wich extensions you want to delete, separated by a comma (ex. 'jpg, txt, png')", "Specify extensions to delete");
 			
-			if(!askConfirmation("Are you sure to delete all matches ["+ deleteExtensionMatch +"] in [" + selected.getName() + "] ?", null)) {
+			if(deleteExtensionMatch.trim().equals("") && !askConfirmation("No extension specified: are you sure to delete all files in [" + selected.getName() + "] ?", null)) {
+				skippedAdvice();
+				return;
+			
+			} else if (deleteExtensionMatch == null || !askConfirmation("Are you sure to delete all matches ["+ deleteExtensionMatch +"] in [" + selected.getName() + "] ?", null)) {
 				skippedAdvice();
 				return;
 			}
+
+			response = FileStuff.emptyDirContentByExt(selected, deleteExtensionMatch);
 			
 			if (response.getNotFoundExtensionResult().size() != 0) {
 				notFoundExtensions = " These extensions have 0 matches: " + response.getNotFoundExtensionResult();

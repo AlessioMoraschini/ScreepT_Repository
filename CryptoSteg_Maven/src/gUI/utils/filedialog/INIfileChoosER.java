@@ -3,7 +3,6 @@ package gUI.utils.filedialog;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 import org.apache.commons.io.FilenameUtils;
@@ -12,6 +11,7 @@ import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelperExtended;
 import mainobj.INItializer;
 
 import java.awt.BorderLayout;
@@ -26,6 +26,8 @@ public class INIfileChoosER extends JDialog{
 	// INItializer logger creation		
 	static Logger logger = Logger.getLogger(INIfileChoosER.class); 
 	
+	private JOptionHelperExtended dialogHelper;
+	
 	/**
 	 * Read file INI updating textArea and label
 	 * */
@@ -36,6 +38,8 @@ public class INIfileChoosER extends JDialog{
 		fileChooser.setCurrentDirectory(new File("INI_FILES"));		
 		final INItializer backupINI = fileINI;
 		int returnVal = fileChooser.showOpenDialog(this.getParent());
+		
+		dialogHelper = new JOptionHelperExtended(this);
 		
         if (returnVal == JFileChooser.APPROVE_OPTION) {
         	String fileExtension = FilenameUtils.getExtension(fileChooser.getSelectedFile().getName());
@@ -54,10 +58,10 @@ public class INIfileChoosER extends JDialog{
 				logger.error(e);
 			}else {
 				if(!fileExtension.equalsIgnoreCase("ini")) {
-					JOptionPane.showMessageDialog(fileChooser.getParent(), "Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
+					dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
 				}
 				if(fileChooser.getSelectedFile()==null) {
-					JOptionPane.showMessageDialog(fileChooser.getParent(), "No file was selected, load aborted. :(");
+					dialogHelper.warn("No file was selected, load aborted. :(");
 				}
 				fileINI=backupINI;
 			}
@@ -86,6 +90,8 @@ public class INIfileChoosER extends JDialog{
 		final INItializer backupINI = fileINI;
 		int returnVal = fileChooser.showOpenDialog(this.getParent());
 		
+		dialogHelper = new JOptionHelperExtended(this);
+		
         if (returnVal == JFileChooser.APPROVE_OPTION) {
         	String fileExtension = FilenameUtils.getExtension(fileChooser.getSelectedFile().getName());
             if(fileChooser.getSelectedFile()!=null && fileExtension.equalsIgnoreCase("ini"))try {
@@ -94,17 +100,17 @@ public class INIfileChoosER extends JDialog{
             	fileINI.readConfigIniFile();
     	    	logger.debug("chosen: "+fileChooser.getSelectedFile().getAbsolutePath());
     	    	logger.debug("\n\n\n### NEW INI CONFIGURATION LOADED ###\n\n -> "+fileINI.toStringa());
-    	    	JOptionPane.showMessageDialog(fileChooser.getParent(),"Configuration Loaded!");
+    	    	dialogHelper.info("Configuration Loaded!");
     	        
 			} catch (IOException e) {
 				logger.error("File not exist or cannot be read! :("+"IO error\n");
-				JOptionPane.showMessageDialog(fileChooser.getParent(), "File not exist or cannot be read! :(", "IO error", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error("File not exist or cannot be read! :(", "IO error");
 			}else {
 				if(!fileExtension.equalsIgnoreCase("ini")) {
-					JOptionPane.showMessageDialog(fileChooser.getParent(), "Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
+					dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
 				}
 				if(fileChooser.getSelectedFile()==null) {
-					JOptionPane.showMessageDialog(fileChooser.getParent(), "No file was selected, load aborted. :(");
+					dialogHelper.warn("No file was selected, load aborted. :(");
 				}
 				fileINI=backupINI;
 			}
@@ -129,23 +135,25 @@ public class INIfileChoosER extends JDialog{
 		File backupIni = fileINI.getIniFile().getFile();
 		boolean done = false;
 		int returnVal = fileChooser.showSaveDialog(this.getParent());
+		dialogHelper = new JOptionHelperExtended(this);
+		
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
             	selectedFile = fileChooser.getSelectedFile();
             	selectedFile = FileStuff.changeExtension(selectedFile, ".ini");
             	if(selectedFile.exists()) {
-            		if(JOptionPane.showConfirmDialog(this.getContentPane(), "File "+selectedFile.getName()+" exists, overwrite it?")==JOptionPane.OK_OPTION) {
+            		if(dialogHelper.yesOrNo("File "+selectedFile.getName()+" exists, overwrite it?")) {
             			selectedFile.delete();	
                        	done = selectedFile.createNewFile();
             		}else {
-        				JOptionPane.showMessageDialog(this.getContentPane(), "Operation cancelled");
+            			dialogHelper.info("Operation cancelled");
             		}
             	}else {
                    	done = selectedFile.createNewFile();
             	}
             		   		
                	if(done) {
-    				JOptionPane.showMessageDialog(this.getContentPane(), "File "+selectedFile.getName()+" succesfully created!");
+               		dialogHelper.info("File "+selectedFile.getName()+" succesfully created!");
     				fileINI.setIniFile(new Wini(selectedFile));
     				fileINI.setIniReadFile(new Ini(selectedFile));
     				fileINI.writeCurrentConfigIniFile();
@@ -159,7 +167,7 @@ public class INIfileChoosER extends JDialog{
 			}  			
             
         }else{
-        	JOptionPane.showMessageDialog(this.getContentPane(), "Operation cancelled");
+        	dialogHelper.warn("Operation cancelled");
         }
 		
 		getContentPane().add(fileChooser, BorderLayout.NORTH);

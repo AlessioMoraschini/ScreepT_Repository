@@ -7,14 +7,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
-
 
 import amfileutils.FileStuff;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.subpanels.ImageGenContainerPanel;
+import gui.JOptionHelper;
 
 public class ImageWorkerScrYpT {
 
@@ -71,7 +70,7 @@ public class ImageWorkerScrYpT {
 	 * 
 	 * @return BufferedImage keyImage
 	 */
-	public static synchronized BufferedImage generaKeyImage(int width, int height, int imgType, ImageGenContainerPanel container ) {
+	public static synchronized BufferedImage generateKeyImage(int width, int height, int imgType, ImageGenContainerPanel container ) {
 		// use secure random for more entrophy on the key
 		SecureRandom random;
 		
@@ -115,7 +114,6 @@ public class ImageWorkerScrYpT {
 	 */
 	public static File addKeyImgToDictionary(String imageName, BufferedImage img, KeyGenFrame parent){
 				
-//		updateProgressBar(20, progBar);
 		boolean esit = false;
 		File destFile = new File(KeyGenFrame.KEY_DICTIONARY+imageName);
 	
@@ -125,7 +123,6 @@ public class ImageWorkerScrYpT {
 		if (!destFile.exists()) {
 			esit = destFile.mkdirs();
 			try {
-//				updateProgressBar(30, progBar);
 				esit = ImageIO.write(img, "png", destFile);
 				loGGer.debug("Image written: "+destFile.getAbsolutePath());
 			} catch (IOException e) {
@@ -134,13 +131,9 @@ public class ImageWorkerScrYpT {
 			if (esit) {
 				loGGer.debug(destFile.getAbsolutePath() + " Created!");
 			}
-//			updateProgressBar(80, progBar);
 		} else if(destFile.exists()) {
-			int choice = JOptionPane.showConfirmDialog(parent, "File "+destFile.getName()+" exists, overwrite it?");
-    		if(choice == JOptionPane.OK_OPTION) {
-//    			updateProgressBar(30, progBar);
+    		if(new JOptionHelper(parent).yesOrNo("File "+destFile.getName()+" exists, overwrite it?")) {
     			destFile.delete();	
-//    			updateProgressBar(40, progBar);
                	try {
                   	esit = destFile.createNewFile();
         			esit = ImageIO.write(img, "png", destFile);
@@ -150,8 +143,7 @@ public class ImageWorkerScrYpT {
         		} catch (IOException e) {
         			loGGer.error("Exception happened!", e);
         		}
-//               	updateProgressBar(80, progBar);
-    		}else if(choice == JOptionPane.NO_OPTION){
+    		} else {
                	try {
                		destFile = FileStuff.renameJavaObjFile(destFile);
         			esit = ImageIO.write(img, "png", destFile);
@@ -164,7 +156,6 @@ public class ImageWorkerScrYpT {
     		}
     		
     	}
-//		updateProgressBar(100, progBar);
 		parent.getBtnGenerateKey().setEnabled(true);
 		parent.getBtnExport().setEnabled(true);
 		return destFile;

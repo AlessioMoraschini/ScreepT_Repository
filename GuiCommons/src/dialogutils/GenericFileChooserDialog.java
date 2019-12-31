@@ -10,12 +10,12 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
 import general.MyFileView;
+import gui.JOptionHelper;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 
@@ -23,6 +23,8 @@ public class GenericFileChooserDialog {
 
 	public static String writerNames[] = ImageIO.getWriterFileSuffixes();
 	public static MyFileView fileView = new MyFileView();
+	
+	private static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 	
 	public INItializer currentConf;
 	
@@ -57,7 +59,7 @@ public class GenericFileChooserDialog {
         	boolean png = givenExtension.toLowerCase().contains("png");
         	boolean others = Arrays.asList(writerNames).contains(givenExtension);
         	if(!jpeg && !jpg && !png && !others){
-        		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
@@ -129,7 +131,7 @@ public class GenericFileChooserDialog {
         	File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null) {
-        		JOptionPane.showMessageDialog(parent, "Please select a file!", "File not selected", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a file!", "File not selected");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
@@ -159,7 +161,7 @@ public class GenericFileChooserDialog {
         	File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null) {
-        		JOptionPane.showMessageDialog(parent, "Please select a file!", "File not selected", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a file!", "File not selected");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
@@ -189,7 +191,7 @@ public class GenericFileChooserDialog {
 			File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
 			if(selectedFile==null) {
-				JOptionPane.showMessageDialog(parent, "Please select a file!", "File not selected", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error("Please select a file!", "File not selected");
 			}else {
 				correctFile = selectedFile;
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
@@ -217,13 +219,13 @@ public class GenericFileChooserDialog {
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null||!Arrays.asList(writerNames).contains(givenExtension)) {
-        		JOptionPane.showMessageDialog(parent, "Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a valid file between "+Arrays.toString(writerNames), "Wrong File format");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.info("Skipped after user request.", "Skipped");
         }
         return correctFile;
 	}
@@ -248,7 +250,7 @@ public class GenericFileChooserDialog {
     		correctFile = selectedFile;
     		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.info("Skipped after user request.", "Skipped");
         }
         return correctFile;
 	}
@@ -271,7 +273,7 @@ public class GenericFileChooserDialog {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a directory!", "Select a directory");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
@@ -298,7 +300,7 @@ public class GenericFileChooserDialog {
 			
 			File selectedFile = fileChooser.getSelectedFile();
 			if(selectedFile==null||!selectedFile.isDirectory()) {
-				JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+				dialogHelper.error("Select a directory!", "Select a directory");
 			}else {
 				correctFile = selectedFile;
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
@@ -326,7 +328,7 @@ public class GenericFileChooserDialog {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		JOptionPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Select a directory!", "Select a directory");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
@@ -343,18 +345,18 @@ public class GenericFileChooserDialog {
 	 * @return if OK return true, NO return false, else return null if cancel is pressed or window closed
 	 */
 	public static Boolean askYorN(String title, String msg, Component parent, boolean precondition) {
-			int askSave = JOptionPane.CANCEL_OPTION;
+			int askSave = JOptionHelper.CANC;
 			
 			if (precondition) {
-				askSave = JOptionPane.showConfirmDialog(parent, msg, title, JOptionPane.YES_NO_CANCEL_OPTION);
+				askSave = dialogHelper.yesNoOrCanc(msg, title);
 			}else {
 				return false;
 			}
 			
-			if(askSave == JOptionPane.OK_OPTION){
+			if(askSave == JOptionHelper.OK){
 				return true;
 				
-			}else if(askSave == JOptionPane.NO_OPTION) {
+			}else if(askSave == JOptionHelper.NO) {
 				return false;
 			}
 			

@@ -13,7 +13,6 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
@@ -454,7 +453,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					return;
 				}
 				
-				String newName = JOptionPane.showInputDialog("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
+				String newName = dialogHelper.askForStringNullable("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
 				if(newName == null) {
 					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					return;
@@ -471,7 +470,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					if (!selected.createNewFile()) {
 						String msg = "File not created";
 						logger.warn(msg);
-						JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.WARNING_MESSAGE);
+						dialogHelper.warn(msg, msg);
 						currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 						return;
 					}
@@ -480,7 +479,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				} catch (IOException e1) {
 					String msg = "Error creating new file";
 					logger.error(msg, e1);
-					JOptionPane.showMessageDialog(null, msg, msg, JOptionPane.ERROR_MESSAGE);
+					dialogHelper.error(msg, msg);
 				}
 				
 				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);

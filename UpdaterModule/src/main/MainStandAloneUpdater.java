@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.swing.JOptionPane;
-
 import org.ini4j.Wini;
 
 import files.Various;
@@ -23,6 +21,8 @@ public class MainStandAloneUpdater {
 	public static final String FTP_PROPERTIES = "FTP.properties";
 	public static final String resourcesMappingDefPath = "resourcesFilePathsMappings.properties";
 	private static final String ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
+	
+	private static final JOptionHelper dialogHelper = new JOptionHelper(null);
 	
 	public static final HashingFunction downloadsHashFunc = HashingFunction.MD5;
 	/**
@@ -133,10 +133,10 @@ public class MainStandAloneUpdater {
 					// Current files backup - ask to user
 					boolean proceed = false;
 					do {
-						Integer choice = JOptionPane.showConfirmDialog(null,
+						Integer choice = dialogHelper.yesNoOrCanc(
 								"ScrYpT will be updated, do you want to backup current installation before to update?"
-										+ " (update process will not touch your personal files, but if you prefer you can backup all scrypt folder before to update)");
-						if (JOptionPane.YES_OPTION == choice) {
+										+ " (update process will not touch your personal files, but if you prefer you can backup all scrypt folder before to update)", "Backup current Version files?");
+						if (JOptionHelper.OK == choice) {
 							File destBackupDir = Various.directoRead(null,
 									"Select backup destination, or proceed without backup. A unique \"ScrYpT_updater_backup\" folder will be created in the specified destination.",
 									new File(System.getProperty("user.home")));
@@ -147,9 +147,8 @@ public class MainStandAloneUpdater {
 							}
 						}
 
-						if (JOptionPane.CANCEL_OPTION == choice) {
-							int confirmExitChoice = JOptionPane.showConfirmDialog(null, "Are you sure to exit update Procedure?", "Exit procedure?", JOptionPane.YES_NO_OPTION);
-							if(JOptionPane.YES_OPTION == confirmExitChoice) {
+						if (JOptionHelper.CANC == choice) {
+							if(dialogHelper.yesOrNo("Are you sure to exit update Procedure?", "Exit procedure?")) {
 								launchJar(mainApplicationLauncher);
 							} else {
 								proceed = true;
@@ -200,11 +199,7 @@ public class MainStandAloneUpdater {
 					
 				} else {
 					String fileData = "UpdaterJar => "+updaterJar+"; updates folder => "+updatesFolder;
-					JOptionPane.showMessageDialog(
-						null, 
-						"Updates data or updater jar not found, exiting updated procedure."
-						+fileData,
-						"Updates not found", JOptionPane.ERROR_MESSAGE);
+					dialogHelper.error("Updates data or updater jar not found, exiting updated procedure." + fileData, "Updates not found");
 				}
 				
 				// LAUNCH ScrYpT_Launcher.jar
@@ -216,7 +211,8 @@ public class MainStandAloneUpdater {
 					updateProgressMonitor.update(100, "Completed! Restarting ScrYpT...", true);
 					updateProgressMonitor.forceClose();
 				}
-				JOptionPane.showMessageDialog(null, "Cannot update, an error occurred: " + e.getClass());
+				
+				dialogHelper.error("Cannot update, an error occurred: " + e.getClass());
 				System.out.println(e.getClass() + Arrays.deepToString(e.getStackTrace()));
 				
 				// LAUNCH ScrYpT_Launcher.jar
@@ -241,24 +237,23 @@ public class MainStandAloneUpdater {
 	private static boolean validateUpdatesFolder(File updaterJar, File updatesFolder, PropertiesManagerLight manifestProps) {
 		// .... /UPDATES/updates.zip  ::  (updatesFolder = .... /UPDATES/updates/)
 		File zipUpdates = new File(updatesFolder.getParentFile() + File.separator + "updates.zip");
-		boolean esit = true;
+		boolean proceed = true;
 		try {
-			esit = (!DownloadUtils.checkHashFromProperties(updaterJar, manifestProps, downloadsHashFunc)) ? false : esit;
-			esit = (!DownloadUtils.checkHashFromProperties(zipUpdates, manifestProps, downloadsHashFunc)) ? false : esit;
+			proceed = (!DownloadUtils.checkHashFromProperties(updaterJar, manifestProps, downloadsHashFunc)) ? false : proceed;
+			proceed = (!DownloadUtils.checkHashFromProperties(zipUpdates, manifestProps, downloadsHashFunc)) ? false : proceed;
 		} catch (Throwable e) {
-			esit = false;
+			proceed = false;
 		}
 		
-		if(!esit) {
-			Integer choice = JOptionPane.showConfirmDialog(null, "It was not possible to verify integrity of downloaded updates, install anyway?");
-			if(!(JOptionPane.YES_OPTION == choice)) {
-				esit = false;
+		if(!proceed) {
+			if(dialogHelper.yesOrNo("It was not possible to verify integrity of downloaded updates, install anyway?")) {
+				proceed = true;
 			} else {
-				esit = true;
+				proceed = false;
 			}
 		}
 		
-		return esit;
+		return proceed;
 	}
 	
 	private static void signalErrorAndExit1(Throwable e) {

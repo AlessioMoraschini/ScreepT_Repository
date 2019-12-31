@@ -16,7 +16,6 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
@@ -26,6 +25,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
+import dialogutils.JOptionHelperExtended;
 import gUI.frames.KeyGenFrame;
 import gui.UpdateProgressPanelMin;
 import mainobj.INItializer;
@@ -42,8 +42,9 @@ public class TreeFileMouseListenerDictionary {
 	private JTree tree;
 	private File selectedNode;
 	private JTextArea TEXT_LOG = new JTextArea();
-	private JFrame mainFrame;
 	private INItializer currentConfig;
+	
+	private JOptionHelperExtended dialogHelper;
 	
 	// object that display wait dialog
 	private volatile UpdateProgressPanelMin progUpdater;
@@ -51,11 +52,11 @@ public class TreeFileMouseListenerDictionary {
 	// constructor
 	public TreeFileMouseListenerDictionary(INItializer currentConf, JFrame parent, JTree treeIn, JTextArea log, JTextArea mainTxtArea) {
 		currentConfig = currentConf;
-		mainFrame = parent;
 		TEXT_LOG = log;
 		tree = treeIn;
 		tree.setComponentPopupMenu(getPopUpMenu());
 		tree.addMouseListener(getMouseListener());
+		dialogHelper = new JOptionHelperExtended(parent);
 	}
 	
 	public MouseListener getMouseListener() {
@@ -144,7 +145,7 @@ public class TreeFileMouseListenerDictionary {
 	        public void actionPerformed(ActionEvent arg0) {
 
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
-            	if(treeSelArr.length!= 0 && JOptionPane.showConfirmDialog(mainFrame, "Are you sure to delete?")==JOptionPane.OK_OPTION){	        		
+            	if(treeSelArr.length!= 0 && dialogHelper.yesOrNo("Are you sure to delete?")){	        		
 		            for(TreePath tp : treeSelArr) {
 //		            	String path = tp.toString().replaceAll("\\]| |\\[|", "").replaceAll(",", File.separator);
 		            	String path = tp.getLastPathComponent().toString();
@@ -159,7 +160,7 @@ public class TreeFileMouseListenerDictionary {
 
 	            }else {
 	            	String msg = "Skipped after user request!";
-			    	JOptionPane.showMessageDialog(mainFrame, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
+	            	dialogHelper.info(msg, "Skipped");
 			    	logger.debug(msg);
 	            }
 
@@ -177,12 +178,10 @@ public class TreeFileMouseListenerDictionary {
 				File selected = fileRead(TEXT_LOG);
 				if (selected!=null) {
 					if (FileStuff.copyFile(selected, new File(KeyGenFrame.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite()) != null) {
-						JOptionPane.showMessageDialog(TEXT_LOG, "File correctly saved in " + KeyGenFrame.KEY_DICTIONARY,
-								"File added to dictionary :)", JOptionPane.INFORMATION_MESSAGE);
+						dialogHelper.info("File correctly saved in " + KeyGenFrame.KEY_DICTIONARY, "File added to dictionary :)");
 						logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KeyGenFrame.KEY_DICTIONARY);
 					} else {
-						JOptionPane.showMessageDialog(TEXT_LOG, "File not saved in " + KeyGenFrame.KEY_DICTIONARY,
-								". Some error occurred :(", JOptionPane.ERROR_MESSAGE);
+						dialogHelper.error("File not saved in " + KeyGenFrame.KEY_DICTIONARY, "An error occurred");
 						logger.error("File not saved, some error occurred :( ");
 					}
 				}
@@ -230,7 +229,7 @@ public class TreeFileMouseListenerDictionary {
 									logger.debug(msg + Arrays.toString(treeSelArr));
 									TEXT_LOG.setText("\n\n ### Completed ###\n\n  " + msg);
 									progUpdater.getPb().setValue(100);
-									JOptionPane.showMessageDialog(TEXT_LOG, msg, "Files exported!", JOptionPane.INFORMATION_MESSAGE);
+									dialogHelper.info(msg, "Files exported!");
 								
 								} catch (Exception e) {
 									logger.error("There was an Exception", e);
@@ -240,7 +239,7 @@ public class TreeFileMouseListenerDictionary {
 
 							} else {
 								String msg = "Skipped after user request!";
-								JOptionPane.showMessageDialog(tree, msg, "Skipped", JOptionPane.WARNING_MESSAGE);
+								dialogHelper.info(msg, "Skipped");
 								logger.debug(msg);
 							}
 						}
@@ -265,15 +264,17 @@ public class TreeFileMouseListenerDictionary {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
-        	if(selectedFile==null||!givenExtension.equalsIgnoreCase("png")) {
-        		JOptionPane.showMessageDialog(parent, "Please select a valid '.png' file!", "Wrong File format", JOptionPane.ERROR_MESSAGE);
+        	
+        	if(selectedFile==null || !givenExtension.equalsIgnoreCase("png")) {
+        		dialogHelper.error("Please select a valid '.png' file!", "Wrong File format");
         	}else {
         		correctFile = selectedFile;
 
         	}
         }else {
-        	JOptionPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.info("Skipped after user request.");
         }
+        
         return correctFile;
 	}
 	
@@ -288,21 +289,19 @@ public class TreeFileMouseListenerDictionary {
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConfig.getFileOpt().getLastDstFolderPath()));		
 		File correctFile = null;
-		JOptionPane optPane = new JOptionPane();
-		
 		
 		int returnVal = fileChooser.showSaveDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		optPane.showMessageDialog(parent, "Please select a directory!", "Select a directory, please", JOptionPane.ERROR_MESSAGE);
+        		dialogHelper.error("Please select a directory!", "Select a directory, please");
         	}else {
         		correctFile = selectedFile;
         		currentConfig.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }else {
-        	optPane.showMessageDialog(parent, "Skipped after user request.");
+        	dialogHelper.info("Skipped after user request.");
         }
         return correctFile;
 	}
