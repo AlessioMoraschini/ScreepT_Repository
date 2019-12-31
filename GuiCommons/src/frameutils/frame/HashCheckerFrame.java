@@ -29,7 +29,6 @@ import dialogutils.JOptionHelperExtended;
 
 import java.awt.Dimension;
 
-import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JSeparator;
@@ -61,7 +60,7 @@ public class HashCheckerFrame extends ParentFrame{
 	private JRadioButton rdbtnUseAlgorithmAsPrefix;
 	private JRadioButton rdbtnUppercase;
 	
-	public HashCheckerFrame(File initialFile, JFrame parentFrame, @Nullable TextEditorOption txtOptions) {
+	public HashCheckerFrame(File initialFile, JFrame parentFrame, TextEditorOption txtOptions) {
 		super();
 		
 		this.txtOptions = txtOptions == null ? new TextEditorOption() : txtOptions;
@@ -383,7 +382,7 @@ public class HashCheckerFrame extends ParentFrame{
 		return new Dimension(920, 215);
 	}
 	
-	public static HashCheckerFrame getInstance(File initialFile, JFrame parentFrame, @Nullable TextEditorOption txtOptions) {
+	public static HashCheckerFrame getInstance(File initialFile, JFrame parentFrame, TextEditorOption txtOptions) {
 		return singletonInstance == null ? new HashCheckerFrame(initialFile, parentFrame, txtOptions) : singletonInstance;
 	}
 }

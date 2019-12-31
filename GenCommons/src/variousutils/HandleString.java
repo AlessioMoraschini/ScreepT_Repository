@@ -66,18 +66,19 @@ public class HandleString {
 	}
 	
 	public static String replaceOccurrencesWithRandom(String source, String match, char[] possibleCharacters) {
-		do {
+		
+		while(source.contains(match)){
 			source = source.replaceFirst(match, RandomStringUtils.random(1, possibleCharacters));
-		} while(source.contains(match));
+		}
 		
 		return source;
 	}
 
 	public static String replaceOccurrencesWithRandom(String source, String match) {
 		
-		do {
+		while(source.contains(match)){
 			source = source.replaceFirst(match, RandomStringUtils.randomAscii(1));
-		} while(source.contains(match));
+		}
 		
 		return source;
 	}

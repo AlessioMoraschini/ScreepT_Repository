@@ -76,9 +76,9 @@ public class HwTest {
 		// DIRECTORY STATS
 		titlePrint(" /"+ dir +" ");
 		
-		print("N of files: " + dirUsage.getFiles());
-		print("N of dirs contained: " + dirUsage.getSubdirs());
-		print("Disk usage: " + FileStuff.coolFileSize(dirUsage.getDiskUsage()));
+//		print("N of files: " + dirUsage.getFiles());
+//		print("N of dirs contained: " + dirUsage.getSubdirs());
+//		print("Disk usage: " + FileStuff.coolFileSize(dirUsage.getDiskUsage()));
 		
 		// RAM INFO
 //		int ii=0;
@@ -120,7 +120,7 @@ public class HwTest {
 		cpu = sigar.getCpu();
 		cpus = sigar.getCpuList();
 		cpuInfos = sigar.getCpuInfoList();
-		dirUsage = sigar.getDirUsage(dir);
+//		dirUsage = sigar.getDirUsage(dir);
 		memory = sigar.getMem();
 		FSList = sigar.getFileSystemList();
 		sysINFO = new SystemInfo();

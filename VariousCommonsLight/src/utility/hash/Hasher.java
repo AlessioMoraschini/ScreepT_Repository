@@ -99,6 +99,19 @@ public class Hasher {
 		
 		return result;
 	}
+
+	/**
+	 * Utility method to convert byte array to equivalent char array format. this is useful if you want to apply hashing for a byte array source
+	 */
+	public static byte[] charArrayToByte(char[] source) {
+		
+		byte[] result = new byte[source.length];
+		for(int i = 0; i < source.length; i++) {
+			result[i] = (byte) source[i]; 
+		}
+		
+		return result;
+	}
 	
 	public static byte[] generateSecureRandom(int length) {
 		

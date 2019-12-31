@@ -475,7 +475,7 @@ public class ScrYpTLauncher {
 				String advice = "<html>It seems there is already a running instance of " +GeneralConfig.APPLICATION_NAME 
 						+ "<br/> -> If this message is not due to a previous application crash, it's strongly recommended to avoid multiple instances." 
 						+ "<br/> Are you sure to start another instance?</html>";
-				runNewInstance = new JOptionHelper(null).yesOrNo(advice);
+				runNewInstance = new JOptionHelper(null).yesOrNo(advice, "ScrYpT already running");
 			}
 			
 			if (!runNewInstance) {

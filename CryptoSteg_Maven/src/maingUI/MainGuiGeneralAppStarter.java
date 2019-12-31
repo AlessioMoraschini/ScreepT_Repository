@@ -74,6 +74,8 @@ public class MainGuiGeneralAppStarter {
 	public static boolean tesseractAvailable;
 	public static boolean voiceSpeakerAvailable;
 	public static boolean jnetPcapAvailable;
+	public static boolean hwInfoAvailable;
+	public static boolean networkInfoAvailable;
 	
 	public static void main(String[] args) {
 		
@@ -153,6 +155,8 @@ public class MainGuiGeneralAppStarter {
 				tesseractAvailable = LibChecker.checkTesseract();
 				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
 				jnetPcapAvailable = LibChecker.checkJnetPcap();
+				hwInfoAvailable = LibChecker.checkHardwareInfoDependencies();
+				networkInfoAvailable = LibChecker.checkNetworkInfoDependencies();
 				
 				updateInstalledPlugins();
 			} catch (Exception e) {
@@ -178,7 +182,7 @@ public class MainGuiGeneralAppStarter {
 			try {
 				
 				// SETUP TOOLTIPS PROPERTIES
-				Font tooltipFontFromProps = ("".equals(GeneralConfig.TOOLTIP_FONT))? new Font("Segoe UI", Font.PLAIN, 14) : HandleString.getFontFromString(GeneralConfig.TOOLTIP_FONT);
+				Font tooltipFontFromProps = (GeneralConfig.TOOLTIP_FONT == null)? new Font("Segoe UI", Font.PLAIN, 14) : GeneralConfig.TOOLTIP_FONT;
 				GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, GeneralConfig.TOOLTIP_RESHOW_DELAY, tooltipFontFromProps);
 			
 			} catch (Exception e) {

@@ -3,8 +3,10 @@ package uTILS.dependencycheck;
 import java.io.File;
 
 import org.apache.log4j.Logger;
+import org.hyperic.sigar.Sigar;
 
 import conversion.Text2Speech;
+import oshi.SystemInfo;
 import resources.GeneralConfig;
 
 public class LibChecker {
@@ -14,7 +16,7 @@ public class LibChecker {
 		
 	public static boolean checkJnetPcap() {
 		try {
-			org.jnetpcap.Pcap.libVersion();
+			Class.forName("org.jnetpcap.Pcap");
 			logger.info(" \n => JnetPcap library found! :)");
 			return true;
 		} catch (UnsatisfiedLinkError e) {
@@ -22,6 +24,9 @@ public class LibChecker {
 			return false;
 		} catch (NoClassDefFoundError e) {
 			logger.error("! JnetPcap class def missing ! \n\n", e);
+			return false;
+		} catch (Throwable throwable){
+			logger.error("! JnetPcap class not found ! \n\n", throwable);
 			return false;
 		}
 	}
@@ -38,6 +43,50 @@ public class LibChecker {
 			logger.error("! Cannot run voice speaker: undefined library dependencies: Text2Speech ! \n\n", e);
 		}
 		return libFound;
+	}
+
+	public static boolean checkHardwareInfoDependencies() {
+		boolean libFound = false;
+		boolean oshiFound = false;
+		boolean sigarFound = false;
+		
+		try {
+			Class.forName("oshi.hardware.Display");
+			new SystemInfo();
+			oshiFound = true;
+
+			Class.forName("org.hyperic.sigar.Sigar");
+			new Sigar();
+			sigarFound = true;
+			
+			libFound = oshiFound && sigarFound;
+			logger.info(" \n => HardwareInfo Oshi+Sigar libraries found! :)");
+		} catch (Throwable e) {
+			libFound = false;
+			logger.error("! Cannot instantiate HardwareInfo: undefined library dependencies: "
+					+ "\n-> Oshi found:[" + oshiFound
+					+ "]\n-> Sigar found:["+sigarFound+"] ! \n\n", e);
+		}
+		return libFound;
+	}
+
+	public static boolean checkNetworkInfoDependencies() {
+		boolean sigarFound = false;
+		
+		try {
+			
+			Class.forName("org.hyperic.sigar.Sigar");
+			new Sigar();
+			sigarFound = true;
+			
+			logger.info(" \n => NetworkInfo Sigar library found! :)");
+		} catch (Throwable e) {
+			sigarFound = false;
+			logger.error("! Cannot instantiate NetworkInfo: undefined library dependencies: "
+					+ "\n-> Sigar found:["+sigarFound+"] ! \n\n", e);
+		}
+		
+		return sigarFound;
 	}
 	
 	public static boolean checkTesseract() {

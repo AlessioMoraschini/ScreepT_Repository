@@ -64,23 +64,32 @@
   
   <dependencies>
   	
+	<!-- https://mvnrepository.com/artifact/com.github.oshi/oshi-core -->
 	<dependency>
 	    <groupId>com.github.oshi</groupId>
 	    <artifactId>oshi-core</artifactId>
 	    <version>3.13.0</version>
+	    <scope>${plugins.export.scope}</scope>
 	</dependency>
-			
-	<dependency>
+
+	<!-- <dependency>
 	    <groupId>com.github.oshi</groupId>
 	    <artifactId>oshi-parent</artifactId>
 	    <version>3.13.0</version>
 	    <type>pom</type>
-	</dependency>
+	</dependency> -->
 		
 	<dependency>
 	    <groupId>org.fusesource</groupId>
 	    <artifactId>sigar</artifactId>
 	    <version>1.6.4</version>
+	    <exclusions>
+		    <exclusion>
+		    	<groupId>log4j</groupId>
+	    		<artifactId>log4j</artifactId>
+		    </exclusion>
+	    </exclusions>
+	    <scope>${plugins.export.scope}</scope>
 	</dependency>	
 	<dependency>
 		<groupId>GuiCommons</groupId>

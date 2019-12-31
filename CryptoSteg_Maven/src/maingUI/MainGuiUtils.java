@@ -354,8 +354,7 @@ public class MainGuiUtils {
 		replaceMainPanel(MainGUI.configManagerPanel);
     	
     	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ConfigurationManagerPanel.class);
-    	MainGUI.currentConfiguration.writeSingleValue(
-		INItializer.GEN_OPT, "lastPanelOpened", ConfigurationManagerPanel.class.getCanonicalName());
+    	MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", ConfigurationManagerPanel.class.getCanonicalName());
     	
     	refreshGUIlaf();
     	

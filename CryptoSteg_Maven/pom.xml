@@ -224,13 +224,13 @@
 					 </resource>
 					 
 				 	<!-- Root files to export without filtering -->
-			     	<resource>
+			     	<!-- <resource>
 					    <filtering>false</filtering>
 					    <directory>./</directory>
 					    <includes>
 					        <include>Installed_plugins.properties</include>
 					    </includes>
-					</resource>
+					</resource> -->
 					
 					 <!-- Main scrypt's jar (not fatjar) just compiled in /target -->
 				     <resource>
@@ -343,7 +343,7 @@
     						<include>UPDATES</include>
     						<include>Dependencies_Installers/**/*</include>
     						<include>IMG/**/*</include>
-					        <include>Installed_plugins.properties</include>
+					       <!--  <include>Installed_plugins.properties</include> -->
 					        <include>changelog.log</include>
 					    </includes>
 					    <excludes>
@@ -674,6 +674,26 @@
 		    <version>6.2.2</version>
 		    <scope>${plugins.export.scope}</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.github.oshi</groupId>
+		    <artifactId>oshi-core</artifactId>
+		    <version>3.13.0</version>
+		    <scope>${plugins.export.scope}</scope>
+		</dependency>
+	
+		<dependency>
+		    <groupId>org.fusesource</groupId>
+		    <artifactId>sigar</artifactId>
+		    <version>1.6.4</version>
+		    <exclusions>
+			    <exclusion>
+			    	<groupId>log4j</groupId>
+		    		<artifactId>log4j</artifactId>
+			    </exclusion>
+		    </exclusions>
+		    <scope>${plugins.export.scope}</scope>
+		</dependency>	
 	
 		<!-- IMPORTS FROM OTHER PROJECTS -->
 		<dependency>

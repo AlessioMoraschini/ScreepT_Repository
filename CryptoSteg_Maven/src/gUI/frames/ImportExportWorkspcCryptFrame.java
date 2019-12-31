@@ -133,9 +133,12 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		
 		addListeners();
 		
-		setVisible(true);
-		
-		updateToExport();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				setVisible(true);
+				updateToExport();
+			}
+		});
 		
 		logger.info("Frame loaded: " + getClass().getName());
 	}
@@ -164,7 +167,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File selectedToImport = fileChooser.directoRead(textEditor.parentFrame, "Select crypted workspace to import");
+				File selectedToImport = fileChooser.directoRead(MainGUI.mainAPP.getMainFrame(), "Select crypted workspace to import");
 				
 				updateToImport(selectedToImport);
 			}

@@ -184,7 +184,7 @@ public class GeneralConfig {
 	public static int TOOLTIP_DELAY;
 	public static int TOOLTIP_TIMEOUT;
 	public static int TOOLTIP_RESHOW_DELAY;
-	public static String TOOLTIP_FONT;
+	public static Font TOOLTIP_FONT;
 	public static Font DEFAULT_POP_UP_MENUS_FONT;
 	public static Font DIALOG_BTN_FONT;
 	
@@ -522,7 +522,7 @@ public class GeneralConfig {
 			TOOLTIP_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_DELAY", 400);
 			TOOLTIP_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_TIMEOUT", 30000);
 			TOOLTIP_RESHOW_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_RESHOW_DELAY", 2000);
-			TOOLTIP_FONT = resourcesFilePathsMappings.getProperty("TOOLTIP_FONT");
+			TOOLTIP_FONT = resourcesFilePathsMappings.getFontFromString("TOOLTIP_FONT", new Font("Segoe UI", Font.PLAIN, 18));
 			DEFAULT_POP_UP_MENUS_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_POP_UP_MENUS_FONT", new Font("Segoe UI", Font.PLAIN, 16));
 			DIALOG_BTN_FONT = resourcesFilePathsMappings.getFontFromString("DIALOG_BTN_FONT", new Font("Segoe UI", Font.BOLD, 16));
 			

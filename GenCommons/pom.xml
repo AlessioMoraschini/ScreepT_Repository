@@ -34,10 +34,21 @@
 	    <version>1.2.17</version>
 	</dependency>
 	
+	<!-- https://mvnrepository.com/artifact/com.google.googlejavaformat/google-java-format -->
 	<dependency>
-	  <groupId>com.google.googlejavaformat</groupId>
-	  <artifactId>google-java-format</artifactId>
-	  <version>1.7</version>
+	    <groupId>com.google.googlejavaformat</groupId>
+	    <artifactId>google-java-format</artifactId>
+	    <version>1.7</version>
+	    <exclusions>
+		    <exclusion>
+			    <groupId>com.google.code.findbugs</groupId>
+		    	<artifactId>jsr305</artifactId>
+		    </exclusion>
+		    <exclusion>
+		     	<groupId>com.google.errorprone</groupId>
+	   			<artifactId>error_prone_annotations</artifactId>
+		    </exclusion>
+	    </exclusions>
 	</dependency>
 	
 	<!-- <dependency>
@@ -46,12 +57,6 @@
 	    <version>1.6</version>
 	</dependency> -->
 		
-	<dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	    <version>2.6</version>
-	</dependency>
-
 	<dependency>
 	    <groupId>org.slf4j</groupId>
 	    <artifactId>slf4j-api</artifactId>
@@ -75,6 +80,32 @@
 	    <groupId>org.apache.commons</groupId>
 	    <artifactId>commons-lang3</artifactId>
 	    <version>3.9</version>
+	    <exclusions>
+		    <exclusion>
+		    	<groupId>org.easymock</groupId>
+   			 	<artifactId>easymock</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.junit-pioneer</groupId>
+    			<artifactId>junit-pioneer</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.junit.jupiter</groupId>
+    			<artifactId>junit-jupiter</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.openjdk.jmh</groupId>
+    			<artifactId>jmh-core</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.openjdk.jmh</groupId>
+    			<artifactId>jmh-generator-annprocess</artifactId>
+		    </exclusion>
+	    </exclusions>
 	</dependency>
 	<!-- IMPORTS FROM OTHER PROJECTS -->
 		

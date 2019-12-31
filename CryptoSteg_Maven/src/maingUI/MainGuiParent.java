@@ -466,8 +466,8 @@ public class MainGuiParent {
 		mntmOptimizeResourcesUsage.setToolTipText(
 				GuiUtils.encapsulateInHtml(
 						"Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)"
-						+ "<b>NB:</b> remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors."
-						+ "<u>If you want to have less memory used by ScrYpT</u> you can setup them in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));
+						+ "<br><b>NB:</b> remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors."
+						+ "<br><u>If you want to modify the memory used by ScrYpT</u> you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));
 
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);

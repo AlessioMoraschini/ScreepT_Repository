@@ -2,7 +2,6 @@ package maingUI;
 
 import java.io.File;
 
-import javax.annotation.Nullable;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
@@ -205,7 +204,7 @@ public class WindowCreator {
 		return panelAbout;
 	}
 	
-	public TutorialFrame newTutorialFrame(@Nullable boolean visible) {
+	public TutorialFrame newTutorialFrame(boolean visible) {
 		
 		try {
 			TutorialFrame tutorialFrame = TutorialFrame.getInstance();

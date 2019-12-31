@@ -1021,6 +1021,8 @@ public class MainGUI extends MainGuiParent{
 											// Check hard coded plugins presence
 											MainGuiGeneralAppStarter.tesseractAvailable = LibChecker.checkTesseract();
 											MainGuiGeneralAppStarter.voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
+											MainGuiGeneralAppStarter.hwInfoAvailable = LibChecker.checkHardwareInfoDependencies();
+											MainGuiGeneralAppStarter.networkInfoAvailable = LibChecker.checkNetworkInfoDependencies();
 											if(initTxtWriter != null) {
 												initTxtWriter.subHeaderPanel.enableDependenciesFunctions();
 											}
@@ -1080,6 +1082,9 @@ public class MainGUI extends MainGuiParent{
 				isOnHomePage.set(true);
 				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
 				setBackgroundImage();
+				
+				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(MainGUI.class);
+		    	MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", MainGUI.class.getCanonicalName());
 			}
 		});
 
@@ -1257,6 +1262,7 @@ public class MainGUI extends MainGuiParent{
 		currentJvmVersion = System.getProperty("java.version");
 		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(currentJvmVersion);
 		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
+		
 		if(compareRes == 1) {
 			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion 
 					+ "). Run with version under Max JVM version supported to use this functionality (Max allowed: "
@@ -1270,6 +1276,17 @@ public class MainGUI extends MainGuiParent{
 			// set tooltip text to menu item
 			mntmhwInfo.setToolTipText(tooltipMSG);
 			mntmnetInfo.setToolTipText(tooltipMSG);
+		
+		} 
+		
+		if(!MainGuiGeneralAppStarter.hwInfoAvailable) {
+			mntmhwInfo.setEnabled(false);
+			mntmhwInfo.setToolTipText("Hardware info tool not found in this installation, download plugin and restart in order to use it");
+		} 
+		
+		if(!MainGuiGeneralAppStarter.networkInfoAvailable) {
+			mntmnetInfo.setEnabled(false);
+			mntmnetInfo.setToolTipText("Network info tool not found in this installation, download plugin and restart in order to use it");
 		}
 	}
 	
@@ -1417,11 +1434,11 @@ public class MainGUI extends MainGuiParent{
 	public static void closeOpenBlockingFrames(){
 		logger.info("\n => Closing blocking frames");
 		
-		if(HwInfoFrame.singletonInstance != null) {
+		if(MainGuiGeneralAppStarter.hwInfoAvailable && HwInfoFrame.singletonInstance != null) {
 			HwInfoFrame.singletonInstance.dispose();
 		}
 		
-		if(NetInfoFrame.singletonInstance != null) {
+		if(MainGuiGeneralAppStarter.networkInfoAvailable && NetInfoFrame.singletonInstance != null) {
 			NetInfoFrame.singletonInstance.dispose();
 		}
 		
