@@ -32,6 +32,7 @@ import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import utility.ConversionUtils;
 
 public class TreeFileMouseListenerDictionary {
 	
@@ -125,7 +126,7 @@ public class TreeFileMouseListenerDictionary {
 							throw new IOException();
 						}
 						String msg = "\n\n### Image values ###\n\n Width: "+img.getWidth()+" Px\n Height: "+img.getHeight()+" Px\n\n=> File Size: "
-									+FileStuff.coolFileSize(thisFile)+"\n\n => ImgType: "+img.toString();
+									+ConversionUtils.coolFileSize(thisFile)+"\n\n => ImgType: "+img.toString();
 						logger.debug(msg);
 						TEXT_LOG.setText(msg);
 					} catch (IOException e1) {

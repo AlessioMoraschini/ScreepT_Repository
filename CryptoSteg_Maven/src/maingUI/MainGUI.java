@@ -75,6 +75,7 @@ import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import uTILS.dependencycheck.LibChecker;
+import utility.ConversionUtils;
 import utils.SysUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.arch.PanelType;
@@ -732,7 +733,7 @@ public class MainGUI extends MainGuiParent{
 					Sounds.playSound(SoundsConfigurator.SOUND_CLOCK, null);
 					FLAG_mntmEraseLogs = true;
 					File LOG_MAIN_FILE = new File(GeneralConfig.LOG_PATH);
-					String coolFileSize = FileStuff.coolFileSize(LOG_MAIN_FILE.length());
+					String coolFileSize = ConversionUtils.coolFileSize(LOG_MAIN_FILE.length());
 					String msg =  "<html>Are you sure you to want to erase your logs? <br/> If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]</html>";
 					if(dialogHelper.yesOrNo(msg, "Erase Logs content?")) {
 						if (FileStuff.clearFileContent(GeneralConfig.LOG_PATH) && FileStuff.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
@@ -1022,7 +1023,6 @@ public class MainGUI extends MainGuiParent{
 											MainGuiGeneralAppStarter.tesseractAvailable = LibChecker.checkTesseract();
 											MainGuiGeneralAppStarter.voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
 											MainGuiGeneralAppStarter.hwInfoAvailable = LibChecker.checkHardwareInfoDependencies();
-											MainGuiGeneralAppStarter.networkInfoAvailable = LibChecker.checkNetworkInfoDependencies();
 											if(initTxtWriter != null) {
 												initTxtWriter.subHeaderPanel.enableDependenciesFunctions();
 											}
@@ -1261,10 +1261,6 @@ public class MainGUI extends MainGuiParent{
 	public static boolean checkJavaVersionMaxCompatibility() {
 		currentJvmVersion = System.getProperty("java.version");
 		
-		if(SysUtils.isCurrentOpenJdk()) {
-			return false;
-		}
-		
 		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(currentJvmVersion);
 		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
 		
@@ -1278,19 +1274,10 @@ public class MainGUI extends MainGuiParent{
 					+ "). Run with version under Max JVM version supported to use this functionality (Max allowed: "
 					+ GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY + ")";
 			
-			String openJdkUnsupported = "This function is not available when using OpenJdk: use Oracle JRE to have this function.";
-			
 			// Disable non compatible options
 			mntmhwInfo.setEnabled(false);
-			mntmnetInfo.setEnabled(false);
 			
-			if (SysUtils.isCurrentOpenJdk()) {
-				mntmhwInfo.setToolTipText(openJdkUnsupported);
-				mntmnetInfo.setToolTipText(openJdkUnsupported);
-			} else {
-				mntmhwInfo.setToolTipText(tooltipMSG);
-				mntmnetInfo.setToolTipText(tooltipMSG);
-			}
+			mntmhwInfo.setToolTipText(tooltipMSG);
 		
 		} else {
 			if(!MainGuiGeneralAppStarter.hwInfoAvailable) {
@@ -1298,10 +1285,6 @@ public class MainGUI extends MainGuiParent{
 				mntmhwInfo.setToolTipText("Hardware info tool not found in this installation, download plugin and restart in order to use it");
 			} 
 			
-			if(!MainGuiGeneralAppStarter.networkInfoAvailable) {
-				mntmnetInfo.setEnabled(false);
-				mntmnetInfo.setToolTipText("Network info tool not found in this installation, download plugin and restart in order to use it");
-			}
 		}
 	}
 	
@@ -1453,7 +1436,7 @@ public class MainGUI extends MainGuiParent{
 			HwInfoFrame.singletonInstance.dispose();
 		}
 		
-		if(MainGuiGeneralAppStarter.networkInfoAvailable && NetInfoFrame.singletonInstance != null) {
+		if(NetInfoFrame.singletonInstance != null) {
 			NetInfoFrame.singletonInstance.dispose();
 		}
 		

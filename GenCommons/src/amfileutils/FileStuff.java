@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
@@ -37,6 +36,7 @@ import amfileutils.om.DeleteFilesByExtensionDTO;
 import files.CustomFileFilters;
 import gui.JOptionHelper;
 import resources.GeneralConfig;
+import utility.ConversionUtils;
 
 public class FileStuff {
 	
@@ -1185,56 +1185,6 @@ public class FileStuff {
     	return true;
 	}
 	
-	/**
-	 *  return a string containing the size of the file formatted correctly according to his size
-	 * 
-	 * @return cool formatted string representing the file size with correct measure unit
-	 */
-	public static String coolFileSize(File file){
-		long size = file.length();
-		if(size <= 0) return "0";
-	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "ExaB" };
-	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-	    return new DecimalFormat("#,##0.##").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-	}
-	
-	/**
-	 *  return a string containing the size formatted correctly according to his size
-	 * @param size is the size in bytes to represent in cool way
-	 * @return cool formatted string representing the file size with correct measure unit
-	 */
-	public static String coolFileSize(Long size){
-		if(size <= 0) return "0";
-	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "ExaB" };
-	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-	    return new DecimalFormat("#,##0.##").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-	}
-	
-	/**
-	 *  return a string containing the size formatted correctly in bits according to his size
-	 * @param size is the size in bytes to represent in cool way
-	 * @return cool formatted string representing the file size in bits with correct measure unit
-	 */
-	public static String coolFileSizeBits(File file){
-		long size = file.length();
-		if(size <= 0) return "0";
-	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Exab" };
-	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-	}
-	
-	/**
-	 *  return a string containing the size formatted correctly in bits according to his size
-	 * @param size is the size in bytes to represent in cool way
-	 * @return cool formatted string representing the file size in bits with correct measure unit
-	 */
-	public static String coolFileSizeBits(Long size){
-		if(size <= 0) return "0";
-	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Exab" };
-	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-	}
-	
 	public static File copyFile(File source, File dest, boolean overwrite) {
 		
 		long startTime = System.currentTimeMillis();
@@ -1268,7 +1218,7 @@ public class FileStuff {
 		}
 		try {
 		    FileUtils.copyFile(source, dest);
-		    logger.debug("File written: "+dest.getAbsolutePath()+"\nSize: " + coolFileSize(dest));
+		    logger.debug("File written: "+dest.getAbsolutePath()+"\nSize: " + ConversionUtils.coolFileSize(dest));
 		    esit = dest;
 		} catch (IOException e) {
 			logger.error("Exception happened!", e);
@@ -1308,7 +1258,7 @@ public class FileStuff {
 		
 		try {
 		    FileUtils.copyFileToDirectory(source, destdir, true);
-		    logger.debug("File written: "+destdir.getAbsolutePath()+"\nSize: " + coolFileSize(destdir));
+		    logger.debug("File written: "+destdir.getAbsolutePath()+"\nSize: " + ConversionUtils.coolFileSize(destdir));
 		    esit = true;
 		} catch (IOException e) {
 			logger.error("Exception happened!", e);

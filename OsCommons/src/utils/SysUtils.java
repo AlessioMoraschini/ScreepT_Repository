@@ -25,7 +25,7 @@ public class SysUtils {
 	static Logger logger = Logger.getLogger(SysUtils.class); 
 	
 	// STATIC METHODS
-	private static final OSinfo OS_INFO_LAZY = new OSinfo();
+	public static final OSinfo OS_INFO_LAZY = new OSinfo();
 	
 	public static final String winPath32 = "C:/Program Files (x86)/";
 	public static final String winPath64 = "C:/Program Files/";

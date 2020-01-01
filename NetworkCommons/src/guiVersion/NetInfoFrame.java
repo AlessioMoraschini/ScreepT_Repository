@@ -3,9 +3,6 @@ package guiVersion;
 import resources.GeneralConfig;
 
 import org.apache.log4j.Logger;
-import org.hyperic.sigar.NetInfo;
-import org.hyperic.sigar.NetInterfaceConfig;
-import org.hyperic.sigar.SigarException;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
@@ -26,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import javax.swing.JLabel;
 
@@ -512,8 +510,12 @@ public class NetInfoFrame extends ParentFrame{
 		boolean networkUp = false;
 		
 		currentSelAdapter = (NetworkAdapter) comboAdapters.getSelectedItem();
-		if(currentSelAdapter.interfaceConfig != null) {
-			networkUp = true;
+		try {
+			if(currentSelAdapter.inetAddr.isReachable(currentSelAdapter.networkInterface, 10000, 5000)) {
+				networkUp = true;
+			}
+		} catch (IOException e) {
+			logger.error("Cannot check connectivity on current interface: " + currentSelAdapter);
 		}
 		
 		btnCalculateConnSpeed.setEnabled(networkUp);
@@ -532,9 +534,8 @@ public class NetInfoFrame extends ParentFrame{
 		dynLblMacAddress.setText(currentSelAdapter.locMAC);
 		dynLblHostName.setText(currentSelAdapter.hostName);
 		dynLblMTU.setText(String.valueOf(currentSelAdapter.getMTU()));
-		NetInterfaceConfig netInfo = currentSelAdapter.interfaceConfig;
-		String broadcastAddr = netInfo != null ? netInfo.getBroadcast() : errMSG;
-		String subMask = netInfo != null ? netInfo.getNetmask() : errMSG;
+		String broadcastAddr = currentSelAdapter.getBroadCastFromInetAddr();
+		String subMask = currentSelAdapter.getSubnetMaskFromInetAddr();
 		dynLblSubnetMask.setText(subMask);
 		dynLblBroadcastAddr.setText(broadcastAddr);
 		try {
@@ -561,16 +562,24 @@ public class NetInfoFrame extends ParentFrame{
 	// interface unrelated info
 	private void updateAdapterGUIinfos() {
 		
+		List<String> nameServers = NetworkUtils.getDnsServers();
+		if (nameServers.isEmpty()) {
+			dynLblDNS1.setText(UNSELECTED);
+			dynLblDNS2.setText(UNSELECTED);
+		} else {
+			dynLblDNS1.setText(nameServers.get(0));
+			if (nameServers.size() > 1) {
+				dynLblDNS2.setText(nameServers.get(1));
+			} else {
+				dynLblDNS2.setText(UNSELECTED);
+			}
+		}
+			
 		try {
-			NetInfo netInfo = NetworkUtils.getSysINFO().getNetInfo();
-			dynLblDNS1.setText(netInfo.getPrimaryDns());
-			dynLblDNS2.setText(netInfo.getSecondaryDns());
-			dynLblDefGateway.setText(netInfo.getDefaultGateway());
-		} catch (SigarException e) {
+			dynLblDefGateway.setText(NetworkUtils.getIpNetstatGateway());
+		} catch (Exception e) {
 			String msg = "Error retrieving network Informations";
 			dynLblDefGateway.setText(errMSG);
-			dynLblDNS1.setText(errMSG);
-			dynLblDNS2.setText(errMSG);
 			handleException(msg, e);
 		}
 	}

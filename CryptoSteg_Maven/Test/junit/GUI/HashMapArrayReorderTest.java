@@ -14,10 +14,10 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
-import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import testUtils.TestTimer;
+import utility.ConversionUtils;
 import utility.EntrophyzerUtils;
 
 public class HashMapArrayReorderTest {
@@ -97,8 +97,8 @@ public class HashMapArrayReorderTest {
 			printSeparator(100);
 		}
 		
-		print("\nCoding time: " + codeTime + " ms => speed = "+FileStuff.coolFileSize((long)SRC_BYTES*1000/codeTime)+"/sec");
-		print("\nDecoding time: " + decodeTime + " ms=> speed = "+FileStuff.coolFileSize((long)SRC_BYTES*1000/decodeTime)+"/sec");
+		print("\nCoding time: " + codeTime + " ms => speed = "+ConversionUtils.coolFileSize((long)SRC_BYTES*1000/codeTime)+"/sec");
+		print("\nDecoding time: " + decodeTime + " ms=> speed = "+ConversionUtils.coolFileSize((long)SRC_BYTES*1000/decodeTime)+"/sec");
 		
 		assertTrue(Arrays.equals(bytesToCode, originalBytesFromCoded));
 		assertTrue(!Arrays.equals(bytesToCode, wrongKeyDecodedBytes));

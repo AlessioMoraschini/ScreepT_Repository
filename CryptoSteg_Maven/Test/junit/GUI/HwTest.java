@@ -3,34 +3,27 @@ package junit.GUI;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.hyperic.sigar.Cpu;
-import org.hyperic.sigar.CpuInfo;
-import org.hyperic.sigar.DirUsage;
-import org.hyperic.sigar.FileSystem;
-import org.hyperic.sigar.Mem;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
 import org.junit.Test;
 
-import amfileutils.FileStuff;
 import oshi.SystemInfo;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.GlobalMemory;
+import oshi.hardware.NetworkIF;
 import oshi.jna.platform.windows.PowrProf.SystemBatteryState;
+import oshi.software.os.OSFileStore;
+import runtime.RuntimeUtil;
+import utility.ConversionUtils;
 
 public class HwTest {
 
 	private static final String dir = "TEST_FILES";
-	private Sigar sigar;
-	private Cpu cpu;
-	private Cpu[] cpus;
-	private CpuInfo[] cpuInfos;
-	private DirUsage dirUsage;
-	private Mem memory; 
-	private FileSystem[] FSList;
+	private CentralProcessor cpu;
+	private GlobalMemory memory; 
 	private SystemBatteryState battery;
 	private SystemInfo sysINFO;
 	
 	@Test
-	public void testHwInfo() throws IOException, SigarException {
+	public void testHwInfo() throws IOException {
 		
 		init();
 		
@@ -52,78 +45,80 @@ public class HwTest {
 		print("HD READ speed: " + sysINFO.getHardware().getDiskStores()[0].getReadBytes());
 		print("HD WRITE speed: " + sysINFO.getHardware().getDiskStores()[0].getWriteBytes());
 
-		// CPU INFO
-		titlePrint(" CPU INFO ");
-		int i = 1;
-		print("Vendor: " + cpuInfos[0].getVendor());
-		print("Model: " + cpuInfos[0].getModel());
-		print("N of Cores: " + cpuInfos[0].getTotalCores());
-		print("N of sockets: " + cpuInfos[0].getTotalSockets());
-		print("Cores x socket: " + cpuInfos[0].getCoresPerSocket());
-		for(CpuInfo info :cpuInfos) {
-			titlePrint(" CPU "+i+" INFO ");
-		
-			print("Mhz: " + info.getMhz());
-			print("Cache size: " + info.getCacheSize());
-			
-			i++;
-		}
-		
 		// oshi cpu
+		titlePrint(" CPU INFO ");
+		print("Vendor: " + cpu.getVendor());
+		print("Identifier: " + cpu.getIdentifier());
+		print("Model: " + cpu.getModel());
+		print("Name: " + cpu.getName());
+		print("Load: " + ConversionUtils.getPercentString(cpu.getSystemCpuLoad()));
+		print("Family: " + cpu.getFamily());
+		print("N of logical cores: " + cpu.getLogicalProcessorCount());
+		print("N of Cores: " + cpu.getPhysicalProcessorCount());
+		print("N of sockets: " + cpu.getPhysicalPackageCount());
+		print("Frequency: " + ConversionUtils.coolFrequency(cpu.getVendorFreq()));
+		
 		titlePrint(" OSHI CPU INFO ");
 		print(sysINFO.getHardware().getProcessor().toString());
 		
-		// DIRECTORY STATS
-		titlePrint(" /"+ dir +" ");
-		
-//		print("N of files: " + dirUsage.getFiles());
-//		print("N of dirs contained: " + dirUsage.getSubdirs());
-//		print("Disk usage: " + FileStuff.coolFileSize(dirUsage.getDiskUsage()));
+		print("Current process - memory Used: " + RuntimeUtil.getUsedMemoryString());
+		print("Current process - memory available: " + RuntimeUtil.getFreeMemoryString());
+		print("Current process - Percentage of memory max: " + RuntimeUtil.getMaxMemoryString());
+		print("Current process - Percentage of memory used: " + RuntimeUtil.getPercentageUsedFormatted());
+		print("Current process - Percentage of memory used on System: " + RuntimeUtil.getPercMemoryOnTotalSystem(memory.getTotal()));
+
+		print("Current process - Percentage of CPU used: " + RuntimeUtil.getCurrentProcCpuUsageString());
 		
 		// RAM INFO
 //		int ii=0;
 //		while (i<20) {
-			memory = sigar.getMem();
-			titlePrint(" Memory Info ");
-			print("Used: " + FileStuff.coolFileSize(memory.getActualUsed()));
-			print("Free: " + FileStuff.coolFileSize(memory.getActualFree()));
-			print("% Used: " + Math.round(memory.getUsedPercent()));
-			print("% Free: " + Math.round(memory.getFreePercent()));
-			print("Ram: " + memory.getRam());
+		long memoryTot = memory.getTotal();
+		long memoryFree = memory.getAvailable();
+		long memoryUsed = memoryTot - memoryFree;
+				
+		
+		titlePrint(" RAM Memory Info ");
+		print("Total: " + ConversionUtils.coolFileSize(memoryTot));
+		print("Used: " + ConversionUtils.coolFileSize(memoryUsed));
+		print("Free: " + ConversionUtils.coolFileSize(memoryFree));
+		print("% Used: " + ConversionUtils.getPercent(memoryUsed, memoryTot));
+		print("% Free: " + ConversionUtils.getPercent(memoryFree, memoryTot));
 //			ii++;
-			try {
-				Thread.sleep(1500);
-			} catch (InterruptedException e) {
-				print("!! Memory analisys INTERRUPTED !!");
-			} 
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e) {
+			print("!! Memory analisys INTERRUPTED !!");
+		} 
 //		}
 
 			
 		// FILE SYSTEM INFO
 		titlePrint(" File System Info ");
-		for(FileSystem FS : FSList) {
+		for(OSFileStore FS : sysINFO.getOperatingSystem().getFileSystem().getFileStores()) {
 			separatorPrint();
 			print(FS.toString());
-			print("Name: " + FS.getDevName());
-			print("Dir: " + FS.getDirName());
-			print("Flags: " + FS.getFlags());
-			print("Options: " + FS.getOptions());
-			print("Sys-Type: " + FS.getSysTypeName());
-			print("Type: " + FS.getTypeName());
+			print("Name: " + FS.getName());
+			print("Dir: " + FS.getMount());
+			print("Volume: " + FS.getVolume());
+			print("Total space: " + FS.getTotalSpace());
+			print("Usable space: " + FS.getUsableSpace());
+			print("Logical volume: " + FS.getLogicalVolume());
+			print("Type: " + FS.getType());
 		}
 		separatorPrint();
 		
+		// Network with OSHI
+		NetworkIF[] interfaces = sysINFO.getHardware().getNetworkIFs();
+		for(NetworkIF newtInterface : interfaces) {
+			print(newtInterface.getDisplayName());
+		}
+		
 	}
 	
-	private void init() throws SigarException {
-		sigar = new Sigar();
-		cpu = sigar.getCpu();
-		cpus = sigar.getCpuList();
-		cpuInfos = sigar.getCpuInfoList();
-//		dirUsage = sigar.getDirUsage(dir);
-		memory = sigar.getMem();
-		FSList = sigar.getFileSystemList();
+	private void init() {
 		sysINFO = new SystemInfo();
+		cpu = sysINFO.getHardware().getProcessor();
+		memory = sysINFO.getHardware().getMemory();
 	}
 	// lazy printer
 	private void print(Object src) {

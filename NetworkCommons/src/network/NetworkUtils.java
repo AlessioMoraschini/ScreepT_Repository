@@ -1,16 +1,20 @@
 package network;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JProgressBar;
@@ -28,22 +32,19 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
-import org.hyperic.sigar.NetInterfaceConfig;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
 
-import amfileutils.FileStuff;
 import network.om.FtpSpeedTestOptions;
-import network.om.IPaddressConverter;
 import resources.GeneralConfig;
+import sun.net.dns.ResolverConfiguration;
+import utility.ConversionUtils;
+import utility.SafeLogger;
 
 public class NetworkUtils {
 
 ////////////////////////  FIELDS  ////////////////////////
 	
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(NetworkUtils.class); 
+	static SafeLogger logger = new SafeLogger(NetworkUtils.class); 
 	
 	//private static final Random RANDOM_GENERATOR = new Random();
 
@@ -54,17 +55,13 @@ public class NetworkUtils {
 	private Vector<NetworkAdapter> networkAdapters;
 	
 	public Enumeration<NetworkInterface> networkInterfaces;
-	
-	public static Sigar sysINFO;
-	
+//	
 ////////////////////////  CONSTRUCTORS  ////////////////////////
 	
 	public NetworkUtils() throws IOException {
 		
 		//LogManager.getRootLogger().setLevel(Level.ERROR);
 		retrieveAvailableAdapters();
-		sysINFO = new Sigar();
-		associateNetAdaptersWithConfig();
 	}
 	
 ////////////////////////  PRIVATE METHODS  ////////////////////////
@@ -125,27 +122,6 @@ public class NetworkUtils {
 		}
 	}
 	
-	private void associateNetAdaptersWithConfig() {
-		String[] interfaces = new String[1];
-		try {
-			NetInterfaceConfig currentConf;
-			interfaces = sysINFO.getNetInterfaceList();
-			for (String interfName : interfaces) {
-				currentConf = sysINFO.getNetInterfaceConfig(interfName);
-				for (NetworkAdapter adapterIter : networkAdapters) {
-					boolean condition = currentConf.getHwaddr().equals(adapterIter.locMAC) && currentConf.getAddress().equals(adapterIter.locIP);
-					//							&& currentConf.getDescription().equals(adapterIter.getName());
-					if (condition) {
-						adapterIter.setInterfaceConfig(currentConf);
-					}
-				}
-			}
-		} catch (SigarException e) {
-			logger.error("Error retrieving interfaces with Sigar", e);
-		}
-
-	}
-	
 	public String retrieveAdapterPublicIP(NetworkAdapter currentAdapter) throws IOException {
 		if (currentAdapter.getLocalIP()!=null && currentAdapter.getInetAddr().isReachable(1000)) {
 			try {
@@ -196,7 +172,7 @@ public class NetworkUtils {
 		
 		// calculate speed
 		int upSpeed = (int)(randomFile.length/((end-start)/(1000F)));
-		String UP_Speed = FileStuff.coolFileSize((long)upSpeed)+"/s  ["+FileStuff.coolFileSizeBits((long)upSpeed)+"ps]";
+		String UP_Speed = ConversionUtils.coolFileSize((long)upSpeed)+"/s  ["+ConversionUtils.coolFileSizeBits((long)upSpeed)+"ps]";
 		
 		if(progress != null) progress.setIndeterminate(false);
 		updatePb(progress, 100);
@@ -230,7 +206,7 @@ public class NetworkUtils {
 		downStream.close();
 		
 		int downSpeed = (int)(testOptions.downSize/((end-start)/(1000F)));
-		String DOWN_Speed = FileStuff.coolFileSize((long)downSpeed)+"/s  ["+FileStuff.coolFileSizeBits((long)downSpeed)+"ps]";
+		String DOWN_Speed = ConversionUtils.coolFileSize((long)downSpeed)+"/s  ["+ConversionUtils.coolFileSizeBits((long)downSpeed)+"ps]";
 		
 		if(progress != null) progress.setIndeterminate(false);
 		updatePb(progress, 100);
@@ -292,6 +268,53 @@ public class NetworkUtils {
 	    return IPaddressConverter.asBytes(responseString);
 	}
 	
+	public static List<String> getDnsServers() {
+		return ResolverConfiguration.open().nameservers();
+	}
+	
+	public static String getIpNetstatGateway() throws Exception {
+		
+		Process result = Runtime.getRuntime().exec("netstat -rn");
+
+        BufferedReader output = new BufferedReader(new InputStreamReader(result.getInputStream()));
+        String thisLine = output.readLine();
+        
+        ArrayList<String> ips = new ArrayList<>();
+        int columnGateway = 0;
+
+        boolean ipLineFound = false;
+		while (thisLine != null) {
+			thisLine = output.readLine();
+			
+			if(ipLineFound) {
+				
+				String[] elements = thisLine.split(" ");
+				for(String element : elements) {
+					String ip = IPaddressConverter.extractIpFromString(element).trim();
+					if(!ip.isEmpty()) {
+						ips.add(ip);
+					}
+				}
+				
+				break;
+			}
+			
+			if (thisLine.contains("Gateway")) {
+				String[] headStrings = thisLine.split("    ");
+				for(String elem : headStrings) {
+					if(!elem.trim().isEmpty() && !elem.trim().contains("Gateway")) {
+						columnGateway++;
+					} else if(elem.trim().contains("Gateway")) {
+						break;
+					}
+				}
+				ipLineFound = true;
+			}
+		}
+		
+		return ips.get(columnGateway);
+	}
+	
 	private static FTPClient ftpDOWNinit(InetAddress localAddress) throws IOException {
 		// force passive mode to use specified adapter
 		FTPClient ftpClient = new FTPClient();
@@ -330,8 +353,4 @@ public class NetworkUtils {
 		return networkAdapters;
 	}
 
-	public static Sigar getSysINFO() {
-		return sysINFO;
-	}
-	
 }

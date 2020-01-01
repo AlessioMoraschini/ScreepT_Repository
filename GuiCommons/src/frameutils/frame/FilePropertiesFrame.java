@@ -17,6 +17,7 @@ import network.DownloadUtils;
 import om.HashingFunction;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import utility.ConversionUtils;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,7 +25,6 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
-import amfileutils.FileStuff;
 import frameutils.utils.GuiUtils;
 import general.MyFileView;
 
@@ -249,7 +249,7 @@ public class FilePropertiesFrame extends JFrame{
 		
 		dynLblFileName.setText(fileUnderAnalysis.getName());
 		dynLblPath.setText(fileUnderAnalysis.getAbsolutePath());
-		dynLblSize.setText(FileStuff.coolFileSize(fileUnderAnalysis));
+		dynLblSize.setText(ConversionUtils.coolFileSize(fileUnderAnalysis));
 		dynLblLastChange.setText(" " + GeneralConfig.GENERIC_FORMATTER.format(new Date(fileUnderAnalysis.lastModified())));
 		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
 		updateFooter();

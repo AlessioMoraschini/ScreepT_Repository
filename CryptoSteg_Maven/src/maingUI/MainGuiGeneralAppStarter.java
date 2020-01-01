@@ -37,7 +37,6 @@ import resources.SoundsConfigurator;
 import uTILS.dependencycheck.LibChecker;
 import updater.UpdatesManager;
 import utility.PropertiesManagerLight;
-import variousutils.HandleString;
 
 public class MainGuiGeneralAppStarter {
 	
@@ -75,7 +74,6 @@ public class MainGuiGeneralAppStarter {
 	public static boolean voiceSpeakerAvailable;
 	public static boolean jnetPcapAvailable;
 	public static boolean hwInfoAvailable;
-	public static boolean networkInfoAvailable;
 	
 	public static void main(String[] args) {
 		
@@ -156,7 +154,6 @@ public class MainGuiGeneralAppStarter {
 				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
 				jnetPcapAvailable = LibChecker.checkJnetPcap();
 				hwInfoAvailable = LibChecker.checkHardwareInfoDependencies();
-				networkInfoAvailable = LibChecker.checkNetworkInfoDependencies();
 				
 				updateInstalledPlugins();
 			} catch (Exception e) {
@@ -368,10 +365,6 @@ public class MainGuiGeneralAppStarter {
 			installedPlugins.add("TextToSpeech.zip");
 		}
 		
-		if(MainGuiGeneralAppStarter.networkInfoAvailable) {
-			installedPlugins.add("NetworkInfo.zip");
-		}
-
 		if(MainGuiGeneralAppStarter.hwInfoAvailable) {
 			installedPlugins.add("HardwareInfo.zip");
 		}

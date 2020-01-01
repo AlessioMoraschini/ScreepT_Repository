@@ -36,6 +36,7 @@ import om.ImgConverterOption;
 import om.ScalingAlgorithm;
 import panel.PanelFileDragNDropManager;
 import resources.IconsPathConfigurator;
+import utility.ConversionUtils;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
@@ -795,7 +796,7 @@ public class ImageConverterFrame extends ParentFrame{
 									comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
 									refreshOutGui();						
 									refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
-											FileStuff.coolFileSize(inputImgFile), w, h);				
+											ConversionUtils.coolFileSize(inputImgFile), w, h);				
 									
 									// refresh image preview in gui
 									// way with custom repainter (keep type)
@@ -862,7 +863,7 @@ public class ImageConverterFrame extends ParentFrame{
 					comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
 					refreshOutGui();						
 					refreshInGui(inputImgFile.getName(), FilenameUtils.getExtension(inputImgFile.getName()), size,
-							FileStuff.coolFileSize(inputImgFile), w, h);				
+							ConversionUtils.coolFileSize(inputImgFile), w, h);				
 					
 					// refresh image preview in gui
 					// way with custom repainter (keep type)

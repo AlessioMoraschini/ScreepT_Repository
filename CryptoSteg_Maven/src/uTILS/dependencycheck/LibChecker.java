@@ -3,7 +3,6 @@ package uTILS.dependencycheck;
 import java.io.File;
 
 import org.apache.log4j.Logger;
-import org.hyperic.sigar.Sigar;
 
 import com.sun.jna.Native;
 
@@ -51,7 +50,6 @@ public class LibChecker {
 	public static boolean checkHardwareInfoDependencies() {
 		boolean libFound = false;
 		boolean oshiFound = false;
-		boolean sigarFound = false;
 		
 		if(!MainGUI.checkJavaVersionMaxCompatibility()) {
 			return false;
@@ -60,54 +58,20 @@ public class LibChecker {
 		try {
 			Native.setProtected(true);
 			logger.info("JNA PROTECTED MODE ACTIVE -> " + Native.isProtected());
-			Class.forName("oshi.hardware.Display");
+			Class.forName("oshi.SystemInfo");
 			new SystemInfo();
 			oshiFound = true;
 
-			Class.forName("org.hyperic.sigar.Sigar");
-			new Sigar();
-			sigarFound = true;
-			
-			libFound = oshiFound && sigarFound;
-			logger.info(" \n => HardwareInfo Oshi+Sigar libraries found! :)");
+			libFound = oshiFound;
+			logger.info(" \n => HardwareInfo Oshi libraries found! :)");
 		} catch (Throwable e) {
 			libFound = false;
 			logger.error("! Cannot instantiate HardwareInfo: undefined library dependencies: "
-					+ "\n-> Oshi found:[" + oshiFound
-					+ "]\n-> Sigar found:["+sigarFound+"] ! \n\n", e);
+					+ "\n-> Oshi found:[" + oshiFound + "]! \n\n", e);
 		}
 		return libFound;
 	}
 
-	public static boolean checkNetworkInfoDependencies() {
-		boolean sigarFound = false;
-		
-		if(!MainGUI.checkJavaVersionMaxCompatibility()) {
-			return false;
-		}
-		
-		try {
-			Native.setProtected(true);
-			logger.info("JNA PROTECTED MODE ACTIVE -> " + Native.isProtected());
-		} catch (Throwable error) {
-			logger.error("Cannot set JNA PROTECTED MODE", error);
-		}
-		
-		try {
-			Class.forName("org.hyperic.sigar.Sigar");
-			new Sigar();
-			sigarFound = true;
-			
-			logger.info(" \n => NetworkInfo Sigar library found! :)");
-		} catch (Throwable e) {
-			sigarFound = false;
-			logger.error("! Cannot instantiate NetworkInfo: undefined library dependencies: "
-					+ "\n-> Sigar found:["+sigarFound+"] ! \n\n", e);
-		}
-		
-		return sigarFound;
-	}
-	
 	public static boolean checkTesseract() {
 		String tessdataLib = GeneralConfig.RESOURCES_DIR + "lib/tessdata/eng.traineddata";
 		boolean tessDataFound = false;

@@ -17,6 +17,7 @@ import net.miginfocom.swing.MigLayout;
 import om.BufferedImageType;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
+import utility.ConversionUtils;
 
 import javax.swing.JPanel;
 import java.awt.SystemColor;
@@ -179,7 +180,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 
 					} else {
 						if (FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")) {
-							msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
+							msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
 							textArea.setText(msg);
 
 						} else {

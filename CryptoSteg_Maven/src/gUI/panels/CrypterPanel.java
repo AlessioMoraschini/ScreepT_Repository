@@ -42,6 +42,7 @@ import resources.IconsPathConfigurator;
 import splitpanel.SplitPaneUtils;
 import treeutils.om.FileTreeModel;
 import util.UpdateProgressPanelCrypter;
+import utility.ConversionUtils;
 import variousutils.HandleString;
 
 import javax.swing.JLabel;
@@ -1227,7 +1228,7 @@ public class CrypterPanel extends ModulePanel {
 							textAreaLog.append("\n" + msg);
 						} else {
 							if (FilenameUtils.getExtension(thisFile.getAbsolutePath()).equals("png")) {
-								msg = " .png Key recognized ->" + thisFile.getName() + "\n\n ## SIZE: " + FileStuff.coolFileSize(thisFile) + "\n\n ## Path: "
+								msg = " .png Key recognized ->" + thisFile.getName() + "\n\n ## SIZE: " + ConversionUtils.coolFileSize(thisFile) + "\n\n ## Path: "
 										+ thisFile.getAbsolutePath();
 								textAreaLog.append("\n" + msg);
 							} else {
@@ -1444,7 +1445,7 @@ public class CrypterPanel extends ModulePanel {
 			try {
 				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png") && ImageIO.read(thisFile)!=null) {
 					textAreaLog.append("\n" + "");
-					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
+					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
 					logger.info(msg);
 					textAreaLog.append("\n" + msg);	
 					
@@ -1486,7 +1487,7 @@ public class CrypterPanel extends ModulePanel {
 			if (BufferedImageType.checkIfAdmittedType(image.getType())) {
 				
 				String msg = "\n\n### Image values ###\n\n Width: " + img.getWidth() + " Px\n Height: "
-						+ img.getHeight() + " Px\n\n=> File Size: " + FileStuff.coolFileSize(thisFile)
+						+ img.getHeight() + " Px\n\n=> File Size: " + ConversionUtils.coolFileSize(thisFile)
 						+ "\n\n => ImgType: " + img.toString();
 				textAreaLog.append("\n" + msg);
 				logger.info(msg);

@@ -672,19 +672,6 @@
 		    <scope>${plugins.export.scope}</scope>
 		</dependency>
 	
-		<dependency>
-		    <groupId>org.fusesource</groupId>
-		    <artifactId>sigar</artifactId>
-		    <version>1.6.4</version>
-		    <exclusions>
-			    <exclusion>
-			    	<groupId>log4j</groupId>
-		    		<artifactId>log4j</artifactId>
-			    </exclusion>
-		    </exclusions>
-		    <scope>${plugins.export.scope}</scope>
-		</dependency>	
-	
 		<!-- IMPORTS FROM OTHER PROJECTS -->
 		<dependency>
 			<groupId>Initializer_Configs</groupId>

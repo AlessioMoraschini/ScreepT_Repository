@@ -190,6 +190,49 @@ public class ByteWorker {
 			return null;
 		}
     }
+
+	/**
+	 * This method Extracts 4 bytes forming the given integer from left to right. 
+	 * In bits it's equivalent to: [00000000 11111111 22222222 33333333], where the number is array index.
+	 * @param source the integer to retrieve bytes from
+	 * @return array of four bytes representing the integer.
+	 */
+	public static byte[] retrieveBytesFromInt(Integer source) {
+		byte[] result = new byte[4];
+	
+		result[0] = (byte) ((source & 0xFF000000) >> 24);
+		result[1] = (byte) ((source & 0x00FF0000) >> 16);
+		result[2] = (byte) ((source & 0x0000FF00) >> 8);
+		result[3] = (byte) ((source & 0x000000FF) >> 0);
+	
+		return result;
+	}
+
+	/**
+	 * @return the 32 bits integer(4x 8 bits) made by the four bytes in the order: [b0,b1,b2,b3]
+	 */
+	public static int fourBytesToIntShift(byte b0, byte b1, byte b2, byte b3) {
+		int r = (b3 & 0xFF) | ((b2 & 0xFF) << 8) | ((b1 & 0xFF) << 16) | ((b0 & 0xFF) << 24);
+		return r;
+	}
+
+	/**
+	 * @return the 24 bits integer(8 zeros and 24 bits) made by the three bytes in the order: [0,b1,b2,b3]
+	 * So, result is wrapped in integer padding left with zeros (useful to avoid overflows in operations with integer retrieved from byte stream)
+	 */
+	public static int threeBytesToIntShift(byte b1, byte b2, byte b3) {
+		int r = (b3 & 0xFF) | ((b2 & 0xFF) << 8) | ((b1 & 0xFF) << 16);
+		return r;
+	}
+
+	/**
+	 * @return the 16 bits equivalent integer(16 zeros and 16 bits) made by the three bytes in the order: [0,0,b1,b2]. 
+	 * So, result is wrapped in integer padding left with zeros (useful to avoid overflows in operations with integer retrieved from byte stream)
+	 */
+	public static int twoBytesToIntShift(byte b1, byte b2) {
+		int r = (b2 & 0xFF) | ((b1 & 0xFF) << 8) ;
+		return r;
+	}
 	
 	// GETTERS AND SETTERS
 	

@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import om.BufferedImageType;
 import util.ImageEncodingUtils;
+import utility.ByteWorker;
 import utility.EntrophyzerUtils;
 import utility.SafeLogger;
 
@@ -274,13 +275,13 @@ public class StegCipher {
 	    			
 	    			if(bytePerPix == 3) {
 	    				
-	    				currentByteToInt = threeBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
 	    			}else if(bytePerPix == 2) {
 	    				
-	    				currentByteToInt = threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
 	    			}else if(bytePerPix == 1) {
 	    				
-	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
 	    			}
 	    			
 	    		}else if(availableSrcBytes < bytePerPix) {
@@ -290,10 +291,10 @@ public class StegCipher {
 	    			
 	    			if(availableSrcBytes == 2) {
 	    				
-	    				currentByteToInt = threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
 	    			}else if(availableSrcBytes == 1) {
 	    				
-	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
 	    			}else if(availableSrcBytes == 0){
 	    				
 	    				// if finished available bytes current value will be a random value (to not have clear keyImage pixel in result)
@@ -375,16 +376,16 @@ public class StegCipher {
 	    			cycleN = bytePerPix;
 	    			
 	    			if(bytePerPix == 4) {
-	    				currentByteToInt = fourBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2], AES_CODED_OUT[nBytesCoded+3]);
+	    				currentByteToInt = ByteWorker.fourBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2], AES_CODED_OUT[nBytesCoded+3]);
 	    			
 	    			}else if(bytePerPix == 3) {
-	    				currentByteToInt = threeBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift(AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
 	    			
 	    			}else if(bytePerPix == 2) {
-	    				currentByteToInt = threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
 	    			
 	    			}else if(bytePerPix == 1) {
-	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
 	    			}
 	    			
 	    		}else if(availableSrcBytes < bytePerPix) {
@@ -393,13 +394,13 @@ public class StegCipher {
 	    			cycleN = availableSrcBytes;
 	    			
 	    			if(availableSrcBytes == 3) {
-	    				currentByteToInt = fourBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
+	    				currentByteToInt = ByteWorker.fourBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1], AES_CODED_OUT[nBytesCoded+2]);
 	    			
 	    			}else if(availableSrcBytes == 2) {
-	    				currentByteToInt = threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift((byte)0, AES_CODED_OUT[nBytesCoded], AES_CODED_OUT[nBytesCoded+1]);
 	    			
 	    			}else if(availableSrcBytes == 1) {
-	    				currentByteToInt = threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
+	    				currentByteToInt = ByteWorker.threeBytesToIntShift((byte)0, (byte)0, AES_CODED_OUT[nBytesCoded]);
 	    			
 	    			}else if(availableSrcBytes == 0){
 	    				// if finished available bytes current value will be a random value (to not have clear keyImage pixel in result)
@@ -607,7 +608,7 @@ public class StegCipher {
 					Integer deodedPX = securePxKey - codedPx;
 					
 					// get back integer into four bytes array for current pixel
-					cycleBytes = retrieveBytesFromInt(deodedPX);
+					cycleBytes = ByteWorker.retrieveBytesFromInt(deodedPX);
 					
 					// NOW GET BACK BYTES THAT ARE ENCODED INTO DECODED INTEGER:
 					
@@ -707,7 +708,7 @@ public class StegCipher {
 					Integer decodedPX = pxKey ^ codedPx;
 					
 					// get back integer into four bytes array for current pixel
-					cycleBytes = retrieveBytesFromInt(decodedPX);
+					cycleBytes = ByteWorker.retrieveBytesFromInt(decodedPX);
 					
 					// NOW GET BACK BYTES THAT ARE ENCODED INTO DECODED INTEGER:
 					
@@ -799,50 +800,6 @@ public class StegCipher {
 		return val;
 	}	
 
-	/**
-	 * @return the 32 bytes integer(4x 8 bits) made by the four bytes in the order: [b0,b1,b2,b3]
-	 */
-	public static int fourBytesToIntShift(byte b0, byte b1, byte b2, byte b3) {
-		int r = (b3 & 0xFF) | ((b2 & 0xFF) << 8) | ((b1 & 0xFF) << 16) | ((b0 & 0xFF) << 24);
-		return r;
-	}
-	
-	/**
-	 * @return the 24 bytes integer(8 zeros and 24 bits) made by the three bytes in the order: [0,b1,b2,b3]
-	 * So, result is wrapped in integer padding left with zeros (useful to avoid overflows in operations with integer retrieved from byte stream)
-	 */
-	public static int threeBytesToIntShift(byte b1, byte b2, byte b3) {
-		int r = (b3 & 0xFF) | ((b2 & 0xFF) << 8) | ((b1 & 0xFF) << 16);
-		return r;
-	}
-	
-	/**
-	 * @return the 16 bytes equivalent integer(16 zeros and 16 bits) made by the three bytes in the order: [0,0,b1,b2]. 
-	 * So, result is wrapped in integer padding left with zeros (useful to avoid overflows in operations with integer retrieved from byte stream)
-	 */
-	public static int twoBytesToIntShift(byte b1, byte b2) {
-		int r = (b2 & 0xFF) | ((b1 & 0xFF) << 8) ;
-		return r;
-	}
-
-	
-	/**
-	 * This method Extracts 4 bytes forming the given integer from left to right. 
-	 * In bits it's equivalent to: [00000000 11111111 22222222 33333333], where the number is array index.
-	 * @param source the integer to retrieve bytes from
-	 * @return array of four bytes representing the integer.
-	 */
-	public static byte[] retrieveBytesFromInt(Integer source) {
-		byte[] result = new byte[4];
-
-		result[0] = (byte) ((source & 0xFF000000) >> 24);
-		result[1] = (byte) ((source & 0x00FF0000) >> 16);
-		result[2] = (byte) ((source & 0x0000FF00) >> 8);
-		result[3] = (byte) ((source & 0x000000FF) >> 0);
-
-		return result;
-	}
-	
 	/**
 	 * This method grant that src+N (where N<2^30) cannot suffer from overflow. Useful when src value is only random or not important to mantain intact
 	 * @param src the source integer to secure

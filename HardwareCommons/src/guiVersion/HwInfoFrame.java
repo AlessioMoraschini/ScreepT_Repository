@@ -1,14 +1,7 @@
 package guiVersion;
 
 import org.apache.log4j.Logger;
-import org.hyperic.sigar.CpuInfo;
-import org.hyperic.sigar.Mem;
-import org.hyperic.sigar.ProcCpu;
-import org.hyperic.sigar.ProcMem;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
@@ -19,9 +12,12 @@ import oshi.SystemInfo;
 import oshi.hardware.Baseboard;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.Display;
+import oshi.hardware.GlobalMemory;
 import oshi.hardware.HWDiskStore;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import runtime.RuntimeUtil;
+import utility.ConversionUtils;
 import utility.DoubleListWorker;
 
 import javax.swing.JPanel;
@@ -30,6 +26,7 @@ import javax.swing.border.LineBorder;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
@@ -57,7 +54,7 @@ public class HwInfoFrame extends ParentFrame{
 	private static final String errMSG = "### ERROR ###";
 	private static final String UNSELECTED = "##############";
 	
-	private static final int THREAD_REFRESH_RATE = 1500;
+	private static final int THREAD_REFRESH_RATE = 1000;
 
 	// GUI elements
 	private JScrollPane scrollPane;
@@ -102,9 +99,9 @@ public class HwInfoFrame extends ParentFrame{
 	private JLabel lblNofSockets;
 	private JTextField dynLblCPUNofSockets;
 	private JLabel lblCpuFrequency;
-	private JLabel lblCacheSize;
+	private JLabel lblLogicalCores;
 	private JTextField dynLblCpuFrequency;
-	private JTextField dynLblCPUCacheSize;
+	private JTextField dynLblLogicalCores;
 	private JPanel panelMOBO;
 	private JLabel lblMotherboard;
 	private JTextField dynLblMoboModel;
@@ -127,17 +124,13 @@ public class HwInfoFrame extends ParentFrame{
 	
 	// system variables
 	private SystemInfo sysINFO;
-	private Mem memoryRam;
-	private Sigar sigar;
-	private CpuInfo[] cpuInfos; 
+	private GlobalMemory memoryRam;
+	private CentralProcessor cpu;
 	private Baseboard MOBO; 
 	private Display[] displays;
 	private Integer[] displayIndexer;
-	private CentralProcessor genCPU;
 	private LimitedConcurrentList<Double> cpuUsageHystory;
 	private HDinfo[] HDList;
-	private ProcCpu scryptCpuUsage;
-	private ProcMem scryptMemUsage;
 	
 	// network related objects
 	public HwInfoFrame thisPanel;
@@ -428,15 +421,15 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblCPUNofCores.setEditable(false);
 		panelCPU.add(dynLblCPUNofCores, "cell 3 1,growx");
 		
-		lblCacheSize = new JLabel("Cache Size:");
-		lblCacheSize.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		panelCPU.add(lblCacheSize, "cell 4 1,alignx center");
+		lblLogicalCores = new JLabel("Logical cores:");
+		lblLogicalCores.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		panelCPU.add(lblLogicalCores, "cell 4 1,alignx center");
 		
-		dynLblCPUCacheSize = new JTextField(UNSELECTED);
-		dynLblCPUCacheSize.setForeground(new Color(72, 61, 139));
-		dynLblCPUCacheSize.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		dynLblCPUCacheSize.setEditable(false);
-		panelCPU.add(dynLblCPUCacheSize, "cell 5 1,growx");
+		dynLblLogicalCores = new JTextField(UNSELECTED);
+		dynLblLogicalCores.setForeground(new Color(72, 61, 139));
+		dynLblLogicalCores.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblLogicalCores.setEditable(false);
+		panelCPU.add(dynLblLogicalCores, "cell 5 1,growx");
 		
 		panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
@@ -689,12 +682,11 @@ public class HwInfoFrame extends ParentFrame{
 	private void initSystemVars() {
 		cpuUsageHystory = new LimitedConcurrentList<Double>(1000);
 		sysINFO = new SystemInfo();
-		sigar = new Sigar();
 		
 		MOBO = sysINFO.getHardware().getComputerSystem().getBaseboard();
 		displays = sysINFO.getHardware().getDisplays();
 		displayIndexer = initDisplayIndexer();
-		genCPU = sysINFO.getHardware().getProcessor();
+		cpu = sysINFO.getHardware().getProcessor();
 		HWDiskStore[] info = sysINFO.getHardware().getDiskStores();
 		HDList = new HDinfo[info.length];
 		int i = 0;
@@ -708,21 +700,14 @@ public class HwInfoFrame extends ParentFrame{
 //////////////////////////AND NOW SOME USEFUL METHOD //////////////////////////
 	
 	private void updateScryptResourcesUsage(){
-		Sigar tempSigar = new Sigar();
-		long currentPid = tempSigar.getPid();
+		String percentRam = RuntimeUtil.getPercMemoryOnTotalSystem(memoryRam.getTotal());
+		String usedRam = RuntimeUtil.getUsedMemoryString();
 		try {
-			scryptCpuUsage = sigar.getProcCpu(currentPid);
-			scryptMemUsage = sigar.getProcMem(currentPid);
-		} catch (Exception e) {
-			logger.error("Error retrieving resources usage from ScrYpT", e);
+			dynLblScryptCpuPerc.setText(RuntimeUtil.getCurrentProcCpuUsageString());
+		} catch (IOException e) {
+			dynLblScryptCpuPerc.setText(errMSG);
 		}
-//			scryptCpuUsage.gather(tempSigar, currentPid);
-//			scryptMemUsage.gather(tempSigar, currentPid);
-			double percentD = scryptCpuUsage.getPercent();
-			int percent = (int) percentD * 100;
-			percent = (percent > 100) ? 100 : (percent < 0) ? 0 : percent;
-			dynLblScryptCpuPerc.setText(new DecimalFormat("#,##0.##").format(percent)+"%");
-			dynLblScryptRamUsage.setText(FileStuff.coolFileSize(scryptMemUsage.getResident()));
+		dynLblScryptRamUsage.setText(usedRam + "[" + percentRam + "]");
 	}
 	
 	private void updateGenInfo() {
@@ -733,19 +718,12 @@ public class HwInfoFrame extends ParentFrame{
 	}
 	
 	private void updateCpuInfo() {
-		try {
-			cpuInfos = sigar.getCpuInfoList();
-		} catch (SigarException e) {
-			logger.error("Error initializing cpu", e);
-		}
-		dynLblCPU.setText(cpuInfos[0].getModel());
-		dynLblCpuFrequency.setText(String.valueOf(cpuInfos[0].getMhz())+"Mhz");
-		dynLblCPUNofCores.setText(String.valueOf(cpuInfos[0].getTotalCores()));
-		dynLblCPUNofSockets.setText(String.valueOf(cpuInfos[0].getTotalSockets()));
-		dynLblCPUVendor.setText(cpuInfos[0].getVendor());
-		
-		String cacheSize = (cpuInfos[0].getCacheSize()!=-1)? String.valueOf(FileStuff.coolFileSize(cpuInfos[0].getCacheSize())) : UNSELECTED;
-		dynLblCPUCacheSize.setText(cacheSize);
+		dynLblCPU.setText(cpu.getName());
+		dynLblCpuFrequency.setText(ConversionUtils.coolFrequency(cpu.getVendorFreq()));
+		dynLblCPUNofCores.setText(String.valueOf(cpu.getPhysicalProcessorCount()));
+		dynLblCPUNofSockets.setText(String.valueOf(cpu.getPhysicalPackageCount()));
+		dynLblCPUVendor.setText(cpu.getVendor());
+		dynLblLogicalCores.setText(String.valueOf(cpu.getLogicalProcessorCount()));
 	}
 	
 	private void updateMoboInfo() {
@@ -760,14 +738,19 @@ public class HwInfoFrame extends ParentFrame{
 	
 	private void updateRamInfo() {
 		try {
-			memoryRam = sigar.getMem();
-			String usedPerc = String.valueOf(Math.round(memoryRam.getUsedPercent()))+"%";
-			String freePerc = String.valueOf(Math.round(memoryRam.getFreePercent()))+"%";
+			memoryRam = sysINFO.getHardware().getMemory();
 			
-			dynLblRam.setText(String.valueOf(memoryRam.getRam())+" MB");
-			dynLblFreeRam.setText(FileStuff.coolFileSize(memoryRam.getActualFree()) + " ["+freePerc+"]");
-			dynLblUsedRam.setText(FileStuff.coolFileSize(memoryRam.getActualUsed()) + " ["+usedPerc+"]");
-		} catch (SigarException e) {	
+			long memoryTot = memoryRam.getTotal();
+			long memoryFree = memoryRam.getAvailable();
+			long memoryUsed = memoryTot - memoryFree;
+			
+			String usedPerc = ConversionUtils.getPercentString(memoryUsed, memoryTot);
+			String freePerc = ConversionUtils.getPercentString(memoryFree, memoryTot);
+			
+			dynLblRam.setText(memoryTot/(1024*1024)+" MB");
+			dynLblFreeRam.setText(ConversionUtils.coolFileSize(memoryFree) + " ["+freePerc+"]");
+			dynLblUsedRam.setText(ConversionUtils.coolFileSize(memoryUsed) + " ["+usedPerc+"]");
+		} catch (Throwable e) {	
 			dynLblRam.setText(errMSG);
 			dynLblFreeRam.setText(errMSG);
 			dynLblFreeRam.setText(errMSG);
@@ -775,7 +758,7 @@ public class HwInfoFrame extends ParentFrame{
 	}
 	
 	private void updateCpuUsageInfo() {
-		double currentUsage = genCPU.getSystemCpuLoadBetweenTicks();
+		double currentUsage = cpu.getSystemCpuLoadBetweenTicks();
 		cpuUsageHystory.add(currentUsage);
 		double avgUsageCurrent = DoubleListWorker.getAvgValue(cpuUsageHystory.getList());
 		double cpuVolts = sysINFO.getHardware().getSensors().getCpuVoltage();
@@ -798,10 +781,10 @@ public class HwInfoFrame extends ParentFrame{
 			dynLblHDReadBytes.setText(String.valueOf(disk.getReadBytes()));
 			dynLblHDWriteBytes.setText(String.valueOf(disk.getWrites()));
 			dynLblHDmodel.setText(disk.getModel());
-			dynLblHDCapacity.setText(FileStuff.coolFileSize(disk.getSize()));
+			dynLblHDCapacity.setText(ConversionUtils.coolFileSize(disk.getSize()));
 			dynLblHDSerial.setText(disk.getSerial());
-			dynLblHdBytesRead.setText(FileStuff.coolFileSize(disk.getReadBytes()));
-			dynLblHdBytesWritten.setText(FileStuff.coolFileSize(disk.getWriteBytes()));
+			dynLblHdBytesRead.setText(ConversionUtils.coolFileSize(disk.getReadBytes()));
+			dynLblHdBytesWritten.setText(ConversionUtils.coolFileSize(disk.getWriteBytes()));
 		} catch (IndexOutOfBoundsException e) {
 			logger.error(e);
 		}

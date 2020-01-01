@@ -37,6 +37,7 @@ import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import utility.ConversionUtils;
 import variousutils.HandleString;
 
 public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListenerBasic{
@@ -320,9 +321,9 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 				if(img == null ) {
 					throw new IOException();
 				}
-				String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getPath()
+				String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getPath()
 							+"\n\n### Image values ###\n\n Width: "+img.getWidth()+" Px\n Height: "+img.getHeight()+" Px\n\n=> File Size: "
-							+FileStuff.coolFileSize(thisFile)+"\n\n => ImgType: "+img.toString();
+							+ConversionUtils.coolFileSize(thisFile)+"\n\n => ImgType: "+img.toString();
 				logger.debug(msg);
 				TEXT_LOG.setText(msg);
 				
@@ -369,7 +370,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 		if (tree.getLastSelectedPathComponent()!=null && !cryptoPanel.isCoderUsed()) {
 			try {
 				if(FilenameUtils.getExtension(thisFile.getAbsolutePath()).equalsIgnoreCase("png")&&ImageIO.read(thisFile)!=null) {
-					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+FileStuff.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
+					String msg = " .png Key recognized ->" + thisFile.getName()+"\n\n ## SIZE: "+ConversionUtils.coolFileSize(thisFile)+"\n\n ## Path: "+thisFile.getAbsolutePath();
 					TEXT_LOG.setText(msg);	
 					imgKeySelected.setForeground(SystemColor.GREEN);
 					

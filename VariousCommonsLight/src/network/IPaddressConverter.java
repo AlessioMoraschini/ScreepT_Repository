@@ -1,6 +1,8 @@
-package network.om;
+package network;
 
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * TCP/IP utils
@@ -8,6 +10,22 @@ import java.util.StringTokenizer;
  * @author Alessio Moraschini 2018
  */
 public class IPaddressConverter {
+	
+	private static final String IPADDRESS_PATTERN = 
+	        "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+
+	private static final Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
+	
+	public static String extractIpFromString(String raw) {
+		
+		final Matcher matcher = pattern.matcher(raw);
+		
+		if (matcher.find()) {
+		    return matcher.group();
+		} else{
+		    return "";
+		}
+	}
 
 
     /**

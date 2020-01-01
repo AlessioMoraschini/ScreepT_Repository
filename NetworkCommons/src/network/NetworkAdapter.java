@@ -1,11 +1,10 @@
 package network;
 
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 
-import org.hyperic.sigar.NetInterfaceConfig;
-
-import network.om.IPaddressConverter;
+import utility.BitWorker;
 
 public class NetworkAdapter {
 	
@@ -24,8 +23,6 @@ public class NetworkAdapter {
 	 
 	public String name;
 	public String hostName;
-	
-	public NetInterfaceConfig interfaceConfig;
 	
 	// CONSTRUCTOR //
 	
@@ -94,14 +91,6 @@ public class NetworkAdapter {
 		MTU = mTU;
 	}
 
-	public NetInterfaceConfig getInterfaceConfig() {
-		return interfaceConfig;
-	}
-
-	public void setInterfaceConfig(NetInterfaceConfig interfaceConfig) {
-		this.interfaceConfig = interfaceConfig;
-	}
-
 	public NetworkInterface getNetworkInterface() {
 		return networkInterface;
 	}
@@ -109,10 +98,33 @@ public class NetworkAdapter {
 	public void setNetworkInterface(NetworkInterface networkInterface) {
 		this.networkInterface = networkInterface;
 	}
+	
+	public String getSubnetMaskFromInetAddr() {
+		if(networkInterface != null && inetAddr != null) {
+			for (InterfaceAddress addressIface : networkInterface.getInterfaceAddresses()) {
+			    if (addressIface.getAddress().equals(inetAddr)) {
+					return BitWorker.maskLengthToBytes(addressIface.getNetworkPrefixLength());
+				}
+			}
+		} 
+		
+		return "- Address Undefined -";
+	}
+
+	public String getBroadCastFromInetAddr() {
+		if(networkInterface != null && inetAddr != null) {
+			for (InterfaceAddress addressIface : networkInterface.getInterfaceAddresses()) {
+				if (addressIface.getAddress().equals(inetAddr)) {
+					return addressIface.getBroadcast().getHostAddress();
+				}
+			}
+		} 
+		
+		return "- Address Undefined -";
+	}
 
 	@Override
 	public String toString() {
 		return name +" - "+ locMAC + " - "+ locIP;
 	}
-
 }
