@@ -54,7 +54,7 @@ public class MissingDependenciesPanel extends JDialog{
 
 	private JOptionHelper dialogHelper;
 	
-	private StartPanel parentStarterFrame;
+	private LauncherMainPanel parentStarterFrame;
 	private MissingDependenciesPanel thisPanel;
 	private ArrayList<DependencyModel> dependeciesMissing;
 	private JTable table;
@@ -69,7 +69,7 @@ public class MissingDependenciesPanel extends JDialog{
 	public static boolean active = false;
 	
 	// constructor
-	public MissingDependenciesPanel(String title, StartPanel parentStarter) {
+	public MissingDependenciesPanel(String title, LauncherMainPanel parentStarter) {
 		
 		active = true;
 		parentStarterFrame = parentStarter;

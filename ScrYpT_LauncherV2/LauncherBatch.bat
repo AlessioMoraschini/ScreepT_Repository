@@ -1,9 +1,9 @@
-set JDK_PATH=C:\Program Files\java/jdk-11.0.2/bin; 
+set JDK_PATH=C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot/bin; 
 
 set PATH=%JDK_PATH%%PATH% 
 
 echo %PATH% 
 
-java -Xmx512m -Xms256m -Xss125m -XX:MaxPermSize=128m -XshowSettings:vm -Dfile.encoding=UTF8 -Dawt.useSystemAAFontSettings=on -Dsun.java2d.d3d=false -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -jar ScrYpT_0.7.6.jar 
+javaw -Xmx768m -Xms348m -Xss100m  -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -cp ./*;./Resources_Scrypt/lib/*  maingUI.MainGuiGeneralAppStarter 
 
 exit 0

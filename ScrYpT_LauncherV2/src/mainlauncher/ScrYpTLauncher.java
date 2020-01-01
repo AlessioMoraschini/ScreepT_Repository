@@ -21,7 +21,7 @@ import gui.GuiUtils;
 import gui.JOptionHelper;
 import gui.panels.CustomizeParametersPanel;
 import gui.panels.MissingDependenciesPanel;
-import gui.panels.StartPanel;
+import gui.panels.LauncherMainPanel;
 import gui.utils.LauncherLoaderFrame;
 import gui.utils.LoggerUtils;
 import launcherutils.CommandsAssembler;
@@ -87,7 +87,7 @@ public class ScrYpTLauncher {
 	public static CommandsAssembler commandsAssembler;
 	public static JvmHelper jvmHelper;
 	
-	public static StartPanel launcherMainFrame;
+	public static LauncherMainPanel launcherMainFrame;
 	public static ScrYpTLauncher LAUNCHER;
 	public static LauncherLoaderFrame loaderGraphics;
 	
@@ -224,7 +224,7 @@ public class ScrYpTLauncher {
 		}
 		
 		// GUI launcher initialization
-		launcherMainFrame = new StartPanel("ScrYpt Launcher", this);
+		launcherMainFrame = new LauncherMainPanel("ScrYpt Launcher", this);
 
 		if(JvmHelper.warningJVM) {
 			SwingUtilities.invokeLater(new Runnable() {

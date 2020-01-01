@@ -368,6 +368,14 @@ public class MainGuiGeneralAppStarter {
 			installedPlugins.add("TextToSpeech.zip");
 		}
 		
+		if(MainGuiGeneralAppStarter.networkInfoAvailable) {
+			installedPlugins.add("NetworkInfo.zip");
+		}
+
+		if(MainGuiGeneralAppStarter.hwInfoAvailable) {
+			installedPlugins.add("HardwareInfo.zip");
+		}
+		
 		PluginManager.installedPluginProperties.saveProperty(
 				PluginManager.installedPluginPropsListKey, PropertiesManagerLight.listToString(
 						installedPlugins, PluginManager.installedPluginPropsListSeparator));

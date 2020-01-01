@@ -1258,35 +1258,50 @@ public class MainGUI extends MainGuiParent{
         return correctFile;
 	}
 	
-	private void checkVersionAndDisableUnsupportedOpt() {
+	public static boolean checkJavaVersionMaxCompatibility() {
 		currentJvmVersion = System.getProperty("java.version");
+		
+		if(SysUtils.isCurrentOpenJdk()) {
+			return false;
+		}
+		
 		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(currentJvmVersion);
 		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
 		
-		if(compareRes == 1) {
+		return compareRes != 1;
+	}
+	
+	private void checkVersionAndDisableUnsupportedOpt() {
+		
+		if(!checkJavaVersionMaxCompatibility()) {
 			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion 
 					+ "). Run with version under Max JVM version supported to use this functionality (Max allowed: "
-					+GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY + ")";
+					+ GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY + ")";
+			
+			String openJdkUnsupported = "This function is not available when using OpenJdk: use Oracle JRE to have this function.";
 			
 			// Disable non compatible options
 			mntmhwInfo.setEnabled(false);
 			mntmnetInfo.setEnabled(false);
-//			mntmCrypter.setEnabled(false);
-//			mntmCrypter.setToolTipText(tooltipMSG);
-			// set tooltip text to menu item
-			mntmhwInfo.setToolTipText(tooltipMSG);
-			mntmnetInfo.setToolTipText(tooltipMSG);
+			
+			if (SysUtils.isCurrentOpenJdk()) {
+				mntmhwInfo.setToolTipText(openJdkUnsupported);
+				mntmnetInfo.setToolTipText(openJdkUnsupported);
+			} else {
+				mntmhwInfo.setToolTipText(tooltipMSG);
+				mntmnetInfo.setToolTipText(tooltipMSG);
+			}
 		
-		} 
-		
-		if(!MainGuiGeneralAppStarter.hwInfoAvailable) {
-			mntmhwInfo.setEnabled(false);
-			mntmhwInfo.setToolTipText("Hardware info tool not found in this installation, download plugin and restart in order to use it");
-		} 
-		
-		if(!MainGuiGeneralAppStarter.networkInfoAvailable) {
-			mntmnetInfo.setEnabled(false);
-			mntmnetInfo.setToolTipText("Network info tool not found in this installation, download plugin and restart in order to use it");
+		} else {
+			if(!MainGuiGeneralAppStarter.hwInfoAvailable) {
+				mntmhwInfo.setEnabled(false);
+				mntmhwInfo.setToolTipText("Hardware info tool not found in this installation, download plugin and restart in order to use it");
+			} 
+			
+			if(!MainGuiGeneralAppStarter.networkInfoAvailable) {
+				mntmnetInfo.setEnabled(false);
+				mntmnetInfo.setToolTipText("Network info tool not found in this installation, download plugin and restart in order to use it");
+			}
 		}
 	}
 	

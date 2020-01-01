@@ -186,6 +186,10 @@ public class JvmHelper {
 		// remove non dots chars and transform undescores to dots
 		String noLettersDotsOnly = SysUtils.keepOnlyDotsAndDigits(version);
 		
+		if(!noLettersDotsOnly.startsWith("1.")) {
+			noLettersDotsOnly = "1.".concat(noLettersDotsOnly);
+		}
+		
 		boolean lessThanMax;
 		boolean moreThanMin;
 		try {

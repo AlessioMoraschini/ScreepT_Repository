@@ -223,15 +223,6 @@
 					    <excludes>/**/*humbs.db</excludes>
 					 </resource>
 					 
-				 	<!-- Root files to export without filtering -->
-			     	<!-- <resource>
-					    <filtering>false</filtering>
-					    <directory>./</directory>
-					    <includes>
-					        <include>Installed_plugins.properties</include>
-					    </includes>
-					</resource> -->
-					
 					 <!-- Main scrypt's jar (not fatjar) just compiled in /target -->
 				     <resource>
 					    <filtering>false</filtering>
@@ -343,7 +334,6 @@
     						<include>UPDATES</include>
     						<include>Dependencies_Installers/**/*</include>
     						<include>IMG/**/*</include>
-					       <!--  <include>Installed_plugins.properties</include> -->
 					        <include>changelog.log</include>
 					    </includes>
 					    <excludes>

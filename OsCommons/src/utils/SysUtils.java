@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -25,6 +26,12 @@ public class SysUtils {
 	
 	// STATIC METHODS
 	private static final OSinfo OS_INFO_LAZY = new OSinfo();
+	
+	public static final String winPath32 = "C:/Program Files (x86)/";
+	public static final String winPath64 = "C:/Program Files/";
+
+	public static final String winJavaExecutable = "java.exe";
+	public static final String winJavawExecutable = "javaw.exe";
 	
 	public static OSinfo retrieveOS() {
 		return new OSinfo();
@@ -135,9 +142,19 @@ public class SysUtils {
 			// END MAC
 		}else if(OS.isWindows()) {
 			
+			// Add oracle's java list
 			ArrayList<String> foundJavaRootFolders = findWindowsProgramPath("java");
 			for(String currFolder : foundJavaRootFolders) {
 				ArrayList<String> foundVersions = getAllJavaWinVersionFromRoot(currFolder);
+				for (String currVersionPath : foundVersions) {
+					foundJVMS.add(currVersionPath);
+				}
+			}
+
+			// Add open JDK java list
+			List<String> foundOpenJdkRootFolders = findWindowsProgramPathByNamePart("openjdk");
+			for(String currFolder : foundOpenJdkRootFolders) {
+				ArrayList<String> foundVersions = getAllDirsWithJavaExeInside(currFolder);
 				for (String currVersionPath : foundVersions) {
 					foundJVMS.add(currVersionPath);
 				}
@@ -221,6 +238,10 @@ public class SysUtils {
 		} else {
 			return 2048;
 		}
+	}
+	
+	public static boolean isCurrentOpenJdk() {
+		return System.getProperty("java.home").toLowerCase().contains("openjdk");
 	}
 
 	/**
@@ -420,16 +441,65 @@ public class SysUtils {
 		return false;
 	}
 	
+
+	public static File findDirectoryInsideRoot(File parentDirectory, String directoryToFind, boolean caseSensitive) {
+       
+		if(directoryToFind == null) {
+			return null;
+		}
+		
+		File[] files = parentDirectory.listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                continue;
+            }
+            if (caseSensitive && file.getName().equals(directoryToFind.trim())) {
+                return file;
+            } else if (!caseSensitive && file.getName().toLowerCase().equals(directoryToFind.trim().toLowerCase())) {
+                return file;
+            }
+            
+            if(file.isDirectory()) {
+            	return findDirectoryInsideRoot(file, directoryToFind, caseSensitive);
+            }
+        }
+
+        return null;
+	}
+	
+	public static File findFileInsideRoot(File parentDirectory, String fileToFind, boolean caseSensitive) {
+		
+		if(fileToFind == null) {
+			return null;
+		}
+		
+		File[] files = parentDirectory.listFiles();
+		for (File file : files) {
+			if (caseSensitive && file.isFile() && file.getName().equals(fileToFind.trim())) {
+				return file;
+			
+			} else if (!caseSensitive && file.isFile() && file.getName().toLowerCase().equals(fileToFind.trim().toLowerCase())) {
+				return file;
+			
+			} else if(file.isDirectory()) {
+				return findFileInsideRoot(file, fileToFind, caseSensitive);
+			}
+		}
+		
+		return null;
+	}
+	
 /////////////////////////////  WINDOWS ONLY  //////////////////////////////////////////
 	
 	public static ArrayList<String> findWindowsProgramPath(String programName) {
 		ArrayList<String> foundList = new ArrayList<String>();
 		
-		String path32 = "C:/Program Files (x86)/";
-		String path64 = "C:/Program Files/";
+		if(programName == null) {
+			return foundList;
+		}
 		
-		File sw32 = new File(path32, programName);
-		File sw64 = new File(path64, programName);
+		File sw32 = new File(winPath32, programName);
+		File sw64 = new File(winPath64, programName);
 		
 		if(sw64.exists()) {
 			foundList.add(sw64.getAbsolutePath());
@@ -439,6 +509,56 @@ public class SysUtils {
 		}
 		
 		return foundList;
+	}
+
+	public static List<String> findWindowsProgramPathByNamePart(String programNamePart) {
+		ArrayList<String> foundList = new ArrayList<String>();
+		
+		if(programNamePart == null) {
+			return foundList;
+		}
+		
+		File[] sw32 = new File(winPath32).listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().contains(programNamePart);
+			}
+		});
+		
+		File[] sw64 = new File(winPath64).listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().contains(programNamePart.toLowerCase());
+			}
+		});
+		
+		for(File dir : sw64) {
+			foundList.add(dir.getAbsolutePath());
+		}
+		for(File dir : sw32) {
+			foundList.add(dir.getAbsolutePath());
+		}
+		
+		return foundList;
+	}
+	
+	public static ArrayList<String> getAllDirsWithJavaExeInside(String root) {
+		ArrayList<String> stringRetrievedPaths = new ArrayList<String>();
+		
+		File currentRootDir = new File(root);
+		currentRootDir.list(new FilenameFilter() {
+			
+			@Override
+			public boolean accept(File dir, String name) {
+				File currentFile = new File(dir.getPath() + File.separator + name);
+				if(findFileInsideRoot(currentFile, winJavaExecutable, true) != null) {
+					stringRetrievedPaths.add(currentFile.getAbsolutePath());
+				}
+				return false;
+			}
+		});
+				
+		return stringRetrievedPaths;
 	}
 	
 	public static ArrayList<String> getAllJavaWinVersionFromRoot(String root) {
@@ -452,9 +572,9 @@ public class SysUtils {
 				
 				if(!(name.toLowerCase().indexOf("jdk")<0) || !(name.toLowerCase().indexOf("jre")<0)) {
 					if (dir.isDirectory()) {
-						String currentPath = dir.getPath()+"/"+name;
+						String currentPath = dir.getPath() + File.separator + name;
 						File binFolder = new File(currentPath+"/bin");
-						File exeJvm = new File(binFolder.getAbsolutePath()+"/java.exe");
+						File exeJvm = new File(binFolder.getAbsolutePath() + File.separator + winJavaExecutable);
 						// if name contains (case insensitive) jdk or jre then it's a java install directory
 						if (exeJvm.exists()) {
 							stringRetrievedPaths.add(currentPath);
@@ -468,6 +588,7 @@ public class SysUtils {
 		
 		return stringRetrievedPaths;
 	}
+	
 	
 ////////////////////////////////  LINUX ONLY  ///////////////////////////////////////////////// sudo update-alternatives --config java
 	

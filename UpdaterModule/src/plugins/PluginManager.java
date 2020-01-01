@@ -343,7 +343,7 @@ public class PluginManager {
 		return result;
 	}
 	
-	public ArrayList<String> getInstalledPluginsList() {
+	public static ArrayList<String> getInstalledPluginsList() {
 		installedPluginProperties.readFromFile();
 		return installedPluginProperties.getStringList(installedPluginPropsListKey, installedPluginPropsListSeparator);
 	}

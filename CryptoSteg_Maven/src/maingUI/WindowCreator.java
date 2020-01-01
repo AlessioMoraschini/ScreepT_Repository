@@ -216,13 +216,15 @@ public class WindowCreator {
 			}
 			
 			return tutorialFrame;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			
 			if (visible) {
 				logger.error("Error loading HTML panel" + TutorialFrame.class, e);
 				File htmlTutorialFile = new File(GeneralConfig.SCRYPT_TUTORIAL_HTML_PATH);
-				MainGUI.dialogHelper.warn("Current Java version does not support html reader, documentation will be opened with default browser!", null);
-				SysUtils.openUrlInBrowser(htmlTutorialFile.toURI().toString());
+				boolean openWithBrowser = MainGUI.dialogHelper.yesOrNo("Current Java version does not support html reader, open with default browser?", null);
+				if (openWithBrowser) {
+					SysUtils.openUrlInBrowser(htmlTutorialFile.toURI().toString());
+				}
 			}
 			
 			return null;

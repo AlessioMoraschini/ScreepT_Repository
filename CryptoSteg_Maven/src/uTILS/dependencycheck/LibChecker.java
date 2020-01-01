@@ -5,7 +5,10 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import org.hyperic.sigar.Sigar;
 
+import com.sun.jna.Native;
+
 import conversion.Text2Speech;
+import maingUI.MainGUI;
 import oshi.SystemInfo;
 import resources.GeneralConfig;
 
@@ -50,7 +53,13 @@ public class LibChecker {
 		boolean oshiFound = false;
 		boolean sigarFound = false;
 		
+		if(!MainGUI.checkJavaVersionMaxCompatibility()) {
+			return false;
+		}
+		
 		try {
+			Native.setProtected(true);
+			logger.info("JNA PROTECTED MODE ACTIVE -> " + Native.isProtected());
 			Class.forName("oshi.hardware.Display");
 			new SystemInfo();
 			oshiFound = true;
@@ -73,8 +82,18 @@ public class LibChecker {
 	public static boolean checkNetworkInfoDependencies() {
 		boolean sigarFound = false;
 		
+		if(!MainGUI.checkJavaVersionMaxCompatibility()) {
+			return false;
+		}
+		
 		try {
-			
+			Native.setProtected(true);
+			logger.info("JNA PROTECTED MODE ACTIVE -> " + Native.isProtected());
+		} catch (Throwable error) {
+			logger.error("Cannot set JNA PROTECTED MODE", error);
+		}
+		
+		try {
 			Class.forName("org.hyperic.sigar.Sigar");
 			new Sigar();
 			sigarFound = true;

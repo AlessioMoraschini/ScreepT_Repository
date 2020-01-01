@@ -57,9 +57,9 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TOOLTIP_LAUNCH_AS_JAR = "ScrYpT will be launched as Jar (works only with centralized build, pugins might not work with this configuration!)";
 	private static final String TOOLTIP_LAUNCH_AS_CLASS = "ScrYpT will be launched as .Class (works with centralized build and even with multimodule)";
 	private final String TOOLTIP_INFO_JVM = "Select your preferred, but remember that this software is fully supported only for JVMs between version "
-			+ScrYpTLauncher.iniFileManager.MIN_JRE_VERSION + " <- And -> " + ScrYpTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY;
+			+ IniFileManager.MIN_JRE_VERSION + " <- And -> " + IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY;
 	private final String TOOLTIP_WARN_JVM = "It seems that chosen version is not the best match, full software compatibility is granted for JVM versions between "
-			+ScrYpTLauncher.iniFileManager.MIN_JRE_VERSION + " <- And -> " + ScrYpTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY;
+			+ IniFileManager.MIN_JRE_VERSION + " <- And -> " + IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY;
 	
 	private static final String TITLE_LAUNCH_AS_JAR = "Launch as .Jar:";
 	private static final String TITLE_LAUNCH_AS_CLASS = "Launch as .Class:";
@@ -70,7 +70,7 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	public static boolean active = false;
 	private CustomizeParametersPanel thisPanel;
-	private StartPanel parentStarterPanel;
+	private LauncherMainPanel parentStarterPanel;
 	private JLabel lblMaxMemory;
 	private JLabel lblMinMemory;
 	private JSpinner spinnerMinMemoryMB;
@@ -120,7 +120,7 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	//ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 	
-	public CustomizeParametersPanel(String title, StartPanel parentPanel) {
+	public CustomizeParametersPanel(String title, LauncherMainPanel parentPanel) {
 		getContentPane().setForeground(new Color(220, 220, 220));
 		
 		logger.info(this.getClass().getName() + " Starting...");
@@ -498,7 +498,7 @@ public class CustomizeParametersPanel extends JFrame{
 			public void run() {
 				String selectedVersion = (String)comboPrefJvm.getSelectedItem();
 				File selectedVersionFile = new File(selectedVersion);
-				JVM_WARN = !ScrYpTLauncher.jvmHelper.checkSingleJavaVersionOK(selectedVersionFile.getName(), ScrYpTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, ScrYpTLauncher.iniFileManager.MIN_JRE_VERSION);
+				JVM_WARN = !ScrYpTLauncher.jvmHelper.checkSingleJavaVersionOK(selectedVersionFile.getName(), IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
 				
 				if (JVM_WARN) {
 					lblJvmInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));

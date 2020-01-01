@@ -31,11 +31,11 @@ import java.io.IOException;
 import java.awt.Cursor;
 import java.awt.Insets;
 
-public class StartPanel extends JFrame{
+public class LauncherMainPanel extends JFrame{
 	private static final long serialVersionUID = 5822120722073962394L;
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(StartPanel.class); 
+	static Logger logger = Logger.getLogger(LauncherMainPanel.class); 
 	
 	public static final int TOOLTIP_DELAY = 200;
 			
@@ -43,7 +43,7 @@ public class StartPanel extends JFrame{
 	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 
 	public ScrYpTLauncher LAUNCHER;
-	public StartPanel LAUNCHER_GUI;
+	public LauncherMainPanel LAUNCHER_GUI;
 	public CustomizeParametersPanel customizerPanel;
 	public MissingDependenciesPanel missingDependenciesPanel;
 	
@@ -56,10 +56,10 @@ public class StartPanel extends JFrame{
 	private JLabel label;
 	private JLabel lblAmDesign;
 	
-	private final int W = 500;
+	private final int W = 570;
 	private final int H = 170;
 	
-	public StartPanel(String frameTitle, ScrYpTLauncher launcher) {
+	public LauncherMainPanel(String frameTitle, ScrYpTLauncher launcher) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -77,7 +77,7 @@ public class StartPanel extends JFrame{
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setLayout(new MigLayout("", "[grow][40px:n,grow][40px:n,grow][20px:n,grow][40px:n,grow][20px]", "[30px,grow][25px][25px][25px]"));
+		mainPanel.setLayout(new MigLayout("insets 4, fill", "[grow][40px:n,grow][40px:n,grow][20px:n,grow][40px:n,grow][20px]", "[30px,grow][:27px:27px][:27px:27px][25px]"));
 		
 		JLabel lblWelcomeToScrypt = new JLabel("Welcome to ScrYpT, chose your preferences... or just start me :)");
 		lblWelcomeToScrypt.setForeground(Color.WHITE);
@@ -90,7 +90,7 @@ public class StartPanel extends JFrame{
 		btnStartScrypt.setBorder(null);
 		btnStartScrypt.setBackground(new Color(102, 153, 51));
 		btnStartScrypt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mainPanel.add(btnStartScrypt, "cell 3 1 3 2,grow");
 		
 		btnCustomizeParameters = new JButton("Customize launch parameters");
@@ -98,13 +98,13 @@ public class StartPanel extends JFrame{
 		btnCustomizeParameters.setForeground(new Color(0, 0, 0));
 		btnCustomizeParameters.setBackground(new Color(169, 169, 169));
 		btnCustomizeParameters.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnCustomizeParameters.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		btnCustomizeParameters.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mainPanel.add(btnCustomizeParameters, "cell 0 1 3 1,grow");
 		
 		btnDependencyManager = new JButton("Open Dependency Manager");
 		btnDependencyManager.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDependencyManager.setForeground(Color.BLACK);
-		btnDependencyManager.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		btnDependencyManager.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		btnDependencyManager.setBorder(null);
 		btnDependencyManager.setBackground(new Color(169, 169, 169));
 		mainPanel.add(btnDependencyManager, "cell 0 2 3 1,grow");

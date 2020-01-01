@@ -382,7 +382,7 @@ public class CrypterPanel extends ModulePanel {
 		panelStatus.setBackground(new Color(112, 128, 144));
 		panelMainContainer.add(panelStatus, "cell 0 1 5 1,grow");
 		GridBagLayout gbl_panelStatus = new GridBagLayout();
-		gbl_panelStatus.columnWidths = new int[]{90, 180, 40, 30, 70, 140, 140, 10, 10, 0};
+		gbl_panelStatus.columnWidths = new int[]{90, 180, 40, 20, 50, 140, 140, 10, 10, 0};
 		gbl_panelStatus.rowHeights = new int[]{32, 0};
 		gbl_panelStatus.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelStatus.rowWeights = new double[]{0.0, Double.MIN_VALUE};

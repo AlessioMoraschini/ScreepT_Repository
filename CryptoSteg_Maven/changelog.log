@@ -1,3 +1,5 @@
+* 2019-12-31  (HEAD -> refs/heads/master, refs/remotes/origin/master) Hardware and Network info are no more installed by default, but Plugins
+  
 * 2019-12-30  Added emergency kill shortcut ([esc or alt+F4] x 4 times) + BUGFIX
 | 
 * 2019-12-30  Improved password generator with more options
