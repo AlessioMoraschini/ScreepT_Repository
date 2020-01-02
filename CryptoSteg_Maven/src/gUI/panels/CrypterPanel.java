@@ -100,9 +100,9 @@ public class CrypterPanel extends ModulePanel {
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd @ HH-mm-ss");
 	
 	private static final Dimension screenSize = GuiUtils.getScreenSize();
-	private static final Dimension screenSizeLess = new Dimension(screenSize.width - 5, screenSize.height - 10);
-	private static final Dimension maxBodySize = new Dimension(screenSize.width - 5, screenSize.height - 40);
-	private static final Dimension maxSplitPaneSize = new Dimension(screenSize.width - 5, screenSize.height - 170);
+	private static final Dimension screenSizeLess = new Dimension(screenSize.width - 5, screenSize.height - 45);
+	private static final Dimension maxBodySize = new Dimension(screenSize.width - 5, screenSize.height - 90);
+	private static final Dimension maxSplitPaneSize = new Dimension(screenSize.width - 10, screenSize.height - 190);
 	
 	public static final int labelLengthLimit = 40;
 	public static final char DEFAULT_PSW_CHAR = '\u25CF';
@@ -747,7 +747,8 @@ public class CrypterPanel extends ModulePanel {
 				updateModeInfoTooltip();
 			}
 		});
-		comboModeCrypto.setSelectedItem(CryptoMode.ONLY_AES);
+		CryptoMode mode = CryptoMode.getModeFromBoolean(currentConf.getAesOpt().isFlagAes(), currentConf.getSteganOpt().isFlagSteg());
+		comboModeCrypto.setSelectedItem(mode);
 		
 		// ULTRA-SECURE - CHECKBOX LISTENER
 		chckbxShuffle.addActionListener(new ActionListener() {
@@ -924,6 +925,7 @@ public class CrypterPanel extends ModulePanel {
 						try {
 							result = screeptManagerFoF.decrYpt(mode, currentFile, destinationDir, AESKEYtext.getPassword(), srcKeyImageFile, shuffle);
 						} catch (Exception e) {
+							logger.error("There was an exception:", e);
 							result.resultOK = false;
 						}
 					}
@@ -1046,6 +1048,7 @@ public class CrypterPanel extends ModulePanel {
 						try {
 							result = screeptManagerFoF.crYpt(mode, currentFile, destinationDir, AESKEYtext.getPassword(), srcKeyImageFile, shuffle);
 						} catch (Exception e) {
+							logger.error("There was an exception:", e);
 							result.resultOK = false;
 						}
 					} 
@@ -1346,8 +1349,6 @@ public class CrypterPanel extends ModulePanel {
 	private void initialize(INItializer config) {
 		currentConf = config;		
 		AESKEYtext.setText("");
-		CryptoMode mode = CryptoMode.getModeFromBoolean(currentConf.getAesOpt().isFlagAes(), currentConf.getSteganOpt().isFlagSteg());
-		comboModeCrypto.setSelectedItem(mode);
 		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
 		chckbxHashKey.setSelected(currentConf.getAesOpt().isHashKey());
 		
@@ -1631,8 +1632,8 @@ public class CrypterPanel extends ModulePanel {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				Dimension med = new Dimension(currSize.width - 50, currSize.height - 115);
-				Dimension high = new Dimension(currSize.width - 45, currSize.height - 110);
+				Dimension med = new Dimension(currSize.width - 35, currSize.height - 155);
+				Dimension high = new Dimension(currSize.width - 35, currSize.height - 150);
 				
 				getPanelMainContainer().setPreferredSize(med);
 				getPanelMainContainer().setMaximumSize(high);

@@ -61,9 +61,9 @@ public class MainGuiGeneralAppStarter {
 	public static String[] ARGS;
 	public static File[] argumentsFiles;
 	
-	public static JOptionHelperExtended dialogHelper;
 	public static AWTExceptionHandler mainTrheadAwtErrorHandler;
 	
+	public static JOptionHelperExtended dialogHelper;
 	public static GenericFileChooserDialog fileDialogHelper;
 	
 	public static UpdatesManager updatesManager;
@@ -222,6 +222,8 @@ public class MainGuiGeneralAppStarter {
 			printElapsed("Initial configuration completed", startTime);
 			loaderGraphics.update("Initializing main application...", 15);
 			
+			startSafeKeyBoardThreadListener();
+			
 			/*************************
 			 * LAUNCH MAIN APPLICATION
 			 *************************/
@@ -231,8 +233,6 @@ public class MainGuiGeneralAppStarter {
 			if(!mainAppRunning) {
 				throw new Exception("Something has gone wrong during application start-up, please check the logs");
 			}
-			
-			startSafeKeyBoardThreadListener();
 			
 			printElapsed("Launch completed", startTime);
 			

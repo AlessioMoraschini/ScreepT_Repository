@@ -156,7 +156,9 @@ public class ScreeptManagerFileOrFolder {
 			//  CLEAR DATA AND CLOSE PROGRESS BAR
 			if(screepTManager!=null) {
 				screepTManager.disableProgressUpdater();
-				screepTManager.getAesCoder().clearSensitiveData();
+				if (screepTManager.getAesCoder() != null) {
+					screepTManager.getAesCoder().clearSensitiveData();
+				}
 			}
 		}
 
@@ -264,6 +266,9 @@ public class ScreeptManagerFileOrFolder {
 			
 			if(screepTManager!=null) {
 				screepTManager.disableProgressUpdater();
+				if (screepTManager.getAesCoder() != null) {
+					screepTManager.getAesCoder().clearSensitiveData();
+				}
 			}
 		}
 		
@@ -289,7 +294,6 @@ public class ScreeptManagerFileOrFolder {
 		coderUsed=false;
 		opInfo = screepTManager.getOutputStats();
 		screepTManager.killOpenStreams();
-		screepTManager.getAesCoder().clearSensitiveData();
 
 		return result;
 	}

@@ -20,6 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import files.Various;
@@ -70,7 +71,7 @@ public class JOptionHelper {
 		ICON_WARN_REF = UIManager.getIcon("OptionPane.informationIcon"); 
 		ICON_INFO_REF = UIManager.getIcon("OptionPane.informationIcon");        
 		ICON_QUESTION_REF = UIManager.getIcon("OptionPane.informationIcon");
-		DEFAULT_FONT_DIMENSION = new Font("Segoe UI", Font.PLAIN, 17);
+		DEFAULT_FONT_DIMENSION = new Font("Segoe UI", Font.PLAIN, 19);
 	}
 	
 	public JOptionHelper (Component parentComponent) {
@@ -518,7 +519,7 @@ public class JOptionHelper {
 		textArea.setLineWrap(true);  
 		textArea.setWrapStyleWord(true); 
 		textArea.setMargin(new Insets(6,6,6,6));
-		textArea.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+		textArea.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		scrollPane.setPreferredSize(IF_SCROLLABLE_DEF_DIMENSION);
 		
 		textArea.setText(preloadedMsg);
@@ -541,15 +542,19 @@ public class JOptionHelper {
                 defaultOptions,
                 defaultOptions[0]);
         
-		JDialog dialog = optionPane.createDialog(title);
-		dialog.setAlwaysOnTop(true);
-		dialog.setLocationRelativeTo(parentComponent);
-		dialog.enableInputMethods(true);
-		dialog.toFront();
+		final JDialog dialog = optionPane.createDialog(title);
 		
 		try {
-			dialog.setVisible(true);
-			dialog.dispose();
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					dialog.setAlwaysOnTop(true);
+					dialog.setLocationRelativeTo(parentComponent);
+					dialog.enableInputMethods(true);
+					dialog.toFront();
+					dialog.setVisible(true);
+					dialog.dispose();
+				}
+			});
 		} catch (Exception e) {
 		}
 		

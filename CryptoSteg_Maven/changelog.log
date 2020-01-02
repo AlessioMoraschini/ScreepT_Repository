@@ -1,3 +1,5 @@
+* 2020-01-01  (HEAD -> refs/heads/master, refs/remotes/origin/master) Solved crashes on Network/Hardware analysis
+  
 * 2019-12-31  Hardware and Network info are no more installed by default, but Plugins
   
 * 2019-12-30  Added emergency kill shortcut ([esc or alt+F4] x 4 times) + BUGFIX

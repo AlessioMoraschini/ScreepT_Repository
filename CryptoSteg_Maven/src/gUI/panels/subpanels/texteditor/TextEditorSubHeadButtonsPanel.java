@@ -550,18 +550,21 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		add(chckbxShowTabGrid, "cell 31 1 2 1,aligny center");
 				
 		lblFontSize = new JLabel("Font size: ");
+		lblFontSize.setToolTipText(TextEditorTooltips.tooltipIncreaseTextSize);
 		lblFontSize.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFontSize.setForeground(Color.LIGHT_GRAY);
 		add(lblFontSize, "cell 33 1,alignx right,aligny center");
 		
 		lblSIZE = new JLabel("");
+		lblSIZE.setToolTipText(TextEditorTooltips.tooltipIncreaseTextSize);
 		lblSIZE.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblSIZE.setForeground(SystemColor.window);
 		add(lblSIZE, "cell 34 1,alignx center,aligny center");
 		lblSIZE.setText(String.valueOf(GeneralConfig.DEFAULT_FONT.getSize()) + " Px");
 		
 		sliderFontSize = new JSlider(4, 100);
+		sliderFontSize.setToolTipText(TextEditorTooltips.tooltipIncreaseTextSize);
 		sliderFontSize.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
 		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));

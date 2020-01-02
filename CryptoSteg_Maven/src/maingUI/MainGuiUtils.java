@@ -58,7 +58,6 @@ public class MainGuiUtils {
 				Frame activeWindowBeforeUpdates = GuiUtils.getTopFrame();
 				
 				if (!MainGUI.mainAPP.isUpdating.get()) {
-					dialogHelper = new JOptionHelperExtended(MainGUI.frmScryptV);
 					MainGUI.mainAPP.isUpdating.set(true);
 					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(false);
 
@@ -139,20 +138,20 @@ public class MainGuiUtils {
 							logger.info("User has killed process" + e2.toString());
 						}
 					}
-
+					
 					// Reset application graphics
 					MainGUI.frmScryptV.setEnabled(true);
 					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(true);
 					MainGUI.mainAPP.isUpdating.set(false);
-					
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							activeWindowBeforeUpdates.setAutoRequestFocus(true);
-							activeWindowBeforeUpdates.toFront();
-						}
-					});
 				}
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						activeWindowBeforeUpdates.setAutoRequestFocus(true);
+						activeWindowBeforeUpdates.toFront();
+					}
+				});
 			}
 		});
 	}
@@ -463,7 +462,7 @@ public class MainGuiUtils {
     	contentPane.repaint();
 	}
 	
-	public Runnable tempDecryptedEraser() {
+	public static Runnable tempDecryptedEraser() {
 		return new Runnable() {
 			
 			@Override
@@ -484,15 +483,15 @@ public class MainGuiUtils {
 		};
 	}
 
-	public Runnable tempFilesEraser() {
+	public static Runnable tempFilesEraser() {
 		return new Runnable() {
 			
 			@Override
 			public void run() {
-				File[] decryptedList = GeneralConfig.TEMP_DIRECTORY_FILE.listFiles();
-				if (decryptedList!= null && decryptedList.length!=0) {
+				File[] tempFilesList = GeneralConfig.TEMP_DIRECTORY_FILE.listFiles();
+				if (tempFilesList!= null && tempFilesList.length!=0) {
 					// while there are temp decripted delete them
-					for (File temp : decryptedList) {
+					for (File temp : tempFilesList) {
 						logger.info("Deleting current temp file: " + temp);
 						FileUtils.deleteQuietly(temp);
 					} 

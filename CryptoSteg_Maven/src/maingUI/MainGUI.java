@@ -74,7 +74,6 @@ import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import tabbededitor.CustomTabbedEditor;
-import uTILS.dependencycheck.LibChecker;
 import utility.ConversionUtils;
 import utils.SysUtils;
 import utils.panels.ClipboardPanel;
@@ -163,8 +162,8 @@ public class MainGUI extends MainGuiParent{
 		currentConfiguration = currentConf;
 		dialogHelper = new JOptionHelperExtended(MainGuiGeneralAppStarter.loaderGraphics);
 		
+//		MainGuiGeneralAppStarter.loaderGraphics.toBack();
 		MainGuiGeneralAppStarter.loaderGraphics.setVisible(false);
-		MainGuiGeneralAppStarter.loaderGraphics.toBack();
 		MainGuiUtils.askNameAtStartIfNotDefined();
 		MainGuiGeneralAppStarter.loaderGraphics.setVisible(true);
 		MainGuiGeneralAppStarter.loaderGraphics.toFront();
@@ -418,9 +417,6 @@ public class MainGUI extends MainGuiParent{
 
 		MainGuiGeneralAppStarter.loaderGraphics.update("Initializing screen properties...", 30);
  
- 		// This will be used to print out various types of dialogs in this class
- 		dialogHelper = new JOptionHelperExtended(frmScryptV);
- 
 		// INITIALIZE SCREEN PROPOERTIES
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		screenWidth = gd.getDisplayMode().getWidth();
@@ -438,6 +434,9 @@ public class MainGUI extends MainGuiParent{
 		frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
 		frmScryptV.addMouseListener(new ComponentResizer());
 		frmScryptV.setJMenuBar(menuBar);
+		
+ 		// This will be used to print out various types of dialogs in this class
+ 		dialogHelper = new JOptionHelperExtended(frmScryptV.getContentPane());
 		
 		// FULL SCREEN SETTING
 	    frmScryptV.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -1018,17 +1017,6 @@ public class MainGUI extends MainGuiParent{
 								Runnable libCheckNRefreshGUI = new Runnable() {
 									@Override
 									public void run() {
-										try {
-											// Check hard coded plugins presence
-											MainGuiGeneralAppStarter.tesseractAvailable = LibChecker.checkTesseract();
-											MainGuiGeneralAppStarter.voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
-											MainGuiGeneralAppStarter.hwInfoAvailable = LibChecker.checkHardwareInfoDependencies();
-											if(initTxtWriter != null) {
-												initTxtWriter.subHeaderPanel.enableDependenciesFunctions();
-											}
-										} catch (Throwable e) {
-											logger.warn("Cannot check avalaibility of plugins :(");
-										}
 									}
 								};
 
@@ -1292,7 +1280,7 @@ public class MainGUI extends MainGuiParent{
 		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
     	
 		
-    	if (new JOptionHelperExtended(frmScryptV).showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
+    	if (dialogHelper.showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
 
     		frmScryptV.setAlwaysOnTop(true);
     		closeApplication(0);
@@ -1309,8 +1297,10 @@ public class MainGUI extends MainGuiParent{
 	public static void killApplication(int exitCode) {
 		logger.warn("\n\n => Starting kill procedure...\n\n");
 		
-		// if controls are passed then start real application closing routine
-		frmScryptV.setAlwaysOnTop(false);
+		if (frmScryptV != null) {
+			// if controls are passed then start real application closing routine
+			frmScryptV.setAlwaysOnTop(false);
+		}
 		
 		closeOpenBlockingFrames();
 		
@@ -1409,11 +1399,11 @@ public class MainGUI extends MainGuiParent{
 	
 	public static void runTempFilesErasers() {
      	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
-      	Thread tempEraser = new Thread(mainGuiUtils.tempFilesEraser());
+      	Thread tempEraser = new Thread(MainGuiUtils.tempFilesEraser());
       	tempEraser.start();	
       	
       	// START ERASING CREEPT TEMP DECRYPTED IF THERE ARE SOME
-      	Thread tempCreeptEraser = new Thread(mainGuiUtils.tempDecryptedEraser());
+      	Thread tempCreeptEraser = new Thread(MainGuiUtils.tempDecryptedEraser());
       	tempCreeptEraser.start();	
       	
 		String msg = "Deleting temp files and folders...";
@@ -1440,7 +1430,7 @@ public class MainGUI extends MainGuiParent{
 			NetInfoFrame.singletonInstance.dispose();
 		}
 		
-		if(initTxtWriter != null) {
+		if(initTxtWriter != null && initTxtWriter.subHeaderPanel != null) {
 			if(initTxtWriter.subHeaderPanel.propertiesFrame != null) {
 				initTxtWriter.subHeaderPanel.propertiesFrame.dispose();
 			}

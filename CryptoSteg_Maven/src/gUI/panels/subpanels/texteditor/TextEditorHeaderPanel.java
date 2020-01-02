@@ -48,6 +48,7 @@ public class TextEditorHeaderPanel extends JPanel{
 	private JButton btnPrevHistory;
 	private JButton btnShowhideFooter;
 	private JButton btnShowhideToolkit;
+	private JButton btnToggleHeader;
 
 
 	public TextEditorHeaderPanel(TextEditor parent) {
@@ -57,9 +58,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		this.currentConfiguration = parent.currentConfiguration;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 6, fill, hidemode 3",
-				"[160px,left][][][grow][:180px:300px,grow,trailing][20px:24px:24px][20px:24px:24px][20px:24px:24px][10px:10px:10px][][][][][][]",
-				"[:0px:55px, grow]"));
+		setLayout(new MigLayout("insets 6, fill, hidemode 3", "[160px,left][][][grow][:180px:300px,grow,trailing][20px:24px:24px][20px:24px:24px][20px:24px:24px][10px:10px:10px][][][][][][][]", "[:0px:55px,grow]"));
 		setForeground(SystemColor.menu);
 		setBorder(new LineBorder(Color.BLACK, 1));
 		setBackground(new Color(30,30,30));
@@ -130,21 +129,32 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkFitmantainwords.setEnabled(false);
 		add(chkFitmantainwords, "cell 11 0,alignx right,aligny center");
 		
-		btnShowhideToolkit = new JButton("Toggle functions panel");
+		btnToggleHeader = new JButton("Toggle header");
+		btnToggleHeader.setToolTipText(TextEditorTooltips.tooltipToggleHeader);
+		btnToggleHeader.setCursor(GuiUtils.CURSOR_HAND);
+		btnToggleHeader.setIcon(IconsPathConfigurator.IMG_ICON_VISIBLE);
+		btnToggleHeader.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN));
+		btnToggleHeader.setForeground(Color.WHITE);
+		btnToggleHeader.setBackground(Color.DARK_GRAY);
+		add(btnToggleHeader, "cell 13 0");
+		
+		btnShowhideToolkit = new JButton("Toggle functions");
+		btnShowhideToolkit.setToolTipText(TextEditorTooltips.tooltipToggleSubHeader);
 		btnShowhideToolkit.setCursor(GuiUtils.CURSOR_HAND);
 		btnShowhideToolkit.setIcon(IconsPathConfigurator.IMG_ICON_VISIBLE);
 		btnShowhideToolkit.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN));
 		btnShowhideToolkit.setForeground(Color.WHITE);
 		btnShowhideToolkit.setBackground(Color.DARK_GRAY);
-		add(btnShowhideToolkit, "cell 13 0,growy");
+		add(btnShowhideToolkit, "cell 14 0,growy");
 		
-		btnShowhideFooter = new JButton("Toggle Footer");
+		btnShowhideFooter = new JButton("Toggle footer");
+		btnShowhideFooter.setToolTipText(TextEditorTooltips.tooltipToggleFooter);
 		btnShowhideFooter.setCursor(GuiUtils.CURSOR_HAND);
 		btnShowhideFooter.setIcon(IconsPathConfigurator.IMG_ICON_INVISIBLE);
 		btnShowhideFooter.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN));
 		btnShowhideFooter.setForeground(Color.WHITE);
 		btnShowhideFooter.setBackground(Color.DARK_GRAY);
-		add(btnShowhideFooter, "cell 14 0,growy");
+		add(btnShowhideFooter, "cell 15 0,growy");
 		
 		addHandlers();
 	}
@@ -216,6 +226,13 @@ public class TextEditorHeaderPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				parent.getCurrentTabEditor().goToNextInHistory();
+			}
+		});
+		
+		btnToggleHeader.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parentUtils.hideOrShowHeaderPanelLevel1();
 			}
 		});
 		

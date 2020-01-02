@@ -1,14 +1,11 @@
 package plugins;
 
-import static java.lang.System.out;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
@@ -23,6 +20,7 @@ import network.DownloadUtils;
 import om.HashingFunction;
 import om.exception.ProgressBarInterruptedException;
 import utility.PropertiesManagerLight;
+import utility.SafeLogger;
 
 /**
  * This class contains the methods to manage plugins download, verification, and installation. 
@@ -30,6 +28,8 @@ import utility.PropertiesManagerLight;
  * @author xx
  */
 public class PluginManager {
+	
+	private static SafeLogger logger = new SafeLogger(PluginManager.class);
 	
 	public static final String DESCRIPTION_PROP_PREFIX = "DESCRYPTION_";
 	
@@ -67,7 +67,7 @@ public class PluginManager {
 				pluginsDir.mkdir();
 			}
 		} catch (Exception e) {
-			out.println("Cannot create updates dir (Resources_Scrypt/UPDATES) : " + Arrays.deepToString(e.getStackTrace()));
+			logger.warn("Cannot create updates dir (Resources_Scrypt/UPDATES)", e);
 		}
 	}
 	
@@ -97,36 +97,41 @@ public class PluginManager {
 			if(askUserIfUnverifiedChecksum) {
 				String askMessage = plugin.getName() + " -> File integrity cannot be verified, install anyway?";
 				if(new JOptionHelper(null).yesOrNo(askMessage, "File verification failed")) {
-					throw new Exception("Hash [" + plugin.getCheckSum() + "] not verified for file: " + plugin.localFile);
+					String message = "Hash [" + plugin.getCheckSum() + "] not verified for file: " + plugin.localFile;
+					logger.error(message);
+					throw new Exception(message);
 				}
 			} else {
 				throwHashException = true;
 			}
 
 			if (throwHashException) {
-				throw new ProgressBarInterruptedException(
-						"User has chosen to exit plugin installation: Hash [" + plugin.getCheckSum() + "] not verified for file: " + plugin.localFile);
+				String message = "User has chosen to exit plugin installation: Hash [" + plugin.getCheckSum() + "] not verified for file: " + plugin.localFile;
+				logger.warn(message);
+				throw new ProgressBarInterruptedException(message);
 			}
 		}
-		
 		
 		// Clear destination plugin folder if extraction dir is already present
 		String folderName = FilenameUtils.removeExtension(plugin.getName());
 		File destinationNamedDir = new File(LOCAL_PLUGINS_DIR + File.separator + folderName);
 		if(destinationNamedDir.exists() && destinationNamedDir.isDirectory() && destinationNamedDir.list().length > 0) {
+			logger.info("Deleting destinationNamedDir: " + destinationNamedDir);
 			Various.deleteDirContentRecursive(destinationNamedDir);
 		}
 		
 		// Unzip file
+		logger.info("Unzipping plugin: " + plugin.getLocalFile().getAbsolutePath());
 		File unzippedPlugin = DownloadUtils.unzipFile(plugin.getLocalFile().getAbsolutePath(), destinationNamedDir.getAbsolutePath(), true);
 		plugin.setLocalExtractedDir(unzippedPlugin);
 		
 		// Copy content into current application root, and update mainAppRoot-relative file installed into properties file
-		System.out.print("Copying content of " + plugin.getName() + " into " + APPLICATION_ROOT_DIR);
+		logger.info("Copying content of " + plugin.getName() + " into " + APPLICATION_ROOT_DIR);
 		Various.copyDirectoryContents(plugin.getLocalExtractedDir(), APPLICATION_ROOT_DIR);
 		ArrayList<String> relativeNewCopied = Various.getPathsRelativeToOtherFile(Various.listFiles(unzippedPlugin, new ArrayList<>()), unzippedPlugin);
 		plugin.setInstallationCompleted(true);
 		addToInstalledList(plugin);
+		
 		installedPluginProperties.saveProperty(plugin.getName(), PropertiesManagerLight.listToString(relativeNewCopied, installedPluginPropsListSeparator));
 		
 		updateCache(plugin);
@@ -136,10 +141,13 @@ public class PluginManager {
 	
 	public boolean removePlugin(PluginDTO pluginToRemove) {
 		
+		logger.info("Starting plugin removal...");
+		
 		boolean uninstallOK = true;
 		ArrayList<String> pendingUndeleted = new ArrayList<>();
 		
 		if(pluginToRemove == null || pluginToRemove.getName() == null) {
+			logger.error("Invalid input data: pluginToRemove or name is null. Exiting removePlugin method");
 			return false;
 		}
 		
@@ -151,23 +159,21 @@ public class PluginManager {
 				if (FileUtils.directoryContains(APPLICATION_ROOT_DIR, filePending)) {
 					if (toDelete != null && !"".equals(toDelete.trim()) && filePending.exists() && filePending.isFile()) {
 						FileUtils.forceDelete(filePending);
-						System.out.println(filePending + " uninstall result (deleted = true): " + uninstallOK);
+						logger.info(filePending + " uninstall result (deleted = true): " + uninstallOK);
 					}
 				} else {
-					System.out.println("Directory " + APPLICATION_ROOT_DIR + " does not contain the given file path: " + filePending + " => it's not possible to delete files that reside outside ScrYpT's folder!");
+					logger.warn("Directory " + APPLICATION_ROOT_DIR + " does not contain the given file path: " + filePending + " => it's not possible to delete files that reside outside ScrYpT's folder!");
 				}
 			} catch (IOException e) {
-				System.out.println("An error occurred while tryin' to uninstall " + pluginToRemove + " => file will be deleted on exit.");
-				e.printStackTrace();
+				logger.warn("An error occurred while tryin' to uninstall " + pluginToRemove + " => file will be deleted on exit.", e);
 				pendingUndeleted.add(toDelete);
 				uninstallOK = false;
-				System.out.println("Delete will be tried when JVM will exit.");
+				logger.warn("Delete will be tried when JVM will exit (or during next restart by launcher)");
 			
 				try {
 					Files.newOutputStream(filePending.toPath(), StandardOpenOption.DELETE_ON_CLOSE);
 				} catch (IOException e1) {
-					System.out.println("forceDeleteOnExit not possible, an error occurred :( -> files will be deleted at next restart by Launcher");
-					e1.printStackTrace();
+					logger.warn("forceDeleteOnExit not possible, an error occurred :( -> files will be deleted at next restart by Launcher", e1);
 				}
 			}
 		}
@@ -175,11 +181,15 @@ public class PluginManager {
 		removeFromInstalledList(pluginToRemove);
 		pluginToRemove.setInstallationCompleted(!uninstallOK);
 		updateCache(pluginToRemove);
+		logger.info("Cache updated: " + pluginLocalMap);
 		
 		if(!uninstallOK) {
 			// if something went wrong with delete, mark files that weren't deleted to be deleted by launcher at start
 			updatePendingDelete(pendingUndeleted);
+			logger.info("Pending delete list updated: " + pendingUndeleted);
 		}
+		
+		logger.info("Remove plugin procedure completed, exiting.");
 		
 		return uninstallOK;
 	}
@@ -218,6 +228,7 @@ public class PluginManager {
 		ArrayList<PluginDTO> downloadedList = new ArrayList<>();
 		
 		if(pluginsToDownload == null || pluginsToDownload.isEmpty()) {
+			logger.warn("Invalid input data: null or empty list -> Exiting download procedure.");
 			return downloadedList;
 		}
 		
@@ -234,6 +245,8 @@ public class PluginManager {
 			
 			for(PluginDTO currentRemote : pluginsToDownload) {
 				
+				logger.info("Downloading plugin: " + currentRemote);
+				
 				try {
 					int perc = (int)((float)(i*100)/(float)downloadFilesNumber);
 					pluginManagerProgbar.update(perc, "Downloading "+currentRemote.completeURL, true);
@@ -248,7 +261,7 @@ public class PluginManager {
 				
 				} catch (Exception e) {
 					removeFromCache(currentRemote);
-					e.printStackTrace();
+					logger.error("Error downloading plugin, removed from cache.", e);
 					throw e;
 				}
 				
@@ -261,6 +274,7 @@ public class PluginManager {
 			pluginManagerProgbar.forceClose();
 		}
 		
+		logger.info("Plugin download completed!");
 		return downloadedList;
 	}
 	
@@ -278,9 +292,9 @@ public class PluginManager {
 				pluginManagerProgbar = new UpdateProgressPanelMin(true);
 				pluginManagerProgbar.getPb().setIndeterminate(true);
 				
-				out.println(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+				logger.info(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
 				File downloadedManifest = DownloadUtils.downloadFile(false, new URL(WEB_PLUGINS_MANIFEST_URL), LOCAL_PLUGINS_MANIFEST, pluginManagerProgbar);
-				out.println("Manifest Downloaded!! Size of " + WEB_PLUGINS_MANIFEST_URL + " is: " + Various.coolFileSize(downloadedManifest.length()));
+				logger.info("Manifest Downloaded!! Size of " + WEB_PLUGINS_MANIFEST_URL + " is: " + Various.coolFileSize(downloadedManifest.length()));
 				
 				PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
 				
@@ -296,9 +310,11 @@ public class PluginManager {
 					plugins.add(toAdd);
 					updateCache(toAdd);
 				}
+			} else {
+				logger.error("Server unreachable");
 			}
 		} catch (Throwable e){
-			e.printStackTrace();
+			logger.error("Download procedure interrupted by an exception", e);
 			throw e;
 		}
 		
@@ -329,17 +345,21 @@ public class PluginManager {
 	public boolean clearPluginsLocalDir() {
 		boolean result = false;
 		
+		logger.info("Deleting local plugin directory's content: " + LOCAL_PLUGINS_DIR);
+		
 		try {
 			File pluginsFolder = new File(LOCAL_PLUGINS_DIR);
 			if(pluginsFolder.exists()) {
 				result = Various.deleteDirContentRecursive(pluginsFolder);
 				clearCache();
+				logger.info("Folder deleted and cache cleared");
 			}
 		} catch (Exception e) {
 			result = false;
-			e.printStackTrace();
+			logger.error("Cannot clear plugin directory: ", e);
 		}
 		
+		logger.info("Cleanup completed, exiting delete procedure");
 		return result;
 	}
 	

@@ -1,7 +1,5 @@
 package gui;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.swing.JFrame;
 
 import plugins.PluginDTO;
@@ -11,7 +9,7 @@ public interface IPluginManagerGui {
 	
 	public PluginManager getPluginManager();
 	public PluginDTO getPluginDTO(String nameWithoutExtension);
-	public AtomicBoolean isInstalling();
+	public boolean isInstalling();
 	public void setInstalling(boolean installing);
 	public JFrame getFrame();
 	public JFrame getParentFrame();

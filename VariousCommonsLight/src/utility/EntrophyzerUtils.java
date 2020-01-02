@@ -292,6 +292,19 @@ public class EntrophyzerUtils {
     	return output;
     }
     
+    public static int[] byteArrayToInt(byte[] source) {
+    	if(source == null) {
+    		throw new InputMismatchException("Source byte array is null!");
+    	}
+    	
+    	int[] output = new int[source.length];
+    	for(int i = 0; i < source.length; i++) {
+    		output[i] = (int)source[i]; 
+    	}
+    	
+    	return output;
+    }
+    
 	public static byte[] convertCharsToBytes(char[] sourceChar, int lengthLimit) {
 		CharBuffer chBuff = CharBuffer.wrap(sourceChar);
 		ByteBuffer byBuff = Charset.forName("UTF-8").encode(chBuff);

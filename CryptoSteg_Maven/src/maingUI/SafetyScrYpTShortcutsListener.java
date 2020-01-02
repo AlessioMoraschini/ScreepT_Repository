@@ -44,7 +44,7 @@ public class SafetyScrYpTShortcutsListener implements KeyEventDispatcher{
 				 *  Safe app shutdown -> alt + f4 X 3 times (must be in a row and with max interval between)
 				 */
 				if (e.getKeyCode() == KeyEvent.VK_F4 && repeatedClicksInLimitedTime(e, 4, false, true, false, MAX_INTERVAL_MS)) {
-					if (new JOptionHelperExtended(null).showYNDialogWarn(killAdvice, "Kill Application?", JOptionHelperExtended.YES_OR_NO)) {
+					if (askKill()) {
 
 						logger.info(this.getClass().getName() + " emergency kill procedure started.");
 			    		MainGUI.killApplication(0);
@@ -55,7 +55,7 @@ public class SafetyScrYpTShortcutsListener implements KeyEventDispatcher{
 				 *  Safe app shutdown -> esc X 3 times (must be in a row and with max interval between)
 				 */
 				if (e.getKeyCode() == 27 && repeatedClicksInLimitedTime(e, 4, false, false, false, MAX_INTERVAL_MS)) {
-					if (new JOptionHelperExtended(null).showYNDialogWarn(killAdvice, "Kill Application?", JOptionHelperExtended.YES_OR_NO)) {
+					if (askKill()) {
 						
 						logger.info(this.getClass().getName() + " emergency kill procedure started.");
 						MainGUI.killApplication(0);
@@ -66,6 +66,11 @@ public class SafetyScrYpTShortcutsListener implements KeyEventDispatcher{
 	    
 		// Pass the KeyEvent to the next KeyEventDispatcher in the chain
 	    return false;
+	}
+	
+	private boolean askKill() {
+		JOptionHelperExtended dialogHelper = MainGUI.mainAPP != null && MainGUI.mainAPP.dialogHelper != null ? MainGUI.mainAPP.dialogHelper : new JOptionHelperExtended(null);
+		return dialogHelper.showYNDialogWarn(killAdvice, "Kill Application?", JOptionHelperExtended.YES_OR_NO);
 	}
 	
 	private boolean isShortcutKey(KeyEvent e) {
@@ -83,21 +88,36 @@ public class SafetyScrYpTShortcutsListener implements KeyEventDispatcher{
 			int nLastClicks = lastFiveClicks.getSize();
 			int limit = nLastClicks-1-repeats >= 0 ? nLastClicks-1-repeats : 0;
 			
-			long lastTime = lastFiveClicks.getLast().timestamp;
+			ClickUpdate lastClickData = lastFiveClicks.getLast();
+			long lastTime = lastClickData.timestamp;
 			boolean inARowMatched = false;
 			
 			for(int i = nLastClicks-1; i > limit; i--) {
-				ClickUpdate update = lastFiveClicks.getList().get(i);
-				inARowMatched = lastTime - update.timestamp < maxInterval;
-				lastTime = update.timestamp;
+				inARowMatched = lastTime - lastClickData.timestamp < maxInterval;
+				lastTime = lastClickData.timestamp;
+				inARowMatched = inARowMatched 
+						&& lastClickData.ctrlPressed.get() == ctrl
+						&& lastClickData.altPressed.get() == alt
+						&& lastClickData.shiftPressed.get() == shift
+						&& lastClickData.keyCode == e.getKeyCode();
 				
 				if(!inARowMatched) {
 					inARowMatched = false;
 					break;
 				}
+				
+				if (i-1 >= 0) {
+					lastClickData = lastFiveClicks.getList().get(i - 1);
+				}
 			}
 			
 			combinationFound = inARowMatched;
+		}
+		
+		if(combinationFound) {
+			for (int i = 0; i < repeats; i++) {
+				lastFiveClicks.removeLast();
+			}
 		}
 		
 		return combinationFound;

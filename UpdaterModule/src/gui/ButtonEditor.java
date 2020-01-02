@@ -16,9 +16,12 @@ import files.Various;
 import om.exception.ProgressBarInterruptedException;
 import plugins.PluginDTO;
 import plugins.PluginManager;
+import utility.SafeLogger;
 
 class ButtonEditor extends DefaultCellEditor {
 	private static final long serialVersionUID = 2322648608181904669L;
+	
+	private static SafeLogger logger = new SafeLogger(ButtonEditor.class);
 
 	protected JButton button;
     private String label;
@@ -75,7 +78,10 @@ class ButtonEditor extends DefaultCellEditor {
     public Runnable getActionOnClick(String pluginName) {
     	return new Runnable() {
 			public void run() {
-				if (!pluginManagerInterface.isInstalling().get()) {
+				
+				logger.info("Starting plugin installation: " + pluginName);
+				
+				if (!pluginManagerInterface.isInstalling()) {
 					pluginManagerInterface.setInstalling(true);
 					
 					PluginDTO clickedButtonPlugin = pluginManagerInterface.getPluginDTO(pluginName);
@@ -93,9 +99,11 @@ class ButtonEditor extends DefaultCellEditor {
 							boolean uninstalled = pluginManager.removePlugin(refreshedPlugin);
 							if (uninstalled) {
 								String message = "Plugin uninstalled correctly ;)";
+								logger.info(message);
 								dialogHelper.info(message, "Plugin uninstalled");
 							} else {
 								String message = "An error occurred during plugin removal! Delete will be re-tried on exit.";
+								logger.warn(message);
 								dialogHelper.warn(message, "An error occurred");
 							}
 
@@ -106,37 +114,47 @@ class ButtonEditor extends DefaultCellEditor {
 								PluginDTO downloaded = pluginManager.downloadPlugin(refreshedPlugin);
 								pluginManager.installPlugin(downloaded, true);
 								String message = "Installation completed! Plugin will be available after restart.";
+								logger.info(message);
 								dialogHelper.info(message, "Plugin installed");
 
 							} catch (Throwable e) {
 								if (e instanceof ProgressBarInterruptedException) {
 									pluginManagerInterface.setInstalling(false);
-									String message = "Installation process killed by user.";
+									String message = "Installation process interrupted by user.";
+									logger.info(message);
 									dialogHelper.info(message, "Interrupted by user");
 								
 								} else if(e instanceof TimeoutException) {
 									String message = "Server is unreachable!";
+									logger.error(message, e);
 									dialogHelper.error(message, "An error occurred");
 								
 								} else {
 									String message = "An error occurred during installation";
+									logger.error(message, e);
 									dialogHelper.error(message, "An error occurred");
 								}
 							}
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch (Throwable e) {
+						logger.error("An error occurred", e);
 					} finally {
+						
+						logger.info("Installation Completed, refreshing elements...");
+								
 						try {
 							pluginManagerInterface.refreshTable(true);
 						} catch (Throwable e) {
-							e.printStackTrace();
+							logger.error("Cannot refresh table!", e);
 						}
 						pluginManagerInterface.refreshGuiLibsAfterChange();
 					}
 					
 					pluginManagerInterface.setInstalling(false);
+					logger.info("Installation Completed, refresh completed!");
+					
 				} else {
+					logger.warn("Exiting, installation already in progress.");
 					new JOptionHelper(pluginManagerInterface.getFrame()).warn("Must wait current installation to finish before to start another one!", "Already installing");
 				}
 			}

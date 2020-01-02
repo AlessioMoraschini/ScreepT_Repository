@@ -27,6 +27,7 @@ import utility.EntrophyzerUtils;
 import utility.hash.Hasher;
 import utility.hash.Hasher.HashAlgorithm;
 import utility.hash.Hasher.IterationsLevel;
+import utils.TestUtils;
 
 public class AesCipher {
 	
@@ -227,7 +228,7 @@ public class AesCipher {
 //	    System.out.println("shuffledResult: " + shuffledResult);
 	    
 	    if(shuffledResult) {
-			encrypted = shuffle(iv, encrypted);
+			encrypted = shuffleBack(iv, ciphertext);
 		}
 	    
 	    // Configure cipher
@@ -239,7 +240,7 @@ public class AesCipher {
 			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
 		}
 		
-		byte[] decryptedBytes = cipher.doFinal(ciphertext);
+		byte[] decryptedBytes = cipher.doFinal(encrypted);
 		return decryptedBytes;
 	}
 	
@@ -249,7 +250,18 @@ public class AesCipher {
 		System.arraycopy(EntrophyzerUtils.convertCharsToBytes(password, password.length), 0, arrayReorderingKey, 0, password.length);
 		System.arraycopy(iv, 0, arrayReorderingKey, password.length, iv.length);
 		
-		return EntrophyzerUtils.orderArrayByKey(iv, EntrophyzerUtils.convertCharsToInt(password));
+		TestUtils.printByteArray(arrayReorderingKey);
+		return EntrophyzerUtils.orderArrayByKey(source, EntrophyzerUtils.byteArrayToInt(arrayReorderingKey));
+	}
+
+	public byte[] shuffleBack(byte[] iv, byte[] shuffled) {
+		int keyReorderLength = password.length + iv.length;
+		byte[] arrayReorderingKey = new byte[keyReorderLength];
+		System.arraycopy(EntrophyzerUtils.convertCharsToBytes(password, password.length), 0, arrayReorderingKey, 0, password.length);
+		System.arraycopy(iv, 0, arrayReorderingKey, password.length, iv.length);
+		
+		TestUtils.printByteArray(arrayReorderingKey);
+		return EntrophyzerUtils.reorderBackArrayByKey(shuffled, EntrophyzerUtils.byteArrayToInt(arrayReorderingKey));
 	}
 	
 	// used with JTextField to check password strenght

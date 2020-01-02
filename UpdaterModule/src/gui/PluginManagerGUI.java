@@ -1,7 +1,6 @@
 package gui;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 
@@ -13,7 +12,6 @@ import javax.swing.JScrollPane;
 import java.awt.Font;
 
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -29,11 +27,14 @@ import files.Various;
 import net.miginfocom.swing.MigLayout;
 import plugins.PluginDTO;
 import plugins.PluginManager;
+import utility.SafeLogger;
 
 import javax.swing.JButton;
 
 public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	private static final long serialVersionUID = 8830965172863577977L;
+	
+	private static SafeLogger logger = new SafeLogger(PluginManagerGUI.class);
 
 	private PluginManagerGUI thisPanel;
 	private PluginManager pluginManager;
@@ -51,7 +52,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	
 	public JFrame parentFrame;
 	
-	public AtomicBoolean isInstalling = new AtomicBoolean();
+	public boolean isInstalling = false;
 	
 	public Runnable refreshDependencyAction;
 	
@@ -115,7 +116,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	
 	@Override
 	public void refreshGuiLibsAfterChange() {
-		SwingUtilities.invokeLater(refreshDependencyAction);
+		GuiUtils.launchThreadSafeSwing(refreshDependencyAction);
 	}
 	
 	private void addHandlers() {
@@ -125,7 +126,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
-		    	if(isInstalling.get()) {
+		    	if(isInstalling) {
 		    		if(!askIfSureToClose()) {
 		    			return;
 		    		} else {
@@ -148,7 +149,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 					try{
 						// Nothing to do on selection change
 					}catch(ArrayIndexOutOfBoundsException ex) {
-						System.out.println("Table selection listener triggered, but no rows selected ");
+						logger.debug("Table selection listener triggered, but no rows selected ");
 					} 
 				} // END IF sel != -1				
 			}
@@ -196,7 +197,9 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	
 	public void refreshTable(boolean useCache) throws Throwable {
 		
-		if(isInstalling.get()) {
+		logger.debug("Refreshing table...");
+		
+		if(isInstalling) {
 			return;
 		}
 		
@@ -220,6 +223,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 		
 		table.revalidate();
 		table.repaint();
+		
+		logger.debug("Table refreshed!");
 	}
 	
 	private boolean askIfSureToClose() {
@@ -238,7 +243,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	
 	@Override
 	public void setInstalling(boolean installing) {
-		isInstalling.set(installing);
+		isInstalling = installing;
 	}
 
 	@Override
@@ -257,7 +262,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
 	}
 
 	@Override
-	public AtomicBoolean isInstalling() {
+	public boolean isInstalling() {
 		return isInstalling;
 	}
 }

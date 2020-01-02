@@ -58,6 +58,11 @@ public class LibChecker {
 		try {
 			Native.setProtected(true);
 			logger.info("JNA PROTECTED MODE ACTIVE -> " + Native.isProtected());
+		} catch(Throwable e) {
+			logger.warn("Cannot set native protected mode", e);
+		}
+		
+		try {
 			Class.forName("oshi.SystemInfo");
 			new SystemInfo();
 			oshiFound = true;
