@@ -237,9 +237,9 @@ public class GuiUtils {
 				
 			// JAVA -> use google library to prettify java string
 			} else if (extension.toLowerCase().endsWith("java")) {
-			suppported = true;
-			formatted = CustomCodeFormatter.googleJavaCodeFormat(source);
-			source = formatted;
+			suppported = false;
+//			formatted = CustomCodeFormatter.googleJavaCodeFormat(source);
+//			source = formatted;
 		}
 		} catch (Exception e) {
 			manageFormatterException(e, extension);
@@ -258,9 +258,12 @@ public class GuiUtils {
 			if(!suppported) {
 				unsupportedAdvice = extension + " is not yet supported... maybe coming soon? ;)";
 			}
-			Sounds.playSound(SoundsConfigurator.ERROR, null);
-			logger.warn("Format not supported or an error occurred :-> skipping text replace in text area. " + unsupportedAdvice);
-			dialogHelper.warn(encapsulateInHtml("<b>Cannot format with current settings</b></br>"+unsupportedAdvice), "Cannot Format text");
+			
+			if (!suppported || error) {
+				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				logger.warn("Format not supported or an error occurred :-> skipping text replace in text area. " + unsupportedAdvice);
+				dialogHelper.warn(encapsulateInHtml("<b>Cannot format with current settings</b></br>" + unsupportedAdvice), "Cannot Format text");
+			}
 		}
 		
 		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(originalDialogDim);
@@ -334,7 +337,7 @@ public class GuiUtils {
 			public void run() {
 				target.removeAllItems();
 				Object[] array = values.toArray();
-				DefaultComboBoxModel model = new DefaultComboBoxModel(array);
+				DefaultComboBoxModel<E> model = new DefaultComboBoxModel(array);
 				target.setModel(model);
 				target.revalidate();
 				target.repaint();

@@ -14,7 +14,14 @@ public class TestProps {
 	}
 	
 	@Test
-	public void TestPropertiesApacheSave() {
-		manager.savePropertiesLayoutApache("MAX_N_OF_ERR_DIALOG_OPENED", "5");
+	public void testCommentedPropertySave() {
+		manager.saveCommentedProperty("MAX_N_OF_ERR_DIALOG_OPENED", "5");
 	}
+	
+//	@Test
+//	public void testPropertiesApacheSave() {
+//		manager.savePropertiesLayoutApache("MAX_N_OF_ERR_DIALOG_OPENED", "5");
+//	}
+	
+	
 }

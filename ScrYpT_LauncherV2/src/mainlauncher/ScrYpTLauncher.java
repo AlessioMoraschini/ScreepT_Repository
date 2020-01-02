@@ -20,7 +20,7 @@ import org.apache.log4j.PropertyConfigurator;
 import gui.GuiUtils;
 import gui.JOptionHelper;
 import gui.panels.CustomizeParametersPanel;
-import gui.panels.MissingDependenciesPanel;
+import gui.panels.DependenciesManagerPanel;
 import gui.panels.LauncherMainPanel;
 import gui.utils.LauncherLoaderFrame;
 import gui.utils.LoggerUtils;
@@ -34,7 +34,7 @@ import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
-import resources.PropertiesManager;
+import utility.PropertiesManagerLight;
 import utils.SysUtils;
 
 /**
@@ -69,7 +69,7 @@ public class ScrYpTLauncher {
 	
 	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
 	public static final String installedPluginPendingDeleteListKey = "PLUGINS_PENDING_DELETE_AT_START";
-	public static PropertiesManager installedPluginProperties = new PropertiesManager(installedPluginPropsFileName);
+	public static PropertiesManagerLight installedPluginProperties = new PropertiesManagerLight(installedPluginPropsFileName);
 	
 	
 	// jvm search fields default
@@ -102,7 +102,8 @@ public class ScrYpTLauncher {
 	
 	// use this as flag to signal that something is not ok with dependencies
 	public static  boolean criticalDependenciesOK = false;
-	public static ArrayList<DependencyModel> dependeciesMissing;
+	public static  boolean criticalJVMnotFound = false;
+	public static ArrayList<DependencyModel> missingDependenciesList;
 	
 	/** MAIN START POINT **/
 	public static void main(String[] args) {
@@ -192,7 +193,7 @@ public class ScrYpTLauncher {
 	// CONSTRUCTOR
 	public ScrYpTLauncher() {
 		
-		jvmHelper = new JvmHelper(iniFileManager.MAX_JRE_VERSION, iniFileManager.MIN_JRE_VERSION);
+		jvmHelper = new JvmHelper(IniFileManager.MAX_JRE_VERSION, IniFileManager.MIN_JRE_VERSION);
 		commandsAssembler = new CommandsAssembler(jvmHelper);
 		
 		currentOS = SysUtils.getOsInfoLazy();
@@ -248,8 +249,8 @@ public class ScrYpTLauncher {
 			}
 		});
 		//  IF PROBLEMS WITH DEPENDENCIES LIST CONTAINS SOME ELEMENTS
-		if(dependeciesMissing.size() != 0 && (iniFileManager.showInstallOptions || !criticalDependenciesOK)) {
-			launcherMainFrame.missingDependenciesPanel = new MissingDependenciesPanel("There are dependencies not found!", launcherMainFrame);
+		if(missingDependenciesList.size() != 0 && (iniFileManager.showInstallOptions && !criticalDependenciesOK)) {
+			launcherMainFrame.missingDependenciesPanel = new DependenciesManagerPanel("Check missing dependencies", launcherMainFrame);
 			launcherMainFrame.missingDependenciesPanel.setVisible(true);
 			launcherMainFrame.missingDependenciesPanel.requestFocus();
 			logger.info("Missing dependencies detected, opening installer panel");
@@ -268,12 +269,14 @@ public class ScrYpTLauncher {
 		
 		// ENSURE OLD COMMANDS ARE DELETED
 		commandsAssembler.emptyCommandsList();
-		dependeciesMissing = new ArrayList<DependencyModel>();
+		missingDependenciesList = new ArrayList<DependencyModel>();
 		
 		// RETRIEVE BEST MACTHING JVM ON CURRENT OS
 		String javaPath = jvmHelper.retrieveCorrectJVMS(ignoreWarnings);
 		if(javaPath.equals(JvmHelper.NOT_FOUND_JVM)) {
-			addToMissingDependenciesJVM();
+			addToMissingDependenciesJVM(true);
+		} else {
+			addToMissingDependenciesJVM(false);
 		}
 				
 		// ADD PATH UPDATE COMMAND FOR RIGHT TIPE SH/BAT
@@ -296,9 +299,8 @@ public class ScrYpTLauncher {
 		try {
 			String combinedCommands = commandsAssembler.getCombinedCommandList();
 			initPath = writeInitBatShAndGetPath(combinedCommands);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Throwable e) {
+			logger.error("Error detected while launching application", e);
 		}
 		
 		logger.info("Launch command generated:\n\n" + commandsAssembler.getCombinedCommandList() +"\n\n");
@@ -307,14 +309,18 @@ public class ScrYpTLauncher {
 	/**
 	 * This method adds to missing dependencies JVM with references to download/install it
 	 */
-	public void addToMissingDependenciesJVM() {
+	public void addToMissingDependenciesJVM(boolean critical) {
 		String localPathWinInstaller = DependencyModel.INSTALLERS_PATH + arch32OR64 + "/JRE-1.8-installer/jre-1.8u201.exe";
 		String localPathLinInstaller = "";
 		String localPathMacInstaller = "";
 		DependencyLocalPath pathsLocalInstaller = new DependencyLocalPath(localPathWinInstaller, localPathLinInstaller, localPathMacInstaller);
 		
-		DependencyModel javaDependency = new DependencyModel("Compatible JAVA JVM not found", "Download/Install/Locate", false, JvmHelper.JVM_URL_INSTALL, pathsLocalInstaller, actionDownNInstall_Jvm, actionLocManually_Jvm);
-		dependeciesMissing.add(javaDependency);
+		String javaMsg = critical? "Compatible JAVA JVM not found" : "Java interpreter";
+		DependencyModel javaDependency = new DependencyModel(
+				javaMsg, "Download/Install/Locate", critical, JvmHelper.JVM_URL_INSTALL, pathsLocalInstaller, actionDownNInstall_Jvm, actionLocManually_Jvm);
+		missingDependenciesList.add(javaDependency);
+		
+		criticalJVMnotFound = critical;
 	}
 	
 	/**
@@ -377,7 +383,7 @@ public class ScrYpTLauncher {
 	 */
 	private void addInstallDependenciesCommand() {
 		// TODO
-		criticalDependenciesOK = true;
+		criticalDependenciesOK = !criticalJVMnotFound;
 	}
 	
 	public void defineActionListeners() {
@@ -385,14 +391,18 @@ public class ScrYpTLauncher {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String msg = "Specify /bin folder of a supported java installation ("
-						+iniFileManager.MIN_JRE_VERSION 
+						+ IniFileManager.MIN_JRE_VERSION 
 						+ " <= VERSION < "
-						+iniFileManager.MAX_JRE_VERSION+")";
+						+ IniFileManager.MAX_JRE_VERSION+")";
 				
-				jvmHelper.manualPath_Jvm = FileUtils.directoRead(launcherMainFrame, msg).getAbsolutePath();
-				ScrYpTLauncher.iniFileManager.manualPathJvm = jvmHelper.manualPath_Jvm;
-				if (jvmHelper.checkSingleJavaVersionOK(jvmHelper.manualPath_Jvm.replace("\bin", ""))) {
-					ScrYpTLauncher.iniFileManager.preferredJvm = jvmHelper.manualPath_Jvm;
+				File tempManualJvm = FileUtils.directoRead(launcherMainFrame, msg);
+				
+				if (tempManualJvm != null && tempManualJvm.exists()) {
+					jvmHelper.manualPath_Jvm = tempManualJvm.getAbsolutePath();
+					ScrYpTLauncher.iniFileManager.manualPathJvm = jvmHelper.manualPath_Jvm;
+					if (jvmHelper.checkSingleJavaVersionOK(jvmHelper.manualPath_Jvm.replace("\bin", ""))) {
+						ScrYpTLauncher.iniFileManager.preferredJvm = jvmHelper.manualPath_Jvm;
+					} 
 				}
 			}
 		};
@@ -462,7 +472,7 @@ public class ScrYpTLauncher {
 			if(argumentsFiles != null && argumentsFiles.length > 0) {
 				try {
 					int i = 0;
-					PropertiesManager propertyManager = new PropertiesManager(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
+					PropertiesManagerLight propertyManager = new PropertiesManagerLight(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
 					for (File currentToOpen : argumentsFiles) {
 						propertyManager.dynamicFileBindingsDef.setProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + i, currentToOpen.getCanonicalPath());
 						i++;

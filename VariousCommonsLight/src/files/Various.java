@@ -481,6 +481,14 @@ public class Various {
 		return source != null && "".equals(source.trim());
 	}
 	
+	public static String trimToEmpty(String source) {
+		if (source != null) {
+			return source.trim();
+		} else {
+			return "";
+		}
+	}
+	
 	public static boolean containsIgnoreCase(String first, String second) {
 		if(first == null || second == null) {
 			return false;

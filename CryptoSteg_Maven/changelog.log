@@ -1,4 +1,6 @@
-* 2020-01-01  (HEAD -> refs/heads/master, refs/remotes/origin/master) Solved crashes on Network/Hardware analysis
+* 2020-01-02  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved plugin process + Dialogs and Text Editor bugFix
+| 
+* 2020-01-01  Solved crashes on Network/Hardware analysis
   
 * 2019-12-31  Hardware and Network info are no more installed by default, but Plugins
   

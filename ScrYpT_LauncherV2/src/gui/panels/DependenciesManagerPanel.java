@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +17,8 @@ import mainlauncher.ScrYpTLauncher;
 
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Component;
+
 import net.miginfocom.swing.MigLayout;
 import om.OSinfo;
 import resources.IconsPathConfigurator;
@@ -33,29 +36,31 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
-public class MissingDependenciesPanel extends JDialog{
+public class DependenciesManagerPanel extends JDialog{
 	private static final long serialVersionUID = 8830965172863577977L;
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(MissingDependenciesPanel.class); 
+	static Logger logger = Logger.getLogger(DependenciesManagerPanel.class); 
 	
 	private static final String[] columnNames = {"Dependency name", "Critical dependency (T/F)", "Dependency actions"};
 
 	private JOptionHelper dialogHelper;
 	
 	private LauncherMainPanel parentStarterFrame;
-	private MissingDependenciesPanel thisPanel;
+	private DependenciesManagerPanel thisPanel;
 	private ArrayList<DependencyModel> dependeciesMissing;
 	private JTable table;
 	private JLabel lblTitleHeaderMessage;
@@ -69,7 +74,7 @@ public class MissingDependenciesPanel extends JDialog{
 	public static boolean active = false;
 	
 	// constructor
-	public MissingDependenciesPanel(String title, LauncherMainPanel parentStarter) {
+	public DependenciesManagerPanel(String title, LauncherMainPanel parentStarter) {
 		
 		active = true;
 		parentStarterFrame = parentStarter;
@@ -78,7 +83,9 @@ public class MissingDependenciesPanel extends JDialog{
 		
 		dialogHelper = new JOptionHelper(this);
 		
-		dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
+		dependeciesMissing = ScrYpTLauncher.missingDependenciesList;
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		this.setAlwaysOnTop(true);
 		getContentPane().setBackground(Color.DARK_GRAY);
@@ -94,7 +101,14 @@ public class MissingDependenciesPanel extends JDialog{
 		lblTitleHeaderMessage.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 3 1,grow");
 		
-		table = new JTable();
+		table = new JTable() {
+			//  Returning the Class of each column will allow different
+            //  renderers to be used based on Class
+            public Class<?> getColumnClass(int column)
+            {
+                return getValueAt(0, column).getClass();
+            }
+		};
 		JScrollPane tableContainer = new JScrollPane(table);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
 		table.setCellSelectionEnabled(false);
@@ -142,7 +156,9 @@ public class MissingDependenciesPanel extends JDialog{
 		
 		addHandlers();
 		
-		thisPanel.setBounds(120, 120, 700, 450 );
+		GuiUtils.centerComponent(this,700, 450);
+		
+		this.setVisible(true);
 		
 		logger.info(this.getClass().getName() + " Started");
 	}
@@ -156,10 +172,14 @@ public class MissingDependenciesPanel extends JDialog{
 		            
 		    	if(!ScrYpTLauncher.criticalDependenciesOK) {
 		    		askIfSureToExit();
+		    	} else if(anyMissingCritical(dependeciesMissing)) {
+		    		askIfSureToCloseIgnoring();
+		    	} else {
+		    		active = false;
+		    		logger.debug("Closing Frame: " + thisPanel.getClass().getName());	        	
+		    		dispose();
 		    	}
-		    	askIfSureToCloseIgnoring();
-	        	logger.debug("Closing Frame: " + thisPanel.getClass().getName());	        	
-
+		    	
 		    }
 		});
 		
@@ -177,7 +197,7 @@ public class MissingDependenciesPanel extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 				parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
 				checkCriticalMissingDependencies();
-				dependeciesMissing = ScrYpTLauncher.dependeciesMissing;
+				dependeciesMissing = ScrYpTLauncher.missingDependenciesList;
 				if(dependeciesMissing.size() == 0) {
 					dialogHelper.info("All dependencies are OK, you're ready to use all ScrYpT functions :)", "No missing dependencies found!");
 					parentStarterFrame.setEnabled(true);
@@ -285,17 +305,31 @@ public class MissingDependenciesPanel extends JDialog{
 			parentStarterFrame.setEnabled(false);
 			btnIgnoreWarnings.setEnabled(false);
 		}
-		if(ScrYpTLauncher.dependeciesMissing.size() != 0) {
+		if(ScrYpTLauncher.missingDependenciesList.size() != 0 && anyMissingCritical(ScrYpTLauncher.missingDependenciesList)) {
 			parentStarterFrame.setEnabled(false);
 		}else{
 			parentStarterFrame.setEnabled(true);
-			active = false;
-			dispose();
 		}
+	}
+	
+	public static boolean anyMissingCritical(ArrayList<DependencyModel> dependenciesMissing) {
+		if(dependenciesMissing == null || dependenciesMissing.isEmpty()) {
+			return false;
+		}
+		
+		for(DependencyModel current : dependenciesMissing) {
+			if(current.isCritical) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	private DefaultTableModel getTableModel() {
 		DefaultTableModel model = new DefaultTableModel(null, columnNames) {
+			private static final long serialVersionUID = -135868054973366582L;
+
 			@Override
 		    public boolean isCellEditable(int row, int column) {
 		       //all cells false
@@ -320,17 +354,15 @@ public class MissingDependenciesPanel extends JDialog{
 		
 		if(thisPanel.dependeciesMissing.size() == 0) {
 			parentStarterFrame.setEnabled(true);
-			active = false;
-			dispose();
-			return;
 		}
+		
 		// first empty the table
 		table.removeAll();
 		table.setModel(getTableModel());
 		
 		for(DependencyModel currentDependency : dependeciesMissing) {
 			DefaultTableModel model = (DefaultTableModel) table.getModel();
-			model.addRow(new Object[]{currentDependency.dependencyName, currentDependency.isCritical, currentDependency.solution});
+			model.addRow(new Object[]{currentDependency.dependencyName, String.valueOf(currentDependency.isCritical), currentDependency.solution});
 		}
 		table.revalidate();
 		table.repaint();
@@ -377,13 +409,17 @@ public class MissingDependenciesPanel extends JDialog{
 	private void locateDependencies(int[] selectedDependenciesIndex) {
 		for(DependencyModel currentDependency : dependeciesMissing) {
 			java.util.Date now = new java.util.Date();
-			ActionListener locator = currentDependency.locateManually;
-			ActionEvent event = new ActionEvent(new Button(), ActionEvent.ACTION_PERFORMED, "Anything", now.getTime(), 0);
+			final ActionListener locator = currentDependency.locateManually;
+			final ActionEvent event = new ActionEvent(new Button(), ActionEvent.ACTION_PERFORMED, "Anything", now.getTime(), 0);
 			if(locator != null) {
-				locator.actionPerformed(event);
-				parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
-				checkCriticalMissingDependencies();
-				updateDependencyIssueTable();
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						locator.actionPerformed(event);
+						parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
+						checkCriticalMissingDependencies();
+						updateDependencyIssueTable();
+					}
+				});
 			}
 		}
 	}

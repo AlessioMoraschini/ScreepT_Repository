@@ -2,9 +2,9 @@ package gui.panels;
 
 import javax.swing.JFrame;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import files.Various;
 import gui.GuiUtils;
 import gui.JOptionHelper;
 import launcherutils.IniFileManager;
@@ -422,10 +422,11 @@ public class CustomizeParametersPanel extends JFrame{
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "viewCmdConsole", String.valueOf(viewShell));
 				iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "scaleGuiPerc", stringGuiPerc);
 				
-				// UPDATE PROPERTIES FILE TOO
-				GeneralConfig.resourcesFilePathsMappings.savePropertiesLayoutApache("FLAG_LAUNCH_JAR_COMMAND", stringLaunchAsJar);
-				GeneralConfig.reloadProperties();
-				
+				if (!GeneralConfig.resourcesFilePathsMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND").trim().equals(stringLaunchAsJar)) {
+					// UPDATE PROPERTIES FILE TOO
+					GeneralConfig.resourcesFilePathsMappings.saveCommentedProperty("FLAG_LAUNCH_JAR_COMMAND", stringLaunchAsJar);
+					GeneralConfig.reloadProperties();
+				}
 				iniFileManager.initFromINIFile();
 				
 				// regenerate command list with new args
@@ -571,7 +572,7 @@ public class CustomizeParametersPanel extends JFrame{
 			backupScaleGuiPerc = defaultScaleGuiPerc;
 		}
 		backupLaunchAsJar = Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"))? true : false;
-		backupPreferredJvm  = StringUtils.trimToEmpty(iniFileManager.iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
+		backupPreferredJvm  = Various.trimToEmpty(iniFileManager.iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
 		backupPreferredJvm = checkJvmString(backupPreferredJvm);
 		
 		// apply to gui elements

@@ -35,11 +35,20 @@
 	</dependency>
 	
 	<!-- https://mvnrepository.com/artifact/com.google.googlejavaformat/google-java-format -->
-	<dependency>
+	<!-- <dependency>
 	    <groupId>com.google.googlejavaformat</groupId>
 	    <artifactId>google-java-format</artifactId>
 	    <version>1.7</version>
 	    <exclusions>
+	    	<exclusion>
+			    <groupId>com.google.errorprone</groupId>
+			    <artifactId>javac-shaded</artifactId>
+	    	</exclusion>
+	    	<exclusion>
+			    <groupId>com.google.guava</groupId>
+			    <artifactId>guava</artifactId>
+	    	</exclusion>
+	    	
 		    <exclusion>
 			    <groupId>com.google.code.findbugs</groupId>
 		    	<artifactId>jsr305</artifactId>
@@ -49,7 +58,7 @@
 	   			<artifactId>error_prone_annotations</artifactId>
 		    </exclusion>
 	    </exclusions>
-	</dependency>
+	</dependency> -->
 	
 	<!-- <dependency>
 	    <groupId>org.apache.commons</groupId>

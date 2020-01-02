@@ -16,9 +16,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import com.google.googlejavaformat.java.Formatter;
-import com.google.googlejavaformat.java.FormatterException;
-
 import javascript.JsRunner;
 import resources.GeneralConfig;
 
@@ -91,14 +88,14 @@ public class CustomCodeFormatter {
     }
 
 	
-	/**
-	 * Uses editor standard code formatter to format given code and return back formatted string
-	 * @throws FormatterException 
-	 */
-	public static String googleJavaCodeFormat(String toFormat) throws FormatterException{
-		Formatter formatter =  new Formatter();
-		return formatter.formatSource(toFormat);
-	}
+//	/**
+//	 * Uses editor standard code formatter to format given code and return back formatted string
+//	 * @throws FormatterException 
+//	 */
+//	public static String googleJavaCodeFormat(String toFormat) throws FormatterException{
+//		Formatter formatter =  new Formatter();
+//		return formatter.formatSource(toFormat);
+//	}
 	
 	/** JAVASCRIPT EXTERNAL CALLS - HTML/CSS/JS FORMATTER OR STRINGS 
 	 * **/

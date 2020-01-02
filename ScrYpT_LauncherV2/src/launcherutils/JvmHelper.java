@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import files.Various;
 import mainlauncher.ScrYpTLauncher;
 import om.OSinfo;
 import utils.SysUtils;
@@ -25,7 +25,8 @@ public class JvmHelper {
 	public static final String NOT_FOUND_JVM = "";
 	public static final String JVM_IGNORE_WARN = "JVM_IGNORE_WARNINGS";
 	public static final String JVM_URL_INSTALL =
-			"https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html";
+//			"https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html";
+			"https://adoptopenjdk.net/releases.html";
 	
 	// FLag used to open customize options dialog at start, when warning icon will signal to user about the problem
 	public static boolean warningJVM = false;
@@ -64,7 +65,7 @@ public class JvmHelper {
 		String foundCorrectBin = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
 		
 		// if not found and current is correct return it and exit method
-		if("".equals(StringUtils.trimToEmpty(foundCorrectBin)) && checkSingleJavaVersionOK(currJvmVersion)) {
+		if("".equals(Various.trimToEmpty(foundCorrectBin)) && checkSingleJavaVersionOK(currJvmVersion)) {
 			logger.info("Current JVM("+currJvmVersion+") is OK -> selected and skipping search");
 			foundCorrectBin = JVM_OK;
 			// adding ; to path does not modify current retrieved and escapes NOT_FOUND_JVM controls as path won't be ""
@@ -73,7 +74,7 @@ public class JvmHelper {
 		// Update JVM Warning wignal
 		String foundCorrectName = new File(foundCorrect).getName();
 		warningJVM = foundCorrect.equals(NOT_FOUND_JVM) 
-				|| StringUtils.trimToEmpty(foundCorrect).equals("") 
+				|| Various.trimToEmpty(foundCorrect).equals("") 
 				|| !checkSingleJavaVersionOK(foundCorrectName, ScrYpTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, ScrYpTLauncher.iniFileManager.MIN_JRE_VERSION);
 		
 		// case of ignore warnings specified : use current JVM

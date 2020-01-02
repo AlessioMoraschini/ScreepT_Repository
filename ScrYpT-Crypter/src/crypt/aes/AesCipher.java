@@ -27,7 +27,6 @@ import utility.EntrophyzerUtils;
 import utility.hash.Hasher;
 import utility.hash.Hasher.HashAlgorithm;
 import utility.hash.Hasher.IterationsLevel;
-import utils.TestUtils;
 
 public class AesCipher {
 	
@@ -250,7 +249,6 @@ public class AesCipher {
 		System.arraycopy(EntrophyzerUtils.convertCharsToBytes(password, password.length), 0, arrayReorderingKey, 0, password.length);
 		System.arraycopy(iv, 0, arrayReorderingKey, password.length, iv.length);
 		
-		TestUtils.printByteArray(arrayReorderingKey);
 		return EntrophyzerUtils.orderArrayByKey(source, EntrophyzerUtils.byteArrayToInt(arrayReorderingKey));
 	}
 
@@ -260,7 +258,6 @@ public class AesCipher {
 		System.arraycopy(EntrophyzerUtils.convertCharsToBytes(password, password.length), 0, arrayReorderingKey, 0, password.length);
 		System.arraycopy(iv, 0, arrayReorderingKey, password.length, iv.length);
 		
-		TestUtils.printByteArray(arrayReorderingKey);
 		return EntrophyzerUtils.reorderBackArrayByKey(shuffled, EntrophyzerUtils.byteArrayToInt(arrayReorderingKey));
 	}
 	

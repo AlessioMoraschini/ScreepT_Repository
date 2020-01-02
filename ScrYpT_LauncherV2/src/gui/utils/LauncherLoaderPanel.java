@@ -13,8 +13,9 @@ import resources.GeneralConfig;
 
 import javax.swing.JProgressBar;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import files.Various;
 
 import javax.swing.JLabel;
 import java.awt.CardLayout;
@@ -180,7 +181,7 @@ public class LauncherLoaderPanel extends JPanel{
 			@Override
 			public void run() {
 				
-				final String safeText = StringUtils.trimToEmpty(text);
+				final String safeText = Various.trimToEmpty(text);
 				
 				while(indeterminated.get()) {
 					try {

@@ -17,11 +17,11 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.Various;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
@@ -166,7 +166,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 				
 				if(newName == null) {
 					return;
-				}else if(!StringUtils.trimToEmpty(newName).equals("")){
+				}else if(!Various.trimToEmpty(newName).equals("")){
 					unexistant = FileStuff.renameJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
 				}
 				

@@ -19,7 +19,6 @@ import java.util.Vector;
 
 import javax.swing.JProgressBar;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import org.apache.http.HttpEntity;
@@ -33,6 +32,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import files.Various;
 import network.om.FtpSpeedTestOptions;
 import resources.GeneralConfig;
 import sun.net.dns.ResolverConfiguration;
@@ -78,7 +78,7 @@ public class NetworkUtils {
 		String[] propertiesVal = GeneralConfig.getPubIpProvList();
 		try {
 			for(String address : propertiesVal) {
-				listWS.add(new URI(StringUtils.trim(address)));
+				listWS.add(new URI(Various.trimToEmpty(address)));
 			}
 		} catch (URISyntaxException e) {
 			logger.error("Error in URI format", e);

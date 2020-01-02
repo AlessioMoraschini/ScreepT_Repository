@@ -6,32 +6,32 @@ import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.configuration.PropertiesConfigurationLayout;
-import org.apache.commons.lang.StringUtils;
+//import org.apache.commons.configuration.ConfigurationException;
+//import org.apache.commons.configuration.PropertiesConfiguration;
+//import org.apache.commons.configuration.PropertiesConfigurationLayout;
 import org.apache.log4j.Logger;
+
+import files.Various;
 
 public class PropertiesManager {
 	
 	// PropertiesManager logger
-	static Logger logger = Logger.getLogger(PropertiesManager.class); 
+	private static Logger logger = Logger.getLogger(PropertiesManager.class); 
+	private static SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 	public File dynamicFileBindingsDefSource;
 	public Properties dynamicFileBindingsDef;
-	public PropertiesConfigurationLayout layoutApacheCommons;
+//	public PropertiesConfigurationLayout layoutApacheCommons;
+	public CommentedProperties commentedProperties;
 	
-	public SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 	/**
 	 * To check if definition had success, check if field <b>dynamicFileBindingsDefSource</b> is null after object's creation:
@@ -43,11 +43,35 @@ public class PropertiesManager {
 		dynamicFileBindingsDefSource = new File(bindingsFileDefinitionSource);
 		dynamicFileBindingsDef = new Properties();
 
-		PropertiesConfiguration config = new PropertiesConfiguration();
-		layoutApacheCommons = new PropertiesConfigurationLayout(config);
+//		PropertiesConfiguration config = new PropertiesConfiguration();
+//		layoutApacheCommons = new PropertiesConfigurationLayout(config);
 		
 		if (!prepareDefObj()) {
 			dynamicFileBindingsDefSource = null;
+		}
+
+		if (!loadCommentedProperties()) {
+			commentedProperties = null;
+		}
+	}
+	
+	private boolean loadCommentedProperties() {
+		commentedProperties = new CommentedProperties();
+		if (dynamicFileBindingsDefSource != null) {
+			
+        	synchronized (dynamicFileBindingsDefSource) {
+				try (InputStream input = new FileInputStream(dynamicFileBindingsDefSource)) {
+
+					commentedProperties.load(input);
+					return true;
+
+				} catch (IOException ex) {
+					logger.error("Cannot prepare commented properties file mapping !!");
+					return false;
+				}
+			} 
+		}else {
+			return false;
 		}
 	}
 	
@@ -61,8 +85,12 @@ public class PropertiesManager {
 		dynamicFileBindingsDefSource = bindingsFileDefinitionSource;
 		dynamicFileBindingsDef = new Properties();
 
-		PropertiesConfiguration config = new PropertiesConfiguration();
-		layoutApacheCommons = new PropertiesConfigurationLayout(config);
+//		PropertiesConfiguration config = new PropertiesConfiguration();
+//		layoutApacheCommons = new PropertiesConfigurationLayout(config);
+		
+		if (!loadCommentedProperties()) {
+			commentedProperties = null;
+		}
 		
 		if (!prepareDefObj()) {
 			dynamicFileBindingsDefSource = null;
@@ -73,8 +101,12 @@ public class PropertiesManager {
 		dynamicFileBindingsDef = bindingsFileDefinitionDef;
 		dynamicFileBindingsDefSource = new File("");
 
-		PropertiesConfiguration config = new PropertiesConfiguration();
-		layoutApacheCommons = new PropertiesConfigurationLayout(config);
+//		PropertiesConfiguration config = new PropertiesConfiguration();
+//		layoutApacheCommons = new PropertiesConfigurationLayout(config);
+		
+		if (!loadCommentedProperties()) {
+			commentedProperties = new CommentedProperties();
+		}
 	}
 	
 	/**
@@ -138,16 +170,38 @@ public class PropertiesManager {
 	 * @param propertyName
 	 * @param value
 	 */
-	public void savePropertiesLayoutApache(String propertyName, String value) {
+//	public void savePropertiesLayoutApache(String propertyName, String value) {
+//		try {
+//			dynamicFileBindingsDef.setProperty(propertyName, value);
+//        	layoutApacheCommons.load(new InputStreamReader(new FileInputStream(dynamicFileBindingsDefSource)));
+//        	layoutApacheCommons.getConfiguration().setProperty(propertyName, value);
+//        	logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);
+//        	layoutApacheCommons.save(new FileWriter(dynamicFileBindingsDefSource, false));
+//        	logger.info("Saved!");
+//		} catch (ConfigurationException | IOException e) {
+//			logger.error(e);
+//		}
+//	}
+	
+	public void saveCommentedProperty(String propertyName, String value) {
+		
+		java.io.OutputStream out = null;
 		try {
+			out = new FileOutputStream(dynamicFileBindingsDefSource);
 			dynamicFileBindingsDef.setProperty(propertyName, value);
-        	layoutApacheCommons.load(new InputStreamReader(new FileInputStream(dynamicFileBindingsDefSource)));
-        	layoutApacheCommons.getConfiguration().setProperty(propertyName, value);
         	logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);
-        	layoutApacheCommons.save(new FileWriter(dynamicFileBindingsDefSource, false));
+        	commentedProperties.setProperty(propertyName, value);
+        	commentedProperties.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));
         	logger.info("Saved!");
-		} catch (ConfigurationException | IOException e) {
-			logger.error(e);
+		} catch (Throwable e) {
+			logger.error("Cannot save commented properties", e);
+		} finally {
+			try {
+				out.flush();
+				out.close();
+			} catch (IOException e1) {
+				logger.error("Cannot close streams", e1);
+			}
 		}
 	}
 	
@@ -316,7 +370,7 @@ public class PropertiesManager {
 	public Dimension getDimensionFromString(String separator, String key, Dimension defaultDim) {
 		int width;
 		int height;
-		String source = StringUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+		String source = Various.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
 		try {
 			String[] splitted = source.split(separator);
 			width = Integer.parseInt(splitted[0]);
@@ -332,8 +386,8 @@ public class PropertiesManager {
      * parse font from a representing string
      */
     public Font getFontFromString(String key, Font defaultFont) {
-    	String stringFont = StringUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
-    	if("".equals(StringUtils.trimToEmpty(stringFont))) return defaultFont;
+    	String stringFont = Various.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+    	if("".equals(Various.trimToEmpty(stringFont))) return defaultFont;
     	
     	String[] font = stringFont.split("-");
     	String type;

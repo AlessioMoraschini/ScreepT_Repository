@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
@@ -62,11 +61,11 @@ public class AutoComplete {
 		try {
 			String line=br.readLine();
 			while(line!=null){
-				line = StringUtils.trim(line);
+				line = line.trim();
 				if(line.length()>0 && line.substring(0,1).equals("-")){
 					line = line.substring(1, line.length());
 				}
-				line = StringUtils.trim(line);
+				line = line.trim();
 				provider_temp.addCompletion(new BasicCompletion(provider_temp,line));
 				line =br.readLine();
 			}

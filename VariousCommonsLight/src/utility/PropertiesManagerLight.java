@@ -8,11 +8,16 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Properties;
 
 public class PropertiesManagerLight {
+	
+	private static SafeLogger logger = new SafeLogger(PropertiesManagerLight.class);
+	private static SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 	public File dynamicFileBindingsDefSource;
 	public Properties dynamicFileBindingsDef;
@@ -166,6 +171,27 @@ public class PropertiesManagerLight {
 			}
 		}
 		return true;
+	}
+	
+	public boolean saveAllProperties() {
+		java.io.OutputStream out = null;
+		try {
+			logger.info("Saving properties in " + dynamicFileBindingsDefSource + "\n\n");
+			out = new FileOutputStream(dynamicFileBindingsDefSource);
+			dynamicFileBindingsDef.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));
+        	logger.info("Saved!");
+        	return true;
+		} catch (IOException e1) {
+			logger.error("An error occurred while saving all properties", e1);
+			return false;
+		} finally {
+			try {
+				out.flush();
+				out.close();
+			} catch (IOException e1) {
+				logger.error("Cannot close streams", e1);
+			}
+		}
 	}
 
 	public boolean removeProperty(String key){

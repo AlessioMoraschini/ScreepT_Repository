@@ -45,7 +45,7 @@ public class LauncherMainPanel extends JFrame{
 	public ScrYpTLauncher LAUNCHER;
 	public LauncherMainPanel LAUNCHER_GUI;
 	public CustomizeParametersPanel customizerPanel;
-	public MissingDependenciesPanel missingDependenciesPanel;
+	public DependenciesManagerPanel missingDependenciesPanel;
 	
 	// GUI VARIABLES
 	private JPanel mainPanel;
@@ -177,10 +177,12 @@ public class LauncherMainPanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (MissingDependenciesPanel.active == false) {
-					missingDependenciesPanel = new MissingDependenciesPanel("Dependency Manager", LAUNCHER_GUI);
+				if (DependenciesManagerPanel.active == false) {
+					missingDependenciesPanel = new DependenciesManagerPanel("Dependency Manager", LAUNCHER_GUI);
 					missingDependenciesPanel.setVisible(true);
 					missingDependenciesPanel.requestFocus();
+				} else {
+					missingDependenciesPanel.toFront();
 				}
 			}
 		});

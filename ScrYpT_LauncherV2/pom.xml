@@ -158,46 +158,26 @@
   </build>
   
   <dependencies>
-  		<!-- Exclude test only dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>testUtils</groupId>
-			<artifactId>testUtils</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
+	<!-- Exclude test only dependencies -->
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.12</version>
+		<scope>test</scope>
+	</dependency>
+	
+	<dependency>
+		<groupId>testUtils</groupId>
+		<artifactId>testUtils</artifactId>
+		<version>1.0</version>
+		<scope>test</scope>
+	</dependency>
 		
-		<!-- Exclude dependencies that are not needed -->
-		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>2.6</version>
-		    <scope>provided</scope>
-		</dependency>
-			
-		<dependency>
-		    <groupId>commons-net</groupId>
-		    <artifactId>commons-net</artifactId>
-		    <version>3.6</version>
-		    <scope>provided</scope>
-		</dependency>
-  
 	<dependency>
 		<groupId>org.ini4j</groupId>
 		<artifactId>ini4j</artifactId>
 		<version>0.5.4</version>
 	</dependency>
-	<!-- <dependency>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-lang3</artifactId>
-	    <version>3.9</version>
-	</dependency> -->
 	
 	<dependency>
 	    <groupId>com.miglayout</groupId>
@@ -218,13 +198,6 @@
 	  	<artifactId>OsCommons</artifactId>
 	  	<version>0.0.1-SNAPSHOT</version>
  	</dependency>
- 		
-	<dependency>
-		<groupId>VariousCommonsLight</groupId>
-		<artifactId>VariousCommonsLight</artifactId>
-		<version>1.0</version>
-	</dependency>
-
   </dependencies>
   
   

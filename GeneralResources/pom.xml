@@ -27,11 +27,19 @@
   </build>
   
   <dependencies>
-  	<dependency>
+  	<!-- <dependency>
 	    <groupId>commons-configuration</groupId>
 	    <artifactId>commons-configuration</artifactId>
 	    <version>1.6</version>
 	    <exclusions>
+		    <exclusion>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-lang3</artifactId>
+		    </exclusion>
+		    <exclusion>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-text</artifactId>
+		    </exclusion>
 		    <exclusion>
 		    	<groupId>com.fasterxml.jackson.core</groupId>
     			<artifactId>jackson-databind</artifactId>
@@ -53,6 +61,22 @@
     			<artifactId>spring-core</artifactId>
 		    </exclusion>
 	    </exclusions>
+	</dependency> -->
+	
+	<dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+		<exclusions>
+			<exclusion>
+				<groupId>commons-io</groupId>
+			    <artifactId>commons-io</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>commons-net</groupId>
+		    	<artifactId>commons-net</artifactId>
+			</exclusion>
+		</exclusions>
 	</dependency>
 	
 	<dependency>
