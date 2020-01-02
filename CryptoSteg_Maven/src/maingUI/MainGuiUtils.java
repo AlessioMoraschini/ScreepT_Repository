@@ -88,7 +88,7 @@ public class MainGuiUtils {
 									if (!(e1 instanceof ProgressBarInterruptedException)) {
 										String msg = "Cannot download updates, an error occurred";
 										logger.error(msg, e1);
-										dialogHelper.errorScroll(msg, "Error during download", e1);
+										dialogHelper.errorScroll(msg, "Error during download or unzipping", e1);
 									
 									} else if(e1 instanceof TimeoutException) {
 										String message = "Server is unreachable!";

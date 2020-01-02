@@ -29,6 +29,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import files.Various;
 import utility.PropertiesManagerLight;
+import utility.SafeLogger;
 import gui.UpdateProgressPanelMin;
 import om.exception.ProgressBarInterruptedException;
 import om.HashingFunction;
@@ -36,6 +37,8 @@ import om.HashingFunction;
 import static java.lang.System.out;
 
 public class DownloadUtils {
+	
+	public static SafeLogger logger = new SafeLogger(DownloadUtils.class);
 	
 	public static int CONNECTION_TIMEOUT_MS = 5000;
 	
@@ -179,12 +182,13 @@ public class DownloadUtils {
 		UpdateProgressPanelMin progressUpdater = new UpdateProgressPanelMin(true);
 		
 		long startTime = System.currentTimeMillis();
-		out.println("FileStuff.unzipFile() -> Starting unzip:"
-				+ "\n source: " + sourcePath
-				+ "\n destPath: " + destFolderPath
+		logger.info("FileStuff.unzipFile() -> Starting unzip:"
+				+ "\n sourcePath: " + sourcePath
+				+ "\n destFolderPath: " + destFolderPath
 				+ "\n overwrite: " + ovewrwrite);
 		
 		if(sourcePath == null || destFolderPath == null || !new File(sourcePath).exists()) {
+			logger.error("Null input data, cannot proceed.");
 			throw new Exception();
 		}
 		
@@ -192,7 +196,9 @@ public class DownloadUtils {
 		File fileToZip = new File(sourcePath);
 		int lastDotIndex = fileToZip.getName().lastIndexOf('.');
 		String destPathFolderName = fileToZip.getName().substring(0,lastDotIndex);
-		destFolderPath += File.separator + destPathFolderName;
+		String separator = destFolderPath.endsWith("/") || destFolderPath.endsWith(File.separator) ? 
+				"" : File.separator;
+		destFolderPath += separator + destPathFolderName;
 		
 		File destFolderOut = new File(destFolderPath);
 		if(!destFolderOut.exists() || destFolderOut.isFile()) {
@@ -207,12 +213,20 @@ public class DownloadUtils {
 			ZipInputStream zis = new ZipInputStream(new FileInputStream(sourcePath));
 			ZipEntry zipEntry = zis.getNextEntry();
 			while (zipEntry != null) {
+				logger.debug("Unzipping current element: " + zipEntry.getName());
+				
 				String newOutCurrentPath = destFolderPath + File.separator + zipEntry.getName();
 				File out = (ovewrwrite)? new File(newOutCurrentPath) : Various.renameJavaObjFile(new File(newOutCurrentPath));
 				if(out.exists()) {
-					out.delete();
+					logger.debug("Current output existing: will be deleted! " + out);
+					boolean deleted = out.delete();
+					logger.debug(out + " delete result: " + deleted);
+				} else {
+					logger.debug("Current output does not exist: creating all parent directories needed! " + out.getParentFile());
+					out.getParentFile().mkdirs();
 				}
 				if(zipEntry.isDirectory()) {
+					logger.debug("Current element is directory, creating and continuing with next! " + zipEntry.getName());
 					out.mkdir();
 					zipEntry = zis.getNextEntry();
 					continue;
@@ -236,7 +250,9 @@ public class DownloadUtils {
 				updateProgress(zipEntry.getName(), 50, progressUpdater, true);
 				
 				// For every entry in archive
+				logger.debug("Creating output stream for current output node: " + out);
 			    FileOutputStream fos = new FileOutputStream(out);
+			    logger.debug("Output stream created! starting unzip...");
 			    int len;
 			    int cycles = 1;
 			    while ((len = zis.read(buffer)) > 0) {
@@ -253,6 +269,7 @@ public class DownloadUtils {
 			    }
 			    
 			    fos.close();
+			    logger.debug("Current element unzipped! " + zipEntry.getName());
 			    zipEntry = zis.getNextEntry();
 			}
 			
@@ -267,15 +284,17 @@ public class DownloadUtils {
 			zis.closeEntry();
 			zis.close();
 			
-			out.println("FileStuff.unzipFile() -> COMPLETED!"
+			logger.info("FileStuff.unzipFile() -> COMPLETED!"
 					+ "\n source: " + sourcePath
 					+ "\n unzipped File: " + out
 					+ "\n overwrite: " + ovewrwrite);
 			
-			out.println("unzip file: elapsed" + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+			logger.info("unzip file: elapsed" + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		} catch (Exception e) {
 			
-			out.println(Arrays.deepToString(e.getStackTrace()));
+			logger.error("An error occurred while unzipping data", e);
+			throw e;
+			
 		} finally {
 			if (progressUpdater != null) {
 				progressUpdater.update("Completed", 100);

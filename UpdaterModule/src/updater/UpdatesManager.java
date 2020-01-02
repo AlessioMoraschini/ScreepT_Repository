@@ -172,6 +172,8 @@ public class UpdatesManager {
 				emtpyUpdatesDir();
 				throw e;
 			}
+			
+			throw e;
 		} finally {
 			if(updateProgressBar != null) {
 				updateProgressBar.forceClose();

@@ -1,4 +1,6 @@
-* 2020-01-02  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved plugin process + Dialogs and Text Editor bugFix
+* 2020-01-02  (HEAD -> refs/heads/master, refs/remotes/origin/master) new Version 0.9.16 - Optimized application size
+| 
+* 2020-01-02  (tag: refs/tags/0.9.16) Improved plugin process + Dialogs and Text Editor bugFix
 | 
 * 2020-01-01  Solved crashes on Network/Hardware analysis
   

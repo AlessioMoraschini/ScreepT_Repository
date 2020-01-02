@@ -368,12 +368,11 @@ public class JOptionHelper {
 	 * @param title nullable
 	 */
 	public int yesNoOrCanc(String msg, String title) {
-		int result = NO;
 		
 		title = (!Various.isEmpty(title)) ? title : "Plain";
 		msg = (!Various.isEmpty(msg)) ? msg : "Information message not specified";
 		Boolean boolRes = showYNMessageCommon(msg, title, QUESTION, true, false);
-		result = boolRes == null ? CANC : boolRes ? OK : NO;
+		int result = boolRes == null ? CANC : boolRes ? OK : NO;
 		
 		return result;
 	}
@@ -545,16 +544,12 @@ public class JOptionHelper {
 		final JDialog dialog = optionPane.createDialog(title);
 		
 		try {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					dialog.setAlwaysOnTop(true);
-					dialog.setLocationRelativeTo(parentComponent);
-					dialog.enableInputMethods(true);
-					dialog.toFront();
-					dialog.setVisible(true);
-					dialog.dispose();
-				}
-			});
+			dialog.setAlwaysOnTop(true);
+			dialog.setLocationRelativeTo(parentComponent);
+			dialog.enableInputMethods(true);
+			dialog.toFront();
+			dialog.setVisible(true);
+			dialog.dispose();
 		} catch (Exception e) {
 		}
 		
