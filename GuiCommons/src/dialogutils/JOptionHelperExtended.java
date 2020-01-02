@@ -32,17 +32,19 @@ public class JOptionHelperExtended extends JOptionHelper {
 	
 	// PRIVATE METHODS
 	@Override
-	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType) {
+	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
 		
 		Icon icon = warningType? new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_WARNING) : new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_QUESTION);
+		int options = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
+		Object[] optionsAvailable = cancEnabled ? defaultOptionsExtended : defaultOptions;
 		
 		final JOptionPane optionPane = new JOptionPane(
 				msg instanceof String ? getLabelStyledText((String)msg) : msg, 
         		msgType,
-        		YES_OR_NO, 
+        		options, 
         		icon,
-                defaultOptions,
-                defaultOptions[0]);
+        		optionsAvailable,
+        		optionsAvailable[0]);
         
 		JDialog dialog = optionPane.createDialog(title);
 		dialog.setAlwaysOnTop(true);
@@ -59,7 +61,7 @@ public class JOptionHelperExtended extends JOptionHelper {
 		
 		final Object value = optionPane.getValue();
 		if (value != null) {
-			return (value.equals(defaultOptions[0]));
+			return (cancEnabled && value.equals(defaultOptionsExtended[2])) ? null : (value.equals(optionsAvailable[0]));
 		} else {
 			return (allowNull) ? null : false;
 		}

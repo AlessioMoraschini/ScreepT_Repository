@@ -1043,6 +1043,19 @@ public class FileStuff {
     	return true;
 	}
 	
+	public static boolean isTextAreaEqualToFileContent(JTextArea textArea, File fileToCheck) throws IOException {
+		if(textArea == null || fileToCheck == null || !fileToCheck.exists()) {
+			return false;
+		}
+		
+		String fileRead = FileStuff.readFileAsString(fileToCheck);
+		if(fileRead != null && fileRead.equals(textArea.getText())) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * This method read from a file and give a String representation of content
 	 * @param toRead the source file to read

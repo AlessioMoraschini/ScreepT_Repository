@@ -20,7 +20,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import files.Various;
@@ -89,7 +88,7 @@ public class JOptionHelper {
 	 */
 	public boolean showYNDialog(String msg, String title, int msgType) {
 		
-		return showYNMessageCommon(msg, title, msgType, false, false);
+		return showYNMessageCommon(msg, title, msgType, false, false, false);
 	}
 
 	/**
@@ -98,7 +97,7 @@ public class JOptionHelper {
 	 */
 	public boolean showYNDialogWarn(String msg, String title, int msgType) {
 		
-		return showYNMessageCommon(msg, title, msgType, false, true);
+		return showYNMessageCommon(msg, title, msgType, false, true, false);
 	}
 
 	/**
@@ -107,7 +106,7 @@ public class JOptionHelper {
 	 */
 	public Boolean showYNOrNullDialog(String msg, String title, int msgType) {
 		
-		return showYNMessageCommon(msg, title, msgType, true, false);
+		return showYNMessageCommon(msg, title, msgType, true, false, false);
 	}
 
 	/**
@@ -116,7 +115,7 @@ public class JOptionHelper {
 	 */
 	public Boolean showYNOrNullDialogWarn(String msg, String title) {
 		
-		return showYNMessageCommon(msg, title, JOptionPane.WARNING_MESSAGE, true, true);
+		return showYNMessageCommon(msg, title, JOptionPane.WARNING_MESSAGE, true, true, false);
 	}
 	
 	/**
@@ -163,7 +162,7 @@ public class JOptionHelper {
 		msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
 		JScrollPane scroller = getScrollableDialogPanel(msg);
 		GuiUtils.scrollJScrollPane(scroller, false);
-		return showYNMessageCommon(scroller, title, ERR, false, false);
+		return showYNMessageCommon(scroller, title, ERR, false, false, false);
 	}
 
 	/**
@@ -347,7 +346,7 @@ public class JOptionHelper {
 		title = (!Various.isEmpty(title)) ? title : "Choose an option";
 		msg = (!Various.isEmpty(msg)) ? msg : "Choose an Option";
 		
-		return showYNMessageCommon(msg, title, QUESTION, false, false);
+		return showYNMessageCommon(msg, title, QUESTION, false, false, false);
 	}
 
 	/**
@@ -359,7 +358,7 @@ public class JOptionHelper {
 		
 		msg = (!Various.isEmpty(msg)) ? msg : "Choose an Option";
 		
-		return showYNMessageCommon(msg, msg, QUESTION, false, false);
+		return showYNMessageCommon(msg, msg, QUESTION, false, false, false);
 	}
 
 	/**
@@ -371,7 +370,7 @@ public class JOptionHelper {
 		
 		title = (!Various.isEmpty(title)) ? title : "Plain";
 		msg = (!Various.isEmpty(msg)) ? msg : "Information message not specified";
-		Boolean boolRes = showYNMessageCommon(msg, title, QUESTION, true, false);
+		Boolean boolRes = showYNMessageCommon(msg, title, QUESTION, true, false, true);
 		int result = boolRes == null ? CANC : boolRes ? OK : NO;
 		
 		return result;
@@ -529,20 +528,21 @@ public class JOptionHelper {
 		return scrollPane;
 	}
 	
-	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType) {
+	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
 		
 		Icon icon = warningType? ICON_WARN_REF : ICON_QUESTION_REF;
+		int option = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
+		Object[] optionsAvailable = cancEnabled ? defaultOptionsExtended : defaultOptions;
 		
 		final JOptionPane optionPane = new JOptionPane(
 				msg instanceof String ? getLabelStyledText((String)msg) : msg, 
         		msgType,
-        		YES_OR_NO, 
+        		option, 
         		icon,
-                defaultOptions,
-                defaultOptions[0]);
+        		optionsAvailable,
+        		optionsAvailable[0]);
         
 		final JDialog dialog = optionPane.createDialog(title);
-		
 		try {
 			dialog.setAlwaysOnTop(true);
 			dialog.setLocationRelativeTo(parentComponent);
@@ -555,7 +555,7 @@ public class JOptionHelper {
 		
 		final Object value = optionPane.getValue();
 		if (value != null) {
-			return (value.equals(defaultOptions[0]));
+			return (cancEnabled && value.equals(defaultOptionsExtended[2])) ? null : (value.equals(optionsAvailable[0]));
 		} else {
 			return (allowNull) ? null : false;
 		}

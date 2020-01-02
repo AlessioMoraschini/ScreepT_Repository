@@ -75,7 +75,7 @@ public class CustomTabbedEditor {
 	// In case of removal when there is only one tab, this avoid problems or null pointers by adding a tab, setting firstToRemove=true,
 			// and at the end removing first tab, ending with only an empty tab :)
 	public volatile boolean firstToRemove = false;
-	public volatile int breakRemoveLoopIndex = 0;
+	public int breakRemoveLoopIndex = 0;
 	private AtomicBoolean historyActionChanging = new AtomicBoolean(false);
 	
 	/* THIS WILL REPRESENT THE PREVIOUS INDEX */
@@ -492,26 +492,31 @@ public class CustomTabbedEditor {
 	
 	public void removeAllTabs(final boolean askIfUnsaved) {
 		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				for (breakRemoveLoopIndex = mainTabList.getTabCount(); breakRemoveLoopIndex >= 0 ; breakRemoveLoopIndex--) {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			public void run() {
+				for (breakRemoveLoopIndex = mainTabList.getTabCount(); breakRemoveLoopIndex > 0 ; breakRemoveLoopIndex--) {
 					try {
 						if (!askIfUnsaved) {
-							loadedList.getList().get(breakRemoveLoopIndex).unsaved = false;
+							loadedList.getList().get(breakRemoveLoopIndex-1).unsaved = false;
 							loadedTabObj.unsaved = false;
 						}
-						if (!removeTab(breakRemoveLoopIndex)) {
+						if (!removeTab(breakRemoveLoopIndex-1)) {
 							// If user has chosen to take a look to files or break loop
 							breakRemoveLoop = true;
-						} 
+						}
 					} catch (Exception e) {
-						logger.warn("Attention: an error occurred when tryng to close current tab (N°" + breakRemoveLoopIndex+")");
+						logger.warn("Attention: an error occurred when trying to close current tab (N°" + breakRemoveLoopIndex + ")");
 					}
-					if(breakRemoveLoop) {
+					
+					if (breakRemoveLoop) {
 						break;
 					}
 				}
-				
+//			}
+//		});
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
 				updateSavedLabelNTab(0);
 			}
 		});

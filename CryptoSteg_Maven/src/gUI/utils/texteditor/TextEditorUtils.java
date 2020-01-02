@@ -767,6 +767,33 @@ public class TextEditorUtils {
 		}
 	}
 	
+	public void updateCurrentUnsavedFromFileRead() {
+		GuiUtils.launchThreadSafeSwing(new Runnable() {
+			public void run() {
+				try {
+					CustomTabbedEditor tabbedEditor = currentTextEditor.getCurrentTabEditor();
+					boolean fileUnsaved = checkCurrentFileIsUnsaved();
+					tabbedEditor.loadedTabObj.unsaved = fileUnsaved;
+
+					currentTextEditor.getCurrentTabEditor().updateSavedLabelNTab(null);
+				} catch (Exception e) {
+					logger.error("Cannot update unsaved option for current file and current textArea", e);
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Reads the content from the current tabObject file, and compares it to the current JTextArea loaded content
+	 * If a match is found, returns true, else false is returned.
+	 * @return
+	 * @throws IOException 
+	 */
+	public boolean checkCurrentFileIsUnsaved() throws IOException {
+		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+		return !FileStuff.isTextAreaEqualToFileContent(loadedTabObj.textArea, loadedTabObj.loadedFile);
+	}
+	
 	public void timeoutLblAdvice(int millisec) {
 		new Thread(new Runnable() {
 

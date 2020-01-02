@@ -65,8 +65,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 								currentTabEditor.loadedTabObj.textArea.undoLastAction();
 							}
 						}
+						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
 					} catch (Throwable e2) {
-							logger.warn(e2);
+						logger.warn(e2);
 					}
 				}
 				
@@ -81,6 +82,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 								currentTabEditor.loadedTabObj.textArea.redoLastAction();
 							} 
 						}
+						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
 					} catch (Throwable e2) {
 							logger.warn(e2);
 					}
@@ -113,6 +115,28 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 			
 			if (isShortcutKey(e)) {
 				
+				/*
+				 * UNDO -  Ctrl+Z : check and update unsaved variable only
+				 */
+				if (e.getKeyCode()==90 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+				{
+					try {
+						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+					} catch (Throwable e2) {
+						logger.warn(e2);
+					}
+				}
+				/*
+				 * REDO -  Ctrl+Y : check and update unsaved variable only
+				 */
+				if (e.getKeyCode()==89 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+				{
+					try {
+						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+					} catch (Throwable e2) {
+						logger.warn(e2);
+					}
+				}
 								
 				/*
 				 *  RELOAD FROM DISK -> CTRL+Shift+R

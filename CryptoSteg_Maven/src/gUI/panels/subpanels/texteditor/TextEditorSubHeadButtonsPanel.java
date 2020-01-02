@@ -1435,6 +1435,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				if (parent.getCurrentTabEditor().loadedTabObj.textArea.canUndo()) {
 					parent.getCurrentTabEditor().loadedTabObj.textArea.undoLastAction();
+					textEditorUtils.updateCurrentUnsavedFromFileRead();
 				}
 			}
 		});
@@ -1445,6 +1446,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 				if (parent.getCurrentTabEditor().loadedTabObj.textArea.canRedo()) {
 					parent.getCurrentTabEditor().loadedTabObj.textArea.redoLastAction();
+					textEditorUtils.updateCurrentUnsavedFromFileRead();
 				}
 
 			}
@@ -1921,7 +1923,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			parent.getCurrentTabEditor().removeAllTabs(true);
 		
 		}else if(askIfUnsaved == JOptionHelperExtended.NO){
-			parent.getCurrentTabEditor().removeAllTabs(false);
+			if (dialogHelper.yesOrNo("Are you sure to remove all tabs?")) {
+				parent.getCurrentTabEditor().removeAllTabs(false);
+			}
 		}
 		
 		return true;

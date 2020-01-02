@@ -282,7 +282,7 @@ public class HashCheckerFrame extends ParentFrame{
 
 								txtFieldChecksumResult.setText(hash);
 								txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
-								if (txtFieldChecksumMatcher.getText().equals(hash) || txtFieldChecksumMatcher.getText().contains(hash)) {
+								if (txtFieldChecksumMatcher.getText().trim().equalsIgnoreCase(hash)) {
 									txtFieldChecksumMatcher.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
 									dialogHelper.info("File matches the given checksum!", "File matched!");
 								} else {
