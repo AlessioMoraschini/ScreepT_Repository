@@ -1,14 +1,14 @@
 package gui;
 
 import org.junit.Test;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 
 public class TestProgressBar {
 	
 	@Test
 	public void testAutoResize() throws InterruptedException {
 		
-		UpdateProgressPanelMin progressUpdater = new UpdateProgressPanelMin(false);
+		UpdateProgressPanel progressUpdater = new UpdateProgressPanel(false);
 		progressUpdater.update("Test number one", 20);
 		progressUpdater.adaptWidthToCurrentText();
 		Thread.sleep(1000);

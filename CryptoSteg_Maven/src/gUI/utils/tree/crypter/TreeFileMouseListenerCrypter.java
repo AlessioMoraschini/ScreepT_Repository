@@ -31,7 +31,7 @@ import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import menusettings.MenuSetter;
@@ -55,7 +55,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	private CrypterPanel cryptoPanel;
 	
 	// object that display wait dialog
-	private volatile UpdateProgressPanelMin progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
 	
 	private JOptionHelperExtended dialogHelper;
 	
@@ -222,7 +222,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 						try {
 							worker = new ImageGeneralWorker(selected);
 							BufferedImage image = worker.getImage();
-							progUpdater = new UpdateProgressPanelMin(false);
+							progUpdater = new UpdateProgressPanel(false);
 							progUpdater.setUndefinedDuration();
 							progUpdater.update("Format not supported as key, Converting image to png...", 10);
 							ImageGeneralWorker.convertAndWrite(image, "png", selected);
@@ -231,7 +231,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 							dialogHelper.error("An error occurred when trying to convert "+selected+" to png", "An error occurred :(");
 							return;
 						} finally {
-							UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+							UpdateProgressPanel.forceDisposeSafe(progUpdater);
 						}
 					}
 					
@@ -264,7 +264,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 
 							try {
 								if (selected != null) {
-									progUpdater = new UpdateProgressPanelMin(false);
+									progUpdater = new UpdateProgressPanel(false);
 									progUpdater.getPb().setValue(5);
 									progUpdater.getLabel().setText("Exporting files...");
 
@@ -302,7 +302,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 							} catch (Exception e) {
 								logger.error("There was an exception while exporting.", e);
 							} finally {
-								UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+								UpdateProgressPanel.forceDisposeSafe(progUpdater);
 							}
 						}
 					}).start();

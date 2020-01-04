@@ -14,7 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import files.Various;
 import gui.JOptionHelper;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import main.MainStandAloneUpdater;
 import network.DownloadUtils;
 import om.HashingFunction;
@@ -234,10 +234,10 @@ public class PluginManager {
 		
 		int downloadFilesNumber = pluginsToDownload.size();
 		
-		UpdateProgressPanelMin pluginManagerProgbar = null;
+		UpdateProgressPanel pluginManagerProgbar = null;
 		
 		try {
-			pluginManagerProgbar = new UpdateProgressPanelMin(true);
+			pluginManagerProgbar = new UpdateProgressPanel(true);
 			pluginManagerProgbar.getPb().setIndeterminate(true);
 			pluginManagerProgbar.getGeneralBar().setIndeterminate(true);
 			
@@ -285,11 +285,11 @@ public class PluginManager {
 	public ArrayList<PluginDTO> discoverLatestPlugins() throws Throwable, TimeoutException{
 		
 		ArrayList<PluginDTO> plugins = new ArrayList<>();
-		UpdateProgressPanelMin pluginManagerProgbar = null;
+		UpdateProgressPanel pluginManagerProgbar = null;
 		
 		try {
 			if(DownloadUtils.isUrlReachable(new URL(WEB_PLUGINS_MANIFEST_URL))) {
-				pluginManagerProgbar = new UpdateProgressPanelMin(true);
+				pluginManagerProgbar = new UpdateProgressPanel(true);
 				pluginManagerProgbar.getPb().setIndeterminate(true);
 				
 				logger.info(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));

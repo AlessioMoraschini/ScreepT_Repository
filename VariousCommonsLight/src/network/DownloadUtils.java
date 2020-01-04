@@ -30,7 +30,7 @@ import javax.xml.bind.DatatypeConverter;
 import files.Various;
 import utility.PropertiesManagerLight;
 import utility.SafeLogger;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import om.exception.ProgressBarInterruptedException;
 import om.HashingFunction;
 
@@ -77,7 +77,7 @@ public class DownloadUtils {
 	    
 	}
 	
-	public static File downloadFile(boolean silent, URL url, String localPath, UpdateProgressPanelMin progressUpdater) throws Exception, ProgressBarInterruptedException{
+	public static File downloadFile(boolean silent, URL url, String localPath, UpdateProgressPanel progressUpdater) throws Exception, ProgressBarInterruptedException{
 		int fileSize = getFileSize(url);
 		out.println("Opening url stream...");
 		BufferedInputStream in = null;
@@ -179,7 +179,7 @@ public class DownloadUtils {
 	 */
 	public static File unzipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
 		
-		UpdateProgressPanelMin progressUpdater = new UpdateProgressPanelMin(true);
+		UpdateProgressPanel progressUpdater = new UpdateProgressPanel(true);
 		
 		long startTime = System.currentTimeMillis();
 		logger.info("FileStuff.unzipFile() -> Starting unzip:"
@@ -233,7 +233,7 @@ public class DownloadUtils {
 				}
 				
 				if (progressUpdater == null) {
-					progressUpdater = new UpdateProgressPanelMin();
+					progressUpdater = new UpdateProgressPanel();
 					Various.centerComponent(progressUpdater.getDialog());
 				}
 				if(!progressUpdater.getDialog().isVisible()) {
@@ -318,7 +318,7 @@ public class DownloadUtils {
 	 * <b>Fix this before to use it</b>
 	 */
 	@Deprecated
-	public static File zipFile(String sourcePath, String destFolderPath, boolean ovewrwrite, UpdateProgressPanelMin progressUpdater) throws Exception {
+	public static File zipFile(String sourcePath, String destFolderPath, boolean ovewrwrite, UpdateProgressPanel progressUpdater) throws Exception {
 		
 		long startTime = System.currentTimeMillis();
 		out.println("FileStuff.zipFile() -> Starting zip:"
@@ -403,7 +403,7 @@ public class DownloadUtils {
 					}
 					
 				    ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(outputFile)); 
-				    zipFolder(zos, dirSrc, null, new UpdateProgressPanelMin(true), true, excludeParent);
+				    zipFolder(zos, dirSrc, null, new UpdateProgressPanel(true), true, excludeParent);
 				    
 				    //close the stream 
 				    zos.close();
@@ -422,7 +422,7 @@ public class DownloadUtils {
 			ZipOutputStream zos,
 			File fileToZip,
 			String parentDirectoryName,
-			UpdateProgressPanelMin progressUpdater,
+			UpdateProgressPanel progressUpdater,
 			boolean autocloseProgbar,
 			boolean excludeParent) throws Exception {
 		
@@ -430,7 +430,7 @@ public class DownloadUtils {
 	        return;
 	    }
 
-	    progressUpdater = (progressUpdater == null)? new UpdateProgressPanelMin(true) : progressUpdater;
+	    progressUpdater = (progressUpdater == null)? new UpdateProgressPanel(true) : progressUpdater;
 	    FileInputStream fis = null;
 	    
 	    try {
@@ -747,7 +747,7 @@ public class DownloadUtils {
 		return downloadedStr + "/" + totalStr;
 	}
 	
-	public static void updateProgress(String text, int progress, UpdateProgressPanelMin progressUpdater, boolean useGeneralBar) throws ProgressBarInterruptedException {
+	public static void updateProgress(String text, int progress, UpdateProgressPanel progressUpdater, boolean useGeneralBar) throws ProgressBarInterruptedException {
 		if(progressUpdater != null) {
 			if(progressUpdater.secondBarEnabled) {
 				progressUpdater.update(progress, text, useGeneralBar);
@@ -757,7 +757,7 @@ public class DownloadUtils {
 		}
 	}
 	
-	public static void ifStoppedByUserThrowException(UpdateProgressPanelMin progressMonitor) throws ProgressBarInterruptedException {
+	public static void ifStoppedByUserThrowException(UpdateProgressPanel progressMonitor) throws ProgressBarInterruptedException {
 		if(progressMonitor != null && progressMonitor.closable.get() && progressMonitor.stopProcess.get()) {
 			progressMonitor.forceCloseNExceptionSignal();
 		}

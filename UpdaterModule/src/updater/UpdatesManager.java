@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import files.Various;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import main.MainStandAloneUpdater;
 import network.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
@@ -60,11 +60,11 @@ public class UpdatesManager {
 	public String lookForUpdates(boolean silent) throws Exception, TimeoutException {
 		String newVersionAvailable = null;
 		
-		UpdateProgressPanelMin updateManagerProgbar = null;
+		UpdateProgressPanel updateManagerProgbar = null;
 		try {
 			if(DownloadUtils.isUrlReachable(manifestRemoteUrl)) {
 				if (!silent) {
-					updateManagerProgbar = new UpdateProgressPanelMin(true);
+					updateManagerProgbar = new UpdateProgressPanel(true);
 					updateManagerProgbar.getPb().setIndeterminate(true);
 				}
 				
@@ -116,13 +116,13 @@ public class UpdatesManager {
 		
 		lastUpdatesDownloaded = new File[3];
 		
-		UpdateProgressPanelMin updateProgressBar = null;
+		UpdateProgressPanel updateProgressBar = null;
 		try {
 			if(UPDATES_DIR == null || !new File(UPDATES_DIR).isDirectory()) {
 				return null;
 			}
 			
-			updateProgressBar = new UpdateProgressPanelMin(true);
+			updateProgressBar = new UpdateProgressPanel(true);
 			updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
 			out.println(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
 			

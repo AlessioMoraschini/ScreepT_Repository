@@ -21,7 +21,7 @@ import gUI.frames.ImportExportWorkspcCryptFrame;
 import gUI.frames.KeyDictionaryFrame;
 import gUI.frames.KeyGenFrame;
 import gUI.frames.TutorialFrame;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import media.Sounds;
@@ -147,7 +147,7 @@ public class WindowCreator {
 		
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			public void run() {
-				UpdateProgressPanelMin prog = new UpdateProgressPanelMin(false);
+				UpdateProgressPanel prog = new UpdateProgressPanel(false);
 				prog.getPb().setIndeterminate(true);
 				prog.getLabel().setText("Loading Network informations...");
 				prog.getPb().setString("Loading...");
@@ -166,7 +166,7 @@ public class WindowCreator {
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			@Override
 			public void run() {
-				UpdateProgressPanelMin prog = new UpdateProgressPanelMin(false);
+				UpdateProgressPanel prog = new UpdateProgressPanel(false);
 				prog.getPb().setIndeterminate(true);
 				prog.getLabel().setText("Loading System informations...");
 				prog.getPb().setString("Loading...");

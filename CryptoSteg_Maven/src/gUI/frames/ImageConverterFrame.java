@@ -11,7 +11,7 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
@@ -151,7 +151,7 @@ public class ImageConverterFrame extends ParentFrame{
 	private JSeparator separator_7;
 
 	// object that display wait dialog
-	UpdateProgressPanelMin progUpdater;
+	UpdateProgressPanel progUpdater;
 
 	
 	public ImageConverterFrame(INItializer currentConf) {
@@ -556,7 +556,7 @@ public class ImageConverterFrame extends ParentFrame{
 						if(inputImgFile!=null) {
 							
 							try {
-								progUpdater = new UpdateProgressPanelMin(false);
+								progUpdater = new UpdateProgressPanel(false);
 								progUpdater.getPb().setValue(20);
 								
 								if (inputImg != null) {
@@ -601,7 +601,7 @@ public class ImageConverterFrame extends ParentFrame{
 							} catch (Exception e) {
 								logger.error("There wan an exception!", e);
 							} finally {
-								UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+								UpdateProgressPanel.forceDisposeSafe(progUpdater);
 							}
 							
 						}else {
@@ -660,7 +660,7 @@ public class ImageConverterFrame extends ParentFrame{
 									selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
 									selected = FileStuff.renameJavaObjFile(selected);
 									
-									progUpdater = new UpdateProgressPanelMin(false);
+									progUpdater = new UpdateProgressPanel(false);
 									progUpdater.getPb().setValue(20);
 									progUpdater.getPb().setIndeterminate(true);
 
@@ -722,7 +722,7 @@ public class ImageConverterFrame extends ParentFrame{
 								} catch (Exception e) {
 									logger.error("There was an Exception", e);
 								} finally {
-									UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+									UpdateProgressPanel.forceDisposeSafe(progUpdater);
 								}
 								
 								String msg = "Image converted: "+selected.getAbsolutePath();
@@ -771,7 +771,7 @@ public class ImageConverterFrame extends ParentFrame{
 						if (selected!=null) {
 							
 							try {
-								progUpdater = new UpdateProgressPanelMin(false);
+								progUpdater = new UpdateProgressPanel(false);
 								progUpdater.getPb().setValue(20);
 								progUpdater.getLabel().setText("I'm loading the image...");
 								progUpdater.getPb().setIndeterminate(true);
@@ -812,7 +812,7 @@ public class ImageConverterFrame extends ParentFrame{
 							} catch (Exception e) {
 								logger.error("There was an Exception", e);
 							} finally {
-								UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+								UpdateProgressPanel.forceDisposeSafe(progUpdater);
 							}
 						}
 
@@ -838,7 +838,7 @@ public class ImageConverterFrame extends ParentFrame{
 		if (sourceImage!=null) {
 			
 			try {
-				progUpdater = new UpdateProgressPanelMin(false);
+				progUpdater = new UpdateProgressPanel(false);
 				progUpdater.getPb().setValue(20);
 				progUpdater.getLabel().setText("I'm loading the image...");
 				progUpdater.getPb().setIndeterminate(true);
@@ -879,7 +879,7 @@ public class ImageConverterFrame extends ParentFrame{
 			} catch (Exception e) {
 				logger.error("There was an Exception", e);
 			} finally {
-				UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+				UpdateProgressPanel.forceDisposeSafe(progUpdater);
 			}
 		}
 

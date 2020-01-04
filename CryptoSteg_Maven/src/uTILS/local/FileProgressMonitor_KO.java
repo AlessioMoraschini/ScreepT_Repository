@@ -1,6 +1,6 @@
 package uTILS.local;
 
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 
 public class FileProgressMonitor_KO {
 	
@@ -11,7 +11,7 @@ public class FileProgressMonitor_KO {
 	public static volatile boolean finished = false;
 	
 	// progress GUI bar
-	public static UpdateProgressPanelMin progUpdater;
+	public static UpdateProgressPanel progUpdater;
 	
 //////////////////////////////
 		// METHODS //

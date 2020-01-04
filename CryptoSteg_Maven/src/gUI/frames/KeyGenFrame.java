@@ -47,7 +47,7 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.subpanels.ImageGenContainerPanel;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import maingUI.MainGUI;
 import mainobj.INItializer;
 
@@ -88,7 +88,7 @@ public class KeyGenFrame extends ParentFrame {
 	private JLabel lblThisSettingsAllow;
 	
 	// container of the image from which generated original image will be taken
-	private volatile UpdateProgressPanelMin progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
 	private ImageGenContainerPanel imageContainer;
 	private KeyGenFrame thisFrame;
 	
@@ -342,7 +342,7 @@ public class KeyGenFrame extends ParentFrame {
 								int returnVal = fileChooser.showSaveDialog(thisFrame);
 							    if (returnVal == JFileChooser.APPROVE_OPTION) {
 							    	
-							    	progUpdater = new UpdateProgressPanelMin(false);
+							    	progUpdater = new UpdateProgressPanel(false);
 							    	progUpdater.setLocationRelativeTo(MainGUI.mainAPP.getMainFrame());
 									progUpdater.getPb().setValue(10);
 									progUpdater.getPb().setIndeterminate(true);
@@ -403,7 +403,7 @@ public class KeyGenFrame extends ParentFrame {
 						} catch (Throwable e) {
 							logger.error("An error occurred while exporting image.", e);
 						} finally {
-							UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+							UpdateProgressPanel.forceDisposeSafe(progUpdater);
 							updateBTNenabled(true);
 						}
 					}
@@ -439,7 +439,7 @@ public class KeyGenFrame extends ParentFrame {
 								}
 								// now if user pressed cancel input is null, let's check
 								if (inputName != null) {
-									progUpdater = new UpdateProgressPanelMin(false);
+									progUpdater = new UpdateProgressPanel(false);
 									progUpdater.setLocationRelativeTo(MainGUI.mainAPP.getMainFrame());
 									progUpdater.getPb().setValue(0);
 									progUpdater.getPb().setIndeterminate(true);
@@ -467,7 +467,7 @@ public class KeyGenFrame extends ParentFrame {
 						} catch (HeadlessException e) {
 							e.printStackTrace();
 						} finally {
-							UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+							UpdateProgressPanel.forceDisposeSafe(progUpdater);
 							updateBTNenabled(true);
 						}
 					}

@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
 import gUI.frames.KeyGenFrame;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
@@ -48,7 +48,7 @@ public class TreeFileMouseListenerDictionary {
 	private JOptionHelperExtended dialogHelper;
 	
 	// object that display wait dialog
-	private volatile UpdateProgressPanelMin progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
 
 	// constructor
 	public TreeFileMouseListenerDictionary(INItializer currentConf, JFrame parent, JTree treeIn, JTextArea log, JTextArea mainTxtArea) {
@@ -214,7 +214,7 @@ public class TreeFileMouseListenerDictionary {
 							int i = 0;
 							if (treeSelArr.length != 0) {
 								try {
-									progUpdater = new UpdateProgressPanelMin(false);
+									progUpdater = new UpdateProgressPanel(false);
 									progUpdater.getPb().setValue(5);
 									for (TreePath tp : treeSelArr) {
 										i++;
@@ -235,7 +235,7 @@ public class TreeFileMouseListenerDictionary {
 								} catch (Exception e) {
 									logger.error("There was an Exception", e);
 								} finally {
-									UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+									UpdateProgressPanel.forceDisposeSafe(progUpdater);
 								}
 
 							} else {

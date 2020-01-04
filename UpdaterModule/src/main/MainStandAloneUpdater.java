@@ -9,7 +9,7 @@ import org.ini4j.Wini;
 
 import files.Various;
 import gui.JOptionHelper;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import network.DownloadUtils;
 import network.FtpDumper;
 import network.progress.UploadAction;
@@ -116,7 +116,7 @@ public class MainStandAloneUpdater {
 			// ScrYpTVx.x/
 			File mainRootDirectory = generalApplicationFolder.getParentFile();
 			
-			UpdateProgressPanelMin updateProgressMonitor = null;
+			UpdateProgressPanel updateProgressMonitor = null;
 			try {
 				
 				// Validate downloaded files
@@ -160,7 +160,7 @@ public class MainStandAloneUpdater {
 					} while(!proceed);
 					
 					// Proceed with update
-					updateProgressMonitor = new UpdateProgressPanelMin(true); 
+					updateProgressMonitor = new UpdateProgressPanel(true); 
 					updateProgressMonitor.setUndefinedDuration();
 					updateProgressMonitor.update(30, "Copying new files...", true);
 					updateProgressMonitor.update(30, "Copying new files...", false);
@@ -286,7 +286,7 @@ public class MainStandAloneUpdater {
 		String psw = PSW.equals("")? new JOptionHelper(null).askForString("Insert FTPS password", "Insert FTPS password") : PSW;
 		FtpDumper dumper = new FtpDumper(HOST, USER, psw, PORT);
 		
-		UpdateProgressPanelMin progPanel = new UpdateProgressPanelMin(true);
+		UpdateProgressPanel progPanel = new UpdateProgressPanel(true);
 		
 		try {
 			int i = 1;
@@ -316,7 +316,7 @@ public class MainStandAloneUpdater {
 		}
 	}
 	
-	private static UploadAction getUploadAction(UpdateProgressPanelMin progPanel, long fileSize, String fileName) {
+	private static UploadAction getUploadAction(UpdateProgressPanel progPanel, long fileSize, String fileName) {
 		return new UploadAction() {
 
 			@Override

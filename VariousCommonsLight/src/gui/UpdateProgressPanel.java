@@ -27,7 +27,7 @@ import files.Various;
  * @author xx
  *
  */
-public class UpdateProgressPanelMin {
+public class UpdateProgressPanel {
 	
 	public final static int PanelWidth = 400;
 	public final static int PanelHeight = 100;
@@ -53,7 +53,7 @@ public class UpdateProgressPanelMin {
     
     // ####################### START CONSTRUCTORS - USE THE ONE WITH TWO PARAMS #################### //
     
-    public UpdateProgressPanelMin() {
+    public UpdateProgressPanel() {
     	
     	progBarEnabled = new AtomicBoolean(true);
     	
@@ -82,7 +82,7 @@ public class UpdateProgressPanelMin {
     /**
 	 * @wbp.parser.constructor
 	 */
-    public UpdateProgressPanelMin(boolean secondBar) {
+    public UpdateProgressPanel(boolean secondBar) {
     	
     	progBarEnabled = new AtomicBoolean(true);
     	
@@ -361,7 +361,7 @@ public class UpdateProgressPanelMin {
 		} catch (Exception e) {}
 	}
 
-	public static void forceDisposeSafe(UpdateProgressPanelMin updateProgressBar) {
+	public static void forceDisposeSafe(UpdateProgressPanel updateProgressBar) {
 		try {
 			updateProgressBar.forceClose();
 		} catch(Exception e) {

@@ -19,7 +19,7 @@ import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 
 import gUI.frames.KeyGenFrame;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import mainobj.INItializer;
 import media.ImageGeneralWorker;
 import om.KeyGenImageType;
@@ -34,7 +34,7 @@ public class ImageGenContainerPanel extends JPanel{
     public BufferedImage image;
     
 	// object that display wait dialog
-	private volatile UpdateProgressPanelMin progUpdater;
+	private volatile UpdateProgressPanel progUpdater;
     
 	Image scaledImage;
 	
@@ -71,7 +71,7 @@ public class ImageGenContainerPanel extends JPanel{
 			public void run() {
 				
 				try {
-					progUpdater = new UpdateProgressPanelMin(false);
+					progUpdater = new UpdateProgressPanel(false);
 					progUpdater.getDialog().setLocationRelativeTo(thisFrame);
 					progUpdater.setProgBarEnabled(true);
 					progUpdater.getPb().setValue(0);
@@ -115,7 +115,7 @@ public class ImageGenContainerPanel extends JPanel{
 				} catch (Throwable e) {
 					logger.error("There was an exception/error!", e);
 				} finally {
-					UpdateProgressPanelMin.forceDisposeSafe(progUpdater);
+					UpdateProgressPanel.forceDisposeSafe(progUpdater);
 				}
 
 
@@ -168,12 +168,12 @@ public class ImageGenContainerPanel extends JPanel{
 	}
 
 
-	public UpdateProgressPanelMin getProgUpdater() {
+	public UpdateProgressPanel getProgUpdater() {
 		return progUpdater;
 	}
 
 
-	public void setProgUpdater(UpdateProgressPanelMin progUpdater) {
+	public void setProgUpdater(UpdateProgressPanel progUpdater) {
 		this.progUpdater = progUpdater;
 	}
 

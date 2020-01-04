@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
-import gui.UpdateProgressPanelMin;
+import gui.UpdateProgressPanel;
 import net.miginfocom.swing.MigLayout;
 import network.DownloadUtils;
 import om.HashingFunction;
@@ -219,7 +219,7 @@ public class HashCheckerFrame extends ParentFrame{
 				final String prefix = getPrefix();
 				GuiUtils.launchThreadSafeSwing(new Runnable() {
 					public void run() {
-						UpdateProgressPanelMin updateProgress = null;
+						UpdateProgressPanel updateProgress = null;
 						try {
 
 							if (currentFile != null && currentFile.exists()) {
@@ -228,7 +228,7 @@ public class HashCheckerFrame extends ParentFrame{
 											.setText(prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
 								} else if (dialogHelper.showYNDialog("Hashing a folder can be a long task, really want to start hashing?",
 										"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {
-									updateProgress = new UpdateProgressPanelMin(false);
+									updateProgress = new UpdateProgressPanel(false);
 									updateProgress.setClosable(true);
 									updateProgress.setUndefinedDuration();
 									txtFieldChecksumResult.setText(prefix + DownloadUtils.getFolderHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
@@ -260,7 +260,7 @@ public class HashCheckerFrame extends ParentFrame{
 				final String prefix = getPrefix();
 				GuiUtils.launchThreadSafeSwing(new Runnable() {
 					public void run() {
-						UpdateProgressPanelMin updateProgress = null;
+						UpdateProgressPanel updateProgress = null;
 						try {
 							if (currentFile != null && currentFile.exists()) {
 								String hash = "";
@@ -270,7 +270,7 @@ public class HashCheckerFrame extends ParentFrame{
 									} else {
 										if (dialogHelper.showYNDialog("Hashing a folder can be a long task, are you sure to start hashing?",
 												"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {
-											updateProgress = new UpdateProgressPanelMin(false);
+											updateProgress = new UpdateProgressPanel(false);
 											updateProgress.setClosable(true);
 											updateProgress.setUndefinedDuration();
 											hash = prefix + DownloadUtils.getFolderHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
