@@ -112,7 +112,7 @@ public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
 
 	@Override
 	public boolean getAdditionalConditionBeforeUpdateOnDocumentEvent() {
-		return !textEditor.subHeaderPanel.isCrypterOn;
+		return !textEditor.headerPanel.isCrypterOn;
 	}
 
 	@Override

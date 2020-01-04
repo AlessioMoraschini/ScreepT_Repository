@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
 
@@ -41,11 +42,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.awt.event.ActionEvent;
 
-public class TemplatesChoosePanel extends JFrame{
+public class TemplatesChooserFrame extends ParentFrame {
 	private static final long serialVersionUID = 6657650710605549352L;
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(TemplatesChoosePanel.class);
+	static Logger logger = Logger.getLogger(TemplatesChooserFrame.class);
 		
 	private final static String TEMPLATES_FOLDER_NAME = GeneralConfig.RESOURCES_DIR  + "Templates/";
 	private final static File TEMPLATES_FOLDER = new File(TEMPLATES_FOLDER_NAME);
@@ -66,7 +67,7 @@ public class TemplatesChoosePanel extends JFrame{
 	
 	
 	// MAIN CONSTRUCTOR //
-	public TemplatesChoosePanel(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
+	public TemplatesChooserFrame(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
 		
 		active = true;
 		
@@ -79,14 +80,17 @@ public class TemplatesChoosePanel extends JFrame{
 		this.setResizable(false);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"insets 2, fill", "[100px,grow][70px]", "[42px][30px,grow][30px,grow]"));
+		getContentPane().setLayout(new MigLayout(
+				GeneralConfig.DEBUG_GRAPHICS+"insets 2, fill",
+				"[100px,grow][70px]",
+				"[45px][35px,grow][30px,grow]"));
 		
 		panel = new JPanel();
 		panel.setForeground(Color.WHITE);
-		panel.setBorder(new LineBorder(Color.GRAY, 4));
+		panel.setBorder(new LineBorder(Color.GRAY, 2));
 		panel.setBackground(Color.BLACK);
 		getContentPane().add(panel, "cell 0 0 2 1,growx,aligny top");
-		panel.setLayout(new MigLayout("", "[][][][grow][][]", "[]"));
+		panel.setLayout(new MigLayout("insets 2, fill", "[][][][grow][][]", "[40px]"));
 		
 		lblTemplates = new JLabel("Templates Manager");
 		lblTemplates.setHorizontalAlignment(SwingConstants.CENTER);
@@ -118,24 +122,24 @@ public class TemplatesChoosePanel extends JFrame{
 		btnReloadTemplates.setForeground(Color.BLACK);
 		
 		comboTemplateSelector = new JComboBox<String>(retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER));
-		comboTemplateSelector.setMinimumSize(new Dimension(33, 30));
+		comboTemplateSelector.setMinimumSize(new Dimension(33, 35));
 		comboTemplateSelector.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(comboTemplateSelector, "cell 0 1,growx");
 		
 		AddCustomFromFile = new JButton("Add Custom Template");
-		AddCustomFromFile.setMinimumSize(new Dimension(185, 30));
+		AddCustomFromFile.setMinimumSize(new Dimension(185, 35));
 		AddCustomFromFile.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(AddCustomFromFile, "cell 1 1,growx");
 		
 		btnInject = new JButton("Inject template");
-		btnInject.setMinimumSize(new Dimension(108, 30));
+		btnInject.setMinimumSize(new Dimension(108, 35));
 		btnInject.setCursor(GuiUtils.CURSOR_HAND);
 		btnInject.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnInject.setBackground(Color.GRAY);
 		getContentPane().add(btnInject, "cell 0 2,growx");
 		
 		btnAddSelectionToTemplates = new JButton("Add Selection to Templates");
-		btnAddSelectionToTemplates.setMinimumSize(new Dimension(185, 30));
+		btnAddSelectionToTemplates.setMinimumSize(new Dimension(185, 35));
 		btnAddSelectionToTemplates.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnAddSelectionToTemplates, "cell 1 2,growx");
 		
@@ -296,6 +300,11 @@ public class TemplatesChoosePanel extends JFrame{
 	
 	private File retrieveTemplateByName(String name) {
 		return new File(TEMPLATES_FOLDER_NAME+name);
+	}
+	
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(550, 170);
 	}
 	
 	private void reloadTemplates() {

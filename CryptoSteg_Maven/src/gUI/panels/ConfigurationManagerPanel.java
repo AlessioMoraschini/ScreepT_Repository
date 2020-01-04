@@ -19,6 +19,7 @@ import frameutils.utils.GuiUtils;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
+import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
 import maingUI.MainGuiUtils;
 import mainobj.INItializer;
@@ -288,9 +289,19 @@ public class ConfigurationManagerPanel extends ModulePanel {
 
 		addHandlers();
 		
-		applyTextAreaStyle();
+		initGuiFromConfig();
 		
 		logger.info(this.getClass().getName() + " Started");
+	}
+	
+	public void initGuiFromConfig() {
+		GUIStyelSettings.setStyle(config.getGuiOpt().getPreferredStyle(), config.getGuiOpt().nimbusSize);
+		GUIStyelSettings.applyNimbusSize(null, config.getGuiOpt().nimbusSize);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				applyTextAreaStyle();
+			}
+		});
 	}
 	
 	public void applyTextAreaStyle(){

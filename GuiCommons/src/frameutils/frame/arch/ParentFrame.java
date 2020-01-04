@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -33,7 +34,15 @@ public class ParentFrame extends JFrame{
 		
 		setCloseAction();
 		
-		GuiUtils.centerComponent(this, getDefaultDimension());
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				setMinimumSize(getDefaultDimension());
+				setPreferredSize(getDefaultDimension());
+				setMaximumSize(getDefaultDimension());
+				GuiUtils.centerComponent(ParentFrame.this, getDefaultDimension());
+				pack();
+			}
+		});
 	}
 	
 	protected void setCloseAction() {

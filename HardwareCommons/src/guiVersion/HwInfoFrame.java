@@ -2,7 +2,6 @@ package guiVersion;
 
 import org.apache.log4j.Logger;
 
-import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import net.miginfocom.swing.MigLayout;
@@ -111,14 +110,14 @@ public class HwInfoFrame extends ParentFrame{
 	private JLabel lblSerialNumber;
 	private JPanel panelHD;
 	private JLabel lblHd;
-	private JComboBox comboSelectedHd;
+	private JComboBox<HDinfo> comboSelectedHd;
 	private JLabel lblReads;
 	private JLabel lblHDName;
 	private JTextField dynLblHDReadBytes;
 	private JTextField dynLblHDmodel;
 	private JPanel panelMonitors;
 	private JLabel lblDisplay;
-	private JComboBox comboSelectedDisplay;
+	private JComboBox<Integer> comboSelectedDisplay;
 	private JLabel lblName;
 	private JTextField dynLblDisplayInfo1;
 	
@@ -171,6 +170,7 @@ public class HwInfoFrame extends ParentFrame{
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_HW_INFO, this);
 		
 		thisPanel = this;
+		singletonInstance = this;
 
 		// Initialize hardware utils objects
 		initSystemVars();
@@ -538,7 +538,7 @@ public class HwInfoFrame extends ParentFrame{
 		panelHD.add(lblHd, "cell 0 0,alignx center");
 		
 //		comboSelectedHd = new JComboBox(); // only for editing in windowbuilder
-		comboSelectedHd = new JComboBox(HDList);
+		comboSelectedHd = new JComboBox<HDinfo>(HDList);
 		panelHD.add(comboSelectedHd, "cell 1 0,growx");
 		
 		lblWrites = new JLabel("Writes:");
@@ -815,11 +815,6 @@ public class HwInfoFrame extends ParentFrame{
 			indexer[i] = i;
 		}
 		return indexer;
-	}
-	
-	private void handleException(String msg, Throwable e) {
-		logger.error(msg, e);
-		new JOptionHelperExtended(thisPanel).error(msg, msg);
 	}
 	
 	/**

@@ -99,8 +99,6 @@ public class WindowCreator {
 		
 		commonGraphicInit(panelKeyGen, "IMG Generator - ");
 		
-    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelKeyGen, JFrame.MAXIMIZED_BOTH);
-    	
     	return panelKeyGen;
 	}
 	
@@ -109,8 +107,6 @@ public class WindowCreator {
 		KeyDictionaryFrame panelKeyDict = KeyDictionaryFrame.getInstance(MainGUI.currentConfiguration);
 				
 		commonGraphicInit(panelKeyDict, "Key Dictionary - ");
-		
-    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelKeyDict,JFrame.MAXIMIZED_BOTH);
     	
     	return panelKeyDict;
 	}
@@ -120,8 +116,6 @@ public class WindowCreator {
 		GraphicPreferencesFrame panelGuiOptions = GraphicPreferencesFrame.getInstance(MainGUI.currentConfiguration);
 		
 		commonGraphicInitAlwaysOnTop(panelGuiOptions, "Graphics preferences - ");
-		
-		GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelGuiOptions, JFrame.MAXIMIZED_BOTH);
 		
 		return panelGuiOptions;
 	}
@@ -146,8 +140,6 @@ public class WindowCreator {
 		
 		panelImgConv.setResizable(false);
 		
-    	GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelImgConv,JFrame.MAXIMIZED_BOTH);
-    	
     	return panelImgConv;
 	}
 	
@@ -165,8 +157,6 @@ public class WindowCreator {
 				commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ");
 
 				prog.forceClose();
-
-				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelNetInfo, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 	}
@@ -186,8 +176,6 @@ public class WindowCreator {
 				panelHwInfo.setResizable(false);
 				
 				prog.forceClose();
-
-				GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelHwInfo, JFrame.MAXIMIZED_BOTH);
 			}
 		});
 	}
@@ -199,7 +187,6 @@ public class WindowCreator {
 		commonGraphicInit(panelAbout, "About - ");
 		
 		panelAbout.setResizable(false);
-		GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelAbout, JFrame.MAXIMIZED_BOTH);
 		
 		return panelAbout;
 	}
@@ -238,7 +225,6 @@ public class WindowCreator {
 		commonGraphicInit(panelChangeLog, "ChangeLog - ");
 		
 		panelChangeLog.setResizable(true);
-		GuiUtils.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), panelChangeLog, JFrame.MAXIMIZED_BOTH);
 		
 		return panelChangeLog;
 	}
@@ -248,12 +234,19 @@ public class WindowCreator {
 		
 		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		
+		newFrame.setMinimumSize(newFrame.getDefaultDimension());
+		newFrame.setPreferredSize(newFrame.getDefaultDimension());
+		newFrame.setMaximumSize(newFrame.getDefaultDimension());
+		
 		newFrame.setLocationRelativeTo(mainApplication.getMainFrame());
 		newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		newFrame.setTitle(title + GeneralConfig.APPLICATION_NAME);
-		newFrame.setVisible(true);
+		GuiUtils.extendFramesAndMoveToTop(mainApplication.getMainFrame(), newFrame,JFrame.MAXIMIZED_BOTH);
 		GuiUtils.centerComponent(newFrame, newFrame.getDefaultDimension());
-		newFrame.toFront();
+		
+		newFrame.pack();
+		
+		newFrame.setVisible(true);
 	}
 	
 	public void commonGraphicInitAlwaysOnTop(ParentFrame newFrame, String title) {

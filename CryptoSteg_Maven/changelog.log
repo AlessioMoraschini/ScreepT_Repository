@@ -1,4 +1,8 @@
-* 2020-01-02  (HEAD -> refs/heads/master, refs/remotes/origin/master) new Version 0.9.16 - Optimized application size
+* 2020-01-03  (HEAD -> refs/heads/master, refs/remotes/origin/master) Added undo/redo unsaved automation + fixed dialogs/close all tabs
+| 
+* 2020-01-02  IMPORTANT: update process -> fixed bug in unzipping
+| 
+* 2020-01-02  new Version 0.9.16 - Optimized application size
 | 
 * 2020-01-02  (tag: refs/tags/0.9.16) Improved plugin process + Dialogs and Text Editor bugFix
 | 

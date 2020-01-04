@@ -36,7 +36,6 @@ public class TextEditorTooltips {
 	public static final String tooltipParseImage = "Read Image and parse text";
 	public static final String tooltipParsePdfTxt = "Read Pdf and parse text";
 	public static final String tooltipFontChooser = "Change font and text-properties";
-	public static final String tooltipTemplates = "Choose between many different patterns of code to insert in you text";
 	public static final String tooltipDefaultOpt = "Reset default text-graphics values";
 	public static final String tooltipRemoveSpaces = "Remove spaces from selected/all text (press Ctrl to choose a character to remove)";
 	public static final String tooltipRemoveContent = "Remove specific words from selected/all text";
@@ -55,6 +54,7 @@ public class TextEditorTooltips {
 	public static final String tooltipInlineTabs = "[Ctrl + Shift + I] If selected tabs will be o one line, else they will be always visible organized in rows";
 	public static final String tooltipShowTabGrid = "[Ctrl + G] If selected tabs will be highlighted.";
 	public static final String tooltipTabSize = "This number will be used as number of spaces for each tab pressed.";
+	public static final String tooltipTemplatesPanel = "[Ctrl + T] Open templates manager";
 	public static final String tooltipFileViewBtn = "[Alt + Q] Show/hide file explorer panel";
 	public static final String tooltipMapViewBtn = "[Alt + W] Show/hide document map panel";
 	public static final String tooltipClipboardViewBtn = "[Alt + A] Show/hide file document clipboard panel";

@@ -39,7 +39,6 @@ import om.BufferedImageType;
 import om.CrypterResultDTO;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import splitpanel.SplitPaneUtils;
 import treeutils.om.FileTreeModel;
 import util.UpdateProgressPanelCrypter;
 import utility.ConversionUtils;
@@ -151,9 +150,6 @@ public class CrypterPanel extends ModulePanel {
 	private JTextArea textAreaMain;
 	private JTextArea textAreaLog;
 	
-	// password field
-	private JCheckBox chckbxShowAesKey;
-
 	//Jtree used to represent dictionary
 	private JTree tree;
 
@@ -206,19 +202,23 @@ public class CrypterPanel extends ModulePanel {
 	// Buttons
 	public JButton btnDeCreept;
 	public JButton btnCreept;
-	public JButton btnSelectSourceFile;
+	public JButton btnAddSourceFile;
 	public JButton btnDispoKeyImg;
 	public JButton btnGenerateKeyImg;
 	public JButton btnGenerateKeyPsw;
 
 	// public field representing current Panel
 	public CrypterPanel thisPanel; 
+
+	// combobox to select conversion mode
+	private JComboBox<CryptoMode> comboModeCrypto;
+	private CryptoMode mode;
 	
 	// AES password gui-container
 	private JPasswordField AESKEYtext;
-	
-	// combobox to select conversion mode
-	private JComboBox<CryptoMode> comboModeCrypto;
+	private JCheckBox chckbxShowAesKey;
+	private JCheckBox chckbxShuffle;
+	private JCheckBox chckbxHashKey;
 
 	
 ///////////////////////////////////////////////
@@ -242,10 +242,7 @@ public class CrypterPanel extends ModulePanel {
 	private boolean flagCreateNewMonitor = false;
 	public FileChangeMonitor fileMonitor;
 	private ScreeptManagerFileOrFolder screeptManagerFoF;
-	private CryptoMode mode;
-	
-	private JCheckBox chckbxShuffle;
-	private JCheckBox chckbxHashKey;
+
 	private JScrollPane scrollPaneDragNDropSource;
 	private JPanel panelBackgroundDragSources;
 	private JTree treeSourcesDragAndDrop;
@@ -257,9 +254,9 @@ public class CrypterPanel extends ModulePanel {
 	public JOptionHelperExtended dialogHelper;
 	
 	int leftVerticalDivHeight;
-	int leftWidth = 370;
+	int leftWidth = 310;
 	int rightWidth = 480;
-	int rightWidthMin = 465;
+	int rightWidthMin = 380;
 	
 	public CrypterPanelShortcutsListener shortcutsListener;
 
@@ -280,6 +277,7 @@ public class CrypterPanel extends ModulePanel {
 		screeptManagerFoF = new ScreeptManagerFileOrFolder(generalProgress, thisPanel, false);
 		parentFrame=parent.getMainFrame();
 		mainApplication = parent;
+		currentConf = currentConfiguration;	
 		leftVerticalDivHeight = mainApplication.getMainFrame().getHeight() / 2;
 		
 		// set the background of the entire panel
@@ -351,7 +349,7 @@ public class CrypterPanel extends ModulePanel {
 		
 		btnCreept = new JButton("Creept");
 		btnCreept.setHorizontalTextPosition(SwingConstants.RIGHT);
-		btnCreept.setMinimumSize(new Dimension(120, 28));
+		btnCreept.setMinimumSize(new Dimension(130, 34));
 		btnCreept.setIconTextGap(10);
 		btnCreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
 		panelHeader.add(btnCreept, "cell 5 0,alignx right,aligny center");
@@ -364,7 +362,7 @@ public class CrypterPanel extends ModulePanel {
 		
 		btnDeCreept = new JButton("DeCreept");
 		btnDeCreept.setHorizontalTextPosition(SwingConstants.RIGHT);
-		btnDeCreept.setMinimumSize(new Dimension(120, 28));
+		btnDeCreept.setMinimumSize(new Dimension(130, 34));
 		btnDeCreept.setIconTextGap(10);
 		btnDeCreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
 		panelHeader.add(btnDeCreept, "cell 6 0,alignx right,aligny center");
@@ -447,6 +445,7 @@ public class CrypterPanel extends ModulePanel {
 		comboModeCrypto = new JComboBox<CryptoMode>();
 		comboModeCrypto.setPreferredSize(new Dimension(33, 24));
 		comboModeCrypto.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboModeCrypto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		GridBagConstraints gbc_comboModeCrypto = new GridBagConstraints();
 		gbc_comboModeCrypto.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboModeCrypto.insets = new Insets(0, 0, 0, 5);
@@ -456,6 +455,7 @@ public class CrypterPanel extends ModulePanel {
 		comboModeCrypto.setModel(new DefaultComboBoxModel<CryptoMode>(CryptoMode.values()));
 			
 		chckbxShuffle = new JCheckBox("Shuffle Mode");
+		chckbxShuffle.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		chckbxShuffle.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
 		chckbxShuffle.setDisabledIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		chckbxShuffle.setSelectedIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
@@ -472,6 +472,7 @@ public class CrypterPanel extends ModulePanel {
 		panelStatus.add(chckbxShuffle, gbc_chckbxShuffle);
 
 		chckbxHashKey = new JCheckBox("Hash key");
+		chckbxHashKey.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		chckbxHashKey.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
 		chckbxHashKey.setDisabledIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 		chckbxHashKey.setSelectedIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
@@ -567,9 +568,6 @@ public class CrypterPanel extends ModulePanel {
 			}
 		});
 		
-		// function to initialize values
-		initialize(currentConfiguration);
-				
 		// ADD ACTION LISTENERS TO LINK ACTIONS // 
 		addHandlers();
 		
@@ -579,21 +577,21 @@ public class CrypterPanel extends ModulePanel {
 			@Override
 			public void run() {
 				while (true) {
-					String backupText = textAreaLog.getText();
-					Highlighter backH = textAreaLog.getHighlighter();
-					textAreaLog.setHighlighter(null);
-					TreePath[] backup = tree.getSelectionPaths();
-					tree = new JTree(treeModel);
-					// refresh tree gui
-					refreshJTree();
-					tree.setSelectionPaths(backup);
-					textAreaLog.setText(backupText);
 					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e) {
+						String backupText = textAreaLog.getText();
+						Highlighter backH = textAreaLog.getHighlighter();
+						textAreaLog.setHighlighter(null);
+						TreePath[] backup = tree.getSelectionPaths();
+						tree = new JTree(treeModel);
+						// refresh tree gui
+						refreshJTree();
+						tree.setSelectionPaths(backup);
+						textAreaLog.setText(backupText);
+						textAreaLog.setHighlighter(backH);
+						Thread.sleep(2000);
+					} catch (Exception e) {
 						logger.error(e.toString());
 					}
-					textAreaLog.setHighlighter(backH);
 				}
 			}
 		});
@@ -606,24 +604,24 @@ public class CrypterPanel extends ModulePanel {
 			public void run() {
 				while(MainGUI.mainAppRunning) {
 					
-					// check the aes key and set jtextField color
-					AesCipher.check(AESKEYtext);
-					// set the label text according to selected mode
-					if(checkIfReadyToCode() && !isCoderUsed()) {
-						enableCoderButtons();
-					}else {
-						disableCoderButtons();
-					}
-					
-					if(!isCoderUsed()) {
-						enableSelectionButtons();
-					}else {
-						disableSelectionButtons();
-					}
-					
 					try {
+						// check the aes key and set jtextField color
+						AesCipher.check(AESKEYtext);
+						// set the label text according to selected mode
+						if(checkIfReadyToCode() && !isCoderUsed()) {
+							enableCoderButtons();
+						}else {
+							disableCoderButtons();
+						}
+						
+						if(!isCoderUsed()) {
+							enableSelectionButtons();
+						}else {
+							disableSelectionButtons();
+						}
+					
 						Thread.sleep(200);
-					} catch (InterruptedException e) {
+					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
 
@@ -633,8 +631,9 @@ public class CrypterPanel extends ModulePanel {
 		
 		logger.info(this.getClass().getName() + " Started");
 		
-		GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
-		SplitPaneUtils.resetAllDIviderColors(this, new Color(25, 25, 25));
+		// function to initialize values
+		initialize();
+		initGuiFromConfig();
 		
 		/*
 		 * KEYBOARD SHORTCUTS - use custom listener
@@ -784,7 +783,7 @@ public class CrypterPanel extends ModulePanel {
 		});
 		
 		// SELECT SINGLE FILE LISTENER
-		btnSelectSourceFile.addActionListener(new ActionListener() {
+		btnAddSourceFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				// select input file or directory with fileChooser
@@ -1180,6 +1179,7 @@ public class CrypterPanel extends ModulePanel {
 		textAreaMain.setBackground(new Color(30,30,30));
 		textAreaMain.setForeground(new Color(230,230,230));
 		textAreaMain.setRequestFocusEnabled(true);
+		textAreaMain.setCaretColor(Color.LIGHT_GRAY);
 		textAreaMain.setEditable(true);
 		textAreaMain.setEnabled(true);
 		textAreaMain.setMargin(new Insets(10, 15, 10, 10));
@@ -1319,14 +1319,14 @@ public class CrypterPanel extends ModulePanel {
 		separatorDragNDropTitle = new JSeparator();
 		panelBackgroundDragSources.add(separatorDragNDropTitle, "cell 0 1 2 1,growx");
 		
-		btnSelectSourceFile = new JButton("Add Source File or Folder");
-		btnSelectSourceFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panelBackgroundDragSources.add(btnSelectSourceFile, "cell 0 2 2 1,grow");
-		btnSelectSourceFile.setRequestFocusEnabled(false);
-		btnSelectSourceFile.setBorder(new LineBorder(new Color(0, 0, 0), 3));
-		btnSelectSourceFile.setForeground(SystemColor.text);
-		btnSelectSourceFile.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 15));
-		btnSelectSourceFile.setBackground(Color.DARK_GRAY);
+		btnAddSourceFile = new JButton("Add Source File or Folder");
+		btnAddSourceFile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelBackgroundDragSources.add(btnAddSourceFile, "cell 0 2 2 1,grow");
+		btnAddSourceFile.setRequestFocusEnabled(false);
+		btnAddSourceFile.setBorder(new LineBorder(new Color(0, 0, 0), 1));
+		btnAddSourceFile.setForeground(SystemColor.text);
+		btnAddSourceFile.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 15));
+		btnAddSourceFile.setBackground(Color.DARK_GRAY);
 		
 		treeSourcesDragAndDrop = new JTree();
 		treeSourcesDragAndDrop.setBackground(new Color(220, 220, 220));
@@ -1346,16 +1346,13 @@ public class CrypterPanel extends ModulePanel {
 		panelBackgroundDragSources.add(panelVDragNDropPane, "cell 0 4 2 1,grow");
 	}
 	
-	private void initialize(INItializer config) {
-		currentConf = config;		
+	private void initialize() {
 		AESKEYtext.setText("");
 		chckbxShuffle.setSelected(currentConf.getSteganOpt().isUltraSecure());
 		chckbxHashKey.setSelected(currentConf.getAesOpt().isHashKey());
 		
 		updateHashedTooltip();
 		updateShuffleTooltip();
-		
-		initGuiFromConfig();
 	}
 	
 	private synchronized boolean checkIfReadyToCode() {
@@ -1534,7 +1531,8 @@ public class CrypterPanel extends ModulePanel {
 
 	public void addNewSourceFile(File selected) {
 		logger.debug("Adding file to selection...");
-		if (selected!=null && selected.exists() && !isFileAlreadyLoadedInRoot(selected)) {
+		boolean alreadyLoaded = isFileAlreadyLoadedInRoot(selected);
+		if (selected!=null && selected.exists() && !alreadyLoaded) {
 			srcFile = selected;
 			panelVDragNDropPane.addFileToTree(selected);
 			String newdisplayed = HandleString.fitToMaxLentgh(selected.getName(), labelLengthLimit);
@@ -1547,8 +1545,14 @@ public class CrypterPanel extends ModulePanel {
 			logger.debug("File :" + selected.getName() + " correctly loaded");
 		} else {
 			
-			dialogHelper.info("File was already loaded in source pool", "File already Loaded :)");
-			logger.debug("File load skipped: already loaded!");
+			if (alreadyLoaded) {
+				dialogHelper.info("File was already loaded in source pool", "File already Loaded :)");
+				logger.debug("File load skipped: already loaded!");
+			
+			} else if(!selected.exists()){
+				dialogHelper.warn("Skipped: file does not exist", "Non existing file: Skipped");
+				logger.warn("File load skipped cause source does not exist");
+			}
 		}
 	}
 	
@@ -1579,13 +1583,13 @@ public class CrypterPanel extends ModulePanel {
 	private void disableSelectionButtons() {
 		btnDispoKeyImg.setEnabled(false);
 		btnGenerateKeyImg.setEnabled(false);
-		btnSelectSourceFile.setEnabled(false);
+		btnAddSourceFile.setEnabled(false);
 	}
 	
 	private void enableSelectionButtons() {
 		btnDispoKeyImg.setEnabled(true);
 		btnGenerateKeyImg.setEnabled(true);
-		btnSelectSourceFile.setEnabled(true);
+		btnAddSourceFile.setEnabled(true);
 	}
 	
 	private void appendMessageTxtAreas(String msg) {
@@ -1599,10 +1603,6 @@ public class CrypterPanel extends ModulePanel {
 	}
 	
 	public void initGuiFromConfig() {
-		GUIStyelSettings.applyNimbusSize(currentConf.getGuiOpt().nimbusSize);
-		GUIStyelSettings.updateAllWindowsLaf();
-		
-		SplitPaneUtils.resetAllDIviderColors(this, new Color(25, 25, 25));
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			
@@ -1612,6 +1612,10 @@ public class CrypterPanel extends ModulePanel {
 				Font logFont = textAreaLog.getFont();
 				textAreaLog.setFont(new Font(logFont.getName(), logFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()-1));
 				textAreaMain.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+				
+				GUIStyelSettings.setStyle(currentConf.getGuiOpt().getPreferredStyle(), currentConf.getGuiOpt().nimbusSize);
+				GUIStyelSettings.applyNimbusSize(null, currentConf.getGuiOpt().nimbusSize);
+//				SplitPaneUtils.resetAllDIviderColors(thisPanel, new Color(40,40,40));
 			}
 		});
 	}

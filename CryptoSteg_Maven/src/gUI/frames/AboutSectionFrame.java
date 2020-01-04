@@ -67,6 +67,7 @@ public class AboutSectionFrame extends ParentFrame{
 		mainAppFrame = mainApp.getMainFrame();
 		mainAppFrame.setEnabled(false);
 		thisFrame = this;
+		singletonInstance = this;
 		
 		// SET FRAME ICON
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);

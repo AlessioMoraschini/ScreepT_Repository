@@ -449,7 +449,7 @@ public class GuiUtils {
 		if((frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) && finalState == JFrame.MAXIMIZED_BOTH ) {
 			return; // if was not max then skip
 		}
-		changeFrameStateLaterUnchecked(frame, toFront, finalState);
+		extendFramesAndMoveToTop(frame, toFront, finalState);
 	}
 	
 	/**
@@ -471,19 +471,14 @@ public class GuiUtils {
 	 * 
 	 * <b>if toFront is not null it will be take to front last</b>
 	 */
-	public static void changeFrameStateLaterUnchecked(JFrame frame, JFrame toFront, int finalState) {
+	public static void extendFramesAndMoveToTop(JFrame frame, JFrame toFront, int finalState) {
 		
 		if(frame == null || toFront == null) {return;}
 		
 		toFront.setLocationRelativeTo(frame);
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				frame.setExtendedState(finalState);
-				if(toFront != null) {
-					toFront.toFront();
-				}
-			}
-		});
+		frame.setExtendedState(finalState);
+		toFront.setExtendedState(finalState);
+		toFront.toFront();
 	}
 	
 	/**

@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
@@ -31,9 +32,11 @@ import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gUI.utils.tooltip.TextEditorTooltips;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
+import maingUI.ToggleAction;
 import media.ImageGeneralWorker;
 import media.Sounds;
 import om.SupportedFileTextEditor;
@@ -43,7 +46,6 @@ import om.files.FileNamed;
 import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
-import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import splitpanel.SplitPaneUtils;
 import tabbededitor.CustomTabbedEditor;
@@ -130,13 +132,16 @@ public class TextEditorUtils {
 			button.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 			button.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
 		}
+
+		List<JToggleButton> textEditorToggleButtons = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor.subHeaderPanel, JToggleButton.class, "nostyle", true, false);
+		for(JToggleButton toggleButton : textEditorToggleButtons) {
+			toggleButton.setCursor(GuiUtils.CURSOR_HAND);
+			toggleButton.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+			toggleButton.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
+		}
 		
-		currentTextEditor.subHeaderPanel.toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
-		currentTextEditor.subHeaderPanel.toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
-		currentTextEditor.subHeaderPanel.toggleButtonSpellCheck.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
-		currentTextEditor.subHeaderPanel.btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
-		currentTextEditor.subHeaderPanel.btnTt.setMinimumSize(new Dimension(65, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
-		currentTextEditor.subHeaderPanel.btnLowerAfterDots.setMinimumSize(new Dimension(45, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
+		currentTextEditor.subHeaderPanel.btnTt.setMinimumSize(new Dimension(45, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
+		currentTextEditor.subHeaderPanel.btnLowerAfterDots.setMinimumSize(new Dimension(40, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
 	}
 	
 	/**
@@ -381,7 +386,6 @@ public class TextEditorUtils {
 		
 		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 		resetAllDIviderColors();
-//		SplitPaneUtils.setDividerColors(null, Color.BLACK, currentTextEditor.splitPaneMain);
 	}
 	
 	public void resetAllDIviderColors() {
@@ -570,9 +574,47 @@ public class TextEditorUtils {
 				if (currentTextEditor.isRightPaneOn()) {
 					currentTextEditor.rightPaneResizeOnly();
 				}
+				
+				adaptToSizeResponsive(mainApplication.getMainFrame().getBounds());
+				
 				currentTextEditor.repaint();
 			}
 		});
+	}
+	
+	public void adaptToSizeResponsive(Rectangle mainFrameBounds) {
+		if(mainFrameBounds.width > 1050 && mainFrameBounds.width < 1300) {
+			setSubHeaderHideablesVisible1(false);
+			setSubHeaderHideablesVisible2(true);
+		} else if(mainFrameBounds.width <= 1050) {
+			setSubHeaderHideablesVisible2(false);
+		} else {
+			setSubHeaderHideablesVisible1(true);
+			setSubHeaderHideablesVisible2(true);
+		}
+	}
+	
+	public void setSubHeaderHideablesVisible1(boolean visible) {
+		TextEditorSubHeadButtonsPanel subHeader = currentTextEditor.subHeaderPanel;
+		subHeader.slider_margin.setVisible(visible);
+		subHeader.sliderFontSize.setVisible(visible);
+		subHeader.lblSIZE.setVisible(visible);
+		subHeader.lblMargin.setVisible(visible);
+		subHeader.lBLMargin.setVisible(visible);
+		subHeader.lblFontSize.setVisible(visible);
+		
+		subHeader.revalidate();
+		subHeader.repaint(50);
+	}
+	
+	public void setSubHeaderHideablesVisible2(boolean visible) {
+		TextEditorSubHeadButtonsPanel subHeader = currentTextEditor.subHeaderPanel;
+		subHeader.labelTabSize.setVisible(visible);
+		subHeader.tabSizeSpinner.setVisible(visible);
+		subHeader.chckbxShowTabGrid.setVisible(visible);
+		
+		subHeader.revalidate();
+		subHeader.repaint(50);
 	}
 	
 	public void updateMargin() {
@@ -590,7 +632,7 @@ public class TextEditorUtils {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
-				GUIStyelSettings.applyNimbusSize(editor.currentConfiguration.getGuiOpt().nimbusSize);
+				GUIStyelSettings.applyNimbusSize(null, editor.currentConfiguration.getGuiOpt().nimbusSize);
 				GUIStyelSettings.updateAllWindowsLaf();
 				resetDividerColor();
 				currentTabEditor.applyStyleToTabs();
@@ -649,8 +691,7 @@ public class TextEditorUtils {
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setHeaderVisible(newVisible);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
-		MainGUI.mainAPP.mntmTxtEdHideShowTitleBlock.setIcon(currentTextEditor.headerPanel.isVisible() ?
-				IconsPathConfigurator.IMG_ICON_VISIBLE : IconsPathConfigurator.IMG_ICON_INVISIBLE);
+		updateTogglesIconsFromConfig();
 	}
 
 	/**
@@ -666,8 +707,7 @@ public class TextEditorUtils {
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setHeaderVisible(visibility);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
-		MainGUI.mainAPP.mntmTxtEdHideShowTitleBlock.setIcon(currentTextEditor.headerPanel.isVisible() ? 
-				IconsPathConfigurator.IMG_ICON_VISIBLE : IconsPathConfigurator.IMG_ICON_INVISIBLE);
+		updateTogglesIconsFromConfig();
 	}
 	
 	/**
@@ -685,7 +725,7 @@ public class TextEditorUtils {
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setSubHeaderVisible(newVisible);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
-		currentTextEditor.headerPanel.updateSubpanelVisibilityIconFromConfig();
+		updateTogglesIconsFromConfig();
 	}
 
 	/**
@@ -701,7 +741,7 @@ public class TextEditorUtils {
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setSubHeaderVisible(visibility);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
-		currentTextEditor.headerPanel.updateSubpanelVisibilityIconFromConfig();
+		updateTogglesIconsFromConfig();
 	}
 	
 	/**
@@ -713,7 +753,7 @@ public class TextEditorUtils {
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setFooterVisible(newVisible);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
-		currentTextEditor.headerPanel.updateFooterVisibilityIconFromConfig();
+		updateTogglesIconsFromConfig();
 	}
 
 	/**
@@ -724,7 +764,7 @@ public class TextEditorUtils {
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setFooterVisible(visibility);
 		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
-		currentTextEditor.headerPanel.updateFooterVisibilityIconFromConfig();
+		updateTogglesIconsFromConfig();
 	}
 	
 	// START ADVICE TEMPORIZATION AND VISUALIZTION METHODS
@@ -768,19 +808,15 @@ public class TextEditorUtils {
 	}
 	
 	public void updateCurrentUnsavedFromFileRead() {
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
-			public void run() {
-				try {
-					CustomTabbedEditor tabbedEditor = currentTextEditor.getCurrentTabEditor();
-					boolean fileUnsaved = checkCurrentFileIsUnsaved();
-					tabbedEditor.loadedTabObj.unsaved = fileUnsaved;
+		try {
+			CustomTabbedEditor tabbedEditor = currentTextEditor.getCurrentTabEditor();
+			boolean fileUnsaved = checkCurrentFileIsUnsaved();
+			tabbedEditor.loadedTabObj.unsaved = fileUnsaved;
 
-					currentTextEditor.getCurrentTabEditor().updateSavedLabelNTab(null);
-				} catch (Exception e) {
-					logger.error("Cannot update unsaved option for current file and current textArea", e);
-				}
-			}
-		});
+			currentTextEditor.getCurrentTabEditor().updateSavedLabelNTab(null);
+		} catch (Exception e) {
+			logger.error("Cannot update unsaved option for current file and current textArea", e);
+		}
 	}
 	
 	/**
@@ -900,7 +936,6 @@ public class TextEditorUtils {
 	public void resetDividerColor() {
 		if (currentTextEditor.splitPaneMain != null) {
 			resetAllDIviderColors();
-//			SplitPaneUtils.setDividerColors(null, Color.DARK_GRAY, currentTextEditor.splitPaneMain);
 		}
 	}
 	
@@ -1007,7 +1042,7 @@ public class TextEditorUtils {
 		// Update gui
 		loadedTabObj.textArea.revalidate();
 		currentTextEditor.CURRENT_EXT_OUT = selected.nomeStringa;
-		currentTextEditor.footerPanel.lblAdvice.setText("[Current output: " + currentTextEditor.CURRENT_EXT_OUT + "]");
+		currentTextEditor.footerPanel.lblAdvice.setText("[Type: " + currentTextEditor.CURRENT_EXT_OUT + "]");
 		currentTextEditor.subHeaderPanel.btnSaveTextFileAs.setToolTipText(TextEditorTooltips.tooltipSaveTextFileAs + " as " + currentTextEditor.CURRENT_EXT_OUT);
 
 		loadedTabObj.unsaved = unsaved;
@@ -1057,4 +1092,39 @@ public class TextEditorUtils {
 		txtOpt.setMargin(margin);
 	}
 	
+	public void setupTogglesOnMainMenu(boolean enabled) {
+		MainGUI.mainAPP.setTogglesEnabled(enabled);
+		if (enabled) {
+			updateTogglesIconsFromConfig();
+			MainGUI.toggleHeaderAction = new ToggleAction() {
+				@Override
+				public void doOnClick() {
+					hideOrShowHeaderPanelLevel1();
+				}
+			};
+			MainGUI.toggleSubHeaderAction = new ToggleAction() {
+				@Override
+				public void doOnClick() {
+					hideOrShowHeaderPanelLevel2();
+				}
+			};
+			MainGUI.toggleFooterAction = new ToggleAction() {
+				@Override
+				public void doOnClick() {
+					hideOrShowFooterPanel();
+				}
+			};
+		}
+	}
+	
+	public void updateTogglesIconsFromConfig() {
+		try {
+			TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
+			MainGUI.mainAPP.setToggleHeaderIcon(options.headerVisible);
+			MainGUI.mainAPP.setToggleSubHeaderIcon(options.subHeaderVisible);
+			MainGUI.mainAPP.setToggleFooterIcon(options.footerVisible);
+		} catch (Exception e) {
+		}
+	}
+
 }

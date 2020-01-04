@@ -30,9 +30,6 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	
 	public static ImportExportWorkspcCryptFrame singletonInstance = null;
 	
-	protected static int WIDTH = 700;
-	protected static int HEIGHT = 120;
-
 	protected TextEditorOption textOptions;
 	protected TextEditor textEditor;
 	
@@ -55,6 +52,8 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	 */
 	public ImportExportWorkspcCryptFrame(TextEditorOption txtOptions, TextEditor textEditor) {
 		super();
+		
+		singletonInstance = this;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		
@@ -155,13 +154,20 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		});
 	}
 	
-	@Override
-	protected void setCloseAction() {
-		singletonInstance = null;
-		super.setCloseAction();
-	}
-	
 	protected void addListeners() {
+		
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            
+		    	singletonInstance = null;
+		    	
+	        	logger.debug("Closing Frame: " + getClass().getName());	        	
+	        	isActive.set(false);
+	        	
+	        	dispose();
+		    }
+		});
 		
 		btnSelectImport.addActionListener(new ActionListener() {
 			

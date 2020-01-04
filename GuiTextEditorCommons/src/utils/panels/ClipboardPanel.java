@@ -52,7 +52,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	static Logger logger = Logger.getLogger(ClipboardPanel.class);
 	JOptionHelperExtended dialogHelper;
 	
-	public static ClipboardPanel singletonInstance;
+	public static ClipboardPanel singletonInstance = null;
 
 	public RSyntaxTextArea txtAreaClipboard;
 	private JScrollPane txtAreaContainer;
@@ -85,6 +85,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	 */
 	public ClipboardPanel(ITextAreaDialogs dialogManager, INItializer configuration) {
 		
+		singletonInstance = this;
 		
 		this.config = (configuration != null)? configuration : new INItializer();
 		this.options = (config != null)? config.getTextEditorOpt() : new TextEditorOption();

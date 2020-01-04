@@ -96,6 +96,8 @@ public class KeyDictionaryFrame extends ParentFrame{
 		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
 		
 		thisPanel = this;
+		singletonInstance = this;
+		
 		// initialize configuration
 		currentConf = currentConfiguration;
 		

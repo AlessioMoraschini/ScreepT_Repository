@@ -193,6 +193,12 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				if (e.getKeyCode() == 84 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmTextEditor().doClick();
 				}
+				/**
+				 *  OPEN IMPORT/EXPORT crypted workspace: TEXT-EDITOR : CTRL+ALT+SHIFT+I
+				 */
+				if (e.getKeyCode() == 73 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmTxtEditorImpExpCryptedWkspc().doClick();
+				}
 
 				/**
 				 *  OPEN SYS-INFO : ALT+SHIFT+Y

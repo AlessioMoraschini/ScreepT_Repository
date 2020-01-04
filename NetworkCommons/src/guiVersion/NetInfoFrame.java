@@ -115,6 +115,7 @@ public class NetInfoFrame extends ParentFrame{
 		
 		isActive.set(true);
 		thisPanel = this;
+		singletonInstance = this;
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_NET_INFO, this);
@@ -128,6 +129,8 @@ public class NetInfoFrame extends ParentFrame{
 		initialize();
 		
 		addEventHandlers();
+		
+		logger.info(this.getClass().getName() + ": ready!");
 	}
 	
 ////////////////////////// INITIALIZER METHOD //////////////////////////

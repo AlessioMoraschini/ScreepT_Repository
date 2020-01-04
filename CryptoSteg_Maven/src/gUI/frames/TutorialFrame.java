@@ -38,6 +38,8 @@ public class TutorialFrame extends ParentFrame{
 		
 		thisPanel = this;
 		
+		singletonInstance = this;
+		
 		// GUI SETTINGS
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
 		GuiUtils.centerComponent(this, 70);

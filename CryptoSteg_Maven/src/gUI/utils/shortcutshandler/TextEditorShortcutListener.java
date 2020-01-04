@@ -183,10 +183,10 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	CRYPT-DECRYPT -> CTRL+Shift+C  ## CTRL+Shift+D
 				 */
 				if (e.getKeyCode() == 67 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					subHeaderPanel.btnCrypt.doClick();
+					currentTextEditor.headerPanel.btnCrypt.doClick();
 				}
 				if (e.getKeyCode() == 68 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					subHeaderPanel.btnDecrypt.doClick();
+					currentTextEditor.headerPanel.btnDecrypt.doClick();
 				}
 				/*
 				 * Code/Decode using base 64, selected or all text: 

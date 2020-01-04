@@ -31,7 +31,7 @@ import utility.SafeLogger;
 
 import javax.swing.JButton;
 
-public class PluginManagerGUI extends JFrame implements IPluginManagerGui{
+public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	private static final long serialVersionUID = 8830965172863577977L;
 	
 	private static SafeLogger logger = new SafeLogger(PluginManagerGUI.class);

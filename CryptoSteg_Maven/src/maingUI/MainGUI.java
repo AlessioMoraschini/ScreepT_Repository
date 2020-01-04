@@ -168,22 +168,6 @@ public class MainGUI extends MainGuiParent{
 		MainGuiGeneralAppStarter.loaderGraphics.setVisible(true);
 		MainGuiGeneralAppStarter.loaderGraphics.toFront();
 		
-		// START LOADING PANEL THREAD
-		new Thread(new Runnable() {
-			public void run() {
-				for (int i = 0; i < 10; i++) {
-					String dots = new String(new char[i + 1]).replace("\0", ".");
-					String msg = "Initializing " + GeneralConfig.APPLICATION_NAME + dots;
-					MainGuiGeneralAppStarter.loaderGraphics.update(msg, 20 + i / 2);
-					try {
-						Thread.sleep(60);
-					} catch (InterruptedException e) {
-						logger.error("Error waiting before starting launcher", e);
-					}
-				}
-			}
-		}).start();
-		
 		try {
 			now = new Date();
 			mainAppRunning = true;
@@ -469,6 +453,23 @@ public class MainGUI extends MainGuiParent{
 			}
  		});
  		
+ 		// TOP-RIGHT TOGGLES
+ 		mntmToggleHeader = new CustomJmenuItem(new AbstractAction("") {
+ 			public void actionPerformed(ActionEvent e) {
+ 				toggleHeaderAction.doOnClick();
+ 			}
+ 		});
+ 		mntmToggleSubHeader = new CustomJmenuItem(new AbstractAction("") {
+ 			public void actionPerformed(ActionEvent e) {
+ 				toggleSubHeaderAction.doOnClick();
+ 			}
+ 		});
+ 		mntmToggleFooter = new CustomJmenuItem(new AbstractAction("") {
+ 			public void actionPerformed(ActionEvent e) {
+ 				toggleFooterAction.doOnClick();
+ 			}
+ 		});
+ 		
  		// NOT OPENING VIEW - UNUSED RESOURCES OPTIMIZATION
  		mntmOptimizeResourcesUsage = new CustomJmenuItem(new AbstractAction("") {
  			public void actionPerformed(ActionEvent e) {
@@ -511,15 +512,6 @@ public class MainGUI extends MainGuiParent{
 						updateGuiFromCurrConfig();
 					}
 		    }
-		});
-
-		// NOT OPENING VIEW - SHOW/HIDE Txt Editor Header
-		mntmTxtEdHideShowTitleBlock = new CustomJmenuItem(new AbstractAction("Show/Hide text editor's header block") {
-			public void actionPerformed(ActionEvent ae) {
-				if(initTxtWriter != null) {
-					initTxtWriter.textEditorUtils.hideOrShowHeaderPanelLevel1();
-				}
-			}
 		});
 
 		String msg1 = "Are you sure to reset ";
@@ -1079,6 +1071,7 @@ public class MainGUI extends MainGuiParent{
 		// BACKGROUND RESIZER //
 		frmScryptV.addComponentListener(new ComponentListener() {
 			public void componentShown(ComponentEvent e) {
+				resizeMainFrameDefaults();
 			}
 			public void componentResized(ComponentEvent e) {
 				resizeMainFrameDefaults();
@@ -1093,11 +1086,13 @@ public class MainGUI extends MainGuiParent{
 	////////// END OF MENU MOUSE CLICK - HANDLERS DECLARATION  ////////////////
 	
 		MainGuiGeneralAppStarter.loaderGraphics.update("Adding ActionHandlers...", 50);
+		logger.debug("Adding ActionHandlers...");
  		addHandlers();
  		
  		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(getKeyEventHandler());
  
 		// once each component is declared add it to the menu bar
+ 		logger.debug("Initializing main menuBar...");
  		MainGuiGeneralAppStarter.loaderGraphics.update("Structuring menu...", 60);
 		structureMenuBar();
 		
@@ -1105,6 +1100,8 @@ public class MainGUI extends MainGuiParent{
 		checkVersionAndDisableUnsupportedOpt();
 		
 		frmScryptV.requestFocus();
+		
+		logger.debug("MainGui instance initialized");
 	}
 	
 	
@@ -1131,17 +1128,20 @@ public class MainGUI extends MainGuiParent{
 			frmScryptV.dispose();
 			frmScryptV.setUndecorated(false);
 			frmScryptV.setLocationRelativeTo(frmScryptV);
-			frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
 			frmScryptV.setSize(preFullScreenSize);
 			frmScryptV.setVisible(true);
 			isFullScreen.set(false);
 			menuBar.setVisible(true);
 			mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPAND));
 		}
+		
+		resizeMainFrameDefaults();
 	}
 	
 	public void resizeMainFrameDefaults() {
 
+		frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
+		
 		// resize background - Only on home page to improve performance
 		if (isOnHomePage.get()) {
 			labelBACKground.setSize(frmScryptV.getContentPane().getSize());
@@ -1154,6 +1154,7 @@ public class MainGUI extends MainGuiParent{
 
 		// resize textEditor if present
 		if (frmScryptV.getContentPane().getComponent(0) instanceof CrypterPanel) {
+			frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSizeCrypter);
 			panelCrypter.resizeFrameToDefault(mainAPP);
 		}
 	}
@@ -1570,13 +1571,18 @@ public class MainGUI extends MainGuiParent{
 	 */
 	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
-		if(initTxtWriter != null) {
+		if(initTxtWriter != null && mainGuiUtils.isTextEditorActive()) {
 			initTxtWriter.initGuiFromConfig(true, true);
 		}
 		
 		// CRYPTER REFRESH
-		if(panelCrypter != null) {
+		if(panelCrypter != null && mainGuiUtils.isCrypterActive()) {
 			panelCrypter.initGuiFromConfig();
+		}
+		
+		// CONFIGURATOR REFRESH
+		if(configManagerPanel != null && mainGuiUtils.isConfManagerActive()) {
+			configManagerPanel.initGuiFromConfig();
 		}
 		
 		// PANEL GRAPHICS PREFERENCES
@@ -1589,6 +1595,10 @@ public class MainGUI extends MainGuiParent{
 			GeneralOptionsFrame.singletonInstance.initGuiFromConfig();
 		}
 		
+		if(initTxtWriter != null) {
+			initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
+		}
+
 		if(GUIStyelSettings.isNimbus(currentConfiguration.getGuiOpt())) {
 			if (GUIStyelSettings.isDarkNimbus(currentConfiguration.getGuiOpt())) {
 				
@@ -1599,12 +1609,7 @@ public class MainGUI extends MainGuiParent{
 		}else {
 			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 		}
-		
-		if(initTxtWriter != null) {
-			initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
-		}
-
-		GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
+		GUIStyelSettings.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
 	}
 	
 	// GETTERS //

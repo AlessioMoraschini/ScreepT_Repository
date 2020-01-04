@@ -36,6 +36,7 @@ import frameutils.utils.GuiUtils;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import gUI.utils.tooltip.TextEditorTooltips;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
@@ -58,6 +59,10 @@ public class MainGuiParent {
 	// this file is the abstraction of the current settings used by various sub-programs and application of this main_GUI.
 	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.	
 	public static INItializer currentConfiguration;
+	
+	public static ToggleAction toggleHeaderAction = new ToggleAction() {};
+	public static ToggleAction toggleSubHeaderAction = new ToggleAction() {};
+	public static ToggleAction toggleFooterAction = new ToggleAction() {};
 	
 	//////////////////////GENERAL STATIC ELEMENTS /////////////////////////
 	////////////////////////////////////////////////////////////////////////
@@ -102,9 +107,14 @@ public class MainGuiParent {
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
 		JMenu mnrestartPanel;
-	JMenuItem mntmpadding = new JMenuItem();
-	JMenuItem mntmOptimizeResourcesUsage;
-	JMenuItem mntmPinApplicationOnTop;
+			// Top-right elements
+			JMenuItem mntmpadding = new JMenuItem();
+			public JMenuItem mntmToggleHeader;   
+			public JMenuItem mntmToggleSubHeader;
+			public JMenuItem mntmToggleFooter; 
+			JMenuItem mntmpadding2 = new JMenuItem();
+			JMenuItem mntmOptimizeResourcesUsage;
+			JMenuItem mntmPinApplicationOnTop;
 	
 	static CustomJmenuItem mntmInspectCurrentConfiguration;
 	CustomJmenuItem mntmloadPrjSub;
@@ -124,7 +134,6 @@ public class MainGuiParent {
 	CustomJmenuItem mntmgenerateKeyImageSub;
 	CustomJmenuItem mntmViewKeyDictionary;
 	static CustomJmenuItem mntmTextEditor;
-	public CustomJmenuItem mntmTxtEdHideShowTitleBlock;
 	public CustomJmenuItem mntmTxtEditorImpExpCryptedWkspc;
 	CustomJmenuItem mntmnetInfo;
 	CustomJmenuItem mntmhwInfo;
@@ -217,21 +226,73 @@ public class MainGuiParent {
 
 	/******************  BEGIN MAIN MENU-BAR SETUP  *****************************/
 
+	void sizeTopRightElement(JMenuItem topRightItem, Dimension dimension) {
+		topRightItem.setMinimumSize(dimension);
+		topRightItem.setPreferredSize(dimension);
+		topRightItem.setMaximumSize(dimension);
+		topRightItem.setOpaque(false);
+	}
+	
+	public void setTogglesEnabled(boolean visible) {
+		mntmToggleHeader.setVisible(visible);
+		mntmToggleSubHeader.setVisible(visible);
+		mntmToggleFooter.setVisible(visible);
+	}
+	
+	public void setToggleHeaderIcon(boolean visible) {
+		if (visible) {
+			mntmToggleHeader.setIcon(IconsPathConfigurator.IMG_ICON_HEAD_VISIBLE);
+		} else {
+			mntmToggleHeader.setIcon(IconsPathConfigurator.IMG_ICON_HEAD_INVISIBLE);
+		}
+	}
+	public void setToggleSubHeaderIcon(boolean visible) {
+		if (visible) {
+			mntmToggleSubHeader.setIcon(IconsPathConfigurator.IMG_ICON_SUBHEAD_VISIBLE);
+		} else {
+			mntmToggleSubHeader.setIcon(IconsPathConfigurator.IMG_ICON_SUBHEAD_INVISIBLE);
+		}
+	}
+	public void setToggleFooterIcon(boolean visible) {
+		if (visible) {
+			mntmToggleFooter.setIcon(IconsPathConfigurator.IMG_ICON_FOOTER_VISIBLE);
+		} else {
+			mntmToggleFooter.setIcon(IconsPathConfigurator.IMG_ICON_FOOTER_INVISIBLE);
+		}
+	}
+	
+	private void stylePaddings() {
+		// prepare padding to right for pinApplication
+		mntmpadding.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		mntmpadding.setMaximumSize(new Dimension(5000, 20));
+		mntmpadding.setMinimumSize(new Dimension(20, 20));
+		mntmpadding.setEnabled(false);
+		
+		mntmpadding2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); // ONLY TO PAD RIGHT Pin On Top
+		mntmpadding2.setMaximumSize(new Dimension(20, 20));
+		mntmpadding2.setPreferredSize(new Dimension(20, 20));
+		mntmpadding2.setMinimumSize(new Dimension(20, 20));
+		mntmpadding2.setEnabled(false);
+	}
+	
 	void structureMenuBar() {
 		
 		// CREATE MENU-BAR STRUCTURE
-		Insets mainMargin = new Insets(0, 1, 1, 1);
+		Insets mainMargin = new Insets(4, 1, 4, 1);
 		menuBar.setMargin(mainMargin);
-		// prepare padding to right for pinApplication
-		mntmpadding.setMaximumSize(new Dimension(5000, 20));
-		mntmpadding.setMinimumSize(new Dimension(200, 20));
 		
-		mntmOptimizeResourcesUsage.setMaximumSize(new Dimension(30, 20));
-		mntmOptimizeResourcesUsage.setPreferredSize(new Dimension(30, 20));
+		stylePaddings();
+		
+		sizeTopRightElement(mntmToggleHeader, new Dimension(40, 25));
+		mntmToggleHeader.setToolTipText(TextEditorTooltips.tooltipToggleHeader);
+		sizeTopRightElement(mntmToggleSubHeader, new Dimension(40, 25));
+		mntmToggleSubHeader.setToolTipText(TextEditorTooltips.tooltipToggleSubHeader);
+		sizeTopRightElement(mntmToggleFooter, new Dimension(40, 25));
+		mntmToggleFooter.setToolTipText(TextEditorTooltips.tooltipToggleFooter);
+		
+		sizeTopRightElement(mntmOptimizeResourcesUsage, new Dimension(40, 25));
+		sizeTopRightElement(mntmPinApplicationOnTop, new Dimension(40, 25));
 
-		mntmPinApplicationOnTop.setMaximumSize(new Dimension(30, 20));
-		mntmPinApplicationOnTop.setPreferredSize(new Dimension(30, 20));
- 		mntmpadding.setEnabled(false);
  		
 		Insets menuEntryMargin = new Insets(0, 0, 0, 8);
 		menuBar.add(mnFile);
@@ -248,6 +309,16 @@ public class MainGuiParent {
 		mnHelp.setMargin(menuEntryMargin);
 		
 		menuBar.add(mntmpadding);
+		
+		menuBar.add(mntmToggleHeader);
+		mntmToggleHeader.setMargin(menuEntryMargin);
+		menuBar.add(mntmToggleSubHeader);
+		mntmToggleSubHeader.setMargin(menuEntryMargin);
+		menuBar.add(mntmToggleFooter);
+		mntmToggleFooter.setMargin(menuEntryMargin);
+		
+		menuBar.add(mntmpadding2);
+		
 		menuBar.add(mntmOptimizeResourcesUsage);
 		mntmOptimizeResourcesUsage.setMargin(menuEntryMargin);
 		menuBar.add(mntmPinApplicationOnTop);
@@ -283,7 +354,6 @@ public class MainGuiParent {
 			mnTextEditor.add(mnLastWorkspaces);
 			mnTextEditor.add(mnLastOpenedFile);
 			mnTextEditor.add(mntmTxtEditorImpExpCryptedWkspc);
-			mnTextEditor.add(mntmTxtEdHideShowTitleBlock);
 				
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
@@ -357,6 +427,13 @@ public class MainGuiParent {
 		menuBar.repaint();
 	}
 	
+	private void styleTopRightElement(JMenuItem topRightElement) {
+		topRightElement.setCursor(GuiUtils.CURSOR_HAND);
+		topRightElement.setFont(menuBarFont);
+		topRightElement.setAlignmentX(1);
+		topRightElement.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+	}
+	
 	/**
 	 * Method to update the font of main menu
 	 *  
@@ -381,13 +458,11 @@ public class MainGuiParent {
 		mnHelp.setFont(menuBarFont);
 		
 		// ICON ON RIGHT OF BAR
-		mntmpadding.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); // ONLY TO PAD RIGHT Pin On Top
-		mntmOptimizeResourcesUsage.setFont(menuBarFont);
-		mntmOptimizeResourcesUsage.setAlignmentX(1);
-		mntmOptimizeResourcesUsage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		mntmPinApplicationOnTop.setFont(menuBarFont);
-		mntmPinApplicationOnTop.setAlignmentX(1);
-		mntmPinApplicationOnTop.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		styleTopRightElement(mntmToggleHeader);
+		styleTopRightElement(mntmToggleSubHeader);
+		styleTopRightElement(mntmToggleFooter);
+		styleTopRightElement(mntmOptimizeResourcesUsage);
+		styleTopRightElement(mntmPinApplicationOnTop);
 
 		// SUBDIRECTORIES
 		mnFilesAndDirectories.setFont(subMenuFont);
@@ -420,7 +495,6 @@ public class MainGuiParent {
 		mnLastWorkspaces.setFont(menuItemFont);
 		mnLastOpenedFile.setFont(menuItemFont);
 		mntmTxtEditorImpExpCryptedWkspc.setFont(menuItemFont);
-		mntmTxtEdHideShowTitleBlock.setFont(menuItemFont);
 
 		// VARIOUS SECTION
 		mntmnetInfo.setFont(menuItemFont);
@@ -462,7 +536,6 @@ public class MainGuiParent {
 		MenuSetter.setIconTextGap(menuBar, 15);
 		
 		mntmOptimizeResourcesUsage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLEANUP));
-		mntmOptimizeResourcesUsage.setCursor(GuiUtils.CURSOR_HAND);
 		mntmOptimizeResourcesUsage.setToolTipText(
 				GuiUtils.encapsulateInHtml(
 						"Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)"
@@ -470,7 +543,6 @@ public class MainGuiParent {
 						+ "<br><u>If you want to modify the memory used by ScrYpT</u> you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));
 
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
-		mntmPinApplicationOnTop.setCursor(GuiUtils.CURSOR_HAND);
 		mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
 		
 		// file submenu
@@ -571,8 +643,7 @@ public class MainGuiParent {
 		
 		// Text editor sub-menu
 		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
-		mntmTxtEdHideShowTitleBlock.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_H, CTRL_MASK | ALT_MASK | SHIFT_MASK));
-		
+		mntmTxtEditorImpExpCryptedWkspc.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		
 		// Various submenu
 		mntmnetInfo.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, ALT_MASK | SHIFT_MASK));
@@ -932,10 +1003,6 @@ public class MainGuiParent {
 	
 	public CustomJmenuItem getMntmTxtEditorImpExpCryptedWkspc() {
 		return mntmTxtEditorImpExpCryptedWkspc;
-	}
-
-	public CustomJmenuItem getMntmTxtEdHideShowTitleBlock() {
-		return mntmTxtEdHideShowTitleBlock;
 	}
 
 	public JMenuItem getMntmnetInfo() {

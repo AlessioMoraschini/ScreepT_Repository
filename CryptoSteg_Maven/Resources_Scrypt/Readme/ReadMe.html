@@ -168,8 +168,9 @@
 					<span class="highlightBolded">Notice</span>: it's still possible to just launch the "ScrYpt_Vxx.jar" that you find inside the "/application" folder, but remember: it's not designed to render and work the best this way... so you might have a non-optimal experience running the software this way.
 					<br><br>
 					
-					<span class="highlightBolded">Notice</span>: full support is granted for java versions series 1.8.XX. With newer versions both Crypter and Network/hardware tools will be disabled for compatibility reasons. You can download the 
-						software with Java installer, download JVM separetely from launcher, or download it by your own and restart ScrYpT ;).
+					<span class="highlightBolded">Notice</span>: full support is granted for java versions series 1.8.XX - 11.X.X : previous version will not work at all, while on newer versions some functions can be disabled or limited for compatibility reasons. 
+					You can either download Oracle's main version (<a class="dependencyLink" target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">JVM download page</a>) or openJdk version (<a class="dependencyLink" target="_blank" href="https://adoptopenjdk.net/releases.html">openJdk download page</a>), or download it from another source.
+					<br>At the end of the process just refresh and/or restart ScrYpT. During the launch process JVM will be searched automatically, but if it's not found you can specify manually the path of you JVM /bin folder ;).
 					<br><br>
 					
 					After you run ScrYpT_launcher executable you'll be lead to a basic panel where you can choose to start the software, select specific settings to run the software, or check the dependency.<br>
@@ -413,7 +414,7 @@
 					</p>
 						
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/hardware.png"/> <span id="subSectTitleSysInfo" class="subMenuthirdLevel">SYSTEM INFORMATIONS</span></li>
-					<p><span class="highlightBoldedGrey">IMPORTANT: </span>enabled only with Java versions between 1.6.xx and 1.8.xx due to compatibility reasons.</p>
+					<p><span class="highlightBoldedGrey">IMPORTANT: </span>Download "hardwareInfo" plugin to use this function.</p>
 					<p>
 						In this section you can find many informations about you system, the java version in use, and current usage of CPU and RAM by ScrYpT, but not only.
 						In fact, here you can find informations about your currently linked displays, HD, RAM, CPU. <br>
@@ -421,13 +422,12 @@
 					</p>
 				
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/network.png"/> <span id="subSectTitleNetInfo" class="subMenuthirdLevel">NETWORK INFORMATIONS</span></li>
-					<p><span class="highlightBoldedGrey">IMPORTANT: </span>enabled only with Java versions between 1.6.xx and 1.8.xx due to compatibility reasons.</p>
 					<p>
-						In this section you can find many informations about you network cards, and their connection main info, such as 
+						In this section you can find many informations about your network cards, and their main connection informations, such as 
 						local IP, public IP(only if connected to internet), MAC address, gateway, DNS, MTU, and delay.
 						<span class="highlightBolded">Just choose your network card </span>from the list on the top center area :)
 					</p>
-					<p>On the right you can find a panel with information about you connection speed, related to the selected network adapter from the list above. To discover up/down speed and delay of you network card, select a network card with active internet connection, press on "Calculate connection speed", and wait for the test to finish to read results. According to the test type selected (Short/medium/large) this can require up to some minutes.
+					<p>On the right you can find a panel with information about you connection speed, related to the selected network adapter from the list above. To discover up/down speed and delay of your network card, select one with an active internet connection, press on "Calculate connection speed", and wait for the test to finish to read results. According to the test type selected (Short/medium/large) this can require up to some minutes.
 					<br><span class="highlightBoldedGrey">This button </span>will become clickable only when there is an active connection from the current selected network card.</p>
 					
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/imageConverter.png"/> <span id="subSectTitleImgConverter" class="subMenuthirdLevel">IMAGE CONVERTER</span></li>
@@ -525,15 +525,18 @@
 					<li> <span class="SHCT_TEXT">OPEN IMAGE KEYGEN</span> - [Alt + Shift + K]</li>
 					<li> <span class="SHCT_TEXT">OPEN KEY DICTIONARY</span> - [Alt + Shift + D]</li>
 					<hr>
-					<h4> 4 - Various submenu:</h4>
+					<h4> 4 - Text editor submenu:</h4>
 					<li> <span class="SHCT_TEXT">OPEN TEXT EDITOR</span> - [Alt + Shift + T]</li>
+					<li> <span class="SHCT_TEXT">IMPORT/EXPORT CRYPTED WORKSPACE</span> - [Ctrl + Alt + Shift + I]</li>
+					<hr>
+					<h4> 5 - Various submenu:</h4>
 					<li> <span class="SHCT_TEXT">OPEN SYSTEM INFO</span> - [Alt + Shift + Y]</li>
 					<li> <span class="SHCT_TEXT">OPEN NETWORK INFO</span> - [Alt + Shift + N]</li>
 					<li> <span class="SHCT_TEXT">OPEN HASH CHECKER PANEL</span> - [Alt + Shift + U]</li>
 					<li> <span class="SHCT_TEXT">OPEN COLOR PICKER PANEL</span> - [Ctrl + Alt + Shift + P]</li>
 					<li> <span class="SHCT_TEXT">OPEN CLIPBOARDS-MEMO PANEL</span> - [Alt + Shift + P]</li>
 					<hr>
-					<h4> 4.1 - Files and Folders actions submenu:</h4>
+					<h4> 5.1 - Files and Folders actions submenu:</h4>
 					<li><span class="SHCT_TEXT">UPPERCASE ALL FOLDER CONTENT</span> - [Alt + Shift + 0]</li>
 					<li><span class="SHCT_TEXT">CREATE FOLDERS FROM STRING PATH</span> - [Alt + Shift + 9]</li>
 					<li><span class="SHCT_TEXT">COPY DIRECTORY STRUCTURE</span> - [Alt + Shift + 8]</li>
@@ -541,17 +544,17 @@
 					<li><span class="SHCT_TEXT">DELETE ALL CONTENT FROM DIRECTORY (RECURSIVE)</span> - [Alt + Shift + 6]</li>
 					<li><span class="SHCT_TEXT">DELETE ONLY FILES CONTAINED IN DIRECTORY (RECURSIVE)</span> - [Alt + Shift + 5]</li>
 					<hr>
-					<h4> 4.2 - Media converters:</h4>
+					<h4> 5.2 - Media converters:</h4>
 					<li> <span class="SHCT_TEXT">OPEN IMAGE CONVERTER</span> - [Alt + Shift + I]</li>
 					<hr>
-					<h4> 5 - Help submenu:</h4>
+					<h4> 6 - Help submenu:</h4>
 					<li> <span class="SHCT_TEXT">OPEN ABOUT-INFO PANEL</span> - [Alt + Shift + .]</li>
 					<li> <span class="SHCT_TEXT">EXPORT LOGS</span> - [Alt + E + .]</li>
 					<li> <span class="SHCT_TEXT">ERASE LOGS</span> - [Alt + Canc + .]</li>
 					<li> <span class="SHCT_TEXT">OPEN TUTORIAL PANEL</span> - [Alt + Shift + Q]</li>
 					<li> <span class="SHCT_TEXT">RETURN TO HOMEPAGE</span> - [Alt + Shift + H]</li>
 					<hr>
-					<h4> 5.1 - RESET PANELS:</h4>
+					<h4> 6.1 - RESET PANELS:</h4>
 					<li> <span class="SHCT_TEXT">RESET ALL PANELS</span> - [Ctrl + Alt + Shift + 0]</li>
 					<li> <span class="SHCT_TEXT">RESET TEXT EDITOR</span> - [Ctrl + Alt + Shift + 9]</li>
 					<li> <span class="SHCT_TEXT">RESET CRYPTER</span> - [Ctrl + Alt + Shift + 8]</li>
@@ -588,7 +591,7 @@
 					<li> <span class="SHCT_TEXT">ADAPT WIDTH TO SCREEN SIZE</span> - [Ctrl + Shift + A]</li>
 					
 					<hr>
-					<h4> Plug-in panels:</h4>
+					<h4> Various and text editor panels:</h4>
 					<li> <span class="SHCT_TEXT">OPEN SPECIAL/ESCAPES PANEL</span> - [Ctrl + E]</li>
 					<li> <span class="SHCT_TEXT">OPEN TEMPLATES PANEL</span> - [Ctrl + T]</li>
 					<li> <span class="SHCT_TEXT">OPEN CALCULATOR</span> - [Ctrl + Alt + C]</li>

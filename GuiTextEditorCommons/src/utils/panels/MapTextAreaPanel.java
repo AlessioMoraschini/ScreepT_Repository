@@ -24,7 +24,7 @@ import utils.panels.arch.ParentPanel;
 public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 	private static final long serialVersionUID = 8967000441862912408L;
 
-	public static MapTextAreaPanel singletonInstance;
+	public static MapTextAreaPanel singletonInstance = null;
 	
 	private RSyntaxTextArea txtAreaMiniMap;
 	private RSyntaxTextArea targetTemp;
@@ -34,6 +34,7 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 	
 	public MapTextAreaPanel(final ITextAreaDialogs dialogManager) {
 		this.txtAreaMiniMap = new RSyntaxTextArea();
+		singletonInstance = this;
 		
 		this.currentScrollPane = new JScrollPane();
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[200px,grow]", "[270px,grow]"));
@@ -55,7 +56,7 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 		txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
 		txtAreaMiniMap.setAntiAliasingEnabled(true);
 		txtAreaMiniMap.setEditable(false);
-		GUIStyelSettings.applyNimbusSize(0);
+		GUIStyelSettings.applyNimbusSize(null, 0);
 		
 		txtAreaMiniMap.addMouseListener(new MouseListener() {
 			
@@ -63,7 +64,7 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 			public void mouseReleased(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						GUIStyelSettings.applyNimbusSize(0);
+						GUIStyelSettings.applyNimbusSize(null, 0);
 						safeSyncCaretToTxtReference();
 //						txtAreaMiniMap.setText(targetTemp.getText());
 					}

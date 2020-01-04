@@ -211,6 +211,20 @@ public class IconsPathConfigurator {
 	public static final String ICON_DOWN_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDownSmall.png";
 	public static final String ICON_DOWN = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDown.png";
 	
+	// TOGGLES
+	public static final String ST_ICON_HEAD_VISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/Head_visible.png";
+	public static final String ST_ICON_SUBHEAD_VISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/SubHead_visible.png";
+	public static final String ST_ICON_FOOTER_VISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/Footer_visible.png";
+	public static final String ST_ICON_HEAD_INVISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/Head_invisible.png";
+	public static final String ST_ICON_SUBHEAD_INVISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/SubHead_invisible.png";
+	public static final String ST_ICON_FOOTER_INVISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/Footer_invisible.png";
+	public static final ImageIcon IMG_ICON_HEAD_VISIBLE = new ImageIcon(ST_ICON_HEAD_VISIBLE);
+	public static final ImageIcon IMG_ICON_SUBHEAD_VISIBLE = new ImageIcon(ST_ICON_SUBHEAD_VISIBLE);
+	public static final ImageIcon IMG_ICON_FOOTER_VISIBLE = new ImageIcon(ST_ICON_FOOTER_VISIBLE);
+	public static final ImageIcon IMG_ICON_HEAD_INVISIBLE = new ImageIcon(ST_ICON_HEAD_INVISIBLE);
+	public static final ImageIcon IMG_ICON_SUBHEAD_INVISIBLE = new ImageIcon(ST_ICON_SUBHEAD_INVISIBLE);
+	public static final ImageIcon IMG_ICON_FOOTER_INVISIBLE = new ImageIcon(ST_ICON_FOOTER_INVISIBLE);
+	
 	////////////////  MOST_USED INSTANTIATED DEFAULT STATIC ICONS   ///////////////////
 	public static final ImageIcon IMG_ICON_LIGHT_ON = new ImageIcon(ICON_LIGHT_ON);
 	public static final ImageIcon IMG_ICON_LIGHT_OFF = new ImageIcon(ICON_LIGHT_OFF);

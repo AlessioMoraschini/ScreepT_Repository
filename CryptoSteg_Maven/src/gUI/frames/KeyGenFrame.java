@@ -108,6 +108,8 @@ public class KeyGenFrame extends ParentFrame {
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		thisFrame = this;
+		singletonInstance = this;
+		
 		currentConfig = currentConf;
 		
 		dialogHelper = new JOptionHelperExtended(thisFrame);

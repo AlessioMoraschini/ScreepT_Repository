@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.Painter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -196,16 +197,23 @@ public class GUIStyelSettings{
 	}
 	
 	public static LookAndFeelInfoCustom[] getLookAndFeelList() {
-		LookAndFeelInfo[] lookNFeelArray = UIManager.getInstalledLookAndFeels();
 		LookAndFeelInfoCustom[] jtatooInfo = getJTatooLAF();
 		LookAndFeelInfoCustom[] jgoodiesInfo = getJGoodiesLAF();
 		
+		List<LookAndFeelInfo> lookNFeelArrayList = new ArrayList<>();
+		for(LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+			String lowerCaseName = laf.getName().toLowerCase();
+			if(!lowerCaseName.contains("windows classic") && !lowerCaseName.contains("cde/motif")) {
+				lookNFeelArrayList.add(laf);
+			}
+		}
+		
 		LookAndFeelInfoCustom[] outList = new LookAndFeelInfoCustom
-				[lookNFeelArray.length + jtatooInfo.length + jgoodiesInfo.length]; // modify equals to custom's total
+				[lookNFeelArrayList.size() + jtatooInfo.length + jgoodiesInfo.length]; // modify equals to custom's total
 		
 		int i = 0;
 		
-		for(LookAndFeelInfo current : lookNFeelArray) {
+		for(LookAndFeelInfo current : lookNFeelArrayList) {
 			outList[i] = new LookAndFeelInfoCustom(current.getName(), current.getClassName());
 			i++;
 		}
@@ -264,7 +272,7 @@ public class GUIStyelSettings{
 //				}
 //			}
 //		});
-		applyNimbusSize(size);
+		applyNimbusSize(null, size);
 		if(updateUI) {
 			updateAllWindowsLaf();
 		}
@@ -275,7 +283,7 @@ public class GUIStyelSettings{
 	 * Apply to all windows general nimbus LAF size for all components in the parentFrame Container, according to the int value given as param:
 	 * 0=mini; 1=small; 2= large.  Other values use small as default.
 	 */
-	public static void applyNimbusSize(int size) {
+	public static void applyNimbusSize(JFrame targetFrame, int size) {
 		try {
 			String nameLaf = UIManager.getLookAndFeel().getName();
 			if (!"Nimbus".equals(nameLaf)) {
@@ -305,9 +313,21 @@ public class GUIStyelSettings{
 			}
 		}
 		
-		for (Window currWin : Window.getWindows()) {
-			// for every component in the given root one apply the new size
-			for (Component curr : getAllComponents(currWin)) {
+		if (targetFrame == null) {
+			for (Window currWin : Window.getWindows()) {
+				// for every component in the given root one apply the new size
+				for (Component curr : getAllComponents(currWin)) {
+					try {
+						if (curr instanceof JComponent && curr != null) {
+							((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
+						}
+					} catch (Throwable e) {
+						logger.error("An error occurred!", e);
+					}
+				}
+			} 
+		} else {
+			for (Component curr : getAllComponents(targetFrame)) {
 				try {
 					if (curr instanceof JComponent && curr != null) {
 						((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);

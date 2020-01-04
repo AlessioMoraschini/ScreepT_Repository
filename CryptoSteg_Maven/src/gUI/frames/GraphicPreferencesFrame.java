@@ -173,6 +173,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		
 		thisFrame = this;
 		
+		singletonInstance = this;
+		
 		currentEditor = MainGUI.initTxtWriter;
 		
 		logger.info(this.getClass().getName() + " Starting...");
@@ -186,8 +188,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
 		setLocationRelativeTo(MainGUI.frmScryptV);
-		
-		GuiUtils.centerComponent(this, getDefaultDimension());
 		
 		updateBackup(currentConfiguration);
 
@@ -558,13 +558,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		btnDiscard.setBackground(new Color(205, 92, 92));
 		mainPanel.add(btnDiscard, "cell 11 14 2 1,grow");
 
-		initGuiFromConfig();
-		
 		addHandlers();
-		
-		if (currentEditor != null) {
-			MainGUI.initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
-		}
 		
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			@Override
@@ -581,6 +575,14 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		styleBasedThemesSelectorToggle((LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem());
 		styleBasedDarkNimbusToggle((LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem());
 		styleBasedSizeNimbusToggle((LookAndFeelInfoCustom) comboStyleLaF.getSelectedItem());
+		
+		initGuiFromConfig();
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				MainGUI.updateGuiFromCurrConfig();
+			}
+		});
 	}
 
 	private void addHandlers() {
@@ -595,12 +597,11 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				// reset INItializer reference currentConf too
 				resetConfigValues(currentConfiguration);
 				
-				antialiasingApply(currentConfiguration.getTextEditorOpt().antialiasedTxtArea);
-				if (currentEditor != null) {
-					currentEditor.initGuiFromConfig(true, true);
-				}
-				logger.debug(
-						"Closing " + getClass().getName() + " - Configuration resetted: \n" + currentConfiguration.toStringa());
+//				antialiasingApply(currentConfiguration.getTextEditorOpt().antialiasedTxtArea);
+//				if (currentEditor != null) {
+//					currentEditor.initGuiFromConfig(true, true);
+//				}
+				logger.debug("Closing " + getClass().getName() + " - Configuration resetted: \n" + currentConfiguration.toStringa());
 
 				isActive.set(false);
 				
@@ -632,6 +633,12 @@ public class GraphicPreferencesFrame extends ParentFrame {
 							
 							singletonInstance = null;
 						}
+						
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								MainGUI.updateGuiFromCurrConfig();
+							}
+						});
 					}
 				});
 
@@ -1013,8 +1020,13 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				currentConfiguration.getGuiOpt().setNimbusSize((int) spinnerNimbusSize.getValue());
-				GUIStyelSettings.applyNimbusSize((int) spinnerNimbusSize.getValue());
-				currentEditor.initGuiFromConfig(true, true);
+				GUIStyelSettings.applyNimbusSize(null, (int) spinnerNimbusSize.getValue());
+//				currentEditor.initGuiFromConfig(true, true);
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						MainGUI.updateGuiFromCurrConfig();
+					}
+				});
 			}
 		});
 
@@ -1099,31 +1111,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			}
 		}
 		
-		if (guiOpt.isDarkGuiNimbus()) {
-			GUIStyelSettings.setDarkNimbus(guiOpt.nimbusSize);
-		}else {
-			GUIStyelSettings.setLightNimbus(guiOpt.nimbusSize);
-		}
-		GUIStyelSettings.setStyle(guiOpt.getPreferredStyle(), guiOpt.nimbusSize);
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				if (currentEditor != null) {
-					currentEditor.getCurrentTabEditor().applyStyleToTabs();
-					if (currentEditor.getCurrentTabEditor().loadedTabObj != null) {
-						currentEditor.getCurrentTabEditor().loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
-						RsyntaxUtils.setFont(currentEditor.getCurrentTabEditor().loadedTabObj.textArea, currentConfiguration.getTextEditorOpt().getFont());
-					}
-				}
-			}
-		});
+		GUIStyelSettings.applyNimbusSize(null, (int) spinnerNimbusSize.getValue());
 		
-		// Apply effects to current text area if text editor is opened
 		antialiasingApply(currentConfiguration.getTextEditorOpt().antialiasedTxtArea);
-		if (currentEditor != null) {
-			currentEditor.initGuiFromConfig(forceGuiRefresh, true);
-			currentEditor.getCurrentTabEditor().loadedTabObj.updateTextAreaPreferences(txtOpt);
-		}
-		
 	}
 	
 	private void syncRightPaneCustomOptions() {
@@ -1261,8 +1251,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	
 	private void updateComboLocales() {
 		for (int i = 0; i < comboLocales.getItemCount(); i++) {
-			Locale currentScanString = ((Locale) comboLocales.getItemAt(i));
-			if (currentScanString.toString().equalsIgnoreCase(currentConfiguration.getGenOpt().getLocale().toString())) {
+			Locale currentScanLocale = ((Locale) comboLocales.getItemAt(i));
+			if (currentScanLocale.equals(currentConfiguration.getGenOpt().getLocale())) {
 				comboLocales.setSelectedIndex(i);
 				break;
 			}
@@ -1270,7 +1260,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	}
 
 	public void initGuiFromConfig() {
-		updateBackup(currentConfiguration);
 		updateGUI(false);
 	}
 	
@@ -1302,7 +1291,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 					}
 					GUIStyelSettings.updateThemeByName(currentConfiguration.getGuiOpt().getPreferredThemeName());
 					GUIStyelSettings.setStyle(laf.getClassName(), currentConfiguration.getGuiOpt().nimbusSize);
-					GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
+					GUIStyelSettings.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
 
 				} catch (Exception e1) {
 					

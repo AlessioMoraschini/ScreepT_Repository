@@ -83,6 +83,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 	public GeneratePasswordFrame(JFrame parentFrame) {
 		super();
 		thisFrame = this;
+		singletonInstance = this;
 		
 		getContentPane().setBackground(new Color(10,10,10));
 		
@@ -90,9 +91,6 @@ public class GeneratePasswordFrame extends ParentFrame{
 		
 		setTitle("Generate Password - " + GeneralConfig.APPLICATION_NAME);
 		
-		this.setMinimumSize(new Dimension(650, 60));
-
-		setVisible(true);
 		setAlwaysOnTop(true);
 		
 		// SW window icon
@@ -168,6 +166,8 @@ public class GeneratePasswordFrame extends ParentFrame{
 		getContentPane().add(rdbtnUseSymbols, "cell 6 2 3 1,alignx center");
 		
 		addHandlers();
+		
+		setLocationRelativeTo(parentFrame);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			

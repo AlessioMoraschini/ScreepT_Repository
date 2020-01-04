@@ -104,6 +104,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		
 		// assign this frame to variable
 		thisFrame = this;
+		singletonInstance = this;
 		
 		// initialize launcher config
 		currentConfiguration = currentConf;

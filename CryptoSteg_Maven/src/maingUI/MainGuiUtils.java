@@ -247,7 +247,7 @@ public class MainGuiUtils {
 			i++;
 		}
 		
-		GuiUtils.changeFrameStateLaterUnchecked(MainGUI.frmScryptV, MainGUI.frmScryptV, JFrame.MAXIMIZED_BOTH);
+		GuiUtils.extendFramesAndMoveToTop(MainGUI.frmScryptV, MainGUI.frmScryptV, JFrame.MAXIMIZED_BOTH);
 		MainGUI.frmScryptV.requestFocus();
 		MainGUI.frmScryptV.toFront();
 	}
@@ -355,7 +355,7 @@ public class MainGuiUtils {
     	MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(ConfigurationManagerPanel.class);
     	MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", ConfigurationManagerPanel.class.getCanonicalName());
     	
-    	refreshGUIlaf();
+    	MainGUI.configManagerPanel.initGuiFromConfig();
     	
     	resetMainAppCursor();
     	
@@ -407,15 +407,10 @@ public class MainGuiUtils {
 					MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
 				}
 				
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						replaceMainPanel(MainGUI.panelCrypter);
-						MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
-						MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
-						refreshGUIlaf();
-					}
-				});
-				
+				replaceMainPanel(MainGUI.panelCrypter);
+				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
+				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
+				MainGUI.panelCrypter.initGuiFromConfig();
 				
 				resetMainAppCursor();
 			}
@@ -442,14 +437,13 @@ public class MainGuiUtils {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						replaceMainPanel(MainGUI.initTxtWriter);
-						MainGUI.updateGuiFromCurrConfig();
+						MainGUI.initTxtWriter.initGuiFromConfig(true, true);
 					}
 				});
 				
 				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
 				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
-				
 			}
 		});
 	}
@@ -460,6 +454,16 @@ public class MainGuiUtils {
     	contentPane.add(newMainPanel);
     	contentPane.revalidate(); 
     	contentPane.repaint();
+    	
+    	if(newMainPanel instanceof TextEditor) {
+    		((TextEditor)newMainPanel).textEditorUtils.setupTogglesOnMainMenu(true);
+    		mainAppReference.resizeMainFrameDefaults();
+    	} else if(newMainPanel instanceof CrypterPanel) {
+    		mainAppReference.setTogglesEnabled(false);
+    		mainAppReference.resizeMainFrameDefaults();
+    	} else {
+    		mainAppReference.setTogglesEnabled(false);
+    	}
 	}
 	
 	public static Runnable tempDecryptedEraser() {

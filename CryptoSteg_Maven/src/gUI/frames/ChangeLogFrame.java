@@ -25,6 +25,8 @@ public class ChangeLogFrame extends ParentFrame{
 	private JScrollPane scrollPane;
 	
 	public ChangeLogFrame(File ChangeLog) {
+		singletonInstance = this;
+		
 		if(ChangeLog == null) {
 			dialogHelper.error("ChangeLog not found", "ChangeLog not found");
 			dispose();

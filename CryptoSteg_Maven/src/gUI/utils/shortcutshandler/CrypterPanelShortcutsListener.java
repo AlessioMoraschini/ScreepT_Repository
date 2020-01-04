@@ -55,7 +55,7 @@ public class CrypterPanelShortcutsListener implements KeyEventDispatcher{
 				 *  LOAD FILE -> CTRL+L
 				 */
 				if (e.getKeyCode() == 76 && !e.isAltDown() && e.isControlDown()	&& !e.isShiftDown()) {
-					currentGui.btnSelectSourceFile.doClick();
+					currentGui.btnAddSourceFile.doClick();
 				}
 
 			}

@@ -56,24 +56,24 @@ public class TextEditorFooterPanel extends JPanel{
 		
 		setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		setBackground(Color.GRAY);
-		setLayout(new MigLayout("fill,insets 3", 
-				"[][200px,grow][grow][][:60px:120px][][:60px:120px][][:60px:120px][][:20px:120px][][:20px:120px][][:60px:120px][grow][140px:n][]",
+		setLayout(new MigLayout("fill,insets 3, hidemode 3", 
+				"[][50px,grow][50px][][:50px:120px][][:30px:90px][][:50px:120px][][:20px:120px][][:20px:120px][][:50px:120px][grow][70px:n][]",
 				"[fill]"));
 
-		lblCurrentFileLBL = new JLabel("   Current file:");
+		lblCurrentFileLBL = new JLabel(" Current file:");
 		add(lblCurrentFileLBL, "cell 0 0,growy");
 		lblCurrentFileLBL.setForeground(SystemColor.controlHighlight);
 		lblCurrentFileLBL.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 
 		lblCurrentFile = new JTextField("\\*.txt");
-		lblCurrentFile.setMinimumSize(new Dimension(280, 22));
+		lblCurrentFile.setMinimumSize(new Dimension(40, 22));
 		lblCurrentFile.setBackground(Color.DARK_GRAY);
 		lblCurrentFile.setOpaque(true);
 		lblCurrentFile.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblCurrentFile.setForeground(SystemColor.activeCaption);
 		add(lblCurrentFile, "cell 1 0,growx");
 
-		rdbtnShowCompletePath = new JRadioButton("Complete Path");
+		rdbtnShowCompletePath = new JRadioButton("Path");
 		rdbtnShowCompletePath.setOpaque(false);
 		rdbtnShowCompletePath.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		add(rdbtnShowCompletePath, "cell 2 0");
@@ -99,7 +99,7 @@ public class TextEditorFooterPanel extends JPanel{
 		dynLblTotLines.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		add(dynLblTotLines, "cell 6 0");
 
-		labelTotalChars = new JLabel("Tot. Chars:");
+		labelTotalChars = new JLabel("N° Chars:");
 		labelTotalChars.setForeground(SystemColor.controlHighlight);
 		labelTotalChars.setFont(new Font("Segoe UI", Font.BOLD, 10));
 		add(labelTotalChars, "cell 7 0,alignx right");
@@ -153,7 +153,7 @@ public class TextEditorFooterPanel extends JPanel{
 		lblAdvice.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		lblAdvice.setForeground(Color.LIGHT_GRAY);
 		lblAdvice.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAdvice.setText(" [Current output: .txt]");
+		lblAdvice.setText("[Type: .txt]");
 		
 		addHandlers();
 		

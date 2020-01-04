@@ -58,7 +58,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -197,14 +196,14 @@ public class TextEditor extends ModulePanel {
 		// MAIN PANEL
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.DARK_GRAY);
-		mainPanel.setMinimumSize(new Dimension(800, 300));
+		mainPanel.setMinimumSize(new Dimension(500, 300));
 		mainPanel.setMaximumSize(GuiUtils.getScreenSizePerc(100, parentFrame));
 		mainPanel.setLayout(new MigLayout("fill, insets 0, hidemode 3", 
-				"[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][5px:5px:5px][25px:50px:60px][25px:50px:60px][55px:55px:55px][40px:40px:40px][45px:45px:45px][30px:35px:35px][10px:30px,grow]",
+				"[25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:n:25px][30px:n][52px:55px:55px][:3%:4%][45px:45px:45px][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][35px:35px:35px][35px:35px:35px][20][30][105px:n][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][25px:2%:2.5%][][][][][][][][]",
 				"[:0px:45px][:0px:50px][:0px:2px][300px,grow][:0px:50px]"));
 		
 		mainScrollPane = new JScrollPane();
-		mainScrollPane.setMinimumSize(new Dimension(1100, 300));
+		mainScrollPane.setMinimumSize(new Dimension(500, 300));
 		mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		mainScrollPane.setBackground(Color.DARK_GRAY);
 		mainScrollPane.setViewportView(mainPanel);
@@ -328,7 +327,7 @@ public class TextEditor extends ModulePanel {
 		
 		toggleButtonFileTreeWorkspace = new JButton("");
 		GuiUtils.makeTransparentJButton(toggleButtonFileTreeWorkspace);
-		File workspace = new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+//		File workspace = new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
 //		toggleButtonFileTreeWorkspace.setEnabled(workspace != null && !workspace.getName().equals("") && workspace.exists());
 		toggleButtonFileTreeWorkspace.setMaximumSize(new Dimension(20, 12));
 		toggleButtonFileTreeWorkspace.setCursor(GuiUtils.CURSOR_HAND);
@@ -800,9 +799,9 @@ public class TextEditor extends ModulePanel {
 						logger.warn("!!! Error trying to sync current file at start into JTree");
 					} 
 				}
-				GUIStyelSettings.applyNimbusSize(currentConfiguration.getGuiOpt().nimbusSize);
 			}
 		});
+		GUIStyelSettings.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
 	}
 	
 	public void fileTreeShowOrHide(TextEditorOption txtOptions) {
@@ -914,7 +913,7 @@ public class TextEditor extends ModulePanel {
 					getCurrentTabEditor().loadedTabObj.textArea.requestFocus();
 				}
 
-				GUIStyelSettings.applyNimbusSize(0);
+				GUIStyelSettings.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
 				currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 				currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 				

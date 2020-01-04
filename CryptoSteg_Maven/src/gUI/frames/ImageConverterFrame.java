@@ -155,10 +155,12 @@ public class ImageConverterFrame extends ParentFrame{
 
 	
 	public ImageConverterFrame(INItializer currentConf) {
+		super();
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		thisFrame = this;
+		singletonInstance = this;
 		
 		isActive.set(true);
 		
