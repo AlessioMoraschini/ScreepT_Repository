@@ -16,15 +16,15 @@ import tabbededitor.ITabbedEditorOwner;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
 
-public class TabbedEditorOwnerScrYpT implements ITabbedEditorOwner{
+public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	
-	// TabbedEditorOwnerScrYpT logger creation
-	static Logger logger = Logger.getLogger(TabbedEditorOwnerScrYpT.class);
+	// TabbedEditorOwnerScreepT logger creation
+	static Logger logger = Logger.getLogger(TabbedEditorOwnerScreepT.class);
 
 	public TextEditor textEditor;
 	public TextEditorUtils txtUtils;
 	
-	public TabbedEditorOwnerScrYpT(TextEditor textEditorReference) {
+	public TabbedEditorOwnerScreepT(TextEditor textEditorReference) {
 		textEditor = textEditorReference;
 		txtUtils = textEditor.textEditorUtils;
 	}

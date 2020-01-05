@@ -43,10 +43,10 @@ public class TutorialFrame extends ParentFrame{
 		// GUI SETTINGS
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
 		GuiUtils.centerComponent(this, 70);
-		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(this, MainGUI.mainFrameScreept);
 
 		mainHtmlReadmePanel = new HtmlPanel(new Integer(40), "indexList");
-		File htmlTutorialFile = new File(GeneralConfig.SCRYPT_TUTORIAL_HTML_PATH);
+		File htmlTutorialFile = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
 		mainHtmlReadmePanel.loadHtmlFx(htmlTutorialFile.toURI().toString());
 		mainHtmlReadmePanel.jfxPanel.resizeComp(thisPanel.getWidth(), thisPanel.getHeight());
 		mainHtmlReadmePanel.setBorder(BorderFactory.createEmptyBorder());
@@ -58,7 +58,7 @@ public class TutorialFrame extends ParentFrame{
 	}
 	
 	public void reloadHtml() {
-		File f = new File(GeneralConfig.SCRYPT_TUTORIAL_HTML_PATH);
+		File f = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
 		mainHtmlReadmePanel.loadHtmlFx(f.toURI().toString());
 	}
 	

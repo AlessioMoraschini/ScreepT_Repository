@@ -112,7 +112,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GEN_OPT, this);
 		
-		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(this, MainGUI.mainFrameScreept);
 		
 		try {
 			launcherConfiguration = new Wini(new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH));

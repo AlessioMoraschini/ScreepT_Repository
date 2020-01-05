@@ -54,10 +54,10 @@ import utils.SysUtils;
  * ENJOY :)
  *
  */
-public class ScrYpTLauncher {
+public class ScreepTLauncher {
 	
-	// ScrYpTLauncher logger
-	static Logger logger = Logger.getLogger(ScrYpTLauncher.class); 
+	// ScreepTLauncher logger
+	static Logger logger = Logger.getLogger(ScreepTLauncher.class); 
 	
 	public static final String BATCH_LAUNCHER_NAME = "LauncherBatch.bat";
 	public static final String BASH_LAUNCHER_NAME = "LauncherBash.sh";
@@ -88,7 +88,7 @@ public class ScrYpTLauncher {
 	public static JvmHelper jvmHelper;
 	
 	public static LauncherMainPanel launcherMainFrame;
-	public static ScrYpTLauncher LAUNCHER;
+	public static ScreepTLauncher LAUNCHER;
 	public static LauncherLoaderFrame loaderGraphics;
 	
 	public static String[] ARGS;
@@ -181,7 +181,7 @@ public class ScrYpTLauncher {
 				public void run() {
 
 					// init launcher and GUI
-					LAUNCHER = new ScrYpTLauncher();
+					LAUNCHER = new ScreepTLauncher();
 
 				} // end run method
 			}); // end invokeLater
@@ -191,7 +191,7 @@ public class ScrYpTLauncher {
 	}
 	
 	// CONSTRUCTOR
-	public ScrYpTLauncher() {
+	public ScreepTLauncher() {
 		
 		jvmHelper = new JvmHelper(IniFileManager.MAX_JRE_VERSION, IniFileManager.MIN_JRE_VERSION);
 		commandsAssembler = new CommandsAssembler(jvmHelper);
@@ -225,7 +225,7 @@ public class ScrYpTLauncher {
 		}
 		
 		// GUI launcher initialization
-		launcherMainFrame = new LauncherMainPanel("ScrYpt Launcher", this);
+		launcherMainFrame = new LauncherMainPanel("ScreepT Launcher", this);
 
 		if(JvmHelper.warningJVM) {
 			SwingUtilities.invokeLater(new Runnable() {
@@ -340,10 +340,10 @@ public class ScrYpTLauncher {
 			// CASE WINDOWS
 			if (currentOS.isWindows()) {
 				if (iniFileManager.viewShellAfterStart) {
-					runtime.exec("cmd /c start /min \"ScrYpT-Shell\" \"" + initPath + "\"");
+					runtime.exec("cmd /c start /min \"ScreepT-Shell\" \"" + initPath + "\"");
 				}else {
 					runtime.exec("cmd /c \"start /b " + initPath + "\"");
-//					runtime.exec("cmd /K start /b \"ScrYpT-Shell\" \"" + initPath + "\"");
+//					runtime.exec("cmd /K start /b \"ScreepT-Shell\" \"" + initPath + "\"");
 //					runtime.exec("cmd /c call \"" + initPath + "\"");
 				}
 			
@@ -399,9 +399,9 @@ public class ScrYpTLauncher {
 				
 				if (tempManualJvm != null && tempManualJvm.exists()) {
 					jvmHelper.manualPath_Jvm = tempManualJvm.getAbsolutePath();
-					ScrYpTLauncher.iniFileManager.manualPathJvm = jvmHelper.manualPath_Jvm;
+					ScreepTLauncher.iniFileManager.manualPathJvm = jvmHelper.manualPath_Jvm;
 					if (jvmHelper.checkSingleJavaVersionOK(jvmHelper.manualPath_Jvm.replace("\bin", ""))) {
-						ScrYpTLauncher.iniFileManager.preferredJvm = jvmHelper.manualPath_Jvm;
+						ScreepTLauncher.iniFileManager.preferredJvm = jvmHelper.manualPath_Jvm;
 					} 
 				}
 			}
@@ -409,11 +409,11 @@ public class ScrYpTLauncher {
 	}
 	
 	private static void appLogStart() {
-		logger.debug(LoggerUtils.getStartString("ScrYpT - Launcher", true));
+		logger.debug(LoggerUtils.getStartString("ScreepT - Launcher", true));
 	}
 	
 	private static void appLogEnd() {
-		logger.debug(LoggerUtils.getExitString("ScrYpT - Launcher", true));
+		logger.debug(LoggerUtils.getExitString("ScreepT - Launcher", true));
 	}
 	
 	public static void startPendingDeletesCleanerThread(){
@@ -464,7 +464,7 @@ public class ScrYpTLauncher {
 	 * Check if there is already an instance running, and in that case show a message to inform user or open the file into runnig instance
 	 */
 	public static void checkAlreadyRunning() {
-		boolean alreadyRunning = GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE != null && GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.exists();
+		boolean alreadyRunning = GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE != null && GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.exists();
 		if(alreadyRunning) {
 			
 			boolean runNewInstance = false;
@@ -472,7 +472,7 @@ public class ScrYpTLauncher {
 			if(argumentsFiles != null && argumentsFiles.length > 0) {
 				try {
 					int i = 0;
-					PropertiesManagerLight propertyManager = new PropertiesManagerLight(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
+					PropertiesManagerLight propertyManager = new PropertiesManagerLight(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE);
 					for (File currentToOpen : argumentsFiles) {
 						propertyManager.dynamicFileBindingsDef.setProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + i, currentToOpen.getCanonicalPath());
 						i++;
@@ -485,7 +485,7 @@ public class ScrYpTLauncher {
 				String advice = "<html>It seems there is already a running instance of " +GeneralConfig.APPLICATION_NAME 
 						+ "<br/> -> If this message is not due to a previous application crash, it's strongly recommended to avoid multiple instances." 
 						+ "<br/> Are you sure to start another instance?</html>";
-				runNewInstance = new JOptionHelper(null).yesOrNo(advice, "ScrYpT already running");
+				runNewInstance = new JOptionHelper(null).yesOrNo(advice, "ScreepT already running");
 			}
 			
 			if (!runNewInstance) {

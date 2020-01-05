@@ -4,6 +4,6 @@ set PATH=%JDK_PATH%%PATH%
 
 echo %PATH% 
 
-java -Xmx256m -Xms128m -Xss56m -XX:MaxPermSize=38m -XshowSettings:vm -Dfile.encoding=UTF8 -Dawt.useSystemAAFontSettings=on -Dsun.java2d.d3d=false -Dswing.metalTheme=steel -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -jar NetworkInfoTool.jar
+java -Xmx256m -Xms128m -Xss56m -XX:MaxPermSize=38m -XshowSettings:vm -Dfile.encoding=UTF8 -Dawt.useSystemAAFontSettings=on -Dsun.java2d.d3d=false -Dswing.metalTheme=steel -Dsun.java2d.ddscale=true -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_ScreepT/lib" -jar NetworkInfoTool.jar
 
 exit 0

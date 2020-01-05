@@ -34,7 +34,7 @@ public class GeneralConfig {
 	// MAIN PROPERTIES                                                                                                                                                                                           
 	public static String AUTHOR = "A.M. Design and Development";                                                                                                                                                                      
 	public static String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION", "Unknown Version");                                                                                                                                   
-	public static String APPLICATION_NAME = "ScrYpT - V" + APP_VERSION;                                                                                                                                                               
+	public static String APPLICATION_NAME = "ScreepT - V" + APP_VERSION;                                                                                                                                                               
 	public static String BUILD_INCREMENTAL_NUMBER = resourcesFilePathsMappings.getProperty("BUILD_INCREMENTAL_NUMBER", "Unknown build number");     
 	public static String BUILD_COMMIT_HASH = resourcesFilePathsMappings.getProperty("BUILD_COMMIT_HASH", "Undefined commit hash");
 	public static String CHANGE_LOG_FILE_PATH = resourcesFilePathsMappings.getProperty("CHANGE_LOG_FILE_PATH", "");
@@ -48,9 +48,9 @@ public class GeneralConfig {
 	public static String WEB_UPDATER_JAR_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATER_JAR_PROP", "updaterJarUrl");                                                                                                               
 	public static String WEB_UPDATES_PACK_NAME = resourcesFilePathsMappings.getProperty("WEB_UPDATES_PACK_NAME", "updates.zip");                                                                                                               
 	public static String WEB_UPDATES_PACK_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATES_PACK_PROP", "updatesZippedUrl");                                                                                                               
-	public static String WEB_UPDATES_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_UPDATES_MANIFEST_URL", "www.am-design-development.com/ScrYpT/Updates/manifest.properties");                                                                                                               
-	public static String WEB_PLUGINS_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_MANIFEST_URL", "www.am-design-development.com/ScrYpT/Plugins/manifest.properties");                                                                                                               
-	public static String WEB_PLUGINS_BASE_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_BASE_URL", "www.am-design-development.com/ScrYpT/Plugins/");                                                                                                               
+	public static String WEB_UPDATES_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_UPDATES_MANIFEST_URL", "www.am-design-development.com/ScreepT/Updates/manifest.properties");                                                                                                               
+	public static String WEB_PLUGINS_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_MANIFEST_URL", "www.am-design-development.com/ScreepT/Plugins/manifest.properties");                                                                                                               
+	public static String WEB_PLUGINS_BASE_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_BASE_URL", "www.am-design-development.com/ScreepT/Plugins/");                                                                                                               
 	public static String BUILD_TS_DATE = resourcesFilePathsMappings.getProperty("BUILD_TIMESTAMP")                                                                                                                                    
 	                     									.replaceAll("T", " at ")                                                                                                                                                 
 	                     									.replaceAll("Z", "")                                                                                                                                                     
@@ -75,9 +75,9 @@ public class GeneralConfig {
 	public static String PANEL_FILES_FOLDER = resourcesFilePathsMappings.getProperty("PANEL_TEMP_FOLDER");                                                                                                                            
 	public static String TEMPLATES_FOLDER = resourcesFilePathsMappings.getProperty("TEMPLATES_FOLDER");                                                                                                                               
 	public static String CLIBPOARDS_PANEL_SRC_FOLDER = resourcesFilePathsMappings.getProperty("CLIBPOARDS_PANEL_SRC_FOLDER");                                                                                                         
-	public static String JS_LIB_FOLDER = resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") != null? resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") : "/Resources_Scrypt/lib/js/";                                      
+	public static String JS_LIB_FOLDER = resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") != null? resourcesFilePathsMappings.getProperty("JS_LIB_FOLDER") : "/Resources_ScreepT/lib/js/";                                      
 	public static String SPELLCHECKER_DEFAULT_DICT = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DEFAULT_DICT") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DEFAULT_DICT") : "english_dic.zip";            
-	public static String SPELLCHECKER_DICT_FOLDER = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") : "Resources_Scrypt/SpellChecker/";
+	public static String SPELLCHECKER_DICT_FOLDER = resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") != null? resourcesFilePathsMappings.getProperty("SPELLCHECKER_DICT_FOLDER") : "Resources_ScreepT/SpellChecker/";
 	public static File SPELLCHECKER_DICT_FOLER_FILE = new File(SPELLCHECKER_DICT_FOLDER);
 	public static Color SPELL_CHECKER_UNDERLINE_COL = resourcesFilePathsMappings.getColorVarFromProps(resourcesFilePathsMappings.getProperty("SPELL_CHECKER_UNDERLINE_COL"), Color.orange);
 	// Temp Folders and Files
@@ -87,17 +87,17 @@ public class GeneralConfig {
 	// IMPORTANT FOLDERS
 	public static String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
 	public static String CURRENT_EXECUTION_DIR = System.getProperty("user.dir")+"/";
-	public static String USER_PERSONAL_DIR_SCRYPT_FOLDER = USER_PERSONAL_DIR + "ScrYpT_temp_files" + File.separatorChar + APP_VERSION;
-	public static File F_USER_PERSONAL_DIR_SCRYPT_FOLDER = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER);
+	public static String USER_PERSONAL_DIR_SCREEPT_FOLDER = USER_PERSONAL_DIR + "ScreepT_temp_files" + File.separatorChar + APP_VERSION;
+	public static File F_USER_PERSONAL_DIR_SCREEPT_FOLDER = new File(USER_PERSONAL_DIR_SCREEPT_FOLDER);
 	public static String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";
 	public static File USER_DESKTOP_FILE = new File(USER_DESKTOP);
-	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScrYpT_decrypted_tempFiles";
+	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScreepT_decrypted_tempFiles";
 	public static File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	/**
 	 * This file is created at SW start, and deleted on close to signal other external programs
 	 */
-	public static String SCRYPT_ACTIVE_SIGNAL_PATH = USER_PERSONAL_DIR_SCRYPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.scrypt";
-	public static File SCRYPT_ACTIVE_SIGNAL_FILE = new File(SCRYPT_ACTIVE_SIGNAL_PATH);
+	public static String SCREEPT_ACTIVE_SIGNAL_PATH = USER_PERSONAL_DIR_SCREEPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.ScreepT";
+	public static File SCREEPT_ACTIVE_SIGNAL_FILE = new File(SCREEPT_ACTIVE_SIGNAL_PATH);
 	public static String SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX = "FILE_TO_LAUNCH_";
 	public static int SIGNAL_LISTENER_PERIOD = resourcesFilePathsMappings.getIntVarFromProps("SIGNAL_LISTENER_PERIOD", 300);
 	
@@ -106,8 +106,8 @@ public class GeneralConfig {
 	public static String BACKUP_INI;
 	
 	// Readme File
-	public static String SCRYPT_TUTORIAL_HTML_PATH;
-	public static String SCRYPT_TUTORIAL_HTML_URL;
+	public static String SCREEPT_TUTORIAL_HTML_PATH;
+	public static String SCREEPT_TUTORIAL_HTML_URL;
 
 	// Logs configuration
 	public static String LOG_PATH = resourcesFilePathsMappings.getProperty("LOG_PATH");                                  
@@ -366,14 +366,14 @@ public class GeneralConfig {
     }
     
     /**
-     * This method creates directory in user system folder to put shared scrypt's files
+     * This method creates directory in user system folder to put shared screept's files
      * @return
      */
-    public static boolean mkDirUserDirScrYpT() {
+    public static boolean mkDirUserDirScreepT() {
     	try {
-    		File userDirScryptFolder = new File(USER_PERSONAL_DIR_SCRYPT_FOLDER); 
-			if (!userDirScryptFolder.exists()) {
-				userDirScryptFolder.mkdirs();
+    		File userDirScreeptFolder = new File(USER_PERSONAL_DIR_SCREEPT_FOLDER); 
+			if (!userDirScreeptFolder.exists()) {
+				userDirScreeptFolder.mkdirs();
 			}
 			return true;
 		} catch (Exception e) {
@@ -469,8 +469,8 @@ public class GeneralConfig {
 			BACKUP_INI= resourcesFilePathsMappings.getProperty("BACKUP_INI");
 			
 			// Readme File
-			SCRYPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
-			SCRYPT_TUTORIAL_HTML_URL = "File:./" + SCRYPT_TUTORIAL_HTML_PATH;
+			SCREEPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
+			SCREEPT_TUTORIAL_HTML_URL = "File:./" + SCREEPT_TUTORIAL_HTML_PATH;
 
 			// JVM and LAUNCHER
 			MAX_JVM_COMPLETE_COMPATIBILITY = resourcesFilePathsMappings.getProperty("MAX_JVM_COMPLETE_COMPATIBILITY");
@@ -485,7 +485,7 @@ public class GeneralConfig {
 			 * Used in launcher to choose right type of launch command for system
 			 */
 			FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(resourcesFilePathsMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
-			MAIN_GENERAL_CLASSPATH = "./*;./Resources_Scrypt/lib/* ";
+			MAIN_GENERAL_CLASSPATH = "./*;./Resources_ScreepT/lib/* ";
 			MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
 			
 			// LAUNCHER DEFAULTS

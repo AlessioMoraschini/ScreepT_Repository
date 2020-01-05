@@ -103,8 +103,8 @@ public class MainStandAloneUpdater {
 		}else {
 
 			/**********************************************************************************************************		
-			 * Function B: update ScrYpT 
-			 * Usage -> update scrypt function: java -jar updater.jar updater.jar UPDATES/updates ScrYpT_0.9.5.jar
+			 * Function B: update ScreepT 
+			 * Usage -> update ScreepT function: java -jar updater.jar updater.jar UPDATES/updates ScreepT_0.9.5.jar
 			 **********************************************************************************************************/
 			// This is normal updater function //
 			
@@ -115,11 +115,11 @@ public class MainStandAloneUpdater {
 			String manifestPath = updatesFolder.getAbsolutePath() + File.separator + UPDATES_MANIFEST;
 			PropertiesManagerLight manifestProps = new PropertiesManagerLight(manifestPath);
 			
-			final String mainApplicationLauncher = "ScrYpT_Launcher.jar";
+			final String mainApplicationLauncher = "ScreepT_Launcher.jar";
 			
-			// ScrYpTVx.x/application/
+			// ScreepTVx.x/application/
 			File generalApplicationFolder = new File("").getAbsoluteFile();
-			// ScrYpTVx.x/
+			// ScreepTVx.x/
 			File mainRootDirectory = generalApplicationFolder.getParentFile();
 			
 			UpdateProgressPanel updateProgressMonitor = null;
@@ -140,14 +140,14 @@ public class MainStandAloneUpdater {
 					boolean proceed = false;
 					do {
 						Integer choice = dialogHelper.yesNoOrCanc(
-								"ScrYpT will be updated, do you want to backup current installation before to update?"
-										+ " (update process will not touch your personal files, but if you prefer you can backup all scrypt folder before to update)", "Backup current Version files?");
+								"ScreepT will be updated, do you want to backup current installation before to update?"
+										+ " (update process will not touch your personal files, but if you prefer you can backup all ScreepT folder before to update)", "Backup current Version files?");
 						if (JOptionHelper.OK == choice) {
 							File destBackupDir = Various.directoRead(null,
-									"Select backup destination, or proceed without backup. A unique \"ScrYpT_updater_backup\" folder will be created in the specified destination.",
+									"Select backup destination, or proceed without backup. A unique \"ScreepT_updater_backup\" folder will be created in the specified destination.",
 									new File(System.getProperty("user.home")));
 							if (destBackupDir != null) {
-								destBackupDir = new File(destBackupDir.getCanonicalPath() + File.separator + "ScrYpT_updater_backup");
+								destBackupDir = new File(destBackupDir.getCanonicalPath() + File.separator + "ScreepT_updater_backup");
 								destBackupDir = Various.renameJavaObjFile(destBackupDir);
 								Various.copyDirectoryContents(mainRootDirectory, destBackupDir);
 							}
@@ -200,7 +200,7 @@ public class MainStandAloneUpdater {
 						oldJar.deleteOnExit();
 					}
 					
-					updateProgressMonitor.update(100, "Completed! Restarting ScrYpT...", true);
+					updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
 					updateProgressMonitor.forceClose();
 					
 				} else {
@@ -208,20 +208,20 @@ public class MainStandAloneUpdater {
 					dialogHelper.error("Updates data or updater jar not found, exiting updated procedure." + fileData, "Updates not found");
 				}
 				
-				// LAUNCH ScrYpT_Launcher.jar
+				// LAUNCH ScreepT_Launcher.jar
 				launchJar(mainApplicationLauncher);
 				
 			} catch (Exception e) {
 				if (updateProgressMonitor != null) {
 					
-					updateProgressMonitor.update(100, "Completed! Restarting ScrYpT...", true);
+					updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
 					updateProgressMonitor.forceClose();
 				}
 				
 				dialogHelper.error("Cannot update, an error occurred: " + e.getClass());
 				System.out.println(e.getClass() + Arrays.deepToString(e.getStackTrace()));
 				
-				// LAUNCH ScrYpT_Launcher.jar
+				// LAUNCH ScreepT_Launcher.jar
 				Runtime runtime = Runtime.getRuntime();
 				try {
 					runtime.exec("java -jar " + mainApplicationLauncher);
@@ -287,7 +287,7 @@ public class MainStandAloneUpdater {
 		String USER = ftpProperties.getProperty("USER", "");
 		String PSW = ftpProperties.getProperty("PSW", "");
 		int PORT = ftpProperties.getIntVarFromProps("PORT", 22);
-		String FOLDER_ON_SERVER = ftpProperties.getProperty("FOLDER_ON_SERVER", "/www.am-design-development.com/ScrYpT/Updates");
+		String FOLDER_ON_SERVER = ftpProperties.getProperty("FOLDER_ON_SERVER", "/www.am-design-development.com/ScreepT/Updates");
 		
 		if (PSW.equals("")) {
 			char[] psw = new JOptionHelper(null).askForPasswordNullable("Insert FTPS password", "Insert FTPS password", 64, "Upload");

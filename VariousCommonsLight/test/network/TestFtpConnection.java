@@ -25,12 +25,12 @@ public class TestFtpConnection {
 	private static String psw = "";
 	private static FtpDumper dumper;
 	private static final int PORT = 22;
-	private static final String FOLDER_ON_SERVER_LONG_DOWNLOAD = "/www.am-design-development.com/ScrYpT/Release";
-	private static final String FOLDER_ON_SERVER = "/www.am-design-development.com/ScrYpT/Updates";
+	private static final String FOLDER_ON_SERVER_LONG_DOWNLOAD = "/www.am-design-development.com/ScreepT/Release";
+	private static final String FOLDER_ON_SERVER = "/www.am-design-development.com/ScreepT/Updates";
 	private static final String TEST_FILE_UPLOAD = "E.java";
 	private static final File FILE_TO_UPLOAD = new File(TestConstants.sourceFolderPath + TEST_FILE_UPLOAD);
 //	private static final String TEST_FILE_UPLOAD = "A.txt";
-	private static final String TEST_FILE_DOWNLOAD_LONG = "ScrYpT_V0.9.14.zip";
+	private static final String TEST_FILE_DOWNLOAD_LONG = "ScreepT_V0.9.14.zip";
 	private static final String TEST_FILE_DOWNLOAD = TEST_FILE_UPLOAD;
 //	private static final String TEST_FILE_DOWNLOAD = "TEST_FTP_UPLOAD.txt";
 	private static final String DOWNLOAD_DESTINATION_LOCAL = "C:/Users/xx/Desktop/Downloads/" + TEST_FILE_DOWNLOAD;

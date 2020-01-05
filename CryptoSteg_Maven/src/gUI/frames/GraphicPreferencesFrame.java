@@ -187,7 +187,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		this.setResizable(false);
 
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GUI_OPT, this);
-		setLocationRelativeTo(MainGUI.frmScryptV);
+		setLocationRelativeTo(MainGUI.mainFrameScreept);
 		
 		updateBackup(currentConfiguration);
 

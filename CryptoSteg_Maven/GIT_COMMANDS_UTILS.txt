@@ -8,10 +8,10 @@
 
 git log v0.9.11.. --invert-grep --grep=EXCL_CHLOG --tags --decorate=full --oneline --graph --pretty=tformat:"%ad %d %s%n" --date=format:"%Y-%m-%d"
 
-git log v0.9.11...v0.9.11b --oneline > CryptoSteg_Maven\Resources_Scrypt\changelog.log
+git log v0.9.11...v0.9.11b --oneline > CryptoSteg_Maven\Resources_ScreepT\changelog.log
 
 # questo è pesante, occhio all'utilizzo su molti commit
-git log v0.9.11...v0.9.11b --stat > CryptoSteg_Maven\Resources_Scrypt\changelog.log
+git log v0.9.11...v0.9.11b --stat > CryptoSteg_Maven\Resources_ScreepT\changelog.log
 
 git log -n 5 > changelog.log
 
@@ -22,6 +22,6 @@ git log --invert-grep --grep=TEST_AUTO
 # Altre versioni
 
 
-git log v0.9.11...v0.9.11b --stat > CryptoSteg_Maven\Resources_Scrypt\changelog.log
+git log v0.9.11...v0.9.11b --stat > CryptoSteg_Maven\Resources_ScreepT\changelog.log
 
 git log -n 5 > changelog.log

@@ -7,7 +7,7 @@
   <parent>
   	<groupId>Parent_Project</groupId>
   	<artifactId>Parent_Project</artifactId>
-  	<version>${parent.build.version.scrypt}</version>
+  	<version>${parent.build.version.screept}</version>
   	<relativePath>../Parent_Project</relativePath>
   </parent>
   

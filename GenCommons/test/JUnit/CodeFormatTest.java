@@ -19,7 +19,7 @@ import testUtils.TestUtils;
 public class CodeFormatTest {
 	
 	
-	public static final String jsLibraryPath = "./Resources_Scrypt/lib/js/javascript.js";
+	public static final String jsLibraryPath = "./Resources_ScreepT/lib/js/javascript.js";
 	public static final String codeJavaSourceFilePath = "TestFiles/CodeFormatTest/formatTest.java";
 	public static final String codeXmlSourceFilePath = "TestFiles/CodeFormatTest/formatTest.xml";
 	public static final String codeJsSourceFilePath = "TestFiles/CodeFormatTest/formatTest.js";
@@ -33,7 +33,7 @@ public class CodeFormatTest {
 	@Before
 	public void init() throws ScriptException, IOException {
 		if (FOLDER_LIB) {
-			codeFormatter = new CustomCodeFormatter("/Resources_Scrypt/lib/js/");
+			codeFormatter = new CustomCodeFormatter("/Resources_ScreepT/lib/js/");
 		}else{
 			codeFormatter = new CustomCodeFormatter(jsLibraryPath);
 		}

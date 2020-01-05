@@ -3,7 +3,7 @@
   <groupId>Parent_Project</groupId>
   <artifactId>Parent_Project</artifactId>
   <!-- Version is Defined in this file as custom property -->
-  <version>${parent.build.version.scrypt}</version>
+  <version>${parent.build.version.screept}</version>
   <packaging>pom</packaging>
   
   <!-- MODULES BUILD -->
@@ -33,7 +33,7 @@
   	<!-- ######################  GENERAL BUILD OPTIONS  ##################### -->
   	
 	  	<!-- Main application version used everyWhere -->
-	  	<parent.build.version.scrypt>0.9.16</parent.build.version.scrypt>
+	  	<parent.build.version.screept>0.9.17</parent.build.version.screept>
 
 	  	<user.name>AM-Design-Development - (Alessio Moraschini)</user.name>
 	  	
@@ -64,10 +64,10 @@
 		
 	  	<export.directory.fatjar.main>
 	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
-			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}\Application
+			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScreepT_V${parent.build.version.screept}\Application
 		</export.directory.fatjar.main>
 	  	<export.directory.fatjar.resources>
-	  		${export.directory.fatjar.main}\Resources_Scrypt
+	  		${export.directory.fatjar.main}\Resources_ScreepT
 		</export.directory.fatjar.resources>
   	
   	
@@ -79,10 +79,10 @@
 	  	
 	  	<export.directory.multijar.main>
 	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
-			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScrYpT_V${parent.build.version.scrypt}_ModularBuild\Application
+			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScreepT_V${parent.build.version.screept}_ModularBuild\Application
 		</export.directory.multijar.main>
 		<export.directory.multijar.resources>
-	  		${export.directory.multijar.main}\Resources_Scrypt
+	  		${export.directory.multijar.main}\Resources_ScreepT
 		</export.directory.multijar.resources>
 	  	<export.directory.multijar.libs>
 			${export.directory.multijar.resources}\lib

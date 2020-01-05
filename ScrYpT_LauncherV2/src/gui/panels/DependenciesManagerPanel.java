@@ -13,11 +13,10 @@ import gui.GuiUtils;
 import gui.JOptionHelper;
 import launcherutils.IniFileManager;
 import launcherutils.om.DependencyModel;
-import mainlauncher.ScrYpTLauncher;
+import mainlauncher.ScreepTLauncher;
 
 import java.awt.Button;
 import java.awt.Color;
-import java.awt.Component;
 
 import net.miginfocom.swing.MigLayout;
 import om.OSinfo;
@@ -43,7 +42,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -83,7 +81,7 @@ public class DependenciesManagerPanel extends JDialog{
 		
 		dialogHelper = new JOptionHelper(this);
 		
-		dependeciesMissing = ScrYpTLauncher.missingDependenciesList;
+		dependeciesMissing = ScreepTLauncher.missingDependenciesList;
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -91,7 +89,7 @@ public class DependenciesManagerPanel extends JDialog{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow][50%,grow]", "[50px:80px][grow][40px:n][40px:n]"));
 		
-		lblTitleHeaderMessage = new JLabel("If some dependencies are missing and they're critical, you have to solve them before to start ScrYpt!");
+		lblTitleHeaderMessage = new JLabel("If some dependencies are missing and they're critical, you have to solve them before to start ScreepT!");
 		lblTitleHeaderMessage.setForeground(new Color(211, 211, 211));
 		lblTitleHeaderMessage.setBackground(Color.BLACK);
 		lblTitleHeaderMessage.setBorder(new LineBorder(new Color(0, 0, 0), 2));
@@ -102,6 +100,8 @@ public class DependenciesManagerPanel extends JDialog{
 		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 3 1,grow");
 		
 		table = new JTable() {
+			private static final long serialVersionUID = -906822605094698109L;
+
 			//  Returning the Class of each column will allow different
             //  renderers to be used based on Class
             public Class<?> getColumnClass(int column)
@@ -170,7 +170,7 @@ public class DependenciesManagerPanel extends JDialog{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
-		    	if(!ScrYpTLauncher.criticalDependenciesOK) {
+		    	if(!ScreepTLauncher.criticalDependenciesOK) {
 		    		askIfSureToExit();
 		    	} else if(anyMissingCritical(dependeciesMissing)) {
 		    		askIfSureToCloseIgnoring();
@@ -197,9 +197,9 @@ public class DependenciesManagerPanel extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 				parentStarterFrame.LAUNCHER.analyzeBeforeLauncher();
 				checkCriticalMissingDependencies();
-				dependeciesMissing = ScrYpTLauncher.missingDependenciesList;
+				dependeciesMissing = ScreepTLauncher.missingDependenciesList;
 				if(dependeciesMissing.size() == 0) {
-					dialogHelper.info("All dependencies are OK, you're ready to use all ScrYpT functions :)", "No missing dependencies found!");
+					dialogHelper.info("All dependencies are OK, you're ready to use all ScreepT functions :)", "No missing dependencies found!");
 					parentStarterFrame.setEnabled(true);
 					active = false;
 					dispose();
@@ -262,7 +262,7 @@ public class DependenciesManagerPanel extends JDialog{
 						if (!localInstaller.exists()) {
 							btnInstallDependency.setEnabled(false);
 							btnInstallDependency
-									.setToolTipText("There is no installer in current version of ScrYpt for "
+									.setToolTipText("There is no installer in current version of ScreepT for "
 											+ selectedDependency.dependencyName);
 						} else {
 							btnInstallDependency.setEnabled(true);
@@ -273,7 +273,7 @@ public class DependenciesManagerPanel extends JDialog{
 						if (selectedDependency.URL == null || selectedDependency.URL.equals("")) {
 							btnDownloadDependency.setEnabled(false);
 							btnDownloadDependency
-									.setToolTipText("There is no URL specified in current version of ScrYpt for "
+									.setToolTipText("There is no URL specified in current version of ScreepT for "
 											+ selectedDependency.dependencyName);
 						} else {
 							btnDownloadDependency.setEnabled(true);
@@ -300,12 +300,12 @@ public class DependenciesManagerPanel extends JDialog{
 	// methods used to check dependency status and install //
 	
 	private void checkCriticalMissingDependencies() {
-		if(!ScrYpTLauncher.criticalDependenciesOK) {
+		if(!ScreepTLauncher.criticalDependenciesOK) {
 			// if critical problem then disable window closing possibility
 			parentStarterFrame.setEnabled(false);
 			btnIgnoreWarnings.setEnabled(false);
 		}
-		if(ScrYpTLauncher.missingDependenciesList.size() != 0 && anyMissingCritical(ScrYpTLauncher.missingDependenciesList)) {
+		if(ScreepTLauncher.missingDependenciesList.size() != 0 && anyMissingCritical(ScreepTLauncher.missingDependenciesList)) {
 			parentStarterFrame.setEnabled(false);
 		}else{
 			parentStarterFrame.setEnabled(true);
@@ -370,7 +370,7 @@ public class DependenciesManagerPanel extends JDialog{
 	}
 	
 	private void askIfSureToCloseIgnoring() {
-		String msg = "Are you sure to continue anyway? Some ScrYpT functions will be disabled by default.";
+		String msg = "Are you sure to continue anyway? Some ScreepT functions will be disabled by default.";
 		JCheckBox checkbox = new JCheckBox("Do not show this section next Time");
 		checkbox.setOpaque(false);
 		Object[] params = {msg, checkbox};
@@ -378,10 +378,10 @@ public class DependenciesManagerPanel extends JDialog{
 			int response = JOptionPane.showConfirmDialog(parentStarterFrame, params, "Confirm before continue", JOptionPane.WARNING_MESSAGE);
 			if (response == JOptionPane.OK_OPTION) {
 				if (checkbox.isSelected()) {
-					IniFileManager iniFileManager = ScrYpTLauncher.iniFileManager;
+					IniFileManager iniFileManager = ScreepTLauncher.iniFileManager;
 					iniFileManager.writeValueToIniConfiguration(IniFileManager.INI_APP_OPT, "autoShowInstallOpt", "false");
 				}
-				ScrYpTLauncher.ignoreWarnings = true;
+				ScreepTLauncher.ignoreWarnings = true;
 				parentStarterFrame.setEnabled(true);
 				active = false;
 				dispose();
@@ -396,7 +396,7 @@ public class DependenciesManagerPanel extends JDialog{
 	}
 	
 	private void askIfSureToExit() {
-		String msg = "Are you sure to close? Scrypt cannot be launched without required dependencies, launcher will close if continue";
+		String msg = "Are you sure to close? ScreepT cannot be launched without required dependencies, launcher will close if continue";
 		
 		if (dialogHelper.yesOrNo(msg, "Confirm before continue")) {
 			System.exit(1);

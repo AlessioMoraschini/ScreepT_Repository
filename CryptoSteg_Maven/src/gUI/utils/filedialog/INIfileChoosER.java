@@ -112,10 +112,7 @@ public class INIfileChoosER extends JDialog{
 				if(fileChooser.getSelectedFile()==null) {
 					dialogHelper.warn("No file was selected, load aborted. :(");
 				}
-				fileINI=backupINI;
 			}
-            //fileINI.writeCurrentConfigIniFile();
-            
             
         }else {
         	logger.debug("=> No File selected! ");

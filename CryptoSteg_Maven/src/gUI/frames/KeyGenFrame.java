@@ -37,7 +37,7 @@ import java.util.Date;
 import net.miginfocom.swing.MigLayout;
 import om.KeyGenImageType;
 import resources.IconsPathConfigurator;
-import uTILS.local.ImageWorkerScrYpT;
+import uTILS.local.ImageWorkerScreepT;
 
 import org.apache.log4j.Logger;
 
@@ -168,10 +168,10 @@ public class KeyGenFrame extends ParentFrame {
 		// initialize spinner and sliders with max, min, and selected values
 		widthValGUI = new JSpinner();
 		widthValGUI.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		widthValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_W, 100, ImageWorkerScrYpT.MAX_WIDTH_GEN, 5));
+		widthValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_W, 100, ImageWorkerScreepT.MAX_WIDTH_GEN, 5));
 		panel_1.add(widthValGUI, "cell 2 1,growx");
 		
-		sliderWidth = new JSlider(JSlider.HORIZONTAL, 100,ImageWorkerScrYpT.MAX_WIDTH_GEN, CURRENT_SEL_W );
+		sliderWidth = new JSlider(JSlider.HORIZONTAL, 100,ImageWorkerScreepT.MAX_WIDTH_GEN, CURRENT_SEL_W );
 		sliderWidth.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(sliderWidth, "cell 3 1,growx");
 		
@@ -180,13 +180,13 @@ public class KeyGenFrame extends ParentFrame {
 		lblImageHeight.setFont(new Font("SansSerif", Font.BOLD, 12));
 		panel_1.add(lblImageHeight, "cell 0 2 2 1,alignx center,aligny center");
 		
-		sliderHeight = new JSlider(JSlider.HORIZONTAL, 100,ImageWorkerScrYpT.MAX_HEIGHT_GEN, CURRENT_SEL_H);
+		sliderHeight = new JSlider(JSlider.HORIZONTAL, 100,ImageWorkerScreepT.MAX_HEIGHT_GEN, CURRENT_SEL_H);
 		sliderHeight.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(sliderHeight, "cell 3 2,growx");
 		
 		heightValGUI = new JSpinner();
 		heightValGUI.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		heightValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_H, 100, ImageWorkerScrYpT.MAX_HEIGHT_GEN, 5));
+		heightValGUI.setModel(new SpinnerNumberModel(CURRENT_SEL_H, 100, ImageWorkerScreepT.MAX_HEIGHT_GEN, 5));
 		panel_1.add(heightValGUI, "cell 2 2,growx");
 		
 		JLabel lblImageType = new JLabel("Image Type:");
@@ -448,7 +448,7 @@ public class KeyGenFrame extends ParentFrame {
 									try {
 										textLog.append("\nI'm workin'... just a second (or maybe two!) :)");
 										textLog.setSelectionStart(textLog.getText().length());
-										File result = ImageWorkerScrYpT.addKeyImgToDictionary(inputName, IMG, thisFrame);
+										File result = ImageWorkerScreepT.addKeyImgToDictionary(inputName, IMG, thisFrame);
 										out = result.getName() + " => Added to dictionary :)";
 										textLog.append(out);
 										logger.debug(out);

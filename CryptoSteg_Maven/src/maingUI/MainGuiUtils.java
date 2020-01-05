@@ -81,7 +81,7 @@ public class MainGuiUtils {
 									MainGUI.updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
 									MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
 									boolean restartNow = dialogHelper.yesOrNo(
-											"ScrYpT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
+											"ScreepT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
 									
 									if (restartNow) {
 										MainGUI.closeApplication(0);
@@ -116,7 +116,7 @@ public class MainGuiUtils {
 										"Update skipped");
 								logger.info("Update skipped, as requested from user.");
 								MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(false);
-								MainGUI.frmScryptV.toFront();
+								MainGUI.mainFrameScreept.toFront();
 							}
 						} else {
 							// If version == null means that sw is already updated
@@ -152,7 +152,7 @@ public class MainGuiUtils {
 					}
 					
 					// Reset application graphics
-					MainGUI.frmScryptV.setEnabled(true);
+					MainGUI.mainFrameScreept.setEnabled(true);
 					MainGUI.mainAPP.getMntmLookForUpdates().setEnabled(true);
 					MainGUI.mainAPP.isUpdating.set(false);
 				}
@@ -217,16 +217,16 @@ public class MainGuiUtils {
 				@Override
 				public void run() {
 					ArrayList<File> initialMonitoredList = new ArrayList<File>();
-					initialMonitoredList.add(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
-					FileChangeMonitor signalFileChangeMonitor = new FileChangeMonitor(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.getParentFile(), initialMonitoredList);
+					initialMonitoredList.add(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE);
+					FileChangeMonitor signalFileChangeMonitor = new FileChangeMonitor(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.getParentFile(), initialMonitoredList);
 
 					logger.info("startSignalListener Thread created and started!");
 					
 					// Only text editor managed for now - missing logic to distinguish file opener type
 					while(MainGUI.mainAppRunning) {
 						try {
-							ChangeDTO changeDTO = signalFileChangeMonitor.checkForFile(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
-							if(changeDTO.isChanged(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE)) {
+							ChangeDTO changeDTO = signalFileChangeMonitor.checkForFile(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE);
+							if(changeDTO.isChanged(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE)) {
 								logger.info("Detected new files to load: loading into TextEditor...");
 								loadFilesFromSignal(TextEditor.class);
 								logger.info("Detected new files LOADED into TextEditor!");
@@ -244,7 +244,7 @@ public class MainGuiUtils {
 	}
 	
 	public static void loadFilesFromSignal(Class<?> targetFrameClass) {
-		PropertiesManager signalManager = new PropertiesManager(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_PATH);
+		PropertiesManager signalManager = new PropertiesManager(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_PATH);
 		boolean breakLoop = false;
 		int i = 0;
 		while(!breakLoop) {
@@ -259,9 +259,9 @@ public class MainGuiUtils {
 			i++;
 		}
 		
-		GuiUtils.extendFramesAndMoveToTop(MainGUI.frmScryptV, MainGUI.frmScryptV, JFrame.MAXIMIZED_BOTH);
-		MainGUI.frmScryptV.requestFocus();
-		MainGUI.frmScryptV.toFront();
+		GuiUtils.extendFramesAndMoveToTop(MainGUI.mainFrameScreept, MainGUI.mainFrameScreept, JFrame.MAXIMIZED_BOTH);
+		MainGUI.mainFrameScreept.requestFocus();
+		MainGUI.mainFrameScreept.toFront();
 	}
 	
 	public static void loadFile(Class<?> targetFrameClass, File toLoad) {

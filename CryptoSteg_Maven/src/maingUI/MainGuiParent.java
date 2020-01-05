@@ -54,7 +54,7 @@ public class MainGuiParent {
 	public static Date now;
 	
 	// the main frame for placing the content
-	static public JFrame frmScryptV;
+	static public JFrame mainFrameScreept;
 	
 	// this file is the abstraction of the current settings used by various sub-programs and application of this main_GUI.
 	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.	
@@ -203,21 +203,21 @@ public class MainGuiParent {
 				while (mainAppRunning) {
 					
 					if(mainGuiUtils.isTextEditorActive()) {
-						frmScryptV.setTitle(BASE_TITLE + " - Text Editor");
+						mainFrameScreept.setTitle(BASE_TITLE + " - Text Editor");
 					
 					} else if(mainGuiUtils.isCrypterActive()) {
-						frmScryptV.setTitle(BASE_TITLE + " - Crypter");
+						mainFrameScreept.setTitle(BASE_TITLE + " - Crypter");
 					
 					} else if(mainGuiUtils.isConfManagerActive()) {
-						frmScryptV.setTitle(BASE_TITLE + " - Configuration Manager");
+						mainFrameScreept.setTitle(BASE_TITLE + " - Configuration Manager");
 						
 					} else {
-						frmScryptV.setTitle(BASE_TITLE);
+						mainFrameScreept.setTitle(BASE_TITLE);
 					}
 					try {
 						Thread.sleep(GeneralConfig.TITLE_REFRESH_TIME);
 					} catch (InterruptedException e) {
-						frmScryptV.setTitle(GeneralConfig.APPLICATION_NAME+" - A.M. development");	
+						mainFrameScreept.setTitle(GeneralConfig.APPLICATION_NAME+" - A.M. development");	
 					}
 				}
 			}
@@ -540,7 +540,7 @@ public class MainGuiParent {
 				GuiUtils.encapsulateInHtml(
 						"Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)"
 						+ "<br><b>NB:</b> remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors."
-						+ "<br><u>If you want to modify the memory used by ScrYpT</u> you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));
+						+ "<br><u>If you want to modify the memory used by ScreepT</u> you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));
 
 		mntmPinApplicationOnTop.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
 		mntmPinApplicationOnTop.setToolTipText("Enable \"always on top\" over other windows (if supported)");
@@ -615,7 +615,7 @@ public class MainGuiParent {
 	/**
 	 * This method adds fake keyListeners (see customJmenuItem class in the overridden method setAccelerator)
 	 * 
-	 * The real ones resides in the class "MainGuiShortcutsListener": those are the shortcuts used in scrypt
+	 * The real ones resides in the class "MainGuiShortcutsListener": those are the shortcuts used in screept
 	 */
 	void addMenuShorctutsTips() {
 		
@@ -922,7 +922,7 @@ public class MainGuiParent {
 		UIManager.put("JMenuBar.font", new Font("Segoe UI", Font.BOLD, fontSize ));
 		UIManager.put("JMenu.font", new Font("Segoe UI", Font.BOLD, fontSize ));
 		UIManager.put("JMenuItem.font", new Font("Segoe UI", Font.BOLD, fontSize-2 ));
-	    SwingUtilities.updateComponentTreeUI(frmScryptV);
+	    SwingUtilities.updateComponentTreeUI(mainFrameScreept);
 	}
 	
 	/******************  END MAIN MENU-BAR SETUP *****************************/
@@ -930,7 +930,7 @@ public class MainGuiParent {
 	// GETTERS //
 	
 	public JFrame getMainFrame() {
-		return frmScryptV;
+		return mainFrameScreept;
 	}
 	
 	public JMenuItem getMntmInspectCurrentConfiguration() {

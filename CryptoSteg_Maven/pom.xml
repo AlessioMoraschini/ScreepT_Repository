@@ -2,13 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>CryptoSteg_Maven</groupId>
   <artifactId>CryptoSteg_Maven</artifactId>
-  <version>${parent.build.version.scrypt}</version>
+  <version>${parent.build.version.screept}</version>
   <name>CryptoSteg_Maven</name>
   
   <parent>
   	<groupId>Parent_Project</groupId>
   	<artifactId>Parent_Project</artifactId>
-  	<version>${parent.build.version.scrypt}</version>
+  	<version>${parent.build.version.screept}</version>
   	<relativePath>../Parent_Project</relativePath>
   </parent>
   
@@ -22,7 +22,7 @@
   </scm>
   
   <properties>
-    <export.jar.name>ScrYpT_${project.version}</export.jar.name>
+    <export.jar.name>ScreepT_${project.version}</export.jar.name>
   </properties>
   
   <build>
@@ -199,12 +199,12 @@
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<export.launcher.jarmode>false</export.launcher.jarmode>
             	<tasks>
-					<echo>SINGLE_MAIN_JAR SOURCE: /target/ScrYpT_${parent.build.version.scrypt}.jar</echo>
+					<echo>SINGLE_MAIN_JAR SOURCE: /target/ScreepT_${parent.build.version.screept}.jar</echo>
 				</tasks>
             	<skip>${export.multijar.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>
-              		<!-- ${basedir}/target/ScrYpT_${parent.build.version.scrypt}.jar -->
+              		<!-- ${basedir}/target/ScreepT_${parent.build.version.screept}.jar -->
               		${export.directory.multijar.main}
               	</outputDirectory>
                	<name>timestamp</name>
@@ -223,7 +223,7 @@
 					    <excludes>/**/*humbs.db</excludes>
 					 </resource>
 					 
-					 <!-- Main scrypt's jar (not fatjar) just compiled in /target -->
+					 <!-- Main screept's jar (not fatjar) just compiled in /target -->
 				     <resource>
 					    <filtering>false</filtering>
 					    <directory>target/</directory>
@@ -235,7 +235,7 @@
             </configuration>            
           </execution>
           
-     <!-- (C-2) MULTIJAR : Resources_ScrYpt -->
+     <!-- (C-2) MULTIJAR : Resources_ScreepT -->
           <execution>
             <id>copy-resources -> ${export.directory.multijar.resources}</id>
             <phase>validate</phase>
@@ -257,7 +257,7 @@
 			    <resources>
 				     <resource>
 						<filtering>false</filtering>
-				        <directory>./Resources_Scrypt</directory>
+				        <directory>./Resources_ScreepT</directory>
     					<includes>
     						<include>/**</include>
     						<include>/*</include>
@@ -273,7 +273,7 @@
 					</resource>
 					<resource>
 					    <filtering>true</filtering>
-					    <directory>./Resources_Scrypt</directory>
+					    <directory>./Resources_ScreepT</directory>
 					    <includes>
 					    	<include>/Readme/**</include>
 					    	<include>/Readme/**/*</include>
@@ -402,7 +402,7 @@
             </configuration>            
           </execution>
          
-      <!-- (C-5) FATJAR : Resources_ScrYpt -->
+      <!-- (C-5) FATJAR : Resources_ScreepT -->
           <execution>
             <id>copy-resources -> ${export.directory.fatjar.resources}</id>
             <phase>install</phase>
@@ -423,7 +423,7 @@
 			    <resources>
 			     	<resource>
 						<filtering>false</filtering>
-				        <directory>./Resources_Scrypt</directory>
+				        <directory>./Resources_ScreepT</directory>
 					    <excludes>
 					    	<exclude>/Readme/**</exclude>
 					    	<exclude>/Readme/*</exclude>
@@ -434,7 +434,7 @@
 					</resource>
 					<resource>
 					    <filtering>true</filtering>
-					    <directory>./Resources_Scrypt</directory>
+					    <directory>./Resources_ScreepT</directory>
 					    <includes>
 					    	<include>/Readme/**</include>
 					    	<include>/Readme/**/*</include>
@@ -445,7 +445,7 @@
             </configuration>            
           </execution>
           
-      <!-- (C-6) SCRYPT'S UPDATES packaging - To hash, zip and upload on server each time 
+      <!-- (C-6) SCREEPT'S UPDATES packaging - To hash, zip and upload on server each time 
       (you can use updater.jar: see MainStandAloneUpdater functions A and A.1)-->
           <execution>
             <id>copy-resources -> ${export.updates.folder}</id>
@@ -467,26 +467,26 @@
 				        <directory>./</directory>
     					<includes>
     						<include>ROOT_DIR_APP_FILES/**</include>
-    						<include>Resources_Scrypt/**</include>
-    						<include>Resources_Scrypt/Backup/**/*.ini</include>
+    						<include>Resources_ScreepT/**</include>
+    						<include>Resources_ScreepT/Backup/**/*.ini</include>
     						<include>changelog.log</include>
 					    </includes>
 					    <excludes>
-					    	<exclude>Resources_Scrypt/Readme/**</exclude>
-					    	<exclude>Resources_Scrypt/Readme/*</exclude>
-					    	<exclude>Resources_Scrypt/lib/**</exclude>
-					    	<exclude>Resources_Scrypt/lib/*</exclude>
-					    	<exclude>Resources_Scrypt/PanelTempFiles/*</exclude>
+					    	<exclude>Resources_ScreepT/Readme/**</exclude>
+					    	<exclude>Resources_ScreepT/Readme/*</exclude>
+					    	<exclude>Resources_ScreepT/lib/**</exclude>
+					    	<exclude>Resources_ScreepT/lib/*</exclude>
+					    	<exclude>Resources_ScreepT/PanelTempFiles/*</exclude>
 					    	<exclude>/**/*Thumbs.db</exclude>
-					    	<exclude>Resources_Scrypt/CONFIG.ini</exclude>
+					    	<exclude>Resources_ScreepT/CONFIG.ini</exclude>
 					    </excludes>
 					</resource>
 					<resource>
 					    <filtering>true</filtering>
 					    <directory>./</directory>
 					    <includes>
-					    	<include>Resources_Scrypt/Readme/**</include>
-					    	<include>Resources_Scrypt/Readme/**/*</include>
+					    	<include>Resources_ScreepT/Readme/**</include>
+					    	<include>Resources_ScreepT/Readme/**/*</include>
 					        <include>resourcesFilePathsMappings.properties</include>
 					        <include>LAUNCHER/**/*</include>
 					        <include>LAUNCHER/*</include>

@@ -404,10 +404,10 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			}
 		});
 		
-		// RELOAD ORIGINAL SCRYPT CONFIGURATION
+		// RELOAD ORIGINAL SCREEPT CONFIGURATION
 		btnResetOriginalConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (dialogHelper.yesOrNo("Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ", "Warning - Reset INI standard config?")) {
+				if (dialogHelper.yesOrNo("Really want to Reset standard ScreepT configuration? Unsaved changes will be lost! ", "Warning - Reset INI standard config?")) {
 					try {
 						FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
 						config.setIniReadFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));

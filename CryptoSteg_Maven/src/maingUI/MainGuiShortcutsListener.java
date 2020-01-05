@@ -31,7 +31,7 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 			 */
 			if(e.getKeyCode() == 27 && currentGui.isImmersiveModeOn.get()) {
 				try {
-					if (MainGUI.frmScryptV.isFocused()) {
+					if (MainGUI.mainFrameScreept.isFocused()) {
 						if (MainGUI.mainGuiUtils.isTextEditorActive()) {
 							MainGUI.initTxtWriter.textEditorUtils.setImmersiveMode(false);
 						} else {
@@ -51,7 +51,7 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 			 */
 			if(e.getKeyCode() == 27 && currentGui.isFullScreen.get() && !currentGui.isImmersiveModeOn.get()) {
 				try {
-					if (MainGUI.frmScryptV.isFocused()) {
+					if (MainGUI.mainFrameScreept.isFocused()) {
 						MainGUI.mainAPP.mntmFullScreenMode.doClick();
 						logger.debug("FullScreenMode exit triggered with \"esc\": current mainFrame is active!");
 					} else {

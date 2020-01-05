@@ -1,6 +1,6 @@
 cd Application
 
-call java -Xms128m -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_Scrypt/lib" -Dfile.encoding=UTF8 -jar ScrYpT_Launcher.jar err_test %1
+call java -Xms128m -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_ScreepT/lib" -Dfile.encoding=UTF8 -jar ScrYpT_Launcher.jar err_test %1
 
 if %ERRORLEVEL% GEQ 1 goto errormsg
 

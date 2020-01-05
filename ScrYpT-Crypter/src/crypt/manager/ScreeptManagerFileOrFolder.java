@@ -25,7 +25,7 @@ public class ScreeptManagerFileOrFolder {
 	static SafeLogger logger = new SafeLogger(ScreeptManagerFileOrFolder.class);
 	
 	private String tempFolderInternalPath = null;
-	private String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScrYpT_decrypted_tempFiles";
+	private String TEMP_DECRIPTED_ROOT_PATH = System.getProperty("user.home")+"/Desktop/ScreepT_decrypted_tempFiles";
 	
 	// CODERS objects - shared by methods
 	private AesCipher AEScoder;

@@ -34,7 +34,7 @@ public class PluginManager {
 	
 	private static SafeLogger logger = new SafeLogger(PluginManager.class);
 	
-	public static final String DESCRIPTION_PROP_PREFIX = "DESCRYPTION_";
+	public static final String DESCRIPTION_PROP_PREFIX = "DESCREEPTION_";
 	
 	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
 	public static final String installedPluginPropsListKey = "INSTALLED_LIST";
@@ -47,8 +47,8 @@ public class PluginManager {
 	public static PropertiesManagerLight installedPluginProperties = new PropertiesManagerLight(installedPluginPropsFileName);
 	
 	public static final String LOCAL_PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR", "PLUGINS/");
-	public static final String WEB_PLUGINS_BASE_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_BASE_URL", "https://www.am-design-development.com/ScrYpT/Plugins/");                                                                                                               
-	public static final String WEB_PLUGINS_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_MANIFEST_URL", "https://www.am-design-development.com/ScrYpT/Plugins/manifest.properties");                                                                                                               
+	public static final String WEB_PLUGINS_BASE_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_BASE_URL", "https://www.am-design-development.com/ScreepT/Plugins/");                                                                                                               
+	public static final String WEB_PLUGINS_MANIFEST_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_MANIFEST_URL", "https://www.am-design-development.com/ScreepT/Plugins/manifest.properties");                                                                                                               
 	public static final String LOCAL_PLUGINS_MANIFEST = LOCAL_PLUGINS_DIR + "manifest.properties";                                                                                                               
 	public static final String PLUGIN_LIST_MANIFEST_KEY = "AvailablePluginsList";
 	
@@ -70,14 +70,14 @@ public class PluginManager {
 				pluginsDir.mkdir();
 			}
 		} catch (Exception e) {
-			logger.warn("Cannot create updates dir (Resources_Scrypt/UPDATES)", e);
+			logger.warn("Cannot create updates dir (Resources_ScreepT/UPDATES)", e);
 		}
 	}
 	
 	///// PLUGINS /////////////
 	
 	/**
-	 * Copies a downloaded plugin from current zipped folder into the correct folder of scrypt 
+	 * Copies a downloaded plugin from current zipped folder into the correct folder of screept 
 	 * (by design plugins zipped folders are supposed to be relative to main /application directory)
 	 * @param askUserIfCannotVerifyChecksum if this is true and hash cannot be verified, then user will be asked what to do.
 	 * 	if this is false installation will be automatically stopped if files are not (or cannot be) validated.
@@ -158,14 +158,14 @@ public class PluginManager {
 		for(String toDelete : strPluginFilesList) {
 			File filePending = new File(toDelete);
 			try {
-				// Delete only if contained in current application DIR (Avoid accidental deletes of other files unrelated to ScrYpT)
+				// Delete only if contained in current application DIR (Avoid accidental deletes of other files unrelated to ScreepT)
 				if (FileUtils.directoryContains(APPLICATION_ROOT_DIR, filePending)) {
 					if (toDelete != null && !"".equals(toDelete.trim()) && filePending.exists() && filePending.isFile()) {
 						FileUtils.forceDelete(filePending);
 						logger.info(filePending + " uninstall result (deleted = true): " + uninstallOK);
 					}
 				} else {
-					logger.warn("Directory " + APPLICATION_ROOT_DIR + " does not contain the given file path: " + filePending + " => it's not possible to delete files that reside outside ScrYpT's folder!");
+					logger.warn("Directory " + APPLICATION_ROOT_DIR + " does not contain the given file path: " + filePending + " => it's not possible to delete files that reside outside ScreepT's folder!");
 				}
 			} catch (IOException e) {
 				logger.warn("An error occurred while tryin' to uninstall " + pluginToRemove + " => file will be deleted on exit.", e);

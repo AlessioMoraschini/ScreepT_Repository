@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import files.Various;
-import mainlauncher.ScrYpTLauncher;
+import mainlauncher.ScreepTLauncher;
 import om.OSinfo;
 import utils.SysUtils;
 
@@ -75,7 +75,7 @@ public class JvmHelper {
 		String foundCorrectName = new File(foundCorrect).getName();
 		warningJVM = foundCorrect.equals(NOT_FOUND_JVM) 
 				|| Various.trimToEmpty(foundCorrect).equals("") 
-				|| !checkSingleJavaVersionOK(foundCorrectName, ScrYpTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, ScrYpTLauncher.iniFileManager.MIN_JRE_VERSION);
+				|| !checkSingleJavaVersionOK(foundCorrectName, ScreepTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, ScreepTLauncher.iniFileManager.MIN_JRE_VERSION);
 		
 		// case of ignore warnings specified : use current JVM
 		if(ignoreWarnings) {
@@ -103,8 +103,8 @@ public class JvmHelper {
 		}
 		
 		// PREFERRED BY USER IS DEFINED -> Use that
-		if(foundJVMS.contains(ScrYpTLauncher.iniFileManager.preferredJvm)) {
-			String currentPath = ScrYpTLauncher.iniFileManager.preferredJvm;
+		if(foundJVMS.contains(ScreepTLauncher.iniFileManager.preferredJvm)) {
+			String currentPath = ScreepTLauncher.iniFileManager.preferredJvm;
 			String currentPathName = new File(currentPath).getName();
 			if(checkSingleJavaVersionOK(currentPathName)) {
 				return currentPath;
@@ -120,7 +120,7 @@ public class JvmHelper {
 			
 			try {
 				// MATCH PREFERRED DEFAULT JVM CONDITION
-				if (SysUtils.keepOnlyDotsAndDigits(versionDirName).startsWith(ScrYpTLauncher.iniFileManager.preferredJvmVersionIfNotSpecified)) {
+				if (SysUtils.keepOnlyDotsAndDigits(versionDirName).startsWith(ScreepTLauncher.iniFileManager.preferredJvmVersionIfNotSpecified)) {
 					if (checkSingleJavaVersionOK(versionDirName)) {
 						return currentPath;
 					} 

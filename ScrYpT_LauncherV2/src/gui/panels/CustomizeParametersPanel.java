@@ -9,7 +9,7 @@ import gui.GuiUtils;
 import gui.JOptionHelper;
 import launcherutils.IniFileManager;
 import launcherutils.JvmHelper;
-import mainlauncher.ScrYpTLauncher;
+import mainlauncher.ScreepTLauncher;
 import net.miginfocom.swing.MigLayout;
 import om.OSinfo;
 import resources.GeneralConfig;
@@ -50,12 +50,12 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TOOLTIP_LEVEL_LOG = "Choose a value between 'OFF'(logging feature disabled) and 'ALL'. This can have an impact for overall speed and memory usage (OFF = max speed)";
 	private static final String TOOLTIP_STACK_SIZE = "This is the memory used by java JVM to store variables in ram memory called stack. \nHigh value = more reliability but less free memory for other dynamic values!";
 	private static final String TOOLTIP_WARN_DIFFERENT_XSS_XMX_ARGS = "It's recommended to use same value for max and minimum memory, different values can cause a performance decrease (use different values if you need dynamic memory allocation)";
-	private static final String TOOLTIP_MIN_RAM_SIZE = "This is the minimum heap ram value used bj JVM to start ScrYpT dynamic data allocation";
-	private static final String TOOLTIP_MAX_RAM_SIZE = "This is the maximum heap ram value used bj JVM allocated to ScrYpT for dynamic data allocation";
+	private static final String TOOLTIP_MIN_RAM_SIZE = "This is the minimum heap ram value used bj JVM to start ScreepT dynamic data allocation";
+	private static final String TOOLTIP_MAX_RAM_SIZE = "This is the maximum heap ram value used bj JVM allocated to ScreepT for dynamic data allocation";
 	private static final String TOOLTIP_DISPLAY_SHELL = "When checked, the launcher will keep an open active command line shell with the logger's output";
 	private static final String TOOLTIP_LAUNCH_AS_JAR_WARN = "Works only with centralized build, pugins might not work with this configuration, use this only if you know what you're doing!)";
-	private static final String TOOLTIP_LAUNCH_AS_JAR = "ScrYpT will be launched as Jar (works only with centralized build, pugins might not work with this configuration!)";
-	private static final String TOOLTIP_LAUNCH_AS_CLASS = "ScrYpT will be launched as .Class (works with centralized build and even with multimodule)";
+	private static final String TOOLTIP_LAUNCH_AS_JAR = "ScreepT will be launched as Jar (works only with centralized build, pugins might not work with this configuration!)";
+	private static final String TOOLTIP_LAUNCH_AS_CLASS = "ScreepT will be launched as .Class (works with centralized build and even with multimodule)";
 	private final String TOOLTIP_INFO_JVM = "Select your preferred, but remember that this software is fully supported only for JVMs between version "
 			+ IniFileManager.MIN_JRE_VERSION + " <- And -> " + IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY;
 	private final String TOOLTIP_WARN_JVM = "It seems that chosen version is not the best match, full software compatibility is granted for JVM versions between "
@@ -77,7 +77,7 @@ public class CustomizeParametersPanel extends JFrame{
 	private JSpinner spinnerMaxMemoryMB;
 	private JButton btnExitConfiguration;
 	private JButton btnReloadInitialConfig;
-	private JButton btnLoadScryptDefault;
+	private JButton btnLoadScreeptDefault;
 	private JButton btnSaveConfig;
 	
 	private int backupMinMemoryXms;
@@ -233,8 +233,8 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		String[] jvmArr = new String[1];
 		ArrayList<String> JVMS = SysUtils.findJvmVersionsInstalled(currentOS);
-		if(ScrYpTLauncher.iniFileManager.manualPathJvm != null && !ScrYpTLauncher.iniFileManager.manualPathJvm.equals("")) {
-			JVMS.add(ScrYpTLauncher.iniFileManager.manualPathJvm);
+		if(ScreepTLauncher.iniFileManager.manualPathJvm != null && !ScreepTLauncher.iniFileManager.manualPathJvm.equals("")) {
+			JVMS.add(ScreepTLauncher.iniFileManager.manualPathJvm);
 		}
 		
 		lblJvmInfo = new JLabel("");
@@ -265,15 +265,15 @@ public class CustomizeParametersPanel extends JFrame{
 		btnReloadInitialConfig.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnReloadInitialConfig, "cell 1 5 3 1,growx,aligny center");
 		
-		btnLoadScryptDefault = new JButton();
-		btnLoadScryptDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
-		btnLoadScryptDefault.setForeground(Color.WHITE);
-		btnLoadScryptDefault.setText("Use Defaults");
-		btnLoadScryptDefault.setEnabled(true);
-		btnLoadScryptDefault.setBackground(Color.DARK_GRAY);
-		btnLoadScryptDefault.setIcon(new ImageIcon(IconsPathConfigurator.iconRootPath));
-		btnLoadScryptDefault.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnLoadScryptDefault, "cell 4 5 3 1,growx,aligny center");
+		btnLoadScreeptDefault = new JButton();
+		btnLoadScreeptDefault.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
+		btnLoadScreeptDefault.setForeground(Color.WHITE);
+		btnLoadScreeptDefault.setText("Use Defaults");
+		btnLoadScreeptDefault.setEnabled(true);
+		btnLoadScreeptDefault.setBackground(Color.DARK_GRAY);
+		btnLoadScreeptDefault.setIcon(new ImageIcon(IconsPathConfigurator.iconRootPath));
+		btnLoadScreeptDefault.setCursor(GuiUtils.CURSOR_HAND);
+		getContentPane().add(btnLoadScreeptDefault, "cell 4 5 3 1,growx,aligny center");
 
 		btnSaveConfig = new JButton("Save Launch Options");
 		btnSaveConfig.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
@@ -310,13 +310,13 @@ public class CustomizeParametersPanel extends JFrame{
 		            
 	        	logger.debug("Closing Frame: CustomizeParametersPanel");	        	
 				active = false;
-				ScrYpTLauncher.iniFileManager.initFromINIFile();
+				ScreepTLauncher.iniFileManager.initFromINIFile();
 	        	dispose();
 		    }
 		});
 		
-		// LOAD SCRYPT'S DEFAULTS INTO GUI LAUNCHER BOXES
-		btnLoadScryptDefault.addActionListener(new ActionListener() {
+		// LOAD SCREEPT'S DEFAULTS INTO GUI LAUNCHER BOXES
+		btnLoadScreeptDefault.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -407,7 +407,7 @@ public class CustomizeParametersPanel extends JFrame{
 				String stringLaunchAsJar = (chckBoxLaunchAsJar.isSelected())? "true" : "false";
 				String preferredJvm = (String)comboPrefJvm.getSelectedItem();
 				
-				IniFileManager iniFileManager = ScrYpTLauncher.iniFileManager;
+				IniFileManager iniFileManager = ScreepTLauncher.iniFileManager;
 				// update launcher vars and write to config INI file
 				iniFileManager.JVM_MEMORY_OPTIONS = args;
 				iniFileManager.JVM_STACK_SIZE = stackString;
@@ -499,7 +499,7 @@ public class CustomizeParametersPanel extends JFrame{
 			public void run() {
 				String selectedVersion = (String)comboPrefJvm.getSelectedItem();
 				File selectedVersionFile = new File(selectedVersion);
-				JVM_WARN = !ScrYpTLauncher.jvmHelper.checkSingleJavaVersionOK(selectedVersionFile.getName(), IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
+				JVM_WARN = !ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(selectedVersionFile.getName(), IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
 				
 				if (JVM_WARN) {
 					lblJvmInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
@@ -543,8 +543,8 @@ public class CustomizeParametersPanel extends JFrame{
 	}
 	
 	private void backupInitialValues() {
-		IniFileManager iniFileManager = ScrYpTLauncher.iniFileManager;
-		backupLogLevel = ScrYpTLauncher.iniFileManager.iniConfigFile.get(IniFileManager.INI_APP_OPT, "logLevelSetting");
+		IniFileManager iniFileManager = ScreepTLauncher.iniFileManager;
+		backupLogLevel = ScreepTLauncher.iniFileManager.iniConfigFile.get(IniFileManager.INI_APP_OPT, "logLevelSetting");
 		try {
 			String memArgsBackup = iniFileManager.JVM_MEMORY_OPTIONS;
 			String[] splittedStringArgs = memArgsBackup.split(" ");
@@ -589,9 +589,9 @@ public class CustomizeParametersPanel extends JFrame{
 	private String checkJvmString(String jvmStr) {
 		String result = (jvmStr.equals("") 
 				|| !SysUtils.findJvmVersionsInstalled(new OSinfo()).contains(jvmStr) 
-				|| !ScrYpTLauncher.jvmHelper.checkSingleJavaVersionOK(new File(jvmStr).getName()))?
+				|| !ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(new File(jvmStr).getName()))?
 						
-				ScrYpTLauncher.jvmHelper.retrieveCorrectJVMS(false) : jvmStr;
+				ScreepTLauncher.jvmHelper.retrieveCorrectJVMS(false) : jvmStr;
 		return result;
 	}
 	

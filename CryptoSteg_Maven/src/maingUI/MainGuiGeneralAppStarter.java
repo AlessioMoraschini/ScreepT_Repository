@@ -195,7 +195,7 @@ public class MainGuiGeneralAppStarter {
 			writeSignalFileForExternalJars();
 			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
 			
-			// INITIALIZE .INI CONFIGURATION (ScrYpT + Launcher) FROM CONFIG DEFAULT FILES
+			// INITIALIZE .INI CONFIGURATION (ScreepT + Launcher) FROM CONFIG DEFAULT FILES
 			try {
 				loaderGraphics.update("Initializing user configuration", 10);
 				
@@ -321,11 +321,11 @@ public class MainGuiGeneralAppStarter {
 	 */
 	private static void writeSignalFileForExternalJars(){
 		try {
-			GeneralConfig.mkDirUserDirScrYpT();
-			GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.createNewFile();
-			FileStuff.writeStringToFile(MAIN_SIGNAL_PROPERTY, GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE, true);
+			GeneralConfig.mkDirUserDirScreepT();
+			GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.createNewFile();
+			FileStuff.writeStringToFile(MAIN_SIGNAL_PROPERTY, GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE, true);
 		} catch (Exception e) {
-			logger.error("Error writing signal file ["+GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.getAbsolutePath()+"]");
+			logger.error("Error writing signal file ["+GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.getAbsolutePath()+"]");
 		}
 	}
 	
@@ -333,7 +333,7 @@ public class MainGuiGeneralAppStarter {
 	 * This method will delete general signal file to signal that main Application is closed
 	 */
 	public static void deleteSignalFileForExternalJars() {
-		FileUtils.deleteQuietly(GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE);
+		FileUtils.deleteQuietly(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE);
 	}
 	
 	private static long printElapsed(String msg, long startTime) {
@@ -383,7 +383,7 @@ public class MainGuiGeneralAppStarter {
 			
 			@Override
 			public void run() {
-				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new SafetyScrYpTShortcutsListener());
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new SafetyScreepTShortcutsListener());
 			}
 		}).start();
 	}

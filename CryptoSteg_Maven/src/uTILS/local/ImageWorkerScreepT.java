@@ -15,10 +15,10 @@ import gUI.frames.KeyGenFrame;
 import gUI.panels.subpanels.ImageGenContainerPanel;
 import gui.JOptionHelper;
 
-public class ImageWorkerScrYpT {
+public class ImageWorkerScreepT {
 
 	// ImageWorker logger creation
-	static Logger loGGer = Logger.getLogger(ImageWorkerScrYpT.class);
+	static Logger loGGer = Logger.getLogger(ImageWorkerScreepT.class);
 
 	//////////////////////
 	// FIELDS //
@@ -42,17 +42,17 @@ public class ImageWorkerScrYpT {
 	////////////////////// eccezione!
 	//////////////////////
 
-	public ImageWorkerScrYpT(String imgPath) throws IOException {
+	public ImageWorkerScreepT(String imgPath) throws IOException {
 		imageFile = new File(imgPath);
 		image = ImageIO.read(imageFile);
 	}
 
-	public ImageWorkerScrYpT(File imgFile) throws IOException {
+	public ImageWorkerScreepT(File imgFile) throws IOException {
 		imageFile = imgFile;
 		image = ImageIO.read(imgFile);
 	}
 
-	public ImageWorkerScrYpT(BufferedImage img) {
+	public ImageWorkerScreepT(BufferedImage img) {
 		image = img;
 	}
 

@@ -1,4 +1,6 @@
-* 2020-01-04  (refs/remotes/origin/master) Improved Graphics + TextEditor Bugs fixed
+* 2020-01-05  (HEAD -> refs/heads/master, refs/remotes/origin/master) Improved Updates manager + added synchronization and final hash check
+  
+* 2020-01-04  Improved Graphics + TextEditor Bugs fixed
 | 
 * 2020-01-03  Added undo/redo unsaved automation + fixed dialogs/close all tabs
 | 

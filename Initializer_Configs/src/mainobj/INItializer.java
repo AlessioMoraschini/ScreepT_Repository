@@ -20,6 +20,7 @@ import om.ScalingAlgorithm;
 import om.SteganOption;
 import om.TextEditorOption;
 import om.files.FileNamed;
+import resources.GeneralConfig;
 import utility.SafeLogger;
 
 public class INItializer extends INItializerParent implements INItializerInterface{
@@ -28,7 +29,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	static SafeLogger logger = new SafeLogger(INItializer.class); 
 	
 	// DEFAULT INI
-	public final static String DEFAULT_INI_PATH = "Resources_Scrypt/CONFIG.ini"; 
+	public final static String DEFAULT_INI_PATH = GeneralConfig.RESOURCES_DIR + "CONFIG.ini"; 
 
 	// options om
 	private GenericOption genOpt;

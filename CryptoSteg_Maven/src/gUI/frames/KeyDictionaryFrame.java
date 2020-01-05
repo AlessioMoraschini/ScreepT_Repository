@@ -93,7 +93,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);
-		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(this, MainGUI.mainFrameScreept);
 		
 		thisPanel = this;
 		singletonInstance = this;
@@ -123,7 +123,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 		getContentPane().add(labelPathAd, "cell 0 1 9 1,alignx center");
 		labelPathAd.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		labelPathAd.setForeground(new Color(0, 0, 128));
-		labelPathAd.setText("Dictionary Path: ..\\ScrYpt_Folder\\"+KEY_DICTIONARY_FILE.getPath());
+		labelPathAd.setText("Dictionary Path: ..\\ScreepT_Folder\\"+KEY_DICTIONARY_FILE.getPath());
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 2));

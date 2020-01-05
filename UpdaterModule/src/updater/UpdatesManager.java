@@ -29,7 +29,7 @@ public class UpdatesManager {
 	public static SafeLogger logger = new SafeLogger(UpdatesManager.class);
 	
 	public static PropertiesManagerLight resourcesFilePathsMappings = new PropertiesManagerLight(MainStandAloneUpdater.resourcesMappingDefPath);
-	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_Scrypt/");  
+	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_ScreepT/");  
 	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR", "UPDATES/");
 	public static String TEMP_DIR = resourcesFilePathsMappings.getProperty("TEMP_DIR", "UPDATES/");
@@ -59,7 +59,7 @@ public class UpdatesManager {
 				updatesDir.mkdir();
 			}
 		} catch (Exception e) {
-			out.println("Cannot create updates dir (Resources_Scrypt/UPDATES) : " + Arrays.deepToString(e.getStackTrace()));
+			out.println("Cannot create updates dir (Resources_ScreepT/UPDATES) : " + Arrays.deepToString(e.getStackTrace()));
 		}
 	}
 	
@@ -157,8 +157,8 @@ public class UpdatesManager {
 			String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
 			logger.info("Version: " + version);
 			
-			// Calculate jar main application reference after extract -> /UPDATES/ScrYpT_X.Y.Z.jar
-			lastUpdatesDownloaded[2] = new File("ScrYpT_"+version+".jar");
+			// Calculate jar main application reference after extract -> /UPDATES/ScreepT_X.Y.Z.jar
+			lastUpdatesDownloaded[2] = new File("ScreepT_"+version+".jar");
 			
 			// READ FROM DOWNLOADED PROPS
 			URL updaterJarUrl = new URL(propsManager.getProperty(WEB_UPDATER_JAR_PROP));

@@ -10,16 +10,16 @@ import dialogutils.JOptionHelperExtended;
 import maingUI.MainGUI;
 import om.LimitedConcurrentList;
 
-public class SafetyScrYpTShortcutsListener implements KeyEventDispatcher{
+public class SafetyScreepTShortcutsListener implements KeyEventDispatcher{
 	
-	static Logger logger = Logger.getLogger(SafetyScrYpTShortcutsListener.class);
+	static Logger logger = Logger.getLogger(SafetyScreepTShortcutsListener.class);
 	
 	private static final String killAdvice = "Really want to kill application and loose your unsaved changes (use this only if application is not responding)?";
 	private static long MAX_INTERVAL_MS = 600;
 	
 	LimitedConcurrentList<ClickUpdate> lastFiveClicks = new LimitedConcurrentList<>(5);
 	
-	public SafetyScrYpTShortcutsListener() {
+	public SafetyScreepTShortcutsListener() {
 		logger.debug(this.getClass().getName() + " Started!");
 	}
 	

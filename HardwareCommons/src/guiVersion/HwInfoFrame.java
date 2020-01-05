@@ -145,11 +145,11 @@ public class HwInfoFrame extends ParentFrame{
 	private JLabel lblBytesRead;
 	private JLabel lblVersion;
 	private JTextField dynLblMoboVersion;
-	private JPanel ScryptInfoPanel;
-	private JLabel lblScrYptCpuUsage;
-	private JTextField dynLblScryptRamUsage;
-	private JTextField dynLblScryptCpuPerc;
-	private JLabel lblScryptRamUsage;
+	private JPanel screeptInfoPanel;
+	private JLabel lblScreeptCpuUsage;
+	private JTextField dynLblScreeptRamUsage;
+	private JTextField dynLblScreeptCpuPerc;
+	private JLabel lblScreeptRamUsage;
 	
 	long currentPid; 
 	
@@ -191,7 +191,7 @@ public class HwInfoFrame extends ParentFrame{
 					updateRamInfo();
 					updateHdInfo();
 					updateCpuUsageInfo();
-					updateScryptResourcesUsage();
+					updateScreeptResourcesUsage();
 					singletonInstance.pack();
 					GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 					try {
@@ -230,41 +230,41 @@ public class HwInfoFrame extends ParentFrame{
 		lblHardwareInfoTool.setBackground(SystemColor.activeCaptionBorder);
 		panelHeaderTitle.add(lblHardwareInfoTool, "cell 0 0,alignx left,aligny center");
 		
-		ScryptInfoPanel = new JPanel();
-		ScryptInfoPanel.setMaximumSize(new Dimension(32767, 30));
-		ScryptInfoPanel.setPreferredSize(new Dimension(10, 25));
-		ScryptInfoPanel.setBorder(new LineBorder(new Color(192, 192, 192), 0));
-		ScryptInfoPanel.setBackground(Color.BLACK);
-		panelHeaderTitle.add(ScryptInfoPanel, "cell 1 0,growx,aligny center");
-		ScryptInfoPanel.setLayout(new MigLayout("fill, inset 1", "[90px:n][80,grow][90px:n][100px,grow]", "[::30px,grow,fill]"));
+		screeptInfoPanel = new JPanel();
+		screeptInfoPanel.setMaximumSize(new Dimension(32767, 30));
+		screeptInfoPanel.setPreferredSize(new Dimension(10, 25));
+		screeptInfoPanel.setBorder(new LineBorder(new Color(192, 192, 192), 0));
+		screeptInfoPanel.setBackground(Color.BLACK);
+		panelHeaderTitle.add(screeptInfoPanel, "cell 1 0,growx,aligny center");
+		screeptInfoPanel.setLayout(new MigLayout("fill, inset 1", "[90px:n][80,grow][90px:n][100px,grow]", "[::30px,grow,fill]"));
 		
-		lblScrYptCpuUsage = new JLabel("ScrYpT Cpu");
-		lblScrYptCpuUsage.setForeground(Color.LIGHT_GRAY);
-		lblScrYptCpuUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		ScryptInfoPanel.add(lblScrYptCpuUsage, "cell 0 0,alignx center,growy");
+		lblScreeptCpuUsage = new JLabel("ScreepT Cpu");
+		lblScreeptCpuUsage.setForeground(Color.LIGHT_GRAY);
+		lblScreeptCpuUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		screeptInfoPanel.add(lblScreeptCpuUsage, "cell 0 0,alignx center,growy");
 		
-		dynLblScryptCpuPerc = new JTextField(UNSELECTED);
-		dynLblScryptCpuPerc.setPreferredSize(new Dimension(132, 18));
-		dynLblScryptCpuPerc.setMinimumSize(new Dimension(6, 18));
-		dynLblScryptCpuPerc.setMaximumSize(new Dimension(2147483647, 40));
-		dynLblScryptCpuPerc.setForeground(new Color(72, 61, 139));
-		dynLblScryptCpuPerc.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		dynLblScryptCpuPerc.setEditable(false);
-		ScryptInfoPanel.add(dynLblScryptCpuPerc, "cell 1 0,growx,aligny center");
+		dynLblScreeptCpuPerc = new JTextField(UNSELECTED);
+		dynLblScreeptCpuPerc.setPreferredSize(new Dimension(132, 18));
+		dynLblScreeptCpuPerc.setMinimumSize(new Dimension(6, 18));
+		dynLblScreeptCpuPerc.setMaximumSize(new Dimension(2147483647, 40));
+		dynLblScreeptCpuPerc.setForeground(new Color(72, 61, 139));
+		dynLblScreeptCpuPerc.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblScreeptCpuPerc.setEditable(false);
+		screeptInfoPanel.add(dynLblScreeptCpuPerc, "cell 1 0,growx,aligny center");
 		
-		lblScryptRamUsage = new JLabel("ScrYpT Ram");
-		lblScryptRamUsage.setForeground(Color.LIGHT_GRAY);
-		lblScryptRamUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		ScryptInfoPanel.add(lblScryptRamUsage, "cell 2 0,alignx center,growy");
+		lblScreeptRamUsage = new JLabel("ScreepT Ram");
+		lblScreeptRamUsage.setForeground(Color.LIGHT_GRAY);
+		lblScreeptRamUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		screeptInfoPanel.add(lblScreeptRamUsage, "cell 2 0,alignx center,growy");
 		
-		dynLblScryptRamUsage = new JTextField(UNSELECTED);
-		dynLblScryptRamUsage.setPreferredSize(new Dimension(132, 18));
-		dynLblScryptRamUsage.setMinimumSize(new Dimension(6, 18));
-		dynLblScryptRamUsage.setMaximumSize(new Dimension(2147483647, 40));
-		dynLblScryptRamUsage.setForeground(new Color(72, 61, 139));
-		dynLblScryptRamUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		dynLblScryptRamUsage.setEditable(false);
-		ScryptInfoPanel.add(dynLblScryptRamUsage, "cell 3 0,growx,aligny center");
+		dynLblScreeptRamUsage = new JTextField(UNSELECTED);
+		dynLblScreeptRamUsage.setPreferredSize(new Dimension(132, 18));
+		dynLblScreeptRamUsage.setMinimumSize(new Dimension(6, 18));
+		dynLblScreeptRamUsage.setMaximumSize(new Dimension(2147483647, 40));
+		dynLblScreeptRamUsage.setForeground(new Color(72, 61, 139));
+		dynLblScreeptRamUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		dynLblScreeptRamUsage.setEditable(false);
+		screeptInfoPanel.add(dynLblScreeptRamUsage, "cell 3 0,growx,aligny center");
 		
 		ConncetionInfoScrollPanel = new JScrollPane();
 		ConncetionInfoScrollPanel.setBackground(Color.WHITE);
@@ -700,15 +700,15 @@ public class HwInfoFrame extends ParentFrame{
 	
 //////////////////////////AND NOW SOME USEFUL METHOD //////////////////////////
 	
-	private void updateScryptResourcesUsage(){
+	private void updateScreeptResourcesUsage(){
 		String percentRam = RuntimeUtil.getPercMemoryOnTotalSystem(memoryRam.getTotal());
 		String usedRam = RuntimeUtil.getUsedMemoryString();
 		try {
-			dynLblScryptCpuPerc.setText(RuntimeUtil.getCurrentProcCpuUsageString());
+			dynLblScreeptCpuPerc.setText(RuntimeUtil.getCurrentProcCpuUsageString());
 		} catch (IOException e) {
-			dynLblScryptCpuPerc.setText(errMSG);
+			dynLblScreeptCpuPerc.setText(errMSG);
 		}
-		dynLblScryptRamUsage.setText(usedRam + "[" + percentRam + "]");
+		dynLblScreeptRamUsage.setText(usedRam + "[" + percentRam + "]");
 	}
 	
 	private void updateGenInfo() {
@@ -827,7 +827,7 @@ public class HwInfoFrame extends ParentFrame{
 			public void run() {
 				while(isActive.get()){
 					
-					if(!GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.exists()) {
+					if(!GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.exists()) {
 						System.exit(0);
 					}
 					
@@ -837,7 +837,7 @@ public class HwInfoFrame extends ParentFrame{
 					}
 				}
 				
-				if(!GeneralConfig.SCRYPT_ACTIVE_SIGNAL_FILE.exists()) {
+				if(!GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.exists()) {
 					System.exit(0);
 				}
 			}

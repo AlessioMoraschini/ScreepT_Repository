@@ -239,7 +239,7 @@ public class IconsPathConfigurator {
 	 */
 	public static final Hashtable<String,ImageIcon> FILE_TYPE_ICONS_MAP = defaultFileIcons();
 	/**
-	 * This is a set containing all types of extension recognized by ScrYpT
+	 * This is a set containing all types of extension recognized by ScreepT
 	 */
 	public static final Set<String> FILE_TYPE_ICONS_KEYS = FILE_TYPE_ICONS_MAP.keySet();
 	

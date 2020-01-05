@@ -168,7 +168,7 @@ public class ImageConverterFrame extends ParentFrame{
 		currentConfiguration = currentConf;
 		
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER, this);
-		GuiUtils.showOnSameScreen(this, MainGUI.frmScryptV);
+		GuiUtils.showOnSameScreen(this, MainGUI.mainFrameScreept);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		

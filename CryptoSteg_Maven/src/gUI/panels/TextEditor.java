@@ -75,7 +75,7 @@ import gUI.panels.subpanels.texteditor.TextEditorFooterPanel;
 import gUI.panels.subpanels.texteditor.TextEditorHeaderPanel;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gUI.utils.shortcutshandler.TextEditorShortcutListener;
-import gUI.utils.texteditor.TabbedEditorOwnerScrYpT;
+import gUI.utils.texteditor.TabbedEditorOwnerScreepT;
 import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tooltip.TextEditorTooltips;
 import gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor;
@@ -224,7 +224,7 @@ public class TextEditor extends ModulePanel {
 		
 		// ADD ONLY AFTER COMBO INITIALIZATION
 		tabbedEditorsList = new ArrayList<CustomTabbedEditor>();
-		CustomTabbedEditor initialTabbedEditor = new CustomTabbedEditor(this, currentConfiguration, new TabbedEditorOwnerScrYpT(this));
+		CustomTabbedEditor initialTabbedEditor = new CustomTabbedEditor(this, currentConfiguration, new TabbedEditorOwnerScreepT(this));
 		tabbedEditorsList.add(initialTabbedEditor);
 		
 		getCurrentTabEditor().applyStyleToTabs();
@@ -1017,9 +1017,9 @@ public class TextEditor extends ModulePanel {
 			}
 		} else if(currentConfiguration.getTextEditorOpt().firstTimeOpened){
 			
-			currentTabbedEditor.loadedTabObj.textArea.setText(" Welcome to ScrYpT's Text Editor!\n\n\n"
+			currentTabbedEditor.loadedTabObj.textArea.setText(" Welcome to ScreepT's Text Editor!\n\n\n"
 					+ "This functionality is made mainly for coding use, here you can find many useful functions, and remember:"
-					+ "\n\n 1) Take a look into documentation under \"help\" submenu to know everything about ScrYpT"
+					+ "\n\n 1) Take a look into documentation under \"help\" submenu to know everything about ScreepT"
 					+ "\n\n 2) Remember to hover with mouse on buttons and other interactive elements to have useful hints about functionalities"
 					+ "\n\n 3) Key shortcuts are awesome to speed-up your workflow, so ... better to learn them!"
 					+ "\n\n 4) Last but not last... Have a good time ;)");

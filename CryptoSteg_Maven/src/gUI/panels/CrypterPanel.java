@@ -854,11 +854,11 @@ public class CrypterPanel extends ModulePanel {
 				// retrieve source file array from dragNDrop panel
 				srcFiles = panelVDragNDropPane.getTreeNodes();
 
-				// ask user if he wants to delete decripted after closing ScrYpT
+				// ask user if he wants to delete decripted after closing ScreepT
 
-				if (dialogHelper.yesOrNo("Delete decripted file(s) after exiting ScrypT? (TEMP folder will be created on Desktop)", "Delete decripted when SW will be closed")) {
+				if (dialogHelper.yesOrNo("Delete decripted file(s) after exiting ScreepT? (TEMP folder will be created on Desktop)", "Delete decripted when SW will be closed")) {
 					textAreaMain.append("Decripted files will be exported to temporary folder on user desktop folder\n");
-					// if temporary mode create temp folder ScrYpT on desktop
+					// if temporary mode create temp folder ScreepT on desktop
 					destinationDir = new File(GeneralConfig.TEMP_DECRIPTED_ROOT_PATH);
 
 					if (fileMonitor == null) {

@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import gui.GuiUtils;
 import gui.utils.GUIStyelSettings;
 import gui.utils.Sounds;
-import mainlauncher.ScrYpTLauncher;
+import mainlauncher.ScreepTLauncher;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -42,24 +42,24 @@ public class LauncherMainPanel extends JFrame{
 	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 
-	public ScrYpTLauncher LAUNCHER;
+	public ScreepTLauncher LAUNCHER;
 	public LauncherMainPanel LAUNCHER_GUI;
 	public CustomizeParametersPanel customizerPanel;
 	public DependenciesManagerPanel missingDependenciesPanel;
 	
 	// GUI VARIABLES
 	private JPanel mainPanel;
-	private JButton btnStartScrypt;
+	private JButton btnStartScreept;
 	private JButton btnCustomizeParameters;
 	private JButton btnDependencyManager;
-	private JLabel lblScryptLauncher;
+	private JLabel lblScreeptLauncher;
 	private JLabel label;
 	private JLabel lblAmDesign;
 	
 	private final int W = 570;
 	private final int H = 170;
 	
-	public LauncherMainPanel(String frameTitle, ScrYpTLauncher launcher) {
+	public LauncherMainPanel(String frameTitle, ScreepTLauncher launcher) {
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
@@ -79,19 +79,19 @@ public class LauncherMainPanel extends JFrame{
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setLayout(new MigLayout("insets 4, fill", "[grow][40px:n,grow][40px:n,grow][20px:n,grow][40px:n,grow][20px]", "[30px,grow][:27px:27px][:27px:27px][25px]"));
 		
-		JLabel lblWelcomeToScrypt = new JLabel("Welcome to ScrYpT, chose your preferences... or just start me :)");
-		lblWelcomeToScrypt.setForeground(Color.WHITE);
-		lblWelcomeToScrypt.setFont(new Font("Segoe UI Black", Font.PLAIN, 13));
-		mainPanel.add(lblWelcomeToScrypt, "cell 0 0 6 1,alignx center");
+		JLabel lblWelcomeToScreept = new JLabel("Welcome to ScreepT, chose your preferences... or just start me :)");
+		lblWelcomeToScreept.setForeground(Color.WHITE);
+		lblWelcomeToScreept.setFont(new Font("Segoe UI Black", Font.PLAIN, 13));
+		mainPanel.add(lblWelcomeToScreept, "cell 0 0 6 1,alignx center");
 		
-		btnStartScrypt = new JButton("Start ScrYpT");
-		btnStartScrypt.setMargin(new Insets(10, 10, 10, 10));
-		btnStartScrypt.setForeground(new Color(0, 0, 0));
-		btnStartScrypt.setBorder(null);
-		btnStartScrypt.setBackground(new Color(102, 153, 51));
-		btnStartScrypt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnStartScrypt.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mainPanel.add(btnStartScrypt, "cell 3 1 3 2,grow");
+		btnStartScreept = new JButton("Start ScreepT");
+		btnStartScreept.setMargin(new Insets(10, 10, 10, 10));
+		btnStartScreept.setForeground(new Color(0, 0, 0));
+		btnStartScreept.setBorder(null);
+		btnStartScreept.setBackground(new Color(102, 153, 51));
+		btnStartScreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnStartScreept.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		mainPanel.add(btnStartScreept, "cell 3 1 3 2,grow");
 		
 		btnCustomizeParameters = new JButton("Customize launch parameters");
 		btnCustomizeParameters.setBorder(null);
@@ -114,12 +114,12 @@ public class LauncherMainPanel extends JFrame{
 		lblAmDesign.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		mainPanel.add(lblAmDesign, "cell 0 3 2 1,alignx left,aligny bottom");
 		
-		lblScryptLauncher = new JLabel("ScrYpT Launcher");
-		lblScryptLauncher.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		lblScryptLauncher.setForeground(new Color(240, 248, 255));
-		mainPanel.add(lblScryptLauncher, "cell 2 3 2 1,alignx center,aligny bottom");
+		lblScreeptLauncher = new JLabel("ScreepT Launcher");
+		lblScreeptLauncher.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		lblScreeptLauncher.setForeground(new Color(240, 248, 255));
+		mainPanel.add(lblScreeptLauncher, "cell 2 3 2 1,alignx center,aligny bottom");
 		
-		label = new JLabel("ScrYpT Launcher - V1.0");
+		label = new JLabel("ScreepT Launcher - V1.0");
 		label.setForeground(Color.LIGHT_GRAY);
 		label.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		mainPanel.add(label, "cell 4 3 2 1,alignx right,aligny bottom");
@@ -143,7 +143,7 @@ public class LauncherMainPanel extends JFrame{
 		    }
 		});
 		
-		btnStartScrypt.addActionListener(new ActionListener() {
+		btnStartScreept.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {

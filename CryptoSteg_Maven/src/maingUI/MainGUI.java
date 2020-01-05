@@ -177,8 +177,8 @@ public class MainGUI extends MainGuiParent{
 			// START MAIN WINDOW CONSTRUCTOR
 			logger.info("Initializing main GUI-start");
 			MainGUI window = new MainGUI();
-			frmScryptV.setVisible(true);
-			frmScryptV.setEnabled(true);
+			mainFrameScreept.setVisible(true);
+			mainFrameScreept.setEnabled(true);
 			mainGuiUtils = new MainGuiUtils(window);
 			logger.info("Main GUI initialized correctly.");
 			
@@ -207,7 +207,7 @@ public class MainGUI extends MainGuiParent{
 							}
 						}
 					}
-					logger.info("## AUTOSAVE module Stopped (Closing ScrYpt)");
+					logger.info("## AUTOSAVE module Stopped (Closing ScreepT)");
 				}
 			});
 			
@@ -239,7 +239,7 @@ public class MainGUI extends MainGuiParent{
 				        	logger.warn("## AUTOSAVE-MANAGER interrupted.");
 						}
 					}
-					logger.warn("## AUTOSAVE-MANAGER Stopped (Closing ScrYpt)");
+					logger.warn("## AUTOSAVE-MANAGER Stopped (Closing ScreepT)");
 				}
 			});
 			
@@ -247,7 +247,7 @@ public class MainGUI extends MainGuiParent{
 			autosaveManager.start();
 			
 			// MAIN WINDOW RESIZE LISTENER
-			frmScryptV.addComponentListener(new ComponentAdapter() {
+			mainFrameScreept.addComponentListener(new ComponentAdapter() {
 				@Override
 				public void componentResized(ComponentEvent componentEvent) {
 					MainGUI.mainAPP.resizeMainFrameDefaults();
@@ -255,7 +255,7 @@ public class MainGUI extends MainGuiParent{
 			});
 			
 			// MAIN WINDOW CLOSE LISTENER
-			frmScryptV.addWindowListener(new java.awt.event.WindowAdapter() {
+			mainFrameScreept.addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 			    	askForExit();
@@ -264,8 +264,8 @@ public class MainGUI extends MainGuiParent{
 			
 			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 
-			frmScryptV.requestFocus();
-			frmScryptV.toFront();
+			mainFrameScreept.requestFocus();
+			mainFrameScreept.toFront();
 			
 			SwingUtilities.invokeLater(new Runnable() {
 				
@@ -321,7 +321,7 @@ public class MainGUI extends MainGuiParent{
 					GuiUtils.launchThreadSafeSwing(new Runnable() {
 						public void run() {
 							
-							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScrYpT", 100, 200);
+							MainGuiGeneralAppStarter.loaderGraphics.update("Welcome to ScreepT", 100, 200);
 							
 							window.startTitleUpdater();
 							
@@ -348,7 +348,6 @@ public class MainGUI extends MainGuiParent{
 				}
 			});
 			
-			//window.frmScryptV.getContentPane().setPreferredSize( new Dimension(screenWidth, screenHeight));
 		} catch (Exception e) {
 			logger.error("Exception happened!", e);
 		}
@@ -382,7 +381,7 @@ public class MainGUI extends MainGuiParent{
 		// SW window icon
 		try {
 			SW_ICON = ImageIO.read(new File(ImagesPathConfigurator.MAIN_APP_ICON));
-			frmScryptV.setIconImage(SW_ICON);
+			mainFrameScreept.setIconImage(SW_ICON);
 			logger.info("icon image setted to main window");
 		} catch (IOException e1) {
 			logger.error("Exception happened!", e1);
@@ -410,21 +409,21 @@ public class MainGUI extends MainGuiParent{
 		subMenuSize = menuSize-2;
 		
 		// INITIALIZE MAIN FRAME
-		frmScryptV = new JFrame();
-		frmScryptV.setEnabled(false);
-		frmScryptV.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
-		frmScryptV.getContentPane().setBackground(SystemColor.windowText);
-		frmScryptV.setBounds(0, 0, 1500, 850 );
-		frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
-		frmScryptV.addMouseListener(new ComponentResizer());
-		frmScryptV.setJMenuBar(menuBar);
+		mainFrameScreept = new JFrame();
+		mainFrameScreept.setEnabled(false);
+		mainFrameScreept.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
+		mainFrameScreept.getContentPane().setBackground(SystemColor.windowText);
+		mainFrameScreept.setBounds(0, 0, 1500, 850 );
+		mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
+		mainFrameScreept.addMouseListener(new ComponentResizer());
+		mainFrameScreept.setJMenuBar(menuBar);
 		
  		// This will be used to print out various types of dialogs in this class
- 		dialogHelper = new JOptionHelperExtended(frmScryptV.getContentPane());
+ 		dialogHelper = new JOptionHelperExtended(mainFrameScreept.getContentPane());
 		
 		// FULL SCREEN SETTING
-	    frmScryptV.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frmScryptV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    mainFrameScreept.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mainFrameScreept.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         setBackgroundImage();
         
@@ -477,16 +476,16 @@ public class MainGUI extends MainGuiParent{
  					mainGuiUtils.deReferenceUnusedPanels();
  					System.gc();
  					System.runFinalization();
- 					dialogHelper.info("ScrYpT's Resources usage optimized.", "Resources usage optimized.");
+ 					dialogHelper.info("ScreepT's Resources usage optimized.", "Resources usage optimized.");
  				} catch(Exception e1) {
- 					String errorMessage = "Cannot optimize ScrYpT's resources usage, something has gone wrong!";
+ 					String errorMessage = "Cannot optimize ScreepT's resources usage, something has gone wrong!";
  					logger.error(errorMessage, e1);
  					dialogHelper.warn(errorMessage, "Cannot clean resources");
  				}
  			}
  		});
  
-		// NOT OPENING VIEW - EXIT AND CLOSE SCRYPT
+		// NOT OPENING VIEW - EXIT AND CLOSE SCREEPT
 		mntmExit = new CustomJmenuItem(new AbstractAction("Exit") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExit) {
@@ -507,7 +506,7 @@ public class MainGUI extends MainGuiParent{
 		    			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    			FLAG_loadPrjSub = true;
 						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, GeneralConfig.DEFAULT_INI_FOLDER);
-						panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
+						panel.setBounds(20, 20, mainFrameScreept.getWidth(), mainFrameScreept.getHeight() / 2);
 						FLAG_loadPrjSub = false;
 						updateGuiFromCurrConfig();
 					}
@@ -522,7 +521,7 @@ public class MainGUI extends MainGuiParent{
 		    public void actionPerformed(ActionEvent ae) {
 		    	if(dialogHelper.yesOrNo(msg1 + "all panels" + msg2, "Reset all panels?")) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-		    		mainGuiUtils.resetPanel(null, MainGUI.frmScryptV);
+		    		mainGuiUtils.resetPanel(null, MainGUI.mainFrameScreept);
 		    	}
 			}
 	    });
@@ -532,7 +531,7 @@ public class MainGUI extends MainGuiParent{
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					mainGuiUtils.resetPanel(TextEditor.class, MainGUI.frmScryptV);
+					mainGuiUtils.resetPanel(TextEditor.class, MainGUI.mainFrameScreept);
 		    	}
 			}
 		});
@@ -542,7 +541,7 @@ public class MainGUI extends MainGuiParent{
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					mainGuiUtils.resetPanel(CrypterPanel.class, MainGUI.frmScryptV);
+					mainGuiUtils.resetPanel(CrypterPanel.class, MainGUI.mainFrameScreept);
 		    	}
 			}
 		});
@@ -552,7 +551,7 @@ public class MainGUI extends MainGuiParent{
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-					mainGuiUtils.resetPanel(ConfigurationManagerPanel.class, MainGUI.frmScryptV);
+					mainGuiUtils.resetPanel(ConfigurationManagerPanel.class, MainGUI.mainFrameScreept);
 		    	}
 			}
 		});
@@ -563,7 +562,7 @@ public class MainGUI extends MainGuiParent{
 		    	if (!FLAG_savePrjSub) {
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSub = true;
-		    		ConfigurationManagerPanel.saveCurrentConf(currentConfiguration, frmScryptV);
+		    		ConfigurationManagerPanel.saveCurrentConf(currentConfiguration, mainFrameScreept);
 		    		FLAG_savePrjSub = false;
 				}  	
 		    }
@@ -576,7 +575,7 @@ public class MainGUI extends MainGuiParent{
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSubAs = true;
 					INIfileChoosER panel = new INIfileChoosER(currentConfiguration, (JLabel)null);
-					panel.setBounds(20, 20, frmScryptV.getWidth(), frmScryptV.getHeight() / 2);
+					panel.setBounds(20, 20, mainFrameScreept.getWidth(), mainFrameScreept.getHeight() / 2);
 					FLAG_savePrjSubAs = false;
 				}  	
 		    }
@@ -635,7 +634,7 @@ public class MainGUI extends MainGuiParent{
 			}
 		});
 
-		// NOT OPENING VIEW - RELOAD STANDARD SCRYPT CONFIGURATION
+		// NOT OPENING VIEW - RELOAD STANDARD SCREEPT CONFIGURATION
 		mntmloadSrcrYptDefaultConf = new CustomJmenuItem(new AbstractAction("Reset Original") {
 		    public void actionPerformed(ActionEvent ae) {
 
@@ -643,7 +642,7 @@ public class MainGUI extends MainGuiParent{
 		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadSrcrYptDefaultConf = true;
 					if (dialogHelper.yesOrNo(
-							"Really want to Reset standard ScrypT configuration? Unsaved changes will be lost! ",
+							"Really want to Reset standard ScreepT configuration? Unsaved changes will be lost! ",
 							"Warning - Reset INI standard config?")) {
 						try {
 							FileUtils.copyFile(new File(GeneralConfig.BACKUP_INI), new File(GeneralConfig.DEFAULT_INI));
@@ -674,7 +673,7 @@ public class MainGUI extends MainGuiParent{
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmExportLog = true;
 					
-					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScrYpT_launcher's customize options at start)";
+					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScreepT_launcher's customize options at start)";
 					boolean choice = true;
 					if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
 						choice = dialogHelper.yesOrNo(msg, "Export logs even if disabled?");
@@ -683,7 +682,7 @@ public class MainGUI extends MainGuiParent{
 					if (choice) {
 
 						// show input dialog to select the file(gives null in case of no file selected)
-						File selected = fileLogWriteDialog(frmScryptV);
+						File selected = fileLogWriteDialog(mainFrameScreept);
 						if (selected != null) {
 							logger.info("\n\n##################################################\n\n" + now.toString()
 							 		+ "\n\nBuild N°: " + GeneralConfig.BUILD_INCREMENTAL_NUMBER + "\n\n"
@@ -752,7 +751,7 @@ public class MainGUI extends MainGuiParent{
 				if (!FLAG_mntmTouppercaseDirectory) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmTouppercaseDirectory = true;
-					last_dir_used = FilesAndDirectoriesManagerGUI.renameFirstLetterDirNames(frmScryptV, last_dir_used);
+					last_dir_used = FilesAndDirectoriesManagerGUI.renameFirstLetterDirNames(mainFrameScreept, last_dir_used);
 					FLAG_mntmTouppercaseDirectory = false;
 				}
 			}
@@ -764,7 +763,7 @@ public class MainGUI extends MainGuiParent{
 				if (!FLAG_mntmDeleteDirectoryContentByExtension) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentByExtension = true;
-					FilesAndDirectoriesManagerGUI.deleteContentByExtension(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.deleteContentByExtension(mainFrameScreept, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentByExtension = false;
 				}
 			}
@@ -776,7 +775,7 @@ public class MainGUI extends MainGuiParent{
 				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentRecursive = true;
-					FilesAndDirectoriesManagerGUI.deleteAllContent(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.deleteAllContent(mainFrameScreept, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentRecursive = false;
 				}
 			}
@@ -788,7 +787,7 @@ public class MainGUI extends MainGuiParent{
 				if(!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = true;
-					FilesAndDirectoriesManagerGUI.deleteOnlyFilesInFolder(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.deleteOnlyFilesInFolder(mainFrameScreept, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
 				}
 			}
@@ -800,7 +799,7 @@ public class MainGUI extends MainGuiParent{
 				if (!FLAG_mntmMakeDirsFromPath) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmMakeDirsFromPath = true;
-					FilesAndDirectoriesManagerGUI.makeDirsFromPath(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.makeDirsFromPath(mainFrameScreept, currentConfiguration);
 					FLAG_mntmMakeDirsFromPath = false;
 				}
 			}
@@ -812,7 +811,7 @@ public class MainGUI extends MainGuiParent{
 				if(!FLAG_mntmCopyDirStructure) {
 					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmCopyDirStructure = true;
-					FilesAndDirectoriesManagerGUI.copyDirStructure(frmScryptV, currentConfiguration);
+					FilesAndDirectoriesManagerGUI.copyDirStructure(mainFrameScreept, currentConfiguration);
 					FLAG_mntmCopyDirStructure = false;
 				}
 			}
@@ -833,11 +832,11 @@ public class MainGUI extends MainGuiParent{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (frmScryptV.isUndecorated()) {
+						if (mainFrameScreept.isUndecorated()) {
 						} else {
 						}
 						
-						setFullScreenEnabled(!frmScryptV.isUndecorated());
+						setFullScreenEnabled(!mainFrameScreept.isUndecorated());
 						
 						// Update txtArea to adapt new size
 						if(initTxtWriter != null && initTxtWriter.textEditorUtils != null) {
@@ -950,8 +949,8 @@ public class MainGUI extends MainGuiParent{
 			}
 		});
 		
-		// open in a new window - ABOUT SCRYPT
-		mntmAboutScreept = new CustomJmenuItem(new AbstractAction("About - ScrYpt") {
+		// open in a new window - ABOUT ScreepT
+		mntmAboutScreept = new CustomJmenuItem(new AbstractAction("About - ScreepT") {
 			public void actionPerformed(ActionEvent e) {
 				
 				windowCreator.newAboutSectionFrame();
@@ -1069,7 +1068,7 @@ public class MainGUI extends MainGuiParent{
 		});
 
 		// BACKGROUND RESIZER //
-		frmScryptV.addComponentListener(new ComponentListener() {
+		mainFrameScreept.addComponentListener(new ComponentListener() {
 			public void componentShown(ComponentEvent e) {
 				resizeMainFrameDefaults();
 			}
@@ -1099,7 +1098,7 @@ public class MainGUI extends MainGuiParent{
 		// check non compatible options with current JVM
 		checkVersionAndDisableUnsupportedOpt();
 		
-		frmScryptV.requestFocus();
+		mainFrameScreept.requestFocus();
 		
 		logger.debug("MainGui instance initialized");
 	}
@@ -1110,12 +1109,12 @@ public class MainGUI extends MainGuiParent{
 	public void setFullScreenEnabled(boolean enable) {
 		
 		if(enable) {
-			frmScryptV.dispose();
-			preFullScreenSize = GuiUtils.makeFullScreen(frmScryptV);
-			frmScryptV.setSize(preFullScreenSize);
-			frmScryptV.setMinimumSize(GuiUtils.getScreenSize(frmScryptV));
-			frmScryptV.setLocationRelativeTo(frmScryptV);
-			frmScryptV.setVisible(true);
+			mainFrameScreept.dispose();
+			preFullScreenSize = GuiUtils.makeFullScreen(mainFrameScreept);
+			mainFrameScreept.setSize(preFullScreenSize);
+			mainFrameScreept.setMinimumSize(GuiUtils.getScreenSize(mainFrameScreept));
+			mainFrameScreept.setLocationRelativeTo(mainFrameScreept);
+			mainFrameScreept.setVisible(true);
 			isFullScreen.set(true);
 			mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
 //			movePanelMouseListener = MovePanelMouseListener.applyMoveListenerR(frmScryptV); // USE TO ADD LISTENER DRAG PANEL
@@ -1123,13 +1122,13 @@ public class MainGUI extends MainGuiParent{
 		} else {
 //			MovePanelMouseListener.removeMoveListener(frmScryptV, movePanelMouseListener); // USE TO REMOVE LISTENER DRAG PANEL
 			if(preFullScreenSize == null) {
-				preFullScreenSize = GuiUtils.getScreenSize(frmScryptV);
+				preFullScreenSize = GuiUtils.getScreenSize(mainFrameScreept);
 			}
-			frmScryptV.dispose();
-			frmScryptV.setUndecorated(false);
-			frmScryptV.setLocationRelativeTo(frmScryptV);
-			frmScryptV.setSize(preFullScreenSize);
-			frmScryptV.setVisible(true);
+			mainFrameScreept.dispose();
+			mainFrameScreept.setUndecorated(false);
+			mainFrameScreept.setLocationRelativeTo(mainFrameScreept);
+			mainFrameScreept.setSize(preFullScreenSize);
+			mainFrameScreept.setVisible(true);
 			isFullScreen.set(false);
 			menuBar.setVisible(true);
 			mntmFullScreenMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPAND));
@@ -1140,21 +1139,21 @@ public class MainGUI extends MainGuiParent{
 	
 	public void resizeMainFrameDefaults() {
 
-		frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
+		mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSize);
 		
 		// resize background - Only on home page to improve performance
 		if (isOnHomePage.get()) {
-			labelBACKground.setSize(frmScryptV.getContentPane().getSize());
+			labelBACKground.setSize(mainFrameScreept.getContentPane().getSize());
 		}
 
 		// resize textEditor if present
-		if (frmScryptV.getContentPane().getComponent(0) instanceof TextEditor) {
+		if (mainFrameScreept.getContentPane().getComponent(0) instanceof TextEditor) {
 			initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
 		}
 
 		// resize textEditor if present
-		if (frmScryptV.getContentPane().getComponent(0) instanceof CrypterPanel) {
-			frmScryptV.setMinimumSize(MainGuiGeneralAppStarter.minimumSizeCrypter);
+		if (mainFrameScreept.getContentPane().getComponent(0) instanceof CrypterPanel) {
+			mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSizeCrypter);
 			panelCrypter.resizeFrameToDefault(mainAPP);
 		}
 	}
@@ -1162,7 +1161,7 @@ public class MainGUI extends MainGuiParent{
 	public void addHandlers() {
 		
 		// DEACTIVATE OPEN MENU ON CLICK OUTSIDE IT WHEN OPEN
-		frmScryptV.addMouseListener(new MouseListener() {
+		mainFrameScreept.addMouseListener(new MouseListener() {
 			
 			public void mouseReleased(MouseEvent e) {
 				MenuSelectionManager.defaultManager().clearSelectedPath();
@@ -1191,7 +1190,7 @@ public class MainGUI extends MainGuiParent{
 		try {
 			JPanel MAIN_PANEL = new JPanel();
 			MAIN_PANEL.setBackground(SystemColor.infoText);
-            frmScryptV.getContentPane().add(MAIN_PANEL);
+            mainFrameScreept.getContentPane().add(MAIN_PANEL);
             MAIN_PANEL.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[90%]", "[1.00][100.52%,baseline]"));
             
             if(APPLICATION_MAIN_BCKG_IMAGE == null) {
@@ -1199,7 +1198,7 @@ public class MainGUI extends MainGuiParent{
             }
             
             labelBACKground = new JLabel(new ImageIcon(APPLICATION_MAIN_BCKG_IMAGE));
-		   	JPanel contentPane = (JPanel) frmScryptV.getContentPane();
+		   	JPanel contentPane = (JPanel) mainFrameScreept.getContentPane();
 		   	contentPane.removeAll();
 	    	contentPane.add(labelBACKground);
 	    	contentPane.revalidate(); 
@@ -1283,12 +1282,12 @@ public class MainGUI extends MainGuiParent{
 		
     	if (dialogHelper.showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
 
-    		frmScryptV.setAlwaysOnTop(true);
+    		mainFrameScreept.setAlwaysOnTop(true);
     		closeApplication(0);
     		
     	}else {
     		
-    		frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    		mainFrameScreept.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     		activeWindow.toFront();
     		activeWindow.requestFocus();
     	}
@@ -1298,9 +1297,9 @@ public class MainGUI extends MainGuiParent{
 	public static void killApplication(int exitCode) {
 		logger.warn("\n\n => Starting kill procedure...\n\n");
 		
-		if (frmScryptV != null) {
+		if (mainFrameScreept != null) {
 			// if controls are passed then start real application closing routine
-			frmScryptV.setAlwaysOnTop(false);
+			mainFrameScreept.setAlwaysOnTop(false);
 		}
 		
 		closeOpenBlockingFrames();
@@ -1330,17 +1329,17 @@ public class MainGUI extends MainGuiParent{
 		
 		// CHECK UNSAVED TEXT EDITOR FILES
 		if(!askUnsavedTextFiles()) {
-			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			mainFrameScreept.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			return;
 		}
 		
-		if(doIfTempDecryptedChanged(frmScryptV)) {
-			frmScryptV.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		if(doIfTempDecryptedChanged(mainFrameScreept)) {
+			mainFrameScreept.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			return;
 		}
 		
 		// if controls are passed then start real application closing routine
-		frmScryptV.setAlwaysOnTop(true);
+		mainFrameScreept.setAlwaysOnTop(true);
 		
 		closeOpenBlockingFrames();
 		
@@ -1500,7 +1499,7 @@ public class MainGUI extends MainGuiParent{
 			}
 		} 
 		
-		Boolean choiceY = GenericFileChooserDialog.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", frmScryptV, askCondition);
+		Boolean choiceY = GenericFileChooserDialog.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", mainFrameScreept, askCondition);
 		if(choiceY == null) {
 			// cancel -> don't exit
 			return false;
