@@ -33,6 +33,7 @@ import org.ini4j.Wini;
 import amfileutils.FileStuff;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
+import files.ZipWorker;
 import files.watcher.ChangeDTO;
 import frameutils.utils.ComponentResizer;
 import frameutils.utils.GuiUtils;
@@ -67,7 +68,6 @@ import java.awt.Window;
 import java.awt.Dialog.ModalExclusionType;
 
 import net.miginfocom.swing.MigLayout;
-import network.DownloadUtils;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -696,7 +696,7 @@ public class MainGUI extends MainGuiParent{
 							tempFolder.mkdir();
 							File copiedMainLog = FileStuff.copyFileIntoDir(new File(GeneralConfig.LOG_PATH), tempFolder, true);
 							File copiedLauncherLog = FileStuff.copyFileIntoDir(new File(GeneralConfig.LOG_LAUNCHER_PATH), tempFolder, false);
-							File zipped = DownloadUtils.zipFolderToFile(tempFolder.getAbsolutePath(), selected, true, true);
+							File zipped = ZipWorker.zipFolderToFile(tempFolder.getAbsolutePath(), selected, true, true);
 							boolean copied = copiedMainLog != null && copiedLauncherLog != null;
 							if (copied && zipped != null && zipped.exists()) {
 								dialogHelper.info("File correctly saved in " + zipped, "Log File Exported :)");
@@ -996,7 +996,7 @@ public class MainGUI extends MainGuiParent{
 			}
 		});
 
-		// Check and download/install updates
+		// Check and download/install Plugins
 		mntmLookForPlugins = new CustomJmenuItem(new AbstractAction("Install plugins...") {
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
@@ -1373,6 +1373,14 @@ public class MainGUI extends MainGuiParent{
 		MainGuiGeneralAppStarter.deleteSignalFileForExternalJars();
 		
 		// Check and launch eventual pending updates
+		checkUpdatesWaitingForInstall();
+		
+		logger.info("Exit procedure completed succesfully, now software will shut down");
+		
+		System.exit(exitCode);
+	}
+	
+	public static void checkUpdatesWaitingForInstall() {
 		try {
 			if (MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()) {
 				logger.error("Updates detected, starting updater jar application...");
@@ -1392,10 +1400,6 @@ public class MainGUI extends MainGuiParent{
 		} catch (IOException e) {
 			logger.error("Cannot start update procedure, an error occurred!", e);
 		}
-		
-		logger.info("Exit procedure completed succesfully, now software will shut down");
-		
-		System.exit(exitCode);
 	}
 	
 	public static void runTempFilesErasers() {

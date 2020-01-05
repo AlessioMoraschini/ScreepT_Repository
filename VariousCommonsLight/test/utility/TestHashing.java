@@ -12,9 +12,9 @@ import org.junit.Test;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import utility.hash.HashDTO;
-import utility.hash.Hasher;
-import utility.hash.Hasher.HashAlgorithm;
-import utility.hash.Hasher.IterationsLevel;
+import utility.hash.SafeHasher;
+import utility.hash.SafeHasher.HashAlgorithm;
+import utility.hash.SafeHasher.IterationsLevel;
 import utils.TestUtils;
 
 public class TestHashing {
@@ -34,7 +34,7 @@ public class TestHashing {
 		TestUtils.printHeader(S, 50, "CHAR ARRAY SRC");
 		
 		psw = new char[]{'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b'};
-		HashDTO hashResult = Hasher.hashPsw(psw, iter, algo);
+		HashDTO hashResult = SafeHasher.hashPsw(psw, iter, algo);
 		
 		TestUtils.printHeader(S, 40, "SOURCE");
 		TestUtils.printCharArray(psw);
@@ -45,7 +45,7 @@ public class TestHashing {
 		TestUtils.printHeader(S, 40, "HASHED");
 		TestUtils.printByteArray(hashResult.getHashed());
 		
-		byte[] hashBackResult = Hasher.hashPswWithGivenSalt(psw, hashResult.getSalt(), iter, algo);
+		byte[] hashBackResult = SafeHasher.hashPswWithGivenSalt(psw, hashResult.getSalt(), iter, algo);
 		
 		TestUtils.printHeader(S, 40, "HASHED-BACK with previous salt");
 		TestUtils.printByteArray(hashBackResult);
@@ -59,9 +59,9 @@ public class TestHashing {
 		String S = "B";
 		TestUtils.printHeader(S, 50, "BYTES ARRAY SRC");
 		
-		byte[] srcBytes = Hasher.generateSecureRandom(16);
-		psw = Hasher.byteArrayToChar(srcBytes);
-		HashDTO hashResult = Hasher.hashPsw(psw, iter, algo);
+		byte[] srcBytes = SafeHasher.generateSecureRandom(16);
+		psw = SafeHasher.byteArrayToChar(srcBytes);
+		HashDTO hashResult = SafeHasher.hashPsw(psw, iter, algo);
 		
 		TestUtils.printHeader(S, 40, "SOURCE_BYTES");
 		TestUtils.printByteArray(srcBytes);
@@ -75,7 +75,7 @@ public class TestHashing {
 		TestUtils.printHeader(S, 40, "HASHED");
 		TestUtils.printByteArray(hashResult.getHashed());
 		
-		byte[] hashBackResult = Hasher.hashPswWithGivenSalt(psw, hashResult.getSalt(), iter, algo);
+		byte[] hashBackResult = SafeHasher.hashPswWithGivenSalt(psw, hashResult.getSalt(), iter, algo);
 		
 		TestUtils.printHeader(S, 40, "HASHED-BACK with previous salt");
 		TestUtils.printByteArray(hashBackResult);

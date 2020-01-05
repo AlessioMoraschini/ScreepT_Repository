@@ -75,6 +75,7 @@ public class JOptionHelper {
 	
 	public JOptionHelper (Component parentComponent) {
 		this.parentComponent = (parentComponent != null) ? parentComponent : new JFrame();
+		this.enabledAdvices = true;
 	}
 	
 	public JOptionHelper (Component parentComponent, boolean enableAdvices) {

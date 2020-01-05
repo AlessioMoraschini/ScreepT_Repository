@@ -13,19 +13,22 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import files.Various;
+import files.ZipWorker;
 import gui.JOptionHelper;
 import gui.UpdateProgressPanel;
 import main.MainStandAloneUpdater;
-import network.DownloadUtils;
-import om.HashingFunction;
+import network.http.HttpHelper;
+import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
 import utility.PropertiesManagerLight;
 import utility.SafeLogger;
+import utility.hash.ChecksumHasher;
+import utility.hash.HashingFunction;
 
 /**
  * This class contains the methods to manage plugins download, verification, and installation. 
  * It also provides a local caching functionality to store temporaneus valid downloaded plugins.
- * @author xx
+ * @author Alessio Moraschini
  */
 public class PluginManager {
 	
@@ -122,7 +125,7 @@ public class PluginManager {
 		
 		// Unzip file
 		logger.info("Unzipping plugin: " + plugin.getLocalFile().getAbsolutePath());
-		File unzippedPlugin = DownloadUtils.unzipFile(plugin.getLocalFile().getAbsolutePath(), destinationNamedDir.getAbsolutePath(), true);
+		File unzippedPlugin = ZipWorker.unzipFile(plugin.getLocalFile().getAbsolutePath(), destinationNamedDir.getAbsolutePath(), true);
 		plugin.setLocalExtractedDir(unzippedPlugin);
 		
 		// Copy content into current application root, and update mainAppRoot-relative file installed into properties file
@@ -288,7 +291,7 @@ public class PluginManager {
 		UpdateProgressPanel pluginManagerProgbar = null;
 		
 		try {
-			if(DownloadUtils.isUrlReachable(new URL(WEB_PLUGINS_MANIFEST_URL))) {
+			if(HttpHelper.isUrlReachable(new URL(WEB_PLUGINS_MANIFEST_URL))) {
 				pluginManagerProgbar = new UpdateProgressPanel(true);
 				pluginManagerProgbar.getPb().setIndeterminate(true);
 				
@@ -430,7 +433,7 @@ public class PluginManager {
 			File localZipFile = pluginToCheck.getLocalFile();
 			
 			if(checkSum != null && !"".equals(checkSum.trim()) && localZipFile != null && localZipFile.exists() && localZipFile.isFile()) {
-				Boolean hashOk = DownloadUtils.checkFileHash(localZipFile, checkSum, DEFAULT_HASHING_F_PLUGINS);
+				Boolean hashOk = ChecksumHasher.checkFileHash(localZipFile, checkSum, DEFAULT_HASHING_F_PLUGINS);
 				return hashOk;
 			}
 		}
@@ -488,7 +491,7 @@ public class PluginManager {
 				&& pluginCacheVal.completeURL != null 
 				&& !"".equals(pluginCacheVal.completeURL);
 				
-		Boolean hashOk = DownloadUtils.checkFileHash(pluginCacheVal.localFile, pluginCacheVal.checkSum, DEFAULT_HASHING_F_PLUGINS);
+		Boolean hashOk = ChecksumHasher.checkFileHash(pluginCacheVal.localFile, pluginCacheVal.checkSum, DEFAULT_HASHING_F_PLUGINS);
 		
 		if(usablePlugin && hashOk) {
 			return pluginCacheVal;

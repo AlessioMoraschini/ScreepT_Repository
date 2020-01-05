@@ -20,7 +20,7 @@ import javax.crypto.spec.PBEKeySpec;
  * <b>NB:</>Compatible only for java 1.8 and more if algorithm used is "PBKDF2WithHmacSHA512"
  *
  */
-public class Hasher {
+public class SafeHasher {
 	
 	private static String algorithmSha512 = "PBKDF2WithHmacSHA512";
 	private static String algorithmSha1 = "PBKDF2WithHmacSHA1";

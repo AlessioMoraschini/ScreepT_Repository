@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 
+import network.utils.IPaddressConverter;
 import utility.BitWorker;
 
 public class NetworkAdapter {
@@ -100,24 +101,32 @@ public class NetworkAdapter {
 	}
 	
 	public String getSubnetMaskFromInetAddr() {
-		if(networkInterface != null && inetAddr != null) {
-			for (InterfaceAddress addressIface : networkInterface.getInterfaceAddresses()) {
-			    if (addressIface.getAddress().equals(inetAddr)) {
-					return BitWorker.maskLengthToBytes(addressIface.getNetworkPrefixLength());
+		try {
+			if(networkInterface != null && inetAddr != null) {
+				for (InterfaceAddress addressIface : networkInterface.getInterfaceAddresses()) {
+				    if (addressIface.getAddress().equals(inetAddr)) {
+						return BitWorker.maskLengthToBytes(addressIface.getNetworkPrefixLength());
+					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		} 
 		
 		return "- Address Undefined -";
 	}
 
 	public String getBroadCastFromInetAddr() {
-		if(networkInterface != null && inetAddr != null) {
-			for (InterfaceAddress addressIface : networkInterface.getInterfaceAddresses()) {
-				if (addressIface.getAddress().equals(inetAddr)) {
-					return addressIface.getBroadcast().getHostAddress();
+		try {
+			if(networkInterface != null && inetAddr != null) {
+				for (InterfaceAddress addressIface : networkInterface.getInterfaceAddresses()) {
+					if (addressIface.getAddress().equals(inetAddr)) {
+						return addressIface.getBroadcast().getHostAddress();
+					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		} 
 		
 		return "- Address Undefined -";

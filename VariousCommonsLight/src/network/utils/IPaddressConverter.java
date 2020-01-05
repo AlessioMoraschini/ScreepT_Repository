@@ -1,4 +1,4 @@
-package network;
+package network.utils;
 
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;

@@ -8,7 +8,7 @@ import java.awt.event.MouseMotionListener;
 
 /**
  * Use This applied to a Frame to make it draggable even if undecorated
- * @author xx
+ * @author Alessio Moraschini
  *
  */
 public class MovePanelMouseListener implements MouseListener, MouseMotionListener {

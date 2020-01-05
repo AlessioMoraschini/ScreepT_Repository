@@ -10,9 +10,9 @@ import frameutils.utils.GuiUtils;
 import gui.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.hash.Hasher;
-import utility.hash.Hasher.HashAlgorithm;
-import utility.hash.Hasher.IterationsLevel;
+import utility.hash.SafeHasher;
+import utility.hash.SafeHasher.HashAlgorithm;
+import utility.hash.SafeHasher.IterationsLevel;
 import variousutils.HandleString;
 import net.miginfocom.swing.MigLayout;
 
@@ -258,9 +258,9 @@ public class GeneratePasswordFrame extends ParentFrame{
 						if (source.option == 0) {
 							expanded = source.value;
 						} else {
-							expanded = Hasher.byteArrayToChar(Hasher.fillArrayFromOtherArray(Hasher.charArrayToByte(source.value), (int) spinnerLength.getValue()));
+							expanded = SafeHasher.byteArrayToChar(SafeHasher.fillArrayFromOtherArray(SafeHasher.charArrayToByte(source.value), (int) spinnerLength.getValue()));
 						}
-						final String raw = DatatypeConverter.printHexBinary(Hasher.hashPswWithGivenSalt(expanded, fixedSalt, IterationsLevel.HIGH, HashAlgorithm.PBKDF2SHA512));
+						final String raw = DatatypeConverter.printHexBinary(SafeHasher.hashPswWithGivenSalt(expanded, fixedSalt, IterationsLevel.HIGH, HashAlgorithm.PBKDF2SHA512));
 						final String converted = source.option == 0 ? 
 								HandleString.forceLength(raw, (int)spinnerLength.getValue(), getPossibleCharacters()) :
 									HandleString.forceLengthDeterministic(raw, (int)spinnerLength.getValue(), "O");

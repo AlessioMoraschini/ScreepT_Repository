@@ -8,9 +8,9 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
+import files.Various;
 import om.AesOption;
 import om.FileOptions;
 import om.GenericOption;
@@ -20,16 +20,16 @@ import om.ScalingAlgorithm;
 import om.SteganOption;
 import om.TextEditorOption;
 import om.files.FileNamed;
-import resources.GeneralConfig;
+import utility.SafeLogger;
 
 public class INItializer extends INItializerParent implements INItializerInterface{
 
 	// INItializer logger creation		
-	static Logger logger = Logger.getLogger(INItializer.class); 
+	static SafeLogger logger = new SafeLogger(INItializer.class); 
 	
 	// DEFAULT INI
 	public final static String DEFAULT_INI_PATH = "Resources_Scrypt/CONFIG.ini"; 
-	
+
 	// options om
 	private GenericOption genOpt;
 	private FileOptions fileOpt;
@@ -132,11 +132,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			logger.info("Configuration written to: "+iniFile.getFile().getAbsolutePath() + this.toStringa());
 			
 			// WRITE ALL VALUES TO FILE
-			try {
-				iniFile.store();
-			} catch (IOException e) {
-				logger.error("Exception happened!", e);
-			}
+			super.store();
 		}
 	}
 	
@@ -295,7 +291,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		Color filePanelBackCol = (!"".equals(FilePanelbackColStr) && FilePanelbackColStr!= null)? getRgbColorFromString(FilePanelbackColStr) : TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
 		Color foreCol = (!"".equals(foreColStr) && foreColStr!= null)? getRgbColorFromString(foreColStr) : TextEditorOption.DEFAULT_FOREGROUND_COL;
 		String selectedFileAtStart = (!"".equals(selectedAtStartStr) && selectedAtStartStr!= null)? selectedAtStartStr : TextEditorOption.DEFAULT_SELECTED_FILE_AT_START;
-		String defaultWorspaceLocation = (!"".equals(defaultWorspaceLocationStr) && defaultWorspaceLocationStr!= null)? defaultWorspaceLocationStr : GeneralConfig.USER_PERSONAL_DIR;
+		String defaultWorspaceLocation = (!"".equals(defaultWorspaceLocationStr) && defaultWorspaceLocationStr!= null)? defaultWorspaceLocationStr : USER_PERSONAL_DIR;
 		String lastEscapeLanguage = (!"".equals(lastEscapeLanguageStr) && lastEscapeLanguageStr!= null)? lastEscapeLanguageStr : TextEditorOption.DEF_LastEscapeLanguage;
 		
 		int tabSize = 2;
@@ -335,9 +331,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_VOICE_RATE);
 		}
 		
-		textEditorOpt.setDividerFileTreePosX(getIntVarFromConf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerFileTreePosX"), TextEditorOption.DEFAULT_DIVIDER_POS_X));
-		textEditorOpt.setDividerRightPanePosX(getIntVarFromConf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosX"), TextEditorOption.DEF_dividerRightPanePosX));
-		textEditorOpt.setDividerRightPanePosXClipboard(getIntVarFromConf(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard"), TextEditorOption.DEF_dividerRightPanePosXClipboard));
+		textEditorOpt.setDividerFileTreePosX(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerFileTreePosX"), TextEditorOption.DEFAULT_DIVIDER_POS_X));
+		textEditorOpt.setDividerRightPanePosX(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosX"), TextEditorOption.DEF_dividerRightPanePosX));
+		textEditorOpt.setDividerRightPanePosXClipboard(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard"), TextEditorOption.DEF_dividerRightPanePosXClipboard));
 		
 		// automatic syntax selection file-extension-based
 		textEditorOpt.setDefaultAutoSyntaxSync(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync")));
@@ -444,7 +440,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		
 		// selected theme
 		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
-		String theme = (themeRead != null && !themeRead.equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
+		String theme = (!Various.trimToEmpty(themeRead).equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
 		textEditorOpt.setSelectedTheme(theme);
 	}
 	

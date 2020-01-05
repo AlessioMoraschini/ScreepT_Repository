@@ -23,6 +23,7 @@ public class JOptionHelperExtended extends JOptionHelper {
 	
 	public JOptionHelperExtended (Component parentComponent) {
 		super(parentComponent);
+		this.enabledAdvices = true;
 	}
 	
 	public JOptionHelperExtended (Component parentComponent, boolean enableAdvices) {

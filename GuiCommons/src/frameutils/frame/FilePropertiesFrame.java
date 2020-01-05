@@ -13,11 +13,11 @@ import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
-import network.DownloadUtils;
-import om.HashingFunction;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
+import utility.hash.ChecksumHasher;
+import utility.hash.HashingFunction;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -256,7 +256,7 @@ public class FilePropertiesFrame extends JFrame{
 		try {
 			if (fileUnderAnalysis != null) {
 				if (fileUnderAnalysis.isFile()) {
-					hashMd5DynLbl.setText(DownloadUtils.getFileHash(fileUnderAnalysis.getAbsolutePath(), HashingFunction.MD5));
+					hashMd5DynLbl.setText(ChecksumHasher.getFileHash(fileUnderAnalysis.getAbsolutePath(), HashingFunction.MD5));
 				} else {
 					hashMd5DynLbl.setText("Not a File... cannot hash!");
 				}

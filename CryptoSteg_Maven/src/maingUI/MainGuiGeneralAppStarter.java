@@ -134,7 +134,7 @@ public class MainGuiGeneralAppStarter {
 				// Load updates manager module
 				loaderGraphics.update("Starting updates manager...", 5);
 				updatesManager = new UpdatesManager(new URL(GeneralConfig.WEB_UPDATES_MANIFEST_URL), GeneralConfig.APP_VERSION);
-				updatesManager.emtpyUpdatesDir();
+				updatesManager.emptyUpdatesDir();
 				logger.info("Updates manager started!");
 			} catch (Exception e) {
 				logger.error("Cannot initialize Updates Manager :(", e);

@@ -1,4 +1,4 @@
-package om;
+package utility.hash;
 
 public enum HashingFunction {MD5("MD5"),
 							 SHA1("SHA-1"),

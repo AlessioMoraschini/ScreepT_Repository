@@ -445,7 +445,8 @@
             </configuration>            
           </execution>
           
-      <!-- (C-6) SCRYPT'S UPDATES packaging - To manually hash, zip and upload on server each time -->
+      <!-- (C-6) SCRYPT'S UPDATES packaging - To hash, zip and upload on server each time 
+      (you can use updater.jar: see MainStandAloneUpdater functions A and A.1)-->
           <execution>
             <id>copy-resources -> ${export.updates.folder}</id>
             <phase>install</phase>

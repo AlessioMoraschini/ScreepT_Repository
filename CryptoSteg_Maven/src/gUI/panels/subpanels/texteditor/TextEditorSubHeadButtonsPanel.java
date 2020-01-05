@@ -51,6 +51,7 @@ import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import amfileutils.FileStuff;
 import conversion.Text2Speech;
 import dialogutils.JOptionHelperExtended;
+import files.Various;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.EscapeReplacerFrame;
 import frameutils.frame.FilePropertiesFrame;
@@ -83,7 +84,7 @@ import variousutils.HandleString;
 
 /**
  * This panel will contain all buttons to do actions into textEditor, in order to have small and separated module to use into GUI
- * @author xx
+ * @author Alessio Moraschini
  *
  */
 public class TextEditorSubHeadButtonsPanel extends JPanel{
@@ -1063,20 +1064,38 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnDefaultOpt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				logger.debug("Applying default values from .ini current configuration file...");
+				
 				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
-				loadedTabObj.textArea.setFont(GeneralConfig.DEFAULT_FONT);
-
+				// UPDATE GUI
 				RsyntaxUtils.setBackground(loadedTabObj.textArea, DEFAULT_BCKG_COL);
 				loadedTabObj.textArea.setBackground(DEFAULT_BCKG_COL);
 				RsyntaxUtils.setForeground(loadedTabObj.textArea, DEFAULT_FORE_COL);
 				loadedTabObj.textArea.setForeground(DEFAULT_FORE_COL);
 
-				slider_margin.setValue(10);
-				sliderFontSize.setValue(loadedTabObj.textArea.getFont().getSize());
-				lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
+				try {
+					String marginString = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "margin");
+					slider_margin.setValue(INItializer.getIntVarFromString(marginString, 10));
+					
+					String fontString = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "font");
+					Font defaultFont = INItializer.getFontFromString(fontString, currentConfiguration.getTextEditorOpt().getFont());
+					
+					loadedTabObj.textArea.setFont(defaultFont);
+					
+					sliderFontSize.setValue(defaultFont.getSize());
+					lblSIZE.setText(String.valueOf(defaultFont.getSize()) + " Px");
+				} catch (IOException e1) {
+					logger.warn("Cannot update default margin/Font: an error occurred", e1);
+				}
+				
+				applyDefaultStyle();
+				applyFileFormatSyntaxFull();
 
-				textEditorUtils.defaultTxtConfig(GeneralConfig.DEFAULT_FONT, DEFAULT_BCKG_COL, DEFAULT_FORE_COL, 10);
+				// UPDATE CONFIGURATION (in memory only)
+				textEditorUtils.updateDefaultTxtConfig(GeneralConfig.DEFAULT_FONT, DEFAULT_BCKG_COL, DEFAULT_FORE_COL, 10);
+
+				logger.debug("Default values applying from .ini current configuration file Completed!");
 			}
 		});
 
@@ -1234,7 +1253,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							// else speak
 							objSpeaker = new Text2Speech();
 							btnSpeak.setBackground(Color.RED);
-							objSpeaker.dospeak(selected , "kevin16", (parent.headerPanel.sliderSpokenSpeed.getValue() / 100.0f));
+//							float volume = currentConfiguration.getGenOpt().getGeneralVolume();
+							float volume = 1.0F;
+							objSpeaker.dospeak(selected , "kevin16", (parent.headerPanel.sliderSpokenSpeed.getValue() / 100.0f), volume);
 							objSpeaker = null;
 							btnSpeak.setBackground(new Color(176, 196, 222));
 						}
@@ -1323,7 +1344,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// FILE FORMAT SELECTOR
 		comboFileFormat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				applyFileFormatFull();
+				applyFileFormatSyntaxFull();
 			}
 		});
 		
@@ -1695,7 +1716,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		enableDependenciesFunctions();
 	}
 	
-	public void applyFileFormatFull() {
+	public void applyFileFormatSyntaxFull() {
 		TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 		
 		// backup unsaved to avoid changing saved info with theme change
@@ -1709,9 +1730,40 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		}
 		
 		parent.getCurrentTabEditor().updateSavedLabelNTab(null);
-		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
-		currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(((SupportedFileTextEditor)comboFileFormat.getSelectedItem()).toString());
+		
+		if (!currentConfiguration.getTextEditorOpt().clipboardSyncStyle) {
+			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync",
+					currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
+			currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(((SupportedFileTextEditor) comboFileFormat.getSelectedItem()).toString());
+		}
+	}
 	
+	/**
+	 * Read default value from currentConfiguration file and apply read theme using it: NB current configuration in memory will be updated with it
+	 */
+	public void applyDefaultStyle() {
+		try {
+			String prefThemeFromFile = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "preferredTheme");
+			if (!Various.trimToEmpty(prefThemeFromFile).equals("")) {
+				comboStylesScheme.setSelectedItem(ThemesWrapper.getFromListByPath(prefThemeFromFile, themeList));
+			}
+		} catch (Exception e) {
+			logger.error("Cannot set default theme from configuration file", e);
+		}
+	}
+	
+	/**
+	 * Read default value from currentConfiguration file and apply syntax using it: NB current configuration in memory will be updated with it
+	 */
+	public void applyDefaultFileFormatSyntax() {
+		try {
+			String prefSyntaxFromConfigFile = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "preferredTheme");
+			if (!Various.trimToEmpty(prefSyntaxFromConfigFile).equals("")) {
+				applyFileFormatSyntaxFull();
+			}
+		} catch (Exception e) {
+			logger.error("Cannot set default style from configuration file", e);
+		}
 	}
 	
 	public void enableDependenciesFunctions() {

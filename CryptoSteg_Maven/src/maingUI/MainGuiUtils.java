@@ -1,6 +1,5 @@
 package maingUI;
 
-import static maingUI.MainGuiGeneralAppStarter.*;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
@@ -21,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import exception.UpdatesUnavailableException;
 import files.watcher.ChangeDTO;
 import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtils;
@@ -45,12 +45,17 @@ public class MainGuiUtils {
 	static Logger logger = Logger.getLogger(MainGuiUtils.class);
 
 	public MainGUI mainAppReference;
+	
+	private static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 
 	public MainGuiUtils(MainGUI mainApp) {
 		mainAppReference = mainApp;
+		dialogHelper = new JOptionHelperExtended(mainApp != null ? mainApp.getMainFrame() : null);
 	}
 	
 	public static Thread lookForUpdates(final boolean silent) {
+		dialogHelper.setAdvicesEnabled(!silent);
+		
 		return new Thread(new Runnable() {
 			
 			@Override
@@ -77,6 +82,7 @@ public class MainGuiUtils {
 									MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
 									boolean restartNow = dialogHelper.yesOrNo(
 											"ScrYpT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
+									
 									if (restartNow) {
 										MainGUI.closeApplication(0);
 									} else {
@@ -95,6 +101,10 @@ public class MainGuiUtils {
 										dialogHelper.error(message, "An error occurred");
 										logger.error(message, e1);
 										
+									} else if(e1 instanceof UpdatesUnavailableException) {
+										dialogHelper.warn(e1.getMessage(), "An error occurred");
+										logger.error(e1.getMessage(), e1);
+										
 									} else {
 										dialogHelper.info("Process killed by user", "Process killed by user");
 										logger.info("User has killed process" + e1.toString());
@@ -112,31 +122,33 @@ public class MainGuiUtils {
 							// If version == null means that sw is already updated
 							if (MainGuiGeneralAppStarter.updatesManager.udpdatesReachable()) {
 								logger.info("Nothing to download, current version is up to date :)");
-								if (!silent) {
 									dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
-								}
 							}else {
 								logger.error("Cannot retrieve remote update data, server is unreachable.");
-								if (!silent) {
-									dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");
-								}
+								dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");
 							}
 						}
 					} catch (Exception e2) {
 						// " main types of error: user killed process or general error during process
-						if (!(e2 instanceof ProgressBarInterruptedException)) {
-							dialogHelper.error("Cannot read updates, an error occurred :(", "An error occurred!");
-							logger.error("Cannot read updates, an error occurred :(", e2);
+						if (e2 instanceof ProgressBarInterruptedException) {
+							dialogHelper.info("Process killed by user", "Process killed by user");
+							logger.info("User has killed process" + e2.toString());
 						
 						} else if(e2 instanceof TimeoutException) {
 							String message = "Server is unreachable!";
 							dialogHelper.error(message, "An error occurred");
 							logger.error(message, e2);
 						
+						} else if(e2 instanceof UpdatesUnavailableException) {
+							dialogHelper.warn(e2.getMessage(), "An error occurred");
+							logger.error(e2.getMessage(), e2);
+							
 						} else {
-							dialogHelper.info("Process killed by user", "Process killed by user");
-							logger.info("User has killed process" + e2.toString());
+							dialogHelper.error("Cannot read updates, an error occurred :(", "An error occurred!");
+							logger.error("Cannot read updates, an error occurred :(", e2);
 						}
+					} finally {
+						dialogHelper.setAdvicesEnabled(true);
 					}
 					
 					// Reset application graphics

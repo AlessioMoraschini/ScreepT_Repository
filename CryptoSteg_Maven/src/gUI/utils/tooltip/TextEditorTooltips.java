@@ -36,7 +36,7 @@ public class TextEditorTooltips {
 	public static final String tooltipParseImage = "Read Image and parse text";
 	public static final String tooltipParsePdfTxt = "Read Pdf and parse text";
 	public static final String tooltipFontChooser = "Change font and text-properties";
-	public static final String tooltipDefaultOpt = "Reset default text-graphics values";
+	public static final String tooltipDefaultOpt = "Reset default text-graphics values reading them from current configuration file.";
 	public static final String tooltipRemoveSpaces = "Remove spaces from selected/all text (press Ctrl to choose a character to remove)";
 	public static final String tooltipRemoveContent = "Remove specific words from selected/all text";
 	public static final String tooltipUndo = "[Ctrl + Z] Undo Last";

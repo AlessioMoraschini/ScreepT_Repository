@@ -24,9 +24,9 @@ import javax.swing.text.BadLocationException;
 import utility.BitWorker;
 import utility.EncodingUtils;
 import utility.EntrophyzerUtils;
-import utility.hash.Hasher;
-import utility.hash.Hasher.HashAlgorithm;
-import utility.hash.Hasher.IterationsLevel;
+import utility.hash.SafeHasher;
+import utility.hash.SafeHasher.HashAlgorithm;
+import utility.hash.SafeHasher.IterationsLevel;
 
 public class AesCipher {
 	
@@ -307,7 +307,7 @@ public class AesCipher {
 		byte[] bytePsw = new byte[0];
 		try {
 			bytePsw = charKeyToByteArrayV2(this.password);
-			bytePsw = Hasher.hashPswWithGivenSalt(Hasher.byteArrayToChar(bytePsw), salt, iter, algo);
+			bytePsw = SafeHasher.hashPswWithGivenSalt(SafeHasher.byteArrayToChar(bytePsw), salt, iter, algo);
 			hashedSecretKeySpec = new SecretKeySpec(Arrays.copyOf(bytePsw, limit), "AES");
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			hashedSecretKeySpec = secretKeySpec;

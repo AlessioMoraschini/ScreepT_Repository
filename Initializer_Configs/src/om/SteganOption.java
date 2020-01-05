@@ -3,14 +3,14 @@ package om;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import resources.GeneralConfig;
+import mainobj.INItializerParent;
 
 public class SteganOption {
-
+	
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
 	public final static int DEFAULT_WIDTH = 1000;
 	public final static int DEFAULT_HEIGHT= 1000;
-	public final static String DEFAULT_IMG_RECENT_PATH = GeneralConfig.USER_PERSONAL_DIR;
+	public final static String DEFAULT_IMG_RECENT_PATH = INItializerParent.USER_PERSONAL_DIR;
 	public final static boolean DEFAULT_FLAG_STEG = true;
 	public final static boolean DEFAULT_FLAG_ULTRASECURE = true;
 	

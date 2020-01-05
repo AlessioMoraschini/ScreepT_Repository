@@ -28,12 +28,13 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
 
-public class AboutSectionFrame extends ParentFrame{
+public class AboutSectionFrame extends ParentFrame {
 	private static final long serialVersionUID = -1578977495369367445L;
 
 	// initialize Logger
@@ -55,6 +56,7 @@ public class AboutSectionFrame extends ParentFrame{
 	private MainGUI mainApp;
 	
 	public AboutSectionFrame(MainGUI main) {
+		super();
 		
 		isActive.set(true);
 		
@@ -171,10 +173,15 @@ public class AboutSectionFrame extends ParentFrame{
 		            
 		    	isActive.set(false);
 				
-				logger.info(this.getClass().getName() + " Closed");
 				mainAppFrame.setEnabled(true);
-				mainAppFrame.requestFocus();
 				singletonInstance = null;
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						mainAppFrame.toFront();
+					}
+				});
+				
+				logger.info(this.getClass().getName() + " Closed");
 	        	dispose();
 		    }
 		});
@@ -183,7 +190,7 @@ public class AboutSectionFrame extends ParentFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SysUtils.openUrlInBrowser("https://"+GeneralConfig.WEBSITE);
+				SysUtils.openUrlInBrowser("https://" + GeneralConfig.WEBSITE);
 			}
 		});
 	}

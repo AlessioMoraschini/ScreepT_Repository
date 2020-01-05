@@ -8,21 +8,31 @@ import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import exception.UpdatesUnavailableException;
 import files.Various;
+import files.ZipWorker;
 import gui.UpdateProgressPanel;
 import main.MainStandAloneUpdater;
-import network.DownloadUtils;
+import network.http.HttpHelper;
+import network.http.HttpHelper.HttpRequestMetod;
+import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
 import utility.PropertiesManagerLight;
+import utility.SafeLogger;
+import utility.hash.ChecksumHasher;
+import utility.hash.HashingFunction;
 
 public class UpdatesManager {
 
 	public URL manifestRemoteUrl;
 	
+	public static SafeLogger logger = new SafeLogger(UpdatesManager.class);
+	
 	public static PropertiesManagerLight resourcesFilePathsMappings = new PropertiesManagerLight(MainStandAloneUpdater.resourcesMappingDefPath);
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_Scrypt/");  
 	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR", "UPDATES/");
+	public static String TEMP_DIR = resourcesFilePathsMappings.getProperty("TEMP_DIR", "UPDATES/");
 	public static String WEB_UPDATER_VERSION_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATER_VERSION_PROP", "version");                                                                                                               
 	public static String WEB_UPDATES_PACK_NAME = resourcesFilePathsMappings.getProperty("WEB_UPDATES_PACK_NAME", "updates.zip");                                                                                                               
 	public static String WEB_UPDATES_PACK_PROP = resourcesFilePathsMappings.getProperty("WEB_UPDATES_PACK_PROP", "updatesZippedUrl");                                                                                                               
@@ -62,31 +72,39 @@ public class UpdatesManager {
 		
 		UpdateProgressPanel updateManagerProgbar = null;
 		try {
-			if(DownloadUtils.isUrlReachable(manifestRemoteUrl)) {
+			
+			if(HttpHelper.is404(manifestRemoteUrl, HttpRequestMetod.GET)) {
+				throw new UpdatesUnavailableException(getUpdatesUnavailableMessage());
+			}
+			
+			if(HttpHelper.isUrlReachable(manifestRemoteUrl)) {
 				if (!silent) {
 					updateManagerProgbar = new UpdateProgressPanel(true);
 					updateManagerProgbar.getPb().setIndeterminate(true);
 				}
 				
-				out.println(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+				logger.info(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
 				File downloadedManifest = DownloadUtils.downloadFile(silent, manifestRemoteUrl, localTempManifestPath, updateManagerProgbar);
-				out.println("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
+				logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
 				
 				PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
 				
 				String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
-				out.println("Version: " + version);
+				logger.info("Version: " + version);
 				
-				newVersionAvailable = (DownloadUtils.checkNewVersion(version, currentVersion)) ? version : null;
+				newVersionAvailable = (DownloadUtils.compareNewVersion(version, currentVersion)) ? version : null;
 			} else {
 				throw new TimeoutException("Server unreachable");
 			}
 		} catch (Exception e) {
-			out.println("An error occurred:" + Arrays.deepToString(e.getStackTrace()));
+			logger.error("An error occurred:", e);
 			updatesReadyToInstall.set(false);
 			if(e instanceof ProgressBarInterruptedException ) {
-				out.println("User stopped process:" + Arrays.deepToString(e.getStackTrace()));
-				emtpyUpdatesDir();
+				logger.warn("User stopped process:", e);
+				emptyUpdatesDir();
+				throw e;
+			} else {
+				logger.error("", e);
 				throw e;
 			}
 		} finally {
@@ -99,10 +117,10 @@ public class UpdatesManager {
 	}
 	
 	public boolean udpdatesReachable() {
-		return DownloadUtils.isUrlReachable(manifestRemoteUrl);
+		return HttpHelper.isUrlReachable(manifestRemoteUrl);
 	}
 	
-	public boolean emtpyUpdatesDir() {
+	public boolean emptyUpdatesDir() {
 		File updatesDir = new File(UPDATES_DIR);
 		return Various.deleteDirContentRecursive(updatesDir);
 	}
@@ -112,9 +130,13 @@ public class UpdatesManager {
 	 */
 	public File[] downloadAndExtractUpdates() throws Exception, TimeoutException {
 		
-		emtpyUpdatesDir();
+		emptyUpdatesDir();
 		
 		lastUpdatesDownloaded = new File[3];
+		
+		if(HttpHelper.is404(manifestRemoteUrl, HttpRequestMetod.GET)) {
+			throw new UpdatesUnavailableException(getUpdatesUnavailableMessage());
+		}
 		
 		UpdateProgressPanel updateProgressBar = null;
 		try {
@@ -124,56 +146,62 @@ public class UpdatesManager {
 			
 			updateProgressBar = new UpdateProgressPanel(true);
 			updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
-			out.println(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+			logger.info(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
 			
 			// Download manifest.properties into UPDATES -> /UPDATES/manifest.properties
 			File downloadedManifest = DownloadUtils.downloadFile(false, manifestRemoteUrl, localTempManifestPath, updateProgressBar);
-			out.println("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
+			logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
 			
 			PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
 			
 			String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
-			out.println("Version: " + version);
+			logger.info("Version: " + version);
 			
 			// Calculate jar main application reference after extract -> /UPDATES/ScrYpT_X.Y.Z.jar
 			lastUpdatesDownloaded[2] = new File("ScrYpT_"+version+".jar");
 			
 			// READ FROM DOWNLOADED PROPS
 			URL updaterJarUrl = new URL(propsManager.getProperty(WEB_UPDATER_JAR_PROP));
-			out.println("updaterJarUrl: " + updaterJarUrl);
+			logger.info("updaterJarUrl: " + updaterJarUrl);
 			
 			URL updatesZippedUrl = new URL(propsManager.getProperty(WEB_UPDATES_PACK_PROP));
-			out.println("updatesZippedUrl: " + updatesZippedUrl);
+			logger.info("updatesZippedUrl: " + updatesZippedUrl);
 			
 			// Download jar updater into root -> /application/updater.jar
 			updateProgressBar.update(40, "Downloading "+updaterJarUrl, true);
-			out.println(Various.getHeaderString("#", 40, "PARSE AND DOWNLOAD PACKETS"));
+			logger.info(Various.getHeaderString("#", 40, "PARSE AND DOWNLOAD PACKETS"));
+			
 			File downloadedUpdater = DownloadUtils.downloadFile(false, updaterJarUrl, WEB_UPDATER_JAR_NAME, updateProgressBar);
 			lastUpdatesDownloaded[0] = downloadedUpdater;
-			out.println("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + Various.coolFileSize(downloadedUpdater.length()));
+			logger.info("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + Various.coolFileSize(downloadedUpdater.length()));
 
 			// Download zipped updates -> /UPDATES/updates.zip
 			updateProgressBar.update(70, "Downloading "+updaterJarUrl, true);
 			File downloadedUpdatesZip = DownloadUtils.downloadFile(false, updatesZippedUrl, localTempZippedUpdates, updateProgressBar);
-			out.println("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + Various.coolFileSize(downloadedUpdatesZip.length()));
+			logger.info("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + Various.coolFileSize(downloadedUpdatesZip.length()));
+			
+			// Final check for remote changes
+			finalReCheckManifest(downloadedManifest);
 			
 			updateProgressBar.forceClose();
 			
 			// Extract zipped updates -> /UPDATES/updates/
-			File unzippedUpdates = DownloadUtils.unzipFile(downloadedUpdatesZip.getAbsolutePath(), UPDATES_DIR, true);
-			out.println("Unzipped updates: " + unzippedUpdates);
+			File unzippedUpdates = ZipWorker.unzipFile(downloadedUpdatesZip.getAbsolutePath(), UPDATES_DIR, true);
+			logger.info("Unzipped updates: " + unzippedUpdates);
 			lastUpdatesDownloaded[1] = unzippedUpdates;
-		
+			
 		} catch (Exception e) {
-			out.println("An error occurred!" + Arrays.deepToString(e.getStackTrace()));
-			updatesReadyToInstall.set(false);
+			logger.error("An error occurred!", e);
+			
 			if (e instanceof ProgressBarInterruptedException) {
-				out.println("User stopped process:" + Arrays.deepToString(e.getStackTrace()));
-				emtpyUpdatesDir();
-				throw e;
+				logger.warn("User stopped process:", e);
 			}
+
+			updatesReadyToInstall.set(false);
+			emptyUpdatesDir();
 			
 			throw e;
+			
 		} finally {
 			if(updateProgressBar != null) {
 				updateProgressBar.forceClose();
@@ -184,7 +212,40 @@ public class UpdatesManager {
 		return lastUpdatesDownloaded;
 	}
 	
-	public File[] getLastUpdates() {
+	/**
+	 * This method is meant to test if the initial manifest is not changed during the upload process: 
+	 * if so it means that something has changed during the download, possibily leading to inconsistent data.
+	 * 
+	 * To avoid this, in this case an exception of type UpdatesUnavailableException will be thrown.
+	 * 
+	 * @throws UpdatesUnavailableException 
+	 * 
+	 * @throws Exception 
+	 */
+	private void finalReCheckManifest(File originalManifest) throws UpdatesUnavailableException, Exception {
+		if(HttpHelper.is404(manifestRemoteUrl, HttpRequestMetod.GET)) {
+			throw new UpdatesUnavailableException(getUpdatesUnavailableMessage());
+		}
+		
+		File newTempManifest = DownloadUtils.downloadFile(true, manifestRemoteUrl, TEMP_DIR + localTempManifestName, null);
+		boolean fileIsTheSame = false;
+		
+		try {
+			fileIsTheSame = ChecksumHasher.equalsFilesChecksum(newTempManifest, originalManifest, HashingFunction.MD5);
+		} catch (Throwable e) {
+			logger.error("The was an error while comparing new temp manifest checksum", e);
+		}
+		
+		if(!fileIsTheSame) {
+			Exception exc = new UpdatesUnavailableException(getUpdatesUnavailableMessage());
+			logger.error("New manifest does not match the original one: launching exception!", exc);
+			throw exc;
+		} else {
+			logger.info("New manifest matched correctly :)");
+		}
+	}
+	
+	public File[] getLatestUpdates() {
 		try {
 			if (lastUpdatesDownloaded == null || lastUpdatesDownloaded.length < 2 || !lastUpdatesDownloaded[0].exists() || !lastUpdatesDownloaded[1].exists()) {
 				return null;
@@ -197,4 +258,9 @@ public class UpdatesManager {
 		}
 	}
 	
+	private String getUpdatesUnavailableMessage() {
+		return "<html><b> Could not retrieve updates! </b>"
+				+ "<br><br>This could mean that there are updates to new version in progress, or that some files are no longer available."
+				+ "<br>Retry later, if the problem persists contact administrator [" + manifestRemoteUrl + "]</html>";
+	}
 }

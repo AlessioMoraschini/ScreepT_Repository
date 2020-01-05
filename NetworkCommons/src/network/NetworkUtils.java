@@ -34,6 +34,7 @@ import org.apache.http.util.EntityUtils;
 
 import files.Various;
 import network.om.FtpSpeedTestOptions;
+import network.utils.IPaddressConverter;
 import resources.GeneralConfig;
 import sun.net.dns.ResolverConfiguration;
 import utility.ConversionUtils;

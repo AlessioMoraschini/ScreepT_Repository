@@ -16,7 +16,7 @@ public class Text2Speech {
 	String speaktext; 
 	public Voice voice;
 	
-	public void dospeak(String speak,String  voicename, float speed)    
+	public void dospeak(String speak,String voicename, float speed, float volume)    
 	{    
 	    speaktext=speak;    
 	    String voiceName =voicename;    
@@ -51,7 +51,9 @@ public class Text2Speech {
 //	        synthesizer.speakPlainText(speaktext, null);    
 //	        synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);    
 //	        synthesizer.deallocate();    
+	        voice.setPitch(95F);
 	        voice.allocate();
+	        voice.setVolume(volume);
 	        logger.debug(" Voice is speaking");
 	        voice.speak(speaktext);
 	        voice.deallocate();

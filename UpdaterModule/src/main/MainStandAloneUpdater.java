@@ -4,20 +4,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.ini4j.Wini;
 
 import files.Various;
+import files.ZipWorker;
 import gui.JOptionHelper;
 import gui.UpdateProgressPanel;
-import network.DownloadUtils;
-import network.FtpDumper;
+import network.ftp.FtpDumper;
 import network.progress.UploadAction;
-import om.HashingFunction;
 import utility.PropertiesManagerLight;
+import utility.SafeLogger;
+import utility.hash.ChecksumHasher;
+import utility.hash.HashingFunction;
 
 public class MainStandAloneUpdater {
+	
+	public static SafeLogger logger = new SafeLogger(MainStandAloneUpdater.class);
 
+	public static final String UPDATES_MANIFEST = "manifest.properties";
 	public static final String FTP_PROPERTIES = "FTP.properties";
 	public static final String resourcesMappingDefPath = "resourcesFilePathsMappings.properties";
 	private static final String ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
@@ -52,7 +58,7 @@ public class MainStandAloneUpdater {
 			// Only for updates folder -> zip folder into current one
 			if(createUpdatesZip && updatesDir.isDirectory() && updatesDir.exists()) {
 				try {
-					DownloadUtils.zipFolder(updatesDir.getAbsolutePath(), currentDir, true, true);
+					ZipWorker.zipFolder(updatesDir.getAbsolutePath(), currentDir, true, true);
 				} catch (Exception e) {
 					signalErrorAndExit1(e);
 				}
@@ -68,9 +74,9 @@ public class MainStandAloneUpdater {
 						&& !curr.getName().equals(FTP_PROPERTIES)) {
 					
 					try {
-						manifestProps.saveProperty(curr.getName(), DownloadUtils.getFileHash(curr, downloadsHashFunc, true));
+						manifestProps.saveProperty(curr.getName(), ChecksumHasher.getFileHash(curr, downloadsHashFunc, true));
 						manifestProps.readFromFile();
-						if(!manifestProps.getProperty(curr.getName(), "").equals(DownloadUtils.getFileHash(curr, downloadsHashFunc, true))) {
+						if(!manifestProps.getProperty(curr.getName(), "").equals(ChecksumHasher.getFileHash(curr, downloadsHashFunc, true))) {
 							new JOptionHelper(null).warn("Hash control not passed: check properties for " + curr.getName(), "Hash not matching");
 						} else {
 							toUpload.add(curr);
@@ -106,7 +112,7 @@ public class MainStandAloneUpdater {
 			final File updatesFolder = new File(args[1]).getAbsoluteFile();
 			final File newJar = new File(args[2]).getAbsoluteFile();
 			
-			String manifestPath = updatesFolder.getAbsolutePath() + File.separator + "manifest.properties";
+			String manifestPath = updatesFolder.getAbsolutePath() + File.separator + UPDATES_MANIFEST;
 			PropertiesManagerLight manifestProps = new PropertiesManagerLight(manifestPath);
 			
 			final String mainApplicationLauncher = "ScrYpT_Launcher.jar";
@@ -239,8 +245,8 @@ public class MainStandAloneUpdater {
 		File zipUpdates = new File(updatesFolder.getParentFile() + File.separator + "updates.zip");
 		boolean proceed = true;
 		try {
-			proceed = (!DownloadUtils.checkHashFromProperties(updaterJar, manifestProps, downloadsHashFunc)) ? false : proceed;
-			proceed = (!DownloadUtils.checkHashFromProperties(zipUpdates, manifestProps, downloadsHashFunc)) ? false : proceed;
+			proceed = (!ChecksumHasher.checkHashFromProperties(updaterJar, manifestProps, downloadsHashFunc)) ? false : proceed;
+			proceed = (!ChecksumHasher.checkHashFromProperties(zipUpdates, manifestProps, downloadsHashFunc)) ? false : proceed;
 		} catch (Throwable e) {
 			proceed = false;
 		}
@@ -257,7 +263,7 @@ public class MainStandAloneUpdater {
 	}
 	
 	private static void signalErrorAndExit1(Throwable e) {
-		System.out.println("An error occurred: " + Arrays.deepToString(e.getStackTrace()));
+		logger.error("An error occurred: ",e);
 		try {
 			Thread.sleep(10000);
 			System.exit(1);
@@ -266,7 +272,7 @@ public class MainStandAloneUpdater {
 	}
 
 	private static void signalOKAndExit0() {
-		System.out.println("Finished! Updater will close after 5 seconds from now...");
+		logger.info("Finished! Updater will close after 5 seconds from now...");
 		try {
 			Thread.sleep(5000);
 			System.exit(0);
@@ -283,15 +289,34 @@ public class MainStandAloneUpdater {
 		int PORT = ftpProperties.getIntVarFromProps("PORT", 22);
 		String FOLDER_ON_SERVER = ftpProperties.getProperty("FOLDER_ON_SERVER", "/www.am-design-development.com/ScrYpT/Updates");
 		
-		String psw = PSW.equals("")? new JOptionHelper(null).askForString("Insert FTPS password", "Insert FTPS password") : PSW;
-		FtpDumper dumper = new FtpDumper(HOST, USER, psw, PORT);
+		if (PSW.equals("")) {
+			char[] psw = new JOptionHelper(null).askForPasswordNullable("Insert FTPS password", "Insert FTPS password", 64, "Upload");
+			if(psw != null) {
+				PSW = new String(psw);
+			}
+		}
+		
+		FtpDumper dumper = new FtpDumper(HOST, USER, PSW, PORT);
 		
 		UpdateProgressPanel progPanel = new UpdateProgressPanel(true);
+		
+		// Remove remote manifest before to start upload, and upload separately after other files:
+		// -> this will avoid users to start updates during the update process.
+		File manifestFound = findManifestAndMoveAtTheEnd(toUploadList);
+		if(manifestFound != null) {
+			try {
+				logger.info("Deleting remote manifest: " + UPDATES_MANIFEST);
+				boolean deleted = dumper.deleteFile(FOLDER_ON_SERVER, manifestFound.getName());
+				logger.info("Remote manifest deleted? -> " + deleted);
+			} catch (Exception e) {
+				logger.warn("Cannot delete remote " + UPDATES_MANIFEST + " before to upload!", e);
+			}
+		}
 		
 		try {
 			int i = 1;
 			for (File currentToUpload : toUploadList) {
-				System.out.println("Uploading " + currentToUpload);
+				System.out.println("Uploading: " + currentToUpload + " ...");
 				
 				dumper.setUploadAction(getUploadAction(progPanel, currentToUpload.length(), currentToUpload.getName()));
 				int generalProgress = (int)(i*100 / toUploadList.size());
@@ -300,7 +325,7 @@ public class MainStandAloneUpdater {
 				progPanel.adaptWidthToCurrentText();
 				
 				dumper.uploadFile(currentToUpload.getAbsolutePath(), currentToUpload.getName(), FOLDER_ON_SERVER);
-				System.out.println(currentToUpload + "Uploaded");
+				System.out.println(currentToUpload + " -> Uploaded");
 				
 				i++;
 			}
@@ -314,6 +339,19 @@ public class MainStandAloneUpdater {
 			
 			new JOptionHelper(null).info("FTP upload completed!", "Upload completed");
 		}
+	}
+	
+	private static File findManifestAndMoveAtTheEnd(List<File> readyToDownload) {
+		for(File current : readyToDownload) {
+			if(UPDATES_MANIFEST.equals(current.getName())) {
+				readyToDownload.remove(current);
+				readyToDownload.add(current); // Moves the file at the end of the list
+				
+				return current;
+			}
+		}
+		
+		return null;
 	}
 	
 	private static UploadAction getUploadAction(UpdateProgressPanel progPanel, long fileSize, String fileName) {

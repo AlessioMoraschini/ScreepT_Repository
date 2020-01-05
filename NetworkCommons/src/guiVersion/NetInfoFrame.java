@@ -29,6 +29,8 @@ import javax.swing.JLabel;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import java.awt.Dimension;
 import java.awt.Component;
 import javax.swing.JScrollPane;
@@ -98,23 +100,19 @@ public class NetInfoFrame extends ParentFrame{
 	private JTextField dynLblBroadcastAddr;
 	
 	// network related objects
-	public NetInfoFrame thisPanel;
 	private NetworkUtils netUtils;
 	public NetworkAdapter currentSelAdapter;
 	
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
 	public NetInfoFrame() {
+		super();
 		
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		setTitle("Network Info Frame");
 		
-		setMaximumSize(GuiUtils.getScreenSize());
-		setMinimumSize(new Dimension(950, 400));
-		
 		isActive.set(true);
-		thisPanel = this;
 		singletonInstance = this;
 		
 		// SW window icon
@@ -129,6 +127,15 @@ public class NetInfoFrame extends ParentFrame{
 		initialize();
 		
 		addEventHandlers();
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				singletonInstance.pack();
+				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
+			}
+		});
 		
 		logger.info(this.getClass().getName() + ": ready!");
 	}
@@ -379,9 +386,15 @@ public class NetInfoFrame extends ParentFrame{
 			
 			@Override
 			public void run() {
+				singletonInstance.pack();
+				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
+				
 				updateNetDisplayedINFO();
 				updateAdapterGUIinfos();
 				validateConnectivity();
+				
+				singletonInstance.pack();
+				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 			}
 		});
 		
@@ -526,7 +539,7 @@ public class NetInfoFrame extends ParentFrame{
 	
 	private void handleException(String msg, Throwable e) {
 		logger.error(msg, e);
-		new JOptionHelper(thisPanel).error(msg, msg);
+		new JOptionHelper(singletonInstance).error(msg, msg);
 	}
 
 	// interface related info

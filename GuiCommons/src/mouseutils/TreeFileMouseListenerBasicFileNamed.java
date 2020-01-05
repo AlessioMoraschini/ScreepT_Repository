@@ -32,7 +32,7 @@ import resources.IconsPathConfigurator;
 
 /**
  * This represents a basic extensible component, when each node is a File Object
- * @author xx
+ * @author Alessio Moraschini
  *
  */
 public class TreeFileMouseListenerBasicFileNamed {

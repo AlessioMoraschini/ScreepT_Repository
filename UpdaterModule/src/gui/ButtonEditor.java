@@ -98,7 +98,7 @@ class ButtonEditor extends DefaultCellEditor {
 
 							boolean uninstalled = pluginManager.removePlugin(refreshedPlugin);
 							if (uninstalled) {
-								String message = "Plugin uninstalled correctly ;)";
+								String message = "Plugin uninstalled correctly. Files are marked for delete and will be removed at next restart ;)";
 								logger.info(message);
 								dialogHelper.info(message, "Plugin uninstalled");
 							} else {
@@ -113,7 +113,7 @@ class ButtonEditor extends DefaultCellEditor {
 
 								PluginDTO downloaded = pluginManager.downloadPlugin(refreshedPlugin);
 								pluginManager.installPlugin(downloaded, true);
-								String message = "Installation completed! Plugin will be available after restart.";
+								String message = "Installation completed! Plugin will be available after application restart.";
 								logger.info(message);
 								dialogHelper.info(message, "Plugin installed");
 

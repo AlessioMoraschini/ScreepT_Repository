@@ -13,12 +13,12 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gui.UpdateProgressPanel;
 import net.miginfocom.swing.MigLayout;
-import network.DownloadUtils;
-import om.HashingFunction;
 import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.TxtFieldFileDragNDropManager;
+import utility.hash.ChecksumHasher;
+import utility.hash.HashingFunction;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -225,13 +225,13 @@ public class HashCheckerFrame extends ParentFrame{
 							if (currentFile != null && currentFile.exists()) {
 								if (currentFile.isFile()) {
 									txtFieldChecksumResult
-											.setText(prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
+											.setText(prefix + ChecksumHasher.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
 								} else if (dialogHelper.showYNDialog("Hashing a folder can be a long task, really want to start hashing?",
 										"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {
 									updateProgress = new UpdateProgressPanel(false);
 									updateProgress.setClosable(true);
 									updateProgress.setUndefinedDuration();
-									txtFieldChecksumResult.setText(prefix + DownloadUtils.getFolderHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
+									txtFieldChecksumResult.setText(prefix + ChecksumHasher.getFolderHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
 								}
 								txtFieldChecksumResult.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
 							} else {
@@ -266,14 +266,14 @@ public class HashCheckerFrame extends ParentFrame{
 								String hash = "";
 								if (rootPaneCheckingEnabled) {
 									if (currentFile.isFile()) {
-										hash = prefix + DownloadUtils.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
+										hash = prefix + ChecksumHasher.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
 									} else {
 										if (dialogHelper.showYNDialog("Hashing a folder can be a long task, are you sure to start hashing?",
 												"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {
 											updateProgress = new UpdateProgressPanel(false);
 											updateProgress.setClosable(true);
 											updateProgress.setUndefinedDuration();
-											hash = prefix + DownloadUtils.getFolderHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
+											hash = prefix + ChecksumHasher.getFolderHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
 										} else {
 											return;
 										}

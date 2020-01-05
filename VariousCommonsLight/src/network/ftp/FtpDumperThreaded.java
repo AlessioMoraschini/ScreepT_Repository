@@ -1,4 +1,4 @@
-package network;
+package network.ftp;
 
 public class FtpDumperThreaded implements Runnable{
 

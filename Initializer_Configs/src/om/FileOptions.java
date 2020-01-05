@@ -1,6 +1,6 @@
 package om;
 
-import resources.GeneralConfig;
+import mainobj.INItializerParent;
 
 public class FileOptions {
 	
@@ -8,8 +8,8 @@ public class FileOptions {
 	public final static boolean DEFAULT_FLAG_AUTOSAVE = true;
 	public final static boolean DEFAULT_FLAG_OVERWRITE = false;
 	public final static int DEFAULT_AUTOSAVE_INTERVAL = 5;
-	public final static String DEFAULT_LAST_SRC_FOLDER_PATH = GeneralConfig.USER_PERSONAL_DIR;
-	public final static String DEFAULT_LAST_DEST_FOLDER_PATH = GeneralConfig.USER_PERSONAL_DIR;
+	public final static String DEFAULT_LAST_SRC_FOLDER_PATH = INItializerParent.USER_PERSONAL_DIR;
+	public final static String DEFAULT_LAST_DEST_FOLDER_PATH = INItializerParent.USER_PERSONAL_DIR;
 	public final static int DEFAULT_MIN_AUTOSAVE_INTERVAL = 60000;
 	
 	// FIELDS

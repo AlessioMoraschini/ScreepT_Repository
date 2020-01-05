@@ -1,4 +1,4 @@
-package network;
+package network.ftp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -152,12 +152,8 @@ public class FtpDumper {
             
             ftps.setFileType(FTP.BINARY_FILE_TYPE);
             ftps.enterLocalPassiveMode();
-            ftps.changeWorkingDirectory(ftpDirFromServerRoot);
-
-            logger.info("Checking directory:  "+ ftpDirFromServerRoot + " ...\n");
-            int returnCodeA = ftps.getReplyCode();
            
-            if (returnCodeA == 550) {//if specified directory does not exist
+            if (!checkDirectoryExists(ftpDirFromServerRoot)) {//if specified directory does not exist
             	logger.warn("Directory not existing:  "+ ftpDirFromServerRoot +" -> creating it...\n");
                 ftps.makeDirectory(ftpDirFromServerRoot);
                 logger.warn("Directory created:  "+ ftpDirFromServerRoot + " \n");
@@ -192,13 +188,96 @@ public class FtpDumper {
 	}	
 	
 	/**
+     * Determines whether a directory exists or not
+     * @param dirPath
+     * @return true if exists, false otherwise
+     * @throws IOException thrown if any I/O error occurred.
+     */
+	public boolean checkDirectoryExists(String dirPath) throws IOException {
+    	if(!ftps.isConnected()) {
+        	logger.warn("FTPS not connected: trying to reconnect...");
+        	connect();
+        }
+        
+        ftps.setFileType(FTP.BINARY_FILE_TYPE);
+        ftps.enterLocalPassiveMode();
+        ftps.changeWorkingDirectory(dirPath);
+
+        logger.info("Checking directory:  "+ dirPath + " ...\n");
+        int returnCode = ftps.getReplyCode();
+       
+        if (returnCode == 550) {
+            return false;
+        }
+        return true;
+    }
+ 
+    /**
+     * Determines whether a file exists or not
+     * @param filePath
+     * @return true if exists, false otherwise
+     * @throws IOException thrown if any I/O error occurred.
+     */
+    public boolean checkFileExists(String FTPdir, String RemoteName) throws IOException {
+    	
+    	if(!checkDirectoryExists(FTPdir)) {
+    		throw new IOException("Ftp directory: " + FTPdir + " does not exist!");
+    	}
+    	
+    	if(!ftps.isConnected()) {
+        	logger.warn("FTPS not connected: trying to reconnect...");
+        	connect();
+        }
+        
+        ftps.setFileType(FTP.BINARY_FILE_TYPE);
+        ftps.enterLocalPassiveMode();
+        ftps.changeWorkingDirectory(FTPdir);
+        
+        InputStream inputStream = ftps.retrieveFileStream(RemoteName);
+        int returnCode = ftps.getReplyCode();
+        if (inputStream == null) {
+            return false;
+        } else {
+        	try {
+        		if (inputStream != null) {
+					inputStream.close();
+				}
+        	} catch(Exception e){
+        	}
+        	return returnCode != 550;
+        }
+    }
+	
+	public boolean deleteFile(String FTPdir, String RemoteName) throws IOException {
+		
+		if(!checkDirectoryExists(FTPdir)) {
+    		throw new IOException("Ftp directory: " + FTPdir + " does not exist!");
+    	}
+		
+    	if(!ftps.isConnected()) {
+    		logger.warn("FTPS not connected: trying to reconnect...");
+        	connect();
+        }
+        ftps.enterLocalPassiveMode();
+        ftps.setFileType(FTP.BINARY_FILE_TYPE);
+        ftps.changeWorkingDirectory(FTPdir);
+        
+        return ftps.deleteFile(RemoteName);
+    }
+	
+	/**
 	 * This method saves remote files denoted by name only, that are inside the remote folder specified at FTPdir (folder path from server root)
 	 * @param FTPdir the remote folder in which the file is contained
 	 * @param RemoteName the name of the remote file to download
 	 * @param localOutputPath the local download target path, including the file name (if not existing it will be created)
 	 * @return
+	 * @throws IOException 
 	 */
-	public File downloadFile(String FTPdir, String RemoteName, String localOutputPath, boolean overwriteLocal) {
+	public File downloadFile(String FTPdir, String RemoteName, String localOutputPath, boolean overwriteLocal) throws IOException {
+		
+		if(!checkDirectoryExists(FTPdir)) {
+    		throw new IOException("Ftp directory: " + FTPdir + " does not exist!");
+    	}
 		
 		OutputStream outputStream = null;
 		File localFile = new File(localOutputPath); 
@@ -212,16 +291,12 @@ public class FtpDumper {
             ftps.enterLocalPassiveMode();
             ftps.setFileType(FTP.BINARY_FILE_TYPE);
             ftps.changeWorkingDirectory(FTPdir);
-            int returnCodeA = ftps.getReplyCode();
-            if (returnCodeA == 550) {
-            	logger.error("Error downloading remote file: remotefolder (" + FTPdir + ") does not exist");
-            	return localFile;            
-            }        
+
             if(!overwriteLocal) {
             	localFile = Various.renameJavaObjFile(localFile);
             }
             if(!localFile.exists()) {
-//            	localFile.mkdirs();
+            	localFile.getParentFile().mkdirs();
             	localFile.createNewFile();
             }
             
@@ -253,7 +328,6 @@ public class FtpDumper {
 				logger.error("Cannot close output stream: ", e);
 			}
         }		
-     
 	}
 	
 	/**
@@ -261,7 +335,7 @@ public class FtpDumper {
 	 * @param FTPdir
 	 * @return
 	 */
-	public String[] GetRemoteFiles(String FTPdir){
+	public String[] getRemoteFilesInFolder(String FTPdir){
 		String [] alldumps;
         try {
         	if(!ftps.isConnected()) {
@@ -283,7 +357,7 @@ public class FtpDumper {
         } 	
 	}
 	
-	public CopyStreamAdapter getUploadListener(long totalLength, String fileName) {
+	private CopyStreamAdapter getUploadListener(long totalLength, String fileName) {
 		return new CopyStreamAdapter() {
 
 		    @Override
@@ -297,7 +371,7 @@ public class FtpDumper {
 		 };
 	}
 
-	public CopyStreamAdapter getDownloadListener(long totalLength, String fileName) {
+	private CopyStreamAdapter getDownloadListener(long totalLength, String fileName) {
 		return new CopyStreamAdapter() {
 			
 			@Override

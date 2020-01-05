@@ -156,15 +156,13 @@ public class HwInfoFrame extends ParentFrame{
 ////////////////////////// CONSTRUCTOR //////////////////////////
 	
 	public HwInfoFrame() {
+		super();
 		
 		isActive.set(true);
 
 		logger.info(this.getClass().getName() + " Starting...");
 		
 		setTitle("Hardware Info Frame");
-		
-		setMaximumSize(new Dimension(800, 450));
-		setMinimumSize(new Dimension(750, 400));
 		
 		// SW window icon
 		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_HW_INFO, this);
@@ -194,6 +192,8 @@ public class HwInfoFrame extends ParentFrame{
 					updateHdInfo();
 					updateCpuUsageInfo();
 					updateScryptResourcesUsage();
+					singletonInstance.pack();
+					GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 					try {
 						Thread.sleep(THREAD_REFRESH_RATE);
 					} catch (InterruptedException e) {
@@ -203,6 +203,7 @@ public class HwInfoFrame extends ParentFrame{
 				logger.info(HwInfoFrame.this.getClass().getName() + " Started - OUTPUT_CODE: HWINFOPANEL_STARTED_OK");
 			}
 		});
+		
 	}
 	
 ////////////////////////// INITIALIZER METHOD //////////////////////////
@@ -653,7 +654,7 @@ public class HwInfoFrame extends ParentFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
-	        	logger.debug("Closing Frame: "+HwInfoFrame.class.getName());	        	
+	        	logger.debug("Closing Frame: " + HwInfoFrame.class.getName());	        	
 	        	singletonInstance = null;
 	        	isActive.set(false);
 	        	dispose();

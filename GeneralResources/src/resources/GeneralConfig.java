@@ -81,7 +81,7 @@ public class GeneralConfig {
 	public static File SPELLCHECKER_DICT_FOLER_FILE = new File(SPELLCHECKER_DICT_FOLDER);
 	public static Color SPELL_CHECKER_UNDERLINE_COL = resourcesFilePathsMappings.getColorVarFromProps(resourcesFilePathsMappings.getProperty("SPELL_CHECKER_UNDERLINE_COL"), Color.orange);
 	// Temp Folders and Files
-	public static String TEMP_DIRECTORY = RESOURCES_DIR + "temp/";
+	public static String TEMP_DIRECTORY = resourcesFilePathsMappings.getProperty("TEMP_DIR", RESOURCES_DIR + "temp/");
 	public static File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
 	
 	// IMPORTANT FOLDERS

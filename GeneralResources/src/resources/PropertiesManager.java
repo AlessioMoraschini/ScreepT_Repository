@@ -117,8 +117,7 @@ public class PropertiesManager {
 		logger.debug("Loading property: " + key + " From properties file: " + dynamicFileBindingsDefSource);
 		String res = "";
 		if(dynamicFileBindingsDef != null) {
-			res = dynamicFileBindingsDef.getProperty(key);
-			res = (res != null)? res : "";
+			res = Various.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
 		}
 		
 		logger.debug("Loaded property: " + res);
@@ -133,7 +132,7 @@ public class PropertiesManager {
 		String res = "";
 		if(dynamicFileBindingsDef != null) {
 			res = dynamicFileBindingsDef.getProperty(key);
-			res = (res != null)? res : defaultVal;
+			res = (res != null)? Various.trimToEmpty(res) : defaultVal;
 		}
 		
 		return res;

@@ -618,7 +618,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(850, 245);
+		return new Dimension(870, 245);
 	}
 	
 	public static GeneralOptionsFrame getInstance(INItializer currentConf) {

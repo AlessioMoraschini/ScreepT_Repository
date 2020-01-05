@@ -23,7 +23,7 @@ import gui.JOptionHelper;
  * - notice that others undo actions have to be done manually, this class only manage progress update and signals close action with
  * an apposite exception class. This is a progress bar panel, with up to two progressBars.
  * Progress Panel can be closable or not (by default is closable), just call method 
- * @author xx
+ * @author Alessio Moraschini
  *
  */
 public class UpdateProgressPanelCrypter {

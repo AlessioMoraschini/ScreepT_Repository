@@ -61,6 +61,18 @@ public class PropertiesManagerLight {
 	 * Avoid null values reading from properties
 	 * @return
 	 */
+	public String getPropertyNullable(String key) {
+		if(dynamicFileBindingsDef != null) {
+			return dynamicFileBindingsDef.getProperty(key);
+		}
+		
+		return "";
+	}
+
+	/**
+	 * Avoid null values reading from properties
+	 * @return
+	 */
 	public String getProperty(String key) {
 		String res = "";
 		if(dynamicFileBindingsDef != null) {

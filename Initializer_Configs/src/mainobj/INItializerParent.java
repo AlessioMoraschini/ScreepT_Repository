@@ -8,15 +8,19 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import files.Various;
+import utility.SafeLogger;
 import utility.reflection.ReflectionUtils;
 
 public abstract class INItializerParent implements INItializerInterface{
 
-	static Logger logger = Logger.getLogger(INItializerParent.class); 
+	static SafeLogger logger = new SafeLogger(INItializerParent.class); 
+	
+	public static final String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
 	
 	// FIELDS
 	Ini iniReadFile;
@@ -37,6 +41,64 @@ public abstract class INItializerParent implements INItializerInterface{
 		} catch (IOException e) {
 			logger.error("Exception happened!", e);
 		}
+	}
+	
+	/**
+	 * Read a value from a given INI file in String format : nullSafe
+	 * @param iniToReadPath
+	 * @param OPT_SECTION
+	 * @param OPT_VAR
+	 * @return
+	 * @throws InvalidFileFormatException
+	 * @throws IOException
+	 */
+	public static String readFromFile(String iniToReadPath, String OPT_SECTION, String OPT_VAR) throws InvalidFileFormatException, IOException {
+		String valueRead = "";
+		if (iniToReadPath != null && new File(iniToReadPath).exists()) {
+			Ini tempIniFile = new Wini(new File(iniToReadPath));
+			valueRead = Various.trimToEmpty(tempIniFile.get(OPT_SECTION, OPT_VAR));
+		}
+		
+		return valueRead;
+	}
+	
+	/**
+	 * Read a value from loaded INI file in String format : nullSafe
+	 * @param OPT_SECTION
+	 * @param OPT_VAR
+	 * @return
+	 * @throws InvalidFileFormatException
+	 * @throws IOException
+	 */
+	public String readFromFile(String OPT_SECTION, String OPT_VAR) throws InvalidFileFormatException, IOException {
+		return readFromFile(iniReadFile.getFile().getCanonicalPath(), OPT_SECTION, OPT_VAR);
+	}
+	
+	/**
+	 * Writes a value inside a given file, returning true if value is effectively written
+	 * @param iniToReadPath
+	 * @param OPT_SECTION
+	 * @param OPT_VAR
+	 * @param OPT_VALUE
+	 * @return
+	 * @throws InvalidFileFormatException
+	 * @throws IOException
+	 */
+	public static boolean writeToFile(String iniToReadPath, String OPT_SECTION, String OPT_VAR, String OPT_VALUE) throws InvalidFileFormatException, IOException {
+		boolean valueWritten = false;
+		if (iniToReadPath != null && new File(iniToReadPath).exists()) {
+			Wini iniTempFile = new Wini(new File(iniToReadPath));
+			iniTempFile.load();
+			
+			iniTempFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
+			iniTempFile.store();
+			String result = readFromFile(iniToReadPath, OPT_SECTION, OPT_VAR);
+			if(result != null && result.equals(OPT_VALUE)) {
+				valueWritten = true;
+			}
+		}
+		
+		return valueWritten;
 	}
 	
 	/**
@@ -148,7 +210,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		return result;
 	}
 	
-	public static int getIntVarFromConf(String val, int defaultVal) {
+	public static int getIntVarFromString(String val, int defaultVal) {
 		try {
 			return Integer.valueOf(val);
 		}catch(Exception e){

@@ -37,7 +37,7 @@ public class LibChecker {
 		boolean libFound = false;
 		try {
 			Text2Speech objSpeaker = new Text2Speech();
-			objSpeaker.dospeak(" " , "kevin16", (0.5f));
+			objSpeaker.dospeak(" " , "kevin16", (0.5f), 0.5f);
 			libFound = true;
 			logger.info(" \n => voice speaker library found! :)");
 		} catch (Throwable e) {

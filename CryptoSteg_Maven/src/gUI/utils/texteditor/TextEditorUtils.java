@@ -1084,7 +1084,7 @@ public class TextEditorUtils {
 		textArea.repaint();
 	}
 	
-	public void defaultTxtConfig(Font DEFAULT, Color DEFAULT_BCKG_COL, Color DEFAULT_FORE_COL, int margin) {
+	public void updateDefaultTxtConfig(Font DEFAULT, Color DEFAULT_BCKG_COL, Color DEFAULT_FORE_COL, int margin) {
 		TextEditorOption txtOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		txtOpt.setFont(DEFAULT);
 		txtOpt.setBackCol(DEFAULT_BCKG_COL);

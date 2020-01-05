@@ -5,13 +5,13 @@ import static testconfig.TestConstants.*;
 
 import org.junit.Test;
 
-import network.DownloadUtils;
+import files.ZipWorker;
 
 public class TestZip {
 
 	@Test
 	public void testZipFolder() throws Exception {
-		File zipped = DownloadUtils.zipFolder(sourceFolderPath + "FolderC", destFolder, true, true);
+		File zipped = ZipWorker.zipFolder(sourceFolderPath + "FolderC", destFolder, true, true);
 		System.out.println(zipped);
 	}
 }
