@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>CryptoSteg_Maven</groupId>
-  <artifactId>CryptoSteg_Maven</artifactId>
+  <groupId>ScreepT</groupId>
+  <artifactId>ScreepT</artifactId>
   <version>${parent.build.version.screept}</version>
-  <name>CryptoSteg_Maven</name>
+  <name>ScreepT</name>
   
   <parent>
-  	<groupId>Parent_Project</groupId>
-  	<artifactId>Parent_Project</artifactId>
+  	<groupId>ScreepT_Parent</groupId>
+  	<artifactId>ScreepT_Parent</artifactId>
   	<version>${parent.build.version.screept}</version>
-  	<relativePath>../Parent_Project</relativePath>
+  	<relativePath>../ScreepT_Parent</relativePath>
   </parent>
   
   <packaging>jar</packaging>
@@ -681,9 +681,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>ScrYpT-Crypter</groupId>
-		 	<artifactId>ScrYpT-Crypter</artifactId>
-		 	<version>0.0.1-SNAPSHOT</version>
+			<groupId>ScreepT_Crypter</groupId>
+		 	<artifactId>ScreepT_Crypter</artifactId>
+		 	<version>1.0</version>
 		</dependency>
 		
 		<dependency>
@@ -693,9 +693,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>ScrYpT_LauncherV2</groupId>
-			<artifactId>ScrYpT_LauncherV2</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>ScreepT_Launcher</groupId>
+			<artifactId>ScreepT_Launcher</artifactId>
+			<version>1.0</version>
 			<!-- <scope>compile</scope> -->
 		</dependency>
 		

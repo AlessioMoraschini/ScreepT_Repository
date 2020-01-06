@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>Parent_Project</groupId>
-  <artifactId>Parent_Project</artifactId>
+  <groupId>ScreepT_Parent</groupId>
+  <artifactId>ScreepT_Parent</artifactId>
   <!-- Version is Defined in this file as custom property -->
   <version>${parent.build.version.screept}</version>
   <packaging>pom</packaging>
@@ -12,7 +12,7 @@
   	<module>../GenCommons</module>
   	<module>../GeneralResources</module>
   	<module>../OsCommons</module>
-  	<module>../ScrYpT-Crypter</module>
+  	<module>../ScreepT_Crypter</module>
   	<module>../Initializer_Configs</module>
   	<module>../GuiCommons</module>
   	<module>../NetworkCommons</module>
@@ -21,13 +21,13 @@
   	<module>../GuiTextEditorCommons</module>
   	<module>../MultimediaConversion</module>
   	<module>../UltimateCalculator</module>
-  	<module>../ScrYpT_LauncherV2</module>
-  	<module>../CryptoSteg_Maven</module>
+  	<module>../ScreepT_Launcher</module>
+  	<module>../ScreepT</module>
   </modules>
   
   <properties>
   
-  	<!-- Builds are coded into pom.xml of "ScrYpT_Launcher" and "CryptoSteg_Maven" projects, this build is designed to the compile entire application.
+  	<!-- Builds are coded into pom.xml of "ScrYpT_Launcher" and "ScreepT" projects, this build is designed to the compile entire application.
 		 Launch this with wanted configurations to customize the build process(see after in this file). Launch normally with "clean install -X -U"	   -->
   
   	<!-- ######################  GENERAL BUILD OPTIONS  ##################### -->

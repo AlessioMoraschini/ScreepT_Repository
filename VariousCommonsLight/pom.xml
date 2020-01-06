@@ -6,10 +6,10 @@
 	<version>1.0</version>
 
 	<parent>
-		<groupId>Parent_Project</groupId>
-		<artifactId>Parent_Project</artifactId>
+		<groupId>ScreepT_Parent</groupId>
+		<artifactId>ScreepT_Parent</artifactId>
 		<version>${parent.build.version.screept}</version>
-		<relativePath>../Parent_Project</relativePath>
+		<relativePath>../ScreepT_Parent</relativePath>
 	</parent>
 
 	<packaging>jar</packaging>

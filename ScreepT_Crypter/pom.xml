@@ -1,18 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>ScrYpT-Crypter</groupId>
-  <artifactId>ScrYpT-Crypter</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>ScreepT_Crypter</groupId>
+  <artifactId>ScreepT_Crypter</artifactId>
+  <version>1.0</version>
   
   <packaging>jar</packaging>
-  <name>ScrYpT-Crypter</name>
+  <name>ScreepT_Crypter</name>
   
   <parent>
-  	<groupId>Parent_Project</groupId>
-  	<artifactId>Parent_Project</artifactId>
+  	<groupId>ScreepT_Parent</groupId>
+  	<artifactId>ScreepT_Parent</artifactId>
   	<version>${parent.build.version.screept}</version>
-  	<relativePath>../Parent_Project</relativePath>
+  	<relativePath>../ScreepT_Parent</relativePath>
   </parent>
   
   <build>
