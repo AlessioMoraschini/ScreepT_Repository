@@ -1,8 +1,5 @@
 #List of Java keywords
 
-In the Java programming language, a keyword is one of 50 reserved words that have a predefined meaning in the language; because of
-this, programmers cannot use keywords as names for variables, methods, classes, or as any other identifier.
-
 - A
   - abstract 
   - assert
@@ -69,8 +66,6 @@ this, programmers cannot use keywords as names for variables, methods, classes, 
   - volatile
 - W
   - while
-
-# Reserved words for literal values
 
 - false
 - null

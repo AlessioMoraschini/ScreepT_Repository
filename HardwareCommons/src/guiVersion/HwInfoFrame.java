@@ -186,23 +186,27 @@ public class HwInfoFrame extends ParentFrame{
 		// START THREAD VALUES UPDATER 
 		GuiUtils.launchThreadSafeSwing(new Runnable() {
 			public void run() {
+
 				
 				while(thisPanel.isActive.get()) {
+
 					updateRamInfo();
 					updateHdInfo();
 					updateCpuUsageInfo();
 					updateScreeptResourcesUsage();
-					singletonInstance.pack();
-					GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 					try {
 						Thread.sleep(THREAD_REFRESH_RATE);
 					} catch (InterruptedException e) {
 						logger.error(Arrays.toString(e.getStackTrace()));
 					}
+					
 				}
 				logger.info(HwInfoFrame.this.getClass().getName() + " Started - OUTPUT_CODE: HWINFOPANEL_STARTED_OK");
 			}
 		});
+		
+		singletonInstance.pack();
+		GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 		
 	}
 	

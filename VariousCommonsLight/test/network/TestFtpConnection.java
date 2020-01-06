@@ -81,7 +81,7 @@ public class TestFtpConnection {
 //		progPanel.updateText("Downloading " + FOLDER_ON_SERVER + "/" + TEST_FILE_DOWNLOAD);
 		File downloaded = dumper.downloadFile(FOLDER_ON_SERVER, TEST_FILE_DOWNLOAD, DOWNLOAD_DESTINATION_LOCAL, false);
 
-		assertTrue(ChecksumHasher.equalsFilesChecksum(downloaded, FILE_TO_UPLOAD, HashingFunction.MD5));
+		assertTrue(ChecksumHasher.equalsFilesChecksum(downloaded, FILE_TO_UPLOAD, HashingFunction.SHA512));
 		assertTrue(deleteFile(FILE_TO_UPLOAD.getName()));
 		
 //		progPanel.forceClose();

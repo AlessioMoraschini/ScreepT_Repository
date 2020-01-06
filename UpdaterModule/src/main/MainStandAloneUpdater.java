@@ -30,7 +30,7 @@ public class MainStandAloneUpdater {
 	
 	private static final JOptionHelper dialogHelper = new JOptionHelper(null);
 	
-	public static final HashingFunction downloadsHashFunc = HashingFunction.MD5;
+	public static final HashingFunction downloadsHashFunc = HashingFunction.SHA512;
 	/**
 	 * This is main application updater module, runnable as main class of updater.jar
 	 * @param args -> args[0]= mainApplication jar ; args[1]=  updates extracted folder

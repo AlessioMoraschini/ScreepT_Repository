@@ -2,6 +2,7 @@ package om;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.SwingUtilities;
 
@@ -17,11 +18,13 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	
 	ColumnTextArea currentColumnTextArea;
 	public int instanceId;
+	public AtomicBoolean fractionalFontEnabled;
 	
 	public ColumnTextAreaShortcutsListener(ColumnTextArea currentColumnTextArea) {
 		instanceId = instancesCreatedTotalNumber ++;
 		logger.debug(this.getClass().getName() + " Started listening on column textArea! Instance n°" + instancesCreatedTotalNumber);
 		this.currentColumnTextArea = currentColumnTextArea;
+		fractionalFontEnabled = new AtomicBoolean(currentColumnTextArea.getFractionalFontMetricsEnabled());
 	}
 	
 	@Override
@@ -38,33 +41,34 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
-		// CANC
-		if (!isShortcutKey(e) && e.getKeyCode()==127 && e.getID() == KeyEvent.KEY_PRESSED) {
-			try {
+		if (e.getID() == KeyEvent.KEY_PRESSED && !isShortcutKey(e)) {
+			
+			// CANC
+			if (e.getKeyCode() == 127) {
+				try {
+					if (currentColumnTextArea.isRectangularModeOn.get() && currentColumnTextArea.isCurrentSelectionRectangular()) {
+						currentColumnTextArea.rectangularReplaceSelection("");
+					}
+				} catch (Exception e2) {
+				}
+			}
+			// DELETE
+			if (e.getKeyCode() == 8) {
 				if (currentColumnTextArea.isRectangularModeOn.get() && currentColumnTextArea.isCurrentSelectionRectangular()) {
 					currentColumnTextArea.rectangularReplaceSelection("");
 				}
-			} catch (Exception e2) {
 			}
-		}
 
-		// DELETE
-		if (!isShortcutKey(e) && e.getKeyCode()==8 && e.getID() == KeyEvent.KEY_PRESSED) {
-			if(currentColumnTextArea.isRectangularModeOn.get() && currentColumnTextArea.isCurrentSelectionRectangular()) {
-				currentColumnTextArea.rectangularReplaceSelection("");
-        	}
-		}
-
-		if (!isShortcutKey(e) && e.getID() == KeyEvent.KEY_PRESSED) {
 			String value = String.valueOf(e.getKeyChar());
-			if(StringUtils.isAsciiPrintable(value) && currentColumnTextArea.isCurrentSelectionRectangular()) {
+			if (StringUtils.isAsciiPrintable(value) && currentColumnTextArea.isCurrentSelectionRectangular()) {
+
 				currentColumnTextArea.undoManager.beginInternalAtomicEdit();
 				currentColumnTextArea.rectangularReplaceSelection(value);
 				SwingUtilities.invokeLater(new Runnable() {
-					
+
 					@Override
 					public void run() {
-			
+
 						try {
 							currentColumnTextArea.replaceRange("", currentColumnTextArea.getCaretPosition() - 1, currentColumnTextArea.getCaretPosition());
 							currentColumnTextArea.moveSelectionRectangle(1);
@@ -75,19 +79,19 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 				});
 				return true;
 			}
-		}
-		
-		if (!isShortcutKey(e) && e.getID() == KeyEvent.KEY_RELEASED) {
-			String value = String.valueOf(e.getKeyChar());
-			if(StringUtils.isAsciiPrintable(value) && currentColumnTextArea.isCurrentSelectionRectangular()) {
-				return true;
-			}
-		}
-		
-		if (!isShortcutKey(e) && e.getID() == KeyEvent.KEY_PRESSED) {
-			String value = String.valueOf(e.getKeyChar());
-			if(!StringUtils.isAsciiPrintable(value)) {
+			
+			if (!StringUtils.isAsciiPrintable(value)) {
 				currentColumnTextArea.getHighlighter().removeAllHighlights();
+			}
+		
+		} else if (e.getID() == KeyEvent.KEY_RELEASED) {
+			
+			if (!isShortcutKey(e)) {
+				
+				String value = String.valueOf(e.getKeyChar());
+				if(StringUtils.isAsciiPrintable(value) && currentColumnTextArea.isCurrentSelectionRectangular()) {
+					return true;
+				}
 			}
 		}
 	    
@@ -97,5 +101,13 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	
 	private boolean isShortcutKey(KeyEvent e) {
 		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
+	}
+	
+	private void backupFractionalFont() {
+		fractionalFontEnabled.set(currentColumnTextArea.getFractionalFontMetricsEnabled());
+	}
+
+	private void resetFractionalFont() {
+		currentColumnTextArea.setFractionalFontMetricsEnabled(fractionalFontEnabled.get());
 	}
 }

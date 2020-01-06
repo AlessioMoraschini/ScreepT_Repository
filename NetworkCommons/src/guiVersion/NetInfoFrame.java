@@ -386,20 +386,16 @@ public class NetInfoFrame extends ParentFrame{
 			
 			@Override
 			public void run() {
-				singletonInstance.pack();
-				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 				
 				updateNetDisplayedINFO();
 				updateAdapterGUIinfos();
 				validateConnectivity();
 				
-				singletonInstance.pack();
 				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 			}
 		});
 		
 		logger.info(this.getClass().getName() + " Started");
-		logger.info("OUTPUT_CODE: OK_NETWORKPANEL_STARTED");
 	}
 	
 ////////////////////////// EVENT HANDLERS ACTION LISTENERS //////////////////////////

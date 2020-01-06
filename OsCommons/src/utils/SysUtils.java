@@ -250,8 +250,8 @@ public class SysUtils {
 	 * @return
 	 */
 	public static boolean is64arch() {
-		String arch = System.getenv("PROCESSOR_ARCHITECTURE");
-		if (arch.endsWith("64")) {
+		String arch = System.getProperty("os.arch");
+		if (arch != null && arch.contains("64")) {
 			return true;
 		} else
 			return false;
@@ -263,8 +263,8 @@ public class SysUtils {
 	 * @return
 	 */
 	public static boolean is32arch() {
-		String arch = System.getenv("PROCESSOR_ARCHITECTURE");
-		if (arch.endsWith("32")) {
+		String arch = System.getProperty("os.arch");
+		if (arch != null && arch.contains("86")) {
 			return true;
 		} else
 			return false;

@@ -231,7 +231,7 @@ public class UpdatesManager {
 		boolean fileIsTheSame = false;
 		
 		try {
-			fileIsTheSame = ChecksumHasher.equalsFilesChecksum(newTempManifest, originalManifest, HashingFunction.MD5);
+			fileIsTheSame = ChecksumHasher.equalsFilesChecksum(newTempManifest, originalManifest, HashingFunction.SHA512);
 		} catch (Throwable e) {
 			logger.error("The was an error while comparing new temp manifest checksum", e);
 		}

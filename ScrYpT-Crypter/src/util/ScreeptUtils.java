@@ -1,5 +1,6 @@
 package util;
 
+import java.awt.Container;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,10 +8,57 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import javax.swing.JPasswordField;
+
+import crypt.aes.AesCipher;
+import gui.JOptionHelper;
+import om.SecurityLevel;
 import utility.SafeLogger;
 
 public class ScreeptUtils {
-
+	
+	public static boolean checkPasswordStrengthDynamic(SecurityLevel level, JPasswordField passwordField, int minLengthIncluded) {
+		if(level.equals(SecurityLevel.MAX)) {
+			return checkPasswordStrengthHighSecurity(passwordField, minLengthIncluded);
+			
+		} else if(level.equals(SecurityLevel.MID)) {
+			return checkPasswordStrengthMidSecurity(passwordField, minLengthIncluded);
+			
+		} else {
+			return true;
+		}
+	}
+	
+	public static boolean checkPasswordStrengthMidSecurity(JPasswordField passwordField, int minLengthIncluded) {
+		boolean useAnyway = false; 
+		String advice = AesCipher.isPasswordSafeNoSpecials(passwordField.getPassword(), minLengthIncluded);
+				
+		Container parent = passwordField != null ? passwordField.getTopLevelAncestor() : null;
+		
+		if("".equals(advice)) {
+			useAnyway = true;
+		} else {
+			useAnyway = new JOptionHelper(parent).yesOrNo(advice, "Unsafe Password");
+		}
+		
+		return useAnyway;
+	}
+	
+	public static boolean checkPasswordStrengthHighSecurity(JPasswordField passwordField, int minLengthIncluded) {
+		boolean problemFound = true; 
+		String advice = AesCipher.isPasswordSafeBestSecurity(passwordField.getPassword(), minLengthIncluded);
+		
+		Container parent = passwordField != null ? passwordField.getTopLevelAncestor() : null;
+		
+		if("".equals(advice)) {
+			problemFound = false;
+		} else {
+			problemFound = new JOptionHelper(parent).yesOrNo(advice, "Unsafe Password");
+		}
+		
+		return problemFound;
+	}
+	
 	/**
 	 * this method change name of java File variable until the result is a non existent file
 	 * It do that adding (i) numbers at the end of the file name, just before the start of the

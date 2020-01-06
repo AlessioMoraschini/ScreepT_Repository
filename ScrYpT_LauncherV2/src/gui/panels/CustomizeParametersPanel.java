@@ -587,7 +587,7 @@ public class CustomizeParametersPanel extends JFrame{
 	}
 	
 	private String checkJvmString(String jvmStr) {
-		String result = (jvmStr.equals("") 
+		String result = ("".equals(jvmStr) 
 				|| !SysUtils.findJvmVersionsInstalled(new OSinfo()).contains(jvmStr) 
 				|| !ScreepTLauncher.jvmHelper.checkSingleJavaVersionOK(new File(jvmStr).getName()))?
 						
@@ -613,7 +613,7 @@ public class CustomizeParametersPanel extends JFrame{
 		
 		for (int i = 0; i < comboPrefJvm.getItemCount(); i++) {
 			String currentComboValue = (String)comboPrefJvm.getItemAt(i);
-			if (currentComboValue.contains(target) || target.contains(currentComboValue)) {
+			if (currentComboValue != null && (currentComboValue.contains(target) || target.contains(currentComboValue))) {
 				comboPrefJvm.setSelectedIndex(i);
 				comboPrefJvm.revalidate();
 				updateJvmIcon();

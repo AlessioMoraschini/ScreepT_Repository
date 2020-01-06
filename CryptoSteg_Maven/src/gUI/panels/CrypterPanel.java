@@ -40,6 +40,7 @@ import om.CrypterResultDTO;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
+import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
 import utility.ConversionUtils;
 import variousutils.HandleString;
@@ -343,7 +344,7 @@ public class CrypterPanel extends ModulePanel {
 		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
 		lblScreeptHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		lblScreeptHeader.setForeground(Color.WHITE);
-		lblScreeptHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 16));
+		lblScreeptHeader.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 17));
 		lblScreeptHeader.setBackground(new Color(112, 128, 144));
 		panelHeader.add(lblScreeptHeader, "cell 4 0,growx,aligny center");
 		
@@ -688,16 +689,17 @@ public class CrypterPanel extends ModulePanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				try {
-					screeptManagerFoF.setHashed(chckbxHashKey.isSelected());
-					new Thread(cripterRunner()).start();
-				}
-				catch(Throwable ex) {
-					if(screeptManagerFoF.screepTManager!=null) {
-						screeptManagerFoF.screepTManager.disableProgressUpdater();
-					}
-					dialogHelper.error("OOOps, an error occurred, see log for details :(", "Generic Error");
-					logger.error("Exception happened during creept", ex);
+				if (ScreeptUtils.checkPasswordStrengthDynamic(currentConf.getAesOpt().getSecurityLevel(), AESKEYtext, 10)) {
+					try {
+						screeptManagerFoF.setHashed(chckbxHashKey.isSelected());
+						new Thread(cripterRunner()).start();
+					} catch (Throwable ex) {
+						if (screeptManagerFoF.screepTManager != null) {
+							screeptManagerFoF.screepTManager.disableProgressUpdater();
+						}
+						dialogHelper.error("OOOps, an error occurred, see log for details :(", "Generic Error");
+						logger.error("Exception happened during creept", ex);
+					} 
 				}
 				
 			}

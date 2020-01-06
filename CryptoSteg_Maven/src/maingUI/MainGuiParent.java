@@ -185,9 +185,7 @@ public class MainGuiParent {
 		mnHelp = new JMenu("Help");
 			mnrestartPanel = new JMenu("Reset panels...");
 			
-		BASE_TITLE = currentConfiguration.getGenOpt().getUserName() + " is using " + GeneralConfig.APPLICATION_NAME;
-		
-		// JMenuItems are initialized inside MainGUI Constructor, where they are linked to actions
+		// JMenuItems are initialized inside MainGUI Constructor, where they are linked to actions - See MainGUIParent for further details on items
 	}
 	
 	/******************  BEGIN UTILITY METHODS  *****************************/
@@ -200,7 +198,12 @@ public class MainGuiParent {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				
+				logger.info("## TITLE UPDATER started.");
+				
 				while (mainAppRunning) {
+					
+					BASE_TITLE = currentConfiguration.getGenOpt().getUserName() + " is using " + GeneralConfig.APPLICATION_NAME;
 					
 					if(mainGuiUtils.isTextEditorActive()) {
 						mainFrameScreept.setTitle(BASE_TITLE + " - Text Editor");

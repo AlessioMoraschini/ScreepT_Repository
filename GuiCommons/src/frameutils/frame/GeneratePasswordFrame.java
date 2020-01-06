@@ -10,11 +10,13 @@ import frameutils.utils.GuiUtils;
 import gui.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import utility.ConversionUtils;
 import utility.hash.SafeHasher;
 import utility.hash.SafeHasher.HashAlgorithm;
 import utility.hash.SafeHasher.IterationsLevel;
 import variousutils.HandleString;
 import net.miginfocom.swing.MigLayout;
+import om.SecurityLevel;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -46,21 +48,9 @@ import javax.swing.JCheckBox;
 public class GeneratePasswordFrame extends ParentFrame{
 	private static final long serialVersionUID = 7066597918430250412L;
 	
-	private static final byte[] fixedSalt = new byte[] {'F','e','Z','v','U','s','4','v','p','X','d','h','2','3','X','S'};
+	private static final byte[] fixedSalt = new byte[] {'F','0','Z','$','U','_','4','v','p','X','*','h','8','3','X','S'};
 	
 	public static GeneratePasswordFrame singletonInstance = null;
-	
-	private static final String baseString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-	private static final char[] baseCharacters = baseString.toCharArray();
-	
-	private static final String numberString = "0123456789";
-	private static final char[] numberCharacters = numberString.toCharArray();
-	
-	private static final String symbolString = "@&#$%";
-	private static final char[] symbolCharacters = symbolString.toCharArray();
-	
-	private static final String specialString = "`!\\\"'()*+,-./:;<=>?[]^_`{|}~";
-	private static final char[] specialCharacters = specialString.toCharArray();
 	
 	private static boolean symbolsFlag = false;
 	private static boolean numbersFlag = true;
@@ -79,6 +69,8 @@ public class GeneratePasswordFrame extends ParentFrame{
 	private JSeparator separator;
 	private JButton btnHashed;
 	private JCheckBox chckbxShowKey;
+	
+	private SecurityLevel securityLevel = SecurityLevel.NO_CHECK;
 	
 	public GeneratePasswordFrame(JFrame parentFrame) {
 		super();
@@ -147,19 +139,22 @@ public class GeneratePasswordFrame extends ParentFrame{
 		separator = new JSeparator();
 		getContentPane().add(separator, "cell 0 1 9 1,growx");
 		
-		rdbtnUseNumbers = new JRadioButton("Use numbers ["+numberString+"]");
+		rdbtnUseNumbers = new JRadioButton("Use numbers ["+ConversionUtils.numberString+"]");
 		rdbtnUseNumbers.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		rdbtnUseNumbers.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		rdbtnUseNumbers.setOpaque(false);
 		rdbtnUseNumbers.setForeground(Color.WHITE);
 		getContentPane().add(rdbtnUseNumbers, "cell 0 2 2 1,alignx center");
 		
-		rdbtnUseSpecials = new JRadioButton("Use Specials ["+specialString+"]");
+		rdbtnUseSpecials = new JRadioButton("Use Specials ["+ConversionUtils.specialString+"]");
+		rdbtnUseSpecials.setOpaque(false);
 		rdbtnUseSpecials.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		rdbtnUseSpecials.setForeground(Color.WHITE);
 		rdbtnUseSpecials.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		getContentPane().add(rdbtnUseSpecials, "cell 2 2 4 1,alignx center");
 		
-		rdbtnUseSymbols = new JRadioButton("Use Symbols  ["+symbolString+"]");
+		rdbtnUseSymbols = new JRadioButton("Use Symbols  ["+ConversionUtils.symbolString+"]");
+		rdbtnUseSymbols.setOpaque(false);
 		rdbtnUseSymbols.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		rdbtnUseSymbols.setForeground(Color.WHITE);
 		rdbtnUseSymbols.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -176,11 +171,22 @@ public class GeneratePasswordFrame extends ParentFrame{
 				rdbtnUseNumbers.setSelected(numbersFlag);
 				rdbtnUseSpecials.setSelected(specialsFlag);
 				rdbtnUseSymbols.setSelected(symbolsFlag);
+				adaptSecurityLevel();
 				btnGenerate.doClick();
 				logger.info(this.getClass().getName() + " - Started and ready!");
 			}
 		});
 		
+	}
+	
+	private void adaptSecurityLevel() {
+		if(numbersFlag && specialsFlag && symbolsFlag) {
+			securityLevel = SecurityLevel.MAX;
+		} else if(numbersFlag) {
+			securityLevel = SecurityLevel.MID;
+		} else {
+			securityLevel = SecurityLevel.NO_CHECK;
+		}
 	}
 	
 	private void addHandlers() {
@@ -213,18 +219,21 @@ public class GeneratePasswordFrame extends ParentFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				numbersFlag = rdbtnUseNumbers.isSelected();
+				adaptSecurityLevel();
 			}
 		});
 		rdbtnUseSymbols.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				symbolsFlag = rdbtnUseSymbols.isSelected();
+				adaptSecurityLevel();
 			}
 		});
 		rdbtnUseSpecials.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				specialsFlag = rdbtnUseSpecials.isSelected();
+				adaptSecurityLevel();
 			}
 		});
 		
@@ -309,15 +318,15 @@ public class GeneratePasswordFrame extends ParentFrame{
 	
 	private char[] getPossibleCharacters() {
 		
-		char[] symbolChars = rdbtnUseSymbols.isSelected() ? symbolCharacters : new char[0];
-		char[] numberChars = rdbtnUseNumbers.isSelected() ? numberCharacters : new char[0];
-		char[] specialChars = rdbtnUseSpecials.isSelected() ? specialCharacters : new char[0];
+		char[] symbolChars = rdbtnUseSymbols.isSelected() ? ConversionUtils.symbolCharacters : new char[0];
+		char[] numberChars = rdbtnUseNumbers.isSelected() ? ConversionUtils.numberCharacters : new char[0];
+		char[] specialChars = rdbtnUseSpecials.isSelected() ? ConversionUtils.specialCharacters : new char[0];
 		
-		char[] possibleCharacters = new char[baseCharacters.length + symbolChars.length + numberChars.length + specialChars.length];
+		char[] possibleCharacters = new char[ConversionUtils.baseCharacters.length + symbolChars.length + numberChars.length + specialChars.length];
 
 		int i = 0;
 		
-		for(char base : baseCharacters) {
+		for(char base : ConversionUtils.baseCharacters) {
 			possibleCharacters[i] = base;
 			i++;
 		}

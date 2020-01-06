@@ -22,6 +22,7 @@ import javax.swing.JPasswordField;
 import javax.swing.text.BadLocationException;
 
 import utility.BitWorker;
+import utility.ConversionUtils;
 import utility.EncodingUtils;
 import utility.EntrophyzerUtils;
 import utility.hash.SafeHasher;
@@ -426,6 +427,46 @@ public class AesCipher {
 
 	public void setDisplayedKey(char[] displayedKey) {
 		this.displayedKey = displayedKey;
+	}
+
+	/**
+	 * Password mst be more than 10 characters long, containing both symbols, uppercase, lowercase, symbols, specials, and digits.
+	 * @param password
+	 * @return
+	 */
+	public static String isPasswordSafeNoSpecials(char[] password, int minLengthIncluded) {
+		if(password.length <= minLengthIncluded || 
+				!ConversionUtils.containsOneOfMatchesChar(password, ConversionUtils.numberCharacters) ||
+				!ConversionUtils.containsOneOfMatchesChar(password, ConversionUtils.baseUppercase) ||
+				!ConversionUtils.containsOneOfMatchesChar(password, ConversionUtils.baseLowercase)) {
+			return "<html><u>Your password is not safe enough</u>, it should be more than " + minLengthIncluded + 
+					" charachters, containing uppercase, lowercase, and digits."
+					+ "<br>(To have the best secured password, symbols and special characters should be used too!)"
+					+ "<br><br><b>Are you sure to use this password?</b></html>";
+		} else {
+			return "";
+		}
+	}
+
+	/**
+	 * Password mst be more than 10 characters long, containing both symbols, uppercase, lowercase, symbols, specials, and digits.
+	 * @param password
+	 * @return
+	 */
+	public static String isPasswordSafeBestSecurity(char[] password, int minLengthIncluded) {
+		if(password.length <= minLengthIncluded || 
+				!ConversionUtils.containsOneOfMatchesChar(password, ConversionUtils.symbolCharacters) ||
+				!ConversionUtils.containsOneOfMatchesChar(password, ConversionUtils.specialCharacters) ||
+				!ConversionUtils.containsOneOfMatchesChar(password, ConversionUtils.numberCharacters) ||
+				!ConversionUtils.containsOneOfMatchesChar(password, ConversionUtils.baseUppercase) ||
+				!ConversionUtils.containsOneOfMatchesChar(password, ConversionUtils.baseLowercase)) {
+			return "<html><u>Your password is not safe enough</u>, it should be more than " + minLengthIncluded + 
+					" charachters, containing uppercase, lowercase, symbols, special characters, and digits."
+					+ "<br>("+ ConversionUtils.specialString + ConversionUtils.symbolString +")"
+					+ "<br><br><b>Are you sure to use this password?</b></html>";
+		} else {
+			return "";
+		}
 	}
 		
 }

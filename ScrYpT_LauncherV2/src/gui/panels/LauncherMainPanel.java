@@ -162,7 +162,7 @@ public class LauncherMainPanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!CustomizeParametersPanel.active) {
+				if(customizerPanel == null || !CustomizeParametersPanel.active) {
 					customizerPanel = new CustomizeParametersPanel("Customize start options", LAUNCHER_GUI);
 					customizerPanel.setVisible(true);
 					customizerPanel.setAlwaysOnTop(true);

@@ -8,7 +8,7 @@ public class CustomTableModel extends AbstractTableModel {
    
 	private static final long serialVersionUID = 1L;
 	// String name <-> string description <-> boolean already installed <-> checkBox select <-> jbutton uninstall (if installed)
-	private static final String[] COLUMN_NAMES = {"Plugin name", "Descreeption", "Already installed", "selected for installation", "Single Plugin actions"};
+	private static final String[] COLUMN_NAMES = {"Plugin name", "DeScreepTion", "Already installed", "selected for installation", "Single Plugin actions"};
 	
     private static final Class<?>[] COLUMN_TYPES = new Class<?>[] {String.class, String.class, String.class, JCheckBox.class,  JButton.class};
 

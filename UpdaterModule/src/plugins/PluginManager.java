@@ -41,7 +41,7 @@ public class PluginManager {
 	public static final String installedPluginPropsListSeparator = ",";
 	public static final String installedPluginPendingDeleteListKey = "PLUGINS_PENDING_DELETE_AT_START";
 
-	public static final HashingFunction DEFAULT_HASHING_F_PLUGINS = HashingFunction.MD5;
+	public static final HashingFunction DEFAULT_HASHING_F_PLUGINS = HashingFunction.SHA512;
 
 	public static PropertiesManagerLight resourcesFilePathsMappings = new PropertiesManagerLight(MainStandAloneUpdater.resourcesMappingDefPath);
 	public static PropertiesManagerLight installedPluginProperties = new PropertiesManagerLight(installedPluginPropsFileName);

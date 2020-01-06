@@ -39,7 +39,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.drjekyll.fontchooser.FontDialog;
 import org.fife.rsta.ui.GoToDialog;
@@ -76,6 +75,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.SelectionDtoFull;
 import textareautil.TextLineNumber;
+import utility.EncodingUtils;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 import utils.dialog.ColorDialogUtils;
@@ -974,6 +974,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				final JTextArea textArea = parent.getCurrentTabEditor().loadedTabObj.textArea;
 				textArea.setCursor(GuiUtils.CURSOR_WAIT);
 				
+				EncodingUtils encoding64 = new EncodingUtils();
+				EncodingUtils.stringEncoding = currentConfiguration.getGenOpt().getCharset();
+				
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						final int startSel = textArea.getSelectionStart();
@@ -987,10 +990,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 							if (!controlDown) {
 								// Convert only selection an inject in the place of current selection
-								converted = Base64.encodeBase64String(sourceText.getBytes(currEncoding));
+								converted = encoding64.encodeBase64(sourceText.getBytes(currEncoding));
 							} else {
-								byte[] decoded = Base64.decodeBase64(sourceText);
-								converted = new String(decoded, currEncoding);
+								converted = encoding64.decodeBase64(sourceText);
 							}
 
 							if (isSomethingSelected) {
@@ -1019,8 +1021,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 								logger.error("Error with textarea selection reapply after base 64 conversion", e);
 							}
 							
+							textEditorUtils.updateCurrentUnsavedFromFileRead();
 							textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
+							
 						}
+						
 					}
 				});
 			}

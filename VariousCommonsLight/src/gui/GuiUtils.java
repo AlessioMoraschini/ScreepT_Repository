@@ -103,7 +103,7 @@ public class GuiUtils {
 			public void run() {
 				target.removeAllItems();
 				Object[] array = values.toArray();
-				DefaultComboBoxModel model = new DefaultComboBoxModel<>(array);
+				DefaultComboBoxModel<E> model = new DefaultComboBoxModel(array);
 				target.setModel(model);
 				target.revalidate();
 				target.repaint();
@@ -340,8 +340,10 @@ public class GuiUtils {
 	}
 	
 	public static void maximizeFrameSize(JFrame targetFrame) {
-	    Dimension screenSize = getScreenSize();
-	    targetFrame.setSize(screenSize.width, screenSize.height);
+	    if (targetFrame != null) {
+			Dimension screenSize = getScreenSize();
+			targetFrame.setSize(screenSize.width, screenSize.height);
+		}
 	}
 	
 	public static Dimension makeFullScreen(Component element) {
@@ -372,18 +374,22 @@ public class GuiUtils {
 	}
 	
 	public static void centerComponent(Component targetComponent, int percentSize) {
-		float percent = (float)percentSize/100;
-		Dimension screenSize = (targetComponent instanceof JFrame)? getScreenSize((JFrame)targetComponent): getScreenSize();
-		int W = (int)(screenSize.width * percent);
-		int H = (int)(screenSize.height * percent);
-		targetComponent.setSize(W, H);
-		targetComponent.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
+		if (targetComponent != null) {
+			float percent = (float) percentSize / 100;
+			Dimension screenSize = (targetComponent instanceof JFrame) ? getScreenSize((JFrame) targetComponent) : getScreenSize();
+			int W = (int) (screenSize.width * percent);
+			int H = (int) (screenSize.height * percent);
+			targetComponent.setSize(W, H);
+			targetComponent.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+		}
 	}
 	
 	public static void centerComponent(Component targetFrame, int W, int H) {
-		Dimension screenSize = (targetFrame instanceof JFrame)? getScreenSize((JFrame)targetFrame): getScreenSize();
-		targetFrame.setSize(W, H);
-		targetFrame.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
+		if (targetFrame != null) {
+			Dimension screenSize = (targetFrame instanceof JFrame) ? getScreenSize((JFrame) targetFrame) : getScreenSize();
+			targetFrame.setSize(W, H);
+			targetFrame.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+		}
 	}
 	
 	public static void centerComponent(Component targetFrame) {
@@ -400,33 +406,37 @@ public class GuiUtils {
 	}
 	
 	public static void centerFrame(JFrame targetFrame, int percentSize) {
-		float percent = (float)percentSize/100;
-		Dimension screenSize = getScreenSize(targetFrame);
-		int W = (int)(screenSize.width * percent);
-		int H = (int)(screenSize.height * percent);
-		targetFrame.setSize(W, H);
-		targetFrame.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
+		if (targetFrame != null) {
+			float percent = (float) percentSize / 100;
+			Dimension screenSize = getScreenSize(targetFrame);
+			int W = (int) (screenSize.width * percent);
+			int H = (int) (screenSize.height * percent);
+			targetFrame.setSize(W, H);
+			targetFrame.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+		}
 	}
 	
 	public static void centerFrame(JFrame targetFrame, int W, int H) {
-		Dimension screenSize = getScreenSize(targetFrame);
-		targetFrame.setSize(W, H);
-		targetFrame.setBounds(screenSize.width/2-W/2, screenSize.height/2-H/2, W, H);
+		if (targetFrame != null) {
+			Dimension screenSize = getScreenSize(targetFrame);
+			targetFrame.setSize(W, H);
+			targetFrame.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+		}
 	}
 	
 	public static void moveFrame(Component element, int xDiff, int yDiff) {
-		int totX = (element.getX() + xDiff);
-		int totY = (element.getY() + yDiff);
-		int newX = (totX < 0)? 0 : totX;
-		int newY = (totY < 0)? 0 : totY;
-		Dimension screenSize = (element instanceof JFrame)? getScreenSize((JFrame)element): getScreenSize();
-		int maxDeltaX = screenSize.width - newX - element.getWidth();
-		int maxDeltaY = screenSize.height - newY - element.getHeight();
-		
-		newX = (maxDeltaX < 0)? screenSize.width - element.getWidth() : newX;
-		newY = (maxDeltaY < 0)? screenSize.height - element.getHeight() : newY;
-		
-		element.setBounds(newX, newY, element.getWidth(), element.getHeight());
+		if (element != null) {
+			int totX = (element.getX() + xDiff);
+			int totY = (element.getY() + yDiff);
+			int newX = (totX < 0) ? 0 : totX;
+			int newY = (totY < 0) ? 0 : totY;
+			Dimension screenSize = (element instanceof JFrame) ? getScreenSize((JFrame) element) : getScreenSize();
+			int maxDeltaX = screenSize.width - newX - element.getWidth();
+			int maxDeltaY = screenSize.height - newY - element.getHeight();
+			newX = (maxDeltaX < 0) ? screenSize.width - element.getWidth() : newX;
+			newY = (maxDeltaY < 0) ? screenSize.height - element.getHeight() : newY;
+			element.setBounds(newX, newY, element.getWidth(), element.getHeight());
+		}
 	}
 	
 	public static void openInFileSystem(File destination) {
@@ -492,21 +502,23 @@ public class GuiUtils {
     }
     
     public static void selectAllText(JTextComponent field) {
-    	field.requestFocus();
-    	field.setSelectionStart(0);
-    	field.setSelectionEnd(field.getText().length());
+    	if (field != null) {
+			field.requestFocus();
+			field.setSelectionStart(0);
+			field.setSelectionEnd(field.getText().length());
+		}
     }
     
 	public static String getTxtAreaCurrentLine(JTextArea txtArea) throws BadLocationException {
 		
-		int offsetFromStart = txtArea.getCaretPosition();
-		int currLine = txtArea.getLineOfOffset(offsetFromStart);
-		int startOffset = txtArea.getLineStartOffset(currLine);
-		int endOffset = txtArea.getLineEndOffset(currLine);
-		
-		int length = endOffset - startOffset;
-		
-		return txtArea.getText(startOffset, length);
+		if (txtArea != null) {
+			int offsetFromStart = txtArea.getCaretPosition();
+			int currLine = txtArea.getLineOfOffset(offsetFromStart);
+			int startOffset = txtArea.getLineStartOffset(currLine);
+			int endOffset = txtArea.getLineEndOffset(currLine);
+			int length = endOffset - startOffset;
+			return txtArea.getText(startOffset, length);
+		} else return "";
 	}
 	
 	/**

@@ -387,8 +387,6 @@ public class MainGUI extends MainGuiParent{
 			logger.error("Exception happened!", e1);
 		}
 
-		logger.info("## TITLE UPDATER started.");
-		
 	}
 	// END CONSTRUCTOR
 	

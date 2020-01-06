@@ -6,16 +6,20 @@ public class AesOption {
 	public final static boolean DEFAULT_FLAG_AES = true;
 	public final static boolean DEF_FLAG_HASHKEY = true;
 	
+	public final static SecurityLevel DEF_securityLevel = SecurityLevel.MID;
+	
 	
 	// FIELDS	
 	private boolean flagAes;  // flag che indica se � attiva la fase di codifica/decodifica AES
 	private boolean hashKey;
+	private SecurityLevel securityLevel;
 	
 	// constructors //
 	
 	public AesOption() {
 		flagAes = DEFAULT_FLAG_AES;
 		hashKey = DEF_FLAG_HASHKEY;
+		securityLevel = DEF_securityLevel;
 	}
 	
 	public AesOption(boolean AES) {
@@ -39,6 +43,14 @@ public class AesOption {
 
 	public void setFlagAes(boolean flagAes) {
 		this.flagAes = flagAes;
+	}
+
+	public SecurityLevel getSecurityLevel() {
+		return securityLevel;
+	}
+
+	public void setSecurityLevel(SecurityLevel securityLevel) {
+		this.securityLevel = securityLevel;
 	}
 
 }

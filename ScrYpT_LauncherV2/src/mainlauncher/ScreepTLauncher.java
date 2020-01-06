@@ -60,7 +60,7 @@ public class ScreepTLauncher {
 	static Logger logger = Logger.getLogger(ScreepTLauncher.class); 
 	
 	public static final String BATCH_LAUNCHER_NAME = "LauncherBatch.bat";
-	public static final String BASH_LAUNCHER_NAME = "LauncherBash.sh";
+	public static final String BASH_LAUNCHER_NAME = "./LauncherBash.sh";
 	
 	public static String initPath = new OSinfo().isWindows() ? BATCH_LAUNCHER_NAME : BASH_LAUNCHER_NAME;
 	
@@ -349,6 +349,7 @@ public class ScreepTLauncher {
 			
 			}else {
 				// TODO LINUX/MAC SHELL show on/off
+				runtime.exec("pwd");
 				runtime.exec(initPath);
 			}
 			logger.info("Commands launched without exceptions :)"); 

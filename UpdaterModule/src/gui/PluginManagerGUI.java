@@ -46,7 +46,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	private static final String BUTTON_UNINSTALL = "Uninstall";
 	
 	// String name <-> string description <-> boolean already installed <-> checkBox select <-> jbutton uninstall (if installed)
-	private static final String[] columnNames = {"Plugin name", "Descreeption", "Status", "Plugin Action"};
+	private static final String[] columnNames = {"Plugin name", "DeScreepTion", "Status", "Plugin Action"};
 	
 	public static boolean active = false;
 	

@@ -35,6 +35,7 @@ import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import util.ScreeptUtils;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -260,7 +261,7 @@ public class TextEditorHeaderPanel extends JPanel{
 				
 				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
-				if (!isCrypterOn) {
+				if (!isCrypterOn && ScreeptUtils.checkPasswordStrengthDynamic(currentConfiguration.getAesOpt().getSecurityLevel(), txtAesKey, 10)) {
 					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
 					btnCrypt.setCursor(GuiUtils.CURSOR_WAIT);
 					isCrypterOn = true;

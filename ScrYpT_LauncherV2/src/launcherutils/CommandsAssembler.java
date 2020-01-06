@@ -94,7 +94,12 @@ public class CommandsAssembler {
 	 */
 	public String getCombinedCommandList() {
 		StringBuilder builder = new StringBuilder();
-		builder.ensureCapacity(execCommand.getList().size());
+		builder.ensureCapacity(execCommand.getList().size()+1);
+		
+		// Add shebang
+		if(!SysUtils.getOsInfoLazy().isWindows()) {
+			builder.append("#!/bin/bash").append("\n\n");
+		}
 		
 		for(String currentCommand : execCommand.getList()) {
 			builder.append(currentCommand);

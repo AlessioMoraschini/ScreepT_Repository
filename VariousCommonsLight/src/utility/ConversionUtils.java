@@ -4,6 +4,24 @@ import java.io.File;
 import java.text.DecimalFormat;
 
 public class ConversionUtils {
+	
+	public static final String baseUppercaseString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	public static final char[] baseUppercase = baseUppercaseString.toCharArray();
+	
+	public static final String baseLowercaseString = "abcdefghijklmnopqrstuvwxyz";
+	public static final char[] baseLowercase = baseLowercaseString.toCharArray();
+	
+	public static final String baseString = baseUppercaseString.concat(baseLowercaseString);
+	public static final char[] baseCharacters = baseString.toCharArray();
+	
+	public static final String numberString = "0123456789";
+	public static final char[] numberCharacters = numberString.toCharArray();
+	
+	public static final String symbolString = "@&#$%";
+	public static final char[] symbolCharacters = symbolString.toCharArray();
+	
+	public static final String specialString = "`!\\\"'()*+,-./:;<=>?[]^_`{|}~";
+	public static final char[] specialCharacters = specialString.toCharArray();
 
 	public static int getPercent(int part, int total) {
 		return (int)((float)part/total * 100.0f);
@@ -95,4 +113,27 @@ public class ConversionUtils {
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
+
+	public static boolean containsOneOfMatchesChar(char[] password, char[] targetMatches) {
+		for(char iterator : password) {
+			for (char match : targetMatches) {
+				if (iterator == match) {
+					return true;
+				} 
+			}
+		}
+		
+		return false;
+	}
+
+	public static boolean containsMatch(char[] password, char targetMatch) {
+		for(char iterator : password) {
+			if(iterator == targetMatch) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 }

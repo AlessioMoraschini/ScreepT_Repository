@@ -17,6 +17,7 @@ import om.GenericOption;
 import om.GuiOption;
 import om.ImgConverterOption;
 import om.ScalingAlgorithm;
+import om.SecurityLevel;
 import om.SteganOption;
 import om.TextEditorOption;
 import om.files.FileNamed;
@@ -97,6 +98,11 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// LOAD AES OPTIONS => disabled key for security
 		aesOpt.setFlagAes(Boolean.parseBoolean(iniReadFile.get(AES_OPT, "flagCodificaAes")));
 		aesOpt.setHashKey(Boolean.parseBoolean(iniReadFile.get(AES_OPT, "hashKey")));
+		try {
+			aesOpt.setSecurityLevel(SecurityLevel.valueOf(iniReadFile.get(AES_OPT, "securityLevel")));
+		} catch (Exception e) {
+			aesOpt.setSecurityLevel(AesOption.DEF_securityLevel);
+		}
 		
 		loadFileOptions();
 		loadGeneralOptions();
@@ -122,6 +128,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			// set INIFILE-AES OPTIONS
 			iniFile.put(AES_OPT, "flagCodificaAes", aesOpt.isFlagAes());
 			iniFile.put(AES_OPT, "hashKey", aesOpt.isHashKey());
+			iniFile.put(AES_OPT, "securityLevel", aesOpt.getSecurityLevel().name());
 			
 			writeFileOptions();
 			writeGeneralOptions();
@@ -629,6 +636,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// concat AES OPTIONS
 		builder.append("\n\n ---- AES OPTIONS -----\n\n")
 			   .append("\nFLAGAES: ").append(aesOpt.isFlagAes())
+			   .append("\nSECURITY LEVEL: ").append(aesOpt.getSecurityLevel().name())
 			   .append("\nHASH KEY: ").append(aesOpt.isHashKey());
 		
 		// concat GENERAL OPTIONS

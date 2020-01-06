@@ -7,7 +7,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
@@ -91,8 +90,12 @@ public class TabTextEditorObj {
 		// TAB FOCUS CHANGES LISTENER
 		textArea.addFocusListener(focusTxtAreaMonitor);
 		
-		updateTextAreaPreferences(configuration.getTextEditorOpt());
-		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				updateTextAreaPreferences(configuration);
+				textArea.repaint();
+			}
+		});
 	}
 	
 	public void resetData() {
@@ -148,39 +151,37 @@ public class TabTextEditorObj {
 	}
 	
 	
-	public void updateTextAreaPreferences(TextEditorOption txtOptions) {
+	public void updateTextAreaPreferences(INItializer configuration) {
 		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				textArea.setTabSize(txtOptions.tabSize);
-				textArea.setPaintTabLines(txtOptions.isTabLineVisible());
-				textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
-				textArea.setCodeFoldingEnabled(txtOptions.codeFoldingEnabled);
-				textArea.setAutoIndentEnabled(txtOptions.autoIndentEnabled);
-				textArea.setMarkOccurrences(txtOptions.markOccurrences);
-				textArea.setCloseMarkupTags(txtOptions.closeMarkupTags);
-				textArea.setCloseCurlyBraces(txtOptions.closeCurlyBraces);
-				textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
-				textArea.setAnimateBracketMatching(txtOptions.animateBracketMatching);
-				textArea.setBracketMatchingEnabled(txtOptions.bracketMatchingEnabled);
-				textArea.setPaintMatchedBracketPair(txtOptions.paintMatchedBracketPair);
-				textArea.setFadeCurrentLineHighlight(txtOptions.fadeCurrentLineHighlight);
-				textArea.setUseFocusableTips(txtOptions.useFocusableTips);
-				textArea.setHighlightSecondaryLanguages(txtOptions.highlightSecondaryLanguages);
-				textArea.setFractionalFontMetricsEnabled(txtOptions.fractionalFontMetricsEnabled);
-				textArea.setTabsEmulated(txtOptions.tabSpacesEmulated);
-				hyperLinksEnabled(txtOptions.hyperLinksEnabled);
-				textArea.setShowMatchedBracketPopup(txtOptions.showBracketsPopup);
-				textArea.setEOLMarkersVisible(txtOptions.markEndOfLine);
-				textArea.setDragEnabled(true);
-				textArea.setMarkOccurrencesDelay(200);
-				textArea.setPaintMarkOccurrencesBorder(txtOptions.paintMarkOccurrencesBorder);
-				textArea.setRoundedSelectionEdges(txtOptions.roundedSelectionEdges);
-				textArea.setClearWhitespaceLinesEnabled(txtOptions.clearWhitespaceLinesEnabled);
-				textArea.setWhitespaceVisible(txtOptions.whiteSpaceVisible);
-			}
-		});
+		TextEditorOption txtOptions = configuration.getTextEditorOpt();
 		
+		textArea.setTabSize(txtOptions.tabSize);
+		textArea.setPaintTabLines(txtOptions.isTabLineVisible());
+		textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
+		textArea.setCodeFoldingEnabled(txtOptions.codeFoldingEnabled);
+		textArea.setAutoIndentEnabled(txtOptions.autoIndentEnabled);
+		textArea.setMarkOccurrences(txtOptions.markOccurrences);
+		textArea.setCloseMarkupTags(txtOptions.closeMarkupTags);
+		textArea.setCloseCurlyBraces(txtOptions.closeCurlyBraces);
+		textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
+		textArea.setAnimateBracketMatching(txtOptions.animateBracketMatching);
+		textArea.setBracketMatchingEnabled(txtOptions.bracketMatchingEnabled);
+		textArea.setPaintMatchedBracketPair(txtOptions.paintMatchedBracketPair);
+		textArea.setFadeCurrentLineHighlight(txtOptions.fadeCurrentLineHighlight);
+		textArea.setUseFocusableTips(txtOptions.useFocusableTips);
+		textArea.setHighlightSecondaryLanguages(txtOptions.highlightSecondaryLanguages);
+		textArea.setFractionalFontMetricsEnabled(txtOptions.fractionalFontMetricsEnabled);
+		textArea.setTabsEmulated(txtOptions.tabSpacesEmulated);
+		hyperLinksEnabled(txtOptions.hyperLinksEnabled);
+		textArea.setShowMatchedBracketPopup(txtOptions.showBracketsPopup);
+		textArea.setEOLMarkersVisible(txtOptions.markEndOfLine);
+		textArea.setDragEnabled(true);
+		textArea.setMarkOccurrencesDelay(200);
+		textArea.setPaintMarkOccurrencesBorder(txtOptions.paintMarkOccurrencesBorder);
+		textArea.setRoundedSelectionEdges(txtOptions.roundedSelectionEdges);
+		textArea.setClearWhitespaceLinesEnabled(txtOptions.clearWhitespaceLinesEnabled);
+		textArea.setWhitespaceVisible(txtOptions.whiteSpaceVisible);
+		textArea.setLocale(configuration.getGenOpt().getLocale());
 	}
 
 	public void hyperLinksEnabled(boolean enabled) {

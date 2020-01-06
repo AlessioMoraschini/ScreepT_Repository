@@ -91,15 +91,15 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				/*
 				 *  ADJUST FONT-SIZE
 				 */
-				//case Ctrl+[numpad +] -> increase
-				if (e.getKeyCode()==107 && e.isControlDown() && !e.isAltDown() && !e.isShiftDown())
+				//case Ctrl+Shift[numpad +] -> increase
+				if (e.getKeyCode() == KeyEvent.VK_PLUS && e.isControlDown() && !e.isAltDown() && e.isShiftDown())
 				{
 					int val = subHeaderPanel.sliderFontSize.getValue();
 					subHeaderPanel.sliderFontSize.setValue(val+1);
 				}
 				
-				//case Ctrl+[numpad -] -> decrease
-				if (e.getKeyCode()==109 && e.isControlDown() && !e.isAltDown() && !e.isShiftDown())
+				//case Ctrl+Shift[numpad -] -> decrease
+				if (e.getKeyCode() == KeyEvent.VK_MINUS && e.isControlDown() && !e.isAltDown() && e.isShiftDown())
 				{
 					int val = subHeaderPanel.sliderFontSize.getValue();
 					subHeaderPanel.sliderFontSize.setValue(val-1);

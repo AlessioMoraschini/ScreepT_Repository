@@ -737,7 +737,7 @@ public class TextEditor extends ModulePanel {
 		headerPanel.sliderSpokenSpeed.setValue(txtOptions.getVoiceRate());
 		
 		// UPDATE DETAIL
-		loadedTabObj.updateTextAreaPreferences(txtOptions);
+		loadedTabObj.updateTextAreaPreferences(currentConfiguration);
 		loadedTabObj.textArea.setLocale(currentConfiguration.getGenOpt().getLocale());
 
 		// TREE LOCKED

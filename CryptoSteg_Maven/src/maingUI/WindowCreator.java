@@ -1,8 +1,10 @@
 package maingUI;
 
+import java.awt.Rectangle;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -44,7 +46,7 @@ public class WindowCreator {
 		HashCheckerFrame hashCheckerFrame = HashCheckerFrame.getInstance(
 				targetFile, mainApplication.getMainFrame(), MainGUI.currentConfiguration.getTextEditorOpt());
 	
-		commonGraphicInitAlwaysOnTop(hashCheckerFrame, "File Hash Checker - ");
+		commonGraphicInitAlwaysOnTop(hashCheckerFrame, "File Hash Checker - ", true);
 		
 		return hashCheckerFrame;
 	}
@@ -52,7 +54,7 @@ public class WindowCreator {
 	public ClipboardFrame newClipboardFrame() {
 			
 		ClipboardFrame clipboardFrame = ClipboardFrame.getInstance(mainApplication.getMainFrame());
-		commonGraphicInitAlwaysOnTop(clipboardFrame, "Clipboard Frame - ");
+		commonGraphicInitAlwaysOnTop(clipboardFrame, "Clipboard Frame - ", true);
 		
 		return clipboardFrame;
 	}
@@ -60,7 +62,7 @@ public class WindowCreator {
 	public ColorPickerFrame newColorPickerFrame() {
 		
 		ColorPickerFrame colorPickerFrame = ColorPickerFrame.getInstance(mainApplication.getMainFrame());
-		commonGraphicInitAlwaysOnTop(colorPickerFrame, "Color Picker Frame");
+		commonGraphicInitAlwaysOnTop(colorPickerFrame, "Color Picker Frame", true);
 		
 		return colorPickerFrame;
 	}
@@ -69,7 +71,7 @@ public class WindowCreator {
 		
 		GeneratePasswordFrame panelPswKeyGen = GeneratePasswordFrame.getInstance(mainApplication.getMainFrame());
 		
-		commonGraphicInit(panelPswKeyGen, "Generate Password - ");
+		commonGraphicInit(panelPswKeyGen, "Generate Password - ", true);
 		
 		if (passordSizeNullable == null) {
 			panelPswKeyGen.unforceLentgh(16);
@@ -85,7 +87,7 @@ public class WindowCreator {
 		ImportExportWorkspcCryptFrame panelImportExportTxtEditor = ImportExportWorkspcCryptFrame.getInstance(
 				MainGUI.currentConfiguration.getTextEditorOpt(), MainGUI.initTxtWriter);
 		
-		commonGraphicInit(panelImportExportTxtEditor, "Import/Export crypted Workspace - ");
+		commonGraphicInit(panelImportExportTxtEditor, "Import/Export crypted Workspace - ", true);
 
 		panelImportExportTxtEditor.setState(java.awt.Frame.NORMAL);
 		panelImportExportTxtEditor.syncWithCurrentWOrkspace();
@@ -97,7 +99,7 @@ public class WindowCreator {
 		
 		KeyGenFrame panelKeyGen = KeyGenFrame.getInstance(MainGUI.currentConfiguration);
 		
-		commonGraphicInit(panelKeyGen, "IMG Generator - ");
+		commonGraphicInit(panelKeyGen, "IMG Generator - ", true);
 		
     	return panelKeyGen;
 	}
@@ -106,7 +108,7 @@ public class WindowCreator {
 		
 		KeyDictionaryFrame panelKeyDict = KeyDictionaryFrame.getInstance(MainGUI.currentConfiguration);
 				
-		commonGraphicInit(panelKeyDict, "Key Dictionary - ");
+		commonGraphicInit(panelKeyDict, "Key Dictionary - ", true);
     	
     	return panelKeyDict;
 	}
@@ -115,7 +117,7 @@ public class WindowCreator {
 		
 		GraphicPreferencesFrame panelGuiOptions = GraphicPreferencesFrame.getInstance(MainGUI.currentConfiguration);
 		
-		commonGraphicInitAlwaysOnTop(panelGuiOptions, "Graphics preferences - ");
+		commonGraphicInitAlwaysOnTop(panelGuiOptions, "Graphics preferences - ", true);
 		
 		return panelGuiOptions;
 	}
@@ -124,7 +126,7 @@ public class WindowCreator {
 		
 		GeneralOptionsFrame panelGeneralOptions = GeneralOptionsFrame.getInstance(MainGUI.currentConfiguration);
 		
-		commonGraphicInitAlwaysOnTop(panelGeneralOptions, "Generic Options - ");
+		commonGraphicInitAlwaysOnTop(panelGeneralOptions, "Generic Options - ", true);
 
 		panelGeneralOptions.setMinimumSize(panelGeneralOptions.getDefaultDimension());
 		GuiUtils.centerComponent(panelGeneralOptions);
@@ -136,7 +138,7 @@ public class WindowCreator {
 		
 		ImageConverterFrame panelImgConv = ImageConverterFrame.getInstance(MainGUI.currentConfiguration);
 		
-		commonGraphicInit(panelImgConv, "IMG Generator - ");
+		commonGraphicInit(panelImgConv, "IMG Generator - ", true);
 		
 		panelImgConv.setResizable(false);
 		
@@ -154,7 +156,7 @@ public class WindowCreator {
 
 				NetInfoFrame panelNetInfo = NetInfoFrame.getInstance();
 				panelNetInfo.setResizable(false);
-				commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ");
+				commonGraphicInitAlwaysOnTop(panelNetInfo, "Network info - ", true);
 
 				prog.forceClose();
 			}
@@ -172,7 +174,7 @@ public class WindowCreator {
 				prog.getPb().setString("Loading...");
 				
 				HwInfoFrame panelHwInfo = HwInfoFrame.getInstance();
-				commonGraphicInitAlwaysOnTop(panelHwInfo, "Hardware info - ");
+				commonGraphicInitAlwaysOnTop(panelHwInfo, "Hardware info - ", true);
 				panelHwInfo.setResizable(false);
 				
 				prog.forceClose();
@@ -184,7 +186,7 @@ public class WindowCreator {
 		
 		AboutSectionFrame panelAbout = AboutSectionFrame.getInstance(mainApplication);
 		
-		commonGraphicInit(panelAbout, "About - ");
+		commonGraphicInit(panelAbout, "About - ", true);
 		
 		panelAbout.setResizable(false);
 		
@@ -198,7 +200,7 @@ public class WindowCreator {
 			
 			if(visible) {
 				Sounds.playSound(SoundsConfigurator.CLICK_2, null);
-				commonGraphicInit(tutorialFrame, "Documentation - ");
+				commonGraphicInit(tutorialFrame, "Documentation - ", true);
 				tutorialFrame.setResizable(true);
 			}
 			
@@ -222,7 +224,7 @@ public class WindowCreator {
 		
 		ChangeLogFrame panelChangeLog = ChangeLogFrame.getInstance(GeneralConfig.CHANGE_LOG_FILE);
 		
-		commonGraphicInit(panelChangeLog, "ChangeLog - ");
+		commonGraphicInit(panelChangeLog, "ChangeLog - ", true);
 		
 		panelChangeLog.setResizable(true);
 		
@@ -230,10 +232,11 @@ public class WindowCreator {
 	}
 	
 	// COMMONS INITIALIZATION METHODS //
-	public void commonGraphicInit(ParentFrame newFrame, String title) {
+	public void commonGraphicInit(final ParentFrame newFrame, String title, boolean autoExtend) {
 		
 		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
 		
+		newFrame.setMaximizedBounds(new Rectangle(newFrame.getDefaultDimension()));
 		newFrame.setMinimumSize(newFrame.getDefaultDimension());
 		newFrame.setPreferredSize(newFrame.getDefaultDimension());
 		newFrame.setMaximumSize(newFrame.getDefaultDimension());
@@ -241,16 +244,20 @@ public class WindowCreator {
 		newFrame.setLocationRelativeTo(mainApplication.getMainFrame());
 		newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		newFrame.setTitle(title + GeneralConfig.APPLICATION_NAME);
-		GuiUtils.extendFramesAndMoveToTop(mainApplication.getMainFrame(), newFrame,JFrame.MAXIMIZED_BOTH);
-		GuiUtils.centerComponent(newFrame, newFrame.getDefaultDimension());
 		
-		newFrame.pack();
-		
-		newFrame.setVisible(true);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+//				if (autoExtend) {
+//					GuiUtils.extendFramesAndMoveToTop(mainApplication.getMainFrame(), newFrame, JFrame.MAXIMIZED_BOTH);
+//				}
+				GuiUtils.centerComponent(newFrame, newFrame.getDefaultDimension());
+				newFrame.setVisible(true);
+			}
+		});
 	}
 	
-	public void commonGraphicInitAlwaysOnTop(ParentFrame newFrame, String title) {
-		commonGraphicInit(newFrame, title);
+	public void commonGraphicInitAlwaysOnTop(ParentFrame newFrame, String title, boolean autoExtend) {
 		newFrame.setAlwaysOnTop(true);
+		commonGraphicInit(newFrame, title, autoExtend);
 	}
 }
