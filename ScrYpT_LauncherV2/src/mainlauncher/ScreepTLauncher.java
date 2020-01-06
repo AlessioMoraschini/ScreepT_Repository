@@ -334,6 +334,7 @@ public class ScreepTLauncher {
 		
 		try {
 			try {
+				new File(initPath).setExecutable(true);
 				Thread.sleep(100);
 			} catch (Exception e1) {}
 			
@@ -348,12 +349,17 @@ public class ScreepTLauncher {
 				}
 			
 			}else {
+				
 				// TODO LINUX/MAC SHELL show on/off
-				runtime.exec("pwd");
+				SysUtils.logProcessOutput(runtime.exec("pwd"));
+				Process executableMaker = runtime.exec("chmod u+x " + initPath);
+				SysUtils.logProcessOutput(executableMaker);
+				executableMaker.waitFor();
+				
 				runtime.exec(initPath);
 			}
 			logger.info("Commands launched without exceptions :)"); 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error(" !!! Error launching generated commands file !!!\n\n", e);
 		}
 	}

@@ -53,6 +53,8 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	public ImportExportWorkspcCryptFrame(TextEditorOption txtOptions, TextEditor textEditor) {
 		super();
 		
+		dialogHelper.setAdvicesEnabled(false);
+		
 		singletonInstance = this;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
@@ -134,8 +136,10 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				setVisible(true);
 				updateToExport();
+				dialogHelper.setAdvicesEnabled(true);
+				setVisible(true);
+				setAlwaysOnTop(true);
 			}
 		});
 		
@@ -316,7 +320,6 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		} catch (Exception e) {
 			String errorMessage = "Cannot update file to export, an error occurred.";
 			logger.error(errorMessage, e);
-			dialogHelper.error(errorMessage, "An error occurred");
 		} 
 	}
 	

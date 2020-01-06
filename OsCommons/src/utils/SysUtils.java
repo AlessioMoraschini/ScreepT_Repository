@@ -13,16 +13,15 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import om.JVMInfo;
 import om.OSinfo;
+import utility.SafeLogger;
 
 
 public class SysUtils {
 	
 	// SysUtils logger
-	static Logger logger = Logger.getLogger(SysUtils.class); 
+	static SafeLogger logger = new SafeLogger(SysUtils.class); 
 	
 	// STATIC METHODS
 	public static final OSinfo OS_INFO_LAZY = new OSinfo();
@@ -409,6 +408,13 @@ public class SysUtils {
 		return builder.toString();
 	}
 	
+	public static String logProcessOutput(Process process) {
+		String output = SysUtils.readProcessOutput(process.getInputStream());
+		logger.info(output);
+		
+		return "Process output: " + output;
+	}
+	
 	public static boolean cdIntoCommandLine(File directory) {
 		OSinfo OS = retrieveOS();
 			
@@ -420,7 +426,7 @@ public class SysUtils {
 					rt.exec("cmd.exe /c start dir /p", null, directory);
 					return true;
 				}catch(Exception e) {
-					logger.error(e);
+					logger.error("", e);
 					return false;
 				}
 			}else{
@@ -432,7 +438,7 @@ public class SysUtils {
 					
 					return true;
 				} catch (IOException e) {
-					logger.error(e);
+					logger.error("", e);
 					return false;
 				}
 			}

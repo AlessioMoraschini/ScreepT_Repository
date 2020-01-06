@@ -36,7 +36,6 @@ import files.Various;
 import network.om.FtpSpeedTestOptions;
 import network.utils.IPaddressConverter;
 import resources.GeneralConfig;
-import sun.net.dns.ResolverConfiguration;
 import utility.ConversionUtils;
 import utility.SafeLogger;
 
@@ -270,7 +269,12 @@ public class NetworkUtils {
 	}
 	
 	public static List<String> getDnsServers() {
-		return ResolverConfiguration.open().nameservers();
+		try {
+			return sun.net.dns.ResolverConfiguration.open().nameservers();
+		} catch (Throwable e) {
+			logger.error("Cannot retrieve DNS servers", e);
+			return new ArrayList<String>();
+		}
 	}
 	
 	public static String getIpNetstatGateway() throws Exception {
