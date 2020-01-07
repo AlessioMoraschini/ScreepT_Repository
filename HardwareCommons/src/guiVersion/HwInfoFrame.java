@@ -17,7 +17,6 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import runtime.RuntimeUtil;
 import utility.ConversionUtils;
-import utility.DoubleListWorker;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -765,7 +764,7 @@ public class HwInfoFrame extends ParentFrame{
 	private void updateCpuUsageInfo() {
 		double currentUsage = cpu.getSystemCpuLoadBetweenTicks();
 		cpuUsageHystory.add(currentUsage);
-		double avgUsageCurrent = DoubleListWorker.getAvgValue(cpuUsageHystory.getList());
+		double avgUsageCurrent = ConversionUtils.getAvgValue(cpuUsageHystory.getList());
 		double cpuVolts = sysINFO.getHardware().getSensors().getCpuVoltage();
 		double cpuTemp = sysINFO.getHardware().getSensors().getCpuTemperature();
 		String usagePerc = new DecimalFormat("#,##0.##").format(currentUsage*100)+ "%";

@@ -1,4 +1,4 @@
-package resources;
+package utility.properties;
 
 import java.io.*;
 import java.nio.charset.Charset;

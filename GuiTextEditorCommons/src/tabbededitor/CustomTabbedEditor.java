@@ -50,7 +50,7 @@ import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabbedDragNDropManager;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
-import variousutils.HandleString;
+import utility.StringWorker;
 
 public class CustomTabbedEditor {
 
@@ -793,11 +793,11 @@ public class CustomTabbedEditor {
 				if (loadedTabObj.loadedFile != null) {
 					newFileStringTarget.setText(loadedTabObj.loadedFile.getName());
 					newFileStringTarget.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
-					tabHeadLbl.setText(HandleString.fitToMaxLentgh(loadedTabObj.loadedFile.getName(), TabUtils.MAX_TAB_LABELENGHT));
+					tabHeadLbl.setText(StringWorker.fitToMaxLentgh(loadedTabObj.loadedFile.getName(), TabUtils.MAX_TAB_LABELENGHT));
 				} else {
 					// IF FILE IS NOT DEFINED
 					if (tabHeadLbl.getText().startsWith("(*)")) {
-						tabHeadLbl.setText(HandleString.fitToMaxLentgh(
+						tabHeadLbl.setText(StringWorker.fitToMaxLentgh(
 								tabHeadLbl.getText().substring(3, tabHeadLbl.getText().length()),
 								TabUtils.MAX_TAB_LABELENGHT));
 						if (newFileStringTarget.getText().startsWith("(*)")) {
@@ -805,7 +805,7 @@ public class CustomTabbedEditor {
 						}
 					} else {
 						tabHeadLbl.setText(
-								HandleString.fitToMaxLentgh(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME, TabUtils.MAX_TAB_LABELENGHT));
+								StringWorker.fitToMaxLentgh(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME, TabUtils.MAX_TAB_LABELENGHT));
 						newFileStringTarget.setText("No File");
 					}
 				}
@@ -820,7 +820,7 @@ public class CustomTabbedEditor {
 			} else if (indexChange >= 0 && loadedTabObj.unsaved) {
 				// IF FILE IS DEFINED
 				if (loadedTabObj.loadedFile != null) {
-					tabHeadLbl.setText(HandleString.fitToMaxLentgh("(*)" + loadedTabObj.loadedFile.getName(),
+					tabHeadLbl.setText(StringWorker.fitToMaxLentgh("(*)" + loadedTabObj.loadedFile.getName(),
 							TabUtils.MAX_TAB_LABELENGHT));
 					newFileStringTarget.setText("(*)" + loadedTabObj.loadedFile.getName());
 					newFileStringTarget.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
@@ -829,7 +829,7 @@ public class CustomTabbedEditor {
 					newFileStringTarget.setText(tabHeadLbl.getText());
 					if (!tabHeadLbl.getText().startsWith("(*)")) {
 						tabHeadLbl.setText(
-								HandleString.fitToMaxLentgh("(*)" + tabHeadLbl.getText(), TabUtils.MAX_TAB_LABELENGHT));
+								StringWorker.fitToMaxLentgh("(*)" + tabHeadLbl.getText(), TabUtils.MAX_TAB_LABELENGHT));
 					}
 					if (!newFileStringTarget.getText().startsWith("(*)")) {
 						newFileStringTarget.setText(tabHeadLbl.getText());

@@ -2,7 +2,7 @@ package junit.media;
 
 import org.junit.Test;
 
-import media.Sounds;
+import media.SoundsExtended;
 import resources.SoundsConfigurator;
 import testUtils.TestUtils;
 
@@ -12,8 +12,8 @@ public class AudioTest {
 	public void TestAudioClip() throws InterruptedException {
 		for (int i = 0; i < 5; i++) {
 			TestUtils.printl("Playing: " + SoundsConfigurator.CLICK_2);
-			Sounds.setVolume(0.15f*i);
-			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+			SoundsExtended.setVolume(0.15f*i);
+			SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 			Thread.sleep(300);
 		}
 	}

@@ -26,7 +26,7 @@ import gUI.frames.TutorialFrame;
 import gui.UpdateProgressPanel;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
-import media.Sounds;
+import media.SoundsExtended;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import utils.SysUtils;
@@ -199,7 +199,7 @@ public class WindowCreator {
 			TutorialFrame tutorialFrame = TutorialFrame.getInstance();
 			
 			if(visible) {
-				Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+				SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 				commonGraphicInit(tutorialFrame, "Documentation - ", true);
 				tutorialFrame.setResizable(true);
 			}
@@ -234,7 +234,7 @@ public class WindowCreator {
 	// COMMONS INITIALIZATION METHODS //
 	public void commonGraphicInit(final ParentFrame newFrame, String title, boolean autoExtend) {
 		
-		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		
 		newFrame.setMaximizedBounds(new Rectangle(newFrame.getDefaultDimension()));
 		newFrame.setMinimumSize(newFrame.getDefaultDimension());

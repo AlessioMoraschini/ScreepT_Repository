@@ -28,7 +28,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
-import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -44,6 +43,7 @@ import org.drjekyll.fontchooser.FontDialog;
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
@@ -75,8 +75,8 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.SelectionDtoFull;
 import textareautil.TextLineNumber;
-import utility.ConversionUtils;
 import utility.EncodingUtils;
+import utility.StringWorker;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 import utils.dialog.ColorDialogUtils;
@@ -873,6 +873,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
+						textEditorUtils.addCurrentSelectionToLastSearched();
 						if (searchBox == null) {
 							searchBox = textEditorUtils.textAreaDialogs.getSearchDialog(parent.parentFrame,  null, textEditorUtils,"successAdvice", "errorAdvice");
 							GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
@@ -910,6 +911,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
+						textEditorUtils.addCurrentSelectionToLastSearched();
+						
 						if (replaceDialog == null) {
 							replaceDialog = textEditorUtils.textAreaDialogs.getReplaceDialog(
 									parent.parentFrame, null, textEditorUtils,"successAdvice", "errorAdvice");
@@ -972,14 +975,15 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnBase64Conversion.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				final JTextArea textArea = parent.getCurrentTabEditor().loadedTabObj.textArea;
-				textArea.setCursor(GuiUtils.CURSOR_WAIT);
 				
 				EncodingUtils encoding64 = new EncodingUtils();
 				EncodingUtils.stringEncoding = currentConfiguration.getGenOpt().getCharset();
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
+						RSyntaxTextArea textArea = parent.getCurrentTabEditor().loadedTabObj.textArea;
+						textArea.setCursor(GuiUtils.CURSOR_WAIT);
+						
 						final int startSel = textArea.getSelectionStart();
 						int endSel = textArea.getSelectionEnd();
 						String currEncoding = SysUtils.getCurrentSystemEncoding();
@@ -1025,6 +1029,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							textEditorUtils.updateCurrentUnsavedFromFileRead();
 							textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
 							
+							textEditorUtils.revalidateFoldingPainted(textArea);
 						}
 						
 					}
@@ -1096,7 +1101,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				}
 				
 				applyDefaultStyle();
-				applyFileFormatSyntaxFull();
+				textEditorUtils.findRightSyntaxFromComboNSelect(loadedTabObj.loadedFile, true);
 
 				// UPDATE CONFIGURATION (in memory only)
 				textEditorUtils.updateDefaultTxtConfig(GeneralConfig.DEFAULT_FONT, DEFAULT_BCKG_COL, DEFAULT_FORE_COL, 10);
@@ -1351,6 +1356,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboFileFormat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				applyFileFormatSyntaxFull();
+				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(((SupportedFileTextEditor)comboFileFormat.getSelectedItem()).toString());
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
 			}
 		});
 		
@@ -1400,19 +1407,20 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
-				int start = loadedTabObj.textArea.getSelectionStart();
+				boolean isSomethingSelected = loadedTabObj.textArea.getSelectedText() != null;
+				int start = isSomethingSelected ? loadedTabObj.textArea.getSelectionStart() : 0;
 				int end = loadedTabObj.textArea.getSelectionEnd();
 				int newEnd = 0;
 				if (TextEditorShortcutListener.flagCtrlDown.get()) {
 					// remove character - open panel ad hoc
 					String selection = dialogHelper.askForString("Specify the charachter/string you want to remove");
 					if (selection != null && !selection.equals("")) {
-						newEnd = HandleString.removeCharachterFromTxtArea(selection, loadedTabObj.textArea, start, end);
+						newEnd = StringWorker.removeCharachterFromTxtArea(selection, loadedTabObj.textArea, start, end);
 					}
 					TextEditorShortcutListener.flagCtrlDown.set(false);
 				} else {
 					// remove whitespaces
-					newEnd = HandleString.removeCharachterFromTxtArea(" ", loadedTabObj.textArea, start, end);
+					newEnd = StringWorker.removeCharachterFromTxtArea(" ", loadedTabObj.textArea, start, end);
 				}
 				loadedTabObj.textArea.requestFocus();
 				loadedTabObj.textArea.setSelectionStart(start);
@@ -1539,9 +1547,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				}
 				backupText = new String(selected);// create backup copy by value
 
-				selected = HandleString.uppercaseEveryFirstLetterNoSpace(selected);
+				selected = StringWorker.uppercaseEveryFirstLetterNoSpace(selected);
 				if (selected.equals(backupText)) {
-					selected = HandleString.lowerCaseEveryFirstLetterNoSpace(selected);
+					selected = StringWorker.lowerCaseEveryFirstLetterNoSpace(selected);
 					// btnTtTt.setBackground(SystemColor.activeCaptionBorder);
 				} else {
 					// btnTtTt.setBackground(Color.gray);
@@ -1726,7 +1734,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 		
 		// backup unsaved to avoid changing saved info with theme change
-		textEditorUtils.applyFileFormatFromCombo();
+		textEditorUtils.applyFileFormatFromCombo(false);
 		
 		if (currentConfiguration.getTextEditorOpt().spellChecker) {
 			RsyntaxUtils.removeAllParsers(loadedTabObj.textArea);
@@ -1750,7 +1758,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public void applyDefaultStyle() {
 		try {
 			String prefThemeFromFile = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "preferredTheme");
-			if (!ConversionUtils.trimToEmpty(prefThemeFromFile).equals("")) {
+			if (!StringWorker.trimToEmpty(prefThemeFromFile).equals("")) {
 				comboStylesScheme.setSelectedItem(ThemesWrapper.getFromListByPath(prefThemeFromFile, themeList));
 			}
 		} catch (Exception e) {
@@ -1764,7 +1772,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public void applyDefaultFileFormatSyntax() {
 		try {
 			String prefSyntaxFromConfigFile = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "preferredTheme");
-			if (!ConversionUtils.trimToEmpty(prefSyntaxFromConfigFile).equals("")) {
+			if (!StringWorker.trimToEmpty(prefSyntaxFromConfigFile).equals("")) {
 				applyFileFormatSyntaxFull();
 			}
 		} catch (Exception e) {

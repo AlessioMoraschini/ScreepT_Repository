@@ -30,6 +30,7 @@ import files.om.DeleteFilesByExtensionDTO;
 import gui.JOptionHelper;
 import utility.ConversionUtils;
 import utility.SafeLogger;
+import utility.StringWorker;
 
 public class FileWorker {
 
@@ -558,7 +559,7 @@ public class FileWorker {
 		}
 		
 		boolean esit = true;
-		extListCommaSeparated = ConversionUtils.trimToEmpty(extListCommaSeparated);
+		extListCommaSeparated = StringWorker.trimToEmpty(extListCommaSeparated);
 		String[] extensionsList = extListCommaSeparated.split(",");
 		for(String currExtension : extensionsList) {
 			currExtension = currExtension.trim(); // remove whitespaces at start and at end

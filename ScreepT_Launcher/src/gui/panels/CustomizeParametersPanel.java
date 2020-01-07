@@ -14,7 +14,7 @@ import om.OSinfo;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
-import utility.ConversionUtils;
+import utility.StringWorker;
 import utils.SysUtils;
 
 import javax.swing.JLabel;
@@ -572,7 +572,7 @@ public class CustomizeParametersPanel extends JFrame{
 			backupScaleGuiPerc = defaultScaleGuiPerc;
 		}
 		backupLaunchAsJar = Boolean.valueOf(GeneralConfig.linkedMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"))? true : false;
-		backupPreferredJvm  = ConversionUtils.trimToEmpty(iniFileManager.iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
+		backupPreferredJvm  = StringWorker.trimToEmpty(iniFileManager.iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
 		backupPreferredJvm = checkJvmString(backupPreferredJvm);
 		
 		// apply to gui elements

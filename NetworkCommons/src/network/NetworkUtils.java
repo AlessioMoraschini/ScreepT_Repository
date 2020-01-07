@@ -37,6 +37,7 @@ import network.utils.IPaddressConverter;
 import resources.GeneralConfig;
 import utility.ConversionUtils;
 import utility.SafeLogger;
+import utility.StringWorker;
 
 public class NetworkUtils {
 
@@ -77,7 +78,7 @@ public class NetworkUtils {
 		String[] propertiesVal = GeneralConfig.getPubIpProvList();
 		try {
 			for(String address : propertiesVal) {
-				listWS.add(new URI(ConversionUtils.trimToEmpty(address)));
+				listWS.add(new URI(StringWorker.trimToEmpty(address)));
 			}
 		} catch (URISyntaxException e) {
 			logger.error("Error in URI format", e);

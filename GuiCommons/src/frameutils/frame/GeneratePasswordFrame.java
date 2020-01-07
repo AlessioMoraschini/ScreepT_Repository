@@ -11,6 +11,7 @@ import gui.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
+import utility.StringWorker;
 import utility.hash.SafeHasher;
 import utility.hash.SafeHasher.HashAlgorithm;
 import utility.hash.SafeHasher.IterationsLevel;
@@ -272,7 +273,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 						final String raw = DatatypeConverter.printHexBinary(SafeHasher.hashPswWithGivenSalt(expanded, fixedSalt, IterationsLevel.HIGH, HashAlgorithm.PBKDF2SHA512));
 						final String converted = source.option == 0 ? 
 								HandleString.forceLength(raw, (int)spinnerLength.getValue(), getPossibleCharacters()) :
-									HandleString.forceLengthDeterministic(raw, (int)spinnerLength.getValue(), "O");
+									StringWorker.forceLengthDeterministic(raw, (int)spinnerLength.getValue(), "O");
 						textField.setText(converted);
 					
 					} catch (NoSuchAlgorithmException | InvalidKeySpecException e1) {

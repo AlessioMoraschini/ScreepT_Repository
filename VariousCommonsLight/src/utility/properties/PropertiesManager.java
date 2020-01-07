@@ -1,4 +1,4 @@
-package resources;
+package utility.properties;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,24 +14,18 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
-//import org.apache.commons.configuration.ConfigurationException;
-//import org.apache.commons.configuration.PropertiesConfiguration;
-//import org.apache.commons.configuration.PropertiesConfigurationLayout;
-import org.apache.log4j.Logger;
-
 import utility.ConversionUtils;
+import utility.SafeLogger;
+import utility.StringWorker;
 
 public class PropertiesManager {
 	
-	// PropertiesManager logger
-	private static Logger logger = Logger.getLogger(PropertiesManager.class); 
+	private static SafeLogger logger = new SafeLogger(PropertiesManager.class);
 	private static SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 	
 	public File dynamicFileBindingsDefSource;
 	public Properties dynamicFileBindingsDef;
-//	public PropertiesConfigurationLayout layoutApacheCommons;
 	public CommentedProperties commentedProperties;
-	
 	
 	/**
 	 * To check if definition had success, check if field <b>dynamicFileBindingsDefSource</b> is null after object's creation:
@@ -43,10 +37,7 @@ public class PropertiesManager {
 		dynamicFileBindingsDefSource = new File(bindingsFileDefinitionSource);
 		dynamicFileBindingsDef = new Properties();
 
-//		PropertiesConfiguration config = new PropertiesConfiguration();
-//		layoutApacheCommons = new PropertiesConfigurationLayout(config);
-		
-		if (!prepareDefObj()) {
+		if (!readFromFile()) {
 			dynamicFileBindingsDefSource = null;
 		}
 
@@ -84,28 +75,22 @@ public class PropertiesManager {
 	public PropertiesManager(File bindingsFileDefinitionSource) {
 		dynamicFileBindingsDefSource = bindingsFileDefinitionSource;
 		dynamicFileBindingsDef = new Properties();
-
-//		PropertiesConfiguration config = new PropertiesConfiguration();
-//		layoutApacheCommons = new PropertiesConfigurationLayout(config);
+		
+		if (!readFromFile()) {
+			dynamicFileBindingsDefSource = null;
+		}
 		
 		if (!loadCommentedProperties()) {
 			commentedProperties = null;
-		}
-		
-		if (!prepareDefObj()) {
-			dynamicFileBindingsDefSource = null;
 		}
 	}
 	
 	public PropertiesManager(Properties bindingsFileDefinitionDef) {
 		dynamicFileBindingsDef = bindingsFileDefinitionDef;
 		dynamicFileBindingsDefSource = new File("");
-
-//		PropertiesConfiguration config = new PropertiesConfiguration();
-//		layoutApacheCommons = new PropertiesConfigurationLayout(config);
-		
+	
 		if (!loadCommentedProperties()) {
-			commentedProperties = new CommentedProperties();
+			commentedProperties = null;
 		}
 	}
 	
@@ -113,15 +98,58 @@ public class PropertiesManager {
 	 * Avoid null values reading from properties
 	 * @return
 	 */
-	public String getProperty(String key) {
-		logger.debug("Loading property: " + key + " From properties file: " + dynamicFileBindingsDefSource);
-		String res = "";
+	public String getPropertyNullable(String key) {
 		if(dynamicFileBindingsDef != null) {
-			res = ConversionUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+			return dynamicFileBindingsDef.getProperty(key);
 		}
 		
+		return "";
+	}
+
+	/**
+	 * Avoid null values reading from properties
+	 * @return
+	 */
+	public String getProperty(String key) {
+		logger.debug("Loading property: " + key + " From properties file: " + dynamicFileBindingsDefSource);
+
+		String res = "";
+		if(dynamicFileBindingsDef != null) {
+			res = dynamicFileBindingsDef.getProperty(key);
+			res =  StringWorker.trimToEmpty(res);
+		}
 		logger.debug("Loaded property: " + res);
 		return res;
+	}
+	
+	public ArrayList<File> getFileList(String key, String separator, boolean excludeNonExisting){
+		ArrayList<String> rawList = getStringList(key, separator);
+		ArrayList<File> fileList = new ArrayList<File>();
+		
+		if(rawList == null || rawList.isEmpty()) {
+			return fileList;
+		}
+		
+		for(String current : rawList) {
+			File currentFile = new File(current);
+			if(!excludeNonExisting || currentFile.exists()) {
+				fileList.add(currentFile);
+			}
+		}
+		
+		return fileList;
+	}
+	
+	public static String listToString(ArrayList<String> stringList, String separator) {
+		String concatenation = "";
+		// concatenate each element with given separator
+		for(String currentString : stringList) {
+			concatenation += currentString + separator;
+		}
+		if(concatenation.length() > 0) {
+			concatenation = concatenation.substring(0, concatenation.length() - separator.length());
+		}
+		return concatenation;
 	}
 
 	/**
@@ -132,7 +160,7 @@ public class PropertiesManager {
 		String res = "";
 		if(dynamicFileBindingsDef != null) {
 			res = dynamicFileBindingsDef.getProperty(key);
-			res = (res != null)? ConversionUtils.trimToEmpty(res) : defaultVal;
+			res = (res != null)? StringWorker.trimToEmpty(res) : defaultVal;
 		}
 		
 		return res;
@@ -142,7 +170,7 @@ public class PropertiesManager {
 	 * Use this to refresh properties
 	 * @return
 	 */
-	public boolean prepareDefObj() {
+	public boolean readFromFile() {
 
         if (dynamicFileBindingsDefSource != null) {
 			
@@ -162,25 +190,6 @@ public class PropertiesManager {
 			return false;
 		}
     }
-	
-	/**
-	 * Use this to avoid overwriting comments existing in dest file ;)
-	 * 
-	 * @param propertyName
-	 * @param value
-	 */
-//	public void savePropertiesLayoutApache(String propertyName, String value) {
-//		try {
-//			dynamicFileBindingsDef.setProperty(propertyName, value);
-//        	layoutApacheCommons.load(new InputStreamReader(new FileInputStream(dynamicFileBindingsDefSource)));
-//        	layoutApacheCommons.getConfiguration().setProperty(propertyName, value);
-//        	logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);
-//        	layoutApacheCommons.save(new FileWriter(dynamicFileBindingsDefSource, false));
-//        	logger.info("Saved!");
-//		} catch (ConfigurationException | IOException e) {
-//			logger.error(e);
-//		}
-//	}
 	
 	public void saveCommentedProperty(String propertyName, String value) {
 		
@@ -204,6 +213,24 @@ public class PropertiesManager {
 		}
 	}
 	
+	public boolean savePropertyV1(String key, String value){
+		FileOutputStream out = null;
+		
+		try {
+			out = new FileOutputStream(dynamicFileBindingsDefSource);
+			dynamicFileBindingsDef.setProperty(key, value);
+			dynamicFileBindingsDef.store(out, null);
+		} catch (IOException e) {
+			return false;
+		} finally {
+			try {
+				out.close();
+			} catch (Exception e2) {
+			}
+		}
+		return true;
+	}
+	
 	public void saveProperty(String propertyName, String value) {
 		dynamicFileBindingsDef.setProperty(propertyName, value);
 		dynamicFileBindingsDef.put(propertyName, value);
@@ -214,13 +241,13 @@ public class PropertiesManager {
 			dynamicFileBindingsDef.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));
         	logger.info("Saved!");
 		} catch (IOException e1) {
-			logger.error(e1);
+			logger.error("", e1);
 		} finally {
 			try {
 				out.flush();
 				out.close();
 			} catch (IOException e1) {
-				logger.error(e1);
+				logger.error("", e1);
 			}
 		}
 	}
@@ -234,18 +261,18 @@ public class PropertiesManager {
         	logger.info("Saved!");
         	return true;
 		} catch (IOException e1) {
-			logger.error(e1);
+			logger.error("An error occurred while saving all properties", e1);
 			return false;
 		} finally {
 			try {
 				out.flush();
 				out.close();
 			} catch (IOException e1) {
-				logger.error(e1);
+				logger.error("Cannot close streams", e1);
 			}
 		}
 	}
-	
+
 	public boolean removeProperty(String key){
 		FileOutputStream out = null;
 		
@@ -295,36 +322,6 @@ public class PropertiesManager {
 		return list;
 	}
 	
-	public static String listToString(ArrayList<String> stringList, String separator) {
-		String concatenation = "";
-		// concatenate each element with given separator
-		for(String currentString : stringList) {
-			concatenation += currentString + separator;
-		}
-		if(concatenation.length() > 0) {
-			concatenation = concatenation.substring(0, concatenation.length() - separator.length());
-		}
-		return concatenation;
-	}
-	
-	public ArrayList<File> getFileList(String key, String separator, boolean excludeNonExisting){
-		ArrayList<String> rawList = getStringList(key, separator);
-		ArrayList<File> fileList = new ArrayList<File>();
-		
-		if(rawList == null || rawList.isEmpty()) {
-			return fileList;
-		}
-		
-		for(String current : rawList) {
-			File currentFile = new File(current);
-			if(!excludeNonExisting || currentFile.exists()) {
-				fileList.add(currentFile);
-			}
-		}
-		
-		return fileList;
-	}
-
 	public boolean getBooleanVarFromProps(String key, boolean defaultVal) {
 		String val = dynamicFileBindingsDef.getProperty(key);
 		try {
@@ -369,7 +366,10 @@ public class PropertiesManager {
 	public Dimension getDimensionFromString(String separator, String key, Dimension defaultDim) {
 		int width;
 		int height;
-		String source = ConversionUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+		String source = StringWorker.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+		
+		if (source.equals("")) {return defaultDim;};
+		
 		try {
 			String[] splitted = source.split(separator);
 			width = Integer.parseInt(splitted[0]);
@@ -385,25 +385,10 @@ public class PropertiesManager {
      * parse font from a representing string
      */
     public Font getFontFromString(String key, Font defaultFont) {
-    	String stringFont = ConversionUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
-    	if("".equals(ConversionUtils.trimToEmpty(stringFont))) return defaultFont;
+    	String stringFont = StringWorker.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+    	if("".equals(StringWorker.trimToEmpty(stringFont))) return defaultFont;
     	
-    	String[] font = stringFont.split("-");
-    	String type;
-    	int style;
-    	int size;
-		try {
-			if (font.length != 3) {
-				return defaultFont;
-			}
-			type = font[0];
-			style = Integer.parseInt(font[1]);
-			size = Integer.parseInt(font[2]);
-		} catch (Exception e) {
-			return defaultFont;
-		}
-    	
-    	return new Font(type, style, size);
+    	return ConversionUtils.getFontFromString(stringFont, defaultFont);
     }
     
 	// GETTERS AND SETTERS //	

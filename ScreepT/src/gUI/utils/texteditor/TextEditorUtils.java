@@ -39,8 +39,8 @@ import gUI.utils.tooltip.TextEditorTooltips;
 import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
 import maingUI.ToggleAction;
-import media.ImageGeneralWorker;
-import media.Sounds;
+import media.ImageWorkerExtended;
+import media.SoundsExtended;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
@@ -53,6 +53,7 @@ import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import treeutils.om.FileNameCellRenderer;
 import treeutils.om.FileTreeNamedModel;
+import utility.StringWorker;
 import utility.reflection.ReflectionUtils;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
@@ -61,7 +62,6 @@ import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
 import utils.panels.arch.ParentPanel;
-import variousutils.HandleString;
 
 public class TextEditorUtils {
 	
@@ -124,6 +124,39 @@ public class TextEditorUtils {
 		};
 	}
 	
+	/**
+	 * If something is selected start last searched with current selection
+	 */
+	public void addCurrentSelectionToLastSearched() {
+		String selectedText = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea.getSelectedText();
+		if(selectedText != null) {
+			currentTextEditor.currentConfiguration.getTextEditorOpt().lastSearchTerms.addNreplaceToTopIfPresent(selectedText);
+		}
+	}
+
+	/**
+	 * If something is selected updated last replaced with current selection
+	 */
+	public void addCurrentSelectionToLastReplaced() {
+		String selectedText = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea.getSelectedText();
+		if(selectedText != null) {
+			currentTextEditor.currentConfiguration.getTextEditorOpt().lastReplaceTerms.addNreplaceToTopIfPresent(selectedText);
+		}
+	}
+	
+	/**
+	 * Workaround to reapply code folding when text changes newlines or similar
+	 * Was causing code folding to have buggy load
+	 * @param textArea
+	 */
+	public void revalidateFoldingPainted(RSyntaxTextArea textArea) {
+
+		textArea.setCodeFoldingEnabled(false);
+		textArea.setCodeFoldingEnabled(currentTextEditor.currentConfiguration.getTextEditorOpt().isCodeFoldingEnabled());
+		textArea.revalidate();
+		textArea.repaint();
+	}
+	
 	public void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
 		// retrieve all buttons except Containing depth in name
 		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor.subHeaderPanel, JButton.class, "nostyle", true, false);
@@ -172,7 +205,7 @@ public class TextEditorUtils {
 			currentTextEditor.subHeaderPanel.comboFileFormat.setSelectedItem(chosenType);
 			if(!loadedTabObj.textArea.getSyntaxEditingStyle().equals(chosenType.syntax)) {
 				logger.info(chosenType+" -> File format color scheme applied, it was different from current applied");
-				applyFileFormatFromCombo();
+				applyFileFormatFromCombo(false);
 			}else {
 				logger.info(chosenType+" -> File format color scheme not applied, it was the same of current applied");
 			}
@@ -402,7 +435,7 @@ public class TextEditorUtils {
 	
 	public String getFooterPanelAdaptedDirString(String rawText) {
 		
-		rawText = HandleString.fitToMaxLentgh(rawText, GeneralConfig.FOOTER_MAX_DIR_LABEL_LENGTH);
+		rawText = StringWorker.fitToMaxLentgh(rawText, GeneralConfig.FOOTER_MAX_DIR_LABEL_LENGTH);
 		return rawText;
 	}
 	
@@ -774,12 +807,12 @@ public class TextEditorUtils {
 		logger.debug("Starting currentTextEditor.refreshMessageAndTabTooltip() with message: "+message);
 		successAdvice(message);
 		updateTabTooltip(currentTextEditor.getCurrentTabEditor().mainTabList.getSelectedIndex());
-		currentTextEditor.footerPanel.lblCurrentFile.setForeground(ImageGeneralWorker.randomColorRGB(0.1f));
+		currentTextEditor.footerPanel.lblCurrentFile.setForeground(ImageWorkerExtended.randomColorRGB(0.1f));
 		logger.debug("currentTextEditor.refreshMessageAndTabTooltip() completed - Exiting");
 	}
 
 	public void errorAdvice(String msg) {
-		Sounds.playSound(SoundsConfigurator.ERROR, null);
+		SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
 		currentTextEditor.footerPanel.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(GeneralConfig.ADVICE_FOOTER_TIMEOUT);
@@ -869,7 +902,7 @@ public class TextEditorUtils {
 			headerList.add(currentTextEditor.headerPanel);
 			
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			Sounds.playSound(SoundsConfigurator.ERROR, null);
+			SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 			logger.error("Exception during retrieve of elements", e);
 		}
 		
@@ -1017,7 +1050,7 @@ public class TextEditorUtils {
 		return selectedFile;
 	}
 	
-	public void applyFileFormatFromCombo() {
+	public void applyFileFormatFromCombo(boolean forceReload) {
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 		boolean unsaved = loadedTabObj.unsaved;
 		
@@ -1028,12 +1061,13 @@ public class TextEditorUtils {
 		
 
 		// Update text area autocomplete only if selected is different from current one
-		if (!originalStyle.equals(selected.syntax)) {
+		if (forceReload || !originalStyle.equals(selected.syntax)) {
 			loadedTabObj.textArea.setSyntaxEditingStyle(selected.syntax);
 			RsyntaxUtils.addAutoCompletion(loadedTabObj.textArea, selected.languageWordsFile);
 			logger.info("\n [APPLIED] => applyFileFormatFromCombo - addAutoCompletion and Style reapplied cause wanted is different from current textarea editing style"
 					+ "\nCurrent textarea Style: " + loadedTabObj.textArea.getSyntaxEditingStyle() 
-					+ "\nWanted Style: " + selected.syntax + "\n\n");
+					+ "\nWanted Style: " + selected.syntax + "\n\n"
+					+ "\nForced reload=true");
 		}else {
 			logger.info("\n [SKIPPED] => applyFileFormatFromCombo - addAutoCompletion skipped cause wanted is equal to current textarea editing style"
 					+ "\nCurrent textarea Style: " + loadedTabObj.textArea.getSyntaxEditingStyle() 

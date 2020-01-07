@@ -10,8 +10,8 @@ import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
-import utility.PropertiesManagerLight;
 import utility.SafeLogger;
+import utility.properties.PropertiesManager;
 
 public class ChecksumHasher {
 
@@ -134,7 +134,7 @@ public class ChecksumHasher {
 	}
 
 	// HASHING //
-	public static boolean checkHashesFromProperties(List<File> filesToCheck, PropertiesManagerLight propsManifest, HashingFunction hashingFunction) throws Throwable {
+	public static boolean checkHashesFromProperties(List<File> filesToCheck, PropertiesManager propsManifest, HashingFunction hashingFunction) throws Throwable {
 		if(filesToCheck == null || filesToCheck.isEmpty()) {
 			return true;
 		}
@@ -154,7 +154,7 @@ public class ChecksumHasher {
 		return checked;
 	}
 
-	public static boolean checkHashFromProperties(File toCheck, PropertiesManagerLight propsManifest, HashingFunction hashingFunction) throws Throwable {
+	public static boolean checkHashFromProperties(File toCheck, PropertiesManager propsManifest, HashingFunction hashingFunction) throws Throwable {
 		if(propsManifest == null || toCheck == null || !toCheck.exists()) {
 			return false;
 		} else {

@@ -34,12 +34,12 @@ import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
 import gui.UpdateProgressPanel;
 import mainobj.INItializer;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
-import variousutils.HandleString;
+import utility.StringWorker;
 
 public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListenerBasic{
 	
@@ -219,14 +219,14 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 					if(!selected.getName().toLowerCase().endsWith("png")) {
 						// If not a png image convert a temporary png file, and use it as source for import
 						selected = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + selected.getName()));
-						ImageGeneralWorker worker;
+						ImageWorkerExtended worker;
 						try {
-							worker = new ImageGeneralWorker(selected);
+							worker = new ImageWorkerExtended(selected);
 							BufferedImage image = worker.getImage();
 							progUpdater = new UpdateProgressPanel(false);
 							progUpdater.setUndefinedDuration();
 							progUpdater.update("Format not supported as key, Converting image to png...", 10);
-							ImageGeneralWorker.convertAndWrite(image, "png", selected);
+							ImageWorkerExtended.convertAndWrite(image, "png", selected);
 						} catch (Exception e) {
 							logger.error("An error occurred when trying to convert "+selected+" to png", e);
 							dialogHelper.error("An error occurred when trying to convert "+selected+" to png", "An error occurred :(");
@@ -335,11 +335,11 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 //			    Image scaledImage = image.getScaledInstance(imgKeyPanel.getWidth()-13, imgKeyPanel.getHeight()-13,Image.SCALE_FAST);
 
 				// way with custom repainter (keep type)
-				Image scaledImage = ImageGeneralWorker.scaleImage(image, image.getType(), imgKeyPanel.getWidth(), imgKeyPanel.getHeight());
+				Image scaledImage = ImageWorkerExtended.scaleImage(image, image.getType(), imgKeyPanel.getWidth(), imgKeyPanel.getHeight());
 			
 				refreshImage(scaledImage);
 				
-				String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getAbsolutePath(), CrypterPanel.labelLengthLimit);
+				String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getAbsolutePath(), CrypterPanel.labelLengthLimit);
 
 				lblKeyDisp.setText("Displayed: " + newdisplayed);
 				
@@ -375,7 +375,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 					TEXT_LOG.setText(msg);	
 					imgKeySelected.setForeground(SystemColor.GREEN);
 					
-					String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), CrypterPanel.labelLengthLimit);
+					String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), CrypterPanel.labelLengthLimit);
 
 					imgKeySelected.setText(newdisplayed);
 					cryptoPanel.setSrcKeyImageFile(thisFile);

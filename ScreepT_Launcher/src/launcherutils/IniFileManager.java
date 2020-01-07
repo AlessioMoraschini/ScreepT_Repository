@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
-import utility.ConversionUtils;
+import utility.StringWorker;
 
 public class IniFileManager {
 	
@@ -75,9 +75,9 @@ public class IniFileManager {
 			showInstallOptions = (autoInstallerOpt!=null && autoInstallerOpt.equalsIgnoreCase("false"))? false : true;
 			String hideNStart = iniConfigFile.get(INI_APP_OPT, "flagHideNStartDirect");
 			hideNStartDirect = (hideNStart!=null && hideNStart.equalsIgnoreCase("true"))? true : false;
-			preferredJvm = ConversionUtils.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
-			preferredJvmVersionIfNotSpecified = ConversionUtils.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvmVersionIfNotSpecified"));
-			manualPathJvm = ConversionUtils.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "manualPathJvm"));
+			preferredJvm = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
+			preferredJvmVersionIfNotSpecified = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvmVersionIfNotSpecified"));
+			manualPathJvm = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "manualPathJvm"));
 			
 			logger.info("Launcher_configuration file loaded!");
 		} catch (InvalidFileFormatException e) {

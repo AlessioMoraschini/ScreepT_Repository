@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import frameutils.utils.GuiUtils;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import resources.IconsPathConfigurator;
 
 public class FramePointerCursorTest extends JFrame{

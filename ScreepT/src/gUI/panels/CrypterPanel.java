@@ -33,7 +33,7 @@ import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import net.miginfocom.swing.MigLayout;
 import om.BufferedImageType;
 import om.CrypterResultDTO;
@@ -43,7 +43,7 @@ import treeutils.om.FileTreeModel;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
 import utility.ConversionUtils;
-import variousutils.HandleString;
+import utility.StringWorker;
 
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
@@ -1449,7 +1449,7 @@ public class CrypterPanel extends ModulePanel {
 					logger.info(msg);
 					textAreaLog.append("\n" + msg);	
 					
-					String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
+					String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
 					
 					lblKeyImageSelected.setForeground(SystemColor.GREEN);
 					lblKeyImageSelected.setText(newdisplayed);
@@ -1480,7 +1480,7 @@ public class CrypterPanel extends ModulePanel {
 			
 			// read image from file
 			BufferedImage image = ImageIO.read(thisFile);
-			Image scaledImage = ImageGeneralWorker.scaleImage(image, image.getType(), panelKeyImgDisp.getWidth(), panelKeyImgDisp.getHeight());
+			Image scaledImage = ImageWorkerExtended.scaleImage(image, image.getType(), panelKeyImgDisp.getWidth(), panelKeyImgDisp.getHeight());
 		
 			refreshImage(scaledImage);
 			
@@ -1492,7 +1492,7 @@ public class CrypterPanel extends ModulePanel {
 				textAreaLog.append("\n" + msg);
 				logger.info(msg);
 				
-				String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
+				String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
 
 				lblDisplayedKey.setText("Displayed: " + newdisplayed);
 			}else {
@@ -1501,7 +1501,7 @@ public class CrypterPanel extends ModulePanel {
 				textAreaLog.append("\n" + msg);
 				logger.info(msg);
 				
-				String newdisplayed = HandleString.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
+				String newdisplayed = StringWorker.fitToMaxLentgh(thisFile.getName(), labelLengthLimit);
 
 				lblDisplayedKey.setText("Displayed: " + newdisplayed);
 				srcKeyImageFile = null;
@@ -1537,7 +1537,7 @@ public class CrypterPanel extends ModulePanel {
 		if (selected!=null && selected.exists() && !alreadyLoaded) {
 			srcFile = selected;
 			panelVDragNDropPane.addFileToTree(selected);
-			String newdisplayed = HandleString.fitToMaxLentgh(selected.getName(), labelLengthLimit);
+			String newdisplayed = StringWorker.fitToMaxLentgh(selected.getName(), labelLengthLimit);
 			// update gui
 			panelVDragNDropPane.message.setText(newdisplayed + " added to list!");
 			

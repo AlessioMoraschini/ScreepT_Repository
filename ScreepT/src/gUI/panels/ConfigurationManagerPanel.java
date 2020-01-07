@@ -23,7 +23,7 @@ import guistyle.GUIStyelSettings;
 import maingUI.MainGUI;
 import maingUI.MainGuiUtils;
 import mainobj.INItializer;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import net.miginfocom.swing.MigLayout;
 import om.themes.Themes;
 import resources.GeneralConfig;
@@ -339,7 +339,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		btnViewCurrentFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				lblAvviso.setText("[Current Configuration file]");
-				lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(0.2f));
+				lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(0.2f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES (on Disk) ###\n\n");
 				FileWorker.appendFileTxtArea(config.getIniFile().getFile(), textArea, true);
@@ -353,7 +353,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					config.setIniFile(new Wini(config.getIniFile().getFile()));
 					config.setIniReadFile(new Wini(config.getIniFile().getFile()));
 					lblAvviso.setText("[Refreshed temp Config]");
-					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
+					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES (in Volatile Memory) ###\n\n");
 					MainGUI.now = new Date();
@@ -374,7 +374,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				logger.debug("Load CONFIG clicked");
 				INIfileChoosER panel = new INIfileChoosER(config, textArea, lblAvviso);
 		    	panel.setBounds(20,20,parent.getMainFrame().getWidth(),parent.getMainFrame().getHeight()/2);  	
-				lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
+				lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
 				FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
@@ -389,7 +389,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				logger.debug("SAVE CONFIG clicked");
 				if(saveCurrentConf(config, parent.getMainFrame())) {
 					lblAvviso.setText("Configuration saved on disk!");
-					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
+					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 				}
 			}
 		});
@@ -400,7 +400,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				logger.debug("EXPORT CONFIG clicked");
 		    	INIfileChoosER panel = new INIfileChoosER(config, lblAvviso);
 		    	panel.setBounds(20,20,400,300);
-		    	lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
+		    	lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 			}
 		});
 		
@@ -422,7 +422,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						logger.error("Exception happened!", exc);
 					}
 					
-					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
+					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
 					FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
@@ -458,7 +458,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					config.setIniFile(new Wini(backupIni));
 					config.setIniReadFile(new Ini(backupIni));
 					MainGUI.updateGuiFromCurrConfig();
-					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
+					lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 				} catch (IOException e1) {
 					logger.error("Exception happened!", e1);
 					dialogHelper.error("An error occurred :(", "Error");

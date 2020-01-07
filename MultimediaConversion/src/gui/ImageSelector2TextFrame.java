@@ -14,7 +14,7 @@ import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtils;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
@@ -254,7 +254,7 @@ public class ImageSelector2TextFrame extends JFrame{
 	
 	private void displayImage(File sourceFile) throws IOException {
 		Image sourceFileImage = ImageIO.read(sourceFile);
-		Image image = ImageGeneralWorker.scaleImage(sourceFileImage, imageContainerPanel.getWidth(), imageContainerPanel.getHeight(), Image.SCALE_REPLICATE);
+		Image image = ImageWorkerExtended.scaleImage(sourceFileImage, imageContainerPanel.getWidth(), imageContainerPanel.getHeight(), Image.SCALE_REPLICATE);
 		labelLoadedImage.setIcon(new ImageIcon(image));
 	}
 	

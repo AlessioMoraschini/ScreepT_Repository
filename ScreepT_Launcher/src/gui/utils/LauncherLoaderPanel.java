@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
-import utility.ConversionUtils;
+import utility.StringWorker;
 
 import javax.swing.JProgressBar;
 
@@ -180,7 +180,7 @@ public class LauncherLoaderPanel extends JPanel{
 			@Override
 			public void run() {
 				
-				final String safeText = ConversionUtils.trimToEmpty(text);
+				final String safeText = StringWorker.trimToEmpty(text);
 				
 				while(indeterminated.get()) {
 					try {

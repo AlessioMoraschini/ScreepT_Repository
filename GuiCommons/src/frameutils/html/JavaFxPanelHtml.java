@@ -17,7 +17,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import media.Sounds;
+import media.SoundsExtended;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
@@ -221,7 +221,7 @@ public class JavaFxPanelHtml extends JPanel {
             @Override
             public void run() {
             	
-        		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+        		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
         		webEngine.executeScript("window.find('" + targetText + "')");            		
             }
     	});

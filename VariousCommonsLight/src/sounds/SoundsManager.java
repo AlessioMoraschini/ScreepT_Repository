@@ -1,4 +1,4 @@
-package media;
+package sounds;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,10 +11,11 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import resources.SoundsConfigurator;
-
-public class Sounds {
+public class SoundsManager {
 	
+	public static final float DEFAULT_VOLUME = 0.8f;
+	public static float volume = DEFAULT_VOLUME;
+
 	// Preset static volumes
 	public static final float MAX = 1.0f;
 	public static final float HIGH = 0.8f;
@@ -25,14 +26,13 @@ public class Sounds {
 	public static final float MIN = 0.2f;
 	public static final float MUTE = 0f;
 
-	private static float volume = SoundsConfigurator.DEFAULT_EFFECTS_VOLUME;
-	private static AudioInputStream openStream = null;
-
+	public static AudioInputStream openStream = null;
+	
 	public static void playSound(String pathToResource, Float volum){
 		if(volum != null) {
 			setVolume(volum);
 		}else {
-			setVolume(SoundsConfigurator.DEFAULT_EFFECTS_VOLUME);
+			setVolume(DEFAULT_VOLUME);
 		}
 		File audioFile = new File(pathToResource);
 		if(audioFile == null || !audioFile.exists()) {
@@ -85,7 +85,6 @@ public class Sounds {
 		volume = (volume > 1)? 1.0f : volume;
 		volume = (volume < 0)? 0.0f : volume;
 		
-		Sounds.volume = volume;
+		SoundsManager.volume = volume;
 	}
-	
 }

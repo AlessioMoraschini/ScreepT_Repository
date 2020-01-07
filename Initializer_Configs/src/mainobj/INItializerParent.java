@@ -14,6 +14,7 @@ import org.ini4j.Wini;
 
 import utility.ConversionUtils;
 import utility.SafeLogger;
+import utility.StringWorker;
 import utility.reflection.ReflectionUtils;
 
 public abstract class INItializerParent implements INItializerInterface{
@@ -56,7 +57,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		String valueRead = "";
 		if (iniToReadPath != null && new File(iniToReadPath).exists()) {
 			Ini tempIniFile = new Wini(new File(iniToReadPath));
-			valueRead = ConversionUtils.trimToEmpty(tempIniFile.get(OPT_SECTION, OPT_VAR));
+			valueRead = StringWorker.trimToEmpty(tempIniFile.get(OPT_SECTION, OPT_VAR));
 		}
 		
 		return valueRead;
@@ -263,44 +264,14 @@ public abstract class INItializerParent implements INItializerInterface{
      * parse font from a representing string
      */
     public static Font getFontFromString(String stringFont) {
-    	String[] font = stringFont.split("-");
-    	String type;
-    	int style;
-    	int size;
-    	try {
-			if (font.length != 3) {
-				return new Font("Segoe UI", Font.PLAIN, 18);
-			}
-			type = font[0];
-			style = Integer.parseInt(font[1]);
-			size = Integer.parseInt(font[2]);
-		} catch (Exception e) {
-			return new Font("Segoe UI", Font.PLAIN, 18);
-		}
-    	
-    	return new Font(type, style, size);
+    	return ConversionUtils.getFontFromString(stringFont);
     }
     
     /**
      * parse font from a representing string
      */
     public static Font getFontFromString(String stringFont, Font defaultFont) {
-    	String[] font = stringFont.split("-");
-    	String type;
-    	int style;
-    	int size;
-		try {
-			if (font.length != 3) {
-				return defaultFont;
-			}
-			type = font[0];
-			style = Integer.parseInt(font[1]);
-			size = Integer.parseInt(font[2]);
-		} catch (Exception e) {
-			return defaultFont;
-		}
-    	
-    	return new Font(type, style, size);
+    	return ConversionUtils.getFontFromString(stringFont, defaultFont);
     }
     
     /**
@@ -308,34 +279,20 @@ public abstract class INItializerParent implements INItializerInterface{
      * @return
      */
     public static String getFontString(Font srcFont) {
-    	String stringFont = srcFont.getFontName()+"-"+srcFont.getStyle()+"-"+srcFont.getSize();
-    	return stringFont;
+    	return ConversionUtils.getFontString(srcFont);
     }
     
     /**
      * create color from String RGB separed with "-" representation (red-green-blue)
      */
     public static Color getRgbColorFromString(String color) {
-    	String[] rgb = color.split("-");
-    	if(rgb.length != 3) {
-    		return new Color(0,0,0);
-    	}
-    	int red = Integer.parseInt(rgb[0]);
-    	int green = Integer.parseInt(rgb[1]);
-    	int blue = Integer.parseInt(rgb[2]);
-    	
-    	return new Color(red, green, blue);
+    	return ConversionUtils.getRgbColorFromString(color);
     }
     
     /**
      * Convert color to string RGB
      */
     public static String getRgbString(Color sourceColor) {
-    	StringBuilder builder = new StringBuilder();
-    	builder.append(sourceColor.getRed()).append("-")
-    		   .append(sourceColor.getGreen()).append("-")
-    		   .append(sourceColor.getBlue());
-    	String result = builder.toString();
-    	return result;
+    	return ConversionUtils.getRgbString(sourceColor, "-");
     }
 }

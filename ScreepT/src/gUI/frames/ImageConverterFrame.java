@@ -15,7 +15,7 @@ import gui.UpdateProgressPanel;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -37,7 +37,7 @@ import om.ScalingAlgorithm;
 import panel.PanelFileDragNDropManager;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
-import variousutils.HandleString;
+import utility.StringWorker;
 
 import javax.swing.JLabel;
 
@@ -562,7 +562,7 @@ public class ImageConverterFrame extends ParentFrame{
 								if (inputImg != null) {
 									
 									// create copy by reference
-									BufferedImage imageToConvert = ImageGeneralWorker.copyImage(inputImg);
+									BufferedImage imageToConvert = ImageWorkerExtended.copyImage(inputImg);
 								
 									progUpdater.getPb().setValue(30);
 									
@@ -592,7 +592,7 @@ public class ImageConverterFrame extends ParentFrame{
 										progUpdater.getPb().setValue(70);
 										progUpdater.getPb().setValue(90);
 										//if is selected an export file
-										ImageGeneralWorker.convertAndWrite(imageToConvert, ".png", selected);
+										ImageWorkerExtended.convertAndWrite(imageToConvert, ".png", selected);
 										String msg ="Image converted and added to dictionary: "+selected.getAbsolutePath();
 										dialogHelper.info(msg, "Image converted :)");
 										logger.debug(msg);
@@ -646,7 +646,7 @@ public class ImageConverterFrame extends ParentFrame{
 							boolean PNG = ((String)comboBoxFormats.getSelectedItem()).toLowerCase().endsWith("png");
 
 							// create copy by reference
-							BufferedImage imageToConvert = ImageGeneralWorker.copyImage(inputImg);
+							BufferedImage imageToConvert = ImageWorkerExtended.copyImage(inputImg);
 							
 							int X = (int)spinnerWidth.getValue();
 							int Y = (int)spinnerHeight.getValue();
@@ -682,7 +682,7 @@ public class ImageConverterFrame extends ParentFrame{
 									if(getCompressionFactor()==1f) {
 										
 										// IF DON'T COMPRESS
-										ImageGeneralWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
+										ImageWorkerExtended.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
 										
 									}else {
 										
@@ -693,14 +693,14 @@ public class ImageConverterFrame extends ParentFrame{
 											
 											if (JPGorJPEG) {
 												// jpeg converter
-												fout.write(ImageGeneralWorker.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
+												fout.write(ImageWorkerExtended.compressIMGjpgNoMeta(imageToConvert,getCompressionFactor()));
 											}else if(PNG) {
 												// png converter
 												
-												fout.write(ImageGeneralWorker.compressIMGpng(imageToConvert, getCompressionFactorPng(), false));
+												fout.write(ImageWorkerExtended.compressIMGpng(imageToConvert, getCompressionFactorPng(), false));
 											}else {
 												// if no supported conversion type use default
-												ImageGeneralWorker.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
+												ImageWorkerExtended.convertAndWrite(imageToConvert, (String)comboBoxFormats.getSelectedItem(), selected);
 											}
 											
 										} catch (IOException e) {
@@ -802,7 +802,7 @@ public class ImageConverterFrame extends ParentFrame{
 									
 									// refresh image preview in gui
 									// way with custom repainter (keep type)
-									scaledImage = ImageGeneralWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
+									scaledImage = ImageWorkerExtended.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
 									refreshImage(scaledImage);
 									
 									logger.debug("Image Loaded!");
@@ -869,7 +869,7 @@ public class ImageConverterFrame extends ParentFrame{
 					
 					// refresh image preview in gui
 					// way with custom repainter (keep type)
-					scaledImage = ImageGeneralWorker.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
+					scaledImage = ImageWorkerExtended.scaleImage(inputImg, inputImg.getType(), panelImgDisp.getWidth(), panelImgDisp.getHeight());
 					refreshImage(scaledImage);
 					
 					logger.debug("Image Loaded!");
@@ -896,7 +896,7 @@ public class ImageConverterFrame extends ParentFrame{
 	 */
 	private void refreshInGui(String name, String type, String size, String fileSize, int w, int h) {
 		
-		String newdisplayed = HandleString.fitToMaxLentgh(name, CrypterPanel.labelLengthLimit/3);
+		String newdisplayed = StringWorker.fitToMaxLentgh(name, CrypterPanel.labelLengthLimit/3);
 		lblInFileVal.setText(newdisplayed);
 		lblTypeVal.setText(type);
 		lblInSizeVal.setText(size);
@@ -910,7 +910,7 @@ public class ImageConverterFrame extends ParentFrame{
 	 * 
 	 */
 	private void refreshOutGui(String name, String type, String size, String fileSize, int w, int h) {
-		String newdisplayed = HandleString.fitToMaxLentgh(name, CrypterPanel.labelLengthLimit/3);
+		String newdisplayed = StringWorker.fitToMaxLentgh(name, CrypterPanel.labelLengthLimit/3);
 		lblOutFileVal.setText(newdisplayed);
 		lblOutTypeVal.setText(type);
 		lblOutSizeVal.setText(size);

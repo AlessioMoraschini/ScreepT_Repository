@@ -6,7 +6,13 @@ import java.io.IOException;
 import org.junit.Test;
 
 import testconfig.TestConstants;
+import utils.TestUtils;
 
+/**
+ * 
+ * @author xx
+ *
+ */
 public class FilesGenericTest {
 
 	String outPathMKDIRS = TestConstants.destFolderPath + "testFolder_MKDIRS/test.txt";
@@ -15,6 +21,7 @@ public class FilesGenericTest {
 		File out = new File(outPathMKDIRS);
 		out.getParentFile().mkdirs();
 		
-		FileWorker.writeStringToFile(System.lineSeparator(), out, false);
+		FileWorker.writeStringToFile(System.lineSeparator().replaceAll("\n", "ciao").replaceAll("ciao", System.lineSeparator()), out, true);
+		TestUtils.print(FileWorker.readFileAsString(out).replaceAll("ciao", System.lineSeparator()));
 	}
 }

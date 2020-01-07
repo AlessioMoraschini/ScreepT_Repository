@@ -30,14 +30,14 @@ import handlers.AWTExceptionHandler;
 import launcherutils.IniFileManager;
 import logger.LoggerUtils;
 import mainobj.INItializer;
-import media.Sounds;
+import media.SoundsExtended;
 import plugins.PluginManager;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import uTILS.dependencycheck.LibChecker;
 import updater.UpdatesManager;
-import utility.PropertiesManagerLight;
+import utility.properties.PropertiesManager;
 
 public class MainGuiGeneralAppStarter {
 	
@@ -107,7 +107,7 @@ public class MainGuiGeneralAppStarter {
 				}
 				
 			} catch (Exception e) {
-				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
 				throw e;
 			}
@@ -125,7 +125,7 @@ public class MainGuiGeneralAppStarter {
 				
 			} catch (Exception e) {
 				System.out.println("There was a critical error when trying to load Logger! Application cannot start.");
-				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Critical error: Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
 						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
 				throw e;
@@ -185,7 +185,7 @@ public class MainGuiGeneralAppStarter {
 				GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, GeneralConfig.TOOLTIP_RESHOW_DELAY, tooltipFontFromProps);
 			
 			} catch (Exception e) {
-				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot setup Tooltips general graphics, an error occurred", "Cannot load Tooltips props", e);
 			}
 			
@@ -263,7 +263,7 @@ public class MainGuiGeneralAppStarter {
 			
 			if (forceCloseWithoutAsk || ParametricExceptionThread.isCriticalError(t)) {
 				logger.error(AWTExceptionHandler.CRITICAL_ERROR_MSG, t);
-				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 				
 				if (!forceCloseWithoutAsk) {
 					res = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelperExtended.YES_OR_NO);
@@ -290,7 +290,7 @@ public class MainGuiGeneralAppStarter {
 				logger.error("An Exception occurred: ", t);
 				
 				if (currentConfiguration.getGenOpt().isExceptionAdvicesEnabled()) {
-					Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+					SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 					res = new JOptionHelperExtended(null).warnScroll(
 							"An Exception occurred, but I'still here ;) \n\n"
 									+ "(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"
@@ -372,7 +372,7 @@ public class MainGuiGeneralAppStarter {
 		}
 		
 		PluginManager.installedPluginProperties.saveProperty(
-				PluginManager.installedPluginPropsListKey, PropertiesManagerLight.listToString(
+				PluginManager.installedPluginPropsListKey, PropertiesManager.listToString(
 						installedPlugins, PluginManager.installedPluginPropsListSeparator));
 	}
 	

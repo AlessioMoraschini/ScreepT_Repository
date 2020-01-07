@@ -53,7 +53,7 @@ import jmenu.CustomJmenuItem;
 import logger.LoggerUtils;
 import mainobj.INItializer;
 import mainobj.InitOwner;
-import media.Sounds;
+import media.SoundsExtended;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -263,7 +263,7 @@ public class MainGUI extends MainGuiParent{
 			  	}
 			});
 			
-			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+			SoundsExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 
 			mainFrameScreept.requestFocus();
 			mainFrameScreept.toFront();
@@ -502,7 +502,7 @@ public class MainGUI extends MainGuiParent{
 		    public void actionPerformed(ActionEvent ae) {
 		   
 		    		if (!FLAG_loadPrjSub) {
-		    			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		    			SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		    			FLAG_loadPrjSub = true;
 						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, GeneralConfig.DEFAULT_INI_FOLDER);
 						panel.setBounds(20, 20, mainFrameScreept.getWidth(), mainFrameScreept.getHeight() / 2);
@@ -519,7 +519,7 @@ public class MainGUI extends MainGuiParent{
 		mntmResetAllPanels = new CustomJmenuItem(new AbstractAction("Reset all Panels") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if(dialogHelper.yesOrNo(msg1 + "all panels" + msg2, "Reset all panels?")) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		    		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		    		mainGuiUtils.resetPanel(null, MainGUI.mainFrameScreept);
 		    	}
 			}
@@ -529,7 +529,7 @@ public class MainGUI extends MainGuiParent{
 		mntmResetTextEditor = new CustomJmenuItem(new AbstractAction("Reset Text Editor") {
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Text Editor" + msg2, "Reset TextEditor?")) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					mainGuiUtils.resetPanel(TextEditor.class, MainGUI.mainFrameScreept);
 		    	}
 			}
@@ -539,7 +539,7 @@ public class MainGUI extends MainGuiParent{
 		mntmResetCrypterPanel = new CustomJmenuItem(new AbstractAction("Reset ScreepT") {
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					mainGuiUtils.resetPanel(CrypterPanel.class, MainGUI.mainFrameScreept);
 		    	}
 			}
@@ -549,7 +549,7 @@ public class MainGUI extends MainGuiParent{
 		mntmResetConfigManager = new CustomJmenuItem(new AbstractAction("Reset Configuration manager") {
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Configuration Manager" + msg2, "Reset Conf. Manager?")) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					mainGuiUtils.resetPanel(ConfigurationManagerPanel.class, MainGUI.mainFrameScreept);
 		    	}
 			}
@@ -559,7 +559,7 @@ public class MainGUI extends MainGuiParent{
 		mntmSaveCurrent = new CustomJmenuItem(new AbstractAction("Save Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!FLAG_savePrjSub) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		    		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSub = true;
 		    		ConfigurationManagerPanel.saveCurrentConf(currentConfiguration, mainFrameScreept);
 		    		FLAG_savePrjSub = false;
@@ -571,7 +571,7 @@ public class MainGUI extends MainGuiParent{
 		mntmExportPrjSub = new CustomJmenuItem(new AbstractAction("Export Current Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	if (!FLAG_savePrjSubAs) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		    		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSubAs = true;
 					INIfileChoosER panel = new INIfileChoosER(currentConfiguration, (JLabel)null);
 					panel.setBounds(20, 20, mainFrameScreept.getWidth(), mainFrameScreept.getHeight() / 2);
@@ -585,7 +585,7 @@ public class MainGUI extends MainGuiParent{
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadDefaultPrjSub) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		    		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadDefaultPrjSub = true;
 					if (dialogHelper.yesOrNo(
 							"Really want to load default config(unsaved changes will be lost)? ",
@@ -613,7 +613,7 @@ public class MainGUI extends MainGuiParent{
 		mntmSaveCurrentAs = new CustomJmenuItem(new AbstractAction("Save Current as Default") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmSaveCurrentAs) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmSaveCurrentAs = true;
 					try {
 						currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
@@ -638,7 +638,7 @@ public class MainGUI extends MainGuiParent{
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadSrcrYptDefaultConf) {
-		    		Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+		    		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_loadSrcrYptDefaultConf = true;
 					if (dialogHelper.yesOrNo(
 							"Really want to Reset standard ScreepT configuration? Unsaved changes will be lost! ",
@@ -669,7 +669,7 @@ public class MainGUI extends MainGuiParent{
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExportLog) {
 					logger.debug(" => User started logs exporting procedure.");
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmExportLog = true;
 					
 					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScreepT_launcher's customize options at start)";
@@ -719,7 +719,7 @@ public class MainGUI extends MainGuiParent{
 				logger.debug(" => User started logs erasing procedure.");
 
 				if (!FLAG_mntmEraseLogs) {
-					Sounds.playSound(SoundsConfigurator.SOUND_CLOCK, null);
+					SoundsExtended.playSound(SoundsConfigurator.SOUND_CLOCK, null);
 					FLAG_mntmEraseLogs = true;
 					File LOG_MAIN_FILE = new File(GeneralConfig.LOG_PATH);
 					String coolFileSize = ConversionUtils.coolFileSize(LOG_MAIN_FILE.length());
@@ -748,7 +748,7 @@ public class MainGUI extends MainGuiParent{
 		mntmTouppercaseDirectory = new CustomJmenuItem(new AbstractAction("Uppercase First letter - Files&Directories") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmTouppercaseDirectory) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmTouppercaseDirectory = true;
 					last_dir_used = FilesAndDirectoriesManagerGUI.renameFirstLetterDirNames(mainFrameScreept, last_dir_used);
 					FLAG_mntmTouppercaseDirectory = false;
@@ -760,7 +760,7 @@ public class MainGUI extends MainGuiParent{
 		mntmDeleteDirectoryContentByExtension = new CustomJmenuItem(new AbstractAction("Delete Directory's content by extension") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmDeleteDirectoryContentByExtension) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentByExtension = true;
 					FilesAndDirectoriesManagerGUI.deleteContentByExtension(mainFrameScreept, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentByExtension = false;
@@ -772,7 +772,7 @@ public class MainGUI extends MainGuiParent{
 		mntmDeleteDirectoryAllContentRecursive = new CustomJmenuItem(new AbstractAction("Delete Directory's content (All except selected)") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmDeleteDirectoryContentRecursive) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentRecursive = true;
 					FilesAndDirectoriesManagerGUI.deleteAllContent(mainFrameScreept, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentRecursive = false;
@@ -784,7 +784,7 @@ public class MainGUI extends MainGuiParent{
 		mntmEmptyDirectoryRecursive = new CustomJmenuItem(new AbstractAction("Empty all content (doesn't delete folders)") {
 			public void actionPerformed(ActionEvent e) {
 				if(!FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = true;
 					FilesAndDirectoriesManagerGUI.deleteOnlyFilesInFolder(mainFrameScreept, currentConfiguration);
 					FLAG_mntmDeleteDirectoryContentDirsOnlyRecursive = false;
@@ -796,7 +796,7 @@ public class MainGUI extends MainGuiParent{
 		mntmMakeDirsFromPath = new CustomJmenuItem(new AbstractAction("Create directory from String path") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmMakeDirsFromPath) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmMakeDirsFromPath = true;
 					FilesAndDirectoriesManagerGUI.makeDirsFromPath(mainFrameScreept, currentConfiguration);
 					FLAG_mntmMakeDirsFromPath = false;
@@ -808,7 +808,7 @@ public class MainGUI extends MainGuiParent{
 		mntmCopyDirStructure = new CustomJmenuItem(new AbstractAction("Copy directory structure (Copy folders, not files)") {
 			public void actionPerformed(ActionEvent e) {
 				if(!FLAG_mntmCopyDirStructure) {
-					Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+					SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmCopyDirStructure = true;
 					FilesAndDirectoriesManagerGUI.copyDirStructure(mainFrameScreept, currentConfiguration);
 					FLAG_mntmCopyDirStructure = false;
@@ -982,7 +982,7 @@ public class MainGUI extends MainGuiParent{
 			public void actionPerformed(ActionEvent e) {
 				
 				SysUtils.openUrlInBrowser("https://"+GeneralConfig.WEBSITE);
-				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+				SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 			}
 		});
 
@@ -1058,7 +1058,7 @@ public class MainGUI extends MainGuiParent{
 		mntmReturnToWelcome = new CustomJmenuItem(new AbstractAction("Return to Welcome Page") {
 			public void actionPerformed(ActionEvent e) {
 				isOnHomePage.set(true);
-				Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+				SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 				setBackgroundImage();
 				
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(MainGUI.class);
@@ -1309,7 +1309,7 @@ public class MainGUI extends MainGuiParent{
 		
 		logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 	
-		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+		SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
 		MainGuiGeneralAppStarter.deleteSignalFileForExternalJars();
 		
@@ -1366,7 +1366,7 @@ public class MainGUI extends MainGuiParent{
 		
 		logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 	
-		Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+		SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
 		MainGuiGeneralAppStarter.deleteSignalFileForExternalJars();
 		

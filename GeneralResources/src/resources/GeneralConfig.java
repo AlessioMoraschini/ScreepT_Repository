@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import resources.om.FilePojo;
+import utility.properties.PropertiesManager;
 
 public class GeneralConfig {
 	

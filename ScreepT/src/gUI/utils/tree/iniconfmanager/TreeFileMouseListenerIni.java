@@ -29,7 +29,7 @@ import gUI.panels.ConfigurationManagerPanel;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -282,7 +282,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 			currentConfig.setIniReadFile(new Wini(iniFile));
 			currentConfig.readConfigIniFile();
 			
-			confManagerPanel.lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
+			confManagerPanel.lblAvviso.setForeground(ImageWorkerExtended.randomColorRGB(4f));
 			confManagerPanel.lblAvviso.setText("[Configuration Loaded!]");
 			confManagerPanel.config_PATH.setText(currentConfig.getIniFile().getFile().getPath());
 			confManagerPanel.textArea.setText("");

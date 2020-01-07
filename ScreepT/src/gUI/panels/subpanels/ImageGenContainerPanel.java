@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 import gUI.frames.KeyGenFrame;
 import gui.UpdateProgressPanel;
 import mainobj.INItializer;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import om.KeyGenImageType;
 import uTILS.local.ImageWorkerScreepT;
 
@@ -130,7 +130,7 @@ public class ImageGenContainerPanel extends JPanel{
     // constructor to print image on this.JPanel object extender, and save it on the given file
     public ImageGenContainerPanel(int width, int height,int type, File dest, String imgExtension, Panel thisPanel) throws IOException {
         
-        image = ImageGeneralWorker.generateKeyImageAndWrite(width, height, type, dest, imgExtension);
+        image = ImageWorkerExtended.generateKeyImageAndWrite(width, height, type, dest, imgExtension);
         scaledImage = image.getScaledInstance(thisPanel.getWidth(),thisPanel.getHeight(),Image.SCALE_FAST);
         JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
         add(picLabel);        

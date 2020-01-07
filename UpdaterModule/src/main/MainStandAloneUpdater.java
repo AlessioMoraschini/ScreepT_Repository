@@ -15,10 +15,10 @@ import gui.JOptionHelper;
 import gui.UpdateProgressPanel;
 import network.ftp.FtpDumper;
 import network.progress.UploadAction;
-import utility.PropertiesManagerLight;
 import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.properties.PropertiesManager;
 
 public class MainStandAloneUpdater {
 	
@@ -38,7 +38,7 @@ public class MainStandAloneUpdater {
 	 */
 	public static void main(String[] args) {
 		
-		PropertiesManagerLight resourcesFilePathsMappings = new PropertiesManagerLight(resourcesMappingDefPath);
+		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
 		String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
 		
 		File currentDir = new File(System.getProperty("user.dir"));
@@ -54,7 +54,7 @@ public class MainStandAloneUpdater {
 			Boolean createUpdatesZip = Boolean.valueOf(args[1]);
 			String updatesProperties = args[2];
 			
-			PropertiesManagerLight manifestProps = new PropertiesManagerLight(updatesProperties);
+			PropertiesManager manifestProps = new PropertiesManager(updatesProperties);
 
 			// Only for updates folder -> zip folder into current one
 			if(createUpdatesZip && updatesDir.isDirectory() && updatesDir.exists()) {
@@ -114,7 +114,7 @@ public class MainStandAloneUpdater {
 			final File newJar = new File(args[2]).getAbsoluteFile();
 			
 			String manifestPath = updatesFolder.getAbsolutePath() + File.separator + UPDATES_MANIFEST;
-			PropertiesManagerLight manifestProps = new PropertiesManagerLight(manifestPath);
+			PropertiesManager manifestProps = new PropertiesManager(manifestPath);
 			
 			final String mainApplicationLauncher = "ScreepT_Launcher.jar";
 			
@@ -241,7 +241,7 @@ public class MainStandAloneUpdater {
 		System.exit(0);
 	}
 	
-	private static boolean validateUpdatesFolder(File updaterJar, File updatesFolder, PropertiesManagerLight manifestProps) {
+	private static boolean validateUpdatesFolder(File updaterJar, File updatesFolder, PropertiesManager manifestProps) {
 		// .... /UPDATES/updates.zip  ::  (updatesFolder = .... /UPDATES/updates/)
 		File zipUpdates = new File(updatesFolder.getParentFile() + File.separator + "updates.zip");
 		boolean proceed = true;
@@ -283,7 +283,7 @@ public class MainStandAloneUpdater {
 	
 	private static void uploadUpdatesViaFTP(ArrayList<File> toUploadList) {
 		
-		PropertiesManagerLight ftpProperties = new PropertiesManagerLight(FTP_PROPERTIES);
+		PropertiesManager ftpProperties = new PropertiesManager(FTP_PROPERTIES);
 		String HOST = ftpProperties.getProperty("HOST", "ftp.am-design-development.com");
 		String USER = ftpProperties.getProperty("USER", "");
 		String PSW = ftpProperties.getProperty("PSW", "");

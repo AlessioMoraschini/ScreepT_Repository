@@ -29,7 +29,7 @@ import frameutils.utils.GuiUtils;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.ConversionUtils;
+import utility.StringWorker;
 
 /**
  * This represents a basic extensible component, when each node is a File Object
@@ -167,7 +167,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 				
 				if(newName == null) {
 					return;
-				}else if(!ConversionUtils.trimToEmpty(newName).equals("")){
+				}else if(!StringWorker.trimToEmpty(newName).equals("")){
 					unexistant = FileVarious.renameJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
 				}
 				

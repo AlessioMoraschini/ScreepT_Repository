@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
 
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import variousutils.HandleString;
+import utility.StringWorker;
 import net.miginfocom.swing.MigLayout;
 import java.awt.Component;
 
@@ -40,7 +40,7 @@ public class TabHeadPanel_Full extends JPanel{
 		JLabel lblTitle = new JLabel();
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT.deriveFont(14f));
-		lblTitle.setText(HandleString.fitToMaxLentgh(title, TabUtils.MAX_TAB_LABELENGHT));
+		lblTitle.setText(StringWorker.fitToMaxLentgh(title, TabUtils.MAX_TAB_LABELENGHT));
 		setLayout(new MigLayout("fill, insets 0", "[20px][69px,grow][35px]", "[22px:24px:34px]"));
 		// button close
 		final JButton btnClose = new JButton("");

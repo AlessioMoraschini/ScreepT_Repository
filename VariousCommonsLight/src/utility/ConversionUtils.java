@@ -1,7 +1,12 @@
 package utility;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.List;
+
+import om.HslColor;
 
 public class ConversionUtils {
 	
@@ -114,54 +119,194 @@ public class ConversionUtils {
 	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 
-	public static boolean containsOneOfMatchesChar(char[] password, char[] targetMatches) {
-		for(char iterator : password) {
-			for (char match : targetMatches) {
-				if (iterator == match) {
-					return true;
-				} 
+	/**
+	 * Replace all EOL(EndOfLine) characters with the wanted type
+	 * @param source
+	 * @return
+	 */
+	public static String normalizeStringEol(String source, EOL outputEOL) {
+		String output = StringWorker.trimToEmpty(source);
+		
+		output = output.replaceAll(EOL.CRLF.eolRegex, outputEOL.eol);
+		output = output.replaceAll(EOL.CR.eolRegex, outputEOL.eol);
+		output = output.replaceAll(EOL.LF.eolRegex, outputEOL.eol);
+		
+		return output;
+	}
+	
+	public enum EOL{
+		CR("\r", "\\r"),
+		LF("\n", "\\n"),
+		CRLF("\r\n", "\\r\\n");
+		
+		public String eol;
+		public String eolRegex;
+
+		private EOL(String eol, String regex) {
+			this.eol = eol;
+			this.eolRegex = regex;
+		}
+	}
+
+	/**
+	 * parse font from a representing string
+	 */
+	public static Font getFontFromString(String stringFont) {
+		String[] font = stringFont.split("-");
+		String type;
+		int style;
+		int size;
+		try {
+			if (font.length != 3) {
+				return new Font("Segoe UI", Font.PLAIN, 18);
 			}
+			type = font[0];
+			style = Integer.parseInt(font[1]);
+			size = Integer.parseInt(font[2]);
+		} catch (Exception e) {
+			return new Font("Segoe UI", Font.PLAIN, 18);
 		}
 		
-		return false;
+		return new Font(type, style, size);
 	}
 
-	public static boolean containsMatch(char[] password, char targetMatch) {
-		for(char iterator : password) {
-			if(iterator == targetMatch) {
-				return true;
+	/**
+	 * parse font from a representing string
+	 */
+	public static Font getFontFromString(String stringFont, Font defaultFont) {
+		String[] font = stringFont.split("-");
+		String type;
+		int style;
+		int size;
+		try {
+			if (font.length != 3) {
+				return defaultFont;
 			}
+			type = font[0];
+			style = Integer.parseInt(font[1]);
+			size = Integer.parseInt(font[2]);
+		} catch (Exception e) {
+			return defaultFont;
 		}
 		
-		return false;
+		return new Font(type, style, size);
 	}
 
-	public static String trimToEmpty(String source) {
-		if (source != null) {
-			return source.trim();
-		} else {
-			return "";
+	public static Color hsvToRgb(float hue, float saturation, float value) throws RuntimeException{
+	
+	    int h = (int)(hue * 6);
+	    value = value * 256;
+	    int f = (int)hue * 6 - h * 256;
+	    int p = (int)(value * (1 - saturation) * 256);
+	    int q = (int)(value * (1 - f * saturation) * 256);
+	    int t = (int)(value * (1 - (1 - f) * saturation) * 256);
+	
+	    switch (h) {
+	      case 0: return new Color(value, t, p);
+	      case 1: return new Color(q, value, p);
+	      case 2: return new Color(p, value, t);
+	      case 3: return new Color(p, q, value);
+	      case 4: return new Color(t, p, value);
+	      case 5: return new Color(value, p, q);
+	      default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
+	    }
+	}
+
+	/**
+	 * create color from String RGB separed with "-" representation (red-green-blue)
+	 */
+	public static Color getRgbColorFromString(String color) {
+		String[] rgb = color.split("-");
+		if(rgb.length != 3) {
+			return new Color(0,0,0);
 		}
-	}
-
-	public static boolean isEmpty(String source) {
-		return source != null && "".equals(source.trim());
-	}
-
-	public static boolean containsIgnoreCase(String first, String second) {
-		if(first == null || second == null) {
-			return false;
-		}
+		int red = Integer.parseInt(rgb[0]);
+		int green = Integer.parseInt(rgb[1]);
+		int blue = Integer.parseInt(rgb[2]);
 		
-		return first.toLowerCase().contains(second.toLowerCase());
+		return new Color(red, green, blue);
 	}
 
-	public static boolean contains(String first, String second) {
-		if(first == null || second == null) {
-			return false;
+	/**
+	 * return font in string format
+	 * @return
+	 */
+	public static String getFontString(Font srcFont) {
+		String stringFont = srcFont.getFontName()+"-"+srcFont.getStyle()+"-"+srcFont.getSize();
+		return stringFont;
+	}
+
+	/**
+	 * Convert color to string HSL
+	 */
+	public static String getHslString(Color sourceColor, String separator) {
+		float[] hsl = HslColor.fromRGB(sourceColor);
+		String result = "";
+		for(float curr : hsl) {
+			String currString = String.valueOf((int)curr);
+			result = result.concat(currString).concat(separator);
 		}
+		if (result.length() > 1) {
+			result = result.substring(0, result.length()-2);
+		}    	
+		return result;
+	}
+
+	/**
+	 * Convert color to string HSB (where B is brightness, same as Value where referred as HSV)
+	 */
+	public static String getHsbString(Color sourceColor, String separator) {
+		float[] hsv = new float[3];
+		float[] hsb = Color.RGBtoHSB(sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue(), hsv);
+		String result = "";
+		for(float curr : hsb) {
+			String currString = String.format("%.2f", curr);
+			result = result.concat(currString).concat(separator);
+		}
+		if (result.length() > 1) {
+			result = result.substring(0, result.length()-2);
+		}
+		return result;
+	}
+
+	/**
+	 * Convert color to string Hexadecimal
+	 */
+	public static String getHexString(Color sourceColor) {
+		String hex = String.format("#%02x%02x%02x", sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue());
+		return hex;
+	}
+
+	/**
+	 * Convert color to string RGB with custom separator
+	 */
+	public static String getRgbString(Color sourceColor, String separator) {
+		separator = (StringWorker.isEmpty(separator))? "-" : separator;
+		StringBuilder builder = new StringBuilder();
+		builder.append(sourceColor.getRed()).append(separator)
+			   .append(sourceColor.getGreen()).append(separator)
+			   .append(sourceColor.getBlue());
+		String result = builder.toString();
+		return result;
+	}
+
+	/**
+	 * Convert color to string RGB
+	 */
+	public static String getRgbString(Color sourceColor) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(sourceColor.getRed()).append("-")
+			   .append(sourceColor.getGreen()).append("-")
+			   .append(sourceColor.getBlue());
+		String result = builder.toString();
+		return result;
+	}
+
+	public static Double getAvgValue(List<Double> valueList) {
+		double sum = valueList.stream().mapToDouble(Double::doubleValue).sum();
+		int size = valueList.size();
+		return (sum/size);
 		
-		return first.contains(second);
 	}
 
 }

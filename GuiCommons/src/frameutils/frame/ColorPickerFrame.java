@@ -11,8 +11,8 @@ import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import utility.ConversionUtils;
 import utility.reflection.ReflectionUtils;
-import variousutils.HandleString;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -114,10 +114,10 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 	}
 	
 	private void updateTextBoxes(Color currentSelected) {
-		txtRgb.setText(HandleString.getRgbString(currentSelected, ", "));
-		txtHsb.setText(HandleString.getHsbString(currentSelected, " : "));
-		txtHsl.setText(HandleString.getHslString(currentSelected, " : "));
-		txtHex.setText(HandleString.getHexString(currentSelected));
+		txtRgb.setText(ConversionUtils.getRgbString(currentSelected, ", "));
+		txtHsb.setText(ConversionUtils.getHsbString(currentSelected, " : "));
+		txtHsl.setText(ConversionUtils.getHslString(currentSelected, " : "));
+		txtHex.setText(ConversionUtils.getHexString(currentSelected));
 		paneMiniColorSample.setBackground(currentSelected);
 	}
 

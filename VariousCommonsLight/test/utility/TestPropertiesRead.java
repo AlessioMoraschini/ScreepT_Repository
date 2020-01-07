@@ -5,15 +5,16 @@ import org.junit.Test;
 
 import gui.JOptionHelper;
 import testconfig.TestConstants;
+import utility.properties.PropertiesManager;
 
 public class TestPropertiesRead {
 	
 	private static final String sourceFilePropertiesPath = TestConstants.sourceFolderPath + "manifest.properties";
-	private static PropertiesManagerLight propertiesManager;
+	private static PropertiesManager propertiesManager;
 	
 	@BeforeClass
 	public static void init() {
-		propertiesManager = new PropertiesManagerLight(sourceFilePropertiesPath);
+		propertiesManager = new PropertiesManager(sourceFilePropertiesPath);
 	}
 
 	@Test

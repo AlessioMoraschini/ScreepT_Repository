@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import om.ScalingAlgorithm;
 import testUtils.TestUtils;
-import variousutils.HandleString;
+import utility.ConversionUtils;
 
 public class ObjStringConversionINI {
 
@@ -16,10 +16,10 @@ public class ObjStringConversionINI {
 		Color black = Color.black;
 		Color dynColor = new Color(50,120,200);
 		
-		String colorY = HandleString.getRgbString(black);
+		String colorY = ConversionUtils.getRgbString(black);
 		TestUtils.printl("Stringed: "+colorY);
 		
-		Color parsed = HandleString.getRgbColorFromString(colorY);
+		Color parsed = ConversionUtils.getRgbColorFromString(colorY);
 		TestUtils.printl("Parsed: "+parsed);
 		
 		TestUtils.printSeparator(40);
@@ -29,10 +29,10 @@ public class ObjStringConversionINI {
 	public void testFont() {
 		Font testFont = new Font("Segoe UI", Font.PLAIN, 20);
 		
-		String fontString = HandleString.getFontString(testFont);
+		String fontString = ConversionUtils.getFontString(testFont);
 		TestUtils.printl("\nString font: "+fontString);
 		
-		Font parsed = HandleString.getFontFromString(fontString);
+		Font parsed = ConversionUtils.getFontFromString(fontString);
 		TestUtils.printl("Parsed: "+parsed);
 		
 		TestUtils.printSeparator(40);

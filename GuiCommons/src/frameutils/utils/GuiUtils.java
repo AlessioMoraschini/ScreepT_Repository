@@ -52,12 +52,12 @@ import org.apache.log4j.Logger;
 import codeformatter.CustomCodeFormatter;
 import dialogutils.JOptionHelperExtended;
 import files.om.FileNamed;
-import media.ImageGeneralWorker;
-import media.Sounds;
+import media.ImageWorkerExtended;
+import media.SoundsExtended;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
-import variousutils.HandleString;
+import utility.StringWorker;
 
 public class GuiUtils {
 	
@@ -160,7 +160,7 @@ public class GuiUtils {
 		try {
 			Point hotSpot = new Point(0, 0);
 	        BufferedImage cursorImg = ImageIO.read(new File(IconsPathConfigurator.ICON_COLOR_SAMPLER));
-	        cursorImg = ImageGeneralWorker.scaleImage(cursorImg, BufferedImage.TYPE_4BYTE_ABGR_PRE, correctSize.width, correctSize.height);
+	        cursorImg = ImageWorkerExtended.scaleImage(cursorImg, BufferedImage.TYPE_4BYTE_ABGR_PRE, correctSize.width, correctSize.height);
 			result = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, hotSpot, imgPath);
 		} catch (Exception e) {
 			logger.error(e);
@@ -212,7 +212,7 @@ public class GuiUtils {
 				source = CustomCodeFormatter.xmlPrettyFormat(source, tabSize);
 				if (source.equals(old)) {
 					// already formatted
-					source = HandleString.removeLines(source);
+					source = StringWorker.removeLines(source);
 				}
 			// JS/JSON -> use javascript function call with custom library to prettify JS string
 			}else if (extension.toLowerCase().endsWith("js") || extension.toLowerCase().endsWith("json")) {
@@ -260,7 +260,7 @@ public class GuiUtils {
 			}
 			
 			if (!suppported || error) {
-				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 				logger.warn("Format not supported or an error occurred :-> skipping text replace in text area. " + unsupportedAdvice);
 				dialogHelper.warn(encapsulateInHtml("<b>Cannot format with current settings</b></br>" + unsupportedAdvice), "Cannot Format text");
 			}
@@ -292,7 +292,7 @@ public class GuiUtils {
 	}
 	
 	private static void manageFormatterException(Exception e, String extension) {
-		Sounds.playSound(SoundsConfigurator.ERROR, null);
+		SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 		String exception = Arrays.deepToString(e.getStackTrace());
 		logger.error("error formatting "+ extension +" string !", e);
 		dialogHelper.errorScroll("Error reading " + extension + " format: " + exception, "format Error");

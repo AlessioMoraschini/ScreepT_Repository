@@ -34,7 +34,7 @@ import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
-import utility.PropertiesManagerLight;
+import utility.properties.PropertiesManager;
 import utils.SysUtils;
 
 /**
@@ -69,7 +69,7 @@ public class ScreepTLauncher {
 	
 	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
 	public static final String installedPluginPendingDeleteListKey = "PLUGINS_PENDING_DELETE_AT_START";
-	public static PropertiesManagerLight installedPluginProperties = new PropertiesManagerLight(installedPluginPropsFileName);
+	public static PropertiesManager installedPluginProperties = new PropertiesManager(installedPluginPropsFileName);
 	
 	
 	// jvm search fields default
@@ -479,7 +479,7 @@ public class ScreepTLauncher {
 			if(argumentsFiles != null && argumentsFiles.length > 0) {
 				try {
 					int i = 0;
-					PropertiesManagerLight propertyManager = new PropertiesManagerLight(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE);
+					PropertiesManager propertyManager = new PropertiesManager(GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE);
 					for (File currentToOpen : argumentsFiles) {
 						propertyManager.dynamicFileBindingsDef.setProperty(GeneralConfig.SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX + i, currentToOpen.getCanonicalPath());
 						i++;

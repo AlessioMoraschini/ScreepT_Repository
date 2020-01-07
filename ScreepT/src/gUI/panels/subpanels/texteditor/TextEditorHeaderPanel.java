@@ -284,6 +284,7 @@ public class TextEditorHeaderPanel extends JPanel{
 							txtAesKey.requestFocusInWindow();
 						} finally {
 							parentUtils.updateCurrentUnsavedFromFileRead();
+							parentUtils.revalidateFoldingPainted(loadedTabObj.textArea);
 						}
 					} else {
 						parent.dialogHelper.warn("Please enter a password, empty key text!","Empty password");
@@ -323,6 +324,7 @@ public class TextEditorHeaderPanel extends JPanel{
 						} finally {
 							loadedTabObj.textArea.append(decoded);
 							parentUtils.updateCurrentUnsavedFromFileRead();
+							parentUtils.revalidateFoldingPainted(loadedTabObj.textArea);
 						}
 					} else {
 						parent.dialogHelper.warn("Please enter a password, empty key text!","Empty password");

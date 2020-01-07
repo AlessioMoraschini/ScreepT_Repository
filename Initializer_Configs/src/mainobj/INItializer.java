@@ -21,8 +21,8 @@ import om.SecurityLevel;
 import om.SteganOption;
 import om.TextEditorOption;
 import resources.GeneralConfig;
-import utility.ConversionUtils;
 import utility.SafeLogger;
+import utility.StringWorker;
 
 public class INItializer extends INItializerParent implements INItializerInterface{
 
@@ -448,7 +448,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		
 		// selected theme
 		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
-		String theme = (!ConversionUtils.trimToEmpty(themeRead).equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
+		String theme = (!StringWorker.trimToEmpty(themeRead).equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
 		textEditorOpt.setSelectedTheme(theme);
 	}
 	

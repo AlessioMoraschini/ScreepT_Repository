@@ -204,6 +204,8 @@ public class ColumnTextArea extends RSyntaxTextArea{
 				}
     		} 
     		
+    		// BUG: Tabs have different length, so they should be considered as nTabs * lengthOfATab
+    		
     		if (cnt > 1) {
     			int i = cnt -1;
 				// Search into next line for a selection with different Width or Heigth -> if found the this is not rectangular

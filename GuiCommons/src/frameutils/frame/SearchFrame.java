@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
 
-import media.Sounds;
+import media.SoundsExtended;
 import mouseutils.MovePanelMouseListener;
 
 import javax.swing.event.DocumentEvent;
@@ -413,10 +413,10 @@ public class SearchFrame extends JFrame{
 			textSearchArea.setSelectionStart(indexStart);
 			textSearchArea.setSelectionEnd(indexStart + match.length());
 			end = false;
-			Sounds.playSound(SoundsConfigurator.CLICK_2, null);
+			SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		}else {
 			end = true;
-			Sounds.playSound(SoundsConfigurator.CLICK_1, null);
+			SoundsExtended.playSound(SoundsConfigurator.CLICK_1, null);
 		}
 		
 		ifEndGoToStart(match, forward);

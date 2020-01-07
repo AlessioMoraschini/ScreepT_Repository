@@ -19,10 +19,10 @@ import network.http.HttpHelper.HttpRequestMetod;
 import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
 import utility.ConversionUtils;
-import utility.PropertiesManagerLight;
 import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.properties.PropertiesManager;
 
 public class UpdatesManager {
 
@@ -30,7 +30,7 @@ public class UpdatesManager {
 	
 	public static SafeLogger logger = new SafeLogger(UpdatesManager.class);
 	
-	public static PropertiesManagerLight resourcesFilePathsMappings = new PropertiesManagerLight(MainStandAloneUpdater.resourcesMappingDefPath);
+	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.resourcesMappingDefPath);
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_ScreepT/");  
 	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR", "UPDATES/");
@@ -89,7 +89,7 @@ public class UpdatesManager {
 				File downloadedManifest = DownloadUtils.downloadFile(silent, manifestRemoteUrl, localTempManifestPath, updateManagerProgbar);
 				logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
 				
-				PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
+				PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
 				
 				String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
 				logger.info("Version: " + version);
@@ -154,7 +154,7 @@ public class UpdatesManager {
 			File downloadedManifest = DownloadUtils.downloadFile(false, manifestRemoteUrl, localTempManifestPath, updateProgressBar);
 			logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
 			
-			PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
+			PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
 			
 			String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
 			logger.info("Version: " + version);

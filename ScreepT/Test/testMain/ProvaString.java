@@ -1,7 +1,7 @@
 package testMain;
 
 import codeformatter.CustomCodeFormatter;
-import variousutils.HandleString;
+import utility.StringWorker;
 
 public class ProvaString {
 
@@ -17,7 +17,7 @@ public class ProvaString {
 		String input= "<?xml version=\"1.0\" encoding=\"UTF-8\"?><books><book> <title>Basic XML</title><price>100</price><qty>5</qty></book><book><title>Basic Java</title><price>200</price><qty>15</qty></book></books>\r\n";
 		String formattedOut = CustomCodeFormatter.xmlPrettyFormat(input, 3);
 		System.out.println(formattedOut);
-		System.out.println(HandleString.injectStringInSelection(input, "SONO ALESSIO", 1, 5));
+		System.out.println(StringWorker.injectStringInSelection(input, "SONO ALESSIO", 1, 5));
 		
 	}
 

@@ -22,10 +22,10 @@ import network.http.HttpHelper;
 import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
 import utility.ConversionUtils;
-import utility.PropertiesManagerLight;
 import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.properties.PropertiesManager;
 
 /**
  * This class contains the methods to manage plugins download, verification, and installation. 
@@ -45,8 +45,8 @@ public class PluginManager {
 
 	public static final HashingFunction DEFAULT_HASHING_F_PLUGINS = HashingFunction.SHA512;
 
-	public static PropertiesManagerLight resourcesFilePathsMappings = new PropertiesManagerLight(MainStandAloneUpdater.resourcesMappingDefPath);
-	public static PropertiesManagerLight installedPluginProperties = new PropertiesManagerLight(installedPluginPropsFileName);
+	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.resourcesMappingDefPath);
+	public static PropertiesManager installedPluginProperties = new PropertiesManager(installedPluginPropsFileName);
 	
 	public static final String LOCAL_PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR", "PLUGINS/");
 	public static final String WEB_PLUGINS_BASE_URL = resourcesFilePathsMappings.getProperty("WEB_PLUGINS_BASE_URL", "https://www.am-design-development.com/ScreepT/Plugins/");                                                                                                               
@@ -137,7 +137,7 @@ public class PluginManager {
 		plugin.setInstallationCompleted(true);
 		addToInstalledList(plugin);
 		
-		installedPluginProperties.saveProperty(plugin.getName(), PropertiesManagerLight.listToString(relativeNewCopied, installedPluginPropsListSeparator));
+		installedPluginProperties.saveProperty(plugin.getName(), PropertiesManager.listToString(relativeNewCopied, installedPluginPropsListSeparator));
 		
 		updateCache(plugin);
 		
@@ -301,7 +301,7 @@ public class PluginManager {
 				File downloadedManifest = DownloadUtils.downloadFile(false, new URL(WEB_PLUGINS_MANIFEST_URL), LOCAL_PLUGINS_MANIFEST, pluginManagerProgbar);
 				logger.info("Manifest Downloaded!! Size of " + WEB_PLUGINS_MANIFEST_URL + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
 				
-				PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
+				PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
 				
 				ArrayList<String> pluginNames = propsManager.getStringList(PLUGIN_LIST_MANIFEST_KEY, installedPluginPropsListSeparator);
 				for(String pluginName : pluginNames) {
@@ -378,7 +378,7 @@ public class PluginManager {
 			installedPluginNames.add(plugin.getName());
 		}
 		
-		String stringList = PropertiesManagerLight.listToString(installedPluginNames, installedPluginPropsListSeparator);
+		String stringList = PropertiesManager.listToString(installedPluginNames, installedPluginPropsListSeparator);
 		installedPluginProperties.saveProperty(installedPluginPropsListKey, stringList);
 		
 		plugin.installationCompleted = true;
@@ -389,7 +389,7 @@ public class PluginManager {
 			installedPluginNames.remove(plugin.getName());
 		}
 		
-		String stringList = PropertiesManagerLight.listToString(installedPluginNames, installedPluginPropsListSeparator);
+		String stringList = PropertiesManager.listToString(installedPluginNames, installedPluginPropsListSeparator);
 		installedPluginProperties.saveProperty(installedPluginPropsListKey, stringList);
 		installedPluginProperties.removeProperty(plugin.getName());
 		
@@ -417,7 +417,7 @@ public class PluginManager {
 		
 		installedPluginProperties.saveProperty(
 				installedPluginPendingDeleteListKey,
-				PropertiesManagerLight.listToString(currentlyPending, ";"));
+				PropertiesManager.listToString(currentlyPending, ";"));
 	}
 	
 	public boolean isInstalled(PluginDTO plugin) {
@@ -579,6 +579,6 @@ public class PluginManager {
 			relativePahs.add(FileVarious.getPathRelativeToOtherFile(current, relativeReference));
 		}
 		
-		return PropertiesManagerLight.listToString(relativePahs, installedPluginPropsListSeparator);
+		return PropertiesManager.listToString(relativePahs, installedPluginPropsListSeparator);
 	}
 }

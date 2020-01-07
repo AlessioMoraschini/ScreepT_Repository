@@ -29,15 +29,15 @@ import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettings;
 import mainobj.INItializer;
-import media.Sounds;
+import media.SoundsExtended;
 import om.GenericOption;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.exception.ProgressBarInterruptedException;
 import resources.GeneralConfig;
-import resources.PropertiesManager;
 import resources.SoundsConfigurator;
 import tabbededitor.CustomTabbedEditor;
+import utility.properties.PropertiesManager;
 
 public class MainGuiUtils {
 	
@@ -71,7 +71,7 @@ public class MainGuiUtils {
 						String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates(silent);
 						if (newVersion != null) {
 							// If found ask to user what to do
-							Sounds.playSound(SoundsConfigurator.SOUND_PLING, null);
+							SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 							boolean downloadUpdates = dialogHelper.yesOrNo(
 									"<html>New version [" + newVersion + "] found, do you want to download and install it?",
 									"Update found: " + newVersion +
@@ -354,7 +354,7 @@ public class MainGuiUtils {
 		}
 		
 		if (MainGUI.configManagerPanel == null || forceStart) {
-			Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+			SoundsExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 			MainGUI.configManagerPanel = new ConfigurationManagerPanel(MainGUI.currentConfiguration, mainAppReference);
 		}
 		
@@ -415,7 +415,7 @@ public class MainGuiUtils {
 				}
 				
 				if (MainGUI.panelCrypter == null || forceStart) {
-					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+					SoundsExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 					MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
 				}
 				
@@ -443,7 +443,7 @@ public class MainGuiUtils {
 					removeAllListeners(MainGUI.initTxtWriter);
 				}
 				if (MainGUI.initTxtWriter == null || forceRestart) {
-					Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+					SoundsExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 					MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
 				}
 				SwingUtilities.invokeLater(new Runnable() {

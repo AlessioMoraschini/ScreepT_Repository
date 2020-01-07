@@ -44,7 +44,7 @@ import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGUI;
 import mainobj.INItializer;
-import media.Sounds;
+import media.SoundsExtended;
 
 import java.awt.SystemColor;
 
@@ -558,7 +558,7 @@ public class TextEditor extends ModulePanel {
 								GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL = tempUpdated;
 								textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
 							} catch (Exception e2) {
-								Sounds.playSound(SoundsConfigurator.ERROR, null);
+								SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 								dialogHelper.warn("Error trying to set upper ancestor in file tree :(", null);
 								logger.error("Error trying to set upper ancestor in file tree :(", e2);
 							} 
@@ -686,7 +686,7 @@ public class TextEditor extends ModulePanel {
 				
 			} catch (IOException e1) {
 				currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getAbsolutePath();
-				Sounds.playSound(SoundsConfigurator.ERROR, null);
+				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
 				logger.warn("Loaded new workspace [Error parsing canonical path, using asolute]: "+directory.getAbsolutePath(), e1);
 			}
 			

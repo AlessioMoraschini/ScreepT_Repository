@@ -25,7 +25,7 @@ import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticTheme;
 import com.jgoodies.looks.plastic.theme.LightGray;
 
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import om.GuiOption;
 import resources.GeneralConfig;
 import treeutils.TreeUtils;
@@ -100,7 +100,7 @@ public class GUIStyelSettings{
 			UIManager.put("nimbusSelectionForeground", new Color(10, 10, 10));
 			UIManager.setLookAndFeel(style);
 			Color buttonBackG = (Color)UIManager.get("Button.background");
-			if (ImageGeneralWorker.getColorComponentsTotRGBA(buttonBackG) < 400) {
+			if (ImageWorkerExtended.getColorComponentsTotRGBA(buttonBackG) < 400) {
 				UIManager.put("Button.foreground", Color.WHITE);
 			}else {
 				UIManager.put("Button.foreground", Color.BLACK);

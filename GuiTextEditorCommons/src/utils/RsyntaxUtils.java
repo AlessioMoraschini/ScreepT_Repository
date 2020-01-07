@@ -22,9 +22,9 @@ import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import files.CustomFileFilters;
 import files.FileVarious;
 import files.om.FileNamed;
-import media.ImageGeneralWorker;
+import media.ImageWorkerExtended;
 import resources.GeneralConfig;
-import variousutils.HandleString;
+import utility.StringWorker;
 
 public class RsyntaxUtils {
 	
@@ -97,7 +97,7 @@ public class RsyntaxUtils {
 		  }
 		  Font backup = textArea.getFont();
 	      try {
-	    	  inputStream = HandleString.stringToInputStream(sourceRawXml);
+	    	  inputStream = StringWorker.stringToInputStream(sourceRawXml);
 	    	  Theme theme = Theme.load(inputStream);
 	    	  theme.apply(textArea);
 	      } catch (Exception ioe) {
@@ -251,7 +251,7 @@ public class RsyntaxUtils {
 			   currentStyle.background = backg;
 		   }
 		   textArea.setSyntaxScheme(scheme);
-		   textArea.setCaretColor(ImageGeneralWorker.getComplimentColor(backg));
+		   textArea.setCaretColor(ImageWorkerExtended.getComplimentColor(backg));
 		   textArea.revalidate();
 		   textArea.repaint();
 
@@ -265,8 +265,8 @@ public class RsyntaxUtils {
 		   SyntaxScheme scheme = textArea.getSyntaxScheme();
 	      
 		   Style style = scheme.getStyle(Token.PREPROCESSOR);
-		   int lightnessBckgPerc = ImageGeneralWorker.getPercentOfLightness(textArea.getBackground());
-		   int lightnessForegrPerc = ImageGeneralWorker.getPercentOfLightness(textArea.getForeground());
+		   int lightnessBckgPerc = ImageWorkerExtended.getPercentOfLightness(textArea.getBackground());
+		   int lightnessForegrPerc = ImageWorkerExtended.getPercentOfLightness(textArea.getForeground());
 		   if( (Math.abs(lightnessBckgPerc - lightnessForegrPerc) < 30)) {
 			   if(lightnessBckgPerc < 50) {
 				   style.foreground = Color.WHITE;

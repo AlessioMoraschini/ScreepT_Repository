@@ -36,8 +36,8 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
+import utility.ConversionUtils;
 import utils.dialog.ColorDialogUtils;
-import variousutils.HandleString;
 
 public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed{
 	
@@ -340,10 +340,10 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				Color esit = new ColorDialogUtils().askForColor(textEditor.leftSplitTreeFiles, false);
 				if (esit != null) {
 					textEditor.currentConfiguration.getTextEditorOpt().setFilePanelBackCol(esit);
-					textEditor.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "filePanelBackgroundCol", HandleString.getRgbString(esit));
+					textEditor.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "filePanelBackgroundCol", ConversionUtils.getRgbString(esit));
 					textEditor.leftSplitContainer.setBackground(esit);
 					textEditor.leftSplitTreeFiles.setBackground(esit);
-					logger.debug("File panel Background color changed to : " + HandleString.getRgbString(esit));
+					logger.debug("File panel Background color changed to : " + ConversionUtils.getRgbString(esit));
 				}
 			}
 		};
