@@ -23,7 +23,6 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.io.FilenameUtils;
 
-import files.Various;
 import net.miginfocom.swing.MigLayout;
 import plugins.PluginDTO;
 import plugins.PluginManager;
@@ -75,7 +74,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		this.pluginManager = (pluginManager != null) ? pluginManager : new PluginManager();
 
 		UIManager.put("ToolTip.background", new Color(255, 250, 205));
-		Various.centerComponent(this, 1300, 300);
+		GuiUtils.centerComponent(this, 1300, 300);
 		this.setAlwaysOnTop(true);
 		setLocationRelativeTo(parentFrame);
 		getContentPane().setBackground(Color.DARK_GRAY);

@@ -22,15 +22,16 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileVarious;
+import files.FileWorker;
+import files.om.FileNamed;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import mouseutils.TreeFileMouseListenerBasicFileNamed;
-import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
@@ -366,7 +367,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 
 				File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
 				boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo("File exists, wanna overwrite?", "File exists") : true;
-				File result = FileStuff.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite);
+				File result = FileWorker.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite, GeneralConfig.TEMP_DIRECTORY);
 				logger.debug("Copy of "+currentTabEditor.loadedTabObj.loadedFile+" created into target directory: " + targetParentDir.getAbsolutePath());
 				
 				if(result != null) {
@@ -423,7 +424,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				File targetParentDir = (selectedNode.mFile.isDirectory())? selectedNode.mFile : selectedNode.mFile.getParentFile();
 				File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
 				boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo("File exists, wanna overwrite?", "File exists") : true;
-				File result = FileStuff.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite);
+				File result = FileWorker.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite, GeneralConfig.TEMP_DIRECTORY);
 
 				if(result != null) {
 					textEditor.textEditorUtils.successAdvice("Copied");
@@ -458,12 +459,12 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
 					return;
 				}
-				newName = FileStuff.ensureValidExtension(newName, textEditor.subHeaderPanel.comboFileFormat.getSelectedItem().toString());
+				newName = FileVarious.ensureValidExtension(newName, textEditor.subHeaderPanel.comboFileFormat.getSelectedItem().toString());
 				String separator = File.separator;
 				// If file use parent, if directory use selected as root to insert into
 				selected = (selected.isDirectory()) ? 
 						new File(selected.getAbsolutePath() + separator + newName) : new File(selected.getParentFile().getAbsolutePath() + separator + newName);
-				selected = FileStuff.renameJavaObjFile(selected);
+				selected = FileVarious.renameJavaObjFile(selected);
 				
 				try {
 					// create and load new item

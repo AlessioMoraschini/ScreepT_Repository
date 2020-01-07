@@ -19,16 +19,17 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
-import files.Various;
+import files.FileWorker;
+import files.FileVarious;
+import files.om.FileNamed;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtils;
 import menusettings.MenuSetter;
-import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import utility.ConversionUtils;
 
 /**
  * This represents a basic extensible component, when each node is a File Object
@@ -161,13 +162,13 @@ public class TreeFileMouseListenerBasicFileNamed {
 				logger.info("getNewFolderActionListener() -> asking for creating new folder...");
 				File targetDir = node.mFile.isDirectory()? node.mFile : node.mFile.getParentFile();
 				File unexistant = new File(targetDir.getAbsolutePath() + File.separator + "new_folder");
-				unexistant = FileStuff.renameJavaObjFile(unexistant);
+				unexistant = FileVarious.renameJavaObjFile(unexistant);
 				String newName = dialogHelper.askForStringNullable("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
 				
 				if(newName == null) {
 					return;
-				}else if(!Various.trimToEmpty(newName).equals("")){
-					unexistant = FileStuff.renameJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
+				}else if(!ConversionUtils.trimToEmpty(newName).equals("")){
+					unexistant = FileVarious.renameJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
 				}
 				
 				boolean result = unexistant.mkdirs();
@@ -194,7 +195,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 		            		logger.info("getDeleteActionListener()"+node.mFile+"File -> Deleted: "+selectedFile.delete());	
 		            	}else {
 		            		logger.info("getDeleteActionListener()"+node.mFile + "File -> Deleting folder content recursively...");
-		            		FileStuff.deleteDirContentInclRoot(node.mFile);
+		            		FileWorker.deleteDirContentInclRoot(node.mFile);
 		            		logger.info(node.mFile + "Emptied and Deleted!");
 		            	}
 			        }

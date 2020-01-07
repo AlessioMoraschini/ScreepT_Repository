@@ -136,4 +136,32 @@ public class ConversionUtils {
 		return false;
 	}
 
+	public static String trimToEmpty(String source) {
+		if (source != null) {
+			return source.trim();
+		} else {
+			return "";
+		}
+	}
+
+	public static boolean isEmpty(String source) {
+		return source != null && "".equals(source.trim());
+	}
+
+	public static boolean containsIgnoreCase(String first, String second) {
+		if(first == null || second == null) {
+			return false;
+		}
+		
+		return first.toLowerCase().contains(second.toLowerCase());
+	}
+
+	public static boolean contains(String first, String second) {
+		if(first == null || second == null) {
+			return false;
+		}
+		
+		return first.contains(second);
+	}
+
 }

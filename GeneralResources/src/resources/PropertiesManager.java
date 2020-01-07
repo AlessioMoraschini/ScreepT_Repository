@@ -19,7 +19,7 @@ import java.util.Properties;
 //import org.apache.commons.configuration.PropertiesConfigurationLayout;
 import org.apache.log4j.Logger;
 
-import files.Various;
+import utility.ConversionUtils;
 
 public class PropertiesManager {
 	
@@ -117,7 +117,7 @@ public class PropertiesManager {
 		logger.debug("Loading property: " + key + " From properties file: " + dynamicFileBindingsDefSource);
 		String res = "";
 		if(dynamicFileBindingsDef != null) {
-			res = Various.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+			res = ConversionUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
 		}
 		
 		logger.debug("Loaded property: " + res);
@@ -132,7 +132,7 @@ public class PropertiesManager {
 		String res = "";
 		if(dynamicFileBindingsDef != null) {
 			res = dynamicFileBindingsDef.getProperty(key);
-			res = (res != null)? Various.trimToEmpty(res) : defaultVal;
+			res = (res != null)? ConversionUtils.trimToEmpty(res) : defaultVal;
 		}
 		
 		return res;
@@ -369,7 +369,7 @@ public class PropertiesManager {
 	public Dimension getDimensionFromString(String separator, String key, Dimension defaultDim) {
 		int width;
 		int height;
-		String source = Various.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+		String source = ConversionUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
 		try {
 			String[] splitted = source.split(separator);
 			width = Integer.parseInt(splitted[0]);
@@ -385,8 +385,8 @@ public class PropertiesManager {
      * parse font from a representing string
      */
     public Font getFontFromString(String key, Font defaultFont) {
-    	String stringFont = Various.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
-    	if("".equals(Various.trimToEmpty(stringFont))) return defaultFont;
+    	String stringFont = ConversionUtils.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
+    	if("".equals(ConversionUtils.trimToEmpty(stringFont))) return defaultFont;
     	
     	String[] font = stringFont.split("-");
     	String type;

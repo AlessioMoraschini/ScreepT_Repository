@@ -1,4 +1,4 @@
-package om.files;
+package files.om;
 
 import java.io.File;
 import java.io.IOException;

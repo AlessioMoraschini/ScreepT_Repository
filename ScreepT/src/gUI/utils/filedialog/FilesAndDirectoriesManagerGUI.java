@@ -9,9 +9,10 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
-import amfileutils.om.DeleteFilesByExtensionDTO;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
+import files.FileVarious;
+import files.om.DeleteFilesByExtensionDTO;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
@@ -37,14 +38,14 @@ public class FilesAndDirectoriesManagerGUI {
             	if(selectedFile.isFile()) {
             		if(dialog.yesOrNo("Are you sure to rename file: '"+selectedFile.getName()+ "'?")) {
             			defaultVisualizedDir = selectedFile.getParentFile().getAbsolutePath();
-		            	errors=FileStuff.upperCaseSubFolder(selectedFile);
+		            	errors=FileVarious.upperCaseSubFolder(selectedFile);
 		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
             		}
             	}//END FILE
             	else if(selectedFile.isDirectory()) {
             		if(dialog.yesOrNo("Are you sure to rename folder: '" + selectedFile.getName() + "' and all files/directory in it?")) {
             			defaultVisualizedDir = selectedFile.getAbsolutePath();
-		            	errors=FileStuff.upperCaseSubFolder(selectedFile);
+		            	errors=FileVarious.upperCaseSubFolder(selectedFile);
 		            	dialog.info("Renaming completed! \n\nCompleted with: "+errors+" Errors.", null);
             		}	
             	}// END DIRECTORY
@@ -78,7 +79,7 @@ public class FilesAndDirectoriesManagerGUI {
 			
 			File givenDir = new File(dirToMake);
 			
-			if(!FileStuff.isPathRootValid(dirToMake)) {
+			if(!FileVarious.isPathRootValid(dirToMake)) {
 				return;
 			}
 			
@@ -104,7 +105,7 @@ public class FilesAndDirectoriesManagerGUI {
 				return;
 			}
 			
-			boolean res = FileStuff.deleteDirContentRecursive(selected);
+			boolean res = FileWorker.deleteDirContentRecursive(selected);
 			if (res) {
 				dialog.info("Completed, content deleted :)", "Completed, content deleted");
 			} else {
@@ -126,7 +127,7 @@ public class FilesAndDirectoriesManagerGUI {
 				return;
 			}
 			
-			boolean res = FileStuff.emptyDirContentFolderOnly(selected);
+			boolean res = FileWorker.emptyDirContentFolderOnly(selected);
 			if (res) {
 				dialog.info("Completed, folders content deleted :)", "Completed, folders content deleted");
 			} else {
@@ -156,7 +157,7 @@ public class FilesAndDirectoriesManagerGUI {
 				return;
 			}
 
-			response = FileStuff.emptyDirContentByExt(selected, deleteExtensionMatch);
+			response = FileWorker.emptyDirContentByExt(selected, deleteExtensionMatch);
 			
 			if (response.getNotFoundExtensionResult().size() != 0) {
 				notFoundExtensions = " These extensions have 0 matches: " + response.getNotFoundExtensionResult();
@@ -182,7 +183,7 @@ public class FilesAndDirectoriesManagerGUI {
 			if (destination != null) {
 				boolean res = false;
 				try {
-					res = FileStuff.copyDirStructure(selected, destination, true);
+					res = FileWorker.copyDirStructure(selected, destination, true);
 				} catch (IOException e) {
 					logger.error(e);
 					MainGUI.dialogHelper.error("IO Error: you cannot put destination inside source, choose another destination",

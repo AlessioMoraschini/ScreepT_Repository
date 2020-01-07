@@ -27,8 +27,10 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.Gutter;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
+import files.FileVarious;
+import files.om.FileNamed;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -42,7 +44,6 @@ import media.Sounds;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
-import om.files.FileNamed;
 import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
@@ -430,7 +431,7 @@ public class TextEditorUtils {
 		CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
 		
 		File ancestor = new File("");
-		ancestor = FileStuff.getNlevelsAncestor(currentFile, GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL);
+		ancestor = FileVarious.getNlevelsAncestor(currentFile, GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL);
 
 		// ANCESTOR CHECK
 		if(ancestor == null || !ancestor.exists()) {
@@ -458,7 +459,7 @@ public class TextEditorUtils {
 			} catch (IOException e1) {
 				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
 			}
-			currentTextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
+			currentTextEditor.dynLblCurrentDir.setText(FileVarious.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
 				currentTextEditor.dynLblCurrentDir.setToolTipText(currentFile.getCanonicalPath());
 			} catch (IOException e) {
@@ -470,7 +471,7 @@ public class TextEditorUtils {
 			
 			currentTabEditor.loadedTabObj.unsaved = true;
 			currentTabEditor.updateSavedLabelNTab(null);
-			currentTextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
+			currentTextEditor.dynLblCurrentDir.setText(FileVarious.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
 				currentTextEditor.dynLblCurrentDir.setToolTipText(ancestor.getCanonicalPath());
 			} catch (IOException e) {
@@ -523,7 +524,7 @@ public class TextEditorUtils {
 				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
 			}
 			
-			currentTextEditor.dynLblCurrentDir.setText(FileStuff.getNlevelsPathString(workspaceRoot, LEVEL_ANCESTOR_LABEL_DIR));
+			currentTextEditor.dynLblCurrentDir.setText(FileVarious.getNlevelsPathString(workspaceRoot, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
 				currentTextEditor.dynLblCurrentDir.setToolTipText(workspaceRoot.getCanonicalPath());
 				logger.debug("Tree refreshed from workspace: "+workspaceRoot.getCanonicalPath());
@@ -827,7 +828,7 @@ public class TextEditorUtils {
 	 */
 	public boolean checkCurrentFileIsUnsaved() throws IOException {
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
-		return !FileStuff.isTextAreaEqualToFileContent(loadedTabObj.textArea, loadedTabObj.loadedFile);
+		return !FileWorker.isTextAreaEqualToFileContent(loadedTabObj.textArea, loadedTabObj.loadedFile);
 	}
 	
 	public void timeoutLblAdvice(int millisec) {
@@ -1008,9 +1009,9 @@ public class TextEditorUtils {
 		// extension to current in global var
 		if (("." + givenExtension).equals(currentTextEditor.CURRENT_EXT_OUT) || givenExtension.equals("")
 				|| (("." + givenExtension).length() > 5)) {
-			selectedFile = FileStuff.changeExtension(selectedFile, currentTextEditor.CURRENT_EXT_OUT);
+			selectedFile = FileVarious.changeExtension(selectedFile, currentTextEditor.CURRENT_EXT_OUT);
 		} else {
-			selectedFile = FileStuff.changeExtension(selectedFile, "." + givenExtension);
+			selectedFile = FileVarious.changeExtension(selectedFile, "." + givenExtension);
 		}
 
 		return selectedFile;

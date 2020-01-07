@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
-import files.Various;
 import network.utils.DownloadUtils;
+import utility.ConversionUtils;
 import utility.SafeLogger;
 
 public class HttpHelper {
@@ -115,7 +115,7 @@ public class HttpHelper {
 			}
 	        logger.info("=> retrieving file size");
 	        int size = conn.getContentLength();
-	        logger.info("=> Found size: " + Various.coolFileSize((long)size));
+	        logger.info("=> Found size: " + ConversionUtils.coolFileSize((long)size));
 	        return size;
 	    } catch (Exception e) {
 	    	logger.error("An error occurred while retrieving file size: ", e);

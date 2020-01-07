@@ -12,8 +12,8 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
 import gUI.utils.filedialog.INIfileChoosER;
@@ -326,7 +326,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				textArea.setSelectedTextColor(Color.LIGHT_GRAY);
 				textArea.setMargin(new Insets(20, 20, 20, 20));
 				textArea.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-				FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
+				FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true);
 				textArea.revalidate();
 				textArea.repaint();
 			}
@@ -342,7 +342,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(0.2f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES (on Disk) ###\n\n");
-				FileStuff.appendFileTxtArea(config.getIniFile().getFile(), textArea, true);
+				FileWorker.appendFileTxtArea(config.getIniFile().getFile(), textArea, true);
 			}
 		});
 
@@ -377,7 +377,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 				lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 				config_PATH.setText(config.getIniFile().getFile().getPath());
 				textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
-				FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
+				FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
 				textAreaToTop();
 				MainGUI.updateGuiFromCurrConfig();
 			}
@@ -425,7 +425,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					lblAvviso.setForeground(ImageGeneralWorker.randomColorRGB(4f));
 					config_PATH.setText(config.getIniFile().getFile().getPath());
 					textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n");
-					FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
+					FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
 					
 					textAreaToTop();
 				} else {
@@ -449,7 +449,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 						lblAvviso.setText("[Configuration Saved as new Default!]");
 						config_PATH.setText(config.getIniFile().getFile().getPath());
 						textArea.setText("\n\n### CONFIGURATION - ACTUAL FILE CONFIG & VALUES ###\n\n" );
-						FileStuff.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
+						FileWorker.appendFileTxtArea(config.getIniReadFile().getFile(), textArea, true); 	
 						textAreaToTop();
 						dialogHelper.info("File " + config.getIniFile().getFile().getAbsolutePath() + " saved!", "");
 					} else {

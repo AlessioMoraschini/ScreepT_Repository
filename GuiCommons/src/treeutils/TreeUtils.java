@@ -20,9 +20,9 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import files.om.FileNamed;
 import frameutils.utils.GuiUtils;
 import om.LimitedConcurrentList;
-import om.files.FileNamed;
 import treeutils.om.FileNameCellRenderer;
 
 public class TreeUtils {

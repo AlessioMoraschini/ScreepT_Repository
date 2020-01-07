@@ -32,7 +32,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import files.Various;
 import network.om.FtpSpeedTestOptions;
 import network.utils.IPaddressConverter;
 import resources.GeneralConfig;
@@ -78,7 +77,7 @@ public class NetworkUtils {
 		String[] propertiesVal = GeneralConfig.getPubIpProvList();
 		try {
 			for(String address : propertiesVal) {
-				listWS.add(new URI(Various.trimToEmpty(address)));
+				listWS.add(new URI(ConversionUtils.trimToEmpty(address)));
 			}
 		} catch (URISyntaxException e) {
 			logger.error("Error in URI format", e);

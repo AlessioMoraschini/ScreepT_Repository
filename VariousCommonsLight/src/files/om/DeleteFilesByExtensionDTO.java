@@ -1,4 +1,4 @@
-package amfileutils.om;
+package files.om;
 
 import java.util.ArrayList;
 

@@ -6,7 +6,6 @@ import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import maingUI.MainGUI;
 import om.TextEditorOption;
-import om.files.FileNamed;
 import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,6 +20,9 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.border.LineBorder;
+
+import files.om.FileNamed;
+
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JSeparator;

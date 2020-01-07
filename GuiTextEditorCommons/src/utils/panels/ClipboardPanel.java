@@ -24,9 +24,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-import amfileutils.FileStuff;
 import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
+import files.FileVarious;
 import frameutils.utils.GuiUtils;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
@@ -235,7 +236,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		}
 		
 		sync();
-		FileStuff.loadFileTxtArea(dataMap.get(options.getLastFileOpenedClipboard()), txtAreaClipboard, null, null);
+		FileWorker.loadFileTxtArea(dataMap.get(options.getLastFileOpenedClipboard()), txtAreaClipboard, null, null);
 		dialogHelper.enabledAdvices = true;
 	}
 	
@@ -406,7 +407,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 				selected.createNewFile();
 			}
 			
-			if(FileStuff.writeStringToFile(txtAreaClipboard.getText(), selected, true)) {
+			if(FileWorker.writeStringToFile(txtAreaClipboard.getText(), selected, true)) {
 				logger.debug("Current clipboard written: " + selected);
 				dialogHelper.info("Current clipboard written: " + selected.getAbsolutePath(), " saved!");
 			}else {
@@ -422,7 +423,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 	public void saveCurrClipboardSilent() {
 		try {
 			File selected = dataMap.get(options.getLastFileOpenedClipboard());
-			FileStuff.writeStringToFile(txtAreaClipboard.getText(), selected, true);
+			FileWorker.writeStringToFile(txtAreaClipboard.getText(), selected, true);
 			logger.info(selected + "Written to file.");
 		} catch (Exception e) {
 			logger.warn("Erro saving current clipboard");
@@ -448,7 +449,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			if (selected.exists()) {
 				// Update text from file
 				txtAreaClipboard.setText("");
-				FileStuff.appendFileTxtArea(selected, txtAreaClipboard, true);
+				FileWorker.appendFileTxtArea(selected, txtAreaClipboard, true);
 				logger.debug("Current clipboard reloaded from file: " + selected);
 				options.setLastFileOpenedClipboard(target);
 			}
@@ -470,7 +471,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		File newFile = new File(GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + newName);
 				
 		if(newFile.exists()) {
-			newFile = FileStuff.renameJavaObjFile(newFile);
+			newFile = FileVarious.renameJavaObjFile(newFile);
 		}
 		
 		boolean result = newFile.createNewFile();

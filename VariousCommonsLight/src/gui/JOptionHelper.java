@@ -22,7 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import files.Various;
+import utility.ConversionUtils;
 
 public class JOptionHelper {
 	
@@ -135,7 +135,7 @@ public class JOptionHelper {
 	 */
 	public void error(String msg) {
 		if (enabledAdvices) {
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_ERR_MSG;
 			showMessageCommon(msg, msg, ERR, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
@@ -147,8 +147,8 @@ public class JOptionHelper {
 	 */
 	public void error(String msg, String title) {
 		if (enabledAdvices) {
-			title = (!Various.isEmpty(title)) ? title : DEF_ERR_MSG;
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+			title = (!ConversionUtils.isEmpty(title)) ? title : DEF_ERR_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_ERR_MSG;
 			showMessageCommon(msg, title, ERR, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
@@ -160,7 +160,7 @@ public class JOptionHelper {
 	 * @param title nullable
 	 */
 	public boolean errorScroll(String msg, String title) {
-		msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+		msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_ERR_MSG;
 		JScrollPane scroller = getScrollableDialogPanel(msg);
 		GuiUtils.scrollJScrollPane(scroller, false);
 		return showYNMessageCommon(scroller, title, ERR, false, false, false);
@@ -175,7 +175,7 @@ public class JOptionHelper {
 	 */
 	public void errorScroll( String msg, String title, Throwable e) {
 		if (enabledAdvices) {
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_ERR_MSG;
 			String exception = Arrays.deepToString(e.getStackTrace());
 			String newMsg = msg+"\n\n"+exception;
 			JScrollPane scroller = getScrollableDialogPanel(newMsg);
@@ -196,7 +196,7 @@ public class JOptionHelper {
 	public Object errorScroll(String msg, String title, Throwable e, Object[] options, int msgOption) {
 		Object res = null ;
 		try {
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_ERR_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_ERR_MSG;
 			String exception = Arrays.deepToString(e.getStackTrace());
 			String newMsg = msg + "\n\n" + exception;
 			JScrollPane scroller = getScrollableDialogPanel(newMsg);
@@ -215,8 +215,8 @@ public class JOptionHelper {
 	 */
 	public void warn(String msg, String title) {
 		if (enabledAdvices) {
-			title = (!Various.isEmpty(title)) ? title : DEF_WARN_MSG;
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_WARN_MSG;
+			title = (!ConversionUtils.isEmpty(title)) ? title : DEF_WARN_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_WARN_MSG;
 			showMessageCommon(msg, title, WARN, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
@@ -228,7 +228,7 @@ public class JOptionHelper {
 	 */
 	public void warn(String msg) {
 		if (enabledAdvices) {
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_WARN_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_WARN_MSG;
 			showMessageCommon(msg, msg, WARN, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
@@ -241,7 +241,7 @@ public class JOptionHelper {
 	 */
 	public void warnScroll(String msg, String title) {
 		if (enabledAdvices) {
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_WARN_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_WARN_MSG;
 			JScrollPane scroller = getScrollableDialogPanel(msg);
 			GuiUtils.scrollJScrollPane(scroller, false);
 			showMessageCommon(scroller, title, WARN, okOnlyOptions, okOnlyOptions[0]);
@@ -260,7 +260,7 @@ public class JOptionHelper {
 	public Object warnScroll(String msg, String title, Throwable e, Object[] options, int msgOption) {
 		Object res = null ;
 		try {
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_WARN_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_WARN_MSG;
 			String exception = Arrays.deepToString(e.getStackTrace());
 			String newMsg = msg + "\n\n" + exception;
 			JScrollPane scroller = getScrollableDialogPanel(newMsg);
@@ -279,7 +279,7 @@ public class JOptionHelper {
 	 */
 	public void info(String msg) {
 		if (enabledAdvices) {
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_INFO_MSG;
 			showMessageCommon(msg, msg, INFO, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
@@ -291,8 +291,8 @@ public class JOptionHelper {
 	 */
 	public void info(String msg, String title) {
 		if (enabledAdvices) {
-			title = (!Various.isEmpty(title)) ? title : DEF_INFO_MSG;
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			title = (!ConversionUtils.isEmpty(title)) ? title : DEF_INFO_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_INFO_MSG;
 			showMessageCommon(msg, title, INFO, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
@@ -305,7 +305,7 @@ public class JOptionHelper {
 	 */
 	public void infoScroll(String msg, String title) {
 		if (enabledAdvices) {
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_INFO_MSG;
 			JScrollPane scroller = getScrollableDialogPanel(msg);
 			showMessageCommon(scroller, title, INFO, okOnlyOptions, okOnlyOptions[0]);
 		}
@@ -318,8 +318,8 @@ public class JOptionHelper {
 	 */
 	public void question(String msg, String title) {
 		if (enabledAdvices) {
-			title = (!Various.isEmpty(title)) ? title : DEF_INFO_MSG;
-			msg = (!Various.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			title = (!ConversionUtils.isEmpty(title)) ? title : DEF_INFO_MSG;
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : DEF_INFO_MSG;
 			showMessageCommon(msg, title, QUESTION, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
@@ -331,8 +331,8 @@ public class JOptionHelper {
 	 */
 	public void plainMsg(String msg, String title) {
 		if (enabledAdvices) {
-			title = (!Various.isEmpty(title)) ? title : "Message";
-			msg = (!Various.isEmpty(msg)) ? msg : "Information message not specified";
+			title = (!ConversionUtils.isEmpty(title)) ? title : "Message";
+			msg = (!ConversionUtils.isEmpty(msg)) ? msg : "Information message not specified";
 			showMessageCommon(msg, title, PLAIN, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
@@ -344,8 +344,8 @@ public class JOptionHelper {
 	 */
 	public boolean yesOrNo(String msg, String title) {
 		
-		title = (!Various.isEmpty(title)) ? title : "Choose an option";
-		msg = (!Various.isEmpty(msg)) ? msg : "Choose an Option";
+		title = (!ConversionUtils.isEmpty(title)) ? title : "Choose an option";
+		msg = (!ConversionUtils.isEmpty(msg)) ? msg : "Choose an Option";
 		
 		return showYNMessageCommon(msg, title, QUESTION, false, false, false);
 	}
@@ -357,7 +357,7 @@ public class JOptionHelper {
 	 */
 	public boolean yesOrNo(String msg) {
 		
-		msg = (!Various.isEmpty(msg)) ? msg : "Choose an Option";
+		msg = (!ConversionUtils.isEmpty(msg)) ? msg : "Choose an Option";
 		
 		return showYNMessageCommon(msg, msg, QUESTION, false, false, false);
 	}
@@ -369,8 +369,8 @@ public class JOptionHelper {
 	 */
 	public int yesNoOrCanc(String msg, String title) {
 		
-		title = (!Various.isEmpty(title)) ? title : "Plain";
-		msg = (!Various.isEmpty(msg)) ? msg : "Information message not specified";
+		title = (!ConversionUtils.isEmpty(title)) ? title : "Plain";
+		msg = (!ConversionUtils.isEmpty(msg)) ? msg : "Information message not specified";
 		Boolean boolRes = showYNMessageCommon(msg, title, QUESTION, true, false, true);
 		int result = boolRes == null ? CANC : boolRes ? OK : NO;
 		
@@ -379,15 +379,15 @@ public class JOptionHelper {
 	
 	public String askForString(String msg, String title) {
 		
-		title = (!Various.isEmpty(title)) ? title : "Specify a String";
-		msg = (!Various.isEmpty(msg)) ? msg : "Insert a String";
+		title = (!ConversionUtils.isEmpty(title)) ? title : "Specify a String";
+		msg = (!ConversionUtils.isEmpty(msg)) ? msg : "Insert a String";
 		
 		return askForString(msg, title, "New");
 	}
 
 	public String askForString(String msg) {
 		
-		msg = (!Various.isEmpty(msg)) ? msg : "Insert a String";
+		msg = (!ConversionUtils.isEmpty(msg)) ? msg : "Insert a String";
 		
 		return askForString(msg, msg, "New");
 	}

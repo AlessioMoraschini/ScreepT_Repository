@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 
-import files.Various;
+import utility.ConversionUtils;
 import utility.SafeLogger;
+import gui.GuiUtils;
 import gui.UpdateProgressPanel;
 import network.http.HttpHelper;
 import om.exception.ProgressBarInterruptedException;
@@ -35,7 +36,7 @@ public class DownloadUtils {
 				progressUpdater.getDialog().setVisible(true);
 				progressUpdater.getPb().setIndeterminate(false);
 				progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));
-				Various.centerComponent(progressUpdater.getDialog());
+				GuiUtils.centerComponent(progressUpdater.getDialog());
 				progressUpdater.setClosable(true);
 			}
 			
@@ -180,8 +181,8 @@ public class DownloadUtils {
 	public static String getPercSizesString(int val, long tot) {
 		float perc = ((float)val / (float)tot) * 100;
 		
-		String totalStr = Various.coolFileSize(tot);
-		String downloadedStr = Various.coolFileSize((long)(tot * perc) / 100);
+		String totalStr = ConversionUtils.coolFileSize(tot);
+		String downloadedStr = ConversionUtils.coolFileSize((long)(tot * perc) / 100);
 		
 		return downloadedStr + "/" + totalStr;
 	}

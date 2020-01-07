@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
 import om.GuiOption;
 import om.TextEditorOption;
-import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
@@ -39,6 +38,7 @@ import org.apache.log4j.Logger;
 import com.jgoodies.looks.plastic.PlasticTheme;
 
 import dialogutils.JOptionHelperExtended;
+import files.om.FileNamed;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.TextEditor;

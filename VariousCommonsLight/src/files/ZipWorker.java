@@ -10,6 +10,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import gui.GuiUtils;
 import gui.UpdateProgressPanel;
 import network.utils.DownloadUtils;
 
@@ -24,7 +25,7 @@ public class ZipWorker {
 				
 					//create a ZipOutputStream to zip the data to 
 					if(!overwrite && outputFile.exists()) {
-						outputFile = Various.renameJavaObjFile(outputFile);
+						outputFile = FileWorker.renameJavaObjFile(outputFile);
 						outputFile.createNewFile();
 					}
 					
@@ -163,7 +164,7 @@ public class ZipWorker {
 			progressUpdater.getDialog().setTitle("Zipping file: " + new File(sourcePath).getName());
 			progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
 			progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));
-			Various.centerComponent(progressUpdater.getDialog());
+			GuiUtils.centerComponent(progressUpdater.getDialog());
 		}
 		
 		File destFolderOut = new File(destFolderPath);
@@ -173,7 +174,7 @@ public class ZipWorker {
 		
 		File fileToZip = new File(sourcePath);
 		destFolderPath += File.separator + fileToZip.getName();
-		File out = (ovewrwrite)? new File(destFolderPath) : Various.renameJavaObjFile(new File(destFolderPath));
+		File out = (ovewrwrite)? new File(destFolderPath) : FileWorker.renameJavaObjFile(new File(destFolderPath));
 		
 		FileOutputStream fos = new FileOutputStream(out);
 		ZipOutputStream zipOut = new ZipOutputStream(fos);
@@ -254,7 +255,7 @@ public class ZipWorker {
 				DownloadUtils.logger.debug("Unzipping current element: " + zipEntry.getName());
 				
 				String newOutCurrentPath = destFolderPath + File.separator + zipEntry.getName();
-				File out = (ovewrwrite)? new File(newOutCurrentPath) : Various.renameJavaObjFile(new File(newOutCurrentPath));
+				File out = (ovewrwrite)? new File(newOutCurrentPath) : FileWorker.renameJavaObjFile(new File(newOutCurrentPath));
 				if(out.exists()) {
 					DownloadUtils.logger.debug("Current output existing: will be deleted! " + out);
 					boolean deleted = out.delete();
@@ -272,7 +273,7 @@ public class ZipWorker {
 				
 				if (progressUpdater == null) {
 					progressUpdater = new UpdateProgressPanel();
-					Various.centerComponent(progressUpdater.getDialog());
+					GuiUtils.centerComponent(progressUpdater.getDialog());
 				}
 				if(!progressUpdater.getDialog().isVisible()) {
 					progressUpdater.getDialog().setVisible(true);

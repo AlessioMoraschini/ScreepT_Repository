@@ -233,6 +233,17 @@ public class ByteWorker {
 		int r = (b2 & 0xFF) | ((b1 & 0xFF) << 8) ;
 		return r;
 	}
+
+	public static byte[] xorBytes(byte[] first, byte[] second) {
+		byte[] xorResult = new byte[first.length];
+	
+		int i = 0;
+		for (byte firstiByte : first) {
+			xorResult[i] = (i < second.length) ? (byte) (firstiByte ^ second[i++]) : firstiByte;
+		}
+		
+		return xorResult;
+	}
 	
 	// GETTERS AND SETTERS
 	

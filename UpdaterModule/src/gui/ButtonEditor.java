@@ -12,7 +12,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 
-import files.Various;
 import om.exception.ProgressBarInterruptedException;
 import plugins.PluginDTO;
 import plugins.PluginManager;
@@ -50,7 +49,7 @@ class ButtonEditor extends DefaultCellEditor {
             boolean isSelected, int row, int column) {
     	
     	String pluginName = (String)table.getValueAt(row, 0);
-    	Various.launchThreadSafeSwing(getActionOnClick(pluginName));
+    	GuiUtils.launchThreadSafeSwing(getActionOnClick(pluginName));
     	PluginDTO clickedButtonPlugin = pluginManagerInterface.getPluginDTO(pluginName);
 
     	String installStr = clickedButtonPlugin.installationCompleted ? "Uninstall " : "Install ";

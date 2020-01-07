@@ -21,8 +21,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
+import files.FileVarious;
 import frameutils.utils.GuiUtils;
 import gUI.panels.ConfigurationManagerPanel;
 import maingUI.MainGUI;
@@ -155,7 +156,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 			public void actionPerformed(ActionEvent e) {
 				// update textArea with preview of content
 		        confManagerPanel.textArea.setText("Previewing: ["+selectedNode.getAbsolutePath()+"]\n\n");
-		        FileStuff.appendFileTxtArea(selectedNode, confManagerPanel.textArea, false);
+		        FileWorker.appendFileTxtArea(selectedNode, confManagerPanel.textArea, false);
 			}
 		};
 	}
@@ -175,11 +176,11 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 					return;
 				}
 				
-				newName = FileStuff.ensureValidExtension(newName, "ini");
+				newName = FileVarious.ensureValidExtension(newName, "ini");
 				
-				File newFile = FileStuff.renameJavaObjFile(new File(defaultFolder.getAbsolutePath() + "/" + newName));
+				File newFile = FileVarious.renameJavaObjFile(new File(defaultFolder.getAbsolutePath() + "/" + newName));
 				
-				FileStuff.copyFile(currentIniFile, newFile, true);
+				FileWorker.copyFile(currentIniFile, newFile, true);
 				
 				refreshTree();
 			}
@@ -235,7 +236,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	            		String path = tp.getLastPathComponent().toString();
 		            	File selectedFile = new File(path);
 		            	if(selectedFile.isFile() && selectedFile.exists()) {	
-		            		FileStuff.copyFileIntoDir(selectedFile, exportDir, false);
+		            		FileWorker.copyFileIntoDir(selectedFile, exportDir, false, GeneralConfig.TEMP_DIRECTORY);
 		            	}else {
 		            		logger.warn(path + "Not a File or Not existing: out of sync");
 		            	}
@@ -257,7 +258,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 		File selectedImportDir = MainGuiGeneralAppStarter.fileDialogHelper.fileAndDirRead(confManagerPanel);
 		if (selectedImportDir!=null && selectedImportDir.isDirectory()) {
 			try {
-				FileStuff.copyDirectoryContents(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false, "ini");
+				FileWorker.copyDirectoryContents(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false, "ini");
 				dialogHelper.info("Directory :" + selectedImportDir.getName() + " added in the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER, "Directory added to config pool :)");
 				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
 			} catch (IOException e1) {

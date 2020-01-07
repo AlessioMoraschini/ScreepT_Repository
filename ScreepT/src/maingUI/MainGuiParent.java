@@ -32,6 +32,7 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
+import files.om.FileNamed;
 import frameutils.utils.GuiUtils;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
@@ -41,7 +42,6 @@ import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import om.LimitedConcurrentList;
-import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 

@@ -35,8 +35,8 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
 import files.watcher.ChangeDTO;
 import frameutils.utils.GuiUtils;
 import general.MyFileView;
@@ -420,7 +420,7 @@ public class CustomTabbedEditor {
 			mainTabList.addTab(name, newTabNode.currentScrollPane);
 			loadedList.add(newTabNode);
 			loadedTabObj = newTabNode;
-			FileStuff.appendFileTxtArea(file, loadedTabObj.textArea, true);
+			FileWorker.appendFileTxtArea(file, loadedTabObj.textArea, true);
 			mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(name, newIndex));
 			mainTabList.setSelectedIndex(newIndex);
 			loadedTabObj.textArea.discardAllEdits();
@@ -463,7 +463,7 @@ public class CustomTabbedEditor {
 			
 			alreadyLoading = true;
 			loadedTabObj.textArea.setText("");
-			FileStuff.appendFileTxtArea(new File(loadedTabObj.loadedFile.getAbsolutePath()), loadedTabObj.textArea, false);
+			FileWorker.appendFileTxtArea(new File(loadedTabObj.loadedFile.getAbsolutePath()), loadedTabObj.textArea, false);
 			loadedTabObj.unsaved = false;
 			updateSavedLabelNTab(null);
 			alreadyLoading = false;
@@ -730,7 +730,7 @@ public class CustomTabbedEditor {
 		boolean done = true;
 		for (TabTextEditorObj element : loadedList.getList()) {
 			if (element.loadedFile != null && element.loadedFile.exists()) {
-				if (!FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true)) {
+				if (!FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true)) {
 					done = false;
 				}
 			}

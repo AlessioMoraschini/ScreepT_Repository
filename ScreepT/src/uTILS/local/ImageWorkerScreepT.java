@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
+import files.FileVarious;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.subpanels.ImageGenContainerPanel;
 import gui.JOptionHelper;
@@ -117,7 +117,7 @@ public class ImageWorkerScreepT {
 		boolean esit = false;
 		File destFile = new File(KeyGenFrame.KEY_DICTIONARY+imageName);
 	
-		destFile = FileStuff.changeExtension(destFile, ".png");
+		destFile = FileVarious.changeExtension(destFile, ".png");
 		// if directory does not exist create it
 		
 		if (!destFile.exists()) {
@@ -145,7 +145,7 @@ public class ImageWorkerScreepT {
         		}
     		} else {
                	try {
-               		destFile = FileStuff.renameJavaObjFile(destFile);
+               		destFile = FileVarious.renameJavaObjFile(destFile);
         			esit = ImageIO.write(img, "png", destFile);
         			if(esit) {
         				loGGer.info("Image written: "+destFile.getAbsolutePath());

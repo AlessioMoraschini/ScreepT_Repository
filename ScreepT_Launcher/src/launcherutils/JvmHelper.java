@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import files.Various;
 import mainlauncher.ScreepTLauncher;
 import om.OSinfo;
+import utility.ConversionUtils;
 import utils.SysUtils;
 
 public class JvmHelper {
@@ -65,7 +65,7 @@ public class JvmHelper {
 		String foundCorrectBin = (!foundCorrect.equals(NOT_FOUND_JVM))? foundCorrect+"/bin": NOT_FOUND_JVM;
 		
 		// if not found and current is correct return it and exit method
-		if("".equals(Various.trimToEmpty(foundCorrectBin)) && checkSingleJavaVersionOK(currJvmVersion)) {
+		if("".equals(ConversionUtils.trimToEmpty(foundCorrectBin)) && checkSingleJavaVersionOK(currJvmVersion)) {
 			logger.info("Current JVM("+currJvmVersion+") is OK -> selected and skipping search");
 			foundCorrectBin = JVM_OK;
 			// adding ; to path does not modify current retrieved and escapes NOT_FOUND_JVM controls as path won't be ""
@@ -74,7 +74,7 @@ public class JvmHelper {
 		// Update JVM Warning wignal
 		String foundCorrectName = new File(foundCorrect).getName();
 		warningJVM = foundCorrect.equals(NOT_FOUND_JVM) 
-				|| Various.trimToEmpty(foundCorrect).equals("") 
+				|| ConversionUtils.trimToEmpty(foundCorrect).equals("") 
 				|| !checkSingleJavaVersionOK(foundCorrectName, ScreepTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, ScreepTLauncher.iniFileManager.MIN_JRE_VERSION);
 		
 		// case of ignore warnings specified : use current JVM

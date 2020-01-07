@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
+import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.CrypterPanel;
@@ -527,7 +527,7 @@ public class ImageConverterFrame extends ParentFrame{
 				if(!chckbxSameFormat.isSelected()) {
 					String selectedExt = (String)comboBoxFormats.getSelectedItem();
 					lblOutTypeVal.setText(selectedExt);
-					lblOutFileVal.setText(FileStuff.changeExtension(new File(lblOutFileVal.getText()), "."+selectedExt).getName());
+					lblOutFileVal.setText(FileVarious.changeExtension(new File(lblOutFileVal.getText()), "."+selectedExt).getName());
 				}else {
 					if(inputImgFile!= null) {
 						comboBoxFormats.setSelectedItem(FilenameUtils.getExtension(inputImgFile.getName()));
@@ -585,8 +585,8 @@ public class ImageConverterFrame extends ParentFrame{
 									progUpdater.getLabel().setText("I'm writing the image...");
 									
 									File selected = new File(KeyGenFrame.KEY_DICTIONARY + inputImgFile.getName());
-									selected = FileStuff.renameJavaObjFile(selected);
-									selected = FileStuff.changeExtension(selected, ".png");
+									selected = FileVarious.renameJavaObjFile(selected);
+									selected = FileVarious.changeExtension(selected, ".png");
 									
 									if (selected!=null) {
 										progUpdater.getPb().setValue(70);
@@ -657,8 +657,8 @@ public class ImageConverterFrame extends ParentFrame{
 							if (selected!=null) {
 								
 								try {
-									selected = FileStuff.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
-									selected = FileStuff.renameJavaObjFile(selected);
+									selected = FileVarious.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
+									selected = FileVarious.renameJavaObjFile(selected);
 									
 									progUpdater = new UpdateProgressPanel(false);
 									progUpdater.getPb().setValue(20);

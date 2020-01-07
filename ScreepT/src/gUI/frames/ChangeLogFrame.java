@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
+import files.FileWorker;
 import frameutils.frame.arch.ParentFrame;
 
 public class ChangeLogFrame extends ParentFrame{
@@ -41,7 +41,7 @@ public class ChangeLogFrame extends ParentFrame{
 			
 			try {
 				textArea.setText("");
-				FileStuff.appendFileTxtArea(ChangeLog, textArea, true);
+				FileWorker.appendFileTxtArea(ChangeLog, textArea, true);
 			} catch (Exception e) {
 				String msg = "Cannot read changeLog file: " + ChangeLog;
 				textArea.setText(msg);

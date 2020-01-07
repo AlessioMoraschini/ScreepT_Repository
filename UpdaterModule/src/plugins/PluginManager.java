@@ -12,7 +12,8 @@ import java.util.concurrent.TimeoutException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import files.Various;
+import files.FileWorker;
+import files.FileVarious;
 import files.ZipWorker;
 import gui.JOptionHelper;
 import gui.UpdateProgressPanel;
@@ -20,6 +21,7 @@ import main.MainStandAloneUpdater;
 import network.http.HttpHelper;
 import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
+import utility.ConversionUtils;
 import utility.PropertiesManagerLight;
 import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
@@ -120,7 +122,7 @@ public class PluginManager {
 		File destinationNamedDir = new File(LOCAL_PLUGINS_DIR + File.separator + folderName);
 		if(destinationNamedDir.exists() && destinationNamedDir.isDirectory() && destinationNamedDir.list().length > 0) {
 			logger.info("Deleting destinationNamedDir: " + destinationNamedDir);
-			Various.deleteDirContentRecursive(destinationNamedDir);
+			FileWorker.deleteDirContentRecursive(destinationNamedDir);
 		}
 		
 		// Unzip file
@@ -130,8 +132,8 @@ public class PluginManager {
 		
 		// Copy content into current application root, and update mainAppRoot-relative file installed into properties file
 		logger.info("Copying content of " + plugin.getName() + " into " + APPLICATION_ROOT_DIR);
-		Various.copyDirectoryContents(plugin.getLocalExtractedDir(), APPLICATION_ROOT_DIR);
-		ArrayList<String> relativeNewCopied = Various.getPathsRelativeToOtherFile(Various.listFiles(unzippedPlugin, new ArrayList<>()), unzippedPlugin);
+		FileWorker.copyDirectoryContents(plugin.getLocalExtractedDir(), APPLICATION_ROOT_DIR);
+		ArrayList<String> relativeNewCopied = FileVarious.getPathsRelativeToOtherFile(FileVarious.listFiles(unzippedPlugin, new ArrayList<>()), unzippedPlugin);
 		plugin.setInstallationCompleted(true);
 		addToInstalledList(plugin);
 		
@@ -295,9 +297,9 @@ public class PluginManager {
 				pluginManagerProgbar = new UpdateProgressPanel(true);
 				pluginManagerProgbar.getPb().setIndeterminate(true);
 				
-				logger.info(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+				logger.info(FileVarious.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
 				File downloadedManifest = DownloadUtils.downloadFile(false, new URL(WEB_PLUGINS_MANIFEST_URL), LOCAL_PLUGINS_MANIFEST, pluginManagerProgbar);
-				logger.info("Manifest Downloaded!! Size of " + WEB_PLUGINS_MANIFEST_URL + " is: " + Various.coolFileSize(downloadedManifest.length()));
+				logger.info("Manifest Downloaded!! Size of " + WEB_PLUGINS_MANIFEST_URL + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
 				
 				PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
 				
@@ -353,7 +355,7 @@ public class PluginManager {
 		try {
 			File pluginsFolder = new File(LOCAL_PLUGINS_DIR);
 			if(pluginsFolder.exists()) {
-				result = Various.deleteDirContentRecursive(pluginsFolder);
+				result = FileWorker.deleteDirContentRecursive(pluginsFolder);
 				clearCache();
 				logger.info("Folder deleted and cache cleared");
 			}
@@ -571,10 +573,10 @@ public class PluginManager {
 	public String getFileAsStringListFromFolderRelative(File containerFolder, File relativeToThis) throws IOException {
 		File relativeReference = (relativeToThis != null && relativeToThis.exists()) ? relativeToThis : APPLICATION_ROOT_DIR;
 		
-		ArrayList<File> allFiles = Various.listFiles(containerFolder, new ArrayList<File>());
+		ArrayList<File> allFiles = FileVarious.listFiles(containerFolder, new ArrayList<File>());
 		ArrayList<String> relativePahs = new ArrayList<>();
 		for(File current : allFiles) {
-			relativePahs.add(Various.getPathRelativeToOtherFile(current, relativeReference));
+			relativePahs.add(FileVarious.getPathRelativeToOtherFile(current, relativeReference));
 		}
 		
 		return PropertiesManagerLight.listToString(relativePahs, installedPluginPropsListSeparator);

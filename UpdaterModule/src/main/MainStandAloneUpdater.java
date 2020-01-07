@@ -8,7 +8,8 @@ import java.util.List;
 
 import org.ini4j.Wini;
 
-import files.Various;
+import files.FileWorker;
+import files.FileVarious;
 import files.ZipWorker;
 import gui.JOptionHelper;
 import gui.UpdateProgressPanel;
@@ -143,13 +144,13 @@ public class MainStandAloneUpdater {
 								"ScreepT will be updated, do you want to backup current installation before to update?"
 										+ " (update process will not touch your personal files, but if you prefer you can backup all ScreepT folder before to update)", "Backup current Version files?");
 						if (JOptionHelper.OK == choice) {
-							File destBackupDir = Various.directoRead(null,
+							File destBackupDir = FileVarious.directoRead(null,
 									"Select backup destination, or proceed without backup. A unique \"ScreepT_updater_backup\" folder will be created in the specified destination.",
 									new File(System.getProperty("user.home")));
 							if (destBackupDir != null) {
 								destBackupDir = new File(destBackupDir.getCanonicalPath() + File.separator + "ScreepT_updater_backup");
-								destBackupDir = Various.renameJavaObjFile(destBackupDir);
-								Various.copyDirectoryContents(mainRootDirectory, destBackupDir);
+								destBackupDir = FileWorker.renameJavaObjFile(destBackupDir);
+								FileWorker.copyDirectoryContents(mainRootDirectory, destBackupDir);
 							}
 						}
 
@@ -175,15 +176,15 @@ public class MainStandAloneUpdater {
 					System.out.print("Copying content of " + updatesFolder + " into ");
 					
 					System.out.println(generalApplicationFolder.getAbsolutePath());
-					Various.copyDirectoryContents(updatesFolder, generalApplicationFolder);
+					FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
 					
 					// Check if there is Root files update to copy one level up
 					File rootDirUpdates = new File(ROOT_FILES_UPDATES_DIR);
 					if(rootDirUpdates.exists()) {
 						try {
 							updateProgressMonitor.update(70, "Updating licenses and launcher...", true);
-							Various.copyDirectoryContents(rootDirUpdates, mainRootDirectory);
-							Various.deleteDirContentInclRoot(rootDirUpdates);
+							FileWorker.copyDirectoryContents(rootDirUpdates, mainRootDirectory);
+							FileWorker.deleteDirContentInclRoot(rootDirUpdates);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

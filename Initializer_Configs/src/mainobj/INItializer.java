@@ -10,7 +10,7 @@ import java.util.Vector;
 
 import org.ini4j.Wini;
 
-import files.Various;
+import files.om.FileNamed;
 import om.AesOption;
 import om.FileOptions;
 import om.GenericOption;
@@ -20,8 +20,8 @@ import om.ScalingAlgorithm;
 import om.SecurityLevel;
 import om.SteganOption;
 import om.TextEditorOption;
-import om.files.FileNamed;
 import resources.GeneralConfig;
+import utility.ConversionUtils;
 import utility.SafeLogger;
 
 public class INItializer extends INItializerParent implements INItializerInterface{
@@ -448,7 +448,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		
 		// selected theme
 		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
-		String theme = (!Various.trimToEmpty(themeRead).equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
+		String theme = (!ConversionUtils.trimToEmpty(themeRead).equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
 		textEditorOpt.setSelectedTheme(theme);
 	}
 	

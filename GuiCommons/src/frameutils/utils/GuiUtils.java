@@ -51,9 +51,9 @@ import org.apache.log4j.Logger;
 
 import codeformatter.CustomCodeFormatter;
 import dialogutils.JOptionHelperExtended;
+import files.om.FileNamed;
 import media.ImageGeneralWorker;
 import media.Sounds;
-import om.files.FileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;

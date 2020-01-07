@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
@@ -244,7 +244,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 						BufferedImage tempImg = ImageIO.read(selected);
 						if(BufferedImageType.checkIfAdmittedType(tempImg.getType())) {
 							
-							if (FileStuff.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()),currentConf.getFileOpt().isFlagOverwrite()) != null) {
+							if (FileWorker.copyFile(selected, new File(KEY_DICTIONARY + selected.getName()),currentConf.getFileOpt().isFlagOverwrite()) != null) {
 								dialogHelper.info("File correctly saved in " + KEY_DICTIONARY, "File added to dictionary :)");
 								logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KEY_DICTIONARY);
 							}else{
@@ -281,7 +281,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 				
 				if (selectedImportDir!=null) {
 					try {
-						FileStuff.copyDirectoryContents(selectedImportDir, KEY_DICTIONARY_FILE, currentConf.getFileOpt().isFlagOverwrite(), "png");
+						FileWorker.copyDirectoryContents(selectedImportDir, KEY_DICTIONARY_FILE, currentConf.getFileOpt().isFlagOverwrite(), "png");
 						dialogHelper.info(
 								"Directory :" + selectedImportDir.getName() + " added in the dictionary -> " + KEY_DICTIONARY,
 								"Directory added to dictionary :)");
@@ -312,7 +312,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 					}
 					try {
 						String msg = "Export completed in Target Directory ->" + selectedExportDir.getAbsolutePath();
-						FileStuff.copyDirectoryContents(KEY_DICTIONARY_FILE,selectedExportDir, false, "png");
+						FileWorker.copyDirectoryContents(KEY_DICTIONARY_FILE,selectedExportDir, false, "png");
 						dialogHelper.info(msg,"Dictionary exported");
 						logger.debug(msg);
 					} catch (IOException e1) {

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import files.Various;
+import utility.ConversionUtils;
 
 public class ReflectionUtils {
 
@@ -164,17 +164,17 @@ public class ReflectionUtils {
 				
 				if (discardMatches) {
 					
-					if (ignoreCase && !Various.containsIgnoreCase(i_field.getName(), fieldNameFilter)) {
+					if (ignoreCase && !ConversionUtils.containsIgnoreCase(i_field.getName(), fieldNameFilter)) {
 						result.add(positiveMatch);
-					}else if (!ignoreCase && !Various.contains(i_field.getName(), fieldNameFilter)) {
+					}else if (!ignoreCase && !ConversionUtils.contains(i_field.getName(), fieldNameFilter)) {
 						result.add(positiveMatch);
 					}
 					
 				} else {
 					
-					if (ignoreCase && Various.containsIgnoreCase(i_field.getName(), fieldNameFilter)) {
+					if (ignoreCase && ConversionUtils.containsIgnoreCase(i_field.getName(), fieldNameFilter)) {
 						result.add(positiveMatch);
-					}else if (!ignoreCase && Various.contains(i_field.getName(), fieldNameFilter)) {
+					}else if (!ignoreCase && ConversionUtils.contains(i_field.getName(), fieldNameFilter)) {
 						result.add(positiveMatch);
 					}
 				}

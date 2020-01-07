@@ -19,10 +19,10 @@ import org.fife.ui.rsyntaxtextarea.Token;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 
-import amfileutils.FileStuff;
 import files.CustomFileFilters;
+import files.FileVarious;
+import files.om.FileNamed;
 import media.ImageGeneralWorker;
-import om.files.FileNamed;
 import resources.GeneralConfig;
 import variousutils.HandleString;
 
@@ -121,8 +121,8 @@ public class RsyntaxUtils {
 			}
 		
 			if (!wordlistFilePath.toLowerCase().endsWith(".md")) {
-				File rightExt = FileStuff.changeExtension(new File(wordlistFilePath), ".md");
-				File destRightEx = FileStuff.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
+				File rightExt = FileVarious.changeExtension(new File(wordlistFilePath), ".md");
+				File destRightEx = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
 				try {
 					FileUtils.copyFile(new File(wordlistFilePath), destRightEx);
 					wordlistFilePath = destRightEx.getAbsolutePath();
@@ -168,8 +168,8 @@ public class RsyntaxUtils {
 			}
 		   
 		   if (!wordlistFilePath.toLowerCase().endsWith(".md")) {
-				File rightExt = FileStuff.changeExtension(new File(wordlistFilePath), ".md");
-				File destRightEx = FileStuff.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
+				File rightExt = FileVarious.changeExtension(new File(wordlistFilePath), ".md");
+				File destRightEx = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
 				try {
 					FileUtils.copyFile(new File(wordlistFilePath), destRightEx);
 					wordlistFilePath = destRightEx.getAbsolutePath();

@@ -9,7 +9,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import exception.UpdatesUnavailableException;
-import files.Various;
+import files.FileWorker;
+import files.FileVarious;
 import files.ZipWorker;
 import gui.UpdateProgressPanel;
 import main.MainStandAloneUpdater;
@@ -17,6 +18,7 @@ import network.http.HttpHelper;
 import network.http.HttpHelper.HttpRequestMetod;
 import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
+import utility.ConversionUtils;
 import utility.PropertiesManagerLight;
 import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
@@ -83,9 +85,9 @@ public class UpdatesManager {
 					updateManagerProgbar.getPb().setIndeterminate(true);
 				}
 				
-				logger.info(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+				logger.info(FileVarious.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
 				File downloadedManifest = DownloadUtils.downloadFile(silent, manifestRemoteUrl, localTempManifestPath, updateManagerProgbar);
-				logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
+				logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
 				
 				PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
 				
@@ -122,7 +124,7 @@ public class UpdatesManager {
 	
 	public boolean emptyUpdatesDir() {
 		File updatesDir = new File(UPDATES_DIR);
-		return Various.deleteDirContentRecursive(updatesDir);
+		return FileWorker.deleteDirContentRecursive(updatesDir);
 	}
 	
 	/**
@@ -146,11 +148,11 @@ public class UpdatesManager {
 			
 			updateProgressBar = new UpdateProgressPanel(true);
 			updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
-			logger.info(Various.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+			logger.info(FileVarious.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
 			
 			// Download manifest.properties into UPDATES -> /UPDATES/manifest.properties
 			File downloadedManifest = DownloadUtils.downloadFile(false, manifestRemoteUrl, localTempManifestPath, updateProgressBar);
-			logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + Various.coolFileSize(downloadedManifest.length()));
+			logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
 			
 			PropertiesManagerLight propsManager = new PropertiesManagerLight(downloadedManifest);
 			
@@ -169,16 +171,16 @@ public class UpdatesManager {
 			
 			// Download jar updater into root -> /application/updater.jar
 			updateProgressBar.update(40, "Downloading "+updaterJarUrl, true);
-			logger.info(Various.getHeaderString("#", 40, "PARSE AND DOWNLOAD PACKETS"));
+			logger.info(FileVarious.getHeaderString("#", 40, "PARSE AND DOWNLOAD PACKETS"));
 			
 			File downloadedUpdater = DownloadUtils.downloadFile(false, updaterJarUrl, WEB_UPDATER_JAR_NAME, updateProgressBar);
 			lastUpdatesDownloaded[0] = downloadedUpdater;
-			logger.info("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + Various.coolFileSize(downloadedUpdater.length()));
+			logger.info("Updater jar Downloaded!! Size of " + updaterJarUrl + " is: " + ConversionUtils.coolFileSize(downloadedUpdater.length()));
 
 			// Download zipped updates -> /UPDATES/updates.zip
 			updateProgressBar.update(70, "Downloading "+updaterJarUrl, true);
 			File downloadedUpdatesZip = DownloadUtils.downloadFile(false, updatesZippedUrl, localTempZippedUpdates, updateProgressBar);
-			logger.info("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + Various.coolFileSize(downloadedUpdatesZip.length()));
+			logger.info("Updates ZIP Downloaded!! Size of " + updatesZippedUrl + " is: " + ConversionUtils.coolFileSize(downloadedUpdatesZip.length()));
 			
 			// Final check for remote changes
 			finalReCheckManifest(downloadedManifest);

@@ -27,8 +27,9 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
+import files.FileVarious;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
 import gui.UpdateProgressPanel;
@@ -217,7 +218,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 					
 					if(!selected.getName().toLowerCase().endsWith("png")) {
 						// If not a png image convert a temporary png file, and use it as source for import
-						selected = FileStuff.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + selected.getName()));
+						selected = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + selected.getName()));
 						ImageGeneralWorker worker;
 						try {
 							worker = new ImageGeneralWorker(selected);
@@ -235,7 +236,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 						}
 					}
 					
-					if (FileStuff.copyFile(selected, new File(KeyGenFrame.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite()) != null) {
+					if (FileWorker.copyFile(selected, new File(KeyGenFrame.KEY_DICTIONARY + selected.getName()),currentConfig.getFileOpt().isFlagOverwrite()) != null) {
 						dialogHelper.info("File correctly saved in " + KeyGenFrame.KEY_DICTIONARY, "File added to dictionary :)");
 						logger.debug("File :" + selected.getName() + " added in the dictionary -> " + KeyGenFrame.KEY_DICTIONARY);
 					} else {
@@ -280,7 +281,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 											String path = tp.getLastPathComponent().toString();
 											File selectedFile = new File(path);
 											//		        	File selectedFile = (File)tree.getLastSelectedPathComponent(); // only for one file
-											FileStuff.copyFile(selectedFile,
+											FileWorker.copyFile(selectedFile,
 													new File(selected.getAbsolutePath() + "\\" + selectedFile.getName()),
 													false);
 											logger.debug(

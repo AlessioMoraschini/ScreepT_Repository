@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import files.Various;
+import files.FileVarious;
 
 public class TestRelativePath {
 
@@ -13,7 +13,7 @@ public class TestRelativePath {
 		File A = new File("UPDATES/updates/LAUNCHER/Config");
 		File B = new File("UPDATES/updates");
 		
-		System.out.println(Various.getPathRelativeToOtherFile(A, B));
+		System.out.println(FileVarious.getPathRelativeToOtherFile(A, B));
 		
 		System.out.println("".split(","));
 		

@@ -12,7 +12,7 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
-import files.Various;
+import utility.ConversionUtils;
 import utility.SafeLogger;
 import utility.reflection.ReflectionUtils;
 
@@ -56,7 +56,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		String valueRead = "";
 		if (iniToReadPath != null && new File(iniToReadPath).exists()) {
 			Ini tempIniFile = new Wini(new File(iniToReadPath));
-			valueRead = Various.trimToEmpty(tempIniFile.get(OPT_SECTION, OPT_VAR));
+			valueRead = ConversionUtils.trimToEmpty(tempIniFile.get(OPT_SECTION, OPT_VAR));
 		}
 		
 		return valueRead;

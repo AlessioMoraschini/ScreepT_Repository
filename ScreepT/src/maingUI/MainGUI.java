@@ -30,9 +30,10 @@ import org.apache.log4j.Level;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
-import amfileutils.FileStuff;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
+import files.FileVarious;
 import files.ZipWorker;
 import files.watcher.ChangeDTO;
 import frameutils.utils.ComponentResizer;
@@ -689,10 +690,10 @@ public class MainGUI extends MainGuiParent{
 									+ "##################################################\n\n");
 
 							// give true to overwrite because fileWriteDialog already set the value to be unique
-							File tempFolder = FileStuff.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + "LOG_EXPORT_TEMP"));
+							File tempFolder = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + "LOG_EXPORT_TEMP"));
 							tempFolder.mkdir();
-							File copiedMainLog = FileStuff.copyFileIntoDir(new File(GeneralConfig.LOG_PATH), tempFolder, true);
-							File copiedLauncherLog = FileStuff.copyFileIntoDir(new File(GeneralConfig.LOG_LAUNCHER_PATH), tempFolder, false);
+							File copiedMainLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_PATH), tempFolder, true, GeneralConfig.TEMP_DIRECTORY);
+							File copiedLauncherLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_LAUNCHER_PATH), tempFolder, false, GeneralConfig.TEMP_DIRECTORY);
 							File zipped = ZipWorker.zipFolderToFile(tempFolder.getAbsolutePath(), selected, true, true);
 							boolean copied = copiedMainLog != null && copiedLauncherLog != null;
 							if (copied && zipped != null && zipped.exists()) {
@@ -703,7 +704,7 @@ public class MainGUI extends MainGuiParent{
 								logger.error("File not saved, some error occurred :( ");
 							}
 							
-							FileStuff.deleteDirContentInclRoot(tempFolder);
+							FileWorker.deleteDirContentInclRoot(tempFolder);
 						}
 					}
 					FLAG_mntmExportLog = false;
@@ -724,7 +725,7 @@ public class MainGUI extends MainGuiParent{
 					String coolFileSize = ConversionUtils.coolFileSize(LOG_MAIN_FILE.length());
 					String msg =  "<html>Are you sure you to want to erase your logs? <br/> If you want you can click 'no' option and backup them, go under 'help submenu' [ Total size: " + coolFileSize + "]</html>";
 					if(dialogHelper.yesOrNo(msg, "Erase Logs content?")) {
-						if (FileStuff.clearFileContent(GeneralConfig.LOG_PATH) && FileStuff.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
+						if (FileVarious.clearFileContent(GeneralConfig.LOG_PATH) && FileVarious.clearFileContent(GeneralConfig.LOG_LAUNCHER_PATH)) {
 							logger.debug("Files deleted");
 							dialogHelper.info("Logs deleted - as you asked ;)", "Logs deleted");
 						}else {
@@ -1227,8 +1228,8 @@ public class MainGUI extends MainGuiParent{
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             
         	File selectedFile = fileChooser.getSelectedFile();
-        	selectedFile = FileStuff.changeExtension(selectedFile, ".zip");	
-        	selectedFile = FileStuff.renameJavaObjFile(selectedFile);
+        	selectedFile = FileVarious.changeExtension(selectedFile, ".zip");	
+        	selectedFile = FileVarious.renameJavaObjFile(selectedFile);
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("zip")) {

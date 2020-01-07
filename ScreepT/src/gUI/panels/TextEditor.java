@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
-import om.files.FileNamed;
 import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -37,9 +36,9 @@ import javax.swing.ToolTipManager;
 import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.RUndoManager;
 
-
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileVarious;
+import files.om.FileNamed;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
@@ -554,7 +553,7 @@ public class TextEditor extends ModulePanel {
 					public void run() {
 						int tempUpdated = GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL + 1;
 						FileNamed currentRoot = (FileNamed)leftSplitTreeFiles.getModel().getRoot();
-						if (FileStuff.doesAncestorNlevelsExist(currentRoot.mFile, tempUpdated)) {
+						if (FileVarious.doesAncestorNlevelsExist(currentRoot.mFile, tempUpdated)) {
 							try {
 								GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL = tempUpdated;
 								textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);

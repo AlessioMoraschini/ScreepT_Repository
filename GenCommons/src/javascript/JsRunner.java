@@ -12,8 +12,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import amfileutils.FileStuff;
 import files.CustomFileFilters;
+import files.FileWorker;
 
 public class JsRunner {
 	
@@ -39,7 +39,7 @@ public class JsRunner {
 			file = new File("./");
 		}
 		
-		ArrayList<File> librariesToLoad = FileStuff.getAllContent(file, CustomFileFilters.FILE_ONLY);
+		ArrayList<File> librariesToLoad = FileWorker.getAllContent(file, CustomFileFilters.FILE_ONLY);
 		for (File lib : librariesToLoad) {
 			try {
 				engine.eval(Files.newBufferedReader(Paths.get(lib.getAbsolutePath()), StandardCharsets.UTF_8));
@@ -54,7 +54,7 @@ public class JsRunner {
 			file = new File("./");
 		}
 		
-		ArrayList<File> librariesToLoad = FileStuff.getAllContent(file, CustomFileFilters.FILE_ONLY);
+		ArrayList<File> librariesToLoad = FileWorker.getAllContent(file, CustomFileFilters.FILE_ONLY);
 		for (File lib : librariesToLoad) {
 			try {
 				engine.eval(Files.newBufferedReader(Paths.get(lib.getAbsolutePath()), StandardCharsets.UTF_8));

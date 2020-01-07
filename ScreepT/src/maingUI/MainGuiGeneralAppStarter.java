@@ -19,9 +19,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.Wini;
 
-import amfileutils.FileStuff;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
+import files.FileVarious;
 import frameutils.utils.GuiUtils;
 import generic.ParametricExceptionThread;
 import gui.utils.LauncherLoaderFrame;
@@ -193,7 +194,7 @@ public class MainGuiGeneralAppStarter {
 			printElapsed("Log properties loaded", startTime);
 			
 			writeSignalFileForExternalJars();
-			argumentsFiles = FileStuff.getFileArrayFromStrings(args);
+			argumentsFiles = FileVarious.getFileArrayFromStrings(args);
 			
 			// INITIALIZE .INI CONFIGURATION (ScreepT + Launcher) FROM CONFIG DEFAULT FILES
 			try {
@@ -323,7 +324,7 @@ public class MainGuiGeneralAppStarter {
 		try {
 			GeneralConfig.mkDirUserDirScreepT();
 			GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.createNewFile();
-			FileStuff.writeStringToFile(MAIN_SIGNAL_PROPERTY, GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE, true);
+			FileWorker.writeStringToFile(MAIN_SIGNAL_PROPERTY, GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE, true);
 		} catch (Exception e) {
 			logger.error("Error writing signal file ["+GeneralConfig.SCREEPT_ACTIVE_SIGNAL_FILE.getAbsolutePath()+"]");
 		}

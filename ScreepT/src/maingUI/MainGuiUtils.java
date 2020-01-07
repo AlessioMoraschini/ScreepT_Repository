@@ -18,9 +18,9 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
 import exception.UpdatesUnavailableException;
+import files.FileWorker;
 import files.watcher.ChangeDTO;
 import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtils;
@@ -494,7 +494,7 @@ public class MainGuiUtils {
 					logger.info("Nothing to delete!");
 				}
 				// now delete temp folder, and retry if something has not been deleted
-				FileStuff.deleteDirContentInclRoot(GeneralConfig.TEMP_DECRIPTED_ROOT);
+				FileWorker.deleteDirContentInclRoot(GeneralConfig.TEMP_DECRIPTED_ROOT);
 			}
 		};
 	}
@@ -515,7 +515,7 @@ public class MainGuiUtils {
 					logger.info("Nothing to delete!");
 				}
 				// now delete temp folder, and retry if something has not been deleted
-				FileStuff.deleteDirContentRecursive(GeneralConfig.TEMP_DIRECTORY_FILE);
+				FileWorker.deleteDirContentRecursive(GeneralConfig.TEMP_DIRECTORY_FILE);
 			}
 		};
 	}

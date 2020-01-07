@@ -10,12 +10,11 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
+import utility.ConversionUtils;
 
 import javax.swing.JProgressBar;
 
 import org.apache.log4j.Logger;
-
-import files.Various;
 
 import javax.swing.JLabel;
 import java.awt.CardLayout;
@@ -181,7 +180,7 @@ public class LauncherLoaderPanel extends JPanel{
 			@Override
 			public void run() {
 				
-				final String safeText = Various.trimToEmpty(text);
+				final String safeText = ConversionUtils.trimToEmpty(text);
 				
 				while(indeterminated.get()) {
 					try {

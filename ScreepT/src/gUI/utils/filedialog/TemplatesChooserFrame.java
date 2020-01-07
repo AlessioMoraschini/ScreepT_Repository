@@ -13,8 +13,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
+import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import maingUI.MainGuiGeneralAppStarter;
@@ -168,7 +169,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 				String selectedTemplate = "";
 				File selectedFile = retrieveTemplateByName((String)comboTemplateSelector.getSelectedItem());
 				try {
-					selectedTemplate = "\n"+(FileStuff.readFileAsString(selectedFile)) + "\n";
+					selectedTemplate = "\n"+(FileWorker.readFileAsString(selectedFile)) + "\n";
 				} catch (IOException e1) {
 					dialogHelper.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), "ERROR reading Template");
 					logger.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), e1);
@@ -226,7 +227,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 						File templateFile = retrieveTemplateByName(inputTemplateName);
 						String ext = FilenameUtils.getExtension(inputTemplateName);
 						if (!SupportedFileTextEditor.getSupportedExtensions().contains(ext)) {
-							templateFile = FileStuff.changeExtension(templateFile, ".txt");
+							templateFile = FileVarious.changeExtension(templateFile, ".txt");
 						}
 						boolean choose = true;
 						if (templateFile.exists()) {
@@ -234,7 +235,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 						}
 						if (choose) {
 							try {
-								boolean result = FileStuff.writeStringToFile(selected, templateFile, true);
+								boolean result = FileWorker.writeStringToFile(selected, templateFile, true);
 								logger.info("Template written with esit: " + result);
 								dialogHelper.info("Template Added to collection.", "Template Added");
 								reloadTemplates();

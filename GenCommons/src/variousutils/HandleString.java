@@ -17,9 +17,9 @@ import javax.swing.JTextArea;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import files.Various;
 import media.color.HslColor;
 import resources.GeneralConfig;
+import utility.ConversionUtils;
 
 @SuppressWarnings("deprecation")
 public class HandleString {
@@ -512,7 +512,7 @@ public class HandleString {
      * Convert color to string RGB with custom separator
      */
     public static String getRgbString(Color sourceColor, String separator) {
-    	separator = (Various.isEmpty(separator))? "-" : separator;
+    	separator = (ConversionUtils.isEmpty(separator))? "-" : separator;
     	StringBuilder builder = new StringBuilder();
     	builder.append(sourceColor.getRed()).append(separator)
     		   .append(sourceColor.getGreen()).append(separator)

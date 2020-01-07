@@ -17,7 +17,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import om.exception.ProgressBarInterruptedException;
-import files.Various;
 
 /**
  * This is a class that implements a customizable closable (default is not closable, must set closable to true, and then set stopProcess to to true when you want to signal for close)
@@ -374,7 +373,7 @@ public class UpdateProgressPanel {
 	}
 	
 	public void move(int xDiff, int yDiff) {
-		Various.moveFrame(dialog, xDiff, yDiff);
+		GuiUtils.moveFrame(dialog, xDiff, yDiff);
 	}
 	
 	public void hide() {

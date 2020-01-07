@@ -17,11 +17,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-import amfileutils.FileStuff;
 import crypt.aes.AesCipher;
 import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import dialogutils.JOptionHelperExtended;
+import files.FileWorker;
 import files.watcher.FileChangeMonitor;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtils;
@@ -1108,7 +1108,7 @@ public class CrypterPanel extends ModulePanel {
 		if(resultDirectory != null && resultDirectory.isDirectory() && resultDirectory.exists()) {
 			logger.debug("Asking to user if he wants to delete directory: " + resultDirectory);
 			if(dialogHelper.yesOrNo("Do you want to delete " + resultDirectory + "'s content?", "Delete content?")) {
-				boolean result = FileStuff.deleteDirContentRecursive(resultDirectory);
+				boolean result = FileWorker.deleteDirContentRecursive(resultDirectory);
 				
 				if(result) {
 					dialogHelper.info(resultDirectory + "'s content deleted.", "Directory cleaned");

@@ -13,7 +13,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.apache.commons.net.io.CopyStreamAdapter;
 
-import files.Various;
+import files.FileWorker;
 import network.progress.DownloadAction;
 import network.progress.UploadAction;
 import utility.SafeLogger;
@@ -293,7 +293,7 @@ public class FtpDumper {
             ftps.changeWorkingDirectory(FTPdir);
 
             if(!overwriteLocal) {
-            	localFile = Various.renameJavaObjFile(localFile);
+            	localFile = FileWorker.renameJavaObjFile(localFile);
             }
             if(!localFile.exists()) {
             	localFile.getParentFile().mkdirs();

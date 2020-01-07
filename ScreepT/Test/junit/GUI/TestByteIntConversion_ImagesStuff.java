@@ -9,10 +9,10 @@ import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import amfileutils.FileStuff;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import crypt.steg.StegCipher;
+import files.FileWorker;
 import om.BufferedImageType;
 import util.ImageEncodingUtils;
 import utility.ByteWorker;
@@ -45,7 +45,7 @@ public class TestByteIntConversion_ImagesStuff {
 	@Ignore
 	public void deleteFileRecursive() {
 		print("startDelete");
-		FileStuff.deleteDirContentRecursive(new File("C:\\Users\\xx\\Desktop\\MultiCrypterTest\\2"));
+		FileWorker.deleteDirContentRecursive(new File("C:\\Users\\xx\\Desktop\\MultiCrypterTest\\2"));
 	}
 	
 	@Test

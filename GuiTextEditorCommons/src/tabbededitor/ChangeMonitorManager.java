@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
+import files.FileVarious;
 import files.watcher.ChangeDTO;
 import files.watcher.FileChangeMonitor;
 
@@ -203,7 +203,7 @@ public class ChangeMonitorManager implements IChangeMonManager{
 	public void updateCurrMonitor(File file){
 		if (file != null) {
 			boolean nullManager = mainEditorRef.loadedTabObj.fileMonitorManager == null;
-			boolean differentRoot = !nullManager && !FileStuff.isFileSonOfDir(file, mainEditorRef.loadedTabObj.fileMonitorManager.rootMonitorDir);
+			boolean differentRoot = !nullManager && !FileVarious.isFileSonOfDir(file, mainEditorRef.loadedTabObj.fileMonitorManager.rootMonitorDir);
 			boolean mustUpdateRoot = nullManager || differentRoot;
 			
 			if (mustUpdateRoot) {

@@ -41,8 +41,8 @@ import uTILS.local.ImageWorkerScreepT;
 
 import org.apache.log4j.Logger;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtils;
 import gUI.panels.subpanels.ImageGenContainerPanel;
@@ -352,7 +352,7 @@ public class KeyGenFrame extends ParentFrame {
 							        	File selectedFile = fileChooser.getSelectedFile();
 
 							        	//  change extension to png (crittografy in ScreepT need loseless algorithm)
-							    		selectedFile = FileStuff.changeExtension(selectedFile, ".png");
+							    		selectedFile = FileVarious.changeExtension(selectedFile, ".png");
 							        	
 							    		progUpdater.getPb().setValue(20);
 							    		

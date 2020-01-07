@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
-import amfileutils.FileStuff;
 import dialogutils.JOptionHelperExtended;
+import files.FileVarious;
 import mainobj.INItializer;
 
 import java.awt.BorderLayout;
@@ -137,7 +137,7 @@ public class INIfileChoosER extends JDialog{
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
             	selectedFile = fileChooser.getSelectedFile();
-            	selectedFile = FileStuff.changeExtension(selectedFile, ".ini");
+            	selectedFile = FileVarious.changeExtension(selectedFile, ".ini");
             	if(selectedFile.exists()) {
             		if(dialogHelper.yesOrNo("File "+selectedFile.getName()+" exists, overwrite it?")) {
             			selectedFile.delete();	

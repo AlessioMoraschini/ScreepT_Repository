@@ -47,10 +47,10 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
-import amfileutils.FileStuff;
 import conversion.Text2Speech;
 import dialogutils.JOptionHelperExtended;
-import files.Various;
+import files.FileWorker;
+import files.FileVarious;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.EscapeReplacerFrame;
 import frameutils.frame.FilePropertiesFrame;
@@ -75,6 +75,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.SelectionDtoFull;
 import textareautil.TextLineNumber;
+import utility.ConversionUtils;
 import utility.EncodingUtils;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
@@ -1187,7 +1188,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnLoremIpsum.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				FileStuff.appendFileTxtArea(new File(LOREM_IPSUM), parent.getCurrentTabEditor().loadedTabObj.textArea, false);
+				FileWorker.appendFileTxtArea(new File(LOREM_IPSUM), parent.getCurrentTabEditor().loadedTabObj.textArea, false);
 			}
 		});
 
@@ -1568,7 +1569,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					return;
 				} else {
 					try {
-						done = FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true);
+						done = FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true);
 					} catch (IOException e1) {
 						dialogHelper.error("error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
@@ -1610,7 +1611,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					boolean done = false;
 					String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))?
 							loadedTabObj.loadedFile.getName() : "NewFile."+comboFileFormat.getSelectedItem().toString().toLowerCase();
-					exportNamePreset = FileStuff.ensureValidExtension(exportNamePreset, comboFileFormat.getSelectedItem().toString());
+					exportNamePreset = FileVarious.ensureValidExtension(exportNamePreset, comboFileFormat.getSelectedItem().toString());
 
 					try {
 						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, exportNamePreset);
@@ -1621,10 +1622,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							if (selectedFile.exists()) {
 								if (dialogHelper.yesOrNo("File " + selectedFile.getName()
 										+ " exists, overwrite it?", "Overwrite?")) {
-									done = FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile,
+									done = FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile,
 											true);
 								} else {
-									done = FileStuff.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile,
+									done = FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile,
 											false);
 								}
 							} else {
@@ -1749,7 +1750,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public void applyDefaultStyle() {
 		try {
 			String prefThemeFromFile = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "preferredTheme");
-			if (!Various.trimToEmpty(prefThemeFromFile).equals("")) {
+			if (!ConversionUtils.trimToEmpty(prefThemeFromFile).equals("")) {
 				comboStylesScheme.setSelectedItem(ThemesWrapper.getFromListByPath(prefThemeFromFile, themeList));
 			}
 		} catch (Exception e) {
@@ -1763,7 +1764,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public void applyDefaultFileFormatSyntax() {
 		try {
 			String prefSyntaxFromConfigFile = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "preferredTheme");
-			if (!Various.trimToEmpty(prefSyntaxFromConfigFile).equals("")) {
+			if (!ConversionUtils.trimToEmpty(prefSyntaxFromConfigFile).equals("")) {
 				applyFileFormatSyntaxFull();
 			}
 		} catch (Exception e) {
