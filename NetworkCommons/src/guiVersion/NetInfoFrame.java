@@ -5,7 +5,7 @@ import resources.GeneralConfig;
 import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gui.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkAdapter;
@@ -116,7 +116,7 @@ public class NetInfoFrame extends ParentFrame{
 		singletonInstance = this;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_NET_INFO, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_NET_INFO, this);
 		
 		try {
 			netUtils = new NetworkUtils();
@@ -133,7 +133,7 @@ public class NetInfoFrame extends ParentFrame{
 			@Override
 			public void run() {
 				singletonInstance.pack();
-				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
+				GuiUtilsExtended.centerComponent(singletonInstance, getDefaultDimension());
 			}
 		});
 		
@@ -382,7 +382,7 @@ public class NetInfoFrame extends ParentFrame{
 		panel.add(dynLblMTU, "cell 1 7 2 1,growx");
 		
 		// call now cause before some gui elements can not be initialized yet
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -391,7 +391,7 @@ public class NetInfoFrame extends ParentFrame{
 				updateAdapterGUIinfos();
 				validateConnectivity();
 				
-				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
+				GuiUtilsExtended.centerComponent(singletonInstance, getDefaultDimension());
 			}
 		});
 		

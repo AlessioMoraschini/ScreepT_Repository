@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.text.BadLocationException;
 
 import frameutils.html.HtmlPanel;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
 
 public class HtmlPanelTest {
@@ -26,7 +26,7 @@ public class HtmlPanelTest {
 		File f = new File(GeneralConfig.RESOURCES_DIR  + "Readme/ReadMe.html");
 		htmlPane.loadHtmlFx(f.toURI().toString());
 //		HtmlLoader.loadHtmlInEditPaneV2(htmlPane.getMainHtmlEditorPane(), "https://www.google.com");
-		testFrame.setBounds(0,0,GuiUtils.getScreenSize().width, GuiUtils.getScreenSize().height);
+		testFrame.setBounds(0,0,GuiUtilsExtended.getScreenSize().width, GuiUtilsExtended.getScreenSize().height);
 		testFrame.setVisible(true);
 		htmlPane.getFxHtmlPane().resizeComp(htmlPane.jfxPanel.getWidth(), htmlPane.jfxPanel.getHeight());
 		

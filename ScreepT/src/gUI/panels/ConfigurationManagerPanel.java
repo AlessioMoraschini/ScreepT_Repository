@@ -15,11 +15,11 @@ import org.ini4j.Wini;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import frameutils.frame.arch.ModulePanel;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.utils.filedialog.INIfileChoosER;
 import gUI.utils.tree.iniconfmanager.FileCellRendererIni;
 import gUI.utils.tree.iniconfmanager.TreeFileMouseListenerIni;
-import guistyle.GUIStyelSettings;
+import guistyle.GUIStyelSettingsExtended;
 import maingUI.MainGUI;
 import maingUI.MainGuiUtils;
 import mainobj.INItializer;
@@ -295,8 +295,8 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	}
 	
 	public void initGuiFromConfig() {
-		GUIStyelSettings.setStyle(config.getGuiOpt().getPreferredStyle(), config.getGuiOpt().nimbusSize);
-		GUIStyelSettings.applyNimbusSize(null, config.getGuiOpt().nimbusSize);
+		GUIStyelSettingsExtended.setStyle(config.getGuiOpt().getPreferredStyle(), config.getGuiOpt().nimbusSize);
+		GUIStyelSettingsExtended.applyNimbusSize(null, config.getGuiOpt().nimbusSize);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				applyTextAreaStyle();
@@ -475,14 +475,14 @@ public class ConfigurationManagerPanel extends ModulePanel {
 					public void run() {
 						if (searchBox == null) {
 							searchBox = textAreaDialogs.getSearchDialog(thisPanel.parent.getMainFrame(),  null, null,"successAdvice", "errorAdvice");
-							GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
+							GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
 						} else {
 							searchBox.setVisible(true);
 							searchBox.toFront();
 							searchBox.requestFocus();
 						}
 						searchBox.setLocationRelativeTo(thisPanel.parent.getMainFrame());
-						GuiUtils.changeFrameStateLaterUnchecked(thisPanel.parent.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
+						GuiUtilsExtended.changeFrameStateLaterUnchecked(thisPanel.parent.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}

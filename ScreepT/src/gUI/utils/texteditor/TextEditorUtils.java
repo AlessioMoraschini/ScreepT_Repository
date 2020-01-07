@@ -31,16 +31,15 @@ import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
 import files.om.FileNamed;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gUI.utils.tooltip.TextEditorTooltips;
-import guistyle.GUIStyelSettings;
+import guistyle.GUIStyelSettingsExtended;
 import maingUI.MainGUI;
 import maingUI.ToggleAction;
 import media.ImageWorkerExtended;
-import media.SoundsExtended;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
@@ -48,6 +47,7 @@ import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 import splitpanel.SplitPaneUtils;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
@@ -161,7 +161,7 @@ public class TextEditorUtils {
 		// retrieve all buttons except Containing depth in name
 		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor.subHeaderPanel, JButton.class, "nostyle", true, false);
 		for(JButton button : textEditorButtons) {
-			button.setCursor(GuiUtils.CURSOR_HAND);
+			button.setCursor(GuiUtilsExtended.CURSOR_HAND);
 			button.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			button.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 			button.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
@@ -169,7 +169,7 @@ public class TextEditorUtils {
 
 		List<JToggleButton> textEditorToggleButtons = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor.subHeaderPanel, JToggleButton.class, "nostyle", true, false);
 		for(JToggleButton toggleButton : textEditorToggleButtons) {
-			toggleButton.setCursor(GuiUtils.CURSOR_HAND);
+			toggleButton.setCursor(GuiUtilsExtended.CURSOR_HAND);
 			toggleButton.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			toggleButton.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
 		}
@@ -666,8 +666,8 @@ public class TextEditorUtils {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
-				GUIStyelSettings.applyNimbusSize(null, editor.currentConfiguration.getGuiOpt().nimbusSize);
-				GUIStyelSettings.updateAllWindowsLaf();
+				GUIStyelSettingsExtended.applyNimbusSize(null, editor.currentConfiguration.getGuiOpt().nimbusSize);
+				GUIStyelSettingsExtended.updateAllWindowsLaf();
 				resetDividerColor();
 				currentTabEditor.applyStyleToTabs();
 				try {
@@ -706,7 +706,7 @@ public class TextEditorUtils {
 		mainApp.menuBar.setVisible(!enableImmersive);
 		mainApp.isImmersiveModeOn.set(enableImmersive);
 
-		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(mainApp);
 	}
 	
@@ -723,7 +723,7 @@ public class TextEditorUtils {
 		}
 		
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setHeaderVisible(newVisible);
-		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
 		updateTogglesIconsFromConfig();
 	}
@@ -739,7 +739,7 @@ public class TextEditorUtils {
 		}
 		
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setHeaderVisible(visibility);
-		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
 		updateTogglesIconsFromConfig();
 	}
@@ -757,7 +757,7 @@ public class TextEditorUtils {
 		}
 		
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setSubHeaderVisible(newVisible);
-		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
 		updateTogglesIconsFromConfig();
 	}
@@ -773,7 +773,7 @@ public class TextEditorUtils {
 		}
 		
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setSubHeaderVisible(visibility);
-		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
 		updateTogglesIconsFromConfig();
 	}
@@ -785,7 +785,7 @@ public class TextEditorUtils {
 		boolean newVisible = !currentTextEditor.footerPanel.isVisible();
 		currentTextEditor.footerPanel.setVisible(newVisible);
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setFooterVisible(newVisible);
-		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
 		updateTogglesIconsFromConfig();
 	}
@@ -796,7 +796,7 @@ public class TextEditorUtils {
 	public void setFooterVisibile(boolean visibility) {
 		currentTextEditor.footerPanel.setVisible(visibility);
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setFooterVisible(visibility);
-		GuiUtils.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
+		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(currentTextEditor.mainApplication);
 		updateTogglesIconsFromConfig();
 	}
@@ -812,7 +812,7 @@ public class TextEditorUtils {
 	}
 
 	public void errorAdvice(String msg) {
-		SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+		SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 		currentTextEditor.footerPanel.dynLblSearchEsit.setForeground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
 		currentTextEditor.footerPanel.dynLblSearchEsit.setText(msg);
 		timeoutLblAdvice(GeneralConfig.ADVICE_FOOTER_TIMEOUT);
@@ -902,7 +902,7 @@ public class TextEditorUtils {
 			headerList.add(currentTextEditor.headerPanel);
 			
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+			SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 			logger.error("Exception during retrieve of elements", e);
 		}
 		

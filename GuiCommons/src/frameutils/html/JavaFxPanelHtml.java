@@ -17,10 +17,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import media.SoundsExtended;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 import utils.SysUtils;
 
 import java.awt.Color;
@@ -221,7 +221,7 @@ public class JavaFxPanelHtml extends JPanel {
             @Override
             public void run() {
             	
-        		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
+        		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
         		webEngine.executeScript("window.find('" + targetText + "')");            		
             }
     	});

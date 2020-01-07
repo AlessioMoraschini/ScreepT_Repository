@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.utils.tree.keydictionary.TreeFileMouseListenerDictionary;
 import maingUI.MainGUI;
 import mainobj.INItializer;
@@ -92,8 +92,8 @@ public class KeyDictionaryFrame extends ParentFrame{
 		dialogHelper = new JOptionHelperExtended(this);
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);
-		GuiUtils.showOnSameScreen(this, MainGUI.mainFrameScreept);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_KEY_DICT, this);
+		GuiUtilsExtended.showOnSameScreen(this, MainGUI.mainFrameScreept);
 		
 		thisPanel = this;
 		singletonInstance = this;
@@ -223,7 +223,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				GuiUtils.openInFileSystem(KEY_DICTIONARY_FILE);
+				GuiUtilsExtended.openInFileSystem(KEY_DICTIONARY_FILE);
 			}
 		});
 		

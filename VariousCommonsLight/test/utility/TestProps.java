@@ -2,12 +2,12 @@ package utility;
 import org.junit.Before;
 import org.junit.Test;
 
-import generic.TestConstants;
+import testconfig.TestConstants;
 import utility.properties.PropertiesManager;
 
 public class TestProps {
 
-	public static final String testProps = TestConstants.rootTestFolder + "resourcesFilePathsMappings.properties";
+	public static final String testProps = TestConstants.rootTestFolderPath + "resourcesFilePathsMappings.properties";
 	public PropertiesManager manager;
 	
 	@Before

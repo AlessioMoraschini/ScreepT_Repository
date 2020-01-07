@@ -3,7 +3,7 @@ package guiVersion;
 import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import net.miginfocom.swing.MigLayout;
 import om.HDinfo;
 import om.LimitedConcurrentList;
@@ -164,7 +164,7 @@ public class HwInfoFrame extends ParentFrame{
 		setTitle("Hardware Info Frame");
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_HW_INFO, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_HW_INFO, this);
 		
 		thisPanel = this;
 		singletonInstance = this;
@@ -183,7 +183,7 @@ public class HwInfoFrame extends ParentFrame{
 		updateDisplayInfo();
 		
 		// START THREAD VALUES UPDATER 
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			public void run() {
 
 				
@@ -205,7 +205,7 @@ public class HwInfoFrame extends ParentFrame{
 		});
 		
 		singletonInstance.pack();
-		GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
+		GuiUtilsExtended.centerComponent(singletonInstance, getDefaultDimension());
 		
 	}
 	

@@ -17,7 +17,7 @@ import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import maingUI.MainGuiGeneralAppStarter;
 
 import java.awt.SystemColor;
@@ -76,8 +76,8 @@ public class TemplatesChooserFrame extends ParentFrame {
 		
 		outputTextArea = outputText;
 		buttonInvoker = buttonInvoke;
-		GuiUtils.showOnSameScreen(this, parent);
-		GuiUtils.setFrameIcon(ImagesPathConfigurator.MAIN_APP_ICON, this);
+		GuiUtilsExtended.showOnSameScreen(this, parent);
+		GuiUtilsExtended.setFrameIcon(ImagesPathConfigurator.MAIN_APP_ICON, this);
 		this.setResizable(false);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
@@ -106,8 +106,8 @@ public class TemplatesChooserFrame extends ParentFrame {
 		btnOpenInFilesystem.setPreferredSize(new Dimension(20, 20));
 		btnOpenInFilesystem.setMinimumSize(new Dimension(20, 9));
 		btnOpenInFilesystem.setMaximumSize(new Dimension(20, 20));
-		btnOpenInFilesystem.setCursor(GuiUtils.CURSOR_HAND);
-		GuiUtils.makeTransparentJButton(btnOpenInFilesystem);
+		btnOpenInFilesystem.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		GuiUtilsExtended.makeTransparentJButton(btnOpenInFilesystem);
 		btnOpenInFilesystem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 		btnOpenInFilesystem.setForeground(Color.BLACK);
 		
@@ -117,31 +117,31 @@ public class TemplatesChooserFrame extends ParentFrame {
 		btnReloadTemplates.setPreferredSize(new Dimension(20, 20));
 		btnReloadTemplates.setMinimumSize(new Dimension(20, 9));
 		btnReloadTemplates.setMaximumSize(new Dimension(20, 20));
-		btnReloadTemplates.setCursor(GuiUtils.CURSOR_HAND);
-		GuiUtils.makeTransparentJButton(btnReloadTemplates);
+		btnReloadTemplates.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		GuiUtilsExtended.makeTransparentJButton(btnReloadTemplates);
 		btnReloadTemplates.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD4));
 		btnReloadTemplates.setForeground(Color.BLACK);
 		
 		comboTemplateSelector = new JComboBox<String>(retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER));
 		comboTemplateSelector.setMinimumSize(new Dimension(33, 35));
-		comboTemplateSelector.setCursor(GuiUtils.CURSOR_HAND);
+		comboTemplateSelector.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(comboTemplateSelector, "cell 0 1,growx");
 		
 		AddCustomFromFile = new JButton("Add Custom Template");
 		AddCustomFromFile.setMinimumSize(new Dimension(185, 35));
-		AddCustomFromFile.setCursor(GuiUtils.CURSOR_HAND);
+		AddCustomFromFile.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(AddCustomFromFile, "cell 1 1,growx");
 		
 		btnInject = new JButton("Inject template");
 		btnInject.setMinimumSize(new Dimension(108, 35));
-		btnInject.setCursor(GuiUtils.CURSOR_HAND);
+		btnInject.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnInject.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnInject.setBackground(Color.GRAY);
 		getContentPane().add(btnInject, "cell 0 2,growx");
 		
 		btnAddSelectionToTemplates = new JButton("Add Selection to Templates");
 		btnAddSelectionToTemplates.setMinimumSize(new Dimension(185, 35));
-		btnAddSelectionToTemplates.setCursor(GuiUtils.CURSOR_HAND);
+		btnAddSelectionToTemplates.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(btnAddSelectionToTemplates, "cell 1 2,growx");
 		
 		addHandlers();
@@ -260,7 +260,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
 					public void run() {
-						GuiUtils.openInFileSystem(new File(GeneralConfig.TEMPLATES_FOLDER));
+						GuiUtilsExtended.openInFileSystem(new File(GeneralConfig.TEMPLATES_FOLDER));
 					}
 				}).start();
 			}

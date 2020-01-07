@@ -18,7 +18,7 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import menusettings.MenuSetter;
@@ -170,7 +170,7 @@ public class TreeDragNDropListenerCrypter {
 						if (currentSel != null && currentSel.getParent() != null) {
 							File currentFile = ((CrypterDragFileModel) currentSel.getUserObject()).realFile;
 							if (currentFile.exists() && i < 5) {
-								GuiUtils.openInFileSystem(currentFile.getParentFile());
+								GuiUtilsExtended.openInFileSystem(currentFile.getParentFile());
 							}
 						}
 						i++; // open maximum 5 windows

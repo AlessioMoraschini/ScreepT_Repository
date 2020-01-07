@@ -1,4 +1,4 @@
-package gui.utils;
+package gui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.Painter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -17,11 +18,11 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.ColorUIResource;
 
-import org.apache.log4j.Logger;
+import utility.SafeLogger;
 
 public class GUIStyelSettings{
 
-	static Logger logger = Logger.getLogger(GUIStyelSettings.class);
+	static SafeLogger logger = new SafeLogger(GUIStyelSettings.class);
 	
 	private static String level = "mini";
 	
@@ -38,6 +39,8 @@ public class GUIStyelSettings{
 	public static final Color nimbusProgBarColor = new Color(84,165,50);
 
 	public static int focusOpacity = 20;
+	
+	public static Font defaultButtonFont = new Font("Segoe UI", Font.PLAIN, 17);
 
     public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
@@ -67,13 +70,112 @@ public class GUIStyelSettings{
 		}
     }
     
+    /**
+	 * Apply to all windows general nimbus LAF size for all components in the parentFrame Container, according to the int value given as param:
+	 * 0=mini; 1=small; 2= large.  Other values use small as default.
+	 */
+	public static void applyNimbusSize(JFrame targetFrame, int size) {
+		try {
+			String nameLaf = UIManager.getLookAndFeel().getName();
+			if (!"Nimbus".equals(nameLaf)) {
+				return;
+			}
+		} catch (Exception e) {
+			logger.error("An error occurred!", e);
+			return;
+		}
+		level = "mini";
+		switch (size) {
+			case 0: {
+				level = "mini";
+				break;
+			}
+			case 1: {
+				level = "small";
+				break;
+			}
+			case 2: {
+				level = "large";
+				break;
+			}
+			default: {
+				level = "small";
+				break;
+			}
+		}
+		
+		if (targetFrame == null) {
+			for (Window currWin : Window.getWindows()) {
+				// for every component in the given root one apply the new size
+				for (Component curr : getAllComponents(currWin)) {
+					try {
+						if (curr instanceof JComponent && curr != null) {
+							((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
+						}
+					} catch (Throwable e) {
+						logger.error("An error occurred!", e);
+					}
+				}
+			} 
+		} else {
+			for (Component curr : getAllComponents(targetFrame)) {
+				try {
+					if (curr instanceof JComponent && curr != null) {
+						((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
+					}
+				} catch (Throwable e) {
+					logger.error("An error occurred!", e);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * Apply to single target general nimbus LAF size for all components in the parentFrame Container, according to the int value given as param:
+	 * 0=mini; 1=small; 2= large.  Other values use small as default.
+	 */
+	public static void applyNimbusSize(Component target, int size) {
+		try {
+			String nameLaf = UIManager.getLookAndFeel().getName();
+			if (!"Nimbus".equals(nameLaf)) {
+				return;
+			}
+		} catch (Throwable e) {
+			logger.error("An error occurred!", e);
+			return;
+		}
+		String level = "mini";
+		switch (size) {
+			case 0: {
+				level = "mini";
+				break;
+			}
+			case 1: {
+				level = "small";
+				break;
+			}
+			case 2: {
+				level = "large";
+				break;
+			}
+			default: {
+				level = "large";
+				break;
+			}
+		}
+		((JComponent) target).putClientProperty("JComponent.sizeVariant", level);
+		
+	}
+	
+    
     public static synchronized void updateAllWindowsLaf() {
     	// update all windows
 		for(Window window: Window.getWindows()) {
 		    try {
 				SwingUtilities.updateComponentTreeUI(window);
 			} catch (Exception e) {
-				logger.error(e);
+				logger.error("", e);
 			}
 		}
 		
@@ -252,7 +354,7 @@ public class GUIStyelSettings{
 						((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					logger.error("", e);
 				}
 			}
 		}
@@ -324,5 +426,26 @@ public class GUIStyelSettings{
             g.fillRect(0, 0, width, height);
         }
     }
+
+	public static boolean isNimbus(String preferredStyle) {
+		
+		if(preferredStyle != null && !"".equals(preferredStyle)) {
+			return preferredStyle.toLowerCase().contains("nimbus");
+		}
+		
+		return false;
+	}
+
+	public static Painter<JComponent> getPainter(Color color){
+	    return new Painter<JComponent>() 
+	    {
+	        @Override
+	        public void paint(Graphics2D g, JComponent c, int w, int h) 
+	        {
+	            g.setColor(color);
+	            g.fillRect(0, 0, w, h);
+	        }
+	    };
+	}
 
 }

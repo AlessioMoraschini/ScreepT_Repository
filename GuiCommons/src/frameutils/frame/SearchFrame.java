@@ -9,6 +9,7 @@ import java.awt.Cursor;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 import textareautil.SelectionDtoFull;
 
 import javax.swing.JTextField;
@@ -16,7 +17,6 @@ import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
 
-import media.SoundsExtended;
 import mouseutils.MovePanelMouseListener;
 
 import javax.swing.event.DocumentEvent;
@@ -413,10 +413,10 @@ public class SearchFrame extends JFrame{
 			textSearchArea.setSelectionStart(indexStart);
 			textSearchArea.setSelectionEnd(indexStart + match.length());
 			end = false;
-			SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
+			SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		}else {
 			end = true;
-			SoundsExtended.playSound(SoundsConfigurator.CLICK_1, null);
+			SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_1, null);
 		}
 		
 		ifEndGoToStart(match, forward);

@@ -23,18 +23,19 @@ import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import generic.ParametricExceptionThread;
+import gui.GuiUtils;
 import gui.utils.LauncherLoaderFrame;
 import handlers.AWTExceptionHandler;
 import launcherutils.IniFileManager;
 import logger.LoggerUtils;
 import mainobj.INItializer;
-import media.SoundsExtended;
 import plugins.PluginManager;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 import uTILS.dependencycheck.LibChecker;
 import updater.UpdatesManager;
 import utility.properties.PropertiesManager;
@@ -51,7 +52,7 @@ public class MainGuiGeneralAppStarter {
 	
 	// LOADER
 	public static LauncherLoaderFrame loaderGraphics;
-	public static final Dimension screenSize = GuiUtils.getScreenSize();
+	public static final Dimension screenSize = GuiUtilsExtended.getScreenSize();
 	public static final Dimension minimumSize = new Dimension(980,500);
 	public static final Dimension minimumSizeCrypter = new Dimension(1230,750);
 		
@@ -96,7 +97,7 @@ public class MainGuiGeneralAppStarter {
 				dialogHelper = new JOptionHelperExtended(null);
 				fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
 				
-				GuiUtils.init();
+				GuiUtilsExtended.init();
 				JOptionHelperExtended.init();
 				AWTExceptionHandler.init();
 				
@@ -107,7 +108,7 @@ public class MainGuiGeneralAppStarter {
 				}
 				
 			} catch (Exception e) {
-				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot load internal configuration File: " + AWTExceptionHandler.ERROR_FILE_REASONS + "resourcesFilePathsMappings.properties", "Cannot load configuration", e);
 				throw e;
 			}
@@ -125,7 +126,7 @@ public class MainGuiGeneralAppStarter {
 				
 			} catch (Exception e) {
 				System.out.println("There was a critical error when trying to load Logger! Application cannot start.");
-				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Critical error: Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
 						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
 				throw e;
@@ -185,7 +186,7 @@ public class MainGuiGeneralAppStarter {
 				GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, GeneralConfig.TOOLTIP_RESHOW_DELAY, tooltipFontFromProps);
 			
 			} catch (Exception e) {
-				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot setup Tooltips general graphics, an error occurred", "Cannot load Tooltips props", e);
 			}
 			
@@ -263,7 +264,7 @@ public class MainGuiGeneralAppStarter {
 			
 			if (forceCloseWithoutAsk || ParametricExceptionThread.isCriticalError(t)) {
 				logger.error(AWTExceptionHandler.CRITICAL_ERROR_MSG, t);
-				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				
 				if (!forceCloseWithoutAsk) {
 					res = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelperExtended.YES_OR_NO);
@@ -290,7 +291,7 @@ public class MainGuiGeneralAppStarter {
 				logger.error("An Exception occurred: ", t);
 				
 				if (currentConfiguration.getGenOpt().isExceptionAdvicesEnabled()) {
-					SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
+					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 					res = new JOptionHelperExtended(null).warnScroll(
 							"An Exception occurred, but I'still here ;) \n\n"
 									+ "(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"

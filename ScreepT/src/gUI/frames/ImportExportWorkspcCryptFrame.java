@@ -1,7 +1,7 @@
 package gUI.frames;
 
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import maingUI.MainGUI;
@@ -63,7 +63,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		
 		setTitle("Import/Export crypted Workspace");
 		
-		GuiUtils.centerComponent(this, WIDTH, HEIGHT);
+		GuiUtilsExtended.centerComponent(this, WIDTH, HEIGHT);
 		
 		logger.info("Opening frame: " + getClass().getName());
 		
@@ -101,14 +101,14 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		btnSelectImport = new JButton("Select new to import");
 		btnSelectImport.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		btnSelectImport.setBackground(new Color(210, 180, 140));
-		btnSelectImport.setCursor(GuiUtils.CURSOR_HAND);
+		btnSelectImport.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(btnSelectImport, "cell 3 1,growx,aligny center");
 		
 		btnImport = new JButton("Import Selected");
 		btnImport.setForeground(Color.BLACK);
 		btnImport.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		btnImport.setBackground(new Color(205, 133, 63));
-		btnImport.setCursor(GuiUtils.CURSOR_HAND);
+		btnImport.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(btnImport, "cell 4 1 2 1,growx,aligny center");
 		
 		separator = new JSeparator();
@@ -123,7 +123,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		
 		comboBoxExport = new JComboBox<FileNamed>(txtOptions.lastSelectedWorkspaces.getList());
 		comboBoxExport.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		comboBoxExport.setCursor(GuiUtils.CURSOR_HAND);
+		comboBoxExport.setCursor(GuiUtilsExtended.CURSOR_HAND);
 //		comboBoxExport = new JComboBox<FileNamed>();
 		getContentPane().add(comboBoxExport, "cell 1 3 3 1,growx,aligny center");
 		
@@ -131,7 +131,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		btnExport.setForeground(Color.BLACK);
 		btnExport.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		btnExport.setBackground(new Color(119, 136, 153));
-		btnExport.setCursor(GuiUtils.CURSOR_HAND);
+		btnExport.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(btnExport, "cell 4 3 2 1,growx,aligny center");
 		
 		addListeners();
@@ -153,7 +153,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 			public void run() {
 				String lastWorkspaceName = new File(textOptions.defaultWorkspacePath).getName();
 				
-				int match = GuiUtils.getFirstIndexMatchFromFileNamedCombo(comboBoxExport, lastWorkspaceName);
+				int match = GuiUtilsExtended.getFirstIndexMatchFromFileNamedCombo(comboBoxExport, lastWorkspaceName);
 				comboBoxExport.setSelectedIndex(match);
 				comboBoxExport.repaint();
 			}

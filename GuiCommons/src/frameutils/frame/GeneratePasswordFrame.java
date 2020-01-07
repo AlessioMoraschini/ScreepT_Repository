@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ClipboardPanelLight;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gui.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -87,7 +87,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 		setAlwaysOnTop(true);
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEYGEN_PSW, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_KEYGEN_PSW, this);
 		getContentPane().setLayout(new MigLayout("", "[::5px][:230px:230px,grow][grow][40px:n][100px:n][][70px][60px][]", "[:35px:35px][][35px,grow]"));
 		
 		textField = new JPasswordField();
@@ -119,21 +119,21 @@ public class GeneratePasswordFrame extends ParentFrame{
 		spinnerLength.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		spinnerLength.setToolTipText("Best match to use in ScreepT is 16 characters");
 		spinnerLength.setModel(new SpinnerNumberModel(16, 1, 64, 1));
-		GuiUtils.setJspinnerColors(spinnerLength, Color.GRAY, new Color(10,10,10));
+		GuiUtilsExtended.setJspinnerColors(spinnerLength, Color.GRAY, new Color(10,10,10));
 		spinnerLength.setAlignmentY(Component.TOP_ALIGNMENT);
 		spinnerLength.setAlignmentX(Component.LEFT_ALIGNMENT);
 		spinnerLength.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 18));
 		getContentPane().add(spinnerLength, "cell 5 0,grow");
 		
 		btnGenerate = new JButton("Generate");
-		btnGenerate.setCursor(GuiUtils.CURSOR_HAND);
+		btnGenerate.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnGenerate.setBackground(Color.GRAY);
 		btnGenerate.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		getContentPane().add(btnGenerate, "cell 6 0,grow");
 		
 		btnHashed = new JButton("From Word");
 		btnHashed.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		btnHashed.setCursor(GuiUtils.CURSOR_HAND);
+		btnHashed.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnHashed.setBackground(Color.GRAY);
 		getContentPane().add(btnHashed, "cell 7 0 2 1,grow");
 		
@@ -257,7 +257,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 						64,
 						new Object[] {"Generate random", "Generate deterministic"});
 				
-				thisFrame.setCursor(GuiUtils.CURSOR_HAND);
+				thisFrame.setCursor(GuiUtilsExtended.CURSOR_HAND);
 				
 				if(source != null && source.value.length == 0){
 					dialogHelper.warn("You have to specify a password in order to get an hashed value!", "Invalid input");
@@ -284,7 +284,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 					}
 				}
 
-				thisFrame.setCursor(GuiUtils.CURSOR_DEFAULT);
+				thisFrame.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 			}
 		});
 		

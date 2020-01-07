@@ -17,6 +17,8 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import files.FileVarious;
+import files.FileWorker;
 import gui.GuiUtils;
 import gui.JOptionHelper;
 import gui.panels.CustomizeParametersPanel;
@@ -25,7 +27,6 @@ import gui.panels.LauncherMainPanel;
 import gui.utils.LauncherLoaderFrame;
 import gui.utils.LoggerUtils;
 import launcherutils.CommandsAssembler;
-import launcherutils.FileUtils;
 import launcherutils.IniFileManager;
 import launcherutils.JvmHelper;
 import launcherutils.om.DependencyLocalPath;
@@ -377,7 +378,7 @@ public class ScreepTLauncher {
 		logger.info("Creating launcher file : " + initFilePath);
 		
 		// write commands to build bash/batch starter file
-		boolean written = FileUtils.writeStringToFile(commandList, new File(initFilePath), true);
+		boolean written = FileWorker.writeStringToFile(commandList, new File(initFilePath), true);
 		
 		String msg = (written)? "Write completed correctly :)" : "Write not succeded for some error :(";
 		logger.info(msg);
@@ -402,7 +403,7 @@ public class ScreepTLauncher {
 						+ " <= VERSION < "
 						+ IniFileManager.MAX_JRE_VERSION+")";
 				
-				File tempManualJvm = FileUtils.directoRead(launcherMainFrame, msg);
+				File tempManualJvm = FileVarious.directoRead(launcherMainFrame, msg, new File(GeneralConfig.USER_PERSONAL_DIR));
 				
 				if (tempManualJvm != null && tempManualJvm.exists()) {
 					jvmHelper.manualPath_Jvm = tempManualJvm.getAbsolutePath();
@@ -458,7 +459,7 @@ public class ScreepTLauncher {
 				}
 				
 				try {
-					FileUtils.deleteDirContentRecursive(new File(GeneralConfig.PLUGINS_DIR));
+					FileWorker.deleteDirContentRecursive(new File(GeneralConfig.PLUGINS_DIR));
 					logger.info("PLUGINS folder cleaned");
 				} catch (Exception e) {
 					logger.error("Cannot clean PLUGINS folder");

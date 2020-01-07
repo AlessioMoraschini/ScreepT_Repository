@@ -24,12 +24,12 @@ import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.watcher.FileChangeMonitor;
 import frameutils.frame.arch.ModulePanel;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.KeyGenFrame;
 import gUI.utils.shortcutshandler.CrypterPanelShortcutsListener;
 import gUI.utils.tree.crypter.TreeFileMouseListenerCrypter;
 import gUI.utils.tree.crypter.dragndrop.VirtualFileDropPane;
-import guistyle.GUIStyelSettings;
+import guistyle.GUIStyelSettingsExtended;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
@@ -99,7 +99,7 @@ public class CrypterPanel extends ModulePanel {
 	// dateFormatter
 	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd @ HH-mm-ss");
 	
-	private static final Dimension screenSize = GuiUtils.getScreenSize();
+	private static final Dimension screenSize = GuiUtilsExtended.getScreenSize();
 	private static final Dimension screenSizeLess = new Dimension(screenSize.width - 5, screenSize.height - 45);
 	private static final Dimension maxBodySize = new Dimension(screenSize.width - 5, screenSize.height - 90);
 	private static final Dimension maxSplitPaneSize = new Dimension(screenSize.width - 10, screenSize.height - 190);
@@ -573,7 +573,7 @@ public class CrypterPanel extends ModulePanel {
 		addHandlers();
 		
 		// new thread that updates jtree periodically
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -599,7 +599,7 @@ public class CrypterPanel extends ModulePanel {
 		
 		// new thread keeps updated aeskey check and ReadyToCode label.
 		// this thread will check (every second) the value contained in the textfield
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -944,7 +944,7 @@ public class CrypterPanel extends ModulePanel {
 						removeTreeFiles();
 					}
 					
-					GuiUtils.openInFileSystem(destinationDir);
+					GuiUtilsExtended.openInFileSystem(destinationDir);
 
 					textAreaLog.append("\n" + msg);
 					srcFile = null;
@@ -1066,7 +1066,7 @@ public class CrypterPanel extends ModulePanel {
 						removeTreeFiles();
 					}
 					
-					GuiUtils.openInFileSystem(destinationDir);
+					GuiUtilsExtended.openInFileSystem(destinationDir);
 					
 					logger.info(msg);
 					textAreaLog.append("\n" + msg);
@@ -1114,7 +1114,7 @@ public class CrypterPanel extends ModulePanel {
 					dialogHelper.info(resultDirectory + "'s content deleted.", "Directory cleaned");
 				} else {
 					dialogHelper.warn("Cannot delete all content in " + resultDirectory, "Cannot clean directory.");
-					GuiUtils.openInFileSystem(resultDirectory);
+					GuiUtilsExtended.openInFileSystem(resultDirectory);
 				}
 			}
 		}
@@ -1615,8 +1615,8 @@ public class CrypterPanel extends ModulePanel {
 				textAreaLog.setFont(new Font(logFont.getName(), logFont.getStyle(), currentConf.getGuiOpt().getLogFontSize()-1));
 				textAreaMain.setFont(new Font("Segoe UI", Font.PLAIN, 17));
 				
-				GUIStyelSettings.setStyle(currentConf.getGuiOpt().getPreferredStyle(), currentConf.getGuiOpt().nimbusSize);
-				GUIStyelSettings.applyNimbusSize(null, currentConf.getGuiOpt().nimbusSize);
+				GUIStyelSettingsExtended.setStyle(currentConf.getGuiOpt().getPreferredStyle(), currentConf.getGuiOpt().nimbusSize);
+				GUIStyelSettingsExtended.applyNimbusSize(null, currentConf.getGuiOpt().nimbusSize);
 //				SplitPaneUtils.resetAllDIviderColors(thisPanel, new Color(40,40,40));
 			}
 		});

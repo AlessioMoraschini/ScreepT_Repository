@@ -28,7 +28,7 @@ import combobox.TextPaneComboBoxEditor;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.TextEditorOption;
@@ -97,7 +97,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		
 		this.dataMap = GeneralConfig.CLIPBOARD_PANEL_MAP;
 		this.txtAreaClipboard = new RSyntaxTextArea();
-		txtAreaClipboard.setMaximumSize(new Dimension(1500, GuiUtils.getScreenSize().height));
+		txtAreaClipboard.setMaximumSize(new Dimension(1500, GuiUtilsExtended.getScreenSize().height));
 		this.txtAreaContainer = new JScrollPane();
 		txtAreaClipboard.setSelectionColor(config.getTextEditorOpt().filePanelBackCol.brighter().brighter());
 		txtAreaContainer.setMinimumSize(new Dimension(18, 18));
@@ -150,8 +150,8 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		btnSave.setMinimumSize(new Dimension(20, 20));
 		btnSave.setMaximumSize(new Dimension(20, 20));
 		mainPane.add(btnSave, "cell 0 1,alignx center");
-		btnSave.setCursor(GuiUtils.CURSOR_HAND);
-		GuiUtils.makeTransparentJButton(btnSave);
+		btnSave.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		GuiUtilsExtended.makeTransparentJButton(btnSave);
 		btnSave.setToolTipText("Save current Clipboard");
 		btnSave.setForeground(Color.BLACK);
 		btnSave.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE));
@@ -162,8 +162,8 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		btnReload.setMaximumSize(new Dimension(20, 20));
 		btnReload.setForeground(Color.BLACK);
 		btnReload.setToolTipText("Reload current Clipboard (be careful, unsaved changes will be lost)");
-		btnReload.setCursor(GuiUtils.CURSOR_HAND);
-		GuiUtils.makeTransparentJButton(btnReload);
+		btnReload.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		GuiUtilsExtended.makeTransparentJButton(btnReload);
 		btnReload.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		mainPane.add(btnReload, "cell 1 1,alignx center");
 		
@@ -173,14 +173,14 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		btnAddNewClipboard.setMinimumSize(new Dimension(20, 9));
 		btnAddNewClipboard.setMaximumSize(new Dimension(20, 20));
 		btnAddNewClipboard.setForeground(Color.BLACK);
-		btnAddNewClipboard.setCursor(GuiUtils.CURSOR_HAND);
-		GuiUtils.makeTransparentJButton(btnAddNewClipboard);
+		btnAddNewClipboard.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		GuiUtilsExtended.makeTransparentJButton(btnAddNewClipboard);
 		btnAddNewClipboard.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
 		mainPane.add(btnAddNewClipboard, "cell 2 1");
 		
 		String[] clipBoards = dataMap.keySet().toArray(new String[2]);
 		comboClipboards = new JComboBox<>(clipBoards);
-		comboClipboards.setCursor(GuiUtils.CURSOR_HAND);
+		comboClipboards.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		comboClipboards.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN));
 		comboClipboards.setToolTipText("Choose between loaded Clipboards");
 		comboClipboards.setForeground(Color.BLACK);
@@ -192,8 +192,8 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		btnReloadClipboards.setPreferredSize(new Dimension(20, 20));
 		btnReloadClipboards.setMinimumSize(new Dimension(20, 9));
 		btnReloadClipboards.setMaximumSize(new Dimension(20, 20));
-		btnReloadClipboards.setCursor(GuiUtils.CURSOR_HAND);
-		GuiUtils.makeTransparentJButton(btnReloadClipboards);
+		btnReloadClipboards.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		GuiUtilsExtended.makeTransparentJButton(btnReloadClipboards);
 		btnReloadClipboards.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD4));
 		btnReloadClipboards.setForeground(Color.BLACK);
 		mainPane.add(btnReloadClipboards, "cell 6 1");
@@ -203,8 +203,8 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 		btnOpenInFilesystem.setPreferredSize(new Dimension(20, 20));
 		btnOpenInFilesystem.setMinimumSize(new Dimension(20, 9));
 		btnOpenInFilesystem.setMaximumSize(new Dimension(20, 20));
-		btnOpenInFilesystem.setCursor(GuiUtils.CURSOR_HAND);
-		GuiUtils.makeTransparentJButton(btnOpenInFilesystem);
+		btnOpenInFilesystem.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		GuiUtilsExtended.makeTransparentJButton(btnOpenInFilesystem);
 		btnOpenInFilesystem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 		btnOpenInFilesystem.setForeground(Color.BLACK);
 		mainPane.add(btnOpenInFilesystem, "cell 7 1");
@@ -385,7 +385,7 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
 					public void run() {
-						GuiUtils.openInFileSystem(new File(GeneralConfig.PANEL_FILES_FOLDER));
+						GuiUtilsExtended.openInFileSystem(new File(GeneralConfig.PANEL_FILES_FOLDER));
 					}
 				}).start();
 			}

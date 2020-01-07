@@ -10,7 +10,7 @@ import java.io.File;
 import javax.swing.JFrame;
 
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gui.UpdateProgressPanel;
 import net.miginfocom.swing.MigLayout;
 import om.TextEditorOption;
@@ -79,12 +79,12 @@ public class HashCheckerFrame extends ParentFrame{
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[5px][150px:150px][220px,grow][50px:150px:150px][190px:190px:200px][5px]", "[5px,center][30px,center][][35px][][20px,grow][20px,grow][5px,center]"));
 		
 		btnSelectFile = new JButton("Select File");
-		btnSelectFile.setCursor(GuiUtils.CURSOR_HAND);
+		btnSelectFile.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnSelectFile.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSelectFile.setBackground(new Color(119, 136, 153));
 		getContentPane().add(btnSelectFile, "cell 1 1,grow");
 		
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_HASHING, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_HASHING, this);
 		setLocationRelativeTo(parentFrame);
 		
 		txtFieldLoadedFile = new TxtFieldFileDragNDropManager(new Runnable() {
@@ -113,11 +113,11 @@ public class HashCheckerFrame extends ParentFrame{
 		
 //		comboBoxHashingAlgos = new JComboBox<HashingFunction>();
 		comboBoxHashingAlgos = new JComboBox<HashingFunction>(HashingFunction.values());
-		comboBoxHashingAlgos.setCursor(GuiUtils.CURSOR_HAND);
+		comboBoxHashingAlgos.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(comboBoxHashingAlgos, "cell 2 3,growx");
 		
 		rdbtnUppercase = new JRadioButton("Uppercase");
-		rdbtnUppercase.setCursor(GuiUtils.CURSOR_HAND);
+		rdbtnUppercase.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		rdbtnUppercase.setOpaque(false);
 		rdbtnUppercase.setForeground(Color.WHITE);
 		rdbtnUppercase.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -126,7 +126,7 @@ public class HashCheckerFrame extends ParentFrame{
 		
 		rdbtnUseAlgorithmAsPrefix = new JRadioButton("Use Algorithm as Prefix");
 		rdbtnUseAlgorithmAsPrefix.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		rdbtnUseAlgorithmAsPrefix.setCursor(GuiUtils.CURSOR_HAND);
+		rdbtnUseAlgorithmAsPrefix.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		rdbtnUseAlgorithmAsPrefix.setForeground(Color.WHITE);
 		rdbtnUseAlgorithmAsPrefix.setOpaque(false);
 		rdbtnUseAlgorithmAsPrefix.setSelected(txtOptions.prefix_hash);
@@ -136,7 +136,7 @@ public class HashCheckerFrame extends ParentFrame{
 		getContentPane().add(separator, "cell 1 4 4 1,growx");
 		
 		btnVerifyChecksum = new JButton("Verify Checksum");
-		btnVerifyChecksum.setCursor(GuiUtils.CURSOR_HAND);
+		btnVerifyChecksum.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnVerifyChecksum.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnVerifyChecksum.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnVerifyChecksum, "cell 1 5,grow");
@@ -150,7 +150,7 @@ public class HashCheckerFrame extends ParentFrame{
 		
 		btnCalculateHash = new JButton("Calculate Hash");
 		btnCalculateHash.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnCalculateHash.setCursor(GuiUtils.CURSOR_HAND);
+		btnCalculateHash.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnCalculateHash.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnCalculateHash, "cell 1 6,grow");
 		
@@ -217,7 +217,7 @@ public class HashCheckerFrame extends ParentFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final String prefix = getPrefix();
-				GuiUtils.launchThreadSafeSwing(new Runnable() {
+				GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 					public void run() {
 						UpdateProgressPanel updateProgress = null;
 						try {
@@ -258,7 +258,7 @@ public class HashCheckerFrame extends ParentFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final String prefix = getPrefix();
-				GuiUtils.launchThreadSafeSwing(new Runnable() {
+				GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 					public void run() {
 						UpdateProgressPanel updateProgress = null;
 						try {

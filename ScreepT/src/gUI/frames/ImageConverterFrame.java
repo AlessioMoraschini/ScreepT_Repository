@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
 import gui.UpdateProgressPanel;
@@ -167,8 +167,8 @@ public class ImageConverterFrame extends ParentFrame{
 		// initialize field representing locally configuration referred
 		currentConfiguration = currentConf;
 		
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER, this);
-		GuiUtils.showOnSameScreen(this, MainGUI.mainFrameScreept);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER, this);
+		GuiUtilsExtended.showOnSameScreen(this, MainGUI.mainFrameScreept);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		

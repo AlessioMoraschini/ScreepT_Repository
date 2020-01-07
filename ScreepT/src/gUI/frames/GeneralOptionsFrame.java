@@ -8,7 +8,7 @@ import org.ini4j.Wini;
 
 import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -120,9 +120,9 @@ public class GeneralOptionsFrame extends ParentFrame{
 		currentConfiguration = currentConf;
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GEN_OPT, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_GEN_OPT, this);
 		
-		GuiUtils.showOnSameScreen(this, MainGUI.mainFrameScreept);
+		GuiUtilsExtended.showOnSameScreen(this, MainGUI.mainFrameScreept);
 		
 		try {
 			launcherConfiguration = new Wini(new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH));

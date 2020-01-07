@@ -21,7 +21,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import files.om.FileNamed;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import om.LimitedConcurrentList;
 import treeutils.om.FileNameCellRenderer;
 
@@ -128,10 +128,10 @@ public class TreeUtils {
 //				}
 //				
 				if (tp != null) {
-					source.setCursor(GuiUtils.CURSOR_HAND);
+					source.setCursor(GuiUtilsExtended.CURSOR_HAND);
 					((FileNameCellRenderer)source.getCellRenderer()).setHoverBackgroundEffect(true);
 				} else {
-					source.setCursor(GuiUtils.CURSOR_DEFAULT);
+					source.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 					((FileNameCellRenderer)source.getCellRenderer()).setHoverBackgroundEffect(false);
 				}
 			}

@@ -1,9 +1,8 @@
-package media;
+package resources;
 
-import resources.SoundsConfigurator;
 import sounds.SoundsManager;
 
-public class SoundsExtended extends SoundsManager {
+public class SoundsManagerExtended extends SoundsManager {
 	
 	static {
 		volume = SoundsConfigurator.DEFAULT_EFFECTS_VOLUME;

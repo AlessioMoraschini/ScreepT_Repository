@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 import dialogutils.JOptionHelperExtended;
 import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.subpanels.ImageGenContainerPanel;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import gui.UpdateProgressPanel;
@@ -115,7 +115,7 @@ public class KeyGenFrame extends ParentFrame {
 		dialogHelper = new JOptionHelperExtended(thisFrame);
 		
 		// SW window icon
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_KEYGEN, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_KEYGEN, this);
 		
 		// get default values to initialize panel
 		CURRENT_SEL_W = currentConfig.getSteganOpt().getDefaultWidth();
@@ -479,7 +479,7 @@ public class KeyGenFrame extends ParentFrame {
 		// BUTTON KEY GENERATION LISTENER
 		btnGenerateKey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				GuiUtils.launchThreadSafeSwing(new Runnable() {
+				GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 					public void run() {
 						Date now = new Date();
 						panelIMG.setSize(DEF_W, panelIMG.getSize().height);

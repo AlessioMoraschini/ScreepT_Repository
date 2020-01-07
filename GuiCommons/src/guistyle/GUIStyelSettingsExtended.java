@@ -4,15 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.Painter;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.ColorUIResource;
@@ -25,60 +19,28 @@ import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticTheme;
 import com.jgoodies.looks.plastic.theme.LightGray;
 
+import gui.GUIStyelSettings;
 import media.ImageWorkerExtended;
 import om.GuiOption;
 import resources.GeneralConfig;
 import treeutils.TreeUtils;
 
-public class GUIStyelSettings{
+public class GUIStyelSettingsExtended extends GUIStyelSettings {
 
-	static Logger logger = Logger.getLogger(GUIStyelSettings.class);
-	
-	private static String level = "mini";
-	
-	public static final String NimbusLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-	public static final String WindowsLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-	public static final String WindowsClassicLookAndFeel = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
-	public static final String PlafLookAndFeels = "javax.swing.plaf.metal.MetalLookAndFeel";
-	
-	public static final String jtatooLookAndFeel = "com.jtattoo.plaf.smart.SmartLookAndFeel";
-	public static final String jtatooNoireLNF = "com.jtattoo.plaf.noire.NoireLookAndFeel";
-	public static final String jtatooGraphiteLNF = "com.jtattoo.plaf.graphite.GraphiteLookAndFeel";
-	public static final String jtatooMintLNF = "com.jtattoo.plaf.noire.MintLookAndFeel";
-	public static final String jtatooLunaLNF = "com.jtattoo.plaf.luna.LunaLookAndFeel";
+	static Logger logger = Logger.getLogger(GUIStyelSettingsExtended.class);
 	
 	public static final String jgoodiesPlastic = "com.jgoodies.looks.plastic.PlasticLookAndFeel";
 	public static final String jgoodiesPlasticXP = "com.jgoodies.looks.plastic.PlasticXPLookAndFeel";
 	public static final String jgoodiesPlastic3d = "com.jgoodies.looks.plastic.Plastic3DLookAndFeel";
 	public static final String jgoodiesWindows = "com.jgoodies.looks.windows.WindowsLookAndFeel";
 	
-	public static final Color nimbusProgBarColor = new Color(84,165,50);
-	
 	public static PlasticTheme currentTheme = new LightGray();
 
-	public static int focusOpacity = 20;
+	static {
+		defaultButtonFont = GeneralConfig.DIALOG_BTN_FONT;
+	}
 	
-	public static boolean isNimbus(GuiOption guiOpt) {
-		String style = guiOpt.getPreferredStyle();
-		
-		if(style != null && !"".equals(style)) {
-			return style.toLowerCase().contains("nimbus");
-		}
-		
-		return false;
-	}
-
-	public static boolean isDarkNimbus(GuiOption guiOpt) {
-		String style = guiOpt.getPreferredStyle();
-		
-		if(guiOpt.isDarkGuiNimbus() && isNimbus(guiOpt)) {
-			return style.toLowerCase().contains("nimbus");
-		}
-		
-		return false;
-	}
-
-    public static synchronized boolean setStyle(String style, int nimbusSize) {
+	public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
     		
     		try {
@@ -91,7 +53,7 @@ public class GUIStyelSettings{
     		UIManager.put("CheckBox.disabledText", Color.LIGHT_GRAY);
     		UIManager.put("RadioButton.disabledText", Color.LIGHT_GRAY);
     		UIManager.put("nimbusOrange", nimbusProgBarColor);
-    		UIManager.put("OptionPane.buttonFont", new FontUIResource(GeneralConfig.DIALOG_BTN_FONT));
+    		UIManager.put("OptionPane.buttonFont", new FontUIResource(defaultButtonFont));
 			UIManager.put("MenuBar.foreground", Color.black );
 			UIManager.put("ScrollBar.background", new Color(170,170,170));
 			UIManager.put("ToolTip.font", new Font("Segoe UI", Font.PLAIN, 18));
@@ -106,7 +68,7 @@ public class GUIStyelSettings{
 				UIManager.put("Button.foreground", Color.BLACK);
 			}
 			
-			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, true);
+			GUIStyelSettingsExtended.applySizeToAllWindowsNimbus(nimbusSize, true);
 			
     		return true;
 		} catch (Throwable e3) {
@@ -116,21 +78,15 @@ public class GUIStyelSettings{
 		}
     }
     
-    public static synchronized void updateAllWindowsLaf() {
-    	// update all windows
-		for(Window window: Window.getWindows()) {
-		    try {
-				SwingUtilities.updateComponentTreeUI(window);
-			} catch (Throwable e) {
-				logger.error("An error occurred!", e);
-			}
+	public static boolean isDarkNimbus(GuiOption guiOpt) {
+		String style = guiOpt.getPreferredStyle();
+		
+		if(guiOpt.isDarkGuiNimbus() && isNimbus(guiOpt.getPreferredStyle())) {
+			return style.toLowerCase().contains("nimbus");
 		}
 		
-    }
-    
-    public static void setFocusDefaultBtn() {
-		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-    }
+		return false;
+	}
     
     public static synchronized boolean setDarkNimbus(int nimbusSize) {
     	
@@ -139,7 +95,7 @@ public class GUIStyelSettings{
 		UIManager.put("RadioButton.disabledText", Color.LIGHT_GRAY);
 		UIManager.put("nimbusOrange", nimbusProgBarColor);
 		UIManager.put("nimbusBase", new Color(18, 30, 49));
-		UIManager.put("OptionPane.buttonFont", new FontUIResource(GeneralConfig.DIALOG_BTN_FONT));
+		UIManager.put("OptionPane.buttonFont", new FontUIResource(defaultButtonFont));
 		UIManager.put("ScrollBar.background", new Color(70, 70, 70));
 		UIManager.put("MenuBar.foreground", Color.white);
 		UIManager.put("nimbusLightBackground", new Color(250, 250, 250));
@@ -154,7 +110,7 @@ public class GUIStyelSettings{
 					return true;
 				}
 			}
-			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, false);
+			GUIStyelSettingsExtended.applySizeToAllWindowsNimbus(nimbusSize, false);
 		} catch (Throwable e) {
 			logger.error("Exception happened!", e);
 		}
@@ -186,7 +142,7 @@ public class GUIStyelSettings{
 					return true;
 				}
 			}
-			GUIStyelSettings.applySizeToAllWindowsNimbus(nimbusSize, true);
+			GUIStyelSettingsExtended.applySizeToAllWindowsNimbus(nimbusSize, true);
 		} catch (Throwable e) {
 			logger.error("Exception happened!", e);
 		} 
@@ -280,103 +236,6 @@ public class GUIStyelSettings{
 	
 	
 	/**
-	 * Apply to all windows general nimbus LAF size for all components in the parentFrame Container, according to the int value given as param:
-	 * 0=mini; 1=small; 2= large.  Other values use small as default.
-	 */
-	public static void applyNimbusSize(JFrame targetFrame, int size) {
-		try {
-			String nameLaf = UIManager.getLookAndFeel().getName();
-			if (!"Nimbus".equals(nameLaf)) {
-				return;
-			}
-		} catch (Exception e) {
-			logger.error("An error occurred!", e);
-			return;
-		}
-		level = "mini";
-		switch (size) {
-			case 0: {
-				level = "mini";
-				break;
-			}
-			case 1: {
-				level = "small";
-				break;
-			}
-			case 2: {
-				level = "large";
-				break;
-			}
-			default: {
-				level = "small";
-				break;
-			}
-		}
-		
-		if (targetFrame == null) {
-			for (Window currWin : Window.getWindows()) {
-				// for every component in the given root one apply the new size
-				for (Component curr : getAllComponents(currWin)) {
-					try {
-						if (curr instanceof JComponent && curr != null) {
-							((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
-						}
-					} catch (Throwable e) {
-						logger.error("An error occurred!", e);
-					}
-				}
-			} 
-		} else {
-			for (Component curr : getAllComponents(targetFrame)) {
-				try {
-					if (curr instanceof JComponent && curr != null) {
-						((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
-					}
-				} catch (Throwable e) {
-					logger.error("An error occurred!", e);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Apply to single target general nimbus LAF size for all components in the parentFrame Container, according to the int value given as param:
-	 * 0=mini; 1=small; 2= large.  Other values use small as default.
-	 */
-	public static void applyNimbusSize(int size, Component target) {
-		try {
-			String nameLaf = UIManager.getLookAndFeel().getName();
-			if (!"Nimbus".equals(nameLaf)) {
-				return;
-			}
-		} catch (Throwable e) {
-			logger.error("An error occurred!", e);
-			return;
-		}
-		String level = "mini";
-		switch (size) {
-			case 0: {
-				level = "mini";
-				break;
-			}
-			case 1: {
-				level = "small";
-				break;
-			}
-			case 2: {
-				level = "large";
-				break;
-			}
-			default: {
-				level = "large";
-				break;
-			}
-		}
-		((JComponent) target).putClientProperty("JComponent.sizeVariant", level);
-		
-	}
-
-	/**
 	 * Get all components that are sons of the given container
 	 * @param c
 	 * @return
@@ -425,18 +284,5 @@ public class GUIStyelSettings{
 			currentTheme = theme;
 		}
 	}
-	
-	public static Painter<JComponent> getPainter(Color color){
-        return new Painter<JComponent>() 
-        {
-            @Override
-            public void paint(Graphics2D g, JComponent c, int w, int h) 
-            {
-                g.setColor(color);
-                g.fillRect(0, 0, w, h);
-            }
-        };
-	}
-
 	
 }

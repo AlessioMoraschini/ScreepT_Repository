@@ -10,9 +10,9 @@ import dialogutils.JOptionHelperExtended;
 import generic.IParametricRunnable;
 import generic.ParametricExceptionThread;
 import mainobj.InitOwner;
-import media.SoundsExtended;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 
 public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	
@@ -95,7 +95,7 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 				Object res = options[1];
 				
 				if (ParametricExceptionThread.isCriticalError(t)) {
-					SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+					SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 
 					String outOfMemoryPreamble = t instanceof OutOfMemoryError ? 
 							"Not Enough RAM memory allocated to this process, to solve this you can increase the max memory option in launcher panel.\n\n" : "";
@@ -108,7 +108,7 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 					
 				}else{
 					if (initOwner.getInitializer().getGenOpt().isExceptionAdvicesEnabled()) {
-						SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
+						SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 						res = new JOptionHelperExtended(null).warnScroll(
 								"An Exception occurred, but I'm still here ;) "
 										+ "\n\n(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"

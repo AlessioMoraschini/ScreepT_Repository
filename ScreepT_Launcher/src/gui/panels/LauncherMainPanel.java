@@ -4,9 +4,8 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
+import gui.GUIStyelSettings;
 import gui.GuiUtils;
-import gui.utils.GUIStyelSettings;
-import gui.utils.Sounds;
 import mainlauncher.ScreepTLauncher;
 
 import javax.swing.JPanel;
@@ -18,6 +17,8 @@ import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
+import sounds.SoundsManager;
 
 import javax.swing.JLabel;
 import javax.imageio.ImageIO;
@@ -126,7 +127,7 @@ public class LauncherMainPanel extends JFrame{
 	
 		addHandlers();
 		
-		Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+		SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 		logger.info(this.getClass().getName() + " Started");
 	}
 	
@@ -148,7 +149,7 @@ public class LauncherMainPanel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				Sounds.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+				SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 				try {
 					Thread.sleep(400);
 				} catch (InterruptedException e1) {

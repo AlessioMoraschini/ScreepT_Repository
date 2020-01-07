@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.PropertyConfigurator;
 
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
 
 public class HardwareInfoFrameLauncher {
@@ -18,7 +18,7 @@ public class HardwareInfoFrameLauncher {
 		HwInfoFrame frame = new HwInfoFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(250, 200, 1000, 750);
-		GuiUtils.centerComponent(frame);
+		GuiUtilsExtended.centerComponent(frame);
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setAlwaysOnTop(true);

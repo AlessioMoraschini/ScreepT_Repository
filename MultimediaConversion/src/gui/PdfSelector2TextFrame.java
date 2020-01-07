@@ -16,7 +16,7 @@ import org.icepdf.ri.common.SwingViewBuilder;
 import conversion.ImageToTextExtractor;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
@@ -53,7 +53,7 @@ public class PdfSelector2TextFrame extends JFrame{
 	public static boolean active = false;
 	
 	public int WIDTH = 800;
-	public int HEIGHT = GuiUtils.getScreenSize().height-200;
+	public int HEIGHT = GuiUtilsExtended.getScreenSize().height-200;
 	
 	private JScrollPane imageContainerPanel;
 	private JTextArea txtAreaParsedText;
@@ -89,10 +89,10 @@ public class PdfSelector2TextFrame extends JFrame{
 
 		this.setAlwaysOnTop(true);
 		this.setTitle(title);
-		GuiUtils.setFrameIcon(ImagesPathConfigurator.MAIN_APP_ICON, this);
-		GuiUtils.centerFrame(this, WIDTH, HEIGHT);
-		GuiUtils.moveFrame(this, GuiUtils.getScreenSize().width/4, 0);
-		GuiUtils.showOnSameScreen(this, mainFrameParent);
+		GuiUtilsExtended.setFrameIcon(ImagesPathConfigurator.MAIN_APP_ICON, this);
+		GuiUtilsExtended.centerFrame(this, WIDTH, HEIGHT);
+		GuiUtilsExtended.moveFrame(this, GuiUtilsExtended.getScreenSize().width/4, 0);
+		GuiUtilsExtended.showOnSameScreen(this, mainFrameParent);
 		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 		
 		imageContainerPanel = new JScrollPane();
@@ -163,7 +163,7 @@ public class PdfSelector2TextFrame extends JFrame{
 				final File selected = fileDialogHelper.fileRead(thisFrame);
 				if(selected != null && selected.exists()) {
 					final Cursor backup = imageContainerPanel.getCursor();
-					imageContainerPanel.setCursor(GuiUtils.CURSOR_WAIT);
+					imageContainerPanel.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 					
 					Runnable runner = new Runnable() {
 						public void run() {
@@ -188,8 +188,8 @@ public class PdfSelector2TextFrame extends JFrame{
 		btnParseImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				imageContainerPanel.setCursor(GuiUtils.CURSOR_WAIT);
-				txtAreaParsedText.setCursor(GuiUtils.CURSOR_WAIT);
+				imageContainerPanel.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+				txtAreaParsedText.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 				btnParseImage.setEnabled(false);
 				
 				SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
@@ -203,8 +203,8 @@ public class PdfSelector2TextFrame extends JFrame{
 							result = false;
 							dialogHelper.error("An error occurred parsing the image :(","Parse Error");
 						} 
-						imageContainerPanel.setCursor(GuiUtils.CURSOR_DEFAULT);
-						txtAreaParsedText.setCursor(GuiUtils.CURSOR_TEXT);
+						imageContainerPanel.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
+						txtAreaParsedText.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 						btnParseImage.setEnabled(true);
 						return result;
 				    }

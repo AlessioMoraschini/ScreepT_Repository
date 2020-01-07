@@ -33,7 +33,7 @@ import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 
 import files.om.FileNamed;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -431,7 +431,7 @@ public class MainGuiParent {
 	}
 	
 	private void styleTopRightElement(JMenuItem topRightElement) {
-		topRightElement.setCursor(GuiUtils.CURSOR_HAND);
+		topRightElement.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		topRightElement.setFont(menuBarFont);
 		topRightElement.setAlignmentX(1);
 		topRightElement.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -540,7 +540,7 @@ public class MainGuiParent {
 		
 		mntmOptimizeResourcesUsage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLEANUP));
 		mntmOptimizeResourcesUsage.setToolTipText(
-				GuiUtils.encapsulateInHtml(
+				GuiUtilsExtended.encapsulateInHtml(
 						"Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)"
 						+ "<br><b>NB:</b> remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors."
 						+ "<br><u>If you want to modify the memory used by ScreepT</u> you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));

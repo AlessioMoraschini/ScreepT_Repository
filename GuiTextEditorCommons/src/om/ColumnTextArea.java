@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RUndoManager;
 
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
 import sun.swing.SwingUtilities2;
 
@@ -515,7 +515,7 @@ class ColumnSelectionCaret extends DefaultCaret {
     }
 
 	protected void defaultHighlight(Point start, Point end) {
-		Dimension screenSize = GuiUtils.getScreenSize();
+		Dimension screenSize = GuiUtilsExtended.getScreenSize();
 		
 		if (isRectangularModeOn.get()) {
 			JTextComponent comp = this.getComponent();

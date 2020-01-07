@@ -10,7 +10,7 @@ import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
 
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gUI.utils.tooltip.TextEditorTooltips;
@@ -357,7 +357,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 */
 				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					try {
-						GuiUtils.openInFileSystem(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+						GuiUtilsExtended.openInFileSystem(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
 					} catch (Exception e2) {
 					}
 				}
@@ -510,7 +510,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							try {
-								boolean result = GuiUtils.duplicateTextAreaCurrentLine(
+								boolean result = GuiUtilsExtended.duplicateTextAreaCurrentLine(
 									currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, true);
 								if(!result) {
 									logger.warn("Error duplicating current text Line !");
@@ -530,7 +530,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							try {
-								boolean result = GuiUtils.duplicateTextAreaCurrentLine(
+								boolean result = GuiUtilsExtended.duplicateTextAreaCurrentLine(
 									currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, false);
 								if(!result) {
 									logger.warn("Error duplicating current text Line !");
@@ -546,7 +546,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	FORMAT SUPPORTED CODE -> CTRL+SHIFT+F
 				 */
 				if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					GuiUtils.formatTextLater(currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, 
+					GuiUtilsExtended.formatTextLater(currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea, 
 							currentTextEditor.CURRENT_EXT_OUT, 
 							currentTextEditor.currentConfiguration.getTextEditorOpt().tabSize
 					);
@@ -649,9 +649,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		if (e.isAltDown()) {
 			flagAltDown.set(true);
 			if (!e.isControlDown() && !e.isShiftDown()) {
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_CROSS);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_CROSS);
 			}else {
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 			}
 		}else {
 			flagAltDown.set(false);
@@ -687,7 +687,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 			flagAltDown.set(true);
 		}else {
 			flagAltDown.set(false);
-			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 		}
 		
 		/*

@@ -27,7 +27,7 @@ import files.FileVarious;
 import files.FileWorker;
 import files.om.FileNamed;
 import frameutils.frame.HashCheckerFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
@@ -311,13 +311,13 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						try {
 							if (selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
 								currentTabEditor.loadFile(selectedNode.mFile);
-								currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+								currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 							}
 						} catch (Exception e) {
 							logger.error(e);
@@ -363,7 +363,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					return;
 				}
 				
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 
 				File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
 				boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo("File exists, wanna overwrite?", "File exists") : true;
@@ -384,7 +384,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				}
 				
 				refreshItem.doClick();
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 			}
 		};
 	}
@@ -419,7 +419,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					return;
 				}
 				
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 				
 				File targetParentDir = (selectedNode.mFile.isDirectory())? selectedNode.mFile : selectedNode.mFile.getParentFile();
 				File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
@@ -435,7 +435,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				
 				refreshItem.doClick();
 				
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 			}
 		};
 	}
@@ -445,18 +445,18 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 				File selected = new File(""); 
 				if(selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
 					selected = selectedNode.mFile;
 				}else {
-					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 					return;
 				}
 				
 				String newName = dialogHelper.askForStringNullable("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
 				if(newName == null) {
-					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 					return;
 				}
 				newName = FileVarious.ensureValidExtension(newName, textEditor.subHeaderPanel.comboFileFormat.getSelectedItem().toString());
@@ -472,7 +472,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 						String msg = "File not created";
 						logger.warn(msg);
 						dialogHelper.warn(msg, msg);
-						currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 						return;
 					}
 					currentTabEditor.loadFile(selected);
@@ -483,7 +483,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					dialogHelper.error(msg, msg);
 				}
 				
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 				
 				// REFRESH
 				SwingUtilities.invokeLater(new Runnable() {

@@ -316,23 +316,24 @@ public class GuiUtils {
 	public static GraphicsDevice showOnSameScreen(JFrame son, Window frame) {
 		GraphicsDevice result = frame.getGraphicsConfiguration().getDevice();
 		son.setLocationRelativeTo(frame);
-//		if (frame != null) {
-//			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//			GraphicsDevice[] gd = ge.getScreenDevices();
-//			final GraphicsDevice frameDevice = frame.getGraphicsConfiguration().getDevice();
-//			for (GraphicsDevice graphicsDevice : gd) {
-//				if (frameDevice.equals(graphicsDevice)
-//						|| frameDevice.getIDstring().equals(graphicsDevice.getIDstring())) {
-//					final Rectangle monitorBounds = graphicsDevice.getDefaultConfiguration().getBounds();
-//					final int x = monitorBounds.x + (monitorBounds.width - frame.getWidth()) / 2;
-//					final int y = monitorBounds.y + (monitorBounds.height - frame.getHeight()) / 2;
-//					frame.setLocation(x, y);
-//					result = graphicsDevice;
-//					break;
-//				}
-//			} 
-//		}
+
 		return result;
+	}
+	
+	/**
+	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
+	 * Prevent maximize if before was not maxified
+	 * 
+	 * <b>if toFront is not null it will be take to front last</b>
+	 */
+	public static void extendFramesAndMoveToTop(JFrame frame, JFrame toFront, int finalState) {
+		
+		if(frame == null || toFront == null) {return;}
+		
+		toFront.setLocationRelativeTo(frame);
+		frame.setExtendedState(finalState);
+		toFront.setExtendedState(finalState);
+		toFront.toFront();
 	}
 	
 	public static Dimension getScreenSize() {
@@ -604,6 +605,14 @@ public class GuiUtils {
 	        }
 	    }
 	    return result;
+	}
+
+	public static void setupTooltips(int delay, int timeout, int reshowDelay, Font font) {
+		// Tooltip General settings
+		ToolTipManager.sharedInstance().setInitialDelay(delay);
+		ToolTipManager.sharedInstance().setDismissDelay(timeout);
+		ToolTipManager.sharedInstance().setReshowDelay(reshowDelay);
+		UIManager.put("ToolTip.font", font);
 	}
 	
 }

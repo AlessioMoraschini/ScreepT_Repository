@@ -12,11 +12,11 @@ import javax.swing.event.DocumentListener;
 
 import ButtonUtils.ButtonDefaults;
 import gui.JOptionHelper;
-import media.SoundsExtended;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -151,7 +151,7 @@ public class HeaderPanelSearch extends JPanel{
 				if (!textFieldSearch.getText().equals("")) {
 					panelFxHtml.findTextNHighLight(textFieldSearch.getText());
 				}else {
-					SoundsExtended.playSound(SoundsConfigurator.CLICK_1, SoundsConfigurator.DEFAULT_EFFECTS_VOLUME);
+					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_1, SoundsConfigurator.DEFAULT_EFFECTS_VOLUME);
 				}
 			}
 		});

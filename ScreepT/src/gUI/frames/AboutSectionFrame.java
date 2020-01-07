@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.BackgroundFrame;
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import guistyle.TextGuiUtils;
 import maingUI.MainGUI;
 
@@ -72,7 +72,7 @@ public class AboutSectionFrame extends ParentFrame {
 		singletonInstance = this;
 		
 		// SET FRAME ICON
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
 		
 		BufferedImage image = null;
 		try {

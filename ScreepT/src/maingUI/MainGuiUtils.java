@@ -23,19 +23,19 @@ import exception.UpdatesUnavailableException;
 import files.FileWorker;
 import files.watcher.ChangeDTO;
 import files.watcher.FileChangeMonitor;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import guistyle.GUIStyelSettings;
+import guistyle.GUIStyelSettingsExtended;
 import mainobj.INItializer;
-import media.SoundsExtended;
 import om.GenericOption;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.exception.ProgressBarInterruptedException;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
 import utility.properties.PropertiesManager;
 
@@ -60,7 +60,7 @@ public class MainGuiUtils {
 			
 			@Override
 			public void run() {
-				Frame activeWindowBeforeUpdates = GuiUtils.getTopFrame();
+				Frame activeWindowBeforeUpdates = GuiUtilsExtended.getTopFrame();
 				
 				if (!MainGUI.mainAPP.isUpdating.get()) {
 					MainGUI.mainAPP.isUpdating.set(true);
@@ -71,7 +71,7 @@ public class MainGuiUtils {
 						String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates(silent);
 						if (newVersion != null) {
 							// If found ask to user what to do
-							SoundsExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
+							SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 							boolean downloadUpdates = dialogHelper.yesOrNo(
 									"<html>New version [" + newVersion + "] found, do you want to download and install it?",
 									"Update found: " + newVersion +
@@ -212,7 +212,7 @@ public class MainGuiUtils {
 	 */
 	public static void startSignalListener() {
 		try {
-			GuiUtils.launchThreadSafeSwing(new Runnable() {
+			GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 				
 				@Override
 				public void run() {
@@ -259,7 +259,7 @@ public class MainGuiUtils {
 			i++;
 		}
 		
-		GuiUtils.extendFramesAndMoveToTop(MainGUI.mainFrameScreept, MainGUI.mainFrameScreept, JFrame.MAXIMIZED_BOTH);
+		GuiUtilsExtended.extendFramesAndMoveToTop(MainGUI.mainFrameScreept, MainGUI.mainFrameScreept, JFrame.MAXIMIZED_BOTH);
 		MainGUI.mainFrameScreept.requestFocus();
 		MainGUI.mainFrameScreept.toFront();
 	}
@@ -344,7 +344,7 @@ public class MainGuiUtils {
 	
 	public void startConfigManagerPanel(boolean forceStart) {
 		
-		mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
+		mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_WAIT);
 		
 		mainAppReference.isOnHomePage.set(false);
 		
@@ -354,7 +354,7 @@ public class MainGuiUtils {
 		}
 		
 		if (MainGUI.configManagerPanel == null || forceStart) {
-			SoundsExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+			SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 			MainGUI.configManagerPanel = new ConfigurationManagerPanel(MainGUI.currentConfiguration, mainAppReference);
 		}
 		
@@ -371,7 +371,7 @@ public class MainGuiUtils {
     	
     	resetMainAppCursor();
     	
-    	mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
+    	mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 	}
 	
 	public boolean isTextEditorActive() {
@@ -401,7 +401,7 @@ public class MainGuiUtils {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
+				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_WAIT);
 				
 				// reset all listeners
 				if (forceStart) {
@@ -415,7 +415,7 @@ public class MainGuiUtils {
 				}
 				
 				if (MainGUI.panelCrypter == null || forceStart) {
-					SoundsExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 					MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
 				}
 				
@@ -435,7 +435,7 @@ public class MainGuiUtils {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_WAIT);
+				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_WAIT);
 
 				// reset shortcut listener
 				if (forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
@@ -443,7 +443,7 @@ public class MainGuiUtils {
 					removeAllListeners(MainGUI.initTxtWriter);
 				}
 				if (MainGUI.initTxtWriter == null || forceRestart) {
-					SoundsExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
+					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 					MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
 				}
 				SwingUtilities.invokeLater(new Runnable() {
@@ -453,7 +453,7 @@ public class MainGuiUtils {
 					}
 				});
 				
-				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
+				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(TextEditor.class);
 				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", TextEditor.class.getCanonicalName());
 			}
@@ -549,7 +549,7 @@ public class MainGuiUtils {
 	public void resetMainAppCursor() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				mainAppReference.getMainFrame().setCursor(GuiUtils.CURSOR_DEFAULT);
+				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 			}
 		});
 	}
@@ -557,20 +557,20 @@ public class MainGuiUtils {
 	public void refreshGUIlaf() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				boolean isNimbus = GUIStyelSettings.isNimbus(MainGUI.currentConfiguration.getGuiOpt());
+				boolean isNimbus = GUIStyelSettingsExtended.isNimbus(MainGUI.currentConfiguration.getGuiOpt().getPreferredStyle());
 				boolean isDarkNimbus = MainGUI.currentConfiguration.getGuiOpt().isDarkGuiNimbus();
 				
 				if(isNimbus) {
 					if (isDarkNimbus) {
-						GUIStyelSettings.setDarkNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
+						GUIStyelSettingsExtended.setDarkNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
 					}else {
-						GUIStyelSettings.setLightNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
+						GUIStyelSettingsExtended.setLightNimbus(MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
 					}
 				}else {
-					GUIStyelSettings.setStyle(MainGUI.currentConfiguration.getGuiOpt().getPreferredStyle(), MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
+					GUIStyelSettingsExtended.setStyle(MainGUI.currentConfiguration.getGuiOpt().getPreferredStyle(), MainGUI.currentConfiguration.getGuiOpt().nimbusSize);
 				}
 				
-				GUIStyelSettings.updateAllWindowsLaf();
+				GUIStyelSettingsExtended.updateAllWindowsLaf();
 			}
 		});
 	}
@@ -618,7 +618,7 @@ public class MainGuiUtils {
 
 	public static void welcomeMethodFirstTime() {
 		
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			public void run() {
 				// ASK FOR USERNAME IF NULL OR FIRST TIME
 				INItializer currentConfiguration = MainGUI.getCurrentConfInterface().getInitializer();

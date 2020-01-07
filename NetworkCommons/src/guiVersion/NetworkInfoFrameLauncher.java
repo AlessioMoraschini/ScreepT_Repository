@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
 
 public class NetworkInfoFrameLauncher {
@@ -23,7 +23,7 @@ public class NetworkInfoFrameLauncher {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(150, 150, 900, 650);
-		GuiUtils.centerComponent(frame);
+		GuiUtilsExtended.centerComponent(frame);
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setAlwaysOnTop(true);

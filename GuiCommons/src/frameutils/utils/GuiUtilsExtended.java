@@ -8,7 +8,6 @@ import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.Image;
@@ -42,8 +41,6 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
@@ -52,17 +49,18 @@ import org.apache.log4j.Logger;
 import codeformatter.CustomCodeFormatter;
 import dialogutils.JOptionHelperExtended;
 import files.om.FileNamed;
+import gui.GuiUtils;
 import media.ImageWorkerExtended;
-import media.SoundsExtended;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 import utility.StringWorker;
 
-public class GuiUtils {
+public class GuiUtilsExtended extends GuiUtils {
 	
 	// INItializer logger creation		
-	static Logger logger = Logger.getLogger(GuiUtils.class); 
+	static Logger logger = Logger.getLogger(GuiUtilsExtended.class); 
 	
 	public static final Cursor CURSOR_WAIT = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
 	public static final Cursor CURSOR_DEFAULT = Cursor.getDefaultCursor();
@@ -186,9 +184,9 @@ public class GuiUtils {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				sourceArea.setCursor(GuiUtils.CURSOR_WAIT);
+				sourceArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 				formatText(sourceArea, extension, tabSize);
-				sourceArea.setCursor(GuiUtils.CURSOR_TEXT);
+				sourceArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 			}
 		});
 	}
@@ -199,7 +197,7 @@ public class GuiUtils {
 		boolean error = false;
 		int selStart = sourceArea.getSelectionStart(); 
 		int selEnd = sourceArea.getSelectionEnd();
-		String source = GuiUtils.getSelectedOrAllText(sourceArea);
+		String source = GuiUtilsExtended.getSelectedOrAllText(sourceArea);
 		String old = new String(source);
 		String formatted = "";
 		boolean suppported = false;
@@ -260,7 +258,7 @@ public class GuiUtils {
 			}
 			
 			if (!suppported || error) {
-				SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				logger.warn("Format not supported or an error occurred :-> skipping text replace in text area. " + unsupportedAdvice);
 				dialogHelper.warn(encapsulateInHtml("<b>Cannot format with current settings</b></br>" + unsupportedAdvice), "Cannot Format text");
 			}
@@ -292,7 +290,7 @@ public class GuiUtils {
 	}
 	
 	private static void manageFormatterException(Exception e, String extension) {
-		SoundsExtended.playSound(SoundsConfigurator.ERROR, null);
+		SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 		String exception = Arrays.deepToString(e.getStackTrace());
 		logger.error("error formatting "+ extension +" string !", e);
 		dialogHelper.errorScroll("Error reading " + extension + " format: " + exception, "format Error");
@@ -332,172 +330,6 @@ public class GuiUtils {
 		});
 	}
 	
-	public static <E> void refreshCombo(final JComboBox<E> target, final Collection<E> values) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				target.removeAllItems();
-				Object[] array = values.toArray();
-				DefaultComboBoxModel<E> model = new DefaultComboBoxModel(array);
-				target.setModel(model);
-				target.revalidate();
-				target.repaint();
-			}
-		});
-	}
-	
-	public static Window getCurrentActiveWindow() {
-		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
-		return activeWindow;
-	}
-	
-	/**
-	 * Calculates current GUI width / screen width ratio (1 => full screen).
-	 * 
-	 * Returns 0 in case of error, else the ratio guiWidth/screenWidth
-	 */
-	public static float getGuiToScreenWidthRatio(Window mainGui) {
-		if (mainGui == null) { return 0;};
-		
-		int width = (mainGui.getWidth() != 0)? mainGui.getWidth() : 1;
-		
-		return (float)(width/getScreenSize().width);
-	}
-
-	/**
-	 * Calculates current GUI heigth / screen height ratio (1 => full screen).
-	 * 
-	 * Returns 0 in case of error, else the ratio guiHeigth/screenHeigth
-	 */
-	public static float getGuiToScreenHeitghtRatio(JComponent mainGui) {
-		if (mainGui == null) { return 0;};
-		
-		int height = (mainGui.getHeight() != 0)? mainGui.getHeight() : 1;
-		
-		return (float)(height/getScreenSize().height);
-	}
-	
-	/**
-	 * Refresh caret selection in textArea 
-	 */
-	public static void syncCaretPosition(JTextArea target, int start, Integer end) {
-		try {
-			
-			if (end != start) {
-				target.setSelectionStart(start);
-				target.setSelectionEnd(end);
-			}else {
-				target.setCaretPosition(0);
-				target.setCaretPosition(start);
-			}
-			
-		} catch (Exception e) {
-			logger.warn("ERROR setting caret position into textArea miniMap");
-		}
-	}
-	
-	public static void setupTooltips(int delay, int timeout, int reshowDelay, Font font) {
-		// Tooltip General settings
-		ToolTipManager.sharedInstance().setInitialDelay(delay);
-		ToolTipManager.sharedInstance().setDismissDelay(timeout);
-		ToolTipManager.sharedInstance().setReshowDelay(reshowDelay);
-		UIManager.put("ToolTip.font", font);
-	}
-	
-	public static void scrollJScrollPane(JScrollPane scrollPane, boolean bottom) {
-		SwingUtilities.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				JScrollBar vertical = scrollPane.getVerticalScrollBar();
-				int value = (bottom)? vertical.getMaximum() : vertical.getMinimum();
-				vertical.setValue(value);
-			}
-		});
-	}
-	
-	public static void makeTransparentJButton(JButton targetButton) {
-		targetButton.setOpaque(false);
-		targetButton.setContentAreaFilled(false);
-		targetButton.setBorderPainted(false);
-	}
-	
-	public static void makeOpaqueJButton(JButton targetButton) {
-		targetButton.setOpaque(true);
-		targetButton.setContentAreaFilled(true);
-		targetButton.setBorderPainted(true);
-	}
-	
-	public static void makeTransparentJToggleButton(JToggleButton targetButton) {
-		targetButton.setOpaque(false);
-		targetButton.setContentAreaFilled(false);
-		targetButton.setBorderPainted(false);
-	}
-	
-	public static void makeOpaqueJToggleButton(JToggleButton targetButton) {
-		targetButton.setOpaque(true);
-		targetButton.setContentAreaFilled(true);
-		targetButton.setBorderPainted(true);
-	}
-	
-	/**
-	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
-	 * Prevent maximize if before was not maxified
-	 * 
-	 * <b>if toFront is not null it will be take to front last</b>
-	 */
-	public static void changeFrameStateLater(JFrame frame, JFrame toFront, int finalState) {
-		if((frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) && finalState == JFrame.MAXIMIZED_BOTH ) {
-			return; // if was not max then skip
-		}
-		extendFramesAndMoveToTop(frame, toFront, finalState);
-	}
-	
-	/**
-	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
-	 * Prevent maximize if before was not maxified
-	 * 
-	 * <b>if toFront is not null it will be take to front last</b>
-	 */
-	public static void changeFrameStateLater(JFrame frame, JDialog toFront, int finalState) {
-		if((frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) && finalState == JFrame.MAXIMIZED_BOTH ) {
-			return; // if was not max then skip
-		}
-		changeFrameStateLaterUnchecked(frame, toFront, finalState);
-	}
-	
-	/**
-	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
-	 * Prevent maximize if before was not maxified
-	 * 
-	 * <b>if toFront is not null it will be take to front last</b>
-	 */
-	public static void extendFramesAndMoveToTop(JFrame frame, JFrame toFront, int finalState) {
-		
-		if(frame == null || toFront == null) {return;}
-		
-		toFront.setLocationRelativeTo(frame);
-		frame.setExtendedState(finalState);
-		toFront.setExtendedState(finalState);
-		toFront.toFront();
-	}
-	
-	/**
-	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with invokeLater built in.
-	 * Prevent maximize if before was not maxified
-	 * 
-	 * <b>if toFront is not null it will be take to front last</b>
-	 */
-	public static void changeFrameStateLaterUnchecked(JFrame frame, JDialog toFront, int finalState) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				frame.setExtendedState(finalState);
-				if(toFront != null) {
-					toFront.toFront();
-				}
-			}
-		});
-	}
-	
 	public static boolean removeKeyListeners(Component target) {
 		try {
 			for (KeyListener key : target.getKeyListeners()) {
@@ -507,50 +339,6 @@ public class GuiUtils {
 		} catch (Exception e) {
 			return false;
 		}
-	}
-	
-	public static boolean setFrameIcon(Image icon, JFrame frameToSet) {
-		if(icon != null) {
-			frameToSet.setIconImage(icon);
-			return true;
-		}else {
-			return false;
-		}
-	}
-	
-	public static boolean setFrameIcon(ImageIcon icon, JFrame frameToSet) {
-		if(icon != null) {
-			frameToSet.setIconImage(icon.getImage());
-			return true;
-		}else {
-			return false;
-		}
-	}
-	
-	public static void setFrameIcon(String icon, JFrame frameToSet) {
-		ImageIcon imgIcon = new ImageIcon(icon);
-		frameToSet.setIconImage(imgIcon.getImage());
-	}
-	
-	public static void setFrameIcon(String icon, Dialog frameToSet) {
-		ImageIcon imgIcon = new ImageIcon(icon);
-		frameToSet.setIconImage(imgIcon.getImage());
-	}
-	
-	/**
-	 * this method makes the current frame that's invoking this method to move on same monitor as the given frame
-	 * @param frame his monitor will be the target for the current window
-	 * @return the found graphicsDevice obj of target frame
-	 */
-	public static GraphicsDevice showOnSameScreen(JFrame son, Window frame) {
-		GraphicsDevice result = frame.getGraphicsConfiguration().getDevice();
-		son.setLocationRelativeTo(frame);
-
-		return result;
-	}
-	
-	public static Dimension getScreenSize() {
-		return Toolkit.getDefaultToolkit().getScreenSize();
 	}
 	
 	public static void maximizeFrameSize(JFrame targetFrame) {

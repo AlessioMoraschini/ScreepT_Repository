@@ -9,7 +9,7 @@ import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
@@ -67,7 +67,7 @@ public class EscapeReplacerFrame extends JFrame{
 		this.comboClickAction = comboClickAction;
 		
 		setBounds(new Rectangle(700,200));
-		GuiUtils.centerComponent(this);
+		GuiUtilsExtended.centerComponent(this);
 		
 		parentFrame = parent;
 		outputTextArea = outputText;
@@ -75,7 +75,7 @@ public class EscapeReplacerFrame extends JFrame{
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[250px][220px,grow]", "[30px][30px,grow][20px][20px,grow]"));
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES, this);
 		setLocationRelativeTo(parentFrame);
 		
 		panel = new JPanel();
@@ -103,7 +103,7 @@ public class EscapeReplacerFrame extends JFrame{
 		comboEscapeType.setMinimumSize(new Dimension(33, 28));
 		comboEscapeType.setSelectedItem(EscapeType.HTML_4);
 		comboEscapeType.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		comboEscapeType.setCursor(GuiUtils.CURSOR_HAND);
+		comboEscapeType.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(comboEscapeType, "cell 1 1,growx");
 		
 		btnTrySpecialTo = new JButton("Try special To escape");
@@ -111,13 +111,13 @@ public class EscapeReplacerFrame extends JFrame{
 		btnTrySpecialTo.setMinimumSize(new Dimension(148, 25));
 		btnTrySpecialTo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		btnTrySpecialTo.setToolTipText(tooltipTrySpecialToEscape);
-		btnTrySpecialTo.setCursor(GuiUtils.CURSOR_HAND);
+		btnTrySpecialTo.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnTrySpecialTo.setBackground(new Color(169, 169, 169));
 		getContentPane().add(btnTrySpecialTo, "cell 0 2,growx,aligny center");
 		
 		btnConvertSpecialToEsc = new JButton("Convert Special to escapes");
 		btnConvertSpecialToEsc.setMinimumSize(new Dimension(178, 30));
-		btnConvertSpecialToEsc.setCursor(GuiUtils.CURSOR_HAND);
+		btnConvertSpecialToEsc.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnConvertSpecialToEsc.setToolTipText(tooltipReplaceSpecToEscapes);
 		btnConvertSpecialToEsc.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnConvertSpecialToEsc.setBackground(Color.GRAY);
@@ -126,7 +126,7 @@ public class EscapeReplacerFrame extends JFrame{
 		btnTryEscapeTo = new JButton("Try escape To special");
 		btnTryEscapeTo.setMaximumSize(new Dimension(250, 30));
 		btnTryEscapeTo.setMinimumSize(new Dimension(148, 25));
-		btnTryEscapeTo.setCursor(GuiUtils.CURSOR_HAND);
+		btnTryEscapeTo.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnTryEscapeTo.setToolTipText(tooltipTryEscapeToSpec);
 		btnTryEscapeTo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		btnTryEscapeTo.setBackground(new Color(169, 169, 169));
@@ -136,7 +136,7 @@ public class EscapeReplacerFrame extends JFrame{
 		btnConvertEscapesTo.setMinimumSize(new Dimension(178, 30));
 		btnConvertEscapesTo.setFont(new Font("Segoe UI", Font.BOLD, 13));
 		btnConvertEscapesTo.setToolTipText(tooltipReplaceEscapesToSpec);
-		btnConvertEscapesTo.setCursor(GuiUtils.CURSOR_HAND);
+		btnConvertEscapesTo.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnConvertEscapesTo.setBackground(Color.GRAY);
 		getContentPane().add(btnConvertEscapesTo, "cell 1 3,growx,aligny top");
 		
@@ -165,7 +165,7 @@ public class EscapeReplacerFrame extends JFrame{
 				String tryString = textFieldTry.getText();
 				tryString = HandleString.replaceEscapesWithSpecials(tryString, getSelectedEscapeType());
 				textFieldTry.setText(tryString);
-				GuiUtils.selectAllText(textFieldTry);
+				GuiUtilsExtended.selectAllText(textFieldTry);
 			}
 		});
 		
@@ -177,7 +177,7 @@ public class EscapeReplacerFrame extends JFrame{
 				tryString = HandleString.replaceEscapesWithSpecials(tryString, getSelectedEscapeType());
 				tryString = HandleString.replaceSpecialWithEscapes(tryString, getSelectedEscapeType());
 				textFieldTry.setText(tryString);
-				GuiUtils.selectAllText(textFieldTry);
+				GuiUtilsExtended.selectAllText(textFieldTry);
 			}
 		});
 		
@@ -237,22 +237,22 @@ public class EscapeReplacerFrame extends JFrame{
 	// USEFUL METHODS //
 	
 	private void cursorWaiting() {
-		outputTextArea.setCursor(GuiUtils.CURSOR_WAIT);
-		textFieldTry.setCursor(GuiUtils.CURSOR_WAIT);
-		panel.setCursor(GuiUtils.CURSOR_WAIT);
-		btnConvertEscapesTo.setCursor(GuiUtils.CURSOR_WAIT);
-		btnConvertSpecialToEsc.setCursor(GuiUtils.CURSOR_WAIT);
+		outputTextArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+		textFieldTry.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+		panel.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+		btnConvertEscapesTo.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+		btnConvertSpecialToEsc.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 		
 		btnConvertEscapesTo.setEnabled(false);
 		btnConvertSpecialToEsc.setEnabled(false);
 	}
 	
 	private void cursorFinished() {
-		outputTextArea.setCursor(GuiUtils.CURSOR_TEXT);
-		textFieldTry.setCursor(GuiUtils.CURSOR_TEXT);
-		panel.setCursor(GuiUtils.CURSOR_DEFAULT);
-		btnConvertEscapesTo.setCursor(GuiUtils.CURSOR_HAND);
-		btnConvertSpecialToEsc.setCursor(GuiUtils.CURSOR_HAND);
+		outputTextArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+		textFieldTry.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+		panel.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
+		btnConvertEscapesTo.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnConvertSpecialToEsc.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		
 		btnConvertEscapesTo.setEnabled(true);
 		btnConvertSpecialToEsc.setEnabled(true);

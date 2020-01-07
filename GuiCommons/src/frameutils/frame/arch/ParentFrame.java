@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 
 public class ParentFrame extends JFrame{
 	private static final long serialVersionUID = 7079644907872152737L;
@@ -57,6 +57,6 @@ public class ParentFrame extends JFrame{
 	}
 	
 	public Dimension getDefaultDimension() {
-		return GuiUtils.getScreenSizePerc(80, this);
+		return GuiUtilsExtended.getScreenSizePerc(80, this);
 	}
 }

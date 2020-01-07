@@ -25,7 +25,7 @@ import files.FileVarious;
 import files.om.FileNamed;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.frame.HashCheckerFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -146,7 +146,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GuiUtils.openInFileSystem(selectedNode.mFile);
+				GuiUtilsExtended.openInFileSystem(selectedNode.mFile);
 			}
 		};
 	}

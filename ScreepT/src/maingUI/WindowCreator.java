@@ -13,7 +13,7 @@ import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.GeneratePasswordFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.AboutSectionFrame;
 import gUI.frames.ChangeLogFrame;
 import gUI.frames.GeneralOptionsFrame;
@@ -26,9 +26,9 @@ import gUI.frames.TutorialFrame;
 import gui.UpdateProgressPanel;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
-import media.SoundsExtended;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
+import resources.SoundsManagerExtended;
 import utils.SysUtils;
 
 public class WindowCreator {
@@ -129,7 +129,7 @@ public class WindowCreator {
 		commonGraphicInitAlwaysOnTop(panelGeneralOptions, "Generic Options - ", true);
 
 		panelGeneralOptions.setMinimumSize(panelGeneralOptions.getDefaultDimension());
-		GuiUtils.centerComponent(panelGeneralOptions);
+		GuiUtilsExtended.centerComponent(panelGeneralOptions);
 		
 		return panelGeneralOptions;
 	}
@@ -147,7 +147,7 @@ public class WindowCreator {
 	
 	public void newNetInfoFrame() {
 		
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			public void run() {
 				UpdateProgressPanel prog = new UpdateProgressPanel(false);
 				prog.getPb().setIndeterminate(true);
@@ -165,7 +165,7 @@ public class WindowCreator {
 	
 	public void newHwInfoFrame() {
 		
-		GuiUtils.launchThreadSafeSwing(new Runnable() {
+		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			@Override
 			public void run() {
 				UpdateProgressPanel prog = new UpdateProgressPanel(false);
@@ -199,7 +199,7 @@ public class WindowCreator {
 			TutorialFrame tutorialFrame = TutorialFrame.getInstance();
 			
 			if(visible) {
-				SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
+				SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 				commonGraphicInit(tutorialFrame, "Documentation - ", true);
 				tutorialFrame.setResizable(true);
 			}
@@ -234,7 +234,7 @@ public class WindowCreator {
 	// COMMONS INITIALIZATION METHODS //
 	public void commonGraphicInit(final ParentFrame newFrame, String title, boolean autoExtend) {
 		
-		SoundsExtended.playSound(SoundsConfigurator.CLICK_2, null);
+		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		
 		newFrame.setMaximizedBounds(new Rectangle(newFrame.getDefaultDimension()));
 		newFrame.setMinimumSize(newFrame.getDefaultDimension());
@@ -250,7 +250,7 @@ public class WindowCreator {
 //				if (autoExtend) {
 //					GuiUtils.extendFramesAndMoveToTop(mainApplication.getMainFrame(), newFrame, JFrame.MAXIMIZED_BOTH);
 //				}
-				GuiUtils.centerComponent(newFrame, newFrame.getDefaultDimension());
+				GuiUtilsExtended.centerComponent(newFrame, newFrame.getDefaultDimension());
 				newFrame.setVisible(true);
 			}
 		});

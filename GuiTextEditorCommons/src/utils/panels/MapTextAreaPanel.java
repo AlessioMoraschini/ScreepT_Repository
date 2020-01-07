@@ -8,7 +8,7 @@ import javax.swing.JScrollPane;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-import guistyle.GUIStyelSettings;
+import guistyle.GUIStyelSettingsExtended;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ScrollPaneConstants;
@@ -56,7 +56,7 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 		txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
 		txtAreaMiniMap.setAntiAliasingEnabled(true);
 		txtAreaMiniMap.setEditable(false);
-		GUIStyelSettings.applyNimbusSize(null, 0);
+		GUIStyelSettingsExtended.applyNimbusSize(null, 0);
 		
 		txtAreaMiniMap.addMouseListener(new MouseListener() {
 			
@@ -64,7 +64,7 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 			public void mouseReleased(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						GUIStyelSettings.applyNimbusSize(null, 0);
+						GUIStyelSettingsExtended.applyNimbusSize(null, 0);
 						safeSyncCaretToTxtReference();
 //						txtAreaMiniMap.setText(targetTemp.getText());
 					}

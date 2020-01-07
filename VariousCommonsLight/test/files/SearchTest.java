@@ -1,27 +1,27 @@
-package JUnit;
+package files;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import org.junit.Test;
 
-import amfileutils.FileSearch;
+import files.FileSearch;
+import testconfig.TestConstants;
 
 public class SearchTest {
 
 	String fileNameMatch = "java";
 	String folderMatch = "java";
-	File rootDir = new File("C:/Users/xx/Desktop/Documenti&Utili/Informatica varie/CryptoSteg/Test/SearchTest");
 	
 	@Test
 	public void fileSearchTest() {
 		ArrayList<File> matchesFound = new ArrayList<File>();
 		
 		// search in subdirs
-		matchesFound = FileSearch.searchFoldersInRootFolder(rootDir, folderMatch, true);
+		matchesFound = FileSearch.searchFoldersInRootFolder(TestConstants.rootTestFolder, folderMatch, true);
 		printFound(matchesFound);
 		
-		matchesFound = FileSearch.searchFilesInRootFolder(rootDir, folderMatch, true);
+		matchesFound = FileSearch.searchFilesInRootFolder(TestConstants.rootTestFolder, folderMatch, true);
 		printFound(matchesFound);
 	}
 	

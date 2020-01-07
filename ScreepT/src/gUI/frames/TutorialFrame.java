@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.html.HtmlPanel;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import maingUI.MainGUI;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
@@ -41,9 +41,9 @@ public class TutorialFrame extends ParentFrame{
 		singletonInstance = this;
 		
 		// GUI SETTINGS
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
-		GuiUtils.centerComponent(this, 70);
-		GuiUtils.showOnSameScreen(this, MainGUI.mainFrameScreept);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_ABOUT, this);
+		GuiUtilsExtended.centerComponent(this, 70);
+		GuiUtilsExtended.showOnSameScreen(this, MainGUI.mainFrameScreept);
 
 		mainHtmlReadmePanel = new HtmlPanel(new Integer(40), "indexList");
 		File htmlTutorialFile = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);

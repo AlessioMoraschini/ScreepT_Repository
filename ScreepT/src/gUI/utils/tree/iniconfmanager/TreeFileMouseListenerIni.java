@@ -24,7 +24,7 @@ import org.ini4j.Wini;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -242,7 +242,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 		            	}
 			        }
 	            }
-            	GuiUtils.openInFileSystem(exportDir);
+            	GuiUtilsExtended.openInFileSystem(exportDir);
 	        }
 	    };
 	}

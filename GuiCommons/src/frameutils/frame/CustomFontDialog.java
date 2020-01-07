@@ -6,8 +6,8 @@ import org.drjekyll.fontchooser.FontChooser;
 import org.drjekyll.fontchooser.FontDialog;
 import org.drjekyll.fontchooser.util.ResourceBundleUtil;
 
-import frameutils.utils.GuiUtils;
-import guistyle.GUIStyelSettings;
+import frameutils.utils.GuiUtilsExtended;
+import guistyle.GUIStyelSettingsExtended;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -27,12 +27,12 @@ public class CustomFontDialog  extends FontDialog {
 	         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	         dialog.setSelectedFont(component.getFont());
 	         dialog.setVisible(true);
-	         GuiUtils.centerComponent(dialog, 600, 450);
+	         GuiUtilsExtended.centerComponent(dialog, 600, 450);
 	         if (!dialog.isCancelSelected()) {
 	             component.setFont(dialog.getSelectedFont());
 	         }
 	         
-	         GUIStyelSettings.applyNimbusSize(0, dialog);
+	         GUIStyelSettingsExtended.applyNimbusSize(0, dialog);
 	         
 	         return dialog;
 	     }

@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import media.ImageWorkerExtended;
 import resources.IconsPathConfigurator;
 
@@ -44,7 +44,7 @@ public class FramePointerCursorTest extends JFrame{
         setSize(new Dimension(400, 400));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-        GuiUtils.centerComponent(this);
+        GuiUtilsExtended.centerComponent(this);
     }
 
     public static void main(String[] args) {

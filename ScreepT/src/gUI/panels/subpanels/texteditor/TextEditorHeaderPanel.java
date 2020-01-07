@@ -26,7 +26,7 @@ import javax.swing.event.ChangeListener;
 import org.apache.log4j.Logger;
 
 import crypt.aes.AesCipher;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tooltip.TextEditorTooltips;
@@ -96,14 +96,14 @@ public class TextEditorHeaderPanel extends JPanel{
 		add(sliderSpokenSpeed, "cell 2 0,growy");
 		
 		btnCrypt = new JButton();
-		btnCrypt.setCursor(GuiUtils.CURSOR_HAND);
+		btnCrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnCrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
 		btnCrypt.setToolTipText(TextEditorTooltips.tooltipCrypt);
 		btnCrypt.setForeground(SystemColor.inactiveCaption);
 		add(btnCrypt, "cell 6 0,alignx center,grow");
 
 		btnDecrypt = new JButton("");
-		btnDecrypt.setCursor(GuiUtils.CURSOR_HAND);
+		btnDecrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnDecrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
 		btnDecrypt.setToolTipText(TextEditorTooltips.tooltipDecrypt);
 		btnDecrypt.setForeground(SystemColor.inactiveCaption);
@@ -117,7 +117,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		chckbxAesShowKey.setForeground(Color.WHITE);
 		chckbxAesShowKey.setIconTextGap(1);
 		chckbxAesShowKey.setHorizontalAlignment(SwingConstants.LEFT);
-		chckbxAesShowKey.setCursor(GuiUtils.CURSOR_HAND);
+		chckbxAesShowKey.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		chckbxAesShowKey.setFont(new Font("SansSerif", Font.BOLD, 12));
 		add(chckbxAesShowKey, "cell 4 0,alignx center,aligny center");
 		
@@ -136,24 +136,24 @@ public class TextEditorHeaderPanel extends JPanel{
 		txtAesKey.setEchoChar((char) 0);
 		
 		btnPrevHistory = new JButton("");
-		btnPrevHistory.setCursor(GuiUtils.CURSOR_HAND);
+		btnPrevHistory.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnPrevHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PREV));
 		btnPrevHistory.setToolTipText(TextEditorTooltips.tooltipHystoryPrev);
-		GuiUtils.makeTransparentJButton(btnPrevHistory);
+		GuiUtilsExtended.makeTransparentJButton(btnPrevHistory);
 		add(btnPrevHistory, "cell 9 0,alignx center,growy");
 		
 		btnNextHistory = new JButton("");
-		btnNextHistory.setCursor(GuiUtils.CURSOR_HAND);
+		btnNextHistory.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnNextHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NEXT));
 		btnNextHistory.setToolTipText(TextEditorTooltips.tooltipHystoryNext);
-		GuiUtils.makeTransparentJButton(btnNextHistory);
+		GuiUtilsExtended.makeTransparentJButton(btnNextHistory);
 		add(btnNextHistory, "cell 10 0,alignx center,growy");
 		
 		checkBoxInlineTabs = new JCheckBox("Inline Tabs  ");
 		checkBoxInlineTabs.setOpaque(false);
 		checkBoxInlineTabs.setSelected(true);
 		checkBoxInlineTabs.setToolTipText(TextEditorTooltips.tooltipInlineTabs);
-		checkBoxInlineTabs.setCursor(GuiUtils.CURSOR_HAND);
+		checkBoxInlineTabs.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		checkBoxInlineTabs.setForeground(SystemColor.control);
 		checkBoxInlineTabs.setBackground(Color.DARK_GRAY);
 		checkBoxInlineTabs.setIconTextGap(1);
@@ -162,7 +162,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		
 		chkCutWordsTo = new JCheckBox("Adapt Text Width  ");
 		chkCutWordsTo.setOpaque(false);
-		chkCutWordsTo.setCursor(GuiUtils.CURSOR_HAND);
+		chkCutWordsTo.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		chkCutWordsTo.setToolTipText(TextEditorTooltips.tooltipCutWordsTo);
 		chkCutWordsTo.setSelected(false);
 		chkCutWordsTo.setForeground(SystemColor.control);
@@ -180,7 +180,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		
 		chkFitmantainwords = new JCheckBox("Don't cut words");
 		chkFitmantainwords.setOpaque(false);
-		chkFitmantainwords.setCursor(GuiUtils.CURSOR_HAND);
+		chkFitmantainwords.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		chkFitmantainwords.setToolTipText(TextEditorTooltips.tooltipFitMaintainWords);
 		chkFitmantainwords.setForeground(SystemColor.control);
 		chkFitmantainwords.setBackground(Color.DARK_GRAY);
@@ -262,8 +262,8 @@ public class TextEditorHeaderPanel extends JPanel{
 				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				if (!isCrypterOn && ScreeptUtils.checkPasswordStrengthDynamic(currentConfiguration.getAesOpt().getSecurityLevel(), txtAesKey, 10)) {
-					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
-					btnCrypt.setCursor(GuiUtils.CURSOR_WAIT);
+					loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+					btnCrypt.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 					isCrypterOn = true;
 					AesCipher.check(txtAesKey);
 					String encoded = "";
@@ -292,8 +292,8 @@ public class TextEditorHeaderPanel extends JPanel{
 						txtAesKey.requestFocusInWindow();
 					}
 					isCrypterOn = false;
-					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
-					btnCrypt.setCursor(GuiUtils.CURSOR_HAND);
+					loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+					btnCrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
 				}
 			}
 		});
@@ -305,8 +305,8 @@ public class TextEditorHeaderPanel extends JPanel{
 				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				if (!isCrypterOn) {
-					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
-					btnDecrypt.setCursor(GuiUtils.CURSOR_WAIT);
+					loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+					btnDecrypt.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 					isCrypterOn = true;
 					AesCipher.check(txtAesKey);
 					String decoded = "";
@@ -332,8 +332,8 @@ public class TextEditorHeaderPanel extends JPanel{
 						txtAesKey.requestFocusInWindow();
 					}
 					isCrypterOn = false;
-					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
-					btnDecrypt.setCursor(GuiUtils.CURSOR_HAND);
+					loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+					btnDecrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
 				}
 			}
 		});

@@ -25,7 +25,7 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
 
 import java.awt.Font;
@@ -73,10 +73,10 @@ public class FilePropertiesFrame extends JFrame{
 		
 		fileUnderAnalysis = targetFile;
 		
-		GuiUtils.setFrameIcon((targetFile != null && targetFile.isDirectory()) ? new ImageIcon(IconsPathConfigurator.iconFolderPath): MyFileView.getExtIcon(targetFile), this);
+		GuiUtilsExtended.setFrameIcon((targetFile != null && targetFile.isDirectory()) ? new ImageIcon(IconsPathConfigurator.iconFolderPath): MyFileView.getExtIcon(targetFile), this);
 		this.setAlwaysOnTop(alwaysOnTop);
 		
-		GuiUtils.centerComponent(this, DEF_width, DEF_height);
+		GuiUtilsExtended.centerComponent(this, DEF_width, DEF_height);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
@@ -251,7 +251,7 @@ public class FilePropertiesFrame extends JFrame{
 		dynLblPath.setText(fileUnderAnalysis.getAbsolutePath());
 		dynLblSize.setText(ConversionUtils.coolFileSize(fileUnderAnalysis));
 		dynLblLastChange.setText(" " + GeneralConfig.GENERIC_FORMATTER.format(new Date(fileUnderAnalysis.lastModified())));
-		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
 		updateFooter();
 		try {
 			if (fileUnderAnalysis != null) {
@@ -275,9 +275,9 @@ public class FilePropertiesFrame extends JFrame{
 		if(fileToAnalyze == null || !fileToAnalyze.exists()) {
 			return;
 		}
-		GuiUtils.setFrameIcon(MyFileView.getExtIcon(fileToAnalyze), this);
+		GuiUtilsExtended.setFrameIcon(MyFileView.getExtIcon(fileToAnalyze), this);
 		this.fileUnderAnalysis = fileToAnalyze;
-		GuiUtils.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.getIconByFile(fileUnderAnalysis), this);
 		setTitle(fileToAnalyze.getName());
 		adjustLabelsLength();
 		this.initializeValues();

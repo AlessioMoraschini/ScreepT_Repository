@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;
@@ -68,7 +68,7 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 	public ColorPickerFrame(JFrame caller) {
 		
 		this.caller = caller;
-		ApplyCursorSUbElements(GuiUtils.CURSOR_CROSS, caller);
+		ApplyCursorSUbElements(GuiUtilsExtended.CURSOR_CROSS, caller);
 		
 		active = true;
 		
@@ -77,9 +77,9 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[grow][grow]", "[25px:30px,grow][grow]"));
 		
-		GuiUtils.centerComponent(this, getDefaultDimension());
+		GuiUtilsExtended.centerComponent(this, getDefaultDimension());
 		
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, this);
 		
 		initializeGui();
 		
@@ -145,7 +145,7 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 	        	active = false;
 				logger.debug("Closing "+getClass().getName());
 				pointerUtils.removeMouseListener();
-				ApplyCursorSUbElements(GuiUtils.CURSOR_DEFAULT, caller);
+				ApplyCursorSUbElements(GuiUtilsExtended.CURSOR_DEFAULT, caller);
 				singletonInstance = null;
 	        	dispose();
 		    }
@@ -157,11 +157,11 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 			public void actionPerformed(ActionEvent e) {
 				if(!pointerUtils.isEnabled()) {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
-					ApplyCursorSUbElements(GuiUtils.CURSOR_CROSS, caller);
+					ApplyCursorSUbElements(GuiUtilsExtended.CURSOR_CROSS, caller);
 					pointerUtils.setEnabled(new AtomicBoolean(true));
 				}else {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
-					ApplyCursorSUbElements(GuiUtils.CURSOR_DEFAULT, caller);
+					ApplyCursorSUbElements(GuiUtilsExtended.CURSOR_DEFAULT, caller);
 					pointerUtils.setEnabled(new AtomicBoolean(false));
 				}
 			}
@@ -196,12 +196,12 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		panelHeader.setLayout(new MigLayout("insets 1, fill", "[25px:n][grow,fill][25px:n]", "[]"));
 		
 		btnPickerOn = new JButton("");
-		btnPickerOn.setCursor(GuiUtils.CURSOR_HAND);
+		btnPickerOn.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnPickerOn.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		btnPickerOn.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 		btnPickerOn.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
 		btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
-		GuiUtils.makeTransparentJButton(btnPickerOn);
+		GuiUtilsExtended.makeTransparentJButton(btnPickerOn);
 		
 		btnPickerOn.setBorder(null);
 		panelHeader.add(btnPickerOn, "cell 0 0,grow");

@@ -38,8 +38,9 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.watcher.ChangeDTO;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
+import gui.GuiUtils;
 import mainobj.INItializer;
 import om.HistoryNode;
 import om.LimitedConcurrentList;
@@ -236,7 +237,7 @@ public class CustomTabbedEditor {
 	public void loadFile(final File fileToLoad) {
 		
 		logger.debug("Started file loading into new tab: "+fileToLoad+"\n\n");
-		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+		loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				newFileStringTarget = tabEditorManager.getNewFileStringTarget();
@@ -278,7 +279,7 @@ public class CustomTabbedEditor {
 					logger.debug("TextEditor.loadFile() completed - Exiting");
 				}
 				
-				loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 			}
 		});
 	}
@@ -338,7 +339,7 @@ public class CustomTabbedEditor {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+							loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 						} catch (Exception e2) {
 						}
 					}
@@ -355,7 +356,7 @@ public class CustomTabbedEditor {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+							loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 						} catch (Exception e) {
 						}
 					}
@@ -439,14 +440,14 @@ public class CustomTabbedEditor {
 		} catch (Exception e) {
 			logger.error("An error occurred!", e);
 		} finally {
-			loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
+			loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 		}
 		isAddingTab = false;
 	}
 	
 	public void reloadCurrentTab(boolean askDialogOn) {
 
-		loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_WAIT);
+		loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 		
 		// backup caret position and selection
 		final RSyntaxTextArea reference = loadedTabObj.textArea;
@@ -456,7 +457,7 @@ public class CustomTabbedEditor {
 		if (!alreadyLoading && loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
 			// if unsaved ask to reload
 			if (askDialogOn && !(dialogHelper.yesOrNo("Wanna reload? If document is different or changed by another application, you will lose all unsaved changes... Continue?", "Reload file"))) {
-				loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+				loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 				alreadyLoading = false;
 				return;
 			}
@@ -484,7 +485,7 @@ public class CustomTabbedEditor {
 				} catch (Exception e) {
 					logger.warn("Error trying to resume caret position and selection range", e);
 				} finally {
-					loadedTabObj.textArea.setCursor(GuiUtils.CURSOR_TEXT);
+					loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 				}
 			}
 		});
@@ -742,7 +743,7 @@ public class CustomTabbedEditor {
 		JTextArea originalTxtArea = loadedTabObj.textArea;
 		try {
 			tabJustSwitched = true;
-			originalTxtArea.setCursor(GuiUtils.CURSOR_WAIT);
+			originalTxtArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 			if (!isAddingTab && !isRemovingTab) {
 				backupCurrentBeforeSwitch();
 			}
@@ -758,7 +759,7 @@ public class CustomTabbedEditor {
 		} catch(Exception e){
 			logger.error("An error occurred while refreshing current tab", e);
 		} finally {
-			originalTxtArea.setCursor(GuiUtils.CURSOR_TEXT);
+			originalTxtArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 		}
 	}
 	

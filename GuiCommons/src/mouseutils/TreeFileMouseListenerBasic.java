@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
 import frameutils.frame.FilePropertiesFrame;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -114,7 +114,7 @@ public class TreeFileMouseListenerBasic {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GuiUtils.openInFileSystem(selectedNode);
+				GuiUtilsExtended.openInFileSystem(selectedNode);
 			}
 		};
 	}

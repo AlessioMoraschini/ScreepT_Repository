@@ -9,7 +9,7 @@ import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ClipboardPanelLight;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -30,7 +30,7 @@ public class ClipboardFrame extends ParentFrame{
 		
 		this.setMinimumSize(getDefaultDimension());
 
-		GuiUtils.centerComponent(this);
+		GuiUtilsExtended.centerComponent(this);
 		setVisible(true);
 		setAlwaysOnTop(true);
 		
@@ -41,7 +41,7 @@ public class ClipboardFrame extends ParentFrame{
 		this.fileChooser = new GenericFileChooserDialog(null);
 
 		// SW window icon
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_CLIPBOARD, this);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_CLIPBOARD, this);
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		

@@ -29,7 +29,7 @@ import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
 import dialogutils.JOptionHelperExtended;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import om.LimitedConcurrentList;
 import resources.IconsPathConfigurator;
 import utility.reflection.ReflectionLibChecker;
@@ -118,7 +118,7 @@ public class TextAreaDialogs {
 		dialog.setMaxLineNumberAllowed(dialogManager.getTargetTextArea().getLineCount());
 		dialog.setEscapeClosesDialog(true);
 		dialog.setLocationRelativeTo(owner);
-		GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_GOTO_LINE, dialog);
+		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_GOTO_LINE, dialog);
 		dialog.setPreferredSize(DEFAULT_SIZE);
 		dialog.setVisible(true);
 		dialog.toFront();

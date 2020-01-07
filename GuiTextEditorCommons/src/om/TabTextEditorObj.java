@@ -22,7 +22,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.RUndoManager;
 
 import files.watcher.FileChangeMonitor;
-import frameutils.utils.GuiUtils;
+import frameutils.utils.GuiUtilsExtended;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 import shortcuts.ICommonShortcuts;
@@ -133,7 +133,7 @@ public class TabTextEditorObj {
 			public void focusLost(FocusEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 					}
 				});
 			}
@@ -143,7 +143,7 @@ public class TabTextEditorObj {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						checkChangesMonitor.checkChanges();
-						textArea.setCursor(GuiUtils.CURSOR_TEXT);
+						textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 					}
 				});
 			}

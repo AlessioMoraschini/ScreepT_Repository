@@ -69,7 +69,7 @@ public class SafetyScreepTShortcutsListener implements KeyEventDispatcher{
 	}
 	
 	private boolean askKill() {
-		JOptionHelperExtended dialogHelper = MainGUI.mainAPP != null && MainGUI.mainAPP.dialogHelper != null ? MainGUI.mainAPP.dialogHelper : new JOptionHelperExtended(null);
+		JOptionHelperExtended dialogHelper = MainGUI.mainAPP != null && MainGUI.dialogHelper != null ? MainGUI.dialogHelper : new JOptionHelperExtended(null);
 		return dialogHelper.showYNDialogWarn(killAdvice, "Kill Application?", JOptionHelperExtended.YES_OR_NO);
 	}
 	
