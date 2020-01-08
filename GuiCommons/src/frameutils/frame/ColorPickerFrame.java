@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;
@@ -77,7 +78,7 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[grow][grow]", "[25px:30px,grow][grow]"));
 		
-		GuiUtilsExtended.centerComponent(this, getDefaultDimension());
+		GuiUtils.centerComponent(this, getDefaultDimension());
 		
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, this);
 		

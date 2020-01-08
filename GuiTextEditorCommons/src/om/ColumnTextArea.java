@@ -31,11 +31,12 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RUndoManager;
 
 import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
 import resources.GeneralConfig;
 import sun.swing.SwingUtilities2;
 
 @SuppressWarnings("restriction")
-public class ColumnTextArea extends RSyntaxTextArea{
+public class ColumnTextArea extends RSyntaxTextArea {
 	private static final long serialVersionUID = -2828990655552935752L;
 	
 	// ColumnTextArea logger creation
@@ -48,7 +49,7 @@ public class ColumnTextArea extends RSyntaxTextArea{
     private static Object SandboxClipboardKey = new Object();
 
 	public AtomicBoolean isRectangularModeOn = new AtomicBoolean(true);
-	RSyntaxTextArea currentRef;
+	RSyntaxTextArea thisTextArea;
 	RUndoManager undoManager;
 	DefaultCaret customCaret;
 	
@@ -56,7 +57,7 @@ public class ColumnTextArea extends RSyntaxTextArea{
 	
 	public ColumnTextArea(boolean rectangularSelectionActive) {
 		super();
-		currentRef = this;
+		thisTextArea = this;
 		setRectangularSelectionMode(rectangularSelectionActive);
 		
 		addKeyListeners();
@@ -82,7 +83,7 @@ public class ColumnTextArea extends RSyntaxTextArea{
 	
 	public ColumnTextArea(int rows, int columns){
         super(rows, columns);
-        currentRef = this;
+        thisTextArea = this;
         customCaret = new ColumnTextArea.ColumnSelectionCaret(this);
         this.setCaret(customCaret);
 
@@ -199,6 +200,8 @@ public class ColumnTextArea extends RSyntaxTextArea{
 					rowStart = Utilities.getRowStart(this, selections[0].getStartOffset());
 					startFirstL = selections[0].getStartOffset() - rowStart;
 					endFirstL = selections[0].getEndOffset() - rowStart;
+					String currentSelLine = getText(startFirstL, endFirstL);
+					endFirstL = GuiUtils.getHighlightWidthWithTabs(currentSelLine, thisTextArea.getTabSize());
 				} catch (BadLocationException e) {
 					logger.error(e);
 				}
@@ -213,8 +216,10 @@ public class ColumnTextArea extends RSyntaxTextArea{
 					rowStart = Utilities.getRowStart(this, selections[i].getStartOffset());
 					int start = selections[i].getStartOffset() - rowStart;
 					int end = selections[i].getEndOffset() - rowStart;
+					String currentSelLine = getText(start, end);
+					int lineWidth = GuiUtils.getHighlightWidthWithTabs(currentSelLine, thisTextArea.getTabSize());
 					int rowEnd = Utilities.getRowEnd(this, end);
-					if (rowEnd != end && (startFirstL != start || endFirstL != end)) {
+					if (rowEnd != end && (startFirstL != start || endFirstL != lineWidth)) {
 						isRectangular = false;
 					}
 				} catch (BadLocationException e) {
@@ -414,19 +419,19 @@ class ColumnSelectionCaret extends DefaultCaret {
         
         if (e.getClickCount()==1) {
 			try {
-                if(currentRef != null){
+                if(thisTextArea != null){
                     	
                 	boolean rightClick = SwingUtilities.isRightMouseButton(e);
                 	if (!shiftDown && !rightClick) {
-						currentRef.removeAllLineHighlights();
-						currentRef.getHighlighter().removeAllHighlights();
+						thisTextArea.removeAllLineHighlights();
+						thisTextArea.getHighlighter().removeAllHighlights();
 					}
 		
-					int start = currentRef.getSelectionStart();
+					int start = thisTextArea.getSelectionStart();
 
 					// Update last start position, used on key released if shift is pressed
 					if (shiftDown) {
-						lastStartPosition = currentRef.getSelectedText() != null ? start : currentRef.getCaretPosition();
+						lastStartPosition = thisTextArea.getSelectedText() != null ? start : thisTextArea.getCaretPosition();
 					}
 					
 					updateSelectionIfShiftPressed();
@@ -442,9 +447,9 @@ class ColumnSelectionCaret extends DefaultCaret {
     	// SELECT with shift (only if position is different) -> select from currentCaret to viewToModel
         if(shiftDown) {
         	try {
-				currentRef.requestFocus();
-				currentRef.setSelectionStart(lastStartPosition);
-				currentRef.setSelectionEnd(currentRef.getCaretPosition());
+				thisTextArea.requestFocus();
+				thisTextArea.setSelectionStart(lastStartPosition);
+				thisTextArea.setSelectionEnd(thisTextArea.getCaretPosition());
 			} catch (Exception e) {
 			}
         }

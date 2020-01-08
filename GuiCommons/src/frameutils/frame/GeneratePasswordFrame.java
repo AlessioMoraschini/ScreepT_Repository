@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ClipboardPanelLight;
 import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
 import gui.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -119,7 +120,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 		spinnerLength.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		spinnerLength.setToolTipText("Best match to use in ScreepT is 16 characters");
 		spinnerLength.setModel(new SpinnerNumberModel(16, 1, 64, 1));
-		GuiUtilsExtended.setJspinnerColors(spinnerLength, Color.GRAY, new Color(10,10,10));
+		GuiUtils.setJspinnerColors(spinnerLength, Color.GRAY, new Color(10,10,10));
 		spinnerLength.setAlignmentY(Component.TOP_ALIGNMENT);
 		spinnerLength.setAlignmentX(Component.LEFT_ALIGNMENT);
 		spinnerLength.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 18));

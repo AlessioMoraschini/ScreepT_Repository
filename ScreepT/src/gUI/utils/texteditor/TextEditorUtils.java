@@ -861,6 +861,8 @@ public class TextEditorUtils {
 	 */
 	public boolean checkCurrentFileIsUnsaved() throws IOException {
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+//		String text = loadedTabObj.textArea.getText();
+//		boolean normalized = !text.contains("\r\n") && !text.contains("\r");
 		return !FileWorker.isTextAreaEqualToFileContent(loadedTabObj.textArea, loadedTabObj.loadedFile);
 	}
 	

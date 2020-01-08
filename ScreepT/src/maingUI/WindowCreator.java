@@ -23,6 +23,7 @@ import gUI.frames.ImportExportWorkspcCryptFrame;
 import gUI.frames.KeyDictionaryFrame;
 import gUI.frames.KeyGenFrame;
 import gUI.frames.TutorialFrame;
+import gui.GuiUtils;
 import gui.UpdateProgressPanel;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
@@ -250,7 +251,7 @@ public class WindowCreator {
 //				if (autoExtend) {
 //					GuiUtils.extendFramesAndMoveToTop(mainApplication.getMainFrame(), newFrame, JFrame.MAXIMIZED_BOTH);
 //				}
-				GuiUtilsExtended.centerComponent(newFrame, newFrame.getDefaultDimension());
+				GuiUtils.centerComponent(newFrame, newFrame.getDefaultDimension());
 				newFrame.setVisible(true);
 			}
 		});

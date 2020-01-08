@@ -38,6 +38,7 @@ import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gUI.utils.tooltip.TextEditorTooltips;
+import gui.GuiUtils;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
@@ -540,7 +541,7 @@ public class MainGuiParent {
 		
 		mntmOptimizeResourcesUsage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLEANUP));
 		mntmOptimizeResourcesUsage.setToolTipText(
-				GuiUtilsExtended.encapsulateInHtml(
+				GuiUtils.encapsulateInHtml(
 						"Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)"
 						+ "<br><b>NB:</b> remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors."
 						+ "<br><u>If you want to modify the memory used by ScreepT</u> you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well)."));

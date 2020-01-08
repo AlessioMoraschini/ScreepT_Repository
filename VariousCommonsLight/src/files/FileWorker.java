@@ -197,9 +197,9 @@ public class FileWorker {
 		if(toRead == null || !toRead.exists()) {
 			throw new IOException();
 		}
-		
-		long startTime = System.currentTimeMillis();
+	
 		logger.info("readFileAsString -> Start...");
+		long startTime = System.currentTimeMillis();
 	
 		StringBuilder builder = new StringBuilder(100000);
 		FileInputStream readerStream = new FileInputStream(toRead);
@@ -256,9 +256,8 @@ public class FileWorker {
 				builder.append(line);
 				line = reader.readLine();
 				
-				while(line!=null) {
-					builder.append("\n");
-					builder.append(line);
+				while (line != null) {
+					builder.append("\n").append(line);
 					line = reader.readLine();
 				}
 				

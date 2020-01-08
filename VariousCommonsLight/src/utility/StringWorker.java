@@ -1,18 +1,43 @@
 package utility;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import javax.swing.JTextArea;
 
 public class StringWorker {
+
+	public enum EOL{
+		CR("\r", "\\r"),
+		LF("\n", "\\n"),
+		CRLF("\r\n", "\\r\\n");
+		
+		public static final String CR_EXCLUSIVE_REGEX = "\\r(?!\\n)";
+		public static final String LF_EXCLUSIVE_REGEX = "\\n(?!\\r)";
+		public static final char UNICODE_CR = 0x00A;
+		public static final char UNICODE_LF = 0x00D;
+		
+		public String eol;
+		public String eolRegex;
+	
+		private EOL(String eol, String regex) {
+			this.eol = eol;
+			this.eolRegex = regex;
+		}
+	}
 
 	private static SafeLogger logger = new SafeLogger(StringWorker.class);
 	
@@ -85,7 +110,28 @@ public class StringWorker {
 		
 		return extractedBytes;
 	}
+	
+	public static int countOccurrencies(String source, String match) {
+		int lastIndex = 0;
+		int count = 0;
+		
+		if (isEmpty(match) || isEmpty(source)) {
+			return 0;
+		}
+		
+		while(lastIndex != -1){
 
+		    lastIndex = source.indexOf(match, lastIndex);
+
+		    if(lastIndex != -1){
+		        count ++;
+		        lastIndex += match.length();
+		    }
+		}
+		
+		return count;
+	}
+	
 	/**
 	 * this method extract from the source string the elements starting from N elements, and return it. 
 	 * the elements are calculated as separated by the given separator.
@@ -411,6 +457,9 @@ public class StringWorker {
 	public static boolean isEmpty(String source) {
 		return source != null && "".equals(source.trim());
 	}
+	public static boolean isEmptyNoTrim(String source) {
+		return source != null && "".equals(source);
+	}
 
 	public static String trimToEmpty(String source) {
 		if (source != null) {
@@ -418,6 +467,10 @@ public class StringWorker {
 		} else {
 			return "";
 		}
+	}
+	
+	public static boolean notEmpty(String source) {
+		return !isEmpty(source);
 	}
 
 	public static boolean containsOneOfMatchesChar(char[] password, char[] targetMatches) {
@@ -440,6 +493,127 @@ public class StringWorker {
 		}
 		
 		return false;
+	}
+
+	/**
+	 * Replace all EOL(EndOfLine) characters with the wanted type
+	 * @param source
+	 * @return
+	 */
+	public static String normalizeStringToEol(String source, EOL outputEOL) {
+		
+		String output = normalizeStringToLF(source).replaceAll(EOL.LF.eol, outputEOL.eol);
+		
+		return output;
+	}
+
+	/**
+	 * Replace all EOL(EndOfLine) characters with the LF type
+	 * @param source
+	 * @return
+	 */
+	public static String normalizeStringToLF(String source) {
+		String output = trimToEmpty(source);
+		
+		output = source.replaceAll(EOL.CRLF.eolRegex, EOL.LF.eol);
+		output = output.replaceAll(EOL.CR.eolRegex, EOL.LF.eol);
+		
+		return output;
+	}
+
+	/**
+	 * Make visible charachters \r and \n using ascii
+	 */
+	public static String makeCRLFvisible(String source) {
+		if(isEmpty(source)) {
+			return "";
+		}
+		
+		byte[] random = new byte[32];
+		new Random().nextBytes(random);
+		String rand = UUID.nameUUIDFromBytes(random).toString();
+		
+		return source.replace("\r\n", "[\\r\\n]"+rand).replace("\n", "[\\n]"+rand).replace("\r", "[\\r]"+rand).replace(rand, System.getProperty("line.separator"));
+	}
+
+	public static String makeCRLFvisible(File source) throws IOException {
+		if(source == null || !source.exists()) {
+			throw new IOException();
+		}
+	
+		logger.info("readFileAsString -> Start...");
+		long startTime = System.currentTimeMillis();
+	
+		StringBuilder builder = new StringBuilder(100000);
+		FileInputStream readerStream = new FileInputStream(source);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
+		char[] chBuffer = new char[512];
+		try {
+			boolean CR = false;
+			while (reader.read(chBuffer) != -1) {
+				for(char charEl : chBuffer) {
+					if(charEl == '\r') {
+						builder.append("[\\r]");
+						CR = true;
+					} else {
+						if (CR) {
+							CR = false;
+							if (charEl == '\n'){
+								builder.append("[\\n]\r\n");
+							} else {
+								builder.append("\r");
+							}
+						} else {
+							if(charEl == '\n') {
+								builder.append("[\\n]\n");
+							} else {
+								builder.append(charEl);
+							}
+						}
+					}
+				}
+			}
+		} catch (IOException e) {
+			throw e;
+		}finally {
+			reader.close();			
+		}
+		
+		logger.info("readFileAsString -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+		return builder.toString();
+	}
+	
+	public static boolean isStringSupportedByCharset(String source, Charset charset) {
+		
+		try {
+			if("".equals(trimToEmpty(source)) || !validateCharset(charset)) {
+				return false;
+			}
+			
+			return charset.newEncoder().canEncode(source);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public static boolean isStringSupportedByCharset(String source, String charsetName) {
+		
+		try {
+			if("".equals(trimToEmpty(source)) || !validateCharset(charsetName)) {
+				return false;
+			}
+			
+			return Charset.forName(charsetName).newEncoder().canEncode(source);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public static boolean validateCharset(Charset charset) throws Exception {
+		return charset != null && Charset.isSupported(charset.name());
+	}
+	public static boolean validateCharset(String charsetName) throws Exception {
+		return charsetName != null && Charset.isSupported(charsetName);
 	}
 
 }

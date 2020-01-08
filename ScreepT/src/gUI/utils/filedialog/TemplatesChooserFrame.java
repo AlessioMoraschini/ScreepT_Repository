@@ -169,7 +169,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 				String selectedTemplate = "";
 				File selectedFile = retrieveTemplateByName((String)comboTemplateSelector.getSelectedItem());
 				try {
-					selectedTemplate = "\n"+(FileWorker.readFileAsString(selectedFile)) + "\n";
+					selectedTemplate = (FileWorker.readFileAsString(selectedFile));
 				} catch (IOException e1) {
 					dialogHelper.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), "ERROR reading Template");
 					logger.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), e1);

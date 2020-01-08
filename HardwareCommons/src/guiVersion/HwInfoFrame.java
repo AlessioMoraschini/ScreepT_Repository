@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
 import net.miginfocom.swing.MigLayout;
 import om.HDinfo;
 import om.LimitedConcurrentList;
@@ -205,7 +206,7 @@ public class HwInfoFrame extends ParentFrame{
 		});
 		
 		singletonInstance.pack();
-		GuiUtilsExtended.centerComponent(singletonInstance, getDefaultDimension());
+		GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 		
 	}
 	

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
 import gui.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkAdapter;
@@ -133,7 +134,7 @@ public class NetInfoFrame extends ParentFrame{
 			@Override
 			public void run() {
 				singletonInstance.pack();
-				GuiUtilsExtended.centerComponent(singletonInstance, getDefaultDimension());
+				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 			}
 		});
 		
@@ -391,7 +392,7 @@ public class NetInfoFrame extends ParentFrame{
 				updateAdapterGUIinfos();
 				validateConnectivity();
 				
-				GuiUtilsExtended.centerComponent(singletonInstance, getDefaultDimension());
+				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 			}
 		});
 		

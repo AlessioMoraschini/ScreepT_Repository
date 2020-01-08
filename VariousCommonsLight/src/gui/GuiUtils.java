@@ -1,6 +1,7 @@
 package gui;
 
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
@@ -8,15 +9,30 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,7 +43,9 @@ import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
@@ -36,7 +54,10 @@ import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
+import files.om.FileNamed;
+import utility.ImageWorker;
 import utility.SafeLogger;
+import utility.StringWorker;
 
 public class GuiUtils {
 	
@@ -51,6 +72,8 @@ public class GuiUtils {
 	
 	public static final Dimension DEF_CUSTOM_CURSOR_SIZE = new Dimension(8,8);
 	
+	public static JOptionHelper dialogHelper = new JOptionHelper(null);
+
 	/**
 	 * Retrieve selected text from JTextaea if something is selected, else retrieve all text
 	 * @param source
@@ -62,6 +85,90 @@ public class GuiUtils {
 		String result = (selection == null)? allText : selection;
 		
 		return result;
+	}
+	
+	public static MouseListener getClickOutDisposeListener(final JFrame target) {
+		return new MouseAdapter() {
+
+			@Override
+			public void mouseReleased(final MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (target != null) {
+							if (!target.getBounds().contains(e.getPoint())) {
+								target.dispatchEvent(new WindowEvent(target, WindowEvent.WINDOW_CLOSING));
+								target.dispose();
+							}
+						}
+					}
+				});
+			}
+			
+		};
+	}
+	public static FocusListener getFocusOutDisposeListener(final JFrame target) {
+		return new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (target != null) {
+							target.dispatchEvent(new WindowEvent(target, WindowEvent.WINDOW_CLOSING));
+							target.dispose();
+						}
+					}
+				});
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		};		
+	}
+	
+	public static MouseMotionListener getMouseExitedDisposeListener(final JFrame target) {
+		return new MouseMotionListener() {
+			
+			@Override
+			public void mouseMoved(final MouseEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (!target.getBounds().contains(e.getPoint())) {
+							target.dispatchEvent(new WindowEvent(target, WindowEvent.WINDOW_CLOSING));
+							target.dispose();
+						}
+					}
+				});
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+			}
+		};
+	}
+	
+	public static void addEscDisposeListener(JFrame target) {
+		
+		if(target == null) {
+			return;
+		}
+		
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+			
+			@Override
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				if (target != null) {
+					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						target.dispatchEvent(new WindowEvent(target, WindowEvent.WINDOW_CLOSING));
+						KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
+					}
+				}
+				return false;
+			}
+		});
 	}
 	
 	public static void launchThreadSafeSwing(Runnable threadAction) {
@@ -613,6 +720,151 @@ public class GuiUtils {
 		ToolTipManager.sharedInstance().setDismissDelay(timeout);
 		ToolTipManager.sharedInstance().setReshowDelay(reshowDelay);
 		UIManager.put("ToolTip.font", font);
+	}
+
+	public static void setJspinnerColors(JSpinner spinner, Color foreground, Color background) {
+		JComponent editor = spinner.getEditor();
+		int n = editor.getComponentCount();
+		for (int i = 0; i < n; i++) {
+			Component c = editor.getComponent(i);
+			if (c instanceof JTextField) {
+				c.setForeground(foreground);
+				c.setBackground(background);
+			}
+		}
+	}
+
+	public static void centerComponent(Component targetFrame, Dimension dimension) {
+		centerComponent(targetFrame, dimension.width, dimension.height);
+	}
+
+	public static boolean isKeyCodeValidCode(int keyCodeToCheck) {
+		String unknown = Toolkit.getProperty("AWT.unknown", "Unknown");
+	    return !KeyEvent.getKeyText(keyCodeToCheck).equals(unknown + " keyCode: 0x" + Integer.toString(keyCodeToCheck, 16));
+	}
+
+	public static int getFirstIndexMatchFromStringCombo(JComboBox<String> comboBox, String match) {
+		if(comboBox == null || match == null) {
+			return -1;
+		}
+		for(int i = 0; i < comboBox.getItemCount(); i++) {
+			if(comboBox.getItemAt(i).equals(match)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+
+	public static int getFirstIndexMatchFromFileNamedCombo(JComboBox<FileNamed> comboBox, String match) {
+		if(comboBox == null || match == null) {
+			return -1;
+		}
+		for(int i = 0; i < comboBox.getItemCount(); i++) {
+			if(comboBox.getItemAt(i).getFileName().equals(match)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+
+	public static Frame getTopFrame() {
+		Frame[] frames = Frame.getFrames();
+		for (int i = 0; i < frames.length; i++) {
+			if (frames[i].getFocusOwner() != null) {
+				return frames[i];
+			}
+		}
+		if (frames.length > 0) {
+			return frames[0];
+		}
+		return null;
+	}
+
+	public static Cursor getCustomCursor(String imgPath, Dimension size) {
+		Dimension correctSize = size;
+		if(correctSize == null) {
+			correctSize = DEF_CUSTOM_CURSOR_SIZE;
+		}
+		
+		Cursor result = CURSOR_DEFAULT;
+		try {
+			Point hotSpot = new Point(0, 0);
+	        BufferedImage cursorImg = ImageIO.read(new File(imgPath));
+	        cursorImg = ImageWorker.scaleImage(cursorImg, BufferedImage.TYPE_4BYTE_ABGR_PRE, correctSize.width, correctSize.height);
+			result = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, hotSpot, imgPath);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		
+		return result;
+	}
+
+	public static void manageFormatterException(Exception e, String extension) {
+//		SoundsManager.playSound(SoundsConfigurator.ERROR, null);
+		String exception = Arrays.deepToString(e.getStackTrace());
+		logger.error("error formatting "+ extension +" string !", e);
+		dialogHelper.errorScroll("Error reading " + extension + " format: " + exception, "format Error");
+	}
+
+	public static String encapsulateInHtml(String original) {
+		return "<html>" + original + "</html>";
+	}
+
+	public static String replaceEachLineMatchesFromLeft(boolean startsWith, String source, String match, String replacement) {
+		String[] lines = source.split("\n");
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for (String line : lines) {
+			if(i > 0 && i< lines.length) {
+				builder.append("\n");
+			}
+			if (!startsWith || line.startsWith(match)) {
+				builder.append(line.replaceAll(match, replacement));
+			}else {
+				builder.append(line);
+			}
+			i++;
+		}
+		
+		return builder.toString();
+	}
+
+	public static KeyEventDispatcher getKeyDispatcherFromCode(int keyCode) {
+		return new KeyEventDispatcher() {
+		    @Override
+		    public boolean dispatchKeyEvent(KeyEvent e) {
+		        return e.getKeyCode() == keyCode;
+		    }
+		};
+	}
+
+	/**
+	 * Use this to disable or enable default system shortcuts for a given key, identified by its keyCode
+	 * @param keyCode
+	 */
+	public static void setKeySystemActionEnabled(int keyCode, boolean enable) {
+		
+		KeyEventDispatcher customKeyDispatcher = getKeyDispatcherFromCode(keyCode);
+		
+		if(enable) {
+	        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(customKeyDispatcher);
+		}else {
+	        KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(customKeyDispatcher);
+		}
+		
+	}
+
+	public static int getHighlightWidthWithTabs(String currentLine, int tabSize) {
+		if(StringWorker.isEmptyNoTrim(currentLine)) {
+			return 0;
+		}
+		
+		int nOfTabs = StringWorker.countOccurrencies(currentLine, "\t");
+		int tabsTotalLength = tabSize * nOfTabs;
+		
+		return currentLine.length() - nOfTabs + tabsTotalLength;
 	}
 	
 }

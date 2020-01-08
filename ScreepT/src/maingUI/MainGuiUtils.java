@@ -27,6 +27,7 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import gui.GuiUtils;
 import guistyle.GUIStyelSettingsExtended;
 import mainobj.INItializer;
 import om.GenericOption;
@@ -60,7 +61,7 @@ public class MainGuiUtils {
 			
 			@Override
 			public void run() {
-				Frame activeWindowBeforeUpdates = GuiUtilsExtended.getTopFrame();
+				Frame activeWindowBeforeUpdates = GuiUtils.getTopFrame();
 				
 				if (!MainGUI.mainAPP.isUpdating.get()) {
 					MainGUI.mainAPP.isUpdating.set(true);

@@ -4,6 +4,7 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import gui.GuiUtils;
 import maingUI.MainGUI;
 import om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
@@ -153,7 +154,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 			public void run() {
 				String lastWorkspaceName = new File(textOptions.defaultWorkspacePath).getName();
 				
-				int match = GuiUtilsExtended.getFirstIndexMatchFromFileNamedCombo(comboBoxExport, lastWorkspaceName);
+				int match = GuiUtils.getFirstIndexMatchFromFileNamedCombo(comboBoxExport, lastWorkspaceName);
 				comboBoxExport.setSelectedIndex(match);
 				comboBoxExport.repaint();
 			}

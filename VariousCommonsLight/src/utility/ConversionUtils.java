@@ -120,35 +120,6 @@ public class ConversionUtils {
 	}
 
 	/**
-	 * Replace all EOL(EndOfLine) characters with the wanted type
-	 * @param source
-	 * @return
-	 */
-	public static String normalizeStringEol(String source, EOL outputEOL) {
-		String output = StringWorker.trimToEmpty(source);
-		
-		output = output.replaceAll(EOL.CRLF.eolRegex, outputEOL.eol);
-		output = output.replaceAll(EOL.CR.eolRegex, outputEOL.eol);
-		output = output.replaceAll(EOL.LF.eolRegex, outputEOL.eol);
-		
-		return output;
-	}
-	
-	public enum EOL{
-		CR("\r", "\\r"),
-		LF("\n", "\\n"),
-		CRLF("\r\n", "\\r\\n");
-		
-		public String eol;
-		public String eolRegex;
-
-		private EOL(String eol, String regex) {
-			this.eol = eol;
-			this.eolRegex = regex;
-		}
-	}
-
-	/**
 	 * parse font from a representing string
 	 */
 	public static Font getFontFromString(String stringFont) {

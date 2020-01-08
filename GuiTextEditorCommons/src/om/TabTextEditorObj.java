@@ -1,13 +1,22 @@
 package om;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
@@ -16,6 +25,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.apache.log4j.Logger;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -23,10 +33,12 @@ import org.fife.ui.rtextarea.RUndoManager;
 
 import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 import shortcuts.ICommonShortcuts;
 import tabbededitor.IChangeMonManager;
+import utility.StringWorker;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 
@@ -92,6 +104,7 @@ public class TabTextEditorObj {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				defaultAddsToPopupMenu();
 				updateTextAreaPreferences(configuration);
 				textArea.repaint();
 			}
@@ -182,8 +195,67 @@ public class TabTextEditorObj {
 		textArea.setClearWhitespaceLinesEnabled(txtOptions.clearWhitespaceLinesEnabled);
 		textArea.setWhitespaceVisible(txtOptions.whiteSpaceVisible);
 		textArea.setLocale(configuration.getGenOpt().getLocale());
+		
+		textArea.setUseFocusableTips(true);
 	}
+	
+	public void enrichJPopUpMenu(ArrayList<Component> menuItemList) {
+		
+		if (menuItemList != null) {
+			for (Component menuItem : menuItemList) {
+				textArea.getPopupMenu().add(menuItem);
+			}
+		}
+	}
+	
+	private void defaultAddsToPopupMenu() {
+		textArea.getPopupMenu().add(new JSeparator());
+		JMenuItem showFileLineTerminators = new JMenuItem("View lineFeeds (From File)");
+		showFileLineTerminators.addActionListener(getShowLineTerminatorsPreview(true));
+		textArea.getPopupMenu().add(showFileLineTerminators);
 
+		JMenuItem showTextLineTerminators = new JMenuItem("View lineFeeds (From Loaded Text)");
+		showTextLineTerminators.addActionListener(getShowLineTerminatorsPreview(false));
+		textArea.getPopupMenu().add(showTextLineTerminators);
+	}
+	
+	public AbstractAction getShowLineTerminatorsPreview(boolean fromFile) {
+		return new AbstractAction() {
+			private static final long serialVersionUID = 5019052743964361436L;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame = new JFrame(loadedFile != null ? loadedFile.getName() : "unsaved file");
+				RSyntaxTextArea textAreaS = new RSyntaxTextArea();
+				JScrollPane scrollPane = new JScrollPane(textAreaS);
+				textAreaS.setBackground(new Color(254, 255, 205));
+				
+				if(fromFile)try {
+					textAreaS.setText( loadedFile != null? StringWorker.makeCRLFvisible(loadedFile) : "Undefined File");
+				} catch (IOException e1) {}
+				else {
+					textAreaS.setText( textArea != null? StringWorker.makeCRLFvisible(textArea.getText()) : "Text unavailable");
+				}
+				
+				textAreaS.setFont(new Font("DejaVu Sans Mono", Font.PLAIN, 13));
+				textAreaS.setCaretPosition(textArea.getCaretPosition());
+				scrollPane.setViewportView(textAreaS);
+				frame.add(scrollPane);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				frame.setUndecorated(true);
+				frame.setAlwaysOnTop(true);
+				frame.setLocationRelativeTo(textArea);
+				GuiUtils.addEscDisposeListener(frame);
+				textArea.addMouseListener(GuiUtils.getClickOutDisposeListener(frame));
+				textArea.addMouseMotionListener(GuiUtils.getMouseExitedDisposeListener(frame));
+				textAreaS.addFocusListener(GuiUtils.getFocusOutDisposeListener(frame));
+				GuiUtils.centerComponent(frame, 50);
+				GuiUtils.moveFrame(frame, 0, 100);
+				frame.setVisible(true);
+			}
+		};
+	}
+	
 	public void hyperLinksEnabled(boolean enabled) {
 		textArea.setHyperlinksEnabled(enabled);
 		if (enabled) {
