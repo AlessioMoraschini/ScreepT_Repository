@@ -26,10 +26,15 @@ public class SafeLogger {
 	private static final String INFO = "INFO: ";
 	private static final String DEBUG = "DEBUG: ";
 	
-	private boolean loggerEnabled = true;
+	private boolean loggerEnabled;
 
 	public SafeLogger(Class<?> claSS) {
+		this(claSS, true);
+	}
+
+	public SafeLogger(Class<?> claSS, boolean enabled) {
 		reset(claSS);
+		loggerEnabled = enabled;
 	}
 	
 	public void reset(Class<?> claSS) {
@@ -71,50 +76,64 @@ public class SafeLogger {
 	}
 	
 	public void info(String message) {
-		if (loggerAvailable) {
-			invokeLoggerMethod("info", message);
-		} else {
-			out.println(INFO + message);
+		if (loggerEnabled) {
+			if (loggerAvailable) {
+				invokeLoggerMethod("info", message);
+			} else {
+				out.println(INFO + message);
+			} 
 		}
 	}
 
 	public void warn(String message) {
-		if (loggerAvailable) {
-			invokeLoggerMethod("warn", message);
-		} else {
-			out.println(WARN + message);
+		if (loggerEnabled) {
+			if (loggerAvailable) {
+				invokeLoggerMethod("warn", message);
+			} else {
+				out.println(WARN + message);
+			} 
 		}
 	}
 	
 	public void warn(String message, Throwable throwable) {
-		if (loggerAvailable) {
-			invokeLoggerMethod("warn", message, throwable);
-		} else {
-			out.println(ConsoleColours.ANSI_RED + WARN + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW));
+		if (loggerEnabled) {
+			if (loggerAvailable) {
+				invokeLoggerMethod("warn", message, throwable);
+			} else {
+				out.println(
+						ConsoleColours.ANSI_RED + WARN + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW));
+			} 
 		}
 	}
 
 	public void debug(String message) {
-		if (loggerAvailable) {
-			invokeLoggerMethod("debug", message);
-		} else {
-			out.println(DEBUG + message);
+		if (loggerEnabled) {
+			if (loggerAvailable) {
+				invokeLoggerMethod("debug", message);
+			} else {
+				out.println(DEBUG + message);
+			} 
 		}
 	}
 
 	public void error(String message, Throwable throwable) {
-		if (loggerAvailable) {
-			invokeLoggerMethod("error", message, throwable);
-		} else {
-			out.println(ConsoleColours.ANSI_RED + ERROR + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW));
+		if (loggerEnabled) {
+			if (loggerAvailable) {
+				invokeLoggerMethod("error", message, throwable);
+			} else {
+				out.println(
+						ConsoleColours.ANSI_RED + ERROR + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW));
+			} 
 		}
 	}
 
 	public void error(String message) {
-		if (loggerAvailable) {
-			invokeLoggerMethod("error", message);
-		} else {
-			out.println(ERROR + message);
+		if (loggerEnabled) {
+			if (loggerAvailable) {
+				invokeLoggerMethod("error", message);
+			} else {
+				out.println(ERROR + message);
+			} 
 		}
 	}
 

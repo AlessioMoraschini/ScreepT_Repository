@@ -22,7 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class JOptionHelper {
 	
@@ -373,6 +373,8 @@ public class JOptionHelper {
 		msg = (!StringWorker.isEmpty(msg)) ? msg : "Information message not specified";
 		Boolean boolRes = showYNMessageCommon(msg, title, QUESTION, true, false, true);
 		int result = boolRes == null ? CANC : boolRes ? OK : NO;
+		
+		// TODO check for bug when pressing X|ESC -> return no but should return canc
 		
 		return result;
 	}

@@ -254,6 +254,31 @@ public class GenericFileChooserDialog {
         }
         return correctFile;
 	}
+
+	/**JFRAME - only img supported extension
+	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
+	 */
+	public File fileWrite(JFrame parent, String defaultName, File defaultDir) {
+		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+		fileChooser.setDialogTitle("Save File");
+		fileChooser.setFileView(fileView);
+		fileChooser.setCurrentDirectory(defaultDir != null ? defaultDir : new File(currentConf.getFileOpt().getLastDstFolderPath()));	
+		fileChooser.setSelectedFile(new File(defaultName));
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		File correctFile = null;
+		
+		int returnVal = fileChooser.showSaveDialog(parent);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			
+			File selectedFile = fileChooser.getSelectedFile();
+			correctFile = selectedFile;
+			currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
+		}else {
+			dialogHelper.info("Skipped after user request.", "Skipped");
+		}
+		return correctFile;
+	}
 	
 	/**JFRAME - only directories src
 	 * this method select a directory from the user (only directories),if nothing is selected returns null

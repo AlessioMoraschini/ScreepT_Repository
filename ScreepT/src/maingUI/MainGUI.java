@@ -146,6 +146,8 @@ public class MainGUI extends MainGuiParent{
 	
 	public WindowCreator windowCreator;
 	
+	public static boolean alreadyAskingForClose = false;
+	
 	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
 	 * 
 	 * 			Calls contructor, initialize & Launch the application.
@@ -451,20 +453,20 @@ public class MainGUI extends MainGuiParent{
 			}
  		});
  		
- 		// TOP-RIGHT TOGGLES
- 		mntmToggleHeader = new CustomJmenuItem(new AbstractAction("") {
+ 		// TOP-RIGHT TOGGLES : from right
+ 		mntmToggle0 = new CustomJmenuItem(new AbstractAction("") {
  			public void actionPerformed(ActionEvent e) {
- 				toggleHeaderAction.doOnClick();
+ 				toggleAction0.doOnClick();
  			}
  		});
- 		mntmToggleSubHeader = new CustomJmenuItem(new AbstractAction("") {
+ 		mntmToggle1 = new CustomJmenuItem(new AbstractAction("") {
  			public void actionPerformed(ActionEvent e) {
- 				toggleSubHeaderAction.doOnClick();
+ 				toggleAction1.doOnClick();
  			}
  		});
- 		mntmToggleFooter = new CustomJmenuItem(new AbstractAction("") {
+ 		mntmToggle2 = new CustomJmenuItem(new AbstractAction("") {
  			public void actionPerformed(ActionEvent e) {
- 				toggleFooterAction.doOnClick();
+ 				toggleAction2.doOnClick();
  			}
  		});
  		
@@ -1276,8 +1278,14 @@ public class MainGUI extends MainGuiParent{
 	}
 	
 	public static void askForExit() {
-		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
     	
+		if(alreadyAskingForClose) {
+			return;
+		}
+
+		alreadyAskingForClose = true;
+		
+		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
 		
     	if (dialogHelper.showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
 
@@ -1291,6 +1299,7 @@ public class MainGUI extends MainGuiParent{
     		activeWindow.requestFocus();
     	}
     	
+    	alreadyAskingForClose = false;
 	}
 	
 	public static void killApplication(int exitCode) {

@@ -25,10 +25,10 @@ import utility.BitWorker;
 import utility.ConversionUtils;
 import utility.EncodingUtils;
 import utility.EntrophyzerUtils;
-import utility.StringWorker;
 import utility.hash.SafeHasher;
 import utility.hash.SafeHasher.HashAlgorithm;
 import utility.hash.SafeHasher.IterationsLevel;
+import utility.string.StringWorker;
 
 public class AesCipher {
 	
@@ -121,11 +121,7 @@ public class AesCipher {
 		StringBuilder builder = new StringBuilder(10000);
 		for(int i=0; i<sourceLines.length; i++) {
 			encrypted = cipher.doFinal(sourceLines[i].getBytes(EncodingUtils.stringEncoding));
-			if (i == sourceLines.length - 1) {
-				builder.append(encodingUtils.encodeBase64(encrypted)).append("\n");
-			} else {
-				builder.append(encodingUtils.encodeBase64(encrypted)).append("\n");
-			}
+			builder.append(encodingUtils.encodeBase64(encrypted)).append("\n\n");
 		}
 		return builder.toString();
 	}
@@ -203,11 +199,7 @@ public class AesCipher {
 		StringBuilder builder = new StringBuilder(10000);
 		for(int i=0; i<sourceLines.length; i++) {
 			decrypted = cipher.doFinal(encodingUtils.decodeBase64bytes(sourceLines[i]));
-			if (i == sourceLines.length - 1) {
-				builder.append(new String(decrypted, EncodingUtils.stringEncoding)).append("\n");
-			} else {
-				builder.append(new String(decrypted, EncodingUtils.stringEncoding)).append("\n");
-			}
+			builder.append(new String(decrypted, EncodingUtils.stringEncoding)).append("\n\n");
 		}
 		return builder.toString();
 	}

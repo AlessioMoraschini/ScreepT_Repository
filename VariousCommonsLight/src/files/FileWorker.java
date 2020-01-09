@@ -30,7 +30,7 @@ import files.om.DeleteFilesByExtensionDTO;
 import gui.JOptionHelper;
 import utility.ConversionUtils;
 import utility.SafeLogger;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class FileWorker {
 
@@ -103,14 +103,10 @@ public class FileWorker {
 				BufferedReader reader;
 				reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
 				try {
-					String line = reader.readLine();
-					line = (line != null)? line : "";
-					builder.append(line);
-					line = reader.readLine();
+					String line;
 					
-					while (line != null) {
-						builder.append("\n").append(line);
-						line = reader.readLine();
+					while ((line = reader.readLine()) != null) {
+						builder.append(line).append("\n");
 					}
 					reader.close(); 
 					readerStream.close();
@@ -205,13 +201,10 @@ public class FileWorker {
 		FileInputStream readerStream = new FileInputStream(toRead);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
 		try {
-			String line = reader.readLine();
-			builder.append(line);
-			line = reader.readLine();
+			String line;
 			
-			while (line != null) {
-				builder.append("\n").append(line);
-				line = reader.readLine();
+			while ((line = reader.readLine()) != null) {
+				builder.append(line).append("\n");
 			}
 		} catch (IOException e) {
 			throw e;
@@ -251,14 +244,10 @@ public class FileWorker {
 			try {
 				reader = new BufferedReader(new FileReader(txtFile.getAbsolutePath()));
 	
-				String line = reader.readLine();
-				line = (line != null)? line : "";
-				builder.append(line);
-				line = reader.readLine();
+				String line;
 				
-				while (line != null) {
-					builder.append("\n").append(line);
-					line = reader.readLine();
+				while ((line = reader.readLine()) != null) {
+					builder.append(line).append("\n");
 				}
 				
 				textArea_1.append(builder.toString());

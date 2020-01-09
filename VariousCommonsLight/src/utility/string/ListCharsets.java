@@ -1,4 +1,4 @@
-package utility;
+package utility.string;
 
 import java.nio.charset.Charset;
 import java.util.Iterator;

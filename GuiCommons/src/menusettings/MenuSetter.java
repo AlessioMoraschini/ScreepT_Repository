@@ -1,6 +1,9 @@
 package menusettings;
 
 import java.awt.Component;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -58,4 +61,98 @@ public class MenuSetter {
 		}
 	}
 	
+	public static void setMargin(JMenu menuBar, Insets margin) {
+		JMenu menu;
+		JMenuItem menuItem;
+		
+		for(int i=0; i < menuBar.getItemCount(); i++) {
+			Component currentComponent = menuBar.getItem(i);
+			if(currentComponent instanceof JMenu) {
+				menu = (JMenu) currentComponent;
+				setMargin(menu, margin);
+				menu.setMargin(margin);
+			}else if(currentComponent instanceof JMenuItem) {
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.setMargin(margin);
+			}
+		}
+	}
+	
+	public static void setMargin(JPopupMenu menuBar, Insets margin) {
+		JMenu menu;
+		JMenuItem menuItem;
+		
+		for(int i=0; i < menuBar.getComponentCount(); i++) {
+			Component currentComponent = menuBar.getComponent(i);
+			if(currentComponent instanceof JMenu) {
+				menu = (JMenu) currentComponent;
+				setMargin(menu, margin);
+				menu.setMargin(margin);
+			}else if(currentComponent instanceof JMenuItem) {
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.setMargin(margin);
+			}
+		}
+	}
+	public static void setFont(JMenu menuBar, Font font) {
+		JMenu menu;
+		JMenuItem menuItem;
+		
+		for(int i=0; i < menuBar.getItemCount(); i++) {
+			Component currentComponent = menuBar.getItem(i);
+			if(currentComponent instanceof JMenu) {
+				menu = (JMenu) currentComponent;
+				setFont(menu, font);
+				menu.setFont(font);
+			}else if(currentComponent instanceof JMenuItem) {
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.setFont(font);
+			}
+		}
+	}
+	
+	public static void setFont(JPopupMenu menuBar, Font font) {
+		JMenu menu;
+		JMenuItem menuItem;
+		
+		for(int i=0; i < menuBar.getComponentCount(); i++) {
+			Component currentComponent = menuBar.getComponent(i);
+			if(currentComponent instanceof JMenu) {
+				menu = (JMenu) currentComponent;
+				setFont(menu, font);
+				menu.setFont(font);
+			}else if(currentComponent instanceof JMenuItem) {
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.setFont(font);
+			}
+		}
+	}
+	
+	public static void addAction(JMenuItem[] items, ActionListener actionListener) {
+		for (JMenuItem item : items) {
+			item.addActionListener(actionListener);
+		}
+	}
+	
+	public static void addActionToAllJMenuItems(JMenu menuBar, ActionListener actionListener) {
+		JMenuItem menuItem;
+		
+		for(int i=0; i < menuBar.getItemCount(); i++) {
+			Component currentComponent = menuBar.getItem(i);
+			if(currentComponent instanceof JMenuItem) {
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.addActionListener(actionListener);
+			}
+		}
+	}
+	
+	public static void addToDoLater(JMenuItem item, ActionListener listener) {
+		item.addActionListener(listener);
+	}
+	
+	public static void removeAllListenersFromItem(JMenuItem item) {
+		for(ActionListener listener : item.getActionListeners()) {
+			item.removeActionListener(listener);
+		}
+	}
 }

@@ -16,7 +16,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class GuiUtilsExtended extends GuiUtils {
 	

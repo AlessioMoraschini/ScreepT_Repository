@@ -4,16 +4,19 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import resources.GeneralConfig;
+import utility.string.StringWorker;
 
 @SuppressWarnings("deprecation")
-public class HandleString {
+public class StringWorkerExtended extends StringWorker {
 
 	public static final String UNPRINTABLE_ESCAPES = "[^\\x20-\\x7e]";
+	
+	static {
+		TXT_EDITOR_UPPERCASE_SEPARATORS = GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS;
+	}
 
 	// this array contains all char that trigger uppercase next char
-	String currentString;	
-	
-	public HandleString(String input) {
+	public StringWorkerExtended(String input) {
 		currentString = new String(input);
 	}
 	
@@ -41,74 +44,6 @@ public class HandleString {
 		}
 		
 		return source;
-	}
-	
-	public static String lowerAfterDots(String source, char trigger) {
-		String result="";
-		// first letter lowercase
-		boolean flagNewUp = false; 
-		boolean firstChanged = false;
-		
-		// for every char in string if flag is true makeLower case, else add the same original char
-		for(int i=0; i<source.length(); i++) {
-			char character_i = source.charAt(i);
-			if(!firstChanged && Character.isAlphabetic(character_i)) {
-				// First alphabetic letter is always changed
-				result+=String.valueOf(character_i).toLowerCase();
-				firstChanged = true;
-				
-			}else if (flagNewUp==true) {
-				result+=String.valueOf(character_i).toLowerCase();
-				// space and still to lowercase handler
-				if(!(character_i == ' ') && !(GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i)))) {
-					flagNewUp=false;
-				}		
-			} else {
-				result+=String.valueOf(character_i);
-			}
-				
-			// finally update flag according to char value il blacklist
-			if (character_i==trigger || GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i))){
-				flagNewUp=true;
-			}
-		}
-		return result;
-	}
-	
-	public static String upperAfterDots(String source, char trigger) {
-		String result="";
-		// first letter uppercase
-		boolean flagNewUp = false; 
-		boolean firstChanged = false;
-		
-		// for every char in string if flag is true makeUpper case, else add the same original char
-		for(int i=0; i<source.length(); i++) {
-			char character_i = source.charAt(i);
-			
-			if(!firstChanged && Character.isAlphabetic(character_i)) {
-				// First alphabetic letter is always changed
-				result+=String.valueOf(character_i).toUpperCase();
-				firstChanged = true;
-				
-			} else if (flagNewUp==true) {
-				result+=String.valueOf(character_i).toUpperCase();
-				// space and still to uppercase handler
-				if(!(character_i == ' ') && !(GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i)))) {
-					flagNewUp=false;
-				}		
-				
-			} else {
-				result+=String.valueOf(character_i);
-			}
-			
-			// finally update flag according to char value il blacklist
-			if (character_i==trigger || GeneralConfig.TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i))){
-				flagNewUp=true;
-			}
-		}
-		
-		
-		return result;
 	}
 	
 	/**

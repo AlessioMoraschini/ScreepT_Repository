@@ -14,8 +14,8 @@ import org.ini4j.Wini;
 
 import utility.ConversionUtils;
 import utility.SafeLogger;
-import utility.StringWorker;
 import utility.reflection.ReflectionUtils;
+import utility.string.StringWorker;
 
 public abstract class INItializerParent implements INItializerInterface{
 

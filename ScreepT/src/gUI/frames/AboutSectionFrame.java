@@ -197,7 +197,7 @@ public class AboutSectionFrame extends ParentFrame {
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(450, 400);
+		return new Dimension(470, 420);
 	}
 	
 	public static AboutSectionFrame getInstance(MainGUI mainApplication) {

@@ -631,7 +631,7 @@ public class NetInfoFrame extends ParentFrame{
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(1000, 650);
+		return new Dimension(1020, 670);
 	}
 	
 	public static NetInfoFrame getInstance() {

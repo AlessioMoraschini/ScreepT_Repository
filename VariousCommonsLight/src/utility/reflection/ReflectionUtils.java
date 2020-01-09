@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class ReflectionUtils {
 

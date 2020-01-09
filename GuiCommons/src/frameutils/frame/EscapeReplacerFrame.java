@@ -13,11 +13,11 @@ import frameutils.utils.GuiUtilsExtended;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
+import om.SelectionDtoFull;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import textareautil.SelectionDtoFull;
 import variousutils.EscapeType;
-import variousutils.HandleString;
+import variousutils.StringWorkerExtended;
 
 import javax.swing.JLabel;
 
@@ -163,7 +163,7 @@ public class EscapeReplacerFrame extends JFrame{
 		btnTryEscapeTo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String tryString = textFieldTry.getText();
-				tryString = HandleString.replaceEscapesWithSpecials(tryString, getSelectedEscapeType());
+				tryString = StringWorkerExtended.replaceEscapesWithSpecials(tryString, getSelectedEscapeType());
 				textFieldTry.setText(tryString);
 				GuiUtilsExtended.selectAllText(textFieldTry);
 			}
@@ -174,8 +174,8 @@ public class EscapeReplacerFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				String tryString = textFieldTry.getText();
 				// first replace back already escaped sequences to avoid escaping escape text (&grave -> amperstand would be escaped too)
-				tryString = HandleString.replaceEscapesWithSpecials(tryString, getSelectedEscapeType());
-				tryString = HandleString.replaceSpecialWithEscapes(tryString, getSelectedEscapeType());
+				tryString = StringWorkerExtended.replaceEscapesWithSpecials(tryString, getSelectedEscapeType());
+				tryString = StringWorkerExtended.replaceSpecialWithEscapes(tryString, getSelectedEscapeType());
 				textFieldTry.setText(tryString);
 				GuiUtilsExtended.selectAllText(textFieldTry);
 			}
@@ -270,14 +270,14 @@ public class EscapeReplacerFrame extends JFrame{
 		String center = "";
 		
 		if(outputTextArea.getSelectedText() != null) {
-			center = HandleString.replaceSpecialWithEscapes(selectionTxtArea.selection, type);
-			output = selectionTxtArea.prefix.concat(center).concat(selectionTxtArea.end);
+			center = StringWorkerExtended.replaceSpecialWithEscapes(selectionTxtArea.selection, type);
+			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
 			outputTextArea.setText(output);
 			outputTextArea.requestFocus();
 			outputTextArea.setSelectionStart(selStart);
 		}else {
-			output = selectionTxtArea.prefix.concat(center).concat(selectionTxtArea.end);
-			output = HandleString.replaceSpecialWithEscapes(output, type);
+			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
+			output = StringWorkerExtended.replaceSpecialWithEscapes(output, type);
 			outputTextArea.setText(output);
 			outputTextArea.requestFocus();
 			outputTextArea.setSelectionStart(0);
@@ -298,14 +298,14 @@ public class EscapeReplacerFrame extends JFrame{
 		String center = "";
 		
 		if(outputTextArea.getSelectedText() != null) {
-			center = HandleString.replaceEscapesWithSpecials(selectionTxtArea.selection, type);
-			output = selectionTxtArea.prefix.concat(center).concat(selectionTxtArea.end);
+			center = StringWorkerExtended.replaceEscapesWithSpecials(selectionTxtArea.selection, type);
+			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
 			outputTextArea.setText(output);
 			outputTextArea.requestFocus();
 			outputTextArea.setSelectionStart(selStart);
 		}else {
-			output = selectionTxtArea.prefix.concat(center).concat(selectionTxtArea.end);
-			output = HandleString.replaceEscapesWithSpecials(output, type);
+			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
+			output = StringWorkerExtended.replaceEscapesWithSpecials(output, type);
 			outputTextArea.setText(output);
 			outputTextArea.requestFocus();
 			outputTextArea.setSelectionStart(0);

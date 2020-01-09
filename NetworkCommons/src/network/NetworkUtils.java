@@ -37,7 +37,7 @@ import network.utils.IPaddressConverter;
 import resources.GeneralConfig;
 import utility.ConversionUtils;
 import utility.SafeLogger;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class NetworkUtils {
 

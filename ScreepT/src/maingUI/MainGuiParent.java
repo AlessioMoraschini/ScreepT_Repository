@@ -61,9 +61,9 @@ public class MainGuiParent {
 	// if you need to get or set current configuration in volatile memory, then use pojo's mapped in this object, please.	
 	public static INItializer currentConfiguration;
 	
-	public static ToggleAction toggleHeaderAction = new ToggleAction() {};
-	public static ToggleAction toggleSubHeaderAction = new ToggleAction() {};
-	public static ToggleAction toggleFooterAction = new ToggleAction() {};
+	public static ToggleAction toggleAction0 = new ToggleAction() {};
+	public static ToggleAction toggleAction1 = new ToggleAction() {};
+	public static ToggleAction toggleAction2 = new ToggleAction() {};
 	
 	//////////////////////GENERAL STATIC ELEMENTS /////////////////////////
 	////////////////////////////////////////////////////////////////////////
@@ -110,9 +110,9 @@ public class MainGuiParent {
 		JMenu mnrestartPanel;
 			// Top-right elements
 			JMenuItem mntmpadding = new JMenuItem();
-			public JMenuItem mntmToggleHeader;   
-			public JMenuItem mntmToggleSubHeader;
-			public JMenuItem mntmToggleFooter; 
+			public JMenuItem mntmToggle0;   
+			public JMenuItem mntmToggle1;
+			public JMenuItem mntmToggle2; 
 			JMenuItem mntmpadding2 = new JMenuItem();
 			JMenuItem mntmOptimizeResourcesUsage;
 			JMenuItem mntmPinApplicationOnTop;
@@ -238,30 +238,30 @@ public class MainGuiParent {
 	}
 	
 	public void setTogglesEnabled(boolean visible) {
-		mntmToggleHeader.setVisible(visible);
-		mntmToggleSubHeader.setVisible(visible);
-		mntmToggleFooter.setVisible(visible);
+		mntmToggle0.setVisible(visible);
+		mntmToggle1.setVisible(visible);
+		mntmToggle2.setVisible(visible);
 	}
 	
 	public void setToggleHeaderIcon(boolean visible) {
 		if (visible) {
-			mntmToggleHeader.setIcon(IconsPathConfigurator.IMG_ICON_HEAD_VISIBLE);
+			mntmToggle0.setIcon(IconsPathConfigurator.IMG_ICON_HEAD_VISIBLE);
 		} else {
-			mntmToggleHeader.setIcon(IconsPathConfigurator.IMG_ICON_HEAD_INVISIBLE);
+			mntmToggle0.setIcon(IconsPathConfigurator.IMG_ICON_HEAD_INVISIBLE);
 		}
 	}
 	public void setToggleSubHeaderIcon(boolean visible) {
 		if (visible) {
-			mntmToggleSubHeader.setIcon(IconsPathConfigurator.IMG_ICON_SUBHEAD_VISIBLE);
+			mntmToggle1.setIcon(IconsPathConfigurator.IMG_ICON_SUBHEAD_VISIBLE);
 		} else {
-			mntmToggleSubHeader.setIcon(IconsPathConfigurator.IMG_ICON_SUBHEAD_INVISIBLE);
+			mntmToggle1.setIcon(IconsPathConfigurator.IMG_ICON_SUBHEAD_INVISIBLE);
 		}
 	}
 	public void setToggleFooterIcon(boolean visible) {
 		if (visible) {
-			mntmToggleFooter.setIcon(IconsPathConfigurator.IMG_ICON_FOOTER_VISIBLE);
+			mntmToggle2.setIcon(IconsPathConfigurator.IMG_ICON_FOOTER_VISIBLE);
 		} else {
-			mntmToggleFooter.setIcon(IconsPathConfigurator.IMG_ICON_FOOTER_INVISIBLE);
+			mntmToggle2.setIcon(IconsPathConfigurator.IMG_ICON_FOOTER_INVISIBLE);
 		}
 	}
 	
@@ -287,12 +287,12 @@ public class MainGuiParent {
 		
 		stylePaddings();
 		
-		sizeTopRightElement(mntmToggleHeader, new Dimension(40, 25));
-		mntmToggleHeader.setToolTipText(TextEditorTooltips.tooltipToggleHeader);
-		sizeTopRightElement(mntmToggleSubHeader, new Dimension(40, 25));
-		mntmToggleSubHeader.setToolTipText(TextEditorTooltips.tooltipToggleSubHeader);
-		sizeTopRightElement(mntmToggleFooter, new Dimension(40, 25));
-		mntmToggleFooter.setToolTipText(TextEditorTooltips.tooltipToggleFooter);
+		sizeTopRightElement(mntmToggle0, new Dimension(40, 25));
+		mntmToggle0.setToolTipText(TextEditorTooltips.tooltipToggleHeader);
+		sizeTopRightElement(mntmToggle1, new Dimension(40, 25));
+		mntmToggle1.setToolTipText(TextEditorTooltips.tooltipToggleSubHeader);
+		sizeTopRightElement(mntmToggle2, new Dimension(40, 25));
+		mntmToggle2.setToolTipText(TextEditorTooltips.tooltipToggleFooter);
 		
 		sizeTopRightElement(mntmOptimizeResourcesUsage, new Dimension(40, 25));
 		sizeTopRightElement(mntmPinApplicationOnTop, new Dimension(40, 25));
@@ -314,12 +314,12 @@ public class MainGuiParent {
 		
 		menuBar.add(mntmpadding);
 		
-		menuBar.add(mntmToggleHeader);
-		mntmToggleHeader.setMargin(menuEntryMargin);
-		menuBar.add(mntmToggleSubHeader);
-		mntmToggleSubHeader.setMargin(menuEntryMargin);
-		menuBar.add(mntmToggleFooter);
-		mntmToggleFooter.setMargin(menuEntryMargin);
+		menuBar.add(mntmToggle0);
+		mntmToggle0.setMargin(menuEntryMargin);
+		menuBar.add(mntmToggle1);
+		mntmToggle1.setMargin(menuEntryMargin);
+		menuBar.add(mntmToggle2);
+		mntmToggle2.setMargin(menuEntryMargin);
 		
 		menuBar.add(mntmpadding2);
 		
@@ -462,9 +462,9 @@ public class MainGuiParent {
 		mnHelp.setFont(menuBarFont);
 		
 		// ICON ON RIGHT OF BAR
-		styleTopRightElement(mntmToggleHeader);
-		styleTopRightElement(mntmToggleSubHeader);
-		styleTopRightElement(mntmToggleFooter);
+		styleTopRightElement(mntmToggle0);
+		styleTopRightElement(mntmToggle1);
+		styleTopRightElement(mntmToggle2);
 		styleTopRightElement(mntmOptimizeResourcesUsage);
 		styleTopRightElement(mntmPinApplicationOnTop);
 
@@ -1132,5 +1132,4 @@ public class MainGuiParent {
 	public CustomJmenuItem getMntmCopyDirStructure() {
 		return mntmCopyDirStructure;
 	}
-	
 }

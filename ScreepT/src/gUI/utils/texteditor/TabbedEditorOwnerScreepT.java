@@ -8,10 +8,10 @@ import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
+import om.ICommonShortcuts;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
-import shortcuts.ICommonShortcuts;
 import tabbededitor.ITabbedEditorOwner;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;

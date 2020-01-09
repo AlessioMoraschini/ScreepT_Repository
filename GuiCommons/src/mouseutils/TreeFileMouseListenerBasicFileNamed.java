@@ -29,7 +29,7 @@ import frameutils.utils.GuiUtilsExtended;
 import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 /**
  * This represents a basic extensible component, when each node is a File Object

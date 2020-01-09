@@ -19,7 +19,7 @@ import om.SecurityLevel;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
-import utility.ListCharsets;
+import utility.string.ListCharsets;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -653,7 +653,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(1000, 240);
+		return new Dimension(1020, 250);
 	}
 	
 	public static GeneralOptionsFrame getInstance(INItializer currentConf) {

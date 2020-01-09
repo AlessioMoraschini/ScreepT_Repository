@@ -55,6 +55,8 @@ public class ColumnTextArea extends RSyntaxTextArea {
 	
 	public int lastStartPosition = 0;
 	
+	ICommonShortcuts shortctusInterface;
+	
 	public ColumnTextArea(boolean rectangularSelectionActive) {
 		super();
 		thisTextArea = this;
@@ -65,6 +67,10 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		undoManager = new RUndoManager(this);
 		
         this.getCaret().setBlinkRate(GeneralConfig.DEF_CARET_BLINK_RATE);
+	}
+
+	public ColumnTextArea(boolean rectangularSelectionActive, ICommonShortcuts shortctusInterface) {
+		this(rectangularSelectionActive);
 	}
 	
 	private void addKeyListeners() {

@@ -37,7 +37,7 @@ import om.ScalingAlgorithm;
 import panel.PanelFileDragNDropManager;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 import javax.swing.JLabel;
 

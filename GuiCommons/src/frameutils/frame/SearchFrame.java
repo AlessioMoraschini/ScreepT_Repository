@@ -7,10 +7,10 @@ import java.awt.Color;
 import java.awt.Cursor;
 
 import net.miginfocom.swing.MigLayout;
+import om.SelectionDtoFull;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import textareautil.SelectionDtoFull;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -326,7 +326,7 @@ public class SearchFrame extends JFrame{
 				center = textSearchArea.getSelectedText().replaceAll("(?i)"+Pattern.quote(searchTextField.getText()),
 						txtReplaceSelection.getText());
 			}
-			output = selectionTxtArea.prefix.concat(center).concat(selectionTxtArea.end);
+			output = selectionTxtArea.text.concat(center).concat(selectionTxtArea.end);
 			textSearchArea.setText(output);
 			textSearchArea.requestFocus();
 			textSearchArea.setSelectionStart(selStart);

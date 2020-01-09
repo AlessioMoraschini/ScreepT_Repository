@@ -43,7 +43,7 @@ import treeutils.om.FileTreeModel;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
 import utility.ConversionUtils;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;

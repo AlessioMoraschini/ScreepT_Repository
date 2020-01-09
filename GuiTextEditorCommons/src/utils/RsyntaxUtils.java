@@ -24,7 +24,7 @@ import files.FileVarious;
 import files.om.FileNamed;
 import media.ImageWorkerExtended;
 import resources.GeneralConfig;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class RsyntaxUtils {
 	

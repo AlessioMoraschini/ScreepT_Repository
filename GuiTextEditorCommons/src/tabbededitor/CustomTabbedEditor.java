@@ -51,7 +51,7 @@ import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabbedDragNDropManager;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class CustomTabbedEditor {
 

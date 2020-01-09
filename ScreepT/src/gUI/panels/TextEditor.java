@@ -776,14 +776,15 @@ public class TextEditor extends ModulePanel {
 			RsyntaxUtils.removeAllParsers(loadedTabObj.textArea);
 		}
 		
+		Font gutterFont = txtOptions.getFont().getSize() < 20 ? 
+				txtOptions.getFont().deriveFont(txtOptions.getFont().getSize()-2) : txtOptions.getFont().deriveFont(20F);
+		loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
+		
 		// Text area colors and sync tree to current file
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (isPreloading || !currentConfiguration.getTextEditorOpt().isTreeLocked()) {
 					loadedTabObj.textArea.setFont(txtOptions.getFont());
-					Font gutterFont = txtOptions.getFont().getSize() < 20 ? 
-							txtOptions.getFont().deriveFont(txtOptions.getFont().getSize()-2) : txtOptions.getFont().deriveFont(20F);
-					loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
 					
 					if (txtOptions.selectedTheme.equals(Themes.NONE.defaultPath)) {
 						loadedTabObj.textArea.setBackground(txtOptions.getBackCol());

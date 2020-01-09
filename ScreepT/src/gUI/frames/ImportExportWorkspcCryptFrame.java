@@ -328,7 +328,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(800, 180);
+		return new Dimension(820, 190);
 	}
 	
 	public static ImportExportWorkspcCryptFrame getInstance(TextEditorOption txtOptions, TextEditor textEditor) {

@@ -1,25 +1,30 @@
-package textareautil;
+package om;
 
 import javax.swing.JTextArea;
+
+import utility.string.StringWorker;
 
 public class SelectionDtoFull {
 
 	public String prefix = "";
+	public String text = "";
 	public String selection = "";
 	public String end = "";
 	public int first = 0;
 	public int last = 0;
 	public int length = 0;
 	public boolean selected;
+	public JTextArea textArea;
 	
 	public SelectionDtoFull(JTextArea textArea) {
+		this.textArea = textArea;
 		first = textArea.getSelectionStart();
 		last = textArea.getSelectionEnd();
-		prefix = textArea.getText();
-		length = prefix.length();
-		selection = prefix.substring(first, last);
-		end = prefix.substring(last, prefix.length());
-		prefix = prefix.substring(0, first);
+		text = textArea.getText();
+		length = text.length();
+		selection = StringWorker.nullToEmpty(textArea.getSelectedText());
+		end = text.substring(last, text.length());
+		prefix = text.substring(0, first);
 		if(first == last){
 			selected = false;
 		}else {
@@ -28,6 +33,6 @@ public class SelectionDtoFull {
 	}
 	
 	public String getCompleteString() {
-		return prefix.concat(selection).concat(end);
+		return text.concat(selection).concat(end);
 	}
 }

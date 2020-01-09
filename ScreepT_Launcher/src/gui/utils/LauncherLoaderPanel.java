@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 import javax.swing.JProgressBar;
 

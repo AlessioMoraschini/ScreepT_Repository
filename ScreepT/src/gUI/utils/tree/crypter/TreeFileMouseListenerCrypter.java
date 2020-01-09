@@ -39,7 +39,7 @@ import menusettings.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListenerBasic{
 	

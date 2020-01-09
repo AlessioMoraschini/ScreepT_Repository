@@ -45,8 +45,8 @@ public class TextEditorTooltips {
 	public static final String tooltipBoldText = "Set bold style to all text";
 	public static final String tooltipItalic = "Set italics style to all text";
 	public static final String tooltipStyledCopy = "[Alt + C] Copy all selected text to OS clipboards (keeping style)";
-	public static final String tooltipViewInSysExplorer = "[Ctrl + Enter]View in System Explorer (press Ctrl to open in Command Line)";
-	public static final String tooltipViewInCommandLine = "[Ctrl + Shift + Enter]View in Command line";
+	public static final String tooltipViewInSysExplorer = "[Ctrl + Shift + Enter]View in System Explorer (press Ctrl to open in Command Line)";
+	public static final String tooltipViewInCommandLine = "[Ctrl + Alt + Enter]View in Command line";
 	public static final String tooltipViewPropertiesCurrFile = "[Alt + Enter] View the properties of current file.";
 
 	public static final String tooltipCutWordsTo = "When selected, the text will be cropped to adapt the size of the text area";

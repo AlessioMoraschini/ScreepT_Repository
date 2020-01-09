@@ -53,8 +53,8 @@ import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import treeutils.om.FileNameCellRenderer;
 import treeutils.om.FileTreeNamedModel;
-import utility.StringWorker;
 import utility.reflection.ReflectionUtils;
+import utility.string.StringWorker;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
 import utils.dialog.TextAreaDialogs;
@@ -1133,19 +1133,19 @@ public class TextEditorUtils {
 		MainGUI.mainAPP.setTogglesEnabled(enabled);
 		if (enabled) {
 			updateTogglesIconsFromConfig();
-			MainGUI.toggleHeaderAction = new ToggleAction() {
+			MainGUI.toggleAction0 = new ToggleAction() {
 				@Override
 				public void doOnClick() {
 					hideOrShowHeaderPanelLevel1();
 				}
 			};
-			MainGUI.toggleSubHeaderAction = new ToggleAction() {
+			MainGUI.toggleAction1 = new ToggleAction() {
 				@Override
 				public void doOnClick() {
 					hideOrShowHeaderPanelLevel2();
 				}
 			};
-			MainGUI.toggleFooterAction = new ToggleAction() {
+			MainGUI.toggleAction2 = new ToggleAction() {
 				@Override
 				public void doOnClick() {
 					hideOrShowFooterPanel();

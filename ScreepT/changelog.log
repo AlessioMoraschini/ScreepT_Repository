@@ -1,4 +1,6 @@
-* 2020-01-07  (HEAD -> refs/heads/master, refs/remotes/origin/master) Merge branch 'master' of git@github.com:AlessioMoraschini/ScreepT_Repository.git
+* 2020-01-08  (HEAD -> refs/heads/master, refs/remotes/origin/master) Added newLine character check + BUGFIX text editor
+  
+* 2020-01-07  Merge branch 'master' of git@github.com:AlessioMoraschini/ScreepT_Repository.git
 | 
 * 2020-01-07  Update README.md
 | 

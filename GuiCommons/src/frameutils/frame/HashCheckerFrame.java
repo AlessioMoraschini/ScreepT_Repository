@@ -379,7 +379,7 @@ public class HashCheckerFrame extends ParentFrame{
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(920, 215);
+		return new Dimension(940, 225);
 	}
 	
 	public static HashCheckerFrame getInstance(File initialFile, JFrame parentFrame, TextEditorOption txtOptions) {

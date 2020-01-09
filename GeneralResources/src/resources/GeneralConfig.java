@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Properties;
 import java.util.TreeMap;
 
 import resources.om.FilePojo;
+import utility.ConversionUtils;
 import utility.properties.PropertiesManager;
 
 public class GeneralConfig {
@@ -201,7 +201,7 @@ public class GeneralConfig {
 	public static Color ADVICE_FOOTER_OK_COLOR;
 	public static Color ADVICE_FOOTER_KO_COLOR;
 	public static Color ADVICE_FOOTER_INFO_COLOR;
-	public static ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS;
+	public static ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS = ConversionUtils.getStringListFromRawString(resourcesFilePathsMappings.getProperty("TXT_EDITOR_UPPERCASE_SEPARATORS"), ",");;
 	public static int DEFAULT_TREE_ROW_HEIGHT;
 	public static int MAX_LAST_OPENED_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_LAST_OPENED_LIST_SIZE", 12);
 	public static int MAX_WORKSPACE_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_WORKSPACE_LIST_SIZE", 15);
@@ -383,20 +383,6 @@ public class GeneralConfig {
     }
     
     /**
-     * Converts given raw string with separator String, to a list of elements that were separated by such separator
-     * @param rawList
-     * @param separator
-     * @return
-     */
-	private static ArrayList<String> getUppercaseSeparators(String rawList, String separator) {
-		ArrayList<String> result = new ArrayList<String>();
-		String[] elements = rawList.split(separator);
-		result.addAll(Arrays.asList(elements));
-		
-		return result;
-	}
-    
-	/**
 	 * This is a fork from FileStuff - Copied to avoid dependency cycles
 	 * This method read from a file and give a String representation of content
 	 * @param toRead the source file to read
@@ -537,7 +523,6 @@ public class GeneralConfig {
 			ADVICE_FOOTER_OK_COLOR = resourcesFilePathsMappings.getColorVarFromProps("ADVICE_FOOTER_OK_COLOR", Color.GREEN);
 			ADVICE_FOOTER_KO_COLOR = resourcesFilePathsMappings.getColorVarFromProps("ADVICE_FOOTER_KO_COLOR", Color.RED);
 			ADVICE_FOOTER_INFO_COLOR = resourcesFilePathsMappings.getColorVarFromProps("ADVICE_FOOTER_INFO_COLOR", Color.BLUE);
-			TXT_EDITOR_UPPERCASE_SEPARATORS = getUppercaseSeparators(resourcesFilePathsMappings.getProperty("TXT_EDITOR_UPPERCASE_SEPARATORS"), ",");
 			DEFAULT_TREE_ROW_HEIGHT = resourcesFilePathsMappings.getIntVarFromProps("DEFAULT_TREE_ROW_HEIGHT", 14);
 			RECTANGULAR_TXT_SELECTION_ALLOWED = Boolean.valueOf(resourcesFilePathsMappings.getProperty("RECTANGULAR_TXT_SELECTION_ALLOWED"));
 			PRELOAD_TXT_EDITOR_FLAG = Boolean.valueOf(resourcesFilePathsMappings.getProperty("PRELOAD_TXT_EDITOR_FLAG"));

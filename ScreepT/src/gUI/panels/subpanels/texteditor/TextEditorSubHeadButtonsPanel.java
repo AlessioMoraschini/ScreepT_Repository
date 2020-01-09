@@ -73,15 +73,14 @@ import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import textareautil.SelectionDtoFull;
 import textareautil.TextLineNumber;
 import utility.EncodingUtils;
-import utility.StringWorker;
+import utility.string.TextAreaStringEditor;
+import utility.string.StringWorker;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 import utils.dialog.ColorDialogUtils;
 import utils.panels.arch.PanelType;
-import variousutils.HandleString;
 
 /**
  * This panel will contain all buttons to do actions into textEditor, in order to have small and separated module to use into GUI
@@ -102,9 +101,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	private static String LOREM_IPSUM;
 
 	// GENERAL FIELDS //
-	private boolean uppercase;
-	private String backupText;
-	
 	public TextEditor parent;
 	public TextEditorUtils textEditorUtils;
 	public INItializer currentConfiguration;
@@ -204,7 +200,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		LOREM_IPSUM = GeneralConfig.RESOURCES_DIR  + "Templates/LoremIpsum.txt";
 		
 		thisHeaderRef = this;
-		this.uppercase = false;
 		this.parent = parent;
 		this.textEditorUtils = parent.textEditorUtils;
 		this.currentConfiguration = parent.currentConfiguration;
@@ -1307,51 +1302,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			}
 		});
 
-		// MAKE LOWERCASE AFTER LINE ENDERS
-		btnLowerAfterDots.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
-
-				SelectionDtoFull txtAreaDto = new SelectionDtoFull(loadedTabObj.textArea);
-				String result = "";
-
-				if (txtAreaDto.selected) {
-					result = txtAreaDto.prefix
-							.concat(HandleString.lowerAfterDots(txtAreaDto.selection, '.').concat(txtAreaDto.end));
-				} else {
-					result = HandleString.lowerAfterDots(txtAreaDto.getCompleteString(), '.');
-				}
-
-				loadedTabObj.textArea.setText(result);
-				loadedTabObj.textArea.requestFocus();
-				loadedTabObj.textArea.setSelectionStart(txtAreaDto.first);
-				loadedTabObj.textArea.setSelectionEnd(txtAreaDto.last);
-			}
-		});
-
-		// MAKE UPPER CASE AFTER LINE ENDERS
-		btnUpperPostDots.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
-
-				SelectionDtoFull txtAreaDto = new SelectionDtoFull(loadedTabObj.textArea);
-				String result = "";
-
-				if (txtAreaDto.selected) {
-					result = txtAreaDto.prefix
-							.concat(HandleString.upperAfterDots(txtAreaDto.selection, '.').concat(txtAreaDto.end));
-				} else {
-					result = HandleString.upperAfterDots(txtAreaDto.getCompleteString(), '.');
-				}
-
-				loadedTabObj.textArea.setText(result);
-				loadedTabObj.textArea.requestFocus();
-				loadedTabObj.textArea.setSelectionStart(txtAreaDto.first);
-				loadedTabObj.textArea.setSelectionEnd(txtAreaDto.last);
-			}
-		});
-
 		// FILE FORMAT SELECTOR
 		comboFileFormat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1478,90 +1428,43 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 			}
 		});
+		
+		// MAKE LOWERCASE AFTER LINE ENDERS
+		btnLowerAfterDots.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				TextAreaStringEditor.makeLowercasePostDotsNSeparators(
+						parent.getCurrentTabEditor().loadedTabObj.textArea);
+
+			}
+		});
+
+		// MAKE UPPER CASE AFTER LINE ENDERS
+		btnUpperPostDots.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				TextAreaStringEditor.makeUppercasePostDotsNSeparators(
+						parent.getCurrentTabEditor().loadedTabObj.textArea);
+			}
+		});
+
 
 		// MAKE UPPERCASE AFTER LINE ENDS
 		btnTt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
-
-				String text = loadedTabObj.textArea.getText();
-				String textBackup = new String(text);
-				String selected = loadedTabObj.textArea.getSelectedText();
-				String start = "";
-				String end = "";
-				Boolean none = false;
-				int strtN = 0;
-				int endN = text.length();
-				if (selected == null) {
-					// select ALL if no selection
-					none = true;
-					selected = new String(text);
-				} else {
-					strtN = loadedTabObj.textArea.getSelectionStart();
-					endN = loadedTabObj.textArea.getSelectionEnd();
-					start = textBackup.substring(0, strtN);
-					end = textBackup.substring(endN, textBackup.length());
-				}
-				backupText = new String(selected);// create backup copy by value
-
-				if (!uppercase) {
-					selected = selected.toUpperCase();
-					uppercase = true;
-				} else {
-					selected = selected.toLowerCase();
-					uppercase = false;
-				}
-
-				selected = start + selected + end;
-				loadedTabObj.textArea.setText(selected);
-				if (!none) {
-					loadedTabObj.textArea.requestFocus();
-					loadedTabObj.textArea.setSelectionStart(strtN);
-					loadedTabObj.textArea.setSelectionEnd(endN);
-				}
-				logger.debug("TT function start selection: " + strtN);
-				logger.debug("TT function start selection: " + endN);
+				
+				TabTextEditorObj loadedObj = parent.getCurrentTabEditor().loadedTabObj;
+				TextAreaStringEditor.makeToggleUppercase(loadedObj.textArea, loadedObj.uppercase);
+				loadedObj.uppercase = !loadedObj.uppercase;
 			}
 		});
 
 		// MAKE EVERY WORD STARTING WITH UPPERCASE LETTER
 		btnTtTt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
-				String text = loadedTabObj.textArea.getText();
-				String textBackup = new String(text);
-				String selected = loadedTabObj.textArea.getSelectedText();
-				String start = "";
-				String end = "";
-				int strtN = 0;
-				int endN = text.length();
-				if (selected == null) {
-					// select ALL if no selection
-					selected = new String(text);
-				} else {
-					strtN = loadedTabObj.textArea.getSelectionStart();
-					endN = loadedTabObj.textArea.getSelectionEnd();
-					start = textBackup.substring(0, strtN);
-					end = textBackup.substring(endN, textBackup.length());
-				}
-				backupText = new String(selected);// create backup copy by value
-
-				selected = StringWorker.uppercaseEveryFirstLetterNoSpace(selected);
-				if (selected.equals(backupText)) {
-					selected = StringWorker.lowerCaseEveryFirstLetterNoSpace(selected);
-					// btnTtTt.setBackground(SystemColor.activeCaptionBorder);
-				} else {
-					// btnTtTt.setBackground(Color.gray);
-				}
-				selected = start + selected + end;
-				loadedTabObj.textArea.setText(selected);
-				loadedTabObj.textArea.requestFocus();
-				loadedTabObj.textArea.setSelectionStart(strtN);
-				loadedTabObj.textArea.setSelectionEnd(endN);
-				logger.debug("Tt Tt function start selection: " + strtN);
-				logger.debug("Tt Tt function start selection: " + endN);
-
+				TextAreaStringEditor.makeWordsUppercase(parent.getCurrentTabEditor().loadedTabObj.textArea);
 			}
 		});
 
@@ -1622,7 +1525,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					exportNamePreset = FileVarious.ensureValidExtension(exportNamePreset, comboFileFormat.getSelectedItem().toString());
 
 					try {
-						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, exportNamePreset);
+						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, exportNamePreset, loadedTabObj.loadedFile.getParentFile());
 
 						if (selectedFile != null) {
 							skipRefresh = false;
@@ -1630,12 +1533,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							if (selectedFile.exists()) {
 								if (dialogHelper.yesOrNo("File " + selectedFile.getName()
 										+ " exists, overwrite it?", "Overwrite?")) {
-									done = FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile,
-											true);
-								} else {
-									done = FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile,
-											false);
-								}
+									done = FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile, true);
+								} 
 							} else {
 								done = selectedFile.createNewFile();
 								PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
@@ -1674,9 +1573,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						textEditorUtils.errorAdvice("[Error Saving selected file]");
 						dialogHelper.error("error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
+					} finally {
+						
+						// update signal value
+						parent.getCurrentTabEditor().alreadySaving = false;
 					}
-					// update signal value
-					parent.getCurrentTabEditor().alreadySaving = false;
 				}
 				if (!skipRefresh) {
 					textEditorUtils.refreshTree(loadedTabObj.loadedFile, true);

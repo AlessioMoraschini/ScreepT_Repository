@@ -57,7 +57,7 @@ import javax.swing.text.JTextComponent;
 import files.om.FileNamed;
 import utility.ImageWorker;
 import utility.SafeLogger;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class GuiUtils {
 	

@@ -2,14 +2,10 @@ package shortcuts;
 
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;

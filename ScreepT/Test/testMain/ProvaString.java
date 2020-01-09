@@ -1,7 +1,7 @@
 package testMain;
 
 import codeformatter.CustomCodeFormatter;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class ProvaString {
 

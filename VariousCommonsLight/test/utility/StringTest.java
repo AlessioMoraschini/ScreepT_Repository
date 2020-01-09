@@ -15,7 +15,8 @@ import org.junit.Test;
 import files.FileWorker;
 import gui.GuiUtils;
 import testconfig.TestConstants;
-import utility.StringWorker.EOL;
+import utility.string.StringWorker;
+import utility.string.StringWorker.EOL;
 import utils.TestUtils;
 
 public class StringTest {

@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class IniFileManager {
 	

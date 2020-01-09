@@ -16,7 +16,7 @@ import java.util.Properties;
 
 import utility.ConversionUtils;
 import utility.SafeLogger;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class PropertiesManager {
 	

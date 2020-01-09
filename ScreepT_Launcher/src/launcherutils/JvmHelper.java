@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 import mainlauncher.ScreepTLauncher;
 import om.OSinfo;
-import utility.StringWorker;
+import utility.string.StringWorker;
 import utils.SysUtils;
 
 public class JvmHelper {

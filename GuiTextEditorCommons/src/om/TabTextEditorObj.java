@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -12,11 +13,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
@@ -35,10 +37,13 @@ import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
 import mainobj.INItializer;
+import menusettings.MenuSetter;
 import resources.GeneralConfig;
-import shortcuts.ICommonShortcuts;
+import resources.IconsPathConfigurator;
 import tabbededitor.IChangeMonManager;
-import utility.StringWorker;
+import utility.string.StringWorker;
+import utility.string.TextAreaStringEditor;
+import utility.string.StringWorker.EOL;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 
@@ -67,7 +72,11 @@ public class TabTextEditorObj {
 	public boolean unsaved = false;
 	public Parser currentParser;
 	
+	public boolean uppercase;
+	
 	public TabTextEditorObj(File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
+		
+		this.uppercase = false;
 		
 		loadedFile = file;
 		this.checkChangesMonitor = checkChangesMonitor;
@@ -209,37 +218,157 @@ public class TabTextEditorObj {
 	}
 	
 	private void defaultAddsToPopupMenu() {
-		textArea.getPopupMenu().add(new JSeparator());
+		
+		int iconGap = 10;
+		try {
+			JMenuItem undoItem = (JMenuItem)textArea.getPopupMenu().getComponent(0);
+			undoItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
+			
+			JMenuItem redoItem = (JMenuItem)textArea.getPopupMenu().getComponent(1);
+			redoItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
+			
+			JMenuItem cutItem = (JMenuItem)textArea.getPopupMenu().getComponent(3);
+			cutItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CUT));
+			
+			JMenuItem copyItem = (JMenuItem)textArea.getPopupMenu().getComponent(4);
+			copyItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY));
+			
+			JMenuItem pasteItem = (JMenuItem)textArea.getPopupMenu().getComponent(5);
+			pasteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PASTE));
+			
+		} catch (Exception e) {}
+		
 		JMenuItem showFileLineTerminators = new JMenuItem("View lineFeeds (From File)");
+		showFileLineTerminators.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LINES_FILE));
 		showFileLineTerminators.addActionListener(getShowLineTerminatorsPreview(true));
-		textArea.getPopupMenu().add(showFileLineTerminators);
 
 		JMenuItem showTextLineTerminators = new JMenuItem("View lineFeeds (From Loaded Text)");
+		showTextLineTerminators.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LINES_SCREEN));
 		showTextLineTerminators.addActionListener(getShowLineTerminatorsPreview(false));
+
+		JMenu menuStringActions = new JMenu("Text transformation");
+		
+		textArea.getPopupMenu().add(new JSeparator());
+		textArea.getPopupMenu().add(showFileLineTerminators);
 		textArea.getPopupMenu().add(showTextLineTerminators);
+		
+		textArea.getPopupMenu().add(new JSeparator());
+		textArea.getPopupMenu().add(menuStringActions);
+		enrichPopUpMenuStringActions(menuStringActions);
+
+		textArea.getPopupMenu().add(new JSeparator());
+		JMenu eolActions = new JMenu("Normalize End Of Line");
+		textArea.getPopupMenu().add(eolActions);
+		enrichPopUpMenuEolActions(eolActions);
+		
+		MenuSetter.setIconTextGap(textArea.getPopupMenu(), iconGap);
+		MenuSetter.setMargin(textArea.getPopupMenu(), new Insets(3, 3, 3, 3));
+		MenuSetter.setFont(textArea.getPopupMenu(), new Font("Segoe UI", Font.PLAIN, 16));
 	}
 	
-	public AbstractAction getShowLineTerminatorsPreview(boolean fromFile) {
+	private void enrichPopUpMenuStringActions(JMenu stringActions) {
+		JMenuItem uppercaseItem = new JMenuItem(
+				GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase text"));
+		uppercaseItem.addActionListener(
+		e -> {
+			TextAreaStringEditor.makeToggleUppercase(textArea, this.uppercase);
+			uppercase = !uppercase;
+			shortcutsManager.revalidateUnsaved();
+		});
+
+		JMenuItem uppercaseFirstItem = new JMenuItem(
+				GuiUtils.encapsulateInHtml("<b>Tt Tt</b> - Uppercase first letters"));
+		uppercaseFirstItem.addActionListener(
+		e -> {
+			TextAreaStringEditor.makeWordsUppercase(textArea);
+			shortcutsManager.revalidateUnsaved();
+		});
+
+		JMenuItem uppercasePostDotsItem = new JMenuItem(
+				GuiUtils.encapsulateInHtml("<b>.Tt</b> - Uppercase after significant brokers"));
+		uppercasePostDotsItem.addActionListener(
+		e -> {
+			TextAreaStringEditor.makeUppercasePostDotsNSeparators(textArea);
+			shortcutsManager.revalidateUnsaved();
+		});
+		
+		JMenuItem lowercasePostDotsItem = new JMenuItem(
+				GuiUtils.encapsulateInHtml("<b>.tt</b> - Lowercase after significant brokers"));
+		lowercasePostDotsItem.addActionListener(
+		e -> {
+			TextAreaStringEditor.makeLowercasePostDotsNSeparators(textArea);
+			shortcutsManager.revalidateUnsaved();
+		});
+
+		stringActions.add(uppercaseItem);
+		stringActions.add(uppercaseFirstItem);
+		stringActions.add(uppercasePostDotsItem);
+		stringActions.add(lowercasePostDotsItem);
+	}
+	
+	private void enrichPopUpMenuEolActions(JMenu eolActions) {
+		JMenuItem replacePrintedToLF = new JMenuItem("Normalize to LF (\\n) - Linux's default");
+		replacePrintedToLF.addActionListener(getReplaceEol(EOL.LF, false));
+		JMenuItem replacePrintedToCR = new JMenuItem("Normalize to Mac CR (\\r) - Old MAC's default");
+		replacePrintedToCR.addActionListener(getReplaceEol(EOL.CR, false));
+		JMenuItem replacePrintedToCRLF = new JMenuItem("Normalize to Windows CRLF (\\r\\n) - Windows' default");
+		replacePrintedToCRLF.addActionListener(getReplaceEol(EOL.CRLF, false));
+		
+		JSeparator separator = new JSeparator();
+		
+		JMenuItem replacePrintedToFileLF = new JMenuItem("Normalize to LF and write to file (\\n) - Linux's default");
+		replacePrintedToFileLF.addActionListener(getReplaceEol(EOL.LF, true));
+		JMenuItem replacePrintedToFileCR = new JMenuItem("Normalize to Mac CR and write to file (\\r) - Old MAC's default");
+		replacePrintedToFileCR.addActionListener(getReplaceEol(EOL.CR, true));
+		JMenuItem replacePrintedToFileCRLF = new JMenuItem("Normalize to Windows CRLF and write to file (\\r\\n) - Windows' default");
+		replacePrintedToFileCRLF.addActionListener(getReplaceEol(EOL.CRLF, true));
+		
+		eolActions.add(replacePrintedToLF);
+		eolActions.add(replacePrintedToCR);
+		eolActions.add(replacePrintedToCRLF);
+
+		eolActions.add(separator);
+		
+		eolActions.add(replacePrintedToFileLF);
+		eolActions.add(replacePrintedToFileCR);
+		eolActions.add(replacePrintedToFileCRLF);
+	}
+	
+	private AbstractAction getReplaceEol(EOL eolType, boolean saveToFile) {
+		return new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				textArea.setText(StringWorker.normalizeStringToEol(textArea.getText(), eolType));
+				if(saveToFile) {
+					shortcutsManager.saveAsShortcut();
+				}
+			}
+		};
+	}
+	
+	private AbstractAction getShowLineTerminatorsPreview(boolean fromFile) {
 		return new AbstractAction() {
 			private static final long serialVersionUID = 5019052743964361436L;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFrame frame = new JFrame(loadedFile != null ? loadedFile.getName() : "unsaved file");
-				RSyntaxTextArea textAreaS = new RSyntaxTextArea();
-				JScrollPane scrollPane = new JScrollPane(textAreaS);
-				textAreaS.setBackground(new Color(254, 255, 205));
+				RSyntaxTextArea textAreaPopUp = new RSyntaxTextArea();
+				JScrollPane scrollPane = new JScrollPane(textAreaPopUp);
+				textAreaPopUp.setBackground(new Color(254, 255, 205));
+				textAreaPopUp.setMargin(new Insets(12, 12, 12, 12));
 				
 				if(fromFile)try {
-					textAreaS.setText( loadedFile != null? StringWorker.makeCRLFvisible(loadedFile) : "Undefined File");
+					textAreaPopUp.setText( loadedFile != null? StringWorker.makeCRLFvisible(loadedFile) : "Undefined File");
 				} catch (IOException e1) {}
 				else {
-					textAreaS.setText( textArea != null? StringWorker.makeCRLFvisible(textArea.getText()) : "Text unavailable");
+					textAreaPopUp.setText( textArea != null? StringWorker.makeCRLFvisible(textArea.getText()) : "Text unavailable");
 				}
 				
-				textAreaS.setFont(new Font("DejaVu Sans Mono", Font.PLAIN, 13));
-				textAreaS.setCaretPosition(textArea.getCaretPosition());
-				scrollPane.setViewportView(textAreaS);
+				textAreaPopUp.setFont(new Font("DejaVu Sans Mono", Font.PLAIN, 13));
+				textAreaPopUp.setCaretPosition(textArea.getCaretPosition());
+				scrollPane.setViewportView(textAreaPopUp);
 				frame.add(scrollPane);
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				frame.setUndecorated(true);
@@ -248,10 +377,11 @@ public class TabTextEditorObj {
 				GuiUtils.addEscDisposeListener(frame);
 				textArea.addMouseListener(GuiUtils.getClickOutDisposeListener(frame));
 				textArea.addMouseMotionListener(GuiUtils.getMouseExitedDisposeListener(frame));
-				textAreaS.addFocusListener(GuiUtils.getFocusOutDisposeListener(frame));
+				textAreaPopUp.addFocusListener(GuiUtils.getFocusOutDisposeListener(frame));
 				GuiUtils.centerComponent(frame, 50);
 				GuiUtils.moveFrame(frame, 0, 100);
 				frame.setVisible(true);
+				
 			}
 		};
 	}

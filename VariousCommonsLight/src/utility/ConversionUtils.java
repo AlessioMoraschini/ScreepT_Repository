@@ -4,9 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import om.HslColor;
+import utility.string.StringWorker;
 
 public class ConversionUtils {
 	
@@ -278,6 +281,20 @@ public class ConversionUtils {
 		int size = valueList.size();
 		return (sum/size);
 		
+	}
+
+	/**
+	 * Converts given raw string with separator String, to a list of elements that were separated by such separator
+	 * @param rawList
+	 * @param separator
+	 * @return
+	 */
+	public static ArrayList<String> getStringListFromRawString(String rawList, String separator) {
+		ArrayList<String> result = new ArrayList<String>();
+		String[] elements = rawList.split(separator);
+		result.addAll(Arrays.asList(elements));
+		
+		return result;
 	}
 
 }

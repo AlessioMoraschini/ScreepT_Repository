@@ -14,7 +14,7 @@ import om.OSinfo;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
-import utility.StringWorker;
+import utility.string.StringWorker;
 import utils.SysUtils;
 
 import javax.swing.JLabel;

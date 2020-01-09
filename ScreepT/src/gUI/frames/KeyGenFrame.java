@@ -260,7 +260,7 @@ public class KeyGenFrame extends ParentFrame {
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(Color.DARK_GRAY, 6));
 		panel.setForeground(SystemColor.menu);
-		panel.setBackground(SystemColor.activeCaption);
+		panel.setBackground(Color.GRAY);
 		getContentPane().add(panel, "cell 0 0 9 1,grow");
 		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[][][][][][][][][100%][]", "[]"));
 		

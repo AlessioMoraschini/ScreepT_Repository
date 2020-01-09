@@ -1,4 +1,4 @@
-package utility;
+package utility.string;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -18,8 +19,10 @@ import java.util.UUID;
 
 import javax.swing.JTextArea;
 
-public class StringWorker {
+import utility.SafeLogger;
 
+public class StringWorker {
+	
 	public enum EOL{
 		CR("\r", "\\r"),
 		LF("\n", "\\n"),
@@ -38,12 +41,21 @@ public class StringWorker {
 			this.eolRegex = regex;
 		}
 	}
-
+	
 	private static SafeLogger logger = new SafeLogger(StringWorker.class);
 	
+	public static ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS = new ArrayList<>();
+	static {
+		TXT_EDITOR_UPPERCASE_SEPARATORS.addAll(Arrays.asList(new String[] {".","!","<",">","?"}));
+	}
+
 	public static final String UNPRINTABLE_ESCAPES = "[^\\x20-\\x7e]";
 	
-	String currentString;
+	public String currentString;
+	
+	public StringWorker() {
+		currentString = new String("");
+	}
 	
 	public StringWorker(String input) {
 		currentString = new String(input);
@@ -55,6 +67,76 @@ public class StringWorker {
 	    InputStream inputStream = new ByteArrayInputStream(sourceBytes);
 	    
 	    return inputStream;
+	}
+	
+	public static String lowerAfterDots(String source, char trigger) {
+		
+		String result="";
+		// first letter lowercase
+		boolean flagNewUp = false; 
+		boolean firstChanged = false;
+		
+		// for every char in string if flag is true makeLower case, else add the same original char
+		for(int i=0; i<source.length(); i++) {
+			char character_i = source.charAt(i);
+			if(!firstChanged && Character.isAlphabetic(character_i)) {
+				// First alphabetic letter is always changed
+				result+=String.valueOf(character_i).toLowerCase();
+				firstChanged = true;
+				
+			}else if (flagNewUp==true) {
+				result+=String.valueOf(character_i).toLowerCase();
+				// space and still to lowercase handler
+				if(!(character_i == ' ') && !(TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i)))) {
+					flagNewUp=false;
+				}		
+			} else {
+				result+=String.valueOf(character_i);
+			}
+				
+			// finally update flag according to char value il blacklist
+			if (character_i==trigger || TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i))){
+				flagNewUp=true;
+			}
+		}
+		return result;
+	}
+	
+	public static String upperAfterDots(String source, char trigger) {
+		
+		String result="";
+		// first letter uppercase
+		boolean flagNewUp = false; 
+		boolean firstChanged = false;
+		
+		// for every char in string if flag is true makeUpper case, else add the same original char
+		for(int i=0; i<source.length(); i++) {
+			char character_i = source.charAt(i);
+			
+			if(!firstChanged && Character.isAlphabetic(character_i)) {
+				// First alphabetic letter is always changed
+				result+=String.valueOf(character_i).toUpperCase();
+				firstChanged = true;
+				
+			} else if (flagNewUp==true) {
+				result+=String.valueOf(character_i).toUpperCase();
+				// space and still to uppercase handler
+				if(!(character_i == ' ') && !(TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i)))) {
+					flagNewUp=false;
+				}		
+				
+			} else {
+				result+=String.valueOf(character_i);
+			}
+			
+			// finally update flag according to char value il blacklist
+			if (character_i==trigger || TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i))){
+				flagNewUp=true;
+			}
+		}
+		
+		
+		return result;
 	}
 
 	public static String fitToMaxLentgh(String source, int lim) {
@@ -461,6 +543,14 @@ public class StringWorker {
 		return source != null && "".equals(source);
 	}
 
+	public static String nullToEmpty(String source) {
+		if (source != null) {
+			return source;
+		} else {
+			return "";
+		}
+	}
+
 	public static String trimToEmpty(String source) {
 		if (source != null) {
 			return source.trim();
@@ -546,29 +636,29 @@ public class StringWorker {
 	
 		StringBuilder builder = new StringBuilder(100000);
 		FileInputStream readerStream = new FileInputStream(source);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
-		char[] chBuffer = new char[512];
+		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, Charset.forName("UTF-8")));
+		int charInt;
+		char charEl;
 		try {
 			boolean CR = false;
-			while (reader.read(chBuffer) != -1) {
-				for(char charEl : chBuffer) {
-					if(charEl == '\r') {
-						builder.append("[\\r]");
-						CR = true;
-					} else {
-						if (CR) {
-							CR = false;
-							if (charEl == '\n'){
-								builder.append("[\\n]\r\n");
-							} else {
-								builder.append("\r");
-							}
+			while (( charInt = reader.read()) != -1) {
+				charEl = (char) charInt;
+				if(charEl == '\r') {
+					builder.append("[\\r]");
+					CR = true;
+				} else {
+					if (CR) {
+						CR = false;
+						if (charEl == '\n'){
+							builder.append("[\\n]\r\n");
 						} else {
-							if(charEl == '\n') {
-								builder.append("[\\n]\n");
-							} else {
-								builder.append(charEl);
-							}
+							builder.append("\r");
+						}
+					} else {
+						if(charEl == '\n') {
+							builder.append("[\\n]\n");
+						} else {
+							builder.append(charEl);
 						}
 					}
 				}

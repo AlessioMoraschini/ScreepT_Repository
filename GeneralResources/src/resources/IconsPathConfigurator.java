@@ -105,6 +105,8 @@ public class IconsPathConfigurator {
 	public static final String ICON_DOC_UNSAVED = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/starDoc.png";
 	
 	/* Then custom only for Text Editor */
+	public static final String ICON_LINES_SCREEN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/screenLines.png";
+	public static final String ICON_LINES_FILE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/fileLines.png";
 	public static final String ICON_LOCKED= GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Crypt_3.png";
 	public static final String ICON_UNLOCKED = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Decrypt_3.png";
 	public static final String ICON_TEXT_CLEAR = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Clear.png";
@@ -189,6 +191,8 @@ public class IconsPathConfigurator {
 	public static final String ICON_CLOCK = GeneralConfig.RESOURCES_DIR + "Icons/General/clock.png";
 	public static final String ICON_EXPAND = GeneralConfig.RESOURCES_DIR + "Icons/General/expand.png";
 	public static final String ICON_COPY = GeneralConfig.RESOURCES_DIR + "Icons/General/copy.png";
+	public static final String ICON_CUT = GeneralConfig.RESOURCES_DIR + "Icons/General/cut.png";
+	public static final String ICON_PASTE = GeneralConfig.RESOURCES_DIR + "Icons/General/paste.png";
 	public static final String ICON_ARROW_CURVED_RIGHT = GeneralConfig.RESOURCES_DIR + "Icons/General/curvedArrowRight.png";
 	public static final String ICON_ARROW_CURVED_LEFT = GeneralConfig.RESOURCES_DIR + "Icons/General/curvedArrowLeft.png";
 	public static final String ICON_UP_BOXED_PURPLE = GeneralConfig.RESOURCES_DIR + "Icons/General/upSquare.png";

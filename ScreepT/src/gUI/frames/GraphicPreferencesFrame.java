@@ -1338,7 +1338,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(900, 510);
+		return new Dimension(930, 530);
 	}
 	
 	public static GraphicPreferencesFrame getInstance(INItializer currentConf) {

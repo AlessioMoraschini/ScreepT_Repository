@@ -22,7 +22,7 @@ import om.SteganOption;
 import om.TextEditorOption;
 import resources.GeneralConfig;
 import utility.SafeLogger;
-import utility.StringWorker;
+import utility.string.StringWorker;
 
 public class INItializer extends INItializerParent implements INItializerInterface{
 

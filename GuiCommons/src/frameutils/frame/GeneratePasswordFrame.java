@@ -12,11 +12,11 @@ import gui.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
-import utility.StringWorker;
 import utility.hash.SafeHasher;
 import utility.hash.SafeHasher.HashAlgorithm;
 import utility.hash.SafeHasher.IterationsLevel;
-import variousutils.HandleString;
+import utility.string.StringWorker;
+import variousutils.StringWorkerExtended;
 import net.miginfocom.swing.MigLayout;
 import om.SecurityLevel;
 
@@ -273,7 +273,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 						}
 						final String raw = DatatypeConverter.printHexBinary(SafeHasher.hashPswWithGivenSalt(expanded, fixedSalt, IterationsLevel.HIGH, HashAlgorithm.PBKDF2SHA512));
 						final String converted = source.option == 0 ? 
-								HandleString.forceLength(raw, (int)spinnerLength.getValue(), getPossibleCharacters()) :
+								StringWorkerExtended.forceLength(raw, (int)spinnerLength.getValue(), getPossibleCharacters()) :
 									StringWorker.forceLengthDeterministic(raw, (int)spinnerLength.getValue(), "O");
 						textField.setText(converted);
 					
@@ -363,7 +363,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(850, 140);
+		return new Dimension(880, 150);
 	}
 	
 	public static GeneratePasswordFrame getInstance(JFrame parentFrame) {

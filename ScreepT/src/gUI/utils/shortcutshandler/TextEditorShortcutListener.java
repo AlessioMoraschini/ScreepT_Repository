@@ -15,8 +15,8 @@ import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gUI.utils.tooltip.TextEditorTooltips;
 import maingUI.MainGUI;
+import om.ICommonShortcuts;
 import resources.IconsPathConfigurator;
-import shortcuts.ICommonShortcuts;
 import tabbededitor.CustomTabbedEditor;
 import utils.SysUtils;
 
@@ -353,18 +353,18 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 					subHeaderPanel.btnPropertiesPanel.doClick();
 				}
 				/*
-				 * OPEN CURRENT FILE into FyleSystem-> Ctrl+ENTER
+				 * OPEN CURRENT FILE into FyleSystem-> Ctrl+Shift+ENTER
 				 */
-				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					try {
 						GuiUtilsExtended.openInFileSystem(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
 					} catch (Exception e2) {
 					}
 				}
 				/*
-				 * OPEN CURRENT FILE into CommandLine -> Ctrl+Shift+ENTER
+				 * OPEN CURRENT FILE into CommandLine -> Ctrl+Alt+ENTER
 				 */
-				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				if (e.getKeyCode() == 10 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					try {
 						SysUtils.cdIntoCommandLine(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
 					} catch (Exception e2) {
@@ -716,4 +716,15 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	public boolean isAltDown() {
 		return flagAltDown.get();
 	}
+
+	@Override
+	public void revalidateUnsaved() {
+		currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+	}
+
+	@Override
+	public void saveAsShortcut() {
+		subHeaderPanel.btnSaveTextFileAs.doClick();
+	}
+
 }
