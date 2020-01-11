@@ -76,22 +76,19 @@ public class GuiUtilsExtended extends GuiUtils {
 			}else if (extension.toLowerCase().endsWith("js") || extension.toLowerCase().endsWith("json")) {
 				suppported = true;
 				formatted = codeFormatter.jsFormatJSLIB(source, 5);
-				formatted = GuiUtils.replaceEachLineMatchesFromLeft(true, formatted, "    ", "\t");
-				source = formatted;
+				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
 				
 			// HTML -> use javascript function call with custom library to prettify html string
 			}else if (extension.toLowerCase().endsWith("html")) {
 				suppported = true;
 				formatted = codeFormatter.htmlFormatJSLIB(source, 5);
-				formatted = GuiUtils.replaceEachLineMatchesFromLeft(true, formatted, "    ", "\t");
-				source = formatted;
+				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
 			
 			// CSS -> use javascript function call with custom library to prettify css string
 			}else if (extension.toLowerCase().endsWith("css")) {
 				suppported = true;
 				formatted = codeFormatter.cssFormatJSLIB(source, 5);
-				formatted = GuiUtils.replaceEachLineMatchesFromLeft(true, formatted, "    ", "\t");
-				source = formatted;
+				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
 				
 			// JAVA -> use google library to prettify java string
 			} else if (extension.toLowerCase().endsWith("java")) {

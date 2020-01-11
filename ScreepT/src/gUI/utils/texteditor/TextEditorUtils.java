@@ -34,8 +34,9 @@ import files.om.FileNamed;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
+import gUI.panels.subpanels.texteditor.TextEditorFooterPanel;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
-import gUI.utils.tooltip.TextEditorTooltips;
+import gui.TextEditTooltips;
 import guistyle.GUIStyelSettingsExtended;
 import maingUI.MainGUI;
 import maingUI.ToggleAction;
@@ -159,12 +160,16 @@ public class TextEditorUtils {
 	
 	public void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
 		// retrieve all buttons except Containing depth in name
+		
+		Insets margin = new Insets(1, 6, 0, 6);
+		
 		List<JButton> textEditorButtons = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor.subHeaderPanel, JButton.class, "nostyle", true, false);
 		for(JButton button : textEditorButtons) {
 			button.setCursor(GuiUtilsExtended.CURSOR_HAND);
 			button.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			button.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 			button.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
+			button.setMargin(margin);
 		}
 
 		List<JToggleButton> textEditorToggleButtons = ReflectionUtils.retrieveFieldsByTypeContaininingFilter(currentTextEditor.subHeaderPanel, JToggleButton.class, "nostyle", true, false);
@@ -172,10 +177,9 @@ public class TextEditorUtils {
 			toggleButton.setCursor(GuiUtilsExtended.CURSOR_HAND);
 			toggleButton.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			toggleButton.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
+			toggleButton.setMargin(margin);
 		}
 		
-		currentTextEditor.subHeaderPanel.btnTt.setMinimumSize(new Dimension(45, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
-		currentTextEditor.subHeaderPanel.btnLowerAfterDots.setMinimumSize(new Dimension(40, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
 	}
 	
 	/**
@@ -609,7 +613,7 @@ public class TextEditorUtils {
 					currentTextEditor.rightPaneResizeOnly();
 				}
 				
-				adaptToSizeResponsive(mainApplication.getMainFrame().getBounds());
+				adaptToSizeResponsive(MainGUI.mainAPP.getMainFrame().getBounds());
 				
 				currentTextEditor.repaint();
 			}
@@ -617,10 +621,10 @@ public class TextEditorUtils {
 	}
 	
 	public void adaptToSizeResponsive(Rectangle mainFrameBounds) {
-		if(mainFrameBounds.width > 1050 && mainFrameBounds.width < 1300) {
+		if(mainFrameBounds.width > 950 && mainFrameBounds.width < 1200) {
 			setSubHeaderHideablesVisible1(false);
 			setSubHeaderHideablesVisible2(true);
-		} else if(mainFrameBounds.width <= 1050) {
+		} else if(mainFrameBounds.width <= 950) {
 			setSubHeaderHideablesVisible2(false);
 		} else {
 			setSubHeaderHideablesVisible1(true);
@@ -643,11 +647,16 @@ public class TextEditorUtils {
 	
 	public void setSubHeaderHideablesVisible2(boolean visible) {
 		TextEditorSubHeadButtonsPanel subHeader = currentTextEditor.subHeaderPanel;
+		TextEditorFooterPanel footer = currentTextEditor.footerPanel;
 		subHeader.labelTabSize.setVisible(visible);
 		subHeader.tabSizeSpinner.setVisible(visible);
 		subHeader.chckbxShowTabGrid.setVisible(visible);
 		
+		footer.lblAdvice.setVisible(visible);
+		
+		footer.revalidate();
 		subHeader.revalidate();
+		footer.repaint(50);
 		subHeader.repaint(50);
 	}
 	
@@ -658,7 +667,9 @@ public class TextEditorUtils {
 		currentTextEditor.subHeaderPanel.lBLMargin.setText("" + textMargin);
 		loadedTabObj.textArea.setMargin(new Insets(textMargin / 2, textMargin, textMargin / 2, textMargin));
 		loadedTabObj.textArea.revalidate();
-		loadedTabObj.textArea.repaint();
+		loadedTabObj.currentScrollPane.revalidate();
+		loadedTabObj.textArea.repaint(100);
+		loadedTabObj.currentScrollPane.repaint(100);
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setMargin(textMargin);
 	}
 	
@@ -1080,7 +1091,7 @@ public class TextEditorUtils {
 		loadedTabObj.textArea.revalidate();
 		currentTextEditor.CURRENT_EXT_OUT = selected.nomeStringa;
 		currentTextEditor.footerPanel.lblAdvice.setText("[Type: " + currentTextEditor.CURRENT_EXT_OUT + "]");
-		currentTextEditor.subHeaderPanel.btnSaveTextFileAs.setToolTipText(TextEditorTooltips.tooltipSaveTextFileAs + " as " + currentTextEditor.CURRENT_EXT_OUT);
+		currentTextEditor.subHeaderPanel.btnSaveTextFileAs.setToolTipText(TextEditTooltips.tooltipSaveTextFileAs + " as " + currentTextEditor.CURRENT_EXT_OUT);
 
 		loadedTabObj.unsaved = unsaved;
 		

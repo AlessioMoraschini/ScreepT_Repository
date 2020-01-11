@@ -29,7 +29,7 @@ import crypt.aes.AesCipher;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
-import gUI.utils.tooltip.TextEditorTooltips;
+import gui.TextEditTooltips;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
@@ -56,9 +56,7 @@ public class TextEditorHeaderPanel extends JPanel{
 	private JLabel lblVoiceSpeed;
 	public JSlider sliderSpokenSpeed;
 	public JCheckBox checkBoxInlineTabs;
-	public JCheckBox chkFitmantainwords;
 	public JCheckBox chkCutWordsTo;
-	public JLabel lblTextEditor;
 	private JButton btnNextHistory;
 	private JButton btnPrevHistory;
 	
@@ -78,7 +76,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		this.currentConfiguration = parent.currentConfiguration;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 6, fill, hidemode 3", "[160px,left][][][20px:24px:24px][::35px][200px:240px:300px,trailing][40px:45px:45px][40px:45px:45px][10px:10px,grow][::20px][::20px][10px:10px:10px][::120px][::140px][::130px][::5px]", "[:0px:55px,grow]"));
+		setLayout(new MigLayout("insets 6, fill, hidemode 3", "[left][][][][::35px][100px:240px:300px,trailing][40px:45px:45px][40px:45px:45px][10px:10px,grow][::20px][::20px][10px:10px:10px][::120px][::140px][::130px]", "[:0px:55px,grow]"));
 		setForeground(SystemColor.menu);
 		setBorder(new LineBorder(Color.BLACK, 1));
 		setBackground(new Color(30,30,30));
@@ -87,25 +85,25 @@ public class TextEditorHeaderPanel extends JPanel{
 		lblVoiceSpeed.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblVoiceSpeed.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		lblVoiceSpeed.setForeground(SystemColor.control);
-		add(lblVoiceSpeed, "cell 1 0,alignx right,aligny center");
+		add(lblVoiceSpeed, "cell 0 0,alignx right,aligny center");
 		
 		sliderSpokenSpeed = new JSlider();
 		sliderSpokenSpeed.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		sliderSpokenSpeed.setValue(currentConfiguration.getTextEditorOpt().getVoiceRate());
 		sliderSpokenSpeed.setMaximum(400);
-		add(sliderSpokenSpeed, "cell 2 0,growy");
+		add(sliderSpokenSpeed, "cell 1 0 2 1,growy");
 		
 		btnCrypt = new JButton();
 		btnCrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnCrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
-		btnCrypt.setToolTipText(TextEditorTooltips.tooltipCrypt);
+		btnCrypt.setToolTipText(TextEditTooltips.tooltipCrypt);
 		btnCrypt.setForeground(SystemColor.inactiveCaption);
 		add(btnCrypt, "cell 6 0,alignx center,grow");
 
 		btnDecrypt = new JButton("");
 		btnDecrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnDecrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
-		btnDecrypt.setToolTipText(TextEditorTooltips.tooltipDecrypt);
+		btnDecrypt.setToolTipText(TextEditTooltips.tooltipDecrypt);
 		btnDecrypt.setForeground(SystemColor.inactiveCaption);
 		add(btnDecrypt, "cell 7 0,alignx center,grow");
 
@@ -138,21 +136,21 @@ public class TextEditorHeaderPanel extends JPanel{
 		btnPrevHistory = new JButton("");
 		btnPrevHistory.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnPrevHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PREV));
-		btnPrevHistory.setToolTipText(TextEditorTooltips.tooltipHystoryPrev);
+		btnPrevHistory.setToolTipText(TextEditTooltips.tooltipHystoryPrev);
 		GuiUtilsExtended.makeTransparentJButton(btnPrevHistory);
 		add(btnPrevHistory, "cell 9 0,alignx center,growy");
 		
 		btnNextHistory = new JButton("");
 		btnNextHistory.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnNextHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NEXT));
-		btnNextHistory.setToolTipText(TextEditorTooltips.tooltipHystoryNext);
+		btnNextHistory.setToolTipText(TextEditTooltips.tooltipHystoryNext);
 		GuiUtilsExtended.makeTransparentJButton(btnNextHistory);
 		add(btnNextHistory, "cell 10 0,alignx center,growy");
 		
 		checkBoxInlineTabs = new JCheckBox("Inline Tabs  ");
 		checkBoxInlineTabs.setOpaque(false);
 		checkBoxInlineTabs.setSelected(true);
-		checkBoxInlineTabs.setToolTipText(TextEditorTooltips.tooltipInlineTabs);
+		checkBoxInlineTabs.setToolTipText(TextEditTooltips.tooltipInlineTabs);
 		checkBoxInlineTabs.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		checkBoxInlineTabs.setForeground(SystemColor.control);
 		checkBoxInlineTabs.setBackground(Color.DARK_GRAY);
@@ -163,31 +161,13 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkCutWordsTo = new JCheckBox("Adapt Text Width  ");
 		chkCutWordsTo.setOpaque(false);
 		chkCutWordsTo.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chkCutWordsTo.setToolTipText(TextEditorTooltips.tooltipCutWordsTo);
+		chkCutWordsTo.setToolTipText(TextEditTooltips.tooltipCutWordsTo);
 		chkCutWordsTo.setSelected(false);
 		chkCutWordsTo.setForeground(SystemColor.control);
 		chkCutWordsTo.setBackground(Color.DARK_GRAY);
 		chkCutWordsTo.setIconTextGap(1);
 		chkCutWordsTo.setFont(new Font("SansSerif", Font.BOLD, 12));
 		add(chkCutWordsTo, "cell 13 0,alignx center,aligny center");
-		
-		lblTextEditor = new JLabel("Text Editor");
-		lblTextEditor.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTextEditor.setForeground(SystemColor.text);
-		lblTextEditor.setFont(new Font("Segoe UI", Font.BOLD, 15));
-		lblTextEditor.setBackground(SystemColor.activeCaptionBorder);
-		add(lblTextEditor, "cell 0 0,alignx left");
-		
-		chkFitmantainwords = new JCheckBox("Don't cut words");
-		chkFitmantainwords.setOpaque(false);
-		chkFitmantainwords.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		chkFitmantainwords.setToolTipText(TextEditorTooltips.tooltipFitMaintainWords);
-		chkFitmantainwords.setForeground(SystemColor.control);
-		chkFitmantainwords.setBackground(Color.DARK_GRAY);
-		chkFitmantainwords.setIconTextGap(1);
-		chkFitmantainwords.setFont(new Font("SansSerif", Font.BOLD, 12));
-		chkFitmantainwords.setEnabled(false);
-		add(chkFitmantainwords, "cell 14 0,alignx right,aligny center");
 		
 		addHandlers();
 		
@@ -349,18 +329,6 @@ public class TextEditorHeaderPanel extends JPanel{
 			}
 		});
 		
-
-		// ADAPT TO WIDTH MAINTAINING WORDS
-		chkFitmantainwords.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (chkFitmantainwords.isSelected()) {
-					parent.getCurrentTabEditor().loadedTabObj.textArea.setWrapStyleWord(true);
-				} else {
-					parent.getCurrentTabEditor().loadedTabObj.textArea.setWrapStyleWord(false);
-				}
-			}
-		});
-		
 		// CHANGE TAB VISUALIZATION MODE
 		checkBoxInlineTabs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -371,7 +339,6 @@ public class TextEditorHeaderPanel extends JPanel{
 		// ADAPT TO WIDTH
 		if (chkCutWordsTo.isSelected()) {
 			parent.getCurrentTabEditor().loadedTabObj.textArea.setLineWrap(true);
-			chkFitmantainwords.setEnabled(true);
 		}
 		chkCutWordsTo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -379,12 +346,10 @@ public class TextEditorHeaderPanel extends JPanel{
 
 				if (chkCutWordsTo.isSelected()) {
 					loadedTabObj.textArea.setLineWrap(true);
-					chkFitmantainwords.setEnabled(true);
 					currentConfiguration.getTextEditorOpt().breaklineActive = true;
 				} else {
 					loadedTabObj.textArea.setLineWrap(false);
 					loadedTabObj.textArea.setWrapStyleWord(false);
-					chkFitmantainwords.setEnabled(false);
 					currentConfiguration.getTextEditorOpt().breaklineActive = false;
 				}
 			}

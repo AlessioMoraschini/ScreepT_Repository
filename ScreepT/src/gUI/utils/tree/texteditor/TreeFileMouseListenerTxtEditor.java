@@ -119,7 +119,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	                    selectedNode = (FileNamed) selPath.getLastPathComponent();
 	                    if (selectedNode.mFile != null && selectedNode.mFile.exists() && selectedNode.mFile.isFile()) {
 	                    	//	                myDoubleClick(selRow, selPath);
-	                    	currentTabEditor.loadFile(selectedNode.mFile);
+	                    	currentTabEditor.loadFiles(selectedNode.mFile);
 	                    }
 	                } else{
 	                    selectedNode = null;
@@ -316,7 +316,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					public void run() {
 						try {
 							if (selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
-								currentTabEditor.loadFile(selectedNode.mFile);
+								currentTabEditor.loadFiles(selectedNode.mFile);
 								currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 							}
 						} catch (Exception e) {
@@ -475,7 +475,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 						currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 						return;
 					}
-					currentTabEditor.loadFile(selected);
+					currentTabEditor.loadFiles(selected);
 					
 				} catch (IOException e1) {
 					String msg = "Error creating new file";

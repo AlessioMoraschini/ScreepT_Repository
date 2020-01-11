@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>HardwareCommons</groupId>
   <artifactId>HardwareCommons</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
     
   <parent>
   	<groupId>ScreepT_Parent</groupId>
@@ -12,6 +12,24 @@
   </parent>
   
   <packaging>jar</packaging>
+  
+  <name>HardwareCommons</name>
+  <description>
+  	This module is made to gather informations about the underlying hardware, mainly with the use of Oshi project. Cointaning a standalone buidable GUI too.
+  </description>
+  <url>${project.main.url}</url>
+  <inceptionYear>${inception.year}</inceptionYear>
+  <licenses>
+    <license>
+      <name>${project.license.name}</name>
+      <url>${project.license.url}</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>${developer.url}</name>
+    </developer>
+  </developers>
   
   <build>
    	<finalName>HardwareInfoTool.jar</finalName>
@@ -82,7 +100,7 @@
 	<dependency>
 		<groupId>GuiCommons</groupId>
 		<artifactId>GuiCommons</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</dependency>
 	<dependency>
 	    <groupId>log4j</groupId>

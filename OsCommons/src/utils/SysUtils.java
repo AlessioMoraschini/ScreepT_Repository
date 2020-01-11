@@ -125,6 +125,10 @@ public class SysUtils {
 		return command;
 	}
 	
+	public static File getCurrentJavaHome() {
+		return new File(System.getProperty("java.home"));
+	}
+	
 	/**
 	 * According to given OS, search for installed JVM paths
 	 * @param OS
@@ -153,12 +157,24 @@ public class SysUtils {
 			// Add open JDK java list
 			List<String> foundOpenJdkRootFolders = findWindowsProgramPathByNamePart("openjdk");
 			for(String currFolder : foundOpenJdkRootFolders) {
-				ArrayList<String> foundVersions = getAllDirsWithJavaExeInside(currFolder);
+				ArrayList<String> foundVersions = getAllDirsWithJavaExeInside(currFolder, winJavaExecutable);
 				for (String currVersionPath : foundVersions) {
 					foundJVMS.add(currVersionPath);
 				}
 			}
 		} // END WINDOWS
+		
+		String canonicalCurrentPath;
+		try {
+			canonicalCurrentPath = getCurrentJavaHome().getCanonicalPath();
+			logger.info("Current jvm is : " + canonicalCurrentPath);
+			if(!foundJVMS.contains(canonicalCurrentPath)) {
+				foundJVMS.add(canonicalCurrentPath);
+				logger.info(canonicalCurrentPath + " not found in previously retrieved list -> added to JVM list");
+			}
+		} catch (IOException e) {
+			logger.error("Cannot add current JVM to found JVMS");
+		}
 		
 		return foundJVMS;
 	}
@@ -548,7 +564,7 @@ public class SysUtils {
 		return foundList;
 	}
 	
-	public static ArrayList<String> getAllDirsWithJavaExeInside(String root) {
+	public static ArrayList<String> getAllDirsWithJavaExeInside(String root, String fileToFind) {
 		ArrayList<String> stringRetrievedPaths = new ArrayList<String>();
 		
 		File currentRootDir = new File(root);
@@ -557,7 +573,7 @@ public class SysUtils {
 			@Override
 			public boolean accept(File dir, String name) {
 				File currentFile = new File(dir.getPath() + File.separator + name);
-				if(findFileInsideRoot(currentFile, winJavaExecutable, true) != null) {
+				if(findFileInsideRoot(currentFile, fileToFind, true) != null) {
 					stringRetrievedPaths.add(currentFile.getAbsolutePath());
 				}
 				return false;

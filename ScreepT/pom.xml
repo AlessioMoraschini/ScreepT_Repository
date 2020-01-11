@@ -3,7 +3,6 @@
   <groupId>ScreepT</groupId>
   <artifactId>ScreepT</artifactId>
   <version>${parent.build.version.screept}</version>
-  <name>ScreepT</name>
   
   <parent>
   	<groupId>ScreepT_Parent</groupId>
@@ -13,6 +12,25 @@
   </parent>
   
   <packaging>jar</packaging>
+  
+  <name>ScreepT</name>
+  <description>
+  	This is the main module, that comprends the main GUI and all the methods specific for ScreepT implementation.
+  	Furthermore, here you can find many classes useful to manage and keep separated the various functions, keeping the GUI more mainainable.
+  </description>
+  <url>${project.main.url}</url>
+  <inceptionYear>${inception.year}</inceptionYear>
+  <licenses>
+    <license>
+      <name>${project.license.name}</name>
+      <url>${project.license.url}</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>${developer.url}</name>
+    </developer>
+  </developers>
   
   <scm>
       <connection>scm:git:http://127.0.0.1/dummy</connection>
@@ -32,6 +50,74 @@
     
     <plugins>
     
+    	<!-- BUILD OBFUSCATION -->
+    	<plugin>
+		    <groupId>com.github.wvengen</groupId>
+		    <artifactId>proguard-maven-plugin</artifactId>
+		    <version>2.2.0</version>
+
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals><goal>proguard</goal></goals>
+                </execution>
+            </executions>
+            <configuration>
+                <proguardVersion>6.2.0</proguardVersion>
+                <obfuscate>true</obfuscate>
+                <options>
+                    <option>-keep public class maingUI.MainGuiGeneralAppStarter{public static void main(java.lang.String[]);}</option>
+               		<option>-target 1.8</option>
+                </options>
+                <libs>
+                    <lib>${java.home}/lib/rt.jar</lib>
+                </libs>
+                <dependencies>
+                	<dependency>
+					    <groupId>com.github.wvengen</groupId>
+					    <artifactId>proguard-maven-plugin</artifactId>
+					    <version>2.2.0</version>
+					</dependency>
+					                
+                    <dependency>
+					    <groupId>net.sf.proguard</groupId>
+					    <artifactId>proguard-base</artifactId>
+					    <version>6.2.0</version>
+					</dependency>
+					<dependency>
+					    <groupId>net.sf.proguard</groupId>
+					    <artifactId>proguard-parent</artifactId>
+					    <version>6.2.0</version>
+					    <type>pom</type>
+					</dependency>
+										
+
+                </dependencies>
+            </configuration>
+        </plugin>
+    	
+    	<!-- LICENSE REPORT GENERATOR -->
+   		<plugin>
+	        <groupId>org.codehaus.mojo</groupId>
+			<artifactId>license-maven-plugin</artifactId>
+			<version>2.0.0</version>
+			<executions>
+				<execution>
+					<phase>install</phase>
+					<configuration>
+						<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+						<generateBundle>true</generateBundle>
+						<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
+						<excludedScopes>provided,test</excludedScopes>
+					</configuration>
+					<goals>
+					<goal>third-party-report</goal>
+					</goals>
+				</execution>
+			</executions>
+			<configuration></configuration>
+      	</plugin>
+	    
     	  <!-- Generate changelog -->
 	      <plugin>
 	         <groupId>org.codehaus.mojo</groupId>
@@ -677,7 +763,7 @@
 		<dependency>
 			<groupId>Initializer_Configs</groupId>
 		    <artifactId>Initializer_Configs</artifactId>
-		    <version>0.0.1-SNAPSHOT</version>
+		    <version>1.0</version>
 		</dependency>
 		
 		<dependency>
@@ -689,7 +775,7 @@
 		<dependency>
 			<groupId>GuiTextEditorCommons</groupId>
 		   	<artifactId>GuiTextEditorCommons</artifactId>
-		  	<version>0.0.1-SNAPSHOT</version>
+		  	<version>1.0</version>
 		</dependency>
 		
 		<dependency>
@@ -702,43 +788,43 @@
 		<dependency>
 			<groupId>GuiCommons</groupId>
 			<artifactId>GuiCommons</artifactId>
-		 	<version>0.0.1-SNAPSHOT</version>
+		 	<version>1.0</version>
 		</dependency>
 		
 		<dependency>
 		  <groupId>GenCommons</groupId>
 		  <artifactId>GenCommons</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>	
+		  <version>1.0</version>	
 		</dependency>
 		
 		<dependency>
 			<groupId>MultimediaConversion</groupId>
 		  	<artifactId>MultimediaConversion</artifactId>
-		 	<version>0.0.1-SNAPSHOT</version>
+		 	<version>1.0</version>
 		</dependency>
 			
 		<dependency>
 			<groupId>HardwareCommons</groupId>
 	 		<artifactId>HardwareCommons</artifactId>
-	 		<version>0.0.1-SNAPSHOT</version>
+	 		<version>1.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>UltimateCalculator</groupId>
 			<artifactId>UltimateCalculator</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>NetworkCommons</groupId>
 			<artifactId>NetworkCommons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>UpdaterModule</groupId>
 		  	<artifactId>UpdaterModule</artifactId>
-		  	<version>0.0.1-SNAPSHOT</version>
+		  	<version>1.0</version>
 		</dependency>
 
   </dependencies>

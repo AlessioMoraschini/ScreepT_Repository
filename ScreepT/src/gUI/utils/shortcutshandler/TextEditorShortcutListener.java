@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
-import gUI.utils.tooltip.TextEditorTooltips;
+import gui.TextEditTooltips;
 import maingUI.MainGUI;
 import om.ICommonShortcuts;
 import resources.IconsPathConfigurator;
@@ -210,13 +211,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	UPPERCASE AFTER DOTS-SEPARATOR -> CTRL+Shift+[.]
 				 */
 				if (e.getKeyCode() == 46 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					subHeaderPanel.btnUpperPostDots.doClick();
+					((JMenuItem)MainGUI.mainAPP.menuStringActions.getComponent(2)).doClick();
 				}
 				/*
 				 * 	UPPERCASE SELECTED TEXT -> CTRL+Shift+UP_Arrow
 				 */
 				if (e.getKeyCode() == 38 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					subHeaderPanel.btnTt.doClick();
+					((JMenuItem)MainGUI.mainAPP.menuStringActions.getComponent(0)).doClick();
 				}
 				/*
 				 * 	OPEN TEMPLATES PANEL -> CTRL+Shift+T
@@ -600,31 +601,31 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 			public void run() {
 				if (flagCtrlDown.get()) {
 					if (flagHoverBtnRemoveSpaces.get()) {
-						subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveContent);
+						subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditTooltips.tooltipRemoveContent);
 						subHeaderPanel.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_CONTENT));
 					}
 					if (flagHoverBtnViewExpCmd.get()) {
-						subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInCommandLine);
+						subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditTooltips.tooltipViewInCommandLine);
 						subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 					}
 					
 					if(flagHoverBtnBase64.get()) {
-						subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditorTooltips.tooltipDecryptBase64);
+						subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditTooltips.tooltipDecryptBase64);
 						subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_RED));
 					}
 				}
 				
 				if (!flagCtrlDown.get() || !flagHoverBtnBase64.get()) {
-					subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditorTooltips.tooltipCryptBase64);
+					subHeaderPanel.btnBase64Conversion.setToolTipText(TextEditTooltips.tooltipCryptBase64);
 					subHeaderPanel.btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
 				}
 
 				if (!flagCtrlDown.get() || !flagHoverBtnRemoveSpaces.get()) {
-					subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditorTooltips.tooltipRemoveSpaces);
+					subHeaderPanel.btnRemoveSpaces.setToolTipText(TextEditTooltips.tooltipRemoveSpaces);
 					subHeaderPanel.btnRemoveSpaces.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REMOVE_WHITE_LINE));
 				}
 				if (!flagCtrlDown.get() || !flagHoverBtnViewExpCmd.get()) {
-					subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditorTooltips.tooltipViewInSysExplorer);
+					subHeaderPanel.btnViewInExplorer.setToolTipText(TextEditTooltips.tooltipViewInSysExplorer);
 					subHeaderPanel.btnViewInExplorer.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
 				}
 			}

@@ -12,7 +12,6 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -22,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -40,20 +40,20 @@ import files.FileWorker;
 import files.watcher.ChangeDTO;
 import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
-import gui.GuiUtils;
+import gui.dnd.FileDrop;
 import mainobj.INItializer;
+import om.ColumnTextArea;
 import om.HistoryNode;
 import om.LimitedConcurrentList;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
-import tabbedpaneutils.TabbedDragNDropManager;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
 import utility.string.StringWorker;
 
-public class CustomTabbedEditor {
+public class CustomTabbedEditor implements ITabsManager {
 
 	// CustomTabbedEditor logger creation
 	static Logger logger = Logger.getLogger(CustomTabbedEditor.class);
@@ -83,7 +83,7 @@ public class CustomTabbedEditor {
 	public int lastIndexTabbedPane = 0;
 
 	/* THIS IS THE MAIN COMPONENT CONTAINING TABS */
-	public TabbedDragNDropManager mainTabList;
+	public JTabbedPane mainTabList;
 	
 	/* THEESE ARE THE LOADED TABS, AND A REFERENCE TO THE CURRENT SELECTED */
 	public LimitedConcurrentList<HistoryNode> navigationHistory;
@@ -93,6 +93,8 @@ public class CustomTabbedEditor {
 	public INItializer currentConfiguration;
 	public ITabbedEditorOwner tabEditorManager;
 	public JTextComponent newFileStringTarget;
+	
+	public FileDrop fileDrop;
 	
 	public ChangeDTO changesHistory;
 	public IChangeMonManager changeMonManager;
@@ -120,18 +122,13 @@ public class CustomTabbedEditor {
 	private void initMainTabList() {
 		// DRAG 'N DROP IMPLEMENTATION FOR TABS		
 
-		mainTabList = new TabbedDragNDropManager(new Runnable() {
-				@Override
-				public void run() {
-				}
-			}, GuiUtils.getCurrentActiveWindow());
+		mainTabList = new JTabbedPane();
+		fileDrop = new FileDrop(mainTabList, (files)->{this.loadFiles(files);});
 		
 		mainTabList.addMouseWheelListener(new TabbedPaneMouseWheelListener());
 		mainTabList.setBorder(new EmptyBorder(0,0,0,0));
 		mainTabList.setBackground(new Color(30, 30, 30));
 		
-		mainTabList.dropRunner = getFileDropRunnable(mainTabList.loadedFilesList);
-
 		// TAB CHANGE LISTENER - FIRED WHEN CHANGING TAB //
 		mainTabList.addChangeListener(new ChangeListener() {
 
@@ -165,28 +162,10 @@ public class CustomTabbedEditor {
 						TabUtils.scrollToNextTab(mainTabList);
 					} catch (Exception e1) {
 					}
+					
 				}
 			}
 		});
-	}
-	
-	public Runnable getFileDropRunnable(Collection<File> draggedList) {
-		return new Runnable() {
-			@Override
-			public void run() {
-
-				// for each dragged file on tabPane load it in a new tab
-				if (!alreadyLoading) {
-
-					for (File draggedCurrent : draggedList) {
-						loadFile(draggedCurrent);
-					}
-				} // end if !already loading
-
-				// at the end remove all temp files dragged reference
-				draggedList.clear();
-			}
-		};
 	}
 	
 	// TABBED PAIN - RELATED FUNCTIONS
@@ -234,7 +213,20 @@ public class CustomTabbedEditor {
 		}
 	}
 	
-	public void loadFile(final File fileToLoad) {
+	@Override
+	public void loadFiles(final File[] files) {
+		SwingUtilities.invokeLater(()->{
+			// for each dragged file on tabPane load it in a new tab
+			if (!alreadyLoading) {
+
+				for (File draggedCurrent : files) {
+					loadFiles(draggedCurrent);
+				}
+			}
+		});
+	}
+	
+	public void loadFiles(final File fileToLoad) {
 		
 		logger.debug("Started file loading into new tab: "+fileToLoad+"\n\n");
 		loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
@@ -375,6 +367,7 @@ public class CustomTabbedEditor {
 			int newIndex = mainTabList.getTabCount();
 
 			TabTextEditorObj newTabNode = new TabTextEditorObj(
+					this,
 					file, // File reference
 					"", // Initial text
 					getChangeListener(), // Document listener
@@ -382,7 +375,6 @@ public class CustomTabbedEditor {
 					changeMonManager, // file monitor reference
 					tabEditorManager.getShortcutManager() // shortcut listener implementation
 			);
-			
 			newTabNode.textArea.addFocusListener(getFocusListenerTxtCursor());
 			newTabNode.textArea.addMouseListener(new MouseListener() {
 				
@@ -436,13 +428,14 @@ public class CustomTabbedEditor {
 //			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 			applyStyleToTabs();
 			loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
-			
+
 		} catch (Exception e) {
 			logger.error("An error occurred!", e);
 		} finally {
 			loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 		}
 		isAddingTab = false;
+		
 	}
 	
 	public void reloadCurrentTab(boolean askDialogOn) {
@@ -909,7 +902,7 @@ public class CustomTabbedEditor {
 		int i = findComponentIndex(nextComponent);
 		if(i < 0) {
 			logger.warn(".goToPreviousInHistory() -> Component not found in tabList");
-			loadFile(nextNode.getLoadedFile());
+			loadFiles(nextNode.getLoadedFile());
 			loadedTabObj.textArea.setCaretPosition(nextNode.getCaretPosition());
 			historyActionChanging.set(false);
 			return;
@@ -953,4 +946,10 @@ public class CustomTabbedEditor {
 		
 		return -1;
 	}
+
+	@Override
+	public ColumnTextArea getCurrentTextArea() {
+		return loadedTabObj.textArea;
+	}
+
 }

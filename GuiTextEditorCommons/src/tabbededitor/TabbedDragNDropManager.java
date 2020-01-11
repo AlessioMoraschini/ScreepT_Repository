@@ -1,4 +1,4 @@
-	package tabbedpaneutils;
+	package tabbededitor;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -23,13 +23,14 @@ import java.util.TooManyListenersException;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
+import utility.SafeLogger;
 
+@Deprecated
 public class TabbedDragNDropManager extends JTabbedPane{
 	private static final long serialVersionUID = -4714067360032380811L;
 
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(TabbedDragNDropManager.class); 
+	static SafeLogger logger = new SafeLogger(TabbedDragNDropManager.class); 
     
 	public ArrayList<File> loadedFilesList;
 	
@@ -42,11 +43,11 @@ public class TabbedDragNDropManager extends JTabbedPane{
     private Point dragPoint;
 
     // constructor
-    public TabbedDragNDropManager(Runnable dropAction, Component targetDrop) {
+    public TabbedDragNDropManager(Component targetDrop) {
     	
     	super(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
     	loadedFilesList = new ArrayList<File>();
-    	dropRunner = dropAction;
+    	dropRunner = () -> {};
     	targetDropComponent = (targetDrop == null)? this : targetDrop;
     	
     }
@@ -62,7 +63,7 @@ public class TabbedDragNDropManager extends JTabbedPane{
         try {
             getMyDropTarget().addDropTargetListener(getDropTargetHandler());
         } catch (TooManyListenersException ex) {
-            logger.error(ex);
+            logger.error("", ex);
         }
     }
 
@@ -119,7 +120,7 @@ public class TabbedDragNDropManager extends JTabbedPane{
 					}
 					logger.debug(files.size() + " files selected");
 				} catch (Exception e) {
-					logger.error(e);
+					logger.error("", e);
 				}
             }
         };
@@ -178,7 +179,7 @@ public class TabbedDragNDropManager extends JTabbedPane{
                     }
 
                 } catch (Exception ex) {
-                    logger.error(ex);
+                    logger.error("", ex);
                 }
             } else {
                 dtde.rejectDrop();

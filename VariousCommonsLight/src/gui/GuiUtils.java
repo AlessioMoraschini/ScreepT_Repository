@@ -812,25 +812,6 @@ public class GuiUtils {
 		return "<html>" + original + "</html>";
 	}
 
-	public static String replaceEachLineMatchesFromLeft(boolean startsWith, String source, String match, String replacement) {
-		String[] lines = source.split("\n");
-		StringBuilder builder = new StringBuilder();
-		int i = 0;
-		for (String line : lines) {
-			if(i > 0 && i< lines.length) {
-				builder.append("\n");
-			}
-			if (!startsWith || line.startsWith(match)) {
-				builder.append(line.replaceAll(match, replacement));
-			}else {
-				builder.append(line);
-			}
-			i++;
-		}
-		
-		return builder.toString();
-	}
-
 	public static KeyEventDispatcher getKeyDispatcherFromCode(int keyCode) {
 		return new KeyEventDispatcher() {
 		    @Override

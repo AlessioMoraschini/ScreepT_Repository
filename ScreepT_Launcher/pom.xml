@@ -12,6 +12,22 @@
   
   <packaging>jar</packaging>
   
+  <name>ScreepT_Launcher</name>
+  <description>ScreepT_Launcher is the module that's used to configure and start the main application, creating a custom launcher that fits the current OS, but maintaining the portability of the whole software.</description>
+  <url>${project.main.url}</url>
+  <inceptionYear>${inception.year}</inceptionYear>
+  <licenses>
+    <license>
+      <name>${project.license.name}</name>
+      <url>${project.license.url}</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>${developer.url}</name>
+    </developer>
+  </developers>
+  
   <scm>
       <connection>scm:git:http://127.0.0.1/dummy</connection>
       <developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
@@ -190,13 +206,13 @@
 	<dependency>
 		<groupId>Resources</groupId>
 	  	<artifactId>Resources</artifactId>
-	  	<version>0.0.1-SNAPSHOT</version>
+	  	<version>1.0</version>
 	</dependency>
 	
 	<dependency>	
 		<groupId>OsCommons</groupId>
 	  	<artifactId>OsCommons</artifactId>
-	  	<version>0.0.1-SNAPSHOT</version>
+	  	<version>1.0</version>
  	</dependency>
   </dependencies>
   

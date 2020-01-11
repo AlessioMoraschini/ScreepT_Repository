@@ -409,6 +409,67 @@ public class StringWorker {
 		}
 		return lowercaseNames;
 	}
+	
+	public static String getNTimesString(String source, int n) {
+		if(n < 0 || isEmptyNoTrim(source)) {
+			return source;
+		}
+		
+		String result = "";
+		
+		String original = new String(source);
+		for(int i = 0; i < n; i++) {
+			result += original;
+		}
+		
+		return result;
+	}
+	
+	public static String replaceSpacesWithTabs(String source, int tabSize) {
+		String[] lines = source.split("\n");
+		StringBuilder builder = new StringBuilder();
+		for (String line : lines) {
+			
+			int lineLength = line.length();
+			String convertedBlock = "";
+			String buffer = "";
+			for(int i = 0; i < lineLength; i++) {
+				Character current = line.charAt(i);
+				buffer += current;
+
+				if(!current.equals(' ')) {
+					convertedBlock += buffer;
+					buffer = "";
+				}
+				
+				if (buffer.length() == tabSize ) {
+					convertedBlock += "\t";
+					buffer = "";
+				}
+			}
+			
+			builder.append(convertedBlock).append(buffer).append("\n");
+		}
+		
+		return builder.toString();
+	}
+	
+	public static String replaceTabsWithSpaces(String source, int tabSize) {
+		String spaces = getNTimesString(" ", tabSize);
+		return source.replace("\t", spaces);
+	}
+	
+	public static ArrayList<String> getStringWhileNotNull(Character[] buffer) {
+		ArrayList<String> notNulls = new ArrayList<>();
+		for(Character current : buffer) {
+			if(current != null) {
+				notNulls.add(String.valueOf(current));
+			} else {
+				return notNulls;
+			}
+		}
+		return notNulls;
+	}
 
 	/**
 	 * This method changes the characters from start to end in the string with the given String

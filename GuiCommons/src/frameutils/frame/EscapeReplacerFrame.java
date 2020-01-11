@@ -9,6 +9,7 @@ import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 
+import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 
 import java.awt.SystemColor;
@@ -22,7 +23,6 @@ import variousutils.StringWorkerExtended;
 import javax.swing.JLabel;
 
 import java.awt.Font;
-import java.awt.Rectangle;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -34,7 +34,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import java.awt.Dimension;
 
-public class EscapeReplacerFrame extends JFrame{
+public class EscapeReplacerFrame extends ParentFrame {
 	private static final long serialVersionUID = 2122717575417614868L;
 
 	static Logger logger = Logger.getLogger(EscapeReplacerFrame.class);
@@ -66,7 +66,6 @@ public class EscapeReplacerFrame extends JFrame{
 		
 		this.comboClickAction = comboClickAction;
 		
-		setBounds(new Rectangle(700,200));
 		GuiUtilsExtended.centerComponent(this);
 		
 		parentFrame = parent;
@@ -317,5 +316,10 @@ public class EscapeReplacerFrame extends JFrame{
 		}else {
 			outputTextArea.setSelectionEnd(selectionTxtArea.last);
 		}
+	}
+
+	@Override
+	public Dimension getDefaultDimension() {
+		return new Dimension(700, 200);
 	}
 }

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>UltimateCalculator</groupId>
   <artifactId>UltimateCalculator</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <parent>
   	<groupId>ScreepT_Parent</groupId>
   	<artifactId>ScreepT_Parent</artifactId>

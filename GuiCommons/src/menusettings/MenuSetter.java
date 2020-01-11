@@ -145,6 +145,30 @@ public class MenuSetter {
 			}
 		}
 	}
+
+	public static void setSubItemsEnabled(JMenu menuBar, boolean enabled) {
+		JMenuItem menuItem;
+		
+		for(int i=0; i < menuBar.getItemCount(); i++) {
+			Component currentComponent = menuBar.getItem(i);
+			if(currentComponent instanceof JMenuItem) {
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.setEnabled(enabled);
+			}
+		}
+	}
+
+	public static void setSubItemsCommonTooltip(JMenu menuBar, String tooltip) {
+		JMenuItem menuItem;
+		
+		for(int i=0; i < menuBar.getItemCount(); i++) {
+			Component currentComponent = menuBar.getItem(i);
+			if(currentComponent instanceof JMenuItem) {
+				menuItem = (JMenuItem) currentComponent;
+				menuItem.setToolTipText(tooltip);
+			}
+		}
+	}
 	
 	public static void addToDoLater(JMenuItem item, ActionListener listener) {
 		item.addActionListener(listener);

@@ -1,6 +1,6 @@
-package gUI.utils.tooltip;
+package gui;
 
-public class TextEditorTooltips {
+public class TextEditTooltips {
 
 	// TOOLTIPS //
 	public static final String tooltipToggleHeader = "[Ctrl + Alt + shift + H] Toggle header panel visibility on/off";
@@ -30,7 +30,7 @@ public class TextEditorTooltips {
 	public static final String tooltipDarkSwitch = "[Ctrl + B] Switch upon dark and light text combination";
 	public static final String tooltipUpperPostDots = "Makes text uppercase after dots, or a significat line broker";
 	public static final String tooltipLowerPostDots = "Makes text lowerCase after dots, or a significat line broker";
-	public static final String tooltipTt = "[Ctrl + Shift + UP] Makes selected/all text uppercase";
+	public static final String tooltipTT = "[Ctrl + Shift + UP] Makes selected/all text uppercase";
 	public static final String tooltipTtTt = "[Ctrl + shift + dot] Makes selected/all initial characters uppercase";
 	public static final String tooltipLoremIpsum = "Insert classic test text \"Lorem Ipsum\"";
 	public static final String tooltipParseImage = "Read Image and parse text";

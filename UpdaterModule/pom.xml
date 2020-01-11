@@ -2,8 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>UpdaterModule</groupId>
   <artifactId>UpdaterModule</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>UpdaterModule</name>
+  <version>1.0</version>
    
   <parent>
   	<groupId>ScreepT_Parent</groupId>
@@ -13,6 +12,25 @@
   </parent>
   
   <packaging>jar</packaging>
+
+	<name>UpdaterModule</name>
+	<description>
+  		This module is made mainly for ScreepT update process, and to provide a first way to include added plugins to the main software.
+  		This should be made more customizable in the future to easily adapt on new projects that need the same kind of operations.
+  	</description>
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+			<url>${project.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.url}</name>
+		</developer>
+	</developers>
   
   <scm>
       <connection>scm:git:http://127.0.0.1/dummy</connection>

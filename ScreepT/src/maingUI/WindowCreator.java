@@ -1,6 +1,5 @@
 package maingUI;
 
-import java.awt.Rectangle;
 import java.io.File;
 
 import javax.swing.JFrame;
@@ -237,12 +236,9 @@ public class WindowCreator {
 		
 		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		
-		newFrame.setMaximizedBounds(new Rectangle(newFrame.getDefaultDimension()));
 		newFrame.setMinimumSize(newFrame.getDefaultDimension());
 		newFrame.setPreferredSize(newFrame.getDefaultDimension());
-		newFrame.setMaximumSize(newFrame.getDefaultDimension());
 		
-		newFrame.setLocationRelativeTo(mainApplication.getMainFrame());
 		newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		newFrame.setTitle(title + GeneralConfig.APPLICATION_NAME);
 		
@@ -252,6 +248,7 @@ public class WindowCreator {
 //					GuiUtils.extendFramesAndMoveToTop(mainApplication.getMainFrame(), newFrame, JFrame.MAXIMIZED_BOTH);
 //				}
 				GuiUtils.centerComponent(newFrame, newFrame.getDefaultDimension());
+				newFrame.setLocationRelativeTo(mainApplication.getMainFrame());
 				newFrame.setVisible(true);
 			}
 		});

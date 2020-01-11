@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>GuiTextEditorCommons</groupId>
   <artifactId>GuiTextEditorCommons</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <parent>
   	<groupId>ScreepT_Parent</groupId>
   	<artifactId>ScreepT_Parent</artifactId>
@@ -11,6 +11,24 @@
   </parent>
   
   <packaging>jar</packaging>
+  
+  <name>GuiTextEditorCommons</name>
+  <description>
+  	This module is Specific for all the functions needed by the text editor ScreepT's module.
+  </description>
+  <url>${project.main.url}</url>
+  <inceptionYear>${inception.year}</inceptionYear>
+  <licenses>
+    <license>
+      <name>${project.license.name}</name>
+      <url>${project.license.url}</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>${developer.url}</name>
+    </developer>
+  </developers>
   
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -65,19 +83,19 @@
 	<dependency>
 		<groupId>GenCommons</groupId>
 		<artifactId>GenCommons</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</dependency>
 	
 	<dependency>
 		<groupId>GuiCommons</groupId>
 		<artifactId>GuiCommons</artifactId>
-	 	<version>0.0.1-SNAPSHOT</version>
+	 	<version>1.0</version>
 	</dependency>
 	
 	<dependency>
 		<groupId>Initializer_Configs</groupId>
 		<artifactId>Initializer_Configs</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</dependency>
 	
   </dependencies>

@@ -4,7 +4,7 @@
 
   <groupId>NetworkCommons</groupId>
   <artifactId>NetworkCommons</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>jar</packaging>
   
   <parent>
@@ -14,8 +14,23 @@
   	<relativePath>../ScreepT_Parent</relativePath>
   </parent>
 
+  <!-- <url>http://maven.apache.org</url> -->
+  
   <name>NetworkCommons</name>
-  <url>http://maven.apache.org</url>
+  <description>Common classes used to perform http and ftp calls, LAN gathering and various utils methods.</description>
+  <url>${project.main.url}</url>
+  <inceptionYear>${inception.year}</inceptionYear>
+  <licenses>
+    <license>
+      <name>${project.license.name}</name>
+      <url>${project.license.url}</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>${developer.url}</name>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -94,7 +109,7 @@
 	<dependency>
 		<groupId>GuiCommons</groupId>
 		<artifactId>GuiCommons</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</dependency>
 	
 <!-- 	<dependency>

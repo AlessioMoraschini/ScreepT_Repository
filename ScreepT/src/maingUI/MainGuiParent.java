@@ -12,8 +12,8 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -37,12 +37,13 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import gUI.utils.tooltip.TextEditorTooltips;
 import gui.GuiUtils;
+import gui.TextEditTooltips;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import om.LimitedConcurrentList;
+import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
@@ -101,13 +102,16 @@ public class MainGuiParent {
 	JMenu mnPreferences;
 	JMenu mnCryptoSteg; 
 	JMenu mnTextEditor;
-	JMenu mnVarious;
 		JMenu mnLastOpenedFile;
 		JMenu mnLastWorkspaces;
+		public JMenu menuStringActions;
+		
+	JMenu mnVarious;
 		JMenu mnConversionsAndOther;
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
 		JMenu mnrestartPanel;
+		
 			// Top-right elements
 			JMenuItem mntmpadding = new JMenuItem();
 			public JMenuItem mntmToggle0;   
@@ -178,8 +182,11 @@ public class MainGuiParent {
 		mnPreferences = new JMenu("Preferences");
 		mnCryptoSteg = new JMenu("ScreepT");
 		mnTextEditor = new JMenu("Text-Editor");
-			mnLastWorkspaces = new JMenu("TextEditor: Last selected workspaces");
-			mnLastOpenedFile = new JMenu("TextEditor: Last opened files");
+			mnLastWorkspaces = new JMenu("Last selected workspaces");
+			mnLastOpenedFile = new JMenu("Last opened files");
+			menuStringActions = new JMenu("Text transformation");
+			updateTxtEditorStringActions(menuStringActions);
+
 		mnVarious = new JMenu("Various");
 			mnConversionsAndOther = new JMenu("Conversions and Media");
 			mnFilesAndDirectories = new JMenu("Files And Directories");
@@ -288,11 +295,11 @@ public class MainGuiParent {
 		stylePaddings();
 		
 		sizeTopRightElement(mntmToggle0, new Dimension(40, 25));
-		mntmToggle0.setToolTipText(TextEditorTooltips.tooltipToggleHeader);
+		mntmToggle0.setToolTipText(TextEditTooltips.tooltipToggleHeader);
 		sizeTopRightElement(mntmToggle1, new Dimension(40, 25));
-		mntmToggle1.setToolTipText(TextEditorTooltips.tooltipToggleSubHeader);
+		mntmToggle1.setToolTipText(TextEditTooltips.tooltipToggleSubHeader);
 		sizeTopRightElement(mntmToggle2, new Dimension(40, 25));
-		mntmToggle2.setToolTipText(TextEditorTooltips.tooltipToggleFooter);
+		mntmToggle2.setToolTipText(TextEditTooltips.tooltipToggleFooter);
 		
 		sizeTopRightElement(mntmOptimizeResourcesUsage, new Dimension(40, 25));
 		sizeTopRightElement(mntmPinApplicationOnTop, new Dimension(40, 25));
@@ -357,6 +364,7 @@ public class MainGuiParent {
 			mnTextEditor.add(new JSeparator());
 			mnTextEditor.add(mnLastWorkspaces);
 			mnTextEditor.add(mnLastOpenedFile);
+			mnTextEditor.add(menuStringActions);
 			mnTextEditor.add(mntmTxtEditorImpExpCryptedWkspc);
 				
 			mnVarious.add(mntmnetInfo);
@@ -417,7 +425,7 @@ public class MainGuiParent {
 				mnHelp.add(throwException);
 			}
 			
-		updateMenuFonts(menuBarFont, subMenuFont, menuItemFont);
+		updateMenuFonts();
 		
 		addMenuIcons();
 		
@@ -445,11 +453,11 @@ public class MainGuiParent {
 	 * @param subMenuFont Font for sub menu containers
 	 * @param menuItemFont Font for clickable items
 	 */
-	void updateMenuFonts(Font menuBarFont, Font subMenuFont, Font menuItemFont) {
+	void updateMenuFonts() {
 
-		menuBarFont = new Font("Segoe UI", Font.BOLD, menuSize);
-		subMenuFont = new Font("Gadugi", Font.BOLD, subMenuSize);
-		menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
+		this.menuBarFont = new Font("Segoe UI", Font.BOLD, menuSize);
+		this.subMenuFont = new Font("Gadugi", Font.BOLD, subMenuSize);
+		this.menuItemFont = new Font("Segoe UI", Font.PLAIN, subMenuSize);
 		
 		menuBar.setFont(menuBarFont);
 		
@@ -496,8 +504,9 @@ public class MainGuiParent {
 		
 		// TEXT EDITOR SECTION
 		mntmTextEditor.setFont(menuItemFont);
-		mnLastWorkspaces.setFont(menuItemFont);
-		mnLastOpenedFile.setFont(menuItemFont);
+		mnLastWorkspaces.setFont(subMenuFont);
+		mnLastOpenedFile.setFont(subMenuFont);
+		menuStringActions.setFont(subMenuFont);
 		mntmTxtEditorImpExpCryptedWkspc.setFont(menuItemFont);
 
 		// VARIOUS SECTION
@@ -577,6 +586,7 @@ public class MainGuiParent {
 		mnLastWorkspaces.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 		mnLastOpenedFile.setIconTextGap(15);
 		mnLastOpenedFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
+		menuStringActions.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
 		mntmTxtEditorImpExpCryptedWkspc.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
 		
 		// Various submenu
@@ -684,17 +694,8 @@ public class MainGuiParent {
 	}
 	
 	public void addExtraHandlers() {
-		mnLastOpenedFile.addMouseListener(new MouseListener() {
+		mnLastOpenedFile.addMouseListener(new MouseAdapter() {
 			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
@@ -703,22 +704,18 @@ public class MainGuiParent {
 					}
 				});
 			}
+		});
+		
+		menuStringActions.addMouseListener(new MouseAdapter() {
+
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseEntered(MouseEvent e) {
+				updateTxtEditorStringActions(menuStringActions);
 			}
 		});
 
-		mnLastWorkspaces.addMouseListener(new MouseListener() {
+		mnLastWorkspaces.addMouseListener(new MouseAdapter() {
 			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
@@ -726,9 +723,6 @@ public class MainGuiParent {
 						updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 					}
 				});
-			}
-			@Override
-			public void mouseClicked(MouseEvent e) {
 			}
 		});
 		
@@ -809,7 +803,7 @@ public class MainGuiParent {
 						public void run() {
 							File toLoad = new File(target.getToolTipText());
 							if (toLoad.exists()) {
-								initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
+								initTxtWriter.getCurrentTabEditor().loadFiles(toLoad);
 							} else {
 								initTxtWriter.dialogHelper.error("File does not exist anymore!", "File does not exist");
 								removeFromLastOpened(toLoad);
@@ -927,6 +921,43 @@ public class MainGuiParent {
 		UIManager.put("JMenu.font", new Font("Segoe UI", Font.BOLD, fontSize ));
 		UIManager.put("JMenuItem.font", new Font("Segoe UI", Font.BOLD, fontSize-2 ));
 	    SwingUtilities.updateComponentTreeUI(mainFrameScreept);
+	}
+	
+	private void updateTxtEditorStringActions(JMenu stringActions) {
+		stringActions.removeAll();
+		
+		TabTextEditorObj loadedTabObj = getSafeTextEditorCurrentTabObject();
+		
+		if(loadedTabObj == null) {
+			JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase all/selected text"));
+			JMenuItem uppercaseFirstItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Tt Tt</b> - Uppercase all/selected first word's letters"));
+			JMenuItem uppercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.Tt</b> - Uppercase all/selected after significant brokers"));
+			JMenuItem lowercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.tt</b> - Lowercase all/selected after significant brokers"));
+			JMenuItem replaceTabsWithSpaces = new JMenuItem("Replace every tab with " + currentConfiguration.getTextEditorOpt().tabSize + " spaces");
+			JMenuItem replaceSpacesWithTabs = new JMenuItem("Replace every " + currentConfiguration.getTextEditorOpt().tabSize + " spaces with a tab");
+
+			stringActions.add(uppercaseItem);
+			stringActions.add(uppercaseFirstItem);
+			stringActions.add(uppercasePostDotsItem);
+			stringActions.add(lowercasePostDotsItem);
+			stringActions.add(replaceTabsWithSpaces);
+			stringActions.add(replaceSpacesWithTabs);
+
+			MenuSetter.setSubItemsCommonTooltip(menuStringActions, "Start text editor to use theese functions!");
+		} else {
+			loadedTabObj.enrichPopUpMenuStringActions(stringActions);
+		}
+		
+		MenuSetter.setSubItemsEnabled(menuStringActions, loadedTabObj != null);
+		MenuSetter.setFont(menuStringActions, menuItemFont);
+	}
+	
+	private TabTextEditorObj getSafeTextEditorCurrentTabObject() {
+		if(initTxtWriter != null) {
+			return initTxtWriter.getCurrentTabEditor().loadedTabObj;
+		} else {
+			return null;
+		}
 	}
 	
 	/******************  END MAIN MENU-BAR SETUP *****************************/

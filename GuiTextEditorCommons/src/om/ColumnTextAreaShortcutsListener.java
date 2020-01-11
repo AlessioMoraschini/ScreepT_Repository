@@ -41,7 +41,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
-		if (e.getID() == KeyEvent.KEY_PRESSED && !isShortcutKey(e)) {
+		if (e.getID() == KeyEvent.KEY_PRESSED && !e.isAltDown()) {
 			
 			// CANC
 			if (e.getKeyCode() == 127) {
@@ -86,7 +86,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 		
 		} else if (e.getID() == KeyEvent.KEY_RELEASED) {
 			
-			if (!isShortcutKey(e)) {
+			if (!e.isAltDown()) {
 				
 				String value = String.valueOf(e.getKeyChar());
 				if(StringUtils.isAsciiPrintable(value) && currentColumnTextArea.isCurrentSelectionRectangular()) {

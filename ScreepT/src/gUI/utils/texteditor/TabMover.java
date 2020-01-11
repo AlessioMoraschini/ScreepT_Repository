@@ -3,14 +3,16 @@ package gUI.utils.texteditor;
 import java.awt.Component;
 import java.util.Collections;
 
+import javax.swing.JTabbedPane;
+
 import tabbededitor.CustomTabbedEditor;
-import tabbedpaneutils.TabbedDragNDropManager;
+import tabbededitor.TabbedDragNDropManager;
 
 @Deprecated
 public class TabMover {
 	
 	private static volatile boolean movingTab = false;
-	TabbedDragNDropManager tabReferenceDraggable;
+	JTabbedPane tabReferenceDraggable;
 	CustomTabbedEditor currrentTabbedEditor;
 	
 	public TabMover(CustomTabbedEditor tabRef) {

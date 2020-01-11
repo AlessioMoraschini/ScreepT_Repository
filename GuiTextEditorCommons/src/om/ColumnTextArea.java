@@ -71,6 +71,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
 	public ColumnTextArea(boolean rectangularSelectionActive, ICommonShortcuts shortctusInterface) {
 		this(rectangularSelectionActive);
+		this.shortctusInterface = shortctusInterface;
 	}
 	
 	private void addKeyListeners() {

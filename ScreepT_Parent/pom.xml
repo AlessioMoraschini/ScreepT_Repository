@@ -88,6 +88,14 @@
 			${export.directory.multijar.resources}\lib
 		</export.directory.multijar.libs>
   
+  
+  <!-- ####################  LICENSE COMMON DATA  ################# -->
+  	<developer.url>AM-Design-Development - (Alessio Moraschini)</developer.url>
+  	<inception.year>2019</inception.year>
+  	<project.license.name>Proprietary dual License (personal/commercial)</project.license.name>
+  	<project.main.url>https://www.am-design-development.com</project.main.url>
+  	<project.license.url>../License_ScreepT.html</project.license.url>
+	  	
   </properties>
   
 </project>

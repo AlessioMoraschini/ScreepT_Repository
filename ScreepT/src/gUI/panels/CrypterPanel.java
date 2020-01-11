@@ -255,7 +255,7 @@ public class CrypterPanel extends ModulePanel {
 	public JOptionHelperExtended dialogHelper;
 	
 	int leftVerticalDivHeight;
-	int leftWidth = 310;
+	int leftWidth = 380;
 	int rightWidth = 480;
 	int rightWidthMin = 380;
 	
@@ -343,9 +343,9 @@ public class CrypterPanel extends ModulePanel {
 		
 		lblScreeptHeader = new JLabel("ScreepT - File Crypt & Decrypt");
 		lblScreeptHeader.setHorizontalAlignment(SwingConstants.CENTER);
-		lblScreeptHeader.setForeground(Color.WHITE);
-		lblScreeptHeader.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 17));
+		lblScreeptHeader.setForeground(Color.BLACK);
 		lblScreeptHeader.setBackground(new Color(112, 128, 144));
+		lblScreeptHeader.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 17));
 		panelHeader.add(lblScreeptHeader, "cell 4 0,growx,aligny center");
 		
 		btnCreept = new JButton("Creept");
@@ -357,7 +357,7 @@ public class CrypterPanel extends ModulePanel {
 		btnCreept.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnCreept.setRequestFocusEnabled(false);
 		btnCreept.setForeground(Color.BLACK);
-		btnCreept.setBorder(new LineBorder(Color.DARK_GRAY, 3, true));
+		btnCreept.setBorder(new LineBorder(Color.DARK_GRAY, 2, false));
 		btnCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 14));
 		btnCreept.setBackground(GeneralConfig.ADVICE_FOOTER_OK_COLOR);
 		
@@ -371,7 +371,7 @@ public class CrypterPanel extends ModulePanel {
 		btnDeCreept.setMargin(new Insets(0, 0, 0, 20));
 		btnDeCreept.setRequestFocusEnabled(false);
 		btnDeCreept.setForeground(Color.BLACK);
-		btnDeCreept.setBorder(new LineBorder(Color.DARK_GRAY, 3, true));
+		btnDeCreept.setBorder(new LineBorder(Color.DARK_GRAY, 2, false));
 		btnDeCreept.setBackground(GeneralConfig.ADVICE_FOOTER_KO_COLOR);
 		btnDeCreept.setFont(new Font("Lithos Pro Regular", Font.BOLD, 14));
 		
@@ -516,7 +516,7 @@ public class CrypterPanel extends ModulePanel {
 		leftSplitTopPanel.setBackground(new Color(40, 40, 40));
 		leftSplitTopPanel.setLayout(new MigLayout(
 				"fill,insets 0",
-				"[5px][100px][100px][100px][grow]",
+				"[grow][95px][95px][95px][grow]",
 				"[30px:30px:30px] [100px,grow]"));
 		
 		// Left panel divided in two vertically (tree keys + infoTabbedPanel) - top component added later
@@ -1251,38 +1251,38 @@ public class CrypterPanel extends ModulePanel {
 		
 		btnDispoKeyImg = new JButton("One-Use");
 		btnDispoKeyImg.setToolTipText("Select a disposable image that will be forgotten after encryption/decryption");
-		btnDispoKeyImg.setOpaque(false);
+		btnDispoKeyImg.setOpaque(true);
 		btnDispoKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDispoKeyImg.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
 		btnDispoKeyImg.setRequestFocusEnabled(false);
 		btnDispoKeyImg.setBorder(null);
-		btnDispoKeyImg.setForeground(new Color(240,240,240));
+		btnDispoKeyImg.setForeground(Color.BLACK);
+		btnDispoKeyImg.setBackground(new Color(200,200,200));
 		btnDispoKeyImg.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		btnDispoKeyImg.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 		leftSplitTopPanel.add(btnDispoKeyImg, "cell 1 0 1 1");
 
 		btnGenerateKeyImg = new JButton("Img Keygen");
 		btnGenerateKeyImg.setToolTipText("Generate a new random key image");
-		btnGenerateKeyImg.setOpaque(false);
+		btnGenerateKeyImg.setOpaque(true);
 		btnGenerateKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKeyImg.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
 		btnGenerateKeyImg.setRequestFocusEnabled(false);
 		btnGenerateKeyImg.setBorder(null);
-		btnGenerateKeyImg.setForeground(new Color(240,240,240));
+		btnGenerateKeyImg.setForeground(Color.BLACK);
+		btnGenerateKeyImg.setBackground(new Color(200,200,200));
 		btnGenerateKeyImg.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		btnGenerateKeyImg.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 		leftSplitTopPanel.add(btnGenerateKeyImg, "cell 2 0 1 1");
 
 		btnGenerateKeyPsw = new JButton("Psw Keygen");
 		btnGenerateKeyPsw.setToolTipText("Generate a new random password with fixed length");
-		btnGenerateKeyPsw.setOpaque(false);
+		btnGenerateKeyPsw.setOpaque(true);
 		btnGenerateKeyPsw.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKeyPsw.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
 		btnGenerateKeyPsw.setRequestFocusEnabled(false);
 		btnGenerateKeyPsw.setBorder(null);
-		btnGenerateKeyPsw.setForeground(new Color(240,240,240));
+		btnGenerateKeyPsw.setForeground(Color.BLACK);
+		btnGenerateKeyPsw.setBackground(new Color(200, 200, 200));
 		btnGenerateKeyPsw.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		btnGenerateKeyPsw.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 		leftSplitTopPanel.add(btnGenerateKeyPsw, "cell 3 0 1 1");
 		
 		// initialize tree 

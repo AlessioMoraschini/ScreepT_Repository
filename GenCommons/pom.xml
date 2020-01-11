@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>GenCommons</groupId>
   <artifactId>GenCommons</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   
   <parent>
   	<groupId>ScreepT_Parent</groupId>
@@ -12,6 +12,24 @@
   </parent>
   
   <packaging>jar</packaging>
+  
+  <name>GenCommons</name>
+  <description>
+  	This module is made to keep togheter the various functionalities specific for the ScreepT project, but either reusable in future releases.
+  </description>
+  <url>${project.main.url}</url>
+  <inceptionYear>${inception.year}</inceptionYear>
+  <licenses>
+    <license>
+      <name>${project.license.name}</name>
+      <url>${project.license.url}</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>${developer.url}</name>
+    </developer>
+  </developers>
   
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -121,7 +139,7 @@
 	<dependency>
 		<groupId>Resources</groupId>
 		<artifactId>Resources</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
   	</dependency>
   	<dependency>
 		<groupId>VariousCommonsLight</groupId>

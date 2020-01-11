@@ -13,6 +13,24 @@
 	</parent>
 
 	<packaging>jar</packaging>
+	
+	<name>VariousCommonsLight</name>
+	  <description>
+	  	This module is made to provide a common set of useful minimal operations, with the intent to minimize the use of thirdy-part dependencies, making it a reusable module for future other projects other to ScreepT.
+	  </description>
+	  <url>${project.main.url}</url>
+	  <inceptionYear>${inception.year}</inceptionYear>
+	  <licenses>
+	    <license>
+	      <name>${project.license.name}</name>
+	      <url>${project.license.url}</url>
+	    </license>
+	  </licenses>
+	  <developers>
+	    <developer>
+	      <name>${developer.url}</name>
+	    </developer>
+	  </developers>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -87,6 +105,13 @@
 		    <groupId>commons-io</groupId>
 		    <artifactId>commons-io</artifactId>
 		    <version>2.6</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.rover12421.opensource/JFontChooser -->
+		<dependency>
+		    <groupId>com.rover12421.opensource</groupId>
+		    <artifactId>JFontChooser</artifactId>
+		    <version>1.0.5-3</version>
 		</dependency>
 			
 		<dependency>
