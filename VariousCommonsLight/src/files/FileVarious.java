@@ -124,7 +124,7 @@ public class FileVarious {
 	
 	// PRINT UTILS METHODS
 	/**
-	 * Retrieve a String separator n-times charachter
+	 * Retrieve a String separator n-times character
 	 */
 	public static String getSeparator(String character, int n){
 		int curr = 0;
@@ -151,7 +151,7 @@ public class FileVarious {
 	}
 	
 	/**
-	 * Retrieve a header String specifying charachter separator (may be null), header width in charachters, and title
+	 * Retrieve a header String specifying character separator (may be null), header width in characters, and title
 	 */
 	public static String getHeaderString(String character, int n, String title){
 		String result = "";
@@ -616,7 +616,7 @@ public class FileVarious {
 	}
 
 	/**
-	 * Get a string without unsupported charachters for files extensions. This actually means only a-z or 0-9 digits are admitted (ignoring case)
+	 * Get a string without unsupported characters for files extensions. This actually means only a-z or 0-9 digits are admitted (ignoring case)
 	 * extension can both contain part of the end of file's name, method will recognize to mantain dot or not based on last dot index
 	 * @param extension the given extension to filter out removing illegal chars
 	 * @return the cleaned string

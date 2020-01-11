@@ -13,6 +13,37 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  
+	  <build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<header>license-header.txt</header>
+					<properties>
+						<developer.url>AM-Design-Development - (Alessio Moraschini)</developer.url>
+					  	<developer.mail>info@am-design-development.com</developer.mail>
+					  	<inception.year>2019</inception.year>
+					  	<current.year>2020</current.year>
+					</properties>
+					<includes>
+						<include>src/**/*.java</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>first</id>
+						<goals>
+							<goal>format</goal>
+							<!-- <goal>remove</goal> -->
+						</goals>
+						<phase>process-sources</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
   <dependencies>
     <dependency>

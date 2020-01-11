@@ -1324,7 +1324,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			}
 		});
 
-		// REMOVE WHITE SPACES OR CHARACHTER (CTRL PRESSED)
+		// REMOVE WHITE SPACES OR CHARACTER (CTRL PRESSED)
 		btnRemoveSpaces.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
@@ -1335,14 +1335,14 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				int newEnd = 0;
 				if (TextEditorShortcutListener.flagCtrlDown.get()) {
 					// remove character - open panel ad hoc
-					String selection = dialogHelper.askForString("Specify the charachter/string you want to remove");
+					String selection = dialogHelper.askForString("Specify the character/string you want to remove");
 					if (selection != null && !selection.equals("")) {
-						newEnd = StringWorker.removeCharachterFromTxtArea(selection, loadedTabObj.textArea, start, end);
+						newEnd = StringWorker.removeCharacterFromTxtArea(selection, loadedTabObj.textArea, start, end);
 					}
 					TextEditorShortcutListener.flagCtrlDown.set(false);
 				} else {
 					// remove whitespaces
-					newEnd = StringWorker.removeCharachterFromTxtArea(" ", loadedTabObj.textArea, start, end);
+					newEnd = StringWorker.removeCharacterFromTxtArea(" ", loadedTabObj.textArea, start, end);
 				}
 				loadedTabObj.textArea.requestFocus();
 				loadedTabObj.textArea.setSelectionStart(start);

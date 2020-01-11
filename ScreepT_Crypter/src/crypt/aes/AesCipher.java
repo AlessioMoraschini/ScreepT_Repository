@@ -433,7 +433,7 @@ public class AesCipher {
 				!StringWorker.containsOneOfMatchesChar(password, ConversionUtils.baseUppercase) ||
 				!StringWorker.containsOneOfMatchesChar(password, ConversionUtils.baseLowercase)) {
 			return "<html><u>Your password is not safe enough</u>, it should be more than " + minLengthIncluded + 
-					" charachters, containing uppercase, lowercase, and digits."
+					" characters, containing uppercase, lowercase, and digits."
 					+ "<br>(To have the best secured password, symbols and special characters should be used too!)"
 					+ "<br><br><b>Are you sure to use this password?</b></html>";
 		} else {
@@ -454,7 +454,7 @@ public class AesCipher {
 				!StringWorker.containsOneOfMatchesChar(password, ConversionUtils.baseUppercase) ||
 				!StringWorker.containsOneOfMatchesChar(password, ConversionUtils.baseLowercase)) {
 			return "<html><u>Your password is not safe enough</u>, it should be more than " + minLengthIncluded + 
-					" charachters, containing uppercase, lowercase, symbols, special characters, and digits."
+					" characters, containing uppercase, lowercase, symbols, special characters, and digits."
 					+ "<br>("+ ConversionUtils.specialString + ConversionUtils.symbolString +")"
 					+ "<br><br><b>Are you sure to use this password?</b></html>";
 		} else {

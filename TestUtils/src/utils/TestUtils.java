@@ -134,21 +134,21 @@ public class TestUtils {
 	}
 	
 	/**
-	 * Prints a separator n-times charachter
+	 * Prints a separator n-times character
 	 */
 	public static void printSeparator(int n){
 		print( getSeparator("#", n));
 	}
 	
 	/**
-	 * Prints a separator n-times charachter
+	 * Prints a separator n-times character
 	 */
 	public static void printSeparator(String character, int n){
 		print( getSeparator(character, n));
 	}
 	
 	/**
-	 * Retrieve a String separator n-times charachter
+	 * Retrieve a String separator n-times character
 	 */
 	public static String getSeparator(String character, int n){
 		int curr = 0;
@@ -162,7 +162,7 @@ public class TestUtils {
 	}
 	
 	/**
-	 * Prints a header String specifying charachter separator (may be null), header width in charachters, and title
+	 * Prints a header String specifying character separator (may be null), header width in characters, and title
 	 */
 	public static void printHeader(String character, int n, String title){
 		
@@ -170,7 +170,7 @@ public class TestUtils {
 	}
 
 	/**
-	 * Retrieve a header String specifying charachter separator (may be null), header width in charachters, and title
+	 * Retrieve a header String specifying character separator (may be null), header width in characters, and title
 	 */
 	public static String getHeaderString(String character, int n, String title){
 		String result = "";

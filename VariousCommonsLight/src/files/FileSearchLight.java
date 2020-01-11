@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * knowin the source root directory, and the String name to search in the name for a match.
  *
  */
-public class FileSearch {
+public class FileSearchLight {
 
 	/**
 	 * This method search for a file (only the first found) that is not a directory,

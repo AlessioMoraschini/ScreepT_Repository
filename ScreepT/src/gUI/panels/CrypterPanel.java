@@ -129,7 +129,7 @@ public class CrypterPanel extends ModulePanel {
 	
 	private static final String onlyAesTooltip = 
 			"<u>ONLY_AES mode</u> uses AES algorithm (128 bits) to encrypt/decrypt a copy of your data."
-			+ "<br/> To use this <u>you only have to specify a string password</u> (or generate a random new one.. just be sure to remember it). The best length is 16 charachters."
+			+ "<br/> To use this <u>you only have to specify a string password</u> (or generate a random new one.. just be sure to remember it). The best length is 16 characters."
 			+ "<br/><br/> <b>NB:</b> With this mode you can choose to hash password and/or shuffle original bytes to maximize security, but with a slower process.";
 	
 	private static final String onlyStegTooltip = 

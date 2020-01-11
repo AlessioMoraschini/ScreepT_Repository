@@ -1,6 +1,7 @@
-End-User License Agreement (EULA) of ScreepT.
+ScreepT - End User License Agreement
+IMPORTANT! BE SURE TO CAREFULLY READ AND UNDERSTAND ALL OF THE RIGHTS AND RESTRICTIONS SET FORTH IN THIS END USER LICENSE AGREEMENT (”EULA”). YOU ARE NOT AUTHORIZED TO USE THIS SOFTWARE UNLESS AND UNTIL YOU ACCEPT THE TERMS OF THIS EULA.
 
-This End-User License Agreement ("EULA") is a legal agreement between you and Am-Design-development (Alessio Moraschini, author of this software).
+This End-User License Agreement ("EULA") is a legal agreement between you and Alessio Moraschini (from now, referred as "Am-Design-development", who's the author of this software).
 
 This EULA agreement governs your acquisition and use of our ScreepT software ("Software") directly from am-design-development.com or indirectly through a Am-Design-development authorized reseller or distributor (a "Reseller").
 

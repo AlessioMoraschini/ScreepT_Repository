@@ -156,7 +156,7 @@ public class StringWorker {
 	}
 
 	/**
-	 * this method returns an array of bytes of the same length of given string, even if the source has more bytes for each charachter (chinese, cyrillic , etc)
+	 * this method returns an array of bytes of the same length of given string, even if the source has more bytes for each character (chinese, cyrillic , etc)
 	 * @param source the source string
 	 * @return null if source is null, array of first source.length bytes else
 	 * @throws UnsupportedEncodingException
@@ -246,7 +246,7 @@ public class StringWorker {
 	 * 
 	 * @return the integer new selection end of the string
 	 */
-	public static int removeCharachterFromTxtArea(String toRemove, JTextArea textSourceArea, int startSel, int endSel) {
+	public static int removeCharacterFromTxtArea(String toRemove, JTextArea textSourceArea, int startSel, int endSel) {
 		textSourceArea.requestFocus();
 		textSourceArea.setSelectionStart(startSel);
 		textSourceArea.setSelectionEnd(endSel);
@@ -673,7 +673,7 @@ public class StringWorker {
 	}
 
 	/**
-	 * Make visible charachters \r and \n using ascii
+	 * Make visible characters \r and \n using ASCII
 	 */
 	public static String makeCRLFvisible(String source) {
 		if(isEmpty(source)) {

@@ -51,7 +51,7 @@ public class StringWorkerExtended extends StringWorker {
      * The language used correspond to the type specified in type parameter.
      * @param source the source string into which replace found special chars
      * @param type the type of language to convert from/to
-     * @return the source string with replaced special charachters
+     * @return the source string with replaced special characters
      */
     public static String replaceSpecialWithEscapes(String source, EscapeType type) {
     	if (EscapeType.HTML_3.equals(type)) {

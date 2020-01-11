@@ -193,7 +193,7 @@ public class SysUtils {
 	}
 
 	/**
-	 * Use this method to remove every charachter from given string, except "." and
+	 * Use this method to remove every character from given string, except "." and
 	 * digits 0-9 Note that eventual undescores will become dots.
 	 * 
 	 * @param source
