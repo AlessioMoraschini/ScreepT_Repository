@@ -19,6 +19,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
@@ -39,8 +40,11 @@ import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
 import gui.GuiUtils;
+import gui.LightLicenseViewer;
+import gui.LightLicenseViewer.UserLicenseChoice;
 import guistyle.GUIStyelSettingsExtended;
 import mainobj.INItializer;
+import network.utils.DownloadUtils;
 import om.GenericOption;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
@@ -49,6 +53,8 @@ import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
+import utility.hash.ChecksumHasher;
+import utility.hash.HashingFunction;
 import utility.properties.PropertiesManager;
 
 public class MainGuiUtils {
@@ -82,13 +88,14 @@ public class MainGuiUtils {
 						// Look for new versions...
 						String newVersion = MainGuiGeneralAppStarter.updatesManager.lookForUpdates(silent);
 						if (newVersion != null) {
+							
 							// If found ask to user what to do
 							SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 							boolean downloadUpdates = dialogHelper.yesOrNo(
 									"<html>New version [" + newVersion + "] found, do you want to download and install it?",
 									"Update found: " + newVersion +
 									"</br>(you can disable automatic check at start going to preferences -> generalOptions)</html>");
-							if (downloadUpdates) {
+							if (downloadUpdates && checkNewLicense()) {
 								try {
 									MainGUI.updatesDownloaded = MainGuiGeneralAppStarter.updatesManager.downloadAndExtractUpdates();
 									MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.set(true);
@@ -178,6 +185,23 @@ public class MainGuiUtils {
 				});
 			}
 		});
+	}
+	
+	public static boolean checkNewLicense() {
+		
+		try {
+			File newLicense = DownloadUtils.downloadFile(false, new URL(GeneralConfig.WEB_UPDATES_LICENSE_URL), GeneralConfig.TEMP_DIRECTORY, null);
+			
+			if (!ChecksumHasher.equalsFilesChecksum(newLicense, GeneralConfig.LICENSE_FILE, HashingFunction.SHA512)) {
+				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(true);
+				return UserLicenseChoice.ACCEPTED.equals(licenseViewer.userChoice);
+			} else {
+				return true;
+			}
+		} catch (Throwable e) {
+			logger.error("An error occurred while comparing license!");
+			return true;
+		}
 	}
 	
 	public <T> void immersiveModeToggle() {
