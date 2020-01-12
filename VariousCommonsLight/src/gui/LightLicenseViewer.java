@@ -1,7 +1,6 @@
 package gui;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -54,9 +53,10 @@ public class LightLicenseViewer extends JDialog {
 	
 	public static boolean mandatoryChoice = true;
 	
-	public LightLicenseViewer(File sourceLicense, String title) {
+	public LightLicenseViewer(File sourceLicense, String header, String title) {
 		
-		String correctTitle = !StringWorker.isEmpty(title) ? title : "License Acceptance";
+		String correctHeader = !StringWorker.isEmpty(header) ? header : "Accept licence to continue using this software";
+		String correctTitle = !StringWorker.isEmpty(title) ? title : "EULA - acceptance";
 		
 		this.licenseLoadedCorrectly = false;
 		this.sourceLicense = sourceLicense;
@@ -65,7 +65,7 @@ public class LightLicenseViewer extends JDialog {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setPreferredSize(DEFAULT_PREF_DIMENSION);
 		setModalityType(ModalityType.APPLICATION_MODAL);
-		setIconImage(GuiUtils.iconToImage(UIManager.getIcon("OptionPane.questionIcon")));
+		setIconImage(GuiUtils.iconToImage(UIManager.getIcon("OptionPane.informationIcon")));
 
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("fill, insets 4", "[27px,grow][27px,grow]", "[:35px:80px][27px,grow][35px:n]"));
@@ -78,7 +78,7 @@ public class LightLicenseViewer extends JDialog {
 		getContentPane().add(panel, "cell 0 0 2 1,grow");
 		panel.setLayout(new MigLayout("", "[grow]", "[]"));
 		
-		lblNewLabel = new JLabel(correctTitle);
+		lblNewLabel = new JLabel(correctHeader);
 		lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panel.add(lblNewLabel, "cell 0 0,alignx center");
 		
@@ -86,7 +86,7 @@ public class LightLicenseViewer extends JDialog {
 		scrollPane.setBorder(new LineBorder(Color.BLACK, 2));
 		scrollPane.setPreferredSize(DEFAULT_PREF_DIMENSION);
 		int scrollPaneHeigth = mandatoryChoice ? 1 : 2;
-		getContentPane().add(scrollPane, "cell 0 1 "+scrollPaneHeigth+" 1,alignx center,aligny center");
+		getContentPane().add(scrollPane, "cell 0 1 2 "+scrollPaneHeigth+",alignx center,aligny center");
 		
 		jEditorPane = new JEditorPane();
 		scrollPane.setViewportView(jEditorPane);
@@ -158,10 +158,10 @@ public class LightLicenseViewer extends JDialog {
 	}
 	
 	private void loadFile() {
-		String fileContent = "License not found";
+		String fileContent = "License not found at: " + sourceLicense;
 		try {
 			fileContent = FileWorker.readFileAsString(sourceLicense);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			dialogHelper.warn("License file not found!");
 			licenseLoadedCorrectly = false;
 		}
@@ -183,7 +183,7 @@ public class LightLicenseViewer extends JDialog {
 		dispose();
 	}
 	
-	public static LightLicenseViewer getInstance(File sourceLicenseFile, String title) {
-		return instance == null ? new LightLicenseViewer(sourceLicenseFile, title) : instance;
+	public static LightLicenseViewer getInstance(File sourceLicenseFile, String header, String title) {
+		return instance == null ? new LightLicenseViewer(sourceLicenseFile, header, title) : instance;
 	}
 }

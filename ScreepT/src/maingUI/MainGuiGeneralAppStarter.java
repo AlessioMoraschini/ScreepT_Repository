@@ -26,7 +26,6 @@ import javax.swing.UIManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.ini4j.Wini;
 
@@ -37,6 +36,9 @@ import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
 import generic.ParametricExceptionThread;
 import gui.GuiUtils;
+import gui.JOptionHelper;
+import gui.LightLicenseViewer;
+import gui.LightLicenseViewer.UserLicenseChoice;
 import gui.utils.LauncherLoaderFrame;
 import handlers.AWTExceptionHandler;
 import launcherutils.IniFileManager;
@@ -49,6 +51,7 @@ import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import uTILS.dependencycheck.LibChecker;
 import updater.UpdatesManager;
+import utility.SafeLogger;
 import utility.properties.PropertiesManager;
 
 public class MainGuiGeneralAppStarter {
@@ -59,7 +62,7 @@ public class MainGuiGeneralAppStarter {
     private static boolean isLoggerReady = false;
 	
 	// mainGUI logger
-	static Logger logger = Logger.getLogger(MainGuiGeneralAppStarter.class);
+	static SafeLogger logger = new SafeLogger(MainGuiGeneralAppStarter.class);
 	
 	// LOADER
 	public static LauncherLoaderFrame loaderGraphics;
@@ -92,6 +95,8 @@ public class MainGuiGeneralAppStarter {
 	public static void main(String[] args) {
 		
 		long startTime = System.currentTimeMillis();
+		
+		checkEULAstatus();
 		
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
 		loaderGraphics.indeterminate(true, "Loading configuration");
@@ -383,9 +388,8 @@ public class MainGuiGeneralAppStarter {
 			installedPlugins.add("HardwareInfo.zip");
 		}
 		
-		PluginManager.installedPluginProperties.saveProperty(
-				PluginManager.installedPluginPropsListKey, PropertiesManager.listToString(
-						installedPlugins, PluginManager.installedPluginPropsListSeparator));
+		PluginManager.installedPluginProperties.saveCommentedProperty(
+				PluginManager.installedPluginPropsListKey, PropertiesManager.listToString(installedPlugins, PluginManager.installedPluginPropsListSeparator));
 	}
 	
 	/**
@@ -399,5 +403,26 @@ public class MainGuiGeneralAppStarter {
 				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new SafetyScreepTShortcutsListener());
 			}
 		}).start();
+	}
+	
+	public static void checkEULAstatus() {
+		// SHOW LICENSE IF MARKED AS UNACCEPTED
+		if(!GeneralConfig.LICENSE_ACCEPTED) {
+			
+			LightLicenseViewer licenseViewer;
+			UserLicenseChoice choice;
+			do{
+				licenseViewer = new LightLicenseViewer(GeneralConfig.LICENSE_FILE, "You must accept this EULA before to start using ScreepT", "License acceptance");
+				choice = licenseViewer.userChoice;
+				if(choice.equals(UserLicenseChoice.REJECTED)) {
+					if (new JOptionHelper(null).yesOrNo("You cannot use ScreepT without accepting License, wanna exit launch procedure?")) {
+						System.exit(0);
+					}
+				}else {
+					GeneralConfig.licenseProperties.saveCommentedProperty("LICENSE_ACCEPTED", String.valueOf(true));
+				}
+				
+			} while(choice.equals(UserLicenseChoice.REJECTED));
+		}
 	}
 }

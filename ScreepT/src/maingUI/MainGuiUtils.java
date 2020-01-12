@@ -654,7 +654,7 @@ public class MainGuiUtils {
 		do {
 			input = MainGUI.dialogHelper.askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
 			
-			if (input.equals("") || input.length() > 26) {
+			if (input != null && (input.equals("") || input.length() > 26)) {
 				MainGUI.dialogHelper.warn("Username must be between 1-26 characters!", "UserName length Error");
 				logger.error("Error in user input, redo.");
 			} else {

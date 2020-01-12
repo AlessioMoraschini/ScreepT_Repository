@@ -137,7 +137,7 @@ public class ScreepTLauncher {
 			LightLicenseViewer licenseViewer;
 			UserLicenseChoice choice;
 			do{
-				licenseViewer = new LightLicenseViewer(GeneralConfig.LICENSE_FILE, "Accept license to use the software");
+				licenseViewer = new LightLicenseViewer(GeneralConfig.LICENSE_FILE, "You must accept this EULA before to start using ScreepT", "License acceptance");
 				choice = licenseViewer.userChoice;
 				if(choice.equals(UserLicenseChoice.REJECTED)) {
 					if (new JOptionHelper(null).yesOrNo("You cannot use ScreepT without accepting License, wanna exit launch procedure?")) {

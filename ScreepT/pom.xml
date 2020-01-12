@@ -517,7 +517,8 @@
 					    	<exclude>/Readme/**</exclude>
 					    	<exclude>/Readme/*</exclude>
 					    	<!-- Export vanilla version only -->
-					    	<exclude>CONFIG.ini</exclude>				    	
+					    	<exclude>CONFIG.ini</exclude>	
+					    	<exclude>license.properties</exclude>			    	
 					    	<exclude>/**/*Thumbs.db</exclude>
 					    </excludes>
 					</resource>

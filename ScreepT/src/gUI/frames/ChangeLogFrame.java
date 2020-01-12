@@ -23,6 +23,8 @@ import org.apache.log4j.Logger;
 
 import files.FileWorker;
 import frameutils.frame.arch.ParentFrame;
+import gui.GuiUtils;
+import resources.IconsPathConfigurator;
 
 public class ChangeLogFrame extends ParentFrame{
 	private static final long serialVersionUID = -168486278206232881L;
@@ -40,6 +42,7 @@ public class ChangeLogFrame extends ParentFrame{
 		
 		if(ChangeLog == null) {
 			dialogHelper.error("ChangeLog not found", "ChangeLog not found");
+			logger.error("Changelog not found:" + ChangeLog);
 			dispose();
 		}else {
 			textArea = new JTextArea();
@@ -48,6 +51,7 @@ public class ChangeLogFrame extends ParentFrame{
 			scrollPane = new JScrollPane();
 			scrollPane.setViewportView(textArea);
 			
+			GuiUtils.setFrameIcon(IconsPathConfigurator.ICON_DIFFERENCES, this);
 			add(scrollPane);
 			
 			try {
