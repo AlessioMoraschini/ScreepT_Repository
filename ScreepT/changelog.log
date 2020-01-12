@@ -1,4 +1,6 @@
-* 2020-01-09  (HEAD -> refs/heads/master, refs/remotes/origin/master) TextEditor rightClick popUp added endOfLine transformation
+* 2020-01-11  Added new License, improved drag and drop.
+| 
+* 2020-01-09  TextEditor rightClick popUp added endOfLine transformation
 | 
 * 2020-01-08  Added newLine character check + BUGFIX text editor
   

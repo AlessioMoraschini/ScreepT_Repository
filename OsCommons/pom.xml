@@ -24,7 +24,7 @@
   </licenses>
   <developers>
     <developer>
-      <name>${developer.url}</name>
+      <name>${developer.name}</name>
     </developer>
   </developers>
   

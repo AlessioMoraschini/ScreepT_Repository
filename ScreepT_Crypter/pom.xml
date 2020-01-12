@@ -22,7 +22,7 @@
   </licenses>
   <developers>
     <developer>
-      <name>${developer.url}</name>
+      <name>${developer.name}</name>
     </developer>
   </developers>
   
@@ -44,51 +44,6 @@
           <target>1.8</target>
         </configuration>
       </plugin>
-      
-      <!-- BUILD OBFUSCATION -->
-   	<plugin>
-	    <groupId>com.github.wvengen</groupId>
-	    <artifactId>proguard-maven-plugin</artifactId>
-	    <version>2.2.0</version>
-
-           <executions>
-               <execution>
-                   <phase>package</phase>
-                   <goals><goal>proguard</goal></goals>
-               </execution>
-           </executions>
-           <configuration>
-               <proguardVersion>6.2.0</proguardVersion>
-               <obfuscate>true</obfuscate>
-               <options>
-              		<option>-target 1.8</option>
-               </options>
-               <libs>
-                   <lib>${java.home}/lib/rt.jar</lib>
-               </libs>
-               <dependencies>
-               	<dependency>
-				    <groupId>com.github.wvengen</groupId>
-				    <artifactId>proguard-maven-plugin</artifactId>
-				    <version>2.2.0</version>
-				</dependency>
-				                
-                   <dependency>
-				    <groupId>net.sf.proguard</groupId>
-				    <artifactId>proguard-base</artifactId>
-				    <version>6.2.0</version>
-				</dependency>
-				<dependency>
-				    <groupId>net.sf.proguard</groupId>
-				    <artifactId>proguard-parent</artifactId>
-				    <version>6.2.0</version>
-				    <type>pom</type>
-				</dependency>
-									
-
-               </dependencies>
-           </configuration>
-       </plugin>
     </plugins>
   </build>
 

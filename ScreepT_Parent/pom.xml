@@ -35,33 +35,53 @@
 	  	<!-- Main application version used everyWhere -->
 	  	<parent.build.version.screept>0.9.17</parent.build.version.screept>
 
-	  	<user.name>AM-Design-Development - (Alessio Moraschini)</user.name>
-	  	
+	  	 <!-- ####################  LICENSE COMMON DATA  ################# -->
+	  	<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+	  	<developer.mail>info@am-design-development.com</developer.mail>
+	  	<inception.year>2019</inception.year>
+	  	<current.year>2020</current.year>
+	  	<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
+	  	<project.main.url>https://www.am-design-development.com</project.main.url>
+	  	<project.license.url>../License_ScreepT.html</project.license.url>
+		  	
 	  	<!-- Change this to false if you wanna export  -->
 	  	<export.launcher.jarmode>false</export.launcher.jarmode>
 	  	
-	  	<!-- Change this if you want to include or not transitive plugins dependencies into main build (provided=not included : compile=included)-->
+  	<!-- SKIP OPERATIONS SETTINGS -->
+	<!-- Set skip to true to avoid export of this jar and resources -->
+	  	
+	  	<!-- FATJAR -->
+	  	<export.fatjar.root.skip>false</export.fatjar.root.skip>
+	  	<export.fatjar.skip>false</export.fatjar.skip>
+	  	<export.fatjar.launcher.skip>false</export.fatjar.launcher.skip>
+	  	<export.fatjar.vanilla.skip>false</export.fatjar.vanilla.skip>
+		
+		<!-- UPDATES/PLUGINS -->
+	  	<export.updates.regenjars.skip>false</export.updates.regenjars.skip>
+	  	<export.updates.skip>false</export.updates.skip>
+	  	<export.plugins.skip>true</export.plugins.skip>
+	  	
+	  	<!-- EXTRA OPERATIONS -->
+	  	<obfuscation.skip>true</obfuscation.skip>
+	  	<sources.license.header.skip>true</sources.license.header.skip>
+	  	<license.thirdyparty.report.skip>true</license.thirdyparty.report.skip>
+  	
+  		<!-- MULTIJAR - Set skip to true to avoid export of this jar and resources -->
+	  	<export.multijar.skip>true</export.multijar.skip>
+	  	<export.multijar.launcher.skip>true</export.multijar.launcher.skip>
+	  	
+	  	<!-- PLUGINS ADDITION TO JARS - Change this if you want to include or not transitive plugins dependencies into main build (provided=not included : compile=included)-->
 	  	<plugins.export.scope>provided</plugins.export.scope>
 	  	
   	<!-- ##################### MANUAL - UPDATES FOLDER PACKAGING #################### -->
 	  	<export.updates.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_UPDATES_DATA\updates</export.updates.folder>
 	  	<export.updates.root>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_UPDATES_DATA</export.updates.root>
-	  	<export.updates.skip>false</export.updates.skip>
-	  	<export.updates.regenjars.skip>false</export.updates.regenjars.skip>
   	
   	<!-- ##################### MANUAL - PLUGINS FOLDER PACKAGING #################### -->
 	  	<export.plugins.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_PLUGINS_DATA</export.plugins.folder>
-	  	<export.plugins.skip>true</export.plugins.skip>
-  	
   	
   	<!-- ##########################  FATJAR EXPORT - USE THIS  ######################## -->
   	
-  		<!-- Set skip to true to avoid export of this jar and resources -->
-	  	<export.fatjar.skip>false</export.fatjar.skip>
-	  	<export.fatjar.launcher.skip>false</export.fatjar.launcher.skip>
-	  	<export.fatjar.root.skip>false</export.fatjar.root.skip>
-	  	<export.fatjar.vanilla.skip>false</export.fatjar.vanilla.skip>
-		
 	  	<export.directory.fatjar.main>
 	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
 			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScreepT_V${parent.build.version.screept}\Application
@@ -72,11 +92,6 @@
   	
   	
   	<!-- ############################ MULTIJAR EXPORT - NOT UPDATED! ############################### -->
-  	
-  		<!-- Set skip to true to avoid export of this jar and resources -->
-	  	<export.multijar.skip>true</export.multijar.skip>
-	  	<export.multijar.launcher.skip>true</export.multijar.launcher.skip>
-	  	
 	  	<export.directory.multijar.main>
 	  		<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - NOT ALL RESOURCES ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
 			 C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScreepT_V${parent.build.version.screept}_ModularBuild\Application
@@ -89,15 +104,6 @@
 		</export.directory.multijar.libs>
   
   
-  <!-- ####################  LICENSE COMMON DATA  ################# -->
-  	<developer.url>AM-Design-Development - (Alessio Moraschini)</developer.url>
-  	<developer.mail>info@am-design-development.com</developer.mail>
-  	<inception.year>2019</inception.year>
-  	<current.year>2020</current.year>
-  	<project.license.name>Proprietary dual License (personal/commercial)</project.license.name>
-  	<project.main.url>https://www.am-design-development.com</project.main.url>
-  	<project.license.url>../License_ScreepT.html</project.license.url>
-	  	
   </properties>
   
 	  <build>
@@ -109,23 +115,42 @@
 					<configuration>
 						<header>license-header.txt</header>
 						<includes>
-							<include>src/**/*eyLogTest.java</include>
+							<include>**/src/**/*.java</include>
 						</includes>
+						<properties>
+						<developer.name>${developer.name}</developer.name>
+					  	<developer.mail>${developer.mail}</developer.mail>
+					  	<inception.year>${inception.year}</inception.year>
+					  	<current.year>${current.year}</current.year>
+					  	<project.main.url>${project.main.url}</project.main.url>
+						</properties>
+						<skip>${sources.license.header.skip}</skip>
 					</configuration>
 					<executions>
 						<execution>
-							<id>first</id>
-							<goals>
-								<goal>format</goal>
-								<!-- <goal>remove</goal> -->
-							</goals>
-							<phase>process-sources</phase>
+							<id>sources Headers license regeneration</id>
+							<phase>clean</phase>
 						</execution>
 					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<inherited>true</inherited>
+				<executions>
+					<execution>
+						<id>sources Headers license regeneration</id>
+						<goals>
+							<goal>format</goal>
+							<!-- <goal>remove</goal> -->
+						</goals>
+						<phase>clean</phase>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
   

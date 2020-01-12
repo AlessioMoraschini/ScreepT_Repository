@@ -28,7 +28,7 @@
   </licenses>
   <developers>
     <developer>
-      <name>${developer.url}</name>
+      <name>${developer.name}</name>
     </developer>
   </developers>
   
@@ -63,6 +63,7 @@
                 </execution>
             </executions>
             <configuration>
+            	<skip>${obfuscation.skip}</skip>
                 <proguardVersion>6.2.0</proguardVersion>
                 <obfuscate>true</obfuscate>
                 <options>
@@ -115,7 +116,9 @@
 					</goals>
 				</execution>
 			</executions>
-			<configuration></configuration>
+			<configuration>
+				<skipThirdPartyReport>${license.thirdyparty.report.skip}</skipThirdPartyReport>
+			</configuration>
       	</plugin>
 	    
     	  <!-- Generate changelog -->
@@ -216,8 +219,8 @@
 		                    </mainClass>
 		                </manifest>
 		                <manifestEntries>
-		                	<Created-by>${user.name}</Created-by>
-			              	<Built-By>${user.name}</Built-By>
+		                	<Created-by>${developer.name}</Created-by>
+			              	<Built-By>${developer.name}</Built-By>
 			              	<Build-number>${buildNumber}</Build-number>
 			              	<Build-git-hash>${git.commit.id}</Build-git-hash>
 		                </manifestEntries>
@@ -251,8 +254,8 @@
 		                    </mainClass>
 		                </manifest>
 		                <manifestEntries>
-			              	<Created-by>${user.name}</Created-by>
-			              	<Built-By>${user.name}</Built-By>
+			              	<Created-by>${developer.name}</Created-by>
+			              	<Built-By>${developer.name}</Built-By>
 			              	<Build-number>${buildNumber}</Build-number>
 			              	<Build-git-hash>${git.commit.id}</Build-git-hash>
 		                </manifestEntries>

@@ -2,7 +2,7 @@
 =========================================================================================
  Copyright (C) ${inception.year}-${current.year}
   
- ${developer.url} - All Rights Reserved
+ ${developer.name} - All Rights Reserved
 =========================================================================================
 
 You should have received a copy of the license with this file. 

@@ -22,7 +22,7 @@
 				<configuration>
 					<header>license-header.txt</header>
 					<properties>
-						<developer.url>AM-Design-Development - (Alessio Moraschini)</developer.url>
+						<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
 					  	<developer.mail>info@am-design-development.com</developer.mail>
 					  	<inception.year>2019</inception.year>
 					  	<current.year>2020</current.year>
@@ -38,7 +38,7 @@
 							<goal>format</goal>
 							<!-- <goal>remove</goal> -->
 						</goals>
-						<phase>process-sources</phase>
+						<phase>clean</phase>
 					</execution>
 				</executions>
 			</plugin>

@@ -1,3 +1,14 @@
+/**
+ *
+ * =========================================================================================
+ *  Copyright (C) 2019-2020
+ *
+ *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ * =========================================================================================
+ *
+ * You should have received a copy of the license with this file.
+ * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
+ */
 package om;
 
 import java.awt.Dimension;
@@ -33,7 +44,6 @@ import org.fife.ui.rtextarea.RUndoManager;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
 import resources.GeneralConfig;
-import sun.swing.SwingUtilities2;
 
 @SuppressWarnings("restriction")
 public class ColumnTextArea extends RSyntaxTextArea {
@@ -333,14 +343,25 @@ public class ColumnTextArea extends RSyntaxTextArea {
     }
     
     private Clipboard getClipboard(JComponent c) {
-        if (SwingUtilities2.canAccessSystemClipboard()) {
-            return Toolkit.getDefaultToolkit().getSystemClipboard();
-        }
-        Clipboard clipboard = (Clipboard)sun.awt.AppContext.getAppContext().get(SandboxClipboardKey);
-        if (clipboard == null) {
-            clipboard = new Clipboard("Sandboxed Component Clipboard");
-            sun.awt.AppContext.getAppContext().put(SandboxClipboardKey, clipboard);
-        }
+        try {
+			if (sun.swing.SwingUtilities2.canAccessSystemClipboard()) {
+			    return Toolkit.getDefaultToolkit().getSystemClipboard();
+			}
+		} catch (Throwable e) {
+			logger.error("SwingUtilities2 cannot access systemClipboard", e);
+		}
+
+        Clipboard clipboard = new Clipboard("DummyClipboard");
+        
+		try {
+			clipboard = (Clipboard)sun.awt.AppContext.getAppContext().get(SandboxClipboardKey);
+			if (clipboard == null) {
+			    clipboard = new Clipboard("Sandboxed Component Clipboard");
+			    sun.awt.AppContext.getAppContext().put(SandboxClipboardKey, clipboard);
+			}
+		} catch (Throwable e) {
+			logger.error("AppContext cannot access systemClipboard", e);
+		}
         return clipboard;
     }
     

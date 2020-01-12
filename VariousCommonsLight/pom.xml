@@ -28,7 +28,7 @@
 	  </licenses>
 	  <developers>
 	    <developer>
-	      <name>${developer.url}</name>
+	      <name>${developer.name}</name>
 	    </developer>
 	  </developers>
 
@@ -67,8 +67,8 @@
 								<manifest>
 								</manifest>
 								<manifestEntries>
-									<Created-by>${user.name}</Created-by>
-									<Built-By>${user.name}</Built-By>
+									<Created-by>${developer.name}</Created-by>
+									<Built-By>${developer.name}</Built-By>
 									<Build-number>${buildNumber}</Build-number>
 									<Build-git-hash>${git.commit.id}</Build-git-hash>
 								</manifestEntries>
