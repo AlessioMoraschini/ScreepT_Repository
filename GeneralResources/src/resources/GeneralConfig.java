@@ -51,7 +51,7 @@ public class GeneralConfig {
 	public static String BUILD_COMMIT_HASH = resourcesFilePathsMappings.getProperty("BUILD_COMMIT_HASH", "Undefined commit hash");
 	public static String CHANGE_LOG_FILE_PATH = resourcesFilePathsMappings.getProperty("CHANGE_LOG_FILE_PATH", "");
 	public static File CHANGE_LOG_FILE = CHANGE_LOG_FILE_PATH.equals("") ? null : new File(CHANGE_LOG_FILE_PATH);
-
+	
 	public static String WEBSITE = resourcesFilePathsMappings.getProperty("WEBSITE", "www.am-design-development.com");                                                                                                                                                 
 	public static String MAIL_INFO = resourcesFilePathsMappings.getProperty("MAIL_INFO", "info@am-design-development.com");                                                                                                                                             
 	public static String MAIL_BUGS = resourcesFilePathsMappings.getProperty("MAIL_BUGS", "bugs@am-design-development.com");                                                                                                                                             
@@ -66,9 +66,24 @@ public class GeneralConfig {
 	public static String BUILD_TS_DATE = resourcesFilePathsMappings.getProperty("BUILD_TIMESTAMP")                                                                                                                                    
 	                     									.replaceAll("T", " at ")                                                                                                                                                 
 	                     									.replaceAll("Z", "")                                                                                                                                                     
-	                     									.replaceAll("-", "/");                                                                                                                                                   
-	// General Folders   // General Folders                                                                                                                                                                                           
-	public static String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR", "Application/");                                                                                                                             
+	                     									.replaceAll("-", "/");          
+	
+	// IMPORTANT FOLDERS
+	public static String CURRENT_EXECUTION_DIR = System.getProperty("user.dir")+"/";
+	public static String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
+	public static String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";
+	public static File USER_DESKTOP_FILE = new File(USER_DESKTOP);
+	
+	// The first level folder where Application/ directory is contained
+	public static File MAIN_APP_PARENT_DIR = new File(CURRENT_EXECUTION_DIR).getParentFile();  
+	// General Folders                                                                                                                                                                                        
+	public static String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR", "Application/");   
+
+	public static String USER_PERSONAL_DIR_SCREEPT_FOLDER = USER_PERSONAL_DIR + "ScreepT_temp_files" + File.separatorChar + APP_VERSION;
+	public static File F_USER_PERSONAL_DIR_SCREEPT_FOLDER = new File(USER_PERSONAL_DIR_SCREEPT_FOLDER);
+	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScreepT_decrypted_tempFiles";
+	public static File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
+	
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");                                                                                                                                     
 	public static String PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR");
@@ -96,15 +111,12 @@ public class GeneralConfig {
 	public static String TEMP_DIRECTORY = resourcesFilePathsMappings.getProperty("TEMP_DIR", RESOURCES_DIR + "temp/");
 	public static File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
 	
-	// IMPORTANT FOLDERS
-	public static String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
-	public static String CURRENT_EXECUTION_DIR = System.getProperty("user.dir")+"/";
-	public static String USER_PERSONAL_DIR_SCREEPT_FOLDER = USER_PERSONAL_DIR + "ScreepT_temp_files" + File.separatorChar + APP_VERSION;
-	public static File F_USER_PERSONAL_DIR_SCREEPT_FOLDER = new File(USER_PERSONAL_DIR_SCREEPT_FOLDER);
-	public static String USER_DESKTOP = USER_PERSONAL_DIR+"Desktop/";
-	public static File USER_DESKTOP_FILE = new File(USER_DESKTOP);
-	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScreepT_decrypted_tempFiles";
-	public static File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
+	// LICENSE MAPPING
+	public static final String licensePropertiesPath = RESOURCES_DIR + "license.properties";
+	public static PropertiesManager licenseProperties = new PropertiesManager(licensePropertiesPath);
+	public static boolean LICENSE_ACCEPTED = licenseProperties.getBooleanVarFromProps("LICENSE_ACCEPTED", false);
+	public static File LICENSE_FILE = new File(MAIN_APP_PARENT_DIR.getAbsolutePath() + File.separator + "License_ScreepT.html");
+
 	/**
 	 * This file is created at SW start, and deleted on close to signal other external programs
 	 */

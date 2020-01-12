@@ -34,7 +34,10 @@ import gUI.frames.KeyDictionaryFrame;
 import gUI.frames.KeyGenFrame;
 import gUI.frames.TutorialFrame;
 import gui.GuiUtils;
+import gui.JOptionHelper;
+import gui.LightLicenseViewer;
 import gui.UpdateProgressPanel;
+import gui.LightLicenseViewer.UserLicenseChoice;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import resources.GeneralConfig;
@@ -202,6 +205,34 @@ public class WindowCreator {
 		panelAbout.setResizable(false);
 		
 		return panelAbout;
+	}
+
+	public LightLicenseViewer newLicenseFrame(boolean mandatoryDeclineAcceptOptions) {
+		
+		LightLicenseViewer licenseViewer;
+		
+		if (mandatoryDeclineAcceptOptions) {
+			LightLicenseViewer.mandatoryChoice = true;
+			UserLicenseChoice choice;
+			do{
+				licenseViewer = LightLicenseViewer.getInstance(GeneralConfig.LICENSE_FILE, "Accept license to use the software");
+				choice = licenseViewer.userChoice;
+				if(choice.equals(UserLicenseChoice.REJECTED)) {
+					if (new JOptionHelper(null).yesOrNo("You cannot use ScreepT without accepting License, wanna exit launch procedure?")) {
+						MainGUI.closeApplication(1);
+					}
+				}else {
+					GeneralConfig.licenseProperties.saveCommentedProperty("LICENSE_ACCEPTED", String.valueOf(true));
+				}
+				
+			} while(choice.equals(UserLicenseChoice.REJECTED));
+		} else {
+			
+			LightLicenseViewer.mandatoryChoice = false;
+			licenseViewer = LightLicenseViewer.getInstance(GeneralConfig.LICENSE_FILE, "Accept license to use the software");
+		}
+		
+		return licenseViewer;
 	}
 	
 	public TutorialFrame newTutorialFrame(boolean visible) {

@@ -968,6 +968,14 @@ public class MainGUI extends MainGuiParent{
 				windowCreator.newAboutSectionFrame();
 			}
 		});
+
+		// open in a new window - ABOUT ScreepT
+		mntmLicenseScreept = new CustomJmenuItem(new AbstractAction("License - ScreepT") {
+			public void actionPerformed(ActionEvent e) {
+				
+				windowCreator.newLicenseFrame(false);
+			}
+		});
 		
 		// open in a new window - ChangeLog view
 		mntmChangeLog = new CustomJmenuItem(new AbstractAction("View changeLog") {

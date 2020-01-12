@@ -14,7 +14,6 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.ini4j.Wini;
@@ -184,9 +183,9 @@ public class MainStandAloneUpdater {
 					updateProgressMonitor.update(30, "Copying new files...", false);
 					
 					// replace existing files matching with updates (don't touch user personal files)
-					System.out.print("Copying content of " + updatesFolder + " into ");
+					logger.info("Copying content of " + updatesFolder + " into ");
 					
-					System.out.println(generalApplicationFolder.getAbsolutePath());
+					logger.info(generalApplicationFolder.getAbsolutePath());
 					FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
 					
 					// Check if there is Root files update to copy one level up
@@ -231,7 +230,7 @@ public class MainStandAloneUpdater {
 				}
 				
 				dialogHelper.error("Cannot update, an error occurred: " + e.getClass());
-				System.out.println(e.getClass() + Arrays.deepToString(e.getStackTrace()));
+				logger.error(e.getClass().getCanonicalName(), e);
 				
 				// LAUNCH ScreepT_Launcher.jar
 				Runtime runtime = Runtime.getRuntime();

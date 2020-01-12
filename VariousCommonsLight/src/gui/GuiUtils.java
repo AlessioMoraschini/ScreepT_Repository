@@ -21,7 +21,10 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -45,6 +48,7 @@ import java.util.Collection;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -688,6 +692,23 @@ public class GuiUtils {
 				return insertLineIntoTextArea(startOffset, insertText, textArea);
 			}
 		}
+	}
+	
+	public static Image iconToImage(Icon source) {
+		 if (source instanceof ImageIcon) {
+             return ((ImageIcon)source).getImage();
+         } else {
+             int w = source.getIconWidth();
+             int h = source.getIconHeight();
+             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+             GraphicsDevice gd = ge.getDefaultScreenDevice();
+             GraphicsConfiguration gc = gd.getDefaultConfiguration();
+             BufferedImage image = gc.createCompatibleImage(w, h);
+             Graphics2D g = image.createGraphics();
+             source.paintIcon(null, g, 0, 0);
+             g.dispose();
+             return image;
+         }
 	}
 	
 	/**

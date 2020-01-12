@@ -165,6 +165,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmCopyDirStructure;
 	CustomJmenuItem mntmReturnToWelcome;
 	CustomJmenuItem mntmAboutScreept;
+	CustomJmenuItem mntmLicenseScreept;
 	CustomJmenuItem mntmChangeLog;
 	CustomJmenuItem mntmExportLog; 
 	CustomJmenuItem mntmEraseLogs;
@@ -399,6 +400,8 @@ public class MainGuiParent {
 			mnHelp.add(mntmAboutScreept);	
 			mnHelp.add(mntmChangeLog);	
 			mnHelp.add(mntmViewWebsite);
+			mnHelp.add(mntmLicenseScreept);	
+			mnHelp.add(new JSeparator());
 			mnHelp.add(mntmLookForUpdates);
 			mnHelp.add(mntmLookForPlugins);
 			mnHelp.add(new JSeparator());
@@ -544,6 +547,7 @@ public class MainGuiParent {
 		mntmLookForUpdates.setFont(menuItemFont);
 		mntmLookForPlugins.setFont(menuItemFont);
 		mntmAboutScreept.setFont(menuItemFont);
+		mntmLicenseScreept.setFont(menuItemFont);
 		mntmChangeLog.setFont(menuItemFont);
 		mntmExportLog.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
@@ -620,6 +624,7 @@ public class MainGuiParent {
 
 		// Help submenu
 		mntmAboutScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		mntmLicenseScreept.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LICENSE));
 		mntmChangeLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DIFFERENCES));
 		mntmExportLog.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
 		mntmEraseLogs.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
@@ -1109,6 +1114,10 @@ public class MainGuiParent {
 
 	public JMenuItem getMntmAboutScreept() {
 		return mntmAboutScreept;
+	}
+
+	public CustomJmenuItem getMntmLicenseScreept() {
+		return mntmLicenseScreept;
 	}
 
 	public JMenuItem getMntmExportLog() {

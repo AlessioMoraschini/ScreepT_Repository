@@ -654,10 +654,11 @@ public class MainGuiUtils {
 		do {
 			input = MainGUI.dialogHelper.askForStringNullable("Please insert your name:", "Hi, what's your name? :)", "U-sir", new Object[]{"Confirm"});
 			
-			if (input==null || input.equals("") || input.length() > 20) {
-				MainGUI.dialogHelper.warn("Username must be between 1-20 characters!", "UserName length Error");
+			if (input.equals("") || input.length() > 26) {
+				MainGUI.dialogHelper.warn("Username must be between 1-26 characters!", "UserName length Error");
 				logger.error("Error in user input, redo.");
 			} else {
+				input = (input == null) ? "U-Sir" : input;
 				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", input);
 				currentConfiguration.getGenOpt().setUserName(input);
 				end = true;

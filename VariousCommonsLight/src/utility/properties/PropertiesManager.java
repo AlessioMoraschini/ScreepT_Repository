@@ -202,6 +202,12 @@ public class PropertiesManager {
 		}
     }
 	
+	/**
+	 * Set the property value and save current loaded properties to file
+	 * This will maintain comments
+	 * @param propertyName
+	 * @param value
+	 */
 	public void saveCommentedProperty(String propertyName, String value) {
 		
 		java.io.OutputStream out = null;
@@ -224,14 +230,20 @@ public class PropertiesManager {
 		}
 	}
 	
-	public boolean savePropertyV1(String key, String value){
+	/**
+	 * Set the property value and save current loaded properties to file, returning boolean value representing the result of operation
+	 * This will not maintain comments
+	 * @param propertyName
+	 * @param value
+	 */
+	public boolean savePropertyChecked(String key, String value){
 		FileOutputStream out = null;
 		
 		try {
 			out = new FileOutputStream(dynamicFileBindingsDefSource);
 			dynamicFileBindingsDef.setProperty(key, value);
 			dynamicFileBindingsDef.store(out, null);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return false;
 		} finally {
 			try {
@@ -242,6 +254,15 @@ public class PropertiesManager {
 		return true;
 	}
 	
+	/**
+	 * Set the property value and save current loaded properties to file
+	 * This will not maintain comments
+	 * @param propertyName
+	 * @param value
+	 * 
+	 * @Deprecated -> use save Commented property, it's preferrable to this one
+	 */
+	@Deprecated
 	public void saveProperty(String propertyName, String value) {
 		dynamicFileBindingsDef.setProperty(propertyName, value);
 		dynamicFileBindingsDef.put(propertyName, value);

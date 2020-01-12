@@ -77,10 +77,10 @@ public class JOptionHelper {
 	protected Component parentComponent;
 	
 	public static void init() {
-		ICON_ERR_REF = UIManager.getIcon("OptionPane.informationIcon");    
-		ICON_WARN_REF = UIManager.getIcon("OptionPane.informationIcon"); 
+		ICON_ERR_REF = UIManager.getIcon("OptionPane.errorIcon");    
+		ICON_WARN_REF = UIManager.getIcon("OptionPane.warningIcon"); 
 		ICON_INFO_REF = UIManager.getIcon("OptionPane.informationIcon");        
-		ICON_QUESTION_REF = UIManager.getIcon("OptionPane.informationIcon");
+		ICON_QUESTION_REF = UIManager.getIcon("OptionPane.questionIcon");
 		DEFAULT_FONT_DIMENSION = new Font("Segoe UI", Font.PLAIN, 19);
 	}
 	

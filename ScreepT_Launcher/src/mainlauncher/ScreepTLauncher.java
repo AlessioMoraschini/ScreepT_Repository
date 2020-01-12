@@ -32,6 +32,8 @@ import files.FileVarious;
 import files.FileWorker;
 import gui.GuiUtils;
 import gui.JOptionHelper;
+import gui.LightLicenseViewer;
+import gui.LightLicenseViewer.UserLicenseChoice;
 import gui.panels.CustomizeParametersPanel;
 import gui.panels.DependenciesManagerPanel;
 import gui.panels.LauncherMainPanel;
@@ -77,7 +79,6 @@ public class ScreepTLauncher {
 	public static String initPath = new OSinfo().isWindows() ? BATCH_LAUNCHER_NAME : BASH_LAUNCHER_NAME;
 	
 	public static String DEFAULT_INI_PATH; 
-	public static String APPLICATION_DIR;
 	
 	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
 	public static final String installedPluginPendingDeleteListKey = "PLUGINS_PENDING_DELETE_AT_START";
@@ -129,6 +130,25 @@ public class ScreepTLauncher {
 		
 		ARGS = args;
 		argumentsFiles = getFileArrayFromStrings(args);
+		
+		// SHOW LICENSE IF MARKED AS UNACCEPTED
+		if(!GeneralConfig.LICENSE_ACCEPTED) {
+			
+			LightLicenseViewer licenseViewer;
+			UserLicenseChoice choice;
+			do{
+				licenseViewer = new LightLicenseViewer(GeneralConfig.LICENSE_FILE, "Accept license to use the software");
+				choice = licenseViewer.userChoice;
+				if(choice.equals(UserLicenseChoice.REJECTED)) {
+					if (new JOptionHelper(null).yesOrNo("You cannot use ScreepT without accepting License, wanna exit launch procedure?")) {
+						System.exit(0);
+					}
+				}else {
+					GeneralConfig.licenseProperties.saveCommentedProperty("LICENSE_ACCEPTED", String.valueOf(true));
+				}
+				
+			} while(choice.equals(UserLicenseChoice.REJECTED));
+		}
 
 		checkAlreadyRunning();
 		
@@ -140,7 +160,6 @@ public class ScreepTLauncher {
 		
 		JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
 		DEFAULT_INI_PATH = GeneralConfig.DEFAULT_LAUNCHER_INI_PATH; 
-		APPLICATION_DIR = GeneralConfig.MAIN_APP_ROOT_DIR;  
 		
 		// Initialize logger properties -> FIRST THING TO DO
 		PropertyConfigurator.configure(GeneralConfig.LAUNCHER_LOG_PROPS_PATH);

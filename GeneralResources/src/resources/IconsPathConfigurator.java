@@ -169,6 +169,7 @@ public class IconsPathConfigurator {
 	/** This is the green version with 4 arrows **/
 	public static final String ICON_RELOAD4 = GeneralConfig.RESOURCES_DIR + "Icons/General/Reload_4.png";
 	
+	public static final String ICON_LICENSE = GeneralConfig.RESOURCES_DIR + "Icons/General/license.png";
 	public static final String ICON_GEN_INFO = GeneralConfig.RESOURCES_DIR + "Icons/General/info.png";
 	public static final String ICON_BIG_GEN_INFO = GeneralConfig.RESOURCES_DIR + "Icons/General/Info_Big.png";
 	public static final String ICON_GEN_QUESTION = GeneralConfig.RESOURCES_DIR + "Icons/General/question.png";

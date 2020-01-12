@@ -561,6 +561,7 @@
     						<include>changelog.log</include>
 					    </includes>
 					    <excludes>
+    						<exclude>Resources_ScreepT/license.properties</exclude>
 					    	<exclude>Resources_ScreepT/Readme/**</exclude>
 					    	<exclude>Resources_ScreepT/Readme/*</exclude>
 					    	<exclude>Resources_ScreepT/lib/**</exclude>
