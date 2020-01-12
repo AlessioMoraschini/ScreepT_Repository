@@ -52,7 +52,7 @@ public class LightLicenseViewer extends JDialog {
 	
 	public static LightLicenseViewer instance = null;
 	
-	public static boolean mandatoryChoice = false;
+	public static boolean mandatoryChoice = true;
 	
 	public LightLicenseViewer(File sourceLicense, String title) {
 		
