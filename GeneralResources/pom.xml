@@ -4,13 +4,6 @@
   <artifactId>Resources</artifactId>
   <version>1.0</version>
   
-  <parent>
-  	<groupId>ScreepT_Parent</groupId>
-  	<artifactId>ScreepT_Parent</artifactId>
-  	<version>${parent.build.version.screept}</version>
-  	<relativePath>../ScreepT_Parent</relativePath>
-  </parent>
-  
   <packaging>jar</packaging>
   
   <name>Resources</name>
@@ -46,41 +39,6 @@
   </build>
   
   <dependencies>
-  	<!-- <dependency>
-	    <groupId>commons-configuration</groupId>
-	    <artifactId>commons-configuration</artifactId>
-	    <version>1.6</version>
-	    <exclusions>
-		    <exclusion>
-			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-lang3</artifactId>
-		    </exclusion>
-		    <exclusion>
-			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-text</artifactId>
-		    </exclusion>
-		    <exclusion>
-		    	<groupId>com.fasterxml.jackson.core</groupId>
-    			<artifactId>jackson-databind</artifactId>
-		    </exclusion>
-		    <exclusion>
-		    	<groupId>commons-beanutils</groupId>
-    			<artifactId>commons-beanutils</artifactId>
-		    </exclusion>
-		    <exclusion>
-		    	<groupId>log4j</groupId>
-    			<artifactId>log4j</artifactId>
-		    </exclusion>
-		    <exclusion>
-		    	<groupId>commons-jxpath</groupId>
-    			<artifactId>commons-jxpath</artifactId>
-		    </exclusion>
-		    <exclusion>
-		    	<groupId>org.springframework</groupId>
-    			<artifactId>spring-core</artifactId>
-		    </exclusion>
-	    </exclusions>
-	</dependency> -->
 	
 	<dependency>
 		<groupId>VariousCommonsLight</groupId>

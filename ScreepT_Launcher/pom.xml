@@ -12,6 +12,19 @@
   
   <packaging>jar</packaging>
   
+  	<properties>
+  		<export.jar.name>ScreepT_Launcher</export.jar.name>
+  	
+		<!-- #################### LICENSE COMMON DATA ################# -->
+		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+		<developer.mail>info@am-design-development.com</developer.mail>
+		<inception.year>2019</inception.year>
+		<current.year>2020</current.year>
+		<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
+		<project.main.url>https://www.am-design-development.com</project.main.url>
+		<project.license.url>../License_ScreepT.html</project.license.url>
+	</properties>
+  
   <name>ScreepT_Launcher</name>
   <description>ScreepT_Launcher is the module that's used to configure and start the main application, creating a custom launcher that fits the current OS, but maintaining the portability of the whole software.</description>
   <url>${project.main.url}</url>
@@ -34,10 +47,6 @@
       <tag>HEAD</tag>
       <url>http://127.0.0.1/dummy</url>
   </scm>
-  
-  <properties>
-	<export.jar.name>ScreepT_Launcher</export.jar.name>
-  </properties>
   
   <build>
   	<finalName>${export.jar.name}</finalName>
@@ -207,6 +216,22 @@
 		<groupId>Resources</groupId>
 	  	<artifactId>Resources</artifactId>
 	  	<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+		<exclusions>
+			<exclusion>
+				<groupId>commons-io</groupId>
+			    <artifactId>commons-io</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>commons-net</groupId>
+		    	<artifactId>commons-net</artifactId>
+			</exclusion>
+		</exclusions>
 	</dependency>
 	
 	<dependency>	

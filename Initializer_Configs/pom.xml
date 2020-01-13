@@ -3,14 +3,7 @@
   <groupId>Initializer_Configs</groupId>
   <artifactId>Initializer_Configs</artifactId>
   <version>1.0</version>
-    
-  <parent>
-  	<groupId>ScreepT_Parent</groupId>
-  	<artifactId>ScreepT_Parent</artifactId>
-  	<version>${parent.build.version.screept}</version>
-  	<relativePath>../ScreepT_Parent</relativePath>
-  </parent>
-  
+      
   <packaging>jar</packaging>
   
   <name>Initializer_Configs</name>

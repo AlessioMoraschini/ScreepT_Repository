@@ -4,14 +4,18 @@
   <artifactId>GuiCommons</artifactId>
   <version>1.0</version>
   
-  <parent>
-  	<groupId>ScreepT_Parent</groupId>
-  	<artifactId>ScreepT_Parent</artifactId>
-  	<version>${parent.build.version.screept}</version>
-  	<relativePath>../ScreepT_Parent</relativePath>
-  </parent>
-  
   <packaging>jar</packaging>
+  
+  <properties>
+  	<!-- #################### LICENSE COMMON DATA ################# -->
+	<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+	<developer.mail>info@am-design-development.com</developer.mail>
+	<inception.year>2019</inception.year>
+	<current.year>2020</current.year>
+	<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
+	<project.main.url>https://www.am-design-development.com</project.main.url>
+	<project.license.url>../License_ScreepT.html</project.license.url>
+  </properties>
   
   <name>GuiCommons</name>
   <description>
@@ -54,24 +58,12 @@
   </repositories>
   <dependencies> 
   
-  	<!-- <dependency>
-	    <groupId>com.jtattoo</groupId>
-	    <artifactId>JTattoo</artifactId>
-	    <version>1.6.11</version>
-	</dependency> -->
-	
 	<!-- https://mvnrepository.com/artifact/com.jgoodies/looks -->
 	<dependency>
 	    <groupId>com.jgoodies</groupId>
 	    <artifactId>looks</artifactId>
 	    <version>2.2.2</version>
 	</dependency>
-	
- 	<!-- <dependency>
-	   	<groupId>org.drjekyll</groupId>
-	   	<artifactId>fontchooser</artifactId>
-	   	<version>2.4</version>
-	</dependency> -->
 	
 	<dependency>
 	    <groupId>com.miglayout</groupId>
@@ -107,6 +99,18 @@
 		<groupId>UpdaterModule</groupId>
 		<artifactId>UpdaterModule</artifactId>
 		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+		<exclusions>
+			<exclusion>
+				<groupId>commons-net</groupId>
+		    	<artifactId>commons-net</artifactId>
+			</exclusion>
+		</exclusions>
 	</dependency>
 	
   </dependencies>
