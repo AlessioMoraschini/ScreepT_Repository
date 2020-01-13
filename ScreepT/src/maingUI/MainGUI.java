@@ -973,7 +973,7 @@ public class MainGUI extends MainGuiParent{
 		mntmLicenseScreept = new CustomJmenuItem(new AbstractAction("License - ScreepT") {
 			public void actionPerformed(ActionEvent e) {
 				
-				windowCreator.newLicenseFrame(false);
+				windowCreator.newLicenseFrame(false, false);
 			}
 		});
 		

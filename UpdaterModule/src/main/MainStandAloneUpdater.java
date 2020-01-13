@@ -183,9 +183,7 @@ public class MainStandAloneUpdater {
 					updateProgressMonitor.update(30, "Copying new files...", false);
 					
 					// replace existing files matching with updates (don't touch user personal files)
-					logger.info("Copying content of " + updatesFolder + " into ");
-					
-					logger.info(generalApplicationFolder.getAbsolutePath());
+					logger.info("Copying content of " + updatesFolder + " into " + generalApplicationFolder);
 					FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
 					
 					// Check if there is Root files update to copy one level up

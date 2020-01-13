@@ -84,9 +84,9 @@ public class LightLicenseViewer extends JDialog {
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(new LineBorder(Color.BLACK, 2));
-		scrollPane.setPreferredSize(DEFAULT_PREF_DIMENSION);
+		scrollPane.setPreferredSize(new Dimension(2000, 2000));
 		int scrollPaneHeigth = mandatoryChoice ? 1 : 2;
-		getContentPane().add(scrollPane, "cell 0 1 2 "+scrollPaneHeigth+",alignx center,aligny center");
+		getContentPane().add(scrollPane, "cell 0 1 2 " + scrollPaneHeigth + ",alignx center,aligny center");
 		
 		jEditorPane = new JEditorPane();
 		scrollPane.setViewportView(jEditorPane);

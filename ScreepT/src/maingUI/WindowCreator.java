@@ -207,7 +207,7 @@ public class WindowCreator {
 		return panelAbout;
 	}
 
-	public LightLicenseViewer newLicenseFrame(boolean mandatoryDeclineAcceptOptions) {
+	public LightLicenseViewer newLicenseFrame(boolean mandatoryDeclineAcceptOptions, boolean closeOnDecline) {
 		
 		LightLicenseViewer licenseViewer;
 		
@@ -218,8 +218,12 @@ public class WindowCreator {
 				licenseViewer = LightLicenseViewer.getInstance(GeneralConfig.LICENSE_FILE, "You must accept this EULA before to start using ScreepT", "License acceptance");
 				choice = licenseViewer.userChoice;
 				if(choice.equals(UserLicenseChoice.REJECTED)) {
-					if (new JOptionHelper(null).yesOrNo("You cannot use ScreepT without accepting License, wanna exit launch procedure?")) {
-						MainGUI.closeApplication(1);
+					if (new JOptionHelper(null).yesOrNo("You cannot proceed without accepting this License, are you sure to stop this process?")) {
+						if (closeOnDecline) {
+							MainGUI.closeApplication(1);
+						} else {
+							return licenseViewer;
+						}
 					}
 				}else {
 					GeneralConfig.licenseProperties.saveCommentedProperty("LICENSE_ACCEPTED", String.valueOf(true));

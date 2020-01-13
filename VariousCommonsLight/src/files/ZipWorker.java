@@ -17,7 +17,9 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -125,7 +127,7 @@ public class ZipWorker {
 			    	
 			    	int percGenZipped = (int)((float)i*100*buffer.length/(float)fileSize);
 			    	percGenZipped = percGenZipped >= 100 ? 99 : percGenZipped;
-			    	DownloadUtils.updateProgress("Zipping " + fileToZip, percGenZipped, progressUpdater, false);
+			    	UpdateProgressPanel.updateProgress("Zipping " + fileToZip, percGenZipped, progressUpdater, false);
 			        zos.write(buffer, 0, length);
 			        
 			        i++;
@@ -197,7 +199,7 @@ public class ZipWorker {
 		int cycles = 1;
 		while((length = fis.read(bytes)) >= 0) {
 			int percDownloaded = DownloadUtils.getPerc(1024*cycles, zipEntry.getSize());
-	    	DownloadUtils.updateProgress("Zipping " + zipEntry.getName(), percDownloaded, progressUpdater, false);
+	    	UpdateProgressPanel.updateProgress("Zipping " + zipEntry.getName(), percDownloaded, progressUpdater, false);
 			zipOut.write(bytes, 0, length);
 			cycles ++;
 		}
@@ -229,123 +231,119 @@ public class ZipWorker {
 	 */
 	public static File unzipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
 		
-		UpdateProgressPanel progressUpdater = new UpdateProgressPanel(true);
-		
 		long startTime = System.currentTimeMillis();
 		DownloadUtils.logger.info("FileStuff.unzipFile() -> Starting unzip:"
 				+ "\n sourcePath: " + sourcePath
 				+ "\n destFolderPath: " + destFolderPath
 				+ "\n overwrite: " + ovewrwrite);
-		
-		if(sourcePath == null || destFolderPath == null || !new File(sourcePath).exists()) {
-			DownloadUtils.logger.error("Null input data, cannot proceed.");
-			throw new Exception();
-		}
-		
-		// Adapt name in case of overwrite
-		File fileToZip = new File(sourcePath);
-		int lastDotIndex = fileToZip.getName().lastIndexOf('.');
-		String destPathFolderName = fileToZip.getName().substring(0,lastDotIndex);
-		String separator = destFolderPath.endsWith("/") || destFolderPath.endsWith(File.separator) ? 
-				"" : File.separator;
-		destFolderPath += separator + destPathFolderName;
-		
+
 		File destFolderOut = new File(destFolderPath);
-		if(!destFolderOut.exists() || destFolderOut.isFile()) {
-			destFolderOut.mkdirs();
-			destFolderOut.mkdir();
-		}
-		
+		UpdateProgressPanel progressUpdater = new UpdateProgressPanel(true);
+		ZipInputStream zipInputStream = null;
+
 		try {
+			GuiUtils.centerComponent(progressUpdater.getDialog());
+			progressUpdater.setClosable(true);
+			progressUpdater.getDialog().setTitle("Unzipping file: " + new File(sourcePath).getName());
+			progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
+			progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));
+			progressUpdater.getDialog().setVisible(true);
 			progressUpdater.getGeneralBar().setIndeterminate(true);
-			// Prepare for write
+			
+			if(sourcePath == null || destFolderPath == null || !new File(sourcePath).exists()) {
+				DownloadUtils.logger.error("Null input data, cannot proceed.");
+				throw new Exception();
+			}
+			
+			// Adapt name in case of !overwrite
+			File fileToUnZip = new File(sourcePath);
+			int lastDotIndex = fileToUnZip.getName().lastIndexOf('.');
+			String destPathFolderName = fileToUnZip.getName().substring(0,lastDotIndex);
+			String separator = destFolderPath.endsWith("/") || destFolderPath.endsWith(File.separator) ? "" : File.separator;
+			destFolderPath += separator + destPathFolderName;
+			
+			if(!destFolderOut.exists() || destFolderOut.isFile()) {
+				destFolderOut.mkdirs();
+			}
+			
 			byte[] buffer = new byte[1024];
-			ZipInputStream zis = new ZipInputStream(new FileInputStream(sourcePath));
-			ZipEntry zipEntry = zis.getNextEntry();
+			int zipEntries = zipEntriesCount(sourcePath);
+			int currentEntryIterator = 1;
+			zipInputStream = new ZipInputStream(new FileInputStream(sourcePath));
+			ZipEntry zipEntry = zipInputStream.getNextEntry();
+			
 			while (zipEntry != null) {
 				DownloadUtils.logger.debug("Unzipping current element: " + zipEntry.getName());
 				
 				String newOutCurrentPath = destFolderPath + File.separator + zipEntry.getName();
-				File out = (ovewrwrite)? new File(newOutCurrentPath) : FileWorker.renameJavaObjFile(new File(newOutCurrentPath));
-				if(out.exists()) {
-					DownloadUtils.logger.debug("Current output existing: will be deleted! " + out);
-					boolean deleted = out.delete();
-					DownloadUtils.logger.debug(out + " delete result: " + deleted);
+				File outputFile = (ovewrwrite)? new File(newOutCurrentPath) : FileWorker.renameJavaObjFile(new File(newOutCurrentPath));
+				
+				// Existence check
+				if(outputFile.exists()) {
+					DownloadUtils.logger.debug("Current output existing: will be deleted! " + outputFile);
+					boolean deleted = outputFile.delete();
+					DownloadUtils.logger.debug(outputFile + " delete result: " + deleted);
 				} else {
-					DownloadUtils.logger.debug("Current output does not exist: creating all parent directories needed! " + out.getParentFile());
-					out.getParentFile().mkdirs();
+					DownloadUtils.logger.debug("Current output does not exist: creating all parent directories needed! " + outputFile.getParentFile());
+					outputFile.getParentFile().mkdirs();
 				}
+				
+				// In case of folder no need to unzip, just go to next
 				if(zipEntry.isDirectory()) {
 					DownloadUtils.logger.debug("Current element is directory, creating and continuing with next! " + zipEntry.getName());
-					out.mkdir();
-					zipEntry = zis.getNextEntry();
+					outputFile.mkdir();
+					zipEntry = zipInputStream.getNextEntry();
 					continue;
 				}
 				
-				if (progressUpdater == null) {
-					progressUpdater = new UpdateProgressPanel();
-					GuiUtils.centerComponent(progressUpdater.getDialog());
-				}
-				if(!progressUpdater.getDialog().isVisible()) {
-					progressUpdater.getDialog().setVisible(true);
-				}
-				if(progressUpdater != null) {
-					progressUpdater.setClosable(true);
-					progressUpdater.getDialog().setTitle("Unzipping file: " + new File(sourcePath).getName());
-					progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
-					progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));
-				}
-				
-				progressUpdater.getGeneralBar().setIndeterminate(true);
-				DownloadUtils.updateProgress(zipEntry.getName(), 50, progressUpdater, true);
+				int percTot = currentEntryIterator / zipEntries;
+				UpdateProgressPanel.updateProgress(zipEntry.getName(), percTot > 99 ? 99 : percTot, progressUpdater, true);
 				
 				// For every entry in archive
-				DownloadUtils.logger.debug("Creating output stream for current output node: " + out);
-			    FileOutputStream fos = new FileOutputStream(out);
+				DownloadUtils.logger.debug("Creating output stream for current output node: " + outputFile);
+			    FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
 			    DownloadUtils.logger.debug("Output stream created! starting unzip...");
+			    
 			    int len;
 			    int cycles = 1;
-			    while ((len = zis.read(buffer)) > 0) {
-			    	int percDownloaded = DownloadUtils.getPerc(1024*cycles, zipEntry.getSize());
+			    while ((len = zipInputStream.read(buffer)) > 0) {
+			    	int percDownloaded = Math.abs(DownloadUtils.getPerc(1024*cycles, zipEntry.getSize()));
 			    	percDownloaded = (percDownloaded>99) ? 99 : percDownloaded;
 			    	
+			    	// In case of size unavailable | negative value | near to finish : set progressbar undefined
+			    	progressUpdater.getPb().setIndeterminate(percDownloaded == 99);
 			    	DownloadUtils.ifStoppedByUserThrowException(progressUpdater);
-			    	DownloadUtils.updateProgress(zipEntry.getName(), percDownloaded, progressUpdater, false);
+			    	UpdateProgressPanel.updateProgress(zipEntry.getName(), percDownloaded, progressUpdater, false);
 			    	
 			    	// For each byte of current zipped file in archive
-			        fos.write(buffer, 0, len);
+			        fileOutputStream.write(buffer, 0, len);
 			        
 			        cycles++;
 			    }
 			    
-			    fos.close();
+			    fileOutputStream.close();
 			    DownloadUtils.logger.debug("Current element unzipped! " + zipEntry.getName());
-			    zipEntry = zis.getNextEntry();
+			    zipEntry = zipInputStream.getNextEntry();
+			    
+			    currentEntryIterator ++;
 			}
-			
-			if (progressUpdater != null) {
-				progressUpdater.update("Unzip completed!", 99);
-				Thread.sleep(800);
-		    	progressUpdater.update(100, "Completed", true);
-				progressUpdater.update("Completed", 100);
-				progressUpdater.forceClose();
-			}
-			
-			zis.closeEntry();
-			zis.close();
-			
-			DownloadUtils.logger.info("FileStuff.unzipFile() -> COMPLETED!"
-					+ "\n source: " + sourcePath
-					+ "\n unzipped File: " + out
-					+ "\n overwrite: " + ovewrwrite);
 			
 			DownloadUtils.logger.info("unzip file: elapsed" + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
-		} catch (Exception e) {
-			
+			DownloadUtils.logger.info("FileStuff.unzipFile() -> COMPLETED!"
+					+ "\n source: " + sourcePath
+					+ "\n unzipped File: " + destFolderPath
+					+ "\n overwrite: " + ovewrwrite);
+		
+		} catch (Throwable e) {
 			DownloadUtils.logger.error("An error occurred while unzipping data", e);
 			throw e;
 			
 		} finally {
+			try {
+				zipInputStream.closeEntry();
+				zipInputStream.close();
+			}catch(Exception e) {}
+
 			if (progressUpdater != null) {
 				progressUpdater.update("Completed", 100);
 				progressUpdater.forceClose();
@@ -353,6 +351,25 @@ public class ZipWorker {
 		}
 	    
 	    return destFolderOut;
+	}
+	
+	/**
+	 * Retrieve number of entries within a zip file
+	 * @param path
+	 * @return
+	 * @throws IOException
+	 */
+	public static int zipEntriesCount(String path) throws IOException {
+
+	     ZipFile zf = new ZipFile(path);
+	     try {
+			return zf.size();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		} finally {
+			zf.close();
+		}
 	}
 
 }

@@ -41,7 +41,10 @@ public class DownloadUtils {
 		FileOutputStream fileOutputStream = null;
 		
 		try {
-			if(progressUpdater != null && !silent) {
+			if(!silent) {
+				if(progressUpdater == null) {
+					progressUpdater = new UpdateProgressPanel(true);
+				}
 				progressUpdater.getDialog().setTitle("Downloading update file: " + new File(url.getFile()).getName());
 				progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
 				progressUpdater.getDialog().setVisible(true);
@@ -64,7 +67,7 @@ public class DownloadUtils {
 			    percDownloaded = (percDownloaded>99) ? 99 : percDownloaded;
 			    ifStoppedByUserThrowException(progressUpdater);
 			    String msg = "Downloading " + new File(url.getFile()).getName() + " ("+getPercSizesString(bufferSIze*cycles, fileSize)+")";
-				updateProgress(msg, percDownloaded, progressUpdater, false);
+				UpdateProgressPanel.updateProgress(msg, percDownloaded, progressUpdater, false);
 			    cycles ++;
 			}
 			
@@ -79,7 +82,7 @@ public class DownloadUtils {
 				out.println("Closing url stream...");
 				in.close();
 				fileOutputStream.close();
-				updateProgress("Download Completed!", 100, progressUpdater, false);
+				UpdateProgressPanel.updateProgress("Download Completed!", 100, progressUpdater, false);
 				out.println("Streams closed!");
 			} catch (IOException e) {
 				out.println("An error occurred while closing streams after download" + Arrays.deepToString(e.getStackTrace()));
@@ -196,16 +199,6 @@ public class DownloadUtils {
 		String downloadedStr = ConversionUtils.coolFileSize((long)(tot * perc) / 100);
 		
 		return downloadedStr + "/" + totalStr;
-	}
-	
-	public static void updateProgress(String text, int progress, UpdateProgressPanel progressUpdater, boolean useGeneralBar) throws ProgressBarInterruptedException {
-		if(progressUpdater != null) {
-			if(progressUpdater.secondBarEnabled) {
-				progressUpdater.update(progress, text, useGeneralBar);
-			}else {
-				progressUpdater.update(text, progress);
-			}
-		}
 	}
 	
 	public static void ifStoppedByUserThrowException(UpdateProgressPanel progressMonitor) throws ProgressBarInterruptedException {

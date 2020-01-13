@@ -624,8 +624,14 @@
 						<filtering>false</filtering>
 				        <directory>./</directory>
     					<includes>
-    						<include>ROOT_DIR_APP_FILES/License_ScreepT.html</include>
     						<include>FTP.properties</include>
+					    </includes>
+					</resource>
+				     <resource>
+						<filtering>false</filtering>
+				        <directory>./ROOT_DIR_APP_FILES</directory>
+    					<includes>
+    						<include>License_ScreepT.html</include>
 					    </includes>
 					</resource>
 			    </resources>     

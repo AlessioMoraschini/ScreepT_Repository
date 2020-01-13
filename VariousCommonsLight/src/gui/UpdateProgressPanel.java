@@ -465,4 +465,14 @@ public class UpdateProgressPanel {
 			}
 		}
 	}
+
+	public static void updateProgress(String text, int progress, UpdateProgressPanel progressUpdater, boolean useGeneralBar) throws ProgressBarInterruptedException {
+		if(progressUpdater != null) {
+			if(progressUpdater.secondBarEnabled) {
+				progressUpdater.update(progress, text, useGeneralBar);
+			}else {
+				progressUpdater.update(text, progress);
+			}
+		}
+	}
 }

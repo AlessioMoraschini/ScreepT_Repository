@@ -132,7 +132,7 @@ public class AesCipher {
 		StringBuilder builder = new StringBuilder(10000);
 		for(int i=0; i<sourceLines.length; i++) {
 			encrypted = cipher.doFinal(sourceLines[i].getBytes(EncodingUtils.stringEncoding));
-			builder.append(encodingUtils.encodeBase64(encrypted)).append("\n\n");
+			builder.append(encodingUtils.encodeBase64(encrypted)).append("\n");
 		}
 		return builder.toString();
 	}
@@ -210,7 +210,7 @@ public class AesCipher {
 		StringBuilder builder = new StringBuilder(10000);
 		for(int i=0; i<sourceLines.length; i++) {
 			decrypted = cipher.doFinal(encodingUtils.decodeBase64bytes(sourceLines[i]));
-			builder.append(new String(decrypted, EncodingUtils.stringEncoding)).append("\n\n");
+			builder.append(new String(decrypted, EncodingUtils.stringEncoding)).append("\n");
 		}
 		return builder.toString();
 	}
