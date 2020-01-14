@@ -26,12 +26,12 @@
     </developer>
   </developers>
   
-  <parent>
+  <!-- <parent>
   	<groupId>ScreepT_Parent</groupId>
   	<artifactId>ScreepT_Parent</artifactId>
   	<version>${parent.build.version.screept}</version>
   	<relativePath>../ScreepT_Parent</relativePath>
-  </parent>
+  </parent> -->
   
   <build>
     <sourceDirectory>src</sourceDirectory>

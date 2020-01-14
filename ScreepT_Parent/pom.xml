@@ -6,7 +6,7 @@
 	<!-- Version is Defined in this file as custom property -->
 	<version>${parent.build.version.screept}</version>
 	<packaging>pom</packaging>
-
+	
 	<!-- MODULES BUILD -->
 	<modules>
 		<module>../VariousCommonsLight</module>
@@ -25,113 +25,78 @@
 		<module>../ScreepT_Launcher</module>
 		<module>../ScreepT</module>
 	</modules>
-
-	<properties>
-
-		<!-- Builds are coded into pom.xml of "ScrYpT_Launcher" and "ScreepT" projects, 
-			this build is designed to the compile entire application. Launch this with 
-			wanted configurations to customize the build process(see after in this file). 
-			Launch normally with "clean install -X -U" -->
-
-		<!-- ###################### GENERAL BUILD OPTIONS ##################### -->
-
-		<!-- Main application version used everyWhere -->
-		<parent.build.version.screept>0.9.17</parent.build.version.screept>
-
-		<!-- #################### LICENSE COMMON DATA ################# -->
-		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
-		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>2019</inception.year>
-		<current.year>2020</current.year>
-		<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
-		<project.main.url>https://www.am-design-development.com</project.main.url>
-		<project.license.url>../License_ScreepT.html</project.license.url>
-
-		<!-- Change this to false if you wanna export -->
-		<export.launcher.jarmode>false</export.launcher.jarmode>
-
-		<!-- SKIP OPERATIONS SETTINGS -->
-		<!-- Set skip to true to avoid export of this jar and resources -->
-
-		<!-- FATJAR -->
-		<export.fatjar.root.skip>false</export.fatjar.root.skip>
-		<export.fatjar.skip>false</export.fatjar.skip>
-		<export.fatjar.launcher.skip>false</export.fatjar.launcher.skip>
-		<export.fatjar.vanilla.skip>false</export.fatjar.vanilla.skip>
-
-		<!-- UPDATES/PLUGINS -->
-		<export.updates.regenjars.skip>false</export.updates.regenjars.skip>
-		<export.updates.skip>false</export.updates.skip>
-		<export.plugins.skip>true</export.plugins.skip>
-
-		<!-- EXTRA OPERATIONS -->
-		<obfuscation.skip>true</obfuscation.skip>
-		<sources.license.header.skip>true</sources.license.header.skip>
-		<license.thirdyparty.report.skip>true</license.thirdyparty.report.skip>
-
-		<!-- MULTIJAR - Set skip to true to avoid export of this jar and resources -->
-		<export.multijar.skip>true</export.multijar.skip>
-		<export.multijar.launcher.skip>true</export.multijar.launcher.skip>
-
-		<!-- PLUGINS ADDITION TO JARS - Change this if you want to include or not 
-			transitive plugins dependencies into main build (provided=not included : 
-			compile=included) -->
-		<plugins.export.scope>provided</plugins.export.scope>
-
-		<!-- ##################### MANUAL - UPDATES FOLDER PACKAGING #################### -->
-		<export.updates.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_UPDATES_DATA\updates</export.updates.folder>
-		<export.updates.root>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_UPDATES_DATA</export.updates.root>
-
-		<!-- ##################### MANUAL - PLUGINS FOLDER PACKAGING #################### -->
-		<export.plugins.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_PLUGINS_DATA</export.plugins.folder>
-
-		<!-- ########################## FATJAR EXPORT - USE THIS ######################## -->
-
-		<export.directory.fatjar.main>
-			<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - ALL RESOURCES 
-				ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
-			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScreepT_V${parent.build.version.screept}\Application
-		</export.directory.fatjar.main>
-		<export.directory.fatjar.resources>
-			${export.directory.fatjar.main}\Resources_ScreepT
-		</export.directory.fatjar.resources>
-
-
-		<!-- ############################ MULTIJAR EXPORT - NOT UPDATED! ############################### -->
-		<export.directory.multijar.main>
-			<!-- DYNAMIC PATH WITH VERSION - CAN BE UNEXISTINTING - NOT ALL RESOURCES 
-				ARE EXPORTED IN THIS BUILD FROM SCRATCH! -->
-			C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScreepT_V${parent.build.version.screept}_ModularBuild\Application
-		</export.directory.multijar.main>
-		<export.directory.multijar.resources>
-			${export.directory.multijar.main}\Resources_ScreepT
-		</export.directory.multijar.resources>
-		<export.directory.multijar.libs>
-			${export.directory.multijar.resources}\lib
-		</export.directory.multijar.libs>
-
-
-	</properties>
-
+	
+	<!-- PROFILE TYPES : USED TO DIFFERENTIATE BUILDS USING CUSTOM PROPERTIES FILE (app.properties) -->
 	<profiles>
 		<profile>
-			<id>free</id>
-			<!-- The development profile is active by default -->
+			<id>default</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<build.profile.id>free</build.profile.id>
+				<properties.location>profiles/default/app.properties</properties.location>
+				<profile.id>free</profile.id>
+				<jdk>1.8</jdk>
 			</properties>
 		</profile>
+		
+		<profile>
+			<id>free</id>
+			<properties>
+				<properties.location>profiles/free/app.properties</properties.location>
+				<jdk>1.8</jdk>
+			</properties>
+		</profile>
+		
 		<profile>
 			<id>premium</id>
 			<properties>
-				<build.profile.id>premium</build.profile.id>
+				<properties.location>profiles/premium/app.properties</properties.location>
+				<jdk>1.8</jdk>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>extras</id>
+			<properties>
+				<properties.location>profiles/extras/app.properties</properties.location>
+				<jdk>1.8</jdk>
 			</properties>
 		</profile>
 	</profiles>
 
+	<properties>
+
+		<!-- Builds are coded into pom.xml : "ScreepT_Launcher", "ScreepT", and "UpdaterModule" 
+			This build is designed to the compile entire application. Launch this with 
+			wanted configurations to customize the build process(see after in this file). 
+			Launch normally with "clean install -X -U -P free|premium" (see app.properties) -->
+		
+		<!-- Main application version used everyWhere -->
+		<parent.build.version.screept>0.9.18</parent.build.version.screept>
+		
+		<!-- If true, transitive plugins dependencies included in fatjar (provided=excluded : compile=included) -->
+		<plugins.export.scope>provided</plugins.export.scope>
+
+		<!-- ##################### UPDATES FOLDER PACKAGING #################### -->
+		<export.updates.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_UPDATES_DATA\updates</export.updates.folder>
+		<export.updates.root>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_UPDATES_DATA</export.updates.root>
+
+		<!-- ##################### PLUGINS FOLDER PACKAGING #################### -->
+		<export.plugins.folder>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\LATEST_PLUGINS_DATA</export.plugins.folder>
+
+		<!-- ########################## FATJAR EXPORT - USE THIS ######################## -->
+		<export.directory.fatjar.main>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScreepT_V${parent.build.version.screept}\Application</export.directory.fatjar.main>
+		<export.directory.fatjar.resources>${export.directory.fatjar.main}\Resources_ScreepT</export.directory.fatjar.resources>
+
+		<!-- ############################ MULTIJAR EXPORT - DEPRECATED! ############################### -->
+		<export.directory.multijar.main>C:\Users\xx\Desktop\Documenti&amp;Utili\Informatica varie\CryptoSteg\Export\ScreepT_V${parent.build.version.screept}_ModularBuild\Application</export.directory.multijar.main>
+		<export.directory.multijar.resources>${export.directory.multijar.main}\Resources_ScreepT</export.directory.multijar.resources>
+		<export.directory.multijar.libs>${export.directory.multijar.resources}\lib</export.directory.multijar.libs>
+
+	</properties>
+
+	<!-- COMMON PLUGINS -->
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -165,13 +130,13 @@
 				<version>1.0.0</version>
 				<executions>
 					<execution>
-						<phase>pre-clean</phase>
+						<phase>validate</phase>
 						<goals>
 							<goal>read-project-properties</goal>
 						</goals>
 						<configuration>
 							<files>
-								<file>profiles/${build.profile.id}/app.properties</file>
+								<file>${properties.location}</file>
 							</files>
 						</configuration>
 					</execution>
@@ -180,7 +145,10 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
 

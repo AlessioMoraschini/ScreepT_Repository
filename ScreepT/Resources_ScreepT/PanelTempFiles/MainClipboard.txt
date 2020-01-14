@@ -1,5 +1,5 @@
 
-=> Hi, welcome to ScrYpT!
+=> Hi, welcome to ScreepT!
 	
 This is the text editor, mainly for coding use.
 	

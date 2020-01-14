@@ -12,17 +12,6 @@
   </parent>
   
   <packaging>jar</packaging>
-  
-  <properties>
-		<!-- #################### LICENSE COMMON DATA ################# -->
-		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
-		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>2019</inception.year>
-		<current.year>2020</current.year>
-		<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
-		<project.main.url>https://www.am-design-development.com</project.main.url>
-		<project.license.url>../License_ScreepT.html</project.license.url>
-	</properties>
 
 	<name>UpdaterModule</name>
 	<description>
@@ -53,6 +42,26 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
+    	
+    	<!-- Properties inherited from parent -->
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>properties-maven-plugin</artifactId>
+			<executions>
+				<execution>
+					<phase>validate</phase>
+					<goals>
+						<goal>read-project-properties</goal>
+					</goals>
+					<configuration>
+						<files>
+							<file>${project.parent.relativePath}/${properties.location}</file>
+						</files>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+    
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>

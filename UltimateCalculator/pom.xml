@@ -3,12 +3,6 @@
   <groupId>UltimateCalculator</groupId>
   <artifactId>UltimateCalculator</artifactId>
   <version>1.0</version>
-  <parent>
-  	<groupId>ScreepT_Parent</groupId>
-  	<artifactId>ScreepT_Parent</artifactId>
-  	<version>${parent.build.version.screept}</version>
-  	<relativePath>../ScreepT_Parent</relativePath>
-  </parent>
   
   <packaging>jar</packaging>
   
