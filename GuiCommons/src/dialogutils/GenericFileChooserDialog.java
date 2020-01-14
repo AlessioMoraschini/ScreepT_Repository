@@ -23,6 +23,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.FilenameUtils;
 import general.MyFileView;
@@ -38,6 +39,7 @@ public class GenericFileChooserDialog {
 	private static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 	
 	public INItializer currentConf;
+	public FileFilter fileFilter;
 	
 	/**
 	 * Use null currentconfig if you don't need to automatically update last dst/src paths
@@ -45,6 +47,16 @@ public class GenericFileChooserDialog {
 	 */
 	public GenericFileChooserDialog(INItializer currentConf) {
 		this.currentConf = (currentConf == null)? new INItializer() : currentConf;
+		this.fileFilter = null;
+	}
+
+	/**
+	 * Use null currentconfig if you don't need to automatically update last dst/src paths
+	 * @param currentConf
+	 */
+	public GenericFileChooserDialog(INItializer currentConf, String typeDescription, String... fileFilter) {
+		this.currentConf = (currentConf == null)? new INItializer() : currentConf;
+		this.fileFilter = new FileNameExtensionFilter(typeDescription, fileFilter);
 	}
 	
 	/**JFRAME - only img supported extension
@@ -52,7 +64,8 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileImgRead(JFrame parent) {
 
-		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();	
+		updateFileFilters(fileChooser, fileFilter);
 		fileChooser.setDialogTitle("Select input Image File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
@@ -85,7 +98,8 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileImgRead(JPanel parent, String ext) throws Exception {
 
-		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		fileChooser.setFileFilter(getImageFileFilter(ext));
 		fileChooser.setDialogTitle("Select input Image File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setFileView(fileView);
@@ -128,7 +142,17 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileRead(Component parent) {
 		
-		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+        return fileRead(parent, fileFilter);
+	}
+
+	/**
+	 * JPANEL - every extension
+	 * this method select a source file from the user,if nothing is selected returns null
+	 */
+	public File fileRead(Component parent, FileFilter fileFilter) {
+		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();	
+		updateFileFilters(fileChooser, fileFilter);
 		fileChooser.setDialogTitle("Select input File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
@@ -137,18 +161,49 @@ public class GenericFileChooserDialog {
 		File correctFile = null;
 		
 		int returnVal = fileChooser.showOpenDialog(parent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            
-        	File selectedFile = fileChooser.getSelectedFile();
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			
+			File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
-        	if(selectedFile==null) {
-        		dialogHelper.error("Please select a file!", "File not selected");
-        	}else {
-        		correctFile = selectedFile;
-        		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
-        	}
-        }
-        return correctFile;
+			if(selectedFile==null) {
+				dialogHelper.error("Please select a file!", "File not selected");
+			}else {
+				correctFile = selectedFile;
+				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
+			}
+		}
+		return correctFile;
+	}
+
+	/**
+	 * JPANEL - every extension
+	 * this method select a source file from the user,if nothing is selected returns null
+	 */
+	public File fileRead(Component parent, ExtensionFileFilter[] filters, ExtensionFileFilter defaultFilter) {
+		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		addMultipleFileFilter(fileChooser, filters);
+		fileChooser.setFileFilter(defaultFilter);
+		fileChooser.setDialogTitle("Select input File");
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
+		fileChooser.setFileView(fileView);
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		File correctFile = null;
+		
+		int returnVal = fileChooser.showOpenDialog(parent);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			
+			File selectedFile = fileChooser.getSelectedFile();
+//        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
+			if(selectedFile==null) {
+				dialogHelper.error("Please select a file!", "File not selected");
+			}else {
+				correctFile = selectedFile;
+				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
+			}
+		}
+		return correctFile;
 	}
 	
 	/**
@@ -157,7 +212,8 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileAndDirRead(JComponent parent) {
 		
-		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, fileFilter);
 		fileChooser.setDialogTitle("Select input File or Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setFileView(fileView);
@@ -187,7 +243,8 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileAndDirRead(JFrame parent) {
 		
-		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, fileFilter);
 		fileChooser.setDialogTitle("Select input File or Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setFileView(fileView);
@@ -216,7 +273,8 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileImgWrite(JFrame parent, String defaultName) {
 
-		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, fileFilter);
 		fileChooser.setDialogTitle("Save Image File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
@@ -246,7 +304,8 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileWrite(JFrame parent, String defaultName) {
 
-		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, fileFilter);
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
@@ -271,7 +330,8 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileWrite(JFrame parent, String defaultName, File defaultDir) {
 		
-		JFileChooser fileChooser = new CustomFileChooserOnTop();		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, fileFilter);
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(defaultDir != null ? defaultDir : new File(currentConf.getFileOpt().getLastDstFolderPath()));	
@@ -297,6 +357,7 @@ public class GenericFileChooserDialog {
 	public File directoRead(JFrame parent) {
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, null);
 		fileChooser.setDialogTitle("Choose Input Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
@@ -324,6 +385,7 @@ public class GenericFileChooserDialog {
 	public File directoRead(JFrame parent, String title) {
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, null);
 		fileChooser.setDialogTitle(title);
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
@@ -352,6 +414,7 @@ public class GenericFileChooserDialog {
 	public File directoWrite(JFrame parent) {
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, null);
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setDialogTitle("Choose output Directory");
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
@@ -412,5 +475,23 @@ public class GenericFileChooserDialog {
 			return dialog;
 		}
 	}
-}
+	
+	private FileNameExtensionFilter getImageFileFilter(String ext) {
+		return new FileNameExtensionFilter("Images (*." + ext + ")", ext);
+	}
 
+	private void updateFileFilters(JFileChooser fileChooser, FileFilter filter) {
+		if (filter != null) {
+			fileChooser.setFileFilter(filter);
+		}
+	}
+	
+	private static void addMultipleFileFilter(JFileChooser fileChooser, ExtensionFileFilter[] fileFilters) {
+		
+		for(int i = 0; i < fileFilters.length; i++) {
+			fileChooser.addChoosableFileFilter(fileFilters[i]);
+		}
+		
+		fileChooser.setAcceptAllFileFilterUsed(true);
+	}
+}

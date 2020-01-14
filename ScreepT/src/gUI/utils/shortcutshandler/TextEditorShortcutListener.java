@@ -22,6 +22,7 @@ import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
 
+import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
@@ -369,7 +370,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 */
 				if (e.getKeyCode() == 10 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					try {
-						GuiUtilsExtended.openInFileSystem(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+						GuiUtilsExtended.openInFileSystem(FileVarious.getParent(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile));
 					} catch (Exception e2) {
 					}
 				}
@@ -378,7 +379,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 */
 				if (e.getKeyCode() == 10 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					try {
-						SysUtils.cdIntoCommandLine(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+						SysUtils.cdIntoCommandLine(FileVarious.getParent(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile));
 					} catch (Exception e2) {
 					}
 				}

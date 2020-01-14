@@ -57,6 +57,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
 import conversion.Text2Speech;
+import dialogutils.ExtensionFileFilter;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
@@ -695,10 +696,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
 					public void run() {
+						File loadedFileParent = FileVarious.getParent(parent.getCurrentTabEditor().loadedTabObj.loadedFile);
 						if (TextEditorShortcutListener.flagCtrlDown.get()) {
-							SysUtils.cdIntoCommandLine(parent.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+							SysUtils.cdIntoCommandLine(loadedFileParent);
 						} else {
-							GuiUtilsExtended.openInFileSystem(parent.getCurrentTabEditor().loadedTabObj.loadedFile.getParentFile());
+							GuiUtilsExtended.openInFileSystem(loadedFileParent);
 						}
 					}
 				}).start();
@@ -867,7 +869,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						});
 						
 						searchBox.setLocationRelativeTo(mainApplication.getMainFrame());
-						GuiUtilsExtended.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), searchBox, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -914,7 +915,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						});
 
 						replaceDialog.setLocationRelativeTo(mainApplication.getMainFrame());
-						GuiUtilsExtended.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), replaceDialog, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -932,7 +932,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							goToLineDialog = textEditorUtils.textAreaDialogs.getGoToLineDialog(parent.parentFrame);
 						}
 						goToLineDialog.setLocationRelativeTo(mainApplication.getMainFrame());
-						GuiUtilsExtended.changeFrameStateLaterUnchecked(mainApplication.getMainFrame(), goToLineDialog, JFrame.MAXIMIZED_BOTH);
 					}
 				});
 			}
@@ -1469,7 +1468,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					exportNamePreset = FileVarious.ensureValidExtension(exportNamePreset, comboFileFormat.getSelectedItem().toString());
 
 					try {
-						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, exportNamePreset, loadedTabObj.loadedFile.getParentFile());
+						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, exportNamePreset, FileVarious.getParent(loadedTabObj.loadedFile));
 
 						if (selectedFile != null) {
 							skipRefresh = false;
@@ -1505,7 +1504,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 								parent.footerPanel.lblCurrentFile.setText(loadedTabObj.loadedFile.getName());
 								parent.footerPanel.lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
 								textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
-								currentConfiguration.getFileOpt().setLastDstFolderPath(loadedTabObj.loadedFile.getParentFile().getAbsolutePath());
+								currentConfiguration.getFileOpt().setLastDstFolderPath(FileVarious.getParentPath(loadedTabObj.loadedFile));
 							} else {
 								skipRefresh = true;
 								textEditorUtils.errorAdvice("[Error Saving selected file]");
@@ -1556,7 +1555,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 				if (!parent.getCurrentTabEditor().alreadyLoading) {
 
-					File source = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(parent);
+					ExtensionFileFilter defaultExt = ((SupportedFileTextEditor)comboFileFormat.getSelectedItem()).getRelatedFilter();
+					File source = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(parent, SupportedFileTextEditor.getMultipleFileFilter(), defaultExt);
 
 					parent.getCurrentTabEditor().loadFiles(source);
 				}

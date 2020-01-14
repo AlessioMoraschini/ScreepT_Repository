@@ -67,6 +67,19 @@ public class FileVarious {
 		return correctFile;
 	}
 	
+	public static File getParent(File currentFile) {
+		if(currentFile != null) {
+			return currentFile;
+		} else {
+			return null;
+		}
+	}
+	
+	public static String getParentPath(File currentFile) {
+		File parent = getParent(currentFile);
+		return parent == null ? null : parent.getAbsolutePath();
+	}
+	
 	/**
 	 * Get relative path from a reference file path:
 	 * 

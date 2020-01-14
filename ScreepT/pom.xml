@@ -467,7 +467,7 @@
             	<skip>${export.fatjar.root.skip}</skip>
             	<overwrite>true</overwrite>
               	<outputDirectory>
-              		${export.directory.fatjar.main}\..\
+              		${export.directory.fatjar.main}/../
               	</outputDirectory>
 			    <resources>
 				     <resource>
@@ -863,17 +863,4 @@
 
   </dependencies>
   
-	<repositories>
-	   	<repository>
-	        <id>central</id>
-	        <name>jcenter</name>
-	        <url>http://jcenter.bintray.com</url>
-	   	</repository>
-   	    <repository>
-	      	<id>Local-repository-Main</id>
-	      	<name>Main LOCAL Repository</name>
-	      	<url>file:C:\Users\xx\.m2\repository</url>
-	    </repository>
-	</repositories>
-	
 </project>

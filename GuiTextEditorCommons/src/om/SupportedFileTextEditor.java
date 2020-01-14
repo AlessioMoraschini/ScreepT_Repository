@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
+import dialogutils.ExtensionFileFilter;
 import resources.GeneralResourcesPaths;
 import resources.IconsPathConfigurator;
 
@@ -61,14 +62,14 @@ public enum SupportedFileTextEditor {
 									 YAML(".yml","yml", SyntaxConstants.SYNTAX_STYLE_YAML, null, null);
 					
 	public final String DEFAULT_ICON = IconsPathConfigurator.F_ICON_TXT;
-	public String nomeStringa;
+	public String extension;
 	public String senzapunto;
 	public String syntax;
 	public String languageWordsFile;
 	public String iconPath;
 	
 	SupportedFileTextEditor(String extension, String senzapunto, String syntax, String languageFile, String iconPath) {
-		this.nomeStringa = extension;
+		this.extension = extension;
 		this.senzapunto = senzapunto;
 		this.syntax = syntax;
 		this.languageWordsFile = languageFile;
@@ -89,7 +90,7 @@ public enum SupportedFileTextEditor {
 		ArrayList<String> dotsExtensions = new ArrayList<String>();
 		
 		for(SupportedFileTextEditor current : SupportedFileTextEditor.values()) {
-			dotsExtensions.add(current.nomeStringa);
+			dotsExtensions.add(current.extension);
 		}
 		
 		return dotsExtensions;
@@ -118,6 +119,32 @@ public enum SupportedFileTextEditor {
 		}
 		
 		return supported;
+	}
+	
+	public ExtensionFileFilter getRelatedFilter() {
+
+		int i = 0;
+		for(SupportedFileTextEditor type : values()) {
+			if (this.equals(type)) {
+				return new ExtensionFileFilter(new String[] { type.senzapunto }, type.extension);
+			}
+			i++;
+		}
+
+		return new ExtensionFileFilter(new String[] { TXT.senzapunto }, TXT.extension);
+	}
+	
+	public static ExtensionFileFilter[] getMultipleFileFilter() {
+		SupportedFileTextEditor[] values = values();
+		ExtensionFileFilter[] extensionList = new ExtensionFileFilter[values.length];
+
+		int i = 0;
+		for(SupportedFileTextEditor type : values) {
+			extensionList[i] = new ExtensionFileFilter(new String[] {type.senzapunto}, type.extension);
+			i++;
+		}
+
+		return extensionList;
 	}
 	
 }

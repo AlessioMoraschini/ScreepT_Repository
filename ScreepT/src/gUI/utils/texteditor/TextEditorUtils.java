@@ -1100,7 +1100,7 @@ public class TextEditorUtils {
 		
 		// Update gui
 		loadedTabObj.textArea.revalidate();
-		currentTextEditor.CURRENT_EXT_OUT = selected.nomeStringa;
+		currentTextEditor.CURRENT_EXT_OUT = selected.extension;
 		currentTextEditor.footerPanel.lblAdvice.setText("[Type: " + currentTextEditor.CURRENT_EXT_OUT + "]");
 		currentTextEditor.subHeaderPanel.btnSaveTextFileAs.setToolTipText(TextEditTooltips.tooltipSaveTextFileAs + " as " + currentTextEditor.CURRENT_EXT_OUT);
 
