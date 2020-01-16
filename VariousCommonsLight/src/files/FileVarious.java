@@ -456,6 +456,22 @@ public class FileVarious {
 		return file;
 	}
 
+	/**
+	 * Change extension to the given one and return the new file reference. Be careful, the returned file is not physically created!
+	 * NB newExtension must not be preceeded by a dot
+	 * NB defaultExtension not must be preceeded by a dot
+	 */
+	public static File changeExtensionForceDot(File file, String newExtension) {
+		
+		if(newExtension == null || file == null) {
+			return file;
+		}
+		
+		String adapted = newExtension.replaceAll("[.]", "");
+		
+		return changeExtension(file, "." + adapted);
+	}
+
 	public static String getNAncestorsPath(File file, int nLevels) {
 		String result = "";
 		if (file != null) {

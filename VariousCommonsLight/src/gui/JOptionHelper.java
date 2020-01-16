@@ -69,7 +69,7 @@ public class JOptionHelper {
 	
 	public Dimension IF_SCROLLABLE_DEF_DIMENSION = new Dimension( 500, 500 );
 	
-	public static Font DEFAULT_FONT_DIMENSION;
+	public static Font DEFAULT_FONT_DIMENSION = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
 	
 	public boolean enabledAdvices = true;
 	
@@ -81,7 +81,7 @@ public class JOptionHelper {
 		ICON_WARN_REF = UIManager.getIcon("OptionPane.warningIcon"); 
 		ICON_INFO_REF = UIManager.getIcon("OptionPane.informationIcon");        
 		ICON_QUESTION_REF = UIManager.getIcon("OptionPane.questionIcon");
-		DEFAULT_FONT_DIMENSION = new Font("Segoe UI", Font.PLAIN, 19);
+		DEFAULT_FONT_DIMENSION = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
 	}
 	
 	public JOptionHelper (Component parentComponent) {

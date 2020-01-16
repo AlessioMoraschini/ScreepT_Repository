@@ -81,6 +81,7 @@ import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
+import om.TextPositionDTO;
 import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
@@ -1172,49 +1173,36 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// SLIDER FONT CHANGED
 		sliderFontSize.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
+				
 				final TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
-				int oldCaretPLinePos = loadedTabObj.textArea.getCaretPosition();
-				
-				try {
-					
-					if(oldCaretPLinePos > 0 ) {
-						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos - 1);
-						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos);
-					} else {
-						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos + 1);
-						loadedTabObj.textArea.setCaretPosition(oldCaretPLinePos);
-					}
-				
-				}catch(Exception e1) {
-					logger.warn("Error adjusting font size", e1);
-				}
+				TextPositionDTO positionBackup = new TextPositionDTO(loadedTabObj.textArea);
 				
 				loadedTabObj.textArea.setHighlightCurrentLine(false);
 
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
+				SwingUtilities.invokeLater(() -> {
 						
-						Font font = loadedTabObj.textArea.getFont();
-						font = new Font(font.getName(), font.getStyle(), sliderFontSize.getValue());
-						lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
-						currentConfiguration.getTextEditorOpt().setFont(font);
-						loadedTabObj.textArea.setFont(font);
-						
-						Font gutterFont = font.getSize() < 20 ? font.deriveFont(font.getSize()-2) : font.deriveFont(20F);
-						loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
-						
-						GuiUtils.launchThreadSafeSwing(new Runnable() {
-							public void run() {
-								loadedTabObj.textArea.revalidate();
-								loadedTabObj.textArea.repaint(50);
-								try {
-									Thread.sleep(800);
-								} catch (InterruptedException e) {
-								}
-								loadedTabObj.textArea.setHighlightCurrentLine(true);
-							}
-						});
+					Font font = loadedTabObj.textArea.getFont();
+					font = new Font(font.getName(), font.getStyle(), sliderFontSize.getValue());
+					lblSIZE.setText(String.valueOf(loadedTabObj.textArea.getFont().getSize()) + " Px");
+					currentConfiguration.getTextEditorOpt().setFont(font);
+					loadedTabObj.textArea.setFont(font);
+					
+					Font gutterFont = font.getSize() < 20 ? font.deriveFont(font.getSize()-2) : font.deriveFont(20F);
+					loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
+					
+					try {
+						positionBackup.resetPosition();
+					}catch(Exception e1) {
+						logger.warn("Error resetting position", e1);
 					}
+					
+					GuiUtils.launchThreadSafeSwing(new Runnable() {
+						public void run() {
+							loadedTabObj.textArea.revalidate();
+							loadedTabObj.textArea.repaint(500);
+							loadedTabObj.textArea.setHighlightCurrentLine(true);
+						}
+					});
 				});
 			}
 		});
@@ -1288,7 +1276,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboFileFormat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				applyFileFormatSyntaxFull();
-				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(((SupportedFileTextEditor)comboFileFormat.getSelectedItem()).toString());
+				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(getCurrentFileType().toString());
 				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
 			}
 		});
@@ -1299,7 +1287,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				textEditorUtils.findRightSyntaxFromComboNSelect(parent.getCurrentTabEditor().loadedTabObj.loadedFile, !chckbxLockLanguage.isSelected());
 				currentConfiguration.getTextEditorOpt().setDefaultAutoSyntaxSync(!chckbxLockLanguage.isSelected());
-				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(((SupportedFileTextEditor)comboFileFormat.getSelectedItem()).toString());
+				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(getCurrentFileType().toString());
 				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
 			}
 		});
@@ -1464,11 +1452,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					parent.getCurrentTabEditor().alreadySaving = true;
 					boolean done = false;
 					String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))?
-							loadedTabObj.loadedFile.getName() : "NewFile."+comboFileFormat.getSelectedItem().toString().toLowerCase();
-					exportNamePreset = FileVarious.ensureValidExtension(exportNamePreset, comboFileFormat.getSelectedItem().toString());
+							loadedTabObj.loadedFile.getName() : "NewFile" + getCurrentFileType().extension;
+					exportNamePreset = FileVarious.ensureValidExtension(exportNamePreset, getCurrentFileType().extension);
 
 					try {
-						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(parent.parentFrame, exportNamePreset, FileVarious.getParent(loadedTabObj.loadedFile));
+						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(
+								parent.parentFrame, exportNamePreset, FileVarious.getParent(loadedTabObj.loadedFile), SupportedFileTextEditor.getMultipleFileFilter());
 
 						if (selectedFile != null) {
 							skipRefresh = false;
@@ -1555,8 +1544,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 				if (!parent.getCurrentTabEditor().alreadyLoading) {
 
-					ExtensionFileFilter defaultExt = ((SupportedFileTextEditor)comboFileFormat.getSelectedItem()).getRelatedFilter();
-					File source = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(parent, SupportedFileTextEditor.getMultipleFileFilter(), defaultExt);
+					File source = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(parent, SupportedFileTextEditor.getMultipleFileFilter());
 
 					parent.getCurrentTabEditor().loadFiles(source);
 				}
@@ -1689,31 +1677,35 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public void initGuiFromConfig(boolean refreshTheme) {
 		final TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				slider_margin.setValue(txtOptions.getMargin());
-				sliderFontSize.setValue(txtOptions.getFont().getSize());
-				// AUTO LANGUAGE SYNC
-				chckbxLockLanguage.setSelected(!txtOptions.defaultAutoSyntaxSync);
-				
-				if (refreshTheme) {
-					comboStylesScheme.setSelectedItem(ThemesWrapper.getFromListByPath(txtOptions.selectedTheme, themeList));
-				}
-				
-				if(chckbxLockLanguage.isSelected()) {
-					comboFileFormat.setSelectedItem(SupportedFileTextEditor.valueOf(currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync));
-				}
-				
-				textEditorUtils.updateMargin(); // SetValue does not trigger action itself
-				
-				parent.revalidate();
-				parent.repaint();
-				
-				textEditorUtils.setFooterVisibile(currentConfiguration.getTextEditorOpt().footerVisible);
-				textEditorUtils.setHeaderVisibileLevel1(currentConfiguration.getTextEditorOpt().headerVisible);
-				textEditorUtils.setHeaderVisibileLevel2(currentConfiguration.getTextEditorOpt().subHeaderVisible);
+		SwingUtilities.invokeLater(() -> {
+			
+			slider_margin.setValue(txtOptions.getMargin());
+			sliderFontSize.setValue(txtOptions.getFont().getSize());
+			// AUTO LANGUAGE SYNC
+			chckbxLockLanguage.setSelected(!txtOptions.defaultAutoSyntaxSync);
+			
+			if (refreshTheme) {
+				comboStylesScheme.setSelectedItem(ThemesWrapper.getFromListByPath(txtOptions.selectedTheme, themeList));
 			}
+			
+			if(chckbxLockLanguage.isSelected()) {
+				comboFileFormat.setSelectedItem(SupportedFileTextEditor.valueOf(currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync));
+			}
+			
+			textEditorUtils.updateMargin(); // SetValue does not trigger action itself
+			
+			parent.revalidate();
+			parent.repaint();
+			
+			textEditorUtils.setFooterVisibile(currentConfiguration.getTextEditorOpt().footerVisible);
+			textEditorUtils.setHeaderVisibileLevel1(currentConfiguration.getTextEditorOpt().headerVisible);
+			textEditorUtils.setHeaderVisibileLevel2(currentConfiguration.getTextEditorOpt().subHeaderVisible);
+		
 		});
+	}
+	
+	public SupportedFileTextEditor getCurrentFileType() {
+		return (SupportedFileTextEditor)comboFileFormat.getSelectedItem();
 	}
 	
 }

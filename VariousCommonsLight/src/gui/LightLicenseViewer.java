@@ -16,7 +16,6 @@ import utility.string.StringWorker;
 
 import java.awt.Color;
 import javax.swing.border.LineBorder;
-import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
@@ -34,7 +33,7 @@ public class LightLicenseViewer extends JDialog {
 		REJECTED;
 	}
 	
-	private static final Dimension DEFAULT_PREF_DIMENSION = new Dimension(1200, 650);
+	private static final Dimension DEFAULT_PREF_DIMENSION = GuiUtils.getScreenSizePerc(75);
 
 	public UserLicenseChoice userChoice = UserLicenseChoice.REJECTED;
 	File sourceLicense;
@@ -55,6 +54,8 @@ public class LightLicenseViewer extends JDialog {
 	
 	public LightLicenseViewer(File sourceLicense, String header, String title) {
 		
+		instance = this;
+		
 		String correctHeader = !StringWorker.isEmpty(header) ? header : "Accept licence to continue using this software";
 		String correctTitle = !StringWorker.isEmpty(title) ? title : "EULA - acceptance";
 		
@@ -66,9 +67,14 @@ public class LightLicenseViewer extends JDialog {
 		setPreferredSize(DEFAULT_PREF_DIMENSION);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setIconImage(GuiUtils.iconToImage(UIManager.getIcon("OptionPane.informationIcon")));
+		setAlwaysOnTop(true);
+		toFront();
 
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("fill, insets 4", "[27px,grow][27px,grow]", "[:35px:80px][27px,grow][35px:n]"));
+		getContentPane().setLayout(new MigLayout(
+				"fill, insets 4",
+				"[27px,grow][27px,grow]",
+				"[:35px:80px][27px,grow][40px:n]"));
 		
 		setTitle(correctTitle);
 		
@@ -93,14 +99,16 @@ public class LightLicenseViewer extends JDialog {
 		addHtmlStyle();
 		
 		btnDecline = new JButton("Decline");
-		btnDecline.setBackground(Color.LIGHT_GRAY);
+		btnDecline.setCursor(GuiUtils.CURSOR_HAND);
+		btnDecline.setBackground(Color.GRAY);
 		btnDecline.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnDecline.setMinimumSize(new Dimension(150, 28));
+		btnDecline.setMinimumSize(new Dimension(200, 32));
 		
 		btnAccept = new JButton("Accept");
-		btnAccept.setBackground(Color.LIGHT_GRAY);
+		btnAccept.setCursor(GuiUtils.CURSOR_HAND);
+		btnAccept.setBackground(Color.GRAY);
 		btnAccept.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		btnAccept.setMinimumSize(new Dimension(150, 28));
+		btnAccept.setMinimumSize(new Dimension(200, 32));
 
 		if (mandatoryChoice) {
 			getContentPane().add(btnDecline, "cell 0 2,alignx center,growy");
@@ -122,13 +130,15 @@ public class LightLicenseViewer extends JDialog {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if (mandatoryChoice) {
-					askExitRejecting();
+				if (mandatoryChoice && !askExitRejecting()) {
+					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+					return;
 				} else {
+					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					instance = null;
 					dispose();
 				}
 			}
-			
 		});
 		
 		btnAccept.addActionListener((e) -> {
@@ -151,10 +161,13 @@ public class LightLicenseViewer extends JDialog {
         styleSheet.addRule("h1 {color: blue;}");
         styleSheet.addRule("h2 {color: #ff0000;}");
         styleSheet.addRule("pre {font : 10px monaco; color : black; background-color : #fafafa; }");
+        
+        jEditorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        jEditorPane.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 
-        // create a document, set it on the jeditorpane, then add the html
-        Document doc = kit.createDefaultDocument();
-        jEditorPane.setDocument(doc);
+//        // create a document, set it on the jeditorpane, then add the html
+//        Document doc = kit.createDefaultDocument();
+//        jEditorPane.setDocument(doc);
 	}
 	
 	private void loadFile() {
@@ -170,10 +183,14 @@ public class LightLicenseViewer extends JDialog {
 		licenseLoadedCorrectly = !StringWorker.isEmpty(fileContent);
 	}
 	
-	private void askExitRejecting() {
+	private boolean askExitRejecting() {
 		if (dialogHelper.yesOrNo("Are you sure to exit license acceptance? It's required to proceed.", "Exit license acceptance?")) {
 			userChoice = UserLicenseChoice.REJECTED;
+			instance = null;
 			dispose();
+			return true;
+		} else {
+			return false;
 		}
 	}
 

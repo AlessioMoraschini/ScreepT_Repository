@@ -113,32 +113,6 @@
 						</configuration>
 					</execution>
 	
-					<!-- UPDATES FOLDER -->
-					<execution>
-						<id>make-assembly -> ${export.updates.folder}</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<skipAssembly>${export.updates.regenjars.skip}</skipAssembly>
-							<outputDirectory>
-								${export.updates.folder}
-							</outputDirectory>
-							<archive>
-								<manifest>
-									<mainClass>
-										mainlauncher.ScreepTLauncher
-									</mainClass>
-								</manifest>
-							</archive>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<appendAssemblyId>false</appendAssemblyId>
-						</configuration>
-					</execution>
-	
 					<!-- MULTIJAR -->
 					<execution>
 						<id>make-assembly -> ${export.directory.multijar.main}</id>

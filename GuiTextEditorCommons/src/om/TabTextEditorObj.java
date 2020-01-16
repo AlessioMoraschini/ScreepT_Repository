@@ -17,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -47,7 +48,6 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.fife.ui.rtextarea.RUndoManager;
 
 import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtilsExtended;
@@ -88,7 +88,7 @@ public class TabTextEditorObj {
 	public File loadedFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
-	public RUndoManager undoManager;
+//	public RUndoManager undoManager;
 	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
 	public Parser currentParser;
@@ -101,6 +101,8 @@ public class TabTextEditorObj {
 		
 		this.uppercase = false;
 		
+		ColumnTextArea.UNDO_LIMIT = GeneralConfig.UNDO_MAX_LIM;
+		
 		loadedFile = file;
 		this.checkChangesMonitor = checkChangesMonitor;
 		this.shortcutsManager = shortcutsManager;
@@ -110,12 +112,11 @@ public class TabTextEditorObj {
 		textArea = new ColumnTextArea(GeneralConfig.RECTANGULAR_TXT_SELECTION_ALLOWED, shortcutsManager);
 		textArea.setMinimumSize(new Dimension(300,100));
 		textArea.setParserDelay(TXT_AREA_PARSER_DELAY);
-		undoManager = new RUndoManager(textArea);
-		undoManager.setLimit(GeneralConfig.UNDO_MAX_LIM);
 		textArea.setEditable(true);
 		
 		Border dropBorder = new MatteBorder(12,12,12,12, new Color(61, 111, 191,80));
-		fileDrop = new FileDrop(textArea, dropBorder, (files) -> {iTabsManager.loadFiles(files);});
+		fileDrop = new FileDrop(textArea, dropBorder, 
+				(files)->{SwingUtilities.invokeLater(()->{iTabsManager.loadFiles(files);});});
 		
 		currentScrollPane = new RTextScrollPane(textArea);
 		
@@ -147,10 +148,16 @@ public class TabTextEditorObj {
 	}
 	
 	public void resetData() {
-		loadedFile = null;
-		undoManager.discardAllEdits();
-		textArea.setText("");
-		unsaved = false;
+		try {
+			loadedFile = null;
+			textArea.setText("");
+			unsaved = false;
+			if (textArea.undoManager != null) {
+				textArea.undoManager.discardAllEdits();
+			}
+		} catch (Exception e) {
+			logger.error("An error ocurred while resetting data");
+		}
 	}
 	
 	public void updateSpellCheckerParser(String newDictionaryPath, boolean forceReload) {
@@ -319,36 +326,19 @@ public class TabTextEditorObj {
 				
 				final JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase text"));
 				uppercaseItem.setToolTipText(TextEditTooltips.tooltipTT);
-				uppercaseItem.addActionListener(
-					e -> {
-						TextAreaStringEditor.makeToggleUppercase(textArea, uppercase);
-						uppercase = !uppercase;
-						shortcutsManager.revalidateUnsaved();
-					});
+				uppercaseItem.addActionListener(getUppercaseListener());
 		
 				final JMenuItem uppercaseFirstItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Tt Tt</b> - Uppercase first letters"));
 				uppercaseFirstItem.setToolTipText(TextEditTooltips.tooltipTtTt);
-				uppercaseFirstItem.addActionListener(
-					e -> {
-						TextAreaStringEditor.makeWordsUppercase(textArea);
-						shortcutsManager.revalidateUnsaved();
-					});
+				uppercaseFirstItem.addActionListener(getWordsUppercaseListener());
 		
 				final JMenuItem uppercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.Tt</b> - Uppercase after significant brokers"));
 				uppercasePostDotsItem.setToolTipText(TextEditTooltips.tooltipUpperPostDots);
-				uppercasePostDotsItem.addActionListener(
-					e -> {
-						TextAreaStringEditor.makeUppercasePostDotsNSeparators(textArea);
-						shortcutsManager.revalidateUnsaved();
-					});
+				uppercasePostDotsItem.addActionListener(getPostDotsUppercaseListener());
 				
 				final JMenuItem lowercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.tt</b> - Lowercase after significant brokers"));
 				uppercasePostDotsItem.setToolTipText(TextEditTooltips.tooltipLowerPostDots);
-				lowercasePostDotsItem.addActionListener(
-					e -> {
-						TextAreaStringEditor.makeLowercasePostDotsNSeparators(textArea);
-						shortcutsManager.revalidateUnsaved();
-					});
+				lowercasePostDotsItem.addActionListener(getPostDotsLowercaseListener());
 				
 				String tabHint = "(See tabSize in textEditor subHead panel)";
 		
@@ -476,7 +466,7 @@ public class TabTextEditorObj {
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				frame.setUndecorated(true);
 				frame.setAlwaysOnTop(true);
-				GuiUtils.centerComponent(frame, 50);
+				GuiUtils.centerComponent(frame, 65);
 				frame.setLocationRelativeTo(textArea.getTopLevelAncestor());
 				GuiUtils.addEscDisposeListener(frame);
 				textArea.addMouseListener(GuiUtils.getClickOutDisposeListener(frame));
@@ -508,5 +498,42 @@ public class TabTextEditorObj {
 		} catch (Exception e) {
 			return "EXCEPTION_WHILE_LOGGING";
 		}
+	}
+	
+	public ActionListener getUppercaseListener() {
+		return e -> {
+			int linePosition = textArea.getCaretLineNumber();
+			TextAreaStringEditor.makeToggleUppercase(textArea, uppercase);
+			uppercase = !uppercase;
+			resetPositionAndRevalidate(linePosition);
+			shortcutsManager.revalidateUnsaved();
+		};
+	}
+	
+	public ActionListener getWordsUppercaseListener() {
+		return e -> {
+			int linePosition = textArea.getCaretLineNumber();
+			TextAreaStringEditor.makeWordsUppercase(textArea);
+			resetPositionAndRevalidate(linePosition);
+			shortcutsManager.revalidateUnsaved();
+		};
+	}
+
+	public ActionListener getPostDotsUppercaseListener() {
+		return e -> {
+			int linePosition = textArea.getCaretLineNumber();
+			TextAreaStringEditor.makeUppercasePostDotsNSeparators(textArea);
+			resetPositionAndRevalidate(linePosition);
+			shortcutsManager.revalidateUnsaved();
+		};
+	}
+
+	public ActionListener getPostDotsLowercaseListener() {
+		return e -> {
+			int linePosition = textArea.getCaretLineNumber();
+			TextAreaStringEditor.makeLowercasePostDotsNSeparators(textArea);
+			resetPositionAndRevalidate(linePosition);
+			shortcutsManager.revalidateUnsaved();
+		};
 	}
 }

@@ -41,6 +41,8 @@ public class TreeUtils {
 	public static final Color DEF_BACK_SELECTION = new Color(10, 102, 153, 40);
 	public static final Color DEF_BACK_HOVER = new Color(0, 102, 153, 20);
 	
+	public static int MAX_EXPAND_ITERATIONS = 256;
+	
 	public static TreePath getPath(TreeNode treeNode) {
 		List<Object> nodes = new ArrayList<Object>();
 		if (treeNode != null) {
@@ -118,9 +120,6 @@ public class TreeUtils {
 	public static MouseMotionListener getHoverOnNodesListener() {
 		return new MouseMotionListener() {
 			
-			int lastSelected = 0;
-			int initialSelected = 0;
-
 			@Override
 			public void mouseDragged(MouseEvent e) {
 			}
@@ -190,7 +189,7 @@ public class TreeUtils {
 		
 		if(tree.getRowCount()!=rowCount){
 			// IF a folder is expandend rowcount increase, and this will be executed
-			expandAllChildNodes(tree, startingIndex+1, new Integer(rowCount-startingIndex));
+			expandAllChildNodes(tree, startingIndex+1, new Integer(rowCount-startingIndex), MAX_EXPAND_ITERATIONS);
 		}
 	}
 
@@ -200,13 +199,19 @@ public class TreeUtils {
 	 * @param startingIndex
 	 * @param endDistance
 	 */
-	private static void expandAllChildNodes(JTree tree, int startingIndex, Integer endDistance){
+	private static void expandAllChildNodes(JTree tree, int startingIndex, Integer endDistance, int maxIterations){
 		boolean stop = tree.getRowCount() - startingIndex -1 < endDistance;
 		
 		tree.expandRow(startingIndex);
 		
-		if(!stop){
-			expandAllChildNodes(tree, startingIndex+1, endDistance);
+		maxIterations --;
+		
+		try {
+			if(!stop && maxIterations > 0){
+				expandAllChildNodes(tree, startingIndex+1, endDistance, maxIterations);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

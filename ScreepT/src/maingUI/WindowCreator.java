@@ -164,6 +164,7 @@ public class WindowCreator {
 		GuiUtilsExtended.launchThreadSafeSwing(new Runnable() {
 			public void run() {
 				UpdateProgressPanel prog = new UpdateProgressPanel(false);
+				prog.setLocationRelativeTo(MainGUI.mainFrameScreept);
 				prog.getPb().setIndeterminate(true);
 				prog.getLabel().setText("Loading Network informations...");
 				prog.getPb().setString("Loading...");
@@ -183,6 +184,7 @@ public class WindowCreator {
 			@Override
 			public void run() {
 				UpdateProgressPanel prog = new UpdateProgressPanel(false);
+				prog.setLocationRelativeTo(MainGUI.mainFrameScreept);
 				prog.getPb().setIndeterminate(true);
 				prog.getLabel().setText("Loading System informations...");
 				prog.getPb().setString("Loading...");

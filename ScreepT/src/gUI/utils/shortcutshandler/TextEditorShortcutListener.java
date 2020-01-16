@@ -16,7 +16,6 @@ import java.awt.event.KeyEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
@@ -26,6 +25,7 @@ import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
+import gui.GuiUtils;
 import gui.TextEditTooltips;
 import maingUI.MainGUI;
 import om.ICommonShortcuts;
@@ -223,13 +223,23 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	UPPERCASE AFTER DOTS-SEPARATOR -> CTRL+Shift+[.]
 				 */
 				if (e.getKeyCode() == 46 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					((JMenuItem)MainGUI.mainAPP.menuStringActions.getComponent(2)).doClick();
+					try {
+						GuiUtils.fireActionListener(currentTextEditor.getCurrentTabEditor()
+								.loadedTabObj.getPostDotsUppercaseListener(), null);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 				/*
 				 * 	UPPERCASE SELECTED TEXT -> CTRL+Shift+UP_Arrow
 				 */
 				if (e.getKeyCode() == 38 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
-					((JMenuItem)MainGUI.mainAPP.menuStringActions.getComponent(0)).doClick();
+					try {
+						GuiUtils.fireActionListener(currentTextEditor.getCurrentTabEditor()
+								.loadedTabObj.getUppercaseListener(), null);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 				/*
 				 * 	OPEN TEMPLATES PANEL -> CTRL+Shift+T

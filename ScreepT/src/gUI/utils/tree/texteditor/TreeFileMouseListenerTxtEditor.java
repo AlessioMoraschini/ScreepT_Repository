@@ -40,6 +40,7 @@ import files.om.FileNamed;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
+import gui.GuiUtils;
 import mainobj.INItializer;
 import menusettings.MenuSetter;
 import mouseutils.TreeFileMouseListenerBasicFileNamed;
@@ -270,12 +271,14 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					TreePath parent = tree.getSelectionPath();
-					TreeUtils.expandAllChildNodes(tree, parent);
-				} catch (Exception e1) {
-					logger.error("Error expanding tree row N°"+selectedRow, e1);
-				}
+				GuiUtils.launchThreadSafeSwing(() -> { 
+					try {
+						TreePath parent = tree.getSelectionPath();
+						TreeUtils.expandAllChildNodes(tree, parent);
+					} catch (Exception e1) {
+						logger.error("Error expanding tree row N°"+selectedRow, e1);
+					}
+				});
 			}
 		};
 	}

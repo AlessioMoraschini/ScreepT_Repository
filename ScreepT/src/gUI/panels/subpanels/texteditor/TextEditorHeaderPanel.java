@@ -87,7 +87,9 @@ public class TextEditorHeaderPanel extends JPanel{
 		this.currentConfiguration = parent.currentConfiguration;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 6, fill, hidemode 3", "[left][][][][::35px][100px:240px:300px,trailing][40px:45px:45px][40px:45px:45px][10px:10px,grow][::20px][::20px][10px:10px:10px][::120px][::140px][::130px]", "[:0px:55px,grow]"));
+		setLayout(new MigLayout("insets 6, fill, hidemode 3",
+				"[left][][][][::35px][100px:240px:300px,trailing][40px:45px:45px][40px:45px:45px][10px:10px,grow][::20px][::20px][10px:10px:10px][::120px][::140px][::130px]",
+				"[:0px:40px,grow]"));
 		setForeground(SystemColor.menu);
 		setBorder(new LineBorder(Color.BLACK, 1));
 		setBackground(new Color(30,30,30));

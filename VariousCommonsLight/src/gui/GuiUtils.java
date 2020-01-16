@@ -31,6 +31,8 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -231,6 +233,12 @@ public class GuiUtils {
 				target.repaint();
 			}
 		});
+	}
+	
+	public static void fireActionListener(ActionListener listener, Component nullableTarget) {
+		nullableTarget = nullableTarget == null ? new JButton() : nullableTarget;
+		ActionEvent event = new ActionEvent(nullableTarget, ActionEvent.ACTION_PERFORMED, "Anything");
+		listener.actionPerformed(event);
 	}
 	
 	public static Window getCurrentActiveWindow() {
@@ -486,6 +494,13 @@ public class GuiUtils {
 	
 	public static Dimension getScreenSizePerc(int factorPerc, JFrame frame) {
 		Dimension screen = getScreenSize(frame);
+		int w = (screen.width*factorPerc)/100;
+		int h = (screen.height*factorPerc)/100;
+		return new Dimension(w, h);
+	}
+
+	public static Dimension getScreenSizePerc(int factorPerc) {
+		Dimension screen = getScreenSize();
 		int w = (screen.width*factorPerc)/100;
 		int h = (screen.height*factorPerc)/100;
 		return new Dimension(w, h);

@@ -13,6 +13,8 @@ public class ExtensionFileFilter extends javax.swing.filechooser.FileFilter {
 
     private java.util.List<String> extensions;
     private String description;
+    
+    public static String DEFAULT_EXTENSION = "txt";
 
     public ExtensionFileFilter(String[] exts, String desc) {
     	extensions = new java.util.ArrayList<String>();
@@ -61,5 +63,17 @@ public class ExtensionFileFilter extends javax.swing.filechooser.FileFilter {
     @Override
     public String getDescription() {
         return description;
+    }
+    
+    public String getExtension(int i) {
+    	if(extensions != null && !extensions.isEmpty()) {
+    		try {
+				return extensions.get(i);
+			} catch (Exception e) {
+				return extensions.get(0);
+			} 
+    	} else {
+    		return DEFAULT_EXTENSION;
+    	}
     }
 }

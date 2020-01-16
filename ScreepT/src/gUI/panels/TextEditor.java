@@ -210,7 +210,7 @@ public class TextEditor extends ModulePanel {
 		mainPanel.setMaximumSize(GuiUtilsExtended.getScreenSizePerc(100, parentFrame));
 		mainPanel.setLayout(new MigLayout("fill, insets 2, hidemode 3", 
 				"[25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][55px:n:55px,left][25px:n][50px:65px:80px][40px:40px:50px][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][25px:2%:3%][:5px:5px][][][][][][][]",
-				"[:0px:45px][:0px:60px][:0px:2px][300px,grow][:0px:50px]"));
+				"[:0px:35px][:0px:60px][:0px:2px][300px,grow][:0px:60px]"));
 		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setMinimumSize(new Dimension(400, 300));
@@ -792,26 +792,25 @@ public class TextEditor extends ModulePanel {
 		loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
 		
 		// Text area colors and sync tree to current file
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				if (isPreloading || !currentConfiguration.getTextEditorOpt().isTreeLocked()) {
-					loadedTabObj.textArea.setFont(txtOptions.getFont());
-					
-					if (txtOptions.selectedTheme.equals(Themes.NONE.defaultPath)) {
-						loadedTabObj.textArea.setBackground(txtOptions.getBackCol());
-						RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOptions.backCol);
-						loadedTabObj.textArea.setForeground(txtOptions.getForeCol());
-						RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOptions.foreCol);
-					}
-					try {
-						TreeUtils.selectFileInNamedFileTree(MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile,
-								MainGUI.initTxtWriter.leftSplitTreeFiles, true);
-					} catch (Exception e) {
-						logger.warn("!!! Error trying to sync current file at start into JTree");
-					} 
+		SwingUtilities.invokeLater(() -> {
+			if (isPreloading || !currentConfiguration.getTextEditorOpt().isTreeLocked()) {
+				loadedTabObj.textArea.setFont(txtOptions.getFont());
+				
+				if (txtOptions.selectedTheme.equals(Themes.NONE.defaultPath)) {
+					loadedTabObj.textArea.setBackground(txtOptions.getBackCol());
+					RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOptions.backCol);
+					loadedTabObj.textArea.setForeground(txtOptions.getForeCol());
+					RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOptions.foreCol);
 				}
+				try {
+					TreeUtils.selectFileInNamedFileTree(MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile,
+							MainGUI.initTxtWriter.leftSplitTreeFiles, true);
+				} catch (Exception e) {
+					logger.warn("!!! Error trying to sync current file at start into JTree");
+				} 
 			}
 		});
+		
 		GUIStyelSettingsExtended.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
 	}
 	
@@ -896,39 +895,30 @@ public class TextEditor extends ModulePanel {
 		rightPaneResizeOnly();
 		
 		// Gui stuff to invoke later: avoids conflict with dispatch thread
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
+		SwingUtilities.invokeLater(() -> {
 
-				if (writeConfig) {
-					// SAVE CONFIGURATION - CURRENT VIEW ACTIVE (if opened)
-					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
-					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
-				}
-				
-				textEditorUtils.resetDividerColor();
-				
-//				subHeaderPanel.toggleBtnMap.setSelected(txtOptions.mapViewActive);
-//				subHeaderPanel.toggleBtnClipboard.setSelected(txtOptions.clipboardViewActive);
-//				subHeaderPanel.toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
-//				subHeaderPanel.toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
-
-				currentTextEditor.rightSplitPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
-				currentTextEditor.splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
-				currentTextEditor.splitPaneMainContainer.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
-				if(txtOptions.mapViewActive && textEditorUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
-					MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager()).getTxtAreaMiniMap().requestFocus();
-				}
-				
-				if(!txtOptions.mapViewActive && !txtOptions.clipboardViewActive) {
-					getCurrentTabEditor().loadedTabObj.textArea.requestFocus();
-				}
-
-				GUIStyelSettingsExtended.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
-				currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-				currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-				
+			if (writeConfig) {
+				// SAVE CONFIGURATION - CURRENT VIEW ACTIVE (if opened)
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "mapViewActive", txtOptions.mapViewActive);
+				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "clipboardViewActive", txtOptions.clipboardViewActive);
 			}
+			
+			textEditorUtils.resetDividerColor();
+			
+			currentTextEditor.rightSplitPane.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+			currentTextEditor.splitPaneMainContainer.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+			currentTextEditor.splitPaneMainContainer.getRightComponent().setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
+			if(txtOptions.mapViewActive && textEditorUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
+				MapTextAreaPanel.getSingletonLazy(textEditorUtils.getDialogManager()).getTxtAreaMiniMap().requestFocus();
+			}
+			
+			if(!txtOptions.mapViewActive && !txtOptions.clipboardViewActive) {
+				getCurrentTabEditor().loadedTabObj.textArea.requestFocus();
+			}
+
+			currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			GUIStyelSettingsExtended.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
 		});
 	}
 	

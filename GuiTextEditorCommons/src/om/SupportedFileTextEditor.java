@@ -123,15 +123,13 @@ public enum SupportedFileTextEditor {
 	
 	public ExtensionFileFilter getRelatedFilter() {
 
-		int i = 0;
 		for(SupportedFileTextEditor type : values()) {
 			if (this.equals(type)) {
-				return new ExtensionFileFilter(new String[] { type.senzapunto }, type.extension);
+				return new ExtensionFileFilter(new String[] { type.senzapunto }, type.coolDescription());
 			}
-			i++;
 		}
 
-		return new ExtensionFileFilter(new String[] { TXT.senzapunto }, TXT.extension);
+		return new ExtensionFileFilter(new String[] { TXT.senzapunto }, TXT.coolDescription());
 	}
 	
 	public static ExtensionFileFilter[] getMultipleFileFilter() {
@@ -140,11 +138,15 @@ public enum SupportedFileTextEditor {
 
 		int i = 0;
 		for(SupportedFileTextEditor type : values) {
-			extensionList[i] = new ExtensionFileFilter(new String[] {type.senzapunto}, type.extension);
+			extensionList[i] = new ExtensionFileFilter(new String[] {type.senzapunto}, type.coolDescription());
 			i++;
 		}
 
 		return extensionList;
+	}
+	
+	public String coolDescription() {
+		return this.name() + " (" + this.extension + ")";
 	}
 	
 }

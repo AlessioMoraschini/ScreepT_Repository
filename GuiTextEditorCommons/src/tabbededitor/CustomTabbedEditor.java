@@ -134,7 +134,8 @@ public class CustomTabbedEditor implements ITabsManager {
 		// DRAG 'N DROP IMPLEMENTATION FOR TABS		
 
 		mainTabList = new JTabbedPane();
-		fileDrop = new FileDrop(mainTabList, (files)->{this.loadFiles(files);});
+		fileDrop = new FileDrop(mainTabList, 
+				(files)->{SwingUtilities.invokeLater(()->{this.loadFiles(files);});});
 		
 		mainTabList.addMouseWheelListener(new TabbedPaneMouseWheelListener());
 		mainTabList.setBorder(new EmptyBorder(0,0,0,0));
@@ -151,29 +152,26 @@ public class CustomTabbedEditor implements ITabsManager {
 					alreadyrefreshing = true;
 					logger.debug("\n\n ## Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
 
-					tabRefreshAfterUpdate();
-					
-					lastIndexTabbedPane = mainTabList.getSelectedIndex();
-					
 					if (!historyActionChanging.get()) {
-						SwingUtilities.invokeLater(new Runnable() {
-							public void run() {
-								if (loadedTabObj != null && loadedTabObj.currentScrollPane != null && loadedTabObj.textArea != null) {
-									addToHystory(loadedTabObj);
-								}
+								
+						tabRefreshAfterUpdate();
+						lastIndexTabbedPane = mainTabList.getSelectedIndex();
+						
+						SwingUtilities.invokeLater(()->{
+							
+							if (loadedTabObj != null && loadedTabObj.currentScrollPane != null && loadedTabObj.textArea != null) {
+								addToHystory(loadedTabObj);
+							}
+							
+							changeMonManager.checkChanges();
+							alreadyrefreshing = false;
+							
+							try {
+								TabUtils.scrollToNextTab(mainTabList);
+							} catch (Exception e1) {
 							}
 						});
 					}
-					
-					changeMonManager.checkChanges();
-					
-					alreadyrefreshing = false;
-					
-					try {
-						TabUtils.scrollToNextTab(mainTabList);
-					} catch (Exception e1) {
-					}
-					
 				}
 			}
 		});

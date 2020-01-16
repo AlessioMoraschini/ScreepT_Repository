@@ -52,7 +52,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
-		if (e.getID() == KeyEvent.KEY_PRESSED && !e.isAltDown()) {
+		if (!isShortcutKey(e) && e.getID() == KeyEvent.KEY_PRESSED ) {
 			
 			// CANC
 			if (e.getKeyCode() == 127) {
@@ -73,7 +73,6 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 			String value = String.valueOf(e.getKeyChar());
 			if (StringUtils.isAsciiPrintable(value) && currentColumnTextArea.isCurrentSelectionRectangular()) {
 
-				currentColumnTextArea.undoManager.beginInternalAtomicEdit();
 				currentColumnTextArea.rectangularReplaceSelection(value);
 				SwingUtilities.invokeLater(new Runnable() {
 
@@ -83,7 +82,6 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 						try {
 							currentColumnTextArea.replaceRange("", currentColumnTextArea.getCaretPosition() - 1, currentColumnTextArea.getCaretPosition());
 							currentColumnTextArea.moveSelectionRectangle(1);
-							currentColumnTextArea.undoManager.endInternalAtomicEdit();
 						} catch (Exception e1) {
 						}
 					}
@@ -95,7 +93,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 				currentColumnTextArea.getHighlighter().removeAllHighlights();
 			}
 		
-		} else if (e.getID() == KeyEvent.KEY_RELEASED) {
+		} else if (!isShortcutKey(e) && e.getID() == KeyEvent.KEY_RELEASED) {
 			
 			if (!e.isAltDown()) {
 				

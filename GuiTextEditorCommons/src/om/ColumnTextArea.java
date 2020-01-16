@@ -52,6 +52,8 @@ public class ColumnTextArea extends RSyntaxTextArea {
 	// ColumnTextArea logger creation
 	static Logger logger = Logger.getLogger(ColumnTextArea.class);
 	
+	public static int UNDO_LIMIT = 4000;
+	
 	/**
      * Key used in app context to lookup Clipboard to use if access to
      * System clipboard is denied.
@@ -60,8 +62,9 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
 	public AtomicBoolean isRectangularModeOn = new AtomicBoolean(true);
 	RSyntaxTextArea thisTextArea;
-	RUndoManager undoManager;
 	DefaultCaret customCaret;
+	
+	public RUndoManager undoManager;
 	
 	public int lastStartPosition = 0;
 	
@@ -73,8 +76,6 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		setRectangularSelectionMode(rectangularSelectionActive);
 		
 		addKeyListeners();
-		
-		undoManager = new RUndoManager(this);
 		
         this.getCaret().setBlinkRate(GeneralConfig.DEF_CARET_BLINK_RATE);
 	}
@@ -116,6 +117,17 @@ public class ColumnTextArea extends RSyntaxTextArea {
         
         this.getCaret().setBlinkRate(GeneralConfig.DEF_CARET_BLINK_RATE);
     }
+	
+	@Override
+	protected RUndoManager createUndoManager() {
+		RUndoManager undoManager = new RUndoManager(this);
+		undoManager.setLimit(UNDO_LIMIT);
+		return undoManager;
+	}
+	
+	public RUndoManager getUndoManager() {
+		return undoManager;
+	}
 	
 	public void setRectangularSelectionMode(boolean rectangularSelection) {
 		if (rectangularSelection) {

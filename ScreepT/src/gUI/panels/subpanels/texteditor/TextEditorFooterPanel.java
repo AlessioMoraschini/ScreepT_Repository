@@ -80,7 +80,7 @@ public class TextEditorFooterPanel extends JPanel{
 		lblCurrentFile.setMinimumSize(new Dimension(40, 22));
 		lblCurrentFile.setBackground(Color.DARK_GRAY);
 		lblCurrentFile.setOpaque(true);
-		lblCurrentFile.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblCurrentFile.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		lblCurrentFile.setForeground(SystemColor.activeCaption);
 		add(lblCurrentFile, "cell 1 0,growx");
 

@@ -29,7 +29,6 @@ import net.miginfocom.swing.MigLayout;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import sounds.SoundsManager;
 
 import javax.swing.JLabel;
 import javax.imageio.ImageIO;
@@ -91,7 +90,7 @@ public class LauncherMainPanel extends JFrame{
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setLayout(new MigLayout("insets 4, fill", "[grow][40px:n,grow][40px:n,grow][20px:n,grow][40px:n,grow][20px]", "[30px,grow][:27px:27px][:27px:27px][25px]"));
 		
-		JLabel lblWelcomeToScreept = new JLabel("Welcome to ScreepT, chose your preferences... or just start me :)");
+		JLabel lblWelcomeToScreept = new JLabel("Welcome to ScreepT, choose your preferences... or just start me :)");
 		lblWelcomeToScreept.setForeground(Color.WHITE);
 		lblWelcomeToScreept.setFont(new Font("Segoe UI Black", Font.PLAIN, 13));
 		mainPanel.add(lblWelcomeToScreept, "cell 0 0 6 1,alignx center");

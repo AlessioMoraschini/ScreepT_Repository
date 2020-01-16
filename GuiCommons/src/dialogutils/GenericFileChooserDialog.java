@@ -26,6 +26,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.FilenameUtils;
+
+import files.FileVarious;
 import general.MyFileView;
 import gui.JOptionHelper;
 import mainobj.INItializer;
@@ -179,11 +181,10 @@ public class GenericFileChooserDialog {
 	 * JPANEL - every extension
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
-	public File fileRead(Component parent, ExtensionFileFilter[] filters, ExtensionFileFilter defaultFilter) {
+	public File fileRead(Component parent, ExtensionFileFilter[] filters) {
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		addMultipleFileFilter(fileChooser, filters);
-		fileChooser.setFileFilter(defaultFilter);
 		fileChooser.setDialogTitle("Select input File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
@@ -328,10 +329,10 @@ public class GenericFileChooserDialog {
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
 	 */
-	public File fileWrite(JFrame parent, String defaultName, File defaultDir) {
+	public File fileWrite(JFrame parent, String defaultName, File defaultDir, ExtensionFileFilter[] filters) {
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
-		updateFileFilters(fileChooser, fileFilter);
+		addMultipleFileFilter(fileChooser, filters);
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(defaultDir != null ? defaultDir : new File(currentConf.getFileOpt().getLastDstFolderPath()));	
@@ -342,8 +343,12 @@ public class GenericFileChooserDialog {
 		int returnVal = fileChooser.showSaveDialog(parent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			
-			File selectedFile = fileChooser.getSelectedFile();
-			correctFile = selectedFile;
+			correctFile = fileChooser.getSelectedFile();
+			String selectedExtension = getSafeFilterExtension(fileChooser.getFileFilter());
+			if (!selectedExtension.isEmpty()) {
+				correctFile = FileVarious.changeExtensionForceDot(correctFile, selectedExtension);
+			}
+			
 			currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
 		}else {
 			dialogHelper.info("Skipped after user request.", "Skipped");
@@ -488,10 +493,23 @@ public class GenericFileChooserDialog {
 	
 	private static void addMultipleFileFilter(JFileChooser fileChooser, ExtensionFileFilter[] fileFilters) {
 		
+		fileChooser.setAcceptAllFileFilterUsed(true);
+
 		for(int i = 0; i < fileFilters.length; i++) {
 			fileChooser.addChoosableFileFilter(fileFilters[i]);
 		}
-		
-		fileChooser.setAcceptAllFileFilterUsed(true);
+	}
+	
+	/**
+	 * If allFilesFilter an empty string will be returned
+	 * @param filter
+	 * @return
+	 */
+	private static String getSafeFilterExtension(FileFilter filter) {
+		if(filter != null && filter instanceof ExtensionFileFilter) {
+			return ((ExtensionFileFilter)filter).getExtension(0);
+		} else {
+			return "";
+		}
 	}
 }

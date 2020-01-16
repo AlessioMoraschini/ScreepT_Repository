@@ -101,24 +101,24 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 		targetTemp = dialogManager.getTargetTextArea();
 		synchronized(targetTemp) {
 			if (targetTemp != null && txtAreaMiniMap != null) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						// Get diyamic reference from interface taken from main editor utils class
-						txtAreaMiniMap.setBackground(targetTemp.getBackground());
-						RsyntaxUtils.setBackground(txtAreaMiniMap, targetTemp.getBackground());
-						txtAreaMiniMap.setForeground(targetTemp.getForeground());
-						RsyntaxUtils.setForeground(txtAreaMiniMap, targetTemp.getCaretColor());
-						// sync Text and caret position
-						txtAreaMiniMap.setText(targetTemp.getText());
-						txtAreaMiniMap.setCurrentLineHighlightColor(txtAreaMiniMap.getBackground().brighter());
-						txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
-						
-						logger.debug("loading theme: " + targetTemp.getSyntaxScheme() + " into text Area minimap");
-						dialogManager.loadThemeIntoTarget(txtAreaMiniMap);
-						currentScrollPane.setBackground(Color.black);
+				txtAreaMiniMap.setBackground(targetTemp.getBackground());
+				
+				SwingUtilities.invokeLater(() -> {
+					
+					// Get diyamic reference from interface taken from main editor utils class
+					RsyntaxUtils.setBackground(txtAreaMiniMap, targetTemp.getBackground());
+					txtAreaMiniMap.setForeground(targetTemp.getForeground());
+					RsyntaxUtils.setForeground(txtAreaMiniMap, targetTemp.getCaretColor());
+					// sync Text and caret position
+					txtAreaMiniMap.setText(targetTemp.getText());
+					txtAreaMiniMap.setCurrentLineHighlightColor(txtAreaMiniMap.getBackground().brighter());
+					txtAreaMiniMap.setFont(GeneralConfig.TXT_EDITOR_MINIMAP_FONT);
+					
+					logger.debug("loading theme: " + targetTemp.getSyntaxScheme() + " into text Area minimap");
+					dialogManager.loadThemeIntoTarget(txtAreaMiniMap);
+					currentScrollPane.setBackground(Color.black);
 
-						safeSyncCaretFromTxtReference();
-					}
+					safeSyncCaretFromTxtReference();
 				});
 			}
 		}

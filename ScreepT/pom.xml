@@ -69,53 +69,6 @@
 			</executions>
 		</plugin>
     
-    	<!-- BUILD OBFUSCATION -->
-    	<plugin>
-		    <groupId>com.github.wvengen</groupId>
-		    <artifactId>proguard-maven-plugin</artifactId>
-		    <version>2.2.0</version>
-
-            <executions>
-                <execution>
-                    <phase>package</phase>
-                    <goals><goal>proguard</goal></goals>
-                </execution>
-            </executions>
-            <configuration>
-            	<skip>${obfuscation.skip}</skip>
-                <proguardVersion>6.2.0</proguardVersion>
-                <obfuscate>true</obfuscate>
-                <options>
-                    <option>-keep public class maingUI.MainGuiGeneralAppStarter{public static void main(java.lang.String[]);}</option>
-               		<option>-target 1.8</option>
-                </options>
-                <libs>
-                    <lib>${java.home}/lib/rt.jar</lib>
-                </libs>
-                <dependencies>
-                	<dependency>
-					    <groupId>com.github.wvengen</groupId>
-					    <artifactId>proguard-maven-plugin</artifactId>
-					    <version>2.2.0</version>
-					</dependency>
-					                
-                    <dependency>
-					    <groupId>net.sf.proguard</groupId>
-					    <artifactId>proguard-base</artifactId>
-					    <version>6.2.0</version>
-					</dependency>
-					<dependency>
-					    <groupId>net.sf.proguard</groupId>
-					    <artifactId>proguard-parent</artifactId>
-					    <version>6.2.0</version>
-					    <type>pom</type>
-					</dependency>
-										
-
-                </dependencies>
-            </configuration>
-        </plugin>
-    	
     	<!-- LICENSE REPORT GENERATOR -->
    		<plugin>
 	        <groupId>org.codehaus.mojo</groupId>
@@ -162,6 +115,53 @@
 	             </execution>                            
 	         </executions>
 	      </plugin>
+	      
+	      <!-- BUILD OBFUSCATION -->
+   	<plugin>
+	    <groupId>com.github.wvengen</groupId>
+	    <artifactId>proguard-maven-plugin</artifactId>
+	    <version>2.2.0</version>
+
+           <executions>
+               <execution>
+                   <phase>package</phase>
+                   <goals><goal>proguard</goal></goals>
+               </execution>
+           </executions>
+           <configuration>
+           	<skip>${obfuscation.skip}</skip>
+               <proguardVersion>6.2.0</proguardVersion>
+               <obfuscate>true</obfuscate>
+               <options>
+                   <option>-keep public class maingUI.MainGuiGeneralAppStarter{public static void main(java.lang.String[]);}</option>
+              	   <option>-target 1.8</option>
+               </options>
+               <libs>
+                   <lib>${java.home}/lib/rt.jar</lib>
+               </libs>
+               <dependencies>
+               	<dependency>
+				    <groupId>com.github.wvengen</groupId>
+				    <artifactId>proguard-maven-plugin</artifactId>
+				    <version>2.2.0</version>
+				</dependency>
+				                
+                   <dependency>
+				    <groupId>net.sf.proguard</groupId>
+				    <artifactId>proguard-base</artifactId>
+				    <version>6.2.0</version>
+				</dependency>
+				<dependency>
+				    <groupId>net.sf.proguard</groupId>
+				    <artifactId>proguard-parent</artifactId>
+				    <version>6.2.0</version>
+				    <type>pom</type>
+				</dependency>
+									
+
+               </dependencies>
+           </configuration>
+       </plugin>
 	      
       <!-- download source code in Eclipse, best practice -->
       <plugin>
@@ -244,50 +244,39 @@
 			              	<Build-git-hash>${git.commit.id}</Build-git-hash>
 		                </manifestEntries>
 	                </archive>
-	                <descriptorRefs>
-	                    <descriptorRef>jar-with-dependencies</descriptorRef>
-	                </descriptorRefs>
 	                <appendAssemblyId>false</appendAssemblyId>
 	                <exclude>/**/*humbs.db</exclude>
+	                <descriptors>
+	                    <descriptor>UTILS_BUILD/assembly_exclude.xml</descriptor> 
+	                </descriptors>
+	                <!-- <exclude>/**/public-suffix-list.txt</exclude> -->
 	            </configuration>
 	        </execution>
             
-            <!-- (2) UPDATES FOLDER JAR: BUILD AND EXPORT -->
-	        <execution>
-	            <id>make-assembly - UPDATES folder</id>
-	            <phase>package</phase>
-	            <goals>
-	                <goal>single</goal>
-	            </goals>
-	            <configuration>
-	            	<skipAssembly>${export.updates.regenjars.skip}</skipAssembly>
-	            	<overwrite>true</overwrite>
-	                <outputDirectory>
-	                       <!-- ${project.build.directory}/CENTRALIZED -->
-	                       ${export.updates.folder}
-                   	</outputDirectory>
-                	<archive>
-		                <manifest>
-		                    <mainClass>
-		                        maingUI.MainGuiGeneralAppStarter
-		                    </mainClass>
-		                </manifest>
-		                <manifestEntries>
-			              	<Created-by>${developer.name}</Created-by>
-			              	<Built-By>${developer.name}</Built-By>
-			              	<Build-number>${buildNumber}</Build-number>
-			              	<Build-git-hash>${git.commit.id}</Build-git-hash>
-		                </manifestEntries>
-	                </archive>
-	                <descriptorRefs>
-	                    <descriptorRef>jar-with-dependencies</descriptorRef>
-	                </descriptorRefs>
-	                <appendAssemblyId>false</appendAssemblyId>
-	                <exclude>/**/*humbs.db</exclude>
-	            </configuration>
-	        </execution>
 	    </executions>
 	  </plugin>
+	  
+	  <!-- UPDATES COPY ALREADY BUILT JARS -->
+	 <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-antrun-plugin</artifactId>
+		<inherited>true</inherited>
+		<executions>
+			<execution>
+				<id>createThriftDir</id>
+				<phase>install</phase>
+				<configuration>
+					<tasks>
+						<copy file="${export.directory.fatjar.main}/ScreepT_${parent.build.version.screept}.jar" todir="${export.updates.folder}"/>
+						<copy file="${export.directory.fatjar.main}/ScreepT_Launcher.jar" todir="${export.updates.folder}"/>
+					</tasks>
+				</configuration>
+				<goals>
+					<goal>run</goal>
+				</goals>
+			</execution>
+		</executions>
+	</plugin>
 	  
 	  <!-- (C) EXPORT RESOURCES TO BOTH MULTIJAR AND FATJAR EXPORT DIRS -->
   	  <plugin>
@@ -730,8 +719,8 @@
 		  <configuration>
 		    <commitIdGenerationMode>flat</commitIdGenerationMode>
 		  </configuration>
-	</plugin>
-          
+		</plugin>
+	
  	</plugins>
   </build>
   

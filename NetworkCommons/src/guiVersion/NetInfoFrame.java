@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.GuiUtils;
 import gui.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkAdapter;
@@ -41,7 +40,6 @@ import javax.swing.JLabel;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import java.awt.Dimension;
 import java.awt.Component;
@@ -139,15 +137,6 @@ public class NetInfoFrame extends ParentFrame{
 		initialize();
 		
 		addEventHandlers();
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				singletonInstance.pack();
-				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
-			}
-		});
 		
 		logger.info(this.getClass().getName() + ": ready!");
 	}
@@ -402,8 +391,6 @@ public class NetInfoFrame extends ParentFrame{
 				updateNetDisplayedINFO();
 				updateAdapterGUIinfos();
 				validateConnectivity();
-				
-				GuiUtils.centerComponent(singletonInstance, getDefaultDimension());
 			}
 		});
 		
