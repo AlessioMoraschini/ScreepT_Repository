@@ -819,7 +819,7 @@ public class MainGuiParent {
 						public void run() {
 							File toLoad = new File(target.getToolTipText());
 							if (toLoad.exists()) {
-								initTxtWriter.getCurrentTabEditor().loadFiles(toLoad);
+								initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
 							} else {
 								initTxtWriter.dialogHelper.error("File does not exist anymore!", "File does not exist");
 								removeFromLastOpened(toLoad);

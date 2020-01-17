@@ -18,7 +18,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -131,7 +130,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	                    selectedNode = (FileNamed) selPath.getLastPathComponent();
 	                    if (selectedNode.mFile != null && selectedNode.mFile.exists() && selectedNode.mFile.isFile()) {
 	                    	//	                myDoubleClick(selRow, selPath);
-	                    	currentTabEditor.loadFiles(selectedNode.mFile);
+	                    	currentTabEditor.loadFile(selectedNode.mFile);
 	                    }
 	                } else{
 	                    selectedNode = null;
@@ -299,23 +298,14 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	}
 
 	private ActionListener hashingListener() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (hashCheckerFrame == null || !hashCheckerFrame.isActive()) {
-						hashCheckerFrame = new HashCheckerFrame(selectedNode.getFile(), textEditor.parentFrame, textEditor.currentConfiguration.getTextEditorOpt());
-						hashCheckerFrame.setVisible(true);
-						hashCheckerFrame.setAlwaysOnTop(true);
-					} else {
-						hashCheckerFrame.toFront();
-						hashCheckerFrame.setVisible(true);
-						hashCheckerFrame.setAlwaysOnTop(true);
-					}
-				} catch (Exception e1) {
-					logger.error("An error occurred while opening hashing functions manager frame", e1);
-				}
+		return (e) -> {
+			try {
+				hashCheckerFrame = HashCheckerFrame.getInstance(selectedNode.getFile(), textEditor.parentFrame, textEditor.currentConfiguration.getTextEditorOpt());
+				hashCheckerFrame.setVisible(true);
+				hashCheckerFrame.setAlwaysOnTop(true);
+				hashCheckerFrame.toFront();
+			} catch (Exception e1) {
+				logger.error("An error occurred while opening hashing functions manager frame", e1);
 			}
 		};
 	}
@@ -330,7 +320,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					public void run() {
 						try {
 							if (selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
-								currentTabEditor.loadFiles(selectedNode.mFile);
+								currentTabEditor.loadFile(selectedNode.mFile);
 								currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 							}
 						} catch (Exception e) {
@@ -454,61 +444,69 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		};
 	}
 	
+	/**
+	 * Retrieve parent if a file is selected, or current selected if file itself is a directory
+	 * @return
+	 */
+	private File getCurrentDestinationDynamic(FileNamed selectedNode) {
+		if(selectedNode != null && selectedNode.mFile != null) {
+			if(selectedNode.mFile.isDirectory()) {
+				return selectedNode.mFile;
+			} else {
+				return selectedNode.mFile.getParentFile();
+			}
+		} else {
+			return null;
+		}
+	}
+	
 	private ActionListener getNewFileActionListener() {
 		return new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
-				File selected = new File(""); 
-				if(selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
-					selected = selectedNode.mFile;
-				}else {
-					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
-					return;
-				}
-				
-				String newName = dialogHelper.askForStringNullable("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
-				if(newName == null) {
-					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
-					return;
-				}
-				newName = FileVarious.ensureValidExtension(newName, textEditor.subHeaderPanel.comboFileFormat.getSelectedItem().toString());
-				String separator = File.separator;
-				// If file use parent, if directory use selected as root to insert into
-				selected = (selected.isDirectory()) ? 
-						new File(selected.getAbsolutePath() + separator + newName) : new File(selected.getParentFile().getAbsolutePath() + separator + newName);
-				selected = FileVarious.renameJavaObjFile(selected);
 				
 				try {
-					// create and load new item
-					if (!selected.createNewFile()) {
-						String msg = "File not created";
-						logger.warn(msg);
-						dialogHelper.warn(msg, msg);
-						currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+					File selected = getCurrentDestinationDynamic(selectedNode);
+					if(selected == null || selectedNode.mFile == null || currentTabEditor.alreadyLoading) {
 						return;
 					}
-					currentTabEditor.loadFiles(selected);
 					
-				} catch (IOException e1) {
-					String msg = "Error creating new file";
-					logger.error(msg, e1);
-					dialogHelper.error(msg, msg);
-				}
-				
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
-				
-				// REFRESH
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
+					String newName = dialogHelper.askForStringNullable("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
+					if(newName == null) {
+						return;
+					}
+					newName = FileVarious.ensureValidExtension(newName, textEditor.subHeaderPanel.comboFileFormat.getSelectedItem().toString());
+					String separator = File.separator;
+					// If file use parent, if directory use selected as root to insert into
+					selected = (selected.isDirectory()) ? 
+							new File(selected.getAbsolutePath() + separator + newName) : new File(selected.getParentFile().getAbsolutePath() + separator + newName);
+					selected = FileVarious.renameJavaObjFile(selected);
+					
+						// create and load new item
+						if (!selected.createNewFile()) {
+							String msg = "File not created";
+							logger.warn(msg);
+							dialogHelper.warn(msg, msg);
+							return;
+						}
+						currentTabEditor.loadFile(selected);
+						
+					// REFRESH
+					SwingUtilities.invokeLater(() -> {
 						if (currentTabEditor.loadedTabObj != null) {
 							textEditor.textEditorUtils.refreshTree(currentTabEditor.loadedTabObj.loadedFile, false);
 						}
-					}
-				});
-						
+					});
+				
+				} catch (Exception e1) {
+					String msg = "Error creating new file";
+					logger.error(msg, e1);
+					dialogHelper.error(msg, msg);
+				} finally {
+					currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+				}
 			}
 		};
 	}

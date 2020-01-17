@@ -22,8 +22,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -56,12 +54,14 @@ import mainobj.INItializer;
 import om.ColumnTextArea;
 import om.HistoryNode;
 import om.LimitedConcurrentList;
+import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
+import utility.ConversionUtils;
 import utility.string.StringWorker;
 
 public class CustomTabbedEditor implements ITabsManager {
@@ -152,25 +152,25 @@ public class CustomTabbedEditor implements ITabsManager {
 					alreadyrefreshing = true;
 					logger.debug("\n\n ## Triggered mainTabList action listener! Current obj:\n" + loadedTabObj);
 
+					tabRefreshAfterUpdate();
+					lastIndexTabbedPane = mainTabList.getSelectedIndex();
+					
 					if (!historyActionChanging.get()) {
-								
-						tabRefreshAfterUpdate();
-						lastIndexTabbedPane = mainTabList.getSelectedIndex();
-						
 						SwingUtilities.invokeLater(()->{
 							
 							if (loadedTabObj != null && loadedTabObj.currentScrollPane != null && loadedTabObj.textArea != null) {
 								addToHystory(loadedTabObj);
 							}
 							
-							changeMonManager.checkChanges();
-							alreadyrefreshing = false;
-							
-							try {
-								TabUtils.scrollToNextTab(mainTabList);
-							} catch (Exception e1) {
-							}
 						});
+					}
+					
+					changeMonManager.checkChanges();
+					alreadyrefreshing = false;
+					
+					try {
+						TabUtils.scrollToNextTab(mainTabList);
+					} catch (Exception e1) {
 					}
 				}
 			}
@@ -229,13 +229,30 @@ public class CustomTabbedEditor implements ITabsManager {
 			if (!alreadyLoading) {
 
 				for (File draggedCurrent : files) {
-					loadFiles(draggedCurrent);
+					loadFile(draggedCurrent);
 				}
 			}
 		});
 	}
 	
-	public void loadFiles(final File fileToLoad) {
+	private boolean validateFileToOpen(File fileToOpen) {
+		if(fileToOpen != null && fileToOpen.exists() && fileToOpen.length()/1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB) {
+			dialogHelper.error("Cannot load file, max admitted size is " + ConversionUtils.coolFileSize((long)GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024));
+			return false;
+		}
+		
+		if(!SupportedFileTextEditor.isSupported(fileToOpen)) {
+			return dialogHelper.yesOrNo("This type of file is not supported [" + fileToOpen.getName() + "] : Load anyway?");
+		}
+		
+		return true;
+	}
+	
+	public void loadFile(final File fileToLoad) {
+		
+		if(!validateFileToOpen(fileToLoad)) {
+			return;
+		}
 		
 		logger.debug("Started file loading into new tab: "+fileToLoad+"\n\n");
 		loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
@@ -256,7 +273,7 @@ public class CustomTabbedEditor implements ITabsManager {
 					// add new tab with selected file
 					try {
 						addTab(fileToLoad);
-						currentConfiguration.getTextEditorOpt().addFileToLimitedList(fileToLoad, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
+						currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(fileToLoad, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 						logger.debug(fileToLoad.getAbsolutePath()+" -> Loaded!");
 					} catch (Throwable e1) {
 						String msg = "Error occurred loading file into new tab: "+fileToLoad.getAbsolutePath()+"\n\n";
@@ -526,12 +543,31 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 	
 	/**
+	 * Retrieve index of target object main tab content
+	 * 
+	 * if not found -1 will be returned
+	 * @param targetTabObject
+	 * @return
+	 */
+	public int geIndexOfTabObj(TabTextEditorObj targetTabObject) {
+		try {
+			return mainTabList.indexOfComponent(targetTabObject.currentScrollPane);
+		} catch (Exception e) {
+			File filePath = targetTabObject != null ? targetTabObject.loadedFile : null;
+			logger.warn("Cannot find index of " + filePath);
+			return -1;
+		}
+	}
+	
+	/**
 	 * Remove tab doing unsaved check
 	 * @param index
 	 */
 	public boolean removeTab(final int index) {
 		boolean askedRemoveResponse = true;
 		firstToRemove = false;
+		
+		logger.info("Removing tab N° " + index);
 		
 		if(index >= mainTabList.getTabCount() || index < 0) {
 			logger.warn("Cannot remove tab: index is OUT OF BOUNDS ( > tabs number, or < 0) => index=" + index + " ; TabCount=" + mainTabList.getTabCount());
@@ -584,24 +620,16 @@ public class CustomTabbedEditor implements ITabsManager {
 		}else {
 			askedRemoveResponse = false;
 		}
-
-		// GO TO LAST IN HISTORY WHEN CLOSING
+		
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
-				try{
-					loadedTabObj.textArea.requestFocus();
-				
-					Component previousComp = navigationHistory.getLast().getScrollPane();
-					List<Component> comps = Arrays.asList(mainTabList.getComponents());
-					if(comps.contains(previousComp)) {
-						mainTabList.setSelectedComponent(previousComp);
-					}
-				}catch(Exception e) {
-					logger.warn("Error trying to select last element in history!", e);
-				}
+				tabRefreshAfterUpdate();
 			}
 		});
-		
+
+		logger.info("Removal phase ended for index " + index + ". Exiting remove phase");
+
 		return askedRemoveResponse;
 	}
 	
@@ -911,7 +939,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		int i = findComponentIndex(nextComponent);
 		if(i < 0) {
 			logger.warn(".goToPreviousInHistory() -> Component not found in tabList");
-			loadFiles(nextNode.getLoadedFile());
+			loadFile(nextNode.getLoadedFile());
 			loadedTabObj.textArea.setCaretPosition(nextNode.getCaretPosition());
 			historyActionChanging.set(false);
 			return;

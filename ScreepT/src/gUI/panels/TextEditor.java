@@ -623,7 +623,7 @@ public class TextEditor extends ModulePanel {
 				
 				File directory = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(mainApplication.getMainFrame(), "Choose a workspace folder to load");
 				setWorkspace(directory);
-				currentConfiguration.getTextEditorOpt().addFileToLimitedList(directory, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
+				currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(directory, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
 				mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 			}
 		});
@@ -742,6 +742,7 @@ public class TextEditor extends ModulePanel {
 		headerPanel.checkBoxInlineTabs.setSelected(txtOptions.isInlinedTabs());
 		headerPanel.doInlinedCheck();
 		headerPanel.chkCutWordsTo.setSelected(txtOptions.isBreaklineActive());
+		getCurrentTabEditor().loadedTabObj.textArea.setLineWrap(true);
 		leftSplitContainer.setBackground(txtOptions.filePanelBackCol);
 		leftSplitTreeFiles.setBackground(txtOptions.filePanelBackCol);
 		headerPanel.sliderSpokenSpeed.setValue(txtOptions.getVoiceRate());
@@ -980,7 +981,7 @@ public class TextEditor extends ModulePanel {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
 					currentTabbedEditor.addTab(toLoadFile);
-					currentConfiguration.getTextEditorOpt().addFileToLimitedList(toLoadFile, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
+					currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(toLoadFile, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 					if (!loadedAlmostOne)
 						loadedAlmostOne = true;
 				}
@@ -991,9 +992,9 @@ public class TextEditor extends ModulePanel {
 		if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
 			logger.debug("ARGUMENTS FILES:" + Arrays.toString(MainGuiGeneralAppStarter.argumentsFiles));
 			for (File file : MainGuiGeneralAppStarter.argumentsFiles) {
-				currentTabbedEditor.loadFiles(file);
+				currentTabbedEditor.loadFile(file);
 				logger.debug(file.getAbsolutePath() + " -> Loaded");
-				currentConfiguration.getTextEditorOpt().addFileToLimitedList(file, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
+				currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(file, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 			}
 		}
 		
@@ -1055,7 +1056,7 @@ public class TextEditor extends ModulePanel {
 		}
 		
 		if (currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces.getList().size() == 0) {
-			currentConfiguration.getTextEditorOpt().addFileToLimitedList(
+			currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(
 					new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath), currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
 			mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 		}

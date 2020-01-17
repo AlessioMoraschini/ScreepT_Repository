@@ -311,7 +311,7 @@ public class MainGuiUtils {
 				public void run() {
 					if (toLoad != null && toLoad.exists() && SupportedFileTextEditor.isSupported(toLoad)) {
 						try {
-							MainGUI.initTxtWriter.getCurrentTabEditor().loadFiles(toLoad);
+							MainGUI.initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
 						} catch (Exception e) {
 							logger.error("Cannot load file into text Editor: " + toLoad, e);
 						}

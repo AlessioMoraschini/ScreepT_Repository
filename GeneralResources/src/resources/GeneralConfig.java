@@ -264,6 +264,7 @@ public class GeneralConfig {
 	public static Font DEFAULT_DIALOGS_FONT;
 	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR;
 	public static Color BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER;
+	public static int MAX_FILE_SIZE_TXT_EDITOR_KB;
 	public static int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS;
 	public static int NORMAL_WHEEL_SPEED;
 	public static int FAST_WHEEL_SPEED;
@@ -579,6 +580,7 @@ public class GeneralConfig {
 			DEFAULT_DIALOGS_FONT = resourcesFilePathsMappings.getFontFromString("DEFAULT_DIALOGS_FONT", new Font("Segoe UI", Font.PLAIN, 16));
 			BUTTON_BCKG_COLOR_TXT_EDITOR = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR", new Color(120, 125, 140));
 			BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER", new Color(71, 76, 84));
+			MAX_FILE_SIZE_TXT_EDITOR_KB = resourcesFilePathsMappings.getIntVarFromProps("MAX_FILE_SIZE_TXT_EDITOR_KB", 1024*20); // 20 MB default
 			TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
 			NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
 			FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);

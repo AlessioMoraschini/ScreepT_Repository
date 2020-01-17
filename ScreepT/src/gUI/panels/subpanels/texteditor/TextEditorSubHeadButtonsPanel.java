@@ -57,7 +57,6 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
 import conversion.Text2Speech;
-import dialogutils.ExtensionFileFilter;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
@@ -518,7 +517,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnLoadTextFile = new JButton("");
 		btnLoadTextFile.setToolTipText(TextEditTooltips.tooltipLoadTextFile);
 		btnLoadTextFile.setForeground(SystemColor.menuText);
-		btnLoadTextFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
+		btnLoadTextFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_NEW));
 		add(btnLoadTextFile, "cell 0 0,grow");
 		
 		addHandlers();
@@ -1546,7 +1545,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 					File source = MainGuiGeneralAppStarter.fileDialogHelper.fileRead(parent, SupportedFileTextEditor.getMultipleFileFilter());
 
-					parent.getCurrentTabEditor().loadFiles(source);
+					parent.getCurrentTabEditor().loadFile(source);
 				}
 			}
 		});

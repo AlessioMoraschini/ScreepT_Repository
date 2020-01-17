@@ -132,6 +132,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_REMOVE_ALL_DOCS = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/removeAllDocs.png";
 	public static final String ICON_FILE_SAVE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/saveFile.png";
 	public static final String ICON_FILE_LOAD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/LoadFile.png";
+	public static final String ICON_FILE_NEW = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/NewFile.png";
 	public static final String ICON_MAP = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/map.png";
 	public static final String ICON_CLIPBOARD = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/clipboard.png";
 	public static final String ICON_REDO = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Redo.png";

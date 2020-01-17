@@ -105,7 +105,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 		
 		try {
 			// Update last opened files to have current on top of last opened
-			textEditor.currentConfiguration.getTextEditorOpt().addFileToLimitedList(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
+			textEditor.currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(textEditor.getCurrentTabEditor().loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 		} catch (Exception e) {
 			logger.warn("Cannot select current file between last opened ones");
 		}

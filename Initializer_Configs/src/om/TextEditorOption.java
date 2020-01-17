@@ -242,7 +242,7 @@ public class TextEditorOption {
 	/**
 	 * If already present move to top, else if not present add it as last
 	 */
-	public synchronized void addFileToLimitedList(File toAdd, LimitedConcurrentList<FileNamed> targetList, String varToSave) {
+	public synchronized void addFileToTopLimitedList(File toAdd, LimitedConcurrentList<FileNamed> targetList, String varToSave) {
 		
 		if(toAdd == null || targetList == null || !toAdd.exists()) {return;}
 		

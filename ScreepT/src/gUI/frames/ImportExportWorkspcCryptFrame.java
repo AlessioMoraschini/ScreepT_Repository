@@ -274,7 +274,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 						if(completed != null && completed.exists() && completed.isDirectory()) {
 							try {
 								textEditor.setWorkspace(completed);
-								textOptions.addFileToLimitedList(completed, textOptions.lastSelectedWorkspaces, "lastSelectedWorkspaces");
+								textOptions.addFileToTopLimitedList(completed, textOptions.lastSelectedWorkspaces, "lastSelectedWorkspaces");
 								MainGUI.mainAPP.updateLastOpenedWorkspaces(textOptions.lastSelectedWorkspaces);
 								textEditor.textEditorUtils.refreshFromWorkspace(completed);
 								
