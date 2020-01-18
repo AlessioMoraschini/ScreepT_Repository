@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import com.sun.jna.Native;
 
 import conversion.Text2Speech;
-import maingUI.MainGUI;
+import maingUI.MainGuiUtils;
 import oshi.SystemInfo;
 import resources.GeneralConfig;
 
@@ -62,7 +62,7 @@ public class LibChecker {
 		boolean libFound = false;
 		boolean oshiFound = false;
 		
-		if(!MainGUI.checkJavaVersionMaxCompatibility()) {
+		if(!MainGuiUtils.checkJavaVersionMaxCompatibility()) {
 			return false;
 		}
 		

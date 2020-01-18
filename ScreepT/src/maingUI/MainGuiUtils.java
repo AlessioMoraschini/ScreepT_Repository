@@ -19,6 +19,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
@@ -28,8 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 
+import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import exception.UpdatesUnavailableException;
 import files.FileWorker;
@@ -53,14 +54,16 @@ import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
+import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
 import utility.properties.PropertiesManager;
+import utils.SysUtils;
 
 public class MainGuiUtils {
 	
 	// MainGuiUtils logger
-	static Logger logger = Logger.getLogger(MainGuiUtils.class);
+	static SafeLogger logger = new SafeLogger(MainGuiUtils.class);
 
 	public MainGUI mainAppReference;
 	
@@ -102,7 +105,7 @@ public class MainGuiUtils {
 											"ScreepT must be restarted to begin update procedure: do you want to restart now?", "Restart required");
 									
 									if (restartNow) {
-										MainGUI.closeApplication(0);
+										MainGuiManager.closeApplication(0);
 									} else {
 										dialogHelper.info("Updates will be installed when you'll close current session", "Update will start at close");
 									}
@@ -502,14 +505,17 @@ public class MainGuiUtils {
     	contentPane.revalidate(); 
     	contentPane.repaint();
     	
+    	// ENABLE/DISABLE TOP RIGH TOGGLES AND RESIZE CUSTOMIZED FOR PANEL
     	if(newMainPanel instanceof TextEditor) {
     		((TextEditor)newMainPanel).textEditorUtils.setupTogglesOnMainMenu(true);
     		mainAppReference.resizeMainFrameDefaults();
+    	
     	} else if(newMainPanel instanceof CrypterPanel) {
-    		mainAppReference.setTogglesEnabled(false);
+    		mainAppReference.setTopRightTogglesEnabled(false);
     		mainAppReference.resizeMainFrameDefaults();
+    	
     	} else {
-    		mainAppReference.setTogglesEnabled(false);
+    		mainAppReference.setTopRightTogglesEnabled(false);
     	}
 	}
 	
@@ -730,6 +736,74 @@ public class MainGuiUtils {
 
 		if(MainGUI.initTxtWriter != null && !isTextEditorActive() && isAllSavedInTextEditor()) {
 			MainGUI.initTxtWriter = null;
+		}
+	}
+
+	public static boolean checkJavaVersionMaxCompatibility() {
+		MainGUI.currentJvmVersion = System.getProperty("java.version");
+		
+		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(MainGUI.currentJvmVersion);
+		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
+		
+		return compareRes != 1;
+	}
+
+	/**
+	 * return false if not exit, true if has to exit;
+	 * @return
+	 */
+	public static boolean askUnsavedTextFiles() {
+
+		TextEditor initTxtWriter = MainGUI.initTxtWriter;
+		if (initTxtWriter == null || initTxtWriter.getCurrentTabEditor() == null) {
+			return true;
+		}
+		
+		CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
+		boolean askCondition = false;
+		boolean atLeastOneTemp = false;
+	
+		for (TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+			if (tabElement.unsaved) {
+				askCondition = true;
+			}
+			if (tabElement.loadedFile == null) {
+				atLeastOneTemp = true;
+			}
+		} 
+		
+		Boolean choiceY = GenericFileChooserDialog.askYorN(
+				"Files unsaved in textEditor", 
+				"There are some unsaved files in text Editor, do you want to save them?",
+				MainGUI.mainAPP.getMainFrame(),
+				askCondition);
+		if(choiceY == null) {
+			// cancel -> don't exit
+			return false;
+		}else if(choiceY) {
+			try {
+				currentTabEditor.saveAllUnsavedExisting();
+			} catch (IOException e) {
+				logger.error("", e);
+				if(!MainGUI.dialogHelper.yesOrNo("Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?")) {
+					MainGUI.dialogHelper.error("Exit procedure arrested", "Close procedure stopped");
+					MainGUI.mntmTextEditor.doClick();
+					return false; // no -> don't exit after error
+				}
+			}
+			if(atLeastOneTemp) {
+				MainGUI.mntmTextEditor.doClick();
+				for(TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+					if(tabElement.unsaved && tabElement.loadedFile == null) {
+						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
+						return false; // don't exit
+					}
+				}
+			}
+			return true;
+		
+		}else {
+			return true;
 		}
 	}
 }

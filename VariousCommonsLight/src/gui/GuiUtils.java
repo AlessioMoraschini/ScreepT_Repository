@@ -123,6 +123,17 @@ public class GuiUtils {
 			
 		};
 	}
+	
+	public static void forceToFront(JFrame target) {
+		
+		if(target != null) {
+			boolean alwayOnTopBackup = target.isAlwaysOnTop();
+			target.setAlwaysOnTop(true);
+			target.toFront();
+			target.setAlwaysOnTop(alwayOnTopBackup);
+		}
+	}
+	
 	public static FocusListener getFocusOutDisposeListener(final JFrame target) {
 		return new FocusListener() {
 

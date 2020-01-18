@@ -41,12 +41,10 @@ import org.apache.log4j.Level;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
-import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
 import files.ZipWorker;
-import files.watcher.ChangeDTO;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.GeneralOptionsFrame;
 import gUI.frames.GraphicPreferencesFrame;
@@ -57,11 +55,8 @@ import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gui.ComponentResizer;
 import gui.PluginManagerGUI;
-import guiVersion.HwInfoFrame;
-import guiVersion.NetInfoFrame;
 import guistyle.GUIStyelSettingsExtended;
 import jmenu.CustomJmenuItem;
-import logger.LoggerUtils;
 import mainobj.INItializer;
 import mainobj.InitOwner;
 
@@ -75,21 +70,16 @@ import java.util.Date;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.awt.SystemColor;
-import java.awt.Window;
 import java.awt.Dialog.ModalExclusionType;
 
 import net.miginfocom.swing.MigLayout;
-import om.TabTextEditorObj;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import tabbededitor.CustomTabbedEditor;
 import utility.ConversionUtils;
 import utils.SysUtils;
-import utils.panels.ClipboardPanel;
-import utils.panels.arch.PanelType;
 
 import javax.swing.MenuSelectionManager;
 import javax.swing.SwingUtilities;
@@ -123,6 +113,7 @@ public class MainGUI extends MainGuiParent{
 	public static boolean DARK_THEME; // true if dark theme is selected
 	
 	// flags for no-window operations
+	private static boolean FLAG_mntmRestart = false;
 	private static boolean FLAG_mntmExit = false;
 	private static boolean FLAG_loadPrjSub = false;
 	private static boolean FLAG_savePrjSub = false;
@@ -194,6 +185,7 @@ public class MainGUI extends MainGuiParent{
 			mainFrameScreept.setVisible(true);
 			mainFrameScreept.setEnabled(true);
 			mainGuiUtils = new MainGuiUtils(window);
+			mainGuiManager = new MainGuiManager(mainGuiUtils);
 			logger.info("Main GUI initialized correctly.");
 			
 			MainGuiGeneralAppStarter.loaderGraphics.update("Starting autosave modules... ", 65);
@@ -272,7 +264,7 @@ public class MainGUI extends MainGuiParent{
 			mainFrameScreept.addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-			    	askForExit();
+			    	MainGuiManager.askForExit();
 			  	}
 			});
 			
@@ -497,13 +489,26 @@ public class MainGUI extends MainGuiParent{
  			}
  		});
  
+		// NOT OPENING VIEW - RESTART SCREEPT
+ 		mntmRestart = new CustomJmenuItem(new AbstractAction("Restart") {
+			public void actionPerformed(ActionEvent e) {
+				if (!FLAG_mntmRestart) {
+					FLAG_mntmRestart = true;
+					
+					MainGuiManager.restartApplication();
+					
+					FLAG_mntmRestart = false;
+				}
+			}
+		});
+
 		// NOT OPENING VIEW - EXIT AND CLOSE SCREEPT
 		mntmExit = new CustomJmenuItem(new AbstractAction("Exit") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExit) {
 					FLAG_mntmExit = true;
 					
-					askForExit();
+					MainGuiManager.askForExit();
 					
 					FLAG_mntmExit = false;
 				}
@@ -623,7 +628,7 @@ public class MainGUI extends MainGuiParent{
 		});
 
 		// NOT OPENING VIEW - SAVE DEFAULT CONFIGURATION
-		mntmSaveCurrentAs = new CustomJmenuItem(new AbstractAction("Save Current as Default") {
+		mntmSaveCurrentAs = new CustomJmenuItem(new AbstractAction("Save Current Configuration as Default") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmSaveCurrentAs) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
@@ -647,7 +652,7 @@ public class MainGUI extends MainGuiParent{
 		});
 
 		// NOT OPENING VIEW - RELOAD STANDARD SCREEPT CONFIGURATION
-		mntmloadSrcrYptDefaultConf = new CustomJmenuItem(new AbstractAction("Reset Original") {
+		mntmloadSrcrYptDefaultConf = new CustomJmenuItem(new AbstractAction("Reset Original Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 
 		    	if (!FLAG_loadSrcrYptDefaultConf) {
@@ -1082,6 +1087,8 @@ public class MainGUI extends MainGuiParent{
 				SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 				setBackgroundImage();
 				
+				setTopRightTogglesEnabled(false);
+				
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(MainGUI.class);
 		    	MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", MainGUI.class.getCanonicalName());
 			}
@@ -1266,18 +1273,9 @@ public class MainGUI extends MainGuiParent{
         return correctFile;
 	}
 	
-	public static boolean checkJavaVersionMaxCompatibility() {
-		currentJvmVersion = System.getProperty("java.version");
-		
-		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(currentJvmVersion);
-		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
-		
-		return compareRes != 1;
-	}
-	
 	private void checkVersionAndDisableUnsupportedOpt() {
 		
-		if(!checkJavaVersionMaxCompatibility()) {
+		if(!MainGuiUtils.checkJavaVersionMaxCompatibility()) {
 			String tooltipMSG = "This option is unsupported with current JVM version (" + currentJvmVersion 
 					+ "). Run with version under Max JVM version supported to use this functionality (Max allowed: "
 					+ GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY + ")";
@@ -1294,299 +1292,6 @@ public class MainGUI extends MainGuiParent{
 			} 
 			
 		}
-	}
-	
-	public static void askForExit() {
-    	
-		if(alreadyAskingForClose) {
-			return;
-		}
-
-		alreadyAskingForClose = true;
-		
-		Window activeWindow = javax.swing.FocusManager.getCurrentManager().getActiveWindow();
-		
-    	if (dialogHelper.showYNDialog("Really want to exit?", "Exit Program", JOptionHelperExtended.YES_OR_NO)) {
-
-    		mainFrameScreept.setAlwaysOnTop(true);
-    		closeApplication(0);
-    		
-    	}else {
-    		
-    		mainFrameScreept.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    		activeWindow.toFront();
-    		activeWindow.requestFocus();
-    	}
-    	
-    	alreadyAskingForClose = false;
-	}
-	
-	public static void killApplication(int exitCode) {
-		logger.warn("\n\n => Starting kill procedure...\n\n");
-		
-		if (mainFrameScreept != null) {
-			// if controls are passed then start real application closing routine
-			mainFrameScreept.setAlwaysOnTop(false);
-		}
-		
-		closeOpenBlockingFrames();
-		
-		runTempFilesErasers();
-      	
-		mainAppRunning = false;
-		
-		logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
-	
-		SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
-		
-		MainGuiGeneralAppStarter.deleteSignalFileForExternalJars();
-		
-		logger.info("Kill procedure completed succesfully, now software will shut down");
-		
-		System.exit(exitCode);
-	}
-	
-	public static void closeApplication(int exitCode) {
-		
-		logger.info("\n\n => Starting exit procedure...\n\n");
-		
-		// Remember splitPanel dividers position - TEXT Editor
-		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", currentConfiguration.getTextEditorOpt().getDividerRightPanePosX());
-		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
-		
-		// CHECK UNSAVED TEXT EDITOR FILES
-		if(!askUnsavedTextFiles()) {
-			mainFrameScreept.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			return;
-		}
-		
-		if(doIfTempDecryptedChanged(mainFrameScreept)) {
-			mainFrameScreept.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			return;
-		}
-		
-		// if controls are passed then start real application closing routine
-		mainFrameScreept.setAlwaysOnTop(true);
-		
-		closeOpenBlockingFrames();
-		
-		now = new Date();
-		
-        // if autosave is on save before quit
-        if(currentConfiguration.getFileOpt().isFlagAutosave()) {
-			try {
-				currentConfiguration.writeCurrentConfigIniFile();
-				logger.info(" => AUTOSAVE ON: file saved before exiting ["
-						+ currentConfiguration.getIniFile().getFile().getAbsolutePath() + "]");
-			} catch (Exception e) {
-				logger.error("Exception happened!", e);
-			}
-		}else {
-			logger.info("\n => Autosave OFF -> configuration saving skipped");
-		}
-        
-      	// SAVE CURRENTLY OPENED FILES reference only (in text-editor)
-      	backupOpenedFilesInConfig();
-      	
-      	runTempFilesErasers();
-      	
-		mainAppRunning = false;
-		
-		logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
-	
-		SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
-		
-		MainGuiGeneralAppStarter.deleteSignalFileForExternalJars();
-		
-		// Check and launch eventual pending updates
-		checkUpdatesWaitingForInstall();
-		
-		logger.info("Exit procedure completed succesfully, now software will shut down");
-		
-		System.exit(exitCode);
-	}
-	
-	public static void checkUpdatesWaitingForInstall() {
-		try {
-			if (MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()) {
-				logger.error("Updates detected, starting updater jar application...");
-				if(updatesDownloaded != null) {
-					String command = "java -jar " + updatesDownloaded[0].getName() 
-						+ " " + updatesDownloaded[0].getName() 
-						+ " " + updatesDownloaded[1].getParentFile().getName() + "\\" + updatesDownloaded[1].getName()
-						+ " " + updatesDownloaded[2].getName();
-					Runtime runtime = Runtime.getRuntime();
-					logger.info("Launching java command to update with downloaded files: \n\n" + command + "\n\n");
-					runtime.exec(command);
-					logger.info("Updater jar application launched!");
-				}else {
-					logger.error("updatesDownloaded is null!");
-				}
-			}
-		} catch (IOException e) {
-			logger.error("Cannot start update procedure, an error occurred!", e);
-		}
-	}
-	
-	public static void runTempFilesErasers() {
-     	// START ERASING TEMP DECRYPTED IF THERE ARE SOME
-      	Thread tempEraser = new Thread(MainGuiUtils.tempFilesEraser());
-      	tempEraser.start();	
-      	
-      	// START ERASING CREEPT TEMP DECRYPTED IF THERE ARE SOME
-      	Thread tempCreeptEraser = new Thread(MainGuiUtils.tempDecryptedEraser());
-      	tempCreeptEraser.start();	
-      	
-		String msg = "Deleting temp files and folders...";
-		
-		try {
-			logger.info(msg + "please wait!");
-			tempEraser.join();
-			tempCreeptEraser.join();
-			logger.info(msg + "COMPLETED :)");
-			
-		} catch (InterruptedException e) {
-			logger.error("Some error occurred deleting temporary Decrypted files");
-		}
-	}
-	
-	public static void closeOpenBlockingFrames(){
-		logger.info("\n => Closing blocking frames");
-		
-		if(MainGuiGeneralAppStarter.hwInfoAvailable && HwInfoFrame.singletonInstance != null) {
-			HwInfoFrame.singletonInstance.dispose();
-		}
-		
-		if(NetInfoFrame.singletonInstance != null) {
-			NetInfoFrame.singletonInstance.dispose();
-		}
-		
-		if(initTxtWriter != null && initTxtWriter.subHeaderPanel != null) {
-			if(initTxtWriter.subHeaderPanel.propertiesFrame != null) {
-				initTxtWriter.subHeaderPanel.propertiesFrame.dispose();
-			}
-		}
-		
-		logger.info("\n => Blocking frames closed");
-	}
-	
-	public static boolean doIfTempDecryptedChanged(JFrame parent) {
-		logger.debug("Starting check on fileMonitor...");
-		boolean result = false;
-		try {
-			if (panelCrypter != null && 
-				panelCrypter.fileMonitor != null && 
-				panelCrypter.fileMonitor.rootMonitorDir.exists()) {
-				
-				ChangeDTO changesTempDecrypted = panelCrypter.fileMonitor.checkForEverithing();
-				if (changesTempDecrypted.changedFiles.size() != 0) {
-					if(dialogHelper.yesOrNo("There are Files changed after decrypt.. do you want to return to ScreepT view? "+changesTempDecrypted.changedFiles)) {
-						result = false;
-						mntmCrypter.doClick();
-						// add unsaved as source for crypterPanel
-						panelCrypter.panelVDragNDropPane.removeAll();
-						for(File unsaved : panelCrypter.fileMonitor.rootMonitorDir.listFiles()) {
-							panelCrypter.panelVDragNDropPane.addFileToTree(unsaved);
-						}
-					}else {
-						result = false;
-					}
-				}
-			}
-			
-		} catch (Exception e) {
-			logger.error("Error getting changes on tempFolder decrypted", e);
-		}
-		return result;
-	}
-	
-	/**
-	 * return false if not exit, true if has to exit;
-	 * @return
-	 */
-	public static boolean askUnsavedTextFiles() {
-		
-		if (initTxtWriter == null || initTxtWriter.getCurrentTabEditor() == null) {
-			return true;
-		}
-		
-		CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
-
-		boolean askCondition;
-		boolean atLeastOneTemp;
-		
-		askCondition = false;
-		atLeastOneTemp = false;
-		for (TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
-			if (tabElement.unsaved) {
-				askCondition = true;
-			}
-			if (tabElement.loadedFile == null) {
-				atLeastOneTemp = true;
-			}
-		} 
-		
-		Boolean choiceY = GenericFileChooserDialog.askYorN("Files unsaved in textEditor", "There are some unsaved files in text Editor, do you want to save them?", mainFrameScreept, askCondition);
-		if(choiceY == null) {
-			// cancel -> don't exit
-			return false;
-		}else if(choiceY) {
-			try {
-				currentTabEditor.saveAllUnsavedExisting();
-			} catch (IOException e) {
-				logger.error(e);
-				if(!dialogHelper.yesOrNo("Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?")) {
-					dialogHelper.error("Exit procedure arrested", "Close procedure stopped");
-					mntmTextEditor.doClick();
-					return false; // no -> don't exit after error
-				}
-			}
-			if(atLeastOneTemp) {
-				mntmTextEditor.doClick();
-				for(TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
-					if(tabElement.unsaved && tabElement.loadedFile == null) {
-						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
-						return false; // don't exit
-					}
-				}
-			}
-			return true;
-		}else {
-			return true;
-		}
-	}
-	
-	private static void backupOpenedFilesInConfig() {
-		if (initTxtWriter != null) {
-			CustomTabbedEditor currentTabEditor = initTxtWriter.getCurrentTabEditor();
-			
-			// save list of non null and existing files in tabs
-			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
-			for (TabTextEditorObj currentObj : currentTabEditor.loadedList.getList()) {
-				if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
-					currentConfiguration.getTextEditorOpt().getOpenedFileList()
-							.add(currentObj.loadedFile.getAbsolutePath());
-				}
-			}
-			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedFilesAtStart",
-					currentConfiguration.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
-
-			// save current opened if it exists
-			if(currentTabEditor.loadedTabObj != null 
-					&& currentTabEditor.loadedTabObj.loadedFile!= null 
-					&& currentConfiguration.getTextEditorOpt().openedFileList.contains(currentTabEditor.loadedTabObj.loadedFile.getAbsolutePath()))
-			{
-				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "selectedFileAtStart", currentTabEditor.loadedTabObj.loadedFile.getAbsolutePath());
-			}
-			
-			// update clipboard if exists
-			if(initTxtWriter != null && initTxtWriter.textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
-				// save only current cause others are already saved once user selected items
-				((ClipboardPanel)initTxtWriter.rightSplitContainer).saveCurrClipboardSilent();
-			}
-		}
-		
-		logger.info("\n => Opened files in textEditor added to configuration");
 	}
 	
 	/**

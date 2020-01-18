@@ -222,7 +222,7 @@ public class WindowCreator {
 				if(choice.equals(UserLicenseChoice.REJECTED)) {
 					if (new JOptionHelper(null).yesOrNo("You cannot proceed without accepting this License, are you sure to stop this process?")) {
 						if (closeOnDecline) {
-							MainGUI.closeApplication(1);
+							MainGuiManager.closeApplication(1);
 						} else {
 							return licenseViewer;
 						}

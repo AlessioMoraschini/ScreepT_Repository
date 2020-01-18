@@ -25,7 +25,6 @@ import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import files.FileVarious;
@@ -48,6 +47,7 @@ import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
+import utility.SafeLogger;
 import utility.properties.PropertiesManager;
 import utils.SysUtils;
 
@@ -71,7 +71,7 @@ import utils.SysUtils;
 	public class ScreepTLauncher {
 		
 		// ScreepTLauncher logger
-		static Logger logger = Logger.getLogger(ScreepTLauncher.class); 
+		static SafeLogger logger = new SafeLogger(ScreepTLauncher.class); 
 		
 		public static final String BATCH_LAUNCHER_NAME = "LauncherBatch.bat";
 		public static final String BASH_LAUNCHER_NAME = "./LauncherBash.sh";
@@ -249,7 +249,7 @@ import utils.SysUtils;
 				
 				appLogEnd();
 				
-				launchCommands();
+				launchCommands(initPath, iniFileManager.viewShellAfterStart);
 				
 				loaderGraphics.update("Ready", 101);
 				
@@ -364,36 +364,37 @@ import utils.SysUtils;
 		/**
 		 * retrieve list of commands, write to file and run it in current OS
 		 */
-		public void launchCommands() {
+		public static void launchCommands(String nativeLauncherPath, boolean shellVisible) {
 			
-			logger.info("Launching commands on currentOS: " + currentOS.getOsName() + currentOS.getOsArch());
+			OSinfo OS = SysUtils.getOsInfoLazy();
+			logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
 			
 			Runtime runtime = Runtime.getRuntime();
 			
 			try {
 				try {
-					new File(initPath).setExecutable(true);
+					new File(nativeLauncherPath).setExecutable(true);
 					Thread.sleep(100);
 				} catch (Exception e1) {}
 				
 				// CASE WINDOWS
-				if (currentOS.isWindows()) {
-					if (iniFileManager.viewShellAfterStart) {
-						runtime.exec("cmd /c start /min \"ScreepT-Shell\" \"" + initPath + "\"");
+				if (OS.isWindows()) {
+					if (shellVisible) {
+						runtime.exec("cmd /c start /min \"ScreepT-Shell\" \"" + nativeLauncherPath + "\"");
 					}else {
-						runtime.exec(initPath);
-//						runtime.exec("cmd /c \"start /b " + initPath + "\"");
+						runtime.exec(nativeLauncherPath);
+//						runtime.exec("cmd /c \"start /b " + nativeLauncherPath + "\"");
 					}
 				
 				}else {
 					
 					// TODO LINUX/MAC SHELL show on/off
 					SysUtils.logProcessOutput(runtime.exec("pwd"));
-					Process executableMaker = runtime.exec("chmod u+x " + initPath);
+					Process executableMaker = runtime.exec("chmod u+x " + nativeLauncherPath);
 					SysUtils.logProcessOutput(executableMaker);
 					executableMaker.waitFor();
 					
-					runtime.exec(initPath);
+					runtime.exec(nativeLauncherPath);
 				}
 				logger.info("Commands launched without exceptions :)"); 
 			} catch (Exception e) {

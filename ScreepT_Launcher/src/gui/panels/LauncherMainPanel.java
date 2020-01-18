@@ -164,7 +164,7 @@ public class LauncherMainPanel extends JFrame{
 					Thread.sleep(400);
 				} catch (InterruptedException e1) {
 				}
-				LAUNCHER.launchCommands();
+				ScreepTLauncher.launchCommands(ScreepTLauncher.initPath, ScreepTLauncher.iniFileManager.viewShellAfterStart);
 				LAUNCHER_GUI.dispatchEvent(new WindowEvent(LAUNCHER_GUI, WindowEvent.WINDOW_CLOSING));
 			}
 		});

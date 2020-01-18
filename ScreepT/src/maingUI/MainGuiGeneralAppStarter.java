@@ -73,7 +73,7 @@ public class MainGuiGeneralAppStarter {
 	// Main configuration reference for all sub-modules
 	private static INItializer currentConfiguration;
 	// and another one for launcher modding from main app
-	private static Wini launcherConfig;
+	protected static IniFileManager iniFileManager;
 	
 	public static String[] ARGS;
 	public static File[] argumentsFiles;
@@ -217,9 +217,11 @@ public class MainGuiGeneralAppStarter {
 			try {
 				loaderGraphics.update("Initializing user configuration", 10);
 				
-				launcherConfig = new Wini(new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH));
-				LOG_LEVEL_AT_START = LoggerUtils.getLogLevelFromString(launcherConfig.get(IniFileManager.INI_APP_OPT, "logLevelSetting"));
+				iniFileManager = new IniFileManager(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
+				iniFileManager.initFromINIFile();
+				LOG_LEVEL_AT_START = iniFileManager.logLevel;
 				logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
+				
 				if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
 					logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
 				}
@@ -247,6 +249,7 @@ public class MainGuiGeneralAppStarter {
 			 * LAUNCH MAIN APPLICATION
 			 *************************/
 			boolean mainAppRunning = MainGUI.mainApplicationGeneral(currentConfiguration);
+			GuiUtils.forceToFront(MainGUI.mainAPP.getMainFrame());
 			/** MainApp: LAUNCHED :)**/
 			
 			if(!mainAppRunning) {
@@ -298,7 +301,7 @@ public class MainGuiGeneralAppStarter {
 				}
 
 				try {
-					MainGUI.closeApplication(1);
+					MainGuiManager.closeApplication(1);
 				} catch (Exception e) {
 					System.exit(1);
 				}
@@ -320,7 +323,7 @@ public class MainGuiGeneralAppStarter {
 				if (AWTExceptionHandler.options[0].equals(res)) {
 					// CASE KILL APPLICATION
 					try {
-						MainGUI.closeApplication(1);
+						MainGuiManager.closeApplication(1);
 					} catch (Exception e) {
 						System.exit(1);
 					}

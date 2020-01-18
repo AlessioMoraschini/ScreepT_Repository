@@ -58,7 +58,7 @@ public class SafetyScreepTShortcutsListener implements KeyEventDispatcher{
 					if (askKill()) {
 
 						logger.info(this.getClass().getName() + " emergency kill procedure started.");
-			    		MainGUI.killApplication(0);
+			    		MainGuiManager.killApplication(0);
 			    	}
 				}
 
@@ -69,8 +69,15 @@ public class SafetyScreepTShortcutsListener implements KeyEventDispatcher{
 					if (askKill()) {
 						
 						logger.info(this.getClass().getName() + " emergency kill procedure started.");
-						MainGUI.killApplication(0);
+						MainGuiManager.killApplication(0);
 					}
+				}
+
+				/*
+				 *  Safe app restart : alt + F5
+				 */
+				if (e.getKeyCode() == KeyEvent.VK_F5 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+					MainGuiManager.restartApplication();
 				}
 			}
 		}

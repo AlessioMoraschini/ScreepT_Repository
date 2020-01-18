@@ -58,6 +58,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_SAVE_CONF = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/save.png";
 	public static final String ICON_SAVE_AS_DEFAULT_CONF = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/saveAsDefault.png";
 	public static final String ICON_RESET_CONF = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/reset.png";
+	public static final String ICON_RESTART = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/Restart.png";
 	public static final String ICON_EXIT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/turnOff.png";
 	
 		// preferences submenu

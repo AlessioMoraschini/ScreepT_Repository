@@ -211,6 +211,10 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (selectedForExport != null && selectedForExport.exists() && selectedForExport.isDirectory()) {
+						while (textEditor == null || textEditor.textEditorUtils == null) {
+							Thread.sleep(250);
+							textEditor = MainGUI.initTxtWriter;
+						}
 						textEditor.textEditorUtils.openFileInScreeptWithReturnAction(selectedForExport, getAfterExportRunnable());
 					} else {
 						dialogHelper.error("Please select a workspace before to export", "Invalid selection");

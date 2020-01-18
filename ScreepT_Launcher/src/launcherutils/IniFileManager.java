@@ -14,10 +14,12 @@ package launcherutils;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import gui.utils.LoggerUtils;
 import utility.string.StringWorker;
 
 public class IniFileManager {
@@ -44,6 +46,8 @@ public class IniFileManager {
 	public String JVM_STACK_SIZE = "-Xss128m"; // default stack size
 	// main application path default
 	public String MAIN_JAR_FILE = "MainAppToLaunch.jar";
+	
+	public Level logLevel = Level.INFO;
 	
 	public boolean showInstallOptions = true;
 	public boolean hideNStartDirect = false;
@@ -89,6 +93,9 @@ public class IniFileManager {
 			preferredJvm = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvm"));
 			preferredJvmVersionIfNotSpecified = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "preferredJvmVersionIfNotSpecified"));
 			manualPathJvm = StringWorker.trimToEmpty(iniConfigFile.get(IniFileManager.INI_JVM_OPT, "manualPathJvm"));
+			
+			String logLevelStr = iniConfigFile.get(IniFileManager.INI_APP_OPT, "logLevelSetting");
+			logLevel = LoggerUtils.getLogLevelFromString(logLevelStr != null ? logLevelStr : "INFO");
 			
 			logger.info("Launcher_configuration file loaded!");
 		} catch (InvalidFileFormatException e) {

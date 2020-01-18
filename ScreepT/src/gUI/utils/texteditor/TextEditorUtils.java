@@ -1152,7 +1152,7 @@ public class TextEditorUtils {
 	}
 	
 	public void setupTogglesOnMainMenu(boolean enabled) {
-		MainGUI.mainAPP.setTogglesEnabled(enabled);
+		MainGUI.mainAPP.setTopRightTogglesEnabled(enabled);
 		if (enabled) {
 			updateTogglesIconsFromConfig();
 			MainGUI.toggleAction0 = new ToggleAction() {
