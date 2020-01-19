@@ -31,6 +31,8 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
+
 
 /**
  * A Prime Number Hunter Gui
@@ -130,8 +132,7 @@ public class PrimeNumberHunterGui extends JLabel{
 
 		//**Setting Criterion of the Frame**//
     	setBounds(0, 0, 515, 495);
-    	setIcon(new ImageIcon(getClass().getResource("/res/imgs/" +
-    			"PrimeNumberHunterBackground.png")));
+    	setIcon(new ImageIcon(getClass().getResource("/res/imgs/" +	"PrimeNumberHunterBackground.png")));
 	}
 
 	/********* Main Method *********/
@@ -152,5 +153,6 @@ public class PrimeNumberHunterGui extends JLabel{
 		jFrame.setLayout(null);
 		jFrame.add(gui);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 }

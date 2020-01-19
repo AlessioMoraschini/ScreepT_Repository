@@ -1,3 +1,5 @@
+2020-01-18  (HEAD -> refs/heads/BugFix, refs/remotes/origin/master, refs/remotes/origin/BugFix, refs/heads/master) Added restart option + Various Bugs fixed
+
 2020-01-16  New version : build and weigth improvements + bugfix
 
 2020-01-15  Added file type options to Text editor + BUGFIX (various)

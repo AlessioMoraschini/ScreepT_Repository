@@ -28,6 +28,8 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
+
 
 /**
  * A Date Calculator Gui
@@ -154,6 +156,7 @@ public class DateCalculatorGui extends JLabel {
 		jFrame.setLayout(null);
 		jFrame.add(gui);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 
 

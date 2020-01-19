@@ -37,8 +37,11 @@ public class CalculatorMainApp extends Thread{
 	public static boolean keyListenerBaseAdded = false;
 	public static boolean keyListenerAdvancedAdded = false;
 	
+	public static JFrame parentCallerFrame;
+	
 	// constructor - for calling from others softwares
-	public CalculatorMainApp() {
+	public CalculatorMainApp(JFrame parentCallerFrame) {
+		CalculatorMainApp.parentCallerFrame = parentCallerFrame;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				start();

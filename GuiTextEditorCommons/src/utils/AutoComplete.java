@@ -11,6 +11,7 @@
  */
 package utils;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -71,13 +72,24 @@ public class AutoComplete {
 		BufferedReader br = new BufferedReader(fileReader);
 		try {
 			String line=br.readLine();
+			String description = "";
 			while(line!=null){
 				line = line.trim();
+				
 				if(line.length()>0 && line.substring(0,1).equals("-")){
 					line = line.substring(1, line.length());
 				}
 				line = line.trim();
-				provider_temp.addCompletion(new BasicCompletion(provider_temp,line));
+				try {
+					description = line.split(";;;")[1];
+					line = line.split(";;;")[0];
+				} catch (Exception e) {
+					description = "";
+				}
+				
+				if(!"".equals(line)) {
+					provider_temp.addCompletion(new BasicCompletion(provider_temp,line, null, description));
+				}
 				line =br.readLine();
 			}
 		
@@ -89,6 +101,10 @@ public class AutoComplete {
 			ac.setParameterAssistanceEnabled(true);
 			ac.setAutoCompleteEnabled(true);
 			ac.setAutoCompleteSingleChoices(true);
+			ac.setParameterAssistanceEnabled(true);
+			ac.setDescriptionWindowSize(400,200);
+			ac.setShowDescWindow(true);
+			ac.setDescriptionWindowColor(new Color(252, 240, 162));
 			
 			ac.install(code_text_area);
 			

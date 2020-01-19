@@ -721,9 +721,23 @@ public class TextEditorUtils {
 		
 		mainApp.setFullScreenEnabled(enableImmersive);
 		
-		setFooterVisibile(!enableImmersive);
-		setHeaderVisibileLevel1(!enableImmersive);
-		setHeaderVisibileLevel2(!enableImmersive);
+		TextEditorOption txteditorOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
+		
+		if (enableImmersive) {
+			boolean[] blockVisible = new boolean[] {txteditorOpt.footerVisible, txteditorOpt.headerVisible, txteditorOpt.subHeaderVisible};
+			
+			setFooterVisibile(false);
+			setHeaderVisibileLevel1(false);
+			setHeaderVisibileLevel2(false);
+			
+			txteditorOpt.setFooterVisible(blockVisible[0]);
+			txteditorOpt.setHeaderVisible(blockVisible[1]);
+			txteditorOpt.setSubHeaderVisible(blockVisible[2]);
+		} else {
+			setFooterVisibile(txteditorOpt.footerVisible);
+			setHeaderVisibileLevel1(txteditorOpt.headerVisible);
+			setHeaderVisibileLevel2(txteditorOpt.subHeaderVisible);
+		}
 		
 		mainApp.menuBar.setVisible(!enableImmersive);
 		mainApp.isImmersiveModeOn.set(enableImmersive);

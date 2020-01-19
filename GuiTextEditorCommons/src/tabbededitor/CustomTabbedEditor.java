@@ -236,15 +236,16 @@ public class CustomTabbedEditor implements ITabsManager {
 	}
 	
 	private boolean validateFileToOpen(File fileToOpen) {
-		if(fileToOpen != null && fileToOpen.exists() && fileToOpen.length()/1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB) {
-			dialogHelper.error("Cannot load file, max admitted size is " + ConversionUtils.coolFileSize((long)GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024));
-			return false;
+		if (fileToOpen != null) {
+			if (fileToOpen.exists() && fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB) {
+				dialogHelper.error(
+						"Cannot load file, max admitted size is " + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024));
+				return false;
+			}
+			if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
+				return dialogHelper.yesOrNo("This type of file is not supported [" + fileToOpen.getName() + "] : Load anyway?");
+			} 
 		}
-		
-		if(!SupportedFileTextEditor.isSupported(fileToOpen)) {
-			return dialogHelper.yesOrNo("This type of file is not supported [" + fileToOpen.getName() + "] : Load anyway?");
-		}
-		
 		return true;
 	}
 	

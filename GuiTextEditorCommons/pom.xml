@@ -38,6 +38,16 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
+	    <!-- download source code in Eclipse, best practice -->
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-eclipse-plugin</artifactId>
+	        <version>2.9</version>
+	        <configuration>
+	          <downloadSources>true</downloadSources>
+	          <downloadJavadocs>false</downloadJavadocs>
+	        </configuration>
+	      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
@@ -64,12 +74,13 @@
 	    <version>3.0.6</version>
 	</dependency>
 
-	
-<!-- 	<dependency>
-	    <groupId>org.fife</groupId>
-	    <artifactId>RAutocomplete</artifactId>
-	    <version>2.5.1</version>
+	<!-- 
+	<dependency>
+	    <groupId>com.fifesoft</groupId>
+	    <artifactId>autocomplete</artifactId>
+	    <version>3.0.4</version>
 	</dependency> -->
+
 		
     <!-- https://mvnrepository.com/artifact/com.fifesoft/spellchecker -->
 	<dependency>

@@ -17,6 +17,7 @@
 
 package com.minhasKamal.ultimateCalculator.calculators.primeNumberHunter;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -30,6 +31,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import com.minhasKamal.ultimateCalculator.mainFrame.UltimateCalculatorFrame;
 import com.minhasKamal.ultimateCalculator.notifications.message.Message;
 import com.minhasKamal.ultimateCalculator.utils.fileIO.FileIO;
@@ -116,7 +118,8 @@ public class PrimeNumberHunter extends UltimateCalculatorFrame{
 		//**Setting Criterion of the Frame**//
 		//add main label to main frame
 		super.gui.add(primNumHunterGui);
-		super.gui.setBounds(200, 115, 513, 495);
+		super.gui.setMinimumSize(new Dimension(513, 495));
+		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 		super.gui.setTitle("Prime Number Hunter");
 		super.gui.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		super.gui.setLayout(null);

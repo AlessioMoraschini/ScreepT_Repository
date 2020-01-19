@@ -1,41 +1,6 @@
-# Adobe ColdFusion 9 Reserved Key Words
-
-The following list indicates words you must not use for ColdFusion variables, user-defined function names, or custom tag names. Although you can safely use some of these words in some situations, you can prevent errors by avoiding them entirely.
-
-- Any name starting with cf. However, when you call a CFML custom tag directly, you prefix the custom tag page name with cf_.
-- Built-in function names, such as Now or Hash
-- Scope names, such as Form or Session
-- Operators, such as NE or IS
-- The names of any built-in data structures, such as Error or File
-- The names of any built-in variables, such as RecordCount or CGI variable names
-- The following CFScript language element names:
-  - for
-  - default
-  - continue
-  - import
-  - finally
-  - local (inside function declaration)
-  - interface
-  - pageencoding
-
-Remember that ColdFusion is not case sensitive. For example, all of the following are reserved words: IS, Is, iS, and is.
-Note: Keywords in the newly added statements, such as abort, rethrow, param, and so on are not reserved.
-
-
-Reserved words in forms
-
-- _integer
-- _float
-- _range
-- _date
-- _time
-- _eurodate
-
-Reserved words in queries
+#SQL reserved words
 
 - A 
-  - ABSOLUTE
-  - ACTION
   - ADD
   - ALL
   - ALLOCATE
@@ -53,22 +18,19 @@ Reserved words in queries
   - BEGIN
   - BETWEEN
   - BIT
-  - BIT_LENGTH
+  - BOOLEAN
   - BOTH
   - BY
 - C 
+  - CALL
   - CASCADE
   - CASCADED
   - CASE
   - CAST
-  - CATALOG
   - CHAR
   - CHARACTER
-  - CHARACTER_LENGTH
-  - CHAR_LENGTH
   - CHECK
   - CLOSE
-  - COALESCE
   - COLLATE
   - COLLATION
   - COLUMN
@@ -82,7 +44,6 @@ Reserved words in queries
   - CORRESPONDING
   - COUNT
   - CREATE
-  - CROSS
   - CURRENT
   - CURRENT_DATE
   - CURRENT_TIME
@@ -90,37 +51,32 @@ Reserved words in queries
   - CURRENT_USER
   - CURSOR
 - D 
-  - DATE
-  - DAY
   - DEALLOCATE
   - DEC
   - DECIMAL
   - DECLARE
-  - DEFAULT
   - DEFERRABLE
   - DEFERRED
   - DELETE
   - DESC
   - DESCRIBE
-  - DESCRIPTOR
   - DIAGNOSTICS
   - DISCONNECT
   - DISTINCT
-  - DOMAIN
   - DOUBLE
   - DROP
 - E 
   - ELSE
   - END
-  - END-EXEC
+  - ENDEXEC
   - ESCAPE
   - EXCEPT
   - EXCEPTION
   - EXEC
   - EXECUTE
   - EXISTS
+  - EXPLAIN
   - EXTERNAL
-  - EXTRACT
 - F 
   - FALSE
   - FETCH
@@ -131,14 +87,16 @@ Reserved words in queries
   - FOUND
   - FROM
   - FULL
+  - FUNCTION
 - G 
   - GET
+  - GET_CURRENT_CONNECTION
   - GLOBAL
   - GO
   - GOTO
   - GRANT
   - GROUP
-- H 
+ - H 
   - HAVING
   - HOUR
 - I 
@@ -148,13 +106,13 @@ Reserved words in queries
   - INDICATOR
   - INITIALLY
   - INNER
+  - INOUT
   - INPUT
   - INSENSITIVE
   - INSERT
   - INT
   - INTEGER
   - INTERSECT
-  - INTERVAL
   - INTO
   - IS
   - ISOLATION
@@ -163,26 +121,22 @@ Reserved words in queries
 - K 
   - KEY
 - L 
-  - LANGUAGE
   - LAST
-  - LEADING
   - LEFT
-  - LEVEL
   - LIKE
-  - LOCAL
+  - LONGINT
   - LOWER
+  - LTRIM
 - M 
   - MATCH
   - MAX
   - MIN
   - MINUTE
-  - MODULE
-  - MONTH
 - N 
-  - NAMES
   - NATIONAL
   - NATURAL
   - NCHAR
+  - NVARCHAR
   - NEXT
   - NO
   - NOT
@@ -190,7 +144,6 @@ Reserved words in queries
   - NULLIF
   - NUMERIC
 - O 
-  - OCTET_LENGTH
   - OF
   - ON
   - ONLY
@@ -198,14 +151,13 @@ Reserved words in queries
   - OPTION
   - OR
   - ORDER
+  - OUT
   - OUTER
   - OUTPUT
   - OVERLAPS
 - P 
   - PAD
   - PARTIAL
-  - POSITION
-  - PRECISION
   - PREPARE
   - PRESERVE
   - PRIMARY
@@ -223,16 +175,14 @@ Reserved words in queries
   - RIGHT
   - ROLLBACK
   - ROWS
+  - RTRIM
 - S 
   - SCHEMA
   - SCROLL
   - SECOND
-  - SECTION
   - SELECT
-  - SESSION
   - SESSION_USER
   - SET
-  - SIZE
   - SMALLINT
   - SOME
   - SPACE
@@ -240,15 +190,13 @@ Reserved words in queries
   - SQLCODE
   - SQLERROR
   - SQLSTATE
+  - SUBSTR
   - SUBSTRING
   - SUM
   - SYSTEM_USER
 - T 
   - TABLE
   - TEMPORARY
-  - THEN
-  - TIME
-  - TIMESTAMP
   - TIMEZONE_HOUR
   - TIMEZONE_MINUTE
   - TO
@@ -256,7 +204,6 @@ Reserved words in queries
   - TRANSACTION
   - TRANSLATE
   - TRANSLATION
-  - TRIM
   - TRUE
 - U 
   - UNION
@@ -264,26 +211,25 @@ Reserved words in queries
   - UNKNOWN
   - UPDATE
   - UPPER
-  - USAGE
   - USER
   - USING
 - V 
-  - VALUE
   - VALUES
   - VARCHAR
   - VARYING
   - VIEW
 - W 
-  - WHEN
   - WHENEVER
   - WHERE
   - WITH
   - WORK
   - WRITE
-- Y 
+- X 
+  - XML
+  - XMLEXISTS
+  - XMLPARSE
+  - XMLSERIALIZE
+- Y
   - YEAR
-- Z 
-  - ZONE
 
 ---
- 

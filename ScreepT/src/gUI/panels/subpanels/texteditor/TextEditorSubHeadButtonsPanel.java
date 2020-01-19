@@ -517,7 +517,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnLoadTextFile = new JButton("");
 		btnLoadTextFile.setToolTipText(TextEditTooltips.tooltipLoadTextFile);
 		btnLoadTextFile.setForeground(SystemColor.menuText);
-		btnLoadTextFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_NEW));
+		btnLoadTextFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
 		add(btnLoadTextFile, "cell 0 0,grow");
 		
 		addHandlers();
@@ -772,8 +772,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						if (calculatorFrame == null || !CalculatorMainApp.active) {
-							calculatorMainThread = new CalculatorMainApp(); 
-							// STarts automatically
+							calculatorMainThread = new CalculatorMainApp(MainGUI.mainAPP.getMainFrame()); 
 						}
 					}
 				});
@@ -843,20 +842,17 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						textEditorUtils.addCurrentSelectionToLastSearched();
-						if (searchBox == null) {
-							searchBox = textEditorUtils.textAreaDialogs.getSearchDialog(parent.parentFrame,  null, textEditorUtils,"successAdvice", "errorAdvice");
-							GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
-							try {
-								textEditorUtils.textAreaDialogs.setComboItems(
-										searchBox, currentConfiguration.getTextEditorOpt().lastSearchTerms.getList(), true);
-							} catch (IllegalArgumentException | IllegalAccessException e) {
-								logger.error("Cannot update search dialog combobox");
-							}
-						} else {
-							searchBox.setVisible(true);
-							searchBox.toFront();
-							searchBox.requestFocus();
+						searchBox = textEditorUtils.textAreaDialogs.getSearchDialog(parent.parentFrame,  null, textEditorUtils,"successAdvice", "errorAdvice");
+						GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_SEARCH, searchBox);
+						try {
+							textEditorUtils.textAreaDialogs.setComboItems(
+									searchBox, currentConfiguration.getTextEditorOpt().lastSearchTerms.getList(), true);
+						} catch (IllegalArgumentException | IllegalAccessException e) {
+							logger.error("Cannot update search dialog combobox");
 						}
+						searchBox.setVisible(true);
+						searchBox.toFront();
+						searchBox.requestFocus();
 						
 						searchBox.addWindowListener(new java.awt.event.WindowAdapter() {
 							@Override
@@ -881,23 +877,20 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					public void run() {
 						textEditorUtils.addCurrentSelectionToLastSearched();
 						
-						if (replaceDialog == null) {
-							replaceDialog = textEditorUtils.textAreaDialogs.getReplaceDialog(
-									parent.parentFrame, null, textEditorUtils,"successAdvice", "errorAdvice");
-							GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_REPLACE_TXT, replaceDialog);
-							try {
-								textEditorUtils.textAreaDialogs.setComboItems(
-										replaceDialog, currentConfiguration.getTextEditorOpt().lastReplaceTerms.getList(), false);
-								textEditorUtils.textAreaDialogs.setComboItems(
-										replaceDialog, currentConfiguration.getTextEditorOpt().lastSearchTerms.getList(), true);
-							} catch (IllegalArgumentException | IllegalAccessException e) {
-								logger.error("Cannot update replace dialog combobox");
-							}
-						} else {
-							replaceDialog.setVisible(true);
-							replaceDialog.toFront();
-							replaceDialog.requestFocus();
+						replaceDialog = textEditorUtils.textAreaDialogs.getReplaceDialog(
+								parent.parentFrame, null, textEditorUtils,"successAdvice", "errorAdvice");
+						GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_REPLACE_TXT, replaceDialog);
+						try {
+							textEditorUtils.textAreaDialogs.setComboItems(
+									replaceDialog, currentConfiguration.getTextEditorOpt().lastReplaceTerms.getList(), false);
+							textEditorUtils.textAreaDialogs.setComboItems(
+									replaceDialog, currentConfiguration.getTextEditorOpt().lastSearchTerms.getList(), true);
+						} catch (IllegalArgumentException | IllegalAccessException e) {
+							logger.error("Cannot update replace dialog combobox");
 						}
+						replaceDialog.setVisible(true);
+						replaceDialog.toFront();
+						replaceDialog.requestFocus();
 						
 						replaceDialog.addWindowListener(new java.awt.event.WindowAdapter() {
 							@Override
@@ -925,12 +918,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (goToLineDialog == null) {
-							goToLineDialog = textEditorUtils.textAreaDialogs.getGoToLineDialog(parent.parentFrame);
-						} else {
-							goToLineDialog.dispatchEvent(new WindowEvent(mainApplication.getMainFrame(), WindowEvent.WINDOW_CLOSING));
-							goToLineDialog = textEditorUtils.textAreaDialogs.getGoToLineDialog(parent.parentFrame);
-						}
+						goToLineDialog = textEditorUtils.textAreaDialogs.getGoToLineDialog(parent.parentFrame);
+						goToLineDialog.dispatchEvent(new WindowEvent(mainApplication.getMainFrame(), WindowEvent.WINDOW_CLOSING));
+						goToLineDialog = textEditorUtils.textAreaDialogs.getGoToLineDialog(parent.parentFrame);
 						goToLineDialog.setLocationRelativeTo(mainApplication.getMainFrame());
 					}
 				});

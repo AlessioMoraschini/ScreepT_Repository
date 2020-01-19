@@ -127,7 +127,9 @@ public class UltimateCalculatorFrame{
   		gui.dispose();
   	}
   	private void jMenuItemInstructionActionPerformed(ActionEvent evt){
-  		new Instruction(instruction).setVisible(true);
+  		Instruction instructionsGui = new Instruction(instruction);
+  		instructionsGui.setVisible(true);
+  		instructionsGui.setLocationRelativeTo(gui);
   	}
 	// End of Action Events 																	#_______AE_______#
 

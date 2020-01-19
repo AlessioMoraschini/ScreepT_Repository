@@ -17,6 +17,7 @@
 
 package com.minhasKamal.ultimateCalculator.mainFrame;
 
+import java.awt.Dimension;
 import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
@@ -91,7 +92,9 @@ public class UltimateCalculatorFrameGui extends JFrame {
 		// Initialization 																		#*******I*******#
 		//**
 		jMenuBarMain = new JMenuBar();
-		jMenuMode = new JMenu(); jMenuHelp = new JMenu(); jMenuAccessories = new JMenu();
+		jMenuMode = new JMenu(); 
+		jMenuHelp = new JMenu(); 
+		jMenuAccessories = new JMenu();
 		jCBItemMode = new JCheckBoxMenuItem[modes];	//number of modes
 		separator = new JSeparator();
 		jMenuItemInstruction =  new JMenuItem();
@@ -145,7 +148,8 @@ public class UltimateCalculatorFrameGui extends JFrame {
 //		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
     	setResizable(false);
-    	setBounds(230, 115, 200, 300);
+    	setMinimumSize(new Dimension(200, 300));
+		setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 
 	/********* Main Method *********/

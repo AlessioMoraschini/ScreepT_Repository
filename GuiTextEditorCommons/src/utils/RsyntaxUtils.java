@@ -124,37 +124,6 @@ public class RsyntaxUtils {
 	      }
 
 	   }
-	   
-		public static boolean addAutoCompletionV2(RSyntaxTextArea textArea, String wordlistFilePath) {
-			if (wordlistFilePath == null || !new File(wordlistFilePath).exists()) {
-				logger.error("File: "+wordlistFilePath+" is null or not existing, cannot add to autocomplete");
-				return false;
-			}
-		
-			if (!wordlistFilePath.toLowerCase().endsWith(".md")) {
-				File rightExt = FileVarious.changeExtension(new File(wordlistFilePath), ".md");
-				File destRightEx = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
-				try {
-					FileUtils.copyFile(new File(wordlistFilePath), destRightEx);
-					wordlistFilePath = destRightEx.getAbsolutePath();
-				} catch (IOException e) {
-					logger.error("Error creating a temporary copy of user defined launguage");
-				}
-			}
-		
-			File wordlist = new File(wordlistFilePath);
-			try {
-				if (textArea != null && wordlist.exists()) {
-					AutoComplete autoComplete = new AutoComplete(textArea);
-					autoComplete.installGrammar(wordlistFilePath);
-					return true;
-				} else {
-					return false;
-				} 
-			} catch (Exception e) {
-				return false;
-			}
-		}
 		
 		public static boolean addAutoCompletion(RSyntaxTextArea textArea, String wordlistFilePath) {
 			if (wordlistFilePath == null || !new File(wordlistFilePath).exists()) {

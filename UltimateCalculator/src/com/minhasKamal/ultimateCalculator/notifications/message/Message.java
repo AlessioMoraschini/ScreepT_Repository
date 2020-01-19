@@ -18,12 +18,15 @@ package com.minhasKamal.ultimateCalculator.notifications.message;
 
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.*;
+
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
 
 /**
@@ -136,7 +139,8 @@ public class Message extends JDialog {
 
 		//**Setting Criterion of the Frame**//
 		setIconImage(new ImageIcon(getClass().getResource("")).getImage());
-		setBounds(240, 200, 400, 200);
+		setMinimumSize(new Dimension(400, 200));
+		setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 		setTitle("Message");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLayout(null);

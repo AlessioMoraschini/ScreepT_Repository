@@ -90,7 +90,6 @@
 										<li><a class="subIndex3" href="#subSectTitleExp">EXPORT CONFIGURATION</a></li>
 										<li><a class="subIndex3" href="#subSectTitleCurrAsDef">SAVE CURRENT AS DEFAULT</a></li>
 										<li><a class="subIndex3" href="#subSectTitleResetOrig">RESET ORIGINAL CONFIG</a></li>
-										<li><a class="subIndex3" href="#subSectTitleExit">EXIT</a></li>
 									<ul>
 								</div></li>
 								
@@ -137,6 +136,9 @@
 								
 								<li><div class="subIndex2">		
 									<a href="#funcHelpSubMenu">Help</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleExit">EXIT</a></li>
+									</ul>
 								</div></li>
 							</ul>
 								
@@ -174,12 +176,12 @@
 			<div id="InstallationNusage">
 				<h1 class="sectionTitle">1 - INSTALLATION AND FIRST LAUNCH</h1>
 				<h2 id="subLauncherCompatibility" class="sectionSubTitle"> 1.1 - LAUNCHER/COMPATIBILITY</h2>
-				<li><span class="highlightBoldedGrey">ScreepT is a ready to launch software</span> written in java, but, it has a built-in custom launcher meant to check the state of dependencies on your computer before to launch, and warn you if it found something missing (provinding different ways to install them). 
+				<li><span class="highlightBoldedGrey">ScreepT is a ready to launch software</span> written in java. It should be started using the provided launcher, in order to customize parameters (if needed), and check the state of dependencies on your computer before to launch. Everytime something is missing or misconfigured, you'll be warned. 
 				<p> 
 					<li><span class="highlightBoldedGrey">You can find the launcher</span> inside main folder once it's extracted from 
-					the given .zip archive, just use the correct one for your OS.
-					Remember to download the right version for your OS! (The software is designed to run well under Windows, Linux, and MacOS, but it is possible to use it -with limited functions- under other OS with Java interpreter installed, AKA JVM/JRE/JDK ).<br><br>
-					<span class="highlightBolded">Notice</span>: it's still possible to just launch the "ScreepT_Vxx.jar" that you find inside the "/application" folder, but remember: it's not designed to render and work the best this way... so you might have a non-optimal experience running the software this way.
+					the given .zip archive, just use the correct one for your OS (.exe on windows, .sh on linux/mac).
+					The only thing you need is a Java interpreter installed, AKA JVM/JRE/JDK.<br><br>
+					<span class="highlightBolded">Notice</span>: it's still possible to just launch the "ScreepT_Vxx.jar" that you find inside the "/application" folder, but remember: it's not designed to render and work the best this way... so you might have a non-optimal experience.
 					<br><br>
 					
 					<span class="highlightBolded">Notice</span>: full support is granted for java versions series 1.8.XX - 11.X.X : previous version will not work at all, while on newer versions some functions can be disabled or limited for compatibility reasons. 
@@ -188,7 +190,7 @@
 					<br><br>
 					
 					After you run ScreepT_launcher executable you'll be lead to a basic panel where you can choose to start the software, select specific settings to run the software, or check the dependency.<br>
-					If something is missing you'll be asked to update/download/install it (if you downloaded version without installers you'll need an internet connection for that). Once the required dependencies are installed, you can start the software, or if still having problems, try to restart the launcher.
+					If something is missing you'll be asked to update/download it. Once the required dependencies are installed, you can start the software, or if still having problems, try to restart the launcher.
 					
 					<p> You don't need to pass through the launcher panel each time... if you want, after the first launch is gone, you
 						can disable launcher panel in the "general options" tab in ScreepT menu bar under the voice "preferences".
@@ -196,11 +198,12 @@
 				</p>
 				
 				<h2 id="subSettings" class="sectionSubTitle"> 1.2 - LAUNCHER SETTINGS</h2>
+				<image src="Images/Launcher.jpg"/>
 				<p>
 					As sayd before, you can customize settings of your launcher, by clicking "Customize launch parameters".
 					A new window will be opened: here you can set max and min ram memory allocated when using ScreepT. Also the stack size and LOGGING LEVEL can be adjusted in this section.
-					<p><strong>IMPORTANT: </strong> remember that when using values that are very similar or the same, the software can use more than needed OS calls to stay in the small gap between them, resulting in a slow execution.
-					You are advised to use default values if you don't have any particular needing or you are an expert user.
+					<p><strong>IMPORTANT: </strong> The built in values are tested and setted to be the best trade-off between performance and resources usage.
+					You are advised to use default values if you don't have any particular need.
 					</p>
 				</p>
 				
@@ -208,7 +211,7 @@
 				<p> ScYpT is written in java language, that can run almost everyehere. Still said this, remember that you can use all its funcionalities (in an optimized way), just launching the right launcher for your OS.
 				<ul>
 					<li><p><strong>Windows: </strong>double click on .exe launcher</p></li>
-					<li><p><strong>Linux: </strong>double click on .sh launcher <i class="subIndex1"> - Coming soon!</i></p></li>
+					<li><p><strong>Linux: </strong>double click on .sh launcher (remember to give it run execute permissions with <i>"sudo chmod 755 ScreepT_Launcher.sh"</i>)</p></li>
 					<li><p><strong>Mac: </strong>double click on .dpkg launcher <i class="subIndex1"> - Coming soon!</i></p></li>
 				</ul>
 				
@@ -224,15 +227,15 @@
 				
 				<h2 id="funcFileSubMenu" class="sectionSubTitle"> 2.1 - FILE SUBMENU</h2>
 				<p><ul>
-					In this section you can find all the functions to save/load configurations, or open the more detailed configuration manager view. You can save, export, load, reset, reload your favourite configuration, or even use the default one. When selecting a specific configuration you specify different variables such as textEditor colors, text size, menu text size, graphic general style, type of encryption, default export/load folder, default image extension or preferences, and others like that.<br>
-					The main difference is that in the tree view you can see the .ini configuration files loaded and mantained at each execution of ScreepT, unless you change or delete them.
+					In this section you can find all the functions to save/load configurations, or open the more detailed configuration manager view. You can save, export, load, reset, reload your favourite configuration, or even use the default one.<br>
+					In the tree view on the left you can find your saved configurations. You can save your configurations by clicking on export configuration and use default directory "INI_FILES", or even with right click on file tree and selecting "import configuration file or folder".
 					Remember that newer version of ScreepT can have some differences or not load some values, when loading configurations exported/saved in previous versions. 
 					Also notice that if you have Autosave option active, your configuration will be automatically saved in the current loaded every N seconds or when the program exits.<br><br>
 				
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/manager.png"/> <span id="subSectTitleConfigManager" class="subMenuthirdLevel">CONFIGURATION MANAGER</span></li>
 						<p>
-						This view contain a tree visualisation of the loaded configuration, a text print with the values contained in the current one, and different functions tha are basically the same you can find in the main menu bar items under the "File" element.
-						<strong>By right clicking</strong> on an element in the list, you view different actions on the selected configuration from the loaded ones, such as select, delete, delete all or refresh.<br>
+						This contains a view of the loaded configuration, a text print with the values contained in the current one, and different functions that are basically the same you can find in the main menu bar items under the "File" element.
+						<strong>By right clicking</strong> on an element in the list, you can choose between different actions on the selected configuration from the loaded ones, such as select, delete, delete all or refresh.<br>
 						The actions that fire when clicking the action buttons are described in the next points.
 						</p>
 						
@@ -270,11 +273,6 @@
 						After you click this you will be asked to confirm that you want to overwrite default configuration with the default one that you use first time you started ScreepT. This is an empty configuration with default values.
 						</p>
 						
-					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/turnOff.png"/> <span id="subSectTitleExit" class="subMenuthirdLevel">EXIT</span></li>
-						<p>
-						This closes the software, deleting temporary files if present, and saving current configuration if autosave option is ON.
-						</p>						
-					
 				</p></ul>
 				
 				<h2 id="funcPreferencesSubMenu" class="sectionSubTitle"> 2.2 - PREFERENCES SUBMENU</h2>
@@ -404,11 +402,11 @@
 						
 															
 				</p></ul>
+
 				
-				<h2 id="funcVariousSubMenu" class="sectionSubTitle"> 2.4 - VARIOUS SUBMENU</h2>
-				<p><ul>
-				
-					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">TEXT EDITOR</span></li>
+				<h2 id="funcTextEditorSubMenu" class="sectionSubTitle"> 2.4 - TEXT EDITOR SUBMENU</h2>
+				<image src="Images/TextEditor.jpg"/>
+				<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">TEXT EDITOR</span></li>
 					<p>This is a minimal text editor with basic functions, with some extra functionality such as:
 					<ul>
 						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- you can use this by clicking on <image class="iconImg" src="../Icons/Text_Editor/Speaker.png"/> or using the shortcut [Ctrl+spacebar]. This way you will hear the text visible in text-area with english pronunciation. You can also choose the voice speed rate, dragging the selector over the speaker button.</li>
@@ -426,6 +424,9 @@
 						
 					</ul>
 					</p>
+	
+				<h2 id="funcVariousSubMenu" class="sectionSubTitle"> 2.5 - VARIOUS SUBMENU</h2>
+				<p><ul>
 						
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/hardware.png"/> <span id="subSectTitleSysInfo" class="subMenuthirdLevel">SYSTEM INFORMATIONS</span></li>
 					<p><span class="highlightBoldedGrey">IMPORTANT: </span>Download "hardwareInfo" plugin to use this function.</p>
@@ -500,6 +501,10 @@
 				<li>Visit this section if you want to know more about ScreepT fuctions, about A.M. Design 'N Development, visit A.M. Official Website, or simply return to start page. </li>
 				<br><span class="highlightBoldedGrey">IMPORTANT: </span>Always remember that changing section you won't lose any progress of your current opened work, just go back with shortcuts or with the main menu to retrieve the stuff you were doing :)
 				<p><span class="highlightBoldedGrey">!!! IN CASE OF ANY PROBLEM </span> you can export the log with the special function "Export event log", that may contain useful information about the problem itself, and can help solving the bug if there is one, or understand more of what happened during execution. <strong>Send it to me </strong>for further bug examination! If you have problems launching the application and cannot extract this way the log, send me "/application/LOG" and "/application/LAUNCHER/LOG" folders in zip format :)</p>
+				<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/turnOff.png"/> <span id="subSectTitleExit" class="subMenuthirdLevel">EXIT</span></li>
+						<p>
+						This closes the software, deleting temporary files if present, and saving current configuration if autosave option is ON.
+						</p>
 				</ul></p>
 			
 			</div>
@@ -515,6 +520,7 @@
 				
 					<h4> 0 - Emergency shortcuts (active everywhere):</h4>
 					<li> <span class="SHCT_TEXT">FORCE CLOSE APPLICATION</span> - [Esc x 4 times] or [Alt + F4 x 4 times]</li>
+					<li> <span class="SHCT_TEXT">RESTART APPLICATION</span> - [Alt + F5]</li>
 					
 					<h4> 1 - File submenu:</h4>
 					<li> <span class="SHCT_TEXT">OPEN CONFIGURATION MANAGER</span> - [Alt + Shift + 1]</li>

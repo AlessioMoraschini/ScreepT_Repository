@@ -17,6 +17,7 @@
 
 package com.minhasKamal.ultimateCalculator.calculators.advancedCalculator;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -30,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import com.minhasKamal.ultimateCalculator.mainFrame.UltimateCalculatorFrame;
 import com.minhasKamal.ultimateCalculator.utils.fileIO.FileIO;
 
@@ -308,7 +310,8 @@ public class AdvancedCalculator extends UltimateCalculatorFrame{
 		super.gui.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		super.gui.setTitle("Advanced Calculator");
 		super.gui.setResizable(false);
-		super.gui.setBounds(230, 115, 500, 420);
+		super.gui.setMinimumSize(new Dimension(500, 420));
+		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 		super.gui.setFocusable(true);
 	}
 

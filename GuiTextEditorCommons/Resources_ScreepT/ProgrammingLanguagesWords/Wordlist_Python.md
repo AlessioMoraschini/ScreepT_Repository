@@ -1,6 +1,4 @@
 
-You may not name your variables any of the following words as they mean special things in Python:
-
 - A
   - and	
   - assert	
@@ -45,8 +43,6 @@ You may not name your variables any of the following words as they mean special 
 - W 
   - while		
 
-Do NOT use any of the following words either (although they are not strictly Python reserved words, they conflict with the names of commonly-used Python functions):
-
   - Data	
   - Float	
   - Int	
@@ -64,8 +60,6 @@ Do NOT use any of the following words either (although they are not strictly Pyt
   - write	
   - zeros
     
-You should also avoid all the names defined in the math library (you must avoid them if you import the library):
-   
 - A
   - acos	
   - asin	

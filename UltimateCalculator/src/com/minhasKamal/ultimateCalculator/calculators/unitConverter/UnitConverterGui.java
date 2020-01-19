@@ -18,6 +18,7 @@
 package com.minhasKamal.ultimateCalculator.calculators.unitConverter;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.DefaultComboBoxModel;
@@ -30,6 +31,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
+
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 
 
 /**
@@ -155,10 +158,11 @@ public class UnitConverterGui extends JLabel {
 		UnitConverterGui gui = new UnitConverterGui();
 		
 		JFrame jFrame = new JFrame();
-		jFrame.setBounds(230, 115, 355, 400);
+		jFrame.setMinimumSize(new Dimension(355, 400));
 		jFrame.setVisible(true);
 		jFrame.setLayout(null);
 		jFrame.add(gui);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 }

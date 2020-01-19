@@ -20,7 +20,11 @@ package com.minhasKamal.ultimateCalculator.help.instruction;
 
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
+
 import java.awt.SystemColor;
+import java.awt.Dimension;
 import java.awt.Font;
 
 @SuppressWarnings("serial")
@@ -118,7 +122,8 @@ public class Instruction extends JFrame {
 		setIconImage(new ImageIcon(getClass().getResource("/res/imgs/InstructionIcon.png")).getImage());
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle("Instruction");
-		setBounds(200, 150, 355, 435);
+		setMinimumSize(new Dimension(355, 435));
+		setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 		getContentPane().setLayout(null);
 		setResizable(false);
 		getContentPane().add(jPanelMain); getContentPane().add(jButtonOK);

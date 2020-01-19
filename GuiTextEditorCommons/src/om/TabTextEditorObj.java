@@ -216,7 +216,6 @@ public class TabTextEditorObj {
 		textArea.setCodeFoldingEnabled(txtOptions.codeFoldingEnabled);
 		textArea.setAutoIndentEnabled(txtOptions.autoIndentEnabled);
 		textArea.setMarkOccurrences(txtOptions.markOccurrences);
-		textArea.setCloseMarkupTags(txtOptions.closeMarkupTags);
 		textArea.setCloseCurlyBraces(txtOptions.closeCurlyBraces);
 		textArea.setAntiAliasingEnabled(txtOptions.antialiasedTxtArea);
 		textArea.setAnimateBracketMatching(txtOptions.animateBracketMatching);
@@ -237,6 +236,7 @@ public class TabTextEditorObj {
 		textArea.setClearWhitespaceLinesEnabled(txtOptions.clearWhitespaceLinesEnabled);
 		textArea.setWhitespaceVisible(txtOptions.whiteSpaceVisible);
 		textArea.setLocale(configuration.getGenOpt().getLocale());
+		textArea.setCloseMarkupTags(txtOptions.closeMarkupTags);
 		
 		textArea.setUseFocusableTips(true);
 	}

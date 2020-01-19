@@ -17,6 +17,7 @@
 
 package com.minhasKamal.ultimateCalculator.calculators.simpleCalculator;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -29,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import com.minhasKamal.ultimateCalculator.mainFrame.UltimateCalculatorFrame;
 import com.minhasKamal.ultimateCalculator.utils.fileIO.FileIO;
 
@@ -259,7 +261,8 @@ public class SimpleCalculator extends UltimateCalculatorFrame{
 		//**Setting Criterion of the Frame**//
 		super.gui.add(simpleCalcGui);
 		super.gui.setTitle("Simple Calculator");
-		super.gui.setBounds(230, 115, 276, 420);
+		super.gui.setMinimumSize(new Dimension(276, 420));
+		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 
 	//**

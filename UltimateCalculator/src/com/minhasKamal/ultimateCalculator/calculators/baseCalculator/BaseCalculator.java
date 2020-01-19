@@ -17,6 +17,7 @@
 
 package com.minhasKamal.ultimateCalculator.calculators.baseCalculator;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -30,6 +31,7 @@ import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import com.minhasKamal.ultimateCalculator.mainFrame.UltimateCalculatorFrame;
 import com.minhasKamal.ultimateCalculator.utils.fileIO.FileIO;
 
@@ -347,7 +349,8 @@ public class BaseCalculator extends UltimateCalculatorFrame{
 		super.gui.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		super.gui.setTitle("Base Calculator");
 		super.gui.setResizable(false);
-		super.gui.setBounds(230, 115, 327, 450);
+		super.gui.setMinimumSize(new Dimension(327, 450));
+		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 
 	//**

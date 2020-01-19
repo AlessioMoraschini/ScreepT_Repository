@@ -1,246 +1,229 @@
-<input step=””>	Specifies the interval between valid values in a number-based input.
-<input required>	Specifies that the input field is required; disallows form submission and alerts the user if the required field is empty.
-<input readonly>	Disallows the user from editing the value of the input.
-<input placeholder=””>	Specifies placeholder text in a text-based input.
-How To Use In Your HTML Code	Specifies a regular expression against which to validate the value of the input.
-<input multiple>	Allows the user to enter multiple values into a file upload or email input.
-<input min=””>	Specifies a minimum value for number and date input fields.
-<input max=””>	Specifies a maximum value for number and date input fields.
-<input list=””>	Specifies the id of a <datalist> element which provides a list of autocomplete suggestions for the input field.
-<input height=””>	Specifies the height of an image input.
-<input formtarget=””>	Specifies the browsing context in which to open the response from the server after form submission. For use only on input types of "submit" or "image".
-<input formmethod=”	Specifies the HTTP method (GET or POST) to be used when the form data is submitted to the server. Only for use on input types of "submit" or "image".
-<input formaction=””>	Specifies the URL for form submission. Can only be used for type="submit" and type="image".
-<input autofocus>	Specifies that the input field should be in focus immediately upon page load.
-<iframe sandbox=””>	Places a set of security and usability restrictions on the iframe.
-<audio volume=””> HTML Attribute	Specifies the initial volume setting of the audio element, in a range from 0.0 to 1.0.
-<audio preload=””> HTML Attribute	Requests a particular preload behavior to the browser, which the browser may or may not follow.
-<audio muted> HTML Attribute	Specifies that the volume on the audio player should initially be muted.
-<audio loop> HTML Attribute	Specifies that the audio content should loop indefinitely once playback has begun.
-<audio controls> HTML Attribute	Toggles the display of audio playback controls.
-<audio autoplay> HTML Attribute	Specifies that the audio playback should begin immediately on page load.
-<audio src=””> HTML Attribute	Specifies the source file for an audio element.
-<abbr title=””> HTML Attribute	Provides the meaning or explanation of an abbreviation or acronym.
-<a hreflang=””> HTML Attribute	Specifies the language of the linked resource.
-<a download> HTML Attribute	Directs the browser to download the linked resource rather than opening it.
-<img crossorigin=””>	Indicates that CORS headers should be used in the HTTP request, and specifies whether or not to use credentials.
-<img height=””>	Identifies the intrinsic height of an image file, in CSS pixels.
-<img srcset=””>	Defines multiple sizes of the same image, allowing the browser to select the appropriate image source.
-<td nowrap>	NOWRAP indicates that text should not wrap in the cell.
-<td bgcolor=””>	Sets the background color of a single cell in a table.
-<td bordercolor=””>	Sets the color of the entire border around a cell.
-<td background=””>	Specifies the URL of an image file to be used as the <td> element background image.
-<textarea name=””>	Adds a name attribute to a <textarea> element and associates the name with the text added to the text area.
-<textarea cols=””>	Specifies the visible width of a <textarea> element in average character widths. Defaults to 20 if not specified.
-<textarea wrap=””>	Determines whether or not submitted text wraps when a <textarea> is included in a form submission.
-<textarea disabled>	Disables the entry of text into a <textarea> element.
-<textarea tabindex=”””>	Sets the position of a <textarea> element in the tab order.
-<textarea onChange=””>	Adds an event listener to a <textarea> which executes JavaScript scripting when an onchange event occurs.
-<textarea onKeyPress=””>	Adds an event listener to a <textarea> element which executes JavaScript scripting when an onKeyPress event occurs.
-<tr align=””>	Sets the horizontal alignment for the contents of each <td> element in a table row.
-<tr valign=””>	Sets the vertical alignment of all content in a table row.
-<tr bgcolor=””>	Sets the background color for a single table row in an HTML table.
-<tr background=””>	Identifies the URL of a file to be used as a background image for a table row.
-<tr bordercolor=””>	Sets the border color for all inside borders of a table row.
-<ul type=””>	Was used to set list types.
-<img alt=””>	Defines alternate text, which may be presented in place of the image.
-<img name=””>	Identified the image or provided additional information about it. Deprecated in HTML 4.0 in favor of other attributes.
-<img longdesc=””>	Defines a URL at which can be found more information about the image. It was written out of the HTML5 specification, but its status is not quite so clear as other deprecated features.
-<img width=””>	Indicates the intrinsic width of the image, in CSS pixels.
-<img align=””>	Was previously used to specify the alignment and placement of an image relative to the surrounding text. It has been deprecated and should not be used.
-<img border=””>	Previously used to define a border on an image element. It has been deprecated and should no longer be used.
-<img hspace=””>	Previously used to add horizontal space on both side of an image. It is now deprecated.
-<img ismap>	Identifies an image as a server-side image map. When the containing anchor link is clicked, the coordinates of the mouse will be included in the request.
-<img usemap=””>	Specifies a client-side image map to be used with the image.
-<img lowsrc=””>	Specified a smaller or lower-quality version of an image.
-<img naturalsizeflag=””>	This attribute does nothing. It was once used by a proprietary software system.
-<img nosave>	Was intended to prevent users from downloading an image. Was never a part of the HTML specification, and not widely implemented.
-<img dynsrc=””>	An early failed attempt to include native video playback in HTML.
-<img controls>	Toggled media player controls when used in conjunction with the dynsrc attribute. Both attributes are now deprecated.
-<img loop=””> Attribute: Make Videos Loop In Your HTML	Previously used to specify the number of times a video should play, when used in conjunction with the dynsource attribute. Both attributes have been deprecated.
-<img start=””>	Was used in conjunction with the dynsrc attribute to add a video that would load in supported browsers in the place of the image that would otherwise be displayed.
-<img suppress=””>	Used by the now-defunct Netscape browser to suppress the display of image prior to image download completion.
-<input type=””>	Defines the input type.
-<input name=””>	Specifies the name of an input element. The name and value of each input element are included in the HTTP request when the form is submitted.
-<input value=””>	Defines an initial value or default selection for an input field.
-<input size=””>	Specifies the width of the input in characters.
-<input maxlength=””>	Specifies the maximum number of characters that can be entered in a text-type input.
-<input checked>	Specifies whether a checkbox or radio button form input should be checked by default.
-<input border=””>	Was used to specify a border on an input. Deprecated. Use CSS instead.
-<input src=””>	Defines the source URL for an image input.
-<input disabled>	Disables the input field.
-<input accesskey=””>	Defines a keyboard shortcut for the element.
-<input language=””>	Was used to indicate the scripting language used for events triggered by the input.
-<input autocomplete=””>	Specifies whether the browser should attempt to automatically complete the input based on user inputs to similar fields.
-<isindex prompt=””>	Specifies a label or prompt text for the document search form.
-<isindex action=””>	Specifies a URL to search, instead of the current document.
-<label for=””>	Specifies the ID of the associated form field element.
-<legend align=””>	Was used to specify the placement of the legend element. Deprecated. Use CSS instead.
-<li type=””>	Specifies the bullet or numbering style for an individual list item.
-<li value=””>	Specifies the counter value for a list item within a numbered list.
-<link rel=””>	Specifies the relationship between two linked documents.
-<link href=””>	Describes the relationship between the source file and an external file, such as a script.
-<link title=””>	Assigns a name to different linked resources so that users can choose between them.
-<link media=””>	Tells the browser what type of device a resource is designed for.
-<link type=””>	Describes the linked resource's media type (MIME type).
-<map name=””>	Assigns a name to an image map.
-<meta name=””>	Provides a context for the value in the contents attribute of a <meta> element.
-<meta http-equiv=””>	Defines document header information.
-<meta content=””>	Defines the values for the meta element.
-<multicol cols=””>	OIOpublisher The <multicol> element is deprecated, and should not be used. Claire Broadley Claire is seasoned technical writer, editor, and… Read More...
-<multicol gutter=””>	The <multicol> element is deprecated, and should not be used. Claire Broadley Claire is seasoned technical writer, editor, and HTML… Read More...
-<multicol width=””>	The <multicol> element is deprecated, and should not be used. Claire Broadley Claire is seasoned technical writer, editor, and HTML… Read More...
-<ol type=””>	Specifies the type of list marker that should be used on each item of an unordered list.
-<ol start=””>	Defines the starting number in an ordered list.
-<option value=””>	Defines the data sent to the server when a form option item is selected.
-<option selected>	Defines the default selection in a drop-down list.
-<p clear=””>	Was used to force a paragraph to appear below sibling elements rather than next to sibling elements within a parent element.
-<param name=””>	Specifies the parameter name.
-<param value=””>	Specifies the parameter value.
-<script type=””>	Specifies the media type of the script.
-<script src=””>	Specifies the URL of an external script.
-<script defer>	The defer element of <script> allows a script to load, but pauses the execution of the script until the page… Read More...
-<script language=””>	The language attribute of <script> was intended as a way to define the scripting language in use. This was never… Read More...
-<script for=””>	The for attribute of <script> was only supported by Internet Explorer, and is therefore non-standard. We do not recommend its… Read More...
-<select name=””>	Naming Selection Items The name attribute of <select> means you can easily use your selection field with JavaScript. For more… Read More...
-How To Use In HTML Lists	Lets the user select more than one option in the list
-<select size=””>	Specifies the size of a select item.
-<select readonly>	<readonly> is not valid in HTML. Use the disabled attribute. Claire Broadley Claire is seasoned technical writer, editor, and HTML… Read More...
-<select disabled>	Disables a drop-down list.
-<select language=””>	The language attribute of <select> is not valid HTML. Instead, use <script> with a valid type attribute. Claire Broadley Claire… Read More...
-<select onChange=””>	Triggers an event when the selection is changed.
-<select tabindex=””>	Defines the order of selection when the tab key is pressed.
-<select onFocus=””>	Triggers an event when a select item receives focus.
-<spacer type=””>	Do not use. The <spacer> element is obsolete in HTML 5. TYPE sets the type of spacer to use. TYPE… Read More...
-<spacer align=””>	Do not use. The <spacer> element is obsolete in HTML5. Claire Broadley Claire is seasoned technical writer, editor, and HTML… Read More...
-<spacer size=””>	Do not use. The <spacer> element is obsolete in HTML 5. Claire Broadley Claire is seasoned technical writer, editor, and… Read More...
-<spacer width=””>	Do not use. The <spacer> element is obsolete in HTML 5. Claire Broadley Claire is seasoned technical writer, editor, and… Read More...
-<style type=””>	Identifies the type of media contained within a <style> element. However, the only supported value is text/css, so the attribute is not needed.
-<style media=””>	Identifies the device or media that the styles contained in a <style> are designed to be applied to. Allows CSS styles to be optimized for a variety of devices and media formats.
-<table border=””>	Was used to specify whether or not borders should be applied to all table cells. This attribute has been deprecated in favor of CSS.
-<table cellpadding=””>	Was used to add padding between the contents of each table cell and the border or edge of the cell. This attribute has been deprecated and CSS should be used instead.
-<table cellspacing=””>	Was used to specify the distance between the individual cells of an HTML table. This element has been deprecated and CSS should be used to control table layout.
-<table width=””>	The width attribute of <table> is not supported in HTML. Use CSS to control the appearance of tables. Claire Broadley… Read More...
-<table bgcolor=””>	Was used to set the background color of an HTML table. This attribute has been deprecated. Use CSS to style tables.
-<table background=””>	Was used to specify the URL of an image to be set as the background for an HTML table. This element has been deprecated. Use CSS to style HTML tables.
-<table align=””>	Was used to align an HTML table to the left, right, or centered relative to the parent element. This attribute has been deprecated and CSS should be used to control the position of a table.
-<table hspace=””>	hspace is not a valid attribute of <table>. Use CSS instead. Claire Broadley Claire is seasoned technical writer, editor, and… Read More...
-<table height=””>	The height attribute of <table> is not valid in any version of HTML. Use CSS instead. Claire Broadley Claire is… Read More...
-<table frame=””>	The frame attribute was used to define the visible borders of a table. It is now deprecated and should no longer be used.
-<table rules=””>	Was used to specify the display of internal borders between rows and colums. This attribute has been deprecated. Use CSS to style table borders instead.
-How to Use the <table bordercolor=””> Attribute	Was used to specify the color of table borders. This attribute has been deprecated. Use CSS to style table borders.
-<table summary=””>	The summary attribute of <table> was designed to support non-visual HTML readers, such as screen readers. It is deprecated in… Read More...
-<td align=””>	Was used to specify the alignment of the contents of a single table data cell. This attribute has been deprecated. Use CSS to control alignment of the contents of a table data cell.
-<td width=””>	Was used to set the width of a table data cell to a value that would override the default width. This attribute has been deprecated. Use CSS to control layout of data cells in HTML tables.
-<td colspan=””>	Indicates how many columns a cell should take up.
-<A HREF=””””>: Adding Links To Your HTML Code The Easy Way	Specifies the linked document, resource, or location.
-<a name=””> HTML Attribute	Depreciated - do not use.
-How To Use The <a> To Make Links & Open Them Where You Want!	Specifies the context in which the linked resource will open.
-<a title=””> HTML Attribute	Defines the title of a link, which appears to the user as a tooltip.
-<applet code=””> HTML Attribute	Specified the URL of an application code file to be used in an applet. The applet element has been deprecated.
-<applet codebase=”””> HTML Attribute	Specified the location of a directory contain application code to be used in an applet element. The applet element has been deprecated.
-<applet width=””> HTML Attribute	Specified the display width of an applet panel. The applet has been deprecated.
-<applet height=””> HTML Attribute	Specified the display height of an applet panel. The applet element has been deprecated.
-<applet align=””> HTML Attribute	Was used to specify the alignment of an applet relative to the surrounding content. The applet element has been deprecated.
-<applet vspace=””> HTML Attribute	Was used to specify the amount of whitespace that should appear above and below an embedded <applet> element. Applets and the vspace attribute have been deprecated.
-<applet hspace=””> HTML Attribute	Specified the amount of horizontal space (margin) on both sides of an applet element. The applet element has been deprecated.
-<applet border=””> HTML Attribute	Specified the border around the applet panel. The applet element has been deprecated.
-<applet name=””> HTML Attribute	Defined the name of an applet. The applet element has been deprecated.
-<applet archive=””> HTML Attribute	Specified the URL of a JAR (Java Archive) file containing the application code for the applet. The applet element has been deprecated.
-<applet mayscript=””> HTML Attribute	Indicated whether an applet may access on-page JavaScript objects. The applet element has been deprecated.
-<area href=””> HTML Attribute	Defines the URL of the linked document or resource.
-<area alt=””> HTML Attribute	Specifies alternative text for a clickable area in an image map.
-<area shape=””> HTML Attribute	In conjunction with the coords attribute, specifies the shape, size, and placement of a clickable area in an image map.
-<area coords=””> HTML Attribute	Defines the shape and size of a clickable area in an image map.
-<area title=””> HTML Attribute	Defines the title text of the clickable area. The title text will appear as a tooltip in most browsers.
-<area target=””> HTML Attribute	Specifies the context in which to open the linked resource.
-<area nohref> HTML Attribute	Specified that an area of an image map did not link to another resource.
-<base href=””> HTML Attribute	Specifies the base URL which will be used for all relative links in the current document.
-<base target=””> HTML Attribute	Specifies the default target value for all anchor links in the current document.
-<basefont size=””> HTML Attribute	Was used to set the base font size for a whole document. Deprecated. Use CSS instead.
-<basefont color=””> HTML Attribute	Used to set the text color for a whole document. Deprecated. Use CSS instead.
-<basefont face=””> HTML Attribute	Was used to set the base font face for a document. Deprecated. Use CSS instead.
-<bgsound src=””> HTML Attribute	Specified the URL of the audio source file for the deprecated <bgsound> element.
-<bgsound loop=””> HTML Attribute	Specified whether the audio track defined in the deprecated <bgsound> element should loop.
-<body bgcolor=””>	Was used to set the background color on a document. Deprecated. Use CSS instead.
-How To Use To Specify A Background Image	Was used to set the background color and image for the document. Deprecated. Use CSS instead.
-<body text=””>	Was used to style the text inside the body of the document. Deprecated. Use CSS.
-<body bgproperties=””>	Was used to style the background of a document. Deprecated. Use CSS instead.
-<body topmargin=””>	Was used to set a margin above the body of a document. Deprecated. Use CSS.
-<body onLoad=””>	Fires a script when the page has finished loading.
-<body onUnload=””>	Fires a script when the visitor leaves the page.
-<body onFocus=””>	Fires a script when the visitor focuses on the current page.
-<body stylesrc=””>	Was a proprietary attribute for the Frontpage system. Do not use.
-<body scroll=””>	Was used to toggle the display of scroll bars on a page, disabling the user's ability to scroll. Deprecated. You could use CSS to accomplish this, but you should not because it is a bad idea.
-<br clear=”””>	Was used to ensure that line breaks "cleared" floated or aligned elements above them. Deprecated.
-<button type=””>	Specifies the type of the button.
-<button onClick=””>	Runs a script when a button is clicked.
-<button name=””>	Defines the name of the button, which is used for form inputs and labels.
-<button value=””>	Sets the initial value of the button element.
-<button disabled>	Disables the button. It cannot be clicked and usually appears gray.
-<button accesskey=””>	Defines an keyboard shortcut for the button. As of HTML5, this is a global attribute that can be used on any element.
-<button tabindex=””>	Determines the order of selection when the tab key is used.
-<caption align=””>	Was used to control the horizontal alignment of a table caption. Deprecated. Use CSS instead.
-<caption valign=””>	Was used to control the vertical alignment of a table caption. Deprecated. Use CSS.
-<col span=””>	Specifies the number of natural vertical columns to be included in the <col> element.
-<col align=””>	Was used to control the alignment of text within table columns. Deprecated. Use CSS instead.
-<col width=””>	Was used to control the width of table columns. Deprecated. Use CSS instead.
-<col bgcolor=””>	Was used to control the background color of table columns. Deprecated. Use CSS instead.
-<colgroup span=””>	Specifies the number of vertical table columns to be included in a column group.
-<colgroup align=””>	Was used to control the text alignment within a column group in a table. Deprecated. Use CSS.
-<colgroup width=””>	Was used to specify the width of a group of table columns. Deprecated. Use CSS instead.
-<div align=””>	Was used to specify the alignment of a div element. Deprecated. Use CSS instead.
-<dl compact>	Was used to specify a compact display style for a description list. Deprecated. Use CSS instead.
-<embed src=””>	Specifies the URL of an application to be embedded.
-<embed width=””>	Specifies the width of an embedded application panel.
-<embed align=””>	Was used to control the alignment of an embedded application. Not a part of the HTML specification.
-<embed name=””>	Was used to define the name of an embedded application. Not a part of the HTML specification.
-<embed pluginspage=””>	Was used to indicate a download source for a plugin required in order to run the embedded application. Not a part of the HTML specification.
-<embed pluginurl=””>	Was used as part of a proprietary specification for embedded applications. Not a part of the HTML specification.
-<embed hidden>	Hides the element from view.
-<embed href=””>	Was used to define a link resource for an embedded application. Not a part of the HTML specification.
-<embed autostart=””>	Was used to start embedded audio playback immediately. Not a part of the HTML specification.
-<embed loop=””>	Was used to loop playback of embedded media. Not part of the HTML specification.
-<embed playcount=””>	Was used to specify the number of times an embedded media file should play. Not a part of the HTML specification.
-<embed volume=””>	Was used to specify the playback volume of an embedded application. Not a part of the HTML specification.
-<embed controls=””>	Was used to toggle the display of playback controls in embedded media. Not a part of the HTML specification.
-<embed controller=””>	Was used to toggle display of playback controls. Not a part of the HTML specification.
-<embed mastersound>	Was used to control sound in embedded media. Not part of the HTML specification.
-<embed starttime=””>	Was used to indicate the starting playback position for embedded media. Not a part of the HTML specification.
-<font size=””>	Was used to specify the size of text. Deprecated. Use CSS instead.
-<font color=””>	Was used to specify font color. Deprecated. Use CSS instead.
-<font face=””>	Was used to specify a typeface. Deprecated. Use CSS instead.
-<font point-size=””>	Was used to specify the size of text. Deprecated. Use CSS instead.
-<font weight=””>	Was used to indicate the weight (boldness) of text. Deprecated. Use CSS instead.
-<form action=”””>	Specifies a URL to which the form's data is sent when submitted.
-<form method=””>	Tells the browser how to send form data to a web server.
-<form name=””>	The `name` attribute is deprecated when used with the `form` element. Use `id` instead.
-<form enctype=””>	The enctype attribute lets you specify an encoding type for your form.
-<form target=””>	Specifies the browser context in which the form's response should be displayed.
-<form onSubmit=””>	Runs a script when the Submit button is clicked.
-<form onReset=””>	Runs a script when the Reset button is clicked.
-<frame src=””>	Defined the source URL for a frame. Frames are deprecated in HTML5.
-<frame name=””>	Defined the name of a frame. Frames are deprecated in HTML5.
-<frame scrolling=””>	Was used to control scrolling behavior inside frames. Frames are deprecated in HTML5.
-<frame noresize=””>	Was used to stop users from resizing frames within a browser window. Frames are deprecated in HTML5.
-<frame frameborder=””>	Was used to control the borders around frames. Frames are deprecated in HTML5.
-<frame bordercolor=””>	Specified the color of a frame border. Frames are deprecated in HTML5.
-<frame marginwidth=””>	Was used to control the margins of a frame. Frames are deprecated in HTML5.
-<frameset cols=””>	Was used to control display columns in a frameset. Frames and framesets are deprecated in HTML5.
-<frameset frameborder=””>	Was used to control borders between frames in a frameset. Frames are deprecated in HTML5.
-<frameset bordercolor=””>	Was used to specify the color of borders between frames in a frameset. Frames and framesets are deprecated in HTML5.
-<h* align=””>	Was used to specify text alignment (justification) on headline elements. Deprecated in HTML5. Use CSS instead.
-<hr noshade>	Was used to change the display of a horizontal rule form the default 3D style to a flatter 2D style. Deprecated. Use CSS to control the display of an element.
-<hr size=””>	Was used to specify the height (thickness) of a horizontal rule. Deprecated. Use CSS instead.
-<hr width=””>	Was used to specify the width of a horizontal rule. Deprecated in HTML5. Use CSS instead.
-<hr align=””>	Was used to control the horizontal alignment of a horizontal rule. Deprecated. Use CSS instead.
-<hr color=””>	Was used to control the display color of a horizontal rule. Deprecated. Use CSS instead.
-<iframe src=””>	Specifies the URL of a document to display in an iframe.
-<iframe width=””>	Specifies the width of an iframe.
-<iframe name=””>	Specifies the name of an iframe.
-<iframe longdesc=””>	Was used to specify URL containing a long description of an iframe. Deprecated in HTML5. Use CSS instead.
-<iframe frameborder=””>	Was used to toggle the display of a border around an iframe. Deprecated in HTML5. Use CSS instead.
-<iframe marginwidth=””>	Was used to control the width of margins around an iframe. Deprecated in HTML5. Use CSS instead.
-<iframe scrolling=””>	Was used to toggle scrolling on iframes. Deprecated in HTML5. Use CSS instead.
-<iframe align=”””>	Was used to set the alignment of an inline frame relative to surrounding elements. Deprecated. Use CSS instead.
-<iframe vspace=””>	Was used to control the vertical spacing around an iframe. Deprecated in HTML5. Use CSS instead.
+<!–- -–> ;;; For commenting out sections of HTML or placing comments within HTML. Anything between <!-- and --> wont be rendered as text when the page loads in a web browser, but will still be visible if looking at the plain 'ol HTML file in a text editor.
+
+<!DOCTYPE html> ;;; Basically tells the browser what kind of document we're loading, in this case good 'ol HTML. This guy likes to be the first element in the document, even before the opening <html> tag. This page, for example, starts things off with <!DOCTYPE html>
+
+<a> ;;; a for anchor, also known as a hyperlink, or simply a link. To make an actual link using the <a> tag, use the href attribute: <a href="http://eastmanreference.com">Link</a>
+
+<abbr> ;;; Abbr is an abbreviation for abbreviation. Use it with the title attribute to define abbreviations. <abbr title="Cascading Style Sheets">CSS</abbr>. Safari 12.0 hovering the mouse over CSS brings up a little tool tip generated by the abbreviation tag.
+
+<address> ;;; Contact information for the author. Alternatively, this could be general contact information for the website.
+
+<area> ;;; Establishes areas in an image map. <area> is always used inside of <map>.
+
+<article> ;;; The <article> tag is new in HTML5. This tag can be used to contain blog entries, forum posts, etc.
+
+<aside> ;;; New in HTML5. The <aside> element is for making sidebars that are placed next to the main content.
+
+<audio> ;;; New in HTML5. The <audio> tag can be used to place an audio stream within an HTML document.
+
+<b> ;;; For bolding or otherwise styling text without conveying any additional meaning such as with <em> ;;; and <strong> and etc.
+
+<base> ;;; Use to set a base URL.
+
+<bdi> ;;; Short for bidirectional isolation. Useful for working with languages that use right to left text.
+
+<bdo> ;;; Short for Bidirectional Override. Use this to override the current direction of text. Useful for languages that use right to left text.
+
+<blockquote> ;;; For quoting from an external source. Typically rendered as indented text.
+
+<body> ;;; Establishes the body of an HTML document.
+
+<br> ;;; Single line break. Think of br as short for break.
+
+<button> ;;; Specifies button that can be clicked. Commonly used with forms.
+
+<canvas> ;;; Used for rendering graphics on the fly, typically in conjunction with a scripting language.
+
+<caption> ;;; Placed just after <table>, used for table caption.
+
+<cite> ;;; For citing.
+
+<code> ;;; For code examples. A little bit like <samp> and <kbd>, but specifically for code.
+
+<col> ;;; Specify properties of a <col> within a <colgroup>
+
+<colgroup> ;;; Essentially a group of columns.
+
+<data> ;;; Used for script friendly data.
+
+<datalist> ;;; New in HTML5. Specify predefined data for an <input>.
+
+<dd> ;;; For description lists. Use with <dt> and <dl>.
+
+<del> ;;; Mark text as deleted without actually deleting it. This will typically be rendered as a strikethrough.
+
+<details> ;;; New in HTML5. Can be used for additional details which can be hidden or revealed.
+
+<dfn> ;;; Use when first defining a term.
+
+<dialog> ;;; Dialog box.
+
+<div> ;;; A divider or a kind of generic container.
+
+<dl> ;;; Description list. Use with <dd> and <dt>.
+
+<dt> ;;; Description list. Use with and <dl>.
+
+<em> ;;; Emphasis, which I believe often defaults to italics. For something stronger, use <strong>.
+
+<embed> ;;; New in HTML5. A container for external content.
+
+<fieldset> ;;; Group related items in a form.
+
+<figure> ;;; Define self contained content such as photos or diagrams.
+
+<footer> ;;; The footer of a document, below the main content.
+
+<form> ;;; Forms for user input.
+
+<h1> ;;; Level 1 heading, the headline or title of a page.
+
+<h2> ;;; Level 2 heading, the subtitles of a page.
+
+<h3> ;;; Level 3 heading.
+
+<h4> ;;; Level 4 heading.
+
+<h5> ;;; Level 5 heading.
+
+<h6> ;;; Level 6 heading.
+
+<head> ;;; The head section. Used mostly for metadata.
+
+<header> ;;; Not to be confused with <head>, <header> typically contains introductory content and layout that goes above the body.
+
+<hgroup> ;;; Used for grouping <h1>, <h2>, <h3>, etc., tags together. Useful for multilevel headings.
+
+<hr> ;;; This can be used for separating text within a paragraph. Typically renders as a horizontal line running across the page.
+
+<html> ;;; The root level tag of an HTML document. All other HTML tags go inside the HTML tag.
+
+<i> ;;; The <i> element has changed a little in HTML5. It can still make text italicized, and I think that is often the default behavior, however, this depends on the stylesheet.
+
+<iframe> ;;; Makes it possible to embed another page within a page. In HTML5 this is known as nested browsing.
+
+<img> ;;; For displaying images on a webpage. Example: <img src="image.png">
+
+<input> ;;; Input is used with various attributes to create form input elements.
+
+<ins> ;;; Useful for denoting text that has been added to an HTML file since the original version. Updates to a blog post for example. This is typically rendered as underlined text, although this can really be rendered just about any way you want with a stylesheet.
+
+<kbd> ;;; Used for keyboard input. This is different from form element text input.
+
+<keygen> ;;; Used for authentication with a security certificate.
+
+<label> ;;; For assigning labels to interface elements such as forms.
+
+<legend> ;;; Useful for making forms easier to understand.
+
+<li> ;;; This represents a list item with an <ol> (ordered list) or <ul> (unordered list).
+
+<link> ;;; Used for linking to external resources. Typically seen in <head> referring to an external style sheet. Different from the <a> (anchor) tag.
+
+<main> ;;; New to HTML5. These tags enclose the main content of an HTML document.
+
+<map> ;;; Used when defining an image map.
+
+<mark> ;;; This is essentially used for highlighting. Of course, whether or not highlighting is actually involved depends on the involved stylesheet.
+
+<menu> ;;; Used for creating various kinds of menus. This is new to HTML 5.1.
+
+<menuitem> ;;; Specify actions that can be taken with a menu.
+
+<meta> ;;; Used for specifying various meta information about the document. Meta tags are used within the document <head>.
+
+<meter> ;;; Used to represent a number when the minimum and maximum is known, for example 10%.
+
+<nav> ;;; Used for specifying a navigational region within a document.
+
+<noscript> ;;; For anyone using scripts within their pages, <noscript> is useful for specifying content that should be rendered when scripting isn’t supported.
+
+<object> ;;; For embedding objects within a document.
+
+<ol> ;;; Ordered list (1. 2. 3.). Use with list item <li>.
+
+<optgroup> ;;; For grouping objects.
+
+<option> ;;; Used within the <select> tag to specify an option.
+
+<output> ;;; Displays the output of an action, such as from a script or form.
+
+<p> ;;; Paragraph. Enclose paragraphs in an article within <p> tags.
+
+<param> ;;; Use when parameters need to be passed to an object embedded within the document.
+
+<pre> ;;; For preformatted text. This can be useful for demonstrating code, especially if there are multiple lines.
+
+<progress> ;;; Display the progress of an action, such as with a script.
+
+<q> ;;; Quote from some source.
+
+<rb> ;;; For Ruby annotations.
+
+<rp> ;;; Specify text to be displayed when Ruby annotations are not supported by the browser.
+
+<rt> ;;; Text component of a Ruby annotation.
+
+<rtc> ;;; Ruby Text Container.
+
+<ruby> ;;; Also used for Ruby annotation.
+
+<s> ;;; For marking up text that is not longer relevant, applicable, or accurate.
+
+<samp> ;;; Sample output one might get from a particular computer program.
+
+<script> ;;; Scripts inside of an HTML document are enclosed in the script tags.
+
+<section> ;;; A nonspecific means of breaking up content within a webpage into sections.
+
+<select> ;;; Used with <option> for selecting a particular option.
+
+<small> ;;; Typically used for small print. Useful for comments within the main content.
+
+<source> ;;; Used with <audio> and <video> for specifying media source.
+
+<span> ;;; Useful for applying styles to or around text, especially inline.
+
+<strong> ;;; The enclosed text is of strong importance.
+
+<style> ;;; For declaring style sheets within a document.
+
+<sub> ;;; For displaying subscript. Useful for math, especially in conjunction with <sup> (superscript).
+
+<summary> ;;; Used in conjunction with the <details> tag for specifying a summary.
+
+<sup> ;;; For displaying superscript. Useful for math, especially in conjunction with <sub> (subscript).
+
+<table> ;;; For making tables in an HTML page.
+
+<tbody> ;;; Groups table rows.
+
+<td> ;;; Table data; this represents a data cell within a table.
+
+<template> ;;; Declares HTML snippets that can be used later.
+
+<textarea> ;;; For multi-line text entry.
+
+<tfoot> ;;; Table footer.
+
+<th> ;;; Table header cell.
+
+<thead> ;;; Table header row.
+
+<time> ;;; Specifies the date/time within a document.
+
+<title> ;;; The title of an HTML document.
+
+<tr> ;;; A row within a table.
+
+<track> ;;; Used to specify text tracks with <audio> and <video>.
+
+<u> ;;; Useful for annotating text for various reasons. No longer specifically for underlining, although you can of course still do that with CSS.
+
+<ul> ;;; Unordered list. Use with <li> (list item) to make unordered lists.
+
+<var> ;;; Defines a variable within the content of an HTML page.
+
+<video> ;;; For embedding video within an HTML page.
+
+<wbr> ;;; The optional line wrap.

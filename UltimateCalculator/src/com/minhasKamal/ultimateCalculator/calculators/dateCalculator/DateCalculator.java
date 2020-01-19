@@ -17,6 +17,7 @@
 
 package com.minhasKamal.ultimateCalculator.calculators.dateCalculator;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -29,6 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import com.minhasKamal.ultimateCalculator.mainFrame.UltimateCalculatorFrame;
 import com.minhasKamal.ultimateCalculator.notifications.message.Message;
 import com.minhasKamal.ultimateCalculator.utils.fileIO.FileIO;
@@ -130,7 +132,8 @@ public class DateCalculator extends UltimateCalculatorFrame{
     	//Setting Criterion of the Frame//
     	super.gui.add(dateCalcGui);
     	super.gui.setTitle("Date Calculator");
-    	super.gui.setBounds(230, 115, 300, 400);
+    	super.gui.setMinimumSize(new Dimension(300, 400));
+		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 
 	//**

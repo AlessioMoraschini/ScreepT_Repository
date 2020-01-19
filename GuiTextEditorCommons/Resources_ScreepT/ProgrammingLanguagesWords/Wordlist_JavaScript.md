@@ -6,53 +6,79 @@ In JavaScript, some identifiers are reserved words and cannot be used as variabl
   - abstract
   - arguments
 - B
-  - boolean break
-  - byte case
+  - boolean 
+  break
+  - byte 
+  case
 - C
   - catch
   - char
-  - class const continue
+  - class 
+  const 
+  continue
 - D
   - debugger
-  - default delete
+  - default 
+  delete
   - do double
 - E
   - else
   - enum eval
-  - export extends false
+  export 
+  extends 
+  false
 - F
-  - final
-  - finally float for function
+  final
+  finally 
+  float 
+  for 
+  function
 - G
-  - goto
+  goto
 - I
-  - if
-  - implements import in
-  - instanceof
-  - int interface let long
+  if
+  implements 
+  import 
+  in
+  instanceof
+  int 
+  interface 
+  let 
+  long
 - N
-  - native
-  - new null package private protected
+  native
+  new 
+  null 
+  package 
+  private 
+  protected
 - P
-  - public
+  public
 - R
-  - return short
+  return 
+  short
 - S
-  - static
-  - super switch
-  - synchronized this
+  static
+  super 
+  switch
+  synchronized 
+  this
 - T
-  - throw
-  - throws
-  - transient
-  - true try typeof
+  throw
+  throws
+  transient
+  true 
+  try 
+  typeof
 - V
-  - var void
-  - volatile while
+  var 
+  void
+  volatile 
+  while
 - W
-  - with
+  with
 - Y
-  - yield
+  yield
 
 # JavaScript Objects, Properties, and Methods
 

@@ -28,6 +28,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
+
 
 /**
  * A Equation Calculator GUI
@@ -355,5 +357,6 @@ public class EquationCalculatorGui extends JTabbedPane{
 		jFrame.setLayout(null);
 		jFrame.add(gui);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 }

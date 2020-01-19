@@ -62,9 +62,7 @@ public class AdvancedCalculatorGui extends JLabel{
 
 		initialComponent();
 		
-//		if (!CalculatorMainApp.keyListenerAdvancedAdded) {
-//			CalculatorMainApp.keyListenerAdvancedAdded = DigitKeyBaseListener.addRightListenerForClass(this);
-//		}
+//		CalculatorMainApp.keyListenerAdvancedAdded = DigitKeyBaseListener.addRightListenerForClass(this);
 	}
 
 	
@@ -286,6 +284,7 @@ public class AdvancedCalculatorGui extends JLabel{
 		jFrame.setLayout(null);
 		jFrame.add(gui);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 
 

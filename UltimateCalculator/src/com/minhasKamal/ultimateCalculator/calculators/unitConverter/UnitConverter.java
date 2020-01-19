@@ -17,6 +17,7 @@
 
 package com.minhasKamal.ultimateCalculator.calculators.unitConverter;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -30,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
 import com.minhasKamal.ultimateCalculator.mainFrame.UltimateCalculatorFrame;
 import com.minhasKamal.ultimateCalculator.notifications.message.Message;
 import com.minhasKamal.ultimateCalculator.utils.fileIO.FileIO;
@@ -163,7 +165,8 @@ public class UnitConverter extends UltimateCalculatorFrame{
 		//setting criterion of the frame
 		super.gui.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		super.gui.setTitle("Unit Converter");		
-		super.gui.setBounds(230, 115, 350, 400);
+		super.gui.setMinimumSize(new Dimension(350, 400));
+		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 		super.gui.add(unitConvgui);
 		super.gui.setResizable(false);
 		super.gui.setLayout(null);
