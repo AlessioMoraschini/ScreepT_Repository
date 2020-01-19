@@ -22,17 +22,21 @@ import resources.GeneralResourcesPaths;
 import resources.IconsPathConfigurator;
 
 public enum SupportedFileTextEditor {
-									 ASSEMBLY(".asm","asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86, null, IconsPathConfigurator.ICON_CONSOLE),
+									 ASSEMBLY_X86(".asm","asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86, null, IconsPathConfigurator.ICON_CONSOLE),
+									 ASSEMBLY_6502(".asm","asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_6502, null, IconsPathConfigurator.ICON_CONSOLE),
 									 BATCH(".bat","bat", SyntaxConstants.SYNTAX_STYLE_WINDOWS_BATCH, GeneralResourcesPaths.WORDLIST_BASH, IconsPathConfigurator.ICON_CONSOLE),
 									 BASH(".sh","sh", SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL, GeneralResourcesPaths.WORDLIST_BASH, IconsPathConfigurator.ICON_CONSOLE),
 									 C(".c","c", SyntaxConstants.SYNTAX_STYLE_C, GeneralResourcesPaths.WORDLIST_C, null),
+									 CONFIG(".config", "config", SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE, null, IconsPathConfigurator.F_ICON_PROPERTIES),
 									 CLOJURE(".clj","clj", SyntaxConstants.SYNTAX_STYLE_CLOJURE, null, null),
 									 CPLUSPLUS(".cpp","cpp", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS, GeneralResourcesPaths.WORDLIST_Cpp, null),
 									 CSHARP(".cs","cs", SyntaxConstants.SYNTAX_STYLE_CSHARP, GeneralResourcesPaths.WORDLIST_Csharp, null),
 									 CSS(".css","css", SyntaxConstants.SYNTAX_STYLE_CSS, GeneralResourcesPaths.WORDLIST_CSS, IconsPathConfigurator.F_ICON_CSS),
 									 D(".d","d", SyntaxConstants.SYNTAX_STYLE_D, null, null),
+									 DTD(".dtd","dtd", SyntaxConstants.SYNTAX_STYLE_DTD, null, IconsPathConfigurator.F_ICON_CODE),
 									 DELPHI(".dpr","dpr", SyntaxConstants.SYNTAX_STYLE_DELPHI, null, null),
 									 DOCKER(".yml","yml", SyntaxConstants.SYNTAX_STYLE_DOCKERFILE, null, null),
+									 GO(".go","go", SyntaxConstants.SYNTAX_STYLE_GO, null, null),
 									 GROOVY(".groovy","groovy", SyntaxConstants.SYNTAX_STYLE_GROOVY, null, null),
 									 HOSTS(".hosts", "hosts", SyntaxConstants.SYNTAX_STYLE_HOSTS, null, null),
 									 HTACCESS(".htaccess", "htaccess", SyntaxConstants.SYNTAX_STYLE_HTACCESS, null, null),
@@ -56,9 +60,9 @@ public enum SupportedFileTextEditor {
 									 TYPESCRIPT(".ts","ts", SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT, GeneralResourcesPaths.WORDLIST_JS, IconsPathConfigurator.F_ICON_HTML),
 									 TXT(".txt","txt", SyntaxConstants.SYNTAX_STYLE_NONE, null, IconsPathConfigurator.F_ICON_TXT),
 									 VISUAL_BASIC(".vb","vb", SyntaxConstants.SYNTAX_STYLE_VISUAL_BASIC, null, null),
-									 XML(".xml","xml", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
-									 XSD(".xsd","xsd", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
-									 WSDL(".wsdl","wsdl", SyntaxConstants.SYNTAX_STYLE_XML, null, null),
+									 XML(".xml","xml", SyntaxConstants.SYNTAX_STYLE_XML, null, IconsPathConfigurator.F_ICON_CODE),
+									 XSD(".xsd","xsd", SyntaxConstants.SYNTAX_STYLE_XML, null, IconsPathConfigurator.F_ICON_CODE),
+									 WSDL(".wsdl","wsdl", SyntaxConstants.SYNTAX_STYLE_XML, null, IconsPathConfigurator.F_ICON_CODE),
 									 YAML(".yml","yml", SyntaxConstants.SYNTAX_STYLE_YAML, null, null);
 					
 	public final String DEFAULT_ICON = IconsPathConfigurator.F_ICON_TXT;
