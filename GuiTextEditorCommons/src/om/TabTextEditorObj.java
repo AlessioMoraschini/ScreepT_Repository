@@ -88,18 +88,13 @@ public class TabTextEditorObj {
 	public File loadedFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
-//	public RUndoManager undoManager;
 	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
 	public Parser currentParser;
 	
 	public FileDrop fileDrop;
 	
-	public boolean uppercase;
-	
 	public TabTextEditorObj(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
-		
-		this.uppercase = false;
 		
 		ColumnTextArea.UNDO_LIMIT = GeneralConfig.UNDO_MAX_LIM;
 		
@@ -503,8 +498,7 @@ public class TabTextEditorObj {
 	public ActionListener getUppercaseListener() {
 		return e -> {
 			int linePosition = textArea.getCaretLineNumber();
-			TextAreaStringEditor.makeToggleUppercase(textArea, uppercase);
-			uppercase = !uppercase;
+			TextAreaStringEditor.makeToggleUppercase(textArea);
 			resetPositionAndRevalidate(linePosition);
 			shortcutsManager.revalidateUnsaved();
 		};

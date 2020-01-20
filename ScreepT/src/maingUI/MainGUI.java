@@ -150,13 +150,13 @@ public class MainGUI extends MainGuiParent{
 	
 	public static boolean alreadyAskingForClose = false;
 	
-	 /************ BEGIN MAIN APPLICATION GENERAL METHOD  ****************************
+	 /************* BEGIN MAIN APPLICATION GENERAL METHOD  ***************
 	 * 
-	 * 			Calls contructor, initialize & Launch the application.
+	 * 		Calls contructor, initialize & Launch the application.
 	 * 
-	 * 				 (Called from MainGuiGeneralAppStarter())
+	 * 			 (Called from MainGuiGeneralAppStarter())
 	 * 
-	 ************* BEGIN MAIN APPLICATION GENERAL METHOD  ****************************/
+	 ************* BEGIN MAIN APPLICATION GENERAL METHOD  ****************/
 	
 	public static boolean mainApplicationGeneral(INItializer currentConf) {
 		
@@ -167,7 +167,6 @@ public class MainGUI extends MainGuiParent{
 		currentConfiguration = currentConf;
 		dialogHelper = new JOptionHelperExtended(MainGuiGeneralAppStarter.loaderGraphics);
 		
-//		MainGuiGeneralAppStarter.loaderGraphics.toBack();
 		MainGuiGeneralAppStarter.loaderGraphics.setVisible(false);
 		MainGuiUtils.askNameAtStartIfNotDefined();
 		MainGuiGeneralAppStarter.loaderGraphics.setVisible(true);
@@ -347,10 +346,8 @@ public class MainGUI extends MainGuiParent{
 								currentConfiguration.getGenOpt().setFirstAccess(false);
 								currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
 							}
-							
 						}
-					});
-					
+					}); // End title updater and Updates check starters
 				}
 			});
 			
@@ -412,7 +409,7 @@ public class MainGUI extends MainGuiParent{
 		menuSize = currentConfiguration.getGuiOpt().getMenuFontSize();
 		subMenuSize = menuSize-2;
 		
-		// INITIALIZE MAIN FRAME
+		// INITIALIZE MAIN FRAME AND MAIN MENU
 		mainFrameScreept = new JFrame();
 		mainFrameScreept.setEnabled(false);
 		mainFrameScreept.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);

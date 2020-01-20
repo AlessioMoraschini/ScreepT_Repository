@@ -42,7 +42,7 @@
 				<p>Welcome to <b><span class="subIndex2">ScreepT</span></b> tutorial! Here you can find all informations about how to use it properly.</p>
 				<p>ScreepT was born as a crypter...	but it became a multi-platform tool written for fun, and to help me during my own programming tasks. 
 					<br>
-					If you find something you'll like to improve, or you want to signal a bug you can write to ${developer.bugs.mail}. Enjoy!
+					If you find something you'll like to improve, or you want to signal a bug you can write to <i>${developer.bugs.mail}</i>. Enjoy!
 				</p>
 				<hr>
 			</div>
@@ -208,17 +208,17 @@
 				</p>
 				
 				<h2 id="subOSdepLauncher" class="sectionSubTitle"> 1.3 - OS DEPENDENT LAUNCHER</h2>
-				<p> ScYpT is written in java language, that can run almost everyehere. Still said this, remember that you can use all its funcionalities (in an optimized way), just launching the right launcher for your OS.
+				<p> ScYpT is written in java language, that can run almost everyehere. Just launch the right launcher for your OS:
 				<ul>
-					<li><p><strong>Windows: </strong>double click on .exe launcher</p></li>
-					<li><p><strong>Linux: </strong>double click on <i>ScreepT_Launcher.sh</i> launcher (remember to give it execute permissions with <i>"sudo chmod 755 ScreepT_Launcher.sh"</i>)</p>
+					<li><p><span class="subMenuthirdLevel"><strong>Windows: </span></strong>double click on .exe launcher</p></li>
+					<li><p><span class="subMenuthirdLevel"><strong>Linux: </span></strong>double click on <i>ScreepT_Launcher.sh</i> launcher (remember to give it execute permissions with <i>"sudo chmod 755 ScreepT_Launcher.sh"</i>)</p>
 						<span><b>NB: </b></span>in some linux distros the launcher has some troubles launching the generated .sh native launcher. 
 						If you run in this issue when you press start button and the software does not start, you can launch manually the generated .sh launcher:
-						Just go inside the /Application folder and double click on <u>LauncherBash.sh</u>, or launch it from the shell.<br>
+						Just go inside the /Application folder and double click on <u>LauncherBash.sh</u>, or launch it from the shell <br>(in alternative, you can try disabling shell in launcher settings).<br>
 						<span><b>NB: </b></span>if you have problems downloading updates, you can try to update your java certificates with the following command:
 						<code>sudo apt-get install ca-certificates-java</code>
 					</li>
-					<li><p><strong>Mac: </strong>double click on .dpkg launcher <i class="subIndex1"> - Coming soon!</i></p></li>
+					<li><p><span class="subMenuthirdLevel"><strong>Mac-OS: </span></strong>double click on .dpkg launcher <i class="subIndex1"> - Coming soon!</i></p></li>
 				</ul>
 				
 				</p>
@@ -235,19 +235,19 @@
 				<p><ul>
 					In this section you can find all the functions to save/load configurations, or open the more detailed configuration manager view. You can save, export, load, reset, reload your favourite configuration, or even use the default one.<br>
 					In the tree view on the left you can find your saved configurations. You can save your configurations by clicking on export configuration and use default directory "INI_FILES", or even with right click on file tree and selecting "import configuration file or folder".
-					Remember that newer version of ScreepT can have some differences or not load some values, when loading configurations exported/saved in previous versions. 
-					Also notice that if you have Autosave option active, your configuration will be automatically saved in the current loaded every N seconds or when the program exits.<br><br>
+					Remember that newer version of ScreepT can have some differences or not load some values, when loading configurations exported/saved in previous versions (in this case default ones will be used). 
+					Also notice that if you have Autosave option active, current configuration will be automatically saved every N seconds (see <u><a href="#subSectTitleGenOpt">general options</a></u>), or when the program exits.<br><br>
 				
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/manager.png"/> <span id="subSectTitleConfigManager" class="subMenuthirdLevel">CONFIGURATION MANAGER</span></li>
 						<p>
 						This contains a view of the loaded configuration, a text print with the values contained in the current one, and different functions that are basically the same you can find in the main menu bar items under the "File" element.
-						<strong>By right clicking</strong> on an element in the list, you can choose between different actions on the selected configuration from the loaded ones, such as select, delete, delete all or refresh.<br>
+						In this view you can also visualize the loaded settings (either in memory or in current/selected .ini file). <strong>By right clicking</strong> an element in the list, you can choose between different actions on the selected configuration from the loaded ones, such as select, delete, delete all or refresh.<br>
 						The actions that fire when clicking the action buttons are described in the next points.
 						</p>
 						
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/reload.png"/> <span id="subSectTitleReload" class="subMenuthirdLevel">RELOAD CONFIGURATION</span></li>
 						<p>
-						By clicking on this element you can reload the current loaded configuration. Remember that any values that are not yet saved will be lost after the original one will be reloaded.
+						By clicking on this element you can reload the current loaded configuration. Remember that unsaved values will be lost when reloading.
 						</p>
 						
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/loadConfig.png"/> <span id="subSectTitleLoad" class="subMenuthirdLevel">LOAD CUSTOM CONFIGURATION</span></li>
@@ -255,7 +255,7 @@
 						This function allows you to load previously saved/exported configuration by selecting them from your file System.
 						If for some reason any value is not found in the given configuration file, a default one will be loaded.
 						It's also needed to load a valid .ini configuration file saved from ScreepT software. Other files are not accepted, and lead to default values to be loaded.<br>
-						After a file-load, a copy of it can be found in the configuration manager inside the tree view of the user loaded files. Here resides the used file you load.
+						After a file-load, a copy can be found in the configuration manager inside the tree view of the user loaded files (/Application/INI_FILES). Here resides the used file you load.
 						</p>
 						
 					<li><image class="iconImgTitleSect" src="../Icons/Menu_Icons/export.png"/> <span id="subSectTitleExp" class="subMenuthirdLevel">EXPORT CURRENT CONFIGURATION</span></li>

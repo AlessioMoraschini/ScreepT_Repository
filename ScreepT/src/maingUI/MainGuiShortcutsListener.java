@@ -13,25 +13,23 @@ package maingUI;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
-
 import javax.swing.SwingUtilities;
+import gui.listener.KeyListenerParent;
 
-import org.apache.log4j.Logger;
-
-public class MainGuiShortcutsListener implements KeyEventDispatcher{
-	
-	// TextFileWriter logger creation
-	static Logger logger = Logger.getLogger(MainGuiShortcutsListener.class);
+public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyEventDispatcher {
 	
 	MainGUI currentGui;
 	
 	public MainGuiShortcutsListener(MainGUI currentMainGui) {
+		super();
 		logger.debug(this.getClass().getName() + " Started!");
 		currentGui = currentMainGui;
 	}
 	
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
+		
+		updateKeyCode(e);
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
@@ -78,9 +76,15 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 ////////////////LISTENER FOR KEY RELEASED EVENT - WHEN NEED TO TRIGGER ONLY ONE TIME EVEN WHILE KEEPING PRESSED  //////////////////////////
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
-	      
+
+			// WIN + ARROW Pressed: trigger resize
+			if(isOtherPressed(KeyEvent.VK_WINDOWS) && isArrowLR(e.getKeyCode())) {
+				currentGui.resizeMainFrameDefaults();
+			}
+			
 			// HERE SHORTCUTS KEY WITH CTR|ALT|SHIFT
 			if (isShortcutKey(e)) {
+				
 				/**
 				 *  TOGGLE FULL SCREEN : Alt+Shift+Enter
 				 */
@@ -91,7 +95,7 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/*
 				 *  IMMERSIVE MODE ON/OFF -> Ctrl+shift+Alt+M
 				 */
-				if(e.getKeyCode() == 77 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if(e.getKeyCode() == 77 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							MainGUI.mainGuiUtils.immersiveModeToggle();
@@ -105,49 +109,49 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/**
 				 *  OPEN CONFIG-MANAGER : ALT+SHIFT+1
 				 */
-				if (e.getKeyCode() == 49 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 49 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmInspectCurrentConfiguration().doClick();
 				}
 				
 				/**
 				 *  EXPORT CURRENT CONFIGURATION : Ctrl+Alt+Shift+E
 				 */
-				if (e.getKeyCode() == 69 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 69 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmExportPrjSub().doClick();
 				}
 				
 				/**
 				 *  RELOAD CURRENT CONFIGURATION : Ctrl+Alt+Shift+R
 				 */
-				if (e.getKeyCode() == 82 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 82 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmReloadPrjSub().doClick();
 				}
 
 				/**
 				 *  LOAD CUSTOM CONFIGURATION : Ctrl+Alt+Shift+O
 				 */
-				if (e.getKeyCode() == 79 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 79 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmloadPrjSub().doClick();
 				}
 				
 				/**
 				 *  SAVE CURRENT CONFIGURATION : Ctrl+Alt+Shift+S
 				 */
-				if (e.getKeyCode() == 83 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 83 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmSaveCurrent().doClick();
 				}
 
 				/**
 				 *  SAVE CURRENT CONFIGURATION AS: Ctrl+Alt+Shift+W
 				 */
-				if (e.getKeyCode() == 87 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 87 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmSaveCurrentAs().doClick();
 				}
 				
 				/**
 				 *  LOAD BUILT-IN DEFAULT CONFIGURATION: Ctrl+Alt+Shift+D
 				 */
-				if (e.getKeyCode() == 68 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 68 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmloadSrcrYptDefaultConf().doClick();
 				}
 				
@@ -156,13 +160,13 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/**
 				 *  OPEN GENERAL OPTIONS : ALT+SHIFT+2
 				 */
-				if (e.getKeyCode() == 50 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 50 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmGenOpt().doClick();
 				}
 				/**
 				 *  OPEN GUI OPTIONS : ALT+SHIFT+3
 				 */
-				if (e.getKeyCode() == 51 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 51 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmCustomizeUIView().doClick();
 				}
 				
@@ -171,28 +175,28 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/**
 				 *  OPEN CRYPTER : ALT+SHIFT+S
 				 */
-				if (e.getKeyCode() == 83 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 83 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmCrypter().doClick();
 				}
 				
 				/**
 				 *  OPEN KEY-GEN : ALT+SHIFT+K
 				 */
-				if (e.getKeyCode() == 75 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 75 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmgenerateKeyImageSub().doClick();
 				}
 				
 				/**
 				 *  OPEN PSW-KEY-GEN : ALT+SHIFT+K
 				 */
-				if (e.getKeyCode() == 75 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 75 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmgenerateKeyPswSub().doClick();
 				}
 
 				/**
 				 *  OPEN KEY-DICIONARY : ALT+SHIFT+D
 				 */
-				if (e.getKeyCode() == 68 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 68 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmViewKeyDictionary().doClick();
 				}
 				
@@ -201,40 +205,40 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/**
 				 *  OPEN TEXT-EDITOR : ALT+SHIFT+T
 				 */
-				if (e.getKeyCode() == 84 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 84 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmTextEditor().doClick();
 				}
 				/**
 				 *  OPEN IMPORT/EXPORT crypted workspace: TEXT-EDITOR : CTRL+ALT+SHIFT+I
 				 */
-				if (e.getKeyCode() == 73 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 73 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmTxtEditorImpExpCryptedWkspc().doClick();
 				}
 
 				/**
 				 *  OPEN SYS-INFO : ALT+SHIFT+Y
 				 */
-				if (e.getKeyCode() == 89 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 89 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmhwInfo().doClick();
 				}
 				/**
 				 *  OPEN NET-INFO : ALT+SHIFT+N
 				 */
-				if (e.getKeyCode() == 78 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 78 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmnetInfo().doClick();
 				}
 
 				/**
 				 *  OPEN HASH CHECKER PANEL : ALT+SHIFT+U
 				 */
-				if (e.getKeyCode() == 85 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 85 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmHashChecker().doClick();
 				}
 				
 				/*
 				 *  OPEN COLOR SAMPLER -> Ctrl+Alt+Shift+P
 				 */
-				if(e.getKeyCode() == 80 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if(e.getKeyCode() == 80 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							currentGui.getMntmColorPicker().doClick();
@@ -245,7 +249,7 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/*
 				 *  CLIPBOARDS StANDALONE PANEL -> Alt+Shift+P
 				 */
-				if(e.getKeyCode() == 80 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if(e.getKeyCode() == 80 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							currentGui.getMntmClipboardStandalone().doClick();
@@ -257,7 +261,7 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/**
 				 *  OPEN IMAGE-CONVERTER : ALT+SHIFT+I
 				 */
-				if (e.getKeyCode() == 73 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 73 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmImageConverter().doClick();
 				}
 				
@@ -265,42 +269,42 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/**
 				 *  UPPERCASE DIRECTORY : ALT+SHIFT+0
 				 */
-				if (e.getKeyCode() == 48 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 48 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmTouppercaseDirectory().doClick();
 				}
 
 				/**
 				 *  MAKE DIRS FROM PATH : CTRL+ALT+SHIFT+9
 				 */
-				if (e.getKeyCode() == 57 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 57 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmMakeDirsFromPath().doClick();
 				}
 				
 				/**
 				 *  COPY DIR STRUCTURE : CTRL+ALT+SHIFT+8
 				 */
-				if (e.getKeyCode() == 56 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 56 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmCopyDirStructure().doClick();
 				}
 				
 				/**
 				 *  DELETE DIR CONTENT BY EXTENSION : CTRL+ALT+SHIFT+7
 				 */
-				if (e.getKeyCode() == 55 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 55 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmDeleteDirectoryContentByExtension().doClick();
 				}
 				
 				/**
 				 *  DELETE ALL DIR CONTENT : CTRL+ALT+SHIFT+6
 				 */
-				if (e.getKeyCode() == 54 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 54 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmDeleteDirectoryAllContentRecursive().doClick();
 				}
 				
 				/**
 				 *  EMPTY FOLDERS CONTENT : CTRL+ALT+SHIFT+5
 				 */
-				if (e.getKeyCode() == 53 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 53 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmEmptyDirectoryRecursive().doClick();
 				}
 				
@@ -309,56 +313,56 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/**
 				 *  OPEN ABOUT INFO : ALT+SHIFT+.
 				 */
-				if (e.getKeyCode() == 46 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 46 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmAboutScreept().doClick();
 				}
 				
 				/**
 				 *  EXPORT LOGS : ALT+SHIFT+E
 				 */
-				if (e.getKeyCode() == 69 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 69 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmExportLog().doClick();
 				}
 				
 				/**
 				 *  ERASE LOGS : ALT+SHIFT+CANC
 				 */
-				if (e.getKeyCode() == 127 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 127 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmEraseLogs().doClick();
 				}
 				
 				/**
 				 *  RETURN TO HOME PAGE : ALT+SHIFT+H
 				 */
-				if (e.getKeyCode() == 72 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 72 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmReturnToWelcome().doClick();
 				} 
 				
 				/**
 				 *  VIEW WEBSITE : CTRL+ALT+SHIFT+4
 				 */
-				if (e.getKeyCode() == 52 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 52 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmViewWebsite().doClick();
 				} 
 				
 				/**
 				 *  LOOK FOR UPDATES : CTRL+ALT+SHIFT+5
 				 */
-				if (e.getKeyCode() == 53 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 53 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmLookForUpdates().doClick();
 				} 
 
 				/**
 				 *  LOOK FOR PLUGINS : CTRL+ALT+SHIFT+6
 				 */
-				if (e.getKeyCode() == 54 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 54 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmLookForPlugins().doClick();
 				} 
 				
 				/**
 				 *  OPEN MANUAL : ALT+SHIFT+Q
 				 */
-				if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmUserDocumentation().doClick();
 				}
 				
@@ -368,28 +372,28 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 				/**
 				 *  RESET ALL : ALT+SHIFT+0
 				 */
-				if (e.getKeyCode() == 48 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 48 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmResetAllPanels().doClick();
 				}
 				
 				/**
 				 *  RESET TXT EDITOR : ALT+SHIFT+9
 				 */
-				if (e.getKeyCode() == 57 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 57 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmResetTextEditor().doClick();
 				}
 				
 				/**
 				 *  RESET CRYPTER : ALT+SHIFT+8
 				 */
-				if (e.getKeyCode() == 56 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 56 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmResetCrypterPanel().doClick();
 				}
 				
 				/**
 				 *  RESET CONFIG MANAGER : ALT+SHIFT+7
 				 */
-				if (e.getKeyCode() == 55 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == 55 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmResetConfigManager().doClick();
 				}
 			}
@@ -399,7 +403,4 @@ public class MainGuiShortcutsListener implements KeyEventDispatcher{
 	    return false;
 	}
 	
-	private boolean isShortcutKey(KeyEvent e) {
-		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
-	}
 }

@@ -150,11 +150,16 @@ public class SysUtils {
 		ArrayList<String> foundJVMS = new ArrayList<String>();
 		
 		if(OS.isLinux()) {
-			// TODO
-			// END LINUX
+			
+			try {
+				foundJVMS.addAll(LinuxFindJvmVersions.CommandLineJavaAlternativesPaths());
+			} catch (IOException e) {
+				logger.error("Cannot retrieve linux java versions", e);
+			}
 		}else if(OS.isMac()) {
-			// TODO
-			// END MAC
+			
+			// TODO MacOS
+		
 		}else if(OS.isWindows()) {
 			
 			// Add oracle's java list
@@ -176,16 +181,13 @@ public class SysUtils {
 			}
 		} // END WINDOWS
 		
+		// MULTI-PLATFORM : Add current if not yet present into list
 		String canonicalCurrentPath;
-		try {
-			canonicalCurrentPath = getCurrentJavaHome().getCanonicalPath();
-			logger.info("Current jvm is : " + canonicalCurrentPath);
-			if(!foundJVMS.contains(canonicalCurrentPath)) {
-				foundJVMS.add(canonicalCurrentPath);
-				logger.info(canonicalCurrentPath + " not found in previously retrieved list -> added to JVM list");
-			}
-		} catch (IOException e) {
-			logger.error("Cannot add current JVM to found JVMS");
+		canonicalCurrentPath = getCurrentJavaHome().getAbsolutePath();
+		logger.info("Current jvm is : " + canonicalCurrentPath);
+		if(!foundJVMS.contains(canonicalCurrentPath)) {
+			foundJVMS.add(canonicalCurrentPath);
+			logger.info(canonicalCurrentPath + " not found in previously retrieved list -> added to JVM list");
 		}
 		
 		return foundJVMS;
@@ -436,6 +438,22 @@ public class SysUtils {
 		return builder.toString();
 	}
 	
+	public static ArrayList<String> readProcessOutputLines(InputStream inputStream) {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		ArrayList<String> lines = new ArrayList<>();
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				lines.add(line);
+			}
+			reader.close();
+		} catch (IOException e) {
+			logger.error("Error reading process output:\n\n", e);
+		}
+		
+		return lines;
+	}
+	
 	public static String logProcessOutput(Process process) {
 		String output = SysUtils.readProcessOutput(process.getInputStream());
 		logger.info(output);
@@ -638,16 +656,6 @@ public class SysUtils {
 	}
 	
 	
-////////////////////////////////  LINUX ONLY  ///////////////////////////////////////////////// sudo update-alternatives --config java
-	
-	public static ArrayList<String> getLinuxJavaVersions() {
-		ArrayList<String> stringRetrievedPaths = new ArrayList<String>();
-		
-		// TODO implement Linux Java Version
-		
-		return stringRetrievedPaths;
-	}
-
 ////////////////////////////////  MAC-OS ONLY  /////////////////////////////////////////////////
 	
 	public static ArrayList<String> getMacOsJavaVersions() {

@@ -138,7 +138,7 @@ public class INIfileChoosER extends JDialog{
 		
     	JFileChooser fileChooser = new CustomFileChooserOnTop();	
 		fileChooser.setDialogTitle("Save Configuration .INI File");;
-		fileChooser.setCurrentDirectory(new File("INI_FILES"));		
+		fileChooser.setCurrentDirectory(new File("./INI_FILES"));		
 		File selectedFile;
 		File backupIni = fileINI.getIniFile().getFile();
 		boolean done = false;

@@ -99,12 +99,12 @@ public class TextAreaStringEditor {
 		return new SelectionDTO(strtN, endN, selected);
 	}
 	
-	public static void makeToggleUppercase(JTextArea textArea, boolean isUppercase) {
-		SelectionDTO result = getToggleUppercase(new SelectionDtoFull(textArea), isUppercase);
+	public static void makeToggleUppercase(JTextArea textArea) {
+		SelectionDTO result = getToggleUppercase(new SelectionDtoFull(textArea));
 		applySelectionDTO(result, textArea);
 	}
 	
-	public static SelectionDTO getToggleUppercase(SelectionDtoFull selectionDtoFull, boolean isUppercase) {
+	public static SelectionDTO getToggleUppercase(SelectionDtoFull selectionDtoFull) {
 		String text = selectionDtoFull.text;
 		String textBackup = new String(text);
 		String selected = selectionDtoFull.selection;
@@ -122,12 +122,10 @@ public class TextAreaStringEditor {
 			end = textBackup.substring(endN, textBackup.length());
 		}
 		
-		if (!isUppercase) {
+		if (!StringWorker.isStringUpperCase(selected)) {
 			selected = selected.toUpperCase();
-			isUppercase = true;
 		} else {
 			selected = selected.toLowerCase();
-			isUppercase = false;
 		}
 
 		selected = start + selected + end;

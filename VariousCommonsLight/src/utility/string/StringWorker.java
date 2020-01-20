@@ -71,6 +71,27 @@ public class StringWorker {
 	public StringWorker(String input) {
 		currentString = new String(input);
 	}
+	
+    public static boolean isStringUpperCase(String source){
+        
+    	// Validation
+    	if("".equals(trimToEmpty(source))) {
+    		return false;
+    	}
+    	
+        //convert String to char array
+        char[] charArray = source.toCharArray();
+        
+        for(int i=0; i < charArray.length; i++){
+            
+            //if any character is not in upper case, return false
+            if(!Character.isUpperCase(charArray[i])) {
+            	return false;
+            }
+        }
+        
+        return true;
+    }
 
 	public static InputStream stringToInputStream(String src) throws IOException {
 	    

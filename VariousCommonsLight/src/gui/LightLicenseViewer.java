@@ -15,18 +15,30 @@ import net.miginfocom.swing.MigLayout;
 import utility.string.StringWorker;
 
 import java.awt.Color;
+import java.awt.ComponentOrientation;
+
 import javax.swing.border.LineBorder;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
+import files.CustomFileFilters;
 import files.FileWorker;
 
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JMenu;
+import javax.swing.SwingConstants;
+import java.awt.Component;
+import javax.swing.border.EmptyBorder;
 
 public class LightLicenseViewer extends JDialog {
 	private static final long serialVersionUID = -4557971895329584958L;
+	
+	private static File MAIN_PARENT_FOLDER = new File(System.getProperty("user.dir")).getParentFile();
+	public static File MAIN_LIBRARIES_FOLDER = new File(MAIN_PARENT_FOLDER.getAbsolutePath() + File.separator + "Libraries_licenses");
 	
 	public enum UserLicenseChoice{
 		ACCEPTED,
@@ -51,6 +63,9 @@ public class LightLicenseViewer extends JDialog {
 	public static LightLicenseViewer instance = null;
 	
 	public static boolean mandatoryChoice = true;
+	private JMenuBar menuBar;
+	private JMenuItem mntmScreepT;
+	private JMenu mnLibraries;
 	
 	public LightLicenseViewer(File sourceLicense, String header, String title) {
 		
@@ -79,12 +94,13 @@ public class LightLicenseViewer extends JDialog {
 		setTitle(correctTitle);
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBackground(Color.LIGHT_GRAY);
+		panel.setBorder(new LineBorder(new Color(192, 192, 192)));
+		panel.setBackground(Color.BLACK);
 		getContentPane().add(panel, "cell 0 0 2 1,grow");
 		panel.setLayout(new MigLayout("", "[grow]", "[]"));
 		
 		lblNewLabel = new JLabel(correctHeader);
+		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		panel.add(lblNewLabel, "cell 0 0,alignx center");
 		
@@ -115,11 +131,19 @@ public class LightLicenseViewer extends JDialog {
 			getContentPane().add(btnAccept, "cell 1 2,alignx center,growy");
 		}
 		
-		addHandlers();
-		
-		loadFile();
+		loadFile(sourceLicense);
 		
 		GuiUtils.centerComponent(this, DEFAULT_PREF_DIMENSION);
+		
+		menuBar = new JMenuBar();
+		menuBar.setBackground(Color.WHITE);
+		menuBar.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		setJMenuBar(menuBar);
+		
+		updateMenuBar();
+		
+		addHandlers();
+
 		setVisible(true);
 	}
 	
@@ -148,6 +172,39 @@ public class LightLicenseViewer extends JDialog {
 		btnDecline.addActionListener((e) -> {
 			askExitRejecting();
 		});
+		
+		mntmScreepT.addActionListener((e) -> {
+			loadFile(sourceLicense);
+		});
+	}
+	
+	public void updateMenuBar() {
+		
+		menuBar.removeAll();
+		
+		mntmScreepT = new JMenuItem("ScreepT License");
+		mntmScreepT.setBackground(Color.WHITE);
+		mntmScreepT.setAlignmentX(Component.LEFT_ALIGNMENT);
+		mntmScreepT.setHorizontalAlignment(SwingConstants.LEFT);
+		mntmScreepT.setHorizontalTextPosition(SwingConstants.LEFT);
+		mntmScreepT.setMaximumSize(new Dimension(180, 100));
+		mntmScreepT.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		menuBar.add(mntmScreepT);
+
+		mnLibraries = new JMenu("Libraries");
+		mnLibraries.setBorder(new EmptyBorder(0, 0, 0, 0));
+		mnLibraries.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		menuBar.add(mnLibraries);
+		
+		for(File libraryLicense : FileWorker.getAllContent(MAIN_LIBRARIES_FOLDER, CustomFileFilters.FILE_ONLY)) {
+			JMenuItem licenseFileMenuItem = new JMenuItem(libraryLicense.getName());
+			licenseFileMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			mnLibraries.add(licenseFileMenuItem);
+			
+			licenseFileMenuItem.addActionListener((e) -> {
+				loadFile(libraryLicense);
+			});
+		}
 	}
 	
 	private void addHtmlStyle() {
@@ -170,17 +227,20 @@ public class LightLicenseViewer extends JDialog {
 //        jEditorPane.setDocument(doc);
 	}
 	
-	private void loadFile() {
-		String fileContent = "License not found at: " + sourceLicense;
+	private void loadFile(File licenseToLoad) {
+		String fileContent = "License not found at: " + licenseToLoad;
 		try {
-			fileContent = FileWorker.readFileAsString(sourceLicense);
+			fileContent = FileWorker.readFileAsString(licenseToLoad);
 		} catch (Exception e) {
 			dialogHelper.warn("License file not found!");
 			licenseLoadedCorrectly = false;
 		}
 			
+		fileContent = StringWorker.isEmpty(fileContent) ? "Not found" : fileContent;
 		jEditorPane.setText(fileContent);
 		licenseLoadedCorrectly = !StringWorker.isEmpty(fileContent);
+		
+		lblNewLabel.setText("Loaded license: " + licenseToLoad.getName());
 	}
 	
 	private boolean askExitRejecting() {
@@ -203,4 +263,13 @@ public class LightLicenseViewer extends JDialog {
 	public static LightLicenseViewer getInstance(File sourceLicenseFile, String header, String title) {
 		return instance == null ? new LightLicenseViewer(sourceLicenseFile, header, title) : instance;
 	}
+
+	public static File getMAIN_LIBRARIES_FOLDER() {
+		return MAIN_LIBRARIES_FOLDER;
+	}
+
+	public static void setMAIN_LIBRARIES_FOLDER(File mAIN_LIBRARIES_FOLDER) {
+		MAIN_LIBRARIES_FOLDER = mAIN_LIBRARIES_FOLDER;
+	}
+	
 }
