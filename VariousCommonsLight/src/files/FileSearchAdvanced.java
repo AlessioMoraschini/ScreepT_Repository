@@ -50,6 +50,11 @@ public class FileSearchAdvanced {
 		}
 	}
 
+	/**
+	 * Search for all files and folders only in given root directory: matching files/folders with name containing matchNamePart.
+	 * If recursiveDeep is true, then all subdirectories of root will be scanned too unless a result is already found. 
+	 * If false then search will continue until a result is found
+	 */
 	public static List<File> findAllByMatch(File root, String matchNamePart, boolean recursiveDeep) {
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
@@ -95,6 +100,11 @@ public class FileSearchAdvanced {
 		return foundMatches;
 	}
 	
+	/**
+	 * Search for all files only in given root directory: matching files with name containing matchNamePart.
+	 * If recursiveDeep is true, then all subdirectories of root will be scanned too unless a result is already found. 
+	 * If false then search will continue until a result is found
+	 */
 	public static List<File> findOnlyFilesByMatch(File root, String matchNamePart, boolean recursiveDeep) {
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
@@ -140,6 +150,11 @@ public class FileSearchAdvanced {
 		return foundMatches;
 	}
 	
+	/**
+	 * Search for all folders only in given root directory: matching folders with name containing matchNamePart.
+	 * If recursiveDeep is true, then all subdirectories of root will be scanned too unless a result is already found. 
+	 * If false then search will continue until a result is found
+	 */
 	public static List<File> findOnlyFoldersByMatch(File root, String matchNamePart, boolean recursiveDeep) {
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		

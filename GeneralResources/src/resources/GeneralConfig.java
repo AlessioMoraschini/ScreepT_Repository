@@ -151,7 +151,8 @@ public class GeneralConfig {
 	 * Used in launcher to choose right type of launch command for system
 	 */
 	public static boolean FLAG_LAUNCH_JAR_COMMAND;
-	public static String MAIN_GENERAL_CLASSPATH;
+	public static String MAIN_GENERAL_CLASSPATH_WIN = "\"./*;./Resources_ScreepT/lib/*\" ";
+	public static String MAIN_GENERAL_CLASSPATH_UNIX = "\"./*:./Resources_ScreepT/lib/*\" ";
 	public static String MAIN_GENERAL_STARTER_PACKAGE;
 	
 	// LAUNCHER DEFAULTS
@@ -497,7 +498,6 @@ public class GeneralConfig {
 			 * Used in launcher to choose right type of launch command for system
 			 */
 			FLAG_LAUNCH_JAR_COMMAND = Boolean.valueOf(resourcesFilePathsMappings.getProperty("FLAG_LAUNCH_JAR_COMMAND"));
-			MAIN_GENERAL_CLASSPATH = "./*;./Resources_ScreepT/lib/* ";
 			MAIN_GENERAL_STARTER_PACKAGE = "maingUI.MainGuiGeneralAppStarter";
 			
 			// LAUNCHER DEFAULTS

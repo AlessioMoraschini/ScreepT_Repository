@@ -1,4 +1,6 @@
-2020-01-18  (HEAD -> refs/heads/BugFix, refs/remotes/origin/master, refs/remotes/origin/BugFix, refs/heads/master) Added restart option + Various Bugs fixed
+2020-01-19  (tag: refs/tags/0.9.20) Autocomplete and readme improved
+
+2020-01-18  Added restart option + Various Bugs fixed
 
 2020-01-16  New version : build and weigth improvements + bugfix
 

@@ -14,6 +14,8 @@ package updater;
 import static java.lang.System.out;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
@@ -90,25 +92,21 @@ public class UpdatesManager {
 				throw new UpdatesUnavailableException(getUpdatesUnavailableMessage());
 			}
 			
-			if(HttpHelper.isUrlReachable(manifestRemoteUrl)) {
-				if (!silent) {
-					updateManagerProgbar = new UpdateProgressPanel(true);
-					updateManagerProgbar.getPb().setIndeterminate(true);
-				}
-				
-				logger.info(FileVarious.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
-				File downloadedManifest = DownloadUtils.downloadFile(silent, manifestRemoteUrl, localTempManifestPath, updateManagerProgbar);
-				logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
-				
-				PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
-				
-				String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
-				logger.info("Version: " + version);
-				
-				newVersionAvailable = (DownloadUtils.compareNewVersion(version, currentVersion)) ? version : null;
-			} else {
-				throw new TimeoutException("Server unreachable");
+			if (!silent) {
+				updateManagerProgbar = new UpdateProgressPanel(true);
+				updateManagerProgbar.getPb().setIndeterminate(true);
 			}
+			
+			logger.info(FileVarious.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
+			File downloadedManifest = DownloadUtils.downloadFile(silent, manifestRemoteUrl, localTempManifestPath, updateManagerProgbar);
+			logger.info("Manifest Downloaded!! Size of " + manifestRemoteUrl + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
+			
+			PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
+			
+			String version = propsManager.getProperty(WEB_UPDATER_VERSION_PROP);
+			logger.info("Version: " + version);
+			
+			newVersionAvailable = (DownloadUtils.compareNewVersion(version, currentVersion)) ? version : null;
 		} catch (Exception e) {
 			logger.error("An error occurred:", e);
 			updatesReadyToInstall.set(false);
@@ -129,8 +127,8 @@ public class UpdatesManager {
 		return newVersionAvailable;
 	}
 	
-	public boolean udpdatesReachable() {
-		return HttpHelper.isUrlReachable(manifestRemoteUrl);
+	public boolean udpdatesReachable() throws MalformedURLException, IOException {
+		return !HttpHelper.is404(manifestRemoteUrl, HttpRequestMetod.GET);
 	}
 	
 	public boolean emptyUpdatesDir() {

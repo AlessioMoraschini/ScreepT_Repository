@@ -24,9 +24,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import files.FileSearchAdvanced;
 import om.JVMInfo;
 import om.OSinfo;
 import utility.SafeLogger;
+import utility.string.StringWorker;
 
 
 public class SysUtils {
@@ -41,7 +43,6 @@ public class SysUtils {
 	public static final String winPath64 = "C:/Program Files/";
 
 	public static final String winJavaExecutable = "java.exe";
-	public static final String winJavawExecutable = "javaw.exe";
 	
 	public static OSinfo retrieveOS() {
 		return new OSinfo();
@@ -60,7 +61,7 @@ public class SysUtils {
 	 * other params must not be null
 	 */
 	private static String startJarCommand(String jvmArgs, String jarPath, boolean viewShell) {
-		String javaLaunchKeyWord = viewShell ? "java " : "javaw ";
+		String javaLaunchKeyWord = viewShell ? "java " : "java ";
 		return javaLaunchKeyWord + jvmArgs + " -jar " + jarPath;
 	}
 	
@@ -74,7 +75,7 @@ public class SysUtils {
 	 */
 	public static String startJarCommand(String jvmArgs, String jarPath, File[] filteredArgsFiles, boolean viewShell) {
 		
-		String javaLaunchKeyWord = viewShell ? "java " : "javaw ";
+		String javaLaunchKeyWord = viewShell ? "java " : "java ";
 		if(filteredArgsFiles == null || filteredArgsFiles.length == 0) {
 			return startJarCommand(jvmArgs, jarPath, viewShell);
 		}
@@ -100,7 +101,7 @@ public class SysUtils {
 	 * params must not be null
 	 */
 	private static String startClassCommand(String jvmArgs, String classPath, String mainClass, boolean viewShell) {
-		String javaLaunchKeyWord = viewShell ? "java " : "javaw ";
+		String javaLaunchKeyWord = viewShell ? "java " : "java ";
 		return javaLaunchKeyWord + jvmArgs + " -cp " + classPath + " " + mainClass;
 	}
 
@@ -114,7 +115,7 @@ public class SysUtils {
 	 */
 	public static String startClassCommand(String jvmArgs, String classPath, String mainClass, File[] filteredArgsFiles, boolean viewShell) {
 		
-		String javaLaunchKeyWord = viewShell ? "java " : "javaw ";
+		String javaLaunchKeyWord = viewShell ? "java " : "java ";
 		if(filteredArgsFiles == null || filteredArgsFiles.length == 0) {
 			return startClassCommand(jvmArgs, classPath, mainClass, viewShell);
 		}
@@ -573,6 +574,20 @@ public class SysUtils {
 		}
 		
 		return foundList;
+	}
+	
+	public static String getClassPathFromAllJarsFoundInRoot(String root, boolean isRootCurrentDir) {
+		String classPath = "";
+		String separator = getOsInfoLazy().isWindows() ? ";" : ":";
+		
+		for (File found : FileSearchAdvanced.findOnlyFilesByMatch(new File(root), ".jar", true)) {
+			classPath += found + separator;
+		}
+		
+		classPath = StringWorker.removeLastChar(classPath);
+		
+		String relativePrefix = isRootCurrentDir ? "./" : "";
+		return "\"" + relativePrefix + classPath + "\"";
 	}
 	
 	public static ArrayList<String> getAllDirsWithJavaExeInside(String root, String fileToFind) {

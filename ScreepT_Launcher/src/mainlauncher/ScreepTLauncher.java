@@ -389,7 +389,9 @@ import utils.SysUtils;
 				}else {
 					
 					// TODO LINUX/MAC SHELL show on/off
+					logger.info("Executing process [pwd]");
 					SysUtils.logProcessOutput(runtime.exec("pwd"));
+					logger.info("Executing process [chmod u+x" + nativeLauncherPath + "]");
 					Process executableMaker = runtime.exec("chmod u+x " + nativeLauncherPath);
 					SysUtils.logProcessOutput(executableMaker);
 					executableMaker.waitFor();

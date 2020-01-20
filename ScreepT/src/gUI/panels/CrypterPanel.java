@@ -1160,7 +1160,7 @@ public class CrypterPanel extends ModulePanel {
 		textAreaLog.setMargin(new Insets(10, 10, 10, 10));
 		textAreaLog.revalidate();
 		textAreaLog.repaint();
-		textAreaLog.setText("### WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files?\r\n\r\n Nobody knows how to crypt them better than me ;)"); 
+		textAreaLog.setText("### WELCOME TO ScreepT :) ###\n\n Are you ready to crypt/decrypt your files?\n\n Nobody knows how to crypt them better than me ;)"); 
 		
 		panelContainerKey = new JPanel();
 		panelContainerKey.setBackground(Color.DARK_GRAY);
@@ -1208,7 +1208,7 @@ public class CrypterPanel extends ModulePanel {
 		mainSplitTextAreaMain.setRightComponent(scrollPaneText);
 //		panelMainContainer.add(scrollPaneText, "cell 2 2 1 4,grow");
 		
-		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\r\n\r\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");
+		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\n\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");
 		StringBuilder builder = new StringBuilder();
 		builder.append("\n\n 1) load source files or drop them on right panel with file tree")
 			   .append("\n\n 2) choose a modality between only aes, only steg or complete using the selector on top-left bar")

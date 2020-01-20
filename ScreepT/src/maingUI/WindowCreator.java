@@ -243,10 +243,12 @@ public class WindowCreator {
 	
 	public TutorialFrame newTutorialFrame(boolean visible) {
 		
+		boolean unsupported = false;
+		
 		try {
 			TutorialFrame tutorialFrame = TutorialFrame.getInstance();
 			
-			if(visible) {
+			if(!SysUtils.getOsInfoLazy().isLinux() && visible) {
 				SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 				commonGraphicInit(tutorialFrame, "Documentation - ", true);
 				tutorialFrame.setResizable(true);
@@ -255,16 +257,18 @@ public class WindowCreator {
 			return tutorialFrame;
 		} catch (Throwable e) {
 			
-			if (visible) {
-				logger.error("Error loading HTML panel" + TutorialFrame.class, e);
+			unsupported = true;
+			logger.error("Unsupported internal html viewer" + TutorialFrame.class);
+			return null;
+			
+		} finally {
+			if ((SysUtils.getOsInfoLazy().isLinux() || unsupported) && visible) {
 				File htmlTutorialFile = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
-				boolean openWithBrowser = MainGUI.dialogHelper.yesOrNo("Current Java version does not support html reader, open with default browser?", null);
+				boolean openWithBrowser = MainGUI.dialogHelper.yesOrNo("Internal html reader not supported, open with default browser?", "Unsupported internal html reader");
 				if (openWithBrowser) {
 					SysUtils.openUrlInBrowser(htmlTutorialFile.toURI().toString());
 				}
 			}
-			
-			return null;
 		}
 	}
 	

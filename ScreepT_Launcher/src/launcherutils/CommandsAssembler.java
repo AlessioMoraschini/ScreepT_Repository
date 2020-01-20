@@ -91,9 +91,12 @@ public class CommandsAssembler {
 			// THIS USES JAR WITH NO CLASSPATH - USEFUL FOR CENTRALIZED BUILD
 			execCommand.add(SysUtils.startJarCommand(complete_ARGS, dto.MAIN_JAR_FILE, argumentsFiles, viewShell));
 		}else {
+			
+			String classPath = SysUtils.getOsInfoLazy().isWindows() ? 
+					GeneralConfig.MAIN_GENERAL_CLASSPATH_WIN : SysUtils.getClassPathFromAllJarsFoundInRoot(GeneralConfig.CURRENT_EXECUTION_DIR, true);
 			// THIS USES MAIN CLASS WITH CLASSPATH - USEFUL FOR FRAGMENTED BUILD JARS OR CLASSES
 			execCommand.add(SysUtils.startClassCommand(complete_ARGS, 
-					GeneralConfig.MAIN_GENERAL_CLASSPATH, 
+					classPath, 
 					GeneralConfig.MAIN_GENERAL_STARTER_PACKAGE, 
 					argumentsFiles, viewShell));
 		}

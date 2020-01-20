@@ -94,7 +94,7 @@ public class CryptoStegTest_Gui_V2_0 extends JDialog{
 							
 			}
 		});
-		source.setToolTipText("\r\n");
+		source.setToolTipText("\n");
 		source.setForeground(new Color(51, 51, 51));
 		source.setFont(new Font("Monospaced", Font.PLAIN, 28));
 		source.setBounds(755, 133, 945, 230);

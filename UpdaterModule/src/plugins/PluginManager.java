@@ -30,6 +30,7 @@ import gui.JOptionHelper;
 import gui.UpdateProgressPanel;
 import main.MainStandAloneUpdater;
 import network.http.HttpHelper;
+import network.http.HttpHelper.HttpRequestMetod;
 import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
 import utility.ConversionUtils;
@@ -304,7 +305,7 @@ public class PluginManager {
 		UpdateProgressPanel pluginManagerProgbar = null;
 		
 		try {
-			if(HttpHelper.isUrlReachable(new URL(WEB_PLUGINS_MANIFEST_URL))) {
+			if(!HttpHelper.is404(new URL(WEB_PLUGINS_MANIFEST_URL), HttpRequestMetod.GET)) {
 				pluginManagerProgbar = new UpdateProgressPanel(true);
 				pluginManagerProgbar.getPb().setIndeterminate(true);
 				
@@ -327,7 +328,7 @@ public class PluginManager {
 					updateCache(toAdd);
 				}
 			} else {
-				logger.error("Server unreachable");
+				logger.error("Plugin information list unavailable");
 			}
 		} catch (Throwable e){
 			logger.error("Download procedure interrupted by an exception", e);

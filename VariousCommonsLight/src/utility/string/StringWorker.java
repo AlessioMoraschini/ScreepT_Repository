@@ -59,7 +59,7 @@ public class StringWorker {
 	static {
 		TXT_EDITOR_UPPERCASE_SEPARATORS.addAll(Arrays.asList(new String[] {".","!","<",">","?"}));
 	}
-
+	
 	public static final String UNPRINTABLE_ESCAPES = "[^\\x20-\\x7e]";
 	
 	public String currentString;
@@ -78,6 +78,14 @@ public class StringWorker {
 	    InputStream inputStream = new ByteArrayInputStream(sourceBytes);
 	    
 	    return inputStream;
+	}
+	
+	public static String removeLastChar(String source) {
+		if(source != null && !source.isEmpty()) {
+			return source.substring(0, source.length()-1);
+		}
+		
+		return source;
 	}
 	
 	public static String lowerAfterDots(String source, char trigger) {

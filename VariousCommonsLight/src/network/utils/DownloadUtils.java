@@ -32,7 +32,7 @@ public class DownloadUtils {
 	
 	public static SafeLogger logger = new SafeLogger(DownloadUtils.class);
 	
-	public static int CONNECTION_TIMEOUT_MS = 5000;
+	public static int CONNECTION_TIMEOUT_MS = 30000;
 	
 	public static File downloadFile(boolean silent, URL url, String localPath, UpdateProgressPanel progressUpdater) throws Exception, ProgressBarInterruptedException{
 		int fileSize = HttpHelper.getFileSize(url);
