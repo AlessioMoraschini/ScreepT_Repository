@@ -34,6 +34,7 @@ import om.TextEditorOption;
 import resources.GeneralConfig;
 import utility.SafeLogger;
 import utility.string.StringWorker;
+import utility.string.StringWorker.EOL;
 
 public class INItializer extends INItializerParent implements INItializerInterface{
 
@@ -293,6 +294,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	 */
 	public void loadTxtEditorOptions() {
 		// TEXT EDITOR OPTIONS
+		textEditorOpt.setEol(EOL.valueOf(getSafeStringConf(TEXT_EDITOR_OPT, "EOL", TextEditorOption.DEF_eol.name())));
 		textEditorOpt.setFirstTimeOpened(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "firstTimeOpened"), TextEditorOption.DEF_firstTimeOpened));
 		
 		// INI read
@@ -564,6 +566,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	
 	public void writeTxtEditOptions() {
 		// TEXT EDITOR OPTIONS
+		iniFile.put(TEXT_EDITOR_OPT, "EOL", textEditorOpt.getEol().name());
 		iniFile.put(TEXT_EDITOR_OPT, "firstTimeOpened", textEditorOpt.isFirstTimeOpened());
 		
 		iniFile.put(TEXT_EDITOR_OPT, "prefix_hash", textEditorOpt.isPrefix_hash());
@@ -689,6 +692,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 
 		// concat TEXT EDITOR OPTIONS
 		builder.append("\n\n ---- TEXT EDITOR -----\n\n")
+			   .append("End Of Line: ").append(textEditorOpt.eol.name())
 			   .append("FIRST TIME OPENING? ").append(textEditorOpt.firstTimeOpened)
 			   .append("INLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)
 			   .append("\nMARGIN: ").append(textEditorOpt.margin)

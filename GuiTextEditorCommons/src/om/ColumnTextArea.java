@@ -44,6 +44,7 @@ import org.fife.ui.rtextarea.RUndoManager;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
 import resources.GeneralConfig;
+import utility.string.StringWorker.EOL;
 
 @SuppressWarnings("restriction")
 public class ColumnTextArea extends RSyntaxTextArea {
@@ -161,7 +162,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 					if (i == 0) {
 						text = selectedText;
 					} else {
-						text += '\n' + selectedText;
+						text += EOL.defaultEol.eol + selectedText;
 					}
 				}
 			}
@@ -294,7 +295,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
     public int NumberOfSelectionRows() {
     	try {
-    		return getSelectedText().split("\n").length;
+    		return getSelectedText().split(EOL.defaultEol.eol).length;
     	} catch (Exception e) {
     		return 0;
     	}
@@ -306,7 +307,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		removeAllLineHighlights();
 		String text = "";
 		
-		String[] sourceLines = replaceText.split("\n");
+		String[] sourceLines = replaceText.split(EOL.defaultEol.eol);
 		int sourceLinesIterator = 0;
 		int sourceLinesIteratorMax = sourceLines.length; // Excluded: effective max index is max-1
 		boolean useOneLinePerRow = sourceLines.length > 1;
@@ -345,7 +346,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 				if (i == 0) {
 					text = selectedText;
 				} else {
-					text += '\n' + selectedText;
+					text += EOL.defaultEol.eol + selectedText;
 				}
 			}
 		}

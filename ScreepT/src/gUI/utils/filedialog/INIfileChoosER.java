@@ -15,6 +15,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -44,9 +45,8 @@ public class INIfileChoosER extends JDialog{
 	 * */
 	public INIfileChoosER(INItializer fileINI, JTextArea textA, JLabel lblAvviso) {
 		
-		JFileChooser fileChooser = new CustomFileChooserOnTop();			
+		JFileChooser fileChooser = commonFileChooserInit();			
 		fileChooser.setDialogTitle("Load Configuration .INI File");
-		fileChooser.setCurrentDirectory(new File("INI_FILES"));		
 		final INItializer backupINI = fileINI;
 		int returnVal = fileChooser.showOpenDialog(this.getParent());
 		
@@ -57,7 +57,6 @@ public class INIfileChoosER extends JDialog{
             if(fileChooser.getSelectedFile()!=null && fileExtension.equalsIgnoreCase("ini"))try {
 				fileINI.setIniFile(new Wini(fileChooser.getSelectedFile()));
 				fileINI.setIniReadFile(new Wini(fileChooser.getSelectedFile()));
-//            	fileINI = new INItializer(new Wini(fileChooser.getSelectedFile())); -> bug, loose reference on main
             	fileINI.readConfigIniFile();
             	lblAvviso.setText("[Configuration Loaded!]");
     	    	textA.setText("");
@@ -76,18 +75,13 @@ public class INIfileChoosER extends JDialog{
 				}
 				fileINI=backupINI;
 			}
-            //fileINI.writeCurrentConfigIniFile();
-            
             
         }else {
         	textA.setText("");
 	    	textA.append("=> No File selected! ");
 	    	textA.append("\n\n\n=> Same INI CONFIGURATION maintained \n\n -> ");
 			textA.append( fileINI.toStringa());
-//			fileChooser.setCurrentDirectory(new File(fileINI.DEFAULT_INI_PATH).getParentFile());
 		}
-            
-            //This is where a real application would open the file.
     }
 	
 	/**
@@ -95,7 +89,7 @@ public class INIfileChoosER extends JDialog{
 	 * */
 	public INIfileChoosER(INItializer fileINI, String defDir) {
 		
-		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		JFileChooser fileChooser = commonFileChooserInit();
 		fileChooser.setDialogTitle("Load .INI File");
 		fileChooser.setCurrentDirectory(new File(defDir));		
 		final INItializer backupINI = fileINI;
@@ -136,9 +130,9 @@ public class INIfileChoosER extends JDialog{
 	 */
     public INIfileChoosER(INItializer fileINI, JLabel lblAvviso) {
 		
-    	JFileChooser fileChooser = new CustomFileChooserOnTop();	
-		fileChooser.setDialogTitle("Save Configuration .INI File");;
-		fileChooser.setCurrentDirectory(new File("./INI_FILES"));		
+    	JFileChooser fileChooser = commonFileChooserInit();	
+		fileChooser.setDialogTitle("Save Configuration .INI File");
+		
 		File selectedFile;
 		File backupIni = fileINI.getIniFile().getFile();
 		boolean done = false;
@@ -180,7 +174,16 @@ public class INIfileChoosER extends JDialog{
 		
 		getContentPane().add(fileChooser, BorderLayout.NORTH);
 	}
-	
+
+    private CustomFileChooserOnTop commonFileChooserInit() {
+    	CustomFileChooserOnTop fileChooser = new CustomFileChooserOnTop();
+    	fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setCurrentDirectory(new File("./INI_FILES"));
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Configuration file (.ini)", "ini"));	
+		
+		return fileChooser;
+    }
+    
 	private class CustomFileChooserOnTop extends JFileChooser{
 		private static final long serialVersionUID = 7362401687903210645L;
 

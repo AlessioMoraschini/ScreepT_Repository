@@ -440,6 +440,7 @@ public class CustomTabbedEditor implements ITabsManager {
 			mainTabList.addTab(name, newTabNode.currentScrollPane);
 			loadedList.add(newTabNode);
 			loadedTabObj = newTabNode;
+			
 			FileWorker.appendFileTxtArea(file, loadedTabObj.textArea, true);
 			mainTabList.setTabComponentAt(newIndex, getCustomClosableTab(name, newIndex));
 			mainTabList.setSelectedIndex(newIndex);
@@ -452,7 +453,6 @@ public class CustomTabbedEditor implements ITabsManager {
 			}
 			addToHystory(loadedTabObj);
 			
-//			GUIStyelSettings.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 			applyStyleToTabs();
 			loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().font);
 

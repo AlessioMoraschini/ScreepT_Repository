@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tree.crypter.om.CrypterDragFileModel;
-import menusettings.MenuSetter;
+import gui.MenuSetter;
 import resources.IconsPathConfigurator;
 
 public class TreeDragNDropListenerCrypter {

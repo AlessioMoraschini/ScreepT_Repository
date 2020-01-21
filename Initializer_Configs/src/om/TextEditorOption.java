@@ -21,6 +21,7 @@ import java.util.List;
 import files.om.FileNamed;
 import mainobj.INItializer;
 import resources.GeneralConfig;
+import utility.string.StringWorker.EOL;
 
 public class TextEditorOption {
 	
@@ -37,6 +38,7 @@ public class TextEditorOption {
 	public static final Color DEFAULT_FOREGROUND_COL = Color.BLACK;
 	public static final String DEFAULT_SELECTED_FILE_AT_START = "";
 	public static final String DEF_LastEscapeLanguage = "HTML_4";
+	public static final EOL DEF_eol = EOL.defaultEol;
 	
 	//TEXT AREA
 	public static final String DEFAULT_SELECTED_THEME = GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml";
@@ -91,6 +93,7 @@ public class TextEditorOption {
 	public static final String DEF_prefDictspellChecker = GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
 	
 	// FIELDS	
+	public EOL eol;
 	public boolean firstTimeOpened;
 	public boolean headerVisible;
 	public boolean subHeaderVisible;
@@ -162,6 +165,8 @@ public class TextEditorOption {
 		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
 		DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
 		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
+		
+		eol = DEF_eol;
 		
 		firstTimeOpened = DEF_firstTimeOpened;
 		uppercase_hash = DEF_uppercase_hash;
@@ -273,6 +278,15 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public EOL getEol() {
+		return eol;
+	}
+
+	public void setEol(EOL eol) {
+		this.eol = eol;
+		EOL.defaultEol = eol;
+	}
+
 	public boolean isHeaderVisible() {
 		return headerVisible;
 	}

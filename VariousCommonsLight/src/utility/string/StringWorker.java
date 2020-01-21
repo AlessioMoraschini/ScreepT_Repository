@@ -46,6 +46,8 @@ public class StringWorker {
 		
 		public String eol;
 		public String eolRegex;
+		
+		public static EOL defaultEol = LF;
 	
 		private EOL(String eol, String regex) {
 			this.eol = eol;
@@ -405,7 +407,7 @@ public class StringWorker {
 		for(int i=0; i<source.length(); i++) {
 			char character_i = source.charAt(i);			
 			// finally update flag according to char value il blacklist
-			if (!(character_i==' ' || character_i=='\n')){
+			if (!(character_i==' ' || String.valueOf(character_i).equals(EOL.defaultEol.eol))){
 				result+=String.valueOf(character_i);
 			}
 		}
@@ -421,7 +423,7 @@ public class StringWorker {
 		for(int i=0; i<source.length(); i++) {
 			char character_i = source.charAt(i);			
 			// finally update flag according to char value il blacklist
-			if (!(character_i=='\n')){
+			if (!(String.valueOf(character_i).equals(EOL.defaultEol.eol))){
 				result+=String.valueOf(character_i);
 			}
 		}
@@ -466,7 +468,7 @@ public class StringWorker {
 	}
 	
 	public static String replaceSpacesWithTabs(String source, int tabSize) {
-		String[] lines = source.split("\n");
+		String[] lines = source.split(EOL.defaultEol.eol);
 		StringBuilder builder = new StringBuilder();
 		for (String line : lines) {
 			
@@ -488,7 +490,7 @@ public class StringWorker {
 				}
 			}
 			
-			builder.append(convertedBlock).append(buffer).append("\n");
+			builder.append(convertedBlock).append(buffer).append(EOL.defaultEol.eol);
 		}
 		
 		return builder.toString();
@@ -588,7 +590,7 @@ public class StringWorker {
 	public static <K, V> String stringVal(Map<K, V> map) {
 		String out="";
 	    for (Map.Entry<K, V> entry : map.entrySet()) {
-	        out+= "Key : " + entry.getKey() + " <=> Value : " + entry.getValue()+"\n";
+	        out+= "Key : " + entry.getKey() + " <=> Value : " + entry.getValue()+EOL.defaultEol.eol;
 	    }
 	    return out;
 	}
@@ -601,7 +603,7 @@ public class StringWorker {
 		int i=0;
 		String out="";
 	    for (E curr : array) {
-	        out+="Val["+i+"] : " + curr+"\n";
+	        out+="Val["+i+"] : " + curr + EOL.defaultEol.eol;
 	        i++;
 	    }
 	    return out;
@@ -615,7 +617,7 @@ public class StringWorker {
 		int i=0;
 		String out="";
 	    for (int curr : array) {
-	        out += "Val["+i+"] : " + curr+"\n";
+	        out += "Val["+i+"] : " + curr + EOL.defaultEol.eol;
 	        i++;
 	    }
 	    return out;

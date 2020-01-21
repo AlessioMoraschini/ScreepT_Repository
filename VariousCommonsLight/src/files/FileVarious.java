@@ -29,6 +29,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import gui.JOptionHelper;
 import utility.SafeLogger;
+import utility.string.StringWorker.EOL;
 
 /**
  * This class contains a mix of useful methods forked from various classes made by me, to avoid including big dependencies only
@@ -152,7 +153,7 @@ public class FileVarious {
 	 */
 	public static String getSeparator(String character, int n){
 		int curr = 0;
-		String output = "\n  ";
+		String output = EOL.defaultEol.eol + "  ";
 		while (curr < n) {
 			output = output.concat(String.valueOf(character));
 			curr++;
@@ -188,9 +189,9 @@ public class FileVarious {
 		String rightSpaces = leftSpaces + rightPadding;
 		
 		result += getSeparator(character, newN);
-		result += "\n  " + character + leftSpaces + title + rightSpaces + character ;
+		result += EOL.defaultEol.eol + "  " + character + leftSpaces + title + rightSpaces + character ;
 		result += getSeparator(character, newN);
-		result += "\n";
+		result += EOL.defaultEol.eol;
 		
 		return result;
 	}
@@ -532,7 +533,7 @@ public class FileVarious {
 				} 
 				
 				logger.debug("\n\n=> Parent file search result [son:"+son.getCanonicalPath()
-				+", levelsUp:"+originalLevels+"]: "+result.getCanonicalPath()+"\n");
+					+", levelsUp:"+originalLevels+"]: "+result.getCanonicalPath()+"\n");
 				
 			}
 			

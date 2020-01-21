@@ -20,6 +20,7 @@ import org.ini4j.Wini;
 import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
+import gui.GUIStyelSettings;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -31,6 +32,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import utility.string.ListCharsets;
+import utility.string.StringWorker.EOL;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -76,6 +78,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JTextField textFieldUname;
 	private JCheckBox chckbxAutosave;
 	private JComboBox<String> comboCharsets;
+	private JComboBox<EOL> comboBoxDefEOL;
 	private JComboBox<SecurityLevel> comboSecurityLevels;
 
 	private JCheckBox chckbxHideLauncherAt;	
@@ -105,6 +108,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private String BACKUP_CURRENT_USERNAME;
 	private String BACKUP_CHARSET;
 	private SecurityLevel BACKUP_SECURITY_LEVEL;
+	private EOL BACKUP_DEFAULT_EOL;
 	private float BACKUP_GENVOLUME;
 
 	JOptionHelperExtended dialogHelper;
@@ -113,6 +117,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private INItializer currentConfiguration;
 	private Wini launcherConfiguration;
 	private JSeparator separator_1;
+	private JLabel lblDefaultEOL;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		super();
@@ -146,13 +151,13 @@ public class GeneralOptionsFrame extends ParentFrame{
 		initializeValues();		
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[10px][10px][:110px:190px][100px][80px:n][100,grow][100,grow][110px:n][:100px:100px][:100px:100px,grow]", "[:30:40px][10px:n][grow][][grow][grow,bottom][:30px:35px,baseline]"));
+		getContentPane().setLayout(new MigLayout("", "[10px][10px][:110px:190px,grow][100px,grow][80px:n][100][100][110px:n]", "[:30:40px][10px:n][grow][][grow][grow][grow,bottom][:30px:35px,baseline]"));
 		
 		JPanel panel = new JPanel();
 		panel.setForeground(Color.BLACK);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.GRAY);
-		getContentPane().add(panel, "cell 0 0 10 1,grow");
+		getContentPane().add(panel, "cell 0 0 8 1,grow");
 		panel.setLayout(new MigLayout("", "[220px:n][][90px:n][grow][100px:110px:160px,grow]", "[grow]"));
 		
 		
@@ -175,6 +180,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		spinnerInterval = new JSpinner();
 		panel.add(spinnerInterval, "cell 2 0");
 		spinnerInterval.setMinimumSize(new Dimension(80, 28));
+		spinnerInterval.setFont(new Font("Segoe UI", Font.PLAIN, 17));
 		spinnerInterval.setPreferredSize(new Dimension(70, 28));
 		spinnerInterval.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		spinnerInterval.setModel(new SpinnerNumberModel(100, FileOptions.DEFAULT_MIN_AUTOSAVE_INTERVAL/1000, 3600000, 1));
@@ -222,16 +228,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 		textFieldUname.setBackground(new Color(255, 255, 255));
 		getContentPane().add(textFieldUname, "cell 5 2 3 1,growx,aligny center");
 		
-		chckbxExceptionAdvicesEnabled = new JCheckBox("Exception Advices");
-		getContentPane().add(chckbxExceptionAdvicesEnabled, "cell 8 2 2 1,alignx center,aligny center");
-		chckbxExceptionAdvicesEnabled.setOpaque(false);
-		chckbxExceptionAdvicesEnabled.setForeground(Color.LIGHT_GRAY);
-		chckbxExceptionAdvicesEnabled.setToolTipText("Enable/Disable error dialog in case of general warnings detected by the application");
-		chckbxExceptionAdvicesEnabled.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		chckbxExceptionAdvicesEnabled.setFont(new Font("SansSerif", Font.BOLD, 14));
-		
 		separator_1 = new JSeparator();
-		getContentPane().add(separator_1, "cell 0 3 10 1,growx");
+		getContentPane().add(separator_1, "cell 0 3 8 1,growx");
 				
 		lblPasswordSecurityCheck = new JLabel("Password security:");
 		lblPasswordSecurityCheck.setForeground(Color.WHITE);
@@ -252,18 +250,28 @@ public class GeneralOptionsFrame extends ParentFrame{
 		comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
 		comboCharsets.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboCharsets.setToolTipText("Choose general application Charset to use");
-		getContentPane().add(comboCharsets, "cell 5 4,growx,aligny center");
+		getContentPane().add(comboCharsets, "cell 5 4 3 1,growx,aligny center");
 		
-		chckbxAutomaticallyCheckFor = new JCheckBox("Auto-check updates");
-		getContentPane().add(chckbxAutomaticallyCheckFor, "cell 6 4 2 1,alignx center,aligny center");
-		chckbxAutomaticallyCheckFor.setOpaque(false);
-		chckbxAutomaticallyCheckFor.setForeground(Color.LIGHT_GRAY);
-		chckbxAutomaticallyCheckFor.setToolTipText("Enable/Disable automatic check for updates at start");
-		chckbxAutomaticallyCheckFor.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		chckbxAutomaticallyCheckFor.setFont(new Font("SansSerif", Font.BOLD, 15));
+		lblDefaultEOL = new JLabel("Default EOL:");
+		lblDefaultEOL.setForeground(Color.WHITE);
+		lblDefaultEOL.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblDefaultEOL.setFont(new Font("SansSerif", Font.BOLD, 13));
+		getContentPane().add(lblDefaultEOL, "cell 0 5 2 1,alignx right");
+		
+		comboBoxDefEOL = new JComboBox<EOL>(EOL.values());
+		comboBoxDefEOL.setToolTipText("Choose security level used for passwords check");
+		getContentPane().add(comboBoxDefEOL, "cell 2 5,growx");
+		
+		chckbxExceptionAdvicesEnabled = new JCheckBox("Exception Advices");
+		getContentPane().add(chckbxExceptionAdvicesEnabled, "cell 3 5,alignx center,aligny center");
+		chckbxExceptionAdvicesEnabled.setOpaque(false);
+		chckbxExceptionAdvicesEnabled.setForeground(Color.LIGHT_GRAY);
+		chckbxExceptionAdvicesEnabled.setToolTipText("Enable/Disable error dialog in case of general warnings detected by the application");
+		chckbxExceptionAdvicesEnabled.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxExceptionAdvicesEnabled.setFont(new Font("SansSerif", Font.BOLD, 14));
 		
 		chckbxHideLauncherAt = new JCheckBox("Hide Launcher at start");
-		getContentPane().add(chckbxHideLauncherAt, "cell 8 4 2 1,alignx center,aligny center");
+		getContentPane().add(chckbxHideLauncherAt, "cell 4 5 2 1,alignx center,aligny center");
 		chckbxHideLauncherAt.setToolTipText("When checked, launcher will not be shown on startup");
 		chckbxHideLauncherAt.setOpaque(false);
 		chckbxHideLauncherAt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -272,36 +280,44 @@ public class GeneralOptionsFrame extends ParentFrame{
 		chckbxHideLauncherAt.setForeground(Color.LIGHT_GRAY);
 		chckbxHideLauncherAt.setFont(new Font("SansSerif", Font.BOLD, 14));
 		chckbxHideLauncherAt.setBackground(new Color(119, 136, 153));
-		getContentPane().add(separator, "cell 0 5 10 1,growx");
-								btnResetValues = new JButton("Reset initial values");
-								btnResetValues.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-								btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
-								btnResetValues.setBackground(new Color(240, 230, 140));
-								getContentPane().add(btnResetValues, "cell 0 6 3 1,growx");
-								
-								btnSaveConf = new JButton("Save Values");
-								btnSaveConf.setToolTipText("Close this dialog and use current settings with explicit save on phisical file");
-								btnSaveConf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-								btnSaveConf.setForeground(Color.BLACK);
-								btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
-								btnSaveConf.setBackground(new Color(169, 169, 169));
-								getContentPane().add(btnSaveConf, "cell 7 6,growx");
-						
-								btnUseSettings = new JButton("Use");
-								btnUseSettings.setToolTipText("Close this dialog and use current settings without explicit save on phisical file");
-								btnUseSettings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-								btnUseSettings.setForeground(Color.WHITE);
-								btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
-								btnUseSettings.setBackground(Color.DARK_GRAY);
-								getContentPane().add(btnUseSettings, "cell 8 6,growx");
-				
-						btnDiscard = new JButton("Discard");
-						btnDiscard.setToolTipText("Close this dialog and discard every change");
-						btnDiscard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-						btnDiscard.setForeground(new Color(0, 0, 0));
-						btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
-						btnDiscard.setBackground(new Color(205, 92, 92));
-						getContentPane().add(btnDiscard, "cell 9 6,growx");
+		
+		chckbxAutomaticallyCheckFor = new JCheckBox("Auto-check updates");
+		getContentPane().add(chckbxAutomaticallyCheckFor, "cell 6 5 2 1,alignx center,aligny center");
+		chckbxAutomaticallyCheckFor.setOpaque(false);
+		chckbxAutomaticallyCheckFor.setForeground(Color.LIGHT_GRAY);
+		chckbxAutomaticallyCheckFor.setToolTipText("Enable/Disable automatic check for updates at start");
+		chckbxAutomaticallyCheckFor.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxAutomaticallyCheckFor.setFont(new Font("SansSerif", Font.BOLD, 15));
+		getContentPane().add(separator, "cell 0 6 8 1,growx");
+		btnResetValues = new JButton("Reset initial values");
+		btnResetValues.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnResetValues.setBackground(new Color(240, 230, 140));
+		getContentPane().add(btnResetValues, "cell 0 7 3 1,growx");
+		
+		btnSaveConf = new JButton("Save Values");
+		btnSaveConf.setToolTipText("Close this dialog and use current settings with explicit save on phisical file");
+		btnSaveConf.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnSaveConf.setForeground(Color.BLACK);
+		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnSaveConf.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnSaveConf, "cell 5 7,growx");
+
+		btnUseSettings = new JButton("Use");
+		btnUseSettings.setToolTipText("Close this dialog and use current settings without explicit save on phisical file");
+		btnUseSettings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnUseSettings.setForeground(Color.WHITE);
+		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnUseSettings.setBackground(Color.DARK_GRAY);
+		getContentPane().add(btnUseSettings, "cell 6 7,growx");
+
+		btnDiscard = new JButton("Discard");
+		btnDiscard.setToolTipText("Close this dialog and discard every change");
+		btnDiscard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnDiscard.setForeground(new Color(0, 0, 0));
+		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnDiscard.setBackground(new Color(205, 92, 92));
+		getContentPane().add(btnDiscard, "cell 7 7,growx");
 		
 		addHandlers();
 		
@@ -312,6 +328,12 @@ public class GeneralOptionsFrame extends ParentFrame{
 		});
 		
 		logger.info(this.getClass().getName() + " Started");
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				GUIStyelSettings.applyNimbusSize(thisFrame, currentConfiguration.getGuiOpt().nimbusSize);
+			}
+		});
 	}
 	
 	private void addHandlers() {
@@ -421,6 +443,16 @@ public class GeneralOptionsFrame extends ParentFrame{
 				SecurityLevel security = (SecurityLevel)comboSecurityLevels.getSelectedItem();
 				currentConfiguration.getAesOpt().setSecurityLevel(security);
 				logger.info("Security level changed: " + security);
+			}
+		});
+
+		// DEFAULT EOL SELECTOR HANDLER
+		comboBoxDefEOL.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EOL defaultEol = (EOL)comboBoxDefEOL.getSelectedItem();
+				currentConfiguration.getTextEditorOpt().setEol(defaultEol);
+				logger.info("Default EOL changed: " + defaultEol);
 			}
 		});
 		
@@ -548,6 +580,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_CURRENT_USERNAME = new String(currentConfiguration.getGenOpt().getUserName());
 		BACKUP_CHARSET = currentConfiguration.getGenOpt().getCharset();
 		BACKUP_SECURITY_LEVEL = currentConfiguration.getAesOpt().getSecurityLevel();
+		BACKUP_DEFAULT_EOL = currentConfiguration.getTextEditorOpt().getEol();
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
@@ -568,6 +601,7 @@ public class GeneralOptionsFrame extends ParentFrame{
     	updateComboCharsetSelection(currentConfiguration.getGenOpt().getCharset());
     	System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
     	comboSecurityLevels.setSelectedItem(currentConfiguration.getAesOpt().getSecurityLevel());
+    	comboBoxDefEOL.setSelectedItem(currentConfiguration.getTextEditorOpt().getEol());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
     	
     	refreshCheckBoxForeground();
@@ -597,6 +631,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		currentConfiguration.getGenOpt().setUserName(BACKUP_CURRENT_USERNAME);
 		currentConfiguration.getGenOpt().setCharset(BACKUP_CHARSET);
 		currentConfiguration.getAesOpt().setSecurityLevel(BACKUP_SECURITY_LEVEL);
+		currentConfiguration.getTextEditorOpt().setEol(BACKUP_DEFAULT_EOL);
 		currentConfiguration.getGenOpt().setGeneralVolume(BACKUP_GENVOLUME);
 		currentConfiguration.getGenOpt().setExceptionAdvicesEnabled(BACKUP_EXCEPTION_ADVICES);
 		currentConfiguration.getGenOpt().setAutomaticUpdateOn(BACKUP_AUTOCHECK_UPDATES);
@@ -616,6 +651,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_CURRENT_USERNAME = currentConfiguration.getGenOpt().getUserName();
 		BACKUP_CHARSET = currentConfiguration.getGenOpt().getCharset();
 		BACKUP_SECURITY_LEVEL = currentConfiguration.getAesOpt().getSecurityLevel();
+		BACKUP_DEFAULT_EOL = currentConfiguration.getTextEditorOpt().getEol();
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
@@ -636,6 +672,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "flagAutosave", currentConfiguration.getFileOpt().isFlagAutosave());
 		currentConfiguration.writeSingleValue(INItializer.FILE_OPT, "autosaveInterval", currentConfiguration.getFileOpt().autosaveInterval);
 		currentConfiguration.writeSingleValue(INItializer.AES_OPT, "securityLevel", currentConfiguration.getAesOpt().getSecurityLevel().name());
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "EOL", currentConfiguration.getTextEditorOpt().getEol().name());
 		
 		// write launcher configuration
 		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());

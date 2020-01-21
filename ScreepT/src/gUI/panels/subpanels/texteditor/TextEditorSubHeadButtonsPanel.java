@@ -88,6 +88,7 @@ import resources.IconsPathConfigurator;
 import textareautil.TextLineNumber;
 import utility.EncodingUtils;
 import utility.string.StringWorker;
+import utility.string.StringWorker.EOL;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 import utils.dialog.ColorDialogUtils;
@@ -1400,7 +1401,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					return;
 				} else {
 					try {
-						done = FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true);
+						String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), EOL.defaultEol);
+
+						done = FileWorker.writeStringToFile(outString, loadedTabObj.loadedFile, true);
 					} catch (IOException e1) {
 						dialogHelper.error("error Saving the selected file :(");
 						logger.error("Exception happened!", e1);
@@ -1451,15 +1454,18 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						if (selectedFile != null) {
 							skipRefresh = false;
 							selectedFile = textEditorUtils.adaptFileExt(selectedFile);
+							
+							String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), EOL.defaultEol);
+							
 							if (selectedFile.exists()) {
 								if (dialogHelper.yesOrNo("File " + selectedFile.getName()
 										+ " exists, overwrite it?", "Overwrite?")) {
-									done = FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), selectedFile, true);
+									done = FileWorker.writeStringToFile(outString, selectedFile, true);
 								} 
 							} else {
 								done = selectedFile.createNewFile();
 								PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
-								out.write(loadedTabObj.textArea.getText());
+								out.write(outString);
 								out.close();
 							}
 							if (done) {

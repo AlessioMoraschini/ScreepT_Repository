@@ -246,10 +246,11 @@ public class ConfigurationManagerPanel extends ModulePanel {
 		config_PATH.setForeground(Color.WHITE);
 		add(config_PATH, "cell 8 3 5 1");
 		config_PATH.setHorizontalAlignment(SwingConstants.LEFT);
-		config_PATH.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		config_PATH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		config_PATH.setText(config.getIniFile().getFile().getPath());
 		
 		lblAvviso = new JLabel("[Configuration loaded]");
+		lblAvviso.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblAvviso.setForeground(Color.DARK_GRAY);
 		add(lblAvviso, "cell 8 1,growx");
 		

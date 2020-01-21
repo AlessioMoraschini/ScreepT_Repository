@@ -742,7 +742,7 @@ public class TextEditor extends ModulePanel {
 		headerPanel.checkBoxInlineTabs.setSelected(txtOptions.isInlinedTabs());
 		headerPanel.doInlinedCheck();
 		headerPanel.chkCutWordsTo.setSelected(txtOptions.isBreaklineActive());
-		getCurrentTabEditor().loadedTabObj.textArea.setLineWrap(true);
+		getCurrentTabEditor().loadedTabObj.textArea.setLineWrap(txtOptions.isBreaklineActive());
 		leftSplitContainer.setBackground(txtOptions.filePanelBackCol);
 		leftSplitTreeFiles.setBackground(txtOptions.filePanelBackCol);
 		headerPanel.sliderSpokenSpeed.setValue(txtOptions.getVoiceRate());
@@ -789,12 +789,17 @@ public class TextEditor extends ModulePanel {
 		}
 		
 		Font gutterFont = txtOptions.getFont().getSize() < 20 ? 
-				txtOptions.getFont().deriveFont(txtOptions.getFont().getSize()-2) : txtOptions.getFont().deriveFont(20F);
-		loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
+		txtOptions.getFont().deriveFont(txtOptions.getFont().getSize()-2) : txtOptions.getFont().deriveFont(20F);
+		if(!gutterFont.equals(loadedTabObj.currentScrollPane.getGutter().getFont())) {
+			loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
+		}
 		
 		// Text area colors and sync tree to current file
 		SwingUtilities.invokeLater(() -> {
 			if (isPreloading || !currentConfiguration.getTextEditorOpt().isTreeLocked()) {
+				
+				GUIStyelSettingsExtended.applyNimbusSize(loadedTabObj.currentScrollPane, currentConfiguration.getGuiOpt().nimbusSize);
+				
 				loadedTabObj.textArea.setFont(txtOptions.getFont());
 				
 				if (txtOptions.selectedTheme.equals(Themes.NONE.defaultPath)) {
@@ -812,7 +817,6 @@ public class TextEditor extends ModulePanel {
 			}
 		});
 		
-		GUIStyelSettingsExtended.applyNimbusSize(null, currentConfiguration.getGuiOpt().nimbusSize);
 	}
 	
 	public void fileTreeShowOrHide(TextEditorOption txtOptions) {

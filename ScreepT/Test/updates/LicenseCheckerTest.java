@@ -24,6 +24,8 @@ public class LicenseCheckerTest {
 	@Test
 	public void testLicenseCheck() {
 		GeneralConfig.LICENSE_FILE = LICENSE_FILE;
+		GeneralConfig.TEMP_DIRECTORY = "TEST_FILES/";
+		LightLicenseViewer.MAIN_LIBRARIES_FOLDER = new File("TEST_FILES/Libraries_licenses");
 		assertTrue(checkNewLicense());
 	}
 	

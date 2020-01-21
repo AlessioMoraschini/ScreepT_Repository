@@ -64,6 +64,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JViewport;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -320,6 +321,19 @@ public class GuiUtils {
 				vertical.setValue(value);
 			}
 		});
+	}
+	
+	public static void horizontalScrollJscrollPane(JScrollPane target, boolean left) {
+
+        JViewport viewport = target.getViewport();
+        Point p = viewport.getViewPosition();
+
+        if (left) {
+            p.x = 0;
+        } else {
+        	p.x = viewport.getWidth();
+        }
+        viewport.setViewPosition( p );
 	}
 	
 	public static void makeTransparentJButton(JButton targetButton) {

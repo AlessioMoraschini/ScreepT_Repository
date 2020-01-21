@@ -14,17 +14,15 @@ package resources;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import files.FileWorker;
 import resources.om.FilePojo;
 import utility.ConversionUtils;
 import utility.properties.PropertiesManager;
@@ -382,7 +380,7 @@ public class GeneralConfig {
     		current = fileMap.get(themeId);
     		if(current != null) {
     			try {
-					currentRead = readFileAsString(current);
+					currentRead = FileWorker.readFileAsString(current);
 					customThemeContents.put(themeId, currentRead);
 				} catch (Exception e) {
 				}
@@ -408,38 +406,6 @@ public class GeneralConfig {
 		}
     }
     
-    /**
-	 * This is a fork from FileStuff - Copied to avoid dependency cycles
-	 * This method read from a file and give a String representation of content
-	 * @param toRead the source file to read
-	 * @return
-	 * @throws IOException
-	 */
-    private static String readFileAsString(File toRead) throws IOException {
-		if(toRead == null || !toRead.exists()) {
-			throw new IOException();
-		}
-		StringBuilder builder = new StringBuilder(100000);
-		FileInputStream readerStream = new FileInputStream(toRead);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
-		try {
-			String line = reader.readLine();
-			builder.append(line);
-			line = reader.readLine();
-			
-			while (line != null) {
-				builder.append("\n").append(line);
-				line = reader.readLine();
-			}
-		} catch (IOException e) {
-			throw e;
-		}finally {
-			reader.close();			
-		}
-		
-		return builder.toString();
-	}
-	
 	/**
 	 *  * This is a fork from FileStuff - Copied to avoid dependency cycles
 	 * @param fileName

@@ -13,6 +13,7 @@ package gUI.utils.shortcutshandler;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.ImageIcon;
@@ -20,6 +21,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
+import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextarea.SearchEngine;
 
 import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
@@ -64,6 +67,11 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		if (e.getID() == KeyEvent.KEY_PRESSED && MainGUI.mainGuiUtils.isTextEditorActive()) {
 
 			updateCtrlAltShiftPressed(e);
+			
+			// ESC + search panel or replace visible: remove highlights
+			if(e.getKeyCode() == 27) {
+				searchOrReplaceActive();
+			}
 			
 			if (isShortcutKey(e)) {
 				
@@ -748,5 +756,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	@Override
 	public void saveAsShortcut() {
 		subHeaderPanel.btnSaveTextFileAs.doClick();
+	}
+	
+	private void searchOrReplaceActive() {
+		if(subHeaderPanel.searchBox != null || subHeaderPanel.replaceDialog != null) {
+			String searchFor = UUID.randomUUID().toString();
+	    	// RANDOM STRING TO DESELECT ALL
+	    	SearchEngine.markAll(currentTextEditor.getCurrentTabEditor().getCurrentTextArea(), new SearchContext(searchFor));
+		}
 	}
 }

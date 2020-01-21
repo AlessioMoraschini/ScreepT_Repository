@@ -111,6 +111,8 @@ public class LightLicenseViewer extends JDialog {
 		getContentPane().add(scrollPane, "cell 0 1 2 " + scrollPaneHeigth + ",alignx center,aligny center");
 		
 		jEditorPane = new JEditorPane();
+		jEditorPane.setEditable(false);
+		jEditorPane.setCursor(GuiUtils.CURSOR_TEXT);
 		scrollPane.setViewportView(jEditorPane);
 		addHtmlStyle();
 		
@@ -222,9 +224,6 @@ public class LightLicenseViewer extends JDialog {
         jEditorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
         jEditorPane.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 
-//        // create a document, set it on the jeditorpane, then add the html
-//        Document doc = kit.createDefaultDocument();
-//        jEditorPane.setDocument(doc);
 	}
 	
 	private void loadFile(File licenseToLoad) {
@@ -239,6 +238,8 @@ public class LightLicenseViewer extends JDialog {
 		fileContent = StringWorker.isEmpty(fileContent) ? "Not found" : fileContent;
 		jEditorPane.setText(fileContent);
 		licenseLoadedCorrectly = !StringWorker.isEmpty(fileContent);
+		
+		GuiUtils.scrollJScrollPane(scrollPane, false);
 		
 		lblNewLabel.setText("Loaded license: " + licenseToLoad.getName());
 	}

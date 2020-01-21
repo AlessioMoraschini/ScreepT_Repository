@@ -138,6 +138,7 @@ public class GUIStyelSettings{
 					logger.error("An error occurred!", e);
 				}
 			}
+			SwingUtilities.updateComponentTreeUI(targetFrame);
 		}
 	}
 	
@@ -176,7 +177,7 @@ public class GUIStyelSettings{
 			}
 		}
 		((JComponent) target).putClientProperty("JComponent.sizeVariant", level);
-		
+		SwingUtilities.updateComponentTreeUI(target);
 	}
 	
     

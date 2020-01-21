@@ -42,13 +42,14 @@ import gui.JOptionHelper;
 import utility.ConversionUtils;
 import utility.SafeLogger;
 import utility.string.StringWorker;
+import utility.string.StringWorker.EOL;
 
 public class FileWorker {
-
+	
 	static SafeLogger logger = new SafeLogger(FileWorker.class);
 	
 	private static JOptionHelper dialogHelper = new JOptionHelper(null);
-
+	
 	public static File copyFile(File source, File dest, boolean overwrite) {
 		
 		long startTime = System.currentTimeMillis();
@@ -117,7 +118,7 @@ public class FileWorker {
 					String line;
 					
 					while ((line = reader.readLine()) != null) {
-						builder.append(line).append("\n");
+						builder.append(line).append(EOL.defaultEol.eol);
 					}
 					reader.close(); 
 					readerStream.close();
@@ -215,7 +216,7 @@ public class FileWorker {
 			String line;
 			
 			while ((line = reader.readLine()) != null) {
-				builder.append(line).append("\n");
+				builder.append(line).append(EOL.defaultEol.eol);
 			}
 		} catch (IOException e) {
 			throw e;
@@ -258,7 +259,7 @@ public class FileWorker {
 				String line;
 				
 				while ((line = reader.readLine()) != null) {
-					builder.append(line).append("\n");
+					builder.append(line).append(EOL.defaultEol.eol);
 				}
 				
 				textArea_1.append(builder.toString());

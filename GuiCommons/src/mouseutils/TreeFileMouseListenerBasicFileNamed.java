@@ -37,7 +37,7 @@ import files.om.FileNamed;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtilsExtended;
-import menusettings.MenuSetter;
+import gui.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.string.StringWorker;

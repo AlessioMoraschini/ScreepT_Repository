@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 import dialogutils.JOptionHelperExtended;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.utils.GuiUtilsExtended;
-import menusettings.MenuSetter;
+import gui.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
