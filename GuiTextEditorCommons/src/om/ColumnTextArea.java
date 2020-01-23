@@ -12,6 +12,7 @@
 package om;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -42,6 +43,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RUndoManager;
 
 import frameutils.utils.GuiUtilsExtended;
+import gui.FontMetricsWrapper;
 import gui.GuiUtils;
 import resources.GeneralConfig;
 import utility.string.StringWorker.EOL;
@@ -54,6 +56,8 @@ public class ColumnTextArea extends RSyntaxTextArea {
 	static Logger logger = Logger.getLogger(ColumnTextArea.class);
 	
 	public static int UNDO_LIMIT = 4000;
+	
+	public static int INTERLINE = 2;
 	
 	/**
      * Key used in app context to lookup Clipboard to use if access to
@@ -129,6 +133,18 @@ public class ColumnTextArea extends RSyntaxTextArea {
 	public RUndoManager getUndoManager() {
 		return undoManager;
 	}
+	
+	@Override
+    public FontMetricsWrapper getFontMetrics(Font font) {
+        return new FontMetricsWrapper(super.getFontMetrics(font)) {
+			private static final long serialVersionUID = 6451974373953470346L;
+
+			@Override
+            public int getHeight() {
+                return super.getHeight() + INTERLINE;  // Gives line height in pixels
+            }
+        };
+    }
 	
 	public void setRectangularSelectionMode(boolean rectangularSelection) {
 		if (rectangularSelection) {

@@ -301,6 +301,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		return (e) -> {
 			try {
 				hashCheckerFrame = HashCheckerFrame.getInstance(selectedNode.getFile(), textEditor.parentFrame, textEditor.currentConfiguration.getTextEditorOpt());
+				hashCheckerFrame.updateHash();
 				hashCheckerFrame.setVisible(true);
 				hashCheckerFrame.setAlwaysOnTop(true);
 				hashCheckerFrame.toFront();

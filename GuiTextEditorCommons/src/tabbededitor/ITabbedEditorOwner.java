@@ -21,6 +21,8 @@ import om.SupportedFileTextEditor;
 
 public interface ITabbedEditorOwner {
 	
+	public void forceUnrecognizedFileType();
+	
 	public void resyncAddedPanelLight();
 	
 	/**

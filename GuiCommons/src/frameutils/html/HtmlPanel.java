@@ -23,6 +23,7 @@ import javax.swing.border.LineBorder;
 import org.apache.log4j.Logger;
 
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 
@@ -109,10 +110,14 @@ public class HtmlPanel extends JPanel{
 	 * Load into javaFx version panel
 	 * @param pathToHtml
 	 */
-	public void loadHtmlFx(String pathToHtml) {
-		logger.info("Loading html from: " + pathToHtml);
-		jfxPanel.loadUrl(pathToHtml, indexID);
-		logger.info(pathToHtml + " : Loaded!");
+	public void loadHtmlFx(final String pathToHtml) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				logger.info("Loading html from: " + pathToHtml);
+				jfxPanel.loadUrl(pathToHtml, indexID);
+				logger.info(pathToHtml + " : Loaded!");
+			}
+		});
 	}
 	
 	/**

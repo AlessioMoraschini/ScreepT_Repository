@@ -323,6 +323,17 @@ public class GuiUtils {
 		});
 	}
 	
+	public static void scrollJscrollPane(JScrollPane scrollPane, int increment, boolean verticalScroll) {
+		Point oldView = scrollPane.getViewport().getViewPosition();
+		if (verticalScroll) {
+			oldView.y = oldView.y + increment;
+		} else {
+			oldView.x = oldView.x + increment;
+			oldView.x = oldView.x < 0 ? 0 : oldView.x;
+		}
+		scrollPane.getViewport().setViewPosition(oldView);
+	}
+	
 	public static void horizontalScrollJscrollPane(JScrollPane target, boolean left) {
 
         JViewport viewport = target.getViewport();

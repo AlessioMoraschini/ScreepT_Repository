@@ -796,18 +796,19 @@ public class TextEditor extends ModulePanel {
 		
 		// Text area colors and sync tree to current file
 		SwingUtilities.invokeLater(() -> {
-			if (isPreloading || !currentConfiguration.getTextEditorOpt().isTreeLocked()) {
+			
+			GUIStyelSettingsExtended.applyNimbusSize(loadedTabObj.currentScrollPane, currentConfiguration.getGuiOpt().nimbusSize);
+			loadedTabObj.textArea.setFont(txtOptions.getFont());
+			
+			if (isPreloading) {
 				
-				GUIStyelSettingsExtended.applyNimbusSize(loadedTabObj.currentScrollPane, currentConfiguration.getGuiOpt().nimbusSize);
-				
-				loadedTabObj.textArea.setFont(txtOptions.getFont());
-				
-				if (txtOptions.selectedTheme.equals(Themes.NONE.defaultPath)) {
+				if (!currentConfiguration.getTextEditorOpt().isTreeLocked() && txtOptions.selectedTheme.equals(Themes.NONE.defaultPath)) {
 					loadedTabObj.textArea.setBackground(txtOptions.getBackCol());
 					RsyntaxUtils.setBackground(loadedTabObj.textArea, txtOptions.backCol);
 					loadedTabObj.textArea.setForeground(txtOptions.getForeCol());
 					RsyntaxUtils.setForeground(loadedTabObj.textArea, txtOptions.foreCol);
 				}
+				
 				try {
 					TreeUtils.selectFileInNamedFileTree(MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile,
 							MainGUI.initTxtWriter.leftSplitTreeFiles, true);

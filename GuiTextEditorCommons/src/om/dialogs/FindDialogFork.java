@@ -1,15 +1,4 @@
-/**
- *
- * =========================================================================================
- *  Copyright (C) 2019-2020
- *
- *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
- * =========================================================================================
- *
- * You should have received a copy of the license with this file.
- * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
- */
-package om;
+package om.dialogs;
 
 /*
  * 11/14/2003
@@ -20,17 +9,25 @@ package om;
  */
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 import javax.swing.SpringLayout;
@@ -40,9 +37,14 @@ import javax.swing.event.DocumentListener;
 import org.fife.rsta.ui.AssistanceIconPanel;
 import org.fife.rsta.ui.ResizableFrameContentPane;
 import org.fife.rsta.ui.UIUtil;
+import org.fife.rsta.ui.search.AbstractFindReplaceDialog;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
+
+import gui.GUIStyelSettings;
+import gui.GuiUtils;
+import utility.reflection.ReflectionUtils;
 
 
 /**
@@ -73,7 +75,7 @@ import org.fife.ui.rtextarea.SearchEngine;
  * @version 1.0
  * @see FindToolBar
  */
-public class FindDialogFork extends AbstractFindReplaceFork {
+public class FindDialogFork extends AbstractFindReplaceDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -100,8 +102,6 @@ public class FindDialogFork extends AbstractFindReplaceFork {
 
 
 	/**
-	 * @wbp.parser.constructor
-	 * 
 	 * Creates a new <code>FindDialog</code>.
 	 *
 	 * @param owner The main window that owns this dialog.
@@ -122,8 +122,7 @@ public class FindDialogFork extends AbstractFindReplaceFork {
 
 		this.searchListener = listener;
 
-		ComponentOrientation orientation = ComponentOrientation.
-									getOrientation(getLocale());
+		ComponentOrientation orientation = ComponentOrientation.getOrientation(getLocale());
 
 		// Make a panel containing the "Find" edit box.
 		JPanel enterTextPane = new JPanel(new SpringLayout());
@@ -197,6 +196,55 @@ public class FindDialogFork extends AbstractFindReplaceFork {
 
 		applyComponentOrientation(orientation);
 
+		Dialog thisDialog = this;
+		textField.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				SwingUtilities.invokeLater(() -> {
+					GUIStyelSettings.applyNimbusSize(thisDialog, 2);
+				});
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				SwingUtilities.invokeLater(() -> {
+					GUIStyelSettings.applyNimbusSize(thisDialog, 2);
+				});
+			}
+		});
+		
+		GuiUtils.centerComponent(thisDialog, new Dimension(550, (int)thisDialog.getPreferredSize().getHeight()));
+	}
+	
+	
+	
+	public static void updateNimbusSize(Component reference) {
+		try {
+			for(JButton button : ReflectionUtils.retrieveFieldsByType(reference, JButton.class)) {
+				button.putClientProperty("JComponent.sizeVariant", "large");
+				button.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+				button.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			}
+			for(JCheckBox checkBox : ReflectionUtils.retrieveFieldsByType(reference, JCheckBox.class)) {
+				checkBox.putClientProperty("JComponent.sizeVariant", "large");
+				checkBox.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+				checkBox.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			}
+			for(JComboBox<?> comboBox : ReflectionUtils.retrieveFieldsByType(reference, JComboBox.class)) {
+				comboBox.putClientProperty("JComponent.sizeVariant", "large");
+				comboBox.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+				comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			}
+			for(JTextField txtField : ReflectionUtils.retrieveFieldsByType(reference, JTextField.class)) {
+				txtField.putClientProperty("JComponent.sizeVariant", "large");
+				txtField.putClientProperty("Nimbus.Overrides.InheritDefaults", false);
+				txtField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+			}
+			
+			SwingUtilities.updateComponentTreeUI(reference);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+		}
 	}
 
 

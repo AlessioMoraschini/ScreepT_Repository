@@ -80,6 +80,7 @@ public class TutorialFrame extends ParentFrame{
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		    	isActive.set(false);
 				logger.info(this.getClass().getName() + " Closed");
+				setVisible(false);
 				singletonInstance = null;
 				dispose();
 		    }

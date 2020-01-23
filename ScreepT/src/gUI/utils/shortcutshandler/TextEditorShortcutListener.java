@@ -32,6 +32,7 @@ import gui.GuiUtils;
 import gui.TextEditTooltips;
 import maingUI.MainGUI;
 import om.ICommonShortcuts;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import utils.SysUtils;
@@ -74,6 +75,24 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 			}
 			
 			if (isShortcutKey(e)) {
+				
+				// SCROLL UP -> Ctrl + arrow up
+				if (e.getKeyCode()==38 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, - GeneralConfig.KEY_SCROLL_SPEED, true);
+				}
+				// SCROLL DOWN -> Ctrl + arrow down
+				if (e.getKeyCode()==40 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, GeneralConfig.KEY_SCROLL_SPEED, true);
+				}
+				
+				// SCROLL RIGHT -> Ctrl + Alt + arrow right
+				if (e.getKeyCode()==39 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, 2*GeneralConfig.KEY_SCROLL_SPEED, false);
+				}
+				// SCROLL LEFT -> Ctrl + Alt + arrow left
+				if (e.getKeyCode()==37 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					GuiUtils.scrollJscrollPane(currentTabEditor.loadedTabObj.currentScrollPane, - 2*GeneralConfig.KEY_SCROLL_SPEED, false);
+				}
 				
 				/*
 				 * UNDO x5 -  Ctrl+Alt+Z

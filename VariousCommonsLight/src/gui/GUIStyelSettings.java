@@ -14,6 +14,7 @@ package gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Window;
@@ -176,7 +177,20 @@ public class GUIStyelSettings{
 				break;
 			}
 		}
-		((JComponent) target).putClientProperty("JComponent.sizeVariant", level);
+		
+		if (target instanceof Dialog) {
+			for (Component curr : getAllComponents((Dialog)target)) {
+				try {
+					if (curr instanceof JComponent && curr != null) {
+						((JComponent) curr).putClientProperty("JComponent.sizeVariant", level);
+					}
+				} catch (Throwable e) {
+					logger.error("An error occurred!", e);
+				}
+			} 
+		}else {
+			((JComponent) target).putClientProperty("JComponent.sizeVariant", level);
+		}
 		SwingUtilities.updateComponentTreeUI(target);
 	}
 	
@@ -419,6 +433,22 @@ public class GUIStyelSettings{
 		for (Component comp : comps) {
 			compList.add(comp);
 			if (comp instanceof Container)
+				compList.addAll(getAllComponents((Container) comp));
+		}
+		return compList;
+	}
+
+	/**
+	 * Get all components that are sons of the given container
+	 * @param c
+	 * @return
+	 */
+	public static List<Component> getAllComponents(final Window window) {
+		Component[] comps = window.getComponents();
+		List<Component> compList = new ArrayList<Component>();
+		for (Component comp : comps) {
+			compList.add(comp);
+			if (comp instanceof Component)
 				compList.addAll(getAllComponents((Container) comp));
 		}
 		return compList;

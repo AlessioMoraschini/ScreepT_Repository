@@ -11,6 +11,8 @@
  */
 package utils.dialog;
 
+import java.awt.Dialog;
+
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 public interface ITextAreaDialogs {
@@ -18,4 +20,6 @@ public interface ITextAreaDialogs {
 	public RSyntaxTextArea getTargetTextArea();
 	public void loadThemeIntoTarget(RSyntaxTextArea txtArea);
 	public String getCurrentClipboard();
+	public Dialog getSearchDialog();
+	public Dialog getReplaceDialog();
 }

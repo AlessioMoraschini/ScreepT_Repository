@@ -11,6 +11,7 @@
  */
 package utils.dialog;
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.WindowListener;
 import java.lang.reflect.Method;
@@ -23,14 +24,13 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 import org.fife.rsta.ui.GoToDialog;
-import org.fife.rsta.ui.search.FindDialog;
-import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchComboBox;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
@@ -42,9 +42,12 @@ import org.fife.ui.rtextarea.SearchResult;
 import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtilsExtended;
 import om.LimitedConcurrentList;
+import om.dialogs.FindDialogFork;
+import om.dialogs.ReplaceDialogFork;
 import resources.IconsPathConfigurator;
 import utility.reflection.ReflectionLibChecker;
 import utility.reflection.ReflectionUtils;
+import utility.string.TextAreaStringEditor;
 
 public class TextAreaDialogs {
 
@@ -79,6 +82,16 @@ public class TextAreaDialogs {
 			public String getCurrentClipboard() {
 				return null;
 			}
+
+			@Override
+			public Dialog getSearchDialog() {
+				return null;
+			}
+
+			@Override
+			public Dialog getReplaceDialog() {
+				return null;
+			}
 		};
 		searchList = new LimitedConcurrentList<>(LIST_MAX_SIZE);
 		replaceList = new LimitedConcurrentList<>(LIST_MAX_SIZE);
@@ -89,8 +102,8 @@ public class TextAreaDialogs {
 	 * Plus, if methodClass and method are defined, and method accept only a String param,
 	 * then the funtion will be called on search function text output. 
 	 **/
-	public FindDialog getSearchDialog(JFrame owner, JComponent targetResultPrinter, Object methodClass, String methodStringOK, String methodStringKO){
-		FindDialog searchDial = new FindDialog(owner, getSearchListener(dialogManager, targetResultPrinter, methodClass, methodStringOK, methodStringKO));
+	public FindDialogFork getSearchDialog(JFrame owner, JComponent targetResultPrinter, Object methodClass, String methodStringOK, String methodStringKO){
+		FindDialogFork searchDial = new FindDialogFork(owner, getSearchListener(dialogManager, targetResultPrinter, methodClass, methodStringOK, methodStringKO));
 		searchDial.setLocationRelativeTo(owner);
 		applyGUIEffects(searchDial);
 		searchDial.setPreferredSize(DEFAULT_SIZE);
@@ -109,8 +122,8 @@ public class TextAreaDialogs {
 	 * Plus, if methodClass and method are defined, and method accept only a String param,
 	 * then the funtion will be called on replace function text output. 
 	 **/
-	public ReplaceDialog getReplaceDialog(JFrame owner, JComponent targetResultPrinter, Object methodClass, String methodStringOK, String methodStringKO){
-		ReplaceDialog replaceDial = new ReplaceDialog(owner, getSearchListener(dialogManager, targetResultPrinter, methodClass, methodStringOK, methodStringKO));
+	public ReplaceDialogFork getReplaceDialog(JFrame owner, JComponent targetResultPrinter, Object methodClass, String methodStringOK, String methodStringKO){
+		ReplaceDialogFork replaceDial = new ReplaceDialogFork(owner, getSearchListener(dialogManager, targetResultPrinter, methodClass, methodStringOK, methodStringKO));
 		replaceDial.setLocationRelativeTo(owner);
 		replaceDial.setVisible(true);
 		replaceDial.setEscapeClosesDialog(true);
@@ -216,7 +229,7 @@ public class TextAreaDialogs {
 	/**
 	 *  This ties the properties of the two dialogs together (match case, regex, etc.)
 	 */
-	public static void allineateReplaceToFindDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
+	public static void allineateReplaceToFindDialog(FindDialogFork findDialog, ReplaceDialogFork replaceDialog){
 		// This ties the properties of the two dialogs together (match case, regex, etc.)
 		SearchContext context = findDialog.getSearchContext();
 		replaceDialog.setSearchContext(context);
@@ -225,7 +238,7 @@ public class TextAreaDialogs {
 	/**
 	 *  This ties the properties of the two dialogs together (match case, regex, etc.)
 	 */
-	public static void allineateFindToReplaceDialog(FindDialog findDialog, ReplaceDialog replaceDialog){
+	public static void allineateFindToReplaceDialog(FindDialogFork findDialog, ReplaceDialogFork replaceDialog){
 		
 		SearchContext context = replaceDialog.getSearchContext();
 		findDialog.setSearchContext(context);
@@ -268,6 +281,7 @@ public class TextAreaDialogs {
 						break;
 					case FIND:
 						result = SearchEngine.find(dialogManager.getTargetTextArea(), context);
+						result = returnToStartIfEndReached(dialogManager.getTargetTextArea(), result, context, type);
 						if (!result.wasFound()) {
 							UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 						}
@@ -275,6 +289,7 @@ public class TextAreaDialogs {
 						break;
 					case REPLACE:
 						result = SearchEngine.replace(dialogManager.getTargetTextArea(), context);
+						result = returnToStartIfEndReached(dialogManager.getTargetTextArea(), result, context, type);
 						if (!result.wasFound()) {
 							UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 						}
@@ -289,12 +304,16 @@ public class TextAreaDialogs {
 
 				String text = "";
 				if (result.wasFound()) {
-					text = "Text found; occurrences marked: " + result.getMarkedCount();
+					text = "Text found at line " + TextAreaStringEditor.getCurrentCaretLine(dialogManager.getTargetTextArea());
+					if(context.getMarkAll()) {
+						text += " - Occurrences: " + result.getMarkedCount();
+					}
+					
 					esit = true;
 				
 				} else if (type==SearchEvent.Type.MARK_ALL) {
 					if (result.getMarkedCount()>0) {
-						text = "Occurrences marked: " + result.getMarkedCount();
+						text = "Occurrences found: " + result.getMarkedCount();
 						esit = true;
 					}else {
 						esit = false;
@@ -337,6 +356,13 @@ public class TextAreaDialogs {
 						}
 					} 
 				}
+				
+				if(dialogManager.getSearchDialog() != null) {
+					dialogManager.getSearchDialog().setTitle(text);
+				}
+				if(dialogManager.getReplaceDialog() != null) {
+					dialogManager.getReplaceDialog().setTitle(text);
+				}
 			}
 			
 			@Override
@@ -344,6 +370,23 @@ public class TextAreaDialogs {
 				return dialogManager.getTargetTextArea().getSelectedText();
 			}
 		};
+	}
+	
+	private SearchResult returnToStartIfEndReached(JTextArea textArea, SearchResult result, SearchContext context, SearchEvent.Type type) {
+		try {
+			if(result.getMatchRange() == null) {
+				textArea.setCaretPosition(0);
+				if (SearchEvent.Type.FIND.equals(type)) {
+					result = SearchEngine.find(dialogManager.getTargetTextArea(), context);
+				} else if (SearchEvent.Type.FIND.equals(type)) {
+					result = SearchEngine.replace(dialogManager.getTargetTextArea(), context);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	public LimitedConcurrentList<String> getSearchList() {

@@ -224,7 +224,7 @@ public class PropertiesManager {
 			try {
 				out.flush();
 				out.close();
-			} catch (IOException e1) {
+			} catch (Exception e1) {
 				logger.error("Cannot close streams", e1);
 			}
 		}

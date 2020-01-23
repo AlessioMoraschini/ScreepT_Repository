@@ -180,6 +180,12 @@ public class HashCheckerFrame extends ParentFrame{
 		logger.info(this.getClass().getName() + " - Started!");
 	}
 	
+	public void updateHash() {
+		SwingUtilities.invokeLater(()->{
+			btnCalculateHash.doClick();
+		});
+	}
+	
 	public void loadFile(File toLoadFile) {
 		if (toLoadFile != null && toLoadFile.exists()) {
 			currentFile = toLoadFile;
@@ -237,7 +243,7 @@ public class HashCheckerFrame extends ParentFrame{
 							if (currentFile != null && currentFile.exists()) {
 								if (currentFile.isFile()) {
 									txtFieldChecksumResult
-											.setText(prefix + ChecksumHasher.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
+											.setText(prefix + ChecksumHasher.getFileHashBuffered(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
 								} else if (dialogHelper.showYNDialog("Hashing a folder can be a long task, really want to start hashing?",
 										"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {
 									updateProgress = new UpdateProgressPanel(false);
@@ -278,7 +284,7 @@ public class HashCheckerFrame extends ParentFrame{
 								String hash = "";
 								if (rootPaneCheckingEnabled) {
 									if (currentFile.isFile()) {
-										hash = prefix + ChecksumHasher.getFileHash(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
+										hash = prefix + ChecksumHasher.getFileHashBuffered(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected());
 									} else {
 										if (dialogHelper.showYNDialog("Hashing a folder can be a long task, are you sure to start hashing?",
 												"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {

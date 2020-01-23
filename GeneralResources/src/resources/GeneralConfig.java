@@ -268,10 +268,14 @@ public class GeneralConfig {
 	public static int NORMAL_WHEEL_SPEED;
 	public static int FAST_WHEEL_SPEED;
 	public static int ULTRA_FAST_WHEEL_SPEED;
+	public static int KEY_SCROLL_SPEED;
 	public static int DEF_CARET_BLINK_RATE;
 	
 	public static int FOOTER_MAX_DIR_LABEL_LENGTH;
 	public static int DEFAULT_FILE_TREE_ANCESTOR_LEVEL;
+	
+	// PROXY OPTIONS
+	public static String DEF_PROXY_CONFIG_STRING = resourcesFilePathsMappings.getProperty("DEF_PROXY_CONFIG_STRING");
 	
 	public static GeneralConfig lazyInitializedGlobalReference;
 	
@@ -304,6 +308,7 @@ public class GeneralConfig {
 	public static void reloadProperties () {
 		resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
 		linkedMappings = resourcesFilePathsMappings.getDynamicFileBindingsDef();
+		reloadGeneralConfig();
 	}
 	
 	public static String[] getPubIpProvList() {
@@ -438,6 +443,8 @@ public class GeneralConfig {
 	public Boolean initStaticConfig() {
 		
 		try {
+			DEF_PROXY_CONFIG_STRING = resourcesFilePathsMappings.getProperty("DEF_PROXY_CONFIG_STRING");
+			
 			// TEST ERROR CATCH
 			FLAG_THROW_ERROR_TEST_ON = Boolean.valueOf(resourcesFilePathsMappings.getProperty("FLAG_THROW_ERROR_TEST_ON"));
 			MAX_N_OF_ERR_DIALOG_OPENED = resourcesFilePathsMappings.getIntVarFromProps("MAX_N_OF_ERR_DIALOG_OPENED", 2);
@@ -550,6 +557,7 @@ public class GeneralConfig {
 			TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
 			NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
 			FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);
+			KEY_SCROLL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("KEY_SCROLL_SPEED", 3);
 			ULTRA_FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("ULTRA_FAST_WHEEL_SPEED", 300);
 			DEF_CARET_BLINK_RATE = resourcesFilePathsMappings.getIntVarFromProps("DEF_CARET_BLINK_RATE", 400);
 			
@@ -576,5 +584,12 @@ public class GeneralConfig {
 		}else {
 			return false;
 		}
+	}
+	
+	public static void reloadGeneralConfig() {
+		lazyInitializedGlobalReference.initStaticConfig();
+		ImagesPathConfigurator.init();
+		GeneralResourcesPaths.init();
+		SoundsConfigurator.init();
 	}
 }

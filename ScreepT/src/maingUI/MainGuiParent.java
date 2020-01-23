@@ -146,7 +146,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmCustomizeUIView;
 	public CustomJmenuItem mntmFullScreenMode;
 	public CustomJmenuItem mntmImmersiveMode;
-	static CustomJmenuItem mntmCrypter;
+	static CustomJmenuItem mntmCreepter;
 	CustomJmenuItem mntmgenerateKeyPswSub;
 	CustomJmenuItem mntmgenerateKeyImageSub;
 	CustomJmenuItem mntmViewKeyDictionary;
@@ -366,7 +366,7 @@ public class MainGuiParent {
 			mnPreferences.add(mntmFullScreenMode);
 			mnPreferences.add(mntmImmersiveMode);
 			
-			mnCryptoSteg.add(mntmCrypter);
+			mnCryptoSteg.add(mntmCreepter);
 			mnCryptoSteg.add(new JSeparator());
 			mnCryptoSteg.add(mntmgenerateKeyPswSub);
 			mnCryptoSteg.add(mntmgenerateKeyImageSub);
@@ -512,7 +512,7 @@ public class MainGuiParent {
 		mntmImmersiveMode.setFont(menuItemFont);
 		
 		// SCREEPT SECTION
-		mntmCrypter.setFont(menuItemFont);
+		mntmCreepter.setFont(menuItemFont);
 		mntmgenerateKeyPswSub.setFont(menuItemFont);
 		mntmgenerateKeyImageSub.setFont(menuItemFont);
 		mntmViewKeyDictionary.setFont(menuItemFont);
@@ -592,7 +592,7 @@ public class MainGuiParent {
 		mntmImmersiveMode.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMMERSIVE));
 
 		// ScreepT submenu
-		mntmCrypter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT));
+		mntmCreepter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SCREEPT));
 		mntmgenerateKeyPswSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN_PSW));
 		mntmgenerateKeyImageSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEYGEN));
 		mntmViewKeyDictionary.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
@@ -670,7 +670,7 @@ public class MainGuiParent {
 		mntmImmersiveMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_M, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		
 		// ScreepT submenu
-		mntmCrypter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | SHIFT_MASK));
+		mntmCreepter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | SHIFT_MASK));
 		mntmgenerateKeyPswSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmgenerateKeyImageSub.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_K, ALT_MASK | SHIFT_MASK));
 		mntmViewKeyDictionary.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_D, ALT_MASK | SHIFT_MASK));
@@ -1041,7 +1041,7 @@ public class MainGuiParent {
 	}
 
 	public JMenuItem getMntmCrypter() {
-		return mntmCrypter;
+		return mntmCreepter;
 	}
 	
 	public CustomJmenuItem getMntmgenerateKeyPswSub() {

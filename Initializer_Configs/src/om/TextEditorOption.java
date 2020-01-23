@@ -87,6 +87,7 @@ public class TextEditorOption {
 	public static final boolean DEF_fractionalFontMetricsEnabled = true;
 	public static final boolean DEF_hyperLinksEnabled = false;
 	public static final boolean DEF_tabsSpacesEmulated = false;
+	public static final int DEF_interline = 2;
 	public static final boolean DEF_markEndOfLine = false;
 	public static final boolean DEF_showBracketsPopup = false;
 	public static final boolean DEF_spellChecker = false;
@@ -152,6 +153,7 @@ public class TextEditorOption {
 	public boolean paintMarkOccurrencesBorder;
 	public boolean roundedSelectionEdges;
 	public boolean useFocusableTips;
+	public int interline;
 	public boolean tabSpacesEmulated;
 	public boolean markEndOfLine;
 	public boolean showBracketsPopup;
@@ -227,6 +229,7 @@ public class TextEditorOption {
 		highlightSecondaryLanguages = DEF_highlightSecondaryLanguages;
 		fractionalFontMetricsEnabled = DEF_fractionalFontMetricsEnabled;
 		hyperLinksEnabled = DEF_fractionalFontMetricsEnabled;
+		interline = DEF_interline;
 		tabSpacesEmulated = DEF_tabsSpacesEmulated;
 		markEndOfLine = DEF_markEndOfLine;
 		showBracketsPopup = DEF_showBracketsPopup;
@@ -278,6 +281,14 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public int getInterline() {
+		return interline;
+	}
+
+	public void setInterline(int interline) {
+		this.interline = interline;
+	}
+
 	public EOL getEol() {
 		return eol;
 	}

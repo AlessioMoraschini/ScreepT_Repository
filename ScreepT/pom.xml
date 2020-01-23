@@ -81,7 +81,8 @@
 						<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 						<generateBundle>true</generateBundle>
 						<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
-						<excludedScopes>provided,test</excludedScopes>
+						<!-- <excludedScopes>provided,test</excludedScopes> -->
+						<excludedScopes>test</excludedScopes>
 					</configuration>
 					<goals>
 					<goal>third-party-report</goal>

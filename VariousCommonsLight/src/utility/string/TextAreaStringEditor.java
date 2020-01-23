@@ -144,4 +144,13 @@ public class TextAreaStringEditor {
 			textArea.setSelectionEnd(result.end);
 		}
 	}
+	
+	public static int getCurrentCaretLine(JTextArea textArea) {
+		try {
+			int offset = textArea.getCaretPosition();
+			return textArea.getLineOfOffset(offset);
+		} catch (Exception e) {
+			return -1;
+		}
+	}
 }

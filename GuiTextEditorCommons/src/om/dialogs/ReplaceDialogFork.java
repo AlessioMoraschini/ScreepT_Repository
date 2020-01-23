@@ -1,15 +1,4 @@
-/**
- *
- * =========================================================================================
- *  Copyright (C) 2019-2020
- *
- *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
- * =========================================================================================
- *
- * You should have received a copy of the license with this file.
- * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
- */
-package om;
+package om.dialogs;
 
 /*
  * 11/14/2003
@@ -22,11 +11,13 @@ package om;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
@@ -52,6 +43,9 @@ import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
+
+import gui.GUIStyelSettings;
+import gui.GuiUtils;
 
 
 /**
@@ -413,7 +407,27 @@ public class ReplaceDialogFork extends AbstractFindReplaceDialog {
 		addSearchListener(listener);
 
 		applyComponentOrientation(orientation);
+		
+		final Dialog thisDialog = this;
 
+		textField.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				SwingUtilities.invokeLater(() -> {
+					GUIStyelSettings.applyNimbusSize(thisDialog, 2);
+				});
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				SwingUtilities.invokeLater(() -> {
+					GUIStyelSettings.applyNimbusSize(thisDialog, 2);
+				});
+			}
+		});
+		
+		GuiUtils.centerComponent(thisDialog, new Dimension(550, (int)thisDialog.getPreferredSize().getHeight()));
 	}
 
 
@@ -636,3 +650,4 @@ public class ReplaceDialogFork extends AbstractFindReplaceDialog {
 
 
 }
+

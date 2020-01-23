@@ -232,8 +232,11 @@ public class TabTextEditorObj {
 		textArea.setWhitespaceVisible(txtOptions.whiteSpaceVisible);
 		textArea.setLocale(configuration.getGenOpt().getLocale());
 		textArea.setCloseMarkupTags(txtOptions.closeMarkupTags);
+		ColumnTextArea.INTERLINE = txtOptions.interline;
 		
 		textArea.setUseFocusableTips(true);
+		
+		textArea.repaint();
 	}
 	
 	public void enrichJPopUpMenu(ArrayList<Component> menuItemList) {

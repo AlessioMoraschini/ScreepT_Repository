@@ -114,6 +114,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private boolean BACKUP_TXTAREA_AUTOCHECK_CHANGES;
 	private boolean BACKUP_SYNC_CLIPBOARD_STYLE;
 	private String BACKUP_TXTAREA_SPECCLCHECKER_DICT;
+	private int BACKUP_INTERLINE;
 
 	private INItializer currentConfiguration;
 	
@@ -177,6 +178,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JSeparator separator_5;
 	
 	JOptionHelperExtended dialogHelper;
+	private JSpinner spinnerInterline;
+	private JLabel lblInterline;
 	
 	public GraphicPreferencesFrame(INItializer currentConf) {
 		
@@ -209,7 +212,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		mainPanel = new JPanel();
 		mainPanel.setBackground(new Color(0, 0, 0));
 		mainPanel.setBackground(Color.LIGHT_GRAY);
-		mainPanel.setLayout(new MigLayout("", "[:30px:140px][:60px:140px][:30px:90px,grow][:10px:30px,grow][25px,grow][70px:70px][10][:100px:10px,grow][10px,grow][35px,grow][:40px:60px][:30px:40px][:50px:50px]", "[:50:70px][25][10][30][20][30][30][30][30][30][30][][][:5px:10px,grow][:15px:30px,grow,baseline]"));
+		mainPanel.setLayout(new MigLayout("", "[:30px:140px][:60px:140px][:30px:90px,grow][:10px:30px,grow][25px,grow][70px:70px][10][:100px:10px,grow][10px,grow][35px,grow][:60px:70px][:30px:40px][:50px:50px]", "[:50:70px][25][10][30][20][30][30][30][30][30][30][][][:5px:10px,grow][:15px:100px,grow,baseline]"));
 		mainPanelContainer = new JScrollPane(mainPanel);
 		getContentPane().add(mainPanelContainer);
 
@@ -276,11 +279,19 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		lblTheme.setFont(new Font("Tahoma", Font.BOLD, 13));
 		mainPanel.add(lblTheme, "cell 5 2,alignx center");
 		
-		comboLocales = new JComboBox<Locale>(getSupportedLocales());
+		spinnerInterline = new JSpinner();
+		spinnerInterline.setModel(new SpinnerNumberModel(0, 0, 20, 1));
+		spinnerInterline.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		mainPanel.add(spinnerInterline, "cell 9 10,growx");
+		
+		lblInterline = new JLabel("Interline");
+		lblInterline.setFont(new Font("Tahoma", Font.BOLD, 13));
+		mainPanel.add(lblInterline, "cell 10 10 3 1");
+		
 //		comboLocales = new JComboBox<Locale>();
+		comboLocales = new JComboBox<Locale>(getSupportedLocales());
 		comboLocales.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 		comboLocales.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		comboLocales.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 		mainPanel.add(comboLocales, "cell 1 12 3 1,growx");
 		
 //		comboSpellcheckerDictionary = new JComboBox<FileNamed>();
@@ -543,31 +554,35 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		mainPanel.add(separator_1, "cell 0 13 13 1,growx,aligny center");
 
 		btnResetValues = new JButton("Reset initial values");
+		btnResetValues.setMinimumSize(new Dimension(30, 35));
 		btnResetValues.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnResetValues.setBackground(new Color(240, 230, 140));
-		mainPanel.add(btnResetValues, "cell 0 14 5 1,grow");
+		mainPanel.add(btnResetValues, "cell 0 14 5 1,growx,aligny center");
 								
 		btnSaveConf = new JButton("Save Values");
+		btnSaveConf.setMinimumSize(new Dimension(30, 35));
 		btnSaveConf.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnSaveConf.setForeground(new Color(0, 0, 0));
 		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSaveConf.setBackground(new Color(169, 169, 169));
-		mainPanel.add(btnSaveConf, "cell 7 14 3 1,grow");
+		mainPanel.add(btnSaveConf, "cell 7 14 3 1,growx,aligny center");
 
 		btnUseSettings = new JButton("Use");
+		btnUseSettings.setMinimumSize(new Dimension(30, 35));
 		btnUseSettings.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		btnUseSettings.setForeground(Color.WHITE);
+		btnUseSettings.setForeground(Color.BLACK);
 		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnUseSettings.setBackground(Color.DARK_GRAY);
-		mainPanel.add(btnUseSettings, "cell 10 14,grow");
+		btnUseSettings.setBackground(new Color(169, 169, 169));
+		mainPanel.add(btnUseSettings, "cell 10 14,growx,aligny center");
 
 		btnDiscard = new JButton("Discard");
+		btnDiscard.setMinimumSize(new Dimension(30, 35));
 		btnDiscard.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnDiscard.setForeground(new Color(0, 0, 0));
 		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDiscard.setBackground(new Color(205, 92, 92));
-		mainPanel.add(btnDiscard, "cell 11 14 2 1,grow");
+		mainPanel.add(btnDiscard, "cell 11 14 2 1,growx,aligny center");
 
 		addHandlers();
 		
@@ -903,6 +918,10 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				}
 			}
 		});
+		
+		spinnerInterline.addChangeListener((e) -> {
+			currentConfiguration.getTextEditorOpt().setInterline((int)spinnerInterline.getValue());
+		});
 
 		// RESET BUTTON HANDLER
 		btnResetValues.addActionListener(new ActionListener() {
@@ -1110,6 +1129,8 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		chckbxShowBracket.setSelected(txtOpt.showBracketsPopup);
 		chckbxAutoCheckFiles.setSelected(currentConfiguration.getGenOpt().isTxtEditorFileMonitorActive());
 		chckbxSyncClipboardStyle.setSelected(txtOpt.clipboardSyncStyle);
+		spinnerInterline.setValue(txtOpt.getInterline());
+		currentEditor.getCurrentTabEditor().loadedTabObj.textArea.repaint();
 		syncRightPaneCustomOptions();
 		
 
@@ -1176,6 +1197,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		BACKUP_TXTAREA_SHOW_BRACKETS_POPUP = txtOpt.showBracketsPopup;
 		BACKUP_TXTAREA_SHOW_EOL_DELIM = txtOpt.markEndOfLine;
 		BACKUP_TXTAREA_SPECCLCHECKER_DICT = txtOpt.getPrefDictspellChecker();
+		BACKUP_INTERLINE = txtOpt.getInterline();
 		BACKUP_SYNC_CLIPBOARD_STYLE = txtOpt.clipboardSyncStyle;
 		BACKUP_TXTAREA_AUTOCHECK_CHANGES = currentConf.getGenOpt().isTxtEditorFileMonitorActive();
 	}
@@ -1219,6 +1241,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		txtOpt.setMarkEndOfLine(BACKUP_TXTAREA_SHOW_EOL_DELIM);
 		txtOpt.setShowBracketsPopup(BACKUP_TXTAREA_SHOW_BRACKETS_POPUP);
 		txtOpt.setPrefDictspellChecker(BACKUP_TXTAREA_SPECCLCHECKER_DICT);
+		txtOpt.setInterline(BACKUP_INTERLINE);
 		txtOpt.setClipboardSyncStyle(BACKUP_SYNC_CLIPBOARD_STYLE);
 		currentConf.getGenOpt().setTxtEditorFileMonitorActive(BACKUP_TXTAREA_AUTOCHECK_CHANGES);
 	}
@@ -1349,7 +1372,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(930, 530);
+		return new Dimension(960, 530);
 	}
 	
 	public static GraphicPreferencesFrame getInstance(INItializer currentConf) {

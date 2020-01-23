@@ -1057,21 +1057,21 @@ public class MainGUI extends MainGuiParent{
 	////////////////  NOW HANDLERS THAT OPEN IN THE MAIN FRAME  ////////////////////////
 		
 		// open in main frame - FILE CRYPTER
-		mntmCrypter = new CustomJmenuItem(new AbstractAction("Open ScreepT Module - Crypt and Decrypt files") {
+		mntmCreepter = new CustomJmenuItem(new AbstractAction("Creepter Module - Crypt and Decrypt files") {
 		    public void actionPerformed(ActionEvent ae) {
 		    	mainGuiUtils.startCrypterPanel(false);
 		    }
 		});
 		
 		// open in main frame - CONFIGURATION MANAGER
-		mntmInspectCurrentConfiguration = new CustomJmenuItem(new AbstractAction("Open Configuration Manager Module") {
+		mntmInspectCurrentConfiguration = new CustomJmenuItem(new AbstractAction("Configuration Manager Module") {
 		    public void actionPerformed(ActionEvent ae) {
 	    		mainGuiUtils.startConfigManagerPanel(false);
 		    }
 		});
 		
 		// open in main frame - TEXT EDITOR
-		mntmTextEditor = new CustomJmenuItem(new AbstractAction("Open Text Editor Module") {
+		mntmTextEditor = new CustomJmenuItem(new AbstractAction("Text Editor Module") {
 			public void actionPerformed(ActionEvent e) {
 				mainGuiUtils.startTextEditor(false);
 			}

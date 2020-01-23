@@ -161,7 +161,6 @@ public class CustomTabbedEditor implements ITabsManager {
 							if (loadedTabObj != null && loadedTabObj.currentScrollPane != null && loadedTabObj.textArea != null) {
 								addToHystory(loadedTabObj);
 							}
-							
 						});
 					}
 					
@@ -243,7 +242,11 @@ public class CustomTabbedEditor implements ITabsManager {
 				return false;
 			}
 			if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
-				return dialogHelper.yesOrNo("This type of file is not supported [" + fileToOpen.getName() + "] : Load anyway?");
+				boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not supported [" + fileToOpen.getName() + "] : Load anyway?");
+				if (userAcceptance) {
+					tabEditorManager.forceUnrecognizedFileType();
+				}
+				return userAcceptance;
 			} 
 		}
 		return true;

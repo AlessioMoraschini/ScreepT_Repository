@@ -246,9 +246,10 @@ public class WindowCreator {
 		boolean unsupported = false;
 		
 		try {
-			TutorialFrame tutorialFrame = TutorialFrame.getInstance();
+			TutorialFrame tutorialFrame = new TutorialFrame();
 			
 			if(!SysUtils.getOsInfoLazy().isLinux() && visible) {
+				tutorialFrame.reloadHtml();
 				SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 				commonGraphicInit(tutorialFrame, "Documentation - ", true);
 				tutorialFrame.setResizable(true);
@@ -258,7 +259,7 @@ public class WindowCreator {
 		} catch (Throwable e) {
 			
 			unsupported = true;
-			logger.error("Unsupported internal html viewer" + TutorialFrame.class);
+			logger.error("Unsupported internal html viewer" + TutorialFrame.class, e);
 			return null;
 			
 		} finally {

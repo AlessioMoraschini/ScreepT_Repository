@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.text.Position.Bias;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -182,14 +183,18 @@ public class TreeUtils {
 	 * @param tree
 	 * @param treePath
 	 */
-	public static void expandAllChildNodes(JTree tree, int startingIndex){
-		int rowCount = tree.getRowCount();
+	public static void expandAllChildNodes(final JTree tree, final int startingIndex){
+		final int rowCount = tree.getRowCount();
 		
 		tree.expandRow(startingIndex);
 		
 		if(tree.getRowCount()!=rowCount){
-			// IF a folder is expandend rowcount increase, and this will be executed
-			expandAllChildNodes(tree, startingIndex+1, new Integer(rowCount-startingIndex), MAX_EXPAND_ITERATIONS);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					// IF a folder is expandend rowcount increase, and this will be executed
+					expandAllChildNodes(tree, startingIndex + 1, new Integer(rowCount - startingIndex), MAX_EXPAND_ITERATIONS);
+				}
+			});
 		}
 	}
 

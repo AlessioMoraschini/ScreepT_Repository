@@ -26,6 +26,7 @@ import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
+import network.proxy.ProxySettingsGUI;
 import om.FileOptions;
 import om.SecurityLevel;
 import resources.GeneralConfig;
@@ -42,12 +43,15 @@ import javax.swing.event.DocumentListener;
 import javax.swing.JLabel;
 
 import java.awt.Font;
+import java.awt.Dialog.ModalityType;
+
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.JCheckBox;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
@@ -118,6 +122,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private Wini launcherConfiguration;
 	private JSeparator separator_1;
 	private JLabel lblDefaultEOL;
+	private JButton btnNetworkConfig;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		super();
@@ -151,13 +156,13 @@ public class GeneralOptionsFrame extends ParentFrame{
 		initializeValues();		
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[10px][10px][:110px:190px,grow][100px,grow][80px:n][100][100][110px:n]", "[:30:40px][10px:n][grow][][grow][grow][grow,bottom][:30px:35px,baseline]"));
+		getContentPane().setLayout(new MigLayout("", "[10px][10px][:110px:190px,grow][::40px][100px,grow][80px:n][100][100][110px:n]", "[:30:40px][10px:n][grow][][grow][grow][grow,bottom][:30px:35px,baseline]"));
 		
 		JPanel panel = new JPanel();
 		panel.setForeground(Color.BLACK);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.GRAY);
-		getContentPane().add(panel, "cell 0 0 8 1,grow");
+		getContentPane().add(panel, "cell 0 0 9 1,grow");
 		panel.setLayout(new MigLayout("", "[220px:n][][90px:n][grow][100px:110px:160px,grow]", "[grow]"));
 		
 		
@@ -210,12 +215,12 @@ public class GeneralOptionsFrame extends ParentFrame{
 		lblDynVolume.setFont(new Font("SansSerif", Font.BOLD, 13));
 		
 		sliderVolume = new JSlider(0, 100);
-		getContentPane().add(sliderVolume, "cell 2 2 2 1,growx");
+		getContentPane().add(sliderVolume, "cell 2 2 3 1,growx");
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setForeground(Color.WHITE);
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
-		getContentPane().add(lblUsername, "cell 4 2,alignx right");
+		getContentPane().add(lblUsername, "cell 5 2,alignx right");
 		
 		textFieldUname = new JTextField();
 		textFieldUname.setMinimumSize(new Dimension(12, 30));
@@ -226,44 +231,58 @@ public class GeneralOptionsFrame extends ParentFrame{
 		textFieldUname.setColumns(10);
 		textFieldUname.setBorder(new LineBorder(Color.DARK_GRAY, 3));
 		textFieldUname.setBackground(new Color(255, 255, 255));
-		getContentPane().add(textFieldUname, "cell 5 2 3 1,growx,aligny center");
+		getContentPane().add(textFieldUname, "cell 6 2 3 1,growx,aligny center");
 		
 		separator_1 = new JSeparator();
-		getContentPane().add(separator_1, "cell 0 3 8 1,growx");
+		getContentPane().add(separator_1, "cell 0 3 9 1,growx");
 				
 		lblPasswordSecurityCheck = new JLabel("Password security:");
 		lblPasswordSecurityCheck.setForeground(Color.WHITE);
 		lblPasswordSecurityCheck.setFont(new Font("SansSerif", Font.BOLD, 13));
 		getContentPane().add(lblPasswordSecurityCheck, "cell 0 4 2 1,alignx right,aligny center");
 		
-//		comboSecurityLevels = new JComboBox<SecurityLevel>();
-		comboSecurityLevels = new JComboBox<SecurityLevel>(SecurityLevel.values());
-		comboSecurityLevels.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		comboSecurityLevels.setToolTipText("Choose security level used for passwords check");
-		getContentPane().add(comboSecurityLevels, "cell 2 4 2 1,growx");
-		
 		JLabel lblDefaultCharset = new JLabel("Encoding:");
 		lblDefaultCharset.setForeground(Color.WHITE);
 		lblDefaultCharset.setFont(new Font("SansSerif", Font.BOLD, 13));
-		getContentPane().add(lblDefaultCharset, "cell 4 4,alignx right");
+		getContentPane().add(lblDefaultCharset, "cell 5 4,alignx right");
 		
 		comboCharsets = new JComboBox<String>(ListCharsets.getCharsets());
+		comboCharsets.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		comboCharsets.setMinimumSize(new Dimension(20, 30));
 		comboCharsets.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboCharsets.setToolTipText("Choose general application Charset to use");
-		getContentPane().add(comboCharsets, "cell 5 4 3 1,growx,aligny center");
+		getContentPane().add(comboCharsets, "cell 6 4 3 1,growx,aligny center");
 		
 		lblDefaultEOL = new JLabel("Default EOL:");
 		lblDefaultEOL.setForeground(Color.WHITE);
-		lblDefaultEOL.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblDefaultEOL.setFont(new Font("SansSerif", Font.BOLD, 13));
 		getContentPane().add(lblDefaultEOL, "cell 0 5 2 1,alignx right");
 		
+//		comboSecurityLevels = new JComboBox<SecurityLevel>();
+		comboSecurityLevels = new JComboBox<SecurityLevel>(SecurityLevel.values());
+		comboSecurityLevels.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		comboSecurityLevels.setMinimumSize(new Dimension(20, 30));
+		comboSecurityLevels.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		comboSecurityLevels.setToolTipText("Choose security level used for passwords check");
+		getContentPane().add(comboSecurityLevels, "cell 2 4 3 1,growx");
+		
+//		comboBoxDefEOL = new JComboBox<EOL>();
 		comboBoxDefEOL = new JComboBox<EOL>(EOL.values());
+		comboBoxDefEOL.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		comboBoxDefEOL.setMinimumSize(new Dimension(20, 30));
 		comboBoxDefEOL.setToolTipText("Choose security level used for passwords check");
+		comboBoxDefEOL.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		getContentPane().add(comboBoxDefEOL, "cell 2 5,growx");
 		
+		btnNetworkConfig = new JButton("");
+		btnNetworkConfig.setToolTipText("Open network options configuration panel");
+		btnNetworkConfig.setMinimumSize(new Dimension(35, 35));
+		btnNetworkConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
+		btnNetworkConfig.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		getContentPane().add(btnNetworkConfig, "cell 3 5,alignx center,aligny center");
+		
 		chckbxExceptionAdvicesEnabled = new JCheckBox("Exception Advices");
-		getContentPane().add(chckbxExceptionAdvicesEnabled, "cell 3 5,alignx center,aligny center");
+		getContentPane().add(chckbxExceptionAdvicesEnabled, "cell 4 5,alignx center,aligny center");
 		chckbxExceptionAdvicesEnabled.setOpaque(false);
 		chckbxExceptionAdvicesEnabled.setForeground(Color.LIGHT_GRAY);
 		chckbxExceptionAdvicesEnabled.setToolTipText("Enable/Disable error dialog in case of general warnings detected by the application");
@@ -271,7 +290,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		chckbxExceptionAdvicesEnabled.setFont(new Font("SansSerif", Font.BOLD, 14));
 		
 		chckbxHideLauncherAt = new JCheckBox("Hide Launcher at start");
-		getContentPane().add(chckbxHideLauncherAt, "cell 4 5 2 1,alignx center,aligny center");
+		getContentPane().add(chckbxHideLauncherAt, "cell 5 5 2 1,alignx center,aligny center");
 		chckbxHideLauncherAt.setToolTipText("When checked, launcher will not be shown on startup");
 		chckbxHideLauncherAt.setOpaque(false);
 		chckbxHideLauncherAt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -282,13 +301,13 @@ public class GeneralOptionsFrame extends ParentFrame{
 		chckbxHideLauncherAt.setBackground(new Color(119, 136, 153));
 		
 		chckbxAutomaticallyCheckFor = new JCheckBox("Auto-check updates");
-		getContentPane().add(chckbxAutomaticallyCheckFor, "cell 6 5 2 1,alignx center,aligny center");
+		getContentPane().add(chckbxAutomaticallyCheckFor, "cell 7 5 2 1,alignx center,aligny center");
 		chckbxAutomaticallyCheckFor.setOpaque(false);
 		chckbxAutomaticallyCheckFor.setForeground(Color.LIGHT_GRAY);
 		chckbxAutomaticallyCheckFor.setToolTipText("Enable/Disable automatic check for updates at start");
 		chckbxAutomaticallyCheckFor.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxAutomaticallyCheckFor.setFont(new Font("SansSerif", Font.BOLD, 15));
-		getContentPane().add(separator, "cell 0 6 8 1,growx");
+		getContentPane().add(separator, "cell 0 6 9 1,growx");
 		btnResetValues = new JButton("Reset initial values");
 		btnResetValues.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnResetValues.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -301,15 +320,15 @@ public class GeneralOptionsFrame extends ParentFrame{
 		btnSaveConf.setForeground(Color.BLACK);
 		btnSaveConf.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnSaveConf.setBackground(new Color(169, 169, 169));
-		getContentPane().add(btnSaveConf, "cell 5 7,growx");
+		getContentPane().add(btnSaveConf, "cell 6 7,growx");
 
 		btnUseSettings = new JButton("Use");
 		btnUseSettings.setToolTipText("Close this dialog and use current settings without explicit save on phisical file");
 		btnUseSettings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnUseSettings.setForeground(Color.WHITE);
+		btnUseSettings.setForeground(Color.BLACK);
 		btnUseSettings.setFont(new Font("SansSerif", Font.BOLD, 12));
-		btnUseSettings.setBackground(Color.DARK_GRAY);
-		getContentPane().add(btnUseSettings, "cell 6 7,growx");
+		btnUseSettings.setBackground(new Color(169, 169, 169));
+		getContentPane().add(btnUseSettings, "cell 7 7,growx");
 
 		btnDiscard = new JButton("Discard");
 		btnDiscard.setToolTipText("Close this dialog and discard every change");
@@ -317,7 +336,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		btnDiscard.setForeground(new Color(0, 0, 0));
 		btnDiscard.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDiscard.setBackground(new Color(205, 92, 92));
-		getContentPane().add(btnDiscard, "cell 7 7,growx");
+		getContentPane().add(btnDiscard, "cell 8 7,growx");
 		
 		addHandlers();
 		
@@ -397,6 +416,12 @@ public class GeneralOptionsFrame extends ParentFrame{
 				currentConfiguration.getGenOpt().setExceptionAdvicesEnabled(exceptionAdvices);
 				refreshCheckBoxForeground(chckbxExceptionAdvicesEnabled);
 			}
+		});
+		
+		btnNetworkConfig.addActionListener((e) -> {
+			GeneralConfig.reloadProperties();
+			ProxySettingsGUI.frameIcon = new ImageIcon(IconsPathConfigurator.ICON_NETWORK);
+			new ProxySettingsGUI(ModalityType.TOOLKIT_MODAL, false, GeneralConfig.DEF_PROXY_CONFIG_STRING);
 		});
 
 		// AUTO UPDATES ON/OFF 
@@ -701,7 +726,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(1020, 250);
+		return new Dimension(1020, 270);
 	}
 	
 	public static GeneralOptionsFrame getInstance(INItializer currentConf) {

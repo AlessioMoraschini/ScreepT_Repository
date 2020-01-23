@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
+import java.awt.Dialog.ModalityType;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -44,6 +45,7 @@ import handlers.AWTExceptionHandler;
 import launcherutils.IniFileManager;
 import logger.LoggerUtils;
 import mainobj.INItializer;
+import network.proxy.ProxySettingsGUI;
 import plugins.PluginManager;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
@@ -121,6 +123,15 @@ public class MainGuiGeneralAppStarter {
 					UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+				
+				try {
+					// Preload network configuration
+					loaderGraphics.update("Preloading Network configuration", 1);
+					new ProxySettingsGUI(ModalityType.TOOLKIT_MODAL, true, GeneralConfig.DEF_PROXY_CONFIG_STRING);
+					logger.info("Network configuration applied");
+				} catch (Exception e) {
+					logger.info("An error occurred while preloading application's network settings");
 				}
 				
 			} catch (Exception e) {

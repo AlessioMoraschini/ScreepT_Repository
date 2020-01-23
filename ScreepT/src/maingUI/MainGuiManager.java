@@ -239,7 +239,7 @@ public class MainGuiManager {
 				if (changesTempDecrypted.changedFiles.size() != 0) {
 					if(MainGUI.dialogHelper.yesOrNo("There are Files changed after decrypt.. do you want to return to ScreepT view? "+changesTempDecrypted.changedFiles)) {
 						result = false;
-						MainGUI.mntmCrypter.doClick();
+						MainGUI.mntmCreepter.doClick();
 						// add unsaved as source for crypterPanel
 						panelCrypter.panelVDragNDropPane.removeAll();
 						for(File unsaved : panelCrypter.fileMonitor.rootMonitorDir.listFiles()) {

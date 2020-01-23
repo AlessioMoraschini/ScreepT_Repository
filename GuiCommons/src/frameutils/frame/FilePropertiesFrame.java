@@ -267,7 +267,7 @@ public class FilePropertiesFrame extends JFrame{
 		try {
 			if (fileUnderAnalysis != null) {
 				if (fileUnderAnalysis.isFile()) {
-					hashMd5DynLbl.setText(ChecksumHasher.getFileHash(fileUnderAnalysis.getAbsolutePath(), HashingFunction.MD5));
+					hashMd5DynLbl.setText(ChecksumHasher.getFileHashBuffered(fileUnderAnalysis.getAbsolutePath(), HashingFunction.MD5));
 				} else {
 					hashMd5DynLbl.setText("Not a File... cannot hash!");
 				}

@@ -29,6 +29,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
@@ -40,6 +41,7 @@ import crypt.aes.AesCipher;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
+import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import mainobj.INItializer;
 import net.miginfocom.swing.MigLayout;
@@ -355,7 +357,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		}
 		chkCutWordsTo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				final TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				if (chkCutWordsTo.isSelected()) {
 					loadedTabObj.textArea.setLineWrap(true);
@@ -365,6 +367,10 @@ public class TextEditorHeaderPanel extends JPanel{
 					loadedTabObj.textArea.setWrapStyleWord(false);
 					currentConfiguration.getTextEditorOpt().breaklineActive = false;
 				}
+				
+				SwingUtilities.invokeLater(() -> {
+					RXTextUtilities.centerLineInScrollPane(loadedTabObj.textArea);
+				});
 			}
 		});
 		

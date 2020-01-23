@@ -185,7 +185,7 @@ public class SysUtils {
 		String canonicalCurrentPath;
 		canonicalCurrentPath = getCurrentJavaHome().getAbsolutePath();
 		logger.info("Current jvm is : " + canonicalCurrentPath);
-		if(!foundJVMS.contains(canonicalCurrentPath)) {
+		if(!foundJVMS.contains(canonicalCurrentPath) && !foundJVMS.contains(new File(canonicalCurrentPath).getParentFile().getAbsolutePath())) {
 			foundJVMS.add(canonicalCurrentPath);
 			logger.info(canonicalCurrentPath + " not found in previously retrieved list -> added to JVM list");
 		}

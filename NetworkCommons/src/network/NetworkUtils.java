@@ -43,6 +43,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import network.http.HttpHelper;
 import network.om.FtpSpeedTestOptions;
 import network.utils.IPaddressConverter;
 import resources.GeneralConfig;
@@ -334,15 +335,18 @@ public class NetworkUtils {
 	private static FTPClient ftpDOWNinit(InetAddress localAddress) throws IOException {
 		// force passive mode to use specified adapter
 		FTPClient ftpClient = new FTPClient();
+		ftpClient.setProxy(HttpHelper.getProxy());
 		ftpClient.enterLocalPassiveMode();
 		ftpClient.setPassiveLocalIPAddress(localAddress);
 		ftpClient.connect(FtpSpeedTestOptions.HOST_FTP);
 		ftpClient.login(FtpSpeedTestOptions.USER_FTP, FtpSpeedTestOptions.PSW_FTP);
 		return ftpClient;
 	}
+	
 	private static FTPClient ftpUPinit(InetAddress localAddress) throws IOException {
 		// force passive mode to use specified adapter
 		FTPClient ftpClient = new FTPClient();
+		ftpClient.setProxy(HttpHelper.getProxy());
 		ftpClient.enterLocalPassiveMode();
 		ftpClient.setPassiveLocalIPAddress(localAddress);
 		ftpClient.connect(FtpSpeedTestOptions.HOST_FTP);

@@ -149,7 +149,7 @@ public class PluginManager {
 		plugin.setInstallationCompleted(true);
 		addToInstalledList(plugin);
 		
-		installedPluginProperties.saveProperty(plugin.getName(), PropertiesManager.listToString(relativeNewCopied, installedPluginPropsListSeparator));
+		installedPluginProperties.saveCommentedProperty(plugin.getName(), PropertiesManager.listToString(relativeNewCopied, installedPluginPropsListSeparator));
 		
 		updateCache(plugin);
 		
@@ -391,7 +391,7 @@ public class PluginManager {
 		}
 		
 		String stringList = PropertiesManager.listToString(installedPluginNames, installedPluginPropsListSeparator);
-		installedPluginProperties.saveProperty(installedPluginPropsListKey, stringList);
+		installedPluginProperties.saveCommentedProperty(installedPluginPropsListKey, stringList);
 		
 		plugin.installationCompleted = true;
 	}
@@ -402,7 +402,7 @@ public class PluginManager {
 		}
 		
 		String stringList = PropertiesManager.listToString(installedPluginNames, installedPluginPropsListSeparator);
-		installedPluginProperties.saveProperty(installedPluginPropsListKey, stringList);
+		installedPluginProperties.saveCommentedProperty(installedPluginPropsListKey, stringList);
 		installedPluginProperties.removeProperty(plugin.getName());
 		
 		plugin.installationCompleted = false;
@@ -427,7 +427,7 @@ public class PluginManager {
 			return;
 		}
 		
-		installedPluginProperties.saveProperty(
+		installedPluginProperties.saveCommentedProperty(
 				installedPluginPendingDeleteListKey,
 				PropertiesManager.listToString(currentlyPending, ";"));
 	}

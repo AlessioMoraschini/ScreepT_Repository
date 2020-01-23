@@ -23,6 +23,8 @@ public class EncodingUtils {
 	
 	public static String stringEncoding = "UTF-8";
 	
+	public static EncodingUtils staticInstance = new EncodingUtils();
+	
 	public EncodingUtils() {
 		decoderBase64 = Base64.getDecoder();
 		encoderBase64 = Base64.getEncoder();

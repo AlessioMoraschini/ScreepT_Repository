@@ -35,6 +35,11 @@ public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyE
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED) {
 			
+			// WIN + ARROW Pressed: trigger resize
+			if(isOtherPressed(KeyEvent.VK_WINDOWS) && isArrowLR(e.getKeyCode())) {
+				currentGui.resizeMainFrameDefaults();
+			}
+			
 			/*
 			 *  EXIT TOGGLE MODE -> ESC and TOGGLE MODE ACTIVE
 			 */
@@ -77,11 +82,6 @@ public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyE
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
 
-			// WIN + ARROW Pressed: trigger resize
-			if(isOtherPressed(KeyEvent.VK_WINDOWS) && isArrowLR(e.getKeyCode())) {
-				currentGui.resizeMainFrameDefaults();
-			}
-			
 			// HERE SHORTCUTS KEY WITH CTR|ALT|SHIFT
 			if (isShortcutKey(e)) {
 				

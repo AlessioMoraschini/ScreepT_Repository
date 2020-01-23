@@ -397,6 +397,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setHighlightSecondaryLanguages(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "highlightSecondaryLanguages"), TextEditorOption.DEF_highlightSecondaryLanguages));
 		textEditorOpt.setFractionalFontMetricsEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fractionalFontMetricsEnabled"), TextEditorOption.DEF_fractionalFontMetricsEnabled));
 		textEditorOpt.setHyperLinksEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "hyperLinksEnabled"), TextEditorOption.DEF_hyperLinksEnabled));
+		textEditorOpt.setInterline(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "interline"), TextEditorOption.DEF_interline));
 		textEditorOpt.setTabSpacesEmulated(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabSpacesEmulated"), TextEditorOption.DEF_tabsSpacesEmulated));
 		textEditorOpt.setShowBracketsPopup(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "showBracketsPopup"), TextEditorOption.DEF_showBracketsPopup));
 		textEditorOpt.setSpellChecker(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "spellChecker"), TextEditorOption.DEF_spellChecker));
@@ -622,8 +623,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "highlightSecondaryLanguages", textEditorOpt.highlightSecondaryLanguages);
 		iniFile.put(TEXT_EDITOR_OPT, "fractionalFontMetricsEnabled", textEditorOpt.fractionalFontMetricsEnabled);
 		iniFile.put(TEXT_EDITOR_OPT, "hyperLinksEnabled", textEditorOpt.hyperLinksEnabled);
-		iniFile.put(TEXT_EDITOR_OPT, "tabSpacesEmulated", textEditorOpt.tabSpacesEmulated);
 		iniFile.put(TEXT_EDITOR_OPT, "markEndOfLine", textEditorOpt.markEndOfLine);
+		iniFile.put(TEXT_EDITOR_OPT, "tabSpacesEmulated", textEditorOpt.tabSpacesEmulated);
+		iniFile.put(TEXT_EDITOR_OPT, "interline", textEditorOpt.interline);
 		iniFile.put(TEXT_EDITOR_OPT, "showBracketsPopup", textEditorOpt.showBracketsPopup);
 		iniFile.put(TEXT_EDITOR_OPT, "spellChecker", textEditorOpt.spellChecker);
 		iniFile.put(TEXT_EDITOR_OPT, "prefDictspellChecker", textEditorOpt.prefDictspellChecker);
@@ -752,6 +754,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nROUND SELECTION EDGES: ").append(textEditorOpt.roundedSelectionEdges)
 			   .append("\nTAB SPACES EMULATED: ").append(textEditorOpt.roundedSelectionEdges)
 			   .append("\nSHOW END OF LINE: ").append(textEditorOpt.markEndOfLine)
+			   .append("\nSHOW TAB SPACES EMULATED: ").append(textEditorOpt.tabSpacesEmulated)
+			   .append("\nSHOW INTERLINE: ").append(textEditorOpt.interline)
 			   .append("\nSHOW BRACKETS MATCH POPUP: ").append(textEditorOpt.showBracketsPopup)
 			   .append("\nSELL CHECKER ACTIVE: ").append(textEditorOpt.spellChecker)
 			   .append("\nPREFERRED SPELLCHECK DICTIONARY: ").append(textEditorOpt.prefDictspellChecker)

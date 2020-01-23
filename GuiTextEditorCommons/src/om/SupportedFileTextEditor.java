@@ -30,6 +30,7 @@ public enum SupportedFileTextEditor {
 									 CONFIG(".config", "config", SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE, null, IconsPathConfigurator.F_ICON_PROPERTIES),
 									 CLOJURE(".clj","clj", SyntaxConstants.SYNTAX_STYLE_CLOJURE, null, null),
 									 CPLUSPLUS(".cpp","cpp", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS, GeneralResourcesPaths.WORDLIST_Cpp, null),
+									 CPLUSPLUS_H(".h","h", SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS, GeneralResourcesPaths.WORDLIST_Cpp, null),
 									 CSHARP(".cs","cs", SyntaxConstants.SYNTAX_STYLE_CSHARP, GeneralResourcesPaths.WORDLIST_Csharp, null),
 									 CSS(".css","css", SyntaxConstants.SYNTAX_STYLE_CSS, GeneralResourcesPaths.WORDLIST_CSS, IconsPathConfigurator.F_ICON_CSS),
 									 D(".d","d", SyntaxConstants.SYNTAX_STYLE_D, null, null),
@@ -115,7 +116,7 @@ public enum SupportedFileTextEditor {
 		if(target != null && target.exists()) {
 			String extension = FilenameUtils.getExtension(target.getName());
 			for (String supportedExt : getSupportedExtensions()) {
-				if (extension.toLowerCase().contains(supportedExt.toLowerCase())) {
+				if (supportedExt.equalsIgnoreCase(extension)) {
 					supported = true;
 					break;
 				} 

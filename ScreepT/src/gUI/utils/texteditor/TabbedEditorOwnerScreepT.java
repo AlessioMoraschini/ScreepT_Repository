@@ -176,4 +176,11 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 		} 
 	}
 
+	@Override
+	public void forceUnrecognizedFileType() {
+		textEditor.subHeaderPanel.comboFileFormat.setSelectedItem(SupportedFileTextEditor.TXT);
+		textEditor.subHeaderPanel.comboStylesScheme.setSelectedIndex(
+				textEditor.subHeaderPanel.comboStylesScheme.getItemCount()-1);
+	}
+
 }

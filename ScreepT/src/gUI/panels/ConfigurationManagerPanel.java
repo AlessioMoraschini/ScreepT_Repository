@@ -16,7 +16,6 @@ import javax.swing.JScrollPane;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.fife.rsta.ui.search.FindDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -36,6 +35,7 @@ import maingUI.MainGuiUtils;
 import mainobj.INItializer;
 import media.ImageWorkerExtended;
 import net.miginfocom.swing.MigLayout;
+import om.dialogs.FindDialogFork;
 import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -68,6 +68,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.tree.TreeModel;
 
 import java.awt.Cursor;
+import java.awt.Dialog;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.JTree;
 import javax.swing.JSeparator;
@@ -114,7 +116,7 @@ public class ConfigurationManagerPanel extends ModulePanel {
 	private JButton btnFind;
 	
 	private TextAreaDialogs textAreaDialogs;
-	private FindDialog searchBox;
+	private FindDialogFork searchBox;
 
 	public ConfigurationManagerPanel(INItializer configuration, MainGUI parentFrame) {
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(112, 128, 144), new Color(105, 105, 105), new Color(0, 0, 0), new Color(0, 0, 0)));
@@ -136,6 +138,16 @@ public class ConfigurationManagerPanel extends ModulePanel {
 			
 			@Override
 			public String getCurrentClipboard() {
+				return null;
+			}
+
+			@Override
+			public Dialog getSearchDialog() {
+				return searchBox;
+			}
+
+			@Override
+			public Dialog getReplaceDialog() {
 				return null;
 			}
 		});

@@ -160,7 +160,7 @@ public class FileWorker {
 	public static boolean writeStringToFile(String source, File outFile, boolean overwrite) throws IOException {
 		
 		long startTime = System.currentTimeMillis();
-		logger.info("writeStringToFile -> Start...");
+		logger.info("writeStringToFile -> Start (outFile : " + outFile + ")");
 	
 		if(outFile.exists()) {
 			boolean deleted = true;

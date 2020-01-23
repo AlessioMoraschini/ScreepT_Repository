@@ -11,13 +11,15 @@
  */
 package network.http;
 
-import static java.lang.System.out;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -26,13 +28,23 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import network.utils.DownloadUtils;
 import utility.ConversionUtils;
+import utility.EncodingUtils;
 import utility.SafeLogger;
 
 public class HttpHelper {
 	
 	public static SafeLogger logger = new SafeLogger(HttpHelper.class);
+	public static int timeout = DownloadUtils.CONNECTION_TIMEOUT_MS;
+	
+	public static Authenticator defaultAuth = null;
+	public static char[] defaultProxyPsw = null;
+	public static String defaultProxyUser = null;
+	
+	public static Proxy proxy = getProxy();
 	
 	public static boolean is404(URL url, HttpRequestMetod method) throws MalformedURLException, IOException {
 		return 404 == (getResponseCode(url, method));
@@ -44,17 +56,40 @@ public class HttpHelper {
 
 	public static int getResponseCode(String urlString, HttpRequestMetod method) throws MalformedURLException, IOException {
 	    URL url = new URL(urlString); 
-	    HttpURLConnection httpUrlConnection =  (HttpURLConnection)url.openConnection(); 
-	    httpUrlConnection.setRequestMethod(method.name()); 
-	    httpUrlConnection.connect(); 
-	    return httpUrlConnection.getResponseCode();
+	    
+	    return getResponseCode(url, method);
 	}
 
 	public static int getResponseCode(URL url, HttpRequestMetod method) throws MalformedURLException, IOException {
-		HttpURLConnection httpUrlConnection =  (HttpURLConnection)url.openConnection(); 
-		httpUrlConnection.setRequestMethod(method.name()); 
-		httpUrlConnection.connect(); 
-		return httpUrlConnection.getResponseCode();
+		logger.debug("Getting response code from " + url);
+		HttpsURLConnection httpsUrlConnection = null; 
+		int responseCode = -1;
+		try {
+			httpsUrlConnection =  (HttpsURLConnection)url.openConnection(getProxy()); 
+			httpsUrlConnection.setRequestMethod(method.name()); 
+			httpsUrlConnection.setUseCaches(false);
+			httpsUrlConnection.connect(); 
+			responseCode = httpsUrlConnection.getResponseCode();
+		
+		} catch (Exception e) {
+			
+			logger.error("Cannot check response code: an error occurred!", e);
+			throw e;
+		
+		} finally {
+			if(httpsUrlConnection != null) {
+				httpsUrlConnection.disconnect();
+			}
+		}
+	    
+		logger.info("Response code from " + url + ": " + responseCode);
+	    return responseCode;
+	}
+	
+	public static Proxy getProxy() {
+		Proxy retrievedProxy = proxy != null ? proxy : Proxy.NO_PROXY;
+		logger.info("Retrieved proxy from default settings: " + retrievedProxy);
+		return retrievedProxy;
 	}
 	
 	public enum HttpRequestMetod {
@@ -68,9 +103,14 @@ public class HttpHelper {
 	}
 
 	public static boolean isUrlReachable(URL urlToTest) {
+		logger.debug("Testing if url is reachable: " + urlToTest);
 		try {
-			return InetAddress.getByName(urlToTest.getHost()).isReachable(5000);
+			boolean reachable = InetAddress.getByName(urlToTest.getHost()).isReachable(5000);
+			logger.info(urlToTest + " reachable test result: " + reachable);
+			return reachable;
+			
 		} catch (IOException e) {
+			logger.error("Cannot check if " + urlToTest + " is reachable: an error occurred!", e);
 			return false;
 		}
 	}
@@ -91,7 +131,7 @@ public class HttpHelper {
 				lines.add(text);
 			}
 		} catch (IOException e) {
-			out.println(Arrays.deepToString(e.getStackTrace()));
+			logger.error("Exception while retrieving lines from url: " + url, e);
 		} finally {
 			try {
 				scanner.close();
@@ -113,16 +153,21 @@ public class HttpHelper {
 	public static int getFileSize(URL url) throws Exception {
 	    URLConnection conn = null;
 	    try {
-	    	out.println("Opening connection to url "+url+" to retrieve file size...");
+	    	logger.info("Opening connection to url " + url + " to retrieve file size...");
 	        try {
-				conn = url.openConnection();
-				conn.setConnectTimeout(DownloadUtils.CONNECTION_TIMEOUT_MS);
+				conn = url.openConnection(getProxy());
+				conn.setConnectTimeout(timeout);
+				conn.setUseCaches(false);
 				if(conn instanceof HttpURLConnection) {
-				    ((HttpURLConnection)conn).setRequestMethod("HEAD");
+				    ((HttpURLConnection)conn).setRequestMethod(HttpRequestMetod.GET.name());
+				} else if (conn instanceof HttpsURLConnection) {
+					((HttpsURLConnection)conn).setRequestMethod(HttpRequestMetod.GET.name());
 				}
 				conn.getInputStream();
 			} catch (Exception e) {
-				throw new TimeoutException("Server unreachable!");
+				if (e instanceof TimeoutException) {
+					throw new TimeoutException("Server unreachable!");
+				} else throw e;
 			}
 	        logger.info("=> retrieving file size");
 	        int size = conn.getContentLength();
@@ -132,9 +177,70 @@ public class HttpHelper {
 	    	logger.error("An error occurred while retrieving file size: ", e);
 	        throw e;
 	    } finally {
-	        if(conn instanceof HttpURLConnection) {
-	            ((HttpURLConnection)conn).disconnect();
+	       	if(conn != null) {
+	            if (conn instanceof HttpURLConnection) {
+					((HttpURLConnection) conn).disconnect();
+				} else if (conn instanceof HttpsURLConnection) {
+					((HttpsURLConnection)conn).disconnect();
+				}
+	            logger.info("Connection to " + url + " closed.");
 	        }
-	    }
+		}
+	}
+	
+	/**
+	 * Set the proxy that will be used for http/https connections. 
+	 * The host must NOT have the protocol prefix (ex: proxybp.domain.com)
+	 */
+	public static void setProxy(String host, int port) {
+		proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+		System.setProperty("java.net.useSystemProxies", "true");
+		logger.info("Proxy set to -> [host: " + host + " ; port: " + port + "]");
+	}
+
+	/**
+	 * Remove reference to all previous referenced proxy. After this method is called, no proxy will be used
+	 */
+	public static void unsetProxy() {
+		proxy = null;
+		System.setProperty("java.net.useSystemProxies", "false");
+		logger.info("Proxy resetted (no proxy will be used)");
+	}
+	
+	public static void setDefaultProxyAutentication(String username, char[] password) {
+		defaultAuth = new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+
+	    		PasswordAuthentication pswAuth = new PasswordAuthentication(username, password);
+		        Arrays.fill(password, Character.MIN_VALUE);
+		        return pswAuth;
+		    }
+		};
+		
+		defaultProxyPsw = password;
+		defaultProxyUser = username;
+		
+		Authenticator.setDefault(defaultAuth);
+		
+		logger.info("Proxy  authentication set to -> [user: " + username + " ; psw: XXXXXXX ]");
+	}
+	
+	public static void removePreviousProxyAuthentication() {
+		defaultAuth = null;
+		defaultProxyPsw = null;
+		defaultProxyUser = null;
+		Authenticator.setDefault(null);
+		logger.info("Proxy authentication resetted (no proxy authentication data will be used)");
+	}
+
+	public static InputStream urlProxyStream(URL url) throws IOException {
+		URLConnection conn = url.openConnection(getProxy());
+		if (defaultAuth != null) {
+			String encodedUserPwd = EncodingUtils.staticInstance.encodeBase64((defaultProxyUser + ":" + new String(defaultProxyPsw)).getBytes());
+			conn.setRequestProperty("Proxy-Authorization", "Basic " + encodedUserPwd);
+		}
+		conn.setRequestProperty("Accept-Charset", "UTF-8");
+		
+		return conn.getInputStream();
 	}
 }

@@ -13,6 +13,7 @@ package gUI.utils.texteditor;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -33,8 +34,6 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.fife.rsta.ui.search.FindDialog;
-import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.Gutter;
 
@@ -55,6 +54,8 @@ import media.ImageWorkerExtended;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.TextEditorOption;
+import om.dialogs.FindDialogFork;
+import om.dialogs.ReplaceDialogFork;
 import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
@@ -132,6 +133,16 @@ public class TextEditorUtils {
 			@Override
 			public String getCurrentClipboard() {
 				return GeneralConfig.CLIPBOARD_PANEL_DEFAULT;
+			}
+
+			@Override
+			public Dialog getSearchDialog() {
+				return currentTextEditor.subHeaderPanel.searchBox;
+			}
+
+			@Override
+			public Dialog getReplaceDialog() {
+				return currentTextEditor.subHeaderPanel.replaceDialog;
 			}
 		};
 	}
@@ -1134,8 +1145,8 @@ public class TextEditorUtils {
 			currentTextEditor.subHeaderPanel.templatesPanel.outputTextArea = getDialogManager().getTargetTextArea();
 		}
 		
-		FindDialog searchBox = currentTextEditor.subHeaderPanel.searchBox;
-		ReplaceDialog replaceBox = currentTextEditor.subHeaderPanel.replaceDialog;
+		FindDialogFork searchBox = currentTextEditor.subHeaderPanel.searchBox;
+		ReplaceDialogFork replaceBox = currentTextEditor.subHeaderPanel.replaceDialog;
 		if (searchBox != null && replaceBox != null) {
 			TextAreaDialogs.allineateFindToReplaceDialog(searchBox, replaceBox);
 			TextAreaDialogs.allineateReplaceToFindDialog(searchBox, replaceBox);

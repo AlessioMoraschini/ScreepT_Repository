@@ -12,8 +12,9 @@
 package utility.hash;
 
 import java.io.File;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -30,8 +31,8 @@ public class ChecksumHasher {
 	
 	public static boolean equalsFilesChecksum(File A, File B, HashingFunction algorithm) throws Throwable {
 		
-		String hashA = ChecksumHasher.getFileHash(A, algorithm, true);
-		String hashB = ChecksumHasher.getFileHash(B, algorithm, true);
+		String hashA = ChecksumHasher.getFileHashBuffered(A, algorithm, true);
+		String hashB = ChecksumHasher.getFileHashBuffered(B, algorithm, true);
 		
 		return hashA.equals(hashB);
 	}
@@ -40,31 +41,30 @@ public class ChecksumHasher {
 		
 		if(filePath == null || checksum == null) return false;
 		
-		MessageDigest messageDigest = MessageDigest.getInstance(algorithm.algorithmCode);
-		messageDigest.update(Files.readAllBytes(Paths.get(filePath)));
-		byte[] digest = messageDigest.digest();
-		String myChecksum = DatatypeConverter.printHexBinary(digest).toUpperCase();
+		String myChecksum = getFileHashBuffered(filePath, algorithm, true);
 		
-		return myChecksum.equalsIgnoreCase(checksum) || checksum.contains(myChecksum);
+		return myChecksum.equalsIgnoreCase(checksum) || checksum.toUpperCase().contains(myChecksum);
 	}
 
 	public static boolean checkFileHash(File file, String checksum, HashingFunction algorithm) throws Throwable {
 		
 		if(file == null || checksum == null) return false;
 		
-		MessageDigest messageDigest = MessageDigest.getInstance(algorithm.algorithmCode);
-		messageDigest.update(Files.readAllBytes(file.toPath()));
-		byte[] digest = messageDigest.digest();
-		String myChecksum = DatatypeConverter.printHexBinary(digest).toUpperCase();
+		String myChecksum = getFileHashBuffered(file, algorithm, true);
 		
-		return myChecksum.equalsIgnoreCase(checksum) || checksum.contains(myChecksum);
+		return myChecksum.equalsIgnoreCase(checksum) || checksum.toUpperCase().contains(myChecksum);
 	}
 
+	/**
+	 * Use only in case of a small file, cause this reads all the bytes from source into memory,
+	 * potentially leading to an outOfMemoryException. It's preferrable to use <i>getFileHashBuffered()</i> method.
+	 */
+	@Deprecated
 	public static String getFileHash(File file, HashingFunction algorithm, boolean uppercase) throws Throwable {
 		
 		if(file == null) return "";
 	
-		logger.info("Generating hash for file: " + file.getAbsolutePath() + " with algorithm:"+algorithm);
+		logger.info("Generating hash for file: " + file.getAbsolutePath() + " with algorithm:" + algorithm);
 		
 		MessageDigest messageDigest = MessageDigest.getInstance(algorithm.algorithmCode);
 		messageDigest.update(Files.readAllBytes(file.toPath()));
@@ -83,40 +83,82 @@ public class ChecksumHasher {
 		
 		return result;
 	}
+	
+	// HASHING //
+	@Deprecated
+	public static String getFileHash(String filePath, HashingFunction algorithm) throws Throwable {
+		
+		if(filePath == null) return "";
+		
+		logger.info("Generating hash for file: " + filePath + " with algorithm:"+algorithm);
+	         
+	    String result = getFileHashBuffered(new File(filePath), algorithm, true);
+	    
+	    logger.info("Generated hash for file: " + filePath + ", HASHED:"+result);
+	    
+	    return result;
+	}
+	
+	/**
+	 * Use this when reading a big file, cause normale <i>getFileHash()</> can cause a outOfMemoryException 
+	 */
+	public static String getFileHashBuffered(String file, HashingFunction algorithm) throws NoSuchAlgorithmException {
+		
+		return getFileHashBuffered(new File(file), algorithm, true);
+	}
+
+	/**
+	 * Use this when reading a big file, cause normale <i>getFileHash()</> can cause a outOfMemoryException 
+	 */
+	public static String getFileHashBuffered(String file, HashingFunction algorithm, boolean uppercase) throws NoSuchAlgorithmException {
+	
+		return getFileHashBuffered(new File(file), algorithm, uppercase);
+	}
+	
+	/**
+	 * Use this when reading a big file, cause normale <i>getFileHash()</> can cause a outOfMemoryException 
+	 */
+	public static String getFileHashBuffered(File file, HashingFunction algorithm, boolean uppercase) throws NoSuchAlgorithmException {
+		MessageDigest messageDigest;
+	    try {
+	    	messageDigest = MessageDigest.getInstance(algorithm.algorithmCode); 
+	    } catch (NoSuchAlgorithmException ex) {
+	    	logger.error("Unsupported algorithm "+ex);
+	        throw ex;
+	    }
+	    
+	    try(FileChannel fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ)) {
+	        for(long pos = 0, rem = fileChannel.size(), chunk; rem > pos; pos += chunk) {
+	            chunk = Math.min(Integer.MAX_VALUE, rem-pos);
+	            messageDigest.update(fileChannel.map(FileChannel.MapMode.READ_ONLY, pos, chunk));
+	        }
+	    } catch(Exception e){
+	        logger.error("Something has gone wrong while hashing file: " + file, e);
+	        return "";
+	    }
+	    
+	    String result = DatatypeConverter.printHexBinary(messageDigest.digest());
+	    result = (uppercase) ? result.toUpperCase() : result.toLowerCase();
+	    
+	    return result;
+	}
 
 	public static String getFolderHash(File directory, HashingFunction algorithm, boolean uppercase) throws Throwable {
 		if(directory == null) {
 			return "";
 		} else if (directory.isFile()) {
-			return getFileHash(directory, algorithm, uppercase);
+			return getFileHashBuffered(directory, algorithm, uppercase);
 		} else {
 			String hashAccumulator = "";
 			for (File curr : directory.listFiles()) {
 				if (curr.isDirectory()) {
 					hashAccumulator = new String(ChecksumHasher.xorBytes(hashAccumulator.getBytes("UTF-8"), getFolderHash(curr, algorithm, uppercase).getBytes("UTF-8")));
 				} else {
-					hashAccumulator = new String(ChecksumHasher.xorBytes(hashAccumulator.getBytes("UTF-8"), getFileHash(curr, algorithm, uppercase).getBytes("UTF-8")));
+					hashAccumulator = new String(ChecksumHasher.xorBytes(hashAccumulator.getBytes("UTF-8"), getFileHashBuffered(curr, algorithm, uppercase).getBytes("UTF-8")));
 				}
 			}
 			return hashAccumulator;
 		}
-	}
-
-	// HASHING //
-	public static String getFileHash(String filePath, HashingFunction algorithm) throws Throwable {
-		
-		if(filePath == null) return "";
-		
-		System.out.println("Generating hash for file: " + filePath + " with algorithm:"+algorithm);
-	         
-	    MessageDigest messageDigest = MessageDigest.getInstance(algorithm.algorithmCode);
-	    messageDigest.update(Files.readAllBytes(Paths.get(filePath)));
-	    byte[] digest = messageDigest.digest();
-	    
-	    String result = DatatypeConverter.printHexBinary(digest).toUpperCase();
-	    System.out.println("Generated hash for file: " + filePath + ", HASHED:"+result);
-	    
-	    return result;
 	}
 
 	public static byte[] xorBytes(byte[] first, byte[] second) {

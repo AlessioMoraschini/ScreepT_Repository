@@ -475,4 +475,19 @@ public class UpdateProgressPanel {
 			}
 		}
 	}
+	
+	public static UpdateProgressPanel fastCheckedInstance(UpdateProgressPanel progressInstanceNullable, String title, Dimension size) {
+		if(progressInstanceNullable == null) {
+			progressInstanceNullable = new UpdateProgressPanel(true);
+		}
+		progressInstanceNullable.getDialog().setTitle(title);
+		progressInstanceNullable.getDialog().setMinimumSize(size);
+		progressInstanceNullable.getDialog().setPreferredSize(size);
+		progressInstanceNullable.getPb().setIndeterminate(false);
+		progressInstanceNullable.setClosable(true);
+		GuiUtils.centerComponent(progressInstanceNullable.getDialog());
+		progressInstanceNullable.getDialog().setVisible(true);
+		
+		return progressInstanceNullable;
+	}
 }

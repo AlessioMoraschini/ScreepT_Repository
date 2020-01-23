@@ -85,9 +85,9 @@ public class MainStandAloneUpdater {
 						&& !curr.getName().equals(FTP_PROPERTIES)) {
 					
 					try {
-						manifestProps.saveProperty(curr.getName(), ChecksumHasher.getFileHash(curr, downloadsHashFunc, true));
+						manifestProps.saveCommentedProperty(curr.getName(), ChecksumHasher.getFileHashBuffered(curr, downloadsHashFunc, true));
 						manifestProps.readFromFile();
-						if(!manifestProps.getProperty(curr.getName(), "").equals(ChecksumHasher.getFileHash(curr, downloadsHashFunc, true))) {
+						if(!manifestProps.getProperty(curr.getName(), "").equals(ChecksumHasher.getFileHashBuffered(curr, downloadsHashFunc, true))) {
 							new JOptionHelper(null).warn("Hash control not passed: check properties for " + curr.getName(), "Hash not matching");
 						} else {
 							toUpload.add(curr);

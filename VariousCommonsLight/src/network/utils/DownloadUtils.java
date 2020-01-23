@@ -15,13 +15,11 @@ import java.awt.Dimension;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 
 import utility.ConversionUtils;
 import utility.SafeLogger;
-import gui.GuiUtils;
 import gui.UpdateProgressPanel;
 import network.http.HttpHelper;
 import om.exception.ProgressBarInterruptedException;
@@ -42,19 +40,11 @@ public class DownloadUtils {
 		
 		try {
 			if(!silent) {
-				if(progressUpdater == null) {
-					progressUpdater = new UpdateProgressPanel(true);
-				}
-				progressUpdater.getDialog().setTitle("Downloading update file: " + new File(url.getFile()).getName());
-				progressUpdater.getDialog().setMinimumSize(new Dimension(650, 120));
-				progressUpdater.getDialog().setVisible(true);
-				progressUpdater.getPb().setIndeterminate(false);
-				progressUpdater.getDialog().setPreferredSize(new Dimension(650, 120));
-				GuiUtils.centerComponent(progressUpdater.getDialog());
-				progressUpdater.setClosable(true);
+				String title = "Downloading update file: " + new File(url.getFile()).getName();
+				progressUpdater = UpdateProgressPanel.fastCheckedInstance(progressUpdater, title, new Dimension(650, 120));
 			}
 			
-			in = new BufferedInputStream(url.openStream());
+			in = new BufferedInputStream(HttpHelper.urlProxyStream(url));
 			fileOutputStream = new FileOutputStream(localPath);
 			int bufferSIze = 1024;
 			byte dataBuffer[] = new byte[bufferSIze];
@@ -71,7 +61,6 @@ public class DownloadUtils {
 			    cycles ++;
 			}
 			
-			
 		} catch (Exception e) {
 			if (e instanceof ProgressBarInterruptedException) {
 				throw e;
@@ -84,7 +73,7 @@ public class DownloadUtils {
 				fileOutputStream.close();
 				UpdateProgressPanel.updateProgress("Download Completed!", 100, progressUpdater, false);
 				out.println("Streams closed!");
-			} catch (IOException e) {
+			} catch (Exception e) {
 				out.println("An error occurred while closing streams after download" + Arrays.deepToString(e.getStackTrace()));
 			}
 			
