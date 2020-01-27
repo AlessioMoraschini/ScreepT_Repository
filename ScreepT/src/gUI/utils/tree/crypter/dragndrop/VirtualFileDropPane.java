@@ -284,7 +284,7 @@ public class VirtualFileDropPane extends BackgroundFrame {
 					return true;
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("",e);
 		}
     	

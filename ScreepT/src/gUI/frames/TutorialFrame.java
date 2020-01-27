@@ -12,6 +12,7 @@
 package gUI.frames;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.File;
@@ -103,4 +104,15 @@ public class TutorialFrame extends ParentFrame{
 	public static TutorialFrame getInstance() {
 		return singletonInstance == null ? new TutorialFrame() : singletonInstance;
 	}
+
+	@Override
+	public Dimension getDefaultDimension() {
+		return super.getDefaultDimension();
+	}
+
+	@Override
+	public Dimension getMinimumDimension() {
+		return GuiUtilsExtended.getScreenSizePerc(40, this);
+	}
+	
 }

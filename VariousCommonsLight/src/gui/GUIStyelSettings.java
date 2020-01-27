@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.Painter;
 import javax.swing.SwingUtilities;
@@ -141,6 +142,18 @@ public class GUIStyelSettings{
 			}
 			SwingUtilities.updateComponentTreeUI(targetFrame);
 		}
+	}
+	
+	public static Window[] getWindowsExceptJFileChooser() {
+		ArrayList<Window> windows = new ArrayList<>();
+		for (Window currWin : Window.getWindows()) {
+			if(!(currWin instanceof JDialog)) {
+				windows.add(currWin);
+			}
+		}
+		
+		Window[] arrayOut = new Window[windows.size()];
+		return windows.toArray(arrayOut);
 	}
 	
 	

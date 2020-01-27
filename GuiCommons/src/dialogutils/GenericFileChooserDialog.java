@@ -12,9 +12,11 @@
 package dialogutils;
 
 import java.awt.Component;
+import java.awt.Dialog.ModalityType;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
@@ -22,6 +24,10 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -42,6 +48,8 @@ public class GenericFileChooserDialog {
 	
 	public INItializer currentConf;
 	public FileFilter fileFilter;
+	
+	public static AtomicBoolean blockEventsModal = new AtomicBoolean();
 	
 	/**
 	 * Use null currentconfig if you don't need to automatically update last dst/src paths
@@ -65,6 +73,10 @@ public class GenericFileChooserDialog {
 	 * this method select a file from the user (only supported images files),if nothing is selected returns null
 	 */
 	public File fileImgRead(JFrame parent) {
+		
+		blockEventsModal.set(true);
+		
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 
 		JFileChooser fileChooser = new CustomFileChooserOnTop();	
 		updateFileFilters(fileChooser, fileFilter);
@@ -91,6 +103,10 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
         	}
         }
+        
+        blockEventsModal.set(false);
+        resetLaf(oldLaf);
+        
         return correctFile;
 	}
 	
@@ -99,6 +115,10 @@ public class GenericFileChooserDialog {
 	 * @throws UnsupportedDataTypeException if image type is not supported 
 	 */
 	public File fileImgRead(JPanel parent, String ext) throws Exception {
+		
+		blockEventsModal.set(true);
+		
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		fileChooser.setFileFilter(getImageFileFilter(ext));
@@ -135,6 +155,10 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
         	}
         }
+        
+        blockEventsModal.set(false);
+        resetLaf(oldLaf);
+        
         return correctFile;
 	}
 	
@@ -152,6 +176,10 @@ public class GenericFileChooserDialog {
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
 	public File fileRead(Component parent, FileFilter fileFilter) {
+		
+		blockEventsModal.set(true);
+		
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();	
 		updateFileFilters(fileChooser, fileFilter);
@@ -174,6 +202,10 @@ public class GenericFileChooserDialog {
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
 			}
 		}
+		
+		blockEventsModal.set(false);
+		resetLaf(oldLaf);
+		
 		return correctFile;
 	}
 
@@ -182,6 +214,10 @@ public class GenericFileChooserDialog {
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
 	public File fileRead(Component parent, ExtensionFileFilter[] filters) {
+		
+		blockEventsModal.set(true);
+		
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		addMultipleFileFilter(fileChooser, filters);
@@ -204,6 +240,11 @@ public class GenericFileChooserDialog {
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
 			}
 		}
+		
+		resetLaf(oldLaf);
+		
+		blockEventsModal.set(false);
+		
 		return correctFile;
 	}
 	
@@ -212,6 +253,10 @@ public class GenericFileChooserDialog {
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
 	public File fileAndDirRead(JComponent parent) {
+		
+		blockEventsModal.set(true);
+		
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		updateFileFilters(fileChooser, fileFilter);
@@ -235,6 +280,10 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
         	}
         }
+        
+        blockEventsModal.set(false);
+        resetLaf(oldLaf);
+        
         return correctFile;
 	}
 
@@ -243,6 +292,10 @@ public class GenericFileChooserDialog {
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
 	public File fileAndDirRead(JFrame parent) {
+		
+		blockEventsModal.set(true);
+		
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		updateFileFilters(fileChooser, fileFilter);
@@ -266,6 +319,10 @@ public class GenericFileChooserDialog {
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
 			}
 		}
+		
+		blockEventsModal.set(false);
+		resetLaf(oldLaf);
+		
 		return correctFile;
 	}
 	
@@ -273,6 +330,10 @@ public class GenericFileChooserDialog {
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
 	 */
 	public File fileImgWrite(JFrame parent, String defaultName) {
+		
+		blockEventsModal.set(true);
+		
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		updateFileFilters(fileChooser, fileFilter);
@@ -297,6 +358,10 @@ public class GenericFileChooserDialog {
         }else {
         	dialogHelper.info("Skipped after user request.", "Skipped");
         }
+        
+        blockEventsModal.set(false);
+        resetLaf(oldLaf);
+        
         return correctFile;
 	}
 	
@@ -304,7 +369,11 @@ public class GenericFileChooserDialog {
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
 	 */
 	public File fileWrite(JFrame parent, String defaultName) {
+		
+		blockEventsModal.set(true);
 
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
+		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		updateFileFilters(fileChooser, fileFilter);
 		fileChooser.setDialogTitle("Save File");
@@ -323,6 +392,10 @@ public class GenericFileChooserDialog {
         }else {
         	dialogHelper.info("Skipped after user request.", "Skipped");
         }
+        
+        blockEventsModal.set(false);
+        resetLaf(oldLaf);
+        
         return correctFile;
 	}
 
@@ -330,6 +403,9 @@ public class GenericFileChooserDialog {
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
 	 */
 	public File fileWrite(JFrame parent, String defaultName, File defaultDir, ExtensionFileFilter[] filters) {
+		
+		blockEventsModal.set(true);
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		addMultipleFileFilter(fileChooser, filters);
@@ -353,6 +429,10 @@ public class GenericFileChooserDialog {
 		}else {
 			dialogHelper.info("Skipped after user request.", "Skipped");
 		}
+		
+		blockEventsModal.set(false);
+		resetLaf(oldLaf);
+		
 		return correctFile;
 	}
 	
@@ -360,6 +440,9 @@ public class GenericFileChooserDialog {
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */
 	public File directoRead(JFrame parent) {
+		
+		blockEventsModal.set(true);
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		updateFileFilters(fileChooser, null);
@@ -381,6 +464,10 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
         	}
         }
+        
+        blockEventsModal.set(false);
+        resetLaf(oldLaf);
+        
         return correctFile;
 	}
 
@@ -388,6 +475,9 @@ public class GenericFileChooserDialog {
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */
 	public File directoRead(JFrame parent, String title) {
+		
+		blockEventsModal.set(true);
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		updateFileFilters(fileChooser, null);
@@ -409,6 +499,10 @@ public class GenericFileChooserDialog {
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
 			}
 		}
+		
+		blockEventsModal.set(false);
+		resetLaf(oldLaf);
+		
 		return correctFile;
 	}
 	
@@ -417,6 +511,9 @@ public class GenericFileChooserDialog {
 	 * folder, if nothing is selected returns null
 	 */
 	public File directoWrite(JFrame parent) {
+		
+		blockEventsModal.set(true);
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
 		
 		JFileChooser fileChooser = new CustomFileChooserOnTop();
 		updateFileFilters(fileChooser, null);
@@ -438,6 +535,10 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());
         	}
         }
+        
+        blockEventsModal.set(false);
+        resetLaf(oldLaf);
+        
         return correctFile;
 	}
 	
@@ -476,7 +577,8 @@ public class GenericFileChooserDialog {
 			// intercept the dialog created by JFileChooser
 			JDialog dialog = super.createDialog(parent);
 			dialog.setAlwaysOnTop(true);
-			dialog.setModal(true); // set modality (or setModalityType)
+			dialog.setModalityType(ModalityType.DOCUMENT_MODAL);
+//			dialog.setModal(true); // set modality (or setModalityType)
 			return dialog;
 		}
 	}
@@ -498,6 +600,25 @@ public class GenericFileChooserDialog {
 		for(int i = 0; i < fileFilters.length; i++) {
 			fileChooser.addChoosableFileFilter(fileFilters[i]);
 		}
+	}
+	
+	private LookAndFeel backupLafNDefaultSystem() {
+		LookAndFeel oldUI = UIManager.getLookAndFeel();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return oldUI;
+	}
+	
+	private void resetLaf(LookAndFeel oldLaf) {
+		SwingUtilities.invokeLater(() -> {try {
+			UIManager.setLookAndFeel(oldLaf);
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}});
 	}
 	
 	/**

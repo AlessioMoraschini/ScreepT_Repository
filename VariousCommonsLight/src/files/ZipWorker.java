@@ -262,8 +262,11 @@ public class ZipWorker {
 			String separator = destFolderPath.endsWith("/") || destFolderPath.endsWith(File.separator) ? "" : File.separator;
 			destFolderPath += separator + destPathFolderName;
 			
+			destFolderOut = new File(destFolderPath);
+			DownloadUtils.logger.info(sourcePath + " will be extracted to " + destFolderOut);
 			if(!destFolderOut.exists() || destFolderOut.isFile()) {
 				destFolderOut.mkdirs();
+				DownloadUtils.logger.info(destFolderOut + " Directory unexisting -> created");
 			}
 			
 			byte[] buffer = new byte[1024];

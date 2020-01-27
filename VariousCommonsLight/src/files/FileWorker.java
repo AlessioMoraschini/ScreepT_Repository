@@ -429,15 +429,15 @@ public class FileWorker {
 	public static void copyDirectoryContents(File source, File destination) throws IOException{
 	
 		long startTime = System.currentTimeMillis();
-		out.println("copyDirectoryContents -> Start...");
+		logger.info("copyDirectoryContents -> Start...");
 	
 		if(source.isDirectory()) {
 			for (File curr : source.listFiles()) {
-				out.println("Copying "+curr+" \n  => into "+destination);
+				logger.info("Copying "+curr+" \n  => into "+destination);
 				try {
 					FileUtils.copyToDirectory(curr, destination);
 				} catch (Exception e) {
-					out.println(e.getClass() + Arrays.deepToString(e.getStackTrace()));
+					logger.error("An error occurred while copying " + curr + " into " + destination, e);
 				}
 			}
 		}

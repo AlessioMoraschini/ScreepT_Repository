@@ -14,6 +14,8 @@ package maingUI;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 import javax.swing.SwingUtilities;
+
+import dialogutils.GenericFileChooserDialog;
 import gui.listener.KeyListenerParent;
 
 public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyEventDispatcher {
@@ -29,6 +31,10 @@ public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyE
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
 		
+		if(GenericFileChooserDialog.blockEventsModal.get()) {
+			return false;
+		}
+		
 		updateKeyCode(e);
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
@@ -36,9 +42,10 @@ public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyE
 		if (e.getID() == KeyEvent.KEY_PRESSED) {
 			
 			// WIN + ARROW Pressed: trigger resize
-			if(isOtherPressed(KeyEvent.VK_WINDOWS) && isArrowLR(e.getKeyCode())) {
-				currentGui.resizeMainFrameDefaults();
-			}
+//			if(isOtherPressed(KeyEvent.VK_WINDOWS) && isArrowLR(e.getKeyCode())) {
+//				currentGui.resizeMainFrameDefaults();
+//				return true;
+//			}
 			
 			/*
 			 *  EXIT TOGGLE MODE -> ESC and TOGGLE MODE ACTIVE
@@ -81,7 +88,7 @@ public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyE
 ////////////////LISTENER FOR KEY RELEASED EVENT - WHEN NEED TO TRIGGER ONLY ONE TIME EVEN WHILE KEEPING PRESSED  //////////////////////////
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
-
+			
 			// HERE SHORTCUTS KEY WITH CTR|ALT|SHIFT
 			if (isShortcutKey(e)) {
 				

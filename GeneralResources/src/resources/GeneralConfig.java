@@ -455,7 +455,7 @@ public class GeneralConfig {
 			BACKUP_INI= resourcesFilePathsMappings.getProperty("BACKUP_INI");
 			
 			// Readme File
-			SCREEPT_TUTORIAL_HTML_PATH = RESOURCES_DIR + "Readme/ReadMe.html";
+			SCREEPT_TUTORIAL_HTML_PATH = CURRENT_EXECUTION_DIR + "../Readme/ReadMe.html";
 			SCREEPT_TUTORIAL_HTML_URL = "File:./" + SCREEPT_TUTORIAL_HTML_PATH;
 
 			// JVM and LAUNCHER

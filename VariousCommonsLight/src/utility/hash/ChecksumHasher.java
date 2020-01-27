@@ -149,15 +149,15 @@ public class ChecksumHasher {
 		} else if (directory.isFile()) {
 			return getFileHashBuffered(directory, algorithm, uppercase);
 		} else {
-			String hashAccumulator = "";
+			byte[] hashAccumulator = new byte[0];
 			for (File curr : directory.listFiles()) {
 				if (curr.isDirectory()) {
-					hashAccumulator = new String(ChecksumHasher.xorBytes(hashAccumulator.getBytes("UTF-8"), getFolderHash(curr, algorithm, uppercase).getBytes("UTF-8")));
+					hashAccumulator = ChecksumHasher.xorBytes(getFolderHash(curr, algorithm, uppercase).getBytes("UTF-8"), hashAccumulator);
 				} else {
-					hashAccumulator = new String(ChecksumHasher.xorBytes(hashAccumulator.getBytes("UTF-8"), getFileHashBuffered(curr, algorithm, uppercase).getBytes("UTF-8")));
+					hashAccumulator = ChecksumHasher.xorBytes(getFileHashBuffered(curr, algorithm, uppercase).getBytes("UTF-8"), hashAccumulator);
 				}
 			}
-			return hashAccumulator;
+			return DatatypeConverter.printHexBinary(hashAccumulator);
 		}
 	}
 

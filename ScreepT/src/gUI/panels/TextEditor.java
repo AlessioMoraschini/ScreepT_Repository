@@ -254,6 +254,7 @@ public class TextEditor extends ModulePanel {
 		leftSplitTreeFiles.setComponentPopupMenu(mouseListenerTreeFilePanel.getPopUpMenu());
 		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getMouseListener());
 		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getDoubleCLickListener());
+		leftSplitTreeFiles.addKeyListener(mouseListenerTreeFilePanel.getKeyListener());
 		leftSplitTreeFiles.addMouseMotionListener(TreeUtils.getHoverOnNodesListener());
 		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
 		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
@@ -643,11 +644,11 @@ public class TextEditor extends ModulePanel {
 		splitPaneMainContainer.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				final TextEditorOption opt = currentConfiguration.getTextEditorOpt();
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if ((opt.mapViewActive || opt.clipboardViewActive) && getCurrentTabEditor().loadedTabObj.textArea != null) {
+						final TextEditorOption opt = currentConfiguration.getTextEditorOpt();
+						if ((opt.mapViewActive || opt.clipboardViewActive)) {
 							splitPaneMainContainer.getRightComponent().setVisible(true);
 
 							int newRightPaneValue = parentFrame.getWidth() - splitPaneMainContainer.getDividerLocation();

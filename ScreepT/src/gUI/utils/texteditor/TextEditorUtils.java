@@ -601,7 +601,6 @@ public class TextEditorUtils {
 		}
 		
 		currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_WORKSPACE_LBL);
-		
 	}
 	
 	public void resizeFrameToDefault(MainGUI mainApplication) {

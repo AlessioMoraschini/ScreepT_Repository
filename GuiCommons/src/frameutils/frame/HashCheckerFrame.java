@@ -242,8 +242,7 @@ public class HashCheckerFrame extends ParentFrame{
 
 							if (currentFile != null && currentFile.exists()) {
 								if (currentFile.isFile()) {
-									txtFieldChecksumResult
-											.setText(prefix + ChecksumHasher.getFileHashBuffered(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
+									txtFieldChecksumResult.setText(prefix + ChecksumHasher.getFileHashBuffered(currentFile, getSelectedFunction(), rdbtnUppercase.isSelected()));
 								} else if (dialogHelper.showYNDialog("Hashing a folder can be a long task, really want to start hashing?",
 										"Hash folder?", JOptionHelperExtended.YES_OR_NO)) {
 									updateProgress = new UpdateProgressPanel(false);

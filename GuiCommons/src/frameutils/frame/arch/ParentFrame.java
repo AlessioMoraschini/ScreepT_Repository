@@ -74,4 +74,8 @@ public class ParentFrame extends JFrame{
 	public Dimension getDefaultDimension() {
 		return GuiUtilsExtended.getScreenSizePerc(80, this);
 	}
+	
+	public Dimension getMinimumDimension() {
+		return getDefaultDimension();
+	}
 }

@@ -143,13 +143,17 @@ public class PluginManager {
 		plugin.setLocalExtractedDir(unzippedPlugin);
 		
 		// Copy content into current application root, and update mainAppRoot-relative file installed into properties file
-		logger.info("Copying content of " + plugin.getName() + " into " + APPLICATION_ROOT_DIR);
+		logger.info("Copying content of " + plugin.getLocalExtractedDir().getAbsolutePath() + " into " + APPLICATION_ROOT_DIR);
 		FileWorker.copyDirectoryContents(plugin.getLocalExtractedDir(), APPLICATION_ROOT_DIR);
 		ArrayList<String> relativeNewCopied = FileVarious.getPathsRelativeToOtherFile(FileVarious.listFiles(unzippedPlugin, new ArrayList<>()), unzippedPlugin);
 		plugin.setInstallationCompleted(true);
 		addToInstalledList(plugin);
 		
-		installedPluginProperties.saveCommentedProperty(plugin.getName(), PropertiesManager.listToString(relativeNewCopied, installedPluginPropsListSeparator));
+		String installedList = PropertiesManager.listToString(relativeNewCopied, installedPluginPropsListSeparator);
+		installedPluginProperties.commentedProperties.setProperty(plugin.getName(), installedList);
+		installedPluginProperties.savePropertyChecked(plugin.getName(), installedList);
+		logger.info(installedPluginPropsFileName + " -> Installed files list saved for current plugin (" + plugin.getName() + ") :" + installedList);
+		installedPluginProperties.readFromFile();
 		
 		updateCache(plugin);
 		

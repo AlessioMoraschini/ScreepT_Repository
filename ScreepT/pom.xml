@@ -616,7 +616,7 @@
             	<encoding>UTF-8</encoding>
             	<includeEmptyDirs>true</includeEmptyDirs>
             	<skip>${export.updates.skip}</skip>
-            	<overwrite>false</overwrite>
+            	<overwrite>true</overwrite>
               	<outputDirectory>
               		<!-- ${basedir}/target/extra-resources -->
               		${export.updates.root}

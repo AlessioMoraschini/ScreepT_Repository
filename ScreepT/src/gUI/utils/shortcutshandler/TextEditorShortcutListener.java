@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 
+import dialogutils.GenericFileChooserDialog;
 import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
@@ -62,6 +63,10 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	
 	@Override
 	  public boolean dispatchKeyEvent(final KeyEvent e) {
+		
+		if(GenericFileChooserDialog.blockEventsModal.get()) {
+			return false;
+		}
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		

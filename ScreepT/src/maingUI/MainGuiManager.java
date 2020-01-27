@@ -2,7 +2,6 @@ package maingUI;
 
 import java.awt.Window;
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -309,7 +308,7 @@ public class MainGuiManager {
 				if(MainGUI.updatesDownloaded != null) {
 					String command = "java -jar " + MainGUI.updatesDownloaded[0].getName() 
 						+ " " + MainGUI.updatesDownloaded[0].getName() 
-						+ " " + MainGUI.updatesDownloaded[1].getParentFile().getName() + "\\" + MainGUI.updatesDownloaded[1].getName()
+						+ " " + MainGUI.updatesDownloaded[1].getParentFile().getName() + File.separator + MainGUI.updatesDownloaded[1].getName()
 						+ " " + MainGUI.updatesDownloaded[2].getName();
 					Runtime runtime = Runtime.getRuntime();
 					MainGuiUtils.logger.info("Launching java command to update with downloaded files: \n\n" + command + "\n\n");
@@ -319,7 +318,7 @@ public class MainGuiManager {
 					MainGuiUtils.logger.error("updatesDownloaded is null!");
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			MainGuiUtils.logger.error("Cannot start update procedure, an error occurred!", e);
 		}
 	}

@@ -14,10 +14,14 @@ package gUI.utils.tree.texteditor;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -48,6 +52,7 @@ import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import utility.ConversionUtils;
+import utility.SystemClipboardUtils;
 import utils.dialog.ColorDialogUtils;
 
 public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed{
@@ -469,30 +474,30 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
 				
 				try {
-					File selected = getCurrentDestinationDynamic(selectedNode);
-					if(selected == null || selectedNode.mFile == null || currentTabEditor.alreadyLoading) {
+					File destination = getCurrentDestinationDynamic(selectedNode);
+					if(destination == null || selectedNode.mFile == null || currentTabEditor.alreadyLoading) {
 						return;
 					}
 					
-					String newName = dialogHelper.askForStringNullable("Plese specify a name for the file to save in "+selected.getParent(), selected.getName());
+					String newName = dialogHelper.askForStringNullable("Plese specify a name for the file to save in "+destination.getParent(), destination.getName());
 					if(newName == null) {
 						return;
 					}
 					newName = FileVarious.ensureValidExtension(newName, textEditor.subHeaderPanel.comboFileFormat.getSelectedItem().toString());
 					String separator = File.separator;
 					// If file use parent, if directory use selected as root to insert into
-					selected = (selected.isDirectory()) ? 
-							new File(selected.getAbsolutePath() + separator + newName) : new File(selected.getParentFile().getAbsolutePath() + separator + newName);
-					selected = FileVarious.renameJavaObjFile(selected);
+					destination = (destination.isDirectory()) ? 
+							new File(destination.getAbsolutePath() + separator + newName) : new File(destination.getParentFile().getAbsolutePath() + separator + newName);
+					destination = FileVarious.renameJavaObjFile(destination);
 					
 						// create and load new item
-						if (!selected.createNewFile()) {
+						if (!destination.createNewFile()) {
 							String msg = "File not created";
 							logger.warn(msg);
 							dialogHelper.warn(msg, msg);
 							return;
 						}
-						currentTabEditor.loadFile(selected);
+						currentTabEditor.loadFile(destination);
 						
 					// REFRESH
 					SwingUtilities.invokeLater(() -> {
@@ -520,6 +525,50 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			FileNamed root = (FileNamed)tree.getModel().getRoot();
 			textEditor.textEditorUtils.refreshTree(root.mFile, true);
 		}
+	}
+	
+	public KeyListener getKeyListener() {
+		return new KeyAdapter() {
+			public void keyPressed(KeyEvent event) {
+				try {
+					if (event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
+						if(itemLoadFile != null) {
+							itemLoadFile.doClick();
+						}
+					} else if (event.getKeyCode() == 127 && tree.getSelectionCount() != 0) {
+						if(deleteItem != null) {
+							deleteItem.doClick();
+						}
+					} else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() != 0) {
+						File destination = getCurrentDestinationDynamic(selectedNode);
+						List<File> clipboardFiles = SystemClipboardUtils.getClipboardFiles(null);
+						if(!clipboardFiles.isEmpty() && dialogHelper.yesOrNo("Paste " + clipboardFiles.size() + " files into " + destination.getName() + " ?")) {
+							// TODO subfolders
+							for(File file : clipboardFiles) {
+								boolean copy = true;
+								if(destination.listFiles((dir, name) -> {
+									boolean sameType = (dir.isFile() && file.isFile()) || (dir.isDirectory() && file.isDirectory());
+									return sameType && file.getName().equals(name);
+								}).length > 0) {
+									copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", "Overwrite?");
+								}
+								if (copy) {
+									FileUtils.copyToDirectory(file, destination);
+								}
+							}
+							
+							refreshTree();
+						}
+						
+						// TODO copy from tree
+						
+						// TODO generalize clipboard copy action into static method
+					}
+				} catch (Exception e) {
+					logger.error("An error occurred while processing file tree key event", e);
+				}
+			}
+		};
 	}
 	
 	public JMenuItem getItemLoadFile() {

@@ -289,7 +289,7 @@ public class WindowCreator {
 		
 		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		
-		newFrame.setMinimumSize(newFrame.getDefaultDimension());
+		newFrame.setMinimumSize(newFrame.getMinimumDimension());
 		newFrame.setPreferredSize(newFrame.getDefaultDimension());
 		
 		newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

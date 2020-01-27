@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.ini4j.Wini;
 
 import files.FileWorker;
@@ -29,6 +30,7 @@ import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
 import utility.properties.PropertiesManager;
+import utility.string.StringWorker;
 
 public class MainStandAloneUpdater {
 	
@@ -205,22 +207,20 @@ public class MainStandAloneUpdater {
 					iniLauncherConfig.put("APPLICATION_OPTIONS", "jarToLaunch", newJar.getName());
 					iniLauncherConfig.store();
 					
-					if (oldJar != null && oldJar.exists()) {
-						oldJar.deleteOnExit();
-					}
-					
 					updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
 					updateProgressMonitor.forceClose();
 					
+					FileUtils.deleteQuietly(oldJar);
+					
 				} else {
 					String fileData = "UpdaterJar => "+updaterJar+"; updates folder => "+updatesFolder;
-					dialogHelper.error("Updates data or updater jar not found, exiting updated procedure." + fileData, "Updates not found");
+					dialogHelper.error("Updates data or updater jar not found, exiting updated procedure." + fileData, " (Updates not found)");
 				}
 				
 				// LAUNCH ScreepT_Launcher.jar
 				launchJar(mainApplicationLauncher);
 				
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				if (updateProgressMonitor != null) {
 					
 					updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
@@ -231,10 +231,10 @@ public class MainStandAloneUpdater {
 				logger.error(e.getClass().getCanonicalName(), e);
 				
 				// LAUNCH ScreepT_Launcher.jar
-				Runtime runtime = Runtime.getRuntime();
 				try {
-					runtime.exec("java -jar " + mainApplicationLauncher);
+					launchJar(mainApplicationLauncher);
 				} catch (IOException e1) {
+					logger.error(e.getClass().getCanonicalName(), e);
 				}
 				
 				System.exit(0);
@@ -297,6 +297,10 @@ public class MainStandAloneUpdater {
 		String PSW = ftpProperties.getProperty("PSW", "");
 		int PORT = ftpProperties.getIntVarFromProps("PORT", 22);
 		String FOLDER_ON_SERVER = ftpProperties.getProperty("FOLDER_ON_SERVER", "/www.am-design-development.com/ScreepT/Updates");
+		
+		if(StringWorker.isEmpty(USER)) {
+			USER = new JOptionHelper(null).askForString("Specify USERNAME");
+		}
 		
 		if (PSW.equals("")) {
 			char[] psw = new JOptionHelper(null).askForPasswordNullable("Insert FTPS password", "Insert FTPS password", 64, "Upload");

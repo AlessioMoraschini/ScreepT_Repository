@@ -252,12 +252,16 @@ public class MainGUI extends MainGuiParent{
 			autosaveManager.start();
 			
 			// MAIN WINDOW RESIZE LISTENER
-			mainFrameScreept.addComponentListener(new ComponentAdapter() {
-				@Override
-				public void componentResized(ComponentEvent componentEvent) {
-					MainGUI.mainAPP.resizeMainFrameDefaults();
-			    }
-			});
+//			mainFrameScreept.addComponentListener(new ComponentAdapter() {
+//				@Override
+//				public void componentResized(ComponentEvent componentEvent) {
+//					SwingUtilities.invokeLater(new Runnable() {
+//						public void run() {
+//							MainGUI.mainAPP.resizeMainFrameDefaults();
+//						}
+//					});
+//			    }
+//			});
 			
 			// MAIN WINDOW CLOSE LISTENER
 			mainFrameScreept.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -1094,15 +1098,16 @@ public class MainGUI extends MainGuiParent{
 		// BACKGROUND RESIZER //
 		mainFrameScreept.addComponentListener(new ComponentListener() {
 			public void componentShown(ComponentEvent e) {
-				resizeMainFrameDefaults();
+				SwingUtilities.invokeLater(() -> {resizeMainFrameDefaults();});
 			}
 			public void componentResized(ComponentEvent e) {
-				resizeMainFrameDefaults();
+				SwingUtilities.invokeLater(() -> {resizeMainFrameDefaults();});
 			}
 			public void componentMoved(ComponentEvent e) {
-				resizeMainFrameDefaults();
+				SwingUtilities.invokeLater(() -> {resizeMainFrameDefaults();});
 			}
 			public void componentHidden(ComponentEvent e) {
+				SwingUtilities.invokeLater(() -> {resizeMainFrameDefaults();});
 			}
 		});
 		
