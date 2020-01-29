@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
+import frameutils.utils.GuiUtilsExtended;
 import files.FileVarious;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
@@ -93,11 +94,15 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	        @Override
 	        public void mousePressed(MouseEvent arg0) {
                 TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
-                boolean exists = ((File)pathForLocation.getLastPathComponent()).exists();
-                if(pathForLocation != null && exists){
-                    selectedNode = (File) pathForLocation.getLastPathComponent();
-                } else{
-                    selectedNode = null;
+                if(pathForLocation != null && pathForLocation.getLastPathComponent() != null){
+                	boolean exists = ((File)pathForLocation.getLastPathComponent()).exists();
+                	if(exists) {
+                		selectedNode = (File) pathForLocation.getLastPathComponent();
+                	} else{
+                		selectedNode = null;
+                	}
+                } else {
+                	selectedNode = null;
                 }
 
 	            super.mousePressed(arg0);
@@ -158,6 +163,16 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 	    return menu;
 	}
 	
+	@Override
+	public ActionListener openInSystemExplorer() {
+		return (e) -> {
+			if(selectedNode == null) {
+				selectedNode = (File)tree.getModel().getRoot();
+			}
+			GuiUtilsExtended.openInFileSystem(selectedNode);
+		};
+	}
+
 	// select this file Key image in crypter panel
 	private ActionListener getSelectKeyImgListener() {
 		return new ActionListener() {

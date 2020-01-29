@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.commons.io.FileUtils;
@@ -206,17 +207,6 @@ public class MainGuiGeneralAppStarter {
 
 			printElapsed("AWT error handler loaded", startTime);
 			
-			try {
-				
-				// SETUP TOOLTIPS PROPERTIES
-				Font tooltipFontFromProps = (GeneralConfig.TOOLTIP_FONT == null)? new Font("Segoe UI", Font.PLAIN, 14) : GeneralConfig.TOOLTIP_FONT;
-				GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, GeneralConfig.TOOLTIP_RESHOW_DELAY, tooltipFontFromProps);
-			
-			} catch (Exception e) {
-				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
-				dialogHelper.errorScroll("Cannot setup Tooltips general graphics, an error occurred", "Cannot load Tooltips props", e);
-			}
-			
 			printElapsed("DialogHelper, General config and tooltips setup finished", startTime);
 			
 			printElapsed("Log properties loaded", startTime);
@@ -265,6 +255,17 @@ public class MainGuiGeneralAppStarter {
 			
 			if(!mainAppRunning) {
 				throw new Exception("Something has gone wrong during application start-up, please check the logs");
+			}
+			
+			try {
+				// SETUP TOOLTIPS PROPERTIES
+				SwingUtilities.invokeLater(() -> {
+					Font tooltipFontFromProps = (GeneralConfig.TOOLTIP_FONT == null)? new Font("Segoe UI", Font.PLAIN, 14) : GeneralConfig.TOOLTIP_FONT;
+					GuiUtils.setupTooltips(GeneralConfig.TOOLTIP_DELAY, GeneralConfig.TOOLTIP_TIMEOUT, GeneralConfig.TOOLTIP_RESHOW_DELAY, tooltipFontFromProps);
+				});
+			} catch (Exception e) {
+				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
+				dialogHelper.errorScroll("Cannot setup Tooltips general graphics, an error occurred", "Cannot load Tooltips props", e);
 			}
 			
 			printElapsed("Launch completed", startTime);

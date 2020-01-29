@@ -1,4 +1,6 @@
-2020-01-24  (HEAD -> refs/heads/master, refs/remotes/origin/master) V_0.9.21 : text editor bugfix + improved readme and licenses + introduced proxy management
+2020-01-27  Fixed unzip + updates bug, various bug fixed
+
+2020-01-24  V_0.9.21 : text editor bugfix + improved readme and licenses + introduced proxy management
 
 2020-01-19  Autocomplete and readme improved
 

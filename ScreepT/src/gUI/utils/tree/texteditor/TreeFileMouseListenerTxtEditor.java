@@ -14,14 +14,11 @@ package gUI.utils.tree.texteditor;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -31,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FileUtils;
@@ -43,6 +41,7 @@ import files.om.FileNamed;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
+import gUI.utils.texteditor.TextEditorUtils;
 import gui.GuiUtils;
 import gui.MenuSetter;
 import mainobj.INItializer;
@@ -51,8 +50,8 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
+import treeutils.om.FileNameCellRenderer;
 import utility.ConversionUtils;
-import utility.SystemClipboardUtils;
 import utils.dialog.ColorDialogUtils;
 
 public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed{
@@ -65,11 +64,9 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	private TextEditor textEditor;
 	private CustomTabbedEditor currentTabEditor;
 	
-	public JMenuItem itemLoadFile;
 	public JMenu subMenuNew;
 		public JMenuItem itemNewFile;
 		public JMenuItem itemNewFolder;
-	public JMenuItem deleteItem;
 	public JMenuItem copyHereCurrentItem;
 	public JMenuItem moveHereCurrentItem;
 	public JMenuItem sysExplorerItem;
@@ -100,23 +97,27 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	        public void mousePressed(MouseEvent arg0) {
 	        	
 	        	selectedRow = tree.getRowForLocation(arg0.getX(), arg0.getY());
+	        	
 	        	// Right click
-	            if(true){ 
-	            	
-	            	updateEnabledOrDisabled();
-	            	
-	                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
-	                TreePath[] pathsSelection = tree.getSelectionPaths();
-	                updateSelectedNodes(pathsSelection);
-	                if(pathForLocation != null){
-	                	tree.setSelectionPaths(pathsSelection);
-	                    selectedNode = (FileNamed) pathForLocation.getLastPathComponent();
-	                } else{
-	                    selectedNode = null;
-	                }
-	            }
+            	updateEnabledOrDisabled();
+            	
+                TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
+                TreePath[] pathsSelection = tree.getSelectionPaths();
+                updateSelectedNodes(pathsSelection);
+                if(pathForLocation != null){
+                	tree.setSelectionPaths(pathsSelection);
+                    selectedNode = (FileNamed) pathForLocation.getLastPathComponent();
+                } else{
+                    selectedNode = null;
+                }
 	            super.mousePressed(arg0);
 	        }
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				super.mouseExited(e);
+			}
+	        
 	    };
 	}
 	
@@ -154,6 +155,9 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	}
 
 	public JPopupMenu getPopUpMenu() {
+		
+		super.getPopUpMenu();
+		
 	    JPopupMenu menu = new JPopupMenu();
 	    
 	    subMenuNew = new JMenu("New...");
@@ -450,22 +454,6 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		};
 	}
 	
-	/**
-	 * Retrieve parent if a file is selected, or current selected if file itself is a directory
-	 * @return
-	 */
-	private File getCurrentDestinationDynamic(FileNamed selectedNode) {
-		if(selectedNode != null && selectedNode.mFile != null) {
-			if(selectedNode.mFile.isDirectory()) {
-				return selectedNode.mFile;
-			} else {
-				return selectedNode.mFile.getParentFile();
-			}
-		} else {
-			return null;
-		}
-	}
-	
 	private ActionListener getNewFileActionListener() {
 		return new ActionListener() {
 			
@@ -527,48 +515,41 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		}
 	}
 	
-	public KeyListener getKeyListener() {
-		return new KeyAdapter() {
-			public void keyPressed(KeyEvent event) {
-				try {
-					if (event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
-						if(itemLoadFile != null) {
-							itemLoadFile.doClick();
-						}
-					} else if (event.getKeyCode() == 127 && tree.getSelectionCount() != 0) {
-						if(deleteItem != null) {
-							deleteItem.doClick();
-						}
-					} else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() != 0) {
-						File destination = getCurrentDestinationDynamic(selectedNode);
-						List<File> clipboardFiles = SystemClipboardUtils.getClipboardFiles(null);
-						if(!clipboardFiles.isEmpty() && dialogHelper.yesOrNo("Paste " + clipboardFiles.size() + " files into " + destination.getName() + " ?")) {
-							// TODO subfolders
-							for(File file : clipboardFiles) {
-								boolean copy = true;
-								if(destination.listFiles((dir, name) -> {
-									boolean sameType = (dir.isFile() && file.isFile()) || (dir.isDirectory() && file.isDirectory());
-									return sameType && file.getName().equals(name);
-								}).length > 0) {
-									copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", "Overwrite?");
-								}
-								if (copy) {
-									FileUtils.copyToDirectory(file, destination);
-								}
-							}
-							
-							refreshTree();
-						}
-						
-						// TODO copy from tree
-						
-						// TODO generalize clipboard copy action into static method
-					}
-				} catch (Exception e) {
-					logger.error("An error occurred while processing file tree key event", e);
-				}
+	public MouseMotionListener getHoverOnNodesListener() {
+		return new MouseMotionListener() {
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
 			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				JTree source = (JTree) e.getSource();
+				TreePath treePath = source.getPathForLocation(e.getX(), e.getY());
+				int row = source.getRowForLocation(e.getX(), e.getY());
+				FileNameCellRenderer renderer = (FileNameCellRenderer)source.getCellRenderer();
+				
+				if (treePath != null) {
+					renderer.hoveringRow = row;
+					source.setCursor(GuiUtilsExtended.CURSOR_HAND);
+				} else {
+					renderer.hoveringRow = -1;
+					source.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
+				}
+				
+				source.repaint(tree.getVisibleRect());
+			}
+			
 		};
+	}
+	
+	public void changeTreeSelectionColor(Color color) {
+		
+		UIDefaults treeDefaults = new UIDefaults();
+		treeDefaults.put("Tree.selectionBackground", color);
+
+	    tree.putClientProperty("Nimbus.Overrides",treeDefaults);
+	    tree.putClientProperty("Nimbus.Overrides.InheritDefaults", color == null);
 	}
 	
 	public JMenuItem getItemLoadFile() {

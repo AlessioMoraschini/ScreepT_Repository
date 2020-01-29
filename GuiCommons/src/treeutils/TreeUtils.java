@@ -13,8 +13,6 @@ package treeutils;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,9 +31,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import files.om.FileNamed;
-import frameutils.utils.GuiUtilsExtended;
 import om.LimitedConcurrentList;
-import treeutils.om.FileNameCellRenderer;
 
 public class TreeUtils {
 	
@@ -116,38 +112,6 @@ public class TreeUtils {
 			}
 		}
 		return new TreePath(result);
-	}
-	
-	public static MouseMotionListener getHoverOnNodesListener() {
-		return new MouseMotionListener() {
-			
-			@Override
-			public void mouseDragged(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				JTree source = (JTree) e.getSource();
-				TreePath tp = source.getPathForLocation(e.getX(), e.getY());
-//				int selRow = source.getRowForLocation(e.getX(), e.getY());
-//				if (selRow == -1) {
-//					source.clearSelection();
-//					lastSelected = -1;
-//				} else if (selRow != lastSelected) {
-//					source.setSelectionRow(selRow);
-//					lastSelected = selRow;
-//				}
-//				
-				if (tp != null) {
-					source.setCursor(GuiUtilsExtended.CURSOR_HAND);
-					((FileNameCellRenderer)source.getCellRenderer()).setHoverBackgroundEffect(true);
-				} else {
-					source.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
-					((FileNameCellRenderer)source.getCellRenderer()).setHoverBackgroundEffect(false);
-				}
-			}
-			
-		};
 	}
 	
 	public static void expandNodeChildren(JTree tree, TreePath parent) {

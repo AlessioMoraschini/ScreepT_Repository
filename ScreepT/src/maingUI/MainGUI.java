@@ -15,7 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -555,7 +554,7 @@ public class MainGUI extends MainGuiParent{
 		});
 		
 		// NOT OPENING VIEW - RESET CRYPTER
-		mntmResetCrypterPanel = new CustomJmenuItem(new AbstractAction("Reset ScreepT") {
+		mntmResetCrypterPanel = new CustomJmenuItem(new AbstractAction("Reset CreepT") {
 			public void actionPerformed(ActionEvent ae) {
 				if(dialogHelper.yesOrNo(msg1 + "Crypter" + msg2, "Reset Crypter?")) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);

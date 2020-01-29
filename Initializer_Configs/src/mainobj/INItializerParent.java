@@ -199,7 +199,7 @@ public abstract class INItializerParent implements INItializerInterface{
 	
 	public String getSafeStringConf(String section, String variable, String defIfBlank) {
 		String result = iniReadFile.get(section, variable);
-		result = (result == null || "".equals(result))? defIfBlank : result;
+		result = (StringWorker.isEmpty(result))? defIfBlank : result;
 		
 		return result;
 	}

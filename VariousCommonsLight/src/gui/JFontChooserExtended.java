@@ -88,6 +88,7 @@ public class JFontChooserExtended extends JComponent {
 	};
 	protected int dialogResultValue = ERROR_OPTION;
 	private ResourceBundle messageCatalog = ResourceBundle.getBundle("i18n/JFontChooser", getLocale());
+	private static String TEST_STRING = "Always be a poet, even in prose. (C. Baudelaire)";
 	
     protected String msg(String key)
 	{
@@ -824,7 +825,7 @@ public class JFontChooserExtended extends JComponent {
 		{
 			Border lowered = BorderFactory.createLoweredBevelBorder();
 
-			sampleText = new JTextField(msg("SampleString"));
+			sampleText = new JTextField(TEST_STRING);
 			sampleText.setBorder(lowered);
 			sampleText.setPreferredSize(new Dimension(300, 120));
 			sampleText.setHorizontalAlignment(SwingConstants.CENTER);

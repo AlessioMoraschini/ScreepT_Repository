@@ -14,10 +14,16 @@ package mouseutils;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -28,6 +34,7 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
@@ -37,9 +44,11 @@ import files.om.FileNamed;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
 import gui.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import utility.SystemClipboardUtils;
 import utility.string.StringWorker;
 
 /**
@@ -62,6 +71,9 @@ public class TreeFileMouseListenerBasicFileNamed {
 	public JFrame propertiesFrame = null; 
 	public Component parent;
 	public JOptionHelperExtended dialogHelper;
+	
+	public JMenuItem itemLoadFile;
+	public JMenuItem deleteItem;
 
 	public TreeFileMouseListenerBasicFileNamed() {
 		selectedNodes = new Vector<>();
@@ -126,7 +138,11 @@ public class TreeFileMouseListenerBasicFileNamed {
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 	    
-	    JMenuItem deleteItem = new JMenuItem("Delete selected files");
+	    itemLoadFile = new JMenuItem("Open File");
+	    itemLoadFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    menu.add(itemLoadFile);
+	    
+	    deleteItem = new JMenuItem("Delete selected files");
 	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    deleteItem.addActionListener(getDeleteActionListener());
 	    menu.add(deleteItem);
@@ -186,6 +202,40 @@ public class TreeFileMouseListenerBasicFileNamed {
 				logger.info("getNewFolderActionListener() -> " + unexistant + " creation process had result: "+result);
 			}
 		};
+	}
+	
+	public List<File> getSelectedFiles() {
+		 TreePath[] treeSelArr = tree.getSelectionPaths();
+		 ArrayList<File> files = new ArrayList<>();
+		 for(TreePath path : treeSelArr) {
+			 FileNamed node = (FileNamed)path.getLastPathComponent();
+			 if (node != null) {
+				try {
+					files.add(node.mFile.getCanonicalFile());
+				} catch (IOException e) {
+					logger.error("Cannot retrieve file " + node, e);
+				}
+			}
+		 }
+		 
+		 return files;
+	}
+
+	public List<String> getSelectedFilesPaths() {
+		TreePath[] treeSelArr = tree.getSelectionPaths();
+		ArrayList<String> files = new ArrayList<>();
+		for(TreePath path : treeSelArr) {
+			FileNamed node = (FileNamed)path.getLastPathComponent();
+			if (node != null) {
+				try {
+					files.add(node.mFile.getCanonicalPath());
+				} catch (IOException e) {
+					logger.error("Cannot retrieve file " + node, e);
+				}
+			}
+		}
+		
+		return files;
 	}
 
 	public ActionListener getDeleteActionListener() {
@@ -247,7 +297,7 @@ public class TreeFileMouseListenerBasicFileNamed {
 		};
 	}
 	
-	private ActionListener hashingListener(File initialFile) {
+	public ActionListener hashingListener(File initialFile) {
 		return new ActionListener() {
 			
 			@Override
@@ -296,6 +346,68 @@ public class TreeFileMouseListenerBasicFileNamed {
 		};
 	}
 	
+	/**
+	 * Retrieve parent if a file is selected, or current selected if file itself is a directory
+	 * @return
+	 */
+	protected File getCurrentDestinationDynamic(FileNamed selectedNode) {
+		if(selectedNode != null && selectedNode.mFile != null) {
+			if(selectedNode.mFile.isDirectory()) {
+				return selectedNode.mFile;
+			} else {
+				return selectedNode.mFile.getParentFile();
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	public KeyListener getKeyListener() {
+		return new KeyAdapter() {
+			public void keyReleased(KeyEvent event) {
+				if(tree.hasFocus()) try {
+					tree.setCursor(GuiUtils.CURSOR_WAIT);
+					
+					if (event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
+						if(itemLoadFile != null) {
+							itemLoadFile.doClick();
+						}
+					} else if (event.getKeyCode() == 127 && tree.getSelectionCount() != 0) {
+						if(deleteItem != null) {
+							deleteItem.doClick();
+						}
+					} else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() == 1) {
+						File destination = getCurrentDestinationDynamic(selectedNode);
+						List<File> clipboardFiles = SystemClipboardUtils.getClipboardFiles(null);
+						if(!clipboardFiles.isEmpty() && dialogHelper.yesOrNo("Paste " + clipboardFiles.size() + " files into " + destination.getName() + " ?")) {
+							// TODO subfolders
+							for(File file : clipboardFiles) {
+								boolean copy = true;
+								if(destination.listFiles((dir, name) -> {
+									boolean sameType = (dir.isFile() && file.isFile()) || (dir.isDirectory() && file.isDirectory());
+									return sameType && file.getName().equals(name);
+								}).length > 0) {
+									copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", "Overwrite?");
+								}
+								if (copy) {
+									FileUtils.copyToDirectory(file, destination);
+								}
+							}
+							
+							refreshTree();
+						}
+					} else if(event.isControlDown() && !event.isShiftDown() && !event.isAltDown() && event.getKeyCode() == KeyEvent.VK_C && tree.getSelectionCount() != 0) {
+						SystemClipboardUtils.setClipobardFiles(getSelectedFiles());
+					}
+				} catch (Exception e) {
+					logger.error("An error occurred while processing file tree key event", e);
+				} finally {
+					tree.setCursor(GuiUtils.CURSOR_DEFAULT);
+				}
+			}
+		};
+	}
+	
 	
 	// utility methods //
 	
@@ -304,5 +416,4 @@ public class TreeFileMouseListenerBasicFileNamed {
 		tree.revalidate();
 		tree.repaint();
 	}
-	
 }

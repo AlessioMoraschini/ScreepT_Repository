@@ -995,7 +995,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							textEditorUtils.updateCurrentUnsavedFromFileRead();
 							textArea.setCursor(GuiUtilsExtended.CURSOR_DEFAULT);
 							
-							textEditorUtils.revalidateFoldingPainted(textArea);
+							parent.getCurrentTabEditor().revalidateFoldingPainted(textArea);
 						}
 					}
 				});

@@ -69,8 +69,6 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 		
 		if (!textEditor.isPreloading) {
 			
-			txtUtils.applySelectedTheme();
-			
 			// Most heavy operation, reloads current textarea based on current settings
 			txtUtils.applyCurrentGraphicsTextArea(loadedTabObj.textArea, false);
 			
@@ -100,6 +98,8 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 			
 			// Refresh current style from combo only if different from current actually applied to loaded text area tab
 			txtUtils.findRightSyntaxFromComboNSelect(loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().defaultAutoSyntaxSync);
+			
+			txtUtils.applySelectedTheme();
 		}
 		
 		
@@ -179,8 +179,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	@Override
 	public void forceUnrecognizedFileType() {
 		textEditor.subHeaderPanel.comboFileFormat.setSelectedItem(SupportedFileTextEditor.TXT);
-		textEditor.subHeaderPanel.comboStylesScheme.setSelectedIndex(
-				textEditor.subHeaderPanel.comboStylesScheme.getItemCount()-1);
+//		textEditor.subHeaderPanel.comboStylesScheme.setSelectedIndex(textEditor.subHeaderPanel.comboStylesScheme.getItemCount()-1);
 	}
 
 }

@@ -24,6 +24,7 @@ import files.FileVarious;
 import files.ZipWorker;
 import gui.JOptionHelper;
 import gui.UpdateProgressPanel;
+import main.om.PropertiesDTO;
 import network.ftp.FtpDumper;
 import network.progress.UploadAction;
 import utility.SafeLogger;
@@ -35,14 +36,18 @@ import utility.string.StringWorker;
 public class MainStandAloneUpdater {
 	
 	public static SafeLogger logger = new SafeLogger(MainStandAloneUpdater.class);
-
-	public static final String UPDATES_MANIFEST = "manifest.properties";
-	public static final String FTP_PROPERTIES = "FTP.properties";
-	public static final String resourcesMappingDefPath = "resourcesFilePathsMappings.properties";
-	private static final String ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
+	
+	public static final String MAIN_LAUNCHER_JAR = "ScreepT_Launcher.jar";
+	
+	public static final String FTP_PROPERTIES_FILE = "FTP.properties";
+	public static final String PROPERTIES_FILE = "resourcesFilePathsMappings.properties";
+	public final static String KEY_DEFAULT_LAUNCHER_INI_PATH = "DEFAULT_LAUNCHER_INI_PATH";
+	private static final String KEY_ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
+	public static String UPDATES_FILE = "manifest.properties";
+	
+	public static final File CURRENT_DIR = new File(System.getProperty("user.dir"));
 	
 	private static final JOptionHelper dialogHelper = new JOptionHelper(null);
-	
 	public static final HashingFunction downloadsHashFunc = HashingFunction.SHA512;
 	/**
 	 * This is main application updater module, runnable as main class of updater.jar
@@ -50,12 +55,8 @@ public class MainStandAloneUpdater {
 	 */
 	public static void main(String[] args) {
 		
-		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(resourcesMappingDefPath);
-		String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
+		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(PROPERTIES_FILE);
 		
-		File currentDir = new File(System.getProperty("user.dir"));
-		File updatesDir = new File("updates");
-
 		if(args[0].trim().contains("-generateHashes")) {
 			
 			/******************************************************************************************************** 
@@ -64,27 +65,28 @@ public class MainStandAloneUpdater {
 			 ********************************************************************************************************/
 			
 			Boolean createUpdatesZip = Boolean.valueOf(args[1]);
-			String updatesProperties = args[2];
+			UPDATES_FILE = args[2];
 			
-			PropertiesManager manifestProps = new PropertiesManager(updatesProperties);
+			PropertiesManager manifestProps = new PropertiesManager(UPDATES_FILE);
 
+			File updatesDir = new File("updates");
 			// Only for updates folder -> zip folder into current one
 			if(createUpdatesZip && updatesDir.isDirectory() && updatesDir.exists()) {
 				try {
-					ZipWorker.zipFolder(updatesDir.getAbsolutePath(), currentDir, true, true);
+					ZipWorker.zipFolder(updatesDir.getAbsolutePath(), CURRENT_DIR, true, true);
 				} catch (Exception e) {
 					signalErrorAndExit1(e);
 				}
 			}
 
 			ArrayList<File> toUpload = new ArrayList<>();
-			toUpload.add(new File(updatesProperties));
-			for(File curr : currentDir.listFiles()) {
+			toUpload.add(new File(UPDATES_FILE));
+			for(File curr : CURRENT_DIR.listFiles()) {
 				
 				if (curr.isFile() 
 						&& !curr.getName().endsWith(".bat") 
-						&& !curr.getName().equals(updatesProperties)
-						&& !curr.getName().equals(FTP_PROPERTIES)) {
+						&& !curr.getName().equals(UPDATES_FILE)
+						&& !curr.getName().equals(FTP_PROPERTIES_FILE)) {
 					
 					try {
 						manifestProps.saveCommentedProperty(curr.getName(), ChecksumHasher.getFileHashBuffered(curr, downloadsHashFunc, true));
@@ -102,7 +104,7 @@ public class MainStandAloneUpdater {
 			}
 			
 			/******************************************************************************************************** 
-			 * Function A.1: "uploadFtpUpdates" (reads ftp properties from FTP_PROPERTIES file)
+			 * Function A.1: "-generateHashes-uploadFtpUpdates" (reads ftp properties from FTP_PROPERTIES file)
 			 * 	Usage -> generateHashes function: 
 			 * 
 			 * java -jar updater.jar -generateHashes-uploadFtpUpdates true manifest.properties
@@ -113,7 +115,7 @@ public class MainStandAloneUpdater {
 			
 			signalOKAndExit0();
 		
-		}else {
+		} else {
 
 			/**********************************************************************************************************		
 			 * Function B: update ScreepT 
@@ -125,10 +127,8 @@ public class MainStandAloneUpdater {
 			final File updatesFolder = new File(args[1]).getAbsoluteFile();
 			final File newJar = new File(args[2]).getAbsoluteFile();
 			
-			String manifestPath = updatesFolder.getAbsolutePath() + File.separator + UPDATES_MANIFEST;
+			String manifestPath = updatesFolder.getAbsolutePath() + File.separator + UPDATES_FILE;
 			PropertiesManager manifestProps = new PropertiesManager(manifestPath);
-			
-			final String mainApplicationLauncher = "ScreepT_Launcher.jar";
 			
 			// ScreepTVx.x/application/
 			File generalApplicationFolder = new File("").getAbsoluteFile();
@@ -137,15 +137,11 @@ public class MainStandAloneUpdater {
 			
 			UpdateProgressPanel updateProgressMonitor = null;
 			try {
-				
-				// Validate downloaded files
 				if(!validateUpdatesFolder(updaterJar, updatesFolder, manifestProps)) {
-					launchJar(mainApplicationLauncher);
+					launchJar(MAIN_LAUNCHER_JAR);
 				}
 				
-				Wini iniLauncherConfig = new Wini(new File(DEFAULT_LAUNCHER_INI_PATH));
-				String oldJarName = iniLauncherConfig.get("APPLICATION_OPTIONS", "jarToLaunch");
-				File oldJar = (oldJarName != null) ? new File(oldJarName) : null;
+				File oldJar = getOldJar(resourcesFilePathsMappings);
 				
 				if(updaterJar.exists() && updaterJar.isFile() && updatesFolder.exists() && updatesFolder.isDirectory()){
 
@@ -153,24 +149,27 @@ public class MainStandAloneUpdater {
 					boolean proceed = false;
 					do {
 						Integer choice = dialogHelper.yesNoOrCanc(
-								"ScreepT will be updated, do you want to backup current installation before to update?"
-										+ " (update process will not touch your personal files, but if you prefer you can backup all ScreepT folder before to update)", "Backup current Version files?");
+								"ScreepT will be updated, do you want to backup current installation before to update?" +
+							    " (update process will not touch your personal files, but if you prefer you can backup all ScreepT folder before to update)",
+							    "Backup current Version files?");
+						
 						if (JOptionHelper.OK == choice) {
-							File destBackupDir = FileVarious.directoRead(null,
-									"Select backup destination, or proceed without backup. A unique \"ScreepT_updater_backup\" folder will be created in the specified destination.",
-									new File(System.getProperty("user.home")));
-							if (destBackupDir != null) {
-								destBackupDir = new File(destBackupDir.getCanonicalPath() + File.separator + "ScreepT_updater_backup");
-								destBackupDir = FileWorker.renameJavaObjFile(destBackupDir);
-								FileWorker.copyDirectoryContents(mainRootDirectory, destBackupDir);
-							}
+							boolean validDirectory = true;
+							do {
+								File destBackupDir = FileVarious.directoRead(null, "Select a backup destination, or proceed without backup. A unique \"ScreepT_updater_backup\" folder will be created in the specified destination.", new File(System.getProperty("user.home")));
+								if (destBackupDir != null && destBackupDir.exists()) {
+									destBackupDir = new File(destBackupDir.getCanonicalPath() + File.separator + "ScreepT_updater_backup");
+									destBackupDir = FileWorker.renameJavaObjFile(destBackupDir);
+									FileWorker.copyDirectoryContents(mainRootDirectory, destBackupDir);
+								} else {
+									validDirectory = !dialogHelper.yesOrNo("Destination (" + destBackupDir + ") is not valid: wanna choose another one?", "Invalid Backup destination");
+								} 
+							} while (!validDirectory);
 						}
 
 						if (JOptionHelper.CANC == choice) {
 							if(dialogHelper.yesOrNo("Are you sure to exit update Procedure?", "Exit procedure?")) {
-								launchJar(mainApplicationLauncher);
-							} else {
-								proceed = true;
+								launchJar(MAIN_LAUNCHER_JAR);
 							}
 						} else {
 							proceed = true;
@@ -179,17 +178,17 @@ public class MainStandAloneUpdater {
 					} while(!proceed);
 					
 					// Proceed with update
-					updateProgressMonitor = new UpdateProgressPanel(true); 
-					updateProgressMonitor.setUndefinedDuration();
-					updateProgressMonitor.update(30, "Copying new files...", true);
-					updateProgressMonitor.update(30, "Copying new files...", false);
+					updateProgressMonitor = new UpdateProgressPanel(true, true); 
+					updateProgressMonitor.update(30, "Copying new files...");
+					
+					PropertiesDTO backupProperties = getPropertiesToKeep(resourcesFilePathsMappings);
 					
 					// replace existing files matching with updates (don't touch user personal files)
 					logger.info("Copying content of " + updatesFolder + " into " + generalApplicationFolder);
 					FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
 					
 					// Check if there is Root files update to copy one level up
-					File rootDirUpdates = new File(ROOT_FILES_UPDATES_DIR);
+					File rootDirUpdates = new File(KEY_ROOT_FILES_UPDATES_DIR);
 					if(rootDirUpdates.exists()) {
 						try {
 							updateProgressMonitor.update(70, "Updating licenses and launcher...", true);
@@ -200,45 +199,64 @@ public class MainStandAloneUpdater {
 						}
 					}
 					
-					updateProgressMonitor.update(85, "Updating configuration...", true);
-					updateProgressMonitor.update(100, "Updating configuration...", false);
-					
-					// update main application reference in .ini settings for launcher
-					iniLauncherConfig.put("APPLICATION_OPTIONS", "jarToLaunch", newJar.getName());
-					iniLauncherConfig.store();
-					
-					updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
-					updateProgressMonitor.forceClose();
+					updateProgressMonitor.update(85, 100, "Updating configuration...");
+					restorePropertiesToKeep(backupProperties);
+					saveNewJarRef(resourcesFilePathsMappings, newJar);
 					
 					FileUtils.deleteQuietly(oldJar);
+					
+					updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
 					
 				} else {
 					String fileData = "UpdaterJar => "+updaterJar+"; updates folder => "+updatesFolder;
 					dialogHelper.error("Updates data or updater jar not found, exiting updated procedure." + fileData, " (Updates not found)");
 				}
 				
-				// LAUNCH ScreepT_Launcher.jar
-				launchJar(mainApplicationLauncher);
+				launchJar(MAIN_LAUNCHER_JAR);
 				
 			} catch (Throwable e) {
-				if (updateProgressMonitor != null) {
-					
-					updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
-					updateProgressMonitor.forceClose();
-				}
 				
 				dialogHelper.error("Cannot update, an error occurred: " + e.getClass());
 				logger.error(e.getClass().getCanonicalName(), e);
 				
-				// LAUNCH ScreepT_Launcher.jar
 				try {
-					launchJar(mainApplicationLauncher);
+					launchJar(MAIN_LAUNCHER_JAR);
 				} catch (IOException e1) {
 					logger.error(e.getClass().getCanonicalName(), e);
 				}
 				
+			} finally {
+				if (updateProgressMonitor != null) {
+					updateProgressMonitor.forceClose();
+				}
 				System.exit(0);
 			}
+		}
+	}
+
+	// JAR METHODS //
+	
+	private static File getOldJar(PropertiesManager resourcesFilePathsMappings) {
+		try {
+			String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty(MainStandAloneUpdater.KEY_DEFAULT_LAUNCHER_INI_PATH, "LAUNCHER/Launcher_Configuration.ini");
+			Wini iniLauncherConfig = new Wini(new File(DEFAULT_LAUNCHER_INI_PATH));
+			String oldJarName = iniLauncherConfig.get("APPLICATION_OPTIONS", "jarToLaunch");
+			return (oldJarName != null) ? new File(oldJarName) : null;
+		} catch (Exception e) {
+			logger.error("Cannot retrieve old jar", e);
+			return null;
+		}
+	}
+	
+	private static void saveNewJarRef(PropertiesManager resourcesFilePathsMappings, File newJar) {
+		try {
+			String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty(MainStandAloneUpdater.KEY_DEFAULT_LAUNCHER_INI_PATH, "LAUNCHER/Launcher_Configuration.ini");
+			Wini iniLauncherConfig = new Wini(new File(DEFAULT_LAUNCHER_INI_PATH));
+			
+			iniLauncherConfig.put("APPLICATION_OPTIONS", "jarToLaunch", newJar.getName());
+			iniLauncherConfig.store();
+		} catch (Exception e) {
+			logger.error("Cannot save new jar reference", e);
 		}
 	}
 	
@@ -249,6 +267,9 @@ public class MainStandAloneUpdater {
 		System.exit(0);
 	}
 	
+	/**
+	 * Updates Hashes vaildation
+	 */
 	private static boolean validateUpdatesFolder(File updaterJar, File updatesFolder, PropertiesManager manifestProps) {
 		// .... /UPDATES/updates.zip  ::  (updatesFolder = .... /UPDATES/updates/)
 		File zipUpdates = new File(updatesFolder.getParentFile() + File.separator + "updates.zip");
@@ -271,6 +292,20 @@ public class MainStandAloneUpdater {
 		return proceed;
 	}
 	
+	// BACKUP-RESTORE PROPERTIES
+	private static PropertiesDTO getPropertiesToKeep(PropertiesManager resourcesFilePathsMappings) {
+		PropertiesDTO propertiesDTO = new PropertiesDTO();
+		propertiesDTO.proxyConfString = resourcesFilePathsMappings.getProperty(PropertiesDTO.DEF_PROXY_CONFIG_STRING);
+		return propertiesDTO;
+	}
+	private static void restorePropertiesToKeep(PropertiesDTO backupProperties) {
+		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(PROPERTIES_FILE);
+		resourcesFilePathsMappings.saveCommentedProperty(PropertiesDTO.DEF_PROXY_CONFIG_STRING, backupProperties.proxyConfString);
+	}
+	
+	/**
+	 *  SIGNAL KO BEFORE EXIT
+	 */
 	private static void signalErrorAndExit1(Throwable e) {
 		logger.error("An error occurred: ",e);
 		try {
@@ -280,6 +315,9 @@ public class MainStandAloneUpdater {
 		}
 	}
 
+	/**
+	 *  SIGNAL OK BEFORE EXIT
+	 */
 	private static void signalOKAndExit0() {
 		logger.info("Finished! Updater will close after 5 seconds from now...");
 		try {
@@ -289,9 +327,12 @@ public class MainStandAloneUpdater {
 		}
 	}
 	
+	/**
+	 * FTP update mode - Developer usage only
+	 */
 	private static void uploadUpdatesViaFTP(ArrayList<File> toUploadList) {
 		
-		PropertiesManager ftpProperties = new PropertiesManager(FTP_PROPERTIES);
+		PropertiesManager ftpProperties = new PropertiesManager(FTP_PROPERTIES_FILE);
 		String HOST = ftpProperties.getProperty("HOST", "ftp.am-design-development.com");
 		String USER = ftpProperties.getProperty("USER", "");
 		String PSW = ftpProperties.getProperty("PSW", "");
@@ -318,11 +359,11 @@ public class MainStandAloneUpdater {
 		File manifestFound = findManifestAndMoveAtTheEnd(toUploadList);
 		if(manifestFound != null) {
 			try {
-				logger.info("Deleting remote manifest: " + UPDATES_MANIFEST);
+				logger.info("Deleting remote manifest: " + UPDATES_FILE);
 				boolean deleted = dumper.deleteFile(FOLDER_ON_SERVER, manifestFound.getName());
 				logger.info("Remote manifest deleted? -> " + deleted);
 			} catch (Exception e) {
-				logger.warn("Cannot delete remote " + UPDATES_MANIFEST + " before to upload!", e);
+				logger.warn("Cannot delete remote " + UPDATES_FILE + " before to upload!", e);
 			}
 		}
 		
@@ -353,10 +394,19 @@ public class MainStandAloneUpdater {
 			new JOptionHelper(null).info("FTP upload completed!", "Upload completed");
 		}
 	}
+
+	private static UploadAction getUploadAction(UpdateProgressPanel progPanel, long fileSize, String fileName) {
+		return new UploadAction() {
+			@Override
+			public void doAfterUploadProgress(int percent, String currentFile) {
+				progPanel.update(percent, null, false);
+			}
+		};
+	}
 	
 	private static File findManifestAndMoveAtTheEnd(List<File> readyToDownload) {
 		for(File current : readyToDownload) {
-			if(UPDATES_MANIFEST.equals(current.getName())) {
+			if(UPDATES_FILE.equals(current.getName())) {
 				readyToDownload.remove(current);
 				readyToDownload.add(current); // Moves the file at the end of the list
 				
@@ -366,14 +416,5 @@ public class MainStandAloneUpdater {
 		
 		return null;
 	}
-	
-	private static UploadAction getUploadAction(UpdateProgressPanel progPanel, long fileSize, String fileName) {
-		return new UploadAction() {
 
-			@Override
-			public void doAfterUploadProgress(int percent, String currentFile) {
-				progPanel.update(percent, null, false);
-			}
-		};
-	}
 }

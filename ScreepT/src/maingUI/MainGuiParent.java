@@ -194,7 +194,7 @@ public class MainGuiParent {
 		
 		mnFile = new JMenu("File");
 		mnPreferences = new JMenu("Preferences");
-		mnCryptoSteg = new JMenu("ScreepT");
+		mnCryptoSteg = new JMenu("CreepT");
 		mnTextEditor = new JMenu("Text-Editor");
 			mnLastWorkspaces = new JMenu("Last selected workspaces");
 			mnLastOpenedFile = new JMenu("Last opened files");
@@ -947,8 +947,9 @@ public class MainGuiParent {
 		stringActions.removeAll();
 		
 		TabTextEditorObj loadedTabObj = getSafeTextEditorCurrentTabObject();
+		boolean enabled = loadedTabObj != null && mainGuiUtils.isTextEditorActive();
 		
-		if(loadedTabObj == null) {
+		if(!enabled) {
 			JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase all/selected text"));
 			JMenuItem uppercaseFirstItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Tt Tt</b> - Uppercase all/selected first word's letters"));
 			JMenuItem uppercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.Tt</b> - Uppercase all/selected after significant brokers"));
@@ -968,7 +969,7 @@ public class MainGuiParent {
 			loadedTabObj.enrichPopUpMenuStringActions(stringActions);
 		}
 		
-		MenuSetter.setSubItemsEnabled(menuStringActions, loadedTabObj != null);
+		MenuSetter.setSubItemsEnabled(menuStringActions, enabled);
 		MenuSetter.setFont(menuStringActions, menuItemFont);
 	}
 	

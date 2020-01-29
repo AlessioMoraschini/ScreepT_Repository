@@ -108,8 +108,8 @@ public class TextEditor extends ModulePanel {
 	public static final Dimension TREE_BTN_SIZE = new Dimension(24,24);
 
 	// STATIC phrases
-	public static final String ROOT_WORKSPACE_LBL = "Workspace: ";
-	public static final String ROOT_STANDARD_LBL = "Root: ";
+	public static final String ROOT_WORKSPACE_LBL = " Workspace: ";
+	public static final String ROOT_STANDARD_LBL = " Root: ";
 	
 	// GUI Objects //
 
@@ -255,7 +255,7 @@ public class TextEditor extends ModulePanel {
 		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getMouseListener());
 		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getDoubleCLickListener());
 		leftSplitTreeFiles.addKeyListener(mouseListenerTreeFilePanel.getKeyListener());
-		leftSplitTreeFiles.addMouseMotionListener(TreeUtils.getHoverOnNodesListener());
+		leftSplitTreeFiles.addMouseMotionListener(mouseListenerTreeFilePanel.getHoverOnNodesListener());
 		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
 		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
 		
@@ -277,7 +277,7 @@ public class TextEditor extends ModulePanel {
 		rightSplitPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		rightSplitPane.setPreferredSize(new Dimension(200, 500));
 		
-		lblFiles = new JLabel("File tree");
+		lblFiles = new JLabel(" File tree");
 		lblFiles.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		lblFiles.setMinimumSize(new Dimension(50, 12));
 		lblFiles.setHorizontalAlignment(SwingConstants.LEFT);

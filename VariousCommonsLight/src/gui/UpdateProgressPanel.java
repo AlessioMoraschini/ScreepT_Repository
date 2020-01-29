@@ -89,6 +89,13 @@ public class UpdateProgressPanel {
         }).start();
     }
     
+    public UpdateProgressPanel(boolean secondBar, boolean undefinedDuration) {
+    	this(secondBar);
+    	if (undefinedDuration) {
+			setUndefinedDuration();
+		}
+    }
+    
     /**
 	 * @wbp.parser.constructor
 	 */
@@ -330,6 +337,26 @@ public class UpdateProgressPanel {
     	stopProcess.set(true);
     	dialog.dispose();
     	throw new ProgressBarInterruptedException("Forcing process stop: user called forceCloseNExceptionSignal()");
+    }
+    
+    /**
+     * Use this to update both bars with same data
+     * @param value
+     * @param msg
+     */
+    public synchronized void update(int value, String msg) {
+    	update( value, msg, true);
+    	update( value, msg, false);
+    }
+
+    /**
+     * Use this to update both bars with same data but different bar progress
+     * @param value
+     * @param msg
+     */
+    public synchronized void update(int generalValue, int specValue, String msg) {
+    	update( generalValue, msg, true);
+    	this.pb.setValue(specValue);
     }
 	
 	/**

@@ -17,12 +17,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
@@ -35,6 +35,9 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 	
 	private static final int FOLDER_TEXT_HEIGHT = 15;
 	private static final int FILE_TEXT_HEIGHT = 8;
+	
+	public static Font fileFont = new Font("Segoe UI", Font.PLAIN, 14);
+	public static Font folderFont = new Font("Segoe UI", Font.BOLD, 13);
 
 	static Logger logger = Logger.getLogger(FileNameCellRenderer.class); 
 		
@@ -42,6 +45,8 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 	public JPanel container;
 	
 	public JTree treeRef;
+	
+	public int hoveringRow = -1;
 	
 	public FileNameCellRenderer() {
 		container = new JPanel(new BorderLayout());
@@ -73,34 +78,36 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 				try {
 					File absoluteFile = selectedFile.getAbsoluteFile();
 					if (root.getAbsolutePath().equals(selectedFile.getAbsolutePath())) {
-						iconContainer.setText(selectedFile.getCanonicalPath());
+						iconContainer.setText(selectedFile.getName());
 					} else {
 						iconContainer.setText(absoluteFile.getName());
 					}
-				} catch (IOException e) {
+				} catch (Exception e) {
 					logger.error(e);
 				}
 
 				if (selectedFile.isFile()) {
-					iconContainer.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+					iconContainer.setFont(fileFont);
 					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FILE_TEXT_HEIGHT));
 				} else {
-					iconContainer.setFont(new Font("Segoe UI", Font.BOLD, 14));
+					iconContainer.setFont(folderFont);
 					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FOLDER_TEXT_HEIGHT));
 				}
 
 				container.setToolTipText(selectedFile != null ? selectedFile.getAbsolutePath() : "file is null!");
+				
 			}
+			
 			iconContainer.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
-			iconContainer.setForeground(selected ? Color.WHITE : Color.GRAY);
 			container.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
-			container.setForeground(selected ? Color.WHITE : Color.GRAY);
-			//		container.setBounds(tree.getBounds().x, container.getBounds().y, tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
-			//		container.setPreferredSize(new Dimension(tree.getWidth(), GeneralConfig.DEFAULT_TREE_ROW_HEIGHT));
-//			container.revalidate();
-//			iconContainer.revalidate();
-//			container.repaint();
-//			iconContainer.repaint();
+			if(hoveringRow == row){
+				iconContainer.setForeground(new Color(230,230,230));
+				container.setForeground(new Color(230,230,230));
+			} else {
+				iconContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
+				iconContainer.setForeground(selected ? Color.WHITE : Color.GRAY);
+				container.setForeground(selected ? Color.WHITE : Color.GRAY);
+			}
 		}
 		return container;
     }
@@ -109,14 +116,4 @@ public class FileNameCellRenderer implements TreeCellRenderer {
     	return container;
     }
     
-    public void setHoverBackgroundEffect(final boolean hover) {
-		iconContainer.setBackground(hover ? TreeUtils.DEF_BACK_SELECTION : treeRef.getBackground());
-		iconContainer.setForeground(hover ? Color.WHITE : Color.GRAY);
-		container.setBackground(hover ? TreeUtils.DEF_BACK_SELECTION : treeRef.getBackground());
-		container.setForeground(hover ? Color.WHITE : Color.GRAY);
-		
-		container.repaint();
-		iconContainer.repaint();
-    }
-
 }

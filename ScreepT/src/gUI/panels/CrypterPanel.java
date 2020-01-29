@@ -33,6 +33,7 @@ import crypt.manager.CryptoMode;
 import crypt.manager.ScreeptManagerFileOrFolder;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
+import files.watcher.ChangeDTO;
 import files.watcher.FileChangeMonitor;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtilsExtended;
@@ -50,6 +51,7 @@ import om.BufferedImageType;
 import om.CrypterResultDTO;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import treeutils.TreeUtils;
 import treeutils.om.FileTreeModel;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
@@ -62,14 +64,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.Highlighter;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 
 import java.awt.SystemColor;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.SwingConstants;
@@ -253,6 +254,7 @@ public class CrypterPanel extends ModulePanel {
 	// CODERS objects - shared by methods
 	private boolean flagCreateNewMonitor = false;
 	public FileChangeMonitor fileMonitor;
+	public FileChangeMonitor dictionaryMonitor;
 	private ScreeptManagerFileOrFolder screeptManagerFoF;
 
 	private JScrollPane scrollPaneDragNDropSource;
@@ -278,6 +280,11 @@ public class CrypterPanel extends ModulePanel {
 	public CrypterPanel(INItializer currentConfiguration, MainGUI parent) {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 
+		dictionaryMonitor = new FileChangeMonitor(KEY_DICTIONARY_FILE, new ArrayList<>());
+		dictionaryMonitor.addFileToMonitorList(KEY_DICTIONARY_FILE);
+		dictionaryMonitor.setDEL_FLAG(true);
+		dictionaryMonitor.setMOD_FLAG(true);
+		dictionaryMonitor.setNEW_FLAG(true);
 		
 /////////////////////////////////////////////////////////////////////////////////////
 ///////////////					INITIALIZATION    				/////////////////////
@@ -590,17 +597,19 @@ public class CrypterPanel extends ModulePanel {
 			public void run() {
 				while (true) {
 					try {
-						String backupText = textAreaLog.getText();
-						Highlighter backH = textAreaLog.getHighlighter();
-						textAreaLog.setHighlighter(null);
-						TreePath[] backup = tree.getSelectionPaths();
-						tree = new JTree(treeModel);
 						// refresh tree gui
-						refreshJTree();
-						tree.setSelectionPaths(backup);
-						textAreaLog.setText(backupText);
-						textAreaLog.setHighlighter(backH);
-						Thread.sleep(2000);
+						ChangeDTO changes = dictionaryMonitor.checkForEverithing();
+						if(!changes.addedFiles.isEmpty() || !changes.removedFiles.isEmpty() || !changes.changedFiles.isEmpty()) {
+							if(!changes.addedFiles.isEmpty()) {
+								for(File changed : changes.addedFiles) {
+									if(!dictionaryMonitor.monitoredFileList.contains(changed)) {
+										dictionaryMonitor.monitoredFileList.add(changed);
+									}
+								}
+							}
+							refreshJTree();
+						}
+						Thread.sleep(1000);
 					} catch (Exception e) {
 						logger.error(e.toString());
 					}
@@ -1260,9 +1269,11 @@ public class CrypterPanel extends ModulePanel {
 			}
 		};
 		
+		Dimension minimumBtnTreeSize = new Dimension(95, 28);
+		Dimension minimumBtnTreeSizeBig = new Dimension(110, 28);
+		
 		btnDispoKeyImg = new JButton("One-Use");
 		btnDispoKeyImg.setToolTipText("Select a disposable image that will be forgotten after encryption/decryption");
-		btnDispoKeyImg.setOpaque(true);
 		btnDispoKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDispoKeyImg.setIcon(new ImageIcon(IconsPathConfigurator.ICON_KEY_DICT));
 		btnDispoKeyImg.setRequestFocusEnabled(false);
@@ -1270,11 +1281,11 @@ public class CrypterPanel extends ModulePanel {
 		btnDispoKeyImg.setForeground(Color.BLACK);
 		btnDispoKeyImg.setBackground(new Color(200,200,200));
 		btnDispoKeyImg.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		btnDispoKeyImg.setMinimumSize(minimumBtnTreeSize);
 		leftSplitTopPanel.add(btnDispoKeyImg, "cell 1 0 1 1");
 
 		btnGenerateKeyImg = new JButton("Img Keygen");
 		btnGenerateKeyImg.setToolTipText("Generate a new random key image");
-		btnGenerateKeyImg.setOpaque(true);
 		btnGenerateKeyImg.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKeyImg.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
 		btnGenerateKeyImg.setRequestFocusEnabled(false);
@@ -1282,11 +1293,11 @@ public class CrypterPanel extends ModulePanel {
 		btnGenerateKeyImg.setForeground(Color.BLACK);
 		btnGenerateKeyImg.setBackground(new Color(200,200,200));
 		btnGenerateKeyImg.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		btnGenerateKeyImg.setMinimumSize(minimumBtnTreeSizeBig);
 		leftSplitTopPanel.add(btnGenerateKeyImg, "cell 2 0 1 1");
 
 		btnGenerateKeyPsw = new JButton("Psw Keygen");
 		btnGenerateKeyPsw.setToolTipText("Generate a new random password with fixed length");
-		btnGenerateKeyPsw.setOpaque(true);
 		btnGenerateKeyPsw.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGenerateKeyPsw.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
 		btnGenerateKeyPsw.setRequestFocusEnabled(false);
@@ -1294,6 +1305,7 @@ public class CrypterPanel extends ModulePanel {
 		btnGenerateKeyPsw.setForeground(Color.BLACK);
 		btnGenerateKeyPsw.setBackground(new Color(200, 200, 200));
 		btnGenerateKeyPsw.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		btnGenerateKeyPsw.setMinimumSize(minimumBtnTreeSizeBig);
 		leftSplitTopPanel.add(btnGenerateKeyPsw, "cell 3 0 1 1");
 		
 		// initialize tree 
@@ -1429,6 +1441,8 @@ public class CrypterPanel extends ModulePanel {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				tree.setModel(new FileTreeModel(KEY_DICTIONARY_FILE));
+				String[] expansionsBackup = TreeUtils.getExpansionStates(tree);
 				UIDefaults paneDefaults = new UIDefaults();
 				paneDefaults.put("Tree.selectionBackground", Color.BLACK);
 				tree.putClientProperty("Nimbus.Overrides", paneDefaults);
@@ -1437,6 +1451,7 @@ public class CrypterPanel extends ModulePanel {
 				tree.setBackground(Color.GRAY);
 				tree.setVisibleRowCount(10);
 				tree.addTreeSelectionListener(treeListener);
+				TreeUtils.restoreExpansionStates(tree, expansionsBackup);
 				tree.revalidate();
 				tree.repaint();
 			}

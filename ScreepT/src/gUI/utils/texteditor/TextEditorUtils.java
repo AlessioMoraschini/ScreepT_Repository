@@ -167,19 +167,6 @@ public class TextEditorUtils {
 		}
 	}
 	
-	/**
-	 * Workaround to reapply code folding when text changes newlines or similar
-	 * Was causing code folding to have buggy load
-	 * @param textArea
-	 */
-	public void revalidateFoldingPainted(RSyntaxTextArea textArea) {
-
-		textArea.setCodeFoldingEnabled(false);
-		textArea.setCodeFoldingEnabled(currentTextEditor.currentConfiguration.getTextEditorOpt().isCodeFoldingEnabled());
-		textArea.revalidate();
-		textArea.repaint();
-	}
-	
 	public void applyStyleToButtons(TextEditor currentTextEditor) throws IllegalArgumentException, IllegalAccessException {
 		// retrieve all buttons except Containing depth in name
 		
@@ -703,7 +690,7 @@ public class TextEditorUtils {
 				resetDividerColor();
 				currentTabEditor.applyStyleToTabs();
 				try {
-//					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
+					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
 				} catch (Exception e) {
 					logger.debug("Error during current file highlighting in file tree - textEditor");
 				}
@@ -1079,7 +1066,7 @@ public class TextEditorUtils {
 				RsyntaxUtils.changeStyleViaThemeXml(txtArea, theme.path);
 			}
 		}
-		// loadedTabObj.textArea.revalidate();
+
 		txtArea.repaint();
 	}
 

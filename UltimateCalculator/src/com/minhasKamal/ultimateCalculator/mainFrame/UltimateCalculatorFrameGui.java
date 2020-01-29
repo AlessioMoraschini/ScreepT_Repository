@@ -148,7 +148,7 @@ public class UltimateCalculatorFrameGui extends JFrame {
 //		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
     	setResizable(false);
-    	setMinimumSize(new Dimension(200, 300));
+    	setMinimumSize(new Dimension(250, 350));
 		setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 

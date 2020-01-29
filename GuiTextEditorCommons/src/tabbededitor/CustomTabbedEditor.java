@@ -164,6 +164,7 @@ public class CustomTabbedEditor implements ITabsManager {
 						});
 					}
 					
+					revalidateFoldingPainted(loadedTabObj.textArea);
 					changeMonManager.checkChanges();
 					alreadyrefreshing = false;
 					
@@ -322,11 +323,11 @@ public class CustomTabbedEditor implements ITabsManager {
 		return new DocumentListener() {
 
 			public void removeUpdate(DocumentEvent e) {
-				fileChangedTabPanelUpdate();
+//				fileChangedTabPanelUpdate();
 			}
 
 			public void insertUpdate(DocumentEvent e) {
-				fileChangedTabPanelUpdate();
+//				fileChangedTabPanelUpdate();
 			}
 
 			public void changedUpdate(DocumentEvent e) {
@@ -351,6 +352,17 @@ public class CustomTabbedEditor implements ITabsManager {
 			logger.error("Error during label update!", e);
 		}
 		
+	}
+	
+	/**
+	 * Workaround to reapply code folding when text changes newlines or similar
+	 * Was causing code folding to have buggy load
+	 * @param textArea
+	 */
+	public void revalidateFoldingPainted(RSyntaxTextArea textArea) {
+
+		textArea.setCodeFoldingEnabled(false);
+		textArea.setCodeFoldingEnabled(currentConfiguration.getTextEditorOpt().isCodeFoldingEnabled());
 	}
 	
 	public FocusListener getFocusListenerTxtCursor() {

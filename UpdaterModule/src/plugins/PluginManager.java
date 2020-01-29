@@ -57,7 +57,7 @@ public class PluginManager {
 
 	public static final HashingFunction DEFAULT_HASHING_F_PLUGINS = HashingFunction.SHA512;
 
-	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.resourcesMappingDefPath);
+	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.PROPERTIES_FILE);
 	public static PropertiesManager installedPluginProperties = new PropertiesManager(installedPluginPropsFileName);
 	
 	public static final String LOCAL_PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR", "PLUGINS/");

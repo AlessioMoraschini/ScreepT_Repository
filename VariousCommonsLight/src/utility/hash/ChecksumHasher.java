@@ -28,32 +28,6 @@ import utility.properties.PropertiesManager;
 public class ChecksumHasher {
 
 	public static SafeLogger logger = new SafeLogger(ChecksumHasher.class);
-	
-	public static boolean equalsFilesChecksum(File A, File B, HashingFunction algorithm) throws Throwable {
-		
-		String hashA = ChecksumHasher.getFileHashBuffered(A, algorithm, true);
-		String hashB = ChecksumHasher.getFileHashBuffered(B, algorithm, true);
-		
-		return hashA.equals(hashB);
-	}
-
-	public static boolean checkFileHash(String filePath, String checksum, HashingFunction algorithm) throws Throwable {
-		
-		if(filePath == null || checksum == null) return false;
-		
-		String myChecksum = getFileHashBuffered(filePath, algorithm, true);
-		
-		return myChecksum.equalsIgnoreCase(checksum) || checksum.toUpperCase().contains(myChecksum);
-	}
-
-	public static boolean checkFileHash(File file, String checksum, HashingFunction algorithm) throws Throwable {
-		
-		if(file == null || checksum == null) return false;
-		
-		String myChecksum = getFileHashBuffered(file, algorithm, true);
-		
-		return myChecksum.equalsIgnoreCase(checksum) || checksum.toUpperCase().contains(myChecksum);
-	}
 
 	/**
 	 * Use only in case of a small file, cause this reads all the bytes from source into memory,
@@ -84,7 +58,10 @@ public class ChecksumHasher {
 		return result;
 	}
 	
-	// HASHING //
+	/**
+	 * Use only in case of a small file, cause this reads all the bytes from source into memory,
+	 * potentially leading to an outOfMemoryException. It's preferrable to use <i>getFileHashBuffered()</i> method.
+	 */
 	@Deprecated
 	public static String getFileHash(String filePath, HashingFunction algorithm) throws Throwable {
 		
@@ -185,8 +162,34 @@ public class ChecksumHasher {
 	    sr.nextBytes(salt);
 	    return salt;
 	}
+	
+	
+	public static boolean equalsFilesChecksum(File A, File B, HashingFunction algorithm) throws Throwable {
+		
+		String hashA = ChecksumHasher.getFileHashBuffered(A, algorithm, true);
+		String hashB = ChecksumHasher.getFileHashBuffered(B, algorithm, true);
+		
+		return hashA.equals(hashB);
+	}
 
-	// HASHING //
+	public static boolean checkFileHash(String filePath, String checksum, HashingFunction algorithm) throws Throwable {
+		
+		if(filePath == null || checksum == null) return false;
+		
+		String myChecksum = getFileHashBuffered(filePath, algorithm, true);
+		
+		return myChecksum.equalsIgnoreCase(checksum) || checksum.toUpperCase().contains(myChecksum);
+	}
+
+	public static boolean checkFileHash(File file, String checksum, HashingFunction algorithm) throws Throwable {
+		
+		if(file == null || checksum == null) return false;
+		
+		String myChecksum = getFileHashBuffered(file, algorithm, true);
+		
+		return myChecksum.equalsIgnoreCase(checksum) || checksum.toUpperCase().contains(myChecksum);
+	}
+
 	public static boolean checkHashesFromProperties(List<File> filesToCheck, PropertiesManager propsManifest, HashingFunction hashingFunction) throws Throwable {
 		if(filesToCheck == null || filesToCheck.isEmpty()) {
 			return true;
