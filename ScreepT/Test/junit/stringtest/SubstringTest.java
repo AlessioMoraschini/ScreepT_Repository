@@ -12,7 +12,6 @@ import org.junit.Test;
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
 import testUtils.TestUtils;
-import utility.ByteArrayShuffler;
 
 public class SubstringTest {
 

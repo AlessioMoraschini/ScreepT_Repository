@@ -280,7 +280,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 								textEditor.setWorkspace(completed);
 								textOptions.addFileToTopLimitedList(completed, textOptions.lastSelectedWorkspaces, "lastSelectedWorkspaces");
 								MainGUI.mainAPP.updateLastOpenedWorkspaces(textOptions.lastSelectedWorkspaces);
-								textEditor.textEditorUtils.refreshFromWorkspace(completed);
+								textEditor.textEditorUtils.refreshTreeFromWorkspace(completed);
 								
 								MainGUI.mainGuiUtils.startTextEditor(true);
 								

@@ -2,8 +2,6 @@ package junit.GUI;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 
 import org.junit.Rule;
@@ -59,7 +57,7 @@ public class EntroPieTest {
 		}
 	}
 	
-	private void printLineDest(int nForLine, byte[] array) {
+	protected void printLineDest(int nForLine, byte[] array) {
 		int progr = 0;
 		while(progr+nForLine < array.length) {
 			System.out.println(Arrays.toString(Arrays.copyOfRange(array, progr, progr+nForLine)));
@@ -73,7 +71,7 @@ public class EntroPieTest {
 		System.out.println(src);
 	}
 	
-	private void separatorPrint() {
+	protected void separatorPrint() {
 		print("\n   ###################################################\n");
 	}
 }

@@ -38,7 +38,7 @@ public class IconsPathConfigurator {
 	public static final String F_ICON_TYPESCRIPT = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_typescript.png";
 	public static final String F_ICON_AUDIO = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_audio.png";
 	public static final String F_ICON_VIDEO = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_movie.png";
-	public static final String F_ICON_IMAGE = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_image.png";
+	public static final String F_ICON_IMAGE = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/imageConverter.png";
 	public static final String F_ICON_EXE = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_Exe.png";
 	public static final String F_ICON_GENERIC = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_genericFile.png";
 	public static final String F_ICON_JAR = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_Jar.png";
@@ -81,7 +81,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_CONVERSION = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/conversion.png";
 	public static final String ICON_FILE_N_DIR = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/folderActions.png";
 	
-	public static final String ICON_IMAGE_CONVERTER = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/imageConverter.png";
+	public static final String ICON_IMAGE_CONVERTER = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_image.png";
 	
 	public static final String ICON_UPPERCASE_FIRST = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/uppercase.png";
 	public static final String ICON_CREATE_FOLDER = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/createFolder.png";

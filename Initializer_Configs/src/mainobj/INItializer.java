@@ -73,7 +73,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		try {
 			iniReadFile = new Wini(new File(DEFAULT_INI_PATH));
 			iniFile = new Wini(new File(DEFAULT_INI_PATH));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("INItializer() -> Exception happened initializing configuration!", e);
 		}
 	}
@@ -294,7 +294,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	 */
 	public void loadTxtEditorOptions() {
 		// TEXT EDITOR OPTIONS
-		textEditorOpt.setEol(EOL.valueOf(getSafeStringConf(TEXT_EDITOR_OPT, "EOL", TextEditorOption.DEF_eol.name())));
+		textEditorOpt.setEol(EOL.valueOf(getSafeStringConf(TEXT_EDITOR_OPT, "EOL", EOL.defaultEol.name())));
 		textEditorOpt.setFirstTimeOpened(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "firstTimeOpened"), TextEditorOption.DEF_firstTimeOpened));
 		
 		// INI read

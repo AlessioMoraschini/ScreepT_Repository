@@ -280,6 +280,7 @@ public class NetworkUtils {
 	    return IPaddressConverter.asBytes(responseString);
 	}
 	
+	@SuppressWarnings("restriction")
 	public static List<String> getDnsServers() {
 		try {
 			return sun.net.dns.ResolverConfiguration.open().nameservers();

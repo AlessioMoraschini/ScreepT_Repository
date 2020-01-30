@@ -83,6 +83,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 	private JButton btnHashed;
 	private JCheckBox chckbxShowKey;
 	
+	@SuppressWarnings("unused")
 	private SecurityLevel securityLevel = SecurityLevel.NO_CHECK;
 	
 	public GeneratePasswordFrame(JFrame parentFrame) {

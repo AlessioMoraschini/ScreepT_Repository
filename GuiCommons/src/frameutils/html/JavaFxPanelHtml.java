@@ -49,8 +49,10 @@ import com.sun.webkit.dom.HTMLElementImpl;
 /** 
  * SwingFXWebView 
  */  
+@SuppressWarnings("restriction")
 public class JavaFxPanelHtml extends JPanel {  
-     
+	private static final long serialVersionUID = 5581554551184234562L;
+
 	private int W = 1200;
 	private int H = 700;
 	public String URL_Loaded;
@@ -73,7 +75,7 @@ public class JavaFxPanelHtml extends JPanel {
         
     }
     
-    public void resizeComp(int width, int height) {
+	public void resizeComp(int width, int height) {
     	W = width;
     	H = height;
     	
@@ -87,7 +89,7 @@ public class JavaFxPanelHtml extends JPanel {
 		}
     }
      
-    public void loadUrl(String url, String indexId) {
+	public void loadUrl(String url, String indexId) {
     	PlatformImpl.runAndWait(new Runnable() {  
             @Override
             public void run() {  
@@ -129,6 +131,7 @@ public class JavaFxPanelHtml extends JPanel {
         			indexElement = initIndex(indexId);
         			
         			scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+						@SuppressWarnings("incomplete-switch")
 						@Override
 						public void handle(KeyEvent event) {
 							

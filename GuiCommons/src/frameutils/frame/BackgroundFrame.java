@@ -17,6 +17,8 @@ import java.awt.Image;
 
 import javax.swing.JPanel;
 
+import utility.ImageWorker;
+
 public class BackgroundFrame extends JPanel{
 	private static final long serialVersionUID = -2332359202457198415L;
 	
@@ -53,7 +55,7 @@ public class BackgroundFrame extends JPanel{
 				int H = this.getHeight();
 				
 				if(W >= 0 && H >= 0) {
-					backgroundImage = scaleImage(backgroundImage, W, H);
+					backgroundImage = ImageWorker.scaleImageSameRatio(backgroundImage, W, H);
 					X = (W - backgroundImage.getWidth(null)) / 2;
 					Y = (H - backgroundImage.getHeight(null)) / 2;
 				}
@@ -62,23 +64,4 @@ public class BackgroundFrame extends JPanel{
 		}
 	}
 	
-	/**
-	 * this method resize an image to the given wanted dimensions keeping the same
-	 * width/height ratio. returns a Image resized
-	 */
-	private Image scaleImage(Image image, int newWidth, int newHeight) {
-		// Make sure the aspect ratio is maintained, so the image is not distorted
-		double thumbRatio = (double) newWidth / (double) newHeight;
-		int imageWidth = image.getWidth(null);
-		int imageHeight = image.getHeight(null);
-		double aspectRatio = (double) imageWidth / (double) imageHeight;
-
-		if (thumbRatio < aspectRatio) {
-			newHeight = (int) (newWidth / aspectRatio);
-		} else {
-			newWidth = (int) (newHeight * aspectRatio);
-		}
-
-		return image.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
-	}
 }

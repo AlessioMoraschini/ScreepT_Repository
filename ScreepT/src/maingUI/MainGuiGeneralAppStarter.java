@@ -290,17 +290,17 @@ public class MainGuiGeneralAppStarter {
 	 */
 	private static void doStuffBeforeErrorClose(boolean forceCloseWithoutAsk, Throwable t) {
 		
+		Object userChoice;
 		try {
-			Object res;
-			
 			if (forceCloseWithoutAsk || ParametricExceptionThread.isCriticalError(t)) {
+				
 				logger.error(AWTExceptionHandler.CRITICAL_ERROR_MSG, t);
 				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				
 				if (!forceCloseWithoutAsk) {
-					res = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelperExtended.YES_OR_NO);
+					userChoice = dialogHelper.errorScroll(AWTExceptionHandler.CRITICAL_ERROR_MSG + AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(), "Critical Error", t, AWTExceptionHandler.options, JOptionHelperExtended.YES_OR_NO);
 					// IF not kill then return back
-					if (!AWTExceptionHandler.options[0].equals(res)) {
+					if (!AWTExceptionHandler.options[0].equals(userChoice)) {
 						// CASE CONTINUE
 						return;
 					} 
@@ -319,20 +319,22 @@ public class MainGuiGeneralAppStarter {
 				}
 				
 			} else {
+				// Case EXCEPTION 
+				
 				logger.error("An Exception occurred: ", t);
 				
 				if (currentConfiguration.getGenOpt().isExceptionAdvicesEnabled()) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
-					res = new JOptionHelperExtended(null).warnScroll(
+					userChoice = new JOptionHelperExtended(null).warnScroll(
 							"An Exception occurred, but I'still here ;) \n\n"
 									+ "(if you don't want to see this message you can disable it going to preferences->general options and deselecting the related checkbox)\n\n => PRESS \"Kill Application\" IF YOU WANT TO CLOSE, TRYING TO SAVE CURRENT WORK\n\n =>"
 									+ AWTExceptionHandler.DIALOG_USER_ERR_INFO + t.getClass().getCanonicalName(),
 							"An Exception Occurred", t, AWTExceptionHandler.options, JOptionHelperExtended.YES_OR_NO);
 				}else {
 					// Default Continue
-					res = AWTExceptionHandler.options[1];
+					userChoice = AWTExceptionHandler.options[1];
 				}
-				if (AWTExceptionHandler.options[0].equals(res)) {
+				if (AWTExceptionHandler.options[0].equals(userChoice)) {
 					// CASE KILL APPLICATION
 					try {
 						MainGuiManager.closeApplication(1);

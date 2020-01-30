@@ -157,6 +157,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmHashChecker;
 	CustomJmenuItem mntmColorPicker;
 	CustomJmenuItem mntmClipboardStandalone;
+	CustomJmenuItem mntmImageViewer;
 	CustomJmenuItem mntmImageConverter;
 	CustomJmenuItem mntmTouppercaseDirectory;
 	CustomJmenuItem mntmDeleteDirectoryContentByExtension;
@@ -387,6 +388,7 @@ public class MainGuiParent {
 			mnVarious.add(mntmClipboardStandalone);
 			mnVarious.add(mnConversionsAndOther);
 				// SUB-MENU
+				mnConversionsAndOther.add(mntmImageViewer);
 				mnConversionsAndOther.add(mntmImageConverter);
 				mnVarious.add(mnFilesAndDirectories);
 				// SUB-MENU
@@ -532,6 +534,7 @@ public class MainGuiParent {
 		mntmClipboardStandalone.setFont(menuItemFont);
 		
 		// SUB -> CONVERSION UTILS SECTION
+		mntmImageViewer.setFont(menuItemFont);
 		mntmImageConverter.setFont(menuItemFont);
 		
 		// SUB-> FILES AND DIRECTORIES SECTION
@@ -615,6 +618,7 @@ public class MainGuiParent {
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 		
+		mntmImageViewer.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_IMAGE));
 		mntmImageConverter.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER));
 		
 		mntmTouppercaseDirectory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UPPERCASE_FIRST));
@@ -667,7 +671,7 @@ public class MainGuiParent {
 		mntmGenOpt.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_2, ALT_MASK | SHIFT_MASK));
 		mntmCustomizeUIView.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_3, ALT_MASK | SHIFT_MASK));
 		mntmFullScreenMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK | SHIFT_MASK));
-		mntmImmersiveMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_M, CTRL_MASK | ALT_MASK | SHIFT_MASK));
+		mntmImmersiveMode.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_M, ALT_MASK | SHIFT_MASK));
 		
 		// ScreepT submenu
 		mntmCreepter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | SHIFT_MASK));
@@ -685,6 +689,7 @@ public class MainGuiParent {
 		mntmHashChecker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, ALT_MASK | SHIFT_MASK));
 		mntmColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P,CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmClipboardStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, ALT_MASK | SHIFT_MASK));
+		mntmImageViewer.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, ALT_MASK | SHIFT_MASK));
 		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
 		
 			// Folder and files functions
@@ -1095,6 +1100,10 @@ public class MainGuiParent {
 
 	public void setMntmHashChecker(CustomJmenuItem mntmHashChecker) {
 		this.mntmHashChecker = mntmHashChecker;
+	}
+
+	public CustomJmenuItem getMntmImageViewer() {
+		return mntmImageViewer;
 	}
 
 	public JMenuItem getMntmImageConverter() {

@@ -86,7 +86,7 @@ public class JvmHelper {
 		String foundCorrectName = new File(foundCorrect).getName();
 		warningJVM = foundCorrect.equals(NOT_FOUND_JVM) 
 				|| StringWorker.trimToEmpty(foundCorrect).equals("") 
-				|| !checkSingleJavaVersionOK(foundCorrectName, ScreepTLauncher.iniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, ScreepTLauncher.iniFileManager.MIN_JRE_VERSION);
+				|| !checkSingleJavaVersionOK(foundCorrectName, IniFileManager.MAX_JRE_VERSION_FULL_COMPATIBILITY, IniFileManager.MIN_JRE_VERSION);
 		
 		// case of ignore warnings specified : use current JVM
 		if(ignoreWarnings) {

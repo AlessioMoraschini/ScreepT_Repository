@@ -22,7 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+import javax.swing.tree.TreeCellRenderer;
+
 import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;

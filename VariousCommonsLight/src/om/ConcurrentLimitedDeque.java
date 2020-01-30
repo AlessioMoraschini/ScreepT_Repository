@@ -22,7 +22,7 @@ public class ConcurrentLimitedDeque <T>{
 	
 	public ConcurrentLimitedDeque(int maxSize){
 		this.maxSize = maxSize;
-		list = new LinkedBlockingDeque();
+		list = new LinkedBlockingDeque<>();
 	}
 
 	// methods 

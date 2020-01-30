@@ -18,7 +18,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.filechooser.FileView;
 
-import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
 public class MyFileView extends FileView{

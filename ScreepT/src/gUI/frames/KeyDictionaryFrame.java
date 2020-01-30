@@ -359,7 +359,7 @@ public class KeyDictionaryFrame extends ParentFrame{
 		
 		addHandlers();
 		
-		TreeFileMouseListenerDictionary menuListener = new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
+		new TreeFileMouseListenerDictionary(currentConfiguration, thisPanel, tree, textArea, null);
 		logger.debug("## KEY DICTIONARY started");
 
 	}
@@ -437,9 +437,9 @@ public class KeyDictionaryFrame extends ParentFrame{
 	 * this method select a directory from the user (only directories)to write a copy of current
 	 * dictionary, if nothing is selected returns null
 	 */
-	private File directoWrite(JFrame parent) {
+	@Deprecated
+	protected File directoWrite(JFrame parent) {
 
-		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));		

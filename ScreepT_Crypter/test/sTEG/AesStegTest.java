@@ -39,7 +39,7 @@ public class AesStegTest {
 			}
 			
 			StegCipher imgCoder = new StegCipher(new File("IMG/KEY_DICTIONARY/small_agbr.png"));
-			BufferedImage keyImg = imgCoder.getKeyImage();
+//			BufferedImage keyImg = imgCoder.getKeyImage();
 			
 			BufferedImage result = imgCoder.stegaCrypt(byteList);
 			File dest = new File("IMG/file.png");

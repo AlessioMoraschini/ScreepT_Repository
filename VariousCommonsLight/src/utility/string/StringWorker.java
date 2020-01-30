@@ -640,10 +640,10 @@ public class StringWorker {
 	}
 
 	public static boolean isEmpty(String source) {
-		return source != null && "".equals(source.trim());
+		return source == null || (source != null && "".equals(source.trim()));
 	}
 	public static boolean isEmptyNoTrim(String source) {
-		return source != null && "".equals(source);
+		return source == null || (source != null && "".equals(source));
 	}
 
 	public static String nullToEmpty(String source) {
@@ -655,11 +655,7 @@ public class StringWorker {
 	}
 
 	public static String trimToEmpty(String source) {
-		if (source != null) {
-			return source.trim();
-		} else {
-			return "";
-		}
+		return nullToEmpty(source).trim();
 	}
 	
 	public static boolean notEmpty(String source) {

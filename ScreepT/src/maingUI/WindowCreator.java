@@ -152,7 +152,7 @@ public class WindowCreator {
 		
 		ImageConverterFrame panelImgConv = ImageConverterFrame.getInstance(MainGUI.currentConfiguration);
 		
-		commonGraphicInit(panelImgConv, "IMG Generator - ", true);
+		commonGraphicInit(panelImgConv, "IMG Converter - ", true);
 		
 		panelImgConv.setResizable(false);
 		

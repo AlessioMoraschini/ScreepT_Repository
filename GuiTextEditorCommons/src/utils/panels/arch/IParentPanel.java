@@ -13,8 +13,6 @@ package utils.panels.arch;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
 public interface IParentPanel{
 
 	public void sync();

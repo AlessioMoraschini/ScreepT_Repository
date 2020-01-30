@@ -373,6 +373,8 @@ public abstract class AbstractFindReplaceFork extends AbstractSearchDialog {
 		KeyStroke ctrlF = KeyStroke.getKeyStroke(KeyEvent.VK_F, modifier);
 		im.put(ctrlF, "focusSearchForField");
 		am.put("focusSearchForField", new AbstractAction() {
+			private static final long serialVersionUID = -827477797099362910L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				AbstractFindReplaceFork.this.requestFocus();

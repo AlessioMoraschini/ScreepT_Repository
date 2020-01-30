@@ -35,18 +35,18 @@ import gUI.utils.tree.crypter.om.CrypterDragFileModel;
 import gui.MenuSetter;
 import resources.IconsPathConfigurator;
 
-public class TreeDragNDropListenerCrypter {
+public class TreeMouseListenerCrypter {
 	
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(TreeDragNDropListenerCrypter.class); 
+	static Logger logger = Logger.getLogger(TreeMouseListenerCrypter.class); 
 	
 	// gui elements
 	private JTree fileTree ;
-	private DefaultMutableTreeNode selectedNode;
-	private CrypterPanel mainCrypterFrame;
+	public DefaultMutableTreeNode selectedNode;
+	public CrypterPanel mainCrypterFrame;
 	
 	// constructor
-	public TreeDragNDropListenerCrypter(JTree tree){
+	public TreeMouseListenerCrypter(JTree tree){
 		fileTree = tree;
 		fileTree.setComponentPopupMenu(getPopUpMenu());
 		fileTree.addMouseListener(getMouseListener());
@@ -70,7 +70,7 @@ public class TreeDragNDropListenerCrypter {
 	    };
 	}
 	
-	private MouseListener getTooltipListener() {
+	protected MouseListener getTooltipListener() {
 		return new MouseAdapter() {
 		};
 	}

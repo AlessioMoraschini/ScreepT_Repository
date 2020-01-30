@@ -12,6 +12,7 @@
 package utility;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -192,11 +193,7 @@ public class ImageWorker {
 		return newImage;
 	}
 	
-	/**
-	 * this method resize an image to the given wanted dimensions keeping the same
-	 * width/height ratio. returns a Image resized
-	 */
-	public static Image scaleImage(Image image, int newWidth, int newHeight, int scaleMode) {
+	public static Dimension getDimensionSameRatio(Image image, int newWidth, int newHeight) {
 		// Make sure the aspect ratio is maintained, so the image is not distorted
 		double thumbRatio = (double) newWidth / (double) newHeight;
 		int imageWidth = image.getWidth(null);
@@ -208,8 +205,29 @@ public class ImageWorker {
 		} else {
 			newWidth = (int) (newHeight * aspectRatio);
 		}
+		
+		return new Dimension(newWidth, newHeight);
+	}
+	
+	/**
+	 * this method resize an image to the given wanted dimensions keeping the same
+	 * width/height ratio. returns a Image resized
+	 */
+	public static Image scaleImageSameRatio(Image image, int newWidth, int newHeight) {
+		
+		Dimension sameRatio = getDimensionSameRatio(image, newWidth, newHeight);
+		return image.getScaledInstance(sameRatio.width, sameRatio.height, Image.SCALE_SMOOTH);
+	}
+	
+	/**
+	 * this method resize an image to the given wanted dimensions keeping the same
+	 * width/height ratio. returns a Image resized
+	 */
+	public static Image scaleImage(Image image, int newWidth, int newHeight, int scaleMode) {
+		// Make sure the aspect ratio is maintained, so the image is not distorted
+		Dimension sameRatio = getDimensionSameRatio(image, newWidth, newHeight);
 
-		return image.getScaledInstance(newWidth, newHeight, scaleMode);
+		return image.getScaledInstance(sameRatio.width, sameRatio.height, scaleMode);
 	}
 
 	/**

@@ -102,7 +102,7 @@ public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyE
 				/*
 				 *  IMMERSIVE MODE ON/OFF -> Ctrl+shift+Alt+M
 				 */
-				else if(e.getKeyCode() == 77 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if(e.getKeyCode() == 77 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							MainGUI.mainGuiUtils.immersiveModeToggle();
@@ -265,6 +265,13 @@ public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyE
 				}
 				
 				// MEDIA - CONVERTERS //
+				/**
+				 *  OPEN IMAGE-VIEWER : ALT+SHIFT+O
+				 */
+				else if (e.getKeyCode() == KeyEvent.VK_O && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
+					currentGui.getMntmImageViewer().doClick();
+				}
+
 				/**
 				 *  OPEN IMAGE-CONVERTER : ALT+SHIFT+I
 				 */

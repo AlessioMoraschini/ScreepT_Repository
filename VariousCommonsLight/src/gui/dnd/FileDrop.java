@@ -323,9 +323,9 @@ public class FileDrop
                             log( out, "FileDrop: file list accepted." );
 
                             // Get a useful list
-                            java.util.List fileList = (java.util.List) 
+                            java.util.List<?> fileList = (java.util.List<?>) 
                                 tr.getTransferData(java.awt.datatransfer.DataFlavor.javaFileListFlavor);
-                            java.util.Iterator iterator = fileList.iterator();
+//                            java.util.Iterator<?> iterator = fileList.iterator();
 
                             // Convert list to array
                             java.io.File[] filesTemp = new java.io.File[ fileList.size() ];
@@ -435,7 +435,8 @@ public class FileDrop
         {   
             boolean support = false;
             try
-            {   Class arbitraryDndClass = Class.forName( "java.awt.dnd.DnDConstants" );
+            {   
+//            	Class<?> arbitraryDndClass = Class.forName( "java.awt.dnd.DnDConstants" );
                 support = true;
             }   // end try
             catch( Exception e )
@@ -452,7 +453,7 @@ public class FileDrop
      private static File[] createFileArray(BufferedReader bReader, PrintStream out)
      {
         try { 
-            java.util.List list = new java.util.ArrayList();
+            java.util.List<File> list = new java.util.ArrayList<>();
             java.lang.String line = null;
             while ((line = bReader.readLine()) != null) {
                 try {
@@ -658,8 +659,9 @@ public class FileDrop
      * @version 1.2
      */
     public static class Event extends java.util.EventObject {
-
-        private java.io.File[] files;
+		private static final long serialVersionUID = -6360564219554429176L;
+		
+		private java.io.File[] files;
 
         /**
          * Constructs an {@link Event} with the array
@@ -812,8 +814,8 @@ public class FileDrop
          * @param fetcher The {@link Fetcher} that will return the data object
          * @since 1.1
          */
-        public TransferableObject( Class dataClass, Fetcher fetcher )
-        {   this.fetcher = fetcher;
+        public TransferableObject( Class<?> dataClass, Fetcher fetcher ) {
+        	this.fetcher = fetcher;
             this.customFlavor = new java.awt.datatransfer.DataFlavor( dataClass, MIME_TYPE );
         }   // end constructor
 
@@ -853,7 +855,8 @@ public class FileDrop
                 };  // end flavors array
             else
                 return new java.awt.datatransfer.DataFlavor[]
-                {   DATA_FLAVOR,
+                {   
+            		DATA_FLAVOR,
                     java.awt.datatransfer.DataFlavor.stringFlavor
                 };  // end flavors array
         }   // end getTransferDataFlavors

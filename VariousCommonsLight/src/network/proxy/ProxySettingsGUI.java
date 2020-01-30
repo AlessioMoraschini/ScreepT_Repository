@@ -125,7 +125,9 @@ public class ProxySettingsGUI extends JDialog {
 		proxyAuthEnabledGUI(chckAuthSettings.isSelected());
 		
 		if (setAndClose) {
-			dispose();
+			applyProxyData();
+			applProxyAuthData();
+			dispose();	
 		} else {
 			setVisible(true);
 		}

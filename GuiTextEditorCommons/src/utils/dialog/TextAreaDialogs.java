@@ -277,7 +277,7 @@ public class TextAreaDialogs {
 					default: // Prevent FindBugs warning later
 					case MARK_ALL:
 						result = SearchEngine.markAll(dialogManager.getTargetTextArea(), context);
-						searchList.addNreplaceToTopIfPresent(context.getSearchFor());
+						searchList.addUniqueToTop(context.getSearchFor());
 						break;
 					case FIND:
 						result = SearchEngine.find(dialogManager.getTargetTextArea(), context);
@@ -285,7 +285,7 @@ public class TextAreaDialogs {
 						if (!result.wasFound()) {
 							UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 						}
-						searchList.addNreplaceToTopIfPresent(context.getSearchFor());
+						searchList.addUniqueToTop(context.getSearchFor());
 						break;
 					case REPLACE:
 						result = SearchEngine.replace(dialogManager.getTargetTextArea(), context);
@@ -293,11 +293,11 @@ public class TextAreaDialogs {
 						if (!result.wasFound()) {
 							UIManager.getLookAndFeel().provideErrorFeedback(dialogManager.getTargetTextArea());
 						}
-						replaceList.addNreplaceToTopIfPresent(context.getReplaceWith());
+						replaceList.addUniqueToTop(context.getReplaceWith());
 						break;
 					case REPLACE_ALL:
 						result = SearchEngine.replaceAll(dialogManager.getTargetTextArea(), context);
-						replaceList.addNreplaceToTopIfPresent(context.getReplaceWith());
+						replaceList.addUniqueToTop(context.getReplaceWith());
 						new JOptionHelperExtended(null).info(result.getCount() + " occurrences replaced.", "Occurrences replaced");
 						break;
 				}

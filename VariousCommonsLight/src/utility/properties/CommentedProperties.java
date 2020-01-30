@@ -30,12 +30,12 @@ public class CommentedProperties extends java.util.Properties {
 	/**
 	 * Use a Vector to keep a copy of lines that are a comment or 'blank'
 	 */
-	public Vector lineData = new Vector(0, 1);
+	public Vector<String> lineData = new Vector<>(0, 1);
 
 	/**
 	 * Use a Vector to keep a copy of lines containing a key, i.e. they are a property.
 	 */
-	public Vector keyData = new Vector(0, 1);
+	public Vector<String> keyData = new Vector<>(0, 1);
 
 	/**
 	 * Load properties from the specified InputStream. 

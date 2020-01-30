@@ -45,6 +45,10 @@ public class LimitedConcurrentList <T>{
 	public boolean isFull() {
 		return list.size() == maxSize;
 	}
+
+	public boolean isEmpty() {
+		return list.isEmpty();
+	}
 	
 	/**
 	 * Add an element at the end of the list. If max is reached first element will be cleaned out before to insert
@@ -100,6 +104,12 @@ public class LimitedConcurrentList <T>{
 		}
 		return added;
 	}
+	
+	public void addIfNotPresent(T element) {
+		if(!list.contains(element)) {
+			addUniqueToTop(element);
+		}
+	}
 
 	/**
 	 * Add elements at the end of the list(if an element is already present it will be cleaned out and then re-added). 
@@ -107,7 +117,7 @@ public class LimitedConcurrentList <T>{
 	 * @param element
 	 * @return
 	 */
-	public void addNreplaceToTopIfPresent(Collection<T> elements) {
+	public void addUniquesToTop(Collection<T> elements) {
 		
 		synchronized (list) {
 			for (T element : elements) {
@@ -133,7 +143,7 @@ public class LimitedConcurrentList <T>{
 	 * @param element
 	 * @return
 	 */
-	public void addNreplaceToTopIfPresent(T element) {
+	public void addUniqueToTop(T element) {
 		
 		synchronized (list) {
 			if (isFull() && !list.isEmpty()) {
@@ -232,10 +242,11 @@ public class LimitedConcurrentList <T>{
 	}
 	
 	public T getLast() {
-		if(list != null && !list.isEmpty()) {
+		if (list != null && !list.isEmpty()) {
 			int size = list.size();
 			return list.get(size-1);
-		}else return null;
+		
+		} else return null;
 	}
 	
 	/**
@@ -264,6 +275,10 @@ public class LimitedConcurrentList <T>{
 		}
 
 		return builder.toString();
+	}
+	
+	public void reset() {
+		list.clear();
 	}
 
 	// getters & setters

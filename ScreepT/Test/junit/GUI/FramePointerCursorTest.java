@@ -11,15 +11,14 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import frameutils.utils.GuiUtilsExtended;
-import media.ImageWorkerExtended;
 import resources.IconsPathConfigurator;
 
 public class FramePointerCursorTest extends JFrame{
+	private static final long serialVersionUID = 8616210867279218711L;
 
 	FramePointerCursorTest() throws IOException {
         final int x1 = 100, y1 = 100, x2 = 300, y2 = 300;

@@ -96,6 +96,8 @@ public class TextEditorUtils {
 	
 	JOptionHelperExtended dialogHelper;
 	
+	public File lastValidTreeSelRefreshed;
+	
 	public TextEditorUtils(TextEditor currentTextEditor) {
 		this.currentTextEditor = currentTextEditor;
 		this.textAreaDialogs = new TextAreaDialogs(getDialogManager());
@@ -153,7 +155,7 @@ public class TextEditorUtils {
 	public void addCurrentSelectionToLastSearched() {
 		String selectedText = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea.getSelectedText();
 		if(selectedText != null) {
-			currentTextEditor.currentConfiguration.getTextEditorOpt().lastSearchTerms.addNreplaceToTopIfPresent(selectedText);
+			currentTextEditor.currentConfiguration.getTextEditorOpt().lastSearchTerms.addUniqueToTop(selectedText);
 		}
 	}
 
@@ -163,7 +165,7 @@ public class TextEditorUtils {
 	public void addCurrentSelectionToLastReplaced() {
 		String selectedText = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea.getSelectedText();
 		if(selectedText != null) {
-			currentTextEditor.currentConfiguration.getTextEditorOpt().lastReplaceTerms.addNreplaceToTopIfPresent(selectedText);
+			currentTextEditor.currentConfiguration.getTextEditorOpt().lastReplaceTerms.addUniqueToTop(selectedText);
 		}
 	}
 	
@@ -366,14 +368,15 @@ public class TextEditorUtils {
 				try {
 					FileNamed oldDir = (FileNamed)currentTextEditor.leftSplitTreeFiles.getModel().getRoot();
 					if (oldDir != null) {
-						refreshFromWorkspace(oldDir.getFile());
+						refreshTreeFromWorkspace(oldDir.getFile());
 					}
 				} catch (Exception e) {
 				}
 			}
-			
 			return;
 		}
+		
+		lastValidTreeSelRefreshed = currentFile;
 		
 		// Avoid useless refreshing during preload
 		if (!currentTextEditor.isPreloading) {
@@ -385,7 +388,7 @@ public class TextEditorUtils {
 					// SELECTED WORKSPACE
 					if (workspaceRoot != null && workspaceRoot.exists()) {
 						// EXISTING WORKSPACE
-						refreshFromWorkspace(workspaceRoot);
+						refreshTreeFromWorkspace(workspaceRoot);
 					} else {
 						// NOT EXISTING WORKSPACE
 						refresh(currentFile);
@@ -394,17 +397,30 @@ public class TextEditorUtils {
 					// UNSELECTED WORKSPACE
 					refresh(currentFile);
 				}
-			} else if (forceRefresh) {
-				if (options.workspaceViewSelected) {
-					refreshFromWorkspace(workspaceRoot);
+			} else {
+				if (forceRefresh) {
+					if (options.workspaceViewSelected) {
+						refreshTreeFromWorkspace(workspaceRoot);
+					} else {
+						refresh(currentFile);
+					}
 				} else {
-					refresh(currentFile);
+					refreshTreeFromLastValid();
 				}
 			}
-			// Validate dir string length
-			currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
-			currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
-			resetAllDIviderColors();
+			refreshInfoAfterTreeRefresh();
+		}
+	}
+	
+	public void refreshTreeFromLastValid() {
+		
+		FileNamed lastSelectedNode = (FileNamed)currentTextEditor.leftSplitTreeFiles.getLastSelectedPathComponent();
+		File lastSelected = lastSelectedNode != null ? lastSelectedNode.getFile() : lastValidTreeSelRefreshed;
+		
+		if (lastSelected != null && lastSelected.exists()) {
+			File ancestor = FileVarious.getNlevelsAncestor(lastSelected, GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL);
+			changeTreeDepth(ancestor, lastSelected);
+			refreshInfoAfterTreeRefresh();
 		}
 	}
 	
@@ -420,17 +436,20 @@ public class TextEditorUtils {
 				// SELECTED WORKSPACE
 				if (workspaceRoot != null && workspaceRoot.exists()) {
 					// EXISTING WORKSPACE
-					refreshFromWorkspace(workspaceRoot);
+					refreshTreeFromWorkspace(workspaceRoot);
 				}
 			}
 		}else if(forceRefresh) {
-			refreshFromWorkspace(workspaceRoot);
+			refreshTreeFromWorkspace(workspaceRoot);
 		}
 		
+		currentTextEditor.splitPaneMain.setDividerLocation(getMinimumLeftPaneSize()+10);
+		refreshInfoAfterTreeRefresh();
+	}
+	
+	public void refreshInfoAfterTreeRefresh() {
 		// Validate dir string length
 		currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
-		currentTextEditor.splitPaneMain.setDividerLocation(getMinimumLeftPaneSize()+10);
-		
 		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
 		resetAllDIviderColors();
 	}
@@ -476,13 +495,12 @@ public class TextEditorUtils {
 		
 		CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
 		
-		File ancestor = new File("");
-		ancestor = FileVarious.getNlevelsAncestor(currentFile, GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL);
+		File ancestor = FileVarious.getNlevelsAncestor(currentFile, GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL);
 
 		// ANCESTOR CHECK
 		if(ancestor == null || !ancestor.exists()) {
 			currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
-			refreshFromWorkspace(workspaceRoot);
+			refreshTreeFromWorkspace(workspaceRoot);
 			return;
 		}
 		
@@ -492,19 +510,10 @@ public class TextEditorUtils {
 			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
 			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
-//			currentTextEditor.subHeaderPanel.toggleBtnMap.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().mapViewActive);
-//			currentTextEditor.subHeaderPanel.toggleBtnClipboard.setSelected(currentTextEditor.currentConfiguration.getTextEditorOpt().clipboardViewActive);
-
 			currentTextEditor.rightPaneShowOrHide(false);
 			
-			String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftSplitTreeFiles);
-			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(ancestor)));
-			TreeUtils.restoreExpansionStates(currentTextEditor.leftSplitTreeFiles, expansionStBack);
-			try {
-				TreeUtils.selectFileInNamedFileTree(currentFile, currentTextEditor.leftSplitTreeFiles, true);
-			} catch (IOException e1) {
-				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
-			}
+			changeTreeDepth(ancestor, currentFile);
+			
 			currentTextEditor.dynLblCurrentDir.setText(FileVarious.getNlevelsPathString(ancestor, LEVEL_ANCESTOR_LABEL_DIR));
 			try {
 				currentTextEditor.dynLblCurrentDir.setToolTipText(currentFile.getCanonicalPath());
@@ -531,7 +540,7 @@ public class TextEditorUtils {
 			currentTextEditor.dynLblCurrentDir.setText(" - ");
 			logger.warn("Tree refresh skipped, file does not exist");
 			
-			refreshFromWorkspace(ancestor);
+			refreshTreeFromWorkspace(ancestor);
 		} else {
 			if (!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
 				currentTextEditor.splitPaneMain.setDividerLocation(0.0);
@@ -543,7 +552,7 @@ public class TextEditorUtils {
 		currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_STANDARD_LBL);
 	}
 	
-	public void refreshFromWorkspace(File workspaceRoot) {
+	public void refreshTreeFromWorkspace(File workspaceRoot) {
 		
 		CustomTabbedEditor currentTabEditor = currentTextEditor.getCurrentTabEditor();
 		
@@ -556,18 +565,12 @@ public class TextEditorUtils {
 		
 		if (currentTextEditor.currentConfiguration.getTextEditorOpt().fileTreeActive) {
 			
-			String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftSplitTreeFiles);
-			currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(workspaceRoot)));
-			TreeUtils.restoreExpansionStates(currentTextEditor.leftSplitTreeFiles, expansionStBack);
-			try {
-				// loadedTabObj VALIDATION
-				if(currentTabEditor.loadedTabObj == null || currentTabEditor.loadedTabObj.loadedFile == null) {
-					logger.warn("Cannot select current file... Null data for TextEditorUtils.refreshFromWorkspace -> loadedTabObj or loaded file is NULL - index is " + currentTabEditor.mainTabList.getSelectedIndex());
-				}else {
-					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
-				}
-			} catch (IOException e1) {
-				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
+			// loadedTabObj VALIDATION
+			if(currentTabEditor.loadedTabObj == null || currentTabEditor.loadedTabObj.loadedFile == null) {
+				logger.warn("Cannot select current file... Null data for TextEditorUtils.refreshFromWorkspace -> loadedTabObj or loaded file is NULL - index is " + currentTabEditor.mainTabList.getSelectedIndex());
+				changeTreeDepth(workspaceRoot, null);
+			}else {
+				changeTreeDepth(workspaceRoot, currentTabEditor.loadedTabObj.loadedFile);
 			}
 			
 			currentTextEditor.dynLblCurrentDir.setText(FileVarious.getNlevelsPathString(workspaceRoot, LEVEL_ANCESTOR_LABEL_DIR));
@@ -588,6 +591,20 @@ public class TextEditorUtils {
 		}
 		
 		currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_WORKSPACE_LBL);
+	}
+	
+	public void changeTreeDepth(File newRoot, File toSelect) {
+		String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftSplitTreeFiles);
+		currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(newRoot)));
+		TreeUtils.restoreExpansionStates(currentTextEditor.leftSplitTreeFiles, expansionStBack);
+		
+		if(toSelect != null) {
+			try {
+				TreeUtils.selectFileInNamedFileTree(toSelect, currentTextEditor.leftSplitTreeFiles, true);
+			} catch (IOException e1) {
+				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
+			}
+		}
 	}
 	
 	public void resizeFrameToDefault(MainGUI mainApplication) {

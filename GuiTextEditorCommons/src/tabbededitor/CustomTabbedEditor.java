@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -47,6 +48,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.watcher.ChangeDTO;
+import frameutils.frame.ImageViewerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
 import gui.dnd.FileDrop;
@@ -242,7 +244,12 @@ public class CustomTabbedEditor implements ITabsManager {
 						"Cannot load file, max admitted size is " + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024));
 				return false;
 			}
-			if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
+
+			if(isImageFileSupported(fileToOpen)) {
+				ImageViewerFrame.loadIntoLastExistingInstance(fileToOpen);
+				return false;
+				
+			} else if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
 				boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not supported [" + fileToOpen.getName() + "] : Load anyway?");
 				if (userAcceptance) {
 					tabEditorManager.forceUnrecognizedFileType();
@@ -251,6 +258,17 @@ public class CustomTabbedEditor implements ITabsManager {
 			} 
 		}
 		return true;
+	}
+	
+	public boolean isImageFileSupported(File toCheck) {
+		if (toCheck != null) {
+			for (String suffixImg : ImageIO.getWriterFileSuffixes()) {
+				if (toCheck.getName().toLowerCase().endsWith("." + suffixImg.toLowerCase())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public void loadFile(final File fileToLoad) {

@@ -17,11 +17,12 @@ import java.net.UnknownHostException;
 
 import javax.management.MBeanServerConnection;
 
-import com.sun.management.OperatingSystemMXBean;
-
 import utility.ConversionUtils;
+import utility.SafeLogger;
 
 public class RuntimeUtil {
+	
+	private static SafeLogger logger = new SafeLogger(RuntimeUtil.class);
 
 	private RuntimeUtil() {
 		// No Init
@@ -97,26 +98,34 @@ public class RuntimeUtil {
 		return "";
 	}
 	
+	@SuppressWarnings("restriction")
 	public static double getCurrentProcCpuUsage() throws IOException {
-		MBeanServerConnection mbsc = ManagementFactory.getPlatformMBeanServer();
+		try {
+			MBeanServerConnection mbsc = ManagementFactory.getPlatformMBeanServer();
 
-		OperatingSystemMXBean osMBean = ManagementFactory.newPlatformMXBeanProxy(
-		mbsc, ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, OperatingSystemMXBean.class);
+			com.sun.management.OperatingSystemMXBean osMBean = ManagementFactory.newPlatformMXBeanProxy(
+					mbsc,
+					ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME,
+					com.sun.management.OperatingSystemMXBean.class);
 
-		double percent = osMBean.getProcessCpuLoad() * 100;
-		
-		if (percent <= 0) {
-			long nanoBefore = System.nanoTime();
-			long cpuBefore = osMBean.getProcessCpuTime();
-			long cpuAfter = osMBean.getProcessCpuTime();
-			long nanoAfter = System.nanoTime();
-			if (nanoAfter > nanoBefore)
-				percent = ((cpuAfter - cpuBefore) * 100L) / (nanoAfter - nanoBefore);
-			else
-				percent = 0;
+			double percent = osMBean.getProcessCpuLoad() * 100;
+			
+			if (percent <= 0) {
+				long nanoBefore = System.nanoTime();
+				long cpuBefore = osMBean.getProcessCpuTime();
+				long cpuAfter = osMBean.getProcessCpuTime();
+				long nanoAfter = System.nanoTime();
+				if (nanoAfter > nanoBefore)
+					percent = ((cpuAfter - cpuBefore) * 100L) / (nanoAfter - nanoBefore);
+				else
+					percent = 0;
+			}
+			
+			return percent;
+		} catch (Throwable e) {
+			logger.error("Cannot retrieve CpuUsage", e);
+			return 0d;
 		}
-		
-		return percent;
 	}
 	
 	public static String getCurrentProcCpuUsageString() throws IOException {

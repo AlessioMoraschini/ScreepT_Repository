@@ -28,7 +28,6 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.TooManyListenersException;
 
@@ -59,7 +58,8 @@ public class VirtualFileDropPane extends BackgroundFrame {
 	
 	private DropTarget dropTarget;
     private DropTargetHandler dropTargetHandler;
-    private Point dragPoint;
+    @SuppressWarnings("unused")
+	private Point dragPoint;
 
     private boolean dragOver = false;
 
@@ -86,7 +86,7 @@ public class VirtualFileDropPane extends BackgroundFrame {
 			filesTree = new JTree(root);
 		}
         filesTree.setCellRenderer(new DragNDropVirtualCellRenderer());
-		new TreeDragNDropListenerCrypter(filesTree); // pop-up menu listener
+		new TreeMouseListenerCrypter(filesTree); // pop-up menu listener
         
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.rowWeights = new double[]{0.0, 1.0};
@@ -229,7 +229,7 @@ public class VirtualFileDropPane extends BackgroundFrame {
                 dtde.acceptDrop(dtde.getDropAction());
                 try {
 
-                    List transferData = (List) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                    List<File> transferData = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                     if (transferData != null && transferData.size() > 0) {
                         importFiles(transferData);
                         dtde.dropComplete(true);

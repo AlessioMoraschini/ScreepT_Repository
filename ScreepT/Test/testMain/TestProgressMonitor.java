@@ -8,8 +8,6 @@ import javax.swing.JFrame;
 
 import org.apache.commons.io.FileUtils;
 
-import uTILS.local.FileProgressMonitor_KO;
-
 public class TestProgressMonitor {
 
 	public static void main(String[] args) throws IOException {
@@ -29,7 +27,7 @@ public class TestProgressMonitor {
 		
 		FileUtils.copyFile(srcFile, new File(backupPath));
 		
-		File destFile = new File(destPath+srcFile.getName());
+//		File destFile = new File(destPath+srcFile.getName());
 		
 		new Thread(new Runnable() {
 			

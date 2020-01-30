@@ -16,7 +16,6 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 /**
  * class used to render JComboBox containing objects of type UImanager.LookAndFeelInfo
@@ -25,6 +24,7 @@ import javax.swing.UIManager;
  *
  */
 public class KO_ComboBoxLAFRenderer extends JLabel implements ListCellRenderer {
+	private static final long serialVersionUID = 1587070908709053889L;
 
 	public KO_ComboBoxLAFRenderer() {
 		setHorizontalAlignment(CENTER);

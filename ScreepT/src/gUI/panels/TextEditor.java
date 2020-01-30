@@ -168,6 +168,7 @@ public class TextEditor extends ModulePanel {
 	
 	public JOptionHelperExtended dialogHelper;
 	
+	// Help buttons : these aren't shown
 	private JToggleButton preMaximizationBackupLeft;
 	private JToggleButton preMaximizationBackupRight;
 	
@@ -499,12 +500,12 @@ public class TextEditor extends ModulePanel {
 					toggleButtonFileTreeLocked.setBackground(new Color(30,30,30));
 					currentConfiguration.getTextEditorOpt().setTreeLocked(true);
 					// SYNC config file
-					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "isTreeLocked", true);
+					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "isTreeLocked", false);
 				}else {
 					toggleButtonFileTreeLocked.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNPIN));
 					toggleButtonFileTreeLocked.setBackground(new Color(30,30,30));
-					textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
 					currentConfiguration.getTextEditorOpt().setTreeLocked(false);
+					textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
 					// SYNC config file
 					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "isTreeLocked", false);
 				}
@@ -549,7 +550,7 @@ public class TextEditor extends ModulePanel {
 						int tempUpdated = GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL - 1;
 						if(tempUpdated >= 1) {
 							GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL = tempUpdated;
-							textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
+							textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
 						}
 					}
 				});
@@ -568,7 +569,7 @@ public class TextEditor extends ModulePanel {
 						if (FileVarious.doesAncestorNlevelsExist(currentRoot.mFile, tempUpdated)) {
 							try {
 								GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL = tempUpdated;
-								textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, false);
+								textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
 							} catch (Exception e2) {
 								SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 								dialogHelper.warn("Error trying to set upper ancestor in file tree :(", null);
@@ -598,7 +599,7 @@ public class TextEditor extends ModulePanel {
 					currentConfiguration.getTextEditorOpt().setWorkspaceViewSelected(true);
 					// SYNC config file
 					currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "workspaceViewSelected", true);
-					textEditorUtils.refreshFromWorkspace(new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath));
+					textEditorUtils.refreshTreeFromWorkspace(new File(currentConfiguration.getTextEditorOpt().defaultWorkspacePath));
 
 				}else {
 					toggleButtonFileTreeWorkspace.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_OFF));
@@ -703,7 +704,7 @@ public class TextEditor extends ModulePanel {
 			}
 			
 			// REFRESH
-			textEditorUtils.refreshFromWorkspace(directory);
+			textEditorUtils.refreshTreeFromWorkspace(directory);
 		}
 	}
 	
@@ -963,12 +964,17 @@ public class TextEditor extends ModulePanel {
 	 * Checks if navigation in jtree is ON, and in that case updates the enabled navigation buttons
 	 */
 	private void checkIfToEnableTreeNav() {
-		if(currentConfiguration.getTextEditorOpt().workspaceViewSelected || currentConfiguration.getTextEditorOpt().treeLocked) {
+		if(currentConfiguration.getTextEditorOpt().workspaceViewSelected) {
+			String disabledTooltip = "Cannot change tree depth when workspace view is selected!";
 			btnDepthUp_nostyle.setEnabled(false);
+			btnDepthUp_nostyle.setToolTipText(disabledTooltip);
 			btnDepthDown_nostyle.setEnabled(false);
+			btnDepthDown_nostyle.setToolTipText(disabledTooltip);
 		}else {
 			btnDepthUp_nostyle.setEnabled(true);
+			btnDepthUp_nostyle.setToolTipText(TextEditTooltips.tooltipDepthTreeUp);
 			btnDepthDown_nostyle.setEnabled(true);
+			btnDepthDown_nostyle.setToolTipText(TextEditTooltips.tooltipDepthTreeDown);
 		}
 	}
 

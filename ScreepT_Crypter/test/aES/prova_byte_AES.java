@@ -44,7 +44,7 @@ public class prova_byte_AES {
 		}
 		
 		// TEST WRITE IN DICTIONARY() - FileStuff static method
-		String IMG = "keygens";
+//		String IMG = "keygens";
 //		File result = FileStuff.addKeyImgToDictionary(IMG, ImageWorker.generaKeyImage(100, 1000, BufferedImage.TYPE_4BYTE_ABGR));
 //		 System.out.println("esit: "+result+" - "+result.getName()+" - "+result.length()/1024.0+" KB");
 

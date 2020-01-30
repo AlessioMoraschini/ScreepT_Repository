@@ -13,6 +13,7 @@ import javax.swing.border.*;
 import javax.swing.plaf.*;
 import javax.swing.table.*;
 
+@SuppressWarnings("rawtypes")
 public class UiManagerDefaultTester implements ActionListener, ItemListener
 {
 	private final static String[] COLUMN_NAMES = {"Key", "Value", "Sample"};
@@ -20,7 +21,7 @@ public class UiManagerDefaultTester implements ActionListener, ItemListener
 
 	private JComponent contentPane;
 	private JMenuBar menuBar;
-	private JComboBox comboBox;
+	private JComboBox<?> comboBox;
 	private JRadioButton byComponent;
 	private JTable table;
 	private TreeMap<String, TreeMap<String, Object>> items;
@@ -115,6 +116,7 @@ public class UiManagerDefaultTester implements ActionListener, ItemListener
 	/*
 	 *  When the LAF is changed we need to reset the content pane
 	 */
+	@SuppressWarnings("unchecked")
 	public void resetComponents()
 	{
 		items.clear();
@@ -124,7 +126,7 @@ public class UiManagerDefaultTester implements ActionListener, ItemListener
 		buildItemsMap();
 
 		Vector<String> comboBoxItems = new Vector<String>(50);
-		Iterator keys = items.keySet().iterator();
+		Iterator<String> keys = items.keySet().iterator();
 
 		while (keys.hasNext())
 		{
@@ -560,9 +562,10 @@ public class UiManagerDefaultTester implements ActionListener, ItemListener
 			{
 				standInComponent = (JComponent) clazz.newInstance();
 			}
-			catch (InstantiationException e)
-			{
-				standInComponent = new AbstractButton() {};
+			catch (InstantiationException e) {
+				standInComponent = new AbstractButton() {
+					private static final long serialVersionUID = 1L;
+				};
 				((AbstractButton) standInComponent).setModel(new DefaultButtonModel());
 			}
 			return standInComponent;
@@ -589,8 +592,9 @@ public class UiManagerDefaultTester implements ActionListener, ItemListener
 	/*
 	 *  Render the value based on its class.
 	 */
-	class SampleRenderer extends JLabel implements TableCellRenderer
-	{
+	class SampleRenderer extends JLabel implements TableCellRenderer {
+		private static final long serialVersionUID = 8262493406135184717L;
+
 		public SampleRenderer()
 		{
 			super();
@@ -650,8 +654,9 @@ public class UiManagerDefaultTester implements ActionListener, ItemListener
 	 *  Change the LAF and recreate the UIManagerDefaults so that the properties
 	 *  of the new LAF are correctly displayed.
 	 */
-	class ChangeLookAndFeelAction extends AbstractAction
-	{
+	class ChangeLookAndFeelAction extends AbstractAction {
+		private static final long serialVersionUID = -3553533005422181958L;
+		
 		private UiManagerDefaultTester defaults;
 		private String laf;
 
@@ -703,8 +708,9 @@ public class UiManagerDefaultTester implements ActionListener, ItemListener
 	/*
 	 *	Close the frame
 	 */
-	class ExitAction extends AbstractAction
-	{
+	class ExitAction extends AbstractAction {
+		private static final long serialVersionUID = 6087497713977880978L;
+
 		public ExitAction()
 		{
 			putValue(Action.NAME, "Exit");

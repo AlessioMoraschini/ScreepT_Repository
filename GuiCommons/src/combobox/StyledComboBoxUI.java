@@ -21,6 +21,8 @@ import javax.swing.plaf.basic.ComboPopup;
 public class StyledComboBoxUI extends BasicComboBoxUI {
 	protected ComboPopup createPopup() {
 		BasicComboPopup popup = new BasicComboPopup(comboBox) {
+			private static final long serialVersionUID = -7591549935284626568L;
+
 			@Override
 			protected Rectangle computePopupBounds(int px, int py, int pw, int ph) {
 				return super.computePopupBounds(px, py, Math.max(comboBox.getPreferredSize().width, pw), ph);
@@ -32,6 +34,8 @@ public class StyledComboBoxUI extends BasicComboBoxUI {
 }
 
 class StyledComboBox extends JComboBox {
+	private static final long serialVersionUID = -1771296583702725887L;
+
 	public StyledComboBox() {
 		setUI(new StyledComboBoxUI());
 	}

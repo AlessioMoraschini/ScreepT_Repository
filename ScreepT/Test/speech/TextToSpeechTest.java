@@ -1,13 +1,6 @@
 package speech;
 
-import java.beans.PropertyVetoException;
-
-import javax.speech.AudioException;
-import javax.speech.EngineException;
-import javax.speech.EngineStateError;
-
 import classes.Text2Speech_check;
-import classes.Text2Speech_v2;
 
 public class TextToSpeechTest {
 

@@ -861,7 +861,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						searchBox.addWindowListener(new java.awt.event.WindowAdapter() {
 							@Override
 							public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-								currentConfiguration.getTextEditorOpt().lastSearchTerms.addNreplaceToTopIfPresent(textEditorUtils.textAreaDialogs.searchList.getList());
+								currentConfiguration.getTextEditorOpt().lastSearchTerms.addUniquesToTop(textEditorUtils.textAreaDialogs.searchList.getList());
 								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastSearchTerms", currentConfiguration.getTextEditorOpt().lastSearchTerms.toCharSeparatedString(","));
 								
 								searchBox.dispose();
@@ -903,11 +903,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							@Override
 							public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 								// Backup replaced
-								currentConfiguration.getTextEditorOpt().lastReplaceTerms.addNreplaceToTopIfPresent(textEditorUtils.textAreaDialogs.replaceList.getList());
+								currentConfiguration.getTextEditorOpt().lastReplaceTerms.addUniquesToTop(textEditorUtils.textAreaDialogs.replaceList.getList());
 								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastReplaceTerms", currentConfiguration.getTextEditorOpt().lastReplaceTerms.toCharSeparatedString(","));
 								
 								// Backup searched
-								currentConfiguration.getTextEditorOpt().lastSearchTerms.addNreplaceToTopIfPresent(textEditorUtils.textAreaDialogs.searchList.getList());
+								currentConfiguration.getTextEditorOpt().lastSearchTerms.addUniquesToTop(textEditorUtils.textAreaDialogs.searchList.getList());
 								currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastSearchTerms", currentConfiguration.getTextEditorOpt().lastSearchTerms.toCharSeparatedString(","));
 								
 								replaceDialog.dispose();

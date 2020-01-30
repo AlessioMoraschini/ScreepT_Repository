@@ -16,7 +16,8 @@ import javax.swing.text.Position.Bias;
 import javax.swing.tree.TreePath;
 
 public class TreeTest extends JFrame{
-
+	private static final long serialVersionUID = -3904270394542044408L;
+	
 	static JTree tree;
 	static FileTreeModel model;
 	static JButton btnTest;
@@ -54,7 +55,7 @@ public class TreeTest extends JFrame{
 		btnTest.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TreePath nodePath = tree.getSelectionPath();
+//				TreePath nodePath = tree.getSelectionPath();
 			}
 		});
 	}

@@ -43,7 +43,7 @@ public class AdWaitDialog extends JDialog {
         setTitle(title);
 //        //Handle window closing disable initially.
 //        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        int i = 0;
+//        int i = 0;
         // catch every value if user commit an action
 
         optionPane.setBackground(Color.LIGHT_GRAY);
@@ -86,7 +86,9 @@ public class AdWaitDialog extends JDialog {
 
     	//create timer to dispose of dialog after 5 seconds
     	Timer timer = new Timer(5000, new AbstractAction() {
-    	    @Override
+			private static final long serialVersionUID = -6274357138634122453L;
+
+			@Override
     	    public void actionPerformed(ActionEvent ae) {
     	        dialog.dispose();
     	    }

@@ -17,7 +17,6 @@ import java.util.Collections;
 import javax.swing.JTabbedPane;
 
 import tabbededitor.CustomTabbedEditor;
-import tabbededitor.TabbedDragNDropManager;
 
 @Deprecated
 public class TabMover {

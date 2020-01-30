@@ -44,9 +44,11 @@ import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
 import files.ZipWorker;
+import frameutils.frame.ImageViewerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.GeneralOptionsFrame;
 import gUI.frames.GraphicPreferencesFrame;
+import gUI.frames.ImageConverterFrame;
 import gUI.panels.ConfigurationManagerPanel;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -963,6 +965,24 @@ public class MainGUI extends MainGuiParent{
 			public void actionPerformed(ActionEvent e) {
 				
 	    		windowCreator.newImageConverterFrame();
+			}
+		});
+
+		ImageViewerFrame.imageConverterOpener = () -> {
+			ImageConverterFrame converter = windowCreator.newImageConverterFrame();
+			SwingUtilities.invokeLater(() -> {
+				converter.loadImage(ImageViewerFrame.getViewerInstanceList().get(0).imageFile);
+			});
+		};
+		
+		// open in a new window - IMAGE CONVERTER
+		mntmImageViewer = new CustomJmenuItem(new AbstractAction("Image Viewer") {
+			public void actionPerformed(ActionEvent e) {
+				if (ImageViewerFrame.history.isEmpty()) {
+					ImageViewerFrame.loadIntoLastExistingInstance(new File(ImagesPathConfigurator.IMAGE_LOGO_AM_MAIN));
+				} else {
+					ImageViewerFrame.loadIntoLastExistingInstance(ImageViewerFrame.history.getLast());
+				}
 			}
 		});
 		

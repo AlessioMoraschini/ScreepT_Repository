@@ -9,17 +9,16 @@ import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.NetworkIF;
-import oshi.jna.platform.windows.PowrProf.SystemBatteryState;
 import oshi.software.os.OSFileStore;
 import runtime.RuntimeUtil;
 import utility.ConversionUtils;
 
 public class HwTest {
 
-	private static final String dir = "TEST_FILES";
+//	private static final String dir = "TEST_FILES";
 	private CentralProcessor cpu;
 	private GlobalMemory memory; 
-	private SystemBatteryState battery;
+//	private SystemBatteryState battery;
 	private SystemInfo sysINFO;
 	
 	@Test

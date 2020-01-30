@@ -54,7 +54,8 @@ public class AutoComplete {
 	 *
 	 * @param filename the filename for installing grammer rules
 	 */
-	 public void installGrammar(String filename){
+	 @SuppressWarnings("null")
+	public void installGrammar(String filename){
 
 		DefaultCompletionProvider provider_temp = new DefaultCompletionProvider();
 		FileReader fileReader = null;

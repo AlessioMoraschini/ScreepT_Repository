@@ -26,7 +26,7 @@ public class NetTest {
 		System.out.println(src);
 	}
 	
-	private void separatorPrint() {
+	protected void separatorPrint() {
 		print("\n   ###################################################\n");
 	}
 }

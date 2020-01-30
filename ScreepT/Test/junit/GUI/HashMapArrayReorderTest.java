@@ -118,7 +118,7 @@ public class HashMapArrayReorderTest {
 		
 		Map<Integer, Integer> keysMap = EntrophyzerUtils.arrayToIndexedMap(keyArray);
 //		Map<Integer, Integer> map = getRandMap(256);
-		Map<Integer, Integer> keySortedMap = new HashMap<Integer, Integer>();
+//		Map<Integer, Integer> keySortedMap = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> valSortedMap = new HashMap<Integer, Integer>();
 
 		timerManager.updateStart();

@@ -22,6 +22,7 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.utils.tooltip.ToolTipScalingAlgorithm;
+import gui.GuiUtils;
 import gui.UpdateProgressPanel;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -69,7 +70,7 @@ import javax.swing.event.ChangeEvent;
 import java.awt.Dimension;
 import javax.swing.UIManager;
 
-public class ImageConverterFrame extends ParentFrame{
+public class ImageConverterFrame extends ParentFrame {
 	private static final long serialVersionUID = 8723319520694955701L;
 	
 	public static ImageConverterFrame singletonInstance = null;
@@ -163,6 +164,8 @@ public class ImageConverterFrame extends ParentFrame{
 
 	// object that display wait dialog
 	UpdateProgressPanel progUpdater;
+	
+	private static Dimension minimumComboDimension = new Dimension(30, 30);
 
 	
 	public ImageConverterFrame(INItializer currentConf) {
@@ -176,7 +179,7 @@ public class ImageConverterFrame extends ParentFrame{
 		isActive.set(true);
 		
 		// initialize field representing locally configuration referred
-		currentConfiguration = currentConf;
+		currentConfiguration = currentConf != null ? currentConf : new INItializer();
 		
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_IMAGE_CONVERTER, this);
 		GuiUtilsExtended.showOnSameScreen(this, MainGUI.mainFrameScreept);
@@ -184,19 +187,21 @@ public class ImageConverterFrame extends ParentFrame{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		
 		String writerNames[] = ImageIO.getWriterFileSuffixes();
-		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100px][80px][:80px:80px][:100px:110px][80px][:80px:80px][20px:20px:20px,grow][15px][100px:100px:100px][120px:120px:120px]", "[45px][10px][22px,grow][22px,grow][][25px][25px,grow][5px][25px,grow]"));
+		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"",
+				"[100px][80px][:80px:80px][:100px:110px][80px][:80px:80px][20px:20px:20px,grow][15px][100px:100px:100px][120px:120px:120px]",
+				"[35px][10px][22px,grow][22px,grow][][25px][25px,grow][5px][25px,grow]"));
 
 		panelHeader = new JPanel();
 		panelHeader.setForeground(SystemColor.menu);
-		panelHeader.setBorder(new LineBorder(new Color(0, 0, 0), 4));
-		panelHeader.setBackground(new Color(210, 180, 140));
+		panelHeader.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		panelHeader.setBackground(new Color(160,160,160));
 		getContentPane().add(panelHeader, "cell 0 0 10 1,grow");
 		panelHeader.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[100%]", "[]"));
 		
 		lblImageConverterHeader = new JLabel("Image Converter");
 		lblImageConverterHeader.setHorizontalAlignment(SwingConstants.CENTER);
 		lblImageConverterHeader.setForeground(Color.BLACK);
-		lblImageConverterHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 22));
+		lblImageConverterHeader.setFont(new Font("Lithos Pro Regular", Font.BOLD, 20));
 		lblImageConverterHeader.setBackground(SystemColor.activeCaptionBorder);
 		panelHeader.add(lblImageConverterHeader, "cell 0 0,alignx center");
 		
@@ -209,6 +214,7 @@ public class ImageConverterFrame extends ParentFrame{
 		getContentPane().add(lblWidth, "cell 0 2,alignx center");
 		
 		spinnerWidth = new JSpinner();
+		spinnerWidth.setCursor(GuiUtils.CURSOR_HAND);
 		spinnerWidth.setModel(new SpinnerNumberModel(100, 1, 8000, 5));
 		getContentPane().add(spinnerWidth, "cell 1 2 2 1,growx,aligny center");
 		
@@ -218,6 +224,7 @@ public class ImageConverterFrame extends ParentFrame{
 		getContentPane().add(lblHeight, "cell 3 2,alignx center");
 		
 		spinnerHeight = new JSpinner();
+		spinnerHeight.setCursor(GuiUtils.CURSOR_HAND);
 		spinnerHeight.setModel(new SpinnerNumberModel(100, 1, 8000, 5));
 		getContentPane().add(spinnerHeight, "cell 4 2 2 1,growx,aligny center");
 		
@@ -249,6 +256,7 @@ public class ImageConverterFrame extends ParentFrame{
 		panelImgDisp.setLayout(gbl_panelImgDisp);
 		
 		btnOriginalSize = new JButton("Reset size");
+		btnOriginalSize.setCursor(GuiUtils.CURSOR_HAND);
 		btnOriginalSize.setFont(new Font("SansSerif", Font.PLAIN, 12));
 		getContentPane().add(btnOriginalSize, "cell 0 3 2 1,growx");
 		btnOriginalSize.setBackground(Color.GRAY);
@@ -286,13 +294,18 @@ public class ImageConverterFrame extends ParentFrame{
 		getContentPane().add(lblQuality, "cell 4 5 2 1,alignx center");
 		
 		comboScaleQuality = new JComboBox<ScalingAlgorithm>(ScalingAlgorithm.values());
+		comboScaleQuality.setCursor(GuiUtils.CURSOR_HAND);
+		comboScaleQuality.setMinimumSize(minimumComboDimension);
 		getContentPane().add(comboScaleQuality, "cell 0 6 2 1,growx,aligny center");
 		comboScaleQuality.setRenderer(new ToolTipScalingAlgorithm());
 		
 		comboBoxFormats = new JComboBox<String>(writerNames);
+		comboBoxFormats.setCursor(GuiUtils.CURSOR_HAND);
+		comboBoxFormats.setMinimumSize(minimumComboDimension);
 		getContentPane().add(comboBoxFormats, "cell 2 6 2 1,growx,aligny center");
 		
 		spinnerCompFactor = new JSpinner();
+		spinnerCompFactor.setCursor(GuiUtils.CURSOR_HAND);
 		spinnerCompFactor.setMinimumSize(new Dimension(35, 25));
 		spinnerCompFactor.setBorder(UIManager.getBorder("List.cellNoFocusBorder"));
 		spinnerCompFactor.setModel(new SpinnerNumberModel(100, 0, 100, 10));
@@ -305,7 +318,7 @@ public class ImageConverterFrame extends ParentFrame{
 		panel.setBorder(new LineBorder(Color.GRAY, 3, true));
 		panel.setBackground(new Color(192, 192, 192));
 		getContentPane().add(panel, "cell 0 8 10 1,grow");
-		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[45px][15px][100px:n:100px][10px][][15px][100px:n:100px][][grow][grow]", "[][5px][30px][30px][30px][30px]"));
+		panel.setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[45px][15px][120px:n:120px][10px][][15px][120px:n:120px][][grow][grow]", "[][5px][30px][30px][30px][30px]"));
 		
 		lblInputFile = new JLabel("Input File");
 		lblInputFile.setFont(new Font("Lithos Pro Regular", Font.PLAIN, 16));
@@ -384,6 +397,7 @@ public class ImageConverterFrame extends ParentFrame{
 		panel.add(lblOutTypeVal, "cell 6 3,alignx center");
 		
 		btnLoadSourceImg = new JButton("Load Source Image");
+		btnLoadSourceImg.setCursor(GuiUtils.CURSOR_HAND);
 		btnLoadSourceImg.setForeground(Color.WHITE);
 		panel.add(btnLoadSourceImg, "cell 8 3 2 1,grow");
 		btnLoadSourceImg.setBackground(Color.DARK_GRAY);
@@ -412,6 +426,7 @@ public class ImageConverterFrame extends ParentFrame{
 		panel.add(lblOutSizeVal, "cell 6 4,alignx center");
 		
 		btnStartConversion = new JButton("Convert & Export");
+		btnStartConversion.setCursor(GuiUtils.CURSOR_HAND);
 		btnStartConversion.setForeground(Color.WHITE);
 		btnStartConversion.setFont(new Font("SansSerif", Font.BOLD, 15));
 		btnStartConversion.setBackground(Color.BLACK);
@@ -439,7 +454,8 @@ public class ImageConverterFrame extends ParentFrame{
 		lblOutFileSizeVal.setForeground(new Color(0, 0, 128));
 		panel.add(lblOutFileSizeVal, "cell 6 5,alignx center");
 		
-		btnConvertAddDictionary = new JButton("Convert n' Add as Dictionary Key");
+		btnConvertAddDictionary = new JButton("Convert + add to key Dictionary");
+		btnConvertAddDictionary.setCursor(GuiUtils.CURSOR_HAND);
 		btnConvertAddDictionary.setFont(new Font("SansSerif", Font.BOLD, 13));
 		btnConvertAddDictionary.setBackground(new Color(112, 128, 144));
 		panel.add(btnConvertAddDictionary, "cell 8 5 2 1,grow");
@@ -898,7 +914,6 @@ public class ImageConverterFrame extends ParentFrame{
 		btnLoadSourceImg.setEnabled(true);
 		btnOriginalSize.setEnabled(true);
 		btnStartConversion.setEnabled(true);
-				
 	}
 	
 	/**
@@ -1023,7 +1038,7 @@ public class ImageConverterFrame extends ParentFrame{
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(650, 500);
+		return new Dimension(720, 480);
 	}
 	
 	public static ImageConverterFrame getInstance(INItializer currentConf) {
