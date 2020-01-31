@@ -41,7 +41,6 @@ import files.om.FileNamed;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
-import gUI.utils.texteditor.TextEditorUtils;
 import gui.GuiUtils;
 import gui.MenuSetter;
 import mainobj.INItializer;

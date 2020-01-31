@@ -306,6 +306,42 @@ public class SysUtils {
 			return 32;
 		}
 	}
+	
+	public static String getShellOsBased() {
+		if(OS_INFO_LAZY.isWindows()) {
+			return "cmd";
+		} else {
+			return "bash";
+		}
+	}
+	
+	public static boolean openUrlWithSpecificBrowser(String URL, Browser targetBrowser) throws IOException, InterruptedException {
+		Runtime runtime = Runtime.getRuntime();
+		String shell = getShellOsBased();
+		String argument1 = OS_INFO_LAZY.isWindows()? " /c " : OS_INFO_LAZY.isMac()? " -c " : " -c ";
+		
+		Process process = runtime.exec(shell + argument1 + targetBrowser.getOsLaunchSwName() + "\"" + URL + "\"" );
+		return process != null && process.waitFor() == 0;
+	}
+	
+	public static void openUrlInBrowserOrdered(String URL) {
+		boolean opened = false;
+		for(Browser browser : Browser.defaultBrowserOrder) {
+			try {
+				opened = openUrlWithSpecificBrowser(URL, browser);
+			} catch (Exception e) {
+				logger.warn("Cannot open " + URL + " with browser: " + browser, e);
+			}
+			
+			if(opened) {
+				logger.info(URL + " opened with " + browser);
+				return;
+			}
+		}
+		
+		openUrlInBrowser(URL);
+		logger.info(URL + " opened with system default bind application.");
+	}
 
 	public static boolean openUrlInBrowser(String URL) {
 
@@ -377,7 +413,6 @@ public class SysUtils {
 		} 
 		
 		return false;
-		
 	}
 	
 	/**
@@ -669,4 +704,41 @@ public class SysUtils {
 	public static OSinfo getOsInfoLazy() {
 		return (OS_INFO_LAZY!=null)? OS_INFO_LAZY : retrieveOS();
 	}
+
+	public enum Browser {
+		CHROME("Google Chrome", "start chrome ", "google-chrome ", "open -a google-chrome "),
+		FIREFOX("Mozilla Firefox", "start firefox ", "firefox ", "open -a firefox "),
+		SAFARI("Safari", "start safari ", "safari ", "open -a safari "),
+		EDGE("Microsoft Edge", "start microsoft-edge ", "microsoft-edge ", "open -a microsoft-edge "),
+		IE("Internet Explorer", "start iexplore ", "iexplore ", "open -a iexplore "),
+		OPERA("Opera", "start opera ", "opera ", "open -a opera ");
+		
+		public static Browser[] defaultBrowserOrder = new Browser[] {Browser.CHROME, Browser.FIREFOX, Browser.IE};
+		
+		public String browserName;
+		public String winProgamName;
+		public String bashProgamName;
+		public String macProgamName;
+		
+		private Browser(String browserName, String winOsSwName, String bashOsSwName, String macProgamName) {
+			this.browserName = browserName;
+			this.winProgamName = winOsSwName;
+			this.bashProgamName = bashOsSwName;
+			this.macProgamName = macProgamName;
+		}
+		
+		public String getOsLaunchSwName() {
+			
+			if(OS_INFO_LAZY.isWindows()) {
+				return this.winProgamName;
+			
+			} else if(OS_INFO_LAZY.isMac()) {
+				return this.macProgamName;
+			
+			} else {
+				return this.bashProgamName;
+			}
+		}
+	}
 }
+

@@ -164,6 +164,9 @@ public class ImageViewerFrame extends JFrame {
 		
 		panelDropper = new FileSelectorDnD(() -> {
 			loadResizedImageFile(panelDropper.loadedFile, true);
+			SwingUtilities.invokeLater(() -> {
+				history.addToHistory(imageFile);
+			});
 		});
 		panelDropper.setBackground(new Color(128, 128, 128));
 		panelDropper.addNewTarget(imageContainer);
@@ -364,16 +367,16 @@ public class ImageViewerFrame extends JFrame {
 				this.image = ImageIO.read(imageFile);
 				dynLblWidth.setText(String.valueOf(image.getWidth()) + " Px");
 				dynLblHeight.setText(String.valueOf(image.getHeight()) + " Px");
+				
+				history.addToHistoryIfNotPresent(imageFile);
 			}
-			
-			history.addToHistoryIfNotPresent(imageFile);
-
 			
 			imageContainer.setCursor(GuiUtils.CURSOR_WAIT);
 			SwingUtilities.invokeLater(() -> {
 				Dimension sameRatioDim = ImageWorker.getDimensionSameRatio(image, getImgDimension().width, getImgDimension().height);
 				imageContainer.setIcon(new ImageIcon(image.getScaledInstance(sameRatioDim.width, sameRatioDim.height, Image.SCALE_DEFAULT)));
 				imageContainer.setCursor(GuiUtils.CURSOR_DEFAULT);
+				
 			});
 			
 		} catch (Exception e) {

@@ -55,6 +55,7 @@ import gui.GuiUtils;
 import gui.MenuSetter;
 import gui.TextEditTooltips;
 import gui.dnd.FileDrop;
+import jmenu.BrowserOpenerMenu;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -268,6 +269,19 @@ public class TabTextEditorObj {
 			pasteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PASTE));
 			
 		} catch (Exception e) {}
+		
+		// OPEN IN WEB BROWSER
+		
+		BrowserOpenerMenu broserOpener = new BrowserOpenerMenu("Open with browser", (Insets)null, (Font)null, () -> {
+			try {
+				return loadedFile.getCanonicalPath();
+			} catch (IOException e1) {
+				return null;
+			}
+		});
+		broserOpener.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
+		textArea.getPopupMenu().add(new JSeparator());
+		textArea.getPopupMenu().add(broserOpener);
 		
 		// EOL
 

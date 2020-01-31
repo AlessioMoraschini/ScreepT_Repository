@@ -267,7 +267,7 @@ public class WindowCreator {
 				File htmlTutorialFile = new File(GeneralConfig.SCREEPT_TUTORIAL_HTML_PATH);
 				boolean openWithBrowser = MainGUI.dialogHelper.yesOrNo("Internal html reader not supported, open with default browser?", "Unsupported internal html reader");
 				if (openWithBrowser) {
-					SysUtils.openUrlInBrowser(htmlTutorialFile.toURI().toString());
+					SysUtils.openUrlInBrowserOrdered(htmlTutorialFile.toURI().toString());
 				}
 			}
 		}

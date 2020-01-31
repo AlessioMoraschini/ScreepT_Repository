@@ -1421,10 +1421,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						parent.getCurrentTabEditor().updateSavedLabelNTab(null);
 						textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
 						
-						// Clean memorized changes triggered by save
-						logger.debug("Cleaning changes from tabbedPane history");
-						parent.getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
-						logger.debug("Cleaned changes from tabbedPane history");
+						SwingUtilities.invokeLater(() -> {
+							// Clean memorized changes triggered by save
+							logger.debug("Cleaning changes from tabbedPane history");
+							parent.getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
+							logger.debug("Cleaned changes from tabbedPane history");
+						});
 						
 					} else {
 						textEditorUtils.errorAdvice("[Error - not saved]");

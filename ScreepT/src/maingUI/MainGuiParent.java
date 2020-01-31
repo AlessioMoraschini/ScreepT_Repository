@@ -51,6 +51,7 @@ import gUI.panels.TextEditor;
 import gui.GuiUtils;
 import gui.MenuSetter;
 import gui.TextEditTooltips;
+import jmenu.BrowserOpenerMenu;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
 import om.LimitedConcurrentList;
@@ -116,6 +117,7 @@ public class MainGuiParent {
 		JMenu mnLastOpenedFile;
 		JMenu mnLastWorkspaces;
 		public JMenu menuStringActions;
+		public BrowserOpenerMenu menuBrowserOpenerActions;
 		
 	JMenu mnVarious;
 		JMenu mnConversionsAndOther;
@@ -200,7 +202,13 @@ public class MainGuiParent {
 			mnLastWorkspaces = new JMenu("Last selected workspaces");
 			mnLastOpenedFile = new JMenu("Last opened files");
 			menuStringActions = new JMenu("Text transformation");
-			updateTxtEditorStringActions(menuStringActions);
+			menuBrowserOpenerActions = new BrowserOpenerMenu("Open with browser", (Insets)null, (Font)null, () -> {
+				try {
+					return getSafeTextEditorCurrentTabObject().loadedFile.getCanonicalPath();
+				} catch (IOException e1) {
+					return null;
+				}
+			});
 
 		mnVarious = new JMenu("Various");
 			mnConversionsAndOther = new JMenu("Conversions and Media");
@@ -377,6 +385,8 @@ public class MainGuiParent {
 			mnTextEditor.add(new JSeparator());
 			mnTextEditor.add(mnLastWorkspaces);
 			mnTextEditor.add(mnLastOpenedFile);
+			mnTextEditor.add(new JSeparator());
+			mnTextEditor.add(menuBrowserOpenerActions);
 			mnTextEditor.add(menuStringActions);
 			mnTextEditor.add(mntmTxtEditorImpExpCryptedWkspc);
 				
@@ -523,6 +533,10 @@ public class MainGuiParent {
 		mntmTextEditor.setFont(menuItemFont);
 		mnLastWorkspaces.setFont(subMenuFont);
 		mnLastOpenedFile.setFont(subMenuFont);
+		
+		MenuSetter.setFont(menuBrowserOpenerActions, menuItemFont);
+		menuBrowserOpenerActions.setFont(subMenuFont);
+		
 		menuStringActions.setFont(subMenuFont);
 		mntmTxtEditorImpExpCryptedWkspc.setFont(menuItemFont);
 
@@ -606,6 +620,7 @@ public class MainGuiParent {
 		mnLastWorkspaces.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 		mnLastOpenedFile.setIconTextGap(15);
 		mnLastOpenedFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
+		menuBrowserOpenerActions.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		menuStringActions.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
 		mntmTxtEditorImpExpCryptedWkspc.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
 		
@@ -736,6 +751,14 @@ public class MainGuiParent {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				updateTxtEditorStringActions(menuStringActions);
+			}
+		});
+		
+		menuBrowserOpenerActions.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				MenuSetter.setSubItemsEnabled(menuBrowserOpenerActions, mainGuiUtils.isTextEditorActive());
 			}
 		});
 

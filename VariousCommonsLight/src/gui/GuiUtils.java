@@ -161,13 +161,17 @@ public class GuiUtils {
 	public static MouseMotionListener getMouseExitedDisposeListener(final JFrame target) {
 		return new MouseMotionListener() {
 			
+			boolean mouseEntered = false;
+			
 			@Override
 			public void mouseMoved(final MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (!target.getBounds().contains(e.getPoint())) {
+						if (!target.getBounds().contains(e.getPoint()) && mouseEntered) {
 							target.dispatchEvent(new WindowEvent(target, WindowEvent.WINDOW_CLOSING));
 							target.dispose();
+						} else if(target.getBounds().contains(e.getPoint())){
+							mouseEntered = true;
 						}
 					}
 				});
