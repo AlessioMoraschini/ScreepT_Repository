@@ -11,11 +11,7 @@
  */
 package handlers;
 
-import java.util.Arrays;
-
 import javax.swing.SwingUtilities;
-
-import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
 import generic.IParametricRunnable;
@@ -24,10 +20,11 @@ import mainobj.InitOwner;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import utility.SafeLogger;
 
 public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	
-	static Logger logger = Logger.getLogger(AWTExceptionHandler.class);
+	static SafeLogger logger = new SafeLogger(AWTExceptionHandler.class);
 		
 	public volatile static int N_OF_DIALOG_OPENED = 0;
 
@@ -91,11 +88,7 @@ public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	
 	public void handle(Throwable t) {
 
-		try {
-			logger.error("AWT UNHANDLED EXCEPTION DETECTED: ", t);
-		} catch (Throwable e) {
-			System.out.println(Arrays.deepToString(t.getStackTrace()));
-		}
+		logger.error("AWT UNHANDLED EXCEPTION DETECTED: ", t);
 		
 		if(checkAllowedAndUpdCount()) {
 			

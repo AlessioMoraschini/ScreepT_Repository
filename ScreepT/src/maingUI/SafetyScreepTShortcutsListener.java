@@ -13,22 +13,18 @@ package maingUI;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
+import gui.listener.KeyListenerParent;
 import maingUI.MainGUI;
-import om.LimitedConcurrentList;
 
-public class SafetyScreepTShortcutsListener implements KeyEventDispatcher{
+public class SafetyScreepTShortcutsListener extends KeyListenerParent implements KeyEventDispatcher{
 	
 	static Logger logger = Logger.getLogger(SafetyScreepTShortcutsListener.class);
 	
 	private static final String killAdvice = "Really want to kill application and loose your unsaved changes (use this only if application is not responding)?";
-	private static long MAX_INTERVAL_MS = 600;
-	
-	LimitedConcurrentList<ClickUpdate> lastFiveClicks = new LimitedConcurrentList<>(5);
 	
 	public SafetyScreepTShortcutsListener() {
 		logger.debug(this.getClass().getName() + " Started!");
@@ -36,7 +32,7 @@ public class SafetyScreepTShortcutsListener implements KeyEventDispatcher{
 	
 	@Override
 	public boolean dispatchKeyEvent(final KeyEvent e) {
-	    
+		
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
 		if (e.getID() == KeyEvent.KEY_PRESSED) {
@@ -46,8 +42,8 @@ public class SafetyScreepTShortcutsListener implements KeyEventDispatcher{
 		
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
 			
-			lastFiveClicks.add(new ClickUpdate(e.getKeyCode(), e.isControlDown(), e.isAltDown(), e.isShiftDown()));
-	      
+			super.dispatchKeyEvent(e);
+			
 			// HERE SHORTCUTS KEY WITH CTR|ALT|SHIFT
 			if (isShortcutKey(e) || e.getKeyCode() == 27) {
 				
@@ -91,74 +87,4 @@ public class SafetyScreepTShortcutsListener implements KeyEventDispatcher{
 		return dialogHelper.showYNDialogWarn(killAdvice, "Kill Application?", JOptionHelperExtended.YES_OR_NO);
 	}
 	
-	private boolean isShortcutKey(KeyEvent e) {
-		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
-	}
-	
-	private boolean repeatedClicksInLimitedTime(KeyEvent e, int repeats, boolean ctrl, boolean alt, boolean shift, long maxInterval) {
-		if(!lastFiveClicks.isFull()) {
-			return false;
-		}
-		
-		boolean combinationFound = false;
-		
-		if(e.isControlDown() == ctrl && e.isAltDown() == alt && e.isShiftDown() == shift) {
-			int nLastClicks = lastFiveClicks.getSize();
-			int limit = nLastClicks-1-repeats >= 0 ? nLastClicks-1-repeats : 0;
-			
-			ClickUpdate lastClickData = lastFiveClicks.getLast();
-			long lastTime = lastClickData.timestamp;
-			boolean inARowMatched = false;
-			
-			for(int i = nLastClicks-1; i > limit; i--) {
-				inARowMatched = lastTime - lastClickData.timestamp < maxInterval;
-				lastTime = lastClickData.timestamp;
-				inARowMatched = inARowMatched 
-						&& lastClickData.ctrlPressed.get() == ctrl
-						&& lastClickData.altPressed.get() == alt
-						&& lastClickData.shiftPressed.get() == shift
-						&& lastClickData.keyCode == e.getKeyCode();
-				
-				if(!inARowMatched) {
-					inARowMatched = false;
-					break;
-				}
-				
-				if (i-1 >= 0) {
-					lastClickData = lastFiveClicks.getList().get(i - 1);
-				}
-			}
-			
-			combinationFound = inARowMatched;
-		}
-		
-		if(combinationFound) {
-			for (int i = 0; i < repeats; i++) {
-				lastFiveClicks.removeLast();
-			}
-		}
-		
-		return combinationFound;
-	}
-	
-	private class ClickUpdate {
-		long timestamp = 0;
-		int keyCode = KeyEvent.VK_UNDEFINED;
-		
-		AtomicBoolean ctrlPressed;
-		AtomicBoolean altPressed;
-		AtomicBoolean shiftPressed;
-		
-		private ClickUpdate(int keyCode, boolean ctrl, boolean alt, boolean shift) {
-			ctrlPressed = new AtomicBoolean(); 
-			altPressed = new AtomicBoolean();  
-			shiftPressed = new AtomicBoolean();
-			
-			this.keyCode = keyCode;
-			ctrlPressed.set(ctrl);
-			altPressed.set(alt);
-			shiftPressed.set(shift);
-			timestamp = System.currentTimeMillis();
-		}
-	}
 }

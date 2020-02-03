@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 import dialogutils.GenericFileChooserDialog;
 import gui.listener.KeyListenerParent;
 
-public class MainGuiShortcutsListener extends KeyListenerParent  implements KeyEventDispatcher {
+public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEventDispatcher {
 	
 	MainGUI currentGui;
 	

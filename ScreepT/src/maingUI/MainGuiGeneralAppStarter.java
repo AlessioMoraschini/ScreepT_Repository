@@ -95,6 +95,8 @@ public class MainGuiGeneralAppStarter {
 	public static boolean jnetPcapAvailable;
 	public static boolean hwInfoAvailable;
 	
+	public static EasterEggsInitializer easterEggInitializer;
+	
 	public static void main(String[] args) {
 		
 		long startTime = System.currentTimeMillis();
@@ -152,8 +154,10 @@ public class MainGuiGeneralAppStarter {
 				isLoggerReady = true;
 				logger.info("Logger is READY to log everything ;)");
 				
+				printElapsed("Log properties loaded", startTime);
+				
 			} catch (Exception e) {
-				System.out.println("There was a critical error when trying to load Logger! Application cannot start.");
+				logger.error("There was a critical error when trying to load Logger! Application cannot start.");
 				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Critical error: Cannot load internal logging properties File: " + AWTExceptionHandler.ERROR_FILE_REASONS 
 						+GeneralConfig.LOG_PROPERTIES_PATH, "Cannot load configuration", e);
@@ -206,10 +210,6 @@ public class MainGuiGeneralAppStarter {
 			}), MainGUI.getCurrentConfInterface());
 
 			printElapsed("AWT error handler loaded", startTime);
-			
-			printElapsed("DialogHelper, General config and tooltips setup finished", startTime);
-			
-			printElapsed("Log properties loaded", startTime);
 			
 			writeSignalFileForExternalJars();
 			argumentsFiles = FileVarious.getFileArrayFromStrings(args);
@@ -267,6 +267,8 @@ public class MainGuiGeneralAppStarter {
 				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				dialogHelper.errorScroll("Cannot setup Tooltips general graphics, an error occurred", "Cannot load Tooltips props", e);
 			}
+			
+			easterEggInitializer = new EasterEggsInitializer(MainGUI.mainGuiUtils);
 			
 			printElapsed("Launch completed", startTime);
 			

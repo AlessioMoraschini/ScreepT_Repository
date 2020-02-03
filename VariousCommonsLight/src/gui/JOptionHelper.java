@@ -321,6 +321,22 @@ public class JOptionHelper {
 			showMessageCommon(scroller, title, INFO, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
+
+	/**
+	 * Shows a information message within a scrollable panel, useful to show long messages
+	 * 
+	 * @param msg nullable, but should be not null and not empty to be clear to user
+	 * @param title nullable
+	 */
+	public void infoScroll(String msg, String title, Dimension dimension) {
+		if (enabledAdvices) {
+			msg = (!StringWorker.isEmpty(msg)) ? msg : DEF_INFO_MSG;
+			JScrollPane scroller = getScrollableDialogPanel(msg);
+			scroller.setMinimumSize(dimension);
+			scroller.setPreferredSize(dimension);
+			showMessageCommon(scroller, title, INFO, okOnlyOptions, okOnlyOptions[0]);
+		}
+	}
 	
 	/**
 	 * Shows a Question message
@@ -600,6 +616,7 @@ public class JOptionHelper {
 			dialog.setAlwaysOnTop(true);
 			dialog.setLocationRelativeTo(parentComponent);
 			dialog.toFront();
+			dialog.setIconImage(GuiUtils.iconToImage(icon));
 			try {
 				dialog.setVisible(true);
 				dialog.dispose();
