@@ -19,8 +19,13 @@ import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -215,9 +220,46 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 		});
 		
 		GuiUtils.centerComponent(thisDialog, new Dimension(550, (int)thisDialog.getPreferredSize().getHeight()));
+	
+		addComboListener();
 	}
 	
+	private void checkComboWithText() {
+		String selectedItem = findTextCombo.getSelectedString(); 
+		boolean nonEmpty = selectedItem!=null && selectedItem.length()>0;
+		findNextButton.setEnabled(nonEmpty);
+	}
 	
+	private void addComboListener() {
+		findTextCombo.addActionListener((e) -> {
+			checkComboWithText();
+		});
+		
+		findTextCombo.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				try {
+					int item = findTextCombo.getSelectedIndex();
+					int delta = e.getWheelRotation() < 0 ? -1 : 1;
+					findTextCombo.setSelectedIndex(item + delta);
+					checkComboWithText();
+				} catch (Exception e1) {}
+			}
+		});
+		
+		UIUtil.getTextComponent(findTextCombo).addInputMethodListener(new InputMethodListener() {
+			
+			@Override
+			public void inputMethodTextChanged(InputMethodEvent event) {
+				checkComboWithText();
+			}
+			
+			@Override
+			public void caretPositionChanged(InputMethodEvent event) {
+				checkComboWithText();
+			}
+		});
+	}
 	
 	public static void updateNimbusSize(Component reference) {
 		try {
@@ -265,9 +307,8 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 				findTextCombo.addItem(text);
 			}
 
-			String selectedItem = findTextCombo.getSelectedString();
-			boolean nonEmpty = selectedItem!=null && selectedItem.length()>0;
-			findNextButton.setEnabled(nonEmpty);
+			checkComboWithText();
+			
 			super.setVisible(true);
 			focusFindTextField();
 
@@ -292,7 +333,14 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 		pack();
 		JTextComponent textField = UIUtil.getTextComponent(findTextCombo);
 		textField.addFocusListener(new FindFocusAdapter());
-		textField.addKeyListener(new FindKeyListener());
+		textField.addKeyListener(new FindKeyListener() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				super.keyReleased(e);
+				checkComboWithText();
+			}
+		});
 		textField.getDocument().addDocumentListener(new FindDocumentListener());
 	}
 
@@ -304,24 +352,18 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {
-			handleToggleButtons();
+			checkComboWithText();
 		}
 
 		@Override
 		public void removeUpdate(DocumentEvent e) {
-			JTextComponent comp = UIUtil.getTextComponent(findTextCombo);
-			if (comp.getDocument().getLength()==0) {
-				findNextButton.setEnabled(false);
-			}
-			else {
-				handleToggleButtons();
-			}
+			checkComboWithText();
 		}
 
 		@Override
 		public void changedUpdate(DocumentEvent e) {
+			checkComboWithText();
 		}
-
 	}
 
 
@@ -336,6 +378,7 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 			UIUtil.getTextComponent(findTextCombo).selectAll();
 			// Remember what it originally was, in case they tabbed out.
 			lastSearchString = (String)findTextCombo.getSelectedItem();
+			checkComboWithText();
 		}
 
 	}
@@ -368,6 +411,7 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 				}
 			}
 
+			checkComboWithText();
 		}
 
 		// Listens for a key being typed.

@@ -117,6 +117,16 @@ public class SafeLogger {
 		}
 	}
 
+	public void debug(Object obj) {
+		if (loggerEnabled) {
+			if (loggerAvailable) {
+				invokeLoggerMethod("debug", obj.toString());
+			} else {
+				out.println(DEBUG + obj.toString());
+			} 
+		}
+	}
+
 	public void debug(String message) {
 		if (loggerEnabled) {
 			if (loggerAvailable) {
@@ -144,6 +154,16 @@ public class SafeLogger {
 				invokeLoggerMethod("error", message);
 			} else {
 				out.println(ERROR + message);
+			} 
+		}
+	}
+
+	public void error(Throwable throwable) {
+		if (loggerEnabled) {
+			if (loggerAvailable) {
+				invokeLoggerMethod("error", throwable.getClass().getCanonicalName(), throwable);
+			} else {
+				out.println(ERROR + throwable.getClass());
 			} 
 		}
 	}

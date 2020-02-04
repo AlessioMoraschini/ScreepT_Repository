@@ -19,6 +19,7 @@ import javax.swing.text.JTextComponent;
 import org.apache.log4j.Logger;
 
 import gUI.panels.TextEditor;
+import maingUI.MainGUI;
 import om.ICommonShortcuts;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
@@ -180,6 +181,11 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	public void forceUnrecognizedFileType() {
 		textEditor.subHeaderPanel.comboFileFormat.setSelectedItem(SupportedFileTextEditor.TXT);
 //		textEditor.subHeaderPanel.comboStylesScheme.setSelectedIndex(textEditor.subHeaderPanel.comboStylesScheme.getItemCount()-1);
+	}
+
+	@Override
+	public void openColorPicker() {
+		MainGUI.mainAPP.getMntmColorPicker().doClick();
 	}
 
 }

@@ -38,7 +38,7 @@
 					
 			<!--  DESCTIPTION  -->
 			<div id="desSrcYpTion" align="center"><hr>
-				<p>Welcome to <b><span class="subIndex2">ScreepT</span></b> tutorial! Here you can find all informations about how to use it properly.</p>
+				<p>Welcome to <b><span class="subIndex2">ScreepT</span></b> tutorial! Here you can find all informations on how to use it properly.</p>
 				<p>ScreepT was born as a crypter...	but it became a multi-platform tool written for fun, and to help me during my own programming tasks. 
 					<br>
 					If you find something you'll like to improve, or you want to signal a bug you can write to <i>${developer.bugs.mail}</i>. Enjoy!
@@ -175,54 +175,62 @@
 			<!--  INSTALLATION AND USAGE  -->
 			<div id="InstallationNusage">
 				<h1 class="sectionTitle">1 - INSTALLATION AND FIRST LAUNCH</h1>
+				<hr>
 				<h2 id="subLauncherCompatibility" class="sectionSubTitle"> 1.1 - LAUNCHER/COMPATIBILITY</h2>
-				<li><span class="highlightBoldedGrey">ScreepT is a ready to launch software</span> written in java. It should be started using the provided launcher, in order to customize parameters (if needed), and check the state of dependencies on your computer before to launch. Everytime something is missing or misconfigured, you'll be warned. 
+				<hr>
+				<li><span class="highlightBoldedGrey">ScreepT does not require an installation process</span>, and it's written in java: this means that it can be virtually run on every OS having a JRE (> 1.8) installed (said this, you should consider that it's mainly tested on Windows and Linux OS, so it may behave better on these systems). It should be started using the provided launcher, in order to customize parameters (if needed), and check the state of dependencies on your computer before to launch. Everytime a problem is detected in your setup, you'll be warned through pop-up advices or with warning icons. 
 				<p> 
 					<li><span class="highlightBoldedGrey">You can find the launcher</span> inside main folder once it's extracted from 
 					the given .zip archive, just use the correct one for your OS (.exe on windows, .sh on linux/mac).
-					The only thing you need is a Java interpreter installed, AKA JVM/JRE/JDK.<br><br>
-					<span class="highlightBolded">Notice</span>: it's still possible to just launch the "ScreepT_Vxx.jar" that you find inside the "/application" folder, but remember: it's not designed to render and work the best this way... so you might have a non-optimal experience.
+					The only thing you need is a Java interpreter installed, AKA JVM/JRE/JDK (minimum version: 1.8).<br><br>
+					<span class="highlightBolded">Notice</span>: it's still possible to just launch the "ScreepT_Vxx.jar" that you find inside the "/application" folder, but remember: it's not designed to render and work the best this way... so you might have a non-optimal experience... it's better to use the launcher ;)
 					<br><br>
 					
 					<span class="highlightBolded">Notice</span>: full support is granted for java versions series 1.8.XX - 11.X.X : previous version will not work at all, while on newer versions some functions can be disabled or limited for compatibility reasons. 
-					You can either download Oracle's main version (<a class="dependencyLink" target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">JVM download page</a>) or openJdk version (<a class="dependencyLink" target="_blank" href="https://adoptopenjdk.net/releases.html">openJdk download page</a>), or download it from another source.
-					<br>At the end of the process just refresh and/or restart ScreepT. During the launch process JVM will be searched automatically, but if it's not found you can specify manually the path of you JVM /bin folder ;).
+					You can either download Oracle's release (<a class="dependencyLink" target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">JVM download page</a>), openJdk's one (<a class="dependencyLink" target="_blank" href="https://adoptopenjdk.net/releases.html">openJdk download page</a>), or download it from another source (<u>other JVMs may not be automatically detected by the ScreepT's launcher</u>).
+					<br>At the end of the JRE installation procedure, just refresh and/or restart ScreepT. During the launch process JVM will be searched automatically, but if it's not found you can specify manually the path of your JVM /bin folder ;).
 					<br><br>
 					
 					After you run ScreepT_launcher executable you'll be lead to a basic panel where you can choose to start the software, select specific settings to run the software, or check the dependency.<br>
-					If something is missing you'll be asked to update/download it. Once the required dependencies are installed, you can start the software, or if still having problems, try to restart the launcher.
+					If something is missing you'll be asked to update/download it. Once the required dependencies are installed, you can start the software.
+					<br>If you're still having problems, you can try to restart the launcher.
 					
 					<p> You don't need to pass through the launcher panel each time... if you want, after the first launch is gone, you
-						can disable launcher panel in the "general options" tab in ScreepT menu bar under the voice "preferences".
+						can disable launcher panel in the "general options" tab in ScreepT menu bar under the voice "preferences -> general options".
 					</p>
 				</p>
 				
+				<hr>
 				<h2 id="subSettings" class="sectionSubTitle"> 1.2 - LAUNCHER SETTINGS</h2>
-				<image src="Images/Launcher.jpg"/>
+				<hr>
+				<image class="centerImg" src="Images/Launcher.jpg"/>
 				<p>
-					As sayd before, you can customize settings of your launcher, by clicking "Customize launch parameters".
-					A new window will be opened: here you can set max and min ram memory allocated when using ScreepT. Also the stack size and LOGGING LEVEL can be adjusted in this section.
+					As said before, you can customize settings of your launcher, by clicking "Customize launch parameters".
+					A new window will be opened: here you can set max and min ram memory allocated when using ScreepT. Also the stack size and LOGGING LEVEL and other options can be adjusted in this section.
 					<p><strong>IMPORTANT: </strong> The built in values are tested and setted to be the best trade-off between performance and resources usage.
-					You are advised to use default values if you don't have any particular need.
+					it's recommended to use the default settings if you don't have any particular need.
 					</p>
+					<p><strong>IMPORTANT: </strong>it's recommended to launch ScreepT as ".class", cause jar launch setting can cause plugins to not being loaded after launch.</p>
 				</p>
-				
+
+				<hr>
 				<h2 id="subOSdepLauncher" class="sectionSubTitle"> 1.3 - OS DEPENDENT LAUNCHER</h2>
-				<p> ScYpT is written in java language, that can run almost everyehere. Just launch the right launcher for your OS:
+				<hr>
+				<p> ScYpT is written in java language, that can run almost everyehere. However, a native launcher is created by the ScreepT launcher, and it's written during the launch phase. In order to benefit from launcher customization, just use the provided native launcher for you OS:
 				<ul>
-					<li><p><span class="subMenuthirdLevel"><strong>Windows: </span></strong>double click on .exe launcher</p>
+					<li><p><span class="subMenuthirdLevel"><strong>Windows: </span></strong>double click on ScreepT.exe launcher</p>
 						<p><b>NB: </b>On some Windows versions (for example, on Windows 10), application could fail to start when shell is disabled. To solve this issue, just go on "Customize launch parameters" in launcher main panel, and check the option "Display shell". Now ScreepT should start correctly.</p>
-						<p><b>NB: </b>If you launch ScreepT as administrator, drag 'n drop features can be disabled. This behaviour is caused by a Windows security option, and probably cannot be avoided when launching as administrator.</p>
+						<p><b>NB: </b>If you launch ScreepT as administrator, drag 'n drop features may be disabled by default. This behaviour is caused by a Windows security option, and cannot be avoided when launching as administrator.</p>
 					</li>
 					
-					<li><p><span class="subMenuthirdLevel"><strong>Linux: </span></strong>double click on <i>ScreepT_Launcher.sh</i> launcher (remember to give it execute permissions with <i>"sudo chmod 755 ScreepT_Launcher.sh"</i>)</p>
+					<li><p><span class="subMenuthirdLevel"><strong>Linux: </span></strong>double click on <i>ScreepT.sh</i> launcher (remember to give it execute permissions before to launch, with the following <code>"sudo chmod 755 ScreepT.sh"</code>)</p>
 						<span><b>NB: </b></span>in some linux distros the launcher has some troubles launching the generated .sh native launcher. 
 						If you run in this issue when you press start button and the software does not start, you can launch manually the generated .sh launcher:
 						Just go inside the /Application folder and double click on <u>LauncherBash.sh</u>, or launch it from the shell <br>(in alternative, you can try disabling shell in launcher settings).<br>
 						<span><b>NB: </b></span>if you have problems downloading updates, you can try to update your java certificates with the following command:
 						<code>sudo apt-get install ca-certificates-java</code>
 					</li>
-					<li><p><span class="subMenuthirdLevel"><strong>Mac-OS: </span></strong>double click on .dpkg launcher <i class="subIndex1"> - Coming soon!</i></p></li>
+					<li><p><span class="subMenuthirdLevel"><strong>Mac-OS: </span></strong>double click on ScreepT.dmg launcher <i class="subIndex1"> - Coming soon!</i></p></li>
 				</ul>
 				
 				</p>
@@ -234,13 +242,17 @@
 			<!--  FUNCTIONS-DESCRIPTION AND TIPS  -->
 			<div id="FunctionsDescNtips">
 				<h1 class="sectionTitle">2 - FUNCTIONS DESCRIPTION AND TIPS</h1>
-				
+
+				<hr>
 				<h2 id="funcFileSubMenu" class="sectionSubTitle"> 2.1 - FILE SUBMENU</h2>
+				<hr>
 				<p><ul>
-					In this section you can find all the functions to save/load configurations, or open the more detailed configuration manager view. You can save, export, load, reset, reload your favourite configuration, or even use the default one.<br>
+					In this section you can find all the functions to save/load configurations, that are accessible from the more detailed configuration manager view. You can save, export, load, reset, reload your favourite configuration, or even use the default one.<br>
 					In the tree view on the left you can find your saved configurations. You can save your configurations by clicking on export configuration and use default directory "INI_FILES", or even with right click on file tree and selecting "import configuration file or folder".
 					Remember that newer version of ScreepT can have some differences or not load some values, when loading configurations exported/saved in previous versions (in this case default ones will be used). 
 					Also notice that if you have Autosave option active, current configuration will be automatically saved every N seconds (see <u><a href="#subSectTitleGenOpt">general options</a></u>), or when the program exits.<br><br>
+					
+					<image class="centerImg forceWidthImg" src="Images/ConfigurationManager.jpg"></image>
 				
 					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/manager.png"/> <span id="subSectTitleConfigManager" class="subMenuthirdLevel">CONFIGURATION MANAGER</span></li>
 						<p>
@@ -259,7 +271,7 @@
 						This function allows you to load previously saved/exported configuration by selecting them from your file System.
 						If for some reason any value is not found in the given configuration file, a default one will be loaded.
 						You need to use a valid .ini configuration file saved from ScreepT software.<br>
-						After configuration file load, a new copy can be found in the configuration manager inside the tree view of the user loaded files (/Application/INI_FILES).
+						<br><b>Hint: </b>if you want to import a copy of configuration file while loading, you have to open configuration manager, right click on configuration tree on the left, and select "import configuration": after this you will find a copy of the imported configuration in the tree view of user-loaded files (/Application/INI_FILES).
 						</p>
 						
 					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/export.png"/> <span id="subSectTitleExp" class="subMenuthirdLevel">EXPORT CURRENT CONFIGURATION</span></li>
@@ -284,8 +296,10 @@
 						</p>
 						
 				</p></ul>
-				
+
+				<hr>
 				<h2 id="funcPreferencesSubMenu" class="sectionSubTitle"> 2.2 - PREFERENCES SUBMENU</h2>
+				<hr>
 				<p><ul>
 				
 					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/graphics.png"/> <span id="subSectTitleGraphOpt" class="subMenuthirdLevel">GRAPHICS OPTIONS</span></li>
@@ -320,20 +334,22 @@
 						</ul><br>
 										
 				</p></ul>
-				
-				<h2 id="funcScreeptSubMenu" class="sectionSubTitle"> 2.3 - SCREEPT SUBMENU</h2>
+
+				<hr>
+				<h2 id="funcScreeptSubMenu" class="sectionSubTitle"> 2.3 - CREEPT SUBMENU</h2>
+				<hr>
 				<p><ul>
 				
 					<p>
 						This is the core function of this software, and implements a multi crypter/decrypter for files and folders, with key generators and a custom key dictionary manager.
 						<br>In this section you can find all the stuff you need to encrypt and decrypt a copy of your files, using different algorithms combinations.
 						<br><br>
-						ScreepT uses AES-128 bit and STEG_CRYPT algorithm, that can be combined togheter in order to encrypt/decrypt a copy of your data, with different options.
-						You can find information about how it works in the ScreepT section below :)
+						CreepT uses AES-128 bit and STEG_CRYPT algorithm, that can be combined togheter in order to encrypt/decrypt a copy of your data, with different options.
+						You can find information about how it works in the CreepT section below :)
 					</p>
 					<span class="highlightBolded">IMPORTANT: </span>your source files will NOT be deleted or modified. Instead, a unique named folder will be created in the destination folder you choose, and result files will be created in this folder.<br><br>
 					
-					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/crypter.png"/> <span id="subSectTitleCrypter" class="subMenuthirdLevel">SCREEPT - CRYPT AND DECRIPT FILES</span></li><br>
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/crypter.png"/> <span id="subSectTitleCrypter" class="subMenuthirdLevel">CreepT - CRYPT AND DECRIPT FILES</span></li><br>
 						When opening this module, you'll find:
 						<ul class="subList2">
 						
@@ -358,7 +374,7 @@
 							<span class="highlightBoldedGrey">IMPORTANT: </span> you will need text password to decrypt the result crypted files, be sure to remember it!<br></li>
 							
 							<br><li><span class="highlightBolded">STEG_ONLY</span>
-							This mode will use only the STEG encryption algorithm, given a PNG image key, that you have to specify in the left panel, either choosin' it from dictionary (or load it for one use only, and then ScreepT will forget about it after usage). For top security, you should use a random pixels image that you can generate with the given "Image Key Generator", that you find in ScreepT subMenu.
+							This mode will use only the STEG encryption algorithm, given a PNG image key, that you have to specify in the left panel, either choosin' it from dictionary (or load it for one use only, and then CreepT will forget about it after usage). For top security, you should use a random pixels image that you can generate with the given "Image Key Generator", that you find in CreepT subMenu.
 							<br>When using this mode, your files will be encoded one by one, using the value of each pixel from key image to produce an ecrypted result that can be decrypted only with the original key image.<br>
 							<span class="highlightBoldedGrey">IMPORTANT: </span> you will need the key image to decrypt the result crypted files, be sure to keep it in a safe place (USD stick or HD, but remember: never keep the keys under the doormat!).<br>
 							The number of images created depends on the size of source file and size of key image: <br>
@@ -381,12 +397,12 @@
 						<br>
 						<ol>	
 							<br><li><span class="highlightBolded">ULTRA SECURE OPTION</span>
-							<p>When this checkbox is selected, files will have an extra phase in which AES bytes (or result bytes, in case of ONLY_STEG) will be reordered accorging to values contained in the Key used: ScreepT will use theese values as "reorderKey index" to change the order of source bytes before/after to crypt or decrypt them. <br>
-							<span class="highlightBoldedGrey">IMPORTANT: </span>if you cript files with this mode, you won't have to select this option also when decrypting result later. ScreepT will keep memory of the selected option by saving an added bit into the result file.</p>
+							<p>When this checkbox is selected, files will have an extra phase in which AES bytes (or result bytes, in case of ONLY_STEG) will be reordered accorging to values contained in the Key used: CreepT will use theese values as "reorderKey index" to change the order of source bytes before/after to crypt or decrypt them. <br>
+							<span class="highlightBoldedGrey">IMPORTANT: </span>if you cript files with this mode, you won't have to select this option also when decrypting result later. CreepT will keep memory of the selected option by saving an added bit into the result file.</p>
 							
 							<br><li><span class="highlightBolded">HASH KEY OPTION</span>
 							<p>When this checkbox is selected, you text password (the AES one) will be hashed using a secure algorithm (<u>pbkdf2 with hmac sha512</u>). This means that even if your encripted file will be broken, the attacker won't discover your actual password, but an irreversible String sequence calculated from it.<br>
-								<span class="highlightBoldedGrey">IMPORTANT: </span>if you cript files with this mode, you won't have to select this option also when decrypting result later. ScreepT will keep memory of the selected option by saving an added bit into the result file.
+								<span class="highlightBoldedGrey">IMPORTANT: </span>if you cript files with this mode, you won't have to select this option also when decrypting result later. CreepT will keep memory of the selected option by saving an added bit into the result file.
 								<br><b>NB:</b> <i>this mode is't available when using STEG_ONLY mode</i>.
 							</p>
 						</ol>
@@ -394,7 +410,7 @@
 				
 					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/imageWriter.png"/> <span id="subSectTitleKeyGenImg" class="subMenuthirdLevel">KEY IMAGE GENERATOR</span></li>
 						<p>
-						In this panel you can generate your own random .png key image... But remember where you put it: ScreepT is so secure that losing this key will result in the impossibility to recover your crypted files!
+						In this panel you can generate your own random .png key image... But remember where you put it: CreepT is so secure that losing this key will result in the impossibility to recover your crypted files!
 						<br>I suggest to keep the keys in a pen drive or a portable HD, keeping it in a safe place (maybe right next to your heart :D).
 						<p>
 						You can choose different options when generating a key image, and you can use it to crypt files or folder with STEG or COMPLETE mode. When generating a key you can specify:
@@ -412,7 +428,7 @@
 							
 							<li class="highLineHeigthList"><span class="highlightBolded">"Export"</span> button: click this to save the generated image into a folder on your file System</li>
 
-							<li class="highLineHeigthList"><span class="highlightBolded">"Add to Dictionary"</span> button: click this to add the generated key to the dictionary. This way it will be saved in a directory inside ScreepT main directory, and will be accessible either from dictionary function and ScreepT function seen before.
+							<li class="highLineHeigthList"><span class="highlightBolded">"Add to Dictionary"</span> button: click this to add the generated key to the dictionary. This way it will be saved in a directory inside ScreepT main directory, and will be accessible either from dictionary function and CreepT function seen before.
 
 						</ol></p>
 						</p>
@@ -436,13 +452,15 @@
 						Using this functionality you can have a specific view on which PNG images you have loaded in your personal library, that is saved inside current SScreepTsource launch folder.<br>
 						The tree view of files is updated in real time, and by right click on it you can view different actions, such as delete all/selected files from dictionary, manual refresh and viewing informations about selected file.
 						In this panel you can also open the dictionary in system explorer to manage manually the files contained in it.</p>
-						<p><span class="highlightBoldedGrey">IMPORTANT: </span>always remember to do not delete ScreepT folders when you view in system explorer: the software may not work as expected or run into unexpected crashes.
-						However, if you experience any problem, you can run a new instance of ScreepT and reimport keys manually. Always remember to backup in a safe place your encryption key images!! ;)
+						<p><span class="highlightBoldedGrey">IMPORTANT: </span>always be careful: don't delete ScreepT's internal folders when you view in system explorer: the software may not work as expected or run into unexpected crashes.
+						However, if you experience any problem, you can run a new instance of ScreepT and reimport your keys manually: just remember to backup them in a safe place!! ;)
 						</p>
 				</p></ul>
-				
+
+				<hr>
 				<h2 id="funcTextEditorSubMenu" class="sectionSubTitle"> 2.4 - TEXT EDITOR SUBMENU</h2>
-				<image src="Images/TextEditor.jpg"/>
+				<hr>
+				<image class="centerImg forceWidthImg" src="Images/TextEditor.jpg"/>
 				<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">TEXT EDITOR</span></li>
 					<p>This is a built-in text editor with basic functions, and either some extra functionality such as:
 					<ul>
@@ -464,16 +482,22 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 						
 						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE COLORS/FONT </span>- (<u>works only when no theme is selected</u>) you can customize color of background <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/BackgroundColor.png"/> and text <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/TextColor_2.png"/> just by clicking on the relative button: a chooser dialog will appear and you'll be able to choose and preview the selected colors on the loaded text.<br>
 						With the same process is possible to select your preferred font, just by clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/Font_2.png"/>.<br>
-						If you'll press OK the selected colors/font will be added to current volatile configuration (theese will not be written to configuration file until you explicitly save them, or until autosave will occur, if selected).</li>
+						If you'll press OK the selected colors/font will be added to current volatile configuration (theese will not be written to configuration file until you explicitly save them, or until autosave will occur, if selected).
+						
+						</li><li class="highLineHeigthList"><span class="highlightBolded">IMPORT/EXPORT Crypter workspace </span>- with this function you can choose between import or export a workspace in Crypted form. When clicking this button, a po-up panel will appear, allowing to choose between import a previously crypted workspace folder from your file system, or either export one of the previously loaded workspace.
+						<br>After you've selected the wanted options, you will be lead to CreepT view, with the wanted workspace loaded and ready to crypt/decrypt: you have just to choose the crypter mode, and the right keys according to the selected mode. See the <u><a href="#funcScreeptSubMenu">CreepT</a></u> chapter for further details on how to use this function.
+						<hr>After the encryption/decryption process is completed, you'll be automatically brought back to text editor. (in case of import, decrypted workspace will be setted as current workspace)</li>
 						
 					</ul>
 
-					<b>NB:</b> not all available functions may be descripted here: hover on buttons to discover all of them, and learn more about related shortcut keys! :)
+					<b>NB:</b> not all available functions are descripted here: hover on buttons to discover all of them, and learn more about <u>related shortcut keys</u>! :)
 					</p>
-	
+
+				<hr>
 				<h2 id="funcVariousSubMenu" class="sectionSubTitle"> 2.5 - VARIOUS SUBMENU</h2>
+				<hr>
 				<p><ul>
-						
+					
 					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/hardware.png"/> <span id="subSectTitleSysInfo" class="subMenuthirdLevel">SYSTEM INFORMATIONS</span></li>
 					<p><span class="highlightBoldedGrey">IMPORTANT: </span> <u>Download "hardwareInfo" plugin to use this function</u>.</p>
 					<p>
@@ -542,8 +566,10 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 						</p>
 					
 				</p></ul>
-				
-				<h2 id="funcHelpSubMenu" class="sectionSubTitle"> 2.5 - HELP SUBMENU</h2>
+
+				<hr>
+				<h2 id="funcHelpSubMenu" class="sectionSubTitle"> 2.6 - HELP SUBMENU</h2>
+				<hr>
 				<p><ul>
 				<li>Visit this section if you want to know more about ScreepT fuctions, about A.M. Design 'N Development, visit A.M. Official Website, or simply return to start page. </li>
 				<br><span class="highlightBoldedGrey">IMPORTANT: </span>Always remember that changing section you won't lose any progress of your current opened work, just go back with shortcuts or with the main menu to retrieve the stuff you were doing :)
@@ -555,7 +581,8 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 						This closes the software, deleting temporary files if present, and saving current configuration if autosave option is ON.
 						</p>
 					<li class="highLineHeigthList"><span class="highlightBolded">Check for Software Updates </span>- this function is self explanatory: just be sure to have a working internet connection to update the software. NB: you can have some problems updating the software while using a proxy.
-					<li class="highLineHeigthList"><span class="highlightBolded">Install plugins </span>- this function is self explanatory: it opens a new pop up window when you can choose and install plugins for ScreepT. For the early ScreepT versions, this is made mainly to reduce the basic application size, because of some libraries that were very heavy to install as default choice, so I decided to make them installable as plugins. NB: you can have some problems installing plugins on the software while using a proxy.
+					<li class="highLineHeigthList"><span class="highlightBolded">Install plugins </span>- this function is self explanatory: it opens a new pop up window when you can choose and install plugins for ScreepT. For the early ScreepT versions, this is made mainly to reduce the basic application size, because of some libraries that were very heavy to install as default choice, so I decided to make them installable as plugins. 
+					<br><b>NB: </b>you may experience some troubles while installing plugins or updates while using a proxy: in this case you can setup your proxy going to preferences -> generic options, clicking the world icon. Here you can specify the url/port combination of your proxy, and eventually a username/password combination if you need it (for security reasons, by default password won't be saved, and must be specified again at each restart).
 				</ul></p>
 			
 			</div>
@@ -565,8 +592,10 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 			<!--  SHORTCUTS  -->
 			<div id="ShortcutsKeyboard">
 				<h1 class="sectionTitle">3 - KEYBOARD SHORTCUTS LIST</h1>
-				
+
+				<hr>
 				<h2 id="shctsMainGui" class="sectionSubTitle"> 3.1 - GENERAL PURPOSE SHORTCUTS</h2>
+				<hr>
 				<p><ul class="shorctutsList">
 				
 					<h4> 0 - Emergency shortcuts (active everywhere):</h4>
@@ -632,11 +661,12 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 					<li> <span class="SHCT_TEXT">RESET CRYPTER</span> - [Ctrl + Alt + Shift + 8]</li>
 					<li> <span class="SHCT_TEXT">RESET CONFIGURATION MANAGER</span> - [Ctrl + Alt + Shift + 7]</li>
 				</ul></p>				
-				
+
+				<hr>
 				<h2 id="shctsTextEditor" class="sectionSubTitle"> 3.2 - TEXT EDITOR SHORTCUTS</h2>
+				<hr>
 				<p><ul class="shorctutsList">
 					
-					<hr>
 					<h4> On-the-fly view change:</h4>
 					<li> <span class="SHCT_TEXT">MAXIMIZE TEXT AREA</span> - [Ctrl + M]</li>
 					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT TEXT EDITOR'S HEADER</span> - [Ctrl + Shift + Alt + H]</li>
@@ -697,6 +727,7 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 					<li> <span class="SHCT_TEXT">UPPERCASE ALL SELECTED</span> - [Ctrl + ArrowUp]</li>
 					<li> <span class="SHCT_TEXT">UPPERCASE AFTER DOTS/SEPARATORS</span> - [Ctrl + Shift + .]</li>
 					<li> <span class="SHCT_TEXT">DELETE LINE</span> - [Ctrl + D]</li>
+					<li> <span class="SHCT_TEXT">ENCAPSULATE SELECTION INTO TAG</span> - [Ctrl + Alt + T]</li>
 					<li> <span class="SHCT_TEXT">DUPLICATE LINE UP</span> - [Ctrl + Alt + Arrow up]</li>
 					<li> <span class="SHCT_TEXT">DUPLICATE LINE DOWN</span> - [Ctrl + Alt + Arrow down]</li>
 					<li> <span class="SHCT_TEXT">REMOVE SPACES IN SELECTION</span> - [Ctrl + (-)]</li>
@@ -742,7 +773,8 @@ By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icon
 			<!--  CREDITS AND LINKS  -->
 			<div id="CreditsNLinks">
 				<h1 class="sectionTitle">4 - CREDITS AND LINKS</h1>
-			
+				<hr>
+				<p><b>Bonus hint: </b> there are many easter eggs hidden in ScreepT, activatable with key combinations/repeats. Will you be able to find them all? Have a nice hunting :)</p>
 				<p>
 					<span class="highlightBoldedGrey">ScreepT is a free software</span> created with passion during my free time and my busy nights :)
 					Nice to meet you, I'm Alessio Moraschini, and I am the creator of ScreepT!<br><br>

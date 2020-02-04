@@ -11,9 +11,14 @@
  */
 package mouseutils;
 
+import java.awt.Component;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface MousePointerCaller {
 
 	public AtomicBoolean hasFocus = new AtomicBoolean(false);
+	
+	public List<Component> getDisabledElements();
+	
 }

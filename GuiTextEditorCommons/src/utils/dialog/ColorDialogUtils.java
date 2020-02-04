@@ -26,6 +26,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import utils.RsyntaxUtils;
 
 public class ColorDialogUtils extends JColorChooser{
+	private static final long serialVersionUID = 7495639155315531462L;
 	
 	private boolean colorEsit;
 	private JColorChooser thisChooser;

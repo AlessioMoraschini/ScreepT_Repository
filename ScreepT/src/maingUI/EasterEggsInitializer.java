@@ -3,8 +3,6 @@ package maingUI;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
-import javax.swing.JFrame;
-
 import easteregg.EasterEgg;
 import easteregg.EasterEggsManager;
 import easteregg.PhraseEasterEgg;
@@ -36,7 +34,7 @@ public class EasterEggsInitializer {
 		
 		EasterEgg snakeGame = new EasterEgg(
 				"snakeGameEgg01",
-				() -> {Snake.getInstance("Easter Egg found - Need for a snake game? :) ");}, 
+				() -> {Snake.getInstance("Snake - Easter Egg found!");}, 
 				(e) -> {
 					return KeyEvent.VK_S == e.getKeyCode() &&
 							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, false, false, false, 500) && 

@@ -20,6 +20,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.beans.PropertyChangeEvent;
 import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
@@ -46,7 +48,6 @@ import org.fife.ui.rtextarea.SearchEngine;
 
 import gui.GUIStyelSettings;
 import gui.GuiUtils;
-
 
 /**
  * A "Replace" dialog similar to those found in most Windows text editing
@@ -428,9 +429,42 @@ public class ReplaceDialogFork extends AbstractFindReplaceDialog {
 		});
 		
 		GuiUtils.centerComponent(thisDialog, new Dimension(550, (int)thisDialog.getPreferredSize().getHeight()));
+	
+		addComboListener();
 	}
+	
+	private void addComboListener() {
+		
+		findTextCombo.addActionListener((e) -> {
+			String selectedItem = findTextCombo.getSelectedString(); 
+			boolean nonEmpty = selectedItem!=null && selectedItem.length()>0;
+			findNextButton.setEnabled(nonEmpty);
+		});
+		
+		findTextCombo.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				try {
+					int item = findTextCombo.getSelectedIndex();
+					int delta = e.getWheelRotation() < 0 ? -1 : 1;
+					findTextCombo.setSelectedIndex(item + delta);
+				} catch (Exception e1) {}
+			}
+		});
 
-
+		replaceWithCombo.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				try {
+					int item = replaceWithCombo.getSelectedIndex();
+					int delta = e.getWheelRotation() < 0 ? -1 : 1;
+					replaceWithCombo.setSelectedIndex(item + delta);
+				} catch (Exception e1) {}
+			}
+		});
+		
+	}
+	
 	/**
 	 * Sets the text on the "Replace" button.
 	 *

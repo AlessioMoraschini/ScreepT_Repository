@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
+import gui.ColorDialogHelper;
 import gui.GuiUtils;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
@@ -24,6 +25,8 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
+import utility.ImageWorker;
+import utility.KeyListenerUtils;
 import utility.reflection.ReflectionUtils;
 
 import javax.swing.JPanel;
@@ -39,11 +42,19 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
+
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -77,17 +88,25 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 	
 	public JFrame caller;
 	
+	public static ColorDialogHelper colorDialogHelper = new ColorDialogHelper();
+	
 	public ColorPickerFrame(JFrame caller) {
 		
-		this.caller = caller;
-		ApplyCursorSUbElements(GuiUtilsExtended.CURSOR_CROSS, caller);
+		colorDialogHelper.colorChangedAction = (color)->{
+			updateTextBoxes(color);
+		};
+		
+		this.caller = caller != null ? caller : new JFrame();
+		ApplyCursorSUbElements(GuiUtilsExtended.CURSOR_CROSS, this.caller);
 		
 		active = true;
+		
+		singletonInstance = this;
 		
 		setTitle("Color Picker Frame");
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[grow][grow]", "[25px:30px,grow][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[grow][25px:30px,grow]", "[35px:35px,grow][grow]"));
 		
 		GuiUtils.centerComponent(this, getDefaultDimension());
 		
@@ -95,10 +114,11 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		
 		initializeGui();
 		
-		pointerUtils = new MousePointerUtils(getOnClickAction(), this, btnPickerOn);
+		pointerUtils = new MousePointerUtils(getOnClickAction(), this, this);
 		
 		paneMiniColorSample = new JPanel();
 		paneMiniColorSample.setOpaque(true);
+		paneMiniColorSample.setCursor(GuiUtils.CURSOR_HAND);
 		panelHeader.add(paneMiniColorSample, "cell 2 0,grow");
 		
 		addHandlers();
@@ -106,6 +126,10 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		setVisible(true);	
 		setAlwaysOnTop(true);
 		hasFocus.set(false);
+		
+		SwingUtilities.invokeLater(()->{
+			updateTextBoxes(ImageWorker.randomColorRGB(1.0f));
+		});
 	}
 	
 	/**
@@ -126,11 +150,30 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 	}
 	
 	private void updateTextBoxes(Color currentSelected) {
-		txtRgb.setText(ConversionUtils.getRgbString(currentSelected, ", "));
-		txtHsb.setText(ConversionUtils.getHsbString(currentSelected, " : "));
-		txtHsl.setText(ConversionUtils.getHslString(currentSelected, " : "));
+		txtRgb.setText(ConversionUtils.getRgbString(currentSelected, ","));
+		txtHsb.setText(ConversionUtils.getHsbString(currentSelected, ":"));
+		txtHsl.setText(ConversionUtils.getHslString(currentSelected, ":"));
 		txtHex.setText(ConversionUtils.getHexString(currentSelected));
 		paneMiniColorSample.setBackground(currentSelected);
+	}
+
+	private void updateTextBoxesExceptOne(Color currentSelected, JTextComponent toSkip) {
+		
+		SwingUtilities.invokeLater(() -> {
+			if (!txtRgb.equals(toSkip)) {
+				txtRgb.setText(ConversionUtils.getRgbString(currentSelected, ","));
+			}
+			if (!txtHsb.equals(toSkip)) {
+				txtHsb.setText(ConversionUtils.getHsbString(currentSelected, ":"));
+			}
+			if (!txtHsl.equals(toSkip)) {
+				txtHsl.setText(ConversionUtils.getHslString(currentSelected, ":"));
+			}
+			if (!txtHex.equals(toSkip)) {
+				txtHex.setText(ConversionUtils.getHexString(currentSelected));
+			}
+			paneMiniColorSample.setBackground(currentSelected);
+		});
 	}
 
 	public FocusListener focusColorPicker() {
@@ -167,17 +210,145 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!pointerUtils.isEnabled()) {
+				if(!pointerUtils.enabled.get()) {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_ON);
 					ApplyCursorSUbElements(GuiUtilsExtended.CURSOR_CROSS, caller);
-					pointerUtils.setEnabled(new AtomicBoolean(true));
+					pointerUtils.enabled.set(true);
 				}else {
 					btnPickerOn.setIcon(IconsPathConfigurator.IMG_ICON_LIGHT_OFF);
 					ApplyCursorSUbElements(GuiUtilsExtended.CURSOR_DEFAULT, caller);
-					pointerUtils.setEnabled(new AtomicBoolean(false));
+					pointerUtils.enabled.set(false);
 				}
 			}
 		});
+		
+		txtRgb.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				rgbUpdate();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				rgbUpdate();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				rgbUpdate();
+			}
+		});
+		txtRgb.addKeyListener(KeyListenerUtils.getKeyListenerIntTxtField(txtRgb, ",", 1, 0, 255));
+
+		txtHex.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				hexUpdate();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				hexUpdate();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				hexUpdate();
+			}
+		});
+		txtHex.addKeyListener(KeyListenerUtils.getKeyListenerHexTxtField(txtHex, ",", 1000, 0, 0xFFFFFF));
+
+		txtHsb.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				hsbUpdate();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				hsbUpdate();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				hsbUpdate();
+			}
+		});
+		txtHsb.addKeyListener(KeyListenerUtils.getKeyListenerFloatTxtField(txtHsb, ":", 0.01f, 0, 1.0f));
+
+		txtHsl.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				hslUpdate();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				hslUpdate();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				hslUpdate();
+			}
+		});
+		txtHsl.addKeyListener(KeyListenerUtils.getKeyListenerIntTxtField(txtHsl, ":", 1, 0, new int[] {255,100,100}));
+		
+		paneMiniColorSample.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				boolean oldEnabled = pointerUtils.enabled.get();
+				pointerUtils.enabled.set(false);
+				
+				Color selected = colorDialogHelper.askForColor(paneMiniColorSample, false);
+				
+				if (selected != null) {
+					updateTextBoxes(selected);
+				}
+				
+				GuiUtils.launchThreadSafeSwing(() -> {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					pointerUtils.enabled.set(oldEnabled);
+				});
+			}
+		});
+	}
+	
+	private void hslUpdate() {
+		if (txtHsl.hasFocus()) {
+			Color newColor = ConversionUtils.getColorFromHslString(txtHsl.getText(), ":", paneMiniColorSample.getBackground());
+			updateTextBoxesExceptOne(newColor, txtHsl);
+		}
+	}
+	
+	private void hsbUpdate() {
+		if (txtHsb.hasFocus()) {
+			Color newColor = ConversionUtils.getColorFromHsbString(txtHsb.getText(), ":", paneMiniColorSample.getBackground());
+			updateTextBoxesExceptOne(newColor, txtHsb);
+		}
+	}
+	
+	private void rgbUpdate() {
+		if (txtRgb.hasFocus()) {
+			Color newColor = ConversionUtils.getColorFromRgbString(txtRgb.getText().replaceAll("\\s", ""), ",");
+			updateTextBoxesExceptOne(newColor, txtRgb);
+		}
+	}
+	
+	private void hexUpdate() {
+		if (txtHex.hasFocus()) {
+			Color newColor = ConversionUtils.getColorFromHexString(txtHex.getText().replaceAll("\\s", ""), paneMiniColorSample.getBackground());
+			updateTextBoxesExceptOne(newColor, txtHex);
+		}
 	}
 	
 	public void ApplyCursorSUbElements(Cursor cursor, Component instance) {
@@ -205,7 +376,7 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		panelHeader.setBorder(null);
 		panelHeader.setBackground(Color.BLACK);
 		getContentPane().add(panelHeader, "cell 0 0 2 1,grow");
-		panelHeader.setLayout(new MigLayout("insets 1, fill", "[25px:n][grow,fill][25px:n]", "[]"));
+		panelHeader.setLayout(new MigLayout("insets 1, fill", "[25px:n][grow,fill][40px:n]", "[]"));
 		
 		btnPickerOn = new JButton("");
 		btnPickerOn.setCursor(GuiUtilsExtended.CURSOR_HAND);
@@ -218,15 +389,17 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		btnPickerOn.setBorder(null);
 		panelHeader.add(btnPickerOn, "cell 0 0,grow");
 		
-		lblColorPicker = new JLabel("Color Picker");
+		lblColorPicker = new JLabel("Click elements to retrieve their color (or press control and move mouse)");
 		lblColorPicker.setHorizontalAlignment(SwingConstants.CENTER);
 		lblColorPicker.setForeground(Color.WHITE);
-		lblColorPicker.setFont(new Font("Lithos Pro Regular", Font.BOLD, 15));
+		lblColorPicker.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblColorPicker.setBackground(SystemColor.activeCaptionBorder);
 		panelHeader.add(lblColorPicker, "cell 1 0,growx");
 		
 		JPanel panelMain = new JPanel();
-		panelMain.setLayout(new MigLayout("insets 1, fill", "[120px:120px,grow][100px:100px,grow][145px:145px,grow][145px:145px,grow]", "[15px:15px][20px:100px,grow]"));
+		panelMain.setLayout(new MigLayout("insets 1, fill",
+				"[120px:120px,grow][100px:100px,grow][145px:145px,grow][145px:145px,grow]",
+				"[15px:15px][20px:100px,grow]"));
 		panelMain.setBackground(Color.LIGHT_GRAY);
 		getContentPane().add(panelMain, "cell 0 1 2 1,grow");
 		
@@ -286,5 +459,10 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 	
 	public static ColorPickerFrame getInstance(JFrame parentFrame) {
 		return singletonInstance == null ? new ColorPickerFrame(parentFrame) : singletonInstance;
+	}
+
+	@Override
+	public List<Component> getDisabledElements() {
+		return Arrays.asList(this.getComponents());
 	}
 }

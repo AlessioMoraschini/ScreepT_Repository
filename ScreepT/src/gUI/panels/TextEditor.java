@@ -100,8 +100,6 @@ public class TextEditor extends ModulePanel {
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(TextEditor.class);
 	
-	public volatile boolean renewedAdviceTimeout = false;
-	
 	// this is the color of the left panel file navigator
 	public Color fileNavColorBckg = TextEditorOption.DEFAULT_FILE_PANEL_BACKGROUND_COL;
 	

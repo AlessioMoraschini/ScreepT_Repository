@@ -1023,4 +1023,9 @@ public class CustomTabbedEditor implements ITabsManager {
 		return loadedTabObj.textArea;
 	}
 
+	@Override
+	public void openColorPicker() {
+		tabEditorManager.openColorPicker();
+	}
+
 }

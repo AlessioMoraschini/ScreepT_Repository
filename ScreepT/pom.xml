@@ -47,7 +47,6 @@
     <finalName>${export.jar.name}</finalName>
     <sourceDirectory>src</sourceDirectory>
     
-    
     <plugins>
     	
     	<!-- Properties inherited from parent -->
@@ -849,6 +848,12 @@
 			<groupId>UpdaterModule</groupId>
 		  	<artifactId>UpdaterModule</artifactId>
 		  	<version>1.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>VariousCommonsLight</groupId>
+			<artifactId>VariousCommonsLight</artifactId>
+			<version>1.0</version>
 		</dependency>
 
   </dependencies>

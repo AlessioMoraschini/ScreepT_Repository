@@ -31,6 +31,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -97,6 +98,8 @@ public class TextEditorUtils {
 	JOptionHelperExtended dialogHelper;
 	
 	public File lastValidTreeSelRefreshed;
+	
+	private Timer adviceTimer;
 	
 	public TextEditorUtils(TextEditor currentTextEditor) {
 		this.currentTextEditor = currentTextEditor;
@@ -921,16 +924,13 @@ public class TextEditorUtils {
 
 			@Override
 			public void run() {
-				try {
-					currentTextEditor.renewedAdviceTimeout = true;
-					Thread.sleep(millisec);
-					currentTextEditor.renewedAdviceTimeout = false;
-					if(!currentTextEditor.renewedAdviceTimeout) {
-						currentTextEditor.footerPanel.dynLblSearchEsit.setText("");
-					}
-				} catch (InterruptedException e) {
-					logger.error("Exception happened!", e);
+				if (adviceTimer != null) {
+					adviceTimer.stop();
 				}
+				adviceTimer = new Timer(millisec, (e) -> {
+					currentTextEditor.footerPanel.dynLblSearchEsit.setText("");
+				});
+				adviceTimer.start();
 			}
 		}).start();
 	}

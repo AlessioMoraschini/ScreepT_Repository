@@ -297,7 +297,7 @@ public abstract class INItializerParent implements INItializerInterface{
      * create color from String RGB separed with "-" representation (red-green-blue)
      */
     public static Color getRgbColorFromString(String color) {
-    	return ConversionUtils.getRgbColorFromString(color);
+    	return ConversionUtils.getColorFromRgbString(color);
     }
     
     /**

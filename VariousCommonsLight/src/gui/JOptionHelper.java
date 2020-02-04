@@ -616,7 +616,11 @@ public class JOptionHelper {
 			dialog.setAlwaysOnTop(true);
 			dialog.setLocationRelativeTo(parentComponent);
 			dialog.toFront();
-			dialog.setIconImage(GuiUtils.iconToImage(icon));
+			
+			try {
+				dialog.setIconImage(GuiUtils.iconToImage(icon));
+			} catch (Exception e1) {}
+			
 			try {
 				dialog.setVisible(true);
 				dialog.dispose();

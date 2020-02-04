@@ -192,7 +192,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
     @Override
     public void paste() {
     	
-    	int start = getSelectionStart();
+//    	int start = getSelectionStart();
     	
     	if (isRectangularModeOn.get() && isCurrentSelectionRectangular()) {
     		Clipboard clipboard = getClipboard(null);
@@ -204,7 +204,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 		}else {
 			super.paste();
 			requestFocus();
-			setSelectionStart(start);
+//			setSelectionStart(start);
 		}
     	
     }

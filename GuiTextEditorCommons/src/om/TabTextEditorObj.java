@@ -45,6 +45,7 @@ import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -52,6 +53,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
+import gui.JOptionHelper;
 import gui.MenuSetter;
 import gui.TextEditTooltips;
 import gui.dnd.FileDrop;
@@ -102,6 +104,8 @@ public class TabTextEditorObj {
 		loadedFile = file;
 		this.checkChangesMonitor = checkChangesMonitor;
 		this.shortcutsManager = shortcutsManager;
+		
+		this.iTabsManager = iTabsManager;
 		
 		lastLazyInitParserDict = configuration.getTextEditorOpt().prefDictspellChecker;
 		
@@ -283,6 +287,14 @@ public class TabTextEditorObj {
 		textArea.getPopupMenu().add(new JSeparator());
 		textArea.getPopupMenu().add(broserOpener);
 		
+		// Color picker
+		JMenuItem showColorPicker = new JMenuItem("Color picker/converter");
+		showColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
+		showColorPicker.addActionListener((e)->{
+			iTabsManager.openColorPicker();
+		});
+		textArea.getPopupMenu().add(showColorPicker);
+
 		// EOL
 
 		JMenuItem showFileLineTerminators = new JMenuItem("View lineFeeds (From File)");
@@ -351,6 +363,9 @@ public class TabTextEditorObj {
 				final JMenuItem lowercasePostDotsItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>.tt</b> - Lowercase after significant brokers"));
 				uppercasePostDotsItem.setToolTipText(TextEditTooltips.tooltipLowerPostDots);
 				lowercasePostDotsItem.addActionListener(getPostDotsLowercaseListener());
+
+				final JMenuItem encapsulateTag = new JMenuItem(GuiUtils.encapsulateInHtml("<b>Sorround with tag</b> - Ctrl+Alt+T"));
+				encapsulateTag.addActionListener(getEncapsulateTagListener());
 				
 				String tabHint = "(See tabSize in textEditor subHead panel)";
 		
@@ -378,6 +393,7 @@ public class TabTextEditorObj {
 				stringActions.add(uppercaseFirstItem);
 				stringActions.add(uppercasePostDotsItem);
 				stringActions.add(lowercasePostDotsItem);
+				stringActions.add(encapsulateTag);
 				stringActions.add(new JSeparator());
 				stringActions.add(replaceTabsWithSpaces);
 				stringActions.add(replaceSpacesWithTabs);
@@ -545,6 +561,27 @@ public class TabTextEditorObj {
 			TextAreaStringEditor.makeLowercasePostDotsNSeparators(textArea);
 			resetPositionAndRevalidate(linePosition);
 			shortcutsManager.revalidateUnsaved();
+		};
+	}
+
+	public ActionListener getEncapsulateTagListener() {
+		return e -> {
+			if(textArea.getSelectedText() != null) {
+				boolean htmlLike = false;
+				if(textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_XML) || 
+				   textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_MXML) ||
+				   textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_HTML)) {
+					htmlLike = true;
+				}
+				int linePosition = textArea.getCaretLineNumber();
+				String tag = new JOptionHelper(currentScrollPane).askForStringNullable("Specify the tag to use for sorrounding", "Specify tag");
+				if(tag != null) {
+					tag = htmlLike ? GuiUtils.encapsulateInTag(textArea.getSelectedText(), tag) : tag+textArea.getSelectedText()+tag;
+					textArea.replaceSelection(tag);
+					resetPositionAndRevalidate(linePosition);
+					shortcutsManager.revalidateUnsaved();
+				}
+			}
 		};
 	}
 }

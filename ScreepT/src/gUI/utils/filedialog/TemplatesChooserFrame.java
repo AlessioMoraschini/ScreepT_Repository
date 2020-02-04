@@ -104,7 +104,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 		getContentPane().add(panel, "cell 0 0 2 1,growx,aligny top");
 		panel.setLayout(new MigLayout("insets 2, fill", "[][][][grow][][]", "[40px]"));
 		
-		lblTemplates = new JLabel("Templates Manager");
+		lblTemplates = new JLabel(" Templates Manager");
 		lblTemplates.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTemplates.setForeground(Color.LIGHT_GRAY);
 		lblTemplates.setFont(new Font("Segoe UI", Font.BOLD, 15));
@@ -316,7 +316,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 	
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(550, 170);
+		return new Dimension(600, 165);
 	}
 	
 	private void reloadTemplates() {

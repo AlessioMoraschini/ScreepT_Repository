@@ -1,6 +1,8 @@
-2020-01-31  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Added file "open in browser" function
+2020-02-03  (HEAD -> refs/heads/BugFix, refs/remotes/origin/master, refs/remotes/origin/BugFix, refs/heads/master) Added easter Eggs!
 
-2020-01-30  (tag: refs/tags/0.9.22, refs/remotes/origin/master, refs/heads/master) Improved Image viewer + Image converter; Various bugs fixed
+2020-01-31  Added file "open in browser" function
+
+2020-01-30  (tag: refs/tags/0.9.22) Improved Image viewer + Image converter; Various bugs fixed
 
 2020-01-27  Fixed unzip + updates bug, various bug fixed
 

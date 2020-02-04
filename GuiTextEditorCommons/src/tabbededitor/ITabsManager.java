@@ -19,5 +19,7 @@ public interface ITabsManager {
 
 	public ColumnTextArea getCurrentTextArea();
 	
+	public void openColorPicker();
+	
 	public void loadFiles(final File[] fileToLoad);
 }

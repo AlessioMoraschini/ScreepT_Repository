@@ -118,11 +118,13 @@ h2{
 
 #indexTitle{
 	font-size: 1.4em;
+	text-align: left;
 }
 
 .sectionTitle{
 	font-size:25px;
 	color: #0A0099;
+	text-align: center;
 	margin-left: 22px;
 }
 
@@ -130,6 +132,7 @@ h2{
 	font-size:20px;
 	color: #A00044;
 	margin-left: 24px;
+	text-align: center;
 	margin-top: 20px;
 }
 
@@ -195,6 +198,19 @@ h2{
 	text-align: center;
 }
 
+.centerImg{
+	 display: block;
+	 margin-left: auto;
+ 	 margin-right: auto;
+}
+
+.centerImg.forceWidthImg{
+	 display: block;
+	 margin-left: auto;
+ 	 margin-right: auto;
+	 width:55%;
+}
+
 .highlightBolded{
 	font-weight: bold;
 	color:#0880FF;
@@ -218,7 +234,7 @@ li{
 
 .dependencyLink{
 	font-weight:300!important;
-	color: #C449A8!important;
+	color: #999999!important;
 	font-size:1em!important;
 }
 .dependencyLink:hover{

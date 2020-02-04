@@ -259,7 +259,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						GuiUtils.fireActionListener(currentTextEditor.getCurrentTabEditor()
 								.loadedTabObj.getPostDotsUppercaseListener(), null);
 					} catch (Exception e1) {
-						e1.printStackTrace();
+						logger.error(e1);
 					}
 				}
 				/*
@@ -299,6 +299,18 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 */
 				else if (e.getKeyCode() == 82 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnReplaceText.doClick();
+				}
+
+				/*
+				 * 	ENCAPSULATE IN TAG -> CTRL+ALT+T
+				 */
+				else if (e.getKeyCode() == KeyEvent.VK_T && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					try {
+						GuiUtils.fireActionListener(currentTextEditor.getCurrentTabEditor()
+								.loadedTabObj.getEncapsulateTagListener(), null);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 				
 				/*

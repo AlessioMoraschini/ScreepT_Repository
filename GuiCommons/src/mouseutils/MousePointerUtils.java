@@ -22,18 +22,19 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
+import utility.SafeLogger;
 
 public class MousePointerUtils {
 	
 	// mainGUI logger
-	static Logger logger = Logger.getLogger(MousePointerUtils.class);
+	static SafeLogger logger = new SafeLogger(MousePointerUtils.class);
 
 	public Robot robot;
 	public AWTEventListener mouseListener;
@@ -43,10 +44,10 @@ public class MousePointerUtils {
 	MousePointerCaller owner;
 	public Component disabledTarget;
 	
-	private AtomicBoolean enabled = new AtomicBoolean(false);
+	public AtomicBoolean enabled = new AtomicBoolean(false);
 	
 	public MousePointerUtils(Runnable onClickAction, MousePointerCaller owner, Component disabledTarget) {
-		this.onClickAction = (onClickAction != null)? onClickAction : getVoidAction();
+		this.onClickAction = (onClickAction != null)? onClickAction : () -> {};
 		this.owner = owner;
 		this.disabledTarget = disabledTarget;
 		
@@ -76,7 +77,8 @@ public class MousePointerUtils {
 				if(!enabled.get()) {return;}
 				
 				Point currentPos = MouseInfo.getPointerInfo().getLocation();
-				Point absTargPos = disabledTarget.getParent().getBounds().getLocation();
+				Point absTargPos = disabledTarget.getBounds().getLocation();
+
 				try {
 					absTargPos = disabledTarget.getLocationOnScreen();
 				}catch(Exception e) {}
@@ -89,27 +91,35 @@ public class MousePointerUtils {
 					);
 				boolean hoverExcludedComponent = absoluteBounds.contains(currentPos);
 				
+				
+				if (event instanceof KeyEvent) {
+					KeyEvent keyEvent = (KeyEvent) event;
+					
+					if (keyEvent.isControlDown()) {
+						if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
+							logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
+							logger.debug(event);
+							pixelCurrColor = robot.getPixelColor(currentPos.x, currentPos.y);
+							onClickAction.run();
+						}
+					}
+				}
+
 				if(hoverExcludedComponent) {return;}
 				
 				if (event instanceof MouseEvent) {
 					MouseEvent me = (MouseEvent)event;
+					
 					if(me.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON1) {
 						logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
 						logger.debug(event);
 						
 						pixelCurrColor = robot.getPixelColor(currentPos.x, currentPos.y);
-						
-						actionClickThread = new Thread(onClickAction);
-						actionClickThread.start();
-						
-						try {
-							actionClickThread.join();
-						} catch (InterruptedException e) {
-							logger.error(this.getClass(), e);
-						}
+						onClickAction.run();
+
 					}
 				} else if (event instanceof FocusEvent) {
-					if(!owner.hasFocus.get()) {
+					if(!MousePointerCaller.hasFocus.get()) {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override
 							public void run() {
@@ -127,41 +137,23 @@ public class MousePointerUtils {
 					logger.debug(event);
 					
 					pixelCurrColor = robot.getPixelColor(currentPos.x, currentPos.y);
+					onClickAction.run();
 					
-					actionClickThread = new Thread(onClickAction);
-					actionClickThread.start();
-					
-					try {
-						actionClickThread.join();
-					} catch (InterruptedException e) {
-						logger.error(this.getClass(), e);
-					}
 				} 
-//				Thread listenerRemover = new Thread(removeMouseListenerRunnable());
-//				listenerRemover.start();
 			}
 		};
 		
-		Toolkit.getDefaultToolkit().addAWTEventListener(listener, AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
+		Toolkit.getDefaultToolkit().addAWTEventListener(listener, 
+				AWTEvent.KEY_EVENT_MASK |
+				AWTEvent.MOUSE_EVENT_MASK | 
+				AWTEvent.FOCUS_EVENT_MASK);
 		
 		return listener;
-	}
-	
-	public synchronized boolean isEnabled() {
-		return (enabled.get());
 	}
 	
 	public synchronized void removeMouseListener() {
 		Toolkit.getDefaultToolkit().removeAWTEventListener(mouseListener);
 		enabled.set(false);
-	}
-
-	public AtomicBoolean getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(AtomicBoolean enabled) {
-		this.enabled = enabled;
 	}
 
 	public Runnable removeMouseListenerRunnable() {
@@ -171,27 +163,6 @@ public class MousePointerUtils {
 				removeMouseListener();
 			}
 		};
-	}
-	
-	
-	/**
-	 * Do nothing - useful as default
-	 * @return
-	 */
-	private Runnable getVoidAction() {
-		return new Runnable() {
-			@Override
-			public void run() {
-			}
-		};
-	}
-
-	public Runnable getOnClickAction() {
-		return onClickAction;
-	}
-
-	public void setOnClickAction(Runnable onClickAction) {
-		this.onClickAction = onClickAction;
 	}
 	
 }

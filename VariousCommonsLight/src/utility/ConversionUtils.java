@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.text.JTextComponent;
+
 import om.HslColor;
 import utility.string.StringWorker;
 
@@ -177,7 +179,135 @@ public class ConversionUtils {
 		return new Font(type, style, size);
 	}
 
-	public static Color hsvToRgb(float hue, float saturation, float value) throws RuntimeException{
+	/**
+	 * return font in string format
+	 * @return
+	 */
+	public static String getFontString(Font srcFont) {
+		String stringFont = srcFont.getFontName()+"-"+srcFont.getStyle()+"-"+srcFont.getSize();
+		return stringFont;
+	}
+	
+	/**
+	 * Convert color to string RGB with custom separator
+	 */
+	public static String getRgbString(Color sourceColor, String separator) {
+		separator = (StringWorker.isEmpty(separator))? "-" : separator;
+		StringBuilder builder = new StringBuilder();
+		builder.append(sourceColor.getRed()).append(separator)
+			   .append(sourceColor.getGreen()).append(separator)
+			   .append(sourceColor.getBlue());
+		String result = builder.toString();
+		return result;
+	}
+
+	/**
+	 * Convert color to string RGB
+	 */
+	public static String getRgbString(Color sourceColor) {
+		return getRgbString(sourceColor, "-");
+	}
+
+	/**
+	 * create color from String RGB separed with given separator representation (red-green-blue)
+	 */
+	public static Color getColorFromRgbString(String color, String separator) {
+		String[] rgb = color.split(separator);
+		if(rgb.length != 3) {
+			return new Color(0,0,0);
+		}
+		int red = Integer.parseInt(rgb[0]);
+		int green = Integer.parseInt(rgb[1]);
+		int blue = Integer.parseInt(rgb[2]);
+		
+		return new Color(red, green, blue);
+	}
+	
+	/**
+	 * create color from String RGB separed with "-" representation (red-green-blue)
+	 */
+	public static Color getColorFromRgbString(String color) {
+		return getColorFromRgbString(color, "-");
+	}
+
+	/**
+	 * Convert color to string HSL
+	 */
+	public static String getHslString(Color sourceColor, String separator) {
+		float[] hsl = HslColor.fromRGB(sourceColor);
+		String result = "";
+		for(float curr : hsl) {
+			String currString = String.valueOf((int)curr);
+			result = result.concat(currString).concat(separator);
+		}
+		if (result.length() > 0) {
+			result = result.substring(0, result.length()-1);
+		}    	
+		return result;
+	}
+	
+	public static Color getColorFromHslString(String hslColorString, String separator, Color defaultFallback) {
+		String elabored = StringWorker.trimToEmpty(hslColorString).replaceAll("\\s", "");
+		
+		try {
+			
+			String[] hsl = elabored.split(separator);
+			float[] hslFloat = new float[3];
+			
+			for(int i = 0; i < hsl.length; i++) {
+				hslFloat[i] = Float.parseFloat(hsl[i].replaceAll(",", "."));
+			}
+			
+			return HslColor.toRGB(hslFloat);
+		} catch(Exception e) {
+			return defaultFallback;
+		}
+	}
+	
+	/**
+	 * Convert color to string HSB (where B is brightness, same as Value where referred as HSV)
+	 */
+	public static String getHsbString(Color sourceColor, String separator) {
+
+		float[] hsb = Color.RGBtoHSB(sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue(), null);
+		String result = "";
+		for(float curr : hsb) {
+			String currString = String.format("%.2f", curr);
+			result = result.concat(currString).concat(separator);
+		}
+		if (result.length() > 0) {
+			result = result.substring(0, result.length()-1);
+		}
+		return result;
+	}
+	
+	public static Color getColorFromHsbString(String rawHsbColorStr, String separator, Color defaultFallBack) {
+		String elabored = StringWorker.trimToEmpty(rawHsbColorStr).replaceAll("\\s", "");
+		
+		try {
+			
+			String[] hsb = elabored.split(separator);
+			float[] hsbFloat = new float[3];
+			
+			for(int i = 0; i < hsb.length; i++) {
+				hsbFloat[i] = Float.parseFloat(hsb[i].replaceAll(",", "."));
+			}
+			
+			return new Color(Color.HSBtoRGB(hsbFloat[0], hsbFloat[1], hsbFloat[2]));
+		} catch(Exception e) {
+			return defaultFallBack;
+		}
+	}
+	
+	/**
+	 * REMEMBER: hsv is the same as HSB, while hsl is another format
+	 * @param hue
+	 * @param saturation
+	 * @param value
+	 * @return
+	 * @throws RuntimeException
+	 */
+	public static Color hsbToRgb(float hue, float saturation, float value) throws RuntimeException{
 	
 	    int h = (int)(hue * 6);
 	    value = value * 256;
@@ -196,97 +326,128 @@ public class ConversionUtils {
 	      default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
 	    }
 	}
-
-	/**
-	 * create color from String RGB separed with "-" representation (red-green-blue)
-	 */
-	public static Color getRgbColorFromString(String color) {
-		String[] rgb = color.split("-");
-		if(rgb.length != 3) {
-			return new Color(0,0,0);
-		}
-		int red = Integer.parseInt(rgb[0]);
-		int green = Integer.parseInt(rgb[1]);
-		int blue = Integer.parseInt(rgb[2]);
-		
-		return new Color(red, green, blue);
-	}
-
-	/**
-	 * return font in string format
-	 * @return
-	 */
-	public static String getFontString(Font srcFont) {
-		String stringFont = srcFont.getFontName()+"-"+srcFont.getStyle()+"-"+srcFont.getSize();
-		return stringFont;
-	}
-
-	/**
-	 * Convert color to string HSL
-	 */
-	public static String getHslString(Color sourceColor, String separator) {
-		float[] hsl = HslColor.fromRGB(sourceColor);
-		String result = "";
-		for(float curr : hsl) {
-			String currString = String.valueOf((int)curr);
-			result = result.concat(currString).concat(separator);
-		}
-		if (result.length() > 1) {
-			result = result.substring(0, result.length()-2);
-		}    	
-		return result;
-	}
-
-	/**
-	 * Convert color to string HSB (where B is brightness, same as Value where referred as HSV)
-	 */
-	public static String getHsbString(Color sourceColor, String separator) {
-		float[] hsv = new float[3];
-		float[] hsb = Color.RGBtoHSB(sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue(), hsv);
-		String result = "";
-		for(float curr : hsb) {
-			String currString = String.format("%.2f", curr);
-			result = result.concat(currString).concat(separator);
-		}
-		if (result.length() > 1) {
-			result = result.substring(0, result.length()-2);
-		}
-		return result;
-	}
-
+	
 	/**
 	 * Convert color to string Hexadecimal
 	 */
 	public static String getHexString(Color sourceColor) {
-		String hex = String.format("#%02x%02x%02x", sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue());
-		return hex;
+		return String.format("#%02x%02x%02x", sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue());
 	}
-
-	/**
-	 * Convert color to string RGB with custom separator
-	 */
-	public static String getRgbString(Color sourceColor, String separator) {
-		separator = (StringWorker.isEmpty(separator))? "-" : separator;
-		StringBuilder builder = new StringBuilder();
-		builder.append(sourceColor.getRed()).append(separator)
-			   .append(sourceColor.getGreen()).append(separator)
-			   .append(sourceColor.getBlue());
-		String result = builder.toString();
-		return result;
+	
+	public static Color getColorFromHexString(String rawColorStr, Color defaultFallback) {
+		String elabored = StringWorker.trimToEmpty(rawColorStr).replaceAll("#", "");
+		
+		try {
+			int red = Integer.valueOf(elabored.substring(0,2), 16);
+			int green = Integer.valueOf(elabored.substring(2,4), 16);
+			int blue = Integer.valueOf(elabored.substring(4,6), 16);
+			
+			return new Color(red, green, blue);
+		} catch (Exception e) {
+			return defaultFallback;
+		}
 	}
-
-	/**
-	 * Convert color to string RGB
-	 */
-	public static String getRgbString(Color sourceColor) {
-		StringBuilder builder = new StringBuilder();
-		builder.append(sourceColor.getRed()).append("-")
-			   .append(sourceColor.getGreen()).append("-")
-			   .append(sourceColor.getBlue());
-		String result = builder.toString();
-		return result;
+	
+	public static String updateColorComponentInString(String textColor, String newCompValue, String separator, int componentToChange) {
+		String newVal = "";
+		
+		try {
+			String[] parts = textColor.split(separator);
+			for(int i = 0; i < parts.length; i++) {
+				newVal += ((i == componentToChange) ? newCompValue : parts[i]) + separator;
+			}
+			newVal = newVal.substring(0, newVal.length() - 1);
+		} catch (Exception e) {
+			newVal = textColor;
+		}
+		return newVal;
 	}
-
+	
+	public static String getComponentI(String source, String separator, int i) {
+		String [] parts = source.split(separator);
+		try {
+			return parts[i];
+		} catch (Exception e) {
+			return parts[0];
+		}
+	}
+	
+	public static String updateStringInt(String source, int increment, int max, int min) {
+		String newVal = source;
+		
+		try {
+			int sourceInt = Integer.parseInt(source) + increment;
+			if (sourceInt >= min && sourceInt <= max) {
+				newVal = String.valueOf(sourceInt);
+			}
+		} catch (NumberFormatException e) {
+			newVal = source;
+		}
+		
+		return newVal;
+	}
+	
+	public static String updateStringFloat(String source, float increment, float max, float min) {
+		String newVal = source;
+		
+		try {
+			boolean containsComma = source.contains(",");
+			String dotSource = source.replaceAll(",", ".");
+			int decimals = dotSource.length() - dotSource.lastIndexOf(".") - 1;
+			float sourceFloat = Float.parseFloat(dotSource) + increment;
+			if (sourceFloat >= min && sourceFloat <= max) {
+				newVal = String.format("%." + decimals + "f", sourceFloat);
+			}
+			
+			if(containsComma)
+				newVal.replaceAll("[.]", ",");
+			else
+				newVal.replaceAll(",", ".");
+				
+			
+		} catch (NumberFormatException e) {
+			newVal = source;
+		}
+		
+		return newVal;
+	}
+	
+	public static String updateStringHex(String source, int increment, int min, int max) {
+		String newVal = source;
+		
+		try {
+			String temp = source.replaceAll("#", "");
+			int parsed = Integer.parseInt(temp, 16);
+			parsed += increment;
+			parsed = parsed > max ? max : parsed < min ? min : parsed;
+			newVal = "#" + Integer.toHexString(parsed);
+		} catch (NumberFormatException e) {
+			newVal = source;
+		}
+		
+		return newVal;
+	}
+	
+	public static int getIndexOfCaretPositionWithSeparator(JTextComponent textComponent, String separator) {
+		int position = 0;
+		try {
+			String text = textComponent.getText();
+			int caretPosition = textComponent.getCaretPosition();
+			for(int i = 0; i < text.length(); i++) {
+				if(caretPosition == i) {
+					return position;
+				}
+				if(separator.charAt(0) == text.charAt(i)) {
+					position ++;
+				}
+			}
+		} catch (Exception e) {
+			position = 0;
+		}
+		
+		return position;
+	}
+	
 	public static Double getAvgValue(List<Double> valueList) {
 		double sum = valueList.stream().mapToDouble(Double::doubleValue).sum();
 		int size = valueList.size();

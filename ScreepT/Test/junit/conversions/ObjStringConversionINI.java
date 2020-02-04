@@ -19,7 +19,7 @@ public class ObjStringConversionINI {
 		String colorY = ConversionUtils.getRgbString(black);
 		TestUtils.printl("Stringed: "+colorY);
 		
-		Color parsed = ConversionUtils.getRgbColorFromString(colorY);
+		Color parsed = ConversionUtils.getColorFromRgbString(colorY);
 		TestUtils.printl("Parsed: "+parsed);
 		
 		TestUtils.printSeparator(40);

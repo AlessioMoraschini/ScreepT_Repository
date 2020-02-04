@@ -238,7 +238,7 @@ public class GuiUtils {
 		});
 	}
 	
-	public static <E, T> void refreshCombo(final JComboBox target, final Collection<E> values) {
+	public static <E, T> void refreshCombo(final JComboBox<E> target, final Collection<E> values) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				target.removeAllItems();
@@ -899,6 +899,15 @@ public class GuiUtils {
 		return "<html>" + original + "</html>";
 	}
 
+	public static String encapsulateInTag(String original, String tag) {
+		String trimmedTag = StringWorker.trimToEmpty(tag);
+		if(trimmedTag.equals("") || StringWorker.trimToEmpty(original).equals("")) {
+			return null;
+		}
+		
+		return "<"+trimmedTag+">" + original + "</"+trimmedTag+">";
+	}
+	
 	public static KeyEventDispatcher getKeyDispatcherFromCode(int keyCode) {
 		return new KeyEventDispatcher() {
 		    @Override

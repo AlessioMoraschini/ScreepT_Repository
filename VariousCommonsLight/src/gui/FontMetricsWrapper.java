@@ -73,6 +73,7 @@ public class FontMetricsWrapper extends FontMetrics {
 		return target.getMaxDescent();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int getMaxDecent() {
 		return target.getMaxDecent();

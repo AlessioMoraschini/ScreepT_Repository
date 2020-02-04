@@ -82,6 +82,7 @@ public class HashCheckerFrame extends ParentFrame{
 
 		this.parentFrame = parentFrame;
 		thisFrame = this;
+		singletonInstance = this;
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[5px][150px:150px][220px,grow][50px:150px:150px][190px:190px:200px][5px]", "[5px,center][30px,center][][35px][][20px,grow][20px,grow][5px,center]"));

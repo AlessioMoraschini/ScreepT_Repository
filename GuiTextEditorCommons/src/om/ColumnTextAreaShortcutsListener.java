@@ -112,11 +112,11 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
 	}
 	
-	private void backupFractionalFont() {
-		fractionalFontEnabled.set(currentColumnTextArea.getFractionalFontMetricsEnabled());
-	}
-
-	private void resetFractionalFont() {
-		currentColumnTextArea.setFractionalFontMetricsEnabled(fractionalFontEnabled.get());
-	}
+//	private void backupFractionalFont() {
+//		fractionalFontEnabled.set(currentColumnTextArea.getFractionalFontMetricsEnabled());
+//	}
+//
+//	private void resetFractionalFont() {
+//		currentColumnTextArea.setFractionalFontMetricsEnabled(fractionalFontEnabled.get());
+//	}
 }

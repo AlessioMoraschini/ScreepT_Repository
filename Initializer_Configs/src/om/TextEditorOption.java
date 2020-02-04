@@ -166,7 +166,7 @@ public class TextEditorOption {
 		DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);      
 		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
 		DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
-		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
+		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_SEARCH_DIAL_LIST_SIZE); 
 		
 		eol = DEF_eol;
 		
