@@ -35,7 +35,8 @@ public class AdWaitDialog extends JDialog {
     /**
      * Creates the reusable dialog.
      */
-    public AdWaitDialog(String title, JFrame aFrame, JProgressBar bar) {
+    @SuppressWarnings("static-access")
+	public AdWaitDialog(String title, JFrame aFrame, JProgressBar bar) {
         super(aFrame, true);
         
         optionPane = new JOptionPane();

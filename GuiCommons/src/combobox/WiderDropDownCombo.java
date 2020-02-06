@@ -17,9 +17,10 @@ import java.awt.FontMetrics;
 
 import javax.swing.JComboBox;
 
-public class WiderDropDownCombo extends JComboBox {
+public class WiderDropDownCombo extends JComboBox<Object> {
+	private static final long serialVersionUID = -1088675052295636392L;
 
-    private String type;
+	private String type;
     private boolean layingOut = false;
     private int widestLengh = 0;
     private boolean wide = false;

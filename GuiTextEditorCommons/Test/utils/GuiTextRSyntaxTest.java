@@ -9,6 +9,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 public class GuiTextRSyntaxTest extends JFrame{
+	private static final long serialVersionUID = 1987545794216L;
 
 	public static void main(String[] args) {
 		GuiTextRSyntaxTest testFrame = new GuiTextRSyntaxTest();

@@ -1188,7 +1188,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
 					
 					try {
-						RXTextUtilities.centerLineInScrollPane(loadedTabObj.textArea);
+						RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
 					}catch(Exception e1) {
 						logger.warn("Error resetting position", e1);
 					}

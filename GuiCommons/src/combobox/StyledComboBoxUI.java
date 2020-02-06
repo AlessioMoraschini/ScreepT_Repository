@@ -33,7 +33,7 @@ public class StyledComboBoxUI extends BasicComboBoxUI {
 	}
 }
 
-class StyledComboBox extends JComboBox {
+class StyledComboBox extends JComboBox<Object> {
 	private static final long serialVersionUID = -1771296583702725887L;
 
 	public StyledComboBox() {

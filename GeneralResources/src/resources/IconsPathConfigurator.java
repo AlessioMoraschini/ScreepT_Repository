@@ -200,9 +200,13 @@ public class IconsPathConfigurator {
 	public static final String ICON_PREV = GeneralConfig.RESOURCES_DIR + "Icons/General/prev.png";
 	public static final String ICON_NEXT = GeneralConfig.RESOURCES_DIR + "Icons/General/next.png";
 	public static final String ICON_X_WHITE = GeneralConfig.RESOURCES_DIR + "Icons/General/X_white.png";
+	public static final String ICON_X_WHITE_RED = GeneralConfig.RESOURCES_DIR + "Icons/General/X_white_red.png";
 	public static final String ICON_X_LIGHT_GRAY = GeneralConfig.RESOURCES_DIR + "Icons/General/X_lgray.png";
 	public static final String ICON_X_GRAY = GeneralConfig.RESOURCES_DIR + "Icons/General/X_gray.png";
+	public static final String ICON_X_GRAY_RED = GeneralConfig.RESOURCES_DIR + "Icons/General/X_gray_red.png";
+	public static final String ICON_X_GRAY_RED_LIGHTER = GeneralConfig.RESOURCES_DIR + "Icons/General/X_gray_red_lighter.png";
 	public static final String ICON_X_BLACK = GeneralConfig.RESOURCES_DIR + "Icons/General/X_black.png";
+	public static final String ICON_X_BLACK_RED = GeneralConfig.RESOURCES_DIR + "Icons/General/X_black_red.png";
 	public static final String ICON_CLOCK = GeneralConfig.RESOURCES_DIR + "Icons/General/clock.png";
 	public static final String ICON_EXPAND = GeneralConfig.RESOURCES_DIR + "Icons/General/expand.png";
 	public static final String ICON_COPY = GeneralConfig.RESOURCES_DIR + "Icons/General/copy.png";
@@ -249,10 +253,14 @@ public class IconsPathConfigurator {
 	public static final ImageIcon IMG_ICON_LIGHT_ON = new ImageIcon(ICON_LIGHT_ON);
 	public static final ImageIcon IMG_ICON_LIGHT_OFF = new ImageIcon(ICON_LIGHT_OFF);
 	
-	public static final ImageIcon X_WHITE = new ImageIcon(ICON_X_WHITE);
-	public static final ImageIcon X_LIGHT_GRAY = new ImageIcon(ICON_X_LIGHT_GRAY);
+	public static final ImageIcon X_WHITE_IMG = new ImageIcon(ICON_X_WHITE);
+	public static final ImageIcon X_WHITE_IMG_RED = new ImageIcon(ICON_X_WHITE_RED);
+	public static final ImageIcon X_LIGHT_GRAY_IMG = new ImageIcon(ICON_X_LIGHT_GRAY);
 	public static final ImageIcon X_GRAY_IMG = new ImageIcon(ICON_X_GRAY);
+	public static final ImageIcon X_GRAY_IMG_RED = new ImageIcon(ICON_X_GRAY_RED);
+	public static final ImageIcon X_GRAY_IMG_RED_LIGHT = new ImageIcon(ICON_X_GRAY_RED_LIGHTER);
 	public static final ImageIcon X_BLACK_IMG = new ImageIcon(ICON_X_BLACK);
+	public static final ImageIcon X_BLACK_IMG_RED = new ImageIcon(ICON_X_BLACK_RED);
 	
 	/**
 	 * Same as defaultFileIcons(), but this one is already lazy initialized

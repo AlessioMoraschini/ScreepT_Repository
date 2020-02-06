@@ -86,12 +86,12 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
         if (buttonOrdinalPos != Integer.MAX_VALUE && currentButton != null) {
 			if (selectedIndex == tabIndex) {
 				g.setColor(fillingColor);
-				currentButton.setBackground(ACTIVE_BTN_CLOSE_COL);
-				currentButton.setIcon(IconsPathConfigurator.X_WHITE);
+//				currentButton.setBackground(ACTIVE_BTN_CLOSE_COL);
+				currentButton.setIcon(IconsPathConfigurator.X_WHITE_IMG_RED);
 			} else {
 				g.setColor(deSelfillingColor);
-				currentButton.setBackground(INACTIVE_BTN_CLOSE_COL);
-				currentButton.setIcon(IconsPathConfigurator.X_GRAY_IMG);
+//				currentButton.setBackground(INACTIVE_BTN_CLOSE_COL);
+				currentButton.setIcon(IconsPathConfigurator.X_GRAY_IMG_RED);
 			} 
 		}
 		g.fillRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);

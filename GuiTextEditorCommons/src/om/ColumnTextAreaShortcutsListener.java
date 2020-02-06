@@ -12,17 +12,28 @@
 package om;
 
 import java.awt.KeyEventDispatcher;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit;
 
 public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	
 	public static int instancesCreatedTotalNumber = 0;
+	
+	int ALT = InputEvent.ALT_MASK;
+	int CTRL = InputEvent.CTRL_MASK;
+	int SHIFT = InputEvent.SHIFT_MASK;
+	int ALT_CTRL = ALT | CTRL;
+	int ALT_CTRL_SHIFT = ALT | CTRL | SHIFT;
+	int ALT_SHIFT = ALT | SHIFT;
+	int CTRL_SHIFT = CTRL | SHIFT;
 	
 	// TextFileWriter logger creation
 	static Logger logger = Logger.getLogger(ColumnTextAreaShortcutsListener.class);
@@ -36,6 +47,7 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 		logger.debug(this.getClass().getName() + " Started listening on column textArea! Instance n°" + instancesCreatedTotalNumber);
 		this.currentColumnTextArea = currentColumnTextArea;
 		fractionalFontEnabled = new AtomicBoolean(currentColumnTextArea.getFractionalFontMetricsEnabled());
+		addKeyMapActions(currentColumnTextArea);
 	}
 	
 	@Override
@@ -110,6 +122,10 @@ public class ColumnTextAreaShortcutsListener implements KeyEventDispatcher{
 	
 	private boolean isShortcutKey(KeyEvent e) {
 		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
+	}
+	
+	public void addKeyMapActions(ColumnTextArea textArea) {
+		textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_K, CTRL_SHIFT), RSyntaxTextAreaEditorKit.rstaToggleCommentAction);
 	}
 	
 //	private void backupFractionalFont() {

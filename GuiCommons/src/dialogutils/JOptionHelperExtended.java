@@ -29,7 +29,7 @@ public class JOptionHelperExtended extends JOptionHelper {
 		ICON_WARN_REF = new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_WARNING); 
 		ICON_INFO_REF = new ImageIcon(IconsPathConfigurator.ICON_GEN_INFO);        
 		ICON_QUESTION_REF = new ImageIcon(IconsPathConfigurator.ICON_GEN_QUESTION);
-		DEFAULT_FONT_DIMENSION = GeneralConfig.DEFAULT_DIALOGS_FONT;
+		DEFAULT_FONT = GeneralConfig.DEFAULT_DIALOGS_FONT;
 	}
 	
 	public JOptionHelperExtended (Component parentComponent) {

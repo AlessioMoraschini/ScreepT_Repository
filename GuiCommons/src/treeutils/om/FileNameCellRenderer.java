@@ -24,8 +24,6 @@ import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.TreeCellRenderer;
 
-import javax.swing.tree.TreeCellRenderer;
-
 import org.apache.log4j.Logger;
 
 import files.om.FileNamed;

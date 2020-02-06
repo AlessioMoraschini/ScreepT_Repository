@@ -24,7 +24,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -35,11 +34,17 @@ import java.awt.Component;
 public class TabHeadPanel_Full extends JPanel{
 	private static final long serialVersionUID = -6387090181225164666L;
 
-	public TabHeadPanel_Full(String title, String tooltip, String iconPath, ActionListener tabCloseListener) {
+	@SuppressWarnings("unused")
+	private CurrentTabHeader currentTabRetriever;
+	private JPanel thisPanel;
+	
+	public TabHeadPanel_Full(String title, String tooltip, String iconPath, ActionListener tabCloseListener, CurrentTabHeader currentTabRetriever) {
 		super();
 		setOpaque(false);
 		setToolTipText(tooltip);
 		
+		thisPanel = this;
+		this.currentTabRetriever = currentTabRetriever != null ? currentTabRetriever : ()->{return this;};
 		// image label
 		JLabel imageLbl = new JLabel();
 		imageLbl.setIcon(new ImageIcon(iconPath));
@@ -60,8 +65,8 @@ public class TabHeadPanel_Full extends JPanel{
 		btnClose.setSize(new Dimension(20, 20));
 		btnClose.setIgnoreRepaint(true);
 		btnClose.setMargin(new Insets(0, 0, 0, 0));
-		btnClose.setMaximumSize(new Dimension(100, 100));
-		btnClose.setMinimumSize(new Dimension(18, 16));
+		btnClose.setMaximumSize(new Dimension(18, 18));
+		btnClose.setMinimumSize(new Dimension(18, 18));
 		btnClose.setVerticalTextPosition(SwingConstants.CENTER);
 		btnClose.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -69,7 +74,7 @@ public class TabHeadPanel_Full extends JPanel{
 		Color foreground = new Color(210,210,210);
 		btnClose.setBackground(background);
 		btnClose.setForeground(foreground);
-		btnClose.setIcon(IconsPathConfigurator.X_WHITE);
+		btnClose.setIcon(IconsPathConfigurator.X_WHITE_IMG_RED);
 
 		btnClose.addActionListener(tabCloseListener);
 		btnClose.addMouseListener(new MouseListener() {
@@ -78,20 +83,20 @@ public class TabHeadPanel_Full extends JPanel{
 			public void mousePressed(MouseEvent e) {
 			}
 			public void mouseExited(MouseEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						btnClose.setBackground(background);
-						btnClose.setIcon(IconsPathConfigurator.X_WHITE);
-					}
-				});
+				if (thisPanel.equals(currentTabRetriever.getCurrent())) {
+					btnClose.setIcon(IconsPathConfigurator.X_WHITE_IMG_RED);
+				} else {
+					btnClose.setIcon(IconsPathConfigurator.X_GRAY_IMG_RED_LIGHT);
+				}
+				btnClose.repaint();
 			}
 			public void mouseEntered(MouseEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						btnClose.setBackground(background.brighter());
-						btnClose.setIcon(IconsPathConfigurator.X_BLACK_IMG);
-					}
-				});
+				if (thisPanel.equals(currentTabRetriever.getCurrent())) {
+					btnClose.setIcon(IconsPathConfigurator.X_GRAY_IMG_RED_LIGHT);
+				} else {
+					btnClose.setIcon(IconsPathConfigurator.X_BLACK_IMG_RED);
+				}
+				btnClose.repaint();
 			}
 			public void mouseClicked(MouseEvent e) {
 			}
@@ -103,5 +108,10 @@ public class TabHeadPanel_Full extends JPanel{
 		add(lblTitle, "cell 1 0,growx,aligny center"); // 2 - TEXT TITLE
 		add(btnClose, "cell 2 0,alignx right,aligny center"); // 3 - CLOSE BUTTON
 		
+	}
+	
+	@FunctionalInterface
+	public interface CurrentTabHeader {
+		public JPanel getCurrent();
 	}
 }

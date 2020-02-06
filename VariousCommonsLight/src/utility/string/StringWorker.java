@@ -87,7 +87,7 @@ public class StringWorker {
         for(int i=0; i < charArray.length; i++){
             
             //if any character is not in upper case, return false
-            if(!Character.isUpperCase(charArray[i])) {
+            if(Character.isAlphabetic(charArray[i]) && !Character.isUpperCase(charArray[i])) {
             	return false;
             }
         }

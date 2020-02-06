@@ -14,6 +14,7 @@ public class ObjStringConversionINI {
 	@Test
 	public void testColor() {
 		Color black = Color.black;
+		@SuppressWarnings("unused")
 		Color dynColor = new Color(50,120,200);
 		
 		String colorY = ConversionUtils.getRgbString(black);

@@ -13,6 +13,7 @@ package utility.string;
 
 import javax.swing.JTextArea;
 
+import gui.GuiUtils;
 import om.SelectionDTO;
 import om.SelectionDtoFull;
 import utility.SafeLogger;
@@ -100,11 +101,16 @@ public class TextAreaStringEditor {
 	}
 	
 	public static void makeToggleUppercase(JTextArea textArea) {
-		SelectionDTO result = getToggleUppercase(new SelectionDtoFull(textArea));
+		SelectionDTO result = getToggleUppercase(new SelectionDtoFull(textArea), false);
+		applySelectionDTO(result, textArea);
+	}
+
+	public static void makeLowercaseSelection(JTextArea textArea) {
+		SelectionDTO result = getToggleUppercase(new SelectionDtoFull(textArea), true);
 		applySelectionDTO(result, textArea);
 	}
 	
-	public static SelectionDTO getToggleUppercase(SelectionDtoFull selectionDtoFull) {
+	public static SelectionDTO getToggleUppercase(SelectionDtoFull selectionDtoFull, boolean forceLowerCase) {
 		String text = selectionDtoFull.text;
 		String textBackup = new String(text);
 		String selected = selectionDtoFull.selection;
@@ -122,7 +128,7 @@ public class TextAreaStringEditor {
 			end = textBackup.substring(endN, textBackup.length());
 		}
 		
-		if (!StringWorker.isStringUpperCase(selected)) {
+		if (!forceLowerCase && !StringWorker.isStringUpperCase(selected)) {
 			selected = selected.toUpperCase();
 		} else {
 			selected = selected.toLowerCase();
@@ -136,12 +142,19 @@ public class TextAreaStringEditor {
 		return new SelectionDTO(strtN, endN, selected, selected);
 	}
 
-	public static void applySelectionDTO(SelectionDTO result, JTextArea textArea) {
+	public static void applySelectionDTO(final SelectionDTO result, final JTextArea textArea) {
 		if (result != null) {
 			textArea.setText(result.text);
-			textArea.requestFocus();
-			textArea.setSelectionStart(result.start);
-			textArea.setSelectionEnd(result.end);
+			
+			GuiUtils.launchThreadSafeSwing(()->{
+				try {
+					Thread.sleep(150);
+				} catch (InterruptedException e) {
+				}
+				textArea.requestFocus();
+				textArea.setSelectionStart(result.start);
+				textArea.setSelectionEnd(result.end != null ? result.end.intValue() : result.end);
+			});
 		}
 	}
 	

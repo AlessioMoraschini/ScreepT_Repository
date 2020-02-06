@@ -25,6 +25,7 @@ import java.awt.event.MouseEvent;
 
 
 public class CryptoStegTest_Gui_V2_0 extends JDialog{
+	private static final long serialVersionUID = 13265415194517L;
 
 	public JFrame getFrame() {
 		return frame;

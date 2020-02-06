@@ -43,9 +43,10 @@ public class FileTreeModel implements TreeModel {
 	    public int getIndexOfChild(Object parent, Object child) {
 	    	FileNamedTest par = (FileNamedTest) parent;
 	    	FileNamedTest ch = (FileNamedTest) child;
-	        if(par!=null) {
-		        return Arrays.asList(par.fileObj.listFiles()).indexOf(ch);
-	        }else return 0;
+	        if(par!=null && ch != null) {
+		        return Arrays.asList(par.fileObj.listFiles()).indexOf(ch.fileObj);
+	        } else
+	        	return 0;
 	    }
 
 	    @Override

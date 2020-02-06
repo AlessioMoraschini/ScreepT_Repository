@@ -94,7 +94,7 @@ public class KeyGenFrame extends ParentFrame {
 	private JPanel panelIMG;
 	private JTextArea textLog;
 	private JTextArea textInfo;
-	private JComboBox comboImgType;
+	private JComboBox<KeyGenImageType> comboImgType;
 	private JLabel lblFinalSize;
 	private JLabel lblThisSettingsAllow;
 	
@@ -205,7 +205,7 @@ public class KeyGenFrame extends ParentFrame {
 		lblImageType.setFont(new Font("SansSerif", Font.BOLD, 12));
 		panel_1.add(lblImageType, "cell 0 3 2 1,alignx center");
 		
-		comboImgType = new JComboBox(KeyGenImageType.values());
+		comboImgType = new JComboBox<>(KeyGenImageType.values());
 		comboImgType.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_1.add(comboImgType, "cell 2 3 2 1,growx");
 		comboImgType.setRenderer(new ToolTipBufferedImageType());

@@ -40,6 +40,39 @@ public class RXTextUtilities
 	}
 
 	/*
+	 *  Attempt to center the line horizontally containing the caret at the center of the
+	 *  scroll pane.
+	 *
+	 *  @param component the text component in the sroll pane
+	 */
+	public static void centerLineFullInScrollPane(JTextComponent component)
+	{
+		Container container = SwingUtilities.getAncestorOfClass(JViewport.class, component);
+		
+		if (container == null) return;
+		
+		try
+		{
+			Rectangle r = component.modelToView(component.getCaretPosition());
+			JViewport viewport = (JViewport)container;
+			int extentWidth = viewport.getExtentSize().width;
+			int viewWidth = viewport.getViewSize().width;
+			
+			int extentHeight = viewport.getExtentSize().height;
+			int viewHeight = viewport.getViewSize().height;
+
+			int x = Math.max(0, r.x - ((extentWidth - r.width) / 2));
+			x = Math.min(x, viewWidth - extentWidth);
+			
+			int y = Math.max(0, r.y - ((extentHeight - r.height) / 2));
+			y = Math.min(y, viewHeight - extentHeight);
+			
+			viewport.setViewPosition(new Point(x, y));
+		}
+		catch(BadLocationException ble) {}
+	}
+
+	/*
 	 *  Return the column number at the Caret position.
 	 *
 	 *  The column returned will only make sense when using a

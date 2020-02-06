@@ -21,6 +21,7 @@ import tabbededitor.CustomTabbedEditor;
 @Deprecated
 public class TabMover {
 	
+	@SuppressWarnings("unused")
 	private static volatile boolean movingTab = false;
 	JTabbedPane tabReferenceDraggable;
 	CustomTabbedEditor currrentTabbedEditor;

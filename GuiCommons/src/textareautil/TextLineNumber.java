@@ -28,9 +28,8 @@ import javax.swing.text.*;
  *  This class was designed to be used as a component added to the row header
  *  of a JScrollPane.
  */
-public class TextLineNumber extends JPanel
-	implements CaretListener, DocumentListener, PropertyChangeListener
-{
+public class TextLineNumber extends JPanel implements CaretListener, DocumentListener, PropertyChangeListener {
+	private static final long serialVersionUID = 7381792836401096016L;
 	public final static float LEFT = 0.0f;
 	public final static float CENTER = 0.5f;
 	public final static float RIGHT = 1.0f;

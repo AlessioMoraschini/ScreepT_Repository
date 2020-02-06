@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,6 +65,7 @@ public class TextEditorOption {
 	public static final boolean DEF_prefix_hash = false;
 	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles;
 	public static LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces;
+	public static LimitedConcurrentList<String> DEF_lastTagsUsed;
 	public static LimitedConcurrentList<String> DEF_lastReplaceTerms;
 	public static LimitedConcurrentList<String> DEF_lastSearchTerms;
 	
@@ -113,6 +115,8 @@ public class TextEditorOption {
 	public LimitedConcurrentList<FileNamed> lastSelectedWorkspaces;
 	public LimitedConcurrentList<String> lastReplaceTerms;
 	public LimitedConcurrentList<String> lastSearchTerms;
+	public LimitedConcurrentList<String> lastTagsUsed;
+	String[] lastTagsInit = new String[] {"a", "span", "p", "div", "br", "image", "h1", "h2", "h3", "h4", "h5"};
 	
 	// TEXT AREA
 	public String defaultWorkspacePath;
@@ -167,6 +171,8 @@ public class TextEditorOption {
 		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
 		DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
 		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_SEARCH_DIAL_LIST_SIZE); 
+		DEF_lastTagsUsed = new LimitedConcurrentList<String>(60); 
+		DEF_lastTagsUsed.addAll(Arrays.asList(lastTagsInit));
 		
 		eol = DEF_eol;
 		
@@ -183,6 +189,7 @@ public class TextEditorOption {
 		lastSelectedWorkspaces = DEF_lastSelectedWorkspaces;
 		lastReplaceTerms = DEF_lastReplaceTerms;
 		lastSearchTerms = DEF_lastSearchTerms;
+		lastTagsUsed = DEF_lastTagsUsed;
 		margin = DEFAULT_MARGIN;
 		voiceRate = DEFAULT_VOICE_RATE;
 		inlinedTabs = DEFAULT_TAB_INLINE;
@@ -281,6 +288,14 @@ public class TextEditorOption {
 		return tabLineVisible;
 	}
 	
+	public LimitedConcurrentList<String> getLastTagsUsed() {
+		return lastTagsUsed;
+	}
+
+	public void setLastTagsUsed(LimitedConcurrentList<String> lastTagsUsed) {
+		this.lastTagsUsed = lastTagsUsed;
+	}
+
 	public int getInterline() {
 		return interline;
 	}

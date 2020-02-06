@@ -426,9 +426,18 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		} catch (Exception e1) {
 		}
 
-		String lastSearchTerms;
 		try {
-			lastSearchTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastSearchTerms");
+			String lastTagsUsed = iniReadFile.get(TEXT_EDITOR_OPT, "lastTagsUsed");
+			StringTokenizer tokenizerTagsTerms = new StringTokenizer(lastTagsUsed, ";");
+			textEditorOpt.lastTagsUsed.getList().clear();		
+			while(tokenizerTagsTerms.hasMoreTokens()) {
+				textEditorOpt.lastTagsUsed.addLast(tokenizerTagsTerms.nextToken());
+			}
+		} catch (Exception e1) {
+		}
+		
+		try {
+			String lastSearchTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastSearchTerms");
 			StringTokenizer tokenizerSearchedTerms = new StringTokenizer(lastSearchTerms, ",");
 			textEditorOpt.getLastSearchTerms().getList().clear();		
 			while(tokenizerSearchedTerms.hasMoreTokens()) {
@@ -437,9 +446,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		} catch (Exception e1) {
 		}
 		
-		String lastReplaceTerms;
 		try {
-			lastReplaceTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastReplaceTerms");
+			String lastReplaceTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastReplaceTerms");
 			StringTokenizer tokenizerReplaceTerms = new StringTokenizer(lastReplaceTerms, ",");
 			textEditorOpt.getLastReplaceTerms().getList().clear();		
 			while(tokenizerReplaceTerms.hasMoreTokens()) {
@@ -448,16 +456,14 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		} catch (Exception e1) {
 		}
 		
-		String lastSelectedWorkspaces;
 		try {
-			lastSelectedWorkspaces = iniReadFile.get(TEXT_EDITOR_OPT, "lastSelectedWorkspaces");
+			String lastSelectedWorkspaces = iniReadFile.get(TEXT_EDITOR_OPT, "lastSelectedWorkspaces");
 			StringTokenizer tokenizerSelectedWorkspaces = new StringTokenizer(lastSelectedWorkspaces, ",");
 			textEditorOpt.lastSelectedWorkspaces.getList().clear();		
 			while(tokenizerSelectedWorkspaces.hasMoreTokens()) {
 				textEditorOpt.lastSelectedWorkspaces.addLast(new FileNamed(tokenizerSelectedWorkspaces.nextToken()));
 			}
 		} catch (Exception e1) {
-			lastSelectedWorkspaces = "";
 		}
 		
 		// selected theme
@@ -633,6 +639,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "lastSelectedWorkspaces", textEditorOpt.lastSelectedWorkspaces.toCharSeparatedString(","));
 		iniFile.put(TEXT_EDITOR_OPT, "lastReplaceTerms", textEditorOpt.lastReplaceTerms.toCharSeparatedString(","));
 		iniFile.put(TEXT_EDITOR_OPT, "lastSearchTerms", textEditorOpt.lastSearchTerms.toCharSeparatedString(","));
+		iniFile.put(TEXT_EDITOR_OPT, "lastTagsUsed", textEditorOpt.lastTagsUsed.toCharSeparatedString(";"));
 
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
@@ -716,6 +723,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nLAST SELECTED WORKSPACES: ").append(textEditorOpt.lastSelectedWorkspaces.toCharSeparatedString(","))
 			   .append("\nLAST USED REPLACE TERMS: ").append(textEditorOpt.lastReplaceTerms.toCharSeparatedString(","))
 			   .append("\nLAST USED SEARCH TERMS: ").append(textEditorOpt.lastSearchTerms.toCharSeparatedString(","))
+			   .append("\nLAST USED ENCAPSULATION TAGS: ").append(textEditorOpt.lastTagsUsed.toCharSeparatedString(";"))
 			   .append("\nDEFAULT OPENED FILE AT START: ").append(textEditorOpt.selectedAtStart)
 			   .append("\nLAST CODE ESCAPE LANGUAGE: ").append(textEditorOpt.lastEscapeLanguage)
 

@@ -28,7 +28,8 @@ import org.apache.log4j.Logger;
 import java.awt.Color;
 
 public class ProgressCancelableDialog extends JDialog{
-	
+	private static final long serialVersionUID = 5794886118208459310L;
+
 	static Logger logger = Logger.getLogger(ProgressCancelableDialog.class); 
 	
 	public static final int x = 200;

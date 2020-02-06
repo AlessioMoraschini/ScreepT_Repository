@@ -22,6 +22,7 @@ public class TestFtpConnection {
 
 	private static final String HOST = "ftp.am-design-development.com";
 	private static final String USER = "";
+	@SuppressWarnings("unused")
 	private static String psw = "";
 	private static FtpDumper dumper;
 	private static final int PORT = 22;

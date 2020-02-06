@@ -29,6 +29,8 @@ import files.FileSearchAdvanced;
 import files.FileVarious;
 import files.FileWorker;
 import gui.GuiUtils;
+import main.MainStandAloneUpdater;
+import main.om.PropertiesDTO;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
@@ -136,7 +138,7 @@ public class INIfileChoosER {
 					
 					if(confirmation) {
 						ok = copyNloadIniAsDefault(matchedIniConf.get(0));
-						copyGeneralConfig(extFolder.getParentFile());
+						updateFromExternalGeneralConfig(extFolder.getParentFile());
 						if(importCopy) {
 							try {
 								FileUtils.copyFileToDirectory(matchedIniConf.get(0), new File(GeneralConfig.DEFAULT_INI_FOLDER));
@@ -169,6 +171,7 @@ public class INIfileChoosER {
 			fileINI.setIniFile(new Wini(iniRead));
 			fileINI.setIniReadFile(new Wini(iniRead));
 			fileINI.readConfigIniFile();
+			
 			logger.info(iniRead + " -> configuration loaded!");
 			return true;
 		} catch (Exception e) {
@@ -183,6 +186,7 @@ public class INIfileChoosER {
 			MainGUI.currentConfiguration.setIniReadFile(new Wini(iniRead));
 			MainGUI.currentConfiguration.readConfigIniFile();
 			MainGUI.updateGuiFromCurrConfig();
+		
 			logger.info(iniRead + " -> configuration loaded!");
 			return true;
 		} catch (Exception e) {
@@ -196,6 +200,7 @@ public class INIfileChoosER {
 			FileUtils.copyFile(iniFileToLoad.getIniFile().getFile(), MainGUI.currentConfiguration.getIniFile().getFile());
 			MainGUI.currentConfiguration.readConfigIniFile();
 			MainGUI.updateGuiFromCurrConfig();
+			
 			logger.info(iniFileToLoad.getIniFile().getFile() + " -> configuration copied and loaded as default!");
 		} catch (IOException e) {
 			logger.error("Cannot load external ini file: " + iniFileToLoad.getIniFile().getFile(), e);
@@ -208,11 +213,13 @@ public class INIfileChoosER {
 	public static boolean copyNloadIniAsDefault(File iniFileToLoad) {
 		try {
 			String defaultIniPath = MainGUI.currentConfiguration.getIniFile().getFile().getAbsolutePath();
+			
 			FileUtils.copyFile(iniFileToLoad, MainGUI.currentConfiguration.getIniFile().getFile());
 			MainGUI.currentConfiguration.setIniFile(new Wini(new File(defaultIniPath)));
 			MainGUI.currentConfiguration.setIniReadFile(new Wini(new File(defaultIniPath)));
 			MainGUI.currentConfiguration.readConfigIniFile();
 			MainGUI.updateGuiFromCurrConfig();
+		
 			logger.info(iniFileToLoad + " -> configuration copied and loaded as default!");
 		} catch (Exception e) {
 			logger.error("Cannot load external ini file: " + iniFileToLoad, e);
@@ -268,6 +275,26 @@ public class INIfileChoosER {
 		
 	}
     
+    public static void updateFromExternalGeneralConfig(File generalConfigRootSearch) {
+    	
+    	List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true);
+    	
+    	if (!matchedGeneralConf.isEmpty()) {
+    		
+    		try {
+    			PropertiesDTO propertiesToRestore = MainStandAloneUpdater.getPropertiesToKeep(GeneralConfig.resourcesFilePathsMappings);
+    			MainStandAloneUpdater.restorePropertiesToKeep(propertiesToRestore, GeneralConfig.resourcesMappingDefPath);
+    			GeneralConfig.reloadProperties();
+    			logger.info("General config file imported and reloaded from " + matchedGeneralConf.get(0));
+    		} catch (Exception e) {
+    			logger.error("Cannot import general config file from " + matchedGeneralConf.get(0));
+    		}
+    	} else {
+    		logger.warn(GeneralConfig.resourcesMappingDefPath +	" not found into given root: " + generalConfigRootSearch);
+    	}
+    	
+    }
+
     public static void copyGeneralConfig(File generalConfigRootSearch) {
     	
 		List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true);

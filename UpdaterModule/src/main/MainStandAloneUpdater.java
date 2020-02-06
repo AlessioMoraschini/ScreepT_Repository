@@ -200,7 +200,7 @@ public class MainStandAloneUpdater {
 					}
 					
 					updateProgressMonitor.update(85, 100, "Updating configuration...");
-					restorePropertiesToKeep(backupProperties);
+					restorePropertiesToKeep(backupProperties, PROPERTIES_FILE);
 					saveNewJarRef(resourcesFilePathsMappings, newJar);
 					
 					FileUtils.deleteQuietly(oldJar);
@@ -293,14 +293,14 @@ public class MainStandAloneUpdater {
 	}
 	
 	// BACKUP-RESTORE PROPERTIES
-	private static PropertiesDTO getPropertiesToKeep(PropertiesManager resourcesFilePathsMappings) {
+	public static PropertiesDTO getPropertiesToKeep(PropertiesManager resourcesFilePathsMappings) {
 		PropertiesDTO propertiesDTO = new PropertiesDTO();
-		propertiesDTO.proxyConfString = resourcesFilePathsMappings.getProperty(PropertiesDTO.DEF_PROXY_CONFIG_STRING);
+		propertiesDTO.proxyConfString = resourcesFilePathsMappings.getProperty(PropertiesDTO.DEF_PROXY_CONFIG_KEY);
 		return propertiesDTO;
 	}
-	private static void restorePropertiesToKeep(PropertiesDTO backupProperties) {
-		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(PROPERTIES_FILE);
-		resourcesFilePathsMappings.saveCommentedProperty(PropertiesDTO.DEF_PROXY_CONFIG_STRING, backupProperties.proxyConfString);
+	public static void restorePropertiesToKeep(PropertiesDTO backupProperties, String propertiesFilePath) {
+		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(propertiesFilePath);
+		resourcesFilePathsMappings.saveCommentedProperty(PropertiesDTO.DEF_PROXY_CONFIG_KEY, backupProperties.proxyConfString);
 	}
 	
 	/**

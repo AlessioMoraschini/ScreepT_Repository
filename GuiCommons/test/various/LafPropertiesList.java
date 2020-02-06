@@ -15,7 +15,7 @@ public class LafPropertiesList {
         String[ ] colName = {"Key", "Value"};
         String[ ][ ] rowData = new String[ defaults.size() ][ 2 ];
         int i = 0;
-        for(Enumeration e = defaults.keys(); e.hasMoreElements(); i++){
+        for(Enumeration<?> e = defaults.keys(); e.hasMoreElements(); i++){
             Object key = e.nextElement();
             rowData[ i ] [ 0 ] = key.toString();
             rowData[ i ] [ 1 ] = ""+defaults.get(key);

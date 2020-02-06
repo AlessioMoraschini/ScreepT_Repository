@@ -25,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -53,8 +54,8 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
-import gui.JOptionHelper;
 import gui.MenuSetter;
+import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import gui.dnd.FileDrop;
 import jmenu.BrowserOpenerMenu;
@@ -97,6 +98,8 @@ public class TabTextEditorObj {
 	
 	public FileDrop fileDrop;
 	
+	public INItializer currentConfig;
+	
 	public TabTextEditorObj(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
 		
 		ColumnTextArea.UNDO_LIMIT = GeneralConfig.UNDO_MAX_LIM;
@@ -105,9 +108,11 @@ public class TabTextEditorObj {
 		this.checkChangesMonitor = checkChangesMonitor;
 		this.shortcutsManager = shortcutsManager;
 		
+		this.currentConfig = configuration;
+		
 		this.iTabsManager = iTabsManager;
 		
-		lastLazyInitParserDict = configuration.getTextEditorOpt().prefDictspellChecker;
+		lastLazyInitParserDict = currentConfig.getTextEditorOpt().prefDictspellChecker;
 		
 		textArea = new ColumnTextArea(GeneralConfig.RECTANGULAR_TXT_SELECTION_ALLOWED, shortcutsManager);
 		textArea.setMinimumSize(new Dimension(300,100));
@@ -141,7 +146,7 @@ public class TabTextEditorObj {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				defaultAddsToPopupMenu();
-				updateTextAreaPreferences(configuration);
+				updateTextAreaPreferences(currentConfig);
 				textArea.repaint();
 			}
 		});
@@ -348,7 +353,7 @@ public class TabTextEditorObj {
 			public void run() {		
 				stringActions.removeAll();
 				
-				final JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase text"));
+				final JMenuItem uppercaseItem = new JMenuItem(GuiUtils.encapsulateInHtml("<b>TT</b> - Uppercase/Lowercase text"));
 				uppercaseItem.setToolTipText(TextEditTooltips.tooltipTT);
 				uppercaseItem.addActionListener(getUppercaseListener());
 		
@@ -411,6 +416,7 @@ public class TabTextEditorObj {
 				textArea.requestFocus();
 				try {
 					textArea.setCaretPosition(textArea.getLineStartOffset(linePosition));
+					RXTextUtilities.centerLineFullInScrollPane(textArea);
 				} catch (BadLocationException e1) {
 					logger.warn("Cannot reset old line: " + linePosition);
 				}
@@ -528,6 +534,15 @@ public class TabTextEditorObj {
 		}
 	}
 	
+	public ActionListener getLowercaseListener() {
+		return e -> {
+			int linePosition = textArea.getCaretLineNumber();
+			TextAreaStringEditor.makeLowercaseSelection(textArea);
+			resetPositionAndRevalidate(linePosition);
+			shortcutsManager.revalidateUnsaved();
+		};
+	}
+
 	public ActionListener getUppercaseListener() {
 		return e -> {
 			int linePosition = textArea.getCaretLineNumber();
@@ -574,12 +589,30 @@ public class TabTextEditorObj {
 					htmlLike = true;
 				}
 				int linePosition = textArea.getCaretLineNumber();
-				String tag = new JOptionHelper(currentScrollPane).askForStringNullable("Specify the tag to use for sorrounding", "Specify tag");
+				Vector<String> tags = currentConfig.getTextEditorOpt().lastTagsUsed.getList();
+				String tag = RsyntaxUtils.askForStringComboNullable(currentScrollPane, tags, "Specify the tag to use for sorrounding", "Specify tag");
+				
+//				String tag = new JOptionHelper(currentScrollPane).askForStringNullable("Specify the tag to use for sorrounding", "Specify tag");
 				if(tag != null) {
+					tags.add(tag);
+					currentConfig.getTextEditorOpt().lastTagsUsed.setList(tags);
+					currentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastTagsUsed", currentConfig.getTextEditorOpt().lastTagsUsed.toCharSeparatedString(";"));
+					
 					tag = htmlLike ? GuiUtils.encapsulateInTag(textArea.getSelectedText(), tag) : tag+textArea.getSelectedText()+tag;
+					int selStart = textArea.getSelectionStart();
 					textArea.replaceSelection(tag);
 					resetPositionAndRevalidate(linePosition);
 					shortcutsManager.revalidateUnsaved();
+					
+					int selLength = tag.length();
+					
+					GuiUtils.launchThreadSafeSwing(()-> {
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e1) {}
+						textArea.setSelectionStart(selStart);
+						textArea.setSelectionEnd(selStart + selLength);
+					});
 				}
 			}
 		};

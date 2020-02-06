@@ -41,6 +41,7 @@ public class ScreepT_Test_New_StandAlone {
 	private File codedFolderSTEG = new File("TEST_FILES/STEGcod_Source_medium.txt");
 	
 	// COMPLETE CODED SOURCE (decript test)
+	@SuppressWarnings("unused")
 	private File codedFolderCOMPLETE = new File("TEST_FILES/COMPLETEcod_Source_medium.txt");
 	
 	// CODERS USED IN initMethod private functions (only for test purpose)
