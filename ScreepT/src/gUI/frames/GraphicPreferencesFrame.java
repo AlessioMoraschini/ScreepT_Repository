@@ -33,7 +33,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -88,7 +87,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private boolean BACKUP_DARK_THEME;
 	private int BACKUP_NIMBUS_SIZE;
 
-	private Locale BACKUP_LOCALE;
 	// DETAIL
 	private boolean BACKUP_TXTAREA_ANTIALIASED;
 	private boolean BACKUP_TXTAREA_AUTO_INDENT;
@@ -132,7 +130,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JComboBox<PlasticTheme> comboTheme;
 	private JComboBox<LookAndFeelInfoCustom> comboStyleLaF;
 	private JComboBox<FileNamed> comboSpellcheckerDictionary;
-	private JComboBox<Locale> comboLocales;
 
 	private JButton btnDiscard;
 	private JButton btnUseSettings;
@@ -171,7 +168,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	private JLabel lblTextAreaOptions;
 	private JLabel lblGenericGraphicalOptions;
 	private JLabel lblSpellcheckerDictionarySelected;
-	private JLabel lblLocale;
 	private JSeparator separator_2;
 	private JSeparator separator_3;
 	private JSeparator separator_4;
@@ -288,17 +284,9 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		lblInterline.setFont(new Font("Tahoma", Font.BOLD, 13));
 		mainPanel.add(lblInterline, "cell 10 10 3 1");
 		
-//		comboLocales = new JComboBox<Locale>();
-		comboLocales = new JComboBox<Locale>(getSupportedLocales());
-		comboLocales.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		comboLocales.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		mainPanel.add(comboLocales, "cell 1 12 3 1,growx");
-		
-//		comboSpellcheckerDictionary = new JComboBox<FileNamed>();
-		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
-		comboSpellcheckerDictionary.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		comboSpellcheckerDictionary.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		mainPanel.add(comboSpellcheckerDictionary, "cell 6 12 7 1,growx");
+		lblSpellcheckerDictionarySelected = new JLabel("Spellchecker dictionary:");
+		lblSpellcheckerDictionarySelected.setFont(new Font("Tahoma", Font.BOLD, 13));
+		mainPanel.add(lblSpellcheckerDictionarySelected, "cell 0 12 2 1,alignx center");
 
 //		comboStyleLaF = new JComboBox<LookAndFeelInfoCustom>();
 		comboStyleLaF = new JComboBox<LookAndFeelInfoCustom>(GUIStyelSettingsExtended.getLookAndFeelList());
@@ -322,6 +310,12 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		comboTheme.setMaximumRowCount(10);
 		comboTheme.setFont(null);
 		mainPanel.add(comboTheme, "cell 6 2 7 1,growx");
+
+//		comboSpellcheckerDictionary = new JComboBox<FileNamed>();
+		comboSpellcheckerDictionary = new JComboBox<FileNamed>(RsyntaxUtils.getSpellCheckerDIctionaries());
+		comboSpellcheckerDictionary.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		comboSpellcheckerDictionary.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+		mainPanel.add(comboSpellcheckerDictionary, "cell 2 12 4 1,growx");
 
 		JLabel lblMenuFontSize = new JLabel("Menu font size");
 		lblMenuFontSize.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -539,14 +533,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		separator_5.setOpaque(true);
 		separator_5.setBackground(Color.GRAY);
 		mainPanel.add(separator_5, "cell 0 11 13 1,growx");
-		
-		lblLocale = new JLabel("Locale:");
-		lblLocale.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblLocale, "cell 0 12,alignx right");
-		
-		lblSpellcheckerDictionarySelected = new JLabel("Spellchecker dictionary:");
-		lblSpellcheckerDictionarySelected.setFont(new Font("Tahoma", Font.BOLD, 13));
-		mainPanel.add(lblSpellcheckerDictionarySelected, "cell 4 12 2 1,alignx center");
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBackground(Color.GRAY);
@@ -895,18 +881,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			}
 		});
 
-		// COMBO LOCALES HANDLER
-		comboLocales.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Locale locale = (Locale) comboLocales.getSelectedItem();
-					currentConfiguration.getGenOpt().setLocale(locale);
-				} catch (Exception e1) {
-					logger.error("Error setting locale", e1);
-				}
-			}
-		});
-
 		// Preferred spellcheckker dictionary
 		comboSpellcheckerDictionary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1102,8 +1076,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		updateComboLaFGUI(guiOpt.getPreferredStyle());
 		updateComboLaFGUITheme(guiOpt.getPreferredThemeName());
 		chckbxDarklight.setSelected(guiOpt.isDarkGuiNimbus());
-		updateComboLocales();
-		Locale.setDefault(currentConfiguration.getGenOpt().getLocale());
 		
 		// TEXT AREA
 		chckBoxAntiAliasingON.setSelected(txtOpt.antialiasedTxtArea);
@@ -1172,7 +1144,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		BACKUP_PREFERRED_THEME_NAME = guiOpt.getPreferredThemeName();
 		BACKUP_DARK_THEME = guiOpt.isDarkGuiNimbus();
 		BACKUP_NIMBUS_SIZE = guiOpt.getNimbusSize();
-		BACKUP_LOCALE = currentConf.getGenOpt().getLocale();
 		
 		// detail backup
 		BACKUP_TXTAREA_ANTIALIASED = txtOpt.isAntialiasedTxtArea();
@@ -1217,8 +1188,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		guiOpt.setDarkGuiNimbus(BACKUP_DARK_THEME);
 		guiOpt.setNimbusSize(BACKUP_NIMBUS_SIZE);
 
-		currentConf.getGenOpt().setLocale(BACKUP_LOCALE);
-		
 		txtOpt.setAntialiasedTxtArea(BACKUP_TXTAREA_ANTIALIASED);
 		txtOpt.setAnimateBracketMatching(BACKUP_TXTAREA_ANIMATE_BRACKETS);
 		txtOpt.setPaintMatchedBracketPair(BACKUP_TXTAREA_HIGHLIGHT_BRACKET_PAIRS);
@@ -1279,16 +1248,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 				}
 			} catch (Exception e) {
 				logger.warn("Canot update current selected theme", e);
-			}
-		}
-	}
-	
-	private void updateComboLocales() {
-		for (int i = 0; i < comboLocales.getItemCount(); i++) {
-			Locale currentScanLocale = ((Locale) comboLocales.getItemAt(i));
-			if (currentScanLocale.equals(currentConfiguration.getGenOpt().getLocale())) {
-				comboLocales.setSelectedIndex(i);
-				break;
 			}
 		}
 	}
@@ -1377,14 +1336,6 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	
 	public static GraphicPreferencesFrame getInstance(INItializer currentConf) {
 		return singletonInstance == null ? new GraphicPreferencesFrame(currentConf) : singletonInstance;
-	}
-	
-	public static Locale[] getSupportedLocales(){
-		Locale[] supportedLocales = new Locale[2];
-		supportedLocales[0] = Locale.ENGLISH;
-		supportedLocales[1] = Locale.ITALIAN;
-		
-		return supportedLocales;
 	}
 	
 }

@@ -288,6 +288,9 @@ public class Board extends JPanel implements ActionListener {
     
     public void setLevel(Level level) {
     	this.level = level;
+    	if(timer != null) {
+    		timer.setDelay(level.delay);
+    	}
     }
     
     public enum Level{

@@ -37,7 +37,7 @@ public class EasterEggsInitializer {
 				() -> {Snake.getInstance("Snake - Easter Egg found!");}, 
 				(e) -> {
 					return KeyEvent.VK_S == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, false, false, false, 500) && 
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 500) && 
 						   (mainGuiUtils.mainAppReference.isOnHomePage.get());
 					}
 		); 

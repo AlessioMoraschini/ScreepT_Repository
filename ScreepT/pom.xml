@@ -424,7 +424,7 @@
 					    <filtering>false</filtering>
 					    <directory>./</directory>
 					    <includes>
-					        <include>INI_FILES/**/*</include>
+					        <include>INI_FILES</include>
     						<include>LAUNCHER/**/*</include>
     						<include>LOG/**/*</include>
     						<include>NET_SCANNER/**/*</include>
@@ -589,7 +589,7 @@
 					        <include>resourcesFilePathsMappings.properties</include>
 					        <include>LAUNCHER/**/*</include>
 					        <include>LAUNCHER/*</include>
-					        <include>INI_FILES/*</include>
+					        <include>INI_FILES</include>
 					        <include>LOG/*</include>
 					    </includes>
 					    <excludes>

@@ -68,7 +68,7 @@ public class TestSearchAdvanced {
 	private void searchTest(SearchType type, boolean deepSearch) {
 		long start = System.currentTimeMillis();
 		
-		List<File> result = FileSearchAdvanced.findByMatch(rootFolder, MATCH, type, deepSearch);
+		List<File> result = FileSearchAdvanced.findByMatch(rootFolder, MATCH, false, type, deepSearch);
 		
 		long end = System.currentTimeMillis();
 		printElapsed(result.size(), start, end);

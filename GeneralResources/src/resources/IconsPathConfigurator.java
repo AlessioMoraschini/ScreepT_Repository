@@ -101,6 +101,7 @@ public class IconsPathConfigurator {
 	
 	///////////////// POP-UP MENU ICONS /////////////////
 	public static final String ICON_IMPORT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/import.png";
+	public static final String ICON_IMPORT_FROM_SCREEPT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/importFromScreept.png";
 	public static final String ICON_LOAD = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/load.png";
 	public static final String ICON_DELETE = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/delete.png";
 	public static final String ICON_REMOVECROSS = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/removeCross.png";

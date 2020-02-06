@@ -136,6 +136,7 @@ public class MainGuiParent {
 	
 	static CustomJmenuItem mntmInspectCurrentConfiguration;
 	CustomJmenuItem mntmloadPrjSub;
+	CustomJmenuItem mntmImportFromOtherScreepTPrjSub;
 	CustomJmenuItem mntmExportPrjSub;
 	CustomJmenuItem mntmReloadPrjSub;
 	CustomJmenuItem mntmSaveCurrent;
@@ -363,6 +364,7 @@ public class MainGuiParent {
 			mnFile.add(new JSeparator());
 			mnFile.add(mntmReloadPrjSub);
 			mnFile.add(mntmloadPrjSub);
+			mnFile.add(mntmImportFromOtherScreepTPrjSub);
 			mnFile.add(mntmExportPrjSub);
 			mnFile.add(new JSeparator());
 			mnFile.add(mntmSaveCurrent);
@@ -511,6 +513,7 @@ public class MainGuiParent {
 		// FILE SECTION
 		mntmInspectCurrentConfiguration.setFont(menuItemFont);
 		mntmloadPrjSub.setFont(menuItemFont);
+		mntmImportFromOtherScreepTPrjSub.setFont(menuItemFont);
 		mntmExportPrjSub.setFont(menuItemFont);
 		mntmReloadPrjSub.setFont(menuItemFont);
 		mntmSaveCurrent.setFont(menuItemFont);
@@ -596,6 +599,7 @@ public class MainGuiParent {
 		// file submenu
 		mntmInspectCurrentConfiguration.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
 		mntmloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD_CUSTOM_CONF));
+		mntmImportFromOtherScreepTPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT_FROM_SCREEPT));
 		mntmExportPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 		mntmReloadPrjSub.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		mntmSaveCurrent.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
@@ -1023,6 +1027,10 @@ public class MainGuiParent {
 
 	public JMenuItem getMntmloadPrjSub() {
 		return mntmloadPrjSub;
+	}
+	
+	public CustomJmenuItem getMntmImportFromOtherScreepTPrjSub() {
+		return mntmImportFromOtherScreepTPrjSub;
 	}
 
 	public JMenuItem getMntmExportPrjSub() {

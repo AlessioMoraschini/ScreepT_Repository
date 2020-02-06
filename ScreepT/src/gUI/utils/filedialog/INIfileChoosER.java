@@ -11,69 +11,66 @@
  */
 package gUI.utils.filedialog;
 
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
+import dialogutils.ExtensionFileFilter;
+import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
+import files.FileSearchAdvanced;
 import files.FileVarious;
+import files.FileWorker;
+import gui.GuiUtils;
+import maingUI.MainGUI;
+import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
+import resources.GeneralConfig;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
-public class INIfileChoosER extends JDialog{
-	private static final long serialVersionUID = 606461817724105154L;
+public class INIfileChoosER {
 
 	// INItializer logger creation		
 	static Logger logger = Logger.getLogger(INIfileChoosER.class); 
 	
-	private JOptionHelperExtended dialogHelper;
+	private static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(MainGUI.mainAPP != null ? MainGUI.mainAPP.getMainFrame() : null);
 	
 	/**
 	 * Read file INI updating textArea and label
 	 * */
-	public INIfileChoosER(INItializer fileINI, JTextArea textA, JLabel lblAvviso) {
+	public static void readNloadIniWithTextAreaOutput(INItializer fileINI, JTextArea textA, JLabel lblAvviso) {
 		
-		JFileChooser fileChooser = commonFileChooserInit();			
-		fileChooser.setDialogTitle("Load Configuration .INI File");
 		final INItializer backupINI = fileINI;
-		int returnVal = fileChooser.showOpenDialog(this.getParent());
+    	GenericFileChooserDialog chooserDialogHelper = new GenericFileChooserDialog(MainGUI.currentConfiguration);
+    	chooserDialogHelper.defaultDirectory = new File("./INI_FILES");
+    	File iniRead = chooserDialogHelper.fileRead(MainGUI.mainAPP.getMainFrame(), new FileNameExtensionFilter("Configuration file (.ini)", "ini"));
 		
-		dialogHelper = new JOptionHelperExtended(this);
+		dialogHelper = new JOptionHelperExtended(MainGUI.mainAPP.getMainFrame());
 		
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-        	String fileExtension = FilenameUtils.getExtension(fileChooser.getSelectedFile().getName());
-            if(fileChooser.getSelectedFile()!=null && fileExtension.equalsIgnoreCase("ini"))try {
-				fileINI.setIniFile(new Wini(fileChooser.getSelectedFile()));
-				fileINI.setIniReadFile(new Wini(fileChooser.getSelectedFile()));
-            	fileINI.readConfigIniFile();
+        if (iniRead != null) {
+        	String fileExtension = FilenameUtils.getExtension(iniRead.getName());
+           
+        	if(fileExtension.equalsIgnoreCase("ini")) {
+            	loadIniIntoTarget(fileINI, iniRead);
             	lblAvviso.setText("[Configuration Loaded!]");
     	    	textA.setText("");
-    	    	textA.append("chosen: "+fileChooser.getSelectedFile().getAbsolutePath());
+    	    	textA.append("chosen: " + iniRead.getAbsolutePath());
     	    	textA.append("\n\n\n### NEW INI CONFIGURATION LOADED ###\n\n -> ");
     			textA.append( fileINI.toStringa());
     	        
-			} catch (IOException e) {
-				logger.error(e);
-			}else {
-				if(!fileExtension.equalsIgnoreCase("ini")) {
-					dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
-				}
-				if(fileChooser.getSelectedFile()==null) {
-					dialogHelper.warn("No file was selected, load aborted. :(");
-				}
-				fileINI=backupINI;
+			} else {
+				dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
+				fileINI = backupINI;
 			}
             
         }else {
@@ -87,36 +84,26 @@ public class INIfileChoosER extends JDialog{
 	/**
 	 * Read file INI
 	 * */
-	public INIfileChoosER(INItializer fileINI, String defDir) {
+	public static void readNLoadIniFile(INItializer fileINI, String defDir) {
 		
-		JFileChooser fileChooser = commonFileChooserInit();
-		fileChooser.setDialogTitle("Load .INI File");
-		fileChooser.setCurrentDirectory(new File(defDir));		
 		final INItializer backupINI = fileINI;
-		int returnVal = fileChooser.showOpenDialog(this.getParent());
 		
-		dialogHelper = new JOptionHelperExtended(this);
+    	GenericFileChooserDialog chooserDialogHelper = new GenericFileChooserDialog(MainGUI.currentConfiguration);
+    	chooserDialogHelper.defaultDirectory = new File(defDir);
+    	File iniRead = chooserDialogHelper.fileRead(MainGUI.mainAPP.getMainFrame(), new FileNameExtensionFilter("Configuration file (.ini)", "ini"));
 		
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-        	String fileExtension = FilenameUtils.getExtension(fileChooser.getSelectedFile().getName());
-            if(fileChooser.getSelectedFile()!=null && fileExtension.equalsIgnoreCase("ini"))try {
-				fileINI.setIniFile(new Wini(fileChooser.getSelectedFile()));
-				fileINI.setIniReadFile(new Wini(fileChooser.getSelectedFile()));
-            	fileINI.readConfigIniFile();
-    	    	logger.debug("chosen: "+fileChooser.getSelectedFile().getAbsolutePath());
+		dialogHelper = new JOptionHelperExtended(MainGUI.mainAPP.getMainFrame());
+		
+        if (iniRead != null) {
+        	String fileExtension = FilenameUtils.getExtension(iniRead.getName());
+            if(fileExtension.equalsIgnoreCase("ini")) {
+            	loadIniIntoTarget(fileINI, iniRead);
+    	    	logger.debug("chosen: " + iniRead.getAbsolutePath());
     	    	logger.debug("\n\n\n### NEW INI CONFIGURATION LOADED ###\n\n -> "+fileINI.toStringa());
     	    	dialogHelper.info("Configuration Loaded!");
     	        
-			} catch (IOException e) {
-				logger.error("File not exist or cannot be read! :("+"IO error\n");
-				dialogHelper.error("File not exist or cannot be read! :(", "IO error");
-			}else {
-				if(!fileExtension.equalsIgnoreCase("ini")) {
-					dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
-				}
-				if(fileChooser.getSelectedFile()==null) {
-					dialogHelper.warn("No file was selected, load aborted. :(");
-				}
+			} else {
+				dialogHelper.error("Cannot load configuration file with extension different from '.ini'. \n Back to "+ backupINI.getIniFile().getFile().getName());
 			}
             
         }else {
@@ -124,24 +111,132 @@ public class INIfileChoosER extends JDialog{
         	logger.debug("\n\n\n=> INI CONFIGURATION maintained \n\n -> ");
 		}
     }
+	
+	/**
+	 * Import from other installation directory: search CONFIG.ini and copy to current + copy into INI_FILES
+	 * @param fileINI
+	 */
+	public static boolean loadDefaultsFromOtherInstallation(boolean importCopy) {
+		
+		GenericFileChooserDialog chooserDialogHelper = new GenericFileChooserDialog(MainGUI.currentConfiguration);
+    	chooserDialogHelper.defaultDirectory = GeneralConfig.USER_DESKTOP_FILE;
+    	File sourceFolder = chooserDialogHelper.directoRead(MainGUI.mainAPP.getMainFrame(), "Select other's installation root folder");
+		
+    	boolean ok = false;
+		
+		if (sourceFolder != null && sourceFolder.exists()) {
+			File defaultIni = new File(GeneralConfig.DEFAULT_INI);
+			String defaultIniParentDir = defaultIni.getParentFile().getName();
+			List<File> matchedFolders = FileSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true);
+			for (File extFolder : matchedFolders) {
+				List<File> matchedIniConf = FileSearchAdvanced.findOnlyFilesByMatch(extFolder, defaultIni.getName(), true, true);
+				if (!matchedIniConf.isEmpty()) {
+					boolean confirmation = MainGuiGeneralAppStarter.dialogHelper.yesOrNo(
+							GuiUtils.encapsulateInHtml("Are you sure to overwrite default configuration with the following?<br> " + matchedIniConf.get(0)), "Overwrite current?");
+					
+					if(confirmation) {
+						ok = copyNloadIniAsDefault(matchedIniConf.get(0));
+						copyGeneralConfig(extFolder.getParentFile());
+						if(importCopy) {
+							try {
+								FileUtils.copyFileToDirectory(matchedIniConf.get(0), new File(GeneralConfig.DEFAULT_INI_FOLDER));
+								logger.info("Configuration imported from another installation: " + matchedIniConf.get(0));
+							} catch (IOException e) {
+								logger.error("Cannot import configuration's copy from " + matchedIniConf.get(0), e);
+							}
+						}
+					}
+					
+					if(ok)
+						MainGuiGeneralAppStarter.dialogHelper.info(GuiUtils.encapsulateInHtml(matchedIniConf.get(0) + "<br> <b>Imported succesfully!</b>"));
+					break;
+				}
+			} 
+		} else if(sourceFolder != null) {
+			MainGuiGeneralAppStarter.dialogHelper.warn("Nothing selected, Import skipped.");
+			ok = true;
+		} 
+		
+		if(!ok) {
+			MainGuiGeneralAppStarter.dialogHelper.warn("Import skipped, invalid selection: " + sourceFolder);
+		}
+
+		return ok;
+	}
+	
+	public static boolean loadIniIntoTarget(INItializer fileINI, File iniRead) {
+		try {
+			fileINI.setIniFile(new Wini(iniRead));
+			fileINI.setIniReadFile(new Wini(iniRead));
+			fileINI.readConfigIniFile();
+			logger.info(iniRead + " -> configuration loaded!");
+			return true;
+		} catch (Exception e) {
+			logger.error("Cannot load ini file: " + iniRead);
+			return false;
+		}
+	}
+
+	public static boolean loadIniAsDefault(File iniRead) {
+		try {
+			MainGUI.currentConfiguration.setIniFile(new Wini(iniRead));
+			MainGUI.currentConfiguration.setIniReadFile(new Wini(iniRead));
+			MainGUI.currentConfiguration.readConfigIniFile();
+			MainGUI.updateGuiFromCurrConfig();
+			logger.info(iniRead + " -> configuration loaded!");
+			return true;
+		} catch (Exception e) {
+			logger.error("Cannot load ini file: " + iniRead);
+			return false;
+		}
+	}
         
+	public static boolean copyNloadIniAsDefault(INItializer iniFileToLoad) {
+		try {
+			FileUtils.copyFile(iniFileToLoad.getIniFile().getFile(), MainGUI.currentConfiguration.getIniFile().getFile());
+			MainGUI.currentConfiguration.readConfigIniFile();
+			MainGUI.updateGuiFromCurrConfig();
+			logger.info(iniFileToLoad.getIniFile().getFile() + " -> configuration copied and loaded as default!");
+		} catch (IOException e) {
+			logger.error("Cannot load external ini file: " + iniFileToLoad.getIniFile().getFile(), e);
+			return false;
+		}
+		
+		return true;
+	}
+
+	public static boolean copyNloadIniAsDefault(File iniFileToLoad) {
+		try {
+			String defaultIniPath = MainGUI.currentConfiguration.getIniFile().getFile().getAbsolutePath();
+			FileUtils.copyFile(iniFileToLoad, MainGUI.currentConfiguration.getIniFile().getFile());
+			MainGUI.currentConfiguration.setIniFile(new Wini(new File(defaultIniPath)));
+			MainGUI.currentConfiguration.setIniReadFile(new Wini(new File(defaultIniPath)));
+			MainGUI.currentConfiguration.readConfigIniFile();
+			MainGUI.updateGuiFromCurrConfig();
+			logger.info(iniFileToLoad + " -> configuration copied and loaded as default!");
+		} catch (Exception e) {
+			logger.error("Cannot load external ini file: " + iniFileToLoad, e);
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Export file INI updating label (use null for label if you don't want to use it)
 	 */
-    public INIfileChoosER(INItializer fileINI, JLabel lblAvviso) {
+    public static void exportIniFile(INItializer fileINI, JLabel lblAvviso) {
 		
-    	JFileChooser fileChooser = commonFileChooserInit();	
-		fileChooser.setDialogTitle("Save Configuration .INI File");
-		
-		File selectedFile;
-		File backupIni = fileINI.getIniFile().getFile();
+    	GenericFileChooserDialog chooserDialogHelper = new GenericFileChooserDialog(MainGUI.currentConfiguration);
+    	File selectedFile = chooserDialogHelper.fileWrite(MainGUI.mainAPP.getMainFrame(), "Config_Export.ini", new File("./INI_FILES"), new ExtensionFileFilter[] {new ExtensionFileFilter(new String[] {"ini"}, "Configuration file (.ini)")});
+
+    	File backupIni = fileINI.getIniFile().getFile();
 		boolean done = false;
-		int returnVal = fileChooser.showSaveDialog(this.getParent());
-		dialogHelper = new JOptionHelperExtended(this);
+
+		dialogHelper = new JOptionHelperExtended(MainGUI.mainAPP.getMainFrame());
 		
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+        if (selectedFile != null) {
             try {
-            	selectedFile = fileChooser.getSelectedFile();
             	selectedFile = FileVarious.changeExtension(selectedFile, ".ini");
             	if(selectedFile.exists()) {
             		if(dialogHelper.yesOrNo("File "+selectedFile.getName()+" exists, overwrite it?")) {
@@ -156,11 +251,10 @@ public class INIfileChoosER extends JDialog{
             		   		
                	if(done) {
                		dialogHelper.info("File "+selectedFile.getName()+" succesfully created!");
-    				fileINI.setIniFile(new Wini(selectedFile));
-    				fileINI.setIniReadFile(new Ini(selectedFile));
-    				fileINI.writeCurrentConfigIniFile();
+               		loadIniIntoTarget(fileINI, selectedFile);
     				if(lblAvviso != null) lblAvviso.setText("[Configuration Exported!]");
                	}
+
                	fileINI.setIniFile(new Wini(backupIni));
                	fileINI.setIniReadFile(new Ini(backupIni));
 				
@@ -172,28 +266,57 @@ public class INIfileChoosER extends JDialog{
         	dialogHelper.warn("Operation cancelled");
         }
 		
-		getContentPane().add(fileChooser, BorderLayout.NORTH);
 	}
-
-    private CustomFileChooserOnTop commonFileChooserInit() {
-    	CustomFileChooserOnTop fileChooser = new CustomFileChooserOnTop();
-    	fileChooser.setAcceptAllFileFilterUsed(false);
-		fileChooser.setCurrentDirectory(new File("./INI_FILES"));
-		fileChooser.setFileFilter(new FileNameExtensionFilter("Configuration file (.ini)", "ini"));	
-		
-		return fileChooser;
-    }
     
-	private class CustomFileChooserOnTop extends JFileChooser{
-		private static final long serialVersionUID = 7362401687903210645L;
+    public static void copyGeneralConfig(File generalConfigRootSearch) {
+    	
+		List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true);
+		
+		if (!matchedGeneralConf.isEmpty()) {
+			
+			try {
+				FileUtils.copyFile(matchedGeneralConf.get(0), new File(GeneralConfig.resourcesMappingDefPath));
+				GeneralConfig.reloadProperties();
+				logger.info("General config file imported and reloaded from " + matchedGeneralConf.get(0));
+			} catch (IOException e) {
+				logger.error("Cannot import general config file from " + matchedGeneralConf.get(0));
+			}
+		} else {
+			logger.warn(GeneralConfig.resourcesMappingDefPath +	" not found into given root: " + generalConfigRootSearch);
+		}
+		
+    }
 
-		@Override
-		protected JDialog createDialog(Component parent) throws HeadlessException {
-			// intercept the dialog created by JFileChooser
-			JDialog dialog = super.createDialog(parent);
-			dialog.setAlwaysOnTop(true);
-			dialog.setModal(true); // set modality (or setModalityType)
-			return dialog;
+	public static void importIniFileOrDir() {
+		File selectedImportDir = MainGuiGeneralAppStarter.fileDialogHelper.fileAndDirRead(MainGUI.mainAPP.getMainFrame());
+		if (selectedImportDir!=null && selectedImportDir.isDirectory()) {
+			try {
+				FileWorker.copyDirectoryContents(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false, "ini");
+				MainGuiGeneralAppStarter.dialogHelper.info("Directory :" + selectedImportDir.getName() + " added in the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER, "Directory added to config pool :)");
+				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
+			} catch (IOException e1) {
+				dialogHelper.error("Directory not imported in " + GeneralConfig.DEFAULT_INI_FOLDER,	". Some error occurred :(");
+				logger.error("Directory not imported, some error occurred :( ");
+			} 
+		}else if(selectedImportDir!=null && selectedImportDir.isFile() && selectedImportDir.getName().toLowerCase().endsWith(".ini")) {
+			try {
+				FileUtils.copyFileToDirectory(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER));
+				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
+			} catch (IOException e) {
+				logger.error("An error occurred during import :(");
+				dialogHelper.error("Ooooops... An Error occurred during Import!", "An Error Occurred");
+			}
 		}
 	}
+
+	public static boolean saveCurrentConf(INItializer configuration, JFrame parent) {
+		JOptionHelperExtended dialogHelper = new JOptionHelperExtended(parent);
+		if(dialogHelper.yesOrNo("Are you sure to overwrite current configuration?", "Overwrite current Config?")) {
+			configuration.writeCurrentConfigIniFile();
+			dialogHelper.info(configuration.getIniFile().getFile().getAbsolutePath() + " -> Saved", "Configuration saved");
+			return true;
+		}
+		return false; 
+	}
+
 }
