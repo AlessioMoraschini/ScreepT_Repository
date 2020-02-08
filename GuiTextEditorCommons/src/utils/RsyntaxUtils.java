@@ -18,6 +18,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import files.CustomFileFilters;
 import files.FileVarious;
 import files.om.FileNamed;
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import media.ImageWorkerExtended;
 import resources.GeneralConfig;
 import utility.string.StringWorker;
@@ -64,6 +65,57 @@ public class RsyntaxUtils {
 	public static final String THEME_MONOKAI = "/org/fife/ui/rsyntaxtextarea/themes/monokai.xml";
 	public static final String THEME_VS = "/org/fife/ui/rsyntaxtextarea/themes/vs.xml";
 
+	public static Theme readAndLoadThemeFromXmlFile(RSyntaxTextArea textArea, File themeFile) {
+		logger.info("changeStyleViaThemeXml -> Starting import from xml file style definition: " + themeFile);
+		
+		FileInputStream inputStream = null;
+		Theme theme = null;
+		
+		try {
+			inputStream = new FileInputStream(themeFile);
+			theme = Theme.load(inputStream);
+			logger.info("changeStyleViaThemeXml (File) -> Style loaded from: " + themeFile);
+			
+			if (textArea != null) {
+				theme.apply(textArea);
+				logger.info("changeStyleViaThemeXml (File) -> Style applied to textArea");
+			}
+		} catch (Exception e) {
+			logger.error("Cannot load file from xml definition: " + themeFile, e);
+		} finally {
+			try {
+				inputStream.close();
+			} catch (Exception e) {}
+		}
+		
+		return theme;
+	}
+	
+	public static boolean saveThemeToFile(Theme theme, File outputFile) {
+		
+		logger.info("Saving xml style to file: " + outputFile);
+		
+		FileOutputStream outputStream = null;
+		boolean result = false;
+		
+		try {
+			outputStream = new FileOutputStream(outputFile);
+			theme.save(outputStream);
+			result = true;
+			logger.info("Xml style saved to to file: " + outputFile);
+
+		} catch (Exception e) {
+			logger.error("Cannot save theme to file: " + outputFile, e);
+		
+		} finally {
+			try {
+				outputStream.close();
+			} catch (Exception e) {}
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Changes the styles used by the editor via an XML file specification. This
 	 * method is preferred because of its ease and modularity.
@@ -91,13 +143,13 @@ public class RsyntaxUtils {
 					theme.apply(textArea);
 				}
 			} catch (Exception e) {
-				logger.error("Xml scheme definition not found at given address (" + themeFilePath + ")");
+				logger.error("Xml scheme definition not found at given address (" + themeFilePath + ")", ioe);
 			}
 		} finally {
 			try {
 				inputStream.close();
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
+			
 			textArea.setFont(backup);
 			textArea.revalidate();
 			logger.info("changeStyleViaThemeXml (File) -> Style applied in " + String.valueOf(System.currentTimeMillis() - startTime) + " ms");

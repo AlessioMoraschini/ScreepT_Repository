@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.io.FilenameUtils;
 
+import gui.selection.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import plugins.PluginDTO;
 import plugins.PluginManager;

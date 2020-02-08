@@ -27,7 +27,7 @@ import javax.swing.JFrame;
 
 import org.apache.commons.io.FilenameUtils;
 
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import utility.SafeLogger;
 import utility.string.StringWorker.EOL;
 

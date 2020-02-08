@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package gui;
+package gui.selection;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -55,6 +55,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Position;
+
+import gui.GuiUtils;
 
 public class JFontChooserExtended extends JComponent {
 	private static final long serialVersionUID = 2985427256723426264L;

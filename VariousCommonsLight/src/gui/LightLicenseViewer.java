@@ -23,6 +23,7 @@ import javax.swing.text.html.StyleSheet;
 
 import files.CustomFileFilters;
 import files.FileWorker;
+import gui.selection.JOptionHelper;
 
 import javax.swing.JLabel;
 import java.awt.Font;

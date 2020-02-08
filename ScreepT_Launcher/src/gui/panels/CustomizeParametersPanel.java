@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import gui.GuiUtils;
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import launcherutils.IniFileManager;
 import launcherutils.JvmHelper;
 import mainlauncher.ScreepTLauncher;

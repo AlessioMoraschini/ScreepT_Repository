@@ -8,8 +8,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
-import gui.JOptionHelper;
 import gui.MenuSetter;
+import gui.selection.JOptionHelper;
 import jmenu.om.UrlRetriever;
 import utility.SafeLogger;
 import utils.SysUtils;

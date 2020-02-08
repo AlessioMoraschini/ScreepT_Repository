@@ -17,8 +17,8 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.ColorDialogHelper;
 import gui.GuiUtils;
+import gui.selection.ColorDialogHelper;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;
@@ -296,7 +296,7 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 				hslUpdate();
 			}
 		});
-		txtHsl.addKeyListener(KeyListenerUtils.getKeyListenerIntTxtField(txtHsl, ":", 1, 0, new int[] {255,100,100}));
+		txtHsl.addKeyListener(KeyListenerUtils.getKeyListenerIntTxtField(txtHsl, ":", 1, 0, new int[] {360,100,100}));
 		
 		paneMiniColorSample.addMouseListener(new MouseAdapter() {
 			@Override

@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import gui.selection.JOptionHelper;
 import om.exception.ProgressBarInterruptedException;
 
 /**

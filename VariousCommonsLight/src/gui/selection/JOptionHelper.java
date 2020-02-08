@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package gui;
+package gui.selection;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -33,6 +33,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import gui.GuiUtils;
 import utility.string.StringWorker;
 
 public class JOptionHelper {

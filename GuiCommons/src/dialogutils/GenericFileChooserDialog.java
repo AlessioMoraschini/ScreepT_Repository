@@ -35,7 +35,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import files.FileVarious;
 import general.MyFileView;
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 

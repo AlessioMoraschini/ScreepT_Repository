@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import network.NetworkAdapter;
 import network.NetworkUtils;

@@ -73,6 +73,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 import files.om.FileNamed;
+import gui.selection.JOptionHelper;
 import utility.ImageWorker;
 import utility.SafeLogger;
 import utility.string.StringWorker;
