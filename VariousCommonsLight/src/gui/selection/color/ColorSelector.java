@@ -1,4 +1,4 @@
-package gui.selection;
+package gui.selection.color;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -11,7 +11,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.border.LineBorder;
 
 import gui.GuiUtils;
-import gui.selection.ColorChooserGrid.UserChoice;
+import gui.selection.color.ColorChooserGrid.UserChoice;
+import gui.selection.color.om.ColorSelectionElement;
 
 public class ColorSelector extends JPanel {
 	private static final long serialVersionUID = -5210045991796060664L;
@@ -73,6 +74,16 @@ public class ColorSelector extends JPanel {
 		panelBackground.setBackground(elementOm.background);
 		panelBackground.addMouseListener(panelMouseListener(panelBackground, true));
 		add(panelBackground, "cell 5 0,grow");
+	}
+	
+	public void removeBackground() {
+		remove(lblBackground);
+		remove(panelBackground);
+	}
+	
+	public void removeForeground() {
+		remove(lblForeground);
+		remove(panelForeground);
 	}
 	
 	public MouseAdapter panelMouseListener(JPanel target, boolean background) {

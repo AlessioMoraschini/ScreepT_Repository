@@ -56,6 +56,7 @@ import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gui.ComponentResizer;
 import gui.PluginManagerGUI;
+import gui.SchemeManagerGui;
 import guistyle.GUIStyelSettingsExtended;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
@@ -925,6 +926,20 @@ public class MainGUI extends MainGuiParent{
 			}
 		});
 		
+		// open in a new window - Theme Editor
+		mntmThemeEditor = new CustomJmenuItem(new AbstractAction("Color Theme editor") {
+			public void actionPerformed(ActionEvent e) {
+				SchemeManagerGui schemeManager = new SchemeManagerGui(new File(GeneralConfig.THEMES_FOLDER_CUSTOM), currentConfiguration.getTextEditorOpt().font);
+				schemeManager.updateIcons(
+						new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE),
+						new ImageIcon(IconsPathConfigurator.ICON_RELOAD2), 
+						new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE), 
+						new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE_AS)
+				);
+			}
+		});
+		
+		
 		// open in a new window - NET INFO
 		mntmnetInfo = new CustomJmenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
@@ -1111,7 +1126,7 @@ public class MainGUI extends MainGuiParent{
 				mainGuiUtils.startTextEditor(false);
 			}
 		});
-		
+
 		// open in main frame - RETURN TO WELCOME PAGE
 		mntmReturnToWelcome = new CustomJmenuItem(new AbstractAction("Return to Welcome Page") {
 			public void actionPerformed(ActionEvent e) {

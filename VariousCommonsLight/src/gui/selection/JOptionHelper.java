@@ -19,6 +19,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.File;
 import java.util.Arrays;
 
 import javax.swing.Icon;
@@ -389,6 +390,11 @@ public class JOptionHelper {
 		
 		return showYNMessageCommon(msg, msg, QUESTION, false, false, false);
 	}
+	
+	public boolean askOverwriteFile(File file) {
+		String msg = GuiUtils.encapsulateInHtml("<b>File already exists</b>, do you want to overwrite it?<br>" + file);
+		return yesOrNo(msg, "Overwrite?");
+	}
 
 	/**
 	 * Shows a question and return int choice (OK|NO|CANC)
@@ -639,6 +645,32 @@ public class JOptionHelper {
 		label.repaint();
 		
 		return label;
+	}
+
+	/**
+	 * open dialog in parent JComponent, displaying msg
+	 * Check first precondition, if true ask to user else return false.
+	 * After, if OK executes actionOK.
+	 * 
+	 * @return if OK return true, NO return false, else return null if cancel is pressed or window closed
+	 */
+	public Boolean askYorNPrecond(String title, String msg, Component parent, boolean precondition) {
+			int askSave = CANC;
+			
+			if (precondition) {
+				askSave = yesNoOrCanc(msg, title);
+			}else {
+				return false;
+			}
+			
+			if(askSave == OK){
+				return true;
+				
+			}else if(askSave == NO) {
+				return false;
+			}
+			
+			return null;
 	}
 
 	public class Choice<T>{

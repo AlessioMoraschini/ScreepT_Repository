@@ -412,7 +412,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboStylesScheme = new JComboBox<ThemesWrapper>();
 		comboStylesScheme.setMinimumSize(new Dimension(33, 12));
 		comboStylesScheme.setMaximumSize(new Dimension(170, 32767));
-		themeList = initComboStyleScheme();
+		initComboStyleScheme();
 		comboStylesScheme.setToolTipText(TextEditTooltips.tooltipComboStyleScheme);
 		comboStylesScheme.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		comboStylesScheme.setAlignmentX(CENTER_ALIGNMENT);
@@ -1652,7 +1652,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		return true;
 	}
 	
-	private Vector<ThemesWrapper> initComboStyleScheme() {
+	public Vector<ThemesWrapper> initComboStyleScheme() {
 		Vector<ThemesWrapper> wrappers = new Vector<ThemesWrapper>();
 		try {
 			wrappers = ThemesWrapper.getDefaultAndCustomWrappers();
@@ -1667,6 +1667,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboStylesScheme.setSelectedItem(Themes.getThemesWrapperFromName(currentConfiguration.getTextEditorOpt().selectedTheme, wrappers));
 		comboStylesScheme.revalidate();
 		comboStylesScheme.repaint();
+		
+		themeList = wrappers;
 		
 		return wrappers;
 	}

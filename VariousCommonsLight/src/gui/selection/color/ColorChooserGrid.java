@@ -1,4 +1,4 @@
-package gui.selection;
+package gui.selection.color;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,6 +21,9 @@ import gui.GuiUtils;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -30,12 +33,13 @@ public class ColorChooserGrid extends JDialog {
 	public static Color DEFAULT_COLOR = Color.WHITE;
 	public static Border DEFAULT_BORDER = new LineBorder(Color.BLACK, 2);
 	public static Border SELECTED_BORDER = new LineBorder(Color.GRAY, 4);
+	public static Font DEFAULT_BUTTON_FONT = new Font("Tahoma", Font.PLAIN, 16);
 
 	public Color selectedColor;
 	
 	private Dimension DEFAULT_SIZE = new Dimension(550, 450);
 	
-	public int rows = 10;
+	public int rows = 14;
 	public int columns = 15;
 	public int cells = rows*columns;
 	
@@ -131,13 +135,13 @@ public class ColorChooserGrid extends JDialog {
 		getContentPane().add(panelColorSelectionPreview, "cell 2 2,grow");
 		
 		btnAdvancedColor = new JButton("Advanced ...");
-		btnAdvancedColor.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnAdvancedColor.setFont(DEFAULT_BUTTON_FONT);
 		btnAdvancedColor.setCursor(GuiUtils.CURSOR_HAND);
 		getContentPane().add(btnAdvancedColor, "cell 0 2,grow");
 		
 		btnUseColor = new JButton("Use Color");
 		btnUseColor.setCursor(GuiUtils.CURSOR_HAND);
-		btnUseColor.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnUseColor.setFont(DEFAULT_BUTTON_FONT);
 		getContentPane().add(btnUseColor, "cell 3 2,grow");
 		
 		initColorGrid();
@@ -148,9 +152,24 @@ public class ColorChooserGrid extends JDialog {
 	}
 	
 	private void addHandlers() {
+		
+		KeyEventDispatcher keyListener = new KeyEventDispatcher() {
+			
+			@Override
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				if(KeyEvent.VK_ESCAPE == e.getKeyCode()) {
+					userChoice = UserChoice.NONE;  
+					dispose();
+				}
+				return false;
+			}
+		};
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyListener);
+		
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(keyListener);
 		        userChoice = UserChoice.NONE;  
 	        	dispose();
 		    }
@@ -174,14 +193,14 @@ public class ColorChooserGrid extends JDialog {
 	private void initColorGrid() {
 		int hIncrement = 360 / columns;
 		int sIncrement = 100 / columns;
-		int greyIterator = 0;
 		int greyIncrement = 100 / columns;
-		int iterator = 0;
+		int greyIterator = 0;
 		int hIterator = 0;
 		int sIterator = 0;
+
+		int iterator = 0;
 		
 		for(int i = 0; i < rows; i++) {
-			
 			
 			for(int j = 0; j < columns; j++) {
 				panelMatrix[i][j] = new JPanel();
@@ -192,7 +211,7 @@ public class ColorChooserGrid extends JDialog {
 				if (i == 0) {
 					currColor = HslColor.toRGB(new float[] { 0, 0, greyIterator });
 				} else {
-					currColor = HslColor.toRGB(new float[] { hIterator, sIterator, 50 });
+					currColor = HslColor.toRGB(new float[] { hIterator, sIterator, sIterator });
 				}
 				
 				panelMatrix[i][j].setBackground(currColor);

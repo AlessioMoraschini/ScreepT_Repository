@@ -1,4 +1,4 @@
-package gui.selection;
+package gui.selection.color.om;
 
 import java.awt.Color;
 

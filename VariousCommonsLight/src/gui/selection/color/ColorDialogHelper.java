@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package gui.selection;
+package gui.selection.color;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -21,7 +21,7 @@ import javax.swing.JDialog;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import gui.selection.ColorChooserGrid.UserChoice;
+import gui.selection.color.ColorChooserGrid.UserChoice;
 
 public class ColorDialogHelper extends JColorChooser{
 	private static final long serialVersionUID = 7495639155315531462L;

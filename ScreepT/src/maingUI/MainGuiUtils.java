@@ -30,7 +30,6 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
-import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import exception.UpdatesUnavailableException;
 import files.FileWorker;
@@ -772,7 +771,7 @@ public class MainGuiUtils {
 			}
 		} 
 		
-		Boolean choiceY = GenericFileChooserDialog.askYorN(
+		Boolean choiceY = dialogHelper.askYorNPrecond(
 				"Files unsaved in textEditor", 
 				"There are some unsaved files in text Editor, do you want to save them?",
 				MainGUI.mainAPP.getMainFrame(),

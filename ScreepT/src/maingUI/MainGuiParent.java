@@ -154,6 +154,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmgenerateKeyImageSub;
 	CustomJmenuItem mntmViewKeyDictionary;
 	static CustomJmenuItem mntmTextEditor;
+	static CustomJmenuItem mntmThemeEditor;
 	public CustomJmenuItem mntmTxtEditorImpExpCryptedWkspc;
 	CustomJmenuItem mntmnetInfo;
 	CustomJmenuItem mntmhwInfo;
@@ -391,6 +392,7 @@ public class MainGuiParent {
 			mnTextEditor.add(menuBrowserOpenerActions);
 			mnTextEditor.add(menuStringActions);
 			mnTextEditor.add(mntmTxtEditorImpExpCryptedWkspc);
+			mnTextEditor.add(mntmThemeEditor);
 				
 			mnVarious.add(mntmnetInfo);
 			mnVarious.add(mntmhwInfo);
@@ -536,12 +538,11 @@ public class MainGuiParent {
 		mntmTextEditor.setFont(menuItemFont);
 		mnLastWorkspaces.setFont(subMenuFont);
 		mnLastOpenedFile.setFont(subMenuFont);
-		
 		MenuSetter.setFont(menuBrowserOpenerActions, menuItemFont);
 		menuBrowserOpenerActions.setFont(subMenuFont);
-		
 		menuStringActions.setFont(subMenuFont);
 		mntmTxtEditorImpExpCryptedWkspc.setFont(menuItemFont);
+		mntmThemeEditor.setFont(menuItemFont);
 
 		// VARIOUS SECTION
 		mntmnetInfo.setFont(menuItemFont);
@@ -627,6 +628,7 @@ public class MainGuiParent {
 		menuBrowserOpenerActions.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		menuStringActions.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
 		mntmTxtEditorImpExpCryptedWkspc.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
+		mntmThemeEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
 		
 		// Various submenu
 		mntmnetInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NET_INFO));
@@ -1097,6 +1099,10 @@ public class MainGuiParent {
 		return mntmTextEditor;
 	}
 	
+	public static CustomJmenuItem getMntmThemeEditor() {
+		return mntmThemeEditor;
+	}
+
 	public CustomJmenuItem getMntmTxtEditorImpExpCryptedWkspc() {
 		return mntmTxtEditorImpExpCryptedWkspc;
 	}

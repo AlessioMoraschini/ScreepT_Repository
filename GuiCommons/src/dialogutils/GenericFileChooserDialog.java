@@ -35,7 +35,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import files.FileVarious;
 import general.MyFileView;
-import gui.selection.JOptionHelper;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 
@@ -44,7 +43,7 @@ public class GenericFileChooserDialog {
 	public static String writerNames[] = ImageIO.getWriterFileSuffixes();
 	public static MyFileView fileView = new MyFileView();
 	
-	private static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
+	public static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 	
 	public INItializer currentConf;
 	public FileFilter fileFilter;
@@ -559,33 +558,6 @@ public class GenericFileChooserDialog {
         return correctFile;
 	}
 	
-	/**
-	 * open dialog in parent JComponent, displaying msg
-	 * Check first precondition, if true ask to user else return false.
-	 * After, if OK executes actionOK.
-	 * 
-	 * @return if OK return true, NO return false, else return null if cancel is pressed or window closed
-	 */
-	public static Boolean askYorN(String title, String msg, Component parent, boolean precondition) {
-			int askSave = JOptionHelper.CANC;
-			
-			if (precondition) {
-				askSave = dialogHelper.yesNoOrCanc(msg, title);
-			}else {
-				return false;
-			}
-			
-			if(askSave == JOptionHelper.OK){
-				return true;
-				
-			}else if(askSave == JOptionHelper.NO) {
-				return false;
-			}
-			
-			return null;
-	}
-	
-
 	private class CustomFileChooserOnTop extends JFileChooser{
 		private static final long serialVersionUID = -1504918820583535391L;
 
