@@ -56,7 +56,6 @@ import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gui.ComponentResizer;
 import gui.PluginManagerGUI;
-import gui.SchemeManagerGui;
 import guistyle.GUIStyelSettingsExtended;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
@@ -871,15 +870,15 @@ public class MainGUI extends MainGuiParent{
 						setFullScreenEnabled(!mainFrameScreept.isUndecorated());
 						
 						// Update txtArea to adapt new size
-						if(initTxtWriter != null && initTxtWriter.textEditorUtils != null) {
-							initTxtWriter.initGuiFromConfig(false, true);
+						if(textEditorPanel != null && textEditorPanel.textEditorUtils != null) {
+							textEditorPanel.initGuiFromConfig(false, true);
 						}
 						
 						// RESYNC JSCROLL BUG WORKAROUND
-						if (MainGUI.initTxtWriter != null && MainGUI.initTxtWriter instanceof TextEditor) {
-							JScrollPane target = ((TextEditor)MainGUI.initTxtWriter).mainScrollPane;
+						if (MainGUI.textEditorPanel != null && MainGUI.textEditorPanel instanceof TextEditor) {
+							JScrollPane target = ((TextEditor)MainGUI.textEditorPanel).mainScrollPane;
 							GuiUtilsExtended.scrollJScrollPane(target, true);
-							initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
+							textEditorPanel.textEditorUtils.resizeFrameToDefault(mainAPP);
 						}
 					}
 				});
@@ -929,13 +928,7 @@ public class MainGUI extends MainGuiParent{
 		// open in a new window - Theme Editor
 		mntmThemeEditor = new CustomJmenuItem(new AbstractAction("Color Theme editor") {
 			public void actionPerformed(ActionEvent e) {
-				SchemeManagerGui schemeManager = new SchemeManagerGui(new File(GeneralConfig.THEMES_FOLDER_CUSTOM), currentConfiguration.getTextEditorOpt().font);
-				schemeManager.updateIcons(
-						new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE),
-						new ImageIcon(IconsPathConfigurator.ICON_RELOAD2), 
-						new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE), 
-						new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE_AS)
-				);
+				windowCreator.newSchemeManager();
 			}
 		});
 		
@@ -1223,13 +1216,13 @@ public class MainGUI extends MainGuiParent{
 
 		// resize textEditor if present
 		if (mainFrameScreept.getContentPane().getComponent(0) instanceof TextEditor) {
-			initTxtWriter.textEditorUtils.resizeFrameToDefault(mainAPP);
+			textEditorPanel.textEditorUtils.resizeFrameToDefault(mainAPP);
 		}
 
 		// resize textEditor if present
 		if (mainFrameScreept.getContentPane().getComponent(0) instanceof CrypterPanel) {
 			mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSizeCrypter);
-			panelCrypter.resizeFrameToDefault(mainAPP);
+			crypterPanel.resizeFrameToDefault(mainAPP);
 		}
 	}
 	
@@ -1354,13 +1347,13 @@ public class MainGUI extends MainGuiParent{
 	 */
 	public static void updateGuiFromCurrConfig() {
 		// TEXT EDITOR REFRESH
-		if(initTxtWriter != null && mainGuiUtils.isTextEditorActive()) {
-			initTxtWriter.initGuiFromConfig(true, true);
+		if(textEditorPanel != null && mainGuiUtils.isTextEditorActive()) {
+			textEditorPanel.initGuiFromConfig(true, true);
 		}
 		
 		// CRYPTER REFRESH
-		if(panelCrypter != null && mainGuiUtils.isCrypterActive()) {
-			panelCrypter.initGuiFromConfig();
+		if(crypterPanel != null && mainGuiUtils.isCrypterActive()) {
+			crypterPanel.initGuiFromConfig();
 		}
 		
 		// CONFIGURATOR REFRESH
@@ -1378,8 +1371,8 @@ public class MainGUI extends MainGuiParent{
 			GeneralOptionsFrame.singletonInstance.initGuiFromConfig();
 		}
 		
-		if(initTxtWriter != null) {
-			initTxtWriter.getCurrentTabEditor().applyStyleToTabs();
+		if(textEditorPanel != null) {
+			textEditorPanel.getCurrentTabEditor().applyStyleToTabs();
 		}
 
 		if(GUIStyelSettingsExtended.isNimbus(currentConfiguration.getGuiOpt().getPreferredStyle())) {
@@ -1398,11 +1391,11 @@ public class MainGUI extends MainGuiParent{
 	// GETTERS //
 
 	public CrypterPanel getPanelCrypter() {
-		return panelCrypter;
+		return crypterPanel;
 	}
 
 	public static void setPanelCrypter(CrypterPanel panelCrypteR) {
-		panelCrypter = panelCrypteR;
+		crypterPanel = panelCrypteR;
 	}
 	
 	public static InitOwner getCurrentConfInterface() {

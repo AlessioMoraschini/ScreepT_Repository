@@ -25,6 +25,8 @@ public class ColorSelector extends JPanel {
 	
 	public Runnable onColorChange;
 	
+	public boolean enabled = true;
+	
 	public ColorSelectionElement elementOm;
 	
 	public ColorSelector(ColorSelectionElement colorSelectionElement, Runnable onColorChange) {
@@ -42,6 +44,7 @@ public class ColorSelector extends JPanel {
 	public ColorSelector(String elementName, Color backGround, Color foreground, Runnable onColorChange) {
 		
 		elementOm = new ColorSelectionElement(foreground, backGround, elementName);
+		enabled = true;
 		
 		this.onColorChange = onColorChange != null ? onColorChange : ()->{};
 		
@@ -74,6 +77,8 @@ public class ColorSelector extends JPanel {
 		panelBackground.setBackground(elementOm.background);
 		panelBackground.addMouseListener(panelMouseListener(panelBackground, true));
 		add(panelBackground, "cell 5 0,grow");
+		
+		setEnabled(enabled);
 	}
 	
 	public void removeBackground() {
@@ -86,11 +91,22 @@ public class ColorSelector extends JPanel {
 		remove(panelForeground);
 	}
 	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		setBackground(enabled ? Color.WHITE : Color.GRAY);
+		panelBackground.setCursor(enabled ? GuiUtils.CURSOR_HAND : GuiUtils.CURSOR_DEFAULT);
+		panelForeground.setCursor(enabled ? GuiUtils.CURSOR_HAND : GuiUtils.CURSOR_DEFAULT);
+	}
+	
 	public MouseAdapter panelMouseListener(JPanel target, boolean background) {
 		return new MouseAdapter() {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				
+				if(!enabled)
+					return;
+				
 				super.mouseReleased(e);
 				UserChoice userChoice = ColorDialogHelper.askForColorGrid(target.getBackground());
 				

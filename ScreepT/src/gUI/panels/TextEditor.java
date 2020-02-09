@@ -810,8 +810,8 @@ public class TextEditor extends ModulePanel {
 				}
 				
 				try {
-					TreeUtils.selectFileInNamedFileTree(MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile,
-							MainGUI.initTxtWriter.leftSplitTreeFiles, true);
+					TreeUtils.selectFileInNamedFileTree(MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.loadedFile,
+							MainGUI.textEditorPanel.leftSplitTreeFiles, true);
 				} catch (Exception e) {
 					logger.warn("!!! Error trying to sync current file at start into JTree");
 				} 

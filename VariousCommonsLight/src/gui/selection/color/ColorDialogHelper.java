@@ -22,6 +22,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import gui.selection.color.ColorChooserGrid.UserChoice;
+import gui.selection.color.om.ColorChanged;
 
 public class ColorDialogHelper extends JColorChooser{
 	private static final long serialVersionUID = 7495639155315531462L;
@@ -113,7 +114,4 @@ public class ColorDialogHelper extends JColorChooser{
 		return colorChooser.userChoice;
 	}
 	
-	public interface ColorChanged{
-		public void colorChanged(Color color);
-	}
 }

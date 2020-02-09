@@ -184,8 +184,8 @@ public class MainGuiParent {
 	CustomJmenuItem mntmResetCrypterPanel;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
-	public static TextEditor initTxtWriter;
-	public static CrypterPanel panelCrypter;
+	public static TextEditor textEditorPanel;
+	public static CrypterPanel crypterPanel;
 	public static ConfigurationManagerPanel configManagerPanel;
 	
 	public static MainGuiUtils mainGuiUtils;
@@ -848,7 +848,7 @@ public class MainGuiParent {
 				if(target != null && !target.getToolTipText().equals("")) {
 					
 					// IF text editor not opened open it
-					if(initTxtWriter == null || !initTxtWriter.isVisible()) {
+					if(textEditorPanel == null || !textEditorPanel.isVisible()) {
 						mntmTextEditor.doClick();
 					}
 					
@@ -857,9 +857,9 @@ public class MainGuiParent {
 						public void run() {
 							File toLoad = new File(target.getToolTipText());
 							if (toLoad.exists()) {
-								initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
+								textEditorPanel.getCurrentTabEditor().loadFile(toLoad);
 							} else {
-								initTxtWriter.dialogHelper.error("File does not exist anymore!", "File does not exist");
+								textEditorPanel.dialogHelper.error("File does not exist anymore!", "File does not exist");
 								removeFromLastOpened(toLoad);
 							}
 						}
@@ -877,7 +877,7 @@ public class MainGuiParent {
 				if(target != null && !target.getToolTipText().equals("")) {
 					
 					// IF text editor not opened open it
-					if(initTxtWriter == null || !initTxtWriter.isVisible()) {
+					if(textEditorPanel == null || !textEditorPanel.isVisible()) {
 						mntmTextEditor.doClick();
 					}
 					
@@ -886,9 +886,9 @@ public class MainGuiParent {
 						public void run() {
 							File toLoad = new File(target.getToolTipText());
 							if (toLoad.exists() && toLoad.isDirectory()) {
-								initTxtWriter.setWorkspace(toLoad);
+								textEditorPanel.setWorkspace(toLoad);
 							} else {
-								initTxtWriter.dialogHelper.error("File does not exist anymore!", "File does not exist");
+								textEditorPanel.dialogHelper.error("File does not exist anymore!", "File does not exist");
 								removeFromLastWorkspaces(toLoad);
 							}
 						}
@@ -1008,8 +1008,8 @@ public class MainGuiParent {
 	}
 	
 	private TabTextEditorObj getSafeTextEditorCurrentTabObject() {
-		if(initTxtWriter != null) {
-			return initTxtWriter.getCurrentTabEditor().loadedTabObj;
+		if(textEditorPanel != null) {
+			return textEditorPanel.getCurrentTabEditor().loadedTabObj;
 		} else {
 			return null;
 		}

@@ -189,7 +189,7 @@ public class MainGuiManager {
 	
 	static void backupOpenedFilesInConfig() {
 		
-		TextEditor initTxtWriter = MainGUI.initTxtWriter;
+		TextEditor initTxtWriter = MainGUI.textEditorPanel;
 		INItializer currentConfiguration = MainGUI.currentConfiguration;
 		
 		if (initTxtWriter != null) {
@@ -226,7 +226,7 @@ public class MainGuiManager {
 
 	public static boolean doIfTempDecryptedChanged(JFrame parent) {
 		logger.debug("Starting check on fileMonitor...");
-		CrypterPanel panelCrypter = MainGUI.panelCrypter;
+		CrypterPanel panelCrypter = MainGUI.crypterPanel;
 		boolean result = false;
 		
 		try {
@@ -267,9 +267,9 @@ public class MainGuiManager {
 			NetInfoFrame.singletonInstance.dispose();
 		}
 		
-		if(MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.subHeaderPanel != null) {
-			if(MainGUI.initTxtWriter.subHeaderPanel.propertiesFrame != null) {
-				MainGUI.initTxtWriter.subHeaderPanel.propertiesFrame.dispose();
+		if(MainGUI.textEditorPanel != null && MainGUI.textEditorPanel.subHeaderPanel != null) {
+			if(MainGUI.textEditorPanel.subHeaderPanel.propertiesFrame != null) {
+				MainGUI.textEditorPanel.subHeaderPanel.propertiesFrame.dispose();
 			}
 		}
 		

@@ -1,7 +1,6 @@
 package gui;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
@@ -14,22 +13,23 @@ public class SampleFileReader {
 	
 	public static String getFileTextFromSyntax(SupportedFileTextEditor syntax, File sampleSourceFolder) throws IOException {
 		
+		File sampleSource = sampleSourceFolder != null && sampleSourceFolder.exists() ? sampleSourceFolder : defaultSamplesFolder;
 		try {
 			
-			File[] samples = sampleSourceFolder.listFiles(new FilenameFilter() {
+			File[] samples = sampleSource.listFiles(new FilenameFilter() {
 				
 				@Override
 				public boolean accept(File dir, String name) {
-					return name.contains(syntax.name());
+					return name.equals(syntax.name());
 				}
 			});
 			
 			if(samples.length == 0) {
-				samples = sampleSourceFolder.listFiles(new FileFilter() {
+				samples = sampleSource.listFiles(new FilenameFilter() {
 					
 					@Override
-					public boolean accept(File pathname) {
-						return pathname.isFile();
+					public boolean accept(File dir, String name) {
+						return name.equals(SupportedFileTextEditor.JAVA.name());
 					}
 				});
 			}
@@ -41,5 +41,13 @@ public class SampleFileReader {
 		}
 		
 		return "";
+	}
+
+	public static File getDefaultSamplesFolder() {
+		return defaultSamplesFolder;
+	}
+
+	public static void setDefaultSamplesFolder(File defaultSamplesFolder) {
+		SampleFileReader.defaultSamplesFolder = defaultSamplesFolder;
 	}
 }

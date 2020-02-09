@@ -185,7 +185,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		
 		singletonInstance = this;
 		
-		currentEditor = MainGUI.initTxtWriter;
+		currentEditor = MainGUI.textEditorPanel;
 		
 		logger.info(this.getClass().getName() + " Starting...");
 
@@ -904,7 +904,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				currentEditor = MainGUI.initTxtWriter;
+				currentEditor = MainGUI.textEditorPanel;
 
 				logger.debug("Starting reset of GUI_Preferences");
 
