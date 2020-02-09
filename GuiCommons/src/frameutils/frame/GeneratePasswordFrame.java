@@ -19,7 +19,7 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ClipboardPanelLight;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
-import gui.JOptionHelper.Choice;
+import gui.selection.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;

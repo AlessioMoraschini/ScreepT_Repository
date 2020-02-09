@@ -24,22 +24,15 @@ import java.util.Vector;
  */
 public class ListCharsets {
 	
-	private static SortedMap charsets = Charset.availableCharsets();
-    private static Set names = charsets.keySet();
+	private static SortedMap<?, ?> charsets = Charset.availableCharsets();
+    private static Set<?> names = charsets.keySet();
     private static Vector<String> nameList= new Vector<>();
     
     public static Vector<String>  getCharsets() {
-    	for (Iterator e = names.iterator(); e.hasNext();) {
+    	for (Iterator<?> e = names.iterator(); e.hasNext();) {
 	      String name = (String) e.next();
 	      nameList.add(name);
-//	      Charset charset = (Charset) charsets.get(name);
-//	      System.out.println(charset);
-//	      Set aliases = charset.aliases();
-//	      for (Iterator ee = aliases.iterator(); ee.hasNext();) {
-//	        System.out.println("    " + ee.next());
-//	      }
     	}
     	return nameList;
-    	//JComboBox<String> combo = new JComboBox<String>(nameList);
     }
 }

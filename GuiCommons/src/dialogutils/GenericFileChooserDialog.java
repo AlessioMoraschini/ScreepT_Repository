@@ -35,7 +35,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import files.FileVarious;
 import general.MyFileView;
-import gui.JOptionHelper;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 
@@ -44,10 +43,12 @@ public class GenericFileChooserDialog {
 	public static String writerNames[] = ImageIO.getWriterFileSuffixes();
 	public static MyFileView fileView = new MyFileView();
 	
-	private static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
+	public static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 	
 	public INItializer currentConf;
 	public FileFilter fileFilter;
+	
+	public File defaultDirectory;
 	
 	public static AtomicBoolean blockEventsModal = new AtomicBoolean();
 	
@@ -67,6 +68,12 @@ public class GenericFileChooserDialog {
 	public GenericFileChooserDialog(INItializer currentConf, String typeDescription, String... fileFilter) {
 		this.currentConf = (currentConf == null)? new INItializer() : currentConf;
 		this.fileFilter = new FileNameExtensionFilter(typeDescription, fileFilter);
+	}
+	
+	private void updateDefaultDir(File dir, JFileChooser chooser) {
+		if (dir != null && dir.exists()) {
+			chooser.setCurrentDirectory(dir);
+		}
 	}
 	
 	/**JFRAME - only img supported extension
@@ -223,7 +230,8 @@ public class GenericFileChooserDialog {
 		addMultipleFileFilter(fileChooser, filters);
 		fileChooser.setDialogTitle("Select input File");
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));	
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setFileView(fileView);
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -264,6 +272,7 @@ public class GenericFileChooserDialog {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		
 		File correctFile = null;
@@ -303,6 +312,7 @@ public class GenericFileChooserDialog {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		
 		File correctFile = null;
@@ -340,6 +350,7 @@ public class GenericFileChooserDialog {
 		fileChooser.setDialogTitle("Save Image File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setSelectedFile(new File(defaultName));
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -379,6 +390,7 @@ public class GenericFileChooserDialog {
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setSelectedFile(new File(defaultName));
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -412,6 +424,7 @@ public class GenericFileChooserDialog {
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setFileView(fileView);
 		fileChooser.setCurrentDirectory(defaultDir != null ? defaultDir : new File(currentConf.getFileOpt().getLastDstFolderPath()));	
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setSelectedFile(new File(defaultName));
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -449,6 +462,7 @@ public class GenericFileChooserDialog {
 		fileChooser.setDialogTitle("Choose Input Directory");
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setFileView(fileView);
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -484,6 +498,7 @@ public class GenericFileChooserDialog {
 		fileChooser.setDialogTitle(title);
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));		
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setFileView(fileView);
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -520,6 +535,7 @@ public class GenericFileChooserDialog {
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileChooser.setDialogTitle("Choose output Directory");
 		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastDstFolderPath()));	
+		updateDefaultDir(defaultDirectory, fileChooser);
 		fileChooser.setFileView(fileView);
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;
@@ -542,33 +558,6 @@ public class GenericFileChooserDialog {
         return correctFile;
 	}
 	
-	/**
-	 * open dialog in parent JComponent, displaying msg
-	 * Check first precondition, if true ask to user else return false.
-	 * After, if OK executes actionOK.
-	 * 
-	 * @return if OK return true, NO return false, else return null if cancel is pressed or window closed
-	 */
-	public static Boolean askYorN(String title, String msg, Component parent, boolean precondition) {
-			int askSave = JOptionHelper.CANC;
-			
-			if (precondition) {
-				askSave = dialogHelper.yesNoOrCanc(msg, title);
-			}else {
-				return false;
-			}
-			
-			if(askSave == JOptionHelper.OK){
-				return true;
-				
-			}else if(askSave == JOptionHelper.NO) {
-				return false;
-			}
-			
-			return null;
-	}
-	
-
 	private class CustomFileChooserOnTop extends JFileChooser{
 		private static final long serialVersionUID = -1504918820583535391L;
 

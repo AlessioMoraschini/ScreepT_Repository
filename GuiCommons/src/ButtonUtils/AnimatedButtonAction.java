@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.Timer;
 
 public class AnimatedButtonAction extends AbstractAction{
+	private static final long serialVersionUID = -2206917300166814804L;
 
 	JButton button;
 	Runnable action;

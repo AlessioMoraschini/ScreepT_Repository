@@ -37,7 +37,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import files.om.DeleteFilesByExtensionDTO;
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import utility.ConversionUtils;
 import utility.SafeLogger;
 import utility.string.StringWorker;

@@ -40,6 +40,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.fife.rsta.ui.AssistanceIconPanel;
+import org.fife.rsta.ui.RComboBoxModel;
 import org.fife.rsta.ui.ResizableFrameContentPane;
 import org.fife.rsta.ui.UIUtil;
 import org.fife.rsta.ui.search.AbstractFindReplaceDialog;
@@ -49,6 +50,7 @@ import org.fife.ui.rtextarea.SearchEngine;
 
 import gui.GUIStyelSettings;
 import gui.GuiUtils;
+import resources.GeneralConfig;
 import utility.reflection.ReflectionUtils;
 
 
@@ -115,6 +117,9 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 	public FindDialogFork(Frame owner, SearchListener listener) {
 		super(owner);
 		init(listener);
+		if(findTextCombo.getModel() instanceof RComboBoxModel<?>) {
+			((RComboBoxModel<?>) findTextCombo.getModel()).setMaxNumElements(GeneralConfig.MAX_SEARCH_DIAL_LIST_SIZE);
+		}
 	}
 
 

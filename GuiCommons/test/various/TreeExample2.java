@@ -82,8 +82,9 @@ public class TreeExample2 {
      }
 
      public static class MyTree extends JTree {
+		private static final long serialVersionUID = 3635129823226127167L;
 
-          protected void paintComponent(Graphics g) {
+		protected void paintComponent(Graphics g) {
 
                // paint background
                g.setColor(getBackground());
@@ -112,7 +113,9 @@ public class TreeExample2 {
 
      // trick to make renderer transparent for the unselected nodes 
      public static class MyTreeCellRenderer extends DefaultTreeCellRenderer {
-          public MyTreeCellRenderer() {
+		private static final long serialVersionUID = 11216499812321L;
+
+		public MyTreeCellRenderer() {
                setBackgroundNonSelectionColor(null);
           }
 

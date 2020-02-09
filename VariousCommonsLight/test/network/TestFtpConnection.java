@@ -11,7 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import gui.GuiUtils;
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import network.ftp.FtpDumper;
 import testconfig.TestConstants;
 import utility.hash.ChecksumHasher;
@@ -22,6 +22,7 @@ public class TestFtpConnection {
 
 	private static final String HOST = "ftp.am-design-development.com";
 	private static final String USER = "";
+	@SuppressWarnings("unused")
 	private static String psw = "";
 	private static FtpDumper dumper;
 	private static final int PORT = 22;

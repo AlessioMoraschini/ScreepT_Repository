@@ -23,7 +23,7 @@ import javax.swing.UIManager;
  * @author A.M. Design&Development
  *
  */
-public class KO_ComboBoxLAFRenderer extends JLabel implements ListCellRenderer {
+public class KO_ComboBoxLAFRenderer extends JLabel implements ListCellRenderer<Object> {
 	private static final long serialVersionUID = 1587070908709053889L;
 
 	public KO_ComboBoxLAFRenderer() {
@@ -32,7 +32,7 @@ public class KO_ComboBoxLAFRenderer extends JLabel implements ListCellRenderer {
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+	public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 			boolean cellHasFocus) {
 		//Get the selected index. (The index param isn't
         //always valid, so just use the value.)

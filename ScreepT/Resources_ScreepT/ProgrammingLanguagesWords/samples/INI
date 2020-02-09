@@ -1,0 +1,40 @@
+#--------------------------------------------------------------------------------------------------
+#-------------------------------------    AES SETTINGS     ------------------------------------
+#--------------------------------------------------------------------------------------------------
+
+
+[AES_OPTIONS]
+flagCodificaAes = true
+hashKey = false
+securityLevel = NO_CHECK
+
+#--------------------------------------------------------------------------------------------------
+#------------------------------------   SCREEPT  SETTINGS    ---------------------------------------
+#--------------------------------------------------------------------------------------------------
+
+[STEGANO_OPTIONS]
+
+flagCodificaSteg = false
+# Steg mode active by default if true
+
+flagUltraSecure = false
+# Ultra secure mode active by default if true
+
+defaultWidth = 100
+# Default keygen image width
+
+defaultHeight = 100
+# Default keygen image Height
+
+imgKeyRecentPath = IMG
+
+#--------------------------------------------------------------------------------------------------
+#------------------------------------   FILE  SETTINGS   ---------------------------------------
+#--------------------------------------------------------------------------------------------------
+
+[FILE_OPTIONS]
+flagAutosave = true
+# Flag for current config autosave
+
+autosaveInterval = 600000
+# Autosave time between saves (in milliseconds)

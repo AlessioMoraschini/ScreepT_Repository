@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package gui;
+package gui.selection.color;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -21,6 +21,8 @@ import javax.swing.JDialog;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import gui.selection.color.ColorChooserGrid.UserChoice;
+
 public class ColorDialogHelper extends JColorChooser{
 	private static final long serialVersionUID = 7495639155315531462L;
 	
@@ -28,6 +30,16 @@ public class ColorDialogHelper extends JColorChooser{
 	private JColorChooser thisChooser;
 	
 	public ColorChanged colorChangedAction = (e) -> {};
+	
+	public ColorDialogHelper() {
+		colorChangedAction = (e) -> {};
+	}
+	
+	public ColorDialogHelper(ColorChanged colorChangedAction) {
+		if(colorChangedAction != null) {
+			this.colorChangedAction = colorChangedAction;
+		}
+	}
 	
 	/**
 	 * Create a colorChooser dialog updating in real time the color as the selected one.
@@ -93,6 +105,12 @@ public class ColorDialogHelper extends JColorChooser{
 		}else {
 			return null;
 		}
+	}
+	
+	public static UserChoice askForColorGrid(Color selectedColor) {
+		ColorChooserGrid colorChooser = new ColorChooserGrid(selectedColor);
+		
+		return colorChooser.userChoice;
 	}
 	
 	public interface ColorChanged{

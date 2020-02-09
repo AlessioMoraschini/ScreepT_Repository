@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package gui;
+package gui.selection;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -19,6 +19,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.File;
 import java.util.Arrays;
 
 import javax.swing.Icon;
@@ -33,6 +34,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import gui.GuiUtils;
 import utility.string.StringWorker;
 
 public class JOptionHelper {
@@ -69,7 +71,7 @@ public class JOptionHelper {
 	
 	public Dimension IF_SCROLLABLE_DEF_DIMENSION = new Dimension( 500, 500 );
 	
-	public static Font DEFAULT_FONT_DIMENSION = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+	public static Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
 	
 	public boolean enabledAdvices = true;
 	
@@ -81,7 +83,7 @@ public class JOptionHelper {
 		ICON_WARN_REF = UIManager.getIcon("OptionPane.warningIcon"); 
 		ICON_INFO_REF = UIManager.getIcon("OptionPane.informationIcon");        
 		ICON_QUESTION_REF = UIManager.getIcon("OptionPane.questionIcon");
-		DEFAULT_FONT_DIMENSION = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+		DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
 	}
 	
 	public JOptionHelper (Component parentComponent) {
@@ -388,6 +390,11 @@ public class JOptionHelper {
 		
 		return showYNMessageCommon(msg, msg, QUESTION, false, false, false);
 	}
+	
+	public boolean askOverwriteFile(File file) {
+		String msg = GuiUtils.encapsulateInHtml("<b>File already exists</b>, do you want to overwrite it?<br>" + file);
+		return yesOrNo(msg, "Overwrite?");
+	}
 
 	/**
 	 * Shows a question and return int choice (OK|NO|CANC)
@@ -438,7 +445,7 @@ public class JOptionHelper {
 		
 		return askForStringNullable(msg, title, "", new Object[]{"Confirm"});
 	}
-	
+
 	/**
 	 * Returns null if cancel is pressed
 	 * @param msg
@@ -455,10 +462,10 @@ public class JOptionHelper {
 	 * Shows a customizable message dialog that remains alwaysOnTop. Returns true if ok is selected, false in other cases
 	 * msgType can be error, info, warn, exc...
 	 */
-	public String askForStringNullable(String msg, String title, String initialValue, Object options[]) {
+	public String askForStringNullable(Object msg, String title, String initialValue, Object options[]) {
 		
 		final JOptionPane pane = new JOptionPane(
-				getLabelStyledText(msg), JOptionPane.QUESTION_MESSAGE,
+				msg instanceof String ? getLabelStyledText((String)msg) : msg, JOptionPane.QUESTION_MESSAGE,
 				JOptionPane.OK_CANCEL_OPTION, null,
 				options, initialValue);
 		pane.setWantsInput(true);
@@ -629,15 +636,41 @@ public class JOptionHelper {
 		}
 	}
 	
-	protected JLabel getLabelStyledText(String msg) {
+	public JLabel getLabelStyledText(String msg) {
 		JLabel label = new JLabel(msg, SwingConstants.CENTER);
 		label.setOpaque(false);
-		label.setFont(DEFAULT_FONT_DIMENSION);
+		label.setFont(DEFAULT_FONT);
 		label.setVisible(true);
 		label.revalidate();
 		label.repaint();
 		
 		return label;
+	}
+
+	/**
+	 * open dialog in parent JComponent, displaying msg
+	 * Check first precondition, if true ask to user else return false.
+	 * After, if OK executes actionOK.
+	 * 
+	 * @return if OK return true, NO return false, else return null if cancel is pressed or window closed
+	 */
+	public Boolean askYorNPrecond(String title, String msg, Component parent, boolean precondition) {
+			int askSave = CANC;
+			
+			if (precondition) {
+				askSave = yesNoOrCanc(msg, title);
+			}else {
+				return false;
+			}
+			
+			if(askSave == OK){
+				return true;
+				
+			}else if(askSave == NO) {
+				return false;
+			}
+			
+			return null;
 	}
 
 	public class Choice<T>{

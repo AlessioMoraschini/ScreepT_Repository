@@ -27,7 +27,7 @@ import javax.swing.JFrame;
 
 import org.apache.commons.io.FilenameUtils;
 
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import utility.SafeLogger;
 import utility.string.StringWorker.EOL;
 
@@ -504,6 +504,36 @@ public class FileVarious {
 			logger.error("", e);
 		}
 	    return areRelated;
+	}
+	
+	public static File searchUntilAncestorMatch(File son, String wantedParentMatch, boolean exactNameMatch) {
+		File scanner = son;
+		while(scanner != null && scanner.getParentFile() != null) {
+			scanner = scanner.getParentFile();
+			boolean found = 
+					(exactNameMatch && scanner.getName().equals(wantedParentMatch)) ||
+					(!exactNameMatch && scanner.getName().contains(wantedParentMatch));
+			if(found) {
+				return scanner;
+			}
+		}
+		
+		return son;
+	}
+	
+	public static boolean hasParent(File son, String parentName, boolean exactNameMatch) {
+		File scanner = son;
+		while(scanner != null && scanner.getParentFile() != null) {
+			scanner = scanner.getParentFile();
+			boolean found = 
+					(exactNameMatch && scanner.getName().equals(parentName)) ||
+					(!exactNameMatch && scanner.getName().contains(parentName));
+			if(found) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public static File getNlevelsAncestor(File son, int levelsUp) {

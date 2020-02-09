@@ -369,7 +369,7 @@ public class TextEditorHeaderPanel extends JPanel{
 				}
 				
 				SwingUtilities.invokeLater(() -> {
-					RXTextUtilities.centerLineInScrollPane(loadedTabObj.textArea);
+					RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
 				});
 			}
 		});

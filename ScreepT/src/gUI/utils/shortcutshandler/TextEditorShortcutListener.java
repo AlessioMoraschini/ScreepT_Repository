@@ -36,6 +36,7 @@ import om.ICommonShortcuts;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
+import utility.KeyListenerUtils;
 import utils.SysUtils;
 
 public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonShortcuts{
@@ -171,6 +172,15 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 						logger.warn(e2);
 					}
 				}
+				
+				else if (e.getKeyCode() == KeyEvent.VK_K && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
+				{
+					try {
+						revalidateUnsaved();
+					} catch (Throwable e2) {
+						logger.warn(e2);
+					}
+				}
 				/*
 				 * REDO -  Ctrl+Y : check and update unsaved variable only
 				 */
@@ -265,10 +275,21 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				/*
 				 * 	UPPERCASE SELECTED TEXT -> CTRL+Shift+UP_Arrow
 				 */
-				else if (e.getKeyCode() == 38 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (KeyListenerUtils.keyUp(e) && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					try {
 						GuiUtils.fireActionListener(currentTextEditor.getCurrentTabEditor()
 								.loadedTabObj.getUppercaseListener(), null);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+				/*
+				 * 	LOWERCASE SELECTED TEXT -> CTRL+Shift+DOWN_Arrow
+				 */
+				else if (KeyListenerUtils.keyDown(e) && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+					try {
+						GuiUtils.fireActionListener(currentTextEditor.getCurrentTabEditor()
+								.loadedTabObj.getLowercaseListener(), null);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

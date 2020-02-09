@@ -43,6 +43,7 @@
 	  <build>
 		<finalName>${export.jar.name}</finalName>
 		<sourceDirectory>src</sourceDirectory>
+	    
 		<plugins>
 	
 			<!-- Properties inherited from parent -->

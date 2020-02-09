@@ -68,10 +68,10 @@ import gUI.utils.shortcutshandler.TextEditorShortcutListener;
 import gUI.utils.texteditor.TextEditorUtils;
 import gui.GuiUtils;
 import gui.ImageSelector2TextFrame;
-import gui.JFontChooserExtended;
 import gui.PdfSelector2TextFrame;
 import gui.RXTextUtilities;
 import gui.TextEditTooltips;
+import gui.selection.JFontChooserExtended;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
@@ -412,7 +412,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboStylesScheme = new JComboBox<ThemesWrapper>();
 		comboStylesScheme.setMinimumSize(new Dimension(33, 12));
 		comboStylesScheme.setMaximumSize(new Dimension(170, 32767));
-		themeList = initComboStyleScheme();
+		initComboStyleScheme();
 		comboStylesScheme.setToolTipText(TextEditTooltips.tooltipComboStyleScheme);
 		comboStylesScheme.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		comboStylesScheme.setAlignmentX(CENTER_ALIGNMENT);
@@ -1188,7 +1188,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
 					
 					try {
-						RXTextUtilities.centerLineInScrollPane(loadedTabObj.textArea);
+						RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
 					}catch(Exception e1) {
 						logger.warn("Error resetting position", e1);
 					}
@@ -1652,7 +1652,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		return true;
 	}
 	
-	private Vector<ThemesWrapper> initComboStyleScheme() {
+	public Vector<ThemesWrapper> initComboStyleScheme() {
 		Vector<ThemesWrapper> wrappers = new Vector<ThemesWrapper>();
 		try {
 			wrappers = ThemesWrapper.getDefaultAndCustomWrappers();
@@ -1667,6 +1667,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboStylesScheme.setSelectedItem(Themes.getThemesWrapperFromName(currentConfiguration.getTextEditorOpt().selectedTheme, wrappers));
 		comboStylesScheme.revalidate();
 		comboStylesScheme.repaint();
+		
+		themeList = wrappers;
 		
 		return wrappers;
 	}

@@ -22,6 +22,7 @@ import org.fife.ui.rsyntaxtextarea.spell.demo.DemoRootPane;
  * @version 1.0
  */
 public class SpellingParserDemo extends JFrame {
+	private static final long serialVersionUID = 11651321321645L;
 
 
 	/**

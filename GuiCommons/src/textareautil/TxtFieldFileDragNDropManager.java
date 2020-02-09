@@ -51,7 +51,8 @@ public class TxtFieldFileDragNDropManager extends JTextField{
     public boolean allowDirectoriesDrop = false;
 
     private boolean dragOver = false;
-    private Point dragPoint;
+    @SuppressWarnings("unused")
+	private Point dragPoint;
 
     // constructor
     public TxtFieldFileDragNDropManager(Runnable dropAction, Component targetDrop) {

@@ -56,6 +56,7 @@ import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gui.ComponentResizer;
 import gui.PluginManagerGUI;
+import gui.SchemeManagerGui;
 import guistyle.GUIStyelSettingsExtended;
 import jmenu.CustomJmenuItem;
 import mainobj.INItializer;
@@ -117,6 +118,7 @@ public class MainGUI extends MainGuiParent{
 	private static boolean FLAG_mntmRestart = false;
 	private static boolean FLAG_mntmExit = false;
 	private static boolean FLAG_loadPrjSub = false;
+	private static boolean FLAG_importFromOtherPrjSub = false;
 	private static boolean FLAG_savePrjSub = false;
 	private static boolean FLAG_savePrjSubAs = false;
 	private static boolean FLAG_loadDefaultPrjSub = false;
@@ -521,15 +523,27 @@ public class MainGUI extends MainGuiParent{
 		mntmloadPrjSub = new CustomJmenuItem(new AbstractAction("Load Custom Configuration") {
 		    public void actionPerformed(ActionEvent ae) {
 		   
-		    		if (!FLAG_loadPrjSub) {
-		    			SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-		    			FLAG_loadPrjSub = true;
-						INIfileChoosER panel = new INIfileChoosER(currentConfiguration, GeneralConfig.DEFAULT_INI_FOLDER);
-						panel.setBounds(20, 20, mainFrameScreept.getWidth(), mainFrameScreept.getHeight() / 2);
-						FLAG_loadPrjSub = false;
-						updateGuiFromCurrConfig();
-					}
+	    		if (!FLAG_loadPrjSub) {
+	    			SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+	    			FLAG_loadPrjSub = true;
+					INIfileChoosER.readNLoadIniFile(currentConfiguration, GeneralConfig.DEFAULT_INI_FOLDER);
+					FLAG_loadPrjSub = false;
+					updateGuiFromCurrConfig();
+				}
 		    }
+		});
+
+		// NOT OPENING VIEW - IMPORT CONFIGURATION FROM OTHER SCREEPT
+		mntmImportFromOtherScreepTPrjSub = new CustomJmenuItem(new AbstractAction("Load configuration from other installation") {
+			public void actionPerformed(ActionEvent ae) {
+				
+				if (!FLAG_importFromOtherPrjSub) {
+					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+					FLAG_importFromOtherPrjSub = true;
+					INIfileChoosER.loadDefaultsFromOtherInstallation(false);
+					FLAG_importFromOtherPrjSub = false;
+				}
+			}
 		});
 
 		String msg1 = "Are you sure to reset ";
@@ -581,7 +595,7 @@ public class MainGUI extends MainGuiParent{
 		    	if (!FLAG_savePrjSub) {
 		    		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSub = true;
-		    		ConfigurationManagerPanel.saveCurrentConf(currentConfiguration, mainFrameScreept);
+		    		INIfileChoosER.saveCurrentConf(currentConfiguration, mainFrameScreept);
 		    		FLAG_savePrjSub = false;
 				}  	
 		    }
@@ -593,8 +607,7 @@ public class MainGUI extends MainGuiParent{
 		    	if (!FLAG_savePrjSubAs) {
 		    		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 		    		FLAG_savePrjSubAs = true;
-					INIfileChoosER panel = new INIfileChoosER(currentConfiguration, (JLabel)null);
-					panel.setBounds(20, 20, mainFrameScreept.getWidth(), mainFrameScreept.getHeight() / 2);
+					INIfileChoosER.exportIniFile(currentConfiguration, (JLabel)null);
 					FLAG_savePrjSubAs = false;
 				}  	
 		    }
@@ -913,6 +926,20 @@ public class MainGUI extends MainGuiParent{
 			}
 		});
 		
+		// open in a new window - Theme Editor
+		mntmThemeEditor = new CustomJmenuItem(new AbstractAction("Color Theme editor") {
+			public void actionPerformed(ActionEvent e) {
+				SchemeManagerGui schemeManager = new SchemeManagerGui(new File(GeneralConfig.THEMES_FOLDER_CUSTOM), currentConfiguration.getTextEditorOpt().font);
+				schemeManager.updateIcons(
+						new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE),
+						new ImageIcon(IconsPathConfigurator.ICON_RELOAD2), 
+						new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE), 
+						new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE_AS)
+				);
+			}
+		});
+		
+		
 		// open in a new window - NET INFO
 		mntmnetInfo = new CustomJmenuItem(new AbstractAction("Network Info") {
 		    public void actionPerformed(ActionEvent ae) {
@@ -1099,7 +1126,7 @@ public class MainGUI extends MainGuiParent{
 				mainGuiUtils.startTextEditor(false);
 			}
 		});
-		
+
 		// open in main frame - RETURN TO WELCOME PAGE
 		mntmReturnToWelcome = new CustomJmenuItem(new AbstractAction("Return to Welcome Page") {
 			public void actionPerformed(ActionEvent e) {

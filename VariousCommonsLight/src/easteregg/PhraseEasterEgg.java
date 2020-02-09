@@ -3,7 +3,7 @@ package easteregg;
 import java.awt.Dimension;
 import java.util.UUID;
 
-import gui.JOptionHelper;
+import gui.selection.JOptionHelper;
 import om.ShortcutFilter;
 import om.TextRetriever;
 
@@ -15,14 +15,14 @@ public class PhraseEasterEgg extends EasterEgg {
 	
 	public PhraseEasterEgg(String id, TextRetriever textRetriever, ShortcutFilter shortcutFilter) {
 		super(id, () -> {
-			new JOptionHelper(null).infoScroll(textRetriever.retrieveText(), "Easter egg found :)", defaultDialogSize);
+			new JOptionHelper(null).infoScroll(textRetriever.retrieveText(), "You may have just found something special!", defaultDialogSize);
 		}, shortcutFilter);
 		this.textRetriever = textRetriever;
 	}
 	
 	public PhraseEasterEgg(TextRetriever textRetriever) {
 		super(UUID.randomUUID().toString(), () -> {
-			new JOptionHelper(null).infoScroll(textRetriever.retrieveText(), "Easter egg found :)", defaultDialogSize);
+			new JOptionHelper(null).infoScroll(textRetriever.retrieveText(), "You may have just found something special!", defaultDialogSize);
 		}, null);
 		this.textRetriever = textRetriever;
 	}

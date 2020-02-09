@@ -12,7 +12,8 @@
 package crypt.aes;
 
 public class AESException extends Exception{
-	
+	private static final long serialVersionUID = -6838200282561901212L;
+
 	public AESException() {
 		super();
 	}

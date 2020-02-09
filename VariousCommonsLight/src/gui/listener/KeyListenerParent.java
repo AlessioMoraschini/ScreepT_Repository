@@ -15,7 +15,7 @@ public class KeyListenerParent {
 	protected Vector<Integer> currentPressed = new Vector<>();
 	
 	public static long MAX_INTERVAL_MS = 600;
-	public LimitedConcurrentList<ClickUpdate> lastFiveClicks = new LimitedConcurrentList<>(5);
+	public LimitedConcurrentList<ClickUpdate> lastNClicks = new LimitedConcurrentList<>(8);
 	
 	public KeyListenerParent() {
 		currentPressed = new Vector<>();
@@ -25,7 +25,7 @@ public class KeyListenerParent {
 	public boolean dispatchKeyEvent(final KeyEvent e) {
 		
 		updateKeyCode(e);
-		lastFiveClicks.add(new ClickUpdate(e.getKeyCode(), e.isControlDown(), e.isAltDown(), e.isShiftDown()));
+		lastNClicks.add(new ClickUpdate(e.getKeyCode(), e.isControlDown(), e.isAltDown(), e.isShiftDown()));
 		
 		return false;
 	}
@@ -52,45 +52,44 @@ public class KeyListenerParent {
 	}
 	
 	public boolean repeatedClicksInLimitedTime(KeyEvent e, int repeats, boolean ctrl, boolean alt, boolean shift, long maxInterval) {
-		if(!lastFiveClicks.isFull()) {
-			return false;
-		}
-		
 		boolean combinationFound = false;
-		
-		if(e.isControlDown() == ctrl && e.isAltDown() == alt && e.isShiftDown() == shift) {
-			int nLastClicks = lastFiveClicks.getSize();
-			int limit = nLastClicks-1-repeats >= 0 ? nLastClicks-1-repeats : 0;
+
+		if(lastNClicks.isFull() || lastNClicks.getSize() >= repeats) {
 			
-			ClickUpdate lastClickData = lastFiveClicks.getLast();
-			long lastTime = lastClickData.timestamp;
-			boolean inARowMatched = false;
-			
-			for(int i = nLastClicks-1; i > limit; i--) {
-				inARowMatched = lastTime - lastClickData.timestamp < maxInterval;
-				lastTime = lastClickData.timestamp;
-				inARowMatched = inARowMatched 
-						&& lastClickData.ctrlPressed.get() == ctrl
-						&& lastClickData.altPressed.get() == alt
-						&& lastClickData.shiftPressed.get() == shift
-						&& lastClickData.keyCode == e.getKeyCode();
+			if(e.isControlDown() == ctrl && e.isAltDown() == alt && e.isShiftDown() == shift) {
+				int nLastClicks = lastNClicks.getSize();
+				int limit = nLastClicks-1-repeats >= 0 ? nLastClicks-1-repeats : 0;
 				
-				if(!inARowMatched) {
-					inARowMatched = false;
-					break;
+				ClickUpdate lastClickData = lastNClicks.getLast();
+				long lastTime = lastClickData.timestamp;
+				boolean inARowMatched = false;
+				
+				for(int i = nLastClicks-1; i > limit; i--) {
+					inARowMatched = lastTime - lastClickData.timestamp < maxInterval;
+					lastTime = lastClickData.timestamp;
+					inARowMatched = inARowMatched 
+							&& lastClickData.ctrlPressed.get() == ctrl
+							&& lastClickData.altPressed.get() == alt
+							&& lastClickData.shiftPressed.get() == shift
+							&& lastClickData.keyCode == e.getKeyCode();
+					
+					if(!inARowMatched) {
+						inARowMatched = false;
+						break;
+					}
+					
+					if (i-1 >= 0) {
+						lastClickData = lastNClicks.getList().get(i - 1);
+					}
 				}
 				
-				if (i-1 >= 0) {
-					lastClickData = lastFiveClicks.getList().get(i - 1);
-				}
+				combinationFound = inARowMatched;
 			}
 			
-			combinationFound = inARowMatched;
-		}
-		
-		if(combinationFound) {
-			for (int i = 0; i < repeats; i++) {
-				lastFiveClicks.removeLast();
+			if(combinationFound) {
+				for (int i = 0; i < repeats; i++) {
+					lastNClicks.removeLast();
+				}
 			}
 		}
 		

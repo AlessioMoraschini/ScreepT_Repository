@@ -4,11 +4,18 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
+
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit;
+import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 import om.ColumnTextArea;
 
@@ -26,6 +33,8 @@ public class TestShorctutsFrame {
 	public static void analyzeTextInput() {
 		JFrame frame = new JFrame("Test shortcuts");
 		ColumnTextArea textAreaS = new ColumnTextArea(true);
+		textAreaS.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		textAreaS.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.ALT_MASK), "RSTA.ToggleCommentAction");;
 		textAreaS.setRectangularSelectionMode(true);
 		JScrollPane scrollPane = new JScrollPane(textAreaS);
 		scrollPane.setViewportView(textAreaS);

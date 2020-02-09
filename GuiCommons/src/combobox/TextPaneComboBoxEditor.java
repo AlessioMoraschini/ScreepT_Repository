@@ -24,7 +24,8 @@ import java.awt.event.*;
  */
 public class TextPaneComboBoxEditor implements ComboBoxEditor {
     protected JTextPane editor;
-    private Object oldValue;
+    @SuppressWarnings("unused")
+	private Object oldValue;
 
     public TextPaneComboBoxEditor() {
         editor = createEditorComponent();
@@ -124,7 +125,9 @@ public class TextPaneComboBoxEditor implements ComboBoxEditor {
     }
 
     static class BorderlessTextPane extends JTextPane {
-        public BorderlessTextPane(String value,int n) {
+		private static final long serialVersionUID = -336995610770386143L;
+
+		public BorderlessTextPane(String value,int n) {
 //            super(value,n);
             setText(value);
         }
@@ -163,9 +166,10 @@ public class TextPaneComboBoxEditor implements ComboBoxEditor {
     implements javax.swing.plaf.UIResource {
     }
 
-    static class WrappedActionListener extends AbstractAction
-    {
-        private ActionListener listener;
+    static class WrappedActionListener extends AbstractAction {
+		private static final long serialVersionUID = -7791316753010511930L;
+		
+		private ActionListener listener;
 
         public WrappedActionListener(ActionListener listener)
         {

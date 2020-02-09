@@ -58,6 +58,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
@@ -84,6 +85,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JComboBox<String> comboCharsets;
 	private JComboBox<EOL> comboBoxDefEOL;
 	private JComboBox<SecurityLevel> comboSecurityLevels;
+	private JComboBox<Locale> comboLocale;
 
 	private JCheckBox chckbxHideLauncherAt;	
 	private JCheckBox chckbxExceptionAdvicesEnabled;
@@ -105,6 +107,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JButton btnSaveConf;
 	
 	// default values
+	private Locale BACKUP_LOCALE;
 	private int BACKUP_AUTOSAVE_INTERVAL;
 	private boolean BACKUP_AUTOSAVE_FLAG;
 	private boolean BACKUP_EXCEPTION_ADVICES;
@@ -123,6 +126,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JSeparator separator_1;
 	private JLabel lblDefaultEOL;
 	private JButton btnNetworkConfig;
+	private JLabel lblLocale;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		super();
@@ -156,7 +160,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		initializeValues();		
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[10px][10px][:110px:190px,grow][::40px][100px,grow][80px:n][100][100][110px:n]", "[:30:40px][10px:n][grow][][grow][grow][grow,bottom][:30px:35px,baseline]"));
+		getContentPane().setLayout(new MigLayout("", "[10px][10px][:110px:190px,grow][::90px][100px,grow][80px:n][100][100][110px:n]", "[:30:40px][10px:n][grow][][grow][grow][grow,bottom][:30px:35px,baseline]"));
 		
 		JPanel panel = new JPanel();
 		panel.setForeground(Color.BLACK);
@@ -241,6 +245,11 @@ public class GeneralOptionsFrame extends ParentFrame{
 		lblPasswordSecurityCheck.setFont(new Font("SansSerif", Font.BOLD, 13));
 		getContentPane().add(lblPasswordSecurityCheck, "cell 0 4 2 1,alignx right,aligny center");
 		
+		lblLocale = new JLabel("Locale:");
+		lblLocale.setForeground(Color.WHITE);
+		lblLocale.setFont(new Font("SansSerif", Font.BOLD, 13));
+		getContentPane().add(lblLocale, "cell 3 4,alignx trailing");
+	
 		JLabel lblDefaultCharset = new JLabel("Encoding:");
 		lblDefaultCharset.setForeground(Color.WHITE);
 		lblDefaultCharset.setFont(new Font("SansSerif", Font.BOLD, 13));
@@ -258,13 +267,22 @@ public class GeneralOptionsFrame extends ParentFrame{
 		lblDefaultEOL.setFont(new Font("SansSerif", Font.BOLD, 13));
 		getContentPane().add(lblDefaultEOL, "cell 0 5 2 1,alignx right");
 		
+		
+//		comboLocales = new JComboBox<Locale>();
+		comboLocale = new JComboBox<Locale>(getSupportedLocales());
+		comboLocale.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
+		comboLocale.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		comboLocale.setToolTipText("Choose general language used (not yet implemented)");
+		comboLocale.setMinimumSize(new Dimension(20, 30));
+		getContentPane().add(comboLocale, "cell 4 4,growx");
+		
 //		comboSecurityLevels = new JComboBox<SecurityLevel>();
 		comboSecurityLevels = new JComboBox<SecurityLevel>(SecurityLevel.values());
 		comboSecurityLevels.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		comboSecurityLevels.setMinimumSize(new Dimension(20, 30));
 		comboSecurityLevels.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		comboSecurityLevels.setToolTipText("Choose security level used for passwords check");
-		getContentPane().add(comboSecurityLevels, "cell 2 4 3 1,growx");
+		getContentPane().add(comboSecurityLevels, "cell 2 4,growx");
 		
 //		comboBoxDefEOL = new JComboBox<EOL>();
 		comboBoxDefEOL = new JComboBox<EOL>(EOL.values());
@@ -481,6 +499,18 @@ public class GeneralOptionsFrame extends ParentFrame{
 			}
 		});
 		
+		// COMBO LOCALES HANDLER
+		comboLocale.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Locale locale = (Locale) comboLocale.getSelectedItem();
+					currentConfiguration.getGenOpt().setLocale(locale);
+				} catch (Exception e1) {
+					logger.error("Error setting locale", e1);
+				}
+			}
+		});
+		
 		// USERNAME HANDLER
 		textFieldUname.getDocument().addDocumentListener(new DocumentListener() {
 			  public void changedUpdate(DocumentEvent e) {
@@ -608,6 +638,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_DEFAULT_EOL = currentConfiguration.getTextEditorOpt().getEol();
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
+		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
 	}
 	
@@ -627,9 +658,20 @@ public class GeneralOptionsFrame extends ParentFrame{
     	System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
     	comboSecurityLevels.setSelectedItem(currentConfiguration.getAesOpt().getSecurityLevel());
     	comboBoxDefEOL.setSelectedItem(currentConfiguration.getTextEditorOpt().getEol());
+    	comboLocale.setSelectedItem(currentConfiguration.getGenOpt().getLocale());
+    	updateComboLocale();
+    	Locale.setDefault(currentConfiguration.getGenOpt().getLocale());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
     	
     	refreshCheckBoxForeground();
+	}
+	
+	public static Locale[] getSupportedLocales(){
+		Locale[] supportedLocales = new Locale[2];
+		supportedLocales[0] = Locale.ENGLISH;
+		supportedLocales[1] = Locale.ITALIAN;
+		
+		return supportedLocales;
 	}
 	
 	public void updateComboCharsetSelection(String charset) {
@@ -644,6 +686,16 @@ public class GeneralOptionsFrame extends ParentFrame{
 		
 		comboCharsets.revalidate();
 		comboCharsets.repaint();
+	}
+
+	private void updateComboLocale() {
+		for (int i = 0; i < comboLocale.getItemCount(); i++) {
+			Locale currentScanLocale = ((Locale) comboLocale.getItemAt(i));
+			if (currentScanLocale.equals(currentConfiguration.getGenOpt().getLocale())) {
+				comboLocale.setSelectedIndex(i);
+				break;
+			}
+		}
 	}
 		
 	/**
@@ -660,6 +712,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		currentConfiguration.getGenOpt().setGeneralVolume(BACKUP_GENVOLUME);
 		currentConfiguration.getGenOpt().setExceptionAdvicesEnabled(BACKUP_EXCEPTION_ADVICES);
 		currentConfiguration.getGenOpt().setAutomaticUpdateOn(BACKUP_AUTOCHECK_UPDATES);
+		currentConfiguration.getGenOpt().setLocale(BACKUP_LOCALE);
 		
 		// reset INItializer reference currentConfiguration too
 		System.setProperty("file.encoding", BACKUP_CHARSET);
@@ -680,6 +733,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_GENVOLUME = currentConfiguration.getGenOpt().getGeneralVolume();
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
+		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
 		
 		// write launcher configuration
 		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
@@ -689,6 +743,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	
 	private void writeValues() {
 		// write single values to file ini associated to currentConf
+		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "locale", currentConfiguration.getGenOpt().getLocale().toString());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "userName", currentConfiguration.getGenOpt().getUserName());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "charset", currentConfiguration.getGenOpt().getCharset());
 		currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "generalVolume", currentConfiguration.getGenOpt().getGeneralVolume());

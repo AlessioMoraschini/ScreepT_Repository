@@ -28,7 +28,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.ini4j.Wini;
 
@@ -37,6 +36,7 @@ import files.FileWorker;
 import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.ConfigurationManagerPanel;
+import gUI.utils.filedialog.INIfileChoosER;
 import gui.MenuSetter;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -49,13 +49,13 @@ import treeutils.om.FileTreeModel;
 public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBasic{
 	
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(TreeFileMouseListenerIni.class); 
+	public static Logger logger = Logger.getLogger(TreeFileMouseListenerIni.class); 
 	
 	// gui elements
 	private INItializer currentConfig;
 	private ConfigurationManagerPanel confManagerPanel;
 	
-	private JOptionHelperExtended dialogHelper;
+	public static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 
 	public TreeFileMouseListenerIni(Component parent) {
 		super(parent);
@@ -120,6 +120,13 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	    importItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    importItem.addActionListener(importFilesConfig());
 	    menu.add(importItem);
+
+	    JMenuItem importFromScreepTItem = new JMenuItem("Import configuration from other installation");
+	    importFromScreepTItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    importFromScreepTItem.addActionListener((e) -> {
+	    	INIfileChoosER.loadDefaultsFromOtherInstallation(true);
+	    });
+	    menu.add(importFromScreepTItem);
 	    
 	    JMenuItem exportItem = new JMenuItem("Export selected configurations");
 	    exportItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
@@ -152,6 +159,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	    sysExplorerItem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 	    addCurrentItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ADD));
 	    deleteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
+	    importFromScreepTItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT_FROM_SCREEPT));
 	    importItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_IMPORT));
 	    exportItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_CONF));
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
@@ -220,7 +228,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				importIniFileOrDir();
+				INIfileChoosER.importIniFileOrDir();
 				refreshTree();
 			}
 		};
@@ -263,28 +271,6 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 	@Override
 	public void refreshTree() {
 		tree.setModel(new FileTreeModel(new File(GeneralConfig.DEFAULT_INI_FOLDER)));
-	}
-	
-	private void importIniFileOrDir() {
-		File selectedImportDir = MainGuiGeneralAppStarter.fileDialogHelper.fileAndDirRead(confManagerPanel);
-		if (selectedImportDir!=null && selectedImportDir.isDirectory()) {
-			try {
-				FileWorker.copyDirectoryContents(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER), false, "ini");
-				dialogHelper.info("Directory :" + selectedImportDir.getName() + " added in the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER, "Directory added to config pool :)");
-				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
-			} catch (IOException e1) {
-				dialogHelper.error("Directory not imported in " + GeneralConfig.DEFAULT_INI_FOLDER,	". Some error occurred :(");
-				logger.error("Directory not imported, some error occurred :( ");
-			} 
-		}else if(selectedImportDir!=null && selectedImportDir.isFile() && selectedImportDir.getName().toLowerCase().endsWith(".ini")) {
-			try {
-				FileUtils.copyFileToDirectory(selectedImportDir, new File(GeneralConfig.DEFAULT_INI_FOLDER));
-				logger.debug("Directory :" + selectedImportDir.getName() + " added to the configurations -> " + GeneralConfig.DEFAULT_INI_FOLDER);
-			} catch (IOException e) {
-				logger.error("An error occurred during import :(");
-				dialogHelper.error("Ooooops... An Error occurred during Import!", "An Error Occurred");
-			}
-		}
 	}
 	
 	private void loadIni(File iniFile) {

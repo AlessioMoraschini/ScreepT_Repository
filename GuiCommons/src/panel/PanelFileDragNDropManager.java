@@ -50,7 +50,8 @@ public class PanelFileDragNDropManager extends JPanel{
     public Component targetDropComponent;
 
     private boolean dragOver = false;
-    private Point dragPoint;
+    @SuppressWarnings("unused")
+	private Point dragPoint;
 
     // constructor
     public PanelFileDragNDropManager(Runnable dropAction, Component targetDrop) {
@@ -178,7 +179,7 @@ public class PanelFileDragNDropManager extends JPanel{
                 dtde.acceptDrop(dtde.getDropAction());
                 try {
 
-                    List transferData = (List) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                    List<File> transferData = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                     if (transferData != null && transferData.size() > 0) {
                         importFiles(transferData);
                         dtde.dropComplete(true);

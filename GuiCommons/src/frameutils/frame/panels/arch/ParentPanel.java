@@ -21,7 +21,8 @@ import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
 
 public class ParentPanel extends JPanel implements IParentPanel{
-	
+	private static final long serialVersionUID = -5704690014209186123L;
+
 	// ParentPanel logger creation
 	public static Logger logger = Logger.getLogger(ParentPanel.class);
 	

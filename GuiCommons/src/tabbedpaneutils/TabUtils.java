@@ -32,6 +32,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import resources.IconsPathConfigurator;
+import tabbedpaneutils.TabHeadPanel_Full.CurrentTabHeader;
+
 public class TabUtils {
 	
 	public static final int TAB_ICON_ORDER = 0;
@@ -47,9 +50,9 @@ public class TabUtils {
 	 * @param iconPath
 	 * @return
 	 */
-	public static JPanel getCustomClosableTab(String title, String tooltip, String iconPath, ActionListener tabCloseListener) {
+	public static JPanel getCustomClosableTab(String title, String tooltip, String iconPath, ActionListener tabCloseListener, CurrentTabHeader tabHeaderRetriever) {
 
-		return new TabHeadPanel_Full(title, tooltip, iconPath, tabCloseListener);
+		return new TabHeadPanel_Full(title, tooltip, iconPath, tabCloseListener, tabHeaderRetriever);
 	}
 	
 	/**
@@ -104,14 +107,14 @@ public class TabUtils {
 			public void mousePressed(MouseEvent e) {
 			}
 			public void mouseExited(MouseEvent e) {
-				btnClose.setForeground(foreground);
-				btnClose.setBackground(background);
-				btnClose.setText("x");
+				btnClose.setIcon(IconsPathConfigurator.X_WHITE_IMG_RED);
+				btnClose.revalidate();
+				btnClose.repaint();
 			}
 			public void mouseEntered(MouseEvent e) {
-				btnClose.setForeground(Color.WHITE);
-				btnClose.setBackground(background.brighter());
-				btnClose.setText("X");
+				btnClose.setIcon(IconsPathConfigurator.X_GRAY_IMG_RED_LIGHT);
+				btnClose.revalidate();
+				btnClose.repaint();
 			}
 			public void mouseClicked(MouseEvent e) {
 			}
