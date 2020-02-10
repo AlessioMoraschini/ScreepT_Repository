@@ -902,9 +902,6 @@ public class GuiUtils {
 
 	public static String encapsulateInTag(String original, String tag) {
 		String trimmedTag = StringWorker.trimToEmpty(tag);
-		if(trimmedTag.equals("") || StringWorker.trimToEmpty(original).equals("")) {
-			return null;
-		}
 		
 		return "<"+trimmedTag+">" + original + "</"+trimmedTag+">";
 	}

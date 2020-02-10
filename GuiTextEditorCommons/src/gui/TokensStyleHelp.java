@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Insets;
 import java.lang.reflect.Field;
 
@@ -52,12 +51,11 @@ public class TokensStyleHelp {
 					try {
 						final int index = getTokenIndexByName(field.getName());
 						Style areaStyle = textArea.getSyntaxScheme().getStyle(index);
-						Font oldFont = textArea.getFont();
 						Insets oldMargin = textArea.getMargin();
 						
 						areaStyle.background = selector.elementOm.background;
 						areaStyle.foreground = selector.elementOm.foreground;
-						textArea.setFont(oldFont);
+						areaStyle.font = null;
 						textArea.setMargin(oldMargin);
 						textArea.revalidate();
 						textArea.repaint();
@@ -85,14 +83,12 @@ public class TokensStyleHelp {
 		selection.onColorChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
-				Font oldFont = textArea.getFont();
 				Insets oldMargin = textArea.getMargin();
 				
 				theme.selectionBG = selection.elementOm.background;
 				theme.selectionFG = selection.elementOm.foreground;
 				theme.apply(textArea);
 				textArea.setSyntaxScheme(scheme);
-				textArea.setFont(oldFont);
 				textArea.setMargin(oldMargin);
 				textArea.revalidate();
 				textArea.repaint();
@@ -108,14 +104,12 @@ public class TokensStyleHelp {
 		lineHighlight.onColorChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
-				Font oldFont = textArea.getFont();
 				Insets oldMargin = textArea.getMargin();
 				
 				theme.currentLineHighlight = lineHighlight.elementOm.background;
 				theme.apply(textArea);
 				textArea.setSyntaxScheme(scheme);
 				textArea.setCurrentLineHighlightColor(lineHighlight.elementOm.background);
-				textArea.setFont(oldFont);
 				textArea.setMargin(oldMargin);
 				textArea.revalidate();
 				textArea.repaint();
@@ -131,13 +125,11 @@ public class TokensStyleHelp {
 		backgroundMain.onColorChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
-				Font oldFont = textArea.getFont();
 				Insets oldMargin = textArea.getMargin();
 				
 				theme.bgColor = backgroundMain.elementOm.background;
 				theme.apply(textArea);
 				textArea.setSyntaxScheme(scheme);
-				textArea.setFont(oldFont);
 				textArea.setMargin(oldMargin);
 				textArea.revalidate();
 				textArea.repaint();
@@ -153,13 +145,11 @@ public class TokensStyleHelp {
 		caretColor.onColorChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
-				Font oldFont = textArea.getFont();
 				Insets oldMargin = textArea.getMargin();
 				
 				theme.caretColor = caretColor.elementOm.foreground;
 				theme.apply(textArea);
 				textArea.setSyntaxScheme(scheme);
-				textArea.setFont(oldFont);
 				textArea.setMargin(oldMargin);
 				textArea.revalidate();
 				textArea.repaint();
@@ -194,13 +184,11 @@ public class TokensStyleHelp {
 			tokenSelectors[i].onColorChange = () -> {
 				try {
 					SyntaxScheme scheme = textArea.getSyntaxScheme();
-					Font oldFont = textArea.getFont();
 					Insets oldMargin = textArea.getMargin();
 
 					textArea.setSyntaxScheme(scheme);
 					theme.secondaryLanguages[j] = tokenSelectors[j].elementOm.background;
 					textArea.setSecondaryLanguageBackground(j+1, tokenSelectors[j].elementOm.background);
-					textArea.setFont(oldFont);
 					textArea.setMargin(oldMargin);
 
 					textArea.revalidate();

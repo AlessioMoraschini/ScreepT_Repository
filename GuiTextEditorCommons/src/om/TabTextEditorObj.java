@@ -581,39 +581,38 @@ public class TabTextEditorObj {
 
 	public ActionListener getEncapsulateTagListener() {
 		return e -> {
-			if(textArea.getSelectedText() != null) {
-				boolean htmlLike = false;
-				if(textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_XML) || 
-				   textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_MXML) ||
-				   textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_HTML)) {
-					htmlLike = true;
-				}
-				int linePosition = textArea.getCaretLineNumber();
-				Vector<String> tags = currentConfig.getTextEditorOpt().lastTagsUsed.getList();
-				String tag = RsyntaxUtils.askForStringComboNullable(currentScrollPane, tags, "Specify the tag to use for sorrounding", "Specify tag");
-				
+			boolean htmlLike = false;
+			if(textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_XML) || 
+			   textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_MXML) ||
+			   textArea.getSyntaxEditingStyle().equals(SyntaxConstants.SYNTAX_STYLE_HTML)) {
+				htmlLike = true;
+			}
+			int linePosition = textArea.getCaretLineNumber();
+			Vector<String> tags = currentConfig.getTextEditorOpt().lastTagsUsed.getList();
+			String tag = RsyntaxUtils.askForStringComboNullable(currentScrollPane, tags, "Specify the tag to use for sorrounding", "Specify tag");
+			
 //				String tag = new JOptionHelper(currentScrollPane).askForStringNullable("Specify the tag to use for sorrounding", "Specify tag");
-				if(tag != null) {
-					tags.add(tag);
-					currentConfig.getTextEditorOpt().lastTagsUsed.setList(tags);
-					currentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastTagsUsed", currentConfig.getTextEditorOpt().lastTagsUsed.toCharSeparatedString(";"));
-					
-					tag = htmlLike ? GuiUtils.encapsulateInTag(textArea.getSelectedText(), tag) : tag+textArea.getSelectedText()+tag;
-					int selStart = textArea.getSelectionStart();
-					textArea.replaceSelection(tag);
-					resetPositionAndRevalidate(linePosition);
-					shortcutsManager.revalidateUnsaved();
-					
-					int selLength = tag.length();
-					
-					GuiUtils.launchThreadSafeSwing(()-> {
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e1) {}
-						textArea.setSelectionStart(selStart);
-						textArea.setSelectionEnd(selStart + selLength);
-					});
-				}
+			if(tag != null) {
+				tags.add(tag);
+				currentConfig.getTextEditorOpt().lastTagsUsed.setList(tags);
+				currentConfig.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "lastTagsUsed", currentConfig.getTextEditorOpt().lastTagsUsed.toCharSeparatedString(";"));
+				
+				String text = StringWorker.trimToEmpty(textArea.getSelectedText());
+				tag = htmlLike ? GuiUtils.encapsulateInTag(text, tag) : tag+text+tag;
+				int selStart = textArea.getSelectionStart();
+				textArea.replaceSelection(tag);
+				resetPositionAndRevalidate(linePosition);
+				shortcutsManager.revalidateUnsaved();
+				
+				int selLength = tag.length();
+				
+				GuiUtils.launchThreadSafeSwing(()-> {
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e1) {}
+					textArea.setSelectionStart(selStart);
+					textArea.setSelectionEnd(selStart + selLength);
+				});
 			}
 		};
 	}

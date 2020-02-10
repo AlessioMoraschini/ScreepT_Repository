@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import java.util.Arrays;
-
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -338,7 +336,6 @@ public class SchemeManagerGui extends JFrame {
 			
 			
 			testTextArea.setMargin(new Insets(8,8,8,8));
-			testTextArea.setFont(defaultTextFont);
 		});
 	}
 	

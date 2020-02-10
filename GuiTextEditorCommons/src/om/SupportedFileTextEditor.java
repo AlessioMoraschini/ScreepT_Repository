@@ -41,7 +41,7 @@ public enum SupportedFileTextEditor {
 									 GROOVY(".groovy","groovy", SyntaxConstants.SYNTAX_STYLE_GROOVY, null, null),
 									 HOSTS(".hosts", "hosts", SyntaxConstants.SYNTAX_STYLE_HOSTS, null, null),
 									 HTACCESS(".htaccess", "htaccess", SyntaxConstants.SYNTAX_STYLE_HTACCESS, null, null),
-									 HTML(".html","html", SyntaxConstants.SYNTAX_STYLE_XML, GeneralResourcesPaths.WORDLIST_HTML, IconsPathConfigurator.F_ICON_HTML),
+									 HTML(".html","html", SyntaxConstants.SYNTAX_STYLE_HTML, GeneralResourcesPaths.WORDLIST_HTML, IconsPathConfigurator.F_ICON_HTML),
 									 INI(".ini", "ini", SyntaxConstants.SYNTAX_STYLE_INI, null, null),
 									 JAVA(".java","java", SyntaxConstants.SYNTAX_STYLE_JAVA, GeneralResourcesPaths.WORDLIST_JAVA, null),
 									 JS(".js","js", SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT, GeneralResourcesPaths.WORDLIST_JS, IconsPathConfigurator.F_ICON_JS),
