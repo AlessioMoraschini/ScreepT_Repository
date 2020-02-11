@@ -340,13 +340,13 @@ public class SchemeManagerGui extends JFrame {
 	}
 	
 	public void saveCurrentThemeAs(boolean canOverwrite) {
-		File uniqueFileOut = FileVarious.renameJavaObjFile(getSelectedColorSchemeObj(false).schemeSource);
+		File uniqueFileOut = FileVarious.uniqueJavaObjFile(getSelectedColorSchemeObj(false).schemeSource);
 		String outName = dialogHelper.askForStringNullable("Specify theme file name", "Insert theme name", uniqueFileOut.getName());
 		
 		if (StringWorker.notEmpty(outName)) {
 			File outFile = new File(styleFilesFolder + File.separator + outName);
 			outFile = FileVarious.changeExtension(outFile, ".xml");
-			outFile = canOverwrite ? outFile : FileVarious.renameJavaObjFile(outFile);
+			outFile = canOverwrite ? outFile : FileVarious.uniqueJavaObjFile(outFile);
 			
 			saveCurrentTheme(true, outFile, styleFilesFolder);
 			
@@ -388,7 +388,7 @@ public class SchemeManagerGui extends JFrame {
 				outFile = FileVarious.changeExtension(outFile, ".xml");
 				
 				if(outFile.exists() && !dialogHelper.askOverwriteFile(outFile)) {
-					outFile = FileVarious.renameJavaObjFile(outFile);
+					outFile = FileVarious.uniqueJavaObjFile(outFile);
 				}
 				outStream = new FileOutputStream(outFile);
 				

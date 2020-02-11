@@ -309,13 +309,15 @@ public class TreeUtils {
 			}
 			nodes.add(new File(root.getCanonicalPath()));
 			// start selection from root node
+			int lastSelRow = 0;
 			while(nodes.getList().size() > 0){
 				File currentSelection = nodes.getLast();
-				nodePath = tree.getNextMatch(currentSelection.getName(), 0, Bias.Forward);
+				nodePath = tree.getNextMatch(currentSelection.getName(), lastSelRow, Bias.Forward);
 				tree.setExpandsSelectedPaths(true);
 				tree.setSelectionPath(nodePath);
 				tree.expandPath(nodePath);
 				nodes.removeLast();
+				lastSelRow = tree.getRowForPath(nodePath);
 			}
 			return nodePath;
 		} catch (Exception e) {

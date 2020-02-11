@@ -156,7 +156,7 @@ public class ImageWorkerScreepT {
         		}
     		} else {
                	try {
-               		destFile = FileVarious.renameJavaObjFile(destFile);
+               		destFile = FileVarious.uniqueJavaObjFile(destFile);
         			esit = ImageIO.write(img, "png", destFile);
         			if(esit) {
         				loGGer.info("Image written: "+destFile.getAbsolutePath());

@@ -33,6 +33,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -48,6 +49,7 @@ import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorFooterPanel;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gui.TextEditTooltips;
+import gui.selection.JOptionHelper;
 import guistyle.GUIStyelSettingsExtended;
 import maingUI.MainGUI;
 import maingUI.ToggleAction;
@@ -492,6 +494,81 @@ public class TextEditorUtils {
 		} catch (Exception e) {
 			logger.error("Error collapsing tree into textEditor", e);
 		}
+	}
+	
+	public boolean renameCurrentFile(String newName, boolean ensureValidExtension) throws IOException {
+		return renameFile(currentTextEditor.getCurrentTabEditor().loadedTabObj.loadedFile, newName, ensureValidExtension);
+	}
+	
+	public boolean renameFile(File toRename, String newName, boolean ensureValidExtension) throws IOException {
+		if(validateFile(toRename, false) && 
+				!StringWorker.trimToEmpty(newName).equals("") &&
+				!StringWorker.trimToEmpty(newName).equals(toRename.getName())) {
+			
+			logger.info("Renaming file: " + toRename);
+			
+			TabTextEditorObj tabObj = currentTextEditor.getCurrentTabEditor().getAlreadyLoaded(toRename);
+			if(tabObj != null && tabObj.unsaved) {
+				int choice = dialogHelper.yesNoOrCanc("File is not saved, do you want to save it?", "File changed");
+				if (choice == JOptionHelper.OK) {
+					currentTextEditor.subHeaderPanel.btnSaveTextFile.doClick();
+				} else if(choice == JOptionHelper.CANC) {
+					return false;
+				}
+			}
+			
+			newName = ensureValidExtension 
+					? FileVarious.ensureValidExtension(newName, null)
+					: newName;
+			File newFile = new File(toRename.getParentFile().getCanonicalPath() + File.separator + newName);
+					
+			if (newFile.exists()) {
+				logger.info("File already exists: " + toRename);
+				if(!dialogHelper.askOverwriteFile(newFile)) {
+					newFile = FileVarious.uniqueJavaObjFile(newFile);
+					logger.info("User don't want to overwrite: " + toRename);
+				} else {
+					FileUtils.deleteQuietly(newFile);
+					logger.info("User has chosen to overwrite: " + toRename);
+				}
+			}
+			
+			if(toRename.renameTo(newFile)) {
+				FileUtils.deleteQuietly(toRename);
+				if (tabObj != null) {
+					tabObj.loadedFile = newFile;
+					SwingUtilities.invokeLater(() -> {
+						currentTextEditor.getCurrentTabEditor().changeMonManager.removePendingFiredChanges(tabObj.loadedFile);
+					});
+				}
+				logger.info("File renamed to: " + newFile);
+			} else {
+				dialogHelper.warn("Cannot rename!");
+				return false;
+			}
+			
+			SwingUtilities.invokeLater(()->{
+				currentTextEditor.getCurrentTabEditor().tabRefreshAfterUpdate();
+				refreshTree(tabObj.loadedFile, true);
+			});
+			return true;
+		} else 
+			return false;
+	}
+	
+	
+	public boolean validateFile(File toValidate, boolean acceptDirectories) {
+		if (toValidate == null || !toValidate.exists()) {
+			String msg = "File does not exist";
+			dialogHelper.error(msg, msg);
+			return false;
+		} else if(!acceptDirectories && toValidate.isDirectory()) {
+			String msg = "Directories are not supported for this operation";
+			dialogHelper.error(msg, "directories not supported");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	private void refresh(File currentFile) {

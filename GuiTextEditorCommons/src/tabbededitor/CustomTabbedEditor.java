@@ -286,7 +286,7 @@ public class CustomTabbedEditor implements ITabsManager {
 				alreadyLoading = true;
 				
 				// FIRST CHECK IF ALREADY LOADED
-				boolean fileAlreadyPresent = checkFilePresence(fileToLoad) >= 0;
+				boolean fileAlreadyPresent = checkFilePresenceNSelect(fileToLoad) >= 0;
 				if (fileToLoad == null || !fileToLoad.exists() || fileAlreadyPresent) {
 					alreadyLoading = false;
 
@@ -923,7 +923,7 @@ public class CustomTabbedEditor implements ITabsManager {
 		}
 	}
 	
-	public int checkFilePresence(File match) {
+	public int checkFilePresenceNSelect(File match) {
 		for (TabTextEditorObj iterator : loadedList.getList()) {
 			if (iterator.loadedFile != null && iterator.loadedFile.equals(match)) {
 				mainTabList.setSelectedComponent(iterator.currentScrollPane);
@@ -931,6 +931,20 @@ public class CustomTabbedEditor implements ITabsManager {
 			}
 		}
 		return -1;
+	}
+	
+	public boolean isAlreadyLoaded(File match) {
+		return getAlreadyLoaded(match) != null;
+	}
+	
+	public TabTextEditorObj getAlreadyLoaded(File match) {
+		for (TabTextEditorObj iterator : loadedList.getList()) {
+			if (iterator.loadedFile != null && iterator.loadedFile.equals(match)) {
+				return iterator;
+			}
+		}
+		
+		return null;
 	}
 	
 	private void addToHystory(TabTextEditorObj loadedTabObj){

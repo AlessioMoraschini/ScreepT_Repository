@@ -577,7 +577,7 @@ public class JOptionHelper {
         		option, 
         		icon,
         		optionsAvailable,
-        		optionsAvailable[0]);
+        		allowNull ? optionsAvailable[optionsAvailable.length] : optionsAvailable[0]);
         
 		final JDialog dialog = optionPane.createDialog(title);
 		try {

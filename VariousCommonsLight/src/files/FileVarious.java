@@ -234,7 +234,7 @@ public class FileVarious {
 	 * @return the new variable representing non existing file, useful to call before create a new file
 	 * 	to ensure that it is a not existing one.
 	 */
-	public static File renameJavaObjFile(File file) {
+	public static File uniqueJavaObjFile(File file) {
 		String fileName=file.getPath();
 	
 		String extension = "";
@@ -455,6 +455,35 @@ public class FileVarious {
 		file= new File(noExt + newExtension);
 		logger.debug("NEW NAME: "+file.getAbsolutePath());
 		return file;
+	}
+	
+	/**
+	 * Get a renamed file in same directory, without creating real file but creating only a java object
+	 * @throws Exception 
+	 */
+	public static File getRenamed(File toRename, String newName, boolean unique) throws Exception {
+		File parent = toRename.getParentFile();
+		File renamed = new File(parent.getCanonicalPath() + File.separator + newName);
+		
+		return unique ? uniqueJavaObjFile(renamed) : renamed;
+	}
+	
+	public File replaceDirOccurrencesInPath(File toCheck, File dirToReplace, String newDirName) throws Exception {
+		
+		if (toCheck != null && dirToReplace != null && dirToReplace.isDirectory()) {
+			File parent = toCheck;
+			String endTemp = File.separator + toCheck.getName();
+			while ((parent = parent.getParentFile()) != null) {
+				if (parent.getAbsoluteFile().equals(dirToReplace.getAbsoluteFile())) {
+					String newDir = dirToReplace.getParentFile().getCanonicalPath() + File.separator + newDirName;
+					return new File(newDir + endTemp);
+				}
+
+				endTemp = parent.getName() + File.separator + endTemp;
+			} 
+		}
+		
+		return toCheck;
 	}
 
 	/**

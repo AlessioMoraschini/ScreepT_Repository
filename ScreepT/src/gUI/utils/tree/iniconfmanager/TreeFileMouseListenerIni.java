@@ -197,7 +197,7 @@ public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBa
 				
 				newName = FileVarious.ensureValidExtension(newName, "ini");
 				
-				File newFile = FileVarious.renameJavaObjFile(new File(defaultFolder.getAbsolutePath() + "/" + newName));
+				File newFile = FileVarious.uniqueJavaObjFile(new File(defaultFolder.getAbsolutePath() + "/" + newName));
 				
 				FileWorker.copyFile(currentIniFile, newFile, true);
 				

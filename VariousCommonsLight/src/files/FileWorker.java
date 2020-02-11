@@ -482,7 +482,7 @@ public class FileWorker {
 						if (newFile.exists() && !overwrite) {
 							// if file i exists and overwrite specified as false, then use the function to 
 							// correct the name until it's not unique, and then update path string
-							destinationPathString = destination.getPath() + "\\" + FileVarious.renameJavaObjFile(newFile).getName();
+							destinationPathString = destination.getPath() + "\\" + FileVarious.uniqueJavaObjFile(newFile).getName();
 						}
 						Path destinationPath = Paths.get(destinationPathString);
 						Files.copy(file.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -671,7 +671,7 @@ public class FileWorker {
 		if(!overwrite) {
 			logger.debug("File exists: "+targetNewFile.getAbsolutePath()+" -> starting rename");
 			// Create unique file name and write a copy into temp folder, using it as source
-			targetNewFile = FileVarious.renameJavaObjFile(targetNewFile);
+			targetNewFile = FileVarious.uniqueJavaObjFile(targetNewFile);
 			copyFile(source, new File(tempDir + targetNewFile.getName()), true);
 			source = new File(tempDir + targetNewFile.getName());
 			logger.debug("File renamed and -> " + targetNewFile.getAbsolutePath()+" -> copied into temp directory: " + tempDir);

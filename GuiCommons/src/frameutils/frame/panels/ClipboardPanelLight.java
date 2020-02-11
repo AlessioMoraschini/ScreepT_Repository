@@ -475,7 +475,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		File newFile = new File(GeneralConfig.CLIBPOARDS_PANEL_SRC_FOLDER + newName);
 				
 		if(newFile.exists()) {
-			newFile = FileVarious.renameJavaObjFile(newFile);
+			newFile = FileVarious.uniqueJavaObjFile(newFile);
 		}
 		
 		boolean result = newFile.createNewFile();

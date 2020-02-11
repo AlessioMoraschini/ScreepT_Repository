@@ -612,7 +612,7 @@ public class ImageConverterFrame extends ParentFrame {
 									progUpdater.getLabel().setText("I'm writing the image...");
 									
 									File selected = new File(KeyGenFrame.KEY_DICTIONARY + inputImgFile.getName());
-									selected = FileVarious.renameJavaObjFile(selected);
+									selected = FileVarious.uniqueJavaObjFile(selected);
 									selected = FileVarious.changeExtension(selected, ".png");
 									
 									if (selected!=null) {
@@ -685,7 +685,7 @@ public class ImageConverterFrame extends ParentFrame {
 								
 								try {
 									selected = FileVarious.changeExtension(selected, "."+(String)comboBoxFormats.getSelectedItem());
-									selected = FileVarious.renameJavaObjFile(selected);
+									selected = FileVarious.uniqueJavaObjFile(selected);
 									
 									progUpdater = new UpdateProgressPanel(false);
 									progUpdater.getPb().setValue(20);

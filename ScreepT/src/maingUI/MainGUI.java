@@ -722,7 +722,7 @@ public class MainGUI extends MainGuiParent{
 									+ "##################################################\n\n");
 
 							// give true to overwrite because fileWriteDialog already set the value to be unique
-							File tempFolder = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + "LOG_EXPORT_TEMP"));
+							File tempFolder = FileVarious.uniqueJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + "LOG_EXPORT_TEMP"));
 							tempFolder.mkdir();
 							File copiedMainLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_PATH), tempFolder, true, GeneralConfig.TEMP_DIRECTORY);
 							File copiedLauncherLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_LAUNCHER_PATH), tempFolder, false, GeneralConfig.TEMP_DIRECTORY);
@@ -1298,7 +1298,7 @@ public class MainGUI extends MainGuiParent{
             
         	File selectedFile = fileChooser.getSelectedFile();
         	selectedFile = FileVarious.changeExtension(selectedFile, ".zip");	
-        	selectedFile = FileVarious.renameJavaObjFile(selectedFile);
+        	selectedFile = FileVarious.uniqueJavaObjFile(selectedFile);
         	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	
         	if(selectedFile==null||!givenExtension.equalsIgnoreCase("zip")) {

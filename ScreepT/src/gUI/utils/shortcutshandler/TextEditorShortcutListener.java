@@ -476,7 +476,9 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	NEW TAB -> CTRL+N
 				 */
 				else if (e.getKeyCode() == 78 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentTabEditor.addTab(null);
+					if (!currentTextEditor.leftSplitTreeFiles.hasFocus()) {
+						currentTabEditor.addTab(null);
+					}
 				}
 				/*
 				 * 	CLOSE CURRENT TAB -> CTRL+W

@@ -241,7 +241,7 @@ public class RsyntaxUtils {
 
 		if (!wordlistFilePath.toLowerCase().endsWith(".md")) {
 			File rightExt = FileVarious.changeExtension(new File(wordlistFilePath), ".md");
-			File destRightEx = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
+			File destRightEx = FileVarious.uniqueJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + rightExt.getName()));
 			try {
 				FileUtils.copyFile(new File(wordlistFilePath), destRightEx);
 				wordlistFilePath = destRightEx.getAbsolutePath();
