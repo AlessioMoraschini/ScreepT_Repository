@@ -1,4 +1,4 @@
-package gui.selection.color;
+package gui.dialogs.color;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -69,6 +69,18 @@ public class ColorChooserGrid extends JDialog {
 		commonInit();
 		updateColorSelectionPreview(null);
 		
+		setVisible(true);
+	}
+	
+	protected ColorChooserGrid(Color selectedColor, String title) {
+		commonInit();
+
+		if(selectedColor != null) {
+			this.selectedColor = selectedColor;
+		}
+		updateColorSelectionPreview(null);
+		setTitle("Select Color - " + title);
+
 		setVisible(true);
 	}
 	

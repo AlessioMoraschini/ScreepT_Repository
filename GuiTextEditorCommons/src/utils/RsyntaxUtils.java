@@ -43,7 +43,7 @@ import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import files.CustomFileFilters;
 import files.FileVarious;
 import files.om.FileNamed;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import media.ImageWorkerExtended;
 import resources.GeneralConfig;
 import utility.string.StringWorker;

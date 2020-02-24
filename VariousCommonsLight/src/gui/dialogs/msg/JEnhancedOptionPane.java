@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package gui.selection;
+package gui.dialogs.msg;
 
 import java.awt.Component;
 import java.awt.HeadlessException;

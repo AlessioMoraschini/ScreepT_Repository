@@ -4,8 +4,8 @@ import java.awt.Color;
 
 import org.junit.Test;
 
-import gui.selection.color.ColorDialogHelper;
-import gui.selection.color.ColorChooserGrid.UserChoice;
+import gui.dialogs.color.ColorDialogHelper;
+import gui.dialogs.color.ColorChooserGrid.UserChoice;
 import utils.TestUtils;
 
 public class ColorChooserTest {

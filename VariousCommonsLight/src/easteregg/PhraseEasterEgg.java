@@ -3,7 +3,7 @@ package easteregg;
 import java.awt.Dimension;
 import java.util.UUID;
 
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import om.ShortcutFilter;
 import om.TextRetriever;
 

@@ -27,7 +27,7 @@ import files.FileWorker;
 import files.FileVarious;
 import files.ZipWorker;
 import gui.UpdateProgressPanel;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import main.MainStandAloneUpdater;
 import network.http.HttpHelper;
 import network.http.HttpHelper.HttpRequestMetod;

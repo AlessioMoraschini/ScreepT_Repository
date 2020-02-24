@@ -7,13 +7,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.ini4j.InvalidFileFormatException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainobj.INItializerParent;
+import utility.ConversionUtils;
 
 public class TestIni {
 
@@ -31,7 +30,7 @@ public class TestIni {
 		
 		byte[] randomBytes = new byte[20];
 		new Random().nextBytes(randomBytes);
-		randomString = DatatypeConverter.printHexBinary(randomBytes);
+		randomString = ConversionUtils.printHexBinary(randomBytes);
 		
 		assertTrue(INItializerParent.writeToFile(iniFilePath, TEST_SECTION, TEST_VAR, randomString));
 	}

@@ -15,7 +15,9 @@ import java.awt.Component;
 import java.awt.Dialog.ModalityType;
 import java.awt.HeadlessException;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.imageio.ImageIO;
@@ -335,6 +337,45 @@ public class GenericFileChooserDialog {
 		
 		return correctFile;
 	}
+
+	/**
+	 * JCOMPONENT - every extension and every typer of source
+	 * this method select a source file from the user,if nothing is selected returns null
+	 */
+	public List<File> fileAndDirReadMulti(JFrame parent) {
+		
+		blockEventsModal.set(true);
+		
+		List<File> results = new ArrayList<>();
+		
+		LookAndFeel oldLaf = backupLafNDefaultSystem(); 
+		
+		JFileChooser fileChooser = new CustomFileChooserOnTop();
+		updateFileFilters(fileChooser, fileFilter);
+		updateDefaultDir(defaultDirectory, fileChooser);
+
+		fileChooser.setDialogTitle("Select input File or Directory");
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		fileChooser.setFileView(fileView);
+		fileChooser.setMultiSelectionEnabled(true);
+		fileChooser.setCurrentDirectory(new File(currentConf.getFileOpt().getLastSrcFolderPath()));
+		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
+		
+		int returnVal = fileChooser.showOpenDialog(parent);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			
+			results = Arrays.asList(fileChooser.getSelectedFiles());
+			if(results == null) {
+				dialogHelper.error("Please select a file!", "File not selected");
+				results = new ArrayList<>();
+			}
+		}
+		
+		blockEventsModal.set(false);
+		resetLaf(oldLaf);
+		
+		return results;
+	}
 	
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported Image files),if nothing is selected returns null
@@ -603,11 +644,13 @@ public class GenericFileChooserDialog {
 	}
 	
 	private void resetLaf(LookAndFeel oldLaf) {
-		SwingUtilities.invokeLater(() -> {try {
-			UIManager.setLookAndFeel(oldLaf);
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}});
+		SwingUtilities.invokeLater(() -> {
+			try {
+				UIManager.setLookAndFeel(oldLaf);
+			} catch (UnsupportedLookAndFeelException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
 	/**

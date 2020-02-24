@@ -40,7 +40,7 @@ import generic.ParametricExceptionThread;
 import gui.GuiUtils;
 import gui.LightLicenseViewer;
 import gui.LightLicenseViewer.UserLicenseChoice;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import gui.utils.LauncherLoaderFrame;
 import handlers.AWTExceptionHandler;
 import launcherutils.IniFileManager;

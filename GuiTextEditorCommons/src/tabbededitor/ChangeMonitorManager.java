@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import files.FileVarious;
 import files.watcher.ChangeDTO;
 import files.watcher.FileChangeMonitor;
+import om.TabTextEditorObj;
 
 public class ChangeMonitorManager implements IChangeMonManager{
 	
@@ -68,24 +69,32 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		};
 	}
 	
+	public void removeAllPendingChanges() throws Exception {
+		for (int i = 0; i < mainEditorRef.loadedList.getSize(); i++) {
+			ChangeDTO change = mainEditorRef.loadedTabObj.fileMonitorManager.checkForFile(mainEditorRef.loadedList.getList().get(i).loadedFile);
+			logger.debug("Pending change removed from file change monitor: " + change);
+		}
+	}
+	
 	
 	/** useful when user watns to reset monitor just after he has made a change to a file
 	 */
 	public void removePendingFiredChanges(File target) {
 		ChangeDTO changes;
+		TabTextEditorObj objTOClear = mainEditorRef.getTabObjByFile(target);
 		try {
 			logger.debug("Cleaning changes from tabbedPane history");
-			changes = mainEditorRef.loadedTabObj.fileMonitorManager.checkForFile(mainEditorRef.loadedTabObj.loadedFile);
+			changes = objTOClear.fileMonitorManager.checkForFile(objTOClear.loadedFile);
 			// removes references of current file from change history
-			changes = cleanDtoFromFile(changes, mainEditorRef.loadedTabObj.loadedFile);
+			changes = FileChangeMonitor.cleanDtoFromFile(changes, objTOClear.loadedFile);
 			// now add all except them with all eventuals other changes different from given file
 			logger.debug("Resetting changes from others files monitored (except cleaned)...");
 			mainEditorRef.changesHistory.update(changes);
 			
-			logger.debug("Cleaned changes from tabbedPane history");
+			logger.debug("Cleaned changes from tabbedPane history for file: " + objTOClear.loadedFile);
 
 		} catch (Exception e) {
-			logger.warn("There were some problems when trying to remove pending fired changes from file change monitor");
+			logger.warn("There were some problems when trying to remove pending fired changes from file change monitor: " + objTOClear.loadedFile);
 		}
 	}
 	
@@ -96,7 +105,6 @@ public class ChangeMonitorManager implements IChangeMonManager{
 	 * @throws Exception 
 	 */
 	public void checkAndAdviceIfCurrentChanged(boolean forceCheck, boolean ask) throws Exception {
-		
 		
 		// only if forced check or if auto check is enabled
 		if((forceCheck || mainEditorRef.tabEditorManager.isEnabledAutoFileMonitor())) {
@@ -193,17 +201,6 @@ public class ChangeMonitorManager implements IChangeMonManager{
 		mainEditorRef.changesHistory.removedFiles.removeAll(Collections.singletonList(target));
 		mainEditorRef.changesHistory.changedFiles.removeAll(Collections.singletonList(target));
 		mainEditorRef.changesHistory.addedFiles.removeAll(Collections.singletonList(target));
-	}
-	
-	/**
-	 * CLEAN ChangeDTO parameter from given file occurrences
-	 */
-	public ChangeDTO cleanDtoFromFile(ChangeDTO changes, File target) {
-		changes.removedFiles.removeAll(Collections.singletonList(target));
-		changes.changedFiles.removeAll(Collections.singletonList(target));
-		changes.addedFiles.removeAll(Collections.singletonList(target));
-		
-		return changes;
 	}
 	
 	/**

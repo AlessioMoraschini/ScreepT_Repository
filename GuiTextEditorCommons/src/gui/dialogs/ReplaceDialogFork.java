@@ -1,4 +1,4 @@
-package om.dialogs;
+package gui.dialogs;
 
 /*
  * 11/14/2003

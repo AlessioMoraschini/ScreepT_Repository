@@ -17,8 +17,8 @@ import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import files.CustomFileFilters;
 import files.FileVarious;
-import gui.selection.color.ColorSelector;
-import gui.selection.color.om.ColorSelectionElement;
+import gui.dialogs.color.ColorSelector;
+import gui.dialogs.color.om.ColorSelectionElement;
 import utils.RsyntaxUtils;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
@@ -85,8 +85,6 @@ public class SchemeManagerGui extends JFrame {
 	private JButton btnExportTheme;
 	
 	public Runnable closeAction = () -> {};
-	
-	// TODO link to main application
 	
 	public SchemeManagerGui(File sourceFolder, File defaultUnmodificableThemes, Font currentFont) {
 		singletonInstance = this;

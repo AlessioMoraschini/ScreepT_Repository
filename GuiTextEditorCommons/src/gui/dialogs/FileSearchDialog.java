@@ -1,4 +1,4 @@
-package om.dialogs;
+package gui.dialogs;
 
 /*
  * 11/14/2003
@@ -25,6 +25,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -43,13 +46,16 @@ import org.fife.rsta.ui.AssistanceIconPanel;
 import org.fife.rsta.ui.RComboBoxModel;
 import org.fife.rsta.ui.ResizableFrameContentPane;
 import org.fife.rsta.ui.UIUtil;
-import org.fife.rsta.ui.search.AbstractFindReplaceDialog;
+import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
-import org.fife.ui.rtextarea.SearchEngine;
 
+import files.om.FileContentSearchDTO;
+import files.search.FileContentSearch;
+import files.search.FileSearchActions;
 import gui.GUIStyelSettings;
 import gui.GuiUtils;
+import gui.dialogs.msg.JOptionHelper;
 import resources.GeneralConfig;
 import utility.reflection.ReflectionUtils;
 
@@ -61,8 +67,6 @@ import utility.reflection.ReflectionUtils;
  *   <li>Match Case
  *   <li>Match Whole Word
  *   <li>Use Regular Expressions
- *   <li>Search Forwards or Backwards
- *   <li>Mark all
  * </ul>
  * The dialog also remembers your previous several selections in a combo box.
  * <p>An application can use a <code>FindDialog</code> as follows.  It is
@@ -75,14 +79,12 @@ import utility.reflection.ReflectionUtils;
  *       "Find" button.
  * </ul>
  * The application can then call i.e.
- * {@link SearchEngine#find(javax.swing.JTextArea, org.fife.ui.rtextarea.SearchContext) SearchEngine.find()}
- * to actually execute the search.
  *
  * @author Robert Futrell
  * @version 1.0
  * @see FindToolBar
  */
-public class FindDialogFork extends AbstractFindReplaceDialog {
+public class FileSearchDialog extends AbstractFileSearchDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -94,17 +96,29 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 	 * Our search listener, cached so we can grab its selected text easily.
 	 */
 	protected SearchListener searchListener;
+	public FileContentSearch fileSearchObj;
+	
+	public FileSearchActions searchActions;
+	
+	public List<File> selectedSearchFiles;
+	public JOptionHelper dialogHelper;
 
-
+	// TODO DEFINE SEARCH ACTION
+	// TODO LINK SEARCH ACTION
+	// TODO Results viewer
+	
 	/**
 	 * Creates a new <code>FindDialog</code>.
 	 *
 	 * @param owner The parent dialog.
 	 * @param listener The component that listens for {@link SearchEvent}s.
 	 */
-	public FindDialogFork(Dialog owner, SearchListener listener) {
+	public FileSearchDialog(Dialog owner, FileSearchActions searchActions) {
 		super(owner);
-		init(listener);
+		this.searchActions = searchActions;
+		init(getDefaultListener());
+		selectedSearchFiles = new ArrayList<>();
+		dialogHelper = new JOptionHelper(this);
 	}
 
 
@@ -113,15 +127,33 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 	 *
 	 * @param owner The main window that owns this dialog.
 	 * @param listener The component that listens for {@link SearchEvent}s.
+	 * @wbp.parser.constructor
 	 */
-	public FindDialogFork(Frame owner, SearchListener listener) {
+	public FileSearchDialog(Frame owner, FileSearchActions searchActions) {
 		super(owner);
-		init(listener);
+		this.searchActions = searchActions;
+		init(getDefaultListener());
 		if(findTextCombo.getModel() instanceof RComboBoxModel<?>) {
 			((RComboBoxModel<?>) findTextCombo.getModel()).setMaxNumElements(GeneralConfig.MAX_SEARCH_DIAL_LIST_SIZE);
 		}
+		selectedSearchFiles = new ArrayList<>();
+		dialogHelper = new JOptionHelper(this);
 	}
 
+	private SearchListener getDefaultListener() {
+		return new SearchListener() {
+			
+			@Override
+			public void searchEvent(SearchEvent e) {
+				
+			}
+			
+			@Override
+			public String getSelectedText() {
+				return null;
+			}
+		};
+	}
 
 	/**
 	 * Initializes find dialog-specific initialization stuff.
@@ -175,9 +207,10 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 
 		// Make a panel containing the action buttons.
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(2,1, 5,5));
-		buttonPanel.add(findNextButton);
+		buttonPanel.setLayout(new GridLayout(3,1, 5,5));
+		buttonPanel.add(searchButton);
 		buttonPanel.add(cancelButton);
+		buttonPanel.add(chooseFileBtn);
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new BorderLayout());
 		rightPanel.add(buttonPanel, BorderLayout.NORTH);
@@ -195,8 +228,8 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 		temp = new ResizableFrameContentPane(new BorderLayout());
 		temp.add(contentPane, BorderLayout.NORTH);
 		setContentPane(temp);
-		getRootPane().setDefaultButton(findNextButton);
-		setTitle(getString("FindDialogTitle"));
+		getRootPane().setDefaultButton(searchButton);
+		setTitle("File Search");
 		setResizable(true);
 		pack();
 		setLocationRelativeTo(getParent());
@@ -224,15 +257,52 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 			}
 		});
 		
-		GuiUtils.centerComponent(thisDialog, new Dimension(550, (int)thisDialog.getPreferredSize().getHeight()));
-	
+		chooseFileBtn.addActionListener((e) -> {
+			List<File> selection = fileDialogHelper.fileAndDirReadMulti(null);
+			selectedSearchFiles = selection != null 
+					? selection 
+					: selectedSearchFiles != null 
+						? selectedSearchFiles 
+						: new ArrayList<>();
+			
+			setSelectedFileLbl(selectedSearchFiles);
+		});
+		
+		searchButton.addActionListener((e) -> {
+			new Thread(()->{
+				setEnabled(false);
+				try {
+					fileSearchObj = new FileContentSearch(getSearchDTO(), selectedSearchFiles, searchActions);
+					fileSearchObj.startSearch(true);
+				} catch (Throwable e1) {
+					String errMsg = "An error occurred: " + e1.getMessage();
+					dialogHelper.error(errMsg, e1.getClass().getName());
+				}
+				setEnabled(true);
+			}).start();
+		});
+		
 		addComboListener();
+		
+		setAlwaysOnTop(true);
+
+		GuiUtils.centerComponent(thisDialog, new Dimension(650, (int)thisDialog.getPreferredSize().getHeight()));
+	}
+	
+	private FileContentSearchDTO getSearchDTO() {
+		FileContentSearchDTO searchDTO = new FileContentSearchDTO(
+				findTextCombo.getSelectedString(), 
+				caseCheckBox.isSelected(),
+				wholeWordCheckBox.isSelected(),
+				regexCheckBox.isSelected());
+		
+		return searchDTO;
 	}
 	
 	private void checkComboWithText() {
 		String selectedItem = findTextCombo.getSelectedString(); 
 		boolean nonEmpty = selectedItem!=null && selectedItem.length()>0;
-		findNextButton.setEnabled(nonEmpty);
+		searchButton.setEnabled(nonEmpty);
 	}
 	
 	private void addComboListener() {
@@ -410,7 +480,7 @@ public class FindDialogFork extends AbstractFindReplaceDialog {
 			if (e.getKeyCode()==KeyEvent.VK_ENTER && isPreJava6JRE()) {
 				String searchString = (String)findTextCombo.getSelectedItem();
 				if (!searchString.equals(lastSearchString)) {
-					findNextButton.doClick(0);
+					searchButton.doClick(0);
 					lastSearchString = searchString;
 					UIUtil.getTextComponent(findTextCombo).selectAll();
 				}

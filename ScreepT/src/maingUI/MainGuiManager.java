@@ -87,6 +87,7 @@ public class MainGuiManager {
 		// CHECK UNSAVED TEXT EDITOR FILES
 		if(!MainGuiUtils.askUnsavedTextFiles()) {
 			mainFrameScreept.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			mainFrameScreept.setAlwaysOnTop(false);
 			return;
 		}
 		

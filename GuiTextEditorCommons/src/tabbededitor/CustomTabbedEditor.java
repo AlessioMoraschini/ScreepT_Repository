@@ -181,19 +181,43 @@ public class CustomTabbedEditor implements ITabsManager {
 	
 	// TABBED PAIN - RELATED FUNCTIONS
 	
-	public boolean setIconToTab(String iconPath, int index) {
+	public TabTextEditorObj getTabObjByIndex(Integer index) {
+		TabTextEditorObj indexTabObj = 
+				(index == null || index < 0 || index >= loadedList.getSize()) 
+			? this.loadedTabObj 
+			: loadedList.getList().get(index);
+		
+		return indexTabObj;
+	}
+
+	public TabTextEditorObj getTabObjByFile(File match) {
+		TabTextEditorObj indexTabObj = this.loadedTabObj;
+		
+		for (int i = 0; i < loadedList.getSize(); i++) {
+			try {
+				if(match.getCanonicalFile().equals(loadedList.getList().get(i).loadedFile.getAbsoluteFile())) {
+					return loadedList.getList().get(i);
+				}
+			} catch (IOException e) {}
+		}
+		
+		return indexTabObj;
+	}
+	
+	public boolean setIconToTab(String iconPath, Integer index) {
 		try {
 			JLabel tabHeadIcon = (JLabel) (getPanelFromTabHeader(index)).getComponent(TabUtils.TAB_ICON_ORDER);
+			TabTextEditorObj indexTabObj = getTabObjByIndex(index);
 			
-			if (loadedTabObj.loadedFile == null 
-					|| loadedTabObj.unsaved 
+			if (indexTabObj.loadedFile == null 
+					|| indexTabObj.unsaved 
 					|| iconPath.equals(IconsPathConfigurator.ICON_DOC_UNSAVED)) {
 				
 				tabHeadIcon.setIcon(new ImageIcon(iconPath));
 			
 			} else {
 				MyFileView fileView = new MyFileView();
-				tabHeadIcon.setIcon(fileView.getIcon(loadedTabObj.loadedFile));
+				tabHeadIcon.setIcon(fileView.getIcon(indexTabObj.loadedFile));
 			}
 			
 			return true;
@@ -794,12 +818,18 @@ public class CustomTabbedEditor implements ITabsManager {
 	public boolean saveAllUnsavedExisting() throws IOException {
 		boolean done = true;
 		for (TabTextEditorObj element : loadedList.getList()) {
-			if (element.loadedFile != null && element.loadedFile.exists()) {
-				if (!FileWorker.writeStringToFile(loadedTabObj.textArea.getText(), loadedTabObj.loadedFile, true)) {
+			if (element.unsaved && element.loadedFile != null && element.loadedFile.exists()) {
+				if (!FileWorker.writeStringToFile(element.textArea.getText(), element.loadedFile, true)) {
 					done = false;
+				} else {
+					element.unsaved = false;
+					SwingUtilities.invokeLater(() -> {
+						changeMonManager.removePendingFiredChanges(element.loadedFile);
+					});
 				}
 			}
 		}
+		updateAllTabHeaders();
 		return done;
 	}
 	
@@ -839,6 +869,15 @@ public class CustomTabbedEditor implements ITabsManager {
 		}
 	}
 	
+	public void updateAllTabHeaders() {
+		for(int i = 0; i < loadedList.getSize(); i++) {
+			final int j = i;
+			SwingUtilities.invokeLater(() -> {
+				updateSavedLabelNTab(j);
+			});
+		}
+	}
+	
 	/**
 	 * This method updates icons and text on current tab header, given an index. This is based on label unsaved, and stored icons in general config
 	 * specify NULL sourceIndex to use current selected tab, or a custom value > 0
@@ -847,18 +886,18 @@ public class CustomTabbedEditor implements ITabsManager {
 	public void updateSavedLabelNTab(Integer sourceIndex) {
 		int indexChange = (sourceIndex == null) ? mainTabList.getSelectedIndex() : sourceIndex;
 		newFileStringTarget = tabEditorManager.getNewFileStringTarget();
-		TabTextEditorObj loadedTabObj = (sourceIndex == null) ? this.loadedTabObj : loadedList.getList().get(sourceIndex);
+		TabTextEditorObj indexTabObj = getTabObjByIndex(sourceIndex);
 		
 		try {
 			// reference to tabHeader title
 			JLabel tabHeadLbl = (JLabel) (getPanelFromTabHeader(indexChange)).getComponent(TabUtils.TAB_TITLE_ORDER);
 			// IF ALREADY SAVED
-			if (indexChange >= 0 && !loadedTabObj.unsaved) {
+			if (indexChange >= 0 && !indexTabObj.unsaved) {
 				// IF FILE IS DEFINED
-				if (loadedTabObj.loadedFile != null) {
-					newFileStringTarget.setText(loadedTabObj.loadedFile.getName());
-					newFileStringTarget.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
-					tabHeadLbl.setText(StringWorker.fitToMaxLentgh(loadedTabObj.loadedFile.getName(), TabUtils.MAX_TAB_LABELENGHT));
+				if (indexTabObj.loadedFile != null) {
+					newFileStringTarget.setText(indexTabObj.loadedFile.getName());
+					newFileStringTarget.setToolTipText(indexTabObj.loadedFile.getCanonicalPath());
+					tabHeadLbl.setText(StringWorker.fitToMaxLentgh(indexTabObj.loadedFile.getName(), TabUtils.MAX_TAB_LABELENGHT));
 				} else {
 					// IF FILE IS NOT DEFINED
 					if (tabHeadLbl.getText().startsWith("(*)")) {
@@ -876,19 +915,19 @@ public class CustomTabbedEditor implements ITabsManager {
 				}
 				// UPDATE ICON
 				if (tabHeadLbl.getText().equals(CustomTabbedEditor.DEFAULT_NEW_FILE_NAME)
-						&& ("".equals(loadedTabObj.textArea.getText()) || alreadyLoading)) {
+						&& ("".equals(indexTabObj.textArea.getText()) || alreadyLoading)) {
 					setIconToTab(IconsPathConfigurator.ICON_DOC_EMPTY, indexChange);
 				} else {
 					setIconToTab(IconsPathConfigurator.ICON_DOC_SAVED, indexChange);
 				}
 				// ELSE IF NOT YET SAVED
-			} else if (indexChange >= 0 && loadedTabObj.unsaved) {
+			} else if (indexChange >= 0 && indexTabObj.unsaved) {
 				// IF FILE IS DEFINED
-				if (loadedTabObj.loadedFile != null) {
-					tabHeadLbl.setText(StringWorker.fitToMaxLentgh("(*)" + loadedTabObj.loadedFile.getName(),
+				if (indexTabObj.loadedFile != null) {
+					tabHeadLbl.setText(StringWorker.fitToMaxLentgh("(*)" + indexTabObj.loadedFile.getName(),
 							TabUtils.MAX_TAB_LABELENGHT));
-					newFileStringTarget.setText("(*)" + loadedTabObj.loadedFile.getName());
-					newFileStringTarget.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
+					newFileStringTarget.setText("(*)" + indexTabObj.loadedFile.getName());
+					newFileStringTarget.setToolTipText(indexTabObj.loadedFile.getCanonicalPath());
 				} else {
 					// IF FILE IS NOT DEFINED
 					newFileStringTarget.setText(tabHeadLbl.getText());

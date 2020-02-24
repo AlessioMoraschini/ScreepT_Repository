@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import files.FileSearchAdvanced;
+import files.search.FileSearchAdvanced;
 import om.JVMInfo;
 import om.OSinfo;
 import utility.SafeLogger;
@@ -316,12 +316,17 @@ public class SysUtils {
 	}
 	
 	public static boolean openUrlWithSpecificBrowser(String URL, Browser targetBrowser) throws IOException, InterruptedException {
-		Runtime runtime = Runtime.getRuntime();
-		String shell = getShellOsBased();
-		String argument1 = OS_INFO_LAZY.isWindows()? " /c " : OS_INFO_LAZY.isMac()? " -c " : " -c ";
-		
-		Process process = runtime.exec(shell + argument1 + targetBrowser.getOsLaunchSwName() + "\"" + URL + "\"" );
-		return process != null && process.waitFor() == 0;
+		try {
+			Runtime runtime = Runtime.getRuntime();
+			String shell = OS_INFO_LAZY.isWindows() ? getShellOsBased() : "";
+			String argument1 = OS_INFO_LAZY.isWindows()? " /c " : OS_INFO_LAZY.isMac()? " " : " ";
+			String prePost = OS_INFO_LAZY.isWindows() ? "\"" : "";
+			runtime.exec(shell + argument1 + targetBrowser.getOsLaunchSwName() + prePost + URL + prePost);
+			return true;
+			
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public static void openUrlInBrowserOrdered(String URL) {

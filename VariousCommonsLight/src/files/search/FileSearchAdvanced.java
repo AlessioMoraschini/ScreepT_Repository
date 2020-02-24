@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package files;
+package files.search;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;

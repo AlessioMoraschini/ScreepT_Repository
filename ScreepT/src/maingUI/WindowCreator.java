@@ -39,7 +39,7 @@ import gui.LightLicenseViewer;
 import gui.SchemeManagerGui;
 import gui.UpdateProgressPanel;
 import gui.LightLicenseViewer.UserLicenseChoice;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import resources.GeneralConfig;

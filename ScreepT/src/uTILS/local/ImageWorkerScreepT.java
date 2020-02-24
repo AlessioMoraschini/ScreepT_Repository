@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import files.FileVarious;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.subpanels.ImageGenContainerPanel;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 
 public class ImageWorkerScreepT {
 

@@ -775,10 +775,13 @@ public class MainGuiUtils {
 				"Files unsaved in textEditor", 
 				"There are some unsaved files in text Editor, do you want to save them?",
 				MainGUI.mainAPP.getMainFrame(),
-				askCondition);
+				askCondition
+		);
+		
 		if(choiceY == null) {
 			// cancel -> don't exit
 			return false;
+		
 		}else if(choiceY) {
 			try {
 				currentTabEditor.saveAllUnsavedExisting();
@@ -795,6 +798,7 @@ public class MainGuiUtils {
 				for(TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
 					if(tabElement.unsaved && tabElement.loadedFile == null) {
 						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
+						MainGUI.textEditorPanel.subHeaderPanel.btnSaveTextFile.requestFocus();
 						return false; // don't exit
 					}
 				}

@@ -19,7 +19,7 @@ import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ClipboardPanelLight;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
-import gui.selection.JOptionHelper.Choice;
+import gui.dialogs.msg.JOptionHelper.Choice;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.ConversionUtils;
@@ -49,7 +49,6 @@ import javax.swing.JPasswordField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -283,7 +282,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 						} else {
 							expanded = SafeHasher.byteArrayToChar(SafeHasher.fillArrayFromOtherArray(SafeHasher.charArrayToByte(source.value), (int) spinnerLength.getValue()));
 						}
-						final String raw = DatatypeConverter.printHexBinary(SafeHasher.hashPswWithGivenSalt(expanded, fixedSalt, IterationsLevel.HIGH, HashAlgorithm.PBKDF2SHA512));
+						final String raw = ConversionUtils.printHexBinary(SafeHasher.hashPswWithGivenSalt(expanded, fixedSalt, IterationsLevel.HIGH, HashAlgorithm.PBKDF2SHA512));
 						final String converted = source.option == 0 ? 
 								StringWorkerExtended.forceLength(raw, (int)spinnerLength.getValue(), getPossibleCharacters()) :
 									StringWorker.forceLengthDeterministic(raw, (int)spinnerLength.getValue(), "O");

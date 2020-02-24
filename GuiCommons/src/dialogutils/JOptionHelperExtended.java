@@ -18,7 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 

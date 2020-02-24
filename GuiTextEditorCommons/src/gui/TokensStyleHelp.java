@@ -10,8 +10,9 @@ import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.TokenTypes;
 
-import gui.selection.color.ColorSelector;
-import gui.selection.color.om.ColorSelectionElement;
+import gui.dialogs.color.ColorSelector;
+import gui.dialogs.color.om.ColorSelectionElement;
+import gui.dialogs.font.om.FontType;
 import utility.SafeLogger;
 
 public class TokensStyleHelp {
@@ -45,9 +46,13 @@ public class TokensStyleHelp {
 			if (i < schemeTokensNumber) {
 				Style style = scheme.getStyle(i - otherSchemesProperties - secondaryLanguages);
 				
-				ColorSelector selector = new ColorSelector(new ColorSelectionElement(
-						style.foreground, style.background, field.getName()), () -> {});
-				selector.onColorChange = () -> {
+				ColorSelector selector = new ColorSelector(
+						new ColorSelectionElement( style.foreground, style.background, field.getName()),
+						style != null ? FontType.fromFont(style.font) : FontType.Plain,
+						() -> {}
+				);
+				
+				selector.onValueChange = () -> {
 					try {
 						final int index = getTokenIndexByName(field.getName());
 						Style areaStyle = textArea.getSyntaxScheme().getStyle(index);
@@ -55,7 +60,8 @@ public class TokensStyleHelp {
 						
 						areaStyle.background = selector.elementOm.background;
 						areaStyle.foreground = selector.elementOm.foreground;
-						areaStyle.font = null;
+						areaStyle.font = areaStyle.font.deriveFont(selector.fontType.type);
+						
 						textArea.setMargin(oldMargin);
 						textArea.revalidate();
 						textArea.repaint();
@@ -78,9 +84,13 @@ public class TokensStyleHelp {
 		ColorSelector[] tokenSelectors = new ColorSelector[otherSchemesProperties];
 		
 		// Selection style
-		ColorSelector selection = new ColorSelector(new ColorSelectionElement(
-				theme.selectionFG, theme.selectionBG, "SELECTION"), () -> {});
-		selection.onColorChange = () -> {
+		ColorSelector selection = new ColorSelector(
+				new ColorSelectionElement(theme.selectionFG, theme.selectionBG, "SELECTION"), 
+				FontType.Plain,
+				() -> {});
+
+		selection.removeFont();
+		selection.onValueChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
 				Insets oldMargin = textArea.getMargin();
@@ -98,10 +108,14 @@ public class TokensStyleHelp {
 		};
 		
 		// line Highlight
-		ColorSelector lineHighlight = new ColorSelector(new ColorSelectionElement(
-				null, theme.currentLineHighlight, "Line highlight Background"), () -> {});
+		ColorSelector lineHighlight = new ColorSelector(
+				new ColorSelectionElement(null, theme.currentLineHighlight, "Line highlight Background"),
+				FontType.Plain,
+				() -> {});
+		
 		lineHighlight.removeForeground();
-		lineHighlight.onColorChange = () -> {
+		lineHighlight.removeFont();
+		lineHighlight.onValueChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
 				Insets oldMargin = textArea.getMargin();
@@ -119,10 +133,15 @@ public class TokensStyleHelp {
 		};
 
 		// Background main Color
-		ColorSelector backgroundMain = new ColorSelector(new ColorSelectionElement(
-				null, theme.bgColor, "Main background"), () -> {});
+		ColorSelector backgroundMain = new ColorSelector(
+				new ColorSelectionElement(null, theme.bgColor, "Main background"),
+				FontType.Plain,
+				() -> {}
+		);
+		
 		backgroundMain.removeForeground();
-		backgroundMain.onColorChange = () -> {
+		backgroundMain.removeFont();
+		backgroundMain.onValueChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
 				Insets oldMargin = textArea.getMargin();
@@ -139,10 +158,15 @@ public class TokensStyleHelp {
 		};
 
 		// Caret Color
-		ColorSelector caretColor = new ColorSelector(new ColorSelectionElement(
-				theme.caretColor, null, "Caret Color"), () -> {});
+		ColorSelector caretColor = new ColorSelector(
+				new ColorSelectionElement(theme.caretColor, null, "Caret Color"),
+				FontType.Plain,
+				() -> {}
+		);
+		
+		caretColor.removeFont();
 		caretColor.removeBackground();
-		caretColor.onColorChange = () -> {
+		caretColor.onValueChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
 				Insets oldMargin = textArea.getMargin();
@@ -179,9 +203,14 @@ public class TokensStyleHelp {
 		for (int i = 0; i < tokenSelectors.length; i++) {
 			// Selection style
 			Color secondaryColor = i < languagesDefinedCount ? theme.secondaryLanguages[i] : null;
-			tokenSelectors[i] = new ColorSelector(new ColorSelectionElement(null, secondaryColor, "SECONDARY_LANGUAGE_#" + i),() -> {});
+			tokenSelectors[i] = new ColorSelector(
+					new ColorSelectionElement(null, secondaryColor, "SECONDARY_LANGUAGE_#" + i),
+					FontType.Plain,
+					() -> {}
+			);
+			
 			final int j = i;
-			tokenSelectors[i].onColorChange = () -> {
+			tokenSelectors[i].onValueChange = () -> {
 				try {
 					SyntaxScheme scheme = textArea.getSyntaxScheme();
 					Insets oldMargin = textArea.getMargin();
@@ -197,6 +226,7 @@ public class TokensStyleHelp {
 					logger.warn("", e);
 				}
 			};
+			tokenSelectors[i].removeFont();
 			tokenSelectors[i].removeForeground();
 			tokenSelectors[i].setBackground(defaultElementsBackground);
 		}

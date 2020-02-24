@@ -73,7 +73,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 import files.om.FileNamed;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import utility.ImageWorker;
 import utility.SafeLogger;
 import utility.string.StringWorker;
@@ -508,7 +508,14 @@ public class GuiUtils {
 	}
 	
 	public static Dimension getScreenSize() {
-		return Toolkit.getDefaultToolkit().getScreenSize();
+		try {
+			return Toolkit.getDefaultToolkit().getScreenSize();
+		} catch (Throwable e) {
+			GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+			int width = gd.getDisplayMode().getWidth();
+			int height = gd.getDisplayMode().getHeight();
+			return new Dimension(width, height);
+		}
 	}
 	
 	public static void maximizeFrameSize(JFrame targetFrame) {

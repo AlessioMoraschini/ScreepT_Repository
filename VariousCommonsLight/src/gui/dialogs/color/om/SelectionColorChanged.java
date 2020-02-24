@@ -1,4 +1,4 @@
-package gui.selection.color.om;
+package gui.dialogs.color.om;
 
 public interface SelectionColorChanged {
 	public ColorChanged backgroundChanged();

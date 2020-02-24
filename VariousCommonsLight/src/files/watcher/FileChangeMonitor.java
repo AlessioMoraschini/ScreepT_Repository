@@ -21,6 +21,7 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -158,6 +159,17 @@ public class FileChangeMonitor {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * CLEAN ChangeDTO parameter from given file occurrences
+	 */
+	public static ChangeDTO cleanDtoFromFile(ChangeDTO changes, File target) {
+		changes.removedFiles.removeAll(Collections.singletonList(target));
+		changes.changedFiles.removeAll(Collections.singletonList(target));
+		changes.addedFiles.removeAll(Collections.singletonList(target));
+		
+		return changes;
 	}
 	
 	/**
