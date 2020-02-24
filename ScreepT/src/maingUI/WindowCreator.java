@@ -13,6 +13,7 @@ package maingUI;
 
 import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -35,12 +36,14 @@ import gUI.frames.KeyGenFrame;
 import gUI.frames.TutorialFrame;
 import gui.GuiUtils;
 import gui.LightLicenseViewer;
+import gui.SchemeManagerGui;
 import gui.UpdateProgressPanel;
 import gui.LightLicenseViewer.UserLicenseChoice;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import resources.GeneralConfig;
+import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import utils.SysUtils;
@@ -54,9 +57,36 @@ public class WindowCreator {
 		this.mainApplication = mainApplication;
 	}
 	
+	public SchemeManagerGui newSchemeManager() {
+		SchemeManagerGui schemeManager = SchemeManagerGui.getInstance(
+				new File(
+					GeneralConfig.THEMES_FOLDER_CUSTOM), 
+					new File(GeneralConfig.THEMES_FOLDER_DEFAULT), 
+					MainGUI.currentConfiguration.getTextEditorOpt().font);
+		
+		schemeManager.updateIcons(
+				new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE),
+				new ImageIcon(IconsPathConfigurator.ICON_RELOAD2), 
+				new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE), 
+				new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE_AS)
+		);
+		
+		schemeManager.closeAction = () -> {
+			if(MainGUI.mainGuiUtils.isTextEditorActive()) {
+				MainGUI.textEditorPanel.subHeaderPanel.initComboStyleScheme();
+				MainGUI.textEditorPanel.textEditorUtils.applySelectedTheme();
+			}
+		};
+		
+		schemeManager.setAlwaysOnTop(true);
+		schemeManager.setLocationRelativeTo(mainApplication.getMainFrame());
+		
+		return schemeManager;
+	}
+	
 	public HashCheckerFrame newHashChecker() {
 		
-		File targetFile = (MainGUI.initTxtWriter != null) ? MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile : null;
+		File targetFile = (MainGUI.textEditorPanel != null) ? MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.loadedFile : null;
 		HashCheckerFrame hashCheckerFrame = HashCheckerFrame.getInstance(
 				targetFile, mainApplication.getMainFrame(), MainGUI.currentConfiguration.getTextEditorOpt());
 	
@@ -99,7 +129,7 @@ public class WindowCreator {
 	public ImportExportWorkspcCryptFrame newImportExportCryptWorkspace() {
 		
 		ImportExportWorkspcCryptFrame panelImportExportTxtEditor = ImportExportWorkspcCryptFrame.getInstance(
-				MainGUI.currentConfiguration.getTextEditorOpt(), MainGUI.initTxtWriter);
+				MainGUI.currentConfiguration.getTextEditorOpt(), MainGUI.textEditorPanel);
 		
 		commonGraphicInit(panelImportExportTxtEditor, "Import/Export crypted Workspace - ", true);
 

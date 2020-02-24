@@ -253,7 +253,7 @@ public class TextEditor extends ModulePanel {
 		leftSplitTreeFiles.setComponentPopupMenu(mouseListenerTreeFilePanel.getPopUpMenu());
 		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getMouseListener());
 		leftSplitTreeFiles.addMouseListener(mouseListenerTreeFilePanel.getDoubleCLickListener());
-		leftSplitTreeFiles.addKeyListener(mouseListenerTreeFilePanel.getKeyListener());
+		leftSplitTreeFiles.addKeyListener(mouseListenerTreeFilePanel);
 		leftSplitTreeFiles.addMouseMotionListener(mouseListenerTreeFilePanel.getHoverOnNodesListener());
 		leftSplitTreeFiles.setRowHeight(GeneralConfig.DEFAULT_TREE_ROW_HEIGHT);
 		ToolTipManager.sharedInstance().registerComponent(leftSplitTreeFiles);
@@ -810,8 +810,8 @@ public class TextEditor extends ModulePanel {
 				}
 				
 				try {
-					TreeUtils.selectFileInNamedFileTree(MainGUI.initTxtWriter.getCurrentTabEditor().loadedTabObj.loadedFile,
-							MainGUI.initTxtWriter.leftSplitTreeFiles, true);
+					TreeUtils.selectFileInNamedFileTree(MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.loadedFile,
+							MainGUI.textEditorPanel.leftSplitTreeFiles, true);
 				} catch (Exception e) {
 					logger.warn("!!! Error trying to sync current file at start into JTree");
 				} 

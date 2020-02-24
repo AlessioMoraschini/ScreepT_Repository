@@ -217,7 +217,7 @@ public class MainGuiUtils {
 					fullScreenToggleMenuBar();
 				
 				}else if(isTextEditorActive()) {
-					MainGUI.initTxtWriter.textEditorUtils.toggleImmersiveMode();
+					MainGUI.textEditorPanel.textEditorUtils.toggleImmersiveMode();
 				
 				}else if(isCrypterActive()) {
 					mainAppReference.mntmFullScreenMode.doClick();
@@ -313,7 +313,7 @@ public class MainGuiUtils {
 				public void run() {
 					if (toLoad != null && toLoad.exists() && SupportedFileTextEditor.isSupported(toLoad)) {
 						try {
-							MainGUI.initTxtWriter.getCurrentTabEditor().loadFile(toLoad);
+							MainGUI.textEditorPanel.getCurrentTabEditor().loadFile(toLoad);
 						} catch (Exception e) {
 							logger.error("Cannot load file into text Editor: " + toLoad, e);
 						}
@@ -338,8 +338,8 @@ public class MainGuiUtils {
 		String targetStr = (target != null)? target.getName() : "All Panels";
 		logger.info(" Starting reset -> " +targetStr);
 		
-		txtEditor = (instance.getContentPane().getComponent(0).equals(MainGUI.initTxtWriter))? true : false;
-		crypter = (instance.getContentPane().getComponent(0).equals(MainGUI.panelCrypter))? true : false;
+		txtEditor = (instance.getContentPane().getComponent(0).equals(MainGUI.textEditorPanel))? true : false;
+		crypter = (instance.getContentPane().getComponent(0).equals(MainGUI.crypterPanel))? true : false;
 		configuration = (instance.getContentPane().getComponent(0).equals(MainGUI.configManagerPanel))? true : false;
 		home = (!txtEditor && !crypter && !configuration)? true : false;
 		
@@ -442,24 +442,24 @@ public class MainGuiUtils {
 				
 				// reset all listeners
 				if (forceStart) {
-					removeAllListeners(MainGUI.panelCrypter);
+					removeAllListeners(MainGUI.crypterPanel);
 				}
 				
 				// reset shortcut listener
-				if (forceStart && MainGUI.panelCrypter != null && MainGUI.panelCrypter.shortcutsListener != null) {
-					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.panelCrypter.shortcutsListener);
-					removeAllListeners(MainGUI.panelCrypter);
+				if (forceStart && MainGUI.crypterPanel != null && MainGUI.crypterPanel.shortcutsListener != null) {
+					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.crypterPanel.shortcutsListener);
+					removeAllListeners(MainGUI.crypterPanel);
 				}
 				
-				if (MainGUI.panelCrypter == null || forceStart) {
+				if (MainGUI.crypterPanel == null || forceStart) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					MainGUI.panelCrypter = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
+					MainGUI.crypterPanel = new CrypterPanel(MainGUI.currentConfiguration, mainAppReference);
 				}
 				
-				replaceMainPanel(MainGUI.panelCrypter);
+				replaceMainPanel(MainGUI.crypterPanel);
 				MainGUI.currentConfiguration.getGenOpt().setLastPanelOpened(CrypterPanel.class);
 				MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastPanelOpened", CrypterPanel.class.getCanonicalName());
-				MainGUI.panelCrypter.initGuiFromConfig();
+				MainGUI.crypterPanel.initGuiFromConfig();
 				
 				resetMainAppCursor();
 			}
@@ -475,18 +475,18 @@ public class MainGuiUtils {
 				mainAppReference.getMainFrame().setCursor(GuiUtilsExtended.CURSOR_WAIT);
 
 				// reset shortcut listener
-				if (forceRestart && MainGUI.initTxtWriter != null && MainGUI.initTxtWriter.shortcutsListener != null) {
-					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.initTxtWriter.shortcutsListener);
-					removeAllListeners(MainGUI.initTxtWriter);
+				if (forceRestart && MainGUI.textEditorPanel != null && MainGUI.textEditorPanel.shortcutsListener != null) {
+					KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(MainGUI.textEditorPanel.shortcutsListener);
+					removeAllListeners(MainGUI.textEditorPanel);
 				}
-				if (MainGUI.initTxtWriter == null || forceRestart) {
+				if (MainGUI.textEditorPanel == null || forceRestart) {
 					SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
-					MainGUI.initTxtWriter = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
+					MainGUI.textEditorPanel = new TextEditor(mainAppReference, MainGUI.currentConfiguration);
 				}
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						replaceMainPanel(MainGUI.initTxtWriter);
-						MainGUI.initTxtWriter.initGuiFromConfig(true, true);
+						replaceMainPanel(MainGUI.textEditorPanel);
+						MainGUI.textEditorPanel.initGuiFromConfig(true, true);
 					}
 				});
 				
@@ -697,11 +697,11 @@ public class MainGuiUtils {
 	}
 	
 	public boolean isAllSavedInTextEditor() {
-		if (MainGUI.initTxtWriter == null || MainGUI.initTxtWriter.getCurrentTabEditor() == null) {
+		if (MainGUI.textEditorPanel == null || MainGUI.textEditorPanel.getCurrentTabEditor() == null) {
 			return true;
 		}
 		
-		CustomTabbedEditor currentTabEditor = MainGUI.initTxtWriter.getCurrentTabEditor();
+		CustomTabbedEditor currentTabEditor = MainGUI.textEditorPanel.getCurrentTabEditor();
 
 		boolean thereAreUnsaved;
 		boolean atLeastOneTemp;
@@ -729,12 +729,12 @@ public class MainGuiUtils {
 			MainGUI.configManagerPanel = null;
 		}
 		
-		if(MainGUI.panelCrypter != null && !isCrypterActive() && MainGUI.panelCrypter.panelVDragNDropPane.getAllNodes().length == 0) {
-			MainGUI.panelCrypter = null;
+		if(MainGUI.crypterPanel != null && !isCrypterActive() && MainGUI.crypterPanel.panelVDragNDropPane.getAllNodes().length == 0) {
+			MainGUI.crypterPanel = null;
 		}
 
-		if(MainGUI.initTxtWriter != null && !isTextEditorActive() && isAllSavedInTextEditor()) {
-			MainGUI.initTxtWriter = null;
+		if(MainGUI.textEditorPanel != null && !isTextEditorActive() && isAllSavedInTextEditor()) {
+			MainGUI.textEditorPanel = null;
 		}
 	}
 
@@ -753,7 +753,7 @@ public class MainGuiUtils {
 	 */
 	public static boolean askUnsavedTextFiles() {
 
-		TextEditor initTxtWriter = MainGUI.initTxtWriter;
+		TextEditor initTxtWriter = MainGUI.textEditorPanel;
 		if (initTxtWriter == null || initTxtWriter.getCurrentTabEditor() == null) {
 			return true;
 		}
@@ -775,10 +775,13 @@ public class MainGuiUtils {
 				"Files unsaved in textEditor", 
 				"There are some unsaved files in text Editor, do you want to save them?",
 				MainGUI.mainAPP.getMainFrame(),
-				askCondition);
+				askCondition
+		);
+		
 		if(choiceY == null) {
 			// cancel -> don't exit
 			return false;
+		
 		}else if(choiceY) {
 			try {
 				currentTabEditor.saveAllUnsavedExisting();
@@ -795,6 +798,7 @@ public class MainGuiUtils {
 				for(TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
 					if(tabElement.unsaved && tabElement.loadedFile == null) {
 						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
+						MainGUI.textEditorPanel.subHeaderPanel.btnSaveTextFile.requestFocus();
 						return false; // don't exit
 					}
 				}

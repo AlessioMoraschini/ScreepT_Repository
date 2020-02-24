@@ -1,0 +1,31 @@
+#         ###############
+###########   GENERAL   #############
+#         ###############
+#
+APP_VERSION=${project.version}
+BUILD_TIMESTAMP=${maven.build.timestamp}
+BUILD_INCREMENTAL_NUMBER=${buildNumber}
+BUILD_COMMIT_HASH=${git.commit.id}
+CHANGE_LOG_FILE_PATH=changelog.log
+
+WEBSITE=www.am-design-development.com
+MAIL_BUGS=${developer.bugs.mail}
+MAIL_INFO=${developer.mail}
+
+# TEST FLAGS
+FLAG_DEBUG_GRAPHICS=false
+# when active under help menu will compare two clickable error/exception launchers
+FLAG_THROW_ERROR_TEST_ON=false
+# THis will be used to determine how much time has to pass before an AWT error dialog can appear if max is reached
+AWT_EVENT_CHECKER_DECREASE_LIMIT_PERIOD=5000
+MAX_N_OF_ERR_DIALOG_OPENED=1
+
+# JVM COMPATIBILITY CHECK AT RUNTIME - Used for max version admitted in NetworkAnalyzer and Hardware analyzer
+MAX_JVM_COMPLETE_COMPATIBILITY=12.0
+
+# Ini files configuration
+DEFAULT_INI=Resources_ScreepT/CONFIG.ini
+BACKUP_INI=Resources_ScreepT/Backup/BACKUP_CONFIG.ini
+#
+#
+SIGNAL_LISTENER_PERIOD=350

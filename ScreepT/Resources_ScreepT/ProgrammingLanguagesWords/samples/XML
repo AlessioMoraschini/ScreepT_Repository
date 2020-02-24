@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+	<!--  HEAD SECTION  -->
+	<head>
+	<meta charset="utf-8">
+	<title>ScreepT - Tutorial</title>
+	<link rel="stylesheet" href="ReadMe_Style.css">
+	<script src="script.js"></script>
+	</head>
+	
+	<!--  START BODY  -->
+	<body>
+
+		<div id="titleBlock">
+			<div id="titleImage">
+				<image src="./Images/icon.jpg" height="100px" width="auto"></image>
+			</div>
+			<!--  TITLE SECTION  -->
+			<div id="mainTitle" class="center">
+				<h1>ScreepT</h1>
+			</div>
+			<div id="titleImage">
+				<image src="./Images/icon.jpg" height="100px" width="auto"></image>
+			</div>
+			<br>
+		</div>
+		
+		<div id="subTitleBlock"class="centerColoredSub2">A smart crypter... and much more!
+			<div id="subTitle" class="centerColoredSub1">
+				<span>By A.M. Design and Development - 2019 - Version ${project.version}</span>
+			</div>
+			<p style="font-size:12px; color:#444444"><b>(This version was built on: ${maven.build.timestamp})</b></p>
+		</div>
+		
+		<!--  MAIN SECTION  -->
+		<div class="mainBlock"></div>
+	</body>
+</html>

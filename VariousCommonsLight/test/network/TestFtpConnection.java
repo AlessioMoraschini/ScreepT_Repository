@@ -11,7 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import gui.GuiUtils;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import network.ftp.FtpDumper;
 import testconfig.TestConstants;
 import utility.hash.ChecksumHasher;

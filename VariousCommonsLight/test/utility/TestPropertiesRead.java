@@ -3,7 +3,7 @@ package utility;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import testconfig.TestConstants;
 import utility.properties.PropertiesManager;
 

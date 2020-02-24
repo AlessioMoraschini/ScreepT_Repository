@@ -20,8 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
-
+import utility.ConversionUtils;
 import utility.SafeLogger;
 import utility.properties.PropertiesManager;
 
@@ -47,7 +46,7 @@ public class ChecksumHasher {
 		String result;
 		try {
 			// NB: hex is not case sensitive!
-			result = DatatypeConverter.printHexBinary(digest);
+			result = ConversionUtils.printHexBinary(digest);
 			result = (uppercase) ? result.toUpperCase() : result.toLowerCase();
 		} catch (Error e) {
 			result = "";
@@ -114,7 +113,7 @@ public class ChecksumHasher {
 	        return "";
 	    }
 	    
-	    String result = DatatypeConverter.printHexBinary(messageDigest.digest());
+	    String result = ConversionUtils.printHexBinary(messageDigest.digest());
 	    result = (uppercase) ? result.toUpperCase() : result.toLowerCase();
 	    
 	    return result;
@@ -134,7 +133,7 @@ public class ChecksumHasher {
 					hashAccumulator = ChecksumHasher.xorBytes(getFileHashBuffered(curr, algorithm, uppercase).getBytes("UTF-8"), hashAccumulator);
 				}
 			}
-			return DatatypeConverter.printHexBinary(hashAccumulator);
+			return ConversionUtils.printHexBinary(hashAccumulator);
 		}
 	}
 

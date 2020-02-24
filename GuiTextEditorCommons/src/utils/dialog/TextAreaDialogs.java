@@ -41,9 +41,9 @@ import org.fife.ui.rtextarea.SearchResult;
 
 import dialogutils.JOptionHelperExtended;
 import frameutils.utils.GuiUtilsExtended;
+import gui.dialogs.FindDialogFork;
+import gui.dialogs.ReplaceDialogFork;
 import om.LimitedConcurrentList;
-import om.dialogs.FindDialogFork;
-import om.dialogs.ReplaceDialogFork;
 import resources.IconsPathConfigurator;
 import utility.reflection.ReflectionLibChecker;
 import utility.reflection.ReflectionUtils;

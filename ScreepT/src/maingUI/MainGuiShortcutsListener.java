@@ -54,7 +54,7 @@ public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEv
 				try {
 					if (MainGUI.mainFrameScreept.isFocused()) {
 						if (MainGUI.mainGuiUtils.isTextEditorActive()) {
-							MainGUI.initTxtWriter.textEditorUtils.setImmersiveMode(false);
+							MainGUI.textEditorPanel.textEditorUtils.setImmersiveMode(false);
 						} else {
 							MainGUI.mainGuiUtils.immersiveModeToggle();
 						}

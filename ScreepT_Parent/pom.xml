@@ -86,7 +86,7 @@
 		<!-- If true, transitive plugins dependencies included in fatjar (provided=excluded : compile=included) -->
 		<plugins.export.scope>provided</plugins.export.scope>
 		
-		<!-- ! RELATIVE PATHS : NO NEED TO CHANGE THEESE ! -->
+		<!-- ! RELATIVE PATHS : NO NEED TO CHANGE THESE ! -->
 		<root.export.dir>../../ScreepT_Build</root.export.dir>
 
 		<!-- ##################### UPDATES FOLDER PACKAGING #################### -->

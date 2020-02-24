@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import files.FileVarious;
 import gUI.frames.KeyGenFrame;
 import gUI.panels.subpanels.ImageGenContainerPanel;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 
 public class ImageWorkerScreepT {
 
@@ -156,7 +156,7 @@ public class ImageWorkerScreepT {
         		}
     		} else {
                	try {
-               		destFile = FileVarious.renameJavaObjFile(destFile);
+               		destFile = FileVarious.uniqueJavaObjFile(destFile);
         			esit = ImageIO.write(img, "png", destFile);
         			if(esit) {
         				loGGer.info("Image written: "+destFile.getAbsolutePath());

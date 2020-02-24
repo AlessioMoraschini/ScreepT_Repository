@@ -43,8 +43,8 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RUndoManager;
 
 import frameutils.utils.GuiUtilsExtended;
-import gui.FontMetricsWrapper;
 import gui.GuiUtils;
+import gui.dialogs.font.om.FontMetricsWrapper;
 import resources.GeneralConfig;
 import utility.string.StringWorker.EOL;
 

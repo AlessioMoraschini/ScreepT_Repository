@@ -244,7 +244,7 @@ public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListen
 					
 					if(!selected.getName().toLowerCase().endsWith("png")) {
 						// If not a png image convert a temporary png file, and use it as source for import
-						selected = FileVarious.renameJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + selected.getName()));
+						selected = FileVarious.uniqueJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + selected.getName()));
 						ImageWorkerExtended worker;
 						try {
 							worker = new ImageWorkerExtended(selected);

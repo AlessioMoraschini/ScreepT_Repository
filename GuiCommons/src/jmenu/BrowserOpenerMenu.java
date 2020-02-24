@@ -9,7 +9,7 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
 import gui.MenuSetter;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import jmenu.om.UrlRetriever;
 import utility.SafeLogger;
 import utils.SysUtils;

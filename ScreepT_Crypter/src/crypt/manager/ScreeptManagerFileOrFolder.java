@@ -25,7 +25,7 @@ import crypt.aes.AESException;
 import crypt.aes.AesCipher;
 import crypt.steg.STEGException;
 import crypt.steg.StegCipher;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import om.CrypterResultDTO;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;

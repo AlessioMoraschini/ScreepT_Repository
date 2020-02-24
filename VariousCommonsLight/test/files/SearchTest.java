@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import files.FileSearchLight;
+import files.search.FileSearchLight;
 import testconfig.TestConstants;
 
 public class SearchTest {

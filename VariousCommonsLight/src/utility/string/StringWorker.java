@@ -560,6 +560,19 @@ public class StringWorker {
 	}
 
 	/**
+	 * This method prints key and values from map
+	 * @param map
+	 */
+	public static <K, V> String getMapToString(Map<K, V> map) {
+		StringBuilder builder = new StringBuilder();
+		for (Map.Entry<K, V> entry : map.entrySet()) {
+			builder.append("Key : " + entry.getKey() + " <=> Value : " + entry.getValue()).append(EOL.defaultEol.eol);
+		}
+		
+		return builder.toString();
+	}
+
+	/**
 	 * This method prints values from generic array using toString
 	 * @param array
 	 */

@@ -23,7 +23,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import om.exception.ProgressBarInterruptedException;
 import plugins.PluginDTO;
 import plugins.PluginManager;

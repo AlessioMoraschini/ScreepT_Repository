@@ -185,7 +185,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		
 		singletonInstance = this;
 		
-		currentEditor = MainGUI.initTxtWriter;
+		currentEditor = MainGUI.textEditorPanel;
 		
 		logger.info(this.getClass().getName() + " Starting...");
 
@@ -904,7 +904,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				currentEditor = MainGUI.initTxtWriter;
+				currentEditor = MainGUI.textEditorPanel;
 
 				logger.debug("Starting reset of GUI_Preferences");
 
@@ -1102,7 +1102,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		chckbxAutoCheckFiles.setSelected(currentConfiguration.getGenOpt().isTxtEditorFileMonitorActive());
 		chckbxSyncClipboardStyle.setSelected(txtOpt.clipboardSyncStyle);
 		spinnerInterline.setValue(txtOpt.getInterline());
-		currentEditor.getCurrentTabEditor().loadedTabObj.textArea.repaint();
+		refreshTextEditorArea();
 		syncRightPaneCustomOptions();
 		
 
@@ -1118,6 +1118,14 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		GUIStyelSettingsExtended.applyNimbusSize(null, (int) spinnerNimbusSize.getValue());
 		
 		antialiasingApply(currentConfiguration.getTextEditorOpt().antialiasedTxtArea);
+	}
+	
+	private void refreshTextEditorArea() {
+		try {
+			currentEditor.getCurrentTabEditor().loadedTabObj.textArea.repaint();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void syncRightPaneCustomOptions() {

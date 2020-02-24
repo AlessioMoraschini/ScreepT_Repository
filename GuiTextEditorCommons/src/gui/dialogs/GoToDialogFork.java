@@ -1,4 +1,4 @@
-package om.dialogs;
+package gui.dialogs;
 
 public class GoToDialogFork {
 

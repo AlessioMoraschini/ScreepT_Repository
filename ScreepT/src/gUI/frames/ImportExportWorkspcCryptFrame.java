@@ -81,7 +81,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 		
 		if(textEditor == null) {
 			MainGUI.mainGuiUtils.startTextEditor(true);
-			this.textEditor = MainGUI.initTxtWriter;
+			this.textEditor = MainGUI.textEditorPanel;
 		} else {
 			this.textEditor = textEditor;
 		}
@@ -213,7 +213,7 @@ public class ImportExportWorkspcCryptFrame extends ParentFrame {
 					if (selectedForExport != null && selectedForExport.exists() && selectedForExport.isDirectory()) {
 						while (textEditor == null || textEditor.textEditorUtils == null) {
 							Thread.sleep(250);
-							textEditor = MainGUI.initTxtWriter;
+							textEditor = MainGUI.textEditorPanel;
 						}
 						textEditor.textEditorUtils.openFileInScreeptWithReturnAction(selectedForExport, getAfterExportRunnable());
 					} else {

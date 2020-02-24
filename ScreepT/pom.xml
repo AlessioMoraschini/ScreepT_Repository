@@ -466,6 +466,16 @@
 					        <include>/**</include>
 					        <include>/**/*</include>
 					    </includes>
+					    <excludes>
+					    	<exclude>Readme/**/*</exclude>
+					    </excludes>
+					</resource>
+					<resource>
+					    <filtering>true</filtering>
+					    <directory>ROOT_DIR_APP_FILES</directory>
+					    <includes>
+					        <include>Readme/**/*</include>
+					    </includes>
 					</resource>
 			    </resources>     
             </configuration>            
@@ -571,8 +581,8 @@
 					    </includes>
 					    <excludes>
     						<exclude>Resources_ScreepT/license.properties</exclude>
-					    	<exclude>Resources_ScreepT/Readme/**</exclude>
-					    	<exclude>Resources_ScreepT/Readme/*</exclude>
+					    	<exclude>ROOT_DIR_APP_FILES/Readme/**</exclude>
+					    	<exclude>ROOT_DIR_APP_FILES/Readme/*</exclude>
 					    	<exclude>Resources_ScreepT/lib/**</exclude>
 					    	<exclude>Resources_ScreepT/lib/*</exclude>
 					    	<exclude>Resources_ScreepT/PanelTempFiles/*</exclude>
@@ -584,8 +594,8 @@
 					    <filtering>true</filtering>
 					    <directory>./</directory>
 					    <includes>
-					    	<include>Resources_ScreepT/Readme/**</include>
-					    	<include>Resources_ScreepT/Readme/**/*</include>
+					    	<include>ROOT_DIR_APP_FILES/Readme/**</include>
+					    	<include>ROOT_DIR_APP_FILES/Readme/**/*</include>
 					        <include>resourcesFilePathsMappings.properties</include>
 					        <include>LAUNCHER/**/*</include>
 					        <include>LAUNCHER/*</include>

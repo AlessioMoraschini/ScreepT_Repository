@@ -1,4 +1,4 @@
-package gui;
+package gui.dialogs.font.om;
 
 import java.awt.Font;
 import java.awt.FontMetrics;

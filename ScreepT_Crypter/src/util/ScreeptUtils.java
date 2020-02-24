@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import javax.swing.JPasswordField;
 
 import crypt.aes.AesCipher;
-import gui.selection.JOptionHelper;
+import gui.dialogs.msg.JOptionHelper;
 import om.SecurityLevel;
 import utility.SafeLogger;
 

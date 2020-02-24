@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
-import gui.selection.color.ColorDialogHelper;
+import gui.dialogs.color.ColorDialogHelper;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;

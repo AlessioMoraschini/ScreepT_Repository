@@ -11,14 +11,19 @@
  */
 package gUI.utils.tree.texteditor;
 
+import static java.awt.Event.ALT_MASK;
+import static java.awt.Event.SHIFT_MASK;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -27,6 +32,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.tree.TreePath;
@@ -53,9 +59,8 @@ import treeutils.om.FileNameCellRenderer;
 import utility.ConversionUtils;
 import utils.dialog.ColorDialogUtils;
 
-public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed{
+public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed {
 	
-	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TreeFileMouseListenerTxtEditor.class); 
 	
 	// gui elements
@@ -66,6 +71,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	public JMenu subMenuNew;
 		public JMenuItem itemNewFile;
 		public JMenuItem itemNewFolder;
+	public JMenuItem itemRename;
 	public JMenuItem copyHereCurrentItem;
 	public JMenuItem moveHereCurrentItem;
 	public JMenuItem sysExplorerItem;
@@ -178,6 +184,11 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    itemLoadFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    menu.add(itemLoadFile);
 	    
+	    itemRename = new JMenuItem("Rename selected (files only)");
+	    itemRename.addActionListener(getRenameActionListener());
+	    itemRename.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    menu.add(itemRename);
+	    
 	    menu.add(new JSeparator());
 	    
 	    selectAllItem = new JMenuItem("Select all nodes");
@@ -258,6 +269,9 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    itemNewFolder.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CREATE_FOLDER));
 	    changeBckgItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BG_COLOR));
 
+	    // Add shortcuts hints
+	    updateShortcutStrings();
+	    
 	    return menu;
 	}
 	
@@ -453,6 +467,30 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		};
 	}
 	
+	private ActionListener getRenameActionListener() {
+		return (e) -> {
+			try {
+				TreePath[] treeSelArr = tree.getSelectionPaths();
+				for(TreePath tp : treeSelArr) {
+					
+					FileNamed node = (FileNamed)tp.getLastPathComponent();
+					File selectedFile = node.mFile;
+					
+					if(selectedFile != null && selectedFile.isFile()) {
+						String newName = dialogHelper.askForStringNullable("Specify new name for " + selectedFile.getName(), "Specify new name", selectedFile.getName());
+						if(newName != null) {
+							textEditor.textEditorUtils.renameFile(selectedFile, newName, false);
+						} else {
+							return;
+						}
+					}
+				}
+			} catch (IOException e1) {
+				logger.error("Cannot rename current file", e1);
+			}
+		};
+	}
+	
 	private ActionListener getNewFileActionListener() {
 		return new ActionListener() {
 			
@@ -466,7 +504,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 						return;
 					}
 					
-					String newName = dialogHelper.askForStringNullable("Plese specify a name for the file to save in "+destination.getParent(), destination.getName());
+					String newName = dialogHelper.askForStringNullable("Plese specify a name for the file to save in "+destination.getParent(), "Create New file in " + destination.getName());
 					if(newName == null) {
 						return;
 					}
@@ -475,7 +513,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					// If file use parent, if directory use selected as root to insert into
 					destination = (destination.isDirectory()) ? 
 							new File(destination.getAbsolutePath() + separator + newName) : new File(destination.getParentFile().getAbsolutePath() + separator + newName);
-					destination = FileVarious.renameJavaObjFile(destination);
+					destination = FileVarious.uniqueJavaObjFile(destination);
 					
 						// create and load new item
 						if (!destination.createNewFile()) {
@@ -542,6 +580,42 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		};
 	}
 	
+	@Override
+	public void keyReleased(KeyEvent event) {
+		super.keyReleased(event);
+		if (tree.hasFocus()) {
+			if (event.isAltDown() && event.getKeyCode() == KeyEvent.VK_F2) {
+				GuiUtils.fireActionListener(getRenameActionListener(), null);
+			
+			} else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_N) {
+				if(event.isShiftDown()) {
+					GuiUtils.fireActionListener(getNewFolderActionListener(), null);
+					
+				} else {
+					GuiUtils.fireActionListener(getNewFileActionListener(), null);
+					
+				}
+			} else if (event.isAltDown() && event.isControlDown() && event.getKeyCode() == KeyEvent.VK_F5) {
+				refreshItem.doClick();
+			
+			} else if (event.isAltDown() && event.isControlDown() && event.getKeyCode() == KeyEvent.VK_U) {
+				hashingItem.doClick();
+			}
+		}
+	}
+	
+	private void updateShortcutStrings() {
+		itemLoadFile.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, KeyEvent.KEY_LOCATION_UNKNOWN));
+		itemNewFile.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, KeyEvent.CTRL_MASK));
+		itemNewFolder.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, KeyEvent.CTRL_MASK | SHIFT_MASK));
+		hashingItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, KeyEvent.CTRL_MASK | ALT_MASK));
+		propertiesItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK));
+		itemRename.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F2, ALT_MASK));
+		deleteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_CANCEL, KeyEvent.KEY_LOCATION_UNKNOWN));
+		refreshItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F5, KeyEvent.CTRL_MASK | ALT_MASK));
+
+	}
+
 	public void changeTreeSelectionColor(Color color) {
 		
 		UIDefaults treeDefaults = new UIDefaults();

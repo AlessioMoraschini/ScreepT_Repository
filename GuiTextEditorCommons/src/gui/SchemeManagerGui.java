@@ -17,8 +17,8 @@ import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import files.CustomFileFilters;
 import files.FileVarious;
-import gui.selection.color.ColorSelector;
-import gui.selection.color.om.ColorSelectionElement;
+import gui.dialogs.color.ColorSelector;
+import gui.dialogs.color.om.ColorSelectionElement;
 import utils.RsyntaxUtils;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
@@ -50,6 +50,8 @@ public class SchemeManagerGui extends JFrame {
 
 	public static SchemeManagerGui singletonInstance;
 	
+	public static File defaultExportDir = new File(System.getProperty("user.home"));
+	
 	public static Color defaultElementsBackground = Color.WHITE;
 	public static Font DEFAULT_BUTTON_FONT = new Font("Tahoma", Font.PLAIN, 16);
 	
@@ -59,6 +61,7 @@ public class SchemeManagerGui extends JFrame {
 	private GenericFileChooserDialog fileChooserHelper;
 
 	private File styleFilesFolder;
+	private File defaultUnmodificableThemes;
 	public Font defaultTextFont;
 	public List<ColorStyleScheme> schemes;
 	
@@ -81,12 +84,13 @@ public class SchemeManagerGui extends JFrame {
 	private JButton btnSaveTheme;
 	private JButton btnExportTheme;
 	
-	// TODO link to main application
+	public Runnable closeAction = () -> {};
 	
-	public SchemeManagerGui(File sourceFolder, Font currentFont) {
+	public SchemeManagerGui(File sourceFolder, File defaultUnmodificableThemes, Font currentFont) {
 		singletonInstance = this;
 		
 		styleFilesFolder = sourceFolder;
+		this.defaultUnmodificableThemes = defaultUnmodificableThemes;
 		defaultTextFont = currentFont != null ? currentFont.deriveFont(16f) : new Font("Segoe UI", Font.PLAIN, 16);
 		
 		dialogHelper = new JOptionHelperExtended(this);
@@ -131,6 +135,7 @@ public class SchemeManagerGui extends JFrame {
 		scrollPaneElements.setViewportView(panelElements);
 		
 		testTextArea = new RSyntaxTextArea();
+		testTextArea.setEditable(true);
 		scrollPane = new RTextScrollPane();
 		scrollPane.setViewportView(testTextArea);
 		getContentPane().add(scrollPane, "cell 2 2 3 1,grow");
@@ -197,6 +202,7 @@ public class SchemeManagerGui extends JFrame {
 		    	if (dialogHelper.yesOrNo(message, "Close theme manager?")) {
 		    		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					singletonInstance = null;
+					closeAction.run();
 					dispose();
 				
 		    	} else {
@@ -236,9 +242,14 @@ public class SchemeManagerGui extends JFrame {
 		});
 		
 		btnReloadFromFile.addActionListener((e) -> {
-			try {
+			if(!getSelectedColorSchemeObj(false).modifiable || dialogHelper.yesOrNo("Are you sure to reload current theme? all unsaved changes will be lost")) try {
+				int previousIndex = comboScheme.getSelectedIndex();
+				schemes = retrieveXmlSchemes();
+				initComboScheme();
 				getSelectedTheme(true).apply(testTextArea);
 				initGuiFromTheme();
+				
+				comboScheme.setSelectedIndex(previousIndex);
 			} catch (IllegalArgumentException | IllegalAccessException e1) {
 				dialogHelper.error("Cannot load theme, an error occurred");
 			}
@@ -249,9 +260,13 @@ public class SchemeManagerGui extends JFrame {
 				saveCurrentTheme(true, styleFilesFolder);
 			}
 		});
+		
+		btnExportTheme.addActionListener((e) -> {
+			saveCurrentTheme(false, defaultExportDir);
+		});
 
 		btnSaveAs.addActionListener((e) -> {
-			saveCurrentThemeAs();
+			saveCurrentThemeAs(getSelectedColorSchemeObj(false).modifiable);
 		});
 	}
 	
@@ -293,7 +308,7 @@ public class SchemeManagerGui extends JFrame {
 	
 	public void initComboSyntax() {
 		comboSyntax.setModel(new DefaultComboBoxModel(SupportedFileTextEditor.values()));
-		comboSyntax.setSelectedIndex(0);
+		comboSyntax.setSelectedItem(SupportedFileTextEditor.JAVA);
 	}
 	
 	private void initGuiFromTheme() throws IllegalArgumentException, IllegalAccessException {
@@ -303,8 +318,12 @@ public class SchemeManagerGui extends JFrame {
 		
 		SwingUtilities.invokeLater(()->{
 			
+			boolean currentModifiable = getSelectedColorSchemeObj(false).modifiable;
+			btnSaveTheme.setEnabled(currentModifiable);
+
 			for(ColorSelector selector : tokenSelectors) {
 				panelElements.add(selector);
+				selector.setEnabled(currentModifiable);
 			}
 		
 			scrollPane.revalidate();
@@ -313,19 +332,22 @@ public class SchemeManagerGui extends JFrame {
 			panelElements.repaint();
 			testTextArea.repaint();
 			
+			
 			testTextArea.setMargin(new Insets(8,8,8,8));
-			RsyntaxUtils.setFont(testTextArea, defaultTextFont);
 		});
 	}
 	
-	public void saveCurrentThemeAs() {
-		File uniqueFileOut = FileVarious.renameJavaObjFile(getSelectedColorSchemeObj(false).schemeSource);
+	public void saveCurrentThemeAs(boolean canOverwrite) {
+		File uniqueFileOut = FileVarious.uniqueJavaObjFile(getSelectedColorSchemeObj(false).schemeSource);
 		String outName = dialogHelper.askForStringNullable("Specify theme file name", "Insert theme name", uniqueFileOut.getName());
 		
 		if (StringWorker.notEmpty(outName)) {
 			File outFile = new File(styleFilesFolder + File.separator + outName);
 			outFile = FileVarious.changeExtension(outFile, ".xml");
+			outFile = canOverwrite ? outFile : FileVarious.uniqueJavaObjFile(outFile);
+			
 			saveCurrentTheme(true, outFile, styleFilesFolder);
+			
 			schemes = retrieveXmlSchemes();
 			initComboScheme();
 		
@@ -360,11 +382,15 @@ public class SchemeManagerGui extends JFrame {
 				if(outFile == null){
 					return;
 				} 
+
+				outFile = FileVarious.changeExtension(outFile, ".xml");
 				
 				if(outFile.exists() && !dialogHelper.askOverwriteFile(outFile)) {
-					outFile = FileVarious.renameJavaObjFile(outFile);
+					outFile = FileVarious.uniqueJavaObjFile(outFile);
 				}
 				outStream = new FileOutputStream(outFile);
+				
+				defaultExportDir = outFile.getParentFile();
 			}
 
 			loadedSchemeObj.theme.save(outStream);
@@ -392,7 +418,17 @@ public class SchemeManagerGui extends JFrame {
 					CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY, "xml", false));
 			
 			for(File scheme : xmlSchemes) {
-				schemes.add(new ColorStyleScheme(scheme));
+				schemes.add(new ColorStyleScheme(scheme, true));
+			}
+		}
+
+		if(defaultUnmodificableThemes != null && defaultUnmodificableThemes.exists() && defaultUnmodificableThemes.isDirectory()) {
+			
+			File[] xmlSchemes = defaultUnmodificableThemes.listFiles(
+					CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY, "xml", false));
+			
+			for(File scheme : xmlSchemes) {
+				schemes.add(new ColorStyleScheme(scheme, false));
 			}
 		}
 		
@@ -427,10 +463,12 @@ public class SchemeManagerGui extends JFrame {
 		public List<ColorSelectionElement> schemeElements;
 		public File schemeSource;
 		public Theme theme;
+		public boolean modifiable;
 		
-		public ColorStyleScheme(File source) {
+		public ColorStyleScheme(File source, boolean modifiable) {
 			schemeSource = source;
 			theme = loadThemeFromFile();
+			this.modifiable = modifiable;
 		}
 		
 		public Theme loadThemeFromFile() {
@@ -439,11 +477,12 @@ public class SchemeManagerGui extends JFrame {
 
 		@Override
 		public String toString() {
-			return schemeSource != null ? schemeSource.getName() : "Unsaved_theme.xml";
+			String prefix = modifiable ? "Custom theme: " : "Default theme (unmodifiable): ";
+			return schemeSource != null ? prefix + schemeSource.getName() : prefix + "Unsaved_theme.xml";
 		}
 	}
 	
-	public static SchemeManagerGui getInstance(File sourceFolder, Font currentFont) {
-		return singletonInstance == null ? new SchemeManagerGui(sourceFolder, currentFont) : singletonInstance;
+	public static SchemeManagerGui getInstance(File sourceFolder, File unmodifiableThemes, Font currentFont) {
+		return singletonInstance == null ? new SchemeManagerGui(sourceFolder, unmodifiableThemes, currentFont) : singletonInstance;
 	}
 }

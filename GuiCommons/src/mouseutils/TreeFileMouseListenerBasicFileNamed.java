@@ -14,7 +14,6 @@ package mouseutils;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -56,7 +55,7 @@ import utility.string.StringWorker;
  * @author Alessio Moraschini
  *
  */
-public class TreeFileMouseListenerBasicFileNamed {
+public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 	
 	// KeyGenPanel logger
 	static Logger logger = Logger.getLogger(TreeFileMouseListenerBasicFileNamed.class); 
@@ -189,13 +188,13 @@ public class TreeFileMouseListenerBasicFileNamed {
 				logger.info("getNewFolderActionListener() -> asking for creating new folder...");
 				File targetDir = node.mFile.isDirectory()? node.mFile : node.mFile.getParentFile();
 				File unexistant = new File(targetDir.getAbsolutePath() + File.separator + "new_folder");
-				unexistant = FileVarious.renameJavaObjFile(unexistant);
+				unexistant = FileVarious.uniqueJavaObjFile(unexistant);
 				String newName = dialogHelper.askForStringNullable("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
 				
 				if(newName == null) {
 					return;
 				}else if(!StringWorker.trimToEmpty(newName).equals("")){
-					unexistant = FileVarious.renameJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
+					unexistant = FileVarious.uniqueJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
 				}
 				
 				boolean result = unexistant.mkdirs();
@@ -362,58 +361,63 @@ public class TreeFileMouseListenerBasicFileNamed {
 		}
 	}
 	
-	public KeyListener getKeyListener() {
-		return new KeyAdapter() {
-			public void keyReleased(KeyEvent event) {
-				if(tree.hasFocus()) try {
-					tree.setCursor(GuiUtils.CURSOR_WAIT);
-					
-					if (event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
-						if(itemLoadFile != null) {
-							itemLoadFile.doClick();
-						}
-					} else if (event.getKeyCode() == 127 && tree.getSelectionCount() != 0) {
-						if(deleteItem != null) {
-							deleteItem.doClick();
-						}
-					} else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() == 1) {
-						File destination = getCurrentDestinationDynamic(selectedNode);
-						List<File> clipboardFiles = SystemClipboardUtils.getClipboardFiles(null);
-						if(!clipboardFiles.isEmpty() && dialogHelper.yesOrNo("Paste " + clipboardFiles.size() + " files into " + destination.getName() + " ?")) {
-							// TODO subfolders
-							for(File file : clipboardFiles) {
-								boolean copy = true;
-								if(destination.listFiles((dir, name) -> {
-									boolean sameType = (dir.isFile() && file.isFile()) || (dir.isDirectory() && file.isDirectory());
-									return sameType && file.getName().equals(name);
-								}).length > 0) {
-									copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", "Overwrite?");
-								}
-								if (copy) {
-									FileUtils.copyToDirectory(file, destination);
-								}
-							}
-							
-							refreshTree();
-						}
-					} else if(event.isControlDown() && !event.isShiftDown() && !event.isAltDown() && event.getKeyCode() == KeyEvent.VK_C && tree.getSelectionCount() != 0) {
-						SystemClipboardUtils.setClipobardFiles(getSelectedFiles());
-					}
-				} catch (Exception e) {
-					logger.error("An error occurred while processing file tree key event", e);
-				} finally {
-					tree.setCursor(GuiUtils.CURSOR_DEFAULT);
-				}
-			}
-		};
-	}
-	
-	
 	// utility methods //
 	
 	public void refreshTree() {
 		tree.setModel(tree.getModel());
 		tree.revalidate();
 		tree.repaint();
+	}
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyReleased(KeyEvent event) {
+		if(tree.hasFocus()) try {
+			tree.setCursor(GuiUtils.CURSOR_WAIT);
+			
+			if (event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
+				if(itemLoadFile != null) {
+					itemLoadFile.doClick();
+				}
+			} else if (event.getKeyCode() == 127 && tree.getSelectionCount() != 0) {
+				if(deleteItem != null) {
+					deleteItem.doClick();
+				}
+			} else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() == 1) {
+				File destination = getCurrentDestinationDynamic(selectedNode);
+				List<File> clipboardFiles = SystemClipboardUtils.getClipboardFiles(null);
+				if(!clipboardFiles.isEmpty() && dialogHelper.yesOrNo("Paste " + clipboardFiles.size() + " files into " + destination.getName() + " ?")) {
+					// TODO subfolders
+					for(File file : clipboardFiles) {
+						boolean copy = true;
+						if(destination.listFiles((dir, name) -> {
+							boolean sameType = (dir.isFile() && file.isFile()) || (dir.isDirectory() && file.isDirectory());
+							return sameType && file.getName().equals(name);
+						}).length > 0) {
+							copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", "Overwrite?");
+						}
+						if (copy) {
+							FileUtils.copyToDirectory(file, destination);
+						}
+					}
+					
+					refreshTree();
+				}
+			} else if(event.isControlDown() && !event.isShiftDown() && !event.isAltDown() && event.getKeyCode() == KeyEvent.VK_C && tree.getSelectionCount() != 0) {
+				SystemClipboardUtils.setClipobardFiles(getSelectedFiles());
+			}
+		} catch (Exception e) {
+			logger.error("An error occurred while processing file tree key event", e);
+		} finally {
+			tree.setCursor(GuiUtils.CURSOR_DEFAULT);
+		}
 	}
 }
