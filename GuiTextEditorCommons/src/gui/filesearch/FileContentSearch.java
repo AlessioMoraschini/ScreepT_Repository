@@ -1,4 +1,4 @@
-package files.search;
+package gui.filesearch;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,18 +6,27 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.SwingUtilities;
+
 import files.CustomFileFilters;
+import files.FileVarious;
 import files.FileWorker;
 import files.om.FileContentSearchDTO;
 import files.om.SearchResult;
 import gui.UpdateProgressPanel;
+import gui.dialogs.msg.JOptionHelper;
+import om.SupportedFileTextEditor;
+import utility.ArrayHelper;
 import utility.SafeLogger;
 
 public class FileContentSearch {
+	
+	// TODO file extension filter
 	
 	public static SafeLogger logger = new SafeLogger(FileContentSearch.class);
 
@@ -30,6 +39,10 @@ public class FileContentSearch {
 	
 	public FileSearchActions searchActions;
 	
+	FileSearchResultViewer resultViewer;
+	
+	JOptionHelper dialogHelper;
+	
 	String fileEncoding;
 	
 	public FileContentSearch(FileContentSearchDTO searchDTO, List<File> sources, FileSearchActions searchActions) {
@@ -37,6 +50,9 @@ public class FileContentSearch {
 		this.searchDTO = searchDTO == null ? new FileContentSearchDTO(null) : searchDTO;
 		this.sourceFiles = retrieveSourceFilesToUse(sources);
 		results = new ArrayList<SearchResult>();
+		resultViewer = new FileSearchResultViewer(searchActions, null, searchDTO.searchString);
+		
+		dialogHelper = new JOptionHelper(resultViewer);
 		
 		if(searchDTO.regex || searchDTO.wholeWord) {
 			
@@ -68,6 +84,7 @@ public class FileContentSearch {
 		UpdateProgressPanel updateProgPanel = new UpdateProgressPanel(false);
 		updateProgPanel.progBarEnabled.set(showProgressUpdater);
 		int i = 1;
+		int totalFilesToScan = sourceTotalSize();
 		
 		// Start source files iteration
 		try {
@@ -76,7 +93,7 @@ public class FileContentSearch {
 					
 					// Update progress values
 					String msg = source.getName() + " (" + i + "/" + sourceFiles.size() + ")";
-					int progressPerc = i/sourceFiles.size() * 100;
+					int progressPerc = (int)(((float)i/totalFilesToScan) * 100);
 					progressPerc = progressPerc < 100 ? progressPerc : 99;
 					updateProgPanel.update(progressPerc, msg);
 					if(progressPerc == 99) {
@@ -84,10 +101,15 @@ public class FileContentSearch {
 					}
 					
 					// Search into current file
-					SearchResult currentResult = searchIntoFile(source, searchDTO);
+					SearchResult currentResult = searchIntoFile(source, searchDTO, updateProgPanel);
 					currentResult.reorderByLine();
-					searchActions.fileSearchUpdater(currentResult);
-					results.add(currentResult);
+					if (!currentResult.resultLines.isEmpty()) {
+						searchActions.fileSearchUpdater(currentResult);
+						SwingUtilities.invokeLater(() -> {
+							resultViewer.addResult(currentResult);
+							results.add(currentResult);
+						});
+					}
 				} catch (IOException e) {
 					logger.error("An error occurred while searching into " + source, e);
 				}
@@ -107,6 +129,11 @@ public class FileContentSearch {
 		} finally {
 			updateProgPanel.forceClose();
 			searchActions.searchCompleted(results);
+			dialogHelper.info("<html>Search completed with <b>" + getOccurrencesFound() + "</b> results!");
+			SwingUtilities.invokeLater(()->{
+				resultViewer.resultsTree.revalidate();
+				resultViewer.resultsTree.repaint();
+			});
 		}
 		
 		logger.info("Finished String search into files");
@@ -129,10 +156,15 @@ public class FileContentSearch {
 				
 		for(File tempSource : tempSources) {
 			if(tempSource.isDirectory()) {
-				elaboredSources.addAll(FileWorker.getAllContent(tempSource, CustomFileFilters.FILE_ONLY));
+				List<File> subDirFiles = FileWorker.getAllContent(tempSource, CustomFileFilters.FILE_ONLY);
+				elaboredSources.addAll(ArrayHelper.removeNulls(subDirFiles));
 			} else {
 				elaboredSources.add(tempSource);
 			}
+		}
+		
+		if(!searchDTO.binariesIncluded) {
+			elaboredSources = removeBinaries(elaboredSources);
 		}
 		
 		return elaboredSources;
@@ -144,8 +176,9 @@ public class FileContentSearch {
 	 * @return
 	 * @throws IOException 
 	 */
-	public SearchResult searchIntoFile(File source, FileContentSearchDTO searchDTO) throws IOException {
+	public SearchResult searchIntoFile(File source, FileContentSearchDTO searchDTO, UpdateProgressPanel progressPanel) throws IOException {
 		SearchResult result = new SearchResult(source);
+		result.searchString = searchDTO.searchString;
 
 		if(source == null || !source.exists()) {
 			throw new IOException();
@@ -164,6 +197,12 @@ public class FileContentSearch {
 			int i = 1;
 			String line;
 			while ((line = reader.readLine()) != null) {
+				
+				if(progressPanel.stopProcess.get()) {
+					logger.info("Search interrupted by user");
+					searchActions.searchStoppedAction();
+					break;
+				}
 				// For each line use ad hoc search and update results for current file
 				searchIntoLine(i, line, searchDTO, result);
 				i ++;
@@ -189,8 +228,6 @@ public class FileContentSearch {
 		
 		// Initialize search variables
 		int index = 0;
-		int previousIndex = -1;
-		int sourceLength = sourceLine.length();
 		
 		// Start search
 		
@@ -201,23 +238,64 @@ public class FileContentSearch {
 		    	// add all matches on the line
 		    	try {
 					index = matcher.start();
-					result.addMatch(line, index, index + searchDTO.searchString.length());
+					result.addMatch(line, index, index + searchDTO.searchString.length(), sourceLine);
 				} catch (Exception e) {
 					// No match found
 				}
 		    }
 			
 		} else {
-			while(index >= 0 && index < sourceLength && previousIndex != index) {
+			String lineMod = searchDTO.matchCase ? sourceLine : sourceLine.toLowerCase();
+			String match = searchDTO.matchCase ? searchDTO.searchString : searchDTO.searchString.toLowerCase();
+			index = lineMod.indexOf(match);
+			
+			while(index >= 0) {
 				
-				previousIndex = index;
-				index = sourceLine.indexOf(searchDTO.searchString, index);
-				if(index >= 0 && index < sourceLength) {
-					// If result acceptable then add it
-					result.addMatch(line, index, index + searchDTO.searchString.length());
-				}
+				// If result acceptable then add it
+				result.addMatch(line, index, index + searchDTO.searchString.length(), sourceLine);
+				index = lineMod.indexOf(match, index+1);
 			}
 		}
+	}
+	
+	private List<File> removeBinaries(List<File> sources){
+		List<File> filtered = new ArrayList<>();
+		for(File source : sources) {
+			try {
+				if(SupportedFileTextEditor.isSupported(source) || !FileVarious.isBinaryFile(source)) {
+					filtered.add(source);
+				}
+			} catch (IOException e) {
+				logger.error("Cannot check if " + source + " is binary or not", e);
+			}
+		}
+		
+		return filtered;
+	}
+	
+	private int sourceTotalSize() {
+		int n = 0;
+		for(File source : sourceFiles) {
+			if(source != null)
+				n++;
+		}
+		
+		return n;
+	}
+	
+	public int getOccurrencesFound() {
+		int occurrences = 0;
+		for(SearchResult result : results) {
+			Iterator<Integer> iteratorLine = result.resultLines.keySet().iterator();
+			
+			while(iteratorLine.hasNext()) {
+				Integer line = iteratorLine.next();
+				int lineOccurrences = result.resultLines.get(line).size();
+				occurrences += lineOccurrences;
+			}
+		}
+		
+		return occurrences;
 	}
 	
 	public void threadSearch(File parent) {

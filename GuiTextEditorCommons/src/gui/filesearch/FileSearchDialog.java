@@ -1,4 +1,4 @@
-package gui.dialogs;
+package gui.filesearch;
 
 /*
  * 11/14/2003
@@ -51,10 +51,9 @@ import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
 
 import files.om.FileContentSearchDTO;
-import files.search.FileContentSearch;
-import files.search.FileSearchActions;
 import gui.GUIStyelSettings;
 import gui.GuiUtils;
+import gui.dialogs.AbstractFileSearchDialog;
 import gui.dialogs.msg.JOptionHelper;
 import resources.GeneralConfig;
 import utility.reflection.ReflectionUtils;
@@ -87,7 +86,9 @@ import utility.reflection.ReflectionUtils;
 public class FileSearchDialog extends AbstractFileSearchDialog {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	public static FileSearchDialog singletonInstance = null;
+	
 	// This helps us work around the "bug" where JComboBox eats the first Enter
 	// press.
 	private String lastSearchString;
@@ -102,10 +103,6 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	
 	public List<File> selectedSearchFiles;
 	public JOptionHelper dialogHelper;
-
-	// TODO DEFINE SEARCH ACTION
-	// TODO LINK SEARCH ACTION
-	// TODO Results viewer
 	
 	/**
 	 * Creates a new <code>FindDialog</code>.
@@ -119,6 +116,8 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		init(getDefaultListener());
 		selectedSearchFiles = new ArrayList<>();
 		dialogHelper = new JOptionHelper(this);
+		
+		singletonInstance = this;
 	}
 
 
@@ -138,6 +137,8 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		}
 		selectedSearchFiles = new ArrayList<>();
 		dialogHelper = new JOptionHelper(this);
+		
+		singletonInstance = this;
 	}
 
 	private SearchListener getDefaultListener() {
@@ -269,10 +270,16 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		});
 		
 		searchButton.addActionListener((e) -> {
+			
+			if(selectedSearchFiles == null || selectedSearchFiles.isEmpty()) {
+				dialogHelper.info("Select source before to search!", "Missing source file(s)!");
+				return;
+			}
+		
+			setEnabled(false);
+			fileSearchObj = new FileContentSearch(getSearchDTO(), selectedSearchFiles, searchActions);
 			new Thread(()->{
-				setEnabled(false);
 				try {
-					fileSearchObj = new FileContentSearch(getSearchDTO(), selectedSearchFiles, searchActions);
 					fileSearchObj.startSearch(true);
 				} catch (Throwable e1) {
 					String errMsg = "An error occurred: " + e1.getMessage();
@@ -294,14 +301,15 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 				findTextCombo.getSelectedString(), 
 				caseCheckBox.isSelected(),
 				wholeWordCheckBox.isSelected(),
-				regexCheckBox.isSelected());
+				regexCheckBox.isSelected(),
+				includeBinariesCheckBox.isSelected());
 		
 		return searchDTO;
 	}
 	
 	private void checkComboWithText() {
 		String selectedItem = findTextCombo.getSelectedString(); 
-		boolean nonEmpty = selectedItem!=null && selectedItem.length()>0;
+		boolean nonEmpty = selectedItem!=null && !selectedItem.isEmpty();
 		searchButton.setEnabled(nonEmpty);
 	}
 	
@@ -322,16 +330,23 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 			}
 		});
 		
-		UIUtil.getTextComponent(findTextCombo).addInputMethodListener(new InputMethodListener() {
+		findTextCombo.addKeyListener(new KeyListener() {
 			
 			@Override
-			public void inputMethodTextChanged(InputMethodEvent event) {
+			public void keyTyped(KeyEvent e) {
 				checkComboWithText();
 			}
 			
 			@Override
-			public void caretPositionChanged(InputMethodEvent event) {
-				checkComboWithText();
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}
@@ -496,5 +511,12 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 
 	}
 
+	public static FileSearchDialog getLazyInstance(Frame owner, FileSearchActions searchActions) {
+		return singletonInstance != null ? singletonInstance : new FileSearchDialog(owner, searchActions);
+	}
+
+	public static FileSearchDialog getLazyInstance(Dialog owner, FileSearchActions searchActions) {
+		return singletonInstance != null ? singletonInstance : new FileSearchDialog(owner, searchActions);
+	}
 
 }

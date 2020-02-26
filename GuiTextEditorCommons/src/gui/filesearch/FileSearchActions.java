@@ -1,4 +1,4 @@
-package files.search;
+package gui.filesearch;
 
 import java.util.List;
 
@@ -15,8 +15,11 @@ public interface FileSearchActions {
 	 * This will be triggered at the end of the last file search
 	 */
 	public default void searchCompleted(List<SearchResult> results) {
-		System.out.println("Search completed with results: " + results);
+//		System.out.println("Search completed with results: " + results);
 	};
 	
 	public default void searchStoppedAction() {};
+	
+	public default void resultView(SearchResult searchResult, int viewLine) {};
+	
 }

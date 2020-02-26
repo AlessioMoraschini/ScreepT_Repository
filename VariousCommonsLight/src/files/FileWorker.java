@@ -640,10 +640,11 @@ public class FileWorker {
 	 */
 	public static ArrayList<File> getAllContent(File sourceDir, String filterType) {
 		ArrayList<File> result = new ArrayList<>();
-		for(File found : sourceDir.listFiles(CustomFileFilters.customTypeFilter(filterType))) {
+		for(File found : sourceDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.ALL_FOUND))) {
 			if(found.isDirectory()) {
-				result.addAll(getAllContent(found, filterType));
-			}else {
+				ArrayList<File> subResults = getAllContent(found, filterType);
+				result.addAll(subResults);
+			}else if(CustomFileFilters.fileAccepted(filterType)){
 				result.add(found);
 			}
 		}

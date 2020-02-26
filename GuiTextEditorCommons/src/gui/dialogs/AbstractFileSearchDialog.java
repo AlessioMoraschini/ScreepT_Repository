@@ -24,6 +24,7 @@ import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,6 +67,8 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	protected JButton searchButton;
 	protected JButton chooseFileBtn;
 	protected JTextField txtFieldSelectedFiles;
+	
+	protected JCheckBox includeBinariesCheckBox;
 	
 	public GenericFileChooserDialog fileDialogHelper;
 
@@ -245,6 +248,8 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		// Make a panel containing the "search up/down" radio buttons.
 		dirPanel = new JPanel();
 		dirPanel.setLayout(new BoxLayout(dirPanel, BoxLayout.LINE_AXIS));
+		
+		includeBinariesCheckBox = new JCheckBox("Binary files");
 
 		// Rearrange the search conditions panel.
 		searchConditionsPanel.removeAll();
@@ -253,6 +258,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		temp.setLayout(new BoxLayout(temp, BoxLayout.PAGE_AXIS));
 		temp.add(caseCheckBox);
 		temp.add(wholeWordCheckBox);
+		temp.add(includeBinariesCheckBox);
 		searchConditionsPanel.add(temp, BorderLayout.LINE_START);
 		temp = new JPanel();
 		temp.setLayout(new BoxLayout(temp, BoxLayout.PAGE_AXIS));
@@ -264,7 +270,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		// Create the "Find what" label.
 		findFieldLabel = UIUtil.newLabel(getBundle(), "FindWhat",findTextCombo);
 		
-		chooseFileBtn = new JButton("Select source");
+		chooseFileBtn = new JButton("Select source(s)");
 		// Create a "Find Next" button.
 		searchButton = UIUtil.newButton(getBundle(), "Find");
 		searchButton.setActionCommand(SearchEvent.Type.FIND.name());
@@ -313,6 +319,8 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		KeyStroke ctrlF = KeyStroke.getKeyStroke(KeyEvent.VK_F, modifier);
 		im.put(ctrlF, "focusSearchForField");
 		am.put("focusSearchForField", new AbstractAction() {
+			private static final long serialVersionUID = 453078586676359005L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				AbstractFileSearchDialog.this.requestFocus();

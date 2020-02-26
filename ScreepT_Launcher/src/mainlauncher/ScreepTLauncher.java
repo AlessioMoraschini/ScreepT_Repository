@@ -61,7 +61,7 @@ import utils.SysUtils;
 	 * To use this place the exported jar in same folder as main-jar application to run, including the given "LAUNCHER/"
 	 * folder with sub-folders and files keeping names and structure.
 	 * 
-	 * => to run the application just customize MAIN_JAR_FILE with the name of main application jar.
+	 * => to run the application just customize GeneralConfig properties file with the name of main application jar.
 	 * 
 	 * => to customize launcher graphics just change the class of launcherMainFrame extending JFrame class with your own.
 	 * 
@@ -413,7 +413,7 @@ import utils.SysUtils;
 		 */
 		private static String writeInitBatShAndGetPath(String commandList) throws IOException {
 	
-			String initFilePath = (!currentOS.isWindows())? BASH_LAUNCHER_NAME : BATCH_LAUNCHER_NAME;
+			String initFilePath = (currentOS.isWindows())? BATCH_LAUNCHER_NAME : BASH_LAUNCHER_NAME;
 			logger.info("Creating launcher file : " + initFilePath);
 			
 			// write commands to build bash/batch starter file
@@ -529,7 +529,7 @@ import utils.SysUtils;
 						logger.error("{}", e);
 					}
 				} else {
-					String advice = "<html>It seems there is already a running instance of " +GeneralConfig.APPLICATION_NAME 
+					String advice = "<html>It seems there is already a running instance of " + GeneralConfig.APPLICATION_NAME 
 							+ "<br/> -> If this message is not due to a previous application crash, it's strongly recommended to avoid multiple instances." 
 							+ "<br/> Are you sure to start another instance?</html>";
 					runNewInstance = new JOptionHelper(null).yesOrNo(advice, "ScreepT already running");
