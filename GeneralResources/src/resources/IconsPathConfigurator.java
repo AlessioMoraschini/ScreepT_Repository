@@ -143,6 +143,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_DECRYPT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Decrypt.png";
 	public static final String ICON_SPEAKER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Speaker.png";
 	public static final String ICON_SEARCH = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/Search.png";
+	public static final String ICON_FILE_SEARCH = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/FileSearch.png";
 	public static final String ICON_CONVERT_OCR_IMAGE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/OCR.png";
 	public static final String ICON_CONVERT_ESCAPES = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/convertEscapes.png";
 	public static final String ICON_REPLACE_TXT = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/replace.png";

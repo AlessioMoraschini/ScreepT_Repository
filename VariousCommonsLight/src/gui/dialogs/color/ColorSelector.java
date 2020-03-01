@@ -74,8 +74,8 @@ public class ColorSelector extends JPanel {
 		add(lblFont, "cell 2 0,alignx trailing");
 		
 		comboFont = new JComboBox<FontType>(FontType.values());
-		comboFont.setMinimumSize(new Dimension(60,30));
-		comboFont.setPreferredSize(new Dimension(60,30));
+		comboFont.setMinimumSize(new Dimension(75,30));
+		comboFont.setPreferredSize(new Dimension(75,30));
 		comboFont.setRenderer(new FontTypeRenderer());
 		comboFont.setSelectedItem(this.fontType);
 		comboFont.setFont(DEFAULT_FONT.deriveFont(this.fontType.type));
@@ -160,7 +160,6 @@ public class ColorSelector extends JPanel {
 						elementOm.background = userChoice.getChosenColor();
 					else
 						elementOm.foreground = userChoice.getChosenColor();
-						
 						
 					onValueChange.run();
 				}

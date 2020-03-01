@@ -108,9 +108,6 @@ public class MainGuiGeneralAppStarter {
 		
 		try {
 			try {
-				String initPropsMsg = "Preloading configuration";
-				loaderGraphics.update(initPropsMsg, 1);
-				loaderGraphics.indeterminate(true, initPropsMsg);
 				
 				// Load Internal configuration and dialog helper
 				GeneralConfig.initLazyGeneralConfig();

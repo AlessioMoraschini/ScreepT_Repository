@@ -247,6 +247,7 @@ public class WindowCreator {
 			
 		});
 		
+		searchDialog.setIconImage(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH).getImage());
 		searchDialog.setVisible(true);
 		return searchDialog;
 	}

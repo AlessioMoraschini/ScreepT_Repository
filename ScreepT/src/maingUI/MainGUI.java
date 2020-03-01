@@ -918,6 +918,14 @@ public class MainGUI extends MainGuiParent{
 		});
 
 		// open in a new window - IMPORT/EXPORT WORKSPACE - Text Editor
+		mntmFileSearch = new CustomJmenuItem(new AbstractAction("Search text into files") {
+			public void actionPerformed(ActionEvent ae) {
+				
+				windowCreator.fileContentSearch();
+			}
+		});
+
+		// open in a new window - IMPORT/EXPORT WORKSPACE - Text Editor
 		mntmTxtEditorImpExpCryptedWkspc = new CustomJmenuItem(new AbstractAction("Import/Export crypted workspace") {
 			public void actionPerformed(ActionEvent ae) {
 				
