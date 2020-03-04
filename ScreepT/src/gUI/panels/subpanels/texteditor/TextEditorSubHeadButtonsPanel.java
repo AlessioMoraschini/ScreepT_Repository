@@ -193,6 +193,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JOptionHelperExtended dialogHelper;
 	
 	TextEditorSubHeadButtonsPanel thisHeaderRef;
+	private JButton btnFileContentSearch;
 	
 	/************************
 	*	Main subHeader CONSTRUCTOR
@@ -213,7 +214,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		DEFAULT_FORE_COL = currentConfiguration.getTextEditorOpt().foreCol;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 3, hidemode 3", "[27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][65px:n:70px][27px:n][50px:65px:100px][40px:40px:60px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][0px:5px:5px][60px][27px][][][][grow][]", "[:35px:35px,center][:50px:50px,center]"));
+		setLayout(new MigLayout("insets 3, hidemode 3", "[27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][65px:n:70px][27px:n][50px:65px:100px][40px:40px:60px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][0px:5px:5px][60px][27px][][][][grow][]", "[:35px:35px,center][:50px:50px,center]"));
 		
 		btnCloseAllTabs = new JButton("");
 		btnCloseAllTabs.setForeground(Color.BLACK);
@@ -247,6 +248,13 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		toggleBtnClipboard.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleBtnClipboard.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
 		add(toggleBtnClipboard, "cell 23 0,alignx center,grow");
+		
+		toggleButtonSpellCheck = new JToggleButton("");
+		toggleButtonSpellCheck.setMinimumSize(new Dimension(25, 0));
+		toggleButtonSpellCheck.setToolTipText(TextEditTooltips.tooltipSpellChecker);
+		toggleButtonSpellCheck.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
+		add(toggleButtonSpellCheck, "cell 24 0,alignx center,grow");
 		
 		btnStyledCopy = new JButton("");
 		btnStyledCopy.setToolTipText(TextEditTooltips.tooltipStyledCopy);
@@ -344,25 +352,20 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnCalculator.setToolTipText(TextEditTooltips.tooltipBtnCalculator);
 		btnCalculator.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CALCULATOR));
 		add(btnCalculator, "cell 21 0,grow");
-
-		btnColorSampler = new JButton("");
-		btnColorSampler.setToolTipText(TextEditTooltips.tooltipBtnColorSampler);
-		btnColorSampler.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
-		add(btnColorSampler, "cell 21 1,grow");
 		
 		labelTabSize = new JLabel("Tab size:");
 		labelTabSize.setMinimumSize(new Dimension(50, 12));
 		labelTabSize.setHorizontalAlignment(SwingConstants.RIGHT);
 		labelTabSize.setForeground(SystemColor.menu);
 		labelTabSize.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		add(labelTabSize, "cell 25 0,alignx right");
+		add(labelTabSize, "cell 26 0,alignx right");
 		
 		tabSizeSpinner = new JSpinner();
 		tabSizeSpinner.setMinimumSize(new Dimension(30, GeneralConfig.MINIMUM_BUTTON_SIZE.height));
 		tabSizeSpinner.setToolTipText(TextEditTooltips.tooltipTabSize);
 		tabSizeSpinner.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		tabSizeSpinner.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
-		add(tabSizeSpinner, "cell 26 0,growx");
+		add(tabSizeSpinner, "cell 27 0,growx");
 		tabSizeSpinner.setModel(new SpinnerNumberModel(currentConfiguration.getTextEditorOpt().getTabSize(), 1, 9, 1));
 
 		lblMargin = new JLabel("Margin: ");
@@ -371,13 +374,13 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		lblMargin.setForeground(Color.LIGHT_GRAY);
 		lblMargin.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblMargin.setBackground(UIManager.getColor("CheckBox.darkShadow"));
-		add(lblMargin, "cell 27 0,alignx right,aligny center");
+		add(lblMargin, "cell 28 0,alignx right,aligny center");
 
 		lBLMargin = new JLabel("12");
 		lBLMargin.setMinimumSize(new Dimension(14, 12));
 		lBLMargin.setForeground(Color.WHITE);
 		lBLMargin.setFont(new Font("SansSerif", Font.BOLD, 13));
-		add(lBLMargin, "cell 28 0,alignx center,aligny center");
+		add(lBLMargin, "cell 29 0,alignx center,aligny center");
 
 		btnToggleFileView = new JToggleButton("");
 		btnToggleFileView.setMinimumSize(GeneralConfig.MINIMUM_BUTTON_SIZE);
@@ -449,20 +452,25 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnReplaceEscapesSeq.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES));
 		add(btnReplaceEscapesSeq, "cell 18 1,alignx center,grow");
 
-		btnFindText = new JButton("");
-		btnFindText.setToolTipText(TextEditTooltips.tooltipFindText);
-		btnFindText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
-		add(btnFindText, "cell 19 1,alignx center,grow");
-
-		btnReplaceText = new JButton("");
-		btnReplaceText.setToolTipText(TextEditTooltips.tooltipReplaceText);
-		btnReplaceText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REPLACE_TXT));
-		add(btnReplaceText, "cell 20 1,grow");
-
 		btnGoToLine = new JButton("");
 		btnGoToLine.setToolTipText(TextEditTooltips.tooltipGoToLine);
 		btnGoToLine.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GOTO_LINE));
 		add(btnGoToLine, "cell 20 0,grow");
+						
+		btnFileContentSearch = new JButton("");
+		btnFileContentSearch.setToolTipText(TextEditTooltips.tooltipFileContentSearch);
+		btnFileContentSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
+		add(btnFileContentSearch, "cell 19 1,grow");
+
+		btnFindText = new JButton("");
+		btnFindText.setToolTipText(TextEditTooltips.tooltipFindText);
+		btnFindText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
+		add(btnFindText, "cell 20 1,alignx center,grow");
+		
+		btnReplaceText = new JButton("");
+		btnReplaceText.setToolTipText(TextEditTooltips.tooltipReplaceText);
+		btnReplaceText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REPLACE_TXT));
+		add(btnReplaceText, "cell 21 1,grow");
 		
 		btnBase64Conversion = new JButton("");
 		btnBase64Conversion.setMinimumSize(new Dimension(25, 0));
@@ -470,12 +478,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnBase64Conversion.setToolTipText("Encode selected/all text to base 64 (press ctrl to decode base 64)");
 		add(btnBase64Conversion, "cell 22 1,alignx center,grow");
 		
-		toggleButtonSpellCheck = new JToggleButton("");
-		toggleButtonSpellCheck.setMinimumSize(new Dimension(25, 0));
-		toggleButtonSpellCheck.setToolTipText(TextEditTooltips.tooltipSpellChecker);
-		toggleButtonSpellCheck.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
-		add(toggleButtonSpellCheck, "cell 23 1,alignx center,grow");
+		btnColorSampler = new JButton("");
+		btnColorSampler.setToolTipText(TextEditTooltips.tooltipBtnColorSampler);
+		btnColorSampler.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
+		add(btnColorSampler, "cell 23 1,grow");
 						
 		chckbxShowTabGrid = new JCheckBox("Show Tabs");
 		chckbxShowTabGrid.setOpaque(false);
@@ -486,20 +492,20 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		chckbxShowTabGrid.setSelected(currentConfiguration.getTextEditorOpt().isTabLineVisible());
 		chckbxShowTabGrid.setForeground(SystemColor.menu);
 		chckbxShowTabGrid.setBackground(Color.DARK_GRAY);
-		add(chckbxShowTabGrid, "cell 25 1 2 1,alignx center");
+		add(chckbxShowTabGrid, "cell 26 1 2 1,alignx center");
 				
 		lblFontSize = new JLabel("Size: ");
 		lblFontSize.setToolTipText(TextEditTooltips.tooltipIncreaseTextSize);
 		lblFontSize.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblFontSize.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFontSize.setForeground(Color.LIGHT_GRAY);
-		add(lblFontSize, "cell 27 1,alignx right,aligny center");
+		add(lblFontSize, "cell 28 1,alignx right,aligny center");
 		
 		lblSIZE = new JLabel("");
 		lblSIZE.setToolTipText(TextEditTooltips.tooltipIncreaseTextSize);
 		lblSIZE.setFont(new Font("SansSerif", Font.BOLD, 13));
 		lblSIZE.setForeground(SystemColor.window);
-		add(lblSIZE, "cell 28 1,alignx center,aligny center");
+		add(lblSIZE, "cell 29 1,alignx center,aligny center");
 		lblSIZE.setText(String.valueOf(GeneralConfig.DEFAULT_FONT.getSize()) + " Px");
 		
 		sliderFontSize = new JSlider(4, 100);
@@ -508,12 +514,12 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		sliderFontSize.setForeground(SystemColor.activeCaptionBorder);
 		sliderFontSize.setBackground(UIManager.getColor("Button.shadow"));
 		sliderFontSize.setValue(currentConfiguration.getTextEditorOpt().getFont().getSize());
-		add(sliderFontSize, "cell 29 1 3 1,growx");
+		add(sliderFontSize, "cell 30 1 3 1,growx");
 		
 		slider_margin = new JSlider(0, 100, 0);
 		slider_margin.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
 		slider_margin.setBackground(UIManager.getColor("Button.shadow"));
-		add(slider_margin, "cell 29 0 3 1,growx");
+		add(slider_margin, "cell 30 0 3 1,growx");
 		
 		btnLoadTextFile = new JButton("");
 		btnLoadTextFile.setToolTipText(TextEditTooltips.tooltipLoadTextFile);
@@ -837,6 +843,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			}
 		});
 
+		// SEARCH INTO FILE
+		btnFileContentSearch.addActionListener((e)-> {
+			mainApplication.windowCreator.fileContentSearch();
+		});
+		
 		// SEARCH TEXT
 		btnFindText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

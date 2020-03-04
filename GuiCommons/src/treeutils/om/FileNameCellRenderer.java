@@ -87,10 +87,10 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 
 				if (selectedFile.isFile()) {
 					iconContainer.setFont(fileFont);
-					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FILE_TEXT_HEIGHT));
+					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth() + 100, FILE_TEXT_HEIGHT));
 				} else {
 					iconContainer.setFont(folderFont);
-					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth(), FOLDER_TEXT_HEIGHT));
+					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth() + 100, FOLDER_TEXT_HEIGHT));
 				}
 
 				container.setToolTipText(selectedFile != null ? selectedFile.getAbsolutePath() : "file is null!");

@@ -154,8 +154,9 @@ public class MainGuiParent {
 	CustomJmenuItem mntmgenerateKeyImageSub;
 	CustomJmenuItem mntmViewKeyDictionary;
 	static CustomJmenuItem mntmTextEditor;
-	static CustomJmenuItem mntmThemeEditor;
+	static CustomJmenuItem mntmFileSearch;
 	public CustomJmenuItem mntmTxtEditorImpExpCryptedWkspc;
+	static CustomJmenuItem mntmThemeEditor;
 	CustomJmenuItem mntmnetInfo;
 	CustomJmenuItem mntmhwInfo;
 	CustomJmenuItem mntmHashChecker;
@@ -391,6 +392,7 @@ public class MainGuiParent {
 			mnTextEditor.add(new JSeparator());
 			mnTextEditor.add(menuBrowserOpenerActions);
 			mnTextEditor.add(menuStringActions);
+			mnTextEditor.add(mntmFileSearch);
 			mnTextEditor.add(mntmTxtEditorImpExpCryptedWkspc);
 			mnTextEditor.add(mntmThemeEditor);
 				
@@ -541,6 +543,7 @@ public class MainGuiParent {
 		MenuSetter.setFont(menuBrowserOpenerActions, menuItemFont);
 		menuBrowserOpenerActions.setFont(subMenuFont);
 		menuStringActions.setFont(subMenuFont);
+		mntmFileSearch.setFont(menuItemFont);
 		mntmTxtEditorImpExpCryptedWkspc.setFont(menuItemFont);
 		mntmThemeEditor.setFont(menuItemFont);
 
@@ -627,6 +630,7 @@ public class MainGuiParent {
 		mnLastOpenedFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLOCK));
 		menuBrowserOpenerActions.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		menuStringActions.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
+		mntmFileSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
 		mntmTxtEditorImpExpCryptedWkspc.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
 		mntmThemeEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
 		
@@ -702,6 +706,7 @@ public class MainGuiParent {
 		
 		// Text editor sub-menu
 		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
+		mntmFileSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, CTRL_MASK | ALT_MASK));
 		mntmTxtEditorImpExpCryptedWkspc.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		
 		// Various submenu
@@ -1101,6 +1106,14 @@ public class MainGuiParent {
 	
 	public static CustomJmenuItem getMntmThemeEditor() {
 		return mntmThemeEditor;
+	}
+
+	public static CustomJmenuItem getMntmFileSearch() {
+		return mntmFileSearch;
+	}
+
+	public static void setMntmFileSearch(CustomJmenuItem mntmFileSearch) {
+		MainGuiParent.mntmFileSearch = mntmFileSearch;
 	}
 
 	public CustomJmenuItem getMntmTxtEditorImpExpCryptedWkspc() {

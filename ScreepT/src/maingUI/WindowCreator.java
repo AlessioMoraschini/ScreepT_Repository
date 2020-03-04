@@ -15,10 +15,12 @@ import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
+import files.om.SearchResult;
 import frameutils.frame.ClipboardFrame;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.GeneratePasswordFrame;
@@ -40,6 +42,8 @@ import gui.SchemeManagerGui;
 import gui.UpdateProgressPanel;
 import gui.LightLicenseViewer.UserLicenseChoice;
 import gui.dialogs.msg.JOptionHelper;
+import gui.filesearch.FileSearchActions;
+import gui.filesearch.FileSearchDialog;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import resources.GeneralConfig;
@@ -206,6 +210,46 @@ public class WindowCreator {
 				prog.forceClose();
 			}
 		});
+	}
+	
+	public FileSearchDialog fileContentSearch() {
+		
+		FileSearchDialog searchDialog = FileSearchDialog.getLazyInstance((JFrame)null, new FileSearchActions() {
+
+			@Override
+			public void resultView(SearchResult searchResult, int viewLine) {
+				if(!MainGUI.mainGuiUtils.isTextEditorActive()) {
+					MainGUI.mainGuiUtils.startTextEditor(MainGUI.textEditorPanel == null);
+				}
+				
+				SwingUtilities.invokeLater(()->{
+					while (MainGUI.textEditorPanel == null) {
+						try {
+							Thread.sleep(250);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					
+					MainGUI.textEditorPanel.getCurrentTabEditor().loadFile(searchResult.ownerFile);
+				
+					try {
+						JTextArea textArea = MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.textArea;
+						textArea.requestFocus();
+						int lineCaretOffset = textArea.getLineStartOffset(viewLine-1);
+						textArea.setSelectionStart(lineCaretOffset + searchResult.resultLines.get(viewLine).get(0).start);
+						textArea.setSelectionEnd(lineCaretOffset + searchResult.resultLines.get(viewLine).get(0).end);
+					} catch (Exception e) {
+						logger.warn("Cannot select current result into loaded textArea", e);
+					}
+				});
+			}
+			
+		});
+		
+		searchDialog.setIconImage(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH).getImage());
+		searchDialog.setVisible(true);
+		return searchDialog;
 	}
 	
 	public void newHwInfoFrame() {

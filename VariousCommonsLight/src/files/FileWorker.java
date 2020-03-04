@@ -193,24 +193,27 @@ public class FileWorker {
 		logger.info("writeStringToFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return true;
 	}
-
-	/**
-	 * This method read from a file and give a String representation of content
-	 * @param toRead the source file to read
-	 * @return
-	 * @throws IOException
-	 */
-	public static String readFileAsString(File toRead) throws IOException {
+	
+	public static String readFileAsString(File toRead, String encoding) throws IOException {
 		if(toRead == null || !toRead.exists()) {
 			throw new IOException();
 		}
+		
+		String defaultEncoding = System.getProperty("file.encoding");
+		encoding = encoding != null ? encoding : defaultEncoding;
 	
 		logger.info("readFileAsString -> Start...");
 		long startTime = System.currentTimeMillis();
 	
 		StringBuilder builder = new StringBuilder(100000);
 		FileInputStream readerStream = new FileInputStream(toRead);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new InputStreamReader(readerStream, encoding));
+		} catch (Exception e1) {
+			logger.debug("Cannot read with given encoding: " + encoding + " - Using default: " + defaultEncoding);
+			reader = new BufferedReader(new InputStreamReader(readerStream, defaultEncoding));
+		}
 		try {
 			String line;
 			
@@ -225,6 +228,16 @@ public class FileWorker {
 		
 		logger.info("readFileAsString -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return builder.toString();
+	}
+
+	/**
+	 * This method read from a file and give a String representation of content
+	 * @param toRead the source file to read
+	 * @return
+	 * @throws IOException
+	 */
+	public static String readFileAsString(File toRead) throws IOException {
+		return readFileAsString(toRead, null);
 	}
 
 	/**
@@ -640,10 +653,11 @@ public class FileWorker {
 	 */
 	public static ArrayList<File> getAllContent(File sourceDir, String filterType) {
 		ArrayList<File> result = new ArrayList<>();
-		for(File found : sourceDir.listFiles(CustomFileFilters.customTypeFilter(filterType))) {
+		for(File found : sourceDir.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.ALL_FOUND))) {
 			if(found.isDirectory()) {
-				result.addAll(getAllContent(found, filterType));
-			}else {
+				ArrayList<File> subResults = getAllContent(found, filterType);
+				result.addAll(subResults);
+			}else if(CustomFileFilters.fileAccepted(filterType)){
 				result.add(found);
 			}
 		}

@@ -58,6 +58,7 @@ public class CustomizeParametersPanel extends JFrame{
 	static Logger logger = Logger.getLogger(CustomizeParametersPanel.class); 
 	
 	public static final DecimalFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
+	private static final String TOOLTIP_GRAPHICS_SCALE = "<html>Choose general resize factor used for Graphics elements (GUI). <br>(This can have no effect with some java versions).</html>";
 	private static final String TOOLTIP_LEVEL_LOG = "Choose a value between 'OFF'(logging feature disabled) and 'ALL'. This can have an impact for overall speed and memory usage (OFF = max speed)";
 	private static final String TOOLTIP_STACK_SIZE = "This is the memory used by java JVM to store variables in ram memory called stack. \nHigh value = more reliability but less free memory for other dynamic values!";
 	private static final String TOOLTIP_WARN_DIFFERENT_XSS_XMX_ARGS = "It's recommended to use same value for max and minimum memory, different values can cause a performance decrease (use different values if you need dynamic memory allocation)";
@@ -75,8 +76,8 @@ public class CustomizeParametersPanel extends JFrame{
 	private static final String TITLE_LAUNCH_AS_JAR = "Launch as .Jar:";
 	private static final String TITLE_LAUNCH_AS_CLASS = "Launch as .Class:";
 	
-	private static final int DEF_FIXED_HEIGHT = 245;
-	private static final int DEF_FIXED_WIDTH = 575;
+	private static final int DEF_FIXED_HEIGHT = 255;
+	private static final int DEF_FIXED_WIDTH = 650;
 	public static final Dimension DEF_DIMENSION = new Dimension(DEF_FIXED_WIDTH, DEF_FIXED_HEIGHT);
 	
 	public static boolean active = false;
@@ -128,6 +129,7 @@ public class CustomizeParametersPanel extends JFrame{
 	
 	public boolean JVM_WARN = false;
 	private JLabel lblLaunchJarIconWarn;
+	private JLabel labelGuiScaleInfo;
 	
 	//ArrayList<String> foundJvmHomeList = SysUtils.findJvmVersionsInstalled(currentOS);
 	
@@ -151,7 +153,7 @@ public class CustomizeParametersPanel extends JFrame{
 		// END CUSTOM SETTINGS
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][80px,grow]", "[grow][grow][grow][grow][][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[60px,grow][40px][:20px:20px][:60px:90px][25px:n:25px][100px:100px:100px,grow][:20px:20px][20px:n][80px,grow]", "[grow][grow][grow][grow][][grow]"));
 		
 		lblMaxMemory = new JLabel("Max memory(MB):");
 		lblMaxMemory.setForeground(new Color(220, 220, 220));
@@ -180,7 +182,7 @@ public class CustomizeParametersPanel extends JFrame{
 //		comboLogLevel = new JComboBox<String>(); // Windowbuilder workaround for tests
 		comboLogLevel = new JComboBox<String>(IniFileManager.getLogLevelsList());
 		comboLogLevel.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(comboLogLevel, "cell 7 0,growx");
+		getContentPane().add(comboLogLevel, "cell 7 0 2 1,growx");
 		
 		spinnerMinMemoryMB = new JSpinner();
 		spinnerMinMemoryMB.setOpaque(true);
@@ -192,18 +194,25 @@ public class CustomizeParametersPanel extends JFrame{
 		getContentPane().add(lblLogLevelInfo, "cell 6 0,alignx right");
 		
 		labelGuiScale = new JLabel("Graphics Scale:");
+		labelGuiScale.setToolTipText(TOOLTIP_GRAPHICS_SCALE);
 		labelGuiScale.setForeground(new Color(220, 220, 220));
 		getContentPane().add(labelGuiScale, "cell 5 1,alignx right");
 		
+		labelGuiScaleInfo = new JLabel("");
+		labelGuiScaleInfo.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		labelGuiScaleInfo.setToolTipText(TOOLTIP_GRAPHICS_SCALE);
+		labelGuiScaleInfo.setVisible(true);
+		getContentPane().add(labelGuiScaleInfo, "cell 6 1");
+		
 		dynLblScaleGui = new JLabel("1");
 		dynLblScaleGui.setForeground(new Color(220, 220, 220));
-		getContentPane().add(dynLblScaleGui, "cell 6 1,alignx center");
+		getContentPane().add(dynLblScaleGui, "cell 7 1,alignx center");
 		
 		sliderGuiScale = new JSlider();
 		sliderGuiScale.setMinimum(0);
 		sliderGuiScale.setMaximum(100);
 		sliderGuiScale.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(sliderGuiScale, "cell 7 1");
+		getContentPane().add(sliderGuiScale, "cell 8 1");
 		
 		lblStackSize = new JLabel("Stack Size(MB)");
 		lblStackSize.setForeground(new Color(220, 220, 220));
@@ -236,7 +245,7 @@ public class CustomizeParametersPanel extends JFrame{
 		chckbxActiveShell.setToolTipText(TOOLTIP_DISPLAY_SHELL);
 		chckbxActiveShell.setCursor(GuiUtils.CURSOR_HAND);
 		chckbxActiveShell.setFont(new Font("SansSerif", Font.BOLD, 12));
-		getContentPane().add(chckbxActiveShell, "cell 7 2,alignx center");
+		getContentPane().add(chckbxActiveShell, "cell 7 2 2 1,alignx center");
 		
 		lblPreferredJvm = new JLabel("Preferred JVM");
 		lblPreferredJvm.setForeground(new Color(220, 220, 220));
@@ -255,10 +264,10 @@ public class CustomizeParametersPanel extends JFrame{
 		comboPrefJvm = new JComboBox<String>(JVMS.toArray(jvmArr));
 //		comboPrefJvm = new JComboBox<String>(); // Window builder bug workaround for test
 		comboPrefJvm.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(comboPrefJvm, "cell 3 3 5 1,growx");
+		getContentPane().add(comboPrefJvm, "cell 3 3 6 1,growx");
 		
 		separator = new JSeparator();
-		getContentPane().add(separator, "cell 0 4 8 1,growx");
+		getContentPane().add(separator, "cell 0 4 9 1,growx");
 		
 		btnExitConfiguration = new JButton("Discard");
 		btnExitConfiguration.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
@@ -291,7 +300,7 @@ public class CustomizeParametersPanel extends JFrame{
 		btnSaveConfig.setBackground(new Color(85, 166, 66));
 		btnSaveConfig.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SAVE_CONF));
 		btnSaveConfig.setCursor(GuiUtils.CURSOR_HAND);
-		getContentPane().add(btnSaveConfig, "cell 7 5,growx,aligny center");
+		getContentPane().add(btnSaveConfig, "cell 7 5 2 1,growx,aligny center");
 		
 		// add custom behaviour to frame
 		

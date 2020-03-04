@@ -1125,6 +1125,6 @@ public class TextEditor extends ModulePanel {
 	}
 	
 	public CustomTabbedEditor getCurrentTabEditor() {
-		return currentTextEditor.tabbedEditorsList.get(currentTextEditor.currentTabbedEditorSelected);
+		return currentTextEditor.tabbedEditorsList.get(currentTabbedEditorSelected);
 	}
 }

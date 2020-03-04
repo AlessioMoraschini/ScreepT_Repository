@@ -16,18 +16,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 
-import org.apache.log4j.Logger;
-
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
-import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
+import utility.SafeLogger;
 
 public class ParentFrame extends JFrame{
 	private static final long serialVersionUID = 7079644907872152737L;
 	
 	public static final char DEFAULT_PSW_CHAR = '\u25CF';
 	
-	public static Logger logger = Logger.getLogger(ParentFrame.class);
+	public static SafeLogger logger = new SafeLogger(ParentFrame.class);
 	
 	public AtomicBoolean isActive = new AtomicBoolean(true);
 
@@ -72,7 +71,7 @@ public class ParentFrame extends JFrame{
 	}
 	
 	public Dimension getDefaultDimension() {
-		return GuiUtilsExtended.getScreenSizePerc(80, this);
+		return GuiUtils.getScreenSizePerc(80, this);
 	}
 	
 	public Dimension getMinimumDimension() {

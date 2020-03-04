@@ -26,6 +26,11 @@ public class CustomFileFilters {
 	public static final String DIR_ONLY_HIDDEN = "DIR_ONLYH";
 	public static final String DIR_ONLY_VISIBLE = "DIR_ONLYV";
 	
+	public static boolean fileAccepted(String filter) {
+		return filter != null &&
+				(filter.contains("ALL") || filter.contains("FILE"));
+	}
+	
 	/**
 	 * Return a custom file filter with a filter typte to select type of files to accept, without check on extension
 	 * @param filterType use values defined in this class

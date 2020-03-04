@@ -230,7 +230,7 @@ public class LightLicenseViewer extends JDialog {
 	private void loadFile(File licenseToLoad) {
 		String fileContent = "License not found at: " + licenseToLoad;
 		try {
-			fileContent = FileWorker.readFileAsString(licenseToLoad);
+			fileContent = FileWorker.readFileAsString(licenseToLoad, "UTF-8");
 		} catch (Exception e) {
 			dialogHelper.warn("License file not found!");
 			licenseLoadedCorrectly = false;
@@ -257,7 +257,10 @@ public class LightLicenseViewer extends JDialog {
 	}
 
 	private void exitAccepting() {
-		dialogHelper.info("License accepted! However, if you want to read it again you can find it at: " + sourceLicense, "License accepted");
+		dialogHelper.info(
+			GuiUtils.encapsulateInHtml("<b>License accepted!</b><br>If you want to read it again you can find it at: " + sourceLicense),
+			"License accepted"
+		);
 		userChoice = UserLicenseChoice.ACCEPTED;
 		dispose();
 	}

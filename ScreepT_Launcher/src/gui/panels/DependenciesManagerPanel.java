@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
@@ -58,7 +57,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
-public class DependenciesManagerPanel extends JDialog{
+public class DependenciesManagerPanel extends JFrame{
 	private static final long serialVersionUID = 8830965172863577977L;
 
 	// KeyGenPanel logger
@@ -95,12 +94,11 @@ public class DependenciesManagerPanel extends JDialog{
 		dependeciesMissing = ScreepTLauncher.missingDependenciesList;
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
 		this.setAlwaysOnTop(true);
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow][50%,grow]", "[50px:80px][grow][40px:n][40px:n]"));
 		
-		lblTitleHeaderMessage = new JLabel("If some dependencies are missing and they're critical, you have to solve them before to start ScreepT!");
+		lblTitleHeaderMessage = new JLabel("If some dependencies are missing and they're critical, you have to solve them before starting ScreepT!");
 		lblTitleHeaderMessage.setForeground(new Color(211, 211, 211));
 		lblTitleHeaderMessage.setBackground(Color.BLACK);
 		lblTitleHeaderMessage.setBorder(new LineBorder(new Color(0, 0, 0), 2));

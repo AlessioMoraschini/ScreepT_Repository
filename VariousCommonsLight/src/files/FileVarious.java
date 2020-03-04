@@ -103,6 +103,19 @@ public class FileVarious {
 		return other.toURI().relativize(first.toURI()).getPath();
 	}
 	
+	public static boolean isBinaryFile(File fileToCheck) throws IOException {
+        String type = Files.probeContentType(fileToCheck.toPath());
+        if (type == null) {
+            //type couldn't be determined, assume binary
+            return true;
+        } else if (type.startsWith("text")) {
+            return false;
+        } else {
+            //type isn't text
+            return true;
+        }
+    }
+	
 	public static ArrayList<String> getPathsRelativeToOtherFile(ArrayList<File> toRelativize, File reference) throws Exception{
 		ArrayList<String> relativePaths = new ArrayList<>();
 		

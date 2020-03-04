@@ -216,6 +216,13 @@ public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEv
 					currentGui.getMntmTextEditor().doClick();
 				}
 				/**
+				 * OPEN FILE-CONTENT-SEARCH - Ctrl+Alt+F
+				 */
+				else if(e.getKeyCode() == KeyEvent.VK_F && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentGui.windowCreator.fileContentSearch();
+				}
+				
+				/**
 				 *  OPEN IMPORT/EXPORT crypted workspace: TEXT-EDITOR : CTRL+ALT+SHIFT+I
 				 */
 				else if (e.getKeyCode() == 73 && e.isAltDown() && e.isControlDown() && e.isShiftDown()) {

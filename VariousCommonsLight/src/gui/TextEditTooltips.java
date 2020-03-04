@@ -18,6 +18,7 @@ public class TextEditTooltips {
 	public static final String tooltipToggleSubHeader = "[Ctrl + Alt + shift + U] Toggle sub-header panel visibility on/off";
 	public static final String tooltipToggleFooter = "[Ctrl + Alt + shift + L] Toggle footer panel visibility on/off";
 	public static final String tooltipIncreaseTextSize = "[Ctrl + shift + mouse scroll] change font size";
+	public static final String tooltipFileContentSearch = "[Ctrl + Alt + F] Search for text into file(s) with various options";
 	public static final String tooltipFindText = "[Ctrl + F] Search text into current editor";
 	public static final String tooltipReplaceEscapes = "[Ctrl + E] Open Escape sequences / special characters replacement panel - Selected/all text";
 	public static final String tooltipBtnCalculator = "[Ctrl + Alt + C] Open calculator";
