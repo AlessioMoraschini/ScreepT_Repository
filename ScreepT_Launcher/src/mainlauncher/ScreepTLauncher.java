@@ -254,7 +254,7 @@ import utils.SysUtils;
 				loaderGraphics.update("Ready", 101);
 				
 				try {
-					Thread.sleep(800);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

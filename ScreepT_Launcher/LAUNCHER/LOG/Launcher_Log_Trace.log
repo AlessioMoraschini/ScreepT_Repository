@@ -1,0 +1,144 @@
+2020-03-04 21:52:05,949 [main] DEBUG mainlauncher.ScreepTLauncher - 
+
+##################################################
+
+Wed Mar 04 21:52:05 CET 2020
+
+ScreepT - Launcher Started now!
+
+##################################################
+
+
+2020-03-04 21:52:06,607 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2020-03-04 21:52:06,638 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2020-03-04 21:52:06,654 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Started to analyze before launch
+2020-03-04 21:52:06,654 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2020-03-04 21:52:06,670 [AWT-EventQueue-0] INFO  utils.SysUtils - Current jvm is : C:\Program Files\Java\jdk1.8.0_162\jre
+2020-03-04 21:52:06,670 [AWT-EventQueue-0] INFO  utils.SysUtils - C:\Program Files\Java\jdk1.8.0_162\jre not found in previously retrieved list -> added to JVM list
+2020-03-04 21:52:06,670 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - 
+
+ => Versions found: [C:\Program Files\java\jdk-11.0.2, C:\Program Files\java\jdk1.8.0_162, C:\Program Files\java\jre-9.0.4, C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot, C:\Program Files\Java\jdk1.8.0_162\jre]
+
+ => Found correct one: C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot/bin
+WARNING: false
+2020-03-04 21:52:06,670 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Creating launcher file : LauncherBatch.bat
+2020-03-04 21:52:06,670 [AWT-EventQueue-0] INFO  files.FileWorker - writeStringToFile -> Start (outFile : LauncherBatch.bat)
+2020-03-04 21:52:06,670 [AWT-EventQueue-0] INFO  files.FileWorker - writeStringToFile -> Finished in 0 ms
+2020-03-04 21:52:06,670 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Write completed correctly :)
+2020-03-04 21:52:06,670 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Launch command generated:
+
+set JDK_PATH=C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot/bin; 
+
+set PATH=%JDK_PATH%%PATH% 
+
+echo %PATH% 
+
+java -Xmx768m -Xms348m -Xss100m  -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_ScreepT/lib" -cp "./*;./Resources_ScreepT/lib/*"  maingUI.MainGuiGeneralAppStarter 
+
+exit 0
+
+
+2020-03-04 21:52:06,685 [AWT-EventQueue-0] INFO  gui.panels.LauncherMainPanel - gui.panels.LauncherMainPanel Starting...
+2020-03-04 21:52:06,701 [AWT-EventQueue-0] DEBUG gui.panels.LauncherMainPanel - icon image setted to main window
+2020-03-04 21:52:06,920 [AWT-EventQueue-0] INFO  gui.panels.LauncherMainPanel - gui.panels.LauncherMainPanel Started
+2020-03-04 21:52:07,156 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - mainlauncher.ScreepTLauncher Loaded
+2020-03-04 21:52:09,900 [AWT-EventQueue-0] DEBUG gui.panels.DependenciesManagerPanel - icon image setted to main window
+2020-03-04 21:52:09,969 [AWT-EventQueue-0] INFO  gui.panels.DependenciesManagerPanel - gui.panels.DependenciesManagerPanel Started
+2020-03-04 21:52:12,211 [AWT-EventQueue-0] DEBUG gui.panels.DependenciesManagerPanel - Closing Frame: gui.panels.DependenciesManagerPanel
+2020-03-04 21:52:13,479 [AWT-EventQueue-0] DEBUG gui.panels.LauncherMainPanel - Closing Frame: gui.panels.LauncherMainPanel
+2020-03-04 21:55:15,720 [main] DEBUG mainlauncher.ScreepTLauncher - 
+
+##################################################
+
+Wed Mar 04 21:55:15 CET 2020
+
+ScreepT - Launcher Started now!
+
+##################################################
+
+
+2020-03-04 21:55:16,364 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2020-03-04 21:55:16,380 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2020-03-04 21:55:16,395 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Started to analyze before launch
+2020-03-04 21:55:16,395 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2020-03-04 21:55:16,411 [AWT-EventQueue-0] INFO  utils.SysUtils - Current jvm is : C:\Program Files\Java\jdk1.8.0_162\jre
+2020-03-04 21:55:16,411 [AWT-EventQueue-0] INFO  utils.SysUtils - C:\Program Files\Java\jdk1.8.0_162\jre not found in previously retrieved list -> added to JVM list
+2020-03-04 21:55:16,411 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - 
+
+ => Versions found: [C:\Program Files\java\jdk-11.0.2, C:\Program Files\java\jdk1.8.0_162, C:\Program Files\java\jre-9.0.4, C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot, C:\Program Files\Java\jdk1.8.0_162\jre]
+
+ => Found correct one: C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot/bin
+WARNING: false
+2020-03-04 21:55:16,411 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Creating launcher file : LauncherBatch.bat
+2020-03-04 21:55:16,411 [AWT-EventQueue-0] INFO  files.FileWorker - writeStringToFile -> Start (outFile : LauncherBatch.bat)
+2020-03-04 21:55:16,427 [AWT-EventQueue-0] INFO  files.FileWorker - writeStringToFile -> Finished in 16 ms
+2020-03-04 21:55:16,427 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Write completed correctly :)
+2020-03-04 21:55:16,427 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Launch command generated:
+
+set JDK_PATH=C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot/bin; 
+
+set PATH=%JDK_PATH%%PATH% 
+
+echo %PATH% 
+
+java -Xmx768m -Xms348m -Xss100m  -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_ScreepT/lib" -cp "./*;./Resources_ScreepT/lib/*"  maingUI.MainGuiGeneralAppStarter 
+
+exit 0
+
+
+2020-03-04 21:55:16,427 [AWT-EventQueue-0] INFO  gui.panels.LauncherMainPanel - gui.panels.LauncherMainPanel Starting...
+2020-03-04 21:55:16,442 [AWT-EventQueue-0] DEBUG gui.panels.LauncherMainPanel - icon image setted to main window
+2020-03-04 21:55:16,645 [AWT-EventQueue-0] INFO  gui.panels.LauncherMainPanel - gui.panels.LauncherMainPanel Started
+2020-03-04 21:55:16,862 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - mainlauncher.ScreepTLauncher Loaded
+2020-03-04 21:55:18,425 [AWT-EventQueue-0] DEBUG gui.panels.DependenciesManagerPanel - icon image setted to main window
+2020-03-04 21:55:18,484 [AWT-EventQueue-0] INFO  gui.panels.DependenciesManagerPanel - gui.panels.DependenciesManagerPanel Started
+2020-03-04 21:55:28,811 [AWT-EventQueue-0] DEBUG gui.panels.DependenciesManagerPanel - Closing Frame: gui.panels.DependenciesManagerPanel
+2020-03-04 21:55:30,465 [AWT-EventQueue-0] DEBUG gui.panels.LauncherMainPanel - Closing Frame: gui.panels.LauncherMainPanel
+2020-03-04 21:56:51,840 [main] DEBUG mainlauncher.ScreepTLauncher - 
+
+##################################################
+
+Wed Mar 04 21:56:51 CET 2020
+
+ScreepT - Launcher Started now!
+
+##################################################
+
+
+2020-03-04 21:56:52,510 [main] INFO  launcherutils.IniFileManager - Loading INI launcher_configuration file...
+2020-03-04 21:56:52,557 [main] INFO  launcherutils.IniFileManager - Launcher_configuration file loaded!
+2020-03-04 21:56:52,573 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Started to analyze before launch
+2020-03-04 21:56:52,573 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - Started java installed versions check!
+2020-03-04 21:56:52,573 [AWT-EventQueue-0] INFO  utils.SysUtils - Current jvm is : C:\Program Files\Java\jdk1.8.0_162\jre
+2020-03-04 21:56:52,573 [AWT-EventQueue-0] INFO  utils.SysUtils - C:\Program Files\Java\jdk1.8.0_162\jre not found in previously retrieved list -> added to JVM list
+2020-03-04 21:56:52,588 [AWT-EventQueue-0] INFO  launcherutils.JvmHelper - 
+
+ => Versions found: [C:\Program Files\java\jdk-11.0.2, C:\Program Files\java\jdk1.8.0_162, C:\Program Files\java\jre-9.0.4, C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot, C:\Program Files\Java\jdk1.8.0_162\jre]
+
+ => Found correct one: C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot/bin
+WARNING: false
+2020-03-04 21:56:52,588 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Creating launcher file : LauncherBatch.bat
+2020-03-04 21:56:52,588 [AWT-EventQueue-0] INFO  files.FileWorker - writeStringToFile -> Start (outFile : LauncherBatch.bat)
+2020-03-04 21:56:52,588 [AWT-EventQueue-0] INFO  files.FileWorker - writeStringToFile -> Finished in 0 ms
+2020-03-04 21:56:52,588 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Write completed correctly :)
+2020-03-04 21:56:52,588 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - Launch command generated:
+
+set JDK_PATH=C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot/bin; 
+
+set PATH=%JDK_PATH%%PATH% 
+
+echo %PATH% 
+
+java -Xmx768m -Xms348m -Xss100m  -Dsun.java2d.uiScale=1 -Djava.library.path="./Resources_ScreepT/lib" -cp "./*;./Resources_ScreepT/lib/*"  maingUI.MainGuiGeneralAppStarter 
+
+exit 0
+
+
+2020-03-04 21:56:52,588 [AWT-EventQueue-0] INFO  gui.panels.LauncherMainPanel - gui.panels.LauncherMainPanel Starting...
+2020-03-04 21:56:52,604 [AWT-EventQueue-0] DEBUG gui.panels.LauncherMainPanel - icon image setted to main window
+2020-03-04 21:56:52,838 [AWT-EventQueue-0] INFO  gui.panels.LauncherMainPanel - gui.panels.LauncherMainPanel Started
+2020-03-04 21:56:53,116 [AWT-EventQueue-0] INFO  mainlauncher.ScreepTLauncher - mainlauncher.ScreepTLauncher Loaded
+2020-03-04 21:56:53,986 [AWT-EventQueue-0] DEBUG gui.panels.DependenciesManagerPanel - icon image setted to main window
+2020-03-04 21:56:54,053 [AWT-EventQueue-0] INFO  gui.panels.DependenciesManagerPanel - gui.panels.DependenciesManagerPanel Started
+2020-03-04 21:56:59,608 [AWT-EventQueue-0] DEBUG gui.panels.DependenciesManagerPanel - Closing Frame: gui.panels.DependenciesManagerPanel
+2020-03-04 21:57:00,619 [AWT-EventQueue-0] DEBUG gui.panels.LauncherMainPanel - Closing Frame: gui.panels.LauncherMainPanel
