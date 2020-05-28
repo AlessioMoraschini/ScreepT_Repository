@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -71,12 +72,12 @@ import utils.SysUtils;
 	public class ScreepTLauncher {
 		
 		// ScreepTLauncher logger
-		static SafeLogger logger = new SafeLogger(ScreepTLauncher.class); 
+		public static SafeLogger logger = new SafeLogger(ScreepTLauncher.class); 
 		
 		public static final String BATCH_LAUNCHER_NAME = "LauncherBatch.bat";
 		public static final String BASH_LAUNCHER_NAME = "./LauncherBash.sh";
 		
-		public static String initPath = new OSinfo().isWindows() ? BATCH_LAUNCHER_NAME : BASH_LAUNCHER_NAME;
+		public static String generatedNativeLauncherPath = new OSinfo().isWindows() ? BATCH_LAUNCHER_NAME : BASH_LAUNCHER_NAME;
 		
 		public static String DEFAULT_INI_PATH; 
 		
@@ -129,6 +130,7 @@ import utils.SysUtils;
 			checkAlreadyRunning();
 			
 			loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
+			loaderGraphics.setIconImage(new ImageIcon(ImagesPathConfigurator.MAIN_APP_ICON).getImage());
 			loaderGraphics.update("Reading configuration... ", 5);
 			loaderGraphics.indeterminate(true);
 			
@@ -249,7 +251,7 @@ import utils.SysUtils;
 				
 				appLogEnd();
 				
-				launchCommands(initPath, iniFileManager.viewShellAfterStart);
+				SysUtils.launchBatchOrBash(generatedNativeLauncherPath, !ScreepTLauncher.iniFileManager.viewShellAfterStart);
 				
 				loaderGraphics.update("Ready", 101);
 				
@@ -336,7 +338,7 @@ import utils.SysUtils;
 			
 			try {
 				String combinedCommands = commandsAssembler.getCombinedCommandList();
-				initPath = writeInitBatShAndGetPath(combinedCommands);
+				generatedNativeLauncherPath = writeInitBatShAndGetPath(combinedCommands);
 			} catch (Throwable e) {
 				logger.error("Error detected while launching application", e);
 			}
@@ -359,49 +361,6 @@ import utils.SysUtils;
 			missingDependenciesList.add(javaDependency);
 			
 			criticalJVMnotFound = critical;
-		}
-		
-		/**
-		 * retrieve list of commands, write to file and run it in current OS
-		 */
-		public static void launchCommands(String nativeLauncherPath, boolean shellVisible) {
-			
-			OSinfo OS = SysUtils.getOsInfoLazy();
-			logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
-			
-			Runtime runtime = Runtime.getRuntime();
-			
-			try {
-				try {
-					new File(nativeLauncherPath).setExecutable(true);
-					Thread.sleep(100);
-				} catch (Exception e1) {}
-				
-				// CASE WINDOWS
-				if (OS.isWindows()) {
-					if (shellVisible) {
-						runtime.exec("cmd /c start /min \"ScreepT-Shell\" \"" + nativeLauncherPath + "\"");
-					}else {
-						runtime.exec(nativeLauncherPath);
-//						runtime.exec("cmd /c \"start /b " + nativeLauncherPath + "\"");
-					}
-				
-				}else {
-					
-					// TODO LINUX/MAC SHELL show on/off
-					logger.info("Executing process [pwd]");
-					SysUtils.logProcessOutput(runtime.exec("pwd"));
-					logger.info("Executing process [chmod u+x" + nativeLauncherPath + "]");
-					Process executableMaker = runtime.exec("chmod u+x " + nativeLauncherPath);
-					SysUtils.logProcessOutput(executableMaker);
-					executableMaker.waitFor();
-					
-					runtime.exec(nativeLauncherPath);
-				}
-				logger.info("Commands launched without exceptions :)"); 
-			} catch (Exception e) {
-				logger.error(" !!! Error launching generated commands file !!!\n\n", e);
-			}
 		}
 		
 		/**

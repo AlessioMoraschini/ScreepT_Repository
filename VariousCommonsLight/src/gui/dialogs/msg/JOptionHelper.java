@@ -477,14 +477,12 @@ public class JOptionHelper {
 		dialog.setAutoRequestFocus(true);
 		dialog.setLocationRelativeTo(parentComponent);
 		dialog.requestFocus();
-		dialog.setModal(true);
-//		dialog.dispose();
 		dialog.toFront();
+		dialog.setModal(true);
 		dialog.getRootPane().addFocusListener(new FocusListener() {
 			
 			@Override
 			public void focusLost(FocusEvent e) {
-				dialog.setAutoRequestFocus(true);
 				dialog.requestFocus();
 				dialog.toFront();
 			}
@@ -577,7 +575,7 @@ public class JOptionHelper {
         		option, 
         		icon,
         		optionsAvailable,
-        		allowNull ? optionsAvailable[optionsAvailable.length] : optionsAvailable[0]);
+        		allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]);
         
 		final JDialog dialog = optionPane.createDialog(title);
 		try {

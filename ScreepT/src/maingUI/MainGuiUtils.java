@@ -667,10 +667,11 @@ public class MainGuiUtils {
 					String msg = "<html>Hi " + genOpt.getUserName() + ", and welcome to " + GeneralConfig.APPLICATION_NAME
 							+ "!<br/>I suggest you to take a look to documentation before to start, do you want to open it now?</html>";
 					if (dialogHelper.showYNDialog(msg, "Welcome to " + GeneralConfig.APPLICATION_NAME, JOptionHelperExtended.QUESTION)) {
-						MainGUI.mainAPP.getMntmUserDocumentation().doClick();
+						MainGUI.mainAPP.windowCreator.newTutorialFrame(true);
 					}
 				}
 				currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
+				
 			}
 		});
 	}

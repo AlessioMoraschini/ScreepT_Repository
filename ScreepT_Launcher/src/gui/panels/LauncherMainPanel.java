@@ -32,6 +32,7 @@ import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import utils.SysUtils;
 
 import javax.swing.JLabel;
 import javax.imageio.ImageIO;
@@ -179,7 +180,7 @@ public class LauncherMainPanel extends JFrame{
 					Thread.sleep(400);
 				} catch (InterruptedException e1) {
 				}
-				ScreepTLauncher.launchCommands(ScreepTLauncher.initPath, ScreepTLauncher.iniFileManager.viewShellAfterStart);
+				SysUtils.launchBatchOrBash(ScreepTLauncher.generatedNativeLauncherPath, !ScreepTLauncher.iniFileManager.viewShellAfterStart);
 				LAUNCHER_GUI.dispatchEvent(new WindowEvent(LAUNCHER_GUI, WindowEvent.WINDOW_CLOSING));
 			}
 		});

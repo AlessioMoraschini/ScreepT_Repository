@@ -61,8 +61,7 @@ public class SysUtils {
 	 * other params must not be null
 	 */
 	private static String startJarCommand(String jvmArgs, String jarPath, boolean viewShell) {
-		String javaLaunchKeyWord = viewShell ? "java " : "java ";
-		return javaLaunchKeyWord + jvmArgs + " -jar " + jarPath;
+		return getJavaCommand(viewShell, jarPath) + jvmArgs + " -jar " + jarPath;
 	}
 	
 	/**
@@ -75,7 +74,6 @@ public class SysUtils {
 	 */
 	public static String startJarCommand(String jvmArgs, String jarPath, File[] filteredArgsFiles, boolean viewShell) {
 		
-		String javaLaunchKeyWord = viewShell ? "java " : "java ";
 		if(filteredArgsFiles == null || filteredArgsFiles.length == 0) {
 			return startJarCommand(jvmArgs, jarPath, viewShell);
 		}
@@ -89,7 +87,7 @@ public class SysUtils {
 		filesParams = builder.toString();
 		
 		builder = new StringBuilder();
-		builder.append(javaLaunchKeyWord).append(jvmArgs).append(" -jar ").append(jarPath).append(filesParams);
+		builder.append(getJavaCommand(viewShell, jarPath)).append(jvmArgs).append(" -jar ").append(jarPath).append(filesParams);
 		String command = builder.toString();
 		return command;
 	}
@@ -101,8 +99,7 @@ public class SysUtils {
 	 * params must not be null
 	 */
 	private static String startClassCommand(String jvmArgs, String classPath, String mainClass, boolean viewShell) {
-		String javaLaunchKeyWord = viewShell ? "java " : "java ";
-		return javaLaunchKeyWord + jvmArgs + " -cp " + classPath + " " + mainClass;
+		return getJavaCommand(viewShell, mainClass) + jvmArgs + " -cp " + classPath + " " + mainClass;
 	}
 
 	/**
@@ -115,7 +112,6 @@ public class SysUtils {
 	 */
 	public static String startClassCommand(String jvmArgs, String classPath, String mainClass, File[] filteredArgsFiles, boolean viewShell) {
 		
-		String javaLaunchKeyWord = viewShell ? "java " : "java ";
 		if(filteredArgsFiles == null || filteredArgsFiles.length == 0) {
 			return startClassCommand(jvmArgs, classPath, mainClass, viewShell);
 		}
@@ -129,12 +125,25 @@ public class SysUtils {
 		filesParams = builder.toString();
 		
 		builder = new StringBuilder();
-		builder.append(javaLaunchKeyWord).append(jvmArgs)
+		builder.append(getJavaCommand(viewShell, mainClass)).append(jvmArgs)
 			   .append(" -cp ").append(classPath)
 			   .append(" ").append(mainClass)
 			   .append(filesParams);
 		String command = builder.toString();
 		return command;
+	}
+	
+	public static String getJavaCommand(boolean viewShell, String shellTitle) {
+		String javaLaunchKeyWord = "java ";
+		shellTitle = shellTitle == null ? "" : shellTitle;
+		
+		if(OS_INFO_LAZY.isWindows()) {
+			javaLaunchKeyWord = viewShell ? "java " : "start \"" + shellTitle + "\" \"javaw\" ";
+		} else {
+			javaLaunchKeyWord = viewShell ? "java " : "javaw ";
+		}
+		
+		return javaLaunchKeyWord;
 	}
 	
 	public static File getCurrentJavaHome() {
@@ -461,6 +470,45 @@ public class SysUtils {
 		return builder.toString();
 	}
 	
+	/**
+	 * retrieve list of commands, write to file and run it in current OS
+	 */
+	public static void launchBatchOrBash(String batchOrBashPath, boolean minimizedShell) {
+		
+		OSinfo OS = getOsInfoLazy();
+		logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
+		
+		Runtime runtime = Runtime.getRuntime();
+		
+		try {
+			try {
+				new File(batchOrBashPath).setExecutable(true);
+
+			} catch (Exception e1) {}
+			
+			// CASE WINDOWS
+			if (OS.isWindows()) {
+				String minimizedOpt = minimizedShell ? "/min " : "";
+				runtime.exec("cmd /c start " + minimizedOpt + "\"\" \"" + batchOrBashPath + "\"");
+			
+			}else {
+				
+				// TODO LINUX/MAC SHELL show on/off
+				logger.info("Executing process [pwd]");
+				execNlogProcessOutput(runtime.exec("pwd"));
+				logger.info("Executing process [chmod u+x" + batchOrBashPath + "]");
+				Process executableMaker = runtime.exec("chmod u+x " + batchOrBashPath);
+				execNlogProcessOutput(executableMaker);
+				executableMaker.waitFor();
+				
+				runtime.exec(batchOrBashPath);
+			}
+			logger.info("Commands launched without exceptions :)"); 
+		} catch (Exception e) {
+			logger.error(" !!! Error launching generated commands file !!!\n\n", e);
+		}
+	}
+	
 	public static String readProcessOutput(InputStream inputStream) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		StringBuilder builder = new StringBuilder();
@@ -494,7 +542,7 @@ public class SysUtils {
 		return lines;
 	}
 	
-	public static String logProcessOutput(Process process) {
+	public static String execNlogProcessOutput(Process process) {
 		String output = SysUtils.readProcessOutput(process.getInputStream());
 		logger.info(output);
 		
@@ -745,5 +793,6 @@ public class SysUtils {
 			}
 		}
 	}
+
 }
 

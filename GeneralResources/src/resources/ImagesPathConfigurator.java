@@ -16,7 +16,7 @@ public class ImagesPathConfigurator {
 	public static String IMAGE_LOGO_AM_MAIN;
 	public static String IMAGE_BCKG_ABOUT;
 	public static String IMAGE_BCKG_DRAGNDROP;
-	public static String MAIN_APP_ICON;
+	public static String MAIN_APP_ICON = "Resources_ScreepT/Images/icon.png";
 	public static String LAUNCHER_BACK_IMAGE_PATH = "LAUNCHER/launcher_icon.jpg";
 	
 	public static void init() {

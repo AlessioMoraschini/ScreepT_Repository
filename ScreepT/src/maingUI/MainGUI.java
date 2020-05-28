@@ -275,9 +275,6 @@ public class MainGUI extends MainGuiParent{
 			
 			SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_POOL_SHOT, null);
 
-			mainFrameScreept.requestFocus();
-			mainFrameScreept.toFront();
-			
 			SwingUtilities.invokeLater(new Runnable() {
 				
 				@Override
@@ -296,6 +293,9 @@ public class MainGUI extends MainGuiParent{
 					}else {
 						GUIStyelSettingsExtended.setStyle(currentConfiguration.getGuiOpt().getPreferredStyle(), currentConfiguration.getGuiOpt().nimbusSize);
 					}
+					
+					mainFrameScreept.toFront();
+					mainFrameScreept.requestFocus();
 				}
 			});
 
@@ -351,6 +351,9 @@ public class MainGUI extends MainGuiParent{
 								}
 								currentConfiguration.getGenOpt().setFirstAccess(false);
 								currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
+								
+								mainFrameScreept.toFront();
+								mainFrameScreept.requestFocus();
 							}
 						}
 					}); // End title updater and Updates check starters

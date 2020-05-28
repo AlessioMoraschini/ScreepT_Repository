@@ -22,6 +22,7 @@ import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
 import utility.SafeLogger;
+import utils.SysUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.arch.PanelType;
 
@@ -30,8 +31,9 @@ public class MainGuiManager {
 	// MainGuiUtils logger
 	static SafeLogger logger = new SafeLogger(MainGuiUtils.class);
 	
-	private static String initPath = new OSinfo().isWindows() ? 
-			ScreepTLauncher.BATCH_LAUNCHER_NAME : ScreepTLauncher.BASH_LAUNCHER_NAME;
+	private static String nativeLauncherPath = new OSinfo().isWindows() 
+			? ScreepTLauncher.BATCH_LAUNCHER_NAME 
+			: ScreepTLauncher.BASH_LAUNCHER_NAME;
 
 	MainGuiUtils mainGuiUtils;
 	
@@ -46,13 +48,13 @@ public class MainGuiManager {
 		}
 		
 		try {
-			File launcherNativeFile = new File(initPath);
+			File launcherNativeFile = new File(nativeLauncherPath);
 			if (launcherNativeFile.exists()) {
 				
 				MainGuiUtils.logger.info("Restart requested: restarting application...");
 				
 				closeApplication(999);
-				ScreepTLauncher.launchCommands(initPath, MainGuiGeneralAppStarter.iniFileManager.viewShellAfterStart);
+				SysUtils.launchBatchOrBash(nativeLauncherPath, false);
 				
 				MainGuiUtils.logger.info("\n [RESTART REQUESTED] \n\n" + LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 				

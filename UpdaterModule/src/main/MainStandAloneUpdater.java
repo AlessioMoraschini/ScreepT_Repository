@@ -216,7 +216,7 @@ public class MainStandAloneUpdater {
 				
 			} catch (Throwable e) {
 				
-				dialogHelper.error("Cannot update, an error occurred: " + e.getClass());
+				dialogHelper.errorScroll("Cannot update, an error occurred: " + e.getClass(), e.getClass().getCanonicalName(), e);
 				logger.error(e.getClass().getCanonicalName(), e);
 				
 				try {
