@@ -197,19 +197,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			if (mBrick.hasFallingBonus()) {
 				activeBonuses.add(mBrick.fallingBonus);
 			}
-//			try {
-//				it.remove();
-//			} catch (Exception e) {
-//				System.out.println("Cannot remove brick after being shot");
-//				e.printStackTrace();
-//			}
 		}
-		
-//		scoreboard.increaseScore(
-//				gameConfig.COUNT_BLOCKS_X,
-//				gameConfig.COUNT_BLOCKS_Y,
-//				bricks.isEmpty());
-
 	}
 
 	boolean testCollision(Brick mBrick, Ball mBall, ScoreBoard scoreboard, Iterator<Brick> it) {
@@ -229,7 +217,6 @@ public class GameFrame extends JFrame implements KeyListener {
 			if (mBrick.hasFallingBonus() && canAdd) {
 				activeBonuses.add(mBrick.fallingBonus);
 			}
-//			it.remove();
 		}
 		
 		double overlapLeft = mBall.right() - mBrick.left();

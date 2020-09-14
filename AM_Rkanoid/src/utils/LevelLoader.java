@@ -56,7 +56,7 @@ public class LevelLoader {
 	}
 	
 	/**
-	 * Get 1-based current level n°
+	 * Get 1-based current level nï¿½
 	 */
 	public int getCurrentLevelN() {
 		return currentLevel + 1;

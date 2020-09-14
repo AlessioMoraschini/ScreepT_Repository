@@ -14,8 +14,8 @@ public class GameConfigs {
 	public static final String GAME_TITLE = "AM_Rkanoid";
 	public static final String GAME_WELCOME = "Welcome to " + GAME_TITLE;
 
-	public static final String GAME_CONFIG_FOLDER = "resources/config/";
-	public static final String IMG_FOLDER = "/resources/images/";
+	public static String GAME_CONFIG_FOLDER = "resources/config/";
+	public static String IMG_FOLDER = "resources/images/";
 	
 	
 	public int FPS_SLEEP = 10;

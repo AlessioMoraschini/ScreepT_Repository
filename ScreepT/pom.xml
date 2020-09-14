@@ -866,6 +866,12 @@
 			<version>1.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>AM_Rkanoid</groupId>
+			<artifactId>AM_Rkanoid</artifactId>
+			<version>1.0</version>
+		</dependency>
+
   </dependencies>
   
 </project>

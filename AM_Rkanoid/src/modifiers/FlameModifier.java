@@ -12,13 +12,13 @@ public class FlameModifier extends AbstractModifier {
 	
 	public FlameModifier(GameFrame gameFrame, Bonus bonus) {
 		super(gameFrame, bonus);
-		activeModifiers.getAndIncrement();
 	}
 
 	@Override
 	public void applyModifier() {
 		gameFrame.ball.flameBall = true;
 		applyBallColor(bonus.ballColor);
+		activeModifiers.getAndIncrement();
 	}
 
 	@Override

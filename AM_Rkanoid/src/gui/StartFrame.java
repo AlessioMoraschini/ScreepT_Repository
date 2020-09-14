@@ -27,10 +27,12 @@ import utils.LevelLoader;
 public class StartFrame extends JFrame {
 	private static final long serialVersionUID = -8026416994513756565L;
 	
+	private static StartFrame instance;
+	
 	GameFrame gamePanel;
 	StartFrame thisFrame;
 
-	Dimension size = new Dimension(400,150);
+	public static Dimension size = new Dimension(400,150);
 
 	public StartFrame() throws IOException {
 		
@@ -124,4 +126,18 @@ public class StartFrame extends JFrame {
 		constraints.anchor = GridBagConstraints.CENTER;
 		this.add(component, constraints);
 	}
+	
+	public static StartFrame getInstance(String title) {
+		StartFrame instance = null;
+		try {
+			instance = StartFrame.instance != null ? StartFrame.instance : new StartFrame();
+			instance.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			instance.setTitle(title);
+			instance.toFront();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+    	return instance;
+    }
 }

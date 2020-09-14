@@ -38,7 +38,7 @@ public class GuiUtils {
 	}
 	
 	public static Image getResizedImage(String imagePath, Integer img_width, Integer img_height) throws IOException {
-		BufferedImage originalImage = ImageIO.read(GuiUtils.class.getResource(imagePath));
+		BufferedImage originalImage = ImageIO.read(new File(imagePath));
         int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB
                                                : originalImage.getType();
 
