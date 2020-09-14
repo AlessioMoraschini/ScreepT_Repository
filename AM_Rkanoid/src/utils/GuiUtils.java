@@ -44,8 +44,13 @@ public class GuiUtils {
 
         return resizeImage(originalImage, type, img_width, img_height);
 	}
+
+	public static Image getResizedImage(Image image, Integer img_width, Integer img_height) throws IOException {
+		
+		return resizeImage(image, BufferedImage.TYPE_INT_ARGB, img_width, img_height);
+	}
 	
-	public static Image resizeImage(BufferedImage originalImage, int type, Integer img_width, Integer img_height) {
+	public static Image resizeImage(Image originalImage, int type, Integer img_width, Integer img_height) {
 		BufferedImage resizedImage = new BufferedImage(img_width, img_height, type);
 		Graphics2D g = resizedImage.createGraphics();
 		g.drawImage(originalImage, 0, 0, img_width, img_height, null);

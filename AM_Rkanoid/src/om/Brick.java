@@ -15,7 +15,7 @@ public class Brick extends Rectangle {
 	public Brick(double x, double y, GameFrame gameFrame, int healthRemaining) {
 		Bonus bonus = Bonus.getRandomBonus(gameFrame.gameConfig.BONUS_PROBABILITY);
 
-//		bonus = Bonus.SPEED; // TEST ONLY
+//		bonus = Bonus.FLAME_BALL; // TEST ONLY
 		if (bonus != null) {
 			fallingBonus = new FallingBonus(bonus, x, y, gameFrame);
 		} else {

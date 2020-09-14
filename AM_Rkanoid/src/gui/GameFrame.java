@@ -28,6 +28,7 @@ import modifiers.AbstractModifier;
 import modifiers.ExpansionModifier;
 import modifiers.FlameModifier;
 import modifiers.KeyEventModifier;
+import modifiers.PuppyModifier;
 import modifiers.ShotModifier;
 import modifiers.SpeedModifier;
 import om.Ball;
@@ -480,6 +481,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		SpeedModifier.resetModifiersCount();
 		FlameModifier.resetModifiersCount();
 		ShotModifier.resetModifiers();
+		PuppyModifier.resetModifiersCount();
 	}
 
 	@Override

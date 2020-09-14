@@ -1,6 +1,7 @@
 package modifiers;
 
 import java.awt.Color;
+import java.awt.Image;
 
 import gui.GameFrame;
 import om.Bonus;
@@ -29,6 +30,14 @@ public abstract class AbstractModifier {
 		if (color != null) {
 			gameFrame.ball.ballColor = color;
 		}
+	}
+
+	public void applyBallImage(Image image) {
+		gameFrame.ball.ballImage = image;
+	}
+
+	public void removeBallImage() {
+		gameFrame.ball.ballImage = null;
 	}
 	
 	public boolean canAddModifier() {

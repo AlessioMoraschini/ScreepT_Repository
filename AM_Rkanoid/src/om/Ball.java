@@ -2,6 +2,7 @@ package om;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 
 public class Ball extends GameObject {
 
@@ -10,6 +11,8 @@ public class Ball extends GameObject {
 	public double BALL_VELOCITY;
 	public double velocityX;
 	public double velocityY;
+	
+	public volatile Image ballImage;
 	
 	public static final Color DEFAULT_COLOR = new Color(232, 221, 213);
 	public Color ballColor = DEFAULT_COLOR;
@@ -27,8 +30,13 @@ public class Ball extends GameObject {
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(ballColor);
-		g.fillOval((int) left(), (int) top(), (int) radius * 2,	(int) radius * 2);
+		if (ballImage == null) {
+			g.setColor(ballColor);
+			g.fillOval((int) left(), (int) top(), (int) radius * 2, (int) radius * 2);
+		
+		} else {
+			g.drawImage(ballImage, (int) left(), (int) top(), null);
+		}
 	}
 
 	public void update(ScoreBoard scoreBoard, Paddle paddle, double FT_STEP, double SCREEN_WIDTH, double SCREEN_HEIGHT) {
