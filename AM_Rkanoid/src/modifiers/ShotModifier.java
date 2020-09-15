@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 import gui.GameFrame;
 import om.Bonus;
 import om.Shot;
+import sounds.SoundsManager;
+import utils.GameConfigs;
 
 public class ShotModifier extends AbstractModifier implements KeyEventModifier {
 	
@@ -45,6 +47,7 @@ public class ShotModifier extends AbstractModifier implements KeyEventModifier {
 			synchronized (gameFrame.paddle.shotList) {
 				if (gameFrame.paddle.canShot && alreadyActive && canBeEnabled) {
 					gameFrame.paddle.shotList.add(new Shot(gameFrame.paddle.x, gameFrame.paddle.y, gameFrame));
+					SoundsManager.playSound(GameConfigs.SOUNDS_FOLDER + "Shot.wav", 0.5f);
 				}
 			}
 		}

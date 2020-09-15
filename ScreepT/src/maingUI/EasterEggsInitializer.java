@@ -54,6 +54,7 @@ public class EasterEggsInitializer {
 				() -> {
 					GameConfigs.GAME_CONFIG_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/config/";
 					GameConfigs.IMG_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/images/";
+					GameConfigs.SOUNDS_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/sounds/";
 					StartFrame.size = new Dimension(450,150);
 					StartFrame.getInstance("AM_Rkanoid - Easter Egg found!");
 				}, 

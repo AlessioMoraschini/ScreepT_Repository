@@ -11,11 +11,12 @@ public class GameConfigs {
 	
 	private Properties properties;
 	
-	public static final String GAME_TITLE = "AM_Rkanoid";
+	public static final String GAME_TITLE = "Puppy-noid";
 	public static final String GAME_WELCOME = "Welcome to " + GAME_TITLE;
 
 	public static String GAME_CONFIG_FOLDER = "resources/config/";
 	public static String IMG_FOLDER = "resources/images/";
+	public static String SOUNDS_FOLDER = "resources/sounds/";
 	
 	
 	public int FPS_SLEEP = 10;

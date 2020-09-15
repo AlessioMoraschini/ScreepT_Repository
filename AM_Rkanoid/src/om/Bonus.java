@@ -12,18 +12,20 @@ import gui.GameFrame;
 import modifiers.AbstractModifier;
 import modifiers.ShotModifier;
 import modifiers.SpeedModifier;
+import sounds.SoundsManager;
+import utility.ArrayHelper;
 import modifiers.FlameModifier;
 import modifiers.ExpansionModifier;
 import modifiers.LifeModifier;
 import modifiers.PuppyModifier;
 
 public enum Bonus {
-	SHOT(GameConfigs.IMG_FOLDER + "bonus_shot.png", null, Color.GRAY, 12000, ShotModifier.class),
-	SPEED(GameConfigs.IMG_FOLDER + "bonus_speed.png", null, Color.GREEN, 12000, SpeedModifier.class),
-	FLAME_BALL(GameConfigs.IMG_FOLDER + "bonus_flame.png", Color.RED, Color.RED, 12000, FlameModifier.class),
-	EXPANSION(GameConfigs.IMG_FOLDER + "bonus_expansion.jpg", null, Color.RED, 8000, ExpansionModifier.class),
-	LIFE(GameConfigs.IMG_FOLDER + "bonus_life.png", null, null, 50, LifeModifier.class),
-	PUPPY(GameConfigs.IMG_FOLDER + "bonus_puppy.png", null, null, 10000, PuppyModifier.class);
+	SHOT(GameConfigs.IMG_FOLDER + "bonus_shot.png", null, Color.GRAY, 12000, ShotModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Shot.wav"}),
+	SPEED(GameConfigs.IMG_FOLDER + "bonus_speed.png", null, Color.GREEN, 12000, SpeedModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Laser.wav"}),
+	FLAME_BALL(GameConfigs.IMG_FOLDER + "bonus_flame.png", Color.RED, Color.RED, 12000, FlameModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Fire.wav"}),
+	EXPANSION(GameConfigs.IMG_FOLDER + "bonus_expansion.jpg", null, Color.RED, 8000, ExpansionModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Laser.wav"}),
+	LIFE(GameConfigs.IMG_FOLDER + "bonus_life.png", null, null, 50, LifeModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Health.wav"}),
+	PUPPY(GameConfigs.IMG_FOLDER + "puppy_ball.png", null, null, 10000, PuppyModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Fart01.wav"});
 	
 	public static final int UNDEFINED_INT = -1;
 	public static final Object UNDEFINED_OBJ = null;
@@ -37,8 +39,15 @@ public enum Bonus {
 	public int timeMs;
 	public Class<? extends AbstractModifier> modifierClass;
 	public AbstractModifier modifierInstance;
+	public String[] soundPaths;
 	
-	private Bonus(String imagePath, Color ballColor, Color paddleColor, int timeMs, Class<? extends AbstractModifier> modifier) {
+	private Bonus(
+			String imagePath, 
+			Color ballColor, 
+			Color paddleColor, 
+			int timeMs, 
+			Class<? extends AbstractModifier> modifier,
+			String[] soundPaths) {
 		try {
 			icon = GuiUtils.getResizedImage(imagePath, IMAGE_W, IMAGE_H);
 		} catch (IOException e) {
@@ -48,6 +57,15 @@ public enum Bonus {
 		this.paddleColor = paddleColor;
 		this.timeMs = timeMs;
 		this.modifierClass = modifier;
+		this.soundPaths = soundPaths;
+		
+	}
+	
+	public void playRandomSound(Float volume) {
+		String soundToPlay = ArrayHelper.getRandomElement(soundPaths, 100f);
+		if(soundToPlay != null) {
+			SoundsManager.playSound(soundToPlay, volume);
+		}
 	}
 	
 	
@@ -85,6 +103,7 @@ public enum Bonus {
 				
 				if (modifierInstance.canAddModifier()) {
 					modifierInstance.applyModifier();
+					playRandomSound(SoundsManager.MED);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

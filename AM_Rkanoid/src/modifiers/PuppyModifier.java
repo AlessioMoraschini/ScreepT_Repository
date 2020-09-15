@@ -21,14 +21,14 @@ public class PuppyModifier extends AbstractModifier {
 
 	@Override
 	public void applyModifier() {
-		gameFrame.ball.radius = gameFrame.gameConfig.BALL_RADIUS * 2d;
+		gameFrame.ball.radius = gameFrame.gameConfig.BALL_RADIUS * 3d;
 		gameFrame.ball.flameBall = true;
 		if(puppyBallImage == null) {
 			try {
 				puppyBallImage = GuiUtils.getResizedImage(
 						GameConfigs.IMG_FOLDER + "puppy_ball.png",
-						(int)gameFrame.ball.radius * 2, 
-						(int)gameFrame.ball.radius * 2);
+						(int)(gameFrame.ball.radius * 0.3d), 
+						(int)(gameFrame.ball.radius * 0.3d));
 			
 			} catch (IOException e) {
 				e.printStackTrace();
