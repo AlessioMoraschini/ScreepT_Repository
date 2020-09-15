@@ -38,6 +38,9 @@ public class SoundsManager {
 	public static final float MUTE = 0f;
 
 	public static AudioInputStream openStream = null;
+	public static AudioInputStream openStreamInstance = null;
+	
+	public Clip clip;
 	
 	public static void playSound(String pathToResource, Float volum){
 		if(volum != null) {
@@ -72,6 +75,90 @@ public class SoundsManager {
 		if(openStream != null) {
 			try {
 				openStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void play(String pathToResource, Float volum){
+		if(volum != null) {
+			setVolume(volum);
+		}else {
+			setVolume(DEFAULT_VOLUME);
+		}
+		File audioFile = new File(pathToResource);
+		if(audioFile == null || !audioFile.exists()) {
+			return;
+		}
+		
+		AudioInputStream inputStream = null;
+		try {
+			clip = AudioSystem.getClip();
+			inputStream = AudioSystem.getAudioInputStream(audioFile);
+			clip.open(inputStream);
+			applyVolume(clip);
+			clip.start();
+			inputStream.close();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			openStreamInstance = inputStream;
+			e.printStackTrace();
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
+		
+		if(openStreamInstance != null) {
+			try {
+				openStreamInstance.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void stop() {
+		if(clip != null) {
+			clip.stop();
+		}
+	}
+
+	public void loop(String pathToResource, Float volum){
+		if(volum != null) {
+			setVolume(volum);
+		}else {
+			setVolume(DEFAULT_VOLUME);
+		}
+		File audioFile = new File(pathToResource);
+		if(audioFile == null || !audioFile.exists()) {
+			return;
+		}
+		
+		AudioInputStream inputStream = null;
+		try {
+			clip = AudioSystem.getClip();
+			inputStream = AudioSystem.getAudioInputStream(audioFile);
+			clip.open(inputStream);
+			applyVolume(clip);
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			inputStream.close();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			openStreamInstance = inputStream;
+			e.printStackTrace();
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
+		
+		if(openStreamInstance != null) {
+			try {
+				openStreamInstance.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

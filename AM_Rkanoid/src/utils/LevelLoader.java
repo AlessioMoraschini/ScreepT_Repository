@@ -27,6 +27,7 @@ public class LevelLoader {
 				return name.startsWith("config_") && name.endsWith(".properties");
 			}
 		}));
+
 	}
 
 	public String getCurrentLevelConfig() {

@@ -39,6 +39,7 @@ import om.GameObject;
 import om.Paddle;
 import om.ScoreBoard;
 import om.Shot;
+import sounds.SoundsManager;
 import utils.GameConfigs;
 import utils.LevelLoader;
 
@@ -49,6 +50,8 @@ public class GameFrame extends JFrame implements KeyListener {
 	private static final NumberFormat DOUBLE_FORMATTER = new DecimalFormat("#0.00"); 
 	private AtomicBoolean canReprintFps = new AtomicBoolean(true);
 	public LevelLoader levelLoader;
+	
+	public SoundsManager soundsManager;
 	
 	private List<FallingBonus> activeBonuses;
 	public List<KeyEventModifier> keyModifiers;
@@ -78,6 +81,8 @@ public class GameFrame extends JFrame implements KeyListener {
 	
 	public GameFrame(Difficulty difficulty, Runnable returnAction, LevelLoader levelLoader) throws IOException {
 		
+		this.soundsManager = new SoundsManager();
+		
 		this.activeBonuses = new ArrayList<FallingBonus>();
 		this.keyModifiers = new ArrayList<KeyEventModifier>();
 		this.difficulty = difficulty;
@@ -97,6 +102,8 @@ public class GameFrame extends JFrame implements KeyListener {
 					System.out.println("returnAction.run called from windowListener");
 					returnAction.run();
 				}
+				
+				running = false;
 			}
 		});
 	}
@@ -260,20 +267,53 @@ public class GameFrame extends JFrame implements KeyListener {
 			}
 		}
 	}
+	
+	public void drawBackground(Graphics g) {
+		if (gameConfig.background == null) {
+			g.setColor(Color.black);
+			g.fillRect(0, 0, getWidth(), getHeight());
+		} else {
+			g.drawImage(gameConfig.background, 0, 0, null);
+		}
+	}
+	
+	public void playBackTheme() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (gameConfig.BACKGROUND_SOUND_THEME != null) {
+					soundsManager.loop(gameConfig.BACKGROUND_SOUND_THEME, 0.45f);
+				}
+				while(running) {
+					try {
+						Thread.sleep(150);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				soundsManager.stop();
+			}
+		}).start();
+	}
 
 	public void run() throws IOException {
 
+		// SET BACKGROUND
 		BufferStrategy bf = this.getBufferStrategy();
 		Graphics g = bf.getDrawGraphics();
-		g.setColor(Color.black);
-		g.fillRect(0, 0, getWidth(), getHeight());
-
+		drawBackground(g);
+		
+		playBackTheme();
+		
+		// START RUN LOGICS
 		running = true;
 		
 		startEnabledFPSRefresher();
 
 		while (running) {
-
+			
 			long time1 = System.currentTimeMillis();
 
 			if (!scoreboard.gameOver && !scoreboard.win) {
@@ -434,8 +474,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			g = bf.getDrawGraphics();
 
-			g.setColor(Color.black);
-			g.fillRect(0, 0, getWidth(), getHeight());
+			drawBackground(g);
 			
 			ball.draw(g);
 			paddle.draw(g);

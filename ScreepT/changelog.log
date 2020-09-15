@@ -1,6 +1,10 @@
-2020-09-14  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Added AM_Rkanoid project
+2020-09-15  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) PuppyNoid improved with audio effects
 
-2020-05-28  (tag: refs/tags/0.9.26, refs/remotes/origin/master, refs/heads/master) Various fix and improvements
+2020-09-14  New EasterEgg added!
+
+2020-09-14  Added AM_Rkanoid project
+
+2020-05-28  (tag: refs/tags/0.9.26) Various fix and improvements
 
 2020-02-09  Theme editor added to textEditor menu, improved configuration management
 

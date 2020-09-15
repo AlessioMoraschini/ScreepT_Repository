@@ -1,5 +1,6 @@
 package utils;
 
+import java.awt.Image;
 import java.awt.Point;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class GameConfigs {
 
 	public int SCREEN_WIDTH = 1600;
 	public int SCREEN_HEIGHT = 1000;
+	
+	public String BACKGROUND_IMAGE;
+	public String BACKGROUND_SOUND_THEME;
 	
 	public int COUNT_BLOCKS_X = 11;
 	public int COUNT_BLOCKS_Y = 4;
@@ -57,6 +61,8 @@ public class GameConfigs {
 
 	public String FONT = "Courier New";
 	
+	public Image background;
+	
 	public GameConfigs(String propertiesPath) throws IOException {
 		FileReader reader=new FileReader(propertiesPath);  
 	      
@@ -64,6 +70,17 @@ public class GameConfigs {
 		properties.load(reader);  
 		
 		initConfigs();
+		
+		try {
+			background = GuiUtils.getResizedImageOpacity(
+					BACKGROUND_IMAGE,
+					0.4f,
+					SCREEN_WIDTH,
+					SCREEN_HEIGHT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void initConfigs() {
@@ -97,6 +114,17 @@ public class GameConfigs {
 		HIDDEN_BRICKS_MAP = loadHiddenBricksMap();
 		
 		FONT = properties.getProperty("FONT");
+
+		if(properties.getProperty("BACKGROUND_IMAGE") == null)
+			BACKGROUND_IMAGE = IMG_FOLDER + "backgrounds/back_1.jpg";
+		else
+			BACKGROUND_IMAGE = IMG_FOLDER + properties.getProperty("BACKGROUND_IMAGE");
+		
+		if(properties.getProperty("BACKGROUND_SOUND_THEME") == null)
+			BACKGROUND_SOUND_THEME = "LevelThemes/Theme_1.wav";
+		else
+			BACKGROUND_SOUND_THEME = SOUNDS_FOLDER + properties.getProperty("BACKGROUND_SOUND_THEME");
+			
 	}
 	
 	private double loadDouble(String propName) {
