@@ -17,7 +17,7 @@ public class FallingBonus extends Rectangle {
 	// Signal if this bonus is being used
 	public volatile boolean inAction = false;
 	
-	private Timer timer;
+	public Timer timer;
 	private TimerTask task;
 	private double velocity;
 	

@@ -20,9 +20,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JToggleButton;
 
 import modifiers.AbstractModifier;
 import modifiers.ExpansionModifier;
@@ -91,6 +93,8 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		initializeLevel(levelLoader.getCurrentLevelConfig());
 		
+		initializeButtons();
+		
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
 				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -106,6 +110,13 @@ public class GameFrame extends JFrame implements KeyListener {
 				running = false;
 			}
 		});
+	}
+	
+	public void initializeButtons() {
+		JToggleButton muteButton = new JToggleButton("MUTE");
+		muteButton.setSelected(false);
+		muteButton.setBackground(GameConfigs.DEFAULT_BUTTON_BACKGROUND);
+		muteButton.setForeground(GameConfigs.DEFAULT_BUTTON_FOREGROUND);
 	}
 	
 	public void initializeLevel(String configFile) throws IOException{
@@ -151,14 +162,16 @@ public class GameFrame extends JFrame implements KeyListener {
 	
 	private void applyDifficultyMultiplier(Difficulty difficulty) {
 		gameConfig.BALL_VELOCITY *= difficulty.multiplierD;
-		gameConfig.PADDLE_VELOCITY *= (1.0 / difficulty.multiplierD);
-		gameConfig.PADDLE_WIDTH *= (1.0 / difficulty.multiplierD);
+		gameConfig.PADDLE_VELOCITY *= (1.1d / difficulty.multiplierD);
+		gameConfig.PADDLE_WIDTH *= (1.0d / difficulty.multiplierD);
 	}
 
 	boolean isIntersecting(GameObject mA, GameObject mB) {
 		return mA.right() >= mB.left() && mA.left() <= mB.right()
 				&& mA.bottom() >= mB.top() && mA.top() <= mB.bottom();
 	}
+	
+	/////////// COLLISION CHECK METHODS ///////////////
 	
 	void testCollision(Paddle mPaddle, FallingBonus fallingBonus, Iterator<FallingBonus> it) {
 		if (!isIntersecting(mPaddle, fallingBonus))
@@ -249,6 +262,8 @@ public class GameFrame extends JFrame implements KeyListener {
 		return true;
 	}
 
+	///////////////// INITIALIZATION METHODS /////////////////////
+	
 	void initializeBricks(List<Brick> bricks) {
 		// deallocate old bricks
 		bricks.clear();
@@ -268,6 +283,8 @@ public class GameFrame extends JFrame implements KeyListener {
 		}
 	}
 	
+	////////////////// DRAWING METHODS //////////////////
+	
 	public void drawBackground(Graphics g) {
 		if (gameConfig.background == null) {
 			g.setColor(Color.black);
@@ -277,6 +294,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		}
 	}
 	
+	//////////////// SOUND METHODS /////////////////////
 	public void playBackTheme() {
 		new Thread(new Runnable() {
 			
@@ -285,9 +303,17 @@ public class GameFrame extends JFrame implements KeyListener {
 				if (gameConfig.BACKGROUND_SOUND_THEME != null) {
 					soundsManager.loop(gameConfig.BACKGROUND_SOUND_THEME, 0.45f);
 				}
+				
 				while(running) {
 					try {
-						Thread.sleep(150);
+						
+						if(paused) {
+							soundsManager.pause();
+						} else {
+							soundsManager.resumeLoop();
+						}
+
+						Thread.sleep(20);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -298,6 +324,8 @@ public class GameFrame extends JFrame implements KeyListener {
 		}).start();
 	}
 
+	///////// MAIN RUNNER //////////
+	
 	public void run() throws IOException {
 
 		// SET BACKGROUND
@@ -405,6 +433,7 @@ public class GameFrame extends JFrame implements KeyListener {
 					try {
 						Thread.sleep(gameConfig.FPS_STRING_REFRESH_RATE);
 						canReprintFps.set(true);
+						
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -415,9 +444,10 @@ public class GameFrame extends JFrame implements KeyListener {
 
 	private void update() {
 		
-		if(paused)
+		if(paused) {
 			return;
-
+		}
+		
 		currentSlice += lastFt;
 
 		for (; currentSlice >= gameConfig.FT_SLICE; currentSlice -= gameConfig.FT_SLICE) {

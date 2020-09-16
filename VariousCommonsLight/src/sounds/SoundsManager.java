@@ -13,14 +13,11 @@ package sounds;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class SoundsManager {
 	
@@ -40,14 +37,12 @@ public class SoundsManager {
 	public static AudioInputStream openStream = null;
 	public static AudioInputStream openStreamInstance = null;
 	
+	public float volumeInstance = DEFAULT_VOLUME;
+	private int lastFrame;
 	public Clip clip;
 	
 	public static void playSound(String pathToResource, Float volum){
-		if(volum != null) {
-			setVolume(volum);
-		}else {
-			setVolume(DEFAULT_VOLUME);
-		}
+		setGeneralVolume(volum);
 		File audioFile = new File(pathToResource);
 		if(audioFile == null || !audioFile.exists()) {
 			return;
@@ -58,23 +53,15 @@ public class SoundsManager {
 			Clip clip = AudioSystem.getClip();
 	        inputStream = AudioSystem.getAudioInputStream(audioFile);
 	        clip.open(inputStream);
-	        applyVolume(clip);
+	        applyVolume(clip, volume);
 	        clip.start();
-	        inputStream.close();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			openStream = inputStream;
-			e.printStackTrace();
-		} catch (UnsupportedAudioFileException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		if(openStream != null) {
+		if(inputStream != null) {
 			try {
-				openStream.close();
+				inputStream.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -97,23 +84,15 @@ public class SoundsManager {
 			clip = AudioSystem.getClip();
 			inputStream = AudioSystem.getAudioInputStream(audioFile);
 			clip.open(inputStream);
-			applyVolume(clip);
+			applyVolume(clip, volumeInstance);
 			clip.start();
-			inputStream.close();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			openStreamInstance = inputStream;
-			e.printStackTrace();
-		} catch (UnsupportedAudioFileException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		if(openStreamInstance != null) {
+		if(inputStream != null) {
 			try {
-				openStreamInstance.close();
+				inputStream.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -132,6 +111,7 @@ public class SoundsManager {
 		}else {
 			setVolume(DEFAULT_VOLUME);
 		}
+		
 		File audioFile = new File(pathToResource);
 		if(audioFile == null || !audioFile.exists()) {
 			return;
@@ -142,47 +122,83 @@ public class SoundsManager {
 			clip = AudioSystem.getClip();
 			inputStream = AudioSystem.getAudioInputStream(audioFile);
 			clip.open(inputStream);
-			applyVolume(clip);
+			applyVolume(clip, volumeInstance);
 			clip.loop(Clip.LOOP_CONTINUOUSLY);
-			inputStream.close();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			openStreamInstance = inputStream;
-			e.printStackTrace();
-		} catch (UnsupportedAudioFileException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		if(openStreamInstance != null) {
+		if(inputStream != null) {
 			try {
-				openStreamInstance.close();
+				inputStream.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	public static void applyVolume(Clip clip) {
+	public static void applyVolume(Clip clip, float volume) {
         FloatControl volumeManager = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         float range = volumeManager.getMaximum() - volumeManager.getMinimum();
         float calculatedVolume = volumeManager.getMinimum() + (range * volume);
         volumeManager.setValue(calculatedVolume);
 	}
 
+	public void applyVolume() {
+		FloatControl volumeManager = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		float range = volumeManager.getMaximum() - volumeManager.getMinimum();
+		float calculatedVolume = volumeManager.getMinimum() + (range * volumeInstance);
+		volumeManager.setValue(calculatedVolume);
+	}
+	
+	public static void mute(Clip clip) {
+		FloatControl volumeManager = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        volumeManager.setValue(volumeManager.getMinimum());
+	}
+
+	public void pause() {
+
+        if (clip != null && clip.isRunning()) {
+            lastFrame = clip.getFramePosition();
+            System.out.println("Stop");
+            clip.stop();
+        }
+
+    }
+
+    public void resumeLoop() {
+
+        if (clip != null && !clip.isRunning()) {
+            // Make sure we haven't passed the end of the file...
+            if (lastFrame < clip.getFrameLength()) {
+                clip.setFramePosition(lastFrame);
+            } else {
+                clip.setFramePosition(0);
+            }
+            
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+
+    }
+
 	public static float getVolume() {
 		return volume;
 	}
-
-	public static void setVolume(float volume) {
-		
+	
+	public static float adaptVolume(float volume) {
 		volume = volume* (1.0f + volume);
 		
 		volume = (volume > 1)? 1.0f : volume;
 		volume = (volume < 0)? 0.0f : volume;
 		
-		SoundsManager.volume = volume;
+		return volume;
+	}
+
+	public static void setGeneralVolume(float volume) {
+		SoundsManager.volume = adaptVolume(volume);
+	}
+
+	public void setVolume(float volume) {
+		this.volumeInstance = adaptVolume(volume);
 	}
 }

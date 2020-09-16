@@ -1,5 +1,6 @@
 package utils;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
 import java.io.FileReader;
@@ -14,6 +15,9 @@ public class GameConfigs {
 	
 	public static final String GAME_TITLE = "Puppy-noid";
 	public static final String GAME_WELCOME = "Welcome to " + GAME_TITLE;
+	
+	public static final Color DEFAULT_BUTTON_BACKGROUND = Color.DARK_GRAY;
+	public static final Color DEFAULT_BUTTON_FOREGROUND = Color.WHITE;
 
 	public static String GAME_CONFIG_FOLDER = "resources/config/";
 	public static String IMG_FOLDER = "resources/images/";

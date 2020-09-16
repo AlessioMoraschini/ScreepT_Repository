@@ -104,7 +104,9 @@ public class HashCheckerFrame extends ParentFrame{
 				}
 			}
 		}, txtFieldLoadedFile);
+		
 		txtFieldLoadedFile.setAllowDirectoriesDrop(true);
+		txtFieldLoadedFile.setEnabled(false);
 		
 		txtFieldLoadedFile.setBackground(lightGrayDefault);
 		txtFieldLoadedFile.setPreferredSize(new Dimension(18, 25));

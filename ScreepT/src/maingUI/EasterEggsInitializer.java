@@ -33,7 +33,7 @@ public class EasterEggsInitializer {
 				()-> {return getRandomPoetry();},
 				(e) -> {
 					return KeyEvent.VK_U == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 500) && 
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 600) && 
 						   (mainGuiUtils.isCrypterActive() || mainGuiUtils.isTextEditorActive());
 					} 
 		);
@@ -43,7 +43,7 @@ public class EasterEggsInitializer {
 				() -> {Snake.getInstance("Snake - Easter Egg found!");}, 
 				(e) -> {
 					return KeyEvent.VK_S == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 500) && 
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) && 
 						   (mainGuiUtils.mainAppReference.isOnHomePage.get() &&
 							MainGUI.mainAPP.getMainFrame().isFocusOwner());
 					}
