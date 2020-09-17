@@ -268,7 +268,7 @@ public class GUIStyelSettings{
 		UIManager.put("CheckBox.disabledText", Color.GRAY);
 		UIManager.put("RadioButton.disabledText", Color.GRAY);
 		UIManager.put("nimbusOrange", nimbusProgBarColor);
-		UIManager.put("ScrollBar.background", new Color(170,170,170));
+		UIManager.put("ScrollBar.background", new Color(140,140,140));
 		UIManager.put("nimbusBase", new Color(51, 98, 140));
 		UIManager.put("MenuBar.foreground", Color.black);
 		UIManager.put("nimbusLightBackground", new Color(240, 240, 240));

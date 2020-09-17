@@ -16,22 +16,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 public class GuiUtils {
 
-	public static void setNimbusLaf() {
-		
-		SwingUtilities.invokeLater(() -> {
-			try {
-		
-			    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-			        if ("Nimbus".equals(info.getName())) {
-			            UIManager.setLookAndFeel(info.getClassName());
-			            refreshAllUIWindows();
-			            break;
-			        }
-			    }
-			} catch (Exception e) {}
-		});
-	}
-	
 	public static void refreshAllUIWindows() {
 		for(Window window : Window.getWindows()) {
 			SwingUtilities.updateComponentTreeUI(window);

@@ -11,7 +11,7 @@ import easteregg.PhrasesCollection;
 import easteregg.games.snake.Snake;
 import gui.StartFrame;
 import resources.GeneralConfig;
-import utils.GameConfigs;
+import utils.config.GameConfigs;
 
 public class EasterEggsInitializer {
 

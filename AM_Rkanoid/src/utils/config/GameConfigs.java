@@ -1,17 +1,15 @@
-package utils;
+package utils.config;
 
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
-public class GameConfigs {
-	
-	private Properties properties;
+import utils.GuiUtils;
+
+public class GameConfigs extends AbstractConfig {
 	
 	public static final String GAME_TITLE = "Puppy-noid";
 	public static final String GAME_WELCOME = "Welcome to " + GAME_TITLE;
@@ -19,11 +17,6 @@ public class GameConfigs {
 	public static final Color DEFAULT_BUTTON_BACKGROUND = Color.DARK_GRAY;
 	public static final Color DEFAULT_BUTTON_FOREGROUND = Color.WHITE;
 
-	public static String GAME_CONFIG_FOLDER = "resources/config/";
-	public static String IMG_FOLDER = "resources/images/";
-	public static String SOUNDS_FOLDER = "resources/sounds/";
-	
-	
 	public int FPS_SLEEP = 10;
 	public int FPS_STRING_REFRESH_RATE = 300;
 
@@ -68,10 +61,8 @@ public class GameConfigs {
 	public Image background;
 	
 	public GameConfigs(String propertiesPath) throws IOException {
-		FileReader reader=new FileReader(propertiesPath);  
-	      
-		properties = new Properties();  
-		properties.load(reader);  
+		
+		super(propertiesPath); 
 		
 		initConfigs();
 		
@@ -129,18 +120,6 @@ public class GameConfigs {
 		else
 			BACKGROUND_SOUND_THEME = SOUNDS_FOLDER + properties.getProperty("BACKGROUND_SOUND_THEME");
 			
-	}
-	
-	private double loadDouble(String propName) {
-		return Double.parseDouble(properties.getProperty(propName));
-	}
-
-	private float loadFloat(String propName) {
-		return Float.parseFloat(properties.getProperty(propName));
-	}
-
-	private int loadInt(String propName) {
-		return Integer.parseInt(properties.getProperty(propName));
 	}
 	
 	private Map<Point,Integer> loadHealthBricksMap(){

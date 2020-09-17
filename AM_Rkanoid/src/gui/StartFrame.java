@@ -17,17 +17,20 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 import om.Difficulty;
-import utils.GameConfigs;
-import utils.GuiUtils;
 import utils.LevelLoader;
+import utils.config.GameConfigs;
+import utils.config.GeneralConfig;
 
 public class StartFrame extends JFrame {
 	private static final long serialVersionUID = -8026416994513756565L;
 	
 	private static StartFrame instance;
+	
+	private GeneralConfig generalConfig;
 	
 	GameFrame gamePanel;
 	StartFrame thisFrame;
@@ -37,6 +40,8 @@ public class StartFrame extends JFrame {
 	public StartFrame() throws IOException {
 		
 		thisFrame = this;
+		
+		generalConfig = new GeneralConfig(GeneralConfig.GAME_CONFIG_FOLDER + "generalConfig.properties");
 		
 		// Layout Setup 
 		GridBagLayout layout = new GridBagLayout();
@@ -50,7 +55,12 @@ public class StartFrame extends JFrame {
 		JButton startButton = new JButton("Start");
 		
 		JComboBox<Difficulty> comboDifficulty = new JComboBox<Difficulty>(Difficulty.values());
-		comboDifficulty.setSelectedIndex(Difficulty.values().length / 2 - 1);
+		Difficulty difficulty = Difficulty.valueOf(generalConfig.loadString(GeneralConfig.KEY_DIFFICULTY));
+		comboDifficulty.setSelectedItem(difficulty);
+		comboDifficulty.addActionListener((e)->{
+			Difficulty selected = (Difficulty) comboDifficulty.getSelectedItem();
+			generalConfig.setProperty(GeneralConfig.KEY_DIFFICULTY, selected.name(), true);
+		});
 		
 		styleComponent(label, 0, 30, 50);
 		label.setHorizontalAlignment(SwingConstants.LEFT);
@@ -68,7 +78,6 @@ public class StartFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setTitle(GameConfigs.GAME_TITLE);
 		this.setIconImage(new ImageIcon(GameConfigs.IMG_FOLDER + "mainIcon.png").getImage());
-		GuiUtils.setNimbusLaf();
 		
 		// Action listeners
 		startButton.addActionListener((e) -> {
@@ -78,11 +87,14 @@ public class StartFrame extends JFrame {
 				public void run() {
 					try {
 						gamePanel = new GameFrame(
+								generalConfig,
 								(Difficulty)comboDifficulty.getSelectedItem(), 
 								new Runnable() {
 									@Override
 									public void run() {
 										thisFrame.setVisible(true);
+										comboDifficulty.setSelectedItem(
+												Difficulty.valueOf(generalConfig.loadString(GeneralConfig.KEY_DIFFICULTY)));
 									}
 								},
 								new LevelLoader());
@@ -99,6 +111,10 @@ public class StartFrame extends JFrame {
 		
 		setupMenuBar();
 		
+		SwingUtilities.invokeLater(()->{
+			GUIStyelSettings.setLightNimbus(1);
+			GUIStyelSettings.updateAllWindowsLaf();
+		});
 	}
 	
 	private void setupMenuBar() {

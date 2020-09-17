@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import gui.GameFrame;
 import om.Bonus;
-import utils.GameConfigs;
 import utils.GuiUtils;
+import utils.config.GameConfigs;
 
 public class PuppyModifier extends AbstractModifier {
 	

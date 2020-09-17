@@ -5,9 +5,9 @@ import java.awt.Image;
 import java.io.IOException;
 import java.util.Random;
 
-import utils.GameConfigs;
 import utils.GuiUtils;
-
+import utils.config.GameConfigs;
+import utils.config.GeneralConfig;
 import gui.GameFrame;
 import modifiers.AbstractModifier;
 import modifiers.ShotModifier;
@@ -103,7 +103,7 @@ public enum Bonus {
 				
 				if (modifierInstance.canAddModifier()) {
 					modifierInstance.applyModifier();
-					playRandomSound(SoundsManager.MED);
+					playRandomSound(gameFrame.generalConfig.loadFloat(GeneralConfig.KEY_EFFECTS_VOLUME));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

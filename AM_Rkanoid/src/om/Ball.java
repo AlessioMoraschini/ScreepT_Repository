@@ -44,13 +44,13 @@ public class Ball extends GameObject {
 		y += velocityY * FT_STEP;
 
 		if (left() < 0)
-			velocityX = BALL_VELOCITY;
+			velocityX = -velocityX;
 		
 		else if (right() > SCREEN_WIDTH)
-			velocityX = -BALL_VELOCITY;
+			velocityX = -velocityX;
 		
 		if (top() < 0) {
-			velocityY = BALL_VELOCITY;
+			velocityY = -velocityY;
 		
 		} else if (bottom() > SCREEN_HEIGHT) {
 			scoreBoard.die();

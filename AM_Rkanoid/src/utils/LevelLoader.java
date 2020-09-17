@@ -5,6 +5,8 @@ import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.List;
 
+import utils.config.GameConfigs;
+
 public class LevelLoader {
 	
 	private List<String> levels;

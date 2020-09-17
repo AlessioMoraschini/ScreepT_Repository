@@ -160,10 +160,8 @@ public class SoundsManager {
 
         if (clip != null && clip.isRunning()) {
             lastFrame = clip.getFramePosition();
-            System.out.println("Stop");
             clip.stop();
         }
-
     }
 
     public void resumeLoop() {
@@ -178,10 +176,9 @@ public class SoundsManager {
             
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         }
-
     }
 
-	public static float getVolume() {
+	public static float getGeneralVolume() {
 		return volume;
 	}
 	
