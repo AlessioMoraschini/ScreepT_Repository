@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import utils.config.GameConfigs;
 
@@ -11,13 +12,11 @@ public class LevelLoader {
 	
 	private List<String> levels;
 	
-	private int currentLevel = 0;
-	public boolean levelsFinished = false;
+	private AtomicInteger currentLevel = new AtomicInteger(0);
 	
 	public LevelLoader() {
-		currentLevel = 0;
+		currentLevel = new AtomicInteger(0);
 		levels = initLevels();
-		levelsFinished = levels.isEmpty();
 	}
 	
 	public List<String> initLevels(){
@@ -33,46 +32,48 @@ public class LevelLoader {
 	}
 
 	public String getCurrentLevelConfig() {
-		return GameConfigs.GAME_CONFIG_FOLDER + levels.get(currentLevel);
+		try {
+			return GameConfigs.GAME_CONFIG_FOLDER + levels.get(currentLevel.get());
+		}
+		catch(Exception e) {
+			return null;
+		}
 	}
 	
 	public String goToNextLevelConfig() {
 		if(!hasNextLevel()) {
-			levelsFinished = true;
 			return null;
 		} else {
-			currentLevel ++;
+			currentLevel.incrementAndGet();
 			return getCurrentLevelConfig();
 		}
 	}
 	
 	public void setNextLevel() {
 		if(!hasNextLevel()) {
-			levelsFinished = true;
 		} else {
-			currentLevel ++;
+			currentLevel.incrementAndGet();
 		}
 	}
 	
 	public boolean hasNextLevel() {
-		return currentLevel + 1 < levels.size();
+		return !levels.isEmpty() && (currentLevel.get() + 1) < levels.size();
 	}
 	
 	/**
 	 * Get 1-based current level n�
 	 */
 	public int getCurrentLevelN() {
-		return currentLevel + 1;
+		return currentLevel.get() + 1;
 	}
 	
 	public void backToFirstLevel() {
-		currentLevel = 0;
-		levelsFinished = levels.isEmpty();
+		currentLevel = new AtomicInteger(0);
 	}
 	
 	public boolean goToLevel(int level) {
-		if(0 <= level && level < levels.size()-1) {
-			currentLevel = level;
+		if(0 <= level && level < levels.size()) {
+			currentLevel = new AtomicInteger(level);
 			return true;
 		}
 		

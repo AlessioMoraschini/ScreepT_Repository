@@ -43,8 +43,8 @@ public class Brick extends Rectangle {
 			return Color.GRAY;
 		
 		if(healthRemaining >= 2)
-			return Color.CYAN;
+			return Color.RED;
 		
-		return Color.YELLOW;
+		return Color.ORANGE;
 	}
 }

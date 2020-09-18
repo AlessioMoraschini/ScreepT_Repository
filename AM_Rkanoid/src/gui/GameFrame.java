@@ -121,8 +121,11 @@ public class GameFrame extends JFrame implements KeyListener {
 				}
 
 				running = false;
+				
+				SoundsManager.MUTED = false;
 			}
 		});
+		
 	}
 
 	///////////////// INITIALIZATION METHODS /////////////////////
@@ -174,27 +177,36 @@ public class GameFrame extends JFrame implements KeyListener {
 	}
 	
 	public void initializeButtons() {
-		muteButton = new Button(gameConfig.SCREEN_WIDTH - 40, 60, 30, 30);
+		muteButton = new Button(gameConfig.SCREEN_WIDTH - 40, 60, 30, 30, this.getContentPane());
 		try {
 			muteButton.setSelectedImage(GameConfigs.IMG_FOLDER + "muted.png");
 			muteButton.setDeselectedImage(GameConfigs.IMG_FOLDER + "unmuted.png");
 			muteButton.setOnClickAction(() -> {
 				if(!muteButton.isSelected) {
 					soundsManager.pause();
+					SoundsManager.MUTED = true;
 					generalConfig.setProperty(GeneralConfig.KEY_BASE_MUTED, true, true);
+					generalConfig.setProperty(GeneralConfig.KEY_EFFECTS_MUTED, true, true);
 				} else {
 					soundsManager.resumeLoop();
+					SoundsManager.MUTED = false;
 					generalConfig.setProperty(GeneralConfig.KEY_BASE_MUTED, false, true);
+					generalConfig.setProperty(GeneralConfig.KEY_EFFECTS_MUTED, false, true);
 				}
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		muteButton.isSelected = generalConfig.getProperties().getBooleanVarFromProps(GeneralConfig.KEY_BASE_MUTED, true);
+		muteButton.isSelected = 
+				generalConfig.getProperties().getBooleanVarFromProps(GeneralConfig.KEY_BASE_MUTED, true)
+				&& generalConfig.getProperties().getBooleanVarFromProps(GeneralConfig.KEY_EFFECTS_MUTED, true);
+		muteButton.getOnClickAction().run();
+		
+		SoundsManager.MUTED = muteButton.isSelected;
 		buttonList.add(muteButton);
 		
-		pauseButton = new Button(gameConfig.SCREEN_WIDTH - 80, 60, 30, 30);
+		pauseButton = new Button(gameConfig.SCREEN_WIDTH - 80, 60, 30, 30, this.getContentPane());
 		try {
 			pauseButton.setSelectedImage(GameConfigs.IMG_FOLDER + "play.png");
 			pauseButton.setDeselectedImage(GameConfigs.IMG_FOLDER + "pause.png");
@@ -210,13 +222,19 @@ public class GameFrame extends JFrame implements KeyListener {
 		}
 		buttonList.add(pauseButton);
 		
-		optionsButton = new Button(gameConfig.SCREEN_WIDTH - 120, 60, 30, 30);
+		optionsButton = new Button(gameConfig.SCREEN_WIDTH - 120, 60, 30, 30, this.getContentPane());
 		try {
 			optionsButton.setSelectedImage(GameConfigs.IMG_FOLDER + "options.png");
 			optionsButton.setDeselectedImage(GameConfigs.IMG_FOLDER + "options.png");
 			optionsButton.setOnClickAction(() -> {
 				// Open options panel
-				new MainOptionsFrame(this, "Options", generalConfig, gameConfig);
+				boolean paused = this.paused;
+				MainOptionsFrame optFrame = new MainOptionsFrame(this, "Options", generalConfig, gameConfig);
+				optFrame.returnAction = () -> {
+					this.paused = paused;
+				};
+				
+				this.paused = true;
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -259,7 +277,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		gameConfig.PADDLE_VELOCITY *= (1.1d / difficulty.multiplierD);
 		gameConfig.PADDLE_WIDTH *= (1.0d / difficulty.multiplierD);
 		gameConfig.PLAYER_LIVES -= (difficulty.multiplierI);
-		gameConfig.BONUS_PROBABILITY *= (1.1d / difficulty.multiplierD);
+		gameConfig.BONUS_PROBABILITY /= difficulty.multiplierD;
 	}
 
 	boolean isIntersecting(GameObject mA, GameObject mB) {
@@ -269,14 +287,18 @@ public class GameFrame extends JFrame implements KeyListener {
 	/////////// COLLISION CHECK METHODS ///////////////
 
 	void testCollision(Paddle mPaddle, FallingBonus fallingBonus, Iterator<FallingBonus> it) {
-		if (!isIntersecting(mPaddle, fallingBonus))
+		if(fallingBonus.consumed) {
+			it.remove();
+		}
+		
+		if (fallingBonus.catched || !isIntersecting(mPaddle, fallingBonus))
 			return;
 
 		// Collision logic
 		try {
 			fallingBonus.setCatched(true);
 			fallingBonus.fireBonus();
-			it.remove();
+			
 		} catch (Exception e) {
 			System.out.println("Error while running catched fallingBonus logics");
 			e.printStackTrace();
@@ -444,10 +466,17 @@ public class GameFrame extends JFrame implements KeyListener {
 					try {
 						
 						currentGeneralVolume = generalConfig.loadFloat(GeneralConfig.KEY_BASE_VOLUME);
+						
+						boolean mutedBase = generalConfig.getProperties().getBooleanVarFromProps(
+								GeneralConfig.KEY_BASE_MUTED, true);
+						boolean mutedEffects = generalConfig.getProperties().getBooleanVarFromProps(
+								GeneralConfig.KEY_EFFECTS_MUTED, true);
+						
+						muteButton.isSelected = mutedEffects && mutedBase;
 
-						if (paused || muteButton.isSelected) {
+						if (paused || mutedBase) {
 							soundsManager.pause();
-						} else if (!paused || !muteButton.isSelected){
+						} else if (!paused || !mutedBase){
 							soundsManager.resumeLoop();
 						}
 						
@@ -486,8 +515,10 @@ public class GameFrame extends JFrame implements KeyListener {
 		startEnabledFPSRefresher();
 
 		while (running) {
-
+			
 			long time1 = System.currentTimeMillis();
+
+			checkPausedBonuses();
 
 			if (!scoreboard.gameOver && !scoreboard.win) {
 				tryAgain = false;
@@ -502,16 +533,8 @@ public class GameFrame extends JFrame implements KeyListener {
 				}
 
 			} else if (tryAgain) {
-				tryAgain = false;
-				initializeBricks(bricks);
-				scoreboard.lives = new AtomicInteger(gameConfig.PLAYER_LIVES);
-				scoreboard.score = 0;
-				scoreboard.win = false;
-				scoreboard.gameOver = false;
-				scoreboard.updateScoreboard();
-				ball.x = gameConfig.SCREEN_WIDTH / 2;
-				ball.y = gameConfig.SCREEN_HEIGHT / 2;
-				paddle.x = gameConfig.SCREEN_WIDTH / 2;
+				running = false;
+				relaunchcurrentLevel();
 			}
 
 			long time2 = System.currentTimeMillis();
@@ -528,6 +551,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		}
 
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		resetModifiersCount();
 
@@ -550,12 +574,29 @@ public class GameFrame extends JFrame implements KeyListener {
 		}
 	}
 	
+	private void checkPausedBonuses() {
+		if (paused) {
+			for(FallingBonus bonus : activeBonuses) {
+				if(bonus.catched && !bonus.consumed) {
+					bonus.timer.setPaused(true);
+				}
+			}
+			return;
+		
+		} else {
+			for(FallingBonus bonus : activeBonuses) {
+				if(bonus.catched && !bonus.consumed) {
+					bonus.timer.setPaused(false);
+				}
+			}
+		}
+	}
+	
 
 	private void update() {
-
-		if (paused) {
+		
+		if(paused)
 			return;
-		}
 
 		currentSlice += lastFt;
 
@@ -586,7 +627,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 				if (brick.destroyed) {
 					it.remove();
-					scoreboard.increaseScore(gameConfig.COUNT_BLOCKS_X, gameConfig.COUNT_BLOCKS_Y, bricks.isEmpty());
+					scoreboard.increaseScore(difficulty, gameConfig.COUNT_BLOCKS_X, gameConfig.COUNT_BLOCKS_Y, bricks.isEmpty());
 				}
 			}
 
@@ -601,18 +642,40 @@ public class GameFrame extends JFrame implements KeyListener {
 	}
 
 	private boolean launchNewLevel() throws IOException {
-		if (!forceExitLevel && levelLoader.hasNextLevel()) {
-			levelLoader.goToNextLevelConfig();
+		String config = levelLoader.goToNextLevelConfig();
+		if (config != null) {
+			return launchLevel(config);
+		} else {
+			return false;
+		}
+	}
+
+	private boolean relaunchcurrentLevel() throws IOException {
+		scoreboard.score = scoreboard.initialScore;
+		return launchLevel(levelLoader.getCurrentLevelConfig());
+	}
+	
+	private boolean launchLevel(String levelConfig) throws IOException {
+		if (!forceExitLevel) {
+			
 			int lives = scoreboard.lives.get();
+			if(lives <= 0)
+				lives = gameConfig.PLAYER_LIVES;
+			
 			int score = scoreboard.score;
-			GameFrame gamePanel = new GameFrame(generalConfig, difficulty, returnAction, levelLoader);
+			GameFrame gamePanel = new GameFrame(
+					generalConfig,
+					Difficulty.valueOf(generalConfig.loadString(GeneralConfig.KEY_DIFFICULTY)), 
+					returnAction, 
+					levelLoader);
 			gamePanel.setLocationRelativeTo(this);
 			gamePanel.scoreboard.lives = new AtomicInteger(lives);
 			gamePanel.scoreboard.score = score;
+			scoreboard.initialScore = score;
+
 			gamePanel.run();
-
+			
 			return true;
-
 		} else {
 			forceExitLevel = false;
 			return false;

@@ -3,7 +3,6 @@ package gui.config;
 import java.awt.Frame;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import java.awt.GridBagLayout;
@@ -25,6 +24,8 @@ import utils.config.AbstractConfig;
 import utils.config.GeneralConfig;
 
 import java.awt.Dimension;
+import java.awt.Font;
+
 import javax.swing.JButton;
 import java.awt.SystemColor;
 
@@ -49,6 +50,8 @@ public class MainOptionsFrame extends JDialog {
 	private JButton btnSave;
 	
 	private Frame owner;
+	
+	public Runnable returnAction;
 
 	public MainOptionsFrame(Frame owner, String title, AbstractConfig... config) {
 		super(owner, title);
@@ -154,6 +157,9 @@ public class MainOptionsFrame extends JDialog {
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
 				owner.setEnabled(true);
+				if(returnAction != null) {
+					returnAction.run();
+				}
 			}
 		});
 	}
@@ -166,6 +172,7 @@ public class MainOptionsFrame extends JDialog {
 		
 		optionsList = new JList<OptionsSubPanel>(options.toArray(o));
 		optionsList.setSelectedIndex(0);
+		optionsList.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		loadSelectedCategory();
 		optionsList.setMaximumSize(new Dimension(100, 1000));
 		optionsList.setBackground(Color.LIGHT_GRAY);

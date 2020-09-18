@@ -102,7 +102,7 @@ public class StartFrame extends JFrame {
 						gamePanel.setLocationRelativeTo(thisFrame);
 						thisFrame.setVisible(false);
 						gamePanel.run();
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
@@ -112,7 +112,7 @@ public class StartFrame extends JFrame {
 		setupMenuBar();
 		
 		SwingUtilities.invokeLater(()->{
-			GUIStyelSettings.setLightNimbus(1);
+			GUIStyelSettings.setLightNimbus(3);
 			GUIStyelSettings.updateAllWindowsLaf();
 		});
 	}

@@ -1,10 +1,9 @@
 package om;
 
 import java.awt.Graphics;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import gui.GameFrame;
+import utility.AmTimer;
 
 public class FallingBonus extends Rectangle {
 
@@ -17,32 +16,30 @@ public class FallingBonus extends Rectangle {
 	// Signal if this bonus is being used
 	public volatile boolean inAction = false;
 	
-	public Timer timer;
-	private TimerTask task;
+	public AmTimer timer;
+	
 	private double velocity;
 	
 	public GameFrame gameFrame;
 	
 	public Bonus bonus;
-
+	
 	public FallingBonus(Bonus bonus, double x, double y, GameFrame gameFrame) {
 		this.bonus = bonus;
+		this.bonus.fallingBonus = this;
 		this.x = x;
 		this.y = y;
 		this.gameFrame = gameFrame;
 		this.sizeX = gameFrame.gameConfig.BONUS_WIDTH;
 		this.sizeY = gameFrame.gameConfig.BONUS_HEIGHT;
 		this.velocity = gameFrame.gameConfig.BONUS_VELOCITY;
-		timer = new Timer();
-		task = new TimerTask() {
-			
-			@Override
-			public void run() {
+		
+		timer = new AmTimer(() -> {
 				inAction = false;
 				consumed = true;
 				bonus.resetModifier();
-			}
-		};
+			},
+			bonus.timeMs);
 	} 
 
 	public void draw(Graphics g) {
@@ -58,14 +55,9 @@ public class FallingBonus extends Rectangle {
 	public void fireBonus() throws InstantiationException, IllegalAccessException {
 		if (catched && !consumed) {
 			inAction = true;
-			timer.schedule(task, bonus.timeMs);
+			timer.waitAndExecute();
 			bonus.applyModifier(gameFrame);
 		}
-	}
-	
-	public void resetTimer() {
-		timer.cancel();
-		timer.schedule(task, bonus.timeMs);
 	}
 	
 	public void update(double FT_STEP) {

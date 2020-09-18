@@ -23,6 +23,8 @@ public class SoundsManager {
 	
 	public static final float DEFAULT_VOLUME = 0.8f;
 	public static float volume = DEFAULT_VOLUME;
+	
+	public static volatile boolean MUTED = false;
 
 	// Preset static volumes
 	public static final float MAX = 1.0f;
@@ -42,6 +44,10 @@ public class SoundsManager {
 	public Clip clip;
 	
 	public static void playSound(String pathToResource, Float volum){
+		
+		if(MUTED)
+			return;
+		
 		setGeneralVolume(volum);
 		File audioFile = new File(pathToResource);
 		if(audioFile == null || !audioFile.exists()) {

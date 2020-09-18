@@ -24,7 +24,7 @@ public enum Bonus {
 	SPEED(GameConfigs.IMG_FOLDER + "bonus_speed.png", null, Color.GREEN, 12000, SpeedModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Laser.wav"}),
 	FLAME_BALL(GameConfigs.IMG_FOLDER + "bonus_flame.png", Color.RED, Color.RED, 12000, FlameModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Fire.wav"}),
 	EXPANSION(GameConfigs.IMG_FOLDER + "bonus_expansion.jpg", null, Color.RED, 8000, ExpansionModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Laser.wav"}),
-	LIFE(GameConfigs.IMG_FOLDER + "bonus_life.png", null, null, 50, LifeModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Health.wav"}),
+	LIFE(GameConfigs.IMG_FOLDER + "bonus_life.png", null, null, 20, LifeModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Health.wav"}),
 	PUPPY(GameConfigs.IMG_FOLDER + "puppy_ball.png", null, null, 10000, PuppyModifier.class, new String[]{GameConfigs.SOUNDS_FOLDER + "Fart01.wav"});
 	
 	public static final int UNDEFINED_INT = -1;
@@ -40,6 +40,8 @@ public enum Bonus {
 	public Class<? extends AbstractModifier> modifierClass;
 	public AbstractModifier modifierInstance;
 	public String[] soundPaths;
+	
+	public FallingBonus fallingBonus;
 	
 	private Bonus(
 			String imagePath, 

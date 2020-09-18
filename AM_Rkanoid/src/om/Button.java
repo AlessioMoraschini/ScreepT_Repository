@@ -1,5 +1,6 @@
 package om;
 
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.IOException;
@@ -16,13 +17,16 @@ public class Button extends Rectangle {
 	public volatile boolean isSelected;
 	public volatile boolean isMouseHover;
 	
+	public Container owner;
+	
 	private Runnable onClickAction = () -> {};
 	
-	public Button(int x, int y, int sizeX, int sizeY) {
+	public Button(int x, int y, int sizeX, int sizeY, Container owner) {
 		this.x = x;
 		this.y = y;
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
+		this.owner = owner;
 	}
 	
 	public void setOnClickAction(Runnable onclickAction) {
