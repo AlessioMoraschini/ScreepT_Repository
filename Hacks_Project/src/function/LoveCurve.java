@@ -1,6 +1,7 @@
 package function;
 
 public class LoveCurve extends AbstractCurveFunction {
+	private static final long serialVersionUID = 5824796222147322356L;
 
 	public LoveCurve(double initialT, double interval, double finalT) {
 		super(initialT, interval, finalT);

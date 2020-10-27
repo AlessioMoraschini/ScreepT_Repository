@@ -89,11 +89,11 @@ public class GameFrame extends JFrame implements KeyListener {
 	private Button muteButton;
 	private Button pauseButton;
 	private Button optionsButton;
-
+	
 	public GameFrame(GeneralConfig generalConfig, Difficulty difficulty, Runnable returnAction, LevelLoader levelLoader) throws IOException {
 
 		this.soundsManager = new SoundsManager();
-
+		
 		this.activeBonuses = new ArrayList<FallingBonus>();
 		this.keyModifiers = new ArrayList<KeyEventModifier>();
 		this.buttonList = new ArrayList<Button>();
@@ -595,6 +595,8 @@ public class GameFrame extends JFrame implements KeyListener {
 
 	private void update() {
 		
+		scoreboard.updateScoreboard();
+
 		if(paused)
 			return;
 
@@ -660,7 +662,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			
 			int lives = scoreboard.lives.get();
 			if(lives <= 0)
-				lives = gameConfig.PLAYER_LIVES;
+				lives = 1;
 			
 			int score = scoreboard.score;
 			GameFrame gamePanel = new GameFrame(

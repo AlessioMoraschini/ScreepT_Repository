@@ -9,15 +9,20 @@ import java.awt.Toolkit;
 import java.util.Random;
 
 public class GhostMouse {
+	
+	public long timeout = 10000;
 
 	public void run() throws AWTException, InterruptedException {
 		Robot robot = new Robot();
 		Random rand = new Random();
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < 1000; i++) {
 			int x = rand.nextInt(getScreenSize().width);
 			int y = rand.nextInt(getScreenSize().height);
 			robot.mouseMove(x, y);
-			Thread.sleep(100);
+			robot.keyPress(524);
+			robot.keyRelease(524);
+			robot.mouseWheel(rand.nextInt(4)-rand.nextInt(4));
+			Thread.sleep(timeout/1000);
 		}
 	}
 	
