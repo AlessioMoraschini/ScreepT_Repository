@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
-import files.FileVarious;
 import files.search.FileSearchAdvanced;
 import gui.GuiUtils;
 import om.JVMInfo;
@@ -62,40 +62,78 @@ public class SysUtils {
 
 ///////////////////////////////// GENERIC STUFF ////////////////////////////////////////////////
 	
-	public static String addToAutostart(File executable) throws IOException {
+	/**
+	 * @param target
+	 * @param shortcutDestination
+	 * @return element 0: success response from OS :: element 1: error message (empty string if success)
+	 * @throws IOException
+	 */
+	public static String[] addToAutostart(File executable) throws IOException {
+		return addToAutostart(executable, "");
+	}
+	
+	/**
+	 * @param target
+	 * @param shortcutDestination
+	 * @return element 0: success response from OS :: element 1: error message (empty string if success)
+	 * @throws IOException
+	 */
+	public static String[] addToAutostart(File executable, String version) throws IOException {
 		OSinfo OS = getOsInfoLazy();
 		
+		String linkName = getVersionedFileName(executable, version, ".lnk");
+		
 		if(OS.isWindows()) {
-			return createShortcut(executable, new File(WIN_AUTOSTART_PATH + "/" + FileVarious.changeExtension(executable, ".lnk").getName()));
+			return createShortcut(executable, new File(WIN_AUTOSTART_PATH + "/" + linkName));
 		} else {
-			return createShortcut(executable, new File(UNIX_AUTOSTART_PATH + "/" + FileVarious.changeExtension(executable, ".lnk").getName()));
+			return createShortcut(executable, new File(UNIX_AUTOSTART_PATH + "/" + linkName));
 		}
 	}
 	
 	public static boolean removeFromAutostart(File executable) throws IOException {
+		return removeFromAutostart(executable, "");
+	}
+	
+	public static boolean removeFromAutostart(File executable, String version) throws IOException {
 		OSinfo OS = getOsInfoLazy();
 		File toRemove = null;
+		String linkName = getVersionedFileName(executable, version, ".lnk");
 		
 		if(OS.isWindows()) {
-			toRemove = new File(WIN_AUTOSTART_PATH + "/" + FileVarious.changeExtension(executable, ".lnk").getName());
+			toRemove = new File(WIN_AUTOSTART_PATH + "/" + linkName);
 		} else {
-			toRemove = new File(UNIX_AUTOSTART_PATH + "/" + FileVarious.changeExtension(executable, ".lnk").getName());
+			toRemove = new File(UNIX_AUTOSTART_PATH + "/" + linkName);
 		}
 		
 		return FileUtils.deleteQuietly(toRemove);
 	}
 
-	public static boolean isPresentInAutostart(File executable) throws IOException {
+	public static boolean isPresentInAutostart(File executable) {
+		return isPresentInAutostart(executable, "");
+	}
+	
+	public static boolean isPresentInAutostart(File executable, String version) {
 		OSinfo OS = getOsInfoLazy();
 		File toRemove = null;
+		String linkName = getVersionedFileName(executable, version, ".lnk");
 		
 		if(OS.isWindows()) {
-			toRemove = new File(WIN_AUTOSTART_PATH + "/" + FileVarious.changeExtension(executable, ".lnk").getName());
+			toRemove = new File(WIN_AUTOSTART_PATH + "/" + linkName);
 		} else {
-			toRemove = new File(UNIX_AUTOSTART_PATH + "/" + FileVarious.changeExtension(executable, ".lnk").getName());
+			toRemove = new File(UNIX_AUTOSTART_PATH + "/" + linkName);
 		}
 		
 		return toRemove.exists();
+	}
+	
+	public static String getVersionedFileName(File executable, String version, String extension) {
+		String versionStr = StringWorker.trimToEmpty(version);
+		boolean emptyVersion = version.equals("");
+		
+		return FilenameUtils.removeExtension(executable.getName())
+				.concat(emptyVersion ? "" : "_")
+				.concat(versionStr)
+				.concat(".lnk");
 	}
 	
 	public static void viewAutostartFolder(boolean openInShell) {
@@ -114,14 +152,20 @@ public class SysUtils {
 		}
 	}
 	
-	public static String createShortcut(File target, File shortcutDestination) throws IOException {
+	/**
+	 * @param target
+	 * @param shortcutDestination
+	 * @return element 0: success response from OS :: element 1: error message (empty string if success)
+	 * @throws IOException
+	 */
+	public static String[] createShortcut(File target, File shortcutDestination) throws IOException {
 
 		OSinfo OS = getOsInfoLazy();
 		logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
 		logger.debug("Creating a shortcut file for " + target + " : " + shortcutDestination);
 		
 		Runtime runtime = Runtime.getRuntime();
-		String processOutput = "";
+		String[] processOutput = new String[] {"", ""};
 		
 		if(OS.isWindows()) {
 			processOutput = execNlogProcessOutput(runtime.exec("cmd /c mklink \"" + shortcutDestination.getCanonicalPath() + "\" \"" + target.getCanonicalPath() + "\""));
@@ -619,14 +663,14 @@ public class SysUtils {
 		return lines;
 	}
 	
-	public static String execNlogProcessOutput(Process process) {
+	public static String[] execNlogProcessOutput(Process process) {
 		String output = SysUtils.readProcessOutput(process.getInputStream());
 		logger.info(output);
 		
 		String errorString = SysUtils.readProcessOutput(process.getErrorStream());
 		logger.error(errorString);
 		
-		return "Process output: " + output;
+		return new String[] {"Process output: " + output, StringWorker.trimToEmpty(errorString)};
 	}
 	
 	public static boolean cdIntoCommandLine(File directory) {

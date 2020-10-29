@@ -21,6 +21,7 @@ import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GUIStyelSettings;
+import gui.GuiUtils;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -113,7 +114,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private boolean BACKUP_AUTOSAVE_FLAG;
 	private boolean BACKUP_EXCEPTION_ADVICES;
 	private boolean BACKUP_AUTOCHECK_UPDATES;
-	private boolean BACKUP_IS_AUTOSTART_ON;
 	private String BACKUP_CURRENT_USERNAME;
 	private String BACKUP_CHARSET;
 	private SecurityLevel BACKUP_SECURITY_LEVEL;
@@ -130,6 +130,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JButton btnNetworkConfig;
 	private JLabel lblLocale;
 	private JCheckBox chckbxAutostart;
+	private JButton buttonOpenAutostartDir;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		super();
@@ -170,7 +171,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.GRAY);
 		getContentPane().add(panel, "cell 0 0 9 1,grow");
-		panel.setLayout(new MigLayout("", "[220px:n][][90px:n][grow][100px:110px:160px,grow][100px:110px:160px,grow]", "[grow]"));
+		panel.setLayout(new MigLayout("", "[220px:n][][90px:n][grow][100px:110px:160px,grow][][100px:110px:160px,grow]", "[grow]"));
 		
 		
 		chckbxAutosave = new JCheckBox("Autosave configuration");
@@ -212,8 +213,15 @@ public class GeneralOptionsFrame extends ParentFrame{
 		chckbxAutostart.setOpaque(false);
 		panel.add(chckbxAutostart, "cell 4 0,alignx center");
 		
+		buttonOpenAutostartDir = new JButton("");
+		buttonOpenAutostartDir.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
+		buttonOpenAutostartDir.setBackground(Color.DARK_GRAY);
+		buttonOpenAutostartDir.setToolTipText("Open autostart folder in File System");
+		buttonOpenAutostartDir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panel.add(buttonOpenAutostartDir, "cell 5 0, alignx left");
+		
 		lblLogLevelChosen = new JLabel("LogLevel: " + MainGuiGeneralAppStarter.LOG_LEVEL_AT_START);
-		panel.add(lblLogLevelChosen, "cell 5 0,alignx right");
+		panel.add(lblLogLevelChosen, "cell 6 0,alignx right");
 		lblLogLevelChosen.setForeground(new Color(255, 255, 255));
 		lblLogLevelChosen.setFont(new Font("Tahoma", Font.BOLD, 13));
 		
@@ -421,20 +429,10 @@ public class GeneralOptionsFrame extends ParentFrame{
 		
 		// Autostart checbox handler
 		chckbxAutostart.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					if(chckbxAutostart.isSelected()) {
-						SysUtils.addToAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-					} else {
-						SysUtils.removeFromAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-					}
-				} catch (IOException ex) {
-					String msg = "Exception happened while adding " + GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER + " to autostart!";
-					logger.error(msg, ex);
-					dialogHelper.warn(msg, "Cannot add to autostart");
-				}
+				addOrRemoveFromAutostart(chckbxAutostart.isSelected(), true);
+				refreshCheckBoxForeground(chckbxAutostart);
 			}
 		});
 		
@@ -582,6 +580,15 @@ public class GeneralOptionsFrame extends ParentFrame{
 			}
 		});
 		
+		// OPEN AUTOSTART FOLDER BUTTON HANDLER
+		buttonOpenAutostartDir.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SysUtils.viewAutostartFolder(false);
+			}
+		});
+		
 		// DISCARD BUTTON HANDLER
 		btnDiscard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -671,11 +678,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
-		try {
-			BACKUP_IS_AUTOSTART_ON = SysUtils.isPresentInAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-		} catch (IOException e) {
-			BACKUP_IS_AUTOSTART_ON = false;
-		}
 	}
 	
 	/**
@@ -698,12 +700,7 @@ public class GeneralOptionsFrame extends ParentFrame{
     	updateComboLocale();
     	Locale.setDefault(currentConfiguration.getGenOpt().getLocale());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
-    	try {
-			chckbxAutostart.setSelected(SysUtils.isPresentInAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER));
-		} catch (IOException e) {
-			logger.error("Cannot check if launcher(" + GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER 
-					+ ") is already present in autostart", e);
-		}
+		chckbxAutostart.setSelected(SysUtils.isPresentInAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER));
     	
     	refreshCheckBoxForeground();
 	}
@@ -756,20 +753,41 @@ public class GeneralOptionsFrame extends ParentFrame{
 		currentConfiguration.getGenOpt().setAutomaticUpdateOn(BACKUP_AUTOCHECK_UPDATES);
 		currentConfiguration.getGenOpt().setLocale(BACKUP_LOCALE);
 		
-		try {
-			if(BACKUP_IS_AUTOSTART_ON) {
-				SysUtils.addToAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-			} else {
-				SysUtils.removeFromAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-			}
-		} catch (IOException e) {
-			String msg = "Exception happened while adding " + GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER + " to autostart!";
-			logger.error(msg, e);
-			dialogHelper.warn(msg, "Cannot add to autostart");
-		}
-		
 		// reset INItializer reference currentConfiguration too
 		System.setProperty("file.encoding", BACKUP_CHARSET);
+	}
+	
+	private void addOrRemoveFromAutostart(boolean flagAutostartActive, boolean showDialogs) {
+		boolean advicesFlagBackup = dialogHelper.enabledAdvices;
+		dialogHelper.enabledAdvices = showDialogs;
+		try {
+			if(flagAutostartActive) {
+				String[] outcome = SysUtils.addToAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+				if(outcome[1].isEmpty()) {
+					dialogHelper.info(outcome[0]);
+					chckbxAutostart.setSelected(true);
+				} else {
+					dialogHelper.error(GuiUtils.encapsulateInHtml(outcome[1] + "<br><br> Try to restart application with Administration rights."), "Error");
+					chckbxAutostart.setSelected(false);
+				}
+			} else {
+				if(!SysUtils.removeFromAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER)) {
+					chckbxAutostart.setSelected(true);
+					dialogHelper.error(GuiUtils.encapsulateInHtml("Cannot remove from autostart menu <br><br> Try to restart application with Administration rights."), "Error");
+				};
+			}
+		} catch (IOException e) {
+			String msg = "Exception happened while " +
+					(flagAutostartActive ? "adding " : "removing ") + 
+					GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER + 
+					" to autostart!";
+			logger.error(msg, e);
+			dialogHelper.warn(msg, "Cannot " + 
+					(flagAutostartActive? "add to" : "remove from") +
+					" autostart");
+		} finally {
+			dialogHelper.enabledAdvices = advicesFlagBackup;
+		}
 	}
 	
 	/**
@@ -787,11 +805,6 @@ public class GeneralOptionsFrame extends ParentFrame{
 		BACKUP_EXCEPTION_ADVICES = currentConfiguration.getGenOpt().isExceptionAdvicesEnabled();
 		BACKUP_AUTOCHECK_UPDATES = currentConfiguration.getGenOpt().isAutomaticUpdateOn();
 		BACKUP_LOCALE = currentConfiguration.getGenOpt().getLocale();
-		try {
-			BACKUP_IS_AUTOSTART_ON = SysUtils.isPresentInAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-		} catch (IOException e) {
-			BACKUP_IS_AUTOSTART_ON = false;
-		}
 		
 		// write launcher configuration
 		writeLauncherHidingOption(chckbxHideLauncherAt.isSelected());
