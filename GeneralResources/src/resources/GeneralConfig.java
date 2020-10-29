@@ -26,6 +26,7 @@ import files.FileWorker;
 import resources.om.FilePojo;
 import utility.ConversionUtils;
 import utility.properties.PropertiesManager;
+import utils.SysUtils;
 
 public class GeneralConfig {
 	
@@ -75,6 +76,11 @@ public class GeneralConfig {
 	
 	// The first level folder where Application/ directory is contained
 	public static File MAIN_APP_PARENT_DIR = new File(CURRENT_EXECUTION_DIR).getParentFile();  
+	public static String MAIN_APP_OS_DEPENDENT_LAUNCHER_NAME = SysUtils.getOsInfoLazy().isWindows() 
+			? resourcesFilePathsMappings.getProperty("MAIN_LAUNCHER_WINDOWS", "ScreepT.exe")
+			: resourcesFilePathsMappings.getProperty("MAIN_LAUNCHER_UNIX", "ScreepT.sh");
+	public static File MAIN_APP_OS_DEPENDENT_LAUNCHER = new File(MAIN_APP_PARENT_DIR.getAbsolutePath() + "/" + MAIN_APP_OS_DEPENDENT_LAUNCHER_NAME);
+	
 	// General Folders                                                                                                                                                                                        
 	public static String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR", "Application/");   
 
