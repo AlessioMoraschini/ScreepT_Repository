@@ -57,7 +57,7 @@ public class SafeLogger {
 			
 			loggerAvailable = true;
 		} catch (Throwable throwable) {
-			out.println("Cannot initialize logger!\n" + Arrays.deepToString(throwable.getStackTrace()) + "\n\n");
+			out.println("Cannot initialize logger!");
 			loggerAvailable = false;
 		}
 	}

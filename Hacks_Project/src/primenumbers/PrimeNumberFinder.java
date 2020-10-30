@@ -80,9 +80,9 @@ public class PrimeNumberFinder {
 	public static void main(String[] args) throws InterruptedException {
 		PrimeNumberFinder finder = new PrimeNumberFinder();
 		ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "cls").inheritIO();
-		AtomicBoolean listenForPause = new AtomicBoolean();
 		
 		new Thread(() -> {
+			AtomicBoolean listenForPause = new AtomicBoolean();
 			
 			Scanner scanner = new Scanner(System.in);
 			int delay = 200;
