@@ -259,9 +259,8 @@ public class MainStandAloneUpdater {
 
 		Boolean createUpdatesZip = Boolean.valueOf(args[1]);
 		UPDATES_PROPERTIES_FILE = args[2];
-		PropertiesManager manifestProps = new PropertiesManager(UPDATES_PROPERTIES_FILE);
 
-		File releaseFolderOrZip = new File(manifestProps.getProperty("RELEASE_FOLDER-OR-ZIP_TO_ELABORATE"));
+		File releaseFolderOrZip = new File(new PropertiesManager(FTP_PROPERTIES_FILE).getProperty("RELEASE_FOLDER-OR-ZIP_TO_ELABORATE"));
 		logger.info("Src: " + releaseFolderOrZip.getAbsolutePath());
 		
 		// Only for folder to be zipped -> zip folder into current one
@@ -279,9 +278,21 @@ public class MainStandAloneUpdater {
 		ArrayList<File> toUpload = new ArrayList<>();
 		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
 		
+		String updaterJar = "updater.jar";
+		File updaterJarFile = new File(updaterJar);
+		if (updaterJarFile.exists()) {
+			toUpload.add(updaterJarFile);
+		}
+		
 		if(releaseFolderOrZip != null && releaseFolderOrZip.isFile() && StringWorker.trimToEmpty(releaseFolderOrZip.getName()).endsWith(".zip")) {
 			
 			try {
+				PropertiesManager manifestProps = new PropertiesManager(UPDATES_PROPERTIES_FILE);
+
+				if (updaterJarFile.exists()) {
+					String updaterHash = ChecksumHasher.getFileHashBuffered(updaterJar, downloadsHashFunc, true);
+					manifestProps.saveCommentedProperty(updaterJar, updaterHash);
+				}
 				String hash = ChecksumHasher.getFileHashBuffered(releaseFolderOrZip, downloadsHashFunc, true);
 				manifestProps.saveCommentedProperty(releaseFolderOrZip.getName(), hash);
 				manifestProps.saveAllProperties();
