@@ -57,11 +57,6 @@ public class ChecksumHasher {
 		return result;
 	}
 	
-	/**
-	 * Use only in case of a small file, cause this reads all the bytes from source into memory,
-	 * potentially leading to an outOfMemoryException. It's preferrable to use <i>getFileHashBuffered()</i> method.
-	 */
-	@Deprecated
 	public static String getFileHash(String filePath, HashingFunction algorithm) throws Throwable {
 		
 		if(filePath == null) return "";
@@ -76,7 +71,7 @@ public class ChecksumHasher {
 	}
 	
 	/**
-	 * Use this when reading a big file, cause normale <i>getFileHash()</> can cause a outOfMemoryException 
+	 * Use this when reading a big file, cause normal <i>getFileHash()</> can cause a outOfMemoryException 
 	 */
 	public static String getFileHashBuffered(String file, HashingFunction algorithm) throws NoSuchAlgorithmException {
 		
@@ -84,7 +79,7 @@ public class ChecksumHasher {
 	}
 
 	/**
-	 * Use this when reading a big file, cause normale <i>getFileHash()</> can cause a outOfMemoryException 
+	 * Use this when reading a big file, cause normal <i>getFileHash()</> can cause a outOfMemoryException 
 	 */
 	public static String getFileHashBuffered(String file, HashingFunction algorithm, boolean uppercase) throws NoSuchAlgorithmException {
 	
@@ -92,7 +87,7 @@ public class ChecksumHasher {
 	}
 	
 	/**
-	 * Use this when reading a big file, cause normale <i>getFileHash()</> can cause a outOfMemoryException 
+	 * Use this when reading a big file, cause normal <i>getFileHash()</> can cause a outOfMemoryException 
 	 */
 	public static String getFileHashBuffered(File file, HashingFunction algorithm, boolean uppercase) throws NoSuchAlgorithmException {
 		MessageDigest messageDigest;

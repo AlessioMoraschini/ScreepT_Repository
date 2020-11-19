@@ -12,6 +12,8 @@ public class ScoreBoard {
 	
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
+	
+	public static final int INITIAL_MESSAGE_DURATION = 2000;
 
 	public int score = 0;
 	public AtomicInteger lives = new AtomicInteger(5);
@@ -23,6 +25,8 @@ public class ScoreBoard {
 	public Font font;
 	
 	public LevelLoader levelLoader;
+	
+	public int initialScore;
 
 	public ScoreBoard(String text, int PLAYER_LIVES, String FONT, int SCREEN_HEIGHT, int SCREEN_WIDTH, LevelLoader levelLoader) {
 		this.font = new Font(FONT, Font.PLAIN, 12);
@@ -31,21 +35,40 @@ public class ScoreBoard {
 		this.SCREEN_HEIGHT = SCREEN_HEIGHT;
 		this.SCREEN_WIDTH = SCREEN_WIDTH;
 		this.levelLoader = levelLoader;
+		
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					Thread.sleep(INITIAL_MESSAGE_DURATION);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				updateScoreboard();
+			}
+		}).start();
 	}
 
-	public void increaseScore(int COUNT_BLOCKS_X, int COUNT_BLOCKS_Y, boolean noMoreBricks) {
+	public void increaseScore(Difficulty difficulty, int COUNT_BLOCKS_X, int COUNT_BLOCKS_Y, boolean noMoreBricks) {
 		score++;
 		if (noMoreBricks) {
 			win = true;
+			int bonus = calculateBonus(difficulty);
 			if (!levelLoader.hasNextLevel()) {
-				text = "You have won! \nYour score was: " + score + "\n\nPress Esc to exit";
+				text = "You have completed PuppyNoid :D \nYour score was: " + score +
+						" - Bonus Difficulty("+difficulty+"): " + bonus + "\n\nPress Esc to exit";
 				finished = true;
 			} else {
-				text = "You have won! \nYour score is: " + score + "\n\nPress N to go to Next Level,\n\n (Enter to restart, Esc to exit)";
+				text = "You have won! \nYour score is: " + score + 
+						" - Bonus Difficulty("+difficulty+"): " + bonus + "\n\nPress N to go to Next Level,\n\n (Enter to restart, Esc to exit)";
 			}
+			score += bonus;
 		} else {
 			updateScoreboard();
 		}
+	}
+	
+	public int calculateBonus(Difficulty difficulty) {
+		return (int)((score - initialScore) * difficulty.multiplierD * 0.25d);
 	}
 
 	public void die() {

@@ -21,6 +21,7 @@ import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GUIStyelSettings;
+import gui.GuiUtils;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
@@ -34,6 +35,7 @@ import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import utility.string.ListCharsets;
 import utility.string.StringWorker.EOL;
+import utils.SysUtils;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -127,6 +129,8 @@ public class GeneralOptionsFrame extends ParentFrame{
 	private JLabel lblDefaultEOL;
 	private JButton btnNetworkConfig;
 	private JLabel lblLocale;
+	private JCheckBox chckbxAutostart;
+	private JButton buttonOpenAutostartDir;
 	
 	public GeneralOptionsFrame(INItializer currentConf) {
 		super();
@@ -167,7 +171,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel.setBackground(Color.GRAY);
 		getContentPane().add(panel, "cell 0 0 9 1,grow");
-		panel.setLayout(new MigLayout("", "[220px:n][][90px:n][grow][100px:110px:160px,grow]", "[grow]"));
+		panel.setLayout(new MigLayout("", "[220px:n][][90px:n][grow][100px:110px:160px,grow][][100px:110px:160px,grow]", "[grow]"));
 		
 		
 		chckbxAutosave = new JCheckBox("Autosave configuration");
@@ -201,8 +205,23 @@ public class GeneralOptionsFrame extends ParentFrame{
 		lblIntMinutes.setForeground(Color.LIGHT_GRAY);
 		lblIntMinutes.setFont(new Font("SansSerif", Font.BOLD, 13));
 		
+		chckbxAutostart = new JCheckBox("Autostart");
+		chckbxAutostart.setForeground(Color.LIGHT_GRAY);
+		chckbxAutostart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxAutostart.setToolTipText("Enable/Disable ScreepT to be automatically launched at System startup.");
+		chckbxAutostart.setFont(new Font("SansSerif", Font.BOLD, 14));
+		chckbxAutostart.setOpaque(false);
+		panel.add(chckbxAutostart, "cell 4 0,alignx center");
+		
+		buttonOpenAutostartDir = new JButton("");
+		buttonOpenAutostartDir.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
+		buttonOpenAutostartDir.setBackground(Color.DARK_GRAY);
+		buttonOpenAutostartDir.setToolTipText("Open autostart folder in File System");
+		buttonOpenAutostartDir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panel.add(buttonOpenAutostartDir, "cell 5 0, alignx left");
+		
 		lblLogLevelChosen = new JLabel("LogLevel: " + MainGuiGeneralAppStarter.LOG_LEVEL_AT_START);
-		panel.add(lblLogLevelChosen, "cell 4 0,alignx right");
+		panel.add(lblLogLevelChosen, "cell 6 0,alignx right");
 		lblLogLevelChosen.setForeground(new Color(255, 255, 255));
 		lblLogLevelChosen.setFont(new Font("Tahoma", Font.BOLD, 13));
 		
@@ -268,7 +287,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		getContentPane().add(lblDefaultEOL, "cell 0 5 2 1,alignx right");
 		
 		
-//		comboLocales = new JComboBox<Locale>();
+//		comboLocale = new JComboBox<Locale>();
 		comboLocale = new JComboBox<Locale>(getSupportedLocales());
 		comboLocale.setFont(GeneralConfig.BUTTON_DEFAULT_FONT);
 		comboLocale.setCursor(GuiUtilsExtended.CURSOR_HAND);
@@ -405,6 +424,15 @@ public class GeneralOptionsFrame extends ParentFrame{
 				lblDynVolume.setText(sliderVolume.getValue() + "%");
 				float GENVOLUME = (sliderVolume.getValue()/100.0f);
 				currentConfiguration.getGenOpt().setGeneralVolume(GENVOLUME);
+			}
+		});
+		
+		// Autostart checbox handler
+		chckbxAutostart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addOrRemoveFromAutostart(chckbxAutostart.isSelected(), true);
+				refreshCheckBoxForeground(chckbxAutostart);
 			}
 		});
 		
@@ -552,6 +580,15 @@ public class GeneralOptionsFrame extends ParentFrame{
 			}
 		});
 		
+		// OPEN AUTOSTART FOLDER BUTTON HANDLER
+		buttonOpenAutostartDir.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SysUtils.viewAutostartFolder(false);
+			}
+		});
+		
 		// DISCARD BUTTON HANDLER
 		btnDiscard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -616,6 +653,7 @@ public class GeneralOptionsFrame extends ParentFrame{
 		refreshCheckBoxForeground(chckbxAutosave);
 		refreshCheckBoxForeground(chckbxExceptionAdvicesEnabled);
 		refreshCheckBoxForeground(chckbxHideLauncherAt);
+		refreshCheckBoxForeground(chckbxAutostart);
 	}
 	
 	public void refreshCheckBoxForeground(JCheckBox target) {
@@ -662,6 +700,7 @@ public class GeneralOptionsFrame extends ParentFrame{
     	updateComboLocale();
     	Locale.setDefault(currentConfiguration.getGenOpt().getLocale());
     	chckbxHideLauncherAt.setSelected(readLauncherHidingOption());
+		chckbxAutostart.setSelected(SysUtils.isPresentInAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER));
     	
     	refreshCheckBoxForeground();
 	}
@@ -716,7 +755,39 @@ public class GeneralOptionsFrame extends ParentFrame{
 		
 		// reset INItializer reference currentConfiguration too
 		System.setProperty("file.encoding", BACKUP_CHARSET);
-
+	}
+	
+	private void addOrRemoveFromAutostart(boolean flagAutostartActive, boolean showDialogs) {
+		boolean advicesFlagBackup = dialogHelper.enabledAdvices;
+		dialogHelper.enabledAdvices = showDialogs;
+		try {
+			if(flagAutostartActive) {
+				String[] outcome = SysUtils.addToAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+				if(outcome[1].isEmpty()) {
+					dialogHelper.info(outcome[0]);
+					chckbxAutostart.setSelected(true);
+				} else {
+					dialogHelper.error(GuiUtils.encapsulateInHtml(outcome[1] + "<br><br> Try to restart application with Administration rights."), "Error");
+					chckbxAutostart.setSelected(false);
+				}
+			} else {
+				if(!SysUtils.removeFromAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER)) {
+					chckbxAutostart.setSelected(true);
+					dialogHelper.error(GuiUtils.encapsulateInHtml("Cannot remove from autostart menu <br><br> Try to restart application with Administration rights."), "Error");
+				};
+			}
+		} catch (IOException e) {
+			String msg = "Exception happened while " +
+					(flagAutostartActive ? "adding " : "removing ") + 
+					GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER + 
+					" to autostart!";
+			logger.error(msg, e);
+			dialogHelper.warn(msg, "Cannot " + 
+					(flagAutostartActive? "add to" : "remove from") +
+					" autostart");
+		} finally {
+			dialogHelper.enabledAdvices = advicesFlagBackup;
+		}
 	}
 	
 	/**

@@ -38,6 +38,10 @@ public class PropertiesManager {
 	public Properties dynamicFileBindingsDef;
 	public CommentedProperties commentedProperties;
 	
+	public static void setLoggerEnabled(boolean enabled) {
+		logger.setLoggerEnabled(enabled);
+	}
+	
 	/**
 	 * To check if definition had success, check if field <b>dynamicFileBindingsDefSource</b> is null after object's creation:
 	 * in that case something has gone wrong
@@ -122,7 +126,7 @@ public class PropertiesManager {
 	 * @return
 	 */
 	public String getProperty(String key) {
-		logger.debug("Loading property: " + key + " From properties file: " + dynamicFileBindingsDefSource);
+		logger.debug("Loading property: " + key + " From cached properties: " + dynamicFileBindingsDefSource);
 
 		String res = "";
 		if(dynamicFileBindingsDef != null) {

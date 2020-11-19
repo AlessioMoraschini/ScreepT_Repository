@@ -5,8 +5,8 @@ import java.awt.Image;
 import java.io.IOException;
 
 import gui.GameFrame;
-import utils.GameConfigs;
 import utils.GuiUtils;
+import utils.config.GameConfigs;
 
 public class Shot extends Rectangle {
 

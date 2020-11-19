@@ -16,4 +16,12 @@
       </plugin>
     </plugins>
   </build>
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+  	</dependency>
+  </dependencies>
 </project>

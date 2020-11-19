@@ -11,7 +11,7 @@ import easteregg.PhrasesCollection;
 import easteregg.games.snake.Snake;
 import gui.StartFrame;
 import resources.GeneralConfig;
-import utils.GameConfigs;
+import utils.config.GameConfigs;
 
 public class EasterEggsInitializer {
 
@@ -33,7 +33,7 @@ public class EasterEggsInitializer {
 				()-> {return getRandomPoetry();},
 				(e) -> {
 					return KeyEvent.VK_U == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 500) && 
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 600) && 
 						   (mainGuiUtils.isCrypterActive() || mainGuiUtils.isTextEditorActive());
 					} 
 		);
@@ -43,7 +43,7 @@ public class EasterEggsInitializer {
 				() -> {Snake.getInstance("Snake - Easter Egg found!");}, 
 				(e) -> {
 					return KeyEvent.VK_S == e.getKeyCode() &&
-							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 500) && 
+							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) && 
 						   (mainGuiUtils.mainAppReference.isOnHomePage.get() &&
 							MainGUI.mainAPP.getMainFrame().isFocusOwner());
 					}
@@ -54,8 +54,9 @@ public class EasterEggsInitializer {
 				() -> {
 					GameConfigs.GAME_CONFIG_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/config/";
 					GameConfigs.IMG_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/images/";
+					GameConfigs.SOUNDS_FOLDER = GeneralConfig.RESOURCES_DIR + "EasterEggs/AM_Rkanoid/sounds/";
 					StartFrame.size = new Dimension(450,150);
-					StartFrame.getInstance("AM_Rkanoid - Easter Egg found!");
+					StartFrame.getInstance("Puppynoid - Easter Egg found!");
 				}, 
 				(e) -> {
 					return KeyEvent.VK_A == e.getKeyCode() &&

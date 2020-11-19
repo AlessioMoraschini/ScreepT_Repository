@@ -40,10 +40,10 @@ public class MainStandAloneUpdater {
 	public static final String MAIN_LAUNCHER_JAR = "ScreepT_Launcher.jar";
 	
 	public static final String FTP_PROPERTIES_FILE = "FTP.properties";
-	public static final String PROPERTIES_FILE = "resourcesFilePathsMappings.properties";
+	public static final String APP_PROPERTIES_FILE = "resourcesFilePathsMappings.properties";
 	public final static String KEY_DEFAULT_LAUNCHER_INI_PATH = "DEFAULT_LAUNCHER_INI_PATH";
 	private static final String KEY_ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
-	public static String UPDATES_FILE = "manifest.properties";
+	public static String UPDATES_PROPERTIES_FILE = "manifest.properties";
 	
 	public static final File CURRENT_DIR = new File(System.getProperty("user.dir"));
 	
@@ -55,62 +55,34 @@ public class MainStandAloneUpdater {
 	 */
 	public static void main(String[] args) {
 		
-		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(PROPERTIES_FILE);
-		
 		if(args[0].trim().contains("-generateHashes")) {
 			
-			/******************************************************************************************************** 
-			 * Function A: "generateHashes"
-			 * 	Usage -> generateHashes function: java -jar updater.jar -generateHashes true manifest.properties
-			 ********************************************************************************************************/
-			
-			Boolean createUpdatesZip = Boolean.valueOf(args[1]);
-			UPDATES_FILE = args[2];
-			
-			PropertiesManager manifestProps = new PropertiesManager(UPDATES_FILE);
-
-			File updatesDir = new File("updates");
-			// Only for updates folder -> zip folder into current one
-			if(createUpdatesZip && updatesDir.isDirectory() && updatesDir.exists()) {
-				try {
-					ZipWorker.zipFolder(updatesDir.getAbsolutePath(), CURRENT_DIR, true, true);
-				} catch (Exception e) {
-					signalErrorAndExit1(e);
-				}
-			}
-
 			ArrayList<File> toUpload = new ArrayList<>();
-			toUpload.add(new File(UPDATES_FILE));
-			for(File curr : CURRENT_DIR.listFiles()) {
+			
+			if (args[0].trim().contains("-mainRelease")) {
+				/******************************************************************************************************** 
+				 * Function AB: "mainRelease"
+				 * 	Usage -> generateHashes(mainRelease) function: java -jar updater.jar -generateHashes-mainRelease true manifest.properties
+				 ********************************************************************************************************/
+				toUpload = mainGenerateReleaseHashed(args);
 				
-				if (curr.isFile() 
-						&& !curr.getName().endsWith(".bat") 
-						&& !curr.getName().equals(UPDATES_FILE)
-						&& !curr.getName().equals(FTP_PROPERTIES_FILE)) {
-					
-					try {
-						manifestProps.saveCommentedProperty(curr.getName(), ChecksumHasher.getFileHashBuffered(curr, downloadsHashFunc, true));
-						manifestProps.readFromFile();
-						if(!manifestProps.getProperty(curr.getName(), "").equals(ChecksumHasher.getFileHashBuffered(curr, downloadsHashFunc, true))) {
-							new JOptionHelper(null).warn("Hash control not passed: check properties for " + curr.getName(), "Hash not matching");
-						} else {
-							toUpload.add(curr);
-						}
-					} catch (Throwable e) {
-						signalErrorAndExit1(e);
-					}
-				}
-				
+			} else {
+				/******************************************************************************************************** 
+				 * Function AA: "generateHashes"
+				 * 	Usage -> generateHashes function: java -jar updater.jar -generateHashes true manifest.properties
+				 ********************************************************************************************************/
+				toUpload = mainGenerateUpdatesHashed(args);
 			}
 			
-			/******************************************************************************************************** 
-			 * Function A.1: "-generateHashes-uploadFtpUpdates" (reads ftp properties from FTP_PROPERTIES file)
-			 * 	Usage -> generateHashes function: 
-			 * 
-			 * java -jar updater.jar -generateHashes-uploadFtpUpdates true manifest.properties
-			 ********************************************************************************************************/
 			if(args[0].trim().contains("-uploadFtpUpdates")) {
-				uploadUpdatesViaFTP(toUpload);
+				/******************************************************************************************************** 
+				 * Function A.1: "-generateHashes-uploadFtpUpdates" (reads ftp properties from FTP_PROPERTIES file)
+				 * 	Usage -> generateHashes function: 
+				 * 
+				 * java -jar updater.jar -generateHashes-uploadFtpUpdates true manifest.properties
+				 * java -jar updater.jar -generateHashes-uploadFtpUpdates-mainRelease true manifest.properties
+				 ********************************************************************************************************/
+				mainUploadUpdatesViaFTP(toUpload);
 			}
 			
 			signalOKAndExit0();
@@ -121,120 +93,226 @@ public class MainStandAloneUpdater {
 			 * Function B: update ScreepT 
 			 * Usage -> update ScreepT function: java -jar updater.jar updater.jar UPDATES/updates ScreepT_0.9.5.jar
 			 **********************************************************************************************************/
-			// This is normal updater function //
+			mainUpdateScreepT(args);			
+		}
+	}
+	
+	private static void mainUpdateScreepT(String[] args) {
+		
+		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(APP_PROPERTIES_FILE);
+		
+		final File updaterJar = new File(args[0]).getAbsoluteFile();
+		final File updatesFolder = new File(args[1]).getAbsoluteFile();
+		final File newJar = new File(args[2]).getAbsoluteFile();
+		
+		String manifestPath = updatesFolder.getAbsolutePath() + File.separator + UPDATES_PROPERTIES_FILE;
+		PropertiesManager manifestProps = new PropertiesManager(manifestPath);
+		
+		// ScreepTVx.x/application/
+		File generalApplicationFolder = new File("").getAbsoluteFile();
+		// ScreepTVx.x/
+		File mainRootDirectory = generalApplicationFolder.getParentFile();
+		
+		UpdateProgressPanel updateProgressMonitor = null;
+		try {
+			if(!validateUpdatesFolder(updaterJar, updatesFolder, manifestProps)) {
+				launchJar(MAIN_LAUNCHER_JAR);
+			}
 			
-			final File updaterJar = new File(args[0]).getAbsoluteFile();
-			final File updatesFolder = new File(args[1]).getAbsoluteFile();
-			final File newJar = new File(args[2]).getAbsoluteFile();
+			File oldJar = getOldJar(resourcesFilePathsMappings);
 			
-			String manifestPath = updatesFolder.getAbsolutePath() + File.separator + UPDATES_FILE;
-			PropertiesManager manifestProps = new PropertiesManager(manifestPath);
-			
-			// ScreepTVx.x/application/
-			File generalApplicationFolder = new File("").getAbsoluteFile();
-			// ScreepTVx.x/
-			File mainRootDirectory = generalApplicationFolder.getParentFile();
-			
-			UpdateProgressPanel updateProgressMonitor = null;
-			try {
-				if(!validateUpdatesFolder(updaterJar, updatesFolder, manifestProps)) {
-					launchJar(MAIN_LAUNCHER_JAR);
-				}
-				
-				File oldJar = getOldJar(resourcesFilePathsMappings);
-				
-				if(updaterJar.exists() && updaterJar.isFile() && updatesFolder.exists() && updatesFolder.isDirectory()){
+			if(updaterJar.exists() && updaterJar.isFile() && updatesFolder.exists() && updatesFolder.isDirectory()){
 
-					// Current files backup - ask to user
-					boolean proceed = false;
-					do {
-						Integer choice = dialogHelper.yesNoOrCanc(
-								"ScreepT will be updated, do you want to backup current installation before to update?" +
-							    " (update process will not touch your personal files, but if you prefer you can backup all ScreepT folder before to update)",
-							    "Backup current Version files?");
-						
-						if (JOptionHelper.OK == choice) {
-							boolean validDirectory = true;
-							do {
-								File destBackupDir = FileVarious.directoRead(null, "Select a backup destination, or proceed without backup. A unique \"ScreepT_updater_backup\" folder will be created in the specified destination.", new File(System.getProperty("user.home")));
-								if (destBackupDir != null && destBackupDir.exists()) {
-									destBackupDir = new File(destBackupDir.getCanonicalPath() + File.separator + "ScreepT_updater_backup");
-									destBackupDir = FileWorker.renameJavaObjFile(destBackupDir);
-									FileWorker.copyDirectoryContents(mainRootDirectory, destBackupDir);
-								} else {
-									validDirectory = !dialogHelper.yesOrNo("Destination (" + destBackupDir + ") is not valid: wanna choose another one?", "Invalid Backup destination");
-								} 
-							} while (!validDirectory);
-						}
+				// Current files backup - ask to user
+				boolean proceed = false;
+				do {
+					Integer choice = dialogHelper.yesNoOrCanc(
+							"ScreepT will be updated, do you want to backup current installation before to update?" +
+						    " (update process will not touch your personal files, but if you prefer you can backup all ScreepT folder before to update)",
+						    "Backup current Version files?");
+					
+					if (JOptionHelper.OK == choice) {
+						boolean validDirectory = true;
+						do {
+							File destBackupDir = FileVarious.directoRead(null, "Select a backup destination, or proceed without backup. A unique \"ScreepT_updater_backup\" folder will be created in the specified destination.", new File(System.getProperty("user.home")));
+							if (destBackupDir != null && destBackupDir.exists()) {
+								destBackupDir = new File(destBackupDir.getCanonicalPath() + File.separator + "ScreepT_updater_backup");
+								destBackupDir = FileWorker.renameJavaObjFile(destBackupDir);
+								FileWorker.copyDirectoryContents(mainRootDirectory, destBackupDir);
+							} else {
+								validDirectory = !dialogHelper.yesOrNo("Destination (" + destBackupDir + ") is not valid: wanna choose another one?", "Invalid Backup destination");
+							} 
+						} while (!validDirectory);
+					}
 
-						if (JOptionHelper.CANC == choice) {
-							if(dialogHelper.yesOrNo("Are you sure to exit update Procedure?", "Exit procedure?")) {
-								launchJar(MAIN_LAUNCHER_JAR);
-							}
-						} else {
-							proceed = true;
+					if (JOptionHelper.CANC == choice) {
+						if(dialogHelper.yesOrNo("Are you sure to exit update Procedure?", "Exit procedure?")) {
+							launchJar(MAIN_LAUNCHER_JAR);
 						}
-						
-					} while(!proceed);
-					
-					// Proceed with update
-					updateProgressMonitor = new UpdateProgressPanel(true, true); 
-					updateProgressMonitor.update(30, "Copying new files...");
-					
-					PropertiesDTO backupProperties = getPropertiesToKeep(resourcesFilePathsMappings);
-					
-					// replace existing files matching with updates (don't touch user personal files)
-					logger.info("Copying content of " + updatesFolder + " into " + generalApplicationFolder);
-					FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
-					
-					// Check if there is Root files update to copy one level up
-					File rootDirUpdates = new File(KEY_ROOT_FILES_UPDATES_DIR);
-					if(rootDirUpdates.exists()) {
-						try {
-							updateProgressMonitor.update(70, "Updating licenses and launcher...", true);
-							FileWorker.copyDirectoryContents(rootDirUpdates, mainRootDirectory);
-							FileWorker.deleteDirContentInclRoot(rootDirUpdates);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+					} else {
+						proceed = true;
 					}
 					
-					updateProgressMonitor.update(85, 100, "Updating configuration...");
-					restorePropertiesToKeep(backupProperties, PROPERTIES_FILE);
-					saveNewJarRef(resourcesFilePathsMappings, newJar);
-					
-					FileUtils.deleteQuietly(oldJar);
-					
-					updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
-					
-				} else {
-					String fileData = "UpdaterJar => "+updaterJar+"; updates folder => "+updatesFolder;
-					dialogHelper.error("Updates data or updater jar not found, exiting updated procedure." + fileData, " (Updates not found)");
+				} while(!proceed);
+				
+				// Proceed with update
+				updateProgressMonitor = new UpdateProgressPanel(true, true); 
+				updateProgressMonitor.update(30, "Copying new files...");
+				
+				PropertiesDTO backupProperties = getPropertiesToKeep(resourcesFilePathsMappings);
+				
+				// replace existing files matching with updates (don't touch user personal files)
+				logger.info("Copying content of " + updatesFolder + " into " + generalApplicationFolder);
+				FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
+				
+				// Check if there is Root files update to copy one level up
+				File rootDirUpdates = new File(KEY_ROOT_FILES_UPDATES_DIR);
+				if(rootDirUpdates.exists()) {
+					try {
+						updateProgressMonitor.update(70, "Updating licenses and launcher...", true);
+						FileWorker.copyDirectoryContents(rootDirUpdates, mainRootDirectory);
+						FileWorker.deleteDirContentInclRoot(rootDirUpdates);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 				
-				launchJar(MAIN_LAUNCHER_JAR);
+				updateProgressMonitor.update(85, 100, "Updating configuration...");
+				restorePropertiesToKeep(backupProperties, APP_PROPERTIES_FILE);
+				saveNewJarRef(resourcesFilePathsMappings, newJar);
 				
-			} catch (Throwable e) {
+				FileUtils.deleteQuietly(oldJar);
 				
-				dialogHelper.errorScroll("Cannot update, an error occurred: " + e.getClass(), e.getClass().getCanonicalName(), e);
-				logger.error(e.getClass().getCanonicalName(), e);
+				updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
 				
-				try {
-					launchJar(MAIN_LAUNCHER_JAR);
-				} catch (IOException e1) {
-					logger.error(e.getClass().getCanonicalName(), e);
-				}
-				
-			} finally {
-				if (updateProgressMonitor != null) {
-					updateProgressMonitor.forceClose();
-				}
-				System.exit(0);
+			} else {
+				String fileData = "UpdaterJar => "+updaterJar+"; updates folder => "+updatesFolder;
+				dialogHelper.error("Updates data or updater jar not found, exiting updated procedure." + fileData, " (Updates not found)");
 			}
+			
+			launchJar(MAIN_LAUNCHER_JAR);
+			
+		} catch (Throwable e) {
+			
+			dialogHelper.errorScroll("Cannot update, an error occurred: " + e.getClass(), e.getClass().getCanonicalName(), e);
+			logger.error(e.getClass().getCanonicalName(), e);
+			
+			try {
+				launchJar(MAIN_LAUNCHER_JAR);
+			} catch (IOException e1) {
+				logger.error(e.getClass().getCanonicalName(), e);
+			}
+			
+		} finally {
+			if (updateProgressMonitor != null) {
+				updateProgressMonitor.forceClose();
+			}
+			System.exit(0);
 		}
 	}
 
-	// JAR METHODS //
+	private static ArrayList<File> mainGenerateUpdatesHashed(String[] args) {
+		
+		Boolean createUpdatesZip = Boolean.valueOf(args[1]);
+		UPDATES_PROPERTIES_FILE = args[2];
+		PropertiesManager manifestProps = new PropertiesManager(UPDATES_PROPERTIES_FILE);
+
+		File updatesDir = new File("updates");
+		// Only for updates folder -> zip folder into current one
+		if(createUpdatesZip && updatesDir.isDirectory() && updatesDir.exists()) {
+			try {
+				ZipWorker.zipFolder(updatesDir.getAbsolutePath(), CURRENT_DIR, true, true);
+			} catch (Exception e) {
+				signalErrorAndExit1(e);
+			}
+		}
+
+		ArrayList<File> toUpload = new ArrayList<>();
+		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
+		for(File curr : CURRENT_DIR.listFiles()) {
+			
+			if (curr.isFile() 
+					&& !curr.getName().endsWith(".bat") 
+					&& !curr.getName().equals(UPDATES_PROPERTIES_FILE)
+					&& !curr.getName().equals(FTP_PROPERTIES_FILE)) {
+				
+				try {
+					String hash = ChecksumHasher.getFileHashBuffered(curr.getName(), downloadsHashFunc, true);
+					manifestProps.saveCommentedProperty(curr.getName(), hash);
+					manifestProps.readFromFile();
+					if(!manifestProps.getProperty(curr.getName(), "").equals(hash)) {
+						new JOptionHelper(null).warn("Hash control not passed: check properties for " + curr.getName(), "Hash not matching");
+					} else {
+						toUpload.add(curr);
+					}
+				} catch (Throwable e) {
+					signalErrorAndExit1(e);
+				}
+			}
+			
+		}
+		
+		return toUpload;
+	}
+
+	private static ArrayList<File> mainGenerateReleaseHashed(String[] args) {
+
+		Boolean createUpdatesZip = Boolean.valueOf(args[1]);
+		UPDATES_PROPERTIES_FILE = args[2];
+
+		File releaseFolderOrZip = new File(new PropertiesManager(FTP_PROPERTIES_FILE).getProperty("RELEASE_FOLDER-OR-ZIP_TO_ELABORATE"));
+		logger.info("Src: " + releaseFolderOrZip.getAbsolutePath());
+		
+		// Only for folder to be zipped -> zip folder into current one
+		if(createUpdatesZip && releaseFolderOrZip.isDirectory() && releaseFolderOrZip.exists()) {
+			try {
+				// zip the wanted folder and place the zipped file into current directory
+				logger.info("Zipping Src folder: " + releaseFolderOrZip.getAbsolutePath());
+				releaseFolderOrZip = ZipWorker.zipFolder(releaseFolderOrZip.getAbsolutePath(), CURRENT_DIR, true, true);
+				logger.info("Src folder zipped! Result file is: " + releaseFolderOrZip.getAbsolutePath());
+			} catch (Exception e) {
+				signalErrorAndExit1(e);
+			}
+		}
+
+		ArrayList<File> toUpload = new ArrayList<>();
+		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
+		
+		String updaterJar = "updater.jar";
+		File updaterJarFile = new File(updaterJar);
+		if (updaterJarFile.exists()) {
+			toUpload.add(updaterJarFile);
+		}
+		
+		if(releaseFolderOrZip != null && releaseFolderOrZip.isFile() && StringWorker.trimToEmpty(releaseFolderOrZip.getName()).endsWith(".zip")) {
+			
+			try {
+				PropertiesManager manifestProps = new PropertiesManager(UPDATES_PROPERTIES_FILE);
+
+				if (updaterJarFile.exists()) {
+					String updaterHash = ChecksumHasher.getFileHashBuffered(updaterJar, downloadsHashFunc, true);
+					manifestProps.saveCommentedProperty(updaterJar, updaterHash);
+				}
+				String hash = ChecksumHasher.getFileHashBuffered(releaseFolderOrZip, downloadsHashFunc, true);
+				manifestProps.saveCommentedProperty(releaseFolderOrZip.getName(), hash);
+				manifestProps.saveAllProperties();
+				manifestProps.readFromFile();
+				if (!manifestProps.getProperty(releaseFolderOrZip.getName(), "").equals(hash)) {
+					new JOptionHelper(null).warn(
+							"Hash control not passed: check properties for " + releaseFolderOrZip.getName(), "Hash not matching");
+				} else {
+					toUpload.add(releaseFolderOrZip);
+				}
+			} catch (Throwable e) {
+				signalErrorAndExit1(e);
+			}
+		}
+		
+		return toUpload;
+	}
+	
+
+	////////////////////// JAR METHODS //////////////////////////
 	
 	private static File getOldJar(PropertiesManager resourcesFilePathsMappings) {
 		try {
@@ -330,9 +408,16 @@ public class MainStandAloneUpdater {
 	/**
 	 * FTP update mode - Developer usage only
 	 */
-	private static void uploadUpdatesViaFTP(ArrayList<File> toUploadList) {
+	private static void mainUploadUpdatesViaFTP(ArrayList<File> toUploadList) {
 		
-		PropertiesManager ftpProperties = new PropertiesManager(FTP_PROPERTIES_FILE);
+		PropertiesManager ftpProperties;
+		try {
+			ftpProperties = new PropertiesManager(FTP_PROPERTIES_FILE);
+		} catch (Exception e) {
+			logger.error("Cannot read properties file: " + FTP_PROPERTIES_FILE, e);
+			throw e;
+		}
+		
 		String HOST = ftpProperties.getProperty("HOST", "ftp.am-design-development.com");
 		String USER = ftpProperties.getProperty("USER", "");
 		String PSW = ftpProperties.getProperty("PSW", "");
@@ -359,11 +444,11 @@ public class MainStandAloneUpdater {
 		File manifestFound = findManifestAndMoveAtTheEnd(toUploadList);
 		if(manifestFound != null) {
 			try {
-				logger.info("Deleting remote manifest: " + UPDATES_FILE);
+				logger.info("Deleting remote manifest: " + UPDATES_PROPERTIES_FILE);
 				boolean deleted = dumper.deleteFile(FOLDER_ON_SERVER, manifestFound.getName());
 				logger.info("Remote manifest deleted? -> " + deleted);
 			} catch (Exception e) {
-				logger.warn("Cannot delete remote " + UPDATES_FILE + " before to upload!", e);
+				logger.warn("Cannot delete remote " + UPDATES_PROPERTIES_FILE + " before to upload!", e);
 			}
 		}
 		
@@ -406,7 +491,7 @@ public class MainStandAloneUpdater {
 	
 	private static File findManifestAndMoveAtTheEnd(List<File> readyToDownload) {
 		for(File current : readyToDownload) {
-			if(UPDATES_FILE.equals(current.getName())) {
+			if(UPDATES_PROPERTIES_FILE.equals(current.getName())) {
 				readyToDownload.remove(current);
 				readyToDownload.add(current); // Moves the file at the end of the list
 				

@@ -483,6 +483,7 @@ public class JOptionHelper {
 			
 			@Override
 			public void focusLost(FocusEvent e) {
+				dialog.setAutoRequestFocus(true);
 				dialog.requestFocus();
 				dialog.toFront();
 			}
@@ -607,7 +608,7 @@ public class JOptionHelper {
 				icon = ICON_ERR_REF;
 			} else if (QUESTION == msgType) {
 				icon = ICON_QUESTION_REF;
-			}
+			} 
 			
 			final JOptionPane optionPane = new JOptionPane(
 					msg instanceof String ? getLabelStyledText((String) msg) : msg, 

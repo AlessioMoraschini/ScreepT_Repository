@@ -12,8 +12,7 @@ public class AudioTest {
 	public void TestAudioClip() throws InterruptedException {
 		for (int i = 0; i < 5; i++) {
 			TestUtils.printl("Playing: " + SoundsConfigurator.CLICK_2);
-			SoundsManagerExtended.setVolume(0.15f*i);
-			SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+			SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, 0.15f * i);
 			Thread.sleep(300);
 		}
 	}

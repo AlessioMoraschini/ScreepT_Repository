@@ -15,11 +15,12 @@ public class TestSearchAdvanced {
 //	private static final String MATCH = "MATCH_TEST";
 //	private static final File rootFolder = new File("TEST_ROOT_FOLDER");
 
-	private static final String MATCH = "WL";
-	private static final File rootFolder = new File("D:/ibnx0Domain - file backup");
+	private static final boolean IGNORE_CASE = false;
+	private static final String MATCH = "sAmple";
+	private static final File rootFolder = new File("C:\\Users\\xx\\Desktop\\Crypter Test\\BACKUP_ECLIPSE");
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testFolderSearchDeep() throws IOException {
 		
 		System.out.print("TEST_SEARCH FOLDER (DEEP SEARCH) INSIDE: " + rootFolder.getCanonicalPath());
@@ -27,7 +28,7 @@ public class TestSearchAdvanced {
 	}
 
 	@Test
-	@Ignore
+//	@Ignore
 	public void testFolderSearch() throws IOException {
 		
 		System.out.print("TEST_SEARCH FOLDER (NON DEEP) INSIDE: " + rootFolder.getCanonicalPath());
@@ -49,7 +50,7 @@ public class TestSearchAdvanced {
 	}
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testAllSearchDeep() throws IOException {
 		
 		System.out.print("TEST_SEARCH ALL (DEEP SEARCH) INSIDE: " + rootFolder.getCanonicalPath());
@@ -57,7 +58,7 @@ public class TestSearchAdvanced {
 	}
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testAllSearch() throws IOException {
 		
 		System.out.print("TEST_SEARCH ALL (NON DEEP) INSIDE: " + rootFolder.getCanonicalPath());
@@ -69,7 +70,7 @@ public class TestSearchAdvanced {
 	private void searchTest(SearchType type, boolean deepSearch) {
 		long start = System.currentTimeMillis();
 		
-		List<File> result = FileSearchAdvanced.findByMatch(rootFolder, MATCH, false, type, deepSearch);
+		List<File> result = FileSearchAdvanced.findByMatch(rootFolder, MATCH, false, type, deepSearch, IGNORE_CASE);
 		
 		long end = System.currentTimeMillis();
 		printElapsed(result.size(), start, end);

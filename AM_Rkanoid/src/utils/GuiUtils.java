@@ -1,5 +1,6 @@
 package utils;
 
+import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -15,22 +16,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 public class GuiUtils {
 
-	public static void setNimbusLaf() {
-		
-		SwingUtilities.invokeLater(() -> {
-			try {
-		
-			    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-			        if ("Nimbus".equals(info.getName())) {
-			            UIManager.setLookAndFeel(info.getClassName());
-			            refreshAllUIWindows();
-			            break;
-			        }
-			    }
-			} catch (Exception e) {}
-		});
-	}
-	
 	public static void refreshAllUIWindows() {
 		for(Window window : Window.getWindows()) {
 			SwingUtilities.updateComponentTreeUI(window);
@@ -45,6 +30,14 @@ public class GuiUtils {
         return resizeImage(originalImage, type, img_width, img_height);
 	}
 
+	public static Image getResizedImageOpacity(String imagePath, float opacity, Integer img_width, Integer img_height) throws IOException {
+		BufferedImage originalImage = ImageIO.read(new File(imagePath));
+		int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB
+				: originalImage.getType();
+		
+		return resizeImageOpacity(originalImage, opacity, type, img_width, img_height);
+	}
+
 	public static Image getResizedImage(Image image, Integer img_width, Integer img_height) throws IOException {
 		
 		return resizeImage(image, BufferedImage.TYPE_INT_ARGB, img_width, img_height);
@@ -56,6 +49,21 @@ public class GuiUtils {
 		g.drawImage(originalImage, 0, 0, img_width, img_height, null);
 		g.dispose();
 
+		return resizedImage;
+	}
+
+	public static Image resizeImageOpacity(Image originalImage, float opacity, int type, Integer img_width, Integer img_height) {
+		if(opacity < 0.0f)
+			opacity = 0.0f;
+		else if(opacity > 1.0f)
+			opacity = 1f;
+		
+		BufferedImage resizedImage = new BufferedImage(img_width, img_height, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+		g.drawImage(originalImage, 0, 0, img_width, img_height, null);
+		g.dispose();
+		
 		return resizedImage;
 	}
 	

@@ -24,7 +24,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import files.search.FileSearchAdvanced;
+import gui.GuiUtils;
 import om.JVMInfo;
 import om.OSinfo;
 import utility.SafeLogger;
@@ -38,6 +42,9 @@ public class SysUtils {
 	
 	// STATIC METHODS
 	public static final OSinfo OS_INFO_LAZY = new OSinfo();
+	
+	public static final String WIN_AUTOSTART_PATH = "C:/ProgramData/Microsoft/Windows/Start Menu/Programs/StartUp";
+	public static final String UNIX_AUTOSTART_PATH = "/etc/init.d";
 	
 	public static final String winPath32 = "C:/Program Files (x86)/";
 	public static final String winPath64 = "C:/Program Files/";
@@ -54,6 +61,120 @@ public class SysUtils {
 	
 
 ///////////////////////////////// GENERIC STUFF ////////////////////////////////////////////////
+	
+	/**
+	 * @param target
+	 * @param shortcutDestination
+	 * @return element 0: success response from OS :: element 1: error message (empty string if success)
+	 * @throws IOException
+	 */
+	public static String[] addToAutostart(File executable) throws IOException {
+		return addToAutostart(executable, "");
+	}
+	
+	/**
+	 * @param target
+	 * @param shortcutDestination
+	 * @return element 0: success response from OS :: element 1: error message (empty string if success)
+	 * @throws IOException
+	 */
+	public static String[] addToAutostart(File executable, String version) throws IOException {
+		OSinfo OS = getOsInfoLazy();
+		
+		String linkName = getVersionedFileName(executable, version, ".lnk");
+		
+		if(OS.isWindows()) {
+			return createShortcut(executable, new File(WIN_AUTOSTART_PATH + "/" + linkName));
+		} else {
+			return createShortcut(executable, new File(UNIX_AUTOSTART_PATH + "/" + linkName));
+		}
+	}
+	
+	public static boolean removeFromAutostart(File executable) throws IOException {
+		return removeFromAutostart(executable, "");
+	}
+	
+	public static boolean removeFromAutostart(File executable, String version) throws IOException {
+		OSinfo OS = getOsInfoLazy();
+		File toRemove = null;
+		String linkName = getVersionedFileName(executable, version, ".lnk");
+		
+		if(OS.isWindows()) {
+			toRemove = new File(WIN_AUTOSTART_PATH + "/" + linkName);
+		} else {
+			toRemove = new File(UNIX_AUTOSTART_PATH + "/" + linkName);
+		}
+		
+		return FileUtils.deleteQuietly(toRemove);
+	}
+
+	public static boolean isPresentInAutostart(File executable) {
+		return isPresentInAutostart(executable, "");
+	}
+	
+	public static boolean isPresentInAutostart(File executable, String version) {
+		OSinfo OS = getOsInfoLazy();
+		File toRemove = null;
+		String linkName = getVersionedFileName(executable, version, ".lnk");
+		
+		if(OS.isWindows()) {
+			toRemove = new File(WIN_AUTOSTART_PATH + "/" + linkName);
+		} else {
+			toRemove = new File(UNIX_AUTOSTART_PATH + "/" + linkName);
+		}
+		
+		return toRemove.exists();
+	}
+	
+	public static String getVersionedFileName(File executable, String version, String extension) {
+		String versionStr = StringWorker.trimToEmpty(version);
+		boolean emptyVersion = version.equals("");
+		
+		return FilenameUtils.removeExtension(executable.getName())
+				.concat(emptyVersion ? "" : "_")
+				.concat(versionStr)
+				.concat(".lnk");
+	}
+	
+	public static void viewAutostartFolder(boolean openInShell) {
+		if (getOsInfoLazy().isWindows()) {
+			if (openInShell) {
+				cdIntoCommandLine(new File(WIN_AUTOSTART_PATH));
+			} else {
+				GuiUtils.openInFileSystem(new File(WIN_AUTOSTART_PATH));
+			}
+		} else {
+			if (openInShell) {
+				cdIntoCommandLine(new File(UNIX_AUTOSTART_PATH));
+			} else {
+				GuiUtils.openInFileSystem(new File(UNIX_AUTOSTART_PATH));
+			}
+		}
+	}
+	
+	/**
+	 * @param target
+	 * @param shortcutDestination
+	 * @return element 0: success response from OS :: element 1: error message (empty string if success)
+	 * @throws IOException
+	 */
+	public static String[] createShortcut(File target, File shortcutDestination) throws IOException {
+
+		OSinfo OS = getOsInfoLazy();
+		logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
+		logger.debug("Creating a shortcut file for " + target + " : " + shortcutDestination);
+		
+		Runtime runtime = Runtime.getRuntime();
+		String[] processOutput = new String[] {"", ""};
+		
+		if(OS.isWindows()) {
+			processOutput = execNlogProcessOutput(runtime.exec("cmd /c mklink \"" + shortcutDestination.getCanonicalPath() + "\" \"" + target.getCanonicalPath() + "\""));
+		} else {
+			processOutput = execNlogProcessOutput(runtime.exec("ln -s \"" + target.getCanonicalPath() + "\" \"" + shortcutDestination.getCanonicalPath() + "\""));
+		}
+		
+		return processOutput;
+	}
 	
 	/**
   	 * @param main class must be a full package and class name (Ex => [Java.Lang.String])
@@ -542,11 +663,14 @@ public class SysUtils {
 		return lines;
 	}
 	
-	public static String execNlogProcessOutput(Process process) {
+	public static String[] execNlogProcessOutput(Process process) {
 		String output = SysUtils.readProcessOutput(process.getInputStream());
 		logger.info(output);
 		
-		return "Process output: " + output;
+		String errorString = SysUtils.readProcessOutput(process.getErrorStream());
+		logger.error(errorString);
+		
+		return new String[] {"Process output: " + output, StringWorker.trimToEmpty(errorString)};
 	}
 	
 	public static boolean cdIntoCommandLine(File directory) {
@@ -686,7 +810,7 @@ public class SysUtils {
 		String classPath = "";
 		String separator = getOsInfoLazy().isWindows() ? ";" : ":";
 		
-		for (File found : FileSearchAdvanced.findOnlyFilesByMatch(new File(root), ".jar", false, true)) {
+		for (File found : FileSearchAdvanced.findOnlyFilesByMatch(new File(root), ".jar", false, true, false)) {
 			classPath += found + separator;
 		}
 		

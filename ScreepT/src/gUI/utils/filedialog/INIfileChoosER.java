@@ -129,9 +129,9 @@ public class INIfileChoosER {
 		if (sourceFolder != null && sourceFolder.exists()) {
 			File defaultIni = new File(GeneralConfig.DEFAULT_INI);
 			String defaultIniParentDir = defaultIni.getParentFile().getName();
-			List<File> matchedFolders = FileSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true);
+			List<File> matchedFolders = FileSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true, false);
 			for (File extFolder : matchedFolders) {
-				List<File> matchedIniConf = FileSearchAdvanced.findOnlyFilesByMatch(extFolder, defaultIni.getName(), true, true);
+				List<File> matchedIniConf = FileSearchAdvanced.findOnlyFilesByMatch(extFolder, defaultIni.getName(), true, true, false);
 				if (!matchedIniConf.isEmpty()) {
 					boolean confirmation = MainGuiGeneralAppStarter.dialogHelper.yesOrNo(
 							GuiUtils.encapsulateInHtml("Are you sure to overwrite default configuration with the following?<br> " + matchedIniConf.get(0)), "Overwrite current?");
@@ -277,7 +277,7 @@ public class INIfileChoosER {
     
     public static void updateFromExternalGeneralConfig(File generalConfigRootSearch) {
     	
-    	List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true);
+    	List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false);
     	
     	if (!matchedGeneralConf.isEmpty()) {
     		
@@ -292,12 +292,11 @@ public class INIfileChoosER {
     	} else {
     		logger.warn(GeneralConfig.resourcesMappingDefPath +	" not found into given root: " + generalConfigRootSearch);
     	}
-    	
     }
 
     public static void copyGeneralConfig(File generalConfigRootSearch) {
     	
-		List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true);
+		List<File> matchedGeneralConf = FileSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false);
 		
 		if (!matchedGeneralConf.isEmpty()) {
 			

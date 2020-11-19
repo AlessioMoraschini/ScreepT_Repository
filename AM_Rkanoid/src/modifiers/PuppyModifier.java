@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import gui.GameFrame;
 import om.Bonus;
-import utils.GameConfigs;
 import utils.GuiUtils;
+import utils.config.GameConfigs;
 
 public class PuppyModifier extends AbstractModifier {
 	
@@ -21,14 +21,14 @@ public class PuppyModifier extends AbstractModifier {
 
 	@Override
 	public void applyModifier() {
-		gameFrame.ball.radius = gameFrame.gameConfig.BALL_RADIUS * 2d;
+		gameFrame.ball.radius = gameFrame.gameConfig.BALL_RADIUS * 3d;
 		gameFrame.ball.flameBall = true;
 		if(puppyBallImage == null) {
 			try {
 				puppyBallImage = GuiUtils.getResizedImage(
 						GameConfigs.IMG_FOLDER + "puppy_ball.png",
-						(int)gameFrame.ball.radius * 2, 
-						(int)gameFrame.ball.radius * 2);
+						(int)(gameFrame.ball.radius * 0.3d), 
+						(int)(gameFrame.ball.radius * 0.3d));
 			
 			} catch (IOException e) {
 				e.printStackTrace();
