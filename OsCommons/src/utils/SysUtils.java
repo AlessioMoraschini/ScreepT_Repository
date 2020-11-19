@@ -810,7 +810,7 @@ public class SysUtils {
 		String classPath = "";
 		String separator = getOsInfoLazy().isWindows() ? ";" : ":";
 		
-		for (File found : FileSearchAdvanced.findOnlyFilesByMatch(new File(root), ".jar", false, true)) {
+		for (File found : FileSearchAdvanced.findOnlyFilesByMatch(new File(root), ".jar", false, true, false)) {
 			classPath += found + separator;
 		}
 		

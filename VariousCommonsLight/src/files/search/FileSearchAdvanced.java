@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import files.om.FileSearchDTO;
+
 public class FileSearchAdvanced {
 
 	public enum SearchType {
@@ -24,13 +26,30 @@ public class FileSearchAdvanced {
 		ALL;
 	}
 	
+	public static List<File> findByMatch(FileSearchDTO dto){
+		return findByMatch(
+				dto.root,
+				dto.matchNamePart,
+				dto.exactMatch,
+				dto.filter, 
+				dto.recursiveDeep,
+				dto.ignoreCase);
+	}
+	
 	/**
 	 * Find first match only for every folder level, if not found proceed with son directories
 	 * @param root
 	 * @param matchNamePart
 	 * @return
 	 */
-	public static List<File> findByMatch(File root, String matchNamePart, boolean exactMatch, SearchType filter, boolean recursiveDeep) {
+	public static List<File> findByMatch(
+			File root,
+			String matchNamePart,
+			boolean exactMatch, 
+			SearchType filter, 
+			boolean recursiveDeep,
+			boolean ignoreCase) {
+		
 		ArrayList<File> foundFolderMatches = new ArrayList<File>();
 		
 		if(root == null || !root.exists() || !root.isDirectory()) {
@@ -38,13 +57,13 @@ public class FileSearchAdvanced {
 		}
 		
 		if(SearchType.FILE_ONLY.equals(filter)) {
-			return findOnlyFilesByMatch(root, matchNamePart, exactMatch, recursiveDeep);
+			return findOnlyFilesByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
 		
 		} else if (SearchType.FOLDERS_ONLY.equals(filter)) {
-			return findOnlyFoldersByMatch(root, matchNamePart, exactMatch, recursiveDeep);
+			return findOnlyFoldersByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
 			
 		} else {
-			return findAllByMatch(root, matchNamePart, exactMatch, recursiveDeep);
+			return findAllByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
 			
 		}
 	}
@@ -54,7 +73,13 @@ public class FileSearchAdvanced {
 	 * If recursiveDeep is true, then all subdirectories of root will be scanned too unless a result is already found. 
 	 * If false then search will continue until a result is found
 	 */
-	public static List<File> findAllByMatch(File root, String matchNamePart, boolean exactMatch, boolean recursiveDeep) {
+	public static List<File> findAllByMatch(
+			File root,
+			String matchNamePart,
+			boolean exactMatch,
+			boolean recursiveDeep,
+			boolean ignoreCase) {
+		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
 		if(root == null || !root.exists() || !root.isDirectory()) {
@@ -66,8 +91,11 @@ public class FileSearchAdvanced {
 		
 		for(File found : currentLevelFiles) {
 			
+			String foundName = ignoreCase ? found.getName().toUpperCase() : found.getName();
+			String matchNameP = ignoreCase ? matchNamePart.toUpperCase() : matchNamePart;
+			
 			// Search for match in current level
-			if ((exactMatch && found.getName().equals(matchNamePart)) || (!exactMatch && found.getName().contains(matchNamePart))) {
+			if ((exactMatch && foundName.equals(matchNameP)) || (!exactMatch && foundName.contains(matchNameP))) {
 				foundMatches.add(found);
 				somethingFound = true;
 			}
@@ -77,7 +105,7 @@ public class FileSearchAdvanced {
 			if (!somethingFound) {
 				for (File folder : currentLevelFiles) {
 					if (folder.isDirectory()) {
-						List<File> subFolderFounds = findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep);
+						List<File> subFolderFounds = findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
 						foundMatches.addAll(subFolderFounds);
 						if(!subFolderFounds.isEmpty()) {
 							return foundMatches;
@@ -91,7 +119,7 @@ public class FileSearchAdvanced {
 		} else {
 			for (File folder : currentLevelFiles) {
 				if (folder.isDirectory()) {
-					foundMatches.addAll(findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep));
+					foundMatches.addAll(findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase));
 				}
 			} 
 		}
@@ -104,7 +132,13 @@ public class FileSearchAdvanced {
 	 * If recursiveDeep is true, then all subdirectories of root will be scanned too unless a result is already found. 
 	 * If false then search will continue until a result is found
 	 */
-	public static List<File> findOnlyFilesByMatch(File root, String matchNamePart, boolean exactMatch, boolean recursiveDeep) {
+	public static List<File> findOnlyFilesByMatch(
+			File root,
+			String matchNamePart,
+			boolean exactMatch,
+			boolean recursiveDeep,
+			boolean ignoreCase) {
+		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
 		if(root == null || !root.exists() || !root.isDirectory()) {
@@ -116,8 +150,11 @@ public class FileSearchAdvanced {
 		
 		for(File found : currentLevelFiles) {
 			
+			String foundName = ignoreCase ? found.getName().toUpperCase() : found.getName();
+			String matchNameP = ignoreCase ? matchNamePart.toUpperCase() : matchNamePart;
+			
 			// Search for match in current level
-			if (found.isFile() && ((exactMatch && found.getName().equals(matchNamePart)) || (!exactMatch && found.getName().contains(matchNamePart)))) {
+			if (found.isFile() && ((exactMatch && foundName.equals(matchNameP)) || (!exactMatch && foundName.contains(matchNameP)))) {
 				foundMatches.add(found);
 				somethingFound = true;
 			}
@@ -127,7 +164,7 @@ public class FileSearchAdvanced {
 			if (!somethingFound) {
 				for (File folder : currentLevelFiles) {
 					if (folder.isDirectory()) {
-						List<File> subFilesFounds = findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep);
+						List<File> subFilesFounds = findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
 						foundMatches.addAll(subFilesFounds);
 						if(!subFilesFounds.isEmpty()) {
 							return foundMatches;
@@ -141,7 +178,7 @@ public class FileSearchAdvanced {
 		} else {
 			for (File folder : currentLevelFiles) {
 				if (folder.isDirectory()) {
-					foundMatches.addAll(findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep));
+					foundMatches.addAll(findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase));
 				}
 			} 
 		}
@@ -154,7 +191,13 @@ public class FileSearchAdvanced {
 	 * If recursiveDeep is true, then all subdirectories of root will be scanned too unless a result is already found. 
 	 * If false then search will continue until a result is found
 	 */
-	public static List<File> findOnlyFoldersByMatch(File root, String matchNamePart, boolean exactMatch, boolean recursiveDeep) {
+	public static List<File> findOnlyFoldersByMatch(
+			File root,
+			String matchNamePart,
+			boolean exactMatch,
+			boolean recursiveDeep,
+			boolean ignoreCase) {
+		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
 		if(root == null || !root.exists() || !root.isDirectory()) {
@@ -166,8 +209,11 @@ public class FileSearchAdvanced {
 		
 		for(File found : currentLevelFolders) {
 			
+			String foundName = ignoreCase ? found.getName().toUpperCase() : found.getName();
+			String matchNameP = ignoreCase ? matchNamePart.toUpperCase() : matchNamePart;
+			
 			// Search for match in current level
-			if ((exactMatch && found.getName().equals(matchNamePart)) || (!exactMatch && found.getName().contains(matchNamePart))) {
+			if ((exactMatch && foundName.equals(matchNameP)) || (!exactMatch && foundName.contains(matchNameP))) {
 				foundMatches.add(found);
 				somethingFound = true;
 			}
@@ -176,7 +222,7 @@ public class FileSearchAdvanced {
 		if(!recursiveDeep) {
 			if (!somethingFound) {
 				for (File folder : currentLevelFolders) {
-					List<File> subFolderFounds = findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep);
+					List<File> subFolderFounds = findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
 					foundMatches.addAll(subFolderFounds);
 					if(!subFolderFounds.isEmpty()) {
 						return foundMatches;
@@ -188,7 +234,7 @@ public class FileSearchAdvanced {
 			
 		} else {
 			for (File folder : currentLevelFolders) {
-				foundMatches.addAll(findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep));
+				foundMatches.addAll(findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase));
 			} 
 		}
 		
