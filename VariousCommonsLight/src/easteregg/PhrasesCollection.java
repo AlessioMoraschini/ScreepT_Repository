@@ -1,9 +1,14 @@
 package easteregg;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-public class PhrasesCollection {
+import om.TextRetriever;
 
+public class PhrasesCollection implements TextRetriever {
+
+	private static PhrasesCollection singleton;
+	
 	public static ArrayList<String> poetries = new ArrayList<>();
 	static {
 		initPoetries();
@@ -36,5 +41,22 @@ public class PhrasesCollection {
 				"avec rien en soi qui pèse et pose. (A. Rimbaud)");
 		poetries.add("La morale est la faiblesse de la cervelle. (A. Rimbaud)");
 		poetries.add("Le monde est très grand et plein de contrées magnifiques que l'existence de mille hommes ne suffirait pas à visiter. (A. Rimbaud)");
+	}
+
+	public static String getRandomPoetry() {
+		Random random = new Random();
+		return poetries.get(random.nextInt(poetries.size()));
+	}
+	
+	public static PhrasesCollection getSingleton() {
+		if(singleton == null)
+			singleton = new PhrasesCollection();
+		
+		return singleton;
+	}
+
+	@Override
+	public String retrieveText() {
+		return getRandomPoetry();
 	}
 }

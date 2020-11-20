@@ -2,7 +2,6 @@ package maingUI;
 
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
-import java.util.Random;
 
 import easteregg.EasterEgg;
 import easteregg.EasterEggsManager;
@@ -30,7 +29,7 @@ public class EasterEggsInitializer {
 		// Initialize easterEggs
 		PhraseEasterEgg poetryRandomEgg = new PhraseEasterEgg(
 				"poetryEasterEgg01",
-				()-> {return getRandomPoetry();},
+				PhrasesCollection.getSingleton(),
 				(e) -> {
 					return KeyEvent.VK_U == e.getKeyCode() &&
 							manager.shortcutListener.repeatedClicksInLimitedTime(e, 4, true, true, false, 600) && 
@@ -70,10 +69,5 @@ public class EasterEggsInitializer {
 		manager.addEasterEgg(poetryRandomEgg);
 		manager.addEasterEgg(snakeGame);
 		manager.addEasterEgg(arkanoidGame);
-	}
-	
-	private String getRandomPoetry() {
-		Random random = new Random();
-		return PhrasesCollection.poetries.get(random.nextInt(PhrasesCollection.poetries.size()));
 	}
 }
