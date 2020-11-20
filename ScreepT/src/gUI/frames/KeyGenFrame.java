@@ -59,8 +59,8 @@ import gUI.panels.subpanels.ImageGenContainerPanel;
 import gUI.utils.ImageWorkerScreepT;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import gui.UpdateProgressPanel;
+import impl.INItializer;
 import maingUI.MainGUI;
-import mainobj.INItializer;
 
 import java.awt.Cursor;
 

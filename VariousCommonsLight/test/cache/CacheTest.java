@@ -3,7 +3,6 @@ package cache;
 import java.io.File;
 import java.util.List;
 
-import cache.impl.FileSearchDTOCache;
 import cache.impl.FileSearchResultCache;
 import files.om.FileSearchDTO;
 import files.search.FileSearchAdvanced;
@@ -30,13 +29,15 @@ public class CacheTest {
 		new Thread(() ->  {
 			for(int i = 0; i < 60; i++) {
 				try {
-					printList(cache.get(new FileSearchDTOCache(
+					FileSearchDTO inputDto = new FileSearchDTO(
 							new File(ROOT_FOLDER),
 							MATCH + i,
 							true,
 							SearchType.ALL,
 							true,
-							false)));
+							false);
+					
+					printList(cache.get(inputDto));
 
 					printCacheSize();
 					Thread.sleep(400);

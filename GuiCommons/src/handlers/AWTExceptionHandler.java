@@ -13,8 +13,8 @@ package handlers;
 
 import javax.swing.SwingUtilities;
 
+import arch.InitOwner;
 import dialogutils.JOptionHelperExtended;
-import mainobj.InitOwner;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;

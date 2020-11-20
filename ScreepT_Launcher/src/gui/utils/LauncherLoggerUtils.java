@@ -15,7 +15,7 @@ import java.util.Date;
 
 import org.apache.log4j.Level;
 
-public class LoggerUtils {
+public class LauncherLoggerUtils {
 	
 	public final static Level DEFAULT_LOG_LEVEL = Level.ERROR;
 

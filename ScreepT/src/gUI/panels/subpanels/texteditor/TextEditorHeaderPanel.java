@@ -43,7 +43,7 @@ import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
 import gui.RXTextUtilities;
 import gui.TextEditTooltips;
-import mainobj.INItializer;
+import impl.INItializer;
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;

@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package om;
+package impl.om;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -20,7 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import files.om.FileNamed;
-import mainobj.INItializer;
+import impl.INItializer;
+import om.LimitedConcurrentList;
 import resources.GeneralConfig;
 import utility.string.StringWorker.EOL;
 

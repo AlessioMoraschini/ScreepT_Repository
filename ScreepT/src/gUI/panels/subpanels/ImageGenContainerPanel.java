@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 import gUI.frames.KeyGenFrame;
 import gUI.utils.ImageWorkerScreepT;
 import gui.UpdateProgressPanel;
-import mainobj.INItializer;
+import impl.INItializer;
 import om.KeyGenImageType;
 import utils.ImageWorkerExtended;
 

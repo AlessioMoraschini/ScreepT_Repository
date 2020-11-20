@@ -41,8 +41,8 @@ import files.FileVarious;
 import frameutils.frame.panels.arch.IParentPanel;
 import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
+import impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
-import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 

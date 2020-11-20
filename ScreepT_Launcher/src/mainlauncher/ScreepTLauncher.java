@@ -38,7 +38,7 @@ import gui.panels.CustomizeParametersPanel;
 import gui.panels.DependenciesManagerPanel;
 import gui.panels.LauncherMainPanel;
 import gui.utils.LauncherLoaderFrame;
-import gui.utils.LoggerUtils;
+import gui.utils.LauncherLoggerUtils;
 import launcherutils.CommandsAssembler;
 import launcherutils.IniFileManager;
 import launcherutils.JvmHelper;
@@ -415,11 +415,11 @@ import utils.SysUtils;
 		}
 		
 		private static void appLogStart() {
-			logger.debug(LoggerUtils.getStartString("ScreepT - Launcher", true));
+			logger.debug(LauncherLoggerUtils.getStartString("ScreepT - Launcher", true));
 		}
 		
 		private static void appLogEnd() {
-			logger.debug(LoggerUtils.getExitString("ScreepT - Launcher", true));
+			logger.debug(LauncherLoggerUtils.getExitString("ScreepT - Launcher", true));
 		}
 		
 		public static void startPendingDeletesCleanerThread(){

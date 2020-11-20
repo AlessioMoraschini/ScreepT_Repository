@@ -17,7 +17,7 @@ import org.apache.log4j.Level;
 
 import resources.GeneralConfig;
 
-public class LoggerUtils {
+public class ScreepTLoggerUtils {
 	
 	public final static Level DEFAULT_LOG_LEVEL = Level.ERROR;
 

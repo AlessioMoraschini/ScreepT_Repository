@@ -24,9 +24,9 @@ import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
 import files.om.DeleteFilesByExtensionDTO;
+import impl.INItializer;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
-import mainobj.INItializer;
 
 public class FilesAndDirectoriesManagerGUI {
 	

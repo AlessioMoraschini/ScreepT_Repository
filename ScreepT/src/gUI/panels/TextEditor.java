@@ -24,7 +24,6 @@ import javax.swing.JLabel;
 
 import net.miginfocom.swing.MigLayout;
 import om.TabTextEditorObj;
-import om.TextEditorOption;
 import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -55,7 +54,6 @@ import frameutils.frame.arch.ModulePanel;
 import frameutils.utils.GuiUtilsExtended;
 import maingUI.MainGuiGeneralAppStarter;
 import maingUI.MainGUI;
-import mainobj.INItializer;
 
 import java.awt.SystemColor;
 
@@ -90,6 +88,8 @@ import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor;
 import gui.TextEditTooltips;
 import guistyle.GUIStyelSettingsExtended;
+import impl.INItializer;
+import impl.om.TextEditorOption;
 
 import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;

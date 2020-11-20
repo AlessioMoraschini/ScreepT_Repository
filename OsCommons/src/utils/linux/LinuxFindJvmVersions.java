@@ -1,4 +1,4 @@
-package utils;
+package utils.linux;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import utility.log.SafeLogger;
+import utils.SysUtils;
 
 /**
  * @author amoraschini

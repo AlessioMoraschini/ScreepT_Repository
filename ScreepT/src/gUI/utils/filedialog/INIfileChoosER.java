@@ -29,11 +29,11 @@ import files.FileVarious;
 import files.FileWorker;
 import files.search.FileSearchAdvanced;
 import gui.GuiUtils;
+import impl.INItializer;
 import main.MainStandAloneUpdater;
 import main.om.PropertiesDTO;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
-import mainobj.INItializer;
 import resources.GeneralConfig;
 
 import java.io.File;

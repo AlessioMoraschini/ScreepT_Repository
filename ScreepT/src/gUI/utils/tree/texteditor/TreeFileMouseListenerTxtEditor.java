@@ -49,7 +49,7 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gui.GuiUtils;
 import gui.MenuSetter;
-import mainobj.INItializer;
+import impl.INItializer;
 import mouseutils.TreeFileMouseListenerBasicFileNamed;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;

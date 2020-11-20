@@ -38,15 +38,15 @@ import files.FileWorker;
 import files.FileVarious;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.utils.dependencycheck.LibChecker;
-import general.utils.LoggerUtils;
+import general.utils.ScreepTLoggerUtils;
 import gui.GuiUtils;
 import gui.LightLicenseViewer;
 import gui.LightLicenseViewer.UserLicenseChoice;
 import gui.dialogs.msg.JOptionHelper;
 import gui.utils.LauncherLoaderFrame;
 import handlers.AWTExceptionHandler;
+import impl.INItializer;
 import launcherutils.IniFileManager;
-import mainobj.INItializer;
 import network.proxy.ProxySettingsGUI;
 import plugins.PluginManager;
 import resources.GeneralConfig;
@@ -148,7 +148,7 @@ public class MainGuiGeneralAppStarter {
 			try {
 				// Initialize logger properties
 				PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
-				logger.info(LoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
+				logger.info(ScreepTLoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
 				
 				isLoggerReady = true;
 				logger.info("Logger is READY to log everything ;)");
@@ -308,7 +308,7 @@ public class MainGuiGeneralAppStarter {
 				}
 				
 				try {
-					logger.info(LoggerUtils.getGeneralErrorExitMsg(GeneralConfig.APPLICATION_NAME, true));
+					logger.info(ScreepTLoggerUtils.getGeneralErrorExitMsg(GeneralConfig.APPLICATION_NAME, true));
 				} catch (Exception e) {
 					System.out.println("Cannot write to LOGS, maybe there is an error in LOG_properties file (or it does not exist).");
 				}

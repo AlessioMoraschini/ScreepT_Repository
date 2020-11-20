@@ -46,7 +46,7 @@ import gUI.frames.KeyGenFrame;
 import gUI.panels.CrypterPanel;
 import gui.MenuSetter;
 import gui.UpdateProgressPanel;
-import mainobj.INItializer;
+import impl.INItializer;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.manipulation.ConversionUtils;

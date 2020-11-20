@@ -10,11 +10,11 @@ import dialogutils.JOptionHelperExtended;
 import files.watcher.ChangeDTO;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
-import general.utils.LoggerUtils;
+import general.utils.ScreepTLoggerUtils;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
+import impl.INItializer;
 import mainlauncher.ScreepTLauncher;
-import mainobj.INItializer;
 import om.OSinfo;
 import om.TabTextEditorObj;
 import resources.GeneralConfig;
@@ -56,7 +56,7 @@ public class MainGuiManager {
 				closeApplication(999);
 				SysUtils.launchBatchOrBash(nativeLauncherPath, false);
 				
-				MainGuiUtils.logger.info("\n [RESTART REQUESTED] \n\n" + LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+				MainGuiUtils.logger.info("\n [RESTART REQUESTED] \n\n" + ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 				
 				System.exit(0);
 
@@ -125,7 +125,7 @@ public class MainGuiManager {
 	  	
 		MainGUI.mainAppRunning = false;
 		
-		MainGuiUtils.logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+		MainGuiUtils.logger.info(ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 	
 		SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 		
@@ -157,7 +157,7 @@ public class MainGuiManager {
 	  	
 		MainGUI.mainAppRunning = false;
 		
-		MainGuiUtils.logger.info(LoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+		MainGuiUtils.logger.info(ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 	
 		SoundsManagerExtended.playSound(SoundsConfigurator.SOUND_PLING, null);
 		

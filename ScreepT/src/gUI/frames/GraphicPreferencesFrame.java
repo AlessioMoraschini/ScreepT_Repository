@@ -13,8 +13,6 @@ package gUI.frames;
 
 import javax.swing.JFrame;
 import net.miginfocom.swing.MigLayout;
-import om.GuiOption;
-import om.TextEditorOption;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
@@ -54,8 +52,10 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import guistyle.GUIStyelSettingsExtended;
 import guistyle.LookAndFeelInfoCustom;
+import impl.INItializer;
+import impl.om.GuiOption;
+import impl.om.TextEditorOption;
 import maingUI.MainGUI;
-import mainobj.INItializer;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;

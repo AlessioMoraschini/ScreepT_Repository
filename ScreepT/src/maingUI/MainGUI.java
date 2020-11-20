@@ -40,6 +40,7 @@ import org.apache.log4j.Level;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
+import arch.InitOwner;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
@@ -57,9 +58,8 @@ import gUI.utils.filedialog.INIfileChoosER;
 import gui.ComponentResizer;
 import gui.PluginManagerGUI;
 import guistyle.GUIStyelSettingsExtended;
+import impl.INItializer;
 import jmenu.CustomJmenuItem;
-import mainobj.INItializer;
-import mainobj.InitOwner;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

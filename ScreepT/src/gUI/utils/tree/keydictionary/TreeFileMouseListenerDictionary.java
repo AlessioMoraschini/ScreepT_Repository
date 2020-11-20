@@ -40,7 +40,7 @@ import files.FileWorker;
 import gUI.frames.KeyGenFrame;
 import gui.MenuSetter;
 import gui.UpdateProgressPanel;
-import mainobj.INItializer;
+import impl.INItializer;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.manipulation.ConversionUtils;

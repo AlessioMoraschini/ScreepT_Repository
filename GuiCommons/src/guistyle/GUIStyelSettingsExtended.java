@@ -31,7 +31,7 @@ import com.jgoodies.looks.plastic.PlasticTheme;
 import com.jgoodies.looks.plastic.theme.LightGray;
 
 import gui.GUIStyelSettings;
-import om.GuiOption;
+import impl.om.GuiOption;
 import resources.GeneralConfig;
 import treeutils.TreeUtils;
 import utils.ImageWorkerExtended;

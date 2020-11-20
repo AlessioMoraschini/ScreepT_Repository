@@ -9,12 +9,11 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package mainobj;
+package arch;
 
-public interface INItializerInterface {
-	
-	public void readConfigIniFile();
-	public void writeCurrentConfigIniFile();
-	public String toStringa();
-	
+import impl.INItializer;
+
+public interface InitOwner {
+
+	public INItializer getInitializer();
 }

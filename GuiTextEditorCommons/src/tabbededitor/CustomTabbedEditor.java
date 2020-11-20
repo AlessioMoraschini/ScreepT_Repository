@@ -53,7 +53,7 @@ import frameutils.frame.ImageViewerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
 import gui.dnd.FileDrop;
-import mainobj.INItializer;
+import impl.INItializer;
 import om.ColumnTextArea;
 import om.HistoryNode;
 import om.LimitedConcurrentList;

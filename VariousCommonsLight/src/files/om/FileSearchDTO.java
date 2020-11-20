@@ -2,10 +2,11 @@ package files.om;
 
 import java.io.File;
 
+import cache.arch.IResultCacheInput;
 import files.search.FileSearchAdvanced.SearchType;
 
 
-public class FileSearchDTO {
+public class FileSearchDTO implements IResultCacheInput {
 
 	public File root;
 	public String matchNamePart;
@@ -29,5 +30,10 @@ public class FileSearchDTO {
 		this.filter = filter;
 		this.recursiveDeep = recursiveDeep;
 		this.ignoreCase = ignoreCase;
+	}
+	
+	@Override
+	public String getCacheKey() {
+		return (root != null ? root.getAbsolutePath() : "") + matchNamePart + exactMatch + filter + recursiveDeep + ignoreCase;
 	}
 }

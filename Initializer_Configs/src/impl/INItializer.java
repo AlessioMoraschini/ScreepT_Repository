@@ -9,28 +9,28 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package mainobj;
+package impl;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.ini4j.Wini;
 
+import arch.INItializerInterface;
+import arch.INItializerParent;
 import files.om.FileNamed;
-import om.AesOption;
-import om.FileOptions;
-import om.GenericOption;
-import om.GuiOption;
-import om.ImgConverterOption;
+import impl.om.AesOption;
+import impl.om.FileOptions;
+import impl.om.GenericOption;
+import impl.om.GuiOption;
+import impl.om.ImgConverterOption;
+import impl.om.SteganOption;
+import impl.om.TextEditorOption;
 import om.ScalingAlgorithm;
 import om.SecurityLevel;
-import om.SteganOption;
-import om.TextEditorOption;
 import resources.GeneralConfig;
 import utility.log.SafeLogger;
 import utility.string.StringWorker;
@@ -62,6 +62,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	public final static String IMAGE_CONVERTER_OPT = "IMAGE_CONVERTER";
 	
 	public INItializer() {
+		super(DEFAULT_INI_PATH);
 		genOpt = new GenericOption();
 		fileOpt = new FileOptions();
 		steganOpt = new SteganOption();
@@ -69,26 +70,10 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		guiOpt = new GuiOption();
 		textEditorOpt = new TextEditorOption(this);
 		imageConvertOption = new ImgConverterOption();
-		
-		try {
-			iniReadFile = new Wini(new File(DEFAULT_INI_PATH));
-			iniFile = new Wini(new File(DEFAULT_INI_PATH));
-		} catch (Exception e) {
-			logger.error("INItializer() -> Exception happened initializing configuration!", e);
-		}
 	}
 	
 	public INItializer(Wini configFile) {
-		// initialize both read and write ini variable, to keep them synchronyzed
-		if(configFile!=null) {
-			iniReadFile = configFile;
-			iniFile = configFile;
-		} else try {
-			iniReadFile = new Wini(new File(DEFAULT_INI_PATH));
-			iniFile = new Wini(new File(DEFAULT_INI_PATH));
-		} catch (IOException e) {
-			logger.error("INItializer(Wini configFile) -> Exception happened initializing configuration!", e);
-		}
+		super(configFile, DEFAULT_INI_PATH);
 		genOpt = new GenericOption();
 		fileOpt = new FileOptions();
 		steganOpt = new SteganOption();

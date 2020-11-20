@@ -37,7 +37,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import files.FileVarious;
 import general.MyFileView;
-import mainobj.INItializer;
+import impl.INItializer;
 import resources.GeneralConfig;
 
 public class GenericFileChooserDialog {

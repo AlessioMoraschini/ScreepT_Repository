@@ -28,7 +28,7 @@ import javax.swing.border.LineBorder;
 
 import gUI.panels.TextEditor;
 import gUI.utils.texteditor.TextEditorUtils;
-import mainobj.INItializer;
+import impl.INItializer;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 

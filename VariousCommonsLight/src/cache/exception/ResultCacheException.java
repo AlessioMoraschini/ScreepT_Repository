@@ -1,4 +1,4 @@
-package cache.arch;
+package cache.exception;
 
 public class ResultCacheException extends Exception {
 

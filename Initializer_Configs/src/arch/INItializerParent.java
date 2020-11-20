@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package mainobj;
+package arch;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -35,12 +35,34 @@ public abstract class INItializerParent implements INItializerInterface{
 	public static final String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
 	
 	// FIELDS
-	Ini iniReadFile;
-	Wini iniFile;
+	protected Ini iniReadFile;
+	protected Wini iniFile;
 	
-	public void readConfigIniFile() {};
+	public INItializerParent(String iniPath) {
+		try {
+			iniReadFile = new Wini(new File(iniPath));
+			iniFile = new Wini(new File(iniPath));
+		} catch (Exception e) {
+			logger.error("INItializer() -> Exception happened initializing configuration!", e);
+		}
+	}
 	
-	public synchronized void writeCurrentConfigIniFile() {};
+	public INItializerParent(Wini configFile, String defaultIniPath) {
+		// initialize both read and write ini variable, to keep them synchronyzed
+		if(configFile!=null) {
+			iniReadFile = configFile;
+			iniFile = configFile;
+		} else try {
+			iniReadFile = new Wini(new File(defaultIniPath));
+			iniFile = new Wini(new File(defaultIniPath));
+		} catch (IOException e) {
+			logger.error("INItializer(Wini configFile) -> Exception happened initializing configuration!", e);
+		}
+	}
+	
+	public abstract void readConfigIniFile();
+	
+	public abstract void writeCurrentConfigIniFile();
 	
 	
 	/**
