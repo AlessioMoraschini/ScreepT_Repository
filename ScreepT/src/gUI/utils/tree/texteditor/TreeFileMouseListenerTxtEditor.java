@@ -56,7 +56,7 @@ import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import treeutils.TreeUtils;
 import treeutils.om.FileNameCellRenderer;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utils.dialog.ColorDialogUtils;
 
 public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFileNamed {

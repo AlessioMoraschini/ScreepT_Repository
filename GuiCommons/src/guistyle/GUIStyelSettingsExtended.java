@@ -31,10 +31,10 @@ import com.jgoodies.looks.plastic.PlasticTheme;
 import com.jgoodies.looks.plastic.theme.LightGray;
 
 import gui.GUIStyelSettings;
-import media.ImageWorkerExtended;
 import om.GuiOption;
 import resources.GeneralConfig;
 import treeutils.TreeUtils;
+import utils.ImageWorkerExtended;
 
 public class GUIStyelSettingsExtended extends GUIStyelSettings {
 

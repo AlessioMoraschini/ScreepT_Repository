@@ -27,7 +27,6 @@ import gui.UpdateProgressPanel;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
-import media.ImageWorkerExtended;
 
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -48,8 +47,9 @@ import om.ImgConverterOption;
 import om.ScalingAlgorithm;
 import panel.PanelFileDragNDropManager;
 import resources.IconsPathConfigurator;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
+import utils.ImageWorkerExtended;
 
 import javax.swing.JLabel;
 

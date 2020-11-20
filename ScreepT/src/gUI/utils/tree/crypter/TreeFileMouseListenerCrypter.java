@@ -47,11 +47,11 @@ import gUI.panels.CrypterPanel;
 import gui.MenuSetter;
 import gui.UpdateProgressPanel;
 import mainobj.INItializer;
-import media.ImageWorkerExtended;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
+import utils.ImageWorkerExtended;
 
 public class TreeFileMouseListenerCrypter extends mouseutils.TreeFileMouseListenerBasic{
 	

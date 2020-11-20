@@ -43,7 +43,7 @@ import gui.UpdateProgressPanel;
 import mainobj.INItializer;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 public class TreeFileMouseListenerDictionary {
 	

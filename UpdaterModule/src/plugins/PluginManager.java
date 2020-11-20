@@ -33,10 +33,10 @@ import network.http.HttpHelper;
 import network.http.HttpHelper.HttpRequestMetod;
 import network.utils.DownloadUtils;
 import om.exception.ProgressBarInterruptedException;
-import utility.ConversionUtils;
-import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.properties.PropertiesManager;
 
 /**

@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class FileChangeMonitor {
 	

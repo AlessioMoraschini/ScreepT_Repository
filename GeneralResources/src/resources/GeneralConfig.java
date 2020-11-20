@@ -24,7 +24,7 @@ import java.util.TreeMap;
 
 import files.FileWorker;
 import resources.om.FilePojo;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utility.properties.PropertiesManager;
 import utils.SysUtils;
 

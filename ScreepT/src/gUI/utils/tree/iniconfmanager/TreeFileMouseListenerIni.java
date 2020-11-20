@@ -41,10 +41,10 @@ import gui.MenuSetter;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
-import media.ImageWorkerExtended;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
+import utils.ImageWorkerExtended;
 
 public class TreeFileMouseListenerIni extends mouseutils.TreeFileMouseListenerBasic{
 	

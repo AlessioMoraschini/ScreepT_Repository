@@ -24,9 +24,9 @@ import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.ConversionUtils;
-import utility.ImageWorker;
 import utility.KeyListenerUtils;
+import utility.manipulation.ConversionUtils;
+import utility.manipulation.ImageWorker;
 import utility.reflection.ReflectionUtils;
 
 import javax.swing.JPanel;

@@ -32,13 +32,13 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JPasswordField;
 import javax.swing.text.BadLocationException;
 
-import utility.BitWorker;
-import utility.ConversionUtils;
-import utility.EncodingUtils;
-import utility.EntrophyzerUtils;
+import utility.bytes.BitWorker;
 import utility.hash.SafeHasher;
 import utility.hash.SafeHasher.HashAlgorithm;
 import utility.hash.SafeHasher.IterationsLevel;
+import utility.manipulation.ConversionUtils;
+import utility.manipulation.EncodingUtils;
+import utility.manipulation.EntrophyzerUtils;
 import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 

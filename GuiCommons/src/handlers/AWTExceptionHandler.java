@@ -14,13 +14,13 @@ package handlers;
 import javax.swing.SwingUtilities;
 
 import dialogutils.JOptionHelperExtended;
-import generic.IParametricRunnable;
-import generic.ParametricExceptionThread;
 import mainobj.InitOwner;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import utility.SafeLogger;
+import runtime.IParametricRunnable;
+import runtime.ParametricExceptionThread;
+import utility.log.SafeLogger;
 
 public class AWTExceptionHandler implements Thread.UncaughtExceptionHandler{
 	

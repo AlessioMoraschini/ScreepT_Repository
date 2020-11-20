@@ -26,9 +26,9 @@ import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.ConversionUtils;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.manipulation.ConversionUtils;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -13,7 +13,7 @@ import modifiers.AbstractModifier;
 import modifiers.ShotModifier;
 import modifiers.SpeedModifier;
 import sounds.SoundsManager;
-import utility.ArrayHelper;
+import utility.manipulation.ArrayHelper;
 import modifiers.FlameModifier;
 import modifiers.ExpansionModifier;
 import modifiers.LifeModifier;

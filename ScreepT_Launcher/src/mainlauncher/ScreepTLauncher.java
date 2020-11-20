@@ -48,7 +48,7 @@ import launcherutils.om.JvmArgumentsDTO;
 import om.OSinfo;
 import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utility.properties.PropertiesManager;
 import utils.SysUtils;
 

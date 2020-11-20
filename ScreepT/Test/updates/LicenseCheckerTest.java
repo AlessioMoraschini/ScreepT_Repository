@@ -12,9 +12,9 @@ import gui.LightLicenseViewer.UserLicenseChoice;
 import maingUI.WindowCreator;
 import network.utils.DownloadUtils;
 import resources.GeneralConfig;
-import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.log.SafeLogger;
 
 public class LicenseCheckerTest {
 

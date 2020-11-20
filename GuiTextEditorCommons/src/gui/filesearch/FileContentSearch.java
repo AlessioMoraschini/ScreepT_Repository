@@ -21,8 +21,8 @@ import files.om.SearchResult;
 import gui.UpdateProgressPanel;
 import gui.dialogs.msg.JOptionHelper;
 import om.SupportedFileTextEditor;
-import utility.ArrayHelper;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ArrayHelper;
 
 public class FileContentSearch {
 	

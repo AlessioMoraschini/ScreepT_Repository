@@ -27,7 +27,7 @@ import org.apache.commons.net.io.CopyStreamAdapter;
 import files.FileWorker;
 import network.progress.DownloadAction;
 import network.progress.UploadAction;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class FtpDumper {
 

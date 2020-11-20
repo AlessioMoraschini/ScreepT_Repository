@@ -23,7 +23,7 @@ import utils.RsyntaxUtils;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utility.string.StringWorker;
 
 import javax.swing.JLabel;

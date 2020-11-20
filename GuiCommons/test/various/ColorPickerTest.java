@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import org.junit.Test;
 
 import frameutils.frame.ColorPickerFrame;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 public class ColorPickerTest {
 	

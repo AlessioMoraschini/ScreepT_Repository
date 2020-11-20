@@ -38,8 +38,8 @@ import org.apache.commons.io.FilenameUtils;
 
 import files.om.DeleteFilesByExtensionDTO;
 import gui.dialogs.msg.JOptionHelper;
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 

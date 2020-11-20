@@ -5,7 +5,7 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import om.LimitedConcurrentList;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class KeyListenerParent {
 	

@@ -29,7 +29,7 @@ import gui.dialogs.msg.JOptionHelper;
 import om.CrypterResultDTO;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class ScreeptManagerFileOrFolder {
 

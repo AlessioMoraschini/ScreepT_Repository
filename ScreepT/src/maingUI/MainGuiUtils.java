@@ -53,9 +53,9 @@ import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
-import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.log.SafeLogger;
 import utility.properties.PropertiesManager;
 import utils.SysUtils;
 

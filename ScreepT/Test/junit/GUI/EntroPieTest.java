@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import configuration.RepeatTest;
 import configuration.RepeatedTestRule;
-import utility.ByteArrayShuffler;
+import utility.bytes.ByteArrayShuffler;
 
 public class EntroPieTest {
 

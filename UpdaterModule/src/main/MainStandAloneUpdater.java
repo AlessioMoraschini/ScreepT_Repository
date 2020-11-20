@@ -27,9 +27,9 @@ import gui.dialogs.msg.JOptionHelper;
 import main.om.PropertiesDTO;
 import network.ftp.FtpDumper;
 import network.progress.UploadAction;
-import utility.SafeLogger;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
+import utility.log.SafeLogger;
 import utility.properties.PropertiesManager;
 import utility.string.StringWorker;
 

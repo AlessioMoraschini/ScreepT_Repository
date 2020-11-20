@@ -17,8 +17,8 @@ import java.net.UnknownHostException;
 
 import javax.management.MBeanServerConnection;
 
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 
 public class RuntimeUtil {
 	

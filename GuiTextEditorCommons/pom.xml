@@ -97,12 +97,6 @@
 	</dependency>
 			
 	<dependency>
-		<groupId>GenCommons</groupId>
-		<artifactId>GenCommons</artifactId>
-		<version>1.0</version>
-	</dependency>
-	
-	<dependency>
 		<groupId>GuiCommons</groupId>
 		<artifactId>GuiCommons</artifactId>
 	 	<version>1.0</version>

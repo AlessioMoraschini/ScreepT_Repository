@@ -3,7 +3,7 @@ package om;
 import java.awt.Graphics;
 
 import gui.GameFrame;
-import utility.AmTimer;
+import utility.time.AmTimer;
 
 public class FallingBonus extends Rectangle {
 

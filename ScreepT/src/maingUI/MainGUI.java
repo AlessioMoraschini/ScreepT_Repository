@@ -79,7 +79,7 @@ import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utils.SysUtils;
 
 import javax.swing.MenuSelectionManager;

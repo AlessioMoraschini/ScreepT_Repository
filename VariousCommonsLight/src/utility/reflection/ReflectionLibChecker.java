@@ -15,7 +15,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 /**
  * This class contains a series of methods to check whenever a given class or method can be instantiated/called,

@@ -28,7 +28,7 @@ import javax.swing.JFrame;
 import org.apache.commons.io.FilenameUtils;
 
 import gui.dialogs.msg.JOptionHelper;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utility.string.StringWorker.EOL;
 
 /**

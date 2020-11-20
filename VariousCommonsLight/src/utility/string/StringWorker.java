@@ -30,7 +30,7 @@ import java.util.UUID;
 
 import javax.swing.JTextArea;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class StringWorker {
 	

@@ -31,9 +31,9 @@ import java.util.concurrent.TimeoutException;
 import javax.net.ssl.HttpsURLConnection;
 
 import network.utils.DownloadUtils;
-import utility.ConversionUtils;
-import utility.EncodingUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
+import utility.manipulation.EncodingUtils;
 
 public class HttpHelper {
 	

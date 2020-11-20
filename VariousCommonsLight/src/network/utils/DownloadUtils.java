@@ -18,8 +18,8 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.Arrays;
 
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import gui.UpdateProgressPanel;
 import network.http.HttpHelper;
 import om.exception.ProgressBarInterruptedException;

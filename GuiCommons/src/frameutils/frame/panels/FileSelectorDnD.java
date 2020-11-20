@@ -21,7 +21,7 @@ import javax.swing.border.MatteBorder;
 import dialogutils.GenericFileChooserDialog;
 import gui.GuiUtils;
 import gui.dnd.FileDrop;
-import utility.ArrayHelper;
+import utility.manipulation.ArrayHelper;
 
 public class FileSelectorDnD extends JPanel {
 	private static final long serialVersionUID = -7814910139806390419L;

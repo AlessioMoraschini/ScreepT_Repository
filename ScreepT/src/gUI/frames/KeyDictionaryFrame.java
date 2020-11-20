@@ -28,7 +28,7 @@ import net.miginfocom.swing.MigLayout;
 import om.BufferedImageType;
 import resources.IconsPathConfigurator;
 import treeutils.om.FileTreeModel;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 import javax.swing.JPanel;
 import java.awt.SystemColor;

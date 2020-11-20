@@ -31,7 +31,7 @@ import files.search.FileSearchAdvanced;
 import gui.GuiUtils;
 import om.JVMInfo;
 import om.OSinfo;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utility.string.StringWorker;
 
 

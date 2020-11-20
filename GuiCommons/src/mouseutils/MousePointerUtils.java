@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class MousePointerUtils {
 	

@@ -64,7 +64,7 @@ import resources.IconsPathConfigurator;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import tabbedpaneutils.TabbedPaneMouseWheelListener;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
 
 public class CustomTabbedEditor implements ITabsManager {

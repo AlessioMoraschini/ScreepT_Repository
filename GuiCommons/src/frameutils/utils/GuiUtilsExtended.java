@@ -20,13 +20,13 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-import codeformatter.CustomCodeFormatter;
 import dialogutils.JOptionHelperExtended;
 import gui.GuiUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import utility.string.CustomCodeFormatter;
 import utility.string.StringWorker;
 
 public class GuiUtilsExtended extends GuiUtils {

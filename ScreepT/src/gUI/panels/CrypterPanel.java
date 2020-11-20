@@ -45,7 +45,6 @@ import guistyle.GUIStyelSettingsExtended;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import mainobj.INItializer;
-import media.ImageWorkerExtended;
 import net.miginfocom.swing.MigLayout;
 import om.BufferedImageType;
 import om.CrypterResultDTO;
@@ -55,8 +54,9 @@ import treeutils.TreeUtils;
 import treeutils.om.FileTreeModel;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
+import utils.ImageWorkerExtended;
 
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;

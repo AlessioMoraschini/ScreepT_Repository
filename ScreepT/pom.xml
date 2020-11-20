@@ -825,12 +825,6 @@
 		</dependency>
 		
 		<dependency>
-		  <groupId>GenCommons</groupId>
-		  <artifactId>GenCommons</artifactId>
-		  <version>1.0</version>	
-		</dependency>
-		
-		<dependency>
 			<groupId>MultimediaConversion</groupId>
 		  	<artifactId>MultimediaConversion</artifactId>
 		 	<version>1.0</version>

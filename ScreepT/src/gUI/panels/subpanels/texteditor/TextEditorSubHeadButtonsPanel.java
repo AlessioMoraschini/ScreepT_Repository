@@ -86,7 +86,7 @@ import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textareautil.TextLineNumber;
-import utility.EncodingUtils;
+import utility.manipulation.EncodingUtils;
 import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 import utils.RsyntaxUtils;

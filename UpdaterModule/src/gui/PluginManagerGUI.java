@@ -38,7 +38,7 @@ import gui.dialogs.msg.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import plugins.PluginDTO;
 import plugins.PluginManager;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 import javax.swing.JButton;
 

@@ -11,7 +11,7 @@ import oshi.hardware.GlobalMemory;
 import oshi.hardware.NetworkIF;
 import oshi.software.os.OSFileStore;
 import runtime.RuntimeUtil;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 public class HwTest {
 

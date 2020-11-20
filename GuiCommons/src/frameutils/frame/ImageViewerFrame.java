@@ -18,9 +18,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import utility.ConversionUtils;
-import utility.ImageWorker;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
+import utility.manipulation.ImageWorker;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;

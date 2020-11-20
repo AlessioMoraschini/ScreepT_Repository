@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import utility.log.SafeLogger;
+
 public class SystemClipboardUtils {
 	
 	private static SafeLogger logger = new SafeLogger(SystemClipboardUtils.class);

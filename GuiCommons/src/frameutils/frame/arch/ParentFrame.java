@@ -19,7 +19,7 @@ import javax.swing.JFrame;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import gui.GuiUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class ParentFrame extends JFrame{
 	private static final long serialVersionUID = 7079644907872152737L;

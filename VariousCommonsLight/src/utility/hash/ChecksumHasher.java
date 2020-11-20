@@ -20,8 +20,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
 
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.properties.PropertiesManager;
 
 public class ChecksumHasher {

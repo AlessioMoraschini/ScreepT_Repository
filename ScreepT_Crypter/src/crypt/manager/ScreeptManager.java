@@ -44,7 +44,7 @@ import crypt.steg.STEGException;
 import util.ImageEncodingUtils;
 import util.ScreeptUtils;
 import util.UpdateProgressPanelCrypter;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 /**
  * 

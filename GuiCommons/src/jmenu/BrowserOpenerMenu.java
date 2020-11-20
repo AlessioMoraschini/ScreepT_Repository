@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 import gui.MenuSetter;
 import gui.dialogs.msg.JOptionHelper;
 import jmenu.om.UrlRetriever;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utils.SysUtils;
 import utils.SysUtils.Browser;
 

@@ -23,8 +23,8 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.reflection.ReflectionUtils;
 import utility.string.StringWorker;
 

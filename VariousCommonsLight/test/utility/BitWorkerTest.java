@@ -2,6 +2,7 @@ package utility;
 
 import org.junit.Test;
 
+import utility.bytes.BitWorker;
 import utils.TestUtils;
 
 public class BitWorkerTest {

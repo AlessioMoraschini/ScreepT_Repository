@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
-import utility.ConversionUtils;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
 
 public class PropertiesManager {

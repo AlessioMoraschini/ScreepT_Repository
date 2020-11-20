@@ -12,7 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mainobj.INItializerParent;
-import utility.ConversionUtils;
+import utility.manipulation.ConversionUtils;
 
 public class TestIni {
 

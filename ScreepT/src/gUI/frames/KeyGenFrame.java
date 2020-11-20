@@ -48,7 +48,6 @@ import java.util.Date;
 import net.miginfocom.swing.MigLayout;
 import om.KeyGenImageType;
 import resources.IconsPathConfigurator;
-import uTILS.local.ImageWorkerScreepT;
 
 import org.apache.log4j.Logger;
 
@@ -57,6 +56,7 @@ import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.subpanels.ImageGenContainerPanel;
+import gUI.utils.ImageWorkerScreepT;
 import gUI.utils.tooltip.ToolTipBufferedImageType;
 import gui.UpdateProgressPanel;
 import maingUI.MainGUI;

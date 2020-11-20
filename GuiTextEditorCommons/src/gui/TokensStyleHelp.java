@@ -13,7 +13,7 @@ import org.fife.ui.rsyntaxtextarea.TokenTypes;
 import gui.dialogs.color.ColorSelector;
 import gui.dialogs.color.om.ColorSelectionElement;
 import gui.dialogs.font.om.FontType;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class TokensStyleHelp {
 	

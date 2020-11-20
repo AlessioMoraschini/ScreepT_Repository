@@ -24,7 +24,7 @@ import javax.swing.JPasswordField;
 import crypt.aes.AesCipher;
 import gui.dialogs.msg.JOptionHelper;
 import om.SecurityLevel;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class ScreeptUtils {
 	

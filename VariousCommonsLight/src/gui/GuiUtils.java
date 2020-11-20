@@ -73,8 +73,8 @@ import javax.swing.text.JTextComponent;
 
 import files.om.FileNamed;
 import gui.dialogs.msg.JOptionHelper;
-import utility.ImageWorker;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
+import utility.manipulation.ImageWorker;
 import utility.string.StringWorker;
 
 public class GuiUtils {

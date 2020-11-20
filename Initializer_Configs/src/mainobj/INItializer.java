@@ -32,7 +32,7 @@ import om.SecurityLevel;
 import om.SteganOption;
 import om.TextEditorOption;
 import resources.GeneralConfig;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 

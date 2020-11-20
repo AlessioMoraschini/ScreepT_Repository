@@ -16,7 +16,7 @@ import javax.swing.JTextArea;
 import gui.GuiUtils;
 import om.SelectionDTO;
 import om.SelectionDtoFull;
-import utility.SafeLogger;
+import utility.log.SafeLogger;
 
 public class TextAreaStringEditor {
 	
