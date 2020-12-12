@@ -461,7 +461,7 @@ public class TextEditor extends ModulePanel {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				textEditorUtils.applySelectedTheme();
+				textEditorUtils.applySelectedTheme(false);
 			}
 		});
 		

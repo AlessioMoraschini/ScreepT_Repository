@@ -13,6 +13,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dialog;
@@ -46,6 +47,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
@@ -105,6 +107,11 @@ public class GuiUtils {
 		String result = (selection == null) ? allText : selection;
 
 		return result;
+	}
+	
+	public static boolean checkIfComponentContains(Container container, Component toSearch) {
+		List<Component> componentList = Arrays.asList(container.getComponents());
+		return componentList.contains(toSearch);
 	}
 
 	public static MouseListener getClickOutDisposeListener(final JFrame target) {

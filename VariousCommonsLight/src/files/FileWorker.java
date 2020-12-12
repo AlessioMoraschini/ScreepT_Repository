@@ -281,7 +281,7 @@ public class FileWorker {
 				}
 				
 			} catch (Exception e1) {
-				dialogHelper.error("[Error loading the selected file]", null);
+				dialogHelper.error("[Error loading the selected file]", (String)null);
 				logger.error("Exception happened!", e1);
 				return false;
 			}

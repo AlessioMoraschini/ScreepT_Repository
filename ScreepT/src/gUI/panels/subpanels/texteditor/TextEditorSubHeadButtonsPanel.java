@@ -1303,7 +1303,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// style graphics
 		comboStylesScheme.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textEditorUtils.applySelectedTheme();
+				textEditorUtils.applySelectedTheme(false);
 			}
 		});
 

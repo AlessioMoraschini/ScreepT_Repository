@@ -46,6 +46,7 @@ import gui.filesearch.FileSearchActions;
 import gui.filesearch.FileSearchDialog;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
+import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
@@ -76,9 +77,13 @@ public class WindowCreator {
 		);
 		
 		schemeManager.setCloseAction(() -> {
-			if(MainGUI.mainGuiUtils.isTextEditorActive()) {
+			if(MainGUI.textEditorPanel != null && MainGUI.textEditorPanel.subHeaderPanel != null) {
 				MainGUI.textEditorPanel.subHeaderPanel.initComboStyleScheme();
-				MainGUI.textEditorPanel.textEditorUtils.applySelectedTheme();
+				MainGUI.textEditorPanel.subHeaderPanel.comboStylesScheme
+					.setSelectedItem(ThemesWrapper.getFromListByPath(
+							schemeManager.getSelectedColorSchemeObj().schemeSource.getAbsolutePath(),
+							MainGUI.textEditorPanel.subHeaderPanel.themeList));
+				MainGUI.textEditorPanel.textEditorUtils.applySelectedTheme(true);
 			}
 		});
 		

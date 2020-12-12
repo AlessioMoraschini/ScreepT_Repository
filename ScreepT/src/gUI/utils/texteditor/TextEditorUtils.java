@@ -134,7 +134,7 @@ public class TextEditorUtils {
 
 			@Override
 			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {
-				loadTheme(txtArea, (Gutter) null,currentTextEditor.currentConfiguration.getTextEditorOpt());
+				loadTheme(txtArea, (Gutter) null,currentTextEditor.currentConfiguration.getTextEditorOpt(), false);
 			}
 
 			@Override
@@ -1099,14 +1099,14 @@ public class TextEditorUtils {
 		}
 	}
 	
-	public void applySelectedTheme() {
+	public void applySelectedTheme(boolean forceThemeReload) {
 		
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 		TextEditorOption txtOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		// backup unsaved to avoid changing saved info with theme change
 		boolean unsaved = loadedTabObj.unsaved;
 
-		loadTheme(loadedTabObj.textArea, loadedTabObj.currentScrollPane.getGutter(), txtOpt);
+		loadTheme(loadedTabObj.textArea, loadedTabObj.currentScrollPane.getGutter(), txtOpt, forceThemeReload);
 
 		// retore unsaved info backup
 		loadedTabObj.unsaved = unsaved;
@@ -1114,10 +1114,7 @@ public class TextEditorUtils {
 		// Retrieve current pane type and call standard method to sync position and content
 		getTypedIRightPanel().sync();
 		
-//		Color textAreaBackgground = loadedTabObj.textArea.getBackground();
 		Color textAreaBackground = currentTextEditor.leftSplitTreeFiles.getBackground().darker();
-//		Color darkerLight = ImageGeneralWorker.getDarkerNtimes(textAreaBackground, 1);
-//		Color darkerMed = ImageGeneralWorker.getDarkerNtimes(textAreaBackground, 2);
 		currentTextEditor.setBackground(textAreaBackground);
 		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(textAreaBackground);
 		currentTextEditor.mainPanel.setBackground(textAreaBackground);
@@ -1130,7 +1127,7 @@ public class TextEditorUtils {
 	 * @param gutter
 	 * @param txtOpt
 	 */
-	public void loadTheme(RSyntaxTextArea txtArea, Gutter gutter, TextEditorOption txtOpt) {
+	public void loadTheme(RSyntaxTextArea txtArea, Gutter gutter, TextEditorOption txtOpt, boolean forceFileRefresh) {
 		ThemesWrapper theme = (ThemesWrapper) currentTextEditor.subHeaderPanel.comboStylesScheme.getSelectedItem();
 		File pathFile = new File(theme.path);
 		
@@ -1149,6 +1146,7 @@ public class TextEditorUtils {
 			txtOpt.setSelectedTheme(theme.path);
 			
 			boolean usePreloadedStringXml = 
+					!forceFileRefresh &&
 					GeneralConfig.XML_THEMES_CONTENT_MAP != null && 
 					GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(theme.name);
 			

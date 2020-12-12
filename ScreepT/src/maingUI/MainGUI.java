@@ -678,7 +678,7 @@ public class MainGUI extends MainGuiParent{
 							currentConfiguration.setIniFile(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 						} catch (IOException e) {
 							dialogHelper.error(
-									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!", null);
+									"Error resetting standard configuration: it does not exist or IO error occurred, retry later!", (String)null);
 							logger.error("Exception happened!", e);
 						}
 						MainGuiUtils.welcomeMethodFirstTime();
@@ -729,7 +729,7 @@ public class MainGUI extends MainGuiParent{
 								dialogHelper.info("File correctly saved in " + zipped, "Log File Exported :)");
 								logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + zipped);
 							} else {
-								dialogHelper.error("File not saved [" + zipped +"], Some error occurred :(", null);
+								dialogHelper.error("File not saved [" + zipped +"], Some error occurred :(", (String)null);
 								logger.error("File not saved, some error occurred :( ");
 							}
 							
@@ -759,7 +759,7 @@ public class MainGUI extends MainGuiParent{
 							dialogHelper.info("Logs deleted - as you asked ;)", "Logs deleted");
 						}else {
 							logger.error("Files not deleted :: An error occurred :(");
-							dialogHelper.error("Something went wrong :( Some files may still contain stuff.", null);
+							dialogHelper.error("Something went wrong :( Some files may still contain stuff.", (String)null);
 						}
 					} else {
 						logger.debug("Logs not deleted :: skipped by user.");

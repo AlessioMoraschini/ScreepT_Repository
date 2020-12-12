@@ -311,10 +311,10 @@ public class ClipboardPanel  extends ParentPanel implements IParentPanel{
 						if (options.getLastFileOpenedClipboard() != null) {
 							try {
 								if (!addNewClipboardGui()) {
-									dialogHelper.error("File not saved, maybe folder it's not acessible or locked by an other program?!", null);
+									dialogHelper.error("File not saved, maybe folder it's not acessible or locked by an other program?!", (String)null);
 								}
 							} catch (IOException e1) {
-								dialogHelper.error("IOException while trying to create new File!", null);
+								dialogHelper.error("IOException while trying to create new File!", (String)null);
 								logger.error("Error adding new Clipboard panel from scratch.");
 							}
 						}

@@ -379,7 +379,7 @@ public class KeyGenFrame extends ParentFrame {
 							    				logger.debug(selectedFile.getCanonicalPath()+" deleted & re-saved.");
 
 							        		}else {
-							        			dialogHelper.info("Operation cancelled", null);
+							        			dialogHelper.info("Operation cancelled", (String)null);
 							    				logger.debug("Canceled by user.");
 							        		}
 							        	}else {

@@ -48,6 +48,7 @@ public class TokensStyleHelp {
 				
 				ColorSelector selector = new ColorSelector(
 						new ColorSelectionElement( style.foreground, style.background, field.getName()),
+						style.background != null,
 						style != null ? FontType.fromFont(style.font) : FontType.Plain,
 						() -> {}
 				);
@@ -58,7 +59,11 @@ public class TokensStyleHelp {
 						Style areaStyle = textArea.getSyntaxScheme().getStyle(index);
 						Insets oldMargin = textArea.getMargin();
 						
-						areaStyle.background = selector.elementOm.background;
+						if(selector.isOpaqueBackground())
+							areaStyle.background = selector.elementOm.background;
+						else
+							areaStyle.background = null;
+							
 						areaStyle.foreground = selector.elementOm.foreground;
 						areaStyle.font = areaStyle.font.deriveFont(selector.fontType.type);
 						
@@ -85,18 +90,22 @@ public class TokensStyleHelp {
 		
 		// Selection style
 		ColorSelector selection = new ColorSelector(
-				new ColorSelectionElement(theme.selectionFG, theme.selectionBG, "SELECTION"), 
+				new ColorSelectionElement(theme.selectionFG, theme.selectionBG, "SELECTION"),
+				theme.selectionBG != null,
 				FontType.Plain,
 				() -> {});
 
 		selection.removeFont();
+		selection.removeForeground();
 		selection.onValueChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
 				Insets oldMargin = textArea.getMargin();
 				
-				theme.selectionBG = selection.elementOm.background;
-				theme.selectionFG = selection.elementOm.foreground;
+				if(selection.isOpaqueBackground())
+					theme.selectionBG = selection.elementOm.background;
+				else 
+					theme.selectionBG = theme.bgColor;
 				theme.apply(textArea);
 				textArea.setSyntaxScheme(scheme);
 				textArea.setMargin(oldMargin);
@@ -110,11 +119,13 @@ public class TokensStyleHelp {
 		// line Highlight
 		ColorSelector lineHighlight = new ColorSelector(
 				new ColorSelectionElement(null, theme.currentLineHighlight, "Line highlight Background"),
+				true,
 				FontType.Plain,
 				() -> {});
 		
 		lineHighlight.removeForeground();
 		lineHighlight.removeFont();
+		lineHighlight.removeOpaqueBackground();
 		lineHighlight.onValueChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
@@ -135,12 +146,14 @@ public class TokensStyleHelp {
 		// Background main Color
 		ColorSelector backgroundMain = new ColorSelector(
 				new ColorSelectionElement(null, theme.bgColor, "Main background"),
+				true,
 				FontType.Plain,
 				() -> {}
 		);
 		
 		backgroundMain.removeForeground();
 		backgroundMain.removeFont();
+		backgroundMain.removeOpaqueBackground();
 		backgroundMain.onValueChange = () -> {
 			try {
 				SyntaxScheme scheme = textArea.getSyntaxScheme();
@@ -160,11 +173,13 @@ public class TokensStyleHelp {
 		// Caret Color
 		ColorSelector caretColor = new ColorSelector(
 				new ColorSelectionElement(theme.caretColor, null, "Caret Color"),
+				false,
 				FontType.Plain,
 				() -> {}
 		);
 		
 		caretColor.removeFont();
+		caretColor.removeOpaqueBackground();
 		caretColor.removeBackground();
 		caretColor.onValueChange = () -> {
 			try {
@@ -205,6 +220,7 @@ public class TokensStyleHelp {
 			Color secondaryColor = i < languagesDefinedCount ? theme.secondaryLanguages[i] : null;
 			tokenSelectors[i] = new ColorSelector(
 					new ColorSelectionElement(null, secondaryColor, "SECONDARY_LANGUAGE_#" + i),
+					true,
 					FontType.Plain,
 					() -> {}
 			);
@@ -227,6 +243,7 @@ public class TokensStyleHelp {
 				}
 			};
 			tokenSelectors[i].removeFont();
+			tokenSelectors[i].removeOpaqueBackground();
 			tokenSelectors[i].removeForeground();
 			tokenSelectors[i].setBackground(defaultElementsBackground);
 		}

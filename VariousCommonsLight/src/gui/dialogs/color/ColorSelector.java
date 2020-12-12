@@ -1,6 +1,8 @@
 package gui.dialogs.color;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -32,18 +34,21 @@ public class ColorSelector extends JPanel {
 	private JPanel panelBackground;
 	private JLabel lblFont;
 	private JComboBox<FontType> comboFont;
-//	private JComboBox<Boolean> comboOpaque;
+	public FontType fontType;
+	private JLabel lblOpaqueBackground;
+	private JComboBox<Boolean> comboOpaqueBackground;
+	public Boolean opaqueBackground = false;
 	
 	public Runnable onValueChange;
 	
 	public boolean enabled = true;
 	
 	public ColorSelectionElement elementOm;
-	public FontType fontType;
 	
-	public ColorSelector(ColorSelectionElement colorSelectionElement, FontType fontType, Runnable onValueChange) {
+	public ColorSelector(ColorSelectionElement colorSelectionElement, Boolean opaqueBackground, FontType fontType, Runnable onValueChange) {
 		this(
 				colorSelectionElement.elementLabel,
+				opaqueBackground,
 				fontType,
 				colorSelectionElement.background,
 				colorSelectionElement.foreground,
@@ -54,16 +59,17 @@ public class ColorSelector extends JPanel {
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public ColorSelector(String elementName, FontType fontType, Color backGround, Color foreground, Runnable onValueChange) {
+	public ColorSelector(String elementName, Boolean opaqueBackground, FontType fontType, Color backGround, Color foreground, Runnable onValueChange) {
 		
-		elementOm = new ColorSelectionElement(foreground, backGround, elementName);
-		enabled = true;
+		this.elementOm = new ColorSelectionElement(foreground, backGround, elementName);
+		this.opaqueBackground = opaqueBackground;
 		this.fontType = fontType != null ? fontType : FontType.Plain;
+		this.enabled = true;
 		
 		this.onValueChange = onValueChange != null ? onValueChange : ()->{};
 		
 		setBackground(Color.LIGHT_GRAY);
-		setLayout(new MigLayout("", "[][grow][][][80px:n][:50px:50px][80px:n][:50px:50px]", "[grow]"));
+		setLayout(new MigLayout("", "[][grow][][][][][80px:n][:50px:50px][80px:n][:50px:50px]", "[grow]"));
 		
 		lblElementName = new JLabel("Element");
 		lblElementName.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -81,32 +87,62 @@ public class ColorSelector extends JPanel {
 		comboFont.setSelectedItem(this.fontType);
 		comboFont.setFont(DEFAULT_FONT.deriveFont(this.fontType.type));
 		add(comboFont, "cell 3 0,growx");
+
+		lblOpaqueBackground = new JLabel("  Opaque");
+		lblOpaqueBackground.setFont(DEFAULT_FONT);
+		add(lblOpaqueBackground, "cell 4 0,alignx trailing");
+		
+		comboOpaqueBackground = new JComboBox<Boolean>(new Boolean[] {true, false});
+		comboOpaqueBackground.setMinimumSize(new Dimension(75,30));
+		comboOpaqueBackground.setPreferredSize(new Dimension(75,30));
+		comboOpaqueBackground.setSelectedItem(this.fontType);
+		comboOpaqueBackground.setFont(DEFAULT_FONT);
+		add(comboOpaqueBackground, "cell 5 0,growx");
 		
 		lblForeground = new JLabel("Foreground");
 		lblForeground.setFont(DEFAULT_FONT);
-		add(lblForeground, "cell 4 0,alignx right");
+		add(lblForeground, "cell 6 0,alignx right");
 		
 		panelForeground = new JPanel();
 		panelForeground.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panelForeground.setCursor(GuiUtils.CURSOR_HAND);
 		panelForeground.setBackground(elementOm.foreground);
 		panelForeground.addMouseListener(panelMouseListener(panelForeground, false));
-		add(panelForeground, "cell 5 0,grow");
+		add(panelForeground, "cell 7 0,grow");
 		
 		lblBackground = new JLabel("Background");
 		lblBackground.setFont(DEFAULT_FONT);
-		add(lblBackground, "cell 6 0,alignx right");
+		add(lblBackground, "cell 8 0,alignx right");
 		
 		panelBackground = new JPanel();
 		panelBackground.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panelBackground.setCursor(GuiUtils.CURSOR_HAND);
 		panelBackground.setBackground(elementOm.background);
 		panelBackground.addMouseListener(panelMouseListener(panelBackground, true));
-		add(panelBackground, "cell 7 0,grow");
+		add(panelBackground, "cell 9 0,grow");
 		
 		addHandlers();
 		
 		setEnabled(enabled);
+		
+		SwingUtilities.invokeLater(()->{
+			updateComboOpaqueBckg(opaqueBackground, false);
+		});
+	}
+	
+	public void updateComboOpaqueBckg(boolean opaqueBackground, boolean syncGui) {
+		this.comboOpaqueBackground.setSelectedItem(opaqueBackground);
+		this.opaqueBackground = opaqueBackground;
+		
+		if (syncGui) {
+			comboOpaqueBackground.setFont(DEFAULT_FONT.deriveFont(opaqueBackground ? Font.BOLD : Font.PLAIN));
+			if (!opaqueBackground)
+				removeBackground();
+			else if (!GuiUtils.checkIfComponentContains(this, panelBackground)) {
+				add(lblBackground, "cell 8 0,alignx right");
+				add(panelBackground, "cell 9 0,grow");
+			}
+		}
 	}
 	
 	private void addHandlers() {
@@ -114,6 +150,11 @@ public class ColorSelector extends JPanel {
 			FontType selection = (FontType)comboFont.getSelectedItem();
 			fontType = selection;
 			comboFont.setFont(DEFAULT_FONT.deriveFont(this.fontType.type));
+			onValueChange.run();
+		});
+
+		comboOpaqueBackground.addActionListener((e) -> {
+			updateComboOpaqueBckg((Boolean)comboOpaqueBackground.getSelectedItem(), true);
 			onValueChange.run();
 		});
 	}
@@ -132,14 +173,25 @@ public class ColorSelector extends JPanel {
 		remove(lblFont);
 		remove(comboFont);
 	}
+
+	public void removeOpaqueBackground() {
+		remove(lblOpaqueBackground);
+		remove(comboOpaqueBackground);
+	}
 	
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		setBackground(enabled ? Color.WHITE : Color.GRAY);
 		panelBackground.setCursor(enabled ? GuiUtils.CURSOR_HAND : GuiUtils.CURSOR_DEFAULT);
 		panelForeground.setCursor(enabled ? GuiUtils.CURSOR_HAND : GuiUtils.CURSOR_DEFAULT);
+		comboFont.setEnabled(enabled);
+		comboOpaqueBackground.setEnabled(enabled);
 	}
 	
+	public boolean isOpaqueBackground() {
+		return opaqueBackground;
+	}
+
 	public MouseAdapter panelMouseListener(JPanel target, boolean background) {
 		return new MouseAdapter() {
 

@@ -100,7 +100,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 			// Refresh current style from combo only if different from current actually applied to loaded text area tab
 			txtUtils.findRightSyntaxFromComboNSelect(loadedTabObj.loadedFile, textEditor.currentConfiguration.getTextEditorOpt().defaultAutoSyntaxSync);
 			
-			txtUtils.applySelectedTheme();
+			txtUtils.applySelectedTheme(false);
 		}
 		
 		

@@ -35,6 +35,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import gui.GuiUtils;
+import utility.log.SafeLogger;
 import utility.string.StringWorker;
 
 public class JOptionHelper {
@@ -151,6 +152,16 @@ public class JOptionHelper {
 			msg = (!StringWorker.isEmpty(msg)) ? msg : DEF_ERR_MSG;
 			showMessageCommon(msg, msg, ERR, okOnlyOptions, okOnlyOptions[0]);
 		}
+	}
+	
+	public void error(String msg, SafeLogger logger, Throwable e) {
+		error(msg);
+		logger.error("Cannot import theme.", e);
+	}
+	
+	public void error(String msg, SafeLogger logger) {
+		error(msg);
+		logger.error("Cannot import theme.");
 	}
 
 	/**
@@ -309,6 +320,12 @@ public class JOptionHelper {
 			showMessageCommon(msg, title, INFO, okOnlyOptions, okOnlyOptions[0]);
 		}
 	}
+	
+	public void info(String msg, SafeLogger logger) {
+		error(msg);
+		logger.info(msg);
+	}
+	
 	
 	/**
 	 * Shows a information message within a scrollable panel, useful to show long messages

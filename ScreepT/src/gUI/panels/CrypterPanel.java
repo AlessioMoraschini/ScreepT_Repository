@@ -972,14 +972,14 @@ public class CrypterPanel extends ModulePanel {
 				} else {
 					if(result.interrupted) {
 						String msg = "Process interrupted.";
-						dialogHelper.info(msg, null);
+						dialogHelper.info(msg, (String)null);
 						textAreaLog.append("\n" + msg);
 						
 						askUserIfWantsToDelete(destinationDir);
 						
 					} else if (destinationDir != null) {
 						String msg = "Something went wrong :(";
-						dialogHelper.error(msg, null);
+						dialogHelper.error(msg, (String)null);
 						textAreaLog.append("\n" + msg);
 						
 						askUserIfWantsToDelete(destinationDir);

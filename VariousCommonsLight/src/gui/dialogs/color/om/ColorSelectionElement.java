@@ -9,7 +9,7 @@ public class ColorSelectionElement {
 	
 	public ColorSelectionElement(Color foreground, Color background, String elementLabel) {
 		this.foreground = foreground != null ? foreground : Color.BLACK;
-		this.background = background != null ? background : new Color(240, 240, 240, 0);
+		this.background = background;
 		this.elementLabel = elementLabel != null ? elementLabel : "";
 	}
 
