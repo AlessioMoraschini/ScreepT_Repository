@@ -84,7 +84,7 @@ public class SchemeManagerGui extends JFrame {
 	private JButton btnSaveTheme;
 	private JButton btnExportTheme;
 	
-	public Runnable closeAction = () -> {};
+	private Runnable closeAction = () -> {};
 	
 	public SchemeManagerGui(File sourceFolder, File defaultUnmodificableThemes, Font currentFont) {
 		singletonInstance = this;
@@ -242,21 +242,24 @@ public class SchemeManagerGui extends JFrame {
 		});
 		
 		btnReloadFromFile.addActionListener((e) -> {
-			if(!getSelectedColorSchemeObj(false).modifiable || dialogHelper.yesOrNo("Are you sure to reload current theme? all unsaved changes will be lost")) try {
-				int previousIndex = comboScheme.getSelectedIndex();
-				schemes = retrieveXmlSchemes();
-				initComboScheme();
-				getSelectedTheme(true).apply(testTextArea);
-				initGuiFromTheme();
-				
-				comboScheme.setSelectedIndex(previousIndex);
-			} catch (IllegalArgumentException | IllegalAccessException e1) {
-				dialogHelper.error("Cannot load theme, an error occurred");
+			if(!getSelectedColorSchemeObj().modifiable || 
+					dialogHelper.yesOrNo("Are you sure to reload current theme? all unsaved changes will be lost")) {
+				try {
+					int previousIndex = comboScheme.getSelectedIndex();
+					schemes = retrieveXmlSchemes();
+					initComboScheme();
+					getSelectedTheme(true).apply(testTextArea);
+					initGuiFromTheme();
+					
+					comboScheme.setSelectedIndex(previousIndex);
+				} catch (IllegalArgumentException | IllegalAccessException e1) {
+					dialogHelper.error("Cannot load theme, an error occurred");
+				}
 			}
 		});
 		
 		btnSaveTheme.addActionListener((e) -> {
-			if (dialogHelper.yesOrNo("Overwrite " + getSelectedColorSchemeObj(false) + " ?")) {
+			if (dialogHelper.yesOrNo("Overwrite " + getSelectedColorSchemeObj() + " ?")) {
 				saveCurrentTheme(true, styleFilesFolder);
 			}
 		});
@@ -266,7 +269,7 @@ public class SchemeManagerGui extends JFrame {
 		});
 
 		btnSaveAs.addActionListener((e) -> {
-			saveCurrentThemeAs(getSelectedColorSchemeObj(false).modifiable);
+			saveCurrentThemeAs(getSelectedColorSchemeObj().modifiable);
 		});
 	}
 	
@@ -287,25 +290,23 @@ public class SchemeManagerGui extends JFrame {
 	
 	public Theme getSelectedTheme(boolean loadFromFile) {
 		if (loadFromFile) {
-			return getSelectedColorSchemeObj(loadFromFile).loadThemeFromFile();
+			return getSelectedColorSchemeObj().loadThemeFromFile();
 		} else {
-			return getSelectedColorSchemeObj(loadFromFile).theme;
+			return getSelectedColorSchemeObj().theme;
 		}
 	}
 
-	public ColorStyleScheme getSelectedColorSchemeObj(boolean loadFromFile) {
-		if (loadFromFile) {
-			return schemes.get(comboScheme.getSelectedIndex());
-		} else {
-			return schemes.get(comboScheme.getSelectedIndex());
-		}
+	public ColorStyleScheme getSelectedColorSchemeObj() {
+		return schemes.get(comboScheme.getSelectedIndex());
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void initComboScheme() {
 		comboScheme.setModel(new DefaultComboBoxModel(schemes.toArray()));
 		comboScheme.setSelectedIndex(0);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void initComboSyntax() {
 		comboSyntax.setModel(new DefaultComboBoxModel(SupportedFileTextEditor.values()));
 		comboSyntax.setSelectedItem(SupportedFileTextEditor.JAVA);
@@ -318,7 +319,7 @@ public class SchemeManagerGui extends JFrame {
 		
 		SwingUtilities.invokeLater(()->{
 			
-			boolean currentModifiable = getSelectedColorSchemeObj(false).modifiable;
+			boolean currentModifiable = getSelectedColorSchemeObj().modifiable;
 			btnSaveTheme.setEnabled(currentModifiable);
 
 			for(ColorSelector selector : tokenSelectors) {
@@ -338,7 +339,7 @@ public class SchemeManagerGui extends JFrame {
 	}
 	
 	public void saveCurrentThemeAs(boolean canOverwrite) {
-		File uniqueFileOut = FileVarious.uniqueJavaObjFile(getSelectedColorSchemeObj(false).schemeSource);
+		File uniqueFileOut = FileVarious.uniqueJavaObjFile(getSelectedColorSchemeObj().schemeSource);
 		String outName = dialogHelper.askForStringNullable("Specify theme file name", "Insert theme name", uniqueFileOut.getName());
 		
 		if (StringWorker.notEmpty(outName)) {
@@ -360,10 +361,9 @@ public class SchemeManagerGui extends JFrame {
 		saveCurrentTheme(sameLocation, null, defaultParentDir);
 	}
 	
-	@SuppressWarnings("unused")
 	public void saveCurrentTheme(boolean sameLocation, File outputFile, File defaultParentDir) {
 		
-		ColorStyleScheme loadedSchemeObj = getSelectedColorSchemeObj(false);
+		ColorStyleScheme loadedSchemeObj = getSelectedColorSchemeObj();
 		FileOutputStream outStream = null;
 		
 		File outFile = outputFile;
@@ -379,15 +379,14 @@ public class SchemeManagerGui extends JFrame {
 						? fileChooserHelper.fileWrite(this, loadedSchemeObj.schemeSource.getName(), defaultParentDir, DEFAULT_SAVE_FILTER)
 						: outFile;
 				
-				if(outFile == null){
+				if(outFile == null)
 					return;
-				} 
 
 				outFile = FileVarious.changeExtension(outFile, ".xml");
 				
-				if(outFile.exists() && !dialogHelper.askOverwriteFile(outFile)) {
+				if(outFile.exists() && !dialogHelper.askOverwriteFile(outFile))
 					outFile = FileVarious.uniqueJavaObjFile(outFile);
-				}
+				
 				outStream = new FileOutputStream(outFile);
 				
 				defaultExportDir = outFile.getParentFile();
@@ -459,6 +458,14 @@ public class SchemeManagerGui extends JFrame {
 		this.schemes = styles;
 	}
 	
+	public Runnable getCloseAction() {
+		return closeAction;
+	}
+
+	public void setCloseAction(Runnable closeAction) {
+		this.closeAction = closeAction;
+	}
+
 	public class ColorStyleScheme {
 		public List<ColorSelectionElement> schemeElements;
 		public File schemeSource;

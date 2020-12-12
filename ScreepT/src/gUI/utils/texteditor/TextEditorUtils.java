@@ -55,12 +55,12 @@ import gui.dialogs.msg.JOptionHelper;
 import guistyle.GUIStyelSettingsExtended;
 import impl.om.TextEditorOption;
 import maingUI.MainGUI;
-import maingUI.ToggleAction;
 import om.SupportedFileTextEditor;
 import om.TabTextEditorObj;
 import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
+import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import splitpanel.SplitPaneUtils;
@@ -818,15 +818,14 @@ public class TextEditorUtils {
 		TextEditorOption txteditorOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		
 		if (enableImmersive) {
-			boolean[] blockVisible = new boolean[] {txteditorOpt.footerVisible, txteditorOpt.headerVisible, txteditorOpt.subHeaderVisible};
 			
 			setFooterVisibile(false);
 			setHeaderVisibileLevel1(false);
 			setHeaderVisibileLevel2(false);
 			
-			txteditorOpt.setFooterVisible(blockVisible[0]);
-			txteditorOpt.setHeaderVisible(blockVisible[1]);
-			txteditorOpt.setSubHeaderVisible(blockVisible[2]);
+			txteditorOpt.setFooterVisible(txteditorOpt.footerVisible);
+			txteditorOpt.setHeaderVisible(txteditorOpt.headerVisible);
+			txteditorOpt.setSubHeaderVisible(txteditorOpt.subHeaderVisible);
 		} else {
 			setFooterVisibile(txteditorOpt.footerVisible);
 			setHeaderVisibileLevel1(txteditorOpt.headerVisible);
@@ -897,10 +896,8 @@ public class TextEditorUtils {
 	 */
 	public void setHeaderVisibileLevel2(boolean visibility) {
 		ArrayList<Component> headerList = getTxtEditorHeaderLevel2();
-		for(Component element : headerList) {
-			// invert visible flag 
+		for(Component element : headerList)
 			element.setVisible(visibility);
-		}
 		
 		currentTextEditor.currentConfiguration.getTextEditorOpt().setSubHeaderVisible(visibility);
 		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
@@ -1151,7 +1148,10 @@ public class TextEditorUtils {
 			txtArea.setHighlightCurrentLine(true);
 			txtOpt.setSelectedTheme(theme.path);
 			
-			boolean usePreloadedStringXml = GeneralConfig.XML_THEMES_CONTENT_MAP != null && GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(theme.name);
+			boolean usePreloadedStringXml = 
+					GeneralConfig.XML_THEMES_CONTENT_MAP != null && 
+					GeneralConfig.XML_THEMES_CONTENT_MAP.containsKey(theme.name);
+			
 			if (usePreloadedStringXml) {
 				// If available use lazy initialized in memory
 				RsyntaxUtils.changeStyleViaThemeXmlString(txtArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(theme.name));
@@ -1258,36 +1258,44 @@ public class TextEditorUtils {
 	
 	public void setupTogglesOnMainMenu(boolean enabled) {
 		MainGUI.mainAPP.setTopRightTogglesEnabled(enabled);
+		
+		MainGUI.mainAPP.setTopRightToggleTooltip(TextEditTooltips.tooltipToggleFooter, 0);
+		MainGUI.mainAPP.setTopRightToggleTooltip(TextEditTooltips.tooltipToggleSubHeader, 1);
+		MainGUI.mainAPP.setTopRightToggleTooltip(TextEditTooltips.tooltipToggleHeader, 2);
+		
 		if (enabled) {
 			updateTogglesIconsFromConfig();
-			MainGUI.toggleAction0 = new ToggleAction() {
-				@Override
-				public void doOnClick() {
-					hideOrShowHeaderPanelLevel1();
-				}
-			};
-			MainGUI.toggleAction1 = new ToggleAction() {
-				@Override
-				public void doOnClick() {
-					hideOrShowHeaderPanelLevel2();
-				}
-			};
-			MainGUI.toggleAction2 = new ToggleAction() {
-				@Override
-				public void doOnClick() {
-					hideOrShowFooterPanel();
-				}
-			};
+			
+			MainGUI.toggleTopRightActions.set(0, () -> {
+				hideOrShowFooterPanel();
+			});
+			MainGUI.toggleTopRightActions.set(1, () -> {
+				hideOrShowHeaderPanelLevel2();
+			});
+			MainGUI.toggleTopRightActions.set(2, () -> {
+				hideOrShowHeaderPanelLevel1();
+			});
 		}
 	}
 	
 	public void updateTogglesIconsFromConfig() {
 		try {
 			TextEditorOption options = currentTextEditor.currentConfiguration.getTextEditorOpt();
-			MainGUI.mainAPP.setToggleHeaderIcon(options.headerVisible);
-			MainGUI.mainAPP.setToggleSubHeaderIcon(options.subHeaderVisible);
-			MainGUI.mainAPP.setToggleFooterIcon(options.footerVisible);
+			
+			MainGUI.mainAPP.setTopRightToggleIcon(options.footerVisible 
+					? IconsPathConfigurator.IMG_ICON_FOOTER_VISIBLE 
+					: IconsPathConfigurator.IMG_ICON_FOOTER_INVISIBLE, 0);
+			
+			MainGUI.mainAPP.setTopRightToggleIcon(options.subHeaderVisible 
+					? IconsPathConfigurator.IMG_ICON_SUBHEAD_VISIBLE 
+					: IconsPathConfigurator.IMG_ICON_SUBHEAD_INVISIBLE, 1);
+
+			MainGUI.mainAPP.setTopRightToggleIcon(options.headerVisible 
+					? IconsPathConfigurator.IMG_ICON_HEAD_VISIBLE 
+					: IconsPathConfigurator.IMG_ICON_HEAD_INVISIBLE, 2);
+			
 		} catch (Exception e) {
+			logger.error("Cannot update main menu toggles icons from text editor utils.", e);
 		}
 	}
 

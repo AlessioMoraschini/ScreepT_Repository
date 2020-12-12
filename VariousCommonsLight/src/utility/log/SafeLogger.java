@@ -15,7 +15,6 @@ import static java.lang.System.out;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import om.ConsoleColours;
 /**
@@ -163,7 +162,7 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("error", throwable.getClass().getCanonicalName(), throwable);
 			} else {
-				out.println(ERROR + throwable.getClass());
+				out.println(ERROR + getLinedThrowable(throwable, ConsoleColours.ANSI_RED));
 			} 
 		}
 	}
@@ -202,7 +201,7 @@ public class SafeLogger {
 		
 		builder.append(colourPrefix);
 		for(StackTraceElement element : e.getStackTrace()) {
-			builder.append("\n\t")
+			builder.append("\n   ")
 				.append(element.getClassName())
 				.append(" : ").append(element.getMethodName())
 				.append(" : Line N°").append(element.getLineNumber())

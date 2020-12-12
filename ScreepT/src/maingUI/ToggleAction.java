@@ -11,9 +11,8 @@
  */
 package maingUI;
 
+@FunctionalInterface
 public interface ToggleAction {
 
-	public default void doOnClick() {
-		
-	};
+	public void doOnClick();
 }

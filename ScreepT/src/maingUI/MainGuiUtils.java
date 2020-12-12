@@ -412,13 +412,13 @@ public class MainGuiUtils {
 	}
 	
 	public boolean isTextEditorActive() {
-		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof TextEditor;
+		return getMainPanel().getComponent(0) instanceof TextEditor;
 	}
 	public boolean isCrypterActive() {
-		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof CrypterPanel;
+		return getMainPanel().getComponent(0) instanceof CrypterPanel;
 	}
 	public boolean isConfManagerActive() {
-		return mainAppReference.getMainFrame().getContentPane().getComponent(0) instanceof ConfigurationManagerPanel;
+		return getMainPanel().getComponent(0) instanceof ConfigurationManagerPanel;
 	}
 	
 	public void updateTitleRightPart(String newSuffix) {
@@ -497,8 +497,12 @@ public class MainGuiUtils {
 		});
 	}
 	
+	public JPanel getMainPanel() {
+		return (JPanel) mainAppReference.getMainFrame().getContentPane();
+	}
+	
 	public void replaceMainPanel(JPanel newMainPanel) {
-		JPanel contentPane = (JPanel) mainAppReference.getMainFrame().getContentPane();
+		JPanel contentPane = getMainPanel();
 		contentPane.removeAll();
     	contentPane.add(newMainPanel);
     	contentPane.revalidate(); 

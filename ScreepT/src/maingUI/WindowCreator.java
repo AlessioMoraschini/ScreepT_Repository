@@ -75,12 +75,12 @@ public class WindowCreator {
 				new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE_AS)
 		);
 		
-		schemeManager.closeAction = () -> {
+		schemeManager.setCloseAction(() -> {
 			if(MainGUI.mainGuiUtils.isTextEditorActive()) {
 				MainGUI.textEditorPanel.subHeaderPanel.initComboStyleScheme();
 				MainGUI.textEditorPanel.textEditorUtils.applySelectedTheme();
 			}
-		};
+		});
 		
 		schemeManager.setAlwaysOnTop(true);
 		schemeManager.setLocationRelativeTo(mainApplication.getMainFrame());

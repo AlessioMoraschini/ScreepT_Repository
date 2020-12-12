@@ -462,22 +462,16 @@ public class MainGUI extends MainGuiParent{
 			}
  		});
  		
- 		// TOP-RIGHT TOGGLES : from right
- 		mntmToggle0 = new CustomJmenuItem(new AbstractAction("") {
- 			public void actionPerformed(ActionEvent e) {
- 				toggleAction0.doOnClick();
- 			}
- 		});
- 		mntmToggle1 = new CustomJmenuItem(new AbstractAction("") {
- 			public void actionPerformed(ActionEvent e) {
- 				toggleAction1.doOnClick();
- 			}
- 		});
- 		mntmToggle2 = new CustomJmenuItem(new AbstractAction("") {
- 			public void actionPerformed(ActionEvent e) {
- 				toggleAction2.doOnClick();
- 			}
- 		});
+ 		// TOP-RIGHT TOGGLES : from right to left
+ 		for (int i = 0; i < 3; i++) {
+ 			toggleTopRightActions.add(() -> {});
+ 			final int fi = i;
+			mntmTopRightToggles.add(new CustomJmenuItem(new AbstractAction("") {
+				public void actionPerformed(ActionEvent e) {
+					toggleTopRightActions.get(fi).doOnClick();
+				}
+			}));
+		}
  		
  		// NOT OPENING VIEW - UNUSED RESOURCES OPTIMIZATION
  		mntmOptimizeResourcesUsage = new CustomJmenuItem(new AbstractAction("") {

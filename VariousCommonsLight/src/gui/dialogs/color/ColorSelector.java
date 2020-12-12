@@ -32,6 +32,7 @@ public class ColorSelector extends JPanel {
 	private JPanel panelBackground;
 	private JLabel lblFont;
 	private JComboBox<FontType> comboFont;
+//	private JComboBox<Boolean> comboOpaque;
 	
 	public Runnable onValueChange;
 	
