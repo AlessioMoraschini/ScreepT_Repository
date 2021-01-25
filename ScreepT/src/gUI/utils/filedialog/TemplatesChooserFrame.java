@@ -37,6 +37,7 @@ import om.SupportedFileTextEditor;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
+import utility.string.TextAreaStringEditor;
 
 import javax.swing.JLabel;
 
@@ -70,7 +71,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 	private JComboBox<String> comboTemplateSelector;
 	private JButton btnInject;
 	private JButton btnAddSelectionToTemplates;
-	private JButton AddCustomFromFile;
+	private JButton addCustomFromFile;
 	private JButton buttonInvoker;
 	private JButton btnOpenInFilesystem;
 	private JButton btnReloadTemplates;
@@ -138,10 +139,10 @@ public class TemplatesChooserFrame extends ParentFrame {
 		comboTemplateSelector.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		getContentPane().add(comboTemplateSelector, "cell 0 1,growx");
 		
-		AddCustomFromFile = new JButton("Add Custom Template");
-		AddCustomFromFile.setMinimumSize(new Dimension(185, 35));
-		AddCustomFromFile.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		getContentPane().add(AddCustomFromFile, "cell 1 1,growx");
+		addCustomFromFile = new JButton("Add Custom Template");
+		addCustomFromFile.setMinimumSize(new Dimension(185, 35));
+		addCustomFromFile.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		getContentPane().add(addCustomFromFile, "cell 1 1,growx");
 		
 		btnInject = new JButton("Inject template");
 		btnInject.setMinimumSize(new Dimension(108, 35));
@@ -185,12 +186,13 @@ public class TemplatesChooserFrame extends ParentFrame {
 					dialogHelper.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), "ERROR reading Template");
 					logger.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), e1);
 				}
-				outputTextArea.insert(selectedTemplate, outputTextArea.getCaretPosition());
+				TextAreaStringEditor.replaceTextAreaSelection(outputTextArea, selectedTemplate, null, true);
+
 			}
 		});
 
 		// add custom template from file
-		AddCustomFromFile.addActionListener(new ActionListener() {
+		addCustomFromFile.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {

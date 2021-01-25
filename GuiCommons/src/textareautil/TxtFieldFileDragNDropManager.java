@@ -181,7 +181,8 @@ public class TxtFieldFileDragNDropManager extends JTextField{
                 dtde.acceptDrop(dtde.getDropAction());
                 try {
 
-                    List<File> transferData = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                    @SuppressWarnings("unchecked")
+					List<File> transferData = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                     if (transferData != null && transferData.size() > 0) {
                         importFiles(transferData);
                         dtde.dropComplete(true);

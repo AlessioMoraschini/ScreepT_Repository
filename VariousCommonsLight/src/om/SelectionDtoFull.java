@@ -13,6 +13,7 @@ package om;
 
 import javax.swing.JTextArea;
 
+import gui.GuiUtils;
 import utility.string.StringWorker;
 
 public class SelectionDtoFull {
@@ -28,6 +29,7 @@ public class SelectionDtoFull {
 	public JTextArea textArea;
 	
 	public SelectionDtoFull(JTextArea textArea) {
+		textArea.requestFocus();
 		this.textArea = textArea;
 		first = textArea.getSelectionStart();
 		last = textArea.getSelectionEnd();
@@ -43,7 +45,71 @@ public class SelectionDtoFull {
 		}
 	}
 	
+	public void replaceSelection(String replacement, boolean makeNewSelectedIfNothingSelected, boolean ifNotSelThenAppend) {
+		if(replacement != null) {
+			selection = replacement;
+			if(selected) {
+				text = getCompleteString();
+				length = text.length();
+				last = first + replacement.length();
+				end = text.substring(last, text.length());
+			} else {
+				if(ifNotSelThenAppend)
+					appendText(replacement, makeNewSelectedIfNothingSelected);
+				else
+					replaceAllText(replacement, makeNewSelectedIfNothingSelected);
+			}
+		}
+	}
+	
+	public void appendText(String textToAppend, boolean makeSelected) {
+		if(textToAppend != null) {
+			selection = textToAppend;
+			prefix = text;
+			end = "";
+			if(makeSelected) {
+				first = length;
+				last = first + textToAppend.length();
+			}
+			text = getCompleteString();
+			length = text.length();
+		}
+	}
+	
+	public void replaceAllText(String textReplacement, boolean makeSelected) {
+		textReplacement = StringWorker.trimToEmpty(textReplacement);
+		end = "";
+		if(makeSelected) {
+			prefix = "";
+			selection = textReplacement;
+			first = 0;
+			last = textReplacement.length();
+		} else {
+			prefix = textReplacement;
+			selection = "";
+			first = textReplacement.length();
+			last = textReplacement.length();
+		}
+		
+		text = getCompleteString();
+		length = text.length();
+	}
+	
 	public String getCompleteString() {
-		return text.concat(selection).concat(end);
+		return prefix.concat(selection).concat(end);
+	}
+
+	public void applySelectionDTO(final JTextArea textArea) {
+		textArea.setText(text);
+		
+		GuiUtils.launchThreadSafeSwing(()->{
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+			}
+			textArea.requestFocus();
+			textArea.setSelectionStart(first);
+			textArea.setSelectionEnd(last);
+		});
 	}
 }

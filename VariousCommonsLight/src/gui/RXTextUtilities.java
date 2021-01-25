@@ -71,7 +71,7 @@ public class RXTextUtilities
 		}
 		catch(BadLocationException ble) {}
 	}
-
+	
 	/*
 	 *  Return the column number at the Caret position.
 	 *
@@ -150,17 +150,6 @@ public class RXTextUtilities
 			}
 		}
 		catch(Exception e) {}
-	}
-
-	/*
-	 *  Return the number of lines of text, including wrapped lines.
-	 */
-	public static int getWrappedLines(JTextArea component)
-	{
-		View view = component.getUI().getRootView(component).getView(0);
-		int preferredHeight = (int)view.getPreferredSpan(View.Y_AXIS);
-		int lineHeight = component.getFontMetrics( component.getFont() ).getHeight();
-		return preferredHeight / lineHeight;
 	}
 
 	/*

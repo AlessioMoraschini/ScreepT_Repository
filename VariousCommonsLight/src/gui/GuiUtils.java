@@ -252,6 +252,7 @@ public class GuiUtils {
 			public void run() {
 				target.removeAllItems();
 				Object[] array = values.toArray();
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				DefaultComboBoxModel<E> model = new DefaultComboBoxModel(array);
 				target.setModel(model);
 				target.revalidate();

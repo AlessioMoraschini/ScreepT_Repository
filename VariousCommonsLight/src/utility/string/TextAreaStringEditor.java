@@ -12,6 +12,7 @@
 package utility.string;
 
 import javax.swing.JTextArea;
+import javax.swing.text.View;
 
 import gui.GuiUtils;
 import om.SelectionDTO;
@@ -27,7 +28,7 @@ public class TextAreaStringEditor {
 		SelectionDtoFull txtAreaDto = new SelectionDtoFull(textArea);
 		SelectionDTO result = getUppercasePostDotsNSeparators(txtAreaDto);
 
-		TextAreaStringEditor.applySelectionDTO(result, textArea);
+		SelectionDTO.applySelectionDTO(result, textArea);
 	}
 
 	public static SelectionDTO getUppercasePostDotsNSeparators(SelectionDtoFull selectionDtoFull) {
@@ -48,7 +49,7 @@ public class TextAreaStringEditor {
 		SelectionDtoFull txtAreaDto = new SelectionDtoFull(textArea);
 		SelectionDTO result = getLowercasePostDotsNSeparators(txtAreaDto);
 
-		TextAreaStringEditor.applySelectionDTO(result, textArea);
+		SelectionDTO.applySelectionDTO(result, textArea);
 	}
 	
 	public static SelectionDTO getLowercasePostDotsNSeparators(SelectionDtoFull selectionDtoFull) {
@@ -66,7 +67,7 @@ public class TextAreaStringEditor {
 	
 	public static void makeWordsUppercase(JTextArea textArea) {
 		SelectionDTO result = getWordsUppercase(new SelectionDtoFull(textArea));
-		applySelectionDTO(result, textArea);
+		SelectionDTO.applySelectionDTO(result, textArea);
 	}
 	
 	public static SelectionDTO getWordsUppercase(SelectionDtoFull selectionDtoFull) {
@@ -102,12 +103,12 @@ public class TextAreaStringEditor {
 	
 	public static void makeToggleUppercase(JTextArea textArea) {
 		SelectionDTO result = getToggleUppercase(new SelectionDtoFull(textArea), false);
-		applySelectionDTO(result, textArea);
+		SelectionDTO.applySelectionDTO(result, textArea);
 	}
 
 	public static void makeLowercaseSelection(JTextArea textArea) {
 		SelectionDTO result = getToggleUppercase(new SelectionDtoFull(textArea), true);
-		applySelectionDTO(result, textArea);
+		SelectionDTO.applySelectionDTO(result, textArea);
 	}
 	
 	public static SelectionDTO getToggleUppercase(SelectionDtoFull selectionDtoFull, boolean forceLowerCase) {
@@ -142,22 +143,6 @@ public class TextAreaStringEditor {
 		return new SelectionDTO(strtN, endN, selected, selected);
 	}
 
-	public static void applySelectionDTO(final SelectionDTO result, final JTextArea textArea) {
-		if (result != null) {
-			textArea.setText(result.text);
-			
-			GuiUtils.launchThreadSafeSwing(()->{
-				try {
-					Thread.sleep(150);
-				} catch (InterruptedException e) {
-				}
-				textArea.requestFocus();
-				textArea.setSelectionStart(result.start);
-				textArea.setSelectionEnd(result.end != null ? result.end.intValue() : result.end);
-			});
-		}
-	}
-	
 	public static int getCurrentCaretLine(JTextArea textArea) {
 		try {
 			int offset = textArea.getCaretPosition();
@@ -165,5 +150,40 @@ public class TextAreaStringEditor {
 		} catch (Exception e) {
 			return -1;
 		}
+	}
+
+	public static void replaceTextAreaSelection(JTextArea textArea, String selectionReplacement, Runnable doAfter, boolean ifNotSelThenAppend) {
+		
+		SelectionDtoFull selDto = new SelectionDtoFull(textArea);
+		textArea.setCursor(GuiUtils.CURSOR_WAIT);
+		selectionReplacement = selectionReplacement == null ? "" : selectionReplacement;
+		
+		try {
+
+			selDto.replaceSelection(selectionReplacement, true, ifNotSelThenAppend);
+//			textArea.setText(selDto.getCompleteString());
+			selDto.applySelectionDTO(textArea);
+
+		} catch (Exception e) {
+			logger.error("Error with textarea selection replacement", e);
+		
+		} finally {
+			
+			textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
+			if(doAfter != null) {
+				doAfter.run();
+			}
+		}
+	}
+
+	/*
+	 *  Return the number of lines of text, including wrapped lines.
+	 */
+	public static int getWrappedLines(JTextArea component)
+	{
+		View view = component.getUI().getRootView(component).getView(0);
+		int preferredHeight = (int)view.getPreferredSpan(View.Y_AXIS);
+		int lineHeight = component.getFontMetrics( component.getFont() ).getHeight();
+		return preferredHeight / lineHeight;
 	}
 }

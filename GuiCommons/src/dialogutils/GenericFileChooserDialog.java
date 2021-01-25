@@ -14,7 +14,6 @@ package dialogutils;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog.ModalityType;
-import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.util.ArrayList;

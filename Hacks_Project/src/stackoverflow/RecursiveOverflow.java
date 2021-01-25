@@ -22,6 +22,6 @@ public class RecursiveOverflow {
 	
 
 	public static void main(String[] args) {
-		new RecursiveOverflow().stackOverflow(1);
+		RecursiveOverflow.stackOverflow(1);
 	}
 }

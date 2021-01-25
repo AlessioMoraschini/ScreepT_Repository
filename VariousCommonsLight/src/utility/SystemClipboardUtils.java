@@ -17,6 +17,7 @@ public class SystemClipboardUtils {
 	
 	private static SafeLogger logger = new SafeLogger(SystemClipboardUtils.class);
 	
+	@SuppressWarnings("unchecked")
 	public static List<String> readAsFileList(Clipboard clipboard) {
 		clipboard = clipboard == null ? Toolkit.getDefaultToolkit().getSystemClipboard() : clipboard;
 	    try {
@@ -27,6 +28,7 @@ public class SystemClipboardUtils {
 	    }
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static List<File> getClipboardFiles(Clipboard clipboard) {
 		clipboard = clipboard == null ? Toolkit.getDefaultToolkit().getSystemClipboard() : clipboard;
 	    try {

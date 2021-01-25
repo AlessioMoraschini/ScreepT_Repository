@@ -1,3 +1,5 @@
+2020-12-12  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Text-editor: Themes editor - bugs fixed
+
 2020-10-29  Added autostart Option (See General Options panel)
 
 2020-10-29  (tag: refs/tags/0.9.28) General options frame: added autostart menu addition/removal

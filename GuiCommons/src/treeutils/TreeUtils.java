@@ -395,6 +395,7 @@ public class TreeUtils {
 		setNodeExpandedState(tree, node, expanded);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void setNodeExpandedState(JTree tree, DefaultMutableTreeNode node, boolean expanded) {
 		ArrayList<DefaultMutableTreeNode> list = Collections.list(node.children());
 		for (DefaultMutableTreeNode treeNode : list) {

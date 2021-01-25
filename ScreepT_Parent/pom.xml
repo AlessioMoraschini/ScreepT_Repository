@@ -163,9 +163,9 @@
 							<phase>validate</phase>
 							<configuration>
 								<tasks>
-									<!-- <delete dir="${thrift.dir}" /> -->
 									<mkdir dir="${root.export.dir}" />
 									<mkdir dir="${export.updates.root}" />
+									<delete dir="${export.updates.folder}" />
 									<mkdir dir="${export.updates.folder}" />
 									<mkdir dir="${export.plugins.folder}" />
 									<mkdir dir="${export.directory.fatjar.main}" />

@@ -10,7 +10,8 @@ import java.util.List;
 import javax.swing.JFrame;
 
 public abstract class AbstractCurveFunction extends JFrame {
-
+	private static final long serialVersionUID = -7952145336300308954L;
+	
 	protected List<Double> x, y;
 	protected double minX, minY, maxX, maxY;
 	

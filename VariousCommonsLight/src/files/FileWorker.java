@@ -92,13 +92,24 @@ public class FileWorker {
 		return esit;
 	}
 
+	public static boolean appendFileTxtArea(
+			File txtFile,
+			JTextArea textArea_1,
+			boolean goToStart){
+		return appendFileTxtArea(txtFile, textArea_1, goToStart, EOL.defaultEol);
+	}
+	
 	/**
 	 * this method append the content of a txt file (as a string) in the given text area 
 	 * @param txtFile the source .txt file
 	 * @param textArea_1 the text area to be filled with file content
 	 * @return
 	 */
-	public static boolean appendFileTxtArea(File txtFile, JTextArea textArea_1, boolean goToStart) {
+	public static boolean appendFileTxtArea(
+			File txtFile,
+			JTextArea textArea_1,
+			boolean goToStart,
+			EOL eol) {
 		
 		long startTime = System.currentTimeMillis();
 	
@@ -117,7 +128,7 @@ public class FileWorker {
 					String line;
 					
 					while ((line = reader.readLine()) != null) {
-						builder.append(line).append(EOL.defaultEol.eol);
+						builder.append(line).append(eol.eol);
 					}
 					reader.close(); 
 					readerStream.close();
@@ -194,7 +205,17 @@ public class FileWorker {
 		return true;
 	}
 	
-	public static String readFileAsString(File toRead, String encoding) throws IOException {
+	public static String readFileAsString(
+			File toRead,
+			String encoding) throws IOException {
+		return readFileAsString(toRead, encoding, EOL.defaultEol);
+	}
+	
+	public static String readFileAsString(
+			File toRead,
+			String encoding,
+			EOL eol) throws IOException {
+		
 		if(toRead == null || !toRead.exists()) {
 			throw new IOException();
 		}
@@ -218,7 +239,7 @@ public class FileWorker {
 			String line;
 			
 			while ((line = reader.readLine()) != null) {
-				builder.append(line).append(EOL.defaultEol.eol);
+				builder.append(line).append(eol.eol);
 			}
 		} catch (IOException e) {
 			throw e;
@@ -239,6 +260,15 @@ public class FileWorker {
 	public static String readFileAsString(File toRead) throws IOException {
 		return readFileAsString(toRead, null);
 	}
+	
+	public static boolean loadFileTxtArea(
+			File txtFile, 
+			JTextArea textArea_1, 
+			JLabel lblCurrentFile, 
+			String extensionFilter) {
+		return loadFileTxtArea(txtFile, textArea_1, lblCurrentFile, extensionFilter, EOL.defaultEol);
+	}
+
 
 	/**
 	 * this method writes the content of a given extension file (as a string) in the given text area, updating also the given label with description
@@ -248,7 +278,12 @@ public class FileWorker {
 	 * @param extension filter can be null, or specified if you want to filter only a type of file admitted
 	 * @return
 	 */
-	public static boolean loadFileTxtArea(File txtFile, JTextArea textArea_1, JLabel lblCurrentFile, String extensionFilter) {
+	public static boolean loadFileTxtArea(
+			File txtFile, 
+			JTextArea textArea_1, 
+			JLabel lblCurrentFile, 
+			String extensionFilter,
+			EOL eol) {
 		
 		if(txtFile == null) {
 			return false;
@@ -271,7 +306,7 @@ public class FileWorker {
 				String line;
 				
 				while ((line = reader.readLine()) != null) {
-					builder.append(line).append(EOL.defaultEol.eol);
+					builder.append(line).append(eol.eol);
 				}
 				
 				textArea_1.append(builder.toString());

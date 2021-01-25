@@ -176,6 +176,7 @@ public class FileChangeMonitor {
 	 * @return all changes in monitored files (and new adds in root folder), according to specified Flags mod/create/remove
 	 * @throws InterruptedException
 	 */
+	@SuppressWarnings("unchecked")
 	public ChangeDTO checkForEverithing() throws Exception{
 		
 		logger.debug("checkForEverithing() -> starting check...");
@@ -248,9 +249,8 @@ public class FileChangeMonitor {
 	 * @throws InterruptedException
 	 * @throws IOException 
 	 */
+	@SuppressWarnings("unchecked")
 	public ChangeDTO checkForFile(File target) throws Exception{
-		
-//		logger.debug("checkForFile() -> starting check...");
 		
 		ChangeDTO changedsResponse = new ChangeDTO();
 		if(target == null) {
