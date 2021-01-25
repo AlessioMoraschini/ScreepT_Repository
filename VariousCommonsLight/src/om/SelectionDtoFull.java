@@ -62,6 +62,20 @@ public class SelectionDtoFull {
 		}
 	}
 	
+	public void replaceSelectionOrInsAtGivenPosition(String replacement, boolean makeNewSelectedIfNothingSelected, int lineToInsertAt) throws Exception {
+		if(replacement != null) {
+			selection = replacement;
+			if(selected) {
+				text = getCompleteString();
+				length = text.length();
+				last = first + replacement.length();
+				end = text.substring(last, text.length());
+			} else {
+				insertText(replacement, lineToInsertAt);
+			}
+		}
+	}
+	
 	public void appendText(String textToAppend, boolean makeSelected) {
 		if(textToAppend != null) {
 			selection = textToAppend;
@@ -71,6 +85,18 @@ public class SelectionDtoFull {
 				first = length;
 				last = first + textToAppend.length();
 			}
+			text = getCompleteString();
+			length = text.length();
+		}
+	}
+	
+	public void insertText(String textToInsert, int caretPos) {
+		if(!StringWorker.isEmptyNoTrim(textToInsert)) {
+			selection = textToInsert;
+			prefix = text.substring(0, caretPos);
+			end = text.substring(caretPos);
+			first = caretPos;
+			last = first + textToInsert.length();
 			text = getCompleteString();
 			length = text.length();
 		}

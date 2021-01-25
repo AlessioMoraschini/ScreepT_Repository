@@ -1,4 +1,6 @@
-2020-12-12  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Text-editor: Themes editor - bugs fixed
+2021-01-25  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) TEXT EDITOR: Fixed bug on text replacement for templates injection and escape replacement functions.
+
+2020-12-12  Text-editor: Themes editor - bugs fixed
 
 2020-10-29  Added autostart Option (See General Options panel)
 

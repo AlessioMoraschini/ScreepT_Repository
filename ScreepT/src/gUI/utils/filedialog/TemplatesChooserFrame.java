@@ -186,7 +186,7 @@ public class TemplatesChooserFrame extends ParentFrame {
 					dialogHelper.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), "ERROR reading Template");
 					logger.error("An error occurred reading template from file "+selectedFile.getAbsolutePath(), e1);
 				}
-				TextAreaStringEditor.replaceTextAreaSelection(outputTextArea, selectedTemplate, null, true);
+				TextAreaStringEditor.replaceTextAreaSelectionOrInsert(outputTextArea, selectedTemplate, null);
 
 			}
 		});

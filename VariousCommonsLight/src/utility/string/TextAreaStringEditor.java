@@ -175,6 +175,30 @@ public class TextAreaStringEditor {
 			}
 		}
 	}
+	
+	public static void replaceTextAreaSelectionOrInsert(JTextArea textArea, String selectionReplacement, Runnable doAfter) {
+		
+		SelectionDtoFull selDto = new SelectionDtoFull(textArea);
+		textArea.setCursor(GuiUtils.CURSOR_WAIT);
+		selectionReplacement = selectionReplacement == null ? "" : selectionReplacement;
+		
+		try {
+
+			selDto.replaceSelectionOrInsAtGivenPosition(selectionReplacement, true, textArea.getCaretPosition());
+//			textArea.setText(selDto.getCompleteString());
+			selDto.applySelectionDTO(textArea);
+
+		} catch (Exception e) {
+			logger.error("Error with textarea selection replacement", e);
+		
+		} finally {
+			
+			textArea.setCursor(GuiUtils.CURSOR_DEFAULT);
+			if(doAfter != null) {
+				doAfter.run();
+			}
+		}
+	}
 
 	/*
 	 *  Return the number of lines of text, including wrapped lines.
