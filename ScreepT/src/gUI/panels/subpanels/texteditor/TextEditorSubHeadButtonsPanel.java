@@ -1198,11 +1198,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 					Font gutterFont = font.getSize() < 20 ? font.deriveFont(font.getSize()-2) : font.deriveFont(20F);
 					loadedTabObj.currentScrollPane.getGutter().setLineNumberFont(gutterFont);
 					
-					try {
-						RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
-					}catch(Exception e1) {
-						logger.warn("Error resetting position", e1);
-					}
+					RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
 					
 					GuiUtils.launchThreadSafeSwing(new Runnable() {
 						public void run() {

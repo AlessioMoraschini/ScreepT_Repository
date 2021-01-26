@@ -4,6 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
+import utility.log.SafeLogger;
+
 /*
  *	A collection of static methods that provide added functionality for
  *  text components (most notably, JTextArea and JTextPane)
@@ -12,6 +14,7 @@ import javax.swing.text.*;
  */
 public class RXTextUtilities
 {
+	private static final SafeLogger logger = new SafeLogger(RXTextUtilities.class);
 	/*
 	 *  Attempt to center the line containing the caret at the center of the
 	 *  scroll pane.
@@ -69,7 +72,7 @@ public class RXTextUtilities
 			
 			viewport.setViewPosition(new Point(x, y));
 		}
-		catch(BadLocationException ble) {}
+		catch(Exception ble) {logger.warn("Error resetting position", ble);}
 	}
 	
 	/*

@@ -134,7 +134,11 @@ public class TextEditorUtils {
 
 			@Override
 			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {
-				loadTheme(txtArea, (Gutter) null,currentTextEditor.currentConfiguration.getTextEditorOpt(), false);
+				TextEditorOption txtOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
+				loadTheme(txtArea, (Gutter) null, txtOpt, false);
+				if (!currentTextEditor.isPreloading) {
+					applyFileFormatToTextArea(txtArea, false);
+				}
 			}
 
 			@Override
@@ -283,6 +287,15 @@ public class TextEditorUtils {
 		
 		// default is NONE
 		return PanelType.NONE;
+	}
+	
+	public boolean isMiniTextAreaActive() {
+		return currentTextEditor.currentConfiguration.getTextEditorOpt().mapViewActive && 
+				getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA);
+	}
+	public boolean isClipboardPanelActive() {
+		return currentTextEditor.currentConfiguration.getTextEditorOpt().clipboardViewActive && 
+				getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL);
 	}
 	
 	public void openCurrentFileInScreept() {
@@ -1107,7 +1120,7 @@ public class TextEditorUtils {
 		boolean unsaved = loadedTabObj.unsaved;
 
 		loadTheme(loadedTabObj.textArea, loadedTabObj.currentScrollPane.getGutter(), txtOpt, forceThemeReload);
-
+		
 		// retore unsaved info backup
 		loadedTabObj.unsaved = unsaved;
 		
@@ -1175,6 +1188,14 @@ public class TextEditorUtils {
 		}
 
 		return selectedFile;
+	}
+	
+	public void applyFileFormatToTextArea(RSyntaxTextArea textArea, boolean repaint) {
+		SupportedFileTextEditor selected = (SupportedFileTextEditor) currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
+		textArea.setSyntaxEditingStyle(selected.syntax);
+		textArea.revalidate();
+		if(repaint)
+			textArea.repaint();
 	}
 	
 	public void applyFileFormatFromCombo(boolean forceReload) {

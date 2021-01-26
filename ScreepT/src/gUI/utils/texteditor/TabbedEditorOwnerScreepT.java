@@ -93,7 +93,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 			
 			// Sync map if it's active
 			if (txtOpt.mapViewActive && txtUtils != null && txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
-				txtUtils.getTypedIRightPanel();
+//				txtUtils.getTypedIRightPanel();
 				((MapTextAreaPanel) textEditor.rightSplitContainer).sync();
 			}
 			

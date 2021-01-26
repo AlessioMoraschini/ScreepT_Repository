@@ -52,6 +52,7 @@ import files.watcher.ChangeDTO;
 import frameutils.frame.ImageViewerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
+import gui.RXTextUtilities;
 import gui.dnd.FileDrop;
 import impl.INItializer;
 import om.ColumnTextArea;
@@ -162,6 +163,7 @@ public class CustomTabbedEditor implements ITabsManager {
 							
 							if (loadedTabObj != null && loadedTabObj.currentScrollPane != null && loadedTabObj.textArea != null) {
 								addToHystory(loadedTabObj);
+								RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
 							}
 						});
 					}
