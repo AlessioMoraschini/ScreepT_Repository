@@ -476,16 +476,30 @@ public class MainGUI extends MainGuiParent{
  		// NOT OPENING VIEW - UNUSED RESOURCES OPTIMIZATION
  		mntmOptimizeResourcesUsage = new CustomJmenuItem(new AbstractAction("") {
  			public void actionPerformed(ActionEvent e) {
- 				try {
- 					mainGuiUtils.deReferenceUnusedPanels();
- 					System.gc();
- 					System.runFinalization();
- 					dialogHelper.info("ScreepT's Resources usage optimized.", "Resources usage optimized.");
- 				} catch(Exception e1) {
- 					String errorMessage = "Cannot optimize ScreepT's resources usage, something has gone wrong!";
- 					logger.error(errorMessage, e1);
- 					dialogHelper.warn(errorMessage, "Cannot clean resources");
- 				}
+ 				mntmOptimizeResourcesUsage.setEnabled(false);
+ 				SwingUtilities.invokeLater(() -> {
+ 					try {
+ 	 					Boolean cleanResult = mainGuiUtils.deReferenceUnusedPanels();
+ 	 					Thread.sleep(800);
+ 	 					String msg = "Cleaning skipped as requested.";
+ 	 					if(cleanResult != null) {
+ 	 						System.gc();
+ 	 						System.runFinalization();
+ 	 						if(cleanResult)
+ 	 							msg = "ScreepT's Resources usage optimized.";
+ 	 						else
+ 	 							msg = "Resources usage was already optimized, but I've done my best to improve it ;)";
+ 	 					}
+ 	 					
+ 	 					dialogHelper.info(msg);
+ 	 				} catch(Exception e1) {
+ 	 					String errorMessage = "Cannot optimize ScreepT's resources usage, something has gone wrong!";
+ 	 					logger.error(errorMessage, e1);
+ 	 					dialogHelper.warn(errorMessage, "Cannot clean resources");
+ 	 				} finally {
+ 	 					mntmOptimizeResourcesUsage.setEnabled(true);
+ 	 				}
+ 				});
  			}
  		});
  

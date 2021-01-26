@@ -43,8 +43,7 @@ public class EasterEggsInitializer {
 				(e) -> {
 					return KeyEvent.VK_S == e.getKeyCode() &&
 							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 600) && 
-						   (mainGuiUtils.mainAppReference.isOnHomePage.get() &&
-							MainGUI.mainAPP.getMainFrame().isFocusOwner());
+							mainGuiUtils.mainAppReference.isOnHomePage.get();
 					}
 		); 
 		
@@ -60,8 +59,7 @@ public class EasterEggsInitializer {
 				(e) -> {
 					return KeyEvent.VK_A == e.getKeyCode() &&
 							manager.shortcutListener.repeatedClicksInLimitedTime(e, 3, false, false, false, 500) && 
-						   (mainGuiUtils.mainAppReference.isOnHomePage.get()&&
-							MainGUI.mainAPP.getMainFrame().isFocusOwner());
+						   mainGuiUtils.mainAppReference.isOnHomePage.get();
 					}
 		); 
 		

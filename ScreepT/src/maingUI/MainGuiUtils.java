@@ -722,25 +722,36 @@ public class MainGuiUtils {
 			}
 		} 
 		
-		return (thereAreUnsaved || atLeastOneTemp);
+		return !(thereAreUnsaved || atLeastOneTemp);
 	}
 	
 	/**
 	 * Check if panels that are currently loaded (!= null) can be de-referenced (if nothing to save is found, or no file to crypt currently loaded)
 	 */
-	public void deReferenceUnusedPanels() {
+	public Boolean deReferenceUnusedPanels() {
+		
+		if(!MainGuiUtils.askUnsavedTextFiles())
+			// If user presses cancel button do nothing
+			return null;
+		
+		Boolean somethingCleaned = Boolean.FALSE;
 		
 		if(MainGUI.configManagerPanel != null && !isConfManagerActive()) {
 			MainGUI.configManagerPanel = null;
+			somethingCleaned = Boolean.TRUE;
 		}
 		
 		if(MainGUI.crypterPanel != null && !isCrypterActive() && MainGUI.crypterPanel.panelVDragNDropPane.getAllNodes().length == 0) {
 			MainGUI.crypterPanel = null;
+			somethingCleaned = Boolean.TRUE;
 		}
 
 		if(MainGUI.textEditorPanel != null && !isTextEditorActive() && isAllSavedInTextEditor()) {
 			MainGUI.textEditorPanel = null;
+			somethingCleaned = Boolean.TRUE;
 		}
+		
+		return somethingCleaned;
 	}
 
 	public static boolean checkJavaVersionMaxCompatibility() {
@@ -793,7 +804,7 @@ public class MainGuiUtils {
 			} catch (IOException e) {
 				logger.error("", e);
 				if(!MainGUI.dialogHelper.yesOrNo("Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?")) {
-					MainGUI.dialogHelper.error("Exit procedure arrested", "Close procedure stopped");
+					MainGUI.dialogHelper.error("Procedure aborted", "Procedure aborted");
 					MainGUI.mntmTextEditor.doClick();
 					return false; // no -> don't exit after error
 				}
