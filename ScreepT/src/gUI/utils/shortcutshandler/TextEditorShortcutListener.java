@@ -37,6 +37,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import tabbededitor.CustomTabbedEditor;
 import utility.KeyListenerUtils;
+import utility.string.StringWorker.EOL;
 import utils.SysUtils;
 
 public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonShortcuts{
@@ -814,7 +815,12 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 
 	@Override
 	public void saveAsShortcut() {
-		subHeaderPanel.btnSaveTextFileAs.doClick();
+		subHeaderPanel.saveCurrentFileAs(null);
+	}
+	
+	@Override
+	public void saveAsShortcut(EOL eol) {
+		subHeaderPanel.saveCurrentFileAs(eol);
 	}
 	
 	private void searchOrReplaceActive() {

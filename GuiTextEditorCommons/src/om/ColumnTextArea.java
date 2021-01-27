@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -44,6 +45,7 @@ import org.fife.ui.rtextarea.RUndoManager;
 
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
+import gui.RXTextUtilities;
 import gui.dialogs.font.om.FontMetricsWrapper;
 import resources.GeneralConfig;
 import utility.string.StringWorker.EOL;
@@ -451,6 +453,9 @@ class ColumnSelectionCaret extends DefaultCaret {
     	
         super.mouseReleased(e);
         
+        if(thisTextArea != null)
+        	thisTextArea.removeAllLineHighlights();
+        
         SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -477,14 +482,20 @@ class ColumnSelectionCaret extends DefaultCaret {
         if (e.getClickCount()==1) {
 			try {
                 if(thisTextArea != null){
-                    	
+                	Robot robot = new Robot();
+                	robot.mouseMove(e.getXOnScreen(), e.getYOnScreen() - 1);
+                	robot.mouseMove(e.getXOnScreen(), e.getYOnScreen() + 1);
                 	boolean rightClick = SwingUtilities.isRightMouseButton(e);
+                	thisTextArea.removeAllLineHighlights();
+                	thisTextArea.repaint();
                 	if (!shiftDown && !rightClick) {
-						thisTextArea.removeAllLineHighlights();
 						thisTextArea.getHighlighter().removeAllHighlights();
+						thisTextArea.addLineHighlight(RXTextUtilities.getLineAtCaret(thisTextArea) - 1, thisTextArea.getCurrentLineHighlightColor());
 					}
 		
-					int start = thisTextArea.getSelectionStart();
+					int start = thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition() 
+							? lastStartPosition
+							: thisTextArea.getSelectionStart();
 
 					// Update last start position, used on key released if shift is pressed
 					if (shiftDown) {
@@ -497,6 +508,9 @@ class ColumnSelectionCaret extends DefaultCaret {
 			} catch (Exception e1) {
 				logger.error("Error tryin' to refresh highlight on mouse pressed", e1);
 			}
+
+        } else if(e.getClickCount() == 2 || e.getClickCount() == 3 ) {
+        	thisTextArea.removeAllLineHighlights();
 		}
     }
     
@@ -505,8 +519,13 @@ class ColumnSelectionCaret extends DefaultCaret {
         if(shiftDown) {
         	try {
 				thisTextArea.requestFocus();
-				thisTextArea.setSelectionStart(lastStartPosition);
-				thisTextArea.setSelectionEnd(thisTextArea.getCaretPosition());
+				if (thisTextArea.getCaretPosition() > lastStartPosition) {
+					thisTextArea.setSelectionStart(lastStartPosition);
+					thisTextArea.setSelectionEnd(thisTextArea.getCaretPosition());
+				} else {
+					thisTextArea.setSelectionStart(thisTextArea.getCaretPosition());
+					thisTextArea.setSelectionEnd(lastStartPosition);
+				}
 			} catch (Exception e) {
 			}
         }

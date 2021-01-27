@@ -1452,80 +1452,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// SAVE TEXT FILE AS
 		btnSaveTextFileAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
-				boolean skipRefresh = true;
-
-				if (!parent.getCurrentTabEditor().alreadySaving) {
-					// update signal value
-					parent.getCurrentTabEditor().alreadySaving = true;
-					boolean done = false;
-					String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))?
-							loadedTabObj.loadedFile.getName() : "NewFile" + getCurrentFileType().extension;
-					exportNamePreset = FileVarious.ensureValidExtension(exportNamePreset, getCurrentFileType().extension);
-
-					try {
-						File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(
-								parent.parentFrame, exportNamePreset, FileVarious.getParent(loadedTabObj.loadedFile), SupportedFileTextEditor.getMultipleFileFilter());
-
-						if (selectedFile != null) {
-							skipRefresh = false;
-							selectedFile = textEditorUtils.adaptFileExt(selectedFile);
-							
-							String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), EOL.defaultEol);
-							
-							if (selectedFile.exists()) {
-								if (dialogHelper.yesOrNo("File " + selectedFile.getName()
-										+ " exists, overwrite it?", "Overwrite?")) {
-									done = FileWorker.writeStringToFile(outString, selectedFile, true);
-								} 
-							} else {
-								done = selectedFile.createNewFile();
-								PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
-								out.write(outString);
-								out.close();
-							}
-							if (done) {
-								String msgOk = "File " + selectedFile.getName() + " succesfully saved!";
-								dialogHelper.info(msgOk, "File Saved!");
-
-								// Add as current file
-								loadedTabObj.loadedFile = selectedFile;
-								
-								if (parent.getCurrentTabEditor().loadedTabObj.fileMonitorManager == null) {
-									if (loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
-										parent.getCurrentTabEditor().changeMonManager.updateCurrMonitor(loadedTabObj.loadedFile);
-									}
-								}else {
-									parent.getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
-								}
-								
-								loadedTabObj.unsaved = false;
-								parent.getCurrentTabEditor().updateSavedLabelNTab(null);
-								
-								parent.footerPanel.lblCurrentFile.setText(loadedTabObj.loadedFile.getName());
-								parent.footerPanel.lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
-								textEditorUtils.refreshMessageAndTabTooltip("[File saved]");
-								currentConfiguration.getFileOpt().setLastDstFolderPath(FileVarious.getParentPath(loadedTabObj.loadedFile));
-							} else {
-								skipRefresh = true;
-								textEditorUtils.errorAdvice("[Error Saving selected file]");
-							}
-						}
-						
-					} catch (IOException e1) {
-						skipRefresh = true;
-						textEditorUtils.errorAdvice("[Error Saving selected file]");
-						dialogHelper.error("error Saving the selected file :(");
-						logger.error("Exception happened!", e1);
-					} finally {
-						
-						// update signal value
-						parent.getCurrentTabEditor().alreadySaving = false;
-					}
-				}
-				if (!skipRefresh) {
-					textEditorUtils.refreshTree(loadedTabObj.loadedFile, true);
-				}
+				saveCurrentFileAs(null);
 			}
 		});
 		
@@ -1543,8 +1470,8 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						parent.getCurrentTabEditor().reloadCurrentTab(true);
-						
 						textEditorUtils.refreshMessageAndTabTooltip("[File Reloaded]");
+						textEditorUtils.syncMiniTextAreaContent();
 					}
 				});
 			}
@@ -1573,6 +1500,83 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		});
 		
 		enableDependenciesFunctions();
+	}
+	
+	public void saveCurrentFileAs(EOL lineSeparator) {
+		TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+		boolean skipRefresh = true;
+
+		if (!parent.getCurrentTabEditor().alreadySaving) {
+			// update signal value
+			parent.getCurrentTabEditor().alreadySaving = true;
+			boolean done = false;
+			String exportNamePreset = (loadedTabObj.loadedFile != null && !loadedTabObj.loadedFile.getName().equals(""))?
+					loadedTabObj.loadedFile.getName() : "NewFile" + getCurrentFileType().extension;
+			exportNamePreset = FileVarious.ensureValidExtension(exportNamePreset, getCurrentFileType().extension);
+
+			try {
+				File selectedFile = MainGuiGeneralAppStarter.fileDialogHelper.fileWrite(
+						parent.parentFrame, exportNamePreset, FileVarious.getParent(loadedTabObj.loadedFile), SupportedFileTextEditor.getMultipleFileFilter());
+
+				if (selectedFile != null) {
+					skipRefresh = false;
+					selectedFile = textEditorUtils.adaptFileExt(selectedFile);
+					
+					String outString = StringWorker.normalizeStringToEol(loadedTabObj.textArea.getText(), lineSeparator == null ? EOL.defaultEol : lineSeparator);
+					
+					if (selectedFile.exists()) {
+						if (dialogHelper.yesOrNo("File " + selectedFile.getName()
+								+ " exists, overwrite it?", "Overwrite?")) {
+							done = FileWorker.writeStringToFile(outString, selectedFile, true);
+						} 
+					} else {
+						done = selectedFile.createNewFile();
+						PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
+						out.write(outString);
+						out.close();
+					}
+					if (done) {
+						String msgOk = "File " + selectedFile.getName() + " succesfully saved!";
+						dialogHelper.info(msgOk, "File Saved!");
+
+						if (loadedTabObj.loadedFile == null) {
+							// Set as current tabObject's file
+							loadedTabObj.loadedFile = selectedFile;
+							if (parent.getCurrentTabEditor().loadedTabObj.fileMonitorManager == null) {
+								if (loadedTabObj.loadedFile != null && loadedTabObj.loadedFile.exists()) {
+									parent.getCurrentTabEditor().changeMonManager.updateCurrMonitor(loadedTabObj.loadedFile);
+								}
+							} else {
+								parent.getCurrentTabEditor().changeMonManager.removePendingFiredChanges(loadedTabObj.loadedFile);
+							}
+							loadedTabObj.unsaved = false;
+						}
+						parent.getCurrentTabEditor().updateSavedLabelNTab(null);
+						
+						parent.footerPanel.lblCurrentFile.setText(loadedTabObj.loadedFile.getName());
+						parent.footerPanel.lblCurrentFile.setToolTipText(loadedTabObj.loadedFile.getCanonicalPath());
+						textEditorUtils.refreshMessageAndTabTooltip("[File copy saved]");
+						currentConfiguration.getFileOpt().setLastDstFolderPath(FileVarious.getParentPath(loadedTabObj.loadedFile));
+					} else {
+						skipRefresh = true;
+						textEditorUtils.errorAdvice("[Error while saving a copy]");
+					}
+				}
+				
+			} catch (IOException e1) {
+				skipRefresh = true;
+				textEditorUtils.errorAdvice("[Error Saving selected file]");
+				dialogHelper.error("error Saving the selected file :(");
+				logger.error("Exception happened!", e1);
+			} finally {
+				
+				// update signal value
+				parent.getCurrentTabEditor().alreadySaving = false;
+			}
+		}
+		if (!skipRefresh) {
+			textEditorUtils.refreshTree(loadedTabObj.loadedFile, true);
+		}
 	}
 	
 	public void applyFileFormatSyntaxFull() {

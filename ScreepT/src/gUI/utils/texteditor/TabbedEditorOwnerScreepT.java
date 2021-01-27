@@ -152,9 +152,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	@Override
 	public void doAdditionalStuffOnDocMouseReleased(JTextArea target) {
 		try {
-			if (txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
-				((MapTextAreaPanel) textEditor.rightSplitContainer).safeSyncCaretFromTxtReference();
-			} 
+			txtUtils.syncMiniTextAreaContent();
 		} catch (Exception e) {
 			logger.error("Error trying to sync text area minimap caret", e);
 		}

@@ -298,6 +298,13 @@ public class TextEditorUtils {
 				getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL);
 	}
 	
+	public void syncMiniTextAreaContent() {
+		if (isMiniTextAreaActive()) {
+			MapTextAreaPanel miniMap = (MapTextAreaPanel) getTypedIRightPanel();
+			miniMap.syncLight();
+		}
+	}
+	
 	public void openCurrentFileInScreept() {
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 

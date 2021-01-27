@@ -12,25 +12,24 @@ import utility.log.SafeLogger;
  *
  *  See also: javax.swing.text.Utilities
  */
-public class RXTextUtilities
-{
+public class RXTextUtilities {
 	private static final SafeLogger logger = new SafeLogger(RXTextUtilities.class);
+
 	/*
-	 *  Attempt to center the line containing the caret at the center of the
-	 *  scroll pane.
+	 * Attempt to center the line containing the caret at the center of the scroll
+	 * pane.
 	 *
-	 *  @param component the text component in the sroll pane
+	 * @param component the text component in the sroll pane
 	 */
-	public static void centerLineInScrollPane(JTextComponent component)
-	{
+	public static void centerLineInScrollPane(JTextComponent component) {
 		Container container = SwingUtilities.getAncestorOfClass(JViewport.class, component);
 
-		if (container == null) return;
+		if (container == null)
+			return;
 
-		try
-		{
+		try {
 			Rectangle r = component.modelToView(component.getCaretPosition());
-			JViewport viewport = (JViewport)container;
+			JViewport viewport = (JViewport) container;
 			int extentHeight = viewport.getExtentSize().height;
 			int viewHeight = viewport.getViewSize().height;
 
@@ -38,136 +37,129 @@ public class RXTextUtilities
 			y = Math.min(y, viewHeight - extentHeight);
 
 			viewport.setViewPosition(new Point(0, y));
+		} catch (BadLocationException ble) {
 		}
-		catch(BadLocationException ble) {}
 	}
 
 	/*
-	 *  Attempt to center the line horizontally containing the caret at the center of the
-	 *  scroll pane.
+	 * Attempt to center the line horizontally containing the caret at the center of
+	 * the scroll pane.
 	 *
-	 *  @param component the text component in the sroll pane
+	 * @param component the text component in the sroll pane
 	 */
-	public static void centerLineFullInScrollPane(JTextComponent component)
-	{
+	public static void centerLineFullInScrollPane(JTextComponent component) {
+		centerLineFullInScrollPane(component, true, true);
+	}
+
+	public static void centerLineFullInScrollPane(JTextComponent component, boolean vertical, boolean horizontal) {
 		Container container = SwingUtilities.getAncestorOfClass(JViewport.class, component);
-		
-		if (container == null) return;
-		
-		try
-		{
+
+		if (container == null)
+			return;
+
+		try {
 			Rectangle r = component.modelToView(component.getCaretPosition());
-			JViewport viewport = (JViewport)container;
+			JViewport viewport = (JViewport) container;
 			int extentWidth = viewport.getExtentSize().width;
 			int viewWidth = viewport.getViewSize().width;
-			
+
 			int extentHeight = viewport.getExtentSize().height;
 			int viewHeight = viewport.getViewSize().height;
 
 			int x = Math.max(0, r.x - ((extentWidth - r.width) / 2));
-			x = Math.min(x, viewWidth - extentWidth);
-			
-			int y = Math.max(0, r.y - ((extentHeight - r.height) / 2));
-			y = Math.min(y, viewHeight - extentHeight);
-			
-			viewport.setViewPosition(new Point(x, y));
-		}
-		catch(Exception ble) {logger.warn("Error resetting position", ble);}
-	}
-	
-	/*
-	 *  Return the column number at the Caret position.
-	 *
-	 *  The column returned will only make sense when using a
-	 *  Monospaced font.
-	 */
-	public static int getColumnAtCaret(JTextComponent component)
-	{
-		//  Since we assume a monospaced font we can use the width of a single
-		//  character to represent the width of each character
+			x = horizontal ? Math.min(x, viewWidth - extentWidth) : 0;
 
-		FontMetrics fm = component.getFontMetrics( component.getFont() );
-		int characterWidth = fm.stringWidth( "0" );
+			int y = Math.max(0, r.y - ((extentHeight - r.height) / 2));
+			y = vertical ? Math.min(y, viewHeight - extentHeight) : r.y;
+
+			viewport.setViewPosition(new Point(x, y));
+		} catch (Exception ble) {
+			logger.warn("Error resetting position", ble);
+		}
+	}
+
+	/*
+	 * Return the column number at the Caret position.
+	 *
+	 * The column returned will only make sense when using a Monospaced font.
+	 */
+	public static int getColumnAtCaret(JTextComponent component) {
+		// Since we assume a monospaced font we can use the width of a single
+		// character to represent the width of each character
+
+		FontMetrics fm = component.getFontMetrics(component.getFont());
+		int characterWidth = fm.stringWidth("0");
 		int column = 0;
 
-		try
-		{
-			Rectangle r = component.modelToView( component.getCaretPosition() );
+		try {
+			Rectangle r = component.modelToView(component.getCaretPosition());
 			int width = r.x - component.getInsets().left;
 			column = width / characterWidth;
+		} catch (BadLocationException ble) {
 		}
-		catch(BadLocationException ble) {}
 
 		return column + 1;
 	}
 
 	/*
-	 *  Return the line number at the Caret position.
+	 * Return the line number at the Caret position.
 	 */
-	public static int getLineAtCaret(JTextComponent component)
-	{
+	public static int getLineAtCaret(JTextComponent component) {
 		int caretPosition = component.getCaretPosition();
 		Element root = component.getDocument().getDefaultRootElement();
 
-		return root.getElementIndex( caretPosition ) + 1;
+		return root.getElementIndex(caretPosition) + 1;
 	}
 
 	/*
-	 *  Return the number of lines of text in the Document
+	 * Return the number of lines of text in the Document
 	 */
-	public static int getLines(JTextComponent component)
-	{
+	public static int getLines(JTextComponent component) {
 		Element root = component.getDocument().getDefaultRootElement();
 		return root.getElementCount();
 	}
 
 	/*
-	 *  Position the caret at the start of a line.
+	 * Position the caret at the start of a line.
 	 */
-	public static void gotoStartOfLine(JTextComponent component, int line)
-	{
+	public static void gotoStartOfLine(JTextComponent component, int line) {
 		Element root = component.getDocument().getDefaultRootElement();
 		line = Math.max(line, 1);
 		line = Math.min(line, root.getElementCount());
-		int startOfLineOffset = root.getElement( line - 1 ).getStartOffset();
-		component.setCaretPosition( startOfLineOffset );
+		int startOfLineOffset = root.getElement(line - 1).getStartOffset();
+		component.setCaretPosition(startOfLineOffset);
 	}
 
 	/*
-	 *  Position the caret on the first word of a line.
+	 * Position the caret on the first word of a line.
 	 */
-	public static void gotoFirstWordOnLine(final JTextComponent component, int line)
-	{
+	public static void gotoFirstWordOnLine(final JTextComponent component, int line) {
 		gotoStartOfLine(component, line);
 
-		//  The following will position the caret at the start of the first word
+		// The following will position the caret at the start of the first word
 
-		try
-		{
+		try {
 			int position = component.getCaretPosition();
 			String first = component.getDocument().getText(position, 1);
 
-			if (Character.isWhitespace(first.charAt(0)))
-			{
+			if (Character.isWhitespace(first.charAt(0))) {
 				component.setCaretPosition(Utilities.getNextWord(component, position));
 			}
+		} catch (Exception e) {
 		}
-		catch(Exception e) {}
 	}
 
 	/*
-	 *  Return the number of lines of text, including wrapped lines.
+	 * Return the number of lines of text, including wrapped lines.
 	 */
-	public static int getWrappedLines(JTextComponent component)
-	{
+	public static int getWrappedLines(JTextComponent component) {
 		int lines = 0;
 
 		View view = component.getUI().getRootView(component).getView(0);
 
 		int paragraphs = view.getViewCount();
 
-		for (int i = 0; i < paragraphs; i++)
-		{
+		for (int i = 0; i < paragraphs; i++) {
 			lines += view.getView(i).getViewCount();
 		}
 

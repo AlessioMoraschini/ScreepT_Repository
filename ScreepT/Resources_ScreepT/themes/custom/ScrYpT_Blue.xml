@@ -4,8 +4,8 @@
     <baseFont size="13"/>
     <background color="2f3a4c"/>
     <caret color="aaaaaa"/>
-    <selection bg="2f464c" fg="ffffff" roundedEdges="true" useFG="false"/>
-    <currentLineHighlight color="2a3542" fade="false"/>
+    <selection bg="315863" fg="ffffff" roundedEdges="true" useFG="false"/>
+    <currentLineHighlight color="445366" fade="false"/>
     <marginLine fg="394448"/>
     <markAllHighlight color="6b8189"/>
     <markOccurrencesHighlight border="false" color="4b7179"/>

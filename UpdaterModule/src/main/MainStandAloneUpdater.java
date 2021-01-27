@@ -60,21 +60,27 @@ public class MainStandAloneUpdater {
 			ArrayList<File> toUpload = new ArrayList<>();
 			
 			if (args[0].trim().contains("-mainRelease")) {
-				/******************************************************************************************************** 
-				 * Function AB: "mainRelease"
-				 * 	Usage -> generateHashes(mainRelease) function: java -jar updater.jar -generateHashes-mainRelease true manifest.properties
-				 ********************************************************************************************************/
+				logger.info("\n\n******************************************************" 
+						+ "\n* MainRelease detected: -generateHashes-mainRelease  *"
+						+ "\n******************************************************/\n");
+				/** Usage -> generateHashes(mainRelease) function: java -jar updater.jar -generateHashes-mainRelease true manifest.properties**/
 				toUpload = mainGenerateReleaseHashed(args);
 				
 			} else {
+				logger.info("\n\n*******************************************" 
+						+ "\n* Hash updates detected: -generateHashes  *"
+						+ "\n*******************************************/\n");
 				/******************************************************************************************************** 
-				 * Function AA: "generateHashes"
 				 * 	Usage -> generateHashes function: java -jar updater.jar -generateHashes true manifest.properties
 				 ********************************************************************************************************/
 				toUpload = mainGenerateUpdatesHashed(args);
 			}
 			
 			if(args[0].trim().contains("-uploadFtpUpdates")) {
+				
+				logger.info("\n\n*******************************************" 
+						+ "\n* Upload flag detected: -uploadFtpUpdates *"
+						+ "\n*******************************************/\n");
 				/******************************************************************************************************** 
 				 * Function A.1: "-generateHashes-uploadFtpUpdates" (reads ftp properties from FTP_PROPERTIES file)
 				 * 	Usage -> generateHashes function: 
@@ -89,6 +95,9 @@ public class MainStandAloneUpdater {
 		
 		} else {
 
+			logger.info("\n\n***************************************************" 
+					+ "\n* App embedded Update detected: -uploadFtpUpdates *"
+					+ "\n***************************************************/\n");
 			/**********************************************************************************************************		
 			 * Function B: update ScreepT 
 			 * Usage -> update ScreepT function: java -jar updater.jar updater.jar UPDATES/updates ScreepT_0.9.5.jar
@@ -385,6 +394,9 @@ public class MainStandAloneUpdater {
 	 *  SIGNAL KO BEFORE EXIT
 	 */
 	private static void signalErrorAndExit1(Throwable e) {
+		logger.error("\n\n*******************" 
+				+ "\n* PROCESS FAILED! *"
+				+ "\n*******************/\n");
 		logger.error("An error occurred: ",e);
 		try {
 			Thread.sleep(10000);
@@ -397,6 +409,9 @@ public class MainStandAloneUpdater {
 	 *  SIGNAL OK BEFORE EXIT
 	 */
 	private static void signalOKAndExit0() {
+		logger.info("\n\n*********************" 
+				+ "\n* COMPLETE SUCCESS! *"
+				+ "\n*********************/\n");
 		logger.info("Finished! Updater will close after 5 seconds from now...");
 		try {
 			Thread.sleep(5000);

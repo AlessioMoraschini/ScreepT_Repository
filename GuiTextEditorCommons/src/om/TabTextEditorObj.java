@@ -469,7 +469,7 @@ public class TabTextEditorObj {
 				
 				textArea.setText(StringWorker.normalizeStringToEol(textArea.getText(), eolType));
 				if(saveToFile) {
-					shortcutsManager.saveAsShortcut();
+					shortcutsManager.saveAsShortcut(eolType);
 				}
 			}
 		};

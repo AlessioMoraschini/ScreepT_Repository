@@ -11,6 +11,8 @@
  */
 package om;
 
+import utility.string.StringWorker.EOL;
+
 public interface ICommonShortcuts {
 
 	public boolean isCtrlDown();
@@ -19,5 +21,13 @@ public interface ICommonShortcuts {
 	
 	public void revalidateUnsaved();
 	
+	/**
+	 * default line terminator will be used
+	 */
 	public void saveAsShortcut();
+	
+	/**
+	 * If line terminator is null then default one will be used
+	 */
+	public void saveAsShortcut(EOL lineTerminator);
 }

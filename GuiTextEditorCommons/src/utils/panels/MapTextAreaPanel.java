@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
+import gui.RXTextUtilities;
 import guistyle.GUIStyelSettingsExtended;
 import net.miginfocom.swing.MigLayout;
 
@@ -178,6 +179,7 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 				txtAreaMiniMap.setCaretPosition(end);
 			}
 			
+			RXTextUtilities.centerLineFullInScrollPane(txtAreaMiniMap, true, false);
 			dialogManager.getTargetTextArea().requestFocus();
 			
 		} catch (Exception e) {
@@ -196,9 +198,11 @@ public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
 				reference.setSelectionStart(start);
 				reference.setSelectionEnd(end);
 			}else{
-				reference.setCaretPosition(0);
+				reference.setCaretPosition(Math.max(0, end));
 				reference.setCaretPosition(end);
 			}
+			
+			RXTextUtilities.centerLineFullInScrollPane(reference);
 			
 		} catch (Exception e) {
 			logger.warn("ERROR setting caret position into textArea reference map");

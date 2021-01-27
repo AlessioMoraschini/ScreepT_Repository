@@ -584,10 +584,10 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	public void keyReleased(KeyEvent event) {
 		super.keyReleased(event);
 		if (tree.hasFocus()) {
-			if (event.isAltDown() && event.getKeyCode() == KeyEvent.VK_F2) {
+			if (!event.isControlDown() && event.isAltDown() && !event.isShiftDown()  && event.getKeyCode() == KeyEvent.VK_F2) {
 				GuiUtils.fireActionListener(getRenameActionListener(), null);
 			
-			} else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_N) {
+			} else if (event.isControlDown() && !event.isAltDown() && !event.isShiftDown() &&  event.getKeyCode() == KeyEvent.VK_N) {
 				if(event.isShiftDown()) {
 					GuiUtils.fireActionListener(getNewFolderActionListener(), null);
 					
@@ -595,10 +595,10 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 					GuiUtils.fireActionListener(getNewFileActionListener(), null);
 					
 				}
-			} else if (event.isAltDown() && event.isControlDown() && event.getKeyCode() == KeyEvent.VK_F5) {
+			} else if (event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_F5) {
 				refreshItem.doClick();
 			
-			} else if (event.isAltDown() && event.isControlDown() && event.getKeyCode() == KeyEvent.VK_U) {
+			} else if (event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_U) {
 				hashingItem.doClick();
 			}
 		}
