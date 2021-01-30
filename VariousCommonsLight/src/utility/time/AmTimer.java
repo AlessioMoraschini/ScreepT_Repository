@@ -1,28 +1,61 @@
+/*
+ *
+ * =========================================================================================
+ *  Copyright (C) 2019-2020
+ *
+ *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ * =========================================================================================
+ *
+ * You should have received a copy of the license with this file.
+ * If not, please write to: info@am-design-development.com, or visit : ${project.main.url}
+ */
 package utility.time;
 
+import java.util.UUID;
+
 public class AmTimer {
+	
+	public volatile boolean debugEnabled = false;
+	
+	private String id = "";
 
 	private volatile boolean running;
 	private volatile boolean paused;
 	private volatile boolean executed;
+	private volatile boolean aborted;
 	private volatile long msRemaining;
 	private volatile long msLength;
 	private volatile int sleepInterval;
 	private Runnable action;
 	
 	public AmTimer(Runnable action, long msLength) {
+		this.msLength = msLength;
+		this.action = action;
+		sleepInterval = (int) msLength / 4;
 		this.running = false;
 		this.executed = false;
 		this.msRemaining = msLength;
-		this.msLength = msLength;
-		
-		this.action = action;
-		
-		sleepInterval = (int) msLength / 4;
+		this.aborted = false;
+		id = getNewId();
+		print("AmTIMER: created with id:" + id);
 	}
 	
-	public void waitAndExecute() {
-		if(running || action == null) {
+	public AmTimer(Runnable action, long msLength, boolean debugEnabled) {
+		this(action, msLength);
+		this.debugEnabled = debugEnabled;
+	}
+	
+	private String getNewId() {
+		return UUID.randomUUID().toString();
+	}
+	
+	public void abort(){
+		aborted = true;
+		print("AmTIMER: asked to abort, waiting...");
+	}
+	
+	public void executeDelayedAsync() {
+		if(aborted || running || action == null) {
 			return;
 		}
 		
@@ -32,16 +65,16 @@ public class AmTimer {
 			executed = false;
 			running = true;
 			
-			while (msRemaining > 0) {
+			while (!aborted && msRemaining > 0) {
 				
 				try {
 					if(!paused) {
 						// remaining = total - (elapsed)
 						msRemaining = msLength - (System.currentTimeMillis() - startMsTime);
-						System.out.println("AmTIMER: Action NOT PAUSED");
+						print("AmTIMER: Action NOT PAUSED");
 
 					} else {
-						System.out.println("AmTIMER: Action PAUSED");
+						print("AmTIMER: Action PAUSED");
 					}
 					
 					Thread.sleep(sleepInterval);
@@ -50,15 +83,24 @@ public class AmTimer {
 				}
 			}
 			
-			System.out.println("AmTIMER: Executing Action");
-			action.run();
+			if(!aborted) {
+				print("AmTIMER: Executing Action");
+				action.run();
+				executed = true;
+			} else {
+				print("AmTIMER: Action ABORTED");
+			}
 			
-			executed = true;
 			running = false;
 			
 		}).start();
 	}
 
+	private void print(String string) {
+		if(debugEnabled) {
+			System.out.println(id + " # " + string);
+		}
+	}
 
 	public boolean isExecuted() {
 		return executed;
@@ -70,6 +112,10 @@ public class AmTimer {
 
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+	}
+	
+	public boolean isAborted() {
+		return aborted;
 	}
 
 	public boolean isRunning() {

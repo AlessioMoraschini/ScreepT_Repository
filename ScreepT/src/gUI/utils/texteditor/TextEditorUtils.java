@@ -1205,6 +1205,16 @@ public class TextEditorUtils {
 			textArea.repaint();
 	}
 	
+	/**
+	 * If enabled, sync current file format to minimap
+	 * @param repaint repaint or not miniMap
+	 */
+	public void applyFileFormatToMiniMap(boolean repaint) {
+		if(isMiniTextAreaActive()) {
+			applyFileFormatToTextArea(((MapTextAreaPanel)getTypedIRightPanel()).getTxtAreaMiniMap(), repaint);
+		}
+	}
+	
 	public void applyFileFormatFromCombo(boolean forceReload) {
 		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 		boolean unsaved = loadedTabObj.unsaved;
@@ -1236,6 +1246,8 @@ public class TextEditorUtils {
 		currentTextEditor.subHeaderPanel.btnSaveTextFileAs.setToolTipText(TextEditTooltips.tooltipSaveTextFileAs + " as " + currentTextEditor.CURRENT_EXT_OUT);
 
 		loadedTabObj.unsaved = unsaved;
+		
+		applyFileFormatToMiniMap(true);
 		
 		logger.info("applyFileFormatFromCombo - FINISH - " + selected.syntax);
 	}

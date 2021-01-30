@@ -1,3 +1,14 @@
+/*
+ *
+ * =========================================================================================
+ *  Copyright (C) 2019-2020
+ *
+ *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ * =========================================================================================
+ *
+ * You should have received a copy of the license with this file.
+ * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com/
+ */
 package mousehacker;
 
 import java.awt.AWTException;
@@ -8,7 +19,7 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.util.Random;
 
-public class GhostMouse {
+public class GhostPc {
 	
 	public long timeout = 10000;
 
@@ -39,7 +50,7 @@ public class GhostMouse {
 	
 	public static void main(String[] args) {
 		try {
-			new GhostMouse().run();
+			new GhostPc().run();
 		} catch (AWTException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

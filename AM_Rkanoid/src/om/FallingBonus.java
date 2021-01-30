@@ -55,7 +55,7 @@ public class FallingBonus extends Rectangle {
 	public void fireBonus() throws InstantiationException, IllegalAccessException {
 		if (catched && !consumed) {
 			inAction = true;
-			timer.waitAndExecute();
+			timer.executeDelayedAsync();
 			bonus.applyModifier(gameFrame);
 		}
 	}
