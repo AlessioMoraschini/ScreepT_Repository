@@ -11,21 +11,17 @@
  */
 package gUI.utils.texteditor;
 
-import java.awt.Rectangle;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
 import gUI.panels.TextEditor;
 import gUI.utils.shortcutshandler.TextEditorShortcutListener;
-import gui.RXTextUtilities;
 import maingUI.MainGUI;
 import resources.GeneralConfig;
 
 import tabbededitor.CustomTabbedEditor;
-import utils.panels.MapTextAreaPanel;
 
 public class TextEditorMouseWheelListener implements MouseWheelListener{
 	
