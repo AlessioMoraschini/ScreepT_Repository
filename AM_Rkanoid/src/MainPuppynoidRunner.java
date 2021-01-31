@@ -7,7 +7,7 @@ public class MainPuppynoidRunner {
 
 	public static void main(String[] args) throws IOException {
 		
-		PropertiesManager.setLoggerEnabled(false);
+		PropertiesManager.setLoggerEnabled(true);
 		new StartFrame();
 	}
 }

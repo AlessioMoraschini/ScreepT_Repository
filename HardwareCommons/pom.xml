@@ -115,6 +115,7 @@
 	    <groupId>com.github.oshi</groupId>
 	    <artifactId>oshi-parent</artifactId>
 	    <version>3.13.0</version>
+	   <!--  <scope>${plugins.export.scope}</scope> -->
 	    <type>pom</type>
 	</dependency>
 		
