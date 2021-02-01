@@ -24,8 +24,6 @@ import gui.UpdateProgressPanel;
 import network.http.HttpHelper;
 import om.exception.ProgressBarInterruptedException;
 
-import static java.lang.System.out;
-
 public class DownloadUtils {
 	
 	public static SafeLogger logger = new SafeLogger(DownloadUtils.class);
@@ -34,7 +32,7 @@ public class DownloadUtils {
 	
 	public static File downloadFile(boolean silent, URL url, String localPath, UpdateProgressPanel progressUpdater) throws Exception, ProgressBarInterruptedException{
 		int fileSize = HttpHelper.getFileSize(url);
-		out.println("Opening url stream...");
+		logger.info("Opening url stream...");
 		BufferedInputStream in = null;
 		FileOutputStream fileOutputStream = null;
 		
@@ -68,13 +66,13 @@ public class DownloadUtils {
 		} finally {
 			
 			try {
-				out.println("Closing url stream...");
+				logger.info("Closing url stream...");
 				in.close();
 				fileOutputStream.close();
 				UpdateProgressPanel.updateProgress("Download Completed!", 100, progressUpdater, false);
-				out.println("Streams closed!");
+				logger.info("Streams closed!");
 			} catch (Exception e) {
-				out.println("An error occurred while closing streams after download" + Arrays.deepToString(e.getStackTrace()));
+				logger.error("An error occurred while closing streams after download" + Arrays.deepToString(e.getStackTrace()));
 			}
 			
 			if (progressUpdater != null) {
@@ -146,7 +144,7 @@ public class DownloadUtils {
 			lessThanMax = compareVersions(noLettersDotsOnly, max) < 0;
 			moreThanMin = compareVersions(noLettersDotsOnly, min) >= 0;
 		} catch (IllegalArgumentException e) {
-			out.println("Error comparing version: illegal format of ["+version+"]" + Arrays.deepToString(e.getStackTrace()));
+			logger.error("Error comparing version: illegal format of ["+version+"]" + Arrays.deepToString(e.getStackTrace()));
 			return false;
 		}
 		
@@ -163,7 +161,7 @@ public class DownloadUtils {
 		try {
 			newAvailable = compareVersions(noLettersDotsOnlyCurr, noLettersDotsOnlyNew) < 0;
 		} catch (IllegalArgumentException e) {
-			out.println("Error comparing version: illegal format of A["+noLettersDotsOnlyCurr+"]" 
+			logger.error("Error comparing version: illegal format of A["+noLettersDotsOnlyCurr+"]" 
 					+ " or B["+noLettersDotsOnlyNew+"]" + Arrays.deepToString(e.getStackTrace()));
 			return false;
 		}

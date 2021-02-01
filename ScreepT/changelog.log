@@ -1,4 +1,6 @@
-2021-02-01  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Text editor bugfix: file tree right click menu and key shortcuts improved
+2021-02-01  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Templates and Clipboard panels bugs fixed, added last used template memorization
+
+2021-02-01  Text editor bugfix: file tree right click menu and key shortcuts improved
 
 2021-01-27  Various TEXT EDITOR bugs fixed
 

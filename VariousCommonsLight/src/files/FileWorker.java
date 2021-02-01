@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -158,7 +159,47 @@ public class FileWorker {
 		}
 		return true;
 	}
-
+	
+	public static boolean appendStringToFile(String source, File outFile, boolean createIfNotExisting, EOL eol) {
+		
+		if(outFile == null || (!outFile.exists() && !createIfNotExisting))
+			return false;
+		
+		try {
+			if(!outFile.exists())
+				outFile.createNewFile();
+		
+			String outString = eol != null 
+					? StringWorker.normalizeStringToEol(source, eol)
+					: source;
+		
+		    Files.write(outFile.toPath(), outString.getBytes(), StandardOpenOption.APPEND);
+		
+		}catch (IOException e) {
+		    logger.error("Error appending String to file to file", e);
+		    return false;
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * This method writes a string to a file with given EOL (if null default will be used)
+	 * @param source the source string to write on file
+	 * @param outFile the ouput file to write in
+	 * @param overwrite if true overwrite existing file
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean writeStringToFile(String source, File outFile, boolean overwrite, EOL eol) throws IOException {
+		String outString = eol != null 
+				? StringWorker.normalizeStringToEol(source, eol)
+				: source;
+				
+		return writeStringToFile(outString, outFile, overwrite);
+	}
+	
 	/**
 	 * This method writes a string to a file 
 	 * @param source the source string to write on file
@@ -236,10 +277,13 @@ public class FileWorker {
 			reader = new BufferedReader(new InputStreamReader(readerStream, defaultEncoding));
 		}
 		try {
-			String line;
+			String line = reader.readLine();
 			
-			while ((line = reader.readLine()) != null) {
-				builder.append(line).append(eol.eol);
+			while ( line != null) {
+				builder.append(line);
+				line = reader.readLine();
+				if(line != null)
+					builder.append(eol.eol);
 			}
 		} catch (IOException e) {
 			throw e;

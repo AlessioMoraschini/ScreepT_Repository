@@ -31,7 +31,7 @@ import utility.log.SafeLogger;
 
 public class FtpDumper {
 
-	private static final SafeLogger logger = new SafeLogger(FtpDumper.class);
+	public static SafeLogger logger = new SafeLogger(FtpDumper.class);
 	private static final String protocol = "TLS";
 	public static int CONNECTION_TIMEOUT = 30000;
 	public static int KEEP_ALIVE_DURATION_SECONDS = 25;

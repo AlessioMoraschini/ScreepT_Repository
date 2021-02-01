@@ -14,6 +14,7 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -27,15 +28,19 @@ import gui.dialogs.msg.JOptionHelper;
 import main.om.PropertiesDTO;
 import network.ftp.FtpDumper;
 import network.progress.UploadAction;
+import network.utils.DownloadUtils;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
 import utility.log.SafeLogger;
 import utility.properties.PropertiesManager;
 import utility.string.StringWorker;
+import utility.string.StringWorker.EOL;
 
 public class MainStandAloneUpdater {
 	
 	public static SafeLogger logger = new SafeLogger(MainStandAloneUpdater.class);
+	
+	public static final String UPDATER_LOG_FILE = "./updater_history.log";
 	
 	public static final File CURRENT_DIR = new File(System.getProperty("user.dir"));
 	public static final String THIS_JAR_PATH = "updater.jar";
@@ -62,21 +67,44 @@ public class MainStandAloneUpdater {
 	 */
 	public static void main(String[] args) {
 		
+		try {
+			logger.setLogFileEol(null);
+			logger.setLogFile(new File(UPDATER_LOG_FILE));
+			logger.setFlagWriteOnFile(true);
+			ZipWorker.logger = new SafeLogger(ZipWorker.class, true, logger.getLogFile(), true);
+			DownloadUtils.logger = new SafeLogger(DownloadUtils.class, true, logger.getLogFile(), true);
+			FtpDumper.logger = new SafeLogger(FtpDumper.class, true, logger.getLogFile(), true);
+			ChecksumHasher.logger = new SafeLogger(ChecksumHasher.class, true, logger.getLogFile(), true);
+			PropertiesManager.logger = new SafeLogger(PropertiesManager.class, true, logger.getLogFile(), true);
+			
+			logger.info("\n###############################################################" + EOL.defaultEol.eol +
+					"# updater.jar - Starting - " + new Date().toString() + EOL.defaultEol.eol +
+					"###############################################################" + EOL.defaultEol.eol);
+			
+			mainArgsOrhcestrator(args);
+		
+		} catch (Exception e) {
+			signalErrorAndExit1(e);
+		}
+	}
+	
+	private static void mainArgsOrhcestrator(String[] args) {
+		
 		if(args[0].trim().contains("-generateHashes")) {
 			
 			ArrayList<File> toUpload = new ArrayList<>();
 			
 			if (args[0].trim().contains("-mainRelease")) {
-				logger.info("\n\n******************************************************" 
+				logger.info("\n\n\n******************************************************" 
 						+ "\n* MainRelease detected: -generateHashes-mainRelease  *"
-						+ "\n******************************************************/\n");
+						+ "\n******************************************************/\n\n");
 				/** Usage -> generateHashes(mainRelease) function: java -jar updater.jar -generateHashes-mainRelease true manifest.properties**/
 				toUpload = mainGenerateReleaseHashed(args);
 				
 			} else {
-				logger.info("\n\n*******************************************" 
+				logger.info("\n\n\n*******************************************" 
 						+ "\n* Hash updates detected: -generateHashes  *"
-						+ "\n*******************************************/\n");
+						+ "\n*******************************************/\n\n");
 				/******************************************************************************************************** 
 				 * 	Usage -> generateHashes function: java -jar updater.jar -generateHashes true manifest.properties
 				 ********************************************************************************************************/
@@ -85,9 +113,9 @@ public class MainStandAloneUpdater {
 			
 			if(args[0].trim().contains("-uploadFtpUpdates")) {
 				
-				logger.info("\n\n*******************************************" 
+				logger.info("\n\n\n*******************************************" 
 						+ "\n* Upload flag detected: -uploadFtpUpdates *"
-						+ "\n*******************************************/\n");
+						+ "\n*******************************************/\n\n");
 				/******************************************************************************************************** 
 				 * Function A.1: "-generateHashes-uploadFtpUpdates" (reads ftp properties from FTP_PROPERTIES file)
 				 * 	Usage -> generateHashes function: 
@@ -102,9 +130,9 @@ public class MainStandAloneUpdater {
 		
 		} else {
 
-			logger.info("\n\n***************************************************" 
+			logger.info("\n\n\n***************************************************" 
 					+ "\n* App embedded Update detected: -uploadFtpUpdates *"
-					+ "\n***************************************************/\n");
+					+ "\n***************************************************/\n\n");
 			/**********************************************************************************************************		
 			 * Function B: update ScreepT 
 			 * Usage -> update ScreepT function: java -jar updater.jar updater.jar UPDATES/updates ScreepT_0.9.5.jar
@@ -400,9 +428,10 @@ public class MainStandAloneUpdater {
 	 *  SIGNAL KO BEFORE EXIT
 	 */
 	private static void signalErrorAndExit1(Throwable e) {
-		logger.error("\n\n*******************" 
+		logger.error("\n\n\n*******************" 
 				+ "\n* PROCESS FAILED! *"
 				+ "\n*******************/\n");
+		logger.error("# error detected at: " + new Date().toString());
 		logger.error("An error occurred: ",e);
 		try {
 			Thread.sleep(10000);
@@ -415,9 +444,10 @@ public class MainStandAloneUpdater {
 	 *  SIGNAL OK BEFORE EXIT
 	 */
 	private static void signalOKAndExit0() {
-		logger.info("\n\n*********************" 
+		logger.info("\n\n\n*********************" 
 				+ "\n* COMPLETE SUCCESS! *"
 				+ "\n*********************/\n");
+		logger.info("# Completed at: " + new Date().toString());
 		logger.info("Finished! Updater will close after 5 seconds from now...");
 		try {
 			Thread.sleep(5000);

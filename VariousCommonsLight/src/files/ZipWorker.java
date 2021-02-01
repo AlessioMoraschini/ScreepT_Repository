@@ -11,8 +11,6 @@
  */
 package files;
 
-import static java.lang.System.out;
-
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,8 +24,11 @@ import java.util.zip.ZipOutputStream;
 import gui.GuiUtils;
 import gui.UpdateProgressPanel;
 import network.utils.DownloadUtils;
+import utility.log.SafeLogger;
 
 public class ZipWorker {
+	
+	public static SafeLogger logger = new SafeLogger(ZipWorker.class);
 
 	public static File zipFolderToFile(String dir2zip, File outputFile, boolean overwrite, boolean excludeParent) {
 		
@@ -108,13 +109,13 @@ public class ZipWorker {
 			}
 	
 			if (fileToZip.isDirectory()) {
-			    System.out.println("+" + zipEntryName);
+			    logger.info("+" + zipEntryName);
 			    for (File file : fileToZip.listFiles()) {
 			    	boolean dontUseParentForSons = excludeParent && parentDirectoryName == null;
 			    	zipFolder(zos, file, zipEntryName, progressUpdater, false, dontUseParentForSons);
 			    }
 			} else {
-			    System.out.println("   " + zipEntryName);
+			    logger.info("   " + zipEntryName);
 			    byte[] buffer = new byte[1024];
 			    fis = new FileInputStream(fileToZip);
 			    zos.putNextEntry(new ZipEntry(zipEntryName));
@@ -164,7 +165,7 @@ public class ZipWorker {
 	public static File zipFile(String sourcePath, String destFolderPath, boolean ovewrwrite, UpdateProgressPanel progressUpdater) throws Exception {
 		
 		long startTime = System.currentTimeMillis();
-		out.println("FileStuff.zipFile() -> Starting zip:"
+		logger.info("FileStuff.zipFile() -> Starting zip:"
 				+ "\n source: " + sourcePath
 				+ "\n destPath: " + destFolderPath
 				+ "\n overwrite: " + ovewrwrite);
@@ -207,12 +208,12 @@ public class ZipWorker {
 		fis.close();
 		fos.close();
 		
-		System.out.println("FileStuff.zipFile() -> COMPLETED!"
+		logger.info("FileStuff.zipFile() -> COMPLETED!"
 				+ "\n source: " + sourcePath
 				+ "\n zipped File: " + out
 				+ "\n overwrite: " + ovewrwrite);
 		
-		System.out.println("zipFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+		logger.debug("zipFile -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		
 		return out;
 	}
@@ -232,7 +233,7 @@ public class ZipWorker {
 	public static File unzipFile(String sourcePath, String destFolderPath, boolean ovewrwrite) throws Exception {
 		
 		long startTime = System.currentTimeMillis();
-		DownloadUtils.logger.info("FileStuff.unzipFile() -> Starting unzip:"
+		logger.info("FileStuff.unzipFile() -> Starting unzip:"
 				+ "\n sourcePath: " + sourcePath
 				+ "\n destFolderPath: " + destFolderPath
 				+ "\n overwrite: " + ovewrwrite);

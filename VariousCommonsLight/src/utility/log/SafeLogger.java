@@ -13,10 +13,14 @@ package utility.log;
 
 import static java.lang.System.out;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import files.FileWorker;
 import om.ConsoleColours;
+import utility.string.StringWorker.EOL;
 /**
  * This class is meant to provide a safe way to log either to system out or using your log4j logger, using reflection.
  * if no logger is found and safeLogger is enabled then logging messages will be logged. (by default logging is enabled)
@@ -26,15 +30,26 @@ import om.ConsoleColours;
  */
 public class SafeLogger {
 	
-	private Object logger = null;
-	private boolean loggerAvailable = false;
-	
 	private static String loggerClassName = "org.apache.log4j.Logger";
 	
 	private static final String ERROR = "ERROR: ";
 	private static final String WARN = "WARNING: ";
 	private static final String INFO = "INFO: ";
 	private static final String DEBUG = "DEBUG: ";
+
+	public static final int N_MEGABYTES_MAX_LOG_SIZE = 100;
+	public static final long DEFAULT_MAX_LOG_SIZE_BYTES = 1024 * 1024 * N_MEGABYTES_MAX_LOG_SIZE;
+	
+	private Object logger = null;
+	private boolean loggerAvailable = false;
+	private boolean flagWriteOnFile = false;
+	private EOL logFileEol = null;
+	
+	private File logFile = null;
+	
+	private Class<?> instancerClass;
+	
+	private long maxLogSizeBytes = DEFAULT_MAX_LOG_SIZE_BYTES;
 	
 	private boolean loggerEnabled;
 	
@@ -49,12 +64,21 @@ public class SafeLogger {
 	}
 
 	public SafeLogger(Class<?> claSS) {
-		this(claSS, true);
+		this(claSS, true, null, false);
 	}
 
 	public SafeLogger(Class<?> claSS, boolean enabled) {
+		this(claSS, enabled, null, false);
+	}
+
+	public SafeLogger(Class<?> claSS, boolean enabled, File logFile, boolean flagWriteOnFile) {
 		reset(claSS);
-		loggerEnabled = enabled;
+		this.instancerClass = claSS;
+		this.loggerEnabled = enabled;
+		this.logFile = logFile;
+		this.flagWriteOnFile = flagWriteOnFile;
+		logFileEol = null;
+		checkAndInitLogFile();
 	}
 	
 	public void reset(Class<?> claSS) {
@@ -69,6 +93,7 @@ public class SafeLogger {
 			out.println("Cannot initialize logger!");
 			loggerAvailable = false;
 		}
+		
 	}
 	
 	public void invokeLoggerMethod(String method, String msg) {
@@ -100,7 +125,10 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("info", message);
 			} else {
-				out.println(INFO + message);
+				String err = classPreamble() + INFO + message;
+				out.println(err);
+				if(canWriteOnFile(true)) 
+					writeOnLogFile(err);
 			} 
 		}
 	}
@@ -110,7 +138,10 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("warn", message);
 			} else {
-				out.println(WARN + message);
+				String err = classPreamble() + WARN + message;
+				out.println(err);
+				if(canWriteOnFile(true)) 
+					writeOnLogFile(err);
 			} 
 		}
 	}
@@ -120,9 +151,12 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("warn", message, throwable);
 			} else {
-				out.println(
-						ConsoleColours.ANSI_RED + WARN + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW));
+				String err = classPreamble() + ConsoleColours.ANSI_RED + WARN + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW);
+				out.println(err);
+				if(canWriteOnFile(true)) 
+					writeOnLogFile(err);
 			} 
+			
 		}
 	}
 
@@ -131,7 +165,10 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("debug", obj.toString());
 			} else {
-				out.println(DEBUG + obj.toString());
+				String err = classPreamble() + DEBUG + obj.toString();
+				out.println(err);
+				if(canWriteOnFile(true)) 
+					writeOnLogFile(err);
 			} 
 		}
 	}
@@ -141,7 +178,10 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("debug", message);
 			} else {
-				out.println(DEBUG + message);
+				String err = classPreamble() + DEBUG + message;
+				out.println(err);
+				if(canWriteOnFile(true)) 
+					writeOnLogFile(err);
 			} 
 		}
 	}
@@ -151,8 +191,10 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("error", message, throwable);
 			} else {
-				out.println(
-						ConsoleColours.ANSI_RED + ERROR + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW));
+				String err = classPreamble() + ConsoleColours.ANSI_RED + ERROR + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW);
+				out.println(err);
+				if(canWriteOnFile(true)) 
+					writeOnLogFile(err);
 			} 
 		}
 	}
@@ -162,7 +204,10 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("error", message);
 			} else {
-				out.println(ERROR + message);
+				String err = classPreamble() + ERROR + message;
+				out.println(err);
+				if(canWriteOnFile(true)) 
+					writeOnLogFile(err);
 			} 
 		}
 	}
@@ -172,7 +217,10 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("error", throwable.getClass().getCanonicalName(), throwable);
 			} else {
-				out.println(ERROR + getLinedThrowable(throwable, ConsoleColours.ANSI_RED));
+				String err = classPreamble() + ERROR + getLinedThrowable(throwable, ConsoleColours.ANSI_RED);
+				out.println(err);
+				if(canWriteOnFile(true)) 
+					writeOnLogFile(err);
 			} 
 		}
 	}
@@ -221,6 +269,111 @@ public class SafeLogger {
 		
 		
 		return builder.toString();
+	}
+
+	public boolean isFlagWriteOnFile() {
+		return flagWriteOnFile;
+	}
+
+	public void setFlagWriteOnFile(boolean flagWriteOnFile) {
+		this.flagWriteOnFile = flagWriteOnFile;
+	}
+	
+	public boolean canWriteOnFile(boolean considerFlag) {
+		
+		boolean commonCond = logFile != null &&
+				logFile.isFile() &&
+				logFile.exists() &&
+				logFile.canWrite();
+		
+		if(considerFlag)
+			return flagWriteOnFile && commonCond;
+					
+		else
+			return commonCond;
+	}
+	
+	private void writeOnLogFile(String string) {
+		if(canWriteOnFile(true)) {
+			if(maxLogSizeReached())
+				createAndUseNewLogFile();
+			
+			FileWorker.appendStringToFile((logFileEol != null ? logFileEol.eol : EOL.LF.eol) + string, logFile, true, logFileEol);
+		}
+	}
+	
+	private String getInstancerClassName() {
+		return instancerClass != null ? instancerClass.getCanonicalName() : "";
+	}
+	
+	private String wrap(String before, String toWrap, String after) {
+		return before + toWrap + after;
+	}
+	
+	private String classPreamble() {
+		return wrap(" [", getInstancerClassName(), "] ");
+	}
+	
+	private void checkAndInitLogFile() {
+		if(logFile != null && !logFile.exists())
+			FileWorker.appendStringToFile("", logFile, true, logFileEol);
+	}
+	
+	private boolean maxLogSizeReached() {
+		boolean commonCond = logFile != null &&
+				logFile.isFile() &&
+				logFile.exists();
+		
+		if(!commonCond)
+			return false;
+		
+		else
+			return logFile.length() >= maxLogSizeBytes;
+	}
+	
+	public long getMaxLogSizeBytes() {
+		return maxLogSizeBytes;
+	}
+
+	public void setMaxLogSizeBytes(long maxLogSizeBytes) {
+		this.maxLogSizeBytes = maxLogSizeBytes;
+	}
+
+	private boolean createAndUseNewLogFile() {
+		
+		synchronized (logFile) {
+			String oldLog = logFile.getAbsolutePath();
+			File newFile = FileWorker.renameJavaObjFile(logFile);
+			try {
+				newFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+				newFile = new File(oldLog);
+				return false;
+			}
+			logFile = newFile;
+		}
+		
+		return true;
+	}
+
+	public File getLogFile() {
+		return logFile != null ? new File(logFile.getAbsolutePath()) : null;
+	}
+
+	public void setLogFile(File logFile) {
+		synchronized (logFile) {
+			this.logFile = logFile;
+			checkAndInitLogFile();
+		}
+	}
+
+	public EOL getLogFileEol() {
+		return logFileEol;
+	}
+
+	public void setLogFileEol(EOL logFileEol) {
+		this.logFileEol = logFileEol;
 	}
 	
 }
