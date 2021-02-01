@@ -37,15 +37,22 @@ public class MainStandAloneUpdater {
 	
 	public static SafeLogger logger = new SafeLogger(MainStandAloneUpdater.class);
 	
+	public static final File CURRENT_DIR = new File(System.getProperty("user.dir"));
+	public static final String THIS_JAR_PATH = "updater.jar";
+
+	// Main application update static named files
 	public static final String MAIN_LAUNCHER_JAR = "ScreepT_Launcher.jar";
+	public static final String MAIN_APP_PROPERTIES_PATH = "resourcesFilePathsMappings.properties";
 	
+	// Other functionalities
 	public static final String FTP_PROPERTIES_FILE = "FTP.properties";
-	public static final String APP_PROPERTIES_FILE = "resourcesFilePathsMappings.properties";
-	public final static String KEY_DEFAULT_LAUNCHER_INI_PATH = "DEFAULT_LAUNCHER_INI_PATH";
-	private static final String KEY_ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
 	public static String UPDATES_PROPERTIES_FILE = "manifest.properties";
 	
-	public static final File CURRENT_DIR = new File(System.getProperty("user.dir"));
+	// Properties file keys
+	public final static String KEY_DEFAULT_LAUNCHER_INI_PATH = "DEFAULT_LAUNCHER_INI_PATH";
+	private static final String KEY_ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
+	private static final String KEY_FOLDER_ZIP_TO_ELABORATE = "RELEASE_FOLDER-OR-ZIP_TO_ELABORATE";
+	
 	
 	private static final JOptionHelper dialogHelper = new JOptionHelper(null);
 	public static final HashingFunction downloadsHashFunc = HashingFunction.SHA512;
@@ -108,7 +115,7 @@ public class MainStandAloneUpdater {
 	
 	private static void mainUpdateScreepT(String[] args) {
 		
-		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(APP_PROPERTIES_FILE);
+		PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MAIN_APP_PROPERTIES_PATH);
 		
 		final File updaterJar = new File(args[0]).getAbsoluteFile();
 		final File updatesFolder = new File(args[1]).getAbsoluteFile();
@@ -187,7 +194,7 @@ public class MainStandAloneUpdater {
 				}
 				
 				updateProgressMonitor.update(85, 100, "Updating configuration...");
-				restorePropertiesToKeep(backupProperties, APP_PROPERTIES_FILE);
+				restorePropertiesToKeep(backupProperties, MAIN_APP_PROPERTIES_PATH);
 				saveNewJarRef(resourcesFilePathsMappings, newJar);
 				
 				FileUtils.deleteQuietly(oldJar);
@@ -269,7 +276,7 @@ public class MainStandAloneUpdater {
 		Boolean createUpdatesZip = Boolean.valueOf(args[1]);
 		UPDATES_PROPERTIES_FILE = args[2];
 
-		File releaseFolderOrZip = new File(new PropertiesManager(FTP_PROPERTIES_FILE).getProperty("RELEASE_FOLDER-OR-ZIP_TO_ELABORATE"));
+		File releaseFolderOrZip = new File(new PropertiesManager(FTP_PROPERTIES_FILE).getProperty(KEY_FOLDER_ZIP_TO_ELABORATE));
 		logger.info("Src: " + releaseFolderOrZip.getAbsolutePath());
 		
 		// Only for folder to be zipped -> zip folder into current one
@@ -287,8 +294,7 @@ public class MainStandAloneUpdater {
 		ArrayList<File> toUpload = new ArrayList<>();
 		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
 		
-		String updaterJar = "updater.jar";
-		File updaterJarFile = new File(updaterJar);
+		File updaterJarFile = new File(THIS_JAR_PATH);
 		if (updaterJarFile.exists()) {
 			toUpload.add(updaterJarFile);
 		}
@@ -299,8 +305,8 @@ public class MainStandAloneUpdater {
 				PropertiesManager manifestProps = new PropertiesManager(UPDATES_PROPERTIES_FILE);
 
 				if (updaterJarFile.exists()) {
-					String updaterHash = ChecksumHasher.getFileHashBuffered(updaterJar, downloadsHashFunc, true);
-					manifestProps.saveCommentedProperty(updaterJar, updaterHash);
+					String updaterHash = ChecksumHasher.getFileHashBuffered(THIS_JAR_PATH, downloadsHashFunc, true);
+					manifestProps.saveCommentedProperty(THIS_JAR_PATH, updaterHash);
 				}
 				String hash = ChecksumHasher.getFileHashBuffered(releaseFolderOrZip, downloadsHashFunc, true);
 				manifestProps.saveCommentedProperty(releaseFolderOrZip.getName(), hash);

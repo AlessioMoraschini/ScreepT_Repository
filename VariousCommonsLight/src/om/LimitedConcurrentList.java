@@ -158,6 +158,21 @@ public class LimitedConcurrentList <T>{
 			}
 		}
 	}
+	public void addUniqueToTopByEquals(T element) {
+		
+		synchronized (list) {
+			if (isFull() && !list.isEmpty()) {
+				list.remove(0);
+			}
+			
+			for(T el : list) {
+				if(element.equals(el)) {
+					list.remove(el);
+				}
+			}
+			list.add(0, element);
+		}
+	}
 	
 	/**
 	 * Basically same as add()

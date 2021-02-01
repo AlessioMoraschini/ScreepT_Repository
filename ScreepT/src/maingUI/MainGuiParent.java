@@ -803,7 +803,7 @@ public class MainGuiParent {
 		try {
 			@SuppressWarnings("unchecked")
 			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastWorskspacesLlist.getList().clone();
-			Collections.reverse(valueCopy);
+//			Collections.reverse(valueCopy);
 			mnLastWorkspaces.removeAll();
 			for (FileNamed file : valueCopy) {
 				if (file.mFile != null && file.mFile.exists()) {
@@ -880,6 +880,27 @@ public class MainGuiParent {
 							}
 						}
 					});
+				}
+			}
+		});
+	}
+	
+	public void setFolderAsWorkspace(File folder) {
+		
+		if(folder == null)
+			return;
+		
+		// now load file from history
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (!folder.exists()){
+					textEditorPanel.dialogHelper.error("Folder does not exist anymore!", "Folder does not exist");
+				
+				} else if (!folder.isDirectory()){
+					textEditorPanel.dialogHelper.error("Selection is not a folder!", "Selection is not a folder!");
+				
+				} else {
+					textEditorPanel.setWorkspace(folder);
 				}
 			}
 		});

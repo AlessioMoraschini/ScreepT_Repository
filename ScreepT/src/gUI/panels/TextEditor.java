@@ -623,8 +623,6 @@ public class TextEditor extends ModulePanel {
 				
 				File directory = MainGuiGeneralAppStarter.fileDialogHelper.directoRead(mainApplication.getMainFrame(), "Choose a workspace folder to load");
 				setWorkspace(directory);
-				currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(directory, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
-				mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
 			}
 		});
 		
@@ -684,8 +682,8 @@ public class TextEditor extends ModulePanel {
 		
 	}
 	
-	public void setWorkspace(File directory) {
-		if(directory != null && directory.exists()) {
+	public boolean setWorkspace(File directory) {
+		if(directory != null && directory.exists() && directory.isDirectory()) {
 			
 			try {
 				currentConfiguration.getTextEditorOpt().defaultWorkspacePath = directory.getCanonicalPath();
@@ -703,7 +701,16 @@ public class TextEditor extends ModulePanel {
 			
 			// REFRESH
 			textEditorUtils.refreshTreeFromWorkspace(directory);
+			currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(directory, currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces, "lastSelectedWorkspaces");
+			mainApplication.updateLastOpenedWorkspaces(currentConfiguration.getTextEditorOpt().lastSelectedWorkspaces);
+			
+			if(!currentConfiguration.getTextEditorOpt().workspaceViewSelected)
+				toggleButtonFileTreeWorkspace.doClick();
+			
+			return true;
 		}
+		
+		return false;
 	}
 	
 	/**

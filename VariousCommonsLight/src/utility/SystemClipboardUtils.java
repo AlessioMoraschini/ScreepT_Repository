@@ -4,6 +4,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
@@ -11,7 +12,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
+import gui.dialogs.msg.JOptionHelper;
 import utility.log.SafeLogger;
+import utility.string.StringWorker;
+import utility.string.StringWorker.EOL;
 
 public class SystemClipboardUtils {
 	
@@ -39,6 +45,29 @@ public class SystemClipboardUtils {
 	    }
 	}
 	
+	public static boolean pasteFilesFromClipboard(File destination, Clipboard clipboard, JOptionHelper dialogHelper) throws IOException {
+		List<File> clipboardFiles = getClipboardFiles(clipboard);
+		if(!clipboardFiles.isEmpty() && dialogHelper.yesOrNo("Paste " + clipboardFiles.size() + " files into " + destination.getName() + " ?")) {
+			// TODO subfolders
+			for(File file : clipboardFiles) {
+				boolean copy = true;
+				if(destination.listFiles((dir, name) -> {
+					boolean sameType = (dir.isFile() && file.isFile()) || (dir.isDirectory() && file.isDirectory());
+					return sameType && file.getName().equals(name);
+				}).length > 0) {
+					copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", "Overwrite?");
+				}
+				if (copy) {
+					FileUtils.copyToDirectory(file, destination);
+				}
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public static void setClipobardFiles(final List<File> filesToAdd) {
 		
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new Transferable() {
@@ -64,6 +93,16 @@ public class SystemClipboardUtils {
 				logger.debug("Clipboard paste manager owns no more loaded files.");
 			}
 		});
+	}
+	
+	public static void setClipobardString(final List<File> filesToAdd, EOL eol) {
+		StringSelection ss = new StringSelection(StringWorker.concatFilePaths(filesToAdd, eol));
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
+	}
+
+	public static void setClipobardString(String string) {
+		StringSelection ss = new StringSelection(string);
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, ss);
 	}
 
 	public static String readAsString(Clipboard clipboard) {

@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -650,6 +651,45 @@ public class StringWorker {
 		}
 		
 		return first.contains(second);
+	}
+	
+	public static String concat(List<? extends Object> list,  EOL separator) {
+		StringBuilder builder = new StringBuilder();
+		if(list != null && !list.isEmpty()) {
+			int i = 0;
+			for(Object s : list) {
+				if(s != null)
+					builder.append(s);
+				if(s != null && i < list.size() - 1)
+					builder.append(separator.eol);
+				
+				i++;
+			}
+		}
+		
+		return builder.toString();
+	}
+	
+	public static String concatFilePaths(List<File> list,  EOL separator) {
+		separator = separator == null ? EOL.defaultEol : separator;
+		StringBuilder builder = new StringBuilder();
+		if(list != null && !list.isEmpty()) {
+			int i = 0;
+			for(File file : list) {
+				if(file != null)
+					try {
+						builder.append(file.getCanonicalPath());
+					} catch (IOException e) {
+						logger.error("Error getting canonical path of: " + file, e);
+					}
+				if(file != null && i < list.size() - 1)
+					builder.append(separator.eol);
+				
+				i++;
+			}
+		}
+		
+		return builder.toString();
 	}
 
 	public static boolean isEmpty(String source) {

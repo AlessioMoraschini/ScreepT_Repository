@@ -43,7 +43,7 @@ public class UpdatesManager {
 	
 	public static SafeLogger logger = new SafeLogger(UpdatesManager.class);
 	
-	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.APP_PROPERTIES_FILE);
+	public static PropertiesManager resourcesFilePathsMappings = new PropertiesManager(MainStandAloneUpdater.MAIN_APP_PROPERTIES_PATH);
 	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_ScreepT/");  
 	public static String DEFAULT_LAUNCHER_INI_PATH = resourcesFilePathsMappings.getProperty("DEFAULT_LAUNCHER_INI_PATH", "LAUNCHER/Launcher_Configuration.ini");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR", "UPDATES/");

@@ -15,6 +15,7 @@ import static java.awt.Event.ALT_MASK;
 import static java.awt.Event.SHIFT_MASK;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -24,9 +25,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -72,6 +75,9 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		public JMenuItem itemNewFile;
 		public JMenuItem itemNewFolder;
 	public JMenuItem itemRename;
+	public JMenuItem copyItem;
+	public JMenuItem copyPathsItem;
+	public JMenuItem pasteItem;
 	public JMenuItem copyHereCurrentItem;
 	public JMenuItem moveHereCurrentItem;
 	public JMenuItem sysExplorerItem;
@@ -80,6 +86,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	public JMenuItem collapseItem;
 	public JMenuItem expandItem;
 	public JMenuItem hashingItem;
+	public JMenuItem workspaceItem;
 	public JMenuItem propertiesItem;
 	public JMenuItem changeBckgItem;
 	
@@ -158,97 +165,119 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    	itemLoadFile.setEnabled(true);
 	    }
 	}
+	
+	private JMenuItem addMenuItem(JMenu menu, String label, Font font, boolean separatorBefore, boolean separatorAfter) {
+		if (separatorBefore) 
+			menu.add(new JSeparator());
+		
+		JMenuItem item = new JMenuItem(label);
+	    item.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    menu.add(item);
+	    
+	    if (separatorAfter)
+			menu.add(new JSeparator());
+	    
+	    return item;
+	}
+	private JMenuItem addMenuItem(JComponent menu, String label, Font font, boolean separatorBefore, boolean separatorAfter) {
+		if (separatorBefore) 
+			menu.add(new JSeparator());
+		
+		JMenuItem item = new JMenuItem(label);
+		item.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+		menu.add(item);
+		
+		if (separatorAfter)
+			menu.add(new JSeparator());
+		
+		return item;
+	}
 
 	public JPopupMenu getPopUpMenu() {
 		
 		super.getPopUpMenu();
 		
 	    JPopupMenu menu = new JPopupMenu();
+	    Font font = GeneralConfig.DEFAULT_POP_UP_MENUS_FONT;
 	    
 	    subMenuNew = new JMenu("New...");
 	    subMenuNew.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    menu.add(subMenuNew);
-	    
-	    itemNewFolder = new JMenuItem("Add new folder");
-	    itemNewFolder.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    menu.add(new JSeparator());
+
+	    itemNewFolder = addMenuItem(subMenuNew, "Add new folder", font, false, false);
 	    itemNewFolder.addActionListener(getNewFolderActionListener());
-	    subMenuNew.add(itemNewFolder);
 
-	    itemNewFile = new JMenuItem("Add new file");
-	    itemNewFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    itemNewFile = addMenuItem(subMenuNew, "Add new file", font, false, false);
 	    itemNewFile.addActionListener(getNewFileActionListener());
-	    subMenuNew.add(itemNewFile);
 	    
-	    itemLoadFile = new JMenuItem("Open File");
+	    itemLoadFile = addMenuItem(menu, "Open File", font, false, false);
 	    itemLoadFile.addActionListener(getLoadActionListener());
-	    itemLoadFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    menu.add(itemLoadFile);
 	    
-	    itemRename = new JMenuItem("Rename selected (files only)");
+	    itemRename = addMenuItem(menu, "Rename selected (files only)", font, false, false);
 	    itemRename.addActionListener(getRenameActionListener());
-	    itemRename.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    menu.add(itemRename);
 	    
-	    menu.add(new JSeparator());
+	    workspaceItem = addMenuItem(menu, "Use as workspace", font, false, false);
+	    workspaceItem.addActionListener((e) -> {
+	    	List<File> selected = getSelectedFiles();
+	    	if(!selected.isEmpty())
+	    		textEditor.mainApplication.setFolderAsWorkspace(selected.get(selected.size() - 1));
+	    });
+
 	    
-	    selectAllItem = new JMenuItem("Select all nodes");
-	    selectAllItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    selectAllItem.addActionListener(selectAllListener());
-	    menu.add(selectAllItem);
-	   
-	    collapseItem = new JMenuItem("Collapse children nodes");
-	    collapseItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    collapseItem.addActionListener(collapseChildren());
-	    menu.add(collapseItem);
-
-	    expandItem = new JMenuItem("Expand children nodes");
-	    expandItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    expandItem.addActionListener(expandChildren());
-	    menu.add(expandItem);
-
-	    menu.add(new JSeparator());
-
-	    copyHereCurrentItem = new JMenuItem("Copy current file here");
-	    copyHereCurrentItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    copyHereCurrentItem.addActionListener(getCopyHereCurrentFileIfExists());
-	    menu.add(copyHereCurrentItem);
-
-	    moveHereCurrentItem = new JMenuItem("Move current file here");
-	    moveHereCurrentItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    moveHereCurrentItem.addActionListener(getMoveHereCurrentFileIfExists());
-	    menu.add(moveHereCurrentItem);
-
-	    deleteItem = new JMenuItem("Delete selected files");
-	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    deleteItem.addActionListener(getDeleteActionListener());
-	    menu.add(deleteItem);
-	    
-	    menu.add(new JSeparator());
-	    
-	    sysExplorerItem = new JMenuItem("View in system explorer");
-	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    sysExplorerItem.addActionListener(openInSystemExplorer());
-	    menu.add(sysExplorerItem);
-	    
-	    refreshItem = new JMenuItem("Refresh tree");
-	    refreshItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    refreshItem = addMenuItem(menu, "Refresh tree", font, true, false);
 	    refreshItem.addActionListener(refreshListener());
-	    menu.add(refreshItem);
 	    
-	    hashingItem = new JMenuItem("Check File hash...");
-	    hashingItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    hashingItem.addActionListener(hashingListener());
-	    menu.add(hashingItem);
+	    selectAllItem = addMenuItem(menu, "Select all nodes", font, false, false);
+	    selectAllItem.addActionListener(selectAllListener());
+	   
+	    collapseItem = addMenuItem(menu, "Collapse children nodes", font, false, false);
+	    collapseItem.addActionListener(collapseChildren());
 
-	    propertiesItem = new JMenuItem("File Properties");
-	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-	    propertiesItem.addActionListener(propertiesListener());
-	    menu.add(propertiesItem);
+	    expandItem = addMenuItem(menu, "Expand children nodes", font, false, false);
+	    expandItem.addActionListener(expandChildren());
+
+	    copyPathsItem = addMenuItem(menu, "Copy selected file paths", font, true, false);
+	    copyPathsItem.addActionListener((e) -> {
+	    	writeSelectedFilesPathIntoClipboard();
+	    });
+
+	    copyItem = addMenuItem(menu, "Copy", font, false, false);
+	    copyItem.addActionListener((e) -> {
+	    	copySelectedFilesToClipboard();
+	    });
+
+	    pasteItem = addMenuItem(menu, "Paste", font, false, false);
+	    pasteItem.addActionListener((e) -> {
+	    	try {
+				pasteFromClipboard();
+			} catch (IOException e1) {
+				logger.error("Cannote paste files from clipboard", e1);
+			}
+	    });
 	    
-	    changeBckgItem = new JMenuItem("Change file Panel background");
-	    changeBckgItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
+	    copyHereCurrentItem = addMenuItem(menu, "Copy current file here", font, false, false);
+	    copyHereCurrentItem.addActionListener(getCopyHereCurrentFileIfExists());
+
+	    moveHereCurrentItem = addMenuItem(menu, "Move current file here", font, false, false);
+	    moveHereCurrentItem.addActionListener(getMoveHereCurrentFileIfExists());
+
+	    deleteItem = addMenuItem(menu, "Delete selected files", font, false, false);
+	    deleteItem.addActionListener(getDeleteActionListener());
+	    
+	    sysExplorerItem = addMenuItem(menu, "View in system explorer", font, true, false);
+	    sysExplorerItem.addActionListener(openInSystemExplorer());
+	    
+	    hashingItem = addMenuItem(menu, "Check File hash...", font, false, false);
+	    hashingItem.addActionListener(hashingListener());
+
+	    propertiesItem = addMenuItem(menu, "File Properties", font, false, false);
+	    propertiesItem.addActionListener(propertiesListener());
+	    
+	    // DEACTIVATED, see javadoc
+//	    changeBckgItem = addMenuItem(menu, "Change file Panel background", font, false, false);
+	    changeBckgItem = new JMenuItem();
 	    changeBckgItem.addActionListener(ChangeBckgNewFileActionListener());
-//	    menu.add(changeBckgItem); DEACTIVATED, see javadoc
 	    
 	    // set menu icons
 	    MenuSetter.setIconTextGap(menu, 12);
@@ -263,6 +292,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    collapseItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LESS));
 	    expandItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE_SMALL));
 	    hashingItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HASHING));
+	    workspaceItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_ON));
 	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 	    subMenuNew.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 	    itemNewFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
@@ -600,7 +630,11 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			
 			} else if (event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_U) {
 				hashingItem.doClick();
+			
+			} else if (!event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_ENTER) {
+				propertiesItem.doClick();
 			}
+			
 		}
 	}
 	
@@ -608,12 +642,14 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		itemLoadFile.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, KeyEvent.KEY_LOCATION_UNKNOWN));
 		itemNewFile.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, KeyEvent.CTRL_MASK));
 		itemNewFolder.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_N, KeyEvent.CTRL_MASK | SHIFT_MASK));
+		selectAllItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_A, KeyEvent.CTRL_MASK));
 		hashingItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, KeyEvent.CTRL_MASK | ALT_MASK));
-		propertiesItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK));
+		copyItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, KeyEvent.CTRL_MASK));
+		pasteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_V, KeyEvent.CTRL_MASK));
+		propertiesItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, KeyEvent.CTRL_MASK));
 		itemRename.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F2, ALT_MASK));
 		deleteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_CANCEL, KeyEvent.KEY_LOCATION_UNKNOWN));
 		refreshItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F5, KeyEvent.CTRL_MASK | ALT_MASK));
-
 	}
 
 	public void changeTreeSelectionColor(Color color) {

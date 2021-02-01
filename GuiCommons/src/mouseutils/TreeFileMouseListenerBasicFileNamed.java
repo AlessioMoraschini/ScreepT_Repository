@@ -33,7 +33,6 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
@@ -49,6 +48,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.SystemClipboardUtils;
 import utility.string.StringWorker;
+import utility.string.StringWorker.EOL;
 
 /**
  * This represents a basic extensible component, when each node is a File Object
@@ -206,6 +206,9 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 	public List<File> getSelectedFiles() {
 		 TreePath[] treeSelArr = tree.getSelectionPaths();
 		 ArrayList<File> files = new ArrayList<>();
+		 if(treeSelArr == null)
+			 return files;
+		 
 		 for(TreePath path : treeSelArr) {
 			 FileNamed node = (FileNamed)path.getLastPathComponent();
 			 if (node != null) {
@@ -383,41 +386,42 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 		if(tree.hasFocus()) try {
 			tree.setCursor(GuiUtils.CURSOR_WAIT);
 			
-			if (event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
+			if (!event.isAltDown() && !event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
 				if(itemLoadFile != null) {
 					itemLoadFile.doClick();
 				}
-			} else if (event.getKeyCode() == 127 && tree.getSelectionCount() != 0) {
+			} else if (!event.isAltDown() && !event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == 127 && tree.getSelectionCount() > 0) {
 				if(deleteItem != null) {
 					deleteItem.doClick();
 				}
-			} else if (event.isControlDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() == 1) {
-				File destination = getCurrentDestinationDynamic(selectedNode);
-				List<File> clipboardFiles = SystemClipboardUtils.getClipboardFiles(null);
-				if(!clipboardFiles.isEmpty() && dialogHelper.yesOrNo("Paste " + clipboardFiles.size() + " files into " + destination.getName() + " ?")) {
-					// TODO subfolders
-					for(File file : clipboardFiles) {
-						boolean copy = true;
-						if(destination.listFiles((dir, name) -> {
-							boolean sameType = (dir.isFile() && file.isFile()) || (dir.isDirectory() && file.isDirectory());
-							return sameType && file.getName().equals(name);
-						}).length > 0) {
-							copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", "Overwrite?");
-						}
-						if (copy) {
-							FileUtils.copyToDirectory(file, destination);
-						}
-					}
-					
-					refreshTree();
-				}
+			} else if (!event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() == 1) {
+				pasteFromClipboard();
+				
 			} else if(event.isControlDown() && !event.isShiftDown() && !event.isAltDown() && event.getKeyCode() == KeyEvent.VK_C && tree.getSelectionCount() != 0) {
-				SystemClipboardUtils.setClipobardFiles(getSelectedFiles());
+				copySelectedFilesToClipboard();
 			}
 		} catch (Exception e) {
 			logger.error("An error occurred while processing file tree key event", e);
 		} finally {
 			tree.setCursor(GuiUtils.CURSOR_DEFAULT);
 		}
+	}
+	
+	protected void pasteFromClipboard() throws IOException {
+		File destination = getCurrentDestinationDynamic(selectedNode);
+		if(SystemClipboardUtils.pasteFilesFromClipboard(destination, null, dialogHelper))
+			refreshTree();
+	}
+	
+	protected void copySelectedFilesToClipboard() {
+		List<File> files = getSelectedFiles();
+		if(files != null && !files.isEmpty())
+			SystemClipboardUtils.setClipobardFiles(getSelectedFiles());
+	}
+	
+	protected void writeSelectedFilesPathIntoClipboard() {
+		List<File> files = getSelectedFiles();
+		if(files != null && !files.isEmpty())
+			SystemClipboardUtils.setClipobardString(getSelectedFiles(), EOL.defaultEol);
 	}
 }
