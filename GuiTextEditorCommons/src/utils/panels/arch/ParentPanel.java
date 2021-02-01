@@ -11,9 +11,7 @@
  */
 package utils.panels.arch;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.TreeMap;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,7 +27,6 @@ public class ParentPanel extends JPanel implements IParentPanel{
 	public static Logger logger = Logger.getLogger(ParentPanel.class);
 	
 	public ITextAreaDialogs dialogManager;
-	public TreeMap<String, File> dataMap;
 	public JScrollPane currentScrollPane;
 	
 	/**

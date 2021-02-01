@@ -29,6 +29,7 @@ import files.FileWorker;
 import files.FileVarious;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
+import gui.selection.AbstractSelector;
 import maingUI.MainGuiGeneralAppStarter;
 
 import java.awt.SystemColor;
@@ -77,12 +78,15 @@ public class TemplatesChooserFrame extends ParentFrame {
 	private JButton btnReloadTemplates;
 	public JTextArea outputTextArea;
 	private JOptionHelperExtended dialogHelper;
-	
+	private AbstractSelector<String> iSelector;
 	
 	// MAIN CONSTRUCTOR //
 	public TemplatesChooserFrame(JFrame parent, JTextArea outputText, JButton buttonInvoke) {
 		
 		active = true;
+		
+		// Default null safe impl - the custom one can be setted from caller
+		iSelector = AbstractSelector.getDefaultSelector(comboTemplateSelector);
 		
 		dialogHelper = new JOptionHelperExtended(this);
 		
@@ -166,13 +170,19 @@ public class TemplatesChooserFrame extends ParentFrame {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
 	        	active = false;
 	        	buttonInvoker.setEnabled(true);
 	        	
 				logger.debug("Closing "+getClass().getName()+" - Configuration resetted.\n");
 	        	dispose();
 		    }
+		});
+		
+		comboTemplateSelector.addActionListener((e) -> {
+			SwingUtilities.invokeLater(() -> {
+				AbstractSelector.nullSafeSetLastSelected(
+						iSelector, (String)comboTemplateSelector.getSelectedItem());
+			});
 		});
 		
 		// append template into text area at current selection
@@ -321,12 +331,23 @@ public class TemplatesChooserFrame extends ParentFrame {
 		return new Dimension(600, 165);
 	}
 	
+	public AbstractSelector<String> getiSelector() {
+		return iSelector;
+	}
+
+	public void setiSelector(AbstractSelector<String> iSelector, boolean updateComboSelection) {
+		this.iSelector = iSelector;
+		if(updateComboSelection)
+			AbstractSelector.updateStringComboSelection(iSelector, comboTemplateSelector);
+	}
+
 	private void reloadTemplates() {
 		comboTemplateSelector.removeAllItems();
 		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>( retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER) );
 		comboTemplateSelector.setModel( model );
 		//comboTemplateSelector = new JComboBox<String>(retrieveTemplatesFilesFromDir(TEMPLATES_FOLDER));
 		comboTemplateSelector.revalidate();
+		AbstractSelector.updateStringComboSelection(iSelector, comboTemplateSelector);
 		comboTemplateSelector.repaint();
 	}
 	

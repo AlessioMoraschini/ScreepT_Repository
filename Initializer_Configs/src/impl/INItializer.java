@@ -319,8 +319,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
 		textEditorOpt.setLastEscapeLanguage(lastEscapeLanguage);
-		textEditorOpt.setLastFileOpenedClipboard(getSafeFileConf(
-				TEXT_EDITOR_OPT, "lastFileOpenedClipboard", TextEditorOption.DEF_lastFileOpenedClipboard).getName());
+		textEditorOpt.setLastSelectedTemplate(getSafeStringConf(TEXT_EDITOR_OPT, "lastSelectedTemplate", ""));
+		textEditorOpt.setLastFileOpenedClipboard(getSafeStringConf(
+				TEXT_EDITOR_OPT, "lastFileOpenedClipboard", TextEditorOption.DEF_lastFileOpenedClipboard));
 		textEditorOpt.setClipboardSyncStyle(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "clipboardSyncStyle")));
 		
 		// CONVERTED/PARSED TYPES
@@ -582,6 +583,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosX", textEditorOpt.dividerRightPanePosX);
 		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard", textEditorOpt.dividerRightPanePosXClipboard);
 		iniFile.put(TEXT_EDITOR_OPT, "lastFileOpenedClipboard", textEditorOpt.lastFileOpenedClipboard);
+		iniFile.put(TEXT_EDITOR_OPT, "lastSelectedTemplate", textEditorOpt.lastSelectedTemplate);
 		iniFile.put(TEXT_EDITOR_OPT, "clipboardSyncStyle", textEditorOpt.clipboardSyncStyle);
 		iniFile.put(TEXT_EDITOR_OPT, "antialiasedTxtArea", textEditorOpt.antialiasedTxtArea);
 		iniFile.put(TEXT_EDITOR_OPT, "breakLineActive", textEditorOpt.breaklineActive);
@@ -702,6 +704,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION: ").append(textEditorOpt.dividerRightPanePosX)
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): ").append(textEditorOpt.dividerRightPanePosXClipboard)
 			   .append("\nLAST FILE OPENED IN CLIPBOARD: ").append(textEditorOpt.lastFileOpenedClipboard)
+			   .append("\nLAST TEMPLATE USED: ").append(textEditorOpt.lastSelectedTemplate)
 			   .append("\nSYNC CLIPBOARD STYLE WITH CURRENT TEXT AREA: ").append(textEditorOpt.clipboardSyncStyle)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
 			   .append("\nLAST OPENED FILES: ").append(textEditorOpt.lastOpenedFiles.toCharSeparatedString(","))
@@ -813,4 +816,5 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	public ImgConverterOption getImageConvertionOpt() {
 		return this.imageConvertOption;
 	}
+	
 }

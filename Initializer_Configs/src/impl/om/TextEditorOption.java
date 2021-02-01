@@ -55,6 +55,7 @@ public class TextEditorOption {
 	public static final int DEF_dividerRightPanePosX = 60;
 	public static final int DEF_dividerRightPanePosXClipboard = 150;
 	public static final String DEF_lastFileOpenedClipboard = GeneralConfig.CLIPBOARD_PANEL_DEFAULT;
+	public static final String DEF_lastSelectedTemplate = "";
 	public static final int DEFAULT_TAB_SIZE = 2;
 	public static final boolean DEFAULT_TAB_LINE_VISIBLE = false;
 	public static final boolean DEFAULT_BREAK_LINE = false;
@@ -126,6 +127,7 @@ public class TextEditorOption {
 	public int dividerRightPanePosX;
 	public int dividerRightPanePosXClipboard;
 	public String lastFileOpenedClipboard;
+	public String lastSelectedTemplate;
 	public int tabSize = 2;
 	public boolean tabLineVisible;
 	public boolean fileTreeActive;
@@ -206,6 +208,7 @@ public class TextEditorOption {
 		dividerRightPanePosX = DEF_dividerRightPanePosX;
 		dividerRightPanePosXClipboard = DEF_dividerRightPanePosXClipboard;
 		lastFileOpenedClipboard = DEF_lastFileOpenedClipboard;
+		lastSelectedTemplate = DEF_lastSelectedTemplate;
 		tabSize = DEFAULT_TAB_SIZE;
 		
 		fileTreeActive = DEFAULT_FTREE_ACTIVE;
@@ -432,6 +435,14 @@ public class TextEditorOption {
 
 	public void setLastFileOpenedClipboard(String lastFileOpenedClipboard) {
 		this.lastFileOpenedClipboard = lastFileOpenedClipboard;
+	}
+	
+	public String getLastSelectedTemplate() {
+		return lastSelectedTemplate;
+	}
+
+	public void setLastSelectedTemplate(String lastSelectedTemplate) {
+		this.lastSelectedTemplate = lastSelectedTemplate;
 	}
 
 	public int getDividerRightPanePosXClipboard() {

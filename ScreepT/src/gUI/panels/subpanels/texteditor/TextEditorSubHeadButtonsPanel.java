@@ -74,6 +74,7 @@ import gui.TextEditTooltips;
 import gui.dialogs.FindDialogFork;
 import gui.dialogs.ReplaceDialogFork;
 import gui.dialogs.font.JFontChooserExtended;
+import gui.selection.AbstractSelector;
 import impl.INItializer;
 import impl.om.TextEditorOption;
 import maingUI.MainGUI;
@@ -1308,6 +1309,21 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				if (!TemplatesChooserFrame.active) {
 					templatesPanel = new TemplatesChooserFrame(mainApplication.getMainFrame(), parent.getCurrentTabEditor().loadedTabObj.textArea, btnTemplates);
+					templatesPanel.setiSelector(new AbstractSelector<String>() {
+						
+						@Override
+						public String getLastSelected() {
+							return currentConfiguration.getTextEditorOpt().lastSelectedTemplate;
+						}
+						
+						@Override
+						public String setLastSelected(String last) {
+							currentConfiguration.getTextEditorOpt().setLastSelectedTemplate(last);
+							return last;
+						}
+						
+					}, true);
+					
 					templatesPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					templatesPanel.setAlwaysOnTop(true);
 					templatesPanel.setVisible(true);

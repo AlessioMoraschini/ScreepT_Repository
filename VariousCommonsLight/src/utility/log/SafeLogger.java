@@ -29,7 +29,7 @@ public class SafeLogger {
 	private Object logger = null;
 	private boolean loggerAvailable = false;
 	
-	private static final String loggerClassName = "org.apache.log4j.Logger";
+	private static String loggerClassName = "org.apache.log4j.Logger";
 	
 	private static final String ERROR = "ERROR: ";
 	private static final String WARN = "WARNING: ";
@@ -37,6 +37,16 @@ public class SafeLogger {
 	private static final String DEBUG = "DEBUG: ";
 	
 	private boolean loggerEnabled;
+	
+	public static String getLoggerClassName() {
+		return loggerClassName;
+	}
+
+	public static void setLoggerClassName(String loggerClassName) {
+		synchronized (loggerClassName) {
+			SafeLogger.loggerClassName = loggerClassName;
+		}
+	}
 
 	public SafeLogger(Class<?> claSS) {
 		this(claSS, true);

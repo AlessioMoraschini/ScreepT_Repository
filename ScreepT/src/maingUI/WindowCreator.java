@@ -106,7 +106,8 @@ public class WindowCreator {
 	
 	public ClipboardFrame newClipboardFrame() {
 			
-		ClipboardFrame clipboardFrame = ClipboardFrame.getInstance(mainApplication.getMainFrame());
+		ClipboardFrame clipboardFrame = ClipboardFrame.getInstance(
+				mainApplication.getMainFrame(), MainGUI.currentConfiguration.getTextEditorOpt());
 		commonGraphicInitAlwaysOnTop(clipboardFrame, "Clipboard Frame - ", true);
 		
 		return clipboardFrame;

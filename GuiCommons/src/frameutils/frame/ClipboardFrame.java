@@ -21,6 +21,7 @@ import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ClipboardPanelLight;
 import frameutils.utils.GuiUtilsExtended;
+import impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -35,6 +36,10 @@ public class ClipboardFrame extends ParentFrame{
 	ClipboardPanelLight	payloadPanel;
 	
 	public ClipboardFrame(JFrame parentFrame) {
+		this(parentFrame, new TextEditorOption());
+	}
+	
+	public ClipboardFrame(JFrame parentFrame, TextEditorOption options) {
 		logger.info(this.getClass().getName() + " - Starting...");
 		
 		setTitle("Clipboard Frame - " + GeneralConfig.APPLICATION_NAME);
@@ -59,7 +64,7 @@ public class ClipboardFrame extends ParentFrame{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[100%, grow]", "[100%, grow]"));
 		
-		payloadPanel = new ClipboardPanelLight();
+		payloadPanel = new ClipboardPanelLight(options);
 		getContentPane().add(payloadPanel, "cell 0 0 1 1, grow");
 		
 		addHandlers();
@@ -86,5 +91,9 @@ public class ClipboardFrame extends ParentFrame{
 	
 	public static ClipboardFrame getInstance(JFrame parentFrame) {
 		return singletonInstance == null ? new ClipboardFrame(parentFrame) : singletonInstance;
+	}
+
+	public static ClipboardFrame getInstance(JFrame parentFrame, TextEditorOption options) {
+		return singletonInstance == null ? new ClipboardFrame(parentFrame, options) : singletonInstance;
 	}
 }

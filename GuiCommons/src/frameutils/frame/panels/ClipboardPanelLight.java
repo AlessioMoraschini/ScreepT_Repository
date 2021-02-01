@@ -41,6 +41,7 @@ import files.FileVarious;
 import frameutils.frame.panels.arch.IParentPanel;
 import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
+import gui.GuiUtils;
 import impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
@@ -82,6 +83,10 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 	
 	private AtomicBoolean isReloadingCombo = new AtomicBoolean();
 	
+	public ClipboardPanelLight() {
+		this(new TextEditorOption());
+	}
+	
 	/**
 	 * Initialize panel with target directory to write in memory files, which has custom behaviour 
 	 * according to the interface passed as parameter.
@@ -91,10 +96,10 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 	 * @param dialogManager
 	 * @param clipboardPers
 	 */
-	public ClipboardPanelLight() {
+	public ClipboardPanelLight(TextEditorOption options) {
 		
 		
-		this.options = new TextEditorOption();
+		this.options = options;
 		
 		// Disable advices until instantiation is ended
 		this.dialogHelper = new JOptionHelperExtended(this);
@@ -224,7 +229,6 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		addHandlers();
 		
 //		GUIStyelSettings.applyNimbusSize(0);
-		
 		File mainClip = dataMap.get(options.lastFileOpenedClipboard);
 		if(mainClip != null && !mainClip.exists()) {
 			try {
@@ -242,6 +246,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		
 		sync();
 		FileWorker.loadFileTxtArea(dataMap.get(options.getLastFileOpenedClipboard()), txtAreaClipboard, null, null);
+		selectFromComboClipboards(options.getLastFileOpenedClipboard());
 		dialogHelper.enabledAdvices = true;
 	}
 	
@@ -495,20 +500,20 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 	public void sync() {
 		if (this.isVisible() && txtAreaClipboard != null) {
 			
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					try {
-						reload(((File) dataMap.values().toArray()[0]).getName());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					currentScrollPane.setBackground(Color.black);
-					txtAreaClipboard.setWrapStyleWord(true);
-					txtAreaClipboard.setLineWrap(true);
-					txtAreaClipboard.setMargin(new Insets(8, 8, 8, 8));
-					txtAreaClipboard.repaint();
-				}
-			});
+			txtAreaClipboard.setWrapStyleWord(true);
+			txtAreaClipboard.setLineWrap(true);
+			txtAreaClipboard.setMargin(new Insets(8, 8, 8, 8));
+			txtAreaClipboard.repaint();
+			
+			try {
+				File found = ((File)dataMap.get(options.getLastFileOpenedClipboard()));
+				if(found != null)
+					reload(found.getName());
+				else
+					reload(((File)dataMap.values().toArray()[0]).getName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -559,11 +564,16 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		}
 	}
 
-	public void selectFromComboClipboards(String key) {
-		comboClipboards.setSelectedItem(key);
-		((JLabel)comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-		comboClipboards.revalidate();
-		comboClipboards.repaint();
+	public void selectFromComboClipboards(final String key) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				((JLabel) comboClipboards.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+				comboClipboards.revalidate();
+				int index = GuiUtils.getFirstIndexMatchFromStringCombo(comboClipboards, key);
+				comboClipboards.setSelectedIndex(index);
+				comboClipboards.repaint();
+			}
+		});
 	}
 	
 	public String getCrrentFromCombo() {

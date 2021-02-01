@@ -476,7 +476,7 @@ public class MainStandAloneUpdater {
 		try {
 			int i = 1;
 			for (File currentToUpload : toUploadList) {
-				System.out.println("Uploading: " + currentToUpload + " ...");
+				logger.info("Uploading: " + currentToUpload + " ...");
 				
 				dumper.setUploadAction(getUploadAction(progPanel, currentToUpload.length(), currentToUpload.getName()));
 				int generalProgress = (int)(i*100 / toUploadList.size());
@@ -485,7 +485,7 @@ public class MainStandAloneUpdater {
 				progPanel.adaptWidthToCurrentText();
 				
 				dumper.uploadFile(currentToUpload.getAbsolutePath(), currentToUpload.getName(), FOLDER_ON_SERVER);
-				System.out.println(currentToUpload + " -> Uploaded");
+				logger.info(currentToUpload + " -> Uploaded");
 				
 				i++;
 			}

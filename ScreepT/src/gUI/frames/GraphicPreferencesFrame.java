@@ -357,7 +357,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 		separator_3.setBackground(Color.GRAY);
 		mainPanel.add(separator_3, "cell 0 4,growx");
 		
-		lblTextAreaOptions = new JLabel("Text Eitor Options");
+		lblTextAreaOptions = new JLabel("Text Editor Options");
 		lblTextAreaOptions.setForeground(Color.GRAY);
 		lblTextAreaOptions.setFont(new Font("Tahoma", Font.BOLD, 13));
 		mainPanel.add(lblTextAreaOptions, "cell 1 4 2 1,alignx left");
