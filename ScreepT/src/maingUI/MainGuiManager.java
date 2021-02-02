@@ -2,11 +2,19 @@ package maingUI;
 
 import java.awt.Window;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.apache.log4j.Level;
+
 import dialogutils.JOptionHelperExtended;
+import files.CustomFileFilters;
+import files.FileVarious;
+import files.FileWorker;
+import files.ZipWorker;
 import files.watcher.ChangeDTO;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -14,6 +22,7 @@ import general.utils.ScreepTLoggerUtils;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import impl.INItializer;
+import main.MainStandAloneUpdater;
 import mainlauncher.ScreepTLauncher;
 import om.OSinfo;
 import om.TabTextEditorObj;
@@ -68,6 +77,66 @@ public class MainGuiManager {
 		} catch (Exception e) {
 			MainGuiUtils.logger.error("Cannot restart application: an error occurred", e);
 		}
+	}
+	
+	public void exportLogs() {
+		logger.debug(" => User started logs exporting procedure.");
+		boolean choice = true;
+		if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
+			String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScreepT_launcher's customize options at start)";
+			choice = MainGUI.dialogHelper.yesOrNo(msg, "Export logs even if disabled?");
+		}
+		
+		if (choice) {
+
+			// show input dialog to select the file(gives null in case of no file selected)
+			File selected = MainGUI.fileLogWriteDialog(MainGUI.mainFrameScreept);
+			if (selected != null) {
+				logger.info("\n\n##################################################\n\n" + new Date().toString()
+				 		+ "\n\nBuild N°: " + GeneralConfig.BUILD_INCREMENTAL_NUMBER + "\n\n"
+						+ "Build HASH: " + GeneralConfig.BUILD_COMMIT_HASH + "\n\n"
+						+ "\n\n" + GeneralConfig.APPLICATION_NAME + " EXPORT!\n\n"
+						+ "##################################################\n\n");
+
+				// Create unique temporary folder
+				File tempFolder = FileVarious.uniqueJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + "LOG_EXPORT_TEMP"));
+				tempFolder.mkdir();
+				
+				// Copy logs into it
+				File copiedMainLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_PATH), tempFolder, true, GeneralConfig.TEMP_DIRECTORY);
+				File copiedLauncherLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_LAUNCHER_PATH), tempFolder, false, GeneralConfig.TEMP_DIRECTORY);
+				for(File f : getUpdaterLogs())
+					FileWorker.copyFileIntoDir(f, tempFolder, false, GeneralConfig.TEMP_DIRECTORY);
+					
+				// Create a zip of temp folder and put it into selected destination
+				File zipped = ZipWorker.zipFolderToFile(tempFolder.getAbsolutePath(), selected, true, true);
+				boolean copied = copiedMainLog != null && copiedLauncherLog != null;
+				if (copied && zipped != null && zipped.exists()) {
+					MainGUI.dialogHelper.info("File correctly saved in " + zipped, "Log File Exported :)");
+					logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + zipped);
+				} else {
+					MainGUI.dialogHelper.error("File not saved [" + zipped +"], Some error occurred :(", (String)null);
+					logger.error("File not saved, some error occurred :( ");
+				}
+				
+				// Delete temporary folder
+				FileWorker.deleteDirContentInclRoot(tempFolder);
+			}
+		}
+	}
+	
+	public List<File> getUpdaterLogs() {
+		File mainUpdaterLogs = new File(GeneralConfig.CURRENT_EXECUTION_DIR);
+		File[] logs = mainUpdaterLogs.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY, ".log", true));
+		List<File> filtered = new ArrayList<>();
+		if(logs != null) {
+			for(File log : logs) {
+				if(log.getName().contains(MainStandAloneUpdater.UPDATER_LOG_FILE_NAME))
+					filtered.add(log);
+			}
+		}
+		
+		return filtered;
 	}
 
 	/**

@@ -40,7 +40,8 @@ public class MainStandAloneUpdater {
 	
 	public static SafeLogger logger = new SafeLogger(MainStandAloneUpdater.class);
 	
-	public static final String UPDATER_LOG_FILE = "./updater_history.log";
+	public static final String UPDATER_LOG_FILE_NAME = "updater_history";
+	public static final String UPDATER_LOG_FILE = "./" + UPDATER_LOG_FILE_NAME + ".log";
 	
 	public static final File CURRENT_DIR = new File(System.getProperty("user.dir"));
 	public static final String THIS_JAR_PATH = "updater.jar";

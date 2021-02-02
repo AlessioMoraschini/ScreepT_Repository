@@ -36,15 +36,12 @@ import javax.swing.JFileChooser;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Level;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
 import arch.InitOwner;
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
 import files.FileVarious;
-import files.ZipWorker;
 import frameutils.frame.ImageViewerFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.GeneralOptionsFrame;
@@ -711,45 +708,11 @@ public class MainGUI extends MainGuiParent{
 		mntmExportLog = new CustomJmenuItem(new AbstractAction("Export Event Log") {
 			public void actionPerformed(ActionEvent e) {
 				if (!FLAG_mntmExportLog) {
-					logger.debug(" => User started logs exporting procedure.");
 					SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
 					FLAG_mntmExportLog = true;
 					
-					String msg =  "Logger is disabled, you won't have any information from curent session. Export anyway? (To enable use ScreepT_launcher's customize options at start)";
-					boolean choice = true;
-					if(MainGuiGeneralAppStarter.LOG_LEVEL_AT_START.equals(Level.OFF)) {
-						choice = dialogHelper.yesOrNo(msg, "Export logs even if disabled?");
-					}
+					mainGuiManager.exportLogs();
 					
-					if (choice) {
-
-						// show input dialog to select the file(gives null in case of no file selected)
-						File selected = fileLogWriteDialog(mainFrameScreept);
-						if (selected != null) {
-							logger.info("\n\n##################################################\n\n" + now.toString()
-							 		+ "\n\nBuild N°: " + GeneralConfig.BUILD_INCREMENTAL_NUMBER + "\n\n"
-									+ "Build HASH: " + GeneralConfig.BUILD_COMMIT_HASH + "\n\n"
-									+ "\n\n" + GeneralConfig.APPLICATION_NAME + " EXPORT!\n\n"
-									+ "##################################################\n\n");
-
-							// give true to overwrite because fileWriteDialog already set the value to be unique
-							File tempFolder = FileVarious.uniqueJavaObjFile(new File(GeneralConfig.TEMP_DIRECTORY + "LOG_EXPORT_TEMP"));
-							tempFolder.mkdir();
-							File copiedMainLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_PATH), tempFolder, true, GeneralConfig.TEMP_DIRECTORY);
-							File copiedLauncherLog = FileWorker.copyFileIntoDir(new File(GeneralConfig.LOG_LAUNCHER_PATH), tempFolder, false, GeneralConfig.TEMP_DIRECTORY);
-							File zipped = ZipWorker.zipFolderToFile(tempFolder.getAbsolutePath(), selected, true, true);
-							boolean copied = copiedMainLog != null && copiedLauncherLog != null;
-							if (copied && zipped != null && zipped.exists()) {
-								dialogHelper.info("File correctly saved in " + zipped, "Log File Exported :)");
-								logger.info("File :" + GeneralConfig.LOG_PATH + " Exported, exportFile: " + zipped);
-							} else {
-								dialogHelper.error("File not saved [" + zipped +"], Some error occurred :(", (String)null);
-								logger.error("File not saved, some error occurred :( ");
-							}
-							
-							FileWorker.deleteDirContentInclRoot(tempFolder);
-						}
-					}
 					FLAG_mntmExportLog = false;
 					logger.debug(" => Logs exporting procedure ended.");
 				}
