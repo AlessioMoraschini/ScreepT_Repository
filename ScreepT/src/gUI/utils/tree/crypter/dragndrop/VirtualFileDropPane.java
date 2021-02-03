@@ -62,6 +62,7 @@ public class VirtualFileDropPane extends BackgroundFrame {
 	private Point dragPoint;
 
     private boolean dragOver = false;
+    public boolean dropActionEnabled = true;
 
     // public fields
     public JTree filesTree;
@@ -153,6 +154,9 @@ public class VirtualFileDropPane extends BackgroundFrame {
 
     // here there is action to update given JTree
     protected void importFiles(final List<File> files) {
+    	if(!dropActionEnabled)
+    		return;
+    	
         Runnable run = new Runnable() {
             @Override
             public void run() {

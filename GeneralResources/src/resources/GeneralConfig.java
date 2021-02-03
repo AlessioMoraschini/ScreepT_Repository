@@ -89,7 +89,7 @@ public class GeneralConfig {
 	public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScreepT_decrypted_tempFiles";
 	public static File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 	
-	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR");                                                                                                                                     
+	public static String RESOURCES_DIR = resourcesFilePathsMappings.getProperty("RESOURCES_DIR", "Resources_ScreepT/");                                                                                                                                     
 	public static String PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR");
 	public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR");
 	static{
@@ -98,6 +98,8 @@ public class GeneralConfig {
 		} catch (Exception e) {
 		}
 	}
+	public static String CREEPTER_FOLDER = resourcesFilePathsMappings.getProperty("CREEPTER_FOLDER", "Resources_ScreepT/CreepTer/");                                                                                                                       
+	public static String CREEPTER_INSTRUCTIONS_FILE = CREEPTER_FOLDER + "Instructions.txt";                                                                                                                       
 	public static String DEFAULT_IMAGE_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_IMAGE_FOLDER");                                                                                                                       
 	public static String SOUNDS_FOLDER = resourcesFilePathsMappings.getProperty("SOUNDS_FOLDER");                                                                                                                                     
 	public static String WORDLIST_FOLDER = resourcesFilePathsMappings.getProperty("WORDLIST_FOLDER");                                                                                                                                 

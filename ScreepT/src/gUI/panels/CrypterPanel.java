@@ -1197,15 +1197,16 @@ public class CrypterPanel extends ModulePanel {
 		tabbedPane.setBackgroundAt(1, new Color(169, 169, 169));
 		
 		textAreaMain = new JTextArea();
-		textAreaMain.setWrapStyleWord(true);
 		textAreaMain.setBackground(new Color(30,30,30));
 		textAreaMain.setForeground(new Color(230,230,230));
 		textAreaMain.setRequestFocusEnabled(true);
 		textAreaMain.setCaretColor(Color.LIGHT_GRAY);
-		textAreaMain.setEditable(true);
+		textAreaMain.setEditable(false);
 		textAreaMain.setEnabled(true);
 		textAreaMain.setMargin(new Insets(10, 15, 10, 10));
 		textAreaMain.setMaximumSize(maxBodySize);
+		textAreaMain.setWrapStyleWord(true);
+		textAreaMain.setLineWrap(true);
 
 		scrollPaneText = new JScrollPane();
 		scrollPaneText.setViewportView(textAreaMain);
@@ -1218,17 +1219,29 @@ public class CrypterPanel extends ModulePanel {
 //		panelMainContainer.add(scrollPaneText, "cell 2 2 1 4,grow");
 		
 		textAreaMain.setText("   ###  WELCOME TO ScreepT :) ###\n\n Are you ready to crypt/decrypt your files? I will be your best friend... and attackers worst nightmare ;)");
+		textAreaMain.append("\n\n" + getInstructionsText());
+		textAreaMain.setCaretPosition(0);
+		textAreaMain.revalidate();
+		textAreaMain.repaint();
+	}
+	
+	private String getInstructionsText() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("\n\n 1) load source files or drop them on right panel with file tree")
+		try {
+			String str = FileWorker.readFileAsString(new File(GeneralConfig.CREEPTER_INSTRUCTIONS_FILE));
+			builder.append(str);
+		} catch (IOException e) {
+			
+			logger.error("Cannot read initial string from folder: " + GeneralConfig.CREEPTER_FOLDER, e);
+			builder.append("\n\n 1) load source files or drop them on right panel with file tree")
 			   .append("\n\n 2) choose a modality between only aes, only steg or complete using the selector on top-left bar")
 			   .append("\n\n 2a) if complete or steg mode is selected, you have to import a pre-loaded Image fom dictionary or a disposable, or either generate a new one.")
 		 	   .append("\n\n 3) enter a password in the given field")
 		 	   .append("\n\n 4) press creept or drecreept to start process :)")
 		       .append("\n\n PS: Tooltips are your friends, just hover on buttons to know more about them ;)");
+		}
 		
-		textAreaMain.append("\n\n" + builder.toString());
-		textAreaMain.revalidate();
-		textAreaMain.repaint();
+		return builder.toString();
 	}
 	
 	public void configureNstartTree() {
@@ -1612,12 +1625,22 @@ public class CrypterPanel extends ModulePanel {
 		btnDispoKeyImg.setEnabled(false);
 		btnGenerateKeyImg.setEnabled(false);
 		btnAddSourceFile.setEnabled(false);
+		comboModeCrypto.setEnabled(false);
+		chckbxShuffle.setEnabled(false);
+		chckbxHashKey.setEnabled(false);
+		AESKEYtext.setEnabled(false);
+		panelVDragNDropPane.dropActionEnabled = false;
 	}
 	
 	private void enableSelectionButtons() {
 		btnDispoKeyImg.setEnabled(true);
 		btnGenerateKeyImg.setEnabled(true);
 		btnAddSourceFile.setEnabled(true);
+		comboModeCrypto.setEnabled(true);
+		chckbxShuffle.setEnabled(true);
+		chckbxHashKey.setEnabled(true);
+		AESKEYtext.setEnabled(true);
+		panelVDragNDropPane.dropActionEnabled = true;
 	}
 	
 	private void appendMessageTxtAreas(String msg) {
