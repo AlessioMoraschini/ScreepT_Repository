@@ -398,18 +398,11 @@ public class ColumnTextArea extends RSyntaxTextArea {
     
     @Override
     public void copyAsStyledText() {
-    	int selStart = getSelectionStart();
-    	int selEnd = getSelectionEnd();
-    	if(selEnd == selStart) {
-    		setSelectionStart(0);
-        	setSelectionEnd(getText().length()-1);
-    	}
-    	
+    	SelectionDtoFull dto = new SelectionDtoFull(this);
+
     	super.copyAsStyledText();
     	
-    	requestFocus();
-    	setSelectionStart(selStart);
-    	setSelectionEnd(selEnd);
+    	dto.applySelectionDTO(this);
     }
 
 class ColumnSelectionCaret extends DefaultCaret {
@@ -497,9 +490,17 @@ class ColumnSelectionCaret extends DefaultCaret {
 							? lastStartPosition
 							: thisTextArea.getSelectionStart();
 
+//					if(thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition()) {
+//						start = 
+//					} else if(thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition()) {
+//						
+//					}
+
 					// Update last start position, used on key released if shift is pressed
 					if (shiftDown) {
 						lastStartPosition = thisTextArea.getSelectedText() != null ? start : thisTextArea.getCaretPosition();
+					} else {
+						lastStartPosition = thisTextArea.getCaretPosition();
 					}
 					
 					updateSelectionIfShiftPressed();
@@ -528,6 +529,8 @@ class ColumnSelectionCaret extends DefaultCaret {
 				}
 			} catch (Exception e) {
 			}
+        } else {
+        	// TODO
         }
     }
 

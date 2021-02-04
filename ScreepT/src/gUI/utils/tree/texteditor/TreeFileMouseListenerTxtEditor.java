@@ -159,11 +159,49 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	}
 	
 	private void updateEnabledOrDisabled() {
-		if(selectedNode == null || selectedNode.mFile == null || !selectedNode.mFile.isFile()) {
-	    	itemLoadFile.setEnabled(false);
-	    }else {
-	    	itemLoadFile.setEnabled(true);
-	    }
+		
+		JMenuItem[] ifFile = new JMenuItem[] {itemLoadFile, itemRename};
+		JMenuItem[] ifDir = new JMenuItem[] {workspaceItem};
+		JMenuItem[] ifCurrentTabFileExists = new JMenuItem[] {copyHereCurrentItem, moveHereCurrentItem};
+		JMenuItem[] ifExists = new JMenuItem[] {
+				copyHereCurrentItem, moveHereCurrentItem, itemRename, sysExplorerItem,
+				copyPathsItem, hashingItem, deleteItem, copyItem, pasteItem, itemLoadFile,
+				workspaceItem, propertiesItem};
+		
+		if(selectedNode == null || selectedNode.mFile == null || !selectedNode.mFile.exists()) {
+			subMenuNew.setEnabled(false);
+	    	for(JMenuItem jNull : ifExists)
+	    		jNull.setEnabled(false);
+	    
+		} else {
+			subMenuNew.setEnabled(true);
+			for(JMenuItem jNull : ifExists)
+	    		jNull.setEnabled(true);
+			
+			if(selectedNode.mFile.isDirectory()){
+				for(JMenuItem jFile : ifFile)
+					jFile.setEnabled(false);
+				for(JMenuItem jDir : ifDir)
+					jDir.setEnabled(true);
+		   
+			} else {
+		    	for(JMenuItem jFile : ifFile)
+		    		jFile.setEnabled(true);
+				for(JMenuItem jDir : ifDir)
+		    		jDir.setEnabled(false);
+		    }
+		}
+		
+		
+		File currentTabFile = currentTabEditor.loadedTabObj.loadedFile;
+		if(currentTabFile == null || !currentTabFile.exists()) {
+			for(JMenuItem jCurr : ifCurrentTabFileExists)
+				jCurr.setEnabled(false);
+			
+		} else {
+			for(JMenuItem jCurr : ifCurrentTabFileExists)
+				jCurr.setEnabled(true);
+		}
 	}
 	
 	private JMenuItem addMenuItem(JMenu menu, String label, Font font, boolean separatorBefore, boolean separatorAfter) {
