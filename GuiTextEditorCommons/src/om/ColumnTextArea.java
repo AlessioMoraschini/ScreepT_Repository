@@ -500,6 +500,7 @@ class ColumnSelectionCaret extends DefaultCaret {
 					if (shiftDown) {
 						lastStartPosition = thisTextArea.getSelectedText() != null ? start : thisTextArea.getCaretPosition();
 					} else {
+						// TODO: check ctrl shift behaviour
 						lastStartPosition = thisTextArea.getCaretPosition();
 					}
 					

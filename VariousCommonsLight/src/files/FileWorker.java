@@ -282,7 +282,6 @@ public class FileWorker {
 			while ( line != null) {
 				builder.append(line);
 				line = reader.readLine();
-				if(line != null)
 					builder.append(eol.eol);
 			}
 		} catch (IOException e) {

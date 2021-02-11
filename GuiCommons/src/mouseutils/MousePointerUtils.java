@@ -95,7 +95,7 @@ public class MousePointerUtils {
 				if (event instanceof KeyEvent) {
 					KeyEvent keyEvent = (KeyEvent) event;
 					
-					if (keyEvent.isControlDown()) {
+					if (keyEvent.isControlDown() && keyEvent.isShiftDown()) {
 						if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
 							logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
 							logger.debug(event);

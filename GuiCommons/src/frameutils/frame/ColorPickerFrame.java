@@ -108,8 +108,6 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("", "[grow][25px:30px,grow]", "[35px:35px,grow][grow]"));
 		
-		GuiUtils.centerComponent(this, getDefaultDimension());
-		
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER_BIG, this);
 		
 		initializeGui();
@@ -123,12 +121,14 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		
 		addHandlers();
 		
-		setVisible(true);	
 		setAlwaysOnTop(true);
 		hasFocus.set(false);
+		GuiUtils.centerComponent(this, getDefaultDimension());
 		
 		SwingUtilities.invokeLater(()->{
 			updateTextBoxes(ImageWorker.randomColorRGB(1.0f));
+			setVisible(true);	
+			resizeToDefault(true, true, true);
 		});
 	}
 	
@@ -389,7 +389,7 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		btnPickerOn.setBorder(null);
 		panelHeader.add(btnPickerOn, "cell 0 0,grow");
 		
-		lblColorPicker = new JLabel("Click elements to retrieve their color (or press control and move mouse)");
+		lblColorPicker = new JLabel("Click elements to retrieve their color (or press [shift + CTRL] and move mouse)");
 		lblColorPicker.setHorizontalAlignment(SwingConstants.CENTER);
 		lblColorPicker.setForeground(Color.WHITE);
 		lblColorPicker.setFont(new Font("Segoe UI", Font.PLAIN, 14));

@@ -1,150 +1,285 @@
-2021-02-01  Templates and Clipboard panels bugs fixed, added last used template memorization
+2021-02-01 Templates and Clipboard panels bugs fixed, added last used template
+memorization
 
-2021-02-01  Text editor bugfix: file tree right click menu and key shortcuts improved
++ Added AbstractSelector<T> class, to make more code more modular  Templates and Clipboard panels bugs fixed, added last used template memorization
 
-2021-01-27  Various TEXT EDITOR bugs fixed
+2021-02-01 Text editor bugfix: file tree right click menu and key shortcuts
+improved  Text editor bugfix: file tree right click menu and key shortcuts improved
 
-2021-01-26  Fixed Resource optimizer and easter eggs shortcuts' bug
+2021-01-27 Various TEXT EDITOR bugs fixed
 
-2021-01-25  TEXT EDITOR: Fixed bug on text replacement for templates injection and escape replacement functions.
++ linehighlight on mouse pressed
++ shift behaviour on selection
++ miniMap sync improved, added syntax coloring
++ EOL replace and save to file fixed, was using default EOL
++ Filetree shortcuts behaviour improved  Various TEXT EDITOR bugs fixed
 
-2020-12-12  Text-editor: Themes editor - bugs fixed
+2021-01-26 Fixed Resource optimizer and easter eggs shortcuts' bug  Fixed Resource optimizer and easter eggs shortcuts' bug
 
-2020-10-29  Added autostart Option (See General Options panel)
+2021-01-25 TEXT EDITOR: Fixed bug on text replacement for templates injection and
+escape replacement functions.
 
-2020-10-29  (tag: refs/tags/0.9.28) General options frame: added autostart menu addition/removal
+Now when the user select some text, only that text will be replaced in
+the current opened file. If nothing is selected, then if templates
+function it will be appended, else if escape replacer function then all
+text will be replaced  TEXT EDITOR: Fixed bug on text replacement for templates injection and escape replacement functions.
 
-2020-09-15  Puppynoid Improved
+2020-12-12 Text-editor: Themes editor - bugs fixed
 
-2020-09-15  PuppyNoid improved with audio effects
++ fixed wrong background save
++ introduced "import theme" function
++ various potential errors fixed  Text-editor: Themes editor - bugs fixed
 
-2020-09-14  New EasterEgg added!
+2020-10-29 Added autostart Option (See General Options panel)  Added autostart Option (See General Options panel)
 
-2020-09-14  Added AM_Rkanoid project
+2020-10-29 General options frame: added autostart menu addition/removal
 
-2020-05-28  (tag: refs/tags/0.9.26) Various fix and improvements
++ SysUtils improved with new generic methods to create shortcuts and add
+to autostart menu an executable  (tag: refs/tags/0.9.28) General options frame: added autostart menu addition/removal
 
-2020-02-09  Theme editor added to textEditor menu, improved configuration management
+2020-09-15 Puppynoid Improved  Puppynoid Improved
 
-2020-02-09  (tag: refs/tags/0.9.23) Theme editor added to textEditor menu
+2020-09-15 PuppyNoid improved with audio effects  PuppyNoid improved with audio effects
 
-2020-02-06  Added import configs from other ScreepT installation
+2020-09-14 New EasterEgg added!  New EasterEgg added!
 
-2020-02-05  Improved color picker
+2020-09-14 Added AM_Rkanoid project  Added AM_Rkanoid project
 
-2020-02-03  Added easter Eggs!
+2020-05-28 Various fix and improvements  (tag: refs/tags/0.9.26) Various fix and improvements
 
-2020-01-31  Added file "open in browser" function
+2020-02-09 Theme editor added to textEditor menu, improved configuration management  Theme editor added to textEditor menu, improved configuration management
 
-2020-01-30  (tag: refs/tags/0.9.22) Improved Image viewer + Image converter; Various bugs fixed
+2020-02-09 Theme editor added to textEditor menu
 
-2020-01-27  Fixed unzip + updates bug, various bug fixed
++ added samples  (tag: refs/tags/0.9.23) Theme editor added to textEditor menu
 
-2020-01-24  V_0.9.21 : text editor bugfix + improved readme and licenses + introduced proxy management
+2020-02-06 Added import configs from other ScreepT installation
 
-2020-01-19  Autocomplete and readme improved
++ refactor INI operations
++ bugFix easter eggs
++ moved locale to generic options frame
++ snake: added level change sync with timer's delay on change  Added import configs from other ScreepT installation
 
-2020-01-18  Added restart option + Various Bugs fixed
+2020-02-05 Improved color picker
 
-2020-01-16  New version : build and weigth improvements + bugfix
++ various bugs fixed  Improved color picker
 
-2020-01-15  Added file type options to Text editor + BUGFIX (various)
+2020-02-03 Added easter Eggs!
 
-2020-01-12  Added License visualizer and user license acceptance at start
++ improved keyListener parent class  Added easter Eggs!
 
-2020-01-11  Added new License, improved drag and drop.
+2020-01-31 Added file "open in browser" function
 
-2020-01-09  TextEditor rightClick popUp added endOfLine transformation
++ fixed check changes in save file text editor  Added file "open in browser" function
 
-2020-01-08  Added newLine character check + BUGFIX text editor
+2020-01-30 Improved Image viewer + Image converter; Various bugs fixed
+  (tag: refs/tags/0.9.22) Improved Image viewer + Image converter; Various bugs fixed
 
-2020-01-07  Update README.md
+2020-01-27 Fixed unzip + updates bug, various bug fixed  Fixed unzip + updates bug, various bug fixed
 
-2020-01-07  Update README.md
+2020-01-24 V_0.9.21 : text editor bugfix + improved readme and licenses +
+introduced proxy management  V_0.9.21 : text editor bugfix + improved readme and licenses + introduced proxy management
 
-2020-01-05  Improved Updates manager + added synchronization and final hash check
+2020-01-19 Autocomplete and readme improved  Autocomplete and readme improved
 
-2020-01-04  Improved Graphics + TextEditor Bugs fixed
+2020-01-18 Added restart option + Various Bugs fixed
 
-2020-01-03  Added undo/redo unsaved automation + fixed dialogs/close all tabs
++ fixed import/export crypted temporization
++ Refactor mainGUI + Utils: added Manager for close/kill/restart methods
+and related  Added restart option + Various Bugs fixed
 
-2020-01-02  IMPORTANT: update process -> fixed bug in unzipping
+2020-01-16 New version : build and weigth improvements + bugfix  New version : build and weigth improvements + bugfix
 
-2020-01-02  new Version 0.9.16 - Optimized application size
+2020-01-15 Added file type options to Text editor + BUGFIX (various)
 
-2020-01-02  (tag: refs/tags/0.9.16) Improved plugin process + Dialogs and Text Editor bugFix
++ improved launcher timings at start
++ added easy method for resize to parentFrame  Added file type options to Text editor + BUGFIX (various)
 
-2020-01-01  Solved crashes on Network/Hardware analysis
+2020-01-12 Added License visualizer and user license acceptance at start  Added License visualizer and user license acceptance at start
 
-2019-12-31  Hardware and Network info are no more installed by default, but Plugins
+2020-01-11 Added new License, improved drag and drop.
 
-2019-12-30  Added emergency kill shortcut ([esc or alt+F4] x 4 times) + BUGFIX
++ Moved to proprietary license for now, dual license commercial/freeware
++ ScreepT's pom.xml now generate report for thirdy part licenses.
++ added obfuscator to ScreepT's pom.xml
++ replaced FontChooser with JFontChooser's fork, in order to avoid
+GPLV3.0  Added new License, improved drag and drop.
 
-2019-12-30  Improved password generator with more options
+2020-01-09 TextEditor rightClick popUp added endOfLine transformation
 
-2019-12-29  Improved updates and dialogs management + BUGFIX + Internal refactor
++ more refactor
++ added string transformation to popup menu
++ improved popUpMenu
++ various bug fix text editor  TextEditor rightClick popUp added endOfLine transformation
 
-2019-12-27  Error management improvements + Launcher settings tuned
+2020-01-08 Added newLine character check + BUGFIX text editor
 
-2019-12-27  Introduced ScrYpT's optimizer to top-right on menu. (+ Minor bugs fixed)
++ column text area improved on rectangular selection
++ more refactor, condensed forks
++ added "ColumnTextarea" text editor popUp menu extension
++ improved coherence of utils common classes  Added newLine character check + BUGFIX text editor
 
-2019-12-26  Crypter process made cancelable + Configuration manager improved
+2020-01-07 Update README.md  Update README.md
 
-2019-12-26  Improved graphics, launcher, and default properties
+2020-01-07 Update README.md  Update README.md
 
-2019-12-25  Improved import/export crypted workspace + various bugs fixed
+2020-01-05 Improved Updates manager + added synchronization and final hash check
 
-2019-12-22  Refactored main menubar, introduced import/export crypted workspace + BUGFIX
++ refactored class names and packages
++ improved ftp with new functions delete/check existence
++ Added http utils
++ refactored hashChecker, zipUtils, and downloadUtils
++ replaced system.out.println with SafeLogger  Improved Updates manager + added synchronization and final hash check
 
-2019-12-22  (tag: refs/tags/0.9.14) Improved update process, fixed bug in launcher without shell
+2020-01-04 Improved Graphics + TextEditor Bugs fixed
 
-2019-12-21  Improved mapTextArea sync and default options at first launch + BUGFIX
++ moved input aes into headerPanel
++ crypt / decrypt added too many lines to the text
++ Removed threaded control at ctrl + z: with large files it could go out
+of sync with the file (use update progress panel to signal operation in
+progress, even for the crypter)
++ nimbus size did not work when opening crypter
++ templates increased in size
++ txt editor import / export crypted workspace now avoids opening
+multiple panels
++ textEditor: ctrl + z / unsaved management added (check if [rereading
+file + appears] at each ctrl + y / ctrl + z is effective or if it is too
+slow)
++ New icons with dynamic menu bar management for header/subheader/footer
+toggle: use ToggleAction interface  Improved Graphics + TextEditor Bugs fixed
 
-2019-12-21  BugFix - Crypter: removed fictitious error when crypting/decrypting folder with no files in a subFolder
+2020-01-03 Added undo/redo unsaved automation + fixed dialogs/close all tabs  Added undo/redo unsaved automation + fixed dialogs/close all tabs
 
-2019-12-21  Documentation - Added fallback opening with default browser
+2020-01-02 IMPORTANT: update process -> fixed bug in unzipping  IMPORTANT: update process -> fixed bug in unzipping
 
-2019-12-21  Added password generator, improved shuffle/hashed crypter
+2020-01-02 new Version 0.9.16 - Optimized application size  new Version 0.9.16 - Optimized application size
 
-2019-12-20  Improved Crypter and GUI + light ScreepT libs
+2020-01-02 Improved plugin process + Dialogs and Text Editor bugFix  (tag: refs/tags/0.9.16) Improved plugin process + Dialogs and Text Editor bugFix
 
-2019-12-19  Improved AES crypt, added hashed key mode with automatic recognition in decrypt-phase
+2020-01-01 Solved crashes on Network/Hardware analysis
 
-2019-12-18  Minor bugFixing and build/project refactor
++ removed Sigar from dependencies
++ added methods to replace Sigar's work (network/hardware info tools)  Solved crashes on Network/Hardware analysis
 
-2019-12-18  Aes crypter security improvement: added hashing to password
+2019-12-31 Hardware and Network info are no more installed by default, but Plugins
 
-2019-12-18  Added hashing function + Tests improvements
++ Installed_plugin.properties moved to vanilla files, build updated  Hardware and Network info are no more installed by default, but Plugins
 
-2019-12-17  Minor bugs fixed (TextEditor + Launcher)
+2019-12-30 Added emergency kill shortcut ([esc or alt+F4] x 4 times) + BUGFIX
 
-2019-12-16  Fixed file extension naming bug when saving new, tree scroll fixed
++ improved files and directories management: refactor + added confirm
+step
 
-2019-12-16  fixed launcher Version reference BUG
++ mainGui: added killApplication light method  Added emergency kill shortcut ([esc or alt+F4] x 4 times) + BUGFIX
 
-2019-12-16  Fixed plugin bug: added installed check at start
+2019-12-30 Improved password generator with more options
 
-2019-12-15  BUGFIX plugins
++ refactored joptionPane with parent + extension
++ further refactoring, others moved to variouCommonsLight project  Improved password generator with more options
 
-2019-12-15  + Solved graphics scroll bug - Little problems still persisting with added LAFs
+2019-12-29 Improved updates and dialogs management + BUGFIX + Internal refactor  Improved updates and dialogs management + BUGFIX + Internal refactor
 
-2019-12-15  Improved direct open file + added combo syntax backup if autoSyntax locked
+2019-12-27 Error management improvements + Launcher settings tuned  Error management improvements + Launcher settings tuned
 
-2019-12-15  Added instance check at start and open file into current instance
+2019-12-27 Introduced ScrYpT's optimizer to top-right on menu. (+ Minor bugs fixed)
 
-2019-12-15  (tag: refs/tags/0.9.13) Improved launcher executable batch file to use batch root as source
++ refactored structure to make possible to garbageCollect widows opened
+(Added WindowCreator + getInstance to have singleton and make them null
+on dispose)
++ text editor Tree: added file existance check for "move/copy current
+file here"  Introduced ScrYpT's optimizer to top-right on menu. (+ Minor bugs fixed)
 
-2019-12-10  Launcher - solved rare bug (launch fail)
+2019-12-26 Crypter process made cancelable + Configuration manager improved
 
-2019-12-10  (tag: refs/tags/0.9.12) Full Screen, immersiveMode, and Dialogs location bugs fixed
++ improved chargeIniLog panel and renamed to configurationManagerPanel
++ added refactor to crypter exception management
++ added autosave on hideLauncherOption to generalOptionsFrame when
+clicking "use" button  Crypter process made cancelable + Configuration manager improved
 
-2019-12-08  Updated changelog format and export
+2019-12-26 Improved graphics, launcher, and default properties  Improved graphics, launcher, and default properties
 
-2019-12-08  + added changeLog Panel to mainMenu
+2019-12-25 Improved import/export crypted workspace + various bugs fixed  Improved import/export crypted workspace + various bugs fixed
 
-2019-12-08  Improved build and Export
+2019-12-22 Refactored main menubar, introduced import/export crypted workspace +
+BUGFIX
 
-2019-12-08  New changelog, improved changelog export
++ minor fixes and code refactor
++ introduced moduleParent to generalize panels for mainFrame  Refactored main menubar, introduced import/export crypted workspace + BUGFIX
 
-2019-12-08  (tag: refs/tags/v0.9.11b) Improved hash checker with folders and progbar
+2019-12-22 Improved update process, fixed bug in launcher without shell  (tag: refs/tags/0.9.14) Improved update process, fixed bug in launcher without shell
+
+2019-12-21 Improved mapTextArea sync and default options at first launch + BUGFIX  Improved mapTextArea sync and default options at first launch + BUGFIX
+
+2019-12-21 BugFix - Crypter: removed fictitious error when crypting/decrypting
+folder with no files in a subFolder  BugFix - Crypter: removed fictitious error when crypting/decrypting folder with no files in a subFolder
+
+2019-12-21 Documentation - Added fallback opening with default browser  Documentation - Added fallback opening with default browser
+
+2019-12-21 Added password generator, improved shuffle/hashed crypter
+
++ various fixes
++ improved crypter various
++ updated icons
++ crypter classes improved
++ standalone crypter library minimized - removed all dependencies  Added password generator, improved shuffle/hashed crypter
+
+2019-12-20 Improved Crypter and GUI + light ScreepT libs  Improved Crypter and GUI + light ScreepT libs
+
+2019-12-19 Improved AES crypt, added hashed key mode with automatic recognition in
+decrypt-phase
+
++ added bitWorker to get/set specific bit into a single byte
++ improved Text editor with maximize function toggle
++ improved modules on/off visualization into text editor
++ minor bugs fixed - graphics and UX  Improved AES crypt, added hashed key mode with automatic recognition in decrypt-phase
+
+2019-12-18 Minor bugFixing and build/project refactor  Minor bugFixing and build/project refactor
+
+2019-12-18 Aes crypter security improvement: added hashing to password  Aes crypter security improvement: added hashing to password
+
+2019-12-18 Added hashing function + Tests improvements  Added hashing function + Tests improvements
+
+2019-12-17 Minor bugs fixed (TextEditor + Launcher)  Minor bugs fixed (TextEditor + Launcher)
+
+2019-12-16 Fixed file extension naming bug when saving new, tree scroll fixed  Fixed file extension naming bug when saving new, tree scroll fixed
+
+2019-12-16 fixed launcher Version reference BUG  fixed launcher Version reference BUG
+
+2019-12-16 Fixed plugin bug: added installed check at start
+
++ added export plugin folder to build  Fixed plugin bug: added installed check at start
+
+2019-12-15 BUGFIX plugins  BUGFIX plugins
+
+2019-12-15 + Solved graphics scroll bug - Little problems still persisting with
+added LAFs  + Solved graphics scroll bug - Little problems still persisting with added LAFs
+
+2019-12-15 Improved direct open file + added combo syntax backup if autoSyntax
+locked  Improved direct open file + added combo syntax backup if autoSyntax locked
+
+2019-12-15 Added instance check at start and open file into current instance
+
++ minor bugs fixed  Added instance check at start and open file into current instance
+
+2019-12-15 Improved launcher executable batch file to use batch root as source
+
+(cd ./ used caller relative dir instead of batch relative)
+
++various fixes  (tag: refs/tags/0.9.13) Improved launcher executable batch file to use batch root as source
+
+2019-12-10 Launcher - solved rare bug (launch fail)  Launcher - solved rare bug (launch fail)
+
+2019-12-10 Full Screen, immersiveMode, and Dialogs location bugs fixed  (tag: refs/tags/0.9.12) Full Screen, immersiveMode, and Dialogs location bugs fixed
+
+2019-12-08 Updated changelog format and export  Updated changelog format and export
+
+2019-12-08 + added changeLog Panel to mainMenu  + added changeLog Panel to mainMenu
+
+2019-12-08 Improved build and Export  Improved build and Export
+
+2019-12-08 New changelog, improved changelog export  New changelog, improved changelog export
+
+2019-12-08 Improved hash checker with folders and progbar
+
++ started changelog  (tag: refs/tags/v0.9.11b) Improved hash checker with folders and progbar
 
