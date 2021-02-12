@@ -446,19 +446,13 @@ class ColumnSelectionCaret extends DefaultCaret {
     	
         super.mouseReleased(e);
         
-        if(thisTextArea != null)
+        if(thisTextArea != null && !shiftDown)
         	thisTextArea.removeAllLineHighlights();
         
-        SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				updateSelectionIfShiftPressed();
-				if(customCaret != null && customCaret instanceof ColumnSelectionCaret) {
-					((ColumnSelectionCaret)customCaret).paint(getGraphics());
-				}
-			}
-		});
-        
+		updateSelectionIfShiftPressed();
+		if(customCaret != null && customCaret instanceof ColumnSelectionCaret) {
+			((ColumnSelectionCaret)customCaret).paint(getGraphics());
+		}
     }
 
     @Override
@@ -479,28 +473,25 @@ class ColumnSelectionCaret extends DefaultCaret {
                 	robot.mouseMove(e.getXOnScreen(), e.getYOnScreen() - 1);
                 	robot.mouseMove(e.getXOnScreen(), e.getYOnScreen() + 1);
                 	boolean rightClick = SwingUtilities.isRightMouseButton(e);
-                	thisTextArea.removeAllLineHighlights();
-                	thisTextArea.repaint();
-                	if (!shiftDown && !rightClick) {
-						thisTextArea.getHighlighter().removeAllHighlights();
-						thisTextArea.addLineHighlight(RXTextUtilities.getLineAtCaret(thisTextArea) - 1, thisTextArea.getCurrentLineHighlightColor());
+                	
+                	if (!shiftDown) {
+                		thisTextArea.removeAllLineHighlights();
+                		thisTextArea.repaint();
+                		
+                		if(!rightClick) {
+                			thisTextArea.getHighlighter().removeAllHighlights();
+                			thisTextArea.addLineHighlight(RXTextUtilities.getLineAtCaret(thisTextArea) - 1, thisTextArea.getCurrentLineHighlightColor());
+                		}
 					}
 		
 					int start = thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition() 
 							? lastStartPosition
 							: thisTextArea.getSelectionStart();
 
-//					if(thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition()) {
-//						start = 
-//					} else if(thisTextArea.getSelectionEnd() > thisTextArea.getCaretPosition()) {
-//						
-//					}
-
 					// Update last start position, used on key released if shift is pressed
 					if (shiftDown) {
 						lastStartPosition = thisTextArea.getSelectedText() != null ? start : thisTextArea.getCaretPosition();
 					} else {
-						// TODO: check ctrl shift behaviour
 						lastStartPosition = thisTextArea.getCaretPosition();
 					}
 					
@@ -530,9 +521,7 @@ class ColumnSelectionCaret extends DefaultCaret {
 				}
 			} catch (Exception e) {
 			}
-        } else {
-        	// TODO
-        }
+        } 
     }
 
     @Override

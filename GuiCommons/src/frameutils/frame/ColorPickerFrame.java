@@ -389,7 +389,7 @@ public class ColorPickerFrame extends ParentFrame implements MousePointerCaller{
 		btnPickerOn.setBorder(null);
 		panelHeader.add(btnPickerOn, "cell 0 0,grow");
 		
-		lblColorPicker = new JLabel("Click elements to retrieve their color (or press [shift + CTRL] and move mouse)");
+		lblColorPicker = new JLabel("Click elements to retrieve their color (or press [SHIFT + CTRL] and move mouse)");
 		lblColorPicker.setHorizontalAlignment(SwingConstants.CENTER);
 		lblColorPicker.setForeground(Color.WHITE);
 		lblColorPicker.setFont(new Font("Segoe UI", Font.PLAIN, 14));

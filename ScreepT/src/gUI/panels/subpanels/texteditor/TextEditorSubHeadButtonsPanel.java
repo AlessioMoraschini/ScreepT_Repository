@@ -58,7 +58,6 @@ import conversion.Text2Speech;
 import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
-import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.EscapeReplacerFrame;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.utils.GuiUtilsExtended;
@@ -187,7 +186,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public FilePropertiesFrame propertiesFrame;
 	public CalculatorMainApp calculatorFrame;
 	public Thread calculatorMainThread;
-	public ColorPickerFrame colorPickerFrame;
 	
 	public Text2Speech objSpeaker; // field containing the current object used to speak text
 
@@ -794,13 +792,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (colorPickerFrame == null || !colorPickerFrame.active) {
-							colorPickerFrame = ColorPickerFrame.getInstance(parent.parentFrame);
-						}else {
-							colorPickerFrame.dispatchEvent(new WindowEvent(colorPickerFrame, WindowEvent.WINDOW_CLOSING));
-						}
-						colorPickerFrame.setLocationRelativeTo(mainApplication.getMainFrame());
-						GuiUtilsExtended.extendFramesAndMoveToTop(mainApplication.getMainFrame(), colorPickerFrame, JFrame.MAXIMIZED_BOTH);
+						mainApplication.windowCreator.newColorPickerFrame();
 					}
 				});
 			}
