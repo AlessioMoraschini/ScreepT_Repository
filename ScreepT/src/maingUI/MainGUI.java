@@ -946,6 +946,14 @@ public class MainGUI extends MainGuiParent{
 				windowCreator.newClipboardFrame();
 			}
 		});
+
+		// open in a new window - Built-in Shell
+		mntmShellStandalone = new CustomJmenuItem(new AbstractAction("System Console") {
+			public void actionPerformed(ActionEvent e) {
+				
+				windowCreator.newShellFrame();
+			}
+		});
 		
 		// open in a new window - File Hash checker
 		mntmColorPicker = new CustomJmenuItem(new AbstractAction("Color picker") {

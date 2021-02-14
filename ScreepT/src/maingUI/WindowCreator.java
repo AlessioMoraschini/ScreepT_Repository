@@ -25,6 +25,7 @@ import frameutils.frame.ClipboardFrame;
 import frameutils.frame.ColorPickerFrame;
 import frameutils.frame.GeneratePasswordFrame;
 import frameutils.frame.HashCheckerFrame;
+import frameutils.frame.ShellFrame;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.AboutSectionFrame;
@@ -111,6 +112,14 @@ public class WindowCreator {
 		commonGraphicInitAlwaysOnTop(clipboardFrame, "Clipboard Frame - ", true);
 		
 		return clipboardFrame;
+	}
+	
+	public ShellFrame newShellFrame() {
+		
+		ShellFrame shellFrame = ShellFrame.getInstance(mainApplication.getMainFrame(), true);
+		commonGraphicInitAlwaysOnTop(shellFrame, "Shell Frame - ", true);
+		
+		return shellFrame;
 	}
 	
 	public ColorPickerFrame newColorPickerFrame() {

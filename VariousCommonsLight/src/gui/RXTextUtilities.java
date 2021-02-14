@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.text.*;
 
 import utility.log.SafeLogger;
+import utility.string.StringWorker;
 
 /*
  *	A collection of static methods that provide added functionality for
@@ -110,6 +111,97 @@ public class RXTextUtilities {
 
 		return root.getElementIndex(caretPosition) + 1;
 	}
+	
+	/**
+	 * Get text block at current caret position delimited by document start/end or a blank line
+	 * @throws BadLocationException 
+	 */
+	public static String getCurrentCaretTextBlock(JTextComponent component, String lineSeparator, boolean selectText) throws BadLocationException {
+		if(component == null || StringWorker.isEmpty(component.getText())) 
+			return "";
+		
+		StringBuilder builder = new StringBuilder();
+		
+		// Search back from current line to first blank line (or document start)
+		String temp = "initialized";
+		int line = getLineAtCaret(component);
+		while(line > 0) {
+			temp = getLineText(component, line, false);
+			if(StringWorker.isEmpty(temp)) {
+				line++;
+				temp = getLineText(component, line, false);
+				break;
+			}
+			
+			line --;
+		}
+		int start = getStartOfLine(component, line);
+		
+		
+		// Search forward until next blank line, and add to stringBuilder
+		int totLines = getLines(component);
+		while(line <= totLines && !StringWorker.isEmpty(temp)) {
+			temp = getLineText(component, line, false);
+			
+			if(!StringWorker.isEmpty(temp))
+				builder.append(temp);
+			else {
+				line --;
+				break;
+			}
+			
+			if(line < totLines && !StringWorker.isEmpty(getLineText(component, line+1, false)))
+				builder.append(lineSeparator);
+			else
+				break;
+			
+			line ++;
+		}
+		int end = getEndOfLine(component, line) - 1;
+		
+		if(selectText)
+			setSelection(component, start, end);
+		
+		return builder.toString();
+	}
+	
+	public static String getCurrentCaretLineText(JTextComponent component, boolean selectText) throws BadLocationException {
+		if(component == null || StringWorker.isEmpty(component.getText())) 
+			return "";
+		
+		int currLine = getLineAtCaret(component);
+		int start = getStartOfLine(component, currLine);
+		int end = getEndOfLine(component, currLine) - 1;
+		
+		if(selectText)
+			setSelection(component, start, end);
+		
+		return component.getText(start, end-start);
+	}
+	
+	public static void setSelection(JTextComponent component, int start, int end) {
+		SwingUtilities.invokeLater(() -> {
+			component.requestFocus();
+			component.setSelectionStart(start);
+			component.setSelectionEnd(end);
+		});
+	}
+
+	public static String getLineText(JTextComponent component, int line, boolean selectText) throws BadLocationException {
+		if(component == null || StringWorker.isEmpty(component.getText())) 
+			return "";
+		
+		int start = getStartOfLine(component, line);
+		int end = getEndOfLine(component, line);
+		
+		if(selectText) {
+			component.setSelectionStart(start);
+			component.setSelectionEnd(end);
+			component.setCaretPosition(end);
+		}
+		String normalized = StringWorker.normalizeStringToLF(component.getText(start, end-start));
+		return normalized.substring(0, Math.max(0, normalized.length() - 1));
+	}
 
 	/*
 	 * Return the number of lines of text in the Document
@@ -122,12 +214,39 @@ public class RXTextUtilities {
 	/*
 	 * Position the caret at the start of a line.
 	 */
-	public static void gotoStartOfLine(JTextComponent component, int line) {
+	public static int gotoStartOfLine(JTextComponent component, int line) {
+		int startOfLineOffset = getStartOfLine(component, line);
+		component.setCaretPosition(startOfLineOffset);
+		
+		return startOfLineOffset;
+	}
+	
+	public static void gotoLine(JTextArea component, int line) throws BadLocationException {
+		component.setCaretPosition(component.getLineStartOffset(line));
+	}
+	
+	/*
+	 * Position the caret at the start of a line.
+	 */
+	public static int getStartOfLine(JTextComponent component, int line) {
 		Element root = component.getDocument().getDefaultRootElement();
 		line = Math.max(line, 1);
 		line = Math.min(line, root.getElementCount());
-		int startOfLineOffset = root.getElement(line - 1).getStartOffset();
-		component.setCaretPosition(startOfLineOffset);
+		return root.getElement(line - 1).getStartOffset();
+	}
+	
+	public static int gotoEndOfLine(JTextComponent component, int line) {
+		int endOfLineOffset = getEndOfLine(component, line);
+		component.setCaretPosition(endOfLineOffset);
+		
+		return endOfLineOffset;
+	}
+
+	public static int getEndOfLine(JTextComponent component, int line) {
+		Element root = component.getDocument().getDefaultRootElement();
+		line = Math.max(line, 1);
+		line = Math.min(line, root.getElementCount());
+		return root.getElement(line - 1).getEndOffset();
 	}
 
 	/*
@@ -164,5 +283,22 @@ public class RXTextUtilities {
 		}
 
 		return lines;
+	}
+
+	/**
+	 * @param blockMode if true all non bloank contiguous lines will be used, else only the current caret line
+	 * @param lineSeparator the separator to put between the retrieved lines
+	 */
+	public static String getSelectedOrBlockText(JTextArea textArea, boolean blockMode, String lineSeparator) throws BadLocationException {
+		if(textArea == null || StringWorker.isEmpty(textArea.getText()))
+			return "";
+		
+		if(!StringWorker.isEmpty(textArea.getSelectedText()))
+			return StringWorker.normalizeStringToEol(textArea.getSelectedText(), " && ");
+		else if(blockMode)
+			return getCurrentCaretTextBlock(textArea, lineSeparator, true);
+		else
+			return getCurrentCaretLineText(textArea, true);
+			
 	}
 }

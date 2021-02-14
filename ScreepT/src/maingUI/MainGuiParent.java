@@ -159,6 +159,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmHashChecker;
 	CustomJmenuItem mntmColorPicker;
 	CustomJmenuItem mntmClipboardStandalone;
+	CustomJmenuItem mntmShellStandalone;
 	CustomJmenuItem mntmImageViewer;
 	CustomJmenuItem mntmImageConverter;
 	CustomJmenuItem mntmTouppercaseDirectory;
@@ -385,6 +386,7 @@ public class MainGuiParent {
 			mnVarious.add(mntmHashChecker);
 			mnVarious.add(mntmColorPicker);
 			mnVarious.add(mntmClipboardStandalone);
+			mnVarious.add(mntmShellStandalone);
 			mnVarious.add(mnConversionsAndOther);
 				// SUB-MENU
 				mnConversionsAndOther.add(mntmImageViewer);
@@ -535,6 +537,7 @@ public class MainGuiParent {
 		mntmHashChecker.setFont(menuItemFont);
 		mntmColorPicker.setFont(menuItemFont);
 		mntmClipboardStandalone.setFont(menuItemFont);
+		mntmShellStandalone.setFont(menuItemFont);
 		
 		// SUB -> CONVERSION UTILS SECTION
 		mntmImageViewer.setFont(menuItemFont);
@@ -622,6 +625,7 @@ public class MainGuiParent {
 		mntmHashChecker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HASHING));
 		mntmColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
 		mntmClipboardStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
+		mntmShellStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 		

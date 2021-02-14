@@ -52,7 +52,7 @@ public class UpdateProgressPanel {
     public AtomicBoolean stopProcess = new AtomicBoolean(false);
     public AtomicBoolean forceDispose = new AtomicBoolean(false);
     
-    private JDialog dialog;
+    public JDialog dialog;
     private JLabel label = new JLabel("  I'm workin' !");
     
     private GridBagConstraints gbc_pb;

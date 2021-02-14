@@ -235,6 +235,10 @@ public class IconsPathConfigurator {
 	public static final String ICON_UP = GeneralConfig.RESOURCES_DIR + "Icons/General/iconUp.png";
 	public static final String ICON_DOWN_SMALL = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDownSmall.png";
 	public static final String ICON_DOWN = GeneralConfig.RESOURCES_DIR + "Icons/General/iconDown.png";
+
+	public static String ICON_PLAY = GeneralConfig.RESOURCES_DIR + "Icons/General/play.png";
+	public static String ICON_STOP = GeneralConfig.RESOURCES_DIR + "Icons/General/Stop.png";
+	public static String ICON_PAUSE = GeneralConfig.RESOURCES_DIR + "Icons/General/pause.png";
 	
 	// TOGGLES
 	public static final String ST_ICON_HEAD_VISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/Head_visible.png";

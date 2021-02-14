@@ -750,6 +750,18 @@ public class StringWorker {
 	}
 
 	/**
+	 * Replace all EOL(EndOfLine) characters with the wanted type
+	 * @param source
+	 * @return
+	 */
+	public static String normalizeStringToEol(String source, String outputEOL) {
+		
+		String output = normalizeStringToLF(source).replaceAll(EOL.LF.eol, outputEOL);
+		
+		return output;
+	}
+
+	/**
 	 * Replace all EOL(EndOfLine) characters with the LF type
 	 * @param source
 	 * @return

@@ -276,10 +276,11 @@ public class MainStandAloneUpdater {
 		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
 		for(File curr : CURRENT_DIR.listFiles()) {
 			
-			if (curr.isFile() 
-					&& !curr.getName().endsWith(".bat") 
-					&& !curr.getName().equals(UPDATES_PROPERTIES_FILE)
-					&& !curr.getName().equals(FTP_PROPERTIES_FILE)) {
+			if (curr.isFile() &&
+				!curr.getName().endsWith(".bat") &&
+				!curr.getName().endsWith(".log") &&
+				!curr.getName().equals(UPDATES_PROPERTIES_FILE) &&
+				!curr.getName().equals(FTP_PROPERTIES_FILE)) {
 				
 				try {
 					String hash = ChecksumHasher.getFileHashBuffered(curr.getName(), downloadsHashFunc, true);
@@ -490,7 +491,7 @@ public class MainStandAloneUpdater {
 		FtpDumper dumper = new FtpDumper(HOST, USER, PSW, PORT);
 		
 		UpdateProgressPanel progPanel = new UpdateProgressPanel(true);
-		
+		progPanel.dialog.setTitle("Uploading files");
 		// Remove remote manifest before to start upload, and upload separately after other files:
 		// -> this will avoid users to start updates during the update process.
 		File manifestFound = findManifestAndMoveAtTheEnd(toUploadList);
