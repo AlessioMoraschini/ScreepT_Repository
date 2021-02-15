@@ -36,13 +36,12 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
+import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
 import gui.GuiUtils;
 
 import java.awt.Font;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -106,29 +105,8 @@ public class FilePropertiesFrame extends JFrame{
 		lblFileName.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblFileName, "cell 0 0,alignx center");
 		
-		dynLblFileName = new JTextField("");
-		dynLblFileName.setForeground(Color.DARK_GRAY);
+		dynLblFileName = ParentPanel.getTextField(null, Color.DARK_GRAY, null, null, true);
 		panel.add(dynLblFileName, "cell 1 0 3 1,growx");
-		dynLblFileName.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if(dynLblFileName.getSelectedText() == null || "".equals(dynLblFileName.getSelectedText())) {
-					dynLblFileName.selectAll();
-				}
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseClicked(MouseEvent e) {
-			}
-		});
 		
 		viewInFileSystemButton = new JButton("");
 		viewInFileSystemButton.setToolTipText("View in File System explorer");
@@ -155,29 +133,8 @@ public class FilePropertiesFrame extends JFrame{
 		lblPath.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblPath, "cell 0 2,alignx center");
 		
-		dynLblPath = new JTextField("");
-		dynLblPath.setForeground(Color.DARK_GRAY);
+		dynLblPath = ParentPanel.getTextField(null, Color.DARK_GRAY, null, null, true);
 		panel.add(dynLblPath, "cell 1 2 4 1,growx");
-		dynLblPath.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				if(dynLblPath.getSelectedText() == null || "".equals(dynLblPath.getSelectedText())) {
-					dynLblPath.selectAll();
-				}
-			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-			@Override
-			public void mouseClicked(MouseEvent e) {
-			}
-		});
 		
 		hashMd5Lbl = new JLabel("Hash MD5:");
 		hashMd5Lbl.setForeground(Color.LIGHT_GRAY);

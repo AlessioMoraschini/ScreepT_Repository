@@ -13,26 +13,35 @@ package frameutils.frame.panels.arch;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.TreeMap;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
 import gui.GuiUtils;
+import resources.IconsPathConfigurator;
+import utility.log.SafeLogger;
 import utility.reflection.ReflectionUtils;
 
 public abstract class ParentPanel extends JPanel implements IParentPanel{
 	private static final long serialVersionUID = -5704690014209186123L;
 
 	// ParentPanel logger creation
-	public static Logger logger = Logger.getLogger(ParentPanel.class);
+	public static SafeLogger logger = new SafeLogger(ParentPanel.class);
 	
 	public static final Font DEFAULT_BTN_FONT = new Font("Segoe UI", Font.PLAIN, 18);
 	public static final Font DEFAULT_TEXT_AREA_FONT = new Font("Segoe UI", Font.PLAIN, 19);
@@ -56,26 +65,93 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 	
 	abstract protected void initGui();
 	
-	protected void styleButtons(Color background, Color foreground, boolean makeTransparent) {
-		try {
-			for(JButton button : ReflectionUtils.retrieveFieldsByType(this, JButton.class)) {
-				button.setCursor(GuiUtils.CURSOR_HAND);
-				button.setFont(DEFAULT_BTN_FONT);
-				if(makeTransparent)
-					GuiUtils.makeTransparentJButton(button);
-				
-				if(background != null)
-					button.setBackground(background);
-				
-				if(foreground != null)
-					button.setForeground(foreground);
-			}
-		} catch (Exception e) {
-		}
+	// ######### COMMON JComponent factory methods ########### //
+	public static JButton getButton(String text, Color background, Color foreground, String iconPath, boolean makeTransparent) {
+		JButton button = new JButton(text);
+		button.setCursor(GuiUtils.CURSOR_HAND);
+		button.setFont(DEFAULT_BTN_FONT);
+		button.setIcon(new ImageIcon(iconPath));
+		
+		if(background != null)
+			button.setBackground(background);
+		
+		if(foreground != null)
+			button.setForeground(foreground);
+		
+		if(makeTransparent)
+			GuiUtils.makeTransparentJButton(button);
+		
+		return button;
 	}
 	
+	public static JTextArea getTextArea(Color background, Color foreground, Color caretColor, Font font) {
+		JTextArea textArea = new JTextArea();
+		textArea.setMargin(new Insets(4, 4, 4, 4));
+		
+		if(font != null)
+			textArea.setFont(font);
+		
+		if(foreground != null)
+			textArea.setForeground(foreground);
+		
+		if(background != null)
+			textArea.setBackground(background);
+		
+		if(caretColor != null)
+			textArea.setCaretColor(caretColor);
+		
+		return textArea;
+	}
+
+	public static JTextField getTextField(
+			Color background,
+			Color foreground,
+			Color caretColor, 
+			Font font,
+			boolean addAutoSelectMouseListener) {
+		
+		JTextField textField = new JTextField();
+		textField.setMargin(new Insets(4, 4, 4, 4));
+		
+		if(font != null)
+			textField.setFont(font);
+		
+		if(foreground != null)
+			textField.setForeground(foreground);
+		
+		if(background != null)
+			textField.setBackground(background);
+		
+		if(caretColor != null)
+			textField.setCaretColor(caretColor);
+		
+		if(addAutoSelectMouseListener) {
+			textField.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					if(textField.getSelectedText() == null || "".equals(textField.getSelectedText())) {
+						textField.selectAll();
+					}
+				}
+				@Override
+				public void mousePressed(MouseEvent e) {
+				}
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				}
+			});
+		}
+		
+		return textField;
+	}
 	
-	protected JScrollPane getScrollPane(boolean verticalScroll, boolean horizontalScroll) {
+	public static JScrollPane getScrollPane(boolean verticalScroll, boolean horizontalScroll) {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBorder(new EmptyBorder(0,0,0,0));
 		scrollPane.setBackground(Color.black);
@@ -94,7 +170,52 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 		
 		return scrollPane;
 	}
+	
+	public static JButton getPinToTopButton(JFrame targetFrame) {
+		JButton pinToTopButton = getButton("", null, null, IconsPathConfigurator.ICON_PIN_RED, true);
+		pinToTopButton.setToolTipText("Enable \"always on top\" over other windows (if supported)");
+		
+		pinToTopButton.addActionListener((e) -> {
+			if (!targetFrame.isAlwaysOnTop()) {
+				
+				if(!targetFrame.isAlwaysOnTopSupported()) {
+					logger.warn("User tried to set Always on top, but it seems it's not supported in this device!");
+					 new JOptionHelperExtended(targetFrame).warn("It seems that \"Always on top\" is not supported on this system :(", "\"Always on top\" not supported");
+				}
 
+				targetFrame.setAlwaysOnTop(true);
+				pinToTopButton.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_GREEN));
+				pinToTopButton.setToolTipText("Disable \"always on top\" over other windows");
+				
+			}else{
+				targetFrame.setAlwaysOnTop(false);
+				pinToTopButton.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PIN_RED));
+				pinToTopButton.setToolTipText("Enable \"always on top\" over other windows (if supported)");
+			}
+		});
+		
+		return pinToTopButton;
+	}
+
+	
+	protected void styleAllButtons(Color background, Color foreground, boolean makeTransparent) {
+		try {
+			for(JButton button : ReflectionUtils.retrieveFieldsByType(this, JButton.class)) {
+				button.setCursor(GuiUtils.CURSOR_HAND);
+				button.setFont(DEFAULT_BTN_FONT);
+				if(makeTransparent)
+					GuiUtils.makeTransparentJButton(button);
+				
+				if(background != null)
+					button.setBackground(background);
+				
+				if(foreground != null)
+					button.setForeground(foreground);
+			}
+		} catch (Exception e) {
+		}
+	}
+	
 	/**
 	 * This method syncronize current secondary panel textarea with the main one retrieved with 
 	 * @throws IOException 

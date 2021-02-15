@@ -105,11 +105,17 @@ public class RXTextUtilities {
 	/*
 	 * Return the line number at the Caret position.
 	 */
-	public static int getLineAtCaret(JTextComponent component) {
-		int caretPosition = component.getCaretPosition();
-		Element root = component.getDocument().getDefaultRootElement();
+	public static int getLineAtCaret(JTextComponent component) throws BadLocationException {
+		if(component instanceof JTextArea) {
+			return ((JTextArea)component).getLineOfOffset(component.getCaretPosition());
 
-		return root.getElementIndex(caretPosition) + 1;
+		} else {
+			
+			int caretPosition = component.getCaretPosition();
+			Element root = component.getDocument().getDefaultRootElement();
+			
+			return root.getElementIndex(caretPosition) + 1;
+		}
 	}
 	
 	/**
@@ -125,7 +131,7 @@ public class RXTextUtilities {
 		// Search back from current line to first blank line (or document start)
 		String temp = "initialized";
 		int line = getLineAtCaret(component);
-		while(line > 0) {
+		while(line >= 0) {
 			temp = getLineText(component, line, false);
 			if(StringWorker.isEmpty(temp)) {
 				line++;
@@ -133,36 +139,44 @@ public class RXTextUtilities {
 				break;
 			}
 			
-			line --;
+			if(line > 0)
+				line --;
+			else
+				break;
 		}
 		int start = getStartOfLine(component, line);
 		
 		
 		// Search forward until next blank line, and add to stringBuilder
 		int totLines = getLines(component);
-		while(line <= totLines && !StringWorker.isEmpty(temp)) {
+		int separatorsAdded = 0;
+		while(line < totLines && !StringWorker.isEmpty(temp)) {
 			temp = getLineText(component, line, false);
 			
-			if(!StringWorker.isEmpty(temp))
+			if(!StringWorker.isEmpty(temp)) {
 				builder.append(temp);
-			else {
+			
+			} else {
 				line --;
 				break;
 			}
 			
-			if(line < totLines && !StringWorker.isEmpty(getLineText(component, line+1, false)))
+			boolean lastLine = line == totLines - 1;
+			if(line < totLines && !lastLine && !StringWorker.isEmpty(getLineText(component, line+1, false))) {
 				builder.append(lineSeparator);
-			else
-				break;
+				separatorsAdded ++;
+			}
 			
 			line ++;
 		}
-		int end = getEndOfLine(component, line) - 1;
+		
+		String output = builder.toString();
+		int end = start + (output.length() - (lineSeparator.length() * separatorsAdded) + 1);
 		
 		if(selectText)
 			setSelection(component, start, end);
 		
-		return builder.toString();
+		return output;
 	}
 	
 	public static String getCurrentCaretLineText(JTextComponent component, boolean selectText) throws BadLocationException {
@@ -181,18 +195,35 @@ public class RXTextUtilities {
 	
 	public static void setSelection(JTextComponent component, int start, int end) {
 		SwingUtilities.invokeLater(() -> {
+			int safeEnd = (end > component.getText().length()) ? component.getText().length() - 1 : end;
+			int safeStart = (start < 0) ? 0 : start; 
+			
 			component.requestFocus();
-			component.setSelectionStart(start);
-			component.setSelectionEnd(end);
+			component.setSelectionStart(safeStart);
+			component.setSelectionEnd(safeEnd);
 		});
 	}
 
+	/**
+	 * Line >= 0
+	 */
 	public static String getLineText(JTextComponent component, int line, boolean selectText) throws BadLocationException {
 		if(component == null || StringWorker.isEmpty(component.getText())) 
 			return "";
 		
-		int start = getStartOfLine(component, line);
-		int end = getEndOfLine(component, line);
+		int start, end;
+		
+		if(component instanceof JTextArea) {
+			int lineCount = ((JTextArea)component).getLineCount();
+			if(line >= lineCount)
+				line = lineCount - 1;
+			
+			end = ((JTextArea)component).getLineEndOffset(line);
+			start = ((JTextArea)component).getLineStartOffset(line);
+		} else {
+			start = Utilities.getRowStart(component, line);
+			end = Utilities.getRowEnd(component, line);    
+		}
 		
 		if(selectText) {
 			component.setSelectionStart(start);
@@ -200,7 +231,11 @@ public class RXTextUtilities {
 			component.setCaretPosition(end);
 		}
 		String normalized = StringWorker.normalizeStringToLF(component.getText(start, end-start));
-		return normalized.substring(0, Math.max(0, normalized.length() - 1));
+		
+		if(normalized.endsWith("\n"))
+			return normalized.substring(0, Math.max(0, normalized.length() - 1));
+		else
+			return normalized.substring(0, Math.max(0, normalized.length()));
 	}
 
 	/*
@@ -221,6 +256,9 @@ public class RXTextUtilities {
 		return startOfLineOffset;
 	}
 	
+	/**
+	 * Line >= 0
+	 */
 	public static void gotoLine(JTextArea component, int line) throws BadLocationException {
 		component.setCaretPosition(component.getLineStartOffset(line));
 	}
@@ -235,6 +273,9 @@ public class RXTextUtilities {
 		return root.getElement(line - 1).getStartOffset();
 	}
 	
+	/**
+	 * Line >= 1
+	 */
 	public static int gotoEndOfLine(JTextComponent component, int line) {
 		int endOfLineOffset = getEndOfLine(component, line);
 		component.setCaretPosition(endOfLineOffset);
@@ -242,6 +283,9 @@ public class RXTextUtilities {
 		return endOfLineOffset;
 	}
 
+	/**
+	 * Line >= 1
+	 */
 	public static int getEndOfLine(JTextComponent component, int line) {
 		Element root = component.getDocument().getDefaultRootElement();
 		line = Math.max(line, 1);
@@ -294,7 +338,7 @@ public class RXTextUtilities {
 			return "";
 		
 		if(!StringWorker.isEmpty(textArea.getSelectedText()))
-			return StringWorker.normalizeStringToEol(textArea.getSelectedText(), " && ");
+			return StringWorker.normalizeStringToEol(textArea.getSelectedText(), lineSeparator);
 		else if(blockMode)
 			return getCurrentCaretTextBlock(textArea, lineSeparator, true);
 		else

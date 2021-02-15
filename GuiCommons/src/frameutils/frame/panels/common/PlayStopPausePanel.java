@@ -1,8 +1,7 @@
-package frameutils.frame.panels;
+package frameutils.frame.panels.common;
 
 import frameutils.frame.panels.arch.ParentPanel;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
@@ -27,9 +26,9 @@ public class PlayStopPausePanel extends ParentPanel {
 	}
 	
 	public PlayStopPausePanel(Runnable playAction, Runnable stopAction, Runnable pauseAction) {
-		this.playAction = playAction;
-		this.stopAction = stopAction;
-		this.pauseAction = pauseAction;
+		this.playAction = playAction != null ? playAction : () -> {};
+		this.stopAction = stopAction != null ? stopAction : () -> {};
+		this.pauseAction = pauseAction != null ? pauseAction : () -> {};
 		
 		isPlaying = false;  
 		isPaused = false;   
@@ -42,23 +41,19 @@ public class PlayStopPausePanel extends ParentPanel {
 	public void initGui() {
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[::33px,grow][::33px,grow][::33px,grow]", "[::9px,grow]"));
 		
-		playButton = new JButton("");
-		playButton.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PLAY));
-		add(playButton, "cell 0 0,alignx center,aligny center");
+		playButton = getButton("", null, null, IconsPathConfigurator.ICON_PLAY, true);
+		add(playButton, "cell 0 0,alignx left,aligny center");
 		
-		pauseButton = new JButton("");
-		pauseButton.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAUSE));
-		add(pauseButton, "cell 1 0,alignx center,aligny center");
+		pauseButton = getButton("", null, null, IconsPathConfigurator.ICON_PAUSE, true);
+		add(pauseButton, "cell 1 0,alignx left,aligny center");
 		
-		stopButton = new JButton("");
-		stopButton.setIcon(new ImageIcon(IconsPathConfigurator.ICON_STOP));
-		add(stopButton, "cell 2 0,alignx center,aligny center");
+		stopButton = getButton("", null, null, IconsPathConfigurator.ICON_STOP, true);
+		add(stopButton, "cell 2 0,alignx left,aligny center");
 		
 		initButtons();
 	}
 	
 	public void initButtons() {
-		super.styleButtons(null, null, true);
 		setButtonsEnabled(true, false, false);
 		setPlayStopPause(false, false, true);
 	}
@@ -104,6 +99,12 @@ public class PlayStopPausePanel extends ParentPanel {
 	
 	public void setPauseVisible(boolean pauseVisible) {
 		pauseButton.setVisible(pauseVisible);
+	}
+	public void setPlayVisible(boolean playVisible) {
+		playButton.setVisible(playVisible);
+	}
+	public void setStopVisible(boolean stopVisible) {
+		stopButton.setVisible(stopVisible);
 	}
 
 	public boolean isPlaying() {

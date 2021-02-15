@@ -736,6 +736,24 @@ public class StringWorker {
 		
 		return false;
 	}
+	
+	public static String removeBlankLines(String text, String lineSeparator) {
+		if(text == null || lineSeparator == null)
+			return text;
+		
+		StringBuilder builder = new StringBuilder();
+		
+		String[] lines = text.split(lineSeparator);
+		for(int i = 0; i < lines.length; i++) {
+			if(!StringWorker.isEmpty(lines[i]))
+				builder.append(lines[i]);
+			
+			if(i < lines.length - 1)
+				builder.append(lineSeparator);
+		}
+		
+		return builder.toString();
+	}
 
 	/**
 	 * Replace all EOL(EndOfLine) characters with the wanted type

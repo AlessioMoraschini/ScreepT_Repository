@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
@@ -51,7 +52,7 @@ public class ShellFrame extends ParentFrame {
 
 		GuiUtilsExtended.centerComponent(this);
 		setVisible(true);
-		setAlwaysOnTop(true);
+		setAlwaysOnTop(false);
 		
 		isActive.set(true);
 		thisFrame = this;
@@ -68,7 +69,7 @@ public class ShellFrame extends ParentFrame {
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[100%, grow]", "[100%, grow]"));
 		
 		if(writeMode)
-			payloadPanel = new ShellReadWritePanel(20000);
+			payloadPanel = new ShellReadWritePanel(20000, this);
 		else 
 			payloadPanel = new ShellReadPanel(20000);
 
@@ -76,6 +77,12 @@ public class ShellFrame extends ParentFrame {
 		
 		addHandlers();
 		logger.info(this.getClass().getName() + " - Started and ready!");
+		
+		if (payloadPanel instanceof ShellReadWritePanel) {
+			SwingUtilities.invokeLater(() -> {
+				((ShellReadWritePanel)payloadPanel).commandTextArea.requestFocusInWindow();
+			});
+		}
 	}
 	
 	private void addHandlers() {
