@@ -657,6 +657,9 @@ public class GenericFileChooserDialog {
 	
 	private static void addMultipleFileFilter(JFileChooser fileChooser, ExtensionFileFilter[] fileFilters) {
 		
+		if(fileFilters == null)
+			return;
+		
 		fileChooser.setAcceptAllFileFilterUsed(true);
 
 		for(int i = 0; i < fileFilters.length; i++) {

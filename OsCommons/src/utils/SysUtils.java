@@ -595,7 +595,7 @@ public class SysUtils {
 	/**
 	 * retrieve list of commands, write to file and run it in current OS
 	 */
-	public static void launchBatchOrBash(String batchOrBashPath, boolean minimizedShell) {
+	public static Process launchBatchOrBash(String batchOrBashPath, boolean minimizedShell) {
 		
 		OSinfo OS = getOsInfoLazy();
 		logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
@@ -611,9 +611,10 @@ public class SysUtils {
 			// CASE WINDOWS
 			if (OS.isWindows()) {
 				String minimizedOpt = minimizedShell ? "/min " : "";
-				runtime.exec("cmd /c start " + minimizedOpt + "\"\" \"" + batchOrBashPath + "\"");
+				logger.info("Commands launched without exceptions :)"); 
+				return runtime.exec("cmd /c start " + minimizedOpt + "\"\" \"" + batchOrBashPath + "\"");
 			
-			}else {
+			} else {
 				
 				// TODO LINUX/MAC SHELL show on/off
 				logger.info("Executing process [pwd]");
@@ -622,12 +623,53 @@ public class SysUtils {
 				Process executableMaker = runtime.exec("chmod u+x " + batchOrBashPath);
 				execNlogProcessOutput(executableMaker);
 				executableMaker.waitFor();
+				logger.info("Commands launched without exceptions :)"); 
 				
-				runtime.exec(batchOrBashPath);
+				return runtime.exec(batchOrBashPath);
 			}
-			logger.info("Commands launched without exceptions :)"); 
 		} catch (Exception e) {
 			logger.error(" !!! Error launching generated commands file !!!\n\n", e);
+			return null;
+		}
+	}
+
+	/**
+	 * retrieve list of commands, write to file and run it in current OS
+	 */
+	public static Process launchBatchOrBashSimple(String batchOrBashPath) {
+		
+		OSinfo OS = getOsInfoLazy();
+		logger.info("Launching commands on currentOS: " + OS.getOsName() + OS.getOsArch());
+		
+		Runtime runtime = Runtime.getRuntime();
+		
+		try {
+			try {
+				new File(batchOrBashPath).setExecutable(true);
+				
+			} catch (Exception e1) {}
+			
+			// CASE WINDOWS
+			if (OS.isWindows()) {
+				logger.info("Commands launched without exceptions :)"); 
+				return runtime.exec(batchOrBashPath);
+				
+			} else {
+				
+				// TODO LINUX/MAC SHELL show on/off
+				logger.info("Executing process [pwd]");
+				execNlogProcessOutput(runtime.exec("pwd"));
+				logger.info("Executing process [chmod u+x" + batchOrBashPath + "]");
+				Process executableMaker = runtime.exec("chmod u+x " + batchOrBashPath);
+				execNlogProcessOutput(executableMaker);
+				executableMaker.waitFor();
+				logger.info("Commands launched without exceptions :)"); 
+				
+				return runtime.exec(batchOrBashPath);
+			}
+		} catch (Exception e) {
+			logger.error(" !!! Error launching generated commands file !!!\n\n", e);
+			return null;
 		}
 	}
 	

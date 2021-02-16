@@ -264,6 +264,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			genOpt.setGeneralVolume(GenericOption.DEFAULT_VOLUME);
 		}
 		
+		genOpt.setLastShellFile(getSafeStringConf(GEN_OPT, "lastShellFile", ""));
 		genOpt.setAutomaticUpdateOn(getBooleanFromString(iniReadFile.get(GEN_OPT, "automaticUpdateOn"), GenericOption.DEF_automaticUpdateOn));
 		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
@@ -538,6 +539,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		if(genOpt.getUserName().equals("")) {
 			genOpt.setUserName(GenericOption.DEFAULT_USERNAME);
 		}
+		iniFile.put(GEN_OPT, "lastShellFile", genOpt.getLastShellFile());
 		iniFile.put(GEN_OPT, "userName", genOpt.getUserName());
 		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
 		iniFile.put(GEN_OPT, "generalVolume", genOpt.getGeneralVolume());
@@ -652,6 +654,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// concat GENERAL OPTIONS
 		builder.append("\n\n ---- GENERAL OPTIONS -----\n\n")
 			   .append("USERNAME: ").append(genOpt.getUserName())
+			   .append("LAST SHELL FILE: ").append(genOpt.getLastShellFile())
 			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
 			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
 			   .append("\nListen for uncatched exceptions and show them -> ").append(genOpt.isExceptionAdvicesEnabled())

@@ -13,6 +13,7 @@ package frameutils.frame;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -36,13 +37,22 @@ public class ShellFrame extends ParentFrame {
 	JFrame thisFrame;
 	public ParentPanel payloadPanel;
 	public boolean writeMode = false;
+	public File preloadFile;
+	private Runnable closeAction;
 	
 	public ShellFrame(JFrame parentFrame) {
 		this(parentFrame, false);
 	}
 	
 	public ShellFrame(JFrame parentFrame, boolean writeMode) {
+		this(parentFrame, writeMode, null);
+	}
+	
+	public ShellFrame(JFrame parentFrame, boolean writeMode, File preloadFile) {
+
 		this.writeMode = writeMode;
+		this.preloadFile = preloadFile;
+		this.closeAction = () -> {};
 		
 		logger.info(this.getClass().getName() + " - Starting...");
 		
@@ -68,11 +78,16 @@ public class ShellFrame extends ParentFrame {
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[100%, grow]", "[100%, grow]"));
 		
-		if(writeMode)
-			payloadPanel = new ShellReadWritePanel(20000, this);
-		else 
+		if(writeMode) {
+			ShellReadWritePanel panel = new ShellReadWritePanel(80000, this);
+			if(preloadFile != null && preloadFile.isFile() && preloadFile.exists())
+				panel.loadAction(preloadFile).run();
+			
+			payloadPanel = panel;
+			
+		} else {
 			payloadPanel = new ShellReadPanel(20000);
-
+		}
 		getContentPane().add(payloadPanel, "cell 0 0 1 1, grow");
 		
 		addHandlers();
@@ -85,6 +100,14 @@ public class ShellFrame extends ParentFrame {
 		}
 	}
 	
+	public File getLoadedFile() {
+		if(payloadPanel instanceof ShellReadWritePanel) {
+			return ((ShellReadWritePanel)payloadPanel).loadedFile;
+		}
+		
+		return null;
+	}
+	
 	private void addHandlers() {
 		// DEFAULT CLOSE ACTIONS 
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -94,23 +117,41 @@ public class ShellFrame extends ParentFrame {
 	        	isActive.set(false);
 	        	singletonInstance = null;
 				logger.debug("Closing "+getClass().getName());
+				closeAction.run();
 		    }
 		});
 	}
 	
+	public Runnable getCloseAction() {
+		return closeAction;
+	}
+
+	public void setCloseAction(Runnable closeAction) {
+		this.closeAction = closeAction == null ? () -> {} : closeAction;
+	}
+
 	@Override
 	public Dimension getDefaultDimension() {
 		return new Dimension(900, 600);
 	}
 	
 	public static ShellFrame getInstance(JFrame parentFrame) {
-		return singletonInstance == null ? new ShellFrame(parentFrame) : singletonInstance;
+		if(singletonInstance == null)
+			singletonInstance = new ShellFrame(parentFrame);
+		
+		return singletonInstance;
 	}
 
 	public static ShellFrame getInstance(JFrame parentFrame, boolean writeMode) {
 		if(singletonInstance == null || singletonInstance.writeMode != writeMode)
-			return new ShellFrame(parentFrame, writeMode);
-		else 
-			return  singletonInstance;
+			singletonInstance = new ShellFrame(parentFrame, writeMode);
+
+		return  singletonInstance;
+	}
+	public static ShellFrame getInstance(JFrame parentFrame, boolean writeMode, File preloadFile) {
+		if(singletonInstance == null || singletonInstance.writeMode != writeMode)
+			singletonInstance = new ShellFrame(parentFrame, writeMode, preloadFile);
+
+		return  singletonInstance;
 	}
 }

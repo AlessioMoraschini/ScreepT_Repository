@@ -26,7 +26,6 @@ public class ShellFrameTest {
 		ParentPanel.logger.setLoggerAvailable(false);
 		
 		ShellFrame shellFrame = ShellFrame.getInstance(null, true);
-		shellFrame.setAlwaysOnTop(true);
 		
 		shellFrame.setMinimumSize(shellFrame.getMinimumDimension());
 		shellFrame.setPreferredSize(shellFrame.getDefaultDimension());

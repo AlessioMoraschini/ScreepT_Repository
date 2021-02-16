@@ -102,16 +102,21 @@ public class LoadNewSavePanel extends ParentPanel {
 		newButton.setVisible(newVisible);
 	}
 
-	public JButton getPauseButton() {
+	public JButton getLoadButton() {
 		return loadButton;
 	}
 
-	public JButton getStopButton() {
+	public JButton getNewButton() {
 		return newButton;
 	}
 
-	public JButton getPlayButton() {
+	public JButton getSaveButton() {
 		return saveButton;
 	}
+
+	public JButton getSaveAsButton() {
+		return saveAsButton;
+	}
+
 	
 }

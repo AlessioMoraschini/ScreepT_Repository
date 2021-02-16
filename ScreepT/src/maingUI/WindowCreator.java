@@ -12,6 +12,7 @@
 package maingUI;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -47,6 +48,7 @@ import gui.filesearch.FileSearchActions;
 import gui.filesearch.FileSearchDialog;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
+import impl.INItializer;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -117,7 +119,16 @@ public class WindowCreator {
 	public ShellFrame newShellFrame() {
 		
 		ShellFrame shellFrame = ShellFrame.getInstance(mainApplication.getMainFrame(), true);
-		commonGraphicInitAlwaysOnTop(shellFrame, "Shell Frame - ", true);
+		shellFrame.setCloseAction(() -> {
+			if(shellFrame.getLoadedFile() != null)
+				try {
+					MainGUI.currentConfiguration.getGenOpt().setLastShellFile(shellFrame.getLoadedFile().getCanonicalPath());
+					MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastShellFile", MainGUI.currentConfiguration.getGenOpt().getLastShellFile());
+				} catch (IOException e) {
+					logger.error("Cannot update last shell file opened in configuration", e);
+				}
+		});
+		commonGraphicInit(shellFrame, "Shell Frame - ", true);
 		
 		return shellFrame;
 	}

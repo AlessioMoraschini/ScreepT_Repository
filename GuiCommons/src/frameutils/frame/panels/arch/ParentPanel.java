@@ -29,8 +29,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import org.apache.log4j.Logger;
-
+import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import gui.GuiUtils;
 import resources.IconsPathConfigurator;
@@ -47,6 +46,7 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 	public static final Font DEFAULT_TEXT_AREA_FONT = new Font("Segoe UI", Font.PLAIN, 19);
 	
 	protected JOptionHelperExtended dialogHelper;
+	protected GenericFileChooserDialog fileChooser;
 	
 	public TreeMap<String, File> dataMap;
 	
@@ -57,6 +57,7 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 	protected final void init() {
 		dataMap = new TreeMap<>();
 		dialogHelper = new JOptionHelperExtended(this);
+		fileChooser = new GenericFileChooserDialog(null);
 		initGui();
 		addHandlers();
 	}

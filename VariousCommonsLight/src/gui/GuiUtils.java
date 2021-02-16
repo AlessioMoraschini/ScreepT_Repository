@@ -55,6 +55,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -733,6 +734,18 @@ public class GuiUtils {
 		if (frame != null) {
 			RootPaneContainer root = (RootPaneContainer) frame.getRootPane().getTopLevelAncestor();
 			root.getGlassPane().setCursor(CURSOR_DEFAULT);
+		}
+	}
+	
+	public static void clickAndTriggerButton(JButton button) {
+		if(button != null) {
+			button.doClick();
+		}
+	}
+	public static void clickAndTriggerCheckbox(JCheckBox checkbox, boolean triggerUncheckAction) {
+		if(checkbox != null) {
+			checkbox.setSelected(triggerUncheckAction);
+			checkbox.doClick();
 		}
 	}
 
