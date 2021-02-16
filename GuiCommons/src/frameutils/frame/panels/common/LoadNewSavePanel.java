@@ -3,6 +3,7 @@ package frameutils.frame.panels.common;
 import frameutils.frame.panels.arch.ParentPanel;
 
 import javax.swing.JButton;
+
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 
@@ -55,6 +56,10 @@ public class LoadNewSavePanel extends ParentPanel {
 		setAllButtonsEnabled(true);
 	}
 	
+	@Override
+	protected void addKeyListeners() {
+	}
+
 	@Override
 	public void addHandlers() {
 		saveButton.addActionListener((e) -> {

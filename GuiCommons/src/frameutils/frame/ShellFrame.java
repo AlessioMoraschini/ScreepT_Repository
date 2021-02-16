@@ -73,7 +73,7 @@ public class ShellFrame extends ParentFrame {
 		// SW window icon
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_CONSOLE, this);
 		
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[100%, grow]", "[100%, grow]"));
@@ -111,13 +111,24 @@ public class ShellFrame extends ParentFrame {
 	private void addHandlers() {
 		// DEFAULT CLOSE ACTIONS 
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
+		    
+			@Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
-	        	isActive.set(false);
-	        	singletonInstance = null;
+				if(payloadPanel instanceof ShellReadWritePanel) {
+					setVisible(true);
+					if(((ShellReadWritePanel)payloadPanel).askSaveIfUnsaved() == null) {
+						// CANC pressed
+						setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+						return;
+					}
+					setVisible(false);
+				}
+				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				logger.debug("Closing "+getClass().getName());
 				closeAction.run();
+				isActive.set(false);
+				singletonInstance = null;
 		    }
 		});
 	}

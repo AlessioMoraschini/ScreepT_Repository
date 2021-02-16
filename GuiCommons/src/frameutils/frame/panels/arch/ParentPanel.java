@@ -60,11 +60,14 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 		fileChooser = new GenericFileChooserDialog(null);
 		initGui();
 		addHandlers();
+		addKeyListeners();
 	}
 	
 	abstract protected void addHandlers();
 	
 	abstract protected void initGui();
+
+	abstract protected void addKeyListeners();
 	
 	// ######### COMMON JComponent factory methods ########### //
 	public static JButton getButton(String text, Color background, Color foreground, String iconPath, boolean makeTransparent) {

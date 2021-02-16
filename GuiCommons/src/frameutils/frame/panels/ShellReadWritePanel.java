@@ -59,7 +59,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	private JSplitPane splitPane;
 
 	private PlayStopPausePanel playStopPausePanel;
-	private LoadNewSavePanel loadNewSavePanel;
+	public LoadNewSavePanel loadNewSavePanel;
 	public JButton clcButton;
 	public JCheckBox checkBoxConcatenation;
 	public JCheckBox checkBoxAutoscroll;
@@ -69,7 +69,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	public JTextArea commandTextArea;
 	private JTextArea outputTextArea;
 	
-	private boolean fileUnsaved;
+	public boolean fileUnsaved;
 	public File loadedFile;
 	
 	private Process process;
@@ -93,16 +93,21 @@ public class ShellReadWritePanel extends ParentPanel {
 	public void initGui() {
 		setLayout(new MigLayout(
 				"fill, insets 1, hidemode 2", 
-				"[60px][60px][25px][120px][110px:110px:110px][50px][70px:70px][10px][60px, grow][20px]", 
+				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][10px][60px, grow][20px]", 
 				"[35px:35px][50px,grow]"));
 		
 		// HEADER
 		playStopPausePanel = new PlayStopPausePanel(playAction(), stopAction(), pauseAction());
 		playStopPausePanel.setPauseVisible(false);
 		playStopPausePanel.setOpaque(true);
+		playStopPausePanel.getPlayButton().setToolTipText("Launch selected text or current contiguous text block");
+		playStopPausePanel.getStopButton().setToolTipText("Stop execution");
 		add(playStopPausePanel, "cell 0 0 1 1,grow");
 
-		loadNewSavePanel = new LoadNewSavePanel(loadAction(null), null, saveAction(null), saveAsAction());
+		loadNewSavePanel = new LoadNewSavePanel(loadAction(null), newAction(), saveAction(null), saveAsAction());
+		loadNewSavePanel.getLoadButton().setToolTipText("Load file into text area");
+		loadNewSavePanel.getSaveButton().setToolTipText("Save current file");
+		loadNewSavePanel.getSaveAsButton().setToolTipText("Save current file as...");
 		loadNewSavePanel.setNewVisible(false);
 		loadNewSavePanel.setOpaque(true);
 		add(loadNewSavePanel, "cell 1 0 1 1,grow");
@@ -112,14 +117,16 @@ public class ShellReadWritePanel extends ParentPanel {
 		
 		checkBoxAutoscroll = new JCheckBox("Autoscroll");
 		checkBoxAutoscroll.setCursor(GuiUtils.CURSOR_HAND);
+		checkBoxAutoscroll.setToolTipText("Enable/disable output text area auto-scroll feature");
 		add(checkBoxAutoscroll, "cell 3 0 1 1,grow");
 		
-		checkBoxConcatenation = new JCheckBox("Concatenate lines");
+		checkBoxConcatenation = new JCheckBox("Concatenate Lines");
 		checkBoxConcatenation.setCursor(GuiUtils.CURSOR_HAND);
-		add(checkBoxConcatenation, "cell 4 0 1 1,grow");
+		checkBoxConcatenation.setToolTipText("When executing, all executed lines will be concatated with chosen mode");
+		add(checkBoxConcatenation, "cell 4 0 1 1,alignx center, aligny center");
 		
 		labelConcatenationMode = new JLabel("Lines concatenation mode:");
-		add(labelConcatenationMode, "cell 5 0 1 1,alignx right");
+		add(labelConcatenationMode, "cell 5 0 1 1,alignx right, aligny center");
 		
 		comboConcatenationMode = new JComboBox<String>(getComboModes());
 		add(comboConcatenationMode, "cell 6 0 1 1, alignx right");
@@ -168,6 +175,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		});
 		
 		checkBoxConcatenation.addActionListener((e)->{
+			labelConcatenationMode.setEnabled(checkBoxConcatenation.isSelected());
 			comboConcatenationMode.setEnabled(checkBoxConcatenation.isSelected());
 		});
 		GuiUtils.clickAndTriggerCheckbox(checkBoxConcatenation, true);
@@ -189,8 +197,13 @@ public class ShellReadWritePanel extends ParentPanel {
 				onDocumentModification();
 			}
 		});
+		
 	}
 	
+	@Override
+	protected void addKeyListeners() {
+	}
+
 	private void onDocumentModification() {
 		fileUnsaved = true;
 		String fileName = lblCurrentFile.getText();
@@ -264,17 +277,43 @@ public class ShellReadWritePanel extends ParentPanel {
 		return () -> {};
 	}
 	
+	public Boolean askSaveIfUnsaved() {
+		Boolean askSave = false;
+		if(fileUnsaved)
+			askSave = askSave();
+		
+		if(askSave != null && askSave)
+			loadNewSavePanel.getSaveButton().doClick();
+		
+		return askSave;
+	}
+	
 	public Runnable loadAction(final File forceFile) {
 		return () -> {
 			
 			File source = forceFile == null ? fileChooser.fileRead(null) : forceFile;
 			
-			if(askSave())
-				loadNewSavePanel.getSaveButton().doClick();
+			if(askSaveIfUnsaved() == null)
+				// CANC pressed
+				return;
 			
 			FileWorker.loadFileTxtArea(source, commandTextArea, lblCurrentFile, null, EOL.LF);
 			loadedFile = source;
 			lblCurrentFile.setToolTipText(loadedFile.getAbsolutePath());
+			fileUnsaved = false;
+		};
+	}
+
+	public Runnable newAction() {
+		return () -> {
+			
+			if(askSaveIfUnsaved() == null)
+				// CANC pressed
+				return;
+			
+			commandTextArea.setText("");
+			lblCurrentFile.setText("");
+			loadedFile = null;
 			fileUnsaved = false;
 		};
 	}
@@ -339,7 +378,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		return done;
 	}
 	
-	private boolean askSave() {
+	private Boolean askSave() {
 		return dialogHelper.askYorNPrecond("Unsaved file", "Do you want to save current file before to load?", this, fileUnsaved);
 	}
 	

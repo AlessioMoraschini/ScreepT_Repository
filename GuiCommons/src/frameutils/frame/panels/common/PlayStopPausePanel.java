@@ -84,6 +84,10 @@ public class PlayStopPausePanel extends ParentPanel {
 			}
 		});
 	}
+	
+	@Override
+	protected void addKeyListeners() {
+	}
 
 	public void setPlayStopPause(boolean playing, boolean paused, boolean stopped) {
 		isPaused = paused;

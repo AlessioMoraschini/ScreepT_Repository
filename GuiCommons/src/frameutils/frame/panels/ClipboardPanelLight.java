@@ -394,6 +394,10 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 			}
 		});
 	}
+	
+	@Override
+	protected void addKeyListeners() {
+	}
 
 	/**
 	 * This method writes clipBoard content into the file memorized in this map with key equals to the given string

@@ -64,6 +64,10 @@ public class ShellReadPanel extends ParentPanel implements IParentPanel {
 	protected void addHandlers() {
 	}
 	
+	@Override
+	protected void addKeyListeners() {
+	}
+
 	public void initStream() {
 		oldPsBackup = System.out;
 		oldPsBackupErr = System.err;
