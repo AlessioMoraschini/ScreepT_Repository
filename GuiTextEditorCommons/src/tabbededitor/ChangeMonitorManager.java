@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 import files.FileVarious;
 import files.watcher.ChangeDTO;
 import files.watcher.FileChangeMonitor;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 
 public class ChangeMonitorManager implements IChangeMonManager{
 	
@@ -81,7 +81,7 @@ public class ChangeMonitorManager implements IChangeMonManager{
 	 */
 	public void removePendingFiredChanges(File target) {
 		ChangeDTO changes;
-		TabTextEditorObj objTOClear = mainEditorRef.getTabObjByFile(target);
+		TabTextEditorObject objTOClear = mainEditorRef.getTabObjByFile(target);
 		try {
 			logger.debug("Cleaning changes from tabbedPane history");
 			changes = objTOClear.fileMonitorManager.checkForFile(objTOClear.loadedFile);

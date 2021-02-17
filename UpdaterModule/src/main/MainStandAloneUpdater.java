@@ -72,6 +72,7 @@ public class MainStandAloneUpdater {
 			logger.setLogFileEol(null);
 			logger.setLogFile(new File(UPDATER_LOG_FILE));
 			logger.setFlagWriteOnFile(true);
+			FileWorker.logger = new SafeLogger(FileWorker.class, true, logger.getLogFile(), true);
 			ZipWorker.logger = new SafeLogger(ZipWorker.class, true, logger.getLogFile(), true);
 			DownloadUtils.logger = new SafeLogger(DownloadUtils.class, true, logger.getLogFile(), true);
 			FtpDumper.logger = new SafeLogger(FtpDumper.class, true, logger.getLogFile(), true);
@@ -206,28 +207,48 @@ public class MainStandAloneUpdater {
 				
 				PropertiesDTO backupProperties = getPropertiesToKeep(resourcesFilePathsMappings);
 				
-				// replace existing files matching with updates (don't touch user personal files)
-				logger.info("Copying content of " + updatesFolder + " into " + generalApplicationFolder);
-				FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
+				try {
+					Thread.sleep(2000);
+				} catch (Exception e1) {
+					logger.error("", e1);;
+				}
 				
 				// Check if there is Root files update to copy one level up
-				File rootDirUpdates = new File(KEY_ROOT_FILES_UPDATES_DIR);
+				File rootDirUpdates = new File(updatesFolder.getAbsolutePath() + File.separator + KEY_ROOT_FILES_UPDATES_DIR);
 				if(rootDirUpdates.exists()) {
 					try {
-						updateProgressMonitor.update(70, "Updating licenses and launcher...", true);
+						updateProgressMonitor.update(50, "Updating licenses and launcher...", true);
 						FileWorker.copyDirectoryContents(rootDirUpdates, mainRootDirectory);
-						FileWorker.deleteDirContentInclRoot(rootDirUpdates);
+						boolean deleted = FileWorker.deleteDirContentInclRoot(rootDirUpdates);
+						if(deleted)
+							logger.info(rootDirUpdates.getAbsolutePath() + " copied and deleted.");
+						else
+							logger.warn("Something may be not copied and/or deleted.");
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("", e);
 					}
 				}
 				
+				try {
+					Thread.sleep(2000);
+				} catch (Exception e1) {
+					logger.error("", e1);
+				}
+				// replace existing files matching with updates (don't touch user personal files)
+				String msg = "Copying content of " + updatesFolder + " into " + generalApplicationFolder;
+				updateProgressMonitor.update(70, msg, true);
+				logger.info(msg);
+				FileWorker.copyDirectoryContents(updatesFolder, generalApplicationFolder);
+				
+				logger.info("Updating configuration...");
 				updateProgressMonitor.update(85, 100, "Updating configuration...");
 				restorePropertiesToKeep(backupProperties, MAIN_APP_PROPERTIES_PATH);
 				saveNewJarRef(resourcesFilePathsMappings, newJar);
 				
+				logger.info("deleting old jar...");
 				FileUtils.deleteQuietly(oldJar);
 				
+				logger.info("Completed!");
 				updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
 				
 			} else {
@@ -252,6 +273,7 @@ public class MainStandAloneUpdater {
 			if (updateProgressMonitor != null) {
 				updateProgressMonitor.forceClose();
 			}
+			logger.info("Exiting updater. Bie bie ;)");
 			System.exit(0);
 		}
 	}
@@ -384,6 +406,8 @@ public class MainStandAloneUpdater {
 	}
 	
 	private static void launchJar(String launcherPath) throws IOException {
+		
+		logger.info("Launching main jar!");
 		Runtime runtime = Runtime.getRuntime();
 		runtime.exec("java -jar " + launcherPath);
 		
@@ -401,6 +425,7 @@ public class MainStandAloneUpdater {
 			proceed = (!ChecksumHasher.checkHashFromProperties(updaterJar, manifestProps, downloadsHashFunc)) ? false : proceed;
 			proceed = (!ChecksumHasher.checkHashFromProperties(zipUpdates, manifestProps, downloadsHashFunc)) ? false : proceed;
 		} catch (Throwable e) {
+			logger.error("Cannot proceed with update procedure, error while validating checksum!", e);
 			proceed = false;
 		}
 		
@@ -410,6 +435,7 @@ public class MainStandAloneUpdater {
 			} else {
 				proceed = false;
 			}
+			logger.info("User has chosen to continue: " + proceed);
 		}
 		
 		return proceed;

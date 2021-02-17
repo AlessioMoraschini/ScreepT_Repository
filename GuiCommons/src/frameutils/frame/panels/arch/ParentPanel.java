@@ -89,7 +89,11 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 	}
 	
 	public static JTextArea getTextArea(Color background, Color foreground, Color caretColor, Font font) {
-		JTextArea textArea = new JTextArea();
+		return getTextArea(null, background, foreground, caretColor, font);
+	}
+	
+	public static JTextArea getTextArea(JTextArea toEnrich, Color background, Color foreground, Color caretColor, Font font) {
+		JTextArea textArea = toEnrich != null ? toEnrich : new JTextArea();
 		textArea.setMargin(new Insets(4, 4, 4, 4));
 		
 		if(font != null)

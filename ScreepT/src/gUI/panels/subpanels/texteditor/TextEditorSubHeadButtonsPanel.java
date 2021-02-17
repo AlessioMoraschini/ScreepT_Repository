@@ -80,7 +80,7 @@ import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
 import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
@@ -556,7 +556,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 				
 				if (propertiesFrame == null) {
 					loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
@@ -644,7 +644,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+						TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 						
 						if (toggleButtonSpellCheck.isSelected()) {
 							loadedTabObj.updateSpellCheckerParser(currentConfiguration.getTextEditorOpt().prefDictspellChecker, true);
@@ -1046,7 +1046,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				
 				logger.debug("Applying default values from .ini current configuration file...");
 				
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				// UPDATE GUI
 				RsyntaxUtils.setBackground(loadedTabObj.textArea, DEFAULT_BCKG_COL);
@@ -1111,7 +1111,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnFontChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				btnFontChooser.setEnabled(false);
 
@@ -1141,7 +1141,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				comboStylesScheme.setSelectedIndex(comboStylesScheme.getItemCount()-1);
 				setComboFileFormatByIndex(SupportedFileTextEditor.TXT);
 				
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 				
 				Color newBackGroundDark = new Color(30,30,30);
 
@@ -1176,7 +1176,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		sliderFontSize.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				
-				final TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				final TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 				
 				loadedTabObj.textArea.setHighlightCurrentLine(true);
 
@@ -1214,7 +1214,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 
 					@Override
 					public void run() {
-						TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+						TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 						
 						String selected = (loadedTabObj.textArea.getSelectedText() != null && loadedTabObj.textArea.getSelectedText().length() != 0)? 
 								loadedTabObj.textArea.getSelectedText() : loadedTabObj.textArea.getText();
@@ -1337,7 +1337,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// REMOVE WHITE SPACES OR CHARACTER (CTRL PRESSED)
 		btnRemoveSpaces.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				boolean isSomethingSelected = loadedTabObj.textArea.getSelectedText() != null;
 				int start = isSomethingSelected ? loadedTabObj.textArea.getSelectionStart() : 0;
@@ -1384,7 +1384,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// SET TEXT STYLE TO ITALICS
 		btnItaliC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				Font txtFont = loadedTabObj.textArea.getFont();
 				if (!txtFont.isItalic()) {
@@ -1399,7 +1399,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		// MAKE TEXT BOLD
 		btnBold.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				Font txtFont = loadedTabObj.textArea.getFont();
 				if (!txtFont.isBold()) {
@@ -1415,7 +1415,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnSaveTextFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				final TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				final TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				boolean done = false;
 				if (loadedTabObj.loadedFile == null || !loadedTabObj.loadedFile.exists()) {
@@ -1511,7 +1511,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	}
 	
 	public void saveCurrentFileAs(EOL lineSeparator) {
-		TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 		boolean skipRefresh = true;
 
 		if (!parent.getCurrentTabEditor().alreadySaving) {
@@ -1588,7 +1588,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	}
 	
 	public void applyFileFormatSyntaxFull() {
-		TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 		
 		// backup unsaved to avoid changing saved info with theme change
 		textEditorUtils.applyFileFormatFromCombo(false);

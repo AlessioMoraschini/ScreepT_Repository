@@ -126,7 +126,12 @@ public class SelectionDtoFull {
 	}
 
 	public void applySelectionDTO(final JTextArea textArea) {
-		textArea.setText(text);
+		applySelectionDTO(true, textArea);
+	}
+
+	public void applySelectionDTO(boolean setText, final JTextArea textArea) {
+		if(setText)
+			textArea.setText(text);
 		
 		GuiUtils.launchThreadSafeSwing(()->{
 			try {

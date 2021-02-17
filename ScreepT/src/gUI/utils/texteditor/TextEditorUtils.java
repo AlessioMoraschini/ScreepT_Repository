@@ -56,7 +56,7 @@ import guistyle.GUIStyelSettingsExtended;
 import impl.om.TextEditorOption;
 import maingUI.MainGUI;
 import om.SupportedFileTextEditor;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
@@ -209,7 +209,7 @@ public class TextEditorUtils {
 	public void findRightSyntaxFromComboNSelect(File source, boolean autosync) {
 
 		chosenType = (SupportedFileTextEditor)currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();
-		final TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+		final TabTextEditorObject loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 
 		if (autosync) {
 			if (source == null) {
@@ -306,7 +306,7 @@ public class TextEditorUtils {
 	}
 	
 	public void openCurrentFileInScreept() {
-		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 
 		// current file not saved
 		if (loadedTabObj.unsaved) {
@@ -527,7 +527,7 @@ public class TextEditorUtils {
 			
 			logger.info("Renaming file: " + toRename);
 			
-			TabTextEditorObj tabObj = currentTextEditor.getCurrentTabEditor().getAlreadyLoaded(toRename);
+			TabTextEditorObject tabObj = currentTextEditor.getCurrentTabEditor().getAlreadyLoaded(toRename);
 			if(tabObj != null && tabObj.unsaved) {
 				int choice = dialogHelper.yesNoOrCanc("File is not saved, do you want to save it?", "File changed");
 				if (choice == JOptionHelper.OK) {
@@ -786,7 +786,7 @@ public class TextEditorUtils {
 	}
 	
 	public void updateMargin() {
-		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 
 		int textMargin = currentTextEditor.subHeaderPanel.slider_margin.getValue();
 		currentTextEditor.subHeaderPanel.lBLMargin.setText("" + textMargin);
@@ -1007,7 +1007,7 @@ public class TextEditorUtils {
 	 * @throws IOException 
 	 */
 	public boolean checkCurrentFileIsUnsaved() throws IOException {
-		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 //		String text = loadedTabObj.textArea.getText();
 //		boolean normalized = !text.contains("\r\n") && !text.contains("\r");
 		return !FileWorker.isTextAreaEqualToFileContent(loadedTabObj.textArea, loadedTabObj.loadedFile);
@@ -1121,7 +1121,7 @@ public class TextEditorUtils {
 	
 	public void applySelectedTheme(boolean forceThemeReload) {
 		
-		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 		TextEditorOption txtOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
 		// backup unsaved to avoid changing saved info with theme change
 		boolean unsaved = loadedTabObj.unsaved;
@@ -1216,7 +1216,7 @@ public class TextEditorUtils {
 	}
 	
 	public void applyFileFormatFromCombo(boolean forceReload) {
-		TabTextEditorObj loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = currentTextEditor.getCurrentTabEditor().loadedTabObj;
 		boolean unsaved = loadedTabObj.unsaved;
 		
 		SupportedFileTextEditor selected = (SupportedFileTextEditor) currentTextEditor.subHeaderPanel.comboFileFormat.getSelectedItem();

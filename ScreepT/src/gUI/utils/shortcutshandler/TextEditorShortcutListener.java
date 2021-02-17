@@ -579,17 +579,6 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				}
 				
 				
-				/*
-				 *  OPEN CALCULATOR -> Ctrl+Alt+C
-				 */
-				else if (e.getKeyCode() == 67 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							subHeaderPanel.btnCalculator.doClick();
-						}
-					});
-				}
-
 				/*********************************************
 				 * Text Editor  -  TEXT SPECIFIC SHORTCUTS
 				 *********************************************/

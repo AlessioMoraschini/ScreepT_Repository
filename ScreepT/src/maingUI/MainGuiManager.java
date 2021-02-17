@@ -25,7 +25,7 @@ import impl.INItializer;
 import main.MainStandAloneUpdater;
 import mainlauncher.ScreepTLauncher;
 import om.OSinfo;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
@@ -269,7 +269,7 @@ public class MainGuiManager {
 			
 			// save list of non null and existing files in tabs
 			currentConfiguration.getTextEditorOpt().getOpenedFileList().clear();
-			for (TabTextEditorObj currentObj : currentTabEditor.loadedList.getList()) {
+			for (TabTextEditorObject currentObj : currentTabEditor.loadedList.getList()) {
 				if (currentObj.loadedFile != null && currentObj.loadedFile.exists()) {
 					currentConfiguration.getTextEditorOpt().getOpenedFileList()
 							.add(currentObj.loadedFile.getAbsolutePath());
@@ -382,9 +382,8 @@ public class MainGuiManager {
 						+ " " + MainGUI.updatesDownloaded[0].getName() 
 						+ " " + MainGUI.updatesDownloaded[1].getParentFile().getName() + File.separator + MainGUI.updatesDownloaded[1].getName()
 						+ " " + MainGUI.updatesDownloaded[2].getName();
-					Runtime runtime = Runtime.getRuntime();
 					MainGuiUtils.logger.info("Launching java command to update with downloaded files: \n\n" + command + "\n\n");
-					runtime.exec(command);
+					Runtime.getRuntime().exec(command);
 					MainGuiUtils.logger.info("Updater jar application launched!");
 				}else {
 					MainGuiUtils.logger.error("updatesDownloaded is null!");

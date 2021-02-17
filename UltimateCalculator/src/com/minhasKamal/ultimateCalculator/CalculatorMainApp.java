@@ -32,6 +32,7 @@ public class CalculatorMainApp extends Thread{
 	public static volatile boolean active = false;
 	
 	public static SimpleCalculator calculatorGuiSingleton;
+	private static CalculatorMainApp singletonInstance;
 	
 	public static boolean keyListenerSimpleAdded = false;
 	public static boolean keyListenerBaseAdded = false;
@@ -84,6 +85,13 @@ public class CalculatorMainApp extends Thread{
 
 	public static boolean isKeyListenerAdvancedAdded() {
 		return keyListenerAdvancedAdded;
+	}
+	
+	public static CalculatorMainApp getInstance(JFrame parentCaller) {
+		if(singletonInstance == null || !CalculatorMainApp.active)
+			singletonInstance = new CalculatorMainApp(parentCaller);
+		
+		return singletonInstance;
 	}
 
 }

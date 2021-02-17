@@ -23,7 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import net.miginfocom.swing.MigLayout;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import om.themes.Themes;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -437,7 +437,7 @@ public class TextEditor extends ModulePanel {
 				@Override
 				public void run() {
 					CustomTabbedEditor tabEditor = getCurrentTabEditor();
-					Vector<TabTextEditorObj> tabListObjects = tabEditor.loadedList.getList();
+					Vector<TabTextEditorObject> tabListObjects = tabEditor.loadedList.getList();
 
 					tabEditor.loadedTabObj.textArea.setFont(currentConfiguration.getTextEditorOpt().getFont());
 					tabEditor.loadedTabObj.textArea.revalidate();
@@ -720,7 +720,7 @@ public class TextEditor extends ModulePanel {
 	 */
 	public boolean askSave(int index) {
 		int askSave = JOptionHelperExtended.CANC;
-		TabTextEditorObj selected = getCurrentTabEditor().loadedList.getList().get(index);
+		TabTextEditorObject selected = getCurrentTabEditor().loadedList.getList().get(index);
 		
 		if (selected.unsaved) {
 			askSave = dialogHelper.yesNoOrCanc("Do you want to save current file?",	"Save current file?");
@@ -742,7 +742,7 @@ public class TextEditor extends ModulePanel {
 	}
 
 	public void initGuiFromConfig(boolean refreshGuiStyle, boolean refreshTheme) {
-		final TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
+		final TabTextEditorObject loadedTabObj = getCurrentTabEditor().loadedTabObj;
 		final TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
 		
 		// TEXT AREA
@@ -1025,7 +1025,7 @@ public class TextEditor extends ModulePanel {
 			String toOpenAtStart = currentConfiguration.getTextEditorOpt().selectedAtStart;
 			try {
 				int i = 0;
-				for (TabTextEditorObj iteratorObj : currentTabbedEditor.loadedList.getList()) {
+				for (TabTextEditorObject iteratorObj : currentTabbedEditor.loadedList.getList()) {
 					if (iteratorObj.loadedFile != null
 							&& toOpenAtStart.equals(iteratorObj.loadedFile.getAbsolutePath())) {
 						currentTabbedEditor.mainTabList.setSelectedIndex(i);
@@ -1086,7 +1086,7 @@ public class TextEditor extends ModulePanel {
 			@Override
 			public void run() {
 				while (MainGUI.mainAppRunning) {
-					TabTextEditorObj loadedTabObj = getCurrentTabEditor().loadedTabObj;
+					TabTextEditorObject loadedTabObj = getCurrentTabEditor().loadedTabObj;
 					
 					if (loadedTabObj != null && loadedTabObj.textArea != null) {
 						

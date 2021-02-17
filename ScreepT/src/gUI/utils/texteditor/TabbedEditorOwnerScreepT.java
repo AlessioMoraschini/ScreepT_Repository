@@ -23,7 +23,7 @@ import impl.om.TextEditorOption;
 import maingUI.MainGUI;
 import om.ICommonShortcuts;
 import om.SupportedFileTextEditor;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import tabbededitor.ITabbedEditorOwner;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
@@ -66,7 +66,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	public void doAfterTabRefresh() {
 		// create lazy refs for common used objects during current check
 		TextEditorOption txtOpt = textEditor.currentConfiguration.getTextEditorOpt();
-		TabTextEditorObj loadedTabObj = textEditor.getCurrentTabEditor().loadedTabObj;
+		TabTextEditorObject loadedTabObj = textEditor.getCurrentTabEditor().loadedTabObj;
 		
 		if (!textEditor.isPreloading) {
 			

@@ -11,6 +11,7 @@
  */
 package maingUI;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
@@ -20,6 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import files.om.SearchResult;
 import frameutils.frame.ClipboardFrame;
@@ -117,8 +119,16 @@ public class WindowCreator {
 	}
 	
 	public ShellFrame newShellFrame() {
-		
-		ShellFrame shellFrame = ShellFrame.getInstance(mainApplication.getMainFrame(), true);
+		RSyntaxTextArea txtArea = new RSyntaxTextArea();
+		txtArea.setCurrentLineHighlightColor(Color.DARK_GRAY.brighter());
+		txtArea.setSelectedTextColor(Color.DARK_GRAY.brighter().brighter());
+		txtArea.setSelectionColor(Color.DARK_GRAY.brighter().brighter());
+//		RsyntaxUtils.changeStyleViaThemeXmlString(txtArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(Themes.DARK.fileName));
+		ShellFrame shellFrame = ShellFrame.getInstance(
+				txtArea,
+				mainApplication.getMainFrame(),
+				true,
+				new File(MainGUI.currentConfiguration.getGenOpt().getLastShellFile()));
 		shellFrame.setCloseAction(() -> {
 			if(shellFrame.getLoadedFile() != null)
 				try {

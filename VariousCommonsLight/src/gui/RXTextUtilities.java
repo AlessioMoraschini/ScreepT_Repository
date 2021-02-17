@@ -171,7 +171,7 @@ public class RXTextUtilities {
 		}
 		
 		String output = builder.toString();
-		int end = start + (output.length() - (lineSeparator.length() * separatorsAdded) + 1);
+		int end = start + (output.length() - (lineSeparator.length() * separatorsAdded) + separatorsAdded);
 		
 		if(selectText)
 			setSelection(component, start, end);
@@ -198,9 +198,13 @@ public class RXTextUtilities {
 			int safeEnd = (end > component.getText().length()) ? component.getText().length() - 1 : end;
 			int safeStart = (start < 0) ? 0 : start; 
 			
-			component.requestFocus();
-			component.setSelectionStart(safeStart);
-			component.setSelectionEnd(safeEnd);
+			try {
+				component.requestFocus();
+				component.setSelectionStart(safeStart);
+				component.setSelectionEnd(safeEnd);
+			} catch (Exception e) {
+				logger.warn("Cannot apply selection to component");
+			}
 		});
 	}
 

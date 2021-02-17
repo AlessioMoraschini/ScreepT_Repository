@@ -22,10 +22,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -68,12 +70,13 @@ import tabbededitor.ITabsManager;
 import utility.string.StringWorker;
 import utility.string.TextAreaStringEditor;
 import utility.string.StringWorker.EOL;
+import utility.time.AmTimer;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 
-public class TabTextEditorObj {
+public class TabTextEditorObject {
 	
-	static Logger logger = Logger.getLogger(TabTextEditorObj.class);
+	static Logger logger = Logger.getLogger(TabTextEditorObject.class);
 	
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.BOLD, 18);
 
@@ -101,7 +104,11 @@ public class TabTextEditorObj {
 	
 	public INItializer currentConfig;
 	
-	public TabTextEditorObj(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
+	private HyperlinkListener hyperLinkListener;
+	private MouseMotionListener mouseMotionListener;
+	private java.awt.event.MouseListener mouseListener;
+	
+	public TabTextEditorObject(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
 		
 		ColumnTextArea.UNDO_LIMIT = GeneralConfig.UNDO_MAX_LIM;
 		
@@ -280,18 +287,25 @@ public class TabTextEditorObj {
 			
 		} catch (Exception e) {}
 		
-		// OPEN IN WEB BROWSER
+		// Copy with syntax highlighting
+		JMenuItem copySyntaxHighlightItem = new JMenuItem("Copy with syntax highlighting");
+		copySyntaxHighlightItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
+		copySyntaxHighlightItem.addActionListener((e) -> {
+			textArea.copyAsStyledText();
+		});
+		textArea.getPopupMenu().add(new JSeparator());
+		textArea.getPopupMenu().add(copySyntaxHighlightItem);
 		
-		BrowserOpenerMenu broserOpener = new BrowserOpenerMenu("Open with browser", (Insets)null, (Font)null, () -> {
+		// OPEN IN WEB BROWSER
+		BrowserOpenerMenu browserOpener = new BrowserOpenerMenu("Open with browser", (Insets)null, (Font)null, () -> {
 			try {
 				return loadedFile.getCanonicalPath();
 			} catch (IOException e1) {
 				return null;
 			}
 		});
-		broserOpener.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
-		textArea.getPopupMenu().add(new JSeparator());
-		textArea.getPopupMenu().add(broserOpener);
+		browserOpener.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
+		textArea.getPopupMenu().add(browserOpener);
 		
 		// Color picker
 		JMenuItem showColorPicker = new JMenuItem("Color picker/converter");
@@ -504,6 +518,14 @@ public class TabTextEditorObj {
 				GuiUtils.centerComponent(frame, 65);
 				frame.setLocationRelativeTo(textArea.getTopLevelAncestor());
 				GuiUtils.addEscDisposeListener(frame);
+				try {
+					if(mouseListener != null)
+						textArea.removeMouseListener(mouseListener);
+					if(mouseMotionListener != null)
+						textArea.removeMouseMotionListener(mouseMotionListener);
+				} catch (Exception e1) {
+					logger.error("Can't remove mouse listeners from textarea");
+				}
 				textArea.addMouseListener(GuiUtils.getClickOutDisposeListener(frame));
 				textArea.addMouseMotionListener(GuiUtils.getMouseExitedDisposeListener(frame));
 				textAreaPopUp.addFocusListener(GuiUtils.getFocusOutDisposeListener(frame));
@@ -516,12 +538,26 @@ public class TabTextEditorObj {
 	public void hyperLinksEnabled(boolean enabled) {
 		textArea.setHyperlinksEnabled(enabled);
 		if (enabled) {
-			textArea.addHyperlinkListener(new HyperlinkListener() {
+			hyperLinkListener = new HyperlinkListener() {
+				AtomicBoolean canOpenAgain = new AtomicBoolean(true);
+				AmTimer timer = new AmTimer(() -> {canOpenAgain.set(true);}, 4000);
+				
 				@Override
 				public void hyperlinkUpdate(HyperlinkEvent e) {
-					SysUtils.openUrlInBrowserNative(e.getURL().toString());
+					if(canOpenAgain.get()) {
+						canOpenAgain.set(false);
+						SysUtils.openUrlInBrowserNative(e.getURL().toString());
+						timer.executeDelayedAsync();
+					}
 				}
-			});
+			};
+			textArea.addHyperlinkListener(hyperLinkListener);
+		} else if(hyperLinkListener != null){
+			try {
+				textArea.removeHyperlinkListener(hyperLinkListener);
+			} catch (Exception e) {
+				logger.error("Cannot remove hyperlink listener from textarea");
+			}
 		}
 	}
 	

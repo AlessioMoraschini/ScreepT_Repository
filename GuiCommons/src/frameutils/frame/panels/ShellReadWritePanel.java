@@ -78,13 +78,18 @@ public class ShellReadWritePanel extends ParentPanel {
 	
 
 	public ShellReadWritePanel() {
-		this(1000, null);
+		this(1000, null, null);
+	}
+
+	public ShellReadWritePanel(int visibleLines, JFrame parentFrame) {
+		this(visibleLines, parentFrame, null);
 	}
 	
-	public ShellReadWritePanel(int visibleLines, JFrame parentFrame) {
+	public ShellReadWritePanel(int visibleLines, JFrame parentFrame, JTextArea initializedTextAreaInstance) {
 		maxLines = visibleLines;
 		fileUnsaved = false;
 		this.parentFrame = parentFrame;
+		this.commandTextArea = initializedTextAreaInstance != null ? initializedTextAreaInstance : new JTextArea();
 		
 		super.init();
 	}
@@ -141,7 +146,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		
 		// SPLIT PANE
 		splitPane = new JSplitPane();
-		splitPane.setDividerLocation(140);
+		splitPane.setDividerLocation(180);
 		splitPane.setContinuousLayout(true);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		add(splitPane, "cell 0 1 10 1,grow");
@@ -152,7 +157,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		scrollPaneTop.setPreferredSize(new Dimension(1920, 1080));
 		splitPane.setTopComponent(scrollPaneTop);
 		
-		commandTextArea = getTextArea(Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT);
+		commandTextArea = getTextArea(commandTextArea, Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT);
 		scrollPaneTop.setViewportView(commandTextArea);
 		
 		
@@ -293,9 +298,11 @@ public class ShellReadWritePanel extends ParentPanel {
 			
 			File source = forceFile == null ? fileChooser.fileRead(null) : forceFile;
 			
-			if(askSaveIfUnsaved() == null)
+			if(loadedFile == null || askSaveIfUnsaved() == null) {
 				// CANC pressed
+				loadNewSavePanel.setAllButtonsEnabled(true);
 				return;
+			}
 			
 			FileWorker.loadFileTxtArea(source, commandTextArea, lblCurrentFile, null, EOL.LF);
 			loadedFile = source;
@@ -307,9 +314,11 @@ public class ShellReadWritePanel extends ParentPanel {
 	public Runnable newAction() {
 		return () -> {
 			
-			if(askSaveIfUnsaved() == null)
+			if(askSaveIfUnsaved() == null) {
 				// CANC pressed
+				loadNewSavePanel.setAllButtonsEnabled(true);
 				return;
+			}
 			
 			commandTextArea.setText("");
 			lblCurrentFile.setText("");
@@ -321,12 +330,16 @@ public class ShellReadWritePanel extends ParentPanel {
 		return () -> {
 			if(saveFile(false))
 				onDocumentReset();
+			
+			loadNewSavePanel.setAllButtonsEnabled(true);
 		};
 	}
 	public Runnable saveAsAction() {
 		return () -> {
 			if(saveFile(true))
 				onDocumentReset();
+			
+			loadNewSavePanel.setAllButtonsEnabled(true);
 		};
 	}
 	
@@ -370,7 +383,8 @@ public class ShellReadWritePanel extends ParentPanel {
 				}
 			}
 			
-		} catch (IOException e1) {
+		} catch (Exception e1) {
+			done = false;
 			dialogHelper.error("error Saving the selected file :(");
 			logger.error("Exception happened!", e1);
 		}

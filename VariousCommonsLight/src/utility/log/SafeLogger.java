@@ -191,7 +191,8 @@ public class SafeLogger {
 			if (loggerAvailable) {
 				invokeLoggerMethod("error", message, throwable);
 			} else {
-				String err = classPreamble() + ConsoleColours.ANSI_RED + ERROR + message + throwable.getClass().getName() + getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW);
+				String err = classPreamble() + ConsoleColours.ANSI_RED + ERROR + message + throwable.getClass().getName()
+						+ getLinedThrowable(throwable, ConsoleColours.ANSI_YELLOW);
 				out.println(err);
 				if(canWriteOnFile(true)) 
 					writeOnLogFile(err);
@@ -258,6 +259,7 @@ public class SafeLogger {
 		String colourPrefix = consoleColour != null? consoleColour : "";
 		
 		builder.append(colourPrefix);
+		builder.append("\n:" + e.getMessage() + "\n");
 		for(StackTraceElement element : e.getStackTrace()) {
 			builder.append("\n   ")
 				.append(element.getClassName())

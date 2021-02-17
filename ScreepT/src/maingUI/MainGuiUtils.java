@@ -47,7 +47,7 @@ import impl.INItializer;
 import impl.om.GenericOption;
 import network.utils.DownloadUtils;
 import om.SupportedFileTextEditor;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import om.exception.ProgressBarInterruptedException;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
@@ -713,7 +713,7 @@ public class MainGuiUtils {
 		
 		thereAreUnsaved = false;
 		atLeastOneTemp = false;
-		for (TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 			if (tabElement.unsaved) {
 				thereAreUnsaved = true;
 			}
@@ -778,7 +778,7 @@ public class MainGuiUtils {
 		boolean askCondition = false;
 		boolean atLeastOneTemp = false;
 	
-		for (TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+		for (TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 			if (tabElement.unsaved) {
 				askCondition = true;
 			}
@@ -811,7 +811,7 @@ public class MainGuiUtils {
 			}
 			if(atLeastOneTemp) {
 				MainGUI.mntmTextEditor.doClick();
-				for(TabTextEditorObj tabElement : currentTabEditor.loadedList.getList()) {
+				for(TabTextEditorObject tabElement : currentTabEditor.loadedList.getList()) {
 					if(tabElement.unsaved && tabElement.loadedFile == null) {
 						currentTabEditor.mainTabList.setSelectedComponent(tabElement.currentScrollPane);
 						MainGUI.textEditorPanel.subHeaderPanel.btnSaveTextFile.requestFocus();

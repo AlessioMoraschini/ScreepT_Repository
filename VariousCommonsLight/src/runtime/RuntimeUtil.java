@@ -27,7 +27,7 @@ public class RuntimeUtil {
 	private RuntimeUtil() {
 		// No Init
 	}
-
+	
 	public static long getMaxMemory() {
 		return Runtime.getRuntime().maxMemory();
 	}

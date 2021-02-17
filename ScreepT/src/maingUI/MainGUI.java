@@ -39,6 +39,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.ini4j.Ini;
 import org.ini4j.Wini;
 
+import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
+
 import arch.InitOwner;
 import dialogutils.JOptionHelperExtended;
 import files.FileVarious;
@@ -947,11 +949,27 @@ public class MainGUI extends MainGuiParent{
 			}
 		});
 
+		// open in a new window - Built-in Calculator
+		mntmCalculator = new CustomJmenuItem(new AbstractAction("Calculator") {
+			public void actionPerformed(ActionEvent e) {
+				
+				CalculatorMainApp.getInstance(getMainFrame());
+			}
+		});
+		
 		// open in a new window - Built-in Shell
 		mntmShellStandalone = new CustomJmenuItem(new AbstractAction("System Console") {
 			public void actionPerformed(ActionEvent e) {
 				
 				windowCreator.newShellFrame();
+			}
+		});
+
+		// open in a new window - Built-in Shell
+		mntmFileContentSearch = new CustomJmenuItem(new AbstractAction("File content search") {
+			public void actionPerformed(ActionEvent e) {
+				
+				windowCreator.fileContentSearch();
 			}
 		});
 		

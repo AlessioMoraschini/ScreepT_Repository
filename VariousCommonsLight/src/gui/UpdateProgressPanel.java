@@ -488,8 +488,11 @@ public class UpdateProgressPanel {
 			if (dialog.getWidth() != 0 && dialog.getWidth() < newWidth) {
 				int height = dialog.getHeight();
 				height = height == 0 ? 180 : height;
-				
-				GuiUtils.centerComponent(dialog, newWidth, height);
+				dialog.setBounds(
+						dialog.getX() - ((newWidth-dialog.getWidth())/2),
+						dialog.getY(),
+						newWidth,
+						height);
 			}
 		}
 	}

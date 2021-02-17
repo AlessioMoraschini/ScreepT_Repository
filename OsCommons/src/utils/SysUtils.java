@@ -632,6 +632,19 @@ public class SysUtils {
 			return null;
 		}
 	}
+	
+	public static Process launchExeAsAdmin(String exePath, String exeLaunchCommand) throws IOException {
+		try {
+			new File(exePath).setExecutable(true);
+		} catch (Exception e) {
+			logger.error("Cannot set jar executable: " + exeLaunchCommand);
+		}
+		
+		if(OS_INFO_LAZY.isWindows())
+			return Runtime.getRuntime().exec("powershell.exe Start-Process '" + exeLaunchCommand + "' -verb RunAs");
+		else
+			return Runtime.getRuntime().exec("sudo " + exeLaunchCommand);
+	}	
 
 	/**
 	 * retrieve list of commands, write to file and run it in current OS

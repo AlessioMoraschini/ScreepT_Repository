@@ -32,6 +32,10 @@ public class ShellFrameTest {
 		
 		shellFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+//		for(File curr : new File("./test_resources").listFiles()) {
+//			System.out.println(curr);
+//		}
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 //				}

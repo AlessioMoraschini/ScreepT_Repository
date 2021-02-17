@@ -56,7 +56,7 @@ import impl.INItializer;
 import jmenu.BrowserOpenerMenu;
 import jmenu.CustomJmenuItem;
 import om.LimitedConcurrentList;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 
@@ -159,7 +159,9 @@ public class MainGuiParent {
 	CustomJmenuItem mntmHashChecker;
 	CustomJmenuItem mntmColorPicker;
 	CustomJmenuItem mntmClipboardStandalone;
+	CustomJmenuItem mntmCalculator;
 	CustomJmenuItem mntmShellStandalone;
+	CustomJmenuItem mntmFileContentSearch;
 	CustomJmenuItem mntmImageViewer;
 	CustomJmenuItem mntmImageConverter;
 	CustomJmenuItem mntmTouppercaseDirectory;
@@ -386,7 +388,9 @@ public class MainGuiParent {
 			mnVarious.add(mntmHashChecker);
 			mnVarious.add(mntmColorPicker);
 			mnVarious.add(mntmClipboardStandalone);
+			mnVarious.add(mntmCalculator);
 			mnVarious.add(mntmShellStandalone);
+			mnVarious.add(mntmFileContentSearch);
 			mnVarious.add(mnConversionsAndOther);
 				// SUB-MENU
 				mnConversionsAndOther.add(mntmImageViewer);
@@ -537,7 +541,9 @@ public class MainGuiParent {
 		mntmHashChecker.setFont(menuItemFont);
 		mntmColorPicker.setFont(menuItemFont);
 		mntmClipboardStandalone.setFont(menuItemFont);
+		mntmCalculator.setFont(menuItemFont);
 		mntmShellStandalone.setFont(menuItemFont);
+		mntmFileContentSearch.setFont(menuItemFont);
 		
 		// SUB -> CONVERSION UTILS SECTION
 		mntmImageViewer.setFont(menuItemFont);
@@ -625,7 +631,9 @@ public class MainGuiParent {
 		mntmHashChecker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HASHING));
 		mntmColorPicker.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
 		mntmClipboardStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
+		mntmCalculator.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CALCULATOR));
 		mntmShellStandalone.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
+		mntmFileContentSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
 		mnConversionsAndOther.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERSION));
 		mnFilesAndDirectories.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_N_DIR));
 		
@@ -701,6 +709,9 @@ public class MainGuiParent {
 		mntmHashChecker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_U, ALT_MASK | SHIFT_MASK));
 		mntmColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P,CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmClipboardStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, ALT_MASK | SHIFT_MASK));
+		mntmCalculator.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ALT_MASK | CTRL_MASK));
+		mntmShellStandalone.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_S, ALT_MASK | CTRL_MASK));
+		mntmFileContentSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, ALT_MASK | CTRL_MASK));
 		mntmImageViewer.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_O, ALT_MASK | SHIFT_MASK));
 		mntmImageConverter.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, ALT_MASK | SHIFT_MASK));
 		
@@ -992,7 +1003,7 @@ public class MainGuiParent {
 	private void updateTxtEditorStringActions(JMenu stringActions) {
 		stringActions.removeAll();
 		
-		TabTextEditorObj loadedTabObj = getSafeTextEditorCurrentTabObject();
+		TabTextEditorObject loadedTabObj = getSafeTextEditorCurrentTabObject();
 		boolean enabled = loadedTabObj != null && mainGuiUtils.isTextEditorActive();
 		
 		if(!enabled) {
@@ -1019,7 +1030,7 @@ public class MainGuiParent {
 		MenuSetter.setFont(menuStringActions, menuItemFont);
 	}
 	
-	private TabTextEditorObj getSafeTextEditorCurrentTabObject() {
+	private TabTextEditorObject getSafeTextEditorCurrentTabObject() {
 		if(textEditorPanel != null) {
 			return textEditorPanel.getCurrentTabEditor().loadedTabObj;
 		} else {

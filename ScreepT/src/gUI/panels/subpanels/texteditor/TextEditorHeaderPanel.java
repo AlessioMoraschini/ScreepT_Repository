@@ -45,7 +45,7 @@ import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import impl.INItializer;
 import net.miginfocom.swing.MigLayout;
-import om.TabTextEditorObj;
+import om.TabTextEditorObject;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import util.ScreeptUtils;
@@ -254,7 +254,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		btnCrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				if (!isCrypterOn && ScreeptUtils.checkPasswordStrengthDynamic(currentConfiguration.getAesOpt().getSecurityLevel(), txtAesKey, 10)) {
 					loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
@@ -297,7 +297,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		btnDecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				if (!isCrypterOn) {
 					loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
@@ -357,7 +357,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		}
 		chkCutWordsTo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				final TabTextEditorObj loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				final TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
 
 				if (chkCutWordsTo.isSelected()) {
 					loadedTabObj.textArea.setLineWrap(true);

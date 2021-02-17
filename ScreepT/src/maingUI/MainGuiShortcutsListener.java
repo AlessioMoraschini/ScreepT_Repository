@@ -221,6 +221,24 @@ public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEv
 				else if(e.getKeyCode() == KeyEvent.VK_F && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentGui.windowCreator.fileContentSearch();
 				}
+
+				/**
+				 * OPEN SHELL FRAME - Ctrl+Alt+S
+				 */
+				else if(e.getKeyCode() == KeyEvent.VK_S && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentGui.windowCreator.newShellFrame();
+				}
+				
+				/*
+				 *  OPEN CALCULATOR -> Ctrl+Alt+C
+				 */
+				else if (e.getKeyCode() == 67 && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							currentGui.mntmCalculator.doClick();
+						}
+					});
+				}
 				
 				/**
 				 *  OPEN IMPORT/EXPORT crypted workspace: TEXT-EDITOR : CTRL+ALT+SHIFT+I

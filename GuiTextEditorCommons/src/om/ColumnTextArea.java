@@ -402,7 +402,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 
     	super.copyAsStyledText();
     	
-    	dto.applySelectionDTO(this);
+    	dto.applySelectionDTO(false, this);
     }
 
 class ColumnSelectionCaret extends DefaultCaret {
@@ -480,7 +480,7 @@ class ColumnSelectionCaret extends DefaultCaret {
                 		
                 		if(!rightClick) {
                 			thisTextArea.getHighlighter().removeAllHighlights();
-                			thisTextArea.addLineHighlight(RXTextUtilities.getLineAtCaret(thisTextArea) - 1, thisTextArea.getCurrentLineHighlightColor());
+                			thisTextArea.addLineHighlight(RXTextUtilities.getLineAtCaret(thisTextArea), thisTextArea.getCurrentLineHighlightColor());
                 		}
 					}
 		

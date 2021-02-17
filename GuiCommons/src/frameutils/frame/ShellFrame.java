@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import dialogutils.GenericFileChooserDialog;
@@ -37,7 +38,6 @@ public class ShellFrame extends ParentFrame {
 	JFrame thisFrame;
 	public ParentPanel payloadPanel;
 	public boolean writeMode = false;
-	public File preloadFile;
 	private Runnable closeAction;
 	
 	public ShellFrame(JFrame parentFrame) {
@@ -49,9 +49,12 @@ public class ShellFrame extends ParentFrame {
 	}
 	
 	public ShellFrame(JFrame parentFrame, boolean writeMode, File preloadFile) {
+		this(null, parentFrame, writeMode, preloadFile);
+	}
+	
+	public ShellFrame(JTextArea cmdAreaToEnrich, JFrame parentFrame, boolean writeMode, File preloadFile) {
 
 		this.writeMode = writeMode;
-		this.preloadFile = preloadFile;
 		this.closeAction = () -> {};
 		
 		logger.info(this.getClass().getName() + " - Starting...");
@@ -79,7 +82,7 @@ public class ShellFrame extends ParentFrame {
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[100%, grow]", "[100%, grow]"));
 		
 		if(writeMode) {
-			ShellReadWritePanel panel = new ShellReadWritePanel(80000, this);
+			ShellReadWritePanel panel = new ShellReadWritePanel(80000, this, cmdAreaToEnrich);
 			if(preloadFile != null && preloadFile.isFile() && preloadFile.exists())
 				panel.loadAction(preloadFile).run();
 			
@@ -163,6 +166,12 @@ public class ShellFrame extends ParentFrame {
 		if(singletonInstance == null || singletonInstance.writeMode != writeMode)
 			singletonInstance = new ShellFrame(parentFrame, writeMode, preloadFile);
 
+		return  singletonInstance;
+	}
+	public static ShellFrame getInstance(JTextArea cmdTxtAreaToEnrich, JFrame parentFrame, boolean writeMode, File preloadFile) {
+		if(singletonInstance == null || singletonInstance.writeMode != writeMode)
+			singletonInstance = new ShellFrame(cmdTxtAreaToEnrich, parentFrame, writeMode, preloadFile);
+		
 		return  singletonInstance;
 	}
 }

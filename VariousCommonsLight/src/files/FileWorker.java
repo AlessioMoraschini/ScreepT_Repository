@@ -46,7 +46,7 @@ import utility.string.StringWorker.EOL;
 
 public class FileWorker {
 	
-	static SafeLogger logger = new SafeLogger(FileWorker.class);
+	public static SafeLogger logger = new SafeLogger(FileWorker.class);
 	
 	private static JOptionHelper dialogHelper = new JOptionHelper(null);
 	
@@ -482,24 +482,30 @@ public class FileWorker {
 		
 		File[] files = folder.listFiles();
 	    if(files!=null) { //some JVMs return null for empty dirs
-	        for(File f: files) {
-	            if(f.isDirectory()) {
-	                boolean del = deleteDirContentInclRoot(f);
-	                if(del==false) {
-	                	deleted = false;
-	                }
-	            } else {
-	                boolean del = f.delete();
-	                if(del==false) {
-	                	deleted = false;
-	                }
-	            }
-	        }
-	        // at the end delete given container folder too
-	        folder.delete();
+	    	for(File f: files) {
+		        try {
+					    if(f.isDirectory()) {
+					        boolean del = deleteDirContentInclRoot(f);
+					        if(del==false) {
+					        	deleted = false;
+					        }
+					    } else {
+					        boolean del = f.delete();
+					        if(del==false) {
+					        	deleted = false;
+					        }
+					    }
+				} catch (Exception e) {
+					logger.error("Cannot delete file: " + f, e);
+					deleted = false;
+				}
+	    	}
 	    }
+
+	    // at the end delete given container folder too
+	    folder.delete();
 	
-	    out.println("deleteDirContentInclRoot -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
+	    logger.info("deleteDirContentInclRoot -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 	    return deleted;	
 	}
 
@@ -508,7 +514,7 @@ public class FileWorker {
 	}
 
 	/**
-	 * this method is used to physically copy the content of a folder inside a distination folder
+	 * this method is used to physically copy the content of a folder inside a destination folder
 	 * (works also for a source file instead of a source folder). 
 	 * @param source Directory or file
 	 * @param destination Directory container / target file, to replace if exists
@@ -521,13 +527,21 @@ public class FileWorker {
 		long startTime = System.currentTimeMillis();
 		logger.info("copyDirectoryContents -> Start...");
 	
+		for(File file : FileWorker.getAllContent(destination, CustomFileFilters.ALL_FOUND)) {
+			try {
+				file.setWritable(true);
+			} catch(Exception e) {
+				logger.warn("Cannot set writable file: " + file, e);
+			}
+		}
+		
 		if(source.isDirectory()) {
 			for (File curr : source.listFiles()) {
 				logger.info("Copying "+curr+" \n  => into "+destination);
 				try {
 					FileUtils.copyToDirectory(curr, destination);
 				} catch (Exception e) {
-					logger.error("An error occurred while copying " + curr + " into " + destination, e);
+					logger.error("An error occurred while copying \"" + curr + "\" into " + destination, e);
 				}
 			}
 		}

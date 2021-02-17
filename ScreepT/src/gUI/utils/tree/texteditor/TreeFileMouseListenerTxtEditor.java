@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -37,7 +36,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIDefaults;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FileUtils;
@@ -216,19 +214,6 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 			menu.add(new JSeparator());
 	    
 	    return item;
-	}
-	private JMenuItem addMenuItem(JComponent menu, String label, Font font, boolean separatorBefore, boolean separatorAfter) {
-		if (separatorBefore) 
-			menu.add(new JSeparator());
-		
-		JMenuItem item = new JMenuItem(label);
-		item.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
-		menu.add(item);
-		
-		if (separatorAfter)
-			menu.add(new JSeparator());
-		
-		return item;
 	}
 
 	public JPopupMenu getPopUpMenu() {
@@ -690,15 +675,6 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		refreshItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F5, KeyEvent.CTRL_MASK | ALT_MASK));
 	}
 
-	public void changeTreeSelectionColor(Color color) {
-		
-		UIDefaults treeDefaults = new UIDefaults();
-		treeDefaults.put("Tree.selectionBackground", color);
-
-	    tree.putClientProperty("Nimbus.Overrides",treeDefaults);
-	    tree.putClientProperty("Nimbus.Overrides.InheritDefaults", color == null);
-	}
-	
 	public JMenuItem getItemLoadFile() {
 		return itemLoadFile;
 	}
