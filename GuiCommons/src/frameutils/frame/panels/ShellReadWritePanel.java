@@ -393,7 +393,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	}
 	
 	private Boolean askSave() {
-		return dialogHelper.askYorNPrecond("Unsaved file", "Do you want to save current file before to load?", this, fileUnsaved);
+		return dialogHelper.askYorNPrecond("Unsaved file", "Do you want to save current file before to continue?", this, fileUnsaved);
 	}
 	
 	private Process launchCommand(String command) throws IOException {

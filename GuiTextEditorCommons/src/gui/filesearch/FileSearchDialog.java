@@ -32,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -44,6 +45,7 @@ import org.fife.rsta.ui.AssistanceIconPanel;
 import org.fife.rsta.ui.RComboBoxModel;
 import org.fife.rsta.ui.ResizableFrameContentPane;
 import org.fife.rsta.ui.UIUtil;
+import org.fife.rsta.ui.search.SearchComboBox;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
@@ -55,6 +57,7 @@ import gui.dialogs.AbstractFileSearchDialog;
 import gui.dialogs.msg.JOptionHelper;
 import resources.GeneralConfig;
 import utility.reflection.ReflectionUtils;
+import utility.string.StringWorker;
 
 
 /**
@@ -84,6 +87,9 @@ import utility.reflection.ReflectionUtils;
 public class FileSearchDialog extends AbstractFileSearchDialog {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final String COMMA_SEPARATOR = ",";
+	public static String FILTERS_SEPARATOR = COMMA_SEPARATOR;
 	
 	public static FileSearchDialog singletonInstance = null;
 	
@@ -172,10 +178,12 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		textField.addFocusListener(new FindFocusAdapter());
 		textField.addKeyListener(new FindKeyListener());
 		textField.getDocument().addDocumentListener(new FindDocumentListener());
+		
 		JPanel temp = new JPanel(new BorderLayout());
 		temp.add(findTextCombo);
 		AssistanceIconPanel aip = new AssistanceIconPanel(findTextCombo);
 		temp.add(aip, BorderLayout.LINE_START);
+		
 		if (orientation.isLeftToRight()) {
 			enterTextPane.add(findFieldLabel);
 			enterTextPane.add(temp);
@@ -184,8 +192,28 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 			enterTextPane.add(temp);
 			enterTextPane.add(findFieldLabel);
 		}
+		
+		fileFiltersTextCombo = new SearchComboBox(null, false);
+		JTextComponent textField2 = UIUtil.getTextComponent(fileFiltersTextCombo);
+		textField2.addFocusListener(new FindFocusAdapter());
+		textField2.addKeyListener(new FindKeyListener());
+		textField2.getDocument().addDocumentListener(new FindDocumentListener());
+		JPanel temp2 = new JPanel(new BorderLayout());
+		temp2.add(fileFiltersTextCombo);
+		AssistanceIconPanel aipF = new AssistanceIconPanel(fileFiltersTextCombo);
+		temp2.add(aipF, BorderLayout.LINE_START);
+		JLabel filtersLabel = new JLabel("<html> File filters:<br>(comma separated)</html>");
+		filtersLabel.setMaximumSize(new Dimension(60,60));
+		if (orientation.isLeftToRight()) {
+			enterTextPane.add(filtersLabel);
+			enterTextPane.add(temp2);
+		}
+		else {
+			enterTextPane.add(temp2);
+			enterTextPane.add(filtersLabel);
+		}
 
-		UIUtil.makeSpringCompactGrid(enterTextPane, 1, 2,	//rows, cols
+		UIUtil.makeSpringCompactGrid(enterTextPane, 2, 2,	//rows, cols
 											0,0,		//initX, initY
 											6, 6);	//xPad, yPad
 
@@ -294,13 +322,19 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		GuiUtils.centerComponent(thisDialog, new Dimension(650, (int)thisDialog.getPreferredSize().getHeight()));
 	}
 	
+	private String[] getFileFilters(String separator) {
+		String filtersRaw = StringWorker.trimToEmpty(fileFiltersTextCombo.getSelectedString());
+		return filtersRaw.split(separator);
+	}
+	
 	private FileContentSearchDTO getSearchDTO() {
 		FileContentSearchDTO searchDTO = new FileContentSearchDTO(
 				findTextCombo.getSelectedString(), 
 				caseCheckBox.isSelected(),
 				wholeWordCheckBox.isSelected(),
 				regexCheckBox.isSelected(),
-				includeBinariesCheckBox.isSelected());
+				includeBinariesCheckBox.isSelected(), 
+				getFileFilters(FILTERS_SEPARATOR));
 		
 		return searchDTO;
 	}
@@ -324,6 +358,17 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 					int delta = e.getWheelRotation() < 0 ? -1 : 1;
 					findTextCombo.setSelectedIndex(item + delta);
 					checkComboWithText();
+				} catch (Exception e1) {}
+			}
+		});
+
+		fileFiltersTextCombo.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				try {
+					int item = fileFiltersTextCombo.getSelectedIndex();
+					int delta = e.getWheelRotation() < 0 ? -1 : 1;
+					fileFiltersTextCombo.setSelectedIndex(item + delta);
 				} catch (Exception e1) {}
 			}
 		});
@@ -410,16 +455,21 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	public void updateUI() {
 		SwingUtilities.updateComponentTreeUI(this);
 		pack();
+		updateCombo(findTextCombo);
+		updateCombo(fileFiltersTextCombo);
 		JTextComponent textField = UIUtil.getTextComponent(findTextCombo);
-		textField.addFocusListener(new FindFocusAdapter());
 		textField.addKeyListener(new FindKeyListener() {
-
 			@Override
 			public void keyReleased(KeyEvent e) {
 				super.keyReleased(e);
 				checkComboWithText();
 			}
 		});
+	}
+	
+	protected void updateCombo(SearchComboBox combo) {
+		JTextComponent textField = UIUtil.getTextComponent(combo);
+		textField.addFocusListener(new FindFocusAdapter());
 		textField.getDocument().addDocumentListener(new FindDocumentListener());
 	}
 

@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -29,20 +30,25 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
-import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
 import javax.swing.event.EventListenerList;
 import javax.swing.text.JTextComponent;
 
 import org.fife.rsta.ui.UIUtil;
 import org.fife.rsta.ui.search.AbstractSearchDialog;
 import org.fife.rsta.ui.search.FindReplaceButtonsEnableResult;
+import org.fife.rsta.ui.search.SearchComboBox;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 
 import dialogutils.GenericFileChooserDialog;
+import frameutils.frame.panels.arch.ParentPanel;
 import gui.GuiUtils;
+import utility.string.StringWorker.EOL;
 
 /**
  * This is the base class for {@link FindDialog} and {@link ReplaceDialog}. It
@@ -66,7 +72,8 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	protected JLabel findFieldLabel;
 	protected JButton searchButton;
 	protected JButton chooseFileBtn;
-	protected JTextField txtFieldSelectedFiles;
+	protected JTextArea txtFieldSelectedFiles;
+	protected SearchComboBox fileFiltersTextCombo;
 	
 	protected JCheckBox includeBinariesCheckBox;
 	
@@ -115,24 +122,22 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 
 		if ("UpRadioButtonClicked".equals(command)) {
 			context.setSearchForward(false);
-		}
-
-		else if ("DownRadioButtonClicked".equals(command)) {
+		
+		} else if ("DownRadioButtonClicked".equals(command)) {
 			context.setSearchForward(true);
-		}
-
-		else if (SearchEvent.Type.FIND.name().equals(command)) {
+		
+		} else if (SearchEvent.Type.FIND.name().equals(command)) {
 
 			// Add the item to the combo box's list, if it isn't already there.
 			JTextComponent tc = UIUtil.getTextComponent(findTextCombo);
+			JTextComponent tc2 = UIUtil.getTextComponent(fileFiltersTextCombo);
 			findTextCombo.addItem(tc.getText());
+			fileFiltersTextCombo.addItem(tc2.getText());
 			context.setSearchFor(getSearchString());
 
 			fireSearchEvent(e); // Let parent application know
-
-		}
-
-		else {
+		
+		} else {
 			super.actionPerformed(e);
 		}
 
@@ -227,18 +232,21 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 
 		searchButton.setEnabled(enable);
 
+		styleComboText(findTextCombo, enable, er);
+		styleComboText(fileFiltersTextCombo, enable, er);
+		
+		return er;
+
+	}
+	
+	protected void styleComboText(SearchComboBox combo, boolean enable, FindReplaceButtonsEnableResult er) {
 		// setBackground doesn't show up with XP Look and Feel!
-		//findTextComboBox.setBackground(enable ?
-		//		UIManager.getColor("ComboBox.background") : Color.PINK);
-		JTextComponent tc = UIUtil.getTextComponent(findTextCombo);
+		JTextComponent tc = UIUtil.getTextComponent(combo);
 		tc.setForeground(enable ? UIManager.getColor("TextField.foreground") :
 									UIUtil.getErrorTextForeground());
 
 		String tooltip = SearchUtil.getToolTip(er);
 		tc.setToolTipText(tooltip); // Always set, even if null
-
-		return er;
-
 	}
 
 	private void init() {
@@ -259,12 +267,20 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		temp.add(caseCheckBox);
 		temp.add(wholeWordCheckBox);
 		temp.add(includeBinariesCheckBox);
+		temp.add(regexCheckBox);
 		searchConditionsPanel.add(temp, BorderLayout.LINE_START);
 		temp = new JPanel();
 		temp.setLayout(new BoxLayout(temp, BoxLayout.PAGE_AXIS));
-		temp.add(regexCheckBox);
-		txtFieldSelectedFiles = new JTextField("Nothing selected");
-		temp.add(txtFieldSelectedFiles);
+		txtFieldSelectedFiles = new JTextArea(" Nothing selected");
+		txtFieldSelectedFiles.setMargin(new Insets(8, 8, 8, 8));
+		txtFieldSelectedFiles.setMinimumSize(new Dimension(340, 70));
+		txtFieldSelectedFiles.setPreferredSize(new Dimension(340, 70));
+		txtFieldSelectedFiles.setEditable(false);
+		txtFieldSelectedFiles.setAutoscrolls(true);
+		txtFieldSelectedFiles.setBorder(new LineBorder(Color.DARK_GRAY));
+		JScrollPane scroller = ParentPanel.getScrollPane(true, true);
+		scroller.setViewportView(txtFieldSelectedFiles);
+		temp.add(scroller);
 		searchConditionsPanel.add(temp, BorderLayout.LINE_END);
 
 		// Create the "Find what" label.
@@ -281,10 +297,18 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 
 		setSelectedFileLbl(null);
 		
-		setMinimumSize(new Dimension(550, 150));
-		setPreferredSize(new Dimension(550, 170));
+		setMinimumSize(new Dimension(550, 230));
+		setPreferredSize(new Dimension(550, 240));
 		
 		installKeyboardActions();
+		
+		searchButton.setCursor(GuiUtils.CURSOR_HAND);
+		cancelButton.setCursor(GuiUtils.CURSOR_HAND);
+		chooseFileBtn.setCursor(GuiUtils.CURSOR_HAND);
+		caseCheckBox.setCursor(GuiUtils.CURSOR_HAND);
+		includeBinariesCheckBox.setCursor(GuiUtils.CURSOR_HAND);
+		regexCheckBox.setCursor(GuiUtils.CURSOR_HAND);
+		wholeWordCheckBox.setCursor(GuiUtils.CURSOR_HAND);
 	}
 	
 	public void setSelectedFileLbl(List<File> selected) {
@@ -293,13 +317,16 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 			txtFieldSelectedFiles.setBackground(new Color(252, 240, 146));
 		} else {
 			String fileConcatNames = "";
-			txtFieldSelectedFiles.setText("Selected: " + selected.get(0).getName() + " ...");
+			String fileConcatNamesSimple = "";
 			for(File iterator : selected) {
 				String identifier = iterator.isDirectory() ? "<b>Directory: </b>" : "<b>File: </b>";
 				fileConcatNames += identifier + iterator + "<br>";
+				String identifierS = iterator.isDirectory() ? "Directory: " : "File: ";
+				fileConcatNamesSimple += identifierS + iterator + EOL.defaultEol.eol;
 			}
-			
+
 			txtFieldSelectedFiles.setBackground(new Color(208, 252, 146));
+			txtFieldSelectedFiles.setText(fileConcatNamesSimple);
 			txtFieldSelectedFiles.setToolTipText(GuiUtils.encapsulateInHtml(fileConcatNames));
 		}
 	}

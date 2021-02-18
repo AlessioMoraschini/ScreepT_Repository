@@ -11,6 +11,7 @@ import files.om.SearchResult;
 import frameutils.frame.arch.ParentFrame;
 import gui.filesearch.tree.FileSearchResultsTreeCellRenderer;
 import gui.filesearch.tree.FileSearchTreeMouseListener;
+import utility.string.StringWorker;
 
 import java.awt.GridBagLayout;
 import java.text.SimpleDateFormat;
@@ -32,11 +33,23 @@ public class FileSearchResultViewer extends ParentFrame {
 	public JTree resultsTree;
 	
 	public String searchString = "";
+	public int sourceFilesTotal;
+	
+	private String date;
+	
+	public void setTitle(String preamble, boolean refreshDate, boolean shortTitle) {
+		if(date == null || refreshDate)
+			date = DATE_FORMATTER.format(new Date());
+		
+		setTitle(StringWorker.trimToEmpty(preamble) + (shortTitle ? "" : "File Search Results Viewer - ") + date);
+	}
 	
 	public FileSearchResultViewer(FileSearchActions searchActions, JFrame parentFrame, String searchString) {
 		super();
 		
+		this.sourceFilesTotal = 0;
 		this.searchString = searchString;
+		setTitle("", true, false);
 		setTitle("File Search Results Viewer - " + DATE_FORMATTER.format(new Date()));
 		
 		this.searchActions = searchActions != null ? searchActions : new FileSearchActions() {};
@@ -80,6 +93,7 @@ public class FileSearchResultViewer extends ParentFrame {
 	public void addResult(SearchResult resultToAdd) {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)resultsTree.getModel().getRoot();
 		ResultViewDTO fileRoot = new ResultViewDTO(0, resultToAdd, true);
+		fileRoot.sourceFilesTotal = sourceFilesTotal;
 		DefaultMutableTreeNode newFileNode = new DefaultMutableTreeNode(fileRoot);
 		
 		root.add(newFileNode);
@@ -132,22 +146,26 @@ public class FileSearchResultViewer extends ParentFrame {
 		public boolean root;
 		public boolean fileHead;
 		public int occurrences = 0;
+		public int sourceFilesTotal;
 		
 		public ResultViewDTO(int line, SearchResult result) {
 			this.result = result;
 			this.line = line;
 			this.root = false;
 			this.fileHead = false;
+			this.sourceFilesTotal = 0;
 		}
 
 		public ResultViewDTO(boolean root) {
 			this(0, new SearchResult(null));
 			this.root = root;
+			this.sourceFilesTotal = 0;
 		}
 
 		public ResultViewDTO(int line, SearchResult result, boolean fileHead) {
 			this(line, result);
 			this.fileHead = fileHead;
+			this.sourceFilesTotal = 0;
 		}
 
 		@Override
@@ -156,9 +174,14 @@ public class FileSearchResultViewer extends ParentFrame {
 			String viewedString = root
 					? "Search Results [ Search String: " + result.searchString + " ]"
 					: fileHead 
-						? result.ownerFile.getAbsolutePath() + " - Occurrences: " + occurrences
+						? result.ownerFile.getAbsolutePath() + " - Occurrences: " + occurrences + getCheckedOutRatioString()
 						: "(Line: " + line + ") - \"" + result.getLineMatchText(line) + "\"";
 			return viewedString;
+		}
+		
+		public String getCheckedOutRatioString() {
+			String files = result.fileScannedTilNow > 1 ? " files " : " file ";
+			return "  -  (Checked " + result.fileScannedTilNow + files + "out of " + sourceFilesTotal + ")";
 		}
 		
 	}

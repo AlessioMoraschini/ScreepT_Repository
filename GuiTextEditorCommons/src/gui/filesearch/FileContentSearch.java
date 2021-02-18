@@ -8,10 +8,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import files.CustomFileFilters;
 import files.FileVarious;
@@ -21,8 +24,10 @@ import files.om.SearchResult;
 import gui.UpdateProgressPanel;
 import gui.dialogs.msg.JOptionHelper;
 import om.SupportedFileTextEditor;
+import treeutils.TreeUtils;
 import utility.log.SafeLogger;
 import utility.manipulation.ArrayHelper;
+import utility.string.StringWorker;
 
 public class FileContentSearch {
 	
@@ -30,7 +35,8 @@ public class FileContentSearch {
 	
 	public static SafeLogger logger = new SafeLogger(FileContentSearch.class);
 
-	public List<File> sourceFiles;
+	private AtomicInteger totalSourcesScanned;
+	private List<File> sourceFiles;
 	public List<SearchResult> results;
 	public FileContentSearchDTO searchDTO;
 	
@@ -38,6 +44,7 @@ public class FileContentSearch {
 	public boolean useInternalRegex = false;
 	
 	public FileSearchActions searchActions;
+	
 	
 	FileSearchResultViewer resultViewer;
 	
@@ -47,10 +54,12 @@ public class FileContentSearch {
 	
 	public FileContentSearch(FileContentSearchDTO searchDTO, List<File> sources, FileSearchActions searchActions) {
 
+		this.totalSourcesScanned = new AtomicInteger(0);
 		this.searchDTO = searchDTO == null ? new FileContentSearchDTO(null) : searchDTO;
 		this.sourceFiles = retrieveSourceFilesToUse(sources);
 		results = new ArrayList<SearchResult>();
 		resultViewer = new FileSearchResultViewer(searchActions, null, searchDTO.searchString);
+		resultViewer.sourceFilesTotal = sourceFiles.size();
 		
 		dialogHelper = new JOptionHelper(resultViewer);
 		
@@ -89,6 +98,7 @@ public class FileContentSearch {
 		// Start source files iteration
 		try {
 			for(File source : sourceFiles) {
+				totalSourcesScanned.incrementAndGet();
 				try {
 					
 					// Update progress values
@@ -105,6 +115,7 @@ public class FileContentSearch {
 					currentResult.reorderByLine();
 					if (!currentResult.resultLines.isEmpty()) {
 						searchActions.fileSearchUpdater(currentResult);
+						currentResult.fileScannedTilNow = scannedFilesTotal();
 						SwingUtilities.invokeLater(() -> {
 							resultViewer.addResult(currentResult);
 							results.add(currentResult);
@@ -129,10 +140,14 @@ public class FileContentSearch {
 		} finally {
 			updateProgPanel.forceClose();
 			searchActions.searchCompleted(results);
-			dialogHelper.info("<html>Search completed with <b>" + getOccurrencesFound() + "</b> results!");
+			int occurrencesFound = getOccurrencesFound();
+			dialogHelper.info("<html>Search completed with <b>" + occurrencesFound + "</b> results!");
 			SwingUtilities.invokeLater(()->{
+				resultViewer.setTitle("Completed with " + occurrencesFound + " results in " + sourceTotalSize() + " files - ", false, true);
 				resultViewer.resultsTree.revalidate();
 				resultViewer.resultsTree.repaint();
+				DefaultMutableTreeNode root = (DefaultMutableTreeNode)resultViewer.resultsTree.getModel().getRoot();
+				resultViewer.resultsTree.expandPath(new TreePath(root.getPath()));
 			});
 		}
 		
@@ -165,6 +180,10 @@ public class FileContentSearch {
 		
 		if(!searchDTO.binariesIncluded) {
 			elaboredSources = removeBinaries(elaboredSources);
+		}
+		
+		if(searchDTO.fileFilters.length > 0) {
+			elaboredSources = applyFilters(elaboredSources, searchDTO);
 		}
 		
 		return elaboredSources;
@@ -272,6 +291,24 @@ public class FileContentSearch {
 		
 		return filtered;
 	}
+
+	private List<File> applyFilters(List<File> sources, FileContentSearchDTO dto){
+		List<File> filtered = new ArrayList<>();
+		for(File source : sources) {
+			Boolean matches = false;
+			for(String filter : dto.fileFilters) {
+				if(!StringWorker.isEmpty(filter) && StringWorker.checkWildcardMatch(source.getName(), filter, !dto.matchCase)) {
+					matches = true;
+					break;
+				}
+			}
+			
+			if(matches) 
+				filtered.add(source);
+		}
+		
+		return filtered;
+	}
 	
 	private int sourceTotalSize() {
 		int n = 0;
@@ -281,6 +318,10 @@ public class FileContentSearch {
 		}
 		
 		return n;
+	}
+	
+	public int scannedFilesTotal() {
+		return totalSourcesScanned.get();
 	}
 	
 	public int getOccurrencesFound() {

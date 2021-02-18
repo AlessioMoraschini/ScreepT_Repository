@@ -12,14 +12,16 @@ import utility.string.StringWorker;
 public class SearchResult {
 
 	public File ownerFile;
-	
 	public String searchString = "";
+	
+	public int fileScannedTilNow = 0;
 	
 	// Left: line number :: right: list of caret positions of results
 	public Map<Integer, ArrayList<Match>> resultLines;
 	
 	public SearchResult(File ownerFile) {
 		this.ownerFile = ownerFile;
+		this.fileScannedTilNow = 0;
 		resultLines = new HashMap<>();
 	}
 	

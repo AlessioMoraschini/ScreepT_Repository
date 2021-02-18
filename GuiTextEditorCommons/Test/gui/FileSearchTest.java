@@ -1,6 +1,5 @@
 package gui;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import files.om.SearchResult;
@@ -27,6 +26,6 @@ public class FileSearchTest {
 		});
 		
 		dialog.setVisible(true);
-		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 }

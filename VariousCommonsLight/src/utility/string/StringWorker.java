@@ -754,6 +754,22 @@ public class StringWorker {
 		
 		return builder.toString();
 	}
+	
+	public static boolean checkWildcardMatch(String toCheck, String wildcardExpression) {
+		return checkWildcardMatch(toCheck, wildcardExpression, false);
+	}
+
+	public static boolean checkWildcardMatch(String toCheck, String wildcardExpression, boolean ignoreCase) {
+		if(isEmpty(toCheck) || isEmpty(wildcardExpression))
+			return false;
+		
+		if(ignoreCase) {
+			wildcardExpression = wildcardExpression.toLowerCase();
+			toCheck = toCheck.toLowerCase();
+		}
+		
+		return trimToEmpty(toCheck).matches(trimToEmpty(wildcardExpression).replace("?", ".?").replace("*", ".*?"));
+	}
 
 	/**
 	 * Replace all EOL(EndOfLine) characters with the wanted type
