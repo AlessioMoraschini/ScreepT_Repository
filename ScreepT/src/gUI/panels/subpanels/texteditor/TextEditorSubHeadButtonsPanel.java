@@ -1638,10 +1638,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	}
 	
 	public void enableDependenciesFunctions() {
-		String koMsg = "Not found on this installation: update your libraries plugin to use this function!"; 
-		enableDependency(btnSpeak, MainGuiGeneralAppStarter.voiceSpeakerAvailable, TextEditTooltips.tooltipSpeak, koMsg);
-		enableDependency(btnParseImageText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditTooltips.tooltipParseImage, koMsg);
-		enableDependency(btnParsePdfText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditTooltips.tooltipParsePdfTxt, koMsg);
+		String koMsg = " not found on this installation: update your libraries plugin to use this function!"; 
+		enableDependency(btnSpeak, MainGuiGeneralAppStarter.voiceSpeakerAvailable, TextEditTooltips.tooltipSpeak, "TextToSpeech" + koMsg);
+		enableDependency(btnParseImageText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditTooltips.tooltipParseImage, "Tesseract" + koMsg);
+		enableDependency(btnParsePdfText, MainGuiGeneralAppStarter.tesseractAvailable, TextEditTooltips.tooltipParsePdfTxt, "Tesseract" + koMsg);
 	}
 	
 	private static void enableDependency(JButton target, boolean enable, String tooltipY, String tooltipN) {
