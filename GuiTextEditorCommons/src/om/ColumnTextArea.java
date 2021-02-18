@@ -453,6 +453,9 @@ class ColumnSelectionCaret extends DefaultCaret {
 		if(customCaret != null && customCaret instanceof ColumnSelectionCaret) {
 			((ColumnSelectionCaret)customCaret).paint(getGraphics());
 		}
+		
+		if(!shiftDown)
+			lastStartPosition = thisTextArea.getCaretPosition();
     }
 
     @Override
@@ -495,7 +498,7 @@ class ColumnSelectionCaret extends DefaultCaret {
 						lastStartPosition = thisTextArea.getCaretPosition();
 					}
 					
-					updateSelectionIfShiftPressed();
+//					updateSelectionIfShiftPressed();
 				}
 			
 			} catch (Exception e1) {

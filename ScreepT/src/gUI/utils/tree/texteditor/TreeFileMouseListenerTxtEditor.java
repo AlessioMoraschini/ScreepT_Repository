@@ -79,6 +79,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	public JMenuItem copyHereCurrentItem;
 	public JMenuItem moveHereCurrentItem;
 	public JMenuItem sysExplorerItem;
+	public JMenuItem searchContentItem;
 	public JMenuItem refreshItem;
 	public JMenuItem selectAllItem;
 	public JMenuItem collapseItem;
@@ -162,7 +163,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 		JMenuItem[] ifDir = new JMenuItem[] {workspaceItem};
 		JMenuItem[] ifCurrentTabFileExists = new JMenuItem[] {copyHereCurrentItem, moveHereCurrentItem};
 		JMenuItem[] ifExists = new JMenuItem[] {
-				copyHereCurrentItem, moveHereCurrentItem, itemRename, sysExplorerItem,
+				copyHereCurrentItem, moveHereCurrentItem, itemRename, sysExplorerItem, searchContentItem,
 				copyPathsItem, hashingItem, deleteItem, copyItem, pasteItem, itemLoadFile,
 				workspaceItem, propertiesItem};
 		
@@ -288,6 +289,9 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    deleteItem = addMenuItem(menu, "Delete selected files", font, false, false);
 	    deleteItem.addActionListener(getDeleteActionListener());
 	    
+	    searchContentItem = addMenuItem(menu, "Search for text in selected files content", font, true, false);
+	    searchContentItem.addActionListener(searchContentInSelection());
+
 	    sysExplorerItem = addMenuItem(menu, "View in system explorer", font, true, false);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    
@@ -316,6 +320,7 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	    expandItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE_SMALL));
 	    hashingItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_HASHING));
 	    workspaceItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_JOB_ON));
+	    searchContentItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
 	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
 	    subMenuNew.setIcon(new ImageIcon(IconsPathConfigurator.ICON_MORE));
 	    itemNewFile.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_LOAD));
@@ -330,44 +335,31 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	
 	@Override
 	public ActionListener refreshListener() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				refreshTree();
-			}
+		return (e) -> {
+			refreshTree();
 		};
 	}
 	
 	private ActionListener expandChildren() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GuiUtils.launchThreadSafeSwing(() -> { 
-					try {
-						TreePath parent = tree.getSelectionPath();
-						TreeUtils.expandAllChildNodes(tree, parent);
-					} catch (Exception e1) {
-						logger.error("Error expanding tree row N°"+selectedRow, e1);
-					}
-				});
-			}
+		return (e) -> {
+			GuiUtils.launchThreadSafeSwing(() -> { 
+				try {
+					TreePath parent = tree.getSelectionPath();
+					TreeUtils.expandAllChildNodes(tree, parent);
+				} catch (Exception e1) {
+					logger.error("Error expanding tree row N°"+selectedRow, e1);
+				}
+			});
 		};
 	}
 	
 	private ActionListener collapseChildren() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
+		return (e) -> {
+			try {
 //					tree.collapseRow(selectedRow);
-					TreeUtils.collapseTreeSelectionChildren(tree, selectedRow);
-				} catch (Exception e1) {
-					logger.error("Error collapsing tree row N°"+selectedRow, e1);
-				}
+				TreeUtils.collapseTreeSelectionChildren(tree, selectedRow);
+			} catch (Exception e1) {
+				logger.error("Error collapsing tree row N°"+selectedRow, e1);
 			}
 		};
 	}
@@ -387,24 +379,26 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	}
 	
 	private ActionListener getLoadActionListener() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							if (selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
-								currentTabEditor.loadFile(selectedNode.mFile);
-								currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
-							}
-						} catch (Exception e) {
-							logger.error(e);
+		return (e) -> {
+			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					try {
+						if (selectedNode != null && selectedNode.mFile != null && !currentTabEditor.alreadyLoading) {
+							currentTabEditor.loadFile(selectedNode.mFile);
+							currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 						}
+					} catch (Exception e) {
+						logger.error(e);
 					}
-				});
-			}
+				}
+			});
+		};
+	}
+	
+	public ActionListener searchContentInSelection(){
+		return (e) -> {
+			textEditor.mainApplication.windowCreator.fileContentSearch(getSelectedFiles());
 		};
 	}
 	
@@ -414,58 +408,51 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	 */
 	@Deprecated
 	public ActionListener ChangeBckgNewFileActionListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Color esit = new ColorDialogUtils().askForColor(textEditor.leftSplitTreeFiles, false);
-				if (esit != null) {
-					textEditor.currentConfiguration.getTextEditorOpt().setFilePanelBackCol(esit);
-					textEditor.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "filePanelBackgroundCol", ConversionUtils.getRgbString(esit));
-					textEditor.leftSplitContainer.setBackground(esit);
-					textEditor.leftSplitTreeFiles.setBackground(esit);
-					logger.debug("File panel Background color changed to : " + ConversionUtils.getRgbString(esit));
-				}
+		return (e) -> {
+			Color esit = new ColorDialogUtils().askForColor(textEditor.leftSplitTreeFiles, false);
+			if (esit != null) {
+				textEditor.currentConfiguration.getTextEditorOpt().setFilePanelBackCol(esit);
+				textEditor.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "filePanelBackgroundCol", ConversionUtils.getRgbString(esit));
+				textEditor.leftSplitContainer.setBackground(esit);
+				textEditor.leftSplitTreeFiles.setBackground(esit);
+				logger.debug("File panel Background color changed to : " + ConversionUtils.getRgbString(esit));
 			}
 		};
 	}
 	
 	private ActionListener getMoveHereCurrentFileIfExists() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(!checkCurrentAndSelected()) {
-					return;
-				}
-				
-				File targetParentDir = (selectedNode.mFile.isDirectory())? selectedNode.mFile : selectedNode.mFile.getParentFile();
-				if(!dialogHelper.yesOrNo("Are you sure to move current file into [" + targetParentDir.getAbsolutePath()+"] ?", "Move current file?")) {
-					return;
-				}
-				
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
-
-				File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
-				boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo("File exists, wanna overwrite?", "File exists") : true;
-				File result = FileWorker.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite, GeneralConfig.TEMP_DIRECTORY);
-				logger.debug("Copy of "+currentTabEditor.loadedTabObj.loadedFile+" created into target directory: " + targetParentDir.getAbsolutePath());
-				
-				if(result != null) {
-					FileUtils.deleteQuietly(currentTabEditor.loadedTabObj.loadedFile);
-					logger.debug("Original deleted."+currentTabEditor.loadedTabObj.loadedFile);
-
-					currentTabEditor.loadedTabObj.loadedFile = result;
-					currentTabEditor.updateSavedLabelNTab(null);
-					
-					textEditor.textEditorUtils.refreshMessageAndTabTooltip("File Moved");
-				}else {
-					textEditor.textEditorUtils.errorAdvice("Cannot Move!");
-					dialogHelper.error("An error occurred moving file, so file is still to its original position", "Cannot Move!");
-				}
-				
-				refreshItem.doClick();
-				currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
+		return (e) -> {
+			if(!checkCurrentAndSelected()) {
+				return;
 			}
+			
+			File targetParentDir = (selectedNode.mFile.isDirectory())? selectedNode.mFile : selectedNode.mFile.getParentFile();
+			if(!dialogHelper.yesOrNo("Are you sure to move current file into [" + targetParentDir.getAbsolutePath()+"] ?", "Move current file?")) {
+				return;
+			}
+			
+			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_WAIT);
+
+			File outputFilePrevision = new File(targetParentDir.getAbsolutePath() + File.separator + currentTabEditor.loadedTabObj.loadedFile.getName());
+			boolean overwrite = (outputFilePrevision.exists())? dialogHelper.yesOrNo("File exists, wanna overwrite?", "File exists") : true;
+			File result = FileWorker.copyFileIntoDir(currentTabEditor.loadedTabObj.loadedFile, targetParentDir, overwrite, GeneralConfig.TEMP_DIRECTORY);
+			logger.debug("Copy of "+currentTabEditor.loadedTabObj.loadedFile+" created into target directory: " + targetParentDir.getAbsolutePath());
+			
+			if(result != null) {
+				FileUtils.deleteQuietly(currentTabEditor.loadedTabObj.loadedFile);
+				logger.debug("Original deleted."+currentTabEditor.loadedTabObj.loadedFile);
+
+				currentTabEditor.loadedTabObj.loadedFile = result;
+				currentTabEditor.updateSavedLabelNTab(null);
+				
+				textEditor.textEditorUtils.refreshMessageAndTabTooltip("File Moved");
+			}else {
+				textEditor.textEditorUtils.errorAdvice("Cannot Move!");
+				dialogHelper.error("An error occurred moving file, so file is still to its original position", "Cannot Move!");
+			}
+			
+			refreshItem.doClick();
+			currentTabEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 		};
 	}
 	

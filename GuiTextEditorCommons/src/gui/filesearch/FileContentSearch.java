@@ -24,7 +24,6 @@ import files.om.SearchResult;
 import gui.UpdateProgressPanel;
 import gui.dialogs.msg.JOptionHelper;
 import om.SupportedFileTextEditor;
-import treeutils.TreeUtils;
 import utility.log.SafeLogger;
 import utility.manipulation.ArrayHelper;
 import utility.string.StringWorker;

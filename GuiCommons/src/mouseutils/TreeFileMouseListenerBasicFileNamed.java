@@ -173,38 +173,31 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 	}
 	
 	public ActionListener openInSystemExplorer() {
-		return new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GuiUtilsExtended.openInFileSystem(selectedNode.mFile);
-			}
+		return (e) -> {
+			GuiUtilsExtended.openInFileSystem(selectedNode.mFile);
 		};
 	}
 	
 	public ActionListener getNewFolderActionListener() {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				FileNamed node = (FileNamed)tree.getSelectionPath().getLastPathComponent();
-				if(node == null || node.mFile == null || !node.mFile.exists()) {
-					return;
-				}
-				logger.info("getNewFolderActionListener() -> asking for creating new folder...");
-				File targetDir = node.mFile.isDirectory()? node.mFile : node.mFile.getParentFile();
-				File unexistant = new File(targetDir.getAbsolutePath() + File.separator + "new_folder");
-				unexistant = FileVarious.uniqueJavaObjFile(unexistant);
-				String newName = dialogHelper.askForStringNullable("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
-				
-				if(newName == null) {
-					return;
-				}else if(!StringWorker.trimToEmpty(newName).equals("")){
-					unexistant = FileVarious.uniqueJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
-				}
-				
-				boolean result = unexistant.mkdirs();
-				logger.info("getNewFolderActionListener() -> " + unexistant + " creation process had result: "+result);
+		return (e) -> {
+			FileNamed node = (FileNamed)tree.getSelectionPath().getLastPathComponent();
+			if(node == null || node.mFile == null || !node.mFile.exists()) {
+				return;
 			}
+			logger.info("getNewFolderActionListener() -> asking for creating new folder...");
+			File targetDir = node.mFile.isDirectory()? node.mFile : node.mFile.getParentFile();
+			File unexistant = new File(targetDir.getAbsolutePath() + File.separator + "new_folder");
+			unexistant = FileVarious.uniqueJavaObjFile(unexistant);
+			String newName = dialogHelper.askForStringNullable("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
+			
+			if(newName == null) {
+				return;
+			}else if(!StringWorker.trimToEmpty(newName).equals("")){
+				unexistant = FileVarious.uniqueJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
+			}
+			
+			boolean result = unexistant.mkdirs();
+			logger.info("getNewFolderActionListener() -> " + unexistant + " creation process had result: "+result);
 		};
 	}
 	

@@ -14,6 +14,7 @@ package maingUI;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -248,6 +249,12 @@ public class WindowCreator {
 		});
 	}
 	
+	public FileSearchDialog fileContentSearch(List<File> preloadedSourceFiles) {
+		FileSearchDialog searchDialog = fileContentSearch();
+		searchDialog.setSelectedFiles(preloadedSourceFiles);
+		return searchDialog;
+	}
+
 	public FileSearchDialog fileContentSearch() {
 		
 		FileSearchDialog searchDialog = FileSearchDialog.getLazyInstance((JFrame)null, new FileSearchActions() {

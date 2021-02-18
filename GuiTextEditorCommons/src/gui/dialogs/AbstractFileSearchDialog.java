@@ -48,7 +48,6 @@ import org.fife.rsta.ui.search.SearchListener;
 import dialogutils.GenericFileChooserDialog;
 import frameutils.frame.panels.arch.ParentPanel;
 import gui.GuiUtils;
-import utility.string.StringWorker.EOL;
 
 /**
  * This is the base class for {@link FindDialog} and {@link ReplaceDialog}. It
@@ -83,7 +82,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	 * Folks listening for events in this dialog.
 	 */
 	private EventListenerList listenerList;
-
+	
 
 	/**
 	 * Constructor.
@@ -264,6 +263,8 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		searchConditionsPanel.setLayout(new BorderLayout());
 		JPanel temp = new JPanel();
 		temp.setLayout(new BoxLayout(temp, BoxLayout.PAGE_AXIS));
+		caseCheckBox.setMinimumSize(new Dimension(160, 18));
+		caseCheckBox.setPreferredSize(new Dimension(160, 18));
 		temp.add(caseCheckBox);
 		temp.add(wholeWordCheckBox);
 		temp.add(includeBinariesCheckBox);
@@ -273,8 +274,9 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		temp.setLayout(new BoxLayout(temp, BoxLayout.PAGE_AXIS));
 		txtFieldSelectedFiles = new JTextArea(" Nothing selected");
 		txtFieldSelectedFiles.setMargin(new Insets(8, 8, 8, 8));
-		txtFieldSelectedFiles.setMinimumSize(new Dimension(340, 70));
-		txtFieldSelectedFiles.setPreferredSize(new Dimension(340, 70));
+		txtFieldSelectedFiles.setMinimumSize(new Dimension(320, 70));
+		txtFieldSelectedFiles.setPreferredSize(new Dimension(320, 70));
+		txtFieldSelectedFiles.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(17f));
 		txtFieldSelectedFiles.setEditable(false);
 		txtFieldSelectedFiles.setAutoscrolls(true);
 		txtFieldSelectedFiles.setBorder(new LineBorder(Color.DARK_GRAY));
@@ -313,22 +315,39 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	
 	public void setSelectedFileLbl(List<File> selected) {
 		if (selected == null || selected.isEmpty() || !selected.get(0).exists()) {
-			txtFieldSelectedFiles.setText("Nothing selected");
+			txtFieldSelectedFiles.setText(" Nothing selected");
 			txtFieldSelectedFiles.setBackground(new Color(252, 240, 146));
 		} else {
 			String fileConcatNames = "";
-			String fileConcatNamesSimple = "";
 			for(File iterator : selected) {
 				String identifier = iterator.isDirectory() ? "<b>Directory: </b>" : "<b>File: </b>";
 				fileConcatNames += identifier + iterator + "<br>";
-				String identifierS = iterator.isDirectory() ? "Directory: " : "File: ";
-				fileConcatNamesSimple += identifierS + iterator + EOL.defaultEol.eol;
 			}
 
 			txtFieldSelectedFiles.setBackground(new Color(208, 252, 146));
-			txtFieldSelectedFiles.setText(fileConcatNamesSimple);
+			txtFieldSelectedFiles.setText(getStringSourcesSummary(selected));
 			txtFieldSelectedFiles.setToolTipText(GuiUtils.encapsulateInHtml(fileConcatNames));
 		}
+	}
+	
+	protected String getStringSourcesSummary(List<File> selected) {
+		String outcome = "Nothing selected";
+		int directories = 0;
+		int files = 0;
+		if(selected != null) {
+			for(File f : selected) {
+				if(f != null && f.isDirectory())
+					directories ++;
+				else if(f != null)
+					files++;
+			}
+		}
+		
+		outcome = " Files selected: " + files + "\n";
+		outcome += " Directories selected: " + directories + "\n";
+		outcome += " (Hover this textArea to see details)";
+		
+		return outcome;
 	}
 
 

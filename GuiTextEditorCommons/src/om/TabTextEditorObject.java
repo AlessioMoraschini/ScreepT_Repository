@@ -11,6 +11,10 @@
  */
 package om;
 
+import static java.awt.Event.ALT_MASK;
+import static java.awt.Event.SHIFT_MASK;
+
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -20,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -36,6 +41,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
@@ -272,18 +278,26 @@ public class TabTextEditorObject {
 		try {
 			JMenuItem undoItem = (JMenuItem)textArea.getPopupMenu().getComponent(0);
 			undoItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_UNDO));
+			undoItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Z, KeyEvent.CTRL_MASK));
 			
 			JMenuItem redoItem = (JMenuItem)textArea.getPopupMenu().getComponent(1);
 			redoItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REDO));
+			redoItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
 			
 			JMenuItem cutItem = (JMenuItem)textArea.getPopupMenu().getComponent(3);
 			cutItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CUT));
+			cutItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_X, KeyEvent.CTRL_MASK));
 			
 			JMenuItem copyItem = (JMenuItem)textArea.getPopupMenu().getComponent(4);
 			copyItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY));
+			copyItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, KeyEvent.CTRL_MASK));
 			
 			JMenuItem pasteItem = (JMenuItem)textArea.getPopupMenu().getComponent(5);
 			pasteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PASTE));
+			pasteItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_V, KeyEvent.CTRL_MASK));
+
+			JMenuItem selectAllItem = (JMenuItem)textArea.getPopupMenu().getComponent(8);
+			selectAllItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_A, KeyEvent.CTRL_MASK));
 			
 		} catch (Exception e) {}
 		
@@ -341,7 +355,6 @@ public class TabTextEditorObject {
 		});
 		
 		// TEXT TRANSFORMATION
-		textArea.getPopupMenu().add(new JSeparator());
 		final JMenu menuStringActions = new JMenu("Text transformation");
 		
 		textArea.getPopupMenu().add(menuStringActions);
@@ -357,10 +370,28 @@ public class TabTextEditorObject {
 				});
 			}
 		});
+
+		JMenuItem filePropertiesItem = new JMenuItem("File properties");
+		filePropertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
+		filePropertiesItem.addActionListener((e)->{
+			try {
+				ICommonShortcuts.triggerKeyEvent(true, true, false, true, false, KeyEvent.VK_ENTER);
+			} catch (AWTException e1) {
+				logger.error("Can't trigger properties frame keyAction");
+			}
+		});
+		textArea.getPopupMenu().add(new JSeparator());
+		textArea.getPopupMenu().add(filePropertiesItem);
 		
 		MenuSetter.setIconTextGap(textArea.getPopupMenu(), iconGap);
 		MenuSetter.setMargin(textArea.getPopupMenu(), new Insets(3, 3, 3, 3));
 		MenuSetter.setFont(textArea.getPopupMenu(), new Font("Segoe UI", Font.PLAIN, 16));
+		
+		
+		filePropertiesItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_ENTER, ALT_MASK));
+		copySyntaxHighlightItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ALT_MASK));
+		showColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, KeyEvent.CTRL_MASK | SHIFT_MASK | ALT_MASK));
+
 	}
 	
 	public void enrichPopUpMenuStringActions(final JMenu stringActions) {
@@ -538,7 +569,7 @@ public class TabTextEditorObject {
 	public void hyperLinksEnabled(boolean enabled) {
 		textArea.setHyperlinksEnabled(enabled);
 		if (enabled) {
-			hyperLinkListener = new HyperlinkListener() {
+			hyperLinkListener = hyperLinkListener != null ? hyperLinkListener : new HyperlinkListener() {
 				AtomicBoolean canOpenAgain = new AtomicBoolean(true);
 				AmTimer timer = new AmTimer(() -> {canOpenAgain.set(true);}, 4000);
 				
@@ -546,8 +577,8 @@ public class TabTextEditorObject {
 				public void hyperlinkUpdate(HyperlinkEvent e) {
 					if(canOpenAgain.get()) {
 						canOpenAgain.set(false);
-						SysUtils.openUrlInBrowserNative(e.getURL().toString());
 						timer.executeDelayedAsync();
+						SysUtils.openUrlInBrowserNative(e.getURL().toString());
 					}
 				}
 			};

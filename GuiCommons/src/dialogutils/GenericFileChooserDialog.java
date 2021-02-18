@@ -374,7 +374,7 @@ public class GenericFileChooserDialog {
 	 * JCOMPONENT - every extension and every typer of source
 	 * this method select a source file from the user,if nothing is selected returns null
 	 */
-	public List<File> fileAndDirReadMulti(JFrame parent) {
+	public List<File> fileAndDirReadMulti(Component parent) {
 		
 		blockEventsModal.set(true);
 		

@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -108,6 +109,8 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	public List<File> selectedSearchFiles;
 	public JOptionHelper dialogHelper;
 	
+	protected Window owner;
+	
 	/**
 	 * Creates a new <code>FindDialog</code>.
 	 *
@@ -116,6 +119,7 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	 */
 	public FileSearchDialog(Dialog owner, FileSearchActions searchActions) {
 		super(owner);
+		this.owner = owner;
 		this.searchActions = searchActions;
 		init(getDefaultListener());
 		selectedSearchFiles = new ArrayList<>();
@@ -134,6 +138,7 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	 */
 	public FileSearchDialog(Frame owner, FileSearchActions searchActions) {
 		super(owner);
+		this.owner = owner;
 		this.searchActions = searchActions;
 		init(getDefaultListener());
 		if(findTextCombo.getModel() instanceof RComboBoxModel<?>) {
@@ -285,14 +290,7 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		});
 		
 		chooseFileBtn.addActionListener((e) -> {
-			List<File> selection = fileDialogHelper.fileAndDirReadMulti(null);
-			selectedSearchFiles = selection != null 
-					? selection 
-					: selectedSearchFiles != null 
-						? selectedSearchFiles 
-						: new ArrayList<>();
-			
-			setSelectedFileLbl(selectedSearchFiles);
+			setSelectedFiles(fileDialogHelper.fileAndDirReadMulti(owner));
 		});
 		
 		searchButton.addActionListener((e) -> {
@@ -320,6 +318,16 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		setAlwaysOnTop(true);
 
 		GuiUtils.centerComponent(thisDialog, new Dimension(650, (int)thisDialog.getPreferredSize().getHeight()));
+	}
+	
+	public void setSelectedFiles(List<File> selection) {
+		selectedSearchFiles = selection != null 
+				? selection 
+				: selectedSearchFiles != null 
+					? selectedSearchFiles 
+					: new ArrayList<>();
+		
+		setSelectedFileLbl(selectedSearchFiles);
 	}
 	
 	private String[] getFileFilters(String separator) {
