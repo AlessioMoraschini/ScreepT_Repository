@@ -21,6 +21,7 @@ import frameutils.frame.om.ConsoleConcatenationModeWindows;
 import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.frame.panels.common.LoadNewSavePanel;
 import frameutils.frame.panels.common.PlayStopPausePanel;
+import frameutils.shortcuts.ShellShortcutsListener;
 import gui.GuiUtils;
 import gui.RXTextUtilities;
 import net.miginfocom.swing.MigLayout;
@@ -35,6 +36,7 @@ import javax.swing.JSplitPane;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.SystemColor;
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,7 +65,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	
 	public JSplitPane splitPane;
 
-	private PlayStopPausePanel playStopPausePanel;
+	public PlayStopPausePanel playStopPausePanel;
 	public LoadNewSavePanel loadNewSavePanel;
 	public JButton clcButton;
 	public JButton pinToTopButton ;
@@ -84,6 +86,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	
 	private Runnable syncAction;
 	
+	private ShellShortcutsListener shortcutsListener;
 
 	public ShellReadWritePanel() {
 		this(1000, null, null);
@@ -104,6 +107,9 @@ public class ShellReadWritePanel extends ParentPanel {
 		SwingUtilities.invokeLater(() -> {
 			splitPane.setDividerLocation(defaultDividerLocationRatio);
 		});
+		
+		shortcutsListener = new ShellShortcutsListener(this);
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(shortcutsListener);
 	}
 	
 	public void darker() {

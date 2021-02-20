@@ -67,10 +67,10 @@ public class RXTextUtilities {
 			int extentHeight = viewport.getExtentSize().height;
 			int viewHeight = viewport.getViewSize().height;
 
-			int x = Math.max(0, r.x - ((extentWidth - r.width) / 2));
+			int x = r != null ? Math.max(0, r.x - ((extentWidth - r.width) / 2)) : 0;
 			x = horizontal ? Math.min(x, viewWidth - extentWidth) : 0;
 
-			int y = Math.max(0, r.y - ((extentHeight - r.height) / 2));
+			int y = r != null ? Math.max(0, r.y - ((extentHeight - r.height) / 2)) : 0;
 			y = vertical ? Math.min(y, viewHeight - extentHeight) : r.y;
 
 			viewport.setViewPosition(new Point(x, y));

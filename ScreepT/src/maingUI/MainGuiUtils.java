@@ -414,6 +414,9 @@ public class MainGuiUtils {
 	public boolean isTextEditorActive() {
 		return getMainPanel().getComponent(0) instanceof TextEditor;
 	}
+	public boolean isTextEditorPanelWithFocus() {
+		return getMainPanel().getComponent(0) instanceof TextEditor && mainAppReference.getMainFrame().isFocusableWindow();
+	}
 	public boolean isCrypterActive() {
 		return getMainPanel().getComponent(0) instanceof CrypterPanel;
 	}

@@ -72,7 +72,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 	    
 //////////////// LISTENER FOR KEY PRESSED EVENT - ONLY WHEN IS CORRECT TO CONTINUE FIRE EVENT WHILE PRESSISNG  //////////////////////////
 		
-		if (e.getID() == KeyEvent.KEY_PRESSED && MainGUI.mainGuiUtils.isTextEditorActive()) {
+		if (e.getID() == KeyEvent.KEY_PRESSED && MainGUI.mainGuiUtils.isTextEditorPanelWithFocus()) {
 
 			updateCtrlAltShiftPressed(e);
 			
@@ -156,7 +156,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 		
 ////////////////LISTENER FOR KEY RELEASED EVENT - WHEN NEED TO TRIGGER ONLY ONE TIME EVEN WHILE KEEPING PRESSED  //////////////////////////
 		
-		if (e.getID() == KeyEvent.KEY_RELEASED  && MainGUI.mainGuiUtils.isTextEditorActive()) {
+		if (e.getID() == KeyEvent.KEY_RELEASED && MainGUI.mainGuiUtils.isTextEditorPanelWithFocus()) {
 	      
 			updateCtrlAltShiftReleased(e);
 			
