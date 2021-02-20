@@ -54,7 +54,7 @@ import java.util.List;
 public class ShellReadWritePanel extends ParentPanel {
 	private static final long serialVersionUID = -351031239684511014L;
 	
-	public static final Double defaultDividerLocationRatio = 0.4D;
+	public static final Double defaultDividerLocationRatio = 0.25D;
 
 	public int maxLines;
 	

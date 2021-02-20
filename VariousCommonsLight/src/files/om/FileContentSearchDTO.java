@@ -30,13 +30,17 @@ public class FileContentSearchDTO {
 
 	@Override
 	public String toString() {
-		return "FileContentSearchDTO ["
-				+ " matchCase=" + matchCase 
+		return "FileContentSearchDTO " + toStringLight();
+	}
+
+	public String toStringLight() {
+		return "["
+				+ "searchString=" + searchString 
+				+ ", matchCase=" + matchCase 
 				+ ", wholeWord=" + wholeWord 
 				+ ", regex=" + regex 
 				+ ", binariesIncluded=" + binariesIncluded
 				+ ", fileFilters=" + Arrays.toString(fileFilters) 
-				+ ", searchString=" + searchString 
 				+ " ]";
 	}
 }

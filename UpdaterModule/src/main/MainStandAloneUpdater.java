@@ -344,7 +344,6 @@ public class MainStandAloneUpdater {
 		}
 
 		ArrayList<File> toUpload = new ArrayList<>();
-		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
 		
 		File updaterJarFile = new File(THIS_JAR_PATH);
 		if (updaterJarFile.exists()) {
@@ -374,6 +373,8 @@ public class MainStandAloneUpdater {
 				signalErrorAndExit1(e);
 			}
 		}
+		
+		toUpload.add(new File(UPDATES_PROPERTIES_FILE));
 		
 		return toUpload;
 	}
@@ -488,6 +489,13 @@ public class MainStandAloneUpdater {
 	 * FTP update mode - Developer usage only
 	 */
 	private static void mainUploadUpdatesViaFTP(ArrayList<File> toUploadList) {
+		
+		if(toUploadList == null || toUploadList.isEmpty()) {
+			logger.info("Nothing to upload!");
+			return;
+		} else {
+			logger.info("Files to upload:" + EOL.defaultEol.eol + StringWorker.concatFilePaths(toUploadList, EOL.defaultEol));
+		}
 		
 		PropertiesManager ftpProperties;
 		try {

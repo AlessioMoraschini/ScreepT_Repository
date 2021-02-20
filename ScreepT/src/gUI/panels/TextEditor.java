@@ -673,6 +673,17 @@ public class TextEditor extends ModulePanel {
 			}
 		});
 
+		splitPaneVerticalAllAndBottomToggle.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						textEditorUtils.resizeShellInnerDivider();
+					}
+				});
+			}
+		});
+
 		// resizeListener tabListContainer
 		parentFrame.addComponentListener(new ComponentListener() {
 			public void componentShown(ComponentEvent e) {
@@ -793,7 +804,6 @@ public class TextEditor extends ModulePanel {
 	public void initGuiFromConfig(boolean refreshGuiStyle, boolean refreshTheme) {
 		final TabTextEditorObject loadedTabObj = getCurrentTabEditor().loadedTabObj;
 		final TextEditorOption txtOptions = currentConfiguration.getTextEditorOpt();
-		
 		// TEXT AREA
 		headerPanel.checkBoxInlineTabs.setSelected(txtOptions.isInlinedTabs());
 		headerPanel.doInlinedCheck();
@@ -835,8 +845,6 @@ public class TextEditor extends ModulePanel {
 		
 		rightPaneShowOrHide(false);
 		
-		textEditorUtils.updateBottomDividerLocation();
-		
 		subHeaderPanel.initGuiFromConfig(refreshTheme);
 		
 		// SPELL CHECKER ON/OFF
@@ -868,11 +876,11 @@ public class TextEditor extends ModulePanel {
 				}
 				
 				try {
-					TreeUtils.selectFileInNamedFileTree(MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.loadedFile,
-							MainGUI.textEditorPanel.leftFileTree, true);
+					TreeUtils.selectFileInNamedFileTree(MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.loadedFile, MainGUI.textEditorPanel.leftFileTree, true);
 				} catch (Exception e) {
 					logger.warn("!!! Error trying to sync current file at start into JTree");
 				} 
+				textEditorUtils.updateBottomDividerLocation();
 			}
 		});
 		
@@ -913,10 +921,10 @@ public class TextEditor extends ModulePanel {
 						preMaximizationBackupLeft = null;
 					}
 					
-					textEditorUtils.setBottomDividerActive(true, false);
+					textEditorUtils.setBottomDividerActive(true, true);
 					textEditorUtils.checkRightVisibleIfEnabled();
 				} else {
-					textEditorUtils.setBottomDividerActive(false, false);
+					textEditorUtils.setBottomDividerActive(false, true);
 					hideLeftPane();
 					hideRightPane();
 				}
@@ -1016,6 +1024,7 @@ public class TextEditor extends ModulePanel {
 			subHeaderPanel.toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			subHeaderPanel.toggleBtnMap.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 		}
+		
 	}
 	
 	public boolean isRightPaneOn() {

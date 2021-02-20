@@ -57,7 +57,7 @@ public class FileContentSearch {
 		this.searchDTO = searchDTO == null ? new FileContentSearchDTO(null) : searchDTO;
 		this.sourceFiles = retrieveSourceFilesToUse(sources);
 		results = new ArrayList<SearchResult>();
-		resultViewer = new FileSearchResultViewer(searchActions, null, searchDTO.searchString);
+		resultViewer = new FileSearchResultViewer(searchActions, null, searchDTO);
 		resultViewer.sourceFilesTotal = sourceFiles.size();
 		
 		dialogHelper = new JOptionHelper(resultViewer);

@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
+import files.om.FileContentSearchDTO;
 import files.om.SearchResult;
 import frameutils.frame.arch.ParentFrame;
 import gui.filesearch.tree.FileSearchResultsTreeCellRenderer;
@@ -32,7 +33,7 @@ public class FileSearchResultViewer extends ParentFrame {
 	private JScrollPane scrollPane;
 	public JTree resultsTree;
 	
-	public String searchString = "";
+	public FileContentSearchDTO searchDTO;
 	public int sourceFilesTotal;
 	
 	private String date;
@@ -44,11 +45,11 @@ public class FileSearchResultViewer extends ParentFrame {
 		setTitle(StringWorker.trimToEmpty(preamble) + (shortTitle ? "" : "File Search Results Viewer - ") + date);
 	}
 	
-	public FileSearchResultViewer(FileSearchActions searchActions, JFrame parentFrame, String searchString) {
+	public FileSearchResultViewer(FileSearchActions searchActions, JFrame parentFrame, FileContentSearchDTO searchDTO) {
 		super();
 		
 		this.sourceFilesTotal = 0;
-		this.searchString = searchString;
+		this.searchDTO = searchDTO;
 		setTitle("", true, false);
 		setTitle("File Search Results Viewer - " + DATE_FORMATTER.format(new Date()));
 		
@@ -112,7 +113,8 @@ public class FileSearchResultViewer extends ParentFrame {
 	private void initTree() {
 		resultsTree = new JTree();
 		ResultViewDTO rootDto = new ResultViewDTO(true);
-		rootDto.result.searchString = searchString;
+		rootDto.result.searchString = searchDTO != null ? searchDTO.searchString : "";
+		rootDto.searchDTO = searchDTO;
 		TreeNode rootNode = new DefaultMutableTreeNode(rootDto);
 		resultsTree.setModel(new DefaultTreeModel(rootNode));
 		resultsTree.setCellRenderer(new FileSearchResultsTreeCellRenderer(resultsTree));
@@ -147,6 +149,7 @@ public class FileSearchResultViewer extends ParentFrame {
 		public boolean fileHead;
 		public int occurrences = 0;
 		public int sourceFilesTotal;
+		public FileContentSearchDTO searchDTO;
 		
 		public ResultViewDTO(int line, SearchResult result) {
 			this.result = result;
@@ -167,12 +170,20 @@ public class FileSearchResultViewer extends ParentFrame {
 			this.fileHead = fileHead;
 			this.sourceFilesTotal = 0;
 		}
+		
+		public String getSearchDTOString() {
+			if(searchDTO != null) {
+				return searchDTO.toStringLight();
+			}
+			
+			return "";
+		}
 
 		@Override
 		public String toString() {
 			occurrences = result.getOccurrencesFound();
 			String viewedString = root
-					? "Search Results [ Search String: " + result.searchString + " ]"
+					? "Search Results: " + getSearchDTOString()
 					: fileHead 
 						? result.ownerFile.getAbsolutePath() + " - Occurrences: " + occurrences + getCheckedOutRatioString()
 						: "(Line: " + line + ") - \"" + result.getLineMatchText(line) + "\"";

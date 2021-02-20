@@ -665,6 +665,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						}
 						currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
 						parent.rightPaneShowOrHide(true);
+						
+						if(currentConfiguration.getTextEditorOpt().mapViewActive)
+							textEditorUtils.checkRightVisibleIfEnabled();
 					}
 				});
 			}
@@ -676,6 +679,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
+						if(!toggleBtnConsole.isSelected())
+							textEditorUtils.saveBottomDividerLocation();
+						
 						textEditorUtils.setBottomDividerActive(toggleBtnConsole.isSelected(), true);
 					}
 				});
@@ -723,6 +729,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						}
 						currentConfiguration.getTextEditorOpt().mapViewActive = false;
 						parent.rightPaneShowOrHide(true);
+						textEditorUtils.checkRightVisibleIfEnabled();
 					}
 				});
 			}

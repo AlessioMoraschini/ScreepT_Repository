@@ -27,6 +27,18 @@ public class ArrayHelper {
 		return sourceList;
 	}
 
+	public static <T> List<T> removeNulls(T... sourceList){
+		List<T> out = new ArrayList<>();
+		if(sourceList != null) {
+			for(T element : sourceList) {
+				if(element != null)
+					out.add(element);
+			}
+		}
+		
+		return out;
+	}
+
 	public static List<String> removeEmpties(ArrayList<String> sourceList){
 		if(sourceList != null) {
 			int i = 0;
@@ -44,7 +56,7 @@ public class ArrayHelper {
 		ArrayList<String> list = new ArrayList<>();
 		if(sourceList != null) {
 			for(String element : sourceList) {
-				if(element == null || StringWorker.isEmpty(element))
+				if(element != null && !StringWorker.isEmpty(element))
 					list.add(element);
 			}
 		}

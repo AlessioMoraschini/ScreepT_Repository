@@ -36,4 +36,10 @@ public class FileSearchDTO implements IResultCacheInput {
 	public String getCacheKey() {
 		return (root != null ? root.getAbsolutePath() : "") + matchNamePart + exactMatch + filter + recursiveDeep + ignoreCase;
 	}
+
+	@Override
+	public String toString() {
+		return "FileSearchDTO [root=" + root + ", matchNamePart=" + matchNamePart + ", exactMatch=" + exactMatch + ", filter=" + filter + ", recursiveDeep="
+				+ recursiveDeep + ", ignoreCase=" + ignoreCase + "]";
+	}
 }

@@ -1,3 +1,5 @@
+2021-02-20  (HEAD -> refs/heads/BugFix, tag: refs/tags/0.9.37, refs/remotes/origin/BugFix) Split panel integrated into text editor as bottom panel
+
 2021-02-18  FileContent search: added file name filters with wildcard support
 
 2021-02-17  (tag: refs/tags/0.9.36) Shell bugFixed, added shortcuts, and general improvements

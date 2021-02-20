@@ -767,9 +767,9 @@ public class TextEditorUtils {
 	}
 	
 	public void saveBottomDividerLocation() {
-		currentTextEditor.currentConfiguration.getTextEditorOpt().setDividerBottomPosRatio(
-				SplitPaneUtils.getDividerRatio(currentTextEditor.splitPaneVerticalAllAndBottomToggle)
-			);
+		Double ratio = SplitPaneUtils.getDividerRatio(currentTextEditor.splitPaneVerticalAllAndBottomToggle);
+		if(ratio < 0.95D)
+			currentTextEditor.currentConfiguration.getTextEditorOpt().setDividerBottomPosRatio(ratio);
 	}
 	
 	public void setBottomDividerActive(boolean active, boolean saveConfig) {
@@ -777,25 +777,27 @@ public class TextEditorUtils {
 			currentTextEditor.splitPaneVerticalAllAndBottomToggle.getBottomComponent().setVisible(true);
 			currentTextEditor.subHeaderPanel.toggleBtnConsole.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 			resizeBottomPane();
-			if(saveConfig)
-				saveBottomDividerLocation();
 		} else {
 			currentTextEditor.subHeaderPanel.toggleBtnConsole.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
 			currentTextEditor.splitPaneVerticalAllAndBottomToggle.getBottomComponent().setVisible(false);
 			currentTextEditor.splitPaneVerticalAllAndBottomToggle.setDividerLocation(1.0D);
 		}
 		
+		currentTextEditor.subHeaderPanel.toggleBtnConsole.setSelected(active);
+		
 		if(saveConfig)
 			currentTextEditor.currentConfiguration.getTextEditorOpt().setBottomViewActive(active);
 	}
 	
 	public void checkRightVisibleIfEnabled() {
-		if(!isRightPaneVisible())
-			currentTextEditor.splitPaneTreetabsAndRightToggle.setDividerLocation(
-					MainGUI.mainAPP.getMainFrame().getWidth() -
-					currentTextEditor.splitPaneTreeAndVerticalSplit.getDividerLocation() - 
-					120
-				);
+		SwingUtilities.invokeLater(() -> {
+			if(!isRightPaneVisible())
+				currentTextEditor.splitPaneTreetabsAndRightToggle.setDividerLocation(
+						MainGUI.mainAPP.getMainFrame().getWidth() -
+						currentTextEditor.splitPaneTreeAndVerticalSplit.getDividerLocation() - 
+						(getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)? 350 : 150)
+						);
+		});
 	}
 	
 	public boolean isRightPaneVisible() {
@@ -804,13 +806,17 @@ public class TextEditorUtils {
 	
 	public void resizeBottomPane() {
 		currentTextEditor.splitPaneVerticalAllAndBottomToggle.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerBottomPosRatio);
+		resizeShellInnerDivider();
+	}
+	
+	public void resizeShellInnerDivider() {
 		if(getBottomShellPanel() != null) {
 			currentTextEditor.bottomModulePanel.splitPane.setDividerLocation(ShellReadWritePanel.defaultDividerLocationRatio);
 		}
 	}
 	
 	public boolean isBottomDividerActive() {
-		return SplitPaneUtils.getDividerRatio(currentTextEditor.splitPaneVerticalAllAndBottomToggle) != 1.0D;
+		return SplitPaneUtils.getDividerRatio(currentTextEditor.splitPaneVerticalAllAndBottomToggle) < 0.95D;
 	}
 	
 	public void updateBottomDividerLocation() {

@@ -128,17 +128,31 @@ public class INIfileChoosER {
 		
 		if (sourceFolder != null && sourceFolder.exists()) {
 			File defaultIni = new File(GeneralConfig.DEFAULT_INI);
+			File defaultLauncherIni = new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
 			String defaultIniParentDir = defaultIni.getParentFile().getName();
-			List<File> matchedFolders = FileSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true, false);
-			for (File extFolder : matchedFolders) {
-				List<File> matchedIniConf = FileSearchAdvanced.findOnlyFilesByMatch(extFolder, defaultIni.getName(), true, true, false);
+			String defaultLauncherIniParentDir = defaultLauncherIni.getParentFile().getName();
+			List<File> matchedResourcesFolders = FileSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true, false);
+			List<File> matchedLauncherFolders = FileSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultLauncherIniParentDir, true, true, false);
+			
+			for(File launcherFolder : matchedLauncherFolders) {
+				List<File> matchedIniLauncherConf = FileSearchAdvanced.findOnlyFilesByMatch(launcherFolder, defaultLauncherIni.getName(), true, true, false);
+				try {
+					FileUtils.copyFileToDirectory(matchedIniLauncherConf.get(0), defaultLauncherIni.getParentFile(), true);
+				} catch (Exception e1) {
+					String safeFrom = matchedIniLauncherConf.isEmpty() ? " NULL " : matchedIniLauncherConf.get(0).getAbsolutePath();
+					logger.error("Can't copy configuration from " + safeFrom + " to " + defaultLauncherIni.getParentFile());
+				}
+			}
+			
+			for (File resourcesFolder : matchedResourcesFolders) {
+				List<File> matchedIniConf = FileSearchAdvanced.findOnlyFilesByMatch(resourcesFolder, defaultIni.getName(), true, true, false);
 				if (!matchedIniConf.isEmpty()) {
 					boolean confirmation = MainGuiGeneralAppStarter.dialogHelper.yesOrNo(
 							GuiUtils.encapsulateInHtml("Are you sure to overwrite default configuration with the following?<br> " + matchedIniConf.get(0)), "Overwrite current?");
 					
 					if(confirmation) {
 						ok = copyNloadIniAsDefault(matchedIniConf.get(0));
-						updateFromExternalGeneralConfig(extFolder.getParentFile());
+						updateFromExternalGeneralConfig(resourcesFolder.getParentFile());
 						if(importCopy) {
 							try {
 								FileUtils.copyFileToDirectory(matchedIniConf.get(0), new File(GeneralConfig.DEFAULT_INI_FOLDER));
