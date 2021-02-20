@@ -61,7 +61,7 @@ public class ShellFrame extends ParentFrame {
 		
 		setTitle("Shell Frame - " + GeneralConfig.APPLICATION_NAME);
 		
-		this.setMinimumSize(getDefaultDimension());
+		super.resizeToDefault(true, true, false);
 
 		GuiUtilsExtended.centerComponent(this);
 		setVisible(true);
@@ -149,6 +149,11 @@ public class ShellFrame extends ParentFrame {
 		return new Dimension(900, 600);
 	}
 	
+	@Override
+	public Dimension getMinimumDimension() {
+		return new Dimension(100, 200);
+	}
+
 	public static ShellFrame getInstance(JFrame parentFrame) {
 		if(singletonInstance == null)
 			singletonInstance = new ShellFrame(parentFrame);

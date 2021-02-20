@@ -72,6 +72,7 @@ public class MainGuiGeneralAppStarter {
 	public static LauncherLoaderFrame loaderGraphics;
 	public static final Dimension screenSize = GuiUtilsExtended.getScreenSize();
 	public static final Dimension minimumSize = new Dimension(880,500);
+	public static final Dimension minimumSizeTextEditor = new Dimension(960,500);
 	public static final Dimension minimumSizeCrypter = new Dimension(1230,750);
 		
 	// Main configuration reference for all sub-modules

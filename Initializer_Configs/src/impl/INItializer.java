@@ -339,6 +339,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_VOICE_RATE);
 		}
 		
+		textEditorOpt.setDividerBottomPosRatio(getDoubleVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerBottomPosRatio"), TextEditorOption.DEF_dividerBottomPosRatio));
 		textEditorOpt.setDividerFileTreePosX(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerFileTreePosX"), TextEditorOption.DEFAULT_DIVIDER_POS_X));
 		textEditorOpt.setDividerRightPanePosX(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosX"), TextEditorOption.DEF_dividerRightPanePosX));
 		textEditorOpt.setDividerRightPanePosXClipboard(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard"), TextEditorOption.DEF_dividerRightPanePosXClipboard));
@@ -360,6 +361,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setTabLineVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabLineVisibleFlag"), TextEditorOption.DEFAULT_TAB_LINE_VISIBLE));
 		textEditorOpt.setFileTreeActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fileTreeActive"), TextEditorOption.DEFAULT_FTREE_ACTIVE));
 		textEditorOpt.setMapViewActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "mapViewActive"), TextEditorOption.DEF_mapViewActive));
+		textEditorOpt.setBottomViewActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "bottomViewActive"), TextEditorOption.DEF_bottomViewActive));
 		textEditorOpt.setClipboardViewActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "clipboardViewActive"), TextEditorOption.DEF_clipboardViewActive));
 		textEditorOpt.setBreaklineActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "breakLineActive"), TextEditorOption.DEFAULT_BREAK_LINE));
 		textEditorOpt.setAntialiasedTxtArea(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "antialiasedTxtArea"), TextEditorOption.DEF_antialiasedTxtArea));
@@ -581,6 +583,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "fileTreeActive", textEditorOpt.fileTreeActive);
 		iniFile.put(TEXT_EDITOR_OPT, "clipboardViewActive", textEditorOpt.clipboardViewActive);
 		iniFile.put(TEXT_EDITOR_OPT, "mapViewActive", textEditorOpt.mapViewActive);
+		iniFile.put(TEXT_EDITOR_OPT, "bottomViewActive", textEditorOpt.bottomViewActive);
+		iniFile.put(TEXT_EDITOR_OPT, "dividerBottomPosRatio", textEditorOpt.dividerBottomPosRatio);
 		iniFile.put(TEXT_EDITOR_OPT, "dividerFileTreePosX", textEditorOpt.dividerFileTreePosX);
 		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosX", textEditorOpt.dividerRightPanePosX);
 		iniFile.put(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard", textEditorOpt.dividerRightPanePosXClipboard);
@@ -703,8 +707,6 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nPREFIX TO HASH: ").append(textEditorOpt.prefix_hash)
 			   .append("\nFONT: ").append(textEditorOpt.font)
 			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate)
-			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)
-			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION: ").append(textEditorOpt.dividerRightPanePosX)
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): ").append(textEditorOpt.dividerRightPanePosXClipboard)
 			   .append("\nLAST FILE OPENED IN CLIPBOARD: ").append(textEditorOpt.lastFileOpenedClipboard)
 			   .append("\nLAST TEMPLATE USED: ").append(textEditorOpt.lastSelectedTemplate)
@@ -720,8 +722,12 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 
 			   .append("\n\n TEXT AREA DETAIL VALUES: \n\n")
 			   
+			   .append("\nPREFERRED BOTTOM PANEL POSITION RATIO: ").append(textEditorOpt.dividerBottomPosRatio)
+			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)
+			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION: ").append(textEditorOpt.dividerRightPanePosX)
 			   .append("\nFILE TREE VIEW ACTIVE: ").append(textEditorOpt.fileTreeActive)
 			   .append("\nMAP VIEW ACTIVE: ").append(textEditorOpt.mapViewActive)
+			   .append("\nBOTTOM VIEW ACTIVE: ").append(textEditorOpt.bottomViewActive)
 			   .append("\nCLIPBOARD VIEW ACTIVE: ").append(textEditorOpt.clipboardViewActive)
 			   .append("\nFILE TREE LOCKED: ").append(textEditorOpt.treeLocked)
 			   .append("\nWORKSPACE VIEW SELECTED: ").append(textEditorOpt.workspaceViewSelected)

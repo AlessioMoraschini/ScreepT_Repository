@@ -163,6 +163,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JToggleButton btnToggleFileView;
 	public JToggleButton toggleBtnMap;
 	public JToggleButton toggleBtnClipboard;
+	public JToggleButton toggleBtnConsole;
 	public JToggleButton toggleButtonSpellCheck;
 
 	public JSpinner tabSizeSpinner;
@@ -213,7 +214,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		DEFAULT_FORE_COL = currentConfiguration.getTextEditorOpt().foreCol;
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
-		setLayout(new MigLayout("insets 3, hidemode 3", "[27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][65px:n:70px][27px:n][50px:65px:100px][40px:40px:60px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][0px:5px:5px][60px][27px][][][][grow][]", "[:35px:35px,center][:50px:50px,center]"));
+		setLayout(new MigLayout(
+				"insets 3, hidemode 3", 
+				"[27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][65px:n:70px][27px:n][50px:65px:100px][40px:40px:60px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][27px:40px:45px][0px:5px:5px][60px][27px][][][][grow][]",
+				"[:35px:35px,center][:50px:50px,center]"));
 		
 		btnCloseAllTabs = new JButton("");
 		btnCloseAllTabs.setForeground(Color.BLACK);
@@ -254,6 +258,14 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		toggleButtonSpellCheck.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
 		add(toggleButtonSpellCheck, "cell 24 0,alignx center,grow");
+
+		toggleBtnConsole = new JToggleButton("");
+		toggleBtnConsole.setMinimumSize(new Dimension(25, 0));
+		toggleBtnConsole.setToolTipText(TextEditTooltips.tooltipConsoleView);
+		toggleBtnConsole.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		toggleBtnConsole.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
+		toggleBtnConsole.setSelected(currentConfiguration.getTextEditorOpt().bottomViewActive);
+		add(toggleBtnConsole, "cell 24 1,alignx center,grow");
 		
 		btnStyledCopy = new JButton("");
 		btnStyledCopy.setToolTipText(TextEditTooltips.tooltipStyledCopy);
@@ -596,6 +608,16 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnToggleFileView.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String oldRightValStr = "";
+				try {
+					oldRightValStr = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX");
+				} catch (IOException e1) {
+					logger.error("OOOOps", e1);
+				}
+				int oldRightVal = StringWorker.isEmpty(oldRightValStr)
+						? currentConfiguration.getTextEditorOpt().dividerFileTreePosX
+						: Integer.valueOf(oldRightValStr);
+				
 				if (btnToggleFileView.isSelected()) {
 					btnToggleFileView.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
 					currentConfiguration.getTextEditorOpt().fileTreeActive = true;
@@ -605,6 +627,16 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				}
 				parent.fileTreeShowOrHide(currentConfiguration.getTextEditorOpt());
 				textEditorUtils.refreshTree(parent.getCurrentTabEditor().loadedTabObj.loadedFile, false);
+				
+				if(!currentConfiguration.getTextEditorOpt().fileTreeActive) {
+					SwingUtilities.invokeLater(() -> {
+						parent.applyDeltaToRightToggle(parent.splitPaneTreeAndVerticalSplit.getDividerLocation() - oldRightVal);
+					});
+				} else {
+					SwingUtilities.invokeLater(() -> {
+						parent.applyDeltaToRightToggle(parent.splitPaneTreeAndVerticalSplit.getDividerLocation());
+					});
+				}
 			}
 		});
 		
@@ -633,6 +665,18 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 						}
 						currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
 						parent.rightPaneShowOrHide(true);
+					}
+				});
+			}
+		});
+
+		// MAP VIEW
+		toggleBtnConsole.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						textEditorUtils.setBottomDividerActive(toggleBtnConsole.isSelected(), true);
 					}
 				});
 			}

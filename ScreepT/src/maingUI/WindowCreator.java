@@ -31,6 +31,7 @@ import frameutils.frame.GeneratePasswordFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.frame.ShellFrame;
 import frameutils.frame.arch.ParentFrame;
+import frameutils.frame.panels.ShellReadWritePanel;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.AboutSectionFrame;
 import gUI.frames.ChangeLogFrame;
@@ -119,14 +120,9 @@ public class WindowCreator {
 		return clipboardFrame;
 	}
 	
-	public ShellFrame newShellFrame() {
-		RSyntaxTextArea txtArea = new RSyntaxTextArea();
-		txtArea.setCurrentLineHighlightColor(Color.DARK_GRAY.brighter());
-		txtArea.setSelectedTextColor(Color.DARK_GRAY.brighter().brighter());
-		txtArea.setSelectionColor(Color.DARK_GRAY.brighter().brighter());
-//		RsyntaxUtils.changeStyleViaThemeXmlString(txtArea, GeneralConfig.XML_THEMES_CONTENT_MAP.get(Themes.DARK.fileName));
+	public ShellFrame newShellFrame(boolean dark) {
 		ShellFrame shellFrame = ShellFrame.getInstance(
-				txtArea,
+				getDarkTextArea(),
 				mainApplication.getMainFrame(),
 				true,
 				new File(MainGUI.currentConfiguration.getGenOpt().getLastShellFile()));
@@ -139,9 +135,42 @@ public class WindowCreator {
 					logger.error("Cannot update last shell file opened in configuration", e);
 				}
 		});
+		if(dark)
+			((ShellReadWritePanel)shellFrame.payloadPanel).darker();
+		
 		commonGraphicInit(shellFrame, "Shell Frame - ", true);
 		
 		return shellFrame;
+	}
+	
+	public RSyntaxTextArea getDarkTextArea() {
+		RSyntaxTextArea txtArea = new RSyntaxTextArea();
+		txtArea.setCurrentLineHighlightColor(Color.DARK_GRAY);
+		txtArea.setSelectedTextColor(Color.DARK_GRAY.brighter());
+		txtArea.setSelectionColor(Color.DARK_GRAY.brighter());
+		return txtArea;
+	}
+	
+	public ShellReadWritePanel getShellPanel(boolean dark) {
+		File preloadFile = new File(MainGUI.currentConfiguration.getGenOpt().getLastShellFile());
+		ShellReadWritePanel panel = new ShellReadWritePanel(80000, mainApplication.getMainFrame(), getDarkTextArea());
+		panel.darker();
+		
+		if(preloadFile != null && preloadFile.isFile() && preloadFile.exists())
+			panel.loadAction(preloadFile).run();
+		
+		panel.setSyncAction(() -> {
+			if(MainGUI.mainGuiUtils.isTextEditorActive())
+			MainGUI.textEditorPanel.textEditorUtils.updateBottomDividerLocation();
+		});
+		
+		if(dark)
+			panel.darker();
+		
+		panel.pinToTopButton.setEnabled(false);
+		panel.pinToTopButton.setVisible(false);
+		
+		return panel;
 	}
 	
 	public ColorPickerFrame newColorPickerFrame() {

@@ -48,10 +48,12 @@ public class TextEditorOption {
 	public static final boolean DEF_subHeaderVisible = true;
 	public static final boolean DEF_footerVisible = true;
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
+	public static final boolean DEF_bottomViewActive = false;
 	public static final boolean DEF_mapViewActive = false;
 	public static final boolean DEF_clipboardViewActive = false;
 	public static final boolean DEF_clipboardSyncStyle = false;
 	public static final int DEFAULT_DIVIDER_POS_X = 230;
+	public static final Double DEF_dividerBottomPosRatio = 0.8D;
 	public static final int DEF_dividerRightPanePosX = 60;
 	public static final int DEF_dividerRightPanePosXClipboard = 150;
 	public static final String DEF_lastFileOpenedClipboard = GeneralConfig.CLIPBOARD_PANEL_DEFAULT;
@@ -123,6 +125,7 @@ public class TextEditorOption {
 	// TEXT AREA
 	public String defaultWorkspacePath;
 	public String selectedTheme;
+	public Double dividerBottomPosRatio;
 	public int dividerFileTreePosX;
 	public int dividerRightPanePosX;
 	public int dividerRightPanePosXClipboard;
@@ -131,6 +134,7 @@ public class TextEditorOption {
 	public int tabSize = 2;
 	public boolean tabLineVisible;
 	public boolean fileTreeActive;
+	public boolean bottomViewActive;
 	public boolean mapViewActive;
 	public boolean clipboardViewActive;
 	public boolean clipboardSyncStyle;
@@ -204,6 +208,7 @@ public class TextEditorOption {
 		lastEscapeLanguage = DEF_LastEscapeLanguage;
 		defaultWorkspacePath = GeneralConfig.USER_DESKTOP;
 		selectedTheme = DEFAULT_SELECTED_THEME;
+		dividerBottomPosRatio = DEF_dividerBottomPosRatio;
 		dividerFileTreePosX = DEFAULT_DIVIDER_POS_X;
 		dividerRightPanePosX = DEF_dividerRightPanePosX;
 		dividerRightPanePosXClipboard = DEF_dividerRightPanePosXClipboard;
@@ -212,6 +217,7 @@ public class TextEditorOption {
 		tabSize = DEFAULT_TAB_SIZE;
 		
 		fileTreeActive = DEFAULT_FTREE_ACTIVE;
+		bottomViewActive = DEF_bottomViewActive;
 		clipboardViewActive = DEF_clipboardViewActive;
 		clipboardSyncStyle = DEF_clipboardSyncStyle;
 		mapViewActive = DEF_mapViewActive;
@@ -814,7 +820,22 @@ public class TextEditorOption {
 	public void setMapViewActive(boolean mapViewActive) {
 		this.mapViewActive = mapViewActive;
 	}
+	
+	public Double getDividerBottomPosRatio() {
+		return dividerBottomPosRatio;
+	}
 
+	public void setDividerBottomPosRatio(Double dividerBottomPosRatio) {
+		this.dividerBottomPosRatio = dividerBottomPosRatio;
+	}
+
+	public boolean isBottomViewActive() {
+		return bottomViewActive;
+	}
+
+	public void setBottomViewActive(boolean bottomViewActive) {
+		this.bottomViewActive = bottomViewActive;
+	}
 
 	public boolean isClipboardViewActive() {
 		return clipboardViewActive;

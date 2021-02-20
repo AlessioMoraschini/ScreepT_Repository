@@ -226,7 +226,7 @@ public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEv
 				 * OPEN SHELL FRAME - Ctrl+Alt+S
 				 */
 				else if(e.getKeyCode() == KeyEvent.VK_S && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					currentGui.windowCreator.newShellFrame();
+					currentGui.windowCreator.newShellFrame(true);
 				}
 				
 				/*

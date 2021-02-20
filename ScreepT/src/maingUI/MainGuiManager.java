@@ -154,6 +154,7 @@ public class MainGuiManager {
 		// Remember splitPanel dividers position - TEXT Editor
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerRightPanePosX", currentConfiguration.getTextEditorOpt().getDividerRightPanePosX());
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
+		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
 		
 		// CHECK UNSAVED TEXT EDITOR FILES
 		if(!MainGuiUtils.askUnsavedTextFiles()) {
@@ -289,7 +290,7 @@ public class MainGuiManager {
 			// update clipboard if exists
 			if(initTxtWriter != null && initTxtWriter.textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
 				// save only current cause others are already saved once user selected items
-				((ClipboardPanel)initTxtWriter.rightSplitContainer).saveCurrClipboardSilent();
+				((ClipboardPanel)initTxtWriter.rightModulePanel).saveCurrClipboardSilent();
 			}
 		}
 		

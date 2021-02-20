@@ -71,6 +71,7 @@ public class TextEditTooltips {
 	public static final String tooltipFileViewBtn = "[Alt + Q] Show/hide file explorer panel";
 	public static final String tooltipMapViewBtn = "[Alt + W] Show/hide document map panel";
 	public static final String tooltipClipboardViewBtn = "[Alt + A] Show/hide file document clipboard panel";
+	public static final String tooltipConsoleView = "[Alt + S] This will show/hide the integrated console panel";
 	public static final String tooltipFileViewLock = "[Ctrl + Shift + U] This will lock/unlock sync of file tree and current file opened in editor.";
 	public static final String tooltipPackTree = "This function will collapse tree expanded elements";
 	public static final String tooltipResyncTree = "This function will reselect current file into file tree(if found)";

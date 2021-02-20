@@ -181,11 +181,18 @@ public class FileContentSearch {
 			elaboredSources = removeBinaries(elaboredSources);
 		}
 		
-		if(searchDTO.fileFilters.length > 0) {
+		if(hasFileFilters()) {
 			elaboredSources = applyFilters(elaboredSources, searchDTO);
 		}
 		
 		return elaboredSources;
+	}
+	
+	private boolean hasFileFilters() {
+		if(searchDTO.fileFilters == null || searchDTO.fileFilters.length <= 0)
+			return false;
+		
+		return true;
 	}
 	
 	/**

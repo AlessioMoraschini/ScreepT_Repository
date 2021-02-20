@@ -352,28 +352,35 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				/*
 				 * 	OPEN/CLOSE FILE TREE PANEL -> ALT+Q
 				 */
-				else if (e.getKeyCode() == 81 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+				else if (e.getKeyCode() == KeyEvent.VK_Q && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.btnToggleFileView.doClick();
 				}
 				
 				/*
 				 * 	OPEN/CLOSE CLIPBOARD PANEL -> ALT+A
 				 */
-				else if (e.getKeyCode() == 65 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+				else if (e.getKeyCode() == KeyEvent.VK_A && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.toggleBtnClipboard.doClick();
 				}
 
 				/*
 				 * 	OPEN/CLOSE MAP PANEL -> ALT+W
 				 */
-				else if (e.getKeyCode() == 87 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+				else if (e.getKeyCode() == KeyEvent.VK_W && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
 					subHeaderPanel.toggleBtnMap.doClick();
+				}
+
+				/*
+				 * 	OPEN/CLOSE CONSOLE PANEL -> ALT+S
+				 */
+				else if (e.getKeyCode() == KeyEvent.VK_S && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+					subHeaderPanel.toggleBtnConsole.doClick();
 				}
 				
 				/*
 				 *  FILE TREE AUTO UPDATE on CURRENT FILE ON/OFF -> Ctrl+shift+U
 				 */
-				else if (e.getKeyCode() == 85 && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
+				else if (e.getKeyCode() == KeyEvent.VK_U && !e.isAltDown() && e.isControlDown() && e.isShiftDown()) {
 					currentTextEditor.toggleButtonFileTreeLocked.doClick();
 				}
 
@@ -394,7 +401,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				/**
 				 * TOGGLE MAXIMIZE TEXT AREA
 				 */
-				else if (e.getKeyCode() == 77 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+				else if (e.getKeyCode() == KeyEvent.VK_M && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
 					currentTextEditor.toggleMaximizedTextArea();
 				}
 				
@@ -477,7 +484,7 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				 * 	NEW TAB -> CTRL+N
 				 */
 				else if (e.getKeyCode() == 78 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
-					if (!currentTextEditor.leftSplitTreeFiles.hasFocus()) {
+					if (!currentTextEditor.leftFileTree.hasFocus()) {
 						currentTabEditor.addTab(null);
 					}
 				}

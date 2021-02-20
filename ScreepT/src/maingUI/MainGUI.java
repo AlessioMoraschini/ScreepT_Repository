@@ -961,7 +961,7 @@ public class MainGUI extends MainGuiParent{
 		mntmShellStandalone = new CustomJmenuItem(new AbstractAction("System Console") {
 			public void actionPerformed(ActionEvent e) {
 				
-				windowCreator.newShellFrame();
+				windowCreator.newShellFrame(true);
 			}
 		});
 
@@ -1224,6 +1224,7 @@ public class MainGUI extends MainGuiParent{
 
 		// resize textEditor if present
 		if (mainFrameScreept.getContentPane().getComponent(0) instanceof TextEditor) {
+			mainFrameScreept.setMinimumSize(MainGuiGeneralAppStarter.minimumSizeTextEditor);
 			textEditorPanel.textEditorUtils.resizeFrameToDefault(mainAPP);
 		}
 

@@ -57,6 +57,7 @@ import gui.GuiUtils;
 import gui.dialogs.AbstractFileSearchDialog;
 import gui.dialogs.msg.JOptionHelper;
 import resources.GeneralConfig;
+import utility.manipulation.ArrayHelper;
 import utility.reflection.ReflectionUtils;
 import utility.string.StringWorker;
 
@@ -332,7 +333,11 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	
 	private String[] getFileFilters(String separator) {
 		String filtersRaw = StringWorker.trimToEmpty(fileFiltersTextCombo.getSelectedString());
-		return filtersRaw.split(separator);
+		if(filtersRaw.isEmpty())
+			return new String[0];
+		
+		String[] filters = filtersRaw.split(separator);
+		return ArrayHelper.removeEmpties(filters);
 	}
 	
 	private FileContentSearchDTO getSearchDTO() {

@@ -251,6 +251,22 @@ public abstract class INItializerParent implements INItializerInterface{
 			return defaultVal;
 		}
 	}
+
+	public static Float getFloatVarFromString(String val, Float defaultVal) {
+		try {
+			return Float.valueOf(val);
+		}catch(Exception e){
+			return defaultVal;
+		}
+	}
+
+	public static Double getDoubleVarFromString(String val, Double defaultVal) {
+		try {
+			return Double.valueOf(val);
+		}catch(Exception e){
+			return defaultVal;
+		}
+	}
 	
 	public String listToString(ArrayList<String> loadedFiles) {
 		String openedFiles = "";

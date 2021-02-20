@@ -409,12 +409,12 @@ public class TreeFileMouseListenerTxtEditor extends TreeFileMouseListenerBasicFi
 	@Deprecated
 	public ActionListener ChangeBckgNewFileActionListener() {
 		return (e) -> {
-			Color esit = new ColorDialogUtils().askForColor(textEditor.leftSplitTreeFiles, false);
+			Color esit = new ColorDialogUtils().askForColor(textEditor.leftFileTree, false);
 			if (esit != null) {
 				textEditor.currentConfiguration.getTextEditorOpt().setFilePanelBackCol(esit);
 				textEditor.currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "filePanelBackgroundCol", ConversionUtils.getRgbString(esit));
-				textEditor.leftSplitContainer.setBackground(esit);
-				textEditor.leftSplitTreeFiles.setBackground(esit);
+				textEditor.leftScrollPaneContainer.setBackground(esit);
+				textEditor.leftFileTree.setBackground(esit);
 				logger.debug("File panel Background color changed to : " + ConversionUtils.getRgbString(esit));
 			}
 		};

@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -25,6 +26,7 @@ import gui.RXTextUtilities;
 import net.miginfocom.swing.MigLayout;
 import om.OSinfo;
 import resources.IconsPathConfigurator;
+import splitpanel.SplitPaneUtils;
 import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 import utils.SysUtils;
@@ -33,6 +35,7 @@ import javax.swing.JSplitPane;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.SystemColor;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -50,17 +53,20 @@ import java.util.List;
  */
 public class ShellReadWritePanel extends ParentPanel {
 	private static final long serialVersionUID = -351031239684511014L;
+	
+	public static final Double defaultDividerLocationRatio = 0.4D;
 
 	public int maxLines;
 	
 	private JScrollPane scrollPaneBottom;
 	private JScrollPane scrollPaneTop;
 	
-	private JSplitPane splitPane;
+	public JSplitPane splitPane;
 
 	private PlayStopPausePanel playStopPausePanel;
 	public LoadNewSavePanel loadNewSavePanel;
 	public JButton clcButton;
+	public JButton pinToTopButton ;
 	public JCheckBox checkBoxConcatenation;
 	public JCheckBox checkBoxAutoscroll;
 	public JLabel labelConcatenationMode;
@@ -76,6 +82,8 @@ public class ShellReadWritePanel extends ParentPanel {
 	
 	private JFrame parentFrame;
 	
+	private Runnable syncAction;
+	
 
 	public ShellReadWritePanel() {
 		this(1000, null, null);
@@ -90,8 +98,34 @@ public class ShellReadWritePanel extends ParentPanel {
 		fileUnsaved = false;
 		this.parentFrame = parentFrame;
 		this.commandTextArea = initializedTextAreaInstance != null ? initializedTextAreaInstance : new JTextArea();
-		
+		setSyncAction(null);
 		super.init();
+		
+		SwingUtilities.invokeLater(() -> {
+			splitPane.setDividerLocation(defaultDividerLocationRatio);
+		});
+	}
+	
+	public void darker() {
+		getCommandTextArea().setBackground(Color.DARK_GRAY.darker().darker());
+		getOutputTextArea().setBackground(Color.DARK_GRAY.darker().darker());
+		playStopPausePanel.setBackground(Color.DARK_GRAY.darker());
+		loadNewSavePanel.setBackground(Color.DARK_GRAY.darker());
+		
+		labelConcatenationMode.setBackground(Color.DARK_GRAY);
+		labelConcatenationMode.setForeground(Color.LIGHT_GRAY);
+		checkBoxConcatenation.setForeground(SystemColor.menu);
+		checkBoxConcatenation.setBackground(Color.DARK_GRAY);
+		checkBoxAutoscroll.setForeground(SystemColor.menu);
+		checkBoxAutoscroll.setBackground(Color.DARK_GRAY);
+		lblCurrentFile.setForeground(SystemColor.menu);
+		lblCurrentFile.setBackground(Color.DARK_GRAY);
+		comboConcatenationMode.setForeground(SystemColor.menu);
+		comboConcatenationMode.setBackground(Color.DARK_GRAY);
+		
+		SplitPaneUtils.setDividerColors(Color.DARK_GRAY.darker(), Color.DARK_GRAY.brighter(), splitPane);
+
+		setBackground(Color.DARK_GRAY.darker());
 	}
 	
 	@Override
@@ -99,7 +133,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		setLayout(new MigLayout(
 				"fill, insets 1, hidemode 2", 
 				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][10px][60px, grow][20px]", 
-				"[35px:35px][50px,grow]"));
+				"[25px:25px][50px,grow]"));
 		
 		// HEADER
 		playStopPausePanel = new PlayStopPausePanel(playAction(), stopAction(), pauseAction());
@@ -120,33 +154,30 @@ public class ShellReadWritePanel extends ParentPanel {
 		clcButton = getButton("", null, null, IconsPathConfigurator.ICON_TEXT_CLEAR, true);
 		add(clcButton, "cell 2 0 1 1,grow");
 		
-		checkBoxAutoscroll = new JCheckBox("Autoscroll");
-		checkBoxAutoscroll.setCursor(GuiUtils.CURSOR_HAND);
-		checkBoxAutoscroll.setToolTipText("Enable/disable output text area auto-scroll feature");
+		checkBoxAutoscroll = getCheckBox("Autoscroll", "Enable/disable output text area auto-scroll feature", false);
 		add(checkBoxAutoscroll, "cell 3 0 1 1,grow");
 		
-		checkBoxConcatenation = new JCheckBox("Concatenate Lines");
-		checkBoxConcatenation.setCursor(GuiUtils.CURSOR_HAND);
-		checkBoxConcatenation.setToolTipText("When executing, all executed lines will be concatated with chosen mode");
+		checkBoxConcatenation = getCheckBox("Concatenate Lines", "When executing, all executed lines will be concatenated with chosen mode", false);
 		add(checkBoxConcatenation, "cell 4 0 1 1,alignx center, aligny center");
 		
-		labelConcatenationMode = new JLabel("Lines concatenation mode:");
+		labelConcatenationMode = getLabel("Lines concatenation mode:", null, null, null, false);
 		add(labelConcatenationMode, "cell 5 0 1 1,alignx right, aligny center");
 		
 		comboConcatenationMode = new JComboBox<String>(getComboModes());
+		comboConcatenationMode.setCursor(GuiUtils.CURSOR_HAND);
 		add(comboConcatenationMode, "cell 6 0 1 1, alignx right");
 
-		lblCurrentFile = new JLabel("[No file loaded]");
+		lblCurrentFile = getLabel("[No file loaded]", null, null, null, true);
 		lblCurrentFile.setForeground(Color.DARK_GRAY);
 		add(lblCurrentFile, "cell 8 0 1 1, alignx right");
 		
+		pinToTopButton = getPinToTopButton(parentFrame);
 		if(parentFrame != null) {
-			add(getPinToTopButton(parentFrame), "cell 9 0 1 1, alignx right, grow");
+			add(pinToTopButton, "cell 9 0 1 1, alignx right, grow");
 		}
 		
 		// SPLIT PANE
 		splitPane = new JSplitPane();
-		splitPane.setDividerLocation(180);
 		splitPane.setContinuousLayout(true);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		add(splitPane, "cell 0 1 10 1,grow");
@@ -168,11 +199,22 @@ public class ShellReadWritePanel extends ParentPanel {
 		
 		outputTextArea = getTextArea(Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT);
 		outputTextArea.setEditable(false);
+		outputTextArea.setCursor(GuiUtils.CURSOR_TEXT);
 		outputTextArea.setText("I'm ready to launch your commands ;)");
 		scrollPaneBottom.setViewportView(outputTextArea);
 		
 	}
 	
+	public void setSyncAction(Runnable action) {
+		syncAction = action != null ? action : syncAction;
+	}
+
+	@Override
+	public void sync() {
+		syncAction.run();
+		splitPane.setDividerLocation(defaultDividerLocationRatio);
+	}
+
 	@Override
 	public void addHandlers() {
 		clcButton.addActionListener((e) -> {
@@ -453,4 +495,13 @@ public class ShellReadWritePanel extends ParentPanel {
 		else 
 			return ConsoleConcatenationMode.values(false);
 	}
+
+	public JTextArea getCommandTextArea() {
+		return commandTextArea;
+	}
+
+	public JTextArea getOutputTextArea() {
+		return outputTextArea;
+	}
+	
 }

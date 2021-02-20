@@ -37,6 +37,15 @@ public class SplitPaneUtils {
 				}
 	}
 	
+	public static void setBackground(Color background, JSplitPane panel) {
+		try {
+			BasicSplitPaneUI ui = (BasicSplitPaneUI) panel.getUI();
+	        BasicSplitPaneDivider divider = ui.getDivider();
+	        divider.setBackground(background);
+		} catch (Exception e) {
+		}
+	}
+	
 	public static void setDividerColors(Color back, Color border, JSplitPane panel) {
 		panel.setUI(new BasicSplitPaneUI() {
             public BasicSplitPaneDivider createDefaultDivider() {
@@ -78,6 +87,16 @@ public class SplitPaneUtils {
 	            };
             }
         });
+	}
+
+	public static double getDividerRatio(JSplitPane pane) {
+		Double location = (double) pane.getDividerLocation();
+		Double ratio = location / (pane.getHeight() - pane.getDividerSize());
+		return ratio > 1.0D 
+				? 1.0D 
+				: ratio < 0D 
+						? 0D 
+						: ratio;
 	}
 	
 }

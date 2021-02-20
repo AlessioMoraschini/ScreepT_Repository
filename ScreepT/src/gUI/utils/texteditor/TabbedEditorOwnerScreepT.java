@@ -94,7 +94,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 			// Sync map if it's active
 			if (txtOpt.mapViewActive && txtUtils != null && txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA)) {
 //				txtUtils.getTypedIRightPanel();
-				((MapTextAreaPanel) textEditor.rightSplitContainer).sync();
+				((MapTextAreaPanel) textEditor.rightModulePanel).sync();
 			}
 			
 			// Refresh current style from combo only if different from current actually applied to loaded text area tab
@@ -171,7 +171,7 @@ public class TabbedEditorOwnerScreepT implements ITabbedEditorOwner{
 	@Override
 	public void resyncAddedPanelLight() {
 		if (txtUtils.getTypeOfRightPanel().equals(PanelType.MAP_TXTAREA) && textEditor.currentConfiguration.getTextEditorOpt().mapViewActive) {
-			((MapTextAreaPanel) textEditor.rightSplitContainer).syncLight();
+			((MapTextAreaPanel) textEditor.rightModulePanel).syncLight();
 		} 
 	}
 

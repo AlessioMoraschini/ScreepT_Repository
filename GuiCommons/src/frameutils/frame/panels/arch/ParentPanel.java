@@ -22,7 +22,9 @@ import java.util.TreeMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -43,7 +45,7 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 	public static SafeLogger logger = new SafeLogger(ParentPanel.class);
 	
 	public static final Font DEFAULT_BTN_FONT = new Font("Segoe UI", Font.PLAIN, 18);
-	public static final Font DEFAULT_TEXT_AREA_FONT = new Font("Segoe UI", Font.PLAIN, 19);
+	public static final Font DEFAULT_TEXT_AREA_FONT = new Font("Segoe UI", Font.PLAIN, 17);
 	
 	protected JOptionHelperExtended dialogHelper;
 	protected GenericFileChooserDialog fileChooser;
@@ -86,6 +88,25 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 			GuiUtils.makeTransparentJButton(button);
 		
 		return button;
+	}
+
+	public static JLabel getLabel(String text, Color background, Color foreground, String iconPath, boolean opaque) {
+		JLabel label = new JLabel(text);
+		
+		label.setFont(DEFAULT_TEXT_AREA_FONT.deriveFont(13f));
+		
+		if(iconPath != null)
+			label.setIcon(new ImageIcon(iconPath));
+		
+		if(background != null)
+			label.setBackground(background);
+		
+		if(foreground != null)
+			label.setForeground(foreground);
+		
+		label.setOpaque(opaque);
+		
+		return label;
 	}
 	
 	public static JTextArea getTextArea(Color background, Color foreground, Color caretColor, Font font) {
@@ -157,6 +178,17 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 		}
 		
 		return textField;
+	}
+	
+	public static JCheckBox getCheckBox(String text, String tooltip, boolean opaque) {
+		JCheckBox checkBox = new JCheckBox();
+		checkBox.setText(text);
+		checkBox.setOpaque(opaque);
+		checkBox.setCursor(GuiUtils.CURSOR_HAND);
+		checkBox.setToolTipText(tooltip);
+		checkBox.setFont(DEFAULT_TEXT_AREA_FONT.deriveFont(13f));
+		
+		return checkBox;
 	}
 	
 	public static JScrollPane getScrollPane(boolean verticalScroll, boolean horizontalScroll) {

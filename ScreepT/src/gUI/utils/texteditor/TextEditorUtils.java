@@ -43,6 +43,7 @@ import dialogutils.JOptionHelperExtended;
 import files.FileWorker;
 import files.FileVarious;
 import files.om.FileNamed;
+import frameutils.frame.panels.ShellReadWritePanel;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -118,6 +119,10 @@ public class TextEditorUtils {
 	 * @return
 	 */
 	public ITextAreaDialogs getDialogManager() {
+		return getDialogManager(true);
+	}
+	
+	public ITextAreaDialogs getDialogManager(boolean loadFileSyntax) {
 		return new ITextAreaDialogs() {
 			@Override
 			public RSyntaxTextArea getTargetTextArea() {
@@ -136,7 +141,7 @@ public class TextEditorUtils {
 			public void loadThemeIntoTarget(RSyntaxTextArea txtArea) {
 				TextEditorOption txtOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
 				loadTheme(txtArea, (Gutter) null, txtOpt, false);
-				if (!currentTextEditor.isPreloading) {
+				if (!currentTextEditor.isPreloading && loadFileSyntax) {
 					applyFileFormatToTextArea(txtArea, false);
 				}
 			}
@@ -241,29 +246,29 @@ public class TextEditorUtils {
 	
 	public void setRightPanelContent(PanelType wantedType) {
 		if(wantedType.equals(PanelType.MAP_TXTAREA)) {
-			currentTextEditor.rightSplitContainer = MapTextAreaPanel.getSingletonLazy(getDialogManager());
-			currentTextEditor.rightSplitContainer.setVisible(true);
-			currentTextEditor.rightSplitPane = new JScrollPane(currentTextEditor.rightSplitContainer);
-			currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			currentTextEditor.splitPaneMainContainer.setRightComponent(currentTextEditor.rightSplitPane);
-			((MapTextAreaPanel)currentTextEditor.rightSplitContainer).sync();
+			currentTextEditor.rightModulePanel = MapTextAreaPanel.getSingletonLazy(getDialogManager());
+			currentTextEditor.rightModulePanel.setVisible(true);
+			currentTextEditor.rightModuleScrollPane = new JScrollPane(currentTextEditor.rightModulePanel);
+			currentTextEditor.rightModuleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			currentTextEditor.rightModuleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			currentTextEditor.splitPaneTreetabsAndRightToggle.setRightComponent(currentTextEditor.rightModuleScrollPane);
+			((MapTextAreaPanel)currentTextEditor.rightModulePanel).sync();
 			
 		}else if(wantedType.equals(PanelType.CLIPBOARD_PANEL)) {
-			currentTextEditor.rightSplitContainer = ClipboardPanel.getSingletonLazy(getDialogManager(), currentTextEditor.currentConfiguration);
-			currentTextEditor.rightSplitContainer.setVisible(true);
-			currentTextEditor.rightSplitPane = new JScrollPane(currentTextEditor.rightSplitContainer);
-			currentTextEditor.rightSplitPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			currentTextEditor.rightSplitPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			currentTextEditor.splitPaneMainContainer.setRightComponent(currentTextEditor.rightSplitPane);
-			((ClipboardPanel)currentTextEditor.rightSplitContainer).sync();
-			((ClipboardPanel)currentTextEditor.rightSplitContainer)
+			currentTextEditor.rightModulePanel = ClipboardPanel.getSingletonLazy(getDialogManager(), currentTextEditor.currentConfiguration);
+			currentTextEditor.rightModulePanel.setVisible(true);
+			currentTextEditor.rightModuleScrollPane = new JScrollPane(currentTextEditor.rightModulePanel);
+			currentTextEditor.rightModuleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			currentTextEditor.rightModuleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			currentTextEditor.splitPaneTreetabsAndRightToggle.setRightComponent(currentTextEditor.rightModuleScrollPane);
+			((ClipboardPanel)currentTextEditor.rightModulePanel).sync();
+			((ClipboardPanel)currentTextEditor.rightModulePanel)
 				.selectFromComboClipboards(currentTextEditor.currentConfiguration.getTextEditorOpt().lastFileOpenedClipboard);
 		}
 	}
 
 	public ParentPanel getTypedIRightPanel() {
-		JPanel rightContainer = currentTextEditor.rightSplitContainer;
+		JPanel rightContainer = currentTextEditor.rightModulePanel;
 		if (rightContainer != null) {
 			if (rightContainer instanceof MapTextAreaPanel) {
 				return (MapTextAreaPanel) rightContainer;
@@ -276,7 +281,7 @@ public class TextEditorUtils {
 	}
 	
 	public PanelType getTypeOfRightPanel() {
-		JPanel rightContainer = currentTextEditor.rightSplitContainer;
+		JPanel rightContainer = currentTextEditor.rightModulePanel;
 		if (rightContainer != null) {
 			if (rightContainer instanceof MapTextAreaPanel) {
 				return PanelType.MAP_TXTAREA;
@@ -391,7 +396,7 @@ public class TextEditorUtils {
 		if((currentFile == null || !currentFile.exists()) && !currentTextEditor.currentConfiguration.getTextEditorOpt().workspaceViewSelected) {
 			if (!options.treeLocked) {
 				try {
-					FileNamed oldDir = (FileNamed)currentTextEditor.leftSplitTreeFiles.getModel().getRoot();
+					FileNamed oldDir = (FileNamed)currentTextEditor.leftFileTree.getModel().getRoot();
 					if (oldDir != null) {
 						refreshTreeFromWorkspace(oldDir.getFile());
 					}
@@ -439,7 +444,7 @@ public class TextEditorUtils {
 	
 	public void refreshTreeFromLastValid() {
 		
-		FileNamed lastSelectedNode = (FileNamed)currentTextEditor.leftSplitTreeFiles.getLastSelectedPathComponent();
+		FileNamed lastSelectedNode = (FileNamed)currentTextEditor.leftFileTree.getLastSelectedPathComponent();
 		File lastSelected = lastSelectedNode != null ? lastSelectedNode.getFile() : lastValidTreeSelRefreshed;
 		
 		if (lastSelected != null && lastSelected.exists()) {
@@ -468,14 +473,14 @@ public class TextEditorUtils {
 			refreshTreeFromWorkspace(workspaceRoot);
 		}
 		
-		currentTextEditor.splitPaneMain.setDividerLocation(getMinimumLeftPaneSize()+10);
+		currentTextEditor.splitPaneTreeAndVerticalSplit.setDividerLocation(getMinimumLeftPaneSize()+10);
 		refreshInfoAfterTreeRefresh();
 	}
 	
 	public void refreshInfoAfterTreeRefresh() {
 		// Validate dir string length
 		currentTextEditor.dynLblCurrentDir.setText(getFooterPanelAdaptedDirString(currentTextEditor.dynLblCurrentDir.getText()));
-		currentTextEditor.leftSplitTreeFiles.setCellRenderer(new FileNameCellRenderer());
+		currentTextEditor.leftFileTree.setCellRenderer(new FileNameCellRenderer());
 		resetAllDIviderColors();
 	}
 	
@@ -485,6 +490,7 @@ public class TextEditorUtils {
 			for(JSplitPane i : ReflectionUtils.retrieveFieldsByType(currentTextEditor, JSplitPane.class)) {
 				SplitPaneUtils.setDividerColors(new Color(25,25,25), Color.BLACK, i);
 			}
+			SplitPaneUtils.setDividerColors(Color.DARK_GRAY.darker(), Color.DARK_GRAY.brighter(), currentTextEditor.bottomModulePanel.splitPane);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			logger.error("Error resetting divider colors: ", e);
 		}
@@ -505,9 +511,9 @@ public class TextEditorUtils {
 	 */
 	public void collapseTree() {
 		try {
-			for (int i = currentTextEditor.leftSplitTreeFiles.getRowCount(); i >= 0; i--) {
+			for (int i = currentTextEditor.leftFileTree.getRowCount(); i >= 0; i--) {
 				try {
-					currentTextEditor.leftSplitTreeFiles.collapseRow(i);
+					currentTextEditor.leftFileTree.collapseRow(i);
 				} catch (Exception e) {
 				}
 			}
@@ -607,8 +613,8 @@ public class TextEditorUtils {
 		// CURRENT FILE CHECK
 		if (currentFile != null && currentFile.exists() && currentTextEditor.subHeaderPanel.btnToggleFileView.isSelected()) {
 
-			currentTextEditor.splitPaneMain.getLeftComponent().setVisible(true);
-			currentTextEditor.splitPaneMain.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
+			currentTextEditor.splitPaneTreeAndVerticalSplit.getLeftComponent().setVisible(true);
+			currentTextEditor.splitPaneTreeAndVerticalSplit.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerFileTreePosX);
 			
 			currentTextEditor.rightPaneShowOrHide(false);
 			
@@ -635,7 +641,7 @@ public class TextEditorUtils {
 			logger.warn("Tree refresh skipped, file is does not exist or it's null");
 			
 			if (!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
-				currentTextEditor.splitPaneMain.setDividerLocation(0.0);
+				currentTextEditor.splitPaneTreeAndVerticalSplit.setDividerLocation(0.0);
 			}
 			currentTextEditor.dynLblCurrentDir.setText(" - ");
 			logger.warn("Tree refresh skipped, file does not exist");
@@ -643,7 +649,7 @@ public class TextEditorUtils {
 			refreshTreeFromWorkspace(ancestor);
 		} else {
 			if (!currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
-				currentTextEditor.splitPaneMain.setDividerLocation(0.0);
+				currentTextEditor.splitPaneTreeAndVerticalSplit.setDividerLocation(0.0);
 			}
 			currentTextEditor.dynLblCurrentDir.setText(" - ");
 			logger.warn("Tree refresh skipped, file is null");
@@ -694,13 +700,13 @@ public class TextEditorUtils {
 	}
 	
 	public void changeTreeDepth(File newRoot, File toSelect) {
-		String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftSplitTreeFiles);
-		currentTextEditor.leftSplitTreeFiles.setModel(new FileTreeNamedModel(new FileNamed(newRoot)));
-		TreeUtils.restoreExpansionStates(currentTextEditor.leftSplitTreeFiles, expansionStBack);
+		String[] expansionStBack = TreeUtils.getExpansionStates(currentTextEditor.leftFileTree);
+		currentTextEditor.leftFileTree.setModel(new FileTreeNamedModel(new FileNamed(newRoot)));
+		TreeUtils.restoreExpansionStates(currentTextEditor.leftFileTree, expansionStBack);
 		
 		if(toSelect != null) {
 			try {
-				TreeUtils.selectFileInNamedFileTree(toSelect, currentTextEditor.leftSplitTreeFiles, true);
+				TreeUtils.selectFileInNamedFileTree(toSelect, currentTextEditor.leftFileTree, true);
 			} catch (IOException e1) {
 				logger.warn("Some problems occurred in file tree, during search of file into current root", e1);
 			}
@@ -732,7 +738,7 @@ public class TextEditorUtils {
 					}
 				}
 				if (!currentTextEditor.subHeaderPanel.btnToggleFileView.isSelected() && !currentTextEditor.currentConfiguration.getTextEditorOpt().treeLocked) {
-					currentTextEditor.splitPaneMain.setDividerLocation(0);
+					currentTextEditor.splitPaneTreeAndVerticalSplit.setDividerLocation(0);
 				}
 				if (currentTextEditor.isRightPaneOn()) {
 					currentTextEditor.rightPaneResizeOnly();
@@ -740,10 +746,81 @@ public class TextEditorUtils {
 				
 				adaptToSizeResponsive(MainGUI.mainAPP.getMainFrame().getBounds());
 				
+				updateBottomDividerLocation();
+
 				currentTextEditor.repaint();
 			}
 		});
 	}
+	
+	/////////////////////////////////////////////////////////////
+	//// BOTTOM PANEL METHODS - START /////
+	
+	public frameutils.frame.panels.arch.ParentPanel getBottomPane() {
+		return currentTextEditor.bottomModulePanel;
+	}
+	
+	public ShellReadWritePanel getBottomShellPanel() {
+		if(currentTextEditor.bottomModulePanel instanceof ShellReadWritePanel)
+			return (ShellReadWritePanel)getBottomPane();
+		else return null;
+	}
+	
+	public void saveBottomDividerLocation() {
+		currentTextEditor.currentConfiguration.getTextEditorOpt().setDividerBottomPosRatio(
+				SplitPaneUtils.getDividerRatio(currentTextEditor.splitPaneVerticalAllAndBottomToggle)
+			);
+	}
+	
+	public void setBottomDividerActive(boolean active, boolean saveConfig) {
+		if(active) {
+			currentTextEditor.splitPaneVerticalAllAndBottomToggle.getBottomComponent().setVisible(true);
+			currentTextEditor.subHeaderPanel.toggleBtnConsole.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER);
+			resizeBottomPane();
+			if(saveConfig)
+				saveBottomDividerLocation();
+		} else {
+			currentTextEditor.subHeaderPanel.toggleBtnConsole.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR);
+			currentTextEditor.splitPaneVerticalAllAndBottomToggle.getBottomComponent().setVisible(false);
+			currentTextEditor.splitPaneVerticalAllAndBottomToggle.setDividerLocation(1.0D);
+		}
+		
+		if(saveConfig)
+			currentTextEditor.currentConfiguration.getTextEditorOpt().setBottomViewActive(active);
+	}
+	
+	public void checkRightVisibleIfEnabled() {
+		if(!isRightPaneVisible())
+			currentTextEditor.splitPaneTreetabsAndRightToggle.setDividerLocation(
+					MainGUI.mainAPP.getMainFrame().getWidth() -
+					currentTextEditor.splitPaneTreeAndVerticalSplit.getDividerLocation() - 
+					120
+				);
+	}
+	
+	public boolean isRightPaneVisible() {
+		return SplitPaneUtils.getDividerRatio(currentTextEditor.splitPaneTreetabsAndRightToggle) < 0.95D;
+	}
+	
+	public void resizeBottomPane() {
+		currentTextEditor.splitPaneVerticalAllAndBottomToggle.setDividerLocation(currentTextEditor.currentConfiguration.getTextEditorOpt().dividerBottomPosRatio);
+		if(getBottomShellPanel() != null) {
+			currentTextEditor.bottomModulePanel.splitPane.setDividerLocation(ShellReadWritePanel.defaultDividerLocationRatio);
+		}
+	}
+	
+	public boolean isBottomDividerActive() {
+		return SplitPaneUtils.getDividerRatio(currentTextEditor.splitPaneVerticalAllAndBottomToggle) != 1.0D;
+	}
+	
+	public void updateBottomDividerLocation() {
+		SwingUtilities.invokeLater(() -> {
+			setBottomDividerActive(currentTextEditor.currentConfiguration.getTextEditorOpt().isBottomViewActive(), true);
+		});
+	}
+	
+	/////////////////////////////////////////////////////////////
+	//// BOTTOM PANEL METHODS - END /////
 	
 	public void adaptToSizeResponsive(Rectangle mainFrameBounds) {
 		if(mainFrameBounds.width > 950 && mainFrameBounds.width < 1200) {
@@ -807,7 +884,7 @@ public class TextEditorUtils {
 				resetDividerColor();
 				currentTabEditor.applyStyleToTabs();
 				try {
-					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftSplitTreeFiles, true);
+					TreeUtils.selectFileInNamedFileTree(currentTabEditor.loadedTabObj.loadedFile, currentTextEditor.leftFileTree, true);
 				} catch (Exception e) {
 					logger.debug("Error during current file highlighting in file tree - textEditor");
 				}
@@ -1114,7 +1191,7 @@ public class TextEditorUtils {
 	}
 	
 	public void resetDividerColor() {
-		if (currentTextEditor.splitPaneMain != null) {
+		if (currentTextEditor.splitPaneTreeAndVerticalSplit != null) {
 			resetAllDIviderColors();
 		}
 	}
@@ -1134,12 +1211,12 @@ public class TextEditorUtils {
 		// Retrieve current pane type and call standard method to sync position and content
 		getTypedIRightPanel().sync();
 		
-		Color textAreaBackground = currentTextEditor.leftSplitTreeFiles.getBackground().darker();
+		Color textAreaBackground = currentTextEditor.leftFileTree.getBackground().darker();
 		currentTextEditor.setBackground(textAreaBackground);
 		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(textAreaBackground);
 		currentTextEditor.mainPanel.setBackground(textAreaBackground);
 		currentTextEditor.getCurrentTabEditor().mainTabList.setBackground(textAreaBackground);
-		currentTextEditor.rightSplitPane.setBackground(textAreaBackground);
+		currentTextEditor.rightModuleScrollPane.setBackground(textAreaBackground);
 	}
 	
 	/**
