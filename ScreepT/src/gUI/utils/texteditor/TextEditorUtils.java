@@ -490,7 +490,7 @@ public class TextEditorUtils {
 			for(JSplitPane i : ReflectionUtils.retrieveFieldsByType(currentTextEditor, JSplitPane.class)) {
 				SplitPaneUtils.setDividerColors(new Color(25,25,25), Color.BLACK, i);
 			}
-			SplitPaneUtils.setDividerColors(Color.DARK_GRAY.darker(), Color.DARK_GRAY.brighter(), currentTextEditor.bottomModulePanel.splitPane);
+			SplitPaneUtils.setDividerColors(Color.DARK_GRAY.darker(), Color.DARK_GRAY, currentTextEditor.bottomModulePanel.splitPane);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			logger.error("Error resetting divider colors: ", e);
 		}

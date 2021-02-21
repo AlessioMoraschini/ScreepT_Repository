@@ -13,6 +13,7 @@ package impl;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -264,7 +265,6 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			genOpt.setGeneralVolume(GenericOption.DEFAULT_VOLUME);
 		}
 		
-		genOpt.setLastShellFile(getSafeStringConf(GEN_OPT, "lastShellFile", ""));
 		genOpt.setAutomaticUpdateOn(getBooleanFromString(iniReadFile.get(GEN_OPT, "automaticUpdateOn"), GenericOption.DEF_automaticUpdateOn));
 		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
@@ -392,68 +392,26 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setSpellChecker(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "spellChecker"), TextEditorOption.DEF_spellChecker));
 		textEditorOpt.setPrefDictspellChecker(getSafeStringConf(TEXT_EDITOR_OPT, "prefDictspellChecker", TextEditorOption.DEF_prefDictspellChecker));
 		
-		// file list
-		String pathsOpenFilesString;
-		try {
-			pathsOpenFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedFilesAtStart");
-			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(pathsOpenFilesString, ",");
-			textEditorOpt.getOpenedFileList().clear();		
-			while(tokenizerOpenedFiles.hasMoreTokens()) {
-				textEditorOpt.getOpenedFileList().add(tokenizerOpenedFiles.nextToken());
-			}
-		} catch (Exception e1) {
-		}
+		String pathsOpenFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedFilesAtStart");
+		textEditorOpt.setOpenedFileList(getStringListFromString(pathsOpenFilesString, ",", new ArrayList<String>()));		
 		
-		String lastOpenedFiles;
-		try {
-			lastOpenedFiles = iniReadFile.get(TEXT_EDITOR_OPT, "lastOpenedFiles");
-			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(lastOpenedFiles, ",");
-			textEditorOpt.getLastOpenedFiles().getList().clear();		
-			while(tokenizerOpenedFiles.hasMoreTokens()) {
-				textEditorOpt.getLastOpenedFiles().addLast(new FileNamed(tokenizerOpenedFiles.nextToken()));
-			}
-		} catch (Exception e1) {
-		}
+		String pathsOpenShellFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "lastOpenedShellFiles");
+		textEditorOpt.getLastOpenedShellFrameFiles().setList(getFileNamedListFromString(pathsOpenShellFilesString, ";", new Vector<FileNamed>()));		
+		
+		String lastOpenedFiles = iniReadFile.get(TEXT_EDITOR_OPT, "lastOpenedFiles");
+		textEditorOpt.getLastOpenedFiles().setList(getFileNamedListFromString(lastOpenedFiles, ",", new Vector<FileNamed>()));		
 
-		try {
-			String lastTagsUsed = iniReadFile.get(TEXT_EDITOR_OPT, "lastTagsUsed");
-			StringTokenizer tokenizerTagsTerms = new StringTokenizer(lastTagsUsed, ";");
-			textEditorOpt.lastTagsUsed.getList().clear();		
-			while(tokenizerTagsTerms.hasMoreTokens()) {
-				textEditorOpt.lastTagsUsed.addLast(tokenizerTagsTerms.nextToken());
-			}
-		} catch (Exception e1) {
-		}
+		String lastTagsUsed = iniReadFile.get(TEXT_EDITOR_OPT, "lastTagsUsed");
+		textEditorOpt.lastTagsUsed.setList(getStringListFromString(lastTagsUsed, ";", new Vector<String>()));		
 		
-		try {
-			String lastSearchTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastSearchTerms");
-			StringTokenizer tokenizerSearchedTerms = new StringTokenizer(lastSearchTerms, ",");
-			textEditorOpt.getLastSearchTerms().getList().clear();		
-			while(tokenizerSearchedTerms.hasMoreTokens()) {
-				textEditorOpt.getLastSearchTerms().addLast(tokenizerSearchedTerms.nextToken());
-			}
-		} catch (Exception e1) {
-		}
+		String lastSearchTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastSearchTerms");
+		textEditorOpt.getLastSearchTerms().setList(getStringListFromString(lastSearchTerms, lastSearchTerms, new Vector<String>()));		
 		
-		try {
-			String lastReplaceTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastReplaceTerms");
-			StringTokenizer tokenizerReplaceTerms = new StringTokenizer(lastReplaceTerms, ",");
-			textEditorOpt.getLastReplaceTerms().getList().clear();		
-			while(tokenizerReplaceTerms.hasMoreTokens()) {
-				textEditorOpt.getLastReplaceTerms().addLast(tokenizerReplaceTerms.nextToken());
-			}
-		} catch (Exception e1) {
-		}
+		String lastReplaceTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastReplaceTerms");
+		textEditorOpt.getLastReplaceTerms().setList(getStringListFromString(lastReplaceTerms, ",", new Vector<String>()));		
 		
-		try {
-			String lastSelectedWorkspaces = iniReadFile.get(TEXT_EDITOR_OPT, "lastSelectedWorkspaces");
-			StringTokenizer tokenizerSelectedWorkspaces = new StringTokenizer(lastSelectedWorkspaces, ",");
-			textEditorOpt.lastSelectedWorkspaces.getList().clear();		
-			while(tokenizerSelectedWorkspaces.hasMoreTokens()) {
-				textEditorOpt.lastSelectedWorkspaces.addLast(new FileNamed(tokenizerSelectedWorkspaces.nextToken()));
-			}
-		} catch (Exception e1) {
-		}
+		String lastSelectedWorkspaces = iniReadFile.get(TEXT_EDITOR_OPT, "lastSelectedWorkspaces");
+		textEditorOpt.lastSelectedWorkspaces.setList(getFileNamedListFromString(lastSelectedWorkspaces, ",", new Vector<FileNamed>()));		
 		
 		// selected theme
 		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
@@ -541,7 +499,6 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		if(genOpt.getUserName().equals("")) {
 			genOpt.setUserName(GenericOption.DEFAULT_USERNAME);
 		}
-		iniFile.put(GEN_OPT, "lastShellFile", genOpt.getLastShellFile());
 		iniFile.put(GEN_OPT, "userName", genOpt.getUserName());
 		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
 		iniFile.put(GEN_OPT, "generalVolume", genOpt.getGeneralVolume());
@@ -629,6 +586,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "spellChecker", textEditorOpt.spellChecker);
 		iniFile.put(TEXT_EDITOR_OPT, "prefDictspellChecker", textEditorOpt.prefDictspellChecker);
 		iniFile.put(TEXT_EDITOR_OPT, "lastOpenedFiles", textEditorOpt.lastOpenedFiles.toCharSeparatedString(","));
+		iniFile.put(TEXT_EDITOR_OPT, "lastOpenedShellFiles", textEditorOpt.lastOpenedShellFiles.toCharSeparatedString(";"));
 		iniFile.put(TEXT_EDITOR_OPT, "lastSelectedWorkspaces", textEditorOpt.lastSelectedWorkspaces.toCharSeparatedString(","));
 		iniFile.put(TEXT_EDITOR_OPT, "lastReplaceTerms", textEditorOpt.lastReplaceTerms.toCharSeparatedString(","));
 		iniFile.put(TEXT_EDITOR_OPT, "lastSearchTerms", textEditorOpt.lastSearchTerms.toCharSeparatedString(","));
@@ -658,7 +616,6 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// concat GENERAL OPTIONS
 		builder.append("\n\n ---- GENERAL OPTIONS -----\n\n")
 			   .append("USERNAME: ").append(genOpt.getUserName())
-			   .append("LAST SHELL FILE: ").append(genOpt.getLastShellFile())
 			   .append("\nGENERAL VOLUME: ").append(genOpt.getVolumeString())
 			   .append("\nLAST PANEL OPENED: ").append(genOpt.getLastPanelOpened().getName())
 			   .append("\nListen for uncatched exceptions and show them -> ").append(genOpt.isExceptionAdvicesEnabled())
@@ -712,6 +669,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nLAST TEMPLATE USED: ").append(textEditorOpt.lastSelectedTemplate)
 			   .append("\nSYNC CLIPBOARD STYLE WITH CURRENT TEXT AREA: ").append(textEditorOpt.clipboardSyncStyle)
 			   .append("\nOPENED FILES AT START: ").append(textEditorOpt.getOpenedFileList())
+			   .append("\nLAST OPENED CONSOLE FILES: ").append(textEditorOpt.lastOpenedShellFiles.toCharSeparatedString(";"))
 			   .append("\nLAST OPENED FILES: ").append(textEditorOpt.lastOpenedFiles.toCharSeparatedString(","))
 			   .append("\nLAST SELECTED WORKSPACES: ").append(textEditorOpt.lastSelectedWorkspaces.toCharSeparatedString(","))
 			   .append("\nLAST USED REPLACE TERMS: ").append(textEditorOpt.lastReplaceTerms.toCharSeparatedString(","))

@@ -146,12 +146,12 @@ public class ShellFrame extends ParentFrame {
 
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(900, 600);
+		return new Dimension(1100, 600);
 	}
 	
 	@Override
 	public Dimension getMinimumDimension() {
-		return new Dimension(100, 200);
+		return new Dimension(1000, 400);
 	}
 
 	public static ShellFrame getInstance(JFrame parentFrame) {

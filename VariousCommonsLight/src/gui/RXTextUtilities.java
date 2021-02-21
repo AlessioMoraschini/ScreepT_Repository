@@ -349,4 +349,5 @@ public class RXTextUtilities {
 			return getCurrentCaretLineText(textArea, true);
 			
 	}
+
 }

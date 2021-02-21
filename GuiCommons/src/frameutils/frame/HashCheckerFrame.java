@@ -27,7 +27,7 @@ import impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import textareautil.TxtFieldFileDragNDropManager;
+import textarea.om.TxtFieldFileDragNDropManager;
 import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
 

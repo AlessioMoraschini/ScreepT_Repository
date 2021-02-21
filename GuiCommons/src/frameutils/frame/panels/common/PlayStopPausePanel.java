@@ -61,7 +61,7 @@ public class PlayStopPausePanel extends ParentPanel {
 	@Override
 	public void addHandlers() {
 		playButton.addActionListener((e) -> {
-			if(isStopped || isPaused) {
+			if(isStopped || isPaused || isPlaying) {
 				setButtonsEnabled(false, true, true);
 				setPlayStopPause(true, false, false);
 				playAction.run();

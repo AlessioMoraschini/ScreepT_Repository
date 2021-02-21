@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
+import files.om.FileNamed;
 import files.om.SearchResult;
 import frameutils.frame.ClipboardFrame;
 import frameutils.frame.ColorPickerFrame;
@@ -32,6 +33,7 @@ import frameutils.frame.HashCheckerFrame;
 import frameutils.frame.ShellFrame;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ShellReadWritePanel;
+import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.frames.AboutSectionFrame;
 import gUI.frames.ChangeLogFrame;
@@ -53,6 +55,7 @@ import gui.filesearch.FileSearchDialog;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import impl.INItializer;
+import om.LimitedConcurrentList;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -120,21 +123,55 @@ public class WindowCreator {
 		return clipboardFrame;
 	}
 	
+	private File getLastValidFileFromList(LimitedConcurrentList<FileNamed> list) {
+		for(int i = list.getList().size() - 1; i >= 0; i--) {
+			FileNamed curr = list.getList().get(i);
+			if(curr != null && curr.mFile != null && curr.mFile.exists())
+				return curr.mFile;
+		}
+		
+		return null;
+	}
+	
+	private void addNWriteLastShellFrameFileToConfig(File toAdd) {
+		
+		if(toAdd == null)
+			return;
+		
+		try {
+			MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles()
+				.addLast(new FileNamed(toAdd.getCanonicalPath()));
+			MainGUI.currentConfiguration.writeSingleValue(
+					INItializer.TEXT_EDITOR_OPT, "lastOpenedShellFiles", 
+					MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles().toCharSeparatedString(";"));
+		} catch (IOException e) {
+			logger.error("Cannot update last shell file opened in configuration", e);
+		}
+	}
+	
 	public ShellFrame newShellFrame(boolean dark) {
+		File lastValid = getLastValidFileFromList(MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles());
+		
 		ShellFrame shellFrame = ShellFrame.getInstance(
 				getDarkTextArea(),
 				mainApplication.getMainFrame(),
 				true,
-				new File(MainGUI.currentConfiguration.getGenOpt().getLastShellFile()));
+				lastValid);
+		
+		shellFrame.payloadPanel.fileChooser = MainGuiGeneralAppStarter.fileDialogHelper;
+		
 		shellFrame.setCloseAction(() -> {
-			if(shellFrame.getLoadedFile() != null)
-				try {
-					MainGUI.currentConfiguration.getGenOpt().setLastShellFile(shellFrame.getLoadedFile().getCanonicalPath());
-					MainGUI.currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "lastShellFile", MainGUI.currentConfiguration.getGenOpt().getLastShellFile());
-				} catch (IOException e) {
-					logger.error("Cannot update last shell file opened in configuration", e);
-				}
+			addNWriteLastShellFrameFileToConfig(shellFrame.getLoadedFile());
 		});
+		
+		((ShellReadWritePanel)shellFrame.payloadPanel).setAfterLoadAction(() -> {
+			addNWriteLastShellFrameFileToConfig(shellFrame.getLoadedFile());
+		});
+
+		((ShellReadWritePanel)shellFrame.payloadPanel).setAfterSaveAction(() -> {
+			addNWriteLastShellFrameFileToConfig(shellFrame.getLoadedFile());
+		});
+		
 		if(dark)
 			((ShellReadWritePanel)shellFrame.payloadPanel).darker();
 		
@@ -145,23 +182,34 @@ public class WindowCreator {
 	
 	public RSyntaxTextArea getDarkTextArea() {
 		RSyntaxTextArea txtArea = new RSyntaxTextArea();
-		txtArea.setCurrentLineHighlightColor(Color.DARK_GRAY);
-		txtArea.setSelectedTextColor(Color.DARK_GRAY.brighter());
-		txtArea.setSelectionColor(Color.DARK_GRAY.brighter());
+		txtArea.setCurrentLineHighlightColor(Color.DARK_GRAY.darker());
+		txtArea.setSelectedTextColor(Color.DARK_GRAY);
+		txtArea.setSelectionColor(Color.DARK_GRAY);
+		txtArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(18F));
 		return txtArea;
 	}
 	
 	public ShellReadWritePanel getShellPanel(boolean dark) {
-		File preloadFile = new File(MainGUI.currentConfiguration.getGenOpt().getLastShellFile());
+		File preloadFile = getLastValidFileFromList(MainGUI.currentConfiguration.getTextEditorOpt().getLastOpenedShellFrameFiles());
 		ShellReadWritePanel panel = new ShellReadWritePanel(80000, mainApplication.getMainFrame(), getDarkTextArea());
 		panel.darker();
+		
+		panel.fileChooser = MainGuiGeneralAppStarter.fileDialogHelper;
 		
 		if(preloadFile != null && preloadFile.isFile() && preloadFile.exists())
 			panel.loadAction(preloadFile).run();
 		
 		panel.setSyncAction(() -> {
 			if(MainGUI.mainGuiUtils.isTextEditorActive())
-			MainGUI.textEditorPanel.textEditorUtils.updateBottomDividerLocation();
+				MainGUI.textEditorPanel.textEditorUtils.updateBottomDividerLocation();
+		});
+		
+		panel.setAfterLoadAction(() -> {
+			addNWriteLastShellFrameFileToConfig(panel.loadedFile);
+		});
+
+		panel.setAfterSaveAction(() -> {
+			addNWriteLastShellFrameFileToConfig(panel.loadedFile);
 		});
 		
 		if(dark)

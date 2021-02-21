@@ -35,6 +35,7 @@ import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import gui.GuiUtils;
 import resources.IconsPathConfigurator;
+import textarea.om.SelectiveLineEnabledTextArea;
 import utility.log.SafeLogger;
 import utility.reflection.ReflectionUtils;
 
@@ -48,7 +49,7 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 	public static final Font DEFAULT_TEXT_AREA_FONT = new Font("Segoe UI", Font.PLAIN, 17);
 	
 	protected JOptionHelperExtended dialogHelper;
-	protected GenericFileChooserDialog fileChooser;
+	public GenericFileChooserDialog fileChooser;
 	
 	public TreeMap<String, File> dataMap;
 	
@@ -63,6 +64,10 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 		initGui();
 		addHandlers();
 		addKeyListeners();
+	}
+	
+	public void setFileChooser(GenericFileChooserDialog fileChooser) {
+		this.fileChooser = fileChooser;
 	}
 	
 	abstract protected void addHandlers();
@@ -115,6 +120,25 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 	
 	public static JTextArea getTextArea(JTextArea toEnrich, Color background, Color foreground, Color caretColor, Font font) {
 		JTextArea textArea = toEnrich != null ? toEnrich : new JTextArea();
+		textArea.setMargin(new Insets(4, 4, 4, 4));
+		
+		if(font != null)
+			textArea.setFont(font);
+		
+		if(foreground != null)
+			textArea.setForeground(foreground);
+		
+		if(background != null)
+			textArea.setBackground(background);
+		
+		if(caretColor != null)
+			textArea.setCaretColor(caretColor);
+		
+		return textArea;
+	}
+	
+	public static SelectiveLineEnabledTextArea getSpecialTextArea(SelectiveLineEnabledTextArea toEnrich, Color background, Color foreground, Color caretColor, Font font) {
+		SelectiveLineEnabledTextArea textArea = toEnrich != null ? toEnrich : new SelectiveLineEnabledTextArea();
 		textArea.setMargin(new Insets(4, 4, 4, 4));
 		
 		if(font != null)

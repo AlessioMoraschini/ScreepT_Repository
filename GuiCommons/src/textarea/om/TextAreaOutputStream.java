@@ -1,4 +1,4 @@
-package textareautil;
+package textarea.om;
 
 import java.awt.*;
 import java.io.*;

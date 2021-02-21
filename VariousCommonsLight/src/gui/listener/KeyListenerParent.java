@@ -95,6 +95,7 @@ public class KeyListenerParent {
 		
 		return combinationFound;
 	}
+
 	
 	public class ClickUpdate {
 		long timestamp = 0;

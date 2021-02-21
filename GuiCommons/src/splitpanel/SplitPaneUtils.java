@@ -62,6 +62,7 @@ public class SplitPaneUtils {
 					private static final long serialVersionUID = -4392834503356984099L;
 
 					public void setBorder(Border b) {
+						super.setBorder(b);
 	                }
 	
 	                @Override
@@ -77,6 +78,8 @@ public class SplitPaneUtils {
 	            };
             }
         });
+		
+		((BasicSplitPaneUI) panel.getUI()).getDivider().setBorder(new LineBorder(border, 2));
         panel.setBorder(new LineBorder(border));
 	}
 

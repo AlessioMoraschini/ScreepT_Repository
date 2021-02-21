@@ -85,7 +85,7 @@ import om.themes.Themes;
 import om.themes.ThemesWrapper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import textareautil.TextLineNumber;
+import textarea.om.TextLineNumber;
 import utility.manipulation.EncodingUtils;
 import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;

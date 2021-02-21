@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -49,6 +50,15 @@ public class StringWorker {
 		public String eolRegex;
 		
 		public static EOL defaultEol = LF;
+		
+		public static EOL getOsBasedEOL() {
+			String osNameShort = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+			if(osNameShort.indexOf("win") > 0) {
+				return EOL.CRLF;
+			} else {
+				return EOL.LF;
+			}
+		}
 	
 		private EOL(String eol, String regex) {
 			this.eol = eol;

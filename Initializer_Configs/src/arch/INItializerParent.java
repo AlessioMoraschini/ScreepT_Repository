@@ -18,11 +18,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
+import files.om.FileNamed;
 import utility.log.SafeLogger;
 import utility.manipulation.ConversionUtils;
 import utility.reflection.ReflectionUtils;
@@ -266,6 +269,50 @@ public abstract class INItializerParent implements INItializerInterface{
 		}catch(Exception e){
 			return defaultVal;
 		}
+	}
+	
+	public static Vector<FileNamed> getFileNamedListFromString(String val, String separator, Vector<FileNamed> defaultList) {
+		Vector<FileNamed> list = new Vector<>();
+		try {
+			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(val, separator);
+			while(tokenizerOpenedFiles.hasMoreTokens()) {
+				list.add(new FileNamed(tokenizerOpenedFiles.nextToken()));
+			}
+			
+		} catch (Exception e1) {
+			return defaultList;
+		}
+
+		return list;
+	}
+	public static Vector<String> getStringListFromString(String val, String separator, Vector<String> defaultList) {
+		Vector<String> list = new Vector<>();
+		try {
+			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(val, separator);
+			while(tokenizerOpenedFiles.hasMoreTokens()) {
+				list.add(tokenizerOpenedFiles.nextToken());
+			}
+			
+		} catch (Exception e1) {
+			return defaultList;
+		}
+		
+		return list;
+	}
+
+	public static ArrayList<String> getStringListFromString(String val, String separator, ArrayList<String> defaultList) {
+		ArrayList<String> list = new ArrayList<>();
+		try {
+			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(val, separator);
+			while(tokenizerOpenedFiles.hasMoreTokens()) {
+				list.add(tokenizerOpenedFiles.nextToken());
+			}
+			
+		} catch (Exception e1) {
+			return defaultList;
+		}
+		
+		return list;
 	}
 	
 	public String listToString(ArrayList<String> loadedFiles) {

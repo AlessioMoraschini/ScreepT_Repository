@@ -85,6 +85,8 @@ public class ShellReadWritePanel extends ParentPanel {
 	private JFrame parentFrame;
 	
 	private Runnable syncAction;
+	private Runnable afterLoadAction;
+	private Runnable afterSaveAction;
 	
 	private ShellShortcutsListener shortcutsListener;
 
@@ -106,6 +108,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		
 		SwingUtilities.invokeLater(() -> {
 			splitPane.setDividerLocation(defaultDividerLocationRatio);
+			commandTextArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(17F));
 		});
 		
 		shortcutsListener = new ShellShortcutsListener(this);
@@ -129,7 +132,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		comboConcatenationMode.setForeground(SystemColor.menu);
 		comboConcatenationMode.setBackground(Color.DARK_GRAY);
 		
-		SplitPaneUtils.setDividerColors(Color.DARK_GRAY.darker(), Color.DARK_GRAY.brighter(), splitPane);
+		SplitPaneUtils.setDividerColors(Color.DARK_GRAY.darker(), Color.DARK_GRAY, splitPane);
 
 		setBackground(Color.DARK_GRAY.darker());
 	}
@@ -194,7 +197,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		scrollPaneTop.setPreferredSize(new Dimension(1920, 1080));
 		splitPane.setTopComponent(scrollPaneTop);
 		
-		commandTextArea = getTextArea(commandTextArea, Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT);
+		commandTextArea = getTextArea(commandTextArea, Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(19F));
 		scrollPaneTop.setViewportView(commandTextArea);
 		
 		
@@ -275,8 +278,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		return () -> {
 			GuiUtils.launchThreadSafeSwing(() -> {
 				try {
-					if(process != null)
-						stopProcess(process);
+					stopProcess();
 					
 				} catch (Exception e) {
 					logger.error("Error stopping command", e);
@@ -291,37 +293,69 @@ public class ShellReadWritePanel extends ParentPanel {
 			GuiUtils.launchThreadSafeSwing(() -> {
 				String batFile = null;
 				try {
+					// If a command is blocking, then the play button must stay clickable
+					playStopPausePanel.getPlayButton().setEnabled(true);
+					playStopPausePanel.getStopButton().setEnabled(true);
+					
+					// If there is already a running process, then write to it
+					if(process != null) {
+						try {
+							String cmd = RXTextUtilities.getSelectedOrBlockText(commandTextArea, false, EOL.getOsBasedEOL().eol);
+							process.getOutputStream().write(cmd.getBytes());
+							return;
+						} catch (Exception e) {
+							logger.error("Can't write to output process!", e);
+							return;
+						}
+					}
+						
+					// Otherwise start a new one
 					boolean concatenateSelectedLines = checkBoxConcatenation.isSelected();
 					String command = concatenateSelectedLines 
 							? RXTextUtilities.getSelectedOrBlockText(commandTextArea, true, (String)comboConcatenationMode.getSelectedItem())
 							: RXTextUtilities.getSelectedOrBlockText(commandTextArea, true, EOL.LF.eol);
 					
+					Thread input = new Thread(() -> {});
+					Thread error = new Thread(() -> {});
+					
 					if(concatenateSelectedLines) {
 						outputTextArea.append("\n\n ##############################################\n\n "
 								+ " >> Command Launched: \n\n" + command + "\n\n");
 						process = launchCommand(command);
-						readProcessOutput(process.getInputStream(), false);
-						readProcessOutput(process.getErrorStream(), true);
-						process.waitFor();
+						input = readProcessOutput(process.getInputStream(), false);
+						error = readProcessOutput(process.getErrorStream(), true);
+
 					} else {
 						batFile = writeInitBatShAndGetPath(command + "\n exit");
 						outputTextArea.append("\n\n ##############################################\n\n "
 								+ " >> Temp file launched: \n\n" + batFile + "\n\n");
 						process = SysUtils.launchBatchOrBashSimple(batFile);
-						readProcessOutput(process.getInputStream(), false);
-						readProcessOutput(process.getErrorStream(), true);
-						process.waitFor();
+						input = readProcessOutput(process.getInputStream(), false);
+						error = readProcessOutput(process.getErrorStream(), true);
 					}
+					
+					input.start();
+					error.start();
+					input.join();
+					error.join();
+					process.waitFor();
+					
 					
 				} catch (BadLocationException | IOException | InterruptedException e) {
 					logger.error("Error launching command", e);
 					dialogHelper.error("Error launching command!");
+				} 
 				
-				} finally {
-					if(batFile != null)
-					FileUtils.deleteQuietly(new File(batFile));
-					playStopPausePanel.initButtons();
+				try {
+					stopProcess();
+				} catch (InterruptedException e) {
+					logger.error("Can't stop process!");
 				}
+				
+				if(batFile != null)
+					FileUtils.deleteQuietly(new File(batFile));
+				playStopPausePanel.initButtons();
+				
 			});
 		};
 	}
@@ -346,16 +380,19 @@ public class ShellReadWritePanel extends ParentPanel {
 			
 			File source = forceFile == null ? fileChooser.fileRead(null) : forceFile;
 			
-			if(loadedFile == null || askSaveIfUnsaved() == null) {
+			if(source == null || askSaveIfUnsaved() == null) {
 				// CANC pressed
 				loadNewSavePanel.setAllButtonsEnabled(true);
 				return;
 			}
+			loadedFile = source;
 			
 			FileWorker.loadFileTxtArea(source, commandTextArea, lblCurrentFile, null, EOL.LF);
-			loadedFile = source;
 			lblCurrentFile.setToolTipText(loadedFile.getAbsolutePath());
 			fileUnsaved = false;
+			
+			if(afterLoadAction != null)
+				afterLoadAction.run();
 		};
 	}
 
@@ -380,6 +417,9 @@ public class ShellReadWritePanel extends ParentPanel {
 				onDocumentReset();
 			
 			loadNewSavePanel.setAllButtonsEnabled(true);
+			
+			if(afterSaveAction != null)
+				afterSaveAction.run();
 		};
 	}
 	public Runnable saveAsAction() {
@@ -390,8 +430,7 @@ public class ShellReadWritePanel extends ParentPanel {
 			loadNewSavePanel.setAllButtonsEnabled(true);
 		};
 	}
-	
-	
+
 	private boolean saveFile(boolean saveAs) {
 		boolean done = false;
 		try {
@@ -470,29 +509,34 @@ public class ShellReadWritePanel extends ParentPanel {
 		return initFilePath;
 	}
 
-	private void stopProcess(Process process) throws InterruptedException {
-		if(process != null)
-			process.destroyForcibly().waitFor();
+	private void stopProcess() throws InterruptedException {
+		if(this.process != null)
+			this.process.destroyForcibly().waitFor();
+		
+		this.process = null;
 	}
 	
-	private void readProcessOutput(InputStream inputStream, boolean errorStream) throws UnsupportedEncodingException {
+	private Thread readProcessOutput(InputStream inputStream, boolean errorStream) throws UnsupportedEncodingException {
 //		Charset charset = Charset.forName(new OSinfo().isWindows() && Charset.isSupported("UTF-16LE") 
 //				? "UTF-16" 
 //				: "UTF-8");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-		String line = null;
-		try {
-			while ((line = reader.readLine()) != null) {
-				outputTextArea.append(errorStream ? ("ERROR: " + line) : line);
-				outputTextArea.append(EOL.defaultEol.eol);
-				if(checkBoxAutoscroll.isSelected())
-					outputTextArea.setCaretPosition(outputTextArea.getDocument().getLength()-1);
+		Runnable readerAction = () -> {
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, System.getProperty("file.encoding")));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					outputTextArea.append(errorStream ? ("ERROR: " + line) : line);
+					outputTextArea.append(EOL.defaultEol.eol);
+					if(checkBoxAutoscroll.isSelected())
+						outputTextArea.setCaretPosition(outputTextArea.getDocument().getLength()-1);
+				}
+				reader.close();
+			} catch (IOException e) {
+				logger.error("Error reading process output:\n\n", e);
+				outputTextArea.append("!! Error reading process output:\n\n");
 			}
-			reader.close();
-		} catch (IOException e) {
-			logger.error("Error reading process output:\n\n", e);
-			outputTextArea.append("!! Error reading process output:\n\n");
-		}
+		};
+		return new Thread(readerAction);
 	}
 	
 	private String[] getComboModes() {
@@ -508,6 +552,22 @@ public class ShellReadWritePanel extends ParentPanel {
 
 	public JTextArea getOutputTextArea() {
 		return outputTextArea;
+	}
+	
+	public Runnable getAfterLoadAction() {
+		return afterLoadAction;
+	}
+
+	public void setAfterLoadAction(Runnable afterLoadAction) {
+		this.afterLoadAction = afterLoadAction;
+	}
+
+	public Runnable getAfterSaveAction() {
+		return afterSaveAction;
+	}
+
+	public void setAfterSaveAction(Runnable afterSaveAction) {
+		this.afterSaveAction = afterSaveAction;
 	}
 	
 }

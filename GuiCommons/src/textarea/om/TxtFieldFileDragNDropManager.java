@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-	package textareautil;
+	package textarea.om;
 
 import java.awt.Color;
 import java.awt.Component;

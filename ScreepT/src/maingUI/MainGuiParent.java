@@ -818,7 +818,7 @@ public class MainGuiParent {
 		try {
 			@SuppressWarnings("unchecked")
 			Vector<FileNamed> valueCopy = (Vector<FileNamed>) lastWorskspacesLlist.getList().clone();
-//			Collections.reverse(valueCopy);
+			Collections.reverse(valueCopy);
 			mnLastWorkspaces.removeAll();
 			for (FileNamed file : valueCopy) {
 				if (file.mFile != null && file.mFile.exists()) {

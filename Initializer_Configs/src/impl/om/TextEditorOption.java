@@ -69,6 +69,7 @@ public class TextEditorOption {
 	public static final boolean DEF_prefix_hash = false;
 	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles;
 	public static LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces;
+	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedShellFiles;
 	public static LimitedConcurrentList<String> DEF_lastTagsUsed;
 	public static LimitedConcurrentList<String> DEF_lastReplaceTerms;
 	public static LimitedConcurrentList<String> DEF_lastSearchTerms;
@@ -116,6 +117,7 @@ public class TextEditorOption {
 	public String selectedAtStart;
 	public String lastEscapeLanguage;
 	public LimitedConcurrentList<FileNamed> lastOpenedFiles;
+	public LimitedConcurrentList<FileNamed> lastOpenedShellFiles;
 	public LimitedConcurrentList<FileNamed> lastSelectedWorkspaces;
 	public LimitedConcurrentList<String> lastReplaceTerms;
 	public LimitedConcurrentList<String> lastSearchTerms;
@@ -175,6 +177,7 @@ public class TextEditorOption {
 	// CONSTRUCTOR
 	public TextEditorOption() {
 		DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);      
+		DEF_lastOpenedShellFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE); 
 		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
 		DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
 		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_SEARCH_DIAL_LIST_SIZE); 
@@ -193,6 +196,7 @@ public class TextEditorOption {
 		
 		openedFileList = new ArrayList<String>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
+		lastOpenedShellFiles = DEF_lastOpenedShellFiles;
 		lastSelectedWorkspaces = DEF_lastSelectedWorkspaces;
 		lastReplaceTerms = DEF_lastReplaceTerms;
 		lastSearchTerms = DEF_lastSearchTerms;
@@ -403,10 +407,18 @@ public class TextEditorOption {
 		this.lastSelectedWorkspaces = lastSelectedWorkspaces;
 	}
 
+	public LimitedConcurrentList<FileNamed> getLastOpenedShellFrameFiles() {
+		return lastOpenedShellFiles;
+	}
+
+	public void setLastOpenedShellFrameFiles(LimitedConcurrentList<FileNamed> lastOpenedShellFrameFiles) {
+		this.lastOpenedShellFiles = lastOpenedShellFrameFiles;
+	}
+
 	public LimitedConcurrentList<String> getLastReplaceTerms() {
 		return lastReplaceTerms;
 	}
-
+	
 	public void setLastReplaceTerms(LimitedConcurrentList<String> lastReplaceTerms) {
 		this.lastReplaceTerms = lastReplaceTerms;
 	}

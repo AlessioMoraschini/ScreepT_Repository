@@ -19,7 +19,6 @@ public class GenericOption {
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
 	public final static String DEFAULT_USERNAME = "";
-	public final static String DEF_lastShellFile = "";
 	public final static String DEFAULT_CHARSET = "UTF-8";
 	public final static float DEFAULT_VOLUME = 0.6F;
 	public final static boolean DEF_TxtEditorFileMonitorActive = true;
@@ -31,7 +30,6 @@ public class GenericOption {
 
 	// FILEDS
 	private String userName;
-	private String lastShellFile;
 	private String charset;
 	private float generalVolume;
 	private boolean TxtEditorFileMonitorActive;
@@ -42,7 +40,6 @@ public class GenericOption {
 	private Locale locale;
 	
 	public GenericOption() {
-		lastShellFile = DEF_lastShellFile;
 		userName = DEFAULT_USERNAME;
 		charset = DEFAULT_CHARSET;
 		generalVolume = DEFAULT_VOLUME;
@@ -137,12 +134,4 @@ public class GenericOption {
 		this.lastPanelOpened = lastPanelOpened;
 	}
 
-	public String getLastShellFile() {
-		return lastShellFile;
-	}
-
-	public void setLastShellFile(String lastShellFile) {
-		this.lastShellFile = lastShellFile;
-	}
-	
 }

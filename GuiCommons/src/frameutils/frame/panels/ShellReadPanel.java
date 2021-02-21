@@ -12,7 +12,7 @@ import frameutils.frame.panels.arch.IParentPanel;
 import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
 import net.miginfocom.swing.MigLayout;
-import textareautil.TextAreaOutputStream;
+import textarea.om.TextAreaOutputStream;
 
 /**
  * This class implements a console that prints out every output from System.out/System.err streams
