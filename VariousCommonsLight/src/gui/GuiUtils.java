@@ -17,6 +17,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dialog;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Font;
@@ -1027,6 +1028,23 @@ public class GuiUtils {
 		int tabsTotalLength = tabSize * nOfTabs;
 
 		return currentLine.length() - nOfTabs + tabsTotalLength;
+	}
+	
+	public static void setDialogModalType(Dialog target, ModalityType type) {
+		setDialogModalType(target, type, false);
+	}
+
+	public static void setDialogModalType(Dialog target, ModalityType type, boolean switchVisible) {
+		
+		boolean wasVisible = target.isVisible();
+		
+		if(switchVisible)
+			target.setVisible(!wasVisible);
+		
+		target.setModalityType(type);
+	
+		if(switchVisible)
+			target.setVisible(wasVisible);
 	}
 
 }

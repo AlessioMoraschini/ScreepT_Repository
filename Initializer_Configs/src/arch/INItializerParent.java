@@ -17,7 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -33,7 +35,9 @@ import utility.string.StringWorker;
 
 public abstract class INItializerParent implements INItializerInterface{
 
-	static SafeLogger logger = new SafeLogger(INItializerParent.class); 
+	protected static SafeLogger logger = new SafeLogger(INItializerParent.class); 
+	public static final String SEPARATOR_DEFAULT = ";";
+	public static final String SEPARATOR_INNER_DEFAULT = "::";
 	
 	public static final String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
 	
@@ -251,6 +255,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		try {
 			return Integer.valueOf(val);
 		}catch(Exception e){
+			logger.error(e);
 			return defaultVal;
 		}
 	}
@@ -259,6 +264,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		try {
 			return Float.valueOf(val);
 		}catch(Exception e){
+			logger.error(e);
 			return defaultVal;
 		}
 	}
@@ -267,6 +273,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		try {
 			return Double.valueOf(val);
 		}catch(Exception e){
+			logger.error(e);
 			return defaultVal;
 		}
 	}
@@ -280,6 +287,7 @@ public abstract class INItializerParent implements INItializerInterface{
 			}
 			
 		} catch (Exception e1) {
+			logger.error(e1);
 			return defaultList;
 		}
 
@@ -294,12 +302,56 @@ public abstract class INItializerParent implements INItializerInterface{
 			}
 			
 		} catch (Exception e1) {
+			logger.error(e1);
 			return defaultList;
 		}
 		
 		return list;
 	}
 
+	public static <T> Map<String, T> getMapFromKeyList(List<String> keys, List<T> values, T defaultNullVal) {
+		Map<String, T> map = new HashMap<>();
+		
+		int i = 0;
+		for(String key : keys) {
+			T value = null;
+			try {
+				value = values.get(i) != null ? values.get(i) : defaultNullVal;
+			} catch(Exception e) {
+				value = defaultNullVal;
+			}
+			
+			map.put(key, value);
+			i++;
+		}
+		
+		return map;
+	}
+	
+	public static Map<String, String> getStringMapFromString(String val, String separator, String innerSeparator, Map<String, String> defaultMap) {
+		Map<String, String> map = new HashMap<>();
+		try {
+			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(val, separator);
+			while(tokenizerOpenedFiles.hasMoreTokens()) {
+				String token = tokenizerOpenedFiles.nextToken();
+				String[] splittedKeyVal = StringWorker.isEmpty(token) ? new String[0] : token.split(StringWorker.trimToEmpty(innerSeparator));
+				
+				if(splittedKeyVal.length == 1) {
+					map.put(StringWorker.trimToEmpty(splittedKeyVal[0]), "");
+				
+				} else if(splittedKeyVal.length == 2) {
+					map.put(StringWorker.trimToEmpty(splittedKeyVal[0]), StringWorker.trimToEmpty(splittedKeyVal[1]));
+				}
+			}
+			
+		} catch (Exception e1) {
+			logger.error(e1);
+			return map;
+		}
+		
+		return map;
+	}
+	
 	public static ArrayList<String> getStringListFromString(String val, String separator, ArrayList<String> defaultList) {
 		ArrayList<String> list = new ArrayList<>();
 		try {
@@ -309,6 +361,7 @@ public abstract class INItializerParent implements INItializerInterface{
 			}
 			
 		} catch (Exception e1) {
+			logger.error(e1);
 			return defaultList;
 		}
 		
@@ -325,6 +378,24 @@ public abstract class INItializerParent implements INItializerInterface{
 			openedFiles = openedFiles.substring(0, openedFiles.length()-1);
 		}
 		return openedFiles;
+	}
+	
+	public static String mapToString(Map<String, String> map) {
+		String stringMap = "";
+		
+		if(map == null || map.isEmpty())
+			return stringMap;
+		
+		String[] keys = map.keySet().toArray(new String[map.size()]);
+
+		for(int i = 0; i < keys.length; i++) {
+			
+			stringMap += keys[i] + SEPARATOR_INNER_DEFAULT + map.get(keys[i]);
+			if(i < keys.length - 1)
+				stringMap += SEPARATOR_DEFAULT;
+		}
+
+		return stringMap;
 	}
 	
 	@Override

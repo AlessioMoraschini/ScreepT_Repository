@@ -121,13 +121,21 @@ public class ChecksumHasher {
 			return getFileHashBuffered(directory, algorithm, uppercase);
 		} else {
 			byte[] hashAccumulator = new byte[0];
-			for (File curr : directory.listFiles()) {
-				if (curr.isDirectory()) {
-					hashAccumulator = ChecksumHasher.xorBytes(getFolderHash(curr, algorithm, uppercase).getBytes("UTF-8"), hashAccumulator);
-				} else {
-					hashAccumulator = ChecksumHasher.xorBytes(getFileHashBuffered(curr, algorithm, uppercase).getBytes("UTF-8"), hashAccumulator);
+			File[] contents =  directory.listFiles();
+			
+			if(contents != null && contents.length > 0) {
+				for (File curr : contents) {
+					if (curr.isDirectory()) {
+						hashAccumulator = ChecksumHasher.xorBytes(getFolderHash(curr, algorithm, uppercase).getBytes("UTF-8"), hashAccumulator);
+					} else {
+						hashAccumulator = ChecksumHasher.xorBytes(getFileHashBuffered(curr, algorithm, uppercase).getBytes("UTF-8"), hashAccumulator);
+					}
 				}
+			
+			} else {
+				hashAccumulator = ChecksumHasher.xorBytes(getFileHashBuffered(directory, algorithm, uppercase).getBytes("UTF-8"), hashAccumulator);
 			}
+			
 			return ConversionUtils.printHexBinary(hashAccumulator);
 		}
 	}

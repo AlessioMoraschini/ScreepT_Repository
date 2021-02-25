@@ -34,6 +34,7 @@ import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
 import treeutils.TreeUtils;
 import treeutils.om.FileTreeModel;
+import utility.string.StringWorker;
 import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
@@ -47,6 +48,7 @@ import javax.swing.ToolTipManager;
 import org.apache.log4j.Logger;
 import org.fife.ui.rtextarea.RUndoManager;
 
+import arch.INItializerParent;
 import dialogutils.JOptionHelperExtended;
 import files.FileVarious;
 import files.om.FileNamed;
@@ -67,6 +69,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -87,6 +90,7 @@ import gUI.utils.shortcutshandler.TextEditorShortcutListener;
 import gUI.utils.texteditor.TabbedEditorOwnerScreepT;
 import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor;
+import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import guistyle.GUIStyelSettingsExtended;
 import impl.INItializer;
@@ -437,6 +441,8 @@ public class TextEditor extends ModulePanel {
 		initGuiFromConfig(true, true);
 		
 		loadOpenedFilesAtStart();
+		
+		applyFilesCaretPositionMap();
 
 		textEditorUtils.resizeFrameToDefault(mainApplication);
 
@@ -701,7 +707,76 @@ public class TextEditor extends ModulePanel {
 			public void componentHidden(ComponentEvent e) {
 			}
 		});
+	}
+	
+	public ArrayList<String> getLoadedFiles(){
+		ArrayList<String> keys = new ArrayList<>();
 		
+		for(TabTextEditorObject obj : getCurrentTabEditor().loadedList.getList()) {
+			String key = null;
+			try {
+				key = obj.loadedFile.getAbsolutePath();
+			} catch(Exception e) {
+			}
+			
+			if(!StringWorker.isEmpty(key)) {
+				keys.add(key);
+			}
+		}
+		return keys;
+	}
+	
+	public void applyFilesCaretPositionMap() {
+		Map<String, String> openedCarets = currentConfiguration.getTextEditorOpt().getOpenedFileListCaretPosition();
+		
+		for(TabTextEditorObject obj : getCurrentTabEditor().loadedList.getList()) {
+			if(obj.loadedFile != null &&
+					openedCarets != null &&
+					!openedCarets.isEmpty() &&
+					openedCarets.containsKey(obj.loadedFile.getAbsolutePath())) {
+				
+				try {
+					obj.textArea.setCaretPosition(Integer.valueOf(openedCarets.get(obj.loadedFile.getAbsolutePath())));
+				} catch (NumberFormatException e) {
+					logger.error("Cannot apply caret position=" + openedCarets.get(obj.loadedFile.getAbsolutePath()) +
+							" from configuration for file: " + obj.loadedFile);
+				}
+			}
+		}
+	}
+	
+	public Map<String, String> updateOpenedFilesCaretPositionMap(boolean writeToConfigFile){
+		
+		ArrayList<String> caretPositions = new ArrayList<>();
+		ArrayList<String> keys = new ArrayList<>();
+		
+		for(TabTextEditorObject obj : getCurrentTabEditor().loadedList.getList()) {
+			String key = null;
+			String val = null;
+			try {
+				key = obj.loadedFile.getAbsolutePath();
+				val = String.valueOf(obj.textArea.getCaretPosition());
+			} catch(Exception e) {
+				val = "";
+			}
+			
+			if(!StringWorker.isEmpty(key)) {
+				keys.add(key);
+				caretPositions.add(val);
+			}
+		}
+
+		Map<String, String> openedFiles = INItializerParent.getMapFromKeyList(keys, caretPositions, "");
+		currentConfiguration.getTextEditorOpt().setOpenedFileListCaretPosition(openedFiles);
+
+		if(writeToConfigFile)
+			currentConfiguration.writeSingleValue(
+					INItializer.TEXT_EDITOR_OPT, 
+					"openedFileListCaretPosition", 
+					INItializerParent.mapToString(openedFiles)
+				);
+		
+		return openedFiles;
 	}
 	
 	public void applyDeltaToRightToggle(int deltaBase){
@@ -1121,6 +1196,7 @@ public class TextEditor extends ModulePanel {
 		currentTabbedEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				RXTextUtilities.centerLineFullInScrollPane(currentTabbedEditor.loadedTabObj.textArea);
 				// RE-Enable refreshing
 				isPreloading = false;
 				textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);

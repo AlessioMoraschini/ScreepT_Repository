@@ -278,7 +278,9 @@ public class MainGuiManager {
 			}
 			currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "loadedFilesAtStart",
 					currentConfiguration.listToString(currentConfiguration.getTextEditorOpt().getOpenedFileList()));
-	
+			
+			initTxtWriter.updateOpenedFilesCaretPositionMap(true);
+			
 			// save current opened if it exists
 			if(currentTabEditor.loadedTabObj != null 
 					&& currentTabEditor.loadedTabObj.loadedFile!= null 
@@ -296,7 +298,7 @@ public class MainGuiManager {
 		
 		logger.info("\n => Opened files in textEditor added to configuration");
 	}
-
+	
 	public static boolean doIfTempDecryptedChanged(JFrame parent) {
 		logger.debug("Starting check on fileMonitor...");
 		CrypterPanel panelCrypter = MainGUI.crypterPanel;

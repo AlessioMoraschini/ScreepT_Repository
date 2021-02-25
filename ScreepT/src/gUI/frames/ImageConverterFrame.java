@@ -36,6 +36,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import java.awt.SystemColor;
+import java.awt.Dialog.ModalityType;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -584,6 +585,7 @@ public class ImageConverterFrame extends ParentFrame {
 							
 							try {
 								progUpdater = new UpdateProgressPanel(false);
+								progUpdater.setModalType(ModalityType.DOCUMENT_MODAL);
 								progUpdater.getPb().setValue(20);
 								
 								if (inputImg != null) {
@@ -688,6 +690,7 @@ public class ImageConverterFrame extends ParentFrame {
 									selected = FileVarious.uniqueJavaObjFile(selected);
 									
 									progUpdater = new UpdateProgressPanel(false);
+									progUpdater.setModalType(ModalityType.DOCUMENT_MODAL);
 									progUpdater.getPb().setValue(20);
 									progUpdater.getPb().setIndeterminate(true);
 
@@ -799,6 +802,7 @@ public class ImageConverterFrame extends ParentFrame {
 							
 							try {
 								progUpdater = new UpdateProgressPanel(false);
+								progUpdater.setModalType(ModalityType.DOCUMENT_MODAL);
 								progUpdater.getPb().setValue(20);
 								progUpdater.getLabel().setText("I'm loading the image...");
 								progUpdater.getPb().setIndeterminate(true);

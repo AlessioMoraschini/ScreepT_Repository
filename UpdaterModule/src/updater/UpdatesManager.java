@@ -13,6 +13,7 @@ package updater;
 
 import static java.lang.System.out;
 
+import java.awt.Dialog.ModalityType;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -94,6 +95,7 @@ public class UpdatesManager {
 			
 			if (!silent) {
 				updateManagerProgbar = new UpdateProgressPanel(true);
+				updateManagerProgbar.setModalType(ModalityType.MODELESS);
 				updateManagerProgbar.dialog.setTitle("Looking for updates...");
 				updateManagerProgbar.getPb().setIndeterminate(true);
 			}
@@ -157,6 +159,7 @@ public class UpdatesManager {
 			}
 			
 			updateProgressBar = new UpdateProgressPanel(true);
+			updateProgressBar.setModalType(ModalityType.MODELESS);
 			updateProgressBar.dialog.setTitle("Downloading files...");
 			updateProgressBar.update(20, "Downloading "+manifestRemoteUrl, true);
 			logger.info(FileVarious.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));

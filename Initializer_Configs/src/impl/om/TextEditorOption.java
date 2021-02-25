@@ -16,8 +16,10 @@ import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import files.om.FileNamed;
 import impl.INItializer;
@@ -114,6 +116,7 @@ public class TextEditorOption {
 	public Color backCol;
 	public Color foreCol;
 	public ArrayList<String> openedFileList;
+	public Map<String, String> openedFileListCaretPosition;
 	public String selectedAtStart;
 	public String lastEscapeLanguage;
 	public LimitedConcurrentList<FileNamed> lastOpenedFiles;
@@ -195,6 +198,7 @@ public class TextEditorOption {
 		footerVisible = DEF_footerVisible;
 		
 		openedFileList = new ArrayList<String>();
+		openedFileListCaretPosition = new HashMap<>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
 		lastOpenedShellFiles = DEF_lastOpenedShellFiles;
 		lastSelectedWorkspaces = DEF_lastSelectedWorkspaces;
@@ -551,6 +555,14 @@ public class TextEditorOption {
 		this.openedFileList = openedList;
 	}
 	
+	public Map<String, String> getOpenedFileListCaretPosition() {
+		return openedFileListCaretPosition;
+	}
+
+	public void setOpenedFileListCaretPosition(Map<String, String> openedFileListCaretPosition) {
+		this.openedFileListCaretPosition = openedFileListCaretPosition;
+	}
+
 	public void setInlinedTabs(boolean inlinedTabs) {
 		this.inlinedTabs = inlinedTabs;
 	}

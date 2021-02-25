@@ -12,6 +12,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -88,6 +89,8 @@ public class UpdateProgressPanel {
                 
         	}
         }).start();
+		
+		setModalType(ModalityType.APPLICATION_MODAL);
     }
     
     public UpdateProgressPanel(boolean secondBar, boolean undefinedDuration) {
@@ -95,6 +98,12 @@ public class UpdateProgressPanel {
     	if (undefinedDuration) {
 			setUndefinedDuration();
 		}
+    }
+    
+    public void setModalType(ModalityType type) {
+    	SwingUtilities.invokeLater(() -> {
+        	GuiUtils.setDialogModalType(dialog,  type);
+    	});
     }
     
     /**
@@ -141,6 +150,8 @@ public class UpdateProgressPanel {
 		        }).start();
 			}
 		});
+        
+        setModalType(ModalityType.APPLICATION_MODAL);
     }
 
 	// ####################### END CONSTRUCTORS #################### //
@@ -249,6 +260,8 @@ public class UpdateProgressPanel {
 							return;
 						}
 
+						GuiUtils.setDialogModalType(dialog,  ModalityType.MODELESS);
+
 						if (forceDispose.get()) {
 							dialog.dispose();
 						}
@@ -317,6 +330,7 @@ public class UpdateProgressPanel {
     
     public void forceClose(){
     	try {
+    		GuiUtils.setDialogModalType(dialog,  ModalityType.MODELESS);
 			forceDispose.set(true);
 			if(getGeneralBar() != null) {
 				update(100, "Completed! Closing progress bar monitor...", true);

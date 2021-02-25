@@ -14,6 +14,7 @@ package impl;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -392,6 +393,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setSpellChecker(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "spellChecker"), TextEditorOption.DEF_spellChecker));
 		textEditorOpt.setPrefDictspellChecker(getSafeStringConf(TEXT_EDITOR_OPT, "prefDictspellChecker", TextEditorOption.DEF_prefDictspellChecker));
 		
+		String pathsOpenFilesMapString = iniReadFile.get(TEXT_EDITOR_OPT, "openedFileListCaretPosition");
+		textEditorOpt.setOpenedFileListCaretPosition(getStringMapFromString(pathsOpenFilesMapString, SEPARATOR_DEFAULT, SEPARATOR_INNER_DEFAULT, new HashMap<String, String>()));		
+
 		String pathsOpenFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedFilesAtStart");
 		textEditorOpt.setOpenedFileList(getStringListFromString(pathsOpenFilesString, ",", new ArrayList<String>()));		
 		
