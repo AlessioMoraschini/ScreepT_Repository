@@ -90,7 +90,6 @@ public class UpdateProgressPanel {
         	}
         }).start();
 		
-		setModalType(ModalityType.APPLICATION_MODAL);
     }
     
     public UpdateProgressPanel(boolean secondBar, boolean undefinedDuration) {
@@ -150,8 +149,6 @@ public class UpdateProgressPanel {
 		        }).start();
 			}
 		});
-        
-        setModalType(ModalityType.APPLICATION_MODAL);
     }
 
 	// ####################### END CONSTRUCTORS #################### //

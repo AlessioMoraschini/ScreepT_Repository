@@ -693,7 +693,7 @@ public class TextEditorUtils {
 			}
 			
 		}else {
-			logger.warn("\"btnToggleFileView\" is not selected, refresh skipped!");
+			logger.info("\"btnToggleFileView\" is not selected, refresh skipped!");
 		}
 		
 		currentTextEditor.lblCurrentDir.setText(TextEditor.ROOT_WORKSPACE_LBL);

@@ -7,10 +7,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
 
 import org.apache.commons.io.FileUtils;
 
@@ -38,6 +38,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.SystemColor;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -69,9 +71,11 @@ public class ShellReadWritePanel extends ParentPanel {
 	public LoadNewSavePanel loadNewSavePanel;
 	public JButton clcButton;
 	public JButton pinToTopButton ;
+	public JTextField interactiveInputField;
 	public JCheckBox checkBoxConcatenation;
 	public JCheckBox checkBoxAutoscroll;
 	public JLabel labelConcatenationMode;
+	public JLabel lblInteractiveInputDescription;
 	public JLabel lblCurrentFile;
 	public JComboBox<String> comboConcatenationMode;
 	public JTextArea commandTextArea;
@@ -129,8 +133,12 @@ public class ShellReadWritePanel extends ParentPanel {
 		checkBoxAutoscroll.setBackground(Color.DARK_GRAY);
 		lblCurrentFile.setForeground(SystemColor.menu);
 		lblCurrentFile.setBackground(Color.DARK_GRAY);
+		lblInteractiveInputDescription.setForeground(SystemColor.menu);
+		lblInteractiveInputDescription.setBackground(Color.DARK_GRAY);
 		comboConcatenationMode.setForeground(SystemColor.menu);
 		comboConcatenationMode.setBackground(Color.DARK_GRAY);
+		interactiveInputField.setForeground(SystemColor.menu);
+		interactiveInputField.setBackground(Color.DARK_GRAY.darker());
 		
 		SplitPaneUtils.setDividerColors(Color.DARK_GRAY.darker(), Color.DARK_GRAY, splitPane);
 
@@ -142,7 +150,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		setLayout(new MigLayout(
 				"fill, insets 1, hidemode 2", 
 				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][10px][60px, grow][20px]", 
-				"[25px:25px][50px,grow]"));
+				"[25px:25px][:0px:30px][50px,grow]"));
 		
 		// HEADER
 		playStopPausePanel = new PlayStopPausePanel(playAction(), stopAction(), pauseAction());
@@ -185,11 +193,24 @@ public class ShellReadWritePanel extends ParentPanel {
 			add(pinToTopButton, "cell 9 0 1 1, alignx right, grow");
 		}
 		
+		// TOGGLE JTEXT FIELD for interactive input after start
+		lblInteractiveInputDescription = getLabel("Live cmd: ",	null, Color.DARK_GRAY, IconsPathConfigurator.ICON_GEN_INFO, false);
+		lblInteractiveInputDescription.setToolTipText("Enter a command and launch on active process. (to launch command, press enter or click play button)");
+		add(lblInteractiveInputDescription, "cell 0 1 1 1,grow");
+		
+		interactiveInputField = getTextField(
+				Color.WHITE,
+				Color.BLACK,
+				Color.RED,
+				ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), true);
+		add(interactiveInputField, "cell 1 1 9 1,grow");
+		
+		
 		// SPLIT PANE
 		splitPane = new JSplitPane();
 		splitPane.setContinuousLayout(true);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		add(splitPane, "cell 0 1 10 1,grow");
+		add(splitPane, "cell 0 2 10 1,grow");
 
 		
 		// TOP SCROLL PANEL
@@ -212,6 +233,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		outputTextArea.setText("I'm ready to launch your commands ;)");
 		scrollPaneBottom.setViewportView(outputTextArea);
 		
+		setInteractiveInputMode(false);
 	}
 	
 	public void setSyncAction(Runnable action) {
@@ -228,6 +250,14 @@ public class ShellReadWritePanel extends ParentPanel {
 	public void addHandlers() {
 		clcButton.addActionListener((e) -> {
 			outputTextArea.setText("");
+		});
+		
+		interactiveInputField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(KeyEvent.VK_ENTER == e.getKeyCode())
+					playStopPausePanel.getPlayButton().doClick();
+			}
 		});
 		
 		checkBoxConcatenation.addActionListener((e)->{
@@ -288,6 +318,15 @@ public class ShellReadWritePanel extends ParentPanel {
 		};
 	}
 	
+	private void setInteractiveInputMode(boolean interactiveMode) {
+		interactiveInputField.setVisible(interactiveMode);
+		lblInteractiveInputDescription.setVisible(interactiveMode);
+		if(interactiveMode)
+			commandTextArea.setEnabled(false);
+		else
+			commandTextArea.setEnabled(true);
+	}
+	
 	private Runnable playAction() {
 		return () -> {
 			GuiUtils.launchThreadSafeSwing(() -> {
@@ -300,9 +339,20 @@ public class ShellReadWritePanel extends ParentPanel {
 					// If there is already a running process, then write to it
 					if(process != null) {
 						try {
-							String cmd = RXTextUtilities.getSelectedOrBlockText(commandTextArea, false, EOL.getOsBasedEOL().eol);
-							process.getOutputStream().write(cmd.getBytes());
+							String cmd = interactiveInputField.getText();
+							
+							if(!StringWorker.isEmpty(cmd)) {
+								
+								if(cmd.equalsIgnoreCase("CLC") || cmd.equalsIgnoreCase("CLEAR")) {
+									outputTextArea.setText("");
+								
+								} else {
+									process.getOutputStream().write(cmd.getBytes());
+									process.getOutputStream().flush();
+								}
+							}
 							return;
+							
 						} catch (Exception e) {
 							logger.error("Can't write to output process!", e);
 							return;
@@ -315,8 +365,8 @@ public class ShellReadWritePanel extends ParentPanel {
 							? RXTextUtilities.getSelectedOrBlockText(commandTextArea, true, (String)comboConcatenationMode.getSelectedItem())
 							: RXTextUtilities.getSelectedOrBlockText(commandTextArea, true, EOL.LF.eol);
 					
-					Thread input = new Thread(() -> {});
-					Thread error = new Thread(() -> {});
+					Thread input = null;
+					Thread error = null;
 					
 					if(concatenateSelectedLines) {
 						outputTextArea.append("\n\n ##############################################\n\n "
@@ -334,16 +384,18 @@ public class ShellReadWritePanel extends ParentPanel {
 						error = readProcessOutput(process.getErrorStream(), true);
 					}
 					
+					setInteractiveInputMode(true);
 					input.start();
 					error.start();
-					input.join();
-					error.join();
+//					input.join();
+//					error.join();
 					process.waitFor();
 					
 					
-				} catch (BadLocationException | IOException | InterruptedException e) {
+				} catch (Exception e) {
 					logger.error("Error launching command", e);
 					dialogHelper.error("Error launching command!");
+				
 				} 
 				
 				try {
@@ -351,11 +403,10 @@ public class ShellReadWritePanel extends ParentPanel {
 				} catch (InterruptedException e) {
 					logger.error("Can't stop process!");
 				}
-				
+
 				if(batFile != null)
 					FileUtils.deleteQuietly(new File(batFile));
 				playStopPausePanel.initButtons();
-				
 			});
 		};
 	}
@@ -514,6 +565,7 @@ public class ShellReadWritePanel extends ParentPanel {
 			this.process.destroyForcibly().waitFor();
 		
 		this.process = null;
+		setInteractiveInputMode(false);
 	}
 	
 	private Thread readProcessOutput(InputStream inputStream, boolean errorStream) throws UnsupportedEncodingException {
@@ -521,19 +573,31 @@ public class ShellReadWritePanel extends ParentPanel {
 //				? "UTF-16" 
 //				: "UTF-8");
 		Runnable readerAction = () -> {
+			BufferedReader reader = null;
 			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, System.getProperty("file.encoding")));
+				reader = new BufferedReader(new InputStreamReader(inputStream));
 				String line = null;
 				while ((line = reader.readLine()) != null) {
-					outputTextArea.append(errorStream ? ("ERROR: " + line) : line);
-					outputTextArea.append(EOL.defaultEol.eol);
-					if(checkBoxAutoscroll.isSelected())
-						outputTextArea.setCaretPosition(outputTextArea.getDocument().getLength()-1);
+					final String currLine = line;
+					SwingUtilities.invokeLater(() -> {
+						outputTextArea.append(errorStream ? ("ERROR: " + currLine) : currLine);
+						outputTextArea.append(EOL.defaultEol.eol);
+						if(checkBoxAutoscroll.isSelected())
+							outputTextArea.setCaretPosition(outputTextArea.getDocument().getLength()-1);
+					});
 				}
-				reader.close();
+			
 			} catch (IOException e) {
 				logger.error("Error reading process output:\n\n", e);
 				outputTextArea.append("!! Error reading process output:\n\n");
+			
+			} finally {
+				if(reader != null)
+					try {
+						reader.close();
+					} catch(Exception e) {
+						logger.error("Error closing process output reader:", e);
+					}
 			}
 		};
 		return new Thread(readerAction);

@@ -1042,6 +1042,7 @@ public class GuiUtils {
 			target.setVisible(!wasVisible);
 		
 		target.setModalityType(type);
+		target.setModal(!ModalityType.MODELESS.equals(type));
 	
 		if(switchVisible)
 			target.setVisible(wasVisible);

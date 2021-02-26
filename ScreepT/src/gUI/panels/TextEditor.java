@@ -978,6 +978,7 @@ public class TextEditor extends ModulePanel {
 		}
 		
 		textEditorUtils.resetDividerColor();
+		textEditorUtils.checkRightVisibleIfEnabled();
 //		GUIStyelSettings.applyNimbusSize(0);
 	}
 	
@@ -1087,7 +1088,7 @@ public class TextEditor extends ModulePanel {
 			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
 			if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
 				// In case of clipboard use ad-hoc option
-				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosXClipboard);
+				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerFileTreePosX - txtOptions.dividerRightPanePosXClipboard);
 			}else {
 				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
 			}
