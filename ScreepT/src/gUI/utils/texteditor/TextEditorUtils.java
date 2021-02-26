@@ -78,7 +78,7 @@ import utils.dialog.TextAreaDialogs;
 import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
 public class TextEditorUtils {
 	
@@ -267,7 +267,7 @@ public class TextEditorUtils {
 		}
 	}
 
-	public ParentPanel getTypedIRightPanel() {
+	public TogglePanelTextArea getTypedIRightPanel() {
 		JPanel rightContainer = currentTextEditor.rightModulePanel;
 		if (rightContainer != null) {
 			if (rightContainer instanceof MapTextAreaPanel) {

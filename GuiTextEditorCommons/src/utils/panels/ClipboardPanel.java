@@ -50,7 +50,7 @@ import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
 import utils.dialog.ITextAreaDialogs;
 import utils.panels.arch.IParentPanel;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
 import java.awt.Dimension;
 import javax.swing.JLabel;
@@ -60,7 +60,7 @@ import java.awt.Font;
 import java.awt.Insets;
 
 
-public class ClipboardPanel  extends ParentPanel implements IParentPanel{
+public class ClipboardPanel  extends TogglePanelTextArea implements IParentPanel{
 	private static final long serialVersionUID = 4527321717233899589L;
 	
 	// ClipboardPanel logger creation

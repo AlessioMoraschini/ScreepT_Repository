@@ -17,7 +17,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -1130,7 +1130,7 @@ public class GraphicPreferencesFrame extends ParentFrame {
 	
 	private void syncRightPaneCustomOptions() {
 		if (currentEditor != null) {
-			ParentPanel rightPane = currentEditor.textEditorUtils.getTypedIRightPanel();
+			TogglePanelTextArea rightPane = currentEditor.textEditorUtils.getTypedIRightPanel();
 			if (rightPane != null && rightPane instanceof ClipboardPanel) {
 				((ClipboardPanel) rightPane).sync();
 			} 

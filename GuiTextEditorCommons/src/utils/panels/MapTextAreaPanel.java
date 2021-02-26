@@ -30,9 +30,9 @@ import javax.swing.border.EmptyBorder;
 import resources.GeneralConfig;
 import utils.dialog.ITextAreaDialogs;
 import utils.panels.arch.IParentPanel;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
-public class MapTextAreaPanel extends ParentPanel implements IParentPanel{
+public class MapTextAreaPanel extends TogglePanelTextArea implements IParentPanel{
 	private static final long serialVersionUID = 8967000441862912408L;
 
 	public static MapTextAreaPanel singletonInstance = null;

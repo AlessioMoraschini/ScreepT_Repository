@@ -39,7 +39,7 @@ import utils.RsyntaxUtils;
 import utils.panels.ClipboardPanel;
 import utils.panels.MapTextAreaPanel;
 import utils.panels.arch.PanelType;
-import utils.panels.arch.ParentPanel;
+import utils.panels.arch.TogglePanelTextArea;
 
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -138,7 +138,7 @@ public class TextEditor extends ModulePanel {
 	public JScrollPane leftScrollPane;
 	public JScrollPane rightModuleScrollPane;
 	public JPanel leftScrollPaneContainer; 
-	public ParentPanel rightModulePanel; 
+	public TogglePanelTextArea rightModulePanel; 
 	public ShellReadWritePanel bottomModulePanel; 
 	public JTree leftFileTree;
 

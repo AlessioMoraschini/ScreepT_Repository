@@ -20,11 +20,11 @@ import org.apache.log4j.Logger;
 
 import utils.dialog.ITextAreaDialogs;
 
-public class ParentPanel extends JPanel implements IParentPanel{
+public class TogglePanelTextArea extends JPanel implements IParentPanel{
 	private static final long serialVersionUID = 5510587599931974469L;
 
 	// ParentPanel logger creation
-	public static Logger logger = Logger.getLogger(ParentPanel.class);
+	public static Logger logger = Logger.getLogger(TogglePanelTextArea.class);
 	
 	public ITextAreaDialogs dialogManager;
 	public JScrollPane currentScrollPane;
