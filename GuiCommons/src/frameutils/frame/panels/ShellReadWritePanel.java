@@ -34,10 +34,13 @@ import utils.SysUtils;
 
 import javax.swing.JSplitPane;
 
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
+import java.awt.Robot;
 import java.awt.SystemColor;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
@@ -58,7 +61,7 @@ import java.util.List;
 public class ShellReadWritePanel extends ParentPanel {
 	private static final long serialVersionUID = -351031239684511014L;
 	
-	public static final Double defaultDividerLocationRatio = 0.25D;
+	public static final Double defaultDividerLocationRatio = 0.30D;
 
 	public int maxLines;
 	
@@ -233,6 +236,8 @@ public class ShellReadWritePanel extends ParentPanel {
 		outputTextArea.setText("I'm ready to launch your commands ;)");
 		scrollPaneBottom.setViewportView(outputTextArea);
 		
+		commandTextArea.requestFocusInWindow();
+		
 		setInteractiveInputMode(false);
 	}
 	
@@ -306,10 +311,22 @@ public class ShellReadWritePanel extends ParentPanel {
 	
 	private Runnable stopAction() {
 		return () -> {
+
+			commandTextArea.setRequestFocusEnabled(true);
+			commandTextArea.requestFocus();
+			commandTextArea.requestFocusInWindow();
+			try {
+				Robot bot = new Robot();
+				bot.mouseMove(commandTextArea.getLocationOnScreen().x + 10, commandTextArea.getLocationOnScreen().y + 10);
+				bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+				bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			} catch (AWTException e) {
+				logger.error("", e);
+			}
+			
 			GuiUtils.launchThreadSafeSwing(() -> {
 				try {
 					stopProcess();
-					
 				} catch (Exception e) {
 					logger.error("Error stopping command", e);
 					dialogHelper.error("Can't stop command!");
@@ -321,10 +338,13 @@ public class ShellReadWritePanel extends ParentPanel {
 	private void setInteractiveInputMode(boolean interactiveMode) {
 		interactiveInputField.setVisible(interactiveMode);
 		lblInteractiveInputDescription.setVisible(interactiveMode);
-		if(interactiveMode)
+		if(interactiveMode) {
 			commandTextArea.setEnabled(false);
-		else
+			interactiveInputField.requestFocusInWindow();
+		} else {
 			commandTextArea.setEnabled(true);
+			commandTextArea.requestFocusInWindow();
+		}
 	}
 	
 	private Runnable playAction() {

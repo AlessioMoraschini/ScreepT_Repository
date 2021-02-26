@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import frameutils.frame.ShellFrame;
+import frameutils.frame.panels.ShellReadWritePanel;
 import frameutils.frame.panels.arch.ParentPanel;
 import gui.GuiUtils;
 import resources.IconsPathConfigurator;
@@ -41,6 +42,8 @@ public class ShellFrameTest {
 //				}
 				GuiUtils.centerComponent(shellFrame, shellFrame.getDefaultDimension());
 				shellFrame.setLocationRelativeTo(null);
+				((ShellReadWritePanel) shellFrame.payloadPanel).darker();
+				((ShellReadWritePanel) shellFrame.payloadPanel).splitPane.setDividerLocation(150);
 				shellFrame.setVisible(true);
 				
 				System.out.print("Hello this is a test text!");
