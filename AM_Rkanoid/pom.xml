@@ -3,9 +3,15 @@
   <groupId>AM_Rkanoid</groupId>
   <artifactId>AM_Rkanoid</artifactId>
   <version>1.0</version>
+  
+  <properties>
+  	<puppynoid.jar.export.skip>true</puppynoid.jar.export.skip>
+  </properties>
+  
   <build>
   	<finalName>Puppynoid</finalName>
     <sourceDirectory>src</sourceDirectory>
+    
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -30,6 +36,7 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
+							<skipAssembly>${puppynoid.jar.export.skip}</skipAssembly>
 							<overwrite>true</overwrite>
 							<outputDirectory>./built</outputDirectory>
 							<archive>
