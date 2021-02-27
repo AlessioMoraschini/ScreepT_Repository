@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import utility.log.SafeLogger;
 import utility.manipulation.ConversionUtils;
+import utility.string.StringWorker;
 import gui.UpdateProgressPanel;
 import network.http.HttpHelper;
 import om.exception.ProgressBarInterruptedException;
@@ -83,50 +84,6 @@ public class DownloadUtils {
 		return new File(localPath);
 	}
 	
-	private static String keepOnlyDotsAndDigits(String source) {
-		String dotsOnly = source.replaceAll("_", ".");
-		dotsOnly = dotsOnly.replaceAll("-", "");
-		// remove non dots chars
-		return dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-", "");
-	}
-	
-	/**
-	 * Dotted version format compare - if version not matches format
-	 * <Strong>IllegalArgumentException</Strong> is thrown
-	 * 
-	 * @param version_A
-	 * @param version_B
-	 * @return -1 if A less than B, 1 if A more than B, 0 if equals
-	 */
-	private static int compareVersions(String version_A, String version_B) throws IllegalArgumentException {
-
-		if (version_A == null || version_B == null) {
-			throw new IllegalArgumentException("Version can not be null");
-		}
-		
-		String cleanVersA = keepOnlyDotsAndDigits(version_A);
-		String cleanVersB = keepOnlyDotsAndDigits(version_B);
-		
-		if (!cleanVersA.matches("[0-9]+(\\.[0-9]+)*") || !cleanVersB.matches("[0-9]+(\\.[0-9]+)*")) {
-			throw new IllegalArgumentException("Invalid version format");
-		}
-
-		String[] AParts = cleanVersA.split("\\.");
-		String[] BParts = cleanVersB.split("\\.");
-		int length = Math.max(AParts.length, BParts.length);
-		for (int i = 0; i < length; i++) {
-			int ACurrPart = i < AParts.length ? Integer.parseInt(AParts[i]) : 0;
-			int BCurrPart = i < BParts.length ? Integer.parseInt(BParts[i]) : 0;
-			if (ACurrPart < BCurrPart) {
-				return -1;
-			}
-			if (ACurrPart > BCurrPart) {
-				return 1;
-			}
-		}
-		return 0;
-	}
-	
 	/**
 	 * check if a given version (which can contain letters or underscores) respect
 	 * min and max values : if less than max and more(or equal) to min then is OK.
@@ -136,13 +93,13 @@ public class DownloadUtils {
 	public static boolean checkVersionBetweenRange(String version, String max, String min) {
 		
 		// remove non dots chars and transform undescores to dots
-		String noLettersDotsOnly = keepOnlyDotsAndDigits(version);
+		String noLettersDotsOnly = StringWorker.keepOnlyDotsAndDigits(version);
 		
 		boolean lessThanMax;
 		boolean moreThanMin;
 		try {
-			lessThanMax = compareVersions(noLettersDotsOnly, max) < 0;
-			moreThanMin = compareVersions(noLettersDotsOnly, min) >= 0;
+			lessThanMax = StringWorker.compareVersions(noLettersDotsOnly, max) < 0;
+			moreThanMin = StringWorker.compareVersions(noLettersDotsOnly, min) >= 0;
 		} catch (IllegalArgumentException e) {
 			logger.error("Error comparing version: illegal format of ["+version+"]" + Arrays.deepToString(e.getStackTrace()));
 			return false;
@@ -154,12 +111,12 @@ public class DownloadUtils {
 	public static boolean compareNewVersion(String newVersion, String currentVersion) {
 		
 		// remove non dots chars and transform undescores to dots
-		String noLettersDotsOnlyNew = keepOnlyDotsAndDigits(newVersion);
-		String noLettersDotsOnlyCurr = keepOnlyDotsAndDigits(currentVersion);
+		String noLettersDotsOnlyNew = StringWorker.keepOnlyDotsAndDigits(newVersion);
+		String noLettersDotsOnlyCurr = StringWorker.keepOnlyDotsAndDigits(currentVersion);
 		
 		boolean newAvailable = false;
 		try {
-			newAvailable = compareVersions(noLettersDotsOnlyCurr, noLettersDotsOnlyNew) < 0;
+			newAvailable = StringWorker.compareVersions(noLettersDotsOnlyCurr, noLettersDotsOnlyNew) < 0;
 		} catch (IllegalArgumentException e) {
 			logger.error("Error comparing version: illegal format of A["+noLettersDotsOnlyCurr+"]" 
 					+ " or B["+noLettersDotsOnlyNew+"]" + Arrays.deepToString(e.getStackTrace()));

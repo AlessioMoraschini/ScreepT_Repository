@@ -914,4 +914,55 @@ public class StringWorker {
 		return charsetName != null && Charset.isSupported(charsetName);
 	}
 
+	/**
+	 * Use this method to remove every character from given string, except "." and
+	 * digits 0-9 Note that eventual undescores will become dots.
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public static String keepOnlyDotsAndDigits(String source) {
+		String dotsOnly = source.replaceAll("_", ".");
+		dotsOnly = dotsOnly.replaceAll("-", "");
+		// remove non dots chars
+		return dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-", "");
+	}
+
+	/**
+	 * Dotted version format compare - if version not matches format
+	 * <Strong>IllegalArgumentException</Strong> is thrown
+	 * 
+	 * @param version_A
+	 * @param version_B
+	 * @return -1 if A less than B, 1 if A more than B, 0 if equals
+	 */
+	public static int compareVersions(String version_A, String version_B) throws IllegalArgumentException {
+	
+		if (version_A == null || version_B == null) {
+			throw new IllegalArgumentException("Version can not be null");
+		}
+		
+		String cleanVersA = keepOnlyDotsAndDigits(version_A);
+		String cleanVersB = keepOnlyDotsAndDigits(version_B);
+		
+		if (!cleanVersA.matches("[0-9]+(\\.[0-9]+)*") || !cleanVersB.matches("[0-9]+(\\.[0-9]+)*")) {
+			throw new IllegalArgumentException("Invalid version format");
+		}
+	
+		String[] AParts = cleanVersA.split("\\.");
+		String[] BParts = cleanVersB.split("\\.");
+		int length = Math.max(AParts.length, BParts.length);
+		for (int i = 0; i < length; i++) {
+			int ACurrPart = i < AParts.length ? Integer.parseInt(AParts[i]) : 0;
+			int BCurrPart = i < BParts.length ? Integer.parseInt(BParts[i]) : 0;
+			if (ACurrPart < BCurrPart) {
+				return -1;
+			}
+			if (ACurrPart > BCurrPart) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
 }

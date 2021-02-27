@@ -57,7 +57,7 @@ import utility.hash.ChecksumHasher;
 import utility.hash.HashingFunction;
 import utility.log.SafeLogger;
 import utility.properties.PropertiesManager;
-import utils.SysUtils;
+import utility.string.StringWorker;
 
 public class MainGuiUtils {
 	
@@ -760,8 +760,8 @@ public class MainGuiUtils {
 	public static boolean checkJavaVersionMaxCompatibility() {
 		MainGUI.currentJvmVersion = System.getProperty("java.version");
 		
-		String tempCompareJvmCurrent = SysUtils.keepOnlyDotsAndDigits(MainGUI.currentJvmVersion);
-		int compareRes = SysUtils.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
+		String tempCompareJvmCurrent = StringWorker.keepOnlyDotsAndDigits(MainGUI.currentJvmVersion);
+		int compareRes = StringWorker.compareVersions(tempCompareJvmCurrent, GeneralConfig.MAX_JVM_COMPLETE_COMPATIBILITY);
 		
 		return compareRes != 1;
 	}
