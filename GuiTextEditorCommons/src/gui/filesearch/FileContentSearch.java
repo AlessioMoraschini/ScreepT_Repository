@@ -16,6 +16,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.io.FilenameUtils;
+
 import files.CustomFileFilters;
 import files.FileVarious;
 import files.FileWorker;
@@ -30,9 +32,9 @@ import utility.string.StringWorker;
 
 public class FileContentSearch {
 	
-	// TODO file extension filter
-	
 	public static SafeLogger logger = new SafeLogger(FileContentSearch.class);
+	
+	public static final String NEGATION_FILTER = "<>";
 
 	private AtomicInteger totalSourcesScanned;
 	private List<File> sourceFiles;
@@ -288,7 +290,7 @@ public class FileContentSearch {
 		List<File> filtered = new ArrayList<>();
 		for(File source : sources) {
 			try {
-				if(SupportedFileTextEditor.isSupported(source) || !FileVarious.isBinaryFile(source)) {
+				if(FilenameUtils.getExtension(source.getName()).trim().isEmpty() || SupportedFileTextEditor.isSupported(source) || !FileVarious.isBinaryFile(source)) {
 					filtered.add(source);
 				}
 			} catch (IOException e) {
@@ -298,23 +300,100 @@ public class FileContentSearch {
 		
 		return filtered;
 	}
-
-	private List<File> applyFilters(List<File> sources, FileContentSearchDTO dto){
-		List<File> filtered = new ArrayList<>();
-		for(File source : sources) {
-			Boolean matches = false;
-			for(String filter : dto.fileFilters) {
-				if(!StringWorker.isEmpty(filter) && StringWorker.checkWildcardMatch(source.getName(), filter, !dto.matchCase)) {
-					matches = true;
-					break;
-				}
-			}
-			
-			if(matches) 
-				filtered.add(source);
+	
+	public static boolean isExclusionFilter(String filter) {
+		boolean exclusionFilter = false;
+		
+		if(filter != null && !filter.isEmpty()) {
+			exclusionFilter = filter.trim().startsWith(NEGATION_FILTER);
 		}
 		
-		return filtered;
+		return exclusionFilter;
+	}
+	
+	public static String[] getInclusionFileFilters(String[] filters) {
+		List<String> inclusionFilters = new ArrayList<>();
+		
+		if(filters != null && filters.length > 0) {
+			for(String filter : filters) {
+				boolean inclusionFilter = !isExclusionFilter(filter);
+				if(inclusionFilter) {
+					inclusionFilters.add(filter);
+				}
+			}
+		}
+		
+		return inclusionFilters.toArray(new String[inclusionFilters.size()]);
+	}
+	public static String[] getExclusionFileFilters(String[] filters) {
+		List<String> exclusionFilters = new ArrayList<>();
+		
+		if(filters != null && filters.length > 0) {
+			for(String filter : filters) {
+				boolean exclusionFilter = isExclusionFilter(filter);
+				if(exclusionFilter) {
+					exclusionFilters.add(removeExclusionFlag(filter));
+				}
+			}
+		}
+		
+		return exclusionFilters.toArray(new String[exclusionFilters.size()]);
+	}
+
+	public static String removeExclusionFlag(String filter) {
+		
+		if(isExclusionFilter(filter)) {
+			return filter.substring(NEGATION_FILTER.length(), filter.length()).trim();
+		}
+		
+		return filter;
+	}
+
+	public static List<File> applyFilters(List<File> sources, FileContentSearchDTO dto){
+		List<File> filtered = new ArrayList<>();
+		String[] inclusionFilters = getInclusionFileFilters(dto.fileFilters);
+		String[] exclusionFilters = getExclusionFileFilters(dto.fileFilters);;
+		
+		if(inclusionFilters.length > 0) {
+			for(File source : sources) {
+				Boolean matches = false;
+				
+				// Check inclusion filters
+				for(String filter : inclusionFilters) {
+					
+					if(!StringWorker.isEmpty(filter) && StringWorker.checkWildcardMatch(FileVarious.getCanonicalPathSafeNormalized(source, "/"), filter, false)) {
+						matches = true;
+						break;
+					} 
+				}
+				
+				if(matches) 
+					filtered.add(source);
+			}
+		} else {
+			filtered.addAll(sources);
+		}
+
+		// Now check exclusion Filters
+		List<File> filteredFinal = new ArrayList<>();
+		if(exclusionFilters.length > 0) {
+			for(File filteredIncluded : filtered) {
+				Boolean matches = true;
+				for(String filter : exclusionFilters) {
+					if(StringWorker.checkWildcardMatch(FileVarious.getCanonicalPathSafeNormalized(filteredIncluded, "/"), filter, false)) {
+						matches = false;
+						break;
+					}
+				}
+				
+				if(matches) 
+					filteredFinal.add(filteredIncluded);
+			}
+		} else {
+			filteredFinal.addAll(filtered);
+		}
+		
+		return filteredFinal;
 	}
 	
 	private int sourceTotalSize() {

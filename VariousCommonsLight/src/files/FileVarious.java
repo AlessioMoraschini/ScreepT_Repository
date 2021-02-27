@@ -82,6 +82,35 @@ public class FileVarious {
 		return parent == null ? null : parent.getAbsolutePath();
 	}
 	
+	public static String getCanonicalPathSafe(File file) {
+		try {
+			return file.getCanonicalPath();
+		} catch (Exception e) {
+			if(file != null)
+				return file.getAbsolutePath();
+			else
+				return null;
+		}
+	}
+
+	public static String getCanonicalPathSafeNormalized(File file, String separatorNormalized) {
+		String raw = null;
+		try {
+			raw = file.getCanonicalPath();
+			
+		} catch (Exception e) {
+			if(file != null)
+				raw = file.getAbsolutePath();
+			else
+				return null;
+		}
+		
+		raw = raw.replaceAll("/", "\\\\");
+		raw = raw.replaceAll("\\\\", separatorNormalized);
+		
+		return raw;
+	}
+	
 	/**
 	 * Get relative path from a reference file path:
 	 * 
@@ -138,8 +167,8 @@ public class FileVarious {
 	public static boolean isBinaryFile(File fileToCheck) throws IOException {
         String type = Files.probeContentType(fileToCheck.toPath());
         if (type == null) {
-            //type couldn't be determined, assume binary
-            return true;
+            //type couldn't be determined, assume text
+            return false;
         } else if (type.startsWith("text")) {
             return false;
         } else {

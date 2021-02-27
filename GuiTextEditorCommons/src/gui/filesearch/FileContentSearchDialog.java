@@ -31,6 +31,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -62,6 +63,7 @@ import gui.dialogs.msg.JOptionHelper;
 import gui.dnd.FileDrop;
 import impl.om.FileOptions;
 import resources.GeneralConfig;
+import resources.IconsPathConfigurator;
 import utility.manipulation.ArrayHelper;
 import utility.reflection.ReflectionUtils;
 import utility.string.StringWorker;
@@ -252,7 +254,12 @@ public class FileContentSearchDialog extends AbstractFileSearchDialog {
 		temp2.add(fileFiltersTextCombo);
 		AssistanceIconPanel aipF = new AssistanceIconPanel(fileFiltersTextCombo);
 		temp2.add(aipF, BorderLayout.LINE_START);
-		JLabel filtersLabel = new JLabel("<html> File filters:<br>(comma separated)</html>");
+		JLabel filtersLabel = new JLabel(GuiUtils.encapsulateInHtml(" File filters:"));
+		filtersLabel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_INFO));
+		filtersLabel.setToolTipText(GuiUtils.encapsulateInHtml("Add file path filters to include/exclude files from search. Filters must be separated by a comma"
+				+ "<br><b>Inclusive:</b> use a wildcard expression to specify which file paths have to be included"
+				+ "<br><b>Exclusive:</b> use a wildcard expression preceeded by \"&lt;&gt;\" to specify which file paths have to be excluded"
+				+ "<br><br> ex. select only files terminating with .java, excluding the ones under DIR folder ->  filter= *.java, &lt;&gt;*/DIR/*"));
 		filtersLabel.setMaximumSize(new Dimension(60,60));
 		if (orientation.isLeftToRight()) {
 			enterTextPane.add(filtersLabel);
