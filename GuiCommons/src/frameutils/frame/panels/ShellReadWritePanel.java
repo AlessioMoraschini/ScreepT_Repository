@@ -25,6 +25,7 @@ import frameutils.shortcuts.ShellShortcutsListener;
 import gui.GuiUtils;
 import gui.RXTextUtilities;
 import net.miginfocom.swing.MigLayout;
+import om.LimitedConcurrentList;
 import om.OSinfo;
 import resources.IconsPathConfigurator;
 import splitpanel.SplitPaneUtils;
@@ -52,6 +53,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class implements a console that prints out every output from System.out/System.err streams
@@ -96,6 +98,10 @@ public class ShellReadWritePanel extends ParentPanel {
 	private Runnable afterSaveAction;
 	
 	private ShellShortcutsListener shortcutsListener;
+	
+	private LimitedConcurrentList<String> lastInteractiveCommands;
+	
+	private AtomicInteger currentCommandIndex;
 
 	public ShellReadWritePanel() {
 		this(1000, null, null);
@@ -106,6 +112,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	}
 	
 	public ShellReadWritePanel(int visibleLines, JFrame parentFrame, JTextArea initializedTextAreaInstance) {
+		currentCommandIndex = new AtomicInteger(0);
 		maxLines = visibleLines;
 		fileUnsaved = false;
 		this.parentFrame = parentFrame;
@@ -260,8 +267,22 @@ public class ShellReadWritePanel extends ParentPanel {
 		interactiveInputField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if(KeyEvent.VK_ENTER == e.getKeyCode())
-					playStopPausePanel.getPlayButton().doClick();
+				try {
+					if(KeyEvent.VK_ENTER == e.getKeyCode())
+						playStopPausePanel.getPlayButton().doClick();
+					
+					else if(lastInteractiveCommands == null || lastInteractiveCommands.isEmpty())
+						return;
+						
+					else if(KeyEvent.VK_UP == e.getKeyCode() && currentCommandIndex.get() < lastInteractiveCommands.getSize() - 1)
+						interactiveInputField.setText(lastInteractiveCommands.getList().get(currentCommandIndex.incrementAndGet()));
+						
+					else if(KeyEvent.VK_DOWN == e.getKeyCode() && currentCommandIndex.get() > 0)
+						interactiveInputField.setText(lastInteractiveCommands.getList().get(currentCommandIndex.decrementAndGet()));
+				
+				} catch (Exception e1) {
+					logger.error("Can't go to command element number " + currentCommandIndex);
+				}
 			}
 		});
 		
@@ -347,6 +368,14 @@ public class ShellReadWritePanel extends ParentPanel {
 		}
 	}
 	
+	private void addInteractiveCommandToList(String command) {
+		if(lastInteractiveCommands == null)
+			lastInteractiveCommands = new LimitedConcurrentList<>(50);
+		
+		lastInteractiveCommands.addUniqueToTop(command);
+		currentCommandIndex.set(lastInteractiveCommands.getSize() - 1);
+	}
+	
 	private Runnable playAction() {
 		return () -> {
 			GuiUtils.launchThreadSafeSwing(() -> {
@@ -356,10 +385,11 @@ public class ShellReadWritePanel extends ParentPanel {
 					playStopPausePanel.getPlayButton().setEnabled(true);
 					playStopPausePanel.getStopButton().setEnabled(true);
 					
-					// If there is already a running process, then write to it
+					// If there is already a running process, then write to it and return
 					if(process != null) {
 						try {
 							String cmd = interactiveInputField.getText();
+							addInteractiveCommandToList(cmd);
 							
 							if(!StringWorker.isEmpty(cmd)) {
 								
@@ -367,6 +397,10 @@ public class ShellReadWritePanel extends ParentPanel {
 									outputTextArea.setText("");
 								
 								} else {
+									outputTextArea.append(EOL.defaultEol.eol + " USER INPUT >> " + cmd + EOL.defaultEol.eol);
+									if(checkBoxAutoscroll.isSelected())
+										outputTextArea.setCaretPosition(outputTextArea.getDocument().getLength()-1);
+									
 									process.getOutputStream().write(cmd.getBytes());
 									process.getOutputStream().flush();
 								}
@@ -652,6 +686,15 @@ public class ShellReadWritePanel extends ParentPanel {
 
 	public void setAfterSaveAction(Runnable afterSaveAction) {
 		this.afterSaveAction = afterSaveAction;
+	}
+
+	public LimitedConcurrentList<String> getLastInteractiveCommands() {
+		return lastInteractiveCommands;
+	}
+
+	public void setLastInteractiveCommands(LimitedConcurrentList<String> lastInteractiveCommands) {
+		this.lastInteractiveCommands = lastInteractiveCommands;
+		currentCommandIndex.set(lastInteractiveCommands.getSize() - 1);
 	}
 	
 }

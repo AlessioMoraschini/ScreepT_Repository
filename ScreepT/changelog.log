@@ -1,3 +1,5 @@
+2021-02-27  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) File Content Search improved and added to automatic configuration
+
 2021-02-25  Plugin tesseract fix + added opened line position sync at startup
 
 2021-02-20  (tag: refs/tags/0.9.37) Split panel integrated into text editor as bottom panel
