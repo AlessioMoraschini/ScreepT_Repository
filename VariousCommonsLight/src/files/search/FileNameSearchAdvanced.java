@@ -18,7 +18,7 @@ import java.util.List;
 
 import files.om.FileSearchDTO;
 
-public class FileSearchAdvanced {
+public class FileNameSearchAdvanced {
 
 	public enum SearchType {
 		FILE_ONLY,

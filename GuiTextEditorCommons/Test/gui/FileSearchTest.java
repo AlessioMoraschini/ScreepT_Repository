@@ -3,13 +3,13 @@ package gui;
 import javax.swing.JFrame;
 
 import files.om.SearchResult;
+import gui.filesearch.FileContentSearchDialog;
 import gui.filesearch.FileSearchActions;
-import gui.filesearch.FileSearchDialog;
 
 public class FileSearchTest {
 
 	public static void main(String[] argv) {
-		final FileSearchDialog dialog = new FileSearchDialog((JFrame)null, new FileSearchActions() {
+		final FileContentSearchDialog dialog = new FileContentSearchDialog((JFrame)null, new FileSearchActions() {
 
 			@Override
 			public void fileSearchUpdater(SearchResult searchResult) {

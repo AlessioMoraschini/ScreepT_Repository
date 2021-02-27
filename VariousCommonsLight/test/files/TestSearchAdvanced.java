@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import files.search.FileSearchAdvanced;
-import files.search.FileSearchAdvanced.SearchType;
+import files.search.FileNameSearchAdvanced;
+import files.search.FileNameSearchAdvanced.SearchType;
 
 public class TestSearchAdvanced {
 
@@ -69,7 +69,7 @@ public class TestSearchAdvanced {
 	private void searchTest(SearchType type, boolean deepSearch) {
 		long start = System.currentTimeMillis();
 		
-		List<File> result = FileSearchAdvanced.findByMatch(rootFolder, MATCH, false, type, deepSearch, IGNORE_CASE);
+		List<File> result = FileNameSearchAdvanced.findByMatch(rootFolder, MATCH, false, type, deepSearch, IGNORE_CASE);
 		
 		long end = System.currentTimeMillis();
 		printElapsed(result.size(), start, end);

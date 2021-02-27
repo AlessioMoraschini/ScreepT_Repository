@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import files.search.FileSearchAdvanced;
+import files.search.FileNameSearchAdvanced;
 import gui.GuiUtils;
 import om.JVMInfo;
 import om.OSinfo;
@@ -866,7 +866,7 @@ public class SysUtils {
 		String classPath = "";
 		String separator = getOsInfoLazy().isWindows() ? ";" : ":";
 		
-		for (File found : FileSearchAdvanced.findOnlyFilesByMatch(new File(root), ".jar", false, true, false)) {
+		for (File found : FileNameSearchAdvanced.findOnlyFilesByMatch(new File(root), ".jar", false, true, false)) {
 			classPath += found + separator;
 		}
 		

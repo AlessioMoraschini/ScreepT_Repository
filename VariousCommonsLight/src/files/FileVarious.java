@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -101,6 +102,37 @@ public class FileVarious {
 		}
 		
 		return other.toURI().relativize(first.toURI()).getPath();
+	}
+	
+	public static List<File> addWithoutRepetitions(List<File> toAdd, List<File> originalList){
+		if(originalList == null)
+			originalList = new ArrayList<>();
+		
+		if(toAdd != null && !toAdd.isEmpty()) {
+			for(File currentNew : toAdd) {
+				boolean currentAlreadyPresent = originalList.isEmpty() ? false : true;
+				int i = 0;
+				for(File file : originalList) {
+					try {
+						if(file.getCanonicalPath().equals(currentNew.getCanonicalPath())) 
+							break;
+						
+						if(i == originalList.size() - 1)
+							currentAlreadyPresent = false;
+						
+					} catch (IOException e) {
+						logger.error("", e);
+					}
+					
+					i++;
+				}
+				
+				if(!currentAlreadyPresent)
+					originalList.add(currentNew);
+			}
+		}
+		
+		return originalList;
 	}
 	
 	public static boolean isBinaryFile(File fileToCheck) throws IOException {

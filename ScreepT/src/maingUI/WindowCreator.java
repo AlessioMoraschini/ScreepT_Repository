@@ -50,8 +50,8 @@ import gui.SchemeManagerGui;
 import gui.UpdateProgressPanel;
 import gui.LightLicenseViewer.UserLicenseChoice;
 import gui.dialogs.msg.JOptionHelper;
+import gui.filesearch.FileContentSearchDialog;
 import gui.filesearch.FileSearchActions;
-import gui.filesearch.FileSearchDialog;
 import guiVersion.HwInfoFrame;
 import guiVersion.NetInfoFrame;
 import impl.INItializer;
@@ -326,15 +326,15 @@ public class WindowCreator {
 		});
 	}
 	
-	public FileSearchDialog fileContentSearch(List<File> preloadedSourceFiles) {
-		FileSearchDialog searchDialog = fileContentSearch();
+	public FileContentSearchDialog fileContentSearch(List<File> preloadedSourceFiles) {
+		FileContentSearchDialog searchDialog = fileContentSearch();
 		searchDialog.setSelectedFiles(preloadedSourceFiles);
 		return searchDialog;
 	}
 
-	public FileSearchDialog fileContentSearch() {
+	public FileContentSearchDialog fileContentSearch() {
 		
-		FileSearchDialog searchDialog = FileSearchDialog.getLazyInstance((JFrame)null, new FileSearchActions() {
+		FileContentSearchDialog searchDialog = FileContentSearchDialog.getLazyInstance((JFrame)null, new FileSearchActions() {
 
 			@Override
 			public void resultView(SearchResult searchResult, int viewLine) {
@@ -368,6 +368,7 @@ public class WindowCreator {
 		});
 		
 		searchDialog.setIconImage(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH).getImage());
+		searchDialog.setOptions(MainGUI.currentConfiguration.getFileOpt(), true);
 		searchDialog.setVisible(true);
 		return searchDialog;
 	}

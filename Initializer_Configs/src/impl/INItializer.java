@@ -151,6 +151,23 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	public void loadFileOptions() {
 		// LOAD FILE OPTIONS
 		
+		// FSEARCH OPTIONS
+		fileOpt.setfSearchBinaries(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchBinaries")));
+		fileOpt.setfSearchMatchCase(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchMatchCase")));
+		fileOpt.setfSearchRegex(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchRegex")));
+		fileOpt.setfSearchWholeWord(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchWholeWord")));
+		
+		
+		String fSearchLastSearchStrings = iniReadFile.get(FILE_OPT, "fSearchLastSearchStrings");
+		fileOpt.getfSearchLastSearchStrings().setList(getStringListFromString(fSearchLastSearchStrings, SEPARATOR_INNER_DEFAULT_LONG, new Vector<String>()));
+		
+		String fSearchLastLoadedFiles = iniReadFile.get(FILE_OPT, "fSearchLastLoadedFiles");
+		fileOpt.getfSearchLastLoadedFiles().setList(getFileNamedListFromString(fSearchLastLoadedFiles, SEPARATOR_DEFAULT, new Vector<FileNamed>()));
+		
+		String fSearchLastFileFilters = iniReadFile.get(FILE_OPT, "fSearchLastFileFilters");
+		fileOpt.getfSearchLastFileFilters().setList(getMatrixOfStringsFromString(fSearchLastFileFilters, SEPARATOR_INNER_DEFAULT, SEPARATOR_INNER_DEFAULT_LONG, new Vector<String[]>()));
+		
+		
 		// boolean
 		fileOpt.setFlagAutosave(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "flagAutosave")));
 		fileOpt.setFlagOverwrite(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "flagOverwrite")));
@@ -444,6 +461,16 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	
 	public void writeFileOptions() {
 		// set INIFILE-FILE OPTIONS
+		
+		// FSEARCH OPTIONS
+		iniFile.put(FILE_OPT, "fSearchBinaries", fileOpt.isfSearchBinaries());
+		iniFile.put(FILE_OPT, "fSearchMatchCase", fileOpt.isfSearchMatchCase());
+		iniFile.put(FILE_OPT, "fSearchRegex", fileOpt.isfSearchRegex());
+		iniFile.put(FILE_OPT, "fSearchWholeWord", fileOpt.isfSearchWholeWord());
+		iniFile.put(FILE_OPT, "fSearchLastFileFilters", fileOpt.getfSearchLastFileFilters().toCharSeparatedStringMatrix(SEPARATOR_INNER_DEFAULT, SEPARATOR_INNER_DEFAULT_LONG));
+		iniFile.put(FILE_OPT, "fSearchLastLoadedFiles", fileOpt.getfSearchLastLoadedFiles().toCharSeparatedString(SEPARATOR_DEFAULT));
+		iniFile.put(FILE_OPT, "fSearchLastSearchStrings", fileOpt.getfSearchLastSearchStrings().toCharSeparatedString(SEPARATOR_INNER_DEFAULT_LONG));
+		
 		
 		// boolean
 		iniFile.put(FILE_OPT, "flagAutosave", fileOpt.isFlagAutosave());

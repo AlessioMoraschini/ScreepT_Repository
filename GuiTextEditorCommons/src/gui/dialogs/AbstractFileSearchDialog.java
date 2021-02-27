@@ -71,6 +71,8 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	protected JLabel findFieldLabel;
 	protected JButton searchButton;
 	protected JButton chooseFileBtn;
+	protected JButton addFileBtn;
+	protected JButton clearFilesBtn;
 	protected JTextArea txtFieldSelectedFiles;
 	protected SearchComboBox fileFiltersTextCombo;
 	
@@ -191,6 +193,22 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	public void setChooseFileBtn(JButton chooseFileBtn) {
 		this.chooseFileBtn = chooseFileBtn;
 	}
+	
+	public JButton getAddFileBtn() {
+		return addFileBtn;
+	}
+
+	public void setAddFileBtn(JButton addFileBtn) {
+		this.addFileBtn = addFileBtn;
+	}
+	
+	public JButton getClearFilesBtn() {
+		return clearFilesBtn;
+	}
+
+	public void setClearFilesBtn(JButton clearFilesBtn) {
+		this.clearFilesBtn = clearFilesBtn;
+	}
 
 	/**
 	 * Returns the text on the "Find" button.
@@ -272,7 +290,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		searchConditionsPanel.add(temp, BorderLayout.LINE_START);
 		temp = new JPanel();
 		temp.setLayout(new BoxLayout(temp, BoxLayout.PAGE_AXIS));
-		txtFieldSelectedFiles = new JTextArea(" Nothing selected");
+		txtFieldSelectedFiles = new JTextArea("\n Nothing selected (drop your files here to add them)");
 		txtFieldSelectedFiles.setMargin(new Insets(8, 8, 8, 8));
 		txtFieldSelectedFiles.setMinimumSize(new Dimension(320, 70));
 		txtFieldSelectedFiles.setPreferredSize(new Dimension(320, 70));
@@ -289,6 +307,8 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 		findFieldLabel = UIUtil.newLabel(getBundle(), "FindWhat",findTextCombo);
 		
 		chooseFileBtn = new JButton("Select source(s)");
+		addFileBtn = new JButton("Add other sources");
+		clearFilesBtn = new JButton("Reset file selection");
 		// Create a "Find Next" button.
 		searchButton = UIUtil.newButton(getBundle(), "Find");
 		searchButton.setActionCommand(SearchEvent.Type.FIND.name());
@@ -299,23 +319,25 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 
 		setSelectedFileLbl(null);
 		
-		setMinimumSize(new Dimension(550, 230));
-		setPreferredSize(new Dimension(550, 240));
-		
 		installKeyboardActions();
 		
 		searchButton.setCursor(GuiUtils.CURSOR_HAND);
 		cancelButton.setCursor(GuiUtils.CURSOR_HAND);
 		chooseFileBtn.setCursor(GuiUtils.CURSOR_HAND);
+		addFileBtn.setCursor(GuiUtils.CURSOR_HAND);
+		clearFilesBtn.setCursor(GuiUtils.CURSOR_HAND);
 		caseCheckBox.setCursor(GuiUtils.CURSOR_HAND);
 		includeBinariesCheckBox.setCursor(GuiUtils.CURSOR_HAND);
 		regexCheckBox.setCursor(GuiUtils.CURSOR_HAND);
 		wholeWordCheckBox.setCursor(GuiUtils.CURSOR_HAND);
+		
+		setMinimumSize(new Dimension(580, 240));
+		setPreferredSize(new Dimension(590, 250));
 	}
 	
 	public void setSelectedFileLbl(List<File> selected) {
 		if (selected == null || selected.isEmpty() || !selected.get(0).exists()) {
-			txtFieldSelectedFiles.setText(" Nothing selected");
+			txtFieldSelectedFiles.setText("\n Nothing selected (drag your files here)");
 			txtFieldSelectedFiles.setBackground(new Color(252, 240, 146));
 		} else {
 			String fileConcatNames = "";
@@ -331,7 +353,7 @@ public abstract class AbstractFileSearchDialog extends AbstractSearchDialog {
 	}
 	
 	protected String getStringSourcesSummary(List<File> selected) {
-		String outcome = "Nothing selected";
+		String outcome = "\n Nothing selected (drag your files here)";
 		int directories = 0;
 		int files = 0;
 		if(selected != null) {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import files.search.FileSearchLight;
+import files.search.FileNameSearchLight;
 import testconfig.TestConstants;
 
 public class SearchTest {
@@ -18,10 +18,10 @@ public class SearchTest {
 		ArrayList<File> matchesFound = new ArrayList<File>();
 		
 		// search in subdirs
-		matchesFound = FileSearchLight.searchFoldersInRootFolder(TestConstants.rootTestFolder, folderMatch, true);
+		matchesFound = FileNameSearchLight.searchFoldersInRootFolder(TestConstants.rootTestFolder, folderMatch, true);
 		printFound(matchesFound);
 		
-		matchesFound = FileSearchLight.searchFilesInRootFolder(TestConstants.rootTestFolder, folderMatch, true);
+		matchesFound = FileNameSearchLight.searchFilesInRootFolder(TestConstants.rootTestFolder, folderMatch, true);
 		printFound(matchesFound);
 	}
 	

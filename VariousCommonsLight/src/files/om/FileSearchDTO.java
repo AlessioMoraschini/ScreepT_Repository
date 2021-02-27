@@ -3,7 +3,7 @@ package files.om;
 import java.io.File;
 
 import cache.arch.IResultCacheInput;
-import files.search.FileSearchAdvanced.SearchType;
+import files.search.FileNameSearchAdvanced.SearchType;
 
 
 public class FileSearchDTO implements IResultCacheInput {

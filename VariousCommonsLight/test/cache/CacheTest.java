@@ -5,8 +5,8 @@ import java.util.List;
 
 import cache.impl.FileSearchResultCache;
 import files.om.FileSearchDTO;
-import files.search.FileSearchAdvanced;
-import files.search.FileSearchAdvanced.SearchType;
+import files.search.FileNameSearchAdvanced;
+import files.search.FileNameSearchAdvanced.SearchType;
 
 public class CacheTest {
 	
@@ -18,7 +18,7 @@ public class CacheTest {
 			new FileSearchResultCache(
 				EXPIRY_TIME,
 				(input) -> {
-					return FileSearchAdvanced.findByMatch((FileSearchDTO)input);
+					return FileNameSearchAdvanced.findByMatch((FileSearchDTO)input);
 				});
 	
 	public static void main(String[] args) throws Exception {

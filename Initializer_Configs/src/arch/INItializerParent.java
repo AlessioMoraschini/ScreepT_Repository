@@ -38,6 +38,7 @@ public abstract class INItializerParent implements INItializerInterface{
 	protected static SafeLogger logger = new SafeLogger(INItializerParent.class); 
 	public static final String SEPARATOR_DEFAULT = ";";
 	public static final String SEPARATOR_INNER_DEFAULT = "::";
+	public static final String SEPARATOR_INNER_DEFAULT_LONG = ":;:;";
 	
 	public static final String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
 	
@@ -281,9 +282,9 @@ public abstract class INItializerParent implements INItializerInterface{
 	public static Vector<FileNamed> getFileNamedListFromString(String val, String separator, Vector<FileNamed> defaultList) {
 		Vector<FileNamed> list = new Vector<>();
 		try {
-			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(val, separator);
-			while(tokenizerOpenedFiles.hasMoreTokens()) {
-				list.add(new FileNamed(tokenizerOpenedFiles.nextToken()));
+			String[] parts = val.split(separator);
+			for(int i = 0; i < parts.length; i++) {
+				list.add(new FileNamed(parts[i]));
 			}
 			
 		} catch (Exception e1) {
@@ -296,9 +297,9 @@ public abstract class INItializerParent implements INItializerInterface{
 	public static Vector<String> getStringListFromString(String val, String separator, Vector<String> defaultList) {
 		Vector<String> list = new Vector<>();
 		try {
-			StringTokenizer tokenizerOpenedFiles = new StringTokenizer(val, separator);
-			while(tokenizerOpenedFiles.hasMoreTokens()) {
-				list.add(tokenizerOpenedFiles.nextToken());
+			String[] parts = val.split(separator);
+			for(int i = 0; i < parts.length; i++) {
+				list.add(parts[i]);
 			}
 			
 		} catch (Exception e1) {
@@ -308,6 +309,20 @@ public abstract class INItializerParent implements INItializerInterface{
 		
 		return list;
 	}
+
+	public static Vector<String[]> getMatrixOfStringsFromString(String val, String separator, String innerSeparator, Vector<String[]> defaultList) {
+		Vector<String> lastFiltersRows = getStringListFromString(val, separator, new Vector<String>());
+		Vector<String[]> lastFilters = new Vector<>();
+		for(String row : lastFiltersRows) {
+			Vector<String> currRowFilters = getStringListFromString(StringWorker.trimToEmpty(row), innerSeparator, new Vector<String>());
+			if(!currRowFilters.isEmpty()) {
+				lastFilters.add(currRowFilters.toArray(new String[currRowFilters.size()]));
+			}
+		}
+		return lastFilters;
+	}
+	
+	
 
 	public static <T> Map<String, T> getMapFromKeyList(List<String> keys, List<T> values, T defaultNullVal) {
 		Map<String, T> map = new HashMap<>();

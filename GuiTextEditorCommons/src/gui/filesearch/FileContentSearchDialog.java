@@ -26,6 +26,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -51,11 +52,15 @@ import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rtextarea.SearchContext;
 
+import files.FileVarious;
 import files.om.FileContentSearchDTO;
+import files.om.FileNamed;
 import gui.GUIStyelSettings;
 import gui.GuiUtils;
 import gui.dialogs.AbstractFileSearchDialog;
 import gui.dialogs.msg.JOptionHelper;
+import gui.dnd.FileDrop;
+import impl.om.FileOptions;
 import resources.GeneralConfig;
 import utility.manipulation.ArrayHelper;
 import utility.reflection.ReflectionUtils;
@@ -86,14 +91,14 @@ import utility.string.StringWorker;
  * @version 1.0
  * @see FindToolBar
  */
-public class FileSearchDialog extends AbstractFileSearchDialog {
+public class FileContentSearchDialog extends AbstractFileSearchDialog {
 
 	private static final long serialVersionUID = 1L;
 	
 	public static final String COMMA_SEPARATOR = ",";
 	public static String FILTERS_SEPARATOR = COMMA_SEPARATOR;
 	
-	public static FileSearchDialog singletonInstance = null;
+	public static FileContentSearchDialog singletonInstance = null;
 	
 	// This helps us work around the "bug" where JComboBox eats the first Enter
 	// press.
@@ -112,13 +117,15 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	
 	protected Window owner;
 	
+	private FileOptions options;
+	
 	/**
 	 * Creates a new <code>FindDialog</code>.
 	 *
 	 * @param owner The parent dialog.
 	 * @param listener The component that listens for {@link SearchEvent}s.
 	 */
-	public FileSearchDialog(Dialog owner, FileSearchActions searchActions) {
+	public FileContentSearchDialog(Dialog owner, FileSearchActions searchActions) {
 		super(owner);
 		this.owner = owner;
 		this.searchActions = searchActions;
@@ -137,7 +144,7 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	 * @param listener The component that listens for {@link SearchEvent}s.
 	 * @wbp.parser.constructor
 	 */
-	public FileSearchDialog(Frame owner, FileSearchActions searchActions) {
+	public FileContentSearchDialog(Frame owner, FileSearchActions searchActions) {
 		super(owner);
 		this.owner = owner;
 		this.searchActions = searchActions;
@@ -150,6 +157,41 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		
 		singletonInstance = this;
 	}
+	
+	public void refreshFromFileOptions() {
+		for( String[] filters : options.getfSearchLastFileFilters().getList()) {
+			String currentFilter = "";
+			int i = 0;
+			for(String filter : filters) {
+				currentFilter += filter + (i < filters.length - 1 ? "," : "");
+				
+				i++;
+			}
+			
+			if(!StringWorker.isEmpty(currentFilter))
+				fileFiltersTextCombo.addItem(currentFilter);
+		}
+
+		for( String searchStrings : options.getfSearchLastSearchStrings().getList()) {
+			if(!StringWorker.isEmpty(searchStrings))
+				findTextCombo.addItem(searchStrings);
+		}
+		
+		caseCheckBox.setSelected(options.isfSearchMatchCase());
+		includeBinariesCheckBox.setSelected(options.isfSearchBinaries());
+		regexCheckBox.setSelected(options.isfSearchRegex());
+		wholeWordCheckBox.setSelected(options.isfSearchWholeWord());
+	}
+	
+	public FileOptions getOptions() {
+		return options;
+	}
+	public void setOptions(FileOptions options, boolean refreshGui) {
+		this.options = options;
+		if(refreshGui)
+			refreshFromFileOptions();
+	}
+
 
 	private SearchListener getDefaultListener() {
 		return new SearchListener() {
@@ -172,6 +214,8 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 	 * @param listener The component that listens for {@link SearchEvent}s.
 	 */
 	private void init(SearchListener listener) {
+		
+		this.options = new FileOptions();
 
 		this.searchListener = listener;
 
@@ -240,10 +284,12 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 
 		// Make a panel containing the action buttons.
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new GridLayout(3,1, 5,5));
+		buttonPanel.setLayout(new GridLayout(5,1, 5,5));
 		buttonPanel.add(searchButton);
 		buttonPanel.add(cancelButton);
 		buttonPanel.add(chooseFileBtn);
+		buttonPanel.add(addFileBtn);
+		buttonPanel.add(clearFilesBtn);
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new BorderLayout());
 		rightPanel.add(buttonPanel, BorderLayout.NORTH);
@@ -292,6 +338,20 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		
 		chooseFileBtn.addActionListener((e) -> {
 			setSelectedFiles(fileDialogHelper.fileAndDirReadMulti(owner));
+			if(options != null) {
+				options.getfSearchLastLoadedFiles().setListFromList(FileNamed.fromFileList(selectedSearchFiles), true);
+			}
+		});
+
+		addFileBtn.addActionListener((e) -> {
+			addSelectedFiles(fileDialogHelper.fileAndDirReadMulti(owner));
+			if(options != null) {
+				options.getfSearchLastLoadedFiles().addUniquesToTop(FileNamed.fromFileList(selectedSearchFiles));
+			}
+		});
+		
+		clearFilesBtn.addActionListener((e) -> {
+			clearSelectedFiles();
 		});
 		
 		searchButton.addActionListener((e) -> {
@@ -300,9 +360,14 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 				dialogHelper.info("Select source before to search!", "Missing source file(s)!");
 				return;
 			}
+			
+			FileContentSearchDTO dto = getSearchDTO();
+			if(options != null)
+				options.enrichFromDTO(dto);
 		
 			setEnabled(false);
-			fileSearchObj = new FileContentSearch(getSearchDTO(), selectedSearchFiles, searchActions);
+			fileSearchObj = new FileContentSearch(dto, selectedSearchFiles, searchActions);
+			
 			new Thread(()->{
 				try {
 					fileSearchObj.startSearch(true);
@@ -316,9 +381,17 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 		
 		addComboListener();
 		
+		new FileDrop(txtFieldSelectedFiles, (files)->{
+			SwingUtilities.invokeLater(()->{
+				addSelectedFiles(Arrays.asList(files));
+				this.setAutoRequestFocus(true);
+				this.toFront();
+			});
+		});
+		
 		setAlwaysOnTop(true);
 
-		GuiUtils.centerComponent(thisDialog, new Dimension(650, (int)thisDialog.getPreferredSize().getHeight()));
+		GuiUtils.centerComponent(thisDialog, new Dimension(710, 200));
 	}
 	
 	public void setSelectedFiles(List<File> selection) {
@@ -328,6 +401,16 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 					? selectedSearchFiles 
 					: new ArrayList<>();
 		
+		setSelectedFileLbl(selectedSearchFiles);
+	}
+
+	public void addSelectedFiles(List<File> selection) {
+		selectedSearchFiles = FileVarious.addWithoutRepetitions(selection, selectedSearchFiles);
+		setSelectedFileLbl(selectedSearchFiles);
+	}
+
+	public void clearSelectedFiles() {
+		selectedSearchFiles = new ArrayList<>();
 		setSelectedFileLbl(selectedSearchFiles);
 	}
 	
@@ -563,12 +646,12 @@ public class FileSearchDialog extends AbstractFileSearchDialog {
 
 	}
 
-	public static FileSearchDialog getLazyInstance(Frame owner, FileSearchActions searchActions) {
-		return singletonInstance != null ? singletonInstance : new FileSearchDialog(owner, searchActions);
+	public static FileContentSearchDialog getLazyInstance(Frame owner, FileSearchActions searchActions) {
+		return singletonInstance != null ? singletonInstance : new FileContentSearchDialog(owner, searchActions);
 	}
 
-	public static FileSearchDialog getLazyInstance(Dialog owner, FileSearchActions searchActions) {
-		return singletonInstance != null ? singletonInstance : new FileSearchDialog(owner, searchActions);
+	public static FileContentSearchDialog getLazyInstance(Dialog owner, FileSearchActions searchActions) {
+		return singletonInstance != null ? singletonInstance : new FileContentSearchDialog(owner, searchActions);
 	}
 
 }

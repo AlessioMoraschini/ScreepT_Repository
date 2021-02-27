@@ -1,10 +1,12 @@
 package files.om;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import utility.string.StringWorker;
 
-public class FileContentSearchDTO {
+public class FileContentSearchDTO implements Serializable {
+	private static final long serialVersionUID = 8534947210098858129L;
 	
 	public boolean matchCase;
 	public boolean wholeWord;

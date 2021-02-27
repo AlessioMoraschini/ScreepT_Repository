@@ -79,6 +79,7 @@ public class FileContentSearch {
 		this.searchActions = searchActions != null 
 				? searchActions
 				: new FileSearchActions() {};
+				
 	}
 	
 	/**

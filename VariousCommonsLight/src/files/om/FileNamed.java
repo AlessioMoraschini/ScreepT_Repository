@@ -13,6 +13,8 @@ package files.om;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileNamed{
 	
@@ -47,6 +49,21 @@ public class FileNamed{
 			return new FileNamed[0];
 		}
     }
+	
+	public static List<FileNamed> fromFileList(List<File> files) {
+		List<FileNamed> list = new ArrayList<FileNamed>();
+		
+		if(files != null) 
+			for(File file : files) {
+				if(file == null)
+					continue;
+				
+				FileNamed fn = new FileNamed(file);
+				list.add(fn);
+			}
+		
+		return list;
+	}
 
     public File getFile() {
         return mFile;
