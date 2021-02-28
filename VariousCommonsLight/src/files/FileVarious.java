@@ -30,6 +30,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import gui.dialogs.msg.JOptionHelper;
 import utility.log.SafeLogger;
+import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 
 /**
@@ -117,6 +118,13 @@ public class FileVarious {
 		raw = raw.replaceAll("\\\\", separatorNormalized);
 		
 		return raw;
+	}
+
+	public static boolean checkIfSameFile(File fileA, File fileB) {
+		 String pathA = StringWorker.trimToEmpty(getCanonicalPathSafeNormalized(fileA, "/"));
+		 String pathB = StringWorker.trimToEmpty(getCanonicalPathSafeNormalized(fileB, "/"));
+		 
+		 return pathA.equals(pathB);
 	}
 	
 	/**

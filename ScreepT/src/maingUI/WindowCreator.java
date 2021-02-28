@@ -12,6 +12,7 @@
 package maingUI;
 
 import java.awt.Color;
+import java.awt.Dialog;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -357,6 +358,7 @@ public class WindowCreator {
 		searchDialog.setIconImage(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH).getImage());
 		searchDialog.setOptions(MainGUI.currentConfiguration.getFileOpt(), true);
 		searchDialog.setVisible(true);
+		commonGraphicInit(searchDialog, null);
 		return searchDialog;
 	}
 	
@@ -467,6 +469,21 @@ public class WindowCreator {
 	}
 	
 	// COMMONS INITIALIZATION METHODS //
+	public void commonGraphicInit(final Dialog newFrame, String title) {
+		
+		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+		
+		if(title != null)
+			newFrame.setTitle(title + " " + GeneralConfig.APPLICATION_NAME);
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				newFrame.setLocationRelativeTo(mainApplication.getMainFrame());
+				newFrame.setVisible(true);
+			}
+		});
+	}
+	
 	public void commonGraphicInit(final ParentFrame newFrame, String title, boolean autoExtend) {
 		
 		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);

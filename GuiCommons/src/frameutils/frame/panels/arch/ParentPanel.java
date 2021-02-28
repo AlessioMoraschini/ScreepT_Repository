@@ -26,6 +26,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -98,7 +99,7 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 	public static JLabel getLabel(String text, Color background, Color foreground, String iconPath, boolean opaque) {
 		JLabel label = new JLabel(text);
 		
-		label.setFont(DEFAULT_TEXT_AREA_FONT.deriveFont(13f));
+		label.setFont(DEFAULT_TEXT_AREA_FONT.deriveFont(14f));
 		
 		if(iconPath != null)
 			label.setIcon(new ImageIcon(iconPath));
@@ -204,6 +205,17 @@ public abstract class ParentPanel extends JPanel implements IParentPanel{
 		return textField;
 	}
 	
+	public static JRadioButton getRadioButton(String text, String tooltip, boolean opaque) {
+		JRadioButton checkBox = new JRadioButton();
+		checkBox.setText(text);
+		checkBox.setOpaque(opaque);
+		checkBox.setCursor(GuiUtils.CURSOR_HAND);
+		checkBox.setToolTipText(tooltip);
+		checkBox.setFont(DEFAULT_TEXT_AREA_FONT.deriveFont(13f));
+		
+		return checkBox;
+	}
+
 	public static JCheckBox getCheckBox(String text, String tooltip, boolean opaque) {
 		JCheckBox checkBox = new JCheckBox();
 		checkBox.setText(text);

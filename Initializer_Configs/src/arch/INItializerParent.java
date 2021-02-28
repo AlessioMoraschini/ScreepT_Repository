@@ -279,6 +279,19 @@ public abstract class INItializerParent implements INItializerInterface{
 		}
 	}
 	
+	public static File getFileFromString(String val, File defaultVal) {
+		try {
+			if(val != null)
+				return new File(val);
+			else 
+				return defaultVal;
+			
+		}catch(Exception e){
+			logger.error(e);
+			return defaultVal;
+		}
+	}
+	
 	public static Vector<FileNamed> getFileNamedListFromString(String val, String separator, Vector<FileNamed> defaultList) {
 		Vector<FileNamed> list = new Vector<>();
 		try {

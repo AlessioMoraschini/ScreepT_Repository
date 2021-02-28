@@ -528,11 +528,11 @@ public class MainGuiUtils {
 	public void openQuickSearchIntoWorkspace() {
 		
 		SwingUtilities.invokeLater(()->{
-			File workspace = new File(MainGUI.textEditorPanel.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+//			File workspace = new File(MainGUI.textEditorPanel.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
 			FileNameSearchDialog dialog = new FileNameSearchDialog(
 					MainGUI.mainAPP.getMainFrame(), 
-					MainGUI.textEditorPanel.currentConfiguration,
-					workspace);
+					MainGUI.textEditorPanel.currentConfiguration);
+			dialog.setTitle("Search files by name - " + GeneralConfig.APPLICATION_NAME);
 			
 			dialog.setDoubleClickItemAction((file) ->{
 				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {file}, null);

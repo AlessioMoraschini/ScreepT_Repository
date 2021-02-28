@@ -23,6 +23,7 @@ import org.ini4j.Wini;
 
 import arch.INItializerInterface;
 import arch.INItializerParent;
+import files.FileVarious;
 import files.om.FileNamed;
 import impl.om.AesOption;
 import impl.om.FileOptions;
@@ -150,6 +151,10 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	 */
 	public void loadFileOptions() {
 		// LOAD FILE OPTIONS
+		
+		// FNAME SEARCH OPTIONS
+		fileOpt.setfNameSearchUseManual(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fNameSearchUseManual")));
+		fileOpt.setfNameSearchManualDir(getFileFromString(iniReadFile.get(FILE_OPT, "fNameSearchManualDir"), FileOptions.DEF_fNameSearchManualDir));
 		
 		// FSEARCH OPTIONS
 		fileOpt.setfSearchBinaries(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchBinaries")));
@@ -461,6 +466,11 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	
 	public void writeFileOptions() {
 		// set INIFILE-FILE OPTIONS
+		
+		// FNAME SEARCH OPTIONS
+		iniFile.put(FILE_OPT, "fNameSearchUseManual", fileOpt.isfNameSearchUseManual());
+		iniFile.put(FILE_OPT, "fNameSearchManualDir", FileVarious.getCanonicalPathSafe(fileOpt.getfNameSearchManualDir()));
+		
 		
 		// FSEARCH OPTIONS
 		iniFile.put(FILE_OPT, "fSearchBinaries", fileOpt.isfSearchBinaries());

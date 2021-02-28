@@ -11,10 +11,13 @@
  */
 package impl.om;
 
+import java.io.File;
+
 import arch.INItializerParent;
 import files.om.FileContentSearchDTO;
 import files.om.FileNamed;
 import om.LimitedConcurrentList;
+import resources.GeneralConfig;
 
 public class FileOptions {
 	
@@ -38,6 +41,8 @@ public class FileOptions {
 	public final static boolean DEF_fSearchWholeWord = false;
 	public final static boolean DEF_fSearchRegex = false;
 	public final static boolean DEF_fSearchBinaries = false;
+	public final static boolean DEF_fNameSearchUseManual = false;
+	public final static File DEF_fNameSearchManualDir = GeneralConfig.MAIN_APP_PARENT_DIR;
 	
 	// FIELDS
 	private boolean flagAutosave;
@@ -45,6 +50,8 @@ public class FileOptions {
 	public int autosaveInterval;
 	private String lastSrcFolderPath;
 	private String lastDstFolderPath;
+	private File fNameSearchManualDir;
+	private boolean fNameSearchUseManual;
 	private boolean fSearchMatchCase;
 	private boolean fSearchWholeWord;
 	private boolean fSearchRegex;
@@ -59,6 +66,9 @@ public class FileOptions {
 		autosaveInterval = DEFAULT_AUTOSAVE_INTERVAL;
 		lastSrcFolderPath = DEFAULT_LAST_SRC_FOLDER_PATH;
 		lastDstFolderPath = DEFAULT_LAST_DEST_FOLDER_PATH;
+		
+		fNameSearchUseManual = DEF_fNameSearchUseManual;
+		fNameSearchManualDir = DEF_fNameSearchManualDir;
 		
 		fSearchRegex = DEF_fSearchRegex;
 		fSearchWholeWord = DEF_fSearchWholeWord;
@@ -200,6 +210,22 @@ public class FileOptions {
 
 	public void setfSearchLastSearchStrings(LimitedConcurrentList<String> fSearchLastSearchStrings) {
 		this.fSearchLastSearchStrings = fSearchLastSearchStrings;
+	}
+
+	public File getfNameSearchManualDir() {
+		return fNameSearchManualDir;
+	}
+
+	public void setfNameSearchManualDir(File fNameSearchManualDir) {
+		this.fNameSearchManualDir = fNameSearchManualDir;
+	}
+
+	public boolean isfNameSearchUseManual() {
+		return fNameSearchUseManual;
+	}
+
+	public void setfNameSearchUseManual(boolean fNameSearchUseManual) {
+		this.fNameSearchUseManual = fNameSearchUseManual;
 	}
 	
 }

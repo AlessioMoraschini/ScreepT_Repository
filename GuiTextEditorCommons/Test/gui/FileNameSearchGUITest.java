@@ -1,18 +1,16 @@
 package gui;
 
-import java.io.File;
-
 import javax.swing.SwingUtilities;
 
 import gui.filesearch.name.FileNameSearchDialog;
 
 public class FileNameSearchGUITest {
 
-	private static final File rootDir = new File("./");
+//	private static final File rootDir = new File("./");
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(()->{
-			FileNameSearchDialog dialog = new FileNameSearchDialog(rootDir);
+			FileNameSearchDialog dialog = new FileNameSearchDialog();
 			dialog.setDoubleClickItemAction((e) ->{
 				System.out.println("File clicked: " + e.getAbsolutePath());
 			});
