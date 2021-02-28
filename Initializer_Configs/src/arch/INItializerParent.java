@@ -256,7 +256,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		try {
 			return Integer.valueOf(val);
 		}catch(Exception e){
-			logger.error(e);
+			logger.warn("Catched exception, default value [" + defaultVal + "] will be used", e);
 			return defaultVal;
 		}
 	}
@@ -265,7 +265,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		try {
 			return Float.valueOf(val);
 		}catch(Exception e){
-			logger.error(e);
+			logger.warn("Catched exception, default value [" + defaultVal + "] will be used", e);
 			return defaultVal;
 		}
 	}
@@ -274,7 +274,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		try {
 			return Double.valueOf(val);
 		}catch(Exception e){
-			logger.error(e);
+			logger.warn("Catched exception, default value [" + defaultVal + "] will be used", e);
 			return defaultVal;
 		}
 	}
@@ -287,7 +287,7 @@ public abstract class INItializerParent implements INItializerInterface{
 				return defaultVal;
 			
 		}catch(Exception e){
-			logger.error(e);
+			logger.warn("Catched exception, default value [" + defaultVal + "] will be used", e);
 			return defaultVal;
 		}
 	}
@@ -301,7 +301,7 @@ public abstract class INItializerParent implements INItializerInterface{
 			}
 			
 		} catch (Exception e1) {
-			logger.error(e1);
+			logger.warn("Catched exception, default value [" + defaultList + "] will be used", e1);
 			return defaultList;
 		}
 
@@ -316,7 +316,7 @@ public abstract class INItializerParent implements INItializerInterface{
 			}
 			
 		} catch (Exception e1) {
-			logger.error(e1);
+			logger.warn("Catched exception, default value [" + defaultList + "] will be used", e1);
 			return defaultList;
 		}
 		

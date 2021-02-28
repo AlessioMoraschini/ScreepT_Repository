@@ -1,4 +1,4 @@
-2021-02-28  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Various improvements + refactored text editor menu
+2021-02-28  Various improvements + refactored text editor menu
 
 2021-02-28  New feature: quick wildcard search file names wanted folder (CTRL+ALT+R)
 

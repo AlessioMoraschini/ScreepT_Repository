@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -37,6 +38,7 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.string.StringWorker;
+import utility.time.AmAsyncAction;
 
 public class FileNameSearchDialog extends ParentDialog {
 	private static final long serialVersionUID = 5026956746595091072L;
@@ -52,6 +54,8 @@ public class FileNameSearchDialog extends ParentDialog {
 	private FileDropListenerSingle doubleClickItemAction;
 	
 	private File rootDir;
+	
+	private AmAsyncAction keyTimer;
 	
 	public FileNameSearchDialog() {
 		this(null, null);
@@ -85,6 +89,21 @@ public class FileNameSearchDialog extends ParentDialog {
 		});
 	}
 	
+	private boolean isTimerActive() {
+		boolean inactive = keyTimer == null || keyTimer.isAborted() || keyTimer.isExecuted();
+		return !inactive || (keyTimer != null && keyTimer.isRunning());
+	}
+	
+	private void resetTimer(Runnable action, boolean startTimer) {
+		if(isTimerActive()) {
+			keyTimer.abort();
+		}
+			
+		keyTimer = new AmAsyncAction(action, 400);
+		if(startTimer)
+			keyTimer.executeDelayedAsync();
+	}
+	
 	private void initGUI() {
 		setLayout(new MigLayout(
 				"insets 4, hidemode 2", 
@@ -100,7 +119,14 @@ public class FileNameSearchDialog extends ParentDialog {
 		
 		fileDropList.setListSingleClickAction((fileClicked)->{
 			if(fileClicked != null && fileClicked.exists())
-				lblCurrentSelectionPath.setText(FileVarious.getNlevelsPathString(fileClicked, 4));
+				try {
+					lblCurrentSelectionPath.setText(FileVarious.getPathRelativeToOtherFile(
+							fileClicked,
+							rootDir));
+				} catch (IOException e) {
+					logger.warn("Error relativizing path", e);
+					lblCurrentSelectionPath.setText(FileVarious.getNlevelsPathString(fileClicked, 4));
+				}
 			else
 				lblCurrentSelectionPath.setText(NO_SELECTION);
 		});
@@ -179,17 +205,17 @@ public class FileNameSearchDialog extends ParentDialog {
 			
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				searchCurrent();
+				resetTimer(()->{searchCurrent();}, true);
 			}
 			
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				searchCurrent();
+				resetTimer(()->{searchCurrent();}, true);
 			}
 			
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				searchCurrent();
+				resetTimer(()->{searchCurrent();}, true);
 			}
 		});
 		
