@@ -338,21 +338,8 @@ public class WindowCreator {
 
 			@Override
 			public void resultView(SearchResult searchResult, int viewLine) {
-				if(!MainGUI.mainGuiUtils.isTextEditorActive()) {
-					MainGUI.mainGuiUtils.startTextEditor(MainGUI.textEditorPanel == null);
-				}
 				
-				SwingUtilities.invokeLater(()->{
-					while (MainGUI.textEditorPanel == null) {
-						try {
-							Thread.sleep(250);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					
-					MainGUI.textEditorPanel.getCurrentTabEditor().loadFile(searchResult.ownerFile);
-				
+				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {searchResult.ownerFile}, ()->{
 					try {
 						JTextArea textArea = MainGUI.textEditorPanel.getCurrentTabEditor().loadedTabObj.textArea;
 						textArea.requestFocus();

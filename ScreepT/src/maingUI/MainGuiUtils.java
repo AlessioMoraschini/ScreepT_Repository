@@ -42,6 +42,7 @@ import gUI.panels.TextEditor;
 import gui.GuiUtils;
 import gui.LightLicenseViewer;
 import gui.LightLicenseViewer.UserLicenseChoice;
+import gui.filesearch.name.FileNameSearchDialog;
 import guistyle.GUIStyelSettingsExtended;
 import impl.INItializer;
 import impl.om.GenericOption;
@@ -500,6 +501,46 @@ public class MainGuiUtils {
 		});
 	}
 	
+	public synchronized void openFilesInTextEditor(File[] filesToLoad, Runnable postOpenAction) {
+			
+		if(!MainGUI.mainGuiUtils.isTextEditorActive()) {
+			MainGUI.mainGuiUtils.startTextEditor(MainGUI.textEditorPanel == null);
+		}
+		
+		SwingUtilities.invokeLater(()->{
+			while (MainGUI.textEditorPanel == null) {
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			MainGUI.textEditorPanel.getCurrentTabEditor().loadFiles(filesToLoad);
+			
+			SwingUtilities.invokeLater(()->{
+				Runnable action = postOpenAction != null ? postOpenAction : () -> {};
+				action.run();
+			});
+		});
+	}
+	
+	public void openQuickSearchIntoWorkspace() {
+		
+		SwingUtilities.invokeLater(()->{
+			File workspace = new File(MainGUI.textEditorPanel.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+			FileNameSearchDialog dialog = new FileNameSearchDialog(
+					MainGUI.mainAPP.getMainFrame(), 
+					MainGUI.textEditorPanel.currentConfiguration,
+					workspace);
+			
+			dialog.setDoubleClickItemAction((file) ->{
+				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {file}, null);
+			});
+			dialog.setVisible(true);
+		});
+	}
+	
 	public JPanel getMainPanel() {
 		return (JPanel) mainAppReference.getMainFrame().getContentPane();
 	}
@@ -765,7 +806,7 @@ public class MainGuiUtils {
 		
 		return compareRes != 1;
 	}
-
+	
 	/**
 	 * return false if not exit, true if has to exit;
 	 * @return

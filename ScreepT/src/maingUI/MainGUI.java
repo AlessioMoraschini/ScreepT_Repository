@@ -904,8 +904,7 @@ public class MainGUI extends MainGuiParent{
 		// open in a new window - Quick file search - Text Editor
 		mntmFileQuickSearch = new CustomJmenuItem(new AbstractAction("Workspace files: quick search") {
 			public void actionPerformed(ActionEvent ae) {
-				if(mainGuiUtils.isTextEditorActive())
-					textEditorPanel.textEditorUtils.openQuickSearchIntoWorkspace();
+				mainGuiUtils.openQuickSearchIntoWorkspace();
 			}
 		});
 

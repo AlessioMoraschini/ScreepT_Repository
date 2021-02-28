@@ -215,6 +215,14 @@ public class MainGuiShortcutsListener extends KeyListenerParent implements KeyEv
 				else if (e.getKeyCode() == 84 && e.isAltDown() && !e.isControlDown() && e.isShiftDown()) {
 					currentGui.getMntmTextEditor().doClick();
 				}
+				
+				/*
+				 * 	Fast file search -> CTRL+ALT+R
+				 */
+				else if (e.getKeyCode() == KeyEvent.VK_R && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					MainGUI.mainGuiUtils.openQuickSearchIntoWorkspace();
+				}
+				
 				/**
 				 * OPEN FILE-CONTENT-SEARCH - Ctrl+Alt+F
 				 */

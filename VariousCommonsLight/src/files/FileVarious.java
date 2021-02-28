@@ -93,6 +93,14 @@ public class FileVarious {
 		}
 	}
 
+	public static File getCanonicalFileSafe(File file) {
+		try {
+			return file.getCanonicalFile();
+		} catch (Exception e) {
+			return file;
+		}
+	}
+
 	public static String getCanonicalPathSafeNormalized(File file, String separatorNormalized) {
 		String raw = null;
 		try {

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.List;
@@ -38,6 +40,7 @@ public class FileNameSearchDialog extends ParentFrame {
 	private JTextField textField;
 	private FileDropList fileDropList;
 	private JLabel lblCurrentSelectionPath;
+	private JLabel lblCurrentRootFolder;
 	
 	private FileDropListenerSingle doubleClickItemAction;
 	
@@ -67,31 +70,37 @@ public class FileNameSearchDialog extends ParentFrame {
 			textField.setRequestFocusEnabled(true);
 			textField.requestFocus();
 			textField.requestFocusInWindow();
+			
+			setRootDir(this.rootDir);
 		});
 	}
 	
 	private void initGUI() {
 		setLayout(new MigLayout(
 				"insets 4, hidemode 2", 
-				"[60px, grow]", 
+				"[][60px, grow]", 
 				"[25px:25px][30px, grow][25px:25px:25px]"));
 		
 		textField = ParentPanel.getTextField(null, null, Color.LIGHT_GRAY, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), false);
-		add(textField, "cell 0 0 1 1,grow");
+		add(textField, "cell 0 0 2 1,grow");
 		
 		fileDropList = new FileDropList();
 		fileDropList.setDropEnabled(false);
-		add(fileDropList, "cell 0 1 1 1,grow");
+		add(fileDropList, "cell 0 1 2 1,grow");
 		
 		fileDropList.setListSingleClickAction((fileClicked)->{
 			if(fileClicked != null && fileClicked.exists())
-				lblCurrentSelectionPath.setText("Selected file: " + FileVarious.getNlevelsPathString(fileClicked, 4));
+				lblCurrentSelectionPath.setText(FileVarious.getNlevelsPathString(fileClicked, 4));
 			else
 				lblCurrentSelectionPath.setText(NO_SELECTION);
 		});
+
+		lblCurrentRootFolder = ParentPanel.getLabel("", null, null, null, true);
+		lblCurrentRootFolder.setCursor(GuiUtils.CURSOR_HAND);
+		add(lblCurrentRootFolder, "cell 0 2 1 1,grow");
 		
 		lblCurrentSelectionPath = ParentPanel.getLabel(NO_SELECTION, null, null, null, true);
-		add(lblCurrentSelectionPath, "cell 0 2 1 1,grow");
+		add(lblCurrentSelectionPath, "cell 1 2 1 1,grow");
 		
 		applyDarkColor();
 		
@@ -105,6 +114,16 @@ public class FileNameSearchDialog extends ParentFrame {
 		textField.addKeyListener(adapter);
 	}
 	
+	public File getRootDir() {
+		return rootDir;
+	}
+
+	public void setRootDir(File rootDir) {
+		this.rootDir = rootDir;
+		lblCurrentRootFolder.setText("Search into: " + FileVarious.getCanonicalFileSafe(rootDir).getName());
+		lblCurrentRootFolder.setToolTipText(FileVarious.getCanonicalPathSafe(rootDir));
+	}
+
 	private KeyAdapter getEscAdapter() {
 		return new KeyAdapter() {
 			@Override
@@ -122,6 +141,8 @@ public class FileNameSearchDialog extends ParentFrame {
 		setBackground(Color.DARK_GRAY);
 		lblCurrentSelectionPath.setBackground(Color.DARK_GRAY);
     	lblCurrentSelectionPath.setForeground(Color.LIGHT_GRAY);
+    	lblCurrentRootFolder.setBackground(Color.DARK_GRAY);
+    	lblCurrentRootFolder.setForeground(Color.LIGHT_GRAY);
     }
 
 	private void addHandlers() {
@@ -141,6 +162,18 @@ public class FileNameSearchDialog extends ParentFrame {
 			@Override
 			public void changedUpdate(DocumentEvent e) {
 				searchCurrent();
+			}
+		});
+		
+		lblCurrentRootFolder.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				File chosen = fileChooser.directoRead(parentFrame, "Choose new root folder to search into");
+				if(chosen != null && chosen.exists() && chosen.isDirectory()) {
+					synchronized (rootDir) {
+						setRootDir(chosen);
+					}
+				}
 			}
 		});
 	}
