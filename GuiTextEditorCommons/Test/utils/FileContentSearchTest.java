@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import files.om.FileContentSearchDTO;
 import files.om.SearchResult;
-import gui.filesearch.FileContentSearch;
 import gui.filesearch.FileSearchActions;
+import gui.filesearch.content.FileContentSearch;
 
 public class FileContentSearchTest {
 

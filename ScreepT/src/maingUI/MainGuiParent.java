@@ -152,6 +152,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmViewKeyDictionary;
 	static CustomJmenuItem mntmTextEditor;
 	static CustomJmenuItem mntmFileSearch;
+	public CustomJmenuItem mntmFileQuickSearch;
 	public CustomJmenuItem mntmTxtEditorImpExpCryptedWkspc;
 	static CustomJmenuItem mntmThemeEditor;
 	CustomJmenuItem mntmnetInfo;
@@ -379,6 +380,7 @@ public class MainGuiParent {
 			mnTextEditor.add(menuBrowserOpenerActions);
 			mnTextEditor.add(menuStringActions);
 			mnTextEditor.add(mntmFileSearch);
+			mnTextEditor.add(mntmFileQuickSearch);
 			mnTextEditor.add(mntmTxtEditorImpExpCryptedWkspc);
 			mnTextEditor.add(mntmThemeEditor);
 				
@@ -532,6 +534,7 @@ public class MainGuiParent {
 		menuBrowserOpenerActions.setFont(subMenuFont);
 		menuStringActions.setFont(subMenuFont);
 		mntmFileSearch.setFont(menuItemFont);
+		mntmFileQuickSearch.setFont(menuItemFont);
 		mntmTxtEditorImpExpCryptedWkspc.setFont(menuItemFont);
 		mntmThemeEditor.setFont(menuItemFont);
 
@@ -622,6 +625,7 @@ public class MainGuiParent {
 		menuBrowserOpenerActions.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		menuStringActions.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
 		mntmFileSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
+		mntmFileQuickSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
 		mntmTxtEditorImpExpCryptedWkspc.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
 		mntmThemeEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
 		
@@ -701,6 +705,7 @@ public class MainGuiParent {
 		// Text editor sub-menu
 		mntmTextEditor.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_T, ALT_MASK | SHIFT_MASK));
 		mntmFileSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F, CTRL_MASK | ALT_MASK));
+		mntmFileQuickSearch.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_R, CTRL_MASK | ALT_MASK));
 		mntmTxtEditorImpExpCryptedWkspc.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_I, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		
 		// Various submenu

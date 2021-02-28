@@ -303,6 +303,13 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				}
 				
 				/*
+				 * 	Fast file search -> CTRL+ALT+R
+				 */
+				else if (e.getKeyCode() == KeyEvent.VK_R && e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {
+					currentTextEditor.textEditorUtils.openQuickSearchIntoWorkspace();
+				}
+
+				/*
 				 * 	FIND  TEXT -> CTRL+F
 				 */
 				else if (e.getKeyCode() == 70 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown()) {

@@ -76,7 +76,7 @@ import tabbededitor.ITabsManager;
 import utility.string.StringWorker;
 import utility.string.TextAreaStringEditor;
 import utility.string.StringWorker.EOL;
-import utility.time.AmTimer;
+import utility.time.AmAsyncAction;
 import utils.RsyntaxUtils;
 import utils.SysUtils;
 
@@ -571,7 +571,7 @@ public class TabTextEditorObject {
 		if (enabled) {
 			hyperLinkListener = hyperLinkListener != null ? hyperLinkListener : new HyperlinkListener() {
 				AtomicBoolean canOpenAgain = new AtomicBoolean(true);
-				AmTimer timer = new AmTimer(() -> {canOpenAgain.set(true);}, 4000);
+				AmAsyncAction timer = new AmAsyncAction(() -> {canOpenAgain.set(true);}, 4000);
 				
 				@Override
 				public void hyperlinkUpdate(HyperlinkEvent e) {

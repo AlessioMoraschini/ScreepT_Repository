@@ -13,7 +13,7 @@ package utility.time;
 
 import java.util.UUID;
 
-public class AmTimer {
+public class AmAsyncAction {
 	
 	public volatile boolean debugEnabled = false;
 	
@@ -28,7 +28,7 @@ public class AmTimer {
 	private volatile int sleepInterval;
 	private Runnable action;
 	
-	public AmTimer(Runnable action, long msLength) {
+	public AmAsyncAction(Runnable action, long msLength) {
 		this.msLength = msLength;
 		this.action = action;
 		sleepInterval = (int) msLength / 4;
@@ -40,7 +40,7 @@ public class AmTimer {
 		print("AmTIMER: created with id:" + id);
 	}
 	
-	public AmTimer(Runnable action, long msLength, boolean debugEnabled) {
+	public AmAsyncAction(Runnable action, long msLength, boolean debugEnabled) {
 		this(action, msLength);
 		this.debugEnabled = debugEnabled;
 	}

@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import files.om.FileSearchDTO;
+import utility.string.StringWorker;
 
 public class FileNameSearchAdvanced {
 
@@ -33,7 +34,8 @@ public class FileNameSearchAdvanced {
 				dto.exactMatch,
 				dto.filter, 
 				dto.recursiveDeep,
-				dto.ignoreCase);
+				dto.ignoreCase,
+				dto.wildCardMode);
 	}
 	
 	/**
@@ -48,7 +50,8 @@ public class FileNameSearchAdvanced {
 			boolean exactMatch, 
 			SearchType filter, 
 			boolean recursiveDeep,
-			boolean ignoreCase) {
+			boolean ignoreCase,
+			boolean wildcardMode) {
 		
 		ArrayList<File> foundFolderMatches = new ArrayList<File>();
 		
@@ -57,13 +60,13 @@ public class FileNameSearchAdvanced {
 		}
 		
 		if(SearchType.FILE_ONLY.equals(filter)) {
-			return findOnlyFilesByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
+			return findOnlyFilesByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
 		
 		} else if (SearchType.FOLDERS_ONLY.equals(filter)) {
-			return findOnlyFoldersByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
+			return findOnlyFoldersByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
 			
 		} else {
-			return findAllByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
+			return findAllByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
 			
 		}
 	}
@@ -78,7 +81,8 @@ public class FileNameSearchAdvanced {
 			String matchNamePart,
 			boolean exactMatch,
 			boolean recursiveDeep,
-			boolean ignoreCase) {
+			boolean ignoreCase,
+			boolean wildcardMode) {
 		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
@@ -95,7 +99,10 @@ public class FileNameSearchAdvanced {
 			String matchNameP = ignoreCase ? matchNamePart.toUpperCase() : matchNamePart;
 			
 			// Search for match in current level
-			if ((exactMatch && foundName.equals(matchNameP)) || (!exactMatch && foundName.contains(matchNameP))) {
+			if ((wildcardMode && StringWorker.checkWildcardMatch(foundName, matchNameP, false)) ||
+					(exactMatch && foundName.equals(matchNameP)) || 
+					(!exactMatch && foundName.contains(matchNameP))) {
+				
 				foundMatches.add(found);
 				somethingFound = true;
 			}
@@ -105,7 +112,7 @@ public class FileNameSearchAdvanced {
 			if (!somethingFound) {
 				for (File folder : currentLevelFiles) {
 					if (folder.isDirectory()) {
-						List<File> subFolderFounds = findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
+						List<File> subFolderFounds = findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
 						foundMatches.addAll(subFolderFounds);
 						if(!subFolderFounds.isEmpty()) {
 							return foundMatches;
@@ -119,7 +126,7 @@ public class FileNameSearchAdvanced {
 		} else {
 			for (File folder : currentLevelFiles) {
 				if (folder.isDirectory()) {
-					foundMatches.addAll(findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase));
+					foundMatches.addAll(findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode));
 				}
 			} 
 		}
@@ -137,7 +144,8 @@ public class FileNameSearchAdvanced {
 			String matchNamePart,
 			boolean exactMatch,
 			boolean recursiveDeep,
-			boolean ignoreCase) {
+			boolean ignoreCase,
+			boolean wildcardMode) {
 		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
@@ -154,7 +162,11 @@ public class FileNameSearchAdvanced {
 			String matchNameP = ignoreCase ? matchNamePart.toUpperCase() : matchNamePart;
 			
 			// Search for match in current level
-			if (found.isFile() && ((exactMatch && foundName.equals(matchNameP)) || (!exactMatch && foundName.contains(matchNameP)))) {
+			if (found.isFile() && (
+					(wildcardMode && StringWorker.checkWildcardMatch(foundName, matchNameP, false)) ||
+					(exactMatch && foundName.equals(matchNameP)) ||
+					(!exactMatch && foundName.contains(matchNameP)))) {
+				
 				foundMatches.add(found);
 				somethingFound = true;
 			}
@@ -164,7 +176,7 @@ public class FileNameSearchAdvanced {
 			if (!somethingFound) {
 				for (File folder : currentLevelFiles) {
 					if (folder.isDirectory()) {
-						List<File> subFilesFounds = findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
+						List<File> subFilesFounds = findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
 						foundMatches.addAll(subFilesFounds);
 						if(!subFilesFounds.isEmpty()) {
 							return foundMatches;
@@ -178,7 +190,7 @@ public class FileNameSearchAdvanced {
 		} else {
 			for (File folder : currentLevelFiles) {
 				if (folder.isDirectory()) {
-					foundMatches.addAll(findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase));
+					foundMatches.addAll(findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode));
 				}
 			} 
 		}
@@ -196,7 +208,8 @@ public class FileNameSearchAdvanced {
 			String matchNamePart,
 			boolean exactMatch,
 			boolean recursiveDeep,
-			boolean ignoreCase) {
+			boolean ignoreCase,
+			boolean wildcardMode) {
 		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
@@ -213,7 +226,10 @@ public class FileNameSearchAdvanced {
 			String matchNameP = ignoreCase ? matchNamePart.toUpperCase() : matchNamePart;
 			
 			// Search for match in current level
-			if ((exactMatch && foundName.equals(matchNameP)) || (!exactMatch && foundName.contains(matchNameP))) {
+			if ((wildcardMode && StringWorker.checkWildcardMatch(foundName, matchNameP, false)) ||
+					(exactMatch && foundName.equals(matchNameP)) || 
+					(!exactMatch && foundName.contains(matchNameP))) {
+				
 				foundMatches.add(found);
 				somethingFound = true;
 			}
@@ -222,7 +238,7 @@ public class FileNameSearchAdvanced {
 		if(!recursiveDeep) {
 			if (!somethingFound) {
 				for (File folder : currentLevelFolders) {
-					List<File> subFolderFounds = findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase);
+					List<File> subFolderFounds = findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
 					foundMatches.addAll(subFolderFounds);
 					if(!subFolderFounds.isEmpty()) {
 						return foundMatches;
@@ -234,7 +250,7 @@ public class FileNameSearchAdvanced {
 			
 		} else {
 			for (File folder : currentLevelFolders) {
-				foundMatches.addAll(findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase));
+				foundMatches.addAll(findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode));
 			} 
 		}
 		

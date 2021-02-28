@@ -131,11 +131,11 @@ public class INIfileChoosER {
 			File defaultLauncherIni = new File(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
 			String defaultIniParentDir = defaultIni.getParentFile().getName();
 			String defaultLauncherIniParentDir = defaultLauncherIni.getParentFile().getName();
-			List<File> matchedResourcesFolders = FileNameSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true, false);
-			List<File> matchedLauncherFolders = FileNameSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultLauncherIniParentDir, true, true, false);
+			List<File> matchedResourcesFolders = FileNameSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultIniParentDir, true, true, false, false);
+			List<File> matchedLauncherFolders = FileNameSearchAdvanced.findOnlyFoldersByMatch(sourceFolder, defaultLauncherIniParentDir, true, true, false, false);
 			
 			for(File launcherFolder : matchedLauncherFolders) {
-				List<File> matchedIniLauncherConf = FileNameSearchAdvanced.findOnlyFilesByMatch(launcherFolder, defaultLauncherIni.getName(), true, true, false);
+				List<File> matchedIniLauncherConf = FileNameSearchAdvanced.findOnlyFilesByMatch(launcherFolder, defaultLauncherIni.getName(), true, true, false, false);
 				try {
 					FileUtils.copyFileToDirectory(matchedIniLauncherConf.get(0), defaultLauncherIni.getParentFile(), true);
 				} catch (Exception e1) {
@@ -145,7 +145,7 @@ public class INIfileChoosER {
 			}
 			
 			for (File resourcesFolder : matchedResourcesFolders) {
-				List<File> matchedIniConf = FileNameSearchAdvanced.findOnlyFilesByMatch(resourcesFolder, defaultIni.getName(), true, true, false);
+				List<File> matchedIniConf = FileNameSearchAdvanced.findOnlyFilesByMatch(resourcesFolder, defaultIni.getName(), true, true, false, false);
 				if (!matchedIniConf.isEmpty()) {
 					boolean confirmation = MainGuiGeneralAppStarter.dialogHelper.yesOrNo(
 							GuiUtils.encapsulateInHtml("Are you sure to overwrite default configuration with the following?<br> " + matchedIniConf.get(0)), "Overwrite current?");
@@ -291,7 +291,7 @@ public class INIfileChoosER {
     
     public static void updateFromExternalGeneralConfig(File generalConfigRootSearch) {
     	
-    	List<File> matchedGeneralConf = FileNameSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false);
+    	List<File> matchedGeneralConf = FileNameSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false, false);
     	
     	if (!matchedGeneralConf.isEmpty()) {
     		
@@ -310,7 +310,7 @@ public class INIfileChoosER {
 
     public static void copyGeneralConfig(File generalConfigRootSearch) {
     	
-		List<File> matchedGeneralConf = FileNameSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false);
+		List<File> matchedGeneralConf = FileNameSearchAdvanced.findOnlyFilesByMatch(generalConfigRootSearch, GeneralConfig.resourcesMappingDefPath, true, true, false, false);
 		
 		if (!matchedGeneralConf.isEmpty()) {
 			

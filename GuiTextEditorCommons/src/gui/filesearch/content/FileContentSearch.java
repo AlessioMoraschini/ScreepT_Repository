@@ -1,4 +1,4 @@
-package gui.filesearch;
+package gui.filesearch.content;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,6 +25,8 @@ import files.om.FileContentSearchDTO;
 import files.om.SearchResult;
 import gui.UpdateProgressPanel;
 import gui.dialogs.msg.JOptionHelper;
+import gui.filesearch.FileSearchActions;
+import gui.filesearch.resultview.FileSearchResultViewer;
 import om.SupportedFileTextEditor;
 import utility.log.SafeLogger;
 import utility.manipulation.ArrayHelper;

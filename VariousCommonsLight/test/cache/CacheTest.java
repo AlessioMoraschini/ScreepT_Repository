@@ -35,6 +35,7 @@ public class CacheTest {
 							true,
 							SearchType.ALL,
 							true,
+							false,
 							false);
 					
 					printList(cache.get(inputDto));

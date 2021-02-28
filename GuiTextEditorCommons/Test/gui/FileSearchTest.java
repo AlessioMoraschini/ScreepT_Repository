@@ -3,8 +3,8 @@ package gui;
 import javax.swing.JFrame;
 
 import files.om.SearchResult;
-import gui.filesearch.FileContentSearchDialog;
 import gui.filesearch.FileSearchActions;
+import gui.filesearch.content.FileContentSearchDialog;
 
 public class FileSearchTest {
 

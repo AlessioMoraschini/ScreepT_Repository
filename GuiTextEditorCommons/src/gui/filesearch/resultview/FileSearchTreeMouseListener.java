@@ -1,4 +1,4 @@
-package gui.filesearch.tree;
+package gui.filesearch.resultview;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,7 +11,7 @@ import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 
 import gui.filesearch.FileSearchActions;
-import gui.filesearch.FileSearchResultViewer.ResultViewDTO;
+import gui.filesearch.resultview.FileSearchResultViewer.ResultViewDTO;
 
 public class FileSearchTreeMouseListener {
 

@@ -9,7 +9,7 @@
  * You should have received a copy of the license with this file.
  * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
  */
-package gui.filesearch.tree;
+package gui.filesearch.resultview;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,7 +26,7 @@ import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
 
-import gui.filesearch.FileSearchResultViewer.ResultViewDTO;
+import gui.filesearch.resultview.FileSearchResultViewer.ResultViewDTO;
 import resources.IconsPathConfigurator;
 
 public class FileSearchResultsTreeCellRenderer implements TreeCellRenderer {

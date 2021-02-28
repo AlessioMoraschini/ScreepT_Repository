@@ -1,11 +1,11 @@
-package utils;
+package utility.time;
 
-public class TestTimer {
+public class TimeMeter {
 
 	private long startTime;
 	private long endTime;
 	
-	public TestTimer() {
+	public TimeMeter() {
 		reset();
 	}
 	

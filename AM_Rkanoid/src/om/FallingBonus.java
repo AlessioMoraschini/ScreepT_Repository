@@ -3,7 +3,7 @@ package om;
 import java.awt.Graphics;
 
 import gui.GameFrame;
-import utility.time.AmTimer;
+import utility.time.AmAsyncAction;
 
 public class FallingBonus extends Rectangle {
 
@@ -16,7 +16,7 @@ public class FallingBonus extends Rectangle {
 	// Signal if this bonus is being used
 	public volatile boolean inAction = false;
 	
-	public AmTimer timer;
+	public AmAsyncAction timer;
 	
 	private double velocity;
 	
@@ -34,7 +34,7 @@ public class FallingBonus extends Rectangle {
 		this.sizeY = gameFrame.gameConfig.BONUS_HEIGHT;
 		this.velocity = gameFrame.gameConfig.BONUS_VELOCITY;
 		
-		timer = new AmTimer(() -> {
+		timer = new AmAsyncAction(() -> {
 				inAction = false;
 				consumed = true;
 				bonus.resetModifier();

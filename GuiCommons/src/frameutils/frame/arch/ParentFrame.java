@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
 import gui.GuiUtils;
+import impl.INItializer;
 import utility.log.SafeLogger;
 
 public class ParentFrame extends JFrame{
@@ -33,16 +34,28 @@ public class ParentFrame extends JFrame{
 	public JOptionHelperExtended dialogHelper;
 	public GenericFileChooserDialog fileChooser;
 	
+	public JFrame parentFrame;
+	public JFrame thisFrame;
+	public INItializer configuration;
+	
 	public ParentFrame() {
+		this(null, null);
+	}
+
+	public ParentFrame(JFrame parentFrame, INItializer configuration) {
 		isActive.set(true);
 		
-		this.dialogHelper = new JOptionHelperExtended(this);
-		this.fileChooser = new GenericFileChooserDialog(null);
+		thisFrame = this;
+		
+		this.configuration = configuration == null ? new INItializer() : configuration;
+		this.parentFrame = parentFrame;
+		
+		this.dialogHelper = new JOptionHelperExtended(this.parentFrame);
+		this.fileChooser = new GenericFileChooserDialog(this.configuration);
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		setCloseAction();
-		
 	}
 	
 	public void resizeToDefault(boolean minimum, boolean preferred, boolean maximum) {
@@ -53,7 +66,7 @@ public class ParentFrame extends JFrame{
 			setPreferredSize(getDefaultDimension());
 		}
 		if(maximum) {
-			setMaximumSize(getDefaultDimension());
+			setMaximumSize(getMaximumDimension());
 		}
 	}
 	
@@ -75,6 +88,10 @@ public class ParentFrame extends JFrame{
 	}
 	
 	public Dimension getMinimumDimension() {
+		return getDefaultDimension();
+	}
+	
+	public Dimension getMaximumDimension() {
 		return getDefaultDimension();
 	}
 }

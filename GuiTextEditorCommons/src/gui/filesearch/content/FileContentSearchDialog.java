@@ -1,4 +1,4 @@
-package gui.filesearch;
+package gui.filesearch.content;
 
 /*
  * 11/14/2003
@@ -61,6 +61,7 @@ import gui.GuiUtils;
 import gui.dialogs.AbstractFileSearchDialog;
 import gui.dialogs.msg.JOptionHelper;
 import gui.dnd.FileDrop;
+import gui.filesearch.FileSearchActions;
 import impl.om.FileOptions;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;

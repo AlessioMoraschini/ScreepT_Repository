@@ -53,6 +53,7 @@ import gui.TextEditTooltips;
 import gui.dialogs.FindDialogFork;
 import gui.dialogs.ReplaceDialogFork;
 import gui.dialogs.msg.JOptionHelper;
+import gui.filesearch.name.FileNameSearchDialog;
 import guistyle.GUIStyelSettingsExtended;
 import impl.om.TextEditorOption;
 import maingUI.MainGUI;
@@ -494,6 +495,21 @@ public class TextEditorUtils {
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			logger.error("Error resetting divider colors: ", e);
 		}
+	}
+	
+	public void openQuickSearchIntoWorkspace() {
+		SwingUtilities.invokeLater(()->{
+			File workspace = new File(currentTextEditor.currentConfiguration.getTextEditorOpt().defaultWorkspacePath);
+			FileNameSearchDialog dialog = new FileNameSearchDialog(
+					MainGUI.mainAPP.getMainFrame(), 
+					currentTextEditor.currentConfiguration,
+					workspace);
+			
+			dialog.setDoubleClickItemAction((file) ->{
+				currentTextEditor.getCurrentTabEditor().loadFile(file);
+			});
+			dialog.setVisible(true);
+		});
 	}
 	
 	public String getFooterPanelAdaptedDirString(String rawText) {

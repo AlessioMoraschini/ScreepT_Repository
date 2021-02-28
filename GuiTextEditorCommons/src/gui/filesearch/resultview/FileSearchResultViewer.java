@@ -1,4 +1,4 @@
-package gui.filesearch;
+package gui.filesearch.resultview;
 
 import javax.swing.JFrame;
 import javax.swing.JTree;
@@ -10,8 +10,7 @@ import javax.swing.tree.TreeNode;
 import files.om.FileContentSearchDTO;
 import files.om.SearchResult;
 import frameutils.frame.arch.ParentFrame;
-import gui.filesearch.tree.FileSearchResultsTreeCellRenderer;
-import gui.filesearch.tree.FileSearchTreeMouseListener;
+import gui.filesearch.FileSearchActions;
 import utility.string.StringWorker;
 
 import java.awt.GridBagLayout;
