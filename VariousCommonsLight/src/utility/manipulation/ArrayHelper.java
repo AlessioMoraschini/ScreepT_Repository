@@ -1,6 +1,7 @@
 package utility.manipulation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -37,6 +38,13 @@ public class ArrayHelper {
 		}
 		
 		return out;
+	}
+	
+	public static <T extends Comparable<? super T>> List<T> asList(Collection<T> c, boolean sorted) {
+	  List<T> list = new ArrayList<T>(c);
+	  if(sorted)
+		  java.util.Collections.sort(list);
+	  return list;
 	}
 
 	public static List<String> removeEmpties(ArrayList<String> sourceList){

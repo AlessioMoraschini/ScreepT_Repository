@@ -32,6 +32,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import gui.GuiUtils;
@@ -490,6 +491,9 @@ public class JOptionHelper {
 		pane.selectInitialValue();
 		pane.setInitialSelectionValue(initialValue);
 		final JDialog dialog = pane.createDialog(parentComponent, title);
+		SwingUtilities.invokeLater(()->{
+			GuiUtils.giveFocusToComponent(dialog);
+		});
 		dialog.setAlwaysOnTop(true);
 		dialog.setAutoRequestFocus(true);
 		dialog.setLocationRelativeTo(parentComponent);

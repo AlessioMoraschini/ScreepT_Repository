@@ -1,3 +1,9 @@
+2021-02-28  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Various improvements + refactored text editor menu
+
+2021-02-28  New feature: quick wildcard search file names wanted folder (CTRL+ALT+R)
+
+2021-02-28  Added quick file search with CTRL+ALT+R
+
 2021-02-27  File Content Search improved and added to automatic configuration
 
 2021-02-25  Plugin tesseract fix + added opened line position sync at startup
