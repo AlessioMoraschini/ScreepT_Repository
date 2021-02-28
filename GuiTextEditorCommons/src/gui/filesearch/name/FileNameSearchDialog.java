@@ -25,7 +25,7 @@ import files.FileVarious;
 import files.om.FileSearchDTO;
 import files.search.FileNameSearchAdvanced;
 import files.search.FileNameSearchAdvanced.SearchType;
-import frameutils.frame.arch.ParentFrame;
+import frameutils.frame.arch.ParentDialog;
 import frameutils.frame.panels.arch.ParentPanel;
 import gui.GuiUtils;
 import gui.dnd.FileDropListenerSingle;
@@ -38,7 +38,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utility.string.StringWorker;
 
-public class FileNameSearchDialog extends ParentFrame {
+public class FileNameSearchDialog extends ParentDialog {
 	private static final long serialVersionUID = 5026956746595091072L;
 	
 	private static final String NO_SELECTION = "Nothing selected";
@@ -65,10 +65,11 @@ public class FileNameSearchDialog extends ParentFrame {
 //						: rootDir.getParentFile()
 //				: new File("./");
 		
+		GuiUtils.setDialogModalType(this, ModalityType.APPLICATION_MODAL);
 		initGUI();
 		addHandlers();
 		
-		GuiUtils.setFrameIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH), this);
+		setIconImage(new ImageIcon(IconsPathConfigurator.ICON_SEARCH).getImage());
 		
 		setDoubleClickItemAction(null);
 		GuiUtils.centerComponent(this, getDefaultDimension());
@@ -140,6 +141,12 @@ public class FileNameSearchDialog extends ParentFrame {
 		this.rootDir = rootDir;
 		lblCurrentRootFolder.setText(FileVarious.getCanonicalFileSafe(rootDir).getName());
 		lblCurrentRootFolder.setToolTipText(FileVarious.getCanonicalPathSafe(rootDir));
+		
+		if(radioUseWorkspace.isSelected())
+			radioUseWorkspace.setText("Use workspace: ");
+		else
+			radioUseWorkspace.setText("Use custom folder: ");
+			
 	}
 
 	private KeyAdapter getEscAdapter() {
@@ -304,6 +311,6 @@ public class FileNameSearchDialog extends ParentFrame {
 
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(650, 250);
+		return new Dimension(850, 400);
 	}
 }

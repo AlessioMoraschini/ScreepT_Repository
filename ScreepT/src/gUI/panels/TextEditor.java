@@ -90,6 +90,7 @@ import gUI.utils.shortcutshandler.TextEditorShortcutListener;
 import gUI.utils.texteditor.TabbedEditorOwnerScreepT;
 import gUI.utils.texteditor.TextEditorUtils;
 import gUI.utils.tree.texteditor.TreeFileMouseListenerTxtEditor;
+import gui.GuiUtils;
 import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import guistyle.GUIStyelSettingsExtended;
@@ -783,13 +784,12 @@ public class TextEditor extends ModulePanel {
 		if (currentConfiguration.getTextEditorOpt().clipboardViewActive || currentConfiguration.getTextEditorOpt().mapViewActive) {
 			// Refresh divider location
 			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
-			
-			if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
-				// In case of clipboard use ad-hoc option
-				currentConfiguration.getTextEditorOpt().dividerRightPanePosXClipboard += deltaBase;
-			}else {
-				currentConfiguration.getTextEditorOpt().dividerRightPanePosX += deltaBase;
-			}
+		}
+		if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
+			// In case of clipboard use ad-hoc option
+			currentConfiguration.getTextEditorOpt().dividerRightPanePosXClipboard += deltaBase;
+		}else {
+			currentConfiguration.getTextEditorOpt().dividerRightPanePosX += deltaBase;
 		}
 		rightPaneResizeOnly();
 	}
@@ -1066,7 +1066,7 @@ public class TextEditor extends ModulePanel {
 			}
 			
 			if(!txtOptions.mapViewActive && !txtOptions.clipboardViewActive) {
-				getCurrentTabEditor().loadedTabObj.textArea.requestFocus();
+				GuiUtils.giveFocusToComponent(getCurrentTabEditor().loadedTabObj.textArea);
 			}
 
 			currentTextEditor.rightModuleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -1088,7 +1088,7 @@ public class TextEditor extends ModulePanel {
 			splitPaneTreetabsAndRightToggle.getRightComponent().setVisible(true);
 			if (textEditorUtils.getTypeOfRightPanel().equals(PanelType.CLIPBOARD_PANEL)) {
 				// In case of clipboard use ad-hoc option
-				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerFileTreePosX - txtOptions.dividerRightPanePosXClipboard);
+				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosXClipboard);
 			}else {
 				splitPaneTreetabsAndRightToggle.setDividerLocation(parentFrame.getWidth() - txtOptions.dividerRightPanePosX);
 			}

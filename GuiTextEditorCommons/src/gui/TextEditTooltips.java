@@ -56,7 +56,7 @@ public class TextEditTooltips {
 	public static final String tooltipRedo = "[Alt + Z] Redo Last";
 	public static final String tooltipClearText = "[Ctrl + canc] Erase the content of the current opened file displayed (without save)";
 	public static final String tooltipBoldText = "Set bold style to all text";
-	public static final String tooltipItalic = "Set italics style to all text";
+	public static final String tooltipQuickFileSearch = "[Ctrl + Altr + R] Search recursively files in workspace or custom folder by entering wildcard file name to search for";
 	public static final String tooltipStyledCopy = "[Alt + C] Copy all selected text to OS clipboards (keeping style)";
 	public static final String tooltipViewInSysExplorer = "[Ctrl + Shift + Enter]View in System Explorer (press Ctrl to open in Command Line)";
 	public static final String tooltipViewInCommandLine = "[Ctrl + Alt + Enter]View in Command line";

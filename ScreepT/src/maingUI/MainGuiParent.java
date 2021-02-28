@@ -625,7 +625,7 @@ public class MainGuiParent {
 		menuBrowserOpenerActions.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NETWORK));
 		menuStringActions.setIcon(new ImageIcon(IconsPathConfigurator.F_ICON_TXT));
 		mntmFileSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SEARCH));
-		mntmFileQuickSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH));
+		mntmFileQuickSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH_TEXT));
 		mntmTxtEditorImpExpCryptedWkspc.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FOLDER_IMP_EXP));
 		mntmThemeEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
 		

@@ -149,7 +149,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JButton btnClear;
 	public JButton btnRedo;
 	public JButton btnBold;
-	public JButton btnItaliC;
+	public JButton btnQuickFileSearch;
 	public JButton btnForegroundCol;
 	public JButton btnNewTab;
 	public JButton btnRemoveSpaces;
@@ -252,20 +252,20 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		toggleBtnClipboard.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CLIPBOARD));
 		add(toggleBtnClipboard, "cell 23 0,alignx center,grow");
 		
-		toggleButtonSpellCheck = new JToggleButton("");
-		toggleButtonSpellCheck.setMinimumSize(new Dimension(25, 0));
-		toggleButtonSpellCheck.setToolTipText(TextEditTooltips.tooltipSpellChecker);
-		toggleButtonSpellCheck.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
-		add(toggleButtonSpellCheck, "cell 24 0,alignx center,grow");
-
 		toggleBtnConsole = new JToggleButton("");
 		toggleBtnConsole.setMinimumSize(new Dimension(25, 0));
 		toggleBtnConsole.setToolTipText(TextEditTooltips.tooltipConsoleView);
 		toggleBtnConsole.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		toggleBtnConsole.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 		toggleBtnConsole.setSelected(currentConfiguration.getTextEditorOpt().bottomViewActive);
-		add(toggleBtnConsole, "cell 24 1,alignx center,grow");
+		add(toggleBtnConsole, "cell 24 0,alignx center,grow");
+
+		toggleButtonSpellCheck = new JToggleButton("");
+		toggleButtonSpellCheck.setMinimumSize(new Dimension(25, 0));
+		toggleButtonSpellCheck.setToolTipText(TextEditTooltips.tooltipSpellChecker);
+		toggleButtonSpellCheck.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
+		add(toggleButtonSpellCheck, "cell 24 1,alignx center,grow");
 		
 		btnStyledCopy = new JButton("");
 		btnStyledCopy.setToolTipText(TextEditTooltips.tooltipStyledCopy);
@@ -335,11 +335,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnBold.setToolTipText(TextEditTooltips.tooltipBoldText);
 		btnBold.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_BOLD));
 		add(btnBold, "cell 15 0,alignx center,grow");
-
-		btnItaliC = new JButton("");
-		btnItaliC.setToolTipText(TextEditTooltips.tooltipItalic);
-		btnItaliC.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_ITALIC));
-		add(btnItaliC, "cell 16 0,alignx center,grow");
 
 		btnParseImageText = new JButton("");
 		btnParseImageText.setCursor(GuiUtilsExtended.CURSOR_HAND);
@@ -456,17 +451,22 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnSpeak = new JButton("");
 		btnSpeak.setToolTipText(TextEditTooltips.tooltipSpeak);
 		btnSpeak.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPEAKER));
-		add(btnSpeak, "cell 17 1,alignx center,grow");
+		add(btnSpeak, "cell 16 0,alignx center,grow");
 
 		btnReplaceEscapesSeq = new JButton("");
 		btnReplaceEscapesSeq.setToolTipText(TextEditTooltips.tooltipReplaceEscapes);
 		btnReplaceEscapesSeq.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONVERT_ESCAPES));
-		add(btnReplaceEscapesSeq, "cell 18 1,alignx center,grow");
+		add(btnReplaceEscapesSeq, "cell 17 1,alignx center,grow");
+		
+		btnQuickFileSearch = new JButton("");
+		btnQuickFileSearch.setToolTipText(TextEditTooltips.tooltipQuickFileSearch);
+		btnQuickFileSearch.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SEARCH_TEXT));
+		add(btnQuickFileSearch, "cell 18 1,alignx center,grow");
 
-		btnGoToLine = new JButton("");
-		btnGoToLine.setToolTipText(TextEditTooltips.tooltipGoToLine);
-		btnGoToLine.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GOTO_LINE));
-		add(btnGoToLine, "cell 20 0,grow");
+		btnColorSampler = new JButton("");
+		btnColorSampler.setToolTipText(TextEditTooltips.tooltipBtnColorSampler);
+		btnColorSampler.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
+		add(btnColorSampler, "cell 20 0,grow");
 						
 		btnFileContentSearch = new JButton("");
 		btnFileContentSearch.setToolTipText(TextEditTooltips.tooltipFileContentSearch);
@@ -482,17 +482,17 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnReplaceText.setToolTipText(TextEditTooltips.tooltipReplaceText);
 		btnReplaceText.setIcon(new ImageIcon(IconsPathConfigurator.ICON_REPLACE_TXT));
 		add(btnReplaceText, "cell 21 1,grow");
+
+		btnGoToLine = new JButton("");
+		btnGoToLine.setToolTipText(TextEditTooltips.tooltipGoToLine);
+		btnGoToLine.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GOTO_LINE));
+		add(btnGoToLine, "cell 22 1,grow");
 		
 		btnBase64Conversion = new JButton("");
 		btnBase64Conversion.setMinimumSize(new Dimension(25, 0));
 		btnBase64Conversion.setIcon(new ImageIcon(IconsPathConfigurator.ICON_64_PURPLE));
 		btnBase64Conversion.setToolTipText("Encode selected/all text to base 64 (press ctrl to decode base 64)");
-		add(btnBase64Conversion, "cell 22 1,alignx center,grow");
-		
-		btnColorSampler = new JButton("");
-		btnColorSampler.setToolTipText(TextEditTooltips.tooltipBtnColorSampler);
-		btnColorSampler.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COLOR_SAMPLER));
-		add(btnColorSampler, "cell 23 1,grow");
+		add(btnBase64Conversion, "cell 23 1,alignx center,grow");
 						
 		chckbxShowTabGrid = new JCheckBox("Show Tabs");
 		chckbxShowTabGrid.setOpaque(false);
@@ -727,9 +727,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 							toggleBtnClipboard.setBackground(GeneralConfig.BUTTON_BCKG_COLOR_TXT_EDITOR.darker());
 							currentConfiguration.getTextEditorOpt().clipboardViewActive = false;
 						}
+						
 						currentConfiguration.getTextEditorOpt().mapViewActive = false;
 						parent.rightPaneShowOrHide(true);
-						textEditorUtils.checkRightVisibleIfEnabled();
+						if(currentConfiguration.getTextEditorOpt().clipboardViewActive)
+							textEditorUtils.checkRightVisibleIfEnabled();
 					}
 				});
 			}
@@ -1326,6 +1328,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				applyFileFormatSyntaxFull();
 				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(getCurrentFileType().toString());
 				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
+				GuiUtils.giveFocusToComponent(comboFileFormat);
 			}
 		});
 		
@@ -1344,6 +1347,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboStylesScheme.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textEditorUtils.applySelectedTheme(false);
+				GuiUtils.giveFocusToComponent(comboStylesScheme);
 			}
 		});
 
@@ -1432,18 +1436,25 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			}
 		});
 
-		// SET TEXT STYLE TO ITALICS
-		btnItaliC.addActionListener(new ActionListener() {
+		// SET TEXT STYLE TO ITALICS - OLD
+//		btnQuickFileSearch.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+//
+//				Font txtFont = loadedTabObj.textArea.getFont();
+//				if (!txtFont.isItalic()) {
+//					loadedTabObj.textArea.setFont(txtFont.deriveFont(Font.ITALIC, txtFont.getSize()));
+//				} else {
+//					loadedTabObj.textArea.setFont(txtFont.deriveFont(Font.PLAIN, txtFont.getSize()));
+//				}
+//				currentConfiguration.getTextEditorOpt().setFont(txtFont);
+//			}
+//		});
+		
+		// QUICK FILE SEARCH
+		btnQuickFileSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
-
-				Font txtFont = loadedTabObj.textArea.getFont();
-				if (!txtFont.isItalic()) {
-					loadedTabObj.textArea.setFont(txtFont.deriveFont(Font.ITALIC, txtFont.getSize()));
-				} else {
-					loadedTabObj.textArea.setFont(txtFont.deriveFont(Font.PLAIN, txtFont.getSize()));
-				}
-				currentConfiguration.getTextEditorOpt().setFont(txtFont);
+				MainGUI.mainGuiUtils.openQuickSearchIntoWorkspace();
 			}
 		});
 

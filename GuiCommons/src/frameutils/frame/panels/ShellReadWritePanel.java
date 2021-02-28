@@ -333,9 +333,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	private Runnable stopAction() {
 		return () -> {
 
-			commandTextArea.setRequestFocusEnabled(true);
-			commandTextArea.requestFocus();
-			commandTextArea.requestFocusInWindow();
+			GuiUtils.giveFocusToComponent(commandTextArea);
 			try {
 				Robot bot = new Robot();
 				bot.mouseMove(commandTextArea.getLocationOnScreen().x + 10, commandTextArea.getLocationOnScreen().y + 10);

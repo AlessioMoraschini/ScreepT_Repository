@@ -537,6 +537,7 @@ public class MainGuiUtils {
 			dialog.setDoubleClickItemAction((file) ->{
 				MainGUI.mainGuiUtils.openFilesInTextEditor(new File[] {file}, null);
 			});
+			dialog.setLocationRelativeTo(mainAppReference.getMainFrame());
 			dialog.setVisible(true);
 		});
 	}

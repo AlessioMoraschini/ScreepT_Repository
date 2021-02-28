@@ -169,6 +169,19 @@ public class GuiUtils {
 			}
 		};
 	}
+	
+	public static void giveFocusToComponent(Component component) {
+		if(component == null)
+			return;
+		
+		SwingUtilities.invokeLater(()-> {
+			if(component instanceof JTextComponent)
+				((JTextComponent)component).setRequestFocusEnabled(true);
+			
+			component.requestFocus();
+			component.requestFocusInWindow();
+		});
+	}
 
 	public static MouseMotionListener getMouseExitedDisposeListener(final JFrame target) {
 		return new MouseMotionListener() {
