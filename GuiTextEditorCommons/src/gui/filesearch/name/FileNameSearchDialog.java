@@ -99,7 +99,7 @@ public class FileNameSearchDialog extends ParentDialog {
 			keyTimer.abort();
 		}
 			
-		keyTimer = new AmAsyncAction(action, 400);
+		keyTimer = new AmAsyncAction(action, 300);
 		if(startTimer)
 			keyTimer.executeDelayedAsync();
 	}
@@ -306,7 +306,7 @@ public class FileNameSearchDialog extends ParentDialog {
 	}
 	
 	private void searchCurrent() {
-		GuiUtils.launchThreadSafeSwing(() -> {
+		GuiUtils.launchThreadSafeSwingV2(() -> {
 			String searchString = textField.getText();
 			if(StringWorker.isEmpty(searchString))
 				return;
