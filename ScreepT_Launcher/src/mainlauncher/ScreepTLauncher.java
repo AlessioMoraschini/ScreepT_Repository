@@ -127,6 +127,8 @@ import utils.SysUtils;
 				System.exit(1);
 			}
 			
+			ARGS = args;
+			argumentsFiles = getFileArrayFromStrings(args);
 			checkAlreadyRunning();
 			
 			loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
@@ -137,9 +139,6 @@ import utils.SysUtils;
 			GeneralConfig.initLazyGeneralConfig();
 			
 			GuiUtils.setupTooltips(500, 30000, new Font("Segoe UI", Font.PLAIN, 17));
-			
-			ARGS = args;
-			argumentsFiles = getFileArrayFromStrings(args);
 			
 			loaderGraphics.update("Checking license status... ", 10);
 			loaderGraphics.indeterminate(true);
