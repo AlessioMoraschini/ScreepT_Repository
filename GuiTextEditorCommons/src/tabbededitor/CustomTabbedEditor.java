@@ -178,6 +178,8 @@ public class CustomTabbedEditor implements ITabsManager {
 						TabUtils.scrollToNextTab(mainTabList);
 					} catch (Exception e1) {
 					}
+					
+					GuiUtils.giveFocusToComponent(loadedTabObj.textArea);
 				}
 			}
 		});

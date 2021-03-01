@@ -127,6 +127,16 @@ public class FileVarious {
 		 return pathA.equals(pathB);
 	}
 	
+	public static boolean validateFileOrDir(File fileOrDir) {
+		return fileOrDir != null && fileOrDir.exists();
+	}
+	public static boolean validateDir(File dir) {
+		return validateFileOrDir(dir) && dir.isDirectory();
+	}
+	public static boolean validateFile(File file) {
+		return validateFileOrDir(file) && file.isFile();
+	}
+	
 	/**
 	 * Get relative path from a reference file path:
 	 * 

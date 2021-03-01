@@ -157,7 +157,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JButton btnPropertiesPanel;
 	public JButton btnCalculator;
 	public JButton btnColorSampler;
-	private JButton btnStyledCopy;
+	private JButton btnThemeEditor;
 	public JButton btnBase64Conversion;
 	
 	public JToggleButton btnToggleFileView;
@@ -267,11 +267,11 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		toggleButtonSpellCheck.setIcon(new ImageIcon(IconsPathConfigurator.ICON_SPELLCHECKER));
 		add(toggleButtonSpellCheck, "cell 24 1,alignx center,grow");
 		
-		btnStyledCopy = new JButton("");
-		btnStyledCopy.setToolTipText(TextEditTooltips.tooltipStyledCopy);
-		btnStyledCopy.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		btnStyledCopy.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
-		add(btnStyledCopy, "cell 12 1,grow");
+		btnThemeEditor = new JButton("");
+		btnThemeEditor.setToolTipText(TextEditTooltips.tooltipThemeEditor);
+		btnThemeEditor.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnThemeEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PAINT_PALETTE));
+		add(btnThemeEditor, "cell 12 1,grow");
 		
 		comboFileFormat = new JComboBox<SupportedFileTextEditor>();
 		comboFileFormat.setMinimumSize(new Dimension(75, 12));
@@ -641,10 +641,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		});
 		
 		// COPY TO CLIPBOARD KEEPING STYLE
-		btnStyledCopy.addActionListener(new ActionListener() {
+		btnThemeEditor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				parent.getCurrentTabEditor().loadedTabObj.textArea.copyAsStyledText();
+				MainGUI.mainAPP.windowCreator.newSchemeManager();
 			}
 		});
 

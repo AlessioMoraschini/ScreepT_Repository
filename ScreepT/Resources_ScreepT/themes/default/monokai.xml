@@ -6,7 +6,7 @@
 <RSyntaxTheme version="1.0">
 
     <!--  General editor colors. -->
-    <background color="1A1A1A"/>
+    <background color="2E2E2E"/>
     <caret color="D2D2D2"/>
     <selection useFG="false" bg="4C4C4C" roundedEdges="false"/>
     <currentLineHighlight color="383A38" fade="false"/>
@@ -24,7 +24,7 @@
     <!-- Gutter styling. -->
     <gutterBorder color="81969A"/>
     <lineNumbers fg="81969A"/>
-    <foldIndicator fg="6A8088" iconBg="2f383c"/>
+    <foldIndicator fg="6A8088" iconBg="2f383c" iconArmedBg="3f484c"/>
     <iconRowHeader activeLineRange="878787"/>
 
     <!-- Syntax tokens. -->

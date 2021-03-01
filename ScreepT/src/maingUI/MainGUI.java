@@ -55,6 +55,7 @@ import gUI.panels.TextEditor;
 import gUI.utils.filedialog.FilesAndDirectoriesManagerGUI;
 import gUI.utils.filedialog.INIfileChoosER;
 import gui.ComponentResizer;
+import gui.GuiUtils;
 import gui.PluginManagerGUI;
 import guistyle.GUIStyelSettingsExtended;
 import impl.INItializer;
@@ -348,12 +349,13 @@ public class MainGUI extends MainGuiParent{
 								} catch (Exception e) {
 									logger.warn("Cannot wait " + GeneralConfig.UPDATES_AUTOCHECK_DELAY + " ms to check for updates", e);
 								}
-								currentConfiguration.getGenOpt().setFirstAccess(false);
-								currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
 								
 								mainFrameScreept.toFront();
-								mainFrameScreept.requestFocus();
+								GuiUtils.giveFocusToComponent(mainFrameScreept);
 							}
+
+							currentConfiguration.getGenOpt().setFirstAccess(false);
+							currentConfiguration.writeSingleValue(INItializer.GEN_OPT, "firstAccess", false);
 						}
 					}); // End title updater and Updates check starters
 				}

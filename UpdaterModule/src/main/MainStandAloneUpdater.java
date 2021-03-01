@@ -505,24 +505,42 @@ public class MainStandAloneUpdater {
 			throw e;
 		}
 		
+		int CONNECTION_TIMEOUT_MS = ftpProperties.getIntVarFromProps("CONNECTION_TIMEOUT_MS", 25000);
 		String HOST = ftpProperties.getProperty("HOST", "ftp.am-design-development.com");
 		String USER = ftpProperties.getProperty("USER", "");
 		String PSW = ftpProperties.getProperty("PSW", "");
 		int PORT = ftpProperties.getIntVarFromProps("PORT", 22);
 		String FOLDER_ON_SERVER = ftpProperties.getProperty("FOLDER_ON_SERVER", "/www.am-design-development.com/ScreepT/Updates");
 		
-		if(StringWorker.isEmpty(USER)) {
-			USER = new JOptionHelper(null).askForString("Specify USERNAME");
-		}
-		
-		if (PSW.equals("")) {
-			char[] psw = new JOptionHelper(null).askForPasswordNullable("Insert FTPS password", "Insert FTPS password", 64, "Upload");
-			if(psw != null) {
-				PSW = new String(psw);
+		FtpDumper dumper = null;
+		FtpDumper.setCONNECTION_TIMEOUT(CONNECTION_TIMEOUT_MS);
+		boolean validLogin = false;
+		int tries = 0;
+		while (!validLogin) {
+			if ( tries > 0 || StringWorker.isEmpty(USER)) {
+				USER = new JOptionHelper(null).askForString("Enter USERNAME", "Username", USER);
 			}
+			
+			if (PSW.equals("")) {
+				char[] psw = new JOptionHelper(null).askForPasswordNullable("Enter FTPS password for user:" + USER, "Insert FTPS password", 64, "Upload");
+				if (psw != null) {
+					PSW = new String(psw);
+				}
+			}
+			UpdateProgressPanel panel = new UpdateProgressPanel();
+			panel.setUndefinedDuration();
+			panel.setClosable(false);
+			panel.update(20, "Checking connection to FTPS server...");
+			dumper = new FtpDumper(HOST, USER, PSW, PORT);
+			validLogin = dumper.ftps != null && dumper.isConnected();
+			UpdateProgressPanel.forceDisposeSafe(panel);
+			if(!validLogin) {
+				dialogHelper.error("Login failed");
+				PSW = "";
+			} 
+
+			tries++;
 		}
-		
-		FtpDumper dumper = new FtpDumper(HOST, USER, PSW, PORT);
 		
 		UpdateProgressPanel progPanel = new UpdateProgressPanel(true);
 		progPanel.dialog.setTitle("Uploading files");

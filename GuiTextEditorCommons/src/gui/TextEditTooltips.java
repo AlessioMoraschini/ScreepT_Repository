@@ -37,8 +37,8 @@ public class TextEditTooltips {
 	public static final String tooltipCryptBase64 = "[Alt + 4] Encode current selected/all text using base 64 (click this with control key pressed to decode)";
 	public static final String tooltipDecryptBase64 = "[Ctrl + 4] Decode current selected/all text using base 64 (release control key and click to encode)";
 	public static final String tooltipOpenInScreept = "Crypt and export current opened file. (using ScreepT module)";
-	public static final String tooltipBackgroundColor = "Change background color (won't be saved in .txt)";
-	public static final String tooltipForegroundTxt = "Change text color (won't be saved in .txt)";
+	public static final String tooltipBackgroundColor = "Change background color (works only with TEXT syntax and deactivated theme)";
+	public static final String tooltipForegroundTxt = "Change text color (works only with TEXT syntax and deactivated theme)";
 	public static final String tooltipDarkSwitch = "[Ctrl + B] Switch upon dark and light text combination";
 	public static final String tooltipUpperPostDots = "Makes text uppercase after dots, or a significat line broker";
 	public static final String tooltipLowerPostDots = "Makes text lowerCase after dots, or a significat line broker";
@@ -58,6 +58,7 @@ public class TextEditTooltips {
 	public static final String tooltipBoldText = "Set bold style to all text";
 	public static final String tooltipQuickFileSearch = "[Ctrl + Altr + R] Search recursively files in workspace or custom folder by entering wildcard file name to search for";
 	public static final String tooltipStyledCopy = "[Alt + C] Copy all selected text to OS clipboards (keeping style)";
+	public static final String tooltipThemeEditor = "Import/Export/Modify themes, or define your own";
 	public static final String tooltipViewInSysExplorer = "[Ctrl + Shift + Enter]View in System Explorer (press Ctrl to open in Command Line)";
 	public static final String tooltipViewInCommandLine = "[Ctrl + Alt + Enter]View in Command line";
 	public static final String tooltipViewPropertiesCurrFile = "[Alt + Enter] View the properties of current file.";

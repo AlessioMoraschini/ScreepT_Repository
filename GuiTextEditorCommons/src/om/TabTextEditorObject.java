@@ -50,6 +50,8 @@ import javax.swing.border.MatteBorder;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.text.BadLocationException;
 
 import org.apache.log4j.Logger;
@@ -59,6 +61,7 @@ import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import files.FileVarious;
 import files.watcher.FileChangeMonitor;
 import frameutils.utils.GuiUtilsExtended;
 import gui.GuiUtils;
@@ -392,6 +395,39 @@ public class TabTextEditorObject {
 		copySyntaxHighlightItem.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_C, ALT_MASK));
 		showColorPicker.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_P, KeyEvent.CTRL_MASK | SHIFT_MASK | ALT_MASK));
 
+		
+		// SHOW/HIDE listener
+		textArea.getPopupMenu().addPopupMenuListener(new PopupMenuListener() {
+			
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				String selection = textArea.getSelectedText();
+				if(!StringWorker.isEmpty(selection)) {
+					copySyntaxHighlightItem.setEnabled(true);
+				} else {
+					copySyntaxHighlightItem.setEnabled(false);
+				}
+				
+				if(FileVarious.validateFileOrDir(loadedFile)) {
+					showFileLineTerminators.setEnabled(true);
+					filePropertiesItem.setEnabled(true);
+					browserOpener.setEnabled(true);
+				} else {
+					showFileLineTerminators.setEnabled(false);
+					filePropertiesItem.setEnabled(false);
+					browserOpener.setEnabled(false);
+				}
+			}
+			
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				
+			}
+			
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e) {
+			}
+		});
 	}
 	
 	public void enrichPopUpMenuStringActions(final JMenu stringActions) {
