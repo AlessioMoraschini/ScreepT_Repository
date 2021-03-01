@@ -17,21 +17,24 @@
 ::cxY6rQJ7JhzQF1fEqQJhZkoaHErSXA==
 ::ZQ05rAF9IBncCkqN+0xwdVsEAl3MbzLa
 ::ZQ05rAF9IAHYFVzEqQIDKwlRSRS2XA==
-::eg0/rx1wNQPfEVWB+kM9LVsJDGQ=
-::fBEirQZwNQPfEVWB+kM9LVsJDGQ=
-::cRolqwZ3JBvQF1fEqQJQ
+::eg0/rx1wNQPfEVWB+kM9LVsJDDeBLm6/FoFS7fD+jw==
+::fBEirQZwNQPfEVWB+kM9LVsJDDeBLm6/FoEjuKaiobnewg==
+::cRolqwZ3JBvQF1fEqQIcKQ5aTwyHLiu8Cadc2+vp6u+Xlg0cRPIzcYzazr2BLoA=
 ::dhA7uBVwLU+EWHjK2QxwDB5HRQOMfEq0AvU47f7+4+WXr0gTQII=
 ::YQ03rBFzNR3SWATElA==
 ::dhAmsQZ3MwfNWATE1U41OwhdQ0SvM3m7FbYU4ebyjw==
 ::ZQ0/vhVqMQ3MEVWAtB9wSA==
 ::Zg8zqx1/OA3MEVWAtB9wSA==
 ::dhA7pRFwIByZRRmh+kg/MVsPBWQ=
-::Zh4grVQjdCyDJGyX8VAjFANMcCCHL2CuCaUgzOf4+ueCrFkUEtcrcYPS5p2AJu8B50TwfJUslmxbisIJMChbbBeufjsLm2tSuXeMI8iOqjPSSVqM41sEJEl1km3ThC4pXNFpjsAL7CK/70XAk6QF33v3W7sxF2Liyrl4BMwY+DaHa1vNn6NhddrvfrPqCzPaBWYNqWjGtNMkx81+Bh8jGhpTn/dp+S6Y
+::Zh4grVQjdCyDJGyX8VAjFANMcCCHL2CuCaUgzOf4+ueCrFkUEtcrcYPS5p2AJu8B50TwfJUslmxbisIJMChbbBeufjsLm2tSuXeMI8iOqjPSSVqM41sEJEl1km3ThC4pXNFpjsAL7CK/70XAk6QF33v3W7sxF2Liyrl4BMwY+DaHa1vNn6NhddrvfrPqCzPaBWYNqWjGtNMkx81+Bh9xXBFMjoY6tSnxV9y+xHIh
 ::YB416Ek+ZG8=
 ::
 ::
 ::978f952a14a936cc963da21a135fa983
-cd %0\..\Application
+set batdir=%~dp0
+echo %batdir%
+
+cd /D %batdir%\Application
 
 echo %CD%
 
