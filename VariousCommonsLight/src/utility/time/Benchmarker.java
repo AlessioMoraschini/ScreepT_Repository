@@ -1,13 +1,17 @@
 package utility.time;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import utility.manipulation.ArrayHelper;
+import utility.manipulation.EntrophyzerUtils;
+import utility.string.StringWorker;
 import utility.string.StringWorker.EOL;
 
 public class Benchmarker {
@@ -55,7 +59,7 @@ public class Benchmarker {
 	 * @param message
 	 * @return
 	 */
-	public TimeRecord registerEvent(String message, boolean updateStart) {
+	public TimeRecord registerEvent(String message) {
 		TimeRecord record = null;
 		
 		synchronized (endTime) {
@@ -64,10 +68,13 @@ public class Benchmarker {
 			records.put(endTime, record);
 		}
 		
-		if(updateStart)
-			updateStart();
+		updateStart();
 		
 		return record;
+	}
+	
+	public void finalize() {
+		registerEvent("FINALIZED");
 	}
 	
 	/**
@@ -90,13 +97,34 @@ public class Benchmarker {
 	public String getSortedRecordsString() {
 		StringBuilder builder = new StringBuilder();
 		List<TimeRecord> sortedRecords = getRecords();
+		List<Long> elapsedList = new ArrayList<>();
 		long totalElapsed = 0;
 		for(TimeRecord rec : sortedRecords) {
+			elapsedList.add(rec.elapsed);
 			totalElapsed += rec.elapsed;
-			builder.append(rec.toString()).append(EOL.defaultEol.eol);
+			builder.append("\n >> ")
+				.append(rec.elapsed + " ms from last event -> new Event: ")
+				.append(rec.message).append(EOL.defaultEol.eol);
 		}
 		
 		builder.append("\n >> TOTAL ELAPSED TIME (MS) : " + totalElapsed + "\n");
+		builder.append("\n ################################################################");
+		builder.append("\n ## Elapsed time percentage report (from heaviest to lightest) ## \n\n");
+		
+		Map<Double, TimeRecord> percentSortedMap = new TreeMap<>();
+		for(int i = 0; i < elapsedList.size() - 1; i++) {
+			percentSortedMap.put(elapsedList.get(i+1)/(double)totalElapsed * 100D, sortedRecords.get(i));
+		}
+		percentSortedMap = EntrophyzerUtils.sortMapByKeyGeneric(percentSortedMap);
+		int i = 1;
+		
+		List<Double> reverseOrderKeys = ArrayHelper.asList(percentSortedMap.keySet(), true);
+		Collections.reverse(reverseOrderKeys);
+		for(Double key : reverseOrderKeys) {
+			builder.append(i + ": " + StringWorker.getStringDouble(key, 2)).append("% >> ");
+			builder.append(percentSortedMap.get(key).message).append("\n");
+			i++;
+		}
 		
 		return builder.toString();
 	}

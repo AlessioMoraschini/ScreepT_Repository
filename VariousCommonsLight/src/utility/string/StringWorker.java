@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -963,6 +964,24 @@ public class StringWorker {
 			}
 		}
 		return 0;
+	}
+	
+	public static String repeatStringNTimes(String string, int n, boolean newLineEach) {
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < n; i++) {
+			builder.append(string).append((newLineEach && i < n - 1) ? EOL.defaultEol.eol : "");
+		}
+		
+		return builder.toString();
+	}
+	
+	public static DecimalFormat getNDecimalsFormat(int n) {
+		String decimalPattern = repeatStringNTimes("0", n, false);
+		return new DecimalFormat("#0." + decimalPattern); 
+	}
+	
+	public static String getStringDouble(Double value, int nDecimals) {
+		return getNDecimalsFormat(nDecimals).format(value);
 	}
 
 }

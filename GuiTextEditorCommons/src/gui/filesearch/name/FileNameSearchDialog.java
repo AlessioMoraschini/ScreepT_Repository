@@ -306,16 +306,18 @@ public class FileNameSearchDialog extends ParentDialog {
 	}
 	
 	private void searchCurrent() {
-		String searchString = textField.getText();
-		if(StringWorker.isEmpty(searchString))
-			return;
-		
-		// Match everything that starts with current string entered
-		searchString = "*".equals(searchString.trim()) ? "*" : (searchString.trim() + "*");
-		
-		List<File> matches = FileNameSearchAdvanced.findByMatch(getDto(searchString));
-		
-		fileDropList.setFiles(matches);
+		GuiUtils.launchThreadSafeSwing(() -> {
+			String searchString = textField.getText();
+			if(StringWorker.isEmpty(searchString))
+				return;
+			
+			// Match everything that starts with current string entered
+			searchString = "*".equals(searchString.trim()) ? "*" : (searchString.trim() + "*");
+			
+			List<File> matches = FileNameSearchAdvanced.findByMatch(getDto(searchString));
+			
+			fileDropList.setFiles(matches);
+		});
 	}
 	
 	public FileDropListenerSingle getDoubleClickItemAction() {

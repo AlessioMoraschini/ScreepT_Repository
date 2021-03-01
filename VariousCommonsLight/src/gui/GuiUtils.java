@@ -242,6 +242,18 @@ public class GuiUtils {
 			}
 		});
 	}
+	
+	public static void launchThreadSafeSwingV2(Runnable threadAction) {
+		new Thread(() -> {
+			SwingUtilities.invokeLater(() -> {
+				try {
+					threadAction.run();
+				} catch (Exception e) {
+					logger.error("GuiUtils.launchThreadSafeSwing(threadAction) => Error executing threadAction! ", e);
+				}
+			});
+		}).start();
+	}
 
 	public static void labelUpdateWithTimeout(String message, JTextComponent target, int timeout) {
 

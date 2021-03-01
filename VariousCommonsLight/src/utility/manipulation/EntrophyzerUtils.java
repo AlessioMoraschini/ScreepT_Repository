@@ -33,6 +33,12 @@ public class EntrophyzerUtils {
 
 		return treeMap;
 	}
+
+	public static <E extends Comparable<E>, T> TreeMap<E, T> sortMapByKeyGeneric(Map<E, T> map){
+		TreeMap<E, T> treeMap = new TreeMap<E, T>(map);
+		
+		return treeMap;
+	}
 	
 	/**
 	 * This method sort a map according to values

@@ -103,23 +103,28 @@ public class MainGuiGeneralAppStarter {
 	
 	public static EasterEggsInitializer easterEggInitializer;
 	
+	public static Thread getLibcheckerThread() {
+		return new Thread(()-> {
+			try {
+				// Check hard coded plugins presence
+				tesseractAvailable = LibChecker.checkTesseract();
+				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
+				jnetPcapAvailable = LibChecker.checkJnetPcap();
+				hwInfoAvailable = LibChecker.checkHardwareInfoDependencies();
+				
+				updateInstalledPlugins();
+			} catch (Exception e) {
+				logger.warn("Cannot check avalaibility of plugins :(");
+			}
+		});
+	}
+	
 	public static Thread getConfigInitializerThread() {
 		return new Thread(()-> {
 			// INITIALIZE .INI CONFIGURATION (ScreepT + Launcher) FROM CONFIG DEFAULT FILES
 			try {
 				loaderGraphics.update("Initializing user configuration", 1);
 				
-				iniFileManager = new IniFileManager(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
-				iniFileManager.initFromINIFile();
-				LOG_LEVEL_AT_START = iniFileManager.logLevel;
-				logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
-				
-				if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
-					logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
-				}
-				
-				LogManager.getRootLogger().setLevel(LOG_LEVEL_AT_START);
-
 				currentConfiguration = new INItializer(new Wini(new File(GeneralConfig.DEFAULT_INI)));
 				currentConfiguration.readConfigIniFile();
 				System.setProperty("file.encoding", currentConfiguration.getGenOpt().getCharset());
@@ -132,32 +137,57 @@ public class MainGuiGeneralAppStarter {
 	}
 	
 	public static void main(String[] args) {
-		SCREEPT_BENCHMARKER.registerEvent("Main function entered", true);
+		SCREEPT_BENCHMARKER.registerEvent("Main function entered");
 		
 		long startTime = System.currentTimeMillis();
 		
-		SCREEPT_BENCHMARKER.registerEvent("Start EULA check", true);
+		SCREEPT_BENCHMARKER.registerEvent("Start EULA check");
 		checkEULAstatus();
 		
-		SCREEPT_BENCHMARKER.registerEvent("Loader graphics initialization", true);
+		SCREEPT_BENCHMARKER.registerEvent("Loader graphics initialization");
 		loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
 		loaderGraphics.setIconImage(new ImageIcon(ImagesPathConfigurator.MAIN_APP_ICON).getImage());
 		loaderGraphics.indeterminate(true, "Loading configuration");
 		
 		try {
+			Thread libCheckerThread = getLibcheckerThread();
+			Thread configInitializerThread = getConfigInitializerThread();
+			
 			try {
 				
 				// Load Internal configuration and dialog helper
-				SCREEPT_BENCHMARKER.registerEvent("General config initialization", true);
-				GeneralConfig.initLazyGeneralConfig();
-
-				SCREEPT_BENCHMARKER.registerEvent("Dialog helpers initialization", true);
-				dialogHelper = new JOptionHelperExtended(null);
-				fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
+				printElapsed("Main Properties initialization started...", startTime);
+				SCREEPT_BENCHMARKER.registerEvent("General config initialization started");
 				
+				// Load main properties file
+				GeneralConfig.initLazyGeneralConfig();
+				
+				SCREEPT_BENCHMARKER.registerEvent("General config initialization finished");
+				printElapsed("Main Properties initialized!", startTime);
+				
+				String syncAsyncMode = GeneralConfig.ASYNC_MODULES_LOAD ? "asyncronous" : "syncronous";
+				
+				SCREEPT_BENCHMARKER.registerEvent("Starting " + syncAsyncMode + " libraries checker thread");
+				libCheckerThread.start();
+				if(!GeneralConfig.ASYNC_MODULES_LOAD)
+					libCheckerThread.join();
+				
+				SCREEPT_BENCHMARKER.registerEvent("Starting " + syncAsyncMode + " config initialization thread");
+				configInitializerThread.start();
+				if(!GeneralConfig.ASYNC_MODULES_LOAD)
+					configInitializerThread.join();
+
+				SCREEPT_BENCHMARKER.registerEvent("Dialog helpers initialization started");
+				dialogHelper = new JOptionHelperExtended(null);
+				SCREEPT_BENCHMARKER.registerEvent("JOption helper initialization completed");
+				fileDialogHelper = new GenericFileChooserDialog(currentConfiguration);
+				SCREEPT_BENCHMARKER.registerEvent("File chooser initialization completed");
+				
+				SCREEPT_BENCHMARKER.registerEvent("Static helpers vars initialization started");
 				GuiUtilsExtended.init();
 				JOptionHelperExtended.init();
 				AWTExceptionHandler.init();
+				SCREEPT_BENCHMARKER.registerEvent("Static helpers vars initialization completed");
 				
 				try {
 					UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
@@ -167,8 +197,10 @@ public class MainGuiGeneralAppStarter {
 				
 				try {
 					// Preload network configuration
+					SCREEPT_BENCHMARKER.registerEvent("network config loading started");
 					loaderGraphics.update("Preloading Network configuration", 1);
 					new ProxySettingsGUI(ModalityType.TOOLKIT_MODAL, true, GeneralConfig.DEF_PROXY_CONFIG_STRING);
+					SCREEPT_BENCHMARKER.registerEvent("network config loading finished");
 					logger.info("Network configuration applied");
 				} catch (Exception e) {
 					logger.info("An error occurred while preloading application's network settings");
@@ -183,15 +215,29 @@ public class MainGuiGeneralAppStarter {
 			loaderGraphics.indeterminate(false);
 			printElapsed("dialogHelper and GeneralConfig initialization finished", startTime);
 			
-			SCREEPT_BENCHMARKER.registerEvent("Starting async config initialization thread", true);
-			Thread configInitializerThread = getConfigInitializerThread();
-			configInitializerThread.start();
-			
 			try {
+				
+				// READ LOGLEVEL FROM LAUNCHER .INI CONFIGURATION
+				iniFileManager = new IniFileManager(GeneralConfig.DEFAULT_LAUNCHER_INI_PATH);
+				iniFileManager.initFromINIFile();
+				LOG_LEVEL_AT_START = iniFileManager.logLevel;
+				logger.info("Chosen log level: " + LOG_LEVEL_AT_START);
+				
+				if(LOG_LEVEL_AT_START != null && LOG_LEVEL_AT_START.equals(Level.OFF)) {
+					logger.warn("Logger disabled by user choice: nothing will be logged in this session.");
+				}
+				
+				// APPLY LOG LEVEL TO LOG4J properties file
+				PropertiesManager loggerProps = new PropertiesManager(GeneralConfig.LOG_PROPERTIES_PATH);
+				loggerProps.saveCommentedProperty("log4j.rootLogger", LOG_LEVEL_AT_START + ", FILE, console");
+				
 				// Initialize logger properties
-				SCREEPT_BENCHMARKER.registerEvent("Loading logger properties", true);
+				SCREEPT_BENCHMARKER.registerEvent("Loading logger properties");
 				PropertyConfigurator.configure(GeneralConfig.LOG_PROPERTIES_PATH);
 				logger.info(ScreepTLoggerUtils.getStartString(GeneralConfig.APPLICATION_NAME, true));
+
+				// Apply log level
+				LogManager.getRootLogger().setLevel(LOG_LEVEL_AT_START);
 				
 				printElapsed("Log properties loaded", startTime);
 				
@@ -205,7 +251,7 @@ public class MainGuiGeneralAppStarter {
 			
 			try {
 				// Load updates manager module
-				SCREEPT_BENCHMARKER.registerEvent("Loading updates manager", true);
+				SCREEPT_BENCHMARKER.registerEvent("Loading updates manager");
 				loaderGraphics.update("Starting updates manager...", 5);
 				updatesManager = new UpdatesManager(new URL(GeneralConfig.WEB_UPDATES_MANIFEST_URL), GeneralConfig.APP_VERSION);
 				updatesManager.emptyUpdatesDir();
@@ -216,7 +262,7 @@ public class MainGuiGeneralAppStarter {
 			
 			try {
 				// Load plugin manager module
-				SCREEPT_BENCHMARKER.registerEvent("Starting plugin manager", true);
+				SCREEPT_BENCHMARKER.registerEvent("Starting plugin manager");
 				loaderGraphics.update("Starting plugin manager...", 6);
 				pluginManager = new PluginManager();
 				logger.info("Plugin manager started!");
@@ -224,23 +270,12 @@ public class MainGuiGeneralAppStarter {
 				logger.error("Cannot initialize Plugin Manager :(", e);
 			}
 			
-			try {
-				// Check hard coded plugins presence
-				SCREEPT_BENCHMARKER.registerEvent("Checking available plugins", true);
-				tesseractAvailable = LibChecker.checkTesseract();
-				voiceSpeakerAvailable = LibChecker.checkVoiceSpeaker();
-				jnetPcapAvailable = LibChecker.checkJnetPcap();
-				hwInfoAvailable = LibChecker.checkHardwareInfoDependencies();
-				
-				updateInstalledPlugins();
-			} catch (Exception e) {
-				logger.warn("Cannot check avalaibility of plugins :(");
+			if(GeneralConfig.ASYNC_MODULES_LOAD) {
+				SCREEPT_BENCHMARKER.registerEvent("Waiting async configuration loading...");
+				configInitializerThread.join();
 			}
 			
-			SCREEPT_BENCHMARKER.registerEvent("Waiting async configuration loading...", true);
-			configInitializerThread.join();
-			
-			SCREEPT_BENCHMARKER.registerEvent("Starting Main AWT Exception handler", true);
+			SCREEPT_BENCHMARKER.registerEvent("Starting Main AWT Exception handler");
 			loaderGraphics.update("Starting Exception handler...", 8);
 			
 			// CATCH ALL EXCEPTION UNCATCHED DURING SW EXECUTION AND ANALYZE IF THEY ARE Errors or Exceptions
@@ -257,7 +292,7 @@ public class MainGuiGeneralAppStarter {
 
 			printElapsed("AWT error handler loaded", startTime);
 			
-			SCREEPT_BENCHMARKER.registerEvent("Writing signal file for other instances", true);
+			SCREEPT_BENCHMARKER.registerEvent("Writing signal file for other instances");
 			writeSignalFileForExternalJars();
 			argumentsFiles = FileVarious.getFileArrayFromStrings(args);
 			
@@ -267,15 +302,20 @@ public class MainGuiGeneralAppStarter {
 			printElapsed("Initial configuration completed", startTime);
 			loaderGraphics.update("Initializing main application...", 15);
 			
-			SCREEPT_BENCHMARKER.registerEvent("Starting key listener", true);
+			SCREEPT_BENCHMARKER.registerEvent("Starting key listener");
 			startSafeKeyBoardThreadListener();
+			
+			if(GeneralConfig.ASYNC_MODULES_LOAD) {
+				SCREEPT_BENCHMARKER.registerEvent("Waiting async plugin checker...");
+				libCheckerThread.join();
+			}
 			
 			/*************************
 			 * LAUNCH MAIN APPLICATION
 			 *************************/
-			SCREEPT_BENCHMARKER.registerEvent("Configurations loaded: Starting main Application", true);
+			SCREEPT_BENCHMARKER.registerEvent("Configurations loaded: Starting main Application");
 			boolean mainAppRunning = MainGUI.mainApplicationGeneral(currentConfiguration);
-			SCREEPT_BENCHMARKER.registerEvent("Application started", true);
+			SCREEPT_BENCHMARKER.registerEvent("Application started");
 			GuiUtils.forceToFront(MainGUI.mainAPP.getMainFrame());
 			/** MainApp: LAUNCHED :)**/
 			
@@ -296,15 +336,17 @@ public class MainGuiGeneralAppStarter {
 			
 			easterEggInitializer = new EasterEggsInitializer(MainGUI.mainGuiUtils);
 			
-			SCREEPT_BENCHMARKER.registerEvent("Application launched correctly!", true);
+			SCREEPT_BENCHMARKER.registerEvent("Application launched correctly!");
+			SCREEPT_BENCHMARKER.finalize();
 			printElapsed("Launch completed", startTime);
 			
-			logger.debug("\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedRecordsString()
+			logger.debug("\n\n(ASYNC_MODULES_LOAD: " + GeneralConfig.ASYNC_MODULES_LOAD + ")\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedRecordsString()
 					+ "\n\n############################\n\n");
 		// CATCH ALL ERRORS DURING INITIALIZATION, ADVICE USER AND ASK TO EXIT
 		} catch (Throwable e) {
-			SCREEPT_BENCHMARKER.registerEvent("Error launching application", true);
-			logger.debug("\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedRecordsString()
+			SCREEPT_BENCHMARKER.registerEvent("Error launching application");
+			SCREEPT_BENCHMARKER.finalize();
+			logger.debug("\n\n(ASYNC_MODULES_LOAD: " + GeneralConfig.ASYNC_MODULES_LOAD + ")\n\n############################\nSCREEPT_BENCHMARKER Analysys:\n\n" + SCREEPT_BENCHMARKER.getSortedRecordsString()
 				+ "\n\n############################\n\n");
 			
 			printElapsed("Launch finished with errors" + Arrays.deepToString(e.getStackTrace()), startTime);

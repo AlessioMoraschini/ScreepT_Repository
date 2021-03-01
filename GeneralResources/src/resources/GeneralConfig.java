@@ -208,6 +208,7 @@ public class GeneralConfig {
 	public static String debugPreRead;
 	private static boolean FLAG_DEBUG_GRAPHICS;
 	public static String DEBUG_GRAPHICS;
+	public static boolean ASYNC_MODULES_LOAD;
 	
 	// TITLE REFRESHER
 	public static int TITLE_REFRESH_TIME = resourcesFilePathsMappings.getIntVarFromProps("TITLE_REFRESH_TIME", 2000);
@@ -510,6 +511,7 @@ public class GeneralConfig {
 			debugPreRead = resourcesFilePathsMappings.getProperty("FLAG_DEBUG_GRAPHICS");
 			FLAG_DEBUG_GRAPHICS = (debugPreRead!= null && debugPreRead.equalsIgnoreCase("true"))? true : false;
 			DEBUG_GRAPHICS = (FLAG_DEBUG_GRAPHICS)? "debug," : "";
+			ASYNC_MODULES_LOAD = resourcesFilePathsMappings.getBooleanVarFromProps("ASYNC_MODULES_LOAD", true);
 			
 			// Tooltips
 			TOOLTIP_DELAY = resourcesFilePathsMappings.getIntVarFromProps("TOOLTIP_DELAY", 400);
