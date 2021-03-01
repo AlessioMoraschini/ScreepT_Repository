@@ -32,6 +32,7 @@ import resources.SoundsManagerExtended;
 import tabbededitor.CustomTabbedEditor;
 import tabbedpaneutils.CustomTabbedPaneUI_v1;
 import tabbedpaneutils.TabUtils;
+import treeutils.FileNamedTreeTransferHandler;
 import treeutils.TreeUtils;
 import treeutils.om.FileTreeModel;
 import utility.string.StringWorker;
@@ -260,6 +261,10 @@ public class TextEditor extends ModulePanel {
 		splitPaneTreeAndVerticalSplit.setBackground(currentConfiguration.getTextEditorOpt().getFilePanelBackCol());
 		
 		leftFileTree = new JTree(new FileTreeModel(new File(currentConf.getTextEditorOpt().defaultWorkspacePath)));
+		leftFileTree.setDragEnabled(true);
+		leftFileTree.setTransferHandler(new FileNamedTreeTransferHandler(MainGUI.dialogHelper, () -> {
+			textEditorUtils.refreshTree(getCurrentTabEditor().loadedTabObj.loadedFile, true);
+		}));
 		mouseListenerTreeFilePanel = new TreeFileMouseListenerTxtEditor(leftFileTree, this);
 		
 		leftFileTree.setComponentPopupMenu(mouseListenerTreeFilePanel.getPopUpMenu());

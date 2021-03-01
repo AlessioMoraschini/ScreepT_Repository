@@ -156,6 +156,9 @@ public class MainGuiManager {
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerFileTreePosX", currentConfiguration.getTextEditorOpt().getDividerFileTreePosX());
 		currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "dividerBottomPosRatio", String.valueOf(currentConfiguration.getTextEditorOpt().getDividerBottomPosRatio()));
 		
+//		DEFAULT_FILE_TREE_ANCESTOR_LEVEL
+		GeneralConfig.resourcesFilePathsMappings.saveCommentedProperty("DEFAULT_FILE_TREE_ANCESTOR_LEVEL", String.valueOf(GeneralConfig.DEFAULT_FILE_TREE_ANCESTOR_LEVEL));
+		
 		// CHECK UNSAVED TEXT EDITOR FILES
 		if(!MainGuiUtils.askUnsavedTextFiles()) {
 			mainFrameScreept.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
