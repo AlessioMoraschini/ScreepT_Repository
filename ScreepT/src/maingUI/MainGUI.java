@@ -60,6 +60,7 @@ import gui.PluginManagerGUI;
 import guistyle.GUIStyelSettingsExtended;
 import impl.INItializer;
 import jmenu.CustomJmenuItem;
+import mainlauncher.ScreepTLauncher;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -517,6 +518,36 @@ public class MainGUI extends MainGuiParent{
 				}
 			}
 		});
+
+ 		mntmAddToWindowsContextmenu = new CustomJmenuItem(new AbstractAction("Add to Windows context menu after right click on file") {
+ 			public void actionPerformed(ActionEvent e) {
+ 					
+ 				String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+				try {
+					Process proc = SysUtils.launchExeAsAdmin(path, path, ScreepTLauncher.CMD_REGISTRY_ADD_OPEN_WITH);
+					proc.waitFor();
+					dialogHelper.info("Done!");
+				} catch (Exception e1) {
+					logger.error("Cannot launch registry adder", e1);
+					dialogHelper.error("An error occurred!");
+				}
+ 			}
+ 		});
+
+ 		mntmRemoveFromWindowsContextmenu = new CustomJmenuItem(new AbstractAction("Remove from Windows file right click context menu") {
+ 			public void actionPerformed(ActionEvent e) {
+ 				
+ 				String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+ 				try {
+ 					Process proc = SysUtils.launchExeAsAdmin(path, path, ScreepTLauncher.CMD_REGISTRY_REMOVE_OPEN_WITH);
+ 					proc.waitFor();
+ 					dialogHelper.info("Done!");
+ 				} catch (Exception e1) {
+ 					logger.error("Cannot launch registry adder", e1);
+ 					dialogHelper.error("An error occurred!");
+ 				}
+ 			}
+ 		});
 
 		// NOT OPENING VIEW - EXIT AND CLOSE SCREEPT
 		mntmExit = new CustomJmenuItem(new AbstractAction("Exit") {

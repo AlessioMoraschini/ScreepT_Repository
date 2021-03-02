@@ -40,6 +40,10 @@ public class MainStandAloneUpdater {
 	
 	public static SafeLogger logger = new SafeLogger(MainStandAloneUpdater.class);
 	
+	public static final String CMD_FLAG_GENERATE_HASHES = "-generateHashes";
+	public static final String CMD_FLAG_MAIN_RELEASE = "-mainRelease";
+	public static final String CMD_FLAG_UPLOAD_FTP = "-uploadFtpUpdates";
+	
 	public static final String UPDATER_LOG_FILE_NAME = "updater_history";
 	public static final String UPDATER_LOG_FILE = "./" + UPDATER_LOG_FILE_NAME + ".log";
 	
@@ -92,11 +96,11 @@ public class MainStandAloneUpdater {
 	
 	private static void mainArgsOrhcestrator(String[] args) {
 		
-		if(args[0].trim().contains("-generateHashes")) {
+		if(args[0].trim().contains(CMD_FLAG_GENERATE_HASHES)) {
 			
 			ArrayList<File> toUpload = new ArrayList<>();
 			
-			if (args[0].trim().contains("-mainRelease")) {
+			if (args[0].trim().contains(CMD_FLAG_MAIN_RELEASE)) {
 				logger.info("\n\n\n******************************************************" 
 						+ "\n* MainRelease detected: -generateHashes-mainRelease  *"
 						+ "\n******************************************************/\n\n");
@@ -113,7 +117,7 @@ public class MainStandAloneUpdater {
 				toUpload = mainGenerateUpdatesHashed(args);
 			}
 			
-			if(args[0].trim().contains("-uploadFtpUpdates")) {
+			if(args[0].trim().contains(CMD_FLAG_UPLOAD_FTP)) {
 				
 				logger.info("\n\n\n*******************************************" 
 						+ "\n* Upload flag detected: -uploadFtpUpdates *"
@@ -132,9 +136,9 @@ public class MainStandAloneUpdater {
 		
 		} else {
 
-			logger.info("\n\n\n***************************************************" 
-					+ "\n* App embedded Update detected: -uploadFtpUpdates *"
-					+ "\n***************************************************/\n\n");
+			logger.info("\n\n\n****************************" 
+					+ "\n* App embedded Update detected   *"
+					+ "\n****************************/\n\n");
 			/**********************************************************************************************************		
 			 * Function B: update ScreepT 
 			 * Usage -> update ScreepT function: java -jar updater.jar updater.jar UPDATES/updates ScreepT_0.9.5.jar

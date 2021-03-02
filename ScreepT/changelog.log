@@ -1,3 +1,5 @@
+2021-03-02  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Added restart as administrator option + fixed .exe startup bug
+
 2021-03-01  Fixed open with functionality in Windows to load files from other drives
 
 2021-03-01  Added file drag copy/move from file tree

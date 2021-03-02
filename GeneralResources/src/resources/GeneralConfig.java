@@ -45,7 +45,8 @@ public class GeneralConfig {
 	// MAIN PROPERTIES                                                                                                                                                                                           
 	public static String AUTHOR = "A.M. Design and Development";                                                                                                                                                                      
 	public static String APP_VERSION = resourcesFilePathsMappings.getProperty("APP_VERSION", "Unknown Version");                                                                                                                                   
-	public static String APPLICATION_NAME = "ScreepT - V" + APP_VERSION;                                                                                                                                                               
+	public static String APPLICATION_SHORT_NAME = resourcesFilePathsMappings.getProperty("APPLICATION_SHORT_NAME", "ScreepT");                                                                                                                                                               
+	public static String APPLICATION_NAME = APPLICATION_SHORT_NAME + " - V" + APP_VERSION;                                                                                                                                                               
 	public static String BUILD_INCREMENTAL_NUMBER = resourcesFilePathsMappings.getProperty("BUILD_INCREMENTAL_NUMBER", "Unknown build number");     
 	public static String BUILD_COMMIT_HASH = resourcesFilePathsMappings.getProperty("BUILD_COMMIT_HASH", "Undefined commit hash");
 	public static String CHANGE_LOG_FILE_PATH = resourcesFilePathsMappings.getProperty("CHANGE_LOG_FILE_PATH", "");

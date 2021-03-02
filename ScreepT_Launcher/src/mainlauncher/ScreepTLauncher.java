@@ -20,7 +20,6 @@ import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -50,6 +49,7 @@ import resources.GeneralConfig;
 import resources.ImagesPathConfigurator;
 import utility.log.SafeLogger;
 import utility.properties.PropertiesManager;
+import utility.string.StringWorker;
 import utils.SysUtils;
 
 	/**
@@ -74,6 +74,11 @@ import utils.SysUtils;
 		// ScreepTLauncher logger
 		public static SafeLogger logger = new SafeLogger(ScreepTLauncher.class); 
 		
+		// REGISTRY
+		public static final String CMD_REGISTRY_ADD_OPEN_WITH = "--regAdd";
+		public static final String CMD_REGISTRY_REMOVE_OPEN_WITH = "--regRemove";
+		
+		// Launcher files name
 		public static final String BATCH_LAUNCHER_NAME = "LauncherBatch.bat";
 		public static final String BASH_LAUNCHER_NAME = "./LauncherBash.sh";
 		
@@ -127,8 +132,17 @@ import utils.SysUtils;
 				System.exit(1);
 			}
 			
+			logger.setLoggerAvailable(false);
 			ARGS = args;
+			logger.info("ARGS:" + StringWorker.strArray(ARGS));
 			argumentsFiles = getFileArrayFromStrings(args);
+			
+			DEFAULT_INI_PATH = GeneralConfig.DEFAULT_LAUNCHER_INI_PATH;
+			iniFileManager = new IniFileManager(DEFAULT_INI_PATH);
+			currentOS = SysUtils.getOsInfoLazy();
+			
+			checkIfStandaloneCommand();
+			
 			checkAlreadyRunning();
 			
 			loaderGraphics = new LauncherLoaderFrame("Loading Launcher...", ImagesPathConfigurator.LAUNCHER_BACK_IMAGE_PATH, null);
@@ -167,14 +181,12 @@ import utils.SysUtils;
 			startPendingDeletesCleanerThread();
 			
 			JVM_ARGS = " -Djava.library.path=\"./" + GeneralConfig.RESOURCES_DIR  + "lib\"";
-			DEFAULT_INI_PATH = GeneralConfig.DEFAULT_LAUNCHER_INI_PATH; 
 			
 			// Initialize logger properties -> FIRST THING TO DO
+			logger.setLoggerAvailable(true);
 			PropertyConfigurator.configure(GeneralConfig.LAUNCHER_LOG_PROPS_PATH);
 			appLogStart();
 	
-			iniFileManager = new IniFileManager(DEFAULT_INI_PATH);
-			
 			for (int i = 0; i < 20; i++) {
 				String dots = new String(new char[i+1]).replace("\0", ".");
 				String msg = "Initializing launcher" + dots;
@@ -197,19 +209,22 @@ import utils.SysUtils;
 		}// end main
 		
 		public static File[] getFileArrayFromStrings(String[] filePaths){
-			logger.debug("ARGUMENT FILES:" + Arrays.toString(filePaths));
-			
-			File[] argumentsFiles = new File[filePaths.length];
-			int j = 0;
-			for(String s : filePaths) {
-				if (!END_ARGS_SECTION.equals(s)) {
-					argumentsFiles[j] = new File(s);
-				}else {
-					break;
+			try {
+				File[] argumentsFiles = new File[filePaths.length];
+				int j = 0;
+				for(String s : filePaths) {
+					if (!END_ARGS_SECTION.equals(s)) {
+						argumentsFiles[j] = new File(s);
+					}else {
+						break;
+					}
+					j++;
 				}
-				j++;
+				return argumentsFiles;
+			
+			} catch (Exception e) {
+				return new File[0];
 			}
-			return argumentsFiles;
 		}
 		
 		public static void start() {
@@ -234,8 +249,6 @@ import utils.SysUtils;
 			
 			jvmHelper = new JvmHelper(IniFileManager.MAX_JRE_VERSION, IniFileManager.MIN_JRE_VERSION);
 			commandsAssembler = new CommandsAssembler(jvmHelper);
-			
-			currentOS = SysUtils.getOsInfoLazy();
 			
 		loaderGraphics.update("Defining listeners...", 35);
 		
@@ -463,6 +476,58 @@ import utils.SysUtils;
 					}
 				}
 			}).start();
+		}
+		
+		// Do other operations such as modify registry or stuff like this
+		// Only windows options
+		public static void checkIfStandaloneCommand() {
+			if(ARGS == null || ARGS.length <= 0 || !currentOS.isWindows())
+				return;
+
+			boolean oldLogger = logger.isLoggerAvailable();
+			
+			StringBuilder builder = new StringBuilder();
+			boolean skipStart = false;
+			
+			if(ARGS[0].trim().equals(CMD_REGISTRY_ADD_OPEN_WITH)) {
+				
+				logger.info(CMD_REGISTRY_ADD_OPEN_WITH + " triggered!");
+				
+				skipStart = true;
+				builder.append(SysUtils.getRegistryAddString(
+						"HKEY_CLASSES_ROOT\\*\\shell\\Open With "+GeneralConfig.APPLICATION_SHORT_NAME
+						,"icon" 
+						,FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER)));
+
+				builder.append(" && ").append(SysUtils.getRegistryAddStringVal(
+						"HKEY_CLASSES_ROOT\\*\\shell\\Open With "+GeneralConfig.APPLICATION_SHORT_NAME+"\\command"
+						,FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER)
+						,"^%1"));
+				
+			} else if(ARGS[0].trim().equals(CMD_REGISTRY_REMOVE_OPEN_WITH)) {
+				logger.info(CMD_REGISTRY_REMOVE_OPEN_WITH + " triggered!");
+				skipStart = true;
+				builder.append(SysUtils.getPathRemoveString(
+						"HKEY_CLASSES_ROOT\\*\\shell\\Open With "+GeneralConfig.APPLICATION_SHORT_NAME));
+			}
+			
+			if(skipStart) {
+				try {
+					logger.info("Launching command\n\n >> " + builder.toString() + "\n\n");
+					Process proc = SysUtils.launchCommand(builder.toString());
+					logger.error(SysUtils.readProcessOutput(proc.getErrorStream()));
+					logger.info("registry written correctly!");
+				
+				} catch (Throwable e) {
+					logger.error("Error while writing to registry.", e);
+					System.exit(1);
+					
+				} finally {
+					System.exit(0);
+				}
+			}
+			
+			logger.setLoggerAvailable(oldLogger);
 		}
 		
 		/**

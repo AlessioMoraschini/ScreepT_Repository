@@ -56,6 +56,7 @@ import impl.INItializer;
 import jmenu.BrowserOpenerMenu;
 import jmenu.CustomJmenuItem;
 import om.LimitedConcurrentList;
+import om.OSinfo;
 import om.TabTextEditorObject;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -123,6 +124,7 @@ public class MainGuiParent {
 	JMenu mnFilesAndDirectories;
 	JMenu mnHelp;
 		JMenu mnrestartPanel;
+		JMenu mnWindowsRegistry;
 		
 			// Top-right elements
 			JMenuItem mntmpadding = new JMenuItem();
@@ -184,6 +186,8 @@ public class MainGuiParent {
 	CustomJmenuItem mntmResetTextEditor;
 	CustomJmenuItem mntmResetConfigManager;
 	CustomJmenuItem mntmResetCrypterPanel;
+	CustomJmenuItem mntmAddToWindowsContextmenu;
+	CustomJmenuItem mntmRemoveFromWindowsContextmenu;
 	
 	// PANELS THAT OPEN IN THE MAIN FRAME
 	public static TextEditor textEditorPanel;
@@ -219,6 +223,7 @@ public class MainGuiParent {
 			mnFilesAndDirectories = new JMenu("Files And Directories");
 		mnHelp = new JMenu("Help");
 			mnrestartPanel = new JMenu("Reset panels...");
+			mnWindowsRegistry = new JMenu("Windows contextual menu management");
 			
 		// JMenuItems are initialized inside MainGUI Constructor, where they are linked to actions - See MainGUIParent for further details on items
 	}
@@ -419,6 +424,11 @@ public class MainGuiParent {
 			mnHelp.add(mntmUserDocumentation);
 			mnHelp.add(new JSeparator());
 			mnHelp.add(mnrestartPanel);
+			if(new OSinfo().isWindows()) {
+				mnHelp.add(mnWindowsRegistry);
+					mnWindowsRegistry.add(mntmAddToWindowsContextmenu);
+					mnWindowsRegistry.add(mntmRemoveFromWindowsContextmenu);
+			}
 			mnHelp.add(mntmReturnToWelcome);
 			mnHelp.add(mntmRestart);
 			mnHelp.add(mntmExit);
@@ -571,6 +581,9 @@ public class MainGuiParent {
 		mntmExportLog.setFont(menuItemFont);
 		mntmEraseLogs.setFont(menuItemFont);
 		mntmUserDocumentation.setFont(menuItemFont);
+		mnWindowsRegistry.setFont(subMenuFont);
+		mntmAddToWindowsContextmenu.setFont(menuItemFont);
+		mntmRemoveFromWindowsContextmenu.setFont(menuItemFont);
 		mnrestartPanel.setFont(subMenuFont);
 		mntmResetAllPanels.setFont(menuItemFont);
 		mntmResetTextEditor.setFont(menuItemFont);
@@ -664,6 +677,7 @@ public class MainGuiParent {
 		mntmLookForPlugins.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PLUGINS));
 		
 		MenuSetter.setIconTextGap(mnrestartPanel, 20);
+		mnWindowsRegistry.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONSOLE));
 		mnrestartPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		mntmResetAllPanels.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		mntmResetTextEditor.setIcon(new ImageIcon(IconsPathConfigurator.ICON_TEXT_EDITOR));

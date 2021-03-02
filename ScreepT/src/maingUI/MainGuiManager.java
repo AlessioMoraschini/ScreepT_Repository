@@ -66,7 +66,7 @@ public class MainGuiManager {
 				
 				if(asAdmin) {
 					String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
-					SysUtils.launchExeAsAdmin(path, path);
+					SysUtils.launchExeAsAdmin(path, path, (String[])null);
 				} else {
 					SysUtils.launchBatchOrBash(nativeLauncherPath, false);
 				}

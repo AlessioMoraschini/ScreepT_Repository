@@ -595,6 +595,17 @@ public class StringWorker {
 	        i++;
 	    }
 	}
+	public static<E> String strArray(E[] array) {
+		int i=0;
+		StringBuilder builder = new StringBuilder();
+		if(array != null)
+			for (E curr : array) {
+				builder.append("Val["+i+"] : " + curr);
+				i++;
+			}
+		
+		return builder.toString();
+	}
 
 	/**
 	 * This method prints string representation of int array using toString

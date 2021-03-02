@@ -545,6 +545,18 @@ public class SysUtils {
 		return builder.toString();
 	}
 	
+	public static Process launchCommand(String command) throws IOException {
+		List<String> commands = new ArrayList<>();
+		if(new OSinfo().isWindows()) {
+			commands.add("cmd.exe");
+			commands.add("/C");
+		}
+		commands.add(command);
+		
+		ProcessBuilder builder = new ProcessBuilder(commands);
+		return builder.start();
+	}
+	
 	/**
 	 * retrieve list of commands, write to file and run it in current OS
 	 */
@@ -586,18 +598,41 @@ public class SysUtils {
 		}
 	}
 	
-	public static Process launchExeAsAdmin(String exePath, String exeLaunchCommand) throws IOException {
+	public static Process launchExeAsAdmin(String exePath, String exeLaunchCommand, String... args) throws IOException, InterruptedException {
 		try {
 			new File(exePath).setExecutable(true);
 		} catch (Exception e) {
 			logger.error("Cannot set jar executable: " + exeLaunchCommand);
 		}
 		
-		if(OS_INFO_LAZY.isWindows())
-			return Runtime.getRuntime().exec("powershell.exe Start-Process '" + exeLaunchCommand + "' -verb RunAs");
-		else
-			return Runtime.getRuntime().exec("sudo " + exeLaunchCommand);
-	}	
+		String params = " ";
+		if(OS_INFO_LAZY.isWindows()) {
+			if(args != null) {
+				params = " -ArgumentList ";
+				int i = 0;
+				for(String arg : args) {
+					params +=  "'"+ arg +"'" + ((i < args.length - 1) ? "," : "");
+					i++;
+				}
+			}
+			return Runtime.getRuntime().exec("powershell.exe Start-Process '" + exeLaunchCommand + "' "
+					+ params +  " -verb RunAs");
+		} else {
+			if(args != null) {
+				for(String arg : args) {
+					params +=  arg + " ";
+				}
+			}
+
+			logger.info("Executing process [pwd]");
+			execNlogProcessOutput(Runtime.getRuntime().exec("pwd"));
+			logger.info("Executing process [chmod u+x " + exeLaunchCommand + "]");
+			Process executableMaker = Runtime.getRuntime().exec("chmod u+x " + exeLaunchCommand);
+			execNlogProcessOutput(executableMaker);
+			executableMaker.waitFor();
+			return Runtime.getRuntime().exec("sudo " + exeLaunchCommand + params);
+		}
+	}
 
 	/**
 	 * retrieve list of commands, write to file and run it in current OS
@@ -926,6 +961,33 @@ public class SysUtils {
 				return this.bashProgamName;
 			}
 		}
+	}
+
+	/**
+	 * Get registry add command by path, key, and value
+	 * 
+	 * [REG ADD "HKEY_CLASSES_ROOT\*\shell\Open_with_ScreepT\command" /t REG_SZ /d "\"C:\Users\xx\Desktop\SCREEPT_LATEST_V1\ScreepT.exe\" \"^%1\"" /f]
+	 */
+	public static String getRegistryAddString(String path, String key, String val) {
+		return "REG ADD \""+path+"\" /v \""+key+"\" /t REG_SZ /d \""+val+"\" /f";
+	}
+
+	/**
+	 * Get registry add command by path, val, and parameter
+	 * 
+	 * [REG ADD "HKEY_CLASSES_ROOT\*\shell\Open_with_ScreepT\command" /t REG_SZ /d "\"C:\Users\xx\Desktop\SCREEPT_LATEST_V1\ScreepT.exe\" \"^%1\"" /f]
+	 */
+	public static String getRegistryAddStringVal(String path, String val, String param) {
+		return "REG ADD \""+path+"\" /t REG_SZ /d \"\\\""+val+"\\\" \\\"" + param + "\\\"\" /f";
+	}
+
+	/**
+	 * Get registry remove command by key
+	 * @param path
+	 * @return
+	 */
+	public static String getPathRemoveString(String path) {
+		return "REG DELETE \""+path+"\" /f";
 	}
 
 }
