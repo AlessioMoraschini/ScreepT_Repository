@@ -5,7 +5,7 @@
 ::YAwzuBVtJxjWCl3EqQJgSA==
 ::ZR4luwNxJguZRRnk
 ::Yhs/ulQjdF+5
-::cxAkpRVqdFKZSzk=
+::cxAkpRVqdFKZSTk=
 ::cBs/ulQjdF+5
 ::ZR41oxFsdFKZSDk=
 ::eBoioBt6dFKZSDk=
@@ -26,7 +26,7 @@
 ::ZQ0/vhVqMQ3MEVWAtB9wSA==
 ::Zg8zqx1/OA3MEVWAtB9wSA==
 ::dhA7pRFwIByZRRmh+kg/MVsPBWQ=
-::Zh4grVQjdCyDJGyX8VAjFANMcCCHL2CuCaUgzOf4+ueCrFkUEtcrcYPS5p2AJu8B50TwfJUslmxbisIJMChbbBeufjsLm2tSuXeMI8iOqjPSSVqM41sEJEl1km3ThC4pXNFpjsAL7CK/70XAk6QF33v3W7sxF2Liyrl4BMwY+DaHa1vNn6NhddrvfrPqCzPaBWYNqWjGtNMkx81+Bh9xXBFMjoY6tSnxV9y+xHIh
+::Zh4grVQjdCyDJGyX8VAjFANMcCCHL2CuCaUgzOf4+ueCrFkUEtcrcYPS5p2AJu8B50TwfJUslmxbisIJMChbbBeufjsLm2tSuXeMI8iOqjPSSVqM41sEJEl1km3ThC4pXNFpjsAL7CK/70XAk6QF33v3W7sxF2Liyrl4BMwY+DaHa1vNn6NhddrvfrPqCzPaBWYNqWjGtNMkx81+BiJKSgpTnbwi5DP9Iw==
 ::YB416Ek+ZG8=
 ::
 ::
@@ -34,9 +34,7 @@
 set batdir=%~dp0
 echo %batdir%
 
-cd /D %batdir%\Application
-
-echo %CD%
+cd /D %0\..\Application
 
 java -version
 

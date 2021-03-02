@@ -1,3 +1,5 @@
+2021-03-01  Fixed open with functionality in Windows to load files from other drives
+
 2021-03-01  Added file drag copy/move from file tree
 
 2021-02-28  Various improvements + refactored text editor menu

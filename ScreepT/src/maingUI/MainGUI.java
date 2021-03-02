@@ -510,7 +510,8 @@ public class MainGUI extends MainGuiParent{
 				if (!FLAG_mntmRestart) {
 					FLAG_mntmRestart = true;
 					
-					MainGuiManager.restartApplication();
+					boolean asAdmin = dialogHelper.yesOrNo("Restart as administrator?");
+					MainGuiManager.restartApplication(asAdmin);
 					
 					FLAG_mntmRestart = false;
 				}

@@ -50,9 +50,9 @@ public class MainGuiManager {
 		this.mainGuiUtils = mainGuiUtils;
 	}
 	
-	public static void restartApplication() {
+	public static void restartApplication(boolean asAdmin) {
 		
-		if(!MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_NAME + " ?")) {
+		if(!asAdmin && !MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_NAME + " ?")) {
 			return;
 		}
 		
@@ -63,9 +63,15 @@ public class MainGuiManager {
 				MainGuiUtils.logger.info("Restart requested: restarting application...");
 				
 				closeApplication(999);
-				SysUtils.launchBatchOrBash(nativeLauncherPath, false);
 				
-				MainGuiUtils.logger.info("\n [RESTART REQUESTED] \n\n" + ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
+				if(asAdmin) {
+					String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
+					SysUtils.launchExeAsAdmin(path, path);
+				} else {
+					SysUtils.launchBatchOrBash(nativeLauncherPath, false);
+				}
+				
+				MainGuiUtils.logger.info("\n [RESTART REQUESTED - adminMode="+asAdmin+"] \n\n" + ScreepTLoggerUtils.getExitString(GeneralConfig.APPLICATION_NAME, true));
 				
 				System.exit(0);
 

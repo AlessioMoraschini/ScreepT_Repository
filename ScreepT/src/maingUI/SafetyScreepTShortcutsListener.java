@@ -73,7 +73,13 @@ public class SafetyScreepTShortcutsListener extends KeyListenerParent implements
 				 *  Safe app restart : alt + F5
 				 */
 				if (e.getKeyCode() == KeyEvent.VK_F5 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
-					MainGuiManager.restartApplication();
+					MainGuiManager.restartApplication(false);
+				}
+				/*
+				 *  Safe app restart : alt + F6: as admin
+				 */
+				if (e.getKeyCode() == KeyEvent.VK_F6 && e.isAltDown() && !e.isControlDown() && !e.isShiftDown()) {
+					MainGuiManager.restartApplication(true);
 				}
 			}
 		}

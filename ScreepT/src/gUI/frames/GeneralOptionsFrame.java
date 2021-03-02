@@ -27,6 +27,7 @@ import impl.om.FileOptions;
 import launcherutils.IniFileManager;
 import maingUI.MainGUI;
 import maingUI.MainGuiGeneralAppStarter;
+import maingUI.MainGuiManager;
 import net.miginfocom.swing.MigLayout;
 import network.proxy.ProxySettingsGUI;
 import om.SecurityLevel;
@@ -773,7 +774,9 @@ public class GeneralOptionsFrame extends ParentFrame{
 			} else {
 				if(!SysUtils.removeFromAutostart(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER)) {
 					chckbxAutostart.setSelected(true);
-					dialogHelper.error(GuiUtils.encapsulateInHtml("Cannot remove from autostart menu <br><br> Try to restart application with Administration rights."), "Error");
+					boolean tryAsAdmin = dialogHelper.yesOrNo(GuiUtils.encapsulateInHtml("Cannot remove from autostart menu <br><br> Try to restart application with Administration rights?"), "Error");
+					if(tryAsAdmin)
+						MainGuiManager.restartApplication(tryAsAdmin);
 				};
 			}
 		} catch (IOException e) {
