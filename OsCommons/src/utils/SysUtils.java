@@ -630,7 +630,7 @@ public class SysUtils {
 			Process executableMaker = Runtime.getRuntime().exec("chmod u+x " + exeLaunchCommand);
 			execNlogProcessOutput(executableMaker);
 			executableMaker.waitFor();
-			return Runtime.getRuntime().exec("sudo " + exeLaunchCommand + params);
+			return Runtime.getRuntime().exec("sudo -A " + exeLaunchCommand + params);
 		}
 	}
 

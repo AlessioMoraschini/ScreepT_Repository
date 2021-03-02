@@ -1,4 +1,8 @@
-2021-03-02  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Added restart as administrator option + fixed .exe startup bug
+2021-03-02  (HEAD -> refs/heads/BugFix, tag: refs/tags/0.9.40, refs/remotes/origin/BugFix) V0.9.40 first build
+
+2021-03-02  V0.9.39 stable
+
+2021-03-02  Added restart as administrator option + fixed .exe startup bug
 
 2021-03-01  Fixed open with functionality in Windows to load files from other drives
 
