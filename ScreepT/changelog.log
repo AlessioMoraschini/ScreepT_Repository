@@ -1,4 +1,8 @@
-2021-03-02  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Launch as admin - Linux -> added -A option to show GUI prompt
+2021-03-03  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Fixed clipboard panel reload bug
+
+2021-03-03  (tag: refs/tags/0.9.41) New version 0.9.41 - minor bug fixed
+
+2021-03-02  Launch as admin - Linux -> added -A option to show GUI prompt
 
 2021-03-02  (tag: refs/tags/0.9.40) V0.9.40 first build
 

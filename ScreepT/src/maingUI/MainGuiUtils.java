@@ -123,7 +123,7 @@ public class MainGuiUtils {
 										logger.error(message, e1);
 										
 									} else if(e1 instanceof UpdatesUnavailableException) {
-										dialogHelper.warn(e1.getMessage(), "An error occurred");
+										dialogHelper.warn(e1.getMessage(), "Updates not found. It's possibile that they're being upgraded, retry again later.");
 										logger.error(e1.getMessage(), e1);
 										
 									} else {
@@ -143,7 +143,7 @@ public class MainGuiUtils {
 							// If version == null means that sw is already updated
 							if (MainGuiGeneralAppStarter.updatesManager.udpdatesReachable()) {
 								logger.info("Nothing to download, current version is up to date :)");
-									dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
+								dialogHelper.info("Nothing to download, current version is up to date :)", "Already up to date");
 							}else {
 								logger.error("Cannot retrieve remote update data, server is unreachable.");
 								dialogHelper.error("Cannot retrieve remote update data, server is unreachable.", "Connection error");

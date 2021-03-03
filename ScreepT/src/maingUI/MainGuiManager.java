@@ -64,6 +64,10 @@ public class MainGuiManager {
 				
 				closeApplication(999);
 				
+				// If there are updates to install then restart has already been triggered
+				if(MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get() && MainGUI.updatesDownloaded != null)
+					System.exit(0);
+				
 				if(asAdmin) {
 					String path = FileVarious.getCanonicalPathSafe(GeneralConfig.MAIN_APP_OS_DEPENDENT_LAUNCHER);
 					SysUtils.launchExeAsAdmin(path, path, (String[])null);
@@ -388,7 +392,7 @@ public class MainGuiManager {
 	public static void checkUpdatesWaitingForInstall() {
 		try {
 			if (MainGuiGeneralAppStarter.updatesManager.updatesReadyToInstall.get()) {
-				MainGuiUtils.logger.error("Updates detected, starting updater jar application...");
+				MainGuiUtils.logger.info("Updates detected, starting updater jar application...");
 				if(MainGUI.updatesDownloaded != null) {
 					String command = "java -jar " + MainGUI.updatesDownloaded[0].getName() 
 						+ " " + MainGUI.updatesDownloaded[0].getName() 
@@ -398,7 +402,7 @@ public class MainGuiManager {
 					Runtime.getRuntime().exec(command);
 					MainGuiUtils.logger.info("Updater jar application launched!");
 				}else {
-					MainGuiUtils.logger.error("updatesDownloaded is null!");
+					MainGuiUtils.logger.error("MainGUI.updatesDownloaded is null!");
 				}
 			}
 		} catch (Exception e) {
