@@ -45,7 +45,7 @@ public class SafetyScreepTShortcutsListener extends KeyListenerParent implements
 			super.dispatchKeyEvent(e);
 			
 			// HERE SHORTCUTS KEY WITH CTR|ALT|SHIFT
-			if (isShortcutKey(e) || e.getKeyCode() == 27) {
+			if (isShortcutKey(e) || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				
 				/*
 				 *  Safe app shutdown -> alt + f4 X 3 times (must be in a row and with max interval between)
@@ -61,7 +61,7 @@ public class SafetyScreepTShortcutsListener extends KeyListenerParent implements
 				/*
 				 *  Safe app shutdown -> esc X 3 times (must be in a row and with max interval between)
 				 */
-				if (e.getKeyCode() == 27 && repeatedClicksInLimitedTime(e, 4, false, false, false, MAX_INTERVAL_MS)) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE && repeatedClicksInLimitedTime(e, 4, false, false, false, MAX_INTERVAL_MS)) {
 					if (askKill()) {
 						
 						logger.info(this.getClass().getName() + " emergency kill procedure started.");

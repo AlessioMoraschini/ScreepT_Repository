@@ -52,7 +52,8 @@ public class MainGuiManager {
 	
 	public static void restartApplication(boolean asAdmin) {
 		
-		if(!asAdmin && !MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_NAME + " ?")) {
+		String adminFlag = asAdmin ? " as administrator" : "";
+		if(!MainGUI.dialogHelper.yesOrNo("Restart " + GeneralConfig.APPLICATION_SHORT_NAME + adminFlag + " ?")) {
 			return;
 		}
 		

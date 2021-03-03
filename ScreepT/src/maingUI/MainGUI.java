@@ -511,13 +511,25 @@ public class MainGUI extends MainGuiParent{
 				if (!FLAG_mntmRestart) {
 					FLAG_mntmRestart = true;
 					
-					boolean asAdmin = dialogHelper.yesOrNo("Restart as administrator?");
-					MainGuiManager.restartApplication(asAdmin);
+					MainGuiManager.restartApplication(false);
 					
 					FLAG_mntmRestart = false;
 				}
 			}
 		});
+
+ 		// NOT OPENING VIEW - RESTART SCREEPT
+ 		mntmRestartAsAdmin = new CustomJmenuItem(new AbstractAction("Restart as administrator") {
+ 			public void actionPerformed(ActionEvent e) {
+ 				if (!FLAG_mntmRestart) {
+ 					FLAG_mntmRestart = true;
+ 					
+					MainGuiManager.restartApplication(true);
+ 					
+ 					FLAG_mntmRestart = false;
+ 				}
+ 			}
+ 		});
 
  		mntmAddToWindowsContextmenu = new CustomJmenuItem(new AbstractAction("Add to Windows context menu after right click on file") {
  			public void actionPerformed(ActionEvent e) {

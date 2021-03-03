@@ -143,6 +143,7 @@ public class MainGuiParent {
 	CustomJmenuItem mntmloadSrcrYptDefaultConf;
 	CustomJmenuItem mntmExit;
 	CustomJmenuItem mntmRestart;
+	CustomJmenuItem mntmRestartAsAdmin;
 	CustomJmenuItem mntmUserDocumentation;
 	CustomJmenuItem mntmGenOpt;
 	CustomJmenuItem mntmCustomizeUIView;
@@ -431,6 +432,7 @@ public class MainGuiParent {
 			}
 			mnHelp.add(mntmReturnToWelcome);
 			mnHelp.add(mntmRestart);
+			mnHelp.add(mntmRestartAsAdmin);
 			mnHelp.add(mntmExit);
 				// SUB-MENU
 				mnrestartPanel.add(mntmResetAllPanels);
@@ -590,6 +592,7 @@ public class MainGuiParent {
 		mntmResetCrypterPanel.setFont(menuItemFont);
 		mntmResetConfigManager.setFont(menuItemFont);
 		mntmRestart.setFont(menuItemFont);
+		mntmRestartAsAdmin.setFont(menuItemFont);
 		mntmExit.setFont(menuItemFont);
 	}
 	
@@ -684,6 +687,7 @@ public class MainGuiParent {
 		mntmResetCrypterPanel.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
 		mntmResetConfigManager.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CONF_MANAGER));
 		
+		mntmRestartAsAdmin.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESTART));
 		mntmRestart.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RESTART));
 		mntmExit.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXIT));
 	}
@@ -757,6 +761,7 @@ public class MainGuiParent {
 			mntmResetCrypterPanel.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_8, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 			mntmResetConfigManager.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_7, CTRL_MASK | ALT_MASK | SHIFT_MASK));
 		mntmRestart.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F5, ALT_MASK));
+		mntmRestartAsAdmin.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F6, ALT_MASK));
 		mntmExit.setAccelerator(KeyStroke.getKeyStroke( java.awt.event.KeyEvent.VK_F4, ALT_MASK ));
 	}
 	
