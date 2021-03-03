@@ -551,6 +551,7 @@ public class GeneralConfig {
 			 * Contains String themes name, and source theme file, lazy initialized
 			 */
 			XML_THEMES_MAP = getRefreshedThemesMap();
+			
 			/**
 			 * Contains String themes name, and theme content lazy read
 			 */
@@ -582,6 +583,23 @@ public class GeneralConfig {
 			return new Boolean(true);
 		} catch (Exception e) {
 			return null;
+		}
+	}
+	
+	public static void refreshClipboardMap() {
+		synchronized (CLIPBOARD_PANEL_MAP) {
+			CLIPBOARD_PANEL_MAP = getRefreshedClipBoardsMap();
+		}
+	}
+	public static void refreshThemeseMap() {
+		synchronized (XML_THEMES_MAP) {
+			XML_THEMES_MAP = getRefreshedThemesMap();
+		}
+	}
+
+	public static void refreshThemeseContentMap() {
+		synchronized (XML_THEMES_CONTENT_MAP) {
+			XML_THEMES_CONTENT_MAP = getRefreshedThemesContentMap();
 		}
 	}
 	

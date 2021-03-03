@@ -179,7 +179,9 @@ public class CustomTabbedEditor implements ITabsManager {
 					} catch (Exception e1) {
 					}
 					
-					GuiUtils.giveFocusToComponent(loadedTabObj.textArea);
+					SwingUtilities.invokeLater(() -> {
+						GuiUtils.giveFocusToComponent(loadedTabObj.textArea);
+					});
 				}
 			}
 		});
