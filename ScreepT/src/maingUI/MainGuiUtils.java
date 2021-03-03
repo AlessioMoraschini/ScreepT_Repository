@@ -195,7 +195,7 @@ public class MainGuiUtils {
 			File newLicense = DownloadUtils.downloadFile(false, new URL(GeneralConfig.WEB_UPDATES_LICENSE_URL), GeneralConfig.TEMP_DIRECTORY+"tempNewLicense.html", null);
 			
 			if (!ChecksumHasher.equalsFilesChecksum(newLicense, GeneralConfig.LICENSE_FILE, HashingFunction.SHA512)) {
-				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(true, false);
+				LightLicenseViewer licenseViewer = MainGUI.mainAPP.windowCreator.newLicenseFrame(newLicense, true, false);
 				return UserLicenseChoice.ACCEPTED.equals(licenseViewer.userChoice);
 			} else {
 				return true;

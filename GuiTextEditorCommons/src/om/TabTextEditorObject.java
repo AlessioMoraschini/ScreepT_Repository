@@ -611,7 +611,7 @@ public class TabTextEditorObject {
 				
 				@Override
 				public void hyperlinkUpdate(HyperlinkEvent e) {
-					if(canOpenAgain.get()) {
+					if(e != null && e.getURL() != null && canOpenAgain.get()) {
 						canOpenAgain.set(false);
 						timer.executeDelayedAsync();
 						SysUtils.openUrlInBrowserNative(e.getURL().toString());

@@ -168,7 +168,7 @@ public class TextEditorUtils {
 	 */
 	public void addCurrentSelectionToLastSearched() {
 		String selectedText = currentTextEditor.getCurrentTabEditor().loadedTabObj.textArea.getSelectedText();
-		if(selectedText != null) {
+		if(!StringWorker.isEmpty(selectedText)) {
 			currentTextEditor.currentConfiguration.getTextEditorOpt().lastSearchTerms.addUniqueToTop(selectedText);
 		}
 	}

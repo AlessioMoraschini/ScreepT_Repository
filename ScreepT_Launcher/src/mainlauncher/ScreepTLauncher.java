@@ -448,7 +448,7 @@ import utils.SysUtils;
 								pending.delete();
 								logger.info(pending + " deleted succesfully!");
 							} catch (Exception e) {
-								logger.error("An error occurred, cannot delete current pending file to delete: " + pending);
+								logger.error("An error occurred, cannot delete current pending file to delete: " + pending, e);
 							}
 						}
 					}
@@ -464,7 +464,7 @@ import utils.SysUtils;
 							logger.info("updater.jar -> deleted succesfully.");
 							
 						} catch (Exception e) {
-							logger.error("Cannot delete old updater.jar file");
+							logger.error("Cannot delete old updater.jar file", e);
 						}
 					}
 					
@@ -472,7 +472,7 @@ import utils.SysUtils;
 						FileWorker.deleteDirContentRecursive(new File(GeneralConfig.PLUGINS_DIR));
 						logger.info("PLUGINS folder cleaned");
 					} catch (Exception e) {
-						logger.error("Cannot clean PLUGINS folder");
+						logger.error("Cannot clean PLUGINS folder", e);
 					}
 				}
 			}).start();
