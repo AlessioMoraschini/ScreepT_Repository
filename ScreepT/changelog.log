@@ -1,4 +1,6 @@
-2021-03-03  (HEAD -> refs/heads/BugFix, refs/remotes/origin/BugFix) Fixed clipboard panel reload bug
+2021-03-03  minor fix - restart was launching application two times in case of updates pending to install
+
+2021-03-03  Fixed clipboard panel reload bug
 
 2021-03-03  (tag: refs/tags/0.9.41) New version 0.9.41 - minor bug fixed
 

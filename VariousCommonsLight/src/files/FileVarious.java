@@ -470,6 +470,29 @@ public class FileVarious {
 	  return count;
 	}
 
+	public static int countFilesUntilLimit(File directory, boolean countDirectories, long maxAdmitted) {
+		int count = 0;
+		for (File file : directory.listFiles()) {
+			
+			if (file.isFile()) {
+				count++;
+			
+			} else if (file.isDirectory()) {
+				if(countDirectories) {
+					count++;
+				}
+				count += countFilesUntilLimit(file, countDirectories, maxAdmitted);
+				if(count > maxAdmitted)
+					return count;
+			}
+		}
+		return count;
+	}
+
+	public static boolean checkIfContainsMoreFilesThanMax(File directory, boolean countDirectories, long maxAdmitted) {
+		return countFilesUntilLimit(directory, countDirectories, maxAdmitted + 1) > maxAdmitted;
+	}
+
 	public static File[] getFileArrayFromStrings(String[] filePaths){
 		logger.debug("ARGUMENT FILES:" + Arrays.toString(filePaths));
 		

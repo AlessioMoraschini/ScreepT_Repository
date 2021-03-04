@@ -24,6 +24,8 @@ public class FileDropList extends JPanel implements DropTargetListener {
 	private static final long serialVersionUID = -2124235652189325306L;
 	
 	private static final SafeLogger logger = new SafeLogger(FileDropList.class);
+	
+	public static long DEF_fileViewLimit = 60L;
 
 	private DefaultListModel<File> listModel = new DefaultListModel<>();
     @SuppressWarnings("unused")
@@ -35,11 +37,14 @@ public class FileDropList extends JPanel implements DropTargetListener {
     private FileDropListenerSingle listDoubleClickAction;
     private FileDropListenerSingle listSingleClickAction;
 
+    private long fileViewLimit;
     /**
      * Create the panel.
      */
     public FileDropList() {
 
+    	fileViewLimit = DEF_fileViewLimit;
+    	
     	setLayout(new MigLayout(
 				"insets 2, hidemode 2", 
 				"[60px, grow]", 
@@ -104,7 +109,16 @@ public class FileDropList extends JPanel implements DropTargetListener {
         applyDarkColor();
     }
     
-    public void applyDarkColor() {
+    public long getFileViewLimit() {
+		return fileViewLimit;
+	}
+	public void setFileViewLimit(long fileViewLimit) {
+		this.fileViewLimit = fileViewLimit;
+	}
+
+
+
+	public void applyDarkColor() {
     	list.setBackground(Color.DARK_GRAY);
     	this.setBackground(Color.DARK_GRAY);
     	list.setForeground(Color.LIGHT_GRAY);
@@ -169,16 +183,28 @@ public class FileDropList extends JPanel implements DropTargetListener {
     
     public void setFiles(File[] files) {
     	clearList();
+    	int i = 0;
     	if(files != null)
-    		for(File file : files)
+    		for(File file : files) {
+    			if(i > fileViewLimit)
+    				break;
+    			
     			listModel.addElement(file);
+    			i++;
+    		}
     }
 
     public void setFiles(List<File> files) {
     	clearList();
+    	int i = 0;
     	if(files != null) 
-    		for(File file : files)
+    		for(File file : files) {
+    			if(i > fileViewLimit)
+    				break;
+    			
     			listModel.addElement(file);
+    			i++;
+    		}
     }
     
     public void addFiles(File[] files) {

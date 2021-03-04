@@ -13,7 +13,6 @@ package files.search;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import files.om.FileSearchDTO;
@@ -28,6 +27,9 @@ public class FileNameSearchAdvanced {
 	}
 	
 	public static List<File> findByMatch(FileSearchDTO dto){
+		return findByMatch(dto, Long.MAX_VALUE);
+	}
+	public static List<File> findByMatch(FileSearchDTO dto, long stopAfterNResults){
 		return findByMatch(
 				dto.root,
 				dto.matchNamePart,
@@ -35,7 +37,8 @@ public class FileNameSearchAdvanced {
 				dto.filter, 
 				dto.recursiveDeep,
 				dto.ignoreCase,
-				dto.wildCardMode);
+				dto.wildCardMode,
+				stopAfterNResults);
 	}
 	
 	/**
@@ -52,6 +55,24 @@ public class FileNameSearchAdvanced {
 			boolean recursiveDeep,
 			boolean ignoreCase,
 			boolean wildcardMode) {
+		return findByMatch(root, matchNamePart, exactMatch, filter, recursiveDeep, ignoreCase, wildcardMode, Long.MAX_VALUE);
+	}
+	
+	/**
+	 * Find first match only for every folder level, if not found proceed with son directories
+	 * @param root
+	 * @param matchNamePart
+	 * @return
+	 */
+	public static List<File> findByMatch(
+			File root,
+			String matchNamePart,
+			boolean exactMatch, 
+			SearchType filter, 
+			boolean recursiveDeep,
+			boolean ignoreCase,
+			boolean wildcardMode,
+			long stopAfterNResults) {
 		
 		ArrayList<File> foundFolderMatches = new ArrayList<File>();
 		
@@ -60,13 +81,13 @@ public class FileNameSearchAdvanced {
 		}
 		
 		if(SearchType.FILE_ONLY.equals(filter)) {
-			return findOnlyFilesByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
+			return findOnlyFilesByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults);
 		
 		} else if (SearchType.FOLDERS_ONLY.equals(filter)) {
-			return findOnlyFoldersByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
+			return findOnlyFoldersByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults);
 			
 		} else {
-			return findAllByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
+			return findAllByMatch(root, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults);
 			
 		}
 	}
@@ -82,7 +103,8 @@ public class FileNameSearchAdvanced {
 			boolean exactMatch,
 			boolean recursiveDeep,
 			boolean ignoreCase,
-			boolean wildcardMode) {
+			boolean wildcardMode,
+			long stopAfterNResults) {
 		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
@@ -90,7 +112,7 @@ public class FileNameSearchAdvanced {
 			return foundMatches;
 		}
 		
-		List<File> currentLevelFiles = Arrays.asList(root.listFiles());
+		File[] currentLevelFiles = root.listFiles();
 		boolean somethingFound = false;
 		
 		for(File found : currentLevelFiles) {
@@ -112,7 +134,7 @@ public class FileNameSearchAdvanced {
 			if (!somethingFound) {
 				for (File folder : currentLevelFiles) {
 					if (folder.isDirectory()) {
-						List<File> subFolderFounds = findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
+						List<File> subFolderFounds = findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults);
 						foundMatches.addAll(subFolderFounds);
 						if(!subFolderFounds.isEmpty()) {
 							return foundMatches;
@@ -126,12 +148,19 @@ public class FileNameSearchAdvanced {
 		} else {
 			for (File folder : currentLevelFiles) {
 				if (folder.isDirectory()) {
-					foundMatches.addAll(findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode));
+					foundMatches.addAll(findAllByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults));
+				
+					if(sizeExceedLimit(foundMatches, stopAfterNResults))
+						return foundMatches;
 				}
 			} 
 		}
 		
 		return foundMatches;
+	}
+	
+	private static boolean sizeExceedLimit(List<?> files, long maxSize) {
+		return files != null && (maxSize >= 0 &&  files.size() > maxSize);
 	}
 	
 	/**
@@ -145,7 +174,8 @@ public class FileNameSearchAdvanced {
 			boolean exactMatch,
 			boolean recursiveDeep,
 			boolean ignoreCase,
-			boolean wildcardMode) {
+			boolean wildcardMode,
+			long stopAfterNResults) {
 		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
@@ -153,7 +183,7 @@ public class FileNameSearchAdvanced {
 			return foundMatches;
 		}
 		
-		List<File> currentLevelFiles = Arrays.asList(root.listFiles());
+		File[] currentLevelFiles = root.listFiles();
 		boolean somethingFound = false;
 		
 		for(File found : currentLevelFiles) {
@@ -169,6 +199,7 @@ public class FileNameSearchAdvanced {
 				
 				foundMatches.add(found);
 				somethingFound = true;
+				
 			}
 		}
 		
@@ -176,7 +207,7 @@ public class FileNameSearchAdvanced {
 			if (!somethingFound) {
 				for (File folder : currentLevelFiles) {
 					if (folder.isDirectory()) {
-						List<File> subFilesFounds = findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
+						List<File> subFilesFounds = findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults);
 						foundMatches.addAll(subFilesFounds);
 						if(!subFilesFounds.isEmpty()) {
 							return foundMatches;
@@ -190,7 +221,10 @@ public class FileNameSearchAdvanced {
 		} else {
 			for (File folder : currentLevelFiles) {
 				if (folder.isDirectory()) {
-					foundMatches.addAll(findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode));
+					foundMatches.addAll(findOnlyFilesByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults));
+					
+					if(sizeExceedLimit(foundMatches, stopAfterNResults))
+						return foundMatches;
 				}
 			} 
 		}
@@ -209,7 +243,8 @@ public class FileNameSearchAdvanced {
 			boolean exactMatch,
 			boolean recursiveDeep,
 			boolean ignoreCase,
-			boolean wildcardMode) {
+			boolean wildcardMode,
+			long stopAfterNResults) {
 		
 		ArrayList<File> foundMatches = new ArrayList<File>();
 		
@@ -217,7 +252,7 @@ public class FileNameSearchAdvanced {
 			return foundMatches;
 		}
 		
-		List<File> currentLevelFolders = Arrays.asList(root.listFiles(foldersOnly()));
+		File[] currentLevelFolders = root.listFiles(foldersOnly());
 		boolean somethingFound = false;
 		
 		for(File found : currentLevelFolders) {
@@ -238,7 +273,7 @@ public class FileNameSearchAdvanced {
 		if(!recursiveDeep) {
 			if (!somethingFound) {
 				for (File folder : currentLevelFolders) {
-					List<File> subFolderFounds = findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode);
+					List<File> subFolderFounds = findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults);
 					foundMatches.addAll(subFolderFounds);
 					if(!subFolderFounds.isEmpty()) {
 						return foundMatches;
@@ -250,7 +285,10 @@ public class FileNameSearchAdvanced {
 			
 		} else {
 			for (File folder : currentLevelFolders) {
-				foundMatches.addAll(findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode));
+				foundMatches.addAll(findOnlyFoldersByMatch(folder, matchNamePart, exactMatch, recursiveDeep, ignoreCase, wildcardMode, stopAfterNResults));
+				
+				if(sizeExceedLimit(foundMatches, stopAfterNResults))
+					return foundMatches;
 			} 
 		}
 		

@@ -297,7 +297,7 @@ public class SchemeManagerGui extends JFrame {
 				}
 				
 			} catch (DynaValidatorException e1) {
-				dialogHelper.error("Cannot import theme.", logger, e1);
+				dialogHelper.error("Cannot import: invalid theme", logger, e1);
 			}
 		});
 		

@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -44,11 +45,14 @@ public class FileNameSearchDialog extends ParentDialog {
 	private static final long serialVersionUID = 5026956746595091072L;
 	
 	private static final String NO_SELECTION = "Nothing selected";
+	
+	private static final Long MAX_FILE_NUMBER_ALERT = 12000L;
 
 	private JTextField textField;
 	private FileDropList fileDropList;
 	private JRadioButton radioUseWorkspace;
 	private JLabel lblCurrentSelectionPath;
+	private JLabel lblPopUpMessage;
 	private JLabel lblCurrentRootFolder;
 	
 	private FileDropListenerSingle doubleClickItemAction;
@@ -108,7 +112,7 @@ public class FileNameSearchDialog extends ParentDialog {
 		setLayout(new MigLayout(
 				"insets 4, hidemode 2", 
 				"[][][60px, grow]", 
-				"[25px:25px][30px, grow][25px:25px:25px]"));
+				"[25px:25px][30px, grow][][25px:25px:25px]"));
 		
 		textField = ParentPanel.getTextField(null, null, Color.LIGHT_GRAY, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), false);
 		add(textField, "cell 0 0 3 1,grow");
@@ -130,19 +134,25 @@ public class FileNameSearchDialog extends ParentDialog {
 			else
 				lblCurrentSelectionPath.setText(NO_SELECTION);
 		});
+		
+		lblPopUpMessage = ParentPanel.getLabel("", null, null, null, true);
+		lblPopUpMessage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_GEN_WARNING));
+		lblPopUpMessage.setVisible(false);
+		lblPopUpMessage.setBorder(new LineBorder(Color.GRAY));
+		add(lblPopUpMessage, "cell 0 2 3 1,grow");
 
 		radioUseWorkspace = ParentPanel.getRadioButton(
 				"Use workspace", 
 				"When selected, workspace will be used as root. If not selected, the manual root folder will be used (click on root dir name to change it)", 
 				false);
-		add(radioUseWorkspace, "cell 0 2 1 1,grow");
+		add(radioUseWorkspace, "cell 0 3 1 1,grow");
 
 		lblCurrentRootFolder = ParentPanel.getLabel("", null, null, null, true);
 		lblCurrentRootFolder.setCursor(GuiUtils.CURSOR_HAND);
-		add(lblCurrentRootFolder, "cell 1 2 1 1,grow");
+		add(lblCurrentRootFolder, "cell 1 3 1 1,grow");
 		
 		lblCurrentSelectionPath = ParentPanel.getLabel(NO_SELECTION, null, null, null, true);
-		add(lblCurrentSelectionPath, "cell 2 2 1 1,grow");
+		add(lblCurrentSelectionPath, "cell 2 3 1 1,grow");
 		
 		applyDarkColor();
 		
@@ -159,6 +169,16 @@ public class FileNameSearchDialog extends ParentDialog {
 		setAlwaysOnTop(true);
 	}
 	
+	public void setPopUpWarning(String message) {
+		if(StringWorker.isEmpty(message)) {
+			lblPopUpMessage.setVisible(false);
+			lblPopUpMessage.setText("");
+		} else {
+			lblPopUpMessage.setVisible(true);
+			lblPopUpMessage.setText(message);
+		}
+	}
+	
 	public File getRootDir() {
 		return rootDir;
 	}
@@ -172,6 +192,14 @@ public class FileNameSearchDialog extends ParentDialog {
 			radioUseWorkspace.setText("Use workspace: ");
 		else
 			radioUseWorkspace.setText("Use custom folder: ");
+		
+		new Thread(()-> {
+			if(FileVarious.checkIfContainsMoreFilesThanMax(this.rootDir, true, MAX_FILE_NUMBER_ALERT)) {
+				setPopUpWarning("This root directory seems to be huge, searching here can be very slow! Try to use a subfolder as root");
+			} else {
+				setPopUpWarning("");
+			}
+		}).start();
 			
 	}
 
@@ -191,6 +219,8 @@ public class FileNameSearchDialog extends ParentDialog {
 
 		getContentPane().setBackground(Color.DARK_GRAY.darker());
 		setBackground(Color.DARK_GRAY.darker());
+		lblPopUpMessage.setBackground(Color.DARK_GRAY.darker());
+		lblPopUpMessage.setForeground(Color.LIGHT_GRAY);
 		lblCurrentSelectionPath.setBackground(Color.DARK_GRAY);
     	lblCurrentSelectionPath.setForeground(Color.LIGHT_GRAY);
     	lblCurrentRootFolder.setBackground(Color.DARK_GRAY);
@@ -222,7 +252,8 @@ public class FileNameSearchDialog extends ParentDialog {
 		lblCurrentRootFolder.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				chooseManualDir();
+				if(!radioUseWorkspace.isSelected())
+					chooseManualDir();
 			}
 		});
 		
@@ -241,6 +272,8 @@ public class FileNameSearchDialog extends ParentDialog {
 	private void doRadioAction() {
 		if(getFileOptions() != null)
 			getFileOptions().setfNameSearchUseManual(!radioUseWorkspace.isSelected());
+		
+		lblCurrentRootFolder.setCursor(radioUseWorkspace.isSelected() ? GuiUtils.CURSOR_DEFAULT : GuiUtils.CURSOR_HAND);
 
 		if(radioUseWorkspace.isSelected()) {
 			File workspace = getCurrentWorkspace();
@@ -314,7 +347,12 @@ public class FileNameSearchDialog extends ParentDialog {
 			// Match everything that starts with current string entered
 			searchString = "*".equals(searchString.trim()) ? "*" : (searchString.trim() + "*");
 			
-			List<File> matches = FileNameSearchAdvanced.findByMatch(getDto(searchString));
+			List<File> matches = FileNameSearchAdvanced.findByMatch(getDto(searchString), fileDropList.getFileViewLimit());
+			
+			if(matches != null && matches.size() >= fileDropList.getFileViewLimit())
+				setPopUpWarning("Result number limited to " + matches.size() + " results");
+			else
+				setPopUpWarning(null);
 			
 			fileDropList.setFiles(matches);
 		});
@@ -339,6 +377,6 @@ public class FileNameSearchDialog extends ParentDialog {
 
 	@Override
 	public Dimension getDefaultDimension() {
-		return new Dimension(850, 400);
+		return new Dimension(950, 500);
 	}
 }

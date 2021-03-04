@@ -855,7 +855,7 @@ public class SysUtils {
 		String separator = getOsInfoLazy().isWindows() ? ";" : ":";
 		
 		for (File found : FileNameSearchAdvanced.findOnlyFilesByMatch(
-				new File(root), ".jar", false, true, false, false)) {
+				new File(root), ".jar", false, true, false, false, Long.MAX_VALUE)) {
 			classPath += found + separator;
 		}
 		
