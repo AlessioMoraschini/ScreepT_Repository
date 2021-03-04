@@ -50,11 +50,11 @@ public class StringWorker {
 		public String eol;
 		public String eolRegex;
 		
-		public static EOL defaultEol = LF;
+		public static EOL defaultEol = getOsBasedEOL();
 		
 		public static EOL getOsBasedEOL() {
 			String osNameShort = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-			if(osNameShort.indexOf("win") > 0) {
+			if(osNameShort != null && osNameShort.indexOf("win") > 0) {
 				return EOL.CRLF;
 			} else {
 				return EOL.LF;
