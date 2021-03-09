@@ -144,7 +144,9 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 	public JButton btnParsePdfText;
 	public JButton btnFontChooser;
 	public JButton btnTemplates;
-	public JButton btnDefaultOpt;
+	private JButton btnNextHistory;
+	private JButton btnPrevHistory;
+//	public JButton btnDefaultOpt;
 	public JButton btnUndo;
 	public JButton btnClear;
 	public JButton btnRedo;
@@ -280,7 +282,7 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		comboFileFormat.setAlignmentX(CENTER_ALIGNMENT);
 		comboFileFormat.setModel(new DefaultComboBoxModel<SupportedFileTextEditor>(SupportedFileTextEditor.values()));
 		comboFileFormat.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(10).deriveFont(Font.PLAIN));
-		add(comboFileFormat, "cell 5 1 3 1,growx,aligny center");
+		add(comboFileFormat, "cell 6 1 2 1,growx,aligny center");
 		
 		btnNewTab = new JButton("");
 		btnNewTab.setToolTipText(TextEditTooltips.tooltipNewEmptyTab);
@@ -401,13 +403,19 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		btnDark.setToolTipText(TextEditTooltips.tooltipDarkSwitch);
 		add(btnDark, "cell 1 1,grow");
 
-		btnDefaultOpt = new JButton("Default");
-		btnDefaultOpt.setPreferredSize(new Dimension(55, 28));
-		btnDefaultOpt.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		btnDefaultOpt.setMinimumSize(new Dimension(62, 12));
-		btnDefaultOpt.setToolTipText(TextEditTooltips.tooltipDefaultOpt);
-		btnDefaultOpt.setForeground(SystemColor.menuText);
-		add(btnDefaultOpt, "cell 2 1 3 1,grow");
+		btnPrevHistory = new JButton("");
+		btnPrevHistory.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnPrevHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PREV));
+		btnPrevHistory.setToolTipText(TextEditTooltips.tooltipHystoryPrev);
+		GuiUtilsExtended.makeTransparentJButton(btnPrevHistory);
+		add(btnPrevHistory, "cell 2 1 1 1,alignx right,growy");
+		
+		btnNextHistory = new JButton("");
+		btnNextHistory.setCursor(GuiUtilsExtended.CURSOR_HAND);
+		btnNextHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NEXT));
+		btnNextHistory.setToolTipText(TextEditTooltips.tooltipHystoryNext);
+		GuiUtilsExtended.makeTransparentJButton(btnNextHistory);
+		add(btnNextHistory, "cell 3 1 1 1,alignx left,growy");
 
 		chckbxLockLanguage = new JCheckBox("Lock");
 		chckbxLockLanguage.setOpaque(false);
@@ -416,17 +424,17 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		chckbxLockLanguage.setIconTextGap(1);
 		chckbxLockLanguage.setForeground(Color.WHITE);
 		chckbxLockLanguage.setFont(new Font("SansSerif", Font.BOLD, 13));
-		add(chckbxLockLanguage, "cell 8 1,alignx center,aligny center");
+		add(chckbxLockLanguage, "cell 4 1 2 1,alignx center,aligny center");
 
 		comboStylesScheme = new JComboBox<ThemesWrapper>();
 		comboStylesScheme.setMinimumSize(new Dimension(33, 12));
-		comboStylesScheme.setMaximumSize(new Dimension(170, 32767));
+		comboStylesScheme.setMaximumSize(new Dimension(210, 32767));
 		initComboStyleScheme();
 		comboStylesScheme.setToolTipText(TextEditTooltips.tooltipComboStyleScheme);
 		comboStylesScheme.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		comboStylesScheme.setAlignmentX(CENTER_ALIGNMENT);
 		comboStylesScheme.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(10).deriveFont(Font.PLAIN));
-		add(comboStylesScheme, "cell 9 1 3 1,growx,aligny center");
+		add(comboStylesScheme, "cell 8 1 4 1,growx,aligny center");
 
 		btnRemoveSpaces = new JButton("");
 		btnRemoveSpaces.setToolTipText(TextEditTooltips.tooltipRemoveSpaces);
@@ -1093,42 +1101,19 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 			}
 		});
 
-		// SET DEFAULT TEXT AREA VALUES
-		btnDefaultOpt.addActionListener(new ActionListener() {
+		// PREV IN HISTORY
+		btnPrevHistory.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				logger.debug("Applying default values from .ini current configuration file...");
-				
-				TabTextEditorObject loadedTabObj = parent.getCurrentTabEditor().loadedTabObj;
+				parent.getCurrentTabEditor().goToPreviousInHistory();
+			}
+		});
 
-				// UPDATE GUI
-				RsyntaxUtils.setBackground(loadedTabObj.textArea, DEFAULT_BCKG_COL);
-				loadedTabObj.textArea.setBackground(DEFAULT_BCKG_COL);
-				RsyntaxUtils.setForeground(loadedTabObj.textArea, DEFAULT_FORE_COL);
-				loadedTabObj.textArea.setForeground(DEFAULT_FORE_COL);
-
-				try {
-					String marginString = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "margin");
-					slider_margin.setValue(INItializer.getIntVarFromString(marginString, 10));
-					
-					String fontString = currentConfiguration.readFromFile(INItializer.TEXT_EDITOR_OPT, "font");
-					Font defaultFont = INItializer.getFontFromString(fontString, currentConfiguration.getTextEditorOpt().getFont());
-					
-					loadedTabObj.textArea.setFont(defaultFont);
-					
-					sliderFontSize.setValue(defaultFont.getSize());
-					lblSIZE.setText(String.valueOf(defaultFont.getSize()) + " Px");
-				} catch (IOException e1) {
-					logger.warn("Cannot update default margin/Font: an error occurred", e1);
-				}
-				
-				applyDefaultStyle();
-				textEditorUtils.findRightSyntaxFromComboNSelect(loadedTabObj.loadedFile, true);
-
-				// UPDATE CONFIGURATION (in memory only)
-				textEditorUtils.updateDefaultTxtConfig(GeneralConfig.DEFAULT_FONT, DEFAULT_BCKG_COL, DEFAULT_FORE_COL, 10);
-
-				logger.debug("Default values applying from .ini current configuration file Completed!");
+		// NEXT IN HISTORY
+		btnNextHistory.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parent.getCurrentTabEditor().goToNextInHistory();
 			}
 		});
 

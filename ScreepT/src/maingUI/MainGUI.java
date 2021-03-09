@@ -19,6 +19,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -1291,18 +1292,10 @@ public class MainGUI extends MainGuiParent{
 	public void addHandlers() {
 		
 		// DEACTIVATE OPEN MENU ON CLICK OUTSIDE IT WHEN OPEN
-		mainFrameScreept.addMouseListener(new MouseListener() {
-			
-			public void mouseReleased(MouseEvent e) {
+		mainFrameScreept.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
 				MenuSelectionManager.defaultManager().clearSelectedPath();
-			}
-			public void mousePressed(MouseEvent e) {
-			}
-			public void mouseExited(MouseEvent e) {
-			}
-			public void mouseEntered(MouseEvent e) {
-			}
-			public void mouseClicked(MouseEvent e) {
 			}
 		});
 	}

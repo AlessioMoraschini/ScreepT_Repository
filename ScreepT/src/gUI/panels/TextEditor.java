@@ -486,11 +486,20 @@ public class TextEditor extends ModulePanel {
 			});
 		}
 
-		parentFrame.addFocusListener(getCurrentTabEditor().loadedTabObj.focusTxtAreaMonitor);
+//		parentFrame.addFocusListener(getCurrentTabEditor().loadedTabObj.focusTxtAreaMonitor);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				textEditorUtils.applySelectedTheme(false);
+				new Thread(() -> {
+					try {
+						Thread.sleep(1200);
+						GuiUtils.giveFocusToComponent(getCurrentTabEditor().loadedTabObj.textArea);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					RXTextUtilities.centerLineFullInScrollPane(getCurrentTabEditor().loadedTabObj.textArea);
+				}).start();
 			}
 		});
 		
@@ -1202,7 +1211,6 @@ public class TextEditor extends ModulePanel {
 		currentTabbedEditor.loadedTabObj.textArea.setCursor(GuiUtilsExtended.CURSOR_TEXT);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				RXTextUtilities.centerLineFullInScrollPane(currentTabbedEditor.loadedTabObj.textArea);
 				// RE-Enable refreshing
 				isPreloading = false;
 				textEditorUtils.refreshTree(currentTabbedEditor.loadedTabObj.loadedFile, true);
@@ -1244,7 +1252,7 @@ public class TextEditor extends ModulePanel {
 						
 						try {
 							int line = loadedTabObj.textArea.getLineOfOffset(loadedTabObj.textArea.getCaretPosition());
-							footerPanel.dynLblCurrLine.setText(String.valueOf(line));
+							footerPanel.dynLblCurrLine.setText(String.valueOf(line) + 1);
 						} catch (BadLocationException e1) {
 							logger.error("Error refreshing current line in footer", e1);
 						}

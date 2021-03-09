@@ -45,6 +45,7 @@ import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import impl.INItializer;
 import net.miginfocom.swing.MigLayout;
+import om.SelectionDtoFull;
 import om.TabTextEditorObject;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -67,11 +68,10 @@ public class TextEditorHeaderPanel extends JPanel{
 	public INItializer currentConfiguration;
 	
 	private JLabel lblVoiceSpeed;
+	private JLabel lblCrypter;
 	public JSlider sliderSpokenSpeed;
 	public JCheckBox checkBoxInlineTabs;
 	public JCheckBox chkCutWordsTo;
-	private JButton btnNextHistory;
-	private JButton btnPrevHistory;
 	
 	public boolean isCrypterOn = false;
 	
@@ -90,13 +90,13 @@ public class TextEditorHeaderPanel extends JPanel{
 		
 		setBorder(new EmptyBorder(0, 0, 0, 0));
 		setLayout(new MigLayout("insets 6, fill, hidemode 3",
-				"[left][][][][::35px][100px:240px:300px,trailing][40px:45px:45px][40px:45px:45px][10px:10px,grow][::20px][::20px][10px:10px:10px][::120px][::140px][::130px]",
+				"[left][][][][100px:240px:300px,trailing][::35px][100px:240px:300px,trailing][40px:45px:45px][40px:45px:45px][10px:10px,grow][::20px][::20px][10px:10px:10px][::120px][:130px:140px][:130px:130px]",
 				"[:0px:40px,grow]"));
 		setForeground(SystemColor.menu);
 		setBorder(new LineBorder(Color.BLACK, 1));
 		setBackground(new Color(30,30,30));
 		
-		lblVoiceSpeed = new JLabel("Voice rate");
+		lblVoiceSpeed = new JLabel("Voice rate (Text speaker plugin)");
 		lblVoiceSpeed.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblVoiceSpeed.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 		lblVoiceSpeed.setForeground(SystemColor.control);
@@ -113,14 +113,20 @@ public class TextEditorHeaderPanel extends JPanel{
 		btnCrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CRYPT));
 		btnCrypt.setToolTipText(TextEditTooltips.tooltipCrypt);
 		btnCrypt.setForeground(SystemColor.inactiveCaption);
-		add(btnCrypt, "cell 6 0,alignx center,grow");
+		add(btnCrypt, "cell 7 0,alignx center,grow");
 
 		btnDecrypt = new JButton("");
 		btnDecrypt.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		btnDecrypt.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DECRYPT));
 		btnDecrypt.setToolTipText(TextEditTooltips.tooltipDecrypt);
 		btnDecrypt.setForeground(SystemColor.inactiveCaption);
-		add(btnDecrypt, "cell 7 0,alignx center,grow");
+		add(btnDecrypt, "cell 8 0,alignx center,grow");
+		
+		lblCrypter = new JLabel("Crypt/Decrypt selected or all text ");
+		lblCrypter.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCrypter.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+		lblCrypter.setForeground(SystemColor.control);
+		add(lblCrypter, "cell 4 0,alignx center,aligny center");
 
 		chckbxAesShowKey = new JCheckBox("");
 		chckbxAesShowKey.setIcon(new ImageIcon(IconsPathConfigurator.ICON_INVISIBLE));
@@ -132,7 +138,8 @@ public class TextEditorHeaderPanel extends JPanel{
 		chckbxAesShowKey.setHorizontalAlignment(SwingConstants.LEFT);
 		chckbxAesShowKey.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		chckbxAesShowKey.setFont(new Font("SansSerif", Font.BOLD, 12));
-		add(chckbxAesShowKey, "cell 4 0,alignx center,aligny center");
+		add(chckbxAesShowKey, "cell 5 0,alignx center,aligny center");
+		chckbxAesShowKey.setSelected(false);
 		
 		txtAesKey = new JPasswordField();
 		txtAesKey.putClientProperty("JPasswordField.cutCopyAllowed",true);
@@ -140,27 +147,13 @@ public class TextEditorHeaderPanel extends JPanel{
 		txtAesKey.setHorizontalAlignment(SwingConstants.CENTER);
 		txtAesKey.setEchoChar((char) 0);
 		txtAesKey.setText(AES_KEY_PLACEHOLDER);
-		add(txtAesKey, "cell 5 0,growx");
+		add(txtAesKey, "cell 6 0,growx");
 		txtAesKey.setColumns(10);
 		txtAesKey.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN).deriveFont(15f));
 		txtAesKey.setEchoChar(DEFAULT_PSW_CHAR);
 		AesCipher.check(txtAesKey);	
 		// set default placeholder visible
 		txtAesKey.setEchoChar((char) 0);
-		
-		btnPrevHistory = new JButton("");
-		btnPrevHistory.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		btnPrevHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PREV));
-		btnPrevHistory.setToolTipText(TextEditTooltips.tooltipHystoryPrev);
-		GuiUtilsExtended.makeTransparentJButton(btnPrevHistory);
-		add(btnPrevHistory, "cell 9 0,alignx center,growy");
-		
-		btnNextHistory = new JButton("");
-		btnNextHistory.setCursor(GuiUtilsExtended.CURSOR_HAND);
-		btnNextHistory.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NEXT));
-		btnNextHistory.setToolTipText(TextEditTooltips.tooltipHystoryNext);
-		GuiUtilsExtended.makeTransparentJButton(btnNextHistory);
-		add(btnNextHistory, "cell 10 0,alignx center,growy");
 		
 		checkBoxInlineTabs = new JCheckBox("Inline Tabs  ");
 		checkBoxInlineTabs.setOpaque(false);
@@ -171,7 +164,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		checkBoxInlineTabs.setBackground(Color.DARK_GRAY);
 		checkBoxInlineTabs.setIconTextGap(1);
 		checkBoxInlineTabs.setFont(new Font("SansSerif", Font.BOLD, 12));
-		add(checkBoxInlineTabs, "cell 12 0,alignx center,aligny center");
+		add(checkBoxInlineTabs, "cell 14 0,alignx center,aligny center");
 		
 		chkCutWordsTo = new JCheckBox("Adapt Text Width  ");
 		chkCutWordsTo.setOpaque(false);
@@ -182,7 +175,7 @@ public class TextEditorHeaderPanel extends JPanel{
 		chkCutWordsTo.setBackground(Color.DARK_GRAY);
 		chkCutWordsTo.setIconTextGap(1);
 		chkCutWordsTo.setFont(new Font("SansSerif", Font.BOLD, 12));
-		add(chkCutWordsTo, "cell 13 0,alignx center,aligny center");
+		add(chkCutWordsTo, "cell 15 0,alignx center,aligny center");
 		
 		addHandlers();
 		
@@ -266,11 +259,16 @@ public class TextEditorHeaderPanel extends JPanel{
 						try {
 							// loadedTabObj.textArea.getDocument().removeDocumentListener(textAreaChangedListener);
 							AesCipher crypter = new AesCipher(txtAesKey.getPassword());
-							String displayedSource = loadedTabObj.textArea.getText();
+							SelectionDtoFull dto = new SelectionDtoFull(loadedTabObj.textArea);
+							String displayedSource = dto.getSelectedOrAllText();
 							encoded = crypter.encryptLines(displayedSource);
 							// if lentgh more than admitted suggest to use screept
-							loadedTabObj.textArea.setText("");
-							loadedTabObj.textArea.append(encoded);
+							if(dto.selected) {
+								dto.replaceSelection(encoded, true, false);
+								dto.applySelectionDTO(loadedTabObj.textArea);
+							} else {
+								dto.replaceAllText(encoded, true);
+							}
 
 						} catch (Throwable e) {
 							parent.dialogHelper.error("Something has gone wrong, it's possible that UTF charset can be causing problems :(", "Error");
@@ -308,16 +306,21 @@ public class TextEditorHeaderPanel extends JPanel{
 					if (txtAesKey.getPassword().length != 0) {
 						try {
 							AesCipher decrypter = new AesCipher(txtAesKey.getPassword());
-							String displayedSource = loadedTabObj.textArea.getText();
+							SelectionDtoFull dto = new SelectionDtoFull(loadedTabObj.textArea);
+							String displayedSource = dto.getSelectedOrAllText();
 							decoded = decrypter.decryptLines(displayedSource);
-							loadedTabObj.textArea.setText("");
+							if(dto.selected) {
+								dto.replaceSelection(decoded, true, false);
+								dto.applySelectionDTO(loadedTabObj.textArea);
+							} else {
+								dto.replaceAllText(decoded, true);
+							}
 						} catch (Exception e) {
 							parent.dialogHelper.error("Something has gone wrong, it's possible that UTF charset can be causing problems :(", "Error");
 
 							logger.error("Exception happened!", e);
 							txtAesKey.requestFocusInWindow();
 						} finally {
-							loadedTabObj.textArea.append(decoded);
 							parentUtils.updateCurrentUnsavedFromFileRead();
 							parent.getCurrentTabEditor().revalidateFoldingPainted(loadedTabObj.textArea);
 						}
@@ -374,21 +377,6 @@ public class TextEditorHeaderPanel extends JPanel{
 			}
 		});
 		
-		// PREV IN HISTORY
-		btnPrevHistory.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				parent.getCurrentTabEditor().goToPreviousInHistory();
-			}
-		});
-
-		// NEXT IN HISTORY
-		btnNextHistory.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				parent.getCurrentTabEditor().goToNextInHistory();
-			}
-		});
 	}
 	
 	public void doInlinedCheck() {

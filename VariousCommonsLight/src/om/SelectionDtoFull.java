@@ -38,7 +38,7 @@ public class SelectionDtoFull {
 		selection = StringWorker.nullToEmpty(textArea.getSelectedText());
 		end = text.substring(last, text.length());
 		prefix = text.substring(0, first);
-		if(first == last){
+		if(first == last || "".equals(selection)){
 			selected = false;
 		}else {
 			selected = true;
@@ -49,10 +49,10 @@ public class SelectionDtoFull {
 		if(replacement != null) {
 			selection = replacement;
 			if(selected) {
-				text = getCompleteString();
-				length = text.length();
 				last = first + replacement.length();
+				text = getCompleteString();
 				end = text.substring(last, text.length());
+				length = text.length();
 			} else {
 				if(ifNotSelThenAppend)
 					appendText(replacement, makeNewSelectedIfNothingSelected);
@@ -90,6 +90,10 @@ public class SelectionDtoFull {
 		}
 	}
 	
+	public String getSelectedOrAllText() {
+		return selected ? selection : getCompleteString();
+	}
+	
 	public void insertText(String textToInsert, int caretPos) {
 		if(!StringWorker.isEmptyNoTrim(textToInsert)) {
 			selection = textToInsert;
@@ -113,12 +117,15 @@ public class SelectionDtoFull {
 		} else {
 			prefix = textReplacement;
 			selection = "";
+			end = "";
 			first = textReplacement.length();
 			last = textReplacement.length();
 		}
 		
 		text = getCompleteString();
 		length = text.length();
+		
+		applySelectionDTO(textArea);
 	}
 	
 	public String getCompleteString() {
@@ -136,11 +143,11 @@ public class SelectionDtoFull {
 		GuiUtils.launchThreadSafeSwing(()->{
 			try {
 				Thread.sleep(100);
-			} catch (InterruptedException e) {
+				GuiUtils.giveFocusToComponent(textArea);
+				textArea.setSelectionStart(first);
+				textArea.setSelectionEnd(last);
+			} catch (Exception e) {
 			}
-			textArea.requestFocus();
-			textArea.setSelectionStart(first);
-			textArea.setSelectionEnd(last);
 		});
 	}
 }

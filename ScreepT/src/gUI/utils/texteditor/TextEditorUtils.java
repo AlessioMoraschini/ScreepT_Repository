@@ -104,10 +104,21 @@ public class TextEditorUtils {
 	
 	private Timer adviceTimer;
 	
+	private boolean[] headSubheadFooter;
+	
 	public TextEditorUtils(TextEditor currentTextEditor) {
 		this.currentTextEditor = currentTextEditor;
 		this.textAreaDialogs = new TextAreaDialogs(getDialogManager());
 		this.dialogHelper = new JOptionHelperExtended(currentTextEditor);
+		this.headSubheadFooter = getHeadSubheadFooterOld();
+	}
+	
+	private boolean[] getHeadSubheadFooterOld() {
+		return new boolean[] {
+				currentTextEditor.currentConfiguration.getTextEditorOpt().isHeaderVisible(),
+				currentTextEditor.currentConfiguration.getTextEditorOpt().isSubHeaderVisible(),
+				currentTextEditor.currentConfiguration.getTextEditorOpt().isFooterVisible()
+		};
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////
@@ -907,7 +918,9 @@ public class TextEditorUtils {
 		
 		MainGUI mainApp = currentTextEditor.mainApplication;
 		
-		boolean hideAll = currentTextEditor.headerPanel.isVisible() || currentTextEditor.subHeaderPanel.isVisible() || currentTextEditor.footerPanel.isVisible();
+		boolean hideAll = currentTextEditor.headerPanel.isVisible() ||
+				currentTextEditor.subHeaderPanel.isVisible() ||
+				currentTextEditor.footerPanel.isVisible();
 		boolean enableImmersive = hideAll || !mainApp.isFullScreen.get();
 		
 		setImmersiveMode(enableImmersive);
@@ -918,21 +931,17 @@ public class TextEditorUtils {
 		
 		mainApp.setFullScreenEnabled(enableImmersive);
 		
-		TextEditorOption txteditorOpt = currentTextEditor.currentConfiguration.getTextEditorOpt();
-		
 		if (enableImmersive) {
-			
-			setFooterVisibile(false);
+			this.headSubheadFooter = getHeadSubheadFooterOld();
 			setHeaderVisibileLevel1(false);
 			setHeaderVisibileLevel2(false);
-			
-			txteditorOpt.setFooterVisible(txteditorOpt.footerVisible);
-			txteditorOpt.setHeaderVisible(txteditorOpt.headerVisible);
-			txteditorOpt.setSubHeaderVisible(txteditorOpt.subHeaderVisible);
+			setFooterVisibile(false);
+		
 		} else {
-			setFooterVisibile(txteditorOpt.footerVisible);
-			setHeaderVisibileLevel1(txteditorOpt.headerVisible);
-			setHeaderVisibileLevel2(txteditorOpt.subHeaderVisible);
+			
+			setHeaderVisibileLevel1(headSubheadFooter[0]);
+			setHeaderVisibileLevel2(headSubheadFooter[1]);
+			setFooterVisibile(headSubheadFooter[2]);
 		}
 		
 		mainApp.menuBar.setVisible(!enableImmersive);
@@ -941,6 +950,7 @@ public class TextEditorUtils {
 		GuiUtilsExtended.scrollJScrollPane(currentTextEditor.mainScrollPane, true);
 		resizeFrameToDefault(mainApp);
 	}
+	
 	
 	/**
 	 * Toggle visibility of text editor header panel,  inverting visible flag at each invocation

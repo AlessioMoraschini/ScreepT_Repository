@@ -282,18 +282,25 @@ public class CustomTabbedEditor implements ITabsManager {
 	
 	private boolean validateFileToOpen(File fileToOpen) {
 		if (fileToOpen != null) {
-			if (fileToOpen.exists() && fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB) {
-				dialogHelper.error(
-						"Cannot load file, max admitted size is " + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024));
-				return false;
-			}
-
-			if(isImageFileSupported(fileToOpen)) {
+			boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(fileToOpen, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
+			boolean exceedsLength = fileToOpen.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
+			
+			if (fileToOpen.exists() && (exceedsLines || exceedsLength)) {
+				String msg = exceedsLines 
+						? "This file has more than " + GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES + " lines, and can slow down or crash ScreepT. Load anyway?"
+						: "This file is bigger than max admitted size [" + ConversionUtils.coolFileSize((long) GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB * 1024) + "] and can slow down or crash ScreepT. Load anyway?";
+				boolean userAcceptance = dialogHelper.yesOrNo(msg);
+				if (userAcceptance) {
+					tabEditorManager.forceUnrecognizedFileType();
+				}
+				return userAcceptance;
+			
+			} else if(isImageFileSupported(fileToOpen)) {
 				ImageViewerFrame.loadIntoLastExistingInstance(fileToOpen);
 				return false;
 				
 			} else if (!SupportedFileTextEditor.isSupported(fileToOpen)) {
-				boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not supported [" + fileToOpen.getName() + "] : Load anyway?");
+				boolean userAcceptance = dialogHelper.yesOrNo("This type of file is not fully supported [" + fileToOpen.getName() + "] : Load anyway?");
 				if (userAcceptance) {
 					tabEditorManager.forceUnrecognizedFileType();
 				}
@@ -1012,7 +1019,8 @@ public class CustomTabbedEditor implements ITabsManager {
 		return null;
 	}
 	
-	private void addToHystory(TabTextEditorObject loadedTabObj){
+	@Override
+	public void addToHystory(TabTextEditorObject loadedTabObj){
 		
 		// if already last skip
 		if (!historyActionChanging.get()) {
@@ -1060,8 +1068,13 @@ public class CustomTabbedEditor implements ITabsManager {
 			mainTabList.setSelectedIndex(i);
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					loadedTabObj.textArea.requestFocus();
-					loadedTabObj.textArea.setCaretPosition(nextNode.getCaretPosition());
+					GuiUtils.giveFocusToComponent(loadedTabObj.textArea);
+					try {
+						loadedTabObj.textArea.setCaretPosition(nextNode.getCaretPosition());
+					} catch (Exception e) {
+						logger.warn("can't set caret position from history node", e);
+					}
+					RXTextUtilities.centerLineFullInScrollPane(loadedTabObj.textArea);
 				}
 			});
 		}

@@ -252,6 +252,57 @@ public class FileWorker {
 		return readFileAsString(toRead, encoding, EOL.defaultEol);
 	}
 	
+	// returns true if given file contains more than N lines
+	public static boolean checkIfHasMoreThanNLines(
+			File toRead,
+			int limit) {
+		
+		if(toRead == null || !toRead.exists()) {
+			return false;
+		}
+		
+		String defaultEncoding = System.getProperty("file.encoding");
+	
+		logger.info("readFileAsString -> Start...");
+	
+		BufferedReader reader = null;
+		try {
+			FileInputStream readerStream = new FileInputStream(toRead);
+			reader = new BufferedReader(new InputStreamReader(readerStream, defaultEncoding));
+		} catch (Exception e1) {
+			logger.debug("Cannot read with default encoding: " + defaultEncoding);
+			try {
+				reader.close();
+			} catch(Exception e) {
+			}
+			
+			return false;
+		}
+		
+		try {
+			String line = reader.readLine();
+			
+			int i = 0;
+			while ( line != null) {
+				if(i > limit)
+					return true;
+				
+				line = reader.readLine();
+				i++;
+			}
+		} catch (IOException e) {
+			return false;
+		}finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+		}
+		
+		return false;
+	}
+
 	public static String readFileAsString(
 			File toRead,
 			String encoding,
@@ -263,10 +314,10 @@ public class FileWorker {
 		
 		String defaultEncoding = System.getProperty("file.encoding");
 		encoding = encoding != null ? encoding : defaultEncoding;
-	
+		
 		logger.info("readFileAsString -> Start...");
 		long startTime = System.currentTimeMillis();
-	
+		
 		StringBuilder builder = new StringBuilder(100000);
 		FileInputStream readerStream = new FileInputStream(toRead);
 		BufferedReader reader;
@@ -282,7 +333,7 @@ public class FileWorker {
 			while ( line != null) {
 				builder.append(line);
 				line = reader.readLine();
-					builder.append(eol.eol);
+				builder.append(eol.eol);
 			}
 		} catch (IOException e) {
 			throw e;

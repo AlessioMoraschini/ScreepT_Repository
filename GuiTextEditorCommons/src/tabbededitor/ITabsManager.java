@@ -14,6 +14,7 @@ package tabbededitor;
 import java.io.File;
 
 import om.ColumnTextArea;
+import om.TabTextEditorObject;
 
 public interface ITabsManager {
 
@@ -22,4 +23,6 @@ public interface ITabsManager {
 	public void openColorPicker();
 	
 	public void loadFiles(final File[] fileToLoad);
+	
+	public void addToHystory(TabTextEditorObject loadedTabObj);
 }

@@ -30,6 +30,7 @@ import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.TextEditor;
 import gUI.panels.subpanels.texteditor.TextEditorSubHeadButtonsPanel;
 import gui.GuiUtils;
+import gui.RXTextUtilities;
 import gui.TextEditTooltips;
 import maingUI.MainGUI;
 import om.ICommonShortcuts;
@@ -104,15 +105,20 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				/*
 				 * UNDO x5 -  Ctrl+Alt+Z
 				 */
-				if (e.getKeyCode()==90 && e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+				if (e.getKeyCode()==90 && e.isControlDown() && !e.isShiftDown())
 				{
 					try {
-						for(int i = 0; i<5; i++) {
-							if (currentTabEditor.loadedTabObj.textArea.canUndo()) {
-								currentTabEditor.loadedTabObj.textArea.undoLastAction();
+						int oldCaretPos = currentTabEditor.loadedTabObj.textArea.getCaretPosition();
+						if (e.isAltDown()) {
+							for (int i = 0; i < 5; i++) {
+								if (currentTabEditor.loadedTabObj.textArea.canUndo()) {
+									currentTabEditor.loadedTabObj.textArea.undoLastAction();
+								}
 							}
+							currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
 						}
-						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+						currentTabEditor.loadedTabObj.textArea.setCaretPosition(oldCaretPos);
+						RXTextUtilities.centerLineFullInScrollPane(currentTabEditor.loadedTabObj.textArea);
 					} catch (Throwable e2) {
 						logger.warn(e2);
 					}
@@ -121,15 +127,20 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				/*
 				 *  REDO x5 - Ctrl+Alt+Y
 				 */
-				else if (e.getKeyCode()==89 && e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+				else if (e.getKeyCode()==89 && e.isControlDown() && !e.isShiftDown())
 				{
 					try {
-						for (int i = 0; i < 5; i++) {
-							if (currentTabEditor.loadedTabObj.textArea.canRedo()) {
-								currentTabEditor.loadedTabObj.textArea.redoLastAction();
-							} 
+						int oldCaretPos = currentTabEditor.loadedTabObj.textArea.getCaretPosition();
+						if (e.isAltDown()) {
+							for (int i = 0; i < 5; i++) {
+								if (currentTabEditor.loadedTabObj.textArea.canRedo()) {
+									currentTabEditor.loadedTabObj.textArea.redoLastAction();
+								}
+							}
+							currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
 						}
-						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+						currentTabEditor.loadedTabObj.textArea.setCaretPosition(oldCaretPos);
+						RXTextUtilities.centerLineFullInScrollPane(currentTabEditor.loadedTabObj.textArea);
 					} catch (Throwable e2) {
 							logger.warn(e2);
 					}

@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -105,7 +106,7 @@ public class TabTextEditorObject {
 	public File loadedFile;
 	public RTextScrollPane currentScrollPane;
 	public ColumnTextArea textArea;
-	public FocusListener focusTxtAreaMonitor;
+//	public FocusListener focusTxtAreaMonitor;
 	public boolean unsaved = false;
 	public Parser currentParser;
 	
@@ -117,10 +118,15 @@ public class TabTextEditorObject {
 	private MouseMotionListener mouseMotionListener;
 	private java.awt.event.MouseListener mouseListener;
 	
+	private TabTextEditorObject selfReference;
+	
+	private AtomicInteger lastLine;
+	
 	public TabTextEditorObject(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
 		
 		ColumnTextArea.UNDO_LIMIT = GeneralConfig.UNDO_MAX_LIM;
 		
+		selfReference = this;
 		loadedFile = file;
 		this.checkChangesMonitor = checkChangesMonitor;
 		this.shortcutsManager = shortcutsManager;
@@ -155,10 +161,24 @@ public class TabTextEditorObject {
 
 		// TEXT AREA LISTENER
 		textArea.getDocument().addDocumentListener(docListener);
-		focusTxtAreaMonitor = getFocusListenerTxtCursor();
+//		focusTxtAreaMonitor = getFocusListenerTxtCursor();
 		
 		// TAB FOCUS CHANGES LISTENER
-		textArea.addFocusListener(focusTxtAreaMonitor);
+//		textArea.addFocusListener(focusTxtAreaMonitor);
+		
+		lastLine = new AtomicInteger(textArea.getCaretLineNumber());
+		
+		textArea.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				int currentLine = textArea.getCaretLineNumber();
+				if(Math.abs(lastLine.get() - currentLine) > GeneralConfig.HISTORY_MOUSECLICK_LINES_DIFF_TO_ADD) {
+					lastLine.set(currentLine);
+					selfReference.iTabsManager.addToHystory(selfReference);
+				}
+			}
+		});
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
