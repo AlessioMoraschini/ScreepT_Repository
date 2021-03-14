@@ -142,7 +142,7 @@ public class SelectionDtoFull {
 		
 		GuiUtils.launchThreadSafeSwing(()->{
 			try {
-				Thread.sleep(100);
+				Thread.sleep(50);
 				GuiUtils.giveFocusToComponent(textArea);
 				textArea.setSelectionStart(first);
 				textArea.setSelectionEnd(last);

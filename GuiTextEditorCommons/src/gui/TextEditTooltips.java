@@ -11,6 +11,8 @@
  */
 package gui;
 
+import frameutils.utils.GuiUtilsExtended;
+
 public class TextEditTooltips {
 
 	// TOOLTIPS //
@@ -82,6 +84,7 @@ public class TextEditTooltips {
 	public static final String tooltipDepthTreeDown = "[Ctrl + Alt + Shift + Arrow down] Reduce by one level tree depth";
 	public static final String tooltipChckbxLockLanguage = "[Ctrl + shift + L] When checked, language selector will not be auto updated according to current file type";
 	public static final String tooltipFormatCode = "[Ctrl + Shift + F] Format Code according to current selected language (if supported)";
+	public static final String tooltipFormatCodeDisabled = GuiUtils.encapsulateInHtml(tooltipFormatCode + "<br> <b>Not yet supported for current type! supportedTypes are:</b>" + GuiUtils.getAsHtmlList(GuiUtilsExtended.supportedTypesList));
 	public static final String tooltipSpellChecker = "Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.";		
 	
 	public static final String tooltipComboFileFormat = "Choose file extension";

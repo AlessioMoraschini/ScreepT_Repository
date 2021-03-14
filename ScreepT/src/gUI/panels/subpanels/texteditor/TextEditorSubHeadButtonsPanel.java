@@ -229,7 +229,6 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		add(btnCloseAllTabs, "cell 4 0,grow");
 		
 		btntTextFormat = new JButton("Format");
-		btntTextFormat.setToolTipText(TextEditTooltips.tooltipFormatCode);
 		btntTextFormat.setMinimumSize(new Dimension(67, 12));
 		add(btntTextFormat, "cell 8 0 2 1,grow");
 		
@@ -1314,8 +1313,10 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 				currentConfiguration.getTextEditorOpt().setPreferredSyntaxIfNotSync(getCurrentFileType().toString());
 				currentConfiguration.writeSingleValue(INItializer.TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", currentConfiguration.getTextEditorOpt().preferredSyntaxIfNotSync);
 				GuiUtils.giveFocusToComponent(comboFileFormat);
+				checkFormatterEnabled();
 			}
 		});
+		checkFormatterEnabled();
 		
 		//  LOCK/UNLOCK auto recognizer of file type and syntax
 		chckbxLockLanguage.addActionListener(new ActionListener() {
@@ -1555,6 +1556,16 @@ public class TextEditorSubHeadButtonsPanel extends JPanel{
 		});
 		
 		enableDependenciesFunctions();
+	}
+	
+	private void checkFormatterEnabled() {
+		if(GuiUtilsExtended.supportedTypesList.contains(getCurrentFileType().senzapunto.toLowerCase())) {
+			btntTextFormat.setEnabled(true);
+			btntTextFormat.setToolTipText(TextEditTooltips.tooltipFormatCode);
+		} else {
+			btntTextFormat.setEnabled(false);
+			btntTextFormat.setToolTipText(TextEditTooltips.tooltipFormatCodeDisabled);
+		}
 	}
 	
 	public void saveCurrentFileAs(EOL lineSeparator) {

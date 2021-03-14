@@ -81,7 +81,7 @@
 			Launch normally with "clean install -X -U -P free|premium" (see app.properties) -->
 		
 		<!-- Main application version used everyWhere -->
-		<parent.build.version.screept>0.9.41</parent.build.version.screept>
+		<parent.build.version.screept>0.9.42</parent.build.version.screept>
 		
 		<!-- If true, transitive plugins dependencies included in fatjar (provided=excluded : compile=included) -->
 		<plugins.export.scope>provided</plugins.export.scope>

@@ -28,6 +28,7 @@ import validation.arch.model.DynaChecker;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
 import om.SupportedFileTextEditor;
+import resources.GeneralConfig;
 import utility.log.SafeLogger;
 import utility.string.CustomCodeFormatter;
 import utility.string.StringWorker;
@@ -91,6 +92,7 @@ public class SchemeManagerGui extends JFrame {
 	private JButton btnSaveAs;
 	private JButton btnSaveTheme;
 	private JButton btnExportTheme;
+	private JButton btnOpenThemeFolder;
 	
 	private Runnable closeAction = () -> {};
 	
@@ -166,6 +168,11 @@ public class SchemeManagerGui extends JFrame {
 		btnImportTheme.setCursor(GuiUtils.CURSOR_HAND);
 		btnImportTheme.setFont(DEFAULT_BUTTON_FONT);
 		panel.add(btnImportTheme, "cell 1 0");
+		
+		btnOpenThemeFolder = new JButton("Open theme folder");
+		btnOpenThemeFolder.setCursor(GuiUtils.CURSOR_HAND);
+		btnOpenThemeFolder.setFont(DEFAULT_BUTTON_FONT);
+		panel.add(btnOpenThemeFolder, "cell 2 0,alignx left");
 		
 		btnSaveTheme = new JButton("Save current");
 		btnSaveTheme.setCursor(GuiUtils.CURSOR_HAND);
@@ -301,6 +308,10 @@ public class SchemeManagerGui extends JFrame {
 			}
 		});
 		
+		btnOpenThemeFolder.addActionListener((e) -> {
+			GuiUtils.openInFileSystem(new File(GeneralConfig.THEMES_FOLDER_CUSTOM));
+		});
+		
 		btnSaveTheme.addActionListener((e) -> {
 			if (dialogHelper.yesOrNo("Overwrite " + getSelectedColorSchemeObj() + " ?")) {
 				saveCurrentTheme(true, styleFilesFolder);
@@ -394,6 +405,15 @@ public class SchemeManagerGui extends JFrame {
 			
 			schemes = retrieveXmlSchemes();
 			initComboScheme();
+			
+			// Now set as current selected element in combo
+			for(int i = 0; i < schemes.size(); i++) {
+				ColorStyleScheme comboSchemeIterator = comboScheme.getItemAt(i);
+				if(comboSchemeIterator.schemeSource != null && FileVarious.checkIfSameFile(outFile, comboSchemeIterator.schemeSource)){
+					comboScheme.setSelectedIndex(i);
+					break;
+				}
+			}
 		
 		} else if(outName != null){
 			dialogHelper.warn("Invalid name, theme not saved!");

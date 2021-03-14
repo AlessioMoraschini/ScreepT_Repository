@@ -1011,6 +1011,20 @@ public class GuiUtils {
 		return "<html>" + original + "</html>";
 	}
 
+	public static String getAsHtmlList(List<String> originals) {
+		StringBuilder builder = new StringBuilder();
+		if(originals != null) {
+			
+			for(String original : originals) {
+				builder.append("<li>")
+					.append(original)
+					.append("</li>");
+			}
+		}
+			
+		return "<ul>" + builder.toString() + "</ul>";
+	}
+
 	public static String encapsulateInTag(String original, String tag) {
 		String trimmedTag = StringWorker.trimToEmpty(tag);
 

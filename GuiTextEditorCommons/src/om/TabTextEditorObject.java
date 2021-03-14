@@ -122,6 +122,8 @@ public class TabTextEditorObject {
 	
 	private AtomicInteger lastLine;
 	
+	private SelectionDtoFull textAreaContentBackup;
+	
 	public TabTextEditorObject(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
 		
 		ColumnTextArea.UNDO_LIMIT = GeneralConfig.UNDO_MAX_LIM;
@@ -221,6 +223,21 @@ public class TabTextEditorObject {
 		} catch (Exception e) {
 		}
 		
+	}
+	
+	public synchronized void freeRenderingMemory(boolean runGc) {
+		textAreaContentBackup = new SelectionDtoFull(textArea);
+		textArea.setText("");
+		if(runGc) {
+			System.runFinalization();
+			Runtime.getRuntime().gc();
+		}
+	}
+	
+	public synchronized void resetFromRenderingMemory() {
+		if(textAreaContentBackup != null) {
+			textAreaContentBackup.applySelectionDTO(textArea);
+		}
 	}
 	
 	public FocusListener getFocusListenerTxtCursor() {

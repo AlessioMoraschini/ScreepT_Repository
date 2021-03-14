@@ -19,7 +19,7 @@ public class TokensStyleHelp {
 	
 	public static SafeLogger logger = new SafeLogger(TokensStyleHelp.class);
 	
-	public static int otherSchemesProperties = 4;
+	public static int otherSchemesProperties = 5;
 	public static int secondaryLanguages = 3;
 	public static int schemeTokensNumber = TokenTypes.DEFAULT_NUM_TOKEN_TYPES + secondaryLanguages + otherSchemesProperties;
 
@@ -170,6 +170,33 @@ public class TokensStyleHelp {
 			}
 		};
 
+		// tabLine Color
+		ColorSelector tabLineColor = new ColorSelector(
+				new ColorSelectionElement(null, theme.bgColor, "TabLine Color"),
+				true,
+				FontType.Plain,
+				() -> {}
+				);
+		
+		tabLineColor.removeForeground();
+		tabLineColor.removeFont();
+		tabLineColor.removeOpaqueBackground();
+		tabLineColor.onValueChange = () -> {
+			try {
+				SyntaxScheme scheme = textArea.getSyntaxScheme();
+				Insets oldMargin = textArea.getMargin();
+				
+				theme.tabLineColor = tabLineColor.elementOm.background;
+				theme.apply(textArea);
+				textArea.setSyntaxScheme(scheme);
+				textArea.setMargin(oldMargin);
+				textArea.revalidate();
+				textArea.repaint();
+			} catch (Exception e) {
+				logger.warn("", e);
+			}
+		};
+
 		// Caret Color
 		ColorSelector caretColor = new ColorSelector(
 				new ColorSelectionElement(theme.caretColor, null, "Caret Color"),
@@ -202,6 +229,7 @@ public class TokensStyleHelp {
 		tokenSelectors[1] = lineHighlight;
 		tokenSelectors[2] = backgroundMain;
 		tokenSelectors[3] = caretColor;
+		tokenSelectors[4] = tabLineColor;
 		
 		for(ColorSelector selector : tokenSelectors) {
 			selector.setBackground(defaultElementsBackground);
