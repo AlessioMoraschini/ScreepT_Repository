@@ -123,6 +123,7 @@ public class TabTextEditorObject {
 	private AtomicInteger lastLine;
 	
 	private SelectionDtoFull textAreaContentBackup;
+	private int linePositionBackup = 0;
 	
 	public TabTextEditorObject(ITabsManager iTabsManager, File file, String text, DocumentListener docListener, final INItializer configuration, IChangeMonManager checkChangesMonitor, ICommonShortcuts shortcutsManager) {
 		
@@ -225,9 +226,36 @@ public class TabTextEditorObject {
 		
 	}
 	
+	public boolean storeSelectionDto(boolean onlyCaretPsition) {
+		if(textArea != null) {
+			if(!onlyCaretPsition)
+				textAreaContentBackup = new SelectionDtoFull(textArea);
+
+			linePositionBackup = textArea.getCaretPosition();
+		}
+		else return false;
+		
+		return true;
+	}
+	
+	public boolean restoreSelectionDto(boolean lineOnly) {
+		boolean done = true;
+		if(textAreaContentBackup == null) 
+			done = storeSelectionDto(lineOnly);
+		
+		if(lineOnly) {
+			textArea.setCaretPosition(linePositionBackup);
+			RXTextUtilities.centerLineInScrollPane(textArea);
+		} else {
+			textAreaContentBackup.applySelectionDTO(textArea);
+		}
+		
+		return done;
+	}
+	
 	public synchronized void freeRenderingMemory(boolean runGc) {
-		textAreaContentBackup = new SelectionDtoFull(textArea);
-		textArea.setText("");
+		storeSelectionDto(false);
+		textArea.setText(null);
 		if(runGc) {
 			System.runFinalization();
 			Runtime.getRuntime().gc();
@@ -235,9 +263,7 @@ public class TabTextEditorObject {
 	}
 	
 	public synchronized void resetFromRenderingMemory() {
-		if(textAreaContentBackup != null) {
-			textAreaContentBackup.applySelectionDTO(textArea);
-		}
+		restoreSelectionDto(false);
 	}
 	
 	public FocusListener getFocusListenerTxtCursor() {

@@ -116,6 +116,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 								}
 							}
 							currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+						} else {
+							currentTextEditor.getCurrentTabEditor().loadedTabObj.storeSelectionDto(true);
 						}
 						currentTabEditor.loadedTabObj.textArea.setCaretPosition(oldCaretPos);
 						RXTextUtilities.centerLineFullInScrollPane(currentTabEditor.loadedTabObj.textArea);
@@ -138,6 +140,8 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 								}
 							}
 							currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+						} else {
+							currentTextEditor.getCurrentTabEditor().loadedTabObj.storeSelectionDto(true);
 						}
 						currentTabEditor.loadedTabObj.textArea.setCaretPosition(oldCaretPos);
 						RXTextUtilities.centerLineFullInScrollPane(currentTabEditor.loadedTabObj.textArea);
@@ -176,30 +180,36 @@ public class TextEditorShortcutListener implements KeyEventDispatcher, ICommonSh
 				/*
 				 * UNDO -  Ctrl+Z : check and update unsaved variable only
 				 */
-				if (e.getKeyCode()==90 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+				if (e.getKeyCode() == KeyEvent.VK_Z && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
 				{
 					try {
 						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
 					} catch (Throwable e2) {
 						logger.warn(e2);
 					}
+					
+					currentTextEditor.getCurrentTabEditor().loadedTabObj.restoreSelectionDto(true);
+				}
+				/*
+				 * REDO -  Ctrl+Y : check and update unsaved variable only
+				 */
+				else if (e.getKeyCode()== KeyEvent.VK_Y && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
+				{
+					try {
+						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
+					} catch (Throwable e2) {
+						logger.warn(e2);
+					}
+					
+					SwingUtilities.invokeLater(()->{
+						currentTextEditor.getCurrentTabEditor().loadedTabObj.restoreSelectionDto(true);
+					});
 				}
 				
 				else if (e.getKeyCode() == KeyEvent.VK_K && !e.isAltDown() && e.isControlDown() && e.isShiftDown())
 				{
 					try {
 						revalidateUnsaved();
-					} catch (Throwable e2) {
-						logger.warn(e2);
-					}
-				}
-				/*
-				 * REDO -  Ctrl+Y : check and update unsaved variable only
-				 */
-				else if (e.getKeyCode()==89 && !e.isAltDown() && e.isControlDown() && !e.isShiftDown())
-				{
-					try {
-						currentTextEditor.textEditorUtils.updateCurrentUnsavedFromFileRead();
 					} catch (Throwable e2) {
 						logger.warn(e2);
 					}

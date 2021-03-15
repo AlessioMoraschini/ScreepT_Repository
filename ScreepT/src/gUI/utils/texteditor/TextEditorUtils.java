@@ -44,6 +44,7 @@ import files.FileWorker;
 import files.FileVarious;
 import files.om.FileNamed;
 import frameutils.frame.panels.ShellReadWritePanel;
+import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
 import gUI.panels.CrypterPanel;
 import gUI.panels.TextEditor;
@@ -793,6 +794,7 @@ public class TextEditorUtils {
 			currentTextEditor.splitPaneVerticalAllAndBottomToggle.getBottomComponent().setVisible(false);
 			currentTextEditor.splitPaneVerticalAllAndBottomToggle.setDividerLocation(1.0D);
 		}
+		RsyntaxUtils.setFont((RSyntaxTextArea)getBottomShellPanel().commandTextArea, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		
 		currentTextEditor.subHeaderPanel.toggleBtnConsole.setSelected(active);
 		

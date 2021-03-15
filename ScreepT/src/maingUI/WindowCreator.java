@@ -62,6 +62,7 @@ import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import utils.RsyntaxUtils;
 import utils.SysUtils;
 
 public class WindowCreator {
@@ -186,7 +187,8 @@ public class WindowCreator {
 		txtArea.setCurrentLineHighlightColor(Color.DARK_GRAY.darker());
 		txtArea.setSelectedTextColor(Color.DARK_GRAY);
 		txtArea.setSelectionColor(Color.DARK_GRAY);
-		txtArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(18F));
+		txtArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+		RsyntaxUtils.setFont(txtArea, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		return txtArea;
 	}
 	

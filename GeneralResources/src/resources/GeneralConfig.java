@@ -242,6 +242,7 @@ public class GeneralConfig {
 	public static int MAX_SEARCH_DIAL_LIST_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_SEARCH_DIAL_LIST_SIZE", 50);
 	public static int MAX_HISTORY_SIZE = resourcesFilePathsMappings.getIntVarFromProps("MAX_HISTORY_SIZE", 40);
 	public static int HISTORY_MOUSECLICK_LINES_DIFF_TO_ADD = resourcesFilePathsMappings.getIntVarFromProps("HISTORY_MOUSECLICK_LINES_DIFF_TO_ADD", 20);
+	public static float SHELL_PANEL_FONT_SIZE = resourcesFilePathsMappings.getFloatVarFromProps("SHELL_PANEL_FONT_SIZE", 19f);
 	public static boolean RECTANGULAR_TXT_SELECTION_ALLOWED;
 	public static boolean PRELOAD_TXT_EDITOR_FLAG;
 	public static Font TXT_EDITOR_MINIMAP_FONT_DEFAULT;
@@ -568,7 +569,7 @@ public class GeneralConfig {
 			BUTTON_BCKG_COLOR_TXT_EDITOR = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR", new Color(120, 125, 140));
 			BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER = resourcesFilePathsMappings.getColorVarFromProps("BUTTON_BCKG_COLOR_TXT_EDITOR_DARKER", new Color(71, 76, 84));
 			MAX_FILE_SIZE_TXT_EDITOR_KB = resourcesFilePathsMappings.getIntVarFromProps("MAX_FILE_SIZE_TXT_EDITOR_KB", 1024*20); // 20 MB default
-			MAX_TEXT_EDITOR_SAFE_LINES = resourcesFilePathsMappings.getIntVarFromProps("MAX_TEXT_EDITOR_SAFE_LINES", 1000000); // 20 MB default
+			MAX_TEXT_EDITOR_SAFE_LINES = resourcesFilePathsMappings.getIntVarFromProps("MAX_TEXT_EDITOR_SAFE_LINES", 1000000); // 1 Million lines default
 			TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
 			NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
 			FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);

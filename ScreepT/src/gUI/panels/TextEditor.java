@@ -52,6 +52,7 @@ import org.fife.ui.rtextarea.RUndoManager;
 import arch.INItializerParent;
 import dialogutils.JOptionHelperExtended;
 import files.FileVarious;
+import files.FileWorker;
 import files.om.FileNamed;
 import frameutils.frame.arch.ModulePanel;
 import frameutils.frame.panels.ShellReadWritePanel;
@@ -70,6 +71,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
@@ -1139,6 +1141,12 @@ public class TextEditor extends ModulePanel {
 			btnDepthDown_nostyle.setToolTipText(TextEditTooltips.tooltipDepthTreeDown);
 		}
 	}
+	
+	private boolean validateFile(File toLoadFile) {
+		boolean exceedsLines = FileWorker.checkIfHasMoreThanNLines(toLoadFile, GeneralConfig.MAX_TEXT_EDITOR_SAFE_LINES);
+		boolean exceedsLength = toLoadFile.length() / 1024 > GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB;
+		return toLoadFile != null && toLoadFile.exists() && !exceedsLength && !exceedsLines;
+	}
 
 	private void loadOpenedFilesAtStart() {
 		
@@ -1148,17 +1156,27 @@ public class TextEditor extends ModulePanel {
 
 		boolean loadedAlmostOne = false;
 		currentTabbedEditor.alreadyLoading = true;
+		List<String> toRemove = new ArrayList<>();
 		if (currentConfiguration.getTextEditorOpt().getOpenedFileList() != null
 				&& currentConfiguration.getTextEditorOpt().getOpenedFileList().size() != 0) {
 			
 			for (String pathToOpen : currentConfiguration.getTextEditorOpt().getOpenedFileList()) {
 				File toLoadFile = new File(pathToOpen);
 				if (toLoadFile.exists()) {
+					if(!validateFile(toLoadFile)) {
+						toRemove.add(pathToOpen);
+						continue;
+					}
+					
 					currentTabbedEditor.addTab(toLoadFile);
 					currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(toLoadFile, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");
 					if (!loadedAlmostOne)
 						loadedAlmostOne = true;
 				}
+			}
+			
+			for(String toRemoStr : toRemove) {
+				currentConfiguration.getTextEditorOpt().getOpenedFileList().remove(toRemoStr);
 			}
 		}
 
@@ -1166,6 +1184,10 @@ public class TextEditor extends ModulePanel {
 		if (MainGuiGeneralAppStarter.argumentsFiles != null && MainGuiGeneralAppStarter.argumentsFiles.length != 0) {
 			logger.debug("ARGUMENTS FILES:" + Arrays.toString(MainGuiGeneralAppStarter.argumentsFiles));
 			for (File file : MainGuiGeneralAppStarter.argumentsFiles) {
+				if(!validateFile(file)) {
+					continue;
+				}
+				
 				currentTabbedEditor.loadFile(file);
 				logger.debug(file.getAbsolutePath() + " -> Loaded");
 				currentConfiguration.getTextEditorOpt().addFileToTopLimitedList(file, currentConfiguration.getTextEditorOpt().lastOpenedFiles, "lastOpenedFiles");

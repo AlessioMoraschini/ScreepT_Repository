@@ -27,6 +27,7 @@ import gui.RXTextUtilities;
 import net.miginfocom.swing.MigLayout;
 import om.LimitedConcurrentList;
 import om.OSinfo;
+import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import splitpanel.SplitPaneUtils;
 import utility.string.StringWorker;
@@ -122,7 +123,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		
 		SwingUtilities.invokeLater(() -> {
 			splitPane.setDividerLocation(defaultDividerLocationRatio);
-			commandTextArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(17F));
+			commandTextArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		});
 		
 		shortcutsListener = new ShellShortcutsListener(this);
@@ -228,7 +229,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		scrollPaneTop.setPreferredSize(new Dimension(1920, 1080));
 		splitPane.setTopComponent(scrollPaneTop);
 		
-		commandTextArea = getTextArea(commandTextArea, Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(19F));
+		commandTextArea = getTextArea(commandTextArea, Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		scrollPaneTop.setViewportView(commandTextArea);
 		
 		
@@ -237,7 +238,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		scrollPaneBottom.setPreferredSize(new Dimension(1920, 1080));
 		splitPane.setBottomComponent(scrollPaneBottom);
 		
-		outputTextArea = getTextArea(Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT);
+		outputTextArea = getTextArea(Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		outputTextArea.setEditable(false);
 		outputTextArea.setCursor(GuiUtils.CURSOR_TEXT);
 		outputTextArea.setText("I'm ready to launch your commands ;)");

@@ -267,7 +267,7 @@ public class ColumnTextArea extends RSyntaxTextArea {
 					String currentSelLine = getText(start, end);
 					int lineWidth = GuiUtils.getHighlightWidthWithTabs(currentSelLine, thisTextArea.getTabSize());
 					int rowEnd = Utilities.getRowEnd(this, end);
-					if (rowEnd != end && (startFirstL != start || endFirstL != lineWidth)) {
+					if (rowEnd != end && (Math.abs(startFirstL - start) > 1 || Math.abs(endFirstL - lineWidth) > 1)) {
 						isRectangular = false;
 					}
 				} catch (BadLocationException e) {
